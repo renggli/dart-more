@@ -2,6 +2,10 @@
 
 library all_test;
 
-void main() {
+import 'char_matcher_test.dart' as char_matcher_test;
+import 'iterable_test.dart' as iterable_test;
 
+void main() {
+  char_matcher_test.main();
+  iterable_test.main();
 }

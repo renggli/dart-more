@@ -1,8 +1,10 @@
 name: more
 version: 0.4.7
 author: Lukas Renggli <renggli@gmail.com>
-description: More iterables, iterators and collection enhancements.
+description: More Dart — Literally
 homepage: https://github.com/renggli/MoreDart
+dependencies:
+  meta: '>=0.4.7'
 dev_dependencies:
   junitconfiguration: '>=0.4.7'
   unittest: '>=0.4.7'
