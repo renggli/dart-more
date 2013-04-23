@@ -2,9 +2,10 @@
 
 library bit_set;
 
+import 'dart:collection';
 import 'dart:typeddata';
 
-class BitSet implements List<bool>, TypedData {
+class BitSet extends ListBase<bool> implements TypedData {
 
   static final int BITS_PER_INDEX = 8;
 
@@ -35,6 +36,8 @@ class BitSet implements List<bool>, TypedData {
 
   BitSet._(this._buffer, this._length);
 
+  int get length => _length;
+
   bool operator [] (int index) {
     if (0 <= index && index < length) {
       var i = index ~/ BITS_PER_INDEX;
@@ -60,4 +63,3 @@ class BitSet implements List<bool>, TypedData {
   }
 
 }
-
