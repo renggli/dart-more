@@ -79,12 +79,14 @@ class _RangeList extends ListBase<int> implements List<int> {
   }
 
   String toString() {
-    if (_start == 0 && _step == 1) {
-      return 'range($_start)';
+    if (_length == 0) {
+      return 'range()';
+    } else if (_start == 0 && _step == 1) {
+      return 'range(${_start + _length})';
     } else if (_step == 1) {
       return 'range($_start, ${_start + _length})';
     } else {
-      return 'range($_start, ${_start + _step * _length}, $_step})';
+      return 'range($_start, ${_start + _step * _length}, $_step)';
     }
   }
 

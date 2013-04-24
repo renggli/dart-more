@@ -34,6 +34,12 @@ void main() {
       expect(range(7, 2, -2), [7, 5, 3]);
       expect(range(6, 2, -2), [6, 4]);
     });
+    test('printing', () {
+      expect(range().toString(), 'range()');
+      expect(range(1).toString(), 'range(1)');
+      expect(range(1, 2).toString(), 'range(1, 2)');
+      expect(range(1, 5, 2).toString(), 'range(1, 5, 2)');
+    });
   });
 }
 
