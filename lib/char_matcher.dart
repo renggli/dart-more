@@ -33,7 +33,7 @@ abstract class CharMatcher {
   }
 
   /**
-   * Determines a [true] or [false] value for the given character.
+   * Determines if the given character code belongs to the character class.
    */
   bool call(int value);
 
