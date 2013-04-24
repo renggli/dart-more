@@ -2,42 +2,57 @@
 
 library bit_list_test;
 
+import 'dart:math';
 import 'package:unittest/unittest.dart';
 import 'package:more/bit_list.dart';
+
+List<bool> randomList(int seed, int length) {
+  var list = new List();
+  var generator = new Random(seed);
+  for (var i = 0; i < length; i++) {
+    list.add(generator.nextBool());
+  }
+  return list;
+}
 
 void main() {
   group('bit list', () {
     test('empty list', () {
       var list = new BitList(0);
       expect(list, isEmpty);
+      expect(list, []);
     });
-    test('basic list', () {
+    test('tiny list', () {
       var list = new BitList(1);
       expect(list, isNot(isEmpty));
-      expect(list[0], isFalse);
+      expect(list, [false]);
       list[0] = true;
-      expect(list[0], isTrue);
+      expect(list, [true]);
       list[0] = false;
-      expect(list[0], isFalse);
+      expect(list, [false]);
     });
     test('long list', () {
-      for (var step = 1; step < 25; step++) {
-        var list = new BitList(100);
-        for (var i = 0; i < list.length; i += step) {
-          list[i] = true;
+      var target = new BitList(100);
+      for (var i = 0; i < 100; i++) {
+        var source = randomList(i, target.length);
+        for (var j = 0; j < source.length; j++) {
+          target[j] = source[j];
         }
-        for (var i = 0; i < list.length; i++) {
-          expect(list[i], i % step == 0);
+        for (var j = 0; j < source.length; j++) {
+          expect(source[j], target[j]);
         }
       }
     });
     test('list conversion', () {
-      var source = [false, true, false, true, false, true, false, true, true];
-      var target = new BitList.fromList(source);
-      expect(source, target);
-      expect(source, target.toList());
+      for (var len = 0; len < 100; len++) {
+        var source = randomList(len, len);
+        var target = new BitList.fromList(source);
+        expect(source, target);
+        expect(source, target.toList());
+        expect(source, new BitList.fromList(target));
+      }
     });
-    test('bounds reading', () {
+    test('reading bounds', () {
       for (var i = 0; i <= 24; i++) {
         var list = new BitList(i);
         expect(() => list[-1], throwsRangeError);
@@ -47,7 +62,7 @@ void main() {
         expect(() => list[i], throwsRangeError);
       }
     });
-    test('bounds writing', () {
+    test('writing bounds', () {
       for (var i = 0; i <= 24; i++) {
         var list = new BitList(i);
         expect(() => list[-1] = true, throwsRangeError);
@@ -56,6 +71,31 @@ void main() {
         }
         expect(() => list[i] = true, throwsRangeError);
       }
+    });
+    test('logical negation', () {
+      var source = new BitList.fromList(randomList(702, 100));
+      var target = ~source;
+      for (var i = 0; i < target.length; i++) {
+        expect(target[i], !source[i]);
+      }
+    });
+    test('logical and', () {
+      var source1 = new BitList.fromList(randomList(439, 100));
+      var source2 = new BitList.fromList(randomList(902, 100));
+      var target = source1 & source2;
+      for (var i = 0; i < target.length; i++) {
+        expect(target[i], source1[i] && source2[i]);
+      }
+      expect(target, source2 & source1);
+    });
+    test('logical or', () {
+      var source1 = new BitList.fromList(randomList(817, 100));
+      var source2 = new BitList.fromList(randomList(858, 100));
+      var target = source1 | source2;
+      for (var i = 0; i < target.length; i++) {
+        expect(target[i], source1[i] || source2[i]);
+      }
+      expect(target, source2 | source1);
     });
   });
 }

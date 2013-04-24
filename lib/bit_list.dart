@@ -27,6 +27,7 @@ class BitList extends ListBase<bool> {
    * Constucts a new list from a given [list] of booleans or [BitSet].
    */
   factory BitList.fromList(List<bool> list) {
+    // TODO(renggli): optimize by doing something smart
     var result = new BitList(list.length);
     for (var i = 0; i < list.length; i++) {
       if (list[i]) {
@@ -34,14 +35,6 @@ class BitList extends ListBase<bool> {
       }
     }
     return result;
-  }
-
-  /**
-   * Constructs a view onto a given [buffer] at offset [offsetInBytes].
-   */
-  factory BitList.view(ByteBuffer buffer, [int offsetInBytes = 0, int length]) {
-    return new BitList._(new Uint8List.view(buffer, offsetInBytes,
-        _bufferLength(length)), length);
   }
 
   final Uint8List _buffer;
@@ -71,6 +64,32 @@ class BitList extends ListBase<bool> {
     } else {
       throw new RangeError.value(index);
     }
+  }
+
+  BitList operator ~ () {
+    BitList result = new BitList(_length);
+    for (var i = 0; i < _buffer.length; i++) {
+      result._buffer[i] = ~_buffer[i];
+    }
+    return result;
+  }
+
+  BitList operator & (BitList other) {
+    assert(_length == other._length);
+    BitList result = new BitList(_length);
+    for (var i = 0; i < _buffer.length; i++) {
+      result._buffer[i] = _buffer[i] & other._buffer[i];
+    }
+    return result;
+  }
+
+  BitList operator | (BitList other) {
+    assert(_length == other._length);
+    BitList result = new BitList(_length);
+    for (var i = 0; i < _buffer.length; i++) {
+      result._buffer[i] = _buffer[i] | other._buffer[i];
+    }
+    return result;
   }
 
 }

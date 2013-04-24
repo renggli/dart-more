@@ -6,6 +6,4 @@ import 'package:unittest/unittest.dart';
 import 'package:more/char_matcher.dart';
 
 void main() {
-  var letter = LETTER;
-  print(letter);
 }

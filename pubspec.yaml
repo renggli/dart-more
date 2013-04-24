@@ -1,10 +1,8 @@
 name: more
-version: 0.4.7
+version: 0.5.0
 author: Lukas Renggli <renggli@gmail.com>
 description: More Dart — Literally
 homepage: https://github.com/renggli/MoreDart
-dependencies:
-  meta: '>=0.4.7'
 dev_dependencies:
   junitconfiguration: '>=0.4.7'
   unittest: '>=0.4.7'
