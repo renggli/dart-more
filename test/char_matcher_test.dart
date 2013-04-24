@@ -5,12 +5,53 @@ library char_matcher_test;
 import 'package:unittest/unittest.dart';
 import 'package:more/char_matcher.dart';
 
+void verify(CharMatcher matcher, String included, String excluded) {
+  var positive = matcher;
+  expect(positive.matchesEvery(included), isTrue);
+  expect(positive.matchesAny(excluded), isFalse);
+  var negative = ~matcher;
+  expect(negative.matchesEvery(excluded), isTrue);
+  expect(negative.matchesAny(included), isFalse);
+}
+
 void main() {
   group('char matcher', () {
-    group('classes', () {
-
+    group('class', () {
+      test('ANY', () {
+        verify(ANY, 'abc123!@#', '');
+      });
+      test('NONE', () {
+        verify(NONE, '', 'abc123!@# ');
+      });
+      test('isChar', () {
+        verify(isChar('*'), '*', 'abc123!@# ');
+      });
+      test('inRange', () {
+        verify(inRange('a', 'c'), 'abc', 'def123!@# ');
+      });
+      test('ASCII', () {
+        verify(ASCII, 'def123!@#', '\u2665');
+      });
+      test('DIGIT', () {
+        verify(DIGIT, '0123456789', 'abc!@# ');
+      });
+      test('LETTER', () {
+        verify(LETTER, 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ', '123!@# ');
+      });
+      test('LOWER_CASE_LETTER', () {
+        verify(LOWER_CASE_LETTER, 'abcdefghijklmnopqrstuvwxyz', 'ABCDEFGHIJKLMNOPQRSTUVWXYZ123!@# ');
+      });
+      test('UPPER_CASE_LETTER', () {
+        verify(UPPER_CASE_LETTER, 'ABCDEFGHIJKLMNOPQRSTUVWXYZ', 'abcdefghijklmnopqrstuvwxyz123!@# ');
+      });
+      test('LETTER_OR_DIGIT', () {
+        verify(LETTER_OR_DIGIT, 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ01234567890', '!@# ');
+      });
+      test('WHITESPACE', () {
+        verify(WHITESPACE, ' \n\t', 'abcABC!@#');
+      });
     });
-    group('operations', () {
+    group('action', () {
       var star = isChar('*');
       test('matchesEvery', () {
         expect(star.matchesEvery(''), isTrue);
