@@ -7,4 +7,4 @@ Various extension libraries that make Dart a better place.
   stores bits.
 - char_matcher.dart provides a model for character classes, their composition
   and operations on strings.
-- iterable.dart provides various new iterables, such as ranges.
+- range.dart provides a range object for arithmetic progressions.
