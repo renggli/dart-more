@@ -1,9 +1,31 @@
 // Copyright (c) 2013, Lukas Renggli <renggli@gmail.com>
 
+/**
+ * Provides a first-class model of character classes, their composition
+ * and operations on strings.
+ *
+ * The implementation closely follows [Guava](http://goo.gl/xXROX), the Google
+ * collection of libraries for Java-based projects.
+ */
 library char_matcher;
 
 /**
  * Abstract character matcher.
+ *
+ * The [CharMatcher] a boolean predicate on characters. The inclusion of a
+ * character can be determined by calling the matcher with the code-unit
+ * of a character as a function argument, for example:
+ *
+ *     WHITESPACE(' '.codeUnitAt(0)); // true
+ *     DIGIT('a'.codeUnitAt(0)); // false
+ *
+ * A large collection of helper methods let you perform string operations on
+ * the occurences of the specified class of characters: trimming, collapsing,
+ * replacing, removing, retaining, etc. For example:
+ *
+ *     String withoutWhitespace = WHITESPACE.removeFrom(string);
+ *     String onlyDigits = DIGIT.retainFrom(string);
+ *
  */
 abstract class CharMatcher {
 
@@ -40,14 +62,14 @@ abstract class CharMatcher {
   /**
    * Returns [true] if the [sequence] contains only matching characters.
    */
-  bool matchesEvery(String sequence) {
+  bool everyOf(String sequence) {
     return sequence.codeUnits.every(this);
   }
 
   /**
    * Returns [true] if the [sequence] contains at least one matching character.
    */
-  bool matchesAny(String sequence) {
+  bool anyOf(String sequence) {
     return sequence.codeUnits.any(this);
   }
 
@@ -55,7 +77,7 @@ abstract class CharMatcher {
    * Returns the first matching index in [sequence], searching backward
    * starting at [start] (inclusive). Returns -1 if it could not be found.
    */
-  int firstIndex(String sequence, [int start = 0]) {
+  int firstIndexIn(String sequence, [int start = 0]) {
     var codeUnits = sequence.codeUnits;
     for (var i = start; i < codeUnits.length; i++) {
       if (this(codeUnits[i])) {
@@ -69,7 +91,7 @@ abstract class CharMatcher {
    * Returns the last matching index in [sequence] starting at [start]
    * (inclusive). Returns -1 if it could not be found.
    */
-  int lastIndex(String sequence, [int start]) {
+  int lastIndexIn(String sequence, [int start]) {
     var codeUnits = sequence.codeUnits;
     if (start == null) {
       start = codeUnits.length - 1;
@@ -85,7 +107,7 @@ abstract class CharMatcher {
   /**
    * Counts the number of matches in [sequence].
    */
-  int count(String sequence) {
+  int countIn(String sequence) {
     return sequence.codeUnits.where(this).length;
   }
 
@@ -93,7 +115,7 @@ abstract class CharMatcher {
    * Replaces each group of consecutive matched characters in [sequence]
    * with the specified [replacement].
    */
-  String collapse(String sequence, String replacement) {
+  String collapseFrom(String sequence, String replacement) {
     var i = 0;
     var list = new List();
     var codeUnits = sequence.codeUnits;
@@ -117,7 +139,7 @@ abstract class CharMatcher {
    * Replaces each matched character in [sequence] with the sepcified
    * [replacement].
    */
-  String replace(String sequence, String replacement) {
+  String replaceFrom(String sequence, String replacement) {
     var replacementCodes = replacement.codeUnits;
     return new String.fromCharCodes(sequence.codeUnits.expand((value) {
       return this(value) ? replacementCodes : [value];
@@ -127,21 +149,21 @@ abstract class CharMatcher {
   /**
    * Removes all matched characters in [sequence].
    */
-  String remove(String sequence) {
+  String removeFrom(String sequence) {
     return new String.fromCharCodes(sequence.codeUnits.where(~this));
   }
 
   /**
    * Retains all matched characters in [sequence].
    */
-  String retain(String sequence) {
+  String retainFrom(String sequence) {
     return new String.fromCharCodes(sequence.codeUnits.where(this));
   }
 
   /**
    * Removes leading and trailing matching characters in [sequence].
    */
-  String trim(String sequence) {
+  String trimFrom(String sequence) {
     var codeUnits = sequence.codeUnits;
     var left = 0, right = codeUnits.length - 1;
     while (left <= right && this(codeUnits[left])) {
@@ -156,7 +178,7 @@ abstract class CharMatcher {
   /**
    * Removes leading matching characters in [sequence].
    */
-  String trimLeft(String sequence) {
+  String trimLeadingFrom(String sequence) {
     var codeUnits = sequence.codeUnits;
     var left = 0, right = codeUnits.length - 1;
     while (left <= right && this(codeUnits[left])) {
@@ -168,7 +190,7 @@ abstract class CharMatcher {
   /**
    * Removes tailing matching characters in [sequence].
    */
-  String trimRight(String sequence) {
+  String trimTailingFrom(String sequence) {
     var codeUnits = sequence.codeUnits;
     var left = 0, right = codeUnits.length - 1;
     while (left <= right && this(codeUnits[right])) {

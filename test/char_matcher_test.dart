@@ -7,11 +7,11 @@ import 'package:more/char_matcher.dart';
 
 void verify(CharMatcher matcher, String included, String excluded) {
   var positive = matcher;
-  expect(positive.matchesEvery(included), isTrue);
-  expect(positive.matchesAny(excluded), isFalse);
+  expect(positive.everyOf(included), isTrue);
+  expect(positive.anyOf(excluded), isFalse);
   var negative = ~matcher;
-  expect(negative.matchesEvery(excluded), isTrue);
-  expect(negative.matchesAny(included), isFalse);
+  expect(negative.everyOf(excluded), isTrue);
+  expect(negative.anyOf(included), isFalse);
 }
 
 void main() {
@@ -53,153 +53,153 @@ void main() {
     });
     group('action', () {
       var star = isChar('*');
-      test('matchesEvery', () {
-        expect(star.matchesEvery(''), isTrue);
-        expect(star.matchesEvery('a'), isFalse);
-        expect(star.matchesEvery('*'), isTrue);
-        expect(star.matchesEvery('ab'), isFalse);
-        expect(star.matchesEvery('a*'), isFalse);
-        expect(star.matchesEvery('*b'), isFalse);
-        expect(star.matchesEvery('**'), isTrue);
+      test('everyOf', () {
+        expect(star.everyOf(''), isTrue);
+        expect(star.everyOf('a'), isFalse);
+        expect(star.everyOf('*'), isTrue);
+        expect(star.everyOf('ab'), isFalse);
+        expect(star.everyOf('a*'), isFalse);
+        expect(star.everyOf('*b'), isFalse);
+        expect(star.everyOf('**'), isTrue);
       });
-      test('matchesAny', () {
-        expect(star.matchesAny(''), isFalse);
-        expect(star.matchesAny('a'), isFalse);
-        expect(star.matchesAny('*'), isTrue);
-        expect(star.matchesAny('ab'), isFalse);
-        expect(star.matchesAny('a*'), isTrue);
-        expect(star.matchesAny('*b'), isTrue);
-        expect(star.matchesAny('**'), isTrue);
+      test('anyOf', () {
+        expect(star.anyOf(''), isFalse);
+        expect(star.anyOf('a'), isFalse);
+        expect(star.anyOf('*'), isTrue);
+        expect(star.anyOf('ab'), isFalse);
+        expect(star.anyOf('a*'), isTrue);
+        expect(star.anyOf('*b'), isTrue);
+        expect(star.anyOf('**'), isTrue);
       });
-      test('firstIndex', () {
-        expect(star.firstIndex(''), -1);
-        expect(star.firstIndex('*'), 0);
-        expect(star.firstIndex('**'), 0);
-        expect(star.firstIndex('a'), -1);
-        expect(star.firstIndex('a*'), 1);
-        expect(star.firstIndex('a**'), 1);
-        expect(star.firstIndex('*', 1), -1);
-        expect(star.firstIndex('**', 1), 1);
+      test('firstIndexIn', () {
+        expect(star.firstIndexIn(''), -1);
+        expect(star.firstIndexIn('*'), 0);
+        expect(star.firstIndexIn('**'), 0);
+        expect(star.firstIndexIn('a'), -1);
+        expect(star.firstIndexIn('a*'), 1);
+        expect(star.firstIndexIn('a**'), 1);
+        expect(star.firstIndexIn('*', 1), -1);
+        expect(star.firstIndexIn('**', 1), 1);
       });
-      test('lastIndex', () {
-        expect(star.lastIndex(''), -1);
-        expect(star.lastIndex('*'), 0);
-        expect(star.lastIndex('**'), 1);
-        expect(star.lastIndex('a'), -1);
-        expect(star.lastIndex('*a'), 0);
-        expect(star.lastIndex('**a'), 1);
-        expect(star.lastIndex('*', 0), 0);
-        expect(star.lastIndex('**', 0), 0);
+      test('lastIndexIn', () {
+        expect(star.lastIndexIn(''), -1);
+        expect(star.lastIndexIn('*'), 0);
+        expect(star.lastIndexIn('**'), 1);
+        expect(star.lastIndexIn('a'), -1);
+        expect(star.lastIndexIn('*a'), 0);
+        expect(star.lastIndexIn('**a'), 1);
+        expect(star.lastIndexIn('*', 0), 0);
+        expect(star.lastIndexIn('**', 0), 0);
       });
-      test('count', () {
-        expect(star.count(''), 0);
-        expect(star.count('*'), 1);
-        expect(star.count('**'), 2);
-        expect(star.count('a'), 0);
-        expect(star.count('ab'), 0);
-        expect(star.count('a*b'), 1);
-        expect(star.count('*a*b'), 2);
-        expect(star.count('*a*b*'), 3);
+      test('countIn', () {
+        expect(star.countIn(''), 0);
+        expect(star.countIn('*'), 1);
+        expect(star.countIn('**'), 2);
+        expect(star.countIn('a'), 0);
+        expect(star.countIn('ab'), 0);
+        expect(star.countIn('a*b'), 1);
+        expect(star.countIn('*a*b'), 2);
+        expect(star.countIn('*a*b*'), 3);
       });
-      test('collapse', () {
-        expect(star.collapse('', ''), '');
-        expect(star.collapse('', '!'), '');
-        expect(star.collapse('', '!!'), '');
-        expect(star.collapse('*', ''), '');
-        expect(star.collapse('*', '!'), '!');
-        expect(star.collapse('*', '!!'), '!!');
-        expect(star.collapse('**', ''), '');
-        expect(star.collapse('**', '!'), '!');
-        expect(star.collapse('**', '!!'), '!!');
-        expect(star.collapse('a*b*c', ''), 'abc');
-        expect(star.collapse('a*b*c', '!'), 'a!b!c');
-        expect(star.collapse('a*b*c', '!!'), 'a!!b!!c');
-        expect(star.collapse('a**b**c', ''), 'abc');
-        expect(star.collapse('a**b**c', '!'), 'a!b!c');
-        expect(star.collapse('a**b**c', '!!'), 'a!!b!!c');
+      test('collapseFrom', () {
+        expect(star.collapseFrom('', ''), '');
+        expect(star.collapseFrom('', '!'), '');
+        expect(star.collapseFrom('', '!!'), '');
+        expect(star.collapseFrom('*', ''), '');
+        expect(star.collapseFrom('*', '!'), '!');
+        expect(star.collapseFrom('*', '!!'), '!!');
+        expect(star.collapseFrom('**', ''), '');
+        expect(star.collapseFrom('**', '!'), '!');
+        expect(star.collapseFrom('**', '!!'), '!!');
+        expect(star.collapseFrom('a*b*c', ''), 'abc');
+        expect(star.collapseFrom('a*b*c', '!'), 'a!b!c');
+        expect(star.collapseFrom('a*b*c', '!!'), 'a!!b!!c');
+        expect(star.collapseFrom('a**b**c', ''), 'abc');
+        expect(star.collapseFrom('a**b**c', '!'), 'a!b!c');
+        expect(star.collapseFrom('a**b**c', '!!'), 'a!!b!!c');
       });
-      test('replace', () {
-        expect(star.replace('', ''), '');
-        expect(star.replace('', '!'), '');
-        expect(star.replace('', '!!'), '');
-        expect(star.replace('*', ''), '');
-        expect(star.replace('*', '!'), '!');
-        expect(star.replace('*', '!!'), '!!');
-        expect(star.replace('**', ''), '');
-        expect(star.replace('**', '!'), '!!');
-        expect(star.replace('**', '!!'), '!!!!');
-        expect(star.replace('a*b*c', ''), 'abc');
-        expect(star.replace('a*b*c', '!'), 'a!b!c');
-        expect(star.replace('a*b*c', '!!'), 'a!!b!!c');
-        expect(star.replace('a**b**c', ''), 'abc');
-        expect(star.replace('a**b**c', '!'), 'a!!b!!c');
-        expect(star.replace('a**b**c', '!!'), 'a!!!!b!!!!c');
+      test('replaceFrom', () {
+        expect(star.replaceFrom('', ''), '');
+        expect(star.replaceFrom('', '!'), '');
+        expect(star.replaceFrom('', '!!'), '');
+        expect(star.replaceFrom('*', ''), '');
+        expect(star.replaceFrom('*', '!'), '!');
+        expect(star.replaceFrom('*', '!!'), '!!');
+        expect(star.replaceFrom('**', ''), '');
+        expect(star.replaceFrom('**', '!'), '!!');
+        expect(star.replaceFrom('**', '!!'), '!!!!');
+        expect(star.replaceFrom('a*b*c', ''), 'abc');
+        expect(star.replaceFrom('a*b*c', '!'), 'a!b!c');
+        expect(star.replaceFrom('a*b*c', '!!'), 'a!!b!!c');
+        expect(star.replaceFrom('a**b**c', ''), 'abc');
+        expect(star.replaceFrom('a**b**c', '!'), 'a!!b!!c');
+        expect(star.replaceFrom('a**b**c', '!!'), 'a!!!!b!!!!c');
       });
-      test('remove', () {
-        expect(star.remove(''), '');
-        expect(star.remove('*'), '');
-        expect(star.remove('**'), '');
-        expect(star.remove('*a'), 'a');
-        expect(star.remove('*a*'), 'a');
-        expect(star.remove('*a*b'), 'ab');
-        expect(star.remove('*a*b*'), 'ab');
-        expect(star.remove('a*b*'), 'ab');
-        expect(star.remove('ab*'), 'ab');
-        expect(star.remove('ab'), 'ab');
+      test('removeFrom', () {
+        expect(star.removeFrom(''), '');
+        expect(star.removeFrom('*'), '');
+        expect(star.removeFrom('**'), '');
+        expect(star.removeFrom('*a'), 'a');
+        expect(star.removeFrom('*a*'), 'a');
+        expect(star.removeFrom('*a*b'), 'ab');
+        expect(star.removeFrom('*a*b*'), 'ab');
+        expect(star.removeFrom('a*b*'), 'ab');
+        expect(star.removeFrom('ab*'), 'ab');
+        expect(star.removeFrom('ab'), 'ab');
       });
-      test('retain', () {
-        expect(star.retain(''), '');
-        expect(star.retain('*'), '*');
-        expect(star.retain('**'), '**');
-        expect(star.retain('*a'), '*');
-        expect(star.retain('*a*'), '**');
-        expect(star.retain('*a*b'), '**');
-        expect(star.retain('*a*b*'), '***');
-        expect(star.retain('a*b*'), '**');
-        expect(star.retain('ab*'), '*');
-        expect(star.retain('ab'), '');
+      test('retainFrom', () {
+        expect(star.retainFrom(''), '');
+        expect(star.retainFrom('*'), '*');
+        expect(star.retainFrom('**'), '**');
+        expect(star.retainFrom('*a'), '*');
+        expect(star.retainFrom('*a*'), '**');
+        expect(star.retainFrom('*a*b'), '**');
+        expect(star.retainFrom('*a*b*'), '***');
+        expect(star.retainFrom('a*b*'), '**');
+        expect(star.retainFrom('ab*'), '*');
+        expect(star.retainFrom('ab'), '');
       });
-      test('trim', () {
-        expect(star.trim(''), '');
-        expect(star.trim('*'), '');
-        expect(star.trim('**'), '');
-        expect(star.trim('*a'), 'a');
-        expect(star.trim('**a'), 'a');
-        expect(star.trim('*ab'), 'ab');
-        expect(star.trim('a*'), 'a');
-        expect(star.trim('a**'), 'a');
-        expect(star.trim('ab*'), 'ab');
-        expect(star.trim('*a*'), 'a');
-        expect(star.trim('**a**'), 'a');
-        expect(star.trim('*ab*'), 'ab');
+      test('trimFrom', () {
+        expect(star.trimFrom(''), '');
+        expect(star.trimFrom('*'), '');
+        expect(star.trimFrom('**'), '');
+        expect(star.trimFrom('*a'), 'a');
+        expect(star.trimFrom('**a'), 'a');
+        expect(star.trimFrom('*ab'), 'ab');
+        expect(star.trimFrom('a*'), 'a');
+        expect(star.trimFrom('a**'), 'a');
+        expect(star.trimFrom('ab*'), 'ab');
+        expect(star.trimFrom('*a*'), 'a');
+        expect(star.trimFrom('**a**'), 'a');
+        expect(star.trimFrom('*ab*'), 'ab');
       });
-      test('trimLeft', () {
-        expect(star.trimLeft(''), '');
-        expect(star.trimLeft('*'), '');
-        expect(star.trimLeft('**'), '');
-        expect(star.trimLeft('*a'), 'a');
-        expect(star.trimLeft('**a'), 'a');
-        expect(star.trimLeft('*ab'), 'ab');
-        expect(star.trimLeft('a*'), 'a*');
-        expect(star.trimLeft('a**'), 'a**');
-        expect(star.trimLeft('ab*'), 'ab*');
-        expect(star.trimLeft('*a*'), 'a*');
-        expect(star.trimLeft('**a**'), 'a**');
-        expect(star.trimLeft('*ab*'), 'ab*');
+      test('trimLeadingFrom', () {
+        expect(star.trimLeadingFrom(''), '');
+        expect(star.trimLeadingFrom('*'), '');
+        expect(star.trimLeadingFrom('**'), '');
+        expect(star.trimLeadingFrom('*a'), 'a');
+        expect(star.trimLeadingFrom('**a'), 'a');
+        expect(star.trimLeadingFrom('*ab'), 'ab');
+        expect(star.trimLeadingFrom('a*'), 'a*');
+        expect(star.trimLeadingFrom('a**'), 'a**');
+        expect(star.trimLeadingFrom('ab*'), 'ab*');
+        expect(star.trimLeadingFrom('*a*'), 'a*');
+        expect(star.trimLeadingFrom('**a**'), 'a**');
+        expect(star.trimLeadingFrom('*ab*'), 'ab*');
       });
-      test('trimRight', () {
-        expect(star.trimRight(''), '');
-        expect(star.trimRight('*'), '');
-        expect(star.trimRight('**'), '');
-        expect(star.trimRight('*a'), '*a');
-        expect(star.trimRight('**a'), '**a');
-        expect(star.trimRight('*ab'), '*ab');
-        expect(star.trimRight('a*'), 'a');
-        expect(star.trimRight('a**'), 'a');
-        expect(star.trimRight('ab*'), 'ab');
-        expect(star.trimRight('*a*'), '*a');
-        expect(star.trimRight('**a**'), '**a');
-        expect(star.trimRight('*ab*'), '*ab');
+      test('trimTailingFrom', () {
+        expect(star.trimTailingFrom(''), '');
+        expect(star.trimTailingFrom('*'), '');
+        expect(star.trimTailingFrom('**'), '');
+        expect(star.trimTailingFrom('*a'), '*a');
+        expect(star.trimTailingFrom('**a'), '**a');
+        expect(star.trimTailingFrom('*ab'), '*ab');
+        expect(star.trimTailingFrom('a*'), 'a');
+        expect(star.trimTailingFrom('a**'), 'a');
+        expect(star.trimTailingFrom('ab*'), 'ab');
+        expect(star.trimTailingFrom('*a*'), '*a');
+        expect(star.trimTailingFrom('**a**'), '**a');
+        expect(star.trimTailingFrom('*ab*'), '*ab');
       });
     });
   });
