@@ -1,4 +1,4 @@
-More Dart Ñ Literally
+More Dart - Literally
 =====================
 
 Various extension libraries that make Dart a better place.
