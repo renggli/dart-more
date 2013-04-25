@@ -7,5 +7,8 @@ Various extension libraries that make Dart a better place.
   stores bits.
 - `char_matcher.dart` provides a model for character classes, their composition
   and operations on strings.
+- `int_math.dart` is a collection of common mathematical functions on ints.
 - `range.dart` provides a function to create iterables yielding arithmetic 
   progressions.
+  
+And there is more to come ...

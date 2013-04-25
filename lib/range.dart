@@ -1,7 +1,7 @@
 // Copyright (c) 2013, Lukas Renggli <renggli@gmail.com>
 
 /**
- * A function to create iterables yielding arithmetic progressions.
+ * A function to create iterables over arithmetic progressions.
  *
  * The implementation closely follows the semantics of the range object known
  * in [Python](http://goo.gl/33Ddi).
