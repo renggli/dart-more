@@ -259,7 +259,7 @@ class _NoneCharMatcher extends CharMatcher {
   CharMatcher operator | (CharMatcher other) => other;
 }
 
-/** Matches a specifc character. */
+/** Matches a character [char]. */
 CharMatcher isChar(char) {
   return new _SingleCharMatcher(_toCharCode(char));
 }
@@ -271,7 +271,7 @@ class _SingleCharMatcher extends CharMatcher {
   bool call(int value) => _value == value;
 }
 
-/** Matches a character range. */
+/** Matches a character range from [start] to [stop]. */
 CharMatcher inRange(start, stop) {
   return new _RangeCharMatcher(_toCharCode(start), _toCharCode(stop));
 }
@@ -350,8 +350,9 @@ class _WhitespaceCharMatcher extends CharMatcher {
   String toString() => 'WHITESPACE';
   bool call(int value) => (9 <= value && value <= 13) || (value == 32)
       || (value == 160) || (value == 5760) || (value == 6158)
-      || (8192 <= value && value <= 8202) || (value == 8232) || (value == 8233)
-      || (value == 8239) || (value == 8287) || (value == 12288);
+      || (8192 <= value && value <= 8202) || (value == 8232)
+      || (value == 8233) || (value == 8239) || (value == 8287)
+      || (value == 12288);
 }
 
 /** Internal method to convert an element to a character code. */
