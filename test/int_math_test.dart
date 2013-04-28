@@ -42,32 +42,36 @@ void main() {
       expect(binomial(7, -1), 0);
       expect(binomial(7, 8), 0);
     });
-    test('power: x^0', () {
-      expect(power(-2, 0), 1);
-      expect(power(-1, 0), 1);
-      expect(power(0, 0), 1);
-      expect(power(1, 0), 1);
-      expect(power(2, 0), 1);
+    test('pow(x, 0)', () {
+      expect(pow(-2, 0), 1);
+      expect(pow(-1, 0), 1);
+      expect(pow(0, 0), 1);
+      expect(pow(1, 0), 1);
+      expect(pow(2, 0), 1);
     });
-    test('power: x^1', () {
-      expect(power(-2, 1), -2);
-      expect(power(-1, 1), -1);
-      expect(power(0, 1), 0);
-      expect(power(1, 1), 1);
-      expect(power(2, 1), 2);
+    test('pow(x, 1)', () {
+      expect(pow(-2, 1), -2);
+      expect(pow(-1, 1), -1);
+      expect(pow(0, 1), 0);
+      expect(pow(1, 1), 1);
+      expect(pow(2, 1), 2);
     });
-    test('power: x^5', () {
-      expect(power(-2, 5), -32);
-      expect(power(-1, 5), -1);
-      expect(power(0, 5), 0);
-      expect(power(1, 5), 1);
-      expect(power(2, 5), 32);
+    test('pow(x, 5)', () {
+      expect(pow(-2, 5), -32);
+      expect(pow(-1, 5), -1);
+      expect(pow(0, 5), 0);
+      expect(pow(1, 5), 1);
+      expect(pow(2, 5), 32);
     });
-    test('power: x^-2', () {
-      expect(power(-2, -2), 0.25);
-      expect(power(-1, -2), 1.0);
-      expect(power(1, -2), 1.0);
-      expect(power(2, -2), 0.25);
+    test('pow(x, -2)', () {
+      expect(pow(-2, -2), 0.25);
+      expect(pow(-1, -2), 1.0);
+      expect(pow(1, -2), 1.0);
+      expect(pow(2, -2), 0.25);
+    });
+    test('primes', () {
+      expect(primesUpTo(10), [2, 3, 5, 7]);
+      expect(primesUpTo(20), [2, 3, 5, 7, 11, 13, 17, 19]);
     });
   });
 }

@@ -5,6 +5,8 @@
  */
 library int_math;
 
+import 'package:more/bit_set.dart';
+
 /**
  * Returns the greatest common divisor (GCD) of two or more integers (at least
  * one of which is not zero). This is the largest positive integer that divides
@@ -70,9 +72,9 @@ int binomial(int n, int k) {
 /**
  * Returns the power [x] raised to [n], where [n] is an [int].
  */
-num power(num x, int n) {
+num pow(num x, int n) {
   if (n < 0) {
-    return 1 / power(x, -n);
+    return 1 / pow(x, -n);
   }
   var r = 1;
   while (n > 0) {
@@ -85,3 +87,23 @@ num power(num x, int n) {
   return r;
 }
 
+/**
+ * Returns primes up to a [limit] compued by the Sieve of Eratosthenes.
+ */
+List<int> primesUpTo(int limit) {
+  var sieve = new BitSet(limit + 1);
+  for (var i = 2; i * i <= limit; i++) {
+    if (!sieve[i]) {
+      for (var j = i * i; j <= limit; j += i) {
+        sieve[j] = true;
+      }
+    }
+  }
+  var primes = new List();
+  for (var i = 2; i <= limit; i++) {
+    if (!sieve[i]) {
+      primes.add(i);
+    }
+  }
+  return primes;
+}
