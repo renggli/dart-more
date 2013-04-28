@@ -5,7 +5,7 @@
  */
 library int_math;
 
-import 'package:more/bit_set.dart';
+import 'bit_set.dart';
 
 /**
  * Returns the greatest common divisor (GCD) of two or more integers (at least
