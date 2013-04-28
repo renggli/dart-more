@@ -8,11 +8,11 @@ library iterable;
 import 'dart:collection';
 
 /**
- * Returns an iterable over the fibonacci sequence starting with starting
- * with [f0] and [f1]. The default sequence is indefinitely long and by
- * default starts with 0, 1, 1, 2, 3, 5, 8, 13, ...
+ * Returns an iterable over the fibonacci sequence starting with with [f0]
+ * and [f1]. The default sequence is indefinitely long and by default starts
+ * with 0, 1, 1, 2, 3, 5, 8, 13, ...
  */
-Iterable<int> fib([int f0 = 0, int f1 = 1]) {
+Iterable<int> fibonacci([int f0 = 0, int f1 = 1]) {
   return new _FibonacciIterable(f0, f1);
 }
 
