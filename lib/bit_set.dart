@@ -3,7 +3,7 @@
 library bit_set;
 
 import 'dart:collection';
-import 'dart:typeddata';
+import 'dart:typed_data';
 
 class BitSet extends ListBase<bool> {
 
