@@ -40,9 +40,9 @@ List<int> range([int a, int b, int c]) {
   if (step == 0) {
     throw new ArgumentError('Non-zero step-size expected');
   } else if (start < stop && step < 0) {
-    throw new ArgumentError('Negative step-size expected');
-  } else if (start > stop && step > 0) {
     throw new ArgumentError('Positive step-size expected');
+  } else if (start > stop && step > 0) {
+    throw new ArgumentError('Negative step-size expected');
   }
   var length = (stop - start) ~/ step;
   if ((stop - start) % step > 0) length++;
