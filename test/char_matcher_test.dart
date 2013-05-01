@@ -51,6 +51,39 @@ void main() {
         verify(WHITESPACE, ' \n\t', 'abcABC!@#');
       });
     });
+    group('operators', () {
+      test('~', () {
+        expect(~ANY, equals(NONE));
+        expect(~NONE, equals(ANY));
+        expect(~~WHITESPACE, equals(WHITESPACE));
+      });
+      test('|', () {
+        expect(ANY | LETTER, equals(ANY));
+        expect(LETTER | ANY, equals(ANY));
+        expect(NONE | LETTER, equals(LETTER));
+        expect(LETTER | NONE, equals(LETTER));
+        verify(LETTER | DIGIT, 'abc123', '!@# ');
+        verify(DIGIT | LETTER, 'abc123', '!@# ');
+        verify(LETTER | DIGIT | WHITESPACE, 'abc123 ', '!@#');
+        verify(LETTER | (DIGIT | WHITESPACE), 'abc123 ', '!@#');
+        verify((LETTER | DIGIT) | WHITESPACE, 'abc123 ', '!@#');
+      });
+      test('toString', () {
+        expect(ANY.toString(), 'ANY');
+        expect(NONE.toString(), 'NONE');
+        expect(isChar('*').toString(), 'isChar("*")');
+        expect(inRange('a', 'c').toString(), 'inRange("a", "c")');
+        expect(ASCII.toString(), 'ASCII');
+        expect(DIGIT.toString(), 'DIGIT');
+        expect(LETTER.toString(), 'LETTER');
+        expect(LOWER_CASE_LETTER.toString(), 'LOWER_CASE_LETTER');
+        expect(UPPER_CASE_LETTER.toString(), 'UPPER_CASE_LETTER');
+        expect(LETTER_OR_DIGIT.toString(), 'LETTER_OR_DIGIT');
+        expect(WHITESPACE.toString(), 'WHITESPACE');
+        expect((~WHITESPACE).toString(), '~WHITESPACE');
+        expect((LETTER | DIGIT).toString(), 'LETTER | DIGIT');
+      });
+    });
     group('action', () {
       var star = isChar('*');
       test('everyOf', () {

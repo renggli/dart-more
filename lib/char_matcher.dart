@@ -50,7 +50,7 @@ abstract class CharMatcher {
           ..add(this)
           ..addAll(other._matchers));
     } else {
-      new _DisjunctiveCharMatcher([this, other]);
+      return new _DisjunctiveCharMatcher([this, other]);
     }
   }
 
@@ -212,6 +212,7 @@ class _NegateCharMatcher extends CharMatcher {
 class _DisjunctiveCharMatcher extends CharMatcher {
   final List<CharMatcher> _matchers;
   const _DisjunctiveCharMatcher(this._matchers);
+  String toString() => _matchers.join(' | ');
   CharMatcher operator | (CharMatcher other) {
     if (other == ANY) {
       return other;
@@ -228,7 +229,7 @@ class _DisjunctiveCharMatcher extends CharMatcher {
     }
   }
   bool call(int value) {
-    for (CharMatcher matcher in _matchers) {
+    for (var matcher in _matchers) {
       if (matcher(value)) {
         return true;
       }
