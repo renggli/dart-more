@@ -93,3 +93,44 @@ class _PermutationIterator extends Iterator<List> {
     _current[j] = temp;
   }
 }
+
+/**
+ * Returns an iterable over the characters of the [string].
+ */
+Iterable<String> string(String string) {
+  return string.codeUnits.map((code) => new String.fromCharCode(code));
+}
+
+/**
+ * Returns an iterable over the digits of the [number], in the optionally
+ * given [base].
+ */
+Iterable<int> digits(int number, [int base = 10]) {
+  return new _DigitIterable(number.abs(), base);
+}
+
+class _DigitIterable extends IterableBase<int> {
+  final int _number, _base;
+  _DigitIterable(this._number, this._base);
+  Iterator<int> get iterator => new _DigitIterator(_number, _base);
+}
+
+class _DigitIterator extends Iterator<int> {
+  int _current, _number;
+  final int _base;
+  _DigitIterator(this._number, this._base);
+  int get current => _current;
+  bool moveNext() {
+    if (_number == null) {
+      _current = null;
+      return false;
+    } else {
+      _current = _number % _base;
+      _number = _number ~/ _base;
+      if (_number == 0) {
+        _number = null;
+      }
+      return true;
+    }
+  }
+}
