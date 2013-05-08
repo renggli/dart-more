@@ -84,6 +84,29 @@ void main() {
         expect(new Fraction(2, 3) / new Fraction(1, 4), new Fraction(8, 3));
         expect(new Fraction(3, 4) / new Fraction(2, 5), new Fraction(15, 8));
       });
+      test('negate', () {
+        expect(-new Fraction(2, 3), new Fraction(-2, 3));
+      });
+      test('abs', () {
+        expect(new Fraction(-2, -3).abs(), new Fraction(2, 3));
+        expect(new Fraction(-2, 3).abs(), new Fraction(2, 3));
+        expect(new Fraction(2, -3).abs(), new Fraction(2, 3));
+        expect(new Fraction(2, 3).abs(), new Fraction(2, 3));
+      });
+    });
+    group('converting', () {
+      test('toInt', () {
+        expect(new Fraction(1, 2).toInt(), 0);
+        expect(new Fraction(5, 4).toInt(), 1);
+      });
+      test('toDouble', () {
+        expect(new Fraction(1, 2).toDouble(), 0.5);
+        expect(new Fraction(5, 4).toDouble(), 1.25);
+      });
+      test('toString', () {
+        expect(new Fraction(1, 2).toString(), '1/2');
+        expect(new Fraction(5, 4).toString(), '5/4');
+      });
     });
   });
 }

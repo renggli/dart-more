@@ -33,6 +33,7 @@ class Fraction implements Comparable<Fraction> {
     if (value.isInfinite || value.isNaN) {
       throw new ArgumentError('${value} cannot be represented as fraction');
     }
+    // TODO(renggli): figure out something faster
     var sign = value < 0 ? -1 : 1;
     var input = value.abs();
     var whole = 0;
@@ -112,6 +113,6 @@ class Fraction implements Comparable<Fraction> {
 
   int toInt() => numerator ~/ denominator;
 
-  String toString() => '$numerator / $denominator';
+  String toString() => '$numerator/$denominator';
 
 }
