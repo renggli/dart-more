@@ -12,7 +12,7 @@ class Fraction implements Comparable<Fraction> {
   /**
    * Constructs a fraction from a [numerator] and an optional [denominator].
    */
-  factory Fraction(int numerator, [int denominator = 1]) {
+  factory Fraction(num numerator, [num denominator = 1]) {
     if (numerator is! int) {
       throw new ArgumentError('Numerator needs to be int.');
     }
@@ -29,7 +29,7 @@ class Fraction implements Comparable<Fraction> {
   /**
    * Constructs an approximative fraction from a floating point [value].
    */
-  factory Fraction.fromDouble(double value, [int maxDenominator = 1000]) {
+  factory Fraction.fromDouble(num value, [int maxDenominator = 1000]) {
     if (value.isInfinite || value.isNaN) {
       throw new ArgumentError('${value} cannot be represented as fraction');
     }

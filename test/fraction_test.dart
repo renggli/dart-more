@@ -40,6 +40,10 @@ void main() {
         expect(() => new Fraction(2, 0), throwsArgumentError);
         expect(() => new Fraction(2, null), throwsArgumentError);
       });
+      test('double basic', () {
+        expect(new Fraction.fromDouble(2), new Fraction(2));
+        expect(new Fraction.fromDouble(100), new Fraction(100));
+      });
       test('double finite', () {
         expect(new Fraction.fromDouble(1 / 2), new Fraction(1, 2));
         expect(new Fraction.fromDouble(1 / 4), new Fraction(1, 4));
@@ -59,6 +63,26 @@ void main() {
       test('double negative', () {
         expect(new Fraction.fromDouble(-1 / 3), new Fraction(-1, 3));
         expect(new Fraction.fromDouble(-5 / 3), new Fraction(-5, 3));
+      });
+    });
+    group('arithmetic', () {
+      test('addition', () {
+        expect(new Fraction(1, 2) + new Fraction(1, 4), new Fraction(3, 4));
+        expect(new Fraction(1, 2) + new Fraction(3, 4), new Fraction(5, 4));
+        expect(new Fraction(1, 2) + new Fraction(1, 2), new Fraction(1));
+      });
+      test('substraction', () {
+        expect(new Fraction(1, 2) - new Fraction(1, 4), new Fraction(1, 4));
+        expect(new Fraction(1, 2) - new Fraction(3, 4), new Fraction(-1, 4));
+        expect(new Fraction(1, 2) - new Fraction(1, 2), new Fraction(0));
+      });
+      test('multiplication', () {
+        expect(new Fraction(2, 3) * new Fraction(1, 4), new Fraction(1, 6));
+        expect(new Fraction(3, 4) * new Fraction(2, 5), new Fraction(3, 10));
+      });
+      test('division', () {
+        expect(new Fraction(2, 3) / new Fraction(1, 4), new Fraction(8, 3));
+        expect(new Fraction(3, 4) / new Fraction(2, 5), new Fraction(15, 8));
       });
     });
   });
