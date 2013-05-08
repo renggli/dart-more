@@ -5,7 +5,7 @@
  */
 library fraction;
 
-import 'package:more/int_math.dart';
+import 'int_math.dart';
 
 class Fraction implements Comparable<Fraction> {
 
