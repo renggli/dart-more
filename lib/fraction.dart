@@ -102,8 +102,17 @@ class Fraction implements Comparable<Fraction> {
   }
 
   int compareTo(Fraction other) {
-    return numerator * other.denominator - other.numerator * denominator;
+    return (numerator * other.denominator)
+        .compareTo(other.numerator * denominator);
   }
+
+  bool operator < (Fraction other) => compareTo(other) < 0;
+
+  bool operator <= (Fraction other) => compareTo(other) <= 0;
+
+  bool operator >= (Fraction other) => compareTo(other) >= 0;
+
+  bool operator > (Fraction other) => compareTo(other) > 0;
 
   Fraction abs() {
     return numerator < 0 ? -this : this;

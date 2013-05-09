@@ -94,6 +94,38 @@ void main() {
         expect(new Fraction(2, 3).abs(), new Fraction(2, 3));
       });
     });
+    group('comparing', () {
+      test('compareTo', () {
+        expect(new Fraction(2, 3).compareTo(new Fraction(2, 3)), 1.compareTo(1));
+        expect(new Fraction(2, 3).compareTo(new Fraction(4, 5)), 1.compareTo(2));
+        expect(new Fraction(4, 5).compareTo(new Fraction(2, 3)), 2.compareTo(1));
+      });
+      test('<', () {
+        expect(new Fraction(2, 3) < new Fraction(2, 3), isFalse);
+        expect(new Fraction(2, 3) < new Fraction(4, 5), isTrue);
+        expect(new Fraction(4, 5) < new Fraction(2, 3), isFalse);
+      });
+      test('<=', () {
+        expect(new Fraction(2, 3) <= new Fraction(2, 3), isTrue);
+        expect(new Fraction(2, 3) <= new Fraction(4, 5), isTrue);
+        expect(new Fraction(4, 5) <= new Fraction(2, 3), isFalse);
+      });
+      test('>=', () {
+        expect(new Fraction(2, 3) >= new Fraction(2, 3), isTrue);
+        expect(new Fraction(2, 3) >= new Fraction(4, 5), isFalse);
+        expect(new Fraction(4, 5) >= new Fraction(2, 3), isTrue);
+      });
+      test('>', () {
+        expect(new Fraction(2, 3) > new Fraction(2, 3), isFalse);
+        expect(new Fraction(2, 3) > new Fraction(4, 5), isFalse);
+        expect(new Fraction(4, 5) > new Fraction(2, 3), isTrue);
+      });
+      test('==', () {
+        expect(new Fraction(2, 3) == new Fraction(2, 3), isTrue);
+        expect(new Fraction(2, 3) == new Fraction(4, 5), isFalse);
+        expect(new Fraction(4, 5) == new Fraction(2, 3), isFalse);
+      });
+    });
     group('converting', () {
       test('toInt', () {
         expect(new Fraction(1, 2).toInt(), 0);
