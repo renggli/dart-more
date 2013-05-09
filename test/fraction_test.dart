@@ -4,6 +4,8 @@ library fraction_test;
 
 import 'package:unittest/unittest.dart';
 import 'package:more/fraction.dart';
+import 'dart:math' as math;
+
 
 void main() {
   group('fraction', () {
@@ -63,6 +65,15 @@ void main() {
       test('double negative', () {
         expect(new Fraction.fromDouble(-1 / 3), new Fraction(-1, 3));
         expect(new Fraction.fromDouble(-5 / 3), new Fraction(-5, 3));
+      });
+      test('double all', () {
+        for (var num = -10; num <= 10; num++) {
+          for (var den = -10; den <= 10; den++) {
+            if (den != 0) {
+              expect(new Fraction.fromDouble(num / den), new Fraction(num, den));
+            }
+          }
+        }
       });
     });
     group('arithmetic', () {

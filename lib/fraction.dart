@@ -5,7 +5,8 @@
  */
 library fraction;
 
-import 'int_math.dart';
+import 'dart:math' as math;
+import 'int_math.dart' as int_math;
 
 class Fraction implements Comparable<Fraction> {
 
@@ -19,7 +20,7 @@ class Fraction implements Comparable<Fraction> {
     if (denominator is! int || denominator == 0) {
       throw new ArgumentError('Denominator needs to be non-zero.');
     }
-    var d = gcd(numerator, denominator);
+    var d = int_math.gcd(numerator, denominator).abs();
     if (denominator < 0) {
       d *= -1;
     }
@@ -29,37 +30,34 @@ class Fraction implements Comparable<Fraction> {
   /**
    * Constructs an approximative fraction from a floating point [value].
    */
-  factory Fraction.fromDouble(num value, [int maxDenominator = 1000]) {
+  factory Fraction.fromDouble(num value, [num max_denominator = 1e10]) {
     if (value.isInfinite || value.isNaN) {
       throw new ArgumentError('${value} cannot be represented as fraction');
     }
-    // TODO(renggli): figure out something faster
-    var sign = value < 0 ? -1 : 1;
-    var input = value.abs();
-    var whole = 0;
-    if (input > 1.0) {
-      whole = input.truncate();
-      input -= whole;
-    }
-    var low_n = 0, low_d = 1;
-    var high_n = 1,  high_d = 1;
-    var mid_n, mid_d, res_n, res_d;
-    do {
-      mid_n = low_n + high_n;
-      mid_d = low_d + high_d;
-      if (mid_n < input * mid_d) {
-        low_n = mid_n;
-        low_d = mid_d;
-        res_n = high_n;
-        res_d = high_d;
-      } else {
-        high_n = mid_n;
-        high_d = mid_d;
-        res_n = low_n;
-        res_d = low_d;
+    var sign = value < 0.0 ? -1 : 1; value *= sign;
+    var numerator_1 = value.floor(), numerator_2 = 1;
+    var denominator_1 = 1, denominator_2 = 0;
+    var integer_part = numerator_1;
+    var fraction_part = value - numerator_1;
+    while (fraction_part != 0) {
+      var new_value = 1.0 / fraction_part;
+      integer_part = new_value.floor();
+      fraction_part = new_value - integer_part;
+      var temporary = numerator_2;
+      numerator_2 = numerator_1;
+      numerator_1 = numerator_1 * integer_part + temporary;
+      temporary = denominator_2;
+      denominator_2 = denominator_1;
+      denominator_1 = integer_part * denominator_1 + temporary;
+      if (max_denominator < denominator_1) {
+        if (numerator_2 == 0.0) {
+          return new Fraction(sign * numerator_1, denominator_1);
+        } else {
+          return new Fraction(sign * numerator_2, denominator_2);
+        }
       }
-    } while (mid_d < maxDenominator);
-    return new Fraction(sign * (res_n + whole * res_d), res_d);
+    }
+    return new Fraction(sign * numerator_1, denominator_1);
   }
 
   final int numerator;
