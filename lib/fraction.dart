@@ -1,13 +1,16 @@
 // Copyright (c) 2013, Lukas Renggli <renggli@gmail.com>
 
 /**
- *
+ * Provides support for rational number arithmetic.
  */
 library fraction;
 
 import 'dart:math' as math;
 import 'int_math.dart' as int_math;
 
+/**
+ * A rational number.
+ */
 class Fraction implements Comparable<Fraction> {
 
   /**
