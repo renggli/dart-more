@@ -14,3 +14,5 @@ Various extension libraries that make Dart a better place.
   progressions.
   
 And there is more to come ...
+
+Continuous build results are available from [Jenkins](http://jenkins.lukas-renggli.ch/view/Dart/job/MoreDart/).
