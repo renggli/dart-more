@@ -12,9 +12,9 @@ library char_matcher;
 /**
  * Abstract character matcher.
  *
- * The [CharMatcher] a boolean predicate on characters. The inclusion of a
+ * The [CharMatcher] is a boolean predicate on characters. The inclusion of a
  * character can be determined by calling the matcher with the code-unit
- * of a character as a function argument, for example:
+ * of a character as the function argument, for example:
  *
  *     WHITESPACE(' '.codeUnitAt(0)); // true
  *     DIGIT('a'.codeUnitAt(0)); // false
@@ -74,8 +74,8 @@ abstract class CharMatcher {
   }
 
   /**
-   * Returns the first matching index in [sequence], searching backward
-   * starting at [start] (inclusive). Returns -1 if it could not be found.
+   * Returns the last matching index in [sequence] starting at [start]
+   * (inclusive). Returns -1 if it could not be found.
    */
   int firstIndexIn(String sequence, [int start = 0]) {
     var codeUnits = sequence.codeUnits;
@@ -88,8 +88,8 @@ abstract class CharMatcher {
   }
 
   /**
-   * Returns the last matching index in [sequence] starting at [start]
-   * (inclusive). Returns -1 if it could not be found.
+   * Returns the first matching index in [sequence], searching backward
+   * starting at [start] (inclusive). Returns -1 if it could not be found.
    */
   int lastIndexIn(String sequence, [int start]) {
     var codeUnits = sequence.codeUnits;
