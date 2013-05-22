@@ -1,6 +1,6 @@
 // Copyright (c) 2013, Lukas Renggli <renggli@gmail.com>
 
-library char_matcher_test;
+library int_math_test;
 
 import 'package:unittest/unittest.dart';
 import 'package:more/int_math.dart';
