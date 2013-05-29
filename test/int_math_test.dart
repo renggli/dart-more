@@ -1,6 +1,6 @@
 // Copyright (c) 2013, Lukas Renggli <renggli@gmail.com>
 
-library char_matcher_test;
+library int_math_test;
 
 import 'package:unittest/unittest.dart';
 import 'package:more/int_math.dart';
@@ -68,6 +68,12 @@ void main() {
       expect(pow(-1, -2), 1.0);
       expect(pow(1, -2), 1.0);
       expect(pow(2, -2), 0.25);
+    });
+    test('polynomial', () {
+      expect(polynomial([], 10), 0);
+      expect(polynomial([1, 2], 10), 21);
+      expect(polynomial([1, 2, 3], 10), 321);
+      expect(polynomial([1, 2, 3, 4], 10), 4321);
     });
     test('primes', () {
       expect(primesUpTo(10), [2, 3, 5, 7]);
