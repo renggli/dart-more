@@ -60,14 +60,14 @@ abstract class CharMatcher {
   bool call(int value);
 
   /**
-   * Returns [true] if the [sequence] contains only matching characters.
+   * Returns `true` if the [sequence] contains only matching  characters.
    */
   bool everyOf(String sequence) {
     return sequence.codeUnits.every(this);
   }
 
   /**
-   * Returns [true] if the [sequence] contains at least one matching character.
+   * Returns `true` if the [sequence] contains at least one matching character.
    */
   bool anyOf(String sequence) {
     return sequence.codeUnits.any(this);
@@ -75,7 +75,7 @@ abstract class CharMatcher {
 
   /**
    * Returns the first matching index in [sequence], searching backward
-   * starting at [start] (inclusive). Returns -1 if it could not be found.
+   * starting at [start] (inclusive). Returns `-1` if it could not be found.
    */
   int firstIndexIn(String sequence, [int start = 0]) {
     var codeUnits = sequence.codeUnits;
@@ -89,7 +89,7 @@ abstract class CharMatcher {
 
   /**
    * Returns the last matching index in [sequence] starting at [start]
-   * (inclusive). Returns -1 if it could not be found.
+   * (inclusive). Returns `-1` if it could not be found.
    */
   int lastIndexIn(String sequence, [int start]) {
     var codeUnits = sequence.codeUnits;

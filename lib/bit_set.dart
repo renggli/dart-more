@@ -5,6 +5,7 @@ library bit_set;
 import 'dart:collection';
 import 'dart:typed_data';
 
+// TODO(renggli): use UnmodifiableListMixin<bool> when available
 class BitSet extends ListBase<bool> {
 
   static final _BIT_MASK = const [1, 2, 4, 8, 16, 32, 64, 128];
