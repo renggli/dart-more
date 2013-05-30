@@ -51,8 +51,10 @@ List<int> range([int a, int b, int c]) {
 
 /**
  * An iterable over an arithmetic progression.
+ *
+ * TODO(renggli): Mixin UnmodifiableListMixin<int> as soon as we can.
  */
-class _RangeList extends ListBase<int> implements List<int> {
+class _RangeList extends ListBase<int> {
 
   final int _start;
   final int _step;
