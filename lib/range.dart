@@ -17,18 +17,18 @@ import 'dart:collection';
  * For example, `range()` yields `[]`.
  *
  * The range function called with one argument returns the range of all
- * integers up to, but excluding the end. For example, `range(3)` yields
+ * numbers up to, but excluding the end. For example, `range(3)` yields
  * `[0, 1, 2]`.
  *
  * The range function called with two arguments returns the range between
- * the two integers (including the start, but excluding the end). For example,
+ * the two numbers (including the start, but excluding the end). For example,
  * `range(3, 6)` yields `[3, 4, 5]`.
  *
  * The range function called with three arguments returns the range between
- * the first two integers (including the start, but excluding the end) and the
+ * the first two numbers (including the start, but excluding the end) and the
  * step value. For example, `range(1, 7, 2)` yields `[1, 3, 5]`.
  */
-List<int> range([int a, int b, int c]) {
+List<num> range([num a, num b, num c]) {
   var start = 0, stop = 0, step = 1;
   if (c != null) {
     start = a; stop = b; step = c;
@@ -52,23 +52,23 @@ List<int> range([int a, int b, int c]) {
 /**
  * An iterable over an arithmetic progression.
  *
- * TODO(renggli): Mixin UnmodifiableListMixin<int> as soon as we can.
+ * TODO(renggli): Mixin UnmodifiableListMixin<num> as soon as we can.
  */
-class _RangeList extends ListBase<int> {
+class _RangeList extends ListBase<num> {
 
-  final int _start;
-  final int _step;
+  final num _start;
+  final num _step;
   final int _length;
 
   _RangeList(this._start, this._step, this._length);
 
-  Iterator<int> get iterator {
+  Iterator<num> get iterator {
     return new _RangeIterator(_start, _step, _length);
   }
 
   int get length => _length;
 
-  int operator [] (int index) {
+  num operator [] (int index) {
     if (0 <= index && index < _length) {
       return _start + _step * index;
     } else {
@@ -80,7 +80,7 @@ class _RangeList extends ListBase<int> {
     if (end == null) {
       end = length - 1;
     }
-    return new _RangeList(_start + start * _step, end - start, _step);
+    return new _RangeList(_start + start * _step, _step, end - start);
   }
 
   String toString() {
@@ -100,18 +100,18 @@ class _RangeList extends ListBase<int> {
 /**
  * An iterator over an arithmetic progression.
  */
-class _RangeIterator extends Iterator<int> {
+class _RangeIterator extends Iterator<num> {
 
-  final int _start;
-  final int _step;
+  final num _start;
+  final num _step;
   final int _length;
 
   int _index = 0;
-  int _current;
+  num _current;
 
   _RangeIterator(this._start, this._step, this._length);
 
-  int get current => _current;
+  num get current => _current;
 
   bool moveNext() {
     if (_index == _length) {
