@@ -1,7 +1,7 @@
 // Copyright (c) 2013, Lukas Renggli <renggli@gmail.com>
 
 /**
- * Functions that work on collections.
+ * A collection of extension functions for collections.
  */
 library collection;
 

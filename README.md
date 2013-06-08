@@ -7,6 +7,7 @@ Various extension libraries that make Dart a better place.
   stores bits.
 - `char_matcher.dart` provides a model for character classes, their composition
   and operations on strings.
+- `collection.dart` provides various extension functions to collections.
 - `fraction.dart` provides support for rational number arithmetic.
 - `int_math.dart` is a collection of common mathematical functions on ints.
 - `iterable.dart` is a collection of iterables and iterators.
@@ -15,4 +16,5 @@ Various extension libraries that make Dart a better place.
   
 And there is more to come ...
 
-Continuous build results are available from [Jenkins](http://jenkins.lukas-renggli.ch/view/Dart/job/MoreDart/).
+Continuous build results are available from [Jenkins](http://jenkins.lukas-renggli.ch/view/Dart/job/MoreDart/)
+and documentation from the [class documentation](http://jenkins.lukas-renggli.ch/view/Dart/job/MoreDart/javadoc/).
