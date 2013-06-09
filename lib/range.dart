@@ -45,7 +45,7 @@ List<num> range([num a, num b, num c]) {
     throw new ArgumentError('Negative step-size expected');
   }
   var length = (stop - start) ~/ step;
-  if ((stop - start) % step > 0) length++;
+  if ((stop - start) % step > 1e-10 * step.abs()) length++;
   return new _RangeList(start, step, length);
 }
 

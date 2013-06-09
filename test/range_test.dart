@@ -40,6 +40,11 @@ void main() {
       expect(range(1, 2).toString(), 'range(1, 2)');
       expect(range(1, 5, 2).toString(), 'range(1, 5, 2)');
     });
+    test('double range', () {
+      expect(range(1.5, 4.0), [1.5, 2.5, 3.5]);
+      expect(range(1.5, 1.8, 0.1), [1.5, 1.6, 1.7]);
+      expect(range(1.5, 1.8, 0.2), [1.5, 1.7]);
+    });
   });
 }
 
