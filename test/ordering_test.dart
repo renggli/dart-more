@@ -13,10 +13,11 @@ void verify(Ordering ordering, Iterable unsorted, Iterable expected) {
     expect(ordering.binarySearch(sorted, element), (index) => (index) >= 0);
   }
   if (!sorted.isEmpty) {
-    expect(ordering.min(unsorted), expected.first);
-    expect(ordering.max(unsorted), expected.last);
+    expect(ordering.minOf(unsorted), expected.first);
+    expect(ordering.maxOf(unsorted), expected.last);
   }
   expect(!ordering.toString().isEmpty, isTrue);
+
 }
 
 final natural = new Ordering.natural();
@@ -32,33 +33,29 @@ void main() {
         verify(ordering, [3, 2, 1], [1, 2, 3]);
       });
       test('comparator', () {
-
+        var ordering = new Ordering.from((a, b) => a.length - b.length);
+        verify(ordering, ['*', '**', '***'], ['*', '**', '***']);
+        verify(ordering, ['**', '***', '*'], ['*', '**', '***']);
+        verify(ordering, ['***', '*', '**'], ['*', '**', '***']);
+        verify(ordering, ['***', '**', '*'], ['*', '**', '***']);
       });
       test('explicit', () {
         var ordering = new Ordering.explicit([2, 3, 1]);
+        verify(ordering, [3, 2], [2, 3]);
+        verify(ordering, [1, 2], [2, 1]);
         verify(ordering, [1, 2, 3], [2, 3, 1]);
         verify(ordering, [2, 3, 1], [2, 3, 1]);
-        verify(ordering, [3, 1, 2], [2, 3, 1]);
-        verify(ordering, [3, 2, 1], [2, 3, 1]);
         expect(() => ordering.binarySearch([2, 3, 1], 4), throws);
         expect(() => ordering.binarySearch([2, 4, 1], 3), throws);
       });
     });
     group('operators', () {
       test('reverse', () {
-        var ordering = ~natural;
+        var ordering = natural.reverse();
         verify(ordering, [1, 2, 3], [3, 2, 1]);
         verify(ordering, [2, 3, 1], [3, 2, 1]);
         verify(ordering, [3, 1, 2], [3, 2, 1]);
         verify(ordering, [3, 2, 1], [3, 2, 1]);
-      });
-      test('lexicographical', () {
-        var ordering = natural.lexicographical();
-        verify(ordering, [[3], [2], [1]], [[1], [2], [3]]);
-        verify(ordering, [[1, 3], [1, 1], [1, 2]], [[1, 1], [1, 2], [1, 3]]);
-        verify(ordering, [[1, 1], [1], [1, 1, 3, 4]], [[1], [1, 1], [1, 1, 3, 4]]);
-        verify(ordering, [[1, 2], [], [1], [1, 3], [2]], [[], [1], [1, 2], [1, 3], [2]]);
-
       });
       test('nullsFirst', () {
         var ordering = natural.nullsFirst();
@@ -75,18 +72,18 @@ void main() {
         verify(ordering, [3, 2, 1, null], [1, 2, 3, null]);
       });
       test('compound', () {
-        var ordering = natural.map((str) => str.length) & natural;
+        var ordering = natural.onResultOf((str) => str.length).compound(natural);
         verify(ordering, ['333', '1', '4444', '22'], ['1', '22', '333', '4444']);
         verify(ordering, ['2', '333', '4444', '1', '22'], ['1', '2', '22', '333', '4444']);
         verify(ordering, ['33', '333', '2', '22', '1', '4444'], ['1', '2', '22', '33', '333', '4444']);
         verify(ordering, ['4444', '44', '2', '1', '333', '22', '33'], ['1', '2', '22', '33', '44', '333', '4444']);
       });
       test('map', () {
-        var ordering = natural.map((str) => str.length);
-        verify(ordering, ['1', '22', '333'], ['1', '22', '333']);
-        verify(ordering, ['22', '333', '1'], ['1', '22', '333']);
-        verify(ordering, ['333', '1', '22'], ['1', '22', '333']);
-        verify(ordering, ['333', '22', '1'], ['1', '22', '333']);
+        var ordering = natural.onResultOf((str) => str.length);
+        verify(ordering, ['*', '**', '***'], ['*', '**', '***']);
+        verify(ordering, ['**', '***', '*'], ['*', '**', '***']);
+        verify(ordering, ['***', '*', '**'], ['*', '**', '***']);
+        verify(ordering, ['***', '**', '*'], ['*', '**', '***']);
       });
     });
     group('actions', () {
@@ -151,40 +148,52 @@ void main() {
         expect(natural.isStrictlyOrdered([2, 1, 3]), isFalse);
       });
       test('max', () {
-        expect(() => natural.max([]), throws);
-        expect(natural.max([1]), 1);
-        expect(natural.max([1, 2]), 2);
-        expect(natural.max([2, 1]), 2);
-        expect(natural.max([1, 2, 3]), 3);
-        expect(natural.max([1, 3, 2]), 3);
-        expect(natural.max([2, 1, 3]), 3);
-        expect(natural.max([2, 3, 1]), 3);
-        expect(natural.max([3, 1, 2]), 3);
-        expect(natural.max([3, 2, 1]), 3);
+        expect(natural.max(1, 1), 1);
+        expect(natural.max(1, 2), 2);
+        expect(natural.max(2, 1), 2);
+        expect(natural.max(2, 2), 2);
       });
-      test('max orElse', () {
-        expect(natural.max([], orElse: () => -1), -1);
-        expect(natural.max([1], orElse: () => -1), 1);
-        expect(natural.max([1, 2], orElse: () => -1), 2);
-        expect(natural.max([1, 2, 3], orElse: () => -1), 3);
+      test('maxOf', () {
+        expect(() => natural.maxOf([]), throws);
+        expect(natural.maxOf([1]), 1);
+        expect(natural.maxOf([1, 2]), 2);
+        expect(natural.maxOf([2, 1]), 2);
+        expect(natural.maxOf([1, 2, 3]), 3);
+        expect(natural.maxOf([1, 3, 2]), 3);
+        expect(natural.maxOf([2, 1, 3]), 3);
+        expect(natural.maxOf([2, 3, 1]), 3);
+        expect(natural.maxOf([3, 1, 2]), 3);
+        expect(natural.maxOf([3, 2, 1]), 3);
+      });
+      test('maxOf orElse', () {
+        expect(natural.maxOf([], orElse: () => -1), -1);
+        expect(natural.maxOf([1], orElse: () => -1), 1);
+        expect(natural.maxOf([1, 2], orElse: () => -1), 2);
+        expect(natural.maxOf([1, 2, 3], orElse: () => -1), 3);
       });
       test('min', () {
-        expect(() => natural.max([]), throws);
-        expect(natural.min([1]), 1);
-        expect(natural.min([1, 2]), 1);
-        expect(natural.min([2, 1]), 1);
-        expect(natural.min([1, 2, 3]), 1);
-        expect(natural.min([1, 3, 2]), 1);
-        expect(natural.min([2, 1, 3]), 1);
-        expect(natural.min([2, 3, 1]), 1);
-        expect(natural.min([3, 1, 2]), 1);
-        expect(natural.min([3, 2, 1]), 1);
+        expect(natural.min(1, 1), 1);
+        expect(natural.min(1, 2), 1);
+        expect(natural.min(2, 1), 1);
+        expect(natural.min(2, 2), 2);
       });
-      test('min orElse', () {
-        expect(natural.min([], orElse: () => -1), -1);
-        expect(natural.min([1], orElse: () => -1), 1);
-        expect(natural.min([1, 2], orElse: () => -1), 1);
-        expect(natural.min([1, 2, 3], orElse: () => -1), 1);
+      test('minOf', () {
+        expect(() => natural.minOf([]), throws);
+        expect(natural.minOf([1]), 1);
+        expect(natural.minOf([1, 2]), 1);
+        expect(natural.minOf([2, 1]), 1);
+        expect(natural.minOf([1, 2, 3]), 1);
+        expect(natural.minOf([1, 3, 2]), 1);
+        expect(natural.minOf([2, 1, 3]), 1);
+        expect(natural.minOf([2, 3, 1]), 1);
+        expect(natural.minOf([3, 1, 2]), 1);
+        expect(natural.minOf([3, 2, 1]), 1);
+      });
+      test('minOf orElse', () {
+        expect(natural.minOf([], orElse: () => -1), -1);
+        expect(natural.minOf([1], orElse: () => -1), 1);
+        expect(natural.minOf([1, 2], orElse: () => -1), 1);
+        expect(natural.minOf([1, 2, 3], orElse: () => -1), 1);
       });
     });
   });

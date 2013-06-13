@@ -12,20 +12,29 @@ library ordering;
 import 'dart:collection';
 
 /**
- * Abstract ordering.
+ * An ordering implements a [Comparator] function that can be modified
+ * using a fluent interface.
  *
- * The [Ordering] defines an order on elements of type [T]. The order of
- * two elements can be determined using [compare].
+ * The [Ordering] defines a total order on objects of type [T]. For example,
+ * the natural order of two objects can be determined using:
  *
- *     WHITESPACE(' '.codeUnitAt(0)); // true
- *     DIGIT('a'.codeUnitAt(0)); // false
+ *     var natural = new Ordering.natural();
+ *     natural.compare(1, 2);  // 1
  *
- * A large collection of helper methods let you perform string operations on
- * the occurences of the specified class of characters: trimming, collapsing,
- * replacing, removing, retaining, etc. For example:
+ * However, the low-level [compare] function rarely needs to be used
+ * directly. [Ordering] implements various fluent helpers that create new
+ * orderings
  *
- *     String withoutWhitespace = WHITESPACE.removeFrom(string);
- *     String onlyDigits = DIGIT.retainFrom(string);
+ *     natural.reverse();  // a reverse ordering
+ *     natural.nullsFirst();  // orders null values before other values
+ *     natural.compount(other);  // breaks ties of natural with other order
+ *
+ * and that allow the user to perform common tasks on an ordering:
+ *
+ *     natural.min(1, 2);  // 1
+ *     natural.maxOf([8, 2, 9, 1]);  // 9
+ *     natural.sort(['dog', 'cat', 'ape']);  // ['ape', 'cat', 'dog']
+ *     natural.isOrdered(['ape', 'cat', 'dog']);  // true
  *
  */
 abstract class Ordering<T> {
@@ -33,7 +42,9 @@ abstract class Ordering<T> {
   /**
    * Returns a natural ordering of objects.
    */
-  factory Ordering.natural() => new _NaturalOrdering<T>();
+  factory Ordering.natural() => _natural;
+
+  static final _natural = const _NaturalOrdering();
 
   /**
    * Returns an ordering based on a [comparator] function.
@@ -54,33 +65,26 @@ abstract class Ordering<T> {
   /**
    * Internal default constructor for subclasses.
    */
-  Ordering();
+  const Ordering();
 
   /**
-   * Compares two objects with another. Returns -1 if [:a < b:], 0 if
-   * [:a == b:], and 1 if [:a > b:].
+   * Compares two objects [a] and [b] with each other and returns
+   *
+   * * a negative integer if [a] is smaller than [b],
+   * * zero if [a] is equal to [b], and
+   * * a positive integer if [a] is greater than [b].
    */
   int compare(T a, T b);
 
   /**
-   * Returns a [Comparator] function.
-   */
-  Comparator<T> get comparator => (T a, T b) => compare(a, b);
-
-  /**
    * Returns the reverse ordering.
    */
-  Ordering<T> operator ~ () => new _ReverseOrdering<T>(this);
+  Ordering<T> reverse() => new _ReverseOrdering<T>(this);
 
   /**
    * Returns an ordering that breaks the tie of the receiver by using [other].
    */
-  Ordering<T> operator & (Ordering<T> other) => new _CompoundOrdering<T>([this, other]);
-
-  /**
-   * Returns a lexicographical ordering.
-   */
-  Ordering<T> lexicographical() => new _LexicographicalOrdering<T>(this);
+  Ordering<T> compound(Ordering<T> other) => new _CompoundOrdering<T>([this, other]);
 
   /**
    * Returns an ordering that orders [null] values before non-null values.
@@ -95,7 +99,7 @@ abstract class Ordering<T> {
   /**
    * Returns an ordering that uses the provided [function] to transform the result.
    */
-  Ordering<T> map(T function(argument)) => new _FunctionOrdering<T>(this, function);
+  Ordering onResultOf(T function(argument)) => new _FunctionOrdering(this, function);
 
   /**
    * Searches the sorted [list] for the specified [value] using binary search.
@@ -124,7 +128,7 @@ abstract class Ordering<T> {
    * Sorts the provided [list] in place.
    */
   void sort(List<T> list) {
-    list.sort(comparator);
+    list.sort(compare);
   }
 
   /**
@@ -137,7 +141,7 @@ abstract class Ordering<T> {
   }
 
   /**
-   * Tests if the specified [Iterable] is in increasing order.
+   * Tests if the specified [iterable] is in increasing order.
    */
   bool isOrdered(Iterable<T> iterable) {
     var iterator = iterable.iterator;
@@ -171,18 +175,23 @@ abstract class Ordering<T> {
   }
 
   /**
-   * Returns the maximum of the provided iterable.
+   * Returns the maximum of the two arguments [a] and [b].
    */
-  T max(Iterable<T> iterable, { T orElse() }) {
+  T max(T a, T b) {
+    return compare(a, b) > 0 ? a : b;
+  }
+
+  /**
+   * Returns the maximum of the provided [iterable].
+   */
+  T maxOf(Iterable<T> iterable, { T orElse() }) {
     var iterator = iterable.iterator;
     if (iterator.moveNext()) {
-      var max = iterator.current;
+      var value = iterator.current;
       while (iterator.moveNext()) {
-        if (compare(max, iterator.current) < 0) {
-          max = iterator.current;
-        }
+        value = max(value, iterator.current);
       }
-      return max;
+      return value;
     }
     if (orElse == null) {
       throw new StateError('Unable to find maximum in $iterable.');
@@ -190,20 +199,24 @@ abstract class Ordering<T> {
     return orElse();
   }
 
+  /**
+   * Returns the minimum of the two arguments [a] and [b].
+   */
+  T min(T a, T b) {
+    return compare(a, b) < 0 ? a : b;
+  }
 
   /**
-   * Returns the minimum of the provided iterable.
+   * Returns the minimum of the provided [iterable].
    */
-  T min(Iterable<T> iterable, { T orElse() }) {
+  T minOf(Iterable<T> iterable, { T orElse() }) {
     var iterator = iterable.iterator;
     if (iterator.moveNext()) {
-      var min = iterator.current;
+      var value = iterator.current;
       while (iterator.moveNext()) {
-        if (compare(min, iterator.current) > 0) {
-          min = iterator.current;
-        }
+        value = min(value, iterator.current);
       }
-      return min;
+      return value;
     }
     if (orElse == null) {
       throw new StateError('Unable to find minimum in $iterable.');
@@ -214,6 +227,7 @@ abstract class Ordering<T> {
 }
 
 class _NaturalOrdering<T> extends Ordering<T> {
+  const _NaturalOrdering();
   int compare(a, b) => a.compareTo(b);
   String toString() => 'new Ordering.natural()';
 }
@@ -222,7 +236,6 @@ class _ComparatorOrdering<T> extends Ordering<T> {
   final Comparator<T> _comparator;
   _ComparatorOrdering(this._comparator);
   int compare(T a, T b) => _comparator(a, b);
-  Comparator<T> get comparator => _comparator;
   String toString() => 'new Ordering.from($_comparator)';
 }
 
@@ -244,8 +257,8 @@ class _ReverseOrdering<T> extends Ordering<T> {
   final Ordering<T> _other;
   _ReverseOrdering(this._other);
   int compare(T a, T b) => _other.compare(b, a);
-  Ordering<T> operator ~ () => _other;
-  String toString() => '~$_other';
+  Ordering<T> reverse() => _other;
+  String toString() => '$_other.reverse';
 }
 
 class _CompoundOrdering<T> extends Ordering<T> {
@@ -260,28 +273,12 @@ class _CompoundOrdering<T> extends Ordering<T> {
     }
     return 0;
   }
-  Ordering<T> operator & (Ordering<T> other) {
+  Ordering<T> compound(Ordering<T> other) {
     var orderings = new List.from(_orderings);
     orderings.add(other);
     return new _CompoundOrdering(new List.from(orderings, growable: false));
   }
-  String toString() => _orderings.join(' & ');
-}
-
-class _LexicographicalOrdering<T> extends Ordering<T> {
-  final Ordering<T> _ordering;
-  _LexicographicalOrdering(this._ordering);
-  int compare(List<T> a, List<T> b) {
-    var length = a.length < b.length ? a.length : b.length;
-    for (var i = 0; i < length; i++) {
-      var result = _ordering.compare(a[i], b[i]);
-      if (result != 0) {
-        return result;
-      }
-    }
-    return a.length - b.length;
-  }
-  String toString() => '$_ordering.lexicographical()';
+  String toString() => _orderings.join('.compound(') + ')';
 }
 
 class _NullsFirstOrdering<T> extends Ordering<T> {
@@ -309,9 +306,9 @@ class _NullsLastOrdering<T> extends Ordering<T> {
 }
 
 class _FunctionOrdering<T> extends Ordering<T> {
-  final Ordering<T> _ordering;
+  final Ordering _ordering;
   final Function _function;
   _FunctionOrdering(this._ordering, this._function);
-  int compare(T a, T b) => _ordering.compare(_function(a), _function(b));
+  int compare(a, b) => _ordering.compare(_function(a), _function(b));
   String toString() => '$_ordering.map($_function)';
 }

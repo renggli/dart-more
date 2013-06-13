@@ -7,10 +7,10 @@ Various extension libraries that make Dart a better place.
   stores bits.
 - `char_matcher.dart` provides a model for character classes, their composition
   and operations on strings.
-- `collection.dart` provides various extension functions to collections.
 - `fraction.dart` provides support for rational number arithmetic.
 - `int_math.dart` is a collection of common mathematical functions on ints.
 - `iterable.dart` is a collection of iterables and iterators.
+- `ordering.dart` a fluent interface for building comparator functions.
 - `range.dart` provides a function to create iterables yielding arithmetic 
   progressions.
   
