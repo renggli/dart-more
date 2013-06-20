@@ -25,6 +25,7 @@ void main() {
     test('tiny list', () {
       var list = new BitSet(1);
       expect(list, isNot(isEmpty));
+      expect(list, hasLength(1));
       expect(list, [false]);
       list[0] = true;
       expect(list, [true]);
@@ -33,8 +34,9 @@ void main() {
     });
     test('long list', () {
       var target = new BitSet(100);
+      expect(target, hasLength(100));
       for (var i = 0; i < 100; i++) {
-        var source = randomList(i, target.length);
+        var source = randomList(311 * i, target.length);
         for (var j = 0; j < source.length; j++) {
           target[j] = source[j];
         }
@@ -45,15 +47,21 @@ void main() {
     });
     test('list conversion', () {
       for (var len = 0; len < 100; len++) {
-        var source = randomList(len, len);
+        var source = randomList(457 * len, len);
         var target = new BitSet.fromList(source);
         expect(source, target);
         expect(source, target.toList());
         expect(source, new BitSet.fromList(target));
       }
     });
+    test('bit counting', () {
+      for (var len = 0; len < 100; len++) {
+        var list = new BitSet.fromList(randomList(823 * len, len));
+        expect(list.count(true) + list.count(false), list.length);
+      }
+    });
     test('reading bounds', () {
-      for (var i = 0; i <= 24; i++) {
+      for (var i = 0; i < 100; i++) {
         var list = new BitSet(i);
         expect(() => list[-1], throwsRangeError);
         for (var j = 0; j < i; j++) {
@@ -63,7 +71,7 @@ void main() {
       }
     });
     test('writing bounds', () {
-      for (var i = 0; i <= 24; i++) {
+      for (var i = 0; i < 100; i++) {
         var list = new BitSet(i);
         expect(() => list[-1] = true, throwsRangeError);
         for (var j = 0; j < i; j++) {
