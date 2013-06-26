@@ -5,7 +5,7 @@ library bit_set;
 import 'dart:collection';
 import 'dart:typed_data';
 
-// TODO(renggli): use UnmodifiableListMixin<bool> when available
+// TODO(renggli): use FixedLengthListMixin<bool> when available
 class BitSet extends ListBase<bool> {
 
   static final _SET_MASK = new Uint32List.fromList([1, 2, 4, 8,
@@ -28,13 +28,20 @@ class BitSet extends ListBase<bool> {
   }
 
   /**
-   * Constucts a new list from a given [list] of booleans or [BitSet].
+   * Constucts a new list from a given [BitSet] or list of booleans.
    */
   factory BitSet.fromList(List<bool> list) {
     var buffer = new Uint32List((list.length + 31) >> 5);
-    for (int index = 0; index < list.length; index++) {
-      if (list[index]) {
-        buffer[index >> 5] |= _SET_MASK[index & 31];
+    if (list is BitSet) {
+      var bitset = list as BitSet;
+      for (var index = 0; index < buffer.length; index++) {
+        buffer[index] = bitset._buffer[index];
+      }
+    } else {
+      for (var index = 0; index < list.length; index++) {
+        if (list[index]) {
+          buffer[index >> 5] |= _SET_MASK[index & 31];
+        }
       }
     }
     return new BitSet._(buffer, list.length);
@@ -51,7 +58,7 @@ class BitSet extends ListBase<bool> {
     if (0 <= index && index < length) {
       return (_buffer[index >> 5] & _SET_MASK[index & 31]) != 0;
     } else {
-      throw new RangeError.value(index);
+      throw new RangeError.range(index, 0, length - 1);
     }
   }
 
@@ -63,7 +70,7 @@ class BitSet extends ListBase<bool> {
         _buffer[index >> 5] &= _CLR_MASK[index & 31];
       }
     } else {
-      throw new RangeError.value(index);
+      throw new RangeError.range(index, 0, length - 1);
     }
   }
 
