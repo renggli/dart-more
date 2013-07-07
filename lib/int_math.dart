@@ -95,7 +95,7 @@ num pow(num x, int n) {
  *
  *     c[0]*x^0 + c[1]*x^1 + c[2]*x^3 + c[3]*x^3
  */
-num polynomial(List<num> cs, [num x = 10]) {
+num polynomial(Iterable<num> cs, [num x = 10]) {
   var r = 0, e = 1;
   for (var c in cs) {
     r += c * e;
