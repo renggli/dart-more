@@ -17,7 +17,6 @@ void verify(Ordering ordering, Iterable unsorted, Iterable expected) {
     expect(ordering.maxOf(unsorted), expected.last);
   }
   expect(!ordering.toString().isEmpty, isTrue);
-
 }
 
 final natural = new Ordering.natural();
@@ -56,6 +55,13 @@ void main() {
         verify(ordering, [2, 3, 1], [3, 2, 1]);
         verify(ordering, [3, 1, 2], [3, 2, 1]);
         verify(ordering, [3, 2, 1], [3, 2, 1]);
+      });
+      test('lexicographical', () {
+        var ordering = natural.lexicographical();
+        verify(ordering, [[], [1], [1, 1], [1, 2], [2]],
+            [[], [1], [1, 1], [1, 2], [2]]);
+        verify(ordering, [[2], [1, 2], [1, 1], [1], []],
+            [[], [1], [1, 1], [1, 2], [2]]);
       });
       test('nullsFirst', () {
         var ordering = natural.nullsFirst();

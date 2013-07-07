@@ -87,6 +87,12 @@ abstract class Ordering<T> {
   Ordering<T> compound(Ordering<T> other) => new _CompoundOrdering<T>([this, other]);
 
   /**
+   * Returns an ordering that orders iterables lexicographically by
+   * their elements.
+   */
+  Ordering<Iterable<T>> lexicographical() => new _LexicographicalOrdering<T>(this);
+
+  /**
    * Returns an ordering that orders [null] values before non-null values.
    */
   Ordering<T> nullsFirst() => new _NullsFirstOrdering<T>(this);
@@ -279,6 +285,25 @@ class _CompoundOrdering<T> extends Ordering<T> {
     return new _CompoundOrdering(new List.from(orderings, growable: false));
   }
   String toString() => _orderings.join('.compound(') + ')';
+}
+
+class _LexicographicalOrdering<T> extends Ordering<Iterable<T>> {
+  final Ordering<T> _other;
+  _LexicographicalOrdering(this._other);
+  int compare(Iterable<T> a, Iterable<T> b) {
+    Iterator<T> ia = a.iterator, ib = b.iterator;
+    while (ia.moveNext()) {
+      if (!ib.moveNext()) {
+        return 1;
+      }
+      var result = _other.compare(ia.current, ib.current);
+      if (result != 0) {
+        return result;
+      }
+    }
+    return ib.moveNext() ? -1 : 0;
+  }
+  String toString() => '$_other.lexicographical()';
 }
 
 class _NullsFirstOrdering<T> extends Ordering<T> {
