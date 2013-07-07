@@ -78,7 +78,7 @@ void main() {
         verify(ordering, ['33', '333', '2', '22', '1', '4444'], ['1', '2', '22', '33', '333', '4444']);
         verify(ordering, ['4444', '44', '2', '1', '333', '22', '33'], ['1', '2', '22', '33', '44', '333', '4444']);
       });
-      test('map', () {
+      test('onResultOf', () {
         var ordering = natural.onResultOf((str) => str.length);
         verify(ordering, ['*', '**', '***'], ['*', '**', '***']);
         verify(ordering, ['**', '***', '*'], ['*', '**', '***']);

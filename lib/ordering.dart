@@ -258,7 +258,7 @@ class _ReverseOrdering<T> extends Ordering<T> {
   _ReverseOrdering(this._other);
   int compare(T a, T b) => _other.compare(b, a);
   Ordering<T> reverse() => _other;
-  String toString() => '$_other.reverse';
+  String toString() => '$_other.reverse()';
 }
 
 class _CompoundOrdering<T> extends Ordering<T> {
@@ -310,5 +310,5 @@ class _FunctionOrdering<T> extends Ordering<T> {
   final Function _function;
   _FunctionOrdering(this._ordering, this._function);
   int compare(a, b) => _ordering.compare(_function(a), _function(b));
-  String toString() => '$_ordering.map($_function)';
+  String toString() => '$_ordering.onResultOf($_function)';
 }
