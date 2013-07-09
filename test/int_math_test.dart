@@ -69,6 +69,15 @@ void main() {
       expect(pow(1, -2), 1.0);
       expect(pow(2, -2), 0.25);
     });
+    test('powMod(x, y, m)', () {
+      for (var x = 0; x < 10; x++) {
+        for (var y = 0; y < 10; y++) {
+          for (var m = 2; m < 20; m++) {
+            expect(powMod(x, y, m), pow(x, y) % m);
+          }
+        }
+      }
+    });
     test('polynomial', () {
       expect(polynomial([], 10), 0);
       expect(polynomial([1, 2], 10), 21);
@@ -78,6 +87,13 @@ void main() {
     test('primes', () {
       expect(primesUpTo(10), [2, 3, 5, 7]);
       expect(primesUpTo(20), [2, 3, 5, 7, 11, 13, 17, 19]);
+    });
+    test('isProbablyPrime', () {
+      var max = 10000;
+      var primes = primesUpTo(max).toSet();
+      for (var i = 0; i < max; i++) {
+        expect(isProbablyPrime(i), primes.contains(i));
+      }
     });
   });
 }

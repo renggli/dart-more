@@ -35,7 +35,7 @@ int lcm(int a, int b) {
  */
 int factorial(int n) {
   if (n < 0) {
-    throw new ArgumentError('Not valid for negative integers');
+    throw new ArgumentError('factorial($n) is undefined for negative arguments.');
   }
   var r = _FACTORIALS[n < _FACTORIALS.length ? n : _FACTORIALS.length - 1];
   for (var i = _FACTORIALS.length; i <= n; i++) {
@@ -70,19 +70,43 @@ int binomial(int n, int k) {
 }
 
 /**
- * Returns the power [x] raised to [n], where [n] is an [int].
+ * Returns the power [x] raised to [y], where [y] is an [int].
  */
-num pow(num x, int n) {
-  if (n < 0) {
-    return 1 / pow(x, -n);
+num pow(num x, int y) {
+  if (y < 0) {
+    return 1 / pow(x, -y);
   }
   var r = 1;
-  while (n > 0) {
-    if (n.isOdd) {
+  while (y > 0) {
+    if (y.isOdd) {
       r *= x;
     }
-    n = n ~/ 2;
     x *= x;
+    y ~/= 2;
+  }
+  return r;
+}
+
+/**
+ * Returns the power [x] raised to [m] modulo [m].
+ */
+int powMod(int x, int y, int m) {
+  if (m < 1 || y < 0) {
+    throw new ArgumentError('powMod($x, $y, $m) is undefined for y < 0 and m < 1.');
+  }
+  var r = 1;
+  while (y > 0) {
+    if (y.isOdd) {
+      r *= x;
+      if (r >= m) {
+        r %= m;
+      }
+    }
+    x *= x;
+    if (x >= m) {
+      x %= m;
+    }
+    y ~/= 2;
   }
   return r;
 }
@@ -123,4 +147,45 @@ List<int> primesUpTo(int limit) {
     }
   }
   return primes;
+}
+
+/**
+ * Tests if the number [n] is probably a prime.
+ *
+ * The output of this variant of the probabilistic primality test
+ * by Miller–Rabin is deterministic. It has been verified to return
+ * correct results for all n < 341,550,071,728,321.
+ */
+bool isProbablyPrime(int n) {
+  if (n == 2 || n == 3 || n == 5) {
+    return true;
+  }
+  if (n < 2 || n % 2 == 0 || n % 3 == 0 || n % 5 == 0) {
+    return false;
+  }
+  if (n < 25) {
+    return true;
+  }
+  var d = n - 1, s = 0;
+  while (d % 2 == 0) {
+    d ~/= 2;
+    s++;
+  }
+  loop: for (var a in [2, 3, 5, 7, 11, 13, 17]) {
+    var x = powMod(a, d, n);
+    if (x == 1 || x == n - 1) {
+      continue loop;
+    }
+    for (var r = 0; r <= s - 1; r++) {
+      x = powMod(x, 2, n);
+      if (x == 1) {
+        return false;
+      }
+      if (x == n - 1) {
+        continue loop;
+      }
+    }
+    return false;
+  }
+  return true;
 }
