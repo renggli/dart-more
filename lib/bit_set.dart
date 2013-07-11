@@ -61,7 +61,7 @@ class BitSet extends ListBase<bool> with FixedLengthListMixin<bool>  {
     if (0 <= index && index < length) {
       return (_buffer[index >> 5] & _SET_MASK[index & 31]) != 0;
     } else {
-      throw new RangeError.range(index, 0, length - 1);
+      throw new RangeError.range(index, 0, length);
     }
   }
 
@@ -73,7 +73,7 @@ class BitSet extends ListBase<bool> with FixedLengthListMixin<bool>  {
         _buffer[index >> 5] &= _CLR_MASK[index & 31];
       }
     } else {
-      throw new RangeError.range(index, 0, length - 1);
+      throw new RangeError.range(index, 0, length);
     }
   }
 
