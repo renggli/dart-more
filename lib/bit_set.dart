@@ -4,9 +4,12 @@ library bit_set;
 
 import 'dart:collection';
 import 'dart:typed_data';
+import 'src/utils.dart';
 
-// TODO(renggli): use FixedLengthListMixin<bool> when available
-class BitSet extends ListBase<bool> {
+/**
+ * An space efficient fixed length [List] that stores boolean values.
+ */
+class BitSet extends ListBase<bool> with FixedLengthListMixin<bool>  {
 
   static final _SET_MASK = new Uint32List.fromList([1, 2, 4, 8,
       16, 32, 64, 128, 256, 512, 1024, 2048, 4096, 8192, 16384,

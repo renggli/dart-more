@@ -9,6 +9,7 @@
 library range;
 
 import 'dart:collection';
+import 'src/utils.dart';
 
 /**
  * Creates a virtual range of numbers containing an arithmetic progressions.
@@ -51,10 +52,8 @@ List<num> range([num a, num b, num c]) {
 
 /**
  * An iterable over an arithmetic progression.
- *
- * TODO(renggli): Mixin UnmodifiableListMixin<num> as soon as we can.
  */
-class _RangeList extends ListBase<num> {
+class _RangeList extends ListBase<num> with UnmodifiableListMixin<num> {
 
   final num _start;
   final num _step;

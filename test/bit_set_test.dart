@@ -105,6 +105,23 @@ void main() {
       }
       expect(target, source2 | source1);
     });
+    test('fixed length', () {
+      var list = new BitSet(32);
+      expect(() => list.add(false), throwsUnsupportedError);
+      expect(() => list.addAll([true, false]), throwsUnsupportedError);
+      expect(() => list.clear(), throwsUnsupportedError);
+      expect(() => list.insert(2, true), throwsUnsupportedError);
+      expect(() => list.insertAll(2, [true, false]), throwsUnsupportedError);
+      expect(() => list.length = 10, throwsUnsupportedError);
+      expect(() => list.remove(true), throwsUnsupportedError);
+      expect(() => list.removeAll([true, false]), throwsUnsupportedError);
+      expect(() => list.removeAt(2), throwsUnsupportedError);
+      expect(() => list.removeLast(), throwsUnsupportedError);
+      expect(() => list.removeRange(2, 4), throwsUnsupportedError);
+      expect(() => list.removeWhere((value) => true), throwsUnsupportedError);
+      expect(() => list.replaceRange(2, 4, [true, false]), throwsUnsupportedError);
+      expect(() => list.retainAll([true, false]), throwsUnsupportedError);
+      expect(() => list.retainWhere((value) => false), throwsUnsupportedError);
+    });
   });
 }
-

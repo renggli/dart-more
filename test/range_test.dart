@@ -45,6 +45,28 @@ void main() {
       expect(range(1.5, 1.8, 0.1), [1.5, 1.6, 1.7]);
       expect(range(1.5, 1.8, 0.2), [1.5, 1.7]);
     });
+    test('unmodifiable', () {
+      var list = range(1, 5);
+      expect(() => list[0] = 5, throwsUnsupportedError);
+      expect(() => list.add(5), throwsUnsupportedError);
+      expect(() => list.addAll([5, 6]), throwsUnsupportedError);
+      expect(() => list.clear(), throwsUnsupportedError);
+      expect(() => list.fillRange(2, 4, 5), throwsUnsupportedError);
+      expect(() => list.insert(2, 5), throwsUnsupportedError);
+      expect(() => list.insertAll(2, [5, 6]), throwsUnsupportedError);
+      expect(() => list.length = 10, throwsUnsupportedError);
+      expect(() => list.remove(5), throwsUnsupportedError);
+      expect(() => list.removeAll([5, 6]), throwsUnsupportedError);
+      expect(() => list.removeAt(2), throwsUnsupportedError);
+      expect(() => list.removeLast(), throwsUnsupportedError);
+      expect(() => list.removeRange(2, 4), throwsUnsupportedError);
+      expect(() => list.removeWhere((value) => true), throwsUnsupportedError);
+      expect(() => list.replaceRange(2, 4, [5, 6]), throwsUnsupportedError);
+      expect(() => list.retainAll([5, 6]), throwsUnsupportedError);
+      expect(() => list.retainWhere((value) => false), throwsUnsupportedError);
+      expect(() => list.setAll(2, [5, 6]), throwsUnsupportedError);
+      expect(() => list.setRange(2, 4, [5, 6]), throwsUnsupportedError);
+      expect(() => list.sort(), throwsUnsupportedError);
+    });
   });
 }
-
