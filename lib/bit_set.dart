@@ -34,7 +34,7 @@ class BitSet extends ListBase<bool> with FixedLengthListMixin<bool>  {
    * Constucts a new list from a given [BitSet] or list of booleans.
    */
   factory BitSet.fromList(List<bool> list) {
-    var buffer = new Uint32List((list.length + 31 as int) >> 5);
+    var buffer = new Uint32List((list.length + 31) >> 5);
     if (list is BitSet) {
       var bitset = list as BitSet;
       for (var index = 0; index < buffer.length; index++) {
