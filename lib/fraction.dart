@@ -5,7 +5,6 @@
  */
 library fraction;
 
-import 'dart:math' as math;
 import 'int_math.dart' as int_math;
 
 /**
