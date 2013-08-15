@@ -4,7 +4,6 @@ library fraction_test;
 
 import 'package:unittest/unittest.dart';
 import 'package:more/fraction.dart';
-import 'dart:math' as math;
 
 
 void main() {
