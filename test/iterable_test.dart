@@ -39,6 +39,5 @@ void main() {
       expect(digits(10000).toList(), [0, 0, 0, 0, 1]);
     });
   });
-
 }
 
