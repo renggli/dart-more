@@ -36,10 +36,7 @@ class BitSet extends ListBase<bool> with FixedLengthListMixin<bool>  {
   factory BitSet.fromList(List<bool> list) {
     var buffer = new Uint32List((list.length + 31) >> 5);
     if (list is BitSet) {
-      var bitset = list as BitSet;
-      for (var index = 0; index < buffer.length; index++) {
-        buffer[index] = bitset._buffer[index];
-      }
+      buffer.setAll(0, (list as BitSet)._buffer);
     } else {
       for (var index = 0; index < list.length; index++) {
         if (list[index]) {
