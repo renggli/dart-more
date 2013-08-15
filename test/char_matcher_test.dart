@@ -17,75 +17,80 @@ void verify(CharMatcher matcher, String included, String excluded) {
 void main() {
   group('char matcher', () {
     group('class', () {
-      test('ANY', () {
-        verify(ANY, 'abc123!@#', '');
+      test('any', () {
+        verify(new CharMatcher.any(), 'abc123!@#', '');
       });
-      test('NONE', () {
-        verify(NONE, '', 'abc123!@# ');
+      test('none', () {
+        verify(new CharMatcher.none(), '', 'abc123!@# ');
       });
       test('isChar', () {
-        verify(isChar('*'), '*', 'abc123!@# ');
+        verify(new CharMatcher.isChar('*'), '*', 'abc123!@# ');
       });
       test('inRange', () {
-        verify(inRange('a', 'c'), 'abc', 'def123!@# ');
+        verify(new CharMatcher.inRange('a', 'c'), 'abc', 'def123!@# ');
       });
-      test('ASCII', () {
-        verify(ASCII, 'def123!@#', '\u2665');
+      test('ascii', () {
+        verify(new CharMatcher.ascii(), 'def123!@#', '\u2665');
       });
-      test('DIGIT', () {
-        verify(DIGIT, '0123456789', 'abc!@# ');
+      test('digit', () {
+        verify(new CharMatcher.digit(), '0123456789', 'abc!@# ');
       });
-      test('LETTER', () {
-        verify(LETTER, 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ', '123!@# ');
+      test('letter', () {
+        verify(new CharMatcher.letter(), 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ', '123!@# ');
       });
-      test('LOWER_CASE_LETTER', () {
-        verify(LOWER_CASE_LETTER, 'abcdefghijklmnopqrstuvwxyz', 'ABCDEFGHIJKLMNOPQRSTUVWXYZ123!@# ');
+      test('lowerCaseLetter', () {
+        verify(new CharMatcher.lowerCaseLetter(), 'abcdefghijklmnopqrstuvwxyz', 'ABCDEFGHIJKLMNOPQRSTUVWXYZ123!@# ');
       });
-      test('UPPER_CASE_LETTER', () {
-        verify(UPPER_CASE_LETTER, 'ABCDEFGHIJKLMNOPQRSTUVWXYZ', 'abcdefghijklmnopqrstuvwxyz123!@# ');
+      test('upperCaseLetter', () {
+        verify(new CharMatcher.upperCaseLetter(), 'ABCDEFGHIJKLMNOPQRSTUVWXYZ', 'abcdefghijklmnopqrstuvwxyz123!@# ');
       });
-      test('LETTER_OR_DIGIT', () {
-        verify(LETTER_OR_DIGIT, 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ01234567890', '!@# ');
+      test('letterOrDigit', () {
+        verify(new CharMatcher.letterOrDigit(), 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ01234567890', '!@# ');
       });
-      test('WHITESPACE', () {
-        verify(WHITESPACE, ' \n\t', 'abcABC!@#');
+      test('whitespace', () {
+        verify(new CharMatcher.whitespace(), ' \n\t', 'abcABC!@#');
       });
     });
     group('operators', () {
+      var any = new CharMatcher.any();
+      var none = new CharMatcher.none();
+      var letter = new CharMatcher.letter();
+      var digit = new CharMatcher.digit();
+      var whitespace = new CharMatcher.whitespace();
       test('~', () {
-        expect(~ANY, equals(NONE));
-        expect(~NONE, equals(ANY));
-        expect(~~WHITESPACE, equals(WHITESPACE));
+        expect(~any, equals(none));
+        expect(~none, equals(any));
+        expect(~~whitespace, equals(whitespace));
       });
       test('|', () {
-        expect(ANY | LETTER, equals(ANY));
-        expect(LETTER | ANY, equals(ANY));
-        expect(NONE | LETTER, equals(LETTER));
-        expect(LETTER | NONE, equals(LETTER));
-        verify(LETTER | DIGIT, 'abc123', '!@# ');
-        verify(DIGIT | LETTER, 'abc123', '!@# ');
-        verify(LETTER | DIGIT | WHITESPACE, 'abc123 ', '!@#');
-        verify(LETTER | (DIGIT | WHITESPACE), 'abc123 ', '!@#');
-        verify((LETTER | DIGIT) | WHITESPACE, 'abc123 ', '!@#');
+        expect(any | letter, equals(any));
+        expect(letter | any, equals(any));
+        expect(none | letter, equals(letter));
+        expect(letter | none, equals(letter));
+        verify(letter | digit, 'abc123', '!@# ');
+        verify(digit | letter, 'abc123', '!@# ');
+        verify(letter | digit | whitespace, 'abc123 ', '!@#');
+        verify(letter | (digit | whitespace), 'abc123 ', '!@#');
+        verify((letter | digit) | whitespace, 'abc123 ', '!@#');
       });
       test('toString', () {
-        expect(ANY.toString(), 'ANY');
-        expect(NONE.toString(), 'NONE');
-        expect(isChar('*').toString(), 'isChar("*")');
-        expect(inRange('a', 'c').toString(), 'inRange("a", "c")');
-        expect(ASCII.toString(), 'ASCII');
-        expect(DIGIT.toString(), 'DIGIT');
-        expect(LETTER.toString(), 'LETTER');
-        expect(LOWER_CASE_LETTER.toString(), 'LOWER_CASE_LETTER');
-        expect(UPPER_CASE_LETTER.toString(), 'UPPER_CASE_LETTER');
-        expect(LETTER_OR_DIGIT.toString(), 'LETTER_OR_DIGIT');
-        expect(WHITESPACE.toString(), 'WHITESPACE');
-        expect((~WHITESPACE).toString(), '~WHITESPACE');
-        expect((LETTER | DIGIT).toString(), 'LETTER | DIGIT');
+        expect(new CharMatcher.any().toString(), 'any()');
+        expect(new CharMatcher.none().toString(), 'none()');
+        expect(new CharMatcher.isChar('*').toString(), 'isChar("*")');
+        expect(new CharMatcher.inRange('a', 'c').toString(), 'inRange("a", "c")');
+        expect(new CharMatcher.ascii().toString(), 'ascii()');
+        expect(new CharMatcher.digit().toString(), 'digit()');
+        expect(new CharMatcher.letter().toString(), 'letter()');
+        expect(new CharMatcher.lowerCaseLetter().toString(), 'lowerCaseLetter()');
+        expect(new CharMatcher.upperCaseLetter().toString(), 'upperCaseLetter()');
+        expect(new CharMatcher.letterOrDigit().toString(), 'letterOrDigit()');
+        expect(new CharMatcher.whitespace().toString(), 'whitespace()');
+        expect((~new CharMatcher.whitespace()).toString(), '~whitespace()');
+        expect((new CharMatcher.letter() | new CharMatcher.digit()).toString(), 'letter() | digit()');
       });
     });
     group('action', () {
-      var star = isChar('*');
+      var star = new CharMatcher.isChar('*');
       test('everyOf', () {
         expect(star.everyOf(''), isTrue);
         expect(star.everyOf('a'), isFalse);
