@@ -83,9 +83,10 @@ abstract class CharMatcher {
     } else if (other == _NONE) {
       return this;
     } else if (other is _DisjunctiveCharMatcher) {
+      var disjunctive = other as _DisjunctiveCharMatcher;
       return new _DisjunctiveCharMatcher(new List()
           ..add(this)
-          ..addAll(other._matchers));
+          ..addAll(disjunctive._matchers));
     } else {
       return new _DisjunctiveCharMatcher([this, other]);
     }
@@ -256,9 +257,10 @@ class _DisjunctiveCharMatcher extends CharMatcher {
     } else if (other == _NONE) {
       return this;
     } else if (other is _DisjunctiveCharMatcher) {
+      var disjunctive = other as _DisjunctiveCharMatcher;
       return new _DisjunctiveCharMatcher(new List()
         ..addAll(_matchers)
-        ..addAll(other._matchers));
+        ..addAll(disjunctive._matchers));
     } else {
       return new _DisjunctiveCharMatcher(new List()
         ..addAll(_matchers)
