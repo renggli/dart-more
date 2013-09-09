@@ -38,6 +38,26 @@ void main() {
       expect(digits(1000).toList(), [0, 0, 0, 1]);
       expect(digits(10000).toList(), [0, 0, 0, 0, 1]);
     });
+    test('digits (base 2)', () {
+      expect(digits(0, 2).toList(), [0]);
+      expect(digits(1, 2).toList(), [1]);
+      expect(digits(12, 2).toList(), [0, 0, 1, 1]);
+      expect(digits(123, 2).toList(), [1, 1, 0, 1, 1, 1, 1]);
+      expect(digits(1001, 2).toList(), [1, 0, 0, 1, 0, 1, 1, 1, 1, 1]);
+      expect(digits(10001, 2).toList(), [1, 0, 0, 0, 1, 0, 0, 0, 1, 1, 1, 0, 0, 1]);
+      expect(digits(1000, 2).toList(), [0, 0, 0, 1, 0, 1, 1, 1, 1, 1]);
+      expect(digits(10000, 2).toList(), [0, 0, 0, 0, 1, 0, 0, 0, 1, 1, 1, 0, 0, 1]);
+    });
+    test('digits (base 16)', () {
+      expect(digits(0, 16).toList(), [0]);
+      expect(digits(1, 16).toList(), [1]);
+      expect(digits(12, 16).toList(), [12]);
+      expect(digits(123, 16).toList(), [11, 7]);
+      expect(digits(1001, 16).toList(), [9, 14, 3]);
+      expect(digits(10001, 16).toList(), [1, 1, 7, 2]);
+      expect(digits(1000, 16).toList(), [8, 14, 3]);
+      expect(digits(10000, 16).toList(), [0, 1, 7, 2]);
+    });
   });
 }
 

@@ -6,6 +6,7 @@
 library iterable;
 
 import 'dart:collection';
+import 'package:meta/meta.dart';
 
 /**
  * Returns an iterable over the fibonacci sequence starting with with [f0]
@@ -17,23 +18,35 @@ Iterable<int> fibonacci([int f0 = 0, int f1 = 1]) {
 }
 
 class _FibonacciIterable extends IterableBase<int> {
+
   final int _f0, _f1;
+
   _FibonacciIterable(this._f0, this._f1);
+
+  @override
   Iterator<int> get iterator {
     return new _FibonacciIterator(2 * _f0 - _f1, _f1 - _f0);
   }
+
 }
 
 class _FibonacciIterator extends Iterator<int> {
+
   int _previous, _current;
+
   _FibonacciIterator(this._previous, this._current);
+
+  @override
   int get current => _current;
+
+  @override
   bool moveNext() {
     var temporary = _previous;
     _previous = _current;
     _current += temporary;
     return true;
   }
+
 }
 
 /**
@@ -46,21 +59,32 @@ Iterable<List> permutations(List list, [Comparator comparator]) {
 }
 
 class _PermutationIterable extends IterableBase<List> {
+
   final List _list;
   final Comparator _comparator;
+
   _PermutationIterable(this._list, this._comparator);
+
+  @override
   Iterator<List> get iterator {
     return new _PermutationIterator(_list, _comparator);
   }
+
 }
 
 class _PermutationIterator extends Iterator<List> {
+
   final List _list;
   final Comparator _comparator;
   List _current;
   bool _completed = false;
+
   _PermutationIterator(this._list, this._comparator);
+
+  @override
   List get current => _current;
+
+  @override
   bool moveNext() {
     if (_completed) {
       return false;
@@ -87,15 +111,18 @@ class _PermutationIterator extends Iterator<List> {
     }
     return true;
   }
+
   void _swap(int i, int j) {
     var temp = _current[i];
     _current[i] = _current[j];
     _current[j] = temp;
   }
+
 }
 
 /**
- * Returns an iterable over the characters of the [string].
+ * Returns an iterable view on the characters of a [string]. For a mutable
+ * copy of the string see [mutableString(String)].
  */
 Iterable<String> string(String string) {
   return string.codeUnits.map((code) => new String.fromCharCode(code));
@@ -110,16 +137,27 @@ Iterable<int> digits(int number, [int base = 10]) {
 }
 
 class _DigitIterable extends IterableBase<int> {
+
   final int _number, _base;
+
   _DigitIterable(this._number, this._base);
+
+  @override
   Iterator<int> get iterator => new _DigitIterator(_number, _base);
+
 }
 
 class _DigitIterator extends Iterator<int> {
+
   int _current, _number;
   final int _base;
+
   _DigitIterator(this._number, this._base);
+
+  @override
   int get current => _current;
+
+  @override
   bool moveNext() {
     if (_number == null) {
       _current = null;
@@ -133,4 +171,5 @@ class _DigitIterator extends Iterator<int> {
       return true;
     }
   }
+
 }
