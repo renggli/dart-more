@@ -9,6 +9,7 @@
 library range;
 
 import 'dart:collection';
+import 'package:meta/meta.dart';
 import 'src/utils.dart';
 
 /**
@@ -61,12 +62,15 @@ class _RangeList extends ListBase<num> with UnmodifiableListMixin<num> {
 
   _RangeList(this._start, this._step, this._length);
 
+  @override
   Iterator<num> get iterator {
     return new _RangeIterator(_start, _step, _length);
   }
 
+  @override
   int get length => _length;
 
+  @override
   num operator [] (int index) {
     if (0 <= index && index < _length) {
       return _start + _step * index;
@@ -75,6 +79,7 @@ class _RangeList extends ListBase<num> with UnmodifiableListMixin<num> {
     }
   }
 
+  @override
   _RangeList sublist(int start, [int end]) {
     if (end == null) {
       end = length - 1;
@@ -82,6 +87,7 @@ class _RangeList extends ListBase<num> with UnmodifiableListMixin<num> {
     return new _RangeList(_start + start * _step, _step, end - start);
   }
 
+  @override
   String toString() {
     if (_length == 0) {
       return 'range()';
@@ -110,8 +116,10 @@ class _RangeIterator extends Iterator<num> {
 
   _RangeIterator(this._start, this._step, this._length);
 
+  @override
   num get current => _current;
 
+  @override
   bool moveNext() {
     if (_index == _length) {
       _current = null;
