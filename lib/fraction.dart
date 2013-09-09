@@ -5,6 +5,7 @@
  */
 library fraction;
 
+import 'package:meta/meta.dart';
 import 'int_math.dart' as int_math;
 
 /**
@@ -91,16 +92,19 @@ class Fraction implements Comparable<Fraction> {
     return new Fraction._(-numerator, denominator);
   }
 
+  @override
   bool operator == (other) {
     return other is Fraction
         && numerator == other.numerator
         && denominator == other.denominator;
   }
 
+  @override
   int get hashCode {
     return numerator.hashCode + denominator.hashCode;
   }
 
+  @override
   int compareTo(Fraction other) {
     return (numerator * other.denominator)
         .compareTo(other.numerator * denominator);
@@ -122,6 +126,7 @@ class Fraction implements Comparable<Fraction> {
 
   int toInt() => numerator ~/ denominator;
 
+  @override
   String toString() => '$numerator/$denominator';
 
 }
