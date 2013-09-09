@@ -4,6 +4,7 @@ library bit_set;
 
 import 'dart:collection';
 import 'dart:typed_data';
+import 'package:meta/meta.dart';
 import 'src/utils.dart';
 
 /**
@@ -52,8 +53,10 @@ class BitSet extends ListBase<bool> with FixedLengthListMixin<bool>  {
 
   BitSet._(this._buffer, this._length);
 
+  @override
   int get length => _length;
 
+  @override
   bool operator [] (int index) {
     if (0 <= index && index < length) {
       return (_buffer[index >> 5] & _SET_MASK[index & 31]) != 0;
@@ -62,6 +65,7 @@ class BitSet extends ListBase<bool> with FixedLengthListMixin<bool>  {
     }
   }
 
+  @override
   void operator []= (int index, bool value) {
     if (0 <= index && index < length) {
       if (value) {
