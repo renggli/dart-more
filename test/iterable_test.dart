@@ -28,6 +28,20 @@ void main() {
       expect(string('ab').toList(), ['a', 'b']);
       expect(string('aA1! ').toList(), ['a', 'A', '1', '!', ' ']);
     });
+    test('string (mutable)', () {
+      List<String> mutable = mutableString('abc');
+      expect(mutable.length, 3);
+      expect(mutable.toString(), 'abc');
+      expect(mutable[1], 'b');
+      mutable[1] = 'd';
+      expect(mutable[1], 'd');
+      expect(mutable.toString(), 'adc');
+      mutable.add('e');
+      expect(mutable.toString(), 'adce');
+      mutable.remove('a');
+      expect(mutable.toString(), 'dce');
+      expect(mutable.toList(), ['d', 'c', 'e']);
+    });
     test('digits', () {
       expect(digits(0).toList(), [0]);
       expect(digits(1).toList(), [1]);

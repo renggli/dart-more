@@ -129,6 +129,44 @@ Iterable<String> string(String string) {
 }
 
 /**
+ * Returns a mutable list of the characters of a [string].
+ */
+List<String> mutableString(String string, { growable: true }) {
+  return new _MutableString(new List.from(string.codeUnits, growable: growable));
+}
+
+class _MutableString extends ListBase<String> {
+
+  final List<int> _codeUnits;
+
+  _MutableString(this._codeUnits);
+
+  @override
+  int get length => _codeUnits.length;
+
+  @override
+  void set length(int newLength) {
+    _codeUnits.length = newLength;
+  }
+
+  @override
+  String operator [] (int index) => new String.fromCharCode(_codeUnits[index]);
+
+  @override
+  void operator []= (int index, String character) {
+    if (character.length == 1) {
+      _codeUnits[index] = character.codeUnitAt(0);
+    } else {
+      throw new ArgumentError('Invalid character: $character');
+    }
+  }
+
+  @override
+  String toString() => new String.fromCharCodes(_codeUnits);
+
+}
+
+/**
  * Returns an iterable over the digits of the [number], in the optionally
  * given [base].
  */
