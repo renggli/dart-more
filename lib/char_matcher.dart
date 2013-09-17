@@ -379,8 +379,8 @@ class _WhitespaceCharMatcher extends CharMatcher {
 }
 
 int _toCharCode(char) {
-  if (char is int) {
-    return char;
+  if (char is num) {
+    return char.round();
   }
   var value = char.toString();
   if (value.length != 1) {

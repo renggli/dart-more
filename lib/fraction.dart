@@ -16,11 +16,11 @@ class Fraction implements Comparable<Fraction> {
   /**
    * Constructs a fraction from a [numerator] and an optional [denominator].
    */
-  factory Fraction(num numerator, [num denominator = 1]) {
-    if (numerator is! int) {
-      throw new ArgumentError('Numerator needs to be int.');
+  factory Fraction(int numerator, [int denominator = 1]) {
+    if (numerator == null || denominator == null) {
+      throw new ArgumentError('Null numerator or denominator passed to fraction.');
     }
-    if (denominator is! int || denominator == 0) {
+    if (denominator == 0.0) {
       throw new ArgumentError('Denominator needs to be non-zero.');
     }
     var d = int_math.gcd(numerator, denominator).abs();
@@ -92,6 +92,22 @@ class Fraction implements Comparable<Fraction> {
     return new Fraction._(-numerator, denominator);
   }
 
+  bool get isNaN => false;
+
+  bool get isNegative => numerator.isNegative;
+
+  bool get isInfinite => false;
+
+  Fraction abs() => isNegative ? -this : this;
+
+  int round() => toDouble().round();
+  int floor() => toDouble().floor();
+  int ceil() => toDouble().ceil();
+  int truncate() => toDouble().truncate();
+
+  int toInt() => numerator ~/ denominator;
+  double toDouble() => numerator / denominator;
+
   @override
   bool operator == (other) {
     return other is Fraction
@@ -117,14 +133,6 @@ class Fraction implements Comparable<Fraction> {
   bool operator >= (Fraction other) => compareTo(other) >= 0;
 
   bool operator > (Fraction other) => compareTo(other) > 0;
-
-  Fraction abs() {
-    return numerator < 0 ? -this : this;
-  }
-
-  double toDouble() => numerator / denominator;
-
-  int toInt() => numerator ~/ denominator;
 
   @override
   String toString() => '$numerator/$denominator';
