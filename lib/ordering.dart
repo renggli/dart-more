@@ -280,8 +280,7 @@ class _CompoundOrdering<T> extends Ordering<T> {
     return 0;
   }
   Ordering<T> compound(Ordering<T> other) {
-    var orderings = new List.from(_orderings);
-    orderings.add(other);
+    var orderings = new List.from(_orderings)..add(other);
     return new _CompoundOrdering(new List.from(orderings, growable: false));
   }
   String toString() => _orderings.join('.compound(') + ')';

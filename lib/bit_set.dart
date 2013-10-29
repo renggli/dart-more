@@ -4,7 +4,6 @@ library bit_set;
 
 import 'dart:collection';
 import 'dart:typed_data';
-import 'package:meta/meta.dart';
 import 'src/utils.dart';
 
 /**
@@ -37,7 +36,7 @@ class BitSet extends ListBase<bool> with FixedLengthListMixin<bool>  {
   factory BitSet.fromList(List<bool> list) {
     var buffer = new Uint32List((list.length + 31) >> 5);
     if (list is BitSet) {
-      buffer.setAll(0, (list as BitSet)._buffer);
+      buffer.setAll(0, list._buffer);
     } else {
       for (var index = 0; index < list.length; index++) {
         if (list[index]) {

@@ -9,7 +9,6 @@
 library range;
 
 import 'dart:collection';
-import 'package:meta/meta.dart';
 import 'src/utils.dart';
 
 /**

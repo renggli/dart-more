@@ -6,7 +6,6 @@
 library iterable;
 
 import 'dart:collection';
-import 'package:meta/meta.dart';
 
 /**
  * Returns an iterable over the fibonacci sequence starting with with [f0]
