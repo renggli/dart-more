@@ -239,17 +239,32 @@ abstract class CharMatcher {
 }
 
 class _NegateCharMatcher extends CharMatcher {
+
   final CharMatcher _matcher;
+
   const _NegateCharMatcher(this._matcher);
+
+  @override
   String toString() => '~$_matcher';
+
+  @override
   CharMatcher operator ~ () => _matcher;
+
+  @override
   bool call(int value) => !_matcher(value);
+
 }
 
 class _DisjunctiveCharMatcher extends CharMatcher {
+
   final List<CharMatcher> _matchers;
+
   const _DisjunctiveCharMatcher(this._matchers);
+
+  @override
   String toString() => _matchers.join(' | ');
+
+  @override
   CharMatcher operator | (CharMatcher other) {
     if (other == _ANY) {
       return other;
@@ -265,103 +280,181 @@ class _DisjunctiveCharMatcher extends CharMatcher {
         ..add(other));
     }
   }
+
+  @override
   bool call(int value) {
     return _matchers.any((matcher) => matcher(value));
   }
+
 }
 
 final CharMatcher _ANY = const _AnyCharMatcher();
 
 class _AnyCharMatcher extends CharMatcher {
+
   const _AnyCharMatcher();
+
+  @override
   String toString() => 'any()';
+
+  @override
   bool call(int value) => true;
+
+  @override
   CharMatcher operator ~ () => _NONE;
+
+  @override
   CharMatcher operator | (CharMatcher other) => this;
+
 }
 
 final CharMatcher _NONE = const _NoneCharMatcher();
 
 class _NoneCharMatcher extends CharMatcher {
+
   const _NoneCharMatcher();
+
+  @override
   String toString() => 'none()';
+
+  @override
   bool call(int value) => false;
+
+  @override
   CharMatcher operator ~ () => _ANY;
+
+  @override
   CharMatcher operator | (CharMatcher other) => other;
+
 }
 
 class _SingleCharMatcher extends CharMatcher {
+
   final int _value;
+
   const _SingleCharMatcher(this._value);
+
+  @override
   String toString() => 'isChar("' + new String.fromCharCode(_value) + '")';
+
+  @override
   bool call(int value) => _value == value;
+
 }
 
 class _RangeCharMatcher extends CharMatcher {
+
   final int _start;
   final int _stop;
+
   const _RangeCharMatcher(this._start, this._stop);
+
+  @override
   String toString() => 'inRange("' + new String.fromCharCode(_start) +
       '", "' + new String.fromCharCode(_stop) + '")';
+
+  @override
   bool call(int value) => _start <= value && value <= _stop;
+
 }
 
 final CharMatcher _ASCII = const _AsciiCharMatcher();
 
 class _AsciiCharMatcher extends CharMatcher {
+
   const _AsciiCharMatcher();
+
+  @override
   String toString() => 'ascii()';
+
+  @override
   bool call(int value) => value < 128;
+
 }
 
 final CharMatcher _DIGIT = const _DigitCharMatcher();
 
 class _DigitCharMatcher extends CharMatcher {
+
   const _DigitCharMatcher();
+
+  @override
   String toString() => 'digit()';
+
+  @override
   bool call(int value) => 48 <= value && value <= 57;
+
 }
 
 final CharMatcher _LETTER = const _LetterCharMatcher();
 
 class _LetterCharMatcher extends CharMatcher {
+
   const _LetterCharMatcher();
+
+  @override
   String toString() => 'letter()';
+
+  @override
   bool call(int value) => (65 <= value && value <= 90)
       || (97 <= value && value <= 122);
+
 }
 
 final CharMatcher _LOWER_CASE_LETTER = const _LowerCaseLetterCharMatcher();
 
 class _LowerCaseLetterCharMatcher extends CharMatcher {
+
   const _LowerCaseLetterCharMatcher();
+
+  @override
   String toString() => 'lowerCaseLetter()';
+
+  @override
   bool call(int value) => 97 <= value && value <= 122;
+
 }
 
 final CharMatcher _UPPER_CASE_LETTER = const _UpperCaseLetterCharMatcher();
 
 class _UpperCaseLetterCharMatcher extends CharMatcher {
+
   const _UpperCaseLetterCharMatcher();
+
+  @override
   String toString() => 'upperCaseLetter()';
+
+  @override
   bool call(int value) => 65 <= value && value <= 90;
+
 }
 
 final CharMatcher _LETTER_OR_DIGIT = const _LetterOrDigitCharMatcher();
 
 class _LetterOrDigitCharMatcher extends CharMatcher {
+
   const _LetterOrDigitCharMatcher();
+
+  @override
   String toString() => 'letterOrDigit()';
+
+  @override
   bool call(int value) => (65 <= value && value <= 90)
       || (97 <= value && value <= 122) || (48 <= value && value <= 57)
       || (value == 95);
+
 }
 
 final CharMatcher _WHITESPACE = const _WhitespaceCharMatcher();
 
 class _WhitespaceCharMatcher extends CharMatcher {
+
   const _WhitespaceCharMatcher();
+
+  @override
   String toString() => 'whitespace()';
+
+  @override
   bool call(int value) {
     if (value < 256) {
       return value == 0x09 || value == 0x0A || value == 0x0B || value == 0x0C
@@ -374,6 +467,7 @@ class _WhitespaceCharMatcher extends CharMatcher {
           || value == 0x205F || value == 0x3000 || value == 0xFEFF;
     }
   }
+
 }
 
 int _toCharCode(char) {

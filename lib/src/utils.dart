@@ -6,10 +6,6 @@ library _utils;
  * Mixin that throws on the length changing operations of [List].
  *
  * Intended to mix-in on top of [ListMixin] for fixed-length lists.
- *
- * TODO(renggli): get rid of this copy when [FixedLengthListMixin]
- * eventually becomes available from the core libraries
- * (https://code.google.com/p/dart/issues/detail?id=10176).
  */
 abstract class FixedLengthListMixin<E>  {
   void set length(int newLength) {
@@ -94,10 +90,6 @@ abstract class FixedLengthListMixin<E>  {
  * This overrides all mutating methods with methods that throw.
  * This mixin is intended to be mixed in on top of [ListMixin] on
  * unmodifiable lists.
- *
- * TODO(renggli): get rid of this copy when [UnmodifiableListMixin]
- * eventually becomes available from the core libraries
- * (https://code.google.com/p/dart/issues/detail?id=10176).
  */
 abstract class UnmodifiableListMixin<E> {
   void operator []=(int index, E value) {
@@ -200,4 +192,3 @@ abstract class UnmodifiableListMixin<E> {
         "Cannot modify an unmodifiable list");
   }
 }
-

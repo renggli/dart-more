@@ -110,12 +110,18 @@ abstract class Ordering<T> {
   /**
    * Searches the sorted [list] for the specified [value] using binary search.
    *
+   * The search can be optinally limited to a range between [low] and [high].
+   *
    * The method returns the index of the element, or a negative value if the key
    * was not found. The result is undefined if the list is not sorted.
    */
   int binarySearch(List<T> list, T value, {low, high}) {
-    if (low == null) low = 0;
-    if (high == null) high = list.length - 1;
+    if (low == null) {
+      low = 0;
+    }
+    if (high == null) {
+      high = list.length - 1;
+    }
     while (low <= high) {
       var mid = low + (high - low) ~/ 2;
       var cmp = compare(list[mid], value);
@@ -233,43 +239,77 @@ abstract class Ordering<T> {
 }
 
 class _NaturalOrdering<T> extends Ordering<T> {
+
   const _NaturalOrdering();
+
+  @override
   int compare(a, b) => a.compareTo(b);
+
+  @override
   String toString() => 'new Ordering.natural()';
+
 }
 
 class _ComparatorOrdering<T> extends Ordering<T> {
+
   final Comparator<T> _comparator;
+
   _ComparatorOrdering(this._comparator);
+
+  @override
   int compare(T a, T b) => _comparator(a, b);
+
+  @override
   String toString() => 'new Ordering.from($_comparator)';
+
 }
 
 class _ExplicitOrdering<T> extends Ordering<T> {
+
   final Map<T, int> _ranking;
+
   _ExplicitOrdering(this._ranking);
+
+  @override
   int compare(T a, T b) => _rank(a) - _rank(b);
+
   int _rank(T element) {
-    int rank = _ranking[element];
+    var rank = _ranking[element];
     if (rank == null) {
       throw new StateError('Unable to compare $element with $this');
     }
     return rank;
   }
+
+  @override
   String toString() => 'new Ordering.explicit(${_ranking.keys})';
+
 }
 
 class _ReverseOrdering<T> extends Ordering<T> {
+
   final Ordering<T> _other;
+
   _ReverseOrdering(this._other);
+
+  @override
   int compare(T a, T b) => _other.compare(b, a);
+
+  @override
   Ordering<T> reverse() => _other;
+
+  @override
   String toString() => '$_other.reverse()';
+
 }
 
 class _CompoundOrdering<T> extends Ordering<T> {
+
   final List<Ordering<T>> _orderings;
+
   _CompoundOrdering(this._orderings);
+
+  @override
   int compare(T a, T b) {
     for (var ordering in _orderings) {
       var result = ordering.compare(a, b);
@@ -279,18 +319,27 @@ class _CompoundOrdering<T> extends Ordering<T> {
     }
     return 0;
   }
+
+  @override
   Ordering<T> compound(Ordering<T> other) {
     var orderings = new List.from(_orderings)..add(other);
     return new _CompoundOrdering(new List.from(orderings, growable: false));
   }
+
+  @override
   String toString() => _orderings.join('.compound(') + ')';
+
 }
 
 class _LexicographicalOrdering<T> extends Ordering<Iterable<T>> {
+
   final Ordering<T> _other;
+
   _LexicographicalOrdering(this._other);
+
+  @override
   int compare(Iterable<T> a, Iterable<T> b) {
-    Iterator<T> ia = a.iterator, ib = b.iterator;
+    var ia = a.iterator, ib = b.iterator;
     while (ia.moveNext()) {
       if (!ib.moveNext()) {
         return 1;
@@ -302,37 +351,72 @@ class _LexicographicalOrdering<T> extends Ordering<Iterable<T>> {
     }
     return ib.moveNext() ? -1 : 0;
   }
+
+  @override
   String toString() => '$_other.lexicographical()';
+
 }
 
 class _NullsFirstOrdering<T> extends Ordering<T> {
+
   final Ordering<T> _ordering;
+
   _NullsFirstOrdering(this._ordering);
+
+  @override
   int compare(T a, T b) {
-    if (identical(a, b)) return 0;
-    if (identical(a, null)) return -1;
-    if (identical(b, null)) return 1;
-    return _ordering.compare(a, b);
+    if (identical(a, b)) {
+      return 0;
+    } else if (identical(a, null)) {
+      return -1;
+    } else if (identical(b, null)) {
+      return 1;
+    } else {
+      return _ordering.compare(a, b);
+    }
   }
+
+  @override
   String toString() => '$_ordering.nullsFirst()';
+
 }
 
 class _NullsLastOrdering<T> extends Ordering<T> {
+
   final Ordering<T> _ordering;
+
   _NullsLastOrdering(this._ordering);
+
+  @override
   int compare(T a, T b) {
-    if (identical(a, b)) return 0;
-    if (identical(a, null)) return 1;
-    if (identical(b, null)) return -1;
-    return _ordering.compare(a, b);
+    if (identical(a, b)) {
+      return 0;
+    } else if (identical(a, null)) {
+      return 1;
+    } else if (identical(b, null)) {
+      return -1;
+    } else {
+      return _ordering.compare(a, b);
+    }
   }
+
+  @override
   String toString() => '$_ordering.nullsLast()';
+
 }
 
 class _FunctionOrdering<T> extends Ordering<T> {
+
   final Ordering _ordering;
+
   final Function _function;
+
   _FunctionOrdering(this._ordering, this._function);
+
+  @override
   int compare(a, b) => _ordering.compare(_function(a), _function(b));
+
+  @override
   String toString() => '$_ordering.onResultOf($_function)';
+
 }
