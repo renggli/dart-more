@@ -1,10 +1,10 @@
 // Copyright (c) 2013, Lukas Renggli <renggli@gmail.com>
 
-library bit_set_test;
+library bit_list_test;
 
 import 'dart:math';
 import 'package:unittest/unittest.dart';
-import 'package:more/bit_set.dart';
+import 'package:more/bit_list.dart';
 
 List<bool> randomList(int seed, int length) {
   var list = new List();
@@ -18,12 +18,12 @@ List<bool> randomList(int seed, int length) {
 void main() {
   group('bit list', () {
     test('empty list', () {
-      var list = new BitSet(0);
+      var list = new BitList(0);
       expect(list, isEmpty);
       expect(list, []);
     });
     test('tiny list', () {
-      var list = new BitSet(1);
+      var list = new BitList(1);
       expect(list, isNot(isEmpty));
       expect(list, hasLength(1));
       expect(list, [false]);
@@ -33,7 +33,7 @@ void main() {
       expect(list, [false]);
     });
     test('long list', () {
-      var target = new BitSet(100);
+      var target = new BitList(100);
       expect(target, hasLength(100));
       for (var i = 0; i < 100; i++) {
         var source = randomList(311 * i, target.length);
@@ -48,21 +48,21 @@ void main() {
     test('list conversion', () {
       for (var len = 0; len < 100; len++) {
         var source = randomList(457 * len, len);
-        var target = new BitSet.fromList(source);
+        var target = new BitList.fromList(source);
         expect(source, target);
         expect(source, target.toList());
-        expect(source, new BitSet.fromList(target));
+        expect(source, new BitList.fromList(target));
       }
     });
     test('bit counting', () {
       for (var len = 0; len < 100; len++) {
-        var list = new BitSet.fromList(randomList(823 * len, len));
+        var list = new BitList.fromList(randomList(823 * len, len));
         expect(list.count(true) + list.count(false), list.length);
       }
     });
     test('reading bounds', () {
       for (var i = 0; i < 100; i++) {
-        var list = new BitSet(i);
+        var list = new BitList(i);
         expect(() => list[-1], throwsRangeError);
         for (var j = 0; j < i; j++) {
           expect(() => list[j], returnsNormally);
@@ -72,7 +72,7 @@ void main() {
     });
     test('writing bounds', () {
       for (var i = 0; i < 100; i++) {
-        var list = new BitSet(i);
+        var list = new BitList(i);
         expect(() => list[-1] = true, throwsRangeError);
         for (var j = 0; j < i; j++) {
           expect(() => list[j] = true, returnsNormally);
@@ -81,15 +81,15 @@ void main() {
       }
     });
     test('logical negation', () {
-      var source = new BitSet.fromList(randomList(702, 100));
+      var source = new BitList.fromList(randomList(702, 100));
       var target = ~source;
       for (var i = 0; i < target.length; i++) {
         expect(target[i], !source[i]);
       }
     });
     test('logical and', () {
-      var source1 = new BitSet.fromList(randomList(439, 100));
-      var source2 = new BitSet.fromList(randomList(902, 100));
+      var source1 = new BitList.fromList(randomList(439, 100));
+      var source2 = new BitList.fromList(randomList(902, 100));
       var target = source1 & source2;
       for (var i = 0; i < target.length; i++) {
         expect(target[i], source1[i] && source2[i]);
@@ -97,8 +97,8 @@ void main() {
       expect(target, source2 & source1);
     });
     test('logical or', () {
-      var source1 = new BitSet.fromList(randomList(817, 100));
-      var source2 = new BitSet.fromList(randomList(858, 100));
+      var source1 = new BitList.fromList(randomList(817, 100));
+      var source2 = new BitList.fromList(randomList(858, 100));
       var target = source1 | source2;
       for (var i = 0; i < target.length; i++) {
         expect(target[i], source1[i] || source2[i]);
@@ -106,7 +106,7 @@ void main() {
       expect(target, source2 | source1);
     });
     test('fixed length', () {
-      var list = new BitSet(32);
+      var list = new BitList(32);
       expect(() => list.add(false), throwsUnsupportedError);
       expect(() => list.addAll([true, false]), throwsUnsupportedError);
       expect(() => list.clear(), throwsUnsupportedError);

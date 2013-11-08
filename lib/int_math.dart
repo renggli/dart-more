@@ -5,7 +5,7 @@
  */
 library int_math;
 
-import 'bit_set.dart';
+import 'bit_list.dart';
 
 /**
  * Returns the greatest common divisor (GCD) of two or more integers (at least
@@ -132,7 +132,7 @@ num polynomial(Iterable<num> cs, [num x = 10]) {
  * Returns primes up to a [limit] compued by the Sieve of Eratosthenes.
  */
 List<int> primesUpTo(int limit) {
-  var sieve = new BitSet(limit + 1);
+  var sieve = new BitList(limit + 1);
   for (var i = 2; i * i <= limit; i++) {
     if (!sieve[i]) {
       for (var j = i * i; j <= limit; j += i) {

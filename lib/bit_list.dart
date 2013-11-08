@@ -9,7 +9,7 @@ import 'src/utils.dart';
 /**
  * An space efficient fixed length [List] that stores boolean values.
  */
-class BitSet extends ListBase<bool> with FixedLengthListMixin<bool>  {
+class BitList extends ListBase<bool> with FixedLengthListMixin<bool>  {
 
   static final _SET_MASK = new Uint32List.fromList([1, 2, 4, 8,
       16, 32, 64, 128, 256, 512, 1024, 2048, 4096, 8192, 16384,
@@ -26,16 +26,16 @@ class BitSet extends ListBase<bool> with FixedLengthListMixin<bool>  {
   /**
    * Constructs a bit list of the given [length].
    */
-  factory BitSet(int length) {
-    return new BitSet._(new Uint32List((length + 31) >> 5), length);
+  factory BitList(int length) {
+    return new BitList._(new Uint32List((length + 31) >> 5), length);
   }
 
   /**
-   * Constucts a new list from a given [BitSet] or list of booleans.
+   * Constucts a new list from a given [BitList] or list of booleans.
    */
-  factory BitSet.fromList(List<bool> list) {
+  factory BitList.fromList(List<bool> list) {
     var buffer = new Uint32List((list.length + 31) >> 5);
-    if (list is BitSet) {
+    if (list is BitList) {
       buffer.setAll(0, list._buffer);
     } else {
       for (var index = 0; index < list.length; index++) {
@@ -44,17 +44,23 @@ class BitSet extends ListBase<bool> with FixedLengthListMixin<bool>  {
         }
       }
     }
-    return new BitSet._(buffer, list.length);
+    return new BitList._(buffer, list.length);
   }
 
   final Uint32List _buffer;
   final int _length;
 
-  BitSet._(this._buffer, this._length);
+  BitList._(this._buffer, this._length);
 
+  /**
+   * Returns the number of bits in this object.
+   */
   @override
   int get length => _length;
 
+  /**
+   * Returns the value of the bit with the given [index].
+   */
   @override
   bool operator [] (int index) {
     if (0 <= index && index < length) {
@@ -64,6 +70,9 @@ class BitSet extends ListBase<bool> with FixedLengthListMixin<bool>  {
     }
   }
 
+  /**
+   * Sets the [value] of the bit with the given [index].
+   */
   @override
   void operator []= (int index, bool value) {
     if (0 <= index && index < length) {
@@ -77,6 +86,9 @@ class BitSet extends ListBase<bool> with FixedLengthListMixin<bool>  {
     }
   }
 
+  /**
+   * Counts the number of bits that are set to [expected].
+   */
   int count([bool expected = true]) {
     int tally = 0;
     for (var index = 0; index < _length; index++) {
@@ -88,26 +100,39 @@ class BitSet extends ListBase<bool> with FixedLengthListMixin<bool>  {
     return tally;
   }
 
-  BitSet operator ~ () {
-    BitSet result = new BitSet(_length);
+  /**
+   * Returns a new [BitList] with all the bits of the receiver inverted.
+   */
+  BitList operator ~ () {
+    var result = new BitList(_length);
     for (var i = 0; i < _buffer.length; i++) {
       result._buffer[i] = ~_buffer[i];
     }
     return result;
   }
 
-  BitSet operator & (BitSet other) {
+  /**
+   * Returns a new [BitList] with all the bits set that are set in the
+   * receiver and in [other]. The receiver and [other] need to have
+   * the same length, otherwise an exception is thrown.
+   */
+  BitList operator & (BitList other) {
     assert(_length == other._length);
-    BitSet result = new BitSet(_length);
+    var result = new BitList(_length);
     for (var i = 0; i < _buffer.length; i++) {
       result._buffer[i] = _buffer[i] & other._buffer[i];
     }
     return result;
   }
 
-  BitSet operator | (BitSet other) {
+  /**
+   * Returns a new [BitList] with all the bits set that are either set in
+   * the receiver or in [other]. The receiver and [other] need to have
+   * the same length, otherwise an exception is thrown.
+   */
+  BitList operator | (BitList other) {
     assert(_length == other._length);
-    BitSet result = new BitSet(_length);
+    var result = new BitList(_length);
     for (var i = 0; i < _buffer.length; i++) {
       result._buffer[i] = _buffer[i] | other._buffer[i];
     }
