@@ -5,7 +5,6 @@ library fraction_test;
 import 'package:unittest/unittest.dart';
 import 'package:more/fraction.dart';
 
-
 void main() {
   group('fraction', () {
     group('construction', () {
@@ -73,6 +72,14 @@ void main() {
             }
           }
         }
+      });
+      test('zero', () {
+        expect(Fraction.ZERO, new Fraction(0));
+        expect(new Fraction(1, 2) + Fraction.ZERO, new Fraction(1, 2));
+      });
+      test('one', () {
+        expect(Fraction.ONE, new Fraction(1));
+        expect(new Fraction(1, 2) * Fraction.ONE, new Fraction(1, 2));
       });
     });
     group('arithmetic', () {

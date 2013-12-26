@@ -13,6 +13,16 @@ import 'int_math.dart' as int_math;
 class Fraction implements Comparable<Fraction> {
 
   /**
+   * The neutral additive element, i.e. `0`.
+   */
+  static final Fraction ZERO = const Fraction._(0, 1);
+
+  /**
+   * The neutral multiplicative element, i.e. `1`.
+   */
+  static final Fraction ONE = const Fraction._(1, 1);
+
+  /**
    * Constructs a fraction from a [numerator] and an optional [denominator].
    */
   factory Fraction(int numerator, [int denominator = 1]) {
@@ -65,7 +75,7 @@ class Fraction implements Comparable<Fraction> {
   final int numerator;
   final int denominator;
 
-  Fraction._(this.numerator, this.denominator);
+  const Fraction._(this.numerator, this.denominator);
 
   Fraction operator + (Fraction other) {
     return new Fraction(numerator * other.denominator + other.numerator
