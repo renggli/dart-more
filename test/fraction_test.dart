@@ -148,6 +148,8 @@ void main() {
       test('toString', () {
         expect(new Fraction(1, 2).toString(), '1/2');
         expect(new Fraction(5, 4).toString(), '5/4');
+        expect(new Fraction(6).toString(), '6');
+        expect(new Fraction(-6).toString(), '-6');
       });
     });
   });
