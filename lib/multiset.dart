@@ -18,27 +18,35 @@ class Multiset<E> extends IterableBase<E> {
   /**
    * Creates an empty [Multiset].
    */
-  factory Multiset() => new Multiset<E>._(new Map<E, int>());
+  factory Multiset() => new Multiset<E>._(new Map<E, int>(), 0);
 
   /**
    * Creates an empty identity [Multiset].
    */
-  factory Multiset.identity() => new Multiset<E>._(new Map<E, int>.identity());
+  factory Multiset.identity() => new Multiset<E>._(new Map<E, int>.identity(), 0);
 
   /**
    * Creates a multiset that contains all elements of [other].
    */
   factory Multiset.from(Iterable<E> other) {
     if (other is Multiset<E>) {
-      return new Multiset<E>._(new Map.from(other._container));
+      return new Multiset<E>._(new Map.from(other._container), other._length);
     } else {
       return new Multiset<E>()..addAll(other);
     }
   }
 
+  /**
+   * The backing container of the set.
+   */
   final Map<E, int> _container;
 
-  Multiset._(this._container);
+  /**
+   * The cached number of elements.
+   */
+  int _length;
+
+  Multiset._(this._container, this._length);
 
   /**
    * Adds [element] to the receiver [occurrences] number of times.
@@ -50,6 +58,7 @@ class Multiset<E> extends IterableBase<E> {
       throw new ArgumentError('Negative number of occurences');
     } else if (occurences > 0) {
       _container[element] = this[element] + occurences;
+      _length += occurences;
     }
   }
 
@@ -72,8 +81,10 @@ class Multiset<E> extends IterableBase<E> {
       var current = this[element];
       if (current <= occurences) {
         _container.remove(element);
+        _length -= current;
       } else {
         _container[element] = current - occurences;
+        _length -= occurences;
       }
     }
   }
@@ -88,7 +99,10 @@ class Multiset<E> extends IterableBase<E> {
   /**
    * Removes all elements from the receiver.
    */
-  void clear() => _container.clear();
+  void clear() {
+    _container.clear();
+    _length = 0;
+  }
 
   /**
    * Gets the number of occurences of an [element].
@@ -105,10 +119,15 @@ class Multiset<E> extends IterableBase<E> {
   void operator []= (E element, int occurences) {
     if (occurences < 0) {
       throw new ArgumentError('Negative number of occurences');
-    } else if (occurences > 0) {
-      _container[element] = occurences;
     } else {
-      _container.remove(element);
+      var current = this[element];
+      if (occurences > 0) {
+        _container[element] = occurences;
+        _length += occurences - current;
+      } else {
+        _container.remove(element);
+        _length -= current;
+      }
     }
   }
 
@@ -153,15 +172,15 @@ class Multiset<E> extends IterableBase<E> {
   Iterator<E> get iterator => new _MultisetIterator<E>(this._container, distinct.iterator);
 
   /**
-   * The distinct elements of the receiver.
+   * Returns a view on the distinct elements of the receiver.
    */
   Iterable<E> get distinct => _container.keys;
 
+  /**
+   * Returns the total number of elements in the receiver.
+   */
   @override
-  int get length => _container.values.fold(0, (a, b) => a + b);
-
-  @override
-  bool get isEmpty => _container.isEmpty;
+  int get length => _length;
 
 }
 
