@@ -11,6 +11,9 @@ import 'src/utils.dart';
  */
 class BitList extends ListBase<bool> with FixedLengthListMixin<bool>  {
 
+  // constants specific to mapping bits into a [Uint32List]
+  static final int _SHIFT = 5;
+  static final int _OFFSET = 31;
   static final _SET_MASK = new Uint32List.fromList([1, 2, 4, 8,
       16, 32, 64, 128, 256, 512, 1024, 2048, 4096, 8192, 16384,
       32768, 65536, 131072, 262144, 524288, 1048576, 2097152,
@@ -27,20 +30,20 @@ class BitList extends ListBase<bool> with FixedLengthListMixin<bool>  {
    * Constructs a bit list of the given [length].
    */
   factory BitList(int length) {
-    return new BitList._(new Uint32List((length + 31) >> 5), length);
+    return new BitList._(new Uint32List((length + _OFFSET) >> _SHIFT), length);
   }
 
   /**
    * Constucts a new list from a given [BitList] or list of booleans.
    */
   factory BitList.fromList(List<bool> list) {
-    var buffer = new Uint32List((list.length + 31) >> 5);
+    var buffer = new Uint32List((list.length + _OFFSET) >> _SHIFT);
     if (list is BitList) {
       buffer.setAll(0, list._buffer);
     } else {
       for (var index = 0; index < list.length; index++) {
         if (list[index]) {
-          buffer[index >> 5] |= _SET_MASK[index & 31];
+          buffer[index >> _SHIFT] |= _SET_MASK[index & _OFFSET];
         }
       }
     }
@@ -64,7 +67,7 @@ class BitList extends ListBase<bool> with FixedLengthListMixin<bool>  {
   @override
   bool operator [] (int index) {
     if (0 <= index && index < length) {
-      return (_buffer[index >> 5] & _SET_MASK[index & 31]) != 0;
+      return (_buffer[index >> _SHIFT] & _SET_MASK[index & _OFFSET]) != 0;
     } else {
       throw new RangeError.range(index, 0, length);
     }
@@ -77,9 +80,9 @@ class BitList extends ListBase<bool> with FixedLengthListMixin<bool>  {
   void operator []= (int index, bool value) {
     if (0 <= index && index < length) {
       if (value) {
-        _buffer[index >> 5] |= _SET_MASK[index & 31];
+        _buffer[index >> _SHIFT] |= _SET_MASK[index & _OFFSET];
       } else {
-        _buffer[index >> 5] &= _CLR_MASK[index & 31];
+        _buffer[index >> _SHIFT] &= _CLR_MASK[index & _OFFSET];
       }
     } else {
       throw new RangeError.range(index, 0, length);
@@ -92,7 +95,7 @@ class BitList extends ListBase<bool> with FixedLengthListMixin<bool>  {
   int count([bool expected = true]) {
     int tally = 0;
     for (var index = 0; index < _length; index++) {
-      var actual = (_buffer[index >> 5] & _SET_MASK[index & 31]) != 0;
+      var actual = (_buffer[index >> _SHIFT] & _SET_MASK[index & _OFFSET]) != 0;
       if (actual == expected) {
         tally++;
       }
