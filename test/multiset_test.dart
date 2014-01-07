@@ -191,29 +191,59 @@ void main() {
       });
     });
     group('operator', () {
+      var first_list = ['a', 'b', 'c', 'c'];
+      var first_set = new Multiset.from(first_list);
+      var second_list = ['a', 'c', 'd', 'd'];
+      var second_set = new Multiset.from(second_list);
+      test('contains', () {
+        expect(first_set.contains('a'), isTrue);
+        expect(first_set.contains('b'), isTrue);
+        expect(first_set.contains('c'), isTrue);
+        expect(first_set.contains('d'), isFalse);
+      });
+      test('containsAll', () {
+        expect(first_set.containsAll(first_set), isTrue);
+        expect(first_set.containsAll(second_set), isFalse);
+        expect(first_set.containsAll(new Multiset()), isTrue);
+        expect(first_set.containsAll(new Multiset.from(['a', 'b', 'b'])), isFalse);
+        expect(first_set.containsAll(new Multiset.from(['a', 'b', 'd'])), isFalse);
+      });
+      test('containsAll (iterable)', () {
+        expect(first_set.containsAll(first_list), isTrue);
+        expect(first_set.containsAll(second_list), isFalse);
+        expect(first_set.containsAll([]), isTrue);
+        expect(first_set.containsAll(['a', 'b', 'b']), isFalse);
+        expect(first_set.containsAll(['a', 'b', 'd']), isFalse);
+      });
       test('intersection', () {
-        var first = new Multiset.from(['a', 'b', 'c', 'c']);
-        var second = new Multiset.from(['a', 'c', 'd', 'd']);
-        expect(first.intersection(second), unorderedEquals(['a', 'c']));
-        expect(first.intersection(second).distinct, unorderedEquals(['a', 'c']));
-        expect(second.intersection(first), unorderedEquals(['a', 'c']));
-        expect(second.intersection(first).distinct, unorderedEquals(['a', 'c']));
+        expect(first_set.intersection(second_set), unorderedEquals(['a', 'c']));
+        expect(first_set.intersection(second_set).distinct, unorderedEquals(['a', 'c']));
+        expect(second_set.intersection(first_set), unorderedEquals(['a', 'c']));
+        expect(second_set.intersection(first_set).distinct, unorderedEquals(['a', 'c']));
+      });
+      test('intersection (iterable)', () {
+        expect(first_set.intersection(second_list), unorderedEquals(['a', 'c']));
+        expect(second_set.intersection(first_list), unorderedEquals(['a', 'c']));
       });
       test('union', () {
-        var first = new Multiset.from(['a', 'b', 'c', 'c']);
-        var second = new Multiset.from(['a', 'c', 'd', 'd']);
-        expect(first.union(second), unorderedEquals(['a', 'a', 'b', 'c', 'c', 'c', 'd', 'd']));
-        expect(first.union(second).distinct, unorderedEquals(['a', 'b', 'c', 'd']));
-        expect(second.union(first), unorderedEquals(['a', 'a', 'b', 'c', 'c', 'c', 'd', 'd']));
-        expect(second.union(first).distinct, unorderedEquals(['a', 'b', 'c', 'd']));
+        expect(first_set.union(second_set), unorderedEquals(['a', 'a', 'b', 'c', 'c', 'c', 'd', 'd']));
+        expect(first_set.union(second_set).distinct, unorderedEquals(['a', 'b', 'c', 'd']));
+        expect(second_set.union(first_set), unorderedEquals(['a', 'a', 'b', 'c', 'c', 'c', 'd', 'd']));
+        expect(second_set.union(first_set).distinct, unorderedEquals(['a', 'b', 'c', 'd']));
+      });
+      test('union (iterable)', () {
+        expect(first_set.union(second_list), unorderedEquals(['a', 'a', 'b', 'c', 'c', 'c', 'd', 'd']));
+        expect(second_set.union(first_list), unorderedEquals(['a', 'a', 'b', 'c', 'c', 'c', 'd', 'd']));
       });
       test('difference', () {
-        var first = new Multiset.from(['a', 'b', 'c', 'c']);
-        var second = new Multiset.from(['a', 'c', 'd', 'd']);
-        expect(first.difference(second), unorderedEquals(['b', 'c']));
-        expect(first.difference(second).distinct, unorderedEquals(['b', 'c']));
-        expect(second.difference(first), unorderedEquals(['d', 'd']));
-        expect(second.difference(first).distinct, unorderedEquals(['d']));
+        expect(first_set.difference(second_set), unorderedEquals(['b', 'c']));
+        expect(first_set.difference(second_set).distinct, unorderedEquals(['b', 'c']));
+        expect(second_set.difference(first_set), unorderedEquals(['d', 'd']));
+        expect(second_set.difference(first_set).distinct, unorderedEquals(['d']));
+      });
+      test('difference (iterable)', () {
+        expect(first_set.difference(second_list), unorderedEquals(['b', 'c']));
+        expect(second_set.difference(first_list), unorderedEquals(['d', 'd']));
       });
     });
   });

@@ -132,28 +132,50 @@ class Multiset<E> extends IterableBase<E> {
   }
 
   /**
-   * Returns true if [element] is in the receiver.
+   * Returns `true` if [element] is in the receiver.
    */
   @override
   bool contains(Object element) => _container.containsKey(element);
 
   /**
+   * Returns `true` if all elements of [other] are contained in the receiver.
+   */
+  bool containsAll(Iterable<Object> other) {
+    if (other is Multiset) {
+      var multiset = other as Multiset;
+      for (var element in multiset.distinct) {
+        if (this[element] < multiset[element]) {
+          return false;
+        }
+      }
+      return true;
+    } else {
+      return containsAll(new Multiset.from(other));
+    }
+  }
+
+  /**
    * Returns a new [Multiset] with the elements that are in the receiver as well
    * as those in [other].
    */
-  Multiset<E> intersection(Multiset<Object> other) {
-    var result = new Multiset<E>();
-    for (var element in _container.keys) {
-      result.add(element, min(this[element], other[element]));
+  Multiset<E> intersection(Iterable<Object> other) {
+    if (other is Multiset) {
+      var result = new Multiset<E>();
+      var multiset = other as Multiset;
+      for (var element in multiset.distinct) {
+        result.add(element, min(this[element], multiset[element]));
+      }
+      return result;
+    } else {
+      return intersection(new Multiset.from(other));
     }
-    return result;
   }
 
   /**
    * Returns a new [Multiset] with all the elements of the receiver and those
    * in [other].
    */
-  Multiset<E> union(Multiset<E> other) {
+  Multiset<E> union(Iterable<E> other) {
     return new Multiset<E>.from(this)..addAll(other);
   }
 
@@ -161,7 +183,7 @@ class Multiset<E> extends IterableBase<E> {
    * Returns a new [Multiset] with all the elements of the receiver that are
    * not in [other].
    */
-  Multiset<E> difference(Multiset<E> other) {
+  Multiset<E> difference(Iterable<Object> other) {
     return new Multiset<E>.from(this)..removeAll(other);
   }
 
