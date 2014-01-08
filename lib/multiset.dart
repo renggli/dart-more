@@ -212,7 +212,7 @@ class Multiset<E> extends IterableBase<E> {
    * Iterator over the repeated elements of the reciever.
    */
   @override
-  Iterator<E> get iterator => new _MultisetIterator<E>(this._container, distinct.iterator);
+  Iterator<E> get iterator => new _MultisetIterator<E>(_container, distinct.iterator);
 
   /**
    * Returns a view on the distinct elements of the receiver.
