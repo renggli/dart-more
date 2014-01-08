@@ -52,7 +52,7 @@ class Multiset<E> extends IterableBase<E> {
     if (key == null) key = (element) => element;
     if (count == null) count = (element) => 1;
     for (var element in iterable) {
-      result.add(element(element), count(element));
+      result.add(key(element), count(element));
     }
     return result;
   }

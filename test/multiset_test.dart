@@ -50,6 +50,30 @@ void main() {
         expect(set, unorderedEquals(['a', 'a', 'a', 'b', 'b', 'c']));
         expect(set.distinct, unorderedEquals(['a', 'b', 'c']));
       });
+      test('generate', () {
+        var set = new Multiset.fromIterable(['a', 'a', 'a', 'b', 'b', 'c']);
+        expect(set, isNot(isEmpty));
+        expect(set, hasLength(6));
+        expect(set, unorderedEquals(['a', 'a', 'a', 'b', 'b', 'c']));
+        expect(set.distinct, unorderedEquals(['a', 'b', 'c']));
+      });
+      test('generate with key', () {
+        var set = new Multiset.fromIterable(['a', 'a', 'a', 'b', 'b', 'c'],
+            key: (String e) => e.codeUnitAt(0));
+        expect(set, isNot(isEmpty));
+        expect(set, hasLength(6));
+        expect(set, unorderedEquals([97, 97, 97, 98, 98, 99]));
+        expect(set.distinct, unorderedEquals([97, 98, 99]));
+      });
+      test('generate with count', () {
+        var set = new Multiset.fromIterable(['aaa', 'bb', 'c'],
+            key: (String e) => e.substring(0, 1),
+            count: (String e) => e.length);
+        expect(set, isNot(isEmpty));
+        expect(set, hasLength(6));
+        expect(set, unorderedEquals(['a', 'a', 'a', 'b', 'b', 'c']));
+        expect(set.distinct, unorderedEquals(['a', 'b', 'c']));
+      });
     });
     group('adding', () {
       test('zero', () {
