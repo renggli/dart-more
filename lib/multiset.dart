@@ -37,6 +37,27 @@ class Multiset<E> extends IterableBase<E> {
   }
 
   /**
+   * Creates a [Multiset] where the elements and their occurence count is
+   * computed from an [iterable].
+   *
+   * The [key] function specifies the actual elements added to the collection.
+   * The default implementation is the identity function. Repetitions are possible
+   * and merge into the previously added elements.
+   *
+   * The [count] function specifies the number of elements added to the
+   * collection. The default function returns the constant 1.
+   */
+  factory Multiset.fromIterable(Iterable iterable, {E key(element), int count(element)}) {
+    var result = new Multiset<E>();
+    if (key == null) key = (element) => element;
+    if (count == null) count = (element) => 1;
+    for (var element in iterable) {
+      result.add(element(element), count(element));
+    }
+    return result;
+  }
+
+  /**
    * The backing container of the set.
    */
   final Map<E, int> _container;
