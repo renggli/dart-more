@@ -26,7 +26,7 @@ class Multiset<E> extends IterableBase<E> {
   factory Multiset.identity() => new Multiset<E>._(new Map<E, int>.identity(), 0);
 
   /**
-   * Creates a multiset that contains all elements of [other].
+   * Creates a [Multiset] that contains all elements of [other].
    */
   factory Multiset.from(Iterable<E> other) {
     if (other is Multiset<E>) {
