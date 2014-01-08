@@ -162,7 +162,7 @@ class Multiset<E> extends IterableBase<E> {
     if (other is Multiset) {
       var result = new Multiset<E>();
       var multiset = other as Multiset;
-      for (var element in multiset.distinct) {
+      for (var element in distinct) {
         result.add(element, min(this[element], multiset[element]));
       }
       return result;
