@@ -154,4 +154,20 @@ class BitList extends ListBase<bool> with FixedLengthListMixin<bool>  {
     return result;
   }
 
+  /**
+   * Returns the difference of the receiver and [other].
+   *
+   * The new [BitList] has all the bits set that are set in the receiver,
+   * but not in [other]. The receiver and [other] need to have the same
+   * length, otherwise an exception is thrown.
+   */
+  BitList operator - (BitList other) {
+    assert(_length == other._length);
+    var result = new BitList(_length);
+    for (var i = 0; i < _buffer.length; i++) {
+      result._buffer[i] = _buffer[i] & ~other._buffer[i];
+    }
+    return result;
+  }
+
 }
