@@ -90,6 +90,18 @@ class BitList extends ListBase<bool> with FixedLengthListMixin<bool>  {
   }
 
   /**
+   * Sets the bit at the specified [index] to the complement of its
+   * current value.
+   */
+  void flip(int index) {
+    if (0 <= index && index < length) {
+      _buffer[index >> _SHIFT] ^= _SET_MASK[index & _OFFSET];
+    } else {
+      throw new RangeError.range(index, 0, length);
+    }
+  }
+
+  /**
    * Counts the number of bits that are set to [expected].
    */
   int count([bool expected = true]) {
