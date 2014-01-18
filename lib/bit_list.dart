@@ -116,7 +116,9 @@ class BitList extends ListBase<bool> with FixedLengthListMixin<bool>  {
   }
 
   /**
-   * Returns a new [BitList] with all the bits of the receiver inverted.
+   * Returns the complement of the receiver.
+   *
+   * The new [BitList] has all the bits of the receiver inverted.
    */
   BitList operator ~ () {
     var result = new BitList(_length);
@@ -127,9 +129,11 @@ class BitList extends ListBase<bool> with FixedLengthListMixin<bool>  {
   }
 
   /**
-   * Returns a new [BitList] with all the bits set that are set in the
-   * receiver and in [other]. The receiver and [other] need to have
-   * the same length, otherwise an exception is thrown.
+   * Returns the intersection of the receiver and [other].
+   *
+   * The new [BitList] has all the bits set that are set in the receiver
+   * and in [other]. The receiver and [other] need to have the same length,
+   * otherwise an exception is thrown.
    */
   BitList operator & (BitList other) {
     assert(_length == other._length);
@@ -141,9 +145,11 @@ class BitList extends ListBase<bool> with FixedLengthListMixin<bool>  {
   }
 
   /**
-   * Returns a new [BitList] with all the bits set that are either set in
-   * the receiver or in [other]. The receiver and [other] need to have
-   * the same length, otherwise an exception is thrown.
+   * Returns the union of the receiver and [other].
+   *
+   * The new [BitList] has all the bits set that are either set in the
+   * receiver or in [other]. The receiver and [other] need to have the
+   * same length, otherwise an exception is thrown.
    */
   BitList operator | (BitList other) {
     assert(_length == other._length);
