@@ -16,8 +16,8 @@ List<bool> randomList(int seed, int length) {
 }
 
 void main() {
-  group('bit list', () {
-    group('construct', () {
+  group('bitlist', () {
+    group('construction', () {
       test('empty', () {
         var list = new BitList(0);
         expect(list, isEmpty);
@@ -46,7 +46,7 @@ void main() {
           }
         }
       });
-      test('conversion', () {
+      test('convert', () {
         for (var len = 0; len < 100; len++) {
           var source = randomList(457 * len, len);
           var target = new BitList.fromList(source);
@@ -56,7 +56,7 @@ void main() {
         }
       });
     });
-    group('accessing', () {
+    group('accessors', () {
       test('reading', () {
         for (var i = 0; i < 100; i++) {
           var list = new BitList(i);
@@ -90,7 +90,11 @@ void main() {
       test('counting', () {
         for (var len = 0; len < 100; len++) {
           var list = new BitList.fromList(randomList(823 * len, len));
-          expect(list.count(true) + list.count(false), list.length);
+          var trueCount = list.count(true);
+          var falseCount = list.count(false);
+          expect(trueCount + falseCount, list.length);
+          expect(trueCount, list.where((b) => b == true).length);
+          expect(falseCount, list.where((b) => b == false).length);
         }
       });
     });
@@ -128,6 +132,42 @@ void main() {
           expect(target[i], source1[i] && !source2[i]);
         }
         expect(target, source1 & ~source2);
+      });
+      test('shift-left', () {
+        for (var len = 0; len < 100; len++) {
+          var source = new BitList.fromList(randomList(836 * len, len));
+          for (var shift = 0; shift <= len + 10; shift++) {
+            var target = source << shift;
+            if (shift == 0) {
+              expect(target, source);
+            } else if (shift >= len) {
+              expect(target.any((x) => x), isFalse);
+            } else {
+              for (var i = shift; i < source.length; i++) {
+                expect(target[i], source[i - shift]);
+              }
+            }
+            expect(() => source << -1 - shift, throwsArgumentError);
+          }
+        }
+      });
+      test('shift-right', () {
+        for (var len = 0; len < 100; len++) {
+          var source = new BitList.fromList(randomList(963 * len, len));
+          for (var shift = 0; shift <= len + 10; shift++) {
+            var target = source >> shift;
+            if (shift == 0) {
+              expect(target, source);
+            } else if (shift >= len) {
+              expect(target.any((x) => x), isFalse);
+            } else {
+              for (var i = 0; i < source.length - shift; i++) {
+                expect(target[i], source[i + shift]);
+              }
+            }
+            expect(() => source << -1 - shift, throwsArgumentError);
+          }
+        }
       });
     });
     test('fixed length', () {

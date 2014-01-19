@@ -14,6 +14,7 @@ class BitList extends ListBase<bool> with FixedLengthListMixin<bool>  {
   // constants specific to mapping bits into a [Uint32List]
   static final int _SHIFT = 5;
   static final int _OFFSET = 31;
+  static final int _MASK = 0xFFFFFFFF;
   static final _SET_MASK = new Uint32List.fromList([1, 2, 4, 8,
       16, 32, 64, 128, 256, 512, 1024, 2048, 4096, 8192, 16384,
       32768, 65536, 131072, 262144, 524288, 1048576, 2097152,
@@ -172,6 +173,66 @@ class BitList extends ListBase<bool> with FixedLengthListMixin<bool>  {
     var result = new BitList(_length);
     for (var i = 0; i < _buffer.length; i++) {
       result._buffer[i] = _buffer[i] & ~other._buffer[i];
+    }
+    return result;
+  }
+
+  /**
+   * Returns the the bits of the receiver shifted to the left by [amount].
+   */
+  BitList operator << (int amount) {
+    if (amount < 0) {
+      throw new ArgumentError(amount);
+    }
+    if (amount == 0 || _length == 0) {
+      return new BitList.fromList(this);
+    }
+    var shift = amount >> _SHIFT;
+    var offset = amount & _OFFSET;
+    var result = new BitList(_length);
+    if (offset == 0) {
+      for (var i = shift; i < _buffer.length; i++) {
+        result._buffer[i] = _buffer[i - shift];
+      }
+    } else {
+      var suboffset = 1 + _OFFSET - offset;
+      for (var i = shift + 1; i < _buffer.length; i++) {
+        result._buffer[i] = ((_buffer[i - shift] << offset) & _MASK)
+                          | ((_buffer[i - shift - 1] >> suboffset) & _MASK);
+      }
+      if (shift < _buffer.length) {
+        result._buffer[shift] = (_buffer[0] << offset) & _MASK;
+      }
+    }
+    return result;
+  }
+
+  /**
+   * Returns the the bits of the receiver shifted to the right by [amount].
+   */
+  BitList operator >> (int amount) {
+    if (amount < 0) {
+      throw new ArgumentError(amount);
+    }
+    if (amount == 0 || _length == 0) {
+      return new BitList.fromList(this);
+    }
+    var shift = amount >> _SHIFT;
+    var offset = amount & _OFFSET;
+    var result = new BitList(_length);
+    if (offset == 0) {
+      for (var i = 0; i < _buffer.length - shift; i++) {
+        result._buffer[i] = _buffer[i + shift];
+      }
+    } else {
+      var suboffset = 1 + _OFFSET - offset;
+      for (var i = 0; i < _buffer.length - shift - 1; i++) {
+        result._buffer[i] = ((_buffer[i + shift] >> offset) & _MASK)
+                          | ((_buffer[i + shift + 1] << suboffset) & _MASK);
+      }
+      if (0 <= _buffer.length - shift - 1) {
+        result._buffer[_buffer.length - shift - 1] = (_buffer[_buffer.length - 1] >> offset) & _MASK;
+      }
     }
     return result;
   }
