@@ -137,7 +137,9 @@ class BitList extends ListBase<bool> with FixedLengthListMixin<bool>  {
    * otherwise an exception is thrown.
    */
   BitList operator & (BitList other) {
-    assert(_length == other._length);
+    if (_length != other._length) {
+      throw new ArgumentError('Expected list with length ${this.length}, but got ${other.length}');
+    }
     var result = new BitList(_length);
     for (var i = 0; i < _buffer.length; i++) {
       result._buffer[i] = _buffer[i] & other._buffer[i];
@@ -153,7 +155,9 @@ class BitList extends ListBase<bool> with FixedLengthListMixin<bool>  {
    * same length, otherwise an exception is thrown.
    */
   BitList operator | (BitList other) {
-    assert(_length == other._length);
+    if (_length != other._length) {
+      throw new ArgumentError('Expected list with length ${this.length}, but got ${other.length}');
+    }
     var result = new BitList(_length);
     for (var i = 0; i < _buffer.length; i++) {
       result._buffer[i] = _buffer[i] | other._buffer[i];
@@ -169,7 +173,9 @@ class BitList extends ListBase<bool> with FixedLengthListMixin<bool>  {
    * length, otherwise an exception is thrown.
    */
   BitList operator - (BitList other) {
-    assert(_length == other._length);
+    if (_length != other._length) {
+      throw new ArgumentError('Expected list with length ${this.length}, but got ${other.length}');
+    }
     var result = new BitList(_length);
     for (var i = 0; i < _buffer.length; i++) {
       result._buffer[i] = _buffer[i] & ~other._buffer[i];
@@ -182,7 +188,7 @@ class BitList extends ListBase<bool> with FixedLengthListMixin<bool>  {
    */
   BitList operator << (int amount) {
     if (amount < 0) {
-      throw new ArgumentError(amount);
+      throw new ArgumentError('Unable to shift by $amount');
     }
     if (amount == 0 || _length == 0) {
       return new BitList.fromList(this);
@@ -212,7 +218,7 @@ class BitList extends ListBase<bool> with FixedLengthListMixin<bool>  {
    */
   BitList operator >> (int amount) {
     if (amount < 0) {
-      throw new ArgumentError(amount);
+      throw new ArgumentError('Unable to shift by $amount');
     }
     if (amount == 0 || _length == 0) {
       return new BitList.fromList(this);
