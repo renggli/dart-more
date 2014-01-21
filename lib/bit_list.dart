@@ -31,25 +31,30 @@ class BitList extends ListBase<bool> with FixedLengthListMixin<bool>  {
    * Constructs a bit list of the given [length].
    */
   factory BitList(int length) {
-    return new BitList._(new Uint32List((length + _OFFSET) >> _SHIFT), length);
+    var buffer = new Uint32List((length + _OFFSET) >> _SHIFT);
+    return new BitList._(buffer, length);
   }
 
   /**
-   * Constucts a new list from a given [BitList] or list of booleans.
+   * Constucts a new list from a given [Iterable] of booleans.
    */
-  factory BitList.fromList(List<bool> list) {
-    var buffer = new Uint32List((list.length + _OFFSET) >> _SHIFT);
-    if (list is BitList) {
-      buffer.setAll(0, list._buffer);
+  factory BitList.from(Iterable<bool> other) {
+    var length = other.length;
+    var buffer = new Uint32List((length + _OFFSET) >> _SHIFT);
+    if (other is BitList) {
+      buffer.setAll(0, other._buffer);
     } else {
-      for (var index = 0; index < list.length; index++) {
-        if (list[index]) {
+      for (var index = 0, iterator = other.iterator; iterator.moveNext(); index++) {
+        if (iterator.current) {
           buffer[index >> _SHIFT] |= _SET_MASK[index & _OFFSET];
         }
       }
     }
-    return new BitList._(buffer, list.length);
+    return new BitList._(buffer, length);
   }
+
+  @deprecated
+  factory BitList.fromList(List<bool> other) => new BitList.from(other);
 
   final Uint32List _buffer;
   final int _length;
@@ -192,7 +197,7 @@ class BitList extends ListBase<bool> with FixedLengthListMixin<bool>  {
       throw new ArgumentError('Unable to left-shift by $amount');
     }
     if (amount == 0 || _length == 0) {
-      return new BitList.fromList(this);
+      return new BitList.from(this);
     }
     var shift = amount >> _SHIFT;
     var offset = amount & _OFFSET;
@@ -223,7 +228,7 @@ class BitList extends ListBase<bool> with FixedLengthListMixin<bool>  {
       throw new ArgumentError('Unable to right-shift by $amount');
     }
     if (amount == 0 || _length == 0) {
-      return new BitList.fromList(this);
+      return new BitList.from(this);
     }
     var shift = amount >> _SHIFT;
     var offset = amount & _OFFSET;

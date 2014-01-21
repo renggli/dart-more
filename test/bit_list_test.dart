@@ -18,41 +18,46 @@ List<bool> randomList(int seed, int length) {
 void main() {
   group('bitlist', () {
     group('construction', () {
-      test('empty', () {
-        var list = new BitList(0);
-        expect(list, isEmpty);
-        expect(list, []);
+      test('without elements', () {
+        var target = new BitList(0);
+        expect(target, isEmpty);
+        expect(target, hasLength(0));
+        expect(target, []);
       });
-      test('tiny', () {
-        var list = new BitList(1);
-        expect(list, isNot(isEmpty));
-        expect(list, hasLength(1));
-        expect(list, [false]);
-        list[0] = true;
-        expect(list, [true]);
-        list[0] = false;
-        expect(list, [false]);
+      test('with 1 element', () {
+        var target = new BitList(1);
+        expect(target, isNot(isEmpty));
+        expect(target, hasLength(1));
+        expect(target, [false]);
       });
-      test('long', () {
+      test('with 100 elements', () {
         var target = new BitList(100);
+        expect(target, isNot(isEmpty));
         expect(target, hasLength(100));
-        for (var i = 0; i < 100; i++) {
-          var source = randomList(311 * i, target.length);
-          for (var j = 0; j < source.length; j++) {
-            target[j] = source[j];
-          }
-          for (var j = 0; j < source.length; j++) {
-            expect(source[j], target[j]);
-          }
-        }
+        expect(target.every((value) => value == false), isTrue);
       });
-      test('convert', () {
+      test('from List', () {
         for (var len = 0; len < 100; len++) {
-          var source = randomList(457 * len, len);
-          var target = new BitList.fromList(source);
+          var source = new List.from(randomList(457 * len, len));
+          var target = new BitList.from(source);
           expect(source, target);
           expect(source, target.toList());
-          expect(source, new BitList.fromList(target));
+        }
+      });
+      test('from Set', () {
+        for (var len = 0; len < 100; len++) {
+          var source = new Set.from(randomList(827 * len, len));
+          var target = new BitList.from(source);
+          expect(source, target);
+          expect(source, target.toSet());
+        }
+      });
+      test('from BitList', () {
+        for (var len = 0; len < 10; len++) {
+          var source = new Set.from(randomList(287 * len, len));
+          var target = new BitList.from(source);
+          expect(source, target);
+          expect(target, source);
         }
       });
     });
@@ -73,23 +78,26 @@ void main() {
           expect(() => list[-1] = true, throwsRangeError);
           for (var j = 0; j < i; j++) {
             expect(() => list[j] = true, returnsNormally);
+            expect(list[j], isTrue);
           }
           expect(() => list[i] = true, throwsRangeError);
         }
       });
       test('flipping', () {
-        var source = new BitList.fromList(randomList(927, 100));
-        var target = ~source;
-        for (var i = 0; i < source.length; i++) {
-          var before = source[i];
-          source.flip(i);
-          expect(!before, source[i]);
+        for (var len = 0; len < 100; len++) {
+          var source = new BitList.from(randomList(147 * len, 100));
+          var target = ~source;
+          for (var i = 0; i < source.length; i++) {
+            var before = source[i];
+            source.flip(i);
+            expect(!before, source[i]);
+          }
+          expect(target, source);
         }
-        expect(target, source);
       });
       test('counting', () {
         for (var len = 0; len < 100; len++) {
-          var list = new BitList.fromList(randomList(823 * len, len));
+          var list = new BitList.from(randomList(823 * len, len));
           var trueCount = list.count(true);
           var falseCount = list.count(false);
           expect(trueCount + falseCount, list.length);
@@ -100,15 +108,15 @@ void main() {
     });
     group('operators', () {
       test('complement', () {
-        var source = new BitList.fromList(randomList(702, 100));
+        var source = new BitList.from(randomList(702, 100));
         var target = ~source;
         for (var i = 0; i < target.length; i++) {
           expect(target[i], !source[i]);
         }
       });
       test('intersection', () {
-        var source1 = new BitList.fromList(randomList(439, 100));
-        var source2 = new BitList.fromList(randomList(902, 100));
+        var source1 = new BitList.from(randomList(439, 100));
+        var source2 = new BitList.from(randomList(902, 100));
         var target = source1 & source2;
         for (var i = 0; i < target.length; i++) {
           expect(target[i], source1[i] && source2[i]);
@@ -116,8 +124,8 @@ void main() {
         expect(target, source2 & source1);
       });
       test('union', () {
-        var source1 = new BitList.fromList(randomList(817, 100));
-        var source2 = new BitList.fromList(randomList(858, 100));
+        var source1 = new BitList.from(randomList(817, 100));
+        var source2 = new BitList.from(randomList(858, 100));
         var target = source1 | source2;
         for (var i = 0; i < target.length; i++) {
           expect(target[i], source1[i] || source2[i]);
@@ -125,8 +133,8 @@ void main() {
         expect(target, source2 | source1);
       });
       test('difference', () {
-        var source1 = new BitList.fromList(randomList(364, 100));
-        var source2 = new BitList.fromList(randomList(243, 100));
+        var source1 = new BitList.from(randomList(364, 100));
+        var source2 = new BitList.from(randomList(243, 100));
         var target = source1 - source2;
         for (var i = 0; i < target.length; i++) {
           expect(target[i], source1[i] && !source2[i]);
@@ -135,7 +143,7 @@ void main() {
       });
       test('shift-left', () {
         for (var len = 0; len < 100; len++) {
-          var source = new BitList.fromList(randomList(836 * len, len));
+          var source = new BitList.from(randomList(836 * len, len));
           for (var shift = 0; shift <= len + 10; shift++) {
             var target = source << shift;
             if (shift == 0) {
@@ -153,7 +161,7 @@ void main() {
       });
       test('shift-right', () {
         for (var len = 0; len < 100; len++) {
-          var source = new BitList.fromList(randomList(963 * len, len));
+          var source = new BitList.from(randomList(963 * len, len));
           for (var shift = 0; shift <= len + 10; shift++) {
             var target = source >> shift;
             if (shift == 0) {
