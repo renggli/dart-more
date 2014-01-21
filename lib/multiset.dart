@@ -162,7 +162,11 @@ class Multiset<E> extends IterableBase<E> {
    * Returns `true` if all elements of [other] are contained in the receiver.
    */
   bool containsAll(Iterable<Object> other) {
-    if (other is Multiset) {
+    if (other.isEmpty) {
+      return true;
+    } else if (other.length == 1) {
+      return contains(other.first);
+    } if (other is Multiset) {
       var multiset = other as Multiset;
       for (var element in multiset.distinct) {
         if (this[element] < multiset[element]) {
