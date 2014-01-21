@@ -184,11 +184,12 @@ class BitList extends ListBase<bool> with FixedLengthListMixin<bool>  {
   }
 
   /**
-   * Returns the the bits of the receiver shifted to the left by [amount].
+   * Returns a [BitList] of the same length, but with the bits of the receiver shifted
+   * to the left by [amount]. Throws an [ArgumentError] if [amount] is negative.
    */
   BitList operator << (int amount) {
     if (amount < 0) {
-      throw new ArgumentError('Unable to shift by $amount');
+      throw new ArgumentError('Unable to left-shift by $amount');
     }
     if (amount == 0 || _length == 0) {
       return new BitList.fromList(this);
@@ -201,10 +202,10 @@ class BitList extends ListBase<bool> with FixedLengthListMixin<bool>  {
         result._buffer[i] = _buffer[i - shift];
       }
     } else {
-      var suboffset = 1 + _OFFSET - offset;
+      var other_offset = 1 + _OFFSET - offset;
       for (var i = shift + 1; i < _buffer.length; i++) {
         result._buffer[i] = ((_buffer[i - shift] << offset) & _MASK)
-                          | ((_buffer[i - shift - 1] >> suboffset) & _MASK);
+                          | ((_buffer[i - shift - 1] >> other_offset) & _MASK);
       }
       if (shift < _buffer.length) {
         result._buffer[shift] = (_buffer[0] << offset) & _MASK;
@@ -214,11 +215,12 @@ class BitList extends ListBase<bool> with FixedLengthListMixin<bool>  {
   }
 
   /**
-   * Returns the the bits of the receiver shifted to the right by [amount].
+   * Returns a [BitList] of the same length, but with the bits of the receiver shifted
+   * to the right by [amount]. Throws an [ArgumentError] if [amount] is negative.
    */
   BitList operator >> (int amount) {
     if (amount < 0) {
-      throw new ArgumentError('Unable to shift by $amount');
+      throw new ArgumentError('Unable to right-shift by $amount');
     }
     if (amount == 0 || _length == 0) {
       return new BitList.fromList(this);
@@ -231,13 +233,14 @@ class BitList extends ListBase<bool> with FixedLengthListMixin<bool>  {
         result._buffer[i] = _buffer[i + shift];
       }
     } else {
-      var suboffset = 1 + _OFFSET - offset;
-      for (var i = 0; i < _buffer.length - shift - 1; i++) {
+      var last = _buffer.length - shift - 1;
+      var other_offset = 1 + _OFFSET - offset;
+      for (var i = 0; i < last; i++) {
         result._buffer[i] = ((_buffer[i + shift] >> offset) & _MASK)
-                          | ((_buffer[i + shift + 1] << suboffset) & _MASK);
+                          | ((_buffer[i + shift + 1] << other_offset) & _MASK);
       }
-      if (0 <= _buffer.length - shift - 1) {
-        result._buffer[_buffer.length - shift - 1] = (_buffer[_buffer.length - 1] >> offset) & _MASK;
+      if (0 <= last) {
+        result._buffer[last] = (_buffer[_buffer.length - 1] >> offset) & _MASK;
       }
     }
     return result;
