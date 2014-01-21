@@ -144,7 +144,7 @@ abstract class Ordering<T> {
   }
 
   /**
-   * Returns a sorted copy of provided [iterable].
+   * Returns a sorted copy of the provided [iterable].
    */
   List<T> sorted(Iterable<T> iterable) {
     var list = new List.from(iterable, growable: false);
