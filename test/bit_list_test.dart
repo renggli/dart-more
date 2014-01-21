@@ -24,17 +24,13 @@ void main() {
         expect(target, hasLength(0));
         expect(target, []);
       });
-      test('with 1 element', () {
-        var target = new BitList(1);
-        expect(target, isNot(isEmpty));
-        expect(target, hasLength(1));
-        expect(target, [false]);
-      });
-      test('with 100 elements', () {
-        var target = new BitList(100);
-        expect(target, isNot(isEmpty));
-        expect(target, hasLength(100));
-        expect(target.every((value) => value == false), isTrue);
+      test('with elements', () {
+        for (var len = 1; len < 100; len++) {
+          var target = new BitList(len);
+          expect(target, isNot(isEmpty));
+          expect(target, hasLength(len));
+          expect(target.every((value) => value == false), isTrue);
+        }
       });
       test('from List', () {
         for (var len = 0; len < 100; len++) {
