@@ -29,7 +29,7 @@ void main() {
           var target = new BitList(len);
           expect(target, isNot(isEmpty));
           expect(target, hasLength(len));
-          expect(target.every((value) => value == false), isTrue);
+          expect(target, everyElement(isFalse));
         }
       });
       test('from List', () {
@@ -59,24 +59,27 @@ void main() {
     });
     group('accessors', () {
       test('reading', () {
-        for (var i = 0; i < 100; i++) {
-          var list = new BitList(i);
-          expect(() => list[-1], throwsRangeError);
-          for (var j = 0; j < i; j++) {
-            expect(() => list[j], returnsNormally);
+        for (var len = 0; len < 100; len++) {
+          var source = randomList(389 * len, len);
+          var target = new BitList.from(source);
+          expect(() => target[-1], throwsRangeError);
+          for (var i = 0; i < len; i++) {
+            expect(target[i], source[i]);
           }
-          expect(() => list[i], throwsRangeError);
+          expect(() => target[len], throwsRangeError);
         }
       });
       test('writing', () {
-        for (var i = 0; i < 100; i++) {
-          var list = new BitList(i);
-          expect(() => list[-1] = true, throwsRangeError);
-          for (var j = 0; j < i; j++) {
-            expect(() => list[j] = true, returnsNormally);
-            expect(list[j], isTrue);
+        for (var len = 0; len < 100; len++) {
+          var source = randomList(389 * len, len);
+          var target = new BitList(len);
+          expect(() => target[-1] = true, throwsRangeError);
+          for (var i = 0; i < len; i++) {
+            target[i] = source[i];
+            expect(target.sublist(0, i), source.sublist(0, i));
+            expect(target.sublist(i + 1), everyElement(isFalse));
           }
-          expect(() => list[i] = true, throwsRangeError);
+          expect(() => target[len] = true, throwsRangeError);
         }
       });
       test('flipping', () {
@@ -145,7 +148,7 @@ void main() {
             if (shift == 0) {
               expect(target, source);
             } else if (shift >= len) {
-              expect(target.any((x) => x), isFalse);
+              expect(target, everyElement(isFalse));
             } else {
               for (var i = shift; i < source.length; i++) {
                 expect(target[i], source[i - shift]);
@@ -163,7 +166,7 @@ void main() {
             if (shift == 0) {
               expect(target, source);
             } else if (shift >= len) {
-              expect(target.any((x) => x), isFalse);
+              expect(target, everyElement(isFalse));
             } else {
               for (var i = 0; i < source.length - shift; i++) {
                 expect(target[i], source[i + shift]);
