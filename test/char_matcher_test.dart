@@ -18,37 +18,37 @@ void main() {
   group('char matcher', () {
     group('class', () {
       test('any', () {
-        verify(new CharMatcher.any(), 'abc123!@#', '');
+        verify(new CharMatcher.any(), 'abc123_!@#', '');
       });
       test('none', () {
-        verify(new CharMatcher.none(), '', 'abc123!@# ');
+        verify(new CharMatcher.none(), '', 'abc123_!@# ');
       });
       test('isChar', () {
-        verify(new CharMatcher.isChar('*'), '*', 'abc123!@# ');
+        verify(new CharMatcher.isChar('*'), '*', 'abc123_!@# ');
       });
       test('inRange', () {
-        verify(new CharMatcher.inRange('a', 'c'), 'abc', 'def123!@# ');
+        verify(new CharMatcher.inRange('a', 'c'), 'abc', 'def123_!@# ');
       });
       test('ascii', () {
-        verify(new CharMatcher.ascii(), 'def123!@#', '\u2665');
+        verify(new CharMatcher.ascii(), 'def123_!@#', '\u2665');
       });
       test('digit', () {
-        verify(new CharMatcher.digit(), '0123456789', 'abc!@# ');
+        verify(new CharMatcher.digit(), '0123456789', 'abc_!@# ');
       });
       test('letter', () {
-        verify(new CharMatcher.letter(), 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ', '123!@# ');
+        verify(new CharMatcher.letter(), 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ', '123_!@# ');
       });
       test('lowerCaseLetter', () {
-        verify(new CharMatcher.lowerCaseLetter(), 'abcdefghijklmnopqrstuvwxyz', 'ABCDEFGHIJKLMNOPQRSTUVWXYZ123!@# ');
+        verify(new CharMatcher.lowerCaseLetter(), 'abcdefghijklmnopqrstuvwxyz', 'ABCDEFGHIJKLMNOPQRSTUVWXYZ123_!@# ');
       });
       test('upperCaseLetter', () {
-        verify(new CharMatcher.upperCaseLetter(), 'ABCDEFGHIJKLMNOPQRSTUVWXYZ', 'abcdefghijklmnopqrstuvwxyz123!@# ');
+        verify(new CharMatcher.upperCaseLetter(), 'ABCDEFGHIJKLMNOPQRSTUVWXYZ', 'abcdefghijklmnopqrstuvwxyz123_!@# ');
       });
       test('letterOrDigit', () {
-        verify(new CharMatcher.letterOrDigit(), 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ01234567890', '!@# ');
+        verify(new CharMatcher.letterOrDigit(), 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ01234567890_', '!@# ');
       });
       test('whitespace', () {
-        verify(new CharMatcher.whitespace(), ' \n\t', 'abcABC!@#');
+        verify(new CharMatcher.whitespace(), ' \n\t', 'abcABC_!@#');
       });
     });
     group('operators', () {
