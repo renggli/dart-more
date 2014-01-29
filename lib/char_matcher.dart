@@ -97,7 +97,7 @@ abstract class CharMatcher {
   bool call(int value);
 
   /**
-   * Returns `true` if the [sequence] contains only matching  characters.
+   * Returns `true` if the [sequence] contains only matching characters.
    */
   bool everyOf(String sequence) {
     return sequence.codeUnits.every(this);
