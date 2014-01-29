@@ -288,7 +288,7 @@ class _DisjunctiveCharMatcher extends CharMatcher {
 
 }
 
-final CharMatcher _ANY = const _AnyCharMatcher();
+const CharMatcher _ANY = const _AnyCharMatcher();
 
 class _AnyCharMatcher extends CharMatcher {
 
@@ -308,7 +308,7 @@ class _AnyCharMatcher extends CharMatcher {
 
 }
 
-final CharMatcher _NONE = const _NoneCharMatcher();
+const CharMatcher _NONE = const _NoneCharMatcher();
 
 class _NoneCharMatcher extends CharMatcher {
 
@@ -358,7 +358,7 @@ class _RangeCharMatcher extends CharMatcher {
 
 }
 
-final CharMatcher _ASCII = const _AsciiCharMatcher();
+const CharMatcher _ASCII = const _AsciiCharMatcher();
 
 class _AsciiCharMatcher extends CharMatcher {
 
@@ -372,7 +372,7 @@ class _AsciiCharMatcher extends CharMatcher {
 
 }
 
-final CharMatcher _DIGIT = const _DigitCharMatcher();
+const CharMatcher _DIGIT = const _DigitCharMatcher();
 
 class _DigitCharMatcher extends CharMatcher {
 
@@ -386,7 +386,7 @@ class _DigitCharMatcher extends CharMatcher {
 
 }
 
-final CharMatcher _LETTER = const _LetterCharMatcher();
+const CharMatcher _LETTER = const _LetterCharMatcher();
 
 class _LetterCharMatcher extends CharMatcher {
 
@@ -401,7 +401,7 @@ class _LetterCharMatcher extends CharMatcher {
 
 }
 
-final CharMatcher _LOWER_CASE_LETTER = const _LowerCaseLetterCharMatcher();
+const CharMatcher _LOWER_CASE_LETTER = const _LowerCaseLetterCharMatcher();
 
 class _LowerCaseLetterCharMatcher extends CharMatcher {
 
@@ -415,7 +415,7 @@ class _LowerCaseLetterCharMatcher extends CharMatcher {
 
 }
 
-final CharMatcher _UPPER_CASE_LETTER = const _UpperCaseLetterCharMatcher();
+const CharMatcher _UPPER_CASE_LETTER = const _UpperCaseLetterCharMatcher();
 
 class _UpperCaseLetterCharMatcher extends CharMatcher {
 
@@ -429,7 +429,7 @@ class _UpperCaseLetterCharMatcher extends CharMatcher {
 
 }
 
-final CharMatcher _LETTER_OR_DIGIT = const _LetterOrDigitCharMatcher();
+const CharMatcher _LETTER_OR_DIGIT = const _LetterOrDigitCharMatcher();
 
 class _LetterOrDigitCharMatcher extends CharMatcher {
 
@@ -445,7 +445,7 @@ class _LetterOrDigitCharMatcher extends CharMatcher {
 
 }
 
-final CharMatcher _WHITESPACE = const _WhitespaceCharMatcher();
+const CharMatcher _WHITESPACE = const _WhitespaceCharMatcher();
 
 class _WhitespaceCharMatcher extends CharMatcher {
 

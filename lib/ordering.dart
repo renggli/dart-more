@@ -44,7 +44,7 @@ abstract class Ordering<T> {
    */
   factory Ordering.natural() => _natural;
 
-  static final _natural = const _NaturalOrdering();
+  static const _natural = const _NaturalOrdering();
 
   /**
    * Returns an ordering based on a [comparator] function.
