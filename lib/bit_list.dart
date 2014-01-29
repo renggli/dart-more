@@ -12,9 +12,9 @@ import 'src/utils.dart';
 class BitList extends ListBase<bool> with FixedLengthListMixin<bool>  {
 
   // constants specific to mapping bits into a [Uint32List]
-  static final int _SHIFT = 5;
-  static final int _OFFSET = 31;
-  static final int _MASK = 0xFFFFFFFF;
+  static const int _SHIFT = 5;
+  static const int _OFFSET = 31;
+  static const int _MASK = 0xffffffff;
   static final _SET_MASK = new Uint32List.fromList([1, 2, 4, 8,
       16, 32, 64, 128, 256, 512, 1024, 2048, 4096, 8192, 16384,
       32768, 65536, 131072, 262144, 524288, 1048576, 2097152,
