@@ -67,11 +67,11 @@ void main() {
         expect(letter | any, equals(any));
         expect(none | letter, equals(letter));
         expect(letter | none, equals(letter));
-        verify(letter | digit, 'abc123', '!@# ');
-        verify(digit | letter, 'abc123', '!@# ');
-        verify(letter | digit | whitespace, 'abc123 ', '!@#');
-        verify(letter | (digit | whitespace), 'abc123 ', '!@#');
-        verify((letter | digit) | whitespace, 'abc123 ', '!@#');
+        verify(letter | digit, 'abc123', '_!@# ');
+        verify(digit | letter, 'abc123', '_!@# ');
+        verify(letter | digit | whitespace, 'abc123 ', '_!@#');
+        verify(letter | (digit | whitespace), 'abc123 ', '_!@#');
+        verify((letter | digit) | whitespace, 'abc123 ', '_!@#');
       });
       test('toString', () {
         expect(new CharMatcher.any().toString(), 'any()');
