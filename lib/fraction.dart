@@ -15,12 +15,12 @@ class Fraction implements Comparable<Fraction> {
   /**
    * The neutral additive element, i.e. `0`.
    */
-  static final Fraction ZERO = const Fraction._(0, 1);
+  static const Fraction ZERO = const Fraction._(0, 1);
 
   /**
    * The neutral multiplicative element, i.e. `1`.
    */
-  static final Fraction ONE = const Fraction._(1, 1);
+  static const Fraction ONE = const Fraction._(1, 1);
 
   /**
    * Constructs a fraction from a [numerator] and an optional [denominator].
@@ -29,7 +29,7 @@ class Fraction implements Comparable<Fraction> {
     if (numerator == null || denominator == null) {
       throw new ArgumentError('Null numerator or denominator passed to fraction.');
     }
-    if (denominator == 0.0) {
+    if (denominator == 0) {
       throw new ArgumentError('Denominator needs to be non-zero.');
     }
     var d = int_math.gcd(numerator, denominator).abs();
