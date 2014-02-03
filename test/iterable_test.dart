@@ -54,10 +54,14 @@ void main() {
         expect(plenty.toList(), ['M', 'o', 'r', 'e', ' ', 'D', 'a', 'r', 't']);
         expect(empty.toSet(), new Set());
         expect(plenty.toSet(), new Set.from(['M', 'o', 'r', 'e', ' ', 'D', 'a', 't']));
+        expect(empty.toString(), '');
+        expect(plenty.toString(), 'More Dart');
       });
       test('read-only', () {
         expect(() => plenty[0] = 'a', throwsUnsupportedError);
         expect(() => plenty.length = 10, throwsUnsupportedError);
+        expect(() => plenty.add('a'), throwsUnsupportedError);
+        expect(() => plenty.remove('a'), throwsUnsupportedError);
       });
     });
     group('mutableString', () {
@@ -112,6 +116,8 @@ void main() {
         expect(plenty.toList(), ['M', 'o', 'r', 'e', ' ', 'D', 'a', 'r', 't']);
         expect(empty.toSet(), new Set());
         expect(plenty.toSet(), new Set.from(['M', 'o', 'r', 'e', ' ', 'D', 'a', 't']));
+        expect(empty.toString(), '');
+        expect(plenty.toString(), 'More Dart');
       });
     });
     test('digits', () {

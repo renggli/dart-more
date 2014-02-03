@@ -121,13 +121,25 @@ class _PermutationIterator extends Iterator<List> {
 }
 
 /**
- * Returns a light-weight read-only list wrapper around the characters
- * of a [string].
+ * Returns a light-weight immutable iterable list wrapper around the
+ * characters of a [string].
+ *
+ * To loop over the characters of a string simply write:
+ *
+ *     for (String char in string('Hello World')) {
+ *       print(char);
+ *     }
+ *
+ * Of course, also all other more functional operations from [List] work too:
+ *
+ *     string('Hello World')
+ *       .where((char) => char != 'o')
+ *       .forEach(print);
  *
  * For a mutable copy of the string see [mutableString(String)].
  */
-List<String> string(String string) {
-  return new _String(string);
+List<String> string(dynamic string) {
+  return new _String(string.toString());
 }
 
 class _String extends ListBase<String> with UnmodifiableListMixin<String> {
@@ -142,16 +154,19 @@ class _String extends ListBase<String> with UnmodifiableListMixin<String> {
   @override
   String operator [] (int index) => new String.fromCharCode(_string.codeUnitAt(index));
 
+  @override
+  String toString() => _string;
+
 }
 
 /**
  * Returns a mutable copy of the characters of a [string].
  *
- * For a light-weight immutable list of the characters of the string
- * see [string(String)].
+ * For a light-weight immutable iterable list of the characters of the
+ * string see [string(String)].
  */
-List<String> mutableString(String string, { growable: true }) {
-  return new _MutableString(new List.from(string.codeUnits, growable: growable));
+List<String> mutableString(dynamic string, { bool growable: true }) {
+  return new _MutableString(new List.from(string.toString().codeUnits, growable: growable));
 }
 
 class _MutableString extends ListBase<String> {
