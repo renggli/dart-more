@@ -27,6 +27,9 @@ void main() {
       expect(string('a').toList(), ['a']);
       expect(string('ab').toList(), ['a', 'b']);
       expect(string('aA1! ').toList(), ['a', 'A', '1', '!', ' ']);
+      expect(string('123').length, 3);
+      expect(string('123')[1], '2');
+      expect(string('123').reversed.join(), '321');
     });
     test('string (mutable)', () {
       List<String> mutable = mutableString('abc');

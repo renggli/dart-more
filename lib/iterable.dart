@@ -6,6 +6,7 @@
 library iterable;
 
 import 'dart:collection';
+import 'src/utils.dart';
 
 /**
  * Returns an iterable over the fibonacci sequence starting with with [f0]
@@ -120,15 +121,33 @@ class _PermutationIterator extends Iterator<List> {
 }
 
 /**
- * Returns an iterable view on the characters of a [string]. For a mutable
- * copy of the string see [mutableString(String)].
+ * Returns a light-weight read-only list of the characters of a [string].
+ *
+ * For a mutable copy of the string see [mutableString(String)].
  */
-Iterable<String> string(String string) {
-  return string.codeUnits.map((code) => new String.fromCharCode(code));
+List<String> string(String string) {
+  return new _String(string);
+}
+
+class _String extends ListBase<String> with UnmodifiableListMixin<String> {
+
+  final String _string;
+
+  _String(this._string);
+
+  @override
+  int get length => _string.length;
+
+  @override
+  String operator [] (int index) => new String.fromCharCode(_string.codeUnitAt(index));
+
 }
 
 /**
- * Returns a mutable list of the characters of a [string].
+ * Returns a mutable copy of the characters of a [string].
+ *
+ * For a light-weight immutable list of the characters of the string
+ * see [string(String)].
  */
 List<String> mutableString(String string, { growable: true }) {
   return new _MutableString(new List.from(string.codeUnits, growable: growable));
