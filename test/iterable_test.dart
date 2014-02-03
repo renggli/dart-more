@@ -25,6 +25,11 @@ void main() {
     group('string', () {
       var empty = string('');
       var plenty = string('More Dart');
+      test('creating', () {
+        var coerced = string(123);
+        expect(coerced.length, 3);
+        expect(coerced.toString(), '123');
+      });
       test('isEmtpy', () {
         expect(empty.isEmpty, isTrue);
         expect(plenty.isEmpty, isFalse);
@@ -67,6 +72,11 @@ void main() {
     group('mutableString', () {
       var empty = mutableString('');
       var plenty = mutableString('More Dart');
+      test('creating', () {
+        var coerced = mutableString(123);
+        expect(coerced.length, 3);
+        expect(coerced.toString(), '123');
+      });
       test('isEmtpy', () {
         expect(empty.isEmpty, isTrue);
         expect(plenty.isEmpty, isFalse);
