@@ -22,28 +22,97 @@ void main() {
           [[2, 1, 0], [2, 0, 1], [1, 2, 0],
            [1, 0, 2], [0, 2, 1], [0, 1, 2]]);
     });
-    test('string', () {
-      expect(string('').toList(), []);
-      expect(string('a').toList(), ['a']);
-      expect(string('ab').toList(), ['a', 'b']);
-      expect(string('aA1! ').toList(), ['a', 'A', '1', '!', ' ']);
-      expect(string('123').length, 3);
-      expect(string('123')[1], '2');
-      expect(string('123').reversed.join(), '321');
+    group('string', () {
+      var empty = string('');
+      var plenty = string('More Dart');
+      test('isEmtpy', () {
+        expect(empty.isEmpty, isTrue);
+        expect(plenty.isEmpty, isFalse);
+      });
+      test('length', () {
+        expect(empty.length, 0);
+        expect(plenty.length, 9);
+      });
+      test('reading', () {
+        expect(plenty[0], 'M');
+        expect(plenty[1], 'o');
+        expect(plenty[2], 'r');
+        expect(plenty[3], 'e');
+        expect(plenty[4], ' ');
+        expect(plenty[5], 'D');
+        expect(plenty[6], 'a');
+        expect(plenty[7], 'r');
+        expect(plenty[8], 't');
+      });
+      test('reading (range error)', () {
+        expect(() => empty[0], throwsRangeError);
+        expect(() => plenty[-1], throwsRangeError);
+        expect(() => plenty[9], throwsRangeError);
+      });
+      test('converting', () {
+        expect(empty.toList(), []);
+        expect(plenty.toList(), ['M', 'o', 'r', 'e', ' ', 'D', 'a', 'r', 't']);
+        expect(empty.toSet(), new Set());
+        expect(plenty.toSet(), new Set.from(['M', 'o', 'r', 'e', ' ', 'D', 'a', 't']));
+      });
+      test('read-only', () {
+        expect(() => plenty[0] = 'a', throwsUnsupportedError);
+        expect(() => plenty.length = 10, throwsUnsupportedError);
+      });
     });
-    test('string (mutable)', () {
-      List<String> mutable = mutableString('abc');
-      expect(mutable.length, 3);
-      expect(mutable.toString(), 'abc');
-      expect(mutable[1], 'b');
-      mutable[1] = 'd';
-      expect(mutable[1], 'd');
-      expect(mutable.toString(), 'adc');
-      mutable.add('e');
-      expect(mutable.toString(), 'adce');
-      mutable.remove('a');
-      expect(mutable.toString(), 'dce');
-      expect(mutable.toList(), ['d', 'c', 'e']);
+    group('mutableString', () {
+      var empty = mutableString('');
+      var plenty = mutableString('More Dart');
+      test('isEmtpy', () {
+        expect(empty.isEmpty, isTrue);
+        expect(plenty.isEmpty, isFalse);
+      });
+      test('length', () {
+        expect(empty.length, 0);
+        expect(plenty.length, 9);
+      });
+      test('reading', () {
+        expect(plenty[0], 'M');
+        expect(plenty[1], 'o');
+        expect(plenty[2], 'r');
+        expect(plenty[3], 'e');
+        expect(plenty[4], ' ');
+        expect(plenty[5], 'D');
+        expect(plenty[6], 'a');
+        expect(plenty[7], 'r');
+        expect(plenty[8], 't');
+      });
+      test('reading (range error)', () {
+        expect(() => empty[0], throwsRangeError);
+        expect(() => plenty[-1], throwsRangeError);
+        expect(() => plenty[9], throwsRangeError);
+      });
+      test('writing', () {
+        var mutable = mutableString('abc');
+        mutable[1] = 'd';
+        expect(mutable.toString(), 'adc');
+      });
+      test('writing (range error)', () {
+        expect(() => empty[0] = 'a', throwsRangeError);
+        expect(() => plenty[-1] = 'a', throwsRangeError);
+        expect(() => plenty[9] = 'a', throwsRangeError);
+      });
+      test('adding', () {
+        var mutable = mutableString('abc');
+        mutable.add('d');
+        expect(mutable.toString(), 'abcd');
+      });
+      test('removing', () {
+        var mutable = mutableString('abc');
+        mutable.remove('a');
+        expect(mutable.toString(), 'bc');
+      });
+      test('converting', () {
+        expect(empty.toList(), []);
+        expect(plenty.toList(), ['M', 'o', 'r', 'e', ' ', 'D', 'a', 'r', 't']);
+        expect(empty.toSet(), new Set());
+        expect(plenty.toSet(), new Set.from(['M', 'o', 'r', 'e', ' ', 'D', 'a', 't']));
+      });
     });
     test('digits', () {
       expect(digits(0).toList(), [0]);

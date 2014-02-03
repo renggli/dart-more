@@ -121,7 +121,8 @@ class _PermutationIterator extends Iterator<List> {
 }
 
 /**
- * Returns a light-weight read-only list of the characters of a [string].
+ * Returns a light-weight read-only list wrapper around the characters
+ * of a [string].
  *
  * For a mutable copy of the string see [mutableString(String)].
  */
