@@ -245,9 +245,6 @@ class _NegateCharMatcher extends CharMatcher {
   const _NegateCharMatcher(this._matcher);
 
   @override
-  String toString() => '~$_matcher';
-
-  @override
   CharMatcher operator ~ () => _matcher;
 
   @override
@@ -260,9 +257,6 @@ class _DisjunctiveCharMatcher extends CharMatcher {
   final List<CharMatcher> _matchers;
 
   const _DisjunctiveCharMatcher(this._matchers);
-
-  @override
-  String toString() => _matchers.join(' | ');
 
   @override
   CharMatcher operator | (CharMatcher other) {
@@ -295,9 +289,6 @@ class _AnyCharMatcher extends CharMatcher {
   const _AnyCharMatcher();
 
   @override
-  String toString() => 'any()';
-
-  @override
   bool call(int value) => true;
 
   @override
@@ -313,9 +304,6 @@ const CharMatcher _NONE = const _NoneCharMatcher();
 class _NoneCharMatcher extends CharMatcher {
 
   const _NoneCharMatcher();
-
-  @override
-  String toString() => 'none()';
 
   @override
   bool call(int value) => false;
@@ -335,9 +323,6 @@ class _SingleCharMatcher extends CharMatcher {
   const _SingleCharMatcher(this._value);
 
   @override
-  String toString() => 'isChar("' + new String.fromCharCode(_value) + '")';
-
-  @override
   bool call(int value) => _value == value;
 
 }
@@ -348,10 +333,6 @@ class _RangeCharMatcher extends CharMatcher {
   final int _stop;
 
   const _RangeCharMatcher(this._start, this._stop);
-
-  @override
-  String toString() => 'inRange("' + new String.fromCharCode(_start) +
-      '", "' + new String.fromCharCode(_stop) + '")';
 
   @override
   bool call(int value) => _start <= value && value <= _stop;
@@ -365,9 +346,6 @@ class _AsciiCharMatcher extends CharMatcher {
   const _AsciiCharMatcher();
 
   @override
-  String toString() => 'ascii()';
-
-  @override
   bool call(int value) => value < 128;
 
 }
@@ -379,9 +357,6 @@ class _DigitCharMatcher extends CharMatcher {
   const _DigitCharMatcher();
 
   @override
-  String toString() => 'digit()';
-
-  @override
   bool call(int value) => 48 <= value && value <= 57;
 
 }
@@ -391,9 +366,6 @@ const CharMatcher _LETTER = const _LetterCharMatcher();
 class _LetterCharMatcher extends CharMatcher {
 
   const _LetterCharMatcher();
-
-  @override
-  String toString() => 'letter()';
 
   @override
   bool call(int value) => (65 <= value && value <= 90)
@@ -408,9 +380,6 @@ class _LowerCaseLetterCharMatcher extends CharMatcher {
   const _LowerCaseLetterCharMatcher();
 
   @override
-  String toString() => 'lowerCaseLetter()';
-
-  @override
   bool call(int value) => 97 <= value && value <= 122;
 
 }
@@ -420,9 +389,6 @@ const CharMatcher _UPPER_CASE_LETTER = const _UpperCaseLetterCharMatcher();
 class _UpperCaseLetterCharMatcher extends CharMatcher {
 
   const _UpperCaseLetterCharMatcher();
-
-  @override
-  String toString() => 'upperCaseLetter()';
 
   @override
   bool call(int value) => 65 <= value && value <= 90;
@@ -436,9 +402,6 @@ class _LetterOrDigitCharMatcher extends CharMatcher {
   const _LetterOrDigitCharMatcher();
 
   @override
-  String toString() => 'letterOrDigit()';
-
-  @override
   bool call(int value) => (65 <= value && value <= 90)
       || (97 <= value && value <= 122) || (48 <= value && value <= 57)
       || (value == 95);
@@ -450,9 +413,6 @@ const CharMatcher _WHITESPACE = const _WhitespaceCharMatcher();
 class _WhitespaceCharMatcher extends CharMatcher {
 
   const _WhitespaceCharMatcher();
-
-  @override
-  String toString() => 'whitespace()';
 
   @override
   bool call(int value) {

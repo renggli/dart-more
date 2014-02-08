@@ -73,21 +73,6 @@ void main() {
         verify(letter | (digit | whitespace), 'abc123 ', '_!@#');
         verify((letter | digit) | whitespace, 'abc123 ', '_!@#');
       });
-      test('toString', () {
-        expect(new CharMatcher.any().toString(), 'any()');
-        expect(new CharMatcher.none().toString(), 'none()');
-        expect(new CharMatcher.isChar('*').toString(), 'isChar("*")');
-        expect(new CharMatcher.inRange('a', 'c').toString(), 'inRange("a", "c")');
-        expect(new CharMatcher.ascii().toString(), 'ascii()');
-        expect(new CharMatcher.digit().toString(), 'digit()');
-        expect(new CharMatcher.letter().toString(), 'letter()');
-        expect(new CharMatcher.lowerCaseLetter().toString(), 'lowerCaseLetter()');
-        expect(new CharMatcher.upperCaseLetter().toString(), 'upperCaseLetter()');
-        expect(new CharMatcher.letterOrDigit().toString(), 'letterOrDigit()');
-        expect(new CharMatcher.whitespace().toString(), 'whitespace()');
-        expect((~new CharMatcher.whitespace()).toString(), '~whitespace()');
-        expect((new CharMatcher.letter() | new CharMatcher.digit()).toString(), 'letter() | digit()');
-      });
     });
     group('action', () {
       var star = new CharMatcher.isChar('*');
