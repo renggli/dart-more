@@ -245,9 +245,6 @@ class _NaturalOrdering<T> extends Ordering<T> {
   @override
   int compare(a, b) => a.compareTo(b);
 
-  @override
-  String toString() => 'new Ordering.natural()';
-
 }
 
 class _ComparatorOrdering<T> extends Ordering<T> {
@@ -258,9 +255,6 @@ class _ComparatorOrdering<T> extends Ordering<T> {
 
   @override
   int compare(T a, T b) => _comparator(a, b);
-
-  @override
-  String toString() => 'new Ordering.from($_comparator)';
 
 }
 
@@ -281,9 +275,6 @@ class _ExplicitOrdering<T> extends Ordering<T> {
     return rank;
   }
 
-  @override
-  String toString() => 'new Ordering.explicit(${_ranking.keys})';
-
 }
 
 class _ReverseOrdering<T> extends Ordering<T> {
@@ -297,9 +288,6 @@ class _ReverseOrdering<T> extends Ordering<T> {
 
   @override
   Ordering<T> reverse() => _other;
-
-  @override
-  String toString() => '$_other.reverse()';
 
 }
 
@@ -326,9 +314,6 @@ class _CompoundOrdering<T> extends Ordering<T> {
     return new _CompoundOrdering(new List.from(orderings, growable: false));
   }
 
-  @override
-  String toString() => _orderings.join('.compound(') + ')';
-
 }
 
 class _LexicographicalOrdering<T> extends Ordering<Iterable<T>> {
@@ -352,9 +337,6 @@ class _LexicographicalOrdering<T> extends Ordering<Iterable<T>> {
     return ib.moveNext() ? -1 : 0;
   }
 
-  @override
-  String toString() => '$_other.lexicographical()';
-
 }
 
 class _NullsFirstOrdering<T> extends Ordering<T> {
@@ -375,9 +357,6 @@ class _NullsFirstOrdering<T> extends Ordering<T> {
       return _ordering.compare(a, b);
     }
   }
-
-  @override
-  String toString() => '$_ordering.nullsFirst()';
 
 }
 
@@ -400,9 +379,6 @@ class _NullsLastOrdering<T> extends Ordering<T> {
     }
   }
 
-  @override
-  String toString() => '$_ordering.nullsLast()';
-
 }
 
 class _FunctionOrdering<T> extends Ordering<T> {
@@ -415,8 +391,5 @@ class _FunctionOrdering<T> extends Ordering<T> {
 
   @override
   int compare(a, b) => _ordering.compare(_function(a), _function(b));
-
-  @override
-  String toString() => '$_ordering.onResultOf($_function)';
 
 }
