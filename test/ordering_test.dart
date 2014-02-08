@@ -16,7 +16,6 @@ void verify(Ordering ordering, Iterable unsorted, Iterable expected) {
     expect(ordering.minOf(unsorted), expected.first);
     expect(ordering.maxOf(unsorted), expected.last);
   }
-  expect(!ordering.toString().isEmpty, isTrue);
 }
 
 final natural = new Ordering.natural();
