@@ -36,7 +36,7 @@ class BitList extends ListBase<bool> with FixedLengthListMixin<bool>  {
   }
 
   /**
-   * Constucts a new list from a given [Iterable] of booleans.
+   * Constructs a new list from a given [Iterable] of booleans.
    */
   factory BitList.from(Iterable<bool> other) {
     var length = other.length;
@@ -52,9 +52,6 @@ class BitList extends ListBase<bool> with FixedLengthListMixin<bool>  {
     }
     return new BitList._(buffer, length);
   }
-
-  @deprecated
-  factory BitList.fromList(List<bool> other) => new BitList.from(other);
 
   final Uint32List _buffer;
   final int _length;
