@@ -1,5 +1,3 @@
-// Copyright (c) 2013, Lukas Renggli <renggli@gmail.com>
-
 /**
  * Provides a [Set] like data structure where elements are allowed to
  * appear more than once.

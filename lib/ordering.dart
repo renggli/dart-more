@@ -1,5 +1,3 @@
-// Copyright (c) 2013, Lukas Renggli <renggli@gmail.com>
-
 /**
  * Provides a first-class model of comparators, their composition
  * and operations on iterables.
