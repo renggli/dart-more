@@ -194,7 +194,7 @@ abstract class Ordering<T> {
   /**
    * Returns the maximum of the provided [iterable].
    */
-  T maxOf(Iterable<T> iterable, { T orElse() }) {
+  T maxOf(Iterable<T> iterable, {T orElse()}) {
     var iterator = iterable.iterator;
     if (iterator.moveNext()) {
       var value = iterator.current;
@@ -219,7 +219,7 @@ abstract class Ordering<T> {
   /**
    * Returns the minimum of the provided [iterable].
    */
-  T minOf(Iterable<T> iterable, { T orElse() }) {
+  T minOf(Iterable<T> iterable, {T orElse()}) {
     var iterator = iterable.iterator;
     if (iterator.moveNext()) {
       var value = iterator.current;

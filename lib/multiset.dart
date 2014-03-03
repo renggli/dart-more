@@ -126,7 +126,7 @@ class Multiset<E> extends IterableBase<E> {
   /**
    * Gets the number of occurences of an [element].
    */
-  int operator [] (Object element) {
+  int operator [](Object element) {
     return _container.containsKey(element) ? _container[element] : 0;
   }
 
@@ -135,7 +135,7 @@ class Multiset<E> extends IterableBase<E> {
    *
    * Throws an [ArgumentError] if [occurences] is negative.
    */
-  void operator []= (E element, int occurences) {
+  void operator []=(E element, int occurences) {
     if (occurences < 0) {
       throw new ArgumentError('Negative number of occurences: $occurences');
     } else {
@@ -164,7 +164,7 @@ class Multiset<E> extends IterableBase<E> {
       return true;
     } else if (other.length == 1) {
       return contains(other.first);
-    } if (other is Multiset) {
+    } else if (other is Multiset) {
       var multiset = other as Multiset;
       for (var element in multiset.distinct) {
         if (this[element] < multiset[element]) {

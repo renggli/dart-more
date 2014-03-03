@@ -68,7 +68,7 @@ class _RangeList extends ListBase<num> with UnmodifiableListMixin<num> {
   int get length => _length;
 
   @override
-  num operator [] (int index) {
+  num operator [](int index) {
     if (0 <= index && index < _length) {
       return _start + _step * index;
     } else {

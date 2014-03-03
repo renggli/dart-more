@@ -5,7 +5,7 @@ library _utils;
  *
  * Intended to mix-in on top of [ListMixin] for fixed-length lists.
  */
-abstract class FixedLengthListMixin<E>  {
+abstract class FixedLengthListMixin<E> {
 
   void set length(int newLength) {
     throw new UnsupportedError('Cannot change the length of a fixed-length list');

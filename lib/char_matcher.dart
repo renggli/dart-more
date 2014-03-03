@@ -69,13 +69,13 @@ abstract class CharMatcher {
   /**
    * Returns a matcher that matches any character not matched by this matcher.
    */
-  CharMatcher operator ~ () => new _NegateCharMatcher(this);
+  CharMatcher operator ~() => new _NegateCharMatcher(this);
 
   /**
    * Returns a matcher that matches any character matched by either this
    * matcher or [other].
    */
-  CharMatcher operator | (CharMatcher other) {
+  CharMatcher operator |(CharMatcher other) {
     if (other == _ANY) {
       return other;
     } else if (other == _NONE) {
@@ -243,7 +243,7 @@ class _NegateCharMatcher extends CharMatcher {
   const _NegateCharMatcher(this._matcher);
 
   @override
-  CharMatcher operator ~ () => _matcher;
+  CharMatcher operator ~() => _matcher;
 
   @override
   bool call(int value) => !_matcher(value);
@@ -290,10 +290,10 @@ class _AnyCharMatcher extends CharMatcher {
   bool call(int value) => true;
 
   @override
-  CharMatcher operator ~ () => _NONE;
+  CharMatcher operator ~() => _NONE;
 
   @override
-  CharMatcher operator | (CharMatcher other) => this;
+  CharMatcher operator |(CharMatcher other) => this;
 
 }
 
@@ -307,10 +307,10 @@ class _NoneCharMatcher extends CharMatcher {
   bool call(int value) => false;
 
   @override
-  CharMatcher operator ~ () => _ANY;
+  CharMatcher operator ~() => _ANY;
 
   @override
-  CharMatcher operator | (CharMatcher other) => other;
+  CharMatcher operator |(CharMatcher other) => other;
 
 }
 
@@ -366,8 +366,7 @@ class _LetterCharMatcher extends CharMatcher {
   const _LetterCharMatcher();
 
   @override
-  bool call(int value) => (65 <= value && value <= 90)
-      || (97 <= value && value <= 122);
+  bool call(int value) => (65 <= value && value <= 90) || (97 <= value && value <= 122);
 
 }
 
