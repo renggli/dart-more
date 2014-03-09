@@ -92,20 +92,20 @@ abstract class CharMatcher {
   /**
    * Determines if the given character code belongs to the character class.
    */
-  bool call(int value);
+  bool match(int value);
 
   /**
    * Returns `true` if the [sequence] contains only matching characters.
    */
   bool everyOf(String sequence) {
-    return sequence.codeUnits.every(this);
+    return sequence.codeUnits.every(match);
   }
 
   /**
    * Returns `true` if the [sequence] contains at least one matching character.
    */
   bool anyOf(String sequence) {
-    return sequence.codeUnits.any(this);
+    return sequence.codeUnits.any(match);
   }
 
   /**
@@ -115,7 +115,7 @@ abstract class CharMatcher {
   int firstIndexIn(String sequence, [int start = 0]) {
     var codeUnits = sequence.codeUnits;
     for (var i = start; i < codeUnits.length; i++) {
-      if (this(codeUnits[i])) {
+      if (match(codeUnits[i])) {
         return i;
       }
     }
@@ -132,7 +132,7 @@ abstract class CharMatcher {
       start = codeUnits.length - 1;
     }
     for (var i = start; i >= 0; i--) {
-      if (this(codeUnits[i])) {
+      if (match(codeUnits[i])) {
         return i;
       }
     }
@@ -143,7 +143,7 @@ abstract class CharMatcher {
    * Counts the number of matches in [sequence].
    */
   int countIn(String sequence) {
-    return sequence.codeUnits.where(this).length;
+    return sequence.codeUnits.where(match).length;
   }
 
   /**
@@ -157,10 +157,10 @@ abstract class CharMatcher {
     var replacementCodes = replacement.codeUnits;
     while (i < codeUnits.length) {
       var codeUnit = codeUnits[i];
-      if (this(codeUnit)) {
+      if (match(codeUnit)) {
         do {
           i++;
-        } while (i < codeUnits.length && this(codeUnits[i]));
+        } while (i < codeUnits.length && match(codeUnits[i]));
         list.addAll(replacementCodes);
       } else {
         list.add(codeUnit);
@@ -177,7 +177,7 @@ abstract class CharMatcher {
   String replaceFrom(String sequence, String replacement) {
     var replacementCodes = replacement.codeUnits;
     return new String.fromCharCodes(sequence.codeUnits.expand((value) {
-      return this(value) ? replacementCodes : [value];
+      return match(value) ? replacementCodes : [value];
     }));
   }
 
@@ -185,14 +185,14 @@ abstract class CharMatcher {
    * Removes all matched characters in [sequence].
    */
   String removeFrom(String sequence) {
-    return new String.fromCharCodes(sequence.codeUnits.where(~this));
+    return new String.fromCharCodes(sequence.codeUnits.where((~this).match));
   }
 
   /**
    * Retains all matched characters in [sequence].
    */
   String retainFrom(String sequence) {
-    return new String.fromCharCodes(sequence.codeUnits.where(this));
+    return new String.fromCharCodes(sequence.codeUnits.where(match));
   }
 
   /**
@@ -201,10 +201,10 @@ abstract class CharMatcher {
   String trimFrom(String sequence) {
     var codeUnits = sequence.codeUnits;
     var left = 0, right = codeUnits.length - 1;
-    while (left <= right && this(codeUnits[left])) {
+    while (left <= right && match(codeUnits[left])) {
       left++;
     }
-    while (left <= right && this(codeUnits[right])) {
+    while (left <= right && match(codeUnits[right])) {
       right--;
     }
     return sequence.substring(left, right + 1);
@@ -216,7 +216,7 @@ abstract class CharMatcher {
   String trimLeadingFrom(String sequence) {
     var codeUnits = sequence.codeUnits;
     var left = 0, right = codeUnits.length - 1;
-    while (left <= right && this(codeUnits[left])) {
+    while (left <= right && match(codeUnits[left])) {
       left++;
     }
     return sequence.substring(left, right + 1);
@@ -228,7 +228,7 @@ abstract class CharMatcher {
   String trimTailingFrom(String sequence) {
     var codeUnits = sequence.codeUnits;
     var left = 0, right = codeUnits.length - 1;
-    while (left <= right && this(codeUnits[right])) {
+    while (left <= right && match(codeUnits[right])) {
       right--;
     }
     return sequence.substring(left, right + 1);
@@ -246,7 +246,7 @@ class _NegateCharMatcher extends CharMatcher {
   CharMatcher operator ~ () => _matcher;
 
   @override
-  bool call(int value) => !_matcher(value);
+  bool match(int value) => !_matcher.match(value);
 
 }
 
@@ -274,8 +274,8 @@ class _DisjunctiveCharMatcher extends CharMatcher {
   }
 
   @override
-  bool call(int value) {
-    return _matchers.any((matcher) => matcher(value));
+  bool match(int value) {
+    return _matchers.any((matcher) => matcher.match(value));
   }
 
 }
@@ -287,7 +287,7 @@ class _AnyCharMatcher extends CharMatcher {
   const _AnyCharMatcher();
 
   @override
-  bool call(int value) => true;
+  bool match(int value) => true;
 
   @override
   CharMatcher operator ~ () => _NONE;
@@ -304,7 +304,7 @@ class _NoneCharMatcher extends CharMatcher {
   const _NoneCharMatcher();
 
   @override
-  bool call(int value) => false;
+  bool match(int value) => false;
 
   @override
   CharMatcher operator ~ () => _ANY;
@@ -321,7 +321,7 @@ class _SingleCharMatcher extends CharMatcher {
   const _SingleCharMatcher(this._value);
 
   @override
-  bool call(int value) => _value == value;
+  bool match(int value) => _value == value;
 
 }
 
@@ -333,7 +333,7 @@ class _RangeCharMatcher extends CharMatcher {
   const _RangeCharMatcher(this._start, this._stop);
 
   @override
-  bool call(int value) => _start <= value && value <= _stop;
+  bool match(int value) => _start <= value && value <= _stop;
 
 }
 
@@ -344,7 +344,7 @@ class _AsciiCharMatcher extends CharMatcher {
   const _AsciiCharMatcher();
 
   @override
-  bool call(int value) => value < 128;
+  bool match(int value) => value < 128;
 
 }
 
@@ -355,7 +355,7 @@ class _DigitCharMatcher extends CharMatcher {
   const _DigitCharMatcher();
 
   @override
-  bool call(int value) => 48 <= value && value <= 57;
+  bool match(int value) => 48 <= value && value <= 57;
 
 }
 
@@ -366,7 +366,7 @@ class _LetterCharMatcher extends CharMatcher {
   const _LetterCharMatcher();
 
   @override
-  bool call(int value) => (65 <= value && value <= 90)
+  bool match(int value) => (65 <= value && value <= 90)
       || (97 <= value && value <= 122);
 
 }
@@ -378,7 +378,7 @@ class _LowerCaseLetterCharMatcher extends CharMatcher {
   const _LowerCaseLetterCharMatcher();
 
   @override
-  bool call(int value) => 97 <= value && value <= 122;
+  bool match(int value) => 97 <= value && value <= 122;
 
 }
 
@@ -389,7 +389,7 @@ class _UpperCaseLetterCharMatcher extends CharMatcher {
   const _UpperCaseLetterCharMatcher();
 
   @override
-  bool call(int value) => 65 <= value && value <= 90;
+  bool match(int value) => 65 <= value && value <= 90;
 
 }
 
@@ -400,7 +400,7 @@ class _LetterOrDigitCharMatcher extends CharMatcher {
   const _LetterOrDigitCharMatcher();
 
   @override
-  bool call(int value) => (65 <= value && value <= 90)
+  bool match(int value) => (65 <= value && value <= 90)
       || (97 <= value && value <= 122) || (48 <= value && value <= 57)
       || (value == 95);
 
@@ -413,7 +413,7 @@ class _WhitespaceCharMatcher extends CharMatcher {
   const _WhitespaceCharMatcher();
 
   @override
-  bool call(int value) {
+  bool match(int value) {
     if (value < 256) {
       return value == 0x09 || value == 0x0A || value == 0x0B || value == 0x0C
           || value == 0x0D || value == 0x20 || value == 0x85 || value == 0xA0;
