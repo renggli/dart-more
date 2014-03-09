@@ -10,8 +10,8 @@ Various extension libraries that make Dart a better place.
 - `fraction.dart` provides support for rational number arithmetic.
 - `int_math.dart` is a collection of common mathematical functions on ints.
 - `iterable.dart` is a collection of iterables and iterators.
-- `ordering.dart` a fluent interface for building comparator functions.
 - `multiset.data` a data structure where elements might appear more than once.
+- `ordering.dart` a fluent interface for building comparator functions.
 - `range.dart` provides a function to create iterables yielding arithmetic
   progressions.
 

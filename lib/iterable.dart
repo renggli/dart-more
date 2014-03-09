@@ -150,7 +150,7 @@ class _String extends ListBase<String> with UnmodifiableListMixin<String> {
   int get length => _string.length;
 
   @override
-  String operator [] (int index) => new String.fromCharCode(_string.codeUnitAt(index));
+  String operator [](int index) => new String.fromCharCode(_string.codeUnitAt(index));
 
   @override
   String toString() => _string;
@@ -163,7 +163,7 @@ class _String extends ListBase<String> with UnmodifiableListMixin<String> {
  * For a light-weight immutable iterable list of the characters of the
  * string see [string(String)].
  */
-List<String> mutableString(dynamic string, { bool growable: true }) {
+List<String> mutableString(dynamic string, {bool growable: true}) {
   return new _MutableString(new List.from(string.toString().codeUnits, growable: growable));
 }
 
@@ -182,10 +182,10 @@ class _MutableString extends ListBase<String> {
   }
 
   @override
-  String operator [] (int index) => new String.fromCharCode(_codeUnits[index]);
+  String operator [](int index) => new String.fromCharCode(_codeUnits[index]);
 
   @override
-  void operator []= (int index, String character) {
+  void operator []=(int index, String character) {
     if (character.length == 1) {
       _codeUnits[index] = character.codeUnitAt(0);
     } else {
