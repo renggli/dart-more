@@ -26,12 +26,6 @@ class _InfiniteCycleIterable<E> extends IterableBase<E> with InfiniteIterable<E>
   _InfiniteCycleIterable(this._iterable);
 
   @override
-  bool get isEmpty => false;
-
-  @override
-  int get length => throw new StateError('Infinite iterable');
-
-  @override
   Iterator<E> get iterator => new _InfiniteCycleIterator(_iterable);
 
 }

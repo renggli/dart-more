@@ -9,8 +9,8 @@ part of iterable;
  *    var second = new List.from([4, 5]);
  *    var third = new Set.from([6]);
  *
- *    // prints: 1, 2, 3, 4, 5, 6
- *    print(concat([first, second, third]));
+ *    // equals to [1, 2, 3, 4, 5, 6]
+ *    var concatenation = concat([first, second, third]);
  */
 Iterable concat(Iterable<Iterable> iterables) {
   return iterables.expand((Iterable iterable) => iterable);

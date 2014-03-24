@@ -8,30 +8,34 @@ void main() {
     group('concat', () {
       var a = [1, 2, 3], b = [4, 5], c = [6], d = [];
       test('void', () {
-        expect(concat([]).toList(), []);
+        expect(concat([]), []);
       });
       test('basic', () {
-        expect(concat([a]).toList(), [1, 2, 3]);
-        expect(concat([a, b]).toList(), [1, 2, 3, 4, 5]);
-        expect(concat([b, a]).toList(), [4, 5, 1, 2, 3]);
-        expect(concat([a, b, c]).toList(), [1, 2, 3, 4, 5, 6]);
-        expect(concat([a, c, b]).toList(), [1, 2, 3, 6, 4, 5]);
-        expect(concat([b, a, c]).toList(), [4, 5, 1, 2, 3, 6]);
-        expect(concat([b, c, a]).toList(), [4, 5, 6, 1, 2, 3]);
-        expect(concat([c, a, b]).toList(), [6, 1, 2, 3, 4, 5]);
-        expect(concat([c, b, a]).toList(), [6, 4, 5, 1, 2, 3]);
+        expect(concat([a]), [1, 2, 3]);
+        expect(concat([a, b]), [1, 2, 3, 4, 5]);
+        expect(concat([b, a]), [4, 5, 1, 2, 3]);
+        expect(concat([a, b, c]), [1, 2, 3, 4, 5, 6]);
+        expect(concat([a, c, b]), [1, 2, 3, 6, 4, 5]);
+        expect(concat([b, a, c]), [4, 5, 1, 2, 3, 6]);
+        expect(concat([b, c, a]), [4, 5, 6, 1, 2, 3]);
+        expect(concat([c, a, b]), [6, 1, 2, 3, 4, 5]);
+        expect(concat([c, b, a]), [6, 4, 5, 1, 2, 3]);
       });
       test('empty', () {
-        expect(concat([a, b, c, d]).toList(), [1, 2, 3, 4, 5, 6]);
-        expect(concat([a, b, d, c]).toList(), [1, 2, 3, 4, 5, 6]);
-        expect(concat([a, d, b, c]).toList(), [1, 2, 3, 4, 5, 6]);
-        expect(concat([d, a, b, c]).toList(), [1, 2, 3, 4, 5, 6]);
+        expect(concat([a, b, c, d]), [1, 2, 3, 4, 5, 6]);
+        expect(concat([a, b, d, c]), [1, 2, 3, 4, 5, 6]);
+        expect(concat([a, d, b, c]), [1, 2, 3, 4, 5, 6]);
+        expect(concat([d, a, b, c]), [1, 2, 3, 4, 5, 6]);
       });
       test('repeated', () {
-        expect(concat([a, a]).toList(), [1, 2, 3, 1, 2, 3]);
-        expect(concat([b, b, b]).toList(), [4, 5, 4, 5, 4, 5]);
-        expect(concat([c, c, c, c]).toList(), [6, 6, 6, 6]);
-        expect(concat([d, d, d, d, d]).toList(), []);
+        expect(concat([a, a]), [1, 2, 3, 1, 2, 3]);
+        expect(concat([b, b, b]), [4, 5, 4, 5, 4, 5]);
+        expect(concat([c, c, c, c]), [6, 6, 6, 6]);
+        expect(concat([d, d, d, d, d]), []);
+      });
+      test('types', () {
+        expect(concat([new Set.from(c)]), [6]);
+        expect(concat([new List.from(b)]), [4, 5]);
       });
     });
     group('cycle', () {
@@ -41,9 +45,9 @@ void main() {
         expect(cycle([1, 2], 0), isEmpty);
       });
       test('fixed', () {
-        expect(cycle([1, 2], 1).toList(), [1, 2]);
-        expect(cycle([1, 2], 2).toList(), [1, 2, 1, 2]);
-        expect(cycle([1, 2], 3).toList(), [1, 2, 1, 2, 1, 2]);
+        expect(cycle([1, 2], 1), [1, 2]);
+        expect(cycle([1, 2], 2), [1, 2, 1, 2]);
+        expect(cycle([1, 2], 3), [1, 2, 1, 2, 1, 2]);
       });
       test('infinite', () {
         expect(cycle([1, 2]).isEmpty, isFalse);
