@@ -6,7 +6,33 @@ import 'package:more/iterable.dart';
 void main() {
   group('iterable', () {
     group('concat', () {
-
+      var a = [1, 2, 3], b = [4, 5], c = [6], d = [];
+      test('void', () {
+        expect(concat([]).toList(), []);
+      });
+      test('basic', () {
+        expect(concat([a]).toList(), [1, 2, 3]);
+        expect(concat([a, b]).toList(), [1, 2, 3, 4, 5]);
+        expect(concat([b, a]).toList(), [4, 5, 1, 2, 3]);
+        expect(concat([a, b, c]).toList(), [1, 2, 3, 4, 5, 6]);
+        expect(concat([a, c, b]).toList(), [1, 2, 3, 6, 4, 5]);
+        expect(concat([b, a, c]).toList(), [4, 5, 1, 2, 3, 6]);
+        expect(concat([b, c, a]).toList(), [4, 5, 6, 1, 2, 3]);
+        expect(concat([c, a, b]).toList(), [6, 1, 2, 3, 4, 5]);
+        expect(concat([c, b, a]).toList(), [6, 4, 5, 1, 2, 3]);
+      });
+      test('empty', () {
+        expect(concat([a, b, c, d]).toList(), [1, 2, 3, 4, 5, 6]);
+        expect(concat([a, b, d, c]).toList(), [1, 2, 3, 4, 5, 6]);
+        expect(concat([a, d, b, c]).toList(), [1, 2, 3, 4, 5, 6]);
+        expect(concat([d, a, b, c]).toList(), [1, 2, 3, 4, 5, 6]);
+      });
+      test('repeated', () {
+        expect(concat([a, a]).toList(), [1, 2, 3, 1, 2, 3]);
+        expect(concat([b, b, b]).toList(), [4, 5, 4, 5, 4, 5]);
+        expect(concat([c, c, c, c]).toList(), [6, 6, 6, 6]);
+        expect(concat([d, d, d, d, d]).toList(), []);
+      });
     });
     group('cycle', () {
       test('empty', () {

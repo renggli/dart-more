@@ -2,7 +2,16 @@ part of iterable;
 
 /**
  * Combines multiple [iterables] into a single iterable.
+ *
+ * For example:
+ *
+ *    var first = [1, 2, 3];
+ *    var second = new List.from([4, 5]);
+ *    var third = new Set.from([6]);
+ *
+ *    // prints: 1, 2, 3, 4, 5, 6
+ *    print(concat([first, second, third]));
  */
 Iterable concat(Iterable<Iterable> iterables) {
-  return iterables.expand((e) => e.iterator);
+  return iterables.expand((Iterable iterable) => iterable);
 }
