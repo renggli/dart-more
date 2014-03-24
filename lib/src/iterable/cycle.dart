@@ -1,48 +1,55 @@
 part of iterable;
 
 /**
- * Returns an iterable whose iterator cycles indefinitely over the elements of
- * [iterable]. If [count] is provided the the iterations are limited to given
- * number of times.
+ * Returns an iterable whose iterator cycles [count] times over the elements
+ * of [iterable]. If the [count] is not specified an iterable that cycles
+ * indefinitely is returned.
  */
-Iterable cycle(Iterable iterable, [int count]) {
-  if (count == 0) {
+Iterable cycle(Iterable iterable, [num count = double.INFINITY]) {
+  if (count == 0 || iterable.isEmpty) {
     return empty();
   } else if (count == 1) {
     return iterable;
-  } else if (count == null) {
+  } else if (count.isInfinite) {
     return new _InfiniteCycleIterable(iterable);
   } else if (count > 1) {
     return new _CountedCycleIterable(iterable, count);
   } else {
-    throw new ArgumentException('Count needs to be positive, but got $count.');
+    throw new ArgumentError('Positive count expected, but got $count.');
   }
 }
 
-class _InfiniteCycleIterable<T> extends IterableBase<T> {
+class _InfiniteCycleIterable<E> extends IterableBase<E> with InfiniteIterable<E> {
 
-  final Iterable<T> _iterable;
+  final Iterable<E> _iterable;
 
   _InfiniteCycleIterable(this._iterable);
 
   @override
-  Iterator<T> get iterator => _InfiniteCycleIterator(_iterable);
+  bool get isEmpty => false;
+
+  @override
+  int get length => throw new StateError('Infinite iterable');
+
+  @override
+  Iterator<E> get iterator => new _InfiniteCycleIterator(_iterable);
 
 }
 
-class _InfiniteCycleIterator<T> extends Iterator<T> {
+class _InfiniteCycleIterator<E> extends Iterator<E> {
 
-  final Iterable<T> _iterable;
-  Iterator<T> _iterator = const _EmptyIterator();
+  final Iterable<E> _iterable;
+
+  Iterator<E> _iterator = const _EmptyIterator();
 
   _InfiniteCycleIterator(this._iterable);
 
   @override
-  T get current => _iterator.current;
+  E get current => _iterator.current;
 
   @override
   bool moveNext() {
-    if (_iterator.moveNext()) {
+    if (!_iterator.moveNext()) {
       _iterator = _iterable.iterator;
       _iterator.moveNext();
     }
@@ -51,42 +58,45 @@ class _InfiniteCycleIterator<T> extends Iterator<T> {
 
 }
 
-class _CountedCycleIterable<T> extends IterableBase<T> {
+class _CountedCycleIterable<E> extends IterableBase<E> {
 
-  final Iterable<T> _iterable;
+  final Iterable<E> _iterable;
   final int _count;
 
   _CountedCycleIterable(this._iterable, this._count);
 
   @override
-  Iterator<T> get iterator => _CountedCycleIterator(_iterable, _count);
+  Iterator<E> get iterator => new _CountedCycleIterator(_iterable, _count);
 
 }
 
-class _CountedCycleIterator<T> extends Iterator<T> {
+class _CountedCycleIterator<E> extends Iterator<E> {
 
-  final Iterable<T> _iterable;
-  Iterator<T> _iterator = const _EmptyIterator();
-  bool _running = true;
+  final Iterable<E> _iterable;
+
+  Iterator<E> _iterator = const _EmptyIterator();
+  bool _completed = false;
   int _count = 0;
 
   _CountedCycleIterator(this._iterable, this._count);
 
   @override
-  T get current => _running ? _iterator.current : null;
+  E get current => _completed ? null : _iterator.current;
 
   @override
   bool moveNext() {
-    if (_running && _iterator.moveNext()) {
-      if (_count > 0) {
-        _iterator = _iterable.iterator();
-        _iterator.moveNext();
-        _count--;
-      } else {
-        _running = false;
+    if (_completed) {
+      return false;
+    }
+    if (!_iterator.moveNext()) {
+      _iterator = _iterable.iterator;
+      _iterator.moveNext();
+      if (--_count < 0) {
+        _completed = true;
+        return false;
       }
     }
-    return _running;
+    return true;
   }
 
 }
