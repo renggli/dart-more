@@ -3,12 +3,14 @@
  */
 library iterable;
 
-part 'src/iterable/cycle.dart';
-part 'src/iterable/emtpy.dart';
-part 'src/iterable/permutations.dart';
-
 import 'dart:collection';
 import 'src/utils.dart';
+
+part 'src/iterable/combs.dart';
+part 'src/iterable/concat.dart';
+part 'src/iterable/cycle.dart';
+part 'src/iterable/empty.dart';
+part 'src/iterable/string.dart';
 
 /**
  * Returns an iterable over the fibonacci sequence starting with with [f0]
@@ -50,8 +52,6 @@ class _FibonacciIterator extends Iterator<int> {
   }
 
 }
-
-
 
 /**
  * Returns an iterable over the digits of the [number], in the optionally

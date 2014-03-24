@@ -1,8 +1,8 @@
 part of iterable;
 
 /**
- * Returns a light-weight immutable iterable list wrapper around the
- * characters of a [string].
+ * Returns a light-weight immutable iterable list around the characters of
+ * a [string].
  *
  * To loop over the characters of a string simply write:
  *
