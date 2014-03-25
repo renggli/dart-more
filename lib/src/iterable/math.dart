@@ -6,7 +6,7 @@ part of iterable;
  * with 0, 1, 1, 2, 3, 5, 8, 13, ...
  */
 Iterable<int> fibonacci([int f0 = 0, int f1 = 1]) {
-  return fold([2 * f0 - f1, f1 - f0], (a, b) => a + b);
+  return fold([f0, f1], (a, b) => a + b);
 }
 
 /**

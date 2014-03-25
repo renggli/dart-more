@@ -2,6 +2,15 @@ part of iterable;
 
 /**
  * Returns an empty iterable.
+ *
+ * For example, the expression
+ *
+ *     empty()
+ *
+ * results in the empty list:
+ *
+ *     []
+ *
  */
 Iterable empty() => const _EmptyIterable();
 

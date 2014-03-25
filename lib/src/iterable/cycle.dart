@@ -1,19 +1,37 @@
 part of iterable;
 
 /**
- * Returns an iterable whose iterator cycles [count] times over the elements
- * of [iterable]. If the [count] is not specified an iterable that cycles
- * indefinitely is returned.
+ * Returns a lazy iterable whose iterator cycles repeatedly over the elements
+ * of an [iterable]. If [count] is specified, the returned iterable has a limited
+ * size of the receiver times the count. If [count] is unspecified the returned
+ * iterable is of infinite size.
+ *
+ * For example, the expression
+ *
+ *     cycle([1, 2], 3)
+ *
+ * results in the finite list:
+ *
+ *     [1, 2, 1, 2, 1, 2]
+ *
+ * On the other hand, the expression
+ *
+ *     cycle([1, 2])
+ *
+ * results in the infinite list:
+ *
+ *     [1, 2, 1, 2, ...]
+ *
  */
 Iterable cycle(Iterable iterable, [num count = double.INFINITY]) {
   if (count == 0 || iterable.isEmpty) {
     return empty();
-  } else if (count == 1) {
+  } else if (count == 1 || iterable is InfiniteIterable) {
     return iterable;
   } else if (count.isInfinite) {
     return new _InfiniteCycleIterable(iterable);
   } else if (count > 1) {
-    return new _CountedCycleIterable(iterable, count);
+    return new _FiniteCycleIterable(iterable, count);
   } else {
     throw new ArgumentError('Positive count expected, but got $count.');
   }
@@ -52,19 +70,19 @@ class _InfiniteCycleIterator<E> extends Iterator<E> {
 
 }
 
-class _CountedCycleIterable<E> extends IterableBase<E> {
+class _FiniteCycleIterable<E> extends IterableBase<E> {
 
   final Iterable<E> _iterable;
   final int _count;
 
-  _CountedCycleIterable(this._iterable, this._count);
+  _FiniteCycleIterable(this._iterable, this._count);
 
   @override
-  Iterator<E> get iterator => new _CountedCycleIterator(_iterable, _count);
+  Iterator<E> get iterator => new _FiniteCycleIterator(_iterable, _count);
 
 }
 
-class _CountedCycleIterator<E> extends Iterator<E> {
+class _FiniteCycleIterator<E> extends Iterator<E> {
 
   final Iterable<E> _iterable;
 
@@ -72,7 +90,7 @@ class _CountedCycleIterator<E> extends Iterator<E> {
   bool _completed = false;
   int _count = 0;
 
-  _CountedCycleIterator(this._iterable, this._count);
+  _FiniteCycleIterator(this._iterable, this._count);
 
   @override
   E get current => _completed ? null : _iterator.current;
