@@ -2,8 +2,8 @@ part of iterable;
 
 /**
  * Returns a lazy iterable whose iterator cycles repeatedly over the elements
- * of an [iterable]. If [count] is specified, the returned iterable has a limited
- * size of the receiver times the count. If [count] is unspecified the returned
+ * of an [iterable]. If [count] is specified, the returned iterable has a finite
+ * size of [iterable] &times; [count]. If [count] is unspecified the returned
  * iterable is of infinite size.
  *
  * For example, the expression
@@ -23,12 +23,12 @@ part of iterable;
  *     [1, 2, 1, 2, ...]
  *
  */
-Iterable cycle(Iterable iterable, [num count = double.INFINITY]) {
+Iterable /* <E> */ cycle(Iterable /* <E> */ iterable, [int count = null]) {
   if (count == 0 || iterable.isEmpty) {
     return empty();
   } else if (count == 1 || iterable is InfiniteIterable) {
     return iterable;
-  } else if (count.isInfinite) {
+  } else if (count == null) {
     return new _InfiniteCycleIterable(iterable);
   } else if (count > 1) {
     return new _FiniteCycleIterable(iterable, count);

@@ -2,7 +2,7 @@ part of iterable;
 
 /**
  * Returns a lazy infinite list of repeated applications of the
- * [function] to the [initial] value.
+ * [function] to the initial [value].
  *
  * For example, the expression
  *
@@ -13,19 +13,19 @@ part of iterable;
  *     [0, 1, 2, 3, 4, ...]
  *
  */
-Iterable iterate(/* E */ initial, /* E */ function(/* E */ value)) {
-  return new _IterateIterable(initial, function);
+Iterable iterate(/* E */ value, /* E */ function(/* E */ value)) {
+  return new _IterateIterable(value, function);
 }
 
 class _IterateIterable<E> extends IterableBase<E> with InfiniteIterable<E> {
 
-  final E _initial;
+  final E _value;
   final Function _function;
 
-  _IterateIterable(this._initial, this._function);
+  _IterateIterable(this._value, this._function);
 
   @override
-  Iterator<E> get iterator => new _IterateIterator(_initial, _function);
+  Iterator<E> get iterator => new _IterateIterator(_value, _function);
 
 }
 

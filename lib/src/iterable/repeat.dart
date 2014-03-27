@@ -33,7 +33,7 @@ class _RepeatIterator<E> extends Iterator<E> {
 
   E _current;
 
-  _IterateIterator(this._value);
+  _RepeatIterator(this._value);
 
   @override
   E get current => _current;

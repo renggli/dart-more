@@ -2,7 +2,7 @@ part of iterable;
 
 /**
  * Returns a lazy infinite list of repeated applications of the
- * n-ary [function] to its previous n [initial] values.
+ * n-ary [function] to its previous n initial [values].
  *
  * For example, the expression
  *
@@ -13,20 +13,20 @@ part of iterable;
  *     [0, 1, 1, 2, 3, 5, ...]
  *
  */
-Iterable fold(Iterable initial, Function combine) {
-  return new _FoldIterable(initial, combine);
+Iterable /* <E> */ fold(Iterable /* <E> */ values, Function combine) {
+  return new _FoldIterable(values, combine);
 }
 
 class _FoldIterable<E> extends IterableBase<E> with InfiniteIterable<E> {
 
-  final Iterable<E> _initial;
+  final Iterable<E> _values;
   final Function _combine;
 
-  _FoldIterable(this._initial, this._combine);
+  _FoldIterable(this._values, this._combine);
 
   @override
   Iterator<E> get iterator {
-    return new _FoldIterator(new List.from(_initial, growable: false), _combine);
+    return new _FoldIterator(new List.from(_values, growable: false), _combine);
   }
 
 }

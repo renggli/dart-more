@@ -1,7 +1,7 @@
 part of iterable;
 
 /**
- * Returns an empty iterable.
+ * Returns an efficient empty iterable.
  *
  * For example, the expression
  *
@@ -12,7 +12,7 @@ part of iterable;
  *     []
  *
  */
-Iterable empty() => const _EmptyIterable();
+Iterable /* <E> */ empty() => const _EmptyIterable();
 
 class _EmptyIterable<E> implements Iterable<E> {
 

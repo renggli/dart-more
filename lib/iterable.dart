@@ -16,3 +16,4 @@ part 'src/iterable/iterate.dart';
 part 'src/iterable/math.dart';
 part 'src/iterable/repeat.dart';
 part 'src/iterable/string.dart';
+part 'src/iterable/unique.dart';
