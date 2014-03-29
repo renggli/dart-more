@@ -5,6 +5,19 @@ import 'package:more/iterable.dart';
 
 void main() {
   group('iterable', () {
+    group('combinations', () {
+      test('two (without repetitions)', () {
+        var iterable = combinations(string('abcd'), 2, repetitions: false)
+            .map((iterable) => iterable.join());
+        expect(iterable, ['ab', 'ac', 'ad', 'bc', 'bd', 'cd']);
+      });
+      test('two (with repetitions)', () {
+         var iterable = combinations(string('abcd'), 2, repetitions: true)
+             .map((iterable) => iterable.join());
+         expect(iterable, ['aa', 'ab', 'ac', 'ad', 'bb'
+                           'bc', 'bd', 'cc', 'cd', 'dd']);
+       });
+    });
     group('combs', () {
       test('permutations', () {
         expect(permutations([0, 1, 2]),

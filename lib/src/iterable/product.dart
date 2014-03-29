@@ -68,15 +68,16 @@ class _ProductIterator extends Iterator<List> {
         return _sources[i][0];
       }, growable: false);
       return true;
-    } else {
-      for (var i = _state.length - 1; i >= 0; i--) {
-        if (_state[i] < _sources[i].length - 1) {
-          _current[i] = _sources[i][++_state[i]];
-          return true;
-        } else {
-          for (int j = _state.length - 1; j >= i; j--) {
-            _current[j] = _sources[j][_state[j] = 0];
-          }
+    }
+    for (var i = _state.length - 1; i >= 0; i--) {
+      if (_state[i] < _sources[i].length - 1) {
+        _state[i]++;
+        _current[i] = _sources[i][_state[i]];
+        return true;
+      } else {
+        for (int j = _state.length - 1; j >= i; j--) {
+          _state[j] = 0;
+          _current[j] = _sources[j][0];
         }
       }
     }
