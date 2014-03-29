@@ -200,6 +200,43 @@ void main() {
         expect(digits(10000, 16).toList(), [0, 1, 7, 2]);
       });
     });
+    group('product', () {
+      test('2 x 2', () {
+        var iterable = product([[1, 2], [3, 4]]);
+        expect(iterable, [[1, 3], [1, 4], [2, 3], [2, 4]]);
+      });
+      test('1 x 2 x 3', () {
+        var iterable = product([[1], [2, 3], [4, 5, 6]]);
+        expect(iterable, [[1, 2, 4], [1, 2, 5], [1, 2, 6],
+                          [1, 3, 4], [1, 3, 5], [1, 3, 6]]);
+      });
+      test('3 x 2 x 1', () {
+        var iterable = product([[1, 2, 3], [4, 5], [6]]);
+        expect(iterable, [[1, 4, 6], [1, 5, 6], [2, 4, 6],
+                          [2, 5, 6], [3, 4, 6], [3, 5, 6]]);
+      });
+      test('empty', () {
+        expect(product([]), isEmpty);
+        expect(product([[]]), isEmpty);
+        expect(product([[1], []]), isEmpty);
+        expect(product([[], [1]]), isEmpty);
+        expect(product([[1], [], [1]]), isEmpty);
+      });
+    });
+    group('repeat', () {
+      test('finite', () {
+        expect(repeat(0, 0), []);
+        expect(repeat(0, 1), [0]);
+        expect(repeat(0, 2), [0, 0]);
+        expect(repeat(0, 3), [0, 0, 0]);
+        expect(repeat(0, 4), [0, 0, 0, 0]);
+      });
+      test('infinite', () {
+        var infinite = repeat(1);
+        expect(infinite.take(100).every((x) => x == 1), isTrue);
+        expect(() => infinite.length, throwsStateError);
+      });
+    });
     group('string', () {
       group('immutable', () {
         var empty = string('');

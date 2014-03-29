@@ -1,46 +1,45 @@
 part of iterable;
 
 /**
- * Returns a lazy infinite list with a constant [value].
+ * Returns an infinite iterable with a constant [element]. If [count] is
+ * provided the resulting iterator is limited to [count] elements.
  *
- * For example, the expression
+ * Example expressions:
  *
- *     repeat(1);
- *
- * results in the infinite iterable:
- *
- *     [1, 1, 1, 1, 1, ...]
+ *     repeat(2);        // [2, 2, 2, 2, 2, 2, ...]
+ *     repeat('a', 3);   // ['a', 'a', 'a']
  *
  */
-Iterable repeat(/* E */ value) {
-  return new _RepeatIterable(value);
+Iterable repeat(/* E */ element, [int count]) {
+  var iterable = new _RepeatIterable(element);
+  return count == null ? iterable : iterable.take(count);
 }
 
 class _RepeatIterable<E> extends IterableBase<E> with InfiniteIterable<E> {
 
-  final E _value;
+  final E _element;
 
-  _RepeatIterable(this._value);
+  _RepeatIterable(this._element);
 
   @override
-  Iterator<E> get iterator => new _RepeatIterator(_value);
+  Iterator<E> get iterator => new _RepeatIterator(_element);
 
 }
 
 class _RepeatIterator<E> extends Iterator<E> {
 
-  final E _value;
+  final E _element;
 
   E _current;
 
-  _RepeatIterator(this._value);
+  _RepeatIterator(this._element);
 
   @override
   E get current => _current;
 
   @override
   bool moveNext() {
-    _current = _value;
+    _current = _element;
     return true;
   }
 

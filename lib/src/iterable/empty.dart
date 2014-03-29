@@ -12,7 +12,7 @@ part of iterable;
  *     []
  *
  */
-Iterable /* <E> */ empty() => const _EmptyIterable();
+Iterable/*<E>*/ empty() => const _EmptyIterable();
 
 class _EmptyIterable<E> implements Iterable<E> {
 

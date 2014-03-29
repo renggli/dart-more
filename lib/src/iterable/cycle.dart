@@ -1,7 +1,7 @@
 part of iterable;
 
 /**
- * Returns a lazy iterable whose iterator cycles repeatedly over the elements
+ * Returns a iterable whose iterator cycles repeatedly over the elements
  * of an [iterable]. If [count] is specified, the returned iterable has a finite
  * size of [iterable] &times; [count]. If [count] is unspecified the returned
  * iterable is of infinite size.
