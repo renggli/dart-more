@@ -8,7 +8,7 @@ part of iterable;
  *
  *     iterate(0, (n) => n + 1);
  *
- * results in the infinite list of all natural numbers:
+ * results in the infinite iterable of all natural numbers:
  *
  *     [0, 1, 2, 3, 4, ...]
  *

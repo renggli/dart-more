@@ -10,7 +10,7 @@ part of iterable;
  *
  *     cycle([1, 2], 3)
  *
- * results in the finite list:
+ * results in the finite iterable:
  *
  *     [1, 2, 1, 2, 1, 2]
  *
@@ -18,7 +18,7 @@ part of iterable;
  *
  *     cycle([1, 2])
  *
- * results in the infinite list:
+ * results in the infinite iterable:
  *
  *     [1, 2, 1, 2, ...]
  *

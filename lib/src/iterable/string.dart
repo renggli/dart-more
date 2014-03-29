@@ -16,9 +16,9 @@ part of iterable;
  *       .where((char) => char != 'o')
  *       .forEach(print);
  *
- * For a mutable copy of the string see [mutableString(String)].
+ * For a mutable copy of the string see [mutableString(Object)].
  */
-List<String> string(dynamic string) {
+List<String> string(string) {
   return new _String(string.toString());
 }
 
@@ -43,9 +43,9 @@ class _String extends ListBase<String> with UnmodifiableListMixin<String> {
  * Returns a mutable copy of the characters of a [string].
  *
  * For a light-weight immutable iterable list of the characters of the
- * string see [string(String)].
+ * string see [string(Object)].
  */
-List<String> mutableString(dynamic string, {bool growable: true}) {
+List<String> mutableString(string, {bool growable: true}) {
   return new _MutableString(new List.from(string.toString().codeUnits, growable: growable));
 }
 

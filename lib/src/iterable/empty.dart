@@ -7,7 +7,7 @@ part of iterable;
  *
  *     empty()
  *
- * results in the empty list:
+ * results in the empty iterable:
  *
  *     []
  *

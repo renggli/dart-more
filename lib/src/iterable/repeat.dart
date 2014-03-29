@@ -7,7 +7,7 @@ part of iterable;
  *
  *     repeat(1);
  *
- * results in the infinite list:
+ * results in the infinite iterable:
  *
  *     [1, 1, 1, 1, 1, ...]
  *

@@ -8,7 +8,7 @@ part of iterable;
  *
  *     fold([0, 1], (a, b) => a + b);
  *
- * results in the infinite list of all fibonacci numbers:
+ * results in the infinite iterable of all fibonacci numbers:
  *
  *     [0, 1, 1, 2, 3, 5, ...]
  *

@@ -4,7 +4,6 @@
 library iterable;
 
 import 'dart:collection';
-import 'dart:isolate';
 import 'src/utils.dart';
 
 part 'src/iterable/combs.dart';
