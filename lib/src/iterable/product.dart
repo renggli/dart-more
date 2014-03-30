@@ -70,7 +70,7 @@ class _ProductIterator extends Iterator<List> {
       return true;
     }
     for (var i = _state.length - 1; i >= 0; i--) {
-      if (_state[i] < _sources[i].length - 1) {
+      if (_state[i] + 1 < _sources[i].length) {
         _state[i]++;
         _current[i] = _sources[i][_state[i]];
         return true;
