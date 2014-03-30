@@ -130,13 +130,23 @@ class _CombinationsIterator<E> extends Iterator<List<E>> {
       }, growable: false);
       return true;
     }
+    outer:
     for (var i = _state.length - 1; i >= 0; i--) {
       if (_state[i] + 1 < _elements.length) {
         _state[i]++;
         _current[i] = _elements[_state[i]];
-        for (int j = i + 1; j < _state.length; j++) {
-          _state[j] = _state[i];
-          _current[j] = _elements[_state[j]];
+        for (var j = i + 1; j < _state.length; j++) {
+          if (_repetitions) {
+            _state[j] = _state[i];
+            _current[j] = _elements[_state[j]];
+          } else {
+            if (_state[i] + j - i < _elements.length) {
+              _state[j] = _state[i] + j - i;
+              _current[j] = _elements[_state[j]];
+            } else {
+              continue outer;
+            }
+          }
         }
         return true;
       }
