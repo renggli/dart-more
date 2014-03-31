@@ -8,53 +8,69 @@ void main() {
     group('combinations', () {
       var letters = string('abcd');
       var joiner = (iterable) => iterable.join();
-      test('take none (with repetitions)', () {
-        var iterable = combinations(letters, 0, repetitions: true);
-        expect(iterable, isEmpty);
+      group('with repetitions', () {
+        test('take 0', () {
+           var iterable = combinations(letters, 0, repetitions: true);
+           expect(iterable, isEmpty);
+         });
+        test('take 1', () {
+           var iterable = combinations(letters, 1, repetitions: true)
+               .map((iterable) => iterable.join());
+           expect(iterable, ['a', 'b', 'c', 'd']);
+        });
+        test('take 2', () {
+           var iterable = combinations(letters, 2, repetitions: true);
+           expect(iterable.map(joiner), ['aa', 'ab', 'ac', 'ad', 'bb',
+                                         'bc', 'bd', 'cc', 'cd', 'dd']);
+        });
+        test('take 3', () {
+           var iterable = combinations(letters, 3, repetitions: true);
+           expect(iterable.map(joiner), ['aaa', 'aab', 'aac', 'aad',
+                                         'abb', 'abc', 'abd', 'acc',
+                                         'acd', 'add', 'bbb', 'bbc',
+                                         'bbd', 'bcc', 'bcd', 'bdd',
+                                         'ccc', 'ccd', 'cdd', 'ddd']);
+        });
+        test('take 4', () {
+          var iterable = combinations(letters, 4, repetitions: true);
+          expect(iterable.map(joiner), ['aaaa', 'aaab', 'aaac', 'aaad', 'aabb',
+                                        'aabc', 'aabd', 'aacc', 'aacd', 'aadd',
+                                        'abbb', 'abbc', 'abbd', 'abcc', 'abcd',
+                                        'abdd', 'accc', 'accd', 'acdd', 'addd',
+                                        'bbbb', 'bbbc', 'bbbd', 'bbcc', 'bbcd',
+                                        'bbdd', 'bccc', 'bccd', 'bcdd', 'bddd',
+                                        'cccc', 'cccd', 'ccdd', 'cddd', 'dddd']);
+        });
+        test('take 5', () {
+          var iterable = combinations(letters, 5, repetitions: true);
+          expect(iterable.length, 1024);
+        });
       });
-      test('take none (without repetitions)', () {
-        var iterable = combinations(letters, 0, repetitions: false);
-        expect(iterable, isEmpty);
-      });
-      test('take one (with repetitions)', () {
-         var iterable = combinations(letters, 1, repetitions: true)
-             .map((iterable) => iterable.join());
-         expect(iterable, ['a', 'b', 'c', 'd']);
-      });
-      test('take two (without repetitions)', () {
-        var iterable = combinations(letters, 2, repetitions: false);
-        expect(iterable.map(joiner), ['ab', 'ac', 'ad', 'bc', 'bd', 'cd']);
-      });
-      test('take two (with repetitions)', () {
-         var iterable = combinations(letters, 2, repetitions: true);
-         expect(iterable.map(joiner), ['aa', 'ab', 'ac', 'ad', 'bb',
-                                       'bc', 'bd', 'cc', 'cd', 'dd']);
-      });
-      test('take three (without repetitions)', () {
-        var iterable = combinations(letters, 3, repetitions: false);
-        expect(iterable.map(joiner), ['abc', 'abd', 'acd', 'bcd']);
-      });
-      test('take three (with repetitions)', () {
-         var iterable = combinations(letters, 3, repetitions: true);
-         expect(iterable.map(joiner), ['aaa', 'aab', 'aac', 'aad',
-                                       'abb', 'abc', 'abd', 'acc',
-                                       'acd', 'add', 'bbb', 'bbc',
-                                       'bbd', 'bcc', 'bcd', 'bdd',
-                                       'ccc', 'ccd', 'cdd', 'ddd']);
-      });
-      test('take four (without repetitions)', () {
-        var iterable = combinations(letters, 4, repetitions: false);
-        expect(iterable.map(joiner), ['abcd']);
-      });
-      test('take four (with repetitions)', () {
-        var iterable = combinations(letters, 4, repetitions: true);
-        expect(iterable.map(joiner), ['aaaa', 'aaab', 'aaac', 'aaad', 'aabb',
-                                      'aabc', 'aabd', 'aacc', 'aacd', 'aadd',
-                                      'abbb', 'abbc', 'abbd', 'abcc', 'abcd',
-                                      'abdd', 'accc', 'accd', 'acdd', 'addd',
-                                      'bbbb', 'bbbc', 'bbbd', 'bbcc', 'bbcd',
-                                      'bbdd', 'bccc', 'bccd', 'bcdd', 'bddd',
-                                      'cccc', 'cccd', 'ccdd', 'cddd', 'dddd']);
+      group('without repetions', () {
+        test('take 0', () {
+          var iterable = combinations(letters, 0, repetitions: false);
+          expect(iterable, isEmpty);
+        });
+        test('take 1', () {
+          var iterable = combinations(letters, 1, repetitions: false);
+          expect(iterable.map(joiner), ['a', 'b', 'c', 'd']);
+        });
+        test('take 2', () {
+          var iterable = combinations(letters, 2, repetitions: false);
+          expect(iterable.map(joiner), ['ab', 'ac', 'ad', 'bc', 'bd', 'cd']);
+        });
+        test('take 3', () {
+          var iterable = combinations(letters, 3, repetitions: false);
+          expect(iterable.map(joiner), ['abc', 'abd', 'acd', 'bcd']);
+        });
+        test('take 4', () {
+          var iterable = combinations(letters, 4, repetitions: false);
+          expect(iterable.map(joiner), ['abcd']);
+        });
+        test('take 5', () {
+          var iterable = combinations(letters, 5, repetitions: false);
+          expect(iterable, isEmpty);
+        });
       });
       test('range error)', () {
         expect(() => combinations(letters, -1), throwsRangeError);

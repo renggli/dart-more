@@ -65,14 +65,7 @@ def combinations_with_replacement(iterable, r):
             return
         indices[i:] = [indices[i] + 1] * (r - i)
         yield tuple(pool[i] for i in indices)
-The code for combinations_with_replacement() can be also expressed as a subsequence of product() after filtering entries where the elements are not in sorted order (according to their position in the input pool):
 
-def combinations_with_replacement(iterable, r):
-    pool = tuple(iterable)
-    n = len(pool)
-    for indices in product(range(n), repeat=r):
-        if sorted(indices) == list(indices):
-            yield tuple(pool[i] for i in indices)
 The number of items returned is (n+r-1)! / r! / (n-1)! when n > 0.
  *
  */
@@ -97,24 +90,23 @@ class _CombinationsIterable<E> extends IterableBase<List<E>> {
 
   @override
   Iterator<List> get iterator {
-    var state = _repetitions
-        ? new List.filled(_count, 0)
-        : new List.generate(_count, (i) => i, growable: false);
-    return new _CombinationsIterator(_elements, state, _repetitions);
+    var state = new List(_count);
+    return _repetitions
+        ? new _CombinationsWithRepetitionsIterator<E>(_elements, state)
+        : new _CombinationsWithoutRepetitionsIterator<E>(_elements, state);
   }
 
 }
 
-class _CombinationsIterator<E> extends Iterator<List<E>> {
+class _CombinationsWithRepetitionsIterator<E> extends Iterator<List<E>> {
 
   final List<E> _elements;
   final List<int> _state;
-  final bool _repetitions;
 
   List<E> _current = null;
   bool _completed = false;
 
-  _CombinationsIterator(this._elements, this._state, this._repetitions);
+  _CombinationsWithRepetitionsIterator(this._elements, this._state);
 
   @override
   List<E> get current => _current;
@@ -125,10 +117,53 @@ class _CombinationsIterator<E> extends Iterator<List<E>> {
       return false;
     }
     if (_current == null) {
-      _current = new List.generate(_state.length, (i) {
-        return _elements[_state[i]];
-      }, growable: false);
+      for (var i = 0; i < _state.length; i++) {
+        _state[i] = 0;
+        _current[i] = _elements[0];
+      }
       return true;
+    }
+    for (var i = _state.length - 1; i >= 0; i--) {
+      if (_state[i] + 1 < _elements.length) {
+        _state[i]++;
+        _current[i] = _elements[_state[i]];
+        for (var j = i + 1; j < _state.length; j++) {
+          _state[j] = _state[i];
+          _current[j] = _elements[_state[j]];
+        }
+        return true;
+      }
+    }
+    _completed = true;
+    _current = null;
+    return false;
+  }
+
+}
+
+class _CombinationsWithoutRepetitionsIterator<E> extends Iterator<List<E>> {
+
+  final List<E> _elements;
+  final List<int> _state;
+
+  List<E> _current = null;
+  bool _completed = false;
+
+  _CombinationsWithoutRepetitionsIterator(this._elements, this._state);
+
+  @override
+  List<E> get current => _current;
+
+  @override
+  bool moveNext() {
+    if (_completed) {
+      return false;
+    }
+    if (_current == null) {
+      for (var i = 0; i < _state.length; i++) {
+        _state[i] = i;
+        _current[i] = _elements[i];
+      }
     }
     outer:
     for (var i = _state.length - 1; i >= 0; i--) {
@@ -136,16 +171,11 @@ class _CombinationsIterator<E> extends Iterator<List<E>> {
         _state[i]++;
         _current[i] = _elements[_state[i]];
         for (var j = i + 1; j < _state.length; j++) {
-          if (_repetitions) {
-            _state[j] = _state[i];
+          if (_state[i] + j - i < _elements.length) {
+            _state[j] = _state[i] + j - i;
             _current[j] = _elements[_state[j]];
           } else {
-            if (_state[i] + j - i < _elements.length) {
-              _state[j] = _state[i] + j - i;
-              _current[j] = _elements[_state[j]];
-            } else {
-              continue outer;
-            }
+            continue outer;
           }
         }
         return true;
