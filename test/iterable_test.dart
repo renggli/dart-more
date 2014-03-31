@@ -43,7 +43,15 @@ void main() {
         });
         test('take 5', () {
           var iterable = combinations(letters, 5, repetitions: true);
-          expect(iterable.length, 1024);
+          expect(iterable.first.join(), 'aaaaa');
+          expect(iterable.last.join(), 'ddddd');
+          expect(iterable.length, 56);
+        });
+        test('take 6', () {
+          var iterable = combinations(letters, 6, repetitions: true);
+          expect(iterable.first.join(), 'aaaaaa');
+          expect(iterable.last.join(), 'dddddd');
+          expect(iterable.length, 84);
         });
       });
       group('without repetions', () {
@@ -67,13 +75,12 @@ void main() {
           var iterable = combinations(letters, 4, repetitions: false);
           expect(iterable.map(joiner), ['abcd']);
         });
-        test('take 5', () {
-          var iterable = combinations(letters, 5, repetitions: false);
-          expect(iterable, isEmpty);
-        });
       });
-      test('range error)', () {
+      test('range error', () {
         expect(() => combinations(letters, -1), throwsRangeError);
+        expect(() => combinations(letters, -1, repetitions: true), throwsRangeError);
+        expect(() => combinations(letters, -1, repetitions: false), throwsRangeError);
+        expect(() => combinations(letters, 5, repetitions: false), throwsRangeError);
       });
     });
     group('permutations', () {
