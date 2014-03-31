@@ -5,13 +5,9 @@ part of iterable;
  * If [equals] and [hashCode] are omitted, the iterator uses the objects'
  * intrinsic [Object.operator==] and [Object.hashCode] for comparison.
  *
- * For example, the expression
+ * The following expression iterates over 1, 2, 3, and 4:
  *
  *     unique([1, 2, 3, 2, 4])
- *
- * results in the list:
- *
- *     [1, 2, 3, 4]
  *
  */
 Iterable /* <E> */ unique(Iterable /* <E> */ iterable, {bool equals(/* E */ e1, /* E */ e2),
