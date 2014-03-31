@@ -1,109 +1,84 @@
 part of iterable;
 
 /**
- * Returns an iterable over the lexographic permutations of [list] using
- * the optional [comparator].
+ * Returns an iterable over the permutations of [elements]. The permutations
+ * are emitted in lexicographical order based on the input.
  *
- * def permutations(iterable, r=None):
-    # permutations('ABCD', 2) --> AB AC AD BA BC BD CA CB CD DA DB DC
-    # permutations(range(3)) --> 012 021 102 120 201 210
-    pool = tuple(iterable)
-    n = len(pool)
-    r = n if r is None else r
-    if r > n:
-        return
-    indices = range(n)
-    cycles = range(n, n-r, -1)
-    yield tuple(pool[i] for i in indices[:r])
-    while n:
-        for i in reversed(range(r)):
-            cycles[i] -= 1
-            if cycles[i] == 0:
-                indices[i:] = indices[i+1:] + indices[i:i+1]
-                cycles[i] = n - i
-            else:
-                j = cycles[i]
-                indices[i], indices[-j] = indices[-j], indices[i]
-                yield tuple(pool[i] for i in indices[:r])
-                break
-        else:
-            return
-The code for permutations() can be also expressed as a subsequence of product(), filtered to exclude entries with repeated elements (those from the same position in the input pool):
-
-def permutations(iterable, r=None):
-    pool = tuple(iterable)
-    n = len(pool)
-    r = n if r is None else r
-    for indices in product(range(n), repeat=r):
-        if len(set(indices)) == r:
-            yield tuple(pool[i] for i in indices)
-The number of items returned is n! / (n-r)! when 0 <= r <= n or zero when r > n.
-
+ * The following expression iterates over xyz, xzy, yxz, yzx, zxy, and zyx:
+ *
+ *     permutations(string('xyz'));
  *
  */
-Iterable<List> permutations(List list, [Comparator comparator]) {
-  return new _PermutationIterable(list, comparator != null
-      ? comparator : Comparable.compare);
+Iterable<List/*<E>*/> permutations(Iterable/*<E>*/ elements) {
+  elements = elements.toList(growable: false);
+  return elements.isEmpty ? empty() : new _PermutationIterable/*<E>*/(elements);
 }
 
-class _PermutationIterable extends IterableBase<List> {
+class _PermutationIterable<E> extends IterableBase<List<E>> {
 
-  final List _list;
-  final Comparator _comparator;
+  final List<E> _elements;
 
-  _PermutationIterable(this._list, this._comparator);
+  _PermutationIterable(this._elements);
 
   @override
-  Iterator<List> get iterator {
-    return new _PermutationIterator(_list, _comparator);
-  }
+  Iterator<List> get iterator => new _PermutationIterator<E>(_elements);
 
 }
 
-class _PermutationIterator extends Iterator<List> {
+class _PermutationIterator<E> extends Iterator<List<E>> {
 
-  final List _list;
-  final Comparator _comparator;
-  List _current;
+  final List<E> _elements;
+
+  List<int> _state;
+  List<E> _current;
   bool _completed = false;
 
-  _PermutationIterator(this._list, this._comparator);
+  _PermutationIterator(this._elements);
 
   @override
-  List get current => _current;
+  List<E> get current => _current;
 
   @override
   bool moveNext() {
     if (_completed) {
       return false;
     } else if (_current == null) {
-      _current = new List.from(_list, growable: false);
+      _state = new List(_elements.length);
+      _current = new List(_elements.length);
+      for (var i = 0; i < _state.length; i++) {
+        _state[i] = i;
+        _current[i] = _elements[i];
+      }
+      return true;
+    } else {
+      var k = _state.length - 2;
+      while (k >= 0 && _state[k] > _state[k + 1]) {
+        k--;
+      }
+      if (k == -1) {
+        _state = null;
+        _current = null;
+        _completed = true;
+        return false;
+      }
+      var l = _state.length - 1;
+      while (_state[k] > _state[l]) {
+        l--;
+      }
+      swap(k, l);
+      for (var i = k + 1, j = _state.length - 1; i < j; i++, j--) {
+        swap(i, j);
+      }
       return true;
     }
-    var k = _current.length - 2;
-    while (k >= 0 && _comparator(_current[k], _current[k + 1]) >= 0) {
-      k--;
-    }
-    if (k == -1) {
-      _completed = true;
-      _current = null;
-      return false;
-    }
-    var l = _current.length - 1;
-    while (_comparator(_current[k], _current[l]) >= 0) {
-      l--;
-    }
-    _swap(k, l);
-    for (var i = k + 1, j = _current.length - 1; i < j; i++, j--) {
-      _swap(i, j);
-    }
-    return true;
   }
 
-  void _swap(int i, int j) {
-    var temp = _current[i];
-    _current[i] = _current[j];
-    _current[j] = temp;
+  void swap(int i, int j) {
+    var temp = _state[i];
+    _state[i] = _state[j];
+    _state[j] = temp;
+    _current[i] = _elements[_state[i]];
+    _current[j] = _elements[_state[j]];
   }
 
 }

@@ -83,18 +83,6 @@ void main() {
         expect(() => combinations(letters, 5, repetitions: false), throwsRangeError);
       });
     });
-    group('permutations', () {
-      test('permutations', () {
-        expect(permutations([0, 1, 2]),
-            [[0, 1, 2], [0, 2, 1], [1, 0, 2],
-             [1, 2, 0], [2, 0, 1], [2, 1, 0]]);
-      });
-      test('permutations (reverse)', () {
-        expect(permutations([2, 1, 0], (a, b) => b - a),
-            [[2, 1, 0], [2, 0, 1], [1, 2, 0],
-             [1, 0, 2], [0, 2, 1], [0, 1, 2]]);
-      });
-    });
     group('concat', () {
       var a = [1, 2, 3], b = [4, 5], c = [6], d = [];
       test('void', () {
@@ -276,6 +264,33 @@ void main() {
         expect(digits(10001, 16).toList(), [1, 1, 7, 2]);
         expect(digits(1000, 16).toList(), [8, 14, 3]);
         expect(digits(10000, 16).toList(), [0, 1, 7, 2]);
+      });
+    });
+    group('permutations', () {
+      var joiner = (iterable) => iterable.join();
+      test('0', () {
+        var iterator = permutations(string(''));
+        expect(iterator.map(joiner), []);
+      });
+      test('1', () {
+        var iterator = permutations(string('a'));
+        expect(iterator.map(joiner), ['a']);
+      });
+      test('2', () {
+        var iterator = permutations(string('ab'));
+        expect(iterator.map(joiner), ['ab', 'ba']);
+      });
+      test('3', () {
+        var iterator = permutations(string('abc'));
+        expect(iterator.map(joiner), ['abc', 'acb', 'bac', 'bca', 'cab', 'cba']);
+      });
+      test('4', () {
+        var iterator = permutations(string('abcd'));
+        expect(iterator.map(joiner), ['abcd', 'abdc', 'acbd', 'acdb', 'adbc',
+                                      'adcb', 'bacd', 'badc', 'bcad', 'bcda',
+                                      'bdac', 'bdca', 'cabd', 'cadb', 'cbad',
+                                      'cbda', 'cdab', 'cdba', 'dabc', 'dacb',
+                                      'dbac', 'dbca', 'dcab', 'dcba']);
       });
     });
     group('product', () {
