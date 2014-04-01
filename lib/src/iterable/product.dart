@@ -21,7 +21,7 @@ part of iterable;
  *    ['y', 3]
  *
  */
-Iterable<List> product(Iterable<Iterable> iterables) {
+Iterable<List/*<E>*/> product(Iterable<Iterable/*<E>*/> iterables) {
   if (iterables.isEmpty || iterables.any((iterable) => iterable.isEmpty)) {
     return empty();
   } else {
@@ -31,23 +31,23 @@ Iterable<List> product(Iterable<Iterable> iterables) {
   }
 }
 
-class _ProductIterable extends IterableBase<List> {
+class _ProductIterable<E> extends IterableBase<List<E>> {
 
-  final List<List> _sources;
+  final List<List<E>> _sources;
 
   _ProductIterable(this._sources);
 
   @override
-  Iterator<List> get iterator {
+  Iterator<List<E>> get iterator {
     var state = new List.filled(_sources.length, 0);
     return new _ProductIterator(_sources, state);
   }
 
 }
 
-class _ProductIterator extends Iterator<List> {
+class _ProductIterator<E> extends Iterator<List<E>> {
 
-  final List<List> _sources;
+  final List<List<E>> _sources;
   final List<int> _state;
 
   List _current = null;
@@ -56,7 +56,7 @@ class _ProductIterator extends Iterator<List> {
   _ProductIterator(this._sources, this._state);
 
   @override
-  List get current => _current;
+  List<E> get current => _current;
 
   @override
   bool moveNext() {

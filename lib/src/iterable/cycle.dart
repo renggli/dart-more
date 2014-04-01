@@ -23,7 +23,7 @@ part of iterable;
  *     [1, 2, 1, 2, ...]
  *
  */
-Iterable /* <E> */ cycle(Iterable /* <E> */ iterable, [int count = null]) {
+Iterable/*<E>*/ cycle(Iterable/*<E>*/ iterable, [int count = null]) {
   if (count == 0 || iterable.isEmpty) {
     return empty();
   } else if (count == 1 || iterable is InfiniteIterable) {

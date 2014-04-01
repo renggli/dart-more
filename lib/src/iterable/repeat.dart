@@ -10,7 +10,7 @@ part of iterable;
  *     repeat('a', 3);   // ['a', 'a', 'a']
  *
  */
-Iterable repeat(/* E */ element, [int count]) {
+Iterable/*<E>*/ repeat(/*E*/ element, [int count]) {
   var iterable = new _RepeatIterable(element);
   return count == null ? iterable : iterable.take(count);
 }

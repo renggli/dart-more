@@ -13,7 +13,7 @@ part of iterable;
  *     [0, 1, 2, 3, 4, ...]
  *
  */
-Iterable iterate(/* E */ value, /* E */ function(/* E */ value)) {
+Iterable/*<E>*/ iterate(/*E*/ value, /*E*/ function(/*E*/ value)) {
   return new _IterateIterable(value, function);
 }
 
