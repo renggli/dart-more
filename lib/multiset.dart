@@ -239,6 +239,9 @@ class _MultisetIterator<E> extends Iterator<E> {
   _MultisetIterator(this._container, this._elements);
 
   @override
+  E get current => _elements.current;
+
+  @override
   bool moveNext() {
     if (_remaining > 0) {
       _remaining--;
@@ -251,8 +254,5 @@ class _MultisetIterator<E> extends Iterator<E> {
       return true;
     }
   }
-
-  @override
-  E get current => _elements.current;
 
 }

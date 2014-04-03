@@ -35,6 +35,11 @@ class _String extends ListBase<String> with UnmodifiableListMixin<String> {
   String operator [](int index) => new String.fromCharCode(_string.codeUnitAt(index));
 
   @override
+  List<String> sublist(int start, [int end]) {
+    return new _String(_string.substring(start, end));
+  }
+
+  @override
   String toString() => _string;
 
 }
@@ -42,8 +47,16 @@ class _String extends ListBase<String> with UnmodifiableListMixin<String> {
 /**
  * Returns a mutable copy of the characters of a [string].
  *
- * For a light-weight immutable iterable list of the characters of the
- * string see [string(Object)].
+ * For example the following code prints 'Hello Brave World!':
+ *
+ *       var result = mutableString('Hello World');
+ *       result.insertAll(6, string('brave '));
+ *       result[6] = 'B';
+ *       result.add('!');
+ *       print(result);
+ *
+ * For a light-weight immutable iterable list of characters see
+ * [string(Object)].
  */
 List<String> mutableString(string, {bool growable: true}) {
   return new _MutableString(new List.from(string.toString().codeUnits, growable: growable));
@@ -73,6 +86,11 @@ class _MutableString extends ListBase<String> {
     } else {
       throw new ArgumentError('Invalid character: $character');
     }
+  }
+
+  @override
+  List<String> sublist(int start, [int end]) {
+    return new _MutableString(_codeUnits.sublist(start, end));
   }
 
   @override
