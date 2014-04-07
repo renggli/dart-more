@@ -1,6 +1,6 @@
 name: more
 author: Lukas Renggli <renggli@gmail.com>
-version: 1.1.1
+version: 1.2.0
 homepage: https://github.com/renggli/MoreDart
 description: More Dart — Literally
 documentation: http://jenkins.lukas-renggli.ch/view/Dart/job/MoreDart/javadoc/
