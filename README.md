@@ -14,9 +14,9 @@ Various extensions that make Dart a better place:
 
 And there is more to come ...
 
-The library is open source, stable and well tested. Development happens on [GitHub](http://github.com/renggli/dart-more). Feel free to report issues or create a pull-request there. General questions are best asked on [StackOverflow](http://stackoverflow.com/questions/tagged/dart-more).
+This library is open source, stable and well tested. Development happens on [GitHub](http://github.com/renggli/dart-more). Feel free to report issues or create a pull-request there. General questions are best asked on [StackOverflow](http://stackoverflow.com/questions/tagged/dart+more).
 
-Continuous build results are available from [Jenkins](http://jenkins.lukas-renggli.ch/job/dart-more/). An introductionary tutorial is part of the class [documentation](http://jenkins.lukas-renggli.ch/job/dart-more/javadoc/).
+Continuous build results are available from [Jenkins](http://jenkins.lukas-renggli.ch/job/dart-more/).  Up-to-date [documentation](http://jenkins.lukas-renggli.ch/job/dart-more/javadoc/) is created automatically with every new push.
 
 
 Basic Usage
