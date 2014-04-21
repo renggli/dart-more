@@ -1,9 +1,9 @@
 name: more
 author: Lukas Renggli <renggli@gmail.com>
 version: 1.2.0
-homepage: https://github.com/renggli/MoreDart
+homepage: https://github.com/renggli/dart-more
 description: More Dart — Literally
-documentation: http://jenkins.lukas-renggli.ch/view/Dart/job/MoreDart/javadoc/
+documentation: http://jenkins.lukas-renggli.ch/view/Dart/job/dart-more/javadoc/
 environment:
   sdk: '>=0.8.10+6 <2.0.0'
 dev_dependencies:

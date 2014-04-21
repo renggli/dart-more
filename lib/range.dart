@@ -72,7 +72,7 @@ class _RangeList extends ListBase<num> with UnmodifiableListMixin<num> {
     if (0 <= index && index < _length) {
       return _start + _step * index;
     } else {
-      throw new RangeError.value(index);
+      throw new RangeError.range(index, 0, _length);
     }
   }
 

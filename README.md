@@ -1,7 +1,7 @@
 More Dart - Literally
 =====================
 
-Various extension libraries that make Dart a better place.
+Various extensions that make Dart a better place:
 
 - `bit_list.dart` provides a space efficent array data structure that compactly
   stores bits.
@@ -17,5 +17,44 @@ Various extension libraries that make Dart a better place.
 
 And there is more to come ...
 
-Continuous build results are available from [Jenkins](http://jenkins.lukas-renggli.ch/view/Dart/job/MoreDart/)
-and documentation from the [class documentation](http://jenkins.lukas-renggli.ch/view/Dart/job/MoreDart/javadoc/).
+The library is open source, stable and well tested. Development happens on [GitHub](http://github.com/renggli/dart-more). Feel free to report issues or create a pull-request there. General questions are best asked on [StackOverflow](http://stackoverflow.com/questions/tagged/dart-more).
+
+Continuous build results are available from [Jenkins](http://jenkins.lukas-renggli.ch/job/dart-more/). An introductionary tutorial is part of the class [documentation](http://jenkins.lukas-renggli.ch/job/dart-more/javadoc/).
+
+
+Basic Usage
+-----------
+
+### Installation
+
+Add the dependency to your package's pubspec.yaml file:
+
+    dependencies:
+      more: ">=1.0.0 <2.0.0"
+
+Then on the command line run:
+
+    $ pub get
+
+To use one or more of the packages in your Dart code write:
+
+    import 'package:more/bit_list.dart';
+    import 'package:more/char_matcher.dart';
+    import 'package:more/fraction.dart';
+    import 'package:more/int_math.dart';
+    import 'package:more/iterable.dart';
+    import 'package:more/multiset.dart';
+    import 'package:more/ordering.dart';
+    import 'package:more/range.dart';
+
+
+Misc
+----
+
+### History
+
+This library started in April 2013 as I was working through the puzzles of [Project Euler](https://projecteuler.net/) and encountered some missing features in Dart. Over time the library grew and became _more_ useful in many other places, so I created this public library.
+
+### License
+
+The MIT License, see [LICENSE](LICENSE).
