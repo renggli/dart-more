@@ -4,15 +4,15 @@ More Dart - Literally
 Various extensions that make Dart a better place:
 
 - `bit_list.dart` provides a space efficent array data structure that compactly
-  stores bits.
+  stores boolean values.
 - `char_matcher.dart` provides a model for character classes, their composition
   and operations on strings.
 - `fraction.dart` provides support for rational number arithmetic.
-- `int_math.dart` is a collection of common mathematical functions on ints.
+- `int_math.dart` is a collection of common mathematical functions on integers.
 - `iterable.dart` is a collection of iterables and iterators.
 - `multiset.data` a data structure where elements might appear more than once.
 - `ordering.dart` a fluent interface for building comparator functions.
-- `range.dart` provides a function to create iterables yielding arithmetic
+- `range.dart` provides a function to create lists of arithmetic
   progressions.
 
 And there is more to come ...
@@ -53,7 +53,7 @@ Misc
 
 ### History
 
-This library started in April 2013 as I was working through the puzzles of [Project Euler](https://projecteuler.net/) and encountered some missing features in Dart. Over time the library grew and became _more_ useful in many other places, so I created this public library.
+This library started in April 2013 as I was working through the puzzles of [Project Euler](https://projecteuler.net/) and encountered some missing features in Dart. Over time the library grew and became _more_ useful in many other places, so I created this reusable library.
 
 ### License
 
