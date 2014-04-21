@@ -1,6 +1,6 @@
 /**
- * Provides a [Set] like data structure where elements are allowed to
- * appear more than once.
+ * A [Set] like data structure where elements are allowed to appear more
+ * than once.
  */
 library multiset;
 

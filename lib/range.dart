@@ -1,7 +1,7 @@
 /**
- * A function to create iterables over arithmetic progressions.
+ * A function to to create lists of arithmetic progressions.
  *
- * The implementation closely follows the semantics of the range object known
+ * The implementation closely follows the range object known
  * in [Python](http://goo.gl/33Ddi).
  */
 library range;

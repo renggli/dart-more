@@ -1,5 +1,5 @@
 /**
- * Some fancy iterables.
+ * Some fancy iterables and iterators.
  */
 library iterable;
 

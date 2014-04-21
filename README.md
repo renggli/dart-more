@@ -3,17 +3,14 @@ More Dart - Literally
 
 Various extensions that make Dart a better place:
 
-- `bit_list.dart` provides a space efficent array data structure that compactly
-  stores boolean values.
-- `char_matcher.dart` provides a model for character classes, their composition
-  and operations on strings.
-- `fraction.dart` provides support for rational number arithmetic.
+- `bit_list.dart` is a space efficient list storing boolean values.
+- `char_matcher.dart` is a model for character classes, their composition and operations on strings.
+- `fraction.dart` provides exact rational number arithmetic.
 - `int_math.dart` is a collection of common mathematical functions on integers.
 - `iterable.dart` is a collection of iterables and iterators.
 - `multiset.data` a data structure where elements might appear more than once.
 - `ordering.dart` a fluent interface for building comparator functions.
-- `range.dart` provides a function to create lists of arithmetic
-  progressions.
+- `range.dart` is a function to create lists of arithmetic progressions.
 
 And there is more to come ...
 

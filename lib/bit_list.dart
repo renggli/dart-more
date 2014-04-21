@@ -1,3 +1,6 @@
+/**
+ * A space efficient list storing boolean values.
+ */
 library bit_list;
 
 import 'dart:collection';

@@ -1,5 +1,5 @@
 /**
- * Provides support for rational number arithmetic.
+ * Support for exact rational number arithmetic.
  */
 library fraction;
 

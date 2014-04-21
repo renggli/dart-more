@@ -1,5 +1,5 @@
 /**
- * A collection of mathematical functions on [int]s.
+ * A collection of common mathematical functions on integers.
  */
 library int_math;
 
@@ -35,7 +35,10 @@ int factorial(int n) {
   if (n < 0) {
     throw new ArgumentError('factorial($n) is undefined for negative arguments.');
   }
-  var r = _FACTORIALS[n < _FACTORIALS.length ? n : _FACTORIALS.length - 1];
+  if (n < _FACTORIALS.length) {
+    return _FACTORIALS[n];
+  }
+  var r = _FACTORIALS.last;
   for (var i = _FACTORIALS.length; i <= n; i++) {
     r *= i;
   }
@@ -85,7 +88,7 @@ num pow(num x, int y) {
 }
 
 /**
- * Returns the power [x] raised to [m] modulo [m].
+ * Returns the power [x] raised to [y] modulo [m], where [x], [m] and [y] are [int]s.
  */
 int powMod(int x, int y, int m) {
   if (m < 1 || y < 0) {
@@ -109,8 +112,8 @@ int powMod(int x, int y, int m) {
 }
 
 /**
- * Evaluates the polynomial described by the given coefficients [cs]
- * and the value [x].
+ * Evaluates the polynomial described by the given coefficients [cs] and the
+ * value [x].
  *
  * For example, if the list [cs] has 4 elements the function computes:
  *
