@@ -5,7 +5,8 @@ library bit_list;
 
 import 'dart:collection';
 import 'dart:typed_data';
-import 'src/utils.dart';
+
+import 'package:more/iterable.dart';
 
 /**
  * An space efficient fixed length [List] that stores boolean values.

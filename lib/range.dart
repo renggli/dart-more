@@ -7,7 +7,8 @@
 library range;
 
 import 'dart:collection';
-import 'src/utils.dart';
+
+import 'package:more/iterable.dart';
 
 /**
  * Creates a virtual range of numbers containing an arithmetic progressions.

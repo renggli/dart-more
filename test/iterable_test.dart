@@ -3,6 +3,29 @@ library iterable_test;
 import 'package:unittest/unittest.dart';
 import 'package:more/iterable.dart';
 
+void iterableInvariants(Iterable iterable) {
+  var iterator = iterable.iterator;
+  expect(iterator.current, isNull,
+      reason: 'Without moveNext() the current iterator value should be null.');
+  if (iterable is! InfiniteIterable) {
+
+
+
+  }
+
+  if (iterator.moveNext()) {
+    expect(iterator.current, iterable.first);
+
+
+
+
+
+  }
+
+
+}
+
+
 void main() {
   group('iterable', () {
     group('combinations', () {
@@ -203,6 +226,37 @@ void main() {
         expect(empty().toList(growable: false), isEmpty);
         expect(empty().toSet(), isEmpty);
         expect(empty().join(), '');
+      });
+    });
+    group('indexed', () {
+      test('empty', () {
+        var iterable = indexed(empty());
+        expect(iterable, []);
+      });
+      test('simple', () {
+        var iterable = indexed(['a', 'b', 'c']);
+        expect(iterable.map((each) => each.index), [0, 1, 2]);
+        expect(iterable.map((each) => each.value), ['a', 'b', 'c']);
+        expect(iterable.map((each) => each.toString()), ['0: a', '1: b', '2: c']);
+      });
+      test('offset', () {
+        var iterable = indexed(['a', 'b', 'c']);
+        expect(iterable.map((each) => each.index), [0, 1, 2]);
+        expect(iterable.map((each) => each.value), ['a', 'b', 'c']);
+        expect(iterable.map((each) => each.toString()), ['0: a', '1: b', '2: c']);
+      });
+      test('example', () {
+        var actual = indexed(['a', 'b'], offset: 1)
+            .map((each) => '${each.value}-${each.index}')
+            .join(', ');
+        var expected = 'a-1, b-2';
+        expect(actual, expected);
+      });
+      test('reversed', () {
+        var iterable = indexed(indexed(['a', 'b', 'c'])
+            .map((each) => each.toString()).toList().reversed)
+            .map((each) => each.toString()).toList();
+        expect(iterable, ['0: 2: c', '1: 1: b', '2: 0: a']);
       });
     });
     group('fold', () {

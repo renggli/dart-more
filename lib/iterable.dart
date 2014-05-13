@@ -4,13 +4,17 @@
 library iterable;
 
 import 'dart:collection';
-import 'src/utils.dart';
+
+part 'src/iterable/mixins/fixedlength.dart';
+part 'src/iterable/mixins/infinite.dart';
+part 'src/iterable/mixins/unmodifiable.dart';
 
 part 'src/iterable/combinations.dart';
 part 'src/iterable/concat.dart';
 part 'src/iterable/cycle.dart';
 part 'src/iterable/empty.dart';
 part 'src/iterable/fold.dart';
+part 'src/iterable/indexed.dart';
 part 'src/iterable/iterate.dart';
 part 'src/iterable/math.dart';
 part 'src/iterable/permutations.dart';
