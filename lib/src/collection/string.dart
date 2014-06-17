@@ -1,4 +1,4 @@
-part of iterable;
+part of collection;
 
 /**
  * Returns a light-weight immutable iterable list around the characters of

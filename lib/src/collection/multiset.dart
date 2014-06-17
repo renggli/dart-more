@@ -1,11 +1,4 @@
-/**
- * A [Set] like data structure where elements are allowed to appear more
- * than once.
- */
-library multiset;
-
-import 'dart:collection';
-import 'dart:math';
+part of collection;
 
 /**
  * A generalized [Set] (or Bag) in which members are allowed to appear

@@ -1,14 +1,4 @@
-/**
- * A function to to create lists of arithmetic progressions.
- *
- * The implementation closely follows the range object known
- * in [Python](http://goo.gl/33Ddi).
- */
-library range;
-
-import 'dart:collection';
-
-import 'package:more/iterable.dart';
+part of collection;
 
 /**
  * Creates a virtual range of numbers containing an arithmetic progressions.
@@ -49,9 +39,6 @@ List<num> range([num a, num b, num c]) {
   return new _RangeList(start, step, length);
 }
 
-/**
- * An iterable over an arithmetic progression.
- */
 class _RangeList extends ListBase<num> with UnmodifiableListMixin<num> {
 
   final num _start;
@@ -100,9 +87,6 @@ class _RangeList extends ListBase<num> with UnmodifiableListMixin<num> {
 
 }
 
-/**
- * An iterator over an arithmetic progression.
- */
 class _RangeIterator extends Iterator<num> {
 
   final num _start;

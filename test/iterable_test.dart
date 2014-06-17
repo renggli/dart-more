@@ -1,30 +1,8 @@
 library iterable_test;
 
 import 'package:unittest/unittest.dart';
+import 'package:more/collection.dart';
 import 'package:more/iterable.dart';
-
-void iterableInvariants(Iterable iterable) {
-  var iterator = iterable.iterator;
-  expect(iterator.current, isNull,
-      reason: 'Without moveNext() the current iterator value should be null.');
-  if (iterable is! InfiniteIterable) {
-
-
-
-  }
-
-  if (iterator.moveNext()) {
-    expect(iterator.current, iterable.first);
-
-
-
-
-
-  }
-
-
-}
-
 
 void main() {
   group('iterable', () {
@@ -382,116 +360,6 @@ void main() {
         var infinite = repeat(1);
         expect(infinite.take(100).every((x) => x == 1), isTrue);
         expect(() => infinite.length, throwsStateError);
-      });
-    });
-    group('string', () {
-      group('immutable', () {
-        var empty = string('');
-        var plenty = string('More Dart');
-        test('creating', () {
-          var coerced = string(123);
-          expect(coerced.length, 3);
-          expect(coerced.toString(), '123');
-        });
-        test('isEmtpy', () {
-          expect(empty.isEmpty, isTrue);
-          expect(plenty.isEmpty, isFalse);
-        });
-        test('length', () {
-          expect(empty.length, 0);
-          expect(plenty.length, 9);
-        });
-        test('reading', () {
-          expect(plenty[0], 'M');
-          expect(plenty[1], 'o');
-          expect(plenty[2], 'r');
-          expect(plenty[3], 'e');
-          expect(plenty[4], ' ');
-          expect(plenty[5], 'D');
-          expect(plenty[6], 'a');
-          expect(plenty[7], 'r');
-          expect(plenty[8], 't');
-        });
-        test('reading (range error)', () {
-          expect(() => empty[0], throwsRangeError);
-          expect(() => plenty[-1], throwsRangeError);
-          expect(() => plenty[9], throwsRangeError);
-        });
-        test('converting', () {
-          expect(empty.toList(), []);
-          expect(plenty.toList(), ['M', 'o', 'r', 'e', ' ', 'D', 'a', 'r', 't']);
-          expect(empty.toSet(), new Set());
-          expect(plenty.toSet(), new Set.from(['M', 'o', 'r', 'e', ' ', 'D', 'a', 't']));
-          expect(empty.toString(), '');
-          expect(plenty.toString(), 'More Dart');
-        });
-        test('read-only', () {
-          expect(() => plenty[0] = 'a', throwsUnsupportedError);
-          expect(() => plenty.length = 10, throwsUnsupportedError);
-          expect(() => plenty.add('a'), throwsUnsupportedError);
-          expect(() => plenty.remove('a'), throwsUnsupportedError);
-        });
-      });
-      group('mutable', () {
-        var empty = mutableString('');
-        var plenty = mutableString('More Dart');
-        test('creating', () {
-          var coerced = mutableString(123);
-          expect(coerced.length, 3);
-          expect(coerced.toString(), '123');
-        });
-        test('isEmtpy', () {
-          expect(empty.isEmpty, isTrue);
-          expect(plenty.isEmpty, isFalse);
-        });
-        test('length', () {
-          expect(empty.length, 0);
-          expect(plenty.length, 9);
-        });
-        test('reading', () {
-          expect(plenty[0], 'M');
-          expect(plenty[1], 'o');
-          expect(plenty[2], 'r');
-          expect(plenty[3], 'e');
-          expect(plenty[4], ' ');
-          expect(plenty[5], 'D');
-          expect(plenty[6], 'a');
-          expect(plenty[7], 'r');
-          expect(plenty[8], 't');
-        });
-        test('reading (range error)', () {
-          expect(() => empty[0], throwsRangeError);
-          expect(() => plenty[-1], throwsRangeError);
-          expect(() => plenty[9], throwsRangeError);
-        });
-        test('writing', () {
-          var mutable = mutableString('abc');
-          mutable[1] = 'd';
-          expect(mutable.toString(), 'adc');
-        });
-        test('writing (range error)', () {
-          expect(() => empty[0] = 'a', throwsRangeError);
-          expect(() => plenty[-1] = 'a', throwsRangeError);
-          expect(() => plenty[9] = 'a', throwsRangeError);
-        });
-        test('adding', () {
-          var mutable = mutableString('abc');
-          mutable.add('d');
-          expect(mutable.toString(), 'abcd');
-        });
-        test('removing', () {
-          var mutable = mutableString('abc');
-          mutable.remove('a');
-          expect(mutable.toString(), 'bc');
-        });
-        test('converting', () {
-          expect(empty.toList(), []);
-          expect(plenty.toList(), ['M', 'o', 'r', 'e', ' ', 'D', 'a', 'r', 't']);
-          expect(empty.toSet(), new Set());
-          expect(plenty.toSet(), new Set.from(['M', 'o', 'r', 'e', ' ', 'D', 'a', 't']));
-          expect(empty.toString(), '');
-          expect(plenty.toString(), 'More Dart');
-        });
       });
     });
     group('unqiue', () {

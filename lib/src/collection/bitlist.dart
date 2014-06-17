@@ -1,12 +1,4 @@
-/**
- * A space efficient list storing boolean values.
- */
-library bit_list;
-
-import 'dart:collection';
-import 'dart:typed_data';
-
-import 'package:more/iterable.dart';
+part of collection;
 
 /**
  * An space efficient fixed length [List] that stores boolean values.

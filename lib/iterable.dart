@@ -20,5 +20,4 @@ part 'src/iterable/math.dart';
 part 'src/iterable/permutations.dart';
 part 'src/iterable/product.dart';
 part 'src/iterable/repeat.dart';
-part 'src/iterable/string.dart';
 part 'src/iterable/unique.dart';
