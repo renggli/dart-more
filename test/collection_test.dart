@@ -4,7 +4,7 @@ import 'dart:math';
 import 'package:unittest/unittest.dart';
 import 'package:more/collection.dart';
 
-List<bool> randomList(int seed, int length) {
+List<bool> randomBools(int seed, int length) {
   var list = new List();
   var generator = new Random(seed);
   for (var i = 0; i < length; i++) {
@@ -15,6 +15,124 @@ List<bool> randomList(int seed, int length) {
 
 void main() {
   group('collection', () {
+    solo_group('bi-map', () {
+      var example = new BiMap.from({1: 'a', 2: 'b', 3: 'c'});
+      group('construction', () {
+        test('empty', () {
+          var target = new BiMap();
+          expect(target, isEmpty);
+          expect(target, hasLength(0));
+        });
+        test('copy', () {
+          var target = new BiMap.from(example);
+          expect(target.keys, [1, 2, 3]);
+          expect(target.values, ['a', 'b', 'c']);
+        });
+        test('iterable', () {
+          var target = new BiMap.fromIterable(example.keys);
+          expect(target.keys, [1, 2, 3]);
+          expect(target.values, [1, 2, 3]);
+          target = new BiMap.fromIterable(example.keys, key: (e) => e + 1);
+          expect(target.keys, [2, 3, 4]);
+          expect(target.values, [1, 2, 3]);
+          target = new BiMap.fromIterable(example.keys, value: (e) => e + 1);
+          expect(target.keys, [1, 2, 3]);
+          expect(target.values, [2, 3, 4]);
+        });
+        test('iterables', () {
+          var target = new BiMap.fromIterables(example.keys, example.values);
+          expect(target.keys, [1, 2, 3]);
+          expect(target.values, ['a', 'b', 'c']);
+          target = new BiMap.fromIterables(example.values, example.keys);
+          expect(target.keys, ['a', 'b', 'c']);
+          expect(target.values, [1, 2, 3]);
+        });
+      });
+      group('accessing', () {
+        test('indexed', () {
+          expect(example[2], 'b');
+          expect(example['b'], isNull);
+        });
+        test('indexed of inverse', () {
+          expect(example.inverse['b'], 2);
+          expect(example.inverse[2], isNull);
+        });
+        test('keys', () {
+          expect(example.keys, [1, 2, 3]);
+          expect(example.containsKey(2), isTrue);
+          expect(example.containsKey('b'), isFalse);
+        });
+        test('keys of inverse', () {
+          expect(example.inverse.keys, ['a', 'b', 'c']);
+          expect(example.inverse.containsKey(2), isFalse);
+          expect(example.inverse.containsKey('b'), isTrue);
+        });
+        test('values', () {
+          expect(example.values, ['a', 'b', 'c']);
+          expect(example.containsValue(2), isFalse);
+          expect(example.containsValue('b'), isTrue);
+        });
+        test('values of inverse', () {
+          expect(example.inverse.values, [1, 2, 3]);
+          expect(example.inverse.containsValue(2), isTrue);
+          expect(example.inverse.containsValue('b'), isFalse);
+        });
+      });
+      group('writing', () {
+        test('define', () {
+          var target = new BiMap();
+          target[1] = 'a';
+          expect(target.keys, [1]);
+          expect(target.values, ['a']);
+        });
+        test('define inverse', () {
+          var target = new BiMap();
+          target.inverse[1] = 'a';
+          expect(target.keys, ['a']);
+          expect(target.values, [1]);
+        });
+        test('redefine key to new value', () {
+          var target = new BiMap.from(example);
+          target[2] = 'd';
+          expect(target.keys, [1, 3, 2]);
+          expect(target.values, ['a', 'c', 'd']);
+        });
+        test('redefine value to new key', () {
+          var target = new BiMap.from(example);
+          target[4] = 'b';
+          expect(target.keys, [1, 3, 4]);
+          expect(target.values, ['a', 'c', 'b']);
+        });
+        test('redefine key and value', () {
+          var target = new BiMap.from(example);
+          target[1] = 'c';
+          expect(target.keys, [2, 1]);
+          expect(target.values, ['b', 'c']);
+        });
+        test('remove key', () {
+          var target = new BiMap.from(example);
+          expect(target.remove(2), 'b');
+          expect(target.keys, [1, 3]);
+          expect(target.values, ['a', 'c']);
+          expect(target.inverse.keys, ['a', 'c']);
+          expect(target.inverse.values, [1, 3]);
+        });
+        test('remove value', () {
+          var target = new BiMap.from(example);
+          expect(target.inverse.remove('b'), 2);
+          expect(target.keys, [1, 3]);
+          expect(target.values, ['a', 'c']);
+          expect(target.inverse.keys, ['a', 'c']);
+          expect(target.inverse.values, [1, 3]);
+        });
+        test('clear', () {
+          var target = new BiMap.from(example);
+          target.clear();
+          expect(target, isEmpty);
+          expect(target.inverse, isEmpty);
+        });
+      });
+    });
     group('bitlist', () {
       group('construction', () {
         test('without elements', () {
@@ -33,7 +151,7 @@ void main() {
         });
         test('from List', () {
           for (var len = 0; len < 100; len++) {
-            var source = new List.from(randomList(457 * len, len));
+            var source = new List.from(randomBools(457 * len, len));
             var target = new BitList.from(source);
             expect(source, target);
             expect(source, target.toList());
@@ -41,7 +159,7 @@ void main() {
         });
         test('from Set', () {
           for (var len = 0; len < 100; len++) {
-            var source = new Set.from(randomList(827 * len, len));
+            var source = new Set.from(randomBools(827 * len, len));
             var target = new BitList.from(source);
             expect(source, target);
             expect(source, target.toSet());
@@ -49,7 +167,7 @@ void main() {
         });
         test('from BitList', () {
           for (var len = 0; len < 10; len++) {
-            var source = new Set.from(randomList(287 * len, len));
+            var source = new Set.from(randomBools(287 * len, len));
             var target = new BitList.from(source);
             expect(source, target);
             expect(target, source);
@@ -59,7 +177,7 @@ void main() {
       group('accessors', () {
         test('reading', () {
           for (var len = 0; len < 100; len++) {
-            var source = randomList(389 * len, len);
+            var source = randomBools(389 * len, len);
             var target = new BitList.from(source);
             expect(() => target[-1], throwsRangeError);
             for (var i = 0; i < len; i++) {
@@ -70,7 +188,7 @@ void main() {
         });
         test('writing', () {
           for (var len = 0; len < 100; len++) {
-            var source = randomList(389 * len, len);
+            var source = randomBools(389 * len, len);
             var target = new BitList(len);
             expect(() => target[-1] = true, throwsRangeError);
             for (var i = 0; i < len; i++) {
@@ -83,7 +201,7 @@ void main() {
         });
         test('flipping', () {
           for (var len = 0; len < 100; len++) {
-            var source = new BitList.from(randomList(147 * len, 100));
+            var source = new BitList.from(randomBools(147 * len, 100));
             var target = ~source;
             for (var i = 0; i < source.length; i++) {
               var before = source[i];
@@ -95,7 +213,7 @@ void main() {
         });
         test('counting', () {
           for (var len = 0; len < 100; len++) {
-            var list = new BitList.from(randomList(823 * len, len));
+            var list = new BitList.from(randomBools(823 * len, len));
             var trueCount = list.count(true);
             var falseCount = list.count(false);
             expect(trueCount + falseCount, list.length);
@@ -106,15 +224,15 @@ void main() {
       });
       group('operators', () {
         test('complement', () {
-          var source = new BitList.from(randomList(702, 100));
+          var source = new BitList.from(randomBools(702, 100));
           var target = ~source;
           for (var i = 0; i < target.length; i++) {
             expect(target[i], !source[i]);
           }
         });
         test('intersection', () {
-          var source1 = new BitList.from(randomList(439, 100));
-          var source2 = new BitList.from(randomList(902, 100));
+          var source1 = new BitList.from(randomBools(439, 100));
+          var source2 = new BitList.from(randomBools(902, 100));
           var target = source1 & source2;
           for (var i = 0; i < target.length; i++) {
             expect(target[i], source1[i] && source2[i]);
@@ -122,8 +240,8 @@ void main() {
           expect(target, source2 & source1);
         });
         test('union', () {
-          var source1 = new BitList.from(randomList(817, 100));
-          var source2 = new BitList.from(randomList(858, 100));
+          var source1 = new BitList.from(randomBools(817, 100));
+          var source2 = new BitList.from(randomBools(858, 100));
           var target = source1 | source2;
           for (var i = 0; i < target.length; i++) {
             expect(target[i], source1[i] || source2[i]);
@@ -131,8 +249,8 @@ void main() {
           expect(target, source2 | source1);
         });
         test('difference', () {
-          var source1 = new BitList.from(randomList(364, 100));
-          var source2 = new BitList.from(randomList(243, 100));
+          var source1 = new BitList.from(randomBools(364, 100));
+          var source2 = new BitList.from(randomBools(243, 100));
           var target = source1 - source2;
           for (var i = 0; i < target.length; i++) {
             expect(target[i], source1[i] && !source2[i]);
@@ -141,7 +259,7 @@ void main() {
         });
         test('shift-left', () {
           for (var len = 0; len < 100; len++) {
-            var source = new BitList.from(randomList(836 * len, len));
+            var source = new BitList.from(randomBools(836 * len, len));
             for (var shift = 0; shift <= len + 10; shift++) {
               var target = source << shift;
               if (shift == 0) {
@@ -159,7 +277,7 @@ void main() {
         });
         test('shift-right', () {
           for (var len = 0; len < 100; len++) {
-            var source = new BitList.from(randomList(963 * len, len));
+            var source = new BitList.from(randomBools(963 * len, len));
             for (var shift = 0; shift <= len + 10; shift++) {
               var target = source >> shift;
               if (shift == 0) {
