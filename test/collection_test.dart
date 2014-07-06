@@ -313,7 +313,6 @@ void main() {
         expect(() => list.retainWhere((value) => false), throwsUnsupportedError);
       });
     });
-
     group('multiset', () {
       group('construct', () {
         test('empty', () {
@@ -580,43 +579,79 @@ void main() {
       });
     });
     group('range', () {
-      test('no argument constructor', () {
-        expect(range(), []);
+      void verify(List<num> range, List<num> expected) {
+        expect(range, expected);
+        expect(range.length, expected.length);
+        var iterator = range.iterator;
+        for (var i = 0; i < expected.length; i++) {
+          expect(iterator.moveNext(), isTrue);
+          expect(iterator.current, range[i]);
+        }
+        expect(iterator.moveNext(), isFalse);
+        expect(() => range[-1], throwsRangeError);
+        expect(() => range[expected.length], throwsRangeError);
+      }
+      group('constructor', () {
+        test('empty', () {
+          verify(range(), []);
+        });
+        test('1 argument', () {
+          verify(range(0), []);
+          verify(range(1), [0]);
+          verify(range(2), [0, 1]);
+          verify(range(3), [0, 1, 2]);
+        });
+        test('2 argument', () {
+          verify(range(0, 4), [0, 1, 2, 3]);
+          verify(range(5, 9), [5, 6, 7, 8]);
+          verify(range(9, 5), [9, 8, 7, 6]);
+        });
+        test('3 argument (positive step)', () {
+          verify(range(2, 8, 2), [2, 4, 6]);
+          verify(range(3, 8, 2), [3, 5, 7]);
+          verify(range(4, 8, 2), [4, 6]);
+          verify(range(2, 7, 2), [2, 4, 6]);
+          verify(range(2, 6, 2), [2, 4]);
+        });
+        test('3 argument (negative step)', () {
+          verify(range(8, 2, -2), [8, 6, 4]);
+          verify(range(8, 3, -2), [8, 6, 4]);
+          verify(range(8, 4, -2), [8, 6]);
+          verify(range(7, 2, -2), [7, 5, 3]);
+          verify(range(6, 2, -2), [6, 4]);
+        });
+        test('double', () {
+          expect(range(1.5, 4.0), [1.5, 2.5, 3.5]);
+          expect(range(1.5, 1.8, 0.1), [1.5, 1.6, 1.7]);
+          expect(range(1.5, 1.8, 0.2), [1.5, 1.7]);
+        });
+        test('invalid', () {
+          expect(() => range(0, 2, 0), throwsArgumentError);
+          expect(() => range(0, 2, -1), throwsArgumentError);
+          expect(() => range(2, 0, 1), throwsArgumentError);
+        });
       });
-      test('1 argument constructor', () {
-        expect(range(0), []);
-        expect(range(1), [0]);
-        expect(range(2), [0, 1]);
-        expect(range(3), [0, 1, 2]);
-      });
-      test('2 argument constructor', () {
-        expect(range(0, 4), [0, 1, 2, 3]);
-        expect(range(5, 9), [5, 6, 7, 8]);
-      });
-      test('3 argument constructor', () {
-        expect(range(2, 8, 2), [2, 4, 6]);
-        expect(range(3, 8, 2), [3, 5, 7]);
-        expect(range(4, 8, 2), [4, 6]);
-        expect(range(2, 7, 2), [2, 4, 6]);
-        expect(range(2, 6, 2), [2, 4]);
-      });
-      test('3 argument constructor (negative step)', () {
-        expect(range(8, 2, -2), [8, 6, 4]);
-        expect(range(8, 3, -2), [8, 6, 4]);
-        expect(range(8, 4, -2), [8, 6]);
-        expect(range(7, 2, -2), [7, 5, 3]);
-        expect(range(6, 2, -2), [6, 4]);
+      group('sublist', () {
+        test('1 argument', () {
+          verify(range(3).sublist(0), [0, 1, 2]);
+          verify(range(3).sublist(1), [1, 2]);
+          verify(range(3).sublist(2), [2]);
+          verify(range(3).sublist(3), []);
+          expect(() => range(3).sublist(4), throwsRangeError);
+        });
+        test('2 arguments', () {
+          verify(range(3).sublist(0, 3), [0, 1, 2]);
+          verify(range(3).sublist(0, 2), [0, 1]);
+          verify(range(3).sublist(0, 1), [0]);
+          verify(range(3).sublist(0, 0), []);
+          expect(() => range(3).sublist(0, 4), throwsRangeError);
+        });
       });
       test('printing', () {
         expect(range().toString(), 'range()');
         expect(range(1).toString(), 'range(1)');
         expect(range(1, 2).toString(), 'range(1, 2)');
         expect(range(1, 5, 2).toString(), 'range(1, 5, 2)');
-      });
-      test('double range', () {
-        expect(range(1.5, 4.0), [1.5, 2.5, 3.5]);
-        expect(range(1.5, 1.8, 0.1), [1.5, 1.6, 1.7]);
-        expect(range(1.5, 1.8, 0.2), [1.5, 1.7]);
       });
       test('unmodifiable', () {
         var list = range(1, 5);
@@ -640,7 +675,6 @@ void main() {
         expect(() => list.sort(), throwsUnsupportedError);
       });
     });
-
     group('string', () {
       group('immutable', () {
         var empty = string('');

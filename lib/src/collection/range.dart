@@ -24,6 +24,7 @@ List<num> range([num a, num b, num c]) {
     start = a; stop = b; step = c;
   } else if (b != null) {
     start = a; stop = b;
+    step = start <= stop ? 1 : -1;
   } else if (a != null) {
     stop = a;
   }
@@ -65,9 +66,12 @@ class _RangeList extends ListBase<num> with UnmodifiableListMixin<num> {
   }
 
   @override
-  _RangeList sublist(int start, [int end]) {
+  List<num> sublist(int start, [int end]) {
     if (end == null) {
-      end = length - 1;
+      end = length;
+    }
+    if (end < start || end > length) {
+      throw new RangeError.range(end, start, length);
     }
     return new _RangeList(_start + start * _step, _step, end - start);
   }
