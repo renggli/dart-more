@@ -24,6 +24,12 @@ void main() {
       test('isChar', () {
         verify(new CharMatcher.isChar('*'), '*', 'abc123_!@# ');
       });
+      test('isChar number', () {
+        verify(new CharMatcher.isChar(42), '*', 'abc123_!@# ');
+      });
+      test('isChar invalid', () {
+        expect(() => new CharMatcher.isChar('ab'), throwsArgumentError);
+      });
       test('inRange', () {
         verify(new CharMatcher.inRange('a', 'c'), 'abc', 'def123_!@# ');
       });
@@ -46,7 +52,10 @@ void main() {
         verify(new CharMatcher.letterOrDigit(), 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ01234567890_', '!@# ');
       });
       test('whitespace', () {
-        verify(new CharMatcher.whitespace(), ' \n\t', 'abcABC_!@#');
+        var string = new String.fromCharCodes([0x09, 0x0A, 0x0B, 0x0C, 0x0D, 0x20, 0x85, 0xA0,
+          0x1680, 0x180E, 0x2000, 0x2001, 0x2002, 0x2003, 0x2004, 0x2005, 0x2006, 0x2007, 0x2008,
+          0x2009, 0x200A, 0x2028, 0x2029, 0x202F, 0x205F, 0x3000, 0xFEFF]);
+        verify(new CharMatcher.whitespace(), string, 'abcABC_!@#');
       });
     });
     group('operators', () {
@@ -70,6 +79,7 @@ void main() {
         verify(letter | digit | whitespace, 'abc123 ', '_!@#');
         verify(letter | (digit | whitespace), 'abc123 ', '_!@#');
         verify((letter | digit) | whitespace, 'abc123 ', '_!@#');
+        verify((letter | digit) | (whitespace | digit), 'abc123 ', '_!@#');
       });
     });
     group('action', () {
