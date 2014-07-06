@@ -15,7 +15,7 @@ List<bool> randomBools(int seed, int length) {
 
 void main() {
   group('collection', () {
-    solo_group('bi-map', () {
+    group('bi-map', () {
       var example = new BiMap.from({1: 'a', 2: 'b', 3: 'c'});
       group('construction', () {
         test('empty', () {
