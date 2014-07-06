@@ -322,6 +322,13 @@ void main() {
           expect(set, unorderedEquals([]));
           expect(set.distinct, unorderedEquals([]));
         });
+        test('empty identity', () {
+          var set = new Multiset.identity();
+          expect(set, isEmpty);
+          expect(set, hasLength(0));
+          expect(set, unorderedEquals([]));
+          expect(set.distinct, unorderedEquals([]));
+        });
         test('one unique', () {
           var set = new Multiset.from(['a']);
           expect(set, isNot(isEmpty));
@@ -543,6 +550,8 @@ void main() {
           expect(first_set.containsAll(first_list), isTrue);
           expect(first_set.containsAll(second_list), isFalse);
           expect(first_set.containsAll([]), isTrue);
+          expect(first_set.containsAll(['a']), isTrue);
+          expect(first_set.containsAll(['x']), isFalse);
           expect(first_set.containsAll(['a', 'b', 'b']), isFalse);
           expect(first_set.containsAll(['a', 'b', 'd']), isFalse);
         });
