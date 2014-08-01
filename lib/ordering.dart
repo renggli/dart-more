@@ -116,30 +116,24 @@ abstract class Ordering<T> {
   /**
    * Searches the sorted [list] for the specified [value] using binary search.
    *
-   * The search can be optinally limited to a range between [low] and [high].
-   *
    * The method returns the index of the element, or a negative value if the key
    * was not found. The result is undefined if the list is not sorted.
    */
-  int binarySearch(List<T> list, T value, {low, high}) {
-    if (low == null) {
-      low = 0;
-    }
-    if (high == null) {
-      high = list.length - 1;
-    }
-    while (low <= high) {
-      var mid = low + ((high - low) >> 1);
+  int binarySearch(List<T> list, T value) {
+    var min = 0;
+    var max = list.length;
+    while (min < max) {
+      var mid = min + ((max - min) >> 1);
       var comp = compare(list[mid], value);
       if (comp == 0) {
         return mid;
       } else if (comp < 0) {
-        low = mid + 1;
+        min = mid + 1;
       } else {
-        high = mid - 1;
+        max = mid;
       }
     }
-    return -low - 1;
+    return -min - 1;
   }
 
   /**
