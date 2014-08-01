@@ -9,6 +9,16 @@ library ordering;
 
 import 'dart:collection';
 
+part 'src/ordering/comparator.dart';
+part 'src/ordering/compound.dart';
+part 'src/ordering/explicit.dart';
+part 'src/ordering/function.dart';
+part 'src/ordering/lexicographical.dart';
+part 'src/ordering/natural.dart';
+part 'src/ordering/nulls_first.dart';
+part 'src/ordering/nulls_last.dart';
+part 'src/ordering/reverse.dart';
+
 /**
  * An ordering implements a [Comparator] function that can be modified
  * using a fluent interface.
@@ -231,161 +241,5 @@ abstract class Ordering<T> {
     }
     return orElse();
   }
-
-}
-
-class _NaturalOrdering<T> extends Ordering<T> {
-
-  const _NaturalOrdering();
-
-  @override
-  int compare(a, b) => a.compareTo(b);
-
-}
-
-class _ComparatorOrdering<T> extends Ordering<T> {
-
-  final Comparator<T> _comparator;
-
-  _ComparatorOrdering(this._comparator);
-
-  @override
-  int compare(T a, T b) => _comparator(a, b);
-
-}
-
-class _ExplicitOrdering<T> extends Ordering<T> {
-
-  final Map<T, int> _ranking;
-
-  _ExplicitOrdering(this._ranking);
-
-  @override
-  int compare(T a, T b) => _rank(a) - _rank(b);
-
-  int _rank(T element) {
-    var rank = _ranking[element];
-    if (rank == null) {
-      throw new StateError('Unable to compare $element with $this');
-    }
-    return rank;
-  }
-
-}
-
-class _ReverseOrdering<T> extends Ordering<T> {
-
-  final Ordering<T> _other;
-
-  _ReverseOrdering(this._other);
-
-  @override
-  int compare(T a, T b) => _other.compare(b, a);
-
-  @override
-  Ordering<T> reverse() => _other;
-
-}
-
-class _CompoundOrdering<T> extends Ordering<T> {
-
-  final List<Ordering<T>> _orderings;
-
-  _CompoundOrdering(this._orderings);
-
-  @override
-  int compare(T a, T b) {
-    for (var ordering in _orderings) {
-      var result = ordering.compare(a, b);
-      if (result != 0) {
-        return result;
-      }
-    }
-    return 0;
-  }
-
-  @override
-  Ordering<T> compound(Ordering<T> other) {
-    var orderings = new List.from(_orderings)..add(other);
-    return new _CompoundOrdering(new List.from(orderings, growable: false));
-  }
-
-}
-
-class _LexicographicalOrdering<T> extends Ordering<Iterable<T>> {
-
-  final Ordering<T> _other;
-
-  _LexicographicalOrdering(this._other);
-
-  @override
-  int compare(Iterable<T> a, Iterable<T> b) {
-    var ia = a.iterator, ib = b.iterator;
-    while (ia.moveNext()) {
-      if (!ib.moveNext()) {
-        return 1;
-      }
-      var result = _other.compare(ia.current, ib.current);
-      if (result != 0) {
-        return result;
-      }
-    }
-    return ib.moveNext() ? -1 : 0;
-  }
-
-}
-
-class _NullsFirstOrdering<T> extends Ordering<T> {
-
-  final Ordering<T> _ordering;
-
-  _NullsFirstOrdering(this._ordering);
-
-  @override
-  int compare(T a, T b) {
-    if (identical(a, b)) {
-      return 0;
-    } else if (identical(a, null)) {
-      return -1;
-    } else if (identical(b, null)) {
-      return 1;
-    } else {
-      return _ordering.compare(a, b);
-    }
-  }
-
-}
-
-class _NullsLastOrdering<T> extends Ordering<T> {
-
-  final Ordering<T> _ordering;
-
-  _NullsLastOrdering(this._ordering);
-
-  @override
-  int compare(T a, T b) {
-    if (identical(a, b)) {
-      return 0;
-    } else if (identical(a, null)) {
-      return 1;
-    } else if (identical(b, null)) {
-      return -1;
-    } else {
-      return _ordering.compare(a, b);
-    }
-  }
-
-}
-
-class _FunctionOrdering<T> extends Ordering<T> {
-
-  final Ordering _ordering;
-
-  final Function _function;
-
-  _FunctionOrdering(this._ordering, this._function);
-
-  @override
-  int compare(a, b) => _ordering.compare(_function(a), _function(b));
 
 }
