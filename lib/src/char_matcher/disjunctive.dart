@@ -4,7 +4,11 @@ class _DisjunctiveCharMatcher extends CharMatcher {
 
   final List<CharMatcher> _matchers;
 
-  const _DisjunctiveCharMatcher(this._matchers);
+  factory _DisjunctiveCharMatcher(Iterable<CharMatcher> matchers) {
+    return new _DisjunctiveCharMatcher._(new List.from(matchers, growable: false));
+  }
+
+  const _DisjunctiveCharMatcher._(this._matchers);
 
   @override
   CharMatcher operator | (CharMatcher other) {
