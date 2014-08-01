@@ -129,14 +129,14 @@ abstract class Ordering<T> {
       high = list.length - 1;
     }
     while (low <= high) {
-      var mid = low + (high - low) ~/ 2;
-      var cmp = compare(list[mid], value);
-      if (cmp > 0) {
-        high = mid - 1;
-      } else if (cmp < 0) {
+      var mid = low + ((high - low) >> 1);
+      var comp = compare(list[mid], value);
+      if (comp == 0) {
+        return mid;
+      } else if (comp < 0) {
         low = mid + 1;
       } else {
-        return mid;
+        high = mid - 1;
       }
     }
     return -low - 1;
