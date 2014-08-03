@@ -21,6 +21,15 @@ void main() {
         test('empty', () {
           var target = new BiMap();
           expect(target, isEmpty);
+          expect(target.isEmpty, isTrue);
+          expect(target.isNotEmpty, isFalse);
+          expect(target, hasLength(0));
+        });
+        test('idenity', () {
+          var target = new BiMap.identity();
+          expect(target, isEmpty);
+          expect(target.isEmpty, isTrue);
+          expect(target.isNotEmpty, isFalse);
           expect(target, hasLength(0));
         });
         test('copy', () {
@@ -46,6 +55,10 @@ void main() {
           target = new BiMap.fromIterables(example.values, example.keys);
           expect(target.keys, ['a', 'b', 'c']);
           expect(target.values, [1, 2, 3]);
+        });
+        test('iterables (error)', () {
+          expect(() => new BiMap.fromIterables([1], []), throwsArgumentError);
+          expect(() => new BiMap.fromIterables([], [1]), throwsArgumentError);
         });
       });
       group('accessing', () {
@@ -76,6 +89,15 @@ void main() {
           expect(example.inverse.values, [1, 2, 3]);
           expect(example.inverse.containsValue(2), isTrue);
           expect(example.inverse.containsValue('b'), isFalse);
+        });
+        test('iteration', () {
+          var keys = new List(), values = new List();
+          example.forEach((key, value) {
+            keys.add(key);
+            values.add(value);
+          });
+          expect(example.keys, keys);
+          expect(example.values, values);
         });
       });
       group('writing', () {
@@ -130,6 +152,12 @@ void main() {
           target.clear();
           expect(target, isEmpty);
           expect(target.inverse, isEmpty);
+        });
+        test('define if absent', () {
+          var target = new BiMap.from(example);
+          target.putIfAbsent(1, () => fail('Value already present!'));
+          target.putIfAbsent(4, () => 'd');
+          expect(target[4], 'd');
         });
       });
     });
