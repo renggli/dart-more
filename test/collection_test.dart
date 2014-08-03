@@ -348,6 +348,7 @@ void main() {
         expect(() => list.removeLast(), throwsUnsupportedError);
         expect(() => list.removeRange(2, 4), throwsUnsupportedError);
         expect(() => list.removeWhere((value) => true), throwsUnsupportedError);
+        expect(() => list.retainAll([true, false]), throwsUnsupportedError);
         expect(() => list.replaceRange(2, 4, [true, false]), throwsUnsupportedError);
         expect(() => list.retainAll([true, false]), throwsUnsupportedError);
         expect(() => list.retainWhere((value) => false), throwsUnsupportedError);

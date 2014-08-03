@@ -85,6 +85,14 @@ void main() {
         verify(ordering, ['4444', '44', '2', '1', '333', '22', '33'],
             ['1', '2', '22', '33', '44', '333', '4444']);
       });
+      test('compound of compound', () {
+        var ordering = natural.onResultOf((list) => list[0])
+             .compound(natural.onResultOf((list) => list[1]))
+             .compound(natural.onResultOf((list) => list[2]));
+        verify(ordering, [[2, 0, 0], [1, 0, 0]], [[1, 0, 0], [2, 0, 0]]);
+        verify(ordering, [[0, 2, 0], [0, 1, 0]], [[0, 1, 0], [0, 2, 0]]);
+        verify(ordering, [[0, 0, 2], [0, 0, 1]], [[0, 0, 1], [0, 0, 2]]);
+      });
       test('onResultOf', () {
         var ordering = natural.onResultOf((str) => str.length);
         verify(ordering, ['*', '**', '***'], ['*', '**', '***']);
