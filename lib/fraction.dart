@@ -120,7 +120,10 @@ class Fraction implements Comparable<Fraction> {
 
   @override
   int get hashCode {
-    return numerator.hashCode + denominator.hashCode;
+    var result = 17;
+    result = 37 * result + numerator.hashCode;
+    result = 37 * result + denominator.hashCode;
+    return result;
   }
 
   @override

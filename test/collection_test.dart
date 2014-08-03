@@ -1,4 +1,4 @@
-library bit_list_test;
+library collection_test;
 
 import 'dart:math';
 import 'package:unittest/unittest.dart';

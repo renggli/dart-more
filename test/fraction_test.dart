@@ -71,6 +71,11 @@ void main() {
           }
         }
       });
+      test('double error', () {
+        expect(() => new Fraction.fromDouble(double.NAN), throwsArgumentError);
+        expect(() => new Fraction.fromDouble(double.INFINITY), throwsArgumentError);
+        expect(() => new Fraction.fromDouble(double.NEGATIVE_INFINITY), throwsArgumentError);
+      });
       test('zero', () {
         expect(Fraction.ZERO, new Fraction(0));
         expect(new Fraction(1, 2) + Fraction.ZERO, new Fraction(1, 2));
@@ -108,12 +113,31 @@ void main() {
         expect(new Fraction(2, -3).abs(), new Fraction(2, 3));
         expect(new Fraction(2, 3).abs(), new Fraction(2, 3));
       });
+      test('round', () {
+        expect(new Fraction(2, 3).round(), 1);
+        expect(new Fraction(-2, 3).round(), -1);
+      });
+      test('floor', () {
+        expect(new Fraction(2, 3).floor(), 0);
+        expect(new Fraction(-2, 3).floor(), -1);
+      });
+      test('ceil', () {
+        expect(new Fraction(2, 3).ceil(), 1);
+        expect(new Fraction(-2, 3).ceil(), 0);
+      });
+      test('truncate', () {
+        expect(new Fraction(2, 3).truncate(), 0);
+        expect(new Fraction(-5, 3).truncate(), -1);
+      });
     });
     group('comparing', () {
       test('compareTo', () {
         expect(new Fraction(2, 3).compareTo(new Fraction(2, 3)), 1.compareTo(1));
         expect(new Fraction(2, 3).compareTo(new Fraction(4, 5)), 1.compareTo(2));
         expect(new Fraction(4, 5).compareTo(new Fraction(2, 3)), 2.compareTo(1));
+      });
+      test('hash code', () {
+        expect(new Fraction(2, 3).hashCode, isNot(new Fraction(3, 2).hashCode));
       });
       test('<', () {
         expect(new Fraction(2, 3) < new Fraction(2, 3), isFalse);
