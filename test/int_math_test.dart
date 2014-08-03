@@ -25,6 +25,7 @@ void main() {
       expect(factorial(20), 2432902008176640000);
       expect(factorial(21), 2432902008176640000 * 21);
       expect(factorial(22), 2432902008176640000 * 21 * 22);
+      expect(() => factorial(-1), throwsArgumentError);
     });
     test('binomial', () {
       expect(binomial(7, 0), 1);
@@ -75,6 +76,8 @@ void main() {
           }
         }
       }
+      expect(() => powMod(1, 1, 0), throwsArgumentError);
+      expect(() => powMod(1, -1, 1), throwsArgumentError);
     });
     test('polynomial', () {
       expect(polynomial([], 10), 0);
