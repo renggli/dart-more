@@ -205,7 +205,7 @@ void main() {
       group('accessors', () {
         test('reading', () {
           for (var len = 0; len < 100; len++) {
-            var source = randomBools(389 * len, len);
+            var source = randomBools(135 * len, len);
             var target = new BitList.from(source);
             expect(() => target[-1], throwsRangeError);
             for (var i = 0; i < len; i++) {
@@ -216,7 +216,7 @@ void main() {
         });
         test('writing', () {
           for (var len = 0; len < 100; len++) {
-            var source = randomBools(389 * len, len);
+            var source = randomBools(396 * len, len);
             var target = new BitList(len);
             expect(() => target[-1] = true, throwsRangeError);
             for (var i = 0; i < len; i++) {
@@ -229,13 +229,15 @@ void main() {
         });
         test('flipping', () {
           for (var len = 0; len < 100; len++) {
-            var source = new BitList.from(randomBools(147 * len, 100));
+            var source = new BitList.from(randomBools(385 * len, len));
             var target = ~source;
-            for (var i = 0; i < source.length; i++) {
+            expect(() => target.flip(-1), throwsRangeError);
+            for (var i = 0; i < len; i++) {
               var before = source[i];
               source.flip(i);
               expect(!before, source[i]);
             }
+            expect(() => target.flip(len), throwsRangeError);
             expect(target, source);
           }
         });
@@ -266,6 +268,9 @@ void main() {
             expect(target[i], source1[i] && source2[i]);
           }
           expect(target, source2 & source1);
+          var other = new BitList(99);
+          expect(() => other & source1, throwsArgumentError);
+          expect(() => source1 & other, throwsArgumentError);
         });
         test('union', () {
           var source1 = new BitList.from(randomBools(817, 100));
@@ -275,6 +280,9 @@ void main() {
             expect(target[i], source1[i] || source2[i]);
           }
           expect(target, source2 | source1);
+          var other = new BitList(99);
+          expect(() => other | source1, throwsArgumentError);
+          expect(() => source1 | other, throwsArgumentError);
         });
         test('difference', () {
           var source1 = new BitList.from(randomBools(364, 100));
@@ -284,6 +292,10 @@ void main() {
             expect(target[i], source1[i] && !source2[i]);
           }
           expect(target, source1 & ~source2);
+          var other = new BitList(99);
+          expect(() => other - source1, throwsArgumentError);
+          expect(() => source1 - other, throwsArgumentError);
+
         });
         test('shift-left', () {
           for (var len = 0; len < 100; len++) {
@@ -299,8 +311,8 @@ void main() {
                   expect(target[i], source[i - shift]);
                 }
               }
-              expect(() => source << -1 - shift, throwsArgumentError);
             }
+            expect(() => source << -1, throwsArgumentError);
           }
         });
         test('shift-right', () {
@@ -317,8 +329,8 @@ void main() {
                   expect(target[i], source[i + shift]);
                 }
               }
-              expect(() => source << -1 - shift, throwsArgumentError);
             }
+            expect(() => source << -1, throwsArgumentError);
           }
         });
       });
