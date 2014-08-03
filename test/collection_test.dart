@@ -731,6 +731,10 @@ void main() {
           expect(() => plenty.add('a'), throwsUnsupportedError);
           expect(() => plenty.remove('a'), throwsUnsupportedError);
         });
+        test('sublist', () {
+          expect(plenty.sublist(5).toString(), plenty.toString().substring(5));
+          expect(plenty.sublist(5, 7).toString(), plenty.toString().substring(5, 7));
+        });
       });
       group('mutable', () {
         var empty = mutableString('');
@@ -774,6 +778,9 @@ void main() {
           expect(() => plenty[-1] = 'a', throwsRangeError);
           expect(() => plenty[9] = 'a', throwsRangeError);
         });
+        test('writing (argument error)', () {
+          expect(() => plenty[0] = 'ab', throwsArgumentError);
+        });
         test('adding', () {
           var mutable = mutableString('abc');
           mutable.add('d');
@@ -791,6 +798,10 @@ void main() {
           expect(plenty.toSet(), new Set.from(['M', 'o', 'r', 'e', ' ', 'D', 'a', 't']));
           expect(empty.toString(), '');
           expect(plenty.toString(), 'More Dart');
+        });
+        test('sublist', () {
+          expect(plenty.sublist(5).toString(), plenty.toString().substring(5));
+          expect(plenty.sublist(5, 7).toString(), plenty.toString().substring(5, 7));
         });
       });
     });
