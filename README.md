@@ -16,7 +16,7 @@ And there is more to come ...
 
 This library is open source, stable and well tested. Development happens on [GitHub](http://github.com/renggli/dart-more). Feel free to report issues or create a pull-request there. General questions are best asked on [StackOverflow](http://stackoverflow.com/questions/tagged/dart+more).
 
-Continuous build results are available from [Jenkins](http://jenkins.lukas-renggli.ch/job/dart-more/).  Up-to-date [documentation](http://jenkins.lukas-renggli.ch/job/dart-more/javadoc/) is created automatically with every new push.
+Continuous build results are available from [Jenkins](http://jenkins.lukas-renggli.ch/job/dart-more).  Up-to-date [documentation](http://jenkins.lukas-renggli.ch/job/dart-more/javadoc) is created automatically with every new push.
 
 
 Basic Usage
