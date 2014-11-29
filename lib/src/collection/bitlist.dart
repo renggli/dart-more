@@ -5,7 +5,7 @@ part of collection;
  */
 class BitList extends ListBase<bool> with FixedLengthListMixin<bool> {
 
-  // constants specific to mapping bits into a [Uint32List]
+  // constants specific to mapping bits into a [UInt32List]
   static const int _SHIFT = 5;
   static const int _OFFSET = 31;
   static const int _MASK = 0xffffffff;

@@ -13,7 +13,7 @@ part of iterable;
  *
  *     combinations(string('xyz'), 2, repetitions: true);
  *
- * If [repetitions] is set to `false` the iterable generates all the subsequences
+ * If [repetitions] is set to `false` the iterable generates all the sub-sequences
  * of length [count]. The number of items returned is:
  *
  *     elements.length! / count! / (elements.length - count)!

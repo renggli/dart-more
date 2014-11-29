@@ -38,7 +38,7 @@ class Fraction implements Comparable<Fraction> {
   }
 
   /**
-   * Constructs an approximative fraction from a floating point [value].
+   * Constructs an approximate fraction from a floating point [value].
    */
   factory Fraction.fromDouble(num value, [num max_denominator = 1e10]) {
     if (value.isInfinite || value.isNaN) {

@@ -32,7 +32,7 @@ part 'src/char_matcher/whitespace.dart';
  *     DIGIT('a'.codeUnitAt(0)); // false
  *
  * A large collection of helper methods let you perform string operations on
- * the occurences of the specified class of characters: trimming, collapsing,
+ * the occurrences of the specified class of characters: trimming, collapsing,
  * replacing, removing, retaining, etc. For example:
  *
  *     String withoutWhitespace = WHITESPACE.removeFrom(string);
@@ -185,7 +185,7 @@ abstract class CharMatcher {
   }
 
   /**
-   * Replaces each matched character in [sequence] with the sepcified
+   * Replaces each matched character in [sequence] with the specified
    * [replacement].
    */
   String replaceFrom(String sequence, String replacement) {

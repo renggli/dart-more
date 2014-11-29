@@ -28,7 +28,7 @@ class Multiset<E> extends IterableBase<E> {
   }
 
   /**
-   * Creates a [Multiset] where the elements and their occurence count is
+   * Creates a [Multiset] where the elements and their occurrence count is
    * computed from an [iterable].
    *
    * The [key] function specifies the actual elements added to the collection.
@@ -63,14 +63,14 @@ class Multiset<E> extends IterableBase<E> {
   /**
    * Adds [element] to the receiver [occurrences] number of times.
    *
-   * Throws an [ArgumentError] if [occurences] is negative.
+   * Throws an [ArgumentError] if [occurrences] is negative.
    */
-  void add(E element, [int occurences = 1]) {
-    if (occurences < 0) {
-      throw new ArgumentError('Negative number of occurences: $occurences');
-    } else if (occurences > 0) {
-      _container[element] = this[element] + occurences;
-      _length += occurences;
+  void add(E element, [int occurrences = 1]) {
+    if (occurrences < 0) {
+      throw new ArgumentError('Negative number of occurences: $occurrences');
+    } else if (occurrences > 0) {
+      _container[element] = this[element] + occurrences;
+      _length += occurrences;
     }
   }
 
@@ -84,19 +84,19 @@ class Multiset<E> extends IterableBase<E> {
   /**
    * Removes [element] from the receiver [occurrences] number of times.
    *
-   * Throws an [ArgumentError] if [occurences] is negative.
+   * Throws an [ArgumentError] if [occurrences] is negative.
    */
-  void remove(Object element, [int occurences = 1]) {
-    if (occurences < 0) {
-      throw new ArgumentError('Negative number of occurences: $occurences');
-    } else if (occurences > 0) {
+  void remove(Object element, [int occurrences = 1]) {
+    if (occurrences < 0) {
+      throw new ArgumentError('Negative number of occurences: $occurrences');
+    } else if (occurrences > 0) {
       var current = this[element];
-      if (current <= occurences) {
+      if (current <= occurrences) {
         _container.remove(element);
         _length -= current;
       } else {
-        _container[element] = current - occurences;
-        _length -= occurences;
+        _container[element] = current - occurrences;
+        _length -= occurrences;
       }
     }
   }
@@ -117,25 +117,25 @@ class Multiset<E> extends IterableBase<E> {
   }
 
   /**
-   * Gets the number of occurences of an [element].
+   * Gets the number of occurrences of an [element].
    */
   int operator [](Object element) {
     return _container.containsKey(element) ? _container[element] : 0;
   }
 
   /**
-   * Sets the number of [occurences] of an [element].
+   * Sets the number of [occurrences] of an [element].
    *
-   * Throws an [ArgumentError] if [occurences] is negative.
+   * Throws an [ArgumentError] if [occurrences] is negative.
    */
-  void operator []=(E element, int occurences) {
-    if (occurences < 0) {
-      throw new ArgumentError('Negative number of occurences: $occurences');
+  void operator []=(E element, int occurrences) {
+    if (occurrences < 0) {
+      throw new ArgumentError('Negative number of occurences: $occurrences');
     } else {
       var current = this[element];
-      if (occurences > 0) {
-        _container[element] = occurences;
-        _length += occurences - current;
+      if (occurrences > 0) {
+        _container[element] = occurrences;
+        _length += occurrences - current;
       } else {
         _container.remove(element);
         _length -= current;
@@ -204,7 +204,7 @@ class Multiset<E> extends IterableBase<E> {
   }
 
   /**
-   * Iterator over the repeated elements of the reciever.
+   * Iterator over the repeated elements of the receiver.
    */
   @override
   Iterator<E> get iterator => new _MultisetIterator<E>(_container, distinct.iterator);

@@ -35,7 +35,7 @@ part 'src/ordering/reverse.dart';
  *
  *     natural.reverse();  // a reverse ordering
  *     natural.nullsFirst();  // orders null values before other values
- *     natural.compount(other);  // breaks ties of natural with other order
+ *     natural.compound(other);  // breaks ties of natural with other order
  *
  * and that allow the user to perform common tasks on an ordering:
  *

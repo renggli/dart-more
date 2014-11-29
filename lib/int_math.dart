@@ -129,7 +129,7 @@ num polynomial(Iterable<num> cs, [num x = 10]) {
 }
 
 /**
- * Returns primes up to a [limit] compued by the Sieve of Eratosthenes.
+ * Returns primes up to a [limit] computed by the Sieve of Eratosthenes.
  */
 List<int> primesUpTo(int limit) {
   var sieve = new BitList(limit + 1);
@@ -152,7 +152,7 @@ List<int> primesUpTo(int limit) {
 /**
  * Tests if the number [n] is probably a prime.
  *
- * The output of this variant of the probabilistic primality test
+ * The output of this variant of the probabilistic prime test
  * by Miller–Rabin is deterministic. It has been verified to return
  * correct results for all n < 341,550,071,728,321.
  */

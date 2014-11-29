@@ -3,7 +3,7 @@ part of collection;
 /**
  * A bi-map associates keys with values and values with keys.
  *
- * Bi-maps behave like maps from key to values, but can effciently provide an inverse
+ * Bi-maps behave like maps from key to values, but can efficiently provide an inverse
  * bi-map that maps values to keys. Also certain operations, such as [containsValue]
  * are much more efficient than with traditional maps.
  */
@@ -15,7 +15,7 @@ class BiMap<K, V> implements Map<K, V> {
   factory BiMap() => new BiMap._(new Map(), new Map());
 
   /**
-   * Creates an empty idenity bi-map.
+   * Creates an empty identity bi-map.
    */
   factory BiMap.identity() => new BiMap._(new Map.identity(), new Map.identity());
 
