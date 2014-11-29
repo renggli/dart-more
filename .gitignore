@@ -8,7 +8,9 @@ pubspec.lock
 .settings
 .children
 .project
+.idea
 *.js
 *.js_
 *.js.map
 *.js.deps
+*.iml
