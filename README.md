@@ -54,4 +54,4 @@ This library started in April 2013 as I was working through the puzzles of [Proj
 
 ### License
 
-The MIT License, see [LICENSE](LICENSE).
+The MIT License, see [LICENSE](https://github.com/renggli/dart-more/raw/master/LICENSE).
