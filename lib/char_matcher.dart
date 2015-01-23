@@ -89,15 +89,15 @@ abstract class CharMatcher {
    * Returns a matcher that matches any character matched by either this
    * matcher or [other].
    */
-  CharMatcher operator | (CharMatcher other) {
+  CharMatcher operator |(CharMatcher other) {
     if (other == _ANY) {
       return other;
     } else if (other == _NONE) {
       return this;
     } else if (other is _DisjunctiveCharMatcher) {
       return new _DisjunctiveCharMatcher(new List()
-          ..add(this)
-          ..addAll(other._matchers));
+        ..add(this)
+        ..addAll(other._matchers));
     } else {
       return new _DisjunctiveCharMatcher([this, other]);
     }
@@ -214,7 +214,8 @@ abstract class CharMatcher {
    */
   String trimFrom(String sequence) {
     var codeUnits = sequence.codeUnits;
-    var left = 0, right = codeUnits.length - 1;
+    var left = 0,
+        right = codeUnits.length - 1;
     while (left <= right && match(codeUnits[left])) {
       left++;
     }
@@ -229,7 +230,8 @@ abstract class CharMatcher {
    */
   String trimLeadingFrom(String sequence) {
     var codeUnits = sequence.codeUnits;
-    var left = 0, right = codeUnits.length - 1;
+    var left = 0,
+        right = codeUnits.length - 1;
     while (left <= right && match(codeUnits[left])) {
       left++;
     }
@@ -241,13 +243,13 @@ abstract class CharMatcher {
    */
   String trimTailingFrom(String sequence) {
     var codeUnits = sequence.codeUnits;
-    var left = 0, right = codeUnits.length - 1;
+    var left = 0,
+        right = codeUnits.length - 1;
     while (left <= right && match(codeUnits[right])) {
       right--;
     }
     return sequence.substring(left, right + 1);
   }
-
 }
 
 int _toCharCode(char) {

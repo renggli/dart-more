@@ -12,6 +12,6 @@ part of iterable;
  *    // equals to [1, 2, 3, 4, 5, 6]
  *    var concatenation = concat([first, second, third]);
  */
-Iterable/*<E>*/ concat(Iterable<Iterable/*<E>*/> iterables) {
+Iterable /*<E>*/ concat(Iterable<Iterable /*<E>*/ > iterables) {
   return iterables.expand((Iterable iterable) => iterable);
 }

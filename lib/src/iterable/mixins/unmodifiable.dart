@@ -8,7 +8,6 @@ part of iterable;
  * unmodifiable lists.
  */
 abstract class UnmodifiableListMixin<E> implements List<E> {
-
   void operator []=(int index, E value) {
     throw new UnsupportedError('Cannot modify an unmodifiable list.');
   }
@@ -88,5 +87,4 @@ abstract class UnmodifiableListMixin<E> implements List<E> {
   void fillRange(int start, int end, [E fillValue]) {
     throw new UnsupportedError('Cannot modify an unmodifiable list.');
   }
-
 }

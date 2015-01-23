@@ -10,24 +10,21 @@ part of iterable;
  *     repeat('a', 3);   // ['a', 'a', 'a']
  *
  */
-Iterable/*<E>*/ repeat(/*E*/ element, [int count]) {
+Iterable /*<E>*/ repeat(/*E*/ element, [int count]) {
   var iterable = new _RepeatIterable(element);
   return count == null ? iterable : iterable.take(count);
 }
 
 class _RepeatIterable<E> extends IterableBase<E> with InfiniteIterable<E> {
-
   final E _element;
 
   _RepeatIterable(this._element);
 
   @override
   Iterator<E> get iterator => new _RepeatIterator(_element);
-
 }
 
 class _RepeatIterator<E> extends Iterator<E> {
-
   final E _element;
 
   E _current;
@@ -42,5 +39,4 @@ class _RepeatIterator<E> extends Iterator<E> {
     _current = _element;
     return true;
   }
-
 }

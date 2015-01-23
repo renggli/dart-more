@@ -91,7 +91,8 @@ void main() {
           expect(example.inverse.containsValue('b'), isFalse);
         });
         test('iteration', () {
-          var keys = new List(), values = new List();
+          var keys = new List(),
+              values = new List();
           example.forEach((key, value) {
             keys.add(key);
             values.add(value);
@@ -295,7 +296,6 @@ void main() {
           var other = new BitList(99);
           expect(() => other - source1, throwsArgumentError);
           expect(() => source1 - other, throwsArgumentError);
-
         });
         test('shift-left', () {
           for (var len = 0; len < 100; len++) {
@@ -422,8 +422,7 @@ void main() {
         });
         test('generate with count', () {
           var set = new Multiset.fromIterable(['aaa', 'bb', 'c'],
-              key: (String e) => e.substring(0, 1),
-              count: (String e) => e.length);
+              key: (String e) => e.substring(0, 1), count: (String e) => e.length);
           expect(set, isNot(isEmpty));
           expect(set, hasLength(6));
           expect(set, unorderedEquals(['a', 'a', 'a', 'b', 'b', 'c']));
@@ -433,7 +432,9 @@ void main() {
       group('adding', () {
         test('zero', () {
           var set = new Multiset();
-          set..add('a', 0)..add('b', 0);
+          set
+            ..add('a', 0)
+            ..add('b', 0);
           expect(set, isEmpty);
           expect(set, hasLength(0));
           expect(set, unorderedEquals([]));
@@ -441,7 +442,10 @@ void main() {
         });
         test('single', () {
           var set = new Multiset();
-          set..add('a')..add('b')..add('b');
+          set
+            ..add('a')
+            ..add('b')
+            ..add('b');
           expect(set, isNot(isEmpty));
           expect(set, hasLength(3));
           expect(set, unorderedEquals(['a', 'b', 'b']));
@@ -449,7 +453,9 @@ void main() {
         });
         test('multiple', () {
           var set = new Multiset();
-          set..add('a', 2)..add('b', 3);
+          set
+            ..add('a', 2)
+            ..add('b', 3);
           expect(set, isNot(isEmpty));
           expect(set, hasLength(5));
           expect(set, unorderedEquals(['a', 'a', 'b', 'b', 'b']));
@@ -475,7 +481,9 @@ void main() {
       group('remvoing', () {
         test('zero', () {
           var set = new Multiset.from(['a', 'a', 'b', 'b', 'b']);
-          set..remove('a', 0)..remove('b', 0);
+          set
+            ..remove('a', 0)
+            ..remove('b', 0);
           expect(set, isNot(isEmpty));
           expect(set, hasLength(5));
           expect(set, unorderedEquals(['a', 'a', 'b', 'b', 'b']));
@@ -483,7 +491,9 @@ void main() {
         });
         test('single', () {
           var set = new Multiset.from(['a', 'a', 'b', 'b', 'b']);
-          set..remove('a')..remove('b');
+          set
+            ..remove('a')
+            ..remove('b');
           expect(set, isNot(isEmpty));
           expect(set, hasLength(3));
           expect(set, unorderedEquals(['a', 'b', 'b']));
@@ -491,7 +501,9 @@ void main() {
         });
         test('multiple', () {
           var set = new Multiset.from(['a', 'a', 'b', 'b', 'b']);
-          set..remove('a', 3)..remove('b', 2);
+          set
+            ..remove('a', 3)
+            ..remove('b', 2);
           expect(set, isNot(isEmpty));
           expect(set, hasLength(1));
           expect(set, unorderedEquals(['b']));
@@ -607,14 +619,18 @@ void main() {
           expect(second_set.intersection(first_list), unorderedEquals(['a', 'c']));
         });
         test('union', () {
-          expect(first_set.union(second_set), unorderedEquals(['a', 'a', 'b', 'c', 'c', 'c', 'd', 'd']));
+          expect(first_set.union(second_set),
+              unorderedEquals(['a', 'a', 'b', 'c', 'c', 'c', 'd', 'd']));
           expect(first_set.union(second_set).distinct, unorderedEquals(['a', 'b', 'c', 'd']));
-          expect(second_set.union(first_set), unorderedEquals(['a', 'a', 'b', 'c', 'c', 'c', 'd', 'd']));
+          expect(second_set.union(first_set),
+              unorderedEquals(['a', 'a', 'b', 'c', 'c', 'c', 'd', 'd']));
           expect(second_set.union(first_set).distinct, unorderedEquals(['a', 'b', 'c', 'd']));
         });
         test('union (iterable)', () {
-          expect(first_set.union(second_list), unorderedEquals(['a', 'a', 'b', 'c', 'c', 'c', 'd', 'd']));
-          expect(second_set.union(first_list), unorderedEquals(['a', 'a', 'b', 'c', 'c', 'c', 'd', 'd']));
+          expect(first_set.union(second_list),
+              unorderedEquals(['a', 'a', 'b', 'c', 'c', 'c', 'd', 'd']));
+          expect(second_set.union(first_list),
+              unorderedEquals(['a', 'a', 'b', 'c', 'c', 'c', 'd', 'd']));
         });
         test('difference', () {
           expect(first_set.difference(second_set), unorderedEquals(['b', 'c']));

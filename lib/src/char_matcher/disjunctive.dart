@@ -1,7 +1,6 @@
 part of char_matcher;
 
 class _DisjunctiveCharMatcher extends CharMatcher {
-
   final List<CharMatcher> _matchers;
 
   factory _DisjunctiveCharMatcher(Iterable<CharMatcher> matchers) {
@@ -11,7 +10,7 @@ class _DisjunctiveCharMatcher extends CharMatcher {
   const _DisjunctiveCharMatcher._(this._matchers);
 
   @override
-  CharMatcher operator | (CharMatcher other) {
+  CharMatcher operator |(CharMatcher other) {
     if (other == _ANY) {
       return other;
     } else if (other == _NONE) {
@@ -31,5 +30,4 @@ class _DisjunctiveCharMatcher extends CharMatcher {
   bool match(int value) {
     return _matchers.any((matcher) => matcher.match(value));
   }
-
 }

@@ -1,7 +1,6 @@
 part of char_matcher;
 
 class _RangeCharMatcher extends CharMatcher {
-
   final int _start;
   final int _stop;
 
@@ -9,5 +8,4 @@ class _RangeCharMatcher extends CharMatcher {
 
   @override
   bool match(int value) => _start <= value && value <= _stop;
-
 }

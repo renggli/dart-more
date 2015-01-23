@@ -1,14 +1,14 @@
 part of ordering;
 
 class _LexicographicalOrdering<T> extends Ordering<Iterable<T>> {
-
   final Ordering<T> _other;
 
   const _LexicographicalOrdering(this._other);
 
   @override
   int compare(Iterable<T> a, Iterable<T> b) {
-    var ia = a.iterator, ib = b.iterator;
+    var ia = a.iterator,
+        ib = b.iterator;
     while (ia.moveNext()) {
       if (!ib.moveNext()) {
         return 1;
@@ -20,5 +20,4 @@ class _LexicographicalOrdering<T> extends Ordering<Iterable<T>> {
     }
     return ib.moveNext() ? -1 : 0;
   }
-
 }

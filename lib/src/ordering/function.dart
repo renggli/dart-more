@@ -1,7 +1,6 @@
 part of ordering;
 
 class _FunctionOrdering<T> extends Ordering<T> {
-
   final Ordering _ordering;
 
   final Function _function;
@@ -10,5 +9,4 @@ class _FunctionOrdering<T> extends Ordering<T> {
 
   @override
   int compare(a, b) => _ordering.compare(_function(a), _function(b));
-
 }

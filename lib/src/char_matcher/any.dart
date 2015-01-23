@@ -3,7 +3,6 @@ part of char_matcher;
 const CharMatcher _ANY = const _AnyCharMatcher();
 
 class _AnyCharMatcher extends CharMatcher {
-
   const _AnyCharMatcher();
 
   @override
@@ -14,5 +13,4 @@ class _AnyCharMatcher extends CharMatcher {
 
   @override
   CharMatcher operator |(CharMatcher other) => this;
-
 }

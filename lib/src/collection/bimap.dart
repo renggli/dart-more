@@ -35,8 +35,7 @@ class BiMap<K, V> implements Map<K, V> {
    */
   factory BiMap.fromIterable(Iterable iterable, {K key(element), V value(element)}) {
     return new BiMap.fromIterables(
-        key == null ? iterable : iterable.map(key),
-        value == null ? iterable : iterable.map(value));
+        key == null ? iterable : iterable.map(key), value == null ? iterable : iterable.map(value));
   }
 
   /**
@@ -44,8 +43,10 @@ class BiMap<K, V> implements Map<K, V> {
    */
   factory BiMap.fromIterables(Iterable<K> keys, Iterable<V> values) {
     var result = new BiMap();
-    var keyIterator = keys.iterator, valueIterator = values.iterator;
-    var moreKeys = keyIterator.moveNext(), moreValues = valueIterator.moveNext();
+    var keyIterator = keys.iterator,
+        valueIterator = values.iterator;
+    var moreKeys = keyIterator.moveNext(),
+        moreValues = valueIterator.moveNext();
     while (moreKeys && moreValues) {
       result[keyIterator.current] = valueIterator.current;
       moreKeys = keyIterator.moveNext();
@@ -138,5 +139,4 @@ class BiMap<K, V> implements Map<K, V> {
 
   @override
   Iterable<V> get values => _backward.keys;
-
 }

@@ -6,7 +6,6 @@ part of iterable;
  * Intended to mix-in on top of [ListMixin] for fixed-length lists.
  */
 abstract class FixedLengthListMixin<E> implements List<E> {
-
   void set length(int newLength) {
     throw new UnsupportedError('Cannot change the length of a fixed-length list.');
   }
@@ -66,5 +65,4 @@ abstract class FixedLengthListMixin<E> implements List<E> {
   void replaceRange(int start, int end, Iterable<E> iterable) {
     throw new UnsupportedError('Cannot remove from a fixed-length list.');
   }
-
 }

@@ -6,7 +6,6 @@ part of iterable;
  * Intended to mix-in on top of [IterableBase].
  */
 abstract class InfiniteIterable<E> implements Iterable<E> {
-
   @override
   int get length {
     throw new StateError('Cannot return the length of an infinite iterable.');
@@ -39,7 +38,7 @@ abstract class InfiniteIterable<E> implements Iterable<E> {
   }
 
   @override
-  List<E> toList({ bool growable: true }) {
+  List<E> toList({bool growable: true}) {
     throw new StateError('Cannot convert an infinite iterable to a list.');
   }
 
@@ -47,5 +46,4 @@ abstract class InfiniteIterable<E> implements Iterable<E> {
   Set<E> toSet() {
     throw new StateError('Cannot convert an infinite iterable to a set.');
   }
-
 }

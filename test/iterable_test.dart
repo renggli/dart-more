@@ -11,36 +11,83 @@ void main() {
       var joiner = (iterable) => iterable.join();
       group('with repetitions', () {
         test('take 0', () {
-           var iterable = combinations(letters, 0, repetitions: true);
-           expect(iterable, isEmpty);
-         });
+          var iterable = combinations(letters, 0, repetitions: true);
+          expect(iterable, isEmpty);
+        });
         test('take 1', () {
-           var iterable = combinations(letters, 1, repetitions: true)
-               .map((iterable) => iterable.join());
-           expect(iterable, ['a', 'b', 'c', 'd']);
+          var iterable =
+              combinations(letters, 1, repetitions: true).map((iterable) => iterable.join());
+          expect(iterable, ['a', 'b', 'c', 'd']);
         });
         test('take 2', () {
-           var iterable = combinations(letters, 2, repetitions: true);
-           expect(iterable.map(joiner), ['aa', 'ab', 'ac', 'ad', 'bb',
-                                         'bc', 'bd', 'cc', 'cd', 'dd']);
+          var iterable = combinations(letters, 2, repetitions: true);
+          expect(
+              iterable.map(joiner), ['aa', 'ab', 'ac', 'ad', 'bb', 'bc', 'bd', 'cc', 'cd', 'dd']);
         });
         test('take 3', () {
-           var iterable = combinations(letters, 3, repetitions: true);
-           expect(iterable.map(joiner), ['aaa', 'aab', 'aac', 'aad',
-                                         'abb', 'abc', 'abd', 'acc',
-                                         'acd', 'add', 'bbb', 'bbc',
-                                         'bbd', 'bcc', 'bcd', 'bdd',
-                                         'ccc', 'ccd', 'cdd', 'ddd']);
+          var iterable = combinations(letters, 3, repetitions: true);
+          expect(iterable.map(joiner), [
+            'aaa',
+            'aab',
+            'aac',
+            'aad',
+            'abb',
+            'abc',
+            'abd',
+            'acc',
+            'acd',
+            'add',
+            'bbb',
+            'bbc',
+            'bbd',
+            'bcc',
+            'bcd',
+            'bdd',
+            'ccc',
+            'ccd',
+            'cdd',
+            'ddd'
+          ]);
         });
         test('take 4', () {
           var iterable = combinations(letters, 4, repetitions: true);
-          expect(iterable.map(joiner), ['aaaa', 'aaab', 'aaac', 'aaad', 'aabb',
-                                        'aabc', 'aabd', 'aacc', 'aacd', 'aadd',
-                                        'abbb', 'abbc', 'abbd', 'abcc', 'abcd',
-                                        'abdd', 'accc', 'accd', 'acdd', 'addd',
-                                        'bbbb', 'bbbc', 'bbbd', 'bbcc', 'bbcd',
-                                        'bbdd', 'bccc', 'bccd', 'bcdd', 'bddd',
-                                        'cccc', 'cccd', 'ccdd', 'cddd', 'dddd']);
+          expect(iterable.map(joiner), [
+            'aaaa',
+            'aaab',
+            'aaac',
+            'aaad',
+            'aabb',
+            'aabc',
+            'aabd',
+            'aacc',
+            'aacd',
+            'aadd',
+            'abbb',
+            'abbc',
+            'abbd',
+            'abcc',
+            'abcd',
+            'abdd',
+            'accc',
+            'accd',
+            'acdd',
+            'addd',
+            'bbbb',
+            'bbbc',
+            'bbbd',
+            'bbcc',
+            'bbcd',
+            'bbdd',
+            'bccc',
+            'bccd',
+            'bcdd',
+            'bddd',
+            'cccc',
+            'cccd',
+            'ccdd',
+            'cddd',
+            'dddd'
+          ]);
         });
         test('take 5', () {
           var iterable = combinations(letters, 5, repetitions: true);
@@ -85,7 +132,10 @@ void main() {
       });
     });
     group('concat', () {
-      var a = [1, 2, 3], b = [4, 5], c = [6], d = [];
+      var a = [1, 2, 3],
+          b = [4, 5],
+          c = [6],
+          d = [];
       test('void', () {
         expect(concat([]), []);
       });
@@ -224,16 +274,16 @@ void main() {
         expect(iterable.map((each) => each.toString()), ['0: a', '1: b', '2: c']);
       });
       test('example', () {
-        var actual = indexed(['a', 'b'], offset: 1)
-            .map((each) => '${each.value}-${each.index}')
-            .join(', ');
+        var actual =
+            indexed(['a', 'b'], offset: 1).map((each) => '${each.value}-${each.index}').join(', ');
         var expected = 'a-1, b-2';
         expect(actual, expected);
       });
       test('reversed', () {
-        var iterable = indexed(indexed(['a', 'b', 'c'])
-            .map((each) => each.toString()).toList().reversed)
-            .map((each) => each.toString()).toList();
+        var iterable = indexed(
+                indexed(['a', 'b', 'c']).map((each) => each.toString()).toList().reversed)
+            .map((each) => each.toString())
+            .toList();
         expect(iterable, ['0: 2: c', '1: 1: b', '2: 0: a']);
       });
     });
@@ -318,11 +368,32 @@ void main() {
       });
       test('4', () {
         var iterator = permutations(string('abcd'));
-        expect(iterator.map(joiner), ['abcd', 'abdc', 'acbd', 'acdb', 'adbc',
-                                      'adcb', 'bacd', 'badc', 'bcad', 'bcda',
-                                      'bdac', 'bdca', 'cabd', 'cadb', 'cbad',
-                                      'cbda', 'cdab', 'cdba', 'dabc', 'dacb',
-                                      'dbac', 'dbca', 'dcab', 'dcba']);
+        expect(iterator.map(joiner), [
+          'abcd',
+          'abdc',
+          'acbd',
+          'acdb',
+          'adbc',
+          'adcb',
+          'bacd',
+          'badc',
+          'bcad',
+          'bcda',
+          'bdac',
+          'bdca',
+          'cabd',
+          'cadb',
+          'cbad',
+          'cbda',
+          'cdab',
+          'cdba',
+          'dabc',
+          'dacb',
+          'dbac',
+          'dbca',
+          'dcab',
+          'dcba'
+        ]);
       });
     });
     group('product', () {
@@ -332,13 +403,11 @@ void main() {
       });
       test('1 x 2 x 3', () {
         var iterable = product([[1], [2, 3], [4, 5, 6]]);
-        expect(iterable, [[1, 2, 4], [1, 2, 5], [1, 2, 6],
-                          [1, 3, 4], [1, 3, 5], [1, 3, 6]]);
+        expect(iterable, [[1, 2, 4], [1, 2, 5], [1, 2, 6], [1, 3, 4], [1, 3, 5], [1, 3, 6]]);
       });
       test('3 x 2 x 1', () {
         var iterable = product([[1, 2, 3], [4, 5], [6]]);
-        expect(iterable, [[1, 4, 6], [1, 5, 6], [2, 4, 6],
-                          [2, 5, 6], [3, 4, 6], [3, 5, 6]]);
+        expect(iterable, [[1, 4, 6], [1, 5, 6], [2, 4, 6], [2, 5, 6], [3, 4, 6], [3, 5, 6]]);
       });
       test('empty', () {
         expect(product([]), isEmpty);
@@ -376,4 +445,3 @@ void main() {
     });
   });
 }
-

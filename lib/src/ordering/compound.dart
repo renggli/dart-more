@@ -1,7 +1,6 @@
 part of ordering;
 
 class _CompoundOrdering<T> extends Ordering<T> {
-
   final List<Ordering<T>> _orderings;
 
   const _CompoundOrdering(this._orderings);
@@ -22,5 +21,4 @@ class _CompoundOrdering<T> extends Ordering<T> {
     var orderings = new List.from(_orderings)..add(other);
     return new _CompoundOrdering(new List.from(orderings, growable: false));
   }
-
 }

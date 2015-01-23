@@ -12,10 +12,9 @@ part of iterable;
  *     []
  *
  */
-Iterable/*<E>*/ empty() => const _EmptyIterable();
+Iterable /*<E>*/ empty() => const _EmptyIterable();
 
 class _EmptyIterable<E> implements Iterable<E> {
-
   const _EmptyIterable();
 
   @override
@@ -52,17 +51,13 @@ class _EmptyIterable<E> implements Iterable<E> {
   Iterable expand(Iterable f(element)) => this;
 
   @override
-  Iterable skip(int count) => count < 0
-      ? throw new RangeError.value(count)
-      : this;
+  Iterable skip(int count) => count < 0 ? throw new RangeError.value(count) : this;
 
   @override
   Iterable skipWhile(bool test(value)) => this;
 
   @override
-  Iterable take(int count) => count < 0
-      ? throw new RangeError.value(count)
-      : this;
+  Iterable take(int count) => count < 0 ? throw new RangeError.value(count) : this;
 
   @override
   Iterable takeWhile(bool test(value)) => this;
@@ -77,19 +72,16 @@ class _EmptyIterable<E> implements Iterable<E> {
   get single => throw new StateError('No elements');
 
   @override
-  firstWhere(bool test(value), { orElse() }) => orElse == null
-      ? throw new StateError('No matching element')
-      : orElse();
+  firstWhere(bool test(value), {orElse()}) =>
+      orElse == null ? throw new StateError('No matching element') : orElse();
 
   @override
-  lastWhere(bool test(value), { orElse() }) => orElse == null
-      ? throw new StateError('No matching element')
-      : orElse();
+  lastWhere(bool test(value), {orElse()}) =>
+      orElse == null ? throw new StateError('No matching element') : orElse();
 
   @override
-  singleWhere(bool test(value), { orElse() }) => orElse == null
-      ? throw new StateError('No matching element')
-      : orElse();
+  singleWhere(bool test(value), {orElse()}) =>
+      orElse == null ? throw new StateError('No matching element') : orElse();
 
   @override
   fold(initialValue, combine(previousValue, element)) => initialValue;
@@ -108,11 +100,9 @@ class _EmptyIterable<E> implements Iterable<E> {
 
   @override
   String join([String separator]) => '';
-
 }
 
 class _EmptyIterator implements Iterator {
-
   const _EmptyIterator();
 
   @override
@@ -120,5 +110,4 @@ class _EmptyIterator implements Iterator {
 
   @override
   bool moveNext() => false;
-
 }

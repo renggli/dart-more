@@ -235,5 +235,4 @@ abstract class Ordering<T> {
     }
     return orElse();
   }
-
 }

@@ -19,11 +19,16 @@ part of collection;
  * step value. For example, `range(1, 7, 2)` yields `[1, 3, 5]`.
  */
 List<num> range([num a, num b, num c]) {
-  var start = 0, stop = 0, step = 1;
+  var start = 0,
+      stop = 0,
+      step = 1;
   if (c != null) {
-    start = a; stop = b; step = c;
+    start = a;
+    stop = b;
+    step = c;
   } else if (b != null) {
-    start = a; stop = b;
+    start = a;
+    stop = b;
     step = start <= stop ? 1 : -1;
   } else if (a != null) {
     stop = a;
@@ -41,7 +46,6 @@ List<num> range([num a, num b, num c]) {
 }
 
 class _RangeList extends ListBase<num> with UnmodifiableListMixin<num> {
-
   final num _start;
   final num _step;
   final int _length;
@@ -88,11 +92,9 @@ class _RangeList extends ListBase<num> with UnmodifiableListMixin<num> {
       return 'range($_start, ${_start + _step * _length}, $_step)';
     }
   }
-
 }
 
 class _RangeIterator extends Iterator<num> {
-
   final num _start;
   final num _step;
   final int _length;
@@ -115,5 +117,4 @@ class _RangeIterator extends Iterator<num> {
       return true;
     }
   }
-
 }

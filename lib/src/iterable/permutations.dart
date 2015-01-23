@@ -9,24 +9,21 @@ part of iterable;
  *     permutations(string('xyz'));
  *
  */
-Iterable<List/*<E>*/> permutations(Iterable/*<E>*/ elements) {
+Iterable<List /*<E>*/ > permutations(Iterable /*<E>*/ elements) {
   elements = elements.toList(growable: false);
-  return elements.isEmpty ? empty() : new _PermutationIterable/*<E>*/(elements);
+  return elements.isEmpty ? empty() : new _PermutationIterable /*<E>*/ (elements);
 }
 
 class _PermutationIterable<E> extends IterableBase<List<E>> {
-
   final List<E> _elements;
 
   _PermutationIterable(this._elements);
 
   @override
   Iterator<List> get iterator => new _PermutationIterator<E>(_elements);
-
 }
 
 class _PermutationIterator<E> extends Iterator<List<E>> {
-
   final List<E> _elements;
 
   List<int> _state;
@@ -80,5 +77,4 @@ class _PermutationIterator<E> extends Iterator<List<E>> {
     _current[i] = _elements[_state[i]];
     _current[j] = _elements[_state[j]];
   }
-
 }

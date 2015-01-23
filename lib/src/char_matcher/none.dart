@@ -3,7 +3,6 @@ part of char_matcher;
 const CharMatcher _NONE = const _NoneCharMatcher();
 
 class _NoneCharMatcher extends CharMatcher {
-
   const _NoneCharMatcher();
 
   @override
@@ -14,5 +13,4 @@ class _NoneCharMatcher extends CharMatcher {
 
   @override
   CharMatcher operator |(CharMatcher other) => other;
-
 }

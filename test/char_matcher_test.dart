@@ -40,21 +40,51 @@ void main() {
         verify(new CharMatcher.digit(), '0123456789', 'abc_!@# ');
       });
       test('letter', () {
-        verify(new CharMatcher.letter(), 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ', '123_!@# ');
+        verify(new CharMatcher.letter(), 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ',
+            '123_!@# ');
       });
       test('lowerCaseLetter', () {
-        verify(new CharMatcher.lowerCaseLetter(), 'abcdefghijklmnopqrstuvwxyz', 'ABCDEFGHIJKLMNOPQRSTUVWXYZ123_!@# ');
+        verify(new CharMatcher.lowerCaseLetter(), 'abcdefghijklmnopqrstuvwxyz',
+            'ABCDEFGHIJKLMNOPQRSTUVWXYZ123_!@# ');
       });
       test('upperCaseLetter', () {
-        verify(new CharMatcher.upperCaseLetter(), 'ABCDEFGHIJKLMNOPQRSTUVWXYZ', 'abcdefghijklmnopqrstuvwxyz123_!@# ');
+        verify(new CharMatcher.upperCaseLetter(), 'ABCDEFGHIJKLMNOPQRSTUVWXYZ',
+            'abcdefghijklmnopqrstuvwxyz123_!@# ');
       });
       test('letterOrDigit', () {
-        verify(new CharMatcher.letterOrDigit(), 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ01234567890_', '!@# ');
+        verify(new CharMatcher.letterOrDigit(),
+            'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ01234567890_', '!@# ');
       });
       test('whitespace', () {
-        var string = new String.fromCharCodes([0x09, 0x0A, 0x0B, 0x0C, 0x0D, 0x20, 0x85, 0xA0,
-          0x1680, 0x180E, 0x2000, 0x2001, 0x2002, 0x2003, 0x2004, 0x2005, 0x2006, 0x2007, 0x2008,
-          0x2009, 0x200A, 0x2028, 0x2029, 0x202F, 0x205F, 0x3000, 0xFEFF]);
+        var string = new String.fromCharCodes([
+          0x09,
+          0x0A,
+          0x0B,
+          0x0C,
+          0x0D,
+          0x20,
+          0x85,
+          0xA0,
+          0x1680,
+          0x180E,
+          0x2000,
+          0x2001,
+          0x2002,
+          0x2003,
+          0x2004,
+          0x2005,
+          0x2006,
+          0x2007,
+          0x2008,
+          0x2009,
+          0x200A,
+          0x2028,
+          0x2029,
+          0x202F,
+          0x205F,
+          0x3000,
+          0xFEFF
+        ]);
         verify(new CharMatcher.whitespace(), string, 'abcABC_!@#');
       });
     });

@@ -1,7 +1,6 @@
 part of char_matcher;
 
 class _NegateCharMatcher extends CharMatcher {
-
   final CharMatcher _matcher;
 
   const _NegateCharMatcher(this._matcher);
@@ -11,5 +10,4 @@ class _NegateCharMatcher extends CharMatcher {
 
   @override
   bool match(int value) => !_matcher.match(value);
-
 }

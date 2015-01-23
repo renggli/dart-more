@@ -18,18 +18,15 @@ Iterable<int> digits(int number, [int base = 10]) {
 }
 
 class _DigitIterable extends IterableBase<int> {
-
   final int _number, _base;
 
   _DigitIterable(this._number, this._base);
 
   @override
   Iterator<int> get iterator => new _DigitIterator(_number, _base);
-
 }
 
 class _DigitIterator extends Iterator<int> {
-
   int _current, _number;
   final int _base;
 
@@ -52,5 +49,4 @@ class _DigitIterator extends Iterator<int> {
       return true;
     }
   }
-
 }

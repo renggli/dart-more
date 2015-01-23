@@ -23,7 +23,7 @@ part of iterable;
  *     combinations(string('xyz'), 2, repetitions: false);
  *
  */
-Iterable<List/*<E>*/> combinations(Iterable/*<E>*/ elements, int count,
+Iterable<List /*<E>*/ > combinations(Iterable /*<E>*/ elements, int count,
     {bool repetitions: false}) {
   elements = elements.toList(growable: false);
   if (count < 0) {
@@ -33,14 +33,13 @@ Iterable<List/*<E>*/> combinations(Iterable/*<E>*/ elements, int count,
   } else if (count == 0 || elements.isEmpty) {
     return empty();
   } else if (repetitions) {
-    return new _CombinationsWithRepetitionsIterable/*<E>*/(elements, count);
+    return new _CombinationsWithRepetitionsIterable /*<E>*/ (elements, count);
   } else {
-    return new _CombinationsWithoutRepetitionsIterable/*<E>*/(elements, count);
+    return new _CombinationsWithoutRepetitionsIterable /*<E>*/ (elements, count);
   }
 }
 
 class _CombinationsWithRepetitionsIterable<E> extends IterableBase<List<E>> {
-
   final List<E> _elements;
   final int _count;
 
@@ -50,11 +49,9 @@ class _CombinationsWithRepetitionsIterable<E> extends IterableBase<List<E>> {
   Iterator<List<E>> get iterator {
     return new _CombinationsWithRepetitionsIterator<E>(_elements, _count);
   }
-
 }
 
 class _CombinationsWithRepetitionsIterator<E> extends Iterator<List<E>> {
-
   final List<E> _elements;
   final int _count;
 
@@ -92,11 +89,9 @@ class _CombinationsWithRepetitionsIterator<E> extends Iterator<List<E>> {
       return false;
     }
   }
-
 }
 
 class _CombinationsWithoutRepetitionsIterable<E> extends IterableBase<List<E>> {
-
   final List<E> _elements;
   final int _count;
 
@@ -106,11 +101,9 @@ class _CombinationsWithoutRepetitionsIterable<E> extends IterableBase<List<E>> {
   Iterator<List<E>> get iterator {
     return new _CombinationsWithoutRepetitionsIterator<E>(_elements, _count);
   }
-
 }
 
 class _CombinationsWithoutRepetitionsIterator<E> extends Iterator<List<E>> {
-
   final List<E> _elements;
   final int _count;
 
@@ -152,5 +145,4 @@ class _CombinationsWithoutRepetitionsIterator<E> extends Iterator<List<E>> {
       return false;
     }
   }
-
 }

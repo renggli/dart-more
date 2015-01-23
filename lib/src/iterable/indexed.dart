@@ -16,8 +16,8 @@ part of iterable;
  *     'a-1, b-2'
  *
  */
-Iterable<Indexed/*<E>*/> indexed(Iterable/*<E>*/ iterable, {int offset: 0}) {
-  return new _IndexedIterable/*<E>*/(iterable, offset);
+Iterable<Indexed /*<E>*/ > indexed(Iterable /*<E>*/ iterable, {int offset: 0}) {
+  return new _IndexedIterable /*<E>*/ (iterable, offset);
 }
 
 /**
@@ -39,11 +39,9 @@ class Indexed<E> {
 
   @override
   String toString() => '$index: $value';
-
 }
 
 class _IndexedIterable<E> extends IterableBase<Indexed<E>> {
-
   final Iterable<E> _iterable;
   final int _offset;
 
@@ -51,11 +49,9 @@ class _IndexedIterable<E> extends IterableBase<Indexed<E>> {
 
   @override
   Iterator<Indexed<E>> get iterator => new _IndexedIterator<E>(_iterable.iterator, _offset);
-
 }
 
 class _IndexedIterator<E> extends Iterator<Indexed<E>> {
-
   final Iterator<E> _iterable;
 
   int _index;
@@ -75,5 +71,4 @@ class _IndexedIterator<E> extends Iterator<Indexed<E>> {
       return false;
     }
   }
-
 }

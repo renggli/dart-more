@@ -1,7 +1,6 @@
 part of ordering;
 
 class _NullsFirstOrdering<T> extends Ordering<T> {
-
   final Ordering<T> _ordering;
 
   const _NullsFirstOrdering(this._ordering);
@@ -18,5 +17,4 @@ class _NullsFirstOrdering<T> extends Ordering<T> {
       return _ordering.compare(a, b);
     }
   }
-
 }

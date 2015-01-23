@@ -45,9 +45,29 @@ int factorial(int n) {
   return r;
 }
 
-const List<int> _FACTORIALS = const [1, 1, 2, 6, 24, 120, 720, 5040, 40320, 362880, 3628800,
-    39916800, 479001600, 6227020800, 87178291200, 1307674368000, 20922789888000, 355687428096000,
-    6402373705728000, 121645100408832000, 2432902008176640000];
+const List<int> _FACTORIALS = const [
+  1,
+  1,
+  2,
+  6,
+  24,
+  120,
+  720,
+  5040,
+  40320,
+  362880,
+  3628800,
+  39916800,
+  479001600,
+  6227020800,
+  87178291200,
+  1307674368000,
+  20922789888000,
+  355687428096000,
+  6402373705728000,
+  121645100408832000,
+  2432902008176640000
+];
 
 /**
  * Returns the binomial coefficient of the arguments. This is the number of
@@ -120,7 +140,8 @@ int powMod(int x, int y, int m) {
  *     c[0]*x^0 + c[1]*x^1 + c[2]*x^3 + c[3]*x^3
  */
 num polynomial(Iterable<num> cs, [num x = 10]) {
-  var r = 0, e = 1;
+  var r = 0,
+      e = 1;
   for (var c in cs) {
     r += c * e;
     e *= x;
@@ -166,7 +187,8 @@ bool isProbablyPrime(int n) {
   if (n < 25) {
     return true;
   }
-  var d = n - 1, s = 0;
+  var d = n - 1,
+      s = 0;
   while (d % 2 == 0) {
     d ~/= 2;
     s++;

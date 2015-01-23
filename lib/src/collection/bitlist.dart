@@ -9,13 +9,74 @@ class BitList extends ListBase<bool> with FixedLengthListMixin<bool> {
   static const int _SHIFT = 5;
   static const int _OFFSET = 31;
   static const int _MASK = 0xffffffff;
-  static const List<int> _SET_MASK = const [1, 2, 4, 8, 16, 32, 64, 128, 256, 512, 1024, 2048, 4096,
-      8192, 16384, 32768, 65536, 131072, 262144, 524288, 1048576, 2097152, 4194304, 8388608, 16777216,
-      33554432, 67108864, 134217728, 268435456, 536870912, 1073741824, 2147483648];
-  static const List<int> _CLR_MASK = const [-2, -3, -5, -9, -17, -33, -65, -129, -257, -513, -1025,
-      -2049, -4097, -8193, -16385, -32769, -65537, -131073, -262145, -524289, -1048577, -2097153,
-      -4194305, -8388609, -16777217, -33554433, -67108865, -134217729, -268435457, -536870913,
-      -1073741825, -2147483649];
+  static const List<int> _SET_MASK = const [
+    1,
+    2,
+    4,
+    8,
+    16,
+    32,
+    64,
+    128,
+    256,
+    512,
+    1024,
+    2048,
+    4096,
+    8192,
+    16384,
+    32768,
+    65536,
+    131072,
+    262144,
+    524288,
+    1048576,
+    2097152,
+    4194304,
+    8388608,
+    16777216,
+    33554432,
+    67108864,
+    134217728,
+    268435456,
+    536870912,
+    1073741824,
+    2147483648
+  ];
+  static const List<int> _CLR_MASK = const [
+    -2,
+    -3,
+    -5,
+    -9,
+    -17,
+    -33,
+    -65,
+    -129,
+    -257,
+    -513,
+    -1025,
+    -2049,
+    -4097,
+    -8193,
+    -16385,
+    -32769,
+    -65537,
+    -131073,
+    -262145,
+    -524289,
+    -1048577,
+    -2097153,
+    -4194305,
+    -8388609,
+    -16777217,
+    -33554433,
+    -67108865,
+    -134217729,
+    -268435457,
+    -536870913,
+    -1073741825,
+    -2147483649
+  ];
 
   /**
    * Constructs a bit list of the given [length].
@@ -196,8 +257,8 @@ class BitList extends ListBase<bool> with FixedLengthListMixin<bool> {
     } else {
       var other_offset = 1 + _OFFSET - offset;
       for (var i = shift + 1; i < _buffer.length; i++) {
-        result._buffer[i] = ((_buffer[i - shift] << offset) & _MASK)
-                          | ((_buffer[i - shift - 1] >> other_offset) & _MASK);
+        result._buffer[i] = ((_buffer[i - shift] << offset) & _MASK) |
+            ((_buffer[i - shift - 1] >> other_offset) & _MASK);
       }
       if (shift < _buffer.length) {
         result._buffer[shift] = (_buffer[0] << offset) & _MASK;
@@ -228,8 +289,8 @@ class BitList extends ListBase<bool> with FixedLengthListMixin<bool> {
       var last = _buffer.length - shift - 1;
       var other_offset = 1 + _OFFSET - offset;
       for (var i = 0; i < last; i++) {
-        result._buffer[i] = ((_buffer[i + shift] >> offset) & _MASK)
-                          | ((_buffer[i + shift + 1] << other_offset) & _MASK);
+        result._buffer[i] = ((_buffer[i + shift] >> offset) & _MASK) |
+            ((_buffer[i + shift + 1] << other_offset) & _MASK);
       }
       if (0 <= last) {
         result._buffer[last] = (_buffer[_buffer.length - 1] >> offset) & _MASK;
@@ -237,5 +298,4 @@ class BitList extends ListBase<bool> with FixedLengthListMixin<bool> {
     }
     return result;
   }
-
 }

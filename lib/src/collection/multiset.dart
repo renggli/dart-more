@@ -219,11 +219,9 @@ class Multiset<E> extends IterableBase<E> {
    */
   @override
   int get length => _length;
-
 }
 
 class _MultisetIterator<E> extends Iterator<E> {
-
   final Map<E, int> _container;
   final Iterator<E> _elements;
 
@@ -247,5 +245,4 @@ class _MultisetIterator<E> extends Iterator<E> {
       return true;
     }
   }
-
 }

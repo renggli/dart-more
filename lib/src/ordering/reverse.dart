@@ -1,7 +1,6 @@
 part of ordering;
 
 class _ReverseOrdering<T> extends Ordering<T> {
-
   final Ordering<T> _other;
 
   const _ReverseOrdering(this._other);
@@ -11,5 +10,4 @@ class _ReverseOrdering<T> extends Ordering<T> {
 
   @override
   Ordering<T> reverse() => _other;
-
 }

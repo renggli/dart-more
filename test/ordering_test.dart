@@ -55,10 +55,8 @@ void main() {
       });
       test('lexicographical', () {
         var ordering = natural.lexicographical();
-        verify(ordering, [[], [1], [1, 1], [1, 2], [2]],
-            [[], [1], [1, 1], [1, 2], [2]]);
-        verify(ordering, [[2], [1, 2], [1, 1], [1], []],
-            [[], [1], [1, 1], [1, 2], [2]]);
+        verify(ordering, [[], [1], [1, 1], [1, 2], [2]], [[], [1], [1, 1], [1, 2], [2]]);
+        verify(ordering, [[2], [1, 2], [1, 1], [1], []], [[], [1], [1, 1], [1, 2], [2]]);
       });
       test('nullsFirst', () {
         var ordering = natural.nullsFirst();
@@ -76,19 +74,25 @@ void main() {
       });
       test('compound', () {
         var ordering = natural.onResultOf((str) => str.length).compound(natural);
-        verify(ordering, ['333', '1', '4444', '22'],
-            ['1', '22', '333', '4444']);
-        verify(ordering, ['2', '333', '4444', '1', '22'],
-            ['1', '2', '22', '333', '4444']);
-        verify(ordering, ['33', '333', '2', '22', '1', '4444'],
-            ['1', '2', '22', '33', '333', '4444']);
-        verify(ordering, ['4444', '44', '2', '1', '333', '22', '33'],
-            ['1', '2', '22', '33', '44', '333', '4444']);
+        verify(ordering, ['333', '1', '4444', '22'], ['1', '22', '333', '4444']);
+        verify(ordering, ['2', '333', '4444', '1', '22'], ['1', '2', '22', '333', '4444']);
+        verify(
+            ordering, ['33', '333', '2', '22', '1', '4444'], ['1', '2', '22', '33', '333', '4444']);
+        verify(ordering, [
+          '4444',
+          '44',
+          '2',
+          '1',
+          '333',
+          '22',
+          '33'
+        ], ['1', '2', '22', '33', '44', '333', '4444']);
       });
       test('compound of compound', () {
-        var ordering = natural.onResultOf((list) => list[0])
-             .compound(natural.onResultOf((list) => list[1]))
-             .compound(natural.onResultOf((list) => list[2]));
+        var ordering = natural
+            .onResultOf((list) => list[0])
+            .compound(natural.onResultOf((list) => list[1]))
+            .compound(natural.onResultOf((list) => list[2]));
         verify(ordering, [[2, 0, 0], [1, 0, 0]], [[1, 0, 0], [2, 0, 0]]);
         verify(ordering, [[0, 2, 0], [0, 1, 0]], [[0, 1, 0], [0, 2, 0]]);
         verify(ordering, [[0, 0, 2], [0, 0, 1]], [[0, 0, 1], [0, 0, 2]]);

@@ -1,7 +1,6 @@
 part of ordering;
 
 class _ExplicitOrdering<T> extends Ordering<T> {
-
   final Map<T, int> _ranking;
 
   const _ExplicitOrdering(this._ranking);
@@ -16,5 +15,4 @@ class _ExplicitOrdering<T> extends Ordering<T> {
     }
     return rank;
   }
-
 }

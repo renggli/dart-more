@@ -10,13 +10,12 @@ part of iterable;
  *     unique([1, 2, 3, 2, 4])
  *
  */
-Iterable/*<E>*/ unique(Iterable/*<E>*/ iterable, {bool equals(/*E*/ e1, /*E*/ e2),
-                                                  int hashCode(/*E*/ e)}) {
+Iterable /*<E>*/ unique(Iterable /*<E>*/ iterable,
+    {bool equals(/*E*/ e1, /*E*/ e2), int hashCode(/*E*/ e)}) {
   return new _UniqueIterable(iterable, equals, hashCode);
 }
 
 class _UniqueIterable<E> extends IterableBase<E> {
-
   final Iterable<E> _iterable;
   final Function _equals;
   final Function _hashCode;
@@ -28,5 +27,4 @@ class _UniqueIterable<E> extends IterableBase<E> {
     var uniques = new HashSet(equals: _equals, hashCode: _hashCode);
     return _iterable.where((element) => uniques.add(element)).iterator;
   }
-
 }

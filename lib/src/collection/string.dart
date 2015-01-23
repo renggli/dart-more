@@ -23,7 +23,6 @@ List<String> string(string) {
 }
 
 class _String extends ListBase<String> with UnmodifiableListMixin<String> {
-
   final String _string;
 
   _String(this._string);
@@ -41,7 +40,6 @@ class _String extends ListBase<String> with UnmodifiableListMixin<String> {
 
   @override
   String toString() => _string;
-
 }
 
 /**
@@ -63,7 +61,6 @@ List<String> mutableString(string, {bool growable: true}) {
 }
 
 class _MutableString extends ListBase<String> {
-
   final List<int> _codeUnits;
 
   _MutableString(this._codeUnits);
@@ -95,5 +92,4 @@ class _MutableString extends ListBase<String> {
 
   @override
   String toString() => new String.fromCharCodes(_codeUnits);
-
 }
