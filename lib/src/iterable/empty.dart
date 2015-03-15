@@ -99,7 +99,7 @@ class _EmptyIterable<E> implements Iterable<E> {
   Set toSet() => new Set();
 
   @override
-  String join([String separator]) => '';
+  String join([String separator = '']) => '';
 }
 
 class _EmptyIterator implements Iterator {
