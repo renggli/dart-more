@@ -35,7 +35,8 @@ class BiMap<K, V> implements Map<K, V> {
    */
   factory BiMap.fromIterable(Iterable iterable, {K key(element), V value(element)}) {
     return new BiMap.fromIterables(
-        key == null ? iterable : iterable.map(key), value == null ? iterable : iterable.map(value));
+        key == null ? iterable : iterable.map(key),
+        value == null ? iterable : iterable.map(value));
   }
 
   /**

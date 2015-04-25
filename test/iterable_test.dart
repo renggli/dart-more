@@ -396,6 +396,32 @@ void main() {
         ]);
       });
     });
+    group('partition', () {
+      test('empty', () {
+        var iterable = partition([], 2);
+        expect(iterable, []);
+      });
+      test('empty with padding', () {
+        var iterable = partition([], 2, 0);
+        expect(iterable, []);
+      });
+      test('even', () {
+        var iterable = partition([1, 2, 3, 4], 2);
+        expect(iterable, [[1, 2], [3, 4]]);
+      });
+      test('even with padding', () {
+        var iterable = partition([1, 2, 3, 4], 2, 0);
+        expect(iterable, [[1, 2], [3, 4]]);
+      });
+      test('odd', () {
+        var iterable = partition([1, 2, 3, 4, 5], 2);
+        expect(iterable, [[1, 2], [3, 4], [5]]);
+      });
+      test('odd with padding', () {
+        var iterable = partition([1, 2, 3, 4, 5], 2, 0);
+        expect(iterable, [[1, 2], [3, 4], [5, 0]]);
+      });
+    });
     group('product', () {
       test('2 x 2', () {
         var iterable = product([[1, 2], [3, 4]]);

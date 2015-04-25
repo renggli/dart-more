@@ -19,9 +19,7 @@ part of collection;
  * step value. For example, `range(1, 7, 2)` yields `[1, 3, 5]`.
  */
 List<num> range([num a, num b, num c]) {
-  var start = 0,
-      stop = 0,
-      step = 1;
+  var start = 0, stop = 0, step = 1;
   if (c != null) {
     start = a;
     stop = b;

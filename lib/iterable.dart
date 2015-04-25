@@ -17,6 +17,7 @@ part 'src/iterable/fold.dart';
 part 'src/iterable/indexed.dart';
 part 'src/iterable/iterate.dart';
 part 'src/iterable/math.dart';
+part 'src/iterable/partition.dart';
 part 'src/iterable/permutations.dart';
 part 'src/iterable/product.dart';
 part 'src/iterable/repeat.dart';
