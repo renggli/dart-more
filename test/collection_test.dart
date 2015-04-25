@@ -362,6 +362,7 @@ void main() {
           expect(set, hasLength(0));
           expect(set, unorderedEquals([]));
           expect(set.distinct, unorderedEquals([]));
+          expect(set.counts, unorderedEquals([]));
         });
         test('empty identity', () {
           var set = new Multiset.identity();
@@ -369,6 +370,7 @@ void main() {
           expect(set, hasLength(0));
           expect(set, unorderedEquals([]));
           expect(set.distinct, unorderedEquals([]));
+          expect(set.counts, unorderedEquals([]));
         });
         test('one unique', () {
           var set = new Multiset.from(['a']);
@@ -376,6 +378,7 @@ void main() {
           expect(set, hasLength(1));
           expect(set, unorderedEquals(['a']));
           expect(set.distinct, unorderedEquals(['a']));
+          expect(set.counts, unorderedEquals([1]));
         });
         test('many unique', () {
           var set = new Multiset.from(['a', 'b', 'c']);
@@ -383,6 +386,7 @@ void main() {
           expect(set, hasLength(3));
           expect(set, unorderedEquals(['a', 'b', 'c']));
           expect(set.distinct, unorderedEquals(['a', 'b', 'c']));
+          expect(set.counts, unorderedEquals([1, 1, 1]));
         });
         test('one repeated', () {
           var set = new Multiset.from(['a', 'a', 'a']);
@@ -390,6 +394,7 @@ void main() {
           expect(set, hasLength(3));
           expect(set, unorderedEquals(['a', 'a', 'a']));
           expect(set.distinct, unorderedEquals(['a']));
+          expect(set.counts, unorderedEquals([3]));
         });
         test('many repeated', () {
           var set = new Multiset.from(['a', 'a', 'a', 'b', 'b', 'c']);
@@ -397,6 +402,7 @@ void main() {
           expect(set, hasLength(6));
           expect(set, unorderedEquals(['a', 'a', 'a', 'b', 'b', 'c']));
           expect(set.distinct, unorderedEquals(['a', 'b', 'c']));
+          expect(set.counts, unorderedEquals([3, 2, 1]));
         });
         test('copy', () {
           var set = new Multiset.from(new Multiset.from(['a', 'a', 'a', 'b', 'b', 'c']));
@@ -404,6 +410,7 @@ void main() {
           expect(set, hasLength(6));
           expect(set, unorderedEquals(['a', 'a', 'a', 'b', 'b', 'c']));
           expect(set.distinct, unorderedEquals(['a', 'b', 'c']));
+          expect(set.counts, unorderedEquals([3, 2, 1]));
         });
         test('generate', () {
           var set = new Multiset.fromIterable(['a', 'a', 'a', 'b', 'b', 'c']);
@@ -411,6 +418,7 @@ void main() {
           expect(set, hasLength(6));
           expect(set, unorderedEquals(['a', 'a', 'a', 'b', 'b', 'c']));
           expect(set.distinct, unorderedEquals(['a', 'b', 'c']));
+          expect(set.counts, unorderedEquals([3, 2, 1]));
         });
         test('generate with key', () {
           var set = new Multiset.fromIterable(['a', 'a', 'a', 'b', 'b', 'c'],
@@ -419,6 +427,7 @@ void main() {
           expect(set, hasLength(6));
           expect(set, unorderedEquals([97, 97, 97, 98, 98, 99]));
           expect(set.distinct, unorderedEquals([97, 98, 99]));
+          expect(set.counts, unorderedEquals([3, 2, 1]));
         });
         test('generate with count', () {
           var set = new Multiset.fromIterable(['aaa', 'bb', 'c'],
@@ -427,6 +436,7 @@ void main() {
           expect(set, hasLength(6));
           expect(set, unorderedEquals(['a', 'a', 'a', 'b', 'b', 'c']));
           expect(set.distinct, unorderedEquals(['a', 'b', 'c']));
+          expect(set.counts, unorderedEquals([3, 2, 1]));
         });
       });
       group('adding', () {
@@ -439,6 +449,7 @@ void main() {
           expect(set, hasLength(0));
           expect(set, unorderedEquals([]));
           expect(set.distinct, unorderedEquals([]));
+          expect(set.counts, unorderedEquals([]));
         });
         test('single', () {
           var set = new Multiset();
@@ -450,6 +461,7 @@ void main() {
           expect(set, hasLength(3));
           expect(set, unorderedEquals(['a', 'b', 'b']));
           expect(set.distinct, unorderedEquals(['a', 'b']));
+          expect(set.counts, unorderedEquals([1, 2]));
         });
         test('multiple', () {
           var set = new Multiset();
@@ -460,6 +472,7 @@ void main() {
           expect(set, hasLength(5));
           expect(set, unorderedEquals(['a', 'a', 'b', 'b', 'b']));
           expect(set.distinct, unorderedEquals(['a', 'b']));
+          expect(set.counts, unorderedEquals([2, 3]));
         });
         test('all', () {
           var set = new Multiset();
@@ -468,6 +481,7 @@ void main() {
           expect(set, hasLength(5));
           expect(set, unorderedEquals(['a', 'a', 'b', 'b', 'b']));
           expect(set.distinct, unorderedEquals(['a', 'b']));
+          expect(set.counts, unorderedEquals([3, 2]));
         });
         test('error', () {
           var set = new Multiset();
@@ -476,6 +490,7 @@ void main() {
           expect(set, hasLength(0));
           expect(set, unorderedEquals([]));
           expect(set.distinct, unorderedEquals([]));
+          expect(set.counts, unorderedEquals([]));
         });
       });
       group('remvoing', () {
@@ -488,6 +503,7 @@ void main() {
           expect(set, hasLength(5));
           expect(set, unorderedEquals(['a', 'a', 'b', 'b', 'b']));
           expect(set.distinct, unorderedEquals(['a', 'b']));
+          expect(set.counts, unorderedEquals([2, 3]));
         });
         test('single', () {
           var set = new Multiset.from(['a', 'a', 'b', 'b', 'b']);
@@ -498,6 +514,7 @@ void main() {
           expect(set, hasLength(3));
           expect(set, unorderedEquals(['a', 'b', 'b']));
           expect(set.distinct, unorderedEquals(['a', 'b']));
+          expect(set.counts, unorderedEquals([1, 2]));
         });
         test('multiple', () {
           var set = new Multiset.from(['a', 'a', 'b', 'b', 'b']);
@@ -508,6 +525,7 @@ void main() {
           expect(set, hasLength(1));
           expect(set, unorderedEquals(['b']));
           expect(set.distinct, unorderedEquals(['b']));
+          expect(set.counts, unorderedEquals([1]));
         });
         test('all', () {
           var set = new Multiset.from(['a', 'a', 'b', 'b', 'b']);
@@ -516,6 +534,7 @@ void main() {
           expect(set, hasLength(2));
           expect(set, unorderedEquals(['a', 'b']));
           expect(set.distinct, unorderedEquals(['a', 'b']));
+          expect(set.counts, unorderedEquals([1, 1]));
         });
         test('clear', () {
           var set = new Multiset.from(['a', 'a', 'b', 'b', 'b']);
@@ -524,6 +543,7 @@ void main() {
           expect(set, hasLength(0));
           expect(set, unorderedEquals([]));
           expect(set.distinct, unorderedEquals([]));
+          expect(set.counts, unorderedEquals([]));
         });
         test('invalid', () {
           var set = new Multiset.from(['a', 'a', 'b', 'b', 'b']);
@@ -533,6 +553,7 @@ void main() {
           expect(set, hasLength(5));
           expect(set, unorderedEquals(['a', 'a', 'b', 'b', 'b']));
           expect(set.distinct, unorderedEquals(['a', 'b']));
+          expect(set.counts, unorderedEquals([2, 3]));
         });
         test('error', () {
           var set = new Multiset.from(['a', 'a', 'b', 'b', 'b']);
@@ -541,6 +562,7 @@ void main() {
           expect(set, hasLength(5));
           expect(set, unorderedEquals(['a', 'a', 'b', 'b', 'b']));
           expect(set.distinct, unorderedEquals(['a', 'b']));
+          expect(set.counts, unorderedEquals([2, 3]));
         });
       });
       group('access', () {
@@ -552,6 +574,7 @@ void main() {
           expect(set, hasLength(2));
           expect(set, unorderedEquals(['a', 'a']));
           expect(set.distinct, unorderedEquals(['a']));
+          expect(set.counts, unorderedEquals([2]));
         });
         test('multiple', () {
           var set = new Multiset();
@@ -563,6 +586,7 @@ void main() {
           expect(set, hasLength(5));
           expect(set, unorderedEquals(['a', 'a', 'b', 'b', 'b']));
           expect(set.distinct, unorderedEquals(['a', 'b']));
+          expect(set.counts, unorderedEquals([3, 2]));
         });
         test('remove', () {
           var set = new Multiset.from(['a', 'a', 'b', 'b', 'b']);
@@ -571,6 +595,7 @@ void main() {
           expect(set, hasLength(2));
           expect(set, unorderedEquals(['a', 'a']));
           expect(set.distinct, unorderedEquals(['a']));
+          expect(set.counts, unorderedEquals([2]));
         });
         test('error', () {
           var set = new Multiset.from(['a', 'a', 'b', 'b', 'b']);
@@ -579,6 +604,7 @@ void main() {
           expect(set, hasLength(5));
           expect(set, unorderedEquals(['a', 'a', 'b', 'b', 'b']));
           expect(set.distinct, unorderedEquals(['a', 'b']));
+          expect(set.counts, unorderedEquals([2, 3]));
         });
       });
       group('operator', () {

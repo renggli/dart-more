@@ -215,6 +215,11 @@ class Multiset<E> extends IterableBase<E> {
   Iterable<E> get distinct => _container.keys;
 
   /**
+   * Returns a view on the counts of the distinct elements of the receiver.
+   */
+  Iterable<int> get counts => _container.values;
+
+  /**
    * Returns the total number of elements in the receiver.
    */
   @override
