@@ -48,6 +48,7 @@ void main() {
     group('operators', () {
       test('reverse', () {
         var ordering = natural.reverse();
+        expect(ordering.reverse(), same(natural));
         verify(ordering, [1, 2, 3], [3, 2, 1]);
         verify(ordering, [2, 3, 1], [3, 2, 1]);
         verify(ordering, [3, 1, 2], [3, 2, 1]);
