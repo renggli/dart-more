@@ -1,4 +1,4 @@
-library all_test;
+library all_tests;
 
 import 'char_matcher_test.dart' as char_matcher_test;
 import 'collection_test.dart' as collection_test;

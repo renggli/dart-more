@@ -1,7 +1,8 @@
 library collection_test;
 
 import 'dart:math';
-import 'package:unittest/unittest.dart';
+
+import 'package:test/test.dart';
 import 'package:more/collection.dart';
 
 List<bool> randomBools(int seed, int length) {

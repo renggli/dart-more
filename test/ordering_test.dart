@@ -1,6 +1,6 @@
 library ordering_test;
 
-import 'package:unittest/unittest.dart';
+import 'package:test/test.dart';
 import 'package:more/ordering.dart';
 
 void verify(Ordering ordering, Iterable unsorted, Iterable expected) {

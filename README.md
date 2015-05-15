@@ -1,6 +1,10 @@
 More Dart - Literally
 =====================
 
+[![Pub Package](https://img.shields.io/pub/v/more.svg)](https://pub.dartlang.org/packages/more)
+[![Build Status](https://travis-ci.org/renggli/dart-more.svg)](https://travis-ci.org/renggli/dart-more)
+[![Coverage Status](https://coveralls.io/repos/renggli/dart-more/badge.svg)](https://coveralls.io/r/renggli/dart-more)
+
 Various extensions that make Dart a better place:
 
 - `bit_list.dart` is a space efficient list storing boolean values.
@@ -12,37 +16,11 @@ Various extensions that make Dart a better place:
 - `ordering.dart` a fluent interface for building comparator functions.
 - `range.dart` is a function to create lists of arithmetic progressions.
 
-And there is more to come ...
+And there are more to come ...
 
-This library is open source, stable and well tested. Development happens on [GitHub](http://github.com/renggli/dart-more). Feel free to report issues or create a pull-request there. General questions are best asked on [StackOverflow](http://stackoverflow.com/questions/tagged/dart+more).
+This library is open source, stable and well tested. Development happens on [GitHub](https://github.com/renggli/dart-more). Feel free to report issues or create a pull-request there. General questions are best asked on [StackOverflow](http://stackoverflow.com/questions/tagged/more+dart).
 
-Continuous build results are available from [Jenkins](http://jenkins.lukas-renggli.ch/job/dart-more).  Up-to-date [documentation](http://jenkins.lukas-renggli.ch/job/dart-more/javadoc) is created automatically with every new push.
-
-
-Basic Usage
------------
-
-### Installation
-
-Add the dependency to your package's pubspec.yaml file:
-
-    dependencies:
-      more: ">=1.0.0 <2.0.0"
-
-Then on the command line run:
-
-    $ pub get
-
-To use one or more of the packages in your Dart code write:
-
-    import 'package:more/bit_list.dart';
-    import 'package:more/char_matcher.dart';
-    import 'package:more/fraction.dart';
-    import 'package:more/int_math.dart';
-    import 'package:more/iterable.dart';
-    import 'package:more/multiset.dart';
-    import 'package:more/ordering.dart';
-    import 'package:more/range.dart';
+Up-to-date [class documentation](http://www.dartdocs.org/documentation/more/latest/index.html) is created with every release.
 
 
 Misc

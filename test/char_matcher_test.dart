@@ -1,6 +1,6 @@
 library char_matcher_test;
 
-import 'package:unittest/unittest.dart';
+import 'package:test/test.dart';
 import 'package:more/char_matcher.dart';
 
 void verify(CharMatcher matcher, String included, String excluded) {

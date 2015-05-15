@@ -1,6 +1,6 @@
 library int_math_test;
 
-import 'package:unittest/unittest.dart';
+import 'package:test/test.dart';
 import 'package:more/int_math.dart';
 
 void main() {
