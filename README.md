@@ -4,6 +4,7 @@ More Dart - Literally
 [![Pub Package](https://img.shields.io/pub/v/more.svg)](https://pub.dartlang.org/packages/more)
 [![Build Status](https://travis-ci.org/renggli/dart-more.svg)](https://travis-ci.org/renggli/dart-more)
 [![Coverage Status](https://coveralls.io/repos/renggli/dart-more/badge.svg)](https://coveralls.io/r/renggli/dart-more)
+[![Github Issues](http://githubbadges.herokuapp.com/renggli/dart-more/issues.svg)](https://github.com/renggli/dart-more/issues)
 
 Various extensions that make Dart a better place:
 
