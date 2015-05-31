@@ -1,4 +1,4 @@
-More Dart - Literally
+More Dart — Literally
 =====================
 
 [![Pub Package](https://img.shields.io/pub/v/more.svg)](https://pub.dartlang.org/packages/more)
