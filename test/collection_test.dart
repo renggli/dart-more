@@ -5,7 +5,7 @@ import 'dart:math';
 import 'package:test/test.dart';
 import 'package:more/collection.dart';
 
-List<bool> randomBools(int seed, int length) {
+List<bool> randomBooleans(int seed, int length) {
   var list = new List();
   var generator = new Random(seed);
   for (var i = 0; i < length; i++) {
@@ -181,7 +181,7 @@ void main() {
         });
         test('from List', () {
           for (var len = 0; len < 100; len++) {
-            var source = new List.from(randomBools(457 * len, len));
+            var source = new List.from(randomBooleans(457 * len, len));
             var target = new BitList.from(source);
             expect(source, target);
             expect(source, target.toList());
@@ -189,7 +189,7 @@ void main() {
         });
         test('from Set', () {
           for (var len = 0; len < 100; len++) {
-            var source = new Set.from(randomBools(827 * len, len));
+            var source = new Set.from(randomBooleans(827 * len, len));
             var target = new BitList.from(source);
             expect(source, target);
             expect(source, target.toSet());
@@ -197,7 +197,7 @@ void main() {
         });
         test('from BitList', () {
           for (var len = 0; len < 10; len++) {
-            var source = new Set.from(randomBools(287 * len, len));
+            var source = new Set.from(randomBooleans(287 * len, len));
             var target = new BitList.from(source);
             expect(source, target);
             expect(target, source);
@@ -207,7 +207,7 @@ void main() {
       group('accessors', () {
         test('reading', () {
           for (var len = 0; len < 100; len++) {
-            var source = randomBools(135 * len, len);
+            var source = randomBooleans(135 * len, len);
             var target = new BitList.from(source);
             expect(() => target[-1], throwsRangeError);
             for (var i = 0; i < len; i++) {
@@ -218,7 +218,7 @@ void main() {
         });
         test('writing', () {
           for (var len = 0; len < 100; len++) {
-            var source = randomBools(396 * len, len);
+            var source = randomBooleans(396 * len, len);
             var target = new BitList(len);
             expect(() => target[-1] = true, throwsRangeError);
             for (var i = 0; i < len; i++) {
@@ -231,7 +231,7 @@ void main() {
         });
         test('flipping', () {
           for (var len = 0; len < 100; len++) {
-            var source = new BitList.from(randomBools(385 * len, len));
+            var source = new BitList.from(randomBooleans(385 * len, len));
             var target = ~source;
             expect(() => target.flip(-1), throwsRangeError);
             for (var i = 0; i < len; i++) {
@@ -245,7 +245,7 @@ void main() {
         });
         test('counting', () {
           for (var len = 0; len < 100; len++) {
-            var list = new BitList.from(randomBools(823 * len, len));
+            var list = new BitList.from(randomBooleans(823 * len, len));
             var trueCount = list.count(true);
             var falseCount = list.count(false);
             expect(trueCount + falseCount, list.length);
@@ -256,15 +256,15 @@ void main() {
       });
       group('operators', () {
         test('complement', () {
-          var source = new BitList.from(randomBools(702, 100));
+          var source = new BitList.from(randomBooleans(702, 100));
           var target = ~source;
           for (var i = 0; i < target.length; i++) {
             expect(target[i], !source[i]);
           }
         });
         test('intersection', () {
-          var source1 = new BitList.from(randomBools(439, 100));
-          var source2 = new BitList.from(randomBools(902, 100));
+          var source1 = new BitList.from(randomBooleans(439, 100));
+          var source2 = new BitList.from(randomBooleans(902, 100));
           var target = source1 & source2;
           for (var i = 0; i < target.length; i++) {
             expect(target[i], source1[i] && source2[i]);
@@ -275,8 +275,8 @@ void main() {
           expect(() => source1 & other, throwsArgumentError);
         });
         test('union', () {
-          var source1 = new BitList.from(randomBools(817, 100));
-          var source2 = new BitList.from(randomBools(858, 100));
+          var source1 = new BitList.from(randomBooleans(817, 100));
+          var source2 = new BitList.from(randomBooleans(858, 100));
           var target = source1 | source2;
           for (var i = 0; i < target.length; i++) {
             expect(target[i], source1[i] || source2[i]);
@@ -287,8 +287,8 @@ void main() {
           expect(() => source1 | other, throwsArgumentError);
         });
         test('difference', () {
-          var source1 = new BitList.from(randomBools(364, 100));
-          var source2 = new BitList.from(randomBools(243, 100));
+          var source1 = new BitList.from(randomBooleans(364, 100));
+          var source2 = new BitList.from(randomBooleans(243, 100));
           var target = source1 - source2;
           for (var i = 0; i < target.length; i++) {
             expect(target[i], source1[i] && !source2[i]);
@@ -300,7 +300,7 @@ void main() {
         });
         test('shift-left', () {
           for (var len = 0; len < 100; len++) {
-            var source = new BitList.from(randomBools(836 * len, len));
+            var source = new BitList.from(randomBooleans(836 * len, len));
             for (var shift = 0; shift <= len + 10; shift++) {
               var target = source << shift;
               if (shift == 0) {
@@ -318,7 +318,7 @@ void main() {
         });
         test('shift-right', () {
           for (var len = 0; len < 100; len++) {
-            var source = new BitList.from(randomBools(963 * len, len));
+            var source = new BitList.from(randomBooleans(963 * len, len));
             for (var shift = 0; shift <= len + 10; shift++) {
               var target = source >> shift;
               if (shift == 0) {
