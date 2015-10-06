@@ -1,17 +1,15 @@
 part of iterable;
 
-/**
- * Returns an efficient empty iterable.
- *
- * For example, the expression
- *
- *     empty()
- *
- * results in the empty iterable:
- *
- *     []
- *
- */
+/// Returns an efficient empty iterable.
+///
+/// For example, the expression
+///
+///     empty()
+///
+/// results in the empty iterable:
+///
+///     []
+///
 Iterable /*<E>*/ empty() => const _EmptyIterable();
 
 class _EmptyIterable<E> implements Iterable<E> {

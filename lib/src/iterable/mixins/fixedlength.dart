@@ -1,10 +1,8 @@
 part of iterable;
 
-/**
- * Mixin that throws on the length changing operations of [List].
- *
- * Intended to mix-in on top of [ListMixin] for fixed-length lists.
- */
+/// Mixin that throws on the length changing operations of [List].
+///
+/// Intended to mix-in on top of [ListMixin] for fixed-length lists.
 abstract class FixedLengthListMixin<E> implements List<E> {
   void set length(int newLength) {
     throw new UnsupportedError('Cannot change the length of a fixed-length list.');

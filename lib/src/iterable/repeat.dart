@@ -1,15 +1,13 @@
 part of iterable;
 
-/**
- * Returns an infinite iterable with a constant [element]. If [count] is
- * provided the resulting iterator is limited to [count] elements.
- *
- * Example expressions:
- *
- *     repeat(2);        // [2, 2, 2, 2, 2, 2, ...]
- *     repeat('a', 3);   // ['a', 'a', 'a']
- *
- */
+/// Returns an infinite iterable with a constant [element]. If [count] is
+/// provided the resulting iterator is limited to [count] elements.
+///
+/// Example expressions:
+///
+///     repeat(2);        // [2, 2, 2, 2, 2, 2, ...]
+///     repeat('a', 3);   // ['a', 'a', 'a']
+///
 Iterable /*<E>*/ repeat(/*E*/ element, [int count]) {
   var iterable = new _RepeatIterable(element);
   return count == null ? iterable : iterable.take(count);

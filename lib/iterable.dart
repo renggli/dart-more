@@ -1,6 +1,4 @@
-/**
- * Some fancy iterables and iterators.
- */
+/// Some fancy iterables and iterators.
 library iterable;
 
 import 'dart:collection';

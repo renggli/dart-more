@@ -1,28 +1,26 @@
 part of iterable;
 
-/**
- * Returns a iterable whose iterator cycles repeatedly over the elements
- * of an [iterable]. If [count] is specified, the returned iterable has a finite
- * size of [iterable] &times; [count]. If [count] is unspecified the returned
- * iterable is of infinite size.
- *
- * For example, the expression
- *
- *     cycle([1, 2], 3)
- *
- * results in the finite iterable:
- *
- *     [1, 2, 1, 2, 1, 2]
- *
- * On the other hand, the expression
- *
- *     cycle([1, 2])
- *
- * results in the infinite iterable:
- *
- *     [1, 2, 1, 2, ...]
- *
- */
+/// Returns a iterable whose iterator cycles repeatedly over the elements
+/// of an [iterable]. If [count] is specified, the returned iterable has a finite
+/// size of [iterable] &times; [count]. If [count] is unspecified the returned
+/// iterable is of infinite size.
+///
+/// For example, the expression
+///
+///     cycle([1, 2], 3)
+///
+/// results in the finite iterable:
+///
+///     [1, 2, 1, 2, 1, 2]
+///
+/// On the other hand, the expression
+///
+///     cycle([1, 2])
+///
+/// results in the infinite iterable:
+///
+///     [1, 2, 1, 2, ...]
+///
 Iterable /*<E>*/ cycle(Iterable /*<E>*/ iterable, [int count = null]) {
   if (count == 0 || iterable.isEmpty) {
     return empty();

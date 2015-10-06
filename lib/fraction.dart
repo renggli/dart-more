@@ -1,28 +1,18 @@
-/**
- * Support for exact rational number arithmetic.
- */
+/// Support for exact rational number arithmetic.
 library fraction;
 
 import 'int_math.dart' as int_math;
 
-/**
- * A rational number.
- */
+/// A rational number.
 class Fraction implements Comparable<Fraction> {
 
-  /**
-   * The neutral additive element, i.e. `0`.
-   */
+  /// The neutral additive element, i.e. `0`.
   static const Fraction ZERO = const Fraction._(0, 1);
 
-  /**
-   * The neutral multiplicative element, i.e. `1`.
-   */
+  /// The neutral multiplicative element, i.e. `1`.
   static const Fraction ONE = const Fraction._(1, 1);
 
-  /**
-   * Constructs a fraction from a [numerator] and an optional [denominator].
-   */
+  /// Constructs a fraction from a [numerator] and an optional [denominator].
   factory Fraction(int numerator, [int denominator = 1]) {
     if (numerator == null || denominator == null) {
       throw new ArgumentError('Null numerator or denominator passed to fraction.');
@@ -37,9 +27,7 @@ class Fraction implements Comparable<Fraction> {
     return new Fraction._(numerator ~/ d, denominator ~/ d);
   }
 
-  /**
-   * Constructs an approximate fraction from a floating point [value].
-   */
+  /// Constructs an approximate fraction from a floating point [value].
   factory Fraction.fromDouble(num value, [num max_denominator = 1e10]) {
     if (value.isInfinite || value.isNaN) {
       throw new ArgumentError('${value} cannot be represented as fraction');

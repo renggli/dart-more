@@ -1,18 +1,16 @@
 part of iterable;
 
-/**
- * Returns a lazy infinite list of repeated applications of the
- * n-ary [function] to its previous n initial [elements].
- *
- * For example, the expression
- *
- *     fold([0, 1], (a, b) => a + b);
- *
- * results in the infinite iterable of all fibonacci numbers:
- *
- *     [0, 1, 1, 2, 3, 5, ...]
- *
- */
+/// Returns a lazy infinite list of repeated applications of the
+/// n-ary [function] to its previous n initial [elements].
+///
+/// For example, the expression
+///
+///     fold([0, 1], (a, b) => a + b);
+///
+/// results in the infinite iterable of all fibonacci numbers:
+///
+///     [0, 1, 1, 2, 3, 5, ...]
+///
 Iterable /*<E>*/ fold(Iterable /*<E>*/ elements, Function combine) {
   return new _FoldIterable(elements, combine);
 }

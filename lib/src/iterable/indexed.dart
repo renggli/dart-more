@@ -1,38 +1,30 @@
 part of iterable;
 
-/**
- * Returns a [Indexed] iterable
- *
- * By default the index is zero based, but an arbitrary [offset] can be provided.
- *
- * For example, the expression
- *
- *     indexed(['a', 'b'], offset: 1)
- *       .map((each) => '${each.value}-${each.index}')
- *       .join(', ');
- *
- * returns
- *
- *     'a-1, b-2'
- *
- */
+/// Returns a [Indexed] iterable
+///
+/// By default the index is zero based, but an arbitrary [offset] can be provided.
+///
+/// For example, the expression
+///
+///     indexed(['a', 'b'], offset: 1)
+///       .map((each) => '${each.value}-${each.index}')
+///       .join(', ');
+///
+/// returns
+///
+///     'a-1, b-2'
+///
 Iterable<Indexed /*<E>*/ > indexed(Iterable /*<E>*/ iterable, {int offset: 0}) {
   return new _IndexedIterable /*<E>*/ (iterable, offset);
 }
 
-/**
- * An indexed value.
- */
+/// An indexed value.
 class Indexed<E> {
 
-  /**
-   * The index of the value in the iterable.
-   */
+  /// The index of the value in the iterable.
   final int index;
 
-  /**
-   * The actual value.
-   */
+  /// The actual value.
   final E value;
 
   Indexed._(this.index, this.value);

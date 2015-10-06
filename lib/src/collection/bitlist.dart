@@ -1,8 +1,6 @@
 part of collection;
 
-/**
- * An space efficient fixed length [List] that stores boolean values.
- */
+/// An space efficient fixed length [List] that stores boolean values.
 class BitList extends ListBase<bool> with FixedLengthListMixin<bool> {
 
   // constants specific to mapping bits into a [UInt32List]
@@ -18,17 +16,13 @@ class BitList extends ListBase<bool> with FixedLengthListMixin<bool> {
     -2097153, -4194305, -8388609, -16777217, -33554433, -67108865, -134217729, -268435457,
     -536870913, -1073741825, -2147483649];
 
-  /**
-   * Constructs a bit list of the given [length].
-   */
+  /// Constructs a bit list of the given [length].
   factory BitList(int length) {
     var buffer = new Uint32List((length + _OFFSET) >> _SHIFT);
     return new BitList._(buffer, length);
   }
 
-  /**
-   * Constructs a new list from a given [Iterable] of booleans.
-   */
+  /// Constructs a new list from a given [Iterable] of booleans.
   factory BitList.from(Iterable<bool> other) {
     var length = other.length;
     var buffer = new Uint32List((length + _OFFSET) >> _SHIFT);
@@ -49,15 +43,11 @@ class BitList extends ListBase<bool> with FixedLengthListMixin<bool> {
 
   BitList._(this._buffer, this._length);
 
-  /**
-   * Returns the number of bits in this object.
-   */
+  /// Returns the number of bits in this object.
   @override
   int get length => _length;
 
-  /**
-   * Returns the value of the bit with the given [index].
-   */
+  /// Returns the value of the bit with the given [index].
   @override
   bool operator [](int index) {
     if (0 <= index && index < length) {
@@ -67,9 +57,7 @@ class BitList extends ListBase<bool> with FixedLengthListMixin<bool> {
     }
   }
 
-  /**
-   * Sets the [value] of the bit with the given [index].
-   */
+  /// Sets the [value] of the bit with the given [index].
   @override
   void operator []=(int index, bool value) {
     if (0 <= index && index < length) {
@@ -83,10 +71,8 @@ class BitList extends ListBase<bool> with FixedLengthListMixin<bool> {
     }
   }
 
-  /**
-   * Sets the bit at the specified [index] to the complement of its
-   * current value.
-   */
+  /// Sets the bit at the specified [index] to the complement of its
+  /// current value.
   void flip(int index) {
     if (0 <= index && index < length) {
       _buffer[index >> _SHIFT] ^= _SET_MASK[index & _OFFSET];
@@ -95,9 +81,7 @@ class BitList extends ListBase<bool> with FixedLengthListMixin<bool> {
     }
   }
 
-  /**
-   * Counts the number of bits that are set to [expected].
-   */
+  /// Counts the number of bits that are set to [expected].
   int count([bool expected = true]) {
     int tally = 0;
     for (var index = 0; index < _length; index++) {
@@ -109,11 +93,9 @@ class BitList extends ListBase<bool> with FixedLengthListMixin<bool> {
     return tally;
   }
 
-  /**
-   * Returns the complement of the receiver.
-   *
-   * The new [BitList] has all the bits of the receiver inverted.
-   */
+  /// Returns the complement of the receiver.
+  ///
+  /// The new [BitList] has all the bits of the receiver inverted.
   BitList operator ~() {
     var result = new BitList(_length);
     for (var i = 0; i < _buffer.length; i++) {
@@ -122,13 +104,11 @@ class BitList extends ListBase<bool> with FixedLengthListMixin<bool> {
     return result;
   }
 
-  /**
-   * Returns the intersection of the receiver and [other].
-   *
-   * The new [BitList] has all the bits set that are set in the receiver
-   * and in [other]. The receiver and [other] need to have the same length,
-   * otherwise an exception is thrown.
-   */
+  /// Returns the intersection of the receiver and [other].
+  ///
+  /// The new [BitList] has all the bits set that are set in the receiver
+  /// and in [other]. The receiver and [other] need to have the same length,
+  /// otherwise an exception is thrown.
   BitList operator &(BitList other) {
     if (_length != other._length) {
       throw new ArgumentError('Expected list with length ${this.length}, but got ${other.length}');
@@ -140,13 +120,11 @@ class BitList extends ListBase<bool> with FixedLengthListMixin<bool> {
     return result;
   }
 
-  /**
-   * Returns the union of the receiver and [other].
-   *
-   * The new [BitList] has all the bits set that are either set in the
-   * receiver or in [other]. The receiver and [other] need to have the
-   * same length, otherwise an exception is thrown.
-   */
+  /// Returns the union of the receiver and [other].
+  ///
+  /// The new [BitList] has all the bits set that are either set in the
+  /// receiver or in [other]. The receiver and [other] need to have the
+  /// same length, otherwise an exception is thrown.
   BitList operator |(BitList other) {
     if (_length != other._length) {
       throw new ArgumentError('Expected list with length ${this.length}, but got ${other.length}');
@@ -158,13 +136,11 @@ class BitList extends ListBase<bool> with FixedLengthListMixin<bool> {
     return result;
   }
 
-  /**
-   * Returns the difference of the receiver and [other].
-   *
-   * The new [BitList] has all the bits set that are set in the receiver,
-   * but not in [other]. The receiver and [other] need to have the same
-   * length, otherwise an exception is thrown.
-   */
+  /// Returns the difference of the receiver and [other].
+  ///
+  /// The new [BitList] has all the bits set that are set in the receiver,
+  /// but not in [other]. The receiver and [other] need to have the same
+  /// length, otherwise an exception is thrown.
   BitList operator -(BitList other) {
     if (_length != other._length) {
       throw new ArgumentError('Expected list with length ${this.length}, but got ${other.length}');
@@ -176,10 +152,8 @@ class BitList extends ListBase<bool> with FixedLengthListMixin<bool> {
     return result;
   }
 
-  /**
-   * Returns a [BitList] of the same length, but with the bits of the receiver shifted
-   * to the left by [amount]. Throws an [ArgumentError] if [amount] is negative.
-   */
+  /// Returns a [BitList] of the same length, but with the bits of the receiver shifted
+  /// to the left by [amount]. Throws an [ArgumentError] if [amount] is negative.
   BitList operator <<(int amount) {
     if (amount < 0) {
       throw new ArgumentError('Unable to left-shift by $amount');
@@ -207,10 +181,8 @@ class BitList extends ListBase<bool> with FixedLengthListMixin<bool> {
     return result;
   }
 
-  /**
-   * Returns a [BitList] of the same length, but with the bits of the receiver shifted
-   * to the right by [amount]. Throws an [ArgumentError] if [amount] is negative.
-   */
+  /// Returns a [BitList] of the same length, but with the bits of the receiver shifted
+  /// to the right by [amount]. Throws an [ArgumentError] if [amount] is negative.
   BitList operator >>(int amount) {
     if (amount < 0) {
       throw new ArgumentError('Unable to right-shift by $amount');

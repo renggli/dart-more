@@ -1,23 +1,21 @@
 part of collection;
 
-/**
- * Returns a light-weight immutable iterable list around the characters of
- * a [string].
- *
- * To loop over the characters of a string simply write:
- *
- *     for (String char in string('Hello World')) {
- *       print(char);
- *     }
- *
- * Of course, also all other more functional operations from [List] work too:
- *
- *     string('Hello World')
- *       .where((char) => char != 'o')
- *       .forEach(print);
- *
- * For a mutable copy of the string see [mutableString(Object)].
- */
+/// Returns a light-weight immutable iterable list around the characters of
+/// a [string].
+///
+/// To loop over the characters of a string simply write:
+///
+///     for (String char in string('Hello World')) {
+///       print(char);
+///     }
+///
+/// Of course, also all other more functional operations from [List] work too:
+///
+///     string('Hello World')
+///       .where((char) => char != 'o')
+///       .forEach(print);
+///
+/// For a mutable copy of the string see [mutableString(Object)].
 List<String> string(string) {
   return new _String(string.toString());
 }
@@ -42,20 +40,18 @@ class _String extends ListBase<String> with UnmodifiableListMixin<String> {
   String toString() => _string;
 }
 
-/**
- * Returns a mutable copy of the characters of a [string].
- *
- * For example the following code prints 'Hello Brave World!':
- *
- *       var result = mutableString('Hello World');
- *       result.insertAll(6, string('brave '));
- *       result[6] = 'B';
- *       result.add('!');
- *       print(result);
- *
- * For a light-weight immutable iterable list of characters see
- * [string(Object)].
- */
+/// Returns a mutable copy of the characters of a [string].
+///
+/// For example the following code prints 'Hello Brave World!':
+///
+///       var result = mutableString('Hello World');
+///       result.insertAll(6, string('brave '));
+///       result[6] = 'B';
+///       result.add('!');
+///       print(result);
+///
+/// For a light-weight immutable iterable list of characters see
+/// [string(Object)].
 List<String> mutableString(string, {bool growable: true}) {
   return new _MutableString(new List.from(string.toString().codeUnits, growable: growable));
 }

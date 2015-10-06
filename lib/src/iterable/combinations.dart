@@ -1,28 +1,26 @@
 part of iterable;
 
-/**
- * Returns an iterable over the combinations of [elements] of length [count]. The
- * combinations are emitted in lexicographical order based on the input.
- *
- * If [repetitions] is set to `true` the iterable allows individual elements to be
- * repeated more than once. The number of items returned is:
- *
- *     (elements.length + count - 1)! / count! / (elements.length - 1)!
- *
- * The following expression iterates over xx, xy, xz, yy, yz, and zz:
- *
- *     combinations(string('xyz'), 2, repetitions: true);
- *
- * If [repetitions] is set to `false` the iterable generates all the sub-sequences
- * of length [count]. The number of items returned is:
- *
- *     elements.length! / count! / (elements.length - count)!
- *
- * The following expression iterates over xy, xz, yz:
- *
- *     combinations(string('xyz'), 2, repetitions: false);
- *
- */
+/// Returns an iterable over the combinations of [elements] of length [count]. The
+/// combinations are emitted in lexicographical order based on the input.
+///
+/// If [repetitions] is set to `true` the iterable allows individual elements to be
+/// repeated more than once. The number of items returned is:
+///
+///     (elements.length + count - 1)! / count! / (elements.length - 1)!
+///
+/// The following expression iterates over xx, xy, xz, yy, yz, and zz:
+///
+///     combinations(string('xyz'), 2, repetitions: true);
+///
+/// If [repetitions] is set to `false` the iterable generates all the sub-sequences
+/// of length [count]. The number of items returned is:
+///
+///     elements.length! / count! / (elements.length - count)!
+///
+/// The following expression iterates over xy, xz, yz:
+///
+///     combinations(string('xyz'), 2, repetitions: false);
+///
 Iterable<List /*<E>*/ > combinations(Iterable /*<E>*/ elements, int count,
     {bool repetitions: false}) {
   elements = elements.toList(growable: false);

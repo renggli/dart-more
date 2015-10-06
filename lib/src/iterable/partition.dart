@@ -1,14 +1,12 @@
 part of iterable;
 
-/**
- * Divides an `iterable` into sub-iterables of a given `size`. If no `padding` is provided, the
- * final iterable is smaller or equal the desired side, otherwise the final iterable will be
- * padded with the provided object.
- *
- * The following expression yields [1, 2], [3, 4], [5, null]:
- *
- *     partition([1, 2, 3, 4, 5], 2, null);
- */
+/// Divides an `iterable` into sub-iterables of a given `size`. If no `padding` is provided, the
+/// final iterable is smaller or equal the desired side, otherwise the final iterable will be
+/// padded with the provided object.
+///
+/// The following expression yields [1, 2], [3, 4], [5, null]:
+///
+///     partition([1, 2, 3, 4, 5], 2, null);
 Iterable<Iterable/*<E>*/> partition(Iterable/*<E>*/ elements, int size, [padding = _NO_PADDING]) {
   return new _PartitionIterable/*<E>*/(elements, size, padding);
 }

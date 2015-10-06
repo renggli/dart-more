@@ -1,27 +1,19 @@
 part of collection;
 
-/**
- * A bi-map associates keys with values and values with keys.
- *
- * Bi-maps behave like maps from key to values, but can efficiently provide an inverse
- * bi-map that maps values to keys. Also certain operations, such as [containsValue]
- * are much more efficient than with traditional maps.
- */
+/// A bi-map associates keys with values and values with keys.
+///
+/// Bi-maps behave like maps from key to values, but can efficiently provide an inverse
+/// bi-map that maps values to keys. Also certain operations, such as [containsValue]
+/// are much more efficient than with traditional maps.
 class BiMap<K, V> implements Map<K, V> {
 
-  /**
-   * Creates an empty bi-map.
-   */
+  /// Creates an empty bi-map.
   factory BiMap() => new BiMap._(new Map(), new Map());
 
-  /**
-   * Creates an empty identity bi-map.
-   */
+  /// Creates an empty identity bi-map.
   factory BiMap.identity() => new BiMap._(new Map.identity(), new Map.identity());
 
-  /**
-   * Creates bi-map from another map.
-   */
+  /// Creates bi-map from another map.
   factory BiMap.from(Map<K, V> other) {
     if (other is BiMap<K, V>) {
       return new BiMap._(new Map.from(other._forward), new Map.from(other._backward));
@@ -30,18 +22,14 @@ class BiMap<K, V> implements Map<K, V> {
     }
   }
 
-  /**
-   * Creates a bi-map from an iterable (and possible transformation functions).
-   */
+  /// Creates a bi-map from an iterable (and possible transformation functions).
   factory BiMap.fromIterable(Iterable iterable, {K key(element), V value(element)}) {
     return new BiMap.fromIterables(
         key == null ? iterable : iterable.map(key),
         value == null ? iterable : iterable.map(value));
   }
 
-  /**
-   * Creates a bi-map from two equal length iterables.
-   */
+  /// Creates a bi-map from two equal length iterables.
   factory BiMap.fromIterables(Iterable<K> keys, Iterable<V> values) {
     var result = new BiMap();
     var keyIterator = keys.iterator,
@@ -64,9 +52,7 @@ class BiMap<K, V> implements Map<K, V> {
 
   BiMap._(this._forward, this._backward);
 
-  /**
-   * Returns the inverse bi-map.
-   */
+  /// Returns the inverse bi-map.
   BiMap<V, K> get inverse => new BiMap._(_backward, _forward);
 
   @override

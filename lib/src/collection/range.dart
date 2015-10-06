@@ -1,23 +1,21 @@
 part of collection;
 
-/**
- * Creates a virtual range of numbers containing an arithmetic progressions.
- *
- * The range function called without any arguments returns the empty range.
- * For example, `range()` yields `[]`.
- *
- * The range function called with one argument returns the range of all
- * numbers up to, but excluding the end. For example, `range(3)` yields
- * `[0, 1, 2]`.
- *
- * The range function called with two arguments returns the range between
- * the two numbers (including the start, but excluding the end). For example,
- * `range(3, 6)` yields `[3, 4, 5]`.
- *
- * The range function called with three arguments returns the range between
- * the first two numbers (including the start, but excluding the end) and the
- * step value. For example, `range(1, 7, 2)` yields `[1, 3, 5]`.
- */
+/// Creates a virtual range of numbers containing an arithmetic progressions.
+///
+/// The range function called without any arguments returns the empty range.
+/// For example, `range()` yields `[]`.
+///
+/// The range function called with one argument returns the range of all
+/// numbers up to, but excluding the end. For example, `range(3)` yields
+/// `[0, 1, 2]`.
+///
+/// The range function called with two arguments returns the range between
+/// the two numbers (including the start, but excluding the end). For example,
+/// `range(3, 6)` yields `[3, 4, 5]`.
+///
+/// The range function called with three arguments returns the range between
+/// the first two numbers (including the start, but excluding the end) and the
+/// step value. For example, `range(1, 7, 2)` yields `[1, 3, 5]`.
 List<num> range([num a, num b, num c]) {
   var start = 0, stop = 0, step = 1;
   if (c != null) {

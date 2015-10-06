@@ -1,12 +1,10 @@
 part of iterable;
 
-/**
- * Mixin for an unmodifiable [List] class.
- *
- * This overrides all mutating methods with methods that throw.
- * This mixin is intended to be mixed in on top of [ListMixin] on
- * unmodifiable lists.
- */
+/// Mixin for an unmodifiable [List] class.
+///
+/// This overrides all mutating methods with methods that throw.
+/// This mixin is intended to be mixed in on top of [ListMixin] on
+/// unmodifiable lists.
 abstract class UnmodifiableListMixin<E> implements List<E> {
   void operator []=(int index, E value) {
     throw new UnsupportedError('Cannot modify an unmodifiable list.');

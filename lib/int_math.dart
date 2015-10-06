@@ -1,15 +1,11 @@
-/**
- * A collection of common mathematical functions on integers.
- */
+/// A collection of common mathematical functions on integers.
 library int_math;
 
 import 'collection.dart';
 
-/**
- * Returns the greatest common divisor (GCD) of two or more integers (at least
- * one of which is not zero). This is the largest positive integer that divides
- * the numbers without a remainder. For example, the GCD of 8 and 12 is 4.
- */
+/// Returns the greatest common divisor (GCD) of two or more integers (at least
+/// one of which is not zero). This is the largest positive integer that divides
+/// the numbers without a remainder. For example, the GCD of 8 and 12 is 4.
 int gcd(int a, int b) {
   while (b != 0) {
     var t = b;
@@ -19,18 +15,14 @@ int gcd(int a, int b) {
   return a;
 }
 
-/**
- * Returns the least common multiple (LCM) of two integers a and b. This is the
- * smallest positive integer that is divisible by both a and b.
- */
+/// Returns the least common multiple (LCM) of two integers a and b. This is the
+/// smallest positive integer that is divisible by both a and b.
 int lcm(int a, int b) {
   return a * b ~/ gcd(a, b);
 }
 
-/**
- * Returns the factorial of the argument. This is the number of ways to arrange
- * [n] distinct objects into a sequence.
- */
+/// Returns the factorial of the argument. This is the number of ways to arrange
+/// [n] distinct objects into a sequence.
 int factorial(int n) {
   if (n < 0) {
     throw new ArgumentError('factorial($n) is undefined for negative arguments.');
@@ -69,11 +61,9 @@ const List<int> _FACTORIALS = const [
   2432902008176640000
 ];
 
-/**
- * Returns the binomial coefficient of the arguments. This is the number of
- * ways, disregarding order, that [k] objects can be chosen from among [n]
- * objects.
- */
+/// Returns the binomial coefficient of the arguments. This is the number of
+/// ways, disregarding order, that [k] objects can be chosen from among [n]
+/// objects.
 int binomial(int n, int k) {
   if (k < 0 || k > n) {
     return 0;
@@ -89,9 +79,7 @@ int binomial(int n, int k) {
   return r;
 }
 
-/**
- * Returns the power [x] raised to [y], where [y] is an [int].
- */
+/// Returns the power [x] raised to [y], where [y] is an [int].
 num pow(num x, int y) {
   if (y < 0) {
     return 1 / pow(x, -y);
@@ -107,9 +95,7 @@ num pow(num x, int y) {
   return r;
 }
 
-/**
- * Returns the power [x] raised to [y] modulo [m], where [x], [m] and [y] are [int]s.
- */
+/// Returns the power [x] raised to [y] modulo [m], where [x], [m] and [y] are [int]s.
 int powMod(int x, int y, int m) {
   if (m < 1 || y < 0) {
     throw new ArgumentError('powMod($x, $y, $m) is undefined for y < 0 and m < 1.');
@@ -131,14 +117,12 @@ int powMod(int x, int y, int m) {
   return r;
 }
 
-/**
- * Evaluates the polynomial described by the given coefficients [cs] and the
- * value [x].
- *
- * For example, if the list [cs] has 4 elements the function computes:
- *
- *     c[0]*x^0 + c[1]*x^1 + c[2]*x^3 + c[3]*x^3
- */
+/// Evaluates the polynomial described by the given coefficients [cs] and the
+/// value [x].
+///
+/// For example, if the list [cs] has 4 elements the function computes:
+///
+///     c[0]*x^0 + c[1]*x^1 + c[2]*x^3 + c[3]*x^3
 num polynomial(Iterable<num> cs, [num x = 10]) {
   var r = 0,
       e = 1;
@@ -149,9 +133,7 @@ num polynomial(Iterable<num> cs, [num x = 10]) {
   return r;
 }
 
-/**
- * Returns primes up to a [limit] computed by the Sieve of Eratosthenes.
- */
+/// Returns primes up to a [limit] computed by the Sieve of Eratosthenes.
 List<int> primesUpTo(int limit) {
   var sieve = new BitList(limit + 1);
   for (var i = 2; i * i <= limit; i++) {
@@ -170,13 +152,11 @@ List<int> primesUpTo(int limit) {
   return primes;
 }
 
-/**
- * Tests if the number [n] is probably a prime.
- *
- * The output of this variant of the probabilistic prime test
- * by Miller–Rabin is deterministic. It has been verified to return
- * correct results for all n < 341,550,071,728,321.
- */
+/// Tests if the number [n] is probably a prime.
+///
+/// The output of this variant of the probabilistic prime test
+/// by Miller–Rabin is deterministic. It has been verified to return
+/// correct results for all n < 341,550,071,728,321.
 bool isProbablyPrime(int n) {
   if (n == 2 || n == 3 || n == 5) {
     return true;

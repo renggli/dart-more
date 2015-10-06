@@ -1,10 +1,8 @@
 part of iterable;
 
-/**
- * Mixin for infinitely sized iterables.
- *
- * Intended to mix-in on top of [IterableBase].
- */
+/// Mixin for infinitely sized iterables.
+///
+/// Intended to mix-in on top of [IterableBase].
 abstract class InfiniteIterable<E> implements Iterable<E> {
   @override
   int get length {

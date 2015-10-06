@@ -1,26 +1,24 @@
 part of iterable;
 
-/**
- * Returns an iterable over the cross product of [iterables].
- *
- * The resulting iterable is equivalent to nested for-loops. The rightmost elements
- * advance on every iteration. This pattern creates a lexicographic ordering so that
- * if the input’s iterables are sorted, the product is sorted as well.
- *
- * For example, the product of `['x', 'y']` and `[1, 2, 3]` is created with
- *
- *    product([['x', 'y'], [1, 2, 3]]);
- *
- * and results in an iterable with the following elements:
- *
- *    ['x', 1]
- *    ['x', 2]
- *    ['x', 3]
- *    ['y', 1]
- *    ['y', 2]
- *    ['y', 3]
- *
- */
+/// Returns an iterable over the cross product of [iterables].
+///
+/// The resulting iterable is equivalent to nested for-loops. The rightmost elements
+/// advance on every iteration. This pattern creates a lexicographic ordering so that
+/// if the input’s iterables are sorted, the product is sorted as well.
+///
+/// For example, the product of `['x', 'y']` and `[1, 2, 3]` is created with
+///
+///    product([['x', 'y'], [1, 2, 3]]);
+///
+/// and results in an iterable with the following elements:
+///
+///    ['x', 1]
+///    ['x', 2]
+///    ['x', 3]
+///    ['y', 1]
+///    ['y', 2]
+///    ['y', 3]
+///
 Iterable<List /*<E>*/ > product(Iterable<Iterable /*<E>*/ > iterables) {
   if (iterables.isEmpty || iterables.any((iterable) => iterable.isEmpty)) {
     return empty();

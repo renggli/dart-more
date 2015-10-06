@@ -1,14 +1,12 @@
 part of iterable;
 
-/**
- * Returns an iterable over the permutations of [elements]. The permutations
- * are emitted in lexicographical order based on the input.
- *
- * The following expression iterates over xyz, xzy, yxz, yzx, zxy, and zyx:
- *
- *     permutations(string('xyz'));
- *
- */
+/// Returns an iterable over the permutations of [elements]. The permutations
+/// are emitted in lexicographical order based on the input.
+///
+/// The following expression iterates over xyz, xzy, yxz, yzx, zxy, and zyx:
+///
+///     permutations(string('xyz'));
+///
 Iterable<List /*<E>*/ > permutations(Iterable /*<E>*/ elements) {
   elements = elements.toList(growable: false);
   return elements.isEmpty ? empty() : new _PermutationIterable /*<E>*/ (elements);
