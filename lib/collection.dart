@@ -1,4 +1,4 @@
-library collection;
+library more.collection;
 
 import 'dart:collection';
 import 'dart:typed_data';

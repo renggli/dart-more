@@ -1,4 +1,4 @@
-part of iterable;
+part of more.iterable;
 
 /// Returns an iterable over the combinations of [elements] of length [count]. The
 /// combinations are emitted in lexicographical order based on the input.

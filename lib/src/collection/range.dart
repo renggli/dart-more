@@ -1,4 +1,4 @@
-part of collection;
+part of more.collection;
 
 /// Creates a virtual range of numbers containing an arithmetic progressions.
 ///

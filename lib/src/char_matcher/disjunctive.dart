@@ -1,4 +1,4 @@
-part of char_matcher;
+part of more.char_matcher;
 
 class _DisjunctiveCharMatcher extends CharMatcher {
   final List<CharMatcher> _matchers;
@@ -11,9 +11,9 @@ class _DisjunctiveCharMatcher extends CharMatcher {
 
   @override
   CharMatcher operator |(CharMatcher other) {
-    if (other == _ANY) {
+    if (other == _any) {
       return other;
-    } else if (other == _NONE) {
+    } else if (other == _none) {
       return this;
     } else if (other is _DisjunctiveCharMatcher) {
       return new _DisjunctiveCharMatcher(new List()

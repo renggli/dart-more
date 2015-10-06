@@ -1,5 +1,5 @@
 /// A collection of common mathematical functions on integers.
-library int_math;
+library more.int_math;
 
 import 'collection.dart';
 
@@ -27,17 +27,17 @@ int factorial(int n) {
   if (n < 0) {
     throw new ArgumentError('factorial($n) is undefined for negative arguments.');
   }
-  if (n < _FACTORIALS.length) {
-    return _FACTORIALS[n];
+  if (n < _factorials.length) {
+    return _factorials[n];
   }
-  var r = _FACTORIALS.last;
-  for (var i = _FACTORIALS.length; i <= n; i++) {
+  var r = _factorials.last;
+  for (var i = _factorials.length; i <= n; i++) {
     r *= i;
   }
   return r;
 }
 
-const List<int> _FACTORIALS = const [
+const List<int> _factorials = const [
   1,
   1,
   2,

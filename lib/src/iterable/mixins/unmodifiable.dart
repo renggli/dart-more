@@ -1,4 +1,4 @@
-part of iterable;
+part of more.iterable;
 
 /// Mixin for an unmodifiable [List] class.
 ///

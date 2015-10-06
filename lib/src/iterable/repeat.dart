@@ -1,4 +1,4 @@
-part of iterable;
+part of more.iterable;
 
 /// Returns an infinite iterable with a constant [element]. If [count] is
 /// provided the resulting iterator is limited to [count] elements.

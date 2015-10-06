@@ -1,4 +1,4 @@
-part of ordering;
+part of more.ordering;
 
 class _CompoundOrdering<T> extends Ordering<T> {
   final List<Ordering<T>> _orderings;

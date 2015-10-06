@@ -1,4 +1,4 @@
-part of char_matcher;
+part of more.char_matcher;
 
 class _NegateCharMatcher extends CharMatcher {
   final CharMatcher _matcher;

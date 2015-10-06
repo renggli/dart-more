@@ -1,6 +1,6 @@
-part of char_matcher;
+part of more.char_matcher;
 
-const CharMatcher _WHITESPACE = const _WhitespaceCharMatcher();
+const CharMatcher _whitespace = const _WhitespaceCharMatcher();
 
 class _WhitespaceCharMatcher extends CharMatcher {
   const _WhitespaceCharMatcher();

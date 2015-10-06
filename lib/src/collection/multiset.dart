@@ -1,4 +1,4 @@
-part of collection;
+part of more.collection;
 
 /// A generalized [Set] (or Bag) in which members are allowed to appear
 /// more than once.

@@ -1,4 +1,4 @@
-part of iterable;
+part of more.iterable;
 
 /// Returns an iterable over the permutations of [elements]. The permutations
 /// are emitted in lexicographical order based on the input.

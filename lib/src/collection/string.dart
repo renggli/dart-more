@@ -1,4 +1,4 @@
-part of collection;
+part of more.collection;
 
 /// Returns a light-weight immutable iterable list around the characters of
 /// a [string].

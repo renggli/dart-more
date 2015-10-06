@@ -1,5 +1,5 @@
 /// Support for exact rational number arithmetic.
-library fraction;
+library more.fraction;
 
 import 'int_math.dart' as int_math;
 
@@ -7,10 +7,10 @@ import 'int_math.dart' as int_math;
 class Fraction implements Comparable<Fraction> {
 
   /// The neutral additive element, i.e. `0`.
-  static const Fraction ZERO = const Fraction._(0, 1);
+  static const Fraction zero = const Fraction._(0, 1);
 
   /// The neutral multiplicative element, i.e. `1`.
-  static const Fraction ONE = const Fraction._(1, 1);
+  static const Fraction one = const Fraction._(1, 1);
 
   /// Constructs a fraction from a [numerator] and an optional [denominator].
   factory Fraction(int numerator, [int denominator = 1]) {
@@ -28,37 +28,37 @@ class Fraction implements Comparable<Fraction> {
   }
 
   /// Constructs an approximate fraction from a floating point [value].
-  factory Fraction.fromDouble(num value, [num max_denominator = 1e10]) {
+  factory Fraction.fromDouble(num value, [num maxDenominator = 1e10]) {
     if (value.isInfinite || value.isNaN) {
-      throw new ArgumentError('${value} cannot be represented as fraction');
+      throw new ArgumentError('$value cannot be represented as fraction');
     }
     var sign = value < 0.0 ? -1 : 1;
     value *= sign;
-    var numerator_1 = value.floor(),
-        numerator_2 = 1;
-    var denominator_1 = 1,
-        denominator_2 = 0;
-    var integer_part = numerator_1;
-    var fraction_part = value - numerator_1;
-    while (fraction_part != 0) {
-      var new_value = 1.0 / fraction_part;
-      integer_part = new_value.floor();
-      fraction_part = new_value - integer_part;
-      var temporary = numerator_2;
-      numerator_2 = numerator_1;
-      numerator_1 = numerator_1 * integer_part + temporary;
-      temporary = denominator_2;
-      denominator_2 = denominator_1;
-      denominator_1 = integer_part * denominator_1 + temporary;
-      if (max_denominator < denominator_1) {
-        if (numerator_2 == 0.0) {
-          return new Fraction(sign * numerator_1, denominator_1);
+    var numerator1 = value.floor(),
+        numerator2 = 1;
+    var denominator1 = 1,
+        denominator2 = 0;
+    var integerPart = numerator1;
+    var fractionPart = value - numerator1;
+    while (fractionPart != 0) {
+      var newValue = 1.0 / fractionPart;
+      integerPart = newValue.floor();
+      fractionPart = newValue - integerPart;
+      var temporary = numerator2;
+      numerator2 = numerator1;
+      numerator1 = numerator1 * integerPart + temporary;
+      temporary = denominator2;
+      denominator2 = denominator1;
+      denominator1 = integerPart * denominator1 + temporary;
+      if (maxDenominator < denominator1) {
+        if (numerator2 == 0.0) {
+          return new Fraction(sign * numerator1, denominator1);
         } else {
-          return new Fraction(sign * numerator_2, denominator_2);
+          return new Fraction(sign * numerator2, denominator2);
         }
       }
     }
-    return new Fraction(sign * numerator_1, denominator_1);
+    return new Fraction(sign * numerator1, denominator1);
   }
 
   final int numerator;

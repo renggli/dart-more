@@ -1,4 +1,4 @@
-part of iterable;
+part of more.iterable;
 
 /// Mixin that throws on the length changing operations of [List].
 ///

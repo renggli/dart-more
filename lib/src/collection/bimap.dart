@@ -1,4 +1,4 @@
-part of collection;
+part of more.collection;
 
 /// A bi-map associates keys with values and values with keys.
 ///

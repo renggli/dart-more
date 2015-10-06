@@ -1,4 +1,4 @@
-library iterable_test;
+library more.test.iterable_test;
 
 import 'package:test/test.dart';
 import 'package:more/collection.dart';

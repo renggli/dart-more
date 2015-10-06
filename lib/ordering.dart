@@ -3,7 +3,7 @@
 ///
 /// The implementation closely follows [Guava](http://goo.gl/xXROX), the Google
 /// collection of libraries for Java-based projects.
-library ordering;
+library more.ordering;
 
 import 'dart:collection';
 

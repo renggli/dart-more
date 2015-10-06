@@ -1,6 +1,6 @@
-part of char_matcher;
+part of more.char_matcher;
 
-const CharMatcher _ASCII = const _AsciiCharMatcher();
+const CharMatcher _ascii = const _AsciiCharMatcher();
 
 class _AsciiCharMatcher extends CharMatcher {
   const _AsciiCharMatcher();

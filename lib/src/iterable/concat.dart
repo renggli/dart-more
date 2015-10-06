@@ -1,4 +1,4 @@
-part of iterable;
+part of more.iterable;
 
 /// Combines multiple [iterables] into a single iterable.
 ///

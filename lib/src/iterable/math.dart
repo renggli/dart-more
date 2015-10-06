@@ -1,4 +1,4 @@
-part of iterable;
+part of more.iterable;
 
 /// Returns an iterable over the fibonacci sequence starting with [f0] and
 /// [f1]. The default sequence is indefinitely long and by default starts

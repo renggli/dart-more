@@ -1,6 +1,6 @@
-part of char_matcher;
+part of more.char_matcher;
 
-const CharMatcher _LOWER_CASE_LETTER = const _LowerCaseLetterCharMatcher();
+const CharMatcher _lowerCaseLetter = const _LowerCaseLetterCharMatcher();
 
 class _LowerCaseLetterCharMatcher extends CharMatcher {
   const _LowerCaseLetterCharMatcher();

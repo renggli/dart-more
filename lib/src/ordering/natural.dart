@@ -1,4 +1,4 @@
-part of ordering;
+part of more.ordering;
 
 class _NaturalOrdering<T> extends Ordering<T> {
   const _NaturalOrdering();

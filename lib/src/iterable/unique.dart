@@ -1,4 +1,4 @@
-part of iterable;
+part of more.iterable;
 
 /// Returns a lazy iterable that filters out duplicates from the [iterator].
 /// If [equals] and [hashCode] are omitted, the iterator uses the objects'

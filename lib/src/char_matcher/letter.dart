@@ -1,6 +1,6 @@
-part of char_matcher;
+part of more.char_matcher;
 
-const CharMatcher _LETTER = const _LetterCharMatcher();
+const CharMatcher _letter = const _LetterCharMatcher();
 
 class _LetterCharMatcher extends CharMatcher {
   const _LetterCharMatcher();

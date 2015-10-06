@@ -1,4 +1,4 @@
-part of iterable;
+part of more.iterable;
 
 /// Returns a lazy infinite list of repeated applications of the
 /// n-ary [function] to its previous n initial [elements].

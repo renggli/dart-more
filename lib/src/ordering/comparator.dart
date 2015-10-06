@@ -1,4 +1,4 @@
-part of ordering;
+part of more.ordering;
 
 class _ComparatorOrdering<T> extends Ordering<T> {
   final Comparator<T> _comparator;

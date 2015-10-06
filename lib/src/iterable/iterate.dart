@@ -1,4 +1,4 @@
-part of iterable;
+part of more.iterable;
 
 /// Returns a lazy infinite list of repeated applications of the
 /// [function] to the initial [value].

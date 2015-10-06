@@ -1,4 +1,4 @@
-part of iterable;
+part of more.iterable;
 
 /// Divides an `iterable` into sub-iterables of a given `size`. If no `padding` is provided, the
 /// final iterable is smaller or equal the desired side, otherwise the final iterable will be
@@ -7,11 +7,11 @@ part of iterable;
 /// The following expression yields [1, 2], [3, 4], [5, null]:
 ///
 ///     partition([1, 2, 3, 4, 5], 2, null);
-Iterable<Iterable/*<E>*/> partition(Iterable/*<E>*/ elements, int size, [padding = _NO_PADDING]) {
+Iterable<Iterable/*<E>*/> partition(Iterable/*<E>*/ elements, int size, [padding = _sentinel]) {
   return new _PartitionIterable/*<E>*/(elements, size, padding);
 }
 
-const _NO_PADDING = const Object();
+const _sentinel = const Object();
 
 class _PartitionIterable<E> extends IterableBase<Iterable<E>> {
 
@@ -55,7 +55,7 @@ class _PartitionIterator<E> extends Iterator<Iterable<E>> {
             current = null;
             return false;
           }
-          if (_NO_PADDING != padding) {
+          if (_sentinel != padding) {
             for (var j = i; j < size; j++) {
               current.add(padding);
             }

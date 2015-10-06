@@ -1,4 +1,4 @@
-part of ordering;
+part of more.ordering;
 
 class _LexicographicalOrdering<T> extends Ordering<Iterable<T>> {
   final Ordering<T> _other;

@@ -1,4 +1,4 @@
-library int_math_test;
+library more.test.int_math_test;
 
 import 'package:test/test.dart';
 import 'package:more/int_math.dart';

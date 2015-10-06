@@ -1,4 +1,4 @@
-part of ordering;
+part of more.ordering;
 
 class _ExplicitOrdering<T> extends Ordering<T> {
   final Map<T, int> _ranking;

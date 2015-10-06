@@ -1,4 +1,4 @@
-library collection_test;
+library more.test.collection_test;
 
 import 'dart:math';
 
@@ -609,65 +609,65 @@ void main() {
         });
       });
       group('operator', () {
-        var first_list = ['a', 'b', 'c', 'c'];
-        var first_set = new Multiset.from(first_list);
-        var second_list = ['a', 'c', 'd', 'd'];
-        var second_set = new Multiset.from(second_list);
+        var firstList = ['a', 'b', 'c', 'c'];
+        var firstSet = new Multiset.from(firstList);
+        var secondList = ['a', 'c', 'd', 'd'];
+        var secondSet = new Multiset.from(secondList);
         test('contains', () {
-          expect(first_set.contains('a'), isTrue);
-          expect(first_set.contains('b'), isTrue);
-          expect(first_set.contains('c'), isTrue);
-          expect(first_set.contains('d'), isFalse);
+          expect(firstSet.contains('a'), isTrue);
+          expect(firstSet.contains('b'), isTrue);
+          expect(firstSet.contains('c'), isTrue);
+          expect(firstSet.contains('d'), isFalse);
         });
         test('containsAll', () {
-          expect(first_set.containsAll(first_set), isTrue);
-          expect(first_set.containsAll(second_set), isFalse);
-          expect(first_set.containsAll(new Multiset()), isTrue);
-          expect(first_set.containsAll(new Multiset.from(['a', 'b', 'b'])), isFalse);
-          expect(first_set.containsAll(new Multiset.from(['a', 'b', 'd'])), isFalse);
+          expect(firstSet.containsAll(firstSet), isTrue);
+          expect(firstSet.containsAll(secondSet), isFalse);
+          expect(firstSet.containsAll(new Multiset()), isTrue);
+          expect(firstSet.containsAll(new Multiset.from(['a', 'b', 'b'])), isFalse);
+          expect(firstSet.containsAll(new Multiset.from(['a', 'b', 'd'])), isFalse);
         });
         test('containsAll (iterable)', () {
-          expect(first_set.containsAll(first_list), isTrue);
-          expect(first_set.containsAll(second_list), isFalse);
-          expect(first_set.containsAll([]), isTrue);
-          expect(first_set.containsAll(['a']), isTrue);
-          expect(first_set.containsAll(['x']), isFalse);
-          expect(first_set.containsAll(['a', 'b', 'b']), isFalse);
-          expect(first_set.containsAll(['a', 'b', 'd']), isFalse);
+          expect(firstSet.containsAll(firstList), isTrue);
+          expect(firstSet.containsAll(secondList), isFalse);
+          expect(firstSet.containsAll([]), isTrue);
+          expect(firstSet.containsAll(['a']), isTrue);
+          expect(firstSet.containsAll(['x']), isFalse);
+          expect(firstSet.containsAll(['a', 'b', 'b']), isFalse);
+          expect(firstSet.containsAll(['a', 'b', 'd']), isFalse);
         });
         test('intersection', () {
-          expect(first_set.intersection(second_set), unorderedEquals(['a', 'c']));
-          expect(first_set.intersection(second_set).distinct, unorderedEquals(['a', 'c']));
-          expect(second_set.intersection(first_set), unorderedEquals(['a', 'c']));
-          expect(second_set.intersection(first_set).distinct, unorderedEquals(['a', 'c']));
+          expect(firstSet.intersection(secondSet), unorderedEquals(['a', 'c']));
+          expect(firstSet.intersection(secondSet).distinct, unorderedEquals(['a', 'c']));
+          expect(secondSet.intersection(firstSet), unorderedEquals(['a', 'c']));
+          expect(secondSet.intersection(firstSet).distinct, unorderedEquals(['a', 'c']));
         });
         test('intersection (iterable)', () {
-          expect(first_set.intersection(second_list), unorderedEquals(['a', 'c']));
-          expect(second_set.intersection(first_list), unorderedEquals(['a', 'c']));
+          expect(firstSet.intersection(secondList), unorderedEquals(['a', 'c']));
+          expect(secondSet.intersection(firstList), unorderedEquals(['a', 'c']));
         });
         test('union', () {
-          expect(first_set.union(second_set),
+          expect(firstSet.union(secondSet),
               unorderedEquals(['a', 'a', 'b', 'c', 'c', 'c', 'd', 'd']));
-          expect(first_set.union(second_set).distinct, unorderedEquals(['a', 'b', 'c', 'd']));
-          expect(second_set.union(first_set),
+          expect(firstSet.union(secondSet).distinct, unorderedEquals(['a', 'b', 'c', 'd']));
+          expect(secondSet.union(firstSet),
               unorderedEquals(['a', 'a', 'b', 'c', 'c', 'c', 'd', 'd']));
-          expect(second_set.union(first_set).distinct, unorderedEquals(['a', 'b', 'c', 'd']));
+          expect(secondSet.union(firstSet).distinct, unorderedEquals(['a', 'b', 'c', 'd']));
         });
         test('union (iterable)', () {
-          expect(first_set.union(second_list),
+          expect(firstSet.union(secondList),
               unorderedEquals(['a', 'a', 'b', 'c', 'c', 'c', 'd', 'd']));
-          expect(second_set.union(first_list),
+          expect(secondSet.union(firstList),
               unorderedEquals(['a', 'a', 'b', 'c', 'c', 'c', 'd', 'd']));
         });
         test('difference', () {
-          expect(first_set.difference(second_set), unorderedEquals(['b', 'c']));
-          expect(first_set.difference(second_set).distinct, unorderedEquals(['b', 'c']));
-          expect(second_set.difference(first_set), unorderedEquals(['d', 'd']));
-          expect(second_set.difference(first_set).distinct, unorderedEquals(['d']));
+          expect(firstSet.difference(secondSet), unorderedEquals(['b', 'c']));
+          expect(firstSet.difference(secondSet).distinct, unorderedEquals(['b', 'c']));
+          expect(secondSet.difference(firstSet), unorderedEquals(['d', 'd']));
+          expect(secondSet.difference(firstSet).distinct, unorderedEquals(['d']));
         });
         test('difference (iterable)', () {
-          expect(first_set.difference(second_list), unorderedEquals(['b', 'c']));
-          expect(second_set.difference(first_list), unorderedEquals(['d', 'd']));
+          expect(firstSet.difference(secondList), unorderedEquals(['b', 'c']));
+          expect(secondSet.difference(firstList), unorderedEquals(['d', 'd']));
         });
       });
     });

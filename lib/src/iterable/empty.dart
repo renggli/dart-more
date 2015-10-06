@@ -1,4 +1,4 @@
-part of iterable;
+part of more.iterable;
 
 /// Returns an efficient empty iterable.
 ///

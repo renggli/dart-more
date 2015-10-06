@@ -1,4 +1,4 @@
-library ordering_test;
+library more.test.ordering_test;
 
 import 'package:test/test.dart';
 import 'package:more/ordering.dart';

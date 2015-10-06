@@ -1,37 +1,37 @@
-part of collection;
+part of more.collection;
 
 /// An space efficient fixed length [List] that stores boolean values.
 class BitList extends ListBase<bool> with FixedLengthListMixin<bool> {
 
   // constants specific to mapping bits into a [UInt32List]
-  static const int _SHIFT = 5;
-  static const int _OFFSET = 31;
-  static const int _MASK = 0xffffffff;
-  static const List<int> _SET_MASK = const [1, 2, 4, 8, 16, 32, 64, 128, 256, 512, 1024,
+  static const int _shift = 5;
+  static const int _offset = 31;
+  static const int _mask = 0xffffffff;
+  static const List<int> _setMask = const [1, 2, 4, 8, 16, 32, 64, 128, 256, 512, 1024,
     2048, 4096, 8192, 16384, 32768, 65536, 131072, 262144, 524288, 1048576, 2097152, 4194304,
     8388608, 16777216, 33554432, 67108864, 134217728, 268435456, 536870912, 1073741824,
     2147483648];
-  static const List<int> _CLR_MASK = const [-2, -3, -5, -9, -17, -33, -65, -129, -257, -513,
+  static const List<int> _clrMask = const [-2, -3, -5, -9, -17, -33, -65, -129, -257, -513,
     -1025, -2049, -4097, -8193, -16385, -32769, -65537, -131073, -262145, -524289, -1048577,
     -2097153, -4194305, -8388609, -16777217, -33554433, -67108865, -134217729, -268435457,
     -536870913, -1073741825, -2147483649];
 
   /// Constructs a bit list of the given [length].
   factory BitList(int length) {
-    var buffer = new Uint32List((length + _OFFSET) >> _SHIFT);
+    var buffer = new Uint32List((length + _offset) >> _shift);
     return new BitList._(buffer, length);
   }
 
   /// Constructs a new list from a given [Iterable] of booleans.
   factory BitList.from(Iterable<bool> other) {
     var length = other.length;
-    var buffer = new Uint32List((length + _OFFSET) >> _SHIFT);
+    var buffer = new Uint32List((length + _offset) >> _shift);
     if (other is BitList) {
       buffer.setAll(0, other._buffer);
     } else {
       for (var index = 0, iterator = other.iterator; iterator.moveNext(); index++) {
         if (iterator.current) {
-          buffer[index >> _SHIFT] |= _SET_MASK[index & _OFFSET];
+          buffer[index >> _shift] |= _setMask[index & _offset];
         }
       }
     }
@@ -51,7 +51,7 @@ class BitList extends ListBase<bool> with FixedLengthListMixin<bool> {
   @override
   bool operator [](int index) {
     if (0 <= index && index < length) {
-      return (_buffer[index >> _SHIFT] & _SET_MASK[index & _OFFSET]) != 0;
+      return (_buffer[index >> _shift] & _setMask[index & _offset]) != 0;
     } else {
       throw new RangeError.range(index, 0, length);
     }
@@ -62,9 +62,9 @@ class BitList extends ListBase<bool> with FixedLengthListMixin<bool> {
   void operator []=(int index, bool value) {
     if (0 <= index && index < length) {
       if (value) {
-        _buffer[index >> _SHIFT] |= _SET_MASK[index & _OFFSET];
+        _buffer[index >> _shift] |= _setMask[index & _offset];
       } else {
-        _buffer[index >> _SHIFT] &= _CLR_MASK[index & _OFFSET];
+        _buffer[index >> _shift] &= _clrMask[index & _offset];
       }
     } else {
       throw new RangeError.range(index, 0, length);
@@ -75,7 +75,7 @@ class BitList extends ListBase<bool> with FixedLengthListMixin<bool> {
   /// current value.
   void flip(int index) {
     if (0 <= index && index < length) {
-      _buffer[index >> _SHIFT] ^= _SET_MASK[index & _OFFSET];
+      _buffer[index >> _shift] ^= _setMask[index & _offset];
     } else {
       throw new RangeError.range(index, 0, length);
     }
@@ -85,7 +85,7 @@ class BitList extends ListBase<bool> with FixedLengthListMixin<bool> {
   int count([bool expected = true]) {
     int tally = 0;
     for (var index = 0; index < _length; index++) {
-      var actual = (_buffer[index >> _SHIFT] & _SET_MASK[index & _OFFSET]) != 0;
+      var actual = (_buffer[index >> _shift] & _setMask[index & _offset]) != 0;
       if (actual == expected) {
         tally++;
       }
@@ -161,21 +161,21 @@ class BitList extends ListBase<bool> with FixedLengthListMixin<bool> {
     if (amount == 0 || _length == 0) {
       return new BitList.from(this);
     }
-    var shift = amount >> _SHIFT;
-    var offset = amount & _OFFSET;
+    var shift = amount >> _shift;
+    var offset = amount & _offset;
     var result = new BitList(_length);
     if (offset == 0) {
       for (var i = shift; i < _buffer.length; i++) {
         result._buffer[i] = _buffer[i - shift];
       }
     } else {
-      var other_offset = 1 + _OFFSET - offset;
+      var otherOffset = 1 + _offset - offset;
       for (var i = shift + 1; i < _buffer.length; i++) {
-        result._buffer[i] = ((_buffer[i - shift] << offset) & _MASK) |
-            ((_buffer[i - shift - 1] >> other_offset) & _MASK);
+        result._buffer[i] = ((_buffer[i - shift] << offset) & _mask) |
+            ((_buffer[i - shift - 1] >> otherOffset) & _mask);
       }
       if (shift < _buffer.length) {
-        result._buffer[shift] = (_buffer[0] << offset) & _MASK;
+        result._buffer[shift] = (_buffer[0] << offset) & _mask;
       }
     }
     return result;
@@ -190,8 +190,8 @@ class BitList extends ListBase<bool> with FixedLengthListMixin<bool> {
     if (amount == 0 || _length == 0) {
       return new BitList.from(this);
     }
-    var shift = amount >> _SHIFT;
-    var offset = amount & _OFFSET;
+    var shift = amount >> _shift;
+    var offset = amount & _offset;
     var result = new BitList(_length);
     if (offset == 0) {
       for (var i = 0; i < _buffer.length - shift; i++) {
@@ -199,13 +199,13 @@ class BitList extends ListBase<bool> with FixedLengthListMixin<bool> {
       }
     } else {
       var last = _buffer.length - shift - 1;
-      var other_offset = 1 + _OFFSET - offset;
+      var otherOffset = 1 + _offset - offset;
       for (var i = 0; i < last; i++) {
-        result._buffer[i] = ((_buffer[i + shift] >> offset) & _MASK) |
-            ((_buffer[i + shift + 1] << other_offset) & _MASK);
+        result._buffer[i] = ((_buffer[i + shift] >> offset) & _mask) |
+            ((_buffer[i + shift + 1] << otherOffset) & _mask);
       }
       if (0 <= last) {
-        result._buffer[last] = (_buffer[_buffer.length - 1] >> offset) & _MASK;
+        result._buffer[last] = (_buffer[_buffer.length - 1] >> offset) & _mask;
       }
     }
     return result;

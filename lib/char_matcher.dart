@@ -3,7 +3,7 @@
 ///
 /// The implementation is inspired by [Guava](http://goo.gl/xXROX), the Google
 /// collection of libraries for Java-based projects.
-library char_matcher;
+library more.char_matcher;
 
 part 'src/char_matcher/any.dart';
 part 'src/char_matcher/ascii.dart';
@@ -38,10 +38,10 @@ part 'src/char_matcher/whitespace.dart';
 abstract class CharMatcher {
 
   /// A matcher that accepts any character.
-  factory CharMatcher.any() => _ANY;
+  factory CharMatcher.any() => _any;
 
   /// A matcher that accepts no character.
-  factory CharMatcher.none() => _NONE;
+  factory CharMatcher.none() => _none;
 
   /// A matcher that accepts a single [character].
   factory CharMatcher.isChar(character) {
@@ -54,25 +54,25 @@ abstract class CharMatcher {
   }
 
   /// A matcher that accepts ASCII characters.
-  factory CharMatcher.ascii() => _ASCII;
+  factory CharMatcher.ascii() => _ascii;
 
   /// A matcher that accepts letters.
-  factory CharMatcher.letter() => _LETTER;
+  factory CharMatcher.letter() => _letter;
 
   /// A matcher that accepts upper-case letters.
-  factory CharMatcher.upperCaseLetter() => _UPPER_CASE_LETTER;
+  factory CharMatcher.upperCaseLetter() => _upperCaseLetter;
 
   /// A matcher that accepts lower-case letters.
-  factory CharMatcher.lowerCaseLetter() => _LOWER_CASE_LETTER;
+  factory CharMatcher.lowerCaseLetter() => _lowerCaseLetter;
 
   /// A matcher that accepts letters or digits.
-  factory CharMatcher.letterOrDigit() => _LETTER_OR_DIGIT;
+  factory CharMatcher.letterOrDigit() => _letterOrDigit;
 
   /// A matcher that accepts digits.
-  factory CharMatcher.digit() => _DIGIT;
+  factory CharMatcher.digit() => _digit;
 
   /// A matcher that accepts whitespaces.
-  factory CharMatcher.whitespace() => _WHITESPACE;
+  factory CharMatcher.whitespace() => _whitespace;
 
   const CharMatcher();
 
@@ -82,9 +82,9 @@ abstract class CharMatcher {
   /// Returns a matcher that matches any character matched by either this
   /// matcher or [other].
   CharMatcher operator |(CharMatcher other) {
-    if (other == _ANY) {
+    if (other == _any) {
       return other;
-    } else if (other == _NONE) {
+    } else if (other == _none) {
       return this;
     } else if (other is _DisjunctiveCharMatcher) {
       return new _DisjunctiveCharMatcher(new List()

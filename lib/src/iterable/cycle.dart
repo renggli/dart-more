@@ -1,4 +1,4 @@
-part of iterable;
+part of more.iterable;
 
 /// Returns a iterable whose iterator cycles repeatedly over the elements
 /// of an [iterable]. If [count] is specified, the returned iterable has a finite

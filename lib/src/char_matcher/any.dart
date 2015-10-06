@@ -1,6 +1,6 @@
-part of char_matcher;
+part of more.char_matcher;
 
-const CharMatcher _ANY = const _AnyCharMatcher();
+const CharMatcher _any = const _AnyCharMatcher();
 
 class _AnyCharMatcher extends CharMatcher {
   const _AnyCharMatcher();
@@ -9,7 +9,7 @@ class _AnyCharMatcher extends CharMatcher {
   bool match(int value) => true;
 
   @override
-  CharMatcher operator ~() => _NONE;
+  CharMatcher operator ~() => _none;
 
   @override
   CharMatcher operator |(CharMatcher other) => this;

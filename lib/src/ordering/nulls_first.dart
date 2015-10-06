@@ -1,4 +1,4 @@
-part of ordering;
+part of more.ordering;
 
 class _NullsFirstOrdering<T> extends Ordering<T> {
   final Ordering<T> _ordering;

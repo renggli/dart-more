@@ -1,6 +1,6 @@
-part of char_matcher;
+part of more.char_matcher;
 
-const CharMatcher _LETTER_OR_DIGIT = const _LetterOrDigitCharMatcher();
+const CharMatcher _letterOrDigit = const _LetterOrDigitCharMatcher();
 
 class _LetterOrDigitCharMatcher extends CharMatcher {
   const _LetterOrDigitCharMatcher();

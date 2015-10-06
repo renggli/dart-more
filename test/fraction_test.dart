@@ -1,4 +1,4 @@
-library fraction_test;
+library more.test.fraction_test;
 
 import 'package:test/test.dart';
 import 'package:more/fraction.dart';
@@ -77,12 +77,12 @@ void main() {
         expect(() => new Fraction.fromDouble(double.NEGATIVE_INFINITY), throwsArgumentError);
       });
       test('zero', () {
-        expect(Fraction.ZERO, new Fraction(0));
-        expect(new Fraction(1, 2) + Fraction.ZERO, new Fraction(1, 2));
+        expect(Fraction.zero, new Fraction(0));
+        expect(new Fraction(1, 2) + Fraction.zero, new Fraction(1, 2));
       });
       test('one', () {
-        expect(Fraction.ONE, new Fraction(1));
-        expect(new Fraction(1, 2) * Fraction.ONE, new Fraction(1, 2));
+        expect(Fraction.one, new Fraction(1));
+        expect(new Fraction(1, 2) * Fraction.one, new Fraction(1, 2));
       });
     });
     group('arithmetic', () {
