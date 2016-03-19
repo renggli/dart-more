@@ -173,7 +173,7 @@ abstract class CharMatcher {
 
   /// Removes all matched characters in [sequence].
   String removeFrom(String sequence) {
-    return new String.fromCharCodes(sequence.codeUnits.where((~this).match));
+    return (~this).retainFrom(sequence);
   }
 
   /// Retains all matched characters in [sequence].
@@ -222,7 +222,7 @@ int _toCharCode(char) {
   if (char is num) {
     return char.round();
   }
-  var value = char.toString();
+  var value = '$char';
   if (value.length != 1) {
     throw new ArgumentError('$value is not a character');
   }
