@@ -16,7 +16,7 @@ part of more.collection;
 ///       .forEach(print);
 ///
 /// For a mutable copy of the string see [mutableString(Object)].
-List<String> string(string) {
+List<String> string(Object string) {
   return new _String(string.toString());
 }
 
@@ -52,7 +52,7 @@ class _String extends ListBase<String> with UnmodifiableListMixin<String> {
 ///
 /// For a light-weight immutable iterable list of characters see
 /// [string(Object)].
-List<String> mutableString(string, {bool growable: true}) {
+List<String> mutableString(Object string, {bool growable: true}) {
   return new _MutableString(new List.from(string.toString().codeUnits, growable: growable));
 }
 
