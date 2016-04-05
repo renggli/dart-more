@@ -11,14 +11,12 @@ More Dart — Literally
 
 Various extensions that make Dart a better place:
 
-- `bit_list.dart` is a space efficient list storing boolean values.
 - `char_matcher.dart` is a model for character classes, their composition and operations on strings.
+- `collection.dart` is a collection of collection types (bi map, bit list, multi set, range, string).
 - `fraction.dart` provides exact rational number arithmetic.
 - `int_math.dart` is a collection of common mathematical functions on integers.
 - `iterable.dart` is a collection of iterables and iterators.
-- `multiset.data` a data structure where elements might appear more than once.
 - `ordering.dart` a fluent interface for building comparator functions.
-- `range.dart` is a function to create lists of arithmetic progressions.
 
 And there are more to come ...
 
@@ -29,6 +27,21 @@ Up-to-date [class documentation](http://www.dartdocs.org/documentation/more/late
 
 Misc
 ----
+
+### Installation
+
+Follow the _Installing_ instructions on https://pub.dartlang.org/packages/more.
+
+Import the one or more of the packages into your Dart code using:
+
+```dart
+import 'package:more/char_matcher.dart';
+import 'package:more/collection.dart';
+import 'package:more/fraction.dart';
+import 'package:more/int_math.dart';
+import 'package:more/iterable.dart';
+import 'package:more/ordering.dart';
+```
 
 ### History
 
