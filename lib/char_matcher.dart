@@ -144,7 +144,7 @@ abstract class CharMatcher {
   /// with the specified [replacement].
   String collapseFrom(String sequence, String replacement) {
     var i = 0;
-    var list = new List();
+    var list = new List<int>();
     var codeUnits = sequence.codeUnits;
     var replacementCodes = replacement.codeUnits;
     while (i < codeUnits.length) {

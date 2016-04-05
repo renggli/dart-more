@@ -143,7 +143,7 @@ List<int> primesUpTo(int limit) {
       }
     }
   }
-  var primes = new List();
+  var primes = new List<int>();
   for (var i = 2; i <= limit; i++) {
     if (!sieve[i]) {
       primes.add(i);

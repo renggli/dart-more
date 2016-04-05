@@ -51,7 +51,7 @@ abstract class Ordering<T> {
 
   /// Returns an explicit ordering based on a [list] of elements.
   factory Ordering.explicit(List<T> list) {
-    var ranking = new LinkedHashMap();
+    var ranking = new LinkedHashMap<T, int>();
     for (var rank = 0; rank < list.length; rank++) {
       ranking[list[rank]] = rank;
     }

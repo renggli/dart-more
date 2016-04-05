@@ -1,5 +1,8 @@
 part of more.iterable;
 
+typedef bool Equality<E>(E a, E b);
+typedef int Hash<E>(E a);
+
 /// Returns a lazy iterable that filters out duplicates from the [iterator].
 /// If [equals] and [hashCode] are omitted, the iterator uses the objects'
 /// intrinsic [Object.operator==] and [Object.hashCode] for comparison.
@@ -9,14 +12,14 @@ part of more.iterable;
 ///     unique([1, 2, 3, 2, 4])
 ///
 Iterable/*<E>*/ unique/*<E>*/(Iterable/*<E>*/ iterable,
-    {bool equals(/*E*/ e1, /*E*/ e2), int hashCode(/*E*/ e)}) {
+    {Equality/*<E>*/ equals, Hash/*<E>*/ hashCode}) {
   return new _UniqueIterable(iterable, equals, hashCode);
 }
 
 class _UniqueIterable<E> extends IterableBase<E> {
   final Iterable<E> _iterable;
-  final Function _equals;
-  final Function _hashCode;
+  final Equality<E> _equals;
+  final Hash<E> _hashCode;
 
   _UniqueIterable(this._iterable, this._equals, this._hashCode);
 
