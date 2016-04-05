@@ -6,7 +6,7 @@ import 'package:test/test.dart';
 import 'package:more/collection.dart';
 
 List<bool> randomBooleans(int seed, int length) {
-  var list = new List();
+  var list = new List<bool>();
   var generator = new Random(seed);
   for (var i = 0; i < length; i++) {
     list.add(generator.nextBool());
@@ -181,7 +181,7 @@ void main() {
         });
         test('from List', () {
           for (var len = 0; len < 100; len++) {
-            var source = new List.from(randomBooleans(457 * len, len));
+            var source = new List<bool>.from(randomBooleans(457 * len, len));
             var target = new BitList.from(source);
             expect(source, target);
             expect(source, target.toList());
@@ -189,7 +189,7 @@ void main() {
         });
         test('from Set', () {
           for (var len = 0; len < 100; len++) {
-            var source = new Set.from(randomBooleans(827 * len, len));
+            var source = new Set<bool>.from(randomBooleans(827 * len, len));
             var target = new BitList.from(source);
             expect(source, target);
             expect(source, target.toSet());
@@ -197,7 +197,7 @@ void main() {
         });
         test('from BitList', () {
           for (var len = 0; len < 10; len++) {
-            var source = new Set.from(randomBooleans(287 * len, len));
+            var source = new Set<bool>.from(randomBooleans(287 * len, len));
             var target = new BitList.from(source);
             expect(source, target);
             expect(target, source);

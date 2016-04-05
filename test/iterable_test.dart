@@ -8,21 +8,20 @@ void main() {
   group('iterable', () {
     group('combinations', () {
       var letters = string('abcd');
-      var joiner = (iterable) => iterable.join();
+      var joiner = (Iterable iterable) => iterable.join();
       group('with repetitions', () {
         test('take 0', () {
           var iterable = combinations(letters, 0, repetitions: true);
           expect(iterable, isEmpty);
         });
         test('take 1', () {
-          var iterable =
-              combinations(letters, 1, repetitions: true).map((iterable) => iterable.join());
+          var iterable = combinations(letters, 1, repetitions: true)
+              .map((iterable) => iterable.join());
           expect(iterable, ['a', 'b', 'c', 'd']);
         });
         test('take 2', () {
           var iterable = combinations(letters, 2, repetitions: true);
-          expect(
-              iterable.map(joiner), ['aa', 'ab', 'ac', 'ad', 'bb', 'bc', 'bd', 'cc', 'cd', 'dd']);
+          expect(iterable.map(joiner), ['aa', 'ab', 'ac', 'ad', 'bb', 'bc', 'bd', 'cc', 'cd', 'dd']);
         });
         test('take 3', () {
           var iterable = combinations(letters, 3, repetitions: true);
@@ -200,8 +199,16 @@ void main() {
       });
     });
     group('empty', () {
-      noCall1(a) => fail('No call expected, but got ($a).');
-      noCall2(a, b) => fail('No call expected, but got ($a, $b).');
+      dynamic noCallOne(dynamic a) => fail('No call expected, but got $a.');
+      dynamic noCallTwo(dynamic a, dynamic b) => fail('No call expected, but got $a, $b.');
+      Iterable noCallIterable(Iterable a) {
+        fail('No call expected, but got $a.');
+        return [];
+      }
+      bool noCallPredicate(dynamic a) {
+        fail('No call expected, but got $a.');
+        return false;
+      }
       test('iterator', () {
         var iterator = empty().iterator;
         expect(iterator.current, isNull);
@@ -214,39 +221,39 @@ void main() {
         expect(empty().length, 0);
       });
       test('iterating', () {
-        empty().forEach(noCall1);
-        expect(empty().map(noCall1), isEmpty);
-        expect(empty().where(noCall1), isEmpty);
-        expect(empty().fold(true, noCall2), isTrue);
-        expect(() => empty().reduce(noCall2), throwsStateError);
-        expect(empty().expand(noCall1), isEmpty);
+        empty().forEach(noCallOne);
+        expect(empty().map(noCallOne), isEmpty);
+        expect(empty().where(noCallPredicate), isEmpty);
+        expect(empty().fold(true, noCallTwo), isTrue);
+        expect(() => empty().reduce(noCallTwo), throwsStateError);
+        expect(empty().expand(noCallIterable), isEmpty);
       });
       test('testing', () {
-        expect(empty().any(noCall1), isFalse);
-        expect(empty().every(noCall1), isTrue);
+        expect(empty().any(noCallPredicate), isFalse);
+        expect(empty().every(noCallPredicate), isTrue);
         expect(empty().contains(1), isFalse);
       });
       test('take', () {
         expect(empty().take(5), isEmpty);
-        expect(empty().takeWhile(noCall1), isEmpty);
+        expect(empty().takeWhile(noCallPredicate), isEmpty);
       });
       test('skip', () {
         expect(empty().skip(5), isEmpty);
-        expect(empty().skipWhile(noCall1), isEmpty);
+        expect(empty().skipWhile(noCallPredicate), isEmpty);
       });
       test('first', () {
         expect(() => empty().first, throwsStateError);
-        expect(() => empty().firstWhere(noCall1), throwsStateError);
-        expect(empty().firstWhere(noCall1, orElse: () => true), isTrue);
+        expect(() => empty().firstWhere(noCallPredicate), throwsStateError);
+        expect(empty().firstWhere(noCallPredicate, orElse: () => true), isTrue);
       });
       test('last', () {
         expect(() => empty().last, throwsStateError);
-        expect(() => empty().lastWhere(noCall1), throwsStateError);
-        expect(empty().lastWhere(noCall1, orElse: () => true), isTrue);
+        expect(() => empty().lastWhere(noCallPredicate), throwsStateError);
+        expect(empty().lastWhere(noCallPredicate, orElse: () => true), isTrue);
       });
       test('single', () {
         expect(() => empty().single, throwsStateError);
-        expect(() => empty().singleWhere(noCall1), throwsStateError);
+        expect(() => empty().singleWhere(noCallPredicate), throwsStateError);
       });
       test('converting', () {
         expect(empty().toList(), isEmpty);
@@ -349,7 +356,7 @@ void main() {
       });
     });
     group('permutations', () {
-      var joiner = (iterable) => iterable.join();
+      var joiner = (Iterable iterable) => iterable.join();
       test('0', () {
         var iterator = permutations(string(''));
         expect(iterator.map(joiner), []);
