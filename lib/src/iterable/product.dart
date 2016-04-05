@@ -19,11 +19,11 @@ part of more.iterable;
 ///    ['y', 2]
 ///    ['y', 3]
 ///
-Iterable<List /*<E>*/ > product(Iterable<Iterable /*<E>*/ > iterables) {
+Iterable<List/*<E>*/> product/*<E>*/(Iterable<Iterable/*<E>*/> iterables) {
   if (iterables.isEmpty || iterables.any((iterable) => iterable.isEmpty)) {
     return empty();
   } else {
-    return new _ProductIterable(iterables.map((iterable) {
+    return new _ProductIterable<E>(iterables.map((iterable) {
       return iterable.toList(growable: false);
     }).toList(growable: false));
   }
@@ -36,8 +36,8 @@ class _ProductIterable<E> extends IterableBase<List<E>> {
 
   @override
   Iterator<List<E>> get iterator {
-    var state = new List.filled(_sources.length, 0);
-    return new _ProductIterator(_sources, state);
+    List<int> state = new List.filled(_sources.length, 0);
+    return new _ProductIterator<E>(_sources, state);
   }
 }
 
@@ -45,7 +45,7 @@ class _ProductIterator<E> extends Iterator<List<E>> {
   final List<List<E>> _sources;
   final List<int> _state;
 
-  List _current = null;
+  List<E> _current = null;
   bool _completed = false;
 
   _ProductIterator(this._sources, this._state);

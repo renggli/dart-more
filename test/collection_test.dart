@@ -344,14 +344,11 @@ void main() {
         expect(() => list.insertAll(2, [true, false]), throwsUnsupportedError);
         expect(() => list.length = 10, throwsUnsupportedError);
         expect(() => list.remove(true), throwsUnsupportedError);
-        expect(() => list.removeAll([true, false]), throwsUnsupportedError);
         expect(() => list.removeAt(2), throwsUnsupportedError);
         expect(() => list.removeLast(), throwsUnsupportedError);
         expect(() => list.removeRange(2, 4), throwsUnsupportedError);
         expect(() => list.removeWhere((value) => true), throwsUnsupportedError);
-        expect(() => list.retainAll([true, false]), throwsUnsupportedError);
         expect(() => list.replaceRange(2, 4, [true, false]), throwsUnsupportedError);
-        expect(() => list.retainAll([true, false]), throwsUnsupportedError);
         expect(() => list.retainWhere((value) => false), throwsUnsupportedError);
       });
     });
@@ -757,13 +754,11 @@ void main() {
         expect(() => list.insertAll(2, [5, 6]), throwsUnsupportedError);
         expect(() => list.length = 10, throwsUnsupportedError);
         expect(() => list.remove(5), throwsUnsupportedError);
-        expect(() => list.removeAll([]), throwsUnsupportedError);
         expect(() => list.removeAt(2), throwsUnsupportedError);
         expect(() => list.removeLast(), throwsUnsupportedError);
         expect(() => list.removeRange(2, 4), throwsUnsupportedError);
         expect(() => list.removeWhere((value) => true), throwsUnsupportedError);
         expect(() => list.replaceRange(2, 4, [5, 6]), throwsUnsupportedError);
-        expect(() => list.retainAll([]), throwsUnsupportedError);
         expect(() => list.retainWhere((value) => false), throwsUnsupportedError);
         expect(() => list.setAll(2, [5, 6]), throwsUnsupportedError);
         expect(() => list.setRange(2, 4, [5, 6]), throwsUnsupportedError);

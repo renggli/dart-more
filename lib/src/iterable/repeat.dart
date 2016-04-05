@@ -8,8 +8,8 @@ part of more.iterable;
 ///     repeat(2);        // [2, 2, 2, 2, 2, 2, ...]
 ///     repeat('a', 3);   // ['a', 'a', 'a']
 ///
-Iterable /*<E>*/ repeat(/*E*/ element, [int count]) {
-  var iterable = new _RepeatIterable(element);
+Iterable/*<E>*/ repeat/*<E>*/(/*E*/ element, [int count]) {
+  var iterable = new _RepeatIterable<E>(element);
   return count == null ? iterable : iterable.take(count);
 }
 

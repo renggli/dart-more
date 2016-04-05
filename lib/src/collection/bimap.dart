@@ -25,13 +25,13 @@ class BiMap<K, V> implements Map<K, V> {
   /// Creates a bi-map from an iterable (and possible transformation functions).
   factory BiMap.fromIterable(Iterable iterable, {K key(element), V value(element)}) {
     return new BiMap.fromIterables(
-        key == null ? iterable : iterable.map(key),
-        value == null ? iterable : iterable.map(value));
+        key == null ? iterable as Iterable<K> : iterable.map(key),
+        value == null ? iterable as Iterable<V> : iterable.map(value));
   }
 
   /// Creates a bi-map from two equal length iterables.
   factory BiMap.fromIterables(Iterable<K> keys, Iterable<V> values) {
-    var result = new BiMap();
+    var result = new BiMap<K, V>();
     var keyIterator = keys.iterator,
         valueIterator = values.iterator;
     var moreKeys = keyIterator.moveNext(),

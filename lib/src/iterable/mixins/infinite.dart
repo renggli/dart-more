@@ -4,6 +4,7 @@ part of more.iterable;
 ///
 /// Intended to mix-in on top of [IterableBase].
 abstract class InfiniteIterable<E> implements Iterable<E> {
+
   @override
   int get length {
     throw new StateError('Cannot return the length of an infinite iterable.');

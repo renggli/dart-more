@@ -10,7 +10,7 @@ void verify(Ordering ordering, Iterable unsorted, Iterable expected) {
   for (var element in unsorted) {
     expect(ordering.binarySearch(sorted, element), (index) => (index) >= 0);
   }
-  if (!sorted.isEmpty) {
+  if (sorted.isNotEmpty) {
     expect(ordering.minOf(unsorted), expected.first);
     expect(ordering.maxOf(unsorted), expected.last);
   }

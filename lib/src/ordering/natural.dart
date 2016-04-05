@@ -1,8 +1,8 @@
 part of more.ordering;
 
-class _NaturalOrdering<T> extends Ordering<T> {
+class _NaturalOrdering<T extends Comparable> extends Ordering<T> {
   const _NaturalOrdering();
 
   @override
-  int compare(a, b) => a.compareTo(b);
+  int compare(T a, T b) => a.compareTo(b);
 }

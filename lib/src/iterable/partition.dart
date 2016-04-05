@@ -7,7 +7,7 @@ part of more.iterable;
 /// The following expression yields [1, 2], [3, 4], [5, null]:
 ///
 ///     partition([1, 2, 3, 4, 5], 2, null);
-Iterable<Iterable/*<E>*/> partition(Iterable/*<E>*/ elements, int size, [padding = _sentinel]) {
+Iterable<Iterable/*<E>*/> partition/*<E>*/(Iterable/*<E>*/ elements, int size, [padding = _sentinel]) {
   return new _PartitionIterable/*<E>*/(elements, size, padding);
 }
 
@@ -22,7 +22,7 @@ class _PartitionIterable<E> extends IterableBase<Iterable<E>> {
   _PartitionIterable(this.elements, this.size, this.padding);
 
   @override
-  Iterator<Iterable<E>> get iterator => new _PartitionIterator(elements.iterator, size, padding);
+  Iterator<Iterable<E>> get iterator => new _PartitionIterator<E>(elements.iterator, size, padding);
 
 }
 
@@ -57,7 +57,7 @@ class _PartitionIterator<E> extends Iterator<Iterable<E>> {
           }
           if (_sentinel != padding) {
             for (var j = i; j < size; j++) {
-              current.add(padding);
+              current.add(padding as E);
             }
           }
           return true;

@@ -21,15 +21,15 @@ part of more.iterable;
 ///
 ///     [1, 2, 1, 2, ...]
 ///
-Iterable /*<E>*/ cycle(Iterable /*<E>*/ iterable, [int count = null]) {
+Iterable/*<E>*/ cycle/*<E>*/(Iterable/*<E>*/ iterable, [int count = null]) {
   if (count == 0 || iterable.isEmpty) {
     return empty();
   } else if (count == 1 || iterable is InfiniteIterable) {
     return iterable;
   } else if (count == null) {
-    return new _InfiniteCycleIterable(iterable);
+    return new _InfiniteCycleIterable/*<E>*/(iterable);
   } else if (count > 1) {
-    return new _FiniteCycleIterable(iterable, count);
+    return new _FiniteCycleIterable/*<E>*/(iterable, count);
   } else {
     throw new ArgumentError('Positive count expected, but got $count.');
   }

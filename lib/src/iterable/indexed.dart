@@ -14,8 +14,8 @@ part of more.iterable;
 ///
 ///     'a-1, b-2'
 ///
-Iterable<Indexed /*<E>*/ > indexed(Iterable /*<E>*/ iterable, {int offset: 0}) {
-  return new _IndexedIterable /*<E>*/ (iterable, offset);
+Iterable<Indexed/*<E>*/> indexed/*<E>*/(Iterable/*<E>*/ iterable, {int offset: 0}) {
+  return new _IndexedIterable/*<E>*/(iterable, offset);
 }
 
 /// An indexed value.

@@ -28,7 +28,7 @@ class Multiset<E> extends IterableBase<E> {
   ///
   /// The [count] function specifies the number of elements added to the
   /// collection. The default function returns the constant 1.
-  factory Multiset.fromIterable(Iterable iterable, {E key(element), int count(element)}) {
+  factory Multiset.fromIterable(Iterable<E> iterable, {E key(E element), int count(element)}) {
     var result = new Multiset<E>();
     if (key == null) key = (element) => element;
     if (count == null) count = (element) => 1;
@@ -66,7 +66,7 @@ class Multiset<E> extends IterableBase<E> {
   /// Removes [element] from the receiver [occurrences] number of times.
   ///
   /// Throws an [ArgumentError] if [occurrences] is negative.
-  void remove(Object element, [int occurrences = 1]) {
+  void remove(E element, [int occurrences = 1]) {
     if (occurrences < 0) {
       throw new ArgumentError('Negative number of occurences: $occurrences');
     } else if (occurrences > 0) {
@@ -82,7 +82,7 @@ class Multiset<E> extends IterableBase<E> {
   }
 
   /// Removes each element of [elements] from the receiver.
-  void removeAll(Iterable<Object> elements) {
+  void removeAll(Iterable<E> elements) {
     elements.forEach(remove);
   }
 
@@ -126,9 +126,8 @@ class Multiset<E> extends IterableBase<E> {
     } else if (other.length == 1) {
       return contains(other.first);
     } else if (other is Multiset) {
-      var multiset = other as Multiset;
-      for (var element in multiset.distinct) {
-        if (this[element] < multiset[element]) {
+      for (var element in other.distinct) {
+        if (this[element] < other[element]) {
           return false;
         }
       }
@@ -143,9 +142,8 @@ class Multiset<E> extends IterableBase<E> {
   Multiset<E> intersection(Iterable<Object> other) {
     if (other is Multiset) {
       var result = new Multiset<E>();
-      var multiset = other as Multiset;
       for (var element in distinct) {
-        result.add(element, min(this[element], multiset[element]));
+        result.add(element, min(this[element], other[element]));
       }
       return result;
     } else {
