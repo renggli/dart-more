@@ -32,7 +32,7 @@ Misc
 
 Follow the _Installing_ instructions on https://pub.dartlang.org/packages/more.
 
-Import the one or more of the packages into your Dart code using:
+Import one or more of the packages into your Dart code using:
 
 ```dart
 import 'package:more/char_matcher.dart';
