@@ -44,7 +44,7 @@ part 'src/ordering/reverse.dart';
 abstract class Ordering<T> {
 
   /// Returns a natural ordering of objects.
-  factory Ordering.natural() => const _NaturalOrdering();
+  factory Ordering.natural() => const _NaturalOrdering() as Ordering<T>;
 
   /// Returns an ordering based on a [comparator] function.
   factory Ordering.from(Comparator<T> comparator) => new _ComparatorOrdering<T>(comparator);
