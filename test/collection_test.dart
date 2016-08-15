@@ -50,12 +50,12 @@ void main() {
           expect(target.values, [2, 3, 4]);
         });
         test('iterables', () {
-          var target = new BiMap.fromIterables(example.keys, example.values);
-          expect(target.keys, [1, 2, 3]);
-          expect(target.values, ['a', 'b', 'c']);
-          target = new BiMap.fromIterables(example.values, example.keys);
-          expect(target.keys, ['a', 'b', 'c']);
-          expect(target.values, [1, 2, 3]);
+          var target1 = new BiMap.fromIterables(example.keys, example.values);
+          expect(target1.keys, [1, 2, 3]);
+          expect(target1.values, ['a', 'b', 'c']);
+          var target2 = new BiMap.fromIterables(example.values, example.keys);
+          expect(target2.keys, ['a', 'b', 'c']);
+          expect(target2.values, [1, 2, 3]);
         });
         test('iterables (error)', () {
           expect(() => new BiMap.fromIterables([1], []), throwsArgumentError);
@@ -157,7 +157,10 @@ void main() {
         });
         test('define if absent', () {
           var target = new BiMap.from(example);
-          target.putIfAbsent(1, () => fail('Value already present!'));
+          target.putIfAbsent(1, () {
+            fail('Value already present!');
+            return null;
+          });
           target.putIfAbsent(4, () => 'd');
           expect(target[4], 'd');
         });
@@ -546,7 +549,7 @@ void main() {
         test('invalid', () {
           var set = new Multiset.from(['a', 'a', 'b', 'b', 'b']);
           expect(() => set.remove('c'), returnsNormally);
-          expect(() => set.remove(false), returnsNormally);
+          expect(() => set.remove('z'), returnsNormally);
           expect(set, isNot(isEmpty));
           expect(set, hasLength(5));
           expect(set, unorderedEquals(['a', 'a', 'b', 'b', 'b']));
