@@ -28,9 +28,9 @@ class Multiset<E> extends IterableBase<E> {
   ///
   /// The [count] function specifies the number of elements added to the
   /// collection. The default function returns the constant 1.
-  factory Multiset.fromIterable(Iterable<E> iterable, {E key(E element), int count(element)}) {
+  factory Multiset.fromIterable(Iterable iterable, {E key(element), int count(element)}) {
     var result = new Multiset<E>();
-    if (key == null) key = (element) => element;
+    if (key == null) key = (element) => element as E;
     if (count == null) count = (element) => 1;
     for (var element in iterable) {
       result.add(key(element), count(element));
