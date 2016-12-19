@@ -11,8 +11,8 @@ part of more.iterable;
 ///
 ///     [0, 1, 1, 2, 3, 5, ...]
 ///
-Iterable/*<E>*/ fold/*<E>*/(Iterable/*<E>*/ elements, Function combine) {
-  return new _FoldIterable/*<E>*/(elements, combine);
+Iterable<E> fold<E>(Iterable<E> elements, Function combine) {
+  return new _FoldIterable<E>(elements, combine);
 }
 
 class _FoldIterable<E> extends IterableBase<E> with InfiniteIterable<E> {
@@ -23,7 +23,7 @@ class _FoldIterable<E> extends IterableBase<E> with InfiniteIterable<E> {
 
   @override
   Iterator<E> get iterator {
-    return new _FoldIterator(new List.from(_elements, growable: false), _combine);
+    return new _FoldIterator<E>(new List.from(_elements, growable: false), _combine);
   }
 }
 

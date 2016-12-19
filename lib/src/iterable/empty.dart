@@ -10,7 +10,7 @@ part of more.iterable;
 ///
 ///     []
 ///
-Iterable/*<E>*/ empty/*<E>*/() => new _EmptyIterable/*<E>*/();
+Iterable<E> empty<E>() => new _EmptyIterable<E>();
 
 class _EmptyIterable<E> implements Iterable<E> {
   const _EmptyIterable();
@@ -40,13 +40,13 @@ class _EmptyIterable<E> implements Iterable<E> {
   void forEach(void f(element)) => null;
 
   @override
-  Iterable/*<T>*/ map/*<T>*/(/*T*/ f(E e)) => this as Iterable<T>;
+  Iterable<T> map<T>(T f(E e)) => this as Iterable<T>;
 
   @override
   Iterable<E> where(bool test(E element)) => this;
 
   @override
-  Iterable/*<T>*/ expand/*<T>*/(Iterable/*<T>*/ f(E element)) => this as Iterable<T>;
+  Iterable<T> expand<T>(Iterable<T> f(E element)) => this as Iterable<T>;
 
   @override
   Iterable<E> skip(int count) => count < 0 ? throw new RangeError.value(count) : this;
@@ -82,8 +82,7 @@ class _EmptyIterable<E> implements Iterable<E> {
       orElse == null ? throw new StateError('No matching element') : orElse();
 
   @override
-  dynamic/*=T*/ fold/*<T>*/(var/*=T*/ initialValue,
-      dynamic/*=T*/ combine(var/*=T*/ previousValue, E element)) => initialValue;
+  T fold<T>(T initialValue, T combine(T previousValue, E element)) => initialValue;
 
   @override
   reduce(combine(value, element)) => throw new StateError('No elements');
@@ -92,7 +91,7 @@ class _EmptyIterable<E> implements Iterable<E> {
   elementAt(int index) => throw new RangeError.value(index);
 
   @override
-  List<E> toList({bool growable: true}) => new List<E>.from([], growable: growable);
+  List<E> toList({bool growable: true}) => new List.from([], growable: growable);
 
   @override
   Set<E> toSet() => new Set<E>();

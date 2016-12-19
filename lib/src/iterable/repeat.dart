@@ -8,8 +8,8 @@ part of more.iterable;
 ///     repeat(2);        // [2, 2, 2, 2, 2, 2, ...]
 ///     repeat('a', 3);   // ['a', 'a', 'a']
 ///
-Iterable/*<E>*/ repeat/*<E>*/(/*=E*/ element, [int count]) {
-  var iterable = new _RepeatIterable/*<E>*/(element);
+Iterable<E> repeat<E>(E element, [int count]) {
+  var iterable = new _RepeatIterable<E>(element);
   return count == null ? iterable : iterable.take(count);
 }
 
@@ -19,7 +19,7 @@ class _RepeatIterable<E> extends IterableBase<E> with InfiniteIterable<E> {
   _RepeatIterable(this._element);
 
   @override
-  Iterator<E> get iterator => new _RepeatIterator(_element);
+  Iterator<E> get iterator => new _RepeatIterator<E>(_element);
 }
 
 class _RepeatIterator<E> extends Iterator<E> {

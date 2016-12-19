@@ -11,9 +11,8 @@ typedef int Hash<E>(E a);
 ///
 ///     unique([1, 2, 3, 2, 4])
 ///
-Iterable/*<E>*/ unique/*<E>*/(Iterable/*<E>*/ iterable,
-    {Equality/*<E>*/ equals, Hash/*<E>*/ hashCode}) {
-  return new _UniqueIterable(iterable, equals, hashCode);
+Iterable<E> unique<E>(Iterable<E> iterable, {Equality<E> equals, Hash<E> hashCode}) {
+  return new _UniqueIterable<E>(iterable, equals, hashCode);
 }
 
 class _UniqueIterable<E> extends IterableBase<E> {

@@ -7,8 +7,8 @@ part of more.iterable;
 /// The following expression yields [1, 2], [3, 4], [5, null]:
 ///
 ///     partition([1, 2, 3, 4, 5], 2, null);
-Iterable<Iterable/*<E>*/> partition/*<E>*/(Iterable/*<E>*/ elements, int size, [padding = _sentinel]) {
-  return new _PartitionIterable/*<E>*/(elements, size, padding);
+Iterable<Iterable<E>> partition<E>(Iterable<E> elements, int size, [padding = _sentinel]) {
+  return new _PartitionIterable<E>(elements, size, padding);
 }
 
 const _sentinel = const Object();

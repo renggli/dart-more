@@ -29,7 +29,7 @@ void main() {
         verify(ordering, [3, 2, 1], [1, 2, 3]);
       });
       test('comparator', () {
-        var ordering = new Ordering.from((a, b) => a.length - b.length);
+        var ordering = new Ordering.from((String a, String b) => a.length - b.length);
         verify(ordering, ['*', '**', '***'], ['*', '**', '***']);
         verify(ordering, ['**', '***', '*'], ['*', '**', '***']);
         verify(ordering, ['***', '*', '**'], ['*', '**', '***']);
@@ -74,7 +74,9 @@ void main() {
         verify(ordering, [3, 2, 1, null], [1, 2, 3, null]);
       });
       test('compound', () {
-        var ordering = natural.onResultOf((str) => str.length).compound(natural);
+        var ordering = natural
+            .onResultOf((String s) => s.length)
+            .compound(natural);
         verify(ordering, ['333', '1', '4444', '22'], ['1', '22', '333', '4444']);
         verify(ordering, ['2', '333', '4444', '1', '22'], ['1', '2', '22', '333', '4444']);
         verify(
@@ -99,7 +101,7 @@ void main() {
         verify(ordering, [[0, 0, 2], [0, 0, 1]], [[0, 0, 1], [0, 0, 2]]);
       });
       test('onResultOf', () {
-        var ordering = natural.onResultOf((str) => str.length);
+        var ordering = natural.onResultOf((String s) => s.length);
         verify(ordering, ['*', '**', '***'], ['*', '**', '***']);
         verify(ordering, ['**', '***', '*'], ['*', '**', '***']);
         verify(ordering, ['***', '*', '**'], ['*', '**', '***']);

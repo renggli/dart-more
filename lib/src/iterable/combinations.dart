@@ -21,8 +21,7 @@ part of more.iterable;
 ///
 ///     combinations(string('xyz'), 2, repetitions: false);
 ///
-Iterable<List/*<E>*/> combinations/*<E>*/(Iterable/*<E>*/ elements, int count,
-    {bool repetitions: false}) {
+Iterable<List<E>> combinations<E>(Iterable<E> elements, int count, {bool repetitions: false}) {
   elements = elements.toList(growable: false);
   if (count < 0) {
     throw new RangeError.value(count);
@@ -31,9 +30,9 @@ Iterable<List/*<E>*/> combinations/*<E>*/(Iterable/*<E>*/ elements, int count,
   } else if (count == 0 || elements.isEmpty) {
     return empty();
   } else if (repetitions) {
-    return new _CombinationsWithRepetitionsIterable/*<E>*/(elements, count);
+    return new _CombinationsWithRepetitionsIterable<E>(elements, count);
   } else {
-    return new _CombinationsWithoutRepetitionsIterable/*<E>*/(elements, count);
+    return new _CombinationsWithoutRepetitionsIterable<E>(elements, count);
   }
 }
 

@@ -4,7 +4,7 @@ part of more.iterable;
 /// [f1]. The default sequence is indefinitely long and by default starts
 /// with 0, 1, 1, 2, 3, 5, 8, 13, ...
 Iterable<int> fibonacci([int f0 = 0, int f1 = 1]) {
-  return fold([f0, f1], (a, b) => a + b);
+  return fold([f0, f1], (int a, int b) => a + b);
 }
 
 /// Returns an iterable over the digits of the [number], in the optionally

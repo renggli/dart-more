@@ -11,8 +11,8 @@ part of more.iterable;
 ///
 ///     [0, 1, 2, 3, 4, ...]
 ///
-Iterable/*<E>*/ iterate/*<E>*/(Object/*=E*/ value, /*E*/ function(/*E*/ value)) {
-  return new _IterateIterable/*<E>*/(value, function);
+Iterable<E> iterate<E>(E value, E function(E value)) {
+  return new _IterateIterable<E>(value, function);
 }
 
 class _IterateIterable<E> extends IterableBase<E> with InfiniteIterable<E> {
@@ -22,7 +22,7 @@ class _IterateIterable<E> extends IterableBase<E> with InfiniteIterable<E> {
   _IterateIterable(this._value, this._function);
 
   @override
-  Iterator<E> get iterator => new _IterateIterator(_value, _function);
+  Iterator<E> get iterator => new _IterateIterator<E>(_value, _function);
 }
 
 class _IterateIterator<E> extends Iterator<E> {

@@ -19,7 +19,7 @@ part of more.iterable;
 ///    ['y', 2]
 ///    ['y', 3]
 ///
-Iterable<List/*<E>*/> product/*<E>*/(Iterable<Iterable/*<E>*/> iterables) {
+Iterable<List<E>> product<E>(Iterable<Iterable<E>> iterables) {
   if (iterables.isEmpty || iterables.any((iterable) => iterable.isEmpty)) {
     return empty();
   } else {
