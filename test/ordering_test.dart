@@ -41,8 +41,8 @@ void main() {
         verify(ordering, [1, 2], [2, 1]);
         verify(ordering, [1, 2, 3], [2, 3, 1]);
         verify(ordering, [2, 3, 1], [2, 3, 1]);
-        expect(() => ordering.binarySearch([2, 3, 1], 4), throws);
-        expect(() => ordering.binarySearch([2, 4, 1], 3), throws);
+        expect(() => ordering.binarySearch([2, 3, 1], 4), throwsStateError);
+        expect(() => ordering.binarySearch([2, 4, 1], 3), throwsStateError);
       });
     });
     group('operators', () {
@@ -176,7 +176,7 @@ void main() {
         expect(natural.max(2, 2), 2);
       });
       test('maxOf', () {
-        expect(() => natural.maxOf([]), throws);
+        expect(() => natural.maxOf([]), throwsStateError);
         expect(natural.maxOf([1]), 1);
         expect(natural.maxOf([1, 2]), 2);
         expect(natural.maxOf([2, 1]), 2);
@@ -200,7 +200,7 @@ void main() {
         expect(natural.min(2, 2), 2);
       });
       test('minOf', () {
-        expect(() => natural.minOf([]), throws);
+        expect(() => natural.minOf([]), throwsStateError);
         expect(natural.minOf([1]), 1);
         expect(natural.minOf([1, 2]), 1);
         expect(natural.minOf([2, 1]), 1);
