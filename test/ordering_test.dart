@@ -16,7 +16,7 @@ void verify(Ordering ordering, Iterable unsorted, Iterable expected) {
   }
 }
 
-final natural = new Ordering.natural();
+final Ordering natural = new Ordering.natural();
 
 void main() {
   group('ordering', () {
