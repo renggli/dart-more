@@ -125,7 +125,7 @@ class Multiset<E> extends IterableBase<E> {
       return true;
     } else if (other.length == 1) {
       return contains(other.first);
-    } else if (other is Multiset) {
+    } else if (other is Multiset<Object>) {
       for (var element in other.distinct) {
         if (this[element] < other[element]) {
           return false;
@@ -140,7 +140,7 @@ class Multiset<E> extends IterableBase<E> {
   /// Returns a new [Multiset] with the elements that are in the receiver as well
   /// as those in [other].
   Multiset<E> intersection(Iterable<Object> other) {
-    if (other is Multiset) {
+    if (other is Multiset<Object>) {
       var result = new Multiset<E>();
       for (var element in distinct) {
         result.add(element, min(this[element], other[element]));

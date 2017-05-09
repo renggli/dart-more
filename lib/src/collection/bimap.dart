@@ -8,23 +8,25 @@ part of more.collection;
 class BiMap<K, V> implements Map<K, V> {
 
   /// Creates an empty bi-map.
-  factory BiMap() => new BiMap._(new Map(), new Map());
+  factory BiMap() => new BiMap<K, V>._(new Map(), new Map());
 
   /// Creates an empty identity bi-map.
-  factory BiMap.identity() => new BiMap._(new Map.identity(), new Map.identity());
+  factory BiMap.identity() => new BiMap<K, V>._(new Map.identity(), new Map.identity());
 
   /// Creates bi-map from another map.
   factory BiMap.from(Map<K, V> other) {
     if (other is BiMap<K, V>) {
-      return new BiMap._(new Map.from(other._forward), new Map.from(other._backward));
+      return new BiMap<K, V>._(
+          new Map<K, V>.from(other._forward),
+          new Map<V, K>.from(other._backward));
     } else {
-      return new BiMap()..addAll(other);
+      return new BiMap<K, V>()..addAll(other);
     }
   }
 
   /// Creates a bi-map from an iterable (and possible transformation functions).
   factory BiMap.fromIterable(Iterable iterable, {K key(element), V value(element)}) {
-    return new BiMap.fromIterables(
+    return new BiMap<K, V>.fromIterables(
         key == null ? iterable : iterable.map(key),
         value == null ? iterable : iterable.map(value));
   }
