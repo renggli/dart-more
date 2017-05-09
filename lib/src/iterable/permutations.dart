@@ -9,7 +9,7 @@ part of more.iterable;
 ///
 Iterable<List<E>> permutations<E>(Iterable <E> elements) {
   elements = elements.toList(growable: false);
-  return elements.isEmpty ? empty() : new _PermutationIterable<E>(elements);
+  return elements.isEmpty ? emptyIterable<E>() : new _PermutationIterable<E>(elements);
 }
 
 class _PermutationIterable<E> extends IterableBase<List<E>> {
@@ -38,8 +38,8 @@ class _PermutationIterator<E> extends Iterator<List<E>> {
     if (_completed) {
       return false;
     } else if (_current == null) {
-      _state = new List(_elements.length);
-      _current = new List(_elements.length);
+      _state = new List<int>(_elements.length);
+      _current = new List<E>(_elements.length);
       for (var i = 0; i < _state.length; i++) {
         _state[i] = i;
         _current[i] = _elements[i];

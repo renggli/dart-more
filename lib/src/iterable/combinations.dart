@@ -28,7 +28,7 @@ Iterable<List<E>> combinations<E>(Iterable<E> elements, int count, {bool repetit
   } else if (!repetitions && elements.length < count) {
     throw new RangeError.range(count, 0, elements.length);
   } else if (count == 0 || elements.isEmpty) {
-    return empty();
+    return emptyIterable();
   } else if (repetitions) {
     return new _CombinationsWithRepetitionsIterable<E>(elements, count);
   } else {
@@ -66,8 +66,8 @@ class _CombinationsWithRepetitionsIterator<E> extends Iterator<List<E>> {
     if (_completed) {
       return false;
     } else if (_current == null) {
-      _state = new List.filled(_count, 0);
-      _current = new List.filled(_count, _elements[0]);
+      _state = new List<int>.filled(_count, 0);
+      _current = new List<E>.filled(_count, _elements[0]);
       return true;
     } else {
       for (var i = _count - 1; i >= 0; i--) {
@@ -118,8 +118,8 @@ class _CombinationsWithoutRepetitionsIterator<E> extends Iterator<List<E>> {
     if (_completed) {
       return false;
     } else if (_current == null) {
-      _state = new List(_count);
-      _current = new List(_count);
+      _state = new List<int>(_count);
+      _current = new List<E>(_count);
       for (var i = 0; i < _count; i++) {
         _state[i] = i;
         _current[i] = _elements[i];

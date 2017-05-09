@@ -45,7 +45,7 @@ class _PartitionIterator<E> extends Iterator<Iterable<E>> {
       current = null;
       return false;
     } else {
-      current = new List();
+      current = new List<E>();
       for (var i = 0; i < size; i++) {
         if (iterator.moveNext()) {
           current.add(iterator.current);

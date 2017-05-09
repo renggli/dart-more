@@ -1,5 +1,8 @@
 part of more.iterable;
 
+/// One argument function returning an object of the same type.
+typedef E IterateFunction<E>(E value);
+
 /// Returns a lazy infinite list of repeated applications of the
 /// [function] to the initial [value].
 ///
@@ -11,13 +14,13 @@ part of more.iterable;
 ///
 ///     [0, 1, 2, 3, 4, ...]
 ///
-Iterable<E> iterate<E>(E value, E function(E value)) {
+Iterable<E> iterate<E>(E value, IterateFunction<E> function) {
   return new _IterateIterable<E>(value, function);
 }
 
 class _IterateIterable<E> extends IterableBase<E> with InfiniteIterable<E> {
   final E _value;
-  final Function _function;
+  final IterateFunction<E> _function;
 
   _IterateIterable(this._value, this._function);
 
@@ -26,7 +29,7 @@ class _IterateIterable<E> extends IterableBase<E> with InfiniteIterable<E> {
 }
 
 class _IterateIterator<E> extends Iterator<E> {
-  final Function _function;
+  final IterateFunction<E> _function;
 
   E _current;
   E _next;

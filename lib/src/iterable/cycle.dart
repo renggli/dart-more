@@ -23,8 +23,8 @@ part of more.iterable;
 ///
 Iterable<E> cycle<E>(Iterable<E> iterable, [int count = null]) {
   if (count == 0 || iterable.isEmpty) {
-    return empty();
-  } else if (count == 1 || iterable is InfiniteIterable) {
+    return emptyIterable<E>();
+  } else if (count == 1 || iterable is InfiniteIterable<E>) {
     return iterable;
   } else if (count == null) {
     return new _InfiniteCycleIterable<E>(iterable);
@@ -47,7 +47,7 @@ class _InfiniteCycleIterable<E> extends IterableBase<E> with InfiniteIterable<E>
 class _InfiniteCycleIterator<E> extends Iterator<E> {
   final Iterable<E> _iterable;
 
-  Iterator<E> _iterator = const _EmptyIterator();
+  Iterator<E> _iterator = emptyIterator<E>();
 
   _InfiniteCycleIterator(this._iterable);
 
@@ -71,13 +71,13 @@ class _FiniteCycleIterable<E> extends IterableBase<E> {
   _FiniteCycleIterable(this._iterable, this._count);
 
   @override
-  Iterator<E> get iterator => new _FiniteCycleIterator(_iterable, _count);
+  Iterator<E> get iterator => new _FiniteCycleIterator<E>(_iterable, _count);
 }
 
 class _FiniteCycleIterator<E> extends Iterator<E> {
   final Iterable<E> _iterable;
 
-  Iterator<E> _iterator = const _EmptyIterator();
+  Iterator<E> _iterator = emptyIterator<E>();
   bool _completed = false;
   int _count = 0;
 

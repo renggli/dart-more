@@ -56,7 +56,7 @@ class _IndexedIterator<E> extends Iterator<Indexed<E>> {
   @override
   bool moveNext() {
     if (_iterable.moveNext()) {
-      current = new Indexed._(_index++, _iterable.current);
+      current = new Indexed<E>._(_index++, _iterable.current);
       return true;
     } else {
       current = null;
