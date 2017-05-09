@@ -3,7 +3,7 @@ part of more.iterable;
 typedef bool Equality<E>(E a, E b);
 typedef int Hash<E>(E a);
 
-/// Returns a lazy iterable that filters out duplicates from the [iterator].
+/// Returns a lazy iterable that filters out duplicates from the [Iterator].
 /// If [equals] and [hashCode] are omitted, the iterator uses the objects'
 /// intrinsic [Object.operator==] and [Object.hashCode] for comparison.
 ///

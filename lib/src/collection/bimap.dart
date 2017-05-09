@@ -25,8 +25,8 @@ class BiMap<K, V> implements Map<K, V> {
   /// Creates a bi-map from an iterable (and possible transformation functions).
   factory BiMap.fromIterable(Iterable iterable, {K key(element), V value(element)}) {
     return new BiMap.fromIterables(
-        key == null ? iterable as Iterable<K> : iterable.map(key),
-        value == null ? iterable as Iterable<V> : iterable.map(value));
+        key == null ? iterable : iterable.map(key),
+        value == null ? iterable : iterable.map(value));
   }
 
   /// Creates a bi-map from two equal length iterables.
@@ -89,7 +89,7 @@ class BiMap<K, V> implements Map<K, V> {
     return value;
   }
 
-  _remove(key, Map forward, Map backward) {
+  void _remove(key, Map forward, Map backward) {
     if (forward.containsKey(key)) {
       _remove(forward.remove(key), backward, forward);
     }

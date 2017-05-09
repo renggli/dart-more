@@ -39,7 +39,7 @@ class _IterateIterator<E> extends Iterator<E> {
   @override
   bool moveNext() {
     _current = _next;
-    _next = _function(_next) as E;
+    _next = _function(_next);
     return true;
   }
 }

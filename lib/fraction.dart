@@ -105,7 +105,7 @@ class Fraction implements Comparable<Fraction> {
   double toDouble() => numerator / denominator;
 
   @override
-  bool operator ==(other) {
+  bool operator ==(Object other) {
     return other is Fraction && numerator == other.numerator && denominator == other.denominator;
   }
 

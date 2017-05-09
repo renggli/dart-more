@@ -1,7 +1,7 @@
 part of more.iterable;
 
 /// Returns a lazy infinite list of repeated applications of the
-/// n-ary [function] to its previous n initial [elements].
+/// n-ary [Function] to its previous n initial [elements].
 ///
 /// For example, the expression
 ///
@@ -45,7 +45,7 @@ class _FoldIterator<E> extends Iterator<E> {
       _current = _state[_index];
       _index++;
     } else {
-      _current = Function.apply(_combine, _state) as E;
+      _current = Function.apply(_combine, _state);
       for (var i = 0; i < _state.length - 1; i++) {
         _state[i] = _state[i + 1];
       }

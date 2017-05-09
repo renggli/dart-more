@@ -6,7 +6,7 @@ part of more.iterable;
 abstract class FixedLengthListMixin<E> implements List<E> {
 
   @override
-  void set length(int newLength) {
+  set length(int newLength) {
     throw new UnsupportedError('Cannot change the length of a fixed-length list.');
   }
 

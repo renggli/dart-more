@@ -13,7 +13,7 @@ abstract class UnmodifiableListMixin<E> implements List<E> {
   }
 
   @override
-  void set length(int newLength) {
+  set length(int newLength) {
     throw new UnsupportedError('Cannot change the length of an unmodifiable list.');
   }
 

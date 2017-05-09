@@ -74,6 +74,7 @@ abstract class CharMatcher {
   /// A matcher that accepts whitespaces.
   factory CharMatcher.whitespace() => _whitespace;
 
+  /// Internal constructor.
   const CharMatcher();
 
   /// Returns a matcher that matches any character not matched by this matcher.

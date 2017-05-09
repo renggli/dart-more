@@ -65,7 +65,7 @@ class _MutableString extends ListBase<String> {
   int get length => _codeUnits.length;
 
   @override
-  void set length(int newLength) {
+  set length(int newLength) {
     _codeUnits.length = newLength;
   }
 

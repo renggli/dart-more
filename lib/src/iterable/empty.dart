@@ -13,6 +13,7 @@ part of more.iterable;
 Iterable<E> empty<E>() => new _EmptyIterable<E>();
 
 class _EmptyIterable<E> implements Iterable<E> {
+
   const _EmptyIterable();
 
   @override
@@ -28,25 +29,25 @@ class _EmptyIterable<E> implements Iterable<E> {
   Iterator<E> get iterator => const _EmptyIterator();
 
   @override
-  bool any(bool test(element)) => false;
+  bool any(bool test(E element)) => false;
 
   @override
-  bool every(bool test(element)) => true;
+  bool every(bool test(E element)) => true;
 
   @override
   bool contains(Object element) => false;
 
   @override
-  void forEach(void f(element)) => null;
+  void forEach(void f(E element)) => null;
 
   @override
-  Iterable<T> map<T>(T f(E e)) => this as Iterable<T>;
+  Iterable<T> map<T>(T f(E e)) => empty<T>();
 
   @override
   Iterable<E> where(bool test(E element)) => this;
 
   @override
-  Iterable<T> expand<T>(Iterable<T> f(E element)) => this as Iterable<T>;
+  Iterable<T> expand<T>(Iterable<T> f(E element)) => empty<T>();
 
   @override
   Iterable<E> skip(int count) => count < 0 ? throw new RangeError.value(count) : this;
@@ -78,17 +79,17 @@ class _EmptyIterable<E> implements Iterable<E> {
       orElse == null ? throw new StateError('No matching element') : orElse();
 
   @override
-  E singleWhere(bool test(value), {E orElse()}) =>
+  E singleWhere(bool test(E value), {E orElse()}) =>
       orElse == null ? throw new StateError('No matching element') : orElse();
 
   @override
   T fold<T>(T initialValue, T combine(T previousValue, E element)) => initialValue;
 
   @override
-  reduce(combine(value, element)) => throw new StateError('No elements');
+  E reduce(E combine(E value, E element)) => throw new StateError('No elements');
 
   @override
-  elementAt(int index) => throw new RangeError.value(index);
+  E elementAt(int index) => throw new RangeError.value(index);
 
   @override
   List<E> toList({bool growable: true}) => new List.from([], growable: growable);
