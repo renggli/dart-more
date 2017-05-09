@@ -60,7 +60,7 @@ linter:
     - prefer_constructors_over_static_methods
     - prefer_contains
     - prefer_expression_function_bodies
-    - prefer_foreach (stable)
+    - prefer_foreach
     - prefer_function_declarations_over_variables
     - prefer_initializing_formals
     - prefer_interpolation_to_compose_strings
