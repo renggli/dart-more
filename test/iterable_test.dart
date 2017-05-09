@@ -210,62 +210,68 @@ void main() {
         return false;
       }
       test('iterator', () {
-        var iterator = empty().iterator;
+        var iterator = emptyIterator();
+        expect(iterator.current, isNull);
+        expect(iterator.moveNext(), isFalse);
+        expect(iterator.current, isNull);
+      });
+      test('iterable iterator', () {
+        var iterator = emptyIterable().iterator;
         expect(iterator.current, isNull);
         expect(iterator.moveNext(), isFalse);
         expect(iterator.current, isNull);
       });
       test('testing', () {
-        expect(empty().isEmpty, isTrue);
-        expect(empty().isNotEmpty, isFalse);
-        expect(empty().length, 0);
+        expect(emptyIterable().isEmpty, isTrue);
+        expect(emptyIterable().isNotEmpty, isFalse);
+        expect(emptyIterable().length, 0);
       });
       test('iterating', () {
-        empty().forEach(noCallOne);
-        expect(empty().map(noCallOne), isEmpty);
-        expect(empty().where(noCallPredicate), isEmpty);
-        expect(empty().fold(true, noCallTwo), isTrue);
-        expect(() => empty().reduce(noCallTwo), throwsStateError);
-        expect(empty().expand(noCallIterable), isEmpty);
+        emptyIterable().forEach(noCallOne);
+        expect(emptyIterable().map(noCallOne), isEmpty);
+        expect(emptyIterable().where(noCallPredicate), isEmpty);
+        expect(emptyIterable().fold(true, noCallTwo), isTrue);
+        expect(() => emptyIterable().reduce(noCallTwo), throwsStateError);
+        expect(emptyIterable().expand(noCallIterable), isEmpty);
       });
       test('testing', () {
-        expect(empty().any(noCallPredicate), isFalse);
-        expect(empty().every(noCallPredicate), isTrue);
-        expect(empty().contains(1), isFalse);
+        expect(emptyIterable().any(noCallPredicate), isFalse);
+        expect(emptyIterable().every(noCallPredicate), isTrue);
+        expect(emptyIterable().contains(1), isFalse);
       });
       test('take', () {
-        expect(empty().take(5), isEmpty);
-        expect(empty().takeWhile(noCallPredicate), isEmpty);
+        expect(emptyIterable().take(5), isEmpty);
+        expect(emptyIterable().takeWhile(noCallPredicate), isEmpty);
       });
       test('skip', () {
-        expect(empty().skip(5), isEmpty);
-        expect(empty().skipWhile(noCallPredicate), isEmpty);
+        expect(emptyIterable().skip(5), isEmpty);
+        expect(emptyIterable().skipWhile(noCallPredicate), isEmpty);
       });
       test('first', () {
-        expect(() => empty().first, throwsStateError);
-        expect(() => empty().firstWhere(noCallPredicate), throwsStateError);
-        expect(empty().firstWhere(noCallPredicate, orElse: () => true), isTrue);
+        expect(() => emptyIterable().first, throwsStateError);
+        expect(() => emptyIterable().firstWhere(noCallPredicate), throwsStateError);
+        expect(emptyIterable().firstWhere(noCallPredicate, orElse: () => true), isTrue);
       });
       test('last', () {
-        expect(() => empty().last, throwsStateError);
-        expect(() => empty().lastWhere(noCallPredicate), throwsStateError);
-        expect(empty().lastWhere(noCallPredicate, orElse: () => true), isTrue);
+        expect(() => emptyIterable().last, throwsStateError);
+        expect(() => emptyIterable().lastWhere(noCallPredicate), throwsStateError);
+        expect(emptyIterable().lastWhere(noCallPredicate, orElse: () => true), isTrue);
       });
       test('single', () {
-        expect(() => empty().single, throwsStateError);
-        expect(() => empty().singleWhere(noCallPredicate), throwsStateError);
+        expect(() => emptyIterable().single, throwsStateError);
+        expect(() => emptyIterable().singleWhere(noCallPredicate), throwsStateError);
       });
       test('converting', () {
-        expect(empty().toList(), isEmpty);
-        expect(empty().toList(growable: true), isEmpty);
-        expect(empty().toList(growable: false), isEmpty);
-        expect(empty().toSet(), isEmpty);
-        expect(empty().join(), '');
+        expect(emptyIterable().toList(), isEmpty);
+        expect(emptyIterable().toList(growable: true), isEmpty);
+        expect(emptyIterable().toList(growable: false), isEmpty);
+        expect(emptyIterable().toSet(), isEmpty);
+        expect(emptyIterable().join(), '');
       });
     });
     group('indexed', () {
       test('empty', () {
-        var iterable = indexed(empty());
+        var iterable = indexed(emptyIterable());
         expect(iterable, []);
       });
       test('simple', () {

@@ -2,6 +2,12 @@ part of more.iterable;
 
 /// Returns an efficient empty iterable.
 ///
+/// Deprecated, use [emptyIterable()] instead.
+@deprecated
+Iterable<E> empty<E>() => emptyIterable<E>();
+
+/// Returns an efficient empty iterable.
+///
 /// For example, the expression
 ///
 ///     empty()
@@ -10,10 +16,12 @@ part of more.iterable;
 ///
 ///     []
 ///
-Iterable<E> empty<E>() => new _EmptyIterable<E>();
+Iterable<E> emptyIterable<E>() {
+  // const constructors expect concrete types
+  return const _EmptyIterable();
+}
 
 class _EmptyIterable<E> implements Iterable<E> {
-
   const _EmptyIterable();
 
   @override
@@ -26,7 +34,7 @@ class _EmptyIterable<E> implements Iterable<E> {
   bool get isNotEmpty => false;
 
   @override
-  Iterator<E> get iterator => const _EmptyIterator();
+  Iterator<E> get iterator => emptyIterator<E>();
 
   @override
   bool any(bool test(E element)) => false;
@@ -41,13 +49,13 @@ class _EmptyIterable<E> implements Iterable<E> {
   void forEach(void f(E element)) => null;
 
   @override
-  Iterable<T> map<T>(T f(E e)) => empty<T>();
+  Iterable<T> map<T>(T f(E e)) => emptyIterable<T>();
 
   @override
   Iterable<E> where(bool test(E element)) => this;
 
   @override
-  Iterable<T> expand<T>(Iterable<T> f(E element)) => empty<T>();
+  Iterable<T> expand<T>(Iterable<T> f(E element)) => emptyIterable<T>();
 
   @override
   Iterable<E> skip(int count) => count < 0 ? throw new RangeError.value(count) : this;
@@ -92,13 +100,28 @@ class _EmptyIterable<E> implements Iterable<E> {
   E elementAt(int index) => throw new RangeError.value(index);
 
   @override
-  List<E> toList({bool growable: true}) => new List.from([], growable: growable);
+  List<E> toList({bool growable: true}) => new List<E>.from([], growable: growable);
 
   @override
   Set<E> toSet() => new Set<E>();
 
   @override
   String join([String separator = '']) => '';
+}
+
+/// Returns an efficient empty iterator.
+///
+/// For example, the expression
+///
+///     emptyIterator()
+///
+/// results in the empty iterator:
+///
+///     []
+///
+Iterator<E> emptyIterator<E>() {
+  // const constructors expect concrete types
+  return const _EmptyIterator();
 }
 
 class _EmptyIterator<E> implements Iterator<E> {
