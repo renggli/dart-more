@@ -2,7 +2,7 @@ library more.iterable.mixins.infinite;
 
 /// Mixin for infinitely sized iterables.
 ///
-/// Intended to mix-in on top of [IterableBase].
+/// Intended to mix-in on top of `IterableBase<E>`.
 abstract class InfiniteIterable<E> implements Iterable<E> {
   @override
   int get length {

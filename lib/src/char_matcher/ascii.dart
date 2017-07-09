@@ -1,9 +1,11 @@
-part of more.char_matcher;
+library more.char_matcher.ascii;
 
-const CharMatcher _ascii = const _AsciiCharMatcher();
+import 'package:more/char_matcher.dart';
 
-class _AsciiCharMatcher extends CharMatcher {
-  const _AsciiCharMatcher();
+const CharMatcher ascii = const AsciiCharMatcher();
+
+class AsciiCharMatcher extends CharMatcher {
+  const AsciiCharMatcher();
 
   @override
   bool match(int value) => value < 128;

@@ -1,11 +1,13 @@
-part of more.char_matcher;
+library more.char_matcher.ranges;
 
-class _RangesCharMatcher extends CharMatcher {
+import 'package:more/char_matcher.dart';
+
+class RangesCharMatcher extends CharMatcher {
   final int length;
   final List<int> starts;
   final List<int> stops;
 
-  const _RangesCharMatcher(this.length, this.starts, this.stops);
+  const RangesCharMatcher(this.length, this.starts, this.stops);
 
   @override
   bool match(int value) {

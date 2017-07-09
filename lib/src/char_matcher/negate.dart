@@ -1,13 +1,15 @@
-part of more.char_matcher;
+library more.char_matcher.negate;
 
-class _NegateCharMatcher extends CharMatcher {
-  final CharMatcher _matcher;
+import 'package:more/char_matcher.dart';
 
-  const _NegateCharMatcher(this._matcher);
+class NegateCharMatcher extends CharMatcher {
+  final CharMatcher matcher;
+
+  const NegateCharMatcher(this.matcher);
 
   @override
-  CharMatcher operator ~() => _matcher;
+  CharMatcher operator ~() => matcher;
 
   @override
-  bool match(int value) => !_matcher.match(value);
+  bool match(int value) => !matcher.match(value);
 }

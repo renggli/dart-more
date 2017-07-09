@@ -13,7 +13,7 @@ void verify(CharMatcher matcher, String included, String excluded) {
 }
 
 void main() {
-  group('class', () {
+  group('basic', () {
     test('any', () {
       verify(new CharMatcher.any(), 'abc123_!@#', '');
     });
@@ -139,7 +139,7 @@ void main() {
     test('~', () {
       expect(~any, equals(none));
       expect(~none, equals(any));
-      expect(~ ~whitespace, equals(whitespace));
+      expect(~~whitespace, equals(whitespace));
     });
     test('|', () {
       expect(any | letter, equals(any));

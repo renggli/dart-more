@@ -1,9 +1,11 @@
-part of more.char_matcher;
+library more.char_matcher.whitespace;
 
-const CharMatcher _whitespace = const _WhitespaceCharMatcher();
+import 'package:more/char_matcher.dart';
 
-class _WhitespaceCharMatcher extends CharMatcher {
-  const _WhitespaceCharMatcher();
+const CharMatcher whitespace = const WhitespaceCharMatcher();
+
+class WhitespaceCharMatcher extends CharMatcher {
+  const WhitespaceCharMatcher();
 
   @override
   bool match(int value) {

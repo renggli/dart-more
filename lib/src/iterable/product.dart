@@ -2,7 +2,7 @@ library more.iterable.product;
 
 import 'dart:collection';
 
-import 'empty.dart';
+import 'package:more/src/iterable/empty.dart';
 
 /// Returns an iterable over the cross product of [iterables].
 ///

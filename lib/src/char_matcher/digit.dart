@@ -1,9 +1,11 @@
-part of more.char_matcher;
+library more.char_matcher.digit;
 
-const CharMatcher _digit = const _DigitCharMatcher();
+import 'package:more/char_matcher.dart';
 
-class _DigitCharMatcher extends CharMatcher {
-  const _DigitCharMatcher();
+const CharMatcher digit = const DigitCharMatcher();
+
+class DigitCharMatcher extends CharMatcher {
+  const DigitCharMatcher();
 
   @override
   bool match(int value) => 48 <= value && value <= 57;

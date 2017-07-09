@@ -7,15 +7,15 @@ library more.ordering;
 
 import 'dart:collection';
 
-part 'src/ordering/comparator.dart';
-part 'src/ordering/compound.dart';
-part 'src/ordering/explicit.dart';
-part 'src/ordering/function.dart';
-part 'src/ordering/lexicographical.dart';
-part 'src/ordering/natural.dart';
-part 'src/ordering/nulls_first.dart';
-part 'src/ordering/nulls_last.dart';
-part 'src/ordering/reverse.dart';
+import 'src/ordering/comparator.dart';
+import 'src/ordering/compound.dart';
+import 'src/ordering/explicit.dart';
+import 'src/ordering/function.dart';
+import 'src/ordering/lexicographical.dart';
+import 'src/ordering/natural.dart';
+import 'src/ordering/nulls_first.dart';
+import 'src/ordering/nulls_last.dart';
+import 'src/ordering/reverse.dart';
 
 /// An ordering implements a [Comparator] function that can be modified
 /// using a fluent interface.
@@ -43,11 +43,11 @@ part 'src/ordering/reverse.dart';
 ///
 abstract class Ordering<T> {
   /// Returns a natural ordering of objects.
-  factory Ordering.natural() => const _NaturalOrdering();
+  factory Ordering.natural() => const NaturalOrdering();
 
   /// Returns an ordering based on a [comparator] function.
   factory Ordering.from(Comparator<T> comparator) =>
-      new _ComparatorOrdering<T>(comparator);
+      new ComparatorOrdering<T>(comparator);
 
   /// Returns an explicit ordering based on a [list] of elements.
   factory Ordering.explicit(List<T> list) {
@@ -55,7 +55,7 @@ abstract class Ordering<T> {
     for (var rank = 0; rank < list.length; rank++) {
       ranking[list[rank]] = rank;
     }
-    return new _ExplicitOrdering<T>(ranking);
+    return new ExplicitOrdering<T>(ranking);
   }
 
   /// Internal default constructor for subclasses.
@@ -69,26 +69,26 @@ abstract class Ordering<T> {
   int compare(T a, T b);
 
   /// Returns the reverse ordering.
-  Ordering<T> reverse() => new _ReverseOrdering<T>(this);
+  Ordering<T> reverse() => new ReverseOrdering<T>(this);
 
   /// Returns an ordering that breaks the tie of the receiver by using [other].
   Ordering<T> compound(Ordering<T> other) =>
-      new _CompoundOrdering<T>([this, other]);
+      new CompoundOrdering<T>([this, other]);
 
   /// Returns an ordering that orders iterables lexicographically by
   /// their elements.
   Ordering<Iterable<T>> lexicographical() =>
-      new _LexicographicalOrdering<T>(this);
+      new LexicographicalOrdering<T>(this);
 
   /// Returns an ordering that orders [null] values before non-null values.
-  Ordering<T> nullsFirst() => new _NullsFirstOrdering<T>(this);
+  Ordering<T> nullsFirst() => new NullsFirstOrdering<T>(this);
 
   /// Returns an ordering that orders [null] values after non-null values.
-  Ordering<T> nullsLast() => new _NullsLastOrdering<T>(this);
+  Ordering<T> nullsLast() => new NullsLastOrdering<T>(this);
 
   /// Returns an ordering that uses the provided [function] to transform the result.
   Ordering<F> onResultOf<F>(T function(F argument)) =>
-      new _FunctionOrdering<F, T>(this, function);
+      new MappedOrdering<F, T>(this, function);
 
   /// Searches the sorted [list] for the specified [value] using binary search.
   ///

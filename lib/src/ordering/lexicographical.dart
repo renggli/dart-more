@@ -1,9 +1,11 @@
-part of more.ordering;
+library more.ordering.lexicographical;
 
-class _LexicographicalOrdering<T> extends Ordering<Iterable<T>> {
+import 'package:more/ordering.dart';
+
+class LexicographicalOrdering<T> extends Ordering<Iterable<T>> {
   final Ordering<T> _other;
 
-  const _LexicographicalOrdering(this._other);
+  const LexicographicalOrdering(this._other);
 
   @override
   int compare(Iterable<T> a, Iterable<T> b) {

@@ -1,9 +1,11 @@
-part of more.ordering;
+library more.ordering.compound;
 
-class _CompoundOrdering<T> extends Ordering<T> {
+import 'package:more/ordering.dart';
+
+class CompoundOrdering<T> extends Ordering<T> {
   final List<Ordering<T>> _orderings;
 
-  const _CompoundOrdering(this._orderings);
+  const CompoundOrdering(this._orderings);
 
   @override
   int compare(T a, T b) {
@@ -19,7 +21,7 @@ class _CompoundOrdering<T> extends Ordering<T> {
   @override
   Ordering<T> compound(Ordering<T> other) {
     var orderings = new List<Ordering<T>>.from(_orderings)..add(other);
-    return new _CompoundOrdering(
+    return new CompoundOrdering(
         new List<Ordering<T>>.from(orderings, growable: false));
   }
 }

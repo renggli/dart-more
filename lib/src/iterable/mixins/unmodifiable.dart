@@ -2,9 +2,7 @@ library more.iterable.mixins.unmodifiable;
 
 /// Mixin for an unmodifiable [List] class.
 ///
-/// This overrides all mutating methods with methods that throw.
-/// This mixin is intended to be mixed in on top of [ListMixin] on
-/// unmodifiable lists.
+/// Intended to mix-in on top of `ListBase<E>`.
 abstract class UnmodifiableListMixin<E> implements List<E> {
   @override
   void operator []=(int index, E value) {

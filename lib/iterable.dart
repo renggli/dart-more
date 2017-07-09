@@ -1,10 +1,6 @@
 /// Some fancy iterables and iterators.
 library more.iterable;
 
-export 'src/iterable/mixins/fixedlength.dart';
-export 'src/iterable/mixins/infinite.dart';
-export 'src/iterable/mixins/unmodifiable.dart';
-
 export 'src/iterable/combinations.dart';
 export 'src/iterable/concat.dart';
 export 'src/iterable/cycle.dart';

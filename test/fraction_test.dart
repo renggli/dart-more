@@ -65,16 +65,15 @@ void main() {
       for (var num = -10; num <= 10; num++) {
         for (var den = -10; den <= 10; den++) {
           if (den != 0) {
-            expect(
-                new Fraction.fromDouble(num / den), new Fraction(num, den));
+            expect(new Fraction.fromDouble(num / den), new Fraction(num, den));
           }
         }
       }
     });
     test('double error', () {
       expect(() => new Fraction.fromDouble(double.NAN), throwsArgumentError);
-      expect(() => new Fraction.fromDouble(double.INFINITY),
-          throwsArgumentError);
+      expect(
+          () => new Fraction.fromDouble(double.INFINITY), throwsArgumentError);
       expect(() => new Fraction.fromDouble(double.NEGATIVE_INFINITY),
           throwsArgumentError);
     });
@@ -134,12 +133,9 @@ void main() {
   });
   group('comparing', () {
     test('compareTo', () {
-      expect(
-          new Fraction(2, 3).compareTo(new Fraction(2, 3)), 1.compareTo(1));
-      expect(
-          new Fraction(2, 3).compareTo(new Fraction(4, 5)), 1.compareTo(2));
-      expect(
-          new Fraction(4, 5).compareTo(new Fraction(2, 3)), 2.compareTo(1));
+      expect(new Fraction(2, 3).compareTo(new Fraction(2, 3)), 1.compareTo(1));
+      expect(new Fraction(2, 3).compareTo(new Fraction(4, 5)), 1.compareTo(2));
+      expect(new Fraction(4, 5).compareTo(new Fraction(2, 3)), 2.compareTo(1));
     });
     test('hash code', () {
       expect(new Fraction(2, 3).hashCode, isNot(new Fraction(3, 2).hashCode));

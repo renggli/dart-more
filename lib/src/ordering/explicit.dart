@@ -1,9 +1,11 @@
-part of more.ordering;
+library more.ordering.explicit;
 
-class _ExplicitOrdering<T> extends Ordering<T> {
+import 'package:more/ordering.dart';
+
+class ExplicitOrdering<T> extends Ordering<T> {
   final Map<T, int> _ranking;
 
-  const _ExplicitOrdering(this._ranking);
+  const ExplicitOrdering(this._ranking);
 
   @override
   int compare(T a, T b) => _rank(a) - _rank(b);

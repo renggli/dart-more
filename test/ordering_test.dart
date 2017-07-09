@@ -3,8 +3,8 @@ library more.test.ordering_test;
 import 'package:more/ordering.dart';
 import 'package:test/test.dart';
 
-void verify<T>(Ordering<T> ordering, Iterable<T> unsorted,
-    Iterable<T> expected) {
+void verify<T>(
+    Ordering<T> ordering, Iterable<T> unsorted, Iterable<T> expected) {
   var sorted = ordering.sorted(unsorted);
   expect(sorted, expected);
   expect(ordering.isOrdered(sorted), isTrue);
@@ -30,7 +30,7 @@ void main() {
     });
     test('comparator', () {
       var ordering =
-      new Ordering.from((String a, String b) => a.length - b.length);
+          new Ordering.from((String a, String b) => a.length - b.length);
       verify(ordering, ['*', '**', '***'], ['*', '**', '***']);
       verify(ordering, ['**', '***', '*'], ['*', '**', '***']);
       verify(ordering, ['***', '*', '**'], ['*', '**', '***']);
@@ -100,9 +100,8 @@ void main() {
     });
     test('compound', () {
       var ordering =
-      natural.onResultOf((String s) => s.length).compound(natural);
-      verify(
-          ordering, ['333', '1', '4444', '22'], ['1', '22', '333', '4444']);
+          natural.onResultOf((String s) => s.length).compound(natural);
+      verify(ordering, ['333', '1', '4444', '22'], ['1', '22', '333', '4444']);
       verify(ordering, ['2', '333', '4444', '1', '22'],
           ['1', '2', '22', '333', '4444']);
       verify(ordering, ['33', '333', '2', '22', '1', '4444'],

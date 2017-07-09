@@ -2,7 +2,7 @@ library more.collection.range;
 
 import 'dart:collection';
 
-import '../iterable/mixins/unmodifiable.dart';
+import 'package:more/src/iterable/mixins/unmodifiable.dart';
 
 /// Creates a virtual range of numbers containing an arithmetic progressions.
 ///

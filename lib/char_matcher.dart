@@ -5,20 +5,20 @@
 /// collection of libraries for Java-based projects.
 library more.char_matcher;
 
-part 'src/char_matcher/any.dart';
-part 'src/char_matcher/ascii.dart';
-part 'src/char_matcher/digit.dart';
-part 'src/char_matcher/disjunctive.dart';
-part 'src/char_matcher/letter.dart';
-part 'src/char_matcher/letter_or_digit.dart';
-part 'src/char_matcher/lower_case.dart';
-part 'src/char_matcher/negate.dart';
-part 'src/char_matcher/none.dart';
-part 'src/char_matcher/range.dart';
-part 'src/char_matcher/ranges.dart';
-part 'src/char_matcher/single.dart';
-part 'src/char_matcher/upper_case.dart';
-part 'src/char_matcher/whitespace.dart';
+import 'src/char_matcher/any.dart';
+import 'src/char_matcher/ascii.dart';
+import 'src/char_matcher/digit.dart';
+import 'src/char_matcher/disjunctive.dart';
+import 'src/char_matcher/letter.dart';
+import 'src/char_matcher/letter_or_digit.dart';
+import 'src/char_matcher/lower_case.dart';
+import 'src/char_matcher/negate.dart';
+import 'src/char_matcher/none.dart';
+import 'src/char_matcher/pattern.dart';
+import 'src/char_matcher/range.dart';
+import 'src/char_matcher/single.dart';
+import 'src/char_matcher/upper_case.dart';
+import 'src/char_matcher/whitespace.dart';
 
 /// Abstract character matcher function.
 ///
@@ -38,123 +38,62 @@ part 'src/char_matcher/whitespace.dart';
 ///
 abstract class CharMatcher {
   /// A matcher that accepts any character.
-  factory CharMatcher.any() => _any;
+  factory CharMatcher.any() => any;
 
   /// A matcher that accepts no character.
-  factory CharMatcher.none() => _none;
+  factory CharMatcher.none() => none;
 
   /// A matcher that accepts a single [character].
-  factory CharMatcher.isChar(Object character) {
-    return new _SingleCharMatcher(_toCharCode(character));
-  }
+  factory CharMatcher.isChar(Object character) =>
+      new SingleCharMatcher(_toCharCode(character));
 
   /// A matcher that accepts a character range from [start] to [stop].
-  factory CharMatcher.inRange(Object start, Object stop) {
-    return new _RangeCharMatcher(_toCharCode(start), _toCharCode(stop));
-  }
+  factory CharMatcher.inRange(Object start, Object stop) =>
+      new RangeCharMatcher(_toCharCode(start), _toCharCode(stop));
 
   /// A matcher that accepts a regular expression character class.
-  factory CharMatcher.pattern(String pattern) {
-    // 1. Verify if it is negated.
-    bool isNegated = pattern.startsWith('^');
-    if (isNegated) pattern = pattern.substring(1);
-
-    // 2. Build the range lists.
-    List<List<int>> ranges = new List();
-    while (pattern.isNotEmpty) {
-      if (pattern.length >= 3 && pattern[1] == '-') {
-        ranges.add([pattern.codeUnitAt(0), pattern.codeUnitAt(2)]);
-        pattern = pattern.substring(3);
-      } else {
-        ranges.add([pattern.codeUnitAt(0), pattern.codeUnitAt(0)]);
-        pattern = pattern.substring(1);
-      }
-    }
-
-    // 3. Sort the range lists.
-    List<List<int>> sortedRanges = new List.from(ranges, growable: false);
-    sortedRanges.sort((a, b) {
-      return a.first != b.first ? a.first - b.first : a.last - b.last;
-    });
-
-    // 4. Merge adjacent or overlapping ranges.
-    List<List<int>> mergedRanges = new List();
-    for (var thisRange in sortedRanges) {
-      if (mergedRanges.isEmpty) {
-        mergedRanges.add(thisRange);
-      } else {
-        var lastRange = mergedRanges.last;
-        if (lastRange.last + 1 >= thisRange.first) {
-          var characterRange = [lastRange.first, thisRange.last];
-          mergedRanges[mergedRanges.length - 1] = characterRange;
-        } else {
-          mergedRanges.add(thisRange);
-        }
-      }
-    }
-
-    // 5. Build the best resulting predicates
-    CharMatcher predicate;
-    if (mergedRanges.isEmpty) {
-      predicate = new CharMatcher.none();
-    } else if (mergedRanges.length == 1) {
-      if (mergedRanges[0].first == mergedRanges[0].last) {
-        predicate = new CharMatcher.isChar(mergedRanges[0].first);
-      } else {
-        predicate = new CharMatcher.inRange(
-            mergedRanges[0].first, mergedRanges[0].last);
-      }
-    } else {
-      predicate = new _RangesCharMatcher(
-          mergedRanges.length,
-          mergedRanges.map((range) => range.first).toList(growable: false),
-          mergedRanges.map((range) => range.last).toList(growable: false));
-    }
-
-    // 6. Negate, if necessary.
-    return isNegated ? ~predicate : predicate;
-  }
+  factory CharMatcher.pattern(String pattern) => toCharMatcher(pattern);
 
   /// A matcher that accepts ASCII characters.
-  factory CharMatcher.ascii() => _ascii;
+  factory CharMatcher.ascii() => ascii;
 
   /// A matcher that accepts letters.
-  factory CharMatcher.letter() => _letter;
+  factory CharMatcher.letter() => letter;
 
   /// A matcher that accepts upper-case letters.
-  factory CharMatcher.upperCaseLetter() => _upperCaseLetter;
+  factory CharMatcher.upperCaseLetter() => upperCaseLetter;
 
   /// A matcher that accepts lower-case letters.
-  factory CharMatcher.lowerCaseLetter() => _lowerCaseLetter;
+  factory CharMatcher.lowerCaseLetter() => lowerCaseLetter;
 
   /// A matcher that accepts letters or digits.
-  factory CharMatcher.letterOrDigit() => _letterOrDigit;
+  factory CharMatcher.letterOrDigit() => letterOrDigit;
 
   /// A matcher that accepts digits.
-  factory CharMatcher.digit() => _digit;
+  factory CharMatcher.digit() => digit;
 
   /// A matcher that accepts whitespaces.
-  factory CharMatcher.whitespace() => _whitespace;
+  factory CharMatcher.whitespace() => whitespace;
 
   /// Internal constructor.
   const CharMatcher();
 
   /// Returns a matcher that matches any character not matched by this matcher.
-  CharMatcher operator ~() => new _NegateCharMatcher(this);
+  CharMatcher operator ~() => new NegateCharMatcher(this);
 
   /// Returns a matcher that matches any character matched by either this
   /// matcher or [other].
   CharMatcher operator |(CharMatcher other) {
-    if (other == _any) {
+    if (other == any) {
       return other;
-    } else if (other == _none) {
+    } else if (other == none) {
       return this;
-    } else if (other is _DisjunctiveCharMatcher) {
-      return new _DisjunctiveCharMatcher(new List()
+    } else if (other is DisjunctiveCharMatcher) {
+      return new DisjunctiveCharMatcher(new List()
         ..add(this)
-        ..addAll(other._matchers));
+        ..addAll(other.matchers));
     } else {
-      return new _DisjunctiveCharMatcher([this, other]);
+      return new DisjunctiveCharMatcher([this, other]);
     }
   }
 

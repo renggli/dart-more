@@ -1,33 +1,37 @@
-part of more.char_matcher;
+library more.char_matcher.disjunctive;
 
-class _DisjunctiveCharMatcher extends CharMatcher {
-  final List<CharMatcher> _matchers;
+import 'package:more/char_matcher.dart';
+import 'package:more/src/char_matcher/any.dart';
+import 'package:more/src/char_matcher/none.dart';
 
-  factory _DisjunctiveCharMatcher(Iterable<CharMatcher> matchers) {
-    return new _DisjunctiveCharMatcher._(
+class DisjunctiveCharMatcher extends CharMatcher {
+  final List<CharMatcher> matchers;
+
+  factory DisjunctiveCharMatcher(Iterable<CharMatcher> matchers) {
+    return new DisjunctiveCharMatcher._(
         new List.from(matchers, growable: false));
   }
 
-  const _DisjunctiveCharMatcher._(this._matchers);
+  const DisjunctiveCharMatcher._(this.matchers);
 
   @override
   CharMatcher operator |(CharMatcher other) {
-    if (other == _any) {
+    if (other == any) {
       return other;
-    } else if (other == _none) {
+    } else if (other == none) {
       return this;
-    } else if (other is _DisjunctiveCharMatcher) {
-      return new _DisjunctiveCharMatcher(
-          new List()..addAll(_matchers)..addAll(other._matchers));
+    } else if (other is DisjunctiveCharMatcher) {
+      return new DisjunctiveCharMatcher(
+          new List()..addAll(matchers)..addAll(other.matchers));
     } else {
-      return new _DisjunctiveCharMatcher(new List()
-        ..addAll(_matchers)
+      return new DisjunctiveCharMatcher(new List()
+        ..addAll(matchers)
         ..add(other));
     }
   }
 
   @override
   bool match(int value) {
-    return _matchers.any((matcher) => matcher.match(value));
+    return matchers.any((matcher) => matcher.match(value));
   }
 }

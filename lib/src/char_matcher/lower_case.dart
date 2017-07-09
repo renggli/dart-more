@@ -1,9 +1,11 @@
-part of more.char_matcher;
+library more.char_matcher.lower_case;
 
-const CharMatcher _lowerCaseLetter = const _LowerCaseLetterCharMatcher();
+import 'package:more/char_matcher.dart';
 
-class _LowerCaseLetterCharMatcher extends CharMatcher {
-  const _LowerCaseLetterCharMatcher();
+const CharMatcher lowerCaseLetter = const LowerCaseLetterCharMatcher();
+
+class LowerCaseLetterCharMatcher extends CharMatcher {
+  const LowerCaseLetterCharMatcher();
 
   @override
   bool match(int value) => 97 <= value && value <= 122;

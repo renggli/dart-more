@@ -2,7 +2,7 @@ library more.iterable.fold;
 
 import 'dart:collection';
 
-import 'mixins/infinite.dart';
+import 'package:more/src/iterable/mixins/infinite.dart';
 
 /// Returns a lazy infinite list of repeated applications of the
 /// n-ary [Function] to its previous n initial [elements].

@@ -125,19 +125,16 @@ void main() {
     });
     test('range error', () {
       expect(() => combinations(letters, -1), throwsRangeError);
-      expect(() => combinations(letters, -1, repetitions: true),
-          throwsRangeError);
+      expect(
+          () => combinations(letters, -1, repetitions: true), throwsRangeError);
       expect(() => combinations(letters, -1, repetitions: false),
           throwsRangeError);
-      expect(() => combinations(letters, 5, repetitions: false),
-          throwsRangeError);
+      expect(
+          () => combinations(letters, 5, repetitions: false), throwsRangeError);
     });
   });
   group('concat', () {
-    var a = [1, 2, 3],
-        b = [4, 5],
-        c = [6],
-        d = [];
+    var a = [1, 2, 3], b = [4, 5], c = [6], d = [];
     test('void', () {
       expect(concat([]), []);
     });
@@ -262,23 +259,22 @@ void main() {
     });
     test('first', () {
       expect(() => emptyIterable().first, throwsStateError);
-      expect(() => emptyIterable().firstWhere(noCallPredicate),
-          throwsStateError);
+      expect(
+          () => emptyIterable().firstWhere(noCallPredicate), throwsStateError);
       expect(emptyIterable().firstWhere(noCallPredicate, orElse: () => true),
           isTrue);
     });
     test('last', () {
       expect(() => emptyIterable().last, throwsStateError);
       expect(
-              () => emptyIterable().lastWhere(noCallPredicate),
-          throwsStateError);
+          () => emptyIterable().lastWhere(noCallPredicate), throwsStateError);
       expect(emptyIterable().lastWhere(noCallPredicate, orElse: () => true),
           isTrue);
     });
     test('single', () {
       expect(() => emptyIterable().single, throwsStateError);
-      expect(() => emptyIterable().singleWhere(noCallPredicate),
-          throwsStateError);
+      expect(
+          () => emptyIterable().singleWhere(noCallPredicate), throwsStateError);
     });
     test('converting', () {
       expect(emptyIterable().toList(), isEmpty);
@@ -297,15 +293,13 @@ void main() {
       var iterable = indexed(['a', 'b', 'c']);
       expect(iterable.map((each) => each.index), [0, 1, 2]);
       expect(iterable.map((each) => each.value), ['a', 'b', 'c']);
-      expect(
-          iterable.map((each) => each.toString()), ['0: a', '1: b', '2: c']);
+      expect(iterable.map((each) => each.toString()), ['0: a', '1: b', '2: c']);
     });
     test('offset', () {
       var iterable = indexed(['a', 'b', 'c']);
       expect(iterable.map((each) => each.index), [0, 1, 2]);
       expect(iterable.map((each) => each.value), ['a', 'b', 'c']);
-      expect(
-          iterable.map((each) => each.toString()), ['0: a', '1: b', '2: c']);
+      expect(iterable.map((each) => each.toString()), ['0: a', '1: b', '2: c']);
     });
     test('example', () {
       var actual = indexed(['a', 'b'], offset: 1)
@@ -316,9 +310,9 @@ void main() {
     });
     test('reversed', () {
       var iterable = indexed(indexed(['a', 'b', 'c'])
-          .map((each) => each.toString())
-          .toList()
-          .reversed)
+              .map((each) => each.toString())
+              .toList()
+              .reversed)
           .map((each) => each.toString())
           .toList();
       expect(iterable, ['0: 2: c', '1: 1: b', '2: 0: a']);
@@ -402,8 +396,7 @@ void main() {
     });
     test('3', () {
       var iterator = permutations(string('abc'));
-      expect(
-          iterator.map(joiner), ['abc', 'acb', 'bac', 'bca', 'cab', 'cba']);
+      expect(iterator.map(joiner), ['abc', 'acb', 'bac', 'bca', 'cab', 'cba']);
     });
     test('4', () {
       var iterator = permutations(string('abcd'));

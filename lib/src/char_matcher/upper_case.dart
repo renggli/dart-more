@@ -1,9 +1,11 @@
-part of more.char_matcher;
+library more.char_matcher.upper_case;
 
-const CharMatcher _upperCaseLetter = const _UpperCaseLetterCharMatcher();
+import 'package:more/char_matcher.dart';
 
-class _UpperCaseLetterCharMatcher extends CharMatcher {
-  const _UpperCaseLetterCharMatcher();
+const CharMatcher upperCaseLetter = const UpperCaseLetterCharMatcher();
+
+class UpperCaseLetterCharMatcher extends CharMatcher {
+  const UpperCaseLetterCharMatcher();
 
   @override
   bool match(int value) => 65 <= value && value <= 90;

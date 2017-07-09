@@ -1,10 +1,12 @@
-part of more.char_matcher;
+library more.char_matcher.single;
 
-class _SingleCharMatcher extends CharMatcher {
-  final int _value;
+import 'package:more/char_matcher.dart';
 
-  const _SingleCharMatcher(this._value);
+class SingleCharMatcher extends CharMatcher {
+  final int charValue;
+
+  const SingleCharMatcher(this.charValue);
 
   @override
-  bool match(int value) => _value == value;
+  bool match(int value) => charValue == value;
 }

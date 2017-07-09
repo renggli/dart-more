@@ -1,15 +1,18 @@
-part of more.char_matcher;
+library more.char_matcher.any;
 
-const CharMatcher _any = const _AnyCharMatcher();
+import 'package:more/char_matcher.dart';
+import 'package:more/src/char_matcher/none.dart';
 
-class _AnyCharMatcher extends CharMatcher {
-  const _AnyCharMatcher();
+const CharMatcher any = const AnyCharMatcher();
+
+class AnyCharMatcher extends CharMatcher {
+  const AnyCharMatcher();
 
   @override
   bool match(int value) => true;
 
   @override
-  CharMatcher operator ~() => _none;
+  CharMatcher operator ~() => none;
 
   @override
   CharMatcher operator |(CharMatcher other) => this;

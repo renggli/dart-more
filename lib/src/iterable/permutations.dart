@@ -2,7 +2,7 @@ library more.iterable.permutations;
 
 import 'dart:collection';
 
-import 'empty.dart';
+import 'package:more/src/iterable/empty.dart';
 
 /// Returns an iterable over the permutations of [elements]. The permutations
 /// are emitted in lexicographical order based on the input.

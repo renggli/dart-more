@@ -99,11 +99,15 @@ class Fraction implements Comparable<Fraction> {
   Fraction abs() => isNegative ? -this : this;
 
   int round() => toDouble().round();
+
   int floor() => toDouble().floor();
+
   int ceil() => toDouble().ceil();
+
   int truncate() => toDouble().truncate();
 
   int toInt() => numerator ~/ denominator;
+
   double toDouble() => numerator / denominator;
 
   @override

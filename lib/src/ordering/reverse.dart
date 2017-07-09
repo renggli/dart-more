@@ -1,9 +1,11 @@
-part of more.ordering;
+library more.ordering.reverse;
 
-class _ReverseOrdering<T> extends Ordering<T> {
+import 'package:more/ordering.dart';
+
+class ReverseOrdering<T> extends Ordering<T> {
   final Ordering<T> _other;
 
-  const _ReverseOrdering(this._other);
+  const ReverseOrdering(this._other);
 
   @override
   int compare(T a, T b) => _other.compare(b, a);

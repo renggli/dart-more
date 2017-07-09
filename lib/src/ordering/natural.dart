@@ -1,7 +1,9 @@
-part of more.ordering;
+library more.ordering.natural;
 
-class _NaturalOrdering<T extends Comparable> extends Ordering<T> {
-  const _NaturalOrdering();
+import 'package:more/ordering.dart';
+
+class NaturalOrdering<T extends Comparable> extends Ordering<T> {
+  const NaturalOrdering();
 
   @override
   int compare(T a, T b) => a.compareTo(b);

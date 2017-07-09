@@ -1,9 +1,11 @@
-part of more.char_matcher;
+library more.char_matcher.letter_or_digit;
 
-const CharMatcher _letterOrDigit = const _LetterOrDigitCharMatcher();
+import 'package:more/char_matcher.dart';
 
-class _LetterOrDigitCharMatcher extends CharMatcher {
-  const _LetterOrDigitCharMatcher();
+const CharMatcher letterOrDigit = const LetterOrDigitCharMatcher();
+
+class LetterOrDigitCharMatcher extends CharMatcher {
+  const LetterOrDigitCharMatcher();
 
   @override
   bool match(int value) =>

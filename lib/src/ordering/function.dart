@@ -1,13 +1,15 @@
-part of more.ordering;
+library more.ordering.function;
 
-typedef T _MapFunction<F, T>(F argument);
+import 'package:more/ordering.dart';
 
-class _FunctionOrdering<F, T> extends Ordering<F> {
+typedef T MappingFunction<F, T>(F argument);
+
+class MappedOrdering<F, T> extends Ordering<F> {
   final Ordering<T> _ordering;
 
-  final _MapFunction<F, T> _function;
+  final MappingFunction<F, T> _function;
 
-  const _FunctionOrdering(this._ordering, this._function);
+  const MappedOrdering(this._ordering, this._function);
 
   @override
   int compare(F a, F b) => _ordering.compare(_function(a), _function(b));

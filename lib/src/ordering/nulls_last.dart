@@ -1,9 +1,11 @@
-part of more.ordering;
+library more.ordering.nulls_last;
 
-class _NullsLastOrdering<T> extends Ordering<T> {
+import 'package:more/ordering.dart';
+
+class NullsLastOrdering<T> extends Ordering<T> {
   final Ordering<T> _ordering;
 
-  const _NullsLastOrdering(this._ordering);
+  const NullsLastOrdering(this._ordering);
 
   @override
   int compare(T a, T b) {
