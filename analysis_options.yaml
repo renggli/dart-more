@@ -44,7 +44,6 @@ linter:
     - library_names
     - library_prefixes
     - non_constant_identifier_names
-    - omit_local_variable_types
     - only_throw_errors
     - overridden_fields
     - package_api_docs
