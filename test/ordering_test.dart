@@ -1,14 +1,14 @@
 library more.test.ordering_test;
 
-import 'package:test/test.dart';
 import 'package:more/ordering.dart';
+import 'package:test/test.dart';
 
-void verify(Ordering ordering, Iterable unsorted, Iterable expected) {
+void verify<T>(Ordering<T> ordering, Iterable<T> unsorted, Iterable<T> expected) {
   var sorted = ordering.sorted(unsorted);
   expect(sorted, expected);
   expect(ordering.isOrdered(sorted), isTrue);
   for (var element in unsorted) {
-    expect(ordering.binarySearch(sorted, element), (index) => (index) >= 0);
+    expect(ordering.binarySearch(sorted, element), (int index) => (index) >= 0);
   }
   if (sorted.isNotEmpty) {
     expect(ordering.minOf(unsorted), expected.first);
@@ -16,7 +16,7 @@ void verify(Ordering ordering, Iterable unsorted, Iterable expected) {
   }
 }
 
-final Ordering natural = new Ordering.natural();
+final Ordering<Comparable> natural = new Ordering.natural();
 
 void main() {
   group('ordering', () {

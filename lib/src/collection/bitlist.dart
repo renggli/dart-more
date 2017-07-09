@@ -83,7 +83,7 @@ class BitList extends ListBase<bool> with FixedLengthListMixin<bool> {
 
   /// Counts the number of bits that are set to [expected].
   int count([bool expected = true]) {
-    int tally = 0;
+    var tally = 0;
     for (var index = 0; index < _length; index++) {
       var actual = (_buffer[index >> _shift] & _setMask[index & _offset]) != 0;
       if (actual == expected) {
@@ -111,7 +111,7 @@ class BitList extends ListBase<bool> with FixedLengthListMixin<bool> {
   /// otherwise an exception is thrown.
   BitList operator &(BitList other) {
     if (_length != other._length) {
-      throw new ArgumentError('Expected list with length ${this.length}, but got ${other.length}');
+      throw new ArgumentError('Expected list with length ${length}, but got ${other.length}');
     }
     var result = new BitList(_length);
     for (var i = 0; i < _buffer.length; i++) {
@@ -127,7 +127,7 @@ class BitList extends ListBase<bool> with FixedLengthListMixin<bool> {
   /// same length, otherwise an exception is thrown.
   BitList operator |(BitList other) {
     if (_length != other._length) {
-      throw new ArgumentError('Expected list with length ${this.length}, but got ${other.length}');
+      throw new ArgumentError('Expected list with length ${length}, but got ${other.length}');
     }
     var result = new BitList(_length);
     for (var i = 0; i < _buffer.length; i++) {
@@ -143,7 +143,7 @@ class BitList extends ListBase<bool> with FixedLengthListMixin<bool> {
   /// length, otherwise an exception is thrown.
   BitList operator -(BitList other) {
     if (_length != other._length) {
-      throw new ArgumentError('Expected list with length ${this.length}, but got ${other.length}');
+      throw new ArgumentError('Expected list with length ${length}, but got ${other.length}');
     }
     var result = new BitList(_length);
     for (var i = 0; i < _buffer.length; i++) {

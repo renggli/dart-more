@@ -1,7 +1,7 @@
 library more.test.char_matcher_test;
 
-import 'package:test/test.dart';
 import 'package:more/char_matcher.dart';
+import 'package:test/test.dart';
 
 void verify(CharMatcher matcher, String included, String excluded) {
   var positive = matcher;

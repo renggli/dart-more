@@ -1,7 +1,7 @@
 library more.test.fraction_test;
 
-import 'package:test/test.dart';
 import 'package:more/fraction.dart';
+import 'package:test/test.dart';
 
 void main() {
   group('fraction', () {

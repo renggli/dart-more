@@ -36,7 +36,7 @@ class _ProductIterable<E> extends IterableBase<List<E>> {
 
   @override
   Iterator<List<E>> get iterator {
-    List<int> state = new List<int>.filled(_sources.length, 0);
+    var state = new List<int>.filled(_sources.length, 0);
     return new _ProductIterator<E>(_sources, state);
   }
 }
@@ -70,7 +70,7 @@ class _ProductIterator<E> extends Iterator<List<E>> {
         _current[i] = _sources[i][_state[i]];
         return true;
       } else {
-        for (int j = _state.length - 1; j >= i; j--) {
+        for (var j = _state.length - 1; j >= i; j--) {
           _state[j] = 0;
           _current[j] = _sources[j][0];
         }

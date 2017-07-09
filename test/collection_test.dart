@@ -2,8 +2,8 @@ library more.test.collection_test;
 
 import 'dart:math';
 
-import 'package:test/test.dart';
 import 'package:more/collection.dart';
+import 'package:test/test.dart';
 
 List<bool> randomBooleans(int seed, int length) {
   var list = new List<bool>();

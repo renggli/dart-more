@@ -28,10 +28,10 @@ class Multiset<E> extends IterableBase<E> {
   ///
   /// The [count] function specifies the number of elements added to the
   /// collection. The default function returns the constant 1.
-  factory Multiset.fromIterable(Iterable<E> iterable, {E key(element), int count(element)}) {
+  factory Multiset.fromIterable(Iterable iterable, {E key(element), int count(element)}) {
     var result = new Multiset<E>();
-    if (key == null) key = (E element) => element;
-    if (count == null) count = (E element) => 1;
+    key ??= (E element) => element;
+    count ??= (E element) => 1;
     for (var element in iterable) {
       result.add(key(element), count(element));
     }
@@ -66,10 +66,11 @@ class Multiset<E> extends IterableBase<E> {
   /// Removes [element] from the receiver [occurrences] number of times.
   ///
   /// Throws an [ArgumentError] if [occurrences] is negative.
-  void remove(E element, [int occurrences = 1]) {
+  void remove(Object element, [int occurrences = 1]) {
     if (occurrences < 0) {
       throw new ArgumentError('Negative number of occurences: $occurrences');
-    } else if (occurrences > 0) {
+    }
+    if (element is E && occurrences > 0) {
       var current = this[element];
       if (current <= occurrences) {
         _container.remove(element);
@@ -82,7 +83,7 @@ class Multiset<E> extends IterableBase<E> {
   }
 
   /// Removes each element of [elements] from the receiver.
-  void removeAll(Iterable<E> elements) {
+  void removeAll(Iterable<Object> elements) {
     elements.forEach(remove);
   }
 

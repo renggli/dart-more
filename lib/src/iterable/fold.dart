@@ -11,13 +11,13 @@ part of more.iterable;
 ///
 ///     [0, 1, 1, 2, 3, 5, ...]
 ///
-Iterable<E> fold<E>(Iterable<E> elements, Function combine) {
+Iterable<E> fold<E>(Iterable<E> elements, E Function(List<E>) combine) {
   return new _FoldIterable<E>(elements, combine);
 }
 
 class _FoldIterable<E> extends IterableBase<E> with InfiniteIterable<E> {
   final Iterable<E> _elements;
-  final Function _combine;
+  final E Function(List<E>) _combine;
 
   _FoldIterable(this._elements, this._combine);
 
@@ -45,7 +45,7 @@ class _FoldIterator<E> extends Iterator<E> {
       _current = _state[_index];
       _index++;
     } else {
-      _current = Function.apply(_combine, _state);
+      _current = _combine(_state);
       for (var i = 0; i < _state.length - 1; i++) {
         _state[i] = _state[i + 1];
       }

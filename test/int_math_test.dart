@@ -1,7 +1,7 @@
 library more.test.int_math_test;
 
-import 'package:test/test.dart';
 import 'package:more/int_math.dart';
+import 'package:test/test.dart';
 
 void main() {
   group('int math', () {

@@ -8,8 +8,9 @@ part of more.iterable;
 ///     permutations(string('xyz'));
 ///
 Iterable<List<E>> permutations<E>(Iterable <E> elements) {
-  elements = elements.toList(growable: false);
-  return elements.isEmpty ? emptyIterable<E>() : new _PermutationIterable<E>(elements);
+  return elements.isEmpty
+      ? emptyIterable<List<E>>()
+      : new _PermutationIterable<E>(elements.toList(growable: false));
 }
 
 class _PermutationIterable<E> extends IterableBase<List<E>> {

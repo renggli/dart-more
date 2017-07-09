@@ -30,9 +30,9 @@ Iterable<List<E>> combinations<E>(Iterable<E> elements, int count, {bool repetit
   } else if (count == 0 || elements.isEmpty) {
     return emptyIterable();
   } else if (repetitions) {
-    return new _CombinationsWithRepetitionsIterable<E>(elements, count);
+    return new _CombinationsWithRepetitionsIterable<E>(elements.toList(growable: false), count);
   } else {
-    return new _CombinationsWithoutRepetitionsIterable<E>(elements, count);
+    return new _CombinationsWithoutRepetitionsIterable<E>(elements.toList(growable: false), count);
   }
 }
 

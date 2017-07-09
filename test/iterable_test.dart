@@ -1,14 +1,14 @@
 library more.test.iterable_test;
 
-import 'package:test/test.dart';
 import 'package:more/collection.dart';
 import 'package:more/iterable.dart';
+import 'package:test/test.dart';
 
 void main() {
+  String joiner(Iterable<String> iterable) => iterable.join();
   group('iterable', () {
     group('combinations', () {
       var letters = string('abcd');
-      var joiner = (Iterable iterable) => iterable.join();
       group('with repetitions', () {
         test('take 0', () {
           var iterable = combinations(letters, 0, repetitions: true);
@@ -199,13 +199,19 @@ void main() {
       });
     });
     group('empty', () {
-      dynamic noCallOne(dynamic a) => fail('No call expected, but got $a.');
-      dynamic noCallTwo(dynamic a, dynamic b) => fail('No call expected, but got $a, $b.');
-      Iterable noCallIterable(Iterable a) {
+      T noCallOne<T>(T a) {
+        fail('No call expected, but got $a.');
+        return null;
+      }
+      T noCallTwo<T>(T a, T b) {
+        fail('No call expected, but got $a, $b.');
+        return null;
+      }
+      Iterable<S> noCallIterable<T, S>(Iterable<T> a) {
         fail('No call expected, but got $a.');
         return [];
       }
-      bool noCallPredicate(dynamic a) {
+      bool noCallPredicate<T>(T a) {
         fail('No call expected, but got $a.');
         return false;
       }
@@ -302,15 +308,15 @@ void main() {
     });
     group('fold', () {
       test('single value toggle', () {
-        var iterable = fold([1], (a) => -a);
+        var iterable = fold([1], (e) => -e[0]);
         expect(iterable.take(10), [1, -1, 1, -1, 1, -1, 1, -1, 1, -1]);
       });
       test('fibonacci sequence', () {
-        var iterable = fold([0, 1], (a, b) => a + b);
+        var iterable = fold([0, 1], (e) => e[0] + e[1]);
         expect(iterable.take(10), [0, 1, 1, 2, 3, 5, 8, 13, 21, 34]);
       });
       test('extended fibonacci sequence', () {
-        var iterable = fold([0, 0, 1], (a, b, c) => a + b + c);
+        var iterable = fold([0, 0, 1], (e) => e[0] + e[1] + e[2]);
         expect(iterable.take(10), [0, 0, 1, 1, 2, 4, 7, 13, 24, 44]);
       });
     });
@@ -362,7 +368,6 @@ void main() {
       });
     });
     group('permutations', () {
-      var joiner = (Iterable iterable) => iterable.join();
       test('0', () {
         var iterator = permutations(string(''));
         expect(iterator.map(joiner), []);

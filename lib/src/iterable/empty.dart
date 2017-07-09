@@ -100,7 +100,7 @@ class _EmptyIterable<E> implements Iterable<E> {
   E elementAt(int index) => throw new RangeError.value(index);
 
   @override
-  List<E> toList({bool growable: true}) => new List<E>.from([], growable: growable);
+  List<E> toList({bool growable: true}) => new List<E>.from(<E>[], growable: growable);
 
   @override
   Set<E> toSet() => new Set<E>();

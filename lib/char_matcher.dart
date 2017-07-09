@@ -44,12 +44,12 @@ abstract class CharMatcher {
   factory CharMatcher.none() => _none;
 
   /// A matcher that accepts a single [character].
-  factory CharMatcher.isChar(character) {
+  factory CharMatcher.isChar(Object character) {
     return new _SingleCharMatcher(_toCharCode(character));
   }
 
   /// A matcher that accepts a character range from [start] to [stop].
-  factory CharMatcher.inRange(start, stop) {
+  factory CharMatcher.inRange(Object start, Object stop) {
     return new _RangeCharMatcher(_toCharCode(start), _toCharCode(stop));
   }
 
@@ -125,9 +125,7 @@ abstract class CharMatcher {
   /// (inclusive). Returns `-1` if it could not be found.
   int lastIndexIn(String sequence, [int start]) {
     var codeUnits = sequence.codeUnits;
-    if (start == null) {
-      start = codeUnits.length - 1;
-    }
+    start ??= codeUnits.length - 1;
     for (var i = start; i >= 0; i--) {
       if (match(codeUnits[i])) {
         return i;
@@ -219,7 +217,7 @@ abstract class CharMatcher {
   }
 }
 
-int _toCharCode(char) {
+int _toCharCode(Object char) {
   if (char is num) {
     return char.round();
   }

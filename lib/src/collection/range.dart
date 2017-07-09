@@ -38,7 +38,9 @@ List<T> range<T extends num>([T a, T b, T c]) {
     throw new ArgumentError('Negative step-size expected');
   }
   var length = (stop - start) ~/ step;
-  if ((stop - start) % step > 1e-10 * step.abs()) length++;
+  if ((stop - start) % step > 1e-10 * step.abs()) {
+    length++;
+  }
   return new _RangeList<T>(start, step, length);
 }
 
@@ -68,9 +70,7 @@ class _RangeList<T extends num> extends ListBase<T> with UnmodifiableListMixin<T
 
   @override
   List<T> sublist(int start, [int end]) {
-    if (end == null) {
-      end = length;
-    }
+    end ??= length;
     if (end < start || end > length) {
       throw new RangeError.range(end, start, length);
     }

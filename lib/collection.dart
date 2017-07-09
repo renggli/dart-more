@@ -1,10 +1,10 @@
 library more.collection;
 
 import 'dart:collection';
-import 'dart:typed_data';
 import 'dart:math';
+import 'dart:typed_data';
 
-import 'package:more/iterable.dart';
+import 'iterable.dart';
 
 part 'src/collection/bimap.dart';
 part 'src/collection/bitlist.dart';

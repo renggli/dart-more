@@ -91,7 +91,7 @@ class BiMap<K, V> implements Map<K, V> {
     return value;
   }
 
-  void _remove(key, Map forward, Map backward) {
+  void _remove(Object key, Map forward, Map backward) {
     if (forward.containsKey(key)) {
       _remove(forward.remove(key), backward, forward);
     }
