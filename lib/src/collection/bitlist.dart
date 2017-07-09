@@ -94,8 +94,8 @@ class BitList extends ListBase<bool> with FixedLengthListMixin<bool> {
       buffer.setAll(0, other._buffer);
     } else {
       for (var index = 0, iterator = other.iterator;
-          iterator.moveNext();
-          index++) {
+      iterator.moveNext();
+      index++) {
         if (iterator.current) {
           buffer[index >> _shift] |= _setMask[index & _offset];
         }
@@ -241,7 +241,7 @@ class BitList extends ListBase<bool> with FixedLengthListMixin<bool> {
       var otherOffset = 1 + _offset - offset;
       for (var i = shift + 1; i < _buffer.length; i++) {
         result._buffer[i] = ((_buffer[i - shift] << offset) & _mask) |
-            ((_buffer[i - shift - 1] >> otherOffset) & _mask);
+        ((_buffer[i - shift - 1] >> otherOffset) & _mask);
       }
       if (shift < _buffer.length) {
         result._buffer[shift] = (_buffer[0] << offset) & _mask;
@@ -271,7 +271,7 @@ class BitList extends ListBase<bool> with FixedLengthListMixin<bool> {
       var otherOffset = 1 + _offset - offset;
       for (var i = 0; i < last; i++) {
         result._buffer[i] = ((_buffer[i + shift] >> offset) & _mask) |
-            ((_buffer[i + shift + 1] << otherOffset) & _mask);
+        ((_buffer[i + shift + 1] << otherOffset) & _mask);
       }
       if (0 <= last) {
         result._buffer[last] = (_buffer[_buffer.length - 1] >> offset) & _mask;

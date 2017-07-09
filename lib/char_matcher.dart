@@ -5,20 +5,20 @@
 /// collection of libraries for Java-based projects.
 library more.char_matcher;
 
-import 'src/char_matcher/any.dart';
-import 'src/char_matcher/ascii.dart';
-import 'src/char_matcher/digit.dart';
-import 'src/char_matcher/disjunctive.dart';
-import 'src/char_matcher/letter.dart';
-import 'src/char_matcher/letter_or_digit.dart';
-import 'src/char_matcher/lower_case.dart';
-import 'src/char_matcher/negate.dart';
-import 'src/char_matcher/none.dart';
-import 'src/char_matcher/pattern.dart';
-import 'src/char_matcher/range.dart';
-import 'src/char_matcher/single.dart';
-import 'src/char_matcher/upper_case.dart';
-import 'src/char_matcher/whitespace.dart';
+import 'package:more/src/char_matcher/any.dart';
+import 'package:more/src/char_matcher/ascii.dart';
+import 'package:more/src/char_matcher/digit.dart';
+import 'package:more/src/char_matcher/disjunctive.dart';
+import 'package:more/src/char_matcher/letter.dart';
+import 'package:more/src/char_matcher/letter_or_digit.dart';
+import 'package:more/src/char_matcher/lower_case.dart';
+import 'package:more/src/char_matcher/negate.dart';
+import 'package:more/src/char_matcher/none.dart';
+import 'package:more/src/char_matcher/pattern.dart';
+import 'package:more/src/char_matcher/range.dart';
+import 'package:more/src/char_matcher/single.dart';
+import 'package:more/src/char_matcher/upper_case.dart';
+import 'package:more/src/char_matcher/whitespace.dart';
 
 /// Abstract character matcher function.
 ///
@@ -137,7 +137,9 @@ abstract class CharMatcher {
 
   /// Counts the number of matches in [sequence].
   int countIn(String sequence) {
-    return sequence.codeUnits.where(match).length;
+    return sequence.codeUnits
+        .where(match)
+        .length;
   }
 
   /// Replaces each group of consecutive matched characters in [sequence]
@@ -184,7 +186,8 @@ abstract class CharMatcher {
   /// Removes leading and trailing matching characters in [sequence].
   String trimFrom(String sequence) {
     var codeUnits = sequence.codeUnits;
-    var left = 0, right = codeUnits.length - 1;
+    var left = 0,
+        right = codeUnits.length - 1;
     while (left <= right && match(codeUnits[left])) {
       left++;
     }
@@ -197,7 +200,8 @@ abstract class CharMatcher {
   /// Removes leading matching characters in [sequence].
   String trimLeadingFrom(String sequence) {
     var codeUnits = sequence.codeUnits;
-    var left = 0, right = codeUnits.length - 1;
+    var left = 0,
+        right = codeUnits.length - 1;
     while (left <= right && match(codeUnits[left])) {
       left++;
     }
@@ -207,7 +211,8 @@ abstract class CharMatcher {
   /// Removes tailing matching characters in [sequence].
   String trimTailingFrom(String sequence) {
     var codeUnits = sequence.codeUnits;
-    var left = 0, right = codeUnits.length - 1;
+    var left = 0,
+        right = codeUnits.length - 1;
     while (left <= right && match(codeUnits[right])) {
       right--;
     }

@@ -43,7 +43,7 @@ CharMatcher toCharMatcher(String pattern) {
       var lastRange = mergedRanges.last;
       if (lastRange.stop + 1 >= thisRange.start) {
         var characterRange =
-            new RangeCharMatcher(lastRange.start, thisRange.stop);
+        new RangeCharMatcher(lastRange.start, thisRange.stop);
         mergedRanges[mergedRanges.length - 1] = characterRange;
       } else {
         mergedRanges.add(thisRange);

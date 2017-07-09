@@ -1,7 +1,7 @@
 /// A collection of common mathematical functions on integers.
 library more.int_math;
 
-import 'collection.dart';
+import 'package:more/src/collection/bitlist.dart';
 
 /// Returns the greatest common divisor (GCD) of two or more integers (at least
 /// one of which is not zero). This is the largest positive integer that divides
@@ -126,7 +126,8 @@ int powMod(int x, int y, int m) {
 ///
 ///     c[0]*x^0 + c[1]*x^1 + c[2]*x^3 + c[3]*x^3
 num polynomial(Iterable<num> cs, [num x = 10]) {
-  var r = 0, e = 1;
+  var r = 0,
+      e = 1;
   for (var c in cs) {
     r += c * e;
     e *= x;
@@ -168,7 +169,8 @@ bool isProbablyPrime(int n) {
   if (n < 25) {
     return true;
   }
-  var d = n - 1, s = 0;
+  var d = n - 1,
+      s = 0;
   while (d % 2 == 0) {
     d ~/= 2;
     s++;

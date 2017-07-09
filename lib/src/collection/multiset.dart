@@ -18,7 +18,8 @@ class Multiset<E> extends IterableBase<E> {
     if (other is Multiset<E>) {
       return new Multiset<E>._(new Map.from(other._container), other._length);
     } else {
-      return new Multiset<E>()..addAll(other);
+      return new Multiset<E>()
+        ..addAll(other);
     }
   }
 
@@ -159,13 +160,15 @@ class Multiset<E> extends IterableBase<E> {
   /// Returns a new [Multiset] with all the elements of the receiver and those
   /// in [other].
   Multiset<E> union(Iterable<E> other) {
-    return new Multiset<E>.from(this)..addAll(other);
+    return new Multiset<E>.from(this)
+      ..addAll(other);
   }
 
   /// Returns a new [Multiset] with all the elements of the receiver that are
   /// not in [other].
   Multiset<E> difference(Iterable<Object> other) {
-    return new Multiset<E>.from(this)..removeAll(other);
+    return new Multiset<E>.from(this)
+      ..removeAll(other);
   }
 
   /// Iterator over the repeated elements of the receiver.

@@ -19,7 +19,8 @@ class BiMap<K, V> implements Map<K, V> {
       return new BiMap<K, V>._(new Map<K, V>.from(other._forward),
           new Map<V, K>.from(other._backward));
     } else {
-      return new BiMap<K, V>()..addAll(other);
+      return new BiMap<K, V>()
+        ..addAll(other);
     }
   }
 
@@ -34,7 +35,8 @@ class BiMap<K, V> implements Map<K, V> {
   /// Creates a bi-map from two equal length iterables.
   factory BiMap.fromIterables(Iterable<K> keys, Iterable<V> values) {
     var result = new BiMap<K, V>();
-    var keyIterator = keys.iterator, valueIterator = values.iterator;
+    var keyIterator = keys.iterator,
+        valueIterator = values.iterator;
     var moreKeys = keyIterator.moveNext(),
         moreValues = valueIterator.moveNext();
     while (moreKeys && moreValues) {

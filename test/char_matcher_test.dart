@@ -139,7 +139,7 @@ void main() {
     test('~', () {
       expect(~any, equals(none));
       expect(~none, equals(any));
-      expect(~~whitespace, equals(whitespace));
+      expect(~ ~whitespace, equals(whitespace));
     });
     test('|', () {
       expect(any | letter, equals(any));

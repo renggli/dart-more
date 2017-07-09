@@ -1,7 +1,7 @@
 /// Support for exact rational number arithmetic.
 library more.fraction;
 
-import 'int_math.dart' as int_math;
+import 'package:more/int_math.dart' as int_math;
 
 /// A rational number.
 class Fraction implements Comparable<Fraction> {
@@ -34,8 +34,10 @@ class Fraction implements Comparable<Fraction> {
     }
     var sign = value < 0.0 ? -1 : 1;
     value *= sign;
-    var numerator1 = value.floor(), numerator2 = 1;
-    var denominator1 = 1, denominator2 = 0;
+    var numerator1 = value.floor(),
+        numerator2 = 1;
+    var denominator1 = 1,
+        denominator2 = 0;
     var integerPart = numerator1;
     var fractionPart = value - numerator1;
     while (fractionPart != 0) {

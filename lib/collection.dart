@@ -1,7 +1,7 @@
 library more.collection;
 
-export 'src/collection/bimap.dart';
-export 'src/collection/bitlist.dart';
-export 'src/collection/multiset.dart';
-export 'src/collection/range.dart';
-export 'src/collection/string.dart';
+export 'package:more/src/collection/bimap.dart';
+export 'package:more/src/collection/bitlist.dart';
+export 'package:more/src/collection/multiset.dart';
+export 'package:more/src/collection/range.dart';
+export 'package:more/src/collection/string.dart';

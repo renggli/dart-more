@@ -5,17 +5,15 @@
 /// collection of libraries for Java-based projects.
 library more.ordering;
 
-import 'dart:collection';
-
-import 'src/ordering/comparator.dart';
-import 'src/ordering/compound.dart';
-import 'src/ordering/explicit.dart';
-import 'src/ordering/function.dart';
-import 'src/ordering/lexicographical.dart';
-import 'src/ordering/natural.dart';
-import 'src/ordering/nulls_first.dart';
-import 'src/ordering/nulls_last.dart';
-import 'src/ordering/reverse.dart';
+import 'package:more/src/ordering/comparator.dart';
+import 'package:more/src/ordering/compound.dart';
+import 'package:more/src/ordering/explicit.dart';
+import 'package:more/src/ordering/function.dart';
+import 'package:more/src/ordering/lexicographical.dart';
+import 'package:more/src/ordering/natural.dart';
+import 'package:more/src/ordering/nulls_first.dart';
+import 'package:more/src/ordering/nulls_last.dart';
+import 'package:more/src/ordering/reverse.dart';
 
 /// An ordering implements a [Comparator] function that can be modified
 /// using a fluent interface.
@@ -50,13 +48,7 @@ abstract class Ordering<T> {
       new ComparatorOrdering<T>(comparator);
 
   /// Returns an explicit ordering based on a [list] of elements.
-  factory Ordering.explicit(List<T> list) {
-    var ranking = new LinkedHashMap<T, int>();
-    for (var rank = 0; rank < list.length; rank++) {
-      ranking[list[rank]] = rank;
-    }
-    return new ExplicitOrdering<T>(ranking);
-  }
+  factory Ordering.explicit(List<T> list) => new ExplicitOrdering<T>(list);
 
   /// Internal default constructor for subclasses.
   const Ordering();

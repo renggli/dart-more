@@ -28,6 +28,8 @@ class _UniqueIterable<E> extends IterableBase<E> {
   @override
   Iterator<E> get iterator {
     var uniques = new HashSet(equals: _equals, hashCode: _hashCode);
-    return _iterable.where((element) => uniques.add(element)).iterator;
+    return _iterable
+        .where((element) => uniques.add(element))
+        .iterator;
   }
 }

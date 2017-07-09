@@ -59,7 +59,9 @@ class _String extends ListBase<String> with UnmodifiableListMixin<String> {
 /// [string(Object)].
 List<String> mutableString(Object string, {bool growable: true}) {
   return new _MutableString(
-      new List.from(string.toString().codeUnits, growable: growable));
+      new List.from(string
+          .toString()
+          .codeUnits, growable: growable));
 }
 
 class _MutableString extends ListBase<String> {

@@ -126,15 +126,20 @@ void main() {
     test('range error', () {
       expect(() => combinations(letters, -1), throwsRangeError);
       expect(
-          () => combinations(letters, -1, repetitions: true), throwsRangeError);
+              () => combinations(letters, -1, repetitions: true),
+          throwsRangeError);
       expect(() => combinations(letters, -1, repetitions: false),
           throwsRangeError);
       expect(
-          () => combinations(letters, 5, repetitions: false), throwsRangeError);
+              () => combinations(letters, 5, repetitions: false),
+          throwsRangeError);
     });
   });
   group('concat', () {
-    var a = [1, 2, 3], b = [4, 5], c = [6], d = [];
+    var a = [1, 2, 3],
+        b = [4, 5],
+        c = [6],
+        d = [];
     test('void', () {
       expect(concat([]), []);
     });
@@ -260,21 +265,24 @@ void main() {
     test('first', () {
       expect(() => emptyIterable().first, throwsStateError);
       expect(
-          () => emptyIterable().firstWhere(noCallPredicate), throwsStateError);
+              () => emptyIterable().firstWhere(noCallPredicate),
+          throwsStateError);
       expect(emptyIterable().firstWhere(noCallPredicate, orElse: () => true),
           isTrue);
     });
     test('last', () {
       expect(() => emptyIterable().last, throwsStateError);
       expect(
-          () => emptyIterable().lastWhere(noCallPredicate), throwsStateError);
+              () => emptyIterable().lastWhere(noCallPredicate),
+          throwsStateError);
       expect(emptyIterable().lastWhere(noCallPredicate, orElse: () => true),
           isTrue);
     });
     test('single', () {
       expect(() => emptyIterable().single, throwsStateError);
       expect(
-          () => emptyIterable().singleWhere(noCallPredicate), throwsStateError);
+              () => emptyIterable().singleWhere(noCallPredicate),
+          throwsStateError);
     });
     test('converting', () {
       expect(emptyIterable().toList(), isEmpty);
@@ -310,9 +318,9 @@ void main() {
     });
     test('reversed', () {
       var iterable = indexed(indexed(['a', 'b', 'c'])
-              .map((each) => each.toString())
-              .toList()
-              .reversed)
+          .map((each) => each.toString())
+          .toList()
+          .reversed)
           .map((each) => each.toString())
           .toList();
       expect(iterable, ['0: 2: c', '1: 1: b', '2: 0: a']);

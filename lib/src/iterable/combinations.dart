@@ -2,7 +2,7 @@ library more.iterable.combinations;
 
 import 'dart:collection';
 
-import 'empty.dart';
+import 'package:more/src/iterable/empty.dart';
 
 /// Returns an iterable over the combinations of [elements] of length [count]. The
 /// combinations are emitted in lexicographical order based on the input.
