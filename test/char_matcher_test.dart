@@ -88,6 +88,47 @@ void main() {
         verify(new CharMatcher.whitespace(), string, 'abcABC_!@#');
       });
     });
+    group('patterns', () {
+      test('empty', () {
+        verify(new CharMatcher.pattern(''), '', 'abc');
+      });
+      test('single', () {
+        verify(new CharMatcher.pattern('a'), 'a', 'b');
+      });
+      test('many single', () {
+        verify(new CharMatcher.pattern('abc'), 'abc', 'd');
+      });
+      test('range', () {
+        verify(new CharMatcher.pattern('a-c'), 'abc', 'd');
+      });
+      test('overlapping range', () {
+        verify(new CharMatcher.pattern('b-da-c'), 'abcd', 'e');
+      });
+      test('adjacent range', () {
+        verify(new CharMatcher.pattern('c-ea-c'), 'abcde', 'f');
+      });
+      test('prefix range', () {
+        verify(new CharMatcher.pattern('a-ea-c'), 'abcde', 'f');
+      });
+      test('postfix range', () {
+        verify(new CharMatcher.pattern('a-ec-e'), 'abcde', 'f');
+      });
+      test('repeated range', () {
+        verify(new CharMatcher.pattern('a-ea-e'), 'abcde', 'f');
+      });
+      test('composed range', () {
+        verify(new CharMatcher.pattern('ac-df-'), 'acdf-', 'beg');
+      });
+      test('negated single', () {
+        verify(new CharMatcher.pattern('^a'), 'b', 'a');
+      });
+      test('negated range', () {
+        verify(new CharMatcher.pattern('^a-c'), 'd', 'abc');
+      });
+      test('negated composed', () {
+        verify(new CharMatcher.pattern('^ac-df-'), 'beg', 'acdf-');
+      });
+    });
     group('operators', () {
       var any = new CharMatcher.any();
       var none = new CharMatcher.none();

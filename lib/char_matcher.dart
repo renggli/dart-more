@@ -15,6 +15,7 @@ part 'src/char_matcher/lower_case.dart';
 part 'src/char_matcher/negate.dart';
 part 'src/char_matcher/none.dart';
 part 'src/char_matcher/range.dart';
+part 'src/char_matcher/ranges.dart';
 part 'src/char_matcher/single.dart';
 part 'src/char_matcher/upper_case.dart';
 part 'src/char_matcher/whitespace.dart';
@@ -51,6 +52,68 @@ abstract class CharMatcher {
   /// A matcher that accepts a character range from [start] to [stop].
   factory CharMatcher.inRange(Object start, Object stop) {
     return new _RangeCharMatcher(_toCharCode(start), _toCharCode(stop));
+  }
+
+  /// A matcher that accepts a regular expression character class.
+  factory CharMatcher.pattern(String pattern) {
+
+    // 1. Verify if it is negated.
+    bool isNegated = pattern.startsWith('^');
+    if (isNegated) pattern = pattern.substring(1);
+
+    // 2. Build the range lists.
+    List<List<int>> ranges = new List();
+    while (pattern.isNotEmpty) {
+      if (pattern.length >= 3 && pattern[1] == '-') {
+        ranges.add([pattern.codeUnitAt(0), pattern.codeUnitAt(2)]);
+        pattern = pattern.substring(3);
+      } else {
+        ranges.add([pattern.codeUnitAt(0), pattern.codeUnitAt(0)]);
+        pattern = pattern.substring(1);
+      }
+    }
+
+    // 3. Sort the range lists.
+    List<List<int>> sortedRanges = new List.from(ranges, growable: false);
+    sortedRanges.sort((a, b) {
+      return a.first != b.first ? a.first - b.first : a.last - b.last;
+    });
+
+    // 4. Merge adjacent or overlapping ranges.
+    List<List<int>> mergedRanges = new List();
+    for (var thisRange in sortedRanges) {
+      if (mergedRanges.isEmpty) {
+        mergedRanges.add(thisRange);
+      } else {
+        var lastRange = mergedRanges.last;
+        if (lastRange.last + 1 >= thisRange.first) {
+          var characterRange = [lastRange.first, thisRange.last];
+          mergedRanges[mergedRanges.length - 1] = characterRange;
+        } else {
+          mergedRanges.add(thisRange);
+        }
+      }
+    }
+
+    // 5. Build the best resulting predicates
+    CharMatcher predicate;
+    if (mergedRanges.isEmpty) {
+      predicate = new CharMatcher.none();
+    } else if (mergedRanges.length == 1) {
+      if (mergedRanges[0].first == mergedRanges[0].last) {
+        predicate = new CharMatcher.isChar(mergedRanges[0].first);
+      } else {
+        predicate = new CharMatcher.inRange(mergedRanges[0].first, mergedRanges[0].last);
+      }
+    } else {
+      predicate = new _RangesCharMatcher(mergedRanges.length,
+          mergedRanges.map((range) => range.first).toList(growable: false),
+          mergedRanges.map((range) => range.last).toList(growable: false));
+    }
+
+    // 6. Negate, if necessary.
+    return isNegated ? ~predicate : predicate;
+
   }
 
   /// A matcher that accepts ASCII characters.
