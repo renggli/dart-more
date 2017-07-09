@@ -1,10 +1,9 @@
-part of more.iterable;
+library more.iterable.mixins.infinite;
 
 /// Mixin for infinitely sized iterables.
 ///
 /// Intended to mix-in on top of [IterableBase].
 abstract class InfiniteIterable<E> implements Iterable<E> {
-
   @override
   int get length {
     throw new StateError('Cannot return the length of an infinite iterable.');
@@ -18,22 +17,26 @@ abstract class InfiniteIterable<E> implements Iterable<E> {
 
   @override
   E get last {
-    throw new StateError('Cannot return the last element of an infinite iterable.');
+    throw new StateError(
+        'Cannot return the last element of an infinite iterable.');
   }
 
   @override
   E lastWhere(bool test(E element), {E orElse()}) {
-    throw new StateError('Cannot return the last element of an infinite iterable.');
+    throw new StateError(
+        'Cannot return the last element of an infinite iterable.');
   }
 
   @override
   E get single {
-    throw new StateError('Cannot return the single element of an infinite iterable.');
+    throw new StateError(
+        'Cannot return the single element of an infinite iterable.');
   }
 
   @override
   E singleWhere(bool test(E element)) {
-    throw new StateError('Cannot return the single element of an infinite iterable.');
+    throw new StateError(
+        'Cannot return the single element of an infinite iterable.');
   }
 
   @override

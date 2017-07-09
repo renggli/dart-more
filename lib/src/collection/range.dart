@@ -1,4 +1,8 @@
-part of more.collection;
+library more.collection.range;
+
+import 'dart:collection';
+
+import '../iterable/mixins/unmodifiable.dart';
 
 /// Creates a virtual range of numbers containing an arithmetic progressions.
 ///
@@ -17,8 +21,11 @@ part of more.collection;
 /// the first two numbers (including the start, but excluding the end) and the
 /// step value. For example, `range(1, 7, 2)` yields `[1, 3, 5]`.
 List<T> range<T extends num>([T a, T b, T c]) {
-  const num zero = 0, one = 1;
-  T start = zero, stop = zero, step = one;
+  const num zero = 0;
+  const num one = 1;
+  T start = zero;
+  T stop = zero;
+  T step = one;
   if (c != null) {
     start = a;
     stop = b;
@@ -44,7 +51,8 @@ List<T> range<T extends num>([T a, T b, T c]) {
   return new _RangeList<T>(start, step, length);
 }
 
-class _RangeList<T extends num> extends ListBase<T> with UnmodifiableListMixin<T> {
+class _RangeList<T extends num> extends ListBase<T>
+    with UnmodifiableListMixin<T> {
   final T _start;
   final T _step;
   final int _length;

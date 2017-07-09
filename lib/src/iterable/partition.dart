@@ -1,4 +1,6 @@
-part of more.iterable;
+library more.iterable.partition;
+
+import 'dart:collection';
 
 /// Divides an `iterable` into sub-iterables of a given `size`. If no `padding` is provided, the
 /// final iterable is smaller or equal the desired side, otherwise the final iterable will be
@@ -7,14 +9,14 @@ part of more.iterable;
 /// The following expression yields [1, 2], [3, 4], [5, null]:
 ///
 ///     partition([1, 2, 3, 4, 5], 2, null);
-Iterable<Iterable<E>> partition<E>(Iterable<E> elements, int size, [E padding = _sentinel]) {
+Iterable<Iterable<E>> partition<E>(Iterable<E> elements, int size,
+    [E padding = _sentinel]) {
   return new _PartitionIterable<E>(elements, size, padding);
 }
 
 const _sentinel = const Object();
 
 class _PartitionIterable<E> extends IterableBase<Iterable<E>> {
-
   final Iterable<E> elements;
   final int size;
   final E padding;
@@ -22,12 +24,11 @@ class _PartitionIterable<E> extends IterableBase<Iterable<E>> {
   _PartitionIterable(this.elements, this.size, this.padding);
 
   @override
-  Iterator<Iterable<E>> get iterator => new _PartitionIterator<E>(elements.iterator, size, padding);
-
+  Iterator<Iterable<E>> get iterator =>
+      new _PartitionIterator<E>(elements.iterator, size, padding);
 }
 
 class _PartitionIterator<E> extends Iterator<Iterable<E>> {
-
   final Iterator<E> iterator;
   final int size;
   final E padding;

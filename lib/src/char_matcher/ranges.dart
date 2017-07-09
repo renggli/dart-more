@@ -1,7 +1,6 @@
 part of more.char_matcher;
 
 class _RangesCharMatcher extends CharMatcher {
-
   final int length;
   final List<int> starts;
   final List<int> stops;

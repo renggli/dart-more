@@ -1,4 +1,8 @@
-part of more.collection;
+library more.collection.string;
+
+import 'dart:collection';
+
+import '../iterable/mixins/unmodifiable.dart';
 
 /// Returns a light-weight immutable iterable list around the characters of
 /// a [string].
@@ -29,7 +33,8 @@ class _String extends ListBase<String> with UnmodifiableListMixin<String> {
   int get length => _string.length;
 
   @override
-  String operator [](int index) => new String.fromCharCode(_string.codeUnitAt(index));
+  String operator [](int index) =>
+      new String.fromCharCode(_string.codeUnitAt(index));
 
   @override
   List<String> sublist(int start, [int end]) {
@@ -53,7 +58,8 @@ class _String extends ListBase<String> with UnmodifiableListMixin<String> {
 /// For a light-weight immutable iterable list of characters see
 /// [string(Object)].
 List<String> mutableString(Object string, {bool growable: true}) {
-  return new _MutableString(new List.from(string.toString().codeUnits, growable: growable));
+  return new _MutableString(
+      new List.from(string.toString().codeUnits, growable: growable));
 }
 
 class _MutableString extends ListBase<String> {

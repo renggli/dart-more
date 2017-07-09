@@ -4,7 +4,8 @@ class _DisjunctiveCharMatcher extends CharMatcher {
   final List<CharMatcher> _matchers;
 
   factory _DisjunctiveCharMatcher(Iterable<CharMatcher> matchers) {
-    return new _DisjunctiveCharMatcher._(new List.from(matchers, growable: false));
+    return new _DisjunctiveCharMatcher._(
+        new List.from(matchers, growable: false));
   }
 
   const _DisjunctiveCharMatcher._(this._matchers);
@@ -16,9 +17,8 @@ class _DisjunctiveCharMatcher extends CharMatcher {
     } else if (other == _none) {
       return this;
     } else if (other is _DisjunctiveCharMatcher) {
-      return new _DisjunctiveCharMatcher(new List()
-        ..addAll(_matchers)
-        ..addAll(other._matchers));
+      return new _DisjunctiveCharMatcher(
+          new List()..addAll(_matchers)..addAll(other._matchers));
     } else {
       return new _DisjunctiveCharMatcher(new List()
         ..addAll(_matchers)

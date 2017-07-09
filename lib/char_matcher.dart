@@ -37,7 +37,6 @@ part 'src/char_matcher/whitespace.dart';
 ///     String onlyDigits = DIGIT.retainFrom(string);
 ///
 abstract class CharMatcher {
-
   /// A matcher that accepts any character.
   factory CharMatcher.any() => _any;
 
@@ -56,7 +55,6 @@ abstract class CharMatcher {
 
   /// A matcher that accepts a regular expression character class.
   factory CharMatcher.pattern(String pattern) {
-
     // 1. Verify if it is negated.
     bool isNegated = pattern.startsWith('^');
     if (isNegated) pattern = pattern.substring(1);
@@ -103,17 +101,18 @@ abstract class CharMatcher {
       if (mergedRanges[0].first == mergedRanges[0].last) {
         predicate = new CharMatcher.isChar(mergedRanges[0].first);
       } else {
-        predicate = new CharMatcher.inRange(mergedRanges[0].first, mergedRanges[0].last);
+        predicate = new CharMatcher.inRange(
+            mergedRanges[0].first, mergedRanges[0].last);
       }
     } else {
-      predicate = new _RangesCharMatcher(mergedRanges.length,
+      predicate = new _RangesCharMatcher(
+          mergedRanges.length,
           mergedRanges.map((range) => range.first).toList(growable: false),
           mergedRanges.map((range) => range.last).toList(growable: false));
     }
 
     // 6. Negate, if necessary.
     return isNegated ? ~predicate : predicate;
-
   }
 
   /// A matcher that accepts ASCII characters.
@@ -246,8 +245,7 @@ abstract class CharMatcher {
   /// Removes leading and trailing matching characters in [sequence].
   String trimFrom(String sequence) {
     var codeUnits = sequence.codeUnits;
-    var left = 0,
-        right = codeUnits.length - 1;
+    var left = 0, right = codeUnits.length - 1;
     while (left <= right && match(codeUnits[left])) {
       left++;
     }
@@ -260,8 +258,7 @@ abstract class CharMatcher {
   /// Removes leading matching characters in [sequence].
   String trimLeadingFrom(String sequence) {
     var codeUnits = sequence.codeUnits;
-    var left = 0,
-        right = codeUnits.length - 1;
+    var left = 0, right = codeUnits.length - 1;
     while (left <= right && match(codeUnits[left])) {
       left++;
     }
@@ -271,8 +268,7 @@ abstract class CharMatcher {
   /// Removes tailing matching characters in [sequence].
   String trimTailingFrom(String sequence) {
     var codeUnits = sequence.codeUnits;
-    var left = 0,
-        right = codeUnits.length - 1;
+    var left = 0, right = codeUnits.length - 1;
     while (left <= right && match(codeUnits[right])) {
       right--;
     }

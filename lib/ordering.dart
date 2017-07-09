@@ -42,12 +42,12 @@ part 'src/ordering/reverse.dart';
 ///     natural.isOrdered(['ape', 'cat', 'dog']);  // true
 ///
 abstract class Ordering<T> {
-
   /// Returns a natural ordering of objects.
   factory Ordering.natural() => const _NaturalOrdering();
 
   /// Returns an ordering based on a [comparator] function.
-  factory Ordering.from(Comparator<T> comparator) => new _ComparatorOrdering<T>(comparator);
+  factory Ordering.from(Comparator<T> comparator) =>
+      new _ComparatorOrdering<T>(comparator);
 
   /// Returns an explicit ordering based on a [list] of elements.
   factory Ordering.explicit(List<T> list) {
@@ -72,11 +72,13 @@ abstract class Ordering<T> {
   Ordering<T> reverse() => new _ReverseOrdering<T>(this);
 
   /// Returns an ordering that breaks the tie of the receiver by using [other].
-  Ordering<T> compound(Ordering<T> other) => new _CompoundOrdering<T>([this, other]);
+  Ordering<T> compound(Ordering<T> other) =>
+      new _CompoundOrdering<T>([this, other]);
 
   /// Returns an ordering that orders iterables lexicographically by
   /// their elements.
-  Ordering<Iterable<T>> lexicographical() => new _LexicographicalOrdering<T>(this);
+  Ordering<Iterable<T>> lexicographical() =>
+      new _LexicographicalOrdering<T>(this);
 
   /// Returns an ordering that orders [null] values before non-null values.
   Ordering<T> nullsFirst() => new _NullsFirstOrdering<T>(this);
@@ -85,7 +87,8 @@ abstract class Ordering<T> {
   Ordering<T> nullsLast() => new _NullsLastOrdering<T>(this);
 
   /// Returns an ordering that uses the provided [function] to transform the result.
-  Ordering<F> onResultOf<F>(T function(F argument)) => new _FunctionOrdering<F, T>(this, function);
+  Ordering<F> onResultOf<F>(T function(F argument)) =>
+      new _FunctionOrdering<F, T>(this, function);
 
   /// Searches the sorted [list] for the specified [value] using binary search.
   ///

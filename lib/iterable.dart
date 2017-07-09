@@ -1,22 +1,20 @@
 /// Some fancy iterables and iterators.
 library more.iterable;
 
-import 'dart:collection';
+export 'src/iterable/mixins/fixedlength.dart';
+export 'src/iterable/mixins/infinite.dart';
+export 'src/iterable/mixins/unmodifiable.dart';
 
-part 'src/iterable/mixins/fixedlength.dart';
-part 'src/iterable/mixins/infinite.dart';
-part 'src/iterable/mixins/unmodifiable.dart';
-
-part 'src/iterable/combinations.dart';
-part 'src/iterable/concat.dart';
-part 'src/iterable/cycle.dart';
-part 'src/iterable/empty.dart';
-part 'src/iterable/fold.dart';
-part 'src/iterable/indexed.dart';
-part 'src/iterable/iterate.dart';
-part 'src/iterable/math.dart';
-part 'src/iterable/partition.dart';
-part 'src/iterable/permutations.dart';
-part 'src/iterable/product.dart';
-part 'src/iterable/repeat.dart';
-part 'src/iterable/unique.dart';
+export 'src/iterable/combinations.dart';
+export 'src/iterable/concat.dart';
+export 'src/iterable/cycle.dart';
+export 'src/iterable/empty.dart';
+export 'src/iterable/fold.dart';
+export 'src/iterable/indexed.dart';
+export 'src/iterable/iterate.dart';
+export 'src/iterable/math.dart';
+export 'src/iterable/partition.dart';
+export 'src/iterable/permutations.dart';
+export 'src/iterable/product.dart';
+export 'src/iterable/repeat.dart';
+export 'src/iterable/unique.dart';

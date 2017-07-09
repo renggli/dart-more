@@ -1,4 +1,8 @@
-part of more.iterable;
+library more.iterable.fold;
+
+import 'dart:collection';
+
+import 'mixins/infinite.dart';
 
 /// Returns a lazy infinite list of repeated applications of the
 /// n-ary [Function] to its previous n initial [elements].
@@ -23,7 +27,8 @@ class _FoldIterable<E> extends IterableBase<E> with InfiniteIterable<E> {
 
   @override
   Iterator<E> get iterator {
-    return new _FoldIterator<E>(new List.from(_elements, growable: false), _combine);
+    return new _FoldIterator<E>(
+        new List.from(_elements, growable: false), _combine);
   }
 }
 

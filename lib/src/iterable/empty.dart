@@ -1,4 +1,4 @@
-part of more.iterable;
+library more.iterable.empty;
 
 /// Returns an efficient empty iterable.
 ///
@@ -58,13 +58,15 @@ class _EmptyIterable<E> implements Iterable<E> {
   Iterable<T> expand<T>(Iterable<T> f(E element)) => emptyIterable<T>();
 
   @override
-  Iterable<E> skip(int count) => count < 0 ? throw new RangeError.value(count) : this;
+  Iterable<E> skip(int count) =>
+      count < 0 ? throw new RangeError.value(count) : this;
 
   @override
   Iterable<E> skipWhile(bool test(E value)) => this;
 
   @override
-  Iterable<E> take(int count) => count < 0 ? throw new RangeError.value(count) : this;
+  Iterable<E> take(int count) =>
+      count < 0 ? throw new RangeError.value(count) : this;
 
   @override
   Iterable<E> takeWhile(bool test(E value)) => this;
@@ -91,16 +93,19 @@ class _EmptyIterable<E> implements Iterable<E> {
       orElse == null ? throw new StateError('No matching element') : orElse();
 
   @override
-  T fold<T>(T initialValue, T combine(T previousValue, E element)) => initialValue;
+  T fold<T>(T initialValue, T combine(T previousValue, E element)) =>
+      initialValue;
 
   @override
-  E reduce(E combine(E value, E element)) => throw new StateError('No elements');
+  E reduce(E combine(E value, E element)) =>
+      throw new StateError('No elements');
 
   @override
   E elementAt(int index) => throw new RangeError.value(index);
 
   @override
-  List<E> toList({bool growable: true}) => new List<E>.from(<E>[], growable: growable);
+  List<E> toList({bool growable: true}) =>
+      new List<E>.from(<E>[], growable: growable);
 
   @override
   Set<E> toSet() => new Set<E>();

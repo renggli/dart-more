@@ -1,4 +1,9 @@
-part of more.iterable;
+library more.iterable.cycle;
+
+import 'dart:collection';
+
+import 'empty.dart';
+import 'mixins/infinite.dart';
 
 /// Returns a iterable whose iterator cycles repeatedly over the elements
 /// of an [iterable]. If [count] is specified, the returned iterable has a finite
@@ -35,7 +40,8 @@ Iterable<E> cycle<E>(Iterable<E> iterable, [int count = null]) {
   }
 }
 
-class _InfiniteCycleIterable<E> extends IterableBase<E> with InfiniteIterable<E> {
+class _InfiniteCycleIterable<E> extends IterableBase<E>
+    with InfiniteIterable<E> {
   final Iterable<E> _iterable;
 
   _InfiniteCycleIterable(this._iterable);

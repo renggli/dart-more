@@ -1,4 +1,4 @@
-part of more.collection;
+library more.collection.bimap;
 
 /// A bi-map associates keys with values and values with keys.
 ///
@@ -6,18 +6,17 @@ part of more.collection;
 /// bi-map that maps values to keys. Also certain operations, such as [containsValue]
 /// are much more efficient than with traditional maps.
 class BiMap<K, V> implements Map<K, V> {
-
   /// Creates an empty bi-map.
   factory BiMap() => new BiMap<K, V>._(new Map(), new Map());
 
   /// Creates an empty identity bi-map.
-  factory BiMap.identity() => new BiMap<K, V>._(new Map.identity(), new Map.identity());
+  factory BiMap.identity() =>
+      new BiMap<K, V>._(new Map.identity(), new Map.identity());
 
   /// Creates bi-map from another map.
   factory BiMap.from(Map<K, V> other) {
     if (other is BiMap<K, V>) {
-      return new BiMap<K, V>._(
-          new Map<K, V>.from(other._forward),
+      return new BiMap<K, V>._(new Map<K, V>.from(other._forward),
           new Map<V, K>.from(other._backward));
     } else {
       return new BiMap<K, V>()..addAll(other);
@@ -25,7 +24,8 @@ class BiMap<K, V> implements Map<K, V> {
   }
 
   /// Creates a bi-map from an iterable (and possible transformation functions).
-  factory BiMap.fromIterable(Iterable iterable, {K key(element), V value(element)}) {
+  factory BiMap.fromIterable(Iterable iterable,
+      {K key(element), V value(element)}) {
     return new BiMap<K, V>.fromIterables(
         key == null ? iterable : iterable.map(key),
         value == null ? iterable : iterable.map(value));
@@ -34,8 +34,7 @@ class BiMap<K, V> implements Map<K, V> {
   /// Creates a bi-map from two equal length iterables.
   factory BiMap.fromIterables(Iterable<K> keys, Iterable<V> values) {
     var result = new BiMap<K, V>();
-    var keyIterator = keys.iterator,
-        valueIterator = values.iterator;
+    var keyIterator = keys.iterator, valueIterator = values.iterator;
     var moreKeys = keyIterator.moveNext(),
         moreValues = valueIterator.moveNext();
     while (moreKeys && moreValues) {
@@ -44,7 +43,8 @@ class BiMap<K, V> implements Map<K, V> {
       moreValues = valueIterator.moveNext();
     }
     if (moreKeys || moreValues) {
-      throw new ArgumentError('Keys and values iterables have different length.');
+      throw new ArgumentError(
+          'Keys and values iterables have different length.');
     }
     return result;
   }

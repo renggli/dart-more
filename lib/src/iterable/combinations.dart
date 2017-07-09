@@ -1,4 +1,8 @@
-part of more.iterable;
+library more.iterable.combinations;
+
+import 'dart:collection';
+
+import 'empty.dart';
 
 /// Returns an iterable over the combinations of [elements] of length [count]. The
 /// combinations are emitted in lexicographical order based on the input.
@@ -21,7 +25,8 @@ part of more.iterable;
 ///
 ///     combinations(string('xyz'), 2, repetitions: false);
 ///
-Iterable<List<E>> combinations<E>(Iterable<E> elements, int count, {bool repetitions: false}) {
+Iterable<List<E>> combinations<E>(Iterable<E> elements, int count,
+    {bool repetitions: false}) {
   elements = elements.toList(growable: false);
   if (count < 0) {
     throw new RangeError.value(count);
@@ -30,9 +35,11 @@ Iterable<List<E>> combinations<E>(Iterable<E> elements, int count, {bool repetit
   } else if (count == 0 || elements.isEmpty) {
     return emptyIterable();
   } else if (repetitions) {
-    return new _CombinationsWithRepetitionsIterable<E>(elements.toList(growable: false), count);
+    return new _CombinationsWithRepetitionsIterable<E>(
+        elements.toList(growable: false), count);
   } else {
-    return new _CombinationsWithoutRepetitionsIterable<E>(elements.toList(growable: false), count);
+    return new _CombinationsWithoutRepetitionsIterable<E>(
+        elements.toList(growable: false), count);
   }
 }
 

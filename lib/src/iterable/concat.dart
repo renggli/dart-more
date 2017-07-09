@@ -1,4 +1,4 @@
-part of more.iterable;
+library more.iterable.concat;
 
 /// Combines multiple [iterables] into a single iterable.
 ///

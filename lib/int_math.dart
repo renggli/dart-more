@@ -25,7 +25,8 @@ int lcm(int a, int b) {
 /// [n] distinct objects into a sequence.
 int factorial(int n) {
   if (n < 0) {
-    throw new ArgumentError('factorial($n) is undefined for negative arguments.');
+    throw new ArgumentError(
+        'factorial($n) is undefined for negative arguments.');
   }
   if (n < _factorials.length) {
     return _factorials[n];
@@ -98,7 +99,8 @@ num pow(num x, int y) {
 /// Returns the power [x] raised to [y] modulo [m], where [x], [m] and [y] are [int]s.
 int powMod(int x, int y, int m) {
   if (m < 1 || y < 0) {
-    throw new ArgumentError('powMod($x, $y, $m) is undefined for y < 0 and m < 1.');
+    throw new ArgumentError(
+        'powMod($x, $y, $m) is undefined for y < 0 and m < 1.');
   }
   var r = 1;
   while (y > 0) {
@@ -124,8 +126,7 @@ int powMod(int x, int y, int m) {
 ///
 ///     c[0]*x^0 + c[1]*x^1 + c[2]*x^3 + c[3]*x^3
 num polynomial(Iterable<num> cs, [num x = 10]) {
-  var r = 0,
-      e = 1;
+  var r = 0, e = 1;
   for (var c in cs) {
     r += c * e;
     e *= x;
@@ -167,13 +168,13 @@ bool isProbablyPrime(int n) {
   if (n < 25) {
     return true;
   }
-  var d = n - 1,
-      s = 0;
+  var d = n - 1, s = 0;
   while (d % 2 == 0) {
     d ~/= 2;
     s++;
   }
-  loop: for (var a in [2, 3, 5, 7, 11, 13, 17]) {
+  loop:
+  for (var a in [2, 3, 5, 7, 11, 13, 17]) {
     var x = powMod(a, d, n);
     if (x == 1 || x == n - 1) {
       continue loop;

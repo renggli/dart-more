@@ -1,4 +1,8 @@
-part of more.iterable;
+library more.iterable.iterate;
+
+import 'dart:collection';
+
+import 'mixins/infinite.dart';
 
 /// One argument function returning an object of the same type.
 typedef E IterateFunction<E>(E value);

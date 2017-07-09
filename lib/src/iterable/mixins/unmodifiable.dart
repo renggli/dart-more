@@ -1,4 +1,4 @@
-part of more.iterable;
+library more.iterable.mixins.unmodifiable;
 
 /// Mixin for an unmodifiable [List] class.
 ///
@@ -6,7 +6,6 @@ part of more.iterable;
 /// This mixin is intended to be mixed in on top of [ListMixin] on
 /// unmodifiable lists.
 abstract class UnmodifiableListMixin<E> implements List<E> {
-
   @override
   void operator []=(int index, E value) {
     throw new UnsupportedError('Cannot modify an unmodifiable list.');
@@ -14,7 +13,8 @@ abstract class UnmodifiableListMixin<E> implements List<E> {
 
   @override
   set length(int newLength) {
-    throw new UnsupportedError('Cannot change the length of an unmodifiable list.');
+    throw new UnsupportedError(
+        'Cannot change the length of an unmodifiable list.');
   }
 
   @override

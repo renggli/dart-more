@@ -1,5 +1,7 @@
 library more.test.all_tests;
 
+import 'package:test/test.dart';
+
 import 'char_matcher_test.dart' as char_matcher_test;
 import 'collection_test.dart' as collection_test;
 import 'fraction_test.dart' as fraction_test;
@@ -8,10 +10,10 @@ import 'iterable_test.dart' as iterable_test;
 import 'ordering_test.dart' as ordering_test;
 
 void main() {
-  char_matcher_test.main();
-  collection_test.main();
-  fraction_test.main();
-  int_math_test.main();
-  iterable_test.main();
-  ordering_test.main();
+  group('char_matcher', char_matcher_test.main);
+  group('collection', collection_test.main);
+  group('fraction', fraction_test.main);
+  group('int_math', int_math_test.main);
+  group('iterable', iterable_test.main);
+  group('ordering', ordering_test.main);
 }
