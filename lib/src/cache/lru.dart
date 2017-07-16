@@ -11,11 +11,11 @@ class LruCache<K, V> extends Cache<K, V> {
 
   final Loader<K, V> loader;
 
-  final int maxSize;
+  final int maximumSize;
 
   final Map<K, CacheItem<V>> cached = new Map();
 
-  LruCache(this.loader, this.maxSize);
+  LruCache(this.loader, this.maximumSize);
 
   @override
   Future<V> getIfPresent(K key) async => promote(key)?.value;
@@ -60,7 +60,7 @@ class LruCache<K, V> extends Cache<K, V> {
   }
 
   void cleanup() {
-    while (cached.length > maxSize) {
+    while (cached.length > maximumSize) {
       cached.remove(cached.keys.first);
     }
   }

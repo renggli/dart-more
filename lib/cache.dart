@@ -14,7 +14,9 @@ export 'package:more/src/cache/loader.dart';
 abstract class Cache<K, V> {
 
   /// Constructs an empty cache, useful mostly for testing.
-  factory Cache.empty({Loader<K, V> loader, int maxSize: 100}) => new EmptyCache(loader);
+  ///
+  /// The [loader] defines the function to construct items for the cache.
+  factory Cache.empty({Loader<K, V> loader}) => new EmptyCache(loader);
 
   /// Constructs an expiry cache.
   ///
@@ -30,8 +32,11 @@ abstract class Cache<K, V> {
   ///
   /// Note that items do not expire, if you don't interact with the cache. Eviction only happens
   /// when the [evictionInterval] exceeded and you modify or query the cache state.
-  factory Cache.expiry({Loader<K,
-      V> loader, Duration accessExpiry, Duration updateExpiry, Duration evictionInterval}) {
+  factory Cache.expiry(
+      {Loader<K, V> loader,
+      Duration accessExpiry,
+      Duration updateExpiry,
+      Duration evictionInterval}) {
     if (loader == null) {
       throw new ArgumentError.notNull('loader');
     }
@@ -53,30 +58,30 @@ abstract class Cache<K, V> {
 
   /// Constructs a First-in/First-out (FIFO) cache.
   ///
-  /// The [loader] defines the function to construct items for the cache; and [maxSize] defines
+  /// The [loader] defines the function to construct items for the cache; and [maximumSize] defines
   /// the maximum number of items cached.
-  factory Cache.fifo({Loader<K, V> loader, int maxSize: 100}) {
+  factory Cache.fifo({Loader<K, V> loader, int maximumSize: 100}) {
     if (loader == null) {
       throw new ArgumentError.notNull('loader');
     }
-    if (maxSize < 0) {
-      throw new RangeError.value(maxSize, 'maxSize');
+    if (maximumSize < 0) {
+      throw new RangeError.value(maximumSize, 'maximumSize');
     }
-    return new FifoCache(loader, maxSize);
+    return new FifoCache(loader, maximumSize);
   }
 
   /// Constructs a Least Recently Used (LRU) cache.
   ///
-  /// The [loader] defines the function to construct items for the cache; and [maxSize] defines
+  /// The [loader] defines the function to construct items for the cache; and [maximumSize] defines
   /// the maximum number of items cached.
-  factory Cache.lru({Loader<K, V> loader, int maxSize: 100}){
+  factory Cache.lru({Loader<K, V> loader, int maximumSize: 100}) {
     if (loader == null) {
       throw new ArgumentError.notNull('loader');
     }
-    if (maxSize < 0) {
-      throw new RangeError.value(maxSize, 'maxSize');
+    if (maximumSize < 0) {
+      throw new RangeError.value(maximumSize, 'maximumSize');
     }
-    return new LruCache(loader, maxSize);
+    return new LruCache(loader, maximumSize);
   }
 
   /// Unnamed default constructor.
@@ -99,7 +104,4 @@ abstract class Cache<K, V> {
 
   /// Discards all cached values.
   Future invalidateAll();
-
 }
-
-

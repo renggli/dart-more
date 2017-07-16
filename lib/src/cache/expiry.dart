@@ -76,8 +76,8 @@ class ExpiryCache<K, V> extends Cache<K, V> {
     if (lastExpiry.add(expiryInterval).isBefore(currentTime)) {
       var expiredKeys = new List();
       cached.forEach((key, value) {
-        var isExpired =
-            (updateExpiry != null && value.lastUpdate.add(updateExpiry).isBefore(currentTime)) ||
+        var isExpired = (updateExpiry != null &&
+            value.lastUpdate.add(updateExpiry).isBefore(currentTime)) ||
             (accessExpiry != null && value.lastAccess.add(accessExpiry).isBefore(currentTime));
         if (isExpired) {
           expiredKeys.add(key);
