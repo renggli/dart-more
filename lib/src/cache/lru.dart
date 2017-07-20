@@ -25,7 +25,7 @@ class LruCache<K, V> extends Cache<K, V> {
     var item = promote(key);
     if (item == null) {
       item = cached[key] = new CacheItem(loader(key));
-      cleanup();
+      cleanUp();
     }
     return item.value;
   }
@@ -35,7 +35,7 @@ class LruCache<K, V> extends Cache<K, V> {
     var item = promote(key);
     if (item == null) {
       item = cached[key] = new CacheItem(value);
-      cleanup();
+      cleanUp();
     } else {
       item.value = value;
     }
@@ -51,6 +51,9 @@ class LruCache<K, V> extends Cache<K, V> {
   @override
   Future invalidateAll() async => cached.clear();
 
+  @override
+  Future reap() async => cleanUp();
+
   CacheItem<V> promote(K key) {
     var item = cached.remove(key);
     if (item != null) {
@@ -59,7 +62,7 @@ class LruCache<K, V> extends Cache<K, V> {
     return item;
   }
 
-  void cleanup() {
+  void cleanUp() {
     while (cached.length > maximumSize) {
       cached.remove(cached.keys.first);
     }

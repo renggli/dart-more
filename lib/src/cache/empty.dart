@@ -4,6 +4,7 @@ import 'dart:async';
 
 import 'package:more/cache.dart';
 
+/// An empty or null cache, useful mostly for testing.
 class EmptyCache<K, V> extends Cache<K, V> {
 
   final Loader<K, FutureOr<V>> loader;
@@ -27,4 +28,7 @@ class EmptyCache<K, V> extends Cache<K, V> {
 
   @override
   Future invalidateAll() async => null;
+
+  @override
+  Future reap() async => null;
 }
