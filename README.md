@@ -11,6 +11,7 @@ More Dart — Literally
 
 Various extensions that make Dart a better place:
 
+- `cache.dart` is a collection of different caching strategies and their expiry policy.
 - `char_matcher.dart` is a model for character classes, their composition and operations on strings.
 - `collection.dart` is a collection of collection types (bi map, bit list, multi set, range, string).
 - `fraction.dart` provides exact rational number arithmetic.
@@ -35,6 +36,7 @@ Follow the _Installing_ instructions on https://pub.dartlang.org/packages/more.
 Import one or more of the packages into your Dart code using:
 
 ```dart
+import 'package:more/cache.dart';
 import 'package:more/char_matcher.dart';
 import 'package:more/collection.dart';
 import 'package:more/fraction.dart';
