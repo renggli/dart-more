@@ -32,8 +32,8 @@ abstract class Cache<K, V> {
   /// maximal duration an item does not expire without being accessed. Whatever happens first,
   /// causes the expiration. One of the duration can be left `null`, if you don' care.
   ///
-  /// Note that cached items do not magically disappear when they expire. Call [reap()], or setup
-  /// a timer to regularly free items.
+  /// Note that cached items do not magically disappear when they expire. Manually call [reap()], or
+  /// setup a timer to regularly free items.
   factory Cache.expiry(
       {Loader<K, V> loader, Clock clock, Duration updateExpiry, Duration accessExpiry}) {
     if (loader == null) {

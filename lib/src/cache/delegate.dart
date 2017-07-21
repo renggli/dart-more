@@ -6,7 +6,7 @@ import 'package:more/cache.dart';
 /// A cache that delegates to another one.
 class DelegateCache<K, V> extends Cache<K, V> {
 
-  Cache<K, V> delegate;
+  final Cache<K, V> delegate;
 
   DelegateCache(this.delegate);
 
