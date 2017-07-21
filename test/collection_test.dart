@@ -337,7 +337,7 @@ void main() {
               }
             }
           }
-          expect(() => source << -1, throwsArgumentError);
+          expect(() => source >> -1, throwsArgumentError);
         }
       });
     });
