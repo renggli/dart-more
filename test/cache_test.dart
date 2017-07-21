@@ -238,6 +238,25 @@ void main() {
             .then((_) => cache.size())
             .then((size) => expect(size, 0, reason: 'cache should be empty'));
       });
+      test('re-loaded value expires', () {
+        var counter = 0;
+        var cache = newUpdateExpireCache((key) {
+          counter++;
+          return immediateLoader(key);
+        });
+        return cache
+            .get(0)
+            .then((value) => expect(value, '0', reason: 'value is loaded'))
+            .then((value) => expect(counter, 1, reason: 'loaded once'))
+            .then((_) => offset = new Duration(seconds: 20))
+            .then((_) => cache.get(0))
+            .then((value) => expect(value, '0', reason: 'value is still present'))
+            .then((value) => expect(counter, 1, reason: 'still loaded once'))
+            .then((_) => offset = new Duration(seconds: 21))
+            .then((_) => cache.get(0))
+            .then((value) => expect(value, '0', reason: 'value is reloaded'))
+            .then((value) => expect(counter, 2, reason: 'value loaded again'));
+      });
       test('reap expired items', () {
         var cache = newUpdateExpireCache(immediateLoader);
         return cache
@@ -280,6 +299,25 @@ void main() {
             .then((value) => expect(value, isNull, reason: 'value has expried'))
             .then((_) => cache.size())
             .then((size) => expect(size, 0, reason: 'cache should be empty'));
+      });
+      test('re-loaded value expires', () {
+        var counter = 0;
+        var cache = newAccessExpireCache((key) {
+          counter++;
+          return immediateLoader(key);
+        });
+        return cache
+            .get(0)
+            .then((value) => expect(value, '0', reason: 'value is loaded'))
+            .then((value) => expect(counter, 1, reason: 'loaded once'))
+            .then((_) => offset = new Duration(seconds: 20))
+            .then((_) => cache.get(0))
+            .then((value) => expect(value, '0', reason: 'value is still present'))
+            .then((value) => expect(counter, 1, reason: 'still loaded once'))
+            .then((_) => offset = new Duration(seconds: 41))
+            .then((_) => cache.get(0))
+            .then((value) => expect(value, '0', reason: 'value is reloaded'))
+            .then((value) => expect(counter, 2, reason: 'value loaded again'));
       });
       test('reap expired items', () {
         var cache = newAccessExpireCache(immediateLoader);
