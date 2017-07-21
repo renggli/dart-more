@@ -237,8 +237,8 @@ void main() {
       expect(iterator.current, isNull);
     });
     test('empty testing', () {
-      expect(empty().isEmpty, isFalse);
-      expect(empty().isNotEmpty, isTrue);
+      expect(empty().isEmpty, isTrue);
+      expect(empty().isNotEmpty, isFalse);
       expect(empty().length, 0);
     });
     test('emptyIterable testing', () {
