@@ -175,6 +175,11 @@ void persistentCacheTests(Cache<int, String> newCache(Loader<int, String> loader
 }
 
 void main() {
+  group('clock', () {
+    test('system clock', () {
+      expect(systemClock().difference(new DateTime.now()).inSeconds, 0);
+    });
+  });
   group('empty', () {
     Cache<int, String> newCache(Loader<int, String> loader) {
       return new Cache.empty(loader: loader);

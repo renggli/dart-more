@@ -236,7 +236,12 @@ void main() {
       expect(iterator.moveNext(), isFalse);
       expect(iterator.current, isNull);
     });
-    test('testing', () {
+    test('empty testing', () {
+      expect(empty().isEmpty, isFalse);
+      expect(empty().isNotEmpty, isTrue);
+      expect(empty().length, 0);
+    });
+    test('emptyIterable testing', () {
       expect(emptyIterable().isEmpty, isTrue);
       expect(emptyIterable().isNotEmpty, isFalse);
       expect(emptyIterable().length, 0);
