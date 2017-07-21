@@ -62,6 +62,11 @@ void statelessCacheTests(Cache<int, String> newCache(Loader<int, String> loader)
         .then((_) => cache.size())
         .then((value) => expect(value, 0, reason: 'cache should be empty'));
   });
+  test('reap is a no-op', () {
+    return newCache(failingLoader)
+        .reap()
+        .then((size) => expect(size, 0, reason: 'nothing should be gone'));
+  });
 }
 
 void cacheEvictionTest(Cache<int, String> newCache(Loader<int, String> loader), String name,
@@ -158,6 +163,15 @@ void persistentCacheTests(Cache<int, String> newCache(Loader<int, String> loader
         .then((_) => cache.getIfPresent(1))
         .then((value) => expect(value, isNull, reason: 'cache was invalidated'));
   });
+  test('reap is invariant', () {
+    var cache = newCache(failingLoader);
+    return cache
+        .set(1, 'foo')
+        .then((_) => cache.reap())
+        .then((value) => expect(value, 0, reason: 'nothing should be gone'))
+        .then((_) => cache.size())
+        .then((value) => expect(value, 1, reason: 'one item should be left'));
+  });
 }
 
 void main() {
@@ -232,6 +246,7 @@ void main() {
             .then((_) => cache.size())
             .then((size) => expect(size, 1, reason: 'cache has not been reaped'))
             .then((_) => cache.reap())
+            .then((size) => expect(size, 1, reason: 'one item should be gone'))
             .then((_) => cache.size())
             .then((size) => expect(size, 0, reason: 'cache should be empty'));
       });
@@ -274,6 +289,7 @@ void main() {
             .then((_) => cache.size())
             .then((size) => expect(size, 1, reason: 'cache has not been reaped'))
             .then((_) => cache.reap())
+            .then((size) => expect(size, 1, reason: 'one item should be gone'))
             .then((_) => cache.size())
             .then((size) => expect(size, 0, reason: 'cache should be empty'));
       });

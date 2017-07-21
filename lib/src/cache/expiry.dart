@@ -75,7 +75,7 @@ class ExpiryCache<K, V> extends Cache<K, V> {
   Future invalidateAll() async => cached.clear();
 
   @override
-  Future reap() async {
+  Future<int> reap() async {
     var now = clock();
     var expired = new List();
     cached.forEach((key, value) {
@@ -84,6 +84,7 @@ class ExpiryCache<K, V> extends Cache<K, V> {
       }
     });
     expired.forEach(cached.remove);
+    return expired.length;
   }
 }
 

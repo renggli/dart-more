@@ -52,7 +52,7 @@ class LruCache<K, V> extends Cache<K, V> {
   Future invalidateAll() async => cached.clear();
 
   @override
-  Future reap() async => cleanUp();
+  Future<int> reap() async => 0;
 
   CacheItem<V> promote(K key) {
     var item = cached.remove(key);

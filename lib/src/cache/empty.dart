@@ -30,5 +30,5 @@ class EmptyCache<K, V> extends Cache<K, V> {
   Future invalidateAll() async => null;
 
   @override
-  Future reap() async => null;
+  Future<int> reap() async => 0;
 }

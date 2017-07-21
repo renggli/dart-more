@@ -29,5 +29,5 @@ class DelegateCache<K, V> extends Cache<K, V> {
   Future invalidateAll() => delegate.invalidateAll();
 
   @override
-  Future reap() => delegate.reap();
+  Future<int> reap() => delegate.reap();
 }
