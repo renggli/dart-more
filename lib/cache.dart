@@ -14,11 +14,15 @@ export 'package:more/src/cache/delegate.dart';
 export 'package:more/src/cache/loader.dart';
 
 abstract class Cache<K, V> {
-
   /// Constructs an empty or null cache, useful mostly for testing.
   ///
   /// The [loader] defines the function to construct items for the cache.
-  factory Cache.empty({Loader<K, V> loader}) => new EmptyCache(loader);
+  factory Cache.empty({Loader<K, V> loader}) {
+    if (loader == null) {
+      throw new ArgumentError.notNull('loader');
+    }
+    return new EmptyCache(loader);
+  }
 
   /// Constructs an expiry cache.
   ///
@@ -38,6 +42,12 @@ abstract class Cache<K, V> {
     if (updateExpiry == null && accessExpiry == null) {
       throw new ArgumentError("Either 'accessExpiry' or 'updateExpiry' must be provided.");
     }
+    if (updateExpiry != null && updateExpiry.inMicroseconds <= 0) {
+      throw new ArgumentError("Negative 'updateExpire' provided.");
+    }
+    if (accessExpiry != null && accessExpiry.inMicroseconds <= 0) {
+      throw new ArgumentError("Negative 'updateExpire' provided.");
+    }
     return new ExpiryCache(loader, clock ?? systemClock, updateExpiry, accessExpiry);
   }
 
@@ -49,8 +59,8 @@ abstract class Cache<K, V> {
     if (loader == null) {
       throw new ArgumentError.notNull('loader');
     }
-    if (maximumSize < 0) {
-      throw new RangeError.value(maximumSize, 'maximumSize');
+    if (maximumSize <= 0) {
+      throw new ArgumentError("Non-positive 'maximumSize' provided.");
     }
     return new FifoCache(loader, maximumSize);
   }
@@ -63,8 +73,8 @@ abstract class Cache<K, V> {
     if (loader == null) {
       throw new ArgumentError.notNull('loader');
     }
-    if (maximumSize < 0) {
-      throw new RangeError.value(maximumSize, 'maximumSize');
+    if (maximumSize <= 0) {
+      throw new ArgumentError("Non-positive 'maximumSize' provided.");
     }
     return new LruCache(loader, maximumSize);
   }

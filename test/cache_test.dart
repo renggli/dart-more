@@ -181,6 +181,9 @@ void main() {
     }
 
     statelessCacheTests(newCache);
+    test('missing loader', () {
+      expect(() => new Cache.empty(), throwsArgumentError);
+    });
   });
   group('delegate', () {
     Cache<int, String> newCache(Loader<int, String> loader) {
@@ -207,6 +210,22 @@ void main() {
 
     statelessCacheTests(newUpdateExpireCache);
     persistentCacheTests(newUpdateExpireCache);
+
+    group('constructors', () {
+      test('missing loader', () {
+        expect(() => new Cache.expiry(accessExpiry: new Duration(seconds: 20)),
+            throwsArgumentError);
+      });
+      test('missing expiry', () {
+        expect(() => new Cache.expiry(loader: immediateLoader), throwsArgumentError);
+      });
+      test('negative access expiry', () {
+        expect(() => new Cache.expiry(loader: immediateLoader, accessExpiry: Duration.ZERO), throwsArgumentError);
+      });
+      test('negative update expiry', () {
+        expect(() => new Cache.expiry(loader: immediateLoader, updateExpiry: Duration.ZERO), throwsArgumentError);
+      });
+    });
 
     group('update expire cache', () {
       test('expire a set value after it has been updated', () {
@@ -338,8 +357,18 @@ void main() {
       return new Cache.lru(loader: loader, maximumSize: 5);
     }
 
+    group('constructors', () {
+      test('missing lru', () {
+        expect(() => new Cache.lru(), throwsArgumentError);
+      });
+      test('non positive max size', () {
+        expect(() => new Cache.lru(loader: immediateLoader, maximumSize: 0), throwsArgumentError);
+      });
+    });
+
     statelessCacheTests(newCache);
     persistentCacheTests(newCache);
+
     cacheEvictionTest(newCache, 'linear expiry', [0, 1, 2, 3, 4, 5, 6], [2, 3, 4, 5, 6]);
     cacheEvictionTest(newCache, 'reused expiry', [0, 1, 2, 3, 4, 0, 1, 5], [0, 1, 3, 4, 5]);
   });
@@ -347,6 +376,15 @@ void main() {
     Cache<int, String> newCache(Loader<int, String> loader) {
       return new Cache.fifo(loader: loader, maximumSize: 5);
     }
+
+    group('constructors', () {
+      test('missing loader', () {
+        expect(() => new Cache.fifo(), throwsArgumentError);
+      });
+      test('non positive max size', () {
+        expect(() => new Cache.fifo(loader: immediateLoader, maximumSize: 0), throwsArgumentError);
+      });
+    });
 
     statelessCacheTests(newCache);
     persistentCacheTests(newCache);
