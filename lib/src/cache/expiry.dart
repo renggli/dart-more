@@ -29,8 +29,8 @@ class ExpiryCache<K, V> extends Cache<K, V> {
     if (item == null) {
       item = cached[key] = new ExpiryCacheItem(loader(key), now);
     } else if (item.isExpired(now, updateExpiry, accessExpiry)) {
-      item.lastAccess = item.lastUpdate = now;
       item.value = loader(key);
+      item.lastAccess = item.lastUpdate = now;
     } else {
       item.lastAccess = now;
     }
