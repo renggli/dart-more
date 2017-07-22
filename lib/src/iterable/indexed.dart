@@ -28,7 +28,7 @@ class Indexed<E> {
   /// The actual value.
   final E value;
 
-  Indexed._(this.index, this.value);
+  Indexed(this.index, this.value);
 
   @override
   String toString() => '$index: $value';
@@ -57,7 +57,7 @@ class IndexedIterator<E> extends Iterator<Indexed<E>> {
   @override
   bool moveNext() {
     if (iterable.moveNext()) {
-      current = new Indexed<E>._(index++, iterable.current);
+      current = new Indexed<E>(index++, iterable.current);
       return true;
     } else {
       current = null;

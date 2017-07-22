@@ -2,6 +2,9 @@ library more.iterable.partition;
 
 import 'dart:collection';
 
+/// Marker for an absent padding object.
+const noPadding = const Object();
+
 /// Divides an `iterable` into sub-iterables of a given `size`. If no `padding` is provided, the
 /// final iterable is smaller or equal the desired side, otherwise the final iterable will be
 /// padded with the provided object.
@@ -9,11 +12,9 @@ import 'dart:collection';
 /// The following expression yields [1, 2], [3, 4], [5, null]:
 ///
 ///     partition([1, 2, 3, 4, 5], 2, null);
-Iterable<Iterable<E>> partition<E>(Iterable<E> elements, int size, [E padding = sentinel]) {
+Iterable<Iterable<E>> partition<E>(Iterable<E> elements, int size, [E padding = noPadding]) {
   return new PartitionIterable<E>(elements, size, padding);
 }
-
-const sentinel = const Object();
 
 class PartitionIterable<E> extends IterableBase<Iterable<E>> {
   final Iterable<E> elements;
@@ -54,7 +55,7 @@ class PartitionIterator<E> extends Iterator<Iterable<E>> {
             current = null;
             return false;
           }
-          if (sentinel != padding) {
+          if (noPadding != padding) {
             for (var j = i; j < size; j++) {
               current.add(padding);
             }

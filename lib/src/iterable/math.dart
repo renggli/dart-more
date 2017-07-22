@@ -28,11 +28,13 @@ class DigitIterable extends IterableBase<int> {
 }
 
 class DigitIterator extends Iterator<int> {
-  int current;
   int number;
   final int base;
 
   DigitIterator(this.number, this.base);
+
+  @override
+  int current;
 
   @override
   bool moveNext() {

@@ -55,10 +55,12 @@ class CombinationsWithRepetitionsIterator<E> extends Iterator<List<E>> {
   final int count;
 
   List<int> state;
-  List<E> current;
   bool completed = false;
 
   CombinationsWithRepetitionsIterator(this.elements, this.count);
+
+  @override
+  List<E> current;
 
   @override
   bool moveNext() {
