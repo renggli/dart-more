@@ -2,8 +2,6 @@ library more.iterable.combinations;
 
 import 'dart:collection';
 
-import 'package:more/src/iterable/empty.dart';
-
 /// Returns an iterable over the combinations of [elements] of length [count]. The
 /// combinations are emitted in lexicographical order based on the input.
 ///
@@ -33,7 +31,7 @@ Iterable<List<E>> combinations<E>(Iterable<E> elements, int count,
   } else if (!repetitions && elements.length < count) {
     throw new RangeError.range(count, 0, elements.length);
   } else if (count == 0 || elements.isEmpty) {
-    return emptyIterable();
+    return new Iterable<List<E>>.empty();
   } else if (repetitions) {
     return new _CombinationsWithRepetitionsIterable<E>(
         elements.toList(growable: false), count);

@@ -2,8 +2,6 @@ library more.iterable.product;
 
 import 'dart:collection';
 
-import 'package:more/src/iterable/empty.dart';
-
 /// Returns an iterable over the cross product of [iterables].
 ///
 /// The resulting iterable is equivalent to nested for-loops. The rightmost elements
@@ -25,7 +23,7 @@ import 'package:more/src/iterable/empty.dart';
 ///
 Iterable<List<E>> product<E>(Iterable<Iterable<E>> iterables) {
   if (iterables.isEmpty || iterables.any((iterable) => iterable.isEmpty)) {
-    return emptyIterable<List<E>>();
+    return new Iterable<List<E>>.empty();
   } else {
     return new _ProductIterable<E>(iterables.map((iterable) {
       return iterable.toList(growable: false);

@@ -2,7 +2,6 @@ library more.iterable.cycle;
 
 import 'dart:collection';
 
-import 'package:more/src/iterable/empty.dart';
 import 'package:more/src/iterable/mixins/infinite.dart';
 
 /// Returns a iterable whose iterator cycles repeatedly over the elements
@@ -28,7 +27,7 @@ import 'package:more/src/iterable/mixins/infinite.dart';
 ///
 Iterable<E> cycle<E>(Iterable<E> iterable, [int count = null]) {
   if (count == 0 || iterable.isEmpty) {
-    return emptyIterable<E>();
+    return new Iterable<E>.empty();
   } else if (count == 1 || iterable is InfiniteIterable<E>) {
     return iterable;
   } else if (count == null) {
@@ -40,8 +39,7 @@ Iterable<E> cycle<E>(Iterable<E> iterable, [int count = null]) {
   }
 }
 
-class _InfiniteCycleIterable<E> extends IterableBase<E>
-    with InfiniteIterable<E> {
+class _InfiniteCycleIterable<E> extends IterableBase<E> with InfiniteIterable<E> {
   final Iterable<E> _iterable;
 
   _InfiniteCycleIterable(this._iterable);
@@ -53,7 +51,7 @@ class _InfiniteCycleIterable<E> extends IterableBase<E>
 class _InfiniteCycleIterator<E> extends Iterator<E> {
   final Iterable<E> _iterable;
 
-  Iterator<E> _iterator = emptyIterator<E>();
+  Iterator<E> _iterator = new Iterable<E>.empty().iterator;
 
   _InfiniteCycleIterator(this._iterable);
 
@@ -83,9 +81,9 @@ class _FiniteCycleIterable<E> extends IterableBase<E> {
 class _FiniteCycleIterator<E> extends Iterator<E> {
   final Iterable<E> _iterable;
 
-  Iterator<E> _iterator = emptyIterator<E>();
+  Iterator<E> _iterator = new Iterable<E>.empty().iterator;
   bool _completed = false;
-  int _count = 0;
+  int _count;
 
   _FiniteCycleIterator(this._iterable, this._count);
 

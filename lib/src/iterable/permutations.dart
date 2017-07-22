@@ -2,8 +2,6 @@ library more.iterable.permutations;
 
 import 'dart:collection';
 
-import 'package:more/src/iterable/empty.dart';
-
 /// Returns an iterable over the permutations of [elements]. The permutations
 /// are emitted in lexicographical order based on the input.
 ///
@@ -12,9 +10,11 @@ import 'package:more/src/iterable/empty.dart';
 ///     permutations(string('xyz'));
 ///
 Iterable<List<E>> permutations<E>(Iterable<E> elements) {
-  return elements.isEmpty
-      ? emptyIterable<List<E>>()
-      : new _PermutationIterable<E>(elements.toList(growable: false));
+  if (elements.isEmpty) {
+    return new Iterable<List<E>>.empty();
+  } else {
+    return new _PermutationIterable<E>(elements.toList(growable: false));
+  }
 }
 
 class _PermutationIterable<E> extends IterableBase<List<E>> {

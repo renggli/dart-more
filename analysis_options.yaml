@@ -50,7 +50,6 @@ linter:
     - package_prefixed_library_names
     - prefer_adjacent_string_concatenation
     - prefer_conditional_assignment
-    - prefer_const_constructors
     - prefer_constructors_over_static_methods
     - prefer_contains
     - prefer_foreach
