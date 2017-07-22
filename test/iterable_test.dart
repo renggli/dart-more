@@ -203,103 +203,21 @@ void main() {
       expect(() => cycle([1, 2]).toSet(), throwsStateError);
     });
   });
-  group('empty', () {
-    T noCallOne<T>(T a) {
-      fail('No call expected, but got $a.');
-      return null;
-    }
-
-    T noCallTwo<T>(T a, T b) {
-      fail('No call expected, but got $a, $b.');
-      return null;
-    }
-
-    Iterable<S> noCallIterable<T, S>(Iterable<T> a) {
-      fail('No call expected, but got $a.');
-      return [];
-    }
-
-    bool noCallPredicate<T>(T a) {
-      fail('No call expected, but got $a.');
-      return false;
-    }
-
-    test('iterator', () {
-      var iterator = emptyIterator();
-      expect(iterator.current, isNull);
-      expect(iterator.moveNext(), isFalse);
-      expect(iterator.current, isNull);
-    });
-    test('iterable iterator', () {
-      var iterator = emptyIterable().iterator;
-      expect(iterator.current, isNull);
-      expect(iterator.moveNext(), isFalse);
-      expect(iterator.current, isNull);
-    });
-    test('empty testing', () {
+  group('empty (deprecated)', () {
+    test('empty', () {
       expect(empty().isEmpty, isTrue);
-      expect(empty().isNotEmpty, isFalse);
-      expect(empty().length, 0);
     });
-    test('emptyIterable testing', () {
+    test('emptyIterable', () {
       expect(emptyIterable().isEmpty, isTrue);
-      expect(emptyIterable().isNotEmpty, isFalse);
-      expect(emptyIterable().length, 0);
     });
-    test('iterating', () {
-      emptyIterable().forEach(noCallOne);
-      expect(emptyIterable().map(noCallOne), isEmpty);
-      expect(emptyIterable().where(noCallPredicate), isEmpty);
-      expect(emptyIterable().fold(true, noCallTwo), isTrue);
-      expect(() => emptyIterable().reduce(noCallTwo), throwsStateError);
-      expect(emptyIterable().expand(noCallIterable), isEmpty);
-    });
-    test('testing', () {
-      expect(emptyIterable().any(noCallPredicate), isFalse);
-      expect(emptyIterable().every(noCallPredicate), isTrue);
-      expect(emptyIterable().contains(1), isFalse);
-    });
-    test('take', () {
-      expect(emptyIterable().take(5), isEmpty);
-      expect(emptyIterable().takeWhile(noCallPredicate), isEmpty);
-    });
-    test('skip', () {
-      expect(emptyIterable().skip(5), isEmpty);
-      expect(emptyIterable().skipWhile(noCallPredicate), isEmpty);
-    });
-    test('first', () {
-      expect(() => emptyIterable().first, throwsStateError);
-      expect(
-              () => emptyIterable().firstWhere(noCallPredicate),
-          throwsStateError);
-      expect(emptyIterable().firstWhere(noCallPredicate, orElse: () => true),
-          isTrue);
-    });
-    test('last', () {
-      expect(() => emptyIterable().last, throwsStateError);
-      expect(
-              () => emptyIterable().lastWhere(noCallPredicate),
-          throwsStateError);
-      expect(emptyIterable().lastWhere(noCallPredicate, orElse: () => true),
-          isTrue);
-    });
-    test('single', () {
-      expect(() => emptyIterable().single, throwsStateError);
-      expect(
-              () => emptyIterable().singleWhere(noCallPredicate),
-          throwsStateError);
-    });
-    test('converting', () {
-      expect(emptyIterable().toList(), isEmpty);
-      expect(emptyIterable().toList(growable: true), isEmpty);
-      expect(emptyIterable().toList(growable: false), isEmpty);
-      expect(emptyIterable().toSet(), isEmpty);
-      expect(emptyIterable().join(), '');
+    test('emptyIterator', () {
+      expect(emptyIterator().moveNext(), isFalse);
+      expect(emptyIterator().current, isNull);
     });
   });
   group('indexed', () {
     test('empty', () {
-      var iterable = indexed(emptyIterable());
+      var iterable = indexed(const Iterable.empty());
       expect(iterable, []);
     });
     test('simple', () {
