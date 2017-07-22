@@ -3,13 +3,13 @@ library more.ordering.compound;
 import 'package:more/ordering.dart';
 
 class CompoundOrdering<T> extends Ordering<T> {
-  final List<Ordering<T>> _orderings;
+  final List<Ordering<T>> orderings;
 
-  const CompoundOrdering(this._orderings);
+  const CompoundOrdering(this.orderings);
 
   @override
   int compare(T a, T b) {
-    for (var ordering in _orderings) {
+    for (var ordering in orderings) {
       var result = ordering.compare(a, b);
       if (result != 0) {
         return result;
@@ -20,9 +20,9 @@ class CompoundOrdering<T> extends Ordering<T> {
 
   @override
   Ordering<T> compound(Ordering<T> other) {
-    var orderings = new List<Ordering<T>>.from(_orderings)
+    var combined = new List<Ordering<T>>.from(orderings)
       ..add(other);
     return new CompoundOrdering(
-        new List<Ordering<T>>.from(orderings, growable: false));
+        new List<Ordering<T>>.from(combined, growable: false));
   }
 }

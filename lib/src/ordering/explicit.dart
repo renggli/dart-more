@@ -18,9 +18,9 @@ class ExplicitOrdering<T> extends Ordering<T> {
   const ExplicitOrdering._(this.ranking);
 
   @override
-  int compare(T a, T b) => _rank(a) - _rank(b);
+  int compare(T a, T b) => rank(a) - rank(b);
 
-  int _rank(T element) {
+  int rank(T element) {
     var rank = ranking[element];
     if (rank == null) {
       throw new StateError('Unable to compare $element with $this');

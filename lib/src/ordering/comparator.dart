@@ -3,10 +3,10 @@ library more.ordering.comparator;
 import 'package:more/ordering.dart';
 
 class ComparatorOrdering<T> extends Ordering<T> {
-  final Comparator<T> _comparator;
+  final Comparator<T> comparator;
 
-  const ComparatorOrdering(this._comparator);
+  const ComparatorOrdering(this.comparator);
 
   @override
-  int compare(T a, T b) => _comparator(a, b);
+  int compare(T a, T b) => comparator(a, b);
 }
