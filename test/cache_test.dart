@@ -5,6 +5,8 @@ import 'dart:async';
 import 'package:more/cache.dart';
 import 'package:test/test.dart';
 
+const delay = const Duration(milliseconds: 10);
+
 // Various common loaders used with the tests.
 String failingLoader(int key) {
   fail('Loader should never be called');
@@ -13,8 +15,8 @@ String failingLoader(int key) {
 
 String immediateLoader(int key) => '$key';
 Future<String> futureLoader(int key) => new Future.value(immediateLoader(key));
-Future<String> delayedLoader(int key) =>
-    new Future.delayed(const Duration(milliseconds: 10), () => immediateLoader(key));
+Future<String> delayedLoader(int key) => new Future.delayed(delay, () => immediateLoader(key));
+String throwingLoader(int key) => throw new UnsupportedError('$key');
 
 // Basic tests that should pass on any (stateless) cache.
 void statelessCacheTests(Cache<int, String> newCache(Loader<int, String> loader)) {
@@ -37,6 +39,12 @@ void statelessCacheTests(Cache<int, String> newCache(Loader<int, String> loader)
     return newCache(futureLoader)
         .get(1)
         .then((value) => expect(value, '1', reason: 'get value should be loaded'));
+  });
+  test('load throwing value', () {
+    return newCache(throwingLoader)
+        .get(1)
+        .catchError((exception) => exception)
+        .then((value) => expect(value, isUnsupportedError));
   });
   test('load delayed value', () {
     return newCache(delayedLoader)
@@ -95,6 +103,14 @@ void persistentCacheTests(Cache<int, String> newCache(Loader<int, String> loader
         .then((value) => expect(value, 'foo', reason: 'update loaded value'))
         .then((_) => cache.get(1))
         .then((value) => expect(value, 'foo', reason: 'updated value'));
+  });
+  test('load throwing value has no side-effect', () {
+    var cache = newCache(throwingLoader);
+    return cache
+        .get(1)
+        .catchError((exception) => '1')
+        .then((_) => cache.getIfPresent(1))
+        .then((value) => expect(value, isNull, reason: 'loader threw exception'));
   });
   test('set and get', () {
     var cache = newCache(failingLoader);
