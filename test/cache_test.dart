@@ -87,6 +87,15 @@ void cacheEvictionTest(Cache<int, String> newCache(Loader<int, String> loader), 
 
 // Basic tests that should pass on any persistent cache (as long as no expiry kicks in).
 void persistentCacheTests(Cache<int, String> newCache(Loader<int, String> loader)) {
+  test('get and set', () {
+    var cache = newCache(immediateLoader);
+    return cache
+        .get(1)
+        .then((_) => cache.set(1, 'foo'))
+        .then((value) => expect(value, 'foo', reason: 'update loaded value'))
+        .then((_) => cache.get(1))
+        .then((value) => expect(value, 'foo', reason: 'updated value'));
+  });
   test('set and get', () {
     var cache = newCache(failingLoader);
     return cache
