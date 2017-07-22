@@ -85,11 +85,15 @@ void cacheEvictionTest(Cache<int, String> newCache(Loader<int, String> loader), 
 
   test('$name', () async {
     var cache = newCache(immediateLoader);
-    load.forEach((key) => cache.get(key));
-    present.forEach((key) async =>
-        expect(await cache.getIfPresent(key), '$key', reason: '$key should be present'));
-    absent.forEach((key) async =>
-        expect(await cache.getIfPresent(key), isNull, reason: '$key should be absent'));
+    for (var key in load) {
+      expect(await cache.get(key), '$key');
+    }
+    for (var key in present) {
+      expect(await cache.getIfPresent(key), '$key', reason: '$key should be present');
+    }
+    for (var key in absent) {
+      expect(await cache.getIfPresent(key), isNull, reason: '$key should be absent');
+    }
   });
 }
 
@@ -230,12 +234,12 @@ void main() {
 
     Cache<int, String> newUpdateExpireCache(Loader<int, String> loader) {
       return new Cache.expiry(
-          loader: loader, clock: offsetClock, updateExpiry: new Duration(seconds: 20));
+          loader: loader, clock: offsetClock, updateExpiry: const Duration(seconds: 20));
     }
 
     Cache<int, String> newAccessExpireCache(Loader<int, String> loader) {
       return new Cache.expiry(
-          loader: loader, clock: offsetClock, accessExpiry: new Duration(seconds: 20));
+          loader: loader, clock: offsetClock, accessExpiry: const Duration(seconds: 20));
     }
 
     statelessCacheTests(newUpdateExpireCache);
@@ -243,17 +247,19 @@ void main() {
 
     group('constructors', () {
       test('missing loader', () {
-        expect(() => new Cache.expiry(accessExpiry: new Duration(seconds: 20)),
-            throwsArgumentError);
+        expect(
+            () => new Cache.expiry(accessExpiry: const Duration(seconds: 20)), throwsArgumentError);
       });
       test('missing expiry', () {
         expect(() => new Cache.expiry(loader: immediateLoader), throwsArgumentError);
       });
       test('negative access expiry', () {
-        expect(() => new Cache.expiry(loader: immediateLoader, accessExpiry: Duration.ZERO), throwsArgumentError);
+        expect(() => new Cache.expiry(loader: immediateLoader, accessExpiry: Duration.ZERO),
+            throwsArgumentError);
       });
       test('negative update expiry', () {
-        expect(() => new Cache.expiry(loader: immediateLoader, updateExpiry: Duration.ZERO), throwsArgumentError);
+        expect(() => new Cache.expiry(loader: immediateLoader, updateExpiry: Duration.ZERO),
+            throwsArgumentError);
       });
     });
 
@@ -262,14 +268,14 @@ void main() {
         var cache = newUpdateExpireCache(immediateLoader);
         return cache
             .set(1, '2')
-            .then((_) => offset = new Duration(seconds: 20))
+            .then((_) => offset = const Duration(seconds: 20))
             .then((_) => cache.getIfPresent(1))
             .then((value) => expect(value, '2', reason: 'value is set'))
             .then((_) => cache.set(1, '3'))
-            .then((_) => offset = new Duration(seconds: 40))
+            .then((_) => offset = const Duration(seconds: 40))
             .then((_) => cache.getIfPresent(1))
             .then((value) => expect(value, '3', reason: 'value is updated'))
-            .then((_) => offset = new Duration(seconds: 41))
+            .then((_) => offset = const Duration(seconds: 41))
             .then((_) => cache.getIfPresent(1))
             .then((value) => expect(value, isNull, reason: 'value has expried'));
       });
@@ -278,10 +284,10 @@ void main() {
         return cache
             .get(1)
             .then((value) => expect(value, '1', reason: 'value is loaded'))
-            .then((_) => offset = new Duration(seconds: 20))
+            .then((_) => offset = const Duration(seconds: 20))
             .then((_) => cache.getIfPresent(1))
             .then((value) => expect(value, '1', reason: 'value is still present'))
-            .then((_) => offset = new Duration(seconds: 21))
+            .then((_) => offset = const Duration(seconds: 21))
             .then((_) => cache.getIfPresent(1))
             .then((value) => expect(value, isNull, reason: 'value has expried'))
             .then((_) => cache.size())
@@ -297,11 +303,11 @@ void main() {
             .get(0)
             .then((value) => expect(value, '0', reason: 'value is loaded'))
             .then((value) => expect(counter, 1, reason: 'loaded once'))
-            .then((_) => offset = new Duration(seconds: 20))
+            .then((_) => offset = const Duration(seconds: 20))
             .then((_) => cache.get(0))
             .then((value) => expect(value, '0', reason: 'value is still present'))
             .then((value) => expect(counter, 1, reason: 'still loaded once'))
-            .then((_) => offset = new Duration(seconds: 21))
+            .then((_) => offset = const Duration(seconds: 21))
             .then((_) => cache.get(0))
             .then((value) => expect(value, '0', reason: 'value is reloaded'))
             .then((value) => expect(counter, 2, reason: 'value loaded again'));
@@ -310,7 +316,7 @@ void main() {
         var cache = newUpdateExpireCache(immediateLoader);
         return cache
             .set(1, '1')
-            .then((_) => offset = new Duration(seconds: 21))
+            .then((_) => offset = const Duration(seconds: 21))
             .then((_) => cache.size())
             .then((size) => expect(size, 1, reason: 'cache has not been reaped'))
             .then((_) => cache.reap())
@@ -324,14 +330,14 @@ void main() {
         var cache = newAccessExpireCache(immediateLoader);
         return cache
             .set(1, '2')
-            .then((_) => offset = new Duration(seconds: 20))
+            .then((_) => offset = const Duration(seconds: 20))
             .then((_) => cache.getIfPresent(1))
             .then((value) => expect(value, '2', reason: 'value is set'))
             .then((_) => cache.set(1, '3'))
-            .then((_) => offset = new Duration(seconds: 40))
+            .then((_) => offset = const Duration(seconds: 40))
             .then((_) => cache.getIfPresent(1))
             .then((value) => expect(value, '3', reason: 'value is updated'))
-            .then((_) => offset = new Duration(seconds: 61))
+            .then((_) => offset = const Duration(seconds: 61))
             .then((_) => cache.getIfPresent(1))
             .then((value) => expect(value, isNull, reason: 'value has expried'));
       });
@@ -340,10 +346,10 @@ void main() {
         return cache
             .get(1)
             .then((value) => expect(value, '1', reason: 'value is loaded'))
-            .then((_) => offset = new Duration(seconds: 20))
+            .then((_) => offset = const Duration(seconds: 20))
             .then((_) => cache.getIfPresent(1))
             .then((value) => expect(value, '1', reason: 'value is still present'))
-            .then((_) => offset = new Duration(seconds: 41))
+            .then((_) => offset = const Duration(seconds: 41))
             .then((_) => cache.getIfPresent(1))
             .then((value) => expect(value, isNull, reason: 'value has expried'))
             .then((_) => cache.size())
@@ -359,11 +365,11 @@ void main() {
             .get(0)
             .then((value) => expect(value, '0', reason: 'value is loaded'))
             .then((value) => expect(counter, 1, reason: 'loaded once'))
-            .then((_) => offset = new Duration(seconds: 20))
+            .then((_) => offset = const Duration(seconds: 20))
             .then((_) => cache.get(0))
             .then((value) => expect(value, '0', reason: 'value is still present'))
             .then((value) => expect(counter, 1, reason: 'still loaded once'))
-            .then((_) => offset = new Duration(seconds: 41))
+            .then((_) => offset = const Duration(seconds: 41))
             .then((_) => cache.get(0))
             .then((value) => expect(value, '0', reason: 'value is reloaded'))
             .then((value) => expect(counter, 2, reason: 'value loaded again'));
@@ -372,7 +378,7 @@ void main() {
         var cache = newAccessExpireCache(immediateLoader);
         return cache
             .set(1, '1')
-            .then((_) => offset = new Duration(seconds: 120))
+            .then((_) => offset = const Duration(seconds: 120))
             .then((_) => cache.size())
             .then((size) => expect(size, 1, reason: 'cache has not been reaped'))
             .then((_) => cache.reap())
