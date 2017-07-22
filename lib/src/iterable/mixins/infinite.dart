@@ -16,36 +16,23 @@ abstract class InfiniteIterable<E> implements Iterable<E> {
   bool get isNotEmpty => true;
 
   @override
-  E get last {
-    throw new StateError(
-        'Cannot return the last element of an infinite iterable.');
-  }
+  E get last => throw new StateError('Cannot return the last element of an infinite iterable.');
 
   @override
-  E lastWhere(bool test(E element), {E orElse()}) {
-    throw new StateError(
-        'Cannot return the last element of an infinite iterable.');
-  }
+  E lastWhere(bool test(E element), {E orElse()}) =>
+      throw new StateError('Cannot return the last element of an infinite iterable.');
 
   @override
-  E get single {
-    throw new StateError(
-        'Cannot return the single element of an infinite iterable.');
-  }
+  E get single => throw new StateError('Cannot return the single element of an infinite iterable.');
 
   @override
-  E singleWhere(bool test(E element)) {
-    throw new StateError(
-        'Cannot return the single element of an infinite iterable.');
-  }
+  E singleWhere(bool test(E element)) =>
+      throw new StateError('Cannot return the single element of an infinite iterable.');
 
   @override
-  List<E> toList({bool growable: true}) {
-    throw new StateError('Cannot convert an infinite iterable to a list.');
-  }
+  List<E> toList({bool growable: true}) =>
+      throw new StateError('Cannot convert an infinite iterable to a list.');
 
   @override
-  Set<E> toSet() {
-    throw new StateError('Cannot convert an infinite iterable to a set.');
-  }
+  Set<E> toSet() => throw new StateError('Cannot convert an infinite iterable to a set.');
 }

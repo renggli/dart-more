@@ -13,32 +13,30 @@ import 'package:more/src/iterable/mixins/infinite.dart';
 ///     repeat('a', 3);   // ['a', 'a', 'a']
 ///
 Iterable<E> repeat<E>(E element, [int count]) {
-  var iterable = new _RepeatIterable<E>(element);
+  var iterable = new RepeatIterable<E>(element);
   return count == null ? iterable : iterable.take(count);
 }
 
-class _RepeatIterable<E> extends IterableBase<E> with InfiniteIterable<E> {
-  final E _element;
+class RepeatIterable<E> extends IterableBase<E> with InfiniteIterable<E> {
+  final E element;
 
-  _RepeatIterable(this._element);
+  RepeatIterable(this.element);
 
   @override
-  Iterator<E> get iterator => new _RepeatIterator<E>(_element);
+  Iterator<E> get iterator => new RepeatIterator<E>(element);
 }
 
-class _RepeatIterator<E> extends Iterator<E> {
-  final E _element;
+class RepeatIterator<E> extends Iterator<E> {
+  final E element;
 
-  E _current;
-
-  _RepeatIterator(this._element);
+  RepeatIterator(this.element);
 
   @override
-  E get current => _current;
+  E current;
 
   @override
   bool moveNext() {
-    _current = _element;
+    current = element;
     return true;
   }
 }

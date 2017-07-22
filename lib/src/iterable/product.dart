@@ -25,61 +25,60 @@ Iterable<List<E>> product<E>(Iterable<Iterable<E>> iterables) {
   if (iterables.isEmpty || iterables.any((iterable) => iterable.isEmpty)) {
     return new Iterable<List<E>>.empty();
   } else {
-    return new _ProductIterable<E>(iterables.map((iterable) {
+    return new ProductIterable<E>(iterables.map((iterable) {
       return iterable.toList(growable: false);
     }).toList(growable: false));
   }
 }
 
-class _ProductIterable<E> extends IterableBase<List<E>> {
-  final List<List<E>> _sources;
+class ProductIterable<E> extends IterableBase<List<E>> {
+  final List<List<E>> sources;
 
-  _ProductIterable(this._sources);
+  ProductIterable(this.sources);
 
   @override
   Iterator<List<E>> get iterator {
-    var state = new List<int>.filled(_sources.length, 0);
-    return new _ProductIterator<E>(_sources, state);
+    var state = new List<int>.filled(sources.length, 0);
+    return new ProductIterator<E>(sources, state);
   }
 }
 
-class _ProductIterator<E> extends Iterator<List<E>> {
-  final List<List<E>> _sources;
-  final List<int> _state;
+class ProductIterator<E> extends Iterator<List<E>> {
+  final List<List<E>> sources;
+  final List<int> state;
 
-  List<E> _current = null;
-  bool _completed = false;
+  bool completed = false;
 
-  _ProductIterator(this._sources, this._state);
+  ProductIterator(this.sources, this.state);
 
   @override
-  List<E> get current => _current;
+  List<E> current;
 
   @override
   bool moveNext() {
-    if (_completed) {
+    if (completed) {
       return false;
     }
-    if (_current == null) {
-      _current = new List<E>.generate(_sources.length, (i) {
-        return _sources[i][0];
+    if (current == null) {
+      current = new List<E>.generate(sources.length, (i) {
+        return sources[i][0];
       }, growable: false);
       return true;
     }
-    for (var i = _state.length - 1; i >= 0; i--) {
-      if (_state[i] + 1 < _sources[i].length) {
-        _state[i]++;
-        _current[i] = _sources[i][_state[i]];
+    for (var i = state.length - 1; i >= 0; i--) {
+      if (state[i] + 1 < sources[i].length) {
+        state[i]++;
+        current[i] = sources[i][state[i]];
         return true;
       } else {
-        for (var j = _state.length - 1; j >= i; j--) {
-          _state[j] = 0;
-          _current[j] = _sources[j][0];
+        for (var j = state.length - 1; j >= i; j--) {
+          state[j] = 0;
+          current[j] = sources[j][0];
         }
       }
     }
-    _completed = true;
-    _current = null;
+    completed = true;
+    current = null;
     return false;
   }
 }

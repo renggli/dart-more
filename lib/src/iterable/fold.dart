@@ -16,45 +16,43 @@ import 'package:more/src/iterable/mixins/infinite.dart';
 ///     [0, 1, 1, 2, 3, 5, ...]
 ///
 Iterable<E> fold<E>(Iterable<E> elements, E Function(List<E>) combine) {
-  return new _FoldIterable<E>(elements, combine);
+  return new FoldIterable<E>(elements, combine);
 }
 
-class _FoldIterable<E> extends IterableBase<E> with InfiniteIterable<E> {
-  final Iterable<E> _elements;
-  final E Function(List<E>) _combine;
+class FoldIterable<E> extends IterableBase<E> with InfiniteIterable<E> {
+  final Iterable<E> elements;
+  final E Function(List<E>) combine;
 
-  _FoldIterable(this._elements, this._combine);
+  FoldIterable(this.elements, this.combine);
 
   @override
   Iterator<E> get iterator {
-    return new _FoldIterator<E>(
-        new List.from(_elements, growable: false), _combine);
+    return new FoldIterator<E>(new List.from(elements, growable: false), combine);
   }
 }
 
-class _FoldIterator<E> extends Iterator<E> {
-  final List<E> _state;
-  final Function _combine;
+class FoldIterator<E> extends Iterator<E> {
+  final List<E> state;
+  final Function combine;
 
-  int _index = 0;
-  E _current;
+  int index = 0;
 
-  _FoldIterator(this._state, this._combine);
+  FoldIterator(this.state, this.combine);
 
   @override
-  E get current => _current;
+  E current;
 
   @override
   bool moveNext() {
-    if (_index < _state.length) {
-      _current = _state[_index];
-      _index++;
+    if (index < state.length) {
+      current = state[index];
+      index++;
     } else {
-      _current = _combine(_state);
-      for (var i = 0; i < _state.length - 1; i++) {
-        _state[i] = _state[i + 1];
+      current = combine(state);
+      for (var i = 0; i < state.length - 1; i++) {
+        state[i] = state[i + 1];
       }
-      _state[_state.length - 1] = _current;
+      state[state.length - 1] = current;
     }
     return true;
   }

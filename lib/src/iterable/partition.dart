@@ -9,33 +9,31 @@ import 'dart:collection';
 /// The following expression yields [1, 2], [3, 4], [5, null]:
 ///
 ///     partition([1, 2, 3, 4, 5], 2, null);
-Iterable<Iterable<E>> partition<E>(Iterable<E> elements, int size,
-    [E padding = _sentinel]) {
-  return new _PartitionIterable<E>(elements, size, padding);
+Iterable<Iterable<E>> partition<E>(Iterable<E> elements, int size, [E padding = sentinel]) {
+  return new PartitionIterable<E>(elements, size, padding);
 }
 
-const _sentinel = const Object();
+const sentinel = const Object();
 
-class _PartitionIterable<E> extends IterableBase<Iterable<E>> {
+class PartitionIterable<E> extends IterableBase<Iterable<E>> {
   final Iterable<E> elements;
   final int size;
   final E padding;
 
-  _PartitionIterable(this.elements, this.size, this.padding);
+  PartitionIterable(this.elements, this.size, this.padding);
 
   @override
-  Iterator<Iterable<E>> get iterator =>
-      new _PartitionIterator<E>(elements.iterator, size, padding);
+  Iterator<Iterable<E>> get iterator => new PartitionIterator<E>(elements.iterator, size, padding);
 }
 
-class _PartitionIterator<E> extends Iterator<Iterable<E>> {
+class PartitionIterator<E> extends Iterator<Iterable<E>> {
   final Iterator<E> iterator;
   final int size;
   final E padding;
 
   bool completed = false;
 
-  _PartitionIterator(this.iterator, this.size, this.padding);
+  PartitionIterator(this.iterator, this.size, this.padding);
 
   @override
   List<E> current;
@@ -56,7 +54,7 @@ class _PartitionIterator<E> extends Iterator<Iterable<E>> {
             current = null;
             return false;
           }
-          if (_sentinel != padding) {
+          if (sentinel != padding) {
             for (var j = i; j < size; j++) {
               current.add(padding);
             }

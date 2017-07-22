@@ -19,34 +19,33 @@ typedef E IterateFunction<E>(E value);
 ///     [0, 1, 2, 3, 4, ...]
 ///
 Iterable<E> iterate<E>(E value, IterateFunction<E> function) {
-  return new _IterateIterable<E>(value, function);
+  return new IterateIterable<E>(value, function);
 }
 
-class _IterateIterable<E> extends IterableBase<E> with InfiniteIterable<E> {
-  final E _value;
-  final IterateFunction<E> _function;
+class IterateIterable<E> extends IterableBase<E> with InfiniteIterable<E> {
+  final E value;
+  final IterateFunction<E> function;
 
-  _IterateIterable(this._value, this._function);
+  IterateIterable(this.value, this.function);
 
   @override
-  Iterator<E> get iterator => new _IterateIterator<E>(_value, _function);
+  Iterator<E> get iterator => new IterateIterator<E>(value, function);
 }
 
-class _IterateIterator<E> extends Iterator<E> {
-  final IterateFunction<E> _function;
+class IterateIterator<E> extends Iterator<E> {
+  final IterateFunction<E> function;
 
-  E _current;
-  E _next;
+  E next;
 
-  _IterateIterator(this._next, this._function);
+  IterateIterator(this.next, this.function);
 
   @override
-  E get current => _current;
+  E current;
 
   @override
   bool moveNext() {
-    _current = _next;
-    _next = _function(_next);
+    current = next;
+    next = function(next);
     return true;
   }
 }

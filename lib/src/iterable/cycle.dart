@@ -31,75 +31,75 @@ Iterable<E> cycle<E>(Iterable<E> iterable, [int count = null]) {
   } else if (count == 1 || iterable is InfiniteIterable<E>) {
     return iterable;
   } else if (count == null) {
-    return new _InfiniteCycleIterable<E>(iterable);
+    return new InfiniteCycleIterable<E>(iterable);
   } else if (count > 1) {
-    return new _FiniteCycleIterable<E>(iterable, count);
+    return new FiniteCycleIterable<E>(iterable, count);
   } else {
     throw new ArgumentError('Positive count expected, but got $count.');
   }
 }
 
-class _InfiniteCycleIterable<E> extends IterableBase<E> with InfiniteIterable<E> {
-  final Iterable<E> _iterable;
+class InfiniteCycleIterable<E> extends IterableBase<E> with InfiniteIterable<E> {
+  final Iterable<E> iterable;
 
-  _InfiniteCycleIterable(this._iterable);
+  InfiniteCycleIterable(this.iterable);
 
   @override
-  Iterator<E> get iterator => new _InfiniteCycleIterator<E>(_iterable);
+  Iterator<E> get iterator => new InfiniteCycleIterator<E>(iterable);
 }
 
-class _InfiniteCycleIterator<E> extends Iterator<E> {
-  final Iterable<E> _iterable;
+class InfiniteCycleIterator<E> extends Iterator<E> {
+  final Iterable<E> iterable;
 
-  Iterator<E> _iterator = new Iterable<E>.empty().iterator;
+  Iterator<E> iterator = new Iterable<E>.empty().iterator;
 
-  _InfiniteCycleIterator(this._iterable);
+  InfiniteCycleIterator(this.iterable);
 
   @override
-  E get current => _iterator.current;
+  E get current => iterator.current;
 
   @override
   bool moveNext() {
-    if (!_iterator.moveNext()) {
-      _iterator = _iterable.iterator;
-      _iterator.moveNext();
+    if (!iterator.moveNext()) {
+      iterator = iterable.iterator;
+      iterator.moveNext();
     }
     return true;
   }
 }
 
-class _FiniteCycleIterable<E> extends IterableBase<E> {
-  final Iterable<E> _iterable;
-  final int _count;
+class FiniteCycleIterable<E> extends IterableBase<E> {
+  final Iterable<E> iterable;
+  final int count;
 
-  _FiniteCycleIterable(this._iterable, this._count);
+  FiniteCycleIterable(this.iterable, this.count);
 
   @override
-  Iterator<E> get iterator => new _FiniteCycleIterator<E>(_iterable, _count);
+  Iterator<E> get iterator => new FiniteCycleIterator<E>(iterable, count);
 }
 
-class _FiniteCycleIterator<E> extends Iterator<E> {
-  final Iterable<E> _iterable;
+class FiniteCycleIterator<E> extends Iterator<E> {
+  final Iterable<E> iterable;
 
-  Iterator<E> _iterator = new Iterable<E>.empty().iterator;
-  bool _completed = false;
-  int _count;
+  Iterator<E> iterator = new Iterable<E>.empty().iterator;
+  bool completed = false;
+  int count;
 
-  _FiniteCycleIterator(this._iterable, this._count);
+  FiniteCycleIterator(this.iterable, this.count);
 
   @override
-  E get current => _completed ? null : _iterator.current;
+  E get current => completed ? null : iterator.current;
 
   @override
   bool moveNext() {
-    if (_completed) {
+    if (completed) {
       return false;
     }
-    if (!_iterator.moveNext()) {
-      _iterator = _iterable.iterator;
-      _iterator.moveNext();
-      if (--_count < 0) {
-        _completed = true;
+    if (!iterator.moveNext()) {
+      iterator = iterable.iterator;
+      iterator.moveNext();
+      if (--count < 0) {
+        completed = true;
         return false;
       }
     }

@@ -13,60 +13,59 @@ Iterable<List<E>> permutations<E>(Iterable<E> elements) {
   if (elements.isEmpty) {
     return new Iterable<List<E>>.empty();
   } else {
-    return new _PermutationIterable<E>(elements.toList(growable: false));
+    return new PermutationIterable<E>(elements.toList(growable: false));
   }
 }
 
-class _PermutationIterable<E> extends IterableBase<List<E>> {
-  final List<E> _elements;
+class PermutationIterable<E> extends IterableBase<List<E>> {
+  final List<E> elements;
 
-  _PermutationIterable(this._elements);
+  PermutationIterable(this.elements);
 
   @override
-  Iterator<List<E>> get iterator => new _PermutationIterator<E>(_elements);
+  Iterator<List<E>> get iterator => new PermutationIterator<E>(elements);
 }
 
-class _PermutationIterator<E> extends Iterator<List<E>> {
-  final List<E> _elements;
+class PermutationIterator<E> extends Iterator<List<E>> {
+  final List<E> elements;
 
-  List<int> _state;
-  List<E> _current;
-  bool _completed = false;
+  List<int> state;
+  bool completed = false;
 
-  _PermutationIterator(this._elements);
+  PermutationIterator(this.elements);
 
   @override
-  List<E> get current => _current;
+  List<E> current;
 
   @override
   bool moveNext() {
-    if (_completed) {
+    if (completed) {
       return false;
-    } else if (_current == null) {
-      _state = new List<int>(_elements.length);
-      _current = new List<E>(_elements.length);
-      for (var i = 0; i < _state.length; i++) {
-        _state[i] = i;
-        _current[i] = _elements[i];
+    } else if (current == null) {
+      state = new List<int>(elements.length);
+      current = new List<E>(elements.length);
+      for (var i = 0; i < state.length; i++) {
+        state[i] = i;
+        current[i] = elements[i];
       }
       return true;
     } else {
-      var k = _state.length - 2;
-      while (k >= 0 && _state[k] > _state[k + 1]) {
+      var k = state.length - 2;
+      while (k >= 0 && state[k] > state[k + 1]) {
         k--;
       }
       if (k == -1) {
-        _state = null;
-        _current = null;
-        _completed = true;
+        state = null;
+        current = null;
+        completed = true;
         return false;
       }
-      var l = _state.length - 1;
-      while (_state[k] > _state[l]) {
+      var l = state.length - 1;
+      while (state[k] > state[l]) {
         l--;
       }
       swap(k, l);
-      for (var i = k + 1, j = _state.length - 1; i < j; i++, j--) {
+      for (var i = k + 1, j = state.length - 1; i < j; i++, j--) {
         swap(i, j);
       }
       return true;
@@ -74,10 +73,10 @@ class _PermutationIterator<E> extends Iterator<List<E>> {
   }
 
   void swap(int i, int j) {
-    var temp = _state[i];
-    _state[i] = _state[j];
-    _state[j] = temp;
-    _current[i] = _elements[_state[i]];
-    _current[j] = _elements[_state[j]];
+    var temp = state[i];
+    state[i] = state[j];
+    state[j] = temp;
+    current[i] = elements[state[i]];
+    current[j] = elements[state[j]];
   }
 }

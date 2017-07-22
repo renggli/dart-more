@@ -14,37 +14,36 @@ Iterable<int> fibonacci([int f0 = 0, int f1 = 1]) {
 /// Returns an iterable over the digits of the [number], in the optionally
 /// given [base].
 Iterable<int> digits(int number, [int base = 10]) {
-  return new _DigitIterable(number.abs(), base);
+  return new DigitIterable(number.abs(), base);
 }
 
-class _DigitIterable extends IterableBase<int> {
-  final int _number, _base;
+class DigitIterable extends IterableBase<int> {
+  final int number;
+  final int base;
 
-  _DigitIterable(this._number, this._base);
+  DigitIterable(this.number, this.base);
 
   @override
-  Iterator<int> get iterator => new _DigitIterator(_number, _base);
+  Iterator<int> get iterator => new DigitIterator(number, base);
 }
 
-class _DigitIterator extends Iterator<int> {
-  int _current, _number;
-  final int _base;
+class DigitIterator extends Iterator<int> {
+  int current;
+  int number;
+  final int base;
 
-  _DigitIterator(this._number, this._base);
-
-  @override
-  int get current => _current;
+  DigitIterator(this.number, this.base);
 
   @override
   bool moveNext() {
-    if (_number == null) {
-      _current = null;
+    if (number == null) {
+      current = null;
       return false;
     } else {
-      _current = _number % _base;
-      _number = _number ~/ _base;
-      if (_number == 0) {
-        _number = null;
+      current = number % base;
+      number = number ~/ base;
+      if (number == 0) {
+        number = null;
       }
       return true;
     }

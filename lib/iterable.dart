@@ -1,16 +1,16 @@
 /// Some fancy iterables and iterators.
 library more.iterable;
 
-export 'package:more/src/iterable/combinations.dart';
-export 'package:more/src/iterable/concat.dart';
-export 'package:more/src/iterable/cycle.dart';
-export 'package:more/src/iterable/empty.dart';
-export 'package:more/src/iterable/fold.dart';
-export 'package:more/src/iterable/indexed.dart';
-export 'package:more/src/iterable/iterate.dart';
-export 'package:more/src/iterable/math.dart';
-export 'package:more/src/iterable/partition.dart';
-export 'package:more/src/iterable/permutations.dart';
-export 'package:more/src/iterable/product.dart';
-export 'package:more/src/iterable/repeat.dart';
-export 'package:more/src/iterable/unique.dart';
+export 'package:more/src/iterable/combinations.dart' show combinations;
+export 'package:more/src/iterable/concat.dart' show concat;
+export 'package:more/src/iterable/cycle.dart' show cycle;
+export 'package:more/src/iterable/empty.dart' show empty, emptyIterable, emptyIterator;
+export 'package:more/src/iterable/fold.dart' show fold;
+export 'package:more/src/iterable/indexed.dart' show indexed;
+export 'package:more/src/iterable/iterate.dart' show iterate;
+export 'package:more/src/iterable/math.dart' show fibonacci, digits;
+export 'package:more/src/iterable/partition.dart' show partition;
+export 'package:more/src/iterable/permutations.dart' show permutations;
+export 'package:more/src/iterable/product.dart' show product;
+export 'package:more/src/iterable/repeat.dart' show repeat;
+export 'package:more/src/iterable/unique.dart' show unique;
