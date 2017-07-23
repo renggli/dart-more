@@ -1,14 +1,12 @@
 library more.ordering.explicit;
 
-import 'dart:collection';
-
 import 'package:more/ordering.dart';
 
 class ExplicitOrdering<T> extends Ordering<T> {
   final Map<T, int> ranking;
 
   factory ExplicitOrdering(List<T> list) {
-    var ranking = new LinkedHashMap<T, int>();
+    var ranking = new Map<T, int>();
     for (var rank = 0; rank < list.length; rank++) {
       ranking[list[rank]] = rank;
     }

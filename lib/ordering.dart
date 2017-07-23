@@ -40,6 +40,7 @@ import 'package:more/src/ordering/reverse.dart';
 ///     natural.isOrdered(['ape', 'cat', 'dog']);  // true
 ///
 abstract class Ordering<T> {
+
   /// Returns a natural ordering of objects.
   factory Ordering.natural() => const NaturalOrdering();
 
