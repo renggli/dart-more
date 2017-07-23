@@ -38,10 +38,10 @@ import 'package:more/src/char_matcher/whitespace.dart';
 ///
 abstract class CharMatcher {
   /// A matcher that accepts any character.
-  factory CharMatcher.any() => any;
+  factory CharMatcher.any() => const AnyCharMatcher();
 
   /// A matcher that accepts no character.
-  factory CharMatcher.none() => none;
+  factory CharMatcher.none() => const NoneCharMatcher();
 
   /// A matcher that accepts a single [character].
   factory CharMatcher.isChar(Object character) =>
@@ -55,25 +55,25 @@ abstract class CharMatcher {
   factory CharMatcher.pattern(String pattern) => toCharMatcher(pattern);
 
   /// A matcher that accepts ASCII characters.
-  factory CharMatcher.ascii() => ascii;
+  factory CharMatcher.ascii() => const AsciiCharMatcher();
 
   /// A matcher that accepts letters.
-  factory CharMatcher.letter() => letter;
+  factory CharMatcher.letter() => const LetterCharMatcher();
 
   /// A matcher that accepts upper-case letters.
-  factory CharMatcher.upperCaseLetter() => upperCaseLetter;
+  factory CharMatcher.upperCaseLetter() => const UpperCaseLetterCharMatcher();
 
   /// A matcher that accepts lower-case letters.
-  factory CharMatcher.lowerCaseLetter() => lowerCaseLetter;
+  factory CharMatcher.lowerCaseLetter() => const LowerCaseLetterCharMatcher();
 
   /// A matcher that accepts letters or digits.
-  factory CharMatcher.letterOrDigit() => letterOrDigit;
+  factory CharMatcher.letterOrDigit() => const LetterOrDigitCharMatcher();
 
   /// A matcher that accepts digits.
-  factory CharMatcher.digit() => digit;
+  factory CharMatcher.digit() => const DigitCharMatcher();
 
   /// A matcher that accepts whitespaces.
-  factory CharMatcher.whitespace() => whitespace;
+  factory CharMatcher.whitespace() => const WhitespaceCharMatcher();
 
   /// Internal constructor.
   const CharMatcher();
@@ -84,9 +84,9 @@ abstract class CharMatcher {
   /// Returns a matcher that matches any character matched by either this
   /// matcher or [other].
   CharMatcher operator |(CharMatcher other) {
-    if (other == any) {
+    if (other is AnyCharMatcher) {
       return other;
-    } else if (other == none) {
+    } else if (other is NoneCharMatcher) {
       return this;
     } else if (other is DisjunctiveCharMatcher) {
       return new DisjunctiveCharMatcher(new List()

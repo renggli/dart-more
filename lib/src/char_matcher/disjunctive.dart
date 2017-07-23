@@ -16,9 +16,9 @@ class DisjunctiveCharMatcher extends CharMatcher {
 
   @override
   CharMatcher operator |(CharMatcher other) {
-    if (other == any) {
+    if (other is AnyCharMatcher) {
       return other;
-    } else if (other == none) {
+    } else if (other is NoneCharMatcher) {
       return this;
     } else if (other is DisjunctiveCharMatcher) {
       return new DisjunctiveCharMatcher(

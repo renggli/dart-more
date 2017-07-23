@@ -2,8 +2,6 @@ library more.char_matcher.whitespace;
 
 import 'package:more/char_matcher.dart';
 
-const CharMatcher whitespace = const WhitespaceCharMatcher();
-
 class WhitespaceCharMatcher extends CharMatcher {
   const WhitespaceCharMatcher();
 

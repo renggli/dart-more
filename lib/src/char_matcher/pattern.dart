@@ -8,6 +8,7 @@ import 'package:more/src/char_matcher/ranges.dart';
 import 'package:more/src/char_matcher/single.dart';
 
 CharMatcher toCharMatcher(String pattern) {
+
   // 1. Verify if it is negated.
   var isNegated = pattern.startsWith('^');
   if (isNegated) {
@@ -54,7 +55,7 @@ CharMatcher toCharMatcher(String pattern) {
   // 5. Build the best resulting predicates
   CharMatcher predicate;
   if (mergedRanges.isEmpty) {
-    predicate = none;
+    predicate = const NoneCharMatcher();
   } else if (mergedRanges.length == 1) {
     if (mergedRanges[0].start == mergedRanges[0].stop) {
       predicate = new SingleCharMatcher(mergedRanges[0].start);
@@ -70,4 +71,5 @@ CharMatcher toCharMatcher(String pattern) {
 
   // 6. Negate, if necessary.
   return isNegated ? new NegateCharMatcher(predicate) : predicate;
+
 }

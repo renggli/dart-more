@@ -2,8 +2,6 @@ library more.char_matcher.letter;
 
 import 'package:more/char_matcher.dart';
 
-const CharMatcher letter = const LetterCharMatcher();
-
 class LetterCharMatcher extends CharMatcher {
   const LetterCharMatcher();
 

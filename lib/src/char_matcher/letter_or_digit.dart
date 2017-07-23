@@ -2,8 +2,6 @@ library more.char_matcher.letter_or_digit;
 
 import 'package:more/char_matcher.dart';
 
-const CharMatcher letterOrDigit = const LetterOrDigitCharMatcher();
-
 class LetterOrDigitCharMatcher extends CharMatcher {
   const LetterOrDigitCharMatcher();
 
