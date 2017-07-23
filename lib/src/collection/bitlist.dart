@@ -1,12 +1,12 @@
 library more.collection.bitlist;
 
-import 'dart:collection';
-import 'dart:typed_data';
+import 'dart:collection' show ListBase;
+import 'dart:typed_data' show Uint32List;
 
-import 'package:more/src/iterable/mixins/fixedlength.dart';
+import 'package:collection/collection.dart' show NonGrowableListMixin;
 
 /// An space efficient fixed length [List] that stores boolean values.
-class BitList extends ListBase<bool> with FixedLengthListMixin<bool> {
+class BitList extends ListBase<bool> with NonGrowableListMixin<bool> {
   // Constants specific to mapping bits into a [UInt32List].
   static const int _shift = 5;
   static const int _offset = 31;
