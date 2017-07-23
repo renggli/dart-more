@@ -1,25 +1,24 @@
 library more.collection.multiset;
 
-import 'dart:collection';
-import 'dart:math';
+import 'dart:collection' show IterableBase;
+import 'dart:math' show min;
 
 /// A generalized [Set] (or Bag) in which members are allowed to appear
 /// more than once.
 class Multiset<E> extends IterableBase<E> {
+
   /// Creates an empty [Multiset].
   factory Multiset() => new Multiset<E>._(new Map<E, int>(), 0);
 
   /// Creates an empty identity [Multiset].
-  factory Multiset.identity() =>
-      new Multiset<E>._(new Map<E, int>.identity(), 0);
+  factory Multiset.identity() => new Multiset<E>._(new Map<E, int>.identity(), 0);
 
   /// Creates a [Multiset] that contains all elements of [other].
   factory Multiset.from(Iterable<E> other) {
     if (other is Multiset<E>) {
       return new Multiset<E>._(new Map.from(other._container), other._length);
     } else {
-      return new Multiset<E>()
-        ..addAll(other);
+      return new Multiset<E>()..addAll(other);
     }
   }
 
@@ -32,8 +31,7 @@ class Multiset<E> extends IterableBase<E> {
   ///
   /// The [count] function specifies the number of elements added to the
   /// collection. The default function returns the constant 1.
-  factory Multiset.fromIterable(Iterable iterable,
-      {E key(element), int count(element)}) {
+  factory Multiset.fromIterable(Iterable iterable, {E key(element), int count(element)}) {
     var result = new Multiset<E>();
     key ??= (E element) => element;
     count ??= (E element) => 1;
@@ -160,21 +158,18 @@ class Multiset<E> extends IterableBase<E> {
   /// Returns a new [Multiset] with all the elements of the receiver and those
   /// in [other].
   Multiset<E> union(Iterable<E> other) {
-    return new Multiset<E>.from(this)
-      ..addAll(other);
+    return new Multiset<E>.from(this)..addAll(other);
   }
 
   /// Returns a new [Multiset] with all the elements of the receiver that are
   /// not in [other].
   Multiset<E> difference(Iterable<Object> other) {
-    return new Multiset<E>.from(this)
-      ..removeAll(other);
+    return new Multiset<E>.from(this)..removeAll(other);
   }
 
   /// Iterator over the repeated elements of the receiver.
   @override
-  Iterator<E> get iterator =>
-      new _MultisetIterator<E>(_container, distinct.iterator);
+  Iterator<E> get iterator => new MultisetIterator<E>(_container, distinct.iterator);
 
   /// Returns a view on the distinct elements of the receiver.
   Iterable<E> get distinct => _container.keys;
@@ -187,16 +182,16 @@ class Multiset<E> extends IterableBase<E> {
   int get length => _length;
 }
 
-class _MultisetIterator<E> extends Iterator<E> {
-  final Map<E, int> _container;
-  final Iterator<E> _elements;
+class MultisetIterator<E> extends Iterator<E> {
+  final Map<E, int> container;
+  final Iterator<E> elements;
 
   int _remaining = 0;
 
-  _MultisetIterator(this._container, this._elements);
+  MultisetIterator(this.container, this.elements);
 
   @override
-  E get current => _elements.current;
+  E get current => elements.current;
 
   @override
   bool moveNext() {
@@ -204,10 +199,10 @@ class _MultisetIterator<E> extends Iterator<E> {
       _remaining--;
       return true;
     } else {
-      if (!_elements.moveNext()) {
+      if (!elements.moveNext()) {
         return false;
       }
-      _remaining = _container[_elements.current] - 1;
+      _remaining = container[elements.current] - 1;
       return true;
     }
   }

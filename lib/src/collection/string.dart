@@ -1,8 +1,8 @@
 library more.collection.string;
 
-import 'dart:collection';
+import 'dart:collection' show ListBase;
 
-import 'package:more/src/iterable/mixins/unmodifiable.dart';
+import 'package:more/src/iterable/mixins/unmodifiable.dart' show UnmodifiableListMixin;
 
 /// Returns a light-weight immutable iterable list around the characters of
 /// a [string].
@@ -20,29 +20,25 @@ import 'package:more/src/iterable/mixins/unmodifiable.dart';
 ///       .forEach(print);
 ///
 /// For a mutable copy of the string see [mutableString(Object)].
-List<String> string(Object string) {
-  return new _String(string.toString());
-}
+List<String> string(Object string) => new StringList(string.toString());
 
-class _String extends ListBase<String> with UnmodifiableListMixin<String> {
-  final String _string;
+/// A string as an immutable list.
+class StringList extends ListBase<String> with UnmodifiableListMixin<String> {
+  final String contents;
 
-  _String(this._string);
-
-  @override
-  int get length => _string.length;
+  StringList(this.contents);
 
   @override
-  String operator [](int index) =>
-      new String.fromCharCode(_string.codeUnitAt(index));
+  int get length => contents.length;
 
   @override
-  List<String> sublist(int start, [int end]) {
-    return new _String(_string.substring(start, end));
-  }
+  String operator [](int index) => new String.fromCharCode(contents.codeUnitAt(index));
 
   @override
-  String toString() => _string;
+  List<String> sublist(int start, [int end]) => new StringList(contents.substring(start, end));
+
+  @override
+  String toString() => contents;
 }
 
 /// Returns a mutable copy of the characters of a [string].
@@ -55,27 +51,22 @@ class _String extends ListBase<String> with UnmodifiableListMixin<String> {
 ///       result.add('!');
 ///       print(result);
 ///
-/// For a light-weight immutable iterable list of characters see
-/// [string(Object)].
+/// For a light-weight immutable list of characters see [string(Object)].
 List<String> mutableString(Object string, {bool growable: true}) {
-  return new _MutableString(
-      new List.from(string
-          .toString()
-          .codeUnits, growable: growable));
+  return new MutableStringList(new List.from(string.toString().codeUnits, growable: growable));
 }
 
-class _MutableString extends ListBase<String> {
+/// A string as a mutable list.
+class MutableStringList extends ListBase<String> {
   final List<int> _codeUnits;
 
-  _MutableString(this._codeUnits);
+  MutableStringList(this._codeUnits);
 
   @override
   int get length => _codeUnits.length;
 
   @override
-  set length(int newLength) {
-    _codeUnits.length = newLength;
-  }
+  set length(int newLength) => _codeUnits.length = newLength;
 
   @override
   String operator [](int index) => new String.fromCharCode(_codeUnits[index]);
@@ -90,9 +81,7 @@ class _MutableString extends ListBase<String> {
   }
 
   @override
-  List<String> sublist(int start, [int end]) {
-    return new _MutableString(_codeUnits.sublist(start, end));
-  }
+  List<String> sublist(int start, [int end]) => new MutableStringList(_codeUnits.sublist(start, end));
 
   @override
   String toString() => new String.fromCharCodes(_codeUnits);

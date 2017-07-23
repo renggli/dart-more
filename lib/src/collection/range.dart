@@ -1,8 +1,8 @@
 library more.collection.range;
 
-import 'dart:collection';
+import 'dart:collection' show ListBase;
 
-import 'package:more/src/iterable/mixins/unmodifiable.dart';
+import 'package:more/src/iterable/mixins/unmodifiable.dart' show UnmodifiableListMixin;
 
 /// Creates a virtual range of numbers containing an arithmetic progressions.
 ///
@@ -21,46 +21,52 @@ import 'package:more/src/iterable/mixins/unmodifiable.dart';
 /// the first two numbers (including the start, but excluding the end) and the
 /// step value. For example, `range(1, 7, 2)` yields `[1, 3, 5]`.
 List<T> range<T extends num>([T a, T b, T c]) {
-  const num zero = 0;
-  const num one = 1;
-  T start = zero;
-  T stop = zero;
-  T step = one;
-  if (c != null) {
-    start = a;
-    stop = b;
-    step = c;
-  } else if (b != null) {
-    start = a;
-    stop = b;
-    step = start <= stop ? one : -one;
-  } else if (a != null) {
-    stop = a;
-  }
-  if (step == 0) {
-    throw new ArgumentError('Non-zero step-size expected');
-  } else if (start < stop && step < 0) {
-    throw new ArgumentError('Positive step-size expected');
-  } else if (start > stop && step > 0) {
-    throw new ArgumentError('Negative step-size expected');
-  }
-  var length = (stop - start) ~/ step;
-  if ((stop - start) % step > 1e-10 * step.abs()) {
-    length++;
-  }
-  return new _RangeList<T>(start, step, length);
+  return new Range<T>(a, b, c);
 }
 
-class _RangeList<T extends num> extends ListBase<T> with UnmodifiableListMixin<T> {
+/// A virtual range of numbers containing an arithmetic progressions.
+class Range<T extends num> extends ListBase<T> with UnmodifiableListMixin<T> {
+
   final T _start;
   final T _step;
   final int _length;
 
-  _RangeList(this._start, this._step, this._length);
+  factory Range([T a, T b, T c]) {
+    const num zero = 0;
+    const num one = 1;
+    T start = zero;
+    T stop = zero;
+    T step = one;
+    if (c != null) {
+      start = a;
+      stop = b;
+      step = c;
+    } else if (b != null) {
+      start = a;
+      stop = b;
+      step = start <= stop ? one : -one;
+    } else if (a != null) {
+      stop = a;
+    }
+    if (step == 0) {
+      throw new ArgumentError('Non-zero step-size expected');
+    } else if (start < stop && step < 0) {
+      throw new ArgumentError('Positive step-size expected');
+    } else if (start > stop && step > 0) {
+      throw new ArgumentError('Negative step-size expected');
+    }
+    var length = (stop - start) ~/ step;
+    if ((stop - start) % step > 1e-10 * step.abs()) {
+      length++;
+    }
+    return new Range._(start, step, length);
+  }
+
+  Range._(this._start, this._step, this._length);
 
   @override
   Iterator<T> get iterator {
-    return new _RangeIterator<T>(_start, _step, _length);
+    return new RangeIterator<T>(_start, _step, _length);
   }
 
   @override
@@ -81,7 +87,7 @@ class _RangeList<T extends num> extends ListBase<T> with UnmodifiableListMixin<T
     if (end < start || end > length) {
       throw new RangeError.range(end, start, length);
     }
-    return new _RangeList<T>(_start + start * _step, _step, end - start);
+    return new Range._(_start + start * _step, _step, end - start);
   }
 
   @override
@@ -98,26 +104,25 @@ class _RangeList<T extends num> extends ListBase<T> with UnmodifiableListMixin<T
   }
 }
 
-class _RangeIterator<T extends num> extends Iterator<T> {
+class RangeIterator<T extends num> extends Iterator<T> {
   final T _start;
   final T _step;
   final int _length;
 
   int _index = 0;
-  num _current;
 
-  _RangeIterator(this._start, this._step, this._length);
+  RangeIterator(this._start, this._step, this._length);
 
   @override
-  T get current => _current;
+  T current;
 
   @override
   bool moveNext() {
     if (_index == _length) {
-      _current = null;
+      current = null;
       return false;
     } else {
-      _current = _start + _step * _index++;
+      current = _start + _step * _index++;
       return true;
     }
   }

@@ -7,6 +7,7 @@ import 'package:collection/collection.dart' show NonGrowableListMixin;
 
 /// An space efficient fixed length [List] that stores boolean values.
 class BitList extends ListBase<bool> with NonGrowableListMixin<bool> {
+
   // Constants specific to mapping bits into a [UInt32List].
   static const int _shift = 5;
   static const int _offset = 31;
@@ -93,9 +94,7 @@ class BitList extends ListBase<bool> with NonGrowableListMixin<bool> {
     if (other is BitList) {
       buffer.setAll(0, other._buffer);
     } else {
-      for (var index = 0, iterator = other.iterator;
-      iterator.moveNext();
-      index++) {
+      for (var index = 0, iterator = other.iterator; iterator.moveNext(); index++) {
         if (iterator.current) {
           buffer[index >> _shift] |= _setMask[index & _offset];
         }
@@ -177,8 +176,7 @@ class BitList extends ListBase<bool> with NonGrowableListMixin<bool> {
   /// otherwise an exception is thrown.
   BitList operator &(BitList other) {
     if (_length != other._length) {
-      throw new ArgumentError(
-          'Expected list with length ${length}, but got ${other.length}');
+      throw new ArgumentError('Expected list with length ${length}, but got ${other.length}');
     }
     var result = new BitList(_length);
     for (var i = 0; i < _buffer.length; i++) {
@@ -194,8 +192,7 @@ class BitList extends ListBase<bool> with NonGrowableListMixin<bool> {
   /// same length, otherwise an exception is thrown.
   BitList operator |(BitList other) {
     if (_length != other._length) {
-      throw new ArgumentError(
-          'Expected list with length ${length}, but got ${other.length}');
+      throw new ArgumentError('Expected list with length ${length}, but got ${other.length}');
     }
     var result = new BitList(_length);
     for (var i = 0; i < _buffer.length; i++) {
@@ -211,8 +208,7 @@ class BitList extends ListBase<bool> with NonGrowableListMixin<bool> {
   /// length, otherwise an exception is thrown.
   BitList operator -(BitList other) {
     if (_length != other._length) {
-      throw new ArgumentError(
-          'Expected list with length ${length}, but got ${other.length}');
+      throw new ArgumentError('Expected list with length ${length}, but got ${other.length}');
     }
     var result = new BitList(_length);
     for (var i = 0; i < _buffer.length; i++) {
@@ -241,7 +237,7 @@ class BitList extends ListBase<bool> with NonGrowableListMixin<bool> {
       var otherOffset = 1 + _offset - offset;
       for (var i = shift + 1; i < _buffer.length; i++) {
         result._buffer[i] = ((_buffer[i - shift] << offset) & _mask) |
-        ((_buffer[i - shift - 1] >> otherOffset) & _mask);
+            ((_buffer[i - shift - 1] >> otherOffset) & _mask);
       }
       if (shift < _buffer.length) {
         result._buffer[shift] = (_buffer[0] << offset) & _mask;
@@ -271,7 +267,7 @@ class BitList extends ListBase<bool> with NonGrowableListMixin<bool> {
       var otherOffset = 1 + _offset - offset;
       for (var i = 0; i < last; i++) {
         result._buffer[i] = ((_buffer[i + shift] >> offset) & _mask) |
-        ((_buffer[i + shift + 1] << otherOffset) & _mask);
+            ((_buffer[i + shift + 1] << otherOffset) & _mask);
       }
       if (0 <= last) {
         result._buffer[last] = (_buffer[_buffer.length - 1] >> offset) & _mask;

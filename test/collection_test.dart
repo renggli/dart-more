@@ -90,6 +90,43 @@ void main() {
         expect(example.inverse.containsValue(2), isTrue);
         expect(example.inverse.containsValue('b'), isFalse);
       });
+      test('inverse updates', () {
+        var target = new BiMap.from(example);
+        var inverse = target.inverse;
+        target[4] = 'd';
+        expect(inverse['d'], 4, reason: 'inverse sees addition');
+        target.remove(3);
+        expect(inverse[3], isNull, reason: 'inverse sees removal');
+        inverse['e'] = 5;
+        expect(target[5], 'e', reason: 'inverse updates target');
+        inverse.remove('d');
+        expect(target[4], isNull, reason: 'inverse updates target');
+      });
+      test('forward updates', () {
+        var target = new BiMap.from(example);
+        var forward = target.forward;
+        target[4] = 'd';
+        expect(forward[4], 'd', reason: 'inverse sees addition');
+        target.remove(3);
+        expect(forward[3], isNull, reason: 'inverse sees removal');
+        forward[5] = 'e';
+        expect(target[5], 'e', reason: 'inverse updates target');
+        forward.remove(4);
+        expect(target[4], isNull, reason: 'inverse updates target');
+      });
+      test('backward udpates', () {
+        var target = new BiMap.from(example);
+        var backward = target.backward;
+        target[4] = 'd';
+        expect(backward['d'], 4, reason: 'inverse sees addition');
+        target.remove(3);
+        expect(backward[3], isNull, reason: 'inverse sees removal');
+        backward['e'] = 5;
+        expect(target[5], 'e', reason: 'inverse updates target');
+        backward.remove('d');
+        expect(target[4], isNull, reason: 'inverse updates target');
+
+      });
       test('iteration', () {
         var keys = new List(),
             values = new List();
