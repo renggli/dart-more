@@ -1,6 +1,6 @@
 library more.cache.lru;
 
-import 'dart:async';
+import 'dart:async' show Future;
 
 import 'package:more/cache.dart';
 import 'package:more/src/cache/item.dart';

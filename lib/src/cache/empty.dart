@@ -1,6 +1,6 @@
 library more.cache.empty;
 
-import 'dart:async';
+import 'dart:async' show Future, FutureOr;
 
 import 'package:more/cache.dart';
 

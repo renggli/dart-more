@@ -1,6 +1,6 @@
 library more.collection.cache;
 
-import 'dart:async';
+import 'dart:async' show Future;
 
 import 'package:more/src/cache/clock.dart';
 import 'package:more/src/cache/empty.dart';
@@ -14,6 +14,7 @@ export 'package:more/src/cache/delegate.dart';
 export 'package:more/src/cache/loader.dart';
 
 abstract class Cache<K, V> {
+
   /// Constructs an empty or null cache, useful mostly for testing.
   ///
   /// The [loader] defines the function to construct items for the cache.

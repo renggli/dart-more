@@ -1,6 +1,6 @@
 library more.cache.expiry;
 
-import 'dart:async';
+import 'dart:async' show Future, FutureOr;
 
 import 'package:more/cache.dart';
 import 'package:more/src/cache/clock.dart';

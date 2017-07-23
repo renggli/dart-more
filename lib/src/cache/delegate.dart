@@ -1,6 +1,6 @@
 library more.cache.delegate;
 
-import 'dart:async';
+import 'dart:async' show Future;
 
 import 'package:more/cache.dart';
 
