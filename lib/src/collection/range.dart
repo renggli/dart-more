@@ -51,8 +51,7 @@ List<T> range<T extends num>([T a, T b, T c]) {
   return new _RangeList<T>(start, step, length);
 }
 
-class _RangeList<T extends num> extends ListBase<T>
-    with UnmodifiableListMixin<T> {
+class _RangeList<T extends num> extends ListBase<T> with UnmodifiableListMixin<T> {
   final T _start;
   final T _step;
   final int _length;

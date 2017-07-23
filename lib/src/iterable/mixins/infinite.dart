@@ -4,10 +4,11 @@ library more.iterable.mixins.infinite;
 ///
 /// Intended to mix-in on top of `IterableBase<E>`.
 abstract class InfiniteIterable<E> implements Iterable<E> {
+
+  static T _throw<T>() => throw new UnsupportedError('Cannot perform on infite iterable');
+
   @override
-  int get length {
-    throw new StateError('Cannot return the length of an infinite iterable.');
-  }
+  int get length => _throw();
 
   @override
   bool get isEmpty => false;
@@ -16,23 +17,20 @@ abstract class InfiniteIterable<E> implements Iterable<E> {
   bool get isNotEmpty => true;
 
   @override
-  E get last => throw new StateError('Cannot return the last element of an infinite iterable.');
+  E get last => _throw();
 
   @override
-  E lastWhere(bool test(E element), {E orElse()}) =>
-      throw new StateError('Cannot return the last element of an infinite iterable.');
+  E lastWhere(bool test(E element), {E orElse()}) => _throw();
 
   @override
-  E get single => throw new StateError('Cannot return the single element of an infinite iterable.');
+  E get single => _throw();
 
   @override
-  E singleWhere(bool test(E element)) =>
-      throw new StateError('Cannot return the single element of an infinite iterable.');
+  E singleWhere(bool test(E element)) => _throw();
 
   @override
-  List<E> toList({bool growable: true}) =>
-      throw new StateError('Cannot convert an infinite iterable to a list.');
+  List<E> toList({bool growable: true}) => _throw();
 
   @override
-  Set<E> toSet() => throw new StateError('Cannot convert an infinite iterable to a set.');
+  Set<E> toSet() => _throw();
 }

@@ -194,13 +194,13 @@ void main() {
     test('infinite', () {
       expect(cycle([1, 2]).isEmpty, isFalse);
       expect(cycle([1, 2]).isNotEmpty, isTrue);
-      expect(() => cycle([1, 2]).length, throwsStateError);
-      expect(() => cycle([1, 2]).last, throwsStateError);
-      expect(() => cycle([1, 2]).lastWhere((e) => false), throwsStateError);
-      expect(() => cycle([1, 2]).single, throwsStateError);
-      expect(() => cycle([1, 2]).singleWhere((e) => false), throwsStateError);
-      expect(() => cycle([1, 2]).toList(), throwsStateError);
-      expect(() => cycle([1, 2]).toSet(), throwsStateError);
+      expect(() => cycle([1, 2]).length, throwsUnsupportedError);
+      expect(() => cycle([1, 2]).last, throwsUnsupportedError);
+      expect(() => cycle([1, 2]).lastWhere((e) => false), throwsUnsupportedError);
+      expect(() => cycle([1, 2]).single, throwsUnsupportedError);
+      expect(() => cycle([1, 2]).singleWhere((e) => false), throwsUnsupportedError);
+      expect(() => cycle([1, 2]).toList(), throwsUnsupportedError);
+      expect(() => cycle([1, 2]).toSet(), throwsUnsupportedError);
     });
   });
   group('empty (deprecated)', () {
@@ -477,7 +477,7 @@ void main() {
     test('infinite', () {
       var infinite = repeat(1);
       expect(infinite.take(100).every((x) => x == 1), isTrue);
-      expect(() => infinite.length, throwsStateError);
+      expect(() => infinite.length, throwsUnsupportedError);
     });
   });
   group('unqiue', () {

@@ -1,73 +1,69 @@
 library more.iterable.mixins.unmodifiable;
 
+import 'dart:math';
+
 /// Mixin for an unmodifiable [List] class.
 ///
 /// Intended to mix-in on top of `ListBase<E>`.
 abstract class UnmodifiableListMixin<E> implements List<E> {
-  @override
-  void operator []=(int index, E value) =>
-      throw new UnsupportedError('Cannot modify an unmodifiable list.');
+
+  static T _throw<T>() => throw new UnsupportedError('Cannot modify an unmodifiable list');
 
   @override
-  set length(int newLength) =>
-      throw new UnsupportedError('Cannot change the length of an unmodifiable list.');
+  void operator []=(int index, E value) => _throw();
 
   @override
-  void setAll(int at, Iterable<E> iterable) =>
-      throw new UnsupportedError('Cannot modify an unmodifiable list.');
+  set length(int newLength) => _throw();
 
   @override
-  void add(E value) => throw new UnsupportedError('Cannot add to an unmodifiable list.');
+  void setAll(int at, Iterable<E> iterable) => _throw();
 
   @override
-  E insert(int index, E value) => throw new UnsupportedError('Cannot add to an unmodifiable list.');
+  void add(E value) => _throw();
 
   @override
-  void insertAll(int at, Iterable<E> iterable) =>
-      throw new UnsupportedError('Cannot add to an unmodifiable list.');
+  E insert(int index, E value) => _throw();
 
   @override
-  void addAll(Iterable<E> iterable) =>
-      throw new UnsupportedError('Cannot add to an unmodifiable list.');
+  void insertAll(int at, Iterable<E> iterable) => _throw();
 
   @override
-  bool remove(Object element) =>
-      throw new UnsupportedError('Cannot remove from an unmodifiable list.');
+  void addAll(Iterable<E> iterable) => _throw();
 
   @override
-  void removeWhere(bool test(E element)) =>
-      throw new UnsupportedError('Cannot remove from an unmodifiable list.');
+  bool remove(Object element) => _throw();
 
   @override
-  void retainWhere(bool test(E element)) =>
-      throw new UnsupportedError('Cannot remove from an unmodifiable list.');
+  void removeWhere(bool test(E element)) => _throw();
 
   @override
-  void sort([Comparator<E> compare]) =>
-      throw new UnsupportedError('Cannot modify an unmodifiable list.');
+  void retainWhere(bool test(E element)) => _throw();
 
   @override
-  void clear() => throw new UnsupportedError('Cannot clear an unmodifiable list.');
+  void sort([Comparator<E> compare]) => _throw();
 
   @override
-  E removeAt(int index) => throw new UnsupportedError('Cannot remove from an unmodifiable list.');
+  void shuffle([Random random]) => _throw();
 
   @override
-  E removeLast() => throw new UnsupportedError('Cannot remove from an unmodifiable list.');
+  void clear() => _throw();
 
   @override
-  void setRange(int start, int end, Iterable<E> iterable, [int skipCount = 0]) =>
-      throw new UnsupportedError('Cannot modify an unmodifiable list.');
+  E removeAt(int index) => _throw();
 
   @override
-  void removeRange(int start, int end) =>
-      throw new UnsupportedError('Cannot remove from an unmodifiable list.');
+  E removeLast() => _throw();
 
   @override
-  void replaceRange(int start, int end, Iterable<E> iterable) =>
-      throw new UnsupportedError('Cannot remove from an unmodifiable list.');
+  void setRange(int start, int end, Iterable<E> iterable, [int skipCount = 0]) => _throw();
 
   @override
-  void fillRange(int start, int end, [E fillValue]) =>
-      throw new UnsupportedError('Cannot modify an unmodifiable list.');
+  void removeRange(int start, int end) => _throw();
+
+  @override
+  void replaceRange(int start, int end, Iterable<E> iterable) => _throw();
+
+  @override
+  void fillRange(int start, int end, [E fillValue]) => _throw();
+
 }

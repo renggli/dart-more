@@ -5,5 +5,7 @@ description: More Dart — Literally
 homepage: https://github.com/renggli/dart-more
 environment:
   sdk: '>=1.23.0 <2.0.0'
+dependencies:
+  collection: '^1.14.0'
 dev_dependencies:
   test: ^0.12.0
