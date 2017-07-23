@@ -1,6 +1,6 @@
 library more.iterable.product;
 
-import 'dart:collection';
+import 'dart:collection' show IterableBase;
 
 /// Returns an iterable over the cross product of [iterables].
 ///

@@ -1,6 +1,6 @@
 library more.iterable.partition;
 
-import 'dart:collection';
+import 'dart:collection' show IterableBase;
 
 /// Marker for an absent padding object.
 const noPadding = const Object();

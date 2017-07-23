@@ -1,6 +1,6 @@
 library more.iterable.indexed;
 
-import 'dart:collection';
+import 'dart:collection' show IterableBase;
 
 /// Returns a [Indexed] iterable
 ///

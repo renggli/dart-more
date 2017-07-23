@@ -1,6 +1,6 @@
 library more.iterable.fold;
 
-import 'dart:collection';
+import 'dart:collection' show IterableBase;
 
 import 'package:more/src/iterable/mixins/infinite.dart';
 

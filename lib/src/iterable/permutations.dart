@@ -1,6 +1,6 @@
 library more.iterable.permutations;
 
-import 'dart:collection';
+import 'dart:collection' show IterableBase;
 
 /// Returns an iterable over the permutations of [elements]. The permutations
 /// are emitted in lexicographical order based on the input.

@@ -1,6 +1,6 @@
 library more.iterable.math;
 
-import 'dart:collection';
+import 'dart:collection' show IterableBase;
 
 import 'package:more/src/iterable/fold.dart';
 

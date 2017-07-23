@@ -1,6 +1,6 @@
 library more.iterable.combinations;
 
-import 'dart:collection';
+import 'dart:collection' show IterableBase;
 
 /// Returns an iterable over the combinations of [elements] of length [count]. The
 /// combinations are emitted in lexicographical order based on the input.

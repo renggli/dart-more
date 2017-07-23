@@ -1,6 +1,6 @@
 library more.iterable.unique;
 
-import 'dart:collection';
+import 'dart:collection' show IterableBase, HashSet;
 
 typedef bool Equality<E>(E a, E b);
 typedef int Hash<E>(E a);
