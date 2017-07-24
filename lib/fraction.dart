@@ -1,7 +1,7 @@
 /// Support for exact rational number arithmetic.
 library more.fraction;
 
-import 'package:more/int_math.dart' as int_math;
+import 'package:more/src/int_math/gcd.dart';
 
 /// A rational number.
 class Fraction implements Comparable<Fraction> {
@@ -20,7 +20,7 @@ class Fraction implements Comparable<Fraction> {
     if (denominator == 0) {
       throw new ArgumentError('Denominator needs to be non-zero.');
     }
-    var d = int_math.gcd(numerator, denominator).abs();
+    var d = gcd(numerator, denominator).abs();
     if (denominator < 0) {
       d *= -1;
     }
