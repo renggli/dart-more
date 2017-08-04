@@ -5,7 +5,7 @@ import 'dart:async';
 import 'package:more/cache.dart';
 import 'package:test/test.dart';
 
-const delay = const Duration(milliseconds: 10);
+const Duration delay = const Duration(milliseconds: 10);
 
 // Various common loaders used with the tests.
 String failingLoader(int key) {

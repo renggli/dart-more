@@ -3,7 +3,7 @@ library more.iterable.partition;
 import 'dart:collection' show IterableBase;
 
 /// Marker for an absent padding object.
-const noPadding = const Object();
+const dynamic noPadding = const Object();
 
 /// Divides an `iterable` into sub-iterables of a given `size`. If no `padding` is provided, the
 /// final iterable is smaller or equal the desired side, otherwise the final iterable will be
