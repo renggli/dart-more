@@ -7,6 +7,7 @@ library more.char_matcher;
 
 import 'package:more/src/char_matcher/any.dart';
 import 'package:more/src/char_matcher/ascii.dart';
+import 'package:more/src/char_matcher/char_set.dart';
 import 'package:more/src/char_matcher/digit.dart';
 import 'package:more/src/char_matcher/disjunctive.dart';
 import 'package:more/src/char_matcher/letter.dart';
@@ -51,8 +52,11 @@ abstract class CharMatcher {
   factory CharMatcher.inRange(Object start, Object stop) =>
       new RangeCharMatcher(_toCharCode(start), _toCharCode(stop));
 
+  /// A matcher that accepts a set of characters.
+  factory CharMatcher.charSet(String chars) => fromCharSet(chars);
+
   /// A matcher that accepts a regular expression character class.
-  factory CharMatcher.pattern(String pattern) => toCharMatcher(pattern);
+  factory CharMatcher.pattern(String pattern) => fromPattern(pattern);
 
   /// A matcher that accepts ASCII characters.
   factory CharMatcher.ascii() => const AsciiCharMatcher();

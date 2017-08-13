@@ -89,6 +89,25 @@ void main() {
       verify(new CharMatcher.whitespace(), string, 'abcABC_!@#');
     });
   });
+  group('char set', () {
+    test('empty', () {
+      verify(new CharMatcher.charSet(''), '', 'abc');
+    });
+    test('single', () {
+      verify(new CharMatcher.charSet('b'), 'b', 'ac');
+    });
+    test('many single', () {
+      verify(new CharMatcher.charSet('bcd'), 'bcd', 'ae');
+      verify(new CharMatcher.charSet('dcb'), 'bcd', 'ae');
+    });
+    test('many separate', () {
+      verify(new CharMatcher.charSet('bdf'), 'bdf', 'aceg');
+      verify(new CharMatcher.charSet('fdb'), 'bdf', 'aceg');
+    });
+    test('special chars', () {
+      verify(new CharMatcher.charSet('^a-z'), '^-az', 'by');
+    });
+  });
   group('patterns', () {
     test('empty', () {
       verify(new CharMatcher.pattern(''), '', 'abc');
