@@ -61,27 +61,24 @@ abstract class Ordering<T> {
   /// * a positive integer if [a] is greater than [b].
   int compare(T a, T b);
 
-  /// Returns the reverse ordering.
-  Ordering<T> reverse() => new ReverseOrdering<T>(this);
+  /// Returns the reversed ordering.
+  Ordering<T> get reversed => new ReverseOrdering<T>(this);
+
+  /// Returns an ordering that orders [null] values before non-null values.
+  Ordering<T> get nullsFirst => new NullsFirstOrdering<T>(this);
+
+  /// Returns an ordering that orders [null] values after non-null values.
+  Ordering<T> get nullsLast => new NullsLastOrdering<T>(this);
 
   /// Returns an ordering that breaks the tie of the receiver by using [other].
-  Ordering<T> compound(Ordering<T> other) =>
-      new CompoundOrdering<T>([this, other]);
+  Ordering<T> compound(Ordering<T> other) => new CompoundOrdering<T>([this, other]);
 
   /// Returns an ordering that orders iterables lexicographically by
   /// their elements.
-  Ordering<Iterable<T>> lexicographical() =>
-      new LexicographicalOrdering<T>(this);
-
-  /// Returns an ordering that orders [null] values before non-null values.
-  Ordering<T> nullsFirst() => new NullsFirstOrdering<T>(this);
-
-  /// Returns an ordering that orders [null] values after non-null values.
-  Ordering<T> nullsLast() => new NullsLastOrdering<T>(this);
+  Ordering<Iterable<T>> get lexicographical => new LexicographicalOrdering<T>(this);
 
   /// Returns an ordering that uses the provided [function] to transform the result.
-  Ordering<F> onResultOf<F>(T function(F argument)) =>
-      new MappedOrdering<F, T>(this, function);
+  Ordering<F> onResultOf<F>(T function(F argument)) => new MappedOrdering<F, T>(this, function);
 
   /// Searches the sorted [list] for the specified [value] using binary search.
   ///
@@ -105,9 +102,7 @@ abstract class Ordering<T> {
   }
 
   /// Sorts the provided [list] in place.
-  void sort(List<T> list) {
-    list.sort(compare);
-  }
+  void sort(List<T> list) => list.sort(compare);
 
   /// Returns a sorted copy of the provided [iterable].
   List<T> sorted(Iterable<T> iterable) {
@@ -147,9 +142,7 @@ abstract class Ordering<T> {
   }
 
   /// Returns the maximum of the two arguments [a] and [b].
-  T max(T a, T b) {
-    return compare(a, b) > 0 ? a : b;
-  }
+  T max(T a, T b) => compare(a, b) > 0 ? a : b;
 
   /// Returns the maximum of the provided [iterable].
   T maxOf(Iterable<T> iterable, {T orElse()}) {
@@ -168,9 +161,7 @@ abstract class Ordering<T> {
   }
 
   /// Returns the minimum of the two arguments [a] and [b].
-  T min(T a, T b) {
-    return compare(a, b) < 0 ? a : b;
-  }
+  T min(T a, T b) => compare(a, b) < 0 ? a : b;
 
   /// Returns the minimum of the provided [iterable].
   T minOf(Iterable<T> iterable, {T orElse()}) {

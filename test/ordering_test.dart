@@ -1,19 +1,51 @@
 library more.test.ordering_test;
 
+import 'package:more/iterable.dart' show concat;
 import 'package:more/ordering.dart';
 import 'package:test/test.dart';
 
-void verify<T>(Ordering<T> ordering, Iterable<T> unsorted,
-    Iterable<T> expected) {
+void verifyBasic<T>(String type, Ordering<T> ordering, Iterable<T> unsorted, Iterable<T> expected) {
   var sorted = ordering.sorted(unsorted);
-  expect(sorted, expected);
-  expect(ordering.isOrdered(sorted), isTrue);
+  expect(sorted, expected, reason: '$type.sorted');
+  expect(ordering.isOrdered(sorted), isTrue, reason: '$type.isOrdered');
   for (var element in unsorted) {
-    expect(ordering.binarySearch(sorted, element), (int index) => (index) >= 0);
+    expect(ordering.binarySearch(sorted, element), (int index) => (index) >= 0,
+        reason: '$type.binarySearch');
   }
   if (sorted.isNotEmpty) {
-    expect(ordering.minOf(unsorted), expected.first);
-    expect(ordering.maxOf(unsorted), expected.last);
+    expect(ordering.minOf(unsorted), expected.first, reason: '$type.minOf');
+    expect(ordering.maxOf(unsorted), expected.last, reason: '$type.maxOf');
+  }
+}
+
+void verify<T>(Ordering<T> ordering, Iterable<T> unsorted, Iterable<T> expected) {
+  verifyBasic('ordering', ordering, unsorted, expected);
+  verifyBasic('ordering.reversed', ordering.reversed, unsorted, expected.toList().reversed);
+  if (!unsorted.contains(null)) {
+    verifyBasic(
+        'ordering.nullsFirst',
+        ordering.nullsFirst,
+        concat([
+          [null],
+          unsorted,
+          [null]
+        ]),
+        concat([
+          [null, null],
+          expected
+        ]));
+    verifyBasic(
+        'ordering.nullsLast',
+        ordering.nullsLast,
+        concat([
+          [null],
+          unsorted,
+          [null]
+        ]),
+        concat([
+          expected,
+          [null, null]
+        ]));
   }
 }
 
@@ -29,8 +61,7 @@ void main() {
       verify(ordering, [3, 2, 1], [1, 2, 3]);
     });
     test('comparator', () {
-      var ordering =
-      new Ordering.from((String a, String b) => a.length - b.length);
+      var ordering = new Ordering.from((String a, String b) => a.length - b.length);
       verify(ordering, ['*', '**', '***'], ['*', '**', '***']);
       verify(ordering, ['**', '***', '*'], ['*', '**', '***']);
       verify(ordering, ['***', '*', '**'], ['*', '**', '***']);
@@ -48,15 +79,15 @@ void main() {
   });
   group('operators', () {
     test('reverse', () {
-      var ordering = natural.reverse();
-      expect(ordering.reverse(), same(natural));
+      var ordering = natural.reversed;
+      expect(ordering.reversed, same(natural));
       verify(ordering, [1, 2, 3], [3, 2, 1]);
       verify(ordering, [2, 3, 1], [3, 2, 1]);
       verify(ordering, [3, 1, 2], [3, 2, 1]);
       verify(ordering, [3, 2, 1], [3, 2, 1]);
     });
     test('lexicographical', () {
-      var ordering = natural.lexicographical();
+      var ordering = natural.lexicographical;
       verify(ordering, [
         [],
         [1],
@@ -85,27 +116,27 @@ void main() {
       ]);
     });
     test('nullsFirst', () {
-      var ordering = natural.nullsFirst();
+      var ordering = natural.nullsFirst;
+      expect(ordering.nullsFirst, same(ordering));
       verify(ordering, [null, 1, 2, 3], [null, 1, 2, 3]);
       verify(ordering, [2, null, 3, 1], [null, 1, 2, 3]);
       verify(ordering, [3, 1, null, 2], [null, 1, 2, 3]);
       verify(ordering, [3, 2, 1, null], [null, 1, 2, 3]);
     });
     test('nullsLast', () {
-      var ordering = natural.nullsLast();
+      var ordering = natural.nullsLast;
+      expect(ordering.nullsLast, same(ordering));
       verify(ordering, [null, 1, 2, 3], [1, 2, 3, null]);
       verify(ordering, [2, null, 3, 1], [1, 2, 3, null]);
       verify(ordering, [3, 1, null, 2], [1, 2, 3, null]);
       verify(ordering, [3, 2, 1, null], [1, 2, 3, null]);
     });
     test('compound', () {
-      var ordering =
-      natural.onResultOf((String s) => s.length).compound(natural);
+      var ordering = natural.onResultOf((String s) => s.length).compound(natural);
       verify(ordering, ['333', '1', '4444', '22'], ['1', '22', '333', '4444']);
-      verify(ordering, ['2', '333', '4444', '1', '22'],
-          ['1', '2', '22', '333', '4444']);
-      verify(ordering, ['33', '333', '2', '22', '1', '4444'],
-          ['1', '2', '22', '33', '333', '4444']);
+      verify(ordering, ['2', '333', '4444', '1', '22'], ['1', '2', '22', '333', '4444']);
+      verify(
+          ordering, ['33', '333', '2', '22', '1', '4444'], ['1', '2', '22', '33', '333', '4444']);
       verify(ordering, ['4444', '44', '2', '1', '333', '22', '33'],
           ['1', '2', '22', '33', '44', '333', '4444']);
     });

@@ -11,5 +11,5 @@ class ReverseOrdering<T> extends Ordering<T> {
   int compare(T a, T b) => ordering.compare(b, a);
 
   @override
-  Ordering<T> reverse() => ordering;
+  Ordering<T> get reversed => ordering;
 }

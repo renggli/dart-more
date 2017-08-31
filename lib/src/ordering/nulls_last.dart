@@ -19,4 +19,13 @@ class NullsLastOrdering<T> extends Ordering<T> {
       return ordering.compare(a, b);
     }
   }
+
+  @override
+  Ordering<T> get reversed => ordering.reversed.nullsFirst;
+
+  @override
+  Ordering<T> get nullsFirst => ordering.nullsFirst;
+
+  @override
+  Ordering<T> get nullsLast => this;
 }

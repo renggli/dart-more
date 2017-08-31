@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.8.0
+
+* Ordering.reversed, Ordering.nullsFirst, Ordering.nullsLast, and Ordering.lexicographical
+  are now properties for consistency with the Iterable protocol.
+
 ## 1.7.2
 
 * Cleanup after micro library migration.
