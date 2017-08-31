@@ -979,9 +979,9 @@ void main() {
       });
       test('printing', () {
         expect(range().toString(), 'range()');
-        expect(range(1.0).toString(), 'range(1.0)');
-        expect(range(1.0, 2.0).toString(), 'range(1.0, 2.0)');
-        expect(range(1.0, 5.0, 0.5).toString(), 'range(1.0, 5.0, 0.5)');
+        expect(range(1.2).toString(), 'range(1.2)');
+        expect(range(1.2, 3.4).toString(), 'range(1.2, 3.4)');
+        expect(range(1.2, 3.4, 0.5).toString(), 'range(1.2, 3.4, 0.5)');
       });
       test('unmodifiable', () {
         var list = range(1.0, 5.0);
