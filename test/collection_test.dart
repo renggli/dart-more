@@ -729,94 +729,281 @@ void main() {
       for (var i = 0; i < expected.length; i++) {
         expect(iterator.moveNext(), isTrue);
         expect(iterator.current, range[i]);
+        expect(range.indexOf(iterator.current), i);
+        expect(range.indexOf(iterator.current, i), i);
+        expect(range.indexOf(iterator.current, -1), i);
+        expect(range.lastIndexOf(iterator.current), i);
+        expect(range.lastIndexOf(iterator.current, i), i);
+        expect(range.lastIndexOf(iterator.current, expected.length), i);
       }
       expect(iterator.moveNext(), isFalse);
       expect(() => range[-1], throwsRangeError);
       expect(() => range[expected.length], throwsRangeError);
+      for (var value in expected) {
+        expect(range.contains(value), isTrue);
+      }
     }
-
-    group('constructor', () {
-      test('empty', () {
-        verify(range(), []);
+    group('int', () {
+      group('constructor', () {
+        test('empty', () {
+          verify(range<int>(), []);
+          expect(range<int>().contains(0), isFalse);
+        });
+        test('1 argument', () {
+          verify(range(0), []);
+          verify(range(1), [0]);
+          verify(range(2), [0, 1]);
+          verify(range(3), [0, 1, 2]);
+        });
+        test('2 argument', () {
+          verify(range(0, 4), [0, 1, 2, 3]);
+          verify(range(5, 9), [5, 6, 7, 8]);
+          verify(range(9, 5), [9, 8, 7, 6]);
+        });
+        test('3 argument (positive step)', () {
+          verify(range(2, 8, 2), [2, 4, 6]);
+          verify(range(3, 8, 2), [3, 5, 7]);
+          verify(range(4, 8, 2), [4, 6]);
+          verify(range(2, 7, 2), [2, 4, 6]);
+          verify(range(2, 6, 2), [2, 4]);
+        });
+        test('3 argument (negative step)', () {
+          verify(range(8, 2, -2), [8, 6, 4]);
+          verify(range(8, 3, -2), [8, 6, 4]);
+          verify(range(8, 4, -2), [8, 6]);
+          verify(range(7, 2, -2), [7, 5, 3]);
+          verify(range(6, 2, -2), [6, 4]);
+        });
+        test('invalid', () {
+          expect(() => range(0, 2, 0), throwsArgumentError);
+          expect(() => range(0, 2, -1), throwsArgumentError);
+          expect(() => range(2, 0, 1), throwsArgumentError);
+        });
       });
-      test('1 argument', () {
-        verify(range(0), []);
-        verify(range(1), [0]);
-        verify(range(2), [0, 1]);
-        verify(range(3), [0, 1, 2]);
+      group('sublist', () {
+        test('1 argument', () {
+          verify(range(3).sublist(0), [0, 1, 2]);
+          verify(range(3).sublist(1), [1, 2]);
+          verify(range(3).sublist(2), [2]);
+          verify(range(3).sublist(3), []);
+          expect(() => range(3).sublist(4), throwsRangeError);
+        });
+        test('2 arguments', () {
+          verify(range(3).sublist(0, 3), [0, 1, 2]);
+          verify(range(3).sublist(0, 2), [0, 1]);
+          verify(range(3).sublist(0, 1), [0]);
+          verify(range(3).sublist(0, 0), []);
+          expect(() => range(3).sublist(0, 4), throwsRangeError);
+        });
       });
-      test('2 argument', () {
-        verify(range(0, 4), [0, 1, 2, 3]);
-        verify(range(5, 9), [5, 6, 7, 8]);
-        verify(range(9, 5), [9, 8, 7, 6]);
+      group('index', () {
+        test('indexOf (positive step)', () {
+          var r = range(2, 7, 2); // [2, 4, 6]
+          expect(r.indexOf(null), -1);
+          expect(r.indexOf(1), -1);
+          expect(r.indexOf(3), -1);
+          expect(r.indexOf(5), -1);
+          expect(r.indexOf(7), -1);
+          expect(r.indexOf(2, 1), -1);
+          expect(r.indexOf(4, 2), -1);
+          expect(r.indexOf(6, 3), -1);
+          expect(r.indexOf(8, 4), -1);
+        });
+        test('indexOf (negative step)', () {
+          var r = range(7, 2, -2); // [7, 5, 3]
+          expect(r.indexOf(null), -1);
+          expect(r.indexOf(2), -1);
+          expect(r.indexOf(4), -1);
+          expect(r.indexOf(6), -1);
+          expect(r.indexOf(8), -1);
+          expect(r.indexOf(2, 1), -1);
+          expect(r.indexOf(4, 2), -1);
+          expect(r.indexOf(6, 3), -1);
+          expect(r.indexOf(8, 4), -1);
+        });
+        test('lastIndexOf (positive step)', () {
+          var r = range(2, 7, 2); // [2, 4, 6]
+          expect(r.lastIndexOf(null), -1);
+          expect(r.lastIndexOf(1), -1);
+          expect(r.lastIndexOf(3), -1);
+          expect(r.lastIndexOf(5), -1);
+          expect(r.lastIndexOf(7), -1);
+          expect(r.lastIndexOf(1, 1), -1);
+          expect(r.lastIndexOf(3, 2), -1);
+          expect(r.lastIndexOf(5, 3), -1);
+          expect(r.lastIndexOf(7, 4), -1);
+        });
+        test('lastIndexOf (negative step)', () {
+          var r = range(7, 2, -2); // [7, 5, 3]
+          expect(r.lastIndexOf(null), -1);
+          expect(r.lastIndexOf(2), -1);
+          expect(r.lastIndexOf(4), -1);
+          expect(r.lastIndexOf(6), -1);
+          expect(r.lastIndexOf(8), -1);
+          expect(r.lastIndexOf(2, 1), -1);
+          expect(r.lastIndexOf(4, 2), -1);
+          expect(r.lastIndexOf(6, 3), -1);
+          expect(r.lastIndexOf(8, 4), -1);
+        });
       });
-      test('3 argument (positive step)', () {
-        verify(range(2, 8, 2), [2, 4, 6]);
-        verify(range(3, 8, 2), [3, 5, 7]);
-        verify(range(4, 8, 2), [4, 6]);
-        verify(range(2, 7, 2), [2, 4, 6]);
-        verify(range(2, 6, 2), [2, 4]);
+      test('printing', () {
+        expect(range().toString(), 'range()');
+        expect(range(1).toString(), 'range(1)');
+        expect(range(1, 2).toString(), 'range(1, 2)');
+        expect(range(1, 5, 2).toString(), 'range(1, 5, 2)');
       });
-      test('3 argument (negative step)', () {
-        verify(range(8, 2, -2), [8, 6, 4]);
-        verify(range(8, 3, -2), [8, 6, 4]);
-        verify(range(8, 4, -2), [8, 6]);
-        verify(range(7, 2, -2), [7, 5, 3]);
-        verify(range(6, 2, -2), [6, 4]);
-      });
-      test('double', () {
-        expect(range(1.5, 4.0), [1.5, 2.5, 3.5]);
-        expect(range(1.5, 1.8, 0.1), [1.5, 1.6, 1.7]);
-        expect(range(1.5, 1.8, 0.2), [1.5, 1.7]);
-      });
-      test('invalid', () {
-        expect(() => range(0, 2, 0), throwsArgumentError);
-        expect(() => range(0, 2, -1), throwsArgumentError);
-        expect(() => range(2, 0, 1), throwsArgumentError);
+      test('unmodifiable', () {
+        var list = range(1, 5);
+        expect(() => list[0] = 5, throwsUnsupportedError);
+        expect(() => list.add(5), throwsUnsupportedError);
+        expect(() => list.addAll([5, 6]), throwsUnsupportedError);
+        expect(() => list.clear(), throwsUnsupportedError);
+        expect(() => list.fillRange(2, 4, 5), throwsUnsupportedError);
+        expect(() => list.insert(2, 5), throwsUnsupportedError);
+        expect(() => list.insertAll(2, [5, 6]), throwsUnsupportedError);
+        expect(() => list.length = 10, throwsUnsupportedError);
+        expect(() => list.remove(5), throwsUnsupportedError);
+        expect(() => list.removeAt(2), throwsUnsupportedError);
+        expect(() => list.removeLast(), throwsUnsupportedError);
+        expect(() => list.removeRange(2, 4), throwsUnsupportedError);
+        expect(() => list.removeWhere((value) => true), throwsUnsupportedError);
+        expect(() => list.replaceRange(2, 4, [5, 6]), throwsUnsupportedError);
+        expect(() => list.retainWhere((value) => false), throwsUnsupportedError);
+        expect(() => list.setAll(2, [5, 6]), throwsUnsupportedError);
+        expect(() => list.setRange(2, 4, [5, 6]), throwsUnsupportedError);
+        expect(() => list.sort(), throwsUnsupportedError);
       });
     });
-    group('sublist', () {
-      test('1 argument', () {
-        verify(range(3).sublist(0), [0, 1, 2]);
-        verify(range(3).sublist(1), [1, 2]);
-        verify(range(3).sublist(2), [2]);
-        verify(range(3).sublist(3), []);
-        expect(() => range(3).sublist(4), throwsRangeError);
+    group('double', () {
+      group('constructor', () {
+        test('empty', () {
+          verify(range<double>(), []);
+          expect(range<double>().contains(0), isFalse);
+        });
+        test('1 argument', () {
+          verify(range(0.0), []);
+          verify(range(1.0), [0.0]);
+          verify(range(2.0), [0.0, 1.0]);
+          verify(range(3.0), [0.0, 1.0, 2.0]);
+        });
+        test('2 argument', () {
+          verify(range(0.0, 4.0), [0.0, 1.0, 2.0, 3.0]);
+          verify(range(5.0, 9.0), [5.0, 6.0, 7.0, 8.0]);
+          verify(range(9.0, 5.0), [9.0, 8.0, 7.0, 6.0]);
+        });
+        test('3 argument (positive step)', () {
+          verify(range(2.0, 8.0, 1.5), [2.0, 3.5, 5.0, 6.5]);
+          verify(range(3.0, 8.0, 1.5), [3.0, 4.5, 6.0, 7.5]);
+          verify(range(4.0, 8.0, 1.5), [4.0, 5.5, 7.0]);
+          verify(range(2.0, 7.0, 1.5), [2.0, 3.5, 5.0, 6.5]);
+          verify(range(2.0, 6.0, 1.5), [2.0, 3.5, 5.0]);
+        });
+        test('3 argument (negative step)', () {
+          verify(range(8.0, 2.0, -1.5), [8.0, 6.5, 5.0, 3.5]);
+          verify(range(8.0, 3.0, -1.5), [8.0, 6.5, 5.0, 3.5]);
+          verify(range(8.0, 4.0, -1.5), [8.0, 6.5, 5.0]);
+          verify(range(7.0, 2.0, -1.5), [7.0, 5.5, 4.0, 2.5]);
+          verify(range(6.0, 2.0, -1.5), [6.0, 4.5, 3.0]);
+        });
+        test('invalid', () {
+          expect(() => range(0.0, 2.0, 0.0), throwsArgumentError);
+          expect(() => range(0.0, 2.0, -1.5), throwsArgumentError);
+          expect(() => range(2.0, 0.0, 1.5), throwsArgumentError);
+        });
       });
-      test('2 arguments', () {
-        verify(range(3).sublist(0, 3), [0, 1, 2]);
-        verify(range(3).sublist(0, 2), [0, 1]);
-        verify(range(3).sublist(0, 1), [0]);
-        verify(range(3).sublist(0, 0), []);
-        expect(() => range(3).sublist(0, 4), throwsRangeError);
+      group('sublist', () {
+        test('1 argument', () {
+          verify(range(3.0).sublist(0), [0.0, 1.0, 2.0]);
+          verify(range(3.0).sublist(1), [1.0, 2.0]);
+          verify(range(3.0).sublist(2), [2.0]);
+          verify(range(3.0).sublist(3), []);
+          expect(() => range(3).sublist(4), throwsRangeError);
+        });
+        test('2 arguments', () {
+          verify(range(3.0).sublist(0, 3), [0.0, 1.0, 2.0]);
+          verify(range(3.0).sublist(0, 2), [0.0, 1.0]);
+          verify(range(3.0).sublist(0, 1), [0.0]);
+          verify(range(3.0).sublist(0, 0), []);
+          expect(() => range(3).sublist(0, 4), throwsRangeError);
+        });
       });
-    });
-    test('printing', () {
-      expect(range().toString(), 'range()');
-      expect(range(1).toString(), 'range(1)');
-      expect(range(1, 2).toString(), 'range(1, 2)');
-      expect(range(1, 5, 2).toString(), 'range(1, 5, 2)');
-    });
-    test('unmodifiable', () {
-      var list = range(1, 5);
-      expect(() => list[0] = 5, throwsUnsupportedError);
-      expect(() => list.add(5), throwsUnsupportedError);
-      expect(() => list.addAll([5, 6]), throwsUnsupportedError);
-      expect(() => list.clear(), throwsUnsupportedError);
-      expect(() => list.fillRange(2, 4, 5), throwsUnsupportedError);
-      expect(() => list.insert(2, 5), throwsUnsupportedError);
-      expect(() => list.insertAll(2, [5, 6]), throwsUnsupportedError);
-      expect(() => list.length = 10, throwsUnsupportedError);
-      expect(() => list.remove(5), throwsUnsupportedError);
-      expect(() => list.removeAt(2), throwsUnsupportedError);
-      expect(() => list.removeLast(), throwsUnsupportedError);
-      expect(() => list.removeRange(2, 4), throwsUnsupportedError);
-      expect(() => list.removeWhere((value) => true), throwsUnsupportedError);
-      expect(() => list.replaceRange(2, 4, [5, 6]), throwsUnsupportedError);
-      expect(() => list.retainWhere((value) => false), throwsUnsupportedError);
-      expect(() => list.setAll(2, [5, 6]), throwsUnsupportedError);
-      expect(() => list.setRange(2, 4, [5, 6]), throwsUnsupportedError);
-      expect(() => list.sort(), throwsUnsupportedError);
+      group('index', () {
+        test('indexOf (positive step)', () {
+          var r = range(2.0, 7.0, 1.5); // [2.0, 3.5, 5.0, 6.5]
+          expect(r.indexOf(null), -1);
+          expect(r.indexOf(1.0), -1);
+          expect(r.indexOf(3.0), -1);
+          expect(r.indexOf(7.0), -1);
+          expect(r.indexOf(2.0, 1), -1);
+          expect(r.indexOf(3.5, 2), -1);
+          expect(r.indexOf(5.0, 3), -1);
+          expect(r.indexOf(6.5, 4), -1);
+        });
+        test('indexOf (negative step)', () {
+          var r = range(7.0, 2.0, -1.5); // [7.0, 5.5, 4.0, 2.5]
+          expect(r.indexOf(null), -1);
+          expect(r.indexOf(2.0), -1);
+          expect(r.indexOf(5.0), -1);
+          expect(r.indexOf(8.0), -1);
+          expect(r.indexOf(7.0, 1), -1);
+          expect(r.indexOf(5.5, 2), -1);
+          expect(r.indexOf(4.0, 3), -1);
+          expect(r.indexOf(2.5, 4), -1);
+        });
+        test('lastIndexOf (positive step)', () {
+          var r = range(2.0, 7.0, 1.5); // [2.0, 3.5, 5.0, 6.5]
+          expect(r.lastIndexOf(null), -1);
+          expect(r.lastIndexOf(1.0), -1);
+          expect(r.lastIndexOf(3.0), -1);
+          expect(r.lastIndexOf(7.0), -1);
+          expect(r.lastIndexOf(2.0, -1), -1);
+          expect(r.lastIndexOf(3.5, 0), -1);
+          expect(r.lastIndexOf(5.0, 1), -1);
+          expect(r.lastIndexOf(6.5, 2), -1);
+          expect(r.lastIndexOf(7.0, 3), -1);
+          expect(r.lastIndexOf(8.5, 4), -1);
+        });
+        test('lastIndexOf (negative step)', () {
+          var r = range(7.0, 2.0, -1.5); // [7.0, 5.5, 4.0, 2.5]
+          expect(r.lastIndexOf(null), -1);
+          expect(r.lastIndexOf(2.0), -1);
+          expect(r.lastIndexOf(5.0), -1);
+          expect(r.lastIndexOf(8.0), -1);
+          expect(r.lastIndexOf(7.0, -1), -1);
+          expect(r.lastIndexOf(5.5, 0), -1);
+          expect(r.lastIndexOf(4.0, 1), -1);
+          expect(r.lastIndexOf(2.5, 2), -1);
+          expect(r.lastIndexOf(1.0, 3), -1);
+          expect(r.lastIndexOf(0.0, 4), -1);
+        });
+      });
+      test('printing', () {
+        expect(range().toString(), 'range()');
+        expect(range(1.0).toString(), 'range(1.0)');
+        expect(range(1.0, 2.0).toString(), 'range(1.0, 2.0)');
+        expect(range(1.0, 5.0, 0.5).toString(), 'range(1.0, 5.0, 0.5)');
+      });
+      test('unmodifiable', () {
+        var list = range(1.0, 5.0);
+        expect(() => list[0] = 5.0, throwsUnsupportedError);
+        expect(() => list.add(5.0), throwsUnsupportedError);
+        expect(() => list.addAll([5.0, 6.0]), throwsUnsupportedError);
+        expect(() => list.clear(), throwsUnsupportedError);
+        expect(() => list.fillRange(2, 4, 5.0), throwsUnsupportedError);
+        expect(() => list.insert(2, 5.0), throwsUnsupportedError);
+        expect(() => list.insertAll(2, [5.0, 6.0]), throwsUnsupportedError);
+        expect(() => list.length = 10, throwsUnsupportedError);
+        expect(() => list.remove(5.0), throwsUnsupportedError);
+        expect(() => list.removeAt(2), throwsUnsupportedError);
+        expect(() => list.removeLast(), throwsUnsupportedError);
+        expect(() => list.removeRange(2, 4), throwsUnsupportedError);
+        expect(() => list.removeWhere((value) => true), throwsUnsupportedError);
+        expect(() => list.replaceRange(2, 4, [5.0, 6.0]), throwsUnsupportedError);
+        expect(() => list.retainWhere((value) => false), throwsUnsupportedError);
+        expect(() => list.setAll(2, [5.0, 6.0]), throwsUnsupportedError);
+        expect(() => list.setRange(2, 4, [5.0, 6.0]), throwsUnsupportedError);
+        expect(() => list.sort(), throwsUnsupportedError);
+      });
     });
   });
   group('string', () {
