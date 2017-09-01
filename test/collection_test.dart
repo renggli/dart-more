@@ -724,7 +724,7 @@ void main() {
   group('range', () {
     void verify(List<num> range, List<num> expected) {
       expect(range, expected);
-      expect(range.length, expected.length);
+      expect(range.reversed, expected.reversed);
       var iterator = range.iterator;
       for (var i = 0; i < expected.length; i++) {
         expect(iterator.moveNext(), isTrue);
@@ -781,19 +781,26 @@ void main() {
         });
       });
       group('sublist', () {
-        test('1 argument', () {
+        test('sublist (1 argument)', () {
           verify(range(3).sublist(0), [0, 1, 2]);
           verify(range(3).sublist(1), [1, 2]);
           verify(range(3).sublist(2), [2]);
           verify(range(3).sublist(3), []);
           expect(() => range(3).sublist(4), throwsRangeError);
         });
-        test('2 arguments', () {
+        test('sublist (2 arguments)', () {
           verify(range(3).sublist(0, 3), [0, 1, 2]);
           verify(range(3).sublist(0, 2), [0, 1]);
           verify(range(3).sublist(0, 1), [0]);
           verify(range(3).sublist(0, 0), []);
           expect(() => range(3).sublist(0, 4), throwsRangeError);
+        });
+        test('getRange', () {
+          verify(range(3).getRange(0, 3).toList(), [0, 1, 2]);
+          verify(range(3).getRange(0, 2).toList(), [0, 1]);
+          verify(range(3).getRange(0, 1).toList(), [0]);
+          verify(range(3).getRange(0, 0).toList(), []);
+          expect(() => range(3).getRange(0, 4), throwsRangeError);
         });
       });
       group('index', () {
@@ -912,19 +919,26 @@ void main() {
         });
       });
       group('sublist', () {
-        test('1 argument', () {
+        test('sublist (1 argument)', () {
           verify(range(3.0).sublist(0), [0.0, 1.0, 2.0]);
           verify(range(3.0).sublist(1), [1.0, 2.0]);
           verify(range(3.0).sublist(2), [2.0]);
           verify(range(3.0).sublist(3), []);
           expect(() => range(3).sublist(4), throwsRangeError);
         });
-        test('2 arguments', () {
+        test('sublist (2 arguments)', () {
           verify(range(3.0).sublist(0, 3), [0.0, 1.0, 2.0]);
           verify(range(3.0).sublist(0, 2), [0.0, 1.0]);
           verify(range(3.0).sublist(0, 1), [0.0]);
           verify(range(3.0).sublist(0, 0), []);
           expect(() => range(3).sublist(0, 4), throwsRangeError);
+        });
+        test('getRange', () {
+          verify(range(3.0).getRange(0, 3).toList(), [0.0, 1.0, 2.0]);
+          verify(range(3.0).getRange(0, 2).toList(), [0.0, 1.0]);
+          verify(range(3.0).getRange(0, 1).toList(), [0.0]);
+          verify(range(3.0).getRange(0, 0).toList(), []);
+          expect(() => range(3).getRange(0, 4), throwsRangeError);
         });
       });
       group('index', () {

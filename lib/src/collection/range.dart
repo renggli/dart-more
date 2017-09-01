@@ -21,12 +21,12 @@ import 'package:more/src/iterable/mixins/unmodifiable.dart' show UnmodifiableLis
 /// The range function called with three arguments returns the range between
 /// the first two numbers (including the start, but excluding the end) and the
 /// step value. For example, `range(1, 7, 2)` yields `[1, 3, 5]`.
-List<T> range<T extends num>([T a, T b, T c]) {
-  return new Range<T>(a, b, c);
+List<E> range<E extends num>([E a, E b, E c]) {
+  return new Range<E>(a, b, c);
 }
 
 /// A virtual range of numbers containing an arithmetic progressions.
-class Range<T extends num> extends ListBase<T> with UnmodifiableListMixin<T> {
+class Range<E extends num> extends ListBase<E> with UnmodifiableListMixin<E> {
 
   /// Creates a virtual range of numbers containing an arithmetic progressions.
   ///
@@ -44,12 +44,12 @@ class Range<T extends num> extends ListBase<T> with UnmodifiableListMixin<T> {
   /// The range function called with three arguments returns the range between
   /// the first two numbers (including the start, but excluding the end) and the
   /// step value. For example, `range(1, 7, 2)` yields `[1, 3, 5]`.
-  factory Range([T a, T b, T c]) {
+  factory Range([E a, E b, E c]) {
     const num zero = 0;
     const num one = 1;
-    T start = zero;
-    T stop = zero;
-    T step = one;
+    E start = zero;
+    E stop = zero;
+    E step = one;
     if (c != null) {
       start = a;
       stop = b;
@@ -83,22 +83,22 @@ class Range<T extends num> extends ListBase<T> with UnmodifiableListMixin<T> {
   Range._(this.start, this.stop, this.step, this.length);
 
   /// The start of the range (inclusive).
-  final T start;
+  final E start;
 
   /// The stop of the range (exclusive).
-  final T stop;
+  final E stop;
 
   /// The step size.
-  final T step;
+  final E step;
 
   @override
   final int length;
 
   @override
-  Iterator<T> get iterator => new RangeIterator<T>(start, step, length);
+  Iterator<E> get iterator => new RangeIterator<E>(start, step, length);
 
   @override
-  T operator [](int index) {
+  E operator [](int index) {
     if (0 <= index && index < length) {
       return start + step * index;
     } else {
@@ -116,8 +116,8 @@ class Range<T extends num> extends ListBase<T> with UnmodifiableListMixin<T> {
         startIndex = 0;
       }
       var ordering = step > 0
-          ? new Ordering<T>.natural()
-          : new Ordering<T>.natural().reversed;
+          ? new Ordering<E>.natural()
+          : new Ordering<E>.natural().reversed;
       var index = ordering.binarySearch(this, element);
       if (startIndex <= index) {
         return index;
@@ -136,8 +136,8 @@ class Range<T extends num> extends ListBase<T> with UnmodifiableListMixin<T> {
         return -1;
       }
       var ordering = step > 0
-          ? new Ordering<T>.natural()
-          : new Ordering<T>.natural().reversed;
+          ? new Ordering<E>.natural()
+          : new Ordering<E>.natural().reversed;
       var index = ordering.binarySearch(this, element);
       if (0 <= index && index <= stopIndex) {
         return index;
@@ -147,11 +147,16 @@ class Range<T extends num> extends ListBase<T> with UnmodifiableListMixin<T> {
   }
 
   @override
-  List<T> sublist(int startIndex, [int stopIndex]) {
-    stopIndex ??= length;
-    if (stopIndex < startIndex || stopIndex > length) {
-      throw new RangeError.range(stopIndex, startIndex, length);
-    }
+  Range<E> get reversed => isEmpty ? this : new Range._(last, first - step, -step, length);
+
+  @override
+  Range<E> sublist(int startIndex, [int stopIndex]) {
+    return getRange(startIndex, stopIndex ?? length);
+  }
+
+  @override
+  Range<E> getRange(int startIndex, int stopIndex) {
+    RangeError.checkValidRange(startIndex, stopIndex, length);
     return new Range._(
         start + startIndex * step,
         start + stopIndex * step,
@@ -174,9 +179,9 @@ class Range<T extends num> extends ListBase<T> with UnmodifiableListMixin<T> {
 
 }
 
-class RangeIterator<T extends num> extends Iterator<T> {
-  final T start;
-  final T step;
+class RangeIterator<E extends num> extends Iterator<E> {
+  final E start;
+  final E step;
   final int length;
 
   int index = 0;
@@ -184,7 +189,7 @@ class RangeIterator<T extends num> extends Iterator<T> {
   RangeIterator(this.start, this.step, this.length);
 
   @override
-  T current;
+  E current;
 
   @override
   bool moveNext() {
