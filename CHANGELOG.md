@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.8.1
+
+* Add periodic iterable tools (monthly, weekly, daily, hourly, ...).
+
 ## 1.8.0
 
 * Ordering.reversed, Ordering.nullsFirst, Ordering.nullsLast, and Ordering.lexicographical
