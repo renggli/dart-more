@@ -8,90 +8,15 @@ import 'package:collection/collection.dart' show NonGrowableListMixin;
 /// An space efficient fixed length [List] that stores boolean values.
 class BitList extends ListBase<bool> with NonGrowableListMixin<bool> {
 
-  // Constants specific to mapping bits into a [UInt32List].
-  static const int _shift = 5;
-  static const int _offset = 31;
-  static const int _mask = 0xffffffff;
-  static const List<int> _setMask = const [
-    1,
-    2,
-    4,
-    8,
-    16,
-    32,
-    64,
-    128,
-    256,
-    512,
-    1024,
-    2048,
-    4096,
-    8192,
-    16384,
-    32768,
-    65536,
-    131072,
-    262144,
-    524288,
-    1048576,
-    2097152,
-    4194304,
-    8388608,
-    16777216,
-    33554432,
-    67108864,
-    134217728,
-    268435456,
-    536870912,
-    1073741824,
-    2147483648
-  ];
-  static const List<int> _clrMask = const [
-    -2,
-    -3,
-    -5,
-    -9,
-    -17,
-    -33,
-    -65,
-    -129,
-    -257,
-    -513,
-    -1025,
-    -2049,
-    -4097,
-    -8193,
-    -16385,
-    -32769,
-    -65537,
-    -131073,
-    -262145,
-    -524289,
-    -1048577,
-    -2097153,
-    -4194305,
-    -8388609,
-    -16777217,
-    -33554433,
-    -67108865,
-    -134217729,
-    -268435457,
-    -536870913,
-    -1073741825,
-    -2147483649
-  ];
-
   /// Constructs a bit list of the given [length].
-  factory BitList(int length) {
-    return new BitList.filled(length, false);
-  }
+  factory BitList(int length) => new BitList.filled(length, false);
 
   /// Constructs a bit list of the given [length], and initializes the
   /// value at each position with [fill].
   factory BitList.filled(int length, bool fill) {
-    var buffer = new Uint32List((length + _offset) >> _shift);
+    var buffer = new Uint32List((length + OFFSET) >> SHIFT);
     if (fill) {
-      buffer.fillRange(0, buffer.length, _mask);
+      buffer.fillRange(0, buffer.length, MASK);
     }
     return new BitList._(buffer, length);
   }
@@ -99,15 +24,15 @@ class BitList extends ListBase<bool> with NonGrowableListMixin<bool> {
   /// Constructs a new list from a given [Iterable] of booleans.
   factory BitList.from(Iterable<bool> other) {
     var length = other.length;
-    var buffer = new Uint32List((length + _offset) >> _shift);
+    var buffer = new Uint32List((length + OFFSET) >> SHIFT);
     if (other is BitList) {
       buffer.setAll(0, other.buffer);
     } else {
       for (var i = 0, iterator = other.iterator; i < buffer.length; i++) {
         var value = 0;
-        for (var j = 0; j <= _offset && iterator.moveNext(); j++) {
+        for (var j = 0; j <= OFFSET && iterator.moveNext(); j++) {
           if (iterator.current) {
-            value |= _setMask[j];
+            value |= SET_MASK[j];
           }
         }
         buffer[i] = value;
@@ -116,6 +41,7 @@ class BitList extends ListBase<bool> with NonGrowableListMixin<bool> {
     return new BitList._(buffer, length);
   }
 
+  /// Internal constructor for this object.
   BitList._(this.buffer, this.length);
 
   /// The underlying typed buffer of this object.
@@ -129,7 +55,7 @@ class BitList extends ListBase<bool> with NonGrowableListMixin<bool> {
   @override
   bool operator [](int index) {
     if (0 <= index && index < length) {
-      return (buffer[index >> _shift] & _setMask[index & _offset]) != 0;
+      return (buffer[index >> SHIFT] & SET_MASK[index & OFFSET]) != 0;
     } else {
       throw new RangeError.range(index, 0, length);
     }
@@ -140,9 +66,9 @@ class BitList extends ListBase<bool> with NonGrowableListMixin<bool> {
   void operator []=(int index, bool value) {
     if (0 <= index && index < length) {
       if (value) {
-        buffer[index >> _shift] |= _setMask[index & _offset];
+        buffer[index >> SHIFT] |= SET_MASK[index & OFFSET];
       } else {
-        buffer[index >> _shift] &= _clrMask[index & _offset];
+        buffer[index >> SHIFT] &= CLEAR_MASK[index & OFFSET];
       }
     } else {
       throw new RangeError.range(index, 0, length);
@@ -153,7 +79,7 @@ class BitList extends ListBase<bool> with NonGrowableListMixin<bool> {
   /// current value.
   void flip(int index) {
     if (0 <= index && index < length) {
-      buffer[index >> _shift] ^= _setMask[index & _offset];
+      buffer[index >> SHIFT] ^= SET_MASK[index & OFFSET];
     } else {
       throw new RangeError.range(index, 0, length);
     }
@@ -163,7 +89,7 @@ class BitList extends ListBase<bool> with NonGrowableListMixin<bool> {
   int count([bool expected = true]) {
     var tally = 0;
     for (var index = 0; index < length; index++) {
-      var actual = (buffer[index >> _shift] & _setMask[index & _offset]) != 0;
+      var actual = (buffer[index >> SHIFT] & SET_MASK[index & OFFSET]) != 0;
       if (actual == expected) {
         tally++;
       }
@@ -239,21 +165,21 @@ class BitList extends ListBase<bool> with NonGrowableListMixin<bool> {
     if (amount == 0 || length == 0) {
       return new BitList.from(this);
     }
-    var shift = amount >> _shift;
-    var offset = amount & _offset;
+    var shift = amount >> SHIFT;
+    var offset = amount & OFFSET;
     var result = new BitList(length);
     if (offset == 0) {
       for (var i = shift; i < buffer.length; i++) {
         result.buffer[i] = buffer[i - shift];
       }
     } else {
-      var otherOffset = 1 + _offset - offset;
+      var otherOffset = 1 + OFFSET - offset;
       for (var i = shift + 1; i < buffer.length; i++) {
-        result.buffer[i] = ((buffer[i - shift] << offset) & _mask) |
-            ((buffer[i - shift - 1] >> otherOffset) & _mask);
+        result.buffer[i] = ((buffer[i - shift] << offset) & MASK) |
+            ((buffer[i - shift - 1] >> otherOffset) & MASK);
       }
       if (shift < buffer.length) {
-        result.buffer[shift] = (buffer[0] << offset) & _mask;
+        result.buffer[shift] = (buffer[0] << offset) & MASK;
       }
     }
     return result;
@@ -268,8 +194,8 @@ class BitList extends ListBase<bool> with NonGrowableListMixin<bool> {
     if (amount == 0 || length == 0) {
       return new BitList.from(this);
     }
-    var shift = amount >> _shift;
-    var offset = amount & _offset;
+    var shift = amount >> SHIFT;
+    var offset = amount & OFFSET;
     var result = new BitList(length);
     if (offset == 0) {
       for (var i = 0; i < buffer.length - shift; i++) {
@@ -277,15 +203,88 @@ class BitList extends ListBase<bool> with NonGrowableListMixin<bool> {
       }
     } else {
       var last = buffer.length - shift - 1;
-      var otherOffset = 1 + _offset - offset;
+      var otherOffset = 1 + OFFSET - offset;
       for (var i = 0; i < last; i++) {
-        result.buffer[i] = ((buffer[i + shift] >> offset) & _mask) |
-            ((buffer[i + shift + 1] << otherOffset) & _mask);
+        result.buffer[i] = ((buffer[i + shift] >> offset) & MASK) |
+            ((buffer[i + shift + 1] << otherOffset) & MASK);
       }
       if (0 <= last) {
-        result.buffer[last] = (buffer[buffer.length - 1] >> offset) & _mask;
+        result.buffer[last] = (buffer[buffer.length - 1] >> offset) & MASK;
       }
     }
     return result;
   }
 }
+
+// Constants specific to mapping bits into a [UInt32List].
+const int SHIFT = 5;
+const int OFFSET = 31;
+const int MASK = 0xffffffff;
+const List<int> SET_MASK = const [
+  1,
+  2,
+  4,
+  8,
+  16,
+  32,
+  64,
+  128,
+  256,
+  512,
+  1024,
+  2048,
+  4096,
+  8192,
+  16384,
+  32768,
+  65536,
+  131072,
+  262144,
+  524288,
+  1048576,
+  2097152,
+  4194304,
+  8388608,
+  16777216,
+  33554432,
+  67108864,
+  134217728,
+  268435456,
+  536870912,
+  1073741824,
+  2147483648
+];
+const List<int> CLEAR_MASK = const [
+  -2,
+  -3,
+  -5,
+  -9,
+  -17,
+  -33,
+  -65,
+  -129,
+  -257,
+  -513,
+  -1025,
+  -2049,
+  -4097,
+  -8193,
+  -16385,
+  -32769,
+  -65537,
+  -131073,
+  -262145,
+  -524289,
+  -1048577,
+  -2097153,
+  -4194305,
+  -8388609,
+  -16777217,
+  -33554433,
+  -67108865,
+  -134217729,
+  -268435457,
+  -536870913,
+  -1073741825,
+  -2147483649
+];
