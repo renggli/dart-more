@@ -218,6 +218,22 @@ void main() {
           expect(target, everyElement(isFalse));
         }
       });
+      test('with filled false', () {
+        for (var len = 1; len < 100; len++) {
+          var target = new BitList.filled(len, false);
+          expect(target, isNot(isEmpty));
+          expect(target, hasLength(len));
+          expect(target, everyElement(isFalse));
+        }
+      });
+      test('with filled true', () {
+        for (var len = 1; len < 100; len++) {
+          var target = new BitList.filled(len, true);
+          expect(target, isNot(isEmpty));
+          expect(target, hasLength(len));
+          expect(target, everyElement(isTrue));
+        }
+      });
       test('from List', () {
         for (var len = 0; len < 100; len++) {
           var source = new List<bool>.from(randomBooleans(457 * len, len));
