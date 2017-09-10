@@ -7,7 +7,19 @@ class RangesCharMatcher extends CharMatcher {
   final List<int> starts;
   final List<int> stops;
 
-  const RangesCharMatcher(this.length, this.starts, this.stops);
+  RangesCharMatcher(this.length, this.starts, this.stops) {
+    if (length != starts.length || length != stops.length) {
+      throw new ArgumentError("Invalid range sizes.");
+    }
+    for (int i = 0; i < length; i++) {
+      if (starts[i] > stops[i]) {
+        throw new ArgumentError('Invalid range: ${starts[i]}-${stops[i]}.');
+      }
+      if (i + 1 < length && starts[i + 1] <= stops[i]) {
+        throw new ArgumentError("Invalid sequence.");
+      }
+    }
+  }
 
   @override
   bool match(int value) {

@@ -8,5 +8,5 @@ class SingleCharMatcher extends CharMatcher {
   const SingleCharMatcher(this.charValue);
 
   @override
-  bool match(int value) => charValue == value;
+  bool match(int value) => identical(charValue, value);
 }
