@@ -54,35 +54,26 @@ class BitList extends ListBase<bool> with NonGrowableListMixin<bool> {
   /// Returns the value of the bit with the given [index].
   @override
   bool operator [](int index) {
-    if (0 <= index && index < length) {
-      return (buffer[index >> SHIFT] & SET_MASK[index & OFFSET]) != 0;
-    } else {
-      throw new RangeError.range(index, 0, length);
-    }
+    RangeError.checkValidIndex(index, this);
+    return (buffer[index >> SHIFT] & SET_MASK[index & OFFSET]) != 0;
   }
 
   /// Sets the [value] of the bit with the given [index].
   @override
   void operator []=(int index, bool value) {
-    if (0 <= index && index < length) {
-      if (value) {
-        buffer[index >> SHIFT] |= SET_MASK[index & OFFSET];
-      } else {
-        buffer[index >> SHIFT] &= CLEAR_MASK[index & OFFSET];
-      }
+    RangeError.checkValidIndex(index, this);
+    if (value) {
+      buffer[index >> SHIFT] |= SET_MASK[index & OFFSET];
     } else {
-      throw new RangeError.range(index, 0, length);
+      buffer[index >> SHIFT] &= CLEAR_MASK[index & OFFSET];
     }
   }
 
   /// Sets the bit at the specified [index] to the complement of its
   /// current value.
   void flip(int index) {
-    if (0 <= index && index < length) {
-      buffer[index >> SHIFT] ^= SET_MASK[index & OFFSET];
-    } else {
-      throw new RangeError.range(index, 0, length);
-    }
+    RangeError.checkValidIndex(index, this);
+    buffer[index >> SHIFT] ^= SET_MASK[index & OFFSET];
   }
 
   /// Counts the number of bits that are set to [expected].

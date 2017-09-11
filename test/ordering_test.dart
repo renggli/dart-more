@@ -122,6 +122,7 @@ void main() {
       verify(ordering, [2, null, 3, 1], [null, 1, 2, 3]);
       verify(ordering, [3, 1, null, 2], [null, 1, 2, 3]);
       verify(ordering, [3, 2, 1, null], [null, 1, 2, 3]);
+      verify(ordering.nullsLast, [1, null, 2], [1, 2, null]);
     });
     test('nullsLast', () {
       var ordering = natural.nullsLast;
@@ -130,6 +131,7 @@ void main() {
       verify(ordering, [2, null, 3, 1], [1, 2, 3, null]);
       verify(ordering, [3, 1, null, 2], [1, 2, 3, null]);
       verify(ordering, [3, 2, 1, null], [1, 2, 3, null]);
+      verify(ordering.nullsFirst, [1, null, 2], [null, 1, 2]);
     });
     test('compound', () {
       var ordering = natural.onResultOf((String s) => s.length).compound(natural);

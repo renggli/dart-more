@@ -407,9 +407,7 @@ void main() {
       expect(() => list.removeLast(), throwsUnsupportedError);
       expect(() => list.removeRange(2, 4), throwsUnsupportedError);
       expect(() => list.removeWhere((value) => true), throwsUnsupportedError);
-      expect(
-              () => list.replaceRange(2, 4, [true, false]),
-          throwsUnsupportedError);
+      expect(() => list.replaceRange(2, 4, [true, false]), throwsUnsupportedError);
       expect(() => list.retainWhere((value) => false), throwsUnsupportedError);
     });
   });
@@ -894,6 +892,7 @@ void main() {
         expect(() => list.retainWhere((value) => false), throwsUnsupportedError);
         expect(() => list.setAll(2, [5, 6]), throwsUnsupportedError);
         expect(() => list.setRange(2, 4, [5, 6]), throwsUnsupportedError);
+        expect(() => list.shuffle(), throwsUnsupportedError);
         expect(() => list.sort(), throwsUnsupportedError);
       });
     });

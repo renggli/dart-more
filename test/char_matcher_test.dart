@@ -147,6 +147,9 @@ void main() {
     test('negated composed', () {
       verify(new CharMatcher.pattern('^ac-df-'), 'beg', 'acdf-');
     });
+    test('invalid order', () {
+      expect(() => new CharMatcher.pattern('c-a'), throwsArgumentError);
+    });
   });
   group('operators', () {
     var any = new CharMatcher.any();

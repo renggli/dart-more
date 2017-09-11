@@ -13,7 +13,7 @@ import 'package:more/src/ordering/lexicographical.dart';
 import 'package:more/src/ordering/natural.dart';
 import 'package:more/src/ordering/nulls_first.dart';
 import 'package:more/src/ordering/nulls_last.dart';
-import 'package:more/src/ordering/reverse.dart';
+import 'package:more/src/ordering/reversed.dart';
 
 /// An ordering implements a [Comparator] function that can be modified
 /// using a fluent interface.
@@ -62,7 +62,7 @@ abstract class Ordering<T> {
   int compare(T a, T b);
 
   /// Returns the reversed ordering.
-  Ordering<T> get reversed => new ReverseOrdering<T>(this);
+  Ordering<T> get reversed => new ReversedOrdering<T>(this);
 
   /// Returns an ordering that orders [null] values before non-null values.
   Ordering<T> get nullsFirst => new NullsFirstOrdering<T>(this);
