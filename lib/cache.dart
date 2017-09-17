@@ -101,6 +101,6 @@ abstract class Cache<K, V> {
   /// Discards all cached values.
   Future invalidateAll();
 
-  /// Returns the number of reaped items from the cache.
+  /// Returns the number of reaped items.
   Future<int> reap();
 }

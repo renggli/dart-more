@@ -59,7 +59,7 @@ class BiMap<K, V> implements Map<K, V> {
 
   /// Returns a backward map onto the same data. This accessor effectively returns the same as
   /// [BiMap.inverse], but case-down to a [Map].
-  Map<V, K> get backward => new BiMap._(_backward, _forward);
+  Map<V, K> get backward => inverse;
 
   @override
   V operator [](Object key) => _forward[key];
