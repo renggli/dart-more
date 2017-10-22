@@ -480,7 +480,7 @@ void main() {
       });
       test('generate with key', () {
         var set = new Multiset.fromIterable(['a', 'a', 'a', 'b', 'b', 'c'],
-            key: (String e) => e.codeUnitAt(0));
+            key: (e) => (e as String).codeUnitAt(0));
         expect(set, isNot(isEmpty));
         expect(set, hasLength(6));
         expect(set, unorderedEquals([97, 97, 97, 98, 98, 99]));
@@ -489,8 +489,8 @@ void main() {
       });
       test('generate with count', () {
         var set = new Multiset.fromIterable(['aaa', 'bb', 'c'],
-            key: (String e) => e.substring(0, 1),
-            count: (String e) => e.length);
+            key: (e) => (e as String).substring(0, 1),
+            count: (e) => (e as String).length);
         expect(set, isNot(isEmpty));
         expect(set, hasLength(6));
         expect(set, unorderedEquals(['a', 'a', 'a', 'b', 'b', 'c']));
