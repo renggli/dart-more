@@ -196,14 +196,14 @@ void main() {
   });
   group('empty (deprecated)', () {
     test('empty', () {
-      expect(empty().isEmpty, isTrue);
+      expect(empty().isEmpty, isTrue); // ignore: deprecated_member_use
     });
     test('emptyIterable', () {
-      expect(emptyIterable().isEmpty, isTrue);
+      expect(emptyIterable().isEmpty, isTrue); // ignore: deprecated_member_use
     });
     test('emptyIterator', () {
-      expect(emptyIterator().moveNext(), isFalse);
-      expect(emptyIterator().current, isNull);
+      expect(emptyIterator().moveNext(), isFalse); // ignore: deprecated_member_use
+      expect(emptyIterator().current, isNull); // ignore: deprecated_member_use
     });
   });
   group('indexed', () {

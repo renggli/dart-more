@@ -6,7 +6,7 @@ class ExplicitOrdering<T> extends Ordering<T> {
   final Map<T, int> ranking;
 
   factory ExplicitOrdering(List<T> list) {
-    var ranking = new Map<T, int>();
+    var ranking = <T, int>{};
     for (var rank = 0; rank < list.length; rank++) {
       ranking[list[rank]] = rank;
     }

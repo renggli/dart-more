@@ -8,7 +8,7 @@ import 'dart:math' show min;
 class Multiset<E> extends IterableBase<E> {
 
   /// Creates an empty [Multiset].
-  factory Multiset() => new Multiset<E>._(new Map<E, int>(), 0);
+  factory Multiset() => new Multiset<E>._({}, 0);
 
   /// Creates an empty identity [Multiset].
   factory Multiset.identity() => new Multiset<E>._(new Map<E, int>.identity(), 0);

@@ -12,7 +12,7 @@ CharMatcher fromPattern(String pattern) {
   }
 
   // Build the range lists.
-  List<RangeCharMatcher> ranges = new List();
+  List<RangeCharMatcher> ranges = [];
   while (pattern.isNotEmpty) {
     if (pattern.length >= 3 && pattern[1] == '-') {
       var charMatcher = new RangeCharMatcher(pattern.codeUnitAt(0), pattern.codeUnitAt(2));

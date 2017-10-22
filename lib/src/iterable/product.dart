@@ -23,7 +23,7 @@ import 'dart:collection' show IterableBase;
 ///
 Iterable<List<E>> product<E>(Iterable<Iterable<E>> iterables) {
   if (iterables.isEmpty || iterables.any((iterable) => iterable.isEmpty)) {
-    return new Iterable<List<E>>.empty();
+    return const Iterable<List<E>>.empty();
   } else {
     return new ProductIterable<E>(iterables.map((iterable) {
       return iterable.toList(growable: false);

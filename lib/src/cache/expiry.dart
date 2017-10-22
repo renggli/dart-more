@@ -18,7 +18,7 @@ class ExpiryCache<K, V> extends Cache<K, V> {
 
   final Duration accessExpiry;
 
-  final Map<K, ExpiryCacheItem<V>> cached = new Map();
+  final Map<K, ExpiryCacheItem<V>> cached = {};
 
   ExpiryCache(this.loader, this.clock, this.updateExpiry, this.accessExpiry);
 
@@ -77,7 +77,7 @@ class ExpiryCache<K, V> extends Cache<K, V> {
   @override
   Future<int> reap() async {
     var now = clock();
-    var expired = new List();
+    var expired = <K>[];
     cached.forEach((key, value) {
       if (value.isExpired(now, updateExpiry, accessExpiry)) {
         expired.add(key);

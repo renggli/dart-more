@@ -20,9 +20,9 @@ class DisjunctiveCharMatcher extends CharMatcher {
     } else if (other is NoneCharMatcher) {
       return this;
     } else if (other is DisjunctiveCharMatcher) {
-      return new DisjunctiveCharMatcher(new List()..addAll(matchers)..addAll(other.matchers));
+      return new DisjunctiveCharMatcher([]..addAll(matchers)..addAll(other.matchers));
     } else {
-      return new DisjunctiveCharMatcher(new List()
+      return new DisjunctiveCharMatcher([]
         ..addAll(matchers)
         ..add(other));
     }

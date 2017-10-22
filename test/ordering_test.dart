@@ -9,7 +9,7 @@ void verifyBasic<T>(String type, Ordering<T> ordering, Iterable<T> unsorted, Ite
   expect(sorted, expected, reason: '$type.sorted');
   expect(ordering.isOrdered(sorted), isTrue, reason: '$type.isOrdered');
   for (var element in unsorted) {
-    expect(ordering.binarySearch(sorted, element), (int index) => (index) >= 0,
+    expect(ordering.binarySearch(sorted, element), (index) => index >= 0,
         reason: '$type.binarySearch');
   }
   if (sorted.isNotEmpty) {
@@ -61,14 +61,14 @@ void main() {
       verify(ordering, [3, 2, 1], [1, 2, 3]);
     });
     test('comparator', () {
-      var ordering = new Ordering.from((String a, String b) => a.length - b.length);
+      var ordering = new Ordering<String>.from((a, b) => a.length - b.length);
       verify(ordering, ['*', '**', '***'], ['*', '**', '***']);
       verify(ordering, ['**', '***', '*'], ['*', '**', '***']);
       verify(ordering, ['***', '*', '**'], ['*', '**', '***']);
       verify(ordering, ['***', '**', '*'], ['*', '**', '***']);
     });
     test('explicit', () {
-      var ordering = new Ordering.explicit([2, 3, 1]);
+      var ordering = new Ordering<int>.explicit([2, 3, 1]);
       verify(ordering, [3, 2], [2, 3]);
       verify(ordering, [1, 2], [2, 1]);
       verify(ordering, [1, 2, 3], [2, 3, 1]);
@@ -134,7 +134,7 @@ void main() {
       verify(ordering.nullsFirst, [1, null, 2], [null, 1, 2]);
     });
     test('compound', () {
-      var ordering = natural.onResultOf((String s) => s.length).compound(natural);
+      var ordering = natural.onResultOf((s) => s.length).compound(natural);
       verify(ordering, ['333', '1', '4444', '22'], ['1', '22', '333', '4444']);
       verify(ordering, ['2', '333', '4444', '1', '22'], ['1', '2', '22', '333', '4444']);
       verify(
@@ -170,7 +170,7 @@ void main() {
       ]);
     });
     test('onResultOf', () {
-      var ordering = natural.onResultOf((String s) => s.length);
+      var ordering = natural.onResultOf((s) => (s as String).length);
       verify(ordering, ['*', '**', '***'], ['*', '**', '***']);
       verify(ordering, ['**', '***', '*'], ['*', '**', '***']);
       verify(ordering, ['***', '*', '**'], ['*', '**', '***']);

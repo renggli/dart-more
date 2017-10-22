@@ -45,7 +45,7 @@ class PartitionIterator<E> extends Iterator<Iterable<E>> {
       current = null;
       return false;
     } else {
-      current = new List<E>();
+      current = <E>[];
       for (var i = 0; i < size; i++) {
         if (iterator.moveNext()) {
           current.add(iterator.current);

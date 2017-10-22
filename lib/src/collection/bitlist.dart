@@ -106,7 +106,7 @@ class BitList extends ListBase<bool> with NonGrowableListMixin<bool> {
   /// otherwise an exception is thrown.
   BitList operator &(BitList other) {
     if (length != other.length) {
-      throw new ArgumentError('Expected list with length ${length}, but got ${other.length}');
+      throw new ArgumentError('Expected list with length $length, but got ${other.length}');
     }
     var result = new BitList(length);
     for (var i = 0; i < buffer.length; i++) {
@@ -122,7 +122,7 @@ class BitList extends ListBase<bool> with NonGrowableListMixin<bool> {
   /// same length, otherwise an exception is thrown.
   BitList operator |(BitList other) {
     if (length != other.length) {
-      throw new ArgumentError('Expected list with length ${length}, but got ${other.length}');
+      throw new ArgumentError('Expected list with length $length, but got ${other.length}');
     }
     var result = new BitList(length);
     for (var i = 0; i < buffer.length; i++) {
@@ -138,7 +138,7 @@ class BitList extends ListBase<bool> with NonGrowableListMixin<bool> {
   /// length, otherwise an exception is thrown.
   BitList operator -(BitList other) {
     if (length != other.length) {
-      throw new ArgumentError('Expected list with length ${length}, but got ${other.length}');
+      throw new ArgumentError('Expected list with length $length, but got ${other.length}');
     }
     var result = new BitList(length);
     for (var i = 0; i < buffer.length; i++) {

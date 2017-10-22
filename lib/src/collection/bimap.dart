@@ -8,7 +8,7 @@ library more.collection.bimap;
 class BiMap<K, V> implements Map<K, V> {
 
   /// Creates an empty bi-map.
-  factory BiMap() => new BiMap<K, V>._(new Map(), new Map());
+  factory BiMap() => new BiMap<K, V>._({}, {});
 
   /// Creates an empty identity bi-map.
   factory BiMap.identity() => new BiMap<K, V>._(new Map.identity(), new Map.identity());

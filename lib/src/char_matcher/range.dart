@@ -8,7 +8,7 @@ class RangeCharMatcher extends CharMatcher {
 
   RangeCharMatcher(this.start, this.stop) {
     if (start > stop) {
-      throw new ArgumentError('Invalid range: ${start}-${stop}');
+      throw new ArgumentError('Invalid range: $start-$stop');
     }
   }
 

@@ -25,9 +25,9 @@ import 'package:more/src/iterable/mixins/infinite.dart';
 ///
 ///     [1, 2, 1, 2, ...]
 ///
-Iterable<E> cycle<E>(Iterable<E> iterable, [int count = null]) {
+Iterable<E> cycle<E>(Iterable<E> iterable, [int count]) {
   if (count == 0 || iterable.isEmpty) {
-    return new Iterable<E>.empty();
+    return const Iterable<E>.empty();
   } else if (count == 1 || iterable is InfiniteIterable<E>) {
     return iterable;
   } else if (count == null) {
@@ -51,6 +51,7 @@ class InfiniteCycleIterable<E> extends IterableBase<E> with InfiniteIterable<E> 
 class InfiniteCycleIterator<E> extends Iterator<E> {
   final Iterable<E> iterable;
 
+  // ignore: prefer_const_constructors
   Iterator<E> iterator = new Iterable<E>.empty().iterator;
 
   InfiniteCycleIterator(this.iterable);
@@ -81,6 +82,7 @@ class FiniteCycleIterable<E> extends IterableBase<E> {
 class FiniteCycleIterator<E> extends Iterator<E> {
   final Iterable<E> iterable;
 
+  // ignore: prefer_const_constructors
   Iterator<E> iterator = new Iterable<E>.empty().iterator;
   bool completed = false;
   int count;

@@ -93,8 +93,7 @@ abstract class CharMatcher {
     } else if (other is NoneCharMatcher) {
       return this;
     } else if (other is DisjunctiveCharMatcher) {
-      return new DisjunctiveCharMatcher(new List()
-        ..add(this)
+      return new DisjunctiveCharMatcher([this]
         ..addAll(other.matchers));
     } else {
       return new DisjunctiveCharMatcher([this, other]);
@@ -150,7 +149,7 @@ abstract class CharMatcher {
   /// with the specified [replacement].
   String collapseFrom(String sequence, String replacement) {
     var i = 0;
-    var list = new List<int>();
+    var list = <int>[];
     var codeUnits = sequence.codeUnits;
     var replacementCodes = replacement.codeUnits;
     while (i < codeUnits.length) {

@@ -169,11 +169,11 @@ class Range<E extends num> extends ListBase<E> with UnmodifiableListMixin<E> {
     if (length == 0) {
       return 'range()';
     } else if (start == 0 && step == 1) {
-      return 'range(${stop})';
+      return 'range($stop)';
     } else if (step == 1) {
-      return 'range(${start}, ${stop})';
+      return 'range($start, $stop)';
     } else {
-      return 'range(${start}, ${stop}, ${step})';
+      return 'range($start, $stop, $step)';
     }
   }
 

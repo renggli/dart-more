@@ -6,7 +6,7 @@ import 'package:more/collection.dart';
 import 'package:test/test.dart';
 
 List<bool> randomBooleans(int seed, int length) {
-  var list = new List<bool>();
+  var list = <bool>[];
   var generator = new Random(seed);
   for (var i = 0; i < length; i++) {
     list.add(generator.nextBool());
@@ -128,8 +128,8 @@ void main() {
 
       });
       test('iteration', () {
-        var keys = new List(),
-            values = new List();
+        var keys = <int>[];
+        var values = <String>[];
         example.forEach((key, value) {
           keys.add(key);
           values.add(value);

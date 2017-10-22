@@ -4,9 +4,7 @@ library more.iterable.empty;
 ///
 /// Deprecated, use `const Iterable<E>.empty()` instead.
 @deprecated
-Iterable<E> empty<E>() {
-  return new Iterable<E>.empty();
-}
+Iterable<E> empty<E>() => const Iterable<E>.empty();
 
 /// Returns an efficient empty iterable.
 ///
@@ -20,9 +18,7 @@ Iterable<E> empty<E>() {
 ///
 /// Deprecated, use `const Iterable<E>.empty()` instead.
 @deprecated
-Iterable<E> emptyIterable<E>() {
-  return new Iterable<E>.empty();
-}
+Iterable<E> emptyIterable<E>() => const Iterable<E>.empty();
 
 /// Returns an efficient empty iterator.
 ///
@@ -36,6 +32,4 @@ Iterable<E> emptyIterable<E>() {
 ///
 /// Deprecated, use `const Iterable<E>.empty().iterator` instead.
 @deprecated
-Iterator<E> emptyIterator<E>() {
-  return new Iterable<E>.empty().iterator;
-}
+Iterator<E> emptyIterator<E>() => const Iterable<E>.empty().iterator;

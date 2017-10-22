@@ -30,7 +30,7 @@ Iterable<List<E>> combinations<E>(Iterable<E> elements, int count, {bool repetit
   } else if (!repetitions && elements.length < count) {
     throw new RangeError.range(count, 0, elements.length);
   } else if (count == 0 || elements.isEmpty) {
-    return new Iterable<List<E>>.empty();
+    return const Iterable<List<E>>.empty();
   } else if (repetitions) {
     return new CombinationsWithRepetitionsIterable<E>(elements.toList(growable: false), count);
   } else {

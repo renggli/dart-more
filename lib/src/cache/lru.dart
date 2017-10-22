@@ -13,7 +13,7 @@ class LruCache<K, V> extends Cache<K, V> {
 
   final int maximumSize;
 
-  final Map<K, CacheItem<V>> cached = new Map();
+  final Map<K, CacheItem<V>> cached = {};
 
   LruCache(this.loader, this.maximumSize);
 
