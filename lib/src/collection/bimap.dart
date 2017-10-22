@@ -26,7 +26,8 @@ class BiMap<K, V> implements Map<K, V> {
   /// Creates a bi-map from an iterable (and possible transformation functions).
   factory BiMap.fromIterable(Iterable iterable, {K key(element), V value(element)}) {
     return new BiMap<K, V>.fromIterables(
-        key == null ? iterable : iterable.map(key), value == null ? iterable : iterable.map(value));
+        key == null ? iterable : iterable.map(key),
+        value == null ? iterable : iterable.map(value));
   }
 
   /// Creates a bi-map from two equal length iterables.
@@ -114,9 +115,7 @@ class BiMap<K, V> implements Map<K, V> {
   bool containsValue(Object value) => _backward.containsKey(value);
 
   @override
-  void forEach(void f(K key, V value)) {
-    _forward.forEach(f);
-  }
+  void forEach(void f(K key, V value)) => _forward.forEach(f);
 
   @override
   bool get isEmpty => _forward.isEmpty;
