@@ -2,6 +2,7 @@
 
 ## 1.8.1
 
+* Removed empty(), emptyIterator(), emptyIterable() since these are part of the core library now.
 * Add periodic iterable tools (monthly, weekly, daily, hourly, ...).
 
 ## 1.8.0
