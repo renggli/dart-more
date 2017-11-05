@@ -56,8 +56,7 @@ void main() {
         expect(binomial(n, k), verifyBinomial(n, k));
       }
     }
-  });
-
+  }, onPlatform: {'browser': const Skip('large integers')});
   test('binomial (bounds)', () {
     expect(() => binomial(7, -1), throwsArgumentError);
     expect(() => binomial(7, 8), throwsArgumentError);
