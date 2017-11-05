@@ -64,10 +64,10 @@ abstract class Ordering<T> {
   /// Returns the reversed ordering.
   Ordering<T> get reversed => new ReversedOrdering<T>(this);
 
-  /// Returns an ordering that orders [null] values before non-null values.
+  /// Returns an ordering that orders `null` values before non-null values.
   Ordering<T> get nullsFirst => new NullsFirstOrdering<T>(this);
 
-  /// Returns an ordering that orders [null] values after non-null values.
+  /// Returns an ordering that orders `null` values after non-null values.
   Ordering<T> get nullsLast => new NullsLastOrdering<T>(this);
 
   /// Returns an ordering that breaks the tie of the receiver by using [other].
