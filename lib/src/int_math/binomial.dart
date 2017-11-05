@@ -5,7 +5,13 @@ library more.int_math.binomial;
 /// objects.
 int binomial(int n, int k) {
   if (k < 0 || k > n) {
-    return 0;
+    throw new ArgumentError('binomial($n, $k) is undefined for arguments.');
+  }
+  if (k == 0 || k == n) {
+    return 1;
+  }
+  if (k == 1 || k == n - 1) {
+    return n;
   }
   if (k > n - k) {
     k = n - k;

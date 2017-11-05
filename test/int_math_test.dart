@@ -24,6 +24,8 @@ void main() {
     expect(factorial(20), 2432902008176640000);
     expect(factorial(21), 2432902008176640000 * 21);
     expect(factorial(22), 2432902008176640000 * 21 * 22);
+  });
+  test('factorial (bounds)', () {
     expect(() => factorial(-1), throwsArgumentError);
   });
   test('binomial', () {
@@ -36,9 +38,29 @@ void main() {
     expect(binomial(7, 6), 7);
     expect(binomial(7, 7), 1);
   });
+  test('binomial (large)', () {
+    Map<int, Map<int, int>> cache = {};
+    int verifyBinomial(int n, int k) {
+      if (k == 0 || k == n) {
+        return 1;
+      } else if (k == 1 || k == n - 1) {
+        return n;
+      } else {
+        return cache
+            .putIfAbsent(n, () => {})
+            .putIfAbsent(k, () => verifyBinomial(n - 1, k - 1) + verifyBinomial(n - 1, k));
+      }
+    }
+    for (var n = 0; n <= 150; n++) {
+      for (var k = 0; k <= n; k++) {
+        expect(binomial(n, k), verifyBinomial(n, k));
+      }
+    }
+  });
+
   test('binomial (bounds)', () {
-    expect(binomial(7, -1), 0);
-    expect(binomial(7, 8), 0);
+    expect(() => binomial(7, -1), throwsArgumentError);
+    expect(() => binomial(7, 8), throwsArgumentError);
   });
   test('pow(x, 0)', () {
     expect(pow(-2, 0), 1);
@@ -89,7 +111,7 @@ void main() {
     expect(primesUpTo(20), [2, 3, 5, 7, 11, 13, 17, 19]);
   });
   test('isProbablyPrime', () {
-    var max = 10000;
+    var max = 100000;
     var primes = primesUpTo(max).toSet();
     for (var i = 0; i < max; i++) {
       expect(isProbablyPrime(i), primes.contains(i));
