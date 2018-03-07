@@ -27,7 +27,7 @@ import 'package:more/src/iterable/mixins/infinite.dart';
 ///
 Iterable<E> cycle<E>(Iterable<E> iterable, [int count]) {
   if (count == 0 || iterable.isEmpty) {
-    return const Iterable<E>.empty();
+    return const Iterable.empty();
   } else if (count == 1 || iterable is InfiniteIterable<E>) {
     return iterable;
   } else if (count == null) {

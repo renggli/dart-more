@@ -51,12 +51,12 @@ void main() {
             .putIfAbsent(k, () => verifyBinomial(n - 1, k - 1) + verifyBinomial(n - 1, k));
       }
     }
-    for (var n = 0; n <= 150; n++) {
+    for (var n = 0; n <= 60; n++) {
       for (var k = 0; k <= n; k++) {
         expect(binomial(n, k), verifyBinomial(n, k));
       }
     }
-  }, onPlatform: {'browser': const Skip('large integers')});
+  }, onPlatform: {'browser': const Skip('64-bit integers')});
   test('binomial (bounds)', () {
     expect(() => binomial(7, -1), throwsArgumentError);
     expect(() => binomial(7, 8), throwsArgumentError);

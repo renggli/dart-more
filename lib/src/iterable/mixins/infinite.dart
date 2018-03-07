@@ -26,7 +26,7 @@ abstract class InfiniteIterable<E> implements Iterable<E> {
   E get single => _throw();
 
   @override
-  E singleWhere(bool test(E element)) => _throw();
+  E singleWhere(bool test(E element), {E orElse()}) => _throw();
 
   @override
   List<E> toList({bool growable: true}) => _throw();

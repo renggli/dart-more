@@ -8,11 +8,7 @@ import 'package:test/test.dart';
 const Duration delay = const Duration(milliseconds: 10);
 
 // Various common loaders used with the tests.
-String failingLoader(int key) {
-  fail('Loader should never be called');
-  return null;
-}
-
+String failingLoader(int key) => fail('Loader should never be called');
 String immediateLoader(int key) => '$key';
 Future<String> futureLoader(int key) => new Future.value(immediateLoader(key));
 Future<String> delayedLoader(int key) => new Future.delayed(delay, () => immediateLoader(key));

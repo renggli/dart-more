@@ -1,11 +1,13 @@
 library more.collection.bimap;
 
+import 'dart:collection';
+
 /// A bi-map associates keys with values and values with keys.
 ///
 /// Bi-maps behave like maps from key to values, but can efficiently provide an inverse
 /// bi-map that maps values to keys. Also certain operations, such as [containsValue]
 /// are much more efficient than with traditional maps.
-class BiMap<K, V> implements Map<K, V> {
+class BiMap<K, V> extends MapMixin<K, V> {
 
   /// Creates an empty bi-map.
   factory BiMap() => new BiMap<K, V>._({}, {});
@@ -63,6 +65,9 @@ class BiMap<K, V> implements Map<K, V> {
   Map<V, K> get backward => inverse;
 
   @override
+  Iterable<MapEntry<K, V>> get entries => forward.entries;
+
+  @override
   V operator [](Object key) => _forward[key];
 
   @override
@@ -82,11 +87,6 @@ class BiMap<K, V> implements Map<K, V> {
       this[key] = value;
       return value;
     }
-  }
-
-  @override
-  void addAll(Map<K, V> other) {
-    other.forEach((key, value) => this[key] = value);
   }
 
   @override

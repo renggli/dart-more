@@ -11,7 +11,7 @@ import 'dart:collection' show IterableBase;
 ///
 Iterable<List<E>> permutations<E>(Iterable<E> elements) {
   if (elements.isEmpty) {
-    return const Iterable<List<E>>.empty();
+    return const Iterable.empty();
   } else {
     return new PermutationIterable<E>(elements.toList(growable: false));
   }
