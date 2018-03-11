@@ -3,21 +3,21 @@ library more.ordering.natural;
 import 'package:more/ordering.dart';
 
 class NaturalOrdering<T extends Comparable> extends Ordering<T> {
-  const NaturalOrdering();
+  NaturalOrdering();
 
   @override
   int compare(T a, T b) => a.compareTo(b);
 
   @override
-  Ordering<T> get reversed => const ReverseNaturalOrdering();
+  Ordering<T> get reversed => new ReverseNaturalOrdering<T>();
 }
 
 class ReverseNaturalOrdering<T extends Comparable> extends Ordering<T> {
-  const ReverseNaturalOrdering();
+  ReverseNaturalOrdering();
 
   @override
   int compare(T a, T b) => b.compareTo(a);
 
   @override
-  Ordering<T> get reversed => const NaturalOrdering();
+  Ordering<T> get reversed => new NaturalOrdering<T>();
 }

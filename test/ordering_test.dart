@@ -9,7 +9,7 @@ void verifyBasic<T>(String type, Ordering<T> ordering, Iterable<T> unsorted, Ite
   expect(sorted, expected, reason: '$type.sorted');
   expect(ordering.isOrdered(sorted), isTrue, reason: '$type.isOrdered');
   for (var element in unsorted) {
-    expect(ordering.binarySearch(sorted, element), (index) => index >= 0,
+    expect(ordering.binarySearch(sorted, element), (int index) => index >= 0,
         reason: '$type.binarySearch');
   }
   if (sorted.isNotEmpty) {
@@ -49,12 +49,10 @@ void verify<T>(Ordering<T> ordering, Iterable<T> unsorted, Iterable<T> expected)
   }
 }
 
-final Ordering<Comparable> natural = new Ordering.natural();
-
 void main() {
   group('orders', () {
     test('natural', () {
-      var ordering = natural;
+      var ordering = new Ordering.natural();
       verify(ordering, [1, 2, 3], [1, 2, 3]);
       verify(ordering, [2, 3, 1], [1, 2, 3]);
       verify(ordering, [3, 1, 2], [1, 2, 3]);
@@ -68,7 +66,7 @@ void main() {
       verify(ordering, ['***', '**', '*'], ['*', '**', '***']);
     });
     test('explicit', () {
-      var ordering = new Ordering<int>.explicit([2, 3, 1]);
+      var ordering = new Ordering.explicit([2, 3, 1]);
       verify(ordering, [3, 2], [2, 3]);
       verify(ordering, [1, 2], [2, 1]);
       verify(ordering, [1, 2, 3], [2, 3, 1]);
@@ -79,23 +77,22 @@ void main() {
   });
   group('operators', () {
     test('reverse', () {
-      var ordering = natural.reversed;
-      expect(ordering.reversed, same(natural));
+      var ordering = new Ordering.natural().reversed;
       verify(ordering, [1, 2, 3], [3, 2, 1]);
       verify(ordering, [2, 3, 1], [3, 2, 1]);
       verify(ordering, [3, 1, 2], [3, 2, 1]);
       verify(ordering, [3, 2, 1], [3, 2, 1]);
     });
     test('lexicographical', () {
-      var ordering = natural.lexicographical;
+      var ordering = new Ordering.natural().lexicographical;
       verify(ordering, [
-        [],
+        <int>[],
         [1],
         [1, 1],
         [1, 2],
         [2]
       ], [
-        [],
+        <int>[],
         [1],
         [1, 1],
         [1, 2],
@@ -106,9 +103,9 @@ void main() {
         [1, 2],
         [1, 1],
         [1],
-        []
+        <int>[]
       ], [
-        [],
+        <int>[],
         [1],
         [1, 1],
         [1, 2],
@@ -116,7 +113,7 @@ void main() {
       ]);
     });
     test('nullsFirst', () {
-      var ordering = natural.nullsFirst;
+      var ordering = new Ordering.natural().nullsFirst;
       expect(ordering.nullsFirst, same(ordering));
       verify(ordering, [null, 1, 2, 3], [null, 1, 2, 3]);
       verify(ordering, [2, null, 3, 1], [null, 1, 2, 3]);
@@ -125,7 +122,7 @@ void main() {
       verify(ordering.nullsLast, [1, null, 2], [1, 2, null]);
     });
     test('nullsLast', () {
-      var ordering = natural.nullsLast;
+      var ordering = new Ordering.natural().nullsLast;
       expect(ordering.nullsLast, same(ordering));
       verify(ordering, [null, 1, 2, 3], [1, 2, 3, null]);
       verify(ordering, [2, null, 3, 1], [1, 2, 3, null]);
@@ -134,7 +131,9 @@ void main() {
       verify(ordering.nullsFirst, [1, null, 2], [null, 1, 2]);
     });
     test('compound', () {
-      var ordering = natural.onResultOf((s) => s.length).compound(natural);
+      var ordering = new Ordering.natural()
+          .onResultOf<String>((s) => s.length)
+          .compound(new Ordering.natural());
       verify(ordering, ['333', '1', '4444', '22'], ['1', '22', '333', '4444']);
       verify(ordering, ['2', '333', '4444', '1', '22'], ['1', '2', '22', '333', '4444']);
       verify(
@@ -143,10 +142,10 @@ void main() {
           ['1', '2', '22', '33', '44', '333', '4444']);
     });
     test('compound of compound', () {
-      var ordering = natural
+      var ordering = new Ordering.natural()
           .onResultOf((list) => list[0])
-          .compound(natural.onResultOf((list) => list[1]))
-          .compound(natural.onResultOf((list) => list[2]));
+          .compound(new Ordering.natural().onResultOf((list) => list[1]))
+          .compound(new Ordering.natural().onResultOf((list) => list[2]));
       verify(ordering, [
         [2, 0, 0],
         [1, 0, 0]
@@ -170,7 +169,8 @@ void main() {
       ]);
     });
     test('onResultOf', () {
-      var ordering = natural.onResultOf((s) => (s as String).length);
+      var ordering = new Ordering.natural()
+          .onResultOf<String>((s) => s.length);
       verify(ordering, ['*', '**', '***'], ['*', '**', '***']);
       verify(ordering, ['**', '***', '*'], ['*', '**', '***']);
       verify(ordering, ['***', '*', '**'], ['*', '**', '***']);
@@ -178,6 +178,7 @@ void main() {
     });
   });
   group('actions', () {
+    var natural = new Ordering.natural();
     test('binarySearch empty', () {
       expect(natural.binarySearch([], 5), -1);
     });

@@ -10,7 +10,7 @@ class ExplicitOrdering<T> extends Ordering<T> {
     for (var rank = 0; rank < list.length; rank++) {
       ranking[list[rank]] = rank;
     }
-    return new ExplicitOrdering._(ranking);
+    return new ExplicitOrdering<T>._(ranking);
   }
 
   const ExplicitOrdering._(this.ranking);

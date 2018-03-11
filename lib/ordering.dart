@@ -42,14 +42,13 @@ import 'package:more/src/ordering/reversed.dart';
 abstract class Ordering<T> {
 
   /// Returns a natural ordering of objects.
-  factory Ordering.natural() => const NaturalOrdering();
+  factory Ordering.natural() = NaturalOrdering<T>; // ignore: type_argument_not_matching_bounds
 
   /// Returns an ordering based on a [comparator] function.
-  factory Ordering.from(Comparator<T> comparator) =>
-      new ComparatorOrdering<T>(comparator);
+  factory Ordering.from(Comparator<T> comparator) = ComparatorOrdering<T>;
 
   /// Returns an explicit ordering based on a [list] of elements.
-  factory Ordering.explicit(List<T> list) => new ExplicitOrdering<T>(list);
+  factory Ordering.explicit(List<T> list) = ExplicitOrdering<T>;
 
   /// Internal default constructor for subclasses.
   const Ordering();
