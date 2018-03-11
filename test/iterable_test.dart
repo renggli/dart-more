@@ -338,10 +338,6 @@ void main() {
       var iterable = partition(<int>[], 2);
       expect(iterable, <int>[]);
     });
-    test('empty with padding', () {
-      var iterable = partition(<int>[], 2, 0);
-      expect(iterable, <int>[]);
-    });
     test('even', () {
       var iterable = partition([1, 2, 3, 4], 2);
       expect(iterable, [
@@ -349,13 +345,7 @@ void main() {
         [3, 4]
       ]);
     });
-    test('even with padding', () {
-      var iterable = partition([1, 2, 3, 4], 2, 0);
-      expect(iterable, [
-        [1, 2],
-        [3, 4]
-      ]);
-    });
+
     test('odd', () {
       var iterable = partition([1, 2, 3, 4, 5], 2);
       expect(iterable, [
@@ -364,13 +354,19 @@ void main() {
         [5]
       ]);
     });
-    test('odd with padding', () {
-      var iterable = partition([1, 2, 3, 4, 5], 2, 0);
-      expect(iterable, [
-        [1, 2],
-        [3, 4],
-        [5, 0]
-      ]);
+    group('with padding', () {
+      test('empty', () {
+        var iterable = partitionWithPadding(<int>[], 2, 0);
+        expect(iterable, <int>[]);
+      });
+      test('even', () {
+        var iterable = partitionWithPadding([1, 2, 3, 4], 2, 0);
+        expect(iterable, [[1, 2], [3, 4]]);
+      });
+      test('odd', () {
+        var iterable = partitionWithPadding([1, 2, 3, 4, 5], 2, 0);
+        expect(iterable, [[1, 2], [3, 4], [5, 0]]);
+      });
     });
   });
   group('periodical', () {
