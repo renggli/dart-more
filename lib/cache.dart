@@ -22,7 +22,7 @@ abstract class Cache<K, V> {
     if (loader == null) {
       throw new ArgumentError.notNull('loader');
     }
-    return new EmptyCache(loader);
+    return new EmptyCache<K, V>(loader);
   }
 
   /// Constructs an expiry cache.
@@ -49,7 +49,7 @@ abstract class Cache<K, V> {
     if (accessExpiry != null && accessExpiry.inMicroseconds <= 0) {
       throw new ArgumentError("Negative 'updateExpire' provided.");
     }
-    return new ExpiryCache(loader, clock ?? systemClock, updateExpiry, accessExpiry);
+    return new ExpiryCache<K, V>(loader, clock ?? systemClock, updateExpiry, accessExpiry);
   }
 
   /// Constructs a First-in/First-out (FIFO) cache.
@@ -63,7 +63,7 @@ abstract class Cache<K, V> {
     if (maximumSize <= 0) {
       throw new ArgumentError("Non-positive 'maximumSize' provided.");
     }
-    return new FifoCache(loader, maximumSize);
+    return new FifoCache<K, V>(loader, maximumSize);
   }
 
   /// Constructs a Least Recently Used (LRU) cache.
@@ -77,7 +77,7 @@ abstract class Cache<K, V> {
     if (maximumSize <= 0) {
       throw new ArgumentError("Non-positive 'maximumSize' provided.");
     }
-    return new LruCache(loader, maximumSize);
+    return new LruCache<K, V>(loader, maximumSize);
   }
 
   /// Unnamed default constructor.

@@ -39,8 +39,8 @@ void statelessCacheTests(Cache<int, String> newCache(Loader<int, String> loader)
   test('load throwing value', () {
     return newCache(throwingLoader)
         .get(1)
-        .catchError((exception) => exception)
-        .then((value) => expect(value, isUnsupportedError));
+        .then((value) => fail('expected error'),
+            onError: (exception) => expect(exception, isUnsupportedError));
   });
   test('load delayed value', () {
     return newCache(delayedLoader)
