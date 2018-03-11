@@ -68,9 +68,6 @@ class BiMap<K, V> extends MapMixin<K, V> {
   Map<V, K> get backward => inverse;
 
   @override
-  Iterable<MapEntry<K, V>> get entries => forward.entries;
-
-  @override
   V operator [](Object key) => _forward[key];
 
   @override
