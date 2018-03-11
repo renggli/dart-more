@@ -335,12 +335,12 @@ void main() {
   });
   group('partition', () {
     test('empty', () {
-      var iterable = partition([], 2);
-      expect(iterable, []);
+      var iterable = partition(<int>[], 2);
+      expect(iterable, <int>[]);
     });
     test('empty with padding', () {
-      var iterable = partition([], 2, 0);
-      expect(iterable, []);
+      var iterable = partition(<int>[], 2, 0);
+      expect(iterable, <int>[]);
     });
     test('even', () {
       var iterable = partition([1, 2, 3, 4], 2);
