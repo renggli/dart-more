@@ -4,9 +4,9 @@ import 'package:more/src/int_math/pow_mod.dart';
 
 /// Tests if the number [n] is probably a prime.
 ///
-/// The output of this variant of the probabilistic prime test
-/// by Miller–Rabin is deterministic. It has been verified to return
-/// correct results for all n < 341,550,071,728,321.
+/// The output of this variant of the probabilistic prime test by Miller–Rabin
+/// is deterministic. It has been verified to return correct results for all n
+/// < 341,550,071,728,321.
 bool isProbablyPrime(int n) {
   if (n == 2 || n == 3 || n == 5) {
     return true;
@@ -17,8 +17,7 @@ bool isProbablyPrime(int n) {
   if (n < 25) {
     return true;
   }
-  var d = n - 1,
-      s = 0;
+  var d = n - 1, s = 0;
   while (d % 2 == 0) {
     d ~/= 2;
     s++;

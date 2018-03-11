@@ -3,11 +3,11 @@ library more.collection.integer_range;
 import 'dart:collection' show ListBase;
 
 import 'package:more/ordering.dart' show Ordering;
-import 'package:more/src/iterable/mixins/unmodifiable.dart' show UnmodifiableListMixin;
+import 'package:more/src/iterable/mixins/unmodifiable.dart'
+    show UnmodifiableListMixin;
 
 /// A virtual range of integers containing an arithmetic progressions.
 class IntegerRange extends ListBase<int> with UnmodifiableListMixin<int> {
-
   /// Creates a virtual range of numbers containing an arithmetic progressions
   /// of integer values.
   ///
@@ -122,7 +122,8 @@ class IntegerRange extends ListBase<int> with UnmodifiableListMixin<int> {
   }
 
   @override
-  IntegerRange get reversed => isEmpty ? this : new IntegerRange._(last, first - step, -step, length);
+  IntegerRange get reversed =>
+      isEmpty ? this : new IntegerRange._(last, first - step, -step, length);
 
   @override
   IntegerRange sublist(int startIndex, [int stopIndex]) {
@@ -132,11 +133,8 @@ class IntegerRange extends ListBase<int> with UnmodifiableListMixin<int> {
   @override
   IntegerRange getRange(int startIndex, int stopIndex) {
     RangeError.checkValidRange(startIndex, stopIndex, length);
-    return new IntegerRange._(
-        start + startIndex * step,
-        start + stopIndex * step,
-        step,
-        stopIndex - startIndex);
+    return new IntegerRange._(start + startIndex * step,
+        start + stopIndex * step, step, stopIndex - startIndex);
   }
 
   @override
@@ -151,7 +149,6 @@ class IntegerRange extends ListBase<int> with UnmodifiableListMixin<int> {
       return 'new IntegerRange($start, $stop, $step)';
     }
   }
-
 }
 
 class IntegerRangeIterator extends Iterator<int> {

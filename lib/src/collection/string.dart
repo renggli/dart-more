@@ -2,10 +2,11 @@ library more.collection.string;
 
 import 'dart:collection' show ListBase;
 
-import 'package:more/src/iterable/mixins/unmodifiable.dart' show UnmodifiableListMixin;
+import 'package:more/src/iterable/mixins/unmodifiable.dart'
+    show UnmodifiableListMixin;
 
-/// Returns a light-weight immutable iterable list around the characters of
-/// a [string].
+/// Returns a light-weight immutable iterable list around the characters of a
+/// [string].
 ///
 /// To loop over the characters of a string simply write:
 ///
@@ -32,10 +33,12 @@ class StringList extends ListBase<String> with UnmodifiableListMixin<String> {
   int get length => contents.length;
 
   @override
-  String operator [](int index) => new String.fromCharCode(contents.codeUnitAt(index));
+  String operator [](int index) =>
+      new String.fromCharCode(contents.codeUnitAt(index));
 
   @override
-  List<String> sublist(int start, [int end]) => new StringList(contents.substring(start, end));
+  List<String> sublist(int start, [int end]) =>
+      new StringList(contents.substring(start, end));
 
   @override
   String toString() => contents;
@@ -53,7 +56,8 @@ class StringList extends ListBase<String> with UnmodifiableListMixin<String> {
 ///
 /// For a light-weight immutable list of characters see [string(Object)].
 List<String> mutableString(Object string, {bool growable: true}) {
-  return new MutableStringList(new List.from(string.toString().codeUnits, growable: growable));
+  return new MutableStringList(
+      new List.from(string.toString().codeUnits, growable: growable));
 }
 
 /// A string as a mutable list.
@@ -81,7 +85,8 @@ class MutableStringList extends ListBase<String> {
   }
 
   @override
-  List<String> sublist(int start, [int end]) => new MutableStringList(_codeUnits.sublist(start, end));
+  List<String> sublist(int start, [int end]) =>
+      new MutableStringList(_codeUnits.sublist(start, end));
 
   @override
   String toString() => new String.fromCharCodes(_codeUnits);

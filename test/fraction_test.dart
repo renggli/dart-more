@@ -73,8 +73,7 @@ void main() {
     test('double error', () {
       expect(() => new Fraction.fromDouble(double.NAN), throwsArgumentError);
       expect(
-              () => new Fraction.fromDouble(double.INFINITY),
-          throwsArgumentError);
+          () => new Fraction.fromDouble(double.INFINITY), throwsArgumentError);
       expect(() => new Fraction.fromDouble(double.NEGATIVE_INFINITY),
           throwsArgumentError);
     });

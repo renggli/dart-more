@@ -4,7 +4,8 @@ import 'package:more/iterable.dart' show concat;
 import 'package:more/ordering.dart';
 import 'package:test/test.dart';
 
-void verifyBasic<T>(String type, Ordering<T> ordering, Iterable<T> unsorted, Iterable<T> expected) {
+void verifyBasic<T>(String type, Ordering<T> ordering, Iterable<T> unsorted,
+    Iterable<T> expected) {
   var sorted = ordering.sorted(unsorted);
   expect(sorted, expected, reason: '$type.sorted');
   expect(ordering.isOrdered(sorted), isTrue, reason: '$type.isOrdered');
@@ -18,9 +19,11 @@ void verifyBasic<T>(String type, Ordering<T> ordering, Iterable<T> unsorted, Ite
   }
 }
 
-void verify<T>(Ordering<T> ordering, Iterable<T> unsorted, Iterable<T> expected) {
+void verify<T>(
+    Ordering<T> ordering, Iterable<T> unsorted, Iterable<T> expected) {
   verifyBasic('ordering', ordering, unsorted, expected);
-  verifyBasic('ordering.reversed', ordering.reversed, unsorted, expected.toList().reversed);
+  verifyBasic('ordering.reversed', ordering.reversed, unsorted,
+      expected.toList().reversed);
   if (!unsorted.contains(null)) {
     verifyBasic(
         'ordering.nullsFirst',
@@ -135,9 +138,10 @@ void main() {
           .onResultOf<String>((s) => s.length)
           .compound(new Ordering.natural());
       verify(ordering, ['333', '1', '4444', '22'], ['1', '22', '333', '4444']);
-      verify(ordering, ['2', '333', '4444', '1', '22'], ['1', '2', '22', '333', '4444']);
-      verify(
-          ordering, ['33', '333', '2', '22', '1', '4444'], ['1', '2', '22', '33', '333', '4444']);
+      verify(ordering, ['2', '333', '4444', '1', '22'],
+          ['1', '2', '22', '333', '4444']);
+      verify(ordering, ['33', '333', '2', '22', '1', '4444'],
+          ['1', '2', '22', '33', '333', '4444']);
       verify(ordering, ['4444', '44', '2', '1', '333', '22', '33'],
           ['1', '2', '22', '33', '44', '333', '4444']);
     });
@@ -169,8 +173,7 @@ void main() {
       ]);
     });
     test('onResultOf', () {
-      var ordering = new Ordering.natural()
-          .onResultOf<String>((s) => s.length);
+      var ordering = new Ordering.natural().onResultOf<String>((s) => s.length);
       verify(ordering, ['*', '**', '***'], ['*', '**', '***']);
       verify(ordering, ['**', '***', '*'], ['*', '**', '***']);
       verify(ordering, ['***', '*', '**'], ['*', '**', '***']);

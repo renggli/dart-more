@@ -7,8 +7,8 @@ import 'package:more/src/iterable/mixins/infinite.dart';
 /// One argument function returning an object of the same type.
 typedef E IterateFunction<E>(E value);
 
-/// Returns a lazy infinite list of repeated applications of the
-/// [function] to the initial [value].
+/// Returns a lazy infinite list of repeated applications of the [function] to
+/// the initial [value].
 ///
 /// For example, the expression
 ///

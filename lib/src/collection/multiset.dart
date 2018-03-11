@@ -3,15 +3,15 @@ library more.collection.multiset;
 import 'dart:collection' show IterableBase;
 import 'dart:math' show min;
 
-/// A generalized [Set] (or Bag) in which members are allowed to appear
-/// more than once.
+/// A generalized [Set] (or Bag) in which members are allowed to appear  more
+/// than once.
 class Multiset<E> extends IterableBase<E> {
-
   /// Creates an empty [Multiset].
   factory Multiset() => new Multiset<E>._({}, 0);
 
   /// Creates an empty identity [Multiset].
-  factory Multiset.identity() => new Multiset<E>._(new Map<E, int>.identity(), 0);
+  factory Multiset.identity() =>
+      new Multiset<E>._(new Map<E, int>.identity(), 0);
 
   /// Creates a [Multiset] that contains all elements of [other].
   factory Multiset.from(Iterable<E> other) {
@@ -26,12 +26,13 @@ class Multiset<E> extends IterableBase<E> {
   /// computed from an [iterable].
   ///
   /// The [key] function specifies the actual elements added to the collection.
-  /// The default implementation is the identity function. Repetitions are possible
-  /// and merge into the previously added elements.
+  /// The default implementation is the identity function. Repetitions are
+  /// possible and merge into the previously added elements.
   ///
   /// The [count] function specifies the number of elements added to the
   /// collection. The default function returns the constant 1.
-  factory Multiset.fromIterable(Iterable iterable, {E key(element), int count(element)}) {
+  factory Multiset.fromIterable(Iterable iterable,
+      {E key(element), int count(element)}) {
     var result = new Multiset<E>();
     key ??= (element) => element;
     count ??= (element) => 1;
@@ -141,8 +142,8 @@ class Multiset<E> extends IterableBase<E> {
     }
   }
 
-  /// Returns a new [Multiset] with the elements that are in the receiver as well
-  /// as those in [other].
+  /// Returns a new [Multiset] with the elements that are in the receiver as
+  /// well as those in [other].
   Multiset<E> intersection(Iterable<Object> other) {
     if (other is Multiset<Object>) {
       var result = new Multiset<E>();
@@ -169,7 +170,8 @@ class Multiset<E> extends IterableBase<E> {
 
   /// Iterator over the repeated elements of the receiver.
   @override
-  Iterator<E> get iterator => new MultisetIterator<E>(_container, distinct.iterator);
+  Iterator<E> get iterator =>
+      new MultisetIterator<E>(_container, distinct.iterator);
 
   /// Returns a view on the distinct elements of the receiver.
   Iterable<E> get distinct => _container.keys;

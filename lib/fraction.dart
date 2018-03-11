@@ -34,10 +34,8 @@ class Fraction implements Comparable<Fraction> {
     }
     var sign = value < 0.0 ? -1 : 1;
     value *= sign;
-    var numerator1 = value.floor(),
-        numerator2 = 1;
-    var denominator1 = 1,
-        denominator2 = 0;
+    var numerator1 = value.floor(), numerator2 = 1;
+    var denominator1 = 1, denominator2 = 0;
     var integerPart = numerator1;
     var fractionPart = value - numerator1;
     while (fractionPart != 0) {

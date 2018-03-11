@@ -77,7 +77,8 @@ class PartitionWithPaddingIterable<E> extends IterableBase<Iterable<E>> {
   PartitionWithPaddingIterable(this.elements, this.size, this.padding);
 
   @override
-  Iterator<Iterable<E>> get iterator => new PartitionWithPaddingIterator<E>(elements.iterator, size, padding);
+  Iterator<Iterable<E>> get iterator =>
+      new PartitionWithPaddingIterator<E>(elements.iterator, size, padding);
 }
 
 class PartitionWithPaddingIterator<E> extends Iterator<Iterable<E>> {

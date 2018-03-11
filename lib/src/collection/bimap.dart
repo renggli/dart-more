@@ -4,29 +4,30 @@ import 'dart:collection';
 
 /// A bi-map associates keys with values and values with keys.
 ///
-/// Bi-maps behave like maps from key to values, but can efficiently provide an inverse
-/// bi-map that maps values to keys. Also certain operations, such as [containsValue]
-/// are much more efficient than with traditional maps.
+/// Bi-maps behave like maps from key to values, but can efficiently provide an
+/// inverse bi-map that maps values to keys. Also certain operations, such as
+/// [containsValue] are much more efficient than with traditional maps.
 class BiMap<K, V> extends MapMixin<K, V> {
-
   /// Creates an empty bi-map.
   factory BiMap() => new BiMap<K, V>._({}, {});
 
   /// Creates an empty identity bi-map.
-  factory BiMap.identity() => new BiMap<K, V>._(new Map.identity(), new Map.identity());
+  factory BiMap.identity() =>
+      new BiMap<K, V>._(new Map.identity(), new Map.identity());
 
   /// Creates bi-map from another map.
   factory BiMap.from(Map<K, V> other) {
     if (other is BiMap<K, V>) {
-      return new BiMap<K, V>._(
-          new Map<K, V>.from(other._forward), new Map<V, K>.from(other._backward));
+      return new BiMap<K, V>._(new Map<K, V>.from(other._forward),
+          new Map<V, K>.from(other._backward));
     } else {
       return new BiMap<K, V>()..addAll(other);
     }
   }
 
   /// Creates a bi-map from an iterable (and possible transformation functions).
-  factory BiMap.fromIterable(Iterable iterable, {K key(element), V value(element)}) {
+  factory BiMap.fromIterable(Iterable iterable,
+      {K key(element), V value(element)}) {
     return new BiMap<K, V>.fromIterables(
         key == null ? iterable : iterable.map(key),
         value == null ? iterable : iterable.map(value));
@@ -36,14 +37,16 @@ class BiMap<K, V> extends MapMixin<K, V> {
   factory BiMap.fromIterables(Iterable<K> keys, Iterable<V> values) {
     var result = new BiMap<K, V>();
     var keyIterator = keys.iterator, valueIterator = values.iterator;
-    var moreKeys = keyIterator.moveNext(), moreValues = valueIterator.moveNext();
+    var moreKeys = keyIterator.moveNext(),
+        moreValues = valueIterator.moveNext();
     while (moreKeys && moreValues) {
       result[keyIterator.current] = valueIterator.current;
       moreKeys = keyIterator.moveNext();
       moreValues = valueIterator.moveNext();
     }
     if (moreKeys || moreValues) {
-      throw new ArgumentError('Keys and values iterables have different length.');
+      throw new ArgumentError(
+          'Keys and values iterables have different length.');
     }
     return result;
   }
@@ -56,12 +59,12 @@ class BiMap<K, V> extends MapMixin<K, V> {
   /// Returns the inverse bi-map onto the same data.
   BiMap<V, K> get inverse => new BiMap._(_backward, _forward);
 
-  /// Returns a forward map onto the same data. This accessor effectively returns this object,
-  /// but cast-down to a [Map].
+  /// Returns a forward map onto the same data. This accessor effectively
+  /// returns this object, but cast-down to a [Map].
   Map<K, V> get forward => this;
 
-  /// Returns a backward map onto the same data. This accessor effectively returns the same as
-  /// [BiMap.inverse], but case-down to a [Map].
+  /// Returns a backward map onto the same data. This accessor effectively
+  /// returns the same as [BiMap.inverse], but case-down to a [Map].
   Map<V, K> get backward => inverse;
 
   @override

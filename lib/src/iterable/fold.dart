@@ -4,8 +4,8 @@ import 'dart:collection' show IterableBase;
 
 import 'package:more/src/iterable/mixins/infinite.dart';
 
-/// Returns a lazy infinite list of repeated applications of the
-/// n-ary [Function] to its previous n initial [elements].
+/// Returns a lazy infinite list of repeated applications of the n-ary
+/// [Function] to its previous n initial [elements].
 ///
 /// For example, the expression
 ///
@@ -27,7 +27,8 @@ class FoldIterable<E> extends IterableBase<E> with InfiniteIterable<E> {
 
   @override
   Iterator<E> get iterator {
-    return new FoldIterator<E>(new List.from(elements, growable: false), combine);
+    return new FoldIterator<E>(
+        new List.from(elements, growable: false), combine);
   }
 }
 

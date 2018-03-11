@@ -15,11 +15,13 @@ CharMatcher fromPattern(String pattern) {
   List<RangeCharMatcher> ranges = [];
   while (pattern.isNotEmpty) {
     if (pattern.length >= 3 && pattern[1] == '-') {
-      var charMatcher = new RangeCharMatcher(pattern.codeUnitAt(0), pattern.codeUnitAt(2));
+      var charMatcher =
+          new RangeCharMatcher(pattern.codeUnitAt(0), pattern.codeUnitAt(2));
       ranges.add(charMatcher);
       pattern = pattern.substring(3);
     } else {
-      var charMatcher = new RangeCharMatcher(pattern.codeUnitAt(0), pattern.codeUnitAt(0));
+      var charMatcher =
+          new RangeCharMatcher(pattern.codeUnitAt(0), pattern.codeUnitAt(0));
       ranges.add(charMatcher);
       pattern = pattern.substring(1);
     }

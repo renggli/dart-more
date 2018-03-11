@@ -27,9 +27,9 @@ enum Period {
 /// The initial timestamp can be configured using the `start` parameter; and the
 /// period using `step` and the `period` enum of type [Period].
 ///
-/// To limit the iteration to a specific number of timestamps use [Iterable.take];
-/// and to limit iteration to a specific end-timestamp use [Iterable.takeWhile].
-/// For example:
+/// To limit the iteration to a specific number of timestamps use
+/// [Iterable.take]; and to limit iteration to a specific end-timestamp use
+/// [Iterable.takeWhile]. For example:
 ///
 ///     // Enumerate 10 days after September 2, 2017.
 ///     periodical(start: new DateTime(2017, DateTime.SEPTEMBER, 2))

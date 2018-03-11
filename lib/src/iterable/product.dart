@@ -4,9 +4,10 @@ import 'dart:collection' show IterableBase;
 
 /// Returns an iterable over the cross product of [iterables].
 ///
-/// The resulting iterable is equivalent to nested for-loops. The rightmost elements
-/// advance on every iteration. This pattern creates a lexicographic ordering so that
-/// if the input’s iterables are sorted, the product is sorted as well.
+/// The resulting iterable is equivalent to nested for-loops. The rightmost
+/// elements advance on every iteration. This pattern creates a lexicographic
+/// ordering so that if the input’s iterables are sorted, the product is sorted
+/// as well.
 ///
 /// For example, the product of `['x', 'y']` and `[1, 2, 3]` is created with
 ///

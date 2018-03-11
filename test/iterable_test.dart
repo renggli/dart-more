@@ -14,13 +14,14 @@ void main() {
         expect(iterable, isEmpty);
       });
       test('take 1', () {
-        var iterable =
-            combinations(letters, 1, repetitions: true).map((iterable) => iterable.join());
+        var iterable = combinations(letters, 1, repetitions: true)
+            .map((iterable) => iterable.join());
         expect(iterable, ['a', 'b', 'c', 'd']);
       });
       test('take 2', () {
         var iterable = combinations(letters, 2, repetitions: true);
-        expect(iterable.map(joiner), ['aa', 'ab', 'ac', 'ad', 'bb', 'bc', 'bd', 'cc', 'cd', 'dd']);
+        expect(iterable.map(joiner),
+            ['aa', 'ab', 'ac', 'ad', 'bb', 'bc', 'bd', 'cc', 'cd', 'dd']);
       });
       test('take 3', () {
         var iterable = combinations(letters, 3, repetitions: true);
@@ -124,9 +125,12 @@ void main() {
     });
     test('range error', () {
       expect(() => combinations(letters, -1), throwsRangeError);
-      expect(() => combinations(letters, -1, repetitions: true), throwsRangeError);
-      expect(() => combinations(letters, -1, repetitions: false), throwsRangeError);
-      expect(() => combinations(letters, 5, repetitions: false), throwsRangeError);
+      expect(
+          () => combinations(letters, -1, repetitions: true), throwsRangeError);
+      expect(() => combinations(letters, -1, repetitions: false),
+          throwsRangeError);
+      expect(
+          () => combinations(letters, 5, repetitions: false), throwsRangeError);
     });
   });
   group('concat', () {
@@ -187,9 +191,11 @@ void main() {
       expect(cycle([1, 2]).isNotEmpty, isTrue);
       expect(() => cycle([1, 2]).length, throwsUnsupportedError);
       expect(() => cycle([1, 2]).last, throwsUnsupportedError);
-      expect(() => cycle([1, 2]).lastWhere((e) => false), throwsUnsupportedError);
+      expect(
+          () => cycle([1, 2]).lastWhere((e) => false), throwsUnsupportedError);
       expect(() => cycle([1, 2]).single, throwsUnsupportedError);
-      expect(() => cycle([1, 2]).singleWhere((e) => false), throwsUnsupportedError);
+      expect(() => cycle([1, 2]).singleWhere((e) => false),
+          throwsUnsupportedError);
       expect(() => cycle([1, 2]).toList(), throwsUnsupportedError);
       expect(() => cycle([1, 2]).toSet(), throwsUnsupportedError);
     });
@@ -212,16 +218,19 @@ void main() {
       expect(iterable.map((each) => each.toString()), ['0: a', '1: b', '2: c']);
     });
     test('example', () {
-      var actual =
-          indexed(['a', 'b'], offset: 1).map((each) => '${each.value}-${each.index}').join(', ');
+      var actual = indexed(['a', 'b'], offset: 1)
+          .map((each) => '${each.value}-${each.index}')
+          .join(', ');
       var expected = 'a-1, b-2';
       expect(actual, expected);
     });
     test('reversed', () {
-      var iterable =
-          indexed(indexed(['a', 'b', 'c']).map((each) => each.toString()).toList().reversed)
+      var iterable = indexed(indexed(['a', 'b', 'c'])
               .map((each) => each.toString())
-              .toList();
+              .toList()
+              .reversed)
+          .map((each) => each.toString())
+          .toList();
       expect(iterable, ['0: 2: c', '1: 1: b', '2: 0: a']);
     });
   });
@@ -271,9 +280,11 @@ void main() {
       expect(digits(12, 2).toList(), [0, 0, 1, 1]);
       expect(digits(123, 2).toList(), [1, 1, 0, 1, 1, 1, 1]);
       expect(digits(1001, 2).toList(), [1, 0, 0, 1, 0, 1, 1, 1, 1, 1]);
-      expect(digits(10001, 2).toList(), [1, 0, 0, 0, 1, 0, 0, 0, 1, 1, 1, 0, 0, 1]);
+      expect(digits(10001, 2).toList(),
+          [1, 0, 0, 0, 1, 0, 0, 0, 1, 1, 1, 0, 0, 1]);
       expect(digits(1000, 2).toList(), [0, 0, 0, 1, 0, 1, 1, 1, 1, 1]);
-      expect(digits(10000, 2).toList(), [0, 0, 0, 0, 1, 0, 0, 0, 1, 1, 1, 0, 0, 1]);
+      expect(digits(10000, 2).toList(),
+          [0, 0, 0, 0, 1, 0, 0, 0, 1, 1, 1, 0, 0, 1]);
     });
     test('digits (base 16)', () {
       expect(digits(0, 16).toList(), [0]);
@@ -361,11 +372,18 @@ void main() {
       });
       test('even', () {
         var iterable = partitionWithPadding([1, 2, 3, 4], 2, 0);
-        expect(iterable, [[1, 2], [3, 4]]);
+        expect(iterable, [
+          [1, 2],
+          [3, 4]
+        ]);
       });
       test('odd', () {
         var iterable = partitionWithPadding([1, 2, 3, 4, 5], 2, 0);
-        expect(iterable, [[1, 2], [3, 4], [5, 0]]);
+        expect(iterable, [
+          [1, 2],
+          [3, 4],
+          [5, 0]
+        ]);
       });
     });
   });
@@ -519,8 +537,11 @@ void main() {
         expect(truncated, new DateTime(1980, DateTime.JUNE, 9));
       });
       test('weekly (custom start of the week)', () {
-        for (var weekday = DateTime.MONDAY; weekday <= DateTime.SUNDAY; weekday++) {
-          var truncated = truncateToPeriod(date, period: Period.weekly, startWeekday: weekday);
+        for (var weekday = DateTime.MONDAY;
+            weekday <= DateTime.SUNDAY;
+            weekday++) {
+          var truncated = truncateToPeriod(date,
+              period: Period.weekly, startWeekday: weekday);
           expect(truncated.isBefore(date), isTrue);
           expect(truncated.weekday, weekday);
         }
@@ -543,11 +564,13 @@ void main() {
       });
       test('millisecondly', () {
         var truncated = truncateToPeriod(date, period: Period.millisecondly);
-        expect(truncated, new DateTime(1980, DateTime.JUNE, 11, 12, 34, 56, 78));
+        expect(
+            truncated, new DateTime(1980, DateTime.JUNE, 11, 12, 34, 56, 78));
       });
       test('microsecondly', () {
         var truncated = truncateToPeriod(date, period: Period.microsecondly);
-        expect(truncated, new DateTime(1980, DateTime.JUNE, 11, 12, 34, 56, 78, 90));
+        expect(truncated,
+            new DateTime(1980, DateTime.JUNE, 11, 12, 34, 56, 78, 90));
       });
       test('invalid timestamp', () {
         expect(() => truncateToPeriod(null), throwsArgumentError);
@@ -557,10 +580,12 @@ void main() {
       });
       test('invalid start weekday', () {
         expect(
-            () => truncateToPeriod(date, period: Period.weekly, startWeekday: DateTime.MONDAY - 1),
+            () => truncateToPeriod(date,
+                period: Period.weekly, startWeekday: DateTime.MONDAY - 1),
             throwsArgumentError);
         expect(
-            () => truncateToPeriod(date, period: Period.weekly, startWeekday: DateTime.SUNDAY + 1),
+            () => truncateToPeriod(date,
+                period: Period.weekly, startWeekday: DateTime.SUNDAY + 1),
             throwsArgumentError);
       });
     });

@@ -9,7 +9,6 @@ import 'package:more/src/cache/loader.dart';
 
 /// A cache that expires after a certain amount of time.
 class ExpiryCache<K, V> extends Cache<K, V> {
-
   final Loader<K, V> loader;
 
   final Clock clock;
@@ -89,7 +88,6 @@ class ExpiryCache<K, V> extends Cache<K, V> {
 }
 
 class ExpiryCacheItem<V> extends CacheItem<V> {
-
   DateTime lastUpdate;
   DateTime lastAccess;
 

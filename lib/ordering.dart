@@ -40,9 +40,9 @@ import 'package:more/src/ordering/reversed.dart';
 ///     natural.isOrdered(['ape', 'cat', 'dog']);  // true
 ///
 abstract class Ordering<T> {
-
   /// Returns a natural ordering of objects.
-  factory Ordering.natural() = NaturalOrdering<T>; // ignore: type_argument_not_matching_bounds
+  factory Ordering.natural() =
+      NaturalOrdering<T>; // ignore: type_argument_not_matching_bounds
 
   /// Returns an ordering based on a [comparator] function.
   factory Ordering.from(Comparator<T> comparator) = ComparatorOrdering<T>;
@@ -70,19 +70,23 @@ abstract class Ordering<T> {
   Ordering<T> get nullsLast => new NullsLastOrdering<T>(this);
 
   /// Returns an ordering that breaks the tie of the receiver by using [other].
-  Ordering<T> compound(Ordering<T> other) => new CompoundOrdering<T>([this, other]);
+  Ordering<T> compound(Ordering<T> other) =>
+      new CompoundOrdering<T>([this, other]);
 
   /// Returns an ordering that orders iterables lexicographically by
   /// their elements.
-  Ordering<Iterable<T>> get lexicographical => new LexicographicalOrdering<T>(this);
+  Ordering<Iterable<T>> get lexicographical =>
+      new LexicographicalOrdering<T>(this);
 
-  /// Returns an ordering that uses the provided [function] to transform the result.
-  Ordering<F> onResultOf<F>(T function(F argument)) => new MappedOrdering<F, T>(this, function);
+  /// Returns an ordering that uses the provided [function] to transform the
+  /// result.
+  Ordering<F> onResultOf<F>(T function(F argument)) =>
+      new MappedOrdering<F, T>(this, function);
 
   /// Searches the sorted [list] for the specified [value] using binary search.
   ///
-  /// The method returns the index of the element, or a negative value if the key
-  /// was not found. The result is undefined if the list is not sorted.
+  /// The method returns the index of the element, or a negative value if the
+  /// key was not found. The result is undefined if the list is not sorted.
   int binarySearch(List<T> list, T value) {
     var min = 0;
     var max = list.length;

@@ -14,7 +14,6 @@ export 'package:more/src/cache/delegate.dart';
 export 'package:more/src/cache/loader.dart';
 
 abstract class Cache<K, V> {
-
   /// Constructs an empty or null cache, useful mostly for testing.
   ///
   /// The [loader] defines the function to construct items for the cache.
@@ -29,19 +28,24 @@ abstract class Cache<K, V> {
   ///
   /// The [loader] defines the function to construct items for the cache.
   ///
-  /// [updateExpiry] is the duration after which a loaded or set item expires. [accessExpiry] is the
-  /// maximal duration an item does not expire without being accessed. Whatever happens first,
-  /// causes the expiration. One of the duration can be left `null`, if you don' care.
+  /// [updateExpiry] is the duration after which a loaded or set item expires.
+  /// [accessExpiry] is the maximal duration an item does not expire without
+  /// being accessed. Whatever happens first, causes the expiration. One of the
+  /// duration can be left `null`, if you don' care.
   ///
-  /// Note that cached items do not magically disappear when they expire. Manually call [reap()], or
-  /// setup a timer to regularly free items.
+  /// Note that cached items do not magically disappear when they expire.
+  /// Manually call [reap()], or setup a timer to regularly free items.
   factory Cache.expiry(
-      {Loader<K, V> loader, Clock clock, Duration updateExpiry, Duration accessExpiry}) {
+      {Loader<K, V> loader,
+      Clock clock,
+      Duration updateExpiry,
+      Duration accessExpiry}) {
     if (loader == null) {
       throw new ArgumentError.notNull('loader');
     }
     if (updateExpiry == null && accessExpiry == null) {
-      throw new ArgumentError("Either 'accessExpiry' or 'updateExpiry' must be provided.");
+      throw new ArgumentError(
+          "Either 'accessExpiry' or 'updateExpiry' must be provided.");
     }
     if (updateExpiry != null && updateExpiry.inMicroseconds <= 0) {
       throw new ArgumentError("Negative 'updateExpire' provided.");
@@ -49,13 +53,14 @@ abstract class Cache<K, V> {
     if (accessExpiry != null && accessExpiry.inMicroseconds <= 0) {
       throw new ArgumentError("Negative 'updateExpire' provided.");
     }
-    return new ExpiryCache<K, V>(loader, clock ?? systemClock, updateExpiry, accessExpiry);
+    return new ExpiryCache<K, V>(
+        loader, clock ?? systemClock, updateExpiry, accessExpiry);
   }
 
   /// Constructs a First-in/First-out (FIFO) cache.
   ///
-  /// The [loader] defines the function to construct items for the cache; and [maximumSize] defines
-  /// the maximum number of items cached.
+  /// The [loader] defines the function to construct items for the cache; and
+  /// [maximumSize] defines the maximum number of items cached.
   factory Cache.fifo({Loader<K, V> loader, int maximumSize: 100}) {
     if (loader == null) {
       throw new ArgumentError.notNull('loader');
@@ -68,8 +73,8 @@ abstract class Cache<K, V> {
 
   /// Constructs a Least Recently Used (LRU) cache.
   ///
-  /// The [loader] defines the function to construct items for the cache; and [maximumSize] defines
-  /// the maximum number of items cached.
+  /// The [loader] defines the function to construct items for the cache; and
+  /// [maximumSize] defines the maximum number of items cached.
   factory Cache.lru({Loader<K, V> loader, int maximumSize: 100}) {
     if (loader == null) {
       throw new ArgumentError.notNull('loader');

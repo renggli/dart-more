@@ -6,8 +6,8 @@ import 'dart:math' show Random;
 ///
 /// Intended to mix-in on top of `ListBase<E>`.
 abstract class UnmodifiableListMixin<E> implements List<E> {
-
-  static T _throw<T>() => throw new UnsupportedError('Cannot modify an unmodifiable list');
+  static T _throw<T>() =>
+      throw new UnsupportedError('Cannot modify an unmodifiable list');
 
   @override
   void operator []=(int index, E value) => _throw();
@@ -55,7 +55,9 @@ abstract class UnmodifiableListMixin<E> implements List<E> {
   E removeLast() => _throw();
 
   @override
-  void setRange(int start, int end, Iterable<E> iterable, [int skipCount = 0]) => _throw();
+  void setRange(int start, int end, Iterable<E> iterable,
+          [int skipCount = 0]) =>
+      _throw();
 
   @override
   void removeRange(int start, int end) => _throw();
@@ -65,5 +67,4 @@ abstract class UnmodifiableListMixin<E> implements List<E> {
 
   @override
   void fillRange(int start, int end, [E fillValue]) => _throw();
-
 }

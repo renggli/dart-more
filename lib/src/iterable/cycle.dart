@@ -5,9 +5,9 @@ import 'dart:collection' show IterableBase;
 import 'package:more/src/iterable/mixins/infinite.dart';
 
 /// Returns a iterable whose iterator cycles repeatedly over the elements
-/// of an [iterable]. If [count] is specified, the returned iterable has a finite
-/// size of [iterable] &times; [count]. If [count] is unspecified the returned
-/// iterable is of infinite size.
+/// of an [iterable]. If [count] is specified, the returned iterable has a
+/// finite size of [iterable] &times; [count]. If [count] is unspecified the
+/// returned iterable is of infinite size.
 ///
 /// For example, the expression
 ///
@@ -39,7 +39,8 @@ Iterable<E> cycle<E>(Iterable<E> iterable, [int count]) {
   }
 }
 
-class InfiniteCycleIterable<E> extends IterableBase<E> with InfiniteIterable<E> {
+class InfiniteCycleIterable<E> extends IterableBase<E>
+    with InfiniteIterable<E> {
   final Iterable<E> iterable;
 
   InfiniteCycleIterable(this.iterable);

@@ -9,8 +9,7 @@ class LexicographicalOrdering<T> extends Ordering<Iterable<T>> {
 
   @override
   int compare(Iterable<T> a, Iterable<T> b) {
-    var ia = a.iterator,
-        ib = b.iterator;
+    var ia = a.iterator, ib = b.iterator;
     while (ia.moveNext()) {
       if (!ib.moveNext()) {
         return 1;

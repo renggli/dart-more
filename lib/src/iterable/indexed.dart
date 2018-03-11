@@ -4,7 +4,8 @@ import 'dart:collection' show IterableBase;
 
 /// Returns a [Indexed] iterable
 ///
-/// By default the index is zero based, but an arbitrary [offset] can be provided.
+/// By default the index is zero based, but an arbitrary [offset] can be
+/// provided.
 ///
 /// For example, the expression
 ///
@@ -41,7 +42,8 @@ class IndexedIterable<E> extends IterableBase<Indexed<E>> {
   IndexedIterable(this.iterable, this.offset);
 
   @override
-  Iterator<Indexed<E>> get iterator => new IndexedIterator<E>(iterable.iterator, offset);
+  Iterator<Indexed<E>> get iterator =>
+      new IndexedIterator<E>(iterable.iterator, offset);
 }
 
 class IndexedIterator<E> extends Iterator<Indexed<E>> {

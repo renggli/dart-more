@@ -8,7 +8,6 @@ import 'package:more/src/cache/loader.dart';
 
 /// Least Recently Used (LRU) cache.
 class LruCache<K, V> extends Cache<K, V> {
-
   final Loader<K, V> loader;
 
   final int maximumSize;

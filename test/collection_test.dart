@@ -125,7 +125,6 @@ void main() {
         expect(target[5], 'e', reason: 'inverse updates target');
         backward.remove('d');
         expect(target[4], isNull, reason: 'inverse updates target');
-
       });
       test('iteration', () {
         var keys = <int>[];
@@ -301,12 +300,8 @@ void main() {
           var trueCount = list.count(true);
           var falseCount = list.count(false);
           expect(trueCount + falseCount, list.length);
-          expect(trueCount, list
-              .where((b) => b == true)
-              .length);
-          expect(falseCount, list
-              .where((b) => b == false)
-              .length);
+          expect(trueCount, list.where((b) => b == true).length);
+          expect(falseCount, list.where((b) => b == false).length);
         }
       });
     });
@@ -404,7 +399,8 @@ void main() {
       expect(() => list.removeLast(), throwsUnsupportedError);
       expect(() => list.removeRange(2, 4), throwsUnsupportedError);
       expect(() => list.removeWhere((value) => true), throwsUnsupportedError);
-      expect(() => list.replaceRange(2, 4, [true, false]), throwsUnsupportedError);
+      expect(
+          () => list.replaceRange(2, 4, [true, false]), throwsUnsupportedError);
       expect(() => list.retainWhere((value) => false), throwsUnsupportedError);
     });
   });
@@ -681,14 +677,10 @@ void main() {
       });
       test('intersection', () {
         expect(firstSet.intersection(secondSet), unorderedEquals(['a', 'c']));
-        expect(firstSet
-            .intersection(secondSet)
-            .distinct,
+        expect(firstSet.intersection(secondSet).distinct,
             unorderedEquals(['a', 'c']));
         expect(secondSet.intersection(firstSet), unorderedEquals(['a', 'c']));
-        expect(secondSet
-            .intersection(firstSet)
-            .distinct,
+        expect(secondSet.intersection(firstSet).distinct,
             unorderedEquals(['a', 'c']));
       });
       test('intersection (iterable)', () {
@@ -698,15 +690,11 @@ void main() {
       test('union', () {
         expect(firstSet.union(secondSet),
             unorderedEquals(['a', 'a', 'b', 'c', 'c', 'c', 'd', 'd']));
-        expect(firstSet
-            .union(secondSet)
-            .distinct,
+        expect(firstSet.union(secondSet).distinct,
             unorderedEquals(['a', 'b', 'c', 'd']));
         expect(secondSet.union(firstSet),
             unorderedEquals(['a', 'a', 'b', 'c', 'c', 'c', 'd', 'd']));
-        expect(secondSet
-            .union(firstSet)
-            .distinct,
+        expect(secondSet.union(firstSet).distinct,
             unorderedEquals(['a', 'b', 'c', 'd']));
       });
       test('union (iterable)', () {
@@ -717,14 +705,10 @@ void main() {
       });
       test('difference', () {
         expect(firstSet.difference(secondSet), unorderedEquals(['b', 'c']));
-        expect(firstSet
-            .difference(secondSet)
-            .distinct,
+        expect(firstSet.difference(secondSet).distinct,
             unorderedEquals(['b', 'c']));
         expect(secondSet.difference(firstSet), unorderedEquals(['d', 'd']));
-        expect(secondSet
-            .difference(firstSet)
-            .distinct, unorderedEquals(['d']));
+        expect(secondSet.difference(firstSet).distinct, unorderedEquals(['d']));
       });
       test('difference (iterable)', () {
         expect(firstSet.difference(secondList), unorderedEquals(['b', 'c']));
@@ -754,6 +738,7 @@ void main() {
         expect(range.contains(value), isTrue);
       }
     }
+
     group('int', () {
       group('constructor', () {
         test('empty', () {
@@ -868,7 +853,8 @@ void main() {
         expect(new IntegerRange().toString(), 'new IntegerRange()');
         expect(new IntegerRange(1).toString(), 'new IntegerRange(1)');
         expect(new IntegerRange(1, 2).toString(), 'new IntegerRange(1, 2)');
-        expect(new IntegerRange(1, 5, 2).toString(), 'new IntegerRange(1, 5, 2)');
+        expect(
+            new IntegerRange(1, 5, 2).toString(), 'new IntegerRange(1, 5, 2)');
       });
       test('unmodifiable', () {
         var list = new IntegerRange(1, 5);
@@ -886,7 +872,8 @@ void main() {
         expect(() => list.removeRange(2, 4), throwsUnsupportedError);
         expect(() => list.removeWhere((value) => true), throwsUnsupportedError);
         expect(() => list.replaceRange(2, 4, [5, 6]), throwsUnsupportedError);
-        expect(() => list.retainWhere((value) => false), throwsUnsupportedError);
+        expect(
+            () => list.retainWhere((value) => false), throwsUnsupportedError);
         expect(() => list.setAll(2, [5, 6]), throwsUnsupportedError);
         expect(() => list.setRange(2, 4, [5, 6]), throwsUnsupportedError);
         expect(() => list.shuffle(), throwsUnsupportedError);
@@ -1006,8 +993,10 @@ void main() {
       test('printing', () {
         expect(new DoubleRange().toString(), 'new DoubleRange()');
         expect(new DoubleRange(1.2).toString(), 'new DoubleRange(1.2)');
-        expect(new DoubleRange(1.2, 3.4).toString(), 'new DoubleRange(1.2, 3.4)');
-        expect(new DoubleRange(1.2, 3.4, 0.5).toString(), 'new DoubleRange(1.2, 3.4, 0.5)');
+        expect(
+            new DoubleRange(1.2, 3.4).toString(), 'new DoubleRange(1.2, 3.4)');
+        expect(new DoubleRange(1.2, 3.4, 0.5).toString(),
+            'new DoubleRange(1.2, 3.4, 0.5)');
       });
       test('unmodifiable', () {
         var list = new DoubleRange(1.0, 5.0);
@@ -1024,8 +1013,10 @@ void main() {
         expect(() => list.removeLast(), throwsUnsupportedError);
         expect(() => list.removeRange(2, 4), throwsUnsupportedError);
         expect(() => list.removeWhere((value) => true), throwsUnsupportedError);
-        expect(() => list.replaceRange(2, 4, [5.0, 6.0]), throwsUnsupportedError);
-        expect(() => list.retainWhere((value) => false), throwsUnsupportedError);
+        expect(
+            () => list.replaceRange(2, 4, [5.0, 6.0]), throwsUnsupportedError);
+        expect(
+            () => list.retainWhere((value) => false), throwsUnsupportedError);
         expect(() => list.setAll(2, [5.0, 6.0]), throwsUnsupportedError);
         expect(() => list.setRange(2, 4, [5.0, 6.0]), throwsUnsupportedError);
         expect(() => list.sort(), throwsUnsupportedError);

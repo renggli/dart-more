@@ -93,8 +93,7 @@ abstract class CharMatcher {
     } else if (other is NoneCharMatcher) {
       return this;
     } else if (other is DisjunctiveCharMatcher) {
-      return new DisjunctiveCharMatcher([this]
-        ..addAll(other.matchers));
+      return new DisjunctiveCharMatcher([this]..addAll(other.matchers));
     } else {
       return new DisjunctiveCharMatcher([this, other]);
     }
@@ -140,9 +139,7 @@ abstract class CharMatcher {
 
   /// Counts the number of matches in [sequence].
   int countIn(String sequence) {
-    return sequence.codeUnits
-        .where(match)
-        .length;
+    return sequence.codeUnits.where(match).length;
   }
 
   /// Replaces each group of consecutive matched characters in [sequence]
@@ -189,8 +186,7 @@ abstract class CharMatcher {
   /// Removes leading and trailing matching characters in [sequence].
   String trimFrom(String sequence) {
     var codeUnits = sequence.codeUnits;
-    var left = 0,
-        right = codeUnits.length - 1;
+    var left = 0, right = codeUnits.length - 1;
     while (left <= right && match(codeUnits[left])) {
       left++;
     }
@@ -203,8 +199,7 @@ abstract class CharMatcher {
   /// Removes leading matching characters in [sequence].
   String trimLeadingFrom(String sequence) {
     var codeUnits = sequence.codeUnits;
-    var left = 0,
-        right = codeUnits.length - 1;
+    var left = 0, right = codeUnits.length - 1;
     while (left <= right && match(codeUnits[left])) {
       left++;
     }
@@ -214,8 +209,7 @@ abstract class CharMatcher {
   /// Removes tailing matching characters in [sequence].
   String trimTailingFrom(String sequence) {
     var codeUnits = sequence.codeUnits;
-    var left = 0,
-        right = codeUnits.length - 1;
+    var left = 0, right = codeUnits.length - 1;
     while (left <= right && match(codeUnits[right])) {
       right--;
     }

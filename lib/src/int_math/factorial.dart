@@ -29,7 +29,8 @@ const List<int> factorials = const [
 /// [n] distinct objects into a sequence.
 int factorial(int n) {
   if (n < 0) {
-    throw new ArgumentError('factorial($n) is undefined for negative arguments.');
+    throw new ArgumentError(
+        'factorial($n) is undefined for negative arguments.');
   }
   if (n < factorials.length) {
     return factorials[n];
@@ -40,4 +41,3 @@ int factorial(int n) {
   }
   return r;
 }
-

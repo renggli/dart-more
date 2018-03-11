@@ -2,11 +2,11 @@ library more.iterable.combinations;
 
 import 'dart:collection' show IterableBase;
 
-/// Returns an iterable over the combinations of [elements] of length [count]. The
-/// combinations are emitted in lexicographical order based on the input.
+/// Returns an iterable over the combinations of [elements] of length [count].
+/// The combinations are emitted in lexicographical order based on the input.
 ///
-/// If [repetitions] is set to `true` the iterable allows individual elements to be
-/// repeated more than once. The number of items returned is:
+/// If [repetitions] is set to `true` the iterable allows individual elements to
+/// be repeated more than once. The number of items returned is:
 ///
 ///     (elements.length + count - 1)! / count! / (elements.length - 1)!
 ///
@@ -14,8 +14,8 @@ import 'dart:collection' show IterableBase;
 ///
 ///     combinations(string('xyz'), 2, repetitions: true);
 ///
-/// If [repetitions] is set to `false` the iterable generates all the sub-sequences
-/// of length [count]. The number of items returned is:
+/// If [repetitions] is set to `false` the iterable generates all the
+/// sub-sequences of length [count]. The number of items returned is:
 ///
 ///     elements.length! / count! / (elements.length - count)!
 ///
@@ -23,7 +23,8 @@ import 'dart:collection' show IterableBase;
 ///
 ///     combinations(string('xyz'), 2, repetitions: false);
 ///
-Iterable<List<E>> combinations<E>(Iterable<E> elements, int count, {bool repetitions: false}) {
+Iterable<List<E>> combinations<E>(Iterable<E> elements, int count,
+    {bool repetitions: false}) {
   elements = elements.toList(growable: false);
   if (count < 0) {
     throw new RangeError.value(count);
@@ -32,9 +33,11 @@ Iterable<List<E>> combinations<E>(Iterable<E> elements, int count, {bool repetit
   } else if (count == 0 || elements.isEmpty) {
     return const Iterable.empty();
   } else if (repetitions) {
-    return new CombinationsWithRepetitionsIterable<E>(elements.toList(growable: false), count);
+    return new CombinationsWithRepetitionsIterable<E>(
+        elements.toList(growable: false), count);
   } else {
-    return new CombinationsWithoutRepetitionsIterable<E>(elements.toList(growable: false), count);
+    return new CombinationsWithoutRepetitionsIterable<E>(
+        elements.toList(growable: false), count);
   }
 }
 

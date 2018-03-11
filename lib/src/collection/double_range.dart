@@ -3,11 +3,11 @@ library more.collection.double_range;
 import 'dart:collection' show ListBase;
 
 import 'package:more/ordering.dart' show Ordering;
-import 'package:more/src/iterable/mixins/unmodifiable.dart' show UnmodifiableListMixin;
+import 'package:more/src/iterable/mixins/unmodifiable.dart'
+    show UnmodifiableListMixin;
 
 /// A virtual range of doubles containing an arithmetic progressions.
 class DoubleRange extends ListBase<double> with UnmodifiableListMixin<double> {
-
   /// Creates a virtual range of numbers containing an arithmetic progressions
   /// of double values.
   ///
@@ -51,8 +51,8 @@ class DoubleRange extends ListBase<double> with UnmodifiableListMixin<double> {
     var span = stop - start;
     var length = span ~/ step;
     if (length > 0) {
-      // Due to truncation in the division above, it can happen that the last element
-      // is still within the requested range. Make sure to include it.
+      // Due to truncation in the division above, it can happen that the last
+      // element is still within the requested range. Make sure to include it.
       var last = start + length * step;
       if ((step > 0.0 && last < stop) || (step < 0.0 && last > stop)) {
         length++;
@@ -128,7 +128,8 @@ class DoubleRange extends ListBase<double> with UnmodifiableListMixin<double> {
   }
 
   @override
-  DoubleRange get reversed => isEmpty ? this : new DoubleRange._(last, first - step, -step, length);
+  DoubleRange get reversed =>
+      isEmpty ? this : new DoubleRange._(last, first - step, -step, length);
 
   @override
   DoubleRange sublist(int startIndex, [int stopIndex]) {
@@ -138,11 +139,8 @@ class DoubleRange extends ListBase<double> with UnmodifiableListMixin<double> {
   @override
   DoubleRange getRange(int startIndex, int stopIndex) {
     RangeError.checkValidRange(startIndex, stopIndex, length);
-    return new DoubleRange._(
-        start + startIndex * step,
-        start + stopIndex * step,
-        step,
-        stopIndex - startIndex);
+    return new DoubleRange._(start + startIndex * step,
+        start + stopIndex * step, step, stopIndex - startIndex);
   }
 
   @override
@@ -157,7 +155,6 @@ class DoubleRange extends ListBase<double> with UnmodifiableListMixin<double> {
       return 'new DoubleRange($start, $stop, $step)';
     }
   }
-
 }
 
 class DoubleRangeIterator extends Iterator<double> {

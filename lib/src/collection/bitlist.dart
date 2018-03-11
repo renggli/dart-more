@@ -7,12 +7,11 @@ import 'package:collection/collection.dart' show NonGrowableListMixin;
 
 /// An space efficient fixed length [List] that stores boolean values.
 class BitList extends ListBase<bool> with NonGrowableListMixin<bool> {
-
   /// Constructs a bit list of the given [length].
   factory BitList(int length) => new BitList.filled(length, false);
 
-  /// Constructs a bit list of the given [length], and initializes the
-  /// value at each position with [fill].
+  /// Constructs a bit list of the given [length], and initializes the value at
+  /// each position with [fill].
   factory BitList.filled(int length, bool fill) {
     var buffer = new Uint32List((length + bitOffset) >> bitShift);
     if (fill) {
@@ -69,8 +68,8 @@ class BitList extends ListBase<bool> with NonGrowableListMixin<bool> {
     }
   }
 
-  /// Sets the bit at the specified [index] to the complement of its
-  /// current value.
+  /// Sets the bit at the specified [index] to the complement of its current
+  /// value.
   void flip(int index) {
     RangeError.checkValidIndex(index, this);
     buffer[index >> bitShift] ^= bitSetMask[index & bitOffset];
@@ -80,7 +79,8 @@ class BitList extends ListBase<bool> with NonGrowableListMixin<bool> {
   int count([bool expected = true]) {
     var tally = 0;
     for (var index = 0; index < length; index++) {
-      var actual = (buffer[index >> bitShift] & bitSetMask[index & bitOffset]) != 0;
+      var actual =
+          (buffer[index >> bitShift] & bitSetMask[index & bitOffset]) != 0;
       if (actual == expected) {
         tally++;
       }
@@ -101,12 +101,13 @@ class BitList extends ListBase<bool> with NonGrowableListMixin<bool> {
 
   /// Returns the intersection of the receiver and [other].
   ///
-  /// The new [BitList] has all the bits set that are set in the receiver
-  /// and in [other]. The receiver and [other] need to have the same length,
-  /// otherwise an exception is thrown.
+  /// The new [BitList] has all the bits set that are set in the receiver and in
+  /// [other]. The receiver and [other] need to have the same length, otherwise
+  /// an exception is thrown.
   BitList operator &(BitList other) {
     if (length != other.length) {
-      throw new ArgumentError('Expected list with length $length, but got ${other.length}');
+      throw new ArgumentError(
+          'Expected list with length $length, but got ${other.length}');
     }
     var result = new BitList(length);
     for (var i = 0; i < buffer.length; i++) {
@@ -117,12 +118,13 @@ class BitList extends ListBase<bool> with NonGrowableListMixin<bool> {
 
   /// Returns the union of the receiver and [other].
   ///
-  /// The new [BitList] has all the bits set that are either set in the
-  /// receiver or in [other]. The receiver and [other] need to have the
-  /// same length, otherwise an exception is thrown.
+  /// The new [BitList] has all the bits set that are either set in the receiver
+  /// or in [other]. The receiver and [other] need to have the same length,
+  /// otherwise an exception is thrown.
   BitList operator |(BitList other) {
     if (length != other.length) {
-      throw new ArgumentError('Expected list with length $length, but got ${other.length}');
+      throw new ArgumentError(
+          'Expected list with length $length, but got ${other.length}');
     }
     var result = new BitList(length);
     for (var i = 0; i < buffer.length; i++) {
@@ -133,12 +135,13 @@ class BitList extends ListBase<bool> with NonGrowableListMixin<bool> {
 
   /// Returns the difference of the receiver and [other].
   ///
-  /// The new [BitList] has all the bits set that are set in the receiver,
-  /// but not in [other]. The receiver and [other] need to have the same
-  /// length, otherwise an exception is thrown.
+  /// The new [BitList] has all the bits set that are set in the receiver, but
+  /// not in [other]. The receiver and [other] need to have the same length,
+  /// otherwise an exception is thrown.
   BitList operator -(BitList other) {
     if (length != other.length) {
-      throw new ArgumentError('Expected list with length $length, but got ${other.length}');
+      throw new ArgumentError(
+          'Expected list with length $length, but got ${other.length}');
     }
     var result = new BitList(length);
     for (var i = 0; i < buffer.length; i++) {
@@ -147,8 +150,9 @@ class BitList extends ListBase<bool> with NonGrowableListMixin<bool> {
     return result;
   }
 
-  /// Returns a [BitList] of the same length, but with the bits of the receiver shifted
-  /// to the left by [amount]. Throws an [ArgumentError] if [amount] is negative.
+  /// Returns a [BitList] of the same length, but with the bits of the receiver
+  /// shifted to the left by [amount]. Throws an [ArgumentError] if [amount] is
+  /// negative.
   BitList operator <<(int amount) {
     if (amount < 0) {
       throw new ArgumentError('Unable to left-shift by $amount');
@@ -176,8 +180,9 @@ class BitList extends ListBase<bool> with NonGrowableListMixin<bool> {
     return result;
   }
 
-  /// Returns a [BitList] of the same length, but with the bits of the receiver shifted
-  /// to the right by [amount]. Throws an [ArgumentError] if [amount] is negative.
+  /// Returns a [BitList] of the same length, but with the bits of the receiver
+  /// shifted to the right by [amount]. Throws an [ArgumentError] if [amount] is
+  /// negative.
   BitList operator >>(int amount) {
     if (amount < 0) {
       throw new ArgumentError('Unable to right-shift by $amount');
