@@ -1,5 +1,13 @@
 # Changelog
 
+## 1.9.0
+
+* Dart 2.0 strong-mode compatibility required the following breaking changes:
+  * Replace callers of `range()` with either `new IntegerRange()` or 
+    `new DoubleRange()`.
+  * Removed padding argument from `partition()`. To migrate replace broken
+    calls-sites with `partitionWithPadding()`.
+
 ## 1.8.1
 
 * Removed empty(), emptyIterator(), emptyIterable() since these are part of the core library now.
