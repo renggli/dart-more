@@ -90,12 +90,14 @@ class IntegerRange extends ListBase<int> with UnmodifiableListMixin<int> {
       if (startIndex < 0) {
         startIndex = 0;
       }
-      var ordering = step > 0
-          ? new Ordering<int>.natural()
-          : new Ordering<int>.natural().reversed;
-      var index = ordering.binarySearch(this, element);
-      if (startIndex <= index) {
-        return index;
+      if (startIndex < length) {
+        var value = element - start;
+        if (value % step == 0) {
+          var index = value ~/ step;
+          if (index >= startIndex) {
+            return index;
+          }
+        }
       }
     }
     return -1;
