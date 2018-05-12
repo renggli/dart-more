@@ -104,20 +104,19 @@ class IntegerRange extends ListBase<int> with UnmodifiableListMixin<int> {
   }
 
   @override
-  int lastIndexOf(Object element, [int stopIndex]) {
+  int lastIndexOf(Object element, [int startIndex]) {
     if (element is int) {
-      if (stopIndex == null || length <= stopIndex) {
-        stopIndex = length - 1;
+      if (startIndex == null || length <= startIndex) {
+        startIndex = length - 1;
       }
-      if (stopIndex < 0) {
-        return -1;
-      }
-      var ordering = step > 0
-          ? new Ordering<int>.natural()
-          : new Ordering<int>.natural().reversed;
-      var index = ordering.binarySearch(this, element);
-      if (0 <= index && index <= stopIndex) {
-        return index;
+      if (startIndex >= 0) {
+        var value = element - start;
+        if (value % step == 0) {
+          var index = value ~/ step;
+          if (index <= startIndex) {
+            return index;
+          }
+        }
       }
     }
     return -1;
