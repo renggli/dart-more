@@ -2,7 +2,6 @@ library more.collection.integer_range;
 
 import 'dart:collection' show ListBase;
 
-import 'package:more/ordering.dart' show Ordering;
 import 'package:more/src/iterable/mixins/unmodifiable.dart'
     show UnmodifiableListMixin;
 
