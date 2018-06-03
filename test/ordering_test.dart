@@ -146,10 +146,10 @@ void main() {
           ['1', '2', '22', '33', '44', '333', '4444']);
     });
     test('compound of compound', () {
-      var ordering = new Ordering.natural()
-          .onResultOf((list) => list[0])
-          .compound(new Ordering.natural().onResultOf((list) => list[1]))
-          .compound(new Ordering.natural().onResultOf((list) => list[2]));
+      var ordering =
+                    new Ordering.natural().onResultOf<List<int>>((list) => list[0])
+          .compound(new Ordering.natural().onResultOf<List<int>>((list) => list[1]))
+          .compound(new Ordering.natural().onResultOf<List<int>>((list) => list[2]));
       verify(ordering, [
         [2, 0, 0],
         [1, 0, 0]
