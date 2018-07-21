@@ -1,8 +1,8 @@
 name: more
-version: 1.9.1
+version: 1.9.2
 author: Lukas Renggli <renggli@gmail.com>
-description: More Dart — Literally. Collections, iterators, and utilities for
-  caching, mathematics, matching and ordering.
+description: More Dart — Literally. Collecting, iterating, caching, mathematics,
+  matching, and ordering easily.
 homepage: https://github.com/renggli/dart-more
 environment:
   sdk: '>=1.23.0 <3.0.0'
