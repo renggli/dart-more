@@ -31,7 +31,7 @@ Misc
 
 ### Installation
 
-Follow the _Installing_ instructions on https://pub.dartlang.org/packages/more.
+Follow the installation instructions on [dart packages](https://pub.dartlang.org/packages/more#-installing-tab-).
 
 Import one or more of the packages into your Dart code using:
 
