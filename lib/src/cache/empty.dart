@@ -1,12 +1,12 @@
 library more.cache.empty;
 
-import 'dart:async' show Future, FutureOr;
+import 'dart:async' show Future;
 
 import 'package:more/cache.dart';
 
 /// An empty or null cache, useful mostly for testing.
 class EmptyCache<K, V> extends Cache<K, V> {
-  final Loader<K, FutureOr<V>> loader;
+  final Loader<K, V> loader;
 
   EmptyCache(this.loader);
 

@@ -237,7 +237,7 @@ Iterable<DateTime> periodical({
 DateTime truncateToPeriod(
   DateTime timestamp, {
   Period period = Period.daily,
-  int startWeekday = DateTime.MONDAY,
+  int startWeekday = DateTime.monday,
 }) {
   if (timestamp == null) {
     throw ArgumentError.notNull('timestamp');
@@ -271,7 +271,7 @@ DateTime truncateToPeriod(
       );
     case Period.weekly:
       RangeError.checkValueInInterval(
-          startWeekday, DateTime.MONDAY, DateTime.SUNDAY, 'startWeekday');
+          startWeekday, DateTime.monday, DateTime.sunday, 'startWeekday');
       return DateTime(
         timestamp.year,
         timestamp.month,

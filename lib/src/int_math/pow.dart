@@ -5,7 +5,7 @@ num pow(num x, int y) {
   if (y < 0) {
     return 1 / pow(x, -y);
   }
-  var r = 1;
+  num r = 1;
   while (y > 0) {
     if (y.isOdd) {
       r *= x;

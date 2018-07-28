@@ -33,7 +33,7 @@ class Multiset<E> extends IterableBase<E> {
   factory Multiset.fromIterable(Iterable iterable,
       {E key(element), int count(element)}) {
     var result = Multiset<E>();
-    key ??= (element) => element;
+    key ??= (element) => element as E;
     count ??= (element) => 1;
     for (var element in iterable) {
       result.add(key(element), count(element));

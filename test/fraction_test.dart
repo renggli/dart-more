@@ -71,9 +71,9 @@ void main() {
       }
     });
     test('double error', () {
-      expect(() => Fraction.fromDouble(double.NAN), throwsArgumentError);
-      expect(() => Fraction.fromDouble(double.INFINITY), throwsArgumentError);
-      expect(() => Fraction.fromDouble(double.NEGATIVE_INFINITY),
+      expect(() => Fraction.fromDouble(double.nan), throwsArgumentError);
+      expect(() => Fraction.fromDouble(double.infinity), throwsArgumentError);
+      expect(() => Fraction.fromDouble(double.negativeInfinity),
           throwsArgumentError);
     });
     test('zero', () {

@@ -94,7 +94,7 @@ class BitList extends ListBase<bool> with NonGrowableListMixin<bool> {
   BitList operator ~() {
     var result = BitList(length);
     for (var i = 0; i < buffer.length; i++) {
-      result.buffer[i] = ~buffer[i];
+      result.buffer[i] = ~(buffer[i]);
     }
     return result;
   }
@@ -145,7 +145,7 @@ class BitList extends ListBase<bool> with NonGrowableListMixin<bool> {
     }
     var result = BitList(length);
     for (var i = 0; i < buffer.length; i++) {
-      result.buffer[i] = buffer[i] & ~other.buffer[i];
+      result.buffer[i] = buffer[i] & ~(other.buffer[i]);
     }
     return result;
   }

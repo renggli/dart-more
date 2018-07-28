@@ -9,7 +9,7 @@ import 'package:more/src/iterable/mixins/infinite.dart';
 ///
 /// For example, the expression
 ///
-///     fold([0, 1], (a, b) => a + b);
+///     fold([0, 1], (args) => args[0] + args[1]);
 ///
 /// results in the infinite iterable of all fibonacci numbers:
 ///
@@ -26,14 +26,13 @@ class FoldIterable<E> extends IterableBase<E> with InfiniteIterable<E> {
   FoldIterable(this.elements, this.combine);
 
   @override
-  Iterator<E> get iterator {
-    return FoldIterator<E>(List.from(elements, growable: false), combine);
-  }
+  Iterator<E> get iterator =>
+      FoldIterator<E>(List.from(elements, growable: false), combine);
 }
 
 class FoldIterator<E> extends Iterator<E> {
   final List<E> state;
-  final Function combine;
+  final E Function(List<E>) combine;
 
   int index = 0;
 

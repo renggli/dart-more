@@ -71,7 +71,7 @@ void statelessCacheTests(
 
 void cacheEvictionTest(Cache<int, String> newCache(Loader<int, String> loader),
     String name, List<int> load, List<int> present) {
-  var absent = Set()
+  var absent = Set<int>()
     ..addAll(load)
     ..removeAll(present);
 
@@ -233,7 +233,7 @@ void main() {
   group('expiry', () {
     Duration offset;
     DateTime offsetClock() => DateTime(2000).add(offset);
-    setUp(() => offset = Duration.ZERO);
+    setUp(() => offset = Duration.zero);
 
     Cache<int, String> newUpdateExpireCache(Loader<int, String> loader) {
       return Cache.expiry(
@@ -264,13 +264,13 @@ void main() {
       test('negative access expiry', () {
         expect(
             () => Cache.expiry(
-                loader: immediateLoader, accessExpiry: Duration.ZERO),
+                loader: immediateLoader, accessExpiry: Duration.zero),
             throwsArgumentError);
       });
       test('negative update expiry', () {
         expect(
             () => Cache.expiry(
-                loader: immediateLoader, updateExpiry: Duration.ZERO),
+                loader: immediateLoader, updateExpiry: Duration.zero),
             throwsArgumentError);
       });
     });
