@@ -40,18 +40,18 @@ class IntegerRange extends ListBase<int> with UnmodifiableListMixin<int> {
       stop = a;
     }
     if (step == 0) {
-      throw new ArgumentError('Non-zero step-size expected');
+      throw ArgumentError('Non-zero step-size expected');
     } else if (start < stop && step < 0) {
-      throw new ArgumentError('Positive step-size expected');
+      throw ArgumentError('Positive step-size expected');
     } else if (start > stop && step > 0) {
-      throw new ArgumentError('Negative step-size expected');
+      throw ArgumentError('Negative step-size expected');
     }
     var span = stop - start;
     var length = span ~/ step;
     if (span % step != 0) {
       length++;
     }
-    return new IntegerRange._(start, stop, step, length);
+    return IntegerRange._(start, stop, step, length);
   }
 
   IntegerRange._(this.start, this.stop, this.step, this.length);
@@ -69,14 +69,14 @@ class IntegerRange extends ListBase<int> with UnmodifiableListMixin<int> {
   final int length;
 
   @override
-  Iterator<int> get iterator => new IntegerRangeIterator(start, step, length);
+  Iterator<int> get iterator => IntegerRangeIterator(start, step, length);
 
   @override
   int operator [](int index) {
     if (0 <= index && index < length) {
       return start + step * index;
     } else {
-      throw new RangeError.range(index, 0, length);
+      throw RangeError.range(index, 0, length);
     }
   }
 
@@ -123,7 +123,7 @@ class IntegerRange extends ListBase<int> with UnmodifiableListMixin<int> {
 
   @override
   IntegerRange get reversed =>
-      isEmpty ? this : new IntegerRange._(last, first - step, -step, length);
+      isEmpty ? this : IntegerRange._(last, first - step, -step, length);
 
   @override
   IntegerRange sublist(int startIndex, [int stopIndex]) {
@@ -133,8 +133,8 @@ class IntegerRange extends ListBase<int> with UnmodifiableListMixin<int> {
   @override
   IntegerRange getRange(int startIndex, int stopIndex) {
     RangeError.checkValidRange(startIndex, stopIndex, length);
-    return new IntegerRange._(start + startIndex * step,
-        start + stopIndex * step, step, stopIndex - startIndex);
+    return IntegerRange._(start + startIndex * step, start + stopIndex * step,
+        step, stopIndex - startIndex);
   }
 
   @override

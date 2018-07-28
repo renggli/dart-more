@@ -4,4 +4,4 @@ library more.cache.clock;
 typedef DateTime Clock();
 
 /// The standard system clock.
-DateTime systemClock() => new DateTime.now();
+DateTime systemClock() => DateTime.now();

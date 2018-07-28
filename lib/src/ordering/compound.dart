@@ -20,8 +20,7 @@ class CompoundOrdering<T> extends Ordering<T> {
 
   @override
   Ordering<T> compound(Ordering<T> other) {
-    var combined = new List<Ordering<T>>.from(orderings)..add(other);
-    return new CompoundOrdering(
-        new List<Ordering<T>>.from(combined, growable: false));
+    var combined = List<Ordering<T>>.from(orderings)..add(other);
+    return CompoundOrdering(List<Ordering<T>>.from(combined, growable: false));
   }
 }

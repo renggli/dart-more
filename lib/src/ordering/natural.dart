@@ -9,7 +9,7 @@ class NaturalOrdering<T extends Comparable> extends Ordering<T> {
   int compare(T a, T b) => a.compareTo(b);
 
   @override
-  Ordering<T> get reversed => new ReverseNaturalOrdering<T>();
+  Ordering<T> get reversed => ReverseNaturalOrdering<T>();
 }
 
 class ReverseNaturalOrdering<T extends Comparable> extends Ordering<T> {
@@ -19,5 +19,5 @@ class ReverseNaturalOrdering<T extends Comparable> extends Ordering<T> {
   int compare(T a, T b) => b.compareTo(a);
 
   @override
-  Ordering<T> get reversed => new NaturalOrdering<T>();
+  Ordering<T> get reversed => NaturalOrdering<T>();
 }

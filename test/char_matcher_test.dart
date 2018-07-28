@@ -15,49 +15,49 @@ void verify(CharMatcher matcher, String included, String excluded) {
 void main() {
   group('basic', () {
     test('any', () {
-      verify(new CharMatcher.any(), 'abc123_!@#', '');
+      verify(CharMatcher.any(), 'abc123_!@#', '');
     });
     test('none', () {
-      verify(new CharMatcher.none(), '', 'abc123_!@# ');
+      verify(CharMatcher.none(), '', 'abc123_!@# ');
     });
     test('isChar', () {
-      verify(new CharMatcher.isChar('*'), '*', 'abc123_!@# ');
+      verify(CharMatcher.isChar('*'), '*', 'abc123_!@# ');
     });
     test('isChar number', () {
-      verify(new CharMatcher.isChar(42), '*', 'abc123_!@# ');
+      verify(CharMatcher.isChar(42), '*', 'abc123_!@# ');
     });
     test('isChar invalid', () {
-      expect(() => new CharMatcher.isChar('ab'), throwsArgumentError);
+      expect(() => CharMatcher.isChar('ab'), throwsArgumentError);
     });
     test('inRange', () {
-      verify(new CharMatcher.inRange('a', 'c'), 'abc', 'def123_!@# ');
+      verify(CharMatcher.inRange('a', 'c'), 'abc', 'def123_!@# ');
     });
     test('ascii', () {
-      verify(new CharMatcher.ascii(), 'def123_!@#', '\u2665');
+      verify(CharMatcher.ascii(), 'def123_!@#', '\u2665');
     });
     test('digit', () {
-      verify(new CharMatcher.digit(), '0123456789', 'abc_!@# ');
+      verify(CharMatcher.digit(), '0123456789', 'abc_!@# ');
     });
     test('letter', () {
-      verify(new CharMatcher.letter(),
+      verify(CharMatcher.letter(),
           'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ', '123_!@# ');
     });
     test('lowerCaseLetter', () {
-      verify(new CharMatcher.lowerCaseLetter(), 'abcdefghijklmnopqrstuvwxyz',
+      verify(CharMatcher.lowerCaseLetter(), 'abcdefghijklmnopqrstuvwxyz',
           'ABCDEFGHIJKLMNOPQRSTUVWXYZ123_!@# ');
     });
     test('upperCaseLetter', () {
-      verify(new CharMatcher.upperCaseLetter(), 'ABCDEFGHIJKLMNOPQRSTUVWXYZ',
+      verify(CharMatcher.upperCaseLetter(), 'ABCDEFGHIJKLMNOPQRSTUVWXYZ',
           'abcdefghijklmnopqrstuvwxyz123_!@# ');
     });
     test('letterOrDigit', () {
       verify(
-          new CharMatcher.letterOrDigit(),
+          CharMatcher.letterOrDigit(),
           'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ01234567890_',
           '!@# ');
     });
     test('whitespace', () {
-      var string = new String.fromCharCodes([
+      var string = String.fromCharCodes([
         9,
         10,
         11,
@@ -85,78 +85,78 @@ void main() {
         12288,
         65279,
       ]);
-      verify(new CharMatcher.whitespace(), string, 'abcABC_!@#\0');
+      verify(CharMatcher.whitespace(), string, 'abcABC_!@#\0');
     });
   });
   group('char set', () {
     test('empty', () {
-      verify(new CharMatcher.charSet(''), '', 'abc');
+      verify(CharMatcher.charSet(''), '', 'abc');
     });
     test('single', () {
-      verify(new CharMatcher.charSet('b'), 'b', 'ac');
+      verify(CharMatcher.charSet('b'), 'b', 'ac');
     });
     test('many single', () {
-      verify(new CharMatcher.charSet('bcd'), 'bcd', 'ae');
-      verify(new CharMatcher.charSet('dcb'), 'bcd', 'ae');
+      verify(CharMatcher.charSet('bcd'), 'bcd', 'ae');
+      verify(CharMatcher.charSet('dcb'), 'bcd', 'ae');
     });
     test('many separate', () {
-      verify(new CharMatcher.charSet('bdf'), 'bdf', 'aceg');
-      verify(new CharMatcher.charSet('fdb'), 'bdf', 'aceg');
+      verify(CharMatcher.charSet('bdf'), 'bdf', 'aceg');
+      verify(CharMatcher.charSet('fdb'), 'bdf', 'aceg');
     });
     test('special chars', () {
-      verify(new CharMatcher.charSet('^a-z'), '^-az', 'by');
+      verify(CharMatcher.charSet('^a-z'), '^-az', 'by');
     });
   });
   group('patterns', () {
     test('empty', () {
-      verify(new CharMatcher.pattern(''), '', 'abc');
+      verify(CharMatcher.pattern(''), '', 'abc');
     });
     test('single', () {
-      verify(new CharMatcher.pattern('a'), 'a', 'b');
+      verify(CharMatcher.pattern('a'), 'a', 'b');
     });
     test('many single', () {
-      verify(new CharMatcher.pattern('abc'), 'abc', 'd');
+      verify(CharMatcher.pattern('abc'), 'abc', 'd');
     });
     test('range', () {
-      verify(new CharMatcher.pattern('a-c'), 'abc', 'd');
+      verify(CharMatcher.pattern('a-c'), 'abc', 'd');
     });
     test('overlapping range', () {
-      verify(new CharMatcher.pattern('b-da-c'), 'abcd', 'e');
+      verify(CharMatcher.pattern('b-da-c'), 'abcd', 'e');
     });
     test('adjacent range', () {
-      verify(new CharMatcher.pattern('c-ea-c'), 'abcde', 'f');
+      verify(CharMatcher.pattern('c-ea-c'), 'abcde', 'f');
     });
     test('prefix range', () {
-      verify(new CharMatcher.pattern('a-ea-c'), 'abcde', 'f');
+      verify(CharMatcher.pattern('a-ea-c'), 'abcde', 'f');
     });
     test('postfix range', () {
-      verify(new CharMatcher.pattern('a-ec-e'), 'abcde', 'f');
+      verify(CharMatcher.pattern('a-ec-e'), 'abcde', 'f');
     });
     test('repeated range', () {
-      verify(new CharMatcher.pattern('a-ea-e'), 'abcde', 'f');
+      verify(CharMatcher.pattern('a-ea-e'), 'abcde', 'f');
     });
     test('composed range', () {
-      verify(new CharMatcher.pattern('ac-df-'), 'acdf-', 'beg');
+      verify(CharMatcher.pattern('ac-df-'), 'acdf-', 'beg');
     });
     test('negated single', () {
-      verify(new CharMatcher.pattern('^a'), 'b', 'a');
+      verify(CharMatcher.pattern('^a'), 'b', 'a');
     });
     test('negated range', () {
-      verify(new CharMatcher.pattern('^a-c'), 'd', 'abc');
+      verify(CharMatcher.pattern('^a-c'), 'd', 'abc');
     });
     test('negated composed', () {
-      verify(new CharMatcher.pattern('^ac-df-'), 'beg', 'acdf-');
+      verify(CharMatcher.pattern('^ac-df-'), 'beg', 'acdf-');
     });
     test('invalid order', () {
-      expect(() => new CharMatcher.pattern('c-a'), throwsArgumentError);
+      expect(() => CharMatcher.pattern('c-a'), throwsArgumentError);
     });
   });
   group('operators', () {
-    var any = new CharMatcher.any();
-    var none = new CharMatcher.none();
-    var letter = new CharMatcher.letter();
-    var digit = new CharMatcher.digit();
-    var whitespace = new CharMatcher.whitespace();
+    var any = CharMatcher.any();
+    var none = CharMatcher.none();
+    var letter = CharMatcher.letter();
+    var digit = CharMatcher.digit();
+    var whitespace = CharMatcher.whitespace();
     test('~', () {
       expect(~any, equals(none));
       expect(~none, equals(any));
@@ -176,7 +176,7 @@ void main() {
     });
   });
   group('action', () {
-    var star = new CharMatcher.isChar('*');
+    var star = CharMatcher.isChar('*');
     test('everyOf', () {
       expect(star.everyOf(''), isTrue);
       expect(star.everyOf('a'), isFalse);

@@ -46,11 +46,11 @@ abstract class CharMatcher {
 
   /// A matcher that accepts a single [character].
   factory CharMatcher.isChar(Object character) =>
-      new SingleCharMatcher(_toCharCode(character));
+      SingleCharMatcher(_toCharCode(character));
 
   /// A matcher that accepts a character range from [start] to [stop].
   factory CharMatcher.inRange(Object start, Object stop) =>
-      new RangeCharMatcher(_toCharCode(start), _toCharCode(stop));
+      RangeCharMatcher(_toCharCode(start), _toCharCode(stop));
 
   /// A matcher that accepts a set of characters.
   factory CharMatcher.charSet(String chars) => fromCharSet(chars);
@@ -83,7 +83,7 @@ abstract class CharMatcher {
   const CharMatcher();
 
   /// Returns a matcher that matches any character not matched by this matcher.
-  CharMatcher operator ~() => new NegateCharMatcher(this);
+  CharMatcher operator ~() => NegateCharMatcher(this);
 
   /// Returns a matcher that matches any character matched by either this
   /// matcher or [other].
@@ -93,9 +93,9 @@ abstract class CharMatcher {
     } else if (other is NoneCharMatcher) {
       return this;
     } else if (other is DisjunctiveCharMatcher) {
-      return new DisjunctiveCharMatcher([this]..addAll(other.matchers));
+      return DisjunctiveCharMatcher([this]..addAll(other.matchers));
     } else {
-      return new DisjunctiveCharMatcher([this, other]);
+      return DisjunctiveCharMatcher([this, other]);
     }
   }
 
@@ -161,14 +161,14 @@ abstract class CharMatcher {
         i++;
       }
     }
-    return new String.fromCharCodes(list);
+    return String.fromCharCodes(list);
   }
 
   /// Replaces each matched character in [sequence] with the specified
   /// [replacement].
   String replaceFrom(String sequence, String replacement) {
     var replacementCodes = replacement.codeUnits;
-    return new String.fromCharCodes(sequence.codeUnits.expand((value) {
+    return String.fromCharCodes(sequence.codeUnits.expand((value) {
       return match(value) ? replacementCodes : [value];
     }));
   }
@@ -180,7 +180,7 @@ abstract class CharMatcher {
 
   /// Retains all matched characters in [sequence].
   String retainFrom(String sequence) {
-    return new String.fromCharCodes(sequence.codeUnits.where(match));
+    return String.fromCharCodes(sequence.codeUnits.where(match));
   }
 
   /// Removes leading and trailing matching characters in [sequence].
@@ -223,7 +223,7 @@ int _toCharCode(Object char) {
   }
   var value = '$char';
   if (value.length != 1) {
-    throw new ArgumentError('$value is not a character');
+    throw ArgumentError('$value is not a character');
   }
   return value.codeUnitAt(0);
 }

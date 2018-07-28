@@ -24,19 +24,19 @@ import 'dart:collection' show IterableBase;
 ///     combinations(string('xyz'), 2, repetitions: false);
 ///
 Iterable<List<E>> combinations<E>(Iterable<E> elements, int count,
-    {bool repetitions: false}) {
+    {bool repetitions = false}) {
   elements = elements.toList(growable: false);
   if (count < 0) {
-    throw new RangeError.value(count);
+    throw RangeError.value(count);
   } else if (!repetitions && elements.length < count) {
-    throw new RangeError.range(count, 0, elements.length);
+    throw RangeError.range(count, 0, elements.length);
   } else if (count == 0 || elements.isEmpty) {
     return const Iterable.empty();
   } else if (repetitions) {
-    return new CombinationsWithRepetitionsIterable<E>(
+    return CombinationsWithRepetitionsIterable<E>(
         elements.toList(growable: false), count);
   } else {
-    return new CombinationsWithoutRepetitionsIterable<E>(
+    return CombinationsWithoutRepetitionsIterable<E>(
         elements.toList(growable: false), count);
   }
 }
@@ -49,7 +49,7 @@ class CombinationsWithRepetitionsIterable<E> extends IterableBase<List<E>> {
 
   @override
   Iterator<List<E>> get iterator {
-    return new CombinationsWithRepetitionsIterator<E>(elements, count);
+    return CombinationsWithRepetitionsIterator<E>(elements, count);
   }
 }
 
@@ -70,8 +70,8 @@ class CombinationsWithRepetitionsIterator<E> extends Iterator<List<E>> {
     if (completed) {
       return false;
     } else if (current == null) {
-      state = new List<int>.filled(count, 0);
-      current = new List<E>.filled(count, elements[0]);
+      state = List<int>.filled(count, 0);
+      current = List<E>.filled(count, elements[0]);
       return true;
     } else {
       for (var i = count - 1; i >= 0; i--) {
@@ -100,7 +100,7 @@ class CombinationsWithoutRepetitionsIterable<E> extends IterableBase<List<E>> {
 
   @override
   Iterator<List<E>> get iterator {
-    return new CombinationsWithoutRepetitionsIterator<E>(elements, count);
+    return CombinationsWithoutRepetitionsIterator<E>(elements, count);
   }
 }
 
@@ -121,8 +121,8 @@ class CombinationsWithoutRepetitionsIterator<E> extends Iterator<List<E>> {
     if (completed) {
       return false;
     } else if (current == null) {
-      state = new List<int>(count);
-      current = new List<E>(count);
+      state = List<int>(count);
+      current = List<E>(count);
       for (var i = 0; i < count; i++) {
         state[i] = i;
         current[i] = elements[i];

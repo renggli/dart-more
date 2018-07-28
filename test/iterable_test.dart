@@ -162,8 +162,8 @@ void main() {
       expect(concat([d, d, d, d, d]), []);
     });
     test('types', () {
-      expect(concat([new Set.from(c)]), [6]);
-      expect(concat([new List.from(b)]), [4, 5]);
+      expect(concat([Set.from(c)]), [6]);
+      expect(concat([List.from(b)]), [4, 5]);
     });
   });
   group('cycle', () {
@@ -388,115 +388,115 @@ void main() {
     });
   });
   group('periodical', () {
-    var date = new DateTime(1980, DateTime.JUNE, 11, 12, 34, 56, 78, 90);
+    var date = DateTime(1980, DateTime.JUNE, 11, 12, 34, 56, 78, 90);
     group('periodical', () {
       test('millennially', () {
         var iterable = periodical(start: date, period: Period.millennially);
         expect(iterable.take(3), [
-          new DateTime(1980, DateTime.JUNE, 11, 12, 34, 56, 78, 90),
-          new DateTime(2980, DateTime.JUNE, 11, 12, 34, 56, 78, 90),
-          new DateTime(3980, DateTime.JUNE, 11, 12, 34, 56, 78, 90),
+          DateTime(1980, DateTime.JUNE, 11, 12, 34, 56, 78, 90),
+          DateTime(2980, DateTime.JUNE, 11, 12, 34, 56, 78, 90),
+          DateTime(3980, DateTime.JUNE, 11, 12, 34, 56, 78, 90),
         ]);
       });
       test('centennially', () {
         var iterable = periodical(start: date, period: Period.centennially);
         expect(iterable.take(3), [
-          new DateTime(1980, DateTime.JUNE, 11, 12, 34, 56, 78, 90),
-          new DateTime(2080, DateTime.JUNE, 11, 12, 34, 56, 78, 90),
-          new DateTime(2180, DateTime.JUNE, 11, 12, 34, 56, 78, 90),
+          DateTime(1980, DateTime.JUNE, 11, 12, 34, 56, 78, 90),
+          DateTime(2080, DateTime.JUNE, 11, 12, 34, 56, 78, 90),
+          DateTime(2180, DateTime.JUNE, 11, 12, 34, 56, 78, 90),
         ]);
       });
       test('decennially', () {
         var iterable = periodical(start: date, period: Period.decennially);
         expect(iterable.take(3), [
-          new DateTime(1980, DateTime.JUNE, 11, 12, 34, 56, 78, 90),
-          new DateTime(1990, DateTime.JUNE, 11, 12, 34, 56, 78, 90),
-          new DateTime(2000, DateTime.JUNE, 11, 12, 34, 56, 78, 90),
+          DateTime(1980, DateTime.JUNE, 11, 12, 34, 56, 78, 90),
+          DateTime(1990, DateTime.JUNE, 11, 12, 34, 56, 78, 90),
+          DateTime(2000, DateTime.JUNE, 11, 12, 34, 56, 78, 90),
         ]);
       });
       test('yearly', () {
         var iterable = periodical(start: date, period: Period.yearly);
         expect(iterable.take(3), [
-          new DateTime(1980, DateTime.JUNE, 11, 12, 34, 56, 78, 90),
-          new DateTime(1981, DateTime.JUNE, 11, 12, 34, 56, 78, 90),
-          new DateTime(1982, DateTime.JUNE, 11, 12, 34, 56, 78, 90),
+          DateTime(1980, DateTime.JUNE, 11, 12, 34, 56, 78, 90),
+          DateTime(1981, DateTime.JUNE, 11, 12, 34, 56, 78, 90),
+          DateTime(1982, DateTime.JUNE, 11, 12, 34, 56, 78, 90),
         ]);
       });
       test('quarterly', () {
         var iterable = periodical(start: date, period: Period.quarterly);
         expect(iterable.take(3), [
-          new DateTime(1980, DateTime.JUNE, 11, 12, 34, 56, 78, 90),
-          new DateTime(1980, DateTime.SEPTEMBER, 11, 12, 34, 56, 78, 90),
-          new DateTime(1980, DateTime.DECEMBER, 11, 12, 34, 56, 78, 90),
+          DateTime(1980, DateTime.JUNE, 11, 12, 34, 56, 78, 90),
+          DateTime(1980, DateTime.SEPTEMBER, 11, 12, 34, 56, 78, 90),
+          DateTime(1980, DateTime.DECEMBER, 11, 12, 34, 56, 78, 90),
         ]);
       });
       test('monthly', () {
         var iterable = periodical(start: date, period: Period.monthly);
         expect(iterable.take(3), [
-          new DateTime(1980, DateTime.JUNE, 11, 12, 34, 56, 78, 90),
-          new DateTime(1980, DateTime.JULY, 11, 12, 34, 56, 78, 90),
-          new DateTime(1980, DateTime.AUGUST, 11, 12, 34, 56, 78, 90),
+          DateTime(1980, DateTime.JUNE, 11, 12, 34, 56, 78, 90),
+          DateTime(1980, DateTime.JULY, 11, 12, 34, 56, 78, 90),
+          DateTime(1980, DateTime.AUGUST, 11, 12, 34, 56, 78, 90),
         ]);
       });
       test('weekly', () {
         var iterable = periodical(start: date, period: Period.weekly);
         expect(iterable.take(3), [
-          new DateTime(1980, DateTime.JUNE, 11, 12, 34, 56, 78, 90),
-          new DateTime(1980, DateTime.JUNE, 18, 12, 34, 56, 78, 90),
-          new DateTime(1980, DateTime.JUNE, 25, 12, 34, 56, 78, 90),
+          DateTime(1980, DateTime.JUNE, 11, 12, 34, 56, 78, 90),
+          DateTime(1980, DateTime.JUNE, 18, 12, 34, 56, 78, 90),
+          DateTime(1980, DateTime.JUNE, 25, 12, 34, 56, 78, 90),
         ]);
       });
       test('daily', () {
         var iterable = periodical(start: date, period: Period.daily);
         expect(iterable.take(3), [
-          new DateTime(1980, DateTime.JUNE, 11, 12, 34, 56, 78, 90),
-          new DateTime(1980, DateTime.JUNE, 12, 12, 34, 56, 78, 90),
-          new DateTime(1980, DateTime.JUNE, 13, 12, 34, 56, 78, 90),
+          DateTime(1980, DateTime.JUNE, 11, 12, 34, 56, 78, 90),
+          DateTime(1980, DateTime.JUNE, 12, 12, 34, 56, 78, 90),
+          DateTime(1980, DateTime.JUNE, 13, 12, 34, 56, 78, 90),
         ]);
       });
       test('hourly', () {
         var iterable = periodical(start: date, period: Period.hourly);
         expect(iterable.take(3), [
-          new DateTime(1980, DateTime.JUNE, 11, 12, 34, 56, 78, 90),
-          new DateTime(1980, DateTime.JUNE, 11, 13, 34, 56, 78, 90),
-          new DateTime(1980, DateTime.JUNE, 11, 14, 34, 56, 78, 90),
+          DateTime(1980, DateTime.JUNE, 11, 12, 34, 56, 78, 90),
+          DateTime(1980, DateTime.JUNE, 11, 13, 34, 56, 78, 90),
+          DateTime(1980, DateTime.JUNE, 11, 14, 34, 56, 78, 90),
         ]);
       });
       test('minutely', () {
         var iterable = periodical(start: date, period: Period.minutely);
         expect(iterable.take(3), [
-          new DateTime(1980, DateTime.JUNE, 11, 12, 34, 56, 78, 90),
-          new DateTime(1980, DateTime.JUNE, 11, 12, 35, 56, 78, 90),
-          new DateTime(1980, DateTime.JUNE, 11, 12, 36, 56, 78, 90),
+          DateTime(1980, DateTime.JUNE, 11, 12, 34, 56, 78, 90),
+          DateTime(1980, DateTime.JUNE, 11, 12, 35, 56, 78, 90),
+          DateTime(1980, DateTime.JUNE, 11, 12, 36, 56, 78, 90),
         ]);
       });
       test('secondly', () {
         var iterable = periodical(start: date, period: Period.secondly);
         expect(iterable.take(3), [
-          new DateTime(1980, DateTime.JUNE, 11, 12, 34, 56, 78, 90),
-          new DateTime(1980, DateTime.JUNE, 11, 12, 34, 57, 78, 90),
-          new DateTime(1980, DateTime.JUNE, 11, 12, 34, 58, 78, 90),
+          DateTime(1980, DateTime.JUNE, 11, 12, 34, 56, 78, 90),
+          DateTime(1980, DateTime.JUNE, 11, 12, 34, 57, 78, 90),
+          DateTime(1980, DateTime.JUNE, 11, 12, 34, 58, 78, 90),
         ]);
       });
       test('millisecondly', () {
         var iterable = periodical(start: date, period: Period.millisecondly);
         expect(iterable.take(3), [
-          new DateTime(1980, DateTime.JUNE, 11, 12, 34, 56, 78, 90),
-          new DateTime(1980, DateTime.JUNE, 11, 12, 34, 56, 79, 90),
-          new DateTime(1980, DateTime.JUNE, 11, 12, 34, 56, 80, 90),
+          DateTime(1980, DateTime.JUNE, 11, 12, 34, 56, 78, 90),
+          DateTime(1980, DateTime.JUNE, 11, 12, 34, 56, 79, 90),
+          DateTime(1980, DateTime.JUNE, 11, 12, 34, 56, 80, 90),
         ]);
       });
       test('microsecondly', () {
         var iterable = periodical(start: date, period: Period.microsecondly);
         expect(iterable.take(3), [
-          new DateTime(1980, DateTime.JUNE, 11, 12, 34, 56, 78, 90),
-          new DateTime(1980, DateTime.JUNE, 11, 12, 34, 56, 78, 91),
-          new DateTime(1980, DateTime.JUNE, 11, 12, 34, 56, 78, 92),
+          DateTime(1980, DateTime.JUNE, 11, 12, 34, 56, 78, 90),
+          DateTime(1980, DateTime.JUNE, 11, 12, 34, 56, 78, 91),
+          DateTime(1980, DateTime.JUNE, 11, 12, 34, 56, 78, 92),
         ]);
       });
       test('start default', () {
         var first = periodical().first;
-        var difference = first.difference(new DateTime.now());
+        var difference = first.difference(DateTime.now());
         expect(difference.inSeconds, lessThan(1));
       });
       test('invalid step', () {
@@ -510,31 +510,31 @@ void main() {
     group('truncateToPeriod', () {
       test('millennially', () {
         var truncated = truncateToPeriod(date, period: Period.millennially);
-        expect(truncated, new DateTime(1000));
+        expect(truncated, DateTime(1000));
       });
       test('centennially', () {
         var truncated = truncateToPeriod(date, period: Period.centennially);
-        expect(truncated, new DateTime(1900));
+        expect(truncated, DateTime(1900));
       });
       test('decennially', () {
         var truncated = truncateToPeriod(date, period: Period.decennially);
-        expect(truncated, new DateTime(1980));
+        expect(truncated, DateTime(1980));
       });
       test('yearly', () {
         var truncated = truncateToPeriod(date, period: Period.yearly);
-        expect(truncated, new DateTime(1980));
+        expect(truncated, DateTime(1980));
       });
       test('quarterly', () {
         var truncated = truncateToPeriod(date, period: Period.quarterly);
-        expect(truncated, new DateTime(1980, DateTime.APRIL));
+        expect(truncated, DateTime(1980, DateTime.APRIL));
       });
       test('monthly', () {
         var truncated = truncateToPeriod(date, period: Period.monthly);
-        expect(truncated, new DateTime(1980, DateTime.JUNE));
+        expect(truncated, DateTime(1980, DateTime.JUNE));
       });
       test('weekly', () {
         var truncated = truncateToPeriod(date, period: Period.weekly);
-        expect(truncated, new DateTime(1980, DateTime.JUNE, 9));
+        expect(truncated, DateTime(1980, DateTime.JUNE, 9));
       });
       test('weekly (custom start of the week)', () {
         for (var weekday = DateTime.MONDAY;
@@ -548,29 +548,28 @@ void main() {
       });
       test('daily', () {
         var truncated = truncateToPeriod(date, period: Period.daily);
-        expect(truncated, new DateTime(1980, DateTime.JUNE, 11));
+        expect(truncated, DateTime(1980, DateTime.JUNE, 11));
       });
       test('hourly', () {
         var truncated = truncateToPeriod(date, period: Period.hourly);
-        expect(truncated, new DateTime(1980, DateTime.JUNE, 11, 12));
+        expect(truncated, DateTime(1980, DateTime.JUNE, 11, 12));
       });
       test('minutely', () {
         var truncated = truncateToPeriod(date, period: Period.minutely);
-        expect(truncated, new DateTime(1980, DateTime.JUNE, 11, 12, 34));
+        expect(truncated, DateTime(1980, DateTime.JUNE, 11, 12, 34));
       });
       test('secondly', () {
         var truncated = truncateToPeriod(date, period: Period.secondly);
-        expect(truncated, new DateTime(1980, DateTime.JUNE, 11, 12, 34, 56));
+        expect(truncated, DateTime(1980, DateTime.JUNE, 11, 12, 34, 56));
       });
       test('millisecondly', () {
         var truncated = truncateToPeriod(date, period: Period.millisecondly);
-        expect(
-            truncated, new DateTime(1980, DateTime.JUNE, 11, 12, 34, 56, 78));
+        expect(truncated, DateTime(1980, DateTime.JUNE, 11, 12, 34, 56, 78));
       });
       test('microsecondly', () {
         var truncated = truncateToPeriod(date, period: Period.microsecondly);
-        expect(truncated,
-            new DateTime(1980, DateTime.JUNE, 11, 12, 34, 56, 78, 90));
+        expect(
+            truncated, DateTime(1980, DateTime.JUNE, 11, 12, 34, 56, 78, 90));
       });
       test('invalid timestamp', () {
         expect(() => truncateToPeriod(null), throwsArgumentError);

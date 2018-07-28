@@ -7,18 +7,17 @@ import 'dart:math' show min;
 /// than once.
 class Multiset<E> extends IterableBase<E> {
   /// Creates an empty [Multiset].
-  factory Multiset() => new Multiset<E>._({}, 0);
+  factory Multiset() => Multiset<E>._({}, 0);
 
   /// Creates an empty identity [Multiset].
-  factory Multiset.identity() =>
-      new Multiset<E>._(new Map<E, int>.identity(), 0);
+  factory Multiset.identity() => Multiset<E>._(Map<E, int>.identity(), 0);
 
   /// Creates a [Multiset] that contains all elements of [other].
   factory Multiset.from(Iterable<E> other) {
     if (other is Multiset<E>) {
-      return new Multiset<E>._(new Map.from(other._container), other._length);
+      return Multiset<E>._(Map.from(other._container), other._length);
     } else {
-      return new Multiset<E>()..addAll(other);
+      return Multiset<E>()..addAll(other);
     }
   }
 
@@ -33,7 +32,7 @@ class Multiset<E> extends IterableBase<E> {
   /// collection. The default function returns the constant 1.
   factory Multiset.fromIterable(Iterable iterable,
       {E key(element), int count(element)}) {
-    var result = new Multiset<E>();
+    var result = Multiset<E>();
     key ??= (element) => element;
     count ??= (element) => 1;
     for (var element in iterable) {
@@ -55,7 +54,7 @@ class Multiset<E> extends IterableBase<E> {
   /// Throws an [ArgumentError] if [occurrences] is negative.
   void add(E element, [int occurrences = 1]) {
     if (occurrences < 0) {
-      throw new ArgumentError('Negative number of occurences: $occurrences');
+      throw ArgumentError('Negative number of occurences: $occurrences');
     } else if (occurrences > 0) {
       _container[element] = this[element] + occurrences;
       _length += occurrences;
@@ -72,7 +71,7 @@ class Multiset<E> extends IterableBase<E> {
   /// Throws an [ArgumentError] if [occurrences] is negative.
   void remove(Object element, [int occurrences = 1]) {
     if (occurrences < 0) {
-      throw new ArgumentError('Negative number of occurences: $occurrences');
+      throw ArgumentError('Negative number of occurences: $occurrences');
     }
     if (element is E && occurrences > 0) {
       var current = this[element];
@@ -107,7 +106,7 @@ class Multiset<E> extends IterableBase<E> {
   /// Throws an [ArgumentError] if [occurrences] is negative.
   void operator []=(E element, int occurrences) {
     if (occurrences < 0) {
-      throw new ArgumentError('Negative number of occurences: $occurrences');
+      throw ArgumentError('Negative number of occurences: $occurrences');
     } else {
       var current = this[element];
       if (occurrences > 0) {
@@ -138,7 +137,7 @@ class Multiset<E> extends IterableBase<E> {
       }
       return true;
     } else {
-      return containsAll(new Multiset.from(other));
+      return containsAll(Multiset.from(other));
     }
   }
 
@@ -146,32 +145,32 @@ class Multiset<E> extends IterableBase<E> {
   /// well as those in [other].
   Multiset<E> intersection(Iterable<Object> other) {
     if (other is Multiset<Object>) {
-      var result = new Multiset<E>();
+      var result = Multiset<E>();
       for (var element in distinct) {
         result.add(element, min(this[element], other[element]));
       }
       return result;
     } else {
-      return intersection(new Multiset.from(other));
+      return intersection(Multiset.from(other));
     }
   }
 
   /// Returns a new [Multiset] with all the elements of the receiver and those
   /// in [other].
   Multiset<E> union(Iterable<E> other) {
-    return new Multiset<E>.from(this)..addAll(other);
+    return Multiset<E>.from(this)..addAll(other);
   }
 
   /// Returns a new [Multiset] with all the elements of the receiver that are
   /// not in [other].
   Multiset<E> difference(Iterable<Object> other) {
-    return new Multiset<E>.from(this)..removeAll(other);
+    return Multiset<E>.from(this)..removeAll(other);
   }
 
   /// Iterator over the repeated elements of the receiver.
   @override
   Iterator<E> get iterator =>
-      new MultisetIterator<E>(_container, distinct.iterator);
+      MultisetIterator<E>(_container, distinct.iterator);
 
   /// Returns a view on the distinct elements of the receiver.
   Iterable<E> get distinct => _container.keys;

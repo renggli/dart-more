@@ -17,8 +17,8 @@ import 'dart:collection' show IterableBase;
 ///
 ///     'a-1, b-2'
 ///
-Iterable<Indexed<E>> indexed<E>(Iterable<E> iterable, {int offset: 0}) {
-  return new IndexedIterable<E>(iterable, offset);
+Iterable<Indexed<E>> indexed<E>(Iterable<E> iterable, {int offset = 0}) {
+  return IndexedIterable<E>(iterable, offset);
 }
 
 /// An indexed value.
@@ -43,7 +43,7 @@ class IndexedIterable<E> extends IterableBase<Indexed<E>> {
 
   @override
   Iterator<Indexed<E>> get iterator =>
-      new IndexedIterator<E>(iterable.iterator, offset);
+      IndexedIterator<E>(iterable.iterator, offset);
 }
 
 class IndexedIterator<E> extends Iterator<Indexed<E>> {
@@ -59,7 +59,7 @@ class IndexedIterator<E> extends Iterator<Indexed<E>> {
   @override
   bool moveNext() {
     if (iterable.moveNext()) {
-      current = new Indexed<E>(index++, iterable.current);
+      current = Indexed<E>(index++, iterable.current);
       return true;
     } else {
       current = null;

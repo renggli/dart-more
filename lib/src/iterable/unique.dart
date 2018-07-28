@@ -15,7 +15,7 @@ typedef int Hash<E>(E a);
 ///
 Iterable<E> unique<E>(Iterable<E> iterable,
     {Equality<E> equals, Hash<E> hashCode}) {
-  return new UniqueIterable<E>(iterable, equals, hashCode);
+  return UniqueIterable<E>(iterable, equals, hashCode);
 }
 
 class UniqueIterable<E> extends IterableBase<E> {
@@ -27,7 +27,7 @@ class UniqueIterable<E> extends IterableBase<E> {
 
   @override
   Iterator<E> get iterator {
-    var uniques = new HashSet(equals: equals, hashCode: hash);
+    var uniques = HashSet(equals: equals, hashCode: hash);
     return iterable.where((element) => uniques.add(element)).iterator;
   }
 }

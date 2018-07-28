@@ -19,7 +19,7 @@ typedef E IterateFunction<E>(E value);
 ///     [0, 1, 2, 3, 4, ...]
 ///
 Iterable<E> iterate<E>(E value, IterateFunction<E> function) {
-  return new IterateIterable<E>(value, function);
+  return IterateIterable<E>(value, function);
 }
 
 class IterateIterable<E> extends IterableBase<E> with InfiniteIterable<E> {
@@ -29,7 +29,7 @@ class IterateIterable<E> extends IterableBase<E> with InfiniteIterable<E> {
   IterateIterable(this.value, this.function);
 
   @override
-  Iterator<E> get iterator => new IterateIterator<E>(value, function);
+  Iterator<E> get iterator => IterateIterator<E>(value, function);
 }
 
 class IterateIterator<E> extends Iterator<E> {

@@ -5,15 +5,15 @@ import 'dart:async';
 import 'package:more/cache.dart';
 import 'package:test/test.dart';
 
-const Duration delay = const Duration(milliseconds: 10);
+const Duration delay = Duration(milliseconds: 10);
 
 // Various common loaders used with the tests.
 String failingLoader(int key) => fail('Loader should never be called');
 String immediateLoader(int key) => '$key';
-Future<String> futureLoader(int key) => new Future.value(immediateLoader(key));
+Future<String> futureLoader(int key) => Future.value(immediateLoader(key));
 Future<String> delayedLoader(int key) =>
-    new Future.delayed(delay, () => immediateLoader(key));
-String throwingLoader(int key) => throw new UnsupportedError('$key');
+    Future.delayed(delay, () => immediateLoader(key));
+String throwingLoader(int key) => throw UnsupportedError('$key');
 
 // Basic tests that should pass on any (stateless) cache.
 void statelessCacheTests(
@@ -71,7 +71,7 @@ void statelessCacheTests(
 
 void cacheEvictionTest(Cache<int, String> newCache(Loader<int, String> loader),
     String name, List<int> load, List<int> present) {
-  var absent = new Set()
+  var absent = Set()
     ..addAll(load)
     ..removeAll(present);
 
@@ -209,22 +209,22 @@ void persistentCacheTests(
 void main() {
   group('clock', () {
     test('system clock', () {
-      expect(systemClock().difference(new DateTime.now()).inSeconds, 0);
+      expect(systemClock().difference(DateTime.now()).inSeconds, 0);
     });
   });
   group('empty', () {
     Cache<int, String> newCache(Loader<int, String> loader) {
-      return new Cache.empty(loader: loader);
+      return Cache.empty(loader: loader);
     }
 
     statelessCacheTests(newCache);
     test('missing loader', () {
-      expect(() => new Cache.empty(), throwsArgumentError);
+      expect(() => Cache.empty(), throwsArgumentError);
     });
   });
   group('delegate', () {
     Cache<int, String> newCache(Loader<int, String> loader) {
-      return new DelegateCache(new Cache.lru(loader: loader, maximumSize: 5));
+      return DelegateCache(Cache.lru(loader: loader, maximumSize: 5));
     }
 
     statelessCacheTests(newCache);
@@ -232,18 +232,18 @@ void main() {
   });
   group('expiry', () {
     Duration offset;
-    DateTime offsetClock() => new DateTime(2000).add(offset);
+    DateTime offsetClock() => DateTime(2000).add(offset);
     setUp(() => offset = Duration.ZERO);
 
     Cache<int, String> newUpdateExpireCache(Loader<int, String> loader) {
-      return new Cache.expiry(
+      return Cache.expiry(
           loader: loader,
           clock: offsetClock,
           updateExpiry: const Duration(seconds: 20));
     }
 
     Cache<int, String> newAccessExpireCache(Loader<int, String> loader) {
-      return new Cache.expiry(
+      return Cache.expiry(
           loader: loader,
           clock: offsetClock,
           accessExpiry: const Duration(seconds: 20));
@@ -254,23 +254,22 @@ void main() {
 
     group('constructors', () {
       test('missing loader', () {
-        expect(
-            () => new Cache.expiry(accessExpiry: const Duration(seconds: 20)),
+        expect(() => Cache.expiry(accessExpiry: const Duration(seconds: 20)),
             throwsArgumentError);
       });
       test('missing expiry', () {
-        expect(() => new Cache.expiry(loader: immediateLoader),
-            throwsArgumentError);
+        expect(
+            () => Cache.expiry(loader: immediateLoader), throwsArgumentError);
       });
       test('negative access expiry', () {
         expect(
-            () => new Cache.expiry(
+            () => Cache.expiry(
                 loader: immediateLoader, accessExpiry: Duration.ZERO),
             throwsArgumentError);
       });
       test('negative update expiry', () {
         expect(
-            () => new Cache.expiry(
+            () => Cache.expiry(
                 loader: immediateLoader, updateExpiry: Duration.ZERO),
             throwsArgumentError);
       });
@@ -411,15 +410,15 @@ void main() {
   });
   group('lru', () {
     Cache<int, String> newCache(Loader<int, String> loader) {
-      return new Cache.lru(loader: loader, maximumSize: 5);
+      return Cache.lru(loader: loader, maximumSize: 5);
     }
 
     group('constructors', () {
       test('missing lru', () {
-        expect(() => new Cache.lru(), throwsArgumentError);
+        expect(() => Cache.lru(), throwsArgumentError);
       });
       test('non positive max size', () {
-        expect(() => new Cache.lru(loader: immediateLoader, maximumSize: 0),
+        expect(() => Cache.lru(loader: immediateLoader, maximumSize: 0),
             throwsArgumentError);
       });
     });
@@ -434,15 +433,15 @@ void main() {
   });
   group('fifo', () {
     Cache<int, String> newCache(Loader<int, String> loader) {
-      return new Cache.fifo(loader: loader, maximumSize: 5);
+      return Cache.fifo(loader: loader, maximumSize: 5);
     }
 
     group('constructors', () {
       test('missing loader', () {
-        expect(() => new Cache.fifo(), throwsArgumentError);
+        expect(() => Cache.fifo(), throwsArgumentError);
       });
       test('non positive max size', () {
-        expect(() => new Cache.fifo(loader: immediateLoader, maximumSize: 0),
+        expect(() => Cache.fifo(loader: immediateLoader, maximumSize: 0),
             throwsArgumentError);
       });
     });

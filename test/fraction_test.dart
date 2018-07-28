@@ -6,180 +6,179 @@ import 'package:test/test.dart';
 void main() {
   group('construction', () {
     test('irreducible', () {
-      var fraction = new Fraction(3, 7);
+      var fraction = Fraction(3, 7);
       expect(fraction.numerator, 3);
       expect(fraction.denominator, 7);
     });
     test('reducible', () {
-      var fraction = new Fraction(15, 35);
+      var fraction = Fraction(15, 35);
       expect(fraction.numerator, 3);
       expect(fraction.denominator, 7);
     });
     test('normal negative', () {
-      var fraction = new Fraction(-2, 4);
+      var fraction = Fraction(-2, 4);
       expect(fraction.numerator, -1);
       expect(fraction.denominator, 2);
     });
     test('double negative', () {
-      var fraction = new Fraction(-2, -4);
+      var fraction = Fraction(-2, -4);
       expect(fraction.numerator, 1);
       expect(fraction.denominator, 2);
     });
     test('denominator negative', () {
-      var fraction = new Fraction(2, -4);
+      var fraction = Fraction(2, -4);
       expect(fraction.numerator, -1);
       expect(fraction.denominator, 2);
     });
     test('numerator error', () {
-      expect(() => new Fraction(null), throwsArgumentError);
+      expect(() => Fraction(null), throwsArgumentError);
     });
     test('denominator error', () {
-      expect(() => new Fraction(2, 0), throwsArgumentError);
-      expect(() => new Fraction(2, null), throwsArgumentError);
+      expect(() => Fraction(2, 0), throwsArgumentError);
+      expect(() => Fraction(2, null), throwsArgumentError);
     });
     test('double basic', () {
-      expect(new Fraction.fromDouble(2), new Fraction(2));
-      expect(new Fraction.fromDouble(100), new Fraction(100));
+      expect(Fraction.fromDouble(2), Fraction(2));
+      expect(Fraction.fromDouble(100), Fraction(100));
     });
     test('double finite', () {
-      expect(new Fraction.fromDouble(1 / 2), new Fraction(1, 2));
-      expect(new Fraction.fromDouble(1 / 4), new Fraction(1, 4));
+      expect(Fraction.fromDouble(1 / 2), Fraction(1, 2));
+      expect(Fraction.fromDouble(1 / 4), Fraction(1, 4));
     });
     test('double finite (whole)', () {
-      expect(new Fraction.fromDouble(5 / 2), new Fraction(5, 2));
-      expect(new Fraction.fromDouble(9 / 4), new Fraction(9, 4));
+      expect(Fraction.fromDouble(5 / 2), Fraction(5, 2));
+      expect(Fraction.fromDouble(9 / 4), Fraction(9, 4));
     });
     test('double infinite', () {
-      expect(new Fraction.fromDouble(1 / 3), new Fraction(1, 3));
-      expect(new Fraction.fromDouble(1 / 7), new Fraction(1, 7));
+      expect(Fraction.fromDouble(1 / 3), Fraction(1, 3));
+      expect(Fraction.fromDouble(1 / 7), Fraction(1, 7));
     });
     test('double infinite (whole)', () {
-      expect(new Fraction.fromDouble(5 / 3), new Fraction(5, 3));
-      expect(new Fraction.fromDouble(9 / 7), new Fraction(9, 7));
+      expect(Fraction.fromDouble(5 / 3), Fraction(5, 3));
+      expect(Fraction.fromDouble(9 / 7), Fraction(9, 7));
     });
     test('double negative', () {
-      expect(new Fraction.fromDouble(-1 / 3), new Fraction(-1, 3));
-      expect(new Fraction.fromDouble(-5 / 3), new Fraction(-5, 3));
+      expect(Fraction.fromDouble(-1 / 3), Fraction(-1, 3));
+      expect(Fraction.fromDouble(-5 / 3), Fraction(-5, 3));
     });
     test('double all', () {
       for (var num = -10; num <= 10; num++) {
         for (var den = -10; den <= 10; den++) {
           if (den != 0) {
-            expect(new Fraction.fromDouble(num / den), new Fraction(num, den));
+            expect(Fraction.fromDouble(num / den), Fraction(num, den));
           }
         }
       }
     });
     test('double error', () {
-      expect(() => new Fraction.fromDouble(double.NAN), throwsArgumentError);
-      expect(
-          () => new Fraction.fromDouble(double.INFINITY), throwsArgumentError);
-      expect(() => new Fraction.fromDouble(double.NEGATIVE_INFINITY),
+      expect(() => Fraction.fromDouble(double.NAN), throwsArgumentError);
+      expect(() => Fraction.fromDouble(double.INFINITY), throwsArgumentError);
+      expect(() => Fraction.fromDouble(double.NEGATIVE_INFINITY),
           throwsArgumentError);
     });
     test('zero', () {
-      expect(Fraction.zero, new Fraction(0));
-      expect(new Fraction(1, 2) + Fraction.zero, new Fraction(1, 2));
+      expect(Fraction.zero, Fraction(0));
+      expect(Fraction(1, 2) + Fraction.zero, Fraction(1, 2));
     });
     test('one', () {
-      expect(Fraction.one, new Fraction(1));
-      expect(new Fraction(1, 2) * Fraction.one, new Fraction(1, 2));
+      expect(Fraction.one, Fraction(1));
+      expect(Fraction(1, 2) * Fraction.one, Fraction(1, 2));
     });
   });
   group('arithmetic', () {
     test('addition', () {
-      expect(new Fraction(1, 2) + new Fraction(1, 4), new Fraction(3, 4));
-      expect(new Fraction(1, 2) + new Fraction(3, 4), new Fraction(5, 4));
-      expect(new Fraction(1, 2) + new Fraction(1, 2), new Fraction(1));
+      expect(Fraction(1, 2) + Fraction(1, 4), Fraction(3, 4));
+      expect(Fraction(1, 2) + Fraction(3, 4), Fraction(5, 4));
+      expect(Fraction(1, 2) + Fraction(1, 2), Fraction(1));
     });
     test('substraction', () {
-      expect(new Fraction(1, 2) - new Fraction(1, 4), new Fraction(1, 4));
-      expect(new Fraction(1, 2) - new Fraction(3, 4), new Fraction(-1, 4));
-      expect(new Fraction(1, 2) - new Fraction(1, 2), new Fraction(0));
+      expect(Fraction(1, 2) - Fraction(1, 4), Fraction(1, 4));
+      expect(Fraction(1, 2) - Fraction(3, 4), Fraction(-1, 4));
+      expect(Fraction(1, 2) - Fraction(1, 2), Fraction(0));
     });
     test('multiplication', () {
-      expect(new Fraction(2, 3) * new Fraction(1, 4), new Fraction(1, 6));
-      expect(new Fraction(3, 4) * new Fraction(2, 5), new Fraction(3, 10));
+      expect(Fraction(2, 3) * Fraction(1, 4), Fraction(1, 6));
+      expect(Fraction(3, 4) * Fraction(2, 5), Fraction(3, 10));
     });
     test('division', () {
-      expect(new Fraction(2, 3) / new Fraction(1, 4), new Fraction(8, 3));
-      expect(new Fraction(3, 4) / new Fraction(2, 5), new Fraction(15, 8));
+      expect(Fraction(2, 3) / Fraction(1, 4), Fraction(8, 3));
+      expect(Fraction(3, 4) / Fraction(2, 5), Fraction(15, 8));
     });
     test('negate', () {
-      expect(-new Fraction(2, 3), new Fraction(-2, 3));
+      expect(-Fraction(2, 3), Fraction(-2, 3));
     });
     test('abs', () {
-      expect(new Fraction(-2, -3).abs(), new Fraction(2, 3));
-      expect(new Fraction(-2, 3).abs(), new Fraction(2, 3));
-      expect(new Fraction(2, -3).abs(), new Fraction(2, 3));
-      expect(new Fraction(2, 3).abs(), new Fraction(2, 3));
+      expect(Fraction(-2, -3).abs(), Fraction(2, 3));
+      expect(Fraction(-2, 3).abs(), Fraction(2, 3));
+      expect(Fraction(2, -3).abs(), Fraction(2, 3));
+      expect(Fraction(2, 3).abs(), Fraction(2, 3));
     });
     test('round', () {
-      expect(new Fraction(2, 3).round(), 1);
-      expect(new Fraction(-2, 3).round(), -1);
+      expect(Fraction(2, 3).round(), 1);
+      expect(Fraction(-2, 3).round(), -1);
     });
     test('floor', () {
-      expect(new Fraction(2, 3).floor(), 0);
-      expect(new Fraction(-2, 3).floor(), -1);
+      expect(Fraction(2, 3).floor(), 0);
+      expect(Fraction(-2, 3).floor(), -1);
     });
     test('ceil', () {
-      expect(new Fraction(2, 3).ceil(), 1);
-      expect(new Fraction(-2, 3).ceil(), 0);
+      expect(Fraction(2, 3).ceil(), 1);
+      expect(Fraction(-2, 3).ceil(), 0);
     });
     test('truncate', () {
-      expect(new Fraction(2, 3).truncate(), 0);
-      expect(new Fraction(-5, 3).truncate(), -1);
+      expect(Fraction(2, 3).truncate(), 0);
+      expect(Fraction(-5, 3).truncate(), -1);
     });
   });
   group('comparing', () {
     test('compareTo', () {
-      expect(new Fraction(2, 3).compareTo(new Fraction(2, 3)), 1.compareTo(1));
-      expect(new Fraction(2, 3).compareTo(new Fraction(4, 5)), 1.compareTo(2));
-      expect(new Fraction(4, 5).compareTo(new Fraction(2, 3)), 2.compareTo(1));
+      expect(Fraction(2, 3).compareTo(Fraction(2, 3)), 1.compareTo(1));
+      expect(Fraction(2, 3).compareTo(Fraction(4, 5)), 1.compareTo(2));
+      expect(Fraction(4, 5).compareTo(Fraction(2, 3)), 2.compareTo(1));
     });
     test('hash code', () {
-      expect(new Fraction(2, 3).hashCode, isNot(new Fraction(3, 2).hashCode));
+      expect(Fraction(2, 3).hashCode, isNot(Fraction(3, 2).hashCode));
     });
     test('<', () {
-      expect(new Fraction(2, 3) < new Fraction(2, 3), isFalse);
-      expect(new Fraction(2, 3) < new Fraction(4, 5), isTrue);
-      expect(new Fraction(4, 5) < new Fraction(2, 3), isFalse);
+      expect(Fraction(2, 3) < Fraction(2, 3), isFalse);
+      expect(Fraction(2, 3) < Fraction(4, 5), isTrue);
+      expect(Fraction(4, 5) < Fraction(2, 3), isFalse);
     });
     test('<=', () {
-      expect(new Fraction(2, 3) <= new Fraction(2, 3), isTrue);
-      expect(new Fraction(2, 3) <= new Fraction(4, 5), isTrue);
-      expect(new Fraction(4, 5) <= new Fraction(2, 3), isFalse);
+      expect(Fraction(2, 3) <= Fraction(2, 3), isTrue);
+      expect(Fraction(2, 3) <= Fraction(4, 5), isTrue);
+      expect(Fraction(4, 5) <= Fraction(2, 3), isFalse);
     });
     test('>=', () {
-      expect(new Fraction(2, 3) >= new Fraction(2, 3), isTrue);
-      expect(new Fraction(2, 3) >= new Fraction(4, 5), isFalse);
-      expect(new Fraction(4, 5) >= new Fraction(2, 3), isTrue);
+      expect(Fraction(2, 3) >= Fraction(2, 3), isTrue);
+      expect(Fraction(2, 3) >= Fraction(4, 5), isFalse);
+      expect(Fraction(4, 5) >= Fraction(2, 3), isTrue);
     });
     test('>', () {
-      expect(new Fraction(2, 3) > new Fraction(2, 3), isFalse);
-      expect(new Fraction(2, 3) > new Fraction(4, 5), isFalse);
-      expect(new Fraction(4, 5) > new Fraction(2, 3), isTrue);
+      expect(Fraction(2, 3) > Fraction(2, 3), isFalse);
+      expect(Fraction(2, 3) > Fraction(4, 5), isFalse);
+      expect(Fraction(4, 5) > Fraction(2, 3), isTrue);
     });
     test('==', () {
-      expect(new Fraction(2, 3) == new Fraction(2, 3), isTrue);
-      expect(new Fraction(2, 3) == new Fraction(4, 5), isFalse);
-      expect(new Fraction(4, 5) == new Fraction(2, 3), isFalse);
+      expect(Fraction(2, 3) == Fraction(2, 3), isTrue);
+      expect(Fraction(2, 3) == Fraction(4, 5), isFalse);
+      expect(Fraction(4, 5) == Fraction(2, 3), isFalse);
     });
   });
   group('converting', () {
     test('toInt', () {
-      expect(new Fraction(1, 2).toInt(), 0);
-      expect(new Fraction(5, 4).toInt(), 1);
+      expect(Fraction(1, 2).toInt(), 0);
+      expect(Fraction(5, 4).toInt(), 1);
     });
     test('toDouble', () {
-      expect(new Fraction(1, 2).toDouble(), 0.5);
-      expect(new Fraction(5, 4).toDouble(), 1.25);
+      expect(Fraction(1, 2).toDouble(), 0.5);
+      expect(Fraction(5, 4).toDouble(), 1.25);
     });
     test('toString', () {
-      expect(new Fraction(1, 2).toString(), '1/2');
-      expect(new Fraction(5, 4).toString(), '5/4');
-      expect(new Fraction(6).toString(), '6');
-      expect(new Fraction(-6).toString(), '-6');
+      expect(Fraction(1, 2).toString(), '1/2');
+      expect(Fraction(5, 4).toString(), '5/4');
+      expect(Fraction(6).toString(), '6');
+      expect(Fraction(-6).toString(), '-6');
     });
   });
 }

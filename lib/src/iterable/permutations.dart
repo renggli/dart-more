@@ -13,7 +13,7 @@ Iterable<List<E>> permutations<E>(Iterable<E> elements) {
   if (elements.isEmpty) {
     return const Iterable.empty();
   } else {
-    return new PermutationIterable<E>(elements.toList(growable: false));
+    return PermutationIterable<E>(elements.toList(growable: false));
   }
 }
 
@@ -23,7 +23,7 @@ class PermutationIterable<E> extends IterableBase<List<E>> {
   PermutationIterable(this.elements);
 
   @override
-  Iterator<List<E>> get iterator => new PermutationIterator<E>(elements);
+  Iterator<List<E>> get iterator => PermutationIterator<E>(elements);
 }
 
 class PermutationIterator<E> extends Iterator<List<E>> {
@@ -42,8 +42,8 @@ class PermutationIterator<E> extends Iterator<List<E>> {
     if (completed) {
       return false;
     } else if (current == null) {
-      state = new List<int>(elements.length);
-      current = new List<E>(elements.length);
+      state = List<int>(elements.length);
+      current = List<E>(elements.length);
       for (var i = 0; i < state.length; i++) {
         state[i] = i;
         current[i] = elements[i];

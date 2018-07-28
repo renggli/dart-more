@@ -19,9 +19,9 @@ abstract class Cache<K, V> {
   /// The [loader] defines the function to construct items for the cache.
   factory Cache.empty({Loader<K, V> loader}) {
     if (loader == null) {
-      throw new ArgumentError.notNull('loader');
+      throw ArgumentError.notNull('loader');
     }
-    return new EmptyCache<K, V>(loader);
+    return EmptyCache<K, V>(loader);
   }
 
   /// Constructs an expiry cache.
@@ -41,19 +41,19 @@ abstract class Cache<K, V> {
       Duration updateExpiry,
       Duration accessExpiry}) {
     if (loader == null) {
-      throw new ArgumentError.notNull('loader');
+      throw ArgumentError.notNull('loader');
     }
     if (updateExpiry == null && accessExpiry == null) {
-      throw new ArgumentError(
+      throw ArgumentError(
           "Either 'accessExpiry' or 'updateExpiry' must be provided.");
     }
     if (updateExpiry != null && updateExpiry.inMicroseconds <= 0) {
-      throw new ArgumentError("Negative 'updateExpire' provided.");
+      throw ArgumentError("Negative 'updateExpire' provided.");
     }
     if (accessExpiry != null && accessExpiry.inMicroseconds <= 0) {
-      throw new ArgumentError("Negative 'updateExpire' provided.");
+      throw ArgumentError("Negative 'updateExpire' provided.");
     }
-    return new ExpiryCache<K, V>(
+    return ExpiryCache<K, V>(
         loader, clock ?? systemClock, updateExpiry, accessExpiry);
   }
 
@@ -61,28 +61,28 @@ abstract class Cache<K, V> {
   ///
   /// The [loader] defines the function to construct items for the cache; and
   /// [maximumSize] defines the maximum number of items cached.
-  factory Cache.fifo({Loader<K, V> loader, int maximumSize: 100}) {
+  factory Cache.fifo({Loader<K, V> loader, int maximumSize = 100}) {
     if (loader == null) {
-      throw new ArgumentError.notNull('loader');
+      throw ArgumentError.notNull('loader');
     }
     if (maximumSize <= 0) {
-      throw new ArgumentError("Non-positive 'maximumSize' provided.");
+      throw ArgumentError("Non-positive 'maximumSize' provided.");
     }
-    return new FifoCache<K, V>(loader, maximumSize);
+    return FifoCache<K, V>(loader, maximumSize);
   }
 
   /// Constructs a Least Recently Used (LRU) cache.
   ///
   /// The [loader] defines the function to construct items for the cache; and
   /// [maximumSize] defines the maximum number of items cached.
-  factory Cache.lru({Loader<K, V> loader, int maximumSize: 100}) {
+  factory Cache.lru({Loader<K, V> loader, int maximumSize = 100}) {
     if (loader == null) {
-      throw new ArgumentError.notNull('loader');
+      throw ArgumentError.notNull('loader');
     }
     if (maximumSize <= 0) {
-      throw new ArgumentError("Non-positive 'maximumSize' provided.");
+      throw ArgumentError("Non-positive 'maximumSize' provided.");
     }
-    return new LruCache<K, V>(loader, maximumSize);
+    return LruCache<K, V>(loader, maximumSize);
   }
 
   /// Unnamed default constructor.

@@ -10,7 +10,7 @@ class ExplicitOrdering<T> extends Ordering<T> {
     for (var rank = 0; rank < list.length; rank++) {
       ranking[list[rank]] = rank;
     }
-    return new ExplicitOrdering<T>._(ranking);
+    return ExplicitOrdering<T>._(ranking);
   }
 
   const ExplicitOrdering._(this.ranking);
@@ -21,7 +21,7 @@ class ExplicitOrdering<T> extends Ordering<T> {
   int rank(T element) {
     var rank = ranking[element];
     if (rank == null) {
-      throw new StateError('Unable to compare $element with $this');
+      throw StateError('Unable to compare $element with $this');
     }
     return rank;
   }

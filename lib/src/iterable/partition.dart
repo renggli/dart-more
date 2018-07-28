@@ -9,7 +9,7 @@ import 'dart:collection' show IterableBase;
 ///
 ///     partition([1, 2, 3, 4, 5], 2);
 Iterable<Iterable<E>> partition<E>(Iterable<E> elements, int size) {
-  return new PartitionIterable<E>(elements, size);
+  return PartitionIterable<E>(elements, size);
 }
 
 class PartitionIterable<E> extends IterableBase<Iterable<E>> {
@@ -20,7 +20,7 @@ class PartitionIterable<E> extends IterableBase<Iterable<E>> {
 
   @override
   Iterator<Iterable<E>> get iterator =>
-      new PartitionIterator<E>(elements.iterator, size);
+      PartitionIterator<E>(elements.iterator, size);
 }
 
 class PartitionIterator<E> extends Iterator<Iterable<E>> {
@@ -66,7 +66,7 @@ class PartitionIterator<E> extends Iterator<Iterable<E>> {
 ///     partition([1, 2, 3, 4, 5], 2, -1);
 Iterable<Iterable<E>> partitionWithPadding<E>(Iterable<E> elements, int size,
     [E padding]) {
-  return new PartitionWithPaddingIterable<E>(elements, size, padding);
+  return PartitionWithPaddingIterable<E>(elements, size, padding);
 }
 
 class PartitionWithPaddingIterable<E> extends IterableBase<Iterable<E>> {
@@ -78,7 +78,7 @@ class PartitionWithPaddingIterable<E> extends IterableBase<Iterable<E>> {
 
   @override
   Iterator<Iterable<E>> get iterator =>
-      new PartitionWithPaddingIterator<E>(elements.iterator, size, padding);
+      PartitionWithPaddingIterator<E>(elements.iterator, size, padding);
 }
 
 class PartitionWithPaddingIterator<E> extends Iterator<Iterable<E>> {

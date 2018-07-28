@@ -26,7 +26,7 @@ Iterable<List<E>> product<E>(Iterable<Iterable<E>> iterables) {
   if (iterables.isEmpty || iterables.any((iterable) => iterable.isEmpty)) {
     return const Iterable.empty();
   } else {
-    return new ProductIterable<E>(iterables.map((iterable) {
+    return ProductIterable<E>(iterables.map((iterable) {
       return iterable.toList(growable: false);
     }).toList(growable: false));
   }
@@ -39,8 +39,8 @@ class ProductIterable<E> extends IterableBase<List<E>> {
 
   @override
   Iterator<List<E>> get iterator {
-    var state = new List<int>.filled(sources.length, 0);
-    return new ProductIterator<E>(sources, state);
+    var state = List<int>.filled(sources.length, 0);
+    return ProductIterator<E>(sources, state);
   }
 }
 
@@ -61,7 +61,7 @@ class ProductIterator<E> extends Iterator<List<E>> {
       return false;
     }
     if (current == null) {
-      current = new List<E>.generate(sources.length, (i) {
+      current = List<E>.generate(sources.length, (i) {
         return sources[i][0];
       }, growable: false);
       return true;

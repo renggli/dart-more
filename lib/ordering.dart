@@ -61,27 +61,25 @@ abstract class Ordering<T> {
   int compare(T a, T b);
 
   /// Returns the reversed ordering.
-  Ordering<T> get reversed => new ReversedOrdering<T>(this);
+  Ordering<T> get reversed => ReversedOrdering<T>(this);
 
   /// Returns an ordering that orders `null` values before non-null values.
-  Ordering<T> get nullsFirst => new NullsFirstOrdering<T>(this);
+  Ordering<T> get nullsFirst => NullsFirstOrdering<T>(this);
 
   /// Returns an ordering that orders `null` values after non-null values.
-  Ordering<T> get nullsLast => new NullsLastOrdering<T>(this);
+  Ordering<T> get nullsLast => NullsLastOrdering<T>(this);
 
   /// Returns an ordering that breaks the tie of the receiver by using [other].
-  Ordering<T> compound(Ordering<T> other) =>
-      new CompoundOrdering<T>([this, other]);
+  Ordering<T> compound(Ordering<T> other) => CompoundOrdering<T>([this, other]);
 
   /// Returns an ordering that orders iterables lexicographically by
   /// their elements.
-  Ordering<Iterable<T>> get lexicographical =>
-      new LexicographicalOrdering<T>(this);
+  Ordering<Iterable<T>> get lexicographical => LexicographicalOrdering<T>(this);
 
   /// Returns an ordering that uses the provided [function] to transform the
   /// result.
   Ordering<F> onResultOf<F>(T function(F argument)) =>
-      new MappedOrdering<F, T>(this, function);
+      MappedOrdering<F, T>(this, function);
 
   /// Searches the sorted [list] for the specified [value] using binary search.
   ///
@@ -109,7 +107,7 @@ abstract class Ordering<T> {
 
   /// Returns a sorted copy of the provided [iterable].
   List<T> sorted(Iterable<T> iterable) {
-    var list = new List<T>.from(iterable, growable: false);
+    var list = List<T>.from(iterable, growable: false);
     sort(list);
     return list;
   }
@@ -158,7 +156,7 @@ abstract class Ordering<T> {
       return value;
     }
     if (orElse == null) {
-      throw new StateError('Unable to find maximum in $iterable.');
+      throw StateError('Unable to find maximum in $iterable.');
     }
     return orElse();
   }
@@ -177,7 +175,7 @@ abstract class Ordering<T> {
       return value;
     }
     if (orElse == null) {
-      throw new StateError('Unable to find minimum in $iterable.');
+      throw StateError('Unable to find minimum in $iterable.');
     }
     return orElse();
   }

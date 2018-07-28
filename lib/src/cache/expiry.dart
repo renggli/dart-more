@@ -26,7 +26,7 @@ class ExpiryCache<K, V> extends Cache<K, V> {
     var now = clock();
     var item = cached[key];
     if (item == null) {
-      item = cached[key] = new ExpiryCacheItem(loader(key), now);
+      item = cached[key] = ExpiryCacheItem(loader(key), now);
     } else if (item.isExpired(now, updateExpiry, accessExpiry)) {
       item.value = loader(key);
       item.lastAccess = item.lastUpdate = now;
@@ -56,7 +56,7 @@ class ExpiryCache<K, V> extends Cache<K, V> {
     var now = clock();
     var item = cached[key];
     if (item == null) {
-      item = cached[key] = new ExpiryCacheItem(value, now);
+      item = cached[key] = ExpiryCacheItem(value, now);
     } else {
       item.lastUpdate = item.lastAccess = now;
       item.value = value;

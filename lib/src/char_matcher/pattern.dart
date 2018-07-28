@@ -16,12 +16,12 @@ CharMatcher fromPattern(String pattern) {
   while (pattern.isNotEmpty) {
     if (pattern.length >= 3 && pattern[1] == '-') {
       var charMatcher =
-          new RangeCharMatcher(pattern.codeUnitAt(0), pattern.codeUnitAt(2));
+          RangeCharMatcher(pattern.codeUnitAt(0), pattern.codeUnitAt(2));
       ranges.add(charMatcher);
       pattern = pattern.substring(3);
     } else {
       var charMatcher =
-          new RangeCharMatcher(pattern.codeUnitAt(0), pattern.codeUnitAt(0));
+          RangeCharMatcher(pattern.codeUnitAt(0), pattern.codeUnitAt(0));
       ranges.add(charMatcher);
       pattern = pattern.substring(1);
     }

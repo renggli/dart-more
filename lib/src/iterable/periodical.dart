@@ -49,18 +49,18 @@ enum Period {
 ///
 Iterable<DateTime> periodical({
   DateTime start,
-  int step: 1,
-  Period period: Period.daily,
+  int step = 1,
+  Period period = Period.daily,
 }) {
-  start ??= new DateTime.now();
+  start ??= DateTime.now();
   if (step == null || step == 0) {
-    throw new ArgumentError.value(step, 'step', 'invalid step size');
+    throw ArgumentError.value(step, 'step', 'invalid step size');
   }
   switch (period) {
     case Period.millennially:
       return iterate(
           start,
-          (prev) => new DateTime(
+          (prev) => DateTime(
                 prev.year + 1000 * step,
                 prev.month,
                 prev.day,
@@ -73,7 +73,7 @@ Iterable<DateTime> periodical({
     case Period.centennially:
       return iterate(
           start,
-          (prev) => new DateTime(
+          (prev) => DateTime(
                 prev.year + 100 * step,
                 prev.month,
                 prev.day,
@@ -86,7 +86,7 @@ Iterable<DateTime> periodical({
     case Period.decennially:
       return iterate(
           start,
-          (prev) => new DateTime(
+          (prev) => DateTime(
                 prev.year + 10 * step,
                 prev.month,
                 prev.day,
@@ -99,7 +99,7 @@ Iterable<DateTime> periodical({
     case Period.yearly:
       return iterate(
           start,
-          (prev) => new DateTime(
+          (prev) => DateTime(
                 prev.year + step,
                 prev.month,
                 prev.day,
@@ -112,7 +112,7 @@ Iterable<DateTime> periodical({
     case Period.quarterly:
       return iterate(
           start,
-          (prev) => new DateTime(
+          (prev) => DateTime(
                 prev.year,
                 prev.month + 3 * step,
                 prev.day,
@@ -125,7 +125,7 @@ Iterable<DateTime> periodical({
     case Period.monthly:
       return iterate(
           start,
-          (prev) => new DateTime(
+          (prev) => DateTime(
                 prev.year,
                 prev.month + step,
                 prev.day,
@@ -138,7 +138,7 @@ Iterable<DateTime> periodical({
     case Period.weekly:
       return iterate(
           start,
-          (prev) => new DateTime(
+          (prev) => DateTime(
                 prev.year,
                 prev.month,
                 prev.day + 7 * step,
@@ -151,7 +151,7 @@ Iterable<DateTime> periodical({
     case Period.daily:
       return iterate(
           start,
-          (prev) => new DateTime(
+          (prev) => DateTime(
                 prev.year,
                 prev.month,
                 prev.day + step,
@@ -164,7 +164,7 @@ Iterable<DateTime> periodical({
     case Period.hourly:
       return iterate(
           start,
-          (prev) => new DateTime(
+          (prev) => DateTime(
                 prev.year,
                 prev.month,
                 prev.day,
@@ -177,7 +177,7 @@ Iterable<DateTime> periodical({
     case Period.minutely:
       return iterate(
           start,
-          (prev) => new DateTime(
+          (prev) => DateTime(
                 prev.year,
                 prev.month,
                 prev.day,
@@ -190,7 +190,7 @@ Iterable<DateTime> periodical({
     case Period.secondly:
       return iterate(
           start,
-          (prev) => new DateTime(
+          (prev) => DateTime(
                 prev.year,
                 prev.month,
                 prev.day,
@@ -203,7 +203,7 @@ Iterable<DateTime> periodical({
     case Period.millisecondly:
       return iterate(
           start,
-          (prev) => new DateTime(
+          (prev) => DateTime(
                 prev.year,
                 prev.month,
                 prev.day,
@@ -216,7 +216,7 @@ Iterable<DateTime> periodical({
     case Period.microsecondly:
       return iterate(
           start,
-          (prev) => new DateTime(
+          (prev) => DateTime(
                 prev.year,
                 prev.month,
                 prev.day,
@@ -227,7 +227,7 @@ Iterable<DateTime> periodical({
                 prev.microsecond + step,
               ));
   }
-  throw new ArgumentError.value(period, 'period', 'unknown value');
+  throw ArgumentError.value(period, 'period', 'unknown value');
 }
 
 /// Helper that truncates a [DateTime] `timestamp` to the beginning of the
@@ -236,62 +236,62 @@ Iterable<DateTime> periodical({
 /// Truncates the `timestamp` to the beginning of the provided Period.
 DateTime truncateToPeriod(
   DateTime timestamp, {
-  Period period: Period.daily,
-  int startWeekday: DateTime.MONDAY,
+  Period period = Period.daily,
+  int startWeekday = DateTime.MONDAY,
 }) {
   if (timestamp == null) {
-    throw new ArgumentError.notNull('timestamp');
+    throw ArgumentError.notNull('timestamp');
   }
   switch (period) {
     case Period.millennially:
-      return new DateTime(
+      return DateTime(
         timestamp.year ~/ 1000 * 1000,
       );
     case Period.centennially:
-      return new DateTime(
+      return DateTime(
         timestamp.year ~/ 100 * 100,
       );
     case Period.decennially:
-      return new DateTime(
+      return DateTime(
         timestamp.year ~/ 10 * 10,
       );
     case Period.yearly:
-      return new DateTime(
+      return DateTime(
         timestamp.year,
       );
     case Period.quarterly:
-      return new DateTime(
+      return DateTime(
         timestamp.year,
         (timestamp.month - 1) ~/ 3 * 3 + 1,
       );
     case Period.monthly:
-      return new DateTime(
+      return DateTime(
         timestamp.year,
         timestamp.month,
       );
     case Period.weekly:
       RangeError.checkValueInInterval(
           startWeekday, DateTime.MONDAY, DateTime.SUNDAY, 'startWeekday');
-      return new DateTime(
+      return DateTime(
         timestamp.year,
         timestamp.month,
         timestamp.day - (7 + timestamp.weekday - startWeekday) % 7,
       );
     case Period.daily:
-      return new DateTime(
+      return DateTime(
         timestamp.year,
         timestamp.month,
         timestamp.day,
       );
     case Period.hourly:
-      return new DateTime(
+      return DateTime(
         timestamp.year,
         timestamp.month,
         timestamp.day,
         timestamp.hour,
       );
     case Period.minutely:
-      return new DateTime(
+      return DateTime(
         timestamp.year,
         timestamp.month,
         timestamp.day,
@@ -299,7 +299,7 @@ DateTime truncateToPeriod(
         timestamp.minute,
       );
     case Period.secondly:
-      return new DateTime(
+      return DateTime(
         timestamp.year,
         timestamp.month,
         timestamp.day,
@@ -308,7 +308,7 @@ DateTime truncateToPeriod(
         timestamp.second,
       );
     case Period.millisecondly:
-      return new DateTime(
+      return DateTime(
         timestamp.year,
         timestamp.month,
         timestamp.day,
@@ -318,7 +318,7 @@ DateTime truncateToPeriod(
         timestamp.millisecond,
       );
     case Period.microsecondly:
-      return new DateTime(
+      return DateTime(
         timestamp.year,
         timestamp.month,
         timestamp.day,
@@ -329,5 +329,5 @@ DateTime truncateToPeriod(
         timestamp.microsecond,
       );
   }
-  throw new ArgumentError.value(period, 'period', 'unknown value');
+  throw ArgumentError.value(period, 'period', 'unknown value');
 }

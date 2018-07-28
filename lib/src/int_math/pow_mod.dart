@@ -4,8 +4,7 @@ library more.int_math.pow_mod;
 /// [int]s.
 int powMod(int x, int y, int m) {
   if (m < 1 || y < 0) {
-    throw new ArgumentError(
-        'powMod($x, $y, $m) is undefined for y < 0 and m < 1.');
+    throw ArgumentError('powMod($x, $y, $m) is undefined for y < 0 and m < 1.');
   }
   var r = 1;
   while (y > 0) {

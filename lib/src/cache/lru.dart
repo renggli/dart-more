@@ -23,7 +23,7 @@ class LruCache<K, V> extends Cache<K, V> {
   Future<V> get(K key) async {
     var item = promote(key);
     if (item == null) {
-      item = cached[key] = new CacheItem(loader(key));
+      item = cached[key] = CacheItem(loader(key));
       cleanUp();
     }
     return item.value;
@@ -33,7 +33,7 @@ class LruCache<K, V> extends Cache<K, V> {
   Future<V> set(K key, V value) async {
     var item = promote(key);
     if (item == null) {
-      item = cached[key] = new CacheItem(value);
+      item = cached[key] = CacheItem(value);
       cleanUp();
     } else {
       item.value = value;

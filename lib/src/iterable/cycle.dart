@@ -31,11 +31,11 @@ Iterable<E> cycle<E>(Iterable<E> iterable, [int count]) {
   } else if (count == 1 || iterable is InfiniteIterable<E>) {
     return iterable;
   } else if (count == null) {
-    return new InfiniteCycleIterable<E>(iterable);
+    return InfiniteCycleIterable<E>(iterable);
   } else if (count > 1) {
-    return new FiniteCycleIterable<E>(iterable, count);
+    return FiniteCycleIterable<E>(iterable, count);
   } else {
-    throw new ArgumentError('Positive count expected, but got $count.');
+    throw ArgumentError('Positive count expected, but got $count.');
   }
 }
 
@@ -46,14 +46,14 @@ class InfiniteCycleIterable<E> extends IterableBase<E>
   InfiniteCycleIterable(this.iterable);
 
   @override
-  Iterator<E> get iterator => new InfiniteCycleIterator<E>(iterable);
+  Iterator<E> get iterator => InfiniteCycleIterator<E>(iterable);
 }
 
 class InfiniteCycleIterator<E> extends Iterator<E> {
   final Iterable<E> iterable;
 
   // ignore: prefer_const_constructors
-  Iterator<E> iterator = new Iterable<E>.empty().iterator;
+  Iterator<E> iterator = Iterable<E>.empty().iterator;
 
   InfiniteCycleIterator(this.iterable);
 
@@ -77,14 +77,14 @@ class FiniteCycleIterable<E> extends IterableBase<E> {
   FiniteCycleIterable(this.iterable, this.count);
 
   @override
-  Iterator<E> get iterator => new FiniteCycleIterator<E>(iterable, count);
+  Iterator<E> get iterator => FiniteCycleIterator<E>(iterable, count);
 }
 
 class FiniteCycleIterator<E> extends Iterator<E> {
   final Iterable<E> iterable;
 
   // ignore: prefer_const_constructors
-  Iterator<E> iterator = new Iterable<E>.empty().iterator;
+  Iterator<E> iterator = Iterable<E>.empty().iterator;
   bool completed = false;
   int count;
 

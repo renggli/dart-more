@@ -7,7 +7,7 @@ import 'dart:math' show Random;
 /// Intended to mix-in on top of `ListBase<E>`.
 abstract class UnmodifiableListMixin<E> implements List<E> {
   static T _throw<T>() =>
-      throw new UnsupportedError('Cannot modify an unmodifiable list');
+      throw UnsupportedError('Cannot modify an unmodifiable list');
 
   @override
   void operator []=(int index, E value) => _throw();

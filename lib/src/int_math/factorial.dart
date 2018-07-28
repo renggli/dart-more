@@ -1,7 +1,7 @@
 library more.int_math.factorial;
 
 /// Precomputed list of factorials.
-const List<int> factorials = const [
+const List<int> factorials = [
   1,
   1,
   2,
@@ -29,8 +29,7 @@ const List<int> factorials = const [
 /// [n] distinct objects into a sequence.
 int factorial(int n) {
   if (n < 0) {
-    throw new ArgumentError(
-        'factorial($n) is undefined for negative arguments.');
+    throw ArgumentError('factorial($n) is undefined for negative arguments.');
   }
   if (n < factorials.length) {
     return factorials[n];

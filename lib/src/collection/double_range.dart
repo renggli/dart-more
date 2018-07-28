@@ -42,11 +42,11 @@ class DoubleRange extends ListBase<double> with UnmodifiableListMixin<double> {
       stop = a;
     }
     if (step == 0) {
-      throw new ArgumentError('Non-zero step-size expected');
+      throw ArgumentError('Non-zero step-size expected');
     } else if (start < stop && step < 0) {
-      throw new ArgumentError('Positive step-size expected');
+      throw ArgumentError('Positive step-size expected');
     } else if (start > stop && step > 0) {
-      throw new ArgumentError('Negative step-size expected');
+      throw ArgumentError('Negative step-size expected');
     }
     var span = stop - start;
     var length = span ~/ step;
@@ -58,7 +58,7 @@ class DoubleRange extends ListBase<double> with UnmodifiableListMixin<double> {
         length++;
       }
     }
-    return new DoubleRange._(start, stop, step, length);
+    return DoubleRange._(start, stop, step, length);
   }
 
   DoubleRange._(this.start, this.stop, this.step, this.length);
@@ -76,14 +76,14 @@ class DoubleRange extends ListBase<double> with UnmodifiableListMixin<double> {
   final int length;
 
   @override
-  Iterator<double> get iterator => new DoubleRangeIterator(start, step, length);
+  Iterator<double> get iterator => DoubleRangeIterator(start, step, length);
 
   @override
   double operator [](int index) {
     if (0 <= index && index < length) {
       return start + step * index;
     } else {
-      throw new RangeError.range(index, 0, length);
+      throw RangeError.range(index, 0, length);
     }
   }
 
@@ -97,8 +97,8 @@ class DoubleRange extends ListBase<double> with UnmodifiableListMixin<double> {
         startIndex = 0;
       }
       var ordering = step > 0
-          ? new Ordering<double>.natural()
-          : new Ordering<double>.natural().reversed;
+          ? Ordering<double>.natural()
+          : Ordering<double>.natural().reversed;
       var index = ordering.binarySearch(this, element);
       if (startIndex <= index) {
         return index;
@@ -117,8 +117,8 @@ class DoubleRange extends ListBase<double> with UnmodifiableListMixin<double> {
         return -1;
       }
       var ordering = step > 0
-          ? new Ordering<double>.natural()
-          : new Ordering<double>.natural().reversed;
+          ? Ordering<double>.natural()
+          : Ordering<double>.natural().reversed;
       var index = ordering.binarySearch(this, element);
       if (0 <= index && index <= stopIndex) {
         return index;
@@ -129,7 +129,7 @@ class DoubleRange extends ListBase<double> with UnmodifiableListMixin<double> {
 
   @override
   DoubleRange get reversed =>
-      isEmpty ? this : new DoubleRange._(last, first - step, -step, length);
+      isEmpty ? this : DoubleRange._(last, first - step, -step, length);
 
   @override
   DoubleRange sublist(int startIndex, [int stopIndex]) {
@@ -139,8 +139,8 @@ class DoubleRange extends ListBase<double> with UnmodifiableListMixin<double> {
   @override
   DoubleRange getRange(int startIndex, int stopIndex) {
     RangeError.checkValidRange(startIndex, stopIndex, length);
-    return new DoubleRange._(start + startIndex * step,
-        start + stopIndex * step, step, stopIndex - startIndex);
+    return DoubleRange._(start + startIndex * step, start + stopIndex * step,
+        step, stopIndex - startIndex);
   }
 
   @override

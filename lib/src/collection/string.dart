@@ -21,7 +21,7 @@ import 'package:more/src/iterable/mixins/unmodifiable.dart'
 ///       .forEach(print);
 ///
 /// For a mutable copy of the string see [mutableString(Object)].
-List<String> string(Object string) => new StringList(string.toString());
+List<String> string(Object string) => StringList(string.toString());
 
 /// A string as an immutable list.
 class StringList extends ListBase<String> with UnmodifiableListMixin<String> {
@@ -34,11 +34,11 @@ class StringList extends ListBase<String> with UnmodifiableListMixin<String> {
 
   @override
   String operator [](int index) =>
-      new String.fromCharCode(contents.codeUnitAt(index));
+      String.fromCharCode(contents.codeUnitAt(index));
 
   @override
   List<String> sublist(int start, [int end]) =>
-      new StringList(contents.substring(start, end));
+      StringList(contents.substring(start, end));
 
   @override
   String toString() => contents;
@@ -55,9 +55,9 @@ class StringList extends ListBase<String> with UnmodifiableListMixin<String> {
 ///       print(result);
 ///
 /// For a light-weight immutable list of characters see [string(Object)].
-List<String> mutableString(Object string, {bool growable: true}) {
-  return new MutableStringList(
-      new List.from(string.toString().codeUnits, growable: growable));
+List<String> mutableString(Object string, {bool growable = true}) {
+  return MutableStringList(
+      List.from(string.toString().codeUnits, growable: growable));
 }
 
 /// A string as a mutable list.
@@ -73,21 +73,21 @@ class MutableStringList extends ListBase<String> {
   set length(int newLength) => _codeUnits.length = newLength;
 
   @override
-  String operator [](int index) => new String.fromCharCode(_codeUnits[index]);
+  String operator [](int index) => String.fromCharCode(_codeUnits[index]);
 
   @override
   void operator []=(int index, String character) {
     if (character.length == 1) {
       _codeUnits[index] = character.codeUnitAt(0);
     } else {
-      throw new ArgumentError('Invalid character: $character');
+      throw ArgumentError('Invalid character: $character');
     }
   }
 
   @override
   List<String> sublist(int start, [int end]) =>
-      new MutableStringList(_codeUnits.sublist(start, end));
+      MutableStringList(_codeUnits.sublist(start, end));
 
   @override
-  String toString() => new String.fromCharCodes(_codeUnits);
+  String toString() => String.fromCharCodes(_codeUnits);
 }
