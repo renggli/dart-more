@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.10.0
+
+* Drop Dart 1.0 compatibility.
+
 ## 1.9.0
 
 * Dart 2.0 strong-mode compatibility required the following breaking changes:
