@@ -23,7 +23,7 @@ And there are more to come ...
 
 This library is open source, stable and well tested. Development happens on [GitHub](https://github.com/renggli/dart-more). Feel free to report issues or create a pull-request there. General questions are best asked on [StackOverflow](http://stackoverflow.com/questions/tagged/more+dart).
 
-The package is hosted on [dart packages](https://pub.dartlang.org/packages/more). Up-to-date [class documentation](https://pub.dartlang.org/documentation/statemachine/more/) is created with every release.
+The package is hosted on [dart packages](https://pub.dartlang.org/packages/more). Up-to-date [class documentation](https://pub.dartlang.org/documentation/more/) is created with every release.
 
 
 Misc
