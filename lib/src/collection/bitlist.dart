@@ -21,7 +21,7 @@ class BitList extends ListBase<bool> with NonGrowableListMixin<bool> {
   }
 
   /// Constructs a new list from a given [Iterable] of booleans.
-  factory BitList.from(Iterable<bool> other) {
+  factory BitList.of(Iterable<bool> other) {
     var length = other.length;
     var buffer = Uint32List((length + bitOffset) >> bitShift);
     if (other is BitList) {
@@ -39,6 +39,9 @@ class BitList extends ListBase<bool> with NonGrowableListMixin<bool> {
     }
     return BitList._(buffer, length);
   }
+
+  /// Constructs a new list from a given [Iterable] of booleans.
+  factory BitList.from(Iterable<bool> other) = BitList.of;
 
   /// Internal constructor for this object.
   BitList._(this.buffer, this.length);
@@ -66,6 +69,16 @@ class BitList extends ListBase<bool> with NonGrowableListMixin<bool> {
     } else {
       buffer[index >> bitShift] &= bitClearMask[index & bitOffset];
     }
+  }
+
+  @override
+  BitList operator +(List<bool> other) {
+    var result = BitList(length + other.length);
+    result.buffer.setRange(0, buffer.length, buffer);
+    for (var i = 0; i < other.length; i++) {
+      result[length + i] = other[i];
+    }
+    return result;
   }
 
   /// Sets the bit at the specified [index] to the complement of its current
@@ -158,7 +171,7 @@ class BitList extends ListBase<bool> with NonGrowableListMixin<bool> {
       throw ArgumentError('Unable to left-shift by $amount');
     }
     if (amount == 0 || length == 0) {
-      return BitList.from(this);
+      return BitList.of(this);
     }
     var shift = amount >> bitShift;
     var offset = amount & bitOffset;
@@ -188,7 +201,7 @@ class BitList extends ListBase<bool> with NonGrowableListMixin<bool> {
       throw ArgumentError('Unable to right-shift by $amount');
     }
     if (amount == 0 || length == 0) {
-      return BitList.from(this);
+      return BitList.of(this);
     }
     var shift = amount >> bitShift;
     var offset = amount & bitOffset;

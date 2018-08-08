@@ -13,13 +13,16 @@ class Multiset<E> extends IterableBase<E> {
   factory Multiset.identity() => Multiset<E>._(Map<E, int>.identity(), 0);
 
   /// Creates a [Multiset] that contains all elements of [other].
-  factory Multiset.from(Iterable<E> other) {
+  factory Multiset.of(Iterable<E> other) {
     if (other is Multiset<E>) {
-      return Multiset<E>._(Map.from(other._container), other._length);
+      return Multiset<E>._(Map.of(other._container), other._length);
     } else {
       return Multiset<E>()..addAll(other);
     }
   }
+
+  /// Creates a [Multiset] that contains all elements of [other].
+  factory Multiset.from(Iterable<E> other) = Multiset.of;
 
   /// Creates a [Multiset] where the elements and their occurrence count is
   /// computed from an [iterable].

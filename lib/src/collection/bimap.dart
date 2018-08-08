@@ -7,7 +7,7 @@ import 'dart:collection';
 /// Bi-maps behave like maps from key to values, but can efficiently provide an
 /// inverse bi-map that maps values to keys. Also certain operations, such as
 /// [containsValue] are much more efficient than with traditional maps.
-class BiMap<K, V> extends MapMixin<K, V> {
+class BiMap<K, V> extends MapBase<K, V> {
   /// Creates an empty bi-map.
   factory BiMap() => BiMap<K, V>._({}, {});
 
@@ -15,14 +15,19 @@ class BiMap<K, V> extends MapMixin<K, V> {
   factory BiMap.identity() => BiMap<K, V>._(Map.identity(), Map.identity());
 
   /// Creates bi-map from another map.
-  factory BiMap.from(Map<K, V> other) {
+  factory BiMap.of(Map<K, V> other) {
     if (other is BiMap<K, V>) {
       return BiMap<K, V>._(
-          Map<K, V>.from(other._forward), Map<V, K>.from(other._backward));
+        Map<K, V>.of(other._forward),
+        Map<V, K>.of(other._backward),
+      );
     } else {
       return BiMap<K, V>()..addAll(other);
     }
   }
+
+  /// Creates bi-map from another map.
+  factory BiMap.from(Map<K, V> other) = BiMap.of;
 
   /// Creates a bi-map from an iterable (and possible transformation functions).
   factory BiMap.fromIterable(Iterable iterable,

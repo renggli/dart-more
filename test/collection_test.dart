@@ -306,6 +306,19 @@ void main() {
       });
     });
     group('operators', () {
+      test('concatenate', () {
+        for (var len1 = 0; len1 < 100; len1++) {
+          for (var len2 = 0; len2 < 100; len2++) {
+            var source1 = BitList.from(randomBooleans(954 * len1, len1));
+            var source2 = BitList.from(randomBooleans(713 * len2, len2));
+            var target = source1 + source2;
+            expect(target.length, len1 + len2);
+            for (var i = 0; i < len1 + len2; i++) {
+              expect(target[i], i < len1 ? source1[i] : source2[i - len1]);
+            }
+          }
+        }
+      });
       test('complement', () {
         var source = BitList.from(randomBooleans(702, 100));
         var target = ~source;
