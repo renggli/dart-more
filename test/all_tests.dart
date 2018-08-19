@@ -9,6 +9,7 @@ import 'fraction_test.dart' as fraction_test;
 import 'int_math_test.dart' as int_math_test;
 import 'iterable_test.dart' as iterable_test;
 import 'ordering_test.dart' as ordering_test;
+import 'printer_test.dart' as printer_test;
 
 void main() {
   group('cache_test', cache_test.main);
@@ -18,4 +19,5 @@ void main() {
   group('int_math', int_math_test.main);
   group('iterable', iterable_test.main);
   group('ordering', ordering_test.main);
+  group('printer', printer_test.main);
 }
