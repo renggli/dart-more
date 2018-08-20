@@ -7,7 +7,7 @@ import 'src/printer/pluggable_printer.dart';
 import 'src/printer/sequence_printer.dart';
 import 'src/printer/sign_printer.dart';
 import 'src/printer/standard_printer.dart';
-import 'src/printer/crop_printer.dart';
+import 'src/printer/truncate_printer.dart';
 import 'src/printer/pad_printer.dart';
 import 'src/printer/trim_printer.dart';
 import 'src/printer/unit_printer.dart';
@@ -18,6 +18,15 @@ abstract class Printer {
 
   /// Standard printer that simply calls [Object.toString()].
   factory Printer.standard() => const StandardPrinter();
+
+  /// Prints a string literal onto the output.
+  factory Printer.literal([String value = '']) => LiteralPrinter(value);
+
+  /// Depending on the sign of a number.
+  factory Printer.sign({Printer negative, Printer positive}) => SignPrinter(
+        negative ?? Printer.literal('-'),
+        positive ?? Printer.literal(''),
+      );
 
   /// Constructs a custom number printer.
   ///
@@ -47,9 +56,17 @@ abstract class Printer {
       NumberPrinter(accuracy, base, characters, delimiter, digits, infinity,
           nan, padding, precision, separator);
 
-  factory Printer.units(num base, List<String> units) =>
-      UnitPrinter(base, units);
+  /// Converts a number into a human readable unit.
+  factory Printer.units(num base, List<String> units,
+          {Printer integerPrinter, Printer fractionPrinter}) =>
+      UnitPrinter(
+        base,
+        units,
+        integerPrinter ?? Printer.number(precision: 0),
+        fractionPrinter ?? Printer.number(precision: 1),
+      );
 
+  /// Converts file sizes in bytes to a the binary notation.
   factory Printer.binaryFileSize() => Printer.units(1024, [
         'byte',
         'bytes',
@@ -60,11 +77,22 @@ abstract class Printer {
         'PiB',
         'EiB',
         'ZiB',
-        'YiB'
+        'YiB',
       ]);
 
-  factory Printer.decimalFileSize() => Printer.units(
-      1000, ['byte', 'bytes', 'kB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB']);
+  /// Converts file sizes in bytes to a the decimal notation.
+  factory Printer.decimalFileSize() => Printer.units(1000, [
+        'byte',
+        'bytes',
+        'kB',
+        'MB',
+        'GB',
+        'TB',
+        'PB',
+        'EB',
+        'ZB',
+        'YB',
+      ]);
 
   factory Printer.wrap(Object object) {
     if (object is Printer) {
@@ -76,24 +104,34 @@ abstract class Printer {
     }
   }
 
-  /// Trims whitespaces from a string.
-  Printer trim() => TrimPrinter(this, Trim.both);
-  Printer trimLeft() => TrimPrinter(this, Trim.left);
-  Printer trimRight() => TrimPrinter(this, Trim.right);
+  /// Removes any leading and trailing whitespace.
+  Printer trim() => TrimPrinter(this);
 
-  /// Pads a string to a specific [width].
+  /// Removes any leading whitespace.
+  Printer trimLeft() => TrimLeftPrinter(this);
+
+  /// Removes any trailing whitespace.
+  Printer trimRight() => TrimRightPrinter(this);
+
+  /// Pads the string on the left if it is shorter than [width].
   Printer padLeft(int width, [String padding = ' ']) =>
-      PadPrinter(this, Pad.left, width, padding);
+      PadLeftPrinter(this, width, padding);
+
+  /// Pads the string on the right if it is shorter than [width].
   Printer padRight(int width, [String padding = ' ']) =>
-      PadPrinter(this, Pad.right, width, padding);
-  Printer padCenter(int width, [String padding = ' ']) =>
-      PadPrinter(this, Pad.center, width, padding);
+      PadRightPrinter(this, width, padding);
 
-  /// Crops a string to a specific [width].
-  Printer cropLeft(int width) => CropPrinter(this, Crop.left, width);
-  Printer cropRight(int width) => CropPrinter(this, Crop.right, width);
-  Printer cropBoth(int width) => CropPrinter(this, Crop.both, width);
+  /// Pads the string on the left and right if it is shorter than [width].
+  Printer padBoth(int width, [String padding = ' ']) =>
+      PadBothPrinter(this, width, padding);
 
+  /// Truncates the string from the left side if it is longer than width.
+  Printer truncateLeft(int width, [String ellipsis = '']) =>
+      TruncateLeftPrinter(this, width, ellipsis);
+
+  /// Truncates the string from the right side if it is longer than width.
+  Printer truncateRight(int width, [String ellipsis = '']) =>
+      TruncateRightPrinter(this, width, ellipsis);
 
   /// Converts
   Printer map(Object callback(Object value)) => MappedPrinter(this, callback);

@@ -3,17 +3,15 @@ library more.printer.unit_printer;
 import '../../printer.dart';
 import 'utils.dart';
 
-/// Prints numbers in various formats.
+/// Converts numbers into human readable units.
 class UnitPrinter extends Printer {
-  final num base;
+  final num _base;
+  final List<String> _units;
+  final Printer _integerPrinter;
+  final Printer _fractionPrinter;
 
-  final List<String> units;
-
-  final Printer integerPrinter;
-
-  final Printer fractionPrinter;
-
-  UnitPrinter(this.base, this.units);
+  UnitPrinter(
+      this._base, this._units, this._integerPrinter, this._fractionPrinter);
 
   @override
   String call(Object object) {
@@ -23,27 +21,27 @@ class UnitPrinter extends Printer {
       (value) => value.toDouble(),
     );
     if (object == 1) {
-      return _printUnit(value, 0);
+      return _convertUnit(value, 0);
     }
-    for (var i = 1; i < units.length; i++) {
-      if (value < base) {
-        value /= base;
+    for (var i = 1; i < _units.length; i++) {
+      if (value < _base) {
+        return _convertUnit(value, i);
       } else {
-        return _printUnit(value, i);
+        value /= _base;
       }
     }
-    return _printUnit(value, units.length - 1);
+    return _convertUnit(value, _units.length - 1);
   }
 
-  String _printUnit(double object, int unitIndex) {
+  String _convertUnit(double object, int unitIndex) {
     final buffer = StringBuffer();
     if (unitIndex < 2) {
-      buffer.write(integerPrinter(object));
+      buffer.write(_integerPrinter(object));
     } else {
-      buffer.write(fractionPrinter(object));
+      buffer.write(_fractionPrinter(object));
     }
     buffer.write(' ');
-    buffer.write(units[unitIndex]);
+    buffer.write(_units[unitIndex]);
     return buffer.toString();
   }
 }
