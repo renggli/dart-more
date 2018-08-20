@@ -2,8 +2,6 @@ library more.printer.number_printer;
 
 import 'dart:math' as math;
 
-import 'package:more/iterable.dart' as iterable;
-
 import '../../printer.dart';
 import 'utils.dart';
 
@@ -70,19 +68,19 @@ class NumberPrinter extends Printer {
   }
 
   String _convertInteger(num value) {
-    final digits = iterable.digits(value.abs().truncate(), _base);
-    final result = _digitsToString(digits);
-    return _convertIntegerString(result);
+    final digits = _intDigits(value.abs().truncate());
+    return _convertIntegerDigits(digits);
   }
 
-  String _convertIntegerString(String digits) {
+  String _convertIntegerDigits(List<int> digits) {
+    var result = _formatDigits(digits);
     if (_separator != null) {
-      digits = _separateRight(digits, _separator);
+      result = _separateRight(result, _separator);
     }
     if (_digits != null && _padding != null) {
-      digits = digits.padLeft(_digits, _padding);
+      result = result.padLeft(_digits, _padding);
     }
-    return digits;
+    return result;
   }
 
   String _convertFloat(num value) {
@@ -100,8 +98,8 @@ class NumberPrinter extends Printer {
   }
 
   String _convertFraction(double value) {
-    final digits = iterable.digits(value.round(), _base);
-    var result = _digitsToString(digits).padLeft(_precision, _characters[0]);
+    final digits = _intDigits(value.round());
+    var result = _formatDigits(digits).padLeft(_precision, _characters[0]);
     if (_separator != null) {
       result = _separateLeft(result, _separator);
     }
@@ -109,6 +107,27 @@ class NumberPrinter extends Printer {
   }
 
   String _convertBigInt(BigInt value) {
+    final digits = _bigIntDigits(value.abs());
+    return _convertIntegerDigits(digits);
+  }
+
+  List<int> _intDigits(int value) {
+    final digits = <int>[];
+    if (value == 0) {
+      digits.add(0);
+    } else {
+      value = value.abs();
+      while (value > 0) {
+        final next = value ~/ _base;
+        final index = value - next * _base;
+        digits.add(index);
+        value = next;
+      }
+    }
+    return digits;
+  }
+
+  List<int> _bigIntDigits(BigInt value) {
     final digits = <int>[];
     if (value == BigInt.zero) {
       digits.add(0);
@@ -122,12 +141,11 @@ class NumberPrinter extends Printer {
         value = next;
       }
     }
-    final result = _digitsToString(digits);
-    return _convertIntegerString(result);
+    return digits;
   }
 
-  String _digitsToString(Iterable<int> digits) {
-    return digits.toList().reversed.map((digit) => _characters[digit]).join();
+  String _formatDigits(List<int> digits) {
+    return digits.reversed.map((digit) => _characters[digit]).join();
   }
 
   String _separateLeft(String value, String separator) {
