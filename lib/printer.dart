@@ -11,7 +11,6 @@ import 'src/printer/sign_printer.dart';
 import 'src/printer/standard_printer.dart';
 import 'src/printer/trim_printer.dart';
 import 'src/printer/truncate_printer.dart';
-import 'src/printer/unit_printer.dart';
 
 abstract class Printer {
   const Printer();
@@ -74,44 +73,6 @@ abstract class Printer {
           int significant = 1}) =>
       ScientificNumberPrinter(base, characters, delimiter, infinity, nan,
           notation, precision, separator, significant);
-
-  /// Converts a number into a human readable unit.
-  factory Printer.units(num base, List<String> units,
-          {Printer integerPrinter, Printer fractionPrinter}) =>
-      UnitPrinter(
-        base,
-        units,
-        integerPrinter ?? Printer.number(precision: 0),
-        fractionPrinter ?? Printer.number(precision: 1),
-      );
-
-  /// Converts file sizes in bytes to a the binary notation.
-  factory Printer.binaryFileSize() => Printer.units(1024, [
-        'byte',
-        'bytes',
-        'KiB',
-        'MiB',
-        'GiB',
-        'TiB',
-        'PiB',
-        'EiB',
-        'ZiB',
-        'YiB',
-      ]);
-
-  /// Converts file sizes in bytes to a the decimal notation.
-  factory Printer.decimalFileSize() => Printer.units(1000, [
-        'byte',
-        'bytes',
-        'kB',
-        'MB',
-        'GB',
-        'TB',
-        'PB',
-        'EB',
-        'ZB',
-        'YB',
-      ]);
 
   factory Printer.wrap(Object object) {
     if (object is Printer) {

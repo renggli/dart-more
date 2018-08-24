@@ -226,38 +226,6 @@ void main() {
         expect(printer(0.00000000751), '751.000e-11');
       });
     });
-    group('units', () {
-      test('binary file size', () {
-        final printer = Printer.binaryFileSize();
-        expect(printer(1), '1 byte');
-        expect(printer(2), '2 bytes');
-        expect(printer(30), '30 bytes');
-        expect(printer(500), '500 bytes');
-        expect(printer(6000), '5.9 KiB');
-        expect(printer(70000), '68.4 KiB');
-        expect(printer(800000), '781.3 KiB');
-        expect(printer(9000000), '8.6 MiB');
-        expect(printer(10000000), '9.5 MiB');
-        expect(printer(200000000), '190.7 MiB');
-        expect(printer(3000000000), '2.8 GiB');
-        expect(printer(40000000000), '37.3 GiB');
-      });
-      test('decimal file size', () {
-        final printer = Printer.decimalFileSize();
-        expect(printer(1), '1 byte');
-        expect(printer(2), '2 bytes');
-        expect(printer(30), '30 bytes');
-        expect(printer(500), '500 bytes');
-        expect(printer(6000), '6.0 kB');
-        expect(printer(70000), '70.0 kB');
-        expect(printer(800000), '800.0 kB');
-        expect(printer(9000000), '9.0 MB');
-        expect(printer(10000000), '10.0 MB');
-        expect(printer(200000000), '200.0 MB');
-        expect(printer(3000000000), '3.0 GB');
-        expect(printer(40000000000), '40.0 GB');
-      });
-    });
   });
   group('operator', () {
     group('trim', () {
