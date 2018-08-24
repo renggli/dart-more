@@ -3,20 +3,20 @@ library more.printer;
 import 'src/printer/literal_printer.dart';
 import 'src/printer/mapped_printer.dart';
 import 'src/printer/number_printer.dart';
+import 'src/printer/pad_printer.dart';
 import 'src/printer/pluggable_printer.dart';
+import 'src/printer/separate_printer.dart';
 import 'src/printer/sequence_printer.dart';
 import 'src/printer/sign_printer.dart';
 import 'src/printer/standard_printer.dart';
-import 'src/printer/truncate_printer.dart';
-import 'src/printer/pad_printer.dart';
 import 'src/printer/trim_printer.dart';
+import 'src/printer/truncate_printer.dart';
 import 'src/printer/unit_printer.dart';
-import 'src/printer/utils.dart';
 
 abstract class Printer {
   const Printer();
 
-  /// Standard printer that simply calls [Object.toString()].
+  /// Standard printer that simply calls [toString].
   factory Printer.standard() => const StandardPrinter();
 
   /// Prints a string literal onto the output.
@@ -46,15 +46,36 @@ abstract class Printer {
     int base = 10,
     String characters = '0123456789abcdefghijklmnopqrstuvwxyz',
     String delimiter = '.',
-    int digits,
     String infinity = 'Infinity',
     String nan = 'NaN',
-    String padding = ' ',
     int precision = 0,
     String separator,
   }) =>
-      NumberPrinter(accuracy, base, characters, delimiter, digits, infinity,
-          nan, padding, precision, separator);
+      FixedNumberPrinter(accuracy, base, characters, delimiter, infinity, nan,
+          precision, Printer.sign(), separator);
+
+  /// Constructs a custom number printer.
+  ///
+  /// You can customize every single part:
+  /// - The numeric [base ]to which the number should be printed.
+  /// - The [characters] to be used to convert a number to a string.
+  /// - The [delimiter] to separate the integer and fraction part of the number.
+  /// - The string that should be displayed if the number is [infinity].
+  /// - The string that should be displayed if the number is not a number.
+  /// - The [precision] of digits to be printed in the fraction part.
+  /// - The [separator] character to be used to group digits.
+  factory Printer.scientific(
+          {int base = 10,
+          String characters = '0123456789abcdefghijklmnopqrstuvwxyz',
+          String delimiter = '.',
+          String infinity = 'Infinity',
+          String nan = 'NaN',
+          String notation = 'e',
+          int precision = 3,
+          String separator,
+          int significant = 1}) =>
+      ScientificNumberPrinter(base, characters, delimiter, infinity, nan,
+          notation, precision, separator, significant);
 
   /// Converts a number into a human readable unit.
   factory Printer.units(num base, List<String> units,
@@ -132,6 +153,16 @@ abstract class Printer {
   /// Truncates the string from the right side if it is longer than width.
   Printer truncateRight(int width, [String ellipsis = '']) =>
       TruncateRightPrinter(this, width, ellipsis);
+
+  /// Separates a string from the left side with a [separator] every [width]
+  /// characters.
+  Printer separateLeft(int width, int offset, String separator) =>
+      SeparateLeftPrinter(this, width, offset, separator);
+
+  /// Separates a string from the right side with a [separator] every [width]
+  /// characters.
+  Printer separateRight(int width, int offset, String separator) =>
+      SeparateRightPrinter(this, width, offset, separator);
 
   /// Converts
   Printer map(Object callback(Object value)) => MappedPrinter(this, callback);

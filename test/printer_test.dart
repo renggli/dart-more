@@ -1,8 +1,7 @@
-library more.test.cache_test;
-
-import 'package:test/test.dart';
+library more.test.printer_test;
 
 import 'package:more/printer.dart';
+import 'package:test/test.dart';
 
 void main() {
   group('primitive', () {
@@ -50,20 +49,6 @@ void main() {
               Printer.number(base: 16, characters: '0123456789ABCDEF');
           expect(printer(1234), '4D2');
           expect(printer(123123), '1E0F3');
-        });
-        test('digits', () {
-          final printer = Printer.number(digits: 3);
-          expect(printer(1), '  1');
-          expect(printer(12), ' 12');
-          expect(printer(123), '123');
-          expect(printer(1234), '1234');
-        });
-        test('padding', () {
-          final printer = Printer.number(digits: 3, padding: '*');
-          expect(printer(1), '**1');
-          expect(printer(12), '*12');
-          expect(printer(123), '123');
-          expect(printer(1234), '1234');
         });
       });
       group('double', () {
@@ -126,13 +111,119 @@ void main() {
           expect(printer(BigInt.from(1234)), '4d2');
           expect(printer(BigInt.from(123123)), '1e0f3');
         });
-        test('digits', () {
-          final printer = Printer.number(digits: 3);
-          expect(printer(BigInt.from(1)), '  1');
-          expect(printer(BigInt.from(12)), ' 12');
-          expect(printer(BigInt.from(123)), '123');
-          expect(printer(BigInt.from(1234)), '1234');
-        });
+      });
+    });
+    group('scientific', () {
+      test('default', () {
+        final printer = Printer.scientific();
+        expect(printer(0), '0.000e0');
+        expect(printer(2), '2.000e0');
+        expect(printer(300), '3.000e2');
+        expect(printer(4321.768), '4.322e3');
+        expect(printer(-53000), '-5.300e4');
+        expect(printer(6720000000), '6.720e9');
+        expect(printer(0.2), '2.000e-1');
+        expect(printer(0.00000000751), '7.510e-9');
+      });
+      test('base', () {
+        final printer = Printer.scientific(base: 16);
+        expect(printer(0), '0.000e0');
+        expect(printer(2), '2.000e0');
+        expect(printer(300), '1.2c0e2');
+        expect(printer(4321.768), '1.0e2e3');
+        expect(printer(-53000), '-c.f08e3');
+        expect(printer(6720000000), '1.909e8');
+        expect(printer(0.2), '3.333e-1');
+        expect(printer(0.00000000751), '2.041e-7');
+      });
+      test('characters', () {
+        final printer =
+            Printer.scientific(base: 16, characters: '0123456789ABCDEF');
+        expect(printer(0), '0.000e0');
+        expect(printer(2), '2.000e0');
+        expect(printer(300), '1.2C0e2');
+        expect(printer(4321.768), '1.0E2e3');
+        expect(printer(-53000), '-C.F08e3');
+        expect(printer(6720000000), '1.909e8');
+        expect(printer(0.2), '3.333e-1');
+        expect(printer(0.00000000751), '2.041e-7');
+      });
+      test('delimiter', () {
+        final printer = Printer.scientific(delimiter: ',');
+        expect(printer(0), '0,000e0');
+        expect(printer(2), '2,000e0');
+        expect(printer(300), '3,000e2');
+        expect(printer(4321.768), '4,322e3');
+        expect(printer(-53000), '-5,300e4');
+        expect(printer(6720000000), '6,720e9');
+        expect(printer(0.2), '2,000e-1');
+        expect(printer(0.00000000751), '7,510e-9');
+      });
+      test('infinity', () {
+        final printer = Printer.scientific(infinity: 'huge');
+        expect(printer(0), '0.000e0');
+        expect(printer(2), '2.000e0');
+        expect(printer(300), '3.000e2');
+        expect(printer(4321.768), '4.322e3');
+        expect(printer(-53000), '-5.300e4');
+        expect(printer(6720000000), '6.720e9');
+        expect(printer(0.2), '2.000e-1');
+        expect(printer(0.00000000751), '7.510e-9');
+      });
+      test('nan', () {
+        final printer = Printer.scientific(nan: 'n/a');
+        expect(printer(0), '0.000e0');
+        expect(printer(2), '2.000e0');
+        expect(printer(300), '3.000e2');
+        expect(printer(4321.768), '4.322e3');
+        expect(printer(-53000), '-5.300e4');
+        expect(printer(6720000000), '6.720e9');
+        expect(printer(0.2), '2.000e-1');
+        expect(printer(0.00000000751), '7.510e-9');
+      });
+      test('notation', () {
+        final printer = Printer.scientific(notation: 'E');
+        expect(printer(0), '0.000E0');
+        expect(printer(2), '2.000E0');
+        expect(printer(300), '3.000E2');
+        expect(printer(4321.768), '4.322E3');
+        expect(printer(-53000), '-5.300E4');
+        expect(printer(6720000000), '6.720E9');
+        expect(printer(0.2), '2.000E-1');
+        expect(printer(0.00000000751), '7.510E-9');
+      });
+      test('precision', () {
+        final printer = Printer.scientific(precision: 6);
+        expect(printer(0), '0.000000e0');
+        expect(printer(2), '2.000000e0');
+        expect(printer(300), '3.000000e2');
+        expect(printer(4321.768), '4.321768e3');
+        expect(printer(-53000), '-5.300000e4');
+        expect(printer(6720000000), '6.720000e9');
+        expect(printer(0.2), '2.000000e-1');
+        expect(printer(0.00000000751), '7.510000e-9');
+      });
+      test('separator', () {
+        final printer = Printer.scientific(separator: ' ');
+        expect(printer(0), '0.000e0');
+        expect(printer(2), '2.000e0');
+        expect(printer(300), '3.000e2');
+        expect(printer(4321.768), '4.322e3');
+        expect(printer(-53000), '-5.300e4');
+        expect(printer(6720000000), '6.720e9');
+        expect(printer(0.2), '2.000e-1');
+        expect(printer(0.00000000751), '7.510e-9');
+      });
+      test('significant', () {
+        final printer = Printer.scientific(significant: 3);
+        expect(printer(0), '0.000e0');
+        expect(printer(2), '200.000e-2');
+        expect(printer(300), '300.000e0');
+        expect(printer(4321.768), '432.177e1');
+        expect(printer(-53000), '-530.000e2');
+        expect(printer(6720000000), '672.000e7');
+        expect(printer(0.2), '200.000e-3');
+        expect(printer(0.00000000751), '751.000e-11');
       });
     });
     group('units', () {
@@ -261,6 +352,52 @@ void main() {
         expect(printer('1234'), '123...');
         expect(printer('12345'), '123...');
         expect(printer('123456'), '123...');
+      });
+    });
+    group('separate', () {
+      test('left', () {
+        final printer = Printer.standard().separateLeft(3, 0, '_');
+        expect(printer(''), '');
+        expect(printer('1'), '1');
+        expect(printer('12'), '12');
+        expect(printer('123'), '123');
+        expect(printer('1234'), '123_4');
+        expect(printer('12345'), '123_45');
+        expect(printer('123456'), '123_456');
+        expect(printer('1234567'), '123_456_7');
+        expect(printer('12345678'), '123_456_78');
+        expect(printer('123456789'), '123_456_789');
+        expect(printer('1234567890'), '123_456_789_0');
+      });
+      test('right', () {
+        final printer = Printer.standard().separateRight(3, 0, '_');
+        expect(printer(''), '');
+        expect(printer('1'), '1');
+        expect(printer('12'), '12');
+        expect(printer('123'), '123');
+        expect(printer('1234'), '1_234');
+        expect(printer('12345'), '12_345');
+        expect(printer('123456'), '123_456');
+        expect(printer('1234567'), '1_234_567');
+        expect(printer('12345678'), '12_345_678');
+        expect(printer('123456789'), '123_456_789');
+        expect(printer('1234567890'), '1_234_567_890');
+      });
+      test('offset left', () {
+        final left0 = Printer.standard().separateLeft(3, 0, '_');
+        expect(left0('1234567890'), '123_456_789_0');
+        final left1 = Printer.standard().separateLeft(3, 1, '_');
+        expect(left1('1234567890'), '1_234_567_890');
+        final left2 = Printer.standard().separateLeft(3, 2, '_');
+        expect(left2('1234567890'), '12_345_678_90');
+      });
+      test('offset right', () {
+        final right0 = Printer.standard().separateRight(3, 0, '_');
+        expect(right0('1234567890'), '1_234_567_890');
+        final right1 = Printer.standard().separateRight(3, 1, '_');
+        expect(right1('1234567890'), '123_456_789_0');
+        final right2 = Printer.standard().separateRight(3, 2, '_');
+        expect(right2('1234567890'), '12_345_678_90');
       });
     });
   });
