@@ -5,6 +5,12 @@ import 'dart:math' as math;
 import '../../printer.dart';
 import 'utils.dart';
 
+/// Lower-case digits and letters by increasing value.
+const lowerCaseDigits = '0123456789abcdefghijklmnopqrstuvwxyz';
+
+/// Upper-case digits and letters by increasing value.
+const upperCaseDigits = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+
 /// Prints numbers in a fixed format.
 class FixedNumberPrinter extends Printer {
   /// Round towards the nearest number that is a multiple of accuracy.
@@ -25,9 +31,6 @@ class FixedNumberPrinter extends Printer {
   /// The string that should be displayed if the number is not a number.
   final String _nan;
 
-  /// The way the sign of the number is printed.
-  final Printer _sign;
-
   /// The number of digits to be printed in the fraction part.
   final int _precision;
 
@@ -42,7 +45,6 @@ class FixedNumberPrinter extends Printer {
       this._infinity,
       this._nan,
       this._precision,
-      this._sign,
       this._separator);
 
   @override

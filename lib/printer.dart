@@ -35,16 +35,14 @@ abstract class Printer {
   /// - The numeric [base ]to which the number should be printed.
   /// - The [characters] to be used to convert a number to a string.
   /// - The [delimiter] to separate the integer and fraction part of the number.
-  /// - The number of [digits] to be printed in the integer part.
   /// - The string that should be displayed if the number is [infinity].
   /// - The string that should be displayed if the number is not a number.
-  /// - The [padding] character for the integer part.
   /// - The [precision] of digits to be printed in the fraction part.
   /// - The [separator] character to be used to group digits.
   factory Printer.number({
     double accuracy,
     int base = 10,
-    String characters = '0123456789abcdefghijklmnopqrstuvwxyz',
+    String characters = lowerCaseDigits,
     String delimiter = '.',
     String infinity = 'Infinity',
     String nan = 'NaN',
@@ -52,7 +50,7 @@ abstract class Printer {
     String separator,
   }) =>
       FixedNumberPrinter(accuracy, base, characters, delimiter, infinity, nan,
-          precision, Printer.sign(), separator);
+          precision, separator);
 
   /// Constructs a custom number printer.
   ///
@@ -66,7 +64,7 @@ abstract class Printer {
   /// - The [separator] character to be used to group digits.
   factory Printer.scientific(
           {int base = 10,
-          String characters = '0123456789abcdefghijklmnopqrstuvwxyz',
+          String characters = lowerCaseDigits,
           String delimiter = '.',
           String infinity = 'Infinity',
           String nan = 'NaN',

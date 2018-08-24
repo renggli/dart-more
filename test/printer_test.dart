@@ -400,5 +400,24 @@ void main() {
         expect(right2('1234567890'), '12_345_678_90');
       });
     });
+    group('sequence', () {
+      test('simple', () {
+        final printer = Printer.standard() + Printer.standard();
+        expect(printer(1), '11');
+      });
+      test('coerce literal', () {
+        final printer = Printer.standard() + '<--';
+        expect(printer(2), '2<--');
+      });
+      test('coerce function', () {
+        final printer = Printer.standard() +
+                (object) => ((object as int) + 1).toString();
+        expect(printer(3), '34');
+      });
+      test('multiple', () {
+        final printer = Printer.standard() + '--' + Printer.standard() + '!';
+        expect(printer(4), '4--4!');
+      });
+    });
   });
 }
