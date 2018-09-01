@@ -12,6 +12,7 @@ import 'src/printer/sign_printer.dart';
 import 'src/printer/standard_printer.dart';
 import 'src/printer/trim_printer.dart';
 import 'src/printer/truncate_printer.dart';
+import 'src/printer/undefined_printer.dart';
 
 abstract class Printer {
   const Printer();
@@ -117,6 +118,10 @@ abstract class Printer {
   /// characters.
   Printer separateRight(int width, int offset, String separator) =>
       SeparateRightPrinter(this, width, offset, separator);
+
+  /// Prints [other], if the object to be printed is null.
+  Printer undefined([Object other = 'null']) =>
+      UndefinedPrinter(this, Printer.of(other));
 
   /// Helper to modify a printer with a [callback], if a [condition] is met.
   Printer mapIf(bool condition, Printer callback(Printer printer)) =>

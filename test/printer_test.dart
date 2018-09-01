@@ -479,6 +479,18 @@ void main() {
       expect(right2('1234567890'), '12_345_678_90');
     });
   });
+  group('undefined', () {
+    test('default', () {
+      final printer = Printer.standard().undefined();
+      expect(printer(null), 'null');
+      expect(printer('foo'), 'foo');
+    });
+    test('custom', () {
+      final printer = Printer.standard().undefined('n/a');
+      expect(printer(null), 'n/a');
+      expect(printer('foo'), 'foo');
+    });
+  });
   group('sequence', () {
     test('simple', () {
       final printer = Printer.standard() + Printer.standard();
