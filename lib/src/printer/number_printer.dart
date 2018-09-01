@@ -44,6 +44,9 @@ class FixedNumberPrinter extends Printer {
   /// The string that should be displayed if the number is not a number.
   final String nan;
 
+  /// The number of digits to be printed in the integer part.
+  final int padding;
+
   /// The number of digits to be printed in the fraction part.
   final int precision;
 
@@ -53,6 +56,12 @@ class FixedNumberPrinter extends Printer {
   /// The printer used for negative or positive numbers.
   final Printer sign;
 
+  /// Internal integer printer.
+  final Printer _integerPrinter;
+
+  /// Internal fraction printer.
+  final Printer _fractionPrinter;
+
   FixedNumberPrinter({
     this.accuracy,
     this.base = 10,
@@ -60,10 +69,20 @@ class FixedNumberPrinter extends Printer {
     this.delimiter = delimiterString,
     this.infinity = infinityString,
     this.nan = nanString,
+    this.padding = 0,
     this.precision = 0,
     this.separator,
     this.sign = omitPositiveSign,
-  });
+  })  : _integerPrinter = Printer.standard()
+            .mapIf(padding > 0,
+                (printer) => printer.padRight(padding, characters[0]))
+            .mapIf(separator != null,
+                (printer) => printer.separateRight(3, 0, separator)),
+        _fractionPrinter = Printer.standard()
+            .mapIf(precision > 0,
+                (printer) => printer.padLeft(precision, characters[0]))
+            .mapIf(separator != null,
+                (printer) => printer.separateLeft(3, 0, separator));
 
   @override
   String call(Object object) => _prependSign(
@@ -94,7 +113,7 @@ class FixedNumberPrinter extends Printer {
 
   String _convertIntegerDigits(Iterable<int> digits) {
     final result = _formatDigits(digits, characters);
-    return separator == null ? result : _separateRight(result, separator);
+    return _integerPrinter(result);
   }
 
   String _convertFloat(num value) {
@@ -113,9 +132,8 @@ class FixedNumberPrinter extends Printer {
 
   String _convertFraction(double value) {
     final digits = _intDigits(value.round(), base);
-    final result =
-        _formatDigits(digits, characters).padLeft(precision, characters[0]);
-    return separator == null ? result : _separateLeft(result, separator);
+    final result = _formatDigits(digits, characters);
+    return _fractionPrinter(result);
   }
 
   String _convertBigInt(BigInt value) {
@@ -257,28 +275,4 @@ Iterable<int> _bigIntDigits(BigInt value, int base) {
 /// Converts an iterable of [digits] to a string using [characters] mapping.
 String _formatDigits(Iterable<int> digits, String characters) {
   return digits.map((digit) => characters[digit]).join();
-}
-
-/// Separates an [input] string with a [separator] from the left.
-String _separateLeft(String input, String separator) {
-  final buffer = StringBuffer();
-  for (var i = 0; i < input.length; i++) {
-    if (i != 0 && i % 3 == 0) {
-      buffer.write(separator);
-    }
-    buffer.writeCharCode(input.codeUnitAt(i));
-  }
-  return buffer.toString();
-}
-
-/// Separates an [input] string with a [separator] from the right.
-String _separateRight(String input, String separator) {
-  final buffer = StringBuffer();
-  for (var i = 0; i < input.length; i++) {
-    if (i != 0 && (input.length - i) % 3 == 0) {
-      buffer.write(separator);
-    }
-    buffer.writeCharCode(input.codeUnitAt(i));
-  }
-  return buffer.toString();
 }
