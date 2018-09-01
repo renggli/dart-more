@@ -1,3 +1,5 @@
+/// Provides a first-class model to convert object to strings using composition
+/// and highly configurable formatting primitives.
 library more.printer;
 
 import 'src/printer/literal_printer.dart';
@@ -116,11 +118,11 @@ abstract class Printer {
   Printer separateRight(int width, int offset, String separator) =>
       SeparateRightPrinter(this, width, offset, separator);
 
+  /// Helper to modify a printer with a [callback], if a [condition] is met.
+  Printer mapIf(bool condition, Printer callback(Printer printer)) =>
+      condition ? callback(this) : this;
+
   /// Concatenates this printer with [other].
   Printer operator +(Object other) =>
       SequencePrinter([]..add(this)..add(Printer.of(other)));
-
-  /// Helper to modify a printer with [callback], if a [condition] is met.
-  Printer mapIf(bool condition, Printer callback(Printer printer)) =>
-      condition ? callback(this) : this;
 }

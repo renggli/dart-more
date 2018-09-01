@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.11.0
+
+* Add the printer package.
+
 ## 1.10.0
 
 * Drop Dart 1.0 compatibility.

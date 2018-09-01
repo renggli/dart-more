@@ -18,6 +18,7 @@ Various extensions that make Dart a better place:
 - `int_math.dart` is a collection of common mathematical functions on integers.
 - `iterable.dart` is a collection of iterables and iterators.
 - `ordering.dart` a fluent interface for building comparator functions.
+- `printer.dart` a fluent interface for configuring sophisticated printers.
 
 And there are more to come ...
 
@@ -43,6 +44,7 @@ import 'package:more/fraction.dart';
 import 'package:more/int_math.dart';
 import 'package:more/iterable.dart';
 import 'package:more/ordering.dart';
+import 'package:more/printer.dart';
 ```
 
 ### History
