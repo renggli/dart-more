@@ -14,46 +14,68 @@ void main() {
     group('sign', () {
       test('default', () {
         final printer = Printer.sign();
-        expect(printer(-123), '-');
-        expect(printer(123), '');
+        expect(printer(-1), '-');
+        expect(printer(1), '');
       });
       test('custom', () {
         final printer = Printer.sign(
           negative: Printer.literal('--'),
           positive: Printer.literal('++'),
         );
-        expect(printer(-123), '--');
-        expect(printer(123), '++');
+        expect(printer(-1), '--');
+        expect(printer(1), '++');
+      });
+      test('omitPositiveSign', () {
+        final printer = Printer.omitPositiveSign();
+        expect(printer(-1), '-');
+        expect(printer(1), '');
+      });
+      test('spacePositiveSign', () {
+        final printer = Printer.spacePositiveSign();
+        expect(printer(-1), '-');
+        expect(printer(1), ' ');
+      });
+      test('negativeAndPositiveSign', () {
+        final printer = Printer.negativeAndPositiveSign();
+        expect(printer(-1), '-');
+        expect(printer(1), '+');
       });
     });
     group('number', () {
       group('int', () {
         test('default', () {
-          final printer = Printer.number();
+          final printer = Printer.fixed();
           expect(printer(0), '0');
           expect(printer(1234), '1234');
-          expect(printer(-1234), '1234');
+          expect(printer(-1234), '-1234');
         });
         test('separator', () {
-          final printer = Printer.number(separator: '.');
+          final printer = Printer.fixed(separator: '.');
           expect(printer(1234), '1.234');
           expect(printer(1234567), '1.234.567');
         });
         test('base', () {
-          final printer = Printer.number(base: 16);
+          final printer = Printer.fixed(base: 16);
           expect(printer(1234), '4d2');
           expect(printer(123123), '1e0f3');
         });
         test('characters', () {
           final printer =
-              Printer.number(base: 16, characters: '0123456789ABCDEF');
+              Printer.fixed(base: 16, characters: '0123456789ABCDEF');
           expect(printer(1234), '4D2');
           expect(printer(123123), '1E0F3');
+        });
+        test('sign', () {
+          final printer =
+              Printer.fixed(sign: Printer.negativeAndPositiveSign());
+          expect(printer(0), '+0');
+          expect(printer(1234), '+1234');
+          expect(printer(-1234), '-1234');
         });
       });
       group('double', () {
         test('precision', () {
-          final printer = Printer.number(precision: 2);
+          final printer = Printer.fixed(precision: 2);
           expect(printer(1.009), '1.01');
           expect(printer(1.01), '1.01');
           expect(printer(1.019), '1.02');
@@ -65,51 +87,65 @@ void main() {
           expect(printer(0.99), '0.99');
           expect(printer(0.999), '1.00');
           expect(printer(0.9999), '1.00');
-          expect(printer(-0.9), '0.90');
-          expect(printer(-0.99), '0.99');
-          expect(printer(-0.999), '1.00');
-          expect(printer(-0.9999), '1.00');
+          expect(printer(-0.9), '-0.90');
+          expect(printer(-0.99), '-0.99');
+          expect(printer(-0.999), '-1.00');
+          expect(printer(-0.9999), '-1.00');
         });
         test('infinite', () {
-          final printer = Printer.number();
+          final printer = Printer.fixed();
           expect(printer(double.infinity), 'Infinity');
-          expect(printer(double.negativeInfinity), 'Infinity');
+          expect(printer(double.negativeInfinity), '-Infinity');
         });
         test('infinite custom', () {
-          final printer = Printer.number(infinity: 'Huge');
+          final printer = Printer.fixed(infinity: 'Huge');
           expect(printer(double.infinity), 'Huge');
-          expect(printer(double.negativeInfinity), 'Huge');
+          expect(printer(double.negativeInfinity), '-Huge');
         });
         test('NaN', () {
-          final printer = Printer.number();
+          final printer = Printer.fixed();
           expect(printer(double.nan), 'NaN');
         });
         test('NaN custom', () {
-          final printer = Printer.number(nan: 'Not a Number');
+          final printer = Printer.fixed(nan: 'Not a Number');
           expect(printer(double.nan), 'Not a Number');
         });
         test('separator', () {
-          final printer = Printer.number(precision: 8, separator: '!');
+          final printer = Printer.fixed(precision: 8, separator: '!');
           expect(printer(12345.0), '12!345.000!000!00');
           expect(printer(0.6789), '0.678!900!00');
+        });
+        test('sign', () {
+          final printer = Printer.fixed(
+              precision: 1, sign: Printer.negativeAndPositiveSign());
+          expect(printer(-1), '-1.0');
+          expect(printer(0), '+0.0');
+          expect(printer(1), '+1.0');
         });
       });
       group('BigInt', () {
         test('default', () {
-          final printer = Printer.number();
+          final printer = Printer.fixed();
           expect(printer(BigInt.zero), '0');
           expect(printer(BigInt.from(1234)), '1234');
-          expect(printer(BigInt.from(-1234)), '1234');
+          expect(printer(BigInt.from(-1234)), '-1234');
+        });
+        test('base', () {
+          final printer = Printer.fixed(base: 16);
+          expect(printer(BigInt.from(1234)), '4d2');
+          expect(printer(BigInt.from(123123)), '1e0f3');
         });
         test('separator', () {
-          final printer = Printer.number(separator: '.');
+          final printer = Printer.fixed(separator: '.');
           expect(printer(BigInt.from(1234)), '1.234');
           expect(printer(BigInt.from(1234567)), '1.234.567');
         });
-        test('base', () {
-          final printer = Printer.number(base: 16);
-          expect(printer(BigInt.from(1234)), '4d2');
-          expect(printer(BigInt.from(123123)), '1e0f3');
+        test('sign', () {
+          final printer =
+              Printer.fixed(sign: Printer.negativeAndPositiveSign());
+          expect(printer(BigInt.from(-1)), '-1');
+          expect(printer(BigInt.from(0)), '+0');
+          expect(printer(BigInt.from(1)), '+1');
         });
       });
     });
@@ -159,6 +195,18 @@ void main() {
         expect(printer(0.2), '2,000e-1');
         expect(printer(0.00000000751), '7,510e-9');
       });
+      test('exponentSign', () {
+        final printer =
+            Printer.scientific(exponentSign: Printer.negativeAndPositiveSign());
+        expect(printer(0), '0.000e+0');
+        expect(printer(2), '2.000e+0');
+        expect(printer(300), '3.000e+2');
+        expect(printer(4321.768), '4.322e+3');
+        expect(printer(-53000), '-5.300e+4');
+        expect(printer(6720000000), '6.720e+9');
+        expect(printer(0.2), '2.000e-1');
+        expect(printer(0.00000000751), '7.510e-9');
+      });
       test('infinity', () {
         final printer = Printer.scientific(infinity: 'huge');
         expect(printer(0), '0.000e0');
@@ -169,6 +217,18 @@ void main() {
         expect(printer(6720000000), '6.720e9');
         expect(printer(0.2), '2.000e-1');
         expect(printer(0.00000000751), '7.510e-9');
+      });
+      test('mantissaSign', () {
+        final printer =
+            Printer.scientific(mantissaSign: Printer.negativeAndPositiveSign());
+        expect(printer(0), '+0.000e0');
+        expect(printer(2), '+2.000e0');
+        expect(printer(300), '+3.000e2');
+        expect(printer(4321.768), '+4.322e3');
+        expect(printer(-53000), '-5.300e4');
+        expect(printer(6720000000), '+6.720e9');
+        expect(printer(0.2), '+2.000e-1');
+        expect(printer(0.00000000751), '+7.510e-9');
       });
       test('nan', () {
         final printer = Printer.scientific(nan: 'n/a');
@@ -378,8 +438,8 @@ void main() {
         expect(printer(2), '2<--');
       });
       test('coerce function', () {
-        final printer = Printer.standard() +
-                (object) => ((object as int) + 1).toString();
+        final printer =
+            Printer.standard() + (object) => ((object as int) + 1).toString();
         expect(printer(3), '34');
       });
       test('multiple', () {

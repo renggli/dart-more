@@ -5,44 +5,44 @@ import 'delegate_printer.dart';
 
 /// Pads the string on the left if it is shorter than width.
 class PadLeftPrinter extends DelegatePrinter {
-  final int _width;
-  final String _padding;
+  final int width;
+  final String padding;
 
-  const PadLeftPrinter(Printer delegate, this._width, this._padding)
+  const PadLeftPrinter(Printer delegate, this.width, this.padding)
       : super(delegate);
 
   @override
-  String call(Object object) => super.call(object).padLeft(_width, _padding);
+  String call(Object object) => super.call(object).padLeft(width, padding);
 }
 
 /// Pads the string on the right if it is shorter than width.
 class PadRightPrinter extends DelegatePrinter {
-  final int _width;
-  final String _padding;
+  final int width;
+  final String padding;
 
-  const PadRightPrinter(Printer delegate, this._width, this._padding)
+  const PadRightPrinter(Printer delegate, this.width, this.padding)
       : super(delegate);
 
   @override
-  String call(Object object) => super.call(object).padRight(_width, _padding);
+  String call(Object object) => super.call(object).padRight(width, padding);
 }
 
 /// Pads the string on both sides if it is shorter than width.
 class PadBothPrinter extends DelegatePrinter {
-  final int _width;
-  final String _padding;
+  final int width;
+  final String padding;
 
-  const PadBothPrinter(Printer delegate, this._width, this._padding)
+  const PadBothPrinter(Printer delegate, this.width, this.padding)
       : super(delegate);
 
   @override
   String call(Object object) {
     final result = super.call(object);
-    if (result.length < _width) {
-      final padding = _width - result.length;
-      final left = padding ~/ 2;
-      final right = padding ~/ 2 + padding % 2;
-      return '${_padding * left}$result${_padding * right}';
+    if (result.length < width) {
+      final pad = width - result.length;
+      final left = pad ~/ 2;
+      final right = pad ~/ 2 + pad % 2;
+      return '${padding * left}$result${padding * right}';
     } else {
       return result;
     }

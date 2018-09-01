@@ -5,34 +5,34 @@ import 'delegate_printer.dart';
 
 /// Truncates the string from the left side if it is longer than width.
 class TruncateLeftPrinter extends DelegatePrinter {
-  final int _width;
-  final String _ellipsis;
+  final int width;
+  final String ellipsis;
 
-  const TruncateLeftPrinter(Printer delegate, this._width, this._ellipsis)
+  const TruncateLeftPrinter(Printer delegate, this.width, this.ellipsis)
       : super(delegate);
 
   @override
   String call(Object object) {
     final result = super.call(object);
-    return result.length > _width
-        ? _ellipsis + result.substring(result.length - _width)
+    return result.length > width
+        ? ellipsis + result.substring(result.length - width)
         : result;
   }
 }
 
 /// Truncates the string from the right side if it is longer than width.
 class TruncateRightPrinter extends DelegatePrinter {
-  final int _width;
-  final String _ellipsis;
+  final int width;
+  final String ellipsis;
 
-  const TruncateRightPrinter(Printer delegate, this._width, this._ellipsis)
+  const TruncateRightPrinter(Printer delegate, this.width, this.ellipsis)
       : super(delegate);
 
   @override
   String call(Object object) {
     final result = super.call(object);
-    return result.length > _width
-        ? result.substring(0, _width) + _ellipsis
+    return result.length > width
+        ? result.substring(0, width) + ellipsis
         : result;
   }
 }

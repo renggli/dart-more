@@ -6,10 +6,10 @@ typedef String ToString(Object object);
 
 /// Prints a string literal.
 class PluggablePrinter extends Printer {
-  final ToString _callback;
+  final ToString callback;
 
-  const PluggablePrinter(this._callback);
+  const PluggablePrinter(this.callback);
 
   @override
-  String call(Object object) => _callback(object);
+  String call(Object object) => callback(object);
 }

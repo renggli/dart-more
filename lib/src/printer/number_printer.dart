@@ -3,6 +3,7 @@ library more.printer.number_printer;
 import 'dart:math' as math;
 
 import '../../printer.dart';
+import 'sign_printer.dart';
 import 'utils.dart';
 
 /// Lower-case digits and letters by increasing value.
@@ -14,51 +15,60 @@ const upperCaseDigits = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ';
 /// Prints numbers in a fixed format.
 class FixedNumberPrinter extends Printer {
   /// Round towards the nearest number that is a multiple of accuracy.
-  final double _accuracy;
+  final double accuracy;
 
   /// The numeric base to which the number should be printed.
-  final int _base;
+  final int base;
 
   /// The characters to be used to convert a number to a string.
-  final String _characters;
+  final String characters;
 
   /// The delimiter to separate the integer and fraction part of the number.
-  final String _delimiter;
+  final String delimiter;
 
   /// The string that should be displayed if the number is infinite.
-  final String _infinity;
+  final String infinity;
 
   /// The string that should be displayed if the number is not a number.
-  final String _nan;
+  final String nan;
 
   /// The number of digits to be printed in the fraction part.
-  final int _precision;
+  final int precision;
 
   /// The separator character to be used to group digits.
-  final String _separator;
+  final String separator;
 
-  FixedNumberPrinter(
-      this._accuracy,
-      this._base,
-      this._characters,
-      this._delimiter,
-      this._infinity,
-      this._nan,
-      this._precision,
-      this._separator);
+  /// The string to be prepended if the number is positive or negative.
+  final Printer sign;
+
+  FixedNumberPrinter({
+    this.accuracy,
+    this.base = 10,
+    this.characters = lowerCaseDigits,
+    this.delimiter = '.',
+    this.infinity = 'Infinity',
+    this.nan = 'NaN',
+    this.precision = 0,
+    this.separator,
+    this.sign = omitPositiveSign,
+  });
 
   @override
-  String call(Object object) =>
-      checkNumericType(object, _convertNumber, _convertBigInt);
+  String call(Object object) => _prependSign(
+      object, checkNumericType(object, _convertNum, _convertBigInt));
 
-  String _convertNumber(num value) {
+  String _prependSign(Object value, String result) {
+    return '${sign(value)}$result';
+  }
+
+  String _convertNum(num value) {
     if (value.isNaN) {
-      return _nan;
+      return nan;
     }
     if (value.isInfinite) {
-      return _infinity;
+      return infinity;
     }
-    if (_precision == 0) {
+    if (precision == 0) {
       return _convertInteger(value);
     } else {
       return _convertFloat(value);
@@ -66,23 +76,23 @@ class FixedNumberPrinter extends Printer {
   }
 
   String _convertInteger(num value) {
-    final digits = _intDigits(value.abs().truncate(), _base);
+    final digits = _intDigits(value.abs().truncate(), base);
     return _convertIntegerDigits(digits);
   }
 
   String _convertIntegerDigits(Iterable<int> digits) {
-    final result = _formatDigits(digits, _characters);
-    return _separator == null ? result : _separateRight(result, _separator);
+    final result = _formatDigits(digits, characters);
+    return separator == null ? result : _separateRight(result, separator);
   }
 
   String _convertFloat(num value) {
     final buffer = StringBuffer();
-    final multiplier = math.pow(_base, _precision);
-    final accuracy = _accuracy ?? 1.0 / multiplier;
-    final rounded = (value / accuracy).roundToDouble() * accuracy;
+    final multiplier = math.pow(base, precision);
+    final rounding = accuracy ?? 1.0 / multiplier;
+    final rounded = (value / rounding).roundToDouble() * rounding;
     buffer.write(_convertInteger(rounded));
-    if (_delimiter != null) {
-      buffer.write(_delimiter);
+    if (delimiter != null) {
+      buffer.write(delimiter);
     }
     final fractional = rounded.abs() - rounded.abs().truncate();
     buffer.write(_convertFraction(fractional * multiplier));
@@ -90,27 +100,52 @@ class FixedNumberPrinter extends Printer {
   }
 
   String _convertFraction(double value) {
-    final digits = _intDigits(value.round(), _base);
+    final digits = _intDigits(value.round(), base);
     final result =
-        _formatDigits(digits, _characters).padLeft(_precision, _characters[0]);
-    return _separator == null ? result : _separateLeft(result, _separator);
+        _formatDigits(digits, characters).padLeft(precision, characters[0]);
+    return separator == null ? result : _separateLeft(result, separator);
   }
 
   String _convertBigInt(BigInt value) {
-    final digits = _bigIntDigits(value.abs(), _base);
+    final digits = _bigIntDigits(value.abs(), base);
     return _convertIntegerDigits(digits);
   }
 }
 
+/// Prints numbers in a scientific format.
 class ScientificNumberPrinter extends Printer {
   /// The numeric base to which the number should be printed.
-  final int _base;
+  final int base;
 
-  /// The number of significant digits to be printed.
-  final int _significant;
+  /// The characters to be used to convert a number to a string.
+  final String characters;
+
+  /// The delimiter to separate the integer and fraction part of the number.
+  final String delimiter;
+
+  /// The string to be prepended if the exponent is positive or negative.
+  final Printer exponentSign;
+
+  /// The string that should be displayed if the number is infinite.
+  final String infinity;
+
+  /// The string to be prepended if the mantissa is positive or negative.
+  final Printer mantissaSign;
+
+  /// The string that should be displayed if the number is not a number.
+  final String nan;
 
   /// The string separating the mantissa and exponent.
-  final String _notation;
+  final String notation;
+
+  /// The number of digits to be printed in the fraction part.
+  final int precision;
+
+  /// The separator character to be used to group digits.
+  final String separator;
+
+  /// The number of significant digits to be printed.
+  final int significant;
 
   /// The printer of the mantissa.
   final Printer _mantissa;
@@ -118,28 +153,34 @@ class ScientificNumberPrinter extends Printer {
   /// The printer of the exponent.
   final Printer _exponent;
 
-  ScientificNumberPrinter(
-      this._base,
-      String characters,
-      String delimiter,
-      String infinity,
-      String nan,
-      this._notation,
-      int precision,
-      String separator,
-      this._significant)
-      : _mantissa = Printer.sign() +
-            Printer.number(
-                base: _base,
-                characters: characters,
-                delimiter: delimiter,
-                infinity: infinity,
-                nan: nan,
-                precision: precision,
-                separator: separator),
-        _exponent = Printer.sign() +
-            Printer.number(
-                base: _base, characters: characters, separator: separator);
+  ScientificNumberPrinter({
+    this.base = 10,
+    this.characters = lowerCaseDigits,
+    this.delimiter = '.',
+    this.exponentSign = omitPositiveSign,
+    this.infinity = 'Infinity',
+    this.mantissaSign = omitPositiveSign,
+    this.nan = 'NaN',
+    this.notation = 'e',
+    this.precision = 3,
+    this.separator,
+    this.significant = 1,
+  })  : _mantissa = Printer.fixed(
+          base: base,
+          characters: characters,
+          delimiter: delimiter,
+          infinity: infinity,
+          nan: nan,
+          precision: precision,
+          separator: separator,
+          sign: mantissaSign,
+        ),
+        _exponent = Printer.fixed(
+          base: base,
+          characters: characters,
+          separator: separator,
+          sign: exponentSign,
+        );
 
   @override
   String call(Object object) {
@@ -152,10 +193,10 @@ class ScientificNumberPrinter extends Printer {
       return _mantissa(value);
     }
     final exponent = _getExponent(value);
-    final mantissa = value / math.pow(_base, exponent);
+    final mantissa = value / math.pow(base, exponent);
     final buffer = StringBuffer();
     buffer.write(_mantissa(mantissa));
-    buffer.write(_notation);
+    buffer.write(notation);
     buffer.write(_exponent(exponent));
     return buffer.toString();
   }
@@ -164,16 +205,19 @@ class ScientificNumberPrinter extends Printer {
     if (value == 0.0 || value == -0.0) {
       return 0;
     } else {
-      final logBase = math.log(value.abs()) / math.log(_base);
-      return logBase.floor() + 1 - _significant;
+      final logBase = math.log(value.abs()) / math.log(base);
+      return logBase.floor() + 1 - significant;
     }
   }
 }
 
-/// Extracts digits of an [int] [value] in the provided [base].
+/// Extracts digits of a positive [value] in the provided [base].
 Iterable<int> _intDigits(int value, int base) {
+  if (value.isNegative) {
+    throw ArgumentError.value(value, 'value', 'Internal value error');
+  }
   if (value == 0) {
-    return [0];
+    return <int>[0];
   }
   final digits = <int>[];
   while (value > 0) {
@@ -185,10 +229,13 @@ Iterable<int> _intDigits(int value, int base) {
   return digits.reversed;
 }
 
-/// Extracts digits of a [BitInt] [value] in the provided [base].
+/// Extracts digits of a positive [value] in the provided [base].
 Iterable<int> _bigIntDigits(BigInt value, int base) {
+  if (value.isNegative) {
+    throw ArgumentError.value(value, 'value', 'Internal value error');
+  }
   if (value == BigInt.zero) {
-    return [0];
+    return <int>[0];
   }
   final digits = <int>[];
   final bigBase = BigInt.from(base);

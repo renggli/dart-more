@@ -5,12 +5,12 @@ import 'delegate_printer.dart';
 
 /// Separates a string from the left with a separator character.
 class SeparateLeftPrinter extends DelegatePrinter {
-  final int _width;
-  final int _offset;
-  final String _separator;
+  final int width;
+  final int offset;
+  final String separator;
 
   const SeparateLeftPrinter(
-      Printer delegate, this._width, this._offset, this._separator)
+      Printer delegate, this.width, this.offset, this.separator)
       : super(delegate);
 
   @override
@@ -19,8 +19,8 @@ class SeparateLeftPrinter extends DelegatePrinter {
     final buffer = StringBuffer();
     final iterator = input.codeUnits.iterator;
     for (var i = 0; iterator.moveNext(); i++) {
-      if (i != 0 && i % _width == _offset) {
-        buffer.write(_separator);
+      if (i != 0 && i % width == offset) {
+        buffer.write(separator);
       }
       buffer.writeCharCode(iterator.current);
     }
@@ -30,12 +30,12 @@ class SeparateLeftPrinter extends DelegatePrinter {
 
 /// Separates a string from the right with a repeated separator character.
 class SeparateRightPrinter extends DelegatePrinter {
-  final int _width;
-  final int _offset;
-  final String _separator;
+  final int width;
+  final int offset;
+  final String separator;
 
   const SeparateRightPrinter(
-      Printer delegate, this._width, this._offset, this._separator)
+      Printer delegate, this.width, this.offset, this.separator)
       : super(delegate);
 
   @override
@@ -44,8 +44,8 @@ class SeparateRightPrinter extends DelegatePrinter {
     final buffer = StringBuffer();
     final iterator = input.codeUnits.iterator;
     for (var i = 0; iterator.moveNext(); i++) {
-      if (i != 0 && (input.length - i) % _width == _offset) {
-        buffer.write(_separator);
+      if (i != 0 && (input.length - i) % width == offset) {
+        buffer.write(separator);
       }
       buffer.writeCharCode(iterator.current);
     }

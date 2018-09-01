@@ -1,7 +1,6 @@
 library more.printer;
 
 import 'src/printer/literal_printer.dart';
-import 'src/printer/mapped_printer.dart';
 import 'src/printer/number_printer.dart';
 import 'src/printer/pad_printer.dart';
 import 'src/printer/pluggable_printer.dart';
@@ -15,64 +14,51 @@ import 'src/printer/truncate_printer.dart';
 abstract class Printer {
   const Printer();
 
-  /// Standard printer that simply calls [toString].
+  /// Prints an object by simply calling [Object.toString].
   factory Printer.standard() => const StandardPrinter();
 
-  /// Prints a string literal onto the output.
+  /// Prints a string literal string [value].
   factory Printer.literal([String value = '']) => LiteralPrinter(value);
 
-  /// Depending on the sign of a number.
-  factory Printer.sign({Printer negative, Printer positive}) => SignPrinter(
-        negative ?? Printer.literal('-'),
-        positive ?? Printer.literal(''),
-      );
+  /// Prints a sign based on a [negative] and [positive] printer.
+  factory Printer.sign({Printer negative, Printer positive}) = SignPrinter;
 
-  /// Constructs a custom number printer.
-  ///
-  /// You can customize every single part:
-  /// - Rounds towards the nearest number that is a multiple of [accuracy].
-  /// - The numeric [base ]to which the number should be printed.
-  /// - The [characters] to be used to convert a number to a string.
-  /// - The [delimiter] to separate the integer and fraction part of the number.
-  /// - The string that should be displayed if the number is [infinity].
-  /// - The string that should be displayed if the number is not a number.
-  /// - The [precision] of digits to be printed in the fraction part.
-  /// - The [separator] character to be used to group digits.
-  factory Printer.number({
+  /// Prints a sign only for negative numbers (default behavior).
+  factory Printer.omitPositiveSign() => omitPositiveSign;
+
+  /// Prints a leading space, instead of a positive sign.
+  factory Printer.spacePositiveSign() => spacePositiveSign;
+
+  /// Prints a sign for both positive and negative numbers.
+  factory Printer.negativeAndPositiveSign() => negativeAndPositiveSign;
+
+  /// Prints numbers in a custom fixed format.
+  factory Printer.fixed({
     double accuracy,
-    int base = 10,
-    String characters = lowerCaseDigits,
-    String delimiter = '.',
-    String infinity = 'Infinity',
-    String nan = 'NaN',
-    int precision = 0,
+    int base,
+    String characters,
+    String delimiter,
+    String infinity,
+    String nan,
+    int precision,
     String separator,
-  }) =>
-      FixedNumberPrinter(accuracy, base, characters, delimiter, infinity, nan,
-          precision, separator);
+    Printer sign,
+  }) = FixedNumberPrinter;
 
-  /// Constructs a custom number printer.
-  ///
-  /// You can customize every single part:
-  /// - The numeric [base ]to which the number should be printed.
-  /// - The [characters] to be used to convert a number to a string.
-  /// - The [delimiter] to separate the integer and fraction part of the number.
-  /// - The string that should be displayed if the number is [infinity].
-  /// - The string that should be displayed if the number is not a number.
-  /// - The [precision] of digits to be printed in the fraction part.
-  /// - The [separator] character to be used to group digits.
-  factory Printer.scientific(
-          {int base = 10,
-          String characters = lowerCaseDigits,
-          String delimiter = '.',
-          String infinity = 'Infinity',
-          String nan = 'NaN',
-          String notation = 'e',
-          int precision = 3,
-          String separator,
-          int significant = 1}) =>
-      ScientificNumberPrinter(base, characters, delimiter, infinity, nan,
-          notation, precision, separator, significant);
+  /// Prints numbers in a  custom scientific format.
+  factory Printer.scientific({
+    int base,
+    String characters,
+    String delimiter,
+    Printer exponentSign,
+    String infinity,
+    Printer mantissaSign,
+    String nan,
+    String notation,
+    int precision,
+    String separator,
+    int significant,
+  }) = ScientificNumberPrinter;
 
   factory Printer.wrap(Object object) {
     if (object is Printer) {
@@ -83,6 +69,9 @@ abstract class Printer {
       return LiteralPrinter(object.toString());
     }
   }
+
+  /// Prints the object.
+  String call(Object object);
 
   /// Removes any leading and trailing whitespace.
   Printer trim() => TrimPrinter(this);
@@ -122,12 +111,6 @@ abstract class Printer {
   /// characters.
   Printer separateRight(int width, int offset, String separator) =>
       SeparateRightPrinter(this, width, offset, separator);
-
-  /// Converts
-  Printer map(Object callback(Object value)) => MappedPrinter(this, callback);
-
-  /// Prints the object.
-  String call(Object object);
 
   Printer operator +(Object other) =>
       SequencePrinter([]..add(this)..add(Printer.wrap(other)));
