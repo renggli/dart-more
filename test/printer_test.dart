@@ -48,11 +48,6 @@ void main() {
         expect(printer(1234), '1234');
         expect(printer(-1234), '-1234');
       });
-      test('separator', () {
-        final printer = Printer.fixed(separator: '.');
-        expect(printer(1234), '1.234');
-        expect(printer(1234567), '1.234.567');
-      });
       test('base', () {
         final printer = Printer.fixed(base: 16);
         expect(printer(1234), '4d2');
@@ -62,6 +57,16 @@ void main() {
         final printer = Printer.fixed(base: 16, characters: '0123456789ABCDEF');
         expect(printer(1234), '4D2');
         expect(printer(123123), '1E0F3');
+      });
+      test('padding', () {
+        final printer = Printer.fixed(padding: 3);
+        expect(printer(1), '001');
+        expect(printer(-12), '-012');
+      });
+      test('separator', () {
+        final printer = Printer.fixed(separator: '.');
+        expect(printer(1234), '1.234');
+        expect(printer(1234567), '1.234.567');
       });
       test('sign', () {
         final printer = Printer.fixed(sign: Printer.negativeAndPositiveSign());
@@ -202,6 +207,20 @@ void main() {
       expect(printer(0.00000000751), '7,510e-9');
       expect(printer(m12), '1,701e38');
     });
+    test('exponentPadding', () {
+      final printer = Printer.scientific(exponentPadding: 3);
+      expect(printer(0), '0.000e000');
+      expect(printer(2), '2.000e000');
+      expect(printer(300), '3.000e002');
+      expect(printer(4321.768), '4.322e003');
+      expect(printer(-53000), '-5.300e004');
+      expect(printer(6720000000), '6.720e009');
+      expect(printer(0.2), '2.000e-001');
+      expect(printer(0.00000000751), '7.510e-009');
+      expect(printer(m12), '1.701e038');
+      expect(printer(double.nan), 'NaN');
+      expect(printer(double.infinity), 'Infinity');
+    });
     test('exponentSign', () {
       final printer =
           Printer.scientific(exponentSign: Printer.negativeAndPositiveSign());
@@ -226,6 +245,20 @@ void main() {
       expect(printer(0.2), '2.000e-1');
       expect(printer(0.00000000751), '7.510e-9');
       expect(printer(m12), '1.701e38');
+    });
+    test('mantissaPadding', () {
+      final printer = Printer.scientific(mantissaPadding: 3);
+      expect(printer(0), '000.000e0');
+      expect(printer(2), '002.000e0');
+      expect(printer(300), '003.000e2');
+      expect(printer(4321.768), '004.322e3');
+      expect(printer(-53000), '-005.300e4');
+      expect(printer(6720000000), '006.720e9');
+      expect(printer(0.2), '002.000e-1');
+      expect(printer(0.00000000751), '007.510e-9');
+      expect(printer(m12), '001.701e38');
+      expect(printer(double.nan), 'NaN');
+      expect(printer(double.infinity), 'Infinity');
     });
     test('mantissaSign', () {
       final printer =

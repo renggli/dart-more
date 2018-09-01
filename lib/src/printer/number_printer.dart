@@ -57,10 +57,10 @@ class FixedNumberPrinter extends Printer {
   final Printer sign;
 
   /// Internal integer printer.
-  final Printer _integerPrinter;
+  final Printer _integer;
 
   /// Internal fraction printer.
-  final Printer _fractionPrinter;
+  final Printer _fraction;
 
   FixedNumberPrinter({
     this.accuracy,
@@ -73,12 +73,12 @@ class FixedNumberPrinter extends Printer {
     this.precision = 0,
     this.separator,
     this.sign = omitPositiveSign,
-  })  : _integerPrinter = Printer.standard()
+  })  : _integer = Printer.standard()
             .mapIf(padding > 0,
-                (printer) => printer.padRight(padding, characters[0]))
+                (printer) => printer.padLeft(padding, characters[0]))
             .mapIf(separator != null,
                 (printer) => printer.separateRight(3, 0, separator)),
-        _fractionPrinter = Printer.standard()
+        _fraction = Printer.standard()
             .mapIf(precision > 0,
                 (printer) => printer.padLeft(precision, characters[0]))
             .mapIf(separator != null,
@@ -113,7 +113,7 @@ class FixedNumberPrinter extends Printer {
 
   String _convertIntegerDigits(Iterable<int> digits) {
     final result = _formatDigits(digits, characters);
-    return _integerPrinter(result);
+    return _integer(result);
   }
 
   String _convertFloat(num value) {
@@ -133,7 +133,7 @@ class FixedNumberPrinter extends Printer {
   String _convertFraction(double value) {
     final digits = _intDigits(value.round(), base);
     final result = _formatDigits(digits, characters);
-    return _fractionPrinter(result);
+    return _fraction(result);
   }
 
   String _convertBigInt(BigInt value) {
@@ -153,11 +153,17 @@ class ScientificNumberPrinter extends Printer {
   /// The delimiter to separate the integer and fraction part of the number.
   final String delimiter;
 
+  /// The number of digits to be printed in the exponent.
+  final int exponentPadding;
+
   /// The string to be prepended if the exponent is positive or negative.
   final Printer exponentSign;
 
   /// The string that should be displayed if the number is infinite.
   final String infinity;
+
+  /// The number of digits to be printed in the mantissa.
+  final int mantissaPadding;
 
   /// The string to be prepended if the mantissa is positive or negative.
   final Printer mantissaSign;
@@ -187,8 +193,10 @@ class ScientificNumberPrinter extends Printer {
     this.base = 10,
     this.characters = lowerCaseDigits,
     this.delimiter = delimiterString,
+    this.exponentPadding = 0,
     this.exponentSign = omitPositiveSign,
     this.infinity = infinityString,
+    this.mantissaPadding = 0,
     this.mantissaSign = omitPositiveSign,
     this.nan = nanString,
     this.notation = notationString,
@@ -201,6 +209,7 @@ class ScientificNumberPrinter extends Printer {
           delimiter: delimiter,
           infinity: infinity,
           nan: nan,
+          padding: mantissaPadding,
           precision: precision,
           separator: separator,
           sign: mantissaSign,
@@ -208,6 +217,7 @@ class ScientificNumberPrinter extends Printer {
         _exponent = Printer.fixed(
           base: base,
           characters: characters,
+          padding: exponentPadding,
           separator: separator,
           sign: exponentSign,
         );
