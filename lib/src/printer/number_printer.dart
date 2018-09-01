@@ -12,6 +12,18 @@ const lowerCaseDigits = '0123456789abcdefghijklmnopqrstuvwxyz';
 /// Upper-case digits and letters by increasing value.
 const upperCaseDigits = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ';
 
+/// Default string for number delimiters.
+const delimiterString = '.';
+
+/// Default string for infinite values.
+const infinityString = 'Infinity';
+
+/// Default string for NaN values.
+const nanString = 'NaN';
+
+/// Default string for exponent notation.
+const notationString = 'e';
+
 /// Prints numbers in a fixed format.
 class FixedNumberPrinter extends Printer {
   /// Round towards the nearest number that is a multiple of accuracy.
@@ -38,16 +50,16 @@ class FixedNumberPrinter extends Printer {
   /// The separator character to be used to group digits.
   final String separator;
 
-  /// The string to be prepended if the number is positive or negative.
+  /// The printer used for negative or positive numbers.
   final Printer sign;
 
   FixedNumberPrinter({
     this.accuracy,
     this.base = 10,
     this.characters = lowerCaseDigits,
-    this.delimiter = '.',
-    this.infinity = 'Infinity',
-    this.nan = 'NaN',
+    this.delimiter = delimiterString,
+    this.infinity = infinityString,
+    this.nan = nanString,
     this.precision = 0,
     this.separator,
     this.sign = omitPositiveSign,
@@ -87,7 +99,7 @@ class FixedNumberPrinter extends Printer {
 
   String _convertFloat(num value) {
     final buffer = StringBuffer();
-    final multiplier = math.pow(base, precision);
+    final multiplier = math.pow(base.toDouble(), precision.toDouble());
     final rounding = accuracy ?? 1.0 / multiplier;
     final rounded = (value / rounding).roundToDouble() * rounding;
     buffer.write(_convertInteger(rounded));
@@ -156,12 +168,12 @@ class ScientificNumberPrinter extends Printer {
   ScientificNumberPrinter({
     this.base = 10,
     this.characters = lowerCaseDigits,
-    this.delimiter = '.',
+    this.delimiter = delimiterString,
     this.exponentSign = omitPositiveSign,
-    this.infinity = 'Infinity',
+    this.infinity = infinityString,
     this.mantissaSign = omitPositiveSign,
-    this.nan = 'NaN',
-    this.notation = 'e',
+    this.nan = nanString,
+    this.notation = notationString,
     this.precision = 3,
     this.separator,
     this.significant = 1,
@@ -193,7 +205,7 @@ class ScientificNumberPrinter extends Printer {
       return _mantissa(value);
     }
     final exponent = _getExponent(value);
-    final mantissa = value / math.pow(base, exponent);
+    final mantissa = value / math.pow(base.toDouble(), exponent.toDouble());
     final buffer = StringBuffer();
     buffer.write(_mantissa(mantissa));
     buffer.write(notation);
@@ -213,9 +225,6 @@ class ScientificNumberPrinter extends Printer {
 
 /// Extracts digits of a positive [value] in the provided [base].
 Iterable<int> _intDigits(int value, int base) {
-  if (value.isNegative) {
-    throw ArgumentError.value(value, 'value', 'Internal value error');
-  }
   if (value == 0) {
     return <int>[0];
   }
@@ -231,9 +240,6 @@ Iterable<int> _intDigits(int value, int base) {
 
 /// Extracts digits of a positive [value] in the provided [base].
 Iterable<int> _bigIntDigits(BigInt value, int base) {
-  if (value.isNegative) {
-    throw ArgumentError.value(value, 'value', 'Internal value error');
-  }
   if (value == BigInt.zero) {
     return <int>[0];
   }

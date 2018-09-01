@@ -41,7 +41,7 @@ void main() {
         expect(printer(1), '+');
       });
     });
-    group('number', () {
+    group('fixed', () {
       group('int', () {
         test('default', () {
           final printer = Printer.fixed();
@@ -148,8 +148,13 @@ void main() {
           expect(printer(BigInt.from(1)), '+1');
         });
       });
+      test('invalid', () {
+        final printer = Printer.fixed();
+        expect(() => printer('invalid'), throwsArgumentError);
+      });
     });
     group('scientific', () {
+      final m12 = BigInt.from(2).pow(127) - BigInt.one;
       test('default', () {
         final printer = Printer.scientific();
         expect(printer(0), '0.000e0');
@@ -160,6 +165,9 @@ void main() {
         expect(printer(6720000000), '6.720e9');
         expect(printer(0.2), '2.000e-1');
         expect(printer(0.00000000751), '7.510e-9');
+        expect(printer(m12), '1.701e38');
+        expect(printer(double.nan), 'NaN');
+        expect(printer(double.infinity), 'Infinity');
       });
       test('base', () {
         final printer = Printer.scientific(base: 16);
@@ -171,6 +179,7 @@ void main() {
         expect(printer(6720000000), '1.909e8');
         expect(printer(0.2), '3.333e-1');
         expect(printer(0.00000000751), '2.041e-7');
+        expect(printer(m12), '8.000e1f');
       });
       test('characters', () {
         final printer =
@@ -183,6 +192,7 @@ void main() {
         expect(printer(6720000000), '1.909e8');
         expect(printer(0.2), '3.333e-1');
         expect(printer(0.00000000751), '2.041e-7');
+        expect(printer(m12), '8.000e1F');
       });
       test('delimiter', () {
         final printer = Printer.scientific(delimiter: ',');
@@ -194,6 +204,7 @@ void main() {
         expect(printer(6720000000), '6,720e9');
         expect(printer(0.2), '2,000e-1');
         expect(printer(0.00000000751), '7,510e-9');
+        expect(printer(m12), '1,701e38');
       });
       test('exponentSign', () {
         final printer =
@@ -206,6 +217,7 @@ void main() {
         expect(printer(6720000000), '6.720e+9');
         expect(printer(0.2), '2.000e-1');
         expect(printer(0.00000000751), '7.510e-9');
+        expect(printer(m12), '1.701e+38');
       });
       test('infinity', () {
         final printer = Printer.scientific(infinity: 'huge');
@@ -217,6 +229,7 @@ void main() {
         expect(printer(6720000000), '6.720e9');
         expect(printer(0.2), '2.000e-1');
         expect(printer(0.00000000751), '7.510e-9');
+        expect(printer(m12), '1.701e38');
       });
       test('mantissaSign', () {
         final printer =
@@ -229,6 +242,7 @@ void main() {
         expect(printer(6720000000), '+6.720e9');
         expect(printer(0.2), '+2.000e-1');
         expect(printer(0.00000000751), '+7.510e-9');
+        expect(printer(m12), '+1.701e38');
       });
       test('nan', () {
         final printer = Printer.scientific(nan: 'n/a');
@@ -240,6 +254,7 @@ void main() {
         expect(printer(6720000000), '6.720e9');
         expect(printer(0.2), '2.000e-1');
         expect(printer(0.00000000751), '7.510e-9');
+        expect(printer(m12), '1.701e38');
       });
       test('notation', () {
         final printer = Printer.scientific(notation: 'E');
@@ -251,6 +266,7 @@ void main() {
         expect(printer(6720000000), '6.720E9');
         expect(printer(0.2), '2.000E-1');
         expect(printer(0.00000000751), '7.510E-9');
+        expect(printer(m12), '1.701E38');
       });
       test('precision', () {
         final printer = Printer.scientific(precision: 6);
@@ -262,17 +278,20 @@ void main() {
         expect(printer(6720000000), '6.720000e9');
         expect(printer(0.2), '2.000000e-1');
         expect(printer(0.00000000751), '7.510000e-9');
+        expect(printer(m12), '1.701412e38');
       });
       test('separator', () {
-        final printer = Printer.scientific(separator: ' ');
-        expect(printer(0), '0.000e0');
-        expect(printer(2), '2.000e0');
-        expect(printer(300), '3.000e2');
-        expect(printer(4321.768), '4.322e3');
-        expect(printer(-53000), '-5.300e4');
-        expect(printer(6720000000), '6.720e9');
-        expect(printer(0.2), '2.000e-1');
-        expect(printer(0.00000000751), '7.510e-9');
+        final printer =
+            Printer.scientific(precision: 4, separator: ',', significant: 4);
+        expect(printer(0), '0.000,0e0');
+        expect(printer(2), '2,000.000,0e-3');
+        expect(printer(300), '3,000.000,0e-1');
+        expect(printer(4321.768), '4,321.768,0e0');
+        expect(printer(-53000), '-5,300.000,0e1');
+        expect(printer(6720000000), '6,720.000,0e6');
+        expect(printer(0.2), '2,000.000,0e-4');
+        expect(printer(0.00000000751), '7,510.000,0e-12');
+        expect(printer(m12), '1,701.411,8e35');
       });
       test('significant', () {
         final printer = Printer.scientific(significant: 3);
@@ -284,6 +303,11 @@ void main() {
         expect(printer(6720000000), '672.000e7');
         expect(printer(0.2), '200.000e-3');
         expect(printer(0.00000000751), '751.000e-11');
+        expect(printer(m12), '170.141e36');
+      });
+      test('invalid', () {
+        final printer = Printer.scientific();
+        expect(() => printer('invalid'), throwsArgumentError);
       });
     });
   });
