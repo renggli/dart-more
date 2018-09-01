@@ -40,6 +40,7 @@ abstract class Printer {
     String delimiter,
     String infinity,
     String nan,
+    int padding,
     int precision,
     String separator,
     Printer sign,
@@ -60,7 +61,8 @@ abstract class Printer {
     int significant,
   }) = ScientificNumberPrinter;
 
-  factory Printer.wrap(Object object) {
+  /// Prints the object using an appropriate printer.
+  factory Printer.of(Object object) {
     if (object is Printer) {
       return object;
     } else if (object is ToString) {
@@ -112,6 +114,11 @@ abstract class Printer {
   Printer separateRight(int width, int offset, String separator) =>
       SeparateRightPrinter(this, width, offset, separator);
 
+  /// Concatenates this printer with [other].
   Printer operator +(Object other) =>
-      SequencePrinter([]..add(this)..add(Printer.wrap(other)));
+      SequencePrinter([]..add(this)..add(Printer.of(other)));
+
+  /// Helper to modify a printer with [callback], if a [condition] is met.
+  Printer mapIf(bool condition, Printer callback(Printer printer)) =>
+      condition ? callback(this) : this;
 }

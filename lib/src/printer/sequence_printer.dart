@@ -11,7 +11,7 @@ class SequencePrinter extends Printer {
   @override
   Printer operator +(Object other) => SequencePrinter([]
     ..addAll(printers)
-    ..add(Printer.wrap(other)));
+    ..add(Printer.of(other)));
 
   @override
   String call(Object object) {
