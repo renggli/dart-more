@@ -1,7 +1,5 @@
 library more.iterable.indexed;
 
-import 'dart:collection' show IterableBase;
-
 /// Returns a [Indexed] iterable
 ///
 /// By default the index is zero based, but an arbitrary [offset] can be
@@ -17,8 +15,10 @@ import 'dart:collection' show IterableBase;
 ///
 ///     'a-1, b-2'
 ///
-Iterable<Indexed<E>> indexed<E>(Iterable<E> iterable, {int offset = 0}) {
-  return IndexedIterable<E>(iterable, offset);
+Iterable<Indexed<E>> indexed<E>(Iterable<E> elements, {int offset = 0}) sync* {
+  for (var element in elements) {
+    yield Indexed<E>(offset++, element);
+  }
 }
 
 /// An indexed value.
@@ -33,37 +33,4 @@ class Indexed<E> {
 
   @override
   String toString() => '$index: $value';
-}
-
-class IndexedIterable<E> extends IterableBase<Indexed<E>> {
-  final Iterable<E> iterable;
-  final int offset;
-
-  IndexedIterable(this.iterable, this.offset);
-
-  @override
-  Iterator<Indexed<E>> get iterator =>
-      IndexedIterator<E>(iterable.iterator, offset);
-}
-
-class IndexedIterator<E> extends Iterator<Indexed<E>> {
-  final Iterator<E> iterable;
-
-  int index;
-
-  IndexedIterator(this.iterable, this.index);
-
-  @override
-  Indexed<E> current;
-
-  @override
-  bool moveNext() {
-    if (iterable.moveNext()) {
-      current = Indexed<E>(index++, iterable.current);
-      return true;
-    } else {
-      current = null;
-      return false;
-    }
-  }
 }
