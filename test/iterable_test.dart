@@ -682,4 +682,51 @@ void main() {
       expect(unique([1, 2, 3, 3, 2, 1]), [1, 2, 3]);
     });
   });
+  group('window', () {
+    test('2', () {
+      expect(() => window([1], 2), throwsRangeError);
+      expect(window([1, 2], 2), [
+        [1, 2],
+      ]);
+      expect(window([1, 2, 3], 2), [
+        [1, 2],
+        [2, 3],
+      ]);
+      expect(window([1, 2, 3, 4], 2), [
+        [1, 2],
+        [2, 3],
+        [3, 4],
+      ]);
+    });
+    test('3', () {
+      expect(() => window([1, 2], 3), throwsRangeError);
+      expect(window([1, 2, 3], 3), [
+        [1, 2, 3],
+      ]);
+      expect(window([1, 2, 3, 4], 3), [
+        [1, 2, 3],
+        [2, 3, 4]
+      ]);
+      expect(window([1, 2, 3, 4, 5], 3), [
+        [1, 2, 3],
+        [2, 3, 4],
+        [3, 4, 5],
+      ]);
+    });
+    test('4', () {
+      expect(() => window([1, 2, 3], 4), throwsRangeError);
+      expect(window([1, 2, 3, 4], 4), [
+        [1, 2, 3, 4],
+      ]);
+      expect(window([1, 2, 3, 4, 5], 4), [
+        [1, 2, 3, 4],
+        [2, 3, 4, 5],
+      ]);
+      expect(window([1, 2, 3, 4, 5, 6], 4), [
+        [1, 2, 3, 4],
+        [2, 3, 4, 5],
+        [3, 4, 5, 6],
+      ]);
+    });
+  });
 }
