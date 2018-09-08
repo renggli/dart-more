@@ -1,9 +1,6 @@
 library more.iterable.unique;
 
-import 'dart:collection' show IterableBase, HashSet;
-
-typedef bool Equality<E>(E a, E b);
-typedef int Hash<E>(E a);
+import 'dart:collection' show HashSet;
 
 /// Returns a lazy iterable that filters out duplicates from the [Iterator].
 /// If [equals] and [hashCode] are omitted, the iterator uses the objects'
@@ -14,20 +11,11 @@ typedef int Hash<E>(E a);
 ///     unique([1, 2, 3, 2, 4])
 ///
 Iterable<E> unique<E>(Iterable<E> iterable,
-    {Equality<E> equals, Hash<E> hashCode}) {
-  return UniqueIterable<E>(iterable, equals, hashCode);
-}
-
-class UniqueIterable<E> extends IterableBase<E> {
-  final Iterable<E> iterable;
-  final Equality<E> equals;
-  final Hash<E> hash;
-
-  UniqueIterable(this.iterable, this.equals, this.hash);
-
-  @override
-  Iterator<E> get iterator {
-    var uniques = HashSet(equals: equals, hashCode: hash);
-    return iterable.where((element) => uniques.add(element)).iterator;
+    {bool equals(E e1, E e2), int hashCode(E e)}) sync* {
+  final uniques = HashSet(equals: equals, hashCode: hashCode);
+  for (var element in iterable) {
+    if (uniques.add(element)) {
+      yield element;
+    }
   }
 }
