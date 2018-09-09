@@ -1,7 +1,5 @@
 library more.iterable.permutations;
 
-import 'dart:collection' show IterableBase;
-
 /// Returns an iterable over the permutations of [elements]. The permutations
 /// are emitted in lexicographical order based on the input.
 ///
@@ -13,70 +11,38 @@ Iterable<List<E>> permutations<E>(Iterable<E> elements) {
   if (elements.isEmpty) {
     return const Iterable.empty();
   } else {
-    return PermutationIterable<E>(elements.toList(growable: false));
+    return _permutations(elements.toList(growable: false));
   }
 }
 
-class PermutationIterable<E> extends IterableBase<List<E>> {
-  final List<E> elements;
-
-  PermutationIterable(this.elements);
-
-  @override
-  Iterator<List<E>> get iterator => PermutationIterator<E>(elements);
-}
-
-class PermutationIterator<E> extends Iterator<List<E>> {
-  final List<E> elements;
-
-  List<int> state;
-  bool completed = false;
-
-  PermutationIterator(this.elements);
-
-  @override
-  List<E> current;
-
-  @override
-  bool moveNext() {
-    if (completed) {
-      return false;
-    } else if (current == null) {
-      state = List<int>(elements.length);
-      current = List<E>(elements.length);
-      for (var i = 0; i < state.length; i++) {
-        state[i] = i;
-        current[i] = elements[i];
-      }
-      return true;
-    } else {
-      var k = state.length - 2;
-      while (k >= 0 && state[k] > state[k + 1]) {
-        k--;
-      }
-      if (k == -1) {
-        state = null;
-        current = null;
-        completed = true;
-        return false;
-      }
-      var l = state.length - 1;
-      while (state[k] > state[l]) {
-        l--;
-      }
-      swap(k, l);
-      for (var i = k + 1, j = state.length - 1; i < j; i++, j--) {
-        swap(i, j);
-      }
-      return true;
+Iterable<List<E>> _permutations<E>(List<E> elements) sync* {
+  final indexes = List.generate(elements.length, (i) => i);
+  final current = List.generate(elements.length, (i) => elements[i]);
+  do {
+    yield current;
+    var k = indexes.length - 2;
+    while (k >= 0 && indexes[k] > indexes[k + 1]) {
+      k--;
     }
-  }
+    if (k == -1) {
+      break;
+    }
+    var l = indexes.length - 1;
+    while (indexes[k] > indexes[l]) {
+      l--;
+    }
+    _swap(elements, indexes, current, k, l);
+    for (var i = k + 1, j = indexes.length - 1; i < j; i++, j--) {
+      _swap(elements, indexes, current, i, j);
+    }
+  } while (true);
+}
 
-  void swap(int i, int j) {
-    var temp = state[i];
-    state[i] = state[j];
-    state[j] = temp;
-    current[i] = elements[state[i]];
-    current[j] = elements[state[j]];
-  }
+void _swap<E>(
+    List<E> elements, List<int> indexes, List<E> current, int i, int j) {
+  var temp = indexes[i];
+  indexes[i] = indexes[j];
+  indexes[j] = temp;
+  current[i] = elements[indexes[i]];
+  current[j] = elements[indexes[j]];
 }
