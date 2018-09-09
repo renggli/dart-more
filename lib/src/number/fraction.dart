@@ -1,17 +1,16 @@
-/// Support for exact rational number arithmetic.
-library more.fraction;
+library more.number.fraction;
 
 import 'package:more/src/int_math/gcd.dart';
 
 /// A rational number.
 class Fraction implements Comparable<Fraction> {
-  /// The neutral additive element, i.e. `0`.
+  /// The neutral additive element, that is `0`.
   static const Fraction zero = Fraction._(0, 1);
 
-  /// The neutral multiplicative element, i.e. `1`.
+  /// The neutral multiplicative element, that is `1`.
   static const Fraction one = Fraction._(1, 1);
 
-  /// Constructs a fraction from a [numerator] and an optional [denominator].
+  /// Creates a fraction from a [numerator] and an optional [denominator].
   factory Fraction(int numerator, [int denominator = 1]) {
     if (numerator == null || denominator == null) {
       throw ArgumentError('Null numerator or denominator passed to fraction.');
@@ -26,7 +25,7 @@ class Fraction implements Comparable<Fraction> {
     return Fraction._(numerator ~/ d, denominator ~/ d);
   }
 
-  /// Constructs an approximate fraction from a floating point [value].
+  /// Creates an approximate fraction from a floating point [value].
   factory Fraction.fromDouble(num value, [num maxDenominator = 1e10]) {
     if (value.isInfinite || value.isNaN) {
       throw ArgumentError('$value cannot be represented as fraction');
@@ -58,45 +57,64 @@ class Fraction implements Comparable<Fraction> {
     return Fraction(sign * numerator1, denominator1);
   }
 
-  final int numerator;
-  final int denominator;
-
+  /// Internal constructor for fractions.
   const Fraction._(this.numerator, this.denominator);
 
+  /// Returns the numerator of the fraction.
+  final int numerator;
+
+  /// Returns the denominator of the fraction.
+  final int denominator;
+
+  /// Returns the sum of this fraction and [other].
   Fraction operator +(Fraction other) => Fraction(
       numerator * other.denominator + other.numerator * denominator,
       denominator * other.denominator);
 
+  /// Returns the difference of this fraction and [other].
   Fraction operator -(Fraction other) => Fraction(
       numerator * other.denominator - other.numerator * denominator,
       denominator * other.denominator);
 
+  /// Returns the multiplication of this fraction and [other].
   Fraction operator *(Fraction other) =>
       Fraction(numerator * other.numerator, denominator * other.denominator);
 
+  /// Returns the division of this fraction and [other].
   Fraction operator /(Fraction other) =>
       Fraction(numerator * other.denominator, denominator * other.numerator);
 
+  /// Returns the negation of this fraction.
   Fraction operator -() => Fraction._(-numerator, denominator);
 
+  /// Tests if this fraction is not defined.
   bool get isNaN => false;
 
+  /// Tests if this fraction is negative.
   bool get isNegative => numerator.isNegative;
 
+  /// Tests if this fraction is infinite.
   bool get isInfinite => false;
 
+  /// Returns he absolute value of this fraction.
   Fraction abs() => isNegative ? -this : this;
 
+  /// Rounds this fraction to an integer.
   int round() => toDouble().round();
 
+  /// Floors this fraction to an integer.
   int floor() => toDouble().floor();
 
+  /// Ceils this fraction to an integer.
   int ceil() => toDouble().ceil();
 
+  /// Truncates this fraction to an integer.
   int truncate() => toDouble().truncate();
 
+  /// Converts this fraction to an integer.
   int toInt() => numerator ~/ denominator;
 
+  /// Converts this fraction to a double.
   double toDouble() => numerator / denominator;
 
   @override

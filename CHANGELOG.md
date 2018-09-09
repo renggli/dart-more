@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.12.0
+
+* Add the number package.
+  * Move `Fraction` class into this package.
+  * Add support for `Complex` numbers. 
+
 ## 1.11.0
 
 * Add the printer package.

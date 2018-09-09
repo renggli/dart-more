@@ -14,9 +14,9 @@ Various extensions that make Dart a better place:
 - `cache.dart` is a collection of different caching strategies and their expiry policy.
 - `char_matcher.dart` is a model for character classes, their composition and operations on strings.
 - `collection.dart` is a collection of collection types (bi map, bit list, multi set, range, and string).
-- `fraction.dart` provides exact rational number arithmetic.
 - `int_math.dart` is a collection of common mathematical functions on integers.
 - `iterable.dart` is a collection of iterables and iterators.
+- `number.dart` provides fractional and complex arithmetic.
 - `ordering.dart` a fluent interface for building comparator functions.
 - `printer.dart` a fluent interface for configuring sophisticated formatter.
 
@@ -40,9 +40,9 @@ Import one or more of the packages into your Dart code using:
 import 'package:more/cache.dart';
 import 'package:more/char_matcher.dart';
 import 'package:more/collection.dart';
-import 'package:more/fraction.dart';
 import 'package:more/int_math.dart';
 import 'package:more/iterable.dart';
+import 'package:more/number.dart';
 import 'package:more/ordering.dart';
 import 'package:more/printer.dart';
 ```
