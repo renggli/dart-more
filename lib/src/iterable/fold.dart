@@ -15,9 +15,8 @@ import 'package:more/src/iterable/mixins/infinite.dart';
 ///
 ///     [0, 1, 1, 2, 3, 5, ...]
 ///
-Iterable<E> fold<E>(Iterable<E> elements, E Function(List<E>) combine) {
-  return FoldIterable<E>(elements, combine);
-}
+Iterable<E> fold<E>(Iterable<E> elements, E Function(List<E>) combine) =>
+    FoldIterable<E>(elements, combine);
 
 class FoldIterable<E> extends IterableBase<E> with InfiniteIterable<E> {
   final Iterable<E> elements;

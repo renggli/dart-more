@@ -25,9 +25,9 @@ class IntegerRange extends ListBase<int> with UnmodifiableListMixin<int> {
   /// the first two numbers (including the start, but excluding the end) and the
   /// step value. For example, `IntegerRange(1, 7, 2)` yields `<int>[1, 3, 5]`.
   factory IntegerRange([int a, int b, int c]) {
-    int start = 0;
-    int stop = 0;
-    int step = 1;
+    var start = 0;
+    var stop = 0;
+    var step = 1;
     if (c != null) {
       start = a;
       stop = b;
@@ -126,9 +126,8 @@ class IntegerRange extends ListBase<int> with UnmodifiableListMixin<int> {
       isEmpty ? this : IntegerRange._(last, first - step, -step, length);
 
   @override
-  IntegerRange sublist(int startIndex, [int stopIndex]) {
-    return getRange(startIndex, stopIndex ?? length);
-  }
+  IntegerRange sublist(int startIndex, [int stopIndex]) =>
+      getRange(startIndex, stopIndex ?? length);
 
   @override
   IntegerRange getRange(int startIndex, int stopIndex) {

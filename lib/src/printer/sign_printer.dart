@@ -5,13 +5,14 @@ import 'literal_printer.dart';
 import 'utils.dart';
 
 /// A printer that omits the positive sign.
-const omitPositiveSign = SignPrinter();
+const Printer omitPositiveSign = SignPrinter();
 
 /// A printer that puts a leading space, instead of a positive sign.
-const spacePositiveSign = SignPrinter(positive: LiteralPrinter(' '));
+const Printer spacePositiveSign = SignPrinter(positive: LiteralPrinter(' '));
 
 /// A printer that prints a sign for both positive and negative numbers.
-const negativeAndPositiveSign = SignPrinter(positive: LiteralPrinter('+'));
+const Printer negativeAndPositiveSign =
+    SignPrinter(positive: LiteralPrinter('+'));
 
 /// Prints numbers in various formats.
 class SignPrinter extends Printer {

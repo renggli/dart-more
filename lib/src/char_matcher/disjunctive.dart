@@ -7,9 +7,8 @@ import 'package:more/src/char_matcher/none.dart';
 class DisjunctiveCharMatcher extends CharMatcher {
   final List<CharMatcher> matchers;
 
-  factory DisjunctiveCharMatcher(Iterable<CharMatcher> matchers) {
-    return DisjunctiveCharMatcher._(List.from(matchers, growable: false));
-  }
+  factory DisjunctiveCharMatcher(Iterable<CharMatcher> matchers) =>
+      DisjunctiveCharMatcher._(List.from(matchers, growable: false));
 
   const DisjunctiveCharMatcher._(this.matchers);
 
@@ -30,7 +29,5 @@ class DisjunctiveCharMatcher extends CharMatcher {
   }
 
   @override
-  bool match(int value) {
-    return matchers.any((matcher) => matcher.match(value));
-  }
+  bool match(int value) => matchers.any((matcher) => matcher.match(value));
 }

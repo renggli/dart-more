@@ -63,31 +63,21 @@ class Fraction implements Comparable<Fraction> {
 
   const Fraction._(this.numerator, this.denominator);
 
-  Fraction operator +(Fraction other) {
-    return Fraction(
-        numerator * other.denominator + other.numerator * denominator,
-        denominator * other.denominator);
-  }
+  Fraction operator +(Fraction other) => Fraction(
+      numerator * other.denominator + other.numerator * denominator,
+      denominator * other.denominator);
 
-  Fraction operator -(Fraction other) {
-    return Fraction(
-        numerator * other.denominator - other.numerator * denominator,
-        denominator * other.denominator);
-  }
+  Fraction operator -(Fraction other) => Fraction(
+      numerator * other.denominator - other.numerator * denominator,
+      denominator * other.denominator);
 
-  Fraction operator *(Fraction other) {
-    return Fraction(
-        numerator * other.numerator, denominator * other.denominator);
-  }
+  Fraction operator *(Fraction other) =>
+      Fraction(numerator * other.numerator, denominator * other.denominator);
 
-  Fraction operator /(Fraction other) {
-    return Fraction(
-        numerator * other.denominator, denominator * other.numerator);
-  }
+  Fraction operator /(Fraction other) =>
+      Fraction(numerator * other.denominator, denominator * other.numerator);
 
-  Fraction operator -() {
-    return Fraction._(-numerator, denominator);
-  }
+  Fraction operator -() => Fraction._(-numerator, denominator);
 
   bool get isNaN => false;
 
@@ -110,11 +100,10 @@ class Fraction implements Comparable<Fraction> {
   double toDouble() => numerator / denominator;
 
   @override
-  bool operator ==(Object other) {
-    return other is Fraction &&
-        numerator == other.numerator &&
-        denominator == other.denominator;
-  }
+  bool operator ==(Object other) =>
+      other is Fraction &&
+      numerator == other.numerator &&
+      denominator == other.denominator;
 
   @override
   int get hashCode {
@@ -125,10 +114,8 @@ class Fraction implements Comparable<Fraction> {
   }
 
   @override
-  int compareTo(Fraction other) {
-    return (numerator * other.denominator)
-        .compareTo(other.numerator * denominator);
-  }
+  int compareTo(Fraction other) =>
+      (numerator * other.denominator).compareTo(other.numerator * denominator);
 
   bool operator <(Fraction other) => compareTo(other) < 0;
 

@@ -5,9 +5,8 @@ import 'package:more/src/iterable/fold.dart';
 /// Returns an iterable over the fibonacci sequence starting with [f0] and
 /// [f1]. The default sequence is indefinitely long and by default starts
 /// with 0, 1, 1, 2, 3, 5, 8, 13, ...
-Iterable<int> fibonacci([int f0 = 0, int f1 = 1]) {
-  return fold([f0, f1], (args) => args[0] + args[1]);
-}
+Iterable<int> fibonacci([int f0 = 0, int f1 = 1]) =>
+    fold([f0, f1], (args) => args[0] + args[1]);
 
 /// Returns an iterable over the digits of the [value], in the optionally
 /// given [base].

@@ -31,11 +31,10 @@ class BiMap<K, V> extends MapBase<K, V> {
 
   /// Creates a bi-map from an iterable (and possible transformation functions).
   factory BiMap.fromIterable(Iterable iterable,
-      {K key(element), V value(element)}) {
-    return BiMap<K, V>.fromIterables(
-        key == null ? iterable.cast<K>() : iterable.map(key),
-        value == null ? iterable.cast<V>() : iterable.map(value));
-  }
+          {K key(element), V value(element)}) =>
+      BiMap<K, V>.fromIterables(
+          key == null ? iterable.cast<K>() : iterable.map(key),
+          value == null ? iterable.cast<V>() : iterable.map(value));
 
   /// Creates a bi-map from two equal length iterables.
   factory BiMap.fromIterables(Iterable<K> keys, Iterable<V> values) {

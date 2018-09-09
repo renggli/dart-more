@@ -103,14 +103,10 @@ abstract class CharMatcher {
   bool match(int value);
 
   /// Returns `true` if the [sequence] contains only matching characters.
-  bool everyOf(String sequence) {
-    return sequence.codeUnits.every(match);
-  }
+  bool everyOf(String sequence) => sequence.codeUnits.every(match);
 
   /// Returns `true` if the [sequence] contains at least one matching character.
-  bool anyOf(String sequence) {
-    return sequence.codeUnits.any(match);
-  }
+  bool anyOf(String sequence) => sequence.codeUnits.any(match);
 
   /// Returns the first matching index in [sequence], searching backward
   /// starting at [start] (inclusive). Returns `-1` if it could not be found.
@@ -138,9 +134,7 @@ abstract class CharMatcher {
   }
 
   /// Counts the number of matches in [sequence].
-  int countIn(String sequence) {
-    return sequence.codeUnits.where(match).length;
-  }
+  int countIn(String sequence) => sequence.codeUnits.where(match).length;
 
   /// Replaces each group of consecutive matched characters in [sequence]
   /// with the specified [replacement].
@@ -168,20 +162,16 @@ abstract class CharMatcher {
   /// [replacement].
   String replaceFrom(String sequence, String replacement) {
     final replacementCodes = replacement.codeUnits;
-    return String.fromCharCodes(sequence.codeUnits.expand((value) {
-      return match(value) ? replacementCodes : [value];
-    }));
+    return String.fromCharCodes(sequence.codeUnits
+        .expand((value) => match(value) ? replacementCodes : [value]));
   }
 
   /// Removes all matched characters in [sequence].
-  String removeFrom(String sequence) {
-    return (~this).retainFrom(sequence);
-  }
+  String removeFrom(String sequence) => (~this).retainFrom(sequence);
 
   /// Retains all matched characters in [sequence].
-  String retainFrom(String sequence) {
-    return String.fromCharCodes(sequence.codeUnits.where(match));
-  }
+  String retainFrom(String sequence) =>
+      String.fromCharCodes(sequence.codeUnits.where(match));
 
   /// Removes leading and trailing matching characters in [sequence].
   String trimFrom(String sequence) {

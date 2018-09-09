@@ -19,33 +19,39 @@ String throwingLoader(int key) => throw UnsupportedError('$key');
 void statelessCacheTests(
     Cache<int, String> newCache(Loader<int, String> loader)) {
   test('empty', () {
-    return newCache(failingLoader)
+    final cache = newCache(failingLoader);
+    return cache
         .size()
         .then((value) => expect(value, 0, reason: 'cache should be empty'));
   });
   test('no present value', () {
-    return newCache(failingLoader).getIfPresent(1).then((value) =>
+    final cache = newCache(failingLoader);
+    return cache.getIfPresent(1).then((value) =>
         expect(value, isNull, reason: 'there should be no present value'));
   });
   test('load immediate value', () {
-    return newCache(immediateLoader).get(1).then(
+    final cache = newCache(immediateLoader);
+    return cache.get(1).then(
         (value) => expect(value, '1', reason: 'get value should be loaded'));
   });
   test('load future value', () {
-    return newCache(futureLoader).get(1).then(
+    final cache = newCache(futureLoader);
+    return cache.get(1).then(
         (value) => expect(value, '1', reason: 'get value should be loaded'));
   });
   test('load throwing value', () {
-    return newCache(throwingLoader).get(1).then(
-        (value) => fail('expected error'),
+    final cache = newCache(throwingLoader);
+    return cache.get(1).then((value) => fail('expected error'),
         onError: (exception) => expect(exception, isUnsupportedError));
   });
   test('load delayed value', () {
-    return newCache(delayedLoader).get(1).then(
+    final cache = newCache(delayedLoader);
+    return cache.get(1).then(
         (value) => expect(value, '1', reason: 'get value should be loaded'));
   });
   test('set returns value', () {
-    return newCache(failingLoader).set(1, 'foo').then((value) =>
+    final cache = newCache(failingLoader);
+    return cache.set(1, 'foo').then((value) =>
         expect(value, 'foo', reason: 'set value should be returned'));
   });
   test('invalidate empty', () {
@@ -63,7 +69,8 @@ void statelessCacheTests(
         .then((value) => expect(value, 0, reason: 'cache should be empty'));
   });
   test('reap is a no-op', () {
-    return newCache(failingLoader)
+    final cache = newCache(failingLoader);
+    return cache
         .reap()
         .then((size) => expect(size, 0, reason: 'nothing should be gone'));
   });
@@ -213,9 +220,8 @@ void main() {
     });
   });
   group('empty', () {
-    Cache<int, String> newCache(Loader<int, String> loader) {
-      return Cache.empty(loader: loader);
-    }
+    Cache<int, String> newCache(Loader<int, String> loader) =>
+        Cache.empty(loader: loader);
 
     statelessCacheTests(newCache);
     test('missing loader', () {
@@ -223,9 +229,8 @@ void main() {
     });
   });
   group('delegate', () {
-    Cache<int, String> newCache(Loader<int, String> loader) {
-      return DelegateCache(Cache.lru(loader: loader, maximumSize: 5));
-    }
+    Cache<int, String> newCache(Loader<int, String> loader) =>
+        DelegateCache(Cache.lru(loader: loader, maximumSize: 5));
 
     statelessCacheTests(newCache);
     persistentCacheTests(newCache);
@@ -235,19 +240,17 @@ void main() {
     DateTime offsetClock() => DateTime(2000).add(offset);
     setUp(() => offset = Duration.zero);
 
-    Cache<int, String> newUpdateExpireCache(Loader<int, String> loader) {
-      return Cache.expiry(
-          loader: loader,
-          clock: offsetClock,
-          updateExpiry: const Duration(seconds: 20));
-    }
+    Cache<int, String> newUpdateExpireCache(Loader<int, String> loader) =>
+        Cache.expiry(
+            loader: loader,
+            clock: offsetClock,
+            updateExpiry: const Duration(seconds: 20));
 
-    Cache<int, String> newAccessExpireCache(Loader<int, String> loader) {
-      return Cache.expiry(
-          loader: loader,
-          clock: offsetClock,
-          accessExpiry: const Duration(seconds: 20));
-    }
+    Cache<int, String> newAccessExpireCache(Loader<int, String> loader) =>
+        Cache.expiry(
+            loader: loader,
+            clock: offsetClock,
+            accessExpiry: const Duration(seconds: 20));
 
     statelessCacheTests(newUpdateExpireCache);
     persistentCacheTests(newUpdateExpireCache);
@@ -409,9 +412,8 @@ void main() {
     });
   });
   group('lru', () {
-    Cache<int, String> newCache(Loader<int, String> loader) {
-      return Cache.lru(loader: loader, maximumSize: 5);
-    }
+    Cache<int, String> newCache(Loader<int, String> loader) =>
+        Cache.lru(loader: loader, maximumSize: 5);
 
     group('constructors', () {
       test('missing lru', () {
@@ -432,9 +434,8 @@ void main() {
         newCache, 'reused expiry', [0, 1, 2, 3, 4, 0, 1, 5], [0, 1, 3, 4, 5]);
   });
   group('fifo', () {
-    Cache<int, String> newCache(Loader<int, String> loader) {
-      return Cache.fifo(loader: loader, maximumSize: 5);
-    }
+    Cache<int, String> newCache(Loader<int, String> loader) =>
+        Cache.fifo(loader: loader, maximumSize: 5);
 
     group('constructors', () {
       test('missing loader', () {

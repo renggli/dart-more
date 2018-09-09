@@ -26,9 +26,9 @@ Iterable<List<E>> product<E>(Iterable<Iterable<E>> iterables) {
   if (iterables.isEmpty || iterables.any((iterable) => iterable.isEmpty)) {
     return const Iterable.empty();
   } else {
-    return ProductIterable<E>(iterables.map((iterable) {
-      return iterable.toList(growable: false);
-    }).toList(growable: false));
+    return ProductIterable<E>(iterables
+        .map((iterable) => iterable.toList(growable: false))
+        .toList(growable: false));
   }
 }
 
@@ -61,9 +61,8 @@ class ProductIterator<E> extends Iterator<List<E>> {
       return false;
     }
     if (current == null) {
-      current = List<E>.generate(sources.length, (i) {
-        return sources[i][0];
-      }, growable: false);
+      current = List<E>.generate(sources.length, (i) => sources[i][0],
+          growable: false);
       return true;
     }
     for (var i = state.length - 1; i >= 0; i--) {

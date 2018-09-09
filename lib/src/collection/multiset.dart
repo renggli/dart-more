@@ -100,9 +100,8 @@ class Multiset<E> extends IterableBase<E> {
   }
 
   /// Gets the number of occurrences of an [element].
-  int operator [](Object element) {
-    return _container.containsKey(element) ? _container[element] : 0;
-  }
+  int operator [](Object element) =>
+      _container.containsKey(element) ? _container[element] : 0;
 
   /// Sets the number of [occurrences] of an [element].
   ///
@@ -160,15 +159,12 @@ class Multiset<E> extends IterableBase<E> {
 
   /// Returns a new [Multiset] with all the elements of the receiver and those
   /// in [other].
-  Multiset<E> union(Iterable<E> other) {
-    return Multiset<E>.from(this)..addAll(other);
-  }
+  Multiset<E> union(Iterable<E> other) => Multiset<E>.from(this)..addAll(other);
 
   /// Returns a new [Multiset] with all the elements of the receiver that are
   /// not in [other].
-  Multiset<E> difference(Iterable<Object> other) {
-    return Multiset<E>.from(this)..removeAll(other);
-  }
+  Multiset<E> difference(Iterable<Object> other) =>
+      Multiset<E>.from(this)..removeAll(other);
 
   /// Iterator over the repeated elements of the receiver.
   @override

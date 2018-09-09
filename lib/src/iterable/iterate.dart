@@ -18,9 +18,8 @@ typedef E IterateFunction<E>(E value);
 ///
 ///     [0, 1, 2, 3, 4, ...]
 ///
-Iterable<E> iterate<E>(E value, IterateFunction<E> function) {
-  return IterateIterable<E>(value, function);
-}
+Iterable<E> iterate<E>(E value, IterateFunction<E> function) =>
+    IterateIterable<E>(value, function);
 
 class IterateIterable<E> extends IterableBase<E> with InfiniteIterable<E> {
   final E value;

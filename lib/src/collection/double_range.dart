@@ -27,9 +27,9 @@ class DoubleRange extends ListBase<double> with UnmodifiableListMixin<double> {
   /// step value. For example, `DoubleRange(1.0, 7.0, 2.1)` yields
   /// `<double>[1.0, 3.1, 5.2]`.
   factory DoubleRange([double a, double b, double c]) {
-    double start = 0.0;
-    double stop = 0.0;
-    double step = 1.0;
+    var start = 0.0;
+    var stop = 0.0;
+    var step = 1.0;
     if (c != null) {
       start = a;
       stop = b;
@@ -132,9 +132,8 @@ class DoubleRange extends ListBase<double> with UnmodifiableListMixin<double> {
       isEmpty ? this : DoubleRange._(last, first - step, -step, length);
 
   @override
-  DoubleRange sublist(int startIndex, [int stopIndex]) {
-    return getRange(startIndex, stopIndex ?? length);
-  }
+  DoubleRange sublist(int startIndex, [int stopIndex]) =>
+      getRange(startIndex, stopIndex ?? length);
 
   @override
   DoubleRange getRange(int startIndex, int stopIndex) {

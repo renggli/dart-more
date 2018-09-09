@@ -7,22 +7,22 @@ import 'sign_printer.dart';
 import 'utils.dart';
 
 /// Lower-case digits and letters by increasing value.
-const lowerCaseDigits = '0123456789abcdefghijklmnopqrstuvwxyz';
+const String lowerCaseDigits = '0123456789abcdefghijklmnopqrstuvwxyz';
 
 /// Upper-case digits and letters by increasing value.
-const upperCaseDigits = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+const String upperCaseDigits = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ';
 
 /// Default string for number delimiters.
-const delimiterString = '.';
+const String delimiterString = '.';
 
 /// Default string for infinite values.
-const infinityString = 'Infinity';
+const String infinityString = 'Infinity';
 
 /// Default string for NaN values.
-const nanString = 'NaN';
+const String nanString = 'NaN';
 
 /// Default string for exponent notation.
-const notationString = 'e';
+const String notationString = 'e';
 
 /// Prints numbers in a fixed format.
 class FixedNumberPrinter extends Printer {
@@ -88,9 +88,7 @@ class FixedNumberPrinter extends Printer {
   String call(Object object) => _prependSign(
       object, checkNumericType(object, _convertNum, _convertBigInt));
 
-  String _prependSign(Object value, String result) {
-    return '${sign(value)}$result';
-  }
+  String _prependSign(Object value, String result) => '${sign(value)}$result';
 
   String _convertNum(num value) {
     if (value.isNaN) {
@@ -283,6 +281,5 @@ Iterable<int> _bigIntDigits(BigInt value, int base) {
 }
 
 /// Converts an iterable of [digits] to a string using [characters] mapping.
-String _formatDigits(Iterable<int> digits, String characters) {
-  return digits.map((digit) => characters[digit]).join();
-}
+String _formatDigits(Iterable<int> digits, String characters) =>
+    digits.map((digit) => characters[digit]).join();
