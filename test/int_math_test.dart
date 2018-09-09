@@ -38,25 +38,6 @@ void main() {
     expect(binomial(7, 6), 7);
     expect(binomial(7, 7), 1);
   });
-  test('binomial (large)', () {
-    final cache = <int, Map<int, int>>{};
-    int verifyBinomial(int n, int k) {
-      if (k == 0 || k == n) {
-        return 1;
-      } else if (k == 1 || k == n - 1) {
-        return n;
-      } else {
-        return cache.putIfAbsent(n, () => {}).putIfAbsent(
-            k, () => verifyBinomial(n - 1, k - 1) + verifyBinomial(n - 1, k));
-      }
-    }
-
-    for (var n = 0; n <= 60; n++) {
-      for (var k = 0; k <= n; k++) {
-        expect(binomial(n, k), verifyBinomial(n, k));
-      }
-    }
-  }, onPlatform: {'browser': const Skip('64-bit integers')});
   test('binomial (bounds)', () {
     expect(() => binomial(7, -1), throwsArgumentError);
     expect(() => binomial(7, 8), throwsArgumentError);
