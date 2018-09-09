@@ -1,7 +1,5 @@
 library more.iterable.combinations;
 
-import 'dart:collection' show IterableBase;
-
 /// Returns an iterable over the combinations of [elements] of length [count].
 /// The combinations are emitted in lexicographical order based on the input.
 ///
@@ -25,7 +23,6 @@ import 'dart:collection' show IterableBase;
 ///
 Iterable<List<E>> combinations<E>(Iterable<E> elements, int count,
     {bool repetitions = false}) {
-  elements = elements.toList(growable: false);
   if (count < 0) {
     throw RangeError.value(count);
   } else if (!repetitions && elements.length < count) {
@@ -33,116 +30,54 @@ Iterable<List<E>> combinations<E>(Iterable<E> elements, int count,
   } else if (count == 0 || elements.isEmpty) {
     return const Iterable.empty();
   } else if (repetitions) {
-    return CombinationsWithRepetitionsIterable<E>(
+    return _combinationsWithRepetitions<E>(
         elements.toList(growable: false), count);
   } else {
-    return CombinationsWithoutRepetitionsIterable<E>(
+    return _combinationsWithoutRepetitions<E>(
         elements.toList(growable: false), count);
   }
 }
 
-class CombinationsWithRepetitionsIterable<E> extends IterableBase<List<E>> {
-  final List<E> elements;
-  final int count;
-
-  CombinationsWithRepetitionsIterable(this.elements, this.count);
-
-  @override
-  Iterator<List<E>> get iterator {
-    return CombinationsWithRepetitionsIterator<E>(elements, count);
-  }
-}
-
-class CombinationsWithRepetitionsIterator<E> extends Iterator<List<E>> {
-  final List<E> elements;
-  final int count;
-
-  List<int> state;
-  bool completed = false;
-
-  CombinationsWithRepetitionsIterator(this.elements, this.count);
-
-  @override
-  List<E> current;
-
-  @override
-  bool moveNext() {
-    if (completed) {
-      return false;
-    } else if (current == null) {
-      state = List<int>.filled(count, 0);
-      current = List<E>.filled(count, elements[0]);
-      return true;
-    } else {
-      for (var i = count - 1; i >= 0; i--) {
-        var index = state[i] + 1;
-        if (index < elements.length) {
-          for (var j = i; j < count; j++) {
-            state[j] = index;
-            current[j] = elements[index];
-          }
-          return true;
+Iterable<List<E>> _combinationsWithRepetitions<E>(
+    List<E> elements, int count) sync* {
+  final indices = List.filled(count, 0);
+  final current = List.filled(count, elements[0]);
+  var hasMore = false;
+  do {
+    yield current;
+    hasMore = false;
+    for (var i = count - 1; i >= 0; i--) {
+      var index = indices[i] + 1;
+      if (index < elements.length) {
+        for (var j = i; j < count; j++) {
+          indices[j] = index;
+          current[j] = elements[index];
         }
+        hasMore = true;
+        break;
       }
-      state = null;
-      current = null;
-      completed = true;
-      return false;
     }
-  }
+  } while (hasMore);
 }
 
-class CombinationsWithoutRepetitionsIterable<E> extends IterableBase<List<E>> {
-  final List<E> elements;
-  final int count;
-
-  CombinationsWithoutRepetitionsIterable(this.elements, this.count);
-
-  @override
-  Iterator<List<E>> get iterator {
-    return CombinationsWithoutRepetitionsIterator<E>(elements, count);
-  }
-}
-
-class CombinationsWithoutRepetitionsIterator<E> extends Iterator<List<E>> {
-  final List<E> elements;
-  final int count;
-
-  List<int> state;
-  bool completed = false;
-
-  CombinationsWithoutRepetitionsIterator(this.elements, this.count);
-
-  @override
-  List<E> current;
-
-  @override
-  bool moveNext() {
-    if (completed) {
-      return false;
-    } else if (current == null) {
-      state = List<int>(count);
-      current = List<E>(count);
-      for (var i = 0; i < count; i++) {
-        state[i] = i;
-        current[i] = elements[i];
-      }
-      return true;
-    } else {
-      for (var i = count - 1; i >= 0; i--) {
-        var index = state[i];
-        if (index + count - i < elements.length) {
-          for (var j = i; j < count; j++) {
-            state[j] = index + j - i + 1;
-            current[j] = elements[state[j]];
-          }
-          return true;
+Iterable<List<E>> _combinationsWithoutRepetitions<E>(
+    List<E> elements, int count) sync* {
+  final indices = List.generate(count, (i) => i);
+  final current = List.generate(count, (i) => elements[i]);
+  var hasMore = false;
+  do {
+    yield current;
+    hasMore = false;
+    for (var i = count - 1; i >= 0; i--) {
+      var index = indices[i];
+      if (index + count - i < elements.length) {
+        for (var j = i; j < count; j++) {
+          indices[j] = index + j - i + 1;
+          current[j] = elements[indices[j]];
         }
+        hasMore = true;
+        break;
       }
-      state = null;
-      current = null;
-      completed = true;
-      return false;
     }
-  }
+  } while (hasMore);
 }

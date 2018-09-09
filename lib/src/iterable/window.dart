@@ -6,17 +6,20 @@ library more.iterable.window;
 ///
 ///     window([1, 2, 3, 4, 5], 2);
 Iterable<List<E>> window<E>(Iterable<E> elements, int size) sync* {
+  if (size < 1) {
+    throw RangeError.value(size, 'size', 'window size must be positive');
+  }
   final iterator = elements.iterator;
-  final result = List.generate<E>(
+  final current = List.generate<E>(
       size,
       (index) => iterator.moveNext()
           ? iterator.current
           : throw RangeError.index(index, elements, 'iterable'),
       growable: false);
-  yield result;
+  yield current;
   while (iterator.moveNext()) {
-    result.setRange(0, size - 1, result, 1);
-    result.last = iterator.current;
-    yield result;
+    current.setRange(0, size - 1, current, 1);
+    current.last = iterator.current;
+    yield current;
   }
 }

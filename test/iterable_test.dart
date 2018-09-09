@@ -683,6 +683,24 @@ void main() {
     });
   });
   group('window', () {
+    test('0', () {
+      expect(() => window([1], 0), throwsRangeError);
+    });
+    test('1', () {
+      expect(() => window([], 1), throwsRangeError);
+      expect(window([1], 1), [
+        [1],
+      ]);
+      expect(window([1, 2], 1), [
+        [1],
+        [2],
+      ]);
+      expect(window([1, 2, 3], 1), [
+        [1],
+        [2],
+        [3],
+      ]);
+    });
     test('2', () {
       expect(() => window([1], 2), throwsRangeError);
       expect(window([1, 2], 2), [

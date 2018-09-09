@@ -7,14 +7,14 @@ library more.iterable.partition;
 ///
 ///     partition([1, 2, 3, 4, 5], 2);
 Iterable<List<E>> partition<E>(Iterable<E> elements, int size) sync* {
-  final result = <E>[];
+  final current = <E>[];
   final iterator = elements.iterator;
   while (iterator.moveNext()) {
     do {
-      result.add(iterator.current);
-    } while (result.length < size && iterator.moveNext());
-    yield result;
-    result.clear();
+      current.add(iterator.current);
+    } while (current.length < size && iterator.moveNext());
+    yield current;
+    current.clear();
   }
 }
 
@@ -26,16 +26,16 @@ Iterable<List<E>> partition<E>(Iterable<E> elements, int size) sync* {
 ///     partition([1, 2, 3, 4, 5], 2, -1);
 Iterable<Iterable<E>> partitionWithPadding<E>(Iterable<E> elements, int size,
     [E padding]) sync* {
-  final result = <E>[];
+  final current = <E>[];
   final iterator = elements.iterator;
   while (iterator.moveNext()) {
     do {
-      result.add(iterator.current);
-    } while (result.length < size && iterator.moveNext());
-    while (result.length < size) {
-      result.add(padding);
+      current.add(iterator.current);
+    } while (current.length < size && iterator.moveNext());
+    while (current.length < size) {
+      current.add(padding);
     }
-    yield result;
-    result.clear();
+    yield current;
+    current.clear();
   }
 }
