@@ -16,7 +16,7 @@ List<bool> randomBooleans(int seed, int length) {
 
 void main() {
   group('bi-map', () {
-    final example = BiMap.from({1: 'a', 2: 'b', 3: 'c'});
+    final example = BiMap.of({1: 'a', 2: 'b', 3: 'c'});
     group('construction', () {
       test('empty', () {
         final target = BiMap();
@@ -25,36 +25,47 @@ void main() {
         expect(target.isNotEmpty, isFalse);
         expect(target, hasLength(0));
       });
-      test('idenity', () {
+      test('identity', () {
         final target = BiMap.identity();
         expect(target, isEmpty);
         expect(target.isEmpty, isTrue);
         expect(target.isNotEmpty, isFalse);
         expect(target, hasLength(0));
       });
-      test('copy', () {
+      test('of', () {
+        final target = BiMap.of(example);
+        expect(target.keys, [1, 2, 3]);
+        expect(target.values, ['a', 'b', 'c']);
+      });
+      test('from', () {
         final target = BiMap.from(example);
         expect(target.keys, [1, 2, 3]);
         expect(target.values, ['a', 'b', 'c']);
       });
       test('iterable', () {
-        final target1 = BiMap.fromIterable(example.keys);
-        expect(target1.keys, [1, 2, 3]);
-        expect(target1.values, [1, 2, 3]);
-        final target2 = BiMap.fromIterable(example.keys, key: (e) => e + 1);
-        expect(target2.keys, [2, 3, 4]);
-        expect(target2.values, [1, 2, 3]);
-        final target3 = BiMap.fromIterable(example.keys, value: (e) => e + 1);
-        expect(target3.keys, [1, 2, 3]);
-        expect(target3.values, [2, 3, 4]);
+        final target = BiMap.fromIterable(example.keys);
+        expect(target.keys, [1, 2, 3]);
+        expect(target.values, [1, 2, 3]);
+      });
+      test('iterable (key)', () {
+        final target = BiMap.fromIterable(example.keys, key: (e) => e + 1);
+        expect(target.keys, [2, 3, 4]);
+        expect(target.values, [1, 2, 3]);
+      });
+      test('iterable (value)', () {
+        final target = BiMap.fromIterable(example.keys, value: (e) => e + 1);
+        expect(target.keys, [1, 2, 3]);
+        expect(target.values, [2, 3, 4]);
       });
       test('iterables', () {
-        final target1 = BiMap.fromIterables(example.keys, example.values);
-        expect(target1.keys, [1, 2, 3]);
-        expect(target1.values, ['a', 'b', 'c']);
-        final target2 = BiMap.fromIterables(example.values, example.keys);
-        expect(target2.keys, ['a', 'b', 'c']);
-        expect(target2.values, [1, 2, 3]);
+        final target = BiMap.fromIterables(example.keys, example.values);
+        expect(target.keys, [1, 2, 3]);
+        expect(target.values, ['a', 'b', 'c']);
+      });
+      test('iterables (reverse)', () {
+        final target = BiMap.fromIterables(example.values, example.keys);
+        expect(target.keys, ['a', 'b', 'c']);
+        expect(target.values, [1, 2, 3]);
       });
       test('iterables (error)', () {
         expect(() => BiMap.fromIterables([1], []), throwsArgumentError);
@@ -91,7 +102,7 @@ void main() {
         expect(example.inverse.containsValue('b'), isFalse);
       });
       test('inverse updates', () {
-        final target = BiMap.from(example);
+        final target = BiMap.of(example);
         final inverse = target.inverse;
         target[4] = 'd';
         expect(inverse['d'], 4, reason: 'inverse sees addition');
@@ -103,7 +114,7 @@ void main() {
         expect(target[4], isNull, reason: 'inverse updates target');
       });
       test('forward updates', () {
-        final target = BiMap.from(example);
+        final target = BiMap.of(example);
         final forward = target.forward;
         target[4] = 'd';
         expect(forward[4], 'd', reason: 'inverse sees addition');
@@ -115,7 +126,7 @@ void main() {
         expect(target[4], isNull, reason: 'inverse updates target');
       });
       test('backward udpates', () {
-        final target = BiMap.from(example);
+        final target = BiMap.of(example);
         final backward = target.backward;
         target[4] = 'd';
         expect(backward['d'], 4, reason: 'inverse sees addition');
@@ -151,25 +162,25 @@ void main() {
         expect(target.values, [1]);
       });
       test('redefine key to new value', () {
-        final target = BiMap.from(example);
+        final target = BiMap.of(example);
         target[2] = 'd';
         expect(target.keys, [1, 3, 2]);
         expect(target.values, ['a', 'c', 'd']);
       });
       test('redefine value to new key', () {
-        final target = BiMap.from(example);
+        final target = BiMap.of(example);
         target[4] = 'b';
         expect(target.keys, [1, 3, 4]);
         expect(target.values, ['a', 'c', 'b']);
       });
       test('redefine key and value', () {
-        final target = BiMap.from(example);
+        final target = BiMap.of(example);
         target[1] = 'c';
         expect(target.keys, [2, 1]);
         expect(target.values, ['b', 'c']);
       });
       test('remove key', () {
-        final target = BiMap.from(example);
+        final target = BiMap.of(example);
         expect(target.remove(2), 'b');
         expect(target.keys, [1, 3]);
         expect(target.values, ['a', 'c']);
@@ -177,7 +188,7 @@ void main() {
         expect(target.inverse.values, [1, 3]);
       });
       test('remove value', () {
-        final target = BiMap.from(example);
+        final target = BiMap.of(example);
         expect(target.inverse.remove('b'), 2);
         expect(target.keys, [1, 3]);
         expect(target.values, ['a', 'c']);
@@ -185,13 +196,13 @@ void main() {
         expect(target.inverse.values, [1, 3]);
       });
       test('clear', () {
-        final target = BiMap.from(example);
+        final target = BiMap.of(example);
         target.clear();
         expect(target, isEmpty);
         expect(target.inverse, isEmpty);
       });
       test('define if absent', () {
-        final target = BiMap.from(example);
+        final target = BiMap.of(example);
         target.putIfAbsent(1, () => fail('Value already present!'));
         target.putIfAbsent(4, () => 'd');
         expect(target[4], 'd');
@@ -232,24 +243,32 @@ void main() {
       });
       test('from List', () {
         for (var len = 0; len < 100; len++) {
-          final source = List<bool>.from(randomBooleans(457 * len, len));
+          final source = List<bool>.of(randomBooleans(457 * len, len));
           final target = BitList.from(source);
           expect(source, target);
           expect(source, target.toList());
         }
       });
-      test('from Set', () {
+      test('of List', () {
         for (var len = 0; len < 100; len++) {
-          final source = Set<bool>.from(randomBooleans(827 * len, len));
-          final target = BitList.from(source);
+          final source = List<bool>.of(randomBooleans(457 * len, len));
+          final target = BitList.of(source);
+          expect(source, target);
+          expect(source, target.toList());
+        }
+      });
+      test('of Set', () {
+        for (var len = 0; len < 100; len++) {
+          final source = Set<bool>.of(randomBooleans(827 * len, len));
+          final target = BitList.of(source);
           expect(source, target);
           expect(source, target.toSet());
         }
       });
-      test('from BitList', () {
+      test('of BitList', () {
         for (var len = 0; len < 10; len++) {
-          final source = Set<bool>.from(randomBooleans(287 * len, len));
-          final target = BitList.from(source);
+          final source = Set<bool>.of(randomBooleans(287 * len, len));
+          final target = BitList.of(source);
           expect(source, target);
           expect(target, source);
         }
@@ -259,7 +278,7 @@ void main() {
       test('reading', () {
         for (var len = 0; len < 100; len++) {
           final source = randomBooleans(135 * len, len);
-          final target = BitList.from(source);
+          final target = BitList.of(source);
           expect(() => target[-1], throwsRangeError);
           for (var i = 0; i < len; i++) {
             expect(target[i], source[i]);
@@ -282,7 +301,7 @@ void main() {
       });
       test('flipping', () {
         for (var len = 0; len < 100; len++) {
-          final source = BitList.from(randomBooleans(385 * len, len));
+          final source = BitList.of(randomBooleans(385 * len, len));
           final target = ~source;
           expect(() => target.flip(-1), throwsRangeError);
           for (var i = 0; i < len; i++) {
@@ -296,7 +315,7 @@ void main() {
       });
       test('counting', () {
         for (var len = 0; len < 100; len++) {
-          final list = BitList.from(randomBooleans(823 * len, len));
+          final list = BitList.of(randomBooleans(823 * len, len));
           final trueCount = list.count(true);
           final falseCount = list.count(false);
           expect(trueCount + falseCount, list.length);
@@ -309,8 +328,8 @@ void main() {
       test('concatenate', () {
         for (var len1 = 0; len1 < 100; len1++) {
           for (var len2 = 0; len2 < 100; len2++) {
-            final source1 = BitList.from(randomBooleans(954 * len1, len1));
-            final source2 = BitList.from(randomBooleans(713 * len2, len2));
+            final source1 = BitList.of(randomBooleans(954 * len1, len1));
+            final source2 = BitList.of(randomBooleans(713 * len2, len2));
             final target = source1 + source2;
             expect(target.length, len1 + len2);
             for (var i = 0; i < len1 + len2; i++) {
@@ -320,15 +339,15 @@ void main() {
         }
       });
       test('complement', () {
-        final source = BitList.from(randomBooleans(702, 100));
+        final source = BitList.of(randomBooleans(702, 100));
         final target = ~source;
         for (var i = 0; i < target.length; i++) {
           expect(target[i], !source[i]);
         }
       });
       test('intersection', () {
-        final source1 = BitList.from(randomBooleans(439, 100));
-        final source2 = BitList.from(randomBooleans(902, 100));
+        final source1 = BitList.of(randomBooleans(439, 100));
+        final source2 = BitList.of(randomBooleans(902, 100));
         final target = source1 & source2;
         for (var i = 0; i < target.length; i++) {
           expect(target[i], source1[i] && source2[i]);
@@ -339,8 +358,8 @@ void main() {
         expect(() => source1 & other, throwsArgumentError);
       });
       test('union', () {
-        final source1 = BitList.from(randomBooleans(817, 100));
-        final source2 = BitList.from(randomBooleans(858, 100));
+        final source1 = BitList.of(randomBooleans(817, 100));
+        final source2 = BitList.of(randomBooleans(858, 100));
         final target = source1 | source2;
         for (var i = 0; i < target.length; i++) {
           expect(target[i], source1[i] || source2[i]);
@@ -351,8 +370,8 @@ void main() {
         expect(() => source1 | other, throwsArgumentError);
       });
       test('difference', () {
-        final source1 = BitList.from(randomBooleans(364, 100));
-        final source2 = BitList.from(randomBooleans(243, 100));
+        final source1 = BitList.of(randomBooleans(364, 100));
+        final source2 = BitList.of(randomBooleans(243, 100));
         final target = source1 - source2;
         for (var i = 0; i < target.length; i++) {
           expect(target[i], source1[i] && !source2[i]);
@@ -364,7 +383,7 @@ void main() {
       });
       test('shift-left', () {
         for (var len = 0; len < 100; len++) {
-          final source = BitList.from(randomBooleans(836 * len, len));
+          final source = BitList.of(randomBooleans(836 * len, len));
           for (var shift = 0; shift <= len + 10; shift++) {
             final target = source << shift;
             if (shift == 0) {
@@ -382,7 +401,7 @@ void main() {
       });
       test('shift-right', () {
         for (var len = 0; len < 100; len++) {
-          final source = BitList.from(randomBooleans(963 * len, len));
+          final source = BitList.of(randomBooleans(963 * len, len));
           for (var shift = 0; shift <= len + 10; shift++) {
             final target = source >> shift;
             if (shift == 0) {
@@ -435,31 +454,39 @@ void main() {
         expect(set.distinct, unorderedEquals([]));
         expect(set.counts, unorderedEquals([]));
       });
-      test('one unique', () {
-        final set = Multiset.from(['a']);
+      test('of one unique', () {
+        final set = Multiset.of(['a']);
         expect(set, isNot(isEmpty));
         expect(set, hasLength(1));
         expect(set, unorderedEquals(['a']));
         expect(set.distinct, unorderedEquals(['a']));
         expect(set.counts, unorderedEquals([1]));
       });
-      test('many unique', () {
-        final set = Multiset.from(['a', 'b', 'c']);
+      test('of many unique', () {
+        final set = Multiset.of(['a', 'b', 'c']);
         expect(set, isNot(isEmpty));
         expect(set, hasLength(3));
         expect(set, unorderedEquals(['a', 'b', 'c']));
         expect(set.distinct, unorderedEquals(['a', 'b', 'c']));
         expect(set.counts, unorderedEquals([1, 1, 1]));
       });
-      test('one repeated', () {
-        final set = Multiset.from(['a', 'a', 'a']);
+      test('of one repeated', () {
+        final set = Multiset.of(['a', 'a', 'a']);
         expect(set, isNot(isEmpty));
         expect(set, hasLength(3));
         expect(set, unorderedEquals(['a', 'a', 'a']));
         expect(set.distinct, unorderedEquals(['a']));
         expect(set.counts, unorderedEquals([3]));
       });
-      test('many repeated', () {
+      test('of many repeated', () {
+        final set = Multiset.of(['a', 'a', 'a', 'b', 'b', 'c']);
+        expect(set, isNot(isEmpty));
+        expect(set, hasLength(6));
+        expect(set, unorderedEquals(['a', 'a', 'a', 'b', 'b', 'c']));
+        expect(set.distinct, unorderedEquals(['a', 'b', 'c']));
+        expect(set.counts, unorderedEquals([3, 2, 1]));
+      });
+      test('from many repeated', () {
         final set = Multiset.from(['a', 'a', 'a', 'b', 'b', 'c']);
         expect(set, isNot(isEmpty));
         expect(set, hasLength(6));
@@ -469,7 +496,7 @@ void main() {
       });
       test('copy', () {
         final set =
-            Multiset.from(Multiset.from(['a', 'a', 'a', 'b', 'b', 'c']));
+            Multiset.of(Multiset.of(['a', 'a', 'a', 'b', 'b', 'c']));
         expect(set, isNot(isEmpty));
         expect(set, hasLength(6));
         expect(set, unorderedEquals(['a', 'a', 'a', 'b', 'b', 'c']));
@@ -553,7 +580,7 @@ void main() {
     });
     group('remvoing', () {
       test('zero', () {
-        final set = Multiset.from(['a', 'a', 'b', 'b', 'b']);
+        final set = Multiset.of(['a', 'a', 'b', 'b', 'b']);
         set..remove('a', 0)..remove('b', 0);
         expect(set, isNot(isEmpty));
         expect(set, hasLength(5));
@@ -562,7 +589,7 @@ void main() {
         expect(set.counts, unorderedEquals([2, 3]));
       });
       test('single', () {
-        final set = Multiset.from(['a', 'a', 'b', 'b', 'b']);
+        final set = Multiset.of(['a', 'a', 'b', 'b', 'b']);
         set..remove('a')..remove('b');
         expect(set, isNot(isEmpty));
         expect(set, hasLength(3));
@@ -571,7 +598,7 @@ void main() {
         expect(set.counts, unorderedEquals([1, 2]));
       });
       test('multiple', () {
-        final set = Multiset.from(['a', 'a', 'b', 'b', 'b']);
+        final set = Multiset.of(['a', 'a', 'b', 'b', 'b']);
         set..remove('a', 3)..remove('b', 2);
         expect(set, isNot(isEmpty));
         expect(set, hasLength(1));
@@ -580,7 +607,7 @@ void main() {
         expect(set.counts, unorderedEquals([1]));
       });
       test('all', () {
-        final set = Multiset.from(['a', 'a', 'b', 'b', 'b']);
+        final set = Multiset.of(['a', 'a', 'b', 'b', 'b']);
         set.removeAll(['a', 'b', 'b']);
         expect(set, isNot(isEmpty));
         expect(set, hasLength(2));
@@ -589,7 +616,7 @@ void main() {
         expect(set.counts, unorderedEquals([1, 1]));
       });
       test('clear', () {
-        final set = Multiset.from(['a', 'a', 'b', 'b', 'b']);
+        final set = Multiset.of(['a', 'a', 'b', 'b', 'b']);
         set.clear();
         expect(set, isEmpty);
         expect(set, hasLength(0));
@@ -598,7 +625,7 @@ void main() {
         expect(set.counts, unorderedEquals([]));
       });
       test('invalid', () {
-        final set = Multiset.from(['a', 'a', 'b', 'b', 'b']);
+        final set = Multiset.of(['a', 'a', 'b', 'b', 'b']);
         expect(() => set.remove('c'), returnsNormally);
         expect(() => set.remove('z'), returnsNormally);
         expect(set, isNot(isEmpty));
@@ -608,7 +635,7 @@ void main() {
         expect(set.counts, unorderedEquals([2, 3]));
       });
       test('error', () {
-        final set = Multiset.from(['a', 'a', 'b', 'b', 'b']);
+        final set = Multiset.of(['a', 'a', 'b', 'b', 'b']);
         expect(() => set.remove('a', -1), throwsArgumentError);
         expect(set, isNot(isEmpty));
         expect(set, hasLength(5));
@@ -641,7 +668,7 @@ void main() {
         expect(set.counts, unorderedEquals([3, 2]));
       });
       test('remove', () {
-        final set = Multiset.from(['a', 'a', 'b', 'b', 'b']);
+        final set = Multiset.of(['a', 'a', 'b', 'b', 'b']);
         set['b'] = 0;
         expect(set, isNot(isEmpty));
         expect(set, hasLength(2));
@@ -650,7 +677,7 @@ void main() {
         expect(set.counts, unorderedEquals([2]));
       });
       test('error', () {
-        final set = Multiset.from(['a', 'a', 'b', 'b', 'b']);
+        final set = Multiset.of(['a', 'a', 'b', 'b', 'b']);
         expect(() => set['a'] = -1, throwsArgumentError);
         expect(set, isNot(isEmpty));
         expect(set, hasLength(5));
@@ -661,9 +688,9 @@ void main() {
     });
     group('operator', () {
       final firstList = ['a', 'b', 'c', 'c'];
-      final firstSet = Multiset.from(firstList);
+      final firstSet = Multiset.of(firstList);
       final secondList = ['a', 'c', 'd', 'd'];
-      final secondSet = Multiset.from(secondList);
+      final secondSet = Multiset.of(secondList);
       test('contains', () {
         expect(firstSet.contains('a'), isTrue);
         expect(firstSet.contains('b'), isTrue);
@@ -674,8 +701,8 @@ void main() {
         expect(firstSet.containsAll(firstSet), isTrue);
         expect(firstSet.containsAll(secondSet), isFalse);
         expect(firstSet.containsAll(Multiset()), isTrue);
-        expect(firstSet.containsAll(Multiset.from(['a', 'b', 'b'])), isFalse);
-        expect(firstSet.containsAll(Multiset.from(['a', 'b', 'd'])), isFalse);
+        expect(firstSet.containsAll(Multiset.of(['a', 'b', 'b'])), isFalse);
+        expect(firstSet.containsAll(Multiset.of(['a', 'b', 'd'])), isFalse);
       });
       test('containsAll (iterable)', () {
         expect(firstSet.containsAll(firstList), isTrue);
@@ -1070,7 +1097,7 @@ void main() {
         expect(plenty.toList(), ['M', 'o', 'r', 'e', ' ', 'D', 'a', 'r', 't']);
         expect(empty.toSet(), Set());
         expect(
-            plenty.toSet(), Set.from(['M', 'o', 'r', 'e', ' ', 'D', 'a', 't']));
+            plenty.toSet(), Set.of(['M', 'o', 'r', 'e', ' ', 'D', 'a', 't']));
         expect(empty.toString(), '');
         expect(plenty.toString(), 'More Dart');
       });
@@ -1146,7 +1173,7 @@ void main() {
         expect(plenty.toList(), ['M', 'o', 'r', 'e', ' ', 'D', 'a', 'r', 't']);
         expect(empty.toSet(), Set());
         expect(
-            plenty.toSet(), Set.from(['M', 'o', 'r', 'e', ' ', 'D', 'a', 't']));
+            plenty.toSet(), Set.of(['M', 'o', 'r', 'e', ' ', 'D', 'a', 't']));
         expect(empty.toString(), '');
         expect(plenty.toString(), 'More Dart');
       });
