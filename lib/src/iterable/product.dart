@@ -20,33 +20,43 @@ library more.iterable.product;
 ///    ['y', 2]
 ///    ['y', 3]
 ///
-Iterable<List<E>> product<E>(Iterable<Iterable<E>> iterables) {
+Iterable<List<E>> product<E>(Iterable<Iterable<E>> iterables,
+    {int repeat = 1}) {
+  if (repeat < 1) {
+    throw RangeError.value(repeat, 'repeat', 'repeat must be positive');
+  }
   if (iterables.isEmpty || iterables.any((iterable) => iterable.isEmpty)) {
     return const Iterable.empty();
   } else {
-    return _product(iterables
-        .map((iterable) => iterable.toList(growable: false))
-        .toList(growable: false));
+    return _product(
+        iterables
+            .map((iterable) => iterable.toList(growable: false))
+            .toList(growable: false),
+        repeat);
   }
 }
 
-Iterable<List<E>> _product<E>(List<List<E>> elements) sync* {
-  final indexes = List<int>.filled(elements.length, 0);
-  final current = List<E>.generate(elements.length, (i) => elements[i][0]);
+Iterable<List<E>> _product<E>(List<List<E>> elements, int repeat) sync* {
+  final indexes = List<int>.filled(elements.length * repeat, 0);
+  final current = List<E>.generate(
+    elements.length * repeat,
+    (i) => elements[i % elements.length][0],
+  );
   var hasMore = false;
   do {
     yield current;
     hasMore = false;
     for (var i = indexes.length - 1; i >= 0; i--) {
-      if (indexes[i] + 1 < elements[i].length) {
+      final e = i % elements.length;
+      if (indexes[i] + 1 < elements[e].length) {
         indexes[i]++;
-        current[i] = elements[i][indexes[i]];
+        current[i] = elements[e][indexes[i]];
         hasMore = true;
         break;
       } else {
         for (var j = indexes.length - 1; j >= i; j--) {
           indexes[j] = 0;
-          current[j] = elements[j][0];
+          current[j] = elements[j % elements.length][0];
         }
       }
     }

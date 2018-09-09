@@ -590,23 +590,32 @@ void main() {
     });
   });
   group('product', () {
+    test('2', () {
+      final iterable = product([
+        [1, 2],
+      ]);
+      expect(iterable, [
+        [1],
+        [2],
+      ]);
+    });
     test('2 x 2', () {
       final iterable = product([
         [1, 2],
-        [3, 4]
+        [3, 4],
       ]);
       expect(iterable, [
         [1, 3],
         [1, 4],
         [2, 3],
-        [2, 4]
+        [2, 4],
       ]);
     });
     test('1 x 2 x 3', () {
       final iterable = product([
         [1],
         [2, 3],
-        [4, 5, 6]
+        [4, 5, 6],
       ]);
       expect(iterable, [
         [1, 2, 4],
@@ -614,14 +623,14 @@ void main() {
         [1, 2, 6],
         [1, 3, 4],
         [1, 3, 5],
-        [1, 3, 6]
+        [1, 3, 6],
       ]);
     });
     test('3 x 2 x 1', () {
       final iterable = product([
         [1, 2, 3],
         [4, 5],
-        [6]
+        [6],
       ]);
       expect(iterable, [
         [1, 4, 6],
@@ -629,7 +638,63 @@ void main() {
         [2, 4, 6],
         [2, 5, 6],
         [3, 4, 6],
-        [3, 5, 6]
+        [3, 5, 6],
+      ]);
+    });
+    test('repeat 0', () {
+      expect(() => product([], repeat: 0), throwsRangeError);
+    });
+    test('2 x repeat 2', () {
+      final iterable = product([
+        [0, 1],
+      ], repeat: 2);
+      expect(iterable, [
+        [0, 0],
+        [0, 1],
+        [1, 0],
+        [1, 1],
+      ]);
+    });
+    test('2 x 1 x repeat 2', () {
+      final iterable = product([
+        [0, 1],
+        [3],
+      ], repeat: 2);
+      expect(iterable, [
+        [0, 3, 0, 3],
+        [0, 3, 1, 3],
+        [1, 3, 0, 3],
+        [1, 3, 1, 3],
+      ]);
+    });
+    test('2 x repeat 3', () {
+      final iterable = product([
+        [0, 1],
+      ], repeat: 3);
+      expect(iterable, [
+        [0, 0, 0],
+        [0, 0, 1],
+        [0, 1, 0],
+        [0, 1, 1],
+        [1, 0, 0],
+        [1, 0, 1],
+        [1, 1, 0],
+        [1, 1, 1],
+      ]);
+    });
+    test('1 x 2, repeat 3', () {
+      final iterable = product([
+        [0, 1],
+      ], repeat: 3);
+      expect(iterable, [
+        [0, 0, 0],
+        [0, 0, 1],
+        [0, 1, 0],
+        [0, 1, 1],
+        [1, 0, 0],
+        [1, 0, 1],
+        [1, 1, 0],
+        [1, 1, 1],
       ]);
     });
     test('empty', () {
