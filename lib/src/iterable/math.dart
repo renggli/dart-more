@@ -1,7 +1,5 @@
 library more.iterable.math;
 
-import 'dart:collection' show IterableBase;
-
 import 'package:more/src/iterable/fold.dart';
 
 /// Returns an iterable over the fibonacci sequence starting with [f0] and
@@ -11,43 +9,17 @@ Iterable<int> fibonacci([int f0 = 0, int f1 = 1]) {
   return fold([f0, f1], (args) => args[0] + args[1]);
 }
 
-/// Returns an iterable over the digits of the [number], in the optionally
+/// Returns an iterable over the digits of the [value], in the optionally
 /// given [base].
-Iterable<int> digits(int number, [int base = 10]) {
-  return DigitIterable(number.abs(), base);
-}
-
-class DigitIterable extends IterableBase<int> {
-  final int number;
-  final int base;
-
-  DigitIterable(this.number, this.base);
-
-  @override
-  Iterator<int> get iterator => DigitIterator(number, base);
-}
-
-class DigitIterator extends Iterator<int> {
-  int number;
-  final int base;
-
-  DigitIterator(this.number, this.base);
-
-  @override
-  int current;
-
-  @override
-  bool moveNext() {
-    if (number == null) {
-      current = null;
-      return false;
-    } else {
-      current = number % base;
-      number = number ~/ base;
-      if (number == 0) {
-        number = null;
-      }
-      return true;
+Iterable<int> digits(int value, [int base = 10]) sync* {
+  if (value == 0) {
+    yield 0;
+  } else {
+    var number = value.abs();
+    while (number != 0) {
+      final next = number ~/ base;
+      yield number - next * base;
+      number = next;
     }
   }
 }
