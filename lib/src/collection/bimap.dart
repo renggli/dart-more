@@ -39,8 +39,8 @@ class BiMap<K, V> extends MapBase<K, V> {
 
   /// Creates a bi-map from two equal length iterables.
   factory BiMap.fromIterables(Iterable<K> keys, Iterable<V> values) {
-    var result = BiMap<K, V>();
-    var keyIterator = keys.iterator, valueIterator = values.iterator;
+    final result = BiMap<K, V>();
+    final keyIterator = keys.iterator, valueIterator = values.iterator;
     var moreKeys = keyIterator.moveNext(),
         moreValues = valueIterator.moveNext();
     while (moreKeys && moreValues) {
@@ -86,7 +86,7 @@ class BiMap<K, V> extends MapBase<K, V> {
     if (containsKey(key)) {
       return this[key];
     } else {
-      var value = ifAbsent();
+      final value = ifAbsent();
       this[key] = value;
       return value;
     }
@@ -94,7 +94,7 @@ class BiMap<K, V> extends MapBase<K, V> {
 
   @override
   V remove(Object key) {
-    var value = _forward[key];
+    final value = _forward[key];
     _remove(key, _forward, _backward);
     return value;
   }

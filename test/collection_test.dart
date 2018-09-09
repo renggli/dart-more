@@ -6,8 +6,8 @@ import 'package:more/collection.dart';
 import 'package:test/test.dart';
 
 List<bool> randomBooleans(int seed, int length) {
-  var list = <bool>[];
-  var generator = Random(seed);
+  final list = <bool>[];
+  final generator = Random(seed);
   for (var i = 0; i < length; i++) {
     list.add(generator.nextBool());
   }
@@ -16,43 +16,43 @@ List<bool> randomBooleans(int seed, int length) {
 
 void main() {
   group('bi-map', () {
-    var example = BiMap.from({1: 'a', 2: 'b', 3: 'c'});
+    final example = BiMap.from({1: 'a', 2: 'b', 3: 'c'});
     group('construction', () {
       test('empty', () {
-        var target = BiMap();
+        final target = BiMap();
         expect(target, isEmpty);
         expect(target.isEmpty, isTrue);
         expect(target.isNotEmpty, isFalse);
         expect(target, hasLength(0));
       });
       test('idenity', () {
-        var target = BiMap.identity();
+        final target = BiMap.identity();
         expect(target, isEmpty);
         expect(target.isEmpty, isTrue);
         expect(target.isNotEmpty, isFalse);
         expect(target, hasLength(0));
       });
       test('copy', () {
-        var target = BiMap.from(example);
+        final target = BiMap.from(example);
         expect(target.keys, [1, 2, 3]);
         expect(target.values, ['a', 'b', 'c']);
       });
       test('iterable', () {
-        var target = BiMap.fromIterable(example.keys);
-        expect(target.keys, [1, 2, 3]);
-        expect(target.values, [1, 2, 3]);
-        target = BiMap.fromIterable(example.keys, key: (e) => e + 1);
-        expect(target.keys, [2, 3, 4]);
-        expect(target.values, [1, 2, 3]);
-        target = BiMap.fromIterable(example.keys, value: (e) => e + 1);
-        expect(target.keys, [1, 2, 3]);
-        expect(target.values, [2, 3, 4]);
+        final target1 = BiMap.fromIterable(example.keys);
+        expect(target1.keys, [1, 2, 3]);
+        expect(target1.values, [1, 2, 3]);
+        final target2 = BiMap.fromIterable(example.keys, key: (e) => e + 1);
+        expect(target2.keys, [2, 3, 4]);
+        expect(target2.values, [1, 2, 3]);
+        final target3 = BiMap.fromIterable(example.keys, value: (e) => e + 1);
+        expect(target3.keys, [1, 2, 3]);
+        expect(target3.values, [2, 3, 4]);
       });
       test('iterables', () {
-        var target1 = BiMap.fromIterables(example.keys, example.values);
+        final target1 = BiMap.fromIterables(example.keys, example.values);
         expect(target1.keys, [1, 2, 3]);
         expect(target1.values, ['a', 'b', 'c']);
-        var target2 = BiMap.fromIterables(example.values, example.keys);
+        final target2 = BiMap.fromIterables(example.values, example.keys);
         expect(target2.keys, ['a', 'b', 'c']);
         expect(target2.values, [1, 2, 3]);
       });
@@ -91,8 +91,8 @@ void main() {
         expect(example.inverse.containsValue('b'), isFalse);
       });
       test('inverse updates', () {
-        var target = BiMap.from(example);
-        var inverse = target.inverse;
+        final target = BiMap.from(example);
+        final inverse = target.inverse;
         target[4] = 'd';
         expect(inverse['d'], 4, reason: 'inverse sees addition');
         target.remove(3);
@@ -103,8 +103,8 @@ void main() {
         expect(target[4], isNull, reason: 'inverse updates target');
       });
       test('forward updates', () {
-        var target = BiMap.from(example);
-        var forward = target.forward;
+        final target = BiMap.from(example);
+        final forward = target.forward;
         target[4] = 'd';
         expect(forward[4], 'd', reason: 'inverse sees addition');
         target.remove(3);
@@ -115,8 +115,8 @@ void main() {
         expect(target[4], isNull, reason: 'inverse updates target');
       });
       test('backward udpates', () {
-        var target = BiMap.from(example);
-        var backward = target.backward;
+        final target = BiMap.from(example);
+        final backward = target.backward;
         target[4] = 'd';
         expect(backward['d'], 4, reason: 'inverse sees addition');
         target.remove(3);
@@ -127,8 +127,8 @@ void main() {
         expect(target[4], isNull, reason: 'inverse updates target');
       });
       test('iteration', () {
-        var keys = <int>[];
-        var values = <String>[];
+        final keys = <int>[];
+        final values = <String>[];
         example.forEach((key, value) {
           keys.add(key);
           values.add(value);
@@ -139,37 +139,37 @@ void main() {
     });
     group('writing', () {
       test('define', () {
-        var target = BiMap();
+        final target = BiMap();
         target[1] = 'a';
         expect(target.keys, [1]);
         expect(target.values, ['a']);
       });
       test('define inverse', () {
-        var target = BiMap();
+        final target = BiMap();
         target.inverse[1] = 'a';
         expect(target.keys, ['a']);
         expect(target.values, [1]);
       });
       test('redefine key to new value', () {
-        var target = BiMap.from(example);
+        final target = BiMap.from(example);
         target[2] = 'd';
         expect(target.keys, [1, 3, 2]);
         expect(target.values, ['a', 'c', 'd']);
       });
       test('redefine value to new key', () {
-        var target = BiMap.from(example);
+        final target = BiMap.from(example);
         target[4] = 'b';
         expect(target.keys, [1, 3, 4]);
         expect(target.values, ['a', 'c', 'b']);
       });
       test('redefine key and value', () {
-        var target = BiMap.from(example);
+        final target = BiMap.from(example);
         target[1] = 'c';
         expect(target.keys, [2, 1]);
         expect(target.values, ['b', 'c']);
       });
       test('remove key', () {
-        var target = BiMap.from(example);
+        final target = BiMap.from(example);
         expect(target.remove(2), 'b');
         expect(target.keys, [1, 3]);
         expect(target.values, ['a', 'c']);
@@ -177,7 +177,7 @@ void main() {
         expect(target.inverse.values, [1, 3]);
       });
       test('remove value', () {
-        var target = BiMap.from(example);
+        final target = BiMap.from(example);
         expect(target.inverse.remove('b'), 2);
         expect(target.keys, [1, 3]);
         expect(target.values, ['a', 'c']);
@@ -185,13 +185,13 @@ void main() {
         expect(target.inverse.values, [1, 3]);
       });
       test('clear', () {
-        var target = BiMap.from(example);
+        final target = BiMap.from(example);
         target.clear();
         expect(target, isEmpty);
         expect(target.inverse, isEmpty);
       });
       test('define if absent', () {
-        var target = BiMap.from(example);
+        final target = BiMap.from(example);
         target.putIfAbsent(1, () => fail('Value already present!'));
         target.putIfAbsent(4, () => 'd');
         expect(target[4], 'd');
@@ -201,14 +201,14 @@ void main() {
   group('bitlist', () {
     group('construction', () {
       test('without elements', () {
-        var target = BitList(0);
+        final target = BitList(0);
         expect(target, isEmpty);
         expect(target, hasLength(0));
         expect(target, []);
       });
       test('with elements', () {
         for (var len = 1; len < 100; len++) {
-          var target = BitList(len);
+          final target = BitList(len);
           expect(target, isNot(isEmpty));
           expect(target, hasLength(len));
           expect(target, everyElement(isFalse));
@@ -216,7 +216,7 @@ void main() {
       });
       test('with filled false', () {
         for (var len = 1; len < 100; len++) {
-          var target = BitList.filled(len, false);
+          final target = BitList.filled(len, false);
           expect(target, isNot(isEmpty));
           expect(target, hasLength(len));
           expect(target, everyElement(isFalse));
@@ -224,7 +224,7 @@ void main() {
       });
       test('with filled true', () {
         for (var len = 1; len < 100; len++) {
-          var target = BitList.filled(len, true);
+          final target = BitList.filled(len, true);
           expect(target, isNot(isEmpty));
           expect(target, hasLength(len));
           expect(target, everyElement(isTrue));
@@ -232,24 +232,24 @@ void main() {
       });
       test('from List', () {
         for (var len = 0; len < 100; len++) {
-          var source = List<bool>.from(randomBooleans(457 * len, len));
-          var target = BitList.from(source);
+          final source = List<bool>.from(randomBooleans(457 * len, len));
+          final target = BitList.from(source);
           expect(source, target);
           expect(source, target.toList());
         }
       });
       test('from Set', () {
         for (var len = 0; len < 100; len++) {
-          var source = Set<bool>.from(randomBooleans(827 * len, len));
-          var target = BitList.from(source);
+          final source = Set<bool>.from(randomBooleans(827 * len, len));
+          final target = BitList.from(source);
           expect(source, target);
           expect(source, target.toSet());
         }
       });
       test('from BitList', () {
         for (var len = 0; len < 10; len++) {
-          var source = Set<bool>.from(randomBooleans(287 * len, len));
-          var target = BitList.from(source);
+          final source = Set<bool>.from(randomBooleans(287 * len, len));
+          final target = BitList.from(source);
           expect(source, target);
           expect(target, source);
         }
@@ -258,8 +258,8 @@ void main() {
     group('accessors', () {
       test('reading', () {
         for (var len = 0; len < 100; len++) {
-          var source = randomBooleans(135 * len, len);
-          var target = BitList.from(source);
+          final source = randomBooleans(135 * len, len);
+          final target = BitList.from(source);
           expect(() => target[-1], throwsRangeError);
           for (var i = 0; i < len; i++) {
             expect(target[i], source[i]);
@@ -269,8 +269,8 @@ void main() {
       });
       test('writing', () {
         for (var len = 0; len < 100; len++) {
-          var source = randomBooleans(396 * len, len);
-          var target = BitList(len);
+          final source = randomBooleans(396 * len, len);
+          final target = BitList(len);
           expect(() => target[-1] = true, throwsRangeError);
           for (var i = 0; i < len; i++) {
             target[i] = source[i];
@@ -282,11 +282,11 @@ void main() {
       });
       test('flipping', () {
         for (var len = 0; len < 100; len++) {
-          var source = BitList.from(randomBooleans(385 * len, len));
-          var target = ~source;
+          final source = BitList.from(randomBooleans(385 * len, len));
+          final target = ~source;
           expect(() => target.flip(-1), throwsRangeError);
           for (var i = 0; i < len; i++) {
-            var before = source[i];
+            final before = source[i];
             source.flip(i);
             expect(!before, source[i]);
           }
@@ -296,9 +296,9 @@ void main() {
       });
       test('counting', () {
         for (var len = 0; len < 100; len++) {
-          var list = BitList.from(randomBooleans(823 * len, len));
-          var trueCount = list.count(true);
-          var falseCount = list.count(false);
+          final list = BitList.from(randomBooleans(823 * len, len));
+          final trueCount = list.count(true);
+          final falseCount = list.count(false);
           expect(trueCount + falseCount, list.length);
           expect(trueCount, list.where((b) => b == true).length);
           expect(falseCount, list.where((b) => b == false).length);
@@ -309,9 +309,9 @@ void main() {
       test('concatenate', () {
         for (var len1 = 0; len1 < 100; len1++) {
           for (var len2 = 0; len2 < 100; len2++) {
-            var source1 = BitList.from(randomBooleans(954 * len1, len1));
-            var source2 = BitList.from(randomBooleans(713 * len2, len2));
-            var target = source1 + source2;
+            final source1 = BitList.from(randomBooleans(954 * len1, len1));
+            final source2 = BitList.from(randomBooleans(713 * len2, len2));
+            final target = source1 + source2;
             expect(target.length, len1 + len2);
             for (var i = 0; i < len1 + len2; i++) {
               expect(target[i], i < len1 ? source1[i] : source2[i - len1]);
@@ -320,53 +320,53 @@ void main() {
         }
       });
       test('complement', () {
-        var source = BitList.from(randomBooleans(702, 100));
-        var target = ~source;
+        final source = BitList.from(randomBooleans(702, 100));
+        final target = ~source;
         for (var i = 0; i < target.length; i++) {
           expect(target[i], !source[i]);
         }
       });
       test('intersection', () {
-        var source1 = BitList.from(randomBooleans(439, 100));
-        var source2 = BitList.from(randomBooleans(902, 100));
-        var target = source1 & source2;
+        final source1 = BitList.from(randomBooleans(439, 100));
+        final source2 = BitList.from(randomBooleans(902, 100));
+        final target = source1 & source2;
         for (var i = 0; i < target.length; i++) {
           expect(target[i], source1[i] && source2[i]);
         }
         expect(target, source2 & source1);
-        var other = BitList(99);
+        final other = BitList(99);
         expect(() => other & source1, throwsArgumentError);
         expect(() => source1 & other, throwsArgumentError);
       });
       test('union', () {
-        var source1 = BitList.from(randomBooleans(817, 100));
-        var source2 = BitList.from(randomBooleans(858, 100));
-        var target = source1 | source2;
+        final source1 = BitList.from(randomBooleans(817, 100));
+        final source2 = BitList.from(randomBooleans(858, 100));
+        final target = source1 | source2;
         for (var i = 0; i < target.length; i++) {
           expect(target[i], source1[i] || source2[i]);
         }
         expect(target, source2 | source1);
-        var other = BitList(99);
+        final other = BitList(99);
         expect(() => other | source1, throwsArgumentError);
         expect(() => source1 | other, throwsArgumentError);
       });
       test('difference', () {
-        var source1 = BitList.from(randomBooleans(364, 100));
-        var source2 = BitList.from(randomBooleans(243, 100));
-        var target = source1 - source2;
+        final source1 = BitList.from(randomBooleans(364, 100));
+        final source2 = BitList.from(randomBooleans(243, 100));
+        final target = source1 - source2;
         for (var i = 0; i < target.length; i++) {
           expect(target[i], source1[i] && !source2[i]);
         }
         expect(target, source1 & ~source2);
-        var other = BitList(99);
+        final other = BitList(99);
         expect(() => other - source1, throwsArgumentError);
         expect(() => source1 - other, throwsArgumentError);
       });
       test('shift-left', () {
         for (var len = 0; len < 100; len++) {
-          var source = BitList.from(randomBooleans(836 * len, len));
+          final source = BitList.from(randomBooleans(836 * len, len));
           for (var shift = 0; shift <= len + 10; shift++) {
-            var target = source << shift;
+            final target = source << shift;
             if (shift == 0) {
               expect(target, source);
             } else if (shift >= len) {
@@ -382,9 +382,9 @@ void main() {
       });
       test('shift-right', () {
         for (var len = 0; len < 100; len++) {
-          var source = BitList.from(randomBooleans(963 * len, len));
+          final source = BitList.from(randomBooleans(963 * len, len));
           for (var shift = 0; shift <= len + 10; shift++) {
-            var target = source >> shift;
+            final target = source >> shift;
             if (shift == 0) {
               expect(target, source);
             } else if (shift >= len) {
@@ -400,7 +400,7 @@ void main() {
       });
     });
     test('fixed length', () {
-      var list = BitList(32);
+      final list = BitList(32);
       expect(() => list.add(false), throwsUnsupportedError);
       expect(() => list.addAll([true, false]), throwsUnsupportedError);
       expect(() => list.clear(), throwsUnsupportedError);
@@ -420,7 +420,7 @@ void main() {
   group('multiset', () {
     group('construct', () {
       test('empty', () {
-        var set = Multiset();
+        final set = Multiset();
         expect(set, isEmpty);
         expect(set, hasLength(0));
         expect(set, unorderedEquals([]));
@@ -428,7 +428,7 @@ void main() {
         expect(set.counts, unorderedEquals([]));
       });
       test('empty identity', () {
-        var set = Multiset.identity();
+        final set = Multiset.identity();
         expect(set, isEmpty);
         expect(set, hasLength(0));
         expect(set, unorderedEquals([]));
@@ -436,7 +436,7 @@ void main() {
         expect(set.counts, unorderedEquals([]));
       });
       test('one unique', () {
-        var set = Multiset.from(['a']);
+        final set = Multiset.from(['a']);
         expect(set, isNot(isEmpty));
         expect(set, hasLength(1));
         expect(set, unorderedEquals(['a']));
@@ -444,7 +444,7 @@ void main() {
         expect(set.counts, unorderedEquals([1]));
       });
       test('many unique', () {
-        var set = Multiset.from(['a', 'b', 'c']);
+        final set = Multiset.from(['a', 'b', 'c']);
         expect(set, isNot(isEmpty));
         expect(set, hasLength(3));
         expect(set, unorderedEquals(['a', 'b', 'c']));
@@ -452,7 +452,7 @@ void main() {
         expect(set.counts, unorderedEquals([1, 1, 1]));
       });
       test('one repeated', () {
-        var set = Multiset.from(['a', 'a', 'a']);
+        final set = Multiset.from(['a', 'a', 'a']);
         expect(set, isNot(isEmpty));
         expect(set, hasLength(3));
         expect(set, unorderedEquals(['a', 'a', 'a']));
@@ -460,7 +460,7 @@ void main() {
         expect(set.counts, unorderedEquals([3]));
       });
       test('many repeated', () {
-        var set = Multiset.from(['a', 'a', 'a', 'b', 'b', 'c']);
+        final set = Multiset.from(['a', 'a', 'a', 'b', 'b', 'c']);
         expect(set, isNot(isEmpty));
         expect(set, hasLength(6));
         expect(set, unorderedEquals(['a', 'a', 'a', 'b', 'b', 'c']));
@@ -468,7 +468,7 @@ void main() {
         expect(set.counts, unorderedEquals([3, 2, 1]));
       });
       test('copy', () {
-        var set = Multiset.from(Multiset.from(['a', 'a', 'a', 'b', 'b', 'c']));
+        final set = Multiset.from(Multiset.from(['a', 'a', 'a', 'b', 'b', 'c']));
         expect(set, isNot(isEmpty));
         expect(set, hasLength(6));
         expect(set, unorderedEquals(['a', 'a', 'a', 'b', 'b', 'c']));
@@ -476,7 +476,7 @@ void main() {
         expect(set.counts, unorderedEquals([3, 2, 1]));
       });
       test('generate', () {
-        var set = Multiset.fromIterable(['a', 'a', 'a', 'b', 'b', 'c']);
+        final set = Multiset.fromIterable(['a', 'a', 'a', 'b', 'b', 'c']);
         expect(set, isNot(isEmpty));
         expect(set, hasLength(6));
         expect(set, unorderedEquals(['a', 'a', 'a', 'b', 'b', 'c']));
@@ -484,7 +484,7 @@ void main() {
         expect(set.counts, unorderedEquals([3, 2, 1]));
       });
       test('generate with key', () {
-        var set = Multiset.fromIterable(['a', 'a', 'a', 'b', 'b', 'c'],
+        final set = Multiset.fromIterable(['a', 'a', 'a', 'b', 'b', 'c'],
             key: (e) => (e as String).codeUnitAt(0));
         expect(set, isNot(isEmpty));
         expect(set, hasLength(6));
@@ -493,7 +493,7 @@ void main() {
         expect(set.counts, unorderedEquals([3, 2, 1]));
       });
       test('generate with count', () {
-        var set = Multiset.fromIterable(['aaa', 'bb', 'c'],
+        final set = Multiset.fromIterable(['aaa', 'bb', 'c'],
             key: (e) => (e as String).substring(0, 1),
             count: (e) => (e as String).length);
         expect(set, isNot(isEmpty));
@@ -505,7 +505,7 @@ void main() {
     });
     group('adding', () {
       test('zero', () {
-        var set = Multiset();
+        final set = Multiset();
         set..add('a', 0)..add('b', 0);
         expect(set, isEmpty);
         expect(set, hasLength(0));
@@ -514,7 +514,7 @@ void main() {
         expect(set.counts, unorderedEquals([]));
       });
       test('single', () {
-        var set = Multiset();
+        final set = Multiset();
         set..add('a')..add('b')..add('b');
         expect(set, isNot(isEmpty));
         expect(set, hasLength(3));
@@ -523,7 +523,7 @@ void main() {
         expect(set.counts, unorderedEquals([1, 2]));
       });
       test('multiple', () {
-        var set = Multiset();
+        final set = Multiset();
         set..add('a', 2)..add('b', 3);
         expect(set, isNot(isEmpty));
         expect(set, hasLength(5));
@@ -532,7 +532,7 @@ void main() {
         expect(set.counts, unorderedEquals([2, 3]));
       });
       test('all', () {
-        var set = Multiset();
+        final set = Multiset();
         set.addAll(['a', 'a', 'b', 'b', 'b']);
         expect(set, isNot(isEmpty));
         expect(set, hasLength(5));
@@ -541,7 +541,7 @@ void main() {
         expect(set.counts, unorderedEquals([3, 2]));
       });
       test('error', () {
-        var set = Multiset();
+        final set = Multiset();
         expect(() => set.add('a', -1), throwsArgumentError);
         expect(set, isEmpty);
         expect(set, hasLength(0));
@@ -552,7 +552,7 @@ void main() {
     });
     group('remvoing', () {
       test('zero', () {
-        var set = Multiset.from(['a', 'a', 'b', 'b', 'b']);
+        final set = Multiset.from(['a', 'a', 'b', 'b', 'b']);
         set..remove('a', 0)..remove('b', 0);
         expect(set, isNot(isEmpty));
         expect(set, hasLength(5));
@@ -561,7 +561,7 @@ void main() {
         expect(set.counts, unorderedEquals([2, 3]));
       });
       test('single', () {
-        var set = Multiset.from(['a', 'a', 'b', 'b', 'b']);
+        final set = Multiset.from(['a', 'a', 'b', 'b', 'b']);
         set..remove('a')..remove('b');
         expect(set, isNot(isEmpty));
         expect(set, hasLength(3));
@@ -570,7 +570,7 @@ void main() {
         expect(set.counts, unorderedEquals([1, 2]));
       });
       test('multiple', () {
-        var set = Multiset.from(['a', 'a', 'b', 'b', 'b']);
+        final set = Multiset.from(['a', 'a', 'b', 'b', 'b']);
         set..remove('a', 3)..remove('b', 2);
         expect(set, isNot(isEmpty));
         expect(set, hasLength(1));
@@ -579,7 +579,7 @@ void main() {
         expect(set.counts, unorderedEquals([1]));
       });
       test('all', () {
-        var set = Multiset.from(['a', 'a', 'b', 'b', 'b']);
+        final set = Multiset.from(['a', 'a', 'b', 'b', 'b']);
         set.removeAll(['a', 'b', 'b']);
         expect(set, isNot(isEmpty));
         expect(set, hasLength(2));
@@ -588,7 +588,7 @@ void main() {
         expect(set.counts, unorderedEquals([1, 1]));
       });
       test('clear', () {
-        var set = Multiset.from(['a', 'a', 'b', 'b', 'b']);
+        final set = Multiset.from(['a', 'a', 'b', 'b', 'b']);
         set.clear();
         expect(set, isEmpty);
         expect(set, hasLength(0));
@@ -597,7 +597,7 @@ void main() {
         expect(set.counts, unorderedEquals([]));
       });
       test('invalid', () {
-        var set = Multiset.from(['a', 'a', 'b', 'b', 'b']);
+        final set = Multiset.from(['a', 'a', 'b', 'b', 'b']);
         expect(() => set.remove('c'), returnsNormally);
         expect(() => set.remove('z'), returnsNormally);
         expect(set, isNot(isEmpty));
@@ -607,7 +607,7 @@ void main() {
         expect(set.counts, unorderedEquals([2, 3]));
       });
       test('error', () {
-        var set = Multiset.from(['a', 'a', 'b', 'b', 'b']);
+        final set = Multiset.from(['a', 'a', 'b', 'b', 'b']);
         expect(() => set.remove('a', -1), throwsArgumentError);
         expect(set, isNot(isEmpty));
         expect(set, hasLength(5));
@@ -618,7 +618,7 @@ void main() {
     });
     group('access', () {
       test('single', () {
-        var set = Multiset();
+        final set = Multiset();
         set['a'] = 2;
         expect(set['a'], 2);
         expect(set, isNot(isEmpty));
@@ -628,7 +628,7 @@ void main() {
         expect(set.counts, unorderedEquals([2]));
       });
       test('multiple', () {
-        var set = Multiset();
+        final set = Multiset();
         set['a'] = 2;
         set['b'] = 3;
         expect(set['a'], 2);
@@ -640,7 +640,7 @@ void main() {
         expect(set.counts, unorderedEquals([3, 2]));
       });
       test('remove', () {
-        var set = Multiset.from(['a', 'a', 'b', 'b', 'b']);
+        final set = Multiset.from(['a', 'a', 'b', 'b', 'b']);
         set['b'] = 0;
         expect(set, isNot(isEmpty));
         expect(set, hasLength(2));
@@ -649,7 +649,7 @@ void main() {
         expect(set.counts, unorderedEquals([2]));
       });
       test('error', () {
-        var set = Multiset.from(['a', 'a', 'b', 'b', 'b']);
+        final set = Multiset.from(['a', 'a', 'b', 'b', 'b']);
         expect(() => set['a'] = -1, throwsArgumentError);
         expect(set, isNot(isEmpty));
         expect(set, hasLength(5));
@@ -659,10 +659,10 @@ void main() {
       });
     });
     group('operator', () {
-      var firstList = ['a', 'b', 'c', 'c'];
-      var firstSet = Multiset.from(firstList);
-      var secondList = ['a', 'c', 'd', 'd'];
-      var secondSet = Multiset.from(secondList);
+      final firstList = ['a', 'b', 'c', 'c'];
+      final firstSet = Multiset.from(firstList);
+      final secondList = ['a', 'c', 'd', 'd'];
+      final secondSet = Multiset.from(secondList);
       test('contains', () {
         expect(firstSet.contains('a'), isTrue);
         expect(firstSet.contains('b'), isTrue);
@@ -730,7 +730,7 @@ void main() {
     void verify(List<num> range, List<num> expected) {
       expect(range, expected);
       expect(range.reversed, expected.reversed);
-      var iterator = range.iterator;
+      final iterator = range.iterator;
       for (var i = 0; i < expected.length; i++) {
         expect(iterator.moveNext(), isTrue);
         expect(iterator.current, range[i]);
@@ -811,7 +811,7 @@ void main() {
       });
       group('index', () {
         test('indexOf (positive step)', () {
-          var r = IntegerRange(2, 7, 2); // [2, 4, 6]
+          final r = IntegerRange(2, 7, 2); // [2, 4, 6]
           expect(r.indexOf(null), -1);
           expect(r.indexOf(1), -1);
           expect(r.indexOf(3), -1);
@@ -823,7 +823,7 @@ void main() {
           expect(r.indexOf(8, 4), -1);
         });
         test('indexOf (negative step)', () {
-          var r = IntegerRange(7, 2, -2); // [7, 5, 3]
+          final r = IntegerRange(7, 2, -2); // [7, 5, 3]
           expect(r.indexOf(null), -1);
           expect(r.indexOf(2), -1);
           expect(r.indexOf(4), -1);
@@ -835,7 +835,7 @@ void main() {
           expect(r.indexOf(8, 4), -1);
         });
         test('lastIndexOf (positive step)', () {
-          var r = IntegerRange(2, 7, 2); // [2, 4, 6]
+          final r = IntegerRange(2, 7, 2); // [2, 4, 6]
           expect(r.lastIndexOf(null), -1);
           expect(r.lastIndexOf(1), -1);
           expect(r.lastIndexOf(3), -1);
@@ -847,7 +847,7 @@ void main() {
           expect(r.lastIndexOf(7, 4), -1);
         });
         test('lastIndexOf (negative step)', () {
-          var r = IntegerRange(7, 2, -2); // [7, 5, 3]
+          final r = IntegerRange(7, 2, -2); // [7, 5, 3]
           expect(r.lastIndexOf(null), -1);
           expect(r.lastIndexOf(2), -1);
           expect(r.lastIndexOf(4), -1);
@@ -866,7 +866,7 @@ void main() {
         expect(IntegerRange(1, 5, 2).toString(), 'new IntegerRange(1, 5, 2)');
       });
       test('unmodifiable', () {
-        var list = IntegerRange(1, 5);
+        final list = IntegerRange(1, 5);
         expect(() => list[0] = 5, throwsUnsupportedError);
         expect(() => list.add(5), throwsUnsupportedError);
         expect(() => list.addAll([5, 6]), throwsUnsupportedError);
@@ -951,7 +951,7 @@ void main() {
       });
       group('index', () {
         test('indexOf (positive step)', () {
-          var r = DoubleRange(2.0, 7.0, 1.5); // [2.0, 3.5, 5.0, 6.5]
+          final r = DoubleRange(2.0, 7.0, 1.5); // [2.0, 3.5, 5.0, 6.5]
           expect(r.indexOf(null), -1);
           expect(r.indexOf(1.0), -1);
           expect(r.indexOf(3.0), -1);
@@ -962,7 +962,7 @@ void main() {
           expect(r.indexOf(6.5, 4), -1);
         });
         test('indexOf (negative step)', () {
-          var r = DoubleRange(7.0, 2.0, -1.5); // [7.0, 5.5, 4.0, 2.5]
+          final r = DoubleRange(7.0, 2.0, -1.5); // [7.0, 5.5, 4.0, 2.5]
           expect(r.indexOf(null), -1);
           expect(r.indexOf(2.0), -1);
           expect(r.indexOf(5.0), -1);
@@ -973,7 +973,7 @@ void main() {
           expect(r.indexOf(2.5, 4), -1);
         });
         test('lastIndexOf (positive step)', () {
-          var r = DoubleRange(2.0, 7.0, 1.5); // [2.0, 3.5, 5.0, 6.5]
+          final r = DoubleRange(2.0, 7.0, 1.5); // [2.0, 3.5, 5.0, 6.5]
           expect(r.lastIndexOf(null), -1);
           expect(r.lastIndexOf(1.0), -1);
           expect(r.lastIndexOf(3.0), -1);
@@ -986,7 +986,7 @@ void main() {
           expect(r.lastIndexOf(8.5, 4), -1);
         });
         test('lastIndexOf (negative step)', () {
-          var r = DoubleRange(7.0, 2.0, -1.5); // [7.0, 5.5, 4.0, 2.5]
+          final r = DoubleRange(7.0, 2.0, -1.5); // [7.0, 5.5, 4.0, 2.5]
           expect(r.lastIndexOf(null), -1);
           expect(r.lastIndexOf(2.0), -1);
           expect(r.lastIndexOf(5.0), -1);
@@ -1007,7 +1007,7 @@ void main() {
             'new DoubleRange(1.2, 3.4, 0.5)');
       });
       test('unmodifiable', () {
-        var list = DoubleRange(1.0, 5.0);
+        final list = DoubleRange(1.0, 5.0);
         expect(() => list[0] = 5.0, throwsUnsupportedError);
         expect(() => list.add(5.0), throwsUnsupportedError);
         expect(() => list.addAll([5.0, 6.0]), throwsUnsupportedError);
@@ -1033,10 +1033,10 @@ void main() {
   });
   group('string', () {
     group('immutable', () {
-      var empty = string('');
-      var plenty = string('More Dart');
+      final empty = string('');
+      final plenty = string('More Dart');
       test('creating', () {
-        var coerced = string(123);
+        final coerced = string(123);
         expect(coerced.length, 3);
         expect(coerced.toString(), '123');
       });
@@ -1086,10 +1086,10 @@ void main() {
       });
     });
     group('mutable', () {
-      var empty = mutableString('');
-      var plenty = mutableString('More Dart');
+      final empty = mutableString('');
+      final plenty = mutableString('More Dart');
       test('creating', () {
-        var coerced = mutableString(123);
+        final coerced = mutableString(123);
         expect(coerced.length, 3);
         expect(coerced.toString(), '123');
       });
@@ -1118,7 +1118,7 @@ void main() {
         expect(() => plenty[9], throwsRangeError);
       });
       test('writing', () {
-        var mutable = mutableString('abc');
+        final mutable = mutableString('abc');
         mutable[1] = 'd';
         expect(mutable.toString(), 'adc');
       });
@@ -1131,12 +1131,12 @@ void main() {
         expect(() => plenty[0] = 'ab', throwsArgumentError);
       });
       test('adding', () {
-        var mutable = mutableString('abc');
+        final mutable = mutableString('abc');
         mutable.add('d');
         expect(mutable.toString(), 'abcd');
       });
       test('removing', () {
-        var mutable = mutableString('abc');
+        final mutable = mutableString('abc');
         mutable.remove('a');
         expect(mutable.toString(), 'bc');
       });

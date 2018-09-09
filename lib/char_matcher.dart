@@ -115,7 +115,7 @@ abstract class CharMatcher {
   /// Returns the first matching index in [sequence], searching backward
   /// starting at [start] (inclusive). Returns `-1` if it could not be found.
   int firstIndexIn(String sequence, [int start = 0]) {
-    var codeUnits = sequence.codeUnits;
+    final codeUnits = sequence.codeUnits;
     for (var i = start; i < codeUnits.length; i++) {
       if (match(codeUnits[i])) {
         return i;
@@ -127,7 +127,7 @@ abstract class CharMatcher {
   /// Returns the last matching index in [sequence] starting at [start]
   /// (inclusive). Returns `-1` if it could not be found.
   int lastIndexIn(String sequence, [int start]) {
-    var codeUnits = sequence.codeUnits;
+    final codeUnits = sequence.codeUnits;
     start ??= codeUnits.length - 1;
     for (var i = start; i >= 0; i--) {
       if (match(codeUnits[i])) {
@@ -146,11 +146,11 @@ abstract class CharMatcher {
   /// with the specified [replacement].
   String collapseFrom(String sequence, String replacement) {
     var i = 0;
-    var list = <int>[];
-    var codeUnits = sequence.codeUnits;
-    var replacementCodes = replacement.codeUnits;
+    final list = <int>[];
+    final codeUnits = sequence.codeUnits;
+    final replacementCodes = replacement.codeUnits;
     while (i < codeUnits.length) {
-      var codeUnit = codeUnits[i];
+      final codeUnit = codeUnits[i];
       if (match(codeUnit)) {
         do {
           i++;
@@ -167,7 +167,7 @@ abstract class CharMatcher {
   /// Replaces each matched character in [sequence] with the specified
   /// [replacement].
   String replaceFrom(String sequence, String replacement) {
-    var replacementCodes = replacement.codeUnits;
+    final replacementCodes = replacement.codeUnits;
     return String.fromCharCodes(sequence.codeUnits.expand((value) {
       return match(value) ? replacementCodes : [value];
     }));
@@ -185,7 +185,7 @@ abstract class CharMatcher {
 
   /// Removes leading and trailing matching characters in [sequence].
   String trimFrom(String sequence) {
-    var codeUnits = sequence.codeUnits;
+    final codeUnits = sequence.codeUnits;
     var left = 0, right = codeUnits.length - 1;
     while (left <= right && match(codeUnits[left])) {
       left++;
@@ -198,8 +198,9 @@ abstract class CharMatcher {
 
   /// Removes leading matching characters in [sequence].
   String trimLeadingFrom(String sequence) {
-    var codeUnits = sequence.codeUnits;
-    var left = 0, right = codeUnits.length - 1;
+    final codeUnits = sequence.codeUnits;
+    var left = 0;
+    final right = codeUnits.length - 1;
     while (left <= right && match(codeUnits[left])) {
       left++;
     }
@@ -208,8 +209,9 @@ abstract class CharMatcher {
 
   /// Removes tailing matching characters in [sequence].
   String trimTailingFrom(String sequence) {
-    var codeUnits = sequence.codeUnits;
-    var left = 0, right = codeUnits.length - 1;
+    final codeUnits = sequence.codeUnits;
+    final left = 0;
+    var right = codeUnits.length - 1;
     while (left <= right && match(codeUnits[right])) {
       right--;
     }
@@ -221,7 +223,7 @@ int _toCharCode(Object char) {
   if (char is num) {
     return char.round();
   }
-  var value = '$char';
+  final value = '$char';
   if (value.length != 1) {
     throw ArgumentError('$value is not a character');
   }

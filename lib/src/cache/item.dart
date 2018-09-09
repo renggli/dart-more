@@ -7,7 +7,7 @@ class CacheItem<V> {
 
   CacheItem(this.value) {
     if (value is Future<V>) {
-      Future<V> future = value;
+      final Future<V> future = value;
       future.then((v) => value = v);
     }
   }

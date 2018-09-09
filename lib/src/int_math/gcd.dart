@@ -5,7 +5,7 @@ library more.int_math.gcd;
 /// the numbers without a remainder. For example, the GCD of 8 and 12 is 4.
 int gcd(int a, int b) {
   while (b != 0) {
-    var t = b;
+    final t = b;
     b = a % b;
     a = t;
   }

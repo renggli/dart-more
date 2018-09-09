@@ -6,27 +6,27 @@ import 'package:test/test.dart';
 void main() {
   group('construction', () {
     test('irreducible', () {
-      var fraction = Fraction(3, 7);
+      final fraction = Fraction(3, 7);
       expect(fraction.numerator, 3);
       expect(fraction.denominator, 7);
     });
     test('reducible', () {
-      var fraction = Fraction(15, 35);
+      final fraction = Fraction(15, 35);
       expect(fraction.numerator, 3);
       expect(fraction.denominator, 7);
     });
     test('normal negative', () {
-      var fraction = Fraction(-2, 4);
+      final fraction = Fraction(-2, 4);
       expect(fraction.numerator, -1);
       expect(fraction.denominator, 2);
     });
     test('double negative', () {
-      var fraction = Fraction(-2, -4);
+      final fraction = Fraction(-2, -4);
       expect(fraction.numerator, 1);
       expect(fraction.denominator, 2);
     });
     test('denominator negative', () {
-      var fraction = Fraction(2, -4);
+      final fraction = Fraction(2, -4);
       expect(fraction.numerator, -1);
       expect(fraction.denominator, 2);
     });

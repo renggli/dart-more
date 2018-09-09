@@ -54,7 +54,7 @@ class LruCache<K, V> extends Cache<K, V> {
   Future<int> reap() async => 0;
 
   CacheItem<V> promote(K key) {
-    var item = cached.remove(key);
+    final item = cached.remove(key);
     if (item != null) {
       cached[key] = item;
     }

@@ -47,7 +47,7 @@ Iterable<List<E>> _combinationsWithRepetitions<E>(
     yield current;
     hasMore = false;
     for (var i = count - 1; i >= 0; i--) {
-      var index = indices[i] + 1;
+      final index = indices[i] + 1;
       if (index < elements.length) {
         for (var j = i; j < count; j++) {
           indices[j] = index;
@@ -69,7 +69,7 @@ Iterable<List<E>> _combinationsWithoutRepetitions<E>(
     yield current;
     hasMore = false;
     for (var i = count - 1; i >= 0; i--) {
-      var index = indices[i];
+      final index = indices[i];
       if (index + count - i < elements.length) {
         for (var j = i; j < count; j++) {
           indices[j] = index + j - i + 1;

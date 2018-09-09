@@ -89,8 +89,8 @@ abstract class Ordering<T> {
     var min = 0;
     var max = list.length;
     while (min < max) {
-      var mid = min + ((max - min) >> 1);
-      var comp = compare(list[mid], value);
+      final mid = min + ((max - min) >> 1);
+      final comp = compare(list[mid], value);
       if (comp == 0) {
         return mid;
       } else if (comp < 0) {
@@ -107,14 +107,14 @@ abstract class Ordering<T> {
 
   /// Returns a sorted copy of the provided [iterable].
   List<T> sorted(Iterable<T> iterable) {
-    var list = List<T>.from(iterable, growable: false);
+    final list = List<T>.from(iterable, growable: false);
     sort(list);
     return list;
   }
 
   /// Tests if the specified [iterable] is in increasing order.
   bool isOrdered(Iterable<T> iterable) {
-    var iterator = iterable.iterator;
+    final iterator = iterable.iterator;
     if (iterator.moveNext()) {
       var previous = iterator.current;
       while (iterator.moveNext()) {
@@ -129,7 +129,7 @@ abstract class Ordering<T> {
 
   /// Tests if the specified [Iterable] is in strict increasing order.
   bool isStrictlyOrdered(Iterable<T> iterable) {
-    var iterator = iterable.iterator;
+    final iterator = iterable.iterator;
     if (iterator.moveNext()) {
       var previous = iterator.current;
       while (iterator.moveNext()) {
@@ -147,7 +147,7 @@ abstract class Ordering<T> {
 
   /// Returns the maximum of the provided [iterable].
   T maxOf(Iterable<T> iterable, {T orElse()}) {
-    var iterator = iterable.iterator;
+    final iterator = iterable.iterator;
     if (iterator.moveNext()) {
       var value = iterator.current;
       while (iterator.moveNext()) {
@@ -166,7 +166,7 @@ abstract class Ordering<T> {
 
   /// Returns the minimum of the provided [iterable].
   T minOf(Iterable<T> iterable, {T orElse()}) {
-    var iterator = iterable.iterator;
+    final iterator = iterable.iterator;
     if (iterator.moveNext()) {
       var value = iterator.current;
       while (iterator.moveNext()) {

@@ -9,12 +9,12 @@ class LexicographicalOrdering<T> extends Ordering<Iterable<T>> {
 
   @override
   int compare(Iterable<T> a, Iterable<T> b) {
-    var ia = a.iterator, ib = b.iterator;
+    final ia = a.iterator, ib = b.iterator;
     while (ia.moveNext()) {
       if (!ib.moveNext()) {
         return 1;
       }
-      var result = ordering.compare(ia.current, ib.current);
+      final result = ordering.compare(ia.current, ib.current);
       if (result != 0) {
         return result;
       }

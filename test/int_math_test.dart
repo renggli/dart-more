@@ -39,7 +39,7 @@ void main() {
     expect(binomial(7, 7), 1);
   });
   test('binomial (large)', () {
-    Map<int, Map<int, int>> cache = {};
+    final cache = <int, Map<int, int>>{};
     int verifyBinomial(int n, int k) {
       if (k == 0 || k == n) {
         return 1;
@@ -110,8 +110,8 @@ void main() {
     expect(primesUpTo(20), [2, 3, 5, 7, 11, 13, 17, 19]);
   });
   test('isProbablyPrime', () {
-    var max = 100000;
-    var primes = primesUpTo(max).toSet();
+    final max = 100000;
+    final primes = primesUpTo(max).toSet();
     for (var i = 0; i < max; i++) {
       expect(isProbablyPrime(i), primes.contains(i));
     }

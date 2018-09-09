@@ -48,12 +48,12 @@ class DoubleRange extends ListBase<double> with UnmodifiableListMixin<double> {
     } else if (start > stop && step > 0) {
       throw ArgumentError('Negative step-size expected');
     }
-    var span = stop - start;
+    final span = stop - start;
     var length = span ~/ step;
     if (length > 0) {
       // Due to truncation in the division above, it can happen that the last
       // element is still within the requested range. Make sure to include it.
-      var last = start + length * step;
+      final last = start + length * step;
       if ((step > 0.0 && last < stop) || (step < 0.0 && last > stop)) {
         length++;
       }
@@ -96,10 +96,10 @@ class DoubleRange extends ListBase<double> with UnmodifiableListMixin<double> {
       if (startIndex < 0) {
         startIndex = 0;
       }
-      var ordering = step > 0
+      final ordering = step > 0
           ? Ordering<double>.natural()
           : Ordering<double>.natural().reversed;
-      var index = ordering.binarySearch(this, element);
+      final index = ordering.binarySearch(this, element);
       if (startIndex <= index) {
         return index;
       }
@@ -116,10 +116,10 @@ class DoubleRange extends ListBase<double> with UnmodifiableListMixin<double> {
       if (stopIndex < 0) {
         return -1;
       }
-      var ordering = step > 0
+      final ordering = step > 0
           ? Ordering<double>.natural()
           : Ordering<double>.natural().reversed;
-      var index = ordering.binarySearch(this, element);
+      final index = ordering.binarySearch(this, element);
       if (0 <= index && index <= stopIndex) {
         return index;
       }

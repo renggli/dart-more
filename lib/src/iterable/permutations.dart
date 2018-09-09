@@ -40,7 +40,7 @@ Iterable<List<E>> _permutations<E>(List<E> elements) sync* {
 
 void _swap<E>(
     List<E> elements, List<int> indexes, List<E> current, int i, int j) {
-  var temp = indexes[i];
+  final temp = indexes[i];
   indexes[i] = indexes[j];
   indexes[j] = temp;
   current[i] = elements[indexes[i]];

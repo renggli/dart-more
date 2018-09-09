@@ -31,14 +31,14 @@ class Fraction implements Comparable<Fraction> {
     if (value.isInfinite || value.isNaN) {
       throw ArgumentError('$value cannot be represented as fraction');
     }
-    var sign = value < 0.0 ? -1 : 1;
+    final sign = value < 0.0 ? -1 : 1;
     value *= sign;
     var numerator1 = value.floor(), numerator2 = 1;
     var denominator1 = 1, denominator2 = 0;
     var integerPart = numerator1;
     var fractionPart = value - numerator1;
     while (fractionPart != 0) {
-      var newValue = 1.0 / fractionPart;
+      final newValue = 1.0 / fractionPart;
       integerPart = newValue.floor();
       fractionPart = newValue - integerPart;
       var temporary = numerator2;

@@ -8,19 +8,19 @@ import 'package:more/src/char_matcher/single.dart';
 
 CharMatcher optimize(Iterable<RangeCharMatcher> ranges) {
   // Sort the range lists.
-  List<RangeCharMatcher> sortedRanges = List.from(ranges, growable: false);
+  final sortedRanges = List.from<RangeCharMatcher>(ranges, growable: false);
   sortedRanges
       .sort((a, b) => a.start != b.start ? a.start - b.start : a.stop - b.stop);
 
   // Merge adjacent or overlapping ranges.
-  List<RangeCharMatcher> mergedRanges = [];
+  final mergedRanges = <RangeCharMatcher>[];
   for (var thisRange in sortedRanges) {
     if (mergedRanges.isEmpty) {
       mergedRanges.add(thisRange);
     } else {
-      var lastRange = mergedRanges.last;
+      final lastRange = mergedRanges.last;
       if (lastRange.stop + 1 >= thisRange.start) {
-        var charMatcher = RangeCharMatcher(lastRange.start, thisRange.stop);
+        final charMatcher = RangeCharMatcher(lastRange.start, thisRange.stop);
         mergedRanges[mergedRanges.length - 1] = charMatcher;
       } else {
         mergedRanges.add(thisRange);

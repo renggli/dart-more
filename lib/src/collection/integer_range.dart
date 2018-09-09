@@ -46,7 +46,7 @@ class IntegerRange extends ListBase<int> with UnmodifiableListMixin<int> {
     } else if (start > stop && step > 0) {
       throw ArgumentError('Negative step-size expected');
     }
-    var span = stop - start;
+    final span = stop - start;
     var length = span ~/ step;
     if (span % step != 0) {
       length++;
@@ -90,9 +90,9 @@ class IntegerRange extends ListBase<int> with UnmodifiableListMixin<int> {
         startIndex = 0;
       }
       if (startIndex < length) {
-        var value = element - start;
+        final value = element - start;
         if (value % step == 0) {
-          var index = value ~/ step;
+          final index = value ~/ step;
           if (index >= startIndex) {
             return index;
           }
@@ -109,9 +109,9 @@ class IntegerRange extends ListBase<int> with UnmodifiableListMixin<int> {
         startIndex = length - 1;
       }
       if (startIndex >= 0) {
-        var value = element - start;
+        final value = element - start;
         if (value % step == 0) {
-          var index = value ~/ step;
+          final index = value ~/ step;
           if (index <= startIndex) {
             return index;
           }

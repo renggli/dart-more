@@ -6,7 +6,7 @@ class ExplicitOrdering<T> extends Ordering<T> {
   final Map<T, int> ranking;
 
   factory ExplicitOrdering(List<T> list) {
-    var ranking = <T, int>{};
+    final ranking = <T, int>{};
     for (var rank = 0; rank < list.length; rank++) {
       ranking[list[rank]] = rank;
     }
@@ -19,7 +19,7 @@ class ExplicitOrdering<T> extends Ordering<T> {
   int compare(T a, T b) => rank(a) - rank(b);
 
   int rank(T element) {
-    var rank = ranking[element];
+    final rank = ranking[element];
     if (rank == null) {
       throw StateError('Unable to compare $element with $this');
     }

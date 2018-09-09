@@ -10,7 +10,7 @@ class CompoundOrdering<T> extends Ordering<T> {
   @override
   int compare(T a, T b) {
     for (var ordering in orderings) {
-      var result = ordering.compare(a, b);
+      final result = ordering.compare(a, b);
       if (result != 0) {
         return result;
       }
@@ -20,7 +20,7 @@ class CompoundOrdering<T> extends Ordering<T> {
 
   @override
   Ordering<T> compound(Ordering<T> other) {
-    var combined = List<Ordering<T>>.from(orderings)..add(other);
+    final combined = List<Ordering<T>>.from(orderings)..add(other);
     return CompoundOrdering(List<Ordering<T>>.from(combined, growable: false));
   }
 }

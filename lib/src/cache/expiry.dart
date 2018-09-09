@@ -23,7 +23,7 @@ class ExpiryCache<K, V> extends Cache<K, V> {
 
   @override
   Future<V> get(K key) async {
-    var now = clock();
+    final now = clock();
     var item = cached[key];
     if (item == null) {
       item = cached[key] = ExpiryCacheItem(loader(key), now);
@@ -38,8 +38,8 @@ class ExpiryCache<K, V> extends Cache<K, V> {
 
   @override
   Future<V> getIfPresent(K key) async {
-    var now = clock();
-    var item = cached[key];
+    final now = clock();
+    final item = cached[key];
     if (item == null) {
       return null;
     } else if (item.isExpired(now, updateExpiry, accessExpiry)) {
@@ -53,7 +53,7 @@ class ExpiryCache<K, V> extends Cache<K, V> {
 
   @override
   Future<V> set(K key, V value) async {
-    var now = clock();
+    final now = clock();
     var item = cached[key];
     if (item == null) {
       item = cached[key] = ExpiryCacheItem(value, now);
@@ -75,8 +75,8 @@ class ExpiryCache<K, V> extends Cache<K, V> {
 
   @override
   Future<int> reap() async {
-    var now = clock();
-    var expired = <K>[];
+    final now = clock();
+    final expired = <K>[];
     cached.forEach((key, value) {
       if (value.isExpired(now, updateExpiry, accessExpiry)) {
         expired.add(key);

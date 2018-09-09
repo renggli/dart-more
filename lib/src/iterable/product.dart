@@ -39,7 +39,7 @@ class ProductIterable<E> extends IterableBase<List<E>> {
 
   @override
   Iterator<List<E>> get iterator {
-    var state = List<int>.filled(sources.length, 0);
+    final state = List<int>.filled(sources.length, 0);
     return ProductIterator<E>(sources, state);
   }
 }

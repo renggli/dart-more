@@ -4,10 +4,10 @@ import 'package:more/char_matcher.dart';
 import 'package:test/test.dart';
 
 void verify(CharMatcher matcher, String included, String excluded) {
-  var positive = matcher;
+  final positive = matcher;
   expect(positive.everyOf(included), isTrue);
   expect(positive.anyOf(excluded), isFalse);
-  var negative = ~matcher;
+  final negative = ~matcher;
   expect(negative.everyOf(excluded), isTrue);
   expect(negative.anyOf(included), isFalse);
 }
@@ -57,7 +57,7 @@ void main() {
           '!@# ');
     });
     test('whitespace', () {
-      var string = String.fromCharCodes([
+      final string = String.fromCharCodes([
         9,
         10,
         11,
@@ -152,11 +152,11 @@ void main() {
     });
   });
   group('operators', () {
-    var any = CharMatcher.any();
-    var none = CharMatcher.none();
-    var letter = CharMatcher.letter();
-    var digit = CharMatcher.digit();
-    var whitespace = CharMatcher.whitespace();
+    final any = CharMatcher.any();
+    final none = CharMatcher.none();
+    final letter = CharMatcher.letter();
+    final digit = CharMatcher.digit();
+    final whitespace = CharMatcher.whitespace();
     test('~', () {
       expect(~any, equals(none));
       expect(~none, equals(any));
@@ -176,7 +176,7 @@ void main() {
     });
   });
   group('action', () {
-    var star = CharMatcher.isChar('*');
+    final star = CharMatcher.isChar('*');
     test('everyOf', () {
       expect(star.everyOf(''), isTrue);
       expect(star.everyOf('a'), isFalse);

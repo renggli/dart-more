@@ -7,24 +7,24 @@ import 'package:test/test.dart';
 void main() {
   String joiner(Iterable<String> iterable) => iterable.join();
   group('combinations', () {
-    var letters = string('abcd');
+    final letters = string('abcd');
     group('with repetitions', () {
       test('take 0', () {
-        var iterable = combinations(letters, 0, repetitions: true);
+        final iterable = combinations(letters, 0, repetitions: true);
         expect(iterable, isEmpty);
       });
       test('take 1', () {
-        var iterable = combinations(letters, 1, repetitions: true)
+        final iterable = combinations(letters, 1, repetitions: true)
             .map((iterable) => iterable.join());
         expect(iterable, ['a', 'b', 'c', 'd']);
       });
       test('take 2', () {
-        var iterable = combinations(letters, 2, repetitions: true);
+        final iterable = combinations(letters, 2, repetitions: true);
         expect(iterable.map(joiner),
             ['aa', 'ab', 'ac', 'ad', 'bb', 'bc', 'bd', 'cc', 'cd', 'dd']);
       });
       test('take 3', () {
-        var iterable = combinations(letters, 3, repetitions: true);
+        final iterable = combinations(letters, 3, repetitions: true);
         expect(iterable.map(joiner), [
           'aaa',
           'aab',
@@ -49,7 +49,7 @@ void main() {
         ]);
       });
       test('take 4', () {
-        var iterable = combinations(letters, 4, repetitions: true);
+        final iterable = combinations(letters, 4, repetitions: true);
         expect(iterable.map(joiner), [
           'aaaa',
           'aaab',
@@ -89,13 +89,13 @@ void main() {
         ]);
       });
       test('take 5', () {
-        var iterable = combinations(letters, 5, repetitions: true);
+        final iterable = combinations(letters, 5, repetitions: true);
         expect(iterable.first.join(), 'aaaaa');
         expect(iterable.last.join(), 'ddddd');
         expect(iterable.length, 56);
       });
       test('take 6', () {
-        var iterable = combinations(letters, 6, repetitions: true);
+        final iterable = combinations(letters, 6, repetitions: true);
         expect(iterable.first.join(), 'aaaaaa');
         expect(iterable.last.join(), 'dddddd');
         expect(iterable.length, 84);
@@ -103,23 +103,23 @@ void main() {
     });
     group('without repetions', () {
       test('take 0', () {
-        var iterable = combinations(letters, 0, repetitions: false);
+        final iterable = combinations(letters, 0, repetitions: false);
         expect(iterable, isEmpty);
       });
       test('take 1', () {
-        var iterable = combinations(letters, 1, repetitions: false);
+        final iterable = combinations(letters, 1, repetitions: false);
         expect(iterable.map(joiner), ['a', 'b', 'c', 'd']);
       });
       test('take 2', () {
-        var iterable = combinations(letters, 2, repetitions: false);
+        final iterable = combinations(letters, 2, repetitions: false);
         expect(iterable.map(joiner), ['ab', 'ac', 'ad', 'bc', 'bd', 'cd']);
       });
       test('take 3', () {
-        var iterable = combinations(letters, 3, repetitions: false);
+        final iterable = combinations(letters, 3, repetitions: false);
         expect(iterable.map(joiner), ['abc', 'abd', 'acd', 'bcd']);
       });
       test('take 4', () {
-        var iterable = combinations(letters, 4, repetitions: false);
+        final iterable = combinations(letters, 4, repetitions: false);
         expect(iterable.map(joiner), ['abcd']);
       });
     });
@@ -134,7 +134,7 @@ void main() {
     });
   });
   group('concat', () {
-    var a = [1, 2, 3], b = [4, 5], c = [6], d = [];
+    final a = [1, 2, 3], b = [4, 5], c = [6], d = [];
     test('void', () {
       expect(concat([]), []);
     });
@@ -202,30 +202,30 @@ void main() {
   });
   group('indexed', () {
     test('empty', () {
-      var iterable = indexed(const Iterable.empty());
+      final iterable = indexed(const Iterable.empty());
       expect(iterable, []);
     });
     test('simple', () {
-      var iterable = indexed(['a', 'b', 'c']);
+      final iterable = indexed(['a', 'b', 'c']);
       expect(iterable.map((each) => each.index), [0, 1, 2]);
       expect(iterable.map((each) => each.value), ['a', 'b', 'c']);
       expect(iterable.map((each) => each.toString()), ['0: a', '1: b', '2: c']);
     });
     test('offset', () {
-      var iterable = indexed(['a', 'b', 'c']);
+      final iterable = indexed(['a', 'b', 'c']);
       expect(iterable.map((each) => each.index), [0, 1, 2]);
       expect(iterable.map((each) => each.value), ['a', 'b', 'c']);
       expect(iterable.map((each) => each.toString()), ['0: a', '1: b', '2: c']);
     });
     test('example', () {
-      var actual = indexed(['a', 'b'], offset: 1)
+      final actual = indexed(['a', 'b'], offset: 1)
           .map((each) => '${each.value}-${each.index}')
           .join(', ');
-      var expected = 'a-1, b-2';
+      final expected = 'a-1, b-2';
       expect(actual, expected);
     });
     test('reversed', () {
-      var iterable = indexed(indexed(['a', 'b', 'c'])
+      final iterable = indexed(indexed(['a', 'b', 'c'])
               .map((each) => each.toString())
               .toList()
               .reversed)
@@ -236,25 +236,25 @@ void main() {
   });
   group('fold', () {
     test('single value toggle', () {
-      var iterable = fold([1], (e) => -e[0]);
+      final iterable = fold([1], (e) => -e[0]);
       expect(iterable.take(10), [1, -1, 1, -1, 1, -1, 1, -1, 1, -1]);
     });
     test('fibonacci sequence', () {
-      var iterable = fold([0, 1], (e) => e[0] + e[1]);
+      final iterable = fold([0, 1], (e) => e[0] + e[1]);
       expect(iterable.take(10), [0, 1, 1, 2, 3, 5, 8, 13, 21, 34]);
     });
     test('extended fibonacci sequence', () {
-      var iterable = fold([0, 0, 1], (e) => e[0] + e[1] + e[2]);
+      final iterable = fold([0, 0, 1], (e) => e[0] + e[1] + e[2]);
       expect(iterable.take(10), [0, 0, 1, 1, 2, 4, 7, 13, 24, 44]);
     });
   });
   group('iterate', () {
     test('natural numbers', () {
-      var iterable = iterate(0, (a) => a + 1);
+      final iterable = iterate(0, (a) => a + 1);
       expect(iterable.take(10), [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]);
     });
     test('powers of two', () {
-      var iterable = iterate<int>(1, (a) => 2 * a);
+      final iterable = iterate<int>(1, (a) => 2 * a);
       expect(iterable.take(10), [1, 2, 4, 8, 16, 32, 64, 128, 256, 512]);
     });
   });
@@ -299,23 +299,23 @@ void main() {
   });
   group('permutations', () {
     test('0', () {
-      var iterator = permutations(string(''));
+      final iterator = permutations(string(''));
       expect(iterator.map(joiner), []);
     });
     test('1', () {
-      var iterator = permutations(string('a'));
+      final iterator = permutations(string('a'));
       expect(iterator.map(joiner), ['a']);
     });
     test('2', () {
-      var iterator = permutations(string('ab'));
+      final iterator = permutations(string('ab'));
       expect(iterator.map(joiner), ['ab', 'ba']);
     });
     test('3', () {
-      var iterator = permutations(string('abc'));
+      final iterator = permutations(string('abc'));
       expect(iterator.map(joiner), ['abc', 'acb', 'bac', 'bca', 'cab', 'cba']);
     });
     test('4', () {
-      var iterator = permutations(string('abcd'));
+      final iterator = permutations(string('abcd'));
       expect(iterator.map(joiner), [
         'abcd',
         'abdc',
@@ -346,11 +346,11 @@ void main() {
   });
   group('partition', () {
     test('empty', () {
-      var iterable = partition(<int>[], 2);
+      final iterable = partition(<int>[], 2);
       expect(iterable, <int>[]);
     });
     test('even', () {
-      var iterable = partition([1, 2, 3, 4], 2);
+      final iterable = partition([1, 2, 3, 4], 2);
       expect(iterable, [
         [1, 2],
         [3, 4]
@@ -358,7 +358,7 @@ void main() {
     });
 
     test('odd', () {
-      var iterable = partition([1, 2, 3, 4, 5], 2);
+      final iterable = partition([1, 2, 3, 4, 5], 2);
       expect(iterable, [
         [1, 2],
         [3, 4],
@@ -367,18 +367,18 @@ void main() {
     });
     group('with padding', () {
       test('empty', () {
-        var iterable = partitionWithPadding(<int>[], 2, 0);
+        final iterable = partitionWithPadding(<int>[], 2, 0);
         expect(iterable, <int>[]);
       });
       test('even', () {
-        var iterable = partitionWithPadding([1, 2, 3, 4], 2, 0);
+        final iterable = partitionWithPadding([1, 2, 3, 4], 2, 0);
         expect(iterable, [
           [1, 2],
           [3, 4]
         ]);
       });
       test('odd', () {
-        var iterable = partitionWithPadding([1, 2, 3, 4, 5], 2, 0);
+        final iterable = partitionWithPadding([1, 2, 3, 4, 5], 2, 0);
         expect(iterable, [
           [1, 2],
           [3, 4],
@@ -388,10 +388,10 @@ void main() {
     });
   });
   group('periodical', () {
-    var date = DateTime(1980, DateTime.june, 11, 12, 34, 56, 78, 90);
+    final date = DateTime(1980, DateTime.june, 11, 12, 34, 56, 78, 90);
     group('periodical', () {
       test('millennially', () {
-        var iterable = periodical(start: date, period: Period.millennially);
+        final iterable = periodical(start: date, period: Period.millennially);
         expect(iterable.take(3), [
           DateTime(1980, DateTime.june, 11, 12, 34, 56, 78, 90),
           DateTime(2980, DateTime.june, 11, 12, 34, 56, 78, 90),
@@ -399,7 +399,7 @@ void main() {
         ]);
       });
       test('centennially', () {
-        var iterable = periodical(start: date, period: Period.centennially);
+        final iterable = periodical(start: date, period: Period.centennially);
         expect(iterable.take(3), [
           DateTime(1980, DateTime.june, 11, 12, 34, 56, 78, 90),
           DateTime(2080, DateTime.june, 11, 12, 34, 56, 78, 90),
@@ -407,7 +407,7 @@ void main() {
         ]);
       });
       test('decennially', () {
-        var iterable = periodical(start: date, period: Period.decennially);
+        final iterable = periodical(start: date, period: Period.decennially);
         expect(iterable.take(3), [
           DateTime(1980, DateTime.june, 11, 12, 34, 56, 78, 90),
           DateTime(1990, DateTime.june, 11, 12, 34, 56, 78, 90),
@@ -415,7 +415,7 @@ void main() {
         ]);
       });
       test('yearly', () {
-        var iterable = periodical(start: date, period: Period.yearly);
+        final iterable = periodical(start: date, period: Period.yearly);
         expect(iterable.take(3), [
           DateTime(1980, DateTime.june, 11, 12, 34, 56, 78, 90),
           DateTime(1981, DateTime.june, 11, 12, 34, 56, 78, 90),
@@ -423,7 +423,7 @@ void main() {
         ]);
       });
       test('quarterly', () {
-        var iterable = periodical(start: date, period: Period.quarterly);
+        final iterable = periodical(start: date, period: Period.quarterly);
         expect(iterable.take(3), [
           DateTime(1980, DateTime.june, 11, 12, 34, 56, 78, 90),
           DateTime(1980, DateTime.september, 11, 12, 34, 56, 78, 90),
@@ -431,7 +431,7 @@ void main() {
         ]);
       });
       test('monthly', () {
-        var iterable = periodical(start: date, period: Period.monthly);
+        final iterable = periodical(start: date, period: Period.monthly);
         expect(iterable.take(3), [
           DateTime(1980, DateTime.june, 11, 12, 34, 56, 78, 90),
           DateTime(1980, DateTime.july, 11, 12, 34, 56, 78, 90),
@@ -439,7 +439,7 @@ void main() {
         ]);
       });
       test('weekly', () {
-        var iterable = periodical(start: date, period: Period.weekly);
+        final iterable = periodical(start: date, period: Period.weekly);
         expect(iterable.take(3), [
           DateTime(1980, DateTime.june, 11, 12, 34, 56, 78, 90),
           DateTime(1980, DateTime.june, 18, 12, 34, 56, 78, 90),
@@ -447,7 +447,7 @@ void main() {
         ]);
       });
       test('daily', () {
-        var iterable = periodical(start: date, period: Period.daily);
+        final iterable = periodical(start: date, period: Period.daily);
         expect(iterable.take(3), [
           DateTime(1980, DateTime.june, 11, 12, 34, 56, 78, 90),
           DateTime(1980, DateTime.june, 12, 12, 34, 56, 78, 90),
@@ -455,7 +455,7 @@ void main() {
         ]);
       });
       test('hourly', () {
-        var iterable = periodical(start: date, period: Period.hourly);
+        final iterable = periodical(start: date, period: Period.hourly);
         expect(iterable.take(3), [
           DateTime(1980, DateTime.june, 11, 12, 34, 56, 78, 90),
           DateTime(1980, DateTime.june, 11, 13, 34, 56, 78, 90),
@@ -463,7 +463,7 @@ void main() {
         ]);
       });
       test('minutely', () {
-        var iterable = periodical(start: date, period: Period.minutely);
+        final iterable = periodical(start: date, period: Period.minutely);
         expect(iterable.take(3), [
           DateTime(1980, DateTime.june, 11, 12, 34, 56, 78, 90),
           DateTime(1980, DateTime.june, 11, 12, 35, 56, 78, 90),
@@ -471,7 +471,7 @@ void main() {
         ]);
       });
       test('secondly', () {
-        var iterable = periodical(start: date, period: Period.secondly);
+        final iterable = periodical(start: date, period: Period.secondly);
         expect(iterable.take(3), [
           DateTime(1980, DateTime.june, 11, 12, 34, 56, 78, 90),
           DateTime(1980, DateTime.june, 11, 12, 34, 57, 78, 90),
@@ -479,7 +479,7 @@ void main() {
         ]);
       });
       test('millisecondly', () {
-        var iterable = periodical(start: date, period: Period.millisecondly);
+        final iterable = periodical(start: date, period: Period.millisecondly);
         expect(iterable.take(3), [
           DateTime(1980, DateTime.june, 11, 12, 34, 56, 78, 90),
           DateTime(1980, DateTime.june, 11, 12, 34, 56, 79, 90),
@@ -487,7 +487,7 @@ void main() {
         ]);
       });
       test('microsecondly', () {
-        var iterable = periodical(start: date, period: Period.microsecondly);
+        final iterable = periodical(start: date, period: Period.microsecondly);
         expect(iterable.take(3), [
           DateTime(1980, DateTime.june, 11, 12, 34, 56, 78, 90),
           DateTime(1980, DateTime.june, 11, 12, 34, 56, 78, 91),
@@ -495,8 +495,8 @@ void main() {
         ]);
       });
       test('start default', () {
-        var first = periodical().first;
-        var difference = first.difference(DateTime.now());
+        final first = periodical().first;
+        final difference = first.difference(DateTime.now());
         expect(difference.inSeconds, lessThan(1));
       });
       test('invalid step', () {
@@ -509,65 +509,65 @@ void main() {
     });
     group('truncateToPeriod', () {
       test('millennially', () {
-        var truncated = truncateToPeriod(date, period: Period.millennially);
+        final truncated = truncateToPeriod(date, period: Period.millennially);
         expect(truncated, DateTime(1000));
       });
       test('centennially', () {
-        var truncated = truncateToPeriod(date, period: Period.centennially);
+        final truncated = truncateToPeriod(date, period: Period.centennially);
         expect(truncated, DateTime(1900));
       });
       test('decennially', () {
-        var truncated = truncateToPeriod(date, period: Period.decennially);
+        final truncated = truncateToPeriod(date, period: Period.decennially);
         expect(truncated, DateTime(1980));
       });
       test('yearly', () {
-        var truncated = truncateToPeriod(date, period: Period.yearly);
+        final truncated = truncateToPeriod(date, period: Period.yearly);
         expect(truncated, DateTime(1980));
       });
       test('quarterly', () {
-        var truncated = truncateToPeriod(date, period: Period.quarterly);
+        final truncated = truncateToPeriod(date, period: Period.quarterly);
         expect(truncated, DateTime(1980, DateTime.april));
       });
       test('monthly', () {
-        var truncated = truncateToPeriod(date, period: Period.monthly);
+        final truncated = truncateToPeriod(date, period: Period.monthly);
         expect(truncated, DateTime(1980, DateTime.june));
       });
       test('weekly', () {
-        var truncated = truncateToPeriod(date, period: Period.weekly);
+        final truncated = truncateToPeriod(date, period: Period.weekly);
         expect(truncated, DateTime(1980, DateTime.june, 9));
       });
       test('weekly (custom start of the week)', () {
         for (var weekday = DateTime.monday;
             weekday <= DateTime.sunday;
             weekday++) {
-          var truncated = truncateToPeriod(date,
+          final truncated = truncateToPeriod(date,
               period: Period.weekly, startWeekday: weekday);
           expect(truncated.isBefore(date), isTrue);
           expect(truncated.weekday, weekday);
         }
       });
       test('daily', () {
-        var truncated = truncateToPeriod(date, period: Period.daily);
+        final truncated = truncateToPeriod(date, period: Period.daily);
         expect(truncated, DateTime(1980, DateTime.june, 11));
       });
       test('hourly', () {
-        var truncated = truncateToPeriod(date, period: Period.hourly);
+        final truncated = truncateToPeriod(date, period: Period.hourly);
         expect(truncated, DateTime(1980, DateTime.june, 11, 12));
       });
       test('minutely', () {
-        var truncated = truncateToPeriod(date, period: Period.minutely);
+        final truncated = truncateToPeriod(date, period: Period.minutely);
         expect(truncated, DateTime(1980, DateTime.june, 11, 12, 34));
       });
       test('secondly', () {
-        var truncated = truncateToPeriod(date, period: Period.secondly);
+        final truncated = truncateToPeriod(date, period: Period.secondly);
         expect(truncated, DateTime(1980, DateTime.june, 11, 12, 34, 56));
       });
       test('millisecondly', () {
-        var truncated = truncateToPeriod(date, period: Period.millisecondly);
+        final truncated = truncateToPeriod(date, period: Period.millisecondly);
         expect(truncated, DateTime(1980, DateTime.june, 11, 12, 34, 56, 78));
       });
       test('microsecondly', () {
-        var truncated = truncateToPeriod(date, period: Period.microsecondly);
+        final truncated = truncateToPeriod(date, period: Period.microsecondly);
         expect(
             truncated, DateTime(1980, DateTime.june, 11, 12, 34, 56, 78, 90));
       });
@@ -591,7 +591,7 @@ void main() {
   });
   group('product', () {
     test('2 x 2', () {
-      var iterable = product([
+      final iterable = product([
         [1, 2],
         [3, 4]
       ]);
@@ -603,7 +603,7 @@ void main() {
       ]);
     });
     test('1 x 2 x 3', () {
-      var iterable = product([
+      final iterable = product([
         [1],
         [2, 3],
         [4, 5, 6]
@@ -618,7 +618,7 @@ void main() {
       ]);
     });
     test('3 x 2 x 1', () {
-      var iterable = product([
+      final iterable = product([
         [1, 2, 3],
         [4, 5],
         [6]
@@ -665,7 +665,7 @@ void main() {
       expect(repeat(0, 4), [0, 0, 0, 0]);
     });
     test('infinite', () {
-      var infinite = repeat(1);
+      final infinite = repeat(1);
       expect(infinite.take(100).every((x) => x == 1), isTrue);
       expect(() => infinite.length, throwsUnsupportedError);
     });

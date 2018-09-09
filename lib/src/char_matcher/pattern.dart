@@ -6,21 +6,21 @@ import 'package:more/src/char_matcher/range.dart';
 
 CharMatcher fromPattern(String pattern) {
   // Check if negated.
-  var isNegated = pattern.startsWith('^');
+  final isNegated = pattern.startsWith('^');
   if (isNegated) {
     pattern = pattern.substring(1);
   }
 
   // Build the range lists.
-  List<RangeCharMatcher> ranges = [];
+  final ranges = <RangeCharMatcher>[];
   while (pattern.isNotEmpty) {
     if (pattern.length >= 3 && pattern[1] == '-') {
-      var charMatcher =
+      final charMatcher =
           RangeCharMatcher(pattern.codeUnitAt(0), pattern.codeUnitAt(2));
       ranges.add(charMatcher);
       pattern = pattern.substring(3);
     } else {
-      var charMatcher =
+      final charMatcher =
           RangeCharMatcher(pattern.codeUnitAt(0), pattern.codeUnitAt(0));
       ranges.add(charMatcher);
       pattern = pattern.substring(1);
@@ -28,7 +28,7 @@ CharMatcher fromPattern(String pattern) {
   }
 
   // Build the matcher from the ranges.
-  var predicate = optimize(ranges);
+  final predicate = optimize(ranges);
 
   // Negate, if necessary.
   return isNegated ? ~predicate : predicate;

@@ -35,7 +35,7 @@ class Multiset<E> extends IterableBase<E> {
   /// collection. The default function returns the constant 1.
   factory Multiset.fromIterable(Iterable iterable,
       {E key(element), int count(element)}) {
-    var result = Multiset<E>();
+    final result = Multiset<E>();
     key ??= (element) => element as E;
     count ??= (element) => 1;
     for (var element in iterable) {
@@ -77,7 +77,7 @@ class Multiset<E> extends IterableBase<E> {
       throw ArgumentError('Negative number of occurences: $occurrences');
     }
     if (element is E && occurrences > 0) {
-      var current = this[element];
+      final current = this[element];
       if (current <= occurrences) {
         _container.remove(element);
         _length -= current;
@@ -111,7 +111,7 @@ class Multiset<E> extends IterableBase<E> {
     if (occurrences < 0) {
       throw ArgumentError('Negative number of occurences: $occurrences');
     } else {
-      var current = this[element];
+      final current = this[element];
       if (occurrences > 0) {
         _container[element] = occurrences;
         _length += occurrences - current;
@@ -148,7 +148,7 @@ class Multiset<E> extends IterableBase<E> {
   /// well as those in [other].
   Multiset<E> intersection(Iterable<Object> other) {
     if (other is Multiset<Object>) {
-      var result = Multiset<E>();
+      final result = Multiset<E>();
       for (var element in distinct) {
         result.add(element, min(this[element], other[element]));
       }

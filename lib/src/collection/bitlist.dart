@@ -13,7 +13,7 @@ class BitList extends ListBase<bool> with NonGrowableListMixin<bool> {
   /// Constructs a bit list of the given [length], and initializes the value at
   /// each position with [fill].
   factory BitList.filled(int length, bool fill) {
-    var buffer = Uint32List((length + bitOffset) >> bitShift);
+    final buffer = Uint32List((length + bitOffset) >> bitShift);
     if (fill) {
       buffer.fillRange(0, buffer.length, bitMask);
     }
@@ -22,12 +22,13 @@ class BitList extends ListBase<bool> with NonGrowableListMixin<bool> {
 
   /// Constructs a new list from a given [Iterable] of booleans.
   factory BitList.of(Iterable<bool> other) {
-    var length = other.length;
-    var buffer = Uint32List((length + bitOffset) >> bitShift);
+    final length = other.length;
+    final buffer = Uint32List((length + bitOffset) >> bitShift);
     if (other is BitList) {
       buffer.setAll(0, other.buffer);
     } else {
-      for (var i = 0, iterator = other.iterator; i < buffer.length; i++) {
+      final iterator = other.iterator;
+      for (var i = 0; i < buffer.length; i++) {
         var value = 0;
         for (var j = 0; j <= bitOffset && iterator.moveNext(); j++) {
           if (iterator.current) {
@@ -73,7 +74,7 @@ class BitList extends ListBase<bool> with NonGrowableListMixin<bool> {
 
   @override
   BitList operator +(List<bool> other) {
-    var result = BitList(length + other.length);
+    final result = BitList(length + other.length);
     result.buffer.setRange(0, buffer.length, buffer);
     for (var i = 0; i < other.length; i++) {
       result[length + i] = other[i];
@@ -92,7 +93,7 @@ class BitList extends ListBase<bool> with NonGrowableListMixin<bool> {
   int count([bool expected = true]) {
     var tally = 0;
     for (var index = 0; index < length; index++) {
-      var actual =
+      final actual =
           (buffer[index >> bitShift] & bitSetMask[index & bitOffset]) != 0;
       if (actual == expected) {
         tally++;
@@ -105,7 +106,7 @@ class BitList extends ListBase<bool> with NonGrowableListMixin<bool> {
   ///
   /// The new [BitList] has all the bits of the receiver inverted.
   BitList operator ~() {
-    var result = BitList(length);
+    final result = BitList(length);
     for (var i = 0; i < buffer.length; i++) {
       result.buffer[i] = ~(buffer[i]);
     }
@@ -122,7 +123,7 @@ class BitList extends ListBase<bool> with NonGrowableListMixin<bool> {
       throw ArgumentError(
           'Expected list with length $length, but got ${other.length}');
     }
-    var result = BitList(length);
+    final result = BitList(length);
     for (var i = 0; i < buffer.length; i++) {
       result.buffer[i] = buffer[i] & other.buffer[i];
     }
@@ -139,7 +140,7 @@ class BitList extends ListBase<bool> with NonGrowableListMixin<bool> {
       throw ArgumentError(
           'Expected list with length $length, but got ${other.length}');
     }
-    var result = BitList(length);
+    final result = BitList(length);
     for (var i = 0; i < buffer.length; i++) {
       result.buffer[i] = buffer[i] | other.buffer[i];
     }
@@ -156,7 +157,7 @@ class BitList extends ListBase<bool> with NonGrowableListMixin<bool> {
       throw ArgumentError(
           'Expected list with length $length, but got ${other.length}');
     }
-    var result = BitList(length);
+    final result = BitList(length);
     for (var i = 0; i < buffer.length; i++) {
       result.buffer[i] = buffer[i] & ~(other.buffer[i]);
     }
@@ -173,15 +174,15 @@ class BitList extends ListBase<bool> with NonGrowableListMixin<bool> {
     if (amount == 0 || length == 0) {
       return BitList.of(this);
     }
-    var shift = amount >> bitShift;
-    var offset = amount & bitOffset;
-    var result = BitList(length);
+    final shift = amount >> bitShift;
+    final offset = amount & bitOffset;
+    final result = BitList(length);
     if (offset == 0) {
       for (var i = shift; i < buffer.length; i++) {
         result.buffer[i] = buffer[i - shift];
       }
     } else {
-      var otherOffset = 1 + bitOffset - offset;
+      final otherOffset = 1 + bitOffset - offset;
       for (var i = shift + 1; i < buffer.length; i++) {
         result.buffer[i] = ((buffer[i - shift] << offset) & bitMask) |
             ((buffer[i - shift - 1] >> otherOffset) & bitMask);
@@ -203,16 +204,16 @@ class BitList extends ListBase<bool> with NonGrowableListMixin<bool> {
     if (amount == 0 || length == 0) {
       return BitList.of(this);
     }
-    var shift = amount >> bitShift;
-    var offset = amount & bitOffset;
-    var result = BitList(length);
+    final shift = amount >> bitShift;
+    final offset = amount & bitOffset;
+    final result = BitList(length);
     if (offset == 0) {
       for (var i = 0; i < buffer.length - shift; i++) {
         result.buffer[i] = buffer[i + shift];
       }
     } else {
-      var last = buffer.length - shift - 1;
-      var otherOffset = 1 + bitOffset - offset;
+      final last = buffer.length - shift - 1;
+      final otherOffset = 1 + bitOffset - offset;
       for (var i = 0; i < last; i++) {
         result.buffer[i] = ((buffer[i + shift] >> offset) & bitMask) |
             ((buffer[i + shift + 1] << otherOffset) & bitMask);
