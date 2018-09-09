@@ -495,8 +495,7 @@ void main() {
         expect(set.counts, unorderedEquals([3, 2, 1]));
       });
       test('copy', () {
-        final set =
-            Multiset.of(Multiset.of(['a', 'a', 'a', 'b', 'b', 'c']));
+        final set = Multiset.of(Multiset.of(['a', 'a', 'a', 'b', 'b', 'c']));
         expect(set, isNot(isEmpty));
         expect(set, hasLength(6));
         expect(set, unorderedEquals(['a', 'a', 'a', 'b', 'b', 'c']));
