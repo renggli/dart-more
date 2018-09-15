@@ -7,13 +7,13 @@ jobs:
     script: dartanalyzer --fatal-warnings .
   - stage: analyze
     script: dartfmt --dry-run --set-exit-if-changed .
-  - stage: test
+  - stage: unit_test
     script: pub run test --platform vm
-  - stage: test
+  - stage: unit_test
     script: pub run test --platform chrome
 stages:
 - analyze
-- test
+- unit_test
 
 sudo: required
 cache:
