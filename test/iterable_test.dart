@@ -200,9 +200,40 @@ void main() {
       expect(() => cycle([1, 2]).toSet(), throwsUnsupportedError);
     });
   });
+  group('groupBy', () {
+    final example = string('aaaabbbccdaabbb');
+    test('groupBy empty', () {
+      final iterable = groupBy([]);
+      expect(iterable, []);
+    });
+    test('groupBy basic', () {
+      final iterable = groupBy(example);
+      expect(iterable.map((each) => each.key), ['a', 'b', 'c', 'd', 'a', 'b']);
+      expect(iterable.map((each) => each.values), [
+        ['a', 'a', 'a', 'a'],
+        ['b', 'b', 'b'],
+        ['c', 'c'],
+        ['d'],
+        ['a', 'a'],
+        ['b', 'b', 'b'],
+      ]);
+    });
+    test('groupBy mapping', () {
+      final iterable = groupBy(example.reversed, (key) => key.codeUnitAt(0));
+      expect(iterable.map((each) => each.key), [98, 97, 100, 99, 98, 97]);
+      expect(iterable.map((each) => each.values), [
+        ['b', 'b', 'b'],
+        ['a', 'a'],
+        ['d'],
+        ['c', 'c'],
+        ['b', 'b', 'b'],
+        ['a', 'a', 'a', 'a']
+      ]);
+    });
+  });
   group('indexed', () {
     test('empty', () {
-      final iterable = indexed(const Iterable.empty());
+      final iterable = indexed([]);
       expect(iterable, []);
     });
     test('simple', () {

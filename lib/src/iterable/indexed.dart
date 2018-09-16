@@ -1,6 +1,6 @@
 library more.iterable.indexed;
 
-/// Returns a [Indexed] iterable.
+/// Returns a iterable that combines the index and value of an iterable.
 ///
 /// By default the index is zero based, but an arbitrary [offset] can be
 /// provided.
@@ -8,12 +8,12 @@ library more.iterable.indexed;
 /// For example, the expression
 ///
 ///     indexed(['a', 'b'], offset: 1)
-///       .map((each) => '${each.value}-${each.index}')
+///       .map((each) => '${each.index}: ${each.value}')
 ///       .join(', ');
 ///
 /// returns
 ///
-///     'a-1, b-2'
+///     '1: a, 2: b'
 ///
 Iterable<Indexed<E>> indexed<E>(Iterable<E> elements, {int offset = 0}) sync* {
   for (var element in elements) {
