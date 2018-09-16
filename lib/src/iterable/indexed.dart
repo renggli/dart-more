@@ -23,14 +23,7 @@ Iterable<Indexed<E>> indexed<E>(Iterable<E> elements, {int offset = 0}) sync* {
 
 /// An indexed value.
 class Indexed<E> {
-  /// The index of the value in the iterable.
   final int index;
-
-  /// The actual value.
   final E value;
-
   const Indexed(this.index, this.value);
-
-  @override
-  String toString() => '$index: $value';
 }

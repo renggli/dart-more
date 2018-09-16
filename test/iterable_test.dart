@@ -209,29 +209,13 @@ void main() {
       final iterable = indexed(['a', 'b', 'c']);
       expect(iterable.map((each) => each.index), [0, 1, 2]);
       expect(iterable.map((each) => each.value), ['a', 'b', 'c']);
-      expect(iterable.map((each) => each.toString()), ['0: a', '1: b', '2: c']);
     });
     test('offset', () {
-      final iterable = indexed(['a', 'b', 'c']);
-      expect(iterable.map((each) => each.index), [0, 1, 2]);
-      expect(iterable.map((each) => each.value), ['a', 'b', 'c']);
-      expect(iterable.map((each) => each.toString()), ['0: a', '1: b', '2: c']);
-    });
-    test('example', () {
       final actual = indexed(['a', 'b'], offset: 1)
           .map((each) => '${each.value}-${each.index}')
           .join(', ');
       final expected = 'a-1, b-2';
       expect(actual, expected);
-    });
-    test('reversed', () {
-      final iterable = indexed(indexed(['a', 'b', 'c'])
-              .map((each) => each.toString())
-              .toList()
-              .reversed)
-          .map((each) => each.toString())
-          .toList();
-      expect(iterable, ['0: 2: c', '1: 1: b', '2: 0: a']);
     });
   });
   group('fold', () {
