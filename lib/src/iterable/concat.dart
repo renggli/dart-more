@@ -10,5 +10,6 @@ library more.iterable.concat;
 ///
 ///    // equals to [1, 2, 3, 4, 5, 6]
 ///    var concatenation = concat([first, second, third]);
+///
 Iterable<E> concat<E>(Iterable<Iterable<E>> iterables) =>
     iterables.expand((iterable) => iterable);

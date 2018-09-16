@@ -52,7 +52,6 @@ class InfiniteCycleIterable<E> extends IterableBase<E>
 class InfiniteCycleIterator<E> extends Iterator<E> {
   final Iterable<E> iterable;
 
-  // ignore: prefer_const_constructors
   Iterator<E> iterator = Iterable<E>.empty().iterator;
 
   InfiniteCycleIterator(this.iterable);

@@ -1,6 +1,6 @@
 library more.iterable.indexed;
 
-/// Returns a [Indexed] iterable
+/// Returns a [Indexed] iterable.
 ///
 /// By default the index is zero based, but an arbitrary [offset] can be
 /// provided.
@@ -29,7 +29,7 @@ class Indexed<E> {
   /// The actual value.
   final E value;
 
-  Indexed(this.index, this.value);
+  const Indexed(this.index, this.value);
 
   @override
   String toString() => '$index: $value';
