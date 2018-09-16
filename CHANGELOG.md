@@ -5,6 +5,7 @@
 * Add the number package.
   * Move `Fraction` class into this package.
   * Add support for `Complex` numbers. 
+* Add the `groupBy` iterable.
 
 ## 1.11.0
 
