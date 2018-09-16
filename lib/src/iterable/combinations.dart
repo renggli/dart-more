@@ -28,8 +28,9 @@ Iterable<List<E>> combinations<E>(Iterable<E> elements, int count,
   } else if (!repetitions && elements.length < count) {
     throw RangeError.range(count, 0, elements.length);
   } else if (count == 0 || elements.isEmpty) {
-    return const Iterable.empty();
-  } else if (repetitions) {
+    return Iterable.empty();
+  }
+  if (repetitions) {
     return _combinationsWithRepetitions<E>(
         elements.toList(growable: false), count);
   } else {
