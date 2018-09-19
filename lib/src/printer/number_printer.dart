@@ -249,7 +249,7 @@ class ScientificNumberPrinter extends Printer {
   }
 }
 
-/// Extracts digits of a positive [value] in the provided [base].
+/// Extracts digits of a positive `int` [value] in the provided [base].
 Iterable<int> _intDigits(int value, int base) {
   if (value == 0) {
     return <int>[0];
@@ -264,7 +264,7 @@ Iterable<int> _intDigits(int value, int base) {
   return digits.reversed;
 }
 
-/// Extracts digits of a positive [value] in the provided [base].
+/// Extracts digits of a positive `BigInt` [value] in the provided [base].
 Iterable<int> _bigIntDigits(BigInt value, int base) {
   if (value == BigInt.zero) {
     return <int>[0];

@@ -49,7 +49,7 @@ abstract class Printer {
     Printer sign,
   }) = FixedNumberPrinter;
 
-  /// Prints numbers in a  custom scientific format.
+  /// Prints numbers in a custom scientific format.
   factory Printer.scientific({
     int base,
     String characters,
