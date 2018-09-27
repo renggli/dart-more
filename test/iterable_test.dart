@@ -162,8 +162,8 @@ void main() {
       expect(concat([d, d, d, d, d]), []);
     });
     test('types', () {
-      expect(concat([Set.from(c)]), [6]);
-      expect(concat([List.from(b)]), [4, 5]);
+      expect(concat([Set.of(c)]), [6]);
+      expect(concat([List.of(b)]), [4, 5]);
     });
   });
   group('cycle', () {

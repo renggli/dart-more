@@ -42,7 +42,7 @@ class BitList extends ListBase<bool> with NonGrowableListMixin<bool> {
   }
 
   /// Constructs a new list from a given [Iterable] of booleans.
-  factory BitList.from(Iterable<bool> other) = BitList.of;
+  factory BitList.from(Iterable<bool> other) => BitList.of(other);
 
   /// Internal constructor for this object.
   BitList._(this.buffer, this.length);

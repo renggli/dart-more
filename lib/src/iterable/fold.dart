@@ -26,7 +26,7 @@ class FoldIterable<E> extends IterableBase<E> with InfiniteIterable<E> {
 
   @override
   Iterator<E> get iterator =>
-      FoldIterator<E>(List.from(elements, growable: false), combine);
+      FoldIterator<E>(List.of(elements, growable: false), combine);
 }
 
 class FoldIterator<E> extends Iterator<E> {

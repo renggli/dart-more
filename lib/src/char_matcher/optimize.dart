@@ -8,7 +8,7 @@ import 'package:more/src/char_matcher/single.dart';
 
 CharMatcher optimize(Iterable<RangeCharMatcher> ranges) {
   // Sort the range lists.
-  final sortedRanges = List.from<RangeCharMatcher>(ranges, growable: false);
+  final sortedRanges = List.of(ranges, growable: false);
   sortedRanges
       .sort((a, b) => a.start != b.start ? a.start - b.start : a.stop - b.stop);
 

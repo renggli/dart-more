@@ -27,7 +27,7 @@ class BiMap<K, V> extends MapBase<K, V> {
   }
 
   /// Creates bi-map from another map.
-  factory BiMap.from(Map<K, V> other) = BiMap.of;
+  factory BiMap.from(Map<K, V> other) => BiMap.of(other);
 
   /// Creates a bi-map from an iterable (and possible transformation functions).
   factory BiMap.fromIterable(Iterable iterable,

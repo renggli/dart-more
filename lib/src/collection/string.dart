@@ -56,8 +56,7 @@ class StringList extends ListBase<String> with UnmodifiableListMixin<String> {
 ///
 /// For a light-weight immutable list of characters see [string(Object)].
 List<String> mutableString(Object string, {bool growable = true}) =>
-    MutableStringList(
-        List.from(string.toString().codeUnits, growable: growable));
+    MutableStringList(List.of(string.toString().codeUnits, growable: growable));
 
 /// A string as a mutable list.
 class MutableStringList extends ListBase<String> {

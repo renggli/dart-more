@@ -63,7 +63,7 @@ void main() {
       verify(ordering, [3, 2, 1], [1, 2, 3]);
     });
     test('comparator', () {
-      final ordering = Ordering<String>.from((a, b) => a.length - b.length);
+      final ordering = Ordering<String>.of((a, b) => a.length - b.length);
       verify(ordering, ['*', '**', '***'], ['*', '**', '***']);
       verify(ordering, ['**', '***', '*'], ['*', '**', '***']);
       verify(ordering, ['***', '*', '**'], ['*', '**', '***']);

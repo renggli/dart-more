@@ -5,7 +5,7 @@ import 'package:more/ordering.dart';
 class ComparatorOrdering<T> extends Ordering<T> {
   final Comparator<T> comparator;
 
-  const ComparatorOrdering(this.comparator);
+  ComparatorOrdering(this.comparator);
 
   @override
   int compare(T a, T b) => comparator(a, b);

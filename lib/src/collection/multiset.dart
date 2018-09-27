@@ -22,7 +22,7 @@ class Multiset<E> extends IterableBase<E> {
   }
 
   /// Creates a [Multiset] that contains all elements of [other].
-  factory Multiset.from(Iterable<E> other) = Multiset.of;
+  factory Multiset.from(Iterable<E> other) => Multiset.of(other);
 
   /// Creates a [Multiset] where the elements and their occurrence count is
   /// computed from an [iterable].
@@ -139,7 +139,7 @@ class Multiset<E> extends IterableBase<E> {
       }
       return true;
     } else {
-      return containsAll(Multiset.from(other));
+      return containsAll(Multiset.of(other));
     }
   }
 
@@ -153,18 +153,18 @@ class Multiset<E> extends IterableBase<E> {
       }
       return result;
     } else {
-      return intersection(Multiset.from(other));
+      return intersection(Multiset.of(other));
     }
   }
 
   /// Returns a new [Multiset] with all the elements of the receiver and those
   /// in [other].
-  Multiset<E> union(Iterable<E> other) => Multiset<E>.from(this)..addAll(other);
+  Multiset<E> union(Iterable<E> other) => Multiset<E>.of(this)..addAll(other);
 
   /// Returns a new [Multiset] with all the elements of the receiver that are
   /// not in [other].
   Multiset<E> difference(Iterable<Object> other) =>
-      Multiset<E>.from(this)..removeAll(other);
+      Multiset<E>.of(this)..removeAll(other);
 
   /// Iterator over the repeated elements of the receiver.
   @override

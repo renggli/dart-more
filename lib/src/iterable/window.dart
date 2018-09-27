@@ -10,7 +10,7 @@ Iterable<List<E>> window<E>(Iterable<E> elements, int size) sync* {
     throw RangeError.value(size, 'size', 'window size must be positive');
   }
   final iterator = elements.iterator;
-  final current = List.generate<E>(
+  final current = List.generate(
       size,
       (index) => iterator.moveNext()
           ? iterator.current

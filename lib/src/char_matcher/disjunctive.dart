@@ -8,7 +8,7 @@ class DisjunctiveCharMatcher extends CharMatcher {
   final List<CharMatcher> matchers;
 
   factory DisjunctiveCharMatcher(Iterable<CharMatcher> matchers) =>
-      DisjunctiveCharMatcher._(List.from(matchers, growable: false));
+      DisjunctiveCharMatcher._(List.of(matchers, growable: false));
 
   const DisjunctiveCharMatcher._(this.matchers);
 

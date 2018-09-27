@@ -1,14 +1,15 @@
 library more.ordering.explicit;
 
 import 'package:more/ordering.dart';
+import 'package:more/iterable.dart';
 
 class ExplicitOrdering<T> extends Ordering<T> {
   final Map<T, int> ranking;
 
-  factory ExplicitOrdering(List<T> list) {
+  factory ExplicitOrdering(Iterable<T> iterable) {
     final ranking = <T, int>{};
-    for (var rank = 0; rank < list.length; rank++) {
-      ranking[list[rank]] = rank;
+    for (var element in indexed(iterable)) {
+      ranking[element.value] = element.index;
     }
     return ExplicitOrdering<T>._(ranking);
   }
