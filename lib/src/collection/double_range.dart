@@ -145,13 +145,13 @@ class DoubleRange extends ListBase<double> with UnmodifiableListMixin<double> {
   @override
   String toString() {
     if (length == 0) {
-      return 'new DoubleRange()';
-    } else if (start == 0.0 && step == 1) {
-      return 'new DoubleRange($stop)';
+      return 'DoubleRange()';
+    } else if (start == 0.0 && step == 1.0) {
+      return 'DoubleRange($stop)';
     } else if (step == 1.0) {
-      return 'new DoubleRange($start, $stop)';
+      return 'DoubleRange($start, $stop)';
     } else {
-      return 'new DoubleRange($start, $stop, $step)';
+      return 'DoubleRange($start, $stop, $step)';
     }
   }
 }

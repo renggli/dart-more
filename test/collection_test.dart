@@ -887,10 +887,10 @@ void main() {
         });
       });
       test('printing', () {
-        expect(IntegerRange().toString(), 'new IntegerRange()');
-        expect(IntegerRange(1).toString(), 'new IntegerRange(1)');
-        expect(IntegerRange(1, 2).toString(), 'new IntegerRange(1, 2)');
-        expect(IntegerRange(1, 5, 2).toString(), 'new IntegerRange(1, 5, 2)');
+        expect(IntegerRange().toString(), 'IntegerRange()');
+        expect(IntegerRange(1).toString(), 'IntegerRange(1)');
+        expect(IntegerRange(1, 2).toString(), 'IntegerRange(1, 2)');
+        expect(IntegerRange(1, 5, 2).toString(), 'IntegerRange(1, 5, 2)');
       });
       test('unmodifiable', () {
         final list = IntegerRange(1, 5);
@@ -1027,11 +1027,11 @@ void main() {
         });
       });
       test('printing', () {
-        expect(DoubleRange().toString(), 'new DoubleRange()');
-        expect(DoubleRange(1.2).toString(), 'new DoubleRange(1.2)');
-        expect(DoubleRange(1.2, 3.4).toString(), 'new DoubleRange(1.2, 3.4)');
+        expect(DoubleRange().toString(), 'DoubleRange()');
+        expect(DoubleRange(1.2).toString(), 'DoubleRange(1.2)');
+        expect(DoubleRange(1.2, 3.4).toString(), 'DoubleRange(1.2, 3.4)');
         expect(DoubleRange(1.2, 3.4, 0.5).toString(),
-            'new DoubleRange(1.2, 3.4, 0.5)');
+            'DoubleRange(1.2, 3.4, 0.5)');
       });
       test('unmodifiable', () {
         final list = DoubleRange(1.0, 5.0);

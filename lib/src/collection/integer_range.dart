@@ -139,13 +139,13 @@ class IntegerRange extends ListBase<int> with UnmodifiableListMixin<int> {
   @override
   String toString() {
     if (length == 0) {
-      return 'new IntegerRange()';
+      return 'IntegerRange()';
     } else if (start == 0 && step == 1) {
-      return 'new IntegerRange($stop)';
+      return 'IntegerRange($stop)';
     } else if (step == 1) {
-      return 'new IntegerRange($start, $stop)';
+      return 'IntegerRange($start, $stop)';
     } else {
-      return 'new IntegerRange($start, $stop, $step)';
+      return 'IntegerRange($start, $stop, $step)';
     }
   }
 }
