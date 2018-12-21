@@ -68,10 +68,10 @@ class ExpiryCache<K, V> extends Cache<K, V> {
   Future<int> size() async => cached.length;
 
   @override
-  Future invalidate(K key) async => cached.remove(key);
+  Future<void> invalidate(K key) async => cached.remove(key);
 
   @override
-  Future invalidateAll() async => cached.clear();
+  Future<void> invalidateAll() async => cached.clear();
 
   @override
   Future<int> reap() async {

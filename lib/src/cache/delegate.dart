@@ -23,10 +23,10 @@ class DelegateCache<K, V> extends Cache<K, V> {
   Future<int> size() => delegate.size();
 
   @override
-  Future invalidate(K key) => delegate.invalidate(key);
+  Future<void> invalidate(K key) => delegate.invalidate(key);
 
   @override
-  Future invalidateAll() => delegate.invalidateAll();
+  Future<void> invalidateAll() => delegate.invalidateAll();
 
   @override
   Future<int> reap() => delegate.reap();

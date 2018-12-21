@@ -101,10 +101,10 @@ abstract class Cache<K, V> {
   Future<int> size();
 
   /// Discards any cached value with the [key].
-  Future invalidate(K key);
+  Future<void> invalidate(K key);
 
   /// Discards all cached values.
-  Future invalidateAll();
+  Future<void> invalidateAll();
 
   /// Returns the number of reaped items.
   Future<int> reap();
