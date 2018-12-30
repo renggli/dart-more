@@ -68,6 +68,9 @@ class IntegerRange extends ListBase<int> with UnmodifiableListMixin<int> {
   @override
   final int length;
 
+  @deprecated
+  int get stop => end;
+
   @override
   Iterator<int> get iterator => IntegerRangeIterator(start, step, length);
 

@@ -75,6 +75,9 @@ class DoubleRange extends ListBase<double> with UnmodifiableListMixin<double> {
   @override
   final int length;
 
+  @deprecated
+  double get stop => end;
+
   @override
   Iterator<double> get iterator => DoubleRangeIterator(start, step, length);
 

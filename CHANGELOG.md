@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.13.0
+
+* Rename `Range.stop` to `Range.end` to be consistent with Dart naming conventions.
+
 ## 1.12.0
 
 * Add the number package.
