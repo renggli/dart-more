@@ -26,41 +26,41 @@ class IntegerRange extends ListBase<int> with UnmodifiableListMixin<int> {
   /// step value. For example, `IntegerRange(1, 7, 2)` yields `<int>[1, 3, 5]`.
   factory IntegerRange([int a, int b, int c]) {
     var start = 0;
-    var stop = 0;
+    var end = 0;
     var step = 1;
     if (c != null) {
       start = a;
-      stop = b;
+      end = b;
       step = c;
     } else if (b != null) {
       start = a;
-      stop = b;
-      step = start <= stop ? 1 : -1;
+      end = b;
+      step = start <= end ? 1 : -1;
     } else if (a != null) {
-      stop = a;
+      end = a;
     }
     if (step == 0) {
       throw ArgumentError('Non-zero step-size expected');
-    } else if (start < stop && step < 0) {
+    } else if (start < end && step < 0) {
       throw ArgumentError('Positive step-size expected');
-    } else if (start > stop && step > 0) {
+    } else if (start > end && step > 0) {
       throw ArgumentError('Negative step-size expected');
     }
-    final span = stop - start;
+    final span = end - start;
     var length = span ~/ step;
     if (span % step != 0) {
       length++;
     }
-    return IntegerRange._(start, stop, step, length);
+    return IntegerRange._(start, end, step, length);
   }
 
-  IntegerRange._(this.start, this.stop, this.step, this.length);
+  IntegerRange._(this.start, this.end, this.step, this.length);
 
   /// The start of the range (inclusive).
   final int start;
 
-  /// The stop of the range (exclusive).
-  final int stop;
+  /// The end of the range (exclusive).
+  final int end;
 
   /// The step size.
   final int step;
@@ -84,6 +84,7 @@ class IntegerRange extends ListBase<int> with UnmodifiableListMixin<int> {
   bool contains(Object element) => indexOf(element) >= 0;
 
   @override
+  // ignore: avoid_renaming_method_parameters
   int indexOf(Object element, [int startIndex = 0]) {
     if (element is int) {
       if (startIndex < 0) {
@@ -103,16 +104,17 @@ class IntegerRange extends ListBase<int> with UnmodifiableListMixin<int> {
   }
 
   @override
-  int lastIndexOf(Object element, [int startIndex]) {
+  // ignore: avoid_renaming_method_parameters
+  int lastIndexOf(Object element, [int endIndex]) {
     if (element is int) {
-      if (startIndex == null || length <= startIndex) {
-        startIndex = length - 1;
+      if (endIndex == null || length <= endIndex) {
+        endIndex = length - 1;
       }
-      if (startIndex >= 0) {
+      if (endIndex >= 0) {
         final value = element - start;
         if (value % step == 0) {
           final index = value ~/ step;
-          if (index <= startIndex) {
+          if (index <= endIndex) {
             return index;
           }
         }
@@ -126,14 +128,16 @@ class IntegerRange extends ListBase<int> with UnmodifiableListMixin<int> {
       isEmpty ? this : IntegerRange._(last, first - step, -step, length);
 
   @override
-  IntegerRange sublist(int startIndex, [int stopIndex]) =>
-      getRange(startIndex, stopIndex ?? length);
+  // ignore: avoid_renaming_method_parameters
+  IntegerRange sublist(int startIndex, [int endIndex]) =>
+      getRange(startIndex, endIndex ?? length);
 
   @override
-  IntegerRange getRange(int startIndex, int stopIndex) {
-    RangeError.checkValidRange(startIndex, stopIndex, length);
-    return IntegerRange._(start + startIndex * step, start + stopIndex * step,
-        step, stopIndex - startIndex);
+  // ignore: avoid_renaming_method_parameters
+  IntegerRange getRange(int startIndex, int endIndex) {
+    RangeError.checkValidRange(startIndex, endIndex, length);
+    return IntegerRange._(start + startIndex * step, start + endIndex * step,
+        step, endIndex - startIndex);
   }
 
   @override
@@ -141,11 +145,11 @@ class IntegerRange extends ListBase<int> with UnmodifiableListMixin<int> {
     if (length == 0) {
       return 'IntegerRange()';
     } else if (start == 0 && step == 1) {
-      return 'IntegerRange($stop)';
+      return 'IntegerRange($end)';
     } else if (step == 1) {
-      return 'IntegerRange($start, $stop)';
+      return 'IntegerRange($start, $end)';
     } else {
-      return 'IntegerRange($start, $stop, $step)';
+      return 'IntegerRange($start, $end, $step)';
     }
   }
 }

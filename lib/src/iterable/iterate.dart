@@ -5,7 +5,7 @@ import 'dart:collection' show IterableBase;
 import 'package:more/src/iterable/mixins/infinite.dart';
 
 /// One argument function returning an object of the same type.
-typedef E IterateFunction<E>(E value);
+typedef IterateFunction<E> = E Function(E value);
 
 /// Returns a lazy infinite list of repeated applications of the [function] to
 /// the initial [value].

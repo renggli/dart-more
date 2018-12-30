@@ -512,7 +512,7 @@ void main() {
       });
       test('generate with key', () {
         final set = Multiset.fromIterable(['a', 'a', 'a', 'b', 'b', 'c'],
-            key: (e) => (e as String).codeUnitAt(0));
+            key: (e) => e.codeUnitAt(0));
         expect(set, isNot(isEmpty));
         expect(set, hasLength(6));
         expect(set, unorderedEquals([97, 97, 97, 98, 98, 99]));
@@ -521,8 +521,7 @@ void main() {
       });
       test('generate with count', () {
         final set = Multiset.fromIterable(['aaa', 'bb', 'c'],
-            key: (e) => (e as String).substring(0, 1),
-            count: (e) => (e as String).length);
+            key: (e) => e.substring(0, 1), count: (e) => e.length);
         expect(set, isNot(isEmpty));
         expect(set, hasLength(6));
         expect(set, unorderedEquals(['a', 'a', 'a', 'b', 'b', 'c']));
@@ -532,8 +531,7 @@ void main() {
     });
     group('adding', () {
       test('zero', () {
-        final set = Multiset();
-        set..add('a', 0)..add('b', 0);
+        final set = Multiset()..add('a', 0)..add('b', 0);
         expect(set, isEmpty);
         expect(set, hasLength(0));
         expect(set, unorderedEquals([]));
@@ -541,8 +539,7 @@ void main() {
         expect(set.counts, unorderedEquals([]));
       });
       test('single', () {
-        final set = Multiset();
-        set..add('a')..add('b')..add('b');
+        final set = Multiset()..add('a')..add('b')..add('b');
         expect(set, isNot(isEmpty));
         expect(set, hasLength(3));
         expect(set, unorderedEquals(['a', 'b', 'b']));
@@ -550,8 +547,7 @@ void main() {
         expect(set.counts, unorderedEquals([1, 2]));
       });
       test('multiple', () {
-        final set = Multiset();
-        set..add('a', 2)..add('b', 3);
+        final set = Multiset()..add('a', 2)..add('b', 3);
         expect(set, isNot(isEmpty));
         expect(set, hasLength(5));
         expect(set, unorderedEquals(['a', 'a', 'b', 'b', 'b']));
@@ -559,8 +555,7 @@ void main() {
         expect(set.counts, unorderedEquals([2, 3]));
       });
       test('all', () {
-        final set = Multiset();
-        set.addAll(['a', 'a', 'b', 'b', 'b']);
+        final set = Multiset()..addAll(['a', 'a', 'b', 'b', 'b']);
         expect(set, isNot(isEmpty));
         expect(set, hasLength(5));
         expect(set, unorderedEquals(['a', 'a', 'b', 'b', 'b']));

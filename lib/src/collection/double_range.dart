@@ -28,46 +28,46 @@ class DoubleRange extends ListBase<double> with UnmodifiableListMixin<double> {
   /// `<double>[1.0, 3.1, 5.2]`.
   factory DoubleRange([double a, double b, double c]) {
     var start = 0.0;
-    var stop = 0.0;
+    var end = 0.0;
     var step = 1.0;
     if (c != null) {
       start = a;
-      stop = b;
+      end = b;
       step = c;
     } else if (b != null) {
       start = a;
-      stop = b;
-      step = start <= stop ? 1.0 : -1.0;
+      end = b;
+      step = start <= end ? 1.0 : -1.0;
     } else if (a != null) {
-      stop = a;
+      end = a;
     }
     if (step == 0) {
       throw ArgumentError('Non-zero step-size expected');
-    } else if (start < stop && step < 0) {
+    } else if (start < end && step < 0) {
       throw ArgumentError('Positive step-size expected');
-    } else if (start > stop && step > 0) {
+    } else if (start > end && step > 0) {
       throw ArgumentError('Negative step-size expected');
     }
-    final span = stop - start;
+    final span = end - start;
     var length = span ~/ step;
     if (length > 0) {
       // Due to truncation in the division above, it can happen that the last
       // element is still within the requested range. Make sure to include it.
       final last = start + length * step;
-      if ((step > 0.0 && last < stop) || (step < 0.0 && last > stop)) {
+      if ((step > 0.0 && last < end) || (step < 0.0 && last > end)) {
         length++;
       }
     }
-    return DoubleRange._(start, stop, step, length);
+    return DoubleRange._(start, end, step, length);
   }
 
-  DoubleRange._(this.start, this.stop, this.step, this.length);
+  DoubleRange._(this.start, this.end, this.step, this.length);
 
   /// The start of the range (inclusive).
   final double start;
 
-  /// The stop of the range (exclusive).
-  final double stop;
+  /// The end of the range (exclusive).
+  final double end;
 
   /// The step size.
   final double step;
@@ -91,14 +91,14 @@ class DoubleRange extends ListBase<double> with UnmodifiableListMixin<double> {
   bool contains(Object element) => indexOf(element) >= 0;
 
   @override
+  // ignore: avoid_renaming_method_parameters
   int indexOf(Object element, [int startIndex = 0]) {
     if (element is double) {
       if (startIndex < 0) {
         startIndex = 0;
       }
-      final ordering = step > 0
-          ? Ordering<double>.natural()
-          : Ordering<double>.natural().reversed;
+      final ordering =
+          step > 0 ? Ordering.natural<num>() : Ordering.natural<num>().reversed;
       final index = ordering.binarySearch(this, element);
       if (startIndex <= index) {
         return index;
@@ -108,19 +108,19 @@ class DoubleRange extends ListBase<double> with UnmodifiableListMixin<double> {
   }
 
   @override
-  int lastIndexOf(Object element, [int stopIndex]) {
+  // ignore: avoid_renaming_method_parameters
+  int lastIndexOf(Object element, [int endIndex]) {
     if (element is double) {
-      if (stopIndex == null || length <= stopIndex) {
-        stopIndex = length - 1;
+      if (endIndex == null || length <= endIndex) {
+        endIndex = length - 1;
       }
-      if (stopIndex < 0) {
+      if (endIndex < 0) {
         return -1;
       }
-      final ordering = step > 0
-          ? Ordering<double>.natural()
-          : Ordering<double>.natural().reversed;
+      final ordering =
+          step > 0 ? Ordering.natural<num>() : Ordering.natural<num>().reversed;
       final index = ordering.binarySearch(this, element);
-      if (0 <= index && index <= stopIndex) {
+      if (0 <= index && index <= endIndex) {
         return index;
       }
     }
@@ -132,14 +132,16 @@ class DoubleRange extends ListBase<double> with UnmodifiableListMixin<double> {
       isEmpty ? this : DoubleRange._(last, first - step, -step, length);
 
   @override
-  DoubleRange sublist(int startIndex, [int stopIndex]) =>
-      getRange(startIndex, stopIndex ?? length);
+  // ignore: avoid_renaming_method_parameters
+  DoubleRange sublist(int startIndex, [int endIndex]) =>
+      getRange(startIndex, endIndex ?? length);
 
   @override
-  DoubleRange getRange(int startIndex, int stopIndex) {
-    RangeError.checkValidRange(startIndex, stopIndex, length);
-    return DoubleRange._(start + startIndex * step, start + stopIndex * step,
-        step, stopIndex - startIndex);
+  // ignore: avoid_renaming_method_parameters
+  DoubleRange getRange(int startIndex, int endIndex) {
+    RangeError.checkValidRange(startIndex, endIndex, length);
+    return DoubleRange._(start + startIndex * step, start + endIndex * step,
+        step, endIndex - startIndex);
   }
 
   @override
@@ -147,11 +149,11 @@ class DoubleRange extends ListBase<double> with UnmodifiableListMixin<double> {
     if (length == 0) {
       return 'DoubleRange()';
     } else if (start == 0.0 && step == 1.0) {
-      return 'DoubleRange($stop)';
+      return 'DoubleRange($end)';
     } else if (step == 1.0) {
-      return 'DoubleRange($start, $stop)';
+      return 'DoubleRange($start, $end)';
     } else {
-      return 'DoubleRange($start, $stop, $step)';
+      return 'DoubleRange($start, $end, $step)';
     }
   }
 }

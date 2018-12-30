@@ -245,7 +245,7 @@ void main() {
       final actual = indexed(['a', 'b'], offset: 1)
           .map((each) => '${each.value}-${each.index}')
           .join(', ');
-      final expected = 'a-1, b-2';
+      const expected = 'a-1, b-2';
       expect(actual, expected);
     });
   });

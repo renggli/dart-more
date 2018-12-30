@@ -41,7 +41,7 @@ import 'package:more/src/ordering/reversed.dart';
 ///
 abstract class Ordering<T> {
   /// Returns a natural ordering of objects.
-  factory Ordering.natural() => NaturalOrdering<T>();
+  static Ordering<T> natural<T extends Comparable<T>>() => NaturalOrdering<T>();
 
   /// Returns an ordering based on a [comparator] function.
   factory Ordering.of(Comparator<T> comparator) =>
@@ -83,7 +83,7 @@ abstract class Ordering<T> {
 
   /// Returns an ordering that uses the provided [function] to transform the
   /// result.
-  Ordering<F> onResultOf<F>(T function(F argument)) =>
+  Ordering<F> onResultOf<F>(T Function(F argument) function) =>
       MappedOrdering<F, T>(this, function);
 
   /// Searches the sorted [list] for the specified [value] using binary search.
@@ -151,7 +151,7 @@ abstract class Ordering<T> {
   T max(T a, T b) => compare(a, b) > 0 ? a : b;
 
   /// Returns the maximum of the provided [iterable].
-  T maxOf(Iterable<T> iterable, {T orElse()}) {
+  T maxOf(Iterable<T> iterable, {T Function() orElse}) {
     final iterator = iterable.iterator;
     if (iterator.moveNext()) {
       var value = iterator.current;
@@ -170,7 +170,7 @@ abstract class Ordering<T> {
   T min(T a, T b) => compare(a, b) < 0 ? a : b;
 
   /// Returns the minimum of the provided [iterable].
-  T minOf(Iterable<T> iterable, {T orElse()}) {
+  T minOf(Iterable<T> iterable, {T Function() orElse}) {
     final iterator = iterable.iterator;
     if (iterator.moveNext()) {
       var value = iterator.current;

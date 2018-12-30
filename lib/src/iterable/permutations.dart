@@ -18,7 +18,7 @@ Iterable<List<E>> permutations<E>(Iterable<E> elements) {
 Iterable<List<E>> _permutations<E>(List<E> elements) sync* {
   final indexes = List.generate(elements.length, (i) => i);
   final current = List.generate(elements.length, (i) => elements[i]);
-  do {
+  for (;;) {
     yield current;
     var k = indexes.length - 2;
     while (k >= 0 && indexes[k] > indexes[k + 1]) {
@@ -35,7 +35,7 @@ Iterable<List<E>> _permutations<E>(List<E> elements) sync* {
     for (var i = k + 1, j = indexes.length - 1; i < j; i++, j--) {
       _swap(elements, indexes, current, i, j);
     }
-  } while (true);
+  }
 }
 
 void _swap<E>(

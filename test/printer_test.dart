@@ -501,8 +501,8 @@ void main() {
       expect(printer(2), '2<--');
     });
     test('coerce function', () {
-      final printer =
-          Printer.standard() + (object) => ((object as int) + 1).toString();
+      String increment(int value) => (value + 1).toString();
+      final printer = Printer.standard() + increment;
       expect(printer(3), '34');
     });
     test('multiple', () {

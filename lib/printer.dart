@@ -70,7 +70,7 @@ abstract class Printer {
   factory Printer.of(Object object) {
     if (object is Printer) {
       return object;
-    } else if (object is ToString) {
+    } else if (object is Function) {
       return PluggablePrinter(object);
     } else {
       return LiteralPrinter(object.toString());
@@ -124,7 +124,7 @@ abstract class Printer {
       UndefinedPrinter(this, Printer.of(other));
 
   /// Helper to modify a printer with a [callback], if a [condition] is met.
-  Printer mapIf(bool condition, Printer callback(Printer printer)) =>
+  Printer mapIf(bool condition, Printer Function(Printer printer) callback) =>
       condition ? callback(this) : this;
 
   /// Concatenates this printer with [other].

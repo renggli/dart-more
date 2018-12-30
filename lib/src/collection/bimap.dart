@@ -30,8 +30,11 @@ class BiMap<K, V> extends MapBase<K, V> {
   factory BiMap.from(Map<K, V> other) => BiMap.of(other);
 
   /// Creates a bi-map from an iterable (and possible transformation functions).
-  factory BiMap.fromIterable(Iterable iterable,
-          {K key(element), V value(element)}) =>
+  factory BiMap.fromIterable(
+    Iterable iterable, {
+    K key(element), // ignore: use_function_type_syntax_for_parameters
+    V value(element), // ignore: use_function_type_syntax_for_parameters
+  }) =>
       BiMap<K, V>.fromIterables(
           key == null ? iterable.cast<K>() : iterable.map(key),
           value == null ? iterable.cast<V>() : iterable.map(value));
@@ -82,7 +85,7 @@ class BiMap<K, V> extends MapBase<K, V> {
   }
 
   @override
-  V putIfAbsent(K key, V ifAbsent()) {
+  V putIfAbsent(K key, V Function() ifAbsent) {
     if (containsKey(key)) {
       return this[key];
     } else {
@@ -118,7 +121,8 @@ class BiMap<K, V> extends MapBase<K, V> {
   bool containsValue(Object value) => _backward.containsKey(value);
 
   @override
-  void forEach(void callback(K key, V value)) => _forward.forEach(callback);
+  void forEach(void Function(K key, V value) action) =>
+      _forward.forEach(action);
 
   @override
   bool get isEmpty => _forward.isEmpty;

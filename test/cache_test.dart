@@ -7,6 +7,8 @@ import 'package:test/test.dart';
 
 const Duration delay = Duration(milliseconds: 10);
 
+typedef NewCache<T, S> = Cache<T, S> Function(Loader<T, S> loader);
+
 // Various common loaders used with the tests.
 String failingLoader(int key) => fail('Loader should never be called');
 String immediateLoader(int key) => '$key';
@@ -16,8 +18,7 @@ Future<String> delayedLoader(int key) =>
 String throwingLoader(int key) => throw UnsupportedError('$key');
 
 // Basic tests that should pass on any (stateless) cache.
-void statelessCacheTests(
-    Cache<int, String> newCache(Loader<int, String> loader)) {
+void statelessCacheTests(NewCache<int, String> newCache) {
   test('empty', () {
     final cache = newCache(failingLoader);
     return cache
@@ -76,8 +77,8 @@ void statelessCacheTests(
   });
 }
 
-void cacheEvictionTest(Cache<int, String> newCache(Loader<int, String> loader),
-    String name, List<int> load, List<int> present) {
+void cacheEvictionTest(NewCache<int, String> newCache, String name,
+    List<int> load, List<int> present) {
   final absent = Set<int>()
     ..addAll(load)
     ..removeAll(present);
@@ -98,9 +99,9 @@ void cacheEvictionTest(Cache<int, String> newCache(Loader<int, String> loader),
   });
 }
 
-// Basic tests that should pass on any persistent cache (as long as no expiry kicks in).
-void persistentCacheTests(
-    Cache<int, String> newCache(Loader<int, String> loader)) {
+// Basic tests that should pass on any persistent cache (as long as no expiry
+// kicks in).
+void persistentCacheTests(NewCache<int, String> newCache) {
   test('get and set', () {
     final cache = newCache(immediateLoader);
     return cache

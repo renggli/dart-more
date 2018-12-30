@@ -1,7 +1,7 @@
 library more.ordering.explicit;
 
-import 'package:more/ordering.dart';
 import 'package:more/iterable.dart';
+import 'package:more/ordering.dart';
 
 class ExplicitOrdering<T> extends Ordering<T> {
   final Map<T, int> ranking;

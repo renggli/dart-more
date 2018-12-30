@@ -2,7 +2,7 @@ library more.ordering.function;
 
 import 'package:more/ordering.dart';
 
-typedef T MappingFunction<F, T>(F argument);
+typedef MappingFunction<F, T> = T Function(F argument);
 
 class MappedOrdering<F, T> extends Ordering<F> {
   final Ordering<T> ordering;

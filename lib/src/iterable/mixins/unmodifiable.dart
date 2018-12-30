@@ -34,10 +34,10 @@ abstract class UnmodifiableListMixin<E> implements List<E> {
   bool remove(Object element) => _throw();
 
   @override
-  void removeWhere(bool test(E element)) => _throw();
+  void removeWhere(bool Function(E element) test) => _throw();
 
   @override
-  void retainWhere(bool test(E element)) => _throw();
+  void retainWhere(bool Function(E element) test) => _throw();
 
   @override
   void sort([Comparator<E> compare]) => _throw();

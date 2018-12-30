@@ -1,7 +1,7 @@
 library more.printer.utils;
 
-T checkNumericType<T>(Object object, T nativeCallback(num value),
-    T bigIntCallback(BigInt value)) {
+T checkNumericType<T>(Object object, T Function(num value) nativeCallback,
+    T Function(BigInt value) bigIntCallback) {
   if (object is num) {
     return nativeCallback(object);
   } else if (object is BigInt) {

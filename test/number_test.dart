@@ -9,21 +9,21 @@ void main() {
   group('complex', () {
     group('construction', () {
       test('zero', () {
-        final complex = Complex.zero;
+        const complex = Complex.zero;
         expect(complex.real, 0);
         expect(complex.imaginary, 0);
         expect(complex.abs, 0.0);
         expect(complex.phase, 0.0);
       });
       test('one', () {
-        final complex = Complex.one;
+        const complex = Complex.one;
         expect(complex.real, 1);
         expect(complex.imaginary, 0);
         expect(complex.abs, 1.0);
         expect(complex.phase, 0.0);
       });
       test('imaginary', () {
-        final complex = Complex.i;
+        const complex = Complex.i;
         expect(complex.real, 0);
         expect(complex.imaginary, 1);
         expect(complex.abs, 1.0);

@@ -148,6 +148,7 @@ abstract class CharMatcher {
       if (match(codeUnit)) {
         do {
           i++;
+          // ignore: invariant_booleans
         } while (i < codeUnits.length && match(codeUnits[i]));
         list.addAll(replacementCodes);
       } else {
@@ -200,12 +201,11 @@ abstract class CharMatcher {
   /// Removes tailing matching characters in [sequence].
   String trimTailingFrom(String sequence) {
     final codeUnits = sequence.codeUnits;
-    final left = 0;
     var right = codeUnits.length - 1;
-    while (left <= right && match(codeUnits[right])) {
+    while (0 <= right && match(codeUnits[right])) {
       right--;
     }
-    return sequence.substring(left, right + 1);
+    return sequence.substring(0, right + 1);
   }
 }
 

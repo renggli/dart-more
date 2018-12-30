@@ -17,10 +17,11 @@ library more.iterable.group;
 ///     'a: aaa, b: bb, c: c'
 ///
 Iterable<Group<K, V>> groupBy<K, V>(Iterable<V> elements,
-    [K key(V element)]) sync* {
+    [K Function(V element) key]) sync* {
+  Object identity(Object arg) => arg;
   final iterator = elements.iterator;
   if (iterator.moveNext()) {
-    final grouper = key ?? (element) => element as K;
+    final grouper = key ?? identity;
     var group = Group(grouper(iterator.current), <V>[iterator.current]);
     while (iterator.moveNext()) {
       final nextKey = grouper(iterator.current);

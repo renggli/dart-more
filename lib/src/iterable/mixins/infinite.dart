@@ -20,13 +20,14 @@ abstract class InfiniteIterable<E> implements Iterable<E> {
   E get last => _throw();
 
   @override
-  E lastWhere(bool test(E element), {E orElse()}) => _throw();
+  E lastWhere(bool Function(E element) test, {E Function() orElse}) => _throw();
 
   @override
   E get single => _throw();
 
   @override
-  E singleWhere(bool test(E element), {E orElse()}) => _throw();
+  E singleWhere(bool Function(E element) test, {E Function() orElse}) =>
+      _throw();
 
   @override
   List<E> toList({bool growable = true}) => _throw();

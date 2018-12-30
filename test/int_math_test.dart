@@ -91,7 +91,7 @@ void main() {
     expect(primesUpTo(20), [2, 3, 5, 7, 11, 13, 17, 19]);
   });
   test('isProbablyPrime', () {
-    final max = 100000;
+    const max = 100000;
     final primes = primesUpTo(max).toSet();
     for (var i = 0; i < max; i++) {
       expect(isProbablyPrime(i), primes.contains(i));

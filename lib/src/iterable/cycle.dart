@@ -82,8 +82,7 @@ class FiniteCycleIterable<E> extends IterableBase<E> {
 class FiniteCycleIterator<E> extends Iterator<E> {
   final Iterable<E> iterable;
 
-  // ignore: prefer_const_constructors
-  Iterator<E> iterator = Iterable<E>.empty().iterator;
+  Iterator<E> iterator = const Iterable.empty().iterator;
   bool completed = false;
   int count;
 
