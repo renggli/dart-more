@@ -62,8 +62,15 @@ void main() {
       verify(ordering, [3, 1, 2], [1, 2, 3]);
       verify(ordering, [3, 2, 1], [1, 2, 3]);
     });
-    test('comparator', () {
+    test('comparator (of)', () {
       final ordering = Ordering<String>.of((a, b) => a.length - b.length);
+      verify(ordering, ['*', '**', '***'], ['*', '**', '***']);
+      verify(ordering, ['**', '***', '*'], ['*', '**', '***']);
+      verify(ordering, ['***', '*', '**'], ['*', '**', '***']);
+      verify(ordering, ['***', '**', '*'], ['*', '**', '***']);
+    });
+    test('comparator (from)', () {
+      final ordering = Ordering<String>.from((a, b) => a.length - b.length);
       verify(ordering, ['*', '**', '***'], ['*', '**', '***']);
       verify(ordering, ['**', '***', '*'], ['*', '**', '***']);
       verify(ordering, ['***', '*', '**'], ['*', '**', '***']);
@@ -80,12 +87,23 @@ void main() {
     });
   });
   group('operators', () {
-    test('reverse', () {
+    test('reversed', () {
+      final ordering = Ordering.natural<num>().lexicographical;
+      expect(ordering.reversed.reversed, same(ordering));
+    });
+    test('natural (reversed)', () {
       final ordering = Ordering.natural<num>().reversed;
       verify(ordering, [1, 2, 3], [3, 2, 1]);
       verify(ordering, [2, 3, 1], [3, 2, 1]);
       verify(ordering, [3, 1, 2], [3, 2, 1]);
       verify(ordering, [3, 2, 1], [3, 2, 1]);
+    });
+    test('natural (double reversed)', () {
+      final ordering = Ordering.natural<num>().reversed.reversed;
+      verify(ordering, [1, 2, 3], [1, 2, 3]);
+      verify(ordering, [2, 3, 1], [1, 2, 3]);
+      verify(ordering, [3, 1, 2], [1, 2, 3]);
+      verify(ordering, [3, 2, 1], [1, 2, 3]);
     });
     test('lexicographical', () {
       final ordering = Ordering.natural<num>().lexicographical;

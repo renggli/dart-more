@@ -101,6 +101,17 @@ void main() {
         expect(Complex(1, 2).toString(), '1+2i');
       });
     });
+    group('comparing', () {
+      test('compareTo', () {
+        expect(Complex(2, 3) == Complex(2, 3), isTrue);
+        expect(Complex(2, 3) == Complex(3, 2), isFalse);
+        expect(Complex(2, 3) == Complex(2, 4), isFalse);
+      });
+      test('hash code', () {
+        expect(Complex(2, 3).hashCode, Complex(2, 3).hashCode);
+        expect(Complex(2, 3).hashCode, isNot(Complex(3, 2).hashCode));
+      });
+    });
   });
   group('fraction', () {
     group('construction', () {
@@ -184,6 +195,20 @@ void main() {
         expect(Fraction(1, 2) * Fraction.one, Fraction(1, 2));
       });
     });
+    group('testing', () {
+      test('isNan', () {
+        expect(Fraction(0, 1).isNaN, isFalse);
+      });
+      test('isInfinite', () {
+        expect(Fraction(0, 1).isInfinite, isFalse);
+      });
+      test('isNegative', () {
+        expect(Fraction(1, 1).isNegative, isFalse);
+        expect(Fraction(-1, 1).isNegative, isTrue);
+        expect(Fraction(1, -1).isNegative, isTrue);
+        expect(Fraction(-1, -1).isNegative, isFalse);
+      });
+    });
     group('arithmetic', () {
       test('addition', () {
         expect(Fraction(1, 2) + Fraction(1, 4), Fraction(3, 4));
@@ -236,6 +261,7 @@ void main() {
         expect(Fraction(4, 5).compareTo(Fraction(2, 3)), 2.compareTo(1));
       });
       test('hash code', () {
+        expect(Fraction(2, 3).hashCode, Fraction(2, 3).hashCode);
         expect(Fraction(2, 3).hashCode, isNot(Fraction(3, 2).hashCode));
       });
       test('<', () {
