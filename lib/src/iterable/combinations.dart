@@ -45,7 +45,7 @@ Iterable<List<E>> _combinationsWithRepetitions<E>(
   final current = List.filled(count, elements[0]);
   var hasMore = false;
   do {
-    yield current;
+    yield current.toList(growable: false);
     hasMore = false;
     for (var i = count - 1; i >= 0; i--) {
       final index = indices[i] + 1;
@@ -67,7 +67,7 @@ Iterable<List<E>> _combinationsWithoutRepetitions<E>(
   final current = List.generate(count, (i) => elements[i]);
   var hasMore = false;
   do {
-    yield current;
+    yield current.toList(growable: false);
     hasMore = false;
     for (var i = count - 1; i >= 0; i--) {
       final index = indices[i];

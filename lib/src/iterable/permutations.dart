@@ -19,7 +19,7 @@ Iterable<List<E>> _permutations<E>(List<E> elements) sync* {
   final indexes = List.generate(elements.length, (i) => i);
   final current = List.generate(elements.length, (i) => elements[i]);
   for (;;) {
-    yield current;
+    yield current.toList(growable: false);
     var k = indexes.length - 2;
     while (k >= 0 && indexes[k] > indexes[k + 1]) {
       k--;

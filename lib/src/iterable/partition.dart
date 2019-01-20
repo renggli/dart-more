@@ -14,7 +14,7 @@ Iterable<List<E>> partition<E>(Iterable<E> elements, int size) sync* {
     do {
       current.add(iterator.current);
     } while (current.length < size && iterator.moveNext());
-    yield current;
+    yield current.toList(growable: false);
   }
 }
 
@@ -36,6 +36,6 @@ Iterable<Iterable<E>> partitionWithPadding<E>(Iterable<E> elements, int size,
     while (current.length < size) {
       current.add(padding);
     }
-    yield current;
+    yield current.toList(growable: false);
   }
 }

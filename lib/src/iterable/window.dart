@@ -16,10 +16,10 @@ Iterable<List<E>> window<E>(Iterable<E> elements, int size) sync* {
           ? iterator.current
           : throw RangeError.index(index, elements, 'iterable'),
       growable: false);
-  yield current;
+  yield current.toList(growable: false);
   while (iterator.moveNext()) {
     current.setRange(0, size - 1, current, 1);
     current.last = iterator.current;
-    yield current;
+    yield current.toList(growable: false);
   }
 }

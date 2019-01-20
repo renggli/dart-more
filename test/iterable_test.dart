@@ -14,9 +14,8 @@ void main() {
         expect(iterable, isEmpty);
       });
       test('take 1', () {
-        final iterable = combinations(letters, 1, repetitions: true)
-            .map((iterable) => iterable.join());
-        expect(iterable, ['a', 'b', 'c', 'd']);
+        final iterable = combinations(letters, 1, repetitions: true);
+        expect(iterable, [['a'], ['b'], ['c'], ['d']]);
       });
       test('take 2', () {
         final iterable = combinations(letters, 2, repetitions: true);
@@ -108,7 +107,7 @@ void main() {
       });
       test('take 1', () {
         final iterable = combinations(letters, 1, repetitions: false);
-        expect(iterable.map(joiner), ['a', 'b', 'c', 'd']);
+        expect(iterable, [['a'], ['b'], ['c'], ['d']]);
       });
       test('take 2', () {
         final iterable = combinations(letters, 2, repetitions: false);
@@ -315,15 +314,15 @@ void main() {
   group('permutations', () {
     test('0', () {
       final iterator = permutations(string(''));
-      expect(iterator.map(joiner), []);
+      expect(iterator, []);
     });
     test('1', () {
       final iterator = permutations(string('a'));
-      expect(iterator.map(joiner), ['a']);
+      expect(iterator, [['a']]);
     });
     test('2', () {
       final iterator = permutations(string('ab'));
-      expect(iterator.map(joiner), ['ab', 'ba']);
+      expect(iterator, [['a', 'b'], ['b', 'a']]);
     });
     test('3', () {
       final iterator = permutations(string('abc'));
@@ -371,7 +370,6 @@ void main() {
         [3, 4]
       ]);
     });
-
     test('odd', () {
       final iterable = partition([1, 2, 3, 4, 5], 2);
       expect(iterable, [

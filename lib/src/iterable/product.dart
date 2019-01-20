@@ -44,7 +44,7 @@ Iterable<List<E>> _product<E>(List<List<E>> elements, int repeat) sync* {
   );
   var hasMore = false;
   do {
-    yield current;
+    yield current.toList(growable: false);
     hasMore = false;
     for (var i = indexes.length - 1; i >= 0; i--) {
       final e = i % elements.length;
