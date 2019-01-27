@@ -2,9 +2,9 @@ library more.printer.number_printer;
 
 import 'dart:math' as math;
 
-import '../../printer.dart';
-import 'sign_printer.dart';
-import 'utils.dart';
+import 'package:more/printer.dart';
+import 'package:more/src/printer/sign_printer.dart';
+import 'package:more/src/printer/utils.dart';
 
 /// Lower-case digits and letters by increasing value.
 const String lowerCaseDigits = '0123456789abcdefghijklmnopqrstuvwxyz';

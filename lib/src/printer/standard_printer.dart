@@ -1,6 +1,6 @@
 library more.printer.standard_printer;
 
-import '../../printer.dart';
+import 'package:more/printer.dart';
 
 /// Calls the standard [toString] method.
 class StandardPrinter extends Printer {

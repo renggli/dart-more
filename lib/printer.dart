@@ -2,17 +2,17 @@
 /// and highly configurable formatting primitives.
 library more.printer;
 
-import 'src/printer/literal_printer.dart';
-import 'src/printer/number_printer.dart';
-import 'src/printer/pad_printer.dart';
-import 'src/printer/pluggable_printer.dart';
-import 'src/printer/separate_printer.dart';
-import 'src/printer/sequence_printer.dart';
-import 'src/printer/sign_printer.dart';
-import 'src/printer/standard_printer.dart';
-import 'src/printer/trim_printer.dart';
-import 'src/printer/truncate_printer.dart';
-import 'src/printer/undefined_printer.dart';
+import 'package:more/src/printer/literal_printer.dart';
+import 'package:more/src/printer/number_printer.dart';
+import 'package:more/src/printer/pad_printer.dart';
+import 'package:more/src/printer/pluggable_printer.dart';
+import 'package:more/src/printer/separate_printer.dart';
+import 'package:more/src/printer/sequence_printer.dart';
+import 'package:more/src/printer/sign_printer.dart';
+import 'package:more/src/printer/standard_printer.dart';
+import 'package:more/src/printer/trim_printer.dart';
+import 'package:more/src/printer/truncate_printer.dart';
+import 'package:more/src/printer/undefined_printer.dart';
 
 abstract class Printer {
   const Printer();

@@ -1,6 +1,6 @@
 library more.printer.crop_printer;
 
-import '../../printer.dart';
+import 'package:more/printer.dart';
 
 /// Delegates a printer to another one.
 class DelegatePrinter extends Printer {

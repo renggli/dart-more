@@ -1,6 +1,6 @@
 library more.printer.sequence_printer;
 
-import '../../printer.dart';
+import 'package:more/printer.dart';
 
 /// Calls a sequence of other printers.
 class SequencePrinter extends Printer {

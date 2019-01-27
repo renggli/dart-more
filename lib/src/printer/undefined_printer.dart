@@ -1,7 +1,7 @@
 library more.printer.undefined_printer;
 
-import '../../printer.dart';
-import 'delegate_printer.dart';
+import 'package:more/printer.dart';
+import 'package:more/src/printer/delegate_printer.dart';
 
 /// Prints an object different if `null`.
 class UndefinedPrinter extends DelegatePrinter {

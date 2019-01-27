@@ -1,7 +1,7 @@
 library more.printer.pad_printer;
 
-import '../../printer.dart';
-import 'delegate_printer.dart';
+import 'package:more/printer.dart';
+import 'package:more/src/printer/delegate_printer.dart';
 
 /// Pads the string on the left if it is shorter than width.
 class PadLeftPrinter extends DelegatePrinter {

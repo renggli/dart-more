@@ -15,7 +15,12 @@ void main() {
       });
       test('take 1', () {
         final iterable = combinations(letters, 1, repetitions: true);
-        expect(iterable, [['a'], ['b'], ['c'], ['d']]);
+        expect(iterable, [
+          ['a'],
+          ['b'],
+          ['c'],
+          ['d']
+        ]);
       });
       test('take 2', () {
         final iterable = combinations(letters, 2, repetitions: true);
@@ -107,7 +112,12 @@ void main() {
       });
       test('take 1', () {
         final iterable = combinations(letters, 1, repetitions: false);
-        expect(iterable, [['a'], ['b'], ['c'], ['d']]);
+        expect(iterable, [
+          ['a'],
+          ['b'],
+          ['c'],
+          ['d']
+        ]);
       });
       test('take 2', () {
         final iterable = combinations(letters, 2, repetitions: false);
@@ -318,11 +328,16 @@ void main() {
     });
     test('1', () {
       final iterator = permutations(string('a'));
-      expect(iterator, [['a']]);
+      expect(iterator, [
+        ['a']
+      ]);
     });
     test('2', () {
       final iterator = permutations(string('ab'));
-      expect(iterator, [['a', 'b'], ['b', 'a']]);
+      expect(iterator, [
+        ['a', 'b'],
+        ['b', 'a']
+      ]);
     });
     test('3', () {
       final iterator = permutations(string('abc'));
