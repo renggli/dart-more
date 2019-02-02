@@ -868,12 +868,15 @@ void main() {
     });
     test('size = 2, step = 2, includePartial', () {
       expect(window([], 2, step: 2, includePartial: true), []);
-      expect(window([1], 2, step: 2, includePartial: true), [[1]]);
+      expect(window([1], 2, step: 2, includePartial: true), [
+        [1]
+      ]);
       expect(window([1, 2], 2, step: 2, includePartial: true), [
         [1, 2]
       ]);
       expect(window([1, 2, 3], 2, step: 2, includePartial: true), [
-        [1, 2], [3]
+        [1, 2],
+        [3]
       ]);
       expect(window([1, 2, 3, 4], 2, step: 2, includePartial: true), [
         [1, 2],
@@ -882,7 +885,9 @@ void main() {
     });
     test('size = 2, step = 3, includePartial', () {
       expect(window([], 2, step: 3, includePartial: true), []);
-      expect(window([1], 2, step: 3, includePartial: true), [[1]]);
+      expect(window([1], 2, step: 3, includePartial: true), [
+        [1]
+      ]);
       expect(window([1, 2], 2, step: 3, includePartial: true), [
         [1, 2]
       ]);
