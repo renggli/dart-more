@@ -6,6 +6,49 @@ import 'package:test/test.dart';
 
 void main() {
   String joiner(Iterable<String> iterable) => iterable.join();
+
+  group('chunked', () {
+    test('empty', () {
+      final iterable = chunked(<int>[], 2);
+      expect(iterable, <int>[]);
+    });
+    test('even', () {
+      final iterable = chunked([1, 2, 3, 4], 2);
+      expect(iterable, [
+        [1, 2],
+        [3, 4]
+      ]);
+    });
+    test('odd', () {
+      final iterable = chunked([1, 2, 3, 4, 5], 2);
+      expect(iterable, [
+        [1, 2],
+        [3, 4],
+        [5]
+      ]);
+    });
+    group('with padding', () {
+      test('empty', () {
+        final iterable = chunkedWithPadding(<int>[], 2, 0);
+        expect(iterable, <int>[]);
+      });
+      test('even', () {
+        final iterable = chunkedWithPadding([1, 2, 3, 4], 2, 0);
+        expect(iterable, [
+          [1, 2],
+          [3, 4]
+        ]);
+      });
+      test('odd', () {
+        final iterable = chunkedWithPadding([1, 2, 3, 4, 5], 2, 0);
+        expect(iterable, [
+          [1, 2],
+          [3, 4],
+          [5, 0]
+        ]);
+      });
+    });
+  });
   group('combinations', () {
     final letters = string('abcd');
     group('with repetitions', () {
@@ -371,48 +414,6 @@ void main() {
         'dcab',
         'dcba'
       ]);
-    });
-  });
-  group('partition', () {
-    test('empty', () {
-      final iterable = partition(<int>[], 2);
-      expect(iterable, <int>[]);
-    });
-    test('even', () {
-      final iterable = partition([1, 2, 3, 4], 2);
-      expect(iterable, [
-        [1, 2],
-        [3, 4]
-      ]);
-    });
-    test('odd', () {
-      final iterable = partition([1, 2, 3, 4, 5], 2);
-      expect(iterable, [
-        [1, 2],
-        [3, 4],
-        [5]
-      ]);
-    });
-    group('with padding', () {
-      test('empty', () {
-        final iterable = partitionWithPadding(<int>[], 2, 0);
-        expect(iterable, <int>[]);
-      });
-      test('even', () {
-        final iterable = partitionWithPadding([1, 2, 3, 4], 2, 0);
-        expect(iterable, [
-          [1, 2],
-          [3, 4]
-        ]);
-      });
-      test('odd', () {
-        final iterable = partitionWithPadding([1, 2, 3, 4, 5], 2, 0);
-        expect(iterable, [
-          [1, 2],
-          [3, 4],
-          [5, 0]
-        ]);
-      });
     });
   });
   group('periodical', () {

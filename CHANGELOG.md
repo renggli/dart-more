@@ -3,6 +3,8 @@
 ## 1.13.0
 
 * Rename `Range.stop` to `Range.end` to be consistent with Dart naming conventions.
+* Rename `partition` to `chunked` to be more consistent with Dart nomenclature.
+* Add the `zip` iterable.
 
 ## 1.12.0
 
