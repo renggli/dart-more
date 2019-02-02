@@ -840,4 +840,96 @@ void main() {
       ]);
     });
   });
+  group('zip', () {
+    test('empty', () {
+      expect(zip([]), []);
+    });
+    test('empty, includeIncomplete', () {
+      expect(zip([], includeIncomplete: true), []);
+    });
+    test('single', () {
+      expect(
+          zip([
+            [1, 2, 3]
+          ]),
+          [
+            [1],
+            [2],
+            [3]
+          ]);
+    });
+    test('single, includeIncomplete', () {
+      expect(
+          zip([
+            [1, 2, 3]
+          ], includeIncomplete: true),
+          [
+            [1],
+            [2],
+            [3]
+          ]);
+    });
+    test('pair', () {
+      expect(
+          zip([
+            [1, 2, 3],
+            ['a', 'b', 'c'],
+          ]),
+          [
+            [1, 'a'],
+            [2, 'b'],
+            [3, 'c'],
+          ]);
+      expect(
+          zip([
+            [1, 2],
+            ['a', 'b', 'c'],
+          ]),
+          [
+            [1, 'a'],
+            [2, 'b'],
+          ]);
+      expect(
+          zip([
+            [1, 2, 3],
+            ['a', 'b'],
+          ]),
+          [
+            [1, 'a'],
+            [2, 'b'],
+          ]);
+    });
+    test('pair, includeIncomplete', () {
+      expect(
+          zip([
+            [1, 2, 3],
+            ['a', 'b', 'c'],
+          ], includeIncomplete: true),
+          [
+            [1, 'a'],
+            [2, 'b'],
+            [3, 'c'],
+          ]);
+      expect(
+          zip([
+            [1, 2],
+            ['a', 'b', 'c'],
+          ], includeIncomplete: true),
+          [
+            [1, 'a'],
+            [2, 'b'],
+            [null, 'c'],
+          ]);
+      expect(
+          zip([
+            [1, 2, 3],
+            ['a', 'b'],
+          ], includeIncomplete: true),
+          [
+            [1, 'a'],
+            [2, 'b'],
+            [3, null],
+          ]);
+    });
+  });
 }

@@ -18,3 +18,4 @@ export 'package:more/src/iterable/product.dart' show product;
 export 'package:more/src/iterable/repeat.dart' show repeat;
 export 'package:more/src/iterable/unique.dart' show unique;
 export 'package:more/src/iterable/window.dart' show window;
+export 'package:more/src/iterable/zip.dart' show zip;
