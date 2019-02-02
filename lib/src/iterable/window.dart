@@ -5,21 +5,34 @@ library more.iterable.window;
 /// The following expression yields [1, 2, 3], [2, 3, 4], [3, 4, 5]:
 ///
 ///     window([1, 2, 3, 4, 5], 2);
-Iterable<List<E>> window<E>(Iterable<E> elements, int size) sync* {
+Iterable<List<E>> window<E>(Iterable<E> elements, int size,
+    {int step = 1, bool includePartial = false}) sync* {
   if (size < 1) {
-    throw RangeError.value(size, 'size', 'window size must be positive');
+    throw RangeError.value(size, 'size', 'size must be positive');
   }
+  if (step < 1) {
+    throw RangeError.value(step, 'step', 'step must be positive');
+  }
+  final current = <E>[];
   final iterator = elements.iterator;
-  final current = List.generate(
-      size,
-      (index) => iterator.moveNext()
-          ? iterator.current
-          : throw RangeError.index(index, elements, 'iterable'),
-      growable: false);
-  yield current.toList(growable: false);
-  while (iterator.moveNext()) {
-    current.setRange(0, size - 1, current, 1);
-    current.last = iterator.current;
-    yield current.toList(growable: false);
+  for (;;) {
+    while (current.length < size && iterator.moveNext()) {
+      current.add(iterator.current);
+    }
+    if (current.length == size || (includePartial && current.isNotEmpty)) {
+      yield current.toList(growable: false);
+    } else {
+      return;
+    }
+    if (step < size) {
+      current.removeRange(0, step);
+    } else {
+      current.clear();
+      for (var i = 0; i < step - size; i++) {
+        if (!iterator.moveNext()) {
+          return;
+        }
+      }
+    }
   }
 }

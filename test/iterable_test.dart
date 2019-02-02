@@ -777,67 +777,121 @@ void main() {
     });
   });
   group('window', () {
-    test('0', () {
-      expect(() => window([1], 0), throwsRangeError);
+    test('error', () {
+      expect(() => window([1, 2, 3], 0), throwsRangeError);
+      expect(() => window([1, 2, 3], 1, step: 0), throwsRangeError);
     });
-    test('1', () {
-      expect(() => window([], 1), throwsRangeError);
+    test('size = 1', () {
+      expect(window([], 1), []);
       expect(window([1], 1), [
-        [1],
+        [1]
       ]);
       expect(window([1, 2], 1), [
         [1],
-        [2],
+        [2]
       ]);
       expect(window([1, 2, 3], 1), [
         [1],
         [2],
+        [3]
+      ]);
+      expect(window([1, 2, 3, 4], 1), [
+        [1],
+        [2],
         [3],
+        [4]
       ]);
     });
-    test('2', () {
-      expect(() => window([1], 2), throwsRangeError);
+    test('size = 2', () {
+      expect(window([], 2), []);
+      expect(window([1], 2), []);
       expect(window([1, 2], 2), [
-        [1, 2],
+        [1, 2]
       ]);
       expect(window([1, 2, 3], 2), [
         [1, 2],
-        [2, 3],
+        [2, 3]
       ]);
       expect(window([1, 2, 3, 4], 2), [
         [1, 2],
         [2, 3],
+        [3, 4]
+      ]);
+    });
+    test('size = 2, step = 2', () {
+      expect(window([], 2, step: 2), []);
+      expect(window([1], 2, step: 2), []);
+      expect(window([1, 2], 2, step: 2), [
+        [1, 2]
+      ]);
+      expect(window([1, 2, 3], 2, step: 2), [
+        [1, 2]
+      ]);
+      expect(window([1, 2, 3, 4], 2, step: 2), [
+        [1, 2],
+        [3, 4]
+      ]);
+    });
+    test('size = 2, step = 3', () {
+      expect(window([], 2, step: 3), []);
+      expect(window([1], 2, step: 3), []);
+      expect(window([1, 2], 2, step: 3), [
+        [1, 2]
+      ]);
+      expect(window([1, 2, 3], 2, step: 3), [
+        [1, 2]
+      ]);
+      expect(window([1, 2, 3, 4], 2, step: 3), [
+        [1, 2]
+      ]);
+    });
+    test('size = 2, includePartial', () {
+      expect(window([], 2, includePartial: true), []);
+      expect(window([1], 2, includePartial: true), [
+        [1]
+      ]);
+      expect(window([1, 2], 2, includePartial: true), [
+        [1, 2],
+        [2]
+      ]);
+      expect(window([1, 2, 3], 2, includePartial: true), [
+        [1, 2],
+        [2, 3],
+        [3]
+      ]);
+      expect(window([1, 2, 3, 4], 2, includePartial: true), [
+        [1, 2],
+        [2, 3],
         [3, 4],
+        [4]
       ]);
     });
-    test('3', () {
-      expect(() => window([1, 2], 3), throwsRangeError);
-      expect(window([1, 2, 3], 3), [
-        [1, 2, 3],
+    test('size = 2, step = 2, includePartial', () {
+      expect(window([], 2, step: 2, includePartial: true), []);
+      expect(window([1], 2, step: 2, includePartial: true), [[1]]);
+      expect(window([1, 2], 2, step: 2, includePartial: true), [
+        [1, 2]
       ]);
-      expect(window([1, 2, 3, 4], 3), [
-        [1, 2, 3],
-        [2, 3, 4]
+      expect(window([1, 2, 3], 2, step: 2, includePartial: true), [
+        [1, 2], [3]
       ]);
-      expect(window([1, 2, 3, 4, 5], 3), [
-        [1, 2, 3],
-        [2, 3, 4],
-        [3, 4, 5],
+      expect(window([1, 2, 3, 4], 2, step: 2, includePartial: true), [
+        [1, 2],
+        [3, 4]
       ]);
     });
-    test('4', () {
-      expect(() => window([1, 2, 3], 4), throwsRangeError);
-      expect(window([1, 2, 3, 4], 4), [
-        [1, 2, 3, 4],
+    test('size = 2, step = 3, includePartial', () {
+      expect(window([], 2, step: 3, includePartial: true), []);
+      expect(window([1], 2, step: 3, includePartial: true), [[1]]);
+      expect(window([1, 2], 2, step: 3, includePartial: true), [
+        [1, 2]
       ]);
-      expect(window([1, 2, 3, 4, 5], 4), [
-        [1, 2, 3, 4],
-        [2, 3, 4, 5],
+      expect(window([1, 2, 3], 2, step: 3, includePartial: true), [
+        [1, 2]
       ]);
-      expect(window([1, 2, 3, 4, 5, 6], 4), [
-        [1, 2, 3, 4],
-        [2, 3, 4, 5],
-        [3, 4, 5, 6],
+      expect(window([1, 2, 3, 4], 2, step: 3, includePartial: true), [
+        [1, 2],
+        [4]
       ]);
     });
   });
@@ -845,8 +899,8 @@ void main() {
     test('empty', () {
       expect(zip([]), []);
     });
-    test('empty, includeIncomplete', () {
-      expect(zip([], includeIncomplete: true), []);
+    test('empty, includePartial', () {
+      expect(zip([], includePartial: true), []);
     });
     test('single', () {
       expect(
@@ -859,11 +913,11 @@ void main() {
             [3]
           ]);
     });
-    test('single, includeIncomplete', () {
+    test('single, includePartial', () {
       expect(
           zip([
             [1, 2, 3]
-          ], includeIncomplete: true),
+          ], includePartial: true),
           [
             [1],
             [2],
@@ -900,12 +954,12 @@ void main() {
             [2, 'b'],
           ]);
     });
-    test('pair, includeIncomplete', () {
+    test('pair, includePartial', () {
       expect(
           zip([
             [1, 2, 3],
             ['a', 'b', 'c'],
-          ], includeIncomplete: true),
+          ], includePartial: true),
           [
             [1, 'a'],
             [2, 'b'],
@@ -915,7 +969,7 @@ void main() {
           zip([
             [1, 2],
             ['a', 'b', 'c'],
-          ], includeIncomplete: true),
+          ], includePartial: true),
           [
             [1, 'a'],
             [2, 'b'],
@@ -925,7 +979,7 @@ void main() {
           zip([
             [1, 2, 3],
             ['a', 'b'],
-          ], includeIncomplete: true),
+          ], includePartial: true),
           [
             [1, 'a'],
             [2, 'b'],

@@ -2,13 +2,13 @@ library more.iterable.zip;
 
 /// Combines the first, second, third, ... elements of each iterable into a new
 /// list. The resulting iterable has the length of the shortest input iterable,
-/// unless `includeIncomplete` is set to `true`.
+/// unless `includePartial` is set to `true`.
 ///
 /// The following expression yields [1, 'a'], [2, 'b']:
 ///
 ///     zip([[1, 2],  ['a', 'b']]);
 Iterable<List<T>> zip<T>(Iterable<Iterable<T>> iterables,
-    {bool includeIncomplete = false}) sync* {
+    {bool includePartial = false}) sync* {
   if (iterables.isEmpty) {
     return;
   }
@@ -21,12 +21,12 @@ Iterable<List<T>> zip<T>(Iterable<Iterable<T>> iterables,
       hasAll &= hasNext;
       hasAny |= hasNext;
     }
-    if (hasAll || (hasAny && includeIncomplete)) {
+    if (hasAll || (hasAny && includePartial)) {
       yield iterators
           .map((iterator) => iterator.current)
           .toList(growable: false);
     } else {
-      return;
+      break;
     }
   }
 }
