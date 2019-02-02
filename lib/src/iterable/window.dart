@@ -1,6 +1,6 @@
 library more.iterable.window;
 
-/// Sliding window over an iterable.
+/// Sliding window of given `size` over an iterable.
 ///
 /// The following expression yields [1, 2, 3], [2, 3, 4], [3, 4, 5]:
 ///
