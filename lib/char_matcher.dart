@@ -24,18 +24,18 @@ import 'package:more/src/char_matcher/whitespace.dart';
 /// Abstract character matcher function.
 ///
 /// The [CharMatcher] is a boolean predicate on characters. The inclusion of a
-/// character can be determined by calling the matcher with the code-unit
-/// of a character as the function argument, for example:
+/// character can be determined by calling [match] with the code-unit of a
+/// character as the function argument, for example:
 ///
-///     WHITESPACE(' '.codeUnitAt(0)); // true
-///     DIGIT('a'.codeUnitAt(0)); // false
+///     CharMatcher.whitespace().match(' '.codeUnitAt(0)); // true
+///     CharMatcher.digit().match('a'.codeUnitAt(0)); // false
 ///
 /// A large collection of helper methods let you perform string operations on
 /// the occurrences of the specified class of characters: trimming, collapsing,
 /// replacing, removing, retaining, etc. For example:
 ///
-///     String withoutWhitespace = WHITESPACE.removeFrom(string);
-///     String onlyDigits = DIGIT.retainFrom(string);
+///     String withoutWhitespace = CharMatcher.whitespace().removeFrom(string);
+///     String onlyDigits = CharMatcher.digit().retainFrom(string);
 ///
 abstract class CharMatcher {
   /// A matcher that accepts any character.
