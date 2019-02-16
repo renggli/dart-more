@@ -10,45 +10,57 @@ void main() {
     group('construction', () {
       test('zero', () {
         const complex = Complex.zero;
+        expect(complex.a, 0);
+        expect(complex.b, 0);
         expect(complex.real, 0);
         expect(complex.imaginary, 0);
-        expect(complex.abs, 0.0);
-        expect(complex.phase, 0.0);
+        expect(complex.abs(), 0.0);
+        expect(complex.arg(), 0.0);
       });
       test('one', () {
         const complex = Complex.one;
+        expect(complex.a, 1);
+        expect(complex.b, 0);
         expect(complex.real, 1);
         expect(complex.imaginary, 0);
-        expect(complex.abs, 1.0);
-        expect(complex.phase, 0.0);
+        expect(complex.abs(), 1.0);
+        expect(complex.arg(), 0.0);
       });
       test('imaginary', () {
         const complex = Complex.i;
+        expect(complex.a, 0);
+        expect(complex.b, 1);
         expect(complex.real, 0);
         expect(complex.imaginary, 1);
-        expect(complex.abs, 1.0);
-        expect(complex.phase, math.pi / 2);
+        expect(complex.abs(), 1.0);
+        expect(complex.arg(), math.pi / 2);
       });
       test('real', () {
         final complex = Complex.fromReal(123);
+        expect(complex.a, 123);
+        expect(complex.b, 0);
         expect(complex.real, 123);
         expect(complex.imaginary, 0);
-        expect(complex.abs, 123.0);
-        expect(complex.phase, 0.0);
+        expect(complex.abs(), 123.0);
+        expect(complex.arg(), 0.0);
       });
       test('cartesian', () {
         final complex = Complex.fromCartesian(-3, 4);
+        expect(complex.a, -3);
+        expect(complex.b, 4);
         expect(complex.real, -3);
         expect(complex.imaginary, 4);
-        expect(complex.abs, 5.0);
-        expect(complex.phase, math.acos(4 / 5) + math.pi / 2);
+        expect(complex.abs(), 5.0);
+        expect(complex.arg(), math.acos(4 / 5) + math.pi / 2);
       });
       test('polar', () {
         final complex = Complex.fromPolar(math.sqrt(2), 3 * math.pi / 4);
+        expect(complex.a.roundToDouble(), -1.0);
+        expect(complex.b.roundToDouble(), 1.0);
         expect(complex.real.roundToDouble(), -1.0);
         expect(complex.imaginary.roundToDouble(), 1.0);
-        expect(complex.abs, math.sqrt(2));
-        expect(complex.phase, 3 * math.pi / 4);
+        expect(complex.abs(), math.sqrt(2));
+        expect(complex.arg(), 3 * math.pi / 4);
       });
     });
     group('arithmetic', () {
@@ -70,7 +82,25 @@ void main() {
         expect(-Complex(1, -2), Complex(-1, 2));
       });
       test('conjugate', () {
-        expect(Complex(1, -2).conjugate, Complex(1, 2));
+        expect(Complex(1, -2).conjugate(), Complex(1, 2));
+      });
+      test('reciprocal', () {
+        expect(Complex(1, -2).reciprocal(), Complex(0.2, 0.4));
+      });
+      test('exp', () {
+        final value = Complex(1, 2).exp();
+        expect(value.a, closeTo(-1.1312, 0.0001));
+        expect(value.b, closeTo(2.4717, 0.0001));
+      });
+      test('log', () {
+        final value = Complex(1, 2).log();
+        expect(value.a, closeTo(0.8047, 0.0001));
+        expect(value.b, closeTo(1.1071, 0.0001));
+      });
+      test('pow', () {
+        final value = Complex(1, 2).pow(Complex(3, 4));
+        expect(value.a, closeTo(0.1290, 0.0001));
+        expect(value.b, closeTo(0.0339, 0.0001));
       });
     });
     group('testing', () {
@@ -88,26 +118,48 @@ void main() {
       });
     });
     group('converting', () {
+      test('round', () {
+        expect(Complex(2.7, 1.2).round(), Complex(3, 1));
+      });
+      test('floor', () {
+        expect(Complex(2.7, 1.2).floor(), Complex(2, 1));
+      });
+      test('ceil', () {
+        expect(Complex(2.7, 1.2).ceil(), Complex(3, 2));
+      });
+      test('truncate', () {
+        expect(Complex(2.7, 1.2).truncate(), Complex(2, 1));
+      });
       test('toString', () {
-        expect(Complex.zero.toString(), '0+0i');
-        expect(Complex.one.toString(), '1+0i');
-        expect(Complex.i.toString(), '0+1i');
-        expect(Complex(0, 2).toString(), '0+2i');
-        expect(Complex(0, -1).toString(), '0-1i');
-        expect(Complex(0, -2).toString(), '0-2i');
-        expect(Complex(1, 2).toString(), '1+2i');
-        expect(Complex(1, 1).toString(), '1+1i');
-        expect(Complex(1, -1).toString(), '1-1i');
-        expect(Complex(1, 2).toString(), '1+2i');
+        expect(Complex.zero.toString(), '0 + 0i');
+        expect(Complex.one.toString(), '1 + 0i');
+        expect(Complex.i.toString(), '0 + 1i');
+        expect(Complex(0, 2).toString(), '0 + 2i');
+        expect(Complex(0, -1).toString(), '0 - 1i');
+        expect(Complex(0, -2).toString(), '0 - 2i');
+        expect(Complex(1, 2).toString(), '1 + 2i');
+        expect(Complex(1, 1).toString(), '1 + 1i');
+        expect(Complex(1, -1).toString(), '1 - 1i');
+        expect(Complex(1, 2).toString(), '1 + 2i');
       });
     });
     group('comparing', () {
-      test('compareTo', () {
+      test('close', () {
+        expect(
+          Complex.fromPolar(math.e, math.pi / 2).closeTo(Complex(0, 0), 0.1),
+          isFalse,
+        );
+        expect(
+          Complex.fromPolar(math.e, math.pi / 2).closeTo(Complex(0, 2.71), 0.1),
+          isTrue,
+        );
+      });
+      test('equal', () {
         expect(Complex(2, 3) == Complex(2, 3), isTrue);
         expect(Complex(2, 3) == Complex(3, 2), isFalse);
         expect(Complex(2, 3) == Complex(2, 4), isFalse);
       });
-      test('hash code', () {
+      test('hash', () {
         expect(Complex(2, 3).hashCode, Complex(2, 3).hashCode);
         expect(Complex(2, 3).hashCode, isNot(Complex(3, 2).hashCode));
       });
@@ -117,26 +169,36 @@ void main() {
     group('construction', () {
       test('irreducible', () {
         final fraction = Fraction(3, 7);
+        expect(fraction.a, 3);
+        expect(fraction.b, 7);
         expect(fraction.numerator, 3);
         expect(fraction.denominator, 7);
       });
       test('reducible', () {
         final fraction = Fraction(15, 35);
+        expect(fraction.a, 3);
+        expect(fraction.b, 7);
         expect(fraction.numerator, 3);
         expect(fraction.denominator, 7);
       });
       test('normal negative', () {
         final fraction = Fraction(-2, 4);
+        expect(fraction.a, -1);
+        expect(fraction.b, 2);
         expect(fraction.numerator, -1);
         expect(fraction.denominator, 2);
       });
       test('double negative', () {
         final fraction = Fraction(-2, -4);
+        expect(fraction.a, 1);
+        expect(fraction.b, 2);
         expect(fraction.numerator, 1);
         expect(fraction.denominator, 2);
       });
       test('denominator negative', () {
         final fraction = Fraction(2, -4);
+        expect(fraction.a, -1);
+        expect(fraction.b, 2);
         expect(fraction.numerator, -1);
         expect(fraction.denominator, 2);
       });
@@ -255,12 +317,17 @@ void main() {
       });
     });
     group('comparing', () {
-      test('compareTo', () {
+      test('close', () {
+        expect(Fraction(1, 2).closeTo(Fraction(1, 3), 0.1), isFalse);
+        expect(Fraction(1, 2).closeTo(Fraction(2, 4), 0.1), isTrue);
+        expect(Fraction(1, 2).closeTo(Fraction(3, 5), 0.2), isTrue);
+      });
+      test('equals', () {
         expect(Fraction(2, 3).compareTo(Fraction(2, 3)), 1.compareTo(1));
         expect(Fraction(2, 3).compareTo(Fraction(4, 5)), 1.compareTo(2));
         expect(Fraction(4, 5).compareTo(Fraction(2, 3)), 2.compareTo(1));
       });
-      test('hash code', () {
+      test('hash', () {
         expect(Fraction(2, 3).hashCode, Fraction(2, 3).hashCode);
         expect(Fraction(2, 3).hashCode, isNot(Fraction(3, 2).hashCode));
       });

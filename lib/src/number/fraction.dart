@@ -1,7 +1,5 @@
 library more.number.fraction;
 
-import 'package:more/src/int_math/gcd.dart';
-
 /// A rational number.
 class Fraction implements Comparable<Fraction> {
   /// The neutral additive element, that is `0`.
@@ -18,11 +16,14 @@ class Fraction implements Comparable<Fraction> {
     if (denominator == 0) {
       throw ArgumentError('Denominator needs to be non-zero.');
     }
-    var d = gcd(numerator, denominator).abs();
+    var d = numerator.gcd(denominator).abs();
     if (denominator < 0) {
       d *= -1;
     }
-    return Fraction._(numerator ~/ d, denominator ~/ d);
+    if (d != 1) {
+      return Fraction._(numerator ~/ d, denominator ~/ d);
+    }
+    return Fraction._(numerator, denominator);
   }
 
   /// Creates an approximate fraction from a floating point [value].
@@ -58,40 +59,42 @@ class Fraction implements Comparable<Fraction> {
   }
 
   /// Internal constructor for fractions.
-  const Fraction._(this.numerator, this.denominator);
+  const Fraction._(this.a, this.b);
 
   /// Returns the numerator of the fraction.
-  final int numerator;
+  final int a;
+
+  /// Alternative way to access the numerator of the fraction.
+  num get numerator => a;
 
   /// Returns the denominator of the fraction.
-  final int denominator;
+  final int b;
 
-  /// Returns the sum of this fraction and [other].
-  Fraction operator +(Fraction other) => Fraction(
-      numerator * other.denominator + other.numerator * denominator,
-      denominator * other.denominator);
-
-  /// Returns the difference of this fraction and [other].
-  Fraction operator -(Fraction other) => Fraction(
-      numerator * other.denominator - other.numerator * denominator,
-      denominator * other.denominator);
-
-  /// Returns the multiplication of this fraction and [other].
-  Fraction operator *(Fraction other) =>
-      Fraction(numerator * other.numerator, denominator * other.denominator);
-
-  /// Returns the division of this fraction and [other].
-  Fraction operator /(Fraction other) =>
-      Fraction(numerator * other.denominator, denominator * other.numerator);
+  /// Alternative way to access the denominator of the fraction.
+  num get denominator => b;
 
   /// Returns the negation of this fraction.
-  Fraction operator -() => Fraction._(-numerator, denominator);
+  Fraction operator -() => Fraction._(-a, b);
+
+  /// Returns the sum of this fraction and [other].
+  Fraction operator +(Fraction other) =>
+      Fraction(a * other.b + other.a * b, b * other.b);
+
+  /// Returns the difference of this fraction and [other].
+  Fraction operator -(Fraction other) =>
+      Fraction(a * other.b - other.a * b, b * other.b);
+
+  /// Returns the multiplication of this fraction and [other].
+  Fraction operator *(Fraction other) => Fraction(a * other.a, b * other.b);
+
+  /// Returns the division of this fraction and [other].
+  Fraction operator /(Fraction other) => Fraction(a * other.b, b * other.a);
 
   /// Tests if this fraction is not defined.
   bool get isNaN => false;
 
   /// Tests if this fraction is negative.
-  bool get isNegative => numerator.isNegative;
+  bool get isNegative => a.isNegative;
 
   /// Tests if this fraction is infinite.
   bool get isInfinite => false;
@@ -112,28 +115,24 @@ class Fraction implements Comparable<Fraction> {
   int truncate() => toDouble().truncate();
 
   /// Converts this fraction to an integer.
-  int toInt() => numerator ~/ denominator;
+  int toInt() => a ~/ b;
 
   /// Converts this fraction to a double.
-  double toDouble() => numerator / denominator;
+  double toDouble() => a / b;
+
+  /// Tests if this fraction is close to another fraction.
+  bool closeTo(Fraction other, double epsilon) =>
+      (toDouble() - other.toDouble()).abs() < epsilon;
 
   @override
   bool operator ==(Object other) =>
-      other is Fraction &&
-      numerator == other.numerator &&
-      denominator == other.denominator;
+      other is Fraction && a == other.a && b == other.b;
 
   @override
-  int get hashCode {
-    var result = 17;
-    result = 37 * result + numerator.hashCode;
-    result = 37 * result + denominator.hashCode;
-    return result;
-  }
+  int get hashCode => (0x0007ffff & a.hashCode) << 10 ^ b.hashCode;
 
   @override
-  int compareTo(Fraction other) =>
-      (numerator * other.denominator).compareTo(other.numerator * denominator);
+  int compareTo(Fraction other) => (a * other.b).compareTo(other.a * b);
 
   bool operator <(Fraction other) => compareTo(other) < 0;
 
@@ -144,6 +143,5 @@ class Fraction implements Comparable<Fraction> {
   bool operator >(Fraction other) => compareTo(other) > 0;
 
   @override
-  String toString() =>
-      denominator == 1 ? '$numerator' : '$numerator/$denominator';
+  String toString() => b == 1 ? '$a' : '$a/$b';
 }
