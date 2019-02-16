@@ -84,6 +84,9 @@ class Fraction implements Comparable<Fraction> {
   Fraction operator -(Fraction other) =>
       Fraction(a * other.b - other.a * b, b * other.b);
 
+  /// Returns the multiplicative inverse of this fraction.
+  Fraction reciprocal() => isNegative ? Fraction._(-b, -a) : Fraction._(b, a);
+
   /// Returns the multiplication of this fraction and [other].
   Fraction operator *(Fraction other) => Fraction(a * other.a, b * other.b);
 

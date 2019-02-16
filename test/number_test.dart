@@ -278,6 +278,10 @@ void main() {
         expect(Fraction(2, 3) * Fraction(1, 4), Fraction(1, 6));
         expect(Fraction(3, 4) * Fraction(2, 5), Fraction(3, 10));
       });
+      test('reciprocal', () {
+        expect(Fraction(3, 4).reciprocal(), Fraction(4, 3));
+        expect(Fraction(-3, 4).reciprocal(), Fraction(-4, 3));
+      });
       test('division', () {
         expect(Fraction(2, 3) / Fraction(1, 4), Fraction(8, 3));
         expect(Fraction(3, 4) / Fraction(2, 5), Fraction(15, 8));
