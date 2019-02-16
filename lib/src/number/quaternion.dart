@@ -5,22 +5,26 @@ import 'dart:math' as math;
 /// A quaternion number of the form `a + b*i + c*j + d*k`.
 class Quaternion {
   /// The neutral additive element, that is `0`.
-  static const Quaternion zero = Quaternion(0, 0, 0, 0);
+  static const Quaternion zero = Quaternion(0);
 
   /// The neutral multiplicative element, that is `1`.
-  static const Quaternion one = Quaternion(1, 0, 0, 0);
+  static const Quaternion one = Quaternion(1);
 
   /// The quaternion `i` unit.
-  static const Quaternion i = Quaternion(0, 1, 0, 0);
+  static const Quaternion i = Quaternion(0, 1);
 
   /// The quaternion `j` unit.
-  static const Quaternion j = Quaternion(0, 0, 1, 0);
+  static const Quaternion j = Quaternion(0, 0, 1);
 
   /// The quaternion `k` unit.
   static const Quaternion k = Quaternion(0, 0, 0, 1);
 
   /// Constructs a quaternion from its components.
-  const Quaternion(this.a, [this.b = 0, this.c = 0, this.d = 0]);
+  const Quaternion(this.a, [this.b = 0, this.c = 0, this.d = 0])
+      : assert(a != null),
+        assert(b != null),
+        assert(c != null),
+        assert(d != null);
 
   /// Constructs a quaternion from an [axis] and a rotation [angle].
   factory Quaternion.fromAxis(List<num> axis, num angle) {

@@ -5,16 +5,18 @@ import 'dart:math' as math;
 /// A complex number of the form `a + b*i`.
 class Complex {
   /// The neutral additive element, that is `0`.
-  static const Complex zero = Complex(0, 0);
+  static const Complex zero = Complex(0);
 
   /// The neutral multiplicative element, that is `1`.
-  static const Complex one = Complex(1, 0);
+  static const Complex one = Complex(1);
 
   /// The imaginary number, that is `i`.
   static const Complex i = Complex(0, 1);
 
   /// Creates a complex number from a [real] and an [imaginary] parts.
-  const Complex(this.a, [this.b = 0]);
+  const Complex(this.a, [this.b = 0])
+      : assert(a != null),
+        assert(b != null);
 
   /// Creates a complex number from a [real] number.
   factory Complex.fromReal(num real) => Complex(real, 0);
