@@ -6,6 +6,7 @@ import 'package:more/number.dart';
 import 'package:test/test.dart';
 
 void main() {
+  const epsilon = 1e-5;
   group('complex', () {
     group('construction', () {
       test('zero', () {
@@ -89,18 +90,18 @@ void main() {
       });
       test('exp', () {
         final value = Complex(1, 2).exp();
-        expect(value.a, closeTo(-1.1312, 0.0001));
-        expect(value.b, closeTo(2.4717, 0.0001));
+        expect(value.a, closeTo(-1.131204, epsilon));
+        expect(value.b, closeTo(2.471726, epsilon));
       });
       test('log', () {
         final value = Complex(1, 2).log();
-        expect(value.a, closeTo(0.8047, 0.0001));
-        expect(value.b, closeTo(1.1071, 0.0001));
+        expect(value.a, closeTo(0.804718, epsilon));
+        expect(value.b, closeTo(1.107148, epsilon));
       });
       test('pow', () {
         final value = Complex(1, 2).pow(Complex(3, 4));
-        expect(value.a, closeTo(0.1290, 0.0001));
-        expect(value.b, closeTo(0.0339, 0.0001));
+        expect(value.a, closeTo(0.129009, epsilon));
+        expect(value.b, closeTo(0.033924, epsilon));
       });
     });
     group('testing', () {
@@ -131,16 +132,11 @@ void main() {
         expect(Complex(2.7, 1.2).truncate(), Complex(2, 1));
       });
       test('toString', () {
-        expect(Complex.zero.toString(), '0 + 0i');
-        expect(Complex.one.toString(), '1 + 0i');
-        expect(Complex.i.toString(), '0 + 1i');
-        expect(Complex(0, 2).toString(), '0 + 2i');
-        expect(Complex(0, -1).toString(), '0 - 1i');
-        expect(Complex(0, -2).toString(), '0 - 2i');
-        expect(Complex(1, 2).toString(), '1 + 2i');
-        expect(Complex(1, 1).toString(), '1 + 1i');
-        expect(Complex(1, -1).toString(), '1 - 1i');
-        expect(Complex(1, 2).toString(), '1 + 2i');
+        expect(Complex.zero.toString(), 'Complex(0, 0)');
+        expect(Complex.one.toString(), 'Complex(1, 0)');
+        expect(Complex.i.toString(), 'Complex(0, 1)');
+        expect(Complex(1, 2).toString(), 'Complex(1, 2)');
+        expect(Complex(-3, -4).toString(), 'Complex(-3, -4)');
       });
     });
     group('comparing', () {
@@ -367,10 +363,185 @@ void main() {
         expect(Fraction(5, 4).toDouble(), 1.25);
       });
       test('toString', () {
-        expect(Fraction(1, 2).toString(), '1/2');
-        expect(Fraction(5, 4).toString(), '5/4');
-        expect(Fraction(6).toString(), '6');
-        expect(Fraction(-6).toString(), '-6');
+        expect(Fraction(1, 2).toString(), 'Fraction(1, 2)');
+        expect(Fraction(5, 4).toString(), 'Fraction(5, 4)');
+        expect(Fraction(6).toString(), 'Fraction(6, 1)');
+        expect(Fraction(-6).toString(), 'Fraction(-6, 1)');
+      });
+    });
+  });
+  group('quaternion', () {
+    bool Function(Quaternion) isClose(num a, num b, num c, num d) =>
+        (actual) => actual.closeTo(Quaternion(a, b, c, d), epsilon);
+    group('construction', () {
+      test('zero', () {
+        const quaternion = Quaternion.zero;
+        expect(quaternion.a, 0);
+        expect(quaternion.b, 0);
+        expect(quaternion.c, 0);
+        expect(quaternion.d, 0);
+        expect(quaternion.abs(), 0.0);
+      });
+      test('one', () {
+        const quaternion = Quaternion.one;
+        expect(quaternion.a, 1);
+        expect(quaternion.b, 0);
+        expect(quaternion.c, 0);
+        expect(quaternion.d, 0);
+        expect(quaternion.abs(), 1.0);
+      });
+      test('i', () {
+        const quaternion = Quaternion.i;
+        expect(quaternion.a, 0);
+        expect(quaternion.b, 1);
+        expect(quaternion.c, 0);
+        expect(quaternion.d, 0);
+        expect(quaternion.abs(), 1.0);
+      });
+      test('j', () {
+        const quaternion = Quaternion.j;
+        expect(quaternion.a, 0);
+        expect(quaternion.b, 0);
+        expect(quaternion.c, 1);
+        expect(quaternion.d, 0);
+        expect(quaternion.abs(), 1.0);
+      });
+      test('k', () {
+        const quaternion = Quaternion.k;
+        expect(quaternion.a, 0);
+        expect(quaternion.b, 0);
+        expect(quaternion.c, 0);
+        expect(quaternion.d, 1);
+        expect(quaternion.abs(), 1.0);
+      });
+      test('components', () {
+        const quaternion = Quaternion(1, 2, 3, 4);
+        expect(quaternion.a, 1);
+        expect(quaternion.b, 2);
+        expect(quaternion.c, 3);
+        expect(quaternion.d, 4);
+        expect(quaternion.abs(), closeTo(5.477225, epsilon));
+      });
+      test('fromAxis', () {
+        final quaternion = Quaternion.fromAxis([1, 2, 3], 4.0);
+        expect(quaternion, isClose(-0.416146, 0.243019, 0.486039, 0.729059));
+        expect(quaternion.abs(), closeTo(1.0, epsilon));
+      });
+      test('fromVectors', () {
+        final quaternion = Quaternion.fromVectors([1, 2, 3], [4, 5, 6]);
+        expect(quaternion, isClose(0.993637, -0.045978, 0.091956, -0.045978));
+        expect(quaternion.abs(), closeTo(1.0, epsilon));
+      });
+      test('fromEuler', () {
+        final quaternion = Quaternion.fromEuler(1, 2, 3);
+        expect(quaternion, isClose(-0.368871, -0.206149, 0.501509, 0.754933));
+        expect(quaternion.abs(), closeTo(1.0, epsilon));
+      });
+    });
+    group('arithmetic', () {
+      test('addition', () {
+        expect(Quaternion(1, -2, 3, -4) + Quaternion(5, 6, -7, -8),
+            Quaternion(6, 4, -4, -12));
+      });
+      test('substraction', () {
+        expect(Quaternion(1, -2, 3, -4) - Quaternion(5, 6, -7, -8),
+            Quaternion(-4, -8, 10, 4));
+      });
+      test('multiplication', () {
+        expect(Quaternion(1, -2, 3, -4) * Quaternion(5, 6, -7, -8),
+            Quaternion(6, -56, -32, -32));
+        expect(Quaternion(5, 6, -7, -8) * Quaternion(1, -2, 3, -4),
+            Quaternion(6, 48, 48, -24));
+      });
+      test('division', () {
+        expect(Quaternion(1, -2, 3, -4) / Quaternion(5, 6, -7, -8),
+            isClose(0.133333, 1.200000, 2.066666, -0.266666));
+        expect(Quaternion(5, 6, -7, -8) / Quaternion(1, -2, 3, -4),
+            isClose(0.022988, -0.206896, -0.356321, 0.045977));
+      });
+      test('negate', () {
+        expect(-Quaternion(1, -2, 3, -4), Quaternion(-1, 2, -3, 4));
+      });
+      test('conjugate', () {
+        expect(Quaternion(1, -2, 3, -4).conjugate(), Quaternion(1, 2, -3, 4));
+      });
+      test('reciprocal', () {
+        expect(Quaternion(1, -2, 3, -4).reciprocal(),
+            isClose(0.033333, 0.066666, -0.100000, 0.133333));
+      });
+      test('exp', () {
+        expect(Quaternion(1, -2, 3, -4).exp(),
+            isClose(1.693922, 0.789559, -1.184339, 1.579119));
+      });
+      test('log', () {
+        expect(Quaternion(1, -2, 3, -4).log(),
+            isClose(1.700598, -0.515190, 0.772785, -1.030380));
+      });
+      test('pow', () {
+        expect(Quaternion(1, -2, 3, -4).pow(Quaternion(5, 6, -7, -8)),
+            isClose(-4948.167788, -841.118989, -2675.346637, -2885.798013));
+      });
+    });
+    group('testing', () {
+      test('isNan', () {
+        expect(Quaternion(1, 2, 3, 4).isNaN, isFalse);
+        expect(Quaternion(double.nan, 2, 3, 4).isNaN, isTrue);
+        expect(Quaternion(1, double.nan, 3, 4).isNaN, isTrue);
+        expect(Quaternion(1, 2, double.nan, 4).isNaN, isTrue);
+        expect(Quaternion(1, 2, 3, double.nan).isNaN, isTrue);
+      });
+      test('isInfinite', () {
+        expect(Quaternion(1, 2, 3, 4).isInfinite, isFalse);
+        expect(Quaternion(double.infinity, 2, 3, 4).isInfinite, isTrue);
+        expect(Quaternion(1, double.negativeInfinity, 3, 4).isInfinite, isTrue);
+        expect(Quaternion(1, 2, double.infinity, 4).isInfinite, isTrue);
+        expect(Quaternion(1, 2, 3, double.negativeInfinity).isInfinite, isTrue);
+      });
+    });
+    group('converting', () {
+      test('round', () {
+        expect(
+            Quaternion(1.7, 3.2, -2.7, -4.2).round(), Quaternion(2, 3, -3, -4));
+      });
+      test('floor', () {
+        expect(
+            Quaternion(1.7, 3.2, -2.7, -4.2).floor(), Quaternion(1, 3, -3, -5));
+      });
+      test('ceil', () {
+        expect(
+            Quaternion(1.7, 3.2, -2.7, -4.2).ceil(), Quaternion(2, 4, -2, -4));
+      });
+      test('truncate', () {
+        expect(Quaternion(1.7, 3.2, -2.7, -4.2).truncate(),
+            Quaternion(1, 3, -2, -4));
+      });
+      test('toString', () {
+        expect(Quaternion.zero.toString(), 'Quaternion(0, 0, 0, 0)');
+        expect(Quaternion.one.toString(), 'Quaternion(1, 0, 0, 0)');
+        expect(Quaternion.i.toString(), 'Quaternion(0, 1, 0, 0)');
+        expect(Quaternion.j.toString(), 'Quaternion(0, 0, 1, 0)');
+        expect(Quaternion.k.toString(), 'Quaternion(0, 0, 0, 1)');
+        expect(Quaternion(0, 2, 4, 6).toString(), 'Quaternion(0, 2, 4, 6)');
+        expect(Quaternion(1, -1, 2, -3).toString(), 'Quaternion(1, -1, 2, -3)');
+      });
+    });
+    group('comparing', () {
+      test('equal', () {
+        expect(Quaternion(2, 3, 4, 5) == Quaternion(2, 3, 4, 5), isTrue);
+        expect(Quaternion(2, 3, 4, 5) == Quaternion(1, 3, 4, 5), isFalse);
+        expect(Quaternion(2, 3, 4, 5) == Quaternion(2, 4, 4, 5), isFalse);
+        expect(Quaternion(2, 3, 4, 5) == Quaternion(2, 3, 3, 5), isFalse);
+        expect(Quaternion(2, 3, 4, 5) == Quaternion(2, 3, 4, 6), isFalse);
+      });
+      test('hash', () {
+        expect(
+            Quaternion(2, 3, 4, 5).hashCode, Quaternion(2, 3, 4, 5).hashCode);
+        expect(Quaternion(2, 3, 4, 5).hashCode,
+            isNot(Quaternion(3, 2, 4, 5).hashCode));
+        expect(Quaternion(2, 3, 4, 5).hashCode,
+            isNot(Quaternion(2, 4, 3, 5).hashCode));
+        expect(Quaternion(2, 3, 4, 5).hashCode,
+            isNot(Quaternion(2, 3, 5, 4).hashCode));
       });
     });
   });

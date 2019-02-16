@@ -14,7 +14,7 @@ class Complex {
   static const Complex i = Complex(0, 1);
 
   /// Creates a complex number from a [real] and an [imaginary] parts.
-  const Complex(this.a, this.b);
+  const Complex(this.a, [this.b = 0]);
 
   /// Creates a complex number from a [real] number.
   factory Complex.fromReal(num real) => Complex(real, 0);
@@ -126,16 +126,5 @@ class Complex {
   int get hashCode => (0x0007ffff & a.hashCode) << 10 ^ b.hashCode;
 
   @override
-  String toString() {
-    final result = StringBuffer(a);
-    if (!b.isNegative) {
-      result.write(' + ');
-      result.write(b);
-    } else {
-      result.write(' - ');
-      result.write(-b);
-    }
-    result.write('i');
-    return result.toString();
-  }
+  String toString() => 'Complex($a, $b)';
 }

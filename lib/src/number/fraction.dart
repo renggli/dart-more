@@ -143,5 +143,5 @@ class Fraction implements Comparable<Fraction> {
   bool operator >(Fraction other) => compareTo(other) > 0;
 
   @override
-  String toString() => b == 1 ? '$a' : '$a/$b';
+  String toString() => 'Fraction($a, $b)';
 }
