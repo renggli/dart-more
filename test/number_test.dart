@@ -8,6 +8,8 @@ import 'package:test/test.dart';
 void main() {
   const epsilon = 1e-5;
   group('complex', () {
+    bool Function(Complex) isClose(num a, num b) =>
+        (actual) => actual.closeTo(Complex(a, b), epsilon);
     group('construction', () {
       test('zero', () {
         const complex = Complex.zero;
@@ -89,19 +91,13 @@ void main() {
         expect(Complex(1, -2).reciprocal(), Complex(0.2, 0.4));
       });
       test('exp', () {
-        final value = Complex(1, 2).exp();
-        expect(value.a, closeTo(-1.131204, epsilon));
-        expect(value.b, closeTo(2.471726, epsilon));
+        expect(Complex(1, 2).exp(), isClose(-1.131204, 2.471726));
       });
       test('log', () {
-        final value = Complex(1, 2).log();
-        expect(value.a, closeTo(0.804718, epsilon));
-        expect(value.b, closeTo(1.107148, epsilon));
+        expect(Complex(1, 2).log(), isClose(0.804718, 1.107148));
       });
       test('pow', () {
-        final value = Complex(1, 2).pow(Complex(3, 4));
-        expect(value.a, closeTo(0.129009, epsilon));
-        expect(value.b, closeTo(0.033924, epsilon));
+        expect(Complex(1, 2).pow(Complex(3, 4)), isClose(0.129009, 0.033924));
       });
     });
     group('testing', () {
