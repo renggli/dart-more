@@ -16,7 +16,7 @@ Various extensions that make Dart a better place:
 - `collection.dart` is a collection of collection types (bi map, bit list, multi set, range, and string).
 - `int_math.dart` is a collection of common mathematical functions on integers.
 - `iterable.dart` is a collection of iterables and iterators.
-- `number.dart` provides fractional and complex arithmetic.
+- `number.dart` provides fractional, complex and quaternion arithmetic.
 - `ordering.dart` a fluent interface for building comparator functions.
 - `printer.dart` a fluent interface for configuring sophisticated formatter.
 

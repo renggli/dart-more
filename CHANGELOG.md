@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.14.0
+
+* Quaternion numbers.
+
 ## 1.13.0
 
 * Rename `Range.stop` to `Range.end` to be consistent with Dart naming conventions.
