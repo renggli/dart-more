@@ -58,6 +58,17 @@ class Fraction implements Comparable<Fraction> {
     return Fraction(sign * numerator1, denominator1);
   }
 
+  /// Parses [source] as a [Fraction]. Returns `null` in case of a problem.
+  factory Fraction.tryParse(String source) {
+    final values = source.split('/');
+    final numerator = values.isNotEmpty ? int.tryParse(values[0]) : null;
+    final denominator = values.length > 1 ? int.tryParse(values[1]) : 1;
+    if (values.length > 2 || numerator == null || denominator == null) {
+      return null;
+    }
+    return Fraction(numerator, denominator);
+  }
+
   /// Internal constructor for fractions.
   const Fraction._(this.a, this.b)
       : assert(a != null),

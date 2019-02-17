@@ -13,13 +13,16 @@ class Complex {
   /// The imaginary number, that is `i`.
   static const Complex i = Complex(0, 1);
 
-  /// Creates a complex number from a [real] and an [imaginary] parts.
+  /// Creates a complex number from a real part [a] and an imaginary part [b].
   const Complex(this.a, [this.b = 0])
       : assert(a != null),
         assert(b != null);
 
-  /// Creates a complex number from a [real] number.
-  factory Complex.fromReal(num real) => Complex(real, 0);
+  /// Creates a complex number from a real number [a].
+  factory Complex.fromReal(num a) => Complex(a, 0);
+
+  /// Creates a complex number from an imaginary number [b].
+  factory Complex.fromImaginary(num b) => Complex(0, b);
 
   /// Creates a complex number from cartesian coordinates [a] and [b].
   factory Complex.fromCartesian(num a, num b) = Complex;
@@ -29,6 +32,39 @@ class Complex {
         radius * math.cos(phase),
         radius * math.sin(phase),
       );
+
+  /// Parses [source] as a [Complex]. Returns `null` in case of a problem.
+  factory Complex.tryParse(String source) {
+    final parts = numberAndUnitExtractor
+        .allMatches(source.replaceAll(' ', ''))
+        .where((match) => match.start < match.end)
+        .toList();
+    if (parts.isEmpty) {
+      return null;
+    }
+    num a = 0, b = 0;
+    final seen = Set();
+    for (var part in parts) {
+      final number = num.tryParse(part.group(1));
+      final unit = part.group(4).toLowerCase();
+      if (seen.contains(unit)) {
+        return null; // repeated unit
+      }
+      if (unit == '' && number != null) {
+        a = number;
+      } else if (part.group(1).isEmpty || number != null) {
+        if (unit == 'i') {
+          b = number ?? 1;
+        } else {
+          return null; // invalid unit
+        }
+      } else {
+        return null; // parse error
+      }
+      seen.add(unit);
+    }
+    return Complex(a, b);
+  }
 
   /// Returns the real part of the number.
   final num a;
@@ -130,3 +166,6 @@ class Complex {
   @override
   String toString() => 'Complex($a, $b)';
 }
+
+final RegExp numberAndUnitExtractor =
+    RegExp(r'([+-]?\d*(\.\d+)?(e[+-]?\d+)?)\*?(\w?)', caseSensitive: false);

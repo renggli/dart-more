@@ -65,6 +65,45 @@ void main() {
         expect(complex.abs(), math.sqrt(2));
         expect(complex.arg(), 3 * math.pi / 4);
       });
+      test('parse', () {
+        expect(Complex.tryParse('1+2i'), Complex(1, 2));
+        expect(Complex.tryParse('1-2i'), Complex(1, -2));
+        expect(Complex.tryParse('-1+2i'), Complex(-1, 2));
+        expect(Complex.tryParse('-1-2i'), Complex(-1, -2));
+      });
+      test('parse whitespace', () {
+        expect(Complex.tryParse('1 + 2i'), Complex(1, 2));
+        expect(Complex.tryParse('1 - 2i'), Complex(1, -2));
+        expect(Complex.tryParse(' - 1 + 2 i '), Complex(-1, 2));
+        expect(Complex.tryParse(' - 1 - 2 i '), Complex(-1, -2));
+      });
+      test('parse just real', () {
+        expect(Complex.tryParse('1'), Complex(1));
+        expect(Complex.tryParse('1.2'), Complex(1.2));
+        expect(Complex.tryParse('-1.2'), Complex(-1.2));
+        expect(Complex.tryParse('1.2e2'), Complex(120));
+        expect(Complex.tryParse('1.2e-2'), Complex(0.012));
+      });
+      test('parse just imaginary', () {
+        expect(Complex.tryParse('i'), Complex(0, 1));
+        expect(Complex.tryParse('1I'), Complex(0, 1));
+        expect(Complex.tryParse('1.2i'), Complex(0, 1.2));
+        expect(Complex.tryParse('-1.2I'), Complex(0, -1.2));
+        expect(Complex.tryParse('1.2e2i'), Complex(0, 120));
+        expect(Complex.tryParse('1.2e-2I'), Complex(0, 0.012));
+        expect(Complex.tryParse('1*i'), Complex(0, 1));
+        expect(Complex.tryParse('1.2*I'), Complex(0, 1.2));
+        expect(Complex.tryParse('1.2e2*i'), Complex(0, 120));
+        expect(Complex.tryParse('1.2e-2*I'), Complex(0, 0.012));
+      });
+      test('parse error', () {
+        expect(Complex.tryParse(''), isNull);
+        expect(Complex.tryParse('e1'), isNull);
+        expect(Complex.tryParse('1ii'), isNull);
+        expect(Complex.tryParse('1+1'), isNull);
+        expect(Complex.tryParse('i+i'), isNull);
+        expect(Complex.tryParse('i+j'), isNull);
+      });
     });
     group('arithmetic', () {
       test('addition', () {
@@ -247,6 +286,28 @@ void main() {
       test('one', () {
         expect(Fraction.one, Fraction(1));
         expect(Fraction(1, 2) * Fraction.one, Fraction(1, 2));
+      });
+      test('parse', () {
+        expect(Fraction.tryParse('1/2'), Fraction(1, 2));
+        expect(Fraction.tryParse(' 1/2'), Fraction(1, 2));
+        expect(Fraction.tryParse('1 /2'), Fraction(1, 2));
+        expect(Fraction.tryParse('1/ 2'), Fraction(1, 2));
+        expect(Fraction.tryParse('1/2 '), Fraction(1, 2));
+      });
+      test('parse neative', () {
+        expect(Fraction.tryParse('-1/2'), Fraction(-1, 2));
+        expect(Fraction.tryParse('1/-2'), Fraction(-1, 2));
+        expect(Fraction.tryParse('-1/-2'), Fraction(1, 2));
+      });
+      test('parse integer', () {
+        expect(Fraction.tryParse('3'), Fraction(3));
+        expect(Fraction.tryParse(' 3'), Fraction(3));
+        expect(Fraction.tryParse('3 '), Fraction(3));
+      });
+      test('parse error', () {
+        expect(Fraction.tryParse(''), isNull);
+        expect(Fraction.tryParse('1.23'), isNull);
+        expect(Fraction.tryParse('1/2/3'), isNull);
       });
     });
     group('testing', () {
@@ -436,6 +497,47 @@ void main() {
         final quaternion = Quaternion.fromEuler(1, 2, 3);
         expect(quaternion, isClose(-0.368871, -0.206149, 0.501509, 0.754933));
         expect(quaternion.abs(), closeTo(1.0, epsilon));
+      });
+      test('parse', () {
+        expect(Quaternion.tryParse('1+2i+3j+4k'), Quaternion(1, 2, 3, 4));
+        expect(Quaternion.tryParse('1-2i+3j-4k'), Quaternion(1, -2, 3, -4));
+        expect(Quaternion.tryParse('-1+2i-3j+4k'), Quaternion(-1, 2, -3, 4));
+        expect(Quaternion.tryParse('-1-2i-3j-4k'), Quaternion(-1, -2, -3, -4));
+      });
+      test('parse whitespace', () {
+        expect(Quaternion.tryParse('1 + 2i + 3j + 4k'), Quaternion(1, 2, 3, 4));
+        expect(Quaternion.tryParse(' 1 - 2i + 3j - 4k '),
+            Quaternion(1, -2, 3, -4));
+      });
+      test('parse just real', () {
+        expect(Quaternion.tryParse('1'), Quaternion(1));
+        expect(Quaternion.tryParse('1.2'), Quaternion(1.2));
+        expect(Quaternion.tryParse('-1.2'), Quaternion(-1.2));
+        expect(Quaternion.tryParse('1.2e2'), Quaternion(120));
+        expect(Quaternion.tryParse('1.2e-2'), Quaternion(0.012));
+      });
+      test('parse just vector', () {
+        expect(Quaternion.tryParse('i'), Quaternion(0, 1));
+        expect(Quaternion.tryParse('j'), Quaternion(0, 0, 1));
+        expect(Quaternion.tryParse('k'), Quaternion(0, 0, 0, 1));
+        expect(Quaternion.tryParse('1.2I'), Quaternion(0, 1.2));
+        expect(Quaternion.tryParse('1.2J'), Quaternion(0, 0, 1.2));
+        expect(Quaternion.tryParse('1.2K'), Quaternion(0, 0, 0, 1.2));
+        expect(Quaternion.tryParse('1.2e2i'), Quaternion(0, 120));
+        expect(Quaternion.tryParse('1.2e2j'), Quaternion(0, 0, 120));
+        expect(Quaternion.tryParse('1.2e2k'), Quaternion(0, 0, 0, 120));
+        expect(Quaternion.tryParse('-1.2e-2i'), Quaternion(0, -0.012));
+        expect(Quaternion.tryParse('-1.2e-2j'), Quaternion(0, 0, -0.012));
+        expect(Quaternion.tryParse('-1.2e-2k'), Quaternion(0, 0, 0, -0.012));
+      });
+      test('parse error', () {
+        expect(Quaternion.tryParse(''), isNull);
+        expect(Quaternion.tryParse('e1'), isNull);
+        expect(Quaternion.tryParse('1ii'), isNull);
+        expect(Quaternion.tryParse('1+1'), isNull);
+        expect(Quaternion.tryParse('i+i'), isNull);
+        expect(Quaternion.tryParse('j+j'), isNull);
+        expect(Quaternion.tryParse('k+k'), isNull);
       });
     });
     group('arithmetic', () {

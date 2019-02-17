@@ -76,6 +76,47 @@ class Quaternion {
     );
   }
 
+  /// Parses [source] as a [Quaternion]. Returns `null` in case of a problem.
+  factory Quaternion.tryParse(String source) {
+    final parts = numberAndUnitExtractor
+        .allMatches(source.replaceAll(' ', ''))
+        .where((match) => match.start < match.end)
+        .toList();
+    if (parts.isEmpty) {
+      return null;
+    }
+    num a = 0, b = 0, c = 0, d = 0;
+    final seen = Set();
+    for (var part in parts) {
+      final number = num.tryParse(part.group(1));
+      final unit = part.group(4).toLowerCase();
+      if (seen.contains(unit)) {
+        return null; // repeated unit
+      }
+      if (unit == '' && number != null) {
+        a = number;
+      } else if (part.group(1).isEmpty || number != null) {
+        switch (unit) {
+          case 'i':
+            b = number ?? 1;
+            break;
+          case 'j':
+            c = number ?? 1;
+            break;
+          case 'k':
+            d = number ?? 1;
+            break;
+          default:
+            return null; // invalid unit
+        }
+      } else {
+        return null; // parse error
+      }
+      seen.add(unit);
+    }
+    return Quaternion(a, b, c, d);
+  }
+
   /// The 1st quaternion unit (scalar part).
   final num a;
 
@@ -205,3 +246,6 @@ class Quaternion {
   @override
   String toString() => 'Quaternion($a, $b, $c, $d)';
 }
+
+final RegExp numberAndUnitExtractor =
+    RegExp(r'([+-]?\d*(\.\d+)?(e[+-]?\d+)?)\*?(\w?)', caseSensitive: false);
