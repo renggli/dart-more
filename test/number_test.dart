@@ -29,7 +29,7 @@ void main() {
         expect(complex.abs(), 1.0);
         expect(complex.arg(), 0.0);
       });
-      test('imaginary', () {
+      test('i', () {
         const complex = Complex.i;
         expect(complex.a, 0);
         expect(complex.b, 1);
@@ -38,7 +38,7 @@ void main() {
         expect(complex.abs(), 1.0);
         expect(complex.arg(), math.pi / 2);
       });
-      test('real', () {
+      test('fromReal', () {
         final complex = Complex.fromReal(123);
         expect(complex.a, 123);
         expect(complex.b, 0);
@@ -47,7 +47,16 @@ void main() {
         expect(complex.abs(), 123.0);
         expect(complex.arg(), 0.0);
       });
-      test('cartesian', () {
+      test('fromImaginary', () {
+        final complex = Complex.fromImaginary(123);
+        expect(complex.a, 0);
+        expect(complex.b, 123);
+        expect(complex.real, 0);
+        expect(complex.imaginary, 123);
+        expect(complex.abs(), 123.0);
+        expect(complex.arg(), math.pi / 2);
+      });
+      test('fromCartesian', () {
         final complex = Complex.fromCartesian(-3, 4);
         expect(complex.a, -3);
         expect(complex.b, 4);
@@ -56,7 +65,7 @@ void main() {
         expect(complex.abs(), 5.0);
         expect(complex.arg(), math.acos(4 / 5) + math.pi / 2);
       });
-      test('polar', () {
+      test('fromPolar', () {
         final complex = Complex.fromPolar(math.sqrt(2), 3 * math.pi / 4);
         expect(complex.a.roundToDouble(), -1.0);
         expect(complex.b.roundToDouble(), 1.0);
@@ -65,26 +74,26 @@ void main() {
         expect(complex.abs(), math.sqrt(2));
         expect(complex.arg(), 3 * math.pi / 4);
       });
-      test('parse', () {
+      test('tryParse', () {
         expect(Complex.tryParse('1+2i'), Complex(1, 2));
         expect(Complex.tryParse('1-2i'), Complex(1, -2));
         expect(Complex.tryParse('-1+2i'), Complex(-1, 2));
         expect(Complex.tryParse('-1-2i'), Complex(-1, -2));
       });
-      test('parse whitespace', () {
+      test('tryParse (with whitespace)', () {
         expect(Complex.tryParse('1 + 2i'), Complex(1, 2));
         expect(Complex.tryParse('1 - 2i'), Complex(1, -2));
         expect(Complex.tryParse(' - 1 + 2 i '), Complex(-1, 2));
         expect(Complex.tryParse(' - 1 - 2 i '), Complex(-1, -2));
       });
-      test('parse just real', () {
+      test('tryParse (real)', () {
         expect(Complex.tryParse('1'), Complex(1));
         expect(Complex.tryParse('1.2'), Complex(1.2));
         expect(Complex.tryParse('-1.2'), Complex(-1.2));
         expect(Complex.tryParse('1.2e2'), Complex(120));
         expect(Complex.tryParse('1.2e-2'), Complex(0.012));
       });
-      test('parse just imaginary', () {
+      test('tryParse (imaginary)', () {
         expect(Complex.tryParse('i'), Complex(0, 1));
         expect(Complex.tryParse('1I'), Complex(0, 1));
         expect(Complex.tryParse('1.2i'), Complex(0, 1.2));
@@ -96,7 +105,7 @@ void main() {
         expect(Complex.tryParse('1.2e2*i'), Complex(0, 120));
         expect(Complex.tryParse('1.2e-2*I'), Complex(0, 0.012));
       });
-      test('parse error', () {
+      test('tryParse (error)', () {
         expect(Complex.tryParse(''), isNull);
         expect(Complex.tryParse('e1'), isNull);
         expect(Complex.tryParse('1ii'), isNull);
@@ -240,31 +249,31 @@ void main() {
         expect(() => Fraction(2, 0), throwsArgumentError);
         expect(() => Fraction(2, null), throwsArgumentError);
       });
-      test('double basic', () {
+      test('fromDouble (basic)', () {
         expect(Fraction.fromDouble(2), Fraction(2));
         expect(Fraction.fromDouble(100), Fraction(100));
       });
-      test('double finite', () {
+      test('fromDouble (finite)', () {
         expect(Fraction.fromDouble(1 / 2), Fraction(1, 2));
         expect(Fraction.fromDouble(1 / 4), Fraction(1, 4));
       });
-      test('double finite (whole)', () {
+      test('fromDouble (finite, whole)', () {
         expect(Fraction.fromDouble(5 / 2), Fraction(5, 2));
         expect(Fraction.fromDouble(9 / 4), Fraction(9, 4));
       });
-      test('double infinite', () {
+      test('fromDouble (infinite)', () {
         expect(Fraction.fromDouble(1 / 3), Fraction(1, 3));
         expect(Fraction.fromDouble(1 / 7), Fraction(1, 7));
       });
-      test('double infinite (whole)', () {
+      test('fromDouble (infinite, whole)', () {
         expect(Fraction.fromDouble(5 / 3), Fraction(5, 3));
         expect(Fraction.fromDouble(9 / 7), Fraction(9, 7));
       });
-      test('double negative', () {
+      test('fromDouble (negative)', () {
         expect(Fraction.fromDouble(-1 / 3), Fraction(-1, 3));
         expect(Fraction.fromDouble(-5 / 3), Fraction(-5, 3));
       });
-      test('double all', () {
+      test('fromDouble (all)', () {
         for (var num = -10; num <= 10; num++) {
           for (var den = -10; den <= 10; den++) {
             if (den != 0) {
@@ -273,7 +282,7 @@ void main() {
           }
         }
       });
-      test('double error', () {
+      test('fromDouble (error)', () {
         expect(() => Fraction.fromDouble(double.nan), throwsArgumentError);
         expect(() => Fraction.fromDouble(double.infinity), throwsArgumentError);
         expect(() => Fraction.fromDouble(double.negativeInfinity),
@@ -287,24 +296,24 @@ void main() {
         expect(Fraction.one, Fraction(1));
         expect(Fraction(1, 2) * Fraction.one, Fraction(1, 2));
       });
-      test('parse', () {
+      test('tryParse', () {
         expect(Fraction.tryParse('1/2'), Fraction(1, 2));
         expect(Fraction.tryParse(' 1/2'), Fraction(1, 2));
         expect(Fraction.tryParse('1 /2'), Fraction(1, 2));
         expect(Fraction.tryParse('1/ 2'), Fraction(1, 2));
         expect(Fraction.tryParse('1/2 '), Fraction(1, 2));
       });
-      test('parse neative', () {
+      test('tryParse (neative)', () {
         expect(Fraction.tryParse('-1/2'), Fraction(-1, 2));
         expect(Fraction.tryParse('1/-2'), Fraction(-1, 2));
         expect(Fraction.tryParse('-1/-2'), Fraction(1, 2));
       });
-      test('parse integer', () {
+      test('tryParse (integer)', () {
         expect(Fraction.tryParse('3'), Fraction(3));
         expect(Fraction.tryParse(' 3'), Fraction(3));
         expect(Fraction.tryParse('3 '), Fraction(3));
       });
-      test('parse error', () {
+      test('tryParse (error)', () {
         expect(Fraction.tryParse(''), isNull);
         expect(Fraction.tryParse('1.23'), isNull);
         expect(Fraction.tryParse('1/2/3'), isNull);
