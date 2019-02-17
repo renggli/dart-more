@@ -7,25 +7,32 @@ import 'package:test/test.dart';
 
 void main() {
   group('hash', () {
-    test('empty', () {
-      final hashCode = HashCode().value;
-      expect(hashCode, 0);
+    test('hash0', () {
+      expect(hash([]), isZero);
     });
-    test('add', () {
-      final hashCode1 = (HashCode()..add(1)).value;
-      final hashCode2 = (HashCode()..add(1)).value;
-      expect(hashCode1, hashCode2);
+    test('hash1', () {
+      expect(hash([1]), hash1(1));
     });
-    test('addAll', () {
-      final hashCode1 = (HashCode()..add(1)..add(2)..add(3)).value;
-      final hashCode2 = (HashCode()..addAll([1, 2, 3])).value;
-      expect(hashCode1, hashCode2);
+    test('hash2', () {
+      expect(hash([1, 2]), hash2(1, 2));
+    });
+    test('hash3', () {
+      expect(hash([1, 2, 3]), hash3(1, 2, 3));
+    });
+    test('hash4', () {
+      expect(hash([1, 2, 3, 4]), hash4(1, 2, 3, 4));
+    });
+    test('hash5', () {
+      expect(hash([1, 2, 3, 4, 5]), hash5(1, 2, 3, 4, 5));
+    });
+    test('hash6', () {
+      expect(hash([1, 2, 3, 4, 5, 6]), hash6(1, 2, 3, 4, 5, 6));
     });
     test('combinations', () {
       final hashCodes = <int, List<int>>{};
       for (var combination
           in combinations(IntegerRange(8), 5, repetitions: true)) {
-        final hashCode = (HashCode()..addAll(combination)).value;
+        final hashCode = hash(combination);
         if (hashCodes.containsKey(hashCode)) {
           fail('$combination and ${hashCodes[hashCode]} have identical hash.');
         }
@@ -34,7 +41,7 @@ void main() {
     test('permutations', () {
       final hashCodes = <int, List<int>>{};
       for (var permutation in permutations(IntegerRange(8))) {
-        final hashCode = (HashCode()..addAll(permutation)).value;
+        final hashCode = hash(permutation);
         if (hashCodes.containsKey(hashCode)) {
           fail('$permutation and ${hashCodes[hashCode]} have identical hash.');
         }
