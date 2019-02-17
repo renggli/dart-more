@@ -2,6 +2,8 @@ library more.number.quaternion;
 
 import 'dart:math' as math;
 
+import 'package:more/hash.dart' show hash4;
+
 /// A quaternion number of the form `a + b*i + c*j + d*k`.
 class Quaternion {
   /// The neutral additive element, that is `0`.
@@ -237,11 +239,7 @@ class Quaternion {
       d == other.d;
 
   @override
-  int get hashCode =>
-      (0x0007ffff & a.hashCode) << 9 ^
-      (0x0007ffff & b.hashCode) << 6 ^
-      (0x0007ffff & c.hashCode) << 3 ^
-      d.hashCode;
+  int get hashCode => hash4(a, b, c, d);
 
   @override
   String toString() => 'Quaternion($a, $b, $c, $d)';

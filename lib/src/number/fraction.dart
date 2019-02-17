@@ -1,5 +1,7 @@
 library more.number.fraction;
 
+import 'package:more/hash.dart' show hash2;
+
 /// A rational number.
 class Fraction implements Comparable<Fraction> {
   /// The neutral additive element, that is `0`.
@@ -146,7 +148,7 @@ class Fraction implements Comparable<Fraction> {
       other is Fraction && a == other.a && b == other.b;
 
   @override
-  int get hashCode => (0x0007ffff & a.hashCode) << 10 ^ b.hashCode;
+  int get hashCode => hash2(a, b);
 
   @override
   int compareTo(Fraction other) => (a * other.b).compareTo(other.a * b);

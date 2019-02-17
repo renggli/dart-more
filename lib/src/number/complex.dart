@@ -2,6 +2,8 @@ library more.number.complex;
 
 import 'dart:math' as math;
 
+import 'package:more/hash.dart' show hash2;
+
 /// A complex number of the form `a + b*i`.
 class Complex {
   /// The neutral additive element, that is `0`.
@@ -161,7 +163,7 @@ class Complex {
       other is Complex && a == other.a && b == other.b;
 
   @override
-  int get hashCode => (0x0007ffff & a.hashCode) << 10 ^ b.hashCode;
+  int get hashCode => hash2(a, b);
 
   @override
   String toString() => 'Complex($a, $b)';
