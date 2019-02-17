@@ -24,16 +24,10 @@ class HashCode {
   int _hash = 0;
 
   /// Adds an object to the hash code.
-  HashCode add(Object object) {
-    _hash = _combine(_hash, object.hashCode);
-    return this;
-  }
+  void add(Object object) => _hash = _combine(_hash, object.hashCode);
 
   /// Adds multiple objects to the hash code.
-  HashCode addAll(Iterable<Object> objects) {
-    objects.forEach(add);
-    return this;
-  }
+  void addAll(Iterable<Object> objects) => objects.forEach(add);
 
   /// Returns the hash code.
   int get value => _finish(_hash);
