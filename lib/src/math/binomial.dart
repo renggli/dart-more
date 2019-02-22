@@ -1,4 +1,4 @@
-library more.int_math.binomial;
+library more.math.binomial;
 
 /// Returns the binomial coefficient of the arguments. This is the number of
 /// ways, disregarding order, that [k] objects can be chosen from among [n]

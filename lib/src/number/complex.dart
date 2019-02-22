@@ -3,6 +3,7 @@ library more.number.complex;
 import 'dart:math' as math;
 
 import 'package:more/hash.dart' show hash2;
+import 'package:more/math.dart' as math2;
 
 /// A complex number of the form `a + b*i`.
 class Complex {
@@ -80,8 +81,12 @@ class Complex {
   /// Alternative way to access the imaginary part of the number.
   num get imaginary => b;
 
-  /// Returns the radius of this complex value in polar coordinates.
-  double abs() => math.sqrt(a * a + b * b);
+  /// Returns the radius of this complex value in polar coordinates, also called
+  /// the magnitude of the complex number.
+  double abs() => math.sqrt(norm());
+
+  /// Returns the squared magnitude.
+  double norm() => a * a + b * b;
 
   /// Returns the phase of the value in polar coordinates.
   double arg() => math.atan2(b, a);
@@ -136,6 +141,38 @@ class Complex {
 
   /// Compute the power of this complex number raised to `exponent`.
   Complex pow(Complex exponent) => (log() * exponent).exp();
+
+  Complex cos() =>
+      Complex(math.cos(a) * math2.cosh(b), -math.sin(a) * math2.sinh(b));
+
+  Complex cosh() =>
+      Complex(math2.cosh(a) * math.cos(b), math2.sinh(a) * math.sin(b));
+
+  Complex sin() =>
+      Complex(math.sin(a) * math2.cosh(b), math.cos(a) * math2.sinh(b));
+
+  Complex sinh() =>
+      Complex(math2.sinh(a) * math.cos(b), math2.cosh(a) * math.sin(b));
+
+  Complex tan() => null;
+
+  Complex tanh() => null;
+
+  Complex sqrt() => null;
+
+  /// Computes the n-th roots of this complex number.
+  List<Complex> roots(int n) {
+    if (n == 0) {
+      throw ArgumentError.value(n, 'n', 'Cannot compute 0th root.');
+    }
+    final result = <Complex>[];
+    final root = math.pow(abs(), 1 / n);
+    final increment = 2 * math.pi / n;
+    for (var i = 0, phase = arg() / n; i < n.abs(); i++, phase += increment) {
+      result.add(Complex.fromPolar(root, phase));
+    }
+    return result;
+  }
 
   /// Tests if this complex number is not defined.
   bool get isNaN => a.isNaN || b.isNaN;

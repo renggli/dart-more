@@ -1,4 +1,4 @@
-library more.int_math.polynomial;
+library more.math.polynomial;
 
 /// Evaluates the polynomial described by the given coefficients [cs] and the
 /// value [x].

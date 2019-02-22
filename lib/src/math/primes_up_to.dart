@@ -1,4 +1,4 @@
-library more.int_math.primes_up_to;
+library more.math.primes_up_to;
 
 import 'package:more/src/collection/bitlist.dart';
 

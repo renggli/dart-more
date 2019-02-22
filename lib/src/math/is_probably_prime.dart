@@ -1,6 +1,4 @@
-library more.int_math.is_probably_prime;
-
-import 'package:more/src/int_math/pow_mod.dart';
+library more.math.is_probably_prime;
 
 /// Tests if the number [n] is probably a prime.
 ///
@@ -24,12 +22,12 @@ bool isProbablyPrime(int n) {
   }
   loop:
   for (var a in [2, 3, 5, 7, 11, 13, 17]) {
-    var x = powMod(a, d, n);
+    var x = a.modPow(d, n);
     if (x == 1 || x == n - 1) {
       continue loop;
     }
     for (var r = 0; r <= s - 1; r++) {
-      x = powMod(x, 2, n);
+      x = x.modPow(2, n);
       if (x == 1) {
         return false;
       }

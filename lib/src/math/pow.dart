@@ -1,4 +1,4 @@
-library more.int_math.pow;
+library more.math.pow;
 
 /// Returns the power [x] raised to [y], where [y] is an [int].
 num pow(num x, int y) {

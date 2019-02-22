@@ -1,15 +1,9 @@
-library more.test.int_math_test;
+library more.test.math_test;
 
-import 'package:more/int_math.dart';
+import 'package:more/math.dart';
 import 'package:test/test.dart';
 
 void main() {
-  test('gcd', () {
-    expect(gcd(8, 12), 4);
-    expect(gcd(12, 8), 4);
-    expect(gcd(8, 0), 8);
-    expect(gcd(0, 8), 8);
-  });
   test('lcm', () {
     expect(lcm(5, 2), 10);
     expect(lcm(2, 5), 10);
@@ -68,17 +62,6 @@ void main() {
     expect(pow(-1, -2), 1.0);
     expect(pow(1, -2), 1.0);
     expect(pow(2, -2), 0.25);
-  });
-  test('powMod(x, y, m)', () {
-    for (var x = 0; x < 10; x++) {
-      for (var y = 0; y < 10; y++) {
-        for (var m = 2; m < 20; m++) {
-          expect(powMod(x, y, m), pow(x, y) % m);
-        }
-      }
-    }
-    expect(() => powMod(1, 1, 0), throwsArgumentError);
-    expect(() => powMod(1, -1, 1), throwsArgumentError);
   });
   test('polynomial', () {
     expect(polynomial([], 10), 0);

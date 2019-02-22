@@ -1,4 +1,4 @@
-library more.int_math.factorial;
+library more.math.factorial;
 
 /// Precomputed list of factorials.
 const List<int> factorials = [

@@ -1,5 +1,5 @@
 /// The Jenkins hash function copied and adapted from 'package:collection'.
-library more.int_math;
+library more.hash;
 
 /// Mask to keep integers in range (31 bits).
 const int _hashMask = 0x7fffffff;
