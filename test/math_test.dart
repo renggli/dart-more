@@ -3,7 +3,9 @@ library more.test.math_test;
 import 'package:more/math.dart';
 import 'package:test/test.dart';
 
+
 void main() {
+  final epsilon = pow(2.0, -32);
   test('lcm', () {
     expect(lcm(5, 2), 10);
     expect(lcm(2, 5), 10);
@@ -79,5 +81,39 @@ void main() {
     for (var i = 0; i < max; i++) {
       expect(isProbablyPrime(i), primes.contains(i));
     }
+  });
+  group('hyperbolic', () {
+    test('cosh', () {
+      expect(cosh(0), closeTo(1, epsilon));
+      expect(cosh(1), closeTo(1.5430806348152437, epsilon));
+      expect(cosh(-1), closeTo(1.5430806348152437, epsilon));
+    });
+    test('acosh', () {
+      expect(acosh(-1), isNaN);
+      expect(acosh(0), isNaN);
+      expect(acosh(0.5), isNaN);
+      expect(acosh(1), closeTo(0, epsilon));
+      expect(acosh(2), closeTo(1.3169578969248166, epsilon));
+    });
+    test('sinh', () {
+      expect(sinh(0), closeTo(0, epsilon));
+      expect(sinh(1), closeTo(1.1752011936438014, epsilon));
+    });
+    test('asinh', () {
+      expect(asinh(1), closeTo(0.881373587019543, epsilon));
+      expect(asinh(0), closeTo(0, epsilon));
+    });
+    test('tanh', () {
+      expect(tanh(0), closeTo(0, epsilon));
+      expect(tanh(1), closeTo(0.7615941559557649, epsilon));
+    });
+    test('atanh', () {
+      expect(atanh(-2), isNaN);
+      expect(atanh(-1), double.negativeInfinity);
+      expect(atanh(0), closeTo(0, epsilon));
+      expect(atanh(0.5), closeTo(0.5493061443340548, epsilon));
+      expect(atanh(1), double.infinity);
+      expect(atanh(2), isNaN);
+    });
   });
 }

@@ -86,7 +86,7 @@ class Complex {
   double abs() => math.sqrt(norm());
 
   /// Returns the squared magnitude.
-  double norm() => a * a + b * b;
+  num norm() => a * a + b * b;
 
   /// Returns the phase of the value in polar coordinates.
   double arg() => math.atan2(b, a);
@@ -142,23 +142,49 @@ class Complex {
   /// Compute the power of this complex number raised to `exponent`.
   Complex pow(Complex exponent) => (log() * exponent).exp();
 
-  Complex cos() =>
-      Complex(math.cos(a) * math2.cosh(b), -math.sin(a) * math2.sinh(b));
+  /// Compute the cosine of this complex number.
+  Complex cos() => Complex(
+        math.cos(a) * math2.cosh(b),
+        -math.sin(a) * math2.sinh(b),
+      );
 
-  Complex cosh() =>
-      Complex(math2.cosh(a) * math.cos(b), math2.sinh(a) * math.sin(b));
+  /// Compute the hyperbolic cosine of this complex number.
+  Complex cosh() => Complex(
+        math2.cosh(a) * math.cos(b),
+        math2.sinh(a) * math.sin(b),
+      );
 
-  Complex sin() =>
-      Complex(math.sin(a) * math2.cosh(b), math.cos(a) * math2.sinh(b));
+  /// Compute the sine of this complex number.
+  Complex sin() => Complex(
+        math.sin(a) * math2.cosh(b),
+        math.cos(a) * math2.sinh(b),
+      );
 
-  Complex sinh() =>
-      Complex(math2.sinh(a) * math.cos(b), math2.cosh(a) * math.sin(b));
+  /// Compute the hyperbolic sine of this complex number.
+  Complex sinh() => Complex(
+        math2.sinh(a) * math.cos(b),
+        math2.cosh(a) * math.sin(b),
+      );
 
-  Complex tan() => null;
+  /// Compute the tangent of this complex number.
+  Complex tan() {
+    final d = math.cos(2 * a) + math2.cosh(2 * b);
+    return Complex(math.sin(2 * a) / d, math2.sinh(2 * b) / d);
+  }
 
-  Complex tanh() => null;
+  /// Compute the hyperbolic tangent of this complex number.
+  Complex tanh() {
+    final d = math2.cosh(2 * a) + math.cos(2 * b);
+    return Complex(math2.sinh(2 * a) / d, math.sin(2 * b) / d);
+  }
 
-  Complex sqrt() => null;
+  /// Compute the square root of this complex number.
+  Complex sqrt() {
+    final r = abs();
+    final s = this + Complex.fromReal(r);
+    final t = math.sqrt(r) / s.abs();
+    return Complex(a * t, b * t);
+  }
 
   /// Computes the n-th roots of this complex number.
   List<Complex> roots(int n) {
