@@ -117,17 +117,25 @@ void main() {
     group('arithmetic', () {
       test('addition', () {
         expect(Complex(1, -2) + Complex(-3, 4), Complex(-2, 2));
+        expect(Complex(1, -2) + 3, Complex(4, -2));
+        expect(() => Complex(1, -2) + 'foo', throwsArgumentError);
       });
       test('substraction', () {
         expect(Complex(1, -2) - Complex(-3, 4), Complex(4, -6));
+        expect(Complex(1, -2) - 4, Complex(-3, -2));
+        expect(() => Complex(1, -2) - 'foo', throwsArgumentError);
       });
       test('multiplication', () {
         expect(Complex(1, -2) * Complex(-3, 4), Complex(5, 10));
         expect(Complex(-3, 4) * Complex(1, -2), Complex(5, 10));
+        expect(Complex(-3, 4) * 2, Complex(-6, 8));
+        expect(() => Complex(-3, 4) * 'foo', throwsArgumentError);
       });
       test('division', () {
         expect(Complex(5, 10) / Complex(-3, 4), Complex(1, -2));
         expect(Complex(5, 10) / Complex(1, -2), Complex(-3, 4));
+        expect(Complex(6, 10) / 2, Complex(3, 5));
+        expect(() => Complex(6, 10) / 'foo', throwsArgumentError);
       });
       test('negate', () {
         expect(-Complex(1, -2), Complex(-1, 2));
