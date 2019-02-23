@@ -1,8 +1,9 @@
 library more.math.binomial;
 
-/// Returns the binomial coefficient of the arguments. This is the number of
-/// ways, disregarding order, that [k] objects can be chosen from among [n]
-/// objects.
+/// Returns the binomial coefficient of the arguments.
+///
+/// This is the number of ways, disregarding order, that [k] objects can be
+/// chosen from among [n] objects.
 int binomial(int n, int k) {
   if (k < 0 || k > n) {
     throw ArgumentError('binomial($n, $k) is undefined for arguments.');

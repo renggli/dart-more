@@ -2,8 +2,8 @@ library more.math.is_probably_prime;
 
 /// Tests if the number [n] is probably a prime.
 ///
-/// The output of this variant of the probabilistic prime test by Miller–Rabin
-/// is deterministic. It has been verified to return correct results for all n
+/// This variant of the probabilistic prime test by Miller–Rabin is
+/// deterministic. It has been verified to return correct results for all n
 /// < 341,550,071,728,321.
 bool isProbablyPrime(int n) {
   if (n == 2 || n == 3 || n == 5) {

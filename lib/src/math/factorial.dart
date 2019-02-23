@@ -25,8 +25,9 @@ const List<int> factorials = [
   2432902008176640000
 ];
 
-/// Returns the factorial of the argument. This is the number of ways to arrange
-/// [n] distinct objects into a sequence.
+/// Returns the factorial of the argument.
+///
+/// This is the number of ways to arrange [n] distinct objects into a sequence.
 int factorial(int n) {
   if (n < 0) {
     throw ArgumentError('factorial($n) is undefined for negative arguments.');
