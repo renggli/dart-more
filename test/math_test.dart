@@ -3,7 +3,6 @@ library more.test.math_test;
 import 'package:more/math.dart';
 import 'package:test/test.dart';
 
-
 void main() {
   final epsilon = pow(2.0, -32);
   test('lcm', () {
@@ -105,6 +104,7 @@ void main() {
     });
     test('tanh', () {
       expect(tanh(0), closeTo(0, epsilon));
+      expect(tanh(double.infinity), closeTo(1, epsilon));
       expect(tanh(1), closeTo(0.7615941559557649, epsilon));
     });
     test('atanh', () {
