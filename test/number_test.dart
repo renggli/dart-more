@@ -155,6 +155,77 @@ void main() {
       test('pow', () {
         expect(Complex(1, 2).pow(Complex(3, 4)), isClose(0.129009, 0.033924));
       });
+      test('square', () {
+        expect(Complex(2, 3).square(), Complex(-5, 12));
+        expect(Complex(-2, 3).square(), Complex(-5, -12));
+        expect(Complex(2, -3).square(), Complex(-5, -12));
+        expect(Complex(-2, -3).square(), Complex(-5, 12));
+      });
+      test('sqrt', () {
+        expect(Complex(2, 3).sqrt(), isClose(1.674149, 0.895977));
+        expect(Complex(-2, 3).sqrt(), isClose(0.895977, 1.674149));
+        expect(Complex(2, -3).sqrt(), isClose(1.674149, -0.895977));
+        expect(Complex(-2, -3).sqrt(), isClose(0.895977, -1.674149));
+        expect(Complex(2, 3).sqrt().square(), isClose(2, 3));
+      });
+      group('roots', () {
+        final source = Complex(2, 3);
+        void verify(int n) {
+          test('$source.roots($n)', () {
+            final roots = source.roots(n);
+            expect(roots, hasLength(n.abs()));
+            for (var root in roots) {
+              expect(root.pow(n), (actual) => source.closeTo(actual, epsilon));
+            }
+          });
+        }
+
+        test('$source.root(0)', () {
+          expect(() => source.roots(0), throwsArgumentError);
+        });
+        verify(2);
+        verify(3);
+        verify(4);
+        verify(-2);
+        verify(-3);
+        verify(-4);
+      });
+      test('sin', () {
+        expect(Complex(2, 3).sin(), isClose(9.154499, 4.168906));
+      });
+      test('asin', () {
+        expect(Complex(2, 3).asin(), isClose(0.570652, 1.983387));
+      });
+      test('sinh', () {
+        expect(Complex(2, 3).sinh(), isClose(-3.590564, 0.530921));
+      });
+      test('asinh', () {
+        expect(Complex(2, 3).asinh(), isClose(1.968637, 0.964658));
+      });
+      test('cos', () {
+        expect(Complex(2, 3).cos(), isClose(-4.189625, -9.109227));
+      });
+      test('acos', () {
+        expect(Complex(2, 3).acos(), isClose(1.000143, -1.983387));
+      });
+      test('cosh', () {
+        expect(Complex(2, 3).cosh(), isClose(-3.724545, 0.511822));
+      });
+      test('acosh', () {
+        expect(Complex(2, 3).acosh(), isClose(1.983387, 1.000143));
+      });
+      test('tan', () {
+        expect(Complex(2, 3).tan(), isClose(-0.003764, 1.003238));
+      });
+      test('atan', () {
+        expect(Complex(2, 3).atan(), isClose(1.409921, 0.229072));
+      });
+      test('tanh', () {
+        expect(Complex(2, 3).tanh(), isClose(0.965385, -0.009884));
+      });
+      test('atanh', () {
+        expect(Complex(2, 3).atanh(), isClose(0.146946, 1.338972));
+      });
     });
     group('testing', () {
       test('isNan', () {

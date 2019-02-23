@@ -98,30 +98,57 @@ class Complex {
   Complex conjugate() => Complex(a, -b);
 
   /// Returns the sum of this complex value and [other].
-  Complex operator +(Complex other) => Complex(a + other.a, b + other.b);
+  Complex operator +(Object other) {
+    if (other is Complex) {
+      return Complex(a + other.a, b + other.b);
+    } else if (other is num) {
+      return Complex(a + other, b);
+    } else {
+      throw ArgumentError.value(other);
+    }
+  }
 
   /// Returns the difference of this complex value and [other].
-  Complex operator -(Complex other) => Complex(a - other.a, b - other.b);
+  Complex operator -(Object other) {
+    if (other is Complex) {
+      return Complex(a - other.a, b - other.b);
+    } else if (other is num) {
+      return Complex(a - other, b);
+    } else {
+      throw ArgumentError.value(other);
+    }
+  }
 
   /// Returns the multiplication of this complex value and [other].
-  Complex operator *(Complex other) => Complex(
-        a * other.a - b * other.b,
-        a * other.b + b * other.a,
-      );
+  Complex operator *(Object other) {
+    if (other is Complex) {
+      return Complex(a * other.a - b * other.b, a * other.b + b * other.a);
+    } else if (other is num) {
+      return Complex(a * other, b * other);
+    } else {
+      throw ArgumentError.value(other);
+    }
+  }
 
   /// Returns the multiplicative inverse of this complex value.
   Complex reciprocal() {
-    final det = 1.0 / (a * a + b * b);
-    return Complex(a * det, b * -det);
+    final d = 1.0 / norm();
+    return Complex(a * d, b * -d);
   }
 
   /// Returns the division of this complex value and [other].
-  Complex operator /(Complex other) {
-    final det = 1.0 / (other.a * other.a + other.b * other.b);
-    return Complex(
-      (a * other.a + b * other.b) * det,
-      (b * other.a - a * other.b) * det,
-    );
+  Complex operator /(Object other) {
+    if (other is Complex) {
+      final d = 1.0 / other.norm();
+      return Complex(
+        (a * other.a + b * other.b) * d,
+        (b * other.a - a * other.b) * d,
+      );
+    } else if (other is num) {
+      return Complex(a / other, b / other);
+    } else {
+      throw ArgumentError.value(other);
+    }
   }
 
   /// Compute the exponential function of this complex number.
@@ -134,10 +161,7 @@ class Complex {
   }
 
   /// Compute the natural logarithm of this complex number.
-  Complex log() => Complex(
-        math.log(math.sqrt(a * a + b * b)),
-        math.atan2(b, a),
-      );
+  Complex log() => Complex(math.log(math.sqrt(norm())), math.atan2(b, a));
 
   /// Compute the power of this complex number raised to `exponent`.
   Complex pow(Object exponent) => (log() * exponent).exp();
@@ -173,7 +197,6 @@ class Complex {
       );
 
   /// Compute the arc-cosine of this complex number.
-  // add(sqrt1z().multiply(I)).log().multiply(I.negate());
   Complex acos() => (this + i * (one - square()).sqrt()).log() * -i;
 
   /// Compute the hyperbolic cosine of this complex number.
