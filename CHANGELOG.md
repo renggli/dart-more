@@ -3,6 +3,8 @@
 ## 1.15.0
 
 * Deprecated `package:more/int_math` package, and moved all not-deprecated code to `package:more/math.dart`.
+* Add 'polyfills' for hyperbolic functions to the math package.
+* Add functionality for combining hash codes.
 
 ## 1.14.0
 
