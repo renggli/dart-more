@@ -170,25 +170,28 @@ void main() {
       });
       group('roots', () {
         final source = Complex(2, 3);
-        void verify(int n) {
+        void testRoots(int n) {
           test('$source.roots($n)', () {
             final roots = source.roots(n);
             expect(roots, hasLength(n.abs()));
             for (var root in roots) {
-              expect(root.pow(n), (actual) => source.closeTo(actual, epsilon));
+              expect(root.pow(n), isClose(source.a, source.b));
             }
           });
         }
-
+        testRoots(-4);
+        testRoots(-3);
+        testRoots(-2);
+        testRoots(-1);
         test('$source.root(0)', () {
           expect(() => source.roots(0), throwsArgumentError);
         });
-        verify(2);
-        verify(3);
-        verify(4);
-        verify(-2);
-        verify(-3);
-        verify(-4);
+        testRoots(1);
+        testRoots(2);
+        testRoots(3);
+        testRoots(4);
+        testRoots(5);
+        testRoots(6);
       });
       test('sin', () {
         expect(Complex(2, 3).sin(), isClose(9.154499, 4.168906));
@@ -417,15 +420,21 @@ void main() {
         expect(Fraction(1, 2) + Fraction(1, 4), Fraction(3, 4));
         expect(Fraction(1, 2) + Fraction(3, 4), Fraction(5, 4));
         expect(Fraction(1, 2) + Fraction(1, 2), Fraction(1));
+        expect(Fraction(1, 2) + 3, Fraction(7, 2));
+        expect(() => Fraction(1, 2) + 'foo', throwsArgumentError);
       });
       test('substraction', () {
         expect(Fraction(1, 2) - Fraction(1, 4), Fraction(1, 4));
         expect(Fraction(1, 2) - Fraction(3, 4), Fraction(-1, 4));
         expect(Fraction(1, 2) - Fraction(1, 2), Fraction(0));
+        expect(Fraction(1, 2) - 3, Fraction(-5, 2));
+        expect(() => Fraction(1, 2) - 'foo', throwsArgumentError);
       });
       test('multiplication', () {
         expect(Fraction(2, 3) * Fraction(1, 4), Fraction(1, 6));
         expect(Fraction(3, 4) * Fraction(2, 5), Fraction(3, 10));
+        expect(Fraction(3, 4) * 2, Fraction(3, 2));
+        expect(() => Fraction(3, 4) * 'foo', throwsArgumentError);
       });
       test('reciprocal', () {
         expect(Fraction(3, 4).reciprocal(), Fraction(4, 3));
@@ -434,6 +443,8 @@ void main() {
       test('division', () {
         expect(Fraction(2, 3) / Fraction(1, 4), Fraction(8, 3));
         expect(Fraction(3, 4) / Fraction(2, 5), Fraction(15, 8));
+        expect(Fraction(3, 4) / 2, Fraction(3, 8));
+        expect(() => Fraction(3, 4) / 'foo', throwsArgumentError);
       });
       test('negate', () {
         expect(-Fraction(2, 3), Fraction(-2, 3));

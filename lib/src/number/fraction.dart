@@ -93,21 +93,51 @@ class Fraction implements Comparable<Fraction> {
   Fraction operator -() => Fraction._(-a, b);
 
   /// Returns the sum of this fraction and [other].
-  Fraction operator +(Fraction other) =>
-      Fraction(a * other.b + other.a * b, b * other.b);
+  Fraction operator +(Object other) {
+    if (other is Fraction) {
+      return Fraction(a * other.b + other.a * b, b * other.b);
+    } else if (other is int) {
+      return Fraction(a + other * b, b);
+    } else {
+      throw ArgumentError.value(other);
+    }
+  }
 
   /// Returns the difference of this fraction and [other].
-  Fraction operator -(Fraction other) =>
-      Fraction(a * other.b - other.a * b, b * other.b);
+  Fraction operator -(Object other) {
+    if (other is Fraction) {
+      return Fraction(a * other.b - other.a * b, b * other.b);
+    } else if (other is int) {
+      return Fraction(a - other * b, b);
+    } else {
+      throw ArgumentError.value(other);
+    }
+  }
 
   /// Returns the multiplicative inverse of this fraction.
   Fraction reciprocal() => isNegative ? Fraction._(-b, -a) : Fraction._(b, a);
 
   /// Returns the multiplication of this fraction and [other].
-  Fraction operator *(Fraction other) => Fraction(a * other.a, b * other.b);
+  Fraction operator *(Object other) {
+    if (other is Fraction) {
+      return Fraction(a * other.a, b * other.b);
+    } else if (other is int) {
+      return Fraction(a * other, b);
+    } else {
+      throw ArgumentError.value(other);
+    }
+  }
 
   /// Returns the division of this fraction and [other].
-  Fraction operator /(Fraction other) => Fraction(a * other.b, b * other.a);
+  Fraction operator /(Object other) {
+    if (other is Fraction) {
+      return Fraction(a * other.b, b * other.a);
+    } else if (other is int) {
+      return Fraction(a, b * other);
+    } else {
+      throw ArgumentError.value(other);
+    }
+  }
 
   /// Tests if this fraction is not defined.
   bool get isNaN => false;
