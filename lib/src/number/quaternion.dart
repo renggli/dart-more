@@ -179,13 +179,13 @@ class Quaternion {
     }
   }
 
-  /// Compute the multiplicative inverse of this quaternion.
+  /// Computes the multiplicative inverse of this quaternion.
   Quaternion reciprocal() {
     final f = 1 / norm();
     return Quaternion(a * f, -b * f, -c * f, -d * f);
   }
 
-  /// Compute the division of this number and another one.
+  /// Computes the division of this number and another one.
   Quaternion operator /(Object other) {
     if (other is Quaternion) {
       final f = 1 / norm();
@@ -202,7 +202,7 @@ class Quaternion {
     }
   }
 
-  /// Compute the exponential function of this quaternion number.
+  /// Computes the exponential function of this quaternion number.
   Quaternion exp() {
     final exp = math.exp(a);
     final norm = math.sqrt(b * b + c * c + d * d);
@@ -210,14 +210,14 @@ class Quaternion {
     return Quaternion(exp * math.cos(norm), b * scale, c * scale, d * scale);
   }
 
-  /// Compute the natural logarithm of this quaternion number.
+  /// Computes the natural logarithm of this quaternion number.
   Quaternion log() {
     final vectorNorm = math.sqrt(b * b + c * c + d * d);
     final scale = math.atan2(vectorNorm, a) / vectorNorm;
     return Quaternion(0.5 * math.log(norm()), b * scale, c * scale, d * scale);
   }
 
-  /// Compute the power of this quaternion number raised to `exponent`.
+  /// Computes the power of this quaternion number raised to `exponent`.
   Quaternion pow(Object exponent) => (log() * exponent).exp();
 
   /// Tests if this complex number is not defined.

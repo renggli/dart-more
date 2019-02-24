@@ -151,7 +151,7 @@ class Complex {
     }
   }
 
-  /// Compute the exponential function of this complex number.
+  /// Computes the exponential function of this complex number.
   Complex exp() {
     final exp = math.exp(a);
     return Complex(
@@ -160,16 +160,16 @@ class Complex {
     );
   }
 
-  /// Compute the natural logarithm of this complex number.
+  /// Computes the natural logarithm of this complex number.
   Complex log() => Complex(math.log(math.sqrt(norm())), math.atan2(b, a));
 
-  /// Compute the power of this complex number raised to `exponent`.
+  /// Computes the power of this complex number raised to `exponent`.
   Complex pow(Object exponent) => (log() * exponent).exp();
 
   /// Computes the square of this complex number.
   Complex square() => Complex(a * a - b * b, 2 * a * b);
 
-  /// Compute the square root of this complex number.
+  /// Computes the square root of this complex number.
   Complex sqrt() {
     final r = abs(), s = this + r;
     return s / s.abs() * math.sqrt(r);
@@ -190,58 +190,58 @@ class Complex {
     );
   }
 
-  /// Compute the cosine of this complex number.
+  /// Computes the cosine of this complex number.
   Complex cos() => Complex(
         math.cos(a) * math2.cosh(b),
         -math.sin(a) * math2.sinh(b),
       );
 
-  /// Compute the arc-cosine of this complex number.
+  /// Computes the arc-cosine of this complex number.
   Complex acos() => (this + i * (one - square()).sqrt()).log() * -i;
 
-  /// Compute the hyperbolic cosine of this complex number.
+  /// Computes the hyperbolic cosine of this complex number.
   Complex cosh() => Complex(
         math2.cosh(a) * math.cos(b),
         math2.sinh(a) * math.sin(b),
       );
 
-  /// Compute the hyperbolic arc-cosine of this complex number.
+  /// Computes the hyperbolic arc-cosine of this complex number.
   Complex acosh() => ((square() - 1).sqrt() + this).log();
 
-  /// Compute the sine of this complex number.
+  /// Computes the sine of this complex number.
   Complex sin() => Complex(
         math.sin(a) * math2.cosh(b),
         -math.cos(a) * math2.sinh(b),
       );
 
-  /// Compute the arc-sine of this complex number.
+  /// Computes the arc-sine of this complex number.
   Complex asin() => (this * i + (one - square()).sqrt()).log() * -i;
 
-  /// Compute the hyperbolic sine of this complex number.
+  /// Computes the hyperbolic sine of this complex number.
   Complex sinh() => Complex(
         math2.sinh(a) * math.cos(b),
         math2.cosh(a) * math.sin(b),
       );
 
-  /// Compute the hyperbolic arc-sine of this complex number.
+  /// Computes the hyperbolic arc-sine of this complex number.
   Complex asinh() => ((square() + 1).sqrt() + this).log();
 
-  /// Compute the tangent of this complex number.
+  /// Computes the tangent of this complex number.
   Complex tan() {
     final d = math.cos(2 * a) + math2.cosh(2 * b);
     return Complex(math.sin(2 * a) / d, math2.sinh(2 * b) / d);
   }
 
-  /// Compute the arc-tangent of this complex number.
+  /// Computes the arc-tangent of this complex number.
   Complex atan() => ((this + i) / (i - this)).log() * i * 0.5;
 
-  /// Compute the hyperbolic tangent of this complex number.
+  /// Computes the hyperbolic tangent of this complex number.
   Complex tanh() {
     final d = math2.cosh(2 * a) + math.cos(2 * b);
     return Complex(math2.sinh(2 * a) / d, math.sin(2 * b) / d);
   }
 
-  /// Compute the hyperbolic arc-tangent of this complex number.
+  /// Computes the hyperbolic arc-tangent of this complex number.
   Complex atanh() => ((this + one) / (one - this)).log() * 0.5;
 
   /// Tests if this complex number is not defined.
