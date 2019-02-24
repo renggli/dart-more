@@ -80,11 +80,14 @@ void main() {
         expect(Complex.tryParse('-1+2i'), Complex(-1, 2));
         expect(Complex.tryParse('-1-2i'), Complex(-1, -2));
       });
-      test('tryParse (with whitespace)', () {
+      test('tryParse (whitespace)', () {
         expect(Complex.tryParse('1 + 2i'), Complex(1, 2));
         expect(Complex.tryParse('1 - 2i'), Complex(1, -2));
         expect(Complex.tryParse(' - 1 + 2 i '), Complex(-1, 2));
         expect(Complex.tryParse(' - 1 - 2 i '), Complex(-1, -2));
+      });
+      test('tryParse (permutation)', () {
+        expect(Complex.tryParse('2i+1'), Complex(1, 2));
       });
       test('tryParse (real)', () {
         expect(Complex.tryParse('1'), Complex(1));
@@ -179,6 +182,7 @@ void main() {
             }
           });
         }
+
         testRoots(-4);
         testRoots(-3);
         testRoots(-2);
@@ -597,25 +601,31 @@ void main() {
         expect(quaternion, isClose(-0.368871, -0.206149, 0.501509, 0.754933));
         expect(quaternion.abs(), closeTo(1.0, epsilon));
       });
-      test('parse', () {
+      test('tryParse', () {
         expect(Quaternion.tryParse('1+2i+3j+4k'), Quaternion(1, 2, 3, 4));
         expect(Quaternion.tryParse('1-2i+3j-4k'), Quaternion(1, -2, 3, -4));
         expect(Quaternion.tryParse('-1+2i-3j+4k'), Quaternion(-1, 2, -3, 4));
         expect(Quaternion.tryParse('-1-2i-3j-4k'), Quaternion(-1, -2, -3, -4));
       });
-      test('parse whitespace', () {
+      test('tryParse (permutation)', () {
+        expect(Quaternion.tryParse('1+2i+3j+4k'), Quaternion(1, 2, 3, 4));
+        expect(Quaternion.tryParse('2i+1+3j+4k'), Quaternion(1, 2, 3, 4));
+        expect(Quaternion.tryParse('4k+2i+3j+1'), Quaternion(1, 2, 3, 4));
+        expect(Quaternion.tryParse('3j+4k+2i+1'), Quaternion(1, 2, 3, 4));
+      });
+      test('tryParse (whitespace)', () {
         expect(Quaternion.tryParse('1 + 2i + 3j + 4k'), Quaternion(1, 2, 3, 4));
         expect(Quaternion.tryParse(' 1 - 2i + 3j - 4k '),
             Quaternion(1, -2, 3, -4));
       });
-      test('parse just real', () {
+      test('tryParse (real)', () {
         expect(Quaternion.tryParse('1'), Quaternion(1));
         expect(Quaternion.tryParse('1.2'), Quaternion(1.2));
         expect(Quaternion.tryParse('-1.2'), Quaternion(-1.2));
         expect(Quaternion.tryParse('1.2e2'), Quaternion(120));
         expect(Quaternion.tryParse('1.2e-2'), Quaternion(0.012));
       });
-      test('parse just vector', () {
+      test('tryParse (vector)', () {
         expect(Quaternion.tryParse('i'), Quaternion(0, 1));
         expect(Quaternion.tryParse('j'), Quaternion(0, 0, 1));
         expect(Quaternion.tryParse('k'), Quaternion(0, 0, 0, 1));
@@ -629,7 +639,7 @@ void main() {
         expect(Quaternion.tryParse('-1.2e-2j'), Quaternion(0, 0, -0.012));
         expect(Quaternion.tryParse('-1.2e-2k'), Quaternion(0, 0, 0, -0.012));
       });
-      test('parse error', () {
+      test('tryParse (error)', () {
         expect(Quaternion.tryParse(''), isNull);
         expect(Quaternion.tryParse('e1'), isNull);
         expect(Quaternion.tryParse('1ii'), isNull);
@@ -643,22 +653,28 @@ void main() {
       test('addition', () {
         expect(Quaternion(1, -2, 3, -4) + Quaternion(5, 6, -7, -8),
             Quaternion(6, 4, -4, -12));
+        expect(Quaternion(1, -2, 3, -4) + 5, Quaternion(6, -2, 3, -4));
+        expect(() => Quaternion(1, -2, 3, -4) + 'foo', throwsArgumentError);
       });
       test('substraction', () {
         expect(Quaternion(1, -2, 3, -4) - Quaternion(5, 6, -7, -8),
             Quaternion(-4, -8, 10, 4));
+        expect(Quaternion(1, -2, 3, -4) - 5, Quaternion(-4, -2, 3, -4));
+        expect(() => Quaternion(1, -2, 3, -4) - 'foo', throwsArgumentError);
       });
       test('multiplication', () {
         expect(Quaternion(1, -2, 3, -4) * Quaternion(5, 6, -7, -8),
             Quaternion(6, -56, -32, -32));
-        expect(Quaternion(5, 6, -7, -8) * Quaternion(1, -2, 3, -4),
-            Quaternion(6, 48, 48, -24));
+        expect(Quaternion(1, -2, 3, -4) * 5, Quaternion(5, -10, 15, -20));
+        expect(() => Quaternion(5, 6, -7, -8) * 'foo', throwsArgumentError);
       });
       test('division', () {
         expect(Quaternion(1, -2, 3, -4) / Quaternion(5, 6, -7, -8),
             isClose(0.133333, 1.200000, 2.066666, -0.266666));
         expect(Quaternion(5, 6, -7, -8) / Quaternion(1, -2, 3, -4),
             isClose(0.022988, -0.206896, -0.356321, 0.045977));
+        expect(Quaternion(6, 4, -8, -16) / 2, Quaternion(3, 2, -4, -8));
+        expect(() => Quaternion(6, 4, -8, -16) / 'foo', throwsArgumentError);
       });
       test('negate', () {
         expect(-Quaternion(1, -2, 3, -4), Quaternion(-1, 2, -3, 4));

@@ -33,11 +33,7 @@ class Quaternion {
     final norm = math.sin(0.5 * angle) /
         math.sqrt(axis[0] * axis[0] + axis[1] * axis[1] + axis[2] * axis[2]);
     return Quaternion(
-      math.cos(0.5 * angle),
-      axis[0] * norm,
-      axis[1] * norm,
-      axis[2] * norm,
-    );
+        math.cos(0.5 * angle), axis[0] * norm, axis[1] * norm, axis[2] * norm);
   }
 
   /// Constructs a quaternion from the rotation between two vectors [source]
@@ -48,12 +44,8 @@ class Quaternion {
     final b = source[1] * target[2] - source[2] * target[1];
     final c = source[2] * target[0] - source[0] * target[2];
     final d = source[0] * target[1] - source[1] * target[0];
-    return Quaternion(
-      a + math.sqrt(a * a + b * b + c * c + d * d),
-      b,
-      c,
-      d,
-    ).normalize();
+    return Quaternion(a + math.sqrt(a * a + b * b + c * c + d * d), b, c, d)
+        .normalize();
   }
 
   /// Constructs a quaternion from an euler rotation.
@@ -131,8 +123,11 @@ class Quaternion {
   /// The 4th quaternion unit (3rd vector/imaginary part).
   final num d;
 
-  /// Returns the absolute value (or norm) of the quaternion.
-  double abs() => math.sqrt(a * a + b * b + c * c + d * d);
+  /// Returns the absolute value of the quaternion.
+  double abs() => math.sqrt(norm());
+
+  /// Returns the squared absolute value.
+  num norm() => a * a + b * b + c * c + d * d;
 
   /// Returns the negated form of the quaternion.
   Quaternion operator -() => Quaternion(-a, -b, -c, -d);
@@ -142,49 +137,69 @@ class Quaternion {
 
   /// Returns the normalized form of the quarternion.
   Quaternion normalize() {
-    final factor = 1.0 / math.sqrt(a * a + b * b + c * c + d * d);
-    return Quaternion(a * factor, b * factor, c * factor, d * factor);
+    final f = 1 / abs();
+    return Quaternion(a * f, b * f, c * f, d * f);
   }
 
   /// Returns the sum of this number and another one.
-  Quaternion operator +(Quaternion other) => Quaternion(
-        a + other.a,
-        b + other.b,
-        c + other.c,
-        d + other.d,
-      );
+  Quaternion operator +(Object other) {
+    if (other is Quaternion) {
+      return Quaternion(a + other.a, b + other.b, c + other.c, d + other.d);
+    } else if (other is num) {
+      return Quaternion(a + other, b, c, d);
+    } else {
+      throw ArgumentError.value(other);
+    }
+  }
 
   /// Returns the difference of this number and another one.
-  Quaternion operator -(Quaternion other) => Quaternion(
-        a - other.a,
-        b - other.b,
-        c - other.c,
-        d - other.d,
-      );
+  Quaternion operator -(Object other) {
+    if (other is Quaternion) {
+      return Quaternion(a - other.a, b - other.b, c - other.c, d - other.d);
+    } else if (other is num) {
+      return Quaternion(a - other, b, c, d);
+    } else {
+      throw ArgumentError.value(other);
+    }
+  }
 
   /// Returns the product of this number and another one.
-  Quaternion operator *(Quaternion other) => Quaternion(
+  Quaternion operator *(Object other) {
+    if (other is Quaternion) {
+      return Quaternion(
         a * other.a - b * other.b - c * other.c - d * other.d,
         a * other.b + b * other.a + c * other.d - d * other.c,
         a * other.c + c * other.a + d * other.b - b * other.d,
         a * other.d + d * other.a + b * other.c - c * other.b,
       );
+    } else if (other is num) {
+      return Quaternion(a * other, b * other, c * other, d * other);
+    } else {
+      throw ArgumentError.value(other);
+    }
+  }
 
   /// Compute the multiplicative inverse of this quaternion.
   Quaternion reciprocal() {
-    final factor = 1.0 / (a * a + b * b + c * c + d * d);
-    return Quaternion(a * factor, -b * factor, -c * factor, -d * factor);
+    final f = 1 / norm();
+    return Quaternion(a * f, -b * f, -c * f, -d * f);
   }
 
   /// Compute the division of this number and another one.
-  Quaternion operator /(Quaternion other) {
-    final factor = 1.0 / (a * a + b * b + c * c + d * d);
-    return Quaternion(
-      (a * other.a + b * other.b + c * other.c + d * other.d) * factor,
-      (b * other.a - a * other.b - c * other.d + d * other.c) * factor,
-      (c * other.a - a * other.c - d * other.b + b * other.d) * factor,
-      (d * other.a - a * other.d - b * other.c + c * other.b) * factor,
-    );
+  Quaternion operator /(Object other) {
+    if (other is Quaternion) {
+      final f = 1 / norm();
+      return Quaternion(
+        (a * other.a + b * other.b + c * other.c + d * other.d) * f,
+        (b * other.a - a * other.b - c * other.d + d * other.c) * f,
+        (c * other.a - a * other.c - d * other.b + b * other.d) * f,
+        (d * other.a - a * other.d - b * other.c + c * other.b) * f,
+      );
+    } else if (other is num) {
+      return Quaternion(a / other, b / other, c / other, d / other);
+    } else {
+      throw ArgumentError.value(other);
+    }
   }
 
   /// Compute the exponential function of this quaternion number.
@@ -197,14 +212,13 @@ class Quaternion {
 
   /// Compute the natural logarithm of this quaternion number.
   Quaternion log() {
-    final norm = math.sqrt(b * b + c * c + d * d);
-    final norm2 = a * a + b * b + c * c + d * d;
-    final scale = math.atan2(norm, a) / norm;
-    return Quaternion(0.5 * math.log(norm2), b * scale, c * scale, d * scale);
+    final vectorNorm = math.sqrt(b * b + c * c + d * d);
+    final scale = math.atan2(vectorNorm, a) / vectorNorm;
+    return Quaternion(0.5 * math.log(norm()), b * scale, c * scale, d * scale);
   }
 
   /// Compute the power of this quaternion number raised to `exponent`.
-  Quaternion pow(Quaternion exponent) => (log() * exponent).exp();
+  Quaternion pow(Object exponent) => (log() * exponent).exp();
 
   /// Tests if this complex number is not defined.
   bool get isNaN => a.isNaN || b.isNaN || c.isNaN || d.isNaN;
