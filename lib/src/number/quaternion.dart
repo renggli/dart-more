@@ -4,7 +4,7 @@ import 'dart:math' as math;
 
 import 'package:more/hash.dart' show hash4;
 
-/// A quaternion number of the form `a + b*i + c*j + d*k`.
+/// A quaternion number of the form `w + x*i + y*j + z*k`.
 class Quaternion {
   /// The neutral additive element, that is `0`.
   static const Quaternion zero = Quaternion(0);
@@ -22,11 +22,19 @@ class Quaternion {
   static const Quaternion k = Quaternion(0, 0, 0, 1);
 
   /// Constructs a quaternion from its components.
-  const Quaternion(this.a, [this.b = 0, this.c = 0, this.d = 0])
-      : assert(a != null),
-        assert(b != null),
-        assert(c != null),
-        assert(d != null);
+  const Quaternion(this.w, [this.x = 0, this.y = 0, this.z = 0])
+      : assert(w != null),
+        assert(x != null),
+        assert(y != null),
+        assert(z != null);
+
+  /// Constructors a quaternion from a scalar and a vector.
+  factory Quaternion.of(num scalar, List<num> vector) =>
+      Quaternion(scalar, vector[0], vector[1], vector[2]);
+
+  /// Constructors a quaternion from a vector.
+  factory Quaternion.fromList(List<num> vector) =>
+      Quaternion(vector[0], vector[1], vector[2], vector[3]);
 
   /// Constructs a quaternion from an [axis] and a rotation [angle].
   factory Quaternion.fromAxis(List<num> axis, num angle) {
@@ -39,12 +47,12 @@ class Quaternion {
   /// Constructs a quaternion from the rotation between two vectors [source]
   /// and [target].
   factory Quaternion.fromVectors(List<num> source, List<num> target) {
-    final a =
+    final w =
         source[0] * target[0] + source[1] * target[1] + source[2] * target[2];
-    final b = source[1] * target[2] - source[2] * target[1];
-    final c = source[2] * target[0] - source[0] * target[2];
-    final d = source[0] * target[1] - source[1] * target[0];
-    return Quaternion(a + math.sqrt(a * a + b * b + c * c + d * d), b, c, d)
+    final x = source[1] * target[2] - source[2] * target[1];
+    final y = source[2] * target[0] - source[0] * target[2];
+    final z = source[0] * target[1] - source[1] * target[0];
+    return Quaternion(w + math.sqrt(w * w + x * x + y * y + z * z), x, y, z)
         .normalize();
   }
 
@@ -79,7 +87,7 @@ class Quaternion {
     if (parts.isEmpty) {
       return null;
     }
-    num a = 0, b = 0, c = 0, d = 0;
+    num w = 0, x = 0, y = 0, z = 0;
     final seen = Set();
     for (var part in parts) {
       final number = num.tryParse(part.group(1));
@@ -88,17 +96,17 @@ class Quaternion {
         return null; // repeated unit
       }
       if (unit == '' && number != null) {
-        a = number;
+        w = number;
       } else if (part.group(1).isEmpty || number != null) {
         switch (unit) {
           case 'i':
-            b = number ?? 1;
+            x = number ?? 1;
             break;
           case 'j':
-            c = number ?? 1;
+            y = number ?? 1;
             break;
           case 'k':
-            d = number ?? 1;
+            z = number ?? 1;
             break;
           default:
             return null; // invalid unit
@@ -108,45 +116,45 @@ class Quaternion {
       }
       seen.add(unit);
     }
-    return Quaternion(a, b, c, d);
+    return Quaternion(w, x, y, z);
   }
 
   /// The 1st quaternion unit (scalar part).
-  final num a;
+  final num w;
 
   /// The 2nd quaternion unit (1st vector/imaginary part).
-  final num b;
+  final num x;
 
   /// The 3rd quaternion unit (2nd vector/imaginary part).
-  final num c;
+  final num y;
 
   /// The 4th quaternion unit (3rd vector/imaginary part).
-  final num d;
+  final num z;
 
   /// Returns the absolute value of the quaternion.
   double abs() => math.sqrt(norm());
 
   /// Returns the squared absolute value.
-  num norm() => a * a + b * b + c * c + d * d;
+  num norm() => w * w + x * x + y * y + z * z;
 
   /// Returns the negated form of the quaternion.
-  Quaternion operator -() => Quaternion(-a, -b, -c, -d);
+  Quaternion operator -() => Quaternion(-w, -x, -y, -z);
 
   /// Returns the conjugate form of the quaternion.
-  Quaternion conjugate() => Quaternion(a, -b, -c, -d);
+  Quaternion conjugate() => Quaternion(w, -x, -y, -z);
 
   /// Returns the normalized form of the quarternion.
   Quaternion normalize() {
     final f = 1 / abs();
-    return Quaternion(a * f, b * f, c * f, d * f);
+    return Quaternion(w * f, x * f, y * f, z * f);
   }
 
   /// Returns the sum of this number and another one.
   Quaternion operator +(Object other) {
     if (other is Quaternion) {
-      return Quaternion(a + other.a, b + other.b, c + other.c, d + other.d);
+      return Quaternion(w + other.w, x + other.x, y + other.y, z + other.z);
     } else if (other is num) {
-      return Quaternion(a + other, b, c, d);
+      return Quaternion(w + other, x, y, z);
     } else {
       throw ArgumentError.value(other);
     }
@@ -155,9 +163,9 @@ class Quaternion {
   /// Returns the difference of this number and another one.
   Quaternion operator -(Object other) {
     if (other is Quaternion) {
-      return Quaternion(a - other.a, b - other.b, c - other.c, d - other.d);
+      return Quaternion(w - other.w, x - other.x, y - other.y, z - other.z);
     } else if (other is num) {
-      return Quaternion(a - other, b, c, d);
+      return Quaternion(w - other, x, y, z);
     } else {
       throw ArgumentError.value(other);
     }
@@ -167,13 +175,13 @@ class Quaternion {
   Quaternion operator *(Object other) {
     if (other is Quaternion) {
       return Quaternion(
-        a * other.a - b * other.b - c * other.c - d * other.d,
-        a * other.b + b * other.a + c * other.d - d * other.c,
-        a * other.c + c * other.a + d * other.b - b * other.d,
-        a * other.d + d * other.a + b * other.c - c * other.b,
+        w * other.w - x * other.x - y * other.y - z * other.z,
+        w * other.x + x * other.w + y * other.z - z * other.y,
+        w * other.y + y * other.w + z * other.x - x * other.z,
+        w * other.z + z * other.w + x * other.y - y * other.x,
       );
     } else if (other is num) {
-      return Quaternion(a * other, b * other, c * other, d * other);
+      return Quaternion(w * other, x * other, y * other, z * other);
     } else {
       throw ArgumentError.value(other);
     }
@@ -182,7 +190,7 @@ class Quaternion {
   /// Computes the multiplicative inverse of this quaternion.
   Quaternion reciprocal() {
     final f = 1 / norm();
-    return Quaternion(a * f, -b * f, -c * f, -d * f);
+    return Quaternion(w * f, -x * f, -y * f, -z * f);
   }
 
   /// Computes the division of this number and another one.
@@ -190,13 +198,13 @@ class Quaternion {
     if (other is Quaternion) {
       final f = 1 / norm();
       return Quaternion(
-        (a * other.a + b * other.b + c * other.c + d * other.d) * f,
-        (b * other.a - a * other.b - c * other.d + d * other.c) * f,
-        (c * other.a - a * other.c - d * other.b + b * other.d) * f,
-        (d * other.a - a * other.d - b * other.c + c * other.b) * f,
+        (w * other.w + x * other.x + y * other.y + z * other.z) * f,
+        (x * other.w - w * other.x - y * other.z + z * other.y) * f,
+        (y * other.w - w * other.y - z * other.x + x * other.z) * f,
+        (z * other.w - w * other.z - x * other.y + y * other.x) * f,
       );
     } else if (other is num) {
-      return Quaternion(a / other, b / other, c / other, d / other);
+      return Quaternion(w / other, x / other, y / other, z / other);
     } else {
       throw ArgumentError.value(other);
     }
@@ -204,41 +212,41 @@ class Quaternion {
 
   /// Computes the exponential function of this quaternion number.
   Quaternion exp() {
-    final exp = math.exp(a);
-    final norm = math.sqrt(b * b + c * c + d * d);
+    final exp = math.exp(w);
+    final norm = math.sqrt(x * x + y * y + z * z);
     final scale = exp / norm * math.sin(norm);
-    return Quaternion(exp * math.cos(norm), b * scale, c * scale, d * scale);
+    return Quaternion(exp * math.cos(norm), x * scale, y * scale, z * scale);
   }
 
   /// Computes the natural logarithm of this quaternion number.
   Quaternion log() {
-    final vectorNorm = math.sqrt(b * b + c * c + d * d);
-    final scale = math.atan2(vectorNorm, a) / vectorNorm;
-    return Quaternion(0.5 * math.log(norm()), b * scale, c * scale, d * scale);
+    final vectorNorm = math.sqrt(x * x + y * y + z * z);
+    final scale = math.atan2(vectorNorm, w) / vectorNorm;
+    return Quaternion(0.5 * math.log(norm()), x * scale, y * scale, z * scale);
   }
 
   /// Computes the power of this quaternion number raised to `exponent`.
   Quaternion pow(Object exponent) => (log() * exponent).exp();
 
   /// Tests if this complex number is not defined.
-  bool get isNaN => a.isNaN || b.isNaN || c.isNaN || d.isNaN;
+  bool get isNaN => w.isNaN || x.isNaN || y.isNaN || z.isNaN;
 
   /// Tests if this complex number is infinite.
   bool get isInfinite =>
-      a.isInfinite || b.isInfinite || c.isInfinite || d.isInfinite;
+      w.isInfinite || x.isInfinite || y.isInfinite || z.isInfinite;
 
   /// Rounds the values of this complex number to integers.
-  Quaternion round() => Quaternion(a.round(), b.round(), c.round(), d.round());
+  Quaternion round() => Quaternion(w.round(), x.round(), y.round(), z.round());
 
   /// Floors the values of this complex number to integers.
-  Quaternion floor() => Quaternion(a.floor(), b.floor(), c.floor(), d.floor());
+  Quaternion floor() => Quaternion(w.floor(), x.floor(), y.floor(), z.floor());
 
   /// Ceils the values of this complex number to integers.
-  Quaternion ceil() => Quaternion(a.ceil(), b.ceil(), c.ceil(), d.ceil());
+  Quaternion ceil() => Quaternion(w.ceil(), x.ceil(), y.ceil(), z.ceil());
 
   /// Truncates the values of this complex number to integers.
   Quaternion truncate() =>
-      Quaternion(a.truncate(), b.truncate(), c.truncate(), d.truncate());
+      Quaternion(w.truncate(), x.truncate(), y.truncate(), z.truncate());
 
   /// Tests if this complex number is close to another complex number.
   bool closeTo(Quaternion other, double epsilon) =>
@@ -247,16 +255,16 @@ class Quaternion {
   @override
   bool operator ==(Object other) =>
       other is Quaternion &&
-      a == other.a &&
-      b == other.b &&
-      c == other.c &&
-      d == other.d;
+      w == other.w &&
+      x == other.x &&
+      y == other.y &&
+      z == other.z;
 
   @override
-  int get hashCode => hash4(a, b, c, d);
+  int get hashCode => hash4(w, x, y, z);
 
   @override
-  String toString() => 'Quaternion($a, $b, $c, $d)';
+  String toString() => 'Quaternion($w, $x, $y, $z)';
 }
 
 final RegExp numberAndUnitExtractor =

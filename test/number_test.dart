@@ -546,50 +546,66 @@ void main() {
     group('construction', () {
       test('zero', () {
         const quaternion = Quaternion.zero;
-        expect(quaternion.a, 0);
-        expect(quaternion.b, 0);
-        expect(quaternion.c, 0);
-        expect(quaternion.d, 0);
+        expect(quaternion.w, 0);
+        expect(quaternion.x, 0);
+        expect(quaternion.y, 0);
+        expect(quaternion.z, 0);
         expect(quaternion.abs(), 0.0);
       });
       test('one', () {
         const quaternion = Quaternion.one;
-        expect(quaternion.a, 1);
-        expect(quaternion.b, 0);
-        expect(quaternion.c, 0);
-        expect(quaternion.d, 0);
+        expect(quaternion.w, 1);
+        expect(quaternion.x, 0);
+        expect(quaternion.y, 0);
+        expect(quaternion.z, 0);
         expect(quaternion.abs(), 1.0);
       });
       test('i', () {
         const quaternion = Quaternion.i;
-        expect(quaternion.a, 0);
-        expect(quaternion.b, 1);
-        expect(quaternion.c, 0);
-        expect(quaternion.d, 0);
+        expect(quaternion.w, 0);
+        expect(quaternion.x, 1);
+        expect(quaternion.y, 0);
+        expect(quaternion.z, 0);
         expect(quaternion.abs(), 1.0);
       });
       test('j', () {
         const quaternion = Quaternion.j;
-        expect(quaternion.a, 0);
-        expect(quaternion.b, 0);
-        expect(quaternion.c, 1);
-        expect(quaternion.d, 0);
+        expect(quaternion.w, 0);
+        expect(quaternion.x, 0);
+        expect(quaternion.y, 1);
+        expect(quaternion.z, 0);
         expect(quaternion.abs(), 1.0);
       });
       test('k', () {
         const quaternion = Quaternion.k;
-        expect(quaternion.a, 0);
-        expect(quaternion.b, 0);
-        expect(quaternion.c, 0);
-        expect(quaternion.d, 1);
+        expect(quaternion.w, 0);
+        expect(quaternion.x, 0);
+        expect(quaternion.y, 0);
+        expect(quaternion.z, 1);
         expect(quaternion.abs(), 1.0);
       });
       test('components', () {
         const quaternion = Quaternion(1, 2, 3, 4);
-        expect(quaternion.a, 1);
-        expect(quaternion.b, 2);
-        expect(quaternion.c, 3);
-        expect(quaternion.d, 4);
+        expect(quaternion.w, 1);
+        expect(quaternion.x, 2);
+        expect(quaternion.y, 3);
+        expect(quaternion.z, 4);
+        expect(quaternion.abs(), closeTo(5.477225, epsilon));
+      });
+      test('of', () {
+        final quaternion = Quaternion.of(1, [2, 3, 4]);
+        expect(quaternion.w, 1);
+        expect(quaternion.x, 2);
+        expect(quaternion.y, 3);
+        expect(quaternion.z, 4);
+        expect(quaternion.abs(), closeTo(5.477225, epsilon));
+      });
+      test('fromList', () {
+        final quaternion = Quaternion.fromList([1, 2, 3, 4]);
+        expect(quaternion.w, 1);
+        expect(quaternion.x, 2);
+        expect(quaternion.y, 3);
+        expect(quaternion.z, 4);
         expect(quaternion.abs(), closeTo(5.477225, epsilon));
       });
       test('fromAxis', () {
