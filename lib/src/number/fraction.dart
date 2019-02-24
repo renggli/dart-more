@@ -1,6 +1,7 @@
 library more.number.fraction;
 
 import 'package:more/hash.dart' show hash2;
+import 'package:more/math.dart' as math;
 
 /// A rational number.
 class Fraction implements Comparable<Fraction> {
@@ -136,6 +137,20 @@ class Fraction implements Comparable<Fraction> {
       return Fraction(a, b * other);
     } else {
       throw ArgumentError.value(other);
+    }
+  }
+
+  /// Returns the power of this fraction.
+  Fraction pow(int n) {
+    if (a == 0) {
+      return this;
+    }
+    if (n > 0) {
+      return Fraction(math.pow(a, n), math.pow(b, n));
+    } else if (n < 0) {
+      return Fraction(math.pow(b, -n), math.pow(a, -n));
+    } else {
+      return one;
     }
   }
 

@@ -453,6 +453,12 @@ void main() {
       test('negate', () {
         expect(-Fraction(2, 3), Fraction(-2, 3));
       });
+      test('pow', () {
+        expect(Fraction.zero.pow(2), Fraction.zero);
+        expect(Fraction(2, 3).pow(0), Fraction.one);
+        expect(Fraction(2, 3).pow(2), Fraction(4, 9));
+        expect(Fraction(2, 3).pow(-2), Fraction(9, 4));
+      });
       test('abs', () {
         expect(Fraction(-2, -3).abs(), Fraction(2, 3));
         expect(Fraction(-2, 3).abs(), Fraction(2, 3));
