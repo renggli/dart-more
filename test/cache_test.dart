@@ -79,7 +79,7 @@ void statelessCacheTests(NewCache<int, String> newCache) {
 
 void cacheEvictionTest(NewCache<int, String> newCache, String name,
     List<int> load, List<int> present) {
-  final absent = Set<int>()
+  final absent = <int>{}
     ..addAll(load)
     ..removeAll(present);
 

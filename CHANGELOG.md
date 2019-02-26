@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.16.0
+
+* Dart 2.2 compatibility and requirement.
+
 ## 1.15.0
 
 * Deprecated `package:more/int_math` package, and moved all not-deprecated code to `package:more/math.dart`.

@@ -1089,9 +1089,8 @@ void main() {
       test('converting', () {
         expect(empty.toList(), []);
         expect(plenty.toList(), ['M', 'o', 'r', 'e', ' ', 'D', 'a', 'r', 't']);
-        expect(empty.toSet(), Set());
-        expect(
-            plenty.toSet(), Set.of(['M', 'o', 'r', 'e', ' ', 'D', 'a', 't']));
+        expect(empty.toSet(), <String>{});
+        expect(plenty.toSet(), {'M', 'o', 'r', 'e', ' ', 'D', 'a', 't'});
         expect(empty.toString(), '');
         expect(plenty.toString(), 'More Dart');
       });
@@ -1165,9 +1164,8 @@ void main() {
       test('converting', () {
         expect(empty.toList(), []);
         expect(plenty.toList(), ['M', 'o', 'r', 'e', ' ', 'D', 'a', 'r', 't']);
-        expect(empty.toSet(), Set());
-        expect(
-            plenty.toSet(), Set.of(['M', 'o', 'r', 'e', ' ', 'D', 'a', 't']));
+        expect(empty.toSet(), <String>{});
+        expect(plenty.toSet(), {'M', 'o', 'r', 'e', ' ', 'D', 'a', 't'});
         expect(empty.toString(), '');
         expect(plenty.toString(), 'More Dart');
       });

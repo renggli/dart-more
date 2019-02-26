@@ -46,7 +46,7 @@ class Complex {
       return null;
     }
     num a = 0, b = 0;
-    final seen = Set();
+    final seen = <String>{};
     for (var part in parts) {
       final number = num.tryParse(part.group(1));
       final unit = part.group(4).toLowerCase();
