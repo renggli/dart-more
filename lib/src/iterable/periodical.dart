@@ -239,9 +239,7 @@ DateTime truncateToPeriod(
   Period period = Period.daily,
   int startWeekday = DateTime.monday,
 }) {
-  if (timestamp == null) {
-    throw ArgumentError.notNull('timestamp');
-  }
+  ArgumentError.checkNotNull(timestamp, 'timestamp');
   switch (period) {
     case Period.millennially:
       return DateTime(

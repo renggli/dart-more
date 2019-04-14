@@ -18,9 +18,7 @@ abstract class Cache<K, V> {
   ///
   /// The [loader] defines the function to construct items for the cache.
   factory Cache.empty({Loader<K, V> loader}) {
-    if (loader == null) {
-      throw ArgumentError.notNull('loader');
-    }
+    ArgumentError.checkNotNull(loader, 'loader');
     return EmptyCache<K, V>(loader);
   }
 
@@ -31,7 +29,7 @@ abstract class Cache<K, V> {
   /// [updateExpiry] is the duration after which a loaded or set item expires.
   /// [accessExpiry] is the maximal duration an item does not expire without
   /// being accessed. Whatever happens first, causes the expiration. One of the
-  /// duration can be left `null`, if you don' care.
+  /// duration can be left `null`, if you don't care.
   ///
   /// Note that cached items do not magically disappear when they expire.
   /// Manually call [reap()], or setup a timer to regularly free items.
@@ -40,12 +38,10 @@ abstract class Cache<K, V> {
       Clock clock,
       Duration updateExpiry,
       Duration accessExpiry}) {
-    if (loader == null) {
-      throw ArgumentError.notNull('loader');
-    }
+    ArgumentError.checkNotNull(loader, 'loader');
     if (updateExpiry == null && accessExpiry == null) {
       throw ArgumentError(
-          "Either 'accessExpiry' or 'updateExpiry' must be provided.");
+          "Either 'updateExpiry' or 'accessExpiry' must be provided.");
     }
     if (updateExpiry != null && updateExpiry.inMicroseconds <= 0) {
       throw ArgumentError("Negative 'updateExpire' provided.");
@@ -62,9 +58,7 @@ abstract class Cache<K, V> {
   /// The [loader] defines the function to construct items for the cache; and
   /// [maximumSize] defines the maximum number of items cached.
   factory Cache.fifo({Loader<K, V> loader, int maximumSize = 100}) {
-    if (loader == null) {
-      throw ArgumentError.notNull('loader');
-    }
+    ArgumentError.checkNotNull(loader, 'loader');
     if (maximumSize <= 0) {
       throw ArgumentError("Non-positive 'maximumSize' provided.");
     }
@@ -76,9 +70,7 @@ abstract class Cache<K, V> {
   /// The [loader] defines the function to construct items for the cache; and
   /// [maximumSize] defines the maximum number of items cached.
   factory Cache.lru({Loader<K, V> loader, int maximumSize = 100}) {
-    if (loader == null) {
-      throw ArgumentError.notNull('loader');
-    }
+    ArgumentError.checkNotNull(loader, 'loader');
     if (maximumSize <= 0) {
       throw ArgumentError("Non-positive 'maximumSize' provided.");
     }
