@@ -3,7 +3,7 @@ library more.iterable.mixins.infinite;
 /// Mixin for infinitely sized iterables.
 ///
 /// Intended to mix-in on top of `IterableBase<E>`.
-abstract class InfiniteIterable<E> implements Iterable<E> {
+mixin InfiniteIterable<E> implements Iterable<E> {
   static T _throw<T>() =>
       throw UnsupportedError('Cannot perform on infite iterable');
 
