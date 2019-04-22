@@ -18,8 +18,8 @@ class Complex {
 
   /// Creates a complex number from a real part [a] and an imaginary part [b].
   const Complex(this.a, [this.b = 0])
-      : assert(a != null),
-        assert(b != null);
+      : assert(a != null, 'a number must not be null'),
+        assert(b != null, 'b number must not be null');
 
   /// Creates a complex number from a real number [a].
   factory Complex.fromReal(num a) => Complex(a, 0);

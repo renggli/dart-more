@@ -23,10 +23,10 @@ class Quaternion {
 
   /// Constructs a quaternion from its components.
   const Quaternion(this.w, [this.x = 0, this.y = 0, this.z = 0])
-      : assert(w != null),
-        assert(x != null),
-        assert(y != null),
-        assert(z != null);
+      : assert(w != null, 'w must not be null'),
+        assert(x != null, 'x must not be null'),
+        assert(y != null, 'y must not be null'),
+        assert(z != null, 'z must not be null');
 
   /// Constructors a quaternion from a scalar and a vector.
   factory Quaternion.of(num scalar, List<num> vector) =>

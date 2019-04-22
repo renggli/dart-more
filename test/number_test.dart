@@ -179,7 +179,7 @@ void main() {
         expect(const Complex(2, 3).sqrt().square(), isClose(2, 3));
       });
       group('roots', () {
-        const source = const Complex(2, 3);
+        const source = Complex(2, 3);
         void testRoots(int n) {
           test('$source.roots($n)', () {
             final roots = source.roots(n);

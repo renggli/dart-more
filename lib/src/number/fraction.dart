@@ -74,9 +74,9 @@ class Fraction implements Comparable<Fraction> {
 
   /// Internal constructor for fractions.
   const Fraction._(this.a, this.b)
-      : assert(a != null),
-        assert(b != null),
-        assert(b >= 0);
+      : assert(a != null, 'a must not be null'),
+        assert(b != null, 'b must not be null'),
+        assert(b > 0, 'b must be positive');
 
   /// Returns the numerator of the fraction.
   final int a;
