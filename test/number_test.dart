@@ -75,38 +75,38 @@ void main() {
         expect(complex.arg(), 3 * math.pi / 4);
       });
       test('tryParse', () {
-        expect(Complex.tryParse('1+2i'), Complex(1, 2));
-        expect(Complex.tryParse('1-2i'), Complex(1, -2));
-        expect(Complex.tryParse('-1+2i'), Complex(-1, 2));
-        expect(Complex.tryParse('-1-2i'), Complex(-1, -2));
+        expect(Complex.tryParse('1+2i'), const Complex(1, 2));
+        expect(Complex.tryParse('1-2i'), const Complex(1, -2));
+        expect(Complex.tryParse('-1+2i'), const Complex(-1, 2));
+        expect(Complex.tryParse('-1-2i'), const Complex(-1, -2));
       });
       test('tryParse (whitespace)', () {
-        expect(Complex.tryParse('1 + 2i'), Complex(1, 2));
-        expect(Complex.tryParse('1 - 2i'), Complex(1, -2));
-        expect(Complex.tryParse(' - 1 + 2 i '), Complex(-1, 2));
-        expect(Complex.tryParse(' - 1 - 2 i '), Complex(-1, -2));
+        expect(Complex.tryParse('1 + 2i'), const Complex(1, 2));
+        expect(Complex.tryParse('1 - 2i'), const Complex(1, -2));
+        expect(Complex.tryParse(' - 1 + 2 i '), const Complex(-1, 2));
+        expect(Complex.tryParse(' - 1 - 2 i '), const Complex(-1, -2));
       });
       test('tryParse (permutation)', () {
-        expect(Complex.tryParse('2i+1'), Complex(1, 2));
+        expect(Complex.tryParse('2i+1'), const Complex(1, 2));
       });
       test('tryParse (real)', () {
-        expect(Complex.tryParse('1'), Complex(1));
-        expect(Complex.tryParse('1.2'), Complex(1.2));
-        expect(Complex.tryParse('-1.2'), Complex(-1.2));
-        expect(Complex.tryParse('1.2e2'), Complex(120));
-        expect(Complex.tryParse('1.2e-2'), Complex(0.012));
+        expect(Complex.tryParse('1'), const Complex(1));
+        expect(Complex.tryParse('1.2'), const Complex(1.2));
+        expect(Complex.tryParse('-1.2'), const Complex(-1.2));
+        expect(Complex.tryParse('1.2e2'), const Complex(120));
+        expect(Complex.tryParse('1.2e-2'), const Complex(0.012));
       });
       test('tryParse (imaginary)', () {
-        expect(Complex.tryParse('i'), Complex(0, 1));
-        expect(Complex.tryParse('1I'), Complex(0, 1));
-        expect(Complex.tryParse('1.2i'), Complex(0, 1.2));
-        expect(Complex.tryParse('-1.2I'), Complex(0, -1.2));
-        expect(Complex.tryParse('1.2e2i'), Complex(0, 120));
-        expect(Complex.tryParse('1.2e-2I'), Complex(0, 0.012));
-        expect(Complex.tryParse('1*i'), Complex(0, 1));
-        expect(Complex.tryParse('1.2*I'), Complex(0, 1.2));
-        expect(Complex.tryParse('1.2e2*i'), Complex(0, 120));
-        expect(Complex.tryParse('1.2e-2*I'), Complex(0, 0.012));
+        expect(Complex.tryParse('i'), const Complex(0, 1));
+        expect(Complex.tryParse('1I'), const Complex(0, 1));
+        expect(Complex.tryParse('1.2i'), const Complex(0, 1.2));
+        expect(Complex.tryParse('-1.2I'), const Complex(0, -1.2));
+        expect(Complex.tryParse('1.2e2i'), const Complex(0, 120));
+        expect(Complex.tryParse('1.2e-2I'), const Complex(0, 0.012));
+        expect(Complex.tryParse('1*i'), const Complex(0, 1));
+        expect(Complex.tryParse('1.2*I'), const Complex(0, 1.2));
+        expect(Complex.tryParse('1.2e2*i'), const Complex(0, 120));
+        expect(Complex.tryParse('1.2e-2*I'), const Complex(0, 0.012));
       });
       test('tryParse (error)', () {
         expect(Complex.tryParse(''), isNull);
@@ -119,60 +119,67 @@ void main() {
     });
     group('arithmetic', () {
       test('addition', () {
-        expect(Complex(1, -2) + Complex(-3, 4), Complex(-2, 2));
-        expect(Complex(1, -2) + 3, Complex(4, -2));
-        expect(() => Complex(1, -2) + 'foo', throwsArgumentError);
+        expect(
+            const Complex(1, -2) + const Complex(-3, 4), const Complex(-2, 2));
+        expect(const Complex(1, -2) + 3, const Complex(4, -2));
+        expect(() => const Complex(1, -2) + 'foo', throwsArgumentError);
       });
       test('substraction', () {
-        expect(Complex(1, -2) - Complex(-3, 4), Complex(4, -6));
-        expect(Complex(1, -2) - 4, Complex(-3, -2));
-        expect(() => Complex(1, -2) - 'foo', throwsArgumentError);
+        expect(
+            const Complex(1, -2) - const Complex(-3, 4), const Complex(4, -6));
+        expect(const Complex(1, -2) - 4, const Complex(-3, -2));
+        expect(() => const Complex(1, -2) - 'foo', throwsArgumentError);
       });
       test('multiplication', () {
-        expect(Complex(1, -2) * Complex(-3, 4), Complex(5, 10));
-        expect(Complex(-3, 4) * Complex(1, -2), Complex(5, 10));
-        expect(Complex(-3, 4) * 2, Complex(-6, 8));
-        expect(() => Complex(-3, 4) * 'foo', throwsArgumentError);
+        expect(
+            const Complex(1, -2) * const Complex(-3, 4), const Complex(5, 10));
+        expect(
+            const Complex(-3, 4) * const Complex(1, -2), const Complex(5, 10));
+        expect(const Complex(-3, 4) * 2, const Complex(-6, 8));
+        expect(() => const Complex(-3, 4) * 'foo', throwsArgumentError);
       });
       test('division', () {
-        expect(Complex(5, 10) / Complex(-3, 4), Complex(1, -2));
-        expect(Complex(5, 10) / Complex(1, -2), Complex(-3, 4));
-        expect(Complex(6, 10) / 2, Complex(3, 5));
-        expect(() => Complex(6, 10) / 'foo', throwsArgumentError);
+        expect(
+            const Complex(5, 10) / const Complex(-3, 4), const Complex(1, -2));
+        expect(
+            const Complex(5, 10) / const Complex(1, -2), const Complex(-3, 4));
+        expect(const Complex(6, 10) / 2, const Complex(3, 5));
+        expect(() => const Complex(6, 10) / 'foo', throwsArgumentError);
       });
       test('negate', () {
-        expect(-Complex(1, -2), Complex(-1, 2));
+        expect(-const Complex(1, -2), const Complex(-1, 2));
       });
       test('conjugate', () {
-        expect(Complex(1, -2).conjugate(), Complex(1, 2));
+        expect(const Complex(1, -2).conjugate(), const Complex(1, 2));
       });
       test('reciprocal', () {
-        expect(Complex(1, -2).reciprocal(), Complex(0.2, 0.4));
+        expect(const Complex(1, -2).reciprocal(), const Complex(0.2, 0.4));
       });
       test('exp', () {
-        expect(Complex(1, 2).exp(), isClose(-1.131204, 2.471726));
+        expect(const Complex(1, 2).exp(), isClose(-1.131204, 2.471726));
       });
       test('log', () {
-        expect(Complex(1, 2).log(), isClose(0.804718, 1.107148));
+        expect(const Complex(1, 2).log(), isClose(0.804718, 1.107148));
       });
       test('pow', () {
-        expect(Complex(1, 2).pow(Complex(3, 4)), isClose(0.129009, 0.033924));
+        expect(const Complex(1, 2).pow(const Complex(3, 4)),
+            isClose(0.129009, 0.033924));
       });
       test('square', () {
-        expect(Complex(2, 3).square(), Complex(-5, 12));
-        expect(Complex(-2, 3).square(), Complex(-5, -12));
-        expect(Complex(2, -3).square(), Complex(-5, -12));
-        expect(Complex(-2, -3).square(), Complex(-5, 12));
+        expect(const Complex(2, 3).square(), const Complex(-5, 12));
+        expect(const Complex(-2, 3).square(), const Complex(-5, -12));
+        expect(const Complex(2, -3).square(), const Complex(-5, -12));
+        expect(const Complex(-2, -3).square(), const Complex(-5, 12));
       });
       test('sqrt', () {
-        expect(Complex(2, 3).sqrt(), isClose(1.674149, 0.895977));
-        expect(Complex(-2, 3).sqrt(), isClose(0.895977, 1.674149));
-        expect(Complex(2, -3).sqrt(), isClose(1.674149, -0.895977));
-        expect(Complex(-2, -3).sqrt(), isClose(0.895977, -1.674149));
-        expect(Complex(2, 3).sqrt().square(), isClose(2, 3));
+        expect(const Complex(2, 3).sqrt(), isClose(1.674149, 0.895977));
+        expect(const Complex(-2, 3).sqrt(), isClose(0.895977, 1.674149));
+        expect(const Complex(2, -3).sqrt(), isClose(1.674149, -0.895977));
+        expect(const Complex(-2, -3).sqrt(), isClose(0.895977, -1.674149));
+        expect(const Complex(2, 3).sqrt().square(), isClose(2, 3));
       });
       group('roots', () {
-        final source = Complex(2, 3);
+        const source = const Complex(2, 3);
         void testRoots(int n) {
           test('$source.roots($n)', () {
             final roots = source.roots(n);
@@ -198,96 +205,100 @@ void main() {
         testRoots(6);
       });
       test('sin', () {
-        expect(Complex(2, 3).sin(), isClose(9.154499, 4.168906));
+        expect(const Complex(2, 3).sin(), isClose(9.154499, 4.168906));
       });
       test('asin', () {
-        expect(Complex(2, 3).asin(), isClose(0.570652, 1.983387));
+        expect(const Complex(2, 3).asin(), isClose(0.570652, 1.983387));
       });
       test('sinh', () {
-        expect(Complex(2, 3).sinh(), isClose(-3.590564, 0.530921));
+        expect(const Complex(2, 3).sinh(), isClose(-3.590564, 0.530921));
       });
       test('asinh', () {
-        expect(Complex(2, 3).asinh(), isClose(1.968637, 0.964658));
+        expect(const Complex(2, 3).asinh(), isClose(1.968637, 0.964658));
       });
       test('cos', () {
-        expect(Complex(2, 3).cos(), isClose(-4.189625, -9.109227));
+        expect(const Complex(2, 3).cos(), isClose(-4.189625, -9.109227));
       });
       test('acos', () {
-        expect(Complex(2, 3).acos(), isClose(1.000143, -1.983387));
+        expect(const Complex(2, 3).acos(), isClose(1.000143, -1.983387));
       });
       test('cosh', () {
-        expect(Complex(2, 3).cosh(), isClose(-3.724545, 0.511822));
+        expect(const Complex(2, 3).cosh(), isClose(-3.724545, 0.511822));
       });
       test('acosh', () {
-        expect(Complex(2, 3).acosh(), isClose(1.983387, 1.000143));
+        expect(const Complex(2, 3).acosh(), isClose(1.983387, 1.000143));
       });
       test('tan', () {
-        expect(Complex(2, 3).tan(), isClose(-0.003764, 1.003238));
+        expect(const Complex(2, 3).tan(), isClose(-0.003764, 1.003238));
       });
       test('atan', () {
-        expect(Complex(2, 3).atan(), isClose(1.409921, 0.229072));
+        expect(const Complex(2, 3).atan(), isClose(1.409921, 0.229072));
       });
       test('tanh', () {
-        expect(Complex(2, 3).tanh(), isClose(0.965385, -0.009884));
+        expect(const Complex(2, 3).tanh(), isClose(0.965385, -0.009884));
       });
       test('atanh', () {
-        expect(Complex(2, 3).atanh(), isClose(0.146946, 1.338972));
+        expect(const Complex(2, 3).atanh(), isClose(0.146946, 1.338972));
       });
     });
     group('testing', () {
       test('isNan', () {
-        expect(Complex(0, 0).isNaN, isFalse);
-        expect(Complex(0, double.nan).isNaN, isTrue);
-        expect(Complex(double.nan, 0).isNaN, isTrue);
-        expect(Complex(double.nan, double.nan).isNaN, isTrue);
+        expect(const Complex(0, 0).isNaN, isFalse);
+        expect(const Complex(0, double.nan).isNaN, isTrue);
+        expect(const Complex(double.nan, 0).isNaN, isTrue);
+        expect(const Complex(double.nan, double.nan).isNaN, isTrue);
       });
       test('isInfinite', () {
-        expect(Complex(0, 0).isInfinite, isFalse);
-        expect(Complex(0, double.infinity).isInfinite, isTrue);
-        expect(Complex(double.infinity, 0).isInfinite, isTrue);
-        expect(Complex(double.infinity, double.infinity).isInfinite, isTrue);
+        expect(const Complex(0, 0).isInfinite, isFalse);
+        expect(const Complex(0, double.infinity).isInfinite, isTrue);
+        expect(const Complex(double.infinity, 0).isInfinite, isTrue);
+        expect(
+            const Complex(double.infinity, double.infinity).isInfinite, isTrue);
       });
     });
     group('converting', () {
       test('round', () {
-        expect(Complex(2.7, 1.2).round(), Complex(3, 1));
+        expect(const Complex(2.7, 1.2).round(), const Complex(3, 1));
       });
       test('floor', () {
-        expect(Complex(2.7, 1.2).floor(), Complex(2, 1));
+        expect(const Complex(2.7, 1.2).floor(), const Complex(2, 1));
       });
       test('ceil', () {
-        expect(Complex(2.7, 1.2).ceil(), Complex(3, 2));
+        expect(const Complex(2.7, 1.2).ceil(), const Complex(3, 2));
       });
       test('truncate', () {
-        expect(Complex(2.7, 1.2).truncate(), Complex(2, 1));
+        expect(const Complex(2.7, 1.2).truncate(), const Complex(2, 1));
       });
       test('toString', () {
         expect(Complex.zero.toString(), 'Complex(0, 0)');
         expect(Complex.one.toString(), 'Complex(1, 0)');
         expect(Complex.i.toString(), 'Complex(0, 1)');
-        expect(Complex(1, 2).toString(), 'Complex(1, 2)');
-        expect(Complex(-3, -4).toString(), 'Complex(-3, -4)');
+        expect(const Complex(1, 2).toString(), 'Complex(1, 2)');
+        expect(const Complex(-3, -4).toString(), 'Complex(-3, -4)');
       });
     });
     group('comparing', () {
       test('close', () {
         expect(
-          Complex.fromPolar(math.e, math.pi / 2).closeTo(Complex(0, 0), 0.1),
+          Complex.fromPolar(math.e, math.pi / 2)
+              .closeTo(const Complex(0, 0), 0.1),
           isFalse,
         );
         expect(
-          Complex.fromPolar(math.e, math.pi / 2).closeTo(Complex(0, 2.71), 0.1),
+          Complex.fromPolar(math.e, math.pi / 2)
+              .closeTo(const Complex(0, 2.71), 0.1),
           isTrue,
         );
       });
       test('equal', () {
-        expect(Complex(2, 3) == Complex(2, 3), isTrue);
-        expect(Complex(2, 3) == Complex(3, 2), isFalse);
-        expect(Complex(2, 3) == Complex(2, 4), isFalse);
+        expect(const Complex(2, 3) == const Complex(2, 3), isTrue);
+        expect(const Complex(2, 3) == const Complex(3, 2), isFalse);
+        expect(const Complex(2, 3) == const Complex(2, 4), isFalse);
       });
       test('hash', () {
-        expect(Complex(2, 3).hashCode, Complex(2, 3).hashCode);
-        expect(Complex(2, 3).hashCode, isNot(Complex(3, 2).hashCode));
+        expect(const Complex(2, 3).hashCode, const Complex(2, 3).hashCode);
+        expect(
+            const Complex(2, 3).hashCode, isNot(const Complex(3, 2).hashCode));
       });
     });
   });
@@ -624,42 +635,47 @@ void main() {
         expect(quaternion.abs(), closeTo(1.0, epsilon));
       });
       test('tryParse', () {
-        expect(Quaternion.tryParse('1+2i+3j+4k'), Quaternion(1, 2, 3, 4));
-        expect(Quaternion.tryParse('1-2i+3j-4k'), Quaternion(1, -2, 3, -4));
-        expect(Quaternion.tryParse('-1+2i-3j+4k'), Quaternion(-1, 2, -3, 4));
-        expect(Quaternion.tryParse('-1-2i-3j-4k'), Quaternion(-1, -2, -3, -4));
+        expect(Quaternion.tryParse('1+2i+3j+4k'), const Quaternion(1, 2, 3, 4));
+        expect(
+            Quaternion.tryParse('1-2i+3j-4k'), const Quaternion(1, -2, 3, -4));
+        expect(
+            Quaternion.tryParse('-1+2i-3j+4k'), const Quaternion(-1, 2, -3, 4));
+        expect(Quaternion.tryParse('-1-2i-3j-4k'),
+            const Quaternion(-1, -2, -3, -4));
       });
       test('tryParse (permutation)', () {
-        expect(Quaternion.tryParse('1+2i+3j+4k'), Quaternion(1, 2, 3, 4));
-        expect(Quaternion.tryParse('2i+1+3j+4k'), Quaternion(1, 2, 3, 4));
-        expect(Quaternion.tryParse('4k+2i+3j+1'), Quaternion(1, 2, 3, 4));
-        expect(Quaternion.tryParse('3j+4k+2i+1'), Quaternion(1, 2, 3, 4));
+        expect(Quaternion.tryParse('1+2i+3j+4k'), const Quaternion(1, 2, 3, 4));
+        expect(Quaternion.tryParse('2i+1+3j+4k'), const Quaternion(1, 2, 3, 4));
+        expect(Quaternion.tryParse('4k+2i+3j+1'), const Quaternion(1, 2, 3, 4));
+        expect(Quaternion.tryParse('3j+4k+2i+1'), const Quaternion(1, 2, 3, 4));
       });
       test('tryParse (whitespace)', () {
-        expect(Quaternion.tryParse('1 + 2i + 3j + 4k'), Quaternion(1, 2, 3, 4));
+        expect(Quaternion.tryParse('1 + 2i + 3j + 4k'),
+            const Quaternion(1, 2, 3, 4));
         expect(Quaternion.tryParse(' 1 - 2i + 3j - 4k '),
-            Quaternion(1, -2, 3, -4));
+            const Quaternion(1, -2, 3, -4));
       });
       test('tryParse (real)', () {
-        expect(Quaternion.tryParse('1'), Quaternion(1));
-        expect(Quaternion.tryParse('1.2'), Quaternion(1.2));
-        expect(Quaternion.tryParse('-1.2'), Quaternion(-1.2));
-        expect(Quaternion.tryParse('1.2e2'), Quaternion(120));
-        expect(Quaternion.tryParse('1.2e-2'), Quaternion(0.012));
+        expect(Quaternion.tryParse('1'), const Quaternion(1));
+        expect(Quaternion.tryParse('1.2'), const Quaternion(1.2));
+        expect(Quaternion.tryParse('-1.2'), const Quaternion(-1.2));
+        expect(Quaternion.tryParse('1.2e2'), const Quaternion(120));
+        expect(Quaternion.tryParse('1.2e-2'), const Quaternion(0.012));
       });
       test('tryParse (vector)', () {
-        expect(Quaternion.tryParse('i'), Quaternion(0, 1));
-        expect(Quaternion.tryParse('j'), Quaternion(0, 0, 1));
-        expect(Quaternion.tryParse('k'), Quaternion(0, 0, 0, 1));
-        expect(Quaternion.tryParse('1.2I'), Quaternion(0, 1.2));
-        expect(Quaternion.tryParse('1.2J'), Quaternion(0, 0, 1.2));
-        expect(Quaternion.tryParse('1.2K'), Quaternion(0, 0, 0, 1.2));
-        expect(Quaternion.tryParse('1.2e2i'), Quaternion(0, 120));
-        expect(Quaternion.tryParse('1.2e2j'), Quaternion(0, 0, 120));
-        expect(Quaternion.tryParse('1.2e2k'), Quaternion(0, 0, 0, 120));
-        expect(Quaternion.tryParse('-1.2e-2i'), Quaternion(0, -0.012));
-        expect(Quaternion.tryParse('-1.2e-2j'), Quaternion(0, 0, -0.012));
-        expect(Quaternion.tryParse('-1.2e-2k'), Quaternion(0, 0, 0, -0.012));
+        expect(Quaternion.tryParse('i'), const Quaternion(0, 1));
+        expect(Quaternion.tryParse('j'), const Quaternion(0, 0, 1));
+        expect(Quaternion.tryParse('k'), const Quaternion(0, 0, 0, 1));
+        expect(Quaternion.tryParse('1.2I'), const Quaternion(0, 1.2));
+        expect(Quaternion.tryParse('1.2J'), const Quaternion(0, 0, 1.2));
+        expect(Quaternion.tryParse('1.2K'), const Quaternion(0, 0, 0, 1.2));
+        expect(Quaternion.tryParse('1.2e2i'), const Quaternion(0, 120));
+        expect(Quaternion.tryParse('1.2e2j'), const Quaternion(0, 0, 120));
+        expect(Quaternion.tryParse('1.2e2k'), const Quaternion(0, 0, 0, 120));
+        expect(Quaternion.tryParse('-1.2e-2i'), const Quaternion(0, -0.012));
+        expect(Quaternion.tryParse('-1.2e-2j'), const Quaternion(0, 0, -0.012));
+        expect(
+            Quaternion.tryParse('-1.2e-2k'), const Quaternion(0, 0, 0, -0.012));
       });
       test('tryParse (error)', () {
         expect(Quaternion.tryParse(''), isNull);
@@ -673,86 +689,98 @@ void main() {
     });
     group('arithmetic', () {
       test('addition', () {
-        expect(Quaternion(1, -2, 3, -4) + Quaternion(5, 6, -7, -8),
-            Quaternion(6, 4, -4, -12));
-        expect(Quaternion(1, -2, 3, -4) + 5, Quaternion(6, -2, 3, -4));
-        expect(() => Quaternion(1, -2, 3, -4) + 'foo', throwsArgumentError);
+        expect(const Quaternion(1, -2, 3, -4) + const Quaternion(5, 6, -7, -8),
+            const Quaternion(6, 4, -4, -12));
+        expect(
+            const Quaternion(1, -2, 3, -4) + 5, const Quaternion(6, -2, 3, -4));
+        expect(
+            () => const Quaternion(1, -2, 3, -4) + 'foo', throwsArgumentError);
       });
       test('substraction', () {
-        expect(Quaternion(1, -2, 3, -4) - Quaternion(5, 6, -7, -8),
-            Quaternion(-4, -8, 10, 4));
-        expect(Quaternion(1, -2, 3, -4) - 5, Quaternion(-4, -2, 3, -4));
-        expect(() => Quaternion(1, -2, 3, -4) - 'foo', throwsArgumentError);
+        expect(const Quaternion(1, -2, 3, -4) - const Quaternion(5, 6, -7, -8),
+            const Quaternion(-4, -8, 10, 4));
+        expect(const Quaternion(1, -2, 3, -4) - 5,
+            const Quaternion(-4, -2, 3, -4));
+        expect(
+            () => const Quaternion(1, -2, 3, -4) - 'foo', throwsArgumentError);
       });
       test('multiplication', () {
-        expect(Quaternion(1, -2, 3, -4) * Quaternion(5, 6, -7, -8),
-            Quaternion(6, -56, -32, -32));
-        expect(Quaternion(1, -2, 3, -4) * 5, Quaternion(5, -10, 15, -20));
-        expect(() => Quaternion(5, 6, -7, -8) * 'foo', throwsArgumentError);
+        expect(const Quaternion(1, -2, 3, -4) * const Quaternion(5, 6, -7, -8),
+            const Quaternion(6, -56, -32, -32));
+        expect(const Quaternion(1, -2, 3, -4) * 5,
+            const Quaternion(5, -10, 15, -20));
+        expect(
+            () => const Quaternion(5, 6, -7, -8) * 'foo', throwsArgumentError);
       });
       test('division', () {
-        expect(Quaternion(1, -2, 3, -4) / Quaternion(5, 6, -7, -8),
+        expect(const Quaternion(1, -2, 3, -4) / const Quaternion(5, 6, -7, -8),
             isClose(0.133333, 1.200000, 2.066666, -0.266666));
-        expect(Quaternion(5, 6, -7, -8) / Quaternion(1, -2, 3, -4),
+        expect(const Quaternion(5, 6, -7, -8) / const Quaternion(1, -2, 3, -4),
             isClose(0.022988, -0.206896, -0.356321, 0.045977));
-        expect(Quaternion(6, 4, -8, -16) / 2, Quaternion(3, 2, -4, -8));
-        expect(() => Quaternion(6, 4, -8, -16) / 'foo', throwsArgumentError);
+        expect(const Quaternion(6, 4, -8, -16) / 2,
+            const Quaternion(3, 2, -4, -8));
+        expect(
+            () => const Quaternion(6, 4, -8, -16) / 'foo', throwsArgumentError);
       });
       test('negate', () {
-        expect(-Quaternion(1, -2, 3, -4), Quaternion(-1, 2, -3, 4));
+        expect(-const Quaternion(1, -2, 3, -4), const Quaternion(-1, 2, -3, 4));
       });
       test('conjugate', () {
-        expect(Quaternion(1, -2, 3, -4).conjugate(), Quaternion(1, 2, -3, 4));
+        expect(const Quaternion(1, -2, 3, -4).conjugate(),
+            const Quaternion(1, 2, -3, 4));
       });
       test('reciprocal', () {
-        expect(Quaternion(1, -2, 3, -4).reciprocal(),
+        expect(const Quaternion(1, -2, 3, -4).reciprocal(),
             isClose(0.033333, 0.066666, -0.100000, 0.133333));
       });
       test('exp', () {
-        expect(Quaternion(1, -2, 3, -4).exp(),
+        expect(const Quaternion(1, -2, 3, -4).exp(),
             isClose(1.693922, 0.789559, -1.184339, 1.579119));
       });
       test('log', () {
-        expect(Quaternion(1, -2, 3, -4).log(),
+        expect(const Quaternion(1, -2, 3, -4).log(),
             isClose(1.700598, -0.515190, 0.772785, -1.030380));
       });
       test('pow', () {
-        expect(Quaternion(1, -2, 3, -4).pow(Quaternion(5, 6, -7, -8)),
+        expect(
+            const Quaternion(1, -2, 3, -4).pow(const Quaternion(5, 6, -7, -8)),
             isClose(-4948.167788, -841.118989, -2675.346637, -2885.798013));
       });
     });
     group('testing', () {
       test('isNan', () {
-        expect(Quaternion(1, 2, 3, 4).isNaN, isFalse);
-        expect(Quaternion(double.nan, 2, 3, 4).isNaN, isTrue);
-        expect(Quaternion(1, double.nan, 3, 4).isNaN, isTrue);
-        expect(Quaternion(1, 2, double.nan, 4).isNaN, isTrue);
-        expect(Quaternion(1, 2, 3, double.nan).isNaN, isTrue);
+        expect(const Quaternion(1, 2, 3, 4).isNaN, isFalse);
+        expect(const Quaternion(double.nan, 2, 3, 4).isNaN, isTrue);
+        expect(const Quaternion(1, double.nan, 3, 4).isNaN, isTrue);
+        expect(const Quaternion(1, 2, double.nan, 4).isNaN, isTrue);
+        expect(const Quaternion(1, 2, 3, double.nan).isNaN, isTrue);
       });
       test('isInfinite', () {
-        expect(Quaternion(1, 2, 3, 4).isInfinite, isFalse);
-        expect(Quaternion(double.infinity, 2, 3, 4).isInfinite, isTrue);
-        expect(Quaternion(1, double.negativeInfinity, 3, 4).isInfinite, isTrue);
-        expect(Quaternion(1, 2, double.infinity, 4).isInfinite, isTrue);
-        expect(Quaternion(1, 2, 3, double.negativeInfinity).isInfinite, isTrue);
+        expect(const Quaternion(1, 2, 3, 4).isInfinite, isFalse);
+        expect(const Quaternion(double.infinity, 2, 3, 4).isInfinite, isTrue);
+        expect(const Quaternion(1, double.negativeInfinity, 3, 4).isInfinite,
+            isTrue);
+        expect(const Quaternion(1, 2, double.infinity, 4).isInfinite, isTrue);
+        expect(const Quaternion(1, 2, 3, double.negativeInfinity).isInfinite,
+            isTrue);
       });
     });
     group('converting', () {
       test('round', () {
-        expect(
-            Quaternion(1.7, 3.2, -2.7, -4.2).round(), Quaternion(2, 3, -3, -4));
+        expect(const Quaternion(1.7, 3.2, -2.7, -4.2).round(),
+            const Quaternion(2, 3, -3, -4));
       });
       test('floor', () {
-        expect(
-            Quaternion(1.7, 3.2, -2.7, -4.2).floor(), Quaternion(1, 3, -3, -5));
+        expect(const Quaternion(1.7, 3.2, -2.7, -4.2).floor(),
+            const Quaternion(1, 3, -3, -5));
       });
       test('ceil', () {
-        expect(
-            Quaternion(1.7, 3.2, -2.7, -4.2).ceil(), Quaternion(2, 4, -2, -4));
+        expect(const Quaternion(1.7, 3.2, -2.7, -4.2).ceil(),
+            const Quaternion(2, 4, -2, -4));
       });
       test('truncate', () {
-        expect(Quaternion(1.7, 3.2, -2.7, -4.2).truncate(),
-            Quaternion(1, 3, -2, -4));
+        expect(const Quaternion(1.7, 3.2, -2.7, -4.2).truncate(),
+            const Quaternion(1, 3, -2, -4));
       });
       test('toString', () {
         expect(Quaternion.zero.toString(), 'Quaternion(0, 0, 0, 0)');
@@ -760,27 +788,34 @@ void main() {
         expect(Quaternion.i.toString(), 'Quaternion(0, 1, 0, 0)');
         expect(Quaternion.j.toString(), 'Quaternion(0, 0, 1, 0)');
         expect(Quaternion.k.toString(), 'Quaternion(0, 0, 0, 1)');
-        expect(Quaternion(0, 2, 4, 6).toString(), 'Quaternion(0, 2, 4, 6)');
-        expect(Quaternion(1, -1, 2, -3).toString(), 'Quaternion(1, -1, 2, -3)');
+        expect(
+            const Quaternion(0, 2, 4, 6).toString(), 'Quaternion(0, 2, 4, 6)');
+        expect(const Quaternion(1, -1, 2, -3).toString(),
+            'Quaternion(1, -1, 2, -3)');
       });
     });
     group('comparing', () {
       test('equal', () {
-        expect(Quaternion(2, 3, 4, 5) == Quaternion(2, 3, 4, 5), isTrue);
-        expect(Quaternion(2, 3, 4, 5) == Quaternion(1, 3, 4, 5), isFalse);
-        expect(Quaternion(2, 3, 4, 5) == Quaternion(2, 4, 4, 5), isFalse);
-        expect(Quaternion(2, 3, 4, 5) == Quaternion(2, 3, 3, 5), isFalse);
-        expect(Quaternion(2, 3, 4, 5) == Quaternion(2, 3, 4, 6), isFalse);
+        expect(const Quaternion(2, 3, 4, 5) == const Quaternion(2, 3, 4, 5),
+            isTrue);
+        expect(const Quaternion(2, 3, 4, 5) == const Quaternion(1, 3, 4, 5),
+            isFalse);
+        expect(const Quaternion(2, 3, 4, 5) == const Quaternion(2, 4, 4, 5),
+            isFalse);
+        expect(const Quaternion(2, 3, 4, 5) == const Quaternion(2, 3, 3, 5),
+            isFalse);
+        expect(const Quaternion(2, 3, 4, 5) == const Quaternion(2, 3, 4, 6),
+            isFalse);
       });
       test('hash', () {
-        expect(
-            Quaternion(2, 3, 4, 5).hashCode, Quaternion(2, 3, 4, 5).hashCode);
-        expect(Quaternion(2, 3, 4, 5).hashCode,
-            isNot(Quaternion(3, 2, 4, 5).hashCode));
-        expect(Quaternion(2, 3, 4, 5).hashCode,
-            isNot(Quaternion(2, 4, 3, 5).hashCode));
-        expect(Quaternion(2, 3, 4, 5).hashCode,
-            isNot(Quaternion(2, 3, 5, 4).hashCode));
+        expect(const Quaternion(2, 3, 4, 5).hashCode,
+            const Quaternion(2, 3, 4, 5).hashCode);
+        expect(const Quaternion(2, 3, 4, 5).hashCode,
+            isNot(const Quaternion(3, 2, 4, 5).hashCode));
+        expect(const Quaternion(2, 3, 4, 5).hashCode,
+            isNot(const Quaternion(2, 4, 3, 5).hashCode));
+        expect(const Quaternion(2, 3, 4, 5).hashCode,
+            isNot(const Quaternion(2, 3, 5, 4).hashCode));
       });
     });
   });
