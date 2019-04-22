@@ -93,7 +93,7 @@ abstract class CharMatcher {
     } else if (other is NoneCharMatcher) {
       return this;
     } else if (other is DisjunctiveCharMatcher) {
-      return DisjunctiveCharMatcher([this]..addAll(other.matchers));
+      return DisjunctiveCharMatcher([this, ...other.matchers]);
     } else {
       return DisjunctiveCharMatcher([this, other]);
     }

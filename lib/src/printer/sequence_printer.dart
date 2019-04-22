@@ -9,9 +9,8 @@ class SequencePrinter extends Printer {
   const SequencePrinter(this.printers);
 
   @override
-  Printer operator +(Object other) => SequencePrinter([]
-    ..addAll(printers)
-    ..add(Printer.of(other)));
+  Printer operator +(Object other) =>
+      SequencePrinter([...printers, Printer.of(other)]);
 
   @override
   String call(Object object) {

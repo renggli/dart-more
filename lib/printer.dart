@@ -129,5 +129,5 @@ abstract class Printer {
 
   /// Concatenates this printer with [other].
   Printer operator +(Object other) =>
-      SequencePrinter([]..add(this)..add(Printer.of(other)));
+      SequencePrinter([this, Printer.of(other)]);
 }

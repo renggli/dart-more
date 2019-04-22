@@ -7,7 +7,7 @@ description: More Dart — Literally. Collecting, iterating, caching, mathematic
   matching, ordering, and formatting easily.
 
 environment:
-  sdk: '>=2.2.0 <3.0.0'
+  sdk: '>=2.3.0 <3.0.0'
 dependencies:
   collection: ^1.14.0
 dev_dependencies:

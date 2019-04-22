@@ -19,12 +19,9 @@ class DisjunctiveCharMatcher extends CharMatcher {
     } else if (other is NoneCharMatcher) {
       return this;
     } else if (other is DisjunctiveCharMatcher) {
-      return DisjunctiveCharMatcher(
-          []..addAll(matchers)..addAll(other.matchers));
+      return DisjunctiveCharMatcher([...matchers, ...other.matchers]);
     } else {
-      return DisjunctiveCharMatcher([]
-        ..addAll(matchers)
-        ..add(other));
+      return DisjunctiveCharMatcher([...matchers, other]);
     }
   }
 

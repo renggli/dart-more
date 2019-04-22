@@ -20,7 +20,6 @@ class CompoundOrdering<T> extends Ordering<T> {
   }
 
   @override
-  Ordering<T> compound(Ordering<T> other) => CompoundOrdering([]
-    ..addAll(orderings)
-    ..add(other));
+  Ordering<T> compound(Ordering<T> other) =>
+      CompoundOrdering([...orderings, other]);
 }
