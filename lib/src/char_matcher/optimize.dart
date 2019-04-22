@@ -14,7 +14,7 @@ CharMatcher optimize(Iterable<RangeCharMatcher> ranges) {
 
   // Merge adjacent or overlapping ranges.
   final mergedRanges = <RangeCharMatcher>[];
-  for (var thisRange in sortedRanges) {
+  for (final thisRange in sortedRanges) {
     if (mergedRanges.isEmpty) {
       mergedRanges.add(thisRange);
     } else {

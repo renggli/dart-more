@@ -10,7 +10,7 @@ class CompoundOrdering<T> extends Ordering<T> {
 
   @override
   int compare(T a, T b) {
-    for (var ordering in orderings) {
+    for (final ordering in orderings) {
       final result = ordering.compare(a, b);
       if (result != 0) {
         return result;

@@ -47,7 +47,7 @@ class Complex {
     }
     num a = 0, b = 0;
     final seen = <String>{};
-    for (var part in parts) {
+    for (final part in parts) {
       final number = num.tryParse(part.group(1));
       final unit = part.group(4).toLowerCase();
       if (seen.contains(unit)) {

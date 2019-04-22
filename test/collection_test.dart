@@ -766,7 +766,7 @@ void main() {
       expect(iterator.moveNext(), isFalse);
       expect(() => range[-1], throwsRangeError);
       expect(() => range[expected.length], throwsRangeError);
-      for (var value in expected) {
+      for (final value in expected) {
         expect(range.contains(value), isTrue);
       }
     }

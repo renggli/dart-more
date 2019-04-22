@@ -13,7 +13,7 @@ import 'dart:collection' show HashSet;
 Iterable<E> unique<E>(Iterable<E> iterable,
     {bool Function(E e1, E e2) equals, int Function(E e) hashCode}) sync* {
   final uniques = HashSet(equals: equals, hashCode: hashCode);
-  for (var element in iterable) {
+  for (final element in iterable) {
     if (uniques.add(element)) {
       yield element;
     }

@@ -15,7 +15,7 @@ class SequencePrinter extends Printer {
   @override
   String call(Object object) {
     final buffer = StringBuffer();
-    for (var printer in printers) {
+    for (final printer in printers) {
       buffer.write(printer(object));
     }
     return buffer.toString();

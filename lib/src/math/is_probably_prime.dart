@@ -21,7 +21,7 @@ bool isProbablyPrime(int n) {
     s++;
   }
   loop:
-  for (var a in [2, 3, 5, 7, 11, 13, 17]) {
+  for (final a in [2, 3, 5, 7, 11, 13, 17]) {
     var x = a.modPow(d, n);
     if (x == 1 || x == n - 1) {
       continue loop;

@@ -85,14 +85,14 @@ void cacheEvictionTest(NewCache<int, String> newCache, String name,
 
   test('$name', () async {
     final cache = newCache(immediateLoader);
-    for (var key in load) {
+    for (final key in load) {
       expect(await cache.get(key), '$key');
     }
-    for (var key in present) {
+    for (final key in present) {
       expect(await cache.getIfPresent(key), '$key',
           reason: '$key should be present');
     }
-    for (var key in absent) {
+    for (final key in absent) {
       expect(await cache.getIfPresent(key), isNull,
           reason: '$key should be absent');
     }

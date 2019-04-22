@@ -41,7 +41,7 @@ class Multiset<E> extends IterableBase<E> {
     final result = Multiset<E>();
     key ??= (element) => element;
     count ??= (element) => 1;
-    for (var element in iterable) {
+    for (final element in iterable) {
       result.add(key(element), count(element));
     }
     return result;
@@ -135,7 +135,7 @@ class Multiset<E> extends IterableBase<E> {
     } else if (other.length == 1) {
       return contains(other.first);
     } else if (other is Multiset<Object>) {
-      for (var element in other.distinct) {
+      for (final element in other.distinct) {
         if (this[element] < other[element]) {
           return false;
         }
@@ -151,7 +151,7 @@ class Multiset<E> extends IterableBase<E> {
   Multiset<E> intersection(Iterable<Object> other) {
     if (other is Multiset<Object>) {
       final result = Multiset<E>();
-      for (var element in distinct) {
+      for (final element in distinct) {
         result.add(element, min(this[element], other[element]));
       }
       return result;

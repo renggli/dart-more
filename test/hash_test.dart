@@ -30,7 +30,7 @@ void main() {
     });
     test('combinations', () {
       final hashCodes = <int, List<int>>{};
-      for (var combination
+      for (final combination
           in combinations(IntegerRange(8), 5, repetitions: true)) {
         final hashCode = hash(combination);
         if (hashCodes.containsKey(hashCode)) {
@@ -40,7 +40,7 @@ void main() {
     });
     test('permutations', () {
       final hashCodes = <int, List<int>>{};
-      for (var permutation in permutations(IntegerRange(8))) {
+      for (final permutation in permutations(IntegerRange(8))) {
         final hashCode = hash(permutation);
         if (hashCodes.containsKey(hashCode)) {
           fail('$permutation and ${hashCodes[hashCode]} have identical hash.');

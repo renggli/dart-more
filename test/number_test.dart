@@ -184,7 +184,7 @@ void main() {
           test('$source.roots($n)', () {
             final roots = source.roots(n);
             expect(roots, hasLength(n.abs()));
-            for (var root in roots) {
+            for (final root in roots) {
               expect(root.pow(n), isClose(source.a, source.b));
             }
           });

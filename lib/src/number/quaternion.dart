@@ -89,7 +89,7 @@ class Quaternion {
     }
     num w = 0, x = 0, y = 0, z = 0;
     final seen = <String>{};
-    for (var part in parts) {
+    for (final part in parts) {
       final number = num.tryParse(part.group(1));
       final unit = part.group(4).toLowerCase();
       if (seen.contains(unit)) {

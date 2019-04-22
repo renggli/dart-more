@@ -9,7 +9,7 @@ void verifyBasic<T>(String type, Ordering<T> ordering, Iterable<T> unsorted,
   final sorted = ordering.sorted(unsorted);
   expect(sorted, expected, reason: '$type.sorted');
   expect(ordering.isOrdered(sorted), isTrue, reason: '$type.isOrdered');
-  for (var element in unsorted) {
+  for (final element in unsorted) {
     expect(ordering.binarySearch(sorted, element),
         (index) => index is int && index >= 0,
         reason: '$type.binarySearch');

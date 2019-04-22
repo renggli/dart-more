@@ -16,7 +16,7 @@ library more.iterable.indexed;
 ///     '1: a, 2: b'
 ///
 Iterable<Indexed<E>> indexed<E>(Iterable<E> elements, {int offset = 0}) sync* {
-  for (var element in elements) {
+  for (final element in elements) {
     yield Indexed<E>(offset++, element);
   }
 }

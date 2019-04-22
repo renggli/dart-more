@@ -8,7 +8,7 @@ library more.math.polynomial;
 ///     c[0]*x^0 + c[1]*x^1 + c[2]*x^3 + c[3]*x^3
 num polynomial(Iterable<num> cs, [num x = 10]) {
   num r = 0, e = 1;
-  for (var c in cs) {
+  for (final c in cs) {
     r += c * e;
     e *= x;
   }
