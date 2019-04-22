@@ -68,7 +68,7 @@ class IntegerRange extends ListBase<int> with UnmodifiableListMixin<int> {
   @override
   final int length;
 
-  @deprecated
+  @Deprecated('Use the `IntegerRange.end` accessor instead.')
   int get stop => end;
 
   @override

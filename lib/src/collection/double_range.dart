@@ -75,7 +75,7 @@ class DoubleRange extends ListBase<double> with UnmodifiableListMixin<double> {
   @override
   final int length;
 
-  @deprecated
+  @Deprecated('Use the `DoubleRange.end` accessor instead.')
   double get stop => end;
 
   @override

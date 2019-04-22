@@ -1,7 +1,5 @@
 /// A collection of common mathematical functions on integers.
-///
-/// This library is deprecated, instead use 'package:more/math.dart'.
-@deprecated
+@Deprecated('Use `package:more/math.dart` instead.')
 library more.int_math;
 
 export 'package:more/src/math/binomial.dart' show binomial;
