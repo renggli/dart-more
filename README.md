@@ -40,6 +40,7 @@ Import one or more of the packages into your Dart code using:
 import 'package:more/cache.dart';
 import 'package:more/char_matcher.dart';
 import 'package:more/collection.dart';
+import 'package:more/hash.dart';
 import 'package:more/iterable.dart';
 import 'package:more/math.dart';
 import 'package:more/number.dart';
