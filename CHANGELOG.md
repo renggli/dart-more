@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.17.0
+
+* Dart 2.3 compatibility and requirement.
+* Various code improvements and optimizations.
+
+
 ## 1.16.0
 
 * Dart 2.2 compatibility and requirement.
