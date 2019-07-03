@@ -11,6 +11,7 @@ import 'math_test.dart' as math_test;
 import 'number_test.dart' as number_test;
 import 'ordering_test.dart' as ordering_test;
 import 'printer_test.dart' as printer_test;
+import 'tuple_test.dart' as tuple_test;
 
 void main() {
   group('cache', cache_test.main);
@@ -22,4 +23,5 @@ void main() {
   group('number', number_test.main);
   group('ordering', ordering_test.main);
   group('printer', printer_test.main);
+  group('tuple', tuple_test.main);
 }

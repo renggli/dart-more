@@ -1,10 +1,14 @@
 # Changelog
 
+## 1.18.0
+
+* Dart 2.4 compatibility and requirement.
+* Add a tuple data type.
+
 ## 1.17.0
 
 * Dart 2.3 compatibility and requirement.
 * Various code improvements and optimizations.
-
 
 ## 1.16.0
 
