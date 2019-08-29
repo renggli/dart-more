@@ -1,7 +1,7 @@
 library more.test.tuple_test;
 
-import 'package:test/test.dart';
 import 'package:more/tuple.dart';
+import 'package:test/test.dart';
 
 void main() {
   group('Tuple0', () {

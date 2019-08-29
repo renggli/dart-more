@@ -346,44 +346,47 @@ void main() {
         expect(() => Fraction(2, 0), throwsArgumentError);
         expect(() => Fraction(2, null), throwsArgumentError);
       });
-      test('fromDouble (basic)', () {
-        expect(Fraction.fromDouble(2), Fraction(2));
-        expect(Fraction.fromDouble(100), Fraction(100));
-      });
-      test('fromDouble (finite)', () {
-        expect(Fraction.fromDouble(1 / 2), Fraction(1, 2));
-        expect(Fraction.fromDouble(1 / 4), Fraction(1, 4));
-      });
-      test('fromDouble (finite, whole)', () {
-        expect(Fraction.fromDouble(5 / 2), Fraction(5, 2));
-        expect(Fraction.fromDouble(9 / 4), Fraction(9, 4));
-      });
-      test('fromDouble (infinite)', () {
-        expect(Fraction.fromDouble(1 / 3), Fraction(1, 3));
-        expect(Fraction.fromDouble(1 / 7), Fraction(1, 7));
-      });
-      test('fromDouble (infinite, whole)', () {
-        expect(Fraction.fromDouble(5 / 3), Fraction(5, 3));
-        expect(Fraction.fromDouble(9 / 7), Fraction(9, 7));
-      });
-      test('fromDouble (negative)', () {
-        expect(Fraction.fromDouble(-1 / 3), Fraction(-1, 3));
-        expect(Fraction.fromDouble(-5 / 3), Fraction(-5, 3));
-      });
-      test('fromDouble (all)', () {
-        for (var num = -10; num <= 10; num++) {
-          for (var den = -10; den <= 10; den++) {
-            if (den != 0) {
-              expect(Fraction.fromDouble(num / den), Fraction(num, den));
+      group('fromDouble', () {
+        test('basic', () {
+          expect(Fraction.fromDouble(2), Fraction(2));
+          expect(Fraction.fromDouble(100), Fraction(100));
+        });
+        test('finite', () {
+          expect(Fraction.fromDouble(1 / 2), Fraction(1, 2));
+          expect(Fraction.fromDouble(1 / 4), Fraction(1, 4));
+        });
+        test('finite, whole', () {
+          expect(Fraction.fromDouble(5 / 2), Fraction(5, 2));
+          expect(Fraction.fromDouble(9 / 4), Fraction(9, 4));
+        });
+        test('infinite', () {
+          expect(Fraction.fromDouble(1 / 3), Fraction(1, 3));
+          expect(Fraction.fromDouble(1 / 7), Fraction(1, 7));
+        });
+        test('infinite, whole', () {
+          expect(Fraction.fromDouble(5 / 3), Fraction(5, 3));
+          expect(Fraction.fromDouble(9 / 7), Fraction(9, 7));
+        });
+        test('negative', () {
+          expect(Fraction.fromDouble(-1 / 3), Fraction(-1, 3));
+          expect(Fraction.fromDouble(-5 / 3), Fraction(-5, 3));
+        });
+        test('all', () {
+          for (var num = -10; num <= 10; num++) {
+            for (var den = -10; den <= 10; den++) {
+              if (den != 0) {
+                expect(Fraction.fromDouble(num / den), Fraction(num, den));
+              }
             }
           }
-        }
-      });
-      test('fromDouble (error)', () {
-        expect(() => Fraction.fromDouble(double.nan), throwsArgumentError);
-        expect(() => Fraction.fromDouble(double.infinity), throwsArgumentError);
-        expect(() => Fraction.fromDouble(double.negativeInfinity),
-            throwsArgumentError);
+        });
+        test('error', () {
+          expect(() => Fraction.fromDouble(double.nan), throwsArgumentError);
+          expect(
+              () => Fraction.fromDouble(double.infinity), throwsArgumentError);
+          expect(() => Fraction.fromDouble(double.negativeInfinity),
+              throwsArgumentError);
+        });
       });
       test('zero', () {
         expect(Fraction.zero, Fraction(0));
@@ -393,27 +396,43 @@ void main() {
         expect(Fraction.one, Fraction(1));
         expect(Fraction(1, 2) * Fraction.one, Fraction(1, 2));
       });
-      test('tryParse', () {
-        expect(Fraction.tryParse('1/2'), Fraction(1, 2));
-        expect(Fraction.tryParse(' 1/2'), Fraction(1, 2));
-        expect(Fraction.tryParse('1 /2'), Fraction(1, 2));
-        expect(Fraction.tryParse('1/ 2'), Fraction(1, 2));
-        expect(Fraction.tryParse('1/2 '), Fraction(1, 2));
+      group('tryParse', () {
+        test('basic', () {
+          expect(Fraction.tryParse('1/2'), Fraction(1, 2));
+          expect(Fraction.tryParse(' 1/2'), Fraction(1, 2));
+          expect(Fraction.tryParse('1 /2'), Fraction(1, 2));
+          expect(Fraction.tryParse('1/ 2'), Fraction(1, 2));
+          expect(Fraction.tryParse('1/2 '), Fraction(1, 2));
+        });
+        test('neative', () {
+          expect(Fraction.tryParse('-1/2'), Fraction(-1, 2));
+          expect(Fraction.tryParse('1/-2'), Fraction(-1, 2));
+          expect(Fraction.tryParse('-1/-2'), Fraction(1, 2));
+        });
+        test('integer', () {
+          expect(Fraction.tryParse('3'), Fraction(3));
+          expect(Fraction.tryParse(' 3'), Fraction(3));
+          expect(Fraction.tryParse('3 '), Fraction(3));
+        });
+        test('error', () {
+          expect(Fraction.tryParse(''), isNull);
+          expect(Fraction.tryParse('1.23'), isNull);
+          expect(Fraction.tryParse('1/2/3'), isNull);
+        });
       });
-      test('tryParse (neative)', () {
-        expect(Fraction.tryParse('-1/2'), Fraction(-1, 2));
-        expect(Fraction.tryParse('1/-2'), Fraction(-1, 2));
-        expect(Fraction.tryParse('-1/-2'), Fraction(1, 2));
-      });
-      test('tryParse (integer)', () {
-        expect(Fraction.tryParse('3'), Fraction(3));
-        expect(Fraction.tryParse(' 3'), Fraction(3));
-        expect(Fraction.tryParse('3 '), Fraction(3));
-      });
-      test('tryParse (error)', () {
-        expect(Fraction.tryParse(''), isNull);
-        expect(Fraction.tryParse('1.23'), isNull);
-        expect(Fraction.tryParse('1/2/3'), isNull);
+      group('positive', () {
+        final positive = Fraction.positive.take(100000);
+        test('irreducible', () {
+          for (final fraction in positive) {
+            expect(fraction.a.gcd(fraction.b), 1);
+          }
+        });
+        test('unique', () {
+          final seen = <Fraction>{};
+          for (final fraction in positive) {
+            expect(seen.add(fraction), isTrue);
+          }
+        });
       });
     });
     group('testing', () {

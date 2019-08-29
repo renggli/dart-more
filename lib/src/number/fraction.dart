@@ -11,6 +11,27 @@ class Fraction implements Comparable<Fraction> {
   /// The neutral multiplicative element, that is `1`.
   static const Fraction one = Fraction._(1, 1);
 
+  /// Infinite iterable over all positive fractions.
+  ///
+  /// This is the breadth-first traversal of the Calkin–Wilf tree:
+  /// https://en.m.wikipedia.org/wiki/Calkin%E2%80%93Wilf_tree
+  static Iterable<Fraction> get positive sync* {
+    var previous = [Fraction.one];
+    yield previous[0];
+    for (;;) {
+      final current = <Fraction>[];
+      for (final fraction in previous) {
+        final childLeft = Fraction._(fraction.a, fraction.a + fraction.b);
+        current.add(childLeft);
+        yield childLeft;
+        final childRight = Fraction._(fraction.a + fraction.b, fraction.b);
+        current.add(childRight);
+        yield childRight;
+      }
+      previous = current;
+    }
+  }
+
   /// Creates a fraction from a [numerator] and an optional [denominator].
   factory Fraction(int numerator, [int denominator = 1]) {
     if (numerator == null || denominator == null) {
