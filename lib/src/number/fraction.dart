@@ -1,5 +1,6 @@
 library more.number.fraction;
 
+import 'package:collection/collection.dart' show QueueList;
 import 'package:more/hash.dart' show hash2;
 import 'package:more/math.dart' as math;
 
@@ -16,19 +17,12 @@ class Fraction implements Comparable<Fraction> {
   /// This is the breadth-first traversal of the Calkin–Wilf tree:
   /// https://en.m.wikipedia.org/wiki/Calkin%E2%80%93Wilf_tree
   static Iterable<Fraction> get positive sync* {
-    var previous = [Fraction.one];
-    yield previous[0];
+    final pending = QueueList.from([Fraction.one]);
     for (;;) {
-      final current = <Fraction>[];
-      for (final fraction in previous) {
-        final childLeft = Fraction._(fraction.a, fraction.a + fraction.b);
-        current.add(childLeft);
-        yield childLeft;
-        final childRight = Fraction._(fraction.a + fraction.b, fraction.b);
-        current.add(childRight);
-        yield childRight;
-      }
-      previous = current;
+      final current = pending.removeFirst();
+      pending.addLast(Fraction._(current.a, current.a + current.b));
+      pending.addLast(Fraction._(current.a + current.b, current.b));
+      yield current;
     }
   }
 

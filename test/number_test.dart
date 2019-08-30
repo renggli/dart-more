@@ -421,15 +421,36 @@ void main() {
         });
       });
       group('positive', () {
-        final positive = Fraction.positive.take(100000);
+        test('basic', () {
+          final fractions = Fraction.positive.take(15);
+          expect(fractions, [
+            Fraction(1, 1),
+            Fraction(1, 2),
+            Fraction(2, 1),
+            Fraction(1, 3),
+            Fraction(3, 2),
+            Fraction(2, 3),
+            Fraction(3, 1),
+            Fraction(1, 4),
+            Fraction(4, 3),
+            Fraction(3, 5),
+            Fraction(5, 2),
+            Fraction(2, 5),
+            Fraction(5, 3),
+            Fraction(3, 4),
+            Fraction(4, 1),
+          ]);
+        });
         test('irreducible', () {
-          for (final fraction in positive) {
+          final fractions = Fraction.positive.take(100000);
+          for (final fraction in fractions) {
             expect(fraction.a.gcd(fraction.b), 1);
           }
         });
         test('unique', () {
           final seen = <Fraction>{};
-          for (final fraction in positive) {
+          final fractions = Fraction.positive.take(100000);
+          for (final fraction in fractions) {
             expect(seen.add(fraction), isTrue);
           }
         });
