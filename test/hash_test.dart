@@ -36,6 +36,7 @@ void main() {
         if (hashCodes.containsKey(hashCode)) {
           fail('$combination and ${hashCodes[hashCode]} have identical hash.');
         }
+        hashCodes[hashCode] = combination;
       }
     });
     test('permutations', () {
@@ -45,6 +46,7 @@ void main() {
         if (hashCodes.containsKey(hashCode)) {
           fail('$permutation and ${hashCodes[hashCode]} have identical hash.');
         }
+        hashCodes[hashCode] = permutation;
       }
     });
   });
