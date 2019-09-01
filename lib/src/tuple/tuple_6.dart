@@ -14,8 +14,13 @@ class Tuple6<T0, T1, T2, T3, T4, T5> extends Tuple {
   const Tuple6(this.value0, this.value1, this.value2, this.value3, this.value4,
       this.value5);
 
-  static Tuple6<T, T, T, T, T, T> fromList<T>(List<T> list) =>
-      Tuple6(list[0], list[1], list[2], list[3], list[4], list[5]);
+  static Tuple6<T, T, T, T, T, T> fromList<T>(List<T> list) {
+    if (list.length != 6) {
+      throw ArgumentError.value(
+          list, 'list', 'Expected list of length 6, but got ${list.length}.');
+    }
+    return Tuple6(list[0], list[1], list[2], list[3], list[4], list[5]);
+  }
 
   @override
   int get length => 6;

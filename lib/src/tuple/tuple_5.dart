@@ -12,8 +12,13 @@ class Tuple5<T0, T1, T2, T3, T4> extends Tuple {
 
   const Tuple5(this.value0, this.value1, this.value2, this.value3, this.value4);
 
-  static Tuple5<T, T, T, T, T> fromList<T>(List<T> list) =>
-      Tuple5(list[0], list[1], list[2], list[3], list[4]);
+  static Tuple5<T, T, T, T, T> fromList<T>(List<T> list) {
+    if (list.length != 5) {
+      throw ArgumentError.value(
+          list, 'list', 'Expected list of length 5, but got ${list.length}.');
+    }
+    return Tuple5(list[0], list[1], list[2], list[3], list[4]);
+  }
 
   @override
   int get length => 5;

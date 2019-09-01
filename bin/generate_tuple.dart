@@ -67,7 +67,8 @@ Future<void> generateParent(int max) async {
     }
   }
   out.writeln('default:');
-  out.writeln('throw StateError(\'Too many\');');
+  out.writeln('throw ArgumentError.value(list, \'list\', '
+      '\'Length \${list.length} not in range 0..${max - 1}.\');');
   out.writeln('}');
   out.writeln('}');
   out.writeln('');
@@ -127,13 +128,23 @@ Future<void> generateChild(int i, int max) async {
   out.writeln('');
   out.writeln('const Tuple$i($constructorVariables);');
 
-  if (i > 0) {
-    final listTypes = generify(List.generate(i, (i) => 'T'));
-    final listAccessors = listify(List.generate(i, (i) => 'list[$i]'));
-    out.writeln('');
-    out.writeln('static Tuple$i$listTypes fromList<T>(List<T> list) =>');
-    out.writeln('Tuple$i($listAccessors);');
+  final listTypes = generify(List.generate(i, (i) => 'T'));
+  final listAccessors = listify(List.generate(i, (i) => 'list[$i]'));
+  out.writeln('');
+  if (i == 0) {
+    out.writeln('// ignore: prefer_constructors_over_static_methods');
   }
+  out.writeln('static Tuple$i$listTypes fromList<T>(List<T> list) {');
+  if (i == 0) {
+    out.writeln('if (list.isNotEmpty) {');
+  } else {
+    out.writeln('if (list.length != $i) {');
+  }
+  out.writeln('throw ArgumentError.value(list, \'list\', '
+      '\'Expected list of length $i, but got \${list.length}.\');');
+  out.writeln('}');
+  out.writeln('return ${i == 0 ? 'const ' : ''} Tuple$i($listAccessors);');
+  out.writeln('}');
 
   // length
   out.writeln('');
@@ -264,8 +275,8 @@ Future<void> generateTest(int max) async {
 
   out.writeln('library more.test.tuple_test;');
   out.writeln('');
-  out.writeln('import \'package:test/test.dart\';');
   out.writeln('import \'package:more/tuple.dart\';');
+  out.writeln('import \'package:test/test.dart\';');
   out.writeln('');
   out.writeln('void main() {');
 
@@ -273,12 +284,20 @@ Future<void> generateTest(int max) async {
     nest('group', 'Tuple$i', () {
       final numbers = List.generate(i, (i) => '${generator.nextInt(256)}');
       out.writeln('const tuple = Tuple$i(${numbers.join(', ')});');
-      if (i > 0) {
-        nest('test', 'fromList', () {
-          out.writeln('final other = Tuple.fromList([${listify(numbers)}]);');
-          out.writeln('expect(other, tuple);');
-        });
-      }
+      nest('test', 'Tuple.fromList', () {
+        final many = List.generate(max, (i) => '${generator.nextInt(256)}');
+        out.writeln('final other = Tuple.fromList([${listify(numbers)}]);');
+        out.writeln('expect(other, tuple);');
+        out.writeln('expect(() => Tuple.fromList([${listify(many)}]), '
+            'throwsArgumentError);');
+      });
+      nest('test', 'fromList', () {
+        final many = List.generate(i + 1, (i) => '${generator.nextInt(256)}');
+        out.writeln('final other = Tuple$i.fromList([${listify(numbers)}]);');
+        out.writeln('expect(other, tuple);');
+        out.writeln('expect(() => Tuple$i.fromList([${listify(many)}]), '
+            'throwsArgumentError);');
+      });
       if (i > 0) {
         nest('test', 'read', () {
           for (var j = 0; j < i; j++) {
@@ -396,11 +415,6 @@ Future<void> generateTest(int max) async {
       });
     });
   }
-  nest('test', 'fromList (error)', () {
-    final elements = listify(List.generate(max, (i) => '$i'));
-    out.writeln('expect(() => Tuple.fromList([$elements]), throwsStateError);');
-  });
-
   out.writeln('}');
 
   await out.close();

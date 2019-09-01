@@ -10,8 +10,13 @@ class Tuple3<T0, T1, T2> extends Tuple {
 
   const Tuple3(this.value0, this.value1, this.value2);
 
-  static Tuple3<T, T, T> fromList<T>(List<T> list) =>
-      Tuple3(list[0], list[1], list[2]);
+  static Tuple3<T, T, T> fromList<T>(List<T> list) {
+    if (list.length != 3) {
+      throw ArgumentError.value(
+          list, 'list', 'Expected list of length 3, but got ${list.length}.');
+    }
+    return Tuple3(list[0], list[1], list[2]);
+  }
 
   @override
   int get length => 3;

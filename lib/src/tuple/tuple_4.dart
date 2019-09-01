@@ -11,8 +11,13 @@ class Tuple4<T0, T1, T2, T3> extends Tuple {
 
   const Tuple4(this.value0, this.value1, this.value2, this.value3);
 
-  static Tuple4<T, T, T, T> fromList<T>(List<T> list) =>
-      Tuple4(list[0], list[1], list[2], list[3]);
+  static Tuple4<T, T, T, T> fromList<T>(List<T> list) {
+    if (list.length != 4) {
+      throw ArgumentError.value(
+          list, 'list', 'Expected list of length 4, but got ${list.length}.');
+    }
+    return Tuple4(list[0], list[1], list[2], list[3]);
+  }
 
   @override
   int get length => 4;

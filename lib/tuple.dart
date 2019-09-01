@@ -52,7 +52,8 @@ abstract class Tuple {
       case 9:
         return Tuple9.fromList(list);
       default:
-        throw StateError('Too many');
+        throw ArgumentError.value(
+            list, 'list', 'Length ${list.length} not in range 0..9.');
     }
   }
 
