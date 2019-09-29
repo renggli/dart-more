@@ -12,6 +12,7 @@ class Tuple5<T0, T1, T2, T3, T4> extends Tuple {
 
   const Tuple5(this.value0, this.value1, this.value2, this.value3, this.value4);
 
+  // ignore: prefer_constructors_over_static_methods
   static Tuple5<T, T, T, T, T> fromList<T>(List<T> list) {
     if (list.length != 5) {
       throw ArgumentError.value(

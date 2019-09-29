@@ -6,7 +6,7 @@ import 'package:more/tuple.dart';
 class Tuple0 extends Tuple {
   const Tuple0();
 
-// ignore: prefer_constructors_over_static_methods
+  // ignore: prefer_constructors_over_static_methods
   static Tuple0 fromList<T>(List<T> list) {
     if (list.isNotEmpty) {
       throw ArgumentError.value(

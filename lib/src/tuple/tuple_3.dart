@@ -10,6 +10,7 @@ class Tuple3<T0, T1, T2> extends Tuple {
 
   const Tuple3(this.value0, this.value1, this.value2);
 
+  // ignore: prefer_constructors_over_static_methods
   static Tuple3<T, T, T> fromList<T>(List<T> list) {
     if (list.length != 3) {
       throw ArgumentError.value(

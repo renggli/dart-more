@@ -15,6 +15,7 @@ class Tuple7<T0, T1, T2, T3, T4, T5, T6> extends Tuple {
   const Tuple7(this.value0, this.value1, this.value2, this.value3, this.value4,
       this.value5, this.value6);
 
+  // ignore: prefer_constructors_over_static_methods
   static Tuple7<T, T, T, T, T, T, T> fromList<T>(List<T> list) {
     if (list.length != 7) {
       throw ArgumentError.value(

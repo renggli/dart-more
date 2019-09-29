@@ -9,6 +9,7 @@ class Tuple2<T0, T1> extends Tuple {
 
   const Tuple2(this.value0, this.value1);
 
+  // ignore: prefer_constructors_over_static_methods
   static Tuple2<T, T> fromList<T>(List<T> list) {
     if (list.length != 2) {
       throw ArgumentError.value(

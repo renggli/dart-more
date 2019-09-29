@@ -131,9 +131,7 @@ Future<void> generateChild(int i, int max) async {
   final listTypes = generify(List.generate(i, (i) => 'T'));
   final listAccessors = listify(List.generate(i, (i) => 'list[$i]'));
   out.writeln('');
-  if (i == 0) {
-    out.writeln('// ignore: prefer_constructors_over_static_methods');
-  }
+  out.writeln('  // ignore: prefer_constructors_over_static_methods');
   out.writeln('static Tuple$i$listTypes fromList<T>(List<T> list) {');
   if (i == 0) {
     out.writeln('if (list.isNotEmpty) {');
