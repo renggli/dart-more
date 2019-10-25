@@ -8,7 +8,7 @@ export 'package:more/src/iterable/concat.dart' show concat;
 export 'package:more/src/iterable/cycle.dart' show cycle;
 export 'package:more/src/iterable/fold.dart' show fold;
 export 'package:more/src/iterable/group.dart' show groupBy;
-export 'package:more/src/iterable/indexed.dart' show indexed;
+export 'package:more/src/iterable/indexed.dart' show indexed, Indexed;
 export 'package:more/src/iterable/iterate.dart' show iterate;
 export 'package:more/src/iterable/math.dart' show fibonacci, digits;
 export 'package:more/src/iterable/periodical.dart'
