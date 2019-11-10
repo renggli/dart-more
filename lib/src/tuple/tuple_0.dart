@@ -4,8 +4,10 @@ import 'package:more/tuple.dart';
 
 /// Tuple with 0 elements.
 class Tuple0 extends Tuple {
+  /// Const constructor.
   const Tuple0();
 
+  /// List constructor.
   // ignore: prefer_constructors_over_static_methods
   static Tuple0 fromList<T>(List<T> list) {
     if (list.isNotEmpty) {
@@ -24,6 +26,7 @@ class Tuple0 extends Tuple {
   @override
   Tuple1<T> addLast<T>(T value) => addAt0(value);
 
+  /// Returns a new tuple with [value] added at index 0.
   Tuple1<T> addAt0<T>(T value) => Tuple1(value);
 
   @override

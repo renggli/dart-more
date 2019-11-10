@@ -14,9 +14,11 @@ class Tuple9<T0, T1, T2, T3, T4, T5, T6, T7, T8> extends Tuple {
   final T7 value7;
   final T8 value8;
 
+  /// Const constructor.
   const Tuple9(this.value0, this.value1, this.value2, this.value3, this.value4,
       this.value5, this.value6, this.value7, this.value8);
 
+  /// List constructor.
   // ignore: prefer_constructors_over_static_methods
   static Tuple9<T, T, T, T, T, T, T, T, T> fromList<T>(List<T> list) {
     if (list.length != 9) {
@@ -30,30 +32,39 @@ class Tuple9<T0, T1, T2, T3, T4, T5, T6, T7, T8> extends Tuple {
   @override
   int get length => 9;
 
+  /// Returns a new tuple with index 0 replaced by [value].
   Tuple9<T, T1, T2, T3, T4, T5, T6, T7, T8> with0<T>(T value) => Tuple9(
       value, value1, value2, value3, value4, value5, value6, value7, value8);
 
+  /// Returns a new tuple with index 1 replaced by [value].
   Tuple9<T0, T, T2, T3, T4, T5, T6, T7, T8> with1<T>(T value) => Tuple9(
       value0, value, value2, value3, value4, value5, value6, value7, value8);
 
+  /// Returns a new tuple with index 2 replaced by [value].
   Tuple9<T0, T1, T, T3, T4, T5, T6, T7, T8> with2<T>(T value) => Tuple9(
       value0, value1, value, value3, value4, value5, value6, value7, value8);
 
+  /// Returns a new tuple with index 3 replaced by [value].
   Tuple9<T0, T1, T2, T, T4, T5, T6, T7, T8> with3<T>(T value) => Tuple9(
       value0, value1, value2, value, value4, value5, value6, value7, value8);
 
+  /// Returns a new tuple with index 4 replaced by [value].
   Tuple9<T0, T1, T2, T3, T, T5, T6, T7, T8> with4<T>(T value) => Tuple9(
       value0, value1, value2, value3, value, value5, value6, value7, value8);
 
+  /// Returns a new tuple with index 5 replaced by [value].
   Tuple9<T0, T1, T2, T3, T4, T, T6, T7, T8> with5<T>(T value) => Tuple9(
       value0, value1, value2, value3, value4, value, value6, value7, value8);
 
+  /// Returns a new tuple with index 6 replaced by [value].
   Tuple9<T0, T1, T2, T3, T4, T5, T, T7, T8> with6<T>(T value) => Tuple9(
       value0, value1, value2, value3, value4, value5, value, value7, value8);
 
+  /// Returns a new tuple with index 7 replaced by [value].
   Tuple9<T0, T1, T2, T3, T4, T5, T6, T, T8> with7<T>(T value) => Tuple9(
       value0, value1, value2, value3, value4, value5, value6, value, value8);
 
+  /// Returns a new tuple with index 8 replaced by [value].
   Tuple9<T0, T1, T2, T3, T4, T5, T6, T7, T> with8<T>(T value) => Tuple9(
       value0, value1, value2, value3, value4, value5, value6, value7, value);
 
@@ -69,30 +80,39 @@ class Tuple9<T0, T1, T2, T3, T4, T5, T6, T7, T8> extends Tuple {
   @override
   Tuple8<T0, T1, T2, T3, T4, T5, T6, T7> removeLast() => removeAt8();
 
+  /// Returns a new tuple with index 0 removed.
   Tuple8<T1, T2, T3, T4, T5, T6, T7, T8> removeAt0() =>
       Tuple8(value1, value2, value3, value4, value5, value6, value7, value8);
 
+  /// Returns a new tuple with index 1 removed.
   Tuple8<T0, T2, T3, T4, T5, T6, T7, T8> removeAt1() =>
       Tuple8(value0, value2, value3, value4, value5, value6, value7, value8);
 
+  /// Returns a new tuple with index 2 removed.
   Tuple8<T0, T1, T3, T4, T5, T6, T7, T8> removeAt2() =>
       Tuple8(value0, value1, value3, value4, value5, value6, value7, value8);
 
+  /// Returns a new tuple with index 3 removed.
   Tuple8<T0, T1, T2, T4, T5, T6, T7, T8> removeAt3() =>
       Tuple8(value0, value1, value2, value4, value5, value6, value7, value8);
 
+  /// Returns a new tuple with index 4 removed.
   Tuple8<T0, T1, T2, T3, T5, T6, T7, T8> removeAt4() =>
       Tuple8(value0, value1, value2, value3, value5, value6, value7, value8);
 
+  /// Returns a new tuple with index 5 removed.
   Tuple8<T0, T1, T2, T3, T4, T6, T7, T8> removeAt5() =>
       Tuple8(value0, value1, value2, value3, value4, value6, value7, value8);
 
+  /// Returns a new tuple with index 6 removed.
   Tuple8<T0, T1, T2, T3, T4, T5, T7, T8> removeAt6() =>
       Tuple8(value0, value1, value2, value3, value4, value5, value7, value8);
 
+  /// Returns a new tuple with index 7 removed.
   Tuple8<T0, T1, T2, T3, T4, T5, T6, T8> removeAt7() =>
       Tuple8(value0, value1, value2, value3, value4, value5, value6, value8);
 
+  /// Returns a new tuple with index 8 removed.
   Tuple8<T0, T1, T2, T3, T4, T5, T6, T7> removeAt8() =>
       Tuple8(value0, value1, value2, value3, value4, value5, value6, value7);
 

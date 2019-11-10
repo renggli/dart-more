@@ -126,11 +126,13 @@ Future<void> generateChild(int i, int max) async {
   // constructors
   final constructorVariables = listify(values.map((value) => 'this.$value'));
   out.writeln('');
+  out.writeln('/// Const constructor.');
   out.writeln('const Tuple$i($constructorVariables);');
 
   final listTypes = generify(List.generate(i, (i) => 'T'));
   final listAccessors = listify(List.generate(i, (i) => 'list[$i]'));
   out.writeln('');
+  out.writeln('/// List constructor.');
   out.writeln('  // ignore: prefer_constructors_over_static_methods');
   out.writeln('static Tuple$i$listTypes fromList<T>(List<T> list) {');
   if (i == 0) {
@@ -156,6 +158,7 @@ Future<void> generateChild(int i, int max) async {
     typesReplaced[j] = 'T';
     valuesReplaced[j] = 'value';
     out.writeln('');
+    out.writeln('/// Returns a new tuple with index $j replaced by [value].');
     out.writeln('Tuple$i${generify(typesReplaced)} '
         'with$j<T>(T value) => Tuple$i(${listify(valuesReplaced)});');
   }
@@ -182,6 +185,7 @@ Future<void> generateChild(int i, int max) async {
       final addValues =
           listify([...values.sublist(0, j), 'value', ...values.sublist(j, i)]);
       out.writeln('');
+      out.writeln('/// Returns a new tuple with [value] added at index $j.');
       out.writeln('Tuple${i + 1}$addTypes addAt$j<T>(T value) => '
           'Tuple${i + 1}($addValues);');
     }
@@ -216,6 +220,7 @@ Future<void> generateChild(int i, int max) async {
       final removeValues =
           listify([...values.sublist(0, j), ...values.sublist(j + 1)]);
       out.writeln('');
+      out.writeln('/// Returns a new tuple with index $j removed.');
       out.writeln('Tuple${i - 1}$removeTypes removeAt$j() => '
           '${i - 1 == 0 ? 'const ' : ''}Tuple${i - 1}($removeValues);');
     }

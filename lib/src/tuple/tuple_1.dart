@@ -6,8 +6,10 @@ import 'package:more/tuple.dart';
 class Tuple1<T0> extends Tuple {
   final T0 value0;
 
+  /// Const constructor.
   const Tuple1(this.value0);
 
+  /// List constructor.
   // ignore: prefer_constructors_over_static_methods
   static Tuple1<T> fromList<T>(List<T> list) {
     if (list.length != 1) {
@@ -20,6 +22,7 @@ class Tuple1<T0> extends Tuple {
   @override
   int get length => 1;
 
+  /// Returns a new tuple with index 0 replaced by [value].
   Tuple1<T> with0<T>(T value) => Tuple1(value);
 
   @override
@@ -28,8 +31,10 @@ class Tuple1<T0> extends Tuple {
   @override
   Tuple2<T0, T> addLast<T>(T value) => addAt1(value);
 
+  /// Returns a new tuple with [value] added at index 0.
   Tuple2<T, T0> addAt0<T>(T value) => Tuple2(value, value0);
 
+  /// Returns a new tuple with [value] added at index 1.
   Tuple2<T0, T> addAt1<T>(T value) => Tuple2(value0, value);
 
   @override
@@ -38,6 +43,7 @@ class Tuple1<T0> extends Tuple {
   @override
   Tuple0 removeLast() => removeAt0();
 
+  /// Returns a new tuple with index 0 removed.
   Tuple0 removeAt0() => const Tuple0();
 
   @override

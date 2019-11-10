@@ -11,9 +11,11 @@ class Tuple6<T0, T1, T2, T3, T4, T5> extends Tuple {
   final T4 value4;
   final T5 value5;
 
+  /// Const constructor.
   const Tuple6(this.value0, this.value1, this.value2, this.value3, this.value4,
       this.value5);
 
+  /// List constructor.
   // ignore: prefer_constructors_over_static_methods
   static Tuple6<T, T, T, T, T, T> fromList<T>(List<T> list) {
     if (list.length != 6) {
@@ -26,21 +28,27 @@ class Tuple6<T0, T1, T2, T3, T4, T5> extends Tuple {
   @override
   int get length => 6;
 
+  /// Returns a new tuple with index 0 replaced by [value].
   Tuple6<T, T1, T2, T3, T4, T5> with0<T>(T value) =>
       Tuple6(value, value1, value2, value3, value4, value5);
 
+  /// Returns a new tuple with index 1 replaced by [value].
   Tuple6<T0, T, T2, T3, T4, T5> with1<T>(T value) =>
       Tuple6(value0, value, value2, value3, value4, value5);
 
+  /// Returns a new tuple with index 2 replaced by [value].
   Tuple6<T0, T1, T, T3, T4, T5> with2<T>(T value) =>
       Tuple6(value0, value1, value, value3, value4, value5);
 
+  /// Returns a new tuple with index 3 replaced by [value].
   Tuple6<T0, T1, T2, T, T4, T5> with3<T>(T value) =>
       Tuple6(value0, value1, value2, value, value4, value5);
 
+  /// Returns a new tuple with index 4 replaced by [value].
   Tuple6<T0, T1, T2, T3, T, T5> with4<T>(T value) =>
       Tuple6(value0, value1, value2, value3, value, value5);
 
+  /// Returns a new tuple with index 5 replaced by [value].
   Tuple6<T0, T1, T2, T3, T4, T> with5<T>(T value) =>
       Tuple6(value0, value1, value2, value3, value4, value);
 
@@ -50,24 +58,31 @@ class Tuple6<T0, T1, T2, T3, T4, T5> extends Tuple {
   @override
   Tuple7<T0, T1, T2, T3, T4, T5, T> addLast<T>(T value) => addAt6(value);
 
+  /// Returns a new tuple with [value] added at index 0.
   Tuple7<T, T0, T1, T2, T3, T4, T5> addAt0<T>(T value) =>
       Tuple7(value, value0, value1, value2, value3, value4, value5);
 
+  /// Returns a new tuple with [value] added at index 1.
   Tuple7<T0, T, T1, T2, T3, T4, T5> addAt1<T>(T value) =>
       Tuple7(value0, value, value1, value2, value3, value4, value5);
 
+  /// Returns a new tuple with [value] added at index 2.
   Tuple7<T0, T1, T, T2, T3, T4, T5> addAt2<T>(T value) =>
       Tuple7(value0, value1, value, value2, value3, value4, value5);
 
+  /// Returns a new tuple with [value] added at index 3.
   Tuple7<T0, T1, T2, T, T3, T4, T5> addAt3<T>(T value) =>
       Tuple7(value0, value1, value2, value, value3, value4, value5);
 
+  /// Returns a new tuple with [value] added at index 4.
   Tuple7<T0, T1, T2, T3, T, T4, T5> addAt4<T>(T value) =>
       Tuple7(value0, value1, value2, value3, value, value4, value5);
 
+  /// Returns a new tuple with [value] added at index 5.
   Tuple7<T0, T1, T2, T3, T4, T, T5> addAt5<T>(T value) =>
       Tuple7(value0, value1, value2, value3, value4, value, value5);
 
+  /// Returns a new tuple with [value] added at index 6.
   Tuple7<T0, T1, T2, T3, T4, T5, T> addAt6<T>(T value) =>
       Tuple7(value0, value1, value2, value3, value4, value5, value);
 
@@ -77,21 +92,27 @@ class Tuple6<T0, T1, T2, T3, T4, T5> extends Tuple {
   @override
   Tuple5<T0, T1, T2, T3, T4> removeLast() => removeAt5();
 
+  /// Returns a new tuple with index 0 removed.
   Tuple5<T1, T2, T3, T4, T5> removeAt0() =>
       Tuple5(value1, value2, value3, value4, value5);
 
+  /// Returns a new tuple with index 1 removed.
   Tuple5<T0, T2, T3, T4, T5> removeAt1() =>
       Tuple5(value0, value2, value3, value4, value5);
 
+  /// Returns a new tuple with index 2 removed.
   Tuple5<T0, T1, T3, T4, T5> removeAt2() =>
       Tuple5(value0, value1, value3, value4, value5);
 
+  /// Returns a new tuple with index 3 removed.
   Tuple5<T0, T1, T2, T4, T5> removeAt3() =>
       Tuple5(value0, value1, value2, value4, value5);
 
+  /// Returns a new tuple with index 4 removed.
   Tuple5<T0, T1, T2, T3, T5> removeAt4() =>
       Tuple5(value0, value1, value2, value3, value5);
 
+  /// Returns a new tuple with index 5 removed.
   Tuple5<T0, T1, T2, T3, T4> removeAt5() =>
       Tuple5(value0, value1, value2, value3, value4);
 
