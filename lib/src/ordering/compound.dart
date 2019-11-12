@@ -1,6 +1,6 @@
 library more.ordering.compound;
 
-import 'package:more/ordering.dart';
+import '../../ordering.dart';
 
 class CompoundOrdering<T> extends Ordering<T> {
   final List<Ordering<T>> orderings;

@@ -1,6 +1,6 @@
 library more.math.primes_up_to;
 
-import 'package:more/src/collection/bitlist.dart';
+import '../collection/bitlist.dart';
 
 /// Returns primes up to a [limit] computed by the Sieve of Eratosthenes.
 List<int> primesUpTo(int limit) {

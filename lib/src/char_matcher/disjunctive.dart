@@ -1,8 +1,8 @@
 library more.char_matcher.disjunctive;
 
-import 'package:more/char_matcher.dart';
-import 'package:more/src/char_matcher/any.dart';
-import 'package:more/src/char_matcher/none.dart';
+import '../../char_matcher.dart';
+import 'any.dart';
+import 'none.dart';
 
 class DisjunctiveCharMatcher extends CharMatcher {
   final List<CharMatcher> matchers;

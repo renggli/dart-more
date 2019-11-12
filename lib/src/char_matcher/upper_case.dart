@@ -1,6 +1,6 @@
 library more.char_matcher.upper_case;
 
-import 'package:more/char_matcher.dart';
+import '../../char_matcher.dart';
 
 class UpperCaseLetterCharMatcher extends CharMatcher {
   const UpperCaseLetterCharMatcher();

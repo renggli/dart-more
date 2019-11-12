@@ -2,7 +2,7 @@ library more.iterable.iterate;
 
 import 'dart:collection' show IterableBase;
 
-import 'package:more/src/iterable/mixins/infinite.dart';
+import 'mixins/infinite.dart';
 
 /// One argument function returning an object of the same type.
 typedef IterateFunction<E> = E Function(E value);

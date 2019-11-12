@@ -1,6 +1,6 @@
 library more.iterable.math;
 
-import 'package:more/src/iterable/fold.dart';
+import 'fold.dart';
 
 /// Returns an iterable over the fibonacci sequence starting with [f0] and
 /// [f1]. The default sequence is indefinitely long and by default starts

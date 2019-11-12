@@ -1,6 +1,6 @@
 library more.iterable.periodic;
 
-import 'package:more/src/iterable/iterate.dart' show iterate;
+import 'iterate.dart' show iterate;
 
 /// Different kinds of repeating periodic timestamps.
 enum Period {

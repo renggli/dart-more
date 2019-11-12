@@ -1,7 +1,7 @@
 library more.char_matcher.none;
 
-import 'package:more/char_matcher.dart';
-import 'package:more/src/char_matcher/any.dart';
+import '../../char_matcher.dart';
+import 'any.dart';
 
 class NoneCharMatcher extends CharMatcher {
   const NoneCharMatcher();

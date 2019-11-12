@@ -1,6 +1,6 @@
 library more.char_matcher.whitespace;
 
-import 'package:more/char_matcher.dart';
+import '../../char_matcher.dart';
 
 class WhitespaceCharMatcher extends CharMatcher {
   const WhitespaceCharMatcher();

@@ -5,21 +5,21 @@
 /// collection of libraries for Java-based projects.
 library more.char_matcher;
 
-import 'package:more/src/char_matcher/any.dart';
-import 'package:more/src/char_matcher/ascii.dart';
-import 'package:more/src/char_matcher/char_set.dart';
-import 'package:more/src/char_matcher/digit.dart';
-import 'package:more/src/char_matcher/disjunctive.dart';
-import 'package:more/src/char_matcher/letter.dart';
-import 'package:more/src/char_matcher/letter_or_digit.dart';
-import 'package:more/src/char_matcher/lower_case.dart';
-import 'package:more/src/char_matcher/negate.dart';
-import 'package:more/src/char_matcher/none.dart';
-import 'package:more/src/char_matcher/pattern.dart';
-import 'package:more/src/char_matcher/range.dart';
-import 'package:more/src/char_matcher/single.dart';
-import 'package:more/src/char_matcher/upper_case.dart';
-import 'package:more/src/char_matcher/whitespace.dart';
+import 'src/char_matcher/any.dart';
+import 'src/char_matcher/ascii.dart';
+import 'src/char_matcher/char_set.dart';
+import 'src/char_matcher/digit.dart';
+import 'src/char_matcher/disjunctive.dart';
+import 'src/char_matcher/letter.dart';
+import 'src/char_matcher/letter_or_digit.dart';
+import 'src/char_matcher/lower_case.dart';
+import 'src/char_matcher/negate.dart';
+import 'src/char_matcher/none.dart';
+import 'src/char_matcher/pattern.dart';
+import 'src/char_matcher/range.dart';
+import 'src/char_matcher/single.dart';
+import 'src/char_matcher/upper_case.dart';
+import 'src/char_matcher/whitespace.dart';
 
 /// Abstract character matcher function.
 ///

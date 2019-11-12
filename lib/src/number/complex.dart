@@ -1,10 +1,11 @@
 library more.number.complex;
 
-import 'package:meta/meta.dart' show immutable;
 import 'dart:math' as math;
 
-import 'package:more/hash.dart' show hash2;
-import 'package:more/math.dart' as math2;
+import 'package:meta/meta.dart' show immutable;
+
+import '../../hash.dart' show hash2;
+import '../../math.dart' as math2;
 
 /// A complex number of the form `a + b*i`.
 @immutable
@@ -30,7 +31,7 @@ class Complex {
   factory Complex.fromImaginary(num b) => Complex(0, b);
 
   /// Creates a complex number from cartesian coordinates [a] and [b].
-  factory Complex.fromCartesian(num a, num b) = Complex;
+  const factory Complex.fromCartesian(num a, num b) = Complex;
 
   /// Creates a complex number from polar coordinates [radius] and [phase].
   factory Complex.fromPolar(num radius, num phase) => Complex(

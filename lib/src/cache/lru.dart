@@ -2,9 +2,9 @@ library more.cache.lru;
 
 import 'dart:async' show Future;
 
-import 'package:more/cache.dart';
-import 'package:more/src/cache/item.dart';
-import 'package:more/src/cache/loader.dart';
+import '../../cache.dart';
+import 'item.dart';
+import 'loader.dart';
 
 /// Least Recently Used (LRU) cache.
 class LruCache<K, V> extends Cache<K, V> {

@@ -1,6 +1,6 @@
 library more.char_matcher.range;
 
-import 'package:more/char_matcher.dart';
+import '../../char_matcher.dart';
 
 class RangeCharMatcher extends CharMatcher {
   final int start;

@@ -1,6 +1,6 @@
 library more.char_matcher.single;
 
-import 'package:more/char_matcher.dart';
+import '../../char_matcher.dart';
 
 class SingleCharMatcher extends CharMatcher {
   final int charValue;

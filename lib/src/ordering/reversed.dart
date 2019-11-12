@@ -1,6 +1,6 @@
 library more.ordering.reversed;
 
-import 'package:more/ordering.dart';
+import '../../ordering.dart';
 
 class ReversedOrdering<T> extends Ordering<T> {
   final Ordering<T> ordering;

@@ -2,8 +2,7 @@ library more.collection.string;
 
 import 'dart:collection' show ListBase;
 
-import 'package:more/src/iterable/mixins/unmodifiable.dart'
-    show UnmodifiableListMixin;
+import '../iterable/mixins/unmodifiable.dart' show UnmodifiableListMixin;
 
 /// Returns a light-weight immutable iterable list around the characters of a
 /// [string].

@@ -2,9 +2,8 @@ library more.collection.double_range;
 
 import 'dart:collection' show ListBase;
 
-import 'package:more/ordering.dart' show Ordering;
-import 'package:more/src/iterable/mixins/unmodifiable.dart'
-    show UnmodifiableListMixin;
+import '../../ordering.dart' show Ordering;
+import '../iterable/mixins/unmodifiable.dart' show UnmodifiableListMixin;
 
 /// A virtual range of doubles containing an arithmetic progressions.
 class DoubleRange extends ListBase<double> with UnmodifiableListMixin<double> {

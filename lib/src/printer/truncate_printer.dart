@@ -1,7 +1,7 @@
 library more.printer.truncate_printer;
 
-import 'package:more/printer.dart';
-import 'package:more/src/printer/delegate_printer.dart';
+import '../../printer.dart';
+import 'delegate_printer.dart';
 
 /// Truncates the string from the left side if it is longer than width.
 class TruncateLeftPrinter extends DelegatePrinter {

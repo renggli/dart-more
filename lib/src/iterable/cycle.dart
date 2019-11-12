@@ -2,7 +2,7 @@ library more.iterable.cycle;
 
 import 'dart:collection' show IterableBase;
 
-import 'package:more/src/iterable/mixins/infinite.dart';
+import 'mixins/infinite.dart';
 
 /// Returns a iterable whose iterator cycles repeatedly over the elements
 /// of an [iterable]. If [count] is specified, the returned iterable has a

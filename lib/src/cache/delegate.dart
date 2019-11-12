@@ -2,7 +2,7 @@ library more.cache.delegate;
 
 import 'dart:async' show Future;
 
-import 'package:more/cache.dart';
+import '../../cache.dart';
 
 /// A cache that delegates to another one.
 class DelegateCache<K, V> extends Cache<K, V> {

@@ -1,8 +1,8 @@
 library more.cache.fifo;
 
-import 'package:more/src/cache/item.dart';
-import 'package:more/src/cache/loader.dart';
-import 'package:more/src/cache/lru.dart';
+import 'item.dart';
+import 'loader.dart';
+import 'lru.dart';
 
 /// First-in/First-out (FIFO) cache.
 class FifoCache<K, V> extends LruCache<K, V> {

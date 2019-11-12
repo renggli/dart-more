@@ -1,6 +1,6 @@
 library more.ordering.natural;
 
-import 'package:more/ordering.dart';
+import '../../ordering.dart';
 
 class NaturalOrdering<T extends Comparable<T>> extends Ordering<T> {
   NaturalOrdering();

@@ -1,9 +1,10 @@
 library more.number.quaternion;
 
-import 'package:meta/meta.dart' show immutable;
 import 'dart:math' as math;
 
-import 'package:more/hash.dart' show hash4;
+import 'package:meta/meta.dart' show immutable;
+
+import '../../hash.dart' show hash4;
 
 /// A quaternion number of the form `w + x*i + y*j + z*k`.
 @immutable

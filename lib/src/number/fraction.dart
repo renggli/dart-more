@@ -1,9 +1,10 @@
 library more.number.fraction;
 
-import 'package:meta/meta.dart' show immutable;
 import 'package:collection/collection.dart' show QueueList;
-import 'package:more/hash.dart' show hash2;
-import 'package:more/math.dart' as math;
+import 'package:meta/meta.dart' show immutable;
+
+import '../../hash.dart' show hash2;
+import '../../math.dart' as math;
 
 /// A rational number.
 @immutable

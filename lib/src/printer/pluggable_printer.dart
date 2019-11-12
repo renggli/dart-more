@@ -1,6 +1,6 @@
 library more.printer.pluggable_printer;
 
-import 'package:more/printer.dart';
+import '../../printer.dart';
 
 /// Prints a string literal.
 class PluggablePrinter extends Printer {

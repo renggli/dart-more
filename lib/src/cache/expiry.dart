@@ -2,10 +2,10 @@ library more.cache.expiry;
 
 import 'dart:async' show Future, FutureOr;
 
-import 'package:more/cache.dart';
-import 'package:more/src/cache/clock.dart';
-import 'package:more/src/cache/item.dart';
-import 'package:more/src/cache/loader.dart';
+import '../../cache.dart';
+import 'clock.dart';
+import 'item.dart';
+import 'loader.dart';
 
 /// A cache that expires after a certain amount of time.
 class ExpiryCache<K, V> extends Cache<K, V> {

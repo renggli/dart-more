@@ -1,6 +1,6 @@
 library more.char_matcher.negate;
 
-import 'package:more/char_matcher.dart';
+import '../../char_matcher.dart';
 
 class NegateCharMatcher extends CharMatcher {
   final CharMatcher matcher;

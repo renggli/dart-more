@@ -1,6 +1,6 @@
 library more.char_matcher.digit;
 
-import 'package:more/char_matcher.dart';
+import '../../char_matcher.dart';
 
 class DigitCharMatcher extends CharMatcher {
   const DigitCharMatcher();

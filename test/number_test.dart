@@ -57,7 +57,7 @@ void main() {
         expect(complex.arg(), math.pi / 2);
       });
       test('fromCartesian', () {
-        final complex = Complex.fromCartesian(-3, 4);
+        const complex = Complex.fromCartesian(-3, 4);
         expect(complex.a, -3);
         expect(complex.b, 4);
         expect(complex.real, -3);
@@ -644,7 +644,7 @@ void main() {
         expect(quaternion.abs(), closeTo(5.477225, epsilon));
       });
       test('of', () {
-        final quaternion = Quaternion.of(1, [2, 3, 4]);
+        final quaternion = Quaternion.of(1, const [2, 3, 4]);
         expect(quaternion.w, 1);
         expect(quaternion.x, 2);
         expect(quaternion.y, 3);
@@ -652,7 +652,7 @@ void main() {
         expect(quaternion.abs(), closeTo(5.477225, epsilon));
       });
       test('fromList', () {
-        final quaternion = Quaternion.fromList([1, 2, 3, 4]);
+        final quaternion = Quaternion.fromList(const [1, 2, 3, 4]);
         expect(quaternion.w, 1);
         expect(quaternion.x, 2);
         expect(quaternion.y, 3);
@@ -660,12 +660,13 @@ void main() {
         expect(quaternion.abs(), closeTo(5.477225, epsilon));
       });
       test('fromAxis', () {
-        final quaternion = Quaternion.fromAxis([1, 2, 3], 4.0);
+        final quaternion = Quaternion.fromAxis(const [1, 2, 3], 4.0);
         expect(quaternion, isClose(-0.416146, 0.243019, 0.486039, 0.729059));
         expect(quaternion.abs(), closeTo(1.0, epsilon));
       });
       test('fromVectors', () {
-        final quaternion = Quaternion.fromVectors([1, 2, 3], [4, 5, 6]);
+        final quaternion =
+            Quaternion.fromVectors(const [1, 2, 3], const [4, 5, 6]);
         expect(quaternion, isClose(0.993637, -0.045978, 0.091956, -0.045978));
         expect(quaternion.abs(), closeTo(1.0, epsilon));
       });

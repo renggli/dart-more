@@ -5,15 +5,15 @@
 /// collection of libraries for Java-based projects.
 library more.ordering;
 
-import 'package:more/src/ordering/comparator.dart';
-import 'package:more/src/ordering/compound.dart';
-import 'package:more/src/ordering/explicit.dart';
-import 'package:more/src/ordering/function.dart';
-import 'package:more/src/ordering/lexicographical.dart';
-import 'package:more/src/ordering/natural.dart';
-import 'package:more/src/ordering/nulls_first.dart';
-import 'package:more/src/ordering/nulls_last.dart';
-import 'package:more/src/ordering/reversed.dart';
+import 'src/ordering/comparator.dart';
+import 'src/ordering/compound.dart';
+import 'src/ordering/explicit.dart';
+import 'src/ordering/function.dart';
+import 'src/ordering/lexicographical.dart';
+import 'src/ordering/natural.dart';
+import 'src/ordering/nulls_first.dart';
+import 'src/ordering/nulls_last.dart';
+import 'src/ordering/reversed.dart';
 
 /// An ordering implements a [Comparator] function that can be modified
 /// using a fluent interface.

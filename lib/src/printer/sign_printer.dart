@@ -1,8 +1,8 @@
 library more.printer.sign_printer;
 
-import 'package:more/printer.dart';
-import 'package:more/src/printer/literal_printer.dart';
-import 'package:more/src/printer/utils.dart';
+import '../../printer.dart';
+import 'literal_printer.dart';
+import 'utils.dart';
 
 /// A printer that omits the positive sign.
 const Printer omitPositiveSign = SignPrinter();

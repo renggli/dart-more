@@ -2,7 +2,7 @@ library more.iterable.repeat;
 
 import 'dart:collection' show IterableBase;
 
-import 'package:more/src/iterable/mixins/infinite.dart';
+import 'mixins/infinite.dart';
 
 /// Returns an infinite iterable with a constant [element]. If [count] is
 /// provided the resulting iterator is limited to [count] elements.

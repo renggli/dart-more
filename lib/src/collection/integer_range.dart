@@ -2,8 +2,7 @@ library more.collection.integer_range;
 
 import 'dart:collection' show ListBase;
 
-import 'package:more/src/iterable/mixins/unmodifiable.dart'
-    show UnmodifiableListMixin;
+import '../iterable/mixins/unmodifiable.dart' show UnmodifiableListMixin;
 
 /// A virtual range of integers containing an arithmetic progressions.
 class IntegerRange extends ListBase<int> with UnmodifiableListMixin<int> {

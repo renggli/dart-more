@@ -1,6 +1,6 @@
 library more.ordering.function;
 
-import 'package:more/ordering.dart';
+import '../../ordering.dart';
 
 typedef MappingFunction<F, T> = T Function(F argument);
 

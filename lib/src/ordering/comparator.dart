@@ -1,6 +1,6 @@
 library more.ordering.comparator;
 
-import 'package:more/ordering.dart';
+import '../../ordering.dart';
 
 class ComparatorOrdering<T> extends Ordering<T> {
   final Comparator<T> comparator;

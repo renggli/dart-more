@@ -2,16 +2,16 @@ library more.collection.cache;
 
 import 'dart:async' show Future;
 
-import 'package:more/src/cache/clock.dart';
-import 'package:more/src/cache/empty.dart';
-import 'package:more/src/cache/expiry.dart';
-import 'package:more/src/cache/fifo.dart';
-import 'package:more/src/cache/loader.dart';
-import 'package:more/src/cache/lru.dart';
+import 'src/cache/clock.dart';
+import 'src/cache/empty.dart';
+import 'src/cache/expiry.dart';
+import 'src/cache/fifo.dart';
+import 'src/cache/loader.dart';
+import 'src/cache/lru.dart';
 
-export 'package:more/src/cache/clock.dart';
-export 'package:more/src/cache/delegate.dart';
-export 'package:more/src/cache/loader.dart';
+export 'src/cache/clock.dart';
+export 'src/cache/delegate.dart';
+export 'src/cache/loader.dart';
 
 abstract class Cache<K, V> {
   /// Constructs an empty or null cache, useful mostly for testing.

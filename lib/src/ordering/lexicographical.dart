@@ -1,6 +1,6 @@
 library more.ordering.lexicographical;
 
-import 'package:more/ordering.dart';
+import '../../ordering.dart';
 
 class LexicographicalOrdering<T> extends Ordering<Iterable<T>> {
   final Ordering<T> ordering;

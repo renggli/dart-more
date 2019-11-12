@@ -1,10 +1,10 @@
 library more.char_matcher.optimize;
 
-import 'package:more/char_matcher.dart';
-import 'package:more/src/char_matcher/none.dart';
-import 'package:more/src/char_matcher/range.dart';
-import 'package:more/src/char_matcher/ranges.dart';
-import 'package:more/src/char_matcher/single.dart';
+import '../../char_matcher.dart';
+import 'none.dart';
+import 'range.dart';
+import 'ranges.dart';
+import 'single.dart';
 
 CharMatcher optimize(Iterable<RangeCharMatcher> ranges) {
   // Sort the range lists.
