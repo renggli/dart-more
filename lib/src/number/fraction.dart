@@ -1,10 +1,12 @@
 library more.number.fraction;
 
+import 'package:meta/meta.dart' show immutable;
 import 'package:collection/collection.dart' show QueueList;
 import 'package:more/hash.dart' show hash2;
 import 'package:more/math.dart' as math;
 
 /// A rational number.
+@immutable
 class Fraction implements Comparable<Fraction> {
   /// The neutral additive element, that is `0`.
   static const Fraction zero = Fraction._(0, 1);

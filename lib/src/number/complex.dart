@@ -1,11 +1,13 @@
 library more.number.complex;
 
+import 'package:meta/meta.dart' show immutable;
 import 'dart:math' as math;
 
 import 'package:more/hash.dart' show hash2;
 import 'package:more/math.dart' as math2;
 
 /// A complex number of the form `a + b*i`.
+@immutable
 class Complex {
   /// The neutral additive element, that is `0`.
   static const Complex zero = Complex(0);

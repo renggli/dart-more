@@ -1,10 +1,12 @@
 library more.number.quaternion;
 
+import 'package:meta/meta.dart' show immutable;
 import 'dart:math' as math;
 
 import 'package:more/hash.dart' show hash4;
 
 /// A quaternion number of the form `w + x*i + y*j + z*k`.
+@immutable
 class Quaternion {
   /// The neutral additive element, that is `0`.
   static const Quaternion zero = Quaternion(0);
