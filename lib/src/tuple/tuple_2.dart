@@ -1,6 +1,6 @@
 library more.tuple.tuple_2;
 
-import 'package:more/tuple.dart';
+import '../../tuple.dart';
 
 /// Tuple with 2 elements.
 class Tuple2<T0, T1> extends Tuple {

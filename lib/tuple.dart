@@ -1,29 +1,32 @@
 /// Tuple data type.
 library more.tuple;
 
-import 'package:more/src/tuple/tuple_0.dart';
-import 'package:more/src/tuple/tuple_1.dart';
-import 'package:more/src/tuple/tuple_2.dart';
-import 'package:more/src/tuple/tuple_3.dart';
-import 'package:more/src/tuple/tuple_4.dart';
-import 'package:more/src/tuple/tuple_5.dart';
-import 'package:more/src/tuple/tuple_6.dart';
-import 'package:more/src/tuple/tuple_7.dart';
-import 'package:more/src/tuple/tuple_8.dart';
-import 'package:more/src/tuple/tuple_9.dart';
+import 'package:meta/meta.dart' show immutable;
 
-export 'package:more/src/tuple/tuple_0.dart';
-export 'package:more/src/tuple/tuple_1.dart';
-export 'package:more/src/tuple/tuple_2.dart';
-export 'package:more/src/tuple/tuple_3.dart';
-export 'package:more/src/tuple/tuple_4.dart';
-export 'package:more/src/tuple/tuple_5.dart';
-export 'package:more/src/tuple/tuple_6.dart';
-export 'package:more/src/tuple/tuple_7.dart';
-export 'package:more/src/tuple/tuple_8.dart';
-export 'package:more/src/tuple/tuple_9.dart';
+import 'src/tuple/tuple_0.dart';
+import 'src/tuple/tuple_1.dart';
+import 'src/tuple/tuple_2.dart';
+import 'src/tuple/tuple_3.dart';
+import 'src/tuple/tuple_4.dart';
+import 'src/tuple/tuple_5.dart';
+import 'src/tuple/tuple_6.dart';
+import 'src/tuple/tuple_7.dart';
+import 'src/tuple/tuple_8.dart';
+import 'src/tuple/tuple_9.dart';
+
+export 'src/tuple/tuple_0.dart';
+export 'src/tuple/tuple_1.dart';
+export 'src/tuple/tuple_2.dart';
+export 'src/tuple/tuple_3.dart';
+export 'src/tuple/tuple_4.dart';
+export 'src/tuple/tuple_5.dart';
+export 'src/tuple/tuple_6.dart';
+export 'src/tuple/tuple_7.dart';
+export 'src/tuple/tuple_8.dart';
+export 'src/tuple/tuple_9.dart';
 
 /// Abstract tuple class.
+@immutable
 abstract class Tuple {
   /// Const constructor.
   const Tuple();

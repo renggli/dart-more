@@ -41,15 +41,18 @@ Future<void> generateParent(int max) async {
   out.writeln('/// Tuple data type.');
   out.writeln('library more.tuple;');
   out.writeln('');
+  out.writeln('import \'package:meta/meta.dart\' show immutable;');
+  out.writeln('');
   for (var i = 0; i < max; i++) {
-    out.writeln('import \'package:more/src/tuple/tuple_$i.dart\';');
+    out.writeln('import \'src/tuple/tuple_$i.dart\';');
   }
   out.writeln('');
   for (var i = 0; i < max; i++) {
-    out.writeln('export \'package:more/src/tuple/tuple_$i.dart\';');
+    out.writeln('export \'src/tuple/tuple_$i.dart\';');
   }
   out.writeln('');
   out.writeln('/// Abstract tuple class.');
+  out.writeln('@immutable');
   out.writeln('abstract class Tuple {');
   out.writeln('');
   out.writeln('/// Const constructor.');
@@ -113,7 +116,7 @@ Future<void> generateChild(int i, int max) async {
 
   out.writeln('library more.tuple.tuple_$i;');
   out.writeln('');
-  out.writeln('import \'package:more/tuple.dart\';');
+  out.writeln('import \'../../tuple.dart\';');
   out.writeln('');
   out.writeln('/// Tuple with $i element${i != 1 ? 's' : ''}.');
   out.writeln('class Tuple$i${generify(types)} extends Tuple {');

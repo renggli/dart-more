@@ -1,6 +1,6 @@
 library more.tuple.tuple_5;
 
-import 'package:more/tuple.dart';
+import '../../tuple.dart';
 
 /// Tuple with 5 elements.
 class Tuple5<T0, T1, T2, T3, T4> extends Tuple {

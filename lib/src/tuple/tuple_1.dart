@@ -1,6 +1,6 @@
 library more.tuple.tuple_1;
 
-import 'package:more/tuple.dart';
+import '../../tuple.dart';
 
 /// Tuple with 1 element.
 class Tuple1<T0> extends Tuple {
