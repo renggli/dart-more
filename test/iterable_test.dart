@@ -992,4 +992,21 @@ void main() {
           ]);
     });
   });
+  group('sum', () {
+    test('empty', () {
+      expect(sum([]), 0.0);
+    });
+    test('single', () {
+      expect(sum([1]), 1);
+    });
+    test('multiple', () {
+      expect(sum([1, 2, 3]), 6);
+    });
+    test('sumDouble', () {
+      expect(sumDouble([1, 2, 3]), 6.0);
+    });
+    test('sumInt', () {
+      expect(sumInt([1.1, 2.1, 3.1]), 6);
+    });
+  });
 }

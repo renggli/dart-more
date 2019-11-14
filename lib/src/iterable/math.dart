@@ -22,3 +22,9 @@ Iterable<int> digits(int value, [int base = 10]) sync* {
     }
   }
 }
+
+num sum(Iterable<num> iterable) => iterable.fold(0.0, (a, b) => a + b);
+
+double sumDouble(Iterable<num> iterable) => sum(iterable).toDouble();
+
+int sumInt(Iterable<num> iterable) => sum(iterable).toInt();
