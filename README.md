@@ -50,6 +50,10 @@ import 'package:more/printer.dart';
 import 'package:more/tuple.dart';
 ```
 
+### Contributing
+
+The goal of the library is to provide a loose collection of carefully curated utilities that are not provided by the Dart standard library. All features must be well tested. New features must have significant advantages over alternatives, such as code reduction, readability improvement, speed increase, memory reduction, or improved accuracy. In case of doubt, consider filing a feature request before filing a pull request. 
+
 ### History
 
 This library started in April 2013 as I was working through the puzzles of [Project Euler](https://projecteuler.net/) and encountered some missing features in Dart. Over time the library grew and became _more_ useful in many other places, so I created this reusable library.
