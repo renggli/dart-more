@@ -1,6 +1,6 @@
 library more.iterable.concat;
 
-/// Combines multiple [iterables] into a single iterable.
+/// Combines this [Iterable] of [Iterable]s into a single iterable.
 ///
 /// For example:
 ///
@@ -9,7 +9,8 @@ library more.iterable.concat;
 ///    var third = new Set.of([6]);
 ///
 ///    // equals to [1, 2, 3, 4, 5, 6]
-///    var concatenation = concat([first, second, third]);
+///    var concatenation = [first, second, third].concat();
 ///
-Iterable<E> concat<E>(Iterable<Iterable<E>> iterables) =>
-    iterables.expand((iterable) => iterable);
+extension ConcatExtension<E> on Iterable<Iterable<E>> {
+  Iterable<E> concat() => expand((iterable) => iterable);
+}

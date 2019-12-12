@@ -1,6 +1,6 @@
 library more.test.ordering_test;
 
-import 'package:more/iterable.dart' show concat;
+import 'package:more/iterable.dart';
 import 'package:more/ordering.dart';
 import 'package:test/test.dart';
 
@@ -29,27 +29,27 @@ void verify<T>(
     verifyBasic(
         'ordering.nullsFirst',
         ordering.nullsFirst,
-        concat([
+        [
           [null],
           unsorted,
           [null]
-        ]),
-        concat([
+        ].concat(),
+        [
           [null, null],
           expected
-        ]));
+        ].concat());
     verifyBasic(
         'ordering.nullsLast',
         ordering.nullsLast,
-        concat([
+        [
           [null],
           unsorted,
           [null]
-        ]),
-        concat([
+        ].concat(),
+        [
           expected,
           [null, null]
-        ]));
+        ].concat());
   }
 }
 

@@ -37,6 +37,40 @@ void main() {
     expect(() => binomial(7, -1), throwsArgumentError);
     expect(() => binomial(7, 8), throwsArgumentError);
   });
+  group('math', () {
+    test('digits', () {
+      expect(digits(0).toList(), [0]);
+      expect(digits(1).toList(), [1]);
+      expect(digits(12).toList(), [2, 1]);
+      expect(digits(123).toList(), [3, 2, 1]);
+      expect(digits(1001).toList(), [1, 0, 0, 1]);
+      expect(digits(10001).toList(), [1, 0, 0, 0, 1]);
+      expect(digits(1000).toList(), [0, 0, 0, 1]);
+      expect(digits(10000).toList(), [0, 0, 0, 0, 1]);
+    });
+    test('digits (base 2)', () {
+      expect(digits(0, 2).toList(), [0]);
+      expect(digits(1, 2).toList(), [1]);
+      expect(digits(12, 2).toList(), [0, 0, 1, 1]);
+      expect(digits(123, 2).toList(), [1, 1, 0, 1, 1, 1, 1]);
+      expect(digits(1001, 2).toList(), [1, 0, 0, 1, 0, 1, 1, 1, 1, 1]);
+      expect(digits(10001, 2).toList(),
+          [1, 0, 0, 0, 1, 0, 0, 0, 1, 1, 1, 0, 0, 1]);
+      expect(digits(1000, 2).toList(), [0, 0, 0, 1, 0, 1, 1, 1, 1, 1]);
+      expect(digits(10000, 2).toList(),
+          [0, 0, 0, 0, 1, 0, 0, 0, 1, 1, 1, 0, 0, 1]);
+    });
+    test('digits (base 16)', () {
+      expect(digits(0, 16).toList(), [0]);
+      expect(digits(1, 16).toList(), [1]);
+      expect(digits(12, 16).toList(), [12]);
+      expect(digits(123, 16).toList(), [11, 7]);
+      expect(digits(1001, 16).toList(), [9, 14, 3]);
+      expect(digits(10001, 16).toList(), [1, 1, 7, 2]);
+      expect(digits(1000, 16).toList(), [8, 14, 3]);
+      expect(digits(10000, 16).toList(), [0, 1, 7, 2]);
+    });
+  });
   test('pow(x, 0)', () {
     expect(pow(-2, 0), 1);
     expect(pow(-1, 0), 1);

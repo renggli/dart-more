@@ -2,6 +2,7 @@
 library more.math;
 
 export 'src/math/binomial.dart' show binomial;
+export 'src/math/digits.dart' show digits;
 export 'src/math/factorial.dart' show factorial;
 export 'src/math/hyperbolic.dart' show sinh, asinh, cosh, acosh, tanh, atanh;
 export 'src/math/is_probably_prime.dart' show isProbablyPrime;

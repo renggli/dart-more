@@ -12,7 +12,7 @@ import 'mixins/infinite.dart';
 ///     repeat(2);        // [2, 2, 2, 2, 2, 2, ...]
 ///     repeat('a', 3);   // ['a', 'a', 'a']
 ///
-Iterable<E> repeat<E>(E element, [int count]) {
+Iterable<E> repeat<E>(E element, {int count}) {
   final iterable = RepeatIterable<E>(element);
   return count == null ? iterable : iterable.take(count);
 }

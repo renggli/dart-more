@@ -4,38 +4,40 @@ import 'dart:collection' show IterableBase;
 
 import 'mixins/infinite.dart';
 
-/// Returns a iterable whose iterator cycles repeatedly over the elements
-/// of an [iterable]. If [count] is specified, the returned iterable has a
-/// finite size of [iterable] &times; [count]. If [count] is unspecified the
-/// returned iterable is of infinite size.
-///
-/// For example, the expression
-///
-///     cycle([1, 2], 3)
-///
-/// results in the finite iterable:
-///
-///     [1, 2, 1, 2, 1, 2]
-///
-/// On the other hand, the expression
-///
-///     cycle([1, 2])
-///
-/// results in the infinite iterable:
-///
-///     [1, 2, 1, 2, ...]
-///
-Iterable<E> cycle<E>(Iterable<E> iterable, [int count]) {
-  if (count == 0 || iterable.isEmpty) {
-    return const Iterable.empty();
-  } else if (count == 1 || iterable is InfiniteIterable<E>) {
-    return iterable;
-  } else if (count == null) {
-    return InfiniteCycleIterable<E>(iterable);
-  } else if (count > 1) {
-    return FiniteCycleIterable<E>(iterable, count);
-  } else {
-    throw ArgumentError('Positive count expected, but got $count.');
+extension CycleExtension<E> on Iterable<E> {
+  /// Returns a iterable whose iterator cycles repeatedly over the elements
+  /// of this [Iterable]. If [count] is specified, the returned iterable has a
+  /// finite size of this [Iterable] &times; [count]. If [count] is unspecified
+  /// the returned iterable is of infinite size.
+  ///
+  /// For example, the expression
+  ///
+  ///     [1, 2].cycle(count: 3)
+  ///
+  /// results in the finite iterable:
+  ///
+  ///     [1, 2, 1, 2, 1, 2]
+  ///
+  /// On the other hand, the expression
+  ///
+  ///     [1, 2].cycle()
+  ///
+  /// results in the infinite iterable:
+  ///
+  ///     [1, 2, 1, 2, ...]
+  ///
+  Iterable<E> cycle([int count]) {
+    if (count == 0 || isEmpty) {
+      return const Iterable.empty();
+    } else if (count == 1 || this is InfiniteIterable<E>) {
+      return this;
+    } else if (count == null) {
+      return InfiniteCycleIterable<E>(this);
+    } else if (count > 1) {
+      return FiniteCycleIterable<E>(this, count);
+    } else {
+      throw ArgumentError('Positive count expected, but got $count.');
+    }
   }
 }
 

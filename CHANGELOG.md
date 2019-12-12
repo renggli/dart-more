@@ -1,5 +1,14 @@
 # Changelog
 
+## 1.19.0
+
+* Dart 2.7 compatibility and requirement.
+* Cleaned up deprecated code.
+* Iterables
+    * Converted most helpers to extension methods.
+    * Removed `fold` and `fib`, as they are not generally useful.
+    * Moved `digits` to `package:more/int_math`.
+
 ## 1.18.0
 
 * Dart 2.4 compatibility and requirement.

@@ -9,18 +9,18 @@ void main() {
 
   group('chunked', () {
     test('empty', () {
-      final iterable = chunked(<int>[], 2);
+      final iterable = <int>[].chunked(2);
       expect(iterable, <int>[]);
     });
     test('even', () {
-      final iterable = chunked([1, 2, 3, 4], 2);
+      final iterable = [1, 2, 3, 4].chunked(2);
       expect(iterable, [
         [1, 2],
         [3, 4]
       ]);
     });
     test('odd', () {
-      final iterable = chunked([1, 2, 3, 4, 5], 2);
+      final iterable = [1, 2, 3, 4, 5].chunked(2);
       expect(iterable, [
         [1, 2],
         [3, 4],
@@ -29,18 +29,18 @@ void main() {
     });
     group('with padding', () {
       test('empty', () {
-        final iterable = chunkedWithPadding(<int>[], 2, 0);
+        final iterable = <int>[].chunkedWithPadding(2, padding: 0);
         expect(iterable, <int>[]);
       });
       test('even', () {
-        final iterable = chunkedWithPadding([1, 2, 3, 4], 2, 0);
+        final iterable = [1, 2, 3, 4].chunkedWithPadding(2, padding: 0);
         expect(iterable, [
           [1, 2],
           [3, 4]
         ]);
       });
       test('odd', () {
-        final iterable = chunkedWithPadding([1, 2, 3, 4, 5], 2, 0);
+        final iterable = [1, 2, 3, 4, 5].chunkedWithPadding(2, padding: 0);
         expect(iterable, [
           [1, 2],
           [3, 4],
@@ -53,11 +53,11 @@ void main() {
     final letters = string('abcd');
     group('with repetitions', () {
       test('take 0', () {
-        final iterable = combinations(letters, 0, repetitions: true);
+        final iterable = letters.combinations(0, repetitions: true);
         expect(iterable, isEmpty);
       });
       test('take 1', () {
-        final iterable = combinations(letters, 1, repetitions: true);
+        final iterable = letters.combinations(1, repetitions: true);
         expect(iterable, [
           ['a'],
           ['b'],
@@ -66,12 +66,12 @@ void main() {
         ]);
       });
       test('take 2', () {
-        final iterable = combinations(letters, 2, repetitions: true);
+        final iterable = letters.combinations(2, repetitions: true);
         expect(iterable.map(joiner),
             ['aa', 'ab', 'ac', 'ad', 'bb', 'bc', 'bd', 'cc', 'cd', 'dd']);
       });
       test('take 3', () {
-        final iterable = combinations(letters, 3, repetitions: true);
+        final iterable = letters.combinations(3, repetitions: true);
         expect(iterable.map(joiner), [
           'aaa',
           'aab',
@@ -96,7 +96,7 @@ void main() {
         ]);
       });
       test('take 4', () {
-        final iterable = combinations(letters, 4, repetitions: true);
+        final iterable = letters.combinations(4, repetitions: true);
         expect(iterable.map(joiner), [
           'aaaa',
           'aaab',
@@ -136,13 +136,13 @@ void main() {
         ]);
       });
       test('take 5', () {
-        final iterable = combinations(letters, 5, repetitions: true);
+        final iterable = letters.combinations(5, repetitions: true);
         expect(iterable.first.join(), 'aaaaa');
         expect(iterable.last.join(), 'ddddd');
         expect(iterable.length, 56);
       });
       test('take 6', () {
-        final iterable = combinations(letters, 6, repetitions: true);
+        final iterable = letters.combinations(6, repetitions: true);
         expect(iterable.first.join(), 'aaaaaa');
         expect(iterable.last.join(), 'dddddd');
         expect(iterable.length, 84);
@@ -150,11 +150,11 @@ void main() {
     });
     group('without repetions', () {
       test('take 0', () {
-        final iterable = combinations(letters, 0, repetitions: false);
+        final iterable = letters.combinations(0, repetitions: false);
         expect(iterable, isEmpty);
       });
       test('take 1', () {
-        final iterable = combinations(letters, 1, repetitions: false);
+        final iterable = letters.combinations(1, repetitions: false);
         expect(iterable, [
           ['a'],
           ['b'],
@@ -163,103 +163,102 @@ void main() {
         ]);
       });
       test('take 2', () {
-        final iterable = combinations(letters, 2, repetitions: false);
+        final iterable = letters.combinations(2, repetitions: false);
         expect(iterable.map(joiner), ['ab', 'ac', 'ad', 'bc', 'bd', 'cd']);
       });
       test('take 3', () {
-        final iterable = combinations(letters, 3, repetitions: false);
+        final iterable = letters.combinations(3, repetitions: false);
         expect(iterable.map(joiner), ['abc', 'abd', 'acd', 'bcd']);
       });
       test('take 4', () {
-        final iterable = combinations(letters, 4, repetitions: false);
+        final iterable = letters.combinations(4, repetitions: false);
         expect(iterable.map(joiner), ['abcd']);
       });
     });
     test('range error', () {
-      expect(() => combinations(letters, -1), throwsRangeError);
+      expect(() => letters.combinations(-1), throwsRangeError);
       expect(
-          () => combinations(letters, -1, repetitions: true), throwsRangeError);
-      expect(() => combinations(letters, -1, repetitions: false),
-          throwsRangeError);
+          () => letters.combinations(-1, repetitions: true), throwsRangeError);
       expect(
-          () => combinations(letters, 5, repetitions: false), throwsRangeError);
+          () => letters.combinations(-1, repetitions: false), throwsRangeError);
+      expect(
+          () => letters.combinations(5, repetitions: false), throwsRangeError);
     });
   });
   group('concat', () {
     final a = [1, 2, 3], b = [4, 5], c = [6], d = [];
     test('void', () {
-      expect(concat([]), []);
+      expect([[]].concat(), []);
     });
     test('basic', () {
-      expect(concat([a]), [1, 2, 3]);
-      expect(concat([a, b]), [1, 2, 3, 4, 5]);
-      expect(concat([b, a]), [4, 5, 1, 2, 3]);
-      expect(concat([a, b, c]), [1, 2, 3, 4, 5, 6]);
-      expect(concat([a, c, b]), [1, 2, 3, 6, 4, 5]);
-      expect(concat([b, a, c]), [4, 5, 1, 2, 3, 6]);
-      expect(concat([b, c, a]), [4, 5, 6, 1, 2, 3]);
-      expect(concat([c, a, b]), [6, 1, 2, 3, 4, 5]);
-      expect(concat([c, b, a]), [6, 4, 5, 1, 2, 3]);
+      expect([a].concat(), [1, 2, 3]);
+      expect([a, b].concat(), [1, 2, 3, 4, 5]);
+      expect([b, a].concat(), [4, 5, 1, 2, 3]);
+      expect([a, b, c].concat(), [1, 2, 3, 4, 5, 6]);
+      expect([a, c, b].concat(), [1, 2, 3, 6, 4, 5]);
+      expect([b, a, c].concat(), [4, 5, 1, 2, 3, 6]);
+      expect([b, c, a].concat(), [4, 5, 6, 1, 2, 3]);
+      expect([c, a, b].concat(), [6, 1, 2, 3, 4, 5]);
+      expect([c, b, a].concat(), [6, 4, 5, 1, 2, 3]);
     });
     test('empty', () {
-      expect(concat([a, b, c, d]), [1, 2, 3, 4, 5, 6]);
-      expect(concat([a, b, d, c]), [1, 2, 3, 4, 5, 6]);
-      expect(concat([a, d, b, c]), [1, 2, 3, 4, 5, 6]);
-      expect(concat([d, a, b, c]), [1, 2, 3, 4, 5, 6]);
+      expect([a, b, c, d].concat(), [1, 2, 3, 4, 5, 6]);
+      expect([a, b, d, c].concat(), [1, 2, 3, 4, 5, 6]);
+      expect([a, d, b, c].concat(), [1, 2, 3, 4, 5, 6]);
+      expect([d, a, b, c].concat(), [1, 2, 3, 4, 5, 6]);
     });
     test('repeated', () {
-      expect(concat([a, a]), [1, 2, 3, 1, 2, 3]);
-      expect(concat([b, b, b]), [4, 5, 4, 5, 4, 5]);
-      expect(concat([c, c, c, c]), [6, 6, 6, 6]);
-      expect(concat([d, d, d, d, d]), []);
+      expect([a, a].concat(), [1, 2, 3, 1, 2, 3]);
+      expect([b, b, b].concat(), [4, 5, 4, 5, 4, 5]);
+      expect([c, c, c, c].concat(), [6, 6, 6, 6]);
+      expect([d, d, d, d, d].concat(), []);
     });
     test('types', () {
-      expect(concat([Set.of(c)]), [6]);
-      expect(concat([List.of(b)]), [4, 5]);
+      expect([Set.of(c)].concat(), [6]);
+      expect([List.of(b)].concat(), [4, 5]);
     });
   });
   group('cycle', () {
     test('empty', () {
-      expect(cycle([]), isEmpty);
-      expect(cycle([], 5), isEmpty);
-      expect(cycle([1, 2], 0), isEmpty);
+      expect([].cycle(), isEmpty);
+      expect([].cycle(5), isEmpty);
+      expect([1, 2].cycle(0), isEmpty);
     });
     test('fixed', () {
-      expect(cycle([1, 2], 1), [1, 2]);
-      expect(cycle([1, 2], 2), [1, 2, 1, 2]);
-      expect(cycle([1, 2], 3), [1, 2, 1, 2, 1, 2]);
+      expect([1, 2].cycle(1), [1, 2]);
+      expect([1, 2].cycle(2), [1, 2, 1, 2]);
+      expect([1, 2].cycle(3), [1, 2, 1, 2, 1, 2]);
     });
     test('infinite', () {
-      expect(cycle([1, 2]).isEmpty, isFalse);
-      expect(cycle([1, 2]).isNotEmpty, isTrue);
-      expect(cycle([1, 2]).take(3), [1, 2, 1]);
-      expect(cycle([1, 2]).skip(3).take(3), [2, 1, 2]);
+      expect([1, 2].cycle().isEmpty, isFalse);
+      expect([1, 2].cycle().isNotEmpty, isTrue);
+      expect([1, 2].cycle().take(3), [1, 2, 1]);
+      expect([1, 2].cycle().skip(3).take(3), [2, 1, 2]);
     });
     test('invalid', () {
-      expect(() => cycle([1, 2], -1), throwsArgumentError);
+      expect(() => [1, 2].cycle(-1), throwsArgumentError);
     });
     test('infinite', () {
-      expect(cycle([1, 2]).isEmpty, isFalse);
-      expect(cycle([1, 2]).isNotEmpty, isTrue);
-      expect(() => cycle([1, 2]).length, throwsUnsupportedError);
-      expect(() => cycle([1, 2]).last, throwsUnsupportedError);
-      expect(
-          () => cycle([1, 2]).lastWhere((e) => false), throwsUnsupportedError);
-      expect(() => cycle([1, 2]).single, throwsUnsupportedError);
-      expect(() => cycle([1, 2]).singleWhere((e) => false),
-          throwsUnsupportedError);
-      expect(() => cycle([1, 2]).toList(), throwsUnsupportedError);
-      expect(() => cycle([1, 2]).toSet(), throwsUnsupportedError);
+      final infinite = [1, 2].cycle();
+      expect(infinite.cycle().isEmpty, isFalse);
+      expect(infinite.isNotEmpty, isTrue);
+      expect(() => infinite.length, throwsUnsupportedError);
+      expect(() => infinite.last, throwsUnsupportedError);
+      expect(() => infinite.lastWhere((e) => false), throwsUnsupportedError);
+      expect(() => infinite.single, throwsUnsupportedError);
+      expect(() => infinite.singleWhere((e) => false), throwsUnsupportedError);
+      expect(() => infinite.toList(), throwsUnsupportedError);
+      expect(() => infinite.toSet(), throwsUnsupportedError);
     });
   });
   group('groupBy', () {
     final example = string('aaaabbbccdaabbb');
     test('groupBy empty', () {
-      final iterable = groupBy([]);
+      final iterable = [].groupBy();
       expect(iterable, []);
     });
     test('groupBy basic', () {
-      final iterable = groupBy(example);
+      final iterable = example.groupBy();
       expect(iterable.map((each) => each.key), ['a', 'b', 'c', 'd', 'a', 'b']);
       expect(iterable.map((each) => each.values), [
         ['a', 'a', 'a', 'a'],
@@ -271,7 +270,7 @@ void main() {
       ]);
     });
     test('groupBy mapping', () {
-      final iterable = groupBy(example.reversed, (key) => key.codeUnitAt(0));
+      final iterable = example.reversed.groupBy((key) => key.codeUnitAt(0));
       expect(iterable.map((each) => each.key), [98, 97, 100, 99, 98, 97]);
       expect(iterable.map((each) => each.values), [
         ['b', 'b', 'b'],
@@ -285,34 +284,21 @@ void main() {
   });
   group('indexed', () {
     test('empty', () {
-      final iterable = indexed([]);
+      final iterable = [].indexed();
       expect(iterable, []);
     });
     test('simple', () {
-      final iterable = indexed(['a', 'b', 'c']);
+      final iterable = ['a', 'b', 'c'].indexed();
       expect(iterable.map((each) => each.index), [0, 1, 2]);
       expect(iterable.map((each) => each.value), ['a', 'b', 'c']);
     });
     test('offset', () {
-      final actual = indexed(['a', 'b'], offset: 1)
+      final actual = ['a', 'b']
+          .indexed(offset: 1)
           .map((each) => '${each.value}-${each.index}')
           .join(', ');
       const expected = 'a-1, b-2';
       expect(actual, expected);
-    });
-  });
-  group('fold', () {
-    test('single value toggle', () {
-      final iterable = fold([1], (e) => -e[0]);
-      expect(iterable.take(10), [1, -1, 1, -1, 1, -1, 1, -1, 1, -1]);
-    });
-    test('fibonacci sequence', () {
-      final iterable = fold([0, 1], (e) => e[0] + e[1]);
-      expect(iterable.take(10), [0, 1, 1, 2, 3, 5, 8, 13, 21, 34]);
-    });
-    test('extended fibonacci sequence', () {
-      final iterable = fold([0, 0, 1], (e) => e[0] + e[1] + e[2]);
-      expect(iterable.take(10), [0, 0, 1, 1, 2, 4, 7, 13, 24, 44]);
     });
   });
   group('iterate', () {
@@ -325,69 +311,30 @@ void main() {
       expect(iterable.take(10), [1, 2, 4, 8, 16, 32, 64, 128, 256, 512]);
     });
   });
-  group('math', () {
-    test('fibonacci', () {
-      expect(fibonacci(0, 1).take(8), [0, 1, 1, 2, 3, 5, 8, 13]);
-      expect(fibonacci(1, 1).take(8), [1, 1, 2, 3, 5, 8, 13, 21]);
-      expect(fibonacci(1, 0).take(8), [1, 0, 1, 1, 2, 3, 5, 8]);
-    });
-    test('digits', () {
-      expect(digits(0).toList(), [0]);
-      expect(digits(1).toList(), [1]);
-      expect(digits(12).toList(), [2, 1]);
-      expect(digits(123).toList(), [3, 2, 1]);
-      expect(digits(1001).toList(), [1, 0, 0, 1]);
-      expect(digits(10001).toList(), [1, 0, 0, 0, 1]);
-      expect(digits(1000).toList(), [0, 0, 0, 1]);
-      expect(digits(10000).toList(), [0, 0, 0, 0, 1]);
-    });
-    test('digits (base 2)', () {
-      expect(digits(0, 2).toList(), [0]);
-      expect(digits(1, 2).toList(), [1]);
-      expect(digits(12, 2).toList(), [0, 0, 1, 1]);
-      expect(digits(123, 2).toList(), [1, 1, 0, 1, 1, 1, 1]);
-      expect(digits(1001, 2).toList(), [1, 0, 0, 1, 0, 1, 1, 1, 1, 1]);
-      expect(digits(10001, 2).toList(),
-          [1, 0, 0, 0, 1, 0, 0, 0, 1, 1, 1, 0, 0, 1]);
-      expect(digits(1000, 2).toList(), [0, 0, 0, 1, 0, 1, 1, 1, 1, 1]);
-      expect(digits(10000, 2).toList(),
-          [0, 0, 0, 0, 1, 0, 0, 0, 1, 1, 1, 0, 0, 1]);
-    });
-    test('digits (base 16)', () {
-      expect(digits(0, 16).toList(), [0]);
-      expect(digits(1, 16).toList(), [1]);
-      expect(digits(12, 16).toList(), [12]);
-      expect(digits(123, 16).toList(), [11, 7]);
-      expect(digits(1001, 16).toList(), [9, 14, 3]);
-      expect(digits(10001, 16).toList(), [1, 1, 7, 2]);
-      expect(digits(1000, 16).toList(), [8, 14, 3]);
-      expect(digits(10000, 16).toList(), [0, 1, 7, 2]);
-    });
-  });
   group('permutations', () {
     test('0', () {
-      final iterator = permutations(string(''));
+      final iterator = string('').permutations();
       expect(iterator, []);
     });
     test('1', () {
-      final iterator = permutations(string('a'));
+      final iterator = string('a').permutations();
       expect(iterator, [
         ['a']
       ]);
     });
     test('2', () {
-      final iterator = permutations(string('ab'));
+      final iterator = string('ab').permutations();
       expect(iterator, [
         ['a', 'b'],
         ['b', 'a']
       ]);
     });
     test('3', () {
-      final iterator = permutations(string('abc'));
+      final iterator = string('abc').permutations();
       expect(iterator.map(joiner), ['abc', 'acb', 'bac', 'bca', 'cab', 'cba']);
     });
     test('4', () {
-      final iterator = permutations(string('abcd'));
+      final iterator = string('abcd').permutations();
       expect(iterator.map(joiner), [
         'abcd',
         'abdc',
@@ -620,19 +567,19 @@ void main() {
   });
   group('product', () {
     test('2', () {
-      final iterable = product([
+      final iterable = [
         [1, 2],
-      ]);
+      ].product();
       expect(iterable, [
         [1],
         [2],
       ]);
     });
     test('2 x 2', () {
-      final iterable = product([
+      final iterable = [
         [1, 2],
         [3, 4],
-      ]);
+      ].product();
       expect(iterable, [
         [1, 3],
         [1, 4],
@@ -641,11 +588,11 @@ void main() {
       ]);
     });
     test('1 x 2 x 3', () {
-      final iterable = product([
+      final iterable = [
         [1],
         [2, 3],
         [4, 5, 6],
-      ]);
+      ].product();
       expect(iterable, [
         [1, 2, 4],
         [1, 2, 5],
@@ -656,11 +603,11 @@ void main() {
       ]);
     });
     test('3 x 2 x 1', () {
-      final iterable = product([
+      final iterable = [
         [1, 2, 3],
         [4, 5],
         [6],
-      ]);
+      ].product();
       expect(iterable, [
         [1, 4, 6],
         [1, 5, 6],
@@ -671,12 +618,12 @@ void main() {
       ]);
     });
     test('repeat 0', () {
-      expect(() => product([], repeat: 0), throwsRangeError);
+      expect(() => <Iterable>[].product(repeat: 0), throwsRangeError);
     });
     test('2 x repeat 2', () {
-      final iterable = product([
+      final iterable = [
         [0, 1],
-      ], repeat: 2);
+      ].product(repeat: 2);
       expect(iterable, [
         [0, 0],
         [0, 1],
@@ -685,10 +632,10 @@ void main() {
       ]);
     });
     test('2 x 1 x repeat 2', () {
-      final iterable = product([
+      final iterable = [
         [0, 1],
         [3],
-      ], repeat: 2);
+      ].product(repeat: 2);
       expect(iterable, [
         [0, 3, 0, 3],
         [0, 3, 1, 3],
@@ -697,9 +644,9 @@ void main() {
       ]);
     });
     test('2 x repeat 3', () {
-      final iterable = product([
+      final iterable = [
         [0, 1],
-      ], repeat: 3);
+      ].product(repeat: 3);
       expect(iterable, [
         [0, 0, 0],
         [0, 0, 1],
@@ -712,9 +659,9 @@ void main() {
       ]);
     });
     test('1 x 2, repeat 3', () {
-      final iterable = product([
+      final iterable = [
         [0, 1],
-      ], repeat: 3);
+      ].product(repeat: 3);
       expect(iterable, [
         [0, 0, 0],
         [0, 0, 1],
@@ -727,36 +674,36 @@ void main() {
       ]);
     });
     test('empty', () {
-      expect(product([]), isEmpty);
-      expect(product([[]]), isEmpty);
+      expect(<Iterable<int>>[].product(), isEmpty);
+      expect([[]].product(), isEmpty);
       expect(
-          product([
+          [
             [1],
             []
-          ]),
+          ].product(),
           isEmpty);
       expect(
-          product([
+          [
             [],
             [1]
-          ]),
+          ].product(),
           isEmpty);
       expect(
-          product([
+          [
             [1],
             [],
             [1]
-          ]),
+          ].product(),
           isEmpty);
     });
   });
   group('repeat', () {
     test('finite', () {
-      expect(repeat(0, 0), []);
-      expect(repeat(0, 1), [0]);
-      expect(repeat(0, 2), [0, 0]);
-      expect(repeat(0, 3), [0, 0, 0]);
-      expect(repeat(0, 4), [0, 0, 0, 0]);
+      expect(repeat(0, count: 0), []);
+      expect(repeat(0, count: 1), [0]);
+      expect(repeat(0, count: 2), [0, 0]);
+      expect(repeat(0, count: 3), [0, 0, 0]);
+      expect(repeat(0, count: 4), [0, 0, 0, 0]);
     });
     test('infinite', () {
       final infinite = repeat(1);
@@ -766,36 +713,36 @@ void main() {
   });
   group('unqiue', () {
     test('identity', () {
-      expect(unique([1]), [1]);
-      expect(unique([1, 2]), [1, 2]);
-      expect(unique([1, 2, 3]), [1, 2, 3]);
+      expect([1].unique(), [1]);
+      expect([1, 2].unique(), [1, 2]);
+      expect([1, 2, 3].unique(), [1, 2, 3]);
     });
     test('duplicates', () {
-      expect(unique([1, 1]), [1]);
-      expect(unique([1, 2, 2, 1]), [1, 2]);
-      expect(unique([1, 2, 3, 3, 2, 1]), [1, 2, 3]);
+      expect([1, 1].unique(), [1]);
+      expect([1, 2, 2, 1].unique(), [1, 2]);
+      expect([1, 2, 3, 3, 2, 1].unique(), [1, 2, 3]);
     });
   });
   group('window', () {
     test('error', () {
-      expect(() => window([1, 2, 3], 0), throwsRangeError);
-      expect(() => window([1, 2, 3], 1, step: 0), throwsRangeError);
+      expect(() => [1, 2, 3].window(0), throwsRangeError);
+      expect(() => [1, 2, 3].window(1, step: 0), throwsRangeError);
     });
     test('size = 1', () {
-      expect(window([], 1), []);
-      expect(window([1], 1), [
+      expect([].window(1), []);
+      expect([1].window(1), [
         [1]
       ]);
-      expect(window([1, 2], 1), [
+      expect([1, 2].window(1), [
         [1],
         [2]
       ]);
-      expect(window([1, 2, 3], 1), [
+      expect([1, 2, 3].window(1), [
         [1],
         [2],
         [3]
       ]);
-      expect(window([1, 2, 3, 4], 1), [
+      expect([1, 2, 3, 4].window(1), [
         [1],
         [2],
         [3],
@@ -803,63 +750,63 @@ void main() {
       ]);
     });
     test('size = 2', () {
-      expect(window([], 2), []);
-      expect(window([1], 2), []);
-      expect(window([1, 2], 2), [
+      expect([].window(2), []);
+      expect([1].window(2), []);
+      expect([1, 2].window(2), [
         [1, 2]
       ]);
-      expect(window([1, 2, 3], 2), [
+      expect([1, 2, 3].window(2), [
         [1, 2],
         [2, 3]
       ]);
-      expect(window([1, 2, 3, 4], 2), [
+      expect([1, 2, 3, 4].window(2), [
         [1, 2],
         [2, 3],
         [3, 4]
       ]);
     });
     test('size = 2, step = 2', () {
-      expect(window([], 2, step: 2), []);
-      expect(window([1], 2, step: 2), []);
-      expect(window([1, 2], 2, step: 2), [
+      expect([].window(2, step: 2), []);
+      expect([1].window(2, step: 2), []);
+      expect([1, 2].window(2, step: 2), [
         [1, 2]
       ]);
-      expect(window([1, 2, 3], 2, step: 2), [
+      expect([1, 2, 3].window(2, step: 2), [
         [1, 2]
       ]);
-      expect(window([1, 2, 3, 4], 2, step: 2), [
+      expect([1, 2, 3, 4].window(2, step: 2), [
         [1, 2],
         [3, 4]
       ]);
     });
     test('size = 2, step = 3', () {
-      expect(window([], 2, step: 3), []);
-      expect(window([1], 2, step: 3), []);
-      expect(window([1, 2], 2, step: 3), [
+      expect([].window(2, step: 3), []);
+      expect([1].window(2, step: 3), []);
+      expect([1, 2].window(2, step: 3), [
         [1, 2]
       ]);
-      expect(window([1, 2, 3], 2, step: 3), [
+      expect([1, 2, 3].window(2, step: 3), [
         [1, 2]
       ]);
-      expect(window([1, 2, 3, 4], 2, step: 3), [
+      expect([1, 2, 3, 4].window(2, step: 3), [
         [1, 2]
       ]);
     });
     test('size = 2, includePartial', () {
-      expect(window([], 2, includePartial: true), []);
-      expect(window([1], 2, includePartial: true), [
+      expect([].window(2, includePartial: true), []);
+      expect([1].window(2, includePartial: true), [
         [1]
       ]);
-      expect(window([1, 2], 2, includePartial: true), [
+      expect([1, 2].window(2, includePartial: true), [
         [1, 2],
         [2]
       ]);
-      expect(window([1, 2, 3], 2, includePartial: true), [
+      expect([1, 2, 3].window(2, includePartial: true), [
         [1, 2],
         [2, 3],
         [3]
       ]);
-      expect(window([1, 2, 3, 4], 2, includePartial: true), [
+      expect([1, 2, 3, 4].window(2, includePartial: true), [
         [1, 2],
         [2, 3],
         [3, 4],
@@ -867,34 +814,34 @@ void main() {
       ]);
     });
     test('size = 2, step = 2, includePartial', () {
-      expect(window([], 2, step: 2, includePartial: true), []);
-      expect(window([1], 2, step: 2, includePartial: true), [
+      expect([].window(2, step: 2, includePartial: true), []);
+      expect([1].window(2, step: 2, includePartial: true), [
         [1]
       ]);
-      expect(window([1, 2], 2, step: 2, includePartial: true), [
+      expect([1, 2].window(2, step: 2, includePartial: true), [
         [1, 2]
       ]);
-      expect(window([1, 2, 3], 2, step: 2, includePartial: true), [
+      expect([1, 2, 3].window(2, step: 2, includePartial: true), [
         [1, 2],
         [3]
       ]);
-      expect(window([1, 2, 3, 4], 2, step: 2, includePartial: true), [
+      expect([1, 2, 3, 4].window(2, step: 2, includePartial: true), [
         [1, 2],
         [3, 4]
       ]);
     });
     test('size = 2, step = 3, includePartial', () {
-      expect(window([], 2, step: 3, includePartial: true), []);
-      expect(window([1], 2, step: 3, includePartial: true), [
+      expect([].window(2, step: 3, includePartial: true), []);
+      expect([1].window(2, step: 3, includePartial: true), [
         [1]
       ]);
-      expect(window([1, 2], 2, step: 3, includePartial: true), [
+      expect([1, 2].window(2, step: 3, includePartial: true), [
         [1, 2]
       ]);
-      expect(window([1, 2, 3], 2, step: 3, includePartial: true), [
+      expect([1, 2, 3].window(2, step: 3, includePartial: true), [
         [1, 2]
       ]);
-      expect(window([1, 2, 3, 4], 2, step: 3, includePartial: true), [
+      expect([1, 2, 3, 4].window(2, step: 3, includePartial: true), [
         [1, 2],
         [4]
       ]);
@@ -902,16 +849,16 @@ void main() {
   });
   group('zip', () {
     test('empty', () {
-      expect(zip([]), []);
+      expect(<Iterable>[].zip(), []);
     });
     test('empty, includePartial', () {
-      expect(zip([], includePartial: true), []);
+      expect(<Iterable>[].zip(includePartial: true), []);
     });
     test('single', () {
       expect(
-          zip([
+          [
             [1, 2, 3]
-          ]),
+          ].zip(),
           [
             [1],
             [2],
@@ -920,9 +867,9 @@ void main() {
     });
     test('single, includePartial', () {
       expect(
-          zip([
+          [
             [1, 2, 3]
-          ], includePartial: true),
+          ].zip(includePartial: true),
           [
             [1],
             [2],
@@ -931,29 +878,29 @@ void main() {
     });
     test('pair', () {
       expect(
-          zip([
+          [
             [1, 2, 3],
             ['a', 'b', 'c'],
-          ]),
+          ].zip(),
           [
             [1, 'a'],
             [2, 'b'],
             [3, 'c'],
           ]);
       expect(
-          zip([
+          [
             [1, 2],
             ['a', 'b', 'c'],
-          ]),
+          ].zip(),
           [
             [1, 'a'],
             [2, 'b'],
           ]);
       expect(
-          zip([
+          [
             [1, 2, 3],
             ['a', 'b'],
-          ]),
+          ].zip(),
           [
             [1, 'a'],
             [2, 'b'],
@@ -961,30 +908,30 @@ void main() {
     });
     test('pair, includePartial', () {
       expect(
-          zip([
+          [
             [1, 2, 3],
             ['a', 'b', 'c'],
-          ], includePartial: true),
+          ].zip(includePartial: true),
           [
             [1, 'a'],
             [2, 'b'],
             [3, 'c'],
           ]);
       expect(
-          zip([
+          [
             [1, 2],
             ['a', 'b', 'c'],
-          ], includePartial: true),
+          ].zip(includePartial: true),
           [
             [1, 'a'],
             [2, 'b'],
             [null, 'c'],
           ]);
       expect(
-          zip([
+          [
             [1, 2, 3],
             ['a', 'b'],
-          ], includePartial: true),
+          ].zip(includePartial: true),
           [
             [1, 'a'],
             [2, 'b'],

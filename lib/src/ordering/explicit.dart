@@ -8,7 +8,7 @@ class ExplicitOrdering<T> extends Ordering<T> {
 
   factory ExplicitOrdering(Iterable<T> iterable) {
     final ranking = <T, int>{};
-    for (final element in indexed(iterable)) {
+    for (final element in iterable.indexed()) {
       ranking[element.value] = element.index;
     }
     return ExplicitOrdering<T>._(ranking);
