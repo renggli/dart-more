@@ -802,6 +802,10 @@ void main() {
           verify(IntegerRange(7, 2, -2), [7, 5, 3]);
           verify(IntegerRange(6, 2, -2), [6, 4]);
         });
+        test('shorthand', () {
+          verify(0.to(3), [0, 1, 2]);
+          verify(2.to(8, step: 2), [2, 4, 6]);
+        });
         test('invalid', () {
           expect(() => IntegerRange(0, 2, 0), throwsArgumentError);
           expect(() => IntegerRange(0, 2, -1), throwsArgumentError);
@@ -942,6 +946,10 @@ void main() {
           verify(DoubleRange(7.0, 2.0, -1.5), [7.0, 5.5, 4.0, 2.5]);
           verify(DoubleRange(6.0, 2.0, -1.5), [6.0, 4.5, 3.0]);
         });
+        test('shorthand', () {
+          verify(0.0.to(3.0), [0.0, 1.0, 2.0]);
+          verify(4.0.to(8.0, step: 1.5), [4.0, 5.5, 7.0]);
+        });
         test('invalid', () {
           expect(() => DoubleRange(0.0, 2.0, 0.0), throwsArgumentError);
           expect(() => DoubleRange(0.0, 2.0, -1.5), throwsArgumentError);
@@ -1055,10 +1063,10 @@ void main() {
   });
   group('string', () {
     group('immutable', () {
-      final empty = string('');
-      final plenty = string('More Dart');
+      final empty = ''.toList();
+      final plenty = 'More Dart'.toList();
       test('creating', () {
-        final coerced = string(123);
+        final coerced = '123'.toList();
         expect(coerced.length, 3);
         expect(coerced.toString(), '123');
       });
@@ -1107,10 +1115,10 @@ void main() {
       });
     });
     group('mutable', () {
-      final empty = mutableString('');
-      final plenty = mutableString('More Dart');
+      final empty = ''.toList(mutable: true);
+      final plenty = 'More Dart'.toList(mutable: true);
       test('creating', () {
-        final coerced = mutableString(123);
+        final coerced = '123'.toList(mutable: true);
         expect(coerced.length, 3);
         expect(coerced.toString(), '123');
       });
@@ -1139,7 +1147,7 @@ void main() {
         expect(() => plenty[9], throwsRangeError);
       });
       test('writing', () {
-        final mutable = mutableString('abc');
+        final mutable = 'abc'.toList(mutable: true);
         mutable[1] = 'd';
         expect(mutable.toString(), 'adc');
       });
@@ -1152,12 +1160,12 @@ void main() {
         expect(() => plenty[0] = 'ab', throwsArgumentError);
       });
       test('adding', () {
-        final mutable = mutableString('abc');
+        final mutable = 'abc'.toList(mutable: true);
         mutable.add('d');
         expect(mutable.toString(), 'abcd');
       });
       test('removing', () {
-        final mutable = mutableString('abc');
+        final mutable = 'abc'.toList(mutable: true);
         mutable.remove('a');
         expect(mutable.toString(), 'bc');
       });

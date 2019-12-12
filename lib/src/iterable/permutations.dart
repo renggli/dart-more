@@ -6,7 +6,7 @@ extension PermutationsExtension<E> on Iterable<E> {
   ///
   /// The following expression iterates over xyz, xzy, yxz, yzx, zxy, and zyx:
   ///
-  ///     string('xyz').permutations();
+  ///     ['x', 'y', 'z'].permutations();
   ///
   Iterable<List<E>> permutations() {
     if (isEmpty) {

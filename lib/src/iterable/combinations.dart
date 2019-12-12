@@ -12,7 +12,7 @@ extension CombinationsExtension<E> on Iterable<E> {
   ///
   /// The following expression iterates over xx, xy, xz, yy, yz, and zz:
   ///
-  ///     string('xyz').combinations(2, repetitions: true);
+  ///     ['x', 'y', 'z'].combinations(2, repetitions: true);
   ///
   /// If [repetitions] is set to `false` the iterable generates all the
   /// sub-sequences of length [count]. The number of items returned is:
@@ -21,7 +21,7 @@ extension CombinationsExtension<E> on Iterable<E> {
   ///
   /// The following expression iterates over xy, xz, yz:
   ///
-  ///     string('xyz').combinations(2, repetitions: false);
+  ///     ['x', 'y', 'z'].combinations(2, repetitions: false);
   ///
   Iterable<List<E>> combinations(int count, {bool repetitions = false}) {
     if (count < 0) {

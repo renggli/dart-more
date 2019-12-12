@@ -50,7 +50,7 @@ void main() {
     });
   });
   group('combinations', () {
-    final letters = string('abcd');
+    final letters = 'abcd'.toList();
     group('with repetitions', () {
       test('take 0', () {
         final iterable = letters.combinations(0, repetitions: true);
@@ -252,7 +252,7 @@ void main() {
     });
   });
   group('groupBy', () {
-    final example = string('aaaabbbccdaabbb');
+    final example = 'aaaabbbccdaabbb'.toList();
     test('groupBy empty', () {
       final iterable = [].groupBy();
       expect(iterable, []);
@@ -313,28 +313,28 @@ void main() {
   });
   group('permutations', () {
     test('0', () {
-      final iterator = string('').permutations();
+      final iterator = ''.toList().permutations();
       expect(iterator, []);
     });
     test('1', () {
-      final iterator = string('a').permutations();
+      final iterator = 'a'.toList().permutations();
       expect(iterator, [
         ['a']
       ]);
     });
     test('2', () {
-      final iterator = string('ab').permutations();
+      final iterator = 'ab'.toList().permutations();
       expect(iterator, [
         ['a', 'b'],
         ['b', 'a']
       ]);
     });
     test('3', () {
-      final iterator = string('abc').permutations();
+      final iterator = 'abc'.toList().permutations();
       expect(iterator.map(joiner), ['abc', 'acb', 'bac', 'bca', 'cab', 'cba']);
     });
     test('4', () {
-      final iterator = string('abcd').permutations();
+      final iterator = 'abcd'.toList().permutations();
       expect(iterator.map(joiner), [
         'abcd',
         'abdc',

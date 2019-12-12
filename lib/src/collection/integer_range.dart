@@ -156,6 +156,12 @@ class IntegerRange extends ListBase<int> with UnmodifiableListMixin<int> {
   }
 }
 
+extension IntegerRangeExtension on int {
+  /// Shorthand to create a range of [int] numbers, starting with the receiver
+  /// (inclusive) up to but not including [end] (exclusive).
+  IntegerRange to(int end, {int step}) => IntegerRange(this, end, step);
+}
+
 class IntegerRangeIterator extends Iterator<int> {
   final int start;
   final int step;

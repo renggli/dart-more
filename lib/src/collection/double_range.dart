@@ -160,6 +160,12 @@ class DoubleRange extends ListBase<double> with UnmodifiableListMixin<double> {
   }
 }
 
+extension DoubleRangeExtension on double {
+  /// Shorthand to create a range of [double] numbers, starting with the
+  /// receiver (inclusive) up to but not including [end] (exclusive).
+  DoubleRange to(double end, {double step}) => DoubleRange(this, end, step);
+}
+
 class DoubleRangeIterator extends Iterator<double> {
   final double start;
   final double step;
