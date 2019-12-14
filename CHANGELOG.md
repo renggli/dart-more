@@ -1,6 +1,6 @@
 # Changelog
 
-## 1.19.0
+## 2.0.0
 
 * Dart 2.7 compatibility and requirement.
 * Cleaned up deprecated code.
@@ -14,7 +14,6 @@
 * Math
     * Move all numerical operators to `num`, `ìnt` and/or `BigInt` (new).
     * Removed `poylynomial`, as the function is not generally useful.
-    * Removed deprecated functions.
 
 ## 1.18.0
 
