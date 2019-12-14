@@ -296,6 +296,20 @@ void main() {
       expect((1 / math.e).log(), closeTo(-1, epsilon));
     });
   });
+  group('polynomial', () {
+    test('base 2', () {
+      expect(<int>[].polynomial(2), 0);
+      expect([1, 2].polynomial(2), 5);
+      expect([1, 2, 3].polynomial(2), 17);
+      expect([1, 2, 3, 4].polynomial(2), 49);
+    });
+    test('base 10', () {
+      expect(<int>[].polynomial(), 0);
+      expect([1, 2].polynomial(), 21);
+      expect([1, 2, 3].polynomial(), 321);
+      expect([1, 2, 3, 4].polynomial(), 4321);
+    });
+  });
   test('primes', () {
     expect(10.primes, [2, 3, 5, 7]);
     expect(20.primes, [2, 3, 5, 7, 11, 13, 17, 19]);

@@ -7,9 +7,10 @@ export 'src/math/digits.dart'
     show DigitsIntegerExtension, DigitsBigIntExtension;
 export 'src/math/factorial.dart'
     show FactorialIntegerExtension, FactorialBigIntExtension;
-export 'src/math/hyperbolic.dart' show HyperbolicNumExtension;
+export 'src/math/hyperbolic.dart' show HyperbolicNumberExtension;
 export 'src/math/is_probably_prime.dart'
     show ProbablyPrimeIntegerExtension, ProbablyPrimeBigIntExtension;
 export 'src/math/lcm.dart' show LcmIntegerExtension, LcmBigIntExtension;
-export 'src/math/math.dart' show MathNumExtension;
-export 'src/math/primes.dart' show PrimesIntExtension;
+export 'src/math/math.dart' show MathNumberExtension;
+export 'src/math/polynomial.dart' show PolynomialIterableExtension;
+export 'src/math/primes.dart' show PrimesIntegerExtension;

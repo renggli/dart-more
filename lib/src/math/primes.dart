@@ -2,7 +2,7 @@ library more.math.primes_up_to;
 
 import '../collection/bitlist.dart';
 
-extension PrimesIntExtension on int {
+extension PrimesIntegerExtension on int {
   /// Returns primes up to and including this [int] computed by the Sieve of
   /// Eratosthenes.
   Iterable<int> get primes sync* {

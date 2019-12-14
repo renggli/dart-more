@@ -2,7 +2,7 @@ library more.math.math;
 
 import 'dart:math' as math;
 
-extension MathNumExtension on num {
+extension MathNumberExtension on num {
   /// Returns this [num] to the power of [exponent].
   num pow(num exponent) => math.pow(this, exponent);
 

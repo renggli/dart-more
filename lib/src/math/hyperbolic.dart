@@ -3,7 +3,7 @@ library more.math.hyperbolic;
 import 'math.dart';
 
 // Based on the polyfills given on https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math.
-extension HyperbolicNumExtension on num {
+extension HyperbolicNumberExtension on num {
   /// Returns the hyperbolic sine of this [num].
   double sinh() {
     final y = exp();

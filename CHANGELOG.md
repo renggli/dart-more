@@ -13,7 +13,6 @@
     * Move the string lists to `String.toList()` extension method.
 * Math
     * Move all numerical operators to `num`, `ìnt` and/or `BigInt` (new).
-    * Removed `poylynomial`, as the function is not generally useful.
 
 ## 1.18.0
 
