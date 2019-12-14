@@ -7,10 +7,14 @@
 * Iterables
     * Converted most helpers to extension methods.
     * Removed `fold` and `fib`, as they are not generally useful.
-    * Moved `digits` to `package:more/int_math`.
+    * Moved `digits` to `package:more/math`.
 * Collections
     * Add extension method to `int` and `double` to create ranges, i.e. `0.to(20)`.
     * Move the string lists to `String.toList()` extension method.
+* Math
+    * Move all numerical operators to `num`, `ìnt` and/or `BigInt` (new).
+    * Removed `poylynomial`, as the function is not generally useful.
+    * Removed deprecated functions.
 
 ## 1.18.0
 

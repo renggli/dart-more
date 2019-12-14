@@ -3,8 +3,8 @@ library more.number.fraction;
 import 'package:collection/collection.dart' show QueueList;
 import 'package:meta/meta.dart' show immutable;
 
-import '../../hash.dart' show hash2;
-import '../../math.dart' as math;
+import '../../hash.dart';
+import '../../math.dart';
 
 /// A rational number.
 @immutable
@@ -164,9 +164,9 @@ class Fraction implements Comparable<Fraction> {
       return this;
     }
     if (n > 0) {
-      return Fraction(math.pow(a, n), math.pow(b, n));
+      return Fraction(a.pow(n), b.pow(n));
     } else if (n < 0) {
-      return Fraction(math.pow(b, -n), math.pow(a, -n));
+      return Fraction(b.pow(-n), a.pow(-n));
     } else {
       return one;
     }

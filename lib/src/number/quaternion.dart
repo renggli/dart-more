@@ -1,10 +1,9 @@
 library more.number.quaternion;
 
-import 'dart:math' as math;
-
 import 'package:meta/meta.dart' show immutable;
 
-import '../../hash.dart' show hash4;
+import '../../hash.dart';
+import '../../math.dart';
 
 /// A quaternion number of the form `w + x*i + y*j + z*k`.
 @immutable
@@ -41,10 +40,11 @@ class Quaternion {
 
   /// Constructs a quaternion from an [axis] and a rotation [angle].
   factory Quaternion.fromAxis(List<num> axis, num angle) {
-    final norm = math.sin(0.5 * angle) /
-        math.sqrt(axis[0] * axis[0] + axis[1] * axis[1] + axis[2] * axis[2]);
+    final halfAngle = 0.5 * angle;
+    final norm = halfAngle.sin() /
+        (axis[0] * axis[0] + axis[1] * axis[1] + axis[2] * axis[2]).sqrt();
     return Quaternion(
-        math.cos(0.5 * angle), axis[0] * norm, axis[1] * norm, axis[2] * norm);
+        halfAngle.cos(), axis[0] * norm, axis[1] * norm, axis[2] * norm);
   }
 
   /// Constructs a quaternion from the rotation between two vectors [source]
@@ -55,7 +55,7 @@ class Quaternion {
     final x = source[1] * target[2] - source[2] * target[1];
     final y = source[2] * target[0] - source[0] * target[2];
     final z = source[0] * target[1] - source[1] * target[0];
-    return Quaternion(w + math.sqrt(w * w + x * x + y * y + z * z), x, y, z)
+    return Quaternion(w + (w * w + x * x + y * y + z * z).sqrt(), x, y, z)
         .normalize();
   }
 
@@ -65,13 +65,13 @@ class Quaternion {
     final halfTheta = theta * 0.5;
     final halfPsi = psi * 0.5;
 
-    final cosPhi = math.cos(halfPhi);
-    final cosTheta = math.cos(halfTheta);
-    final cosPsi = math.cos(halfPsi);
+    final cosPhi = halfPhi.cos();
+    final cosTheta = halfTheta.cos();
+    final cosPsi = halfPsi.cos();
 
-    final sinPhi = math.sin(halfPhi);
-    final sinTheta = math.sin(halfTheta);
-    final sinPsi = math.sin(halfPsi);
+    final sinPhi = halfPhi.sin();
+    final sinTheta = halfTheta.sin();
+    final sinPsi = halfPsi.sin();
 
     return Quaternion(
       cosTheta * cosPsi * cosPhi - sinTheta * sinPsi * sinPhi,
@@ -135,7 +135,7 @@ class Quaternion {
   final num z;
 
   /// Returns the absolute value of the quaternion.
-  double abs() => math.sqrt(norm());
+  double abs() => norm().sqrt();
 
   /// Returns the squared absolute value.
   num norm() => w * w + x * x + y * y + z * z;
@@ -146,7 +146,7 @@ class Quaternion {
   /// Returns the conjugate form of the quaternion.
   Quaternion conjugate() => Quaternion(w, -x, -y, -z);
 
-  /// Returns the normalized form of the quarternion.
+  /// Returns the normalized form of the quaternion.
   Quaternion normalize() {
     final f = 1 / abs();
     return Quaternion(w * f, x * f, y * f, z * f);
@@ -215,17 +215,17 @@ class Quaternion {
 
   /// Computes the exponential function of this quaternion number.
   Quaternion exp() {
-    final exp = math.exp(w);
-    final norm = math.sqrt(x * x + y * y + z * z);
-    final scale = exp / norm * math.sin(norm);
-    return Quaternion(exp * math.cos(norm), x * scale, y * scale, z * scale);
+    final exp = w.exp();
+    final norm = (x * x + y * y + z * z).sqrt();
+    final scale = exp / norm * norm.sin();
+    return Quaternion(exp * norm.cos(), x * scale, y * scale, z * scale);
   }
 
   /// Computes the natural logarithm of this quaternion number.
   Quaternion log() {
-    final vectorNorm = math.sqrt(x * x + y * y + z * z);
-    final scale = math.atan2(vectorNorm, w) / vectorNorm;
-    return Quaternion(0.5 * math.log(norm()), x * scale, y * scale, z * scale);
+    final vectorNorm = (x * x + y * y + z * z).sqrt();
+    final scale = vectorNorm.atan2(w) / vectorNorm;
+    return Quaternion(0.5 * norm().log(), x * scale, y * scale, z * scale);
   }
 
   /// Computes the power of this quaternion number raised to `exponent`.

@@ -18,7 +18,7 @@ void main() {
   group('char_matcher', char_matcher_test.main);
   group('collection', collection_test.main);
   group('hash', hash_test.main);
-  group('math_test', math_test.main);
+  group('math', math_test.main);
   group('iterable', iterable_test.main);
   group('number', number_test.main);
   group('ordering', ordering_test.main);

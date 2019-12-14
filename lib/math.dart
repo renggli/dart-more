@@ -1,12 +1,15 @@
 /// A collection of common mathematical functions.
 library more.math;
 
-export 'src/math/binomial.dart' show binomial;
-export 'src/math/digits.dart' show digits;
-export 'src/math/factorial.dart' show factorial;
-export 'src/math/hyperbolic.dart' show sinh, asinh, cosh, acosh, tanh, atanh;
-export 'src/math/is_probably_prime.dart' show isProbablyPrime;
-export 'src/math/lcm.dart' show lcm;
-export 'src/math/polynomial.dart' show polynomial;
-export 'src/math/pow.dart' show pow;
-export 'src/math/primes_up_to.dart' show primesUpTo;
+export 'src/math/binomial.dart'
+    show BinomialIntegerExtension, BinomialBigIntExtension;
+export 'src/math/digits.dart'
+    show DigitsIntegerExtension, DigitsBigIntExtension;
+export 'src/math/factorial.dart'
+    show FactorialIntegerExtension, FactorialBigIntExtension;
+export 'src/math/hyperbolic.dart' show HyperbolicNumExtension;
+export 'src/math/is_probably_prime.dart'
+    show ProbablyPrimeIntegerExtension, ProbablyPrimeBigIntExtension;
+export 'src/math/lcm.dart' show LcmIntegerExtension, LcmBigIntExtension;
+export 'src/math/math.dart' show MathNumExtension;
+export 'src/math/primes.dart' show PrimesIntExtension;

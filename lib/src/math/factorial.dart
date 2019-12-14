@@ -25,19 +25,43 @@ const List<int> factorials = [
   2432902008176640000
 ];
 
-/// Returns the factorial of the argument.
-///
-/// This is the number of ways to arrange [n] distinct objects into a sequence.
-int factorial(int n) {
-  if (n < 0) {
-    throw ArgumentError('factorial($n) is undefined for negative arguments.');
+extension FactorialIntegerExtension on int {
+  /// Returns the factorial of this [int].
+  ///
+  /// This is the number of ways to arrange `n` distinct objects into a
+  /// sequence.
+  int factorial() {
+    if (this < 0) {
+      throw ArgumentError('$this.factorial() is undefined for negatives.');
+    }
+    if (this < factorials.length) {
+      return factorials[this];
+    }
+    var r = factorials.last;
+    for (var i = factorials.length; i <= this; i++) {
+      r *= i;
+    }
+    return r;
   }
-  if (n < factorials.length) {
-    return factorials[n];
+}
+
+extension FactorialBigIntExtension on BigInt {
+  /// Returns the factorial of this [BigInt].
+  ///
+  /// This is the number of ways to arrange `n` distinct objects into a
+  /// sequence.
+  BigInt factorial() {
+    final n = toInt();
+    if (n < 0) {
+      throw ArgumentError('$n.factorial() is undefined for negatives.');
+    }
+    if (n < factorials.length) {
+      return BigInt.from(factorials[n]);
+    }
+    var r = BigInt.from(factorials.last);
+    for (var i = factorials.length; i <= n; i++) {
+      r *= BigInt.from(i);
+    }
+    return r;
   }
-  var r = factorials.last;
-  for (var i = factorials.length; i <= n; i++) {
-    r *= i;
-  }
-  return r;
 }

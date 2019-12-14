@@ -1,5 +1,13 @@
 library more.math.lcm;
 
-/// Returns the least common multiple (LCM) of two integers a and b. This is the
-/// smallest positive integer that is divisible by both a and b.
-int lcm(int a, int b) => a * b ~/ a.gcd(b);
+extension LcmIntegerExtension on int {
+  /// Returns the least common multiple (LCM) of this [int] and `other`. This is
+  /// the smallest positive integer that is divisible by both numbers.
+  int lcm(int other) => this * other ~/ gcd(other);
+}
+
+extension LcmBigIntExtension on BigInt {
+  /// Returns the least common multiple (LCM) of this [BigInt] and `other`. This
+  /// is the smallest positive integer that is divisible by both numbers.
+  BigInt lcm(BigInt other) => this * other ~/ gcd(other);
+}

@@ -4,8 +4,8 @@ import 'dart:math' as math;
 
 import 'package:meta/meta.dart' show immutable;
 
-import '../../hash.dart' show hash2;
-import '../../math.dart' as math2;
+import '../../hash.dart';
+import '../../math.dart';
 
 /// A complex number of the form `a + b*i`.
 @immutable
@@ -35,8 +35,8 @@ class Complex {
 
   /// Creates a complex number from polar coordinates [radius] and [phase].
   factory Complex.fromPolar(num radius, num phase) => Complex(
-        radius * math.cos(phase),
-        radius * math.sin(phase),
+        radius * phase.cos(),
+        radius * phase.sin(),
       );
 
   /// Parses [source] as a [Complex]. Returns `null` in case of a problem.
@@ -86,13 +86,13 @@ class Complex {
 
   /// Returns the radius of this complex value in polar coordinates, also called
   /// the magnitude of the complex number.
-  double abs() => math.sqrt(norm());
+  double abs() => norm().sqrt();
 
   /// Returns the squared magnitude.
   num norm() => a * a + b * b;
 
   /// Returns the phase of the value in polar coordinates.
-  double arg() => math.atan2(b, a);
+  double arg() => b.atan2(a);
 
   /// Returns the negated form of this number.
   Complex operator -() => Complex(-a, -b);
@@ -156,15 +156,15 @@ class Complex {
 
   /// Computes the exponential function of this complex number.
   Complex exp() {
-    final exp = math.exp(a);
+    final exp = a.exp();
     return Complex(
-      exp * math.cos(b),
-      exp * math.sin(b),
+      exp * b.cos(),
+      exp * b.sin(),
     );
   }
 
   /// Computes the natural logarithm of this complex number.
-  Complex log() => Complex(math.log(math.sqrt(norm())), math.atan2(b, a));
+  Complex log() => Complex(norm().sqrt().log(), b.atan2(a));
 
   /// Computes the power of this complex number raised to `exponent`.
   Complex pow(Object exponent) => (log() * exponent).exp();
@@ -175,7 +175,7 @@ class Complex {
   /// Computes the square root of this complex number.
   Complex sqrt() {
     final r = abs(), s = this + r;
-    return s / s.abs() * math.sqrt(r);
+    return s / s.abs() * r.sqrt();
   }
 
   /// Computes the n-th roots of this complex number.
@@ -183,7 +183,7 @@ class Complex {
     if (n == 0) {
       throw ArgumentError.value(n, 'n', 'Can\'t compute 0th root.');
     }
-    final root = math.pow(abs(), 1 / n);
+    final root = abs().pow(1 / n);
     final phiBase = arg() / n;
     final phiOffset = 2 * math.pi / n;
     return List.generate(
@@ -194,45 +194,34 @@ class Complex {
   }
 
   /// Computes the cosine of this complex number.
-  Complex cos() => Complex(
-        math.cos(a) * math2.cosh(b),
-        -math.sin(a) * math2.sinh(b),
-      );
+  Complex cos() => Complex(a.cos() * b.cosh(), -a.sin() * b.sinh());
 
   /// Computes the arc-cosine of this complex number.
   Complex acos() => (this + i * (one - square()).sqrt()).log() * -i;
 
   /// Computes the hyperbolic cosine of this complex number.
-  Complex cosh() => Complex(
-        math2.cosh(a) * math.cos(b),
-        math2.sinh(a) * math.sin(b),
-      );
+  Complex cosh() => Complex(a.cosh() * b.cos(), a.sinh() * b.sin());
 
   /// Computes the hyperbolic arc-cosine of this complex number.
   Complex acosh() => ((square() - 1).sqrt() + this).log();
 
   /// Computes the sine of this complex number.
-  Complex sin() => Complex(
-        math.sin(a) * math2.cosh(b),
-        -math.cos(a) * math2.sinh(b),
-      );
+  Complex sin() => Complex(a.sin() * b.cosh(), -a.cos() * b.sinh());
 
   /// Computes the arc-sine of this complex number.
   Complex asin() => (this * i + (one - square()).sqrt()).log() * -i;
 
   /// Computes the hyperbolic sine of this complex number.
-  Complex sinh() => Complex(
-        math2.sinh(a) * math.cos(b),
-        math2.cosh(a) * math.sin(b),
-      );
+  Complex sinh() => Complex(a.sinh() * b.cos(), a.cosh() * b.sin());
 
   /// Computes the hyperbolic arc-sine of this complex number.
   Complex asinh() => ((square() + 1).sqrt() + this).log();
 
   /// Computes the tangent of this complex number.
   Complex tan() {
-    final d = math.cos(2 * a) + math2.cosh(2 * b);
-    return Complex(math.sin(2 * a) / d, math2.sinh(2 * b) / d);
+    final a2 = 2 * a, b2 = 2 * b;
+    final d = a2.cos() + b2.cosh();
+    return Complex(a2.sin() / d, b2.sinh() / d);
   }
 
   /// Computes the arc-tangent of this complex number.
@@ -240,8 +229,9 @@ class Complex {
 
   /// Computes the hyperbolic tangent of this complex number.
   Complex tanh() {
-    final d = math2.cosh(2 * a) + math.cos(2 * b);
-    return Complex(math2.sinh(2 * a) / d, math.sin(2 * b) / d);
+    final a2 = 2 * a, b2 = 2 * b;
+    final d = a2.cosh() + b2.cos();
+    return Complex(a2.sinh() / d, b2.sin() / d);
   }
 
   /// Computes the hyperbolic arc-tangent of this complex number.
