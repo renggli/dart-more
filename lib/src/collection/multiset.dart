@@ -3,6 +3,8 @@ library more.collection.multiset;
 import 'dart:collection' show IterableBase;
 import 'dart:math' show min;
 
+import '../iterable/repeat.dart';
+
 /// A generalized [Set] (or Bag) in which members are allowed to appear  more
 /// than once.
 class Multiset<E> extends IterableBase<E> {
@@ -16,6 +18,10 @@ class Multiset<E> extends IterableBase<E> {
   factory Multiset.of(Iterable<E> other) {
     if (other is Multiset<E>) {
       return Multiset<E>._(Map.of(other._container), other._length);
+    } else if (other is Set<E>) {
+      return Multiset<E>._(
+          Map.fromIterables(other, repeat(1, count: other.length)),
+          other.length);
     } else {
       return Multiset<E>()..addAll(other);
     }
@@ -209,4 +215,8 @@ class MultisetIterator<E> extends Iterator<E> {
       return true;
     }
   }
+}
+
+extension MultisetExtension<T> on Iterable<T> {
+  Multiset<T> toMultiset() => Multiset.of(this);
 }
