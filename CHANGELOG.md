@@ -1,5 +1,9 @@
 # Changelog
 
+## 2.1.0
+
+* Cleanup `Tuple` class to be more readable and better typed.
+
 ## 2.0.0
 
 * Dart 2.7 compatibility and requirement.
