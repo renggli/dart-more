@@ -3,7 +3,10 @@
 ## 2.2.0
 
 * Made `truncateToPeriod` and `periodical` extension methods of `DateTime`.
-* Add extension methods to convert a `Map<K, V>` to a `BiMap<K, V>`, an `Iterable<bool>` to a `BitList`, and an `Iterable<T>` to a `Multiset<T>`.
+* Add extension methods to convert 
+  * a `Map<K, V>` to a `BiMap<K, V>`, 
+  * an `Iterable<bool>` to a `BitList`, 
+  * and an `Iterable<T>` to a `Multiset<T>`.
 
 ## 2.1.0
 
