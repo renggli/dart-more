@@ -11,7 +11,7 @@ class DoubleRange extends ListBase<double> with UnmodifiableListMixin<double> {
   /// of double values.
   ///
   /// The constructor called without any arguments returns the empty range.
-  /// For example, `new DoubleRange()` yields `<double>[]`.
+  /// For example, `DoubleRange()` yields `<double>[]`.
   ///
   /// The constructor called with one argument returns the range of all
   /// numbers up to, but excluding the end. For example, `DoubleRange(3.0)`

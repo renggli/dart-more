@@ -387,8 +387,8 @@ Future<void> generateTest(int max) async {
       nest('test', 'toString', () {
         out.writeln('expect(tuple.toString(), \'(${numbers.join(', ')})\');');
       });
-      final accessors = List.generate(i, (j) => 'tuple.${ordinals[j]}')
-          .join(', ');
+      final accessors =
+          List.generate(i, (j) => 'tuple.${ordinals[j]}').join(', ');
       if (i == 0) {
         out.writeln('// ignore: prefer_const_constructors');
       }

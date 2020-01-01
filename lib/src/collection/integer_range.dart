@@ -10,7 +10,7 @@ class IntegerRange extends ListBase<int> with UnmodifiableListMixin<int> {
   /// of integer values.
   ///
   /// The constructor called without any arguments returns the empty range.
-  /// For example, `new IntegerRange()` yields `<int>[]`.
+  /// For example, `IntegerRange()` yields `<int>[]`.
   ///
   /// The constructor called with one argument returns the range of all
   /// numbers up to, but excluding the end. For example, `IntegerRange(3)`
