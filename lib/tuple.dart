@@ -60,23 +60,11 @@ abstract class Tuple {
     }
   }
 
-  /// Number of elements in the tuple.
+  /// The number of elements in the tuple.
   int get length;
 
   /// An [Iterable] over the values of this tuple.
   Iterable get iterable;
-
-  /// Returns a new tuple with the `value` added to the start.
-  Tuple addFirst<T>(T value);
-
-  /// Returns a new tuple with the `value` added to the end.
-  Tuple addLast<T>(T value);
-
-  /// Returns a new tuple with the first value removed.
-  Tuple removeFirst();
-
-  /// Returns a new tuple with the last value removed.
-  Tuple removeLast();
 
   /// A (untyped) [List] with the values of this tuple.
   List toList({bool growable = false}) =>

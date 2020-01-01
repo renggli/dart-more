@@ -4,17 +4,9 @@ import '../../tuple.dart';
 
 /// Tuple with 7 elements.
 class Tuple7<T0, T1, T2, T3, T4, T5, T6> extends Tuple {
-  final T0 value0;
-  final T1 value1;
-  final T2 value2;
-  final T3 value3;
-  final T4 value4;
-  final T5 value5;
-  final T6 value6;
-
   /// Const constructor.
-  const Tuple7(this.value0, this.value1, this.value2, this.value3, this.value4,
-      this.value5, this.value6);
+  const Tuple7(this.first, this.second, this.third, this.fourth, this.fifth,
+      this.sixth, this.seventh);
 
   /// List constructor.
   // ignore: prefer_constructors_over_static_methods
@@ -30,137 +22,161 @@ class Tuple7<T0, T1, T2, T3, T4, T5, T6> extends Tuple {
   @override
   int get length => 7;
 
-  /// Returns a new tuple with index 0 replaced by [value].
-  Tuple7<T, T1, T2, T3, T4, T5, T6> with0<T>(T value) =>
-      Tuple7(value, value1, value2, value3, value4, value5, value6);
+  /// Returns the first element of this tuple.
+  final T0 first;
 
-  /// Returns a new tuple with index 1 replaced by [value].
-  Tuple7<T0, T, T2, T3, T4, T5, T6> with1<T>(T value) =>
-      Tuple7(value0, value, value2, value3, value4, value5, value6);
+  /// Returns the second element of this tuple.
+  final T1 second;
 
-  /// Returns a new tuple with index 2 replaced by [value].
-  Tuple7<T0, T1, T, T3, T4, T5, T6> with2<T>(T value) =>
-      Tuple7(value0, value1, value, value3, value4, value5, value6);
+  /// Returns the third element of this tuple.
+  final T2 third;
 
-  /// Returns a new tuple with index 3 replaced by [value].
-  Tuple7<T0, T1, T2, T, T4, T5, T6> with3<T>(T value) =>
-      Tuple7(value0, value1, value2, value, value4, value5, value6);
+  /// Returns the fourth element of this tuple.
+  final T3 fourth;
 
-  /// Returns a new tuple with index 4 replaced by [value].
-  Tuple7<T0, T1, T2, T3, T, T5, T6> with4<T>(T value) =>
-      Tuple7(value0, value1, value2, value3, value, value5, value6);
+  /// Returns the fifth element of this tuple.
+  final T4 fifth;
 
-  /// Returns a new tuple with index 5 replaced by [value].
-  Tuple7<T0, T1, T2, T3, T4, T, T6> with5<T>(T value) =>
-      Tuple7(value0, value1, value2, value3, value4, value, value6);
+  /// Returns the sixth element of this tuple.
+  final T5 sixth;
 
-  /// Returns a new tuple with index 6 replaced by [value].
-  Tuple7<T0, T1, T2, T3, T4, T5, T> with6<T>(T value) =>
-      Tuple7(value0, value1, value2, value3, value4, value5, value);
+  /// Returns the seventh element of this tuple.
+  final T6 seventh;
 
-  @override
-  Tuple8<T, T0, T1, T2, T3, T4, T5, T6> addFirst<T>(T value) => addAt0(value);
+  /// Returns the last element of this tuple.
+  T6 get last => seventh;
 
-  @override
-  Tuple8<T0, T1, T2, T3, T4, T5, T6, T> addLast<T>(T value) => addAt7(value);
+  /// Returns a new tuple with the first element replaced by [value].
+  Tuple7<T, T1, T2, T3, T4, T5, T6> withFirst<T>(T value) =>
+      Tuple7(value, second, third, fourth, fifth, sixth, seventh);
 
-  /// Returns a new tuple with [value] added at index 0.
-  Tuple8<T, T0, T1, T2, T3, T4, T5, T6> addAt0<T>(T value) =>
-      Tuple8(value, value0, value1, value2, value3, value4, value5, value6);
+  /// Returns a new tuple with the second element replaced by [value].
+  Tuple7<T0, T, T2, T3, T4, T5, T6> withSecond<T>(T value) =>
+      Tuple7(first, value, third, fourth, fifth, sixth, seventh);
 
-  /// Returns a new tuple with [value] added at index 1.
-  Tuple8<T0, T, T1, T2, T3, T4, T5, T6> addAt1<T>(T value) =>
-      Tuple8(value0, value, value1, value2, value3, value4, value5, value6);
+  /// Returns a new tuple with the third element replaced by [value].
+  Tuple7<T0, T1, T, T3, T4, T5, T6> withThird<T>(T value) =>
+      Tuple7(first, second, value, fourth, fifth, sixth, seventh);
 
-  /// Returns a new tuple with [value] added at index 2.
-  Tuple8<T0, T1, T, T2, T3, T4, T5, T6> addAt2<T>(T value) =>
-      Tuple8(value0, value1, value, value2, value3, value4, value5, value6);
+  /// Returns a new tuple with the fourth element replaced by [value].
+  Tuple7<T0, T1, T2, T, T4, T5, T6> withFourth<T>(T value) =>
+      Tuple7(first, second, third, value, fifth, sixth, seventh);
 
-  /// Returns a new tuple with [value] added at index 3.
-  Tuple8<T0, T1, T2, T, T3, T4, T5, T6> addAt3<T>(T value) =>
-      Tuple8(value0, value1, value2, value, value3, value4, value5, value6);
+  /// Returns a new tuple with the fifth element replaced by [value].
+  Tuple7<T0, T1, T2, T3, T, T5, T6> withFifth<T>(T value) =>
+      Tuple7(first, second, third, fourth, value, sixth, seventh);
 
-  /// Returns a new tuple with [value] added at index 4.
-  Tuple8<T0, T1, T2, T3, T, T4, T5, T6> addAt4<T>(T value) =>
-      Tuple8(value0, value1, value2, value3, value, value4, value5, value6);
+  /// Returns a new tuple with the sixth element replaced by [value].
+  Tuple7<T0, T1, T2, T3, T4, T, T6> withSixth<T>(T value) =>
+      Tuple7(first, second, third, fourth, fifth, value, seventh);
 
-  /// Returns a new tuple with [value] added at index 5.
-  Tuple8<T0, T1, T2, T3, T4, T, T5, T6> addAt5<T>(T value) =>
-      Tuple8(value0, value1, value2, value3, value4, value, value5, value6);
+  /// Returns a new tuple with the seventh element replaced by [value].
+  Tuple7<T0, T1, T2, T3, T4, T5, T> withSeventh<T>(T value) =>
+      Tuple7(first, second, third, fourth, fifth, sixth, value);
 
-  /// Returns a new tuple with [value] added at index 6.
-  Tuple8<T0, T1, T2, T3, T4, T5, T, T6> addAt6<T>(T value) =>
-      Tuple8(value0, value1, value2, value3, value4, value5, value, value6);
+  /// Returns a new tuple with the last element replaced by [value].
+  Tuple7<T0, T1, T2, T3, T4, T5, T> withLast<T>(T value) =>
+      Tuple7(first, second, third, fourth, fifth, sixth, value);
 
-  /// Returns a new tuple with [value] added at index 7.
-  Tuple8<T0, T1, T2, T3, T4, T5, T6, T> addAt7<T>(T value) =>
-      Tuple8(value0, value1, value2, value3, value4, value5, value6, value);
+  /// Returns a new tuple with [value] added at the first position.
+  Tuple8<T, T0, T1, T2, T3, T4, T5, T6> addFirst<T>(T value) =>
+      Tuple8(value, first, second, third, fourth, fifth, sixth, seventh);
 
-  @override
-  Tuple6<T1, T2, T3, T4, T5, T6> removeFirst() => removeAt0();
+  /// Returns a new tuple with [value] added at the second position.
+  Tuple8<T0, T, T1, T2, T3, T4, T5, T6> addSecond<T>(T value) =>
+      Tuple8(first, value, second, third, fourth, fifth, sixth, seventh);
 
-  @override
-  Tuple6<T0, T1, T2, T3, T4, T5> removeLast() => removeAt6();
+  /// Returns a new tuple with [value] added at the third position.
+  Tuple8<T0, T1, T, T2, T3, T4, T5, T6> addThird<T>(T value) =>
+      Tuple8(first, second, value, third, fourth, fifth, sixth, seventh);
 
-  /// Returns a new tuple with index 0 removed.
-  Tuple6<T1, T2, T3, T4, T5, T6> removeAt0() =>
-      Tuple6(value1, value2, value3, value4, value5, value6);
+  /// Returns a new tuple with [value] added at the fourth position.
+  Tuple8<T0, T1, T2, T, T3, T4, T5, T6> addFourth<T>(T value) =>
+      Tuple8(first, second, third, value, fourth, fifth, sixth, seventh);
 
-  /// Returns a new tuple with index 1 removed.
-  Tuple6<T0, T2, T3, T4, T5, T6> removeAt1() =>
-      Tuple6(value0, value2, value3, value4, value5, value6);
+  /// Returns a new tuple with [value] added at the fifth position.
+  Tuple8<T0, T1, T2, T3, T, T4, T5, T6> addFifth<T>(T value) =>
+      Tuple8(first, second, third, fourth, value, fifth, sixth, seventh);
 
-  /// Returns a new tuple with index 2 removed.
-  Tuple6<T0, T1, T3, T4, T5, T6> removeAt2() =>
-      Tuple6(value0, value1, value3, value4, value5, value6);
+  /// Returns a new tuple with [value] added at the sixth position.
+  Tuple8<T0, T1, T2, T3, T4, T, T5, T6> addSixth<T>(T value) =>
+      Tuple8(first, second, third, fourth, fifth, value, sixth, seventh);
 
-  /// Returns a new tuple with index 3 removed.
-  Tuple6<T0, T1, T2, T4, T5, T6> removeAt3() =>
-      Tuple6(value0, value1, value2, value4, value5, value6);
+  /// Returns a new tuple with [value] added at the seventh position.
+  Tuple8<T0, T1, T2, T3, T4, T5, T, T6> addSeventh<T>(T value) =>
+      Tuple8(first, second, third, fourth, fifth, sixth, value, seventh);
 
-  /// Returns a new tuple with index 4 removed.
-  Tuple6<T0, T1, T2, T3, T5, T6> removeAt4() =>
-      Tuple6(value0, value1, value2, value3, value5, value6);
+  /// Returns a new tuple with [value] added at the eighth position.
+  Tuple8<T0, T1, T2, T3, T4, T5, T6, T> addEighth<T>(T value) =>
+      Tuple8(first, second, third, fourth, fifth, sixth, seventh, value);
 
-  /// Returns a new tuple with index 5 removed.
-  Tuple6<T0, T1, T2, T3, T4, T6> removeAt5() =>
-      Tuple6(value0, value1, value2, value3, value4, value6);
+  /// Returns a new tuple with [value] added at the last position.
+  Tuple8<T0, T1, T2, T3, T4, T5, T6, T> addLast<T>(T value) =>
+      Tuple8(first, second, third, fourth, fifth, sixth, seventh, value);
 
-  /// Returns a new tuple with index 6 removed.
-  Tuple6<T0, T1, T2, T3, T4, T5> removeAt6() =>
-      Tuple6(value0, value1, value2, value3, value4, value5);
+  /// Returns a new tuple with the first element removed.
+  Tuple6<T1, T2, T3, T4, T5, T6> removeFirst() =>
+      Tuple6(second, third, fourth, fifth, sixth, seventh);
+
+  /// Returns a new tuple with the second element removed.
+  Tuple6<T0, T2, T3, T4, T5, T6> removeSecond() =>
+      Tuple6(first, third, fourth, fifth, sixth, seventh);
+
+  /// Returns a new tuple with the third element removed.
+  Tuple6<T0, T1, T3, T4, T5, T6> removeThird() =>
+      Tuple6(first, second, fourth, fifth, sixth, seventh);
+
+  /// Returns a new tuple with the fourth element removed.
+  Tuple6<T0, T1, T2, T4, T5, T6> removeFourth() =>
+      Tuple6(first, second, third, fifth, sixth, seventh);
+
+  /// Returns a new tuple with the fifth element removed.
+  Tuple6<T0, T1, T2, T3, T5, T6> removeFifth() =>
+      Tuple6(first, second, third, fourth, sixth, seventh);
+
+  /// Returns a new tuple with the sixth element removed.
+  Tuple6<T0, T1, T2, T3, T4, T6> removeSixth() =>
+      Tuple6(first, second, third, fourth, fifth, seventh);
+
+  /// Returns a new tuple with the seventh element removed.
+  Tuple6<T0, T1, T2, T3, T4, T5> removeSeventh() =>
+      Tuple6(first, second, third, fourth, fifth, sixth);
+
+  /// Returns a new tuple with the last element removed.
+  Tuple6<T0, T1, T2, T3, T4, T5> removeLast() =>
+      Tuple6(first, second, third, fourth, fifth, sixth);
 
   @override
   Iterable get iterable sync* {
-    yield value0;
-    yield value1;
-    yield value2;
-    yield value3;
-    yield value4;
-    yield value5;
-    yield value6;
+    yield first;
+    yield second;
+    yield third;
+    yield fourth;
+    yield fifth;
+    yield sixth;
+    yield seventh;
   }
 
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
       (other is Tuple7 &&
-          value0 == other.value0 &&
-          value1 == other.value1 &&
-          value2 == other.value2 &&
-          value3 == other.value3 &&
-          value4 == other.value4 &&
-          value5 == other.value5 &&
-          value6 == other.value6);
+          first == other.first &&
+          second == other.second &&
+          third == other.third &&
+          fourth == other.fourth &&
+          fifth == other.fifth &&
+          sixth == other.sixth &&
+          seventh == other.seventh);
 
   @override
   int get hashCode =>
       3505223485 ^
-      value0.hashCode ^
-      value1.hashCode ^
-      value2.hashCode ^
-      value3.hashCode ^
-      value4.hashCode ^
-      value5.hashCode ^
-      value6.hashCode;
+      first.hashCode ^
+      second.hashCode ^
+      third.hashCode ^
+      fourth.hashCode ^
+      fifth.hashCode ^
+      sixth.hashCode ^
+      seventh.hashCode;
 }

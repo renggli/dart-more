@@ -20,20 +20,11 @@ class Tuple0 extends Tuple {
   @override
   int get length => 0;
 
-  @override
-  Tuple1<T> addFirst<T>(T value) => addAt0(value);
+  /// Returns a new tuple with [value] added at the first position.
+  Tuple1<T> addFirst<T>(T value) => Tuple1(value);
 
-  @override
-  Tuple1<T> addLast<T>(T value) => addAt0(value);
-
-  /// Returns a new tuple with [value] added at index 0.
-  Tuple1<T> addAt0<T>(T value) => Tuple1(value);
-
-  @override
-  Tuple removeFirst() => throw StateError('Too few');
-
-  @override
-  Tuple removeLast() => throw StateError('Too few');
+  /// Returns a new tuple with [value] added at the last position.
+  Tuple1<T> addLast<T>(T value) => Tuple1(value);
 
   @override
   Iterable get iterable sync* {}

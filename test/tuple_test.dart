@@ -21,21 +21,12 @@ void main() {
     test('addFirst', () {
       final other = tuple.addFirst('a');
       expect(other.length, tuple.length + 1);
-      expect(other.value0, 'a');
+      expect(other.first, 'a');
     });
     test('addLast', () {
       final other = tuple.addLast('a');
       expect(other.length, tuple.length + 1);
-      expect(other.value0, 'a');
-    });
-    test('addAt0', () {
-      final other = tuple.addAt0('a');
-      expect(other.length, tuple.length + 1);
-      expect(other.value0, 'a');
-    });
-    test('remove', () {
-      expect(() => tuple.removeFirst(), throwsStateError);
-      expect(() => tuple.removeLast(), throwsStateError);
+      expect(other.first, 'a');
     });
     test('length', () {
       expect(tuple.length, 0);
@@ -52,12 +43,15 @@ void main() {
     test('toString', () {
       expect(tuple.toString(), '()');
     });
+// ignore: prefer_const_constructors
+    final copy = Tuple0();
     test('equals', () {
       expect(tuple == tuple, isTrue);
-      expect(tuple == const Tuple1(-1), isFalse);
+      expect(tuple == copy, isTrue);
+      expect(copy == tuple, isTrue);
     });
     test('hashCode', () {
-      expect(tuple.hashCode == tuple.hashCode, isTrue);
+      expect(tuple.hashCode == copy.hashCode, isTrue);
     });
   });
   group('Tuple1', () {
@@ -75,35 +69,34 @@ void main() {
       expect(() => Tuple1.fromList([159, 123]), throwsArgumentError);
     });
     test('read', () {
-      expect(tuple.value0, 26);
+      expect(tuple.first, 26);
+      expect(tuple.last, 26);
     });
-    test('with0', () {
-      final other = tuple.with0('a');
-      expect(other.value0, 'a');
+    test('withFirst', () {
+      final other = tuple.withFirst('a');
+      expect(other.first, 'a');
+    });
+    test('withLast', () {
+      final other = tuple.withLast('a');
+      expect(other.first, 'a');
     });
     test('addFirst', () {
       final other = tuple.addFirst('a');
       expect(other.length, tuple.length + 1);
-      expect(other.value0, 'a');
-      expect(other.value1, 26);
+      expect(other.first, 'a');
+      expect(other.second, 26);
+    });
+    test('addSecond', () {
+      final other = tuple.addSecond('a');
+      expect(other.length, tuple.length + 1);
+      expect(other.first, 26);
+      expect(other.second, 'a');
     });
     test('addLast', () {
       final other = tuple.addLast('a');
       expect(other.length, tuple.length + 1);
-      expect(other.value0, 26);
-      expect(other.value1, 'a');
-    });
-    test('addAt0', () {
-      final other = tuple.addAt0('a');
-      expect(other.length, tuple.length + 1);
-      expect(other.value0, 'a');
-      expect(other.value1, 26);
-    });
-    test('addAt1', () {
-      final other = tuple.addAt1('a');
-      expect(other.length, tuple.length + 1);
-      expect(other.value0, 26);
-      expect(other.value1, 'a');
+      expect(other.first, 26);
+      expect(other.second, 'a');
     });
     test('removeFirst', () {
       final other = tuple.removeFirst();
@@ -111,10 +104,6 @@ void main() {
     });
     test('removeLast', () {
       final other = tuple.removeLast();
-      expect(other.length, tuple.length - 1);
-    });
-    test('removeAt0', () {
-      final other = tuple.removeAt0();
       expect(other.length, tuple.length - 1);
     });
     test('length', () {
@@ -132,16 +121,16 @@ void main() {
     test('toString', () {
       expect(tuple.toString(), '(26)');
     });
+    final copy = Tuple1(tuple.first);
     test('equals', () {
       expect(tuple == tuple, isTrue);
-      expect(tuple == tuple.with0(-1), isFalse);
-// ignore: unrelated_type_equality_checks
-      expect(tuple == tuple.with0('a'), isFalse);
+      expect(tuple == copy, isTrue);
+      expect(copy == tuple, isTrue);
+      expect(tuple == tuple.withFirst(-1), isFalse);
     });
     test('hashCode', () {
-      expect(tuple.hashCode == tuple.hashCode, isTrue);
-      expect(tuple.hashCode == tuple.with0(-1).hashCode, isFalse);
-      expect(tuple.hashCode == tuple.with0('a').hashCode, isFalse);
+      expect(tuple.hashCode == copy.hashCode, isTrue);
+      expect(tuple.hashCode == tuple.withFirst(-1).hashCode, isFalse);
     });
   });
   group('Tuple2', () {
@@ -159,73 +148,67 @@ void main() {
       expect(() => Tuple2.fromList([204, 250, 23]), throwsArgumentError);
     });
     test('read', () {
-      expect(tuple.value0, 142);
-      expect(tuple.value1, 224);
+      expect(tuple.first, 142);
+      expect(tuple.second, 224);
+      expect(tuple.last, 224);
     });
-    test('with0', () {
-      final other = tuple.with0('a');
-      expect(other.value0, 'a');
-      expect(other.value1, 224);
+    test('withFirst', () {
+      final other = tuple.withFirst('a');
+      expect(other.first, 'a');
+      expect(other.second, 224);
     });
-    test('with1', () {
-      final other = tuple.with1('a');
-      expect(other.value0, 142);
-      expect(other.value1, 'a');
+    test('withSecond', () {
+      final other = tuple.withSecond('a');
+      expect(other.first, 142);
+      expect(other.second, 'a');
+    });
+    test('withLast', () {
+      final other = tuple.withLast('a');
+      expect(other.first, 142);
+      expect(other.second, 'a');
     });
     test('addFirst', () {
       final other = tuple.addFirst('a');
       expect(other.length, tuple.length + 1);
-      expect(other.value0, 'a');
-      expect(other.value1, 142);
-      expect(other.value2, 224);
+      expect(other.first, 'a');
+      expect(other.second, 142);
+      expect(other.third, 224);
+    });
+    test('addSecond', () {
+      final other = tuple.addSecond('a');
+      expect(other.length, tuple.length + 1);
+      expect(other.first, 142);
+      expect(other.second, 'a');
+      expect(other.third, 224);
+    });
+    test('addThird', () {
+      final other = tuple.addThird('a');
+      expect(other.length, tuple.length + 1);
+      expect(other.first, 142);
+      expect(other.second, 224);
+      expect(other.third, 'a');
     });
     test('addLast', () {
       final other = tuple.addLast('a');
       expect(other.length, tuple.length + 1);
-      expect(other.value0, 142);
-      expect(other.value1, 224);
-      expect(other.value2, 'a');
-    });
-    test('addAt0', () {
-      final other = tuple.addAt0('a');
-      expect(other.length, tuple.length + 1);
-      expect(other.value0, 'a');
-      expect(other.value1, 142);
-      expect(other.value2, 224);
-    });
-    test('addAt1', () {
-      final other = tuple.addAt1('a');
-      expect(other.length, tuple.length + 1);
-      expect(other.value0, 142);
-      expect(other.value1, 'a');
-      expect(other.value2, 224);
-    });
-    test('addAt2', () {
-      final other = tuple.addAt2('a');
-      expect(other.length, tuple.length + 1);
-      expect(other.value0, 142);
-      expect(other.value1, 224);
-      expect(other.value2, 'a');
+      expect(other.first, 142);
+      expect(other.second, 224);
+      expect(other.third, 'a');
     });
     test('removeFirst', () {
       final other = tuple.removeFirst();
       expect(other.length, tuple.length - 1);
-      expect(other.value0, 224);
+      expect(other.first, 224);
+    });
+    test('removeSecond', () {
+      final other = tuple.removeSecond();
+      expect(other.length, tuple.length - 1);
+      expect(other.first, 142);
     });
     test('removeLast', () {
       final other = tuple.removeLast();
       expect(other.length, tuple.length - 1);
-      expect(other.value0, 142);
-    });
-    test('removeAt0', () {
-      final other = tuple.removeAt0();
-      expect(other.length, tuple.length - 1);
-      expect(other.value0, 224);
-    });
-    test('removeAt1', () {
-      final other = tuple.removeAt1();
-      expect(other.length, tuple.length - 1);
-      expect(other.value0, 142);
+      expect(other.first, 142);
     });
     test('length', () {
       expect(tuple.length, 2);
@@ -242,16 +225,18 @@ void main() {
     test('toString', () {
       expect(tuple.toString(), '(142, 224)');
     });
+    final copy = Tuple2(tuple.first, tuple.second);
     test('equals', () {
       expect(tuple == tuple, isTrue);
-      expect(tuple == tuple.with1(-1), isFalse);
-// ignore: unrelated_type_equality_checks
-      expect(tuple == tuple.with1('a'), isFalse);
+      expect(tuple == copy, isTrue);
+      expect(copy == tuple, isTrue);
+      expect(tuple == tuple.withFirst(-1), isFalse);
+      expect(tuple == tuple.withSecond(-1), isFalse);
     });
     test('hashCode', () {
-      expect(tuple.hashCode == tuple.hashCode, isTrue);
-      expect(tuple.hashCode == tuple.with1(-1).hashCode, isFalse);
-      expect(tuple.hashCode == tuple.with1('a').hashCode, isFalse);
+      expect(tuple.hashCode == copy.hashCode, isTrue);
+      expect(tuple.hashCode == tuple.withFirst(-1).hashCode, isFalse);
+      expect(tuple.hashCode == tuple.withSecond(-1).hashCode, isFalse);
     });
   });
   group('Tuple3', () {
@@ -269,105 +254,98 @@ void main() {
       expect(() => Tuple3.fromList([121, 55, 119, 54]), throwsArgumentError);
     });
     test('read', () {
-      expect(tuple.value0, 39);
-      expect(tuple.value1, 140);
-      expect(tuple.value2, 220);
+      expect(tuple.first, 39);
+      expect(tuple.second, 140);
+      expect(tuple.third, 220);
+      expect(tuple.last, 220);
     });
-    test('with0', () {
-      final other = tuple.with0('a');
-      expect(other.value0, 'a');
-      expect(other.value1, 140);
-      expect(other.value2, 220);
+    test('withFirst', () {
+      final other = tuple.withFirst('a');
+      expect(other.first, 'a');
+      expect(other.second, 140);
+      expect(other.third, 220);
     });
-    test('with1', () {
-      final other = tuple.with1('a');
-      expect(other.value0, 39);
-      expect(other.value1, 'a');
-      expect(other.value2, 220);
+    test('withSecond', () {
+      final other = tuple.withSecond('a');
+      expect(other.first, 39);
+      expect(other.second, 'a');
+      expect(other.third, 220);
     });
-    test('with2', () {
-      final other = tuple.with2('a');
-      expect(other.value0, 39);
-      expect(other.value1, 140);
-      expect(other.value2, 'a');
+    test('withThird', () {
+      final other = tuple.withThird('a');
+      expect(other.first, 39);
+      expect(other.second, 140);
+      expect(other.third, 'a');
+    });
+    test('withLast', () {
+      final other = tuple.withLast('a');
+      expect(other.first, 39);
+      expect(other.second, 140);
+      expect(other.third, 'a');
     });
     test('addFirst', () {
       final other = tuple.addFirst('a');
       expect(other.length, tuple.length + 1);
-      expect(other.value0, 'a');
-      expect(other.value1, 39);
-      expect(other.value2, 140);
-      expect(other.value3, 220);
+      expect(other.first, 'a');
+      expect(other.second, 39);
+      expect(other.third, 140);
+      expect(other.fourth, 220);
+    });
+    test('addSecond', () {
+      final other = tuple.addSecond('a');
+      expect(other.length, tuple.length + 1);
+      expect(other.first, 39);
+      expect(other.second, 'a');
+      expect(other.third, 140);
+      expect(other.fourth, 220);
+    });
+    test('addThird', () {
+      final other = tuple.addThird('a');
+      expect(other.length, tuple.length + 1);
+      expect(other.first, 39);
+      expect(other.second, 140);
+      expect(other.third, 'a');
+      expect(other.fourth, 220);
+    });
+    test('addFourth', () {
+      final other = tuple.addFourth('a');
+      expect(other.length, tuple.length + 1);
+      expect(other.first, 39);
+      expect(other.second, 140);
+      expect(other.third, 220);
+      expect(other.fourth, 'a');
     });
     test('addLast', () {
       final other = tuple.addLast('a');
       expect(other.length, tuple.length + 1);
-      expect(other.value0, 39);
-      expect(other.value1, 140);
-      expect(other.value2, 220);
-      expect(other.value3, 'a');
-    });
-    test('addAt0', () {
-      final other = tuple.addAt0('a');
-      expect(other.length, tuple.length + 1);
-      expect(other.value0, 'a');
-      expect(other.value1, 39);
-      expect(other.value2, 140);
-      expect(other.value3, 220);
-    });
-    test('addAt1', () {
-      final other = tuple.addAt1('a');
-      expect(other.length, tuple.length + 1);
-      expect(other.value0, 39);
-      expect(other.value1, 'a');
-      expect(other.value2, 140);
-      expect(other.value3, 220);
-    });
-    test('addAt2', () {
-      final other = tuple.addAt2('a');
-      expect(other.length, tuple.length + 1);
-      expect(other.value0, 39);
-      expect(other.value1, 140);
-      expect(other.value2, 'a');
-      expect(other.value3, 220);
-    });
-    test('addAt3', () {
-      final other = tuple.addAt3('a');
-      expect(other.length, tuple.length + 1);
-      expect(other.value0, 39);
-      expect(other.value1, 140);
-      expect(other.value2, 220);
-      expect(other.value3, 'a');
+      expect(other.first, 39);
+      expect(other.second, 140);
+      expect(other.third, 220);
+      expect(other.fourth, 'a');
     });
     test('removeFirst', () {
       final other = tuple.removeFirst();
       expect(other.length, tuple.length - 1);
-      expect(other.value0, 140);
-      expect(other.value1, 220);
+      expect(other.first, 140);
+      expect(other.second, 220);
+    });
+    test('removeSecond', () {
+      final other = tuple.removeSecond();
+      expect(other.length, tuple.length - 1);
+      expect(other.first, 39);
+      expect(other.second, 220);
+    });
+    test('removeThird', () {
+      final other = tuple.removeThird();
+      expect(other.length, tuple.length - 1);
+      expect(other.first, 39);
+      expect(other.second, 140);
     });
     test('removeLast', () {
       final other = tuple.removeLast();
       expect(other.length, tuple.length - 1);
-      expect(other.value0, 39);
-      expect(other.value1, 140);
-    });
-    test('removeAt0', () {
-      final other = tuple.removeAt0();
-      expect(other.length, tuple.length - 1);
-      expect(other.value0, 140);
-      expect(other.value1, 220);
-    });
-    test('removeAt1', () {
-      final other = tuple.removeAt1();
-      expect(other.length, tuple.length - 1);
-      expect(other.value0, 39);
-      expect(other.value1, 220);
-    });
-    test('removeAt2', () {
-      final other = tuple.removeAt2();
-      expect(other.length, tuple.length - 1);
-      expect(other.value0, 39);
-      expect(other.value1, 140);
+      expect(other.first, 39);
+      expect(other.second, 140);
     });
     test('length', () {
       expect(tuple.length, 3);
@@ -384,16 +362,20 @@ void main() {
     test('toString', () {
       expect(tuple.toString(), '(39, 140, 220)');
     });
+    final copy = Tuple3(tuple.first, tuple.second, tuple.third);
     test('equals', () {
       expect(tuple == tuple, isTrue);
-      expect(tuple == tuple.with2(-1), isFalse);
-// ignore: unrelated_type_equality_checks
-      expect(tuple == tuple.with2('a'), isFalse);
+      expect(tuple == copy, isTrue);
+      expect(copy == tuple, isTrue);
+      expect(tuple == tuple.withFirst(-1), isFalse);
+      expect(tuple == tuple.withSecond(-1), isFalse);
+      expect(tuple == tuple.withThird(-1), isFalse);
     });
     test('hashCode', () {
-      expect(tuple.hashCode == tuple.hashCode, isTrue);
-      expect(tuple.hashCode == tuple.with2(-1).hashCode, isFalse);
-      expect(tuple.hashCode == tuple.with2('a').hashCode, isFalse);
+      expect(tuple.hashCode == copy.hashCode, isTrue);
+      expect(tuple.hashCode == tuple.withFirst(-1).hashCode, isFalse);
+      expect(tuple.hashCode == tuple.withSecond(-1).hashCode, isFalse);
+      expect(tuple.hashCode == tuple.withThird(-1).hashCode, isFalse);
     });
   });
   group('Tuple4', () {
@@ -413,143 +395,135 @@ void main() {
           () => Tuple4.fromList([32, 108, 10, 131, 83]), throwsArgumentError);
     });
     test('read', () {
-      expect(tuple.value0, 178);
-      expect(tuple.value1, 209);
-      expect(tuple.value2, 198);
-      expect(tuple.value3, 186);
+      expect(tuple.first, 178);
+      expect(tuple.second, 209);
+      expect(tuple.third, 198);
+      expect(tuple.fourth, 186);
+      expect(tuple.last, 186);
     });
-    test('with0', () {
-      final other = tuple.with0('a');
-      expect(other.value0, 'a');
-      expect(other.value1, 209);
-      expect(other.value2, 198);
-      expect(other.value3, 186);
+    test('withFirst', () {
+      final other = tuple.withFirst('a');
+      expect(other.first, 'a');
+      expect(other.second, 209);
+      expect(other.third, 198);
+      expect(other.fourth, 186);
     });
-    test('with1', () {
-      final other = tuple.with1('a');
-      expect(other.value0, 178);
-      expect(other.value1, 'a');
-      expect(other.value2, 198);
-      expect(other.value3, 186);
+    test('withSecond', () {
+      final other = tuple.withSecond('a');
+      expect(other.first, 178);
+      expect(other.second, 'a');
+      expect(other.third, 198);
+      expect(other.fourth, 186);
     });
-    test('with2', () {
-      final other = tuple.with2('a');
-      expect(other.value0, 178);
-      expect(other.value1, 209);
-      expect(other.value2, 'a');
-      expect(other.value3, 186);
+    test('withThird', () {
+      final other = tuple.withThird('a');
+      expect(other.first, 178);
+      expect(other.second, 209);
+      expect(other.third, 'a');
+      expect(other.fourth, 186);
     });
-    test('with3', () {
-      final other = tuple.with3('a');
-      expect(other.value0, 178);
-      expect(other.value1, 209);
-      expect(other.value2, 198);
-      expect(other.value3, 'a');
+    test('withFourth', () {
+      final other = tuple.withFourth('a');
+      expect(other.first, 178);
+      expect(other.second, 209);
+      expect(other.third, 198);
+      expect(other.fourth, 'a');
+    });
+    test('withLast', () {
+      final other = tuple.withLast('a');
+      expect(other.first, 178);
+      expect(other.second, 209);
+      expect(other.third, 198);
+      expect(other.fourth, 'a');
     });
     test('addFirst', () {
       final other = tuple.addFirst('a');
       expect(other.length, tuple.length + 1);
-      expect(other.value0, 'a');
-      expect(other.value1, 178);
-      expect(other.value2, 209);
-      expect(other.value3, 198);
-      expect(other.value4, 186);
+      expect(other.first, 'a');
+      expect(other.second, 178);
+      expect(other.third, 209);
+      expect(other.fourth, 198);
+      expect(other.fifth, 186);
+    });
+    test('addSecond', () {
+      final other = tuple.addSecond('a');
+      expect(other.length, tuple.length + 1);
+      expect(other.first, 178);
+      expect(other.second, 'a');
+      expect(other.third, 209);
+      expect(other.fourth, 198);
+      expect(other.fifth, 186);
+    });
+    test('addThird', () {
+      final other = tuple.addThird('a');
+      expect(other.length, tuple.length + 1);
+      expect(other.first, 178);
+      expect(other.second, 209);
+      expect(other.third, 'a');
+      expect(other.fourth, 198);
+      expect(other.fifth, 186);
+    });
+    test('addFourth', () {
+      final other = tuple.addFourth('a');
+      expect(other.length, tuple.length + 1);
+      expect(other.first, 178);
+      expect(other.second, 209);
+      expect(other.third, 198);
+      expect(other.fourth, 'a');
+      expect(other.fifth, 186);
+    });
+    test('addFifth', () {
+      final other = tuple.addFifth('a');
+      expect(other.length, tuple.length + 1);
+      expect(other.first, 178);
+      expect(other.second, 209);
+      expect(other.third, 198);
+      expect(other.fourth, 186);
+      expect(other.fifth, 'a');
     });
     test('addLast', () {
       final other = tuple.addLast('a');
       expect(other.length, tuple.length + 1);
-      expect(other.value0, 178);
-      expect(other.value1, 209);
-      expect(other.value2, 198);
-      expect(other.value3, 186);
-      expect(other.value4, 'a');
-    });
-    test('addAt0', () {
-      final other = tuple.addAt0('a');
-      expect(other.length, tuple.length + 1);
-      expect(other.value0, 'a');
-      expect(other.value1, 178);
-      expect(other.value2, 209);
-      expect(other.value3, 198);
-      expect(other.value4, 186);
-    });
-    test('addAt1', () {
-      final other = tuple.addAt1('a');
-      expect(other.length, tuple.length + 1);
-      expect(other.value0, 178);
-      expect(other.value1, 'a');
-      expect(other.value2, 209);
-      expect(other.value3, 198);
-      expect(other.value4, 186);
-    });
-    test('addAt2', () {
-      final other = tuple.addAt2('a');
-      expect(other.length, tuple.length + 1);
-      expect(other.value0, 178);
-      expect(other.value1, 209);
-      expect(other.value2, 'a');
-      expect(other.value3, 198);
-      expect(other.value4, 186);
-    });
-    test('addAt3', () {
-      final other = tuple.addAt3('a');
-      expect(other.length, tuple.length + 1);
-      expect(other.value0, 178);
-      expect(other.value1, 209);
-      expect(other.value2, 198);
-      expect(other.value3, 'a');
-      expect(other.value4, 186);
-    });
-    test('addAt4', () {
-      final other = tuple.addAt4('a');
-      expect(other.length, tuple.length + 1);
-      expect(other.value0, 178);
-      expect(other.value1, 209);
-      expect(other.value2, 198);
-      expect(other.value3, 186);
-      expect(other.value4, 'a');
+      expect(other.first, 178);
+      expect(other.second, 209);
+      expect(other.third, 198);
+      expect(other.fourth, 186);
+      expect(other.fifth, 'a');
     });
     test('removeFirst', () {
       final other = tuple.removeFirst();
       expect(other.length, tuple.length - 1);
-      expect(other.value0, 209);
-      expect(other.value1, 198);
-      expect(other.value2, 186);
+      expect(other.first, 209);
+      expect(other.second, 198);
+      expect(other.third, 186);
+    });
+    test('removeSecond', () {
+      final other = tuple.removeSecond();
+      expect(other.length, tuple.length - 1);
+      expect(other.first, 178);
+      expect(other.second, 198);
+      expect(other.third, 186);
+    });
+    test('removeThird', () {
+      final other = tuple.removeThird();
+      expect(other.length, tuple.length - 1);
+      expect(other.first, 178);
+      expect(other.second, 209);
+      expect(other.third, 186);
+    });
+    test('removeFourth', () {
+      final other = tuple.removeFourth();
+      expect(other.length, tuple.length - 1);
+      expect(other.first, 178);
+      expect(other.second, 209);
+      expect(other.third, 198);
     });
     test('removeLast', () {
       final other = tuple.removeLast();
       expect(other.length, tuple.length - 1);
-      expect(other.value0, 178);
-      expect(other.value1, 209);
-      expect(other.value2, 198);
-    });
-    test('removeAt0', () {
-      final other = tuple.removeAt0();
-      expect(other.length, tuple.length - 1);
-      expect(other.value0, 209);
-      expect(other.value1, 198);
-      expect(other.value2, 186);
-    });
-    test('removeAt1', () {
-      final other = tuple.removeAt1();
-      expect(other.length, tuple.length - 1);
-      expect(other.value0, 178);
-      expect(other.value1, 198);
-      expect(other.value2, 186);
-    });
-    test('removeAt2', () {
-      final other = tuple.removeAt2();
-      expect(other.length, tuple.length - 1);
-      expect(other.value0, 178);
-      expect(other.value1, 209);
-      expect(other.value2, 186);
-    });
-    test('removeAt3', () {
-      final other = tuple.removeAt3();
-      expect(other.length, tuple.length - 1);
-      expect(other.value0, 178);
-      expect(other.value1, 209);
-      expect(other.value2, 198);
+      expect(other.first, 178);
+      expect(other.second, 209);
+      expect(other.third, 198);
     });
     test('length', () {
       expect(tuple.length, 4);
@@ -566,16 +540,22 @@ void main() {
     test('toString', () {
       expect(tuple.toString(), '(178, 209, 198, 186)');
     });
+    final copy = Tuple4(tuple.first, tuple.second, tuple.third, tuple.fourth);
     test('equals', () {
       expect(tuple == tuple, isTrue);
-      expect(tuple == tuple.with3(-1), isFalse);
-// ignore: unrelated_type_equality_checks
-      expect(tuple == tuple.with3('a'), isFalse);
+      expect(tuple == copy, isTrue);
+      expect(copy == tuple, isTrue);
+      expect(tuple == tuple.withFirst(-1), isFalse);
+      expect(tuple == tuple.withSecond(-1), isFalse);
+      expect(tuple == tuple.withThird(-1), isFalse);
+      expect(tuple == tuple.withFourth(-1), isFalse);
     });
     test('hashCode', () {
-      expect(tuple.hashCode == tuple.hashCode, isTrue);
-      expect(tuple.hashCode == tuple.with3(-1).hashCode, isFalse);
-      expect(tuple.hashCode == tuple.with3('a').hashCode, isFalse);
+      expect(tuple.hashCode == copy.hashCode, isTrue);
+      expect(tuple.hashCode == tuple.withFirst(-1).hashCode, isFalse);
+      expect(tuple.hashCode == tuple.withSecond(-1).hashCode, isFalse);
+      expect(tuple.hashCode == tuple.withThird(-1).hashCode, isFalse);
+      expect(tuple.hashCode == tuple.withFourth(-1).hashCode, isFalse);
     });
   });
   group('Tuple5', () {
@@ -593,187 +573,178 @@ void main() {
           () => Tuple5.fromList([0, 46, 5, 70, 64, 157]), throwsArgumentError);
     });
     test('read', () {
-      expect(tuple.value0, 137);
-      expect(tuple.value1, 102);
-      expect(tuple.value2, 140);
-      expect(tuple.value3, 254);
-      expect(tuple.value4, 112);
+      expect(tuple.first, 137);
+      expect(tuple.second, 102);
+      expect(tuple.third, 140);
+      expect(tuple.fourth, 254);
+      expect(tuple.fifth, 112);
+      expect(tuple.last, 112);
     });
-    test('with0', () {
-      final other = tuple.with0('a');
-      expect(other.value0, 'a');
-      expect(other.value1, 102);
-      expect(other.value2, 140);
-      expect(other.value3, 254);
-      expect(other.value4, 112);
+    test('withFirst', () {
+      final other = tuple.withFirst('a');
+      expect(other.first, 'a');
+      expect(other.second, 102);
+      expect(other.third, 140);
+      expect(other.fourth, 254);
+      expect(other.fifth, 112);
     });
-    test('with1', () {
-      final other = tuple.with1('a');
-      expect(other.value0, 137);
-      expect(other.value1, 'a');
-      expect(other.value2, 140);
-      expect(other.value3, 254);
-      expect(other.value4, 112);
+    test('withSecond', () {
+      final other = tuple.withSecond('a');
+      expect(other.first, 137);
+      expect(other.second, 'a');
+      expect(other.third, 140);
+      expect(other.fourth, 254);
+      expect(other.fifth, 112);
     });
-    test('with2', () {
-      final other = tuple.with2('a');
-      expect(other.value0, 137);
-      expect(other.value1, 102);
-      expect(other.value2, 'a');
-      expect(other.value3, 254);
-      expect(other.value4, 112);
+    test('withThird', () {
+      final other = tuple.withThird('a');
+      expect(other.first, 137);
+      expect(other.second, 102);
+      expect(other.third, 'a');
+      expect(other.fourth, 254);
+      expect(other.fifth, 112);
     });
-    test('with3', () {
-      final other = tuple.with3('a');
-      expect(other.value0, 137);
-      expect(other.value1, 102);
-      expect(other.value2, 140);
-      expect(other.value3, 'a');
-      expect(other.value4, 112);
+    test('withFourth', () {
+      final other = tuple.withFourth('a');
+      expect(other.first, 137);
+      expect(other.second, 102);
+      expect(other.third, 140);
+      expect(other.fourth, 'a');
+      expect(other.fifth, 112);
     });
-    test('with4', () {
-      final other = tuple.with4('a');
-      expect(other.value0, 137);
-      expect(other.value1, 102);
-      expect(other.value2, 140);
-      expect(other.value3, 254);
-      expect(other.value4, 'a');
+    test('withFifth', () {
+      final other = tuple.withFifth('a');
+      expect(other.first, 137);
+      expect(other.second, 102);
+      expect(other.third, 140);
+      expect(other.fourth, 254);
+      expect(other.fifth, 'a');
+    });
+    test('withLast', () {
+      final other = tuple.withLast('a');
+      expect(other.first, 137);
+      expect(other.second, 102);
+      expect(other.third, 140);
+      expect(other.fourth, 254);
+      expect(other.fifth, 'a');
     });
     test('addFirst', () {
       final other = tuple.addFirst('a');
       expect(other.length, tuple.length + 1);
-      expect(other.value0, 'a');
-      expect(other.value1, 137);
-      expect(other.value2, 102);
-      expect(other.value3, 140);
-      expect(other.value4, 254);
-      expect(other.value5, 112);
+      expect(other.first, 'a');
+      expect(other.second, 137);
+      expect(other.third, 102);
+      expect(other.fourth, 140);
+      expect(other.fifth, 254);
+      expect(other.sixth, 112);
+    });
+    test('addSecond', () {
+      final other = tuple.addSecond('a');
+      expect(other.length, tuple.length + 1);
+      expect(other.first, 137);
+      expect(other.second, 'a');
+      expect(other.third, 102);
+      expect(other.fourth, 140);
+      expect(other.fifth, 254);
+      expect(other.sixth, 112);
+    });
+    test('addThird', () {
+      final other = tuple.addThird('a');
+      expect(other.length, tuple.length + 1);
+      expect(other.first, 137);
+      expect(other.second, 102);
+      expect(other.third, 'a');
+      expect(other.fourth, 140);
+      expect(other.fifth, 254);
+      expect(other.sixth, 112);
+    });
+    test('addFourth', () {
+      final other = tuple.addFourth('a');
+      expect(other.length, tuple.length + 1);
+      expect(other.first, 137);
+      expect(other.second, 102);
+      expect(other.third, 140);
+      expect(other.fourth, 'a');
+      expect(other.fifth, 254);
+      expect(other.sixth, 112);
+    });
+    test('addFifth', () {
+      final other = tuple.addFifth('a');
+      expect(other.length, tuple.length + 1);
+      expect(other.first, 137);
+      expect(other.second, 102);
+      expect(other.third, 140);
+      expect(other.fourth, 254);
+      expect(other.fifth, 'a');
+      expect(other.sixth, 112);
+    });
+    test('addSixth', () {
+      final other = tuple.addSixth('a');
+      expect(other.length, tuple.length + 1);
+      expect(other.first, 137);
+      expect(other.second, 102);
+      expect(other.third, 140);
+      expect(other.fourth, 254);
+      expect(other.fifth, 112);
+      expect(other.sixth, 'a');
     });
     test('addLast', () {
       final other = tuple.addLast('a');
       expect(other.length, tuple.length + 1);
-      expect(other.value0, 137);
-      expect(other.value1, 102);
-      expect(other.value2, 140);
-      expect(other.value3, 254);
-      expect(other.value4, 112);
-      expect(other.value5, 'a');
-    });
-    test('addAt0', () {
-      final other = tuple.addAt0('a');
-      expect(other.length, tuple.length + 1);
-      expect(other.value0, 'a');
-      expect(other.value1, 137);
-      expect(other.value2, 102);
-      expect(other.value3, 140);
-      expect(other.value4, 254);
-      expect(other.value5, 112);
-    });
-    test('addAt1', () {
-      final other = tuple.addAt1('a');
-      expect(other.length, tuple.length + 1);
-      expect(other.value0, 137);
-      expect(other.value1, 'a');
-      expect(other.value2, 102);
-      expect(other.value3, 140);
-      expect(other.value4, 254);
-      expect(other.value5, 112);
-    });
-    test('addAt2', () {
-      final other = tuple.addAt2('a');
-      expect(other.length, tuple.length + 1);
-      expect(other.value0, 137);
-      expect(other.value1, 102);
-      expect(other.value2, 'a');
-      expect(other.value3, 140);
-      expect(other.value4, 254);
-      expect(other.value5, 112);
-    });
-    test('addAt3', () {
-      final other = tuple.addAt3('a');
-      expect(other.length, tuple.length + 1);
-      expect(other.value0, 137);
-      expect(other.value1, 102);
-      expect(other.value2, 140);
-      expect(other.value3, 'a');
-      expect(other.value4, 254);
-      expect(other.value5, 112);
-    });
-    test('addAt4', () {
-      final other = tuple.addAt4('a');
-      expect(other.length, tuple.length + 1);
-      expect(other.value0, 137);
-      expect(other.value1, 102);
-      expect(other.value2, 140);
-      expect(other.value3, 254);
-      expect(other.value4, 'a');
-      expect(other.value5, 112);
-    });
-    test('addAt5', () {
-      final other = tuple.addAt5('a');
-      expect(other.length, tuple.length + 1);
-      expect(other.value0, 137);
-      expect(other.value1, 102);
-      expect(other.value2, 140);
-      expect(other.value3, 254);
-      expect(other.value4, 112);
-      expect(other.value5, 'a');
+      expect(other.first, 137);
+      expect(other.second, 102);
+      expect(other.third, 140);
+      expect(other.fourth, 254);
+      expect(other.fifth, 112);
+      expect(other.sixth, 'a');
     });
     test('removeFirst', () {
       final other = tuple.removeFirst();
       expect(other.length, tuple.length - 1);
-      expect(other.value0, 102);
-      expect(other.value1, 140);
-      expect(other.value2, 254);
-      expect(other.value3, 112);
+      expect(other.first, 102);
+      expect(other.second, 140);
+      expect(other.third, 254);
+      expect(other.fourth, 112);
+    });
+    test('removeSecond', () {
+      final other = tuple.removeSecond();
+      expect(other.length, tuple.length - 1);
+      expect(other.first, 137);
+      expect(other.second, 140);
+      expect(other.third, 254);
+      expect(other.fourth, 112);
+    });
+    test('removeThird', () {
+      final other = tuple.removeThird();
+      expect(other.length, tuple.length - 1);
+      expect(other.first, 137);
+      expect(other.second, 102);
+      expect(other.third, 254);
+      expect(other.fourth, 112);
+    });
+    test('removeFourth', () {
+      final other = tuple.removeFourth();
+      expect(other.length, tuple.length - 1);
+      expect(other.first, 137);
+      expect(other.second, 102);
+      expect(other.third, 140);
+      expect(other.fourth, 112);
+    });
+    test('removeFifth', () {
+      final other = tuple.removeFifth();
+      expect(other.length, tuple.length - 1);
+      expect(other.first, 137);
+      expect(other.second, 102);
+      expect(other.third, 140);
+      expect(other.fourth, 254);
     });
     test('removeLast', () {
       final other = tuple.removeLast();
       expect(other.length, tuple.length - 1);
-      expect(other.value0, 137);
-      expect(other.value1, 102);
-      expect(other.value2, 140);
-      expect(other.value3, 254);
-    });
-    test('removeAt0', () {
-      final other = tuple.removeAt0();
-      expect(other.length, tuple.length - 1);
-      expect(other.value0, 102);
-      expect(other.value1, 140);
-      expect(other.value2, 254);
-      expect(other.value3, 112);
-    });
-    test('removeAt1', () {
-      final other = tuple.removeAt1();
-      expect(other.length, tuple.length - 1);
-      expect(other.value0, 137);
-      expect(other.value1, 140);
-      expect(other.value2, 254);
-      expect(other.value3, 112);
-    });
-    test('removeAt2', () {
-      final other = tuple.removeAt2();
-      expect(other.length, tuple.length - 1);
-      expect(other.value0, 137);
-      expect(other.value1, 102);
-      expect(other.value2, 254);
-      expect(other.value3, 112);
-    });
-    test('removeAt3', () {
-      final other = tuple.removeAt3();
-      expect(other.length, tuple.length - 1);
-      expect(other.value0, 137);
-      expect(other.value1, 102);
-      expect(other.value2, 140);
-      expect(other.value3, 112);
-    });
-    test('removeAt4', () {
-      final other = tuple.removeAt4();
-      expect(other.length, tuple.length - 1);
-      expect(other.value0, 137);
-      expect(other.value1, 102);
-      expect(other.value2, 140);
-      expect(other.value3, 254);
+      expect(other.first, 137);
+      expect(other.second, 102);
+      expect(other.third, 140);
+      expect(other.fourth, 254);
     });
     test('length', () {
       expect(tuple.length, 5);
@@ -790,16 +761,25 @@ void main() {
     test('toString', () {
       expect(tuple.toString(), '(137, 102, 140, 254, 112)');
     });
+    final copy = Tuple5(
+        tuple.first, tuple.second, tuple.third, tuple.fourth, tuple.fifth);
     test('equals', () {
       expect(tuple == tuple, isTrue);
-      expect(tuple == tuple.with4(-1), isFalse);
-// ignore: unrelated_type_equality_checks
-      expect(tuple == tuple.with4('a'), isFalse);
+      expect(tuple == copy, isTrue);
+      expect(copy == tuple, isTrue);
+      expect(tuple == tuple.withFirst(-1), isFalse);
+      expect(tuple == tuple.withSecond(-1), isFalse);
+      expect(tuple == tuple.withThird(-1), isFalse);
+      expect(tuple == tuple.withFourth(-1), isFalse);
+      expect(tuple == tuple.withFifth(-1), isFalse);
     });
     test('hashCode', () {
-      expect(tuple.hashCode == tuple.hashCode, isTrue);
-      expect(tuple.hashCode == tuple.with4(-1).hashCode, isFalse);
-      expect(tuple.hashCode == tuple.with4('a').hashCode, isFalse);
+      expect(tuple.hashCode == copy.hashCode, isTrue);
+      expect(tuple.hashCode == tuple.withFirst(-1).hashCode, isFalse);
+      expect(tuple.hashCode == tuple.withSecond(-1).hashCode, isFalse);
+      expect(tuple.hashCode == tuple.withThird(-1).hashCode, isFalse);
+      expect(tuple.hashCode == tuple.withFourth(-1).hashCode, isFalse);
+      expect(tuple.hashCode == tuple.withFifth(-1).hashCode, isFalse);
     });
   });
   group('Tuple6', () {
@@ -817,237 +797,227 @@ void main() {
           throwsArgumentError);
     });
     test('read', () {
-      expect(tuple.value0, 108);
-      expect(tuple.value1, 217);
-      expect(tuple.value2, 93);
-      expect(tuple.value3, 20);
-      expect(tuple.value4, 166);
-      expect(tuple.value5, 21);
+      expect(tuple.first, 108);
+      expect(tuple.second, 217);
+      expect(tuple.third, 93);
+      expect(tuple.fourth, 20);
+      expect(tuple.fifth, 166);
+      expect(tuple.sixth, 21);
+      expect(tuple.last, 21);
     });
-    test('with0', () {
-      final other = tuple.with0('a');
-      expect(other.value0, 'a');
-      expect(other.value1, 217);
-      expect(other.value2, 93);
-      expect(other.value3, 20);
-      expect(other.value4, 166);
-      expect(other.value5, 21);
+    test('withFirst', () {
+      final other = tuple.withFirst('a');
+      expect(other.first, 'a');
+      expect(other.second, 217);
+      expect(other.third, 93);
+      expect(other.fourth, 20);
+      expect(other.fifth, 166);
+      expect(other.sixth, 21);
     });
-    test('with1', () {
-      final other = tuple.with1('a');
-      expect(other.value0, 108);
-      expect(other.value1, 'a');
-      expect(other.value2, 93);
-      expect(other.value3, 20);
-      expect(other.value4, 166);
-      expect(other.value5, 21);
+    test('withSecond', () {
+      final other = tuple.withSecond('a');
+      expect(other.first, 108);
+      expect(other.second, 'a');
+      expect(other.third, 93);
+      expect(other.fourth, 20);
+      expect(other.fifth, 166);
+      expect(other.sixth, 21);
     });
-    test('with2', () {
-      final other = tuple.with2('a');
-      expect(other.value0, 108);
-      expect(other.value1, 217);
-      expect(other.value2, 'a');
-      expect(other.value3, 20);
-      expect(other.value4, 166);
-      expect(other.value5, 21);
+    test('withThird', () {
+      final other = tuple.withThird('a');
+      expect(other.first, 108);
+      expect(other.second, 217);
+      expect(other.third, 'a');
+      expect(other.fourth, 20);
+      expect(other.fifth, 166);
+      expect(other.sixth, 21);
     });
-    test('with3', () {
-      final other = tuple.with3('a');
-      expect(other.value0, 108);
-      expect(other.value1, 217);
-      expect(other.value2, 93);
-      expect(other.value3, 'a');
-      expect(other.value4, 166);
-      expect(other.value5, 21);
+    test('withFourth', () {
+      final other = tuple.withFourth('a');
+      expect(other.first, 108);
+      expect(other.second, 217);
+      expect(other.third, 93);
+      expect(other.fourth, 'a');
+      expect(other.fifth, 166);
+      expect(other.sixth, 21);
     });
-    test('with4', () {
-      final other = tuple.with4('a');
-      expect(other.value0, 108);
-      expect(other.value1, 217);
-      expect(other.value2, 93);
-      expect(other.value3, 20);
-      expect(other.value4, 'a');
-      expect(other.value5, 21);
+    test('withFifth', () {
+      final other = tuple.withFifth('a');
+      expect(other.first, 108);
+      expect(other.second, 217);
+      expect(other.third, 93);
+      expect(other.fourth, 20);
+      expect(other.fifth, 'a');
+      expect(other.sixth, 21);
     });
-    test('with5', () {
-      final other = tuple.with5('a');
-      expect(other.value0, 108);
-      expect(other.value1, 217);
-      expect(other.value2, 93);
-      expect(other.value3, 20);
-      expect(other.value4, 166);
-      expect(other.value5, 'a');
+    test('withSixth', () {
+      final other = tuple.withSixth('a');
+      expect(other.first, 108);
+      expect(other.second, 217);
+      expect(other.third, 93);
+      expect(other.fourth, 20);
+      expect(other.fifth, 166);
+      expect(other.sixth, 'a');
+    });
+    test('withLast', () {
+      final other = tuple.withLast('a');
+      expect(other.first, 108);
+      expect(other.second, 217);
+      expect(other.third, 93);
+      expect(other.fourth, 20);
+      expect(other.fifth, 166);
+      expect(other.sixth, 'a');
     });
     test('addFirst', () {
       final other = tuple.addFirst('a');
       expect(other.length, tuple.length + 1);
-      expect(other.value0, 'a');
-      expect(other.value1, 108);
-      expect(other.value2, 217);
-      expect(other.value3, 93);
-      expect(other.value4, 20);
-      expect(other.value5, 166);
-      expect(other.value6, 21);
+      expect(other.first, 'a');
+      expect(other.second, 108);
+      expect(other.third, 217);
+      expect(other.fourth, 93);
+      expect(other.fifth, 20);
+      expect(other.sixth, 166);
+      expect(other.seventh, 21);
+    });
+    test('addSecond', () {
+      final other = tuple.addSecond('a');
+      expect(other.length, tuple.length + 1);
+      expect(other.first, 108);
+      expect(other.second, 'a');
+      expect(other.third, 217);
+      expect(other.fourth, 93);
+      expect(other.fifth, 20);
+      expect(other.sixth, 166);
+      expect(other.seventh, 21);
+    });
+    test('addThird', () {
+      final other = tuple.addThird('a');
+      expect(other.length, tuple.length + 1);
+      expect(other.first, 108);
+      expect(other.second, 217);
+      expect(other.third, 'a');
+      expect(other.fourth, 93);
+      expect(other.fifth, 20);
+      expect(other.sixth, 166);
+      expect(other.seventh, 21);
+    });
+    test('addFourth', () {
+      final other = tuple.addFourth('a');
+      expect(other.length, tuple.length + 1);
+      expect(other.first, 108);
+      expect(other.second, 217);
+      expect(other.third, 93);
+      expect(other.fourth, 'a');
+      expect(other.fifth, 20);
+      expect(other.sixth, 166);
+      expect(other.seventh, 21);
+    });
+    test('addFifth', () {
+      final other = tuple.addFifth('a');
+      expect(other.length, tuple.length + 1);
+      expect(other.first, 108);
+      expect(other.second, 217);
+      expect(other.third, 93);
+      expect(other.fourth, 20);
+      expect(other.fifth, 'a');
+      expect(other.sixth, 166);
+      expect(other.seventh, 21);
+    });
+    test('addSixth', () {
+      final other = tuple.addSixth('a');
+      expect(other.length, tuple.length + 1);
+      expect(other.first, 108);
+      expect(other.second, 217);
+      expect(other.third, 93);
+      expect(other.fourth, 20);
+      expect(other.fifth, 166);
+      expect(other.sixth, 'a');
+      expect(other.seventh, 21);
+    });
+    test('addSeventh', () {
+      final other = tuple.addSeventh('a');
+      expect(other.length, tuple.length + 1);
+      expect(other.first, 108);
+      expect(other.second, 217);
+      expect(other.third, 93);
+      expect(other.fourth, 20);
+      expect(other.fifth, 166);
+      expect(other.sixth, 21);
+      expect(other.seventh, 'a');
     });
     test('addLast', () {
       final other = tuple.addLast('a');
       expect(other.length, tuple.length + 1);
-      expect(other.value0, 108);
-      expect(other.value1, 217);
-      expect(other.value2, 93);
-      expect(other.value3, 20);
-      expect(other.value4, 166);
-      expect(other.value5, 21);
-      expect(other.value6, 'a');
-    });
-    test('addAt0', () {
-      final other = tuple.addAt0('a');
-      expect(other.length, tuple.length + 1);
-      expect(other.value0, 'a');
-      expect(other.value1, 108);
-      expect(other.value2, 217);
-      expect(other.value3, 93);
-      expect(other.value4, 20);
-      expect(other.value5, 166);
-      expect(other.value6, 21);
-    });
-    test('addAt1', () {
-      final other = tuple.addAt1('a');
-      expect(other.length, tuple.length + 1);
-      expect(other.value0, 108);
-      expect(other.value1, 'a');
-      expect(other.value2, 217);
-      expect(other.value3, 93);
-      expect(other.value4, 20);
-      expect(other.value5, 166);
-      expect(other.value6, 21);
-    });
-    test('addAt2', () {
-      final other = tuple.addAt2('a');
-      expect(other.length, tuple.length + 1);
-      expect(other.value0, 108);
-      expect(other.value1, 217);
-      expect(other.value2, 'a');
-      expect(other.value3, 93);
-      expect(other.value4, 20);
-      expect(other.value5, 166);
-      expect(other.value6, 21);
-    });
-    test('addAt3', () {
-      final other = tuple.addAt3('a');
-      expect(other.length, tuple.length + 1);
-      expect(other.value0, 108);
-      expect(other.value1, 217);
-      expect(other.value2, 93);
-      expect(other.value3, 'a');
-      expect(other.value4, 20);
-      expect(other.value5, 166);
-      expect(other.value6, 21);
-    });
-    test('addAt4', () {
-      final other = tuple.addAt4('a');
-      expect(other.length, tuple.length + 1);
-      expect(other.value0, 108);
-      expect(other.value1, 217);
-      expect(other.value2, 93);
-      expect(other.value3, 20);
-      expect(other.value4, 'a');
-      expect(other.value5, 166);
-      expect(other.value6, 21);
-    });
-    test('addAt5', () {
-      final other = tuple.addAt5('a');
-      expect(other.length, tuple.length + 1);
-      expect(other.value0, 108);
-      expect(other.value1, 217);
-      expect(other.value2, 93);
-      expect(other.value3, 20);
-      expect(other.value4, 166);
-      expect(other.value5, 'a');
-      expect(other.value6, 21);
-    });
-    test('addAt6', () {
-      final other = tuple.addAt6('a');
-      expect(other.length, tuple.length + 1);
-      expect(other.value0, 108);
-      expect(other.value1, 217);
-      expect(other.value2, 93);
-      expect(other.value3, 20);
-      expect(other.value4, 166);
-      expect(other.value5, 21);
-      expect(other.value6, 'a');
+      expect(other.first, 108);
+      expect(other.second, 217);
+      expect(other.third, 93);
+      expect(other.fourth, 20);
+      expect(other.fifth, 166);
+      expect(other.sixth, 21);
+      expect(other.seventh, 'a');
     });
     test('removeFirst', () {
       final other = tuple.removeFirst();
       expect(other.length, tuple.length - 1);
-      expect(other.value0, 217);
-      expect(other.value1, 93);
-      expect(other.value2, 20);
-      expect(other.value3, 166);
-      expect(other.value4, 21);
+      expect(other.first, 217);
+      expect(other.second, 93);
+      expect(other.third, 20);
+      expect(other.fourth, 166);
+      expect(other.fifth, 21);
+    });
+    test('removeSecond', () {
+      final other = tuple.removeSecond();
+      expect(other.length, tuple.length - 1);
+      expect(other.first, 108);
+      expect(other.second, 93);
+      expect(other.third, 20);
+      expect(other.fourth, 166);
+      expect(other.fifth, 21);
+    });
+    test('removeThird', () {
+      final other = tuple.removeThird();
+      expect(other.length, tuple.length - 1);
+      expect(other.first, 108);
+      expect(other.second, 217);
+      expect(other.third, 20);
+      expect(other.fourth, 166);
+      expect(other.fifth, 21);
+    });
+    test('removeFourth', () {
+      final other = tuple.removeFourth();
+      expect(other.length, tuple.length - 1);
+      expect(other.first, 108);
+      expect(other.second, 217);
+      expect(other.third, 93);
+      expect(other.fourth, 166);
+      expect(other.fifth, 21);
+    });
+    test('removeFifth', () {
+      final other = tuple.removeFifth();
+      expect(other.length, tuple.length - 1);
+      expect(other.first, 108);
+      expect(other.second, 217);
+      expect(other.third, 93);
+      expect(other.fourth, 20);
+      expect(other.fifth, 21);
+    });
+    test('removeSixth', () {
+      final other = tuple.removeSixth();
+      expect(other.length, tuple.length - 1);
+      expect(other.first, 108);
+      expect(other.second, 217);
+      expect(other.third, 93);
+      expect(other.fourth, 20);
+      expect(other.fifth, 166);
     });
     test('removeLast', () {
       final other = tuple.removeLast();
       expect(other.length, tuple.length - 1);
-      expect(other.value0, 108);
-      expect(other.value1, 217);
-      expect(other.value2, 93);
-      expect(other.value3, 20);
-      expect(other.value4, 166);
-    });
-    test('removeAt0', () {
-      final other = tuple.removeAt0();
-      expect(other.length, tuple.length - 1);
-      expect(other.value0, 217);
-      expect(other.value1, 93);
-      expect(other.value2, 20);
-      expect(other.value3, 166);
-      expect(other.value4, 21);
-    });
-    test('removeAt1', () {
-      final other = tuple.removeAt1();
-      expect(other.length, tuple.length - 1);
-      expect(other.value0, 108);
-      expect(other.value1, 93);
-      expect(other.value2, 20);
-      expect(other.value3, 166);
-      expect(other.value4, 21);
-    });
-    test('removeAt2', () {
-      final other = tuple.removeAt2();
-      expect(other.length, tuple.length - 1);
-      expect(other.value0, 108);
-      expect(other.value1, 217);
-      expect(other.value2, 20);
-      expect(other.value3, 166);
-      expect(other.value4, 21);
-    });
-    test('removeAt3', () {
-      final other = tuple.removeAt3();
-      expect(other.length, tuple.length - 1);
-      expect(other.value0, 108);
-      expect(other.value1, 217);
-      expect(other.value2, 93);
-      expect(other.value3, 166);
-      expect(other.value4, 21);
-    });
-    test('removeAt4', () {
-      final other = tuple.removeAt4();
-      expect(other.length, tuple.length - 1);
-      expect(other.value0, 108);
-      expect(other.value1, 217);
-      expect(other.value2, 93);
-      expect(other.value3, 20);
-      expect(other.value4, 21);
-    });
-    test('removeAt5', () {
-      final other = tuple.removeAt5();
-      expect(other.length, tuple.length - 1);
-      expect(other.value0, 108);
-      expect(other.value1, 217);
-      expect(other.value2, 93);
-      expect(other.value3, 20);
-      expect(other.value4, 166);
+      expect(other.first, 108);
+      expect(other.second, 217);
+      expect(other.third, 93);
+      expect(other.fourth, 20);
+      expect(other.fifth, 166);
     });
     test('length', () {
       expect(tuple.length, 6);
@@ -1064,16 +1034,27 @@ void main() {
     test('toString', () {
       expect(tuple.toString(), '(108, 217, 93, 20, 166, 21)');
     });
+    final copy = Tuple6(tuple.first, tuple.second, tuple.third, tuple.fourth,
+        tuple.fifth, tuple.sixth);
     test('equals', () {
       expect(tuple == tuple, isTrue);
-      expect(tuple == tuple.with5(-1), isFalse);
-// ignore: unrelated_type_equality_checks
-      expect(tuple == tuple.with5('a'), isFalse);
+      expect(tuple == copy, isTrue);
+      expect(copy == tuple, isTrue);
+      expect(tuple == tuple.withFirst(-1), isFalse);
+      expect(tuple == tuple.withSecond(-1), isFalse);
+      expect(tuple == tuple.withThird(-1), isFalse);
+      expect(tuple == tuple.withFourth(-1), isFalse);
+      expect(tuple == tuple.withFifth(-1), isFalse);
+      expect(tuple == tuple.withSixth(-1), isFalse);
     });
     test('hashCode', () {
-      expect(tuple.hashCode == tuple.hashCode, isTrue);
-      expect(tuple.hashCode == tuple.with5(-1).hashCode, isFalse);
-      expect(tuple.hashCode == tuple.with5('a').hashCode, isFalse);
+      expect(tuple.hashCode == copy.hashCode, isTrue);
+      expect(tuple.hashCode == tuple.withFirst(-1).hashCode, isFalse);
+      expect(tuple.hashCode == tuple.withSecond(-1).hashCode, isFalse);
+      expect(tuple.hashCode == tuple.withThird(-1).hashCode, isFalse);
+      expect(tuple.hashCode == tuple.withFourth(-1).hashCode, isFalse);
+      expect(tuple.hashCode == tuple.withFifth(-1).hashCode, isFalse);
+      expect(tuple.hashCode == tuple.withSixth(-1).hashCode, isFalse);
     });
   });
   group('Tuple7', () {
@@ -1092,293 +1073,282 @@ void main() {
           throwsArgumentError);
     });
     test('read', () {
-      expect(tuple.value0, 138);
-      expect(tuple.value1, 191);
-      expect(tuple.value2, 17);
-      expect(tuple.value3, 53);
-      expect(tuple.value4, 115);
-      expect(tuple.value5, 80);
-      expect(tuple.value6, 129);
+      expect(tuple.first, 138);
+      expect(tuple.second, 191);
+      expect(tuple.third, 17);
+      expect(tuple.fourth, 53);
+      expect(tuple.fifth, 115);
+      expect(tuple.sixth, 80);
+      expect(tuple.seventh, 129);
+      expect(tuple.last, 129);
     });
-    test('with0', () {
-      final other = tuple.with0('a');
-      expect(other.value0, 'a');
-      expect(other.value1, 191);
-      expect(other.value2, 17);
-      expect(other.value3, 53);
-      expect(other.value4, 115);
-      expect(other.value5, 80);
-      expect(other.value6, 129);
+    test('withFirst', () {
+      final other = tuple.withFirst('a');
+      expect(other.first, 'a');
+      expect(other.second, 191);
+      expect(other.third, 17);
+      expect(other.fourth, 53);
+      expect(other.fifth, 115);
+      expect(other.sixth, 80);
+      expect(other.seventh, 129);
     });
-    test('with1', () {
-      final other = tuple.with1('a');
-      expect(other.value0, 138);
-      expect(other.value1, 'a');
-      expect(other.value2, 17);
-      expect(other.value3, 53);
-      expect(other.value4, 115);
-      expect(other.value5, 80);
-      expect(other.value6, 129);
+    test('withSecond', () {
+      final other = tuple.withSecond('a');
+      expect(other.first, 138);
+      expect(other.second, 'a');
+      expect(other.third, 17);
+      expect(other.fourth, 53);
+      expect(other.fifth, 115);
+      expect(other.sixth, 80);
+      expect(other.seventh, 129);
     });
-    test('with2', () {
-      final other = tuple.with2('a');
-      expect(other.value0, 138);
-      expect(other.value1, 191);
-      expect(other.value2, 'a');
-      expect(other.value3, 53);
-      expect(other.value4, 115);
-      expect(other.value5, 80);
-      expect(other.value6, 129);
+    test('withThird', () {
+      final other = tuple.withThird('a');
+      expect(other.first, 138);
+      expect(other.second, 191);
+      expect(other.third, 'a');
+      expect(other.fourth, 53);
+      expect(other.fifth, 115);
+      expect(other.sixth, 80);
+      expect(other.seventh, 129);
     });
-    test('with3', () {
-      final other = tuple.with3('a');
-      expect(other.value0, 138);
-      expect(other.value1, 191);
-      expect(other.value2, 17);
-      expect(other.value3, 'a');
-      expect(other.value4, 115);
-      expect(other.value5, 80);
-      expect(other.value6, 129);
+    test('withFourth', () {
+      final other = tuple.withFourth('a');
+      expect(other.first, 138);
+      expect(other.second, 191);
+      expect(other.third, 17);
+      expect(other.fourth, 'a');
+      expect(other.fifth, 115);
+      expect(other.sixth, 80);
+      expect(other.seventh, 129);
     });
-    test('with4', () {
-      final other = tuple.with4('a');
-      expect(other.value0, 138);
-      expect(other.value1, 191);
-      expect(other.value2, 17);
-      expect(other.value3, 53);
-      expect(other.value4, 'a');
-      expect(other.value5, 80);
-      expect(other.value6, 129);
+    test('withFifth', () {
+      final other = tuple.withFifth('a');
+      expect(other.first, 138);
+      expect(other.second, 191);
+      expect(other.third, 17);
+      expect(other.fourth, 53);
+      expect(other.fifth, 'a');
+      expect(other.sixth, 80);
+      expect(other.seventh, 129);
     });
-    test('with5', () {
-      final other = tuple.with5('a');
-      expect(other.value0, 138);
-      expect(other.value1, 191);
-      expect(other.value2, 17);
-      expect(other.value3, 53);
-      expect(other.value4, 115);
-      expect(other.value5, 'a');
-      expect(other.value6, 129);
+    test('withSixth', () {
+      final other = tuple.withSixth('a');
+      expect(other.first, 138);
+      expect(other.second, 191);
+      expect(other.third, 17);
+      expect(other.fourth, 53);
+      expect(other.fifth, 115);
+      expect(other.sixth, 'a');
+      expect(other.seventh, 129);
     });
-    test('with6', () {
-      final other = tuple.with6('a');
-      expect(other.value0, 138);
-      expect(other.value1, 191);
-      expect(other.value2, 17);
-      expect(other.value3, 53);
-      expect(other.value4, 115);
-      expect(other.value5, 80);
-      expect(other.value6, 'a');
+    test('withSeventh', () {
+      final other = tuple.withSeventh('a');
+      expect(other.first, 138);
+      expect(other.second, 191);
+      expect(other.third, 17);
+      expect(other.fourth, 53);
+      expect(other.fifth, 115);
+      expect(other.sixth, 80);
+      expect(other.seventh, 'a');
+    });
+    test('withLast', () {
+      final other = tuple.withLast('a');
+      expect(other.first, 138);
+      expect(other.second, 191);
+      expect(other.third, 17);
+      expect(other.fourth, 53);
+      expect(other.fifth, 115);
+      expect(other.sixth, 80);
+      expect(other.seventh, 'a');
     });
     test('addFirst', () {
       final other = tuple.addFirst('a');
       expect(other.length, tuple.length + 1);
-      expect(other.value0, 'a');
-      expect(other.value1, 138);
-      expect(other.value2, 191);
-      expect(other.value3, 17);
-      expect(other.value4, 53);
-      expect(other.value5, 115);
-      expect(other.value6, 80);
-      expect(other.value7, 129);
+      expect(other.first, 'a');
+      expect(other.second, 138);
+      expect(other.third, 191);
+      expect(other.fourth, 17);
+      expect(other.fifth, 53);
+      expect(other.sixth, 115);
+      expect(other.seventh, 80);
+      expect(other.eighth, 129);
+    });
+    test('addSecond', () {
+      final other = tuple.addSecond('a');
+      expect(other.length, tuple.length + 1);
+      expect(other.first, 138);
+      expect(other.second, 'a');
+      expect(other.third, 191);
+      expect(other.fourth, 17);
+      expect(other.fifth, 53);
+      expect(other.sixth, 115);
+      expect(other.seventh, 80);
+      expect(other.eighth, 129);
+    });
+    test('addThird', () {
+      final other = tuple.addThird('a');
+      expect(other.length, tuple.length + 1);
+      expect(other.first, 138);
+      expect(other.second, 191);
+      expect(other.third, 'a');
+      expect(other.fourth, 17);
+      expect(other.fifth, 53);
+      expect(other.sixth, 115);
+      expect(other.seventh, 80);
+      expect(other.eighth, 129);
+    });
+    test('addFourth', () {
+      final other = tuple.addFourth('a');
+      expect(other.length, tuple.length + 1);
+      expect(other.first, 138);
+      expect(other.second, 191);
+      expect(other.third, 17);
+      expect(other.fourth, 'a');
+      expect(other.fifth, 53);
+      expect(other.sixth, 115);
+      expect(other.seventh, 80);
+      expect(other.eighth, 129);
+    });
+    test('addFifth', () {
+      final other = tuple.addFifth('a');
+      expect(other.length, tuple.length + 1);
+      expect(other.first, 138);
+      expect(other.second, 191);
+      expect(other.third, 17);
+      expect(other.fourth, 53);
+      expect(other.fifth, 'a');
+      expect(other.sixth, 115);
+      expect(other.seventh, 80);
+      expect(other.eighth, 129);
+    });
+    test('addSixth', () {
+      final other = tuple.addSixth('a');
+      expect(other.length, tuple.length + 1);
+      expect(other.first, 138);
+      expect(other.second, 191);
+      expect(other.third, 17);
+      expect(other.fourth, 53);
+      expect(other.fifth, 115);
+      expect(other.sixth, 'a');
+      expect(other.seventh, 80);
+      expect(other.eighth, 129);
+    });
+    test('addSeventh', () {
+      final other = tuple.addSeventh('a');
+      expect(other.length, tuple.length + 1);
+      expect(other.first, 138);
+      expect(other.second, 191);
+      expect(other.third, 17);
+      expect(other.fourth, 53);
+      expect(other.fifth, 115);
+      expect(other.sixth, 80);
+      expect(other.seventh, 'a');
+      expect(other.eighth, 129);
+    });
+    test('addEighth', () {
+      final other = tuple.addEighth('a');
+      expect(other.length, tuple.length + 1);
+      expect(other.first, 138);
+      expect(other.second, 191);
+      expect(other.third, 17);
+      expect(other.fourth, 53);
+      expect(other.fifth, 115);
+      expect(other.sixth, 80);
+      expect(other.seventh, 129);
+      expect(other.eighth, 'a');
     });
     test('addLast', () {
       final other = tuple.addLast('a');
       expect(other.length, tuple.length + 1);
-      expect(other.value0, 138);
-      expect(other.value1, 191);
-      expect(other.value2, 17);
-      expect(other.value3, 53);
-      expect(other.value4, 115);
-      expect(other.value5, 80);
-      expect(other.value6, 129);
-      expect(other.value7, 'a');
-    });
-    test('addAt0', () {
-      final other = tuple.addAt0('a');
-      expect(other.length, tuple.length + 1);
-      expect(other.value0, 'a');
-      expect(other.value1, 138);
-      expect(other.value2, 191);
-      expect(other.value3, 17);
-      expect(other.value4, 53);
-      expect(other.value5, 115);
-      expect(other.value6, 80);
-      expect(other.value7, 129);
-    });
-    test('addAt1', () {
-      final other = tuple.addAt1('a');
-      expect(other.length, tuple.length + 1);
-      expect(other.value0, 138);
-      expect(other.value1, 'a');
-      expect(other.value2, 191);
-      expect(other.value3, 17);
-      expect(other.value4, 53);
-      expect(other.value5, 115);
-      expect(other.value6, 80);
-      expect(other.value7, 129);
-    });
-    test('addAt2', () {
-      final other = tuple.addAt2('a');
-      expect(other.length, tuple.length + 1);
-      expect(other.value0, 138);
-      expect(other.value1, 191);
-      expect(other.value2, 'a');
-      expect(other.value3, 17);
-      expect(other.value4, 53);
-      expect(other.value5, 115);
-      expect(other.value6, 80);
-      expect(other.value7, 129);
-    });
-    test('addAt3', () {
-      final other = tuple.addAt3('a');
-      expect(other.length, tuple.length + 1);
-      expect(other.value0, 138);
-      expect(other.value1, 191);
-      expect(other.value2, 17);
-      expect(other.value3, 'a');
-      expect(other.value4, 53);
-      expect(other.value5, 115);
-      expect(other.value6, 80);
-      expect(other.value7, 129);
-    });
-    test('addAt4', () {
-      final other = tuple.addAt4('a');
-      expect(other.length, tuple.length + 1);
-      expect(other.value0, 138);
-      expect(other.value1, 191);
-      expect(other.value2, 17);
-      expect(other.value3, 53);
-      expect(other.value4, 'a');
-      expect(other.value5, 115);
-      expect(other.value6, 80);
-      expect(other.value7, 129);
-    });
-    test('addAt5', () {
-      final other = tuple.addAt5('a');
-      expect(other.length, tuple.length + 1);
-      expect(other.value0, 138);
-      expect(other.value1, 191);
-      expect(other.value2, 17);
-      expect(other.value3, 53);
-      expect(other.value4, 115);
-      expect(other.value5, 'a');
-      expect(other.value6, 80);
-      expect(other.value7, 129);
-    });
-    test('addAt6', () {
-      final other = tuple.addAt6('a');
-      expect(other.length, tuple.length + 1);
-      expect(other.value0, 138);
-      expect(other.value1, 191);
-      expect(other.value2, 17);
-      expect(other.value3, 53);
-      expect(other.value4, 115);
-      expect(other.value5, 80);
-      expect(other.value6, 'a');
-      expect(other.value7, 129);
-    });
-    test('addAt7', () {
-      final other = tuple.addAt7('a');
-      expect(other.length, tuple.length + 1);
-      expect(other.value0, 138);
-      expect(other.value1, 191);
-      expect(other.value2, 17);
-      expect(other.value3, 53);
-      expect(other.value4, 115);
-      expect(other.value5, 80);
-      expect(other.value6, 129);
-      expect(other.value7, 'a');
+      expect(other.first, 138);
+      expect(other.second, 191);
+      expect(other.third, 17);
+      expect(other.fourth, 53);
+      expect(other.fifth, 115);
+      expect(other.sixth, 80);
+      expect(other.seventh, 129);
+      expect(other.eighth, 'a');
     });
     test('removeFirst', () {
       final other = tuple.removeFirst();
       expect(other.length, tuple.length - 1);
-      expect(other.value0, 191);
-      expect(other.value1, 17);
-      expect(other.value2, 53);
-      expect(other.value3, 115);
-      expect(other.value4, 80);
-      expect(other.value5, 129);
+      expect(other.first, 191);
+      expect(other.second, 17);
+      expect(other.third, 53);
+      expect(other.fourth, 115);
+      expect(other.fifth, 80);
+      expect(other.sixth, 129);
+    });
+    test('removeSecond', () {
+      final other = tuple.removeSecond();
+      expect(other.length, tuple.length - 1);
+      expect(other.first, 138);
+      expect(other.second, 17);
+      expect(other.third, 53);
+      expect(other.fourth, 115);
+      expect(other.fifth, 80);
+      expect(other.sixth, 129);
+    });
+    test('removeThird', () {
+      final other = tuple.removeThird();
+      expect(other.length, tuple.length - 1);
+      expect(other.first, 138);
+      expect(other.second, 191);
+      expect(other.third, 53);
+      expect(other.fourth, 115);
+      expect(other.fifth, 80);
+      expect(other.sixth, 129);
+    });
+    test('removeFourth', () {
+      final other = tuple.removeFourth();
+      expect(other.length, tuple.length - 1);
+      expect(other.first, 138);
+      expect(other.second, 191);
+      expect(other.third, 17);
+      expect(other.fourth, 115);
+      expect(other.fifth, 80);
+      expect(other.sixth, 129);
+    });
+    test('removeFifth', () {
+      final other = tuple.removeFifth();
+      expect(other.length, tuple.length - 1);
+      expect(other.first, 138);
+      expect(other.second, 191);
+      expect(other.third, 17);
+      expect(other.fourth, 53);
+      expect(other.fifth, 80);
+      expect(other.sixth, 129);
+    });
+    test('removeSixth', () {
+      final other = tuple.removeSixth();
+      expect(other.length, tuple.length - 1);
+      expect(other.first, 138);
+      expect(other.second, 191);
+      expect(other.third, 17);
+      expect(other.fourth, 53);
+      expect(other.fifth, 115);
+      expect(other.sixth, 129);
+    });
+    test('removeSeventh', () {
+      final other = tuple.removeSeventh();
+      expect(other.length, tuple.length - 1);
+      expect(other.first, 138);
+      expect(other.second, 191);
+      expect(other.third, 17);
+      expect(other.fourth, 53);
+      expect(other.fifth, 115);
+      expect(other.sixth, 80);
     });
     test('removeLast', () {
       final other = tuple.removeLast();
       expect(other.length, tuple.length - 1);
-      expect(other.value0, 138);
-      expect(other.value1, 191);
-      expect(other.value2, 17);
-      expect(other.value3, 53);
-      expect(other.value4, 115);
-      expect(other.value5, 80);
-    });
-    test('removeAt0', () {
-      final other = tuple.removeAt0();
-      expect(other.length, tuple.length - 1);
-      expect(other.value0, 191);
-      expect(other.value1, 17);
-      expect(other.value2, 53);
-      expect(other.value3, 115);
-      expect(other.value4, 80);
-      expect(other.value5, 129);
-    });
-    test('removeAt1', () {
-      final other = tuple.removeAt1();
-      expect(other.length, tuple.length - 1);
-      expect(other.value0, 138);
-      expect(other.value1, 17);
-      expect(other.value2, 53);
-      expect(other.value3, 115);
-      expect(other.value4, 80);
-      expect(other.value5, 129);
-    });
-    test('removeAt2', () {
-      final other = tuple.removeAt2();
-      expect(other.length, tuple.length - 1);
-      expect(other.value0, 138);
-      expect(other.value1, 191);
-      expect(other.value2, 53);
-      expect(other.value3, 115);
-      expect(other.value4, 80);
-      expect(other.value5, 129);
-    });
-    test('removeAt3', () {
-      final other = tuple.removeAt3();
-      expect(other.length, tuple.length - 1);
-      expect(other.value0, 138);
-      expect(other.value1, 191);
-      expect(other.value2, 17);
-      expect(other.value3, 115);
-      expect(other.value4, 80);
-      expect(other.value5, 129);
-    });
-    test('removeAt4', () {
-      final other = tuple.removeAt4();
-      expect(other.length, tuple.length - 1);
-      expect(other.value0, 138);
-      expect(other.value1, 191);
-      expect(other.value2, 17);
-      expect(other.value3, 53);
-      expect(other.value4, 80);
-      expect(other.value5, 129);
-    });
-    test('removeAt5', () {
-      final other = tuple.removeAt5();
-      expect(other.length, tuple.length - 1);
-      expect(other.value0, 138);
-      expect(other.value1, 191);
-      expect(other.value2, 17);
-      expect(other.value3, 53);
-      expect(other.value4, 115);
-      expect(other.value5, 129);
-    });
-    test('removeAt6', () {
-      final other = tuple.removeAt6();
-      expect(other.length, tuple.length - 1);
-      expect(other.value0, 138);
-      expect(other.value1, 191);
-      expect(other.value2, 17);
-      expect(other.value3, 53);
-      expect(other.value4, 115);
-      expect(other.value5, 80);
+      expect(other.first, 138);
+      expect(other.second, 191);
+      expect(other.third, 17);
+      expect(other.fourth, 53);
+      expect(other.fifth, 115);
+      expect(other.sixth, 80);
     });
     test('length', () {
       expect(tuple.length, 7);
@@ -1395,16 +1365,29 @@ void main() {
     test('toString', () {
       expect(tuple.toString(), '(138, 191, 17, 53, 115, 80, 129)');
     });
+    final copy = Tuple7(tuple.first, tuple.second, tuple.third, tuple.fourth,
+        tuple.fifth, tuple.sixth, tuple.seventh);
     test('equals', () {
       expect(tuple == tuple, isTrue);
-      expect(tuple == tuple.with6(-1), isFalse);
-// ignore: unrelated_type_equality_checks
-      expect(tuple == tuple.with6('a'), isFalse);
+      expect(tuple == copy, isTrue);
+      expect(copy == tuple, isTrue);
+      expect(tuple == tuple.withFirst(-1), isFalse);
+      expect(tuple == tuple.withSecond(-1), isFalse);
+      expect(tuple == tuple.withThird(-1), isFalse);
+      expect(tuple == tuple.withFourth(-1), isFalse);
+      expect(tuple == tuple.withFifth(-1), isFalse);
+      expect(tuple == tuple.withSixth(-1), isFalse);
+      expect(tuple == tuple.withSeventh(-1), isFalse);
     });
     test('hashCode', () {
-      expect(tuple.hashCode == tuple.hashCode, isTrue);
-      expect(tuple.hashCode == tuple.with6(-1).hashCode, isFalse);
-      expect(tuple.hashCode == tuple.with6('a').hashCode, isFalse);
+      expect(tuple.hashCode == copy.hashCode, isTrue);
+      expect(tuple.hashCode == tuple.withFirst(-1).hashCode, isFalse);
+      expect(tuple.hashCode == tuple.withSecond(-1).hashCode, isFalse);
+      expect(tuple.hashCode == tuple.withThird(-1).hashCode, isFalse);
+      expect(tuple.hashCode == tuple.withFourth(-1).hashCode, isFalse);
+      expect(tuple.hashCode == tuple.withFifth(-1).hashCode, isFalse);
+      expect(tuple.hashCode == tuple.withSixth(-1).hashCode, isFalse);
+      expect(tuple.hashCode == tuple.withSeventh(-1).hashCode, isFalse);
     });
   });
   group('Tuple8', () {
@@ -1422,355 +1405,343 @@ void main() {
           throwsArgumentError);
     });
     test('read', () {
-      expect(tuple.value0, 4);
-      expect(tuple.value1, 238);
-      expect(tuple.value2, 254);
-      expect(tuple.value3, 200);
-      expect(tuple.value4, 37);
-      expect(tuple.value5, 244);
-      expect(tuple.value6, 31);
-      expect(tuple.value7, 234);
+      expect(tuple.first, 4);
+      expect(tuple.second, 238);
+      expect(tuple.third, 254);
+      expect(tuple.fourth, 200);
+      expect(tuple.fifth, 37);
+      expect(tuple.sixth, 244);
+      expect(tuple.seventh, 31);
+      expect(tuple.eighth, 234);
+      expect(tuple.last, 234);
     });
-    test('with0', () {
-      final other = tuple.with0('a');
-      expect(other.value0, 'a');
-      expect(other.value1, 238);
-      expect(other.value2, 254);
-      expect(other.value3, 200);
-      expect(other.value4, 37);
-      expect(other.value5, 244);
-      expect(other.value6, 31);
-      expect(other.value7, 234);
+    test('withFirst', () {
+      final other = tuple.withFirst('a');
+      expect(other.first, 'a');
+      expect(other.second, 238);
+      expect(other.third, 254);
+      expect(other.fourth, 200);
+      expect(other.fifth, 37);
+      expect(other.sixth, 244);
+      expect(other.seventh, 31);
+      expect(other.eighth, 234);
     });
-    test('with1', () {
-      final other = tuple.with1('a');
-      expect(other.value0, 4);
-      expect(other.value1, 'a');
-      expect(other.value2, 254);
-      expect(other.value3, 200);
-      expect(other.value4, 37);
-      expect(other.value5, 244);
-      expect(other.value6, 31);
-      expect(other.value7, 234);
+    test('withSecond', () {
+      final other = tuple.withSecond('a');
+      expect(other.first, 4);
+      expect(other.second, 'a');
+      expect(other.third, 254);
+      expect(other.fourth, 200);
+      expect(other.fifth, 37);
+      expect(other.sixth, 244);
+      expect(other.seventh, 31);
+      expect(other.eighth, 234);
     });
-    test('with2', () {
-      final other = tuple.with2('a');
-      expect(other.value0, 4);
-      expect(other.value1, 238);
-      expect(other.value2, 'a');
-      expect(other.value3, 200);
-      expect(other.value4, 37);
-      expect(other.value5, 244);
-      expect(other.value6, 31);
-      expect(other.value7, 234);
+    test('withThird', () {
+      final other = tuple.withThird('a');
+      expect(other.first, 4);
+      expect(other.second, 238);
+      expect(other.third, 'a');
+      expect(other.fourth, 200);
+      expect(other.fifth, 37);
+      expect(other.sixth, 244);
+      expect(other.seventh, 31);
+      expect(other.eighth, 234);
     });
-    test('with3', () {
-      final other = tuple.with3('a');
-      expect(other.value0, 4);
-      expect(other.value1, 238);
-      expect(other.value2, 254);
-      expect(other.value3, 'a');
-      expect(other.value4, 37);
-      expect(other.value5, 244);
-      expect(other.value6, 31);
-      expect(other.value7, 234);
+    test('withFourth', () {
+      final other = tuple.withFourth('a');
+      expect(other.first, 4);
+      expect(other.second, 238);
+      expect(other.third, 254);
+      expect(other.fourth, 'a');
+      expect(other.fifth, 37);
+      expect(other.sixth, 244);
+      expect(other.seventh, 31);
+      expect(other.eighth, 234);
     });
-    test('with4', () {
-      final other = tuple.with4('a');
-      expect(other.value0, 4);
-      expect(other.value1, 238);
-      expect(other.value2, 254);
-      expect(other.value3, 200);
-      expect(other.value4, 'a');
-      expect(other.value5, 244);
-      expect(other.value6, 31);
-      expect(other.value7, 234);
+    test('withFifth', () {
+      final other = tuple.withFifth('a');
+      expect(other.first, 4);
+      expect(other.second, 238);
+      expect(other.third, 254);
+      expect(other.fourth, 200);
+      expect(other.fifth, 'a');
+      expect(other.sixth, 244);
+      expect(other.seventh, 31);
+      expect(other.eighth, 234);
     });
-    test('with5', () {
-      final other = tuple.with5('a');
-      expect(other.value0, 4);
-      expect(other.value1, 238);
-      expect(other.value2, 254);
-      expect(other.value3, 200);
-      expect(other.value4, 37);
-      expect(other.value5, 'a');
-      expect(other.value6, 31);
-      expect(other.value7, 234);
+    test('withSixth', () {
+      final other = tuple.withSixth('a');
+      expect(other.first, 4);
+      expect(other.second, 238);
+      expect(other.third, 254);
+      expect(other.fourth, 200);
+      expect(other.fifth, 37);
+      expect(other.sixth, 'a');
+      expect(other.seventh, 31);
+      expect(other.eighth, 234);
     });
-    test('with6', () {
-      final other = tuple.with6('a');
-      expect(other.value0, 4);
-      expect(other.value1, 238);
-      expect(other.value2, 254);
-      expect(other.value3, 200);
-      expect(other.value4, 37);
-      expect(other.value5, 244);
-      expect(other.value6, 'a');
-      expect(other.value7, 234);
+    test('withSeventh', () {
+      final other = tuple.withSeventh('a');
+      expect(other.first, 4);
+      expect(other.second, 238);
+      expect(other.third, 254);
+      expect(other.fourth, 200);
+      expect(other.fifth, 37);
+      expect(other.sixth, 244);
+      expect(other.seventh, 'a');
+      expect(other.eighth, 234);
     });
-    test('with7', () {
-      final other = tuple.with7('a');
-      expect(other.value0, 4);
-      expect(other.value1, 238);
-      expect(other.value2, 254);
-      expect(other.value3, 200);
-      expect(other.value4, 37);
-      expect(other.value5, 244);
-      expect(other.value6, 31);
-      expect(other.value7, 'a');
+    test('withEighth', () {
+      final other = tuple.withEighth('a');
+      expect(other.first, 4);
+      expect(other.second, 238);
+      expect(other.third, 254);
+      expect(other.fourth, 200);
+      expect(other.fifth, 37);
+      expect(other.sixth, 244);
+      expect(other.seventh, 31);
+      expect(other.eighth, 'a');
+    });
+    test('withLast', () {
+      final other = tuple.withLast('a');
+      expect(other.first, 4);
+      expect(other.second, 238);
+      expect(other.third, 254);
+      expect(other.fourth, 200);
+      expect(other.fifth, 37);
+      expect(other.sixth, 244);
+      expect(other.seventh, 31);
+      expect(other.eighth, 'a');
     });
     test('addFirst', () {
       final other = tuple.addFirst('a');
       expect(other.length, tuple.length + 1);
-      expect(other.value0, 'a');
-      expect(other.value1, 4);
-      expect(other.value2, 238);
-      expect(other.value3, 254);
-      expect(other.value4, 200);
-      expect(other.value5, 37);
-      expect(other.value6, 244);
-      expect(other.value7, 31);
-      expect(other.value8, 234);
+      expect(other.first, 'a');
+      expect(other.second, 4);
+      expect(other.third, 238);
+      expect(other.fourth, 254);
+      expect(other.fifth, 200);
+      expect(other.sixth, 37);
+      expect(other.seventh, 244);
+      expect(other.eighth, 31);
+      expect(other.ninth, 234);
+    });
+    test('addSecond', () {
+      final other = tuple.addSecond('a');
+      expect(other.length, tuple.length + 1);
+      expect(other.first, 4);
+      expect(other.second, 'a');
+      expect(other.third, 238);
+      expect(other.fourth, 254);
+      expect(other.fifth, 200);
+      expect(other.sixth, 37);
+      expect(other.seventh, 244);
+      expect(other.eighth, 31);
+      expect(other.ninth, 234);
+    });
+    test('addThird', () {
+      final other = tuple.addThird('a');
+      expect(other.length, tuple.length + 1);
+      expect(other.first, 4);
+      expect(other.second, 238);
+      expect(other.third, 'a');
+      expect(other.fourth, 254);
+      expect(other.fifth, 200);
+      expect(other.sixth, 37);
+      expect(other.seventh, 244);
+      expect(other.eighth, 31);
+      expect(other.ninth, 234);
+    });
+    test('addFourth', () {
+      final other = tuple.addFourth('a');
+      expect(other.length, tuple.length + 1);
+      expect(other.first, 4);
+      expect(other.second, 238);
+      expect(other.third, 254);
+      expect(other.fourth, 'a');
+      expect(other.fifth, 200);
+      expect(other.sixth, 37);
+      expect(other.seventh, 244);
+      expect(other.eighth, 31);
+      expect(other.ninth, 234);
+    });
+    test('addFifth', () {
+      final other = tuple.addFifth('a');
+      expect(other.length, tuple.length + 1);
+      expect(other.first, 4);
+      expect(other.second, 238);
+      expect(other.third, 254);
+      expect(other.fourth, 200);
+      expect(other.fifth, 'a');
+      expect(other.sixth, 37);
+      expect(other.seventh, 244);
+      expect(other.eighth, 31);
+      expect(other.ninth, 234);
+    });
+    test('addSixth', () {
+      final other = tuple.addSixth('a');
+      expect(other.length, tuple.length + 1);
+      expect(other.first, 4);
+      expect(other.second, 238);
+      expect(other.third, 254);
+      expect(other.fourth, 200);
+      expect(other.fifth, 37);
+      expect(other.sixth, 'a');
+      expect(other.seventh, 244);
+      expect(other.eighth, 31);
+      expect(other.ninth, 234);
+    });
+    test('addSeventh', () {
+      final other = tuple.addSeventh('a');
+      expect(other.length, tuple.length + 1);
+      expect(other.first, 4);
+      expect(other.second, 238);
+      expect(other.third, 254);
+      expect(other.fourth, 200);
+      expect(other.fifth, 37);
+      expect(other.sixth, 244);
+      expect(other.seventh, 'a');
+      expect(other.eighth, 31);
+      expect(other.ninth, 234);
+    });
+    test('addEighth', () {
+      final other = tuple.addEighth('a');
+      expect(other.length, tuple.length + 1);
+      expect(other.first, 4);
+      expect(other.second, 238);
+      expect(other.third, 254);
+      expect(other.fourth, 200);
+      expect(other.fifth, 37);
+      expect(other.sixth, 244);
+      expect(other.seventh, 31);
+      expect(other.eighth, 'a');
+      expect(other.ninth, 234);
+    });
+    test('addNinth', () {
+      final other = tuple.addNinth('a');
+      expect(other.length, tuple.length + 1);
+      expect(other.first, 4);
+      expect(other.second, 238);
+      expect(other.third, 254);
+      expect(other.fourth, 200);
+      expect(other.fifth, 37);
+      expect(other.sixth, 244);
+      expect(other.seventh, 31);
+      expect(other.eighth, 234);
+      expect(other.ninth, 'a');
     });
     test('addLast', () {
       final other = tuple.addLast('a');
       expect(other.length, tuple.length + 1);
-      expect(other.value0, 4);
-      expect(other.value1, 238);
-      expect(other.value2, 254);
-      expect(other.value3, 200);
-      expect(other.value4, 37);
-      expect(other.value5, 244);
-      expect(other.value6, 31);
-      expect(other.value7, 234);
-      expect(other.value8, 'a');
-    });
-    test('addAt0', () {
-      final other = tuple.addAt0('a');
-      expect(other.length, tuple.length + 1);
-      expect(other.value0, 'a');
-      expect(other.value1, 4);
-      expect(other.value2, 238);
-      expect(other.value3, 254);
-      expect(other.value4, 200);
-      expect(other.value5, 37);
-      expect(other.value6, 244);
-      expect(other.value7, 31);
-      expect(other.value8, 234);
-    });
-    test('addAt1', () {
-      final other = tuple.addAt1('a');
-      expect(other.length, tuple.length + 1);
-      expect(other.value0, 4);
-      expect(other.value1, 'a');
-      expect(other.value2, 238);
-      expect(other.value3, 254);
-      expect(other.value4, 200);
-      expect(other.value5, 37);
-      expect(other.value6, 244);
-      expect(other.value7, 31);
-      expect(other.value8, 234);
-    });
-    test('addAt2', () {
-      final other = tuple.addAt2('a');
-      expect(other.length, tuple.length + 1);
-      expect(other.value0, 4);
-      expect(other.value1, 238);
-      expect(other.value2, 'a');
-      expect(other.value3, 254);
-      expect(other.value4, 200);
-      expect(other.value5, 37);
-      expect(other.value6, 244);
-      expect(other.value7, 31);
-      expect(other.value8, 234);
-    });
-    test('addAt3', () {
-      final other = tuple.addAt3('a');
-      expect(other.length, tuple.length + 1);
-      expect(other.value0, 4);
-      expect(other.value1, 238);
-      expect(other.value2, 254);
-      expect(other.value3, 'a');
-      expect(other.value4, 200);
-      expect(other.value5, 37);
-      expect(other.value6, 244);
-      expect(other.value7, 31);
-      expect(other.value8, 234);
-    });
-    test('addAt4', () {
-      final other = tuple.addAt4('a');
-      expect(other.length, tuple.length + 1);
-      expect(other.value0, 4);
-      expect(other.value1, 238);
-      expect(other.value2, 254);
-      expect(other.value3, 200);
-      expect(other.value4, 'a');
-      expect(other.value5, 37);
-      expect(other.value6, 244);
-      expect(other.value7, 31);
-      expect(other.value8, 234);
-    });
-    test('addAt5', () {
-      final other = tuple.addAt5('a');
-      expect(other.length, tuple.length + 1);
-      expect(other.value0, 4);
-      expect(other.value1, 238);
-      expect(other.value2, 254);
-      expect(other.value3, 200);
-      expect(other.value4, 37);
-      expect(other.value5, 'a');
-      expect(other.value6, 244);
-      expect(other.value7, 31);
-      expect(other.value8, 234);
-    });
-    test('addAt6', () {
-      final other = tuple.addAt6('a');
-      expect(other.length, tuple.length + 1);
-      expect(other.value0, 4);
-      expect(other.value1, 238);
-      expect(other.value2, 254);
-      expect(other.value3, 200);
-      expect(other.value4, 37);
-      expect(other.value5, 244);
-      expect(other.value6, 'a');
-      expect(other.value7, 31);
-      expect(other.value8, 234);
-    });
-    test('addAt7', () {
-      final other = tuple.addAt7('a');
-      expect(other.length, tuple.length + 1);
-      expect(other.value0, 4);
-      expect(other.value1, 238);
-      expect(other.value2, 254);
-      expect(other.value3, 200);
-      expect(other.value4, 37);
-      expect(other.value5, 244);
-      expect(other.value6, 31);
-      expect(other.value7, 'a');
-      expect(other.value8, 234);
-    });
-    test('addAt8', () {
-      final other = tuple.addAt8('a');
-      expect(other.length, tuple.length + 1);
-      expect(other.value0, 4);
-      expect(other.value1, 238);
-      expect(other.value2, 254);
-      expect(other.value3, 200);
-      expect(other.value4, 37);
-      expect(other.value5, 244);
-      expect(other.value6, 31);
-      expect(other.value7, 234);
-      expect(other.value8, 'a');
+      expect(other.first, 4);
+      expect(other.second, 238);
+      expect(other.third, 254);
+      expect(other.fourth, 200);
+      expect(other.fifth, 37);
+      expect(other.sixth, 244);
+      expect(other.seventh, 31);
+      expect(other.eighth, 234);
+      expect(other.ninth, 'a');
     });
     test('removeFirst', () {
       final other = tuple.removeFirst();
       expect(other.length, tuple.length - 1);
-      expect(other.value0, 238);
-      expect(other.value1, 254);
-      expect(other.value2, 200);
-      expect(other.value3, 37);
-      expect(other.value4, 244);
-      expect(other.value5, 31);
-      expect(other.value6, 234);
+      expect(other.first, 238);
+      expect(other.second, 254);
+      expect(other.third, 200);
+      expect(other.fourth, 37);
+      expect(other.fifth, 244);
+      expect(other.sixth, 31);
+      expect(other.seventh, 234);
+    });
+    test('removeSecond', () {
+      final other = tuple.removeSecond();
+      expect(other.length, tuple.length - 1);
+      expect(other.first, 4);
+      expect(other.second, 254);
+      expect(other.third, 200);
+      expect(other.fourth, 37);
+      expect(other.fifth, 244);
+      expect(other.sixth, 31);
+      expect(other.seventh, 234);
+    });
+    test('removeThird', () {
+      final other = tuple.removeThird();
+      expect(other.length, tuple.length - 1);
+      expect(other.first, 4);
+      expect(other.second, 238);
+      expect(other.third, 200);
+      expect(other.fourth, 37);
+      expect(other.fifth, 244);
+      expect(other.sixth, 31);
+      expect(other.seventh, 234);
+    });
+    test('removeFourth', () {
+      final other = tuple.removeFourth();
+      expect(other.length, tuple.length - 1);
+      expect(other.first, 4);
+      expect(other.second, 238);
+      expect(other.third, 254);
+      expect(other.fourth, 37);
+      expect(other.fifth, 244);
+      expect(other.sixth, 31);
+      expect(other.seventh, 234);
+    });
+    test('removeFifth', () {
+      final other = tuple.removeFifth();
+      expect(other.length, tuple.length - 1);
+      expect(other.first, 4);
+      expect(other.second, 238);
+      expect(other.third, 254);
+      expect(other.fourth, 200);
+      expect(other.fifth, 244);
+      expect(other.sixth, 31);
+      expect(other.seventh, 234);
+    });
+    test('removeSixth', () {
+      final other = tuple.removeSixth();
+      expect(other.length, tuple.length - 1);
+      expect(other.first, 4);
+      expect(other.second, 238);
+      expect(other.third, 254);
+      expect(other.fourth, 200);
+      expect(other.fifth, 37);
+      expect(other.sixth, 31);
+      expect(other.seventh, 234);
+    });
+    test('removeSeventh', () {
+      final other = tuple.removeSeventh();
+      expect(other.length, tuple.length - 1);
+      expect(other.first, 4);
+      expect(other.second, 238);
+      expect(other.third, 254);
+      expect(other.fourth, 200);
+      expect(other.fifth, 37);
+      expect(other.sixth, 244);
+      expect(other.seventh, 234);
+    });
+    test('removeEighth', () {
+      final other = tuple.removeEighth();
+      expect(other.length, tuple.length - 1);
+      expect(other.first, 4);
+      expect(other.second, 238);
+      expect(other.third, 254);
+      expect(other.fourth, 200);
+      expect(other.fifth, 37);
+      expect(other.sixth, 244);
+      expect(other.seventh, 31);
     });
     test('removeLast', () {
       final other = tuple.removeLast();
       expect(other.length, tuple.length - 1);
-      expect(other.value0, 4);
-      expect(other.value1, 238);
-      expect(other.value2, 254);
-      expect(other.value3, 200);
-      expect(other.value4, 37);
-      expect(other.value5, 244);
-      expect(other.value6, 31);
-    });
-    test('removeAt0', () {
-      final other = tuple.removeAt0();
-      expect(other.length, tuple.length - 1);
-      expect(other.value0, 238);
-      expect(other.value1, 254);
-      expect(other.value2, 200);
-      expect(other.value3, 37);
-      expect(other.value4, 244);
-      expect(other.value5, 31);
-      expect(other.value6, 234);
-    });
-    test('removeAt1', () {
-      final other = tuple.removeAt1();
-      expect(other.length, tuple.length - 1);
-      expect(other.value0, 4);
-      expect(other.value1, 254);
-      expect(other.value2, 200);
-      expect(other.value3, 37);
-      expect(other.value4, 244);
-      expect(other.value5, 31);
-      expect(other.value6, 234);
-    });
-    test('removeAt2', () {
-      final other = tuple.removeAt2();
-      expect(other.length, tuple.length - 1);
-      expect(other.value0, 4);
-      expect(other.value1, 238);
-      expect(other.value2, 200);
-      expect(other.value3, 37);
-      expect(other.value4, 244);
-      expect(other.value5, 31);
-      expect(other.value6, 234);
-    });
-    test('removeAt3', () {
-      final other = tuple.removeAt3();
-      expect(other.length, tuple.length - 1);
-      expect(other.value0, 4);
-      expect(other.value1, 238);
-      expect(other.value2, 254);
-      expect(other.value3, 37);
-      expect(other.value4, 244);
-      expect(other.value5, 31);
-      expect(other.value6, 234);
-    });
-    test('removeAt4', () {
-      final other = tuple.removeAt4();
-      expect(other.length, tuple.length - 1);
-      expect(other.value0, 4);
-      expect(other.value1, 238);
-      expect(other.value2, 254);
-      expect(other.value3, 200);
-      expect(other.value4, 244);
-      expect(other.value5, 31);
-      expect(other.value6, 234);
-    });
-    test('removeAt5', () {
-      final other = tuple.removeAt5();
-      expect(other.length, tuple.length - 1);
-      expect(other.value0, 4);
-      expect(other.value1, 238);
-      expect(other.value2, 254);
-      expect(other.value3, 200);
-      expect(other.value4, 37);
-      expect(other.value5, 31);
-      expect(other.value6, 234);
-    });
-    test('removeAt6', () {
-      final other = tuple.removeAt6();
-      expect(other.length, tuple.length - 1);
-      expect(other.value0, 4);
-      expect(other.value1, 238);
-      expect(other.value2, 254);
-      expect(other.value3, 200);
-      expect(other.value4, 37);
-      expect(other.value5, 244);
-      expect(other.value6, 234);
-    });
-    test('removeAt7', () {
-      final other = tuple.removeAt7();
-      expect(other.length, tuple.length - 1);
-      expect(other.value0, 4);
-      expect(other.value1, 238);
-      expect(other.value2, 254);
-      expect(other.value3, 200);
-      expect(other.value4, 37);
-      expect(other.value5, 244);
-      expect(other.value6, 31);
+      expect(other.first, 4);
+      expect(other.second, 238);
+      expect(other.third, 254);
+      expect(other.fourth, 200);
+      expect(other.fifth, 37);
+      expect(other.sixth, 244);
+      expect(other.seventh, 31);
     });
     test('length', () {
       expect(tuple.length, 8);
@@ -1787,16 +1758,31 @@ void main() {
     test('toString', () {
       expect(tuple.toString(), '(4, 238, 254, 200, 37, 244, 31, 234)');
     });
+    final copy = Tuple8(tuple.first, tuple.second, tuple.third, tuple.fourth,
+        tuple.fifth, tuple.sixth, tuple.seventh, tuple.eighth);
     test('equals', () {
       expect(tuple == tuple, isTrue);
-      expect(tuple == tuple.with7(-1), isFalse);
-// ignore: unrelated_type_equality_checks
-      expect(tuple == tuple.with7('a'), isFalse);
+      expect(tuple == copy, isTrue);
+      expect(copy == tuple, isTrue);
+      expect(tuple == tuple.withFirst(-1), isFalse);
+      expect(tuple == tuple.withSecond(-1), isFalse);
+      expect(tuple == tuple.withThird(-1), isFalse);
+      expect(tuple == tuple.withFourth(-1), isFalse);
+      expect(tuple == tuple.withFifth(-1), isFalse);
+      expect(tuple == tuple.withSixth(-1), isFalse);
+      expect(tuple == tuple.withSeventh(-1), isFalse);
+      expect(tuple == tuple.withEighth(-1), isFalse);
     });
     test('hashCode', () {
-      expect(tuple.hashCode == tuple.hashCode, isTrue);
-      expect(tuple.hashCode == tuple.with7(-1).hashCode, isFalse);
-      expect(tuple.hashCode == tuple.with7('a').hashCode, isFalse);
+      expect(tuple.hashCode == copy.hashCode, isTrue);
+      expect(tuple.hashCode == tuple.withFirst(-1).hashCode, isFalse);
+      expect(tuple.hashCode == tuple.withSecond(-1).hashCode, isFalse);
+      expect(tuple.hashCode == tuple.withThird(-1).hashCode, isFalse);
+      expect(tuple.hashCode == tuple.withFourth(-1).hashCode, isFalse);
+      expect(tuple.hashCode == tuple.withFifth(-1).hashCode, isFalse);
+      expect(tuple.hashCode == tuple.withSixth(-1).hashCode, isFalse);
+      expect(tuple.hashCode == tuple.withSeventh(-1).hashCode, isFalse);
+      expect(tuple.hashCode == tuple.withEighth(-1).hashCode, isFalse);
     });
   });
   group('Tuple9', () {
@@ -1817,259 +1803,256 @@ void main() {
           throwsArgumentError);
     });
     test('read', () {
-      expect(tuple.value0, 229);
-      expect(tuple.value1, 246);
-      expect(tuple.value2, 244);
-      expect(tuple.value3, 122);
-      expect(tuple.value4, 206);
-      expect(tuple.value5, 164);
-      expect(tuple.value6, 55);
-      expect(tuple.value7, 173);
-      expect(tuple.value8, 2);
+      expect(tuple.first, 229);
+      expect(tuple.second, 246);
+      expect(tuple.third, 244);
+      expect(tuple.fourth, 122);
+      expect(tuple.fifth, 206);
+      expect(tuple.sixth, 164);
+      expect(tuple.seventh, 55);
+      expect(tuple.eighth, 173);
+      expect(tuple.ninth, 2);
+      expect(tuple.last, 2);
     });
-    test('with0', () {
-      final other = tuple.with0('a');
-      expect(other.value0, 'a');
-      expect(other.value1, 246);
-      expect(other.value2, 244);
-      expect(other.value3, 122);
-      expect(other.value4, 206);
-      expect(other.value5, 164);
-      expect(other.value6, 55);
-      expect(other.value7, 173);
-      expect(other.value8, 2);
+    test('withFirst', () {
+      final other = tuple.withFirst('a');
+      expect(other.first, 'a');
+      expect(other.second, 246);
+      expect(other.third, 244);
+      expect(other.fourth, 122);
+      expect(other.fifth, 206);
+      expect(other.sixth, 164);
+      expect(other.seventh, 55);
+      expect(other.eighth, 173);
+      expect(other.ninth, 2);
     });
-    test('with1', () {
-      final other = tuple.with1('a');
-      expect(other.value0, 229);
-      expect(other.value1, 'a');
-      expect(other.value2, 244);
-      expect(other.value3, 122);
-      expect(other.value4, 206);
-      expect(other.value5, 164);
-      expect(other.value6, 55);
-      expect(other.value7, 173);
-      expect(other.value8, 2);
+    test('withSecond', () {
+      final other = tuple.withSecond('a');
+      expect(other.first, 229);
+      expect(other.second, 'a');
+      expect(other.third, 244);
+      expect(other.fourth, 122);
+      expect(other.fifth, 206);
+      expect(other.sixth, 164);
+      expect(other.seventh, 55);
+      expect(other.eighth, 173);
+      expect(other.ninth, 2);
     });
-    test('with2', () {
-      final other = tuple.with2('a');
-      expect(other.value0, 229);
-      expect(other.value1, 246);
-      expect(other.value2, 'a');
-      expect(other.value3, 122);
-      expect(other.value4, 206);
-      expect(other.value5, 164);
-      expect(other.value6, 55);
-      expect(other.value7, 173);
-      expect(other.value8, 2);
+    test('withThird', () {
+      final other = tuple.withThird('a');
+      expect(other.first, 229);
+      expect(other.second, 246);
+      expect(other.third, 'a');
+      expect(other.fourth, 122);
+      expect(other.fifth, 206);
+      expect(other.sixth, 164);
+      expect(other.seventh, 55);
+      expect(other.eighth, 173);
+      expect(other.ninth, 2);
     });
-    test('with3', () {
-      final other = tuple.with3('a');
-      expect(other.value0, 229);
-      expect(other.value1, 246);
-      expect(other.value2, 244);
-      expect(other.value3, 'a');
-      expect(other.value4, 206);
-      expect(other.value5, 164);
-      expect(other.value6, 55);
-      expect(other.value7, 173);
-      expect(other.value8, 2);
+    test('withFourth', () {
+      final other = tuple.withFourth('a');
+      expect(other.first, 229);
+      expect(other.second, 246);
+      expect(other.third, 244);
+      expect(other.fourth, 'a');
+      expect(other.fifth, 206);
+      expect(other.sixth, 164);
+      expect(other.seventh, 55);
+      expect(other.eighth, 173);
+      expect(other.ninth, 2);
     });
-    test('with4', () {
-      final other = tuple.with4('a');
-      expect(other.value0, 229);
-      expect(other.value1, 246);
-      expect(other.value2, 244);
-      expect(other.value3, 122);
-      expect(other.value4, 'a');
-      expect(other.value5, 164);
-      expect(other.value6, 55);
-      expect(other.value7, 173);
-      expect(other.value8, 2);
+    test('withFifth', () {
+      final other = tuple.withFifth('a');
+      expect(other.first, 229);
+      expect(other.second, 246);
+      expect(other.third, 244);
+      expect(other.fourth, 122);
+      expect(other.fifth, 'a');
+      expect(other.sixth, 164);
+      expect(other.seventh, 55);
+      expect(other.eighth, 173);
+      expect(other.ninth, 2);
     });
-    test('with5', () {
-      final other = tuple.with5('a');
-      expect(other.value0, 229);
-      expect(other.value1, 246);
-      expect(other.value2, 244);
-      expect(other.value3, 122);
-      expect(other.value4, 206);
-      expect(other.value5, 'a');
-      expect(other.value6, 55);
-      expect(other.value7, 173);
-      expect(other.value8, 2);
+    test('withSixth', () {
+      final other = tuple.withSixth('a');
+      expect(other.first, 229);
+      expect(other.second, 246);
+      expect(other.third, 244);
+      expect(other.fourth, 122);
+      expect(other.fifth, 206);
+      expect(other.sixth, 'a');
+      expect(other.seventh, 55);
+      expect(other.eighth, 173);
+      expect(other.ninth, 2);
     });
-    test('with6', () {
-      final other = tuple.with6('a');
-      expect(other.value0, 229);
-      expect(other.value1, 246);
-      expect(other.value2, 244);
-      expect(other.value3, 122);
-      expect(other.value4, 206);
-      expect(other.value5, 164);
-      expect(other.value6, 'a');
-      expect(other.value7, 173);
-      expect(other.value8, 2);
+    test('withSeventh', () {
+      final other = tuple.withSeventh('a');
+      expect(other.first, 229);
+      expect(other.second, 246);
+      expect(other.third, 244);
+      expect(other.fourth, 122);
+      expect(other.fifth, 206);
+      expect(other.sixth, 164);
+      expect(other.seventh, 'a');
+      expect(other.eighth, 173);
+      expect(other.ninth, 2);
     });
-    test('with7', () {
-      final other = tuple.with7('a');
-      expect(other.value0, 229);
-      expect(other.value1, 246);
-      expect(other.value2, 244);
-      expect(other.value3, 122);
-      expect(other.value4, 206);
-      expect(other.value5, 164);
-      expect(other.value6, 55);
-      expect(other.value7, 'a');
-      expect(other.value8, 2);
+    test('withEighth', () {
+      final other = tuple.withEighth('a');
+      expect(other.first, 229);
+      expect(other.second, 246);
+      expect(other.third, 244);
+      expect(other.fourth, 122);
+      expect(other.fifth, 206);
+      expect(other.sixth, 164);
+      expect(other.seventh, 55);
+      expect(other.eighth, 'a');
+      expect(other.ninth, 2);
     });
-    test('with8', () {
-      final other = tuple.with8('a');
-      expect(other.value0, 229);
-      expect(other.value1, 246);
-      expect(other.value2, 244);
-      expect(other.value3, 122);
-      expect(other.value4, 206);
-      expect(other.value5, 164);
-      expect(other.value6, 55);
-      expect(other.value7, 173);
-      expect(other.value8, 'a');
+    test('withNinth', () {
+      final other = tuple.withNinth('a');
+      expect(other.first, 229);
+      expect(other.second, 246);
+      expect(other.third, 244);
+      expect(other.fourth, 122);
+      expect(other.fifth, 206);
+      expect(other.sixth, 164);
+      expect(other.seventh, 55);
+      expect(other.eighth, 173);
+      expect(other.ninth, 'a');
     });
-    test('add', () {
-      expect(() => tuple.addFirst(-1), throwsStateError);
-      expect(() => tuple.addLast(-1), throwsStateError);
+    test('withLast', () {
+      final other = tuple.withLast('a');
+      expect(other.first, 229);
+      expect(other.second, 246);
+      expect(other.third, 244);
+      expect(other.fourth, 122);
+      expect(other.fifth, 206);
+      expect(other.sixth, 164);
+      expect(other.seventh, 55);
+      expect(other.eighth, 173);
+      expect(other.ninth, 'a');
     });
     test('removeFirst', () {
       final other = tuple.removeFirst();
       expect(other.length, tuple.length - 1);
-      expect(other.value0, 246);
-      expect(other.value1, 244);
-      expect(other.value2, 122);
-      expect(other.value3, 206);
-      expect(other.value4, 164);
-      expect(other.value5, 55);
-      expect(other.value6, 173);
-      expect(other.value7, 2);
+      expect(other.first, 246);
+      expect(other.second, 244);
+      expect(other.third, 122);
+      expect(other.fourth, 206);
+      expect(other.fifth, 164);
+      expect(other.sixth, 55);
+      expect(other.seventh, 173);
+      expect(other.eighth, 2);
+    });
+    test('removeSecond', () {
+      final other = tuple.removeSecond();
+      expect(other.length, tuple.length - 1);
+      expect(other.first, 229);
+      expect(other.second, 244);
+      expect(other.third, 122);
+      expect(other.fourth, 206);
+      expect(other.fifth, 164);
+      expect(other.sixth, 55);
+      expect(other.seventh, 173);
+      expect(other.eighth, 2);
+    });
+    test('removeThird', () {
+      final other = tuple.removeThird();
+      expect(other.length, tuple.length - 1);
+      expect(other.first, 229);
+      expect(other.second, 246);
+      expect(other.third, 122);
+      expect(other.fourth, 206);
+      expect(other.fifth, 164);
+      expect(other.sixth, 55);
+      expect(other.seventh, 173);
+      expect(other.eighth, 2);
+    });
+    test('removeFourth', () {
+      final other = tuple.removeFourth();
+      expect(other.length, tuple.length - 1);
+      expect(other.first, 229);
+      expect(other.second, 246);
+      expect(other.third, 244);
+      expect(other.fourth, 206);
+      expect(other.fifth, 164);
+      expect(other.sixth, 55);
+      expect(other.seventh, 173);
+      expect(other.eighth, 2);
+    });
+    test('removeFifth', () {
+      final other = tuple.removeFifth();
+      expect(other.length, tuple.length - 1);
+      expect(other.first, 229);
+      expect(other.second, 246);
+      expect(other.third, 244);
+      expect(other.fourth, 122);
+      expect(other.fifth, 164);
+      expect(other.sixth, 55);
+      expect(other.seventh, 173);
+      expect(other.eighth, 2);
+    });
+    test('removeSixth', () {
+      final other = tuple.removeSixth();
+      expect(other.length, tuple.length - 1);
+      expect(other.first, 229);
+      expect(other.second, 246);
+      expect(other.third, 244);
+      expect(other.fourth, 122);
+      expect(other.fifth, 206);
+      expect(other.sixth, 55);
+      expect(other.seventh, 173);
+      expect(other.eighth, 2);
+    });
+    test('removeSeventh', () {
+      final other = tuple.removeSeventh();
+      expect(other.length, tuple.length - 1);
+      expect(other.first, 229);
+      expect(other.second, 246);
+      expect(other.third, 244);
+      expect(other.fourth, 122);
+      expect(other.fifth, 206);
+      expect(other.sixth, 164);
+      expect(other.seventh, 173);
+      expect(other.eighth, 2);
+    });
+    test('removeEighth', () {
+      final other = tuple.removeEighth();
+      expect(other.length, tuple.length - 1);
+      expect(other.first, 229);
+      expect(other.second, 246);
+      expect(other.third, 244);
+      expect(other.fourth, 122);
+      expect(other.fifth, 206);
+      expect(other.sixth, 164);
+      expect(other.seventh, 55);
+      expect(other.eighth, 2);
+    });
+    test('removeNinth', () {
+      final other = tuple.removeNinth();
+      expect(other.length, tuple.length - 1);
+      expect(other.first, 229);
+      expect(other.second, 246);
+      expect(other.third, 244);
+      expect(other.fourth, 122);
+      expect(other.fifth, 206);
+      expect(other.sixth, 164);
+      expect(other.seventh, 55);
+      expect(other.eighth, 173);
     });
     test('removeLast', () {
       final other = tuple.removeLast();
       expect(other.length, tuple.length - 1);
-      expect(other.value0, 229);
-      expect(other.value1, 246);
-      expect(other.value2, 244);
-      expect(other.value3, 122);
-      expect(other.value4, 206);
-      expect(other.value5, 164);
-      expect(other.value6, 55);
-      expect(other.value7, 173);
-    });
-    test('removeAt0', () {
-      final other = tuple.removeAt0();
-      expect(other.length, tuple.length - 1);
-      expect(other.value0, 246);
-      expect(other.value1, 244);
-      expect(other.value2, 122);
-      expect(other.value3, 206);
-      expect(other.value4, 164);
-      expect(other.value5, 55);
-      expect(other.value6, 173);
-      expect(other.value7, 2);
-    });
-    test('removeAt1', () {
-      final other = tuple.removeAt1();
-      expect(other.length, tuple.length - 1);
-      expect(other.value0, 229);
-      expect(other.value1, 244);
-      expect(other.value2, 122);
-      expect(other.value3, 206);
-      expect(other.value4, 164);
-      expect(other.value5, 55);
-      expect(other.value6, 173);
-      expect(other.value7, 2);
-    });
-    test('removeAt2', () {
-      final other = tuple.removeAt2();
-      expect(other.length, tuple.length - 1);
-      expect(other.value0, 229);
-      expect(other.value1, 246);
-      expect(other.value2, 122);
-      expect(other.value3, 206);
-      expect(other.value4, 164);
-      expect(other.value5, 55);
-      expect(other.value6, 173);
-      expect(other.value7, 2);
-    });
-    test('removeAt3', () {
-      final other = tuple.removeAt3();
-      expect(other.length, tuple.length - 1);
-      expect(other.value0, 229);
-      expect(other.value1, 246);
-      expect(other.value2, 244);
-      expect(other.value3, 206);
-      expect(other.value4, 164);
-      expect(other.value5, 55);
-      expect(other.value6, 173);
-      expect(other.value7, 2);
-    });
-    test('removeAt4', () {
-      final other = tuple.removeAt4();
-      expect(other.length, tuple.length - 1);
-      expect(other.value0, 229);
-      expect(other.value1, 246);
-      expect(other.value2, 244);
-      expect(other.value3, 122);
-      expect(other.value4, 164);
-      expect(other.value5, 55);
-      expect(other.value6, 173);
-      expect(other.value7, 2);
-    });
-    test('removeAt5', () {
-      final other = tuple.removeAt5();
-      expect(other.length, tuple.length - 1);
-      expect(other.value0, 229);
-      expect(other.value1, 246);
-      expect(other.value2, 244);
-      expect(other.value3, 122);
-      expect(other.value4, 206);
-      expect(other.value5, 55);
-      expect(other.value6, 173);
-      expect(other.value7, 2);
-    });
-    test('removeAt6', () {
-      final other = tuple.removeAt6();
-      expect(other.length, tuple.length - 1);
-      expect(other.value0, 229);
-      expect(other.value1, 246);
-      expect(other.value2, 244);
-      expect(other.value3, 122);
-      expect(other.value4, 206);
-      expect(other.value5, 164);
-      expect(other.value6, 173);
-      expect(other.value7, 2);
-    });
-    test('removeAt7', () {
-      final other = tuple.removeAt7();
-      expect(other.length, tuple.length - 1);
-      expect(other.value0, 229);
-      expect(other.value1, 246);
-      expect(other.value2, 244);
-      expect(other.value3, 122);
-      expect(other.value4, 206);
-      expect(other.value5, 164);
-      expect(other.value6, 55);
-      expect(other.value7, 2);
-    });
-    test('removeAt8', () {
-      final other = tuple.removeAt8();
-      expect(other.length, tuple.length - 1);
-      expect(other.value0, 229);
-      expect(other.value1, 246);
-      expect(other.value2, 244);
-      expect(other.value3, 122);
-      expect(other.value4, 206);
-      expect(other.value5, 164);
-      expect(other.value6, 55);
-      expect(other.value7, 173);
+      expect(other.first, 229);
+      expect(other.second, 246);
+      expect(other.third, 244);
+      expect(other.fourth, 122);
+      expect(other.fifth, 206);
+      expect(other.sixth, 164);
+      expect(other.seventh, 55);
+      expect(other.eighth, 173);
     });
     test('length', () {
       expect(tuple.length, 9);
@@ -2088,16 +2071,33 @@ void main() {
     test('toString', () {
       expect(tuple.toString(), '(229, 246, 244, 122, 206, 164, 55, 173, 2)');
     });
+    final copy = Tuple9(tuple.first, tuple.second, tuple.third, tuple.fourth,
+        tuple.fifth, tuple.sixth, tuple.seventh, tuple.eighth, tuple.ninth);
     test('equals', () {
       expect(tuple == tuple, isTrue);
-      expect(tuple == tuple.with8(-1), isFalse);
-// ignore: unrelated_type_equality_checks
-      expect(tuple == tuple.with8('a'), isFalse);
+      expect(tuple == copy, isTrue);
+      expect(copy == tuple, isTrue);
+      expect(tuple == tuple.withFirst(-1), isFalse);
+      expect(tuple == tuple.withSecond(-1), isFalse);
+      expect(tuple == tuple.withThird(-1), isFalse);
+      expect(tuple == tuple.withFourth(-1), isFalse);
+      expect(tuple == tuple.withFifth(-1), isFalse);
+      expect(tuple == tuple.withSixth(-1), isFalse);
+      expect(tuple == tuple.withSeventh(-1), isFalse);
+      expect(tuple == tuple.withEighth(-1), isFalse);
+      expect(tuple == tuple.withNinth(-1), isFalse);
     });
     test('hashCode', () {
-      expect(tuple.hashCode == tuple.hashCode, isTrue);
-      expect(tuple.hashCode == tuple.with8(-1).hashCode, isFalse);
-      expect(tuple.hashCode == tuple.with8('a').hashCode, isFalse);
+      expect(tuple.hashCode == copy.hashCode, isTrue);
+      expect(tuple.hashCode == tuple.withFirst(-1).hashCode, isFalse);
+      expect(tuple.hashCode == tuple.withSecond(-1).hashCode, isFalse);
+      expect(tuple.hashCode == tuple.withThird(-1).hashCode, isFalse);
+      expect(tuple.hashCode == tuple.withFourth(-1).hashCode, isFalse);
+      expect(tuple.hashCode == tuple.withFifth(-1).hashCode, isFalse);
+      expect(tuple.hashCode == tuple.withSixth(-1).hashCode, isFalse);
+      expect(tuple.hashCode == tuple.withSeventh(-1).hashCode, isFalse);
+      expect(tuple.hashCode == tuple.withEighth(-1).hashCode, isFalse);
+      expect(tuple.hashCode == tuple.withNinth(-1).hashCode, isFalse);
     });
   });
 }

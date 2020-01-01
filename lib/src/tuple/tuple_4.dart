@@ -4,13 +4,8 @@ import '../../tuple.dart';
 
 /// Tuple with 4 elements.
 class Tuple4<T0, T1, T2, T3> extends Tuple {
-  final T0 value0;
-  final T1 value1;
-  final T2 value2;
-  final T3 value3;
-
   /// Const constructor.
-  const Tuple4(this.value0, this.value1, this.value2, this.value3);
+  const Tuple4(this.first, this.second, this.third, this.fourth);
 
   /// List constructor.
   // ignore: prefer_constructors_over_static_methods
@@ -25,88 +20,102 @@ class Tuple4<T0, T1, T2, T3> extends Tuple {
   @override
   int get length => 4;
 
-  /// Returns a new tuple with index 0 replaced by [value].
-  Tuple4<T, T1, T2, T3> with0<T>(T value) =>
-      Tuple4(value, value1, value2, value3);
+  /// Returns the first element of this tuple.
+  final T0 first;
 
-  /// Returns a new tuple with index 1 replaced by [value].
-  Tuple4<T0, T, T2, T3> with1<T>(T value) =>
-      Tuple4(value0, value, value2, value3);
+  /// Returns the second element of this tuple.
+  final T1 second;
 
-  /// Returns a new tuple with index 2 replaced by [value].
-  Tuple4<T0, T1, T, T3> with2<T>(T value) =>
-      Tuple4(value0, value1, value, value3);
+  /// Returns the third element of this tuple.
+  final T2 third;
 
-  /// Returns a new tuple with index 3 replaced by [value].
-  Tuple4<T0, T1, T2, T> with3<T>(T value) =>
-      Tuple4(value0, value1, value2, value);
+  /// Returns the fourth element of this tuple.
+  final T3 fourth;
 
-  @override
-  Tuple5<T, T0, T1, T2, T3> addFirst<T>(T value) => addAt0(value);
+  /// Returns the last element of this tuple.
+  T3 get last => fourth;
 
-  @override
-  Tuple5<T0, T1, T2, T3, T> addLast<T>(T value) => addAt4(value);
+  /// Returns a new tuple with the first element replaced by [value].
+  Tuple4<T, T1, T2, T3> withFirst<T>(T value) =>
+      Tuple4(value, second, third, fourth);
 
-  /// Returns a new tuple with [value] added at index 0.
-  Tuple5<T, T0, T1, T2, T3> addAt0<T>(T value) =>
-      Tuple5(value, value0, value1, value2, value3);
+  /// Returns a new tuple with the second element replaced by [value].
+  Tuple4<T0, T, T2, T3> withSecond<T>(T value) =>
+      Tuple4(first, value, third, fourth);
 
-  /// Returns a new tuple with [value] added at index 1.
-  Tuple5<T0, T, T1, T2, T3> addAt1<T>(T value) =>
-      Tuple5(value0, value, value1, value2, value3);
+  /// Returns a new tuple with the third element replaced by [value].
+  Tuple4<T0, T1, T, T3> withThird<T>(T value) =>
+      Tuple4(first, second, value, fourth);
 
-  /// Returns a new tuple with [value] added at index 2.
-  Tuple5<T0, T1, T, T2, T3> addAt2<T>(T value) =>
-      Tuple5(value0, value1, value, value2, value3);
+  /// Returns a new tuple with the fourth element replaced by [value].
+  Tuple4<T0, T1, T2, T> withFourth<T>(T value) =>
+      Tuple4(first, second, third, value);
 
-  /// Returns a new tuple with [value] added at index 3.
-  Tuple5<T0, T1, T2, T, T3> addAt3<T>(T value) =>
-      Tuple5(value0, value1, value2, value, value3);
+  /// Returns a new tuple with the last element replaced by [value].
+  Tuple4<T0, T1, T2, T> withLast<T>(T value) =>
+      Tuple4(first, second, third, value);
 
-  /// Returns a new tuple with [value] added at index 4.
-  Tuple5<T0, T1, T2, T3, T> addAt4<T>(T value) =>
-      Tuple5(value0, value1, value2, value3, value);
+  /// Returns a new tuple with [value] added at the first position.
+  Tuple5<T, T0, T1, T2, T3> addFirst<T>(T value) =>
+      Tuple5(value, first, second, third, fourth);
 
-  @override
-  Tuple3<T1, T2, T3> removeFirst() => removeAt0();
+  /// Returns a new tuple with [value] added at the second position.
+  Tuple5<T0, T, T1, T2, T3> addSecond<T>(T value) =>
+      Tuple5(first, value, second, third, fourth);
 
-  @override
-  Tuple3<T0, T1, T2> removeLast() => removeAt3();
+  /// Returns a new tuple with [value] added at the third position.
+  Tuple5<T0, T1, T, T2, T3> addThird<T>(T value) =>
+      Tuple5(first, second, value, third, fourth);
 
-  /// Returns a new tuple with index 0 removed.
-  Tuple3<T1, T2, T3> removeAt0() => Tuple3(value1, value2, value3);
+  /// Returns a new tuple with [value] added at the fourth position.
+  Tuple5<T0, T1, T2, T, T3> addFourth<T>(T value) =>
+      Tuple5(first, second, third, value, fourth);
 
-  /// Returns a new tuple with index 1 removed.
-  Tuple3<T0, T2, T3> removeAt1() => Tuple3(value0, value2, value3);
+  /// Returns a new tuple with [value] added at the fifth position.
+  Tuple5<T0, T1, T2, T3, T> addFifth<T>(T value) =>
+      Tuple5(first, second, third, fourth, value);
 
-  /// Returns a new tuple with index 2 removed.
-  Tuple3<T0, T1, T3> removeAt2() => Tuple3(value0, value1, value3);
+  /// Returns a new tuple with [value] added at the last position.
+  Tuple5<T0, T1, T2, T3, T> addLast<T>(T value) =>
+      Tuple5(first, second, third, fourth, value);
 
-  /// Returns a new tuple with index 3 removed.
-  Tuple3<T0, T1, T2> removeAt3() => Tuple3(value0, value1, value2);
+  /// Returns a new tuple with the first element removed.
+  Tuple3<T1, T2, T3> removeFirst() => Tuple3(second, third, fourth);
+
+  /// Returns a new tuple with the second element removed.
+  Tuple3<T0, T2, T3> removeSecond() => Tuple3(first, third, fourth);
+
+  /// Returns a new tuple with the third element removed.
+  Tuple3<T0, T1, T3> removeThird() => Tuple3(first, second, fourth);
+
+  /// Returns a new tuple with the fourth element removed.
+  Tuple3<T0, T1, T2> removeFourth() => Tuple3(first, second, third);
+
+  /// Returns a new tuple with the last element removed.
+  Tuple3<T0, T1, T2> removeLast() => Tuple3(first, second, third);
 
   @override
   Iterable get iterable sync* {
-    yield value0;
-    yield value1;
-    yield value2;
-    yield value3;
+    yield first;
+    yield second;
+    yield third;
+    yield fourth;
   }
 
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
       (other is Tuple4 &&
-          value0 == other.value0 &&
-          value1 == other.value1 &&
-          value2 == other.value2 &&
-          value3 == other.value3);
+          first == other.first &&
+          second == other.second &&
+          third == other.third &&
+          fourth == other.fourth);
 
   @override
   int get hashCode =>
       1319473077 ^
-      value0.hashCode ^
-      value1.hashCode ^
-      value2.hashCode ^
-      value3.hashCode;
+      first.hashCode ^
+      second.hashCode ^
+      third.hashCode ^
+      fourth.hashCode;
 }

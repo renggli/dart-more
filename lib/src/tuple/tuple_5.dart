@@ -4,14 +4,8 @@ import '../../tuple.dart';
 
 /// Tuple with 5 elements.
 class Tuple5<T0, T1, T2, T3, T4> extends Tuple {
-  final T0 value0;
-  final T1 value1;
-  final T2 value2;
-  final T3 value3;
-  final T4 value4;
-
   /// Const constructor.
-  const Tuple5(this.value0, this.value1, this.value2, this.value3, this.value4);
+  const Tuple5(this.first, this.second, this.third, this.fourth, this.fifth);
 
   /// List constructor.
   // ignore: prefer_constructors_over_static_methods
@@ -26,102 +20,119 @@ class Tuple5<T0, T1, T2, T3, T4> extends Tuple {
   @override
   int get length => 5;
 
-  /// Returns a new tuple with index 0 replaced by [value].
-  Tuple5<T, T1, T2, T3, T4> with0<T>(T value) =>
-      Tuple5(value, value1, value2, value3, value4);
+  /// Returns the first element of this tuple.
+  final T0 first;
 
-  /// Returns a new tuple with index 1 replaced by [value].
-  Tuple5<T0, T, T2, T3, T4> with1<T>(T value) =>
-      Tuple5(value0, value, value2, value3, value4);
+  /// Returns the second element of this tuple.
+  final T1 second;
 
-  /// Returns a new tuple with index 2 replaced by [value].
-  Tuple5<T0, T1, T, T3, T4> with2<T>(T value) =>
-      Tuple5(value0, value1, value, value3, value4);
+  /// Returns the third element of this tuple.
+  final T2 third;
 
-  /// Returns a new tuple with index 3 replaced by [value].
-  Tuple5<T0, T1, T2, T, T4> with3<T>(T value) =>
-      Tuple5(value0, value1, value2, value, value4);
+  /// Returns the fourth element of this tuple.
+  final T3 fourth;
 
-  /// Returns a new tuple with index 4 replaced by [value].
-  Tuple5<T0, T1, T2, T3, T> with4<T>(T value) =>
-      Tuple5(value0, value1, value2, value3, value);
+  /// Returns the fifth element of this tuple.
+  final T4 fifth;
 
-  @override
-  Tuple6<T, T0, T1, T2, T3, T4> addFirst<T>(T value) => addAt0(value);
+  /// Returns the last element of this tuple.
+  T4 get last => fifth;
 
-  @override
-  Tuple6<T0, T1, T2, T3, T4, T> addLast<T>(T value) => addAt5(value);
+  /// Returns a new tuple with the first element replaced by [value].
+  Tuple5<T, T1, T2, T3, T4> withFirst<T>(T value) =>
+      Tuple5(value, second, third, fourth, fifth);
 
-  /// Returns a new tuple with [value] added at index 0.
-  Tuple6<T, T0, T1, T2, T3, T4> addAt0<T>(T value) =>
-      Tuple6(value, value0, value1, value2, value3, value4);
+  /// Returns a new tuple with the second element replaced by [value].
+  Tuple5<T0, T, T2, T3, T4> withSecond<T>(T value) =>
+      Tuple5(first, value, third, fourth, fifth);
 
-  /// Returns a new tuple with [value] added at index 1.
-  Tuple6<T0, T, T1, T2, T3, T4> addAt1<T>(T value) =>
-      Tuple6(value0, value, value1, value2, value3, value4);
+  /// Returns a new tuple with the third element replaced by [value].
+  Tuple5<T0, T1, T, T3, T4> withThird<T>(T value) =>
+      Tuple5(first, second, value, fourth, fifth);
 
-  /// Returns a new tuple with [value] added at index 2.
-  Tuple6<T0, T1, T, T2, T3, T4> addAt2<T>(T value) =>
-      Tuple6(value0, value1, value, value2, value3, value4);
+  /// Returns a new tuple with the fourth element replaced by [value].
+  Tuple5<T0, T1, T2, T, T4> withFourth<T>(T value) =>
+      Tuple5(first, second, third, value, fifth);
 
-  /// Returns a new tuple with [value] added at index 3.
-  Tuple6<T0, T1, T2, T, T3, T4> addAt3<T>(T value) =>
-      Tuple6(value0, value1, value2, value, value3, value4);
+  /// Returns a new tuple with the fifth element replaced by [value].
+  Tuple5<T0, T1, T2, T3, T> withFifth<T>(T value) =>
+      Tuple5(first, second, third, fourth, value);
 
-  /// Returns a new tuple with [value] added at index 4.
-  Tuple6<T0, T1, T2, T3, T, T4> addAt4<T>(T value) =>
-      Tuple6(value0, value1, value2, value3, value, value4);
+  /// Returns a new tuple with the last element replaced by [value].
+  Tuple5<T0, T1, T2, T3, T> withLast<T>(T value) =>
+      Tuple5(first, second, third, fourth, value);
 
-  /// Returns a new tuple with [value] added at index 5.
-  Tuple6<T0, T1, T2, T3, T4, T> addAt5<T>(T value) =>
-      Tuple6(value0, value1, value2, value3, value4, value);
+  /// Returns a new tuple with [value] added at the first position.
+  Tuple6<T, T0, T1, T2, T3, T4> addFirst<T>(T value) =>
+      Tuple6(value, first, second, third, fourth, fifth);
 
-  @override
-  Tuple4<T1, T2, T3, T4> removeFirst() => removeAt0();
+  /// Returns a new tuple with [value] added at the second position.
+  Tuple6<T0, T, T1, T2, T3, T4> addSecond<T>(T value) =>
+      Tuple6(first, value, second, third, fourth, fifth);
 
-  @override
-  Tuple4<T0, T1, T2, T3> removeLast() => removeAt4();
+  /// Returns a new tuple with [value] added at the third position.
+  Tuple6<T0, T1, T, T2, T3, T4> addThird<T>(T value) =>
+      Tuple6(first, second, value, third, fourth, fifth);
 
-  /// Returns a new tuple with index 0 removed.
-  Tuple4<T1, T2, T3, T4> removeAt0() => Tuple4(value1, value2, value3, value4);
+  /// Returns a new tuple with [value] added at the fourth position.
+  Tuple6<T0, T1, T2, T, T3, T4> addFourth<T>(T value) =>
+      Tuple6(first, second, third, value, fourth, fifth);
 
-  /// Returns a new tuple with index 1 removed.
-  Tuple4<T0, T2, T3, T4> removeAt1() => Tuple4(value0, value2, value3, value4);
+  /// Returns a new tuple with [value] added at the fifth position.
+  Tuple6<T0, T1, T2, T3, T, T4> addFifth<T>(T value) =>
+      Tuple6(first, second, third, fourth, value, fifth);
 
-  /// Returns a new tuple with index 2 removed.
-  Tuple4<T0, T1, T3, T4> removeAt2() => Tuple4(value0, value1, value3, value4);
+  /// Returns a new tuple with [value] added at the sixth position.
+  Tuple6<T0, T1, T2, T3, T4, T> addSixth<T>(T value) =>
+      Tuple6(first, second, third, fourth, fifth, value);
 
-  /// Returns a new tuple with index 3 removed.
-  Tuple4<T0, T1, T2, T4> removeAt3() => Tuple4(value0, value1, value2, value4);
+  /// Returns a new tuple with [value] added at the last position.
+  Tuple6<T0, T1, T2, T3, T4, T> addLast<T>(T value) =>
+      Tuple6(first, second, third, fourth, fifth, value);
 
-  /// Returns a new tuple with index 4 removed.
-  Tuple4<T0, T1, T2, T3> removeAt4() => Tuple4(value0, value1, value2, value3);
+  /// Returns a new tuple with the first element removed.
+  Tuple4<T1, T2, T3, T4> removeFirst() => Tuple4(second, third, fourth, fifth);
+
+  /// Returns a new tuple with the second element removed.
+  Tuple4<T0, T2, T3, T4> removeSecond() => Tuple4(first, third, fourth, fifth);
+
+  /// Returns a new tuple with the third element removed.
+  Tuple4<T0, T1, T3, T4> removeThird() => Tuple4(first, second, fourth, fifth);
+
+  /// Returns a new tuple with the fourth element removed.
+  Tuple4<T0, T1, T2, T4> removeFourth() => Tuple4(first, second, third, fifth);
+
+  /// Returns a new tuple with the fifth element removed.
+  Tuple4<T0, T1, T2, T3> removeFifth() => Tuple4(first, second, third, fourth);
+
+  /// Returns a new tuple with the last element removed.
+  Tuple4<T0, T1, T2, T3> removeLast() => Tuple4(first, second, third, fourth);
 
   @override
   Iterable get iterable sync* {
-    yield value0;
-    yield value1;
-    yield value2;
-    yield value3;
-    yield value4;
+    yield first;
+    yield second;
+    yield third;
+    yield fourth;
+    yield fifth;
   }
 
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
       (other is Tuple5 &&
-          value0 == other.value0 &&
-          value1 == other.value1 &&
-          value2 == other.value2 &&
-          value3 == other.value3 &&
-          value4 == other.value4);
+          first == other.first &&
+          second == other.second &&
+          third == other.third &&
+          fourth == other.fourth &&
+          fifth == other.fifth);
 
   @override
   int get hashCode =>
       40243304 ^
-      value0.hashCode ^
-      value1.hashCode ^
-      value2.hashCode ^
-      value3.hashCode ^
-      value4.hashCode;
+      first.hashCode ^
+      second.hashCode ^
+      third.hashCode ^
+      fourth.hashCode ^
+      fifth.hashCode;
 }

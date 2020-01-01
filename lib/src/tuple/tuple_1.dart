@@ -4,10 +4,8 @@ import '../../tuple.dart';
 
 /// Tuple with 1 element.
 class Tuple1<T0> extends Tuple {
-  final T0 value0;
-
   /// Const constructor.
-  const Tuple1(this.value0);
+  const Tuple1(this.first);
 
   /// List constructor.
   // ignore: prefer_constructors_over_static_methods
@@ -22,39 +20,42 @@ class Tuple1<T0> extends Tuple {
   @override
   int get length => 1;
 
-  /// Returns a new tuple with index 0 replaced by [value].
-  Tuple1<T> with0<T>(T value) => Tuple1(value);
+  /// Returns the first element of this tuple.
+  final T0 first;
 
-  @override
-  Tuple2<T, T0> addFirst<T>(T value) => addAt0(value);
+  /// Returns the last element of this tuple.
+  T0 get last => first;
 
-  @override
-  Tuple2<T0, T> addLast<T>(T value) => addAt1(value);
+  /// Returns a new tuple with the first element replaced by [value].
+  Tuple1<T> withFirst<T>(T value) => Tuple1(value);
 
-  /// Returns a new tuple with [value] added at index 0.
-  Tuple2<T, T0> addAt0<T>(T value) => Tuple2(value, value0);
+  /// Returns a new tuple with the last element replaced by [value].
+  Tuple1<T> withLast<T>(T value) => Tuple1(value);
 
-  /// Returns a new tuple with [value] added at index 1.
-  Tuple2<T0, T> addAt1<T>(T value) => Tuple2(value0, value);
+  /// Returns a new tuple with [value] added at the first position.
+  Tuple2<T, T0> addFirst<T>(T value) => Tuple2(value, first);
 
-  @override
-  Tuple0 removeFirst() => removeAt0();
+  /// Returns a new tuple with [value] added at the second position.
+  Tuple2<T0, T> addSecond<T>(T value) => Tuple2(first, value);
 
-  @override
-  Tuple0 removeLast() => removeAt0();
+  /// Returns a new tuple with [value] added at the last position.
+  Tuple2<T0, T> addLast<T>(T value) => Tuple2(first, value);
 
-  /// Returns a new tuple with index 0 removed.
-  Tuple0 removeAt0() => const Tuple0();
+  /// Returns a new tuple with the first element removed.
+  Tuple0 removeFirst() => const Tuple0();
+
+  /// Returns a new tuple with the last element removed.
+  Tuple0 removeLast() => const Tuple0();
 
   @override
   Iterable get iterable sync* {
-    yield value0;
+    yield first;
   }
 
   @override
   bool operator ==(Object other) =>
-      identical(this, other) || (other is Tuple1 && value0 == other.value0);
+      identical(this, other) || (other is Tuple1 && first == other.first);
 
   @override
-  int get hashCode => 523363758 ^ value0.hashCode;
+  int get hashCode => 523363758 ^ first.hashCode;
 }
