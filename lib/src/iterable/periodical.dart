@@ -19,7 +19,7 @@ enum Period {
   microsecondly,
 }
 
-extension PeriodicalDateTime on DateTime {
+extension PeriodicalExtension on DateTime {
   /// Creates an infinitely long [Iterable] of periodic [DateTime] timestamps.
   ///
   /// Called without arguments, the period starts at this [DateTime] and
@@ -228,7 +228,7 @@ extension PeriodicalDateTime on DateTime {
   }
 }
 
-extension TruncateDateTime on DateTime {
+extension TruncateExtension on DateTime {
   /// Truncates [DateTime] to the beginning of the provided [Period].
   DateTime truncate({
     Period period = Period.daily,

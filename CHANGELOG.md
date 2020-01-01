@@ -3,6 +3,7 @@
 ## 2.2.0
 
 * Made `truncateToPeriod` and `periodical` extension methods of `DateTime`.
+* Add extension methods to convert a `Map` to a `BiMap`, and an `Iterable<bool>` to a `BitList`.
 
 ## 2.1.0
 

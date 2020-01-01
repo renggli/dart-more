@@ -226,6 +226,11 @@ class BitList extends ListBase<bool> with NonGrowableListMixin<bool> {
   }
 }
 
+extension BitListExtension on Iterable<bool> {
+  /// Converts this [Iterable] to a space-efficient [BitList].
+  BitList toBitList() => BitList.of(this);
+}
+
 // Constants specific to mapping bits into a [UInt32List].
 const int bitShift = 5;
 const int bitOffset = 31;
