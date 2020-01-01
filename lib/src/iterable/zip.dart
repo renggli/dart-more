@@ -7,7 +7,7 @@ extension ZipExtension<E> on Iterable<Iterable<E>> {
   ///
   /// The following expression yields [1, 'a'], [2, 'b']:
   ///
-  ///     zip([[1, 2],  ['a', 'b']]);
+  ///     [[1, 2],  ['a', 'b']].zip();
   ///
   Iterable<List<E>> zip({bool includePartial = false}) sync* {
     if (isEmpty) {
