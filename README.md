@@ -1,7 +1,7 @@
 More Dart — Literally
 =====================
 
-[![Pub Package](https://img.shields.io/pub/v/more.svg)](https://pub.dartlang.org/packages/more)
+[![Pub Package](https://img.shields.io/pub/v/more.svg)](https://pub.dev/packages/more)
 [![Build Status](https://travis-ci.org/renggli/dart-more.svg)](https://travis-ci.org/renggli/dart-more)
 [![Coverage Status](https://coveralls.io/repos/renggli/dart-more/badge.svg)](https://coveralls.io/r/renggli/dart-more)
 [![GitHub Issues](https://img.shields.io/github/issues/renggli/dart-more.svg)](https://github.com/renggli/dart-more/issues)
@@ -25,7 +25,7 @@ And there are more to come ...
 
 This library is open source, stable and well tested. Development happens on [GitHub](https://github.com/renggli/dart-more). Feel free to report issues or create a pull-request there. General questions are best asked on [StackOverflow](http://stackoverflow.com/questions/tagged/more+dart).
 
-The package is hosted on [dart packages](https://pub.dartlang.org/packages/more). Up-to-date [class documentation](https://pub.dartlang.org/documentation/more/) is created with every release.
+The package is hosted on [dart packages](https://pub.dev/packages/more). Up-to-date [class documentation](https://pub.dev/documentation/more/) is created with every release.
 
 
 Misc
@@ -33,7 +33,7 @@ Misc
 
 ### Installation
 
-Follow the installation instructions on [dart packages](https://pub.dartlang.org/packages/more#-installing-tab-).
+Follow the installation instructions on [dart packages](https://pub.dev/packages/more#-installing-tab-).
 
 Import one or more of the packages into your Dart code using:
 
