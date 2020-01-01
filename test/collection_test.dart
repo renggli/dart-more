@@ -71,6 +71,11 @@ void main() {
         expect(() => BiMap.fromIterables([1], []), throwsArgumentError);
         expect(() => BiMap.fromIterables([], [1]), throwsArgumentError);
       });
+      test('converter', () {
+        final target = example.toBiMap();
+        expect(target.keys, [1, 2, 3]);
+        expect(target.values, ['a', 'b', 'c']);
+      });
     });
     group('accessing', () {
       test('indexed', () {
@@ -269,6 +274,14 @@ void main() {
         for (var len = 0; len < 10; len++) {
           final source = Set<bool>.of(randomBooleans(287 * len, len));
           final target = BitList.of(source);
+          expect(source, target);
+          expect(target, source);
+        }
+      });
+      test('converter', () {
+        for (var len = 0; len < 10; len++) {
+          final source = randomBooleans(195 * len, len);
+          final target = source.toBitList();
           expect(source, target);
           expect(target, source);
         }
@@ -486,6 +499,14 @@ void main() {
         expect(set.distinct, unorderedEquals(['a', 'b', 'c']));
         expect(set.counts, unorderedEquals([3, 2, 1]));
       });
+      test('of set', () {
+        final set = Multiset.of({'a', 'a', 'a', 'b', 'b', 'c'});
+        expect(set, isNot(isEmpty));
+        expect(set, hasLength(3));
+        expect(set, unorderedEquals(['a', 'b', 'c']));
+        expect(set.distinct, unorderedEquals(['a', 'b', 'c']));
+        expect(set.counts, unorderedEquals([1, 1, 1]));
+      });
       test('from many repeated', () {
         final set = Multiset.from(['a', 'a', 'a', 'b', 'b', 'c']);
         expect(set, isNot(isEmpty));
@@ -522,6 +543,14 @@ void main() {
       test('generate with count', () {
         final set = Multiset.fromIterable(['aaa', 'bb', 'c'],
             key: (e) => e.substring(0, 1), count: (e) => e.length);
+        expect(set, isNot(isEmpty));
+        expect(set, hasLength(6));
+        expect(set, unorderedEquals(['a', 'a', 'a', 'b', 'b', 'c']));
+        expect(set.distinct, unorderedEquals(['a', 'b', 'c']));
+        expect(set.counts, unorderedEquals([3, 2, 1]));
+      });
+      test('convert', () {
+        final set = ['a', 'a', 'a', 'b', 'b', 'c'].toMultiset();
         expect(set, isNot(isEmpty));
         expect(set, hasLength(6));
         expect(set, unorderedEquals(['a', 'a', 'a', 'b', 'b', 'c']));
