@@ -1,5 +1,9 @@
 # Changelog
 
+## 2.2.0
+
+* Made `truncateToPeriod` and `periodical` extension methods of `DateTime`.
+
 ## 2.1.0
 
 * Cleanup `Tuple` class to be more readable and better typed.

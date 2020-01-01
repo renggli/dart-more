@@ -8,7 +8,8 @@ export 'src/iterable/cycle.dart' show CycleExtension;
 export 'src/iterable/group.dart' show GroupExtension, Group;
 export 'src/iterable/indexed.dart' show IndexedExtension, Indexed;
 export 'src/iterable/iterate.dart' show iterate;
-export 'src/iterable/periodical.dart' show Period, periodical, truncateToPeriod;
+export 'src/iterable/periodical.dart'
+    show Period, PeriodicalDateTime, TruncateDateTime;
 export 'src/iterable/permutations.dart' show PermutationsExtension;
 export 'src/iterable/product.dart' show ProductExtension;
 export 'src/iterable/repeat.dart' show repeat;
