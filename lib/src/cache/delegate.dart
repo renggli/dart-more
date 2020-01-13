@@ -8,7 +8,7 @@ import '../../cache.dart';
 class DelegateCache<K, V> extends Cache<K, V> {
   final Cache<K, V> delegate;
 
-  DelegateCache(this.delegate);
+  const DelegateCache(this.delegate);
 
   @override
   Future<V> getIfPresent(K key) => delegate.getIfPresent(key);

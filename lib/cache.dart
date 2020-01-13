@@ -78,7 +78,7 @@ abstract class Cache<K, V> {
   }
 
   /// Unnamed default constructor.
-  Cache();
+  const Cache();
 
   /// Returns the value associated with the [key], otherwise `null`.
   Future<V> getIfPresent(K key);

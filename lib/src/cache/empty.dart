@@ -8,7 +8,7 @@ import '../../cache.dart';
 class EmptyCache<K, V> extends Cache<K, V> {
   final Loader<K, V> loader;
 
-  EmptyCache(this.loader);
+  const EmptyCache(this.loader);
 
   @override
   Future<V> getIfPresent(K key) async => null;
