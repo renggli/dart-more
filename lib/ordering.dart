@@ -5,6 +5,8 @@
 /// collection of libraries for Java-based projects.
 library more.ordering;
 
+import 'package:meta/meta.dart' show immutable;
+
 import 'src/ordering/comparator.dart';
 import 'src/ordering/compound.dart';
 import 'src/ordering/explicit.dart';
@@ -39,6 +41,7 @@ import 'src/ordering/reversed.dart';
 ///     natural.sort(['dog', 'cat', 'ape']);  // ['ape', 'cat', 'dog']
 ///     natural.isOrdered(['ape', 'cat', 'dog']);  // true
 ///
+@immutable
 abstract class Ordering<T> {
   /// Returns a natural ordering of objects.
   static Ordering<T> natural<T extends Comparable<T>>() => NaturalOrdering<T>();

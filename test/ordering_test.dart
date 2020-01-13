@@ -77,7 +77,7 @@ void main() {
       verify(ordering, ['***', '**', '*'], ['*', '**', '***']);
     });
     test('explicit', () {
-      final ordering = Ordering.explicit([2, 3, 1]);
+      final ordering = Ordering.explicit(const [2, 3, 1]);
       verify(ordering, [3, 2], [2, 3]);
       verify(ordering, [1, 2], [2, 1]);
       verify(ordering, [1, 2, 3], [2, 3, 1]);

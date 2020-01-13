@@ -5,8 +5,7 @@ import '../../ordering.dart';
 class CompoundOrdering<T> extends Ordering<T> {
   final List<Ordering<T>> orderings;
 
-  CompoundOrdering(Iterable<Ordering<T>> orderings)
-      : orderings = List.of(orderings, growable: false);
+  const CompoundOrdering(this.orderings);
 
   @override
   int compare(T a, T b) {
