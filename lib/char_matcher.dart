@@ -5,6 +5,8 @@
 /// collection of libraries for Java-based projects.
 library more.char_matcher;
 
+import 'package:meta/meta.dart' show immutable;
+
 import 'src/char_matcher/any.dart';
 import 'src/char_matcher/ascii.dart';
 import 'src/char_matcher/char_set.dart';
@@ -37,6 +39,7 @@ import 'src/char_matcher/whitespace.dart';
 ///     String withoutWhitespace = CharMatcher.whitespace().removeFrom(string);
 ///     String onlyDigits = CharMatcher.digit().retainFrom(string);
 ///
+@immutable
 abstract class CharMatcher {
   /// A matcher that accepts any character.
   factory CharMatcher.any() => const AnyCharMatcher();
@@ -108,8 +111,8 @@ abstract class CharMatcher {
   /// Returns `true` if the [sequence] contains at least one matching character.
   bool anyOf(String sequence) => sequence.codeUnits.any(match);
 
-  /// Returns the first matching index in [sequence], searching backward
-  /// starting at [start] (inclusive). Returns `-1` if it could not be found.
+  /// Returns the last matching index in [sequence] starting at [start]
+  /// (inclusive). Returns `-1` if it could not be found.
   int firstIndexIn(String sequence, [int start = 0]) {
     final codeUnits = sequence.codeUnits;
     for (var i = start; i < codeUnits.length; i++) {
@@ -120,8 +123,8 @@ abstract class CharMatcher {
     return -1;
   }
 
-  /// Returns the last matching index in [sequence] starting at [start]
-  /// (inclusive). Returns `-1` if it could not be found.
+  /// Returns the first matching index in [sequence], searching backward
+  /// starting at [start] (inclusive). Returns `-1` if it could not be found.
   int lastIndexIn(String sequence, [int start]) {
     final codeUnits = sequence.codeUnits;
     start ??= codeUnits.length - 1;

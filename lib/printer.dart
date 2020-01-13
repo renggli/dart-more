@@ -2,6 +2,8 @@
 /// and highly configurable formatting primitives.
 library more.printer;
 
+import 'package:meta/meta.dart' show immutable;
+
 import 'src/printer/literal_printer.dart';
 import 'src/printer/number_printer.dart';
 import 'src/printer/pad_printer.dart';
@@ -14,6 +16,7 @@ import 'src/printer/trim_printer.dart';
 import 'src/printer/truncate_printer.dart';
 import 'src/printer/undefined_printer.dart';
 
+@immutable
 abstract class Printer {
   const Printer();
 
@@ -24,6 +27,7 @@ abstract class Printer {
   factory Printer.literal([String value = '']) => LiteralPrinter(value);
 
   /// Prints a sign based on a [negative] and [positive] printer.
+  // ignore: prefer_const_constructors_in_immutables
   factory Printer.sign({Printer negative, Printer positive}) = SignPrinter;
 
   /// Prints a sign only for negative numbers (default behavior).
