@@ -1,4 +1,4 @@
-/// The Jenkins hash function copied and adapted from 'package:collection'.
+/// The Jenkins hash function copied and adapted from 'package:math'.
 library more.hash;
 
 /// Mask to keep integers in range (31 bits).
@@ -6,16 +6,16 @@ const int _hashMask = 0x7fffffff;
 
 /// Helper to combine a [hash] with a new [value].
 int _combine(int hash, int value) {
-  hash = (hash + value) & _hashMask;
-  hash = (hash + (hash << 10)) & _hashMask;
+  hash = 0x1fffffff & (hash + value);
+  hash = 0x1fffffff & (hash + ((0x0007ffff & hash) << 10));
   return hash ^ (hash >> 6);
 }
 
 /// Helper to finish the creation of the [hash] value.
 int _finish(int hash) {
-  hash = (hash + (hash << 3)) & _hashMask;
-  hash ^= hash >> 11;
-  return (hash + (hash << 15)) & _hashMask;
+  hash = 0x1fffffff & (hash + ((0x03ffffff & hash) << 3));
+  hash = hash ^ (hash >> 11);
+  return 0x1fffffff & (hash + ((0x00003fff & hash) << 15));
 }
 
 /// Combines the hash code of multiple objects.
