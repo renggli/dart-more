@@ -1,9 +1,6 @@
 /// The Jenkins hash function copied and adapted from 'package:math'.
 library more.hash;
 
-/// Mask to keep integers in range (31 bits).
-const int _hashMask = 0x7fffffff;
-
 /// Helper to combine a [hash] with a new [value].
 int _combine(int hash, int value) {
   hash = 0x1fffffff & (hash + value);
