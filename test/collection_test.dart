@@ -500,7 +500,7 @@ void main() {
         expect(set.counts, unorderedEquals([3, 2, 1]));
       });
       test('of set', () {
-        final set = Multiset.of({'a', 'a', 'a', 'b', 'b', 'c'});
+        final set = Multiset.of({'a', 'b', 'c'});
         expect(set, isNot(isEmpty));
         expect(set, hasLength(3));
         expect(set, unorderedEquals(['a', 'b', 'c']));
