@@ -70,7 +70,7 @@ abstract class Multimap<K, V, VS extends Iterable<V>> {
 
   /// Removes all values from this multimap.
   void clear() {
-    for (final key in keys) {
+    for (final key in List.of(keys)) {
       this[key].polymorphicClear();
     }
     _map.clear();

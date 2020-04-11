@@ -456,6 +456,8 @@ void main() {
           final map = ListMultimap();
           expect(map, isEmpty);
           expect(map, hasLength(0));
+          expect(map.isEmpty, isTrue);
+          expect(map.isNotEmpty, isFalse);
           expect(map.asMap(), {});
           expect(map.keys, []);
           expect(map.values, []);
@@ -464,6 +466,8 @@ void main() {
           final map = ListMultimap.of(
               ListMultimap.fromIterables(['a', 'b', 'b'], [1, 2, 3]));
           expect(map, hasLength(3));
+          expect(map.isEmpty, isFalse);
+          expect(map.isNotEmpty, isTrue);
           expect(map.keys, ['a', 'b']);
           expect(map.values, [1, 2, 3]);
           expect(map.asMap(), {
@@ -473,7 +477,14 @@ void main() {
           expect(map['a'], [1]);
           expect(map['b'], [2, 3]);
         });
-        test('identity', () {});
+        test('identity', () {
+          final map = ListMultimap.identity();
+          expect(map, isEmpty);
+          expect(map, hasLength(0));
+          expect(map.asMap(), {});
+          expect(map.keys, []);
+          expect(map.values, []);
+        });
         test('fromIterable', () {
           final map = ListMultimap.fromIterable(IntegerRange(3),
               key: (i) => String.fromCharCode(i + 97), value: (i) => i + 1);
@@ -519,6 +530,70 @@ void main() {
           expect(map['b'], [2, 3]);
         });
       });
+      group('accessor', () {
+        test('containsKey', () {
+          final map = ListMultimap.fromIterables(['a', 'b', 'b'], [1, 2, 3]);
+          expect(map.containsKey('a'), isTrue);
+          expect(map.containsKey('b'), isTrue);
+          expect(map.containsKey('c'), isFalse);
+        });
+        test('containsValue', () {
+          final map = ListMultimap.fromIterables(['a', 'b', 'b'], [1, 2, 3]);
+          expect(map.containsValue(1), isTrue);
+          expect(map.containsValue(2), isTrue);
+          expect(map.containsValue(3), isTrue);
+          expect(map.containsValue(4), isFalse);
+        });
+        test('add', () {
+          final map = ListMultimap.fromIterables(['a', 'b', 'b'], [1, 2, 3]);
+          final collection = map['b'];
+          map.add('b', 4);
+          expect(map, hasLength(4));
+          expect(collection, [2, 3, 4]);
+        });
+        test('addAll', () {
+          final map = ListMultimap.fromIterables(['a', 'b', 'b'], [1, 2, 3]);
+          final collection = map['b'];
+          map.addAll('b', [3, 4, 5]);
+          expect(map, hasLength(6));
+          expect(collection, [2, 3, 3, 4, 5]);
+        });
+        test('remove', () {
+          final map = ListMultimap.fromIterables(['a', 'b', 'b'], [1, 2, 3]);
+          final collection = map['b'];
+          map.remove('b', 3);
+          expect(map, hasLength(2));
+          expect(collection, [2]);
+        });
+        test('removeAll', () {
+          final map = ListMultimap.fromIterables(['a', 'b', 'b'], [1, 2, 3]);
+          final collection = map['b'];
+          map.removeAll('b');
+          expect(map, hasLength(1));
+          expect(collection, isEmpty);
+        });
+        test('removeAll with list', () {
+          final map = ListMultimap.fromIterables(['a', 'b', 'b'], [1, 2, 3]);
+          final collection = map['b'];
+          map.removeAll('b', [3]);
+          expect(map, hasLength(2));
+          expect(collection, [2]);
+        });
+        test('clear', () {
+          final map = ListMultimap.fromIterables(['a', 'b', 'b'], [1, 2, 3]);
+          final collection = map['b'];
+          map.clear();
+          expect(map, isEmpty);
+          expect(collection, isEmpty);
+        });
+        test('clear', () {
+          final map = ListMultimap.fromIterables(['a', 'b', 'b'], [1, 2, 3]);
+          final collection = map['b'];
+          map.clear();
+          expect(map, isEmpty);
+          expect(collection, isEmpty);
+        });
+      });
     });
     group('set', () {
       group('constructor', () {
@@ -526,6 +601,8 @@ void main() {
           final map = SetMultimap();
           expect(map, isEmpty);
           expect(map, hasLength(0));
+          expect(map.isEmpty, isTrue);
+          expect(map.isNotEmpty, isFalse);
           expect(map.asMap(), {});
           expect(map.keys, []);
           expect(map.values, []);
@@ -534,6 +611,8 @@ void main() {
           final map = SetMultimap.of(
               SetMultimap.fromIterables(['a', 'b', 'b'], [1, 2, 3]));
           expect(map, hasLength(3));
+          expect(map.isEmpty, isFalse);
+          expect(map.isNotEmpty, isTrue);
           expect(map.keys, ['a', 'b']);
           expect(map.values, [1, 2, 3]);
           expect(map.asMap(), {
@@ -543,7 +622,14 @@ void main() {
           expect(map['a'], [1]);
           expect(map['b'], [2, 3]);
         });
-        test('identity', () {});
+        test('identity', () {
+          final map = SetMultimap.identity();
+          expect(map, isEmpty);
+          expect(map, hasLength(0));
+          expect(map.asMap(), {});
+          expect(map.keys, []);
+          expect(map.values, []);
+        });
         test('fromIterable', () {
           final map = SetMultimap.fromIterable(IntegerRange(3),
               key: (i) => String.fromCharCode(i + 97), value: (i) => i + 1);
@@ -587,6 +673,63 @@ void main() {
           });
           expect(map['a'], [1]);
           expect(map['b'], [2, 3]);
+        });
+      });
+      group('accessor', () {
+        test('containsKey', () {
+          final map = SetMultimap.fromIterables(['a', 'b', 'b'], [1, 2, 3]);
+          expect(map.containsKey('a'), isTrue);
+          expect(map.containsKey('b'), isTrue);
+          expect(map.containsKey('c'), isFalse);
+        });
+        test('containsValue', () {
+          final map = SetMultimap.fromIterables(['a', 'b', 'b'], [1, 2, 3]);
+          expect(map.containsValue(1), isTrue);
+          expect(map.containsValue(2), isTrue);
+          expect(map.containsValue(3), isTrue);
+          expect(map.containsValue(4), isFalse);
+        });
+        test('add', () {
+          final map = SetMultimap.fromIterables(['a', 'b', 'b'], [1, 2, 3]);
+          final collection = map['b'];
+          map.add('b', 4);
+          expect(map, hasLength(4));
+          expect(collection, [2, 3, 4]);
+        });
+        test('addAll', () {
+          final map = SetMultimap.fromIterables(['a', 'b', 'b'], [1, 2, 3]);
+          final collection = map['b'];
+          map.addAll('b', [3, 4, 5]);
+          expect(map, hasLength(5));
+          expect(collection, [2, 3, 4, 5]);
+        });
+        test('remove', () {
+          final map = SetMultimap.fromIterables(['a', 'b', 'b'], [1, 2, 3]);
+          final collection = map['b'];
+          map.remove('b', 3);
+          expect(map, hasLength(2));
+          expect(collection, [2]);
+        });
+        test('removeAll', () {
+          final map = SetMultimap.fromIterables(['a', 'b', 'b'], [1, 2, 3]);
+          final collection = map['b'];
+          map.removeAll('b');
+          expect(map, hasLength(1));
+          expect(collection, isEmpty);
+        });
+        test('removeAll with list', () {
+          final map = SetMultimap.fromIterables(['a', 'b', 'b'], [1, 2, 3]);
+          final collection = map['b'];
+          map.removeAll('b', [3]);
+          expect(map, hasLength(2));
+          expect(collection, [2]);
+        });
+        test('clear', () {
+          final map = SetMultimap.fromIterables(['a', 'b', 'b'], [1, 2, 3]);
+          final collection = map['b'];
+          map.clear();
+          expect(map, isEmpty);
+          expect(collection, isEmpty);
         });
       });
     });

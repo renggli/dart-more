@@ -1,5 +1,10 @@
 # Changelog
 
+## 2.3.0
+
+* Add `ListMultimap` and `SetMultimap`.
+* Mark `CharMatcher`, `Cache` and `Ordering`, immutable.
+
 ## 2.2.0
 
 * Made `truncateToPeriod` and `periodical` extension methods of `DateTime`.
