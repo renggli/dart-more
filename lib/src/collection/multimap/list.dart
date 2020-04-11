@@ -53,7 +53,7 @@ class ListMultimap<K, V> extends Multimap<K, V, List<V>> {
       : super(map ?? <K, List<V>>{}, factory ?? defaultFactory);
 
   @override
-  MultimapValues<K, V, List<V>> operator [](K key) =>
+  ListMultimapValues<K, V> lookupValues(K key) =>
       ListMultimapValues<K, V>(this, key);
 }
 

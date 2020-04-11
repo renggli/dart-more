@@ -544,6 +544,8 @@ void main() {
           expect(map.containsValue(3), isTrue);
           expect(map.containsValue(4), isFalse);
         });
+      });
+      group('modifiers', () {
         test('add', () {
           final map = ListMultimap.fromIterables(['a', 'b', 'b'], [1, 2, 3]);
           final collection = map['b'];
@@ -579,6 +581,20 @@ void main() {
           expect(map, hasLength(2));
           expect(collection, [2]);
         });
+        test('replace', () {
+          final map = ListMultimap.fromIterables(['a', 'b', 'b'], [1, 2, 3]);
+          final collection = map['b'];
+          map.replace('b', 4);
+          expect(map, hasLength(2));
+          expect(collection, [4]);
+        });
+        test('replaceAll', () {
+          final map = ListMultimap.fromIterables(['a', 'b', 'b'], [1, 2, 3]);
+          final collection = map['b'];
+          map.replaceAll('b', [3, 4, 5]);
+          expect(map, hasLength(4));
+          expect(collection, [3, 4, 5]);
+        });
         test('clear', () {
           final map = ListMultimap.fromIterables(['a', 'b', 'b'], [1, 2, 3]);
           final collection = map['b'];
@@ -592,6 +608,56 @@ void main() {
           map.clear();
           expect(map, isEmpty);
           expect(collection, isEmpty);
+        });
+      });
+      group('views', () {
+        group('values', () {
+          test('refresh empty', () {
+            final map = ListMultimap<String, int>();
+            final keyView1 = map['a'];
+            final keyView2 = map['a'];
+            expect(keyView1, isNot(same(keyView2)));
+            keyView1.add(1);
+            expect(keyView1, [1]);
+            expect(keyView2, [1]);
+          });
+          test('refresh full', () {
+            final map = ListMultimap.fromIterables(['a'], [1]);
+            final keyView1 = map['a'];
+            final keyView2 = map['a'];
+            expect(keyView1, isNot(same(keyView2)));
+            keyView1.add(2);
+            expect(keyView1, [1, 2]);
+            expect(keyView2, [1, 2]);
+          });
+        });
+        group('asMap', () {
+          test('access', () {
+            final map = ListMultimap.fromIterables(['a', 'b', 'b'], [1, 2, 3]);
+            final mapView = map.asMap();
+            expect(mapView['b'], [2, 3]);
+            mapView['b'] = [4, 5, 6];
+            expect(map['b'], [4, 5, 6]);
+            expect(mapView['b'], [4, 5, 6]);
+          });
+          test('clear', () {
+            final map = ListMultimap.fromIterables(['a', 'b', 'b'], [1, 2, 3]);
+            final mapView = map.asMap();
+            mapView.clear();
+            expect(map, isEmpty);
+            expect(mapView, isEmpty);
+          });
+          test('remove', () {
+            final map = ListMultimap.fromIterables(['a', 'b', 'b'], [1, 2, 3]);
+            final mapView = map.asMap();
+            mapView.remove('b');
+            expect(map.keys, ['a']);
+            expect(mapView.keys, ['a']);
+          });
+        });
+        test('toString', () {
+          final map = ListMultimap.fromIterables(['a', 'b', 'b'], [1, 2, 3]);
+          expect(map.toString(), '{a: [1], b: [2, 3]}');
         });
       });
     });
@@ -675,7 +741,7 @@ void main() {
           expect(map['b'], [2, 3]);
         });
       });
-      group('accessor', () {
+      group('accessors', () {
         test('containsKey', () {
           final map = SetMultimap.fromIterables(['a', 'b', 'b'], [1, 2, 3]);
           expect(map.containsKey('a'), isTrue);
@@ -689,6 +755,8 @@ void main() {
           expect(map.containsValue(3), isTrue);
           expect(map.containsValue(4), isFalse);
         });
+      });
+      group('modifiers', () {
         test('add', () {
           final map = SetMultimap.fromIterables(['a', 'b', 'b'], [1, 2, 3]);
           final collection = map['b'];
@@ -724,12 +792,76 @@ void main() {
           expect(map, hasLength(2));
           expect(collection, [2]);
         });
+        test('replace', () {
+          final map = SetMultimap.fromIterables(['a', 'b', 'b'], [1, 2, 3]);
+          final collection = map['b'];
+          map.replace('b', 4);
+          expect(map, hasLength(2));
+          expect(collection, [4]);
+        });
+        test('replaceAll', () {
+          final map = SetMultimap.fromIterables(['a', 'b', 'b'], [1, 2, 3]);
+          final collection = map['b'];
+          map.replaceAll('b', [3, 4, 5]);
+          expect(map, hasLength(4));
+          expect(collection, [3, 4, 5]);
+        });
         test('clear', () {
           final map = SetMultimap.fromIterables(['a', 'b', 'b'], [1, 2, 3]);
           final collection = map['b'];
           map.clear();
           expect(map, isEmpty);
           expect(collection, isEmpty);
+        });
+      });
+      group('views', () {
+        group('values', () {
+          test('refresh empty', () {
+            final map = SetMultimap<String, int>();
+            final keyView1 = map['a'];
+            final keyView2 = map['a'];
+            expect(keyView1, isNot(same(keyView2)));
+            keyView1.add(1);
+            expect(keyView1, [1]);
+            expect(keyView2, [1]);
+          });
+          test('refresh full', () {
+            final map = SetMultimap.fromIterables(['a'], [1]);
+            final keyView1 = map['a'];
+            final keyView2 = map['a'];
+            expect(keyView1, isNot(same(keyView2)));
+            keyView1.add(2);
+            expect(keyView1, [1, 2]);
+            expect(keyView2, [1, 2]);
+          });
+        });
+        group('asMap', () {
+          test('access', () {
+            final map = SetMultimap.fromIterables(['a', 'b', 'b'], [1, 2, 3]);
+            final mapView = map.asMap();
+            expect(mapView['b'], [2, 3]);
+            mapView['b'] = {4, 5, 6};
+            expect(map['b'], [4, 5, 6]);
+            expect(mapView['b'], [4, 5, 6]);
+          });
+          test('clear', () {
+            final map = SetMultimap.fromIterables(['a', 'b', 'b'], [1, 2, 3]);
+            final mapView = map.asMap();
+            mapView.clear();
+            expect(map, isEmpty);
+            expect(mapView, isEmpty);
+          });
+          test('remove', () {
+            final map = SetMultimap.fromIterables(['a', 'b', 'b'], [1, 2, 3]);
+            final mapView = map.asMap();
+            mapView.remove('b');
+            expect(map.keys, ['a']);
+            expect(mapView.keys, ['a']);
+          });
+        });
+        test('toString', () {
+          final map = SetMultimap.fromIterables(['a', 'b', 'b'], [1, 2, 3]);
+          expect(map.toString(), '{a: {1}, b: {2, 3}}');
         });
       });
     });

@@ -53,7 +53,7 @@ class SetMultimap<K, V> extends Multimap<K, V, Set<V>> {
       : super(map ?? <K, Set<V>>{}, factory ?? defaultFactory);
 
   @override
-  MultimapValues<K, V, Set<V>> operator [](K key) =>
+  SetMultimapValues<K, V> lookupValues(K key) =>
       SetMultimapValues<K, V>(this, key);
 }
 
