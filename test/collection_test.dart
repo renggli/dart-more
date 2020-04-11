@@ -449,6 +449,148 @@ void main() {
       expect(() => list.retainWhere((value) => false), throwsUnsupportedError);
     });
   });
+  group('multimap', () {
+    group('list', () {
+      group('constructor', () {
+        test('empty', () {
+          final map = ListMultimap();
+          expect(map, isEmpty);
+          expect(map, hasLength(0));
+          expect(map.asMap(), {});
+          expect(map.keys, []);
+          expect(map.values, []);
+        });
+        test('of', () {
+          final map = ListMultimap.of(
+              ListMultimap.fromIterables(['a', 'b', 'b'], [1, 2, 3]));
+          expect(map, hasLength(3));
+          expect(map.keys, ['a', 'b']);
+          expect(map.values, [1, 2, 3]);
+          expect(map.asMap(), {
+            'a': [1],
+            'b': [2, 3]
+          });
+          expect(map['a'], [1]);
+          expect(map['b'], [2, 3]);
+        });
+        test('identity', () {});
+        test('fromIterable', () {
+          final map = ListMultimap.fromIterable(IntegerRange(3),
+              key: (i) => String.fromCharCode(i + 97), value: (i) => i + 1);
+          expect(map, hasLength(3));
+          expect(map.keys, ['a', 'b', 'c']);
+          expect(map.values, [1, 2, 3]);
+          expect(map.asMap(), {
+            'a': [1],
+            'b': [2],
+            'c': [3]
+          });
+          expect(map['a'], [1]);
+          expect(map['b'], [2]);
+          expect(map['c'], [3]);
+        });
+        test('fromIterables', () {
+          final map = ListMultimap.fromIterables(['a', 'b', 'b'], [1, 2, 3]);
+          expect(map, hasLength(3));
+          expect(map.keys, ['a', 'b']);
+          expect(map.values, [1, 2, 3]);
+          expect(map.asMap(), {
+            'a': [1],
+            'b': [2, 3]
+          });
+          expect(map['a'], [1]);
+          expect(map['b'], [2, 3]);
+        });
+        test('fromIterables (error)', () {
+          expect(() => ListMultimap.fromIterables(['a', 'b', 'b'], [1, 2]),
+              throwsArgumentError);
+        });
+        test('fromEntries', () {
+          final map = ListMultimap.fromEntries(
+              const [MapEntry('a', 1), MapEntry('b', 2), MapEntry('b', 3)]);
+          expect(map, hasLength(3));
+          expect(map.keys, ['a', 'b']);
+          expect(map.values, [1, 2, 3]);
+          expect(map.asMap(), {
+            'a': [1],
+            'b': [2, 3]
+          });
+          expect(map['a'], [1]);
+          expect(map['b'], [2, 3]);
+        });
+      });
+    });
+    group('set', () {
+      group('constructor', () {
+        test('empty', () {
+          final map = SetMultimap();
+          expect(map, isEmpty);
+          expect(map, hasLength(0));
+          expect(map.asMap(), {});
+          expect(map.keys, []);
+          expect(map.values, []);
+        });
+        test('of', () {
+          final map = SetMultimap.of(
+              SetMultimap.fromIterables(['a', 'b', 'b'], [1, 2, 3]));
+          expect(map, hasLength(3));
+          expect(map.keys, ['a', 'b']);
+          expect(map.values, [1, 2, 3]);
+          expect(map.asMap(), {
+            'a': [1],
+            'b': [2, 3]
+          });
+          expect(map['a'], [1]);
+          expect(map['b'], [2, 3]);
+        });
+        test('identity', () {});
+        test('fromIterable', () {
+          final map = SetMultimap.fromIterable(IntegerRange(3),
+              key: (i) => String.fromCharCode(i + 97), value: (i) => i + 1);
+          expect(map, hasLength(3));
+          expect(map.keys, ['a', 'b', 'c']);
+          expect(map.values, [1, 2, 3]);
+          expect(map.asMap(), {
+            'a': [1],
+            'b': [2],
+            'c': [3]
+          });
+          expect(map['a'], [1]);
+          expect(map['b'], [2]);
+          expect(map['c'], [3]);
+        });
+        test('fromIterables', () {
+          final map = SetMultimap.fromIterables(['a', 'b', 'b'], [1, 2, 3]);
+          expect(map, hasLength(3));
+          expect(map.keys, ['a', 'b']);
+          expect(map.values, [1, 2, 3]);
+          expect(map.asMap(), {
+            'a': [1],
+            'b': [2, 3]
+          });
+          expect(map['a'], [1]);
+          expect(map['b'], [2, 3]);
+        });
+        test('fromIterables (error)', () {
+          expect(() => SetMultimap.fromIterables(['a', 'b', 'b'], [1, 2]),
+              throwsArgumentError);
+        });
+        test('fromEntries', () {
+          final map = SetMultimap.fromEntries(
+              const [MapEntry('a', 1), MapEntry('b', 2), MapEntry('b', 3)]);
+          expect(map, hasLength(3));
+          expect(map.keys, ['a', 'b']);
+          expect(map.values, [1, 2, 3]);
+          expect(map.asMap(), {
+            'a': [1],
+            'b': [2, 3]
+          });
+          expect(map['a'], [1]);
+          expect(map['b'], [2, 3]);
+        });
+      });
+    });
+  });
   group('multiset', () {
     group('construct', () {
       test('empty', () {
