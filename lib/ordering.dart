@@ -1,8 +1,5 @@
-/// Provides a first-class model of comparators, their composition
-/// and operations on iterables.
-///
-/// The implementation closely follows [Guava](http://goo.gl/xXROX), the Google
-/// collection of libraries for Java-based projects.
+/// Provides a first-class model of comparators, their composition and
+/// operations on iterables.
 library more.ordering;
 
 import 'package:meta/meta.dart' show immutable;
@@ -21,10 +18,10 @@ import 'src/ordering/reversed.dart';
 /// using a fluent interface.
 ///
 /// The [Ordering] defines a total order on objects of type [T]. For example,
-/// the natural order of two objects can be determined using:
+/// the natural order of two [String] instances can be determined using:
 ///
-///     var natural = new Ordering.natural();
-///     natural.compare(1, 2);  // 1
+///     final natural = Ordering.natural<String>();
+///     natural.compare('a', 'b');  // -1
 ///
 /// However, the low-level [compare] function rarely needs to be used
 /// directly. [Ordering] implements various fluent helpers that create new
@@ -36,9 +33,9 @@ import 'src/ordering/reversed.dart';
 ///
 /// and that allow the user to perform common tasks on an ordering:
 ///
-///     natural.min(1, 2);  // 1
-///     natural.maxOf([8, 2, 9, 1]);  // 9
-///     natural.sort(['dog', 'cat', 'ape']);  // ['ape', 'cat', 'dog']
+///     natural.min('a', 'b');  // 'a'
+///     natural.maxOf(['a', 'b', 'c']);  // 'c'
+///     natural.sorted(['dog', 'cat', 'ape']);  // ['ape', 'cat', 'dog']
 ///     natural.isOrdered(['ape', 'cat', 'dog']);  // true
 ///
 @immutable
@@ -110,7 +107,7 @@ abstract class Ordering<T> {
     return -min - 1;
   }
 
-  /// Sorts the provided [list] in place.
+  /// Sorts the provided [list] in-place.
   void sort(List<T> list) => list.sort(compare);
 
   /// Returns a sorted copy of the provided [iterable].
