@@ -5,6 +5,7 @@
 * Add `ListMultimap` and `SetMultimap`.
 * Mark `CharMatcher`, `Cache` and `Ordering` as immutable.
 * Improve documentation, which still included pre Dart 2.0 examples.
+* Add extension methods to convert `Comparator` to `Ordering`.
 
 ## 2.2.0
 

@@ -55,6 +55,7 @@ void verify<T>(
 
 void main() {
   group('orders', () {
+    int stringLengthComparator(String a, String b) => a.length - b.length;
     test('natural', () {
       final ordering = Ordering.natural<num>();
       verify(ordering, [1, 2, 3], [1, 2, 3]);
@@ -63,14 +64,21 @@ void main() {
       verify(ordering, [3, 2, 1], [1, 2, 3]);
     });
     test('comparator (of)', () {
-      final ordering = Ordering<String>.of((a, b) => a.length - b.length);
+      final ordering = Ordering<String>.of(stringLengthComparator);
       verify(ordering, ['*', '**', '***'], ['*', '**', '***']);
       verify(ordering, ['**', '***', '*'], ['*', '**', '***']);
       verify(ordering, ['***', '*', '**'], ['*', '**', '***']);
       verify(ordering, ['***', '**', '*'], ['*', '**', '***']);
     });
     test('comparator (from)', () {
-      final ordering = Ordering<String>.from((a, b) => a.length - b.length);
+      final ordering = Ordering<String>.from(stringLengthComparator);
+      verify(ordering, ['*', '**', '***'], ['*', '**', '***']);
+      verify(ordering, ['**', '***', '*'], ['*', '**', '***']);
+      verify(ordering, ['***', '*', '**'], ['*', '**', '***']);
+      verify(ordering, ['***', '**', '*'], ['*', '**', '***']);
+    });
+    test('comparator (toOrdering)', () {
+      final ordering = stringLengthComparator.toOrdering();
       verify(ordering, ['*', '**', '***'], ['*', '**', '***']);
       verify(ordering, ['**', '***', '*'], ['*', '**', '***']);
       verify(ordering, ['***', '*', '**'], ['*', '**', '***']);

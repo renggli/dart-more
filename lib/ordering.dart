@@ -185,3 +185,8 @@ abstract class Ordering<T> {
     return orElse();
   }
 }
+
+extension OperatorExtension<T> on Comparator<T> {
+  /// Returns an ordering based this function.
+  Ordering<T> toOrdering() => ComparatorOrdering<T>(this);
+}
