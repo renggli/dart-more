@@ -1,8 +1,5 @@
 /// A first-class model of character classes, their composition and operations
 /// on strings.
-///
-/// The implementation is inspired by [Guava](http://goo.gl/xXROX), the Google
-/// collection of libraries for Java-based projects.
 library more.char_matcher;
 
 import 'package:meta/meta.dart' show immutable;

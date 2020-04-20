@@ -58,6 +58,8 @@ The goal of the library is to provide a loose collection of carefully curated ut
 
 This library started in April 2013 as I was working through the puzzles of [Project Euler](https://projecteuler.net/) and encountered some missing features in Dart. Over time the library grew and became _more_ useful in many other places, so I created this reusable library.
 
+Some parts of this library are inspired by similar APIs in [Google Guava](https://github.com/google/guava) (Google core libraries for Java) and [Apache Commons](https://commons.apache.org/) (a repository of reusable Java components).
+
 ### License
 
 The MIT License, see [LICENSE](https://github.com/renggli/dart-more/raw/master/LICENSE).

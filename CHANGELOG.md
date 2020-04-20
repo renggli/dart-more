@@ -79,8 +79,7 @@
 ## 1.9.0
 
 * Dart 2.0 strong-mode compatibility required the following breaking changes:
-  * Replace callers of `range()` with either `new IntegerRange()` or 
-    `new DoubleRange()`.
+  * Replace callers of `range()` with either `IntegerRange()` or `DoubleRange()`.
   * Removed padding argument from `partition()`. To migrate replace broken
     calls-sites with `partitionWithPadding()`.
 
