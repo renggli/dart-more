@@ -500,6 +500,20 @@ void main() {
           expect(map['b'], [2]);
           expect(map['c'], [3]);
         });
+        test('fromIterable (no providers)', () {
+          final map = ListMultimap.fromIterable(IntegerRange(3));
+          expect(map, hasLength(3));
+          expect(map.keys, [0, 1, 2]);
+          expect(map.values, [0, 1, 2]);
+          expect(map.asMap(), {
+            0: [0],
+            1: [1],
+            2: [2]
+          });
+          expect(map[0], [0]);
+          expect(map[1], [1]);
+          expect(map[2], [2]);
+        });
         test('fromIterables', () {
           final map = ListMultimap.fromIterables(['a', 'b', 'b'], [1, 2, 3]);
           expect(map, hasLength(3));
@@ -711,6 +725,20 @@ void main() {
           expect(map['b'], [2]);
           expect(map['c'], [3]);
         });
+        test('fromIterable (no providers)', () {
+          final map = SetMultimap.fromIterable(IntegerRange(3));
+          expect(map, hasLength(3));
+          expect(map.keys, [0, 1, 2]);
+          expect(map.values, [0, 1, 2]);
+          expect(map.asMap(), {
+            0: [0],
+            1: [1],
+            2: [2]
+          });
+          expect(map[0], [0]);
+          expect(map[1], [1]);
+          expect(map[2], [2]);
+        });
         test('fromIterables', () {
           final map = SetMultimap.fromIterables(['a', 'b', 'b'], [1, 2, 3]);
           expect(map, hasLength(3));
@@ -754,6 +782,12 @@ void main() {
           expect(map.containsValue(2), isTrue);
           expect(map.containsValue(3), isTrue);
           expect(map.containsValue(4), isFalse);
+        });
+        test('lookup', () {
+          final map = SetMultimap.fromIterables(['a', 'b', 'b'], [1, 2, 3]);
+          expect(map['b'].lookup(2), 2);
+          expect(map['b'].lookup(3), 3);
+          expect(map['b'].lookup(4), null);
         });
       });
       group('modifiers', () {

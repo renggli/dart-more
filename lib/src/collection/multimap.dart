@@ -38,9 +38,9 @@ abstract class Multimap<K, V, VS extends Iterable<V>> {
 
   /// Applies [callback] to each key/value of this multimap.
   void forEach(void Function(K key, V value) callback) {
-    for (final key in keys) {
-      for (final value in this[key]) {
-        callback(key, value);
+    for (final entry in _map.entries) {
+      for (final value in entry.value) {
+        callback(entry.key, value);
       }
     }
   }
