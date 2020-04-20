@@ -313,4 +313,13 @@ void main() {
       expect(natural.minOf([1, 2, 3], orElse: () => -1), 1);
     });
   });
+  group('regressions', () {
+    test('#4', () {
+      final input = ['dog', 'ape', null, 'cat'];
+      final orderingAsc = Ordering.natural<String>().nullsLast;
+      expect(orderingAsc.sorted(input), ['ape', 'cat', 'dog', null]);
+      final orderingDesc = Ordering.natural<String>().reversed.nullsLast;
+      expect(orderingDesc.sorted(input), ['dog', 'cat', 'ape', null]);
+    });
+  });
 }
