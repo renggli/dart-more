@@ -1,5 +1,6 @@
 library more.tuple.tuple_3;
 
+import '../../hash.dart';
 import '../../tuple.dart';
 
 /// Tuple with 3 elements.
@@ -92,6 +93,5 @@ class Tuple3<T0, T1, T2> extends Tuple {
           third == other.third);
 
   @override
-  int get hashCode =>
-      3372193885 ^ first.hashCode ^ second.hashCode ^ third.hashCode;
+  int get hashCode => hash3(first, second, third);
 }

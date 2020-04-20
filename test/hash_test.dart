@@ -28,6 +28,16 @@ void main() {
     test('hash6', () {
       expect(hash([1, 2, 3, 4, 5, 6]), hash6(1, 2, 3, 4, 5, 6));
     });
+    test('hash7', () {
+      expect(hash([1, 2, 3, 4, 5, 6, 7]), hash7(1, 2, 3, 4, 5, 6, 7));
+    });
+    test('hash8', () {
+      expect(hash([1, 2, 3, 4, 5, 6, 7, 8]), hash8(1, 2, 3, 4, 5, 6, 7, 8));
+    });
+    test('hash9', () {
+      expect(
+          hash([1, 2, 3, 4, 5, 6, 7, 8, 9]), hash9(1, 2, 3, 4, 5, 6, 7, 8, 9));
+    });
     test('combinations', () {
       final hashCodes = <int, List<int>>{};
       for (final combination in 0.to(7).combinations(5, repetitions: true)) {

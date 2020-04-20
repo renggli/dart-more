@@ -122,6 +122,9 @@ Future<void> generateChild(int i, int max) async {
 
   out.writeln('library more.tuple.tuple_$i;');
   out.writeln('');
+  if (i > 0) {
+    out.writeln('import \'../../hash.dart\';');
+  }
   out.writeln('import \'../../tuple.dart\';');
   out.writeln('');
   out.writeln('/// Tuple with $i element${i != 1 ? 's' : ''}.');
@@ -256,11 +259,12 @@ Future<void> generateChild(int i, int max) async {
 
   // hashCode
   {
-    final hashCodes = values.map((each) => ' ^ $each.hashCode').join();
+    final hashCode = i == 0
+        ? generator.nextInt(4294967296).toString()
+        : i <= 9 ? 'hash$i(${values.join(', ')})' : 'hash(iterable)';
     out.writeln('');
     out.writeln('@override');
-    out.writeln('int get hashCode => ${generator.nextInt(4294967296)}'
-        '$hashCodes;');
+    out.writeln('int get hashCode => $hashCode;');
   }
 
   out.writeln('}');

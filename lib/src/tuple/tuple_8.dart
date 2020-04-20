@@ -1,5 +1,6 @@
 library more.tuple.tuple_8;
 
+import '../../hash.dart';
 import '../../tuple.dart';
 
 /// Tuple with 8 elements.
@@ -188,13 +189,5 @@ class Tuple8<T0, T1, T2, T3, T4, T5, T6, T7> extends Tuple {
 
   @override
   int get hashCode =>
-      4213795120 ^
-      first.hashCode ^
-      second.hashCode ^
-      third.hashCode ^
-      fourth.hashCode ^
-      fifth.hashCode ^
-      sixth.hashCode ^
-      seventh.hashCode ^
-      eighth.hashCode;
+      hash8(first, second, third, fourth, fifth, sixth, seventh, eighth);
 }

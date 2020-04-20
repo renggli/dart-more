@@ -35,14 +35,14 @@ int hash4(Object a, Object b, Object c, Object d) => _finish(_combine(
     _combine(_combine(_combine(0, a.hashCode), b.hashCode), c.hashCode),
     d.hashCode));
 
-/// Combines the hash code of four objects [a], [b], [c] and [d].
+/// Combines the hash code of four objects [a], [b], [c], [d], and [e].
 int hash5(Object a, Object b, Object c, Object d, Object e) => _finish(_combine(
     _combine(
         _combine(_combine(_combine(0, a.hashCode), b.hashCode), c.hashCode),
         d.hashCode),
     e.hashCode));
 
-/// Combines the hash code of four objects [a], [b], [c] and [d].
+/// Combines the hash code of four objects [a], [b], [c], [d], [e], and [f].
 int hash6(Object a, Object b, Object c, Object d, Object e, Object f) =>
     _finish(_combine(
         _combine(
@@ -52,3 +52,55 @@ int hash6(Object a, Object b, Object c, Object d, Object e, Object f) =>
                 d.hashCode),
             e.hashCode),
         f.hashCode));
+
+/// Combines the hash code of four objects [a], [b], [c], [d], [e], [f], and
+/// [g].
+int hash7(
+        Object a, Object b, Object c, Object d, Object e, Object f, Object g) =>
+    _finish(_combine(
+        _combine(
+            _combine(
+                _combine(
+                    _combine(_combine(_combine(0, a.hashCode), b.hashCode),
+                        c.hashCode),
+                    d.hashCode),
+                e.hashCode),
+            f.hashCode),
+        g.hashCode));
+
+/// Combines the hash code of four objects [a], [b], [c], [d], [e], [f], [g],
+/// and [h].
+int hash8(Object a, Object b, Object c, Object d, Object e, Object f, Object g,
+        Object h) =>
+    _finish(_combine(
+        _combine(
+            _combine(
+                _combine(
+                    _combine(
+                        _combine(_combine(_combine(0, a.hashCode), b.hashCode),
+                            c.hashCode),
+                        d.hashCode),
+                    e.hashCode),
+                f.hashCode),
+            g.hashCode),
+        h.hashCode));
+
+/// Combines the hash code of four objects [a], [b], [c], [d], [e], [f], [g],
+/// [h], and [i].
+int hash9(Object a, Object b, Object c, Object d, Object e, Object f, Object g,
+        Object h, Object i) =>
+    _finish(_combine(
+        _combine(
+            _combine(
+                _combine(
+                    _combine(
+                        _combine(
+                            _combine(
+                                _combine(_combine(0, a.hashCode), b.hashCode),
+                                c.hashCode),
+                            d.hashCode),
+                        e.hashCode),
+                    f.hashCode),
+                g.hashCode),
+            h.hashCode),
+        i.hashCode));

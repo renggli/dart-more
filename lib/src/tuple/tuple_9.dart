@@ -1,5 +1,6 @@
 library more.tuple.tuple_9;
 
+import '../../hash.dart';
 import '../../tuple.dart';
 
 /// Tuple with 9 elements.
@@ -161,14 +162,5 @@ class Tuple9<T0, T1, T2, T3, T4, T5, T6, T7, T8> extends Tuple {
 
   @override
   int get hashCode =>
-      3590394808 ^
-      first.hashCode ^
-      second.hashCode ^
-      third.hashCode ^
-      fourth.hashCode ^
-      fifth.hashCode ^
-      sixth.hashCode ^
-      seventh.hashCode ^
-      eighth.hashCode ^
-      ninth.hashCode;
+      hash9(first, second, third, fourth, fifth, sixth, seventh, eighth, ninth);
 }

@@ -1,5 +1,6 @@
 library more.tuple.tuple_1;
 
+import '../../hash.dart';
 import '../../tuple.dart';
 
 /// Tuple with 1 element.
@@ -57,5 +58,5 @@ class Tuple1<T0> extends Tuple {
       identical(this, other) || (other is Tuple1 && first == other.first);
 
   @override
-  int get hashCode => 523363758 ^ first.hashCode;
+  int get hashCode => hash1(first);
 }
