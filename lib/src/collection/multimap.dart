@@ -9,19 +9,19 @@ typedef Factory<T> = T Function();
 
 /// A collection maintaining a mapping between keys and multiple values.
 abstract class Multimap<K, V, VS extends Iterable<V>> {
-  /// Underlying map with associations from `key` to `values`.
+  /// Underlying map with associations from `keys` to `values`.
   final Map<K, VS> _map;
 
-  /// Internal counter for values.
+  /// Internal counter for total number of values.
   int _length = 0;
 
-  /// Factory method to build `values` collection.
+  /// Factory method to build `value` collections.
   final VS Function() _factory;
 
   /// Internal factory constructor.
   Multimap(this._map, this._factory);
 
-  /// The number of values in this multimap.
+  /// Returns the total number of values in this multimap.
   int get length => _length;
 
   /// Returns true if there are no values in this multimap.

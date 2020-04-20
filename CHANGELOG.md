@@ -3,7 +3,8 @@
 ## 2.3.0
 
 * Add `ListMultimap` and `SetMultimap`.
-* Mark `CharMatcher`, `Cache` and `Ordering`, immutable.
+* Mark `CharMatcher`, `Cache` and `Ordering` as immutable.
+* Improve documentation, which still included pre Dart 2.0 examples.
 
 ## 2.2.0
 
