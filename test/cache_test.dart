@@ -11,10 +11,14 @@ typedef NewCache<T, S> = Cache<T, S> Function(Loader<T, S> loader);
 
 // Various common loaders used with the tests.
 String failingLoader(int key) => fail('Loader should never be called');
+
 String immediateLoader(int key) => '$key';
+
 Future<String> futureLoader(int key) => Future.value(immediateLoader(key));
+
 Future<String> delayedLoader(int key) =>
     Future.delayed(delay, () => immediateLoader(key));
+
 String throwingLoader(int key) => throw UnsupportedError('$key');
 
 // Basic tests that should pass on any (stateless) cache.
