@@ -3,6 +3,7 @@
 ## 2.4.0
 
 * Add in-place logical operators to `BitList`.
+* Optimize `CharMatcher` with lookup tables.
 * Improved documentation.
 
 ## 2.3.0
