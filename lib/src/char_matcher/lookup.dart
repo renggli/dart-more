@@ -1,0 +1,16 @@
+library more.char_matcher.lookup;
+
+import '../../char_matcher.dart';
+import '../collection/bitlist.dart';
+
+class LookupCharMatcher extends CharMatcher {
+  final int start;
+  final int stop;
+  final BitList buffer;
+
+  const LookupCharMatcher(this.start, this.stop, this.buffer);
+
+  @override
+  bool match(int value) =>
+      start <= value && value <= stop && buffer.getUnchecked(value - start);
+}

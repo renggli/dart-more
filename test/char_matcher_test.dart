@@ -147,6 +147,17 @@ void main() {
     test('negated composed', () {
       verify(CharMatcher.pattern('^ac-df-'), 'beg', 'acdf-');
     });
+    test('full range', () {
+      verify(CharMatcher.pattern('\u0000-\uffff'), '\u0000\u7777\uffff', '');
+    });
+    test('large range', () {
+      verify(CharMatcher.pattern('\u2200-\u22ff\u27c0-\u27ef\u2980-\u29ff'),
+          '∉⟃⦻', 'a');
+    });
+    test('far range', () {
+      verify(
+          CharMatcher.pattern('\u0000\uffff'), '\u0000\uffff', '\u0001\ufffe');
+    });
     test('invalid order', () {
       expect(() => CharMatcher.pattern('c-a'), throwsArgumentError);
     });
