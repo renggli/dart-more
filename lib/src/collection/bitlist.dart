@@ -113,21 +113,33 @@ class BitList extends ListBase<bool> with NonGrowableListMixin<bool> {
     return result;
   }
 
+  /// Computes the complement of the receiver in-place.
+  void not() {
+    for (var i = 0; i < buffer.length; i++) {
+      buffer[i] = ~buffer[i];
+    }
+  }
+
   /// Returns the intersection of the receiver and [other].
   ///
   /// The new [BitList] has all the bits set that are set in the receiver and in
   /// [other]. The receiver and [other] need to have the same length, otherwise
   /// an exception is thrown.
   BitList operator &(BitList other) {
-    if (length != other.length) {
-      throw ArgumentError(
-          'Expected list with length $length, but got ${other.length}');
-    }
+    _checkLength(other);
     final result = BitList(length);
     for (var i = 0; i < buffer.length; i++) {
       result.buffer[i] = buffer[i] & other.buffer[i];
     }
     return result;
+  }
+
+  /// Computes the intersection of the receiver and [other] in-place.
+  void and(BitList other) {
+    _checkLength(other);
+    for (var i = 0; i < buffer.length; i++) {
+      buffer[i] &= other.buffer[i];
+    }
   }
 
   /// Returns the union of the receiver and [other].
@@ -136,15 +148,20 @@ class BitList extends ListBase<bool> with NonGrowableListMixin<bool> {
   /// or in [other]. The receiver and [other] need to have the same length,
   /// otherwise an exception is thrown.
   BitList operator |(BitList other) {
-    if (length != other.length) {
-      throw ArgumentError(
-          'Expected list with length $length, but got ${other.length}');
-    }
+    _checkLength(other);
     final result = BitList(length);
     for (var i = 0; i < buffer.length; i++) {
       result.buffer[i] = buffer[i] | other.buffer[i];
     }
     return result;
+  }
+
+  /// Computes the union of the receiver and [other] in-place.
+  void or(BitList other) {
+    _checkLength(other);
+    for (var i = 0; i < buffer.length; i++) {
+      buffer[i] |= other.buffer[i];
+    }
   }
 
   /// Returns the difference of the receiver and [other].
@@ -153,10 +170,7 @@ class BitList extends ListBase<bool> with NonGrowableListMixin<bool> {
   /// not in [other]. The receiver and [other] need to have the same length,
   /// otherwise an exception is thrown.
   BitList operator -(BitList other) {
-    if (length != other.length) {
-      throw ArgumentError(
-          'Expected list with length $length, but got ${other.length}');
-    }
+    _checkLength(other);
     final result = BitList(length);
     for (var i = 0; i < buffer.length; i++) {
       result.buffer[i] = buffer[i] & ~other.buffer[i];
@@ -168,9 +182,8 @@ class BitList extends ListBase<bool> with NonGrowableListMixin<bool> {
   /// shifted to the left by [amount]. Throws an [ArgumentError] if [amount] is
   /// negative.
   BitList operator <<(int amount) {
-    if (amount < 0) {
-      throw ArgumentError('Unable to left-shift by $amount');
-    }
+    RangeError.checkNotNegative(
+        amount, 'amount', 'Unable to left-shift by $amount');
     if (amount == 0 || length == 0) {
       return BitList.of(this);
     }
@@ -198,9 +211,8 @@ class BitList extends ListBase<bool> with NonGrowableListMixin<bool> {
   /// shifted to the right by [amount]. Throws an [ArgumentError] if [amount] is
   /// negative.
   BitList operator >>(int amount) {
-    if (amount < 0) {
-      throw ArgumentError('Unable to right-shift by $amount');
-    }
+    RangeError.checkNotNegative(
+        amount, 'amount', 'Unable to right-shift by $amount');
     if (amount == 0 || length == 0) {
       return BitList.of(this);
     }
@@ -223,6 +235,13 @@ class BitList extends ListBase<bool> with NonGrowableListMixin<bool> {
       }
     }
     return result;
+  }
+
+  void _checkLength(BitList other) {
+    if (length != other.length) {
+      throw ArgumentError.value(other, 'other',
+          'Expected list with length $length, but got ${other.length}');
+    }
   }
 }
 

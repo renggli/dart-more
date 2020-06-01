@@ -351,36 +351,68 @@ void main() {
           }
         }
       });
-      test('complement', () {
-        final source = BitList.of(randomBooleans(702, 100));
-        final target = ~source;
-        for (var i = 0; i < target.length; i++) {
-          expect(target[i], !source[i]);
-        }
+      group('complement', () {
+        test('operator', () {
+          final source = BitList.of(randomBooleans(702, 100));
+          final target = ~source;
+          for (var i = 0; i < target.length; i++) {
+            expect(target[i], !source[i]);
+          }
+        });
+        test('in-place', () {
+          final source = BitList.of(randomBooleans(702, 100));
+          final target = BitList.of(source);
+          target.not();
+          for (var i = 0; i < target.length; i++) {
+            expect(target[i], !source[i]);
+          }
+        });
       });
-      test('intersection', () {
-        final source1 = BitList.of(randomBooleans(439, 100));
-        final source2 = BitList.of(randomBooleans(902, 100));
-        final target = source1 & source2;
-        for (var i = 0; i < target.length; i++) {
-          expect(target[i], source1[i] && source2[i]);
-        }
-        expect(target, source2 & source1);
-        final other = BitList(99);
-        expect(() => other & source1, throwsArgumentError);
-        expect(() => source1 & other, throwsArgumentError);
+      group('intersection', () {
+        test('operator', () {
+          final source1 = BitList.of(randomBooleans(439, 100));
+          final source2 = BitList.of(randomBooleans(902, 100));
+          final target = source1 & source2;
+          for (var i = 0; i < target.length; i++) {
+            expect(target[i], source1[i] && source2[i]);
+          }
+          expect(target, source2 & source1);
+          final other = BitList(99);
+          expect(() => other & source1, throwsArgumentError);
+          expect(() => source1 & other, throwsArgumentError);
+        });
+        test('in-place', () {
+          final source1 = BitList.of(randomBooleans(439, 100));
+          final source2 = BitList.of(randomBooleans(902, 100));
+          final target = BitList.of(source1);
+          target.and(source2);
+          for (var i = 0; i < target.length; i++) {
+            expect(target[i], source1[i] && source2[i]);
+          }
+        });
       });
-      test('union', () {
-        final source1 = BitList.of(randomBooleans(817, 100));
-        final source2 = BitList.of(randomBooleans(858, 100));
-        final target = source1 | source2;
-        for (var i = 0; i < target.length; i++) {
-          expect(target[i], source1[i] || source2[i]);
-        }
-        expect(target, source2 | source1);
-        final other = BitList(99);
-        expect(() => other | source1, throwsArgumentError);
-        expect(() => source1 | other, throwsArgumentError);
+      group('union', () {
+        test('operator', () {
+          final source1 = BitList.of(randomBooleans(817, 100));
+          final source2 = BitList.of(randomBooleans(858, 100));
+          final target = source1 | source2;
+          for (var i = 0; i < target.length; i++) {
+            expect(target[i], source1[i] || source2[i]);
+          }
+          expect(target, source2 | source1);
+          final other = BitList(99);
+          expect(() => other | source1, throwsArgumentError);
+          expect(() => source1 | other, throwsArgumentError);
+        });
+        test('in-place', () {
+          final source1 = BitList.of(randomBooleans(439, 100));
+          final source2 = BitList.of(randomBooleans(902, 100));
+          final target = BitList.of(source1);
+          target.or(source2);
+          for (var i = 0; i < target.length; i++) {
+            expect(target[i], source1[i] || source2[i]);
+          }
+        });
       });
       test('difference', () {
         final source1 = BitList.of(randomBooleans(364, 100));
