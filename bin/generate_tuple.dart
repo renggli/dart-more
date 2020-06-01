@@ -291,7 +291,11 @@ Future<void> generateTest(int max) async {
 
   for (var i = 0; i < max; i++) {
     nest('group', 'Tuple$i', () {
-      final numbers = List.generate(i, (i) => '${generator.nextInt(256)}');
+      // Make sure the numbers are unique.
+      var numbers = <String>[];
+      do {
+        numbers = List.generate(i, (i) => '${generator.nextInt(256)}');
+      } while (Set.of(numbers).length != i);
       out.writeln('const tuple = Tuple$i(${numbers.join(', ')});');
       nest('test', 'Tuple.fromList', () {
         final many = List.generate(max, (i) => '${generator.nextInt(256)}');
