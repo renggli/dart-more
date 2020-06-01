@@ -6,6 +6,14 @@ import '../../ordering.dart' show Ordering;
 import '../iterable/mixins/unmodifiable.dart' show UnmodifiableListMixin;
 
 /// A virtual range of doubles containing an arithmetic progressions.
+///
+/// The progression is defined by a `start`, `stop` and `step` parameter. A
+/// range essentially implements a lazy list that is also produced by the
+/// following for-loop:
+///
+///   for (double i = start; i < stop; i += step) {
+///     ...
+///
 class DoubleRange extends ListBase<double> with UnmodifiableListMixin<double> {
   /// Creates a virtual range of numbers containing an arithmetic progressions
   /// of double values.

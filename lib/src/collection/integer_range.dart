@@ -5,6 +5,14 @@ import 'dart:collection' show ListBase;
 import '../iterable/mixins/unmodifiable.dart' show UnmodifiableListMixin;
 
 /// A virtual range of integers containing an arithmetic progressions.
+///
+/// The progression is defined by a `start`, `stop` and `step` parameter. A
+/// range essentially implements a lazy list that is also produced by the
+/// following for-loop:
+///
+///   for (int i = start; i < stop; i += step) {
+///     ...
+///
 class IntegerRange extends ListBase<int> with UnmodifiableListMixin<int> {
   /// Creates a virtual range of numbers containing an arithmetic progressions
   /// of integer values.
