@@ -58,13 +58,24 @@ class BitList extends ListBase<bool> with NonGrowableListMixin<bool> {
   @override
   bool operator [](int index) {
     RangeError.checkValidIndex(index, this);
-    return (buffer[index >> bitShift] & bitSetMask[index & bitOffset]) != 0;
+    return getUnchecked(index);
   }
+
+  /// Returns the value of the bit with the given [index]. The behavior is
+  /// undefined if [index] is outside of bounds.
+  bool getUnchecked(int index) =>
+      (buffer[index >> bitShift] & bitSetMask[index & bitOffset]) != 0;
 
   /// Sets the [value] of the bit with the given [index].
   @override
   void operator []=(int index, bool value) {
     RangeError.checkValidIndex(index, this);
+    setUnchecked(index, value);
+  }
+
+  /// Sets the [value] of the bit with the given [index].  The behavior is
+  /// undefined if [index] is outside of bounds.
+  void setUnchecked(int index, bool value) {
     if (value) {
       buffer[index >> bitShift] |= bitSetMask[index & bitOffset];
     } else {
