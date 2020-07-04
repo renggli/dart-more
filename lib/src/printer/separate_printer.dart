@@ -1,5 +1,7 @@
 library more.printer.separate_printer;
 
+import 'package:characters/characters.dart';
+
 import '../../printer.dart';
 import 'delegate_printer.dart';
 
@@ -15,14 +17,14 @@ class SeparateLeftPrinter extends DelegatePrinter {
 
   @override
   String call(Object object) {
-    final input = super.call(object);
     final buffer = StringBuffer();
-    final iterator = input.codeUnits.iterator;
+    final input = super.call(object).characters;
+    final iterator = input.iterator;
     for (var i = 0; iterator.moveNext(); i++) {
-      if (i != 0 && i % width == offset) {
+      if (buffer.isNotEmpty && i % width == offset) {
         buffer.write(separator);
       }
-      buffer.writeCharCode(iterator.current);
+      buffer.write(iterator.current);
     }
     return buffer.toString();
   }
@@ -40,14 +42,14 @@ class SeparateRightPrinter extends DelegatePrinter {
 
   @override
   String call(Object object) {
-    final input = super.call(object);
     final buffer = StringBuffer();
-    final iterator = input.codeUnits.iterator;
-    for (var i = 0; iterator.moveNext(); i++) {
-      if (i != 0 && (input.length - i) % width == offset) {
+    final input = super.call(object).characters;
+    final iterator = input.iterator;
+    for (var i = input.length; iterator.moveNext(); i--) {
+      if (buffer.isNotEmpty && i % width == offset) {
         buffer.write(separator);
       }
-      buffer.writeCharCode(iterator.current);
+      buffer.write(iterator.current);
     }
     return buffer.toString();
   }

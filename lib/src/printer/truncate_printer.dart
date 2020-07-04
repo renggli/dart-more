@@ -1,5 +1,7 @@
 library more.printer.truncate_printer;
 
+import 'package:characters/characters.dart';
+
 import '../../printer.dart';
 import 'delegate_printer.dart';
 
@@ -13,10 +15,11 @@ class TruncateLeftPrinter extends DelegatePrinter {
 
   @override
   String call(Object object) {
-    final result = super.call(object);
-    return result.length > width
-        ? ellipsis + result.substring(result.length - width)
-        : result;
+    final input = super.call(object).characters;
+    if (input.length > width) {
+      return ellipsis + input.takeLast(width).toString();
+    }
+    return input.toString();
   }
 }
 
@@ -30,9 +33,10 @@ class TruncateRightPrinter extends DelegatePrinter {
 
   @override
   String call(Object object) {
-    final result = super.call(object);
-    return result.length > width
-        ? result.substring(0, width) + ellipsis
-        : result;
+    final input = super.call(object).characters;
+    if (input.length > width) {
+      return input.take(width).toString() + ellipsis;
+    }
+    return input.toString();
   }
 }

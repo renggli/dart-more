@@ -1,5 +1,7 @@
 library more.printer.pad_printer;
 
+import 'package:characters/characters.dart';
+
 import '../../printer.dart';
 import 'delegate_printer.dart';
 
@@ -12,7 +14,14 @@ class PadLeftPrinter extends DelegatePrinter {
       : super(delegate);
 
   @override
-  String call(Object object) => super.call(object).padLeft(width, padding);
+  String call(Object object) {
+    final input = super.call(object).characters;
+    final count = width - input.length;
+    if (count > 0) {
+      return '${padding * count}${input}';
+    }
+    return input.toString();
+  }
 }
 
 /// Pads the string on the right if it is shorter than width.
@@ -24,7 +33,14 @@ class PadRightPrinter extends DelegatePrinter {
       : super(delegate);
 
   @override
-  String call(Object object) => super.call(object).padRight(width, padding);
+  String call(Object object) {
+    final input = super.call(object).characters;
+    final count = width - input.length;
+    if (count > 0) {
+      return '${input}${padding * count}';
+    }
+    return input.toString();
+  }
 }
 
 /// Pads the string on both sides if it is shorter than width.
@@ -37,14 +53,13 @@ class PadBothPrinter extends DelegatePrinter {
 
   @override
   String call(Object object) {
-    final result = super.call(object);
-    if (result.length < width) {
-      final pad = width - result.length;
-      final left = pad ~/ 2;
-      final right = pad ~/ 2 + pad % 2;
-      return '${padding * left}$result${padding * right}';
-    } else {
-      return result;
+    final input = super.call(object).characters;
+    final count = width - input.length;
+    if (count > 0) {
+      final left = count ~/ 2;
+      final right = count ~/ 2 + count % 2;
+      return '${padding * left}${input}${padding * right}';
     }
+    return input.toString();
   }
 }

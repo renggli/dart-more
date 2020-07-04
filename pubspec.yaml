@@ -8,6 +8,7 @@ description: More Dart — Literally. Collecting, iterating, caching, mathematic
 environment:
   sdk: '>=2.7.0 <3.0.0'
 dependencies:
+  characters: ^1.0.0
   collection: ^1.14.0
   meta: ^1.1.0
 dev_dependencies:
