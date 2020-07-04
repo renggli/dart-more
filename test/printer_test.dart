@@ -369,6 +369,18 @@ void main() {
       expect(printer('1234'), ' 1234');
       expect(printer('12345'), '12345');
       expect(printer('123456'), '123456');
+      expect(printer('👋'), '    👋');
+    });
+    test('left with custom pad', () {
+      final printer = Printer.standard().padLeft(5, '*');
+      expect(printer(''), '*****');
+      expect(printer('1'), '****1');
+      expect(printer('12'), '***12');
+      expect(printer('123'), '**123');
+      expect(printer('1234'), '*1234');
+      expect(printer('12345'), '12345');
+      expect(printer('123456'), '123456');
+      expect(printer('👋'), '****👋');
     });
     test('right', () {
       final printer = Printer.standard().padRight(5);
@@ -379,6 +391,18 @@ void main() {
       expect(printer('1234'), '1234 ');
       expect(printer('12345'), '12345');
       expect(printer('123456'), '123456');
+      expect(printer('👋'), '👋    ');
+    });
+    test('right with custom pad', () {
+      final printer = Printer.standard().padRight(5, '*');
+      expect(printer(''), '*****');
+      expect(printer('1'), '1****');
+      expect(printer('12'), '12***');
+      expect(printer('123'), '123**');
+      expect(printer('1234'), '1234*');
+      expect(printer('12345'), '12345');
+      expect(printer('123456'), '123456');
+      expect(printer('👋'), '👋****');
     });
     test('both', () {
       final printer = Printer.standard().padBoth(5);
@@ -389,16 +413,18 @@ void main() {
       expect(printer('1234'), '1234 ');
       expect(printer('12345'), '12345');
       expect(printer('123456'), '123456');
+      expect(printer('👋'), '  👋  ');
     });
-    test('padding', () {
-      final printer = Printer.standard().padLeft(5, '*');
+    test('both with custom pad', () {
+      final printer = Printer.standard().padBoth(5, '*');
       expect(printer(''), '*****');
-      expect(printer('1'), '****1');
-      expect(printer('12'), '***12');
-      expect(printer('123'), '**123');
-      expect(printer('1234'), '*1234');
+      expect(printer('1'), '**1**');
+      expect(printer('12'), '*12**');
+      expect(printer('123'), '*123*');
+      expect(printer('1234'), '1234*');
       expect(printer('12345'), '12345');
       expect(printer('123456'), '123456');
+      expect(printer('👋'), '**👋**');
     });
   });
   group('truncate', () {
@@ -411,6 +437,18 @@ void main() {
       expect(printer('1234'), '234');
       expect(printer('12345'), '345');
       expect(printer('123456'), '456');
+      expect(printer('👨👩👧👦'), '👩👧👦');
+    });
+    test('left with ellipsis', () {
+      final printer = Printer.standard().truncateLeft(3, '...');
+      expect(printer(''), '');
+      expect(printer('1'), '1');
+      expect(printer('12'), '12');
+      expect(printer('123'), '123');
+      expect(printer('1234'), '...234');
+      expect(printer('12345'), '...345');
+      expect(printer('123456'), '...456');
+      expect(printer('👨👩👧👦'), '...👩👧👦');
     });
     test('right', () {
       final printer = Printer.standard().truncateRight(3);
@@ -421,8 +459,9 @@ void main() {
       expect(printer('1234'), '123');
       expect(printer('12345'), '123');
       expect(printer('123456'), '123');
+      expect(printer('👨👩👧👦'), '👨👩👧');
     });
-    test('ellipsis', () {
+    test('right with ellipsis', () {
       final printer = Printer.standard().truncateRight(3, '...');
       expect(printer(''), '');
       expect(printer('1'), '1');
@@ -431,6 +470,7 @@ void main() {
       expect(printer('1234'), '123...');
       expect(printer('12345'), '123...');
       expect(printer('123456'), '123...');
+      expect(printer('👨👩👧👦'), '👨👩👧...');
     });
   });
   group('separate', () {
@@ -447,6 +487,7 @@ void main() {
       expect(printer('12345678'), '123_456_78');
       expect(printer('123456789'), '123_456_789');
       expect(printer('1234567890'), '123_456_789_0');
+      expect(printer('👨👩👧👦'), '👨👩👧_👦');
     });
     test('right', () {
       final printer = Printer.standard().separateRight(3, 0, '_');
@@ -461,6 +502,7 @@ void main() {
       expect(printer('12345678'), '12_345_678');
       expect(printer('123456789'), '123_456_789');
       expect(printer('1234567890'), '1_234_567_890');
+      expect(printer('👨👩👧👦'), '👨_👩👧👦');
     });
     test('offset left', () {
       final left0 = Printer.standard().separateLeft(3, 0, '_');
