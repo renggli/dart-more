@@ -5,7 +5,7 @@ import 'dart:collection' show ListBase;
 import '../iterable/mixins/unmodifiable.dart' show UnmodifiableListMixin;
 
 extension ListExtension on String {
-  /// Returns a iterable list around the characters of this [String].
+  /// Returns a iterable list of the UTF-16 characters of this [String].
   ///
   /// The immutable version is very light-weight. To loop over the characters
   /// of a string simply write:

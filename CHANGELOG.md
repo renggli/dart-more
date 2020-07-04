@@ -1,5 +1,10 @@
 # Changelog
 
+## 2.5.0
+
+* Printer package correctly trims, pads and separates unicode strings now.
+* Updated class documentation regarding UTF-16 representation vs unicode strings. 
+
 ## 2.4.0
 
 * Add in-place logical operators to `BitList`.
