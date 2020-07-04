@@ -22,9 +22,9 @@ import 'src/char_matcher/whitespace.dart';
 
 /// Abstract character matcher function.
 ///
-/// The [CharMatcher] is a boolean predicate on characters. The inclusion of a
-/// character can be determined by calling [match] with the code-unit of a
-/// character as the function argument, for example:
+/// The [CharMatcher] is a boolean predicate on UTF-16 code units. The
+/// inclusion of a character can be determined by calling [match] with the
+/// code-unit as the function argument, for example:
 ///
 ///     CharMatcher.whitespace().match(' '.codeUnitAt(0)); // true
 ///     CharMatcher.digit().match('a'.codeUnitAt(0)); // false
