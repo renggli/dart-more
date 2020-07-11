@@ -5,7 +5,7 @@ library more.iterable.mixins.infinite;
 /// Intended to mix-in on top of `IterableBase<E>`.
 mixin InfiniteIterable<E> implements Iterable<E> {
   static T _throw<T>() =>
-      throw UnsupportedError('Cannot perform on infite iterable');
+      throw UnsupportedError('Cannot perform operation on infinite iterable');
 
   @override
   int get length => _throw();

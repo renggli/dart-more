@@ -690,20 +690,50 @@ void main() {
     });
   });
   group('repeat', () {
-    test('finite', () {
-      expect(repeat(0, count: 0), []);
-      expect(repeat(0, count: 1), [0]);
-      expect(repeat(0, count: 2), [0, 0]);
-      expect(repeat(0, count: 3), [0, 0, 0]);
-      expect(repeat(0, count: 4), [0, 0, 0, 0]);
+    test('empty', () {
+      expect([].repeat(), []);
+      expect([].repeat(count: 0), []);
+      expect([].repeat(count: 1), []);
+      expect([].repeat(count: 2), []);
+      expect([].repeat(count: 3), []);
+    });
+    test('single', () {
+      expect([1].repeat().take(3), [1, 1, 1]);
+      expect([1].repeat(count: 0), []);
+      expect([1].repeat(count: 1), [1]);
+      expect([1].repeat(count: 2), [1, 1]);
+      expect([1].repeat(count: 3), [1, 1, 1]);
+    });
+    test('double', () {
+      expect([1, 2].repeat().take(5), [1, 2, 1, 2, 1]);
+      expect([1, 2].repeat(count: 0), []);
+      expect([1, 2].repeat(count: 1), [1, 2]);
+      expect([1, 2].repeat(count: 2), [1, 2, 1, 2]);
+      expect([1, 2].repeat(count: 3), [1, 2, 1, 2, 1, 2]);
+    });
+    test('triple', () {
+      expect([1, 2, 3].repeat().take(7), [1, 2, 3, 1, 2, 3, 1]);
+      expect([1, 2, 3].repeat(count: 0), []);
+      expect([1, 2, 3].repeat(count: 1), [1, 2, 3]);
+      expect([1, 2, 3].repeat(count: 2), [1, 2, 3, 1, 2, 3]);
+      expect([1, 2, 3].repeat(count: 3), [1, 2, 3, 1, 2, 3, 1, 2, 3]);
     });
     test('infinite', () {
-      final infinite = repeat(1);
-      expect(infinite.take(100).every((x) => x == 1), isTrue);
-      expect(() => infinite.length, throwsUnsupportedError);
+      final infinite = iterate(0, (n) => n + 1);
+      expect(infinite.repeat().take(7), [0, 1, 2, 3, 4, 5, 6]);
+      expect(infinite.repeat(count: 0), []);
+      expect(infinite.repeat(count: 1).take(7), [0, 1, 2, 3, 4, 5, 6]);
+      expect(infinite.repeat(count: 2).take(7), [0, 1, 2, 3, 4, 5, 6]);
+      expect(infinite.repeat(count: 3).take(7), [0, 1, 2, 3, 4, 5, 6]);
+    });
+    test('constructor', () {
+      expect(repeat(1, count: 0), []);
+      expect(repeat(1, count: 1), [1]);
+      expect(repeat(1, count: 2), [1, 1]);
+      expect(repeat(1, count: 3), [1, 1, 1]);
     });
   });
-  group('unqiue', () {
+  group('unique', () {
     test('identity', () {
       expect([1].unique(), [1]);
       expect([1, 2].unique(), [1, 2]);
