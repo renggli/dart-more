@@ -130,7 +130,7 @@ void main() {
         forward.remove(4);
         expect(target[4], isNull, reason: 'inverse updates target');
       });
-      test('backward udpates', () {
+      test('backward updates', () {
         final target = BiMap.of(example);
         final backward = target.backward;
         target[4] = 'd';
@@ -1084,7 +1084,7 @@ void main() {
         expect(set.counts, unorderedEquals([]));
       });
     });
-    group('remvoing', () {
+    group('removing', () {
       test('zero', () {
         final set = Multiset.of(['a', 'a', 'b', 'b', 'b']);
         set..remove('a', 0)..remove('b', 0);
@@ -1582,7 +1582,7 @@ void main() {
         expect(coerced.length, 3);
         expect(coerced.toString(), '123');
       });
-      test('isEmtpy', () {
+      test('isEmpty', () {
         expect(empty.isEmpty, isTrue);
         expect(plenty.isEmpty, isFalse);
       });
@@ -1634,7 +1634,7 @@ void main() {
         expect(coerced.length, 3);
         expect(coerced.toString(), '123');
       });
-      test('isEmtpy', () {
+      test('isEmpty', () {
         expect(empty.isEmpty, isTrue);
         expect(plenty.isEmpty, isFalse);
       });

@@ -66,7 +66,7 @@ class Multiset<E> extends IterableBase<E> {
   /// Throws an [ArgumentError] if [occurrences] is negative.
   void add(E element, [int occurrences = 1]) {
     if (occurrences < 0) {
-      throw ArgumentError('Negative number of occurences: $occurrences');
+      throw ArgumentError('Negative number of occurrences: $occurrences');
     } else if (occurrences > 0) {
       _container[element] = this[element] + occurrences;
       _length += occurrences;
@@ -83,7 +83,7 @@ class Multiset<E> extends IterableBase<E> {
   /// Throws an [ArgumentError] if [occurrences] is negative.
   void remove(Object element, [int occurrences = 1]) {
     if (occurrences < 0) {
-      throw ArgumentError('Negative number of occurences: $occurrences');
+      throw ArgumentError('Negative number of occurrences: $occurrences');
     }
     if (element is E && occurrences > 0) {
       final current = this[element];
@@ -117,7 +117,7 @@ class Multiset<E> extends IterableBase<E> {
   /// Throws an [ArgumentError] if [occurrences] is negative.
   void operator []=(E element, int occurrences) {
     if (occurrences < 0) {
-      throw ArgumentError('Negative number of occurences: $occurrences');
+      throw ArgumentError('Negative number of occurrences: $occurrences');
     } else {
       final current = this[element];
       if (occurrences > 0) {

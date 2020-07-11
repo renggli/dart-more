@@ -124,7 +124,7 @@ void main() {
         expect(const Complex(1, -2) + 3, const Complex(4, -2));
         expect(() => const Complex(1, -2) + 'foo', throwsArgumentError);
       });
-      test('substraction', () {
+      test('subtraction', () {
         expect(
             const Complex(1, -2) - const Complex(-3, 4), const Complex(4, -6));
         expect(const Complex(1, -2) - 4, const Complex(-3, -2));
@@ -404,7 +404,7 @@ void main() {
           expect(Fraction.tryParse('1/ 2'), Fraction(1, 2));
           expect(Fraction.tryParse('1/2 '), Fraction(1, 2));
         });
-        test('neative', () {
+        test('negative', () {
           expect(Fraction.tryParse('-1/2'), Fraction(-1, 2));
           expect(Fraction.tryParse('1/-2'), Fraction(-1, 2));
           expect(Fraction.tryParse('-1/-2'), Fraction(1, 2));
@@ -478,7 +478,7 @@ void main() {
         expect(Fraction(1, 2) + 3, Fraction(7, 2));
         expect(() => Fraction(1, 2) + 'foo', throwsArgumentError);
       });
-      test('substraction', () {
+      test('subtraction', () {
         expect(Fraction(1, 2) - Fraction(1, 4), Fraction(1, 4));
         expect(Fraction(1, 2) - Fraction(3, 4), Fraction(-1, 4));
         expect(Fraction(1, 2) - Fraction(1, 2), Fraction(0));
@@ -737,7 +737,7 @@ void main() {
         expect(
             () => const Quaternion(1, -2, 3, -4) + 'foo', throwsArgumentError);
       });
-      test('substraction', () {
+      test('subtraction', () {
         expect(const Quaternion(1, -2, 3, -4) - const Quaternion(5, 6, -7, -8),
             const Quaternion(-4, -8, 10, 4));
         expect(const Quaternion(1, -2, 3, -4) - 5,

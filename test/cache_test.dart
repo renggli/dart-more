@@ -298,7 +298,7 @@ void main() {
             .then((_) => offset = const Duration(seconds: 41))
             .then((_) => cache.getIfPresent(1))
             .then(
-                (value) => expect(value, isNull, reason: 'value has expried'));
+                (value) => expect(value, isNull, reason: 'value has expired'));
       });
       test('loaded value expires', () {
         final cache = newUpdateExpireCache(immediateLoader);
@@ -311,7 +311,7 @@ void main() {
                 (value) => expect(value, '1', reason: 'value is still present'))
             .then((_) => offset = const Duration(seconds: 21))
             .then((_) => cache.getIfPresent(1))
-            .then((value) => expect(value, isNull, reason: 'value has expried'))
+            .then((value) => expect(value, isNull, reason: 'value has expired'))
             .then((_) => cache.size())
             .then((size) => expect(size, 0, reason: 'cache should be empty'));
       });
@@ -364,7 +364,7 @@ void main() {
             .then((_) => offset = const Duration(seconds: 61))
             .then((_) => cache.getIfPresent(1))
             .then(
-                (value) => expect(value, isNull, reason: 'value has expried'));
+                (value) => expect(value, isNull, reason: 'value has expired'));
       });
       test('loaded value expires', () {
         final cache = newAccessExpireCache(immediateLoader);
@@ -377,7 +377,7 @@ void main() {
                 (value) => expect(value, '1', reason: 'value is still present'))
             .then((_) => offset = const Duration(seconds: 41))
             .then((_) => cache.getIfPresent(1))
-            .then((value) => expect(value, isNull, reason: 'value has expried'))
+            .then((value) => expect(value, isNull, reason: 'value has expired'))
             .then((_) => cache.size())
             .then((size) => expect(size, 0, reason: 'cache should be empty'));
       });

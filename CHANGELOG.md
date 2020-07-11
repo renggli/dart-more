@@ -114,7 +114,7 @@
 ## 1.7.2
 
 * Cleanup after micro library migration.
-* Move to latest Dart provided mixins.
+* Move to the latest Dart provided mixins.
 
 ## 1.7.1
 
