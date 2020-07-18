@@ -23,7 +23,7 @@ Various extensions that make Dart a better place:
 
 And there are more to come ...
 
-This library is open source, stable and well tested. Development happens on [GitHub](https://github.com/renggli/dart-more). Feel free to report issues or create a pull-request there. General questions are best asked on [StackOverflow](http://stackoverflow.com/questions/tagged/more+dart).
+This library is open source, stable and well tested. Development happens on [GitHub](https://github.com/renggli/dart-more). Feel free to report issues or create a pull-request there. General questions are best asked on [StackOverflow](https://stackoverflow.com/questions/tagged/more+dart).
 
 The package is hosted on [dart packages](https://pub.dev/packages/more). Up-to-date [class documentation](https://pub.dev/documentation/more/) is created with every release.
 
@@ -52,7 +52,7 @@ import 'package:more/tuple.dart';
 
 ### Contributing
 
-The goal of the library is to provide a loose collection of carefully curated utilities that are not provided by the Dart standard library. All features must be well tested. New features must have significant advantages over alternatives, such as code reduction, readability improvement, speed increase, memory reduction, or improved accuracy. In case of doubt, consider filing a feature request before filing a pull request. 
+The goal of the library is to provide a loose collection of carefully curated utilities that are not provided by the Dart standard library. All features must be well tested. New features must have significant advantages over alternatives, such as code reduction, readability improvement, speed increase, memory reduction, or improved accuracy. In case of doubt, consider filing a feature request before filing a pull request.
 
 ### History
 
