@@ -3,6 +3,7 @@
 ## 2.6.0
 
 * Add `repeat` function on `Iterable`.
+* Improved documentation.
 
 ## 2.5.0
 
