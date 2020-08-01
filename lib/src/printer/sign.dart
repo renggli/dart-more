@@ -1,7 +1,7 @@
-library more.printer.sign_printer;
+library more.printer.sign;
 
 import '../../printer.dart';
-import 'literal_printer.dart';
+import 'literal.dart';
 import 'utils.dart';
 
 /// A printer that omits the positive sign.

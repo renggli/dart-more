@@ -1,4 +1,4 @@
-library more.printer.pluggable_printer;
+library more.printer.pluggable;
 
 import '../../printer.dart';
 

@@ -1,9 +1,9 @@
-library more.printer.number_printer;
+library more.printer.number;
 
 import 'dart:math' as math;
 
 import '../../printer.dart';
-import 'sign_printer.dart';
+import 'sign.dart';
 import 'utils.dart';
 
 /// Lower-case digits and letters by increasing value.

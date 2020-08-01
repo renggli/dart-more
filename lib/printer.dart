@@ -4,17 +4,17 @@ library more.printer;
 
 import 'package:meta/meta.dart' show immutable;
 
-import 'src/printer/literal_printer.dart';
-import 'src/printer/number_printer.dart';
-import 'src/printer/pad_printer.dart';
-import 'src/printer/pluggable_printer.dart';
-import 'src/printer/separate_printer.dart';
-import 'src/printer/sequence_printer.dart';
-import 'src/printer/sign_printer.dart';
-import 'src/printer/standard_printer.dart';
-import 'src/printer/trim_printer.dart';
-import 'src/printer/truncate_printer.dart';
-import 'src/printer/undefined_printer.dart';
+import 'src/printer/literal.dart';
+import 'src/printer/number.dart';
+import 'src/printer/pad.dart';
+import 'src/printer/pluggable.dart';
+import 'src/printer/separate.dart';
+import 'src/printer/sequence.dart';
+import 'src/printer/sign.dart';
+import 'src/printer/standard.dart';
+import 'src/printer/trim.dart';
+import 'src/printer/truncate.dart';
+import 'src/printer/undefined.dart';
 
 @immutable
 abstract class Printer {

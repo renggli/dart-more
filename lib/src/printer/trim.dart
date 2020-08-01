@@ -1,7 +1,7 @@
-library more.printer.trim_printer;
+library more.printer.trim;
 
 import '../../printer.dart';
-import 'delegate_printer.dart';
+import 'delegate.dart';
 
 /// Removes any leading and trailing whitespace.
 class TrimPrinter extends DelegatePrinter {

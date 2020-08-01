@@ -1,9 +1,9 @@
-library more.printer.separate_printer;
+library more.printer.separate;
 
 import 'package:characters/characters.dart';
 
 import '../../printer.dart';
-import 'delegate_printer.dart';
+import 'delegate.dart';
 
 /// Separates a string from the left with a separator character.
 class SeparateLeftPrinter extends DelegatePrinter {

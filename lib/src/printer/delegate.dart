@@ -1,4 +1,4 @@
-library more.printer.crop_printer;
+library more.printer.delegate;
 
 import '../../printer.dart';
 

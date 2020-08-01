@@ -1,4 +1,4 @@
-library more.printer.sequence_printer;
+library more.printer.sequence;
 
 import '../../printer.dart';
 

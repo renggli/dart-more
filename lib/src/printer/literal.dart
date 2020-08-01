@@ -1,4 +1,4 @@
-library more.printer.literal_printer;
+library more.printer.literal;
 
 import '../../printer.dart';
 
