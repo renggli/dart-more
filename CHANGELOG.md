@@ -1,5 +1,9 @@
 # Changelog
 
+## 2.7.0
+
+* Add `separatedBy` function on `Iterable`.
+
 ## 2.6.0
 
 * Add `repeat` function on `Iterable`.

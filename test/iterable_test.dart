@@ -733,6 +733,28 @@ void main() {
       expect(repeat(1, count: 3), [1, 1, 1]);
     });
   });
+  group('separated', () {
+    test('empty', () {
+      var counter = 0;
+      expect([].separatedBy(() => counter++), []);
+      expect(counter, 0);
+    });
+    test('single', () {
+      var counter = 0;
+      expect([10].separatedBy(() => counter++), [10]);
+      expect(counter, 0);
+    });
+    test('double', () {
+      var counter = 0;
+      expect([10, 20].separatedBy(() => counter++), [10, 0, 20]);
+      expect(counter, 1);
+    });
+    test('triple', () {
+      var counter = 0;
+      expect([10, 20, 30].separatedBy(() => counter++), [10, 0, 20, 1, 30]);
+      expect(counter, 2);
+    });
+  });
   group('unique', () {
     test('identity', () {
       expect([1].unique(), [1]);
