@@ -3,6 +3,7 @@
 ## 2.7.0
 
 * Add `separatedBy` function on `Iterable`.
+* Cleanup `printer` package and improve documentation.
 
 ## 2.6.0
 

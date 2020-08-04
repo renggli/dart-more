@@ -733,26 +733,186 @@ void main() {
       expect(repeat(1, count: 3), [1, 1, 1]);
     });
   });
-  group('separated', () {
-    test('empty', () {
-      var counter = 0;
-      expect([].separatedBy(() => counter++), []);
-      expect(counter, 0);
+  group('separatedBy', () {
+    group('without before or after', () {
+      test('empty', () {
+        var s = 0;
+        expect([].separatedBy(() => s++), []);
+        expect(s, 0);
+      });
+      test('single', () {
+        var s = 0;
+        expect([10].separatedBy(() => s++), [10]);
+        expect(s, 0);
+      });
+      test('double', () {
+        var s = 0;
+        expect([10, 20].separatedBy(() => s++), [10, 0, 20]);
+        expect(s, 1);
+      });
+      test('triple', () {
+        var s = 0;
+        expect([10, 20, 30].separatedBy(() => s++), [10, 0, 20, 1, 30]);
+        expect(s, 2);
+      });
+      test('iterator', () {
+        final iterator = [42].separatedBy(() => 0).iterator;
+        expect(iterator.current, isNull);
+        expect(iterator.moveNext(), isTrue);
+        for (var i = 0; i <= 3; i++) {
+          expect(iterator.current, 42);
+        }
+        for (var i = 0; i <= 3; i++) {
+          expect(iterator.moveNext(), isFalse);
+          expect(iterator.current, isNull);
+        }
+      });
     });
-    test('single', () {
-      var counter = 0;
-      expect([10].separatedBy(() => counter++), [10]);
-      expect(counter, 0);
+    group('with before', () {
+      test('empty', () {
+        var s = 0, b = 0;
+        expect(
+            [].separatedBy(
+              () => s++,
+              before: () => b++ + 5,
+            ),
+            []);
+        expect(s, 0);
+        expect(b, 0);
+      });
+      test('single', () {
+        var s = 0, b = 0;
+        expect(
+            [10].separatedBy(
+              () => s++,
+              before: () => b++ + 5,
+            ),
+            [5, 10]);
+        expect(s, 0);
+        expect(b, 1);
+      });
+      test('double', () {
+        var s = 0, b = 0;
+        expect(
+            [10, 20].separatedBy(
+              () => s++,
+              before: () => b++ + 5,
+            ),
+            [5, 10, 0, 20]);
+        expect(s, 1);
+        expect(b, 1);
+      });
+      test('triple', () {
+        var s = 0, b = 0;
+        expect(
+            [10, 20, 30].separatedBy(
+              () => s++,
+              before: () => b++ + 5,
+            ),
+            [5, 10, 0, 20, 1, 30]);
+        expect(s, 2);
+        expect(b, 1);
+      });
     });
-    test('double', () {
-      var counter = 0;
-      expect([10, 20].separatedBy(() => counter++), [10, 0, 20]);
-      expect(counter, 1);
+    group('with after', () {
+      test('empty', () {
+        var s = 0, a = 0;
+        expect(
+            [].separatedBy(
+              () => s++,
+              after: () => a++ + 15,
+            ),
+            []);
+        expect(s, 0);
+        expect(a, 0);
+      });
+      test('single', () {
+        var s = 0, a = 0;
+        expect(
+            [10].separatedBy(
+              () => s++,
+              after: () => a++ + 15,
+            ),
+            [10, 15]);
+        expect(s, 0);
+        expect(a, 1);
+      });
+      test('double', () {
+        var s = 0, a = 0;
+        expect(
+            [10, 20].separatedBy(
+              () => s++,
+              after: () => a++ + 15,
+            ),
+            [10, 0, 20, 15]);
+        expect(s, 1);
+        expect(a, 1);
+      });
+      test('triple', () {
+        var s = 0, a = 0;
+        expect(
+            [10, 20, 30].separatedBy(
+              () => s++,
+              after: () => a++ + 15,
+            ),
+            [10, 0, 20, 1, 30, 15]);
+        expect(s, 2);
+        expect(a, 1);
+      });
     });
-    test('triple', () {
-      var counter = 0;
-      expect([10, 20, 30].separatedBy(() => counter++), [10, 0, 20, 1, 30]);
-      expect(counter, 2);
+    group('with before and after', () {
+      test('empty', () {
+        var s = 0, b = 0, a = 0;
+        expect(
+            [].separatedBy(
+              () => s++,
+              before: () => b++ + 5,
+              after: () => a++ + 15,
+            ),
+            []);
+        expect(s, 0);
+        expect(b, 0);
+        expect(a, 0);
+      });
+      test('single', () {
+        var s = 0, b = 0, a = 0;
+        expect(
+            [10].separatedBy(
+              () => s++,
+              before: () => b++ + 5,
+              after: () => a++ + 15,
+            ),
+            [5, 10, 15]);
+        expect(s, 0);
+        expect(b, 1);
+        expect(a, 1);
+      });
+      test('double', () {
+        var s = 0, b = 0, a = 0;
+        expect(
+            [10, 20].separatedBy(
+              () => s++,
+              before: () => b++ + 5,
+              after: () => a++ + 15,
+            ),
+            [5, 10, 0, 20, 15]);
+        expect(s, 1);
+        expect(b, 1);
+        expect(a, 1);
+      });
+      test('triple', () {
+        var s = 0, b = 0, a = 0;
+        expect(
+            [10, 20, 30].separatedBy(
+              () => s++,
+              before: () => b++ + 5,
+              after: () => a++ + 15,
+            ),
+            [5, 10, 0, 20, 1, 30, 15]);
+        expect(s, 2);
+        expect(b, 1);
+        expect(a, 1);
+      });
     });
   });
   group('unique', () {
