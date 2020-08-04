@@ -2,7 +2,7 @@ library more.iterable.separated;
 
 import 'dart:collection';
 
-/// Function type to build separator elements.
+/// Function type to build elements.
 typedef Builder<E> = E Function();
 
 /// States of the iterator statemachine.
@@ -17,8 +17,8 @@ enum State {
 
 extension SeparatedExtension<E> on Iterable<E> {
   /// Returns an [Iterable] where every element is separated by an element
-  /// built by the provided [separator] builder. Optionally specified [before]
-  /// and [after] builders can provide elements at the beginning and end of the
+  /// built by a [separator] builder. Optionally specified [before] and [after]
+  /// builders can provide an element at the beginning or the end of the
   /// non-empty iterable.
   ///
   /// Examples:
@@ -76,7 +76,7 @@ class SeparatedIterator<E> extends Iterator<E> {
       case State.before:
         state = State.next;
         current = iterator.current;
-        break;
+        return true;
       case State.next:
         if (iterator.moveNext()) {
           state = State.separator;
@@ -94,11 +94,11 @@ class SeparatedIterator<E> extends Iterator<E> {
       case State.separator:
         state = State.next;
         current = iterator.current;
-        break;
+        return true;
       case State.after:
         state = State.complete;
         current = null;
-        break;
+        return false;
       case State.complete:
         return false;
     }
