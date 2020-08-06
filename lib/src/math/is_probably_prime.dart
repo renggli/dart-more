@@ -10,14 +10,14 @@ extension ProbablyPrimeIntegerExtension on int {
     if (this == 2 || this == 3 || this == 5) {
       return true;
     }
-    if (this < 2 || this % 2 == 0 || this % 3 == 0 || this % 5 == 0) {
+    if (this < 2 || isEven || this % 3 == 0 || this % 5 == 0) {
       return false;
     }
     if (this < 25) {
       return true;
     }
     var d = this - 1, s = 0;
-    while (d % 2 == 0) {
+    while (d.isEven) {
       d ~/= 2;
       s++;
     }

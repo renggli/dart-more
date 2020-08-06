@@ -85,7 +85,7 @@ void main() {
         12288,
         65279,
       ]);
-      verify(CharMatcher.whitespace(), string, 'abcABC_!@#\0');
+      verify(CharMatcher.whitespace(), string, 'abcABC_!@#\u0000');
     });
   });
   group('char set', () {

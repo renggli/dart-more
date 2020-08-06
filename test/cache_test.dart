@@ -87,7 +87,7 @@ void cacheEvictionTest(NewCache<int, String> newCache, String name,
     ..addAll(load)
     ..removeAll(present);
 
-  test('$name', () async {
+  test(name, () async {
     final cache = newCache(immediateLoader);
     for (final key in load) {
       expect(await cache.get(key), '$key');
