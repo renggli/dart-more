@@ -5,6 +5,8 @@ export 'src/iterable/chunked.dart' show ChunkedExtension;
 export 'src/iterable/combinations.dart' show CombinationsExtension;
 export 'src/iterable/concat.dart' show ConcatExtension;
 export 'src/iterable/cycle.dart' show CycleExtension;
+export 'src/iterable/flat_map.dart' show FlatMapExtension;
+export 'src/iterable/flatten.dart' show FlattenExtension;
 export 'src/iterable/group.dart' show GroupExtension, Group;
 export 'src/iterable/indexed.dart' show IndexedExtension, Indexed;
 export 'src/iterable/iterate.dart' show iterate;

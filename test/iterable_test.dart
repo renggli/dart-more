@@ -251,6 +251,94 @@ void main() {
       expect(() => infinite.toSet(), throwsUnsupportedError);
     });
   });
+  group('flatMap', () {
+    test('empty', () {
+      expect([].flatMap((each) => fail('Never to be called')), []);
+    });
+    test('expand', () {
+      expect(['a'].flatMap((each) => [1, 2]), [1, 2]);
+    });
+    test('collapse', () {
+      expect(['a', 'b'].flatMap((each) => []), []);
+    });
+  });
+  group('flatten', () {
+    test('default', () {
+      expect(
+          [
+            1,
+            2,
+            [3, 4]
+          ].flatten(),
+          [1, 2, 3, 4]);
+    });
+    test('nested', () {
+      expect(
+          [
+            1,
+            2,
+            [
+              3,
+              4,
+              [5, 6]
+            ]
+          ].flatten(),
+          [1, 2, 3, 4, 5, 6]);
+    });
+    test('limited', () {
+      expect(
+          [
+            1,
+            2,
+            [
+              3,
+              4,
+              [5, 6]
+            ]
+          ].flatten(1),
+          [
+            1,
+            2,
+            3,
+            4,
+            [5, 6]
+          ]);
+    });
+    test('limited typed', () {
+      expect(
+          [
+            1,
+            2,
+            [
+              3,
+              4,
+              [5, 6]
+            ]
+          ].flatten<int>(1),
+          [1, 2, 3, 4]);
+    });
+    test('really deep', () {
+      expect(
+          [
+            1,
+            2,
+            [
+              3,
+              4,
+              [
+                5,
+                6,
+                [
+                  7,
+                  8,
+                  [9, 10]
+                ]
+              ]
+            ]
+          ].flatten<int>(),
+          [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]);
+    });
+  });
   group('groupBy', () {
     final example = 'aaaabbbccdaabbb'.toList();
     test('groupBy empty', () {
