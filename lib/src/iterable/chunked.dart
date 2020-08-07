@@ -22,9 +22,9 @@ extension ChunkedExtension<E> on Iterable<E> {
   ///
   /// The following expression yields [1, 2], [3, 4], [5, -1]:
   ///
-  ///     [1, 2, 3, 4, 5].chunkedWithPadding(2, padding: -1);
+  ///     [1, 2, 3, 4, 5].chunkedWithPadding(2, -1);
   ///
-  Iterable<Iterable<E>> chunkedWithPadding(int size, {E padding}) sync* {
+  Iterable<Iterable<E>> chunkedWithPadding(int size, E padding) sync* {
     final iterator = this.iterator;
     while (iterator.moveNext()) {
       final current = <E>[];

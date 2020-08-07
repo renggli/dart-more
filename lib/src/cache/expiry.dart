@@ -11,9 +11,9 @@ class ExpiryCache<K, V> extends Cache<K, V> {
 
   final Clock clock;
 
-  final Duration updateExpiry;
+  final Duration? updateExpiry;
 
-  final Duration accessExpiry;
+  final Duration? accessExpiry;
 
   final Map<K, ExpiryCacheItem<V>> cached = {};
 
@@ -35,7 +35,7 @@ class ExpiryCache<K, V> extends Cache<K, V> {
   }
 
   @override
-  Future<V> getIfPresent(K key) async {
+  Future<V?> getIfPresent(K key) async {
     final now = clock();
     final item = cached[key];
     if (item == null) {
@@ -89,11 +89,12 @@ class ExpiryCacheItem<V> extends CacheItem<V> {
   DateTime lastUpdate;
   DateTime lastAccess;
 
-  ExpiryCacheItem(FutureOr<V> value, DateTime now) : super(value) {
-    lastUpdate = lastAccess = now;
-  }
+  ExpiryCacheItem(FutureOr<V> value, DateTime now)
+      : lastUpdate = now,
+        lastAccess = now,
+        super(value);
 
-  bool isExpired(DateTime now, Duration updateExpiry, Duration accessExpiry) {
+  bool isExpired(DateTime now, Duration? updateExpiry, Duration? accessExpiry) {
     if (updateExpiry != null && lastUpdate.add(updateExpiry).isBefore(now)) {
       return true;
     }

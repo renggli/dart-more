@@ -9,7 +9,7 @@ class EmptyCache<K, V> extends Cache<K, V> {
   const EmptyCache(this.loader);
 
   @override
-  Future<V> getIfPresent(K key) async => null;
+  Future<V?> getIfPresent(K key) async => null;
 
   @override
   Future<V> get(K key) async => loader(key);

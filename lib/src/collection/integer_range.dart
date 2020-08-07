@@ -29,16 +29,16 @@ class IntegerRange extends ListBase<int> with UnmodifiableListMixin<int> {
   /// The constructor called with three arguments returns the range between
   /// the first two numbers (including the start, but excluding the end) and the
   /// step value. For example, `IntegerRange(1, 7, 2)` yields `<int>[1, 3, 5]`.
-  factory IntegerRange([int a, int b, int c]) {
+  factory IntegerRange([int? a, int? b, int? c]) {
     var start = 0;
     var end = 0;
     var step = 1;
     if (c != null) {
-      start = a;
-      end = b;
+      start = a!;
+      end = b!;
       step = c;
     } else if (b != null) {
-      start = a;
+      start = a!;
       end = b;
       step = start <= end ? 1 : -1;
     } else if (a != null) {
@@ -86,11 +86,11 @@ class IntegerRange extends ListBase<int> with UnmodifiableListMixin<int> {
   }
 
   @override
-  bool contains(Object element) => indexOf(element) >= 0;
+  bool contains(Object? element) => indexOf(element) >= 0;
 
   @override
   // ignore: avoid_renaming_method_parameters
-  int indexOf(Object element, [int startIndex = 0]) {
+  int indexOf(Object? element, [int startIndex = 0]) {
     if (element is int) {
       if (startIndex < 0) {
         startIndex = 0;
@@ -110,7 +110,7 @@ class IntegerRange extends ListBase<int> with UnmodifiableListMixin<int> {
 
   @override
   // ignore: avoid_renaming_method_parameters
-  int lastIndexOf(Object element, [int endIndex]) {
+  int lastIndexOf(Object? element, [int? endIndex]) {
     if (element is int) {
       if (endIndex == null || length <= endIndex) {
         endIndex = length - 1;
@@ -134,7 +134,7 @@ class IntegerRange extends ListBase<int> with UnmodifiableListMixin<int> {
 
   @override
   // ignore: avoid_renaming_method_parameters
-  IntegerRange sublist(int startIndex, [int endIndex]) =>
+  IntegerRange sublist(int startIndex, [int? endIndex]) =>
       getRange(startIndex, endIndex ?? length);
 
   @override
@@ -162,7 +162,7 @@ class IntegerRange extends ListBase<int> with UnmodifiableListMixin<int> {
 extension IntegerRangeExtension on int {
   /// Shorthand to create a range of [int] numbers, starting with the receiver
   /// (inclusive) up to but not including [end] (exclusive).
-  IntegerRange to(int end, {int step}) => IntegerRange(this, end, step);
+  IntegerRange to(int end, {int? step}) => IntegerRange(this, end, step);
 }
 
 class IntegerRangeIterator extends Iterator<int> {
@@ -175,12 +175,11 @@ class IntegerRangeIterator extends Iterator<int> {
   IntegerRangeIterator(this.start, this.step, this.length);
 
   @override
-  int current;
+  late int current;
 
   @override
   bool moveNext() {
     if (index == length) {
-      current = null;
       return false;
     } else {
       current = start + step * index++;

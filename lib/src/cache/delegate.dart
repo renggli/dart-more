@@ -9,7 +9,7 @@ class DelegateCache<K, V> extends Cache<K, V> {
   const DelegateCache(this.delegate);
 
   @override
-  Future<V> getIfPresent(K key) => delegate.getIfPresent(key);
+  Future<V?> getIfPresent(K key) => delegate.getIfPresent(key);
 
   @override
   Future<V> get(K key) => delegate.get(key);

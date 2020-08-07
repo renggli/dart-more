@@ -12,7 +12,7 @@ class TruncateLeftPrinter extends DelegatePrinter {
       : super(delegate);
 
   @override
-  String call(Object object) {
+  String call(Object? object) {
     final input = super.call(object).characters;
     if (input.length > width) {
       return ellipsis + input.takeLast(width).toString();
@@ -30,7 +30,7 @@ class TruncateRightPrinter extends DelegatePrinter {
       : super(delegate);
 
   @override
-  String call(Object object) {
+  String call(Object? object) {
     final input = super.call(object).characters;
     if (input.length > width) {
       return input.take(width).toString() + ellipsis;

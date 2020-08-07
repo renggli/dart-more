@@ -23,7 +23,7 @@ class SignPrinter extends Printer {
   });
 
   @override
-  String call(Object object) {
+  String call(Object? object) {
     final isNegative = checkNumericType(
       object,
       (value) => value.isNegative,

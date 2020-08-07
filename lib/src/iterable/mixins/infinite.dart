@@ -18,13 +18,14 @@ mixin InfiniteIterable<E> implements Iterable<E> {
   E get last => _throw();
 
   @override
-  E lastWhere(bool Function(E element) test, {E Function() orElse}) => _throw();
+  E lastWhere(bool Function(E element) test, {E Function()? orElse}) =>
+      _throw();
 
   @override
   E get single => _throw();
 
   @override
-  E singleWhere(bool Function(E element) test, {E Function() orElse}) =>
+  E singleWhere(bool Function(E element) test, {E Function()? orElse}) =>
       _throw();
 
   @override

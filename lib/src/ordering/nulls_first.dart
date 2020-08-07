@@ -1,17 +1,15 @@
 import '../../ordering.dart';
 
-class NullsFirstOrdering<T> extends Ordering<T> {
+class NullsFirstOrdering<T> extends Ordering<T?> {
   final Ordering<T> ordering;
 
   const NullsFirstOrdering(this.ordering);
 
   @override
-  int compare(T a, T b) {
-    if (identical(a, b)) {
-      return 0;
-    } else if (identical(a, null)) {
+  int compare(T? a, T? b) {
+    if (a == null) {
       return -1;
-    } else if (identical(b, null)) {
+    } else if (b == null) {
       return 1;
     } else {
       return ordering.compare(a, b);
@@ -19,11 +17,11 @@ class NullsFirstOrdering<T> extends Ordering<T> {
   }
 
   @override
-  Ordering<T> get reversed => ordering.reversed.nullsLast;
+  Ordering<T?> get reversed => ordering.reversed.nullsLast;
 
   @override
-  Ordering<T> get nullsFirst => this;
+  Ordering<T?> get nullsFirst => this;
 
   @override
-  Ordering<T> get nullsLast => ordering.nullsLast;
+  Ordering<T?> get nullsLast => ordering.nullsLast;
 }

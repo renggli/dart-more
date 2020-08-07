@@ -120,7 +120,7 @@ abstract class CharMatcher {
 
   /// Returns the first matching index in [sequence], searching backward
   /// starting at [start] (inclusive). Returns `-1` if it could not be found.
-  int lastIndexIn(String sequence, [int start]) {
+  int lastIndexIn(String sequence, [int? start]) {
     final codeUnits = sequence.codeUnits;
     start ??= codeUnits.length - 1;
     for (var i = start; i >= 0; i--) {

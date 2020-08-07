@@ -1,3 +1,6 @@
+analyzer:
+  enable-experiment:
+    - non-nullable
 # https://dart-lang.github.io/linter/lints/
 # https://github.com/dart-lang/linter/blob/master/example/all.yaml
 linter:

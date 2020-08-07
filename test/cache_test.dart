@@ -8,7 +8,8 @@ const Duration delay = Duration(milliseconds: 10);
 typedef NewCache<T, S> = Cache<T, S> Function(Loader<T, S> loader);
 
 // Various common loaders used with the tests.
-String failingLoader(int key) => fail('Loader should never be called');
+String failingLoader(int key) =>
+    throw StateError('Loader should never be called');
 
 String immediateLoader(int key) => '$key';
 
@@ -227,9 +228,6 @@ void main() {
         Cache.empty(loader: loader);
 
     statelessCacheTests(newCache);
-    test('missing loader', () {
-      expect(() => Cache.empty(), throwsArgumentError);
-    });
   });
   group('delegate', () {
     Cache<int, String> newCache(Loader<int, String> loader) =>
@@ -239,7 +237,7 @@ void main() {
     persistentCacheTests(newCache);
   });
   group('expiry', () {
-    Duration offset;
+    late Duration offset;
     DateTime offsetClock() => DateTime(2000).add(offset);
     setUp(() => offset = Duration.zero);
 
@@ -259,10 +257,6 @@ void main() {
     persistentCacheTests(newUpdateExpireCache);
 
     group('constructors', () {
-      test('missing loader', () {
-        expect(() => Cache.expiry(accessExpiry: const Duration(seconds: 20)),
-            throwsArgumentError);
-      });
       test('missing expiry', () {
         expect(
             () => Cache.expiry(loader: immediateLoader), throwsArgumentError);
@@ -419,9 +413,6 @@ void main() {
         Cache.lru(loader: loader, maximumSize: 5);
 
     group('constructors', () {
-      test('missing lru', () {
-        expect(() => Cache.lru(), throwsArgumentError);
-      });
       test('non positive max size', () {
         expect(() => Cache.lru(loader: immediateLoader, maximumSize: 0),
             throwsArgumentError);
@@ -441,9 +432,6 @@ void main() {
         Cache.fifo(loader: loader, maximumSize: 5);
 
     group('constructors', () {
-      test('missing loader', () {
-        expect(() => Cache.fifo(), throwsArgumentError);
-      });
       test('non positive max size', () {
         expect(() => Cache.fifo(loader: immediateLoader, maximumSize: 0),
             throwsArgumentError);

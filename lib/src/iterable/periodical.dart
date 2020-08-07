@@ -48,7 +48,7 @@ extension PeriodicalExtension on DateTime {
     int step = 1,
     Period period = Period.daily,
   }) {
-    if (step == null || step == 0) {
+    if (step == 0) {
       throw ArgumentError.value(step, 'step', 'invalid step size');
     }
     switch (period) {
@@ -222,7 +222,6 @@ extension PeriodicalExtension on DateTime {
                   prev.microsecond + step,
                 ));
     }
-    throw ArgumentError.value(period, 'period', 'unknown value');
   }
 }
 
@@ -319,6 +318,5 @@ extension TruncateExtension on DateTime {
           microsecond,
         );
     }
-    throw ArgumentError.value(period, 'period', 'unknown value');
   }
 }

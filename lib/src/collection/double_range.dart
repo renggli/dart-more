@@ -31,16 +31,16 @@ class DoubleRange extends ListBase<double> with UnmodifiableListMixin<double> {
   /// the first two numbers (including the start, but excluding the end) and the
   /// step value. For example, `DoubleRange(1.0, 7.0, 2.1)` yields
   /// `<double>[1.0, 3.1, 5.2]`.
-  factory DoubleRange([double a, double b, double c]) {
+  factory DoubleRange([double? a, double? b, double? c]) {
     var start = 0.0;
     var end = 0.0;
     var step = 1.0;
     if (c != null) {
-      start = a;
-      end = b;
+      start = a!;
+      end = b!;
       step = c;
     } else if (b != null) {
-      start = a;
+      start = a!;
       end = b;
       step = start <= end ? 1.0 : -1.0;
     } else if (a != null) {
@@ -93,11 +93,11 @@ class DoubleRange extends ListBase<double> with UnmodifiableListMixin<double> {
   }
 
   @override
-  bool contains(Object element) => indexOf(element) >= 0;
+  bool contains(Object? element) => indexOf(element) >= 0;
 
   @override
   // ignore: avoid_renaming_method_parameters
-  int indexOf(Object element, [int startIndex = 0]) {
+  int indexOf(Object? element, [int startIndex = 0]) {
     if (element is double) {
       if (startIndex < 0) {
         startIndex = 0;
@@ -114,7 +114,7 @@ class DoubleRange extends ListBase<double> with UnmodifiableListMixin<double> {
 
   @override
   // ignore: avoid_renaming_method_parameters
-  int lastIndexOf(Object element, [int endIndex]) {
+  int lastIndexOf(Object? element, [int? endIndex]) {
     if (element is double) {
       if (endIndex == null || length <= endIndex) {
         endIndex = length - 1;
@@ -138,7 +138,7 @@ class DoubleRange extends ListBase<double> with UnmodifiableListMixin<double> {
 
   @override
   // ignore: avoid_renaming_method_parameters
-  DoubleRange sublist(int startIndex, [int endIndex]) =>
+  DoubleRange sublist(int startIndex, [int? endIndex]) =>
       getRange(startIndex, endIndex ?? length);
 
   @override
@@ -166,7 +166,7 @@ class DoubleRange extends ListBase<double> with UnmodifiableListMixin<double> {
 extension DoubleRangeExtension on double {
   /// Shorthand to create a range of [double] numbers, starting with the
   /// receiver (inclusive) up to but not including [end] (exclusive).
-  DoubleRange to(double end, {double step}) => DoubleRange(this, end, step);
+  DoubleRange to(double end, {double? step}) => DoubleRange(this, end, step);
 }
 
 class DoubleRangeIterator extends Iterator<double> {
@@ -179,12 +179,11 @@ class DoubleRangeIterator extends Iterator<double> {
   DoubleRangeIterator(this.start, this.step, this.length);
 
   @override
-  double current;
+  late double current;
 
   @override
   bool moveNext() {
     if (index == length) {
-      current = null;
       return false;
     } else {
       current = start + step * index++;

@@ -39,8 +39,8 @@ class Multiset<E> extends IterableBase<E> {
   /// collection. The default function returns the constant 1.
   factory Multiset.fromIterable(
     Iterable iterable, {
-    E key(element), // ignore: use_function_type_syntax_for_parameters
-    int count(element), // ignore: use_function_type_syntax_for_parameters
+    E key(element)?, // ignore: use_function_type_syntax_for_parameters
+    int count(element)?, // ignore: use_function_type_syntax_for_parameters
   }) {
     final result = Multiset<E>();
     key ??= (element) => element;
@@ -79,7 +79,7 @@ class Multiset<E> extends IterableBase<E> {
   /// Removes [element] from the receiver [occurrences] number of times.
   ///
   /// Throws an [ArgumentError] if [occurrences] is negative.
-  void remove(Object element, [int occurrences = 1]) {
+  void remove(Object? element, [int occurrences = 1]) {
     if (occurrences < 0) {
       throw ArgumentError('Negative number of occurrences: $occurrences');
     }
@@ -107,8 +107,7 @@ class Multiset<E> extends IterableBase<E> {
   }
 
   /// Gets the number of occurrences of an [element].
-  int operator [](Object element) =>
-      _container.containsKey(element) ? _container[element] : 0;
+  int operator [](Object? element) => _container[element] ?? 0;
 
   /// Sets the number of [occurrences] of an [element].
   ///
@@ -130,7 +129,7 @@ class Multiset<E> extends IterableBase<E> {
 
   /// Returns `true` if [element] is in the receiver.
   @override
-  bool contains(Object element) => _container.containsKey(element);
+  bool contains(Object? element) => _container.containsKey(element);
 
   /// Returns `true` if all elements of [other] are contained in the receiver.
   bool containsAll(Iterable<Object> other) {
@@ -175,8 +174,9 @@ class Multiset<E> extends IterableBase<E> {
 
   /// Iterator over the repeated elements of the receiver.
   @override
-  Iterator<E> get iterator =>
-      MultisetIterator<E>(_container, distinct.iterator);
+  Iterator<E> get iterator => _container.entries
+      .expand((entry) => repeat(entry.key, count: entry.value))
+      .iterator;
 
   /// Returns a view on the distinct elements of the receiver.
   Iterable<E> get distinct => _container.keys;
@@ -187,32 +187,6 @@ class Multiset<E> extends IterableBase<E> {
   /// Returns the total number of elements in the receiver.
   @override
   int get length => _length;
-}
-
-class MultisetIterator<E> extends Iterator<E> {
-  final Map<E, int> container;
-  final Iterator<E> elements;
-
-  int _remaining = 0;
-
-  MultisetIterator(this.container, this.elements);
-
-  @override
-  E get current => elements.current;
-
-  @override
-  bool moveNext() {
-    if (_remaining > 0) {
-      _remaining--;
-      return true;
-    } else {
-      if (!elements.moveNext()) {
-        return false;
-      }
-      _remaining = container[elements.current] - 1;
-      return true;
-    }
-  }
 }
 
 extension MultisetExtension<T> on Iterable<T> {

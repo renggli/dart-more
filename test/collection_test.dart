@@ -206,7 +206,7 @@ void main() {
       });
       test('define if absent', () {
         final target = BiMap.of(example);
-        target.putIfAbsent(1, () => fail('Value already present!'));
+        target.putIfAbsent(1, () => throw StateError('Value already present!'));
         target.putIfAbsent(4, () => 'd');
         expect(target[4], 'd');
       });

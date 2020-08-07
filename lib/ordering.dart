@@ -67,10 +67,10 @@ abstract class Ordering<T> {
   Ordering<T> get reversed => ReversedOrdering<T>(this);
 
   /// Returns an ordering that orders `null` values before non-null values.
-  Ordering<T> get nullsFirst => NullsFirstOrdering<T>(this);
+  Ordering<T?> get nullsFirst => NullsFirstOrdering<T>(this);
 
   /// Returns an ordering that orders `null` values after non-null values.
-  Ordering<T> get nullsLast => NullsLastOrdering<T>(this);
+  Ordering<T?> get nullsLast => NullsLastOrdering<T>(this);
 
   /// Returns an ordering that breaks the tie of the receiver by using [other].
   Ordering<T> compound(Ordering<T> other) => CompoundOrdering<T>([this, other]);
@@ -149,7 +149,7 @@ abstract class Ordering<T> {
   T max(T a, T b) => compare(a, b) > 0 ? a : b;
 
   /// Returns the maximum of the provided [iterable].
-  T maxOf(Iterable<T> iterable, {T Function() orElse}) {
+  T maxOf(Iterable<T> iterable, {T Function()? orElse}) {
     final iterator = iterable.iterator;
     if (iterator.moveNext()) {
       var value = iterator.current;
@@ -168,7 +168,7 @@ abstract class Ordering<T> {
   T min(T a, T b) => compare(a, b) < 0 ? a : b;
 
   /// Returns the minimum of the provided [iterable].
-  T minOf(Iterable<T> iterable, {T Function() orElse}) {
+  T minOf(Iterable<T> iterable, {T Function()? orElse}) {
     final iterator = iterable.iterator;
     if (iterator.moveNext()) {
       var value = iterator.current;

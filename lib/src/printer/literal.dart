@@ -7,5 +7,5 @@ class LiteralPrinter extends Printer {
   const LiteralPrinter(this.value);
 
   @override
-  String call(Object object) => value;
+  String call(Object? object) => value;
 }

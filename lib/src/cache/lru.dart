@@ -15,7 +15,7 @@ class LruCache<K, V> extends Cache<K, V> {
   LruCache(this.loader, this.maximumSize);
 
   @override
-  Future<V> getIfPresent(K key) async => promote(key)?.value;
+  Future<V?> getIfPresent(K key) async => promote(key)?.value;
 
   @override
   Future<V> get(K key) async {
@@ -51,7 +51,7 @@ class LruCache<K, V> extends Cache<K, V> {
   @override
   Future<int> reap() async => 0;
 
-  CacheItem<V> promote(K key) {
+  CacheItem<V>? promote(K key) {
     final item = cached.remove(key);
     if (item != null) {
       cached[key] = item;

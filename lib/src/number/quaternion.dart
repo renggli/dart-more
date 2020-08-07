@@ -22,11 +22,7 @@ class Quaternion {
   static const Quaternion k = Quaternion(0, 0, 0, 1);
 
   /// Constructs a quaternion from its components.
-  const Quaternion(this.w, [this.x = 0, this.y = 0, this.z = 0])
-      : assert(w != null, 'w must not be null'),
-        assert(x != null, 'x must not be null'),
-        assert(y != null, 'y must not be null'),
-        assert(z != null, 'z must not be null');
+  const Quaternion(this.w, [this.x = 0, this.y = 0, this.z = 0]);
 
   /// Constructors a quaternion from a scalar and a vector.
   factory Quaternion.of(num scalar, List<num> vector) =>
@@ -80,7 +76,7 @@ class Quaternion {
   }
 
   /// Parses [source] as a [Quaternion]. Returns `null` in case of a problem.
-  factory Quaternion.tryParse(String source) {
+  static Quaternion? tryParse(String source) {
     final parts = numberAndUnitExtractor
         .allMatches(source.replaceAll(' ', ''))
         .where((match) => match.start < match.end)
@@ -91,14 +87,16 @@ class Quaternion {
     num w = 0, x = 0, y = 0, z = 0;
     final seen = <String>{};
     for (final part in parts) {
-      final number = num.tryParse(part.group(1));
-      final unit = part.group(4).toLowerCase();
+      final numberString = part.group(1) ?? '';
+      final number = num.tryParse(numberString);
+      final unitString = part.group(4) ?? '';
+      final unit = unitString.toLowerCase();
       if (seen.contains(unit)) {
         return null; // repeated unit
       }
       if (unit == '' && number != null) {
         w = number;
-      } else if (part.group(1).isEmpty || number != null) {
+      } else if (numberString.isEmpty || number != null) {
         switch (unit) {
           case 'i':
             x = number ?? 1;

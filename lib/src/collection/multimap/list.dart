@@ -8,22 +8,22 @@ import '../multimap.dart';
 class ListMultimap<K, V> extends Multimap<K, V, List<V>> {
   /// Creates a [ListMultimap] with the same keys and values as [other].
   factory ListMultimap.of(Multimap<K, V, Iterable<V>> other,
-      {Map<K, List<V>> map, Factory<List<V>> factory}) {
+      {Map<K, List<V>>? map, Factory<List<V>>? factory}) {
     final result = ListMultimap<K, V>(map: map, factory: factory);
     other.forEach(result.add);
     return result;
   }
 
   /// Creates a [ListMultimap] with identity keys.
-  factory ListMultimap.identity({Factory<List<V>> factory}) =>
+  factory ListMultimap.identity({Factory<List<V>>? factory}) =>
       ListMultimap(map: Map.identity(), factory: factory);
 
   /// Creates a [ListMultimap] with the keys and values from [iterable].
   factory ListMultimap.fromIterable(Iterable iterable,
-      {K key(element), // ignore: use_function_type_syntax_for_parameters
-      V value(element), // ignore: use_function_type_syntax_for_parameters
-      Map<K, List<V>> map,
-      Factory<List<V>> factory}) {
+      {K key(element)?, // ignore: use_function_type_syntax_for_parameters
+      V value(element)?, // ignore: use_function_type_syntax_for_parameters
+      Map<K, List<V>>? map,
+      Factory<List<V>>? factory}) {
     final result = ListMultimap<K, V>(map: map, factory: factory);
     fillFromIterable(result, iterable, key, value);
     return result;
@@ -31,7 +31,7 @@ class ListMultimap<K, V> extends Multimap<K, V, List<V>> {
 
   // Creates a [ListMultimap] associating the given [keys] to [values].
   factory ListMultimap.fromIterables(Iterable<K> keys, Iterable<V> values,
-      {Map<K, List<V>> map, Factory<List<V>> factory}) {
+      {Map<K, List<V>>? map, Factory<List<V>>? factory}) {
     final result = ListMultimap<K, V>(map: map, factory: factory);
     fillFromIterables(result, keys, values);
     return result;
@@ -39,7 +39,7 @@ class ListMultimap<K, V> extends Multimap<K, V, List<V>> {
 
   /// Creates a [ListMultimap] containing the entries of [entries].
   factory ListMultimap.fromEntries(Iterable<MapEntry<K, V>> entries,
-      {Map<K, List<V>> map, Factory<List<V>> factory}) {
+      {Map<K, List<V>>? map, Factory<List<V>>? factory}) {
     final result = ListMultimap<K, V>(map: map, factory: factory);
     fillFromEntries(result, entries);
     return result;
@@ -47,7 +47,7 @@ class ListMultimap<K, V> extends Multimap<K, V, List<V>> {
 
   /// Creates an empty [ListMultimap] with the keys held in [map] and the values
   /// in a collection built with [factory].
-  ListMultimap({Map<K, List<V>> map, Factory<List<V>> factory})
+  ListMultimap({Map<K, List<V>>? map, Factory<List<V>>? factory})
       : super(map ?? <K, List<V>>{}, factory ?? defaultFactory);
 
   @override

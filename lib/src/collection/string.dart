@@ -58,7 +58,7 @@ class MutableStringList extends ListBase<String> {
   }
 
   @override
-  List<String> sublist(int start, [int end]) =>
+  List<String> sublist(int start, [int? end]) =>
       MutableStringList(codeUnits.sublist(start, end));
 
   @override
@@ -80,7 +80,7 @@ class ImmutableStringList extends ListBase<String>
       String.fromCharCode(contents.codeUnitAt(index));
 
   @override
-  List<String> sublist(int start, [int end]) =>
+  List<String> sublist(int start, [int? end]) =>
       ImmutableStringList(contents.substring(start, end));
 
   @override

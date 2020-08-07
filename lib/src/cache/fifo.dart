@@ -9,5 +9,5 @@ class FifoCache<K, V> extends LruCache<K, V> {
   // The FIFO cache is the same as the LRU cache, with the exception that we do
   // not rearrange the items in the cache when accessed.
   @override
-  CacheItem<V> promote(K key) => cached[key];
+  CacheItem<V>? promote(K key) => cached[key];
 }

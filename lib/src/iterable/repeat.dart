@@ -12,7 +12,7 @@ extension RepeatExtension<E> on Iterable<E> {
   ///    [1, 2].repeat();               // [1, 2, 1, 2, ...]
   ///    [1, 2, 3].repeat(count: 2);    // [1, 2, 3, 1, 2, 3]
   ///
-  Iterable<E> repeat({int count}) {
+  Iterable<E> repeat({int? count}) {
     if (isEmpty || count == 0) {
       return const Iterable.empty();
     } else if (count == null) {
@@ -33,7 +33,8 @@ extension RepeatExtension<E> on Iterable<E> {
 ///     repeat(2);               // [2, 2, 2, 2, 2, 2, ...]
 ///     repeat('a', count: 3);   // ['a', 'a', 'a']
 ///
-Iterable<E> repeat<E>(E element, {int count}) => [element].repeat(count: count);
+Iterable<E> repeat<E>(E element, {int? count}) =>
+    [element].repeat(count: count);
 
 class RepeatIterable<E> extends IterableBase<E> with InfiniteIterable<E> {
   final Iterable<E> iterable;

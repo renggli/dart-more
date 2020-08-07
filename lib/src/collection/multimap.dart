@@ -44,10 +44,10 @@ abstract class Multimap<K, V, VS extends Iterable<V>> {
   }
 
   /// Returns true if this map contains the given [key].
-  bool containsKey(K key) => _map.containsKey(key);
+  bool containsKey(K? key) => _map.containsKey(key);
 
   /// Returns true if this map contains the given [value].
-  bool containsValue(V value) {
+  bool containsValue(V? value) {
     for (final values in _map.values) {
       if (values.contains(value)) {
         return true;
@@ -70,7 +70,7 @@ abstract class Multimap<K, V, VS extends Iterable<V>> {
   void remove(K key, V value) => lookupValues(key).polymorphicRemove(value);
 
   /// Removes associations from [key] to each of [values].
-  void removeAll(K key, [Iterable<V> values]) => values == null
+  void removeAll(K key, [Iterable<V>? values]) => values == null
       ? lookupValues(key).polymorphicClear()
       : lookupValues(key).polymorphicRemoveAll(values);
 
@@ -180,7 +180,7 @@ class MultimapAsMap<K, V, VS extends Iterable<V>> extends MapBase<K, VS> {
   int get length => _multimap._map.length;
 
   @override
-  VS operator [](Object key) => _multimap[key];
+  VS? operator [](Object? key) => key is K ? _multimap[key] : null;
 
   @override
   void operator []=(K key, VS value) => _multimap.replaceAll(key, value);
@@ -192,10 +192,14 @@ class MultimapAsMap<K, V, VS extends Iterable<V>> extends MapBase<K, VS> {
   Iterable<K> get keys => _multimap.keys;
 
   @override
-  VS remove(Object key) {
-    final result = this[key];
-    _multimap.removeAll(key);
-    return result;
+  VS? remove(Object? key) {
+    if (key is K) {
+      final result = this[key];
+      _multimap.removeAll(key);
+      return result;
+    } else {
+      return null;
+    }
   }
 }
 
@@ -204,9 +208,9 @@ void fillFromIterable<K, V, VS extends Iterable<V>>(
   Multimap<K, V, VS> multimap,
   Iterable iterable,
   // ignore: use_function_type_syntax_for_parameters, type_annotate_public_apis
-  K key(element),
+  K key(element)?,
   // ignore: use_function_type_syntax_for_parameters, type_annotate_public_apis
-  V value(element),
+  V value(element)?,
 ) {
   key ??= (x) => x;
   value ??= (x) => x;

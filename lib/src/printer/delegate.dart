@@ -7,5 +7,5 @@ class DelegatePrinter extends Printer {
   const DelegatePrinter(this.delegate);
 
   @override
-  String call(Object object) => delegate(object);
+  String call(Object? object) => delegate(object);
 }

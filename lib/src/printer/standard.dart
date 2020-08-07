@@ -5,5 +5,5 @@ class StandardPrinter extends Printer {
   const StandardPrinter();
 
   @override
-  String call(Object object) => object.toString();
+  String call(Object? object) => object.toString();
 }

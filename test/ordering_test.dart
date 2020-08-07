@@ -27,24 +27,24 @@ void verify<T>(
     verifyBasic(
         'ordering.nullsFirst',
         ordering.nullsFirst,
-        [
+        <Iterable>[
           [null],
           unsorted,
           [null]
         ].concat(),
-        [
+        <Iterable>[
           [null, null],
           expected
         ].concat());
     verifyBasic(
         'ordering.nullsLast',
         ordering.nullsLast,
-        [
+        <Iterable>[
           [null],
           unsorted,
           [null]
         ].concat(),
-        [
+        <Iterable>[
           expected,
           [null, null]
         ].concat());
@@ -321,7 +321,7 @@ void main() {
   });
   group('regressions', () {
     test('#4', () {
-      final input = ['dog', 'ape', null, 'cat'];
+      final input = <String?>['dog', 'ape', null, 'cat'];
       final orderingAsc = Ordering.natural<String>().nullsLast;
       expect(orderingAsc.sorted(input), ['ape', 'cat', 'dog', null]);
       final orderingDesc = Ordering.natural<String>().reversed.nullsLast;

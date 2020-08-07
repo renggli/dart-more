@@ -15,11 +15,10 @@ extension GroupExtension<V> on Iterable<V> {
   ///
   ///     'a: aaa, b: bb, c: c'
   ///
-  Iterable<Group<K, V>> groupBy<K>([K Function(V element) key]) sync* {
-    Object identity(Object arg) => arg;
+  Iterable<Group<K, V>> groupBy<K>([K Function(V element)? key]) sync* {
     final iterator = this.iterator;
     if (iterator.moveNext()) {
-      final grouper = key ?? identity;
+      final grouper = key ?? (element) => element as K; // ignore: avoid_as
       var group = Group<K, V>(grouper(iterator.current), <V>[iterator.current]);
       while (iterator.moveNext()) {
         final nextKey = grouper(iterator.current);

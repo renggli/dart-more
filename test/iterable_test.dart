@@ -27,18 +27,18 @@ void main() {
     });
     group('with padding', () {
       test('empty', () {
-        final iterable = <int>[].chunkedWithPadding(2, padding: 0);
+        final iterable = <int>[].chunkedWithPadding(2, 0);
         expect(iterable, <int>[]);
       });
       test('even', () {
-        final iterable = [1, 2, 3, 4].chunkedWithPadding(2, padding: 0);
+        final iterable = [1, 2, 3, 4].chunkedWithPadding(2, 0);
         expect(iterable, [
           [1, 2],
           [3, 4]
         ]);
       });
       test('odd', () {
-        final iterable = [1, 2, 3, 4, 5].chunkedWithPadding(2, padding: 0);
+        final iterable = [1, 2, 3, 4, 5].chunkedWithPadding(2, 0);
         expect(iterable, [
           [1, 2],
           [3, 4],
@@ -251,7 +251,7 @@ void main() {
   });
   group('flatMap', () {
     test('empty', () {
-      expect([].flatMap((each) => fail('Never to be called')), []);
+      expect([].flatMap((each) => throw StateError('Never to be called')), []);
     });
     test('expand', () {
       expect(['a'].flatMap((each) => [1, 2]), [1, 2]);
@@ -335,7 +335,7 @@ void main() {
   });
   group('iterate', () {
     test('natural numbers', () {
-      final iterable = iterate(0, (a) => a + 1);
+      final iterable = iterate<int>(0, (a) => a + 1);
       expect(iterable.take(10), [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]);
     });
     test('powers of two', () {
@@ -503,11 +503,7 @@ void main() {
         ]);
       });
       test('invalid step', () {
-        expect(() => date.periodical(step: null), throwsArgumentError);
         expect(() => date.periodical(step: 0), throwsArgumentError);
-      });
-      test('invalid period', () {
-        expect(() => date.periodical(period: null), throwsArgumentError);
       });
     });
     group('truncate', () {
@@ -573,9 +569,6 @@ void main() {
         final truncated = date.truncate(period: Period.microsecondly);
         expect(
             truncated, DateTime(1980, DateTime.june, 11, 12, 34, 56, 78, 90));
-      });
-      test('invalid period', () {
-        expect(() => date.truncate(period: null), throwsArgumentError);
       });
       test('invalid start weekday', () {
         expect(
@@ -751,7 +744,7 @@ void main() {
       expect([1, 2, 3].repeat(count: 3), [1, 2, 3, 1, 2, 3, 1, 2, 3]);
     });
     test('infinite', () {
-      final infinite = iterate(0, (n) => n + 1);
+      final infinite = iterate<int>(0, (n) => n + 1);
       expect(infinite.repeat().take(7), [0, 1, 2, 3, 4, 5, 6]);
       expect(infinite.repeat(count: 0), []);
       expect(infinite.repeat(count: 1).take(7), [0, 1, 2, 3, 4, 5, 6]);

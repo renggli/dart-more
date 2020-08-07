@@ -24,7 +24,7 @@ extension CycleExtension<E> on Iterable<E> {
   ///
   ///     [1, 2, 1, 2, ...]
   ///
-  Iterable<E> cycle([int count]) {
+  Iterable<E> cycle([int? count]) {
     if (count == 0 || isEmpty) {
       return const Iterable.empty();
     } else if (count == 1 || this is InfiniteIterable<E>) {
@@ -82,14 +82,14 @@ class FiniteCycleIterable<E> extends IterableBase<E> {
 class FiniteCycleIterator<E> extends Iterator<E> {
   final Iterable<E> iterable;
 
-  Iterator<E> iterator = const Iterable.empty().iterator;
+  Iterator<E> iterator = Iterable<E>.empty().iterator;
   bool completed = false;
   int count;
 
   FiniteCycleIterator(this.iterable, this.count);
 
   @override
-  E get current => completed ? null : iterator.current;
+  E get current => iterator.current;
 
   @override
   bool moveNext() {

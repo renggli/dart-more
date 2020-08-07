@@ -29,9 +29,6 @@ class Fraction implements Comparable<Fraction> {
 
   /// Creates a fraction from a [numerator] and an optional [denominator].
   factory Fraction(int numerator, [int denominator = 1]) {
-    if (numerator == null || denominator == null) {
-      throw ArgumentError('Null numerator or denominator passed to fraction.');
-    }
     if (denominator == 0) {
       throw ArgumentError('Denominator needs to be non-zero.');
     }
@@ -78,7 +75,7 @@ class Fraction implements Comparable<Fraction> {
   }
 
   /// Parses [source] as a [Fraction]. Returns `null` in case of a problem.
-  factory Fraction.tryParse(String source) {
+  static Fraction? tryParse(String source) {
     final values = source.split('/');
     final numerator = values.isNotEmpty ? int.tryParse(values[0]) : null;
     final denominator = values.length > 1 ? int.tryParse(values[1]) : 1;
@@ -89,10 +86,7 @@ class Fraction implements Comparable<Fraction> {
   }
 
   /// Internal constructor for fractions.
-  const Fraction._(this.a, this.b)
-      : assert(a != null, 'a must not be null'),
-        assert(b != null, 'b must not be null'),
-        assert(b > 0, 'b must be positive');
+  const Fraction._(this.a, this.b) : assert(b > 0, 'b must be positive');
 
   /// Returns the numerator of the fraction.
   final int a;
@@ -162,9 +156,9 @@ class Fraction implements Comparable<Fraction> {
       return this;
     }
     if (n > 0) {
-      return Fraction(a.pow(n), b.pow(n));
+      return Fraction(a.pow(n).toInt(), b.pow(n).toInt());
     } else if (n < 0) {
-      return Fraction(b.pow(-n), a.pow(-n));
+      return Fraction(b.pow(-n).toInt(), a.pow(-n).toInt());
     } else {
       return one;
     }

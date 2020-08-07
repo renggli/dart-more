@@ -337,12 +337,8 @@ void main() {
         expect(fraction.numerator, -1);
         expect(fraction.denominator, 2);
       });
-      test('numerator error', () {
-        expect(() => Fraction(null), throwsArgumentError);
-      });
       test('denominator error', () {
         expect(() => Fraction(2, 0), throwsArgumentError);
-        expect(() => Fraction(2, null), throwsArgumentError);
       });
       group('fromDouble', () {
         test('basic', () {

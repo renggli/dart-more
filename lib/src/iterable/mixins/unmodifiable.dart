@@ -29,7 +29,7 @@ mixin UnmodifiableListMixin<E> implements List<E> {
   void addAll(Iterable<E> iterable) => _throw();
 
   @override
-  bool remove(Object element) => _throw();
+  bool remove(Object? element) => _throw();
 
   @override
   void removeWhere(bool Function(E element) test) => _throw();
@@ -38,10 +38,10 @@ mixin UnmodifiableListMixin<E> implements List<E> {
   void retainWhere(bool Function(E element) test) => _throw();
 
   @override
-  void sort([Comparator<E> compare]) => _throw();
+  void sort([Comparator<E>? compare]) => _throw();
 
   @override
-  void shuffle([Random random]) => _throw();
+  void shuffle([Random? random]) => _throw();
 
   @override
   void clear() => _throw();
@@ -64,5 +64,5 @@ mixin UnmodifiableListMixin<E> implements List<E> {
   void replaceRange(int start, int end, Iterable<E> iterable) => _throw();
 
   @override
-  void fillRange(int start, int end, [E fillValue]) => _throw();
+  void fillRange(int start, int end, [E? fillValue]) => _throw();
 }

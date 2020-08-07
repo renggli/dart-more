@@ -15,10 +15,8 @@ abstract class Cache<K, V> {
   /// Constructs an empty or null cache, useful mostly for testing.
   ///
   /// The [loader] defines the function to construct items for the cache.
-  factory Cache.empty({Loader<K, V> loader}) {
-    ArgumentError.checkNotNull(loader, 'loader');
-    return EmptyCache<K, V>(loader);
-  }
+  factory Cache.empty({required Loader<K, V> loader}) =>
+      EmptyCache<K, V>(loader);
 
   /// Constructs an expiry cache.
   ///
@@ -32,11 +30,10 @@ abstract class Cache<K, V> {
   /// Note that cached items do not magically disappear when they expire.
   /// Manually call [reap()], or setup a timer to regularly free items.
   factory Cache.expiry(
-      {Loader<K, V> loader,
-      Clock clock,
-      Duration updateExpiry,
-      Duration accessExpiry}) {
-    ArgumentError.checkNotNull(loader, 'loader');
+      {required Loader<K, V> loader,
+      Clock? clock,
+      Duration? updateExpiry,
+      Duration? accessExpiry}) {
     if (updateExpiry == null && accessExpiry == null) {
       throw ArgumentError(
           "Either 'updateExpiry' or 'accessExpiry' must be provided.");
@@ -55,8 +52,7 @@ abstract class Cache<K, V> {
   ///
   /// The [loader] defines the function to construct items for the cache; and
   /// [maximumSize] defines the maximum number of items cached.
-  factory Cache.fifo({Loader<K, V> loader, int maximumSize = 100}) {
-    ArgumentError.checkNotNull(loader, 'loader');
+  factory Cache.fifo({required Loader<K, V> loader, int maximumSize = 100}) {
     if (maximumSize <= 0) {
       throw ArgumentError("Non-positive 'maximumSize' provided.");
     }
@@ -67,8 +63,7 @@ abstract class Cache<K, V> {
   ///
   /// The [loader] defines the function to construct items for the cache; and
   /// [maximumSize] defines the maximum number of items cached.
-  factory Cache.lru({Loader<K, V> loader, int maximumSize = 100}) {
-    ArgumentError.checkNotNull(loader, 'loader');
+  factory Cache.lru({required Loader<K, V> loader, int maximumSize = 100}) {
     if (maximumSize <= 0) {
       throw ArgumentError("Non-positive 'maximumSize' provided.");
     }
@@ -79,7 +74,7 @@ abstract class Cache<K, V> {
   const Cache();
 
   /// Returns the value associated with the [key], otherwise `null`.
-  Future<V> getIfPresent(K key);
+  Future<V?> getIfPresent(K key);
 
   /// Returns the value associated with the [key].
   Future<V> get(K key);

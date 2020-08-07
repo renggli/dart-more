@@ -25,7 +25,7 @@ const String notationString = 'e';
 /// Prints numbers in a fixed format.
 class FixedNumberPrinter extends Printer {
   /// Round towards the nearest number that is a multiple of accuracy.
-  final double accuracy;
+  final double? accuracy;
 
   /// The numeric base to which the number should be printed.
   final int base;
@@ -69,24 +69,24 @@ class FixedNumberPrinter extends Printer {
     this.nan = nanString,
     this.padding = 0,
     this.precision = 0,
-    this.separator,
+    this.separator = '',
     this.sign = omitPositiveSign,
   })  : _integer = Printer.standard()
             .mapIf(padding > 0,
                 (printer) => printer.padLeft(padding, characters[0]))
-            .mapIf(separator != null,
+            .mapIf(separator.isNotEmpty,
                 (printer) => printer.separateRight(3, 0, separator)),
         _fraction = Printer.standard()
             .mapIf(precision > 0,
                 (printer) => printer.padLeft(precision, characters[0]))
-            .mapIf(separator != null,
+            .mapIf(separator.isNotEmpty,
                 (printer) => printer.separateLeft(3, 0, separator));
 
   @override
-  String call(Object object) => _prependSign(
+  String call(Object? object) => _prependSign(
       object, checkNumericType(object, _convertNum, _convertBigInt));
 
-  String _prependSign(Object value, String result) => '${sign(value)}$result';
+  String _prependSign(Object? value, String result) => '${sign(value)}$result';
 
   String _convertNum(num value) {
     if (value.isNaN) {
@@ -118,9 +118,7 @@ class FixedNumberPrinter extends Printer {
     final rounding = accuracy ?? 1.0 / multiplier;
     final rounded = (value / rounding).roundToDouble() * rounding;
     buffer.write(_convertInteger(rounded));
-    if (delimiter != null) {
-      buffer.write(delimiter);
-    }
+    buffer.write(delimiter);
     final fractional = rounded.abs() - rounded.abs().truncate();
     buffer.write(_convertFraction(fractional * multiplier));
     return buffer.toString();
@@ -197,7 +195,7 @@ class ScientificNumberPrinter extends Printer {
     this.nan = nanString,
     this.notation = notationString,
     this.precision = 3,
-    this.separator,
+    this.separator = '',
     this.significant = 1,
   })  : _mantissa = Printer.fixed(
           base: base,
@@ -219,7 +217,7 @@ class ScientificNumberPrinter extends Printer {
         );
 
   @override
-  String call(Object object) {
+  String call(Object? object) {
     final value = checkNumericType(
       object,
       (value) => value.toDouble(),

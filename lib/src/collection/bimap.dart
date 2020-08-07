@@ -30,8 +30,8 @@ class BiMap<K, V> extends MapBase<K, V> {
   /// Creates a bi-map from an iterable (and possible transformation functions).
   factory BiMap.fromIterable(
     Iterable iterable, {
-    K key(element), // ignore: use_function_type_syntax_for_parameters
-    V value(element), // ignore: use_function_type_syntax_for_parameters
+    K key(element)?, // ignore: use_function_type_syntax_for_parameters
+    V value(element)?, // ignore: use_function_type_syntax_for_parameters
   }) =>
       BiMap<K, V>.fromIterables(
           key == null ? iterable.cast<K>() : iterable.map(key),
@@ -72,7 +72,7 @@ class BiMap<K, V> extends MapBase<K, V> {
   Map<V, K> get backward => inverse;
 
   @override
-  V operator [](Object key) => _forward[key];
+  V? operator [](Object? key) => _forward[key];
 
   @override
   void operator []=(K key, V value) {
@@ -85,7 +85,7 @@ class BiMap<K, V> extends MapBase<K, V> {
   @override
   V putIfAbsent(K key, V Function() ifAbsent) {
     if (containsKey(key)) {
-      return this[key];
+      return this[key]!;
     } else {
       final value = ifAbsent();
       this[key] = value;
@@ -94,13 +94,13 @@ class BiMap<K, V> extends MapBase<K, V> {
   }
 
   @override
-  V remove(Object key) {
+  V? remove(Object? key) {
     final value = _forward[key];
     _remove(key, _forward, _backward);
     return value;
   }
 
-  void _remove(Object key, Map forward, Map backward) {
+  void _remove(Object? key, Map forward, Map backward) {
     if (forward.containsKey(key)) {
       _remove(forward.remove(key), backward, forward);
     }
@@ -113,10 +113,10 @@ class BiMap<K, V> extends MapBase<K, V> {
   }
 
   @override
-  bool containsKey(Object key) => _forward.containsKey(key);
+  bool containsKey(Object? key) => _forward.containsKey(key);
 
   @override
-  bool containsValue(Object value) => _backward.containsKey(value);
+  bool containsValue(Object? value) => _backward.containsKey(value);
 
   @override
   void forEach(void Function(K key, V value) action) =>

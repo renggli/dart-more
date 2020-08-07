@@ -3,7 +3,7 @@ import 'dart:collection' show IterableBase;
 import 'mixins/infinite.dart';
 
 /// One argument function returning an object of the same type.
-typedef IterateFunction<E> = E Function(E value);
+typedef IterateCallback<E> = E Function(E value);
 
 /// Returns a lazy infinite list of repeated applications of the [function] to
 /// the initial [value].
@@ -16,12 +16,12 @@ typedef IterateFunction<E> = E Function(E value);
 ///
 ///     [0, 1, 2, 3, 4, ...]
 ///
-Iterable<E> iterate<E>(E value, IterateFunction<E> function) =>
+Iterable<E> iterate<E>(E value, IterateCallback<E> function) =>
     IterateIterable<E>(value, function);
 
 class IterateIterable<E> extends IterableBase<E> with InfiniteIterable<E> {
   final E value;
-  final IterateFunction<E> function;
+  final IterateCallback<E> function;
 
   IterateIterable(this.value, this.function);
 
@@ -30,14 +30,14 @@ class IterateIterable<E> extends IterableBase<E> with InfiniteIterable<E> {
 }
 
 class IterateIterator<E> extends Iterator<E> {
-  final IterateFunction<E> function;
+  final IterateCallback<E> function;
 
   E next;
 
   IterateIterator(this.next, this.function);
 
   @override
-  E current;
+  late E current;
 
   @override
   bool moveNext() {

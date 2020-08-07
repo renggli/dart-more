@@ -10,7 +10,7 @@ extension UniqueExtension<E> on Iterable<E> {
   ///     [1, 2, 3, 2, 4].unique()
   ///
   Iterable<E> unique(
-      {bool Function(E e1, E e2) equals, int Function(E e) hashCode}) sync* {
+      {bool Function(E e1, E e2)? equals, int Function(E e)? hashCode}) sync* {
     final uniques = HashSet(equals: equals, hashCode: hashCode);
     for (final element in this) {
       if (uniques.add(element)) {

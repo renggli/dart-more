@@ -72,7 +72,7 @@ abstract class Printer {
   factory Printer.of(Object object) {
     if (object is Printer) {
       return object;
-    } else if (object is Function) {
+    } else if (object is PrintCallback) {
       return PluggablePrinter(object);
     } else {
       return LiteralPrinter(object.toString());
@@ -80,7 +80,7 @@ abstract class Printer {
   }
 
   /// Prints the object.
-  String call(Object object);
+  String call(Object? object);
 
   /// Removes any leading and trailing whitespace.
   Printer trim() => TrimPrinter(this);

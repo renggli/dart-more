@@ -18,9 +18,7 @@ class Complex {
   static const Complex i = Complex(0, 1);
 
   /// Creates a complex number from a real part [a] and an imaginary part [b].
-  const Complex(this.a, [this.b = 0])
-      : assert(a != null, 'a number must not be null'),
-        assert(b != null, 'b number must not be null');
+  const Complex(this.a, [this.b = 0]);
 
   /// Creates a complex number from a real number [a].
   factory Complex.fromReal(num a) => Complex(a, 0);
@@ -38,7 +36,7 @@ class Complex {
       );
 
   /// Parses [source] as a [Complex]. Returns `null` in case of a problem.
-  factory Complex.tryParse(String source) {
+  static Complex? tryParse(String source) {
     final parts = numberAndUnitExtractor
         .allMatches(source.replaceAll(' ', ''))
         .where((match) => match.start < match.end)
@@ -49,14 +47,16 @@ class Complex {
     num a = 0, b = 0;
     final seen = <String>{};
     for (final part in parts) {
-      final number = num.tryParse(part.group(1));
-      final unit = part.group(4).toLowerCase();
+      final numberString = part.group(1) ?? '';
+      final number = num.tryParse(numberString);
+      final unitString = part.group(4) ?? '';
+      final unit = unitString.toLowerCase();
       if (seen.contains(unit)) {
         return null; // repeated unit
       }
       if (unit == '' && number != null) {
         a = number;
-      } else if (part.group(1).isEmpty || number != null) {
+      } else if (numberString.isEmpty || number != null) {
         if (unit == 'i') {
           b = number ?? 1;
         } else {
