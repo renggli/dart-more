@@ -1,5 +1,3 @@
-library more.char_matcher.upper_case;
-
 import '../../char_matcher.dart';
 
 class UpperCaseLetterCharMatcher extends CharMatcher {

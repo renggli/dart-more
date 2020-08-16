@@ -1,5 +1,3 @@
-library more.iterable.product;
-
 extension ProductExtension<E> on Iterable<Iterable<E>> {
   /// Returns an iterable over the cross product of this [Iterable].
   ///

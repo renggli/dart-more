@@ -1,5 +1,3 @@
-library more.collection.double_range;
-
 import 'dart:collection' show ListBase;
 
 import '../../ordering.dart' show Ordering;

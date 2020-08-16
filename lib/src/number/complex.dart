@@ -1,5 +1,3 @@
-library more.number.complex;
-
 import 'dart:math' as math;
 
 import 'package:meta/meta.dart' show immutable;

@@ -1,5 +1,3 @@
-library more.collection.multimap.set;
-
 import 'dart:collection' show SetMixin;
 
 import '../multimap.dart';

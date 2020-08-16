@@ -1,5 +1,3 @@
-library more.test.all_test;
-
 import 'package:test/test.dart';
 
 import 'cache_test.dart' as cache_test;

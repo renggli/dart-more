@@ -1,5 +1,3 @@
-library more.math.math;
-
 import 'dart:math' as math;
 
 extension MathNumberExtension on num {

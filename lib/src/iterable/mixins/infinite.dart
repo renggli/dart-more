@@ -1,5 +1,3 @@
-library more.iterable.mixins.infinite;
-
 /// Mixin for infinitely sized iterables.
 ///
 /// Intended to mix-in on top of `IterableBase<E>`.

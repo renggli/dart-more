@@ -1,5 +1,3 @@
-library more.iterable.unique;
-
 import 'dart:collection' show HashSet;
 
 extension UniqueExtension<E> on Iterable<E> {

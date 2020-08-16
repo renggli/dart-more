@@ -1,5 +1,3 @@
-library more.iterable.window;
-
 extension WindowExtension<E> on Iterable<E> {
   /// Sliding window of given `size` over this [Iterable].
   ///

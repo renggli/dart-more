@@ -1,6 +1,4 @@
 /// A collection of common mathematical functions.
-library more.math;
-
 export 'src/math/binomial.dart'
     show BinomialIntegerExtension, BinomialBigIntExtension;
 export 'src/math/digits.dart'

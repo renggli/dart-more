@@ -1,5 +1,3 @@
-library more.test.iterable_test;
-
 import 'package:more/collection.dart';
 import 'package:more/iterable.dart';
 import 'package:test/test.dart';

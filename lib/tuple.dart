@@ -1,6 +1,4 @@
 /// Tuple data type.
-library more.tuple;
-
 import 'package:meta/meta.dart' show immutable;
 
 import 'src/tuple/tuple_0.dart';

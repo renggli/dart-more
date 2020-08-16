@@ -1,5 +1,3 @@
-library more.iterable.separated;
-
 import 'dart:collection';
 
 /// Function type to build elements.

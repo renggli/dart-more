@@ -1,5 +1,3 @@
-library more.char_matcher.whitespace;
-
 import '../../char_matcher.dart';
 
 class WhitespaceCharMatcher extends CharMatcher {

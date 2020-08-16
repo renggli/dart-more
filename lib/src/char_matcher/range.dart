@@ -1,5 +1,3 @@
-library more.char_matcher.range;
-
 import '../../char_matcher.dart';
 
 class RangeCharMatcher extends CharMatcher {

@@ -1,5 +1,3 @@
-library more.char_matcher.any;
-
 import '../../char_matcher.dart';
 import 'none.dart';
 

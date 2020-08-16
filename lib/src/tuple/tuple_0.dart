@@ -1,5 +1,3 @@
-library more.tuple.tuple_0;
-
 import '../../tuple.dart';
 
 /// Tuple with 0 elements.

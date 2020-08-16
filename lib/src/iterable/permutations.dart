@@ -1,5 +1,3 @@
-library more.iterable.permutations;
-
 extension PermutationsExtension<E> on Iterable<E> {
   /// Returns an iterable over the permutations of this [Iterable]. The
   /// permutations are emitted in lexicographical order based on the input.

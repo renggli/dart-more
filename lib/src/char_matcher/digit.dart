@@ -1,5 +1,3 @@
-library more.char_matcher.digit;
-
 import '../../char_matcher.dart';
 
 class DigitCharMatcher extends CharMatcher {

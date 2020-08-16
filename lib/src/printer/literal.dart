@@ -1,5 +1,3 @@
-library more.printer.literal;
-
 import '../../printer.dart';
 
 /// Prints a string literal.

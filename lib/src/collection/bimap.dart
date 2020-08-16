@@ -1,5 +1,3 @@
-library more.collection.bimap;
-
 import 'dart:collection';
 
 /// A bi-map associates keys with values and values with keys.

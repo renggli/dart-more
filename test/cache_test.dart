@@ -1,5 +1,3 @@
-library more.test.cache_test;
-
 import 'dart:async';
 
 import 'package:more/cache.dart';

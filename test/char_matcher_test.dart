@@ -1,5 +1,3 @@
-library more.test.char_matcher_test;
-
 import 'package:more/char_matcher.dart';
 import 'package:test/test.dart';
 

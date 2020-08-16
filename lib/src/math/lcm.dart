@@ -1,5 +1,3 @@
-library more.math.lcm;
-
 extension LcmIntegerExtension on int {
   /// Returns the least common multiple (LCM) of this [int] and `other`. This is
   /// the smallest positive integer that is divisible by both numbers.

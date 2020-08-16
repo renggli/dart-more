@@ -1,5 +1,3 @@
-library more.test.printer_test;
-
 import 'package:more/printer.dart';
 import 'package:test/test.dart';
 

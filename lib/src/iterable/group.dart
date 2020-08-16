@@ -1,5 +1,3 @@
-library more.iterable.group;
-
 extension GroupExtension<V> on Iterable<V> {
   /// Groups consecutive keys of this [Iterable].
   ///

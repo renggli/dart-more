@@ -1,5 +1,3 @@
-library more.iterable.indexed;
-
 extension IndexedExtension<E> on Iterable<E> {
   /// Returns a iterable that combines the index and value of this [Iterable].
   ///

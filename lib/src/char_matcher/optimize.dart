@@ -1,5 +1,3 @@
-library more.char_matcher.optimize;
-
 import '../../char_matcher.dart';
 import '../collection/bitlist.dart';
 import 'any.dart';

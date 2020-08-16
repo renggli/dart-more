@@ -1,5 +1,3 @@
-library more.test.tuple_test;
-
 import 'package:more/tuple.dart';
 import 'package:test/test.dart';
 

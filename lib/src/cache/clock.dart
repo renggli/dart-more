@@ -1,5 +1,3 @@
-library more.cache.clock;
-
 /// A function to provide the current time.
 typedef Clock = DateTime Function();
 

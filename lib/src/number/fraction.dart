@@ -1,5 +1,3 @@
-library more.number.fraction;
-
 import 'package:collection/collection.dart' show QueueList;
 import 'package:meta/meta.dart' show immutable;
 

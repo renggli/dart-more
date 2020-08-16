@@ -1,5 +1,3 @@
-library more.math.is_probably_prime;
-
 extension ProbablyPrimeIntegerExtension on int {
   /// Tests if this [int] is probably a prime.
   ///

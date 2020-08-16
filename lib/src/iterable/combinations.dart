@@ -1,5 +1,3 @@
-library more.iterable.combinations;
-
 extension CombinationsExtension<E> on Iterable<E> {
   /// Returns an iterable over the combinations of this [Iterable] of length
   /// [count]. The combinations are emitted in lexicographical order based on

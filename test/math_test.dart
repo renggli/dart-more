@@ -1,5 +1,3 @@
-library more.test.math_test;
-
 import 'dart:math' as math;
 
 import 'package:more/math.dart';

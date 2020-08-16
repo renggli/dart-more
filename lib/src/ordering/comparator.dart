@@ -1,5 +1,3 @@
-library more.ordering.comparator;
-
 import '../../ordering.dart';
 
 class ComparatorOrdering<T> extends Ordering<T> {

@@ -1,5 +1,3 @@
-library more.printer.undefined;
-
 import '../../printer.dart';
 import 'delegate.dart';
 

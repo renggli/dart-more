@@ -1,5 +1,3 @@
-library more.collection.multimap.list;
-
 import 'dart:collection' show ListMixin;
 
 import '../multimap.dart';

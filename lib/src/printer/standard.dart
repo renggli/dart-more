@@ -1,5 +1,3 @@
-library more.printer.standard;
-
 import '../../printer.dart';
 
 /// Calls the standard [toString] method.

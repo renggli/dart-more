@@ -1,5 +1,3 @@
-library more.bin.generate_tuple;
-
 import 'dart:io';
 import 'dart:math';
 
@@ -57,8 +55,6 @@ Future<void> generateParent(int max) async {
   final file = parentFile;
   final out = file.openWrite();
   out.writeln('/// Tuple data type.');
-  out.writeln('library more.tuple;');
-  out.writeln('');
   out.writeln('import \'package:meta/meta.dart\' show immutable;');
   out.writeln('');
   for (var i = 0; i < max; i++) {
@@ -282,8 +278,6 @@ Future<void> generateTest(int max) async {
     out.writeln('});');
   }
 
-  out.writeln('library more.test.tuple_test;');
-  out.writeln('');
   out.writeln('import \'package:more/tuple.dart\';');
   out.writeln('import \'package:test/test.dart\';');
   out.writeln('');

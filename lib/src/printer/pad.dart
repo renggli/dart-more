@@ -1,5 +1,3 @@
-library more.printer.pad;
-
 import 'package:characters/characters.dart';
 
 import '../../printer.dart';

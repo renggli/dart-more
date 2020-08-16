@@ -1,5 +1,3 @@
-library more.collection.bitlist;
-
 import 'dart:collection' show ListBase;
 import 'dart:typed_data' show Uint32List;
 

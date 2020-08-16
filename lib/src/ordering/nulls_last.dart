@@ -1,5 +1,3 @@
-library more.ordering.nulls_last;
-
 import '../../ordering.dart';
 
 class NullsLastOrdering<T> extends Ordering<T> {

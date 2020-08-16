@@ -1,5 +1,3 @@
-library more.char_matcher.ascii;
-
 import '../../char_matcher.dart';
 
 class AsciiCharMatcher extends CharMatcher {

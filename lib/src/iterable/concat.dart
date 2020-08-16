@@ -1,5 +1,3 @@
-library more.iterable.concat;
-
 /// Combines this [Iterable] of [Iterable]s into a single iterable.
 ///
 /// For example:

@@ -1,5 +1,3 @@
-library more.iterable.periodic;
-
 import 'iterate.dart' show iterate;
 
 /// Different kinds of repeating periodic timestamps.

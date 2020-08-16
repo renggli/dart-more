@@ -1,5 +1,3 @@
-library more.char_matcher.disjunctive;
-
 import '../../char_matcher.dart';
 import 'any.dart';
 import 'none.dart';

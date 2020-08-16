@@ -1,5 +1,3 @@
-library more.test.hash_test;
-
 import 'package:more/collection.dart';
 import 'package:more/hash.dart';
 import 'package:more/iterable.dart';

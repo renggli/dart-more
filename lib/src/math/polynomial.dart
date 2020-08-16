@@ -1,5 +1,3 @@
-library more.math.polynomial;
-
 extension PolynomialIterableExtension on Iterable<num> {
   /// Evaluates the polynomial described by this [Iterable]s coefficients and
   /// the value [x].

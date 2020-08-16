@@ -1,5 +1,3 @@
-library more.collection.multimap;
-
 import 'dart:collection';
 
 import 'package:meta/meta.dart';

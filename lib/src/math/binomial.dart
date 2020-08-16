@@ -1,5 +1,3 @@
-library more.math.binomial;
-
 extension BinomialIntegerExtension on int {
   /// Returns the binomial coefficient of this [int] and the argument [k],
   ///

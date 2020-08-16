@@ -1,5 +1,3 @@
-library more.math.hyperbolic;
-
 import 'math.dart';
 
 // Based on the polyfills given on https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math.

@@ -1,7 +1,5 @@
 /// Provides a first-class model to convert object to strings using composition
 /// and highly configurable formatting primitives.
-library more.printer;
-
 import 'package:meta/meta.dart' show immutable;
 
 import 'src/printer/literal.dart';

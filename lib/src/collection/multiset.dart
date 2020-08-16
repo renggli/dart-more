@@ -1,5 +1,3 @@
-library more.collection.multiset;
-
 import 'dart:collection' show IterableBase;
 import 'dart:math' show min;
 

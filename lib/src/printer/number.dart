@@ -1,5 +1,3 @@
-library more.printer.number;
-
 import 'dart:math' as math;
 
 import '../../printer.dart';

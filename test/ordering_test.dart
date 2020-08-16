@@ -1,5 +1,3 @@
-library more.test.ordering_test;
-
 import 'package:more/iterable.dart';
 import 'package:more/ordering.dart';
 import 'package:test/test.dart';

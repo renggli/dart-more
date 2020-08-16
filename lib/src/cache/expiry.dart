@@ -1,5 +1,3 @@
-library more.cache.expiry;
-
 import 'dart:async' show Future, FutureOr;
 
 import '../../cache.dart';

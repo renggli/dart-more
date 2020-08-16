@@ -1,5 +1,3 @@
-library more.char_matcher.lower_case;
-
 import '../../char_matcher.dart';
 
 class LowerCaseLetterCharMatcher extends CharMatcher {

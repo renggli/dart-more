@@ -1,5 +1,3 @@
-library more.cache.fifo;
-
 import 'item.dart';
 import 'loader.dart';
 import 'lru.dart';

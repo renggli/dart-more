@@ -1,5 +1,3 @@
-library more.printer.sequence;
-
 import '../../printer.dart';
 
 /// Calls a sequence of other printers.

@@ -1,5 +1,3 @@
-library more.iterable.flatten;
-
 extension FlattenExtension on Iterable {
   /// Creates an iterable with all sub-iterables flattened recursively up to the
   /// specified [depth]. Filters elements that are not of type [E].

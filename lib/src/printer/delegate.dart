@@ -1,5 +1,3 @@
-library more.printer.delegate;
-
 import '../../printer.dart';
 
 /// Delegates a printer to another one.

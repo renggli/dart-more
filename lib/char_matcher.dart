@@ -1,7 +1,5 @@
 /// A first-class model of character classes, their composition and operations
 /// on strings.
-library more.char_matcher;
-
 import 'package:meta/meta.dart' show immutable;
 
 import 'src/char_matcher/any.dart';

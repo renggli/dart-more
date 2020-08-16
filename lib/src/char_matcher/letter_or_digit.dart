@@ -1,5 +1,3 @@
-library more.char_matcher.letter_or_digit;
-
 import '../../char_matcher.dart';
 
 class LetterOrDigitCharMatcher extends CharMatcher {

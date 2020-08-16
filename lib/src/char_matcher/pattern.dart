@@ -1,5 +1,3 @@
-library more.char_matcher.pattern;
-
 import '../../char_matcher.dart';
 import 'optimize.dart';
 import 'range.dart';

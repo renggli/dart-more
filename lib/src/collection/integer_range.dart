@@ -1,5 +1,3 @@
-library more.collection.integer_range;
-
 import 'dart:collection' show ListBase;
 
 import '../iterable/mixins/unmodifiable.dart' show UnmodifiableListMixin;

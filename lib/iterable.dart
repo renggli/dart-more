@@ -1,6 +1,4 @@
 /// Some fancy iterables and iterators.
-library more.iterable;
-
 export 'src/iterable/chunked.dart' show ChunkedExtension;
 export 'src/iterable/combinations.dart' show CombinationsExtension;
 export 'src/iterable/concat.dart' show ConcatExtension;

@@ -1,5 +1,3 @@
-library more.char_matcher.letter;
-
 import '../../char_matcher.dart';
 
 class LetterCharMatcher extends CharMatcher {

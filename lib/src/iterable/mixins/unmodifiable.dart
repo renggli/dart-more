@@ -1,5 +1,3 @@
-library more.iterable.mixins.unmodifiable;
-
 import 'dart:math' show Random;
 
 /// Mixin for an unmodifiable [List] class.

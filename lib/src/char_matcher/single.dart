@@ -1,5 +1,3 @@
-library more.char_matcher.single;
-
 import '../../char_matcher.dart';
 
 class SingleCharMatcher extends CharMatcher {

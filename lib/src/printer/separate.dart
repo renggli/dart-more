@@ -1,5 +1,3 @@
-library more.printer.separate;
-
 import 'package:characters/characters.dart';
 
 import '../../printer.dart';

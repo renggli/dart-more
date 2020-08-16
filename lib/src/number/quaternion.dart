@@ -1,5 +1,3 @@
-library more.number.quaternion;
-
 import 'package:meta/meta.dart' show immutable;
 
 import '../../hash.dart';

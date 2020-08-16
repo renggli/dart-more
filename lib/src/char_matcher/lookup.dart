@@ -1,5 +1,3 @@
-library more.char_matcher.lookup;
-
 import '../../char_matcher.dart';
 import '../collection/bitlist.dart';
 

@@ -1,5 +1,3 @@
-library more.math.factorial;
-
 /// Precomputed list of factorials.
 const List<int> factorials = [
   1,

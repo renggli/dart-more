@@ -1,5 +1,3 @@
-library more.printer.trim;
-
 import '../../printer.dart';
 import 'delegate.dart';
 

@@ -1,5 +1,3 @@
-library more.collection.cache;
-
 import 'dart:async' show Future;
 
 import 'src/cache/clock.dart';

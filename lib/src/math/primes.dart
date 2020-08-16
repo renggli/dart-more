@@ -1,5 +1,3 @@
-library more.math.primes_up_to;
-
 import '../collection/bitlist.dart';
 
 extension PrimesIntegerExtension on int {

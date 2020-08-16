@@ -1,7 +1,5 @@
 /// Provides a first-class model of comparators, their composition and
 /// operations on iterables.
-library more.ordering;
-
 import 'package:meta/meta.dart' show immutable;
 
 import 'src/ordering/comparator.dart';

@@ -1,5 +1,3 @@
-library more.ordering.explicit;
-
 import '../../iterable.dart';
 import '../../ordering.dart';
 

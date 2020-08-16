@@ -1,5 +1,3 @@
-library more.iterable.flat_map;
-
 extension FlatMapExtension<E> on Iterable<E> {
   /// Maps each element of this [Iterable] using a mapping function to zero or
   /// more elements, then flattens the result into a continuous iterable.

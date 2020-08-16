@@ -1,5 +1,3 @@
-library more.iterable.iterate;
-
 import 'dart:collection' show IterableBase;
 
 import 'mixins/infinite.dart';

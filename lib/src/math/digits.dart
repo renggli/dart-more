@@ -1,5 +1,3 @@
-library more.math.digits;
-
 extension DigitsIntegerExtension on int {
   /// Returns an iterable over the digits of this [int], in the optionally
   /// given [base].

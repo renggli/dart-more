@@ -1,5 +1,3 @@
-library more.printer.sign;
-
 import '../../printer.dart';
 import 'literal.dart';
 import 'utils.dart';

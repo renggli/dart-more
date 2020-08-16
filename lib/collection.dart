@@ -1,5 +1,3 @@
-library more.collection;
-
 export 'src/collection/bimap.dart' show BiMap, BiMapExtension;
 export 'src/collection/bitlist.dart' show BitList, BitListExtension;
 export 'src/collection/double_range.dart'

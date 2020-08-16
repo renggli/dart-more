@@ -1,5 +1,3 @@
-library more.ordering.natural;
-
 import '../../ordering.dart';
 
 class NaturalOrdering<T extends Comparable<T>> extends Ordering<T> {

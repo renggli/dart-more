@@ -1,5 +1,3 @@
-library more.printer.truncate;
-
 import 'package:characters/characters.dart';
 
 import '../../printer.dart';

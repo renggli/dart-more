@@ -1,5 +1,3 @@
-library more.test.collection_test;
-
 import 'dart:math';
 
 import 'package:more/collection.dart';

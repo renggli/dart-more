@@ -1,5 +1,3 @@
-library more.tuple.tuple_2;
-
 import '../../hash.dart';
 import '../../tuple.dart';
 

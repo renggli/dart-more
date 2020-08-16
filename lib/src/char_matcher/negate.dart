@@ -1,5 +1,3 @@
-library more.char_matcher.negate;
-
 import '../../char_matcher.dart';
 
 class NegateCharMatcher extends CharMatcher {
