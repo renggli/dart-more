@@ -11,6 +11,7 @@ More Dart — Literally
 
 Various extensions that make Dart a better place:
 
+- `async.dart` provides numerous helpers to make async code better.
 - `cache.dart` is a collection of different caching strategies and their expiry policy.
 - `char_matcher.dart` is a model for character classes, their composition and operations on strings.
 - `collection.dart` is a collection of collection types: bi-map, bit-list, multi-set, set and list multi-map, range, and string.
