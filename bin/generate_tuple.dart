@@ -116,8 +116,6 @@ Future<void> generateChild(int i, int max) async {
   final types = generateTypes(i);
   final values = generateValues(i);
 
-  out.writeln('library more.tuple.tuple_$i;');
-  out.writeln('');
   if (i > 0) {
     out.writeln('import \'../../hash.dart\';');
   }
