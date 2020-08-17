@@ -261,80 +261,14 @@ void main() {
     });
   });
   group('flatten', () {
-    test('default', () {
-      expect(
-          [
-            1,
-            2,
-            [3, 4]
-          ].flatten(),
-          [1, 2, 3, 4]);
+    test('empty', () {
+      expect([[], [], []].flatten(), []);
     });
-    test('nested', () {
-      expect(
-          [
-            1,
-            2,
-            [
-              3,
-              4,
-              [5, 6]
-            ]
-          ].flatten(),
-          [1, 2, 3, 4, 5, 6]);
+    test('single', () {
+      expect([[1], [2], [3]].flatten(), [1, 2, 3]);
     });
-    test('limited', () {
-      expect(
-          [
-            1,
-            2,
-            [
-              3,
-              4,
-              [5, 6]
-            ]
-          ].flatten(1),
-          [
-            1,
-            2,
-            3,
-            4,
-            [5, 6]
-          ]);
-    });
-    test('limited typed', () {
-      expect(
-          [
-            1,
-            2,
-            [
-              3,
-              4,
-              [5, 6]
-            ]
-          ].flatten<int>(1),
-          [1, 2, 3, 4]);
-    });
-    test('really deep', () {
-      expect(
-          [
-            1,
-            2,
-            [
-              3,
-              4,
-              [
-                5,
-                6,
-                [
-                  7,
-                  8,
-                  [9, 10]
-                ]
-              ]
-            ]
-          ].flatten<int>(),
-          [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]);
+    test('double', () {
+      expect([[1, 2], [3, 4], [5, 6]].flatten(), [1, 2, 3, 4, 5, 6]);
     });
   });
   group('groupBy', () {
