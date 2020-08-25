@@ -1,15 +1,15 @@
-extension FlatMapExtension<T> on Stream<T> {
+extension FlatMapExtension<E> on Stream<E> {
   /// Maps each element of this [Stream] using a mapping function to zero or
   /// more elements, then flattens the result into a continuous stream.
   ///
   /// This is an alias for [Stream.expand].
-  Stream<S> flatMap<S>(Iterable<S> Function(T element) callback) =>
-      expand<S>(callback);
+  Stream<T> flatMap<T>(Iterable<T> Function(E element) callback) =>
+      expand<T>(callback);
 
   /// Maps each element of this [Stream] using a mapping function to a stream,
   /// then flattens the result into a continuous stream.
   ///
   /// This is an alias for [Stream.asyncExpand].
-  Stream<S> asyncFlatMap<S>(Stream<S> Function(T element) callback) =>
-      asyncExpand<S>(callback);
+  Stream<T> asyncFlatMap<T>(Stream<T> Function(E element) callback) =>
+      asyncExpand<T>(callback);
 }

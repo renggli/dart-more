@@ -1,4 +1,4 @@
-extension WhereTypeExtension<T> on Stream<T> {
-  /// Returns a [Stream] with all elements that have type [S].
-  Stream<S> whereType<S>() => where((value) => value is S).cast<S>();
+extension WhereTypeExtension<E> on Stream<E> {
+  /// Returns a [Stream] with all elements that have type [T].
+  Stream<T> whereType<T>() => where((value) => value is T).cast<T>();
 }

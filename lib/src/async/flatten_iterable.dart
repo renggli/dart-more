@@ -1,4 +1,4 @@
-extension FlattenIterableExtension<T> on Stream<Iterable<T>> {
+extension FlattenIterableExtension<E> on Stream<Iterable<E>> {
   /// Flattens a [Stream] of [Iterable]s to a flattened [Stream].
-  Stream<T> flatten() => expand((iterable) => iterable);
+  Stream<E> flatten() => expand<E>((iterable) => iterable);
 }
