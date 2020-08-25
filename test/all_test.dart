@@ -1,5 +1,6 @@
 import 'package:test/test.dart';
 
+import 'async_test.dart' as async_test;
 import 'cache_test.dart' as cache_test;
 import 'char_matcher_test.dart' as char_matcher_test;
 import 'collection_test.dart' as collection_test;
@@ -12,6 +13,7 @@ import 'printer_test.dart' as printer_test;
 import 'tuple_test.dart' as tuple_test;
 
 void main() {
+  group('async', async_test.main);
   group('cache', cache_test.main);
   group('char_matcher', char_matcher_test.main);
   group('collection', collection_test.main);
