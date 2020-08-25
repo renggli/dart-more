@@ -265,10 +265,22 @@ void main() {
       expect([[], [], []].flatten(), []);
     });
     test('single', () {
-      expect([[1], [2], [3]].flatten(), [1, 2, 3]);
+      expect(
+          [
+            [1],
+            [2],
+            [3],
+          ].flatten(),
+          [1, 2, 3]);
     });
     test('double', () {
-      expect([[1, 2], [3, 4], [5, 6]].flatten(), [1, 2, 3, 4, 5, 6]);
+      expect(
+          [
+            [1, 2],
+            [3, 4],
+            [5, 6],
+          ].flatten(),
+          [1, 2, 3, 4, 5, 6]);
     });
   });
   group('groupBy', () {
