@@ -36,9 +36,16 @@ Misc
 
 Follow the installation instructions on [dart packages](https://pub.dev/packages/more#-installing-tab-).
 
-Import one or more of the packages into your Dart code using:
+Import the all-including parent package:
 
 ```dart
+import 'package:more/more.dart';
+```
+
+Or one or more of the specific packages into your Dart code:
+
+```dart
+import 'package:more/async.dart';
 import 'package:more/cache.dart';
 import 'package:more/char_matcher.dart';
 import 'package:more/collection.dart';
