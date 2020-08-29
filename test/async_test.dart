@@ -25,11 +25,14 @@ void main() {
           ]));
     });
     test('max age', () {
-      final stream =
-          Stream.periodic(const Duration(milliseconds: 4), (count) => 1 + count)
-              .take(5);
+      final stream = Stream.fromIterable([
+        Stream.fromIterable([1, 2]),
+        Stream.fromFuture(
+            Future.delayed(const Duration(milliseconds: 12), () => 3)),
+        Stream.fromIterable([4, 5]),
+      ]).flatten();
       expect(
-          stream.buffer(maxAge: const Duration(milliseconds: 14)),
+          stream.buffer(maxAge: const Duration(milliseconds: 10)),
           emitsInOrder([
             [1, 2, 3],
             [4, 5]
