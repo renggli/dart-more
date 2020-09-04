@@ -78,7 +78,7 @@ void main() {
             [1, 2, 3]
           ]));
     });
-  });
+  }, onPlatform: {'browser': const Skip('Flaky due to timing')});
   group('flatMap', () {
     group('iterable', () {
       Iterable<String> mapper(int value) => ['$value', '$value'];
