@@ -7,13 +7,14 @@ class NullsLastOrdering<T> extends Ordering<T?> {
 
   @override
   int compare(T? a, T? b) {
-    if (a == null) {
+    if (a == null && b == null) {
+      return 0;
+    } else if (a == null) {
       return 1;
     } else if (b == null) {
       return -1;
-    } else {
-      return ordering.compare(a, b);
     }
+    return ordering.compare(a, b);
   }
 
   @override

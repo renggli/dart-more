@@ -1,4 +1,3 @@
-import 'package:more/iterable.dart';
 import 'package:more/ordering.dart';
 import 'package:test/test.dart';
 
@@ -20,34 +19,31 @@ void verifyBasic<T>(String type, Ordering<T> ordering, Iterable<T> unsorted,
 
 void verify<T>(
     Ordering<T> ordering, Iterable<T> unsorted, Iterable<T> expected) {
-  verifyBasic('ordering', ordering, unsorted, expected);
-  verifyBasic('ordering.reversed', ordering.reversed, unsorted,
-      expected.toList().reversed);
+  verifyBasic(
+    'ordering',
+    ordering,
+    unsorted,
+    expected,
+  );
+  verifyBasic(
+    'ordering.reversed',
+    ordering.reversed,
+    unsorted,
+    expected.toList().reversed,
+  );
   if (!unsorted.contains(null)) {
     verifyBasic(
-        'ordering.nullsFirst',
-        ordering.nullsFirst,
-        <Iterable>[
-          [null],
-          unsorted,
-          [null]
-        ].concat(),
-        <Iterable>[
-          [null, null],
-          expected
-        ].concat());
+      'ordering.nullsFirst',
+      ordering.nullsFirst,
+      <T?>[null, ...unsorted, null],
+      <T?>[null, null, ...expected],
+    );
     verifyBasic(
-        'ordering.nullsLast',
-        ordering.nullsLast,
-        <Iterable>[
-          [null],
-          unsorted,
-          [null]
-        ].concat(),
-        <Iterable>[
-          expected,
-          [null, null]
-        ].concat());
+      'ordering.nullsLast',
+      ordering.nullsLast,
+      <T?>[null, ...unsorted, null],
+      <T?>[...expected, null, null],
+    );
   }
 }
 
