@@ -541,7 +541,8 @@ void main() {
       expect(printer(2), '2<--');
     });
     test('coerce function', () {
-      String increment(int value) => (value + 1).toString();
+      String increment(Object? value) =>
+          value is int ? (value + 1).toString() : 'n/a';
       final printer = Printer.standard() + increment;
       expect(printer(3), '34');
     });
