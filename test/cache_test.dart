@@ -8,74 +8,62 @@ const Duration delay = Duration(milliseconds: 10);
 typedef NewCache<T, S> = Cache<T, S> Function(Loader<T, S> loader);
 
 // Various common loaders used with the tests.
-String failingLoader(int key) => fail('Loader should never be called');
-
 String immediateLoader(int key) => '$key';
+
+String immediateFailingLoader(int key) =>
+    throw StateError('Loader for $key is failing.');
 
 Future<String> futureLoader(int key) => Future.value(immediateLoader(key));
 
-Future<String> delayedLoader(int key) =>
-    Future.delayed(delay, () => immediateLoader(key));
+Future<String> futureFailingLoader(int key) =>
+    Future.error(StateError('Loader for $key is failing.'));
 
-String throwingLoader(int key) => throw UnsupportedError('$key');
+Future<String> futureDelayedLoader(int key) =>
+    Future.delayed(delay, () => immediateLoader(key));
 
 // Basic tests that should pass on any (stateless) cache.
 void statelessCacheTests(NewCache<int, String> newCache) {
-  test('empty', () {
-    final cache = newCache(failingLoader);
-    return cache
-        .size()
-        .then((value) => expect(value, 0, reason: 'cache should be empty'));
+  test('empty', () async {
+    final cache = newCache(immediateFailingLoader);
+    await expectLater(cache.size(), completion(0));
   });
-  test('no present value', () {
-    final cache = newCache(failingLoader);
-    return cache.getIfPresent(1).then((value) =>
-        expect(value, isNull, reason: 'there should be no present value'));
+  test('no present value', () async {
+    final cache = newCache(immediateFailingLoader);
+    await expectLater(cache.getIfPresent(1), completion(isNull));
   });
-  test('load immediate value', () {
+  test('load immediate value', () async {
     final cache = newCache(immediateLoader);
-    return cache.get(1).then(
-        (value) => expect(value, '1', reason: 'get value should be loaded'));
+    await expectLater(cache.get(1), completion('1'));
   });
-  test('load future value', () {
+  test('load immediate failing value', () async {
+    final cache = newCache(immediateFailingLoader);
+    await expectLater(cache.get(1), throwsA(isStateError));
+  });
+  test('load future value', () async {
     final cache = newCache(futureLoader);
-    return cache.get(1).then(
-        (value) => expect(value, '1', reason: 'get value should be loaded'));
+    await expectLater(cache.get(1), completion('1'));
   });
-  test('load throwing value', () {
-    final cache = newCache(throwingLoader);
-    return cache.get(1).then((value) => fail('expected error'),
-        onError: (exception) => expect(exception, isUnsupportedError));
+  test('load future failing value', () async {
+    final cache = newCache(futureFailingLoader);
+    await expectLater(cache.get(1), throwsA(isStateError));
   });
-  test('load delayed value', () {
-    final cache = newCache(delayedLoader);
-    return cache.get(1).then(
-        (value) => expect(value, '1', reason: 'get value should be loaded'));
+  test('load future delayed value', () async {
+    final cache = newCache(futureDelayedLoader);
+    await expectLater(cache.get(1), completion('1'));
   });
-  test('set returns value', () {
-    final cache = newCache(failingLoader);
-    return cache.set(1, 'foo').then((value) =>
-        expect(value, 'foo', reason: 'set value should be returned'));
+  test('invalidate empty', () async {
+    final cache = newCache(immediateFailingLoader);
+    await cache.invalidate(1);
+    await expectLater(cache.size(), completion(0));
   });
-  test('invalidate empty', () {
-    final cache = newCache(failingLoader);
-    return cache
-        .invalidate(1)
-        .then((_) => cache.size())
-        .then((value) => expect(value, 0, reason: 'cache should be empty'));
+  test('invalidate all empty', () async {
+    final cache = newCache(immediateFailingLoader);
+    await cache.invalidateAll();
+    await expectLater(cache.size(), completion(0));
   });
-  test('invalidate all empty', () {
-    final cache = newCache(failingLoader);
-    return cache
-        .invalidateAll()
-        .then((_) => cache.size())
-        .then((value) => expect(value, 0, reason: 'cache should be empty'));
-  });
-  test('reap is a no-op', () {
-    final cache = newCache(failingLoader);
-    return cache
-        .reap()
-        .then((size) => expect(size, 0, reason: 'nothing should be gone'));
+  test('reap is a no-op', () async {
+    final cache = newCache(immediateFailingLoader);
+    await expectLater(cache.reap(), completion(0));
   });
 }
 
@@ -88,131 +76,90 @@ void cacheEvictionTest(NewCache<int, String> newCache, String name,
   test(name, () async {
     final cache = newCache(immediateLoader);
     for (final key in load) {
-      expect(await cache.get(key), '$key');
+      await expectLater(cache.get(key), completion('$key'));
     }
     for (final key in present) {
-      expect(await cache.getIfPresent(key), '$key',
-          reason: '$key should be present');
+      await expectLater(cache.getIfPresent(key), completion('$key'));
     }
     for (final key in absent) {
-      expect(await cache.getIfPresent(key), isNull,
-          reason: '$key should be absent');
+      await expectLater(cache.getIfPresent(key), completion(isNull));
     }
   });
 }
 
-// Basic tests that should pass on any persistent cache (as long as no expiry
-// kicks in).
+// Basic tests that should pass on any persistent cache
+// (as long as no expiry kicks in).
 void persistentCacheTests(NewCache<int, String> newCache) {
-  test('get and set', () {
+  test('get and set', () async {
     final cache = newCache(immediateLoader);
-    return cache
-        .get(1)
-        .then((_) => cache.set(1, 'foo'))
-        .then((value) => expect(value, 'foo', reason: 'update loaded value'))
-        .then((_) => cache.get(1))
-        .then((value) => expect(value, 'foo', reason: 'updated value'));
+    await expectLater(cache.get(1), completion('1'));
+    await expectLater(cache.set(1, 'foo'), completion('foo'));
+    await expectLater(cache.getIfPresent(1), completion('foo'));
   });
-  test('load throwing value has no side-effect', () {
-    final cache = newCache(throwingLoader);
-    return cache
-        .get(1)
-        .catchError((exception) => '1')
-        .then((_) => cache.getIfPresent(1))
-        .then(
-            (value) => expect(value, isNull, reason: 'loader threw exception'));
+  test('load throwing value has no side-effect', () async {
+    final cache = newCache(immediateFailingLoader);
+    await expectLater(cache.get(1), throwsA(isStateError));
+    await expectLater(cache.getIfPresent(1), completion(isNull));
   });
-  test('set and get', () {
-    final cache = newCache(failingLoader);
-    return cache
-        .set(1, 'foo')
-        .then((value) => expect(value, 'foo', reason: 'return value'))
-        .then((_) => cache.get(1))
-        .then((value) => expect(value, 'foo', reason: 'get value'));
+  test('set and get', () async {
+    final cache = newCache(immediateFailingLoader);
+    await expectLater(cache.set(1, 'foo'), completion('foo'));
+    await expectLater(cache.get(1), completion('foo'));
   });
-  test('set and size', () {
-    final cache = newCache(failingLoader);
-    return cache
-        .set(1, 'foo')
-        .then((_) => cache.size())
-        .then((value) => expect(value, 1, reason: 'there should be one item'));
+  test('set and size', () async {
+    final cache = newCache(immediateFailingLoader);
+    await cache.set(1, 'foo');
+    await expectLater(cache.size(), completion(1));
   });
-  test('set, invalidate, get', () {
-    final cache = newCache(failingLoader);
-    return cache
-        .set(1, 'foo')
-        .then((_) => cache.invalidate(1))
-        .then((_) => cache.getIfPresent(1))
-        .then((value) => expect(value, isNull, reason: 'key was invalidated'));
+  test('set, invalidate, get', () async {
+    final cache = newCache(immediateFailingLoader);
+    await cache.set(1, 'foo');
+    await cache.invalidate(1);
+    await expectLater(cache.getIfPresent(1), completion(isNull));
   });
-  test('set, invalidate all, get', () {
-    final cache = newCache(failingLoader);
-    return cache
-        .set(1, 'foo')
-        .then((_) => cache.invalidateAll())
-        .then((_) => cache.getIfPresent(1))
-        .then(
-            (value) => expect(value, isNull, reason: 'cache was invalidated'));
+  test('set, invalidate all, get', () async {
+    final cache = newCache(immediateFailingLoader);
+    await cache.set(1, 'foo');
+    await cache.invalidateAll();
+    await expectLater(cache.getIfPresent(1), completion(isNull));
   });
-  test('get with immediate value is persistent', () {
+  test('get with immediate value is persistent', () async {
     final cache = newCache(immediateLoader);
-    return cache
-        .get(1)
-        .then((value) => expect(value, '1'))
-        .then((_) => cache.getIfPresent(1))
-        .then((value) =>
-            expect(value, '1', reason: 'loaded value is persistent'));
+    await expectLater(cache.get(1), completion('1'));
+    await expectLater(cache.getIfPresent(1), completion('1'));
   });
-  test('get with future value is persistent', () {
+  test('get with future value is persistent', () async {
     final cache = newCache(futureLoader);
-    return cache
-        .get(1)
-        .then((value) => expect(value, '1'))
-        .then((_) => cache.getIfPresent(1))
-        .then((value) =>
-            expect(value, '1', reason: 'loaded value is persistent'));
+    await expectLater(cache.get(1), completion('1'));
+    await expectLater(cache.getIfPresent(1), completion('1'));
   });
-  test('get with delayed value is persistent', () {
-    final cache = newCache(delayedLoader);
-    return cache
-        .get(1)
-        .then((value) => expect(value, '1'))
-        .then((_) => cache.getIfPresent(1))
-        .then((value) =>
-            expect(value, '1', reason: 'loaded value is persistent'));
+  test('get with delayed value is persistent', () async {
+    final cache = newCache(futureDelayedLoader);
+    await expectLater(cache.get(1), completion('1'));
+    await expectLater(cache.getIfPresent(1), completion('1'));
   });
-  test('get with invalidated key is not persistent', () {
-    final cache = newCache(delayedLoader);
+  test('get with invalidated key is not persistent', () async {
+    final cache = newCache(futureDelayedLoader);
     final loaded1 = cache.get(1);
     final loaded2 = cache.get(2);
-    return cache
-        .invalidate(2)
-        .then((_) => Future.wait([loaded1, loaded2]))
-        .then((_) => cache.getIfPresent(1))
-        .then((value) =>
-            expect(value, '1', reason: 'value 1 should still be present'))
-        .then((_) => cache.getIfPresent(2))
-        .then((value) =>
-            expect(value, isNull, reason: 'value 2 should still be absent'));
+    await cache.invalidate(2);
+    await loaded1;
+    await loaded2;
+    await expectLater(cache.getIfPresent(1), completion('1'));
+    await expectLater(cache.getIfPresent(2), completion(isNull));
   });
-  test('get with invalidated cache is not persistent', () {
-    final cache = newCache(delayedLoader);
+  test('get with invalidated cache is not persistent', () async {
+    final cache = newCache(futureDelayedLoader);
     final loaded = cache.get(1);
-    return cache
-        .invalidateAll()
-        .then((_) => loaded)
-        .then((_) => cache.getIfPresent(1))
-        .then(
-            (value) => expect(value, isNull, reason: 'cache was invalidated'));
+    await cache.invalidateAll();
+    await loaded;
+    await expectLater(cache.getIfPresent(1), completion(isNull));
   });
-  test('reap is invariant', () {
-    final cache = newCache(failingLoader);
-    return cache
-        .set(1, 'foo')
-        .then((_) => cache.reap())
-        .then((value) => expect(value, 0, reason: 'nothing should be gone'))
-        .then((_) => cache.size())
-        .then((value) => expect(value, 1, reason: 'one item should be left'));
+  test('reap is invariant', () async {
+    final cache = newCache(immediateFailingLoader);
+    await cache.set(1, 'foo');
+    await expectLater(cache.reap(), completion(0));
+    await expectLater(cache.size(), completion(1));
   });
 }
 
@@ -225,21 +172,16 @@ void main() {
   group('empty', () {
     Cache<int, String> newCache(Loader<int, String> loader) =>
         Cache.empty(loader: loader);
-
     statelessCacheTests(newCache);
-    test('missing loader', () {
-      expect(() => Cache.empty(), throwsArgumentError);
-    });
   });
   group('delegate', () {
     Cache<int, String> newCache(Loader<int, String> loader) =>
         DelegateCache(Cache.lru(loader: loader, maximumSize: 5));
-
     statelessCacheTests(newCache);
     persistentCacheTests(newCache);
   });
   group('expiry', () {
-    Duration offset;
+    late Duration offset;
     DateTime offsetClock() => DateTime(2000).add(offset);
     setUp(() => offset = Duration.zero);
 
@@ -259,10 +201,6 @@ void main() {
     persistentCacheTests(newUpdateExpireCache);
 
     group('constructors', () {
-      test('missing loader', () {
-        expect(() => Cache.expiry(accessExpiry: const Duration(seconds: 20)),
-            throwsArgumentError);
-      });
       test('missing expiry', () {
         expect(
             () => Cache.expiry(loader: immediateLoader), throwsArgumentError);
@@ -282,135 +220,93 @@ void main() {
     });
 
     group('update expire cache', () {
-      test('expire a set value after it has been updated', () {
+      test('expire a set value after it has been updated', () async {
         final cache = newUpdateExpireCache(immediateLoader);
-        return cache
-            .set(1, '2')
-            .then((_) => offset = const Duration(seconds: 20))
-            .then((_) => cache.getIfPresent(1))
-            .then((value) => expect(value, '2', reason: 'value is set'))
-            .then((_) => cache.set(1, '3'))
-            .then((_) => offset = const Duration(seconds: 40))
-            .then((_) => cache.getIfPresent(1))
-            .then((value) => expect(value, '3', reason: 'value is updated'))
-            .then((_) => offset = const Duration(seconds: 41))
-            .then((_) => cache.getIfPresent(1))
-            .then(
-                (value) => expect(value, isNull, reason: 'value has expired'));
+        await expectLater(cache.set(1, '2'), completion('2'));
+        offset = const Duration(seconds: 20);
+        await expectLater(cache.getIfPresent(1), completion('2'));
+        await expectLater(cache.set(1, '3'), completion('3'));
+        offset = const Duration(seconds: 40);
+        await expectLater(cache.getIfPresent(1), completion('3'));
+        offset = const Duration(seconds: 41);
+        await expectLater(cache.getIfPresent(1), completion(isNull));
       });
-      test('loaded value expires', () {
+      test('loaded value expires', () async {
         final cache = newUpdateExpireCache(immediateLoader);
-        return cache
-            .get(1)
-            .then((value) => expect(value, '1', reason: 'value is loaded'))
-            .then((_) => offset = const Duration(seconds: 20))
-            .then((_) => cache.getIfPresent(1))
-            .then(
-                (value) => expect(value, '1', reason: 'value is still present'))
-            .then((_) => offset = const Duration(seconds: 21))
-            .then((_) => cache.getIfPresent(1))
-            .then((value) => expect(value, isNull, reason: 'value has expired'))
-            .then((_) => cache.size())
-            .then((size) => expect(size, 0, reason: 'cache should be empty'));
+        await expectLater(cache.get(1), completion('1'));
+        offset = const Duration(seconds: 20);
+        await expectLater(cache.getIfPresent(1), completion('1'));
+        offset = const Duration(seconds: 21);
+        await expectLater(cache.getIfPresent(1), completion(isNull));
+        await expectLater(cache.size(), completion(0));
       });
-      test('re-loaded value expires', () {
+      test('re-loaded value expires', () async {
         var counter = 0;
         final cache = newUpdateExpireCache((key) {
           counter++;
           return immediateLoader(key);
         });
-        return cache
-            .get(0)
-            .then((value) => expect(value, '0', reason: 'value is loaded'))
-            .then((value) => expect(counter, 1, reason: 'loaded once'))
-            .then((_) => offset = const Duration(seconds: 20))
-            .then((_) => cache.get(0))
-            .then(
-                (value) => expect(value, '0', reason: 'value is still present'))
-            .then((value) => expect(counter, 1, reason: 'still loaded once'))
-            .then((_) => offset = const Duration(seconds: 21))
-            .then((_) => cache.get(0))
-            .then((value) => expect(value, '0', reason: 'value is reloaded'))
-            .then((value) => expect(counter, 2, reason: 'value loaded again'));
+        await expectLater(cache.get(0), completion('0'));
+        expect(counter, 1);
+        offset = const Duration(seconds: 20);
+        await expectLater(cache.get(0), completion('0'));
+        expect(counter, 1);
+        offset = const Duration(seconds: 21);
+        await expectLater(cache.get(0), completion('0'));
+        expect(counter, 2);
       });
-      test('reap expired items', () {
+      test('reap expired items', () async {
         final cache = newUpdateExpireCache(immediateLoader);
-        return cache
-            .set(1, '1')
-            .then((_) => offset = const Duration(seconds: 21))
-            .then((_) => cache.size())
-            .then(
-                (size) => expect(size, 1, reason: 'cache has not been reaped'))
-            .then((_) => cache.reap())
-            .then((size) => expect(size, 1, reason: 'one item should be gone'))
-            .then((_) => cache.size())
-            .then((size) => expect(size, 0, reason: 'cache should be empty'));
+        await cache.set(1, 'foo');
+        offset = const Duration(seconds: 21);
+        await expectLater(cache.size(), completion(1));
+        await expectLater(cache.reap(), completion(1));
+        await expectLater(cache.size(), completion(0));
       });
     });
     group('access expire cache', () {
-      test('expire a set value after it has been updated', () {
+      test('expire a set value after it has been updated', () async {
         final cache = newAccessExpireCache(immediateLoader);
-        return cache
-            .set(1, '2')
-            .then((_) => offset = const Duration(seconds: 20))
-            .then((_) => cache.getIfPresent(1))
-            .then((value) => expect(value, '2', reason: 'value is set'))
-            .then((_) => cache.set(1, '3'))
-            .then((_) => offset = const Duration(seconds: 40))
-            .then((_) => cache.getIfPresent(1))
-            .then((value) => expect(value, '3', reason: 'value is updated'))
-            .then((_) => offset = const Duration(seconds: 61))
-            .then((_) => cache.getIfPresent(1))
-            .then(
-                (value) => expect(value, isNull, reason: 'value has expired'));
+        await cache.set(1, 'foo');
+        offset = const Duration(seconds: 20);
+        await expectLater(cache.getIfPresent(1), completion('foo'));
+        await cache.set(1, 'bar');
+        offset = const Duration(seconds: 40);
+        await expectLater(cache.getIfPresent(1), completion('bar'));
+        offset = const Duration(seconds: 61);
+        await expectLater(cache.getIfPresent(1), completion(isNull));
       });
-      test('loaded value expires', () {
+      test('loaded value expires', () async {
         final cache = newAccessExpireCache(immediateLoader);
-        return cache
-            .get(1)
-            .then((value) => expect(value, '1', reason: 'value is loaded'))
-            .then((_) => offset = const Duration(seconds: 20))
-            .then((_) => cache.getIfPresent(1))
-            .then(
-                (value) => expect(value, '1', reason: 'value is still present'))
-            .then((_) => offset = const Duration(seconds: 41))
-            .then((_) => cache.getIfPresent(1))
-            .then((value) => expect(value, isNull, reason: 'value has expired'))
-            .then((_) => cache.size())
-            .then((size) => expect(size, 0, reason: 'cache should be empty'));
+        await expectLater(cache.get(1), completion('1'));
+        offset = const Duration(seconds: 20);
+        await expectLater(cache.getIfPresent(1), completion('1'));
+        offset = const Duration(seconds: 41);
+        await expectLater(cache.getIfPresent(1), completion(isNull));
+        await expectLater(cache.size(), completion(0));
       });
-      test('re-loaded value expires', () {
+      test('re-loaded value expires', () async {
         var counter = 0;
         final cache = newAccessExpireCache((key) {
           counter++;
           return immediateLoader(key);
         });
-        return cache
-            .get(0)
-            .then((value) => expect(value, '0', reason: 'value is loaded'))
-            .then((value) => expect(counter, 1, reason: 'loaded once'))
-            .then((_) => offset = const Duration(seconds: 20))
-            .then((_) => cache.get(0))
-            .then(
-                (value) => expect(value, '0', reason: 'value is still present'))
-            .then((value) => expect(counter, 1, reason: 'still loaded once'))
-            .then((_) => offset = const Duration(seconds: 41))
-            .then((_) => cache.get(0))
-            .then((value) => expect(value, '0', reason: 'value is reloaded'))
-            .then((value) => expect(counter, 2, reason: 'value loaded again'));
+        await expectLater(cache.get(0), completion('0'));
+        expect(counter, 1);
+        offset = const Duration(seconds: 20);
+        await expectLater(cache.get(0), completion('0'));
+        expect(counter, 1);
+        offset = const Duration(seconds: 41);
+        await expectLater(cache.get(0), completion('0'));
+        expect(counter, 2);
       });
-      test('reap expired items', () {
+      test('reap expired items', () async {
         final cache = newAccessExpireCache(immediateLoader);
-        return cache
-            .set(1, '1')
-            .then((_) => offset = const Duration(seconds: 120))
-            .then((_) => cache.size())
-            .then(
-                (size) => expect(size, 1, reason: 'cache has not been reaped'))
-            .then((_) => cache.reap())
-            .then((size) => expect(size, 1, reason: 'one item should be gone'))
-            .then((_) => cache.size())
-            .then((size) => expect(size, 0, reason: 'cache should be empty'));
+        await cache.set(1, '1');
+        offset = const Duration(seconds: 120);
+        await expectLater(cache.size(), completion(1));
+        await expectLater(cache.reap(), completion(1));
+        await expectLater(cache.size(), completion(0));
       });
     });
   });
@@ -419,9 +315,6 @@ void main() {
         Cache.lru(loader: loader, maximumSize: 5);
 
     group('constructors', () {
-      test('missing lru', () {
-        expect(() => Cache.lru(), throwsArgumentError);
-      });
       test('non positive max size', () {
         expect(() => Cache.lru(loader: immediateLoader, maximumSize: 0),
             throwsArgumentError);
@@ -441,9 +334,6 @@ void main() {
         Cache.fifo(loader: loader, maximumSize: 5);
 
     group('constructors', () {
-      test('missing loader', () {
-        expect(() => Cache.fifo(), throwsArgumentError);
-      });
       test('non positive max size', () {
         expect(() => Cache.fifo(loader: immediateLoader, maximumSize: 0),
             throwsArgumentError);
