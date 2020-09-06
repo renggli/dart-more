@@ -50,7 +50,7 @@ class ExpiryCache<K, V> extends Cache<K, V> {
   }
 
   @override
-  Future<V> set(K key, V value) async {
+  Future<V> set(K key, FutureOr<V> value) async {
     final now = clock();
     var item = cached[key];
     if (item == null) {

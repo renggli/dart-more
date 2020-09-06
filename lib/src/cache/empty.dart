@@ -1,4 +1,4 @@
-import 'dart:async' show Future;
+import 'dart:async' show Future, FutureOr;
 
 import '../../cache.dart';
 
@@ -15,7 +15,7 @@ class EmptyCache<K, V> extends Cache<K, V> {
   Future<V> get(K key) async => loader(key);
 
   @override
-  Future<V> set(K key, V value) async => value;
+  Future<V> set(K key, FutureOr<V> value) async => value;
 
   @override
   Future<int> size() async => 0;

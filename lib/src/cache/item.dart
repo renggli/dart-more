@@ -1,12 +1,6 @@
-import 'dart:async' show Future, FutureOr;
+import 'dart:async' show FutureOr;
 
 class CacheItem<V> {
   FutureOr<V> value;
-
-  CacheItem(this.value) {
-    if (value is Future<V>) {
-      final Future<V> future = value;
-      future.then((v) => value = v);
-    }
-  }
+  CacheItem(this.value);
 }

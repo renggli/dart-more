@@ -1,4 +1,4 @@
-import 'dart:async' show Future;
+import 'dart:async' show Future, FutureOr;
 
 import '../../cache.dart';
 import 'item.dart';
@@ -28,7 +28,7 @@ class LruCache<K, V> extends Cache<K, V> {
   }
 
   @override
-  Future<V> set(K key, V value) async {
+  Future<V> set(K key, FutureOr<V> value) async {
     var item = promote(key);
     if (item == null) {
       item = cached[key] = CacheItem(value);
