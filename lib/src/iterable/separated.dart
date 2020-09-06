@@ -59,7 +59,7 @@ class SeparatedIterator<E> extends Iterator<E> {
     switch (state) {
       case State.start:
         if (iterator.moveNext()) {
-          if (before != null) {
+          if (before == null) {
             state = State.next;
             current = iterator.current;
           } else {
