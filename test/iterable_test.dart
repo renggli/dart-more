@@ -756,14 +756,12 @@ void main() {
       });
       test('iterator', () {
         final iterator = [42].separatedBy(() => 0).iterator;
-        expect(iterator.current, isNull);
         expect(iterator.moveNext(), isTrue);
         for (var i = 0; i <= 3; i++) {
           expect(iterator.current, 42);
         }
         for (var i = 0; i <= 3; i++) {
           expect(iterator.moveNext(), isFalse);
-          expect(iterator.current, isNull);
         }
       });
     });
@@ -1051,95 +1049,147 @@ void main() {
     });
   });
   group('zip', () {
-    test('empty', () {
-      expect(<Iterable>[].zip(), []);
+    group('default', () {
+      test('empty', () {
+        expect(<Iterable<int>>[].zip(), <int>[]);
+      });
+      test('single', () {
+        expect(
+            [
+              [1, 2, 3]
+            ].zip(),
+            [
+              [1],
+              [2],
+              [3]
+            ]);
+      });
+      test('pair', () {
+        expect(
+            [
+              [1, 2, 3],
+              ['a', 'b', 'c'],
+            ].zip(),
+            [
+              [1, 'a'],
+              [2, 'b'],
+              [3, 'c'],
+            ]);
+        expect(
+            [
+              [1, 2],
+              ['a', 'b', 'c'],
+            ].zip(),
+            [
+              [1, 'a'],
+              [2, 'b'],
+            ]);
+        expect(
+            [
+              [1, 2, 3],
+              ['a', 'b'],
+            ].zip(),
+            [
+              [1, 'a'],
+              [2, 'b'],
+            ]);
+      });
     });
-    test('empty, includePartial', () {
-      expect(<Iterable>[].zip(includePartial: true), []);
+    group('partial', () {
+      test('empty', () {
+        expect(<Iterable<int>>[].zipPartial(), <int>[]);
+      });
+      test('single', () {
+        expect(
+            [
+              [1, 2, 3]
+            ].zipPartial(),
+            [
+              [1],
+              [2],
+              [3]
+            ]);
+      });
+      test('pair', () {
+        expect(
+            [
+              [1, 2, 3],
+              ['a', 'b', 'c'],
+            ].zipPartial(),
+            [
+              [1, 'a'],
+              [2, 'b'],
+              [3, 'c'],
+            ]);
+        expect(
+            [
+              [1, 2],
+              ['a', 'b', 'c'],
+            ].zipPartial(),
+            [
+              [1, 'a'],
+              [2, 'b'],
+              [null, 'c'],
+            ]);
+        expect(
+            [
+              [1, 2, 3],
+              ['a', 'b'],
+            ].zipPartial(),
+            [
+              [1, 'a'],
+              [2, 'b'],
+              [3, null],
+            ]);
+      });
     });
-    test('single', () {
-      expect(
-          [
-            [1, 2, 3]
-          ].zip(),
-          [
-            [1],
-            [2],
-            [3]
-          ]);
-    });
-    test('single, includePartial', () {
-      expect(
-          [
-            [1, 2, 3]
-          ].zip(includePartial: true),
-          [
-            [1],
-            [2],
-            [3]
-          ]);
-    });
-    test('pair', () {
-      expect(
-          [
-            [1, 2, 3],
-            ['a', 'b', 'c'],
-          ].zip(),
-          [
-            [1, 'a'],
-            [2, 'b'],
-            [3, 'c'],
-          ]);
-      expect(
-          [
-            [1, 2],
-            ['a', 'b', 'c'],
-          ].zip(),
-          [
-            [1, 'a'],
-            [2, 'b'],
-          ]);
-      expect(
-          [
-            [1, 2, 3],
-            ['a', 'b'],
-          ].zip(),
-          [
-            [1, 'a'],
-            [2, 'b'],
-          ]);
-    });
-    test('pair, includePartial', () {
-      expect(
-          [
-            [1, 2, 3],
-            ['a', 'b', 'c'],
-          ].zip(includePartial: true),
-          [
-            [1, 'a'],
-            [2, 'b'],
-            [3, 'c'],
-          ]);
-      expect(
-          [
-            [1, 2],
-            ['a', 'b', 'c'],
-          ].zip(includePartial: true),
-          [
-            [1, 'a'],
-            [2, 'b'],
-            [null, 'c'],
-          ]);
-      expect(
-          [
-            [1, 2, 3],
-            ['a', 'b'],
-          ].zip(includePartial: true),
-          [
-            [1, 'a'],
-            [2, 'b'],
-            [3, null],
-          ]);
+    group('partial with', () {
+      test('empty', () {
+        expect(<Iterable<int>>[].zipPartialWith(0), <int>[]);
+      });
+      test('single', () {
+        expect(
+            [
+              [1, 2, 3]
+            ].zipPartialWith(0),
+            [
+              [1],
+              [2],
+              [3]
+            ]);
+      });
+      test('pair', () {
+        expect(
+            [
+              [1, 2, 3],
+              ['a', 'b', 'c'],
+            ].zipPartialWith(0),
+            [
+              [1, 'a'],
+              [2, 'b'],
+              [3, 'c'],
+            ]);
+        expect(
+            [
+              [1, 2],
+              ['a', 'b', 'c'],
+            ].zipPartialWith(0),
+            [
+              [1, 'a'],
+              [2, 'b'],
+              [0, 'c'],
+            ]);
+        expect(
+            [
+              [1, 2, 3],
+              ['a', 'b'],
+            ].zipPartialWith(0),
+            [
+              [1, 'a'],
+              [2, 'b'],
+              [3, 0],
+            ]);
+      });
     });
   });
 }
