@@ -46,8 +46,9 @@ extension TapExtension<E> on Stream<E> {
       onResume?.call();
       subscription?.resume();
     };
-    controller.onCancel = () {
+    controller.onCancel = () async {
       onCancel?.call();
+      await subscription?.cancel();
     };
     return controller.stream;
   }
