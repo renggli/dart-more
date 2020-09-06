@@ -1,8 +1,12 @@
 # Changelog
 
-## 2.8.0
+## 2.8.0-nullsafety
 
-* Dart 2.10 compatibility and null-safety.
+* Dart 2.10 requirement and null-safety.
+* Remove `Iterable.concat()` in favor of `Iterable.flatten()`.
+* Split `Iterable.zip()` into `Interable.zip()`, `Iterable.zipPartial()` and `Iterable.zipPartialWith()`.
+* Fix a bug in `Ordering.nullsFirst` and `Ordering.nullsLast`.
+* Fix a race condition in cache value resolution.
 
 ## 2.7.0
 
