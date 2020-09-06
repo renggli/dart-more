@@ -6,10 +6,10 @@ description: More Dart — Literally. Collecting, iterating, caching, mathematic
   matching, ordering, and formatting easily.
 
 environment:
-  sdk: '>=2.9.0 <3.0.0'
+  sdk: '>=2.10.0-92.0.dev <3.0.0'
 dependencies:
-  characters: ^1.0.0-nullsafety
-  collection: ^1.14.0-nullsafety
-  meta: ^1.2.0-nullsafety
+  characters: ^1.1.0-nullsafety
+  collection: ^1.15.0-nullsafety
+  meta: ^1.3.0-nullsafety
 dev_dependencies:
-  test: ^1.15.0-nullsafety
+  test: ^1.16.0-nullsafety
