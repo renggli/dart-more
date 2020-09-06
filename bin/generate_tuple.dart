@@ -255,7 +255,9 @@ Future<void> generateChild(int i, int max) async {
   {
     final hashCode = i == 0
         ? generator.nextInt(4294967296).toString()
-        : i <= 9 ? 'hash$i(${values.join(', ')})' : 'hash(iterable)';
+        : i <= 9
+            ? 'hash$i(${values.join(', ')})'
+            : 'hash(iterable)';
     out.writeln('');
     out.writeln('@override');
     out.writeln('int get hashCode => $hashCode;');
@@ -337,8 +339,11 @@ Future<void> generateTest(int max) async {
                 'tuple.add${capitalize(ordinals[j])}(\'a\');');
             out.writeln('expect(other.length, tuple.length + 1);');
             for (var k = 0; k < i + 1; k++) {
-              final expected =
-                  k == j ? '\'a\'' : k < j ? numbers[k] : numbers[k - 1];
+              final expected = k == j
+                  ? '\'a\''
+                  : k < j
+                      ? numbers[k]
+                      : numbers[k - 1];
               out.writeln('expect(other.${ordinals[k]}, $expected);');
             }
           });
