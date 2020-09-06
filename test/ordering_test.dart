@@ -1,4 +1,3 @@
-import 'package:more/iterable.dart';
 import 'package:more/ordering.dart';
 import 'package:test/test.dart';
 
@@ -20,34 +19,31 @@ void verifyBasic<T>(String type, Ordering<T> ordering, Iterable<T> unsorted,
 
 void verify<T>(
     Ordering<T> ordering, Iterable<T> unsorted, Iterable<T> expected) {
-  verifyBasic('ordering', ordering, unsorted, expected);
-  verifyBasic('ordering.reversed', ordering.reversed, unsorted,
-      expected.toList().reversed);
+  verifyBasic(
+    'ordering',
+    ordering,
+    unsorted,
+    expected,
+  );
+  verifyBasic(
+    'ordering.reversed',
+    ordering.reversed,
+    unsorted,
+    expected.toList().reversed,
+  );
   if (!unsorted.contains(null)) {
     verifyBasic(
-        'ordering.nullsFirst',
-        ordering.nullsFirst,
-        [
-          [null],
-          unsorted,
-          [null]
-        ].concat(),
-        [
-          [null, null],
-          expected
-        ].concat());
+      'ordering.nullsFirst',
+      ordering.nullsFirst,
+      <T>[null, ...unsorted, null],
+      <T>[null, null, ...expected],
+    );
     verifyBasic(
-        'ordering.nullsLast',
-        ordering.nullsLast,
-        [
-          [null],
-          unsorted,
-          [null]
-        ].concat(),
-        [
-          expected,
-          [null, null]
-        ].concat());
+      'ordering.nullsLast',
+      ordering.nullsLast,
+      <T>[null, ...unsorted, null],
+      <T>[...expected, null, null],
+    );
   }
 }
 
@@ -321,7 +317,7 @@ void main() {
   });
   group('regressions', () {
     test('#4', () {
-      final input = ['dog', 'ape', null, 'cat'];
+      final input = <String>['dog', 'ape', null, 'cat'];
       final orderingAsc = Ordering.natural<String>().nullsLast;
       expect(orderingAsc.sorted(input), ['ape', 'cat', 'dog', null]);
       final orderingDesc = Ordering.natural<String>().reversed.nullsLast;
