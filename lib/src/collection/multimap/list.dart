@@ -72,22 +72,29 @@ class ListMultimapValues<K, V> extends MultimapValues<K, V, List<V>>
   }
 
   @override
-  set length(int newLength) {
-    update((map, length) {
-      final previousLength = delegate.length;
-      if (previousLength != newLength) {
-        if (previousLength == 0) {
+  void add(V element) => update((map, length) {
+        if (delegate.isEmpty) {
           map[key] = delegate;
         }
-        delegate.length = newLength;
-        if (newLength == 0) {
-          map.remove(key);
+        delegate.add(element);
+        return 1;
+      });
+
+  @override
+  set length(int newLength) => update((map, length) {
+        final previousLength = delegate.length;
+        if (previousLength != newLength) {
+          if (previousLength == 0) {
+            map[key] = delegate;
+          }
+          delegate.length = newLength;
+          if (newLength == 0) {
+            map.remove(key);
+          }
+          return newLength - previousLength;
         }
-        return newLength - previousLength;
-      }
-      return 0;
-    });
-  }
+        return 0;
+      });
 
   @override
   void polymorphicAdd(V value) => add(value);

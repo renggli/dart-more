@@ -58,6 +58,9 @@ class MutableStringList extends ListBase<String> {
   }
 
   @override
+  void add(String element) => codeUnits.addAll(element.codeUnits);
+
+  @override
   List<String> sublist(int start, [int end]) =>
       MutableStringList(codeUnits.sublist(start, end));
 
