@@ -1,4 +1,4 @@
-import 'dart:async' show Future;
+import 'dart:async' show Future, FutureOr;
 
 import '../../cache.dart';
 
@@ -15,7 +15,7 @@ class DelegateCache<K, V> extends Cache<K, V> {
   Future<V> get(K key) => delegate.get(key);
 
   @override
-  Future<V> set(K key, V value) => delegate.set(key, value);
+  Future<V> set(K key, FutureOr<V> value) => delegate.set(key, value);
 
   @override
   Future<int> size() => delegate.size();

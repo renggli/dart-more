@@ -1,4 +1,4 @@
-import 'dart:async' show Future;
+import 'dart:async' show Future, FutureOr;
 
 import 'src/cache/clock.dart';
 import 'src/cache/empty.dart';
@@ -80,7 +80,7 @@ abstract class Cache<K, V> {
   Future<V> get(K key);
 
   /// Stores the [value] associated with the [key].
-  Future<V> set(K key, V value);
+  Future<V> set(K key, FutureOr<V> value);
 
   /// Number of currently cached values.
   Future<int> size();
