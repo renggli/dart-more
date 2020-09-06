@@ -183,39 +183,6 @@ void main() {
           () => letters.combinations(5, repetitions: false), throwsRangeError);
     });
   });
-  group('concat', () {
-    final a = [1, 2, 3], b = [4, 5], c = [6], d = [];
-    test('void', () {
-      expect([[]].concat(), []);
-    });
-    test('basic', () {
-      expect([a].concat(), [1, 2, 3]);
-      expect([a, b].concat(), [1, 2, 3, 4, 5]);
-      expect([b, a].concat(), [4, 5, 1, 2, 3]);
-      expect([a, b, c].concat(), [1, 2, 3, 4, 5, 6]);
-      expect([a, c, b].concat(), [1, 2, 3, 6, 4, 5]);
-      expect([b, a, c].concat(), [4, 5, 1, 2, 3, 6]);
-      expect([b, c, a].concat(), [4, 5, 6, 1, 2, 3]);
-      expect([c, a, b].concat(), [6, 1, 2, 3, 4, 5]);
-      expect([c, b, a].concat(), [6, 4, 5, 1, 2, 3]);
-    });
-    test('empty', () {
-      expect([a, b, c, d].concat(), [1, 2, 3, 4, 5, 6]);
-      expect([a, b, d, c].concat(), [1, 2, 3, 4, 5, 6]);
-      expect([a, d, b, c].concat(), [1, 2, 3, 4, 5, 6]);
-      expect([d, a, b, c].concat(), [1, 2, 3, 4, 5, 6]);
-    });
-    test('repeated', () {
-      expect([a, a].concat(), [1, 2, 3, 1, 2, 3]);
-      expect([b, b, b].concat(), [4, 5, 4, 5, 4, 5]);
-      expect([c, c, c, c].concat(), [6, 6, 6, 6]);
-      expect([d, d, d, d, d].concat(), []);
-    });
-    test('types', () {
-      expect([Set.of(c)].concat(), [6]);
-      expect([List.of(b)].concat(), [4, 5]);
-    });
-  });
   group('cycle', () {
     test('empty', () {
       expect([].cycle(), isEmpty);
