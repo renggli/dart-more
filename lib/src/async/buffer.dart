@@ -92,9 +92,9 @@ extension BufferExtension<E> on Stream<E> {
       sourceSubscription?.resume();
       triggerSubscription?.resume();
     };
-    controller.onCancel = () {
-      sourceSubscription?.cancel();
-      triggerSubscription?.cancel();
+    controller.onCancel = () async {
+      await sourceSubscription?.cancel();
+      await triggerSubscription?.cancel();
     };
     return controller.stream;
   }
