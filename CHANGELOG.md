@@ -1,5 +1,9 @@
 # Changelog
 
+## 2.8.0
+
+* Dart 2.10 compatibility and null-safety.
+
 ## 2.7.0
 
 * Add `separatedBy`, `flatMap` and `flatten` function on `Iterable`.
