@@ -2,23 +2,23 @@ import 'dart:async';
 
 typedef Callback = void Function();
 typedef DataCallback<E> = void Function(E element);
-typedef ErrorCallback = void Function(Object error, [StackTrace stackTrace]);
+typedef ErrorCallback = void Function(Object error, [StackTrace? stackTrace]);
 
 extension TapExtension<E> on Stream<E> {
   /// Transparently perform side-effects on the events of a [Stream], for
   /// things such as logging or debugging.
   Stream<E> tap({
-    Callback onListen,
-    Callback onPause,
-    Callback onResume,
-    DataCallback<E> onData,
-    ErrorCallback onError,
-    Callback onCancel,
-    Callback onDone,
+    Callback? onListen,
+    Callback? onPause,
+    Callback? onResume,
+    DataCallback<E>? onData,
+    ErrorCallback? onError,
+    Callback? onCancel,
+    Callback? onDone,
   }) {
     final controller =
         isBroadcast ? StreamController<E>.broadcast() : StreamController<E>();
-    StreamSubscription<E> subscription;
+    StreamSubscription<E>? subscription;
     controller.onListen = () {
       onListen?.call();
       subscription = listen(

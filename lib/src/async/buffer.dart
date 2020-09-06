@@ -11,17 +11,17 @@ extension BufferExtension<E> on Stream<E> {
   /// If none of the arguments are given, the stream will buffer results until
   /// the source completes.
   Stream<List<E>> buffer({
-    Stream trigger,
-    int maxLength,
-    Duration maxAge,
+    Stream? trigger,
+    int? maxLength,
+    Duration? maxAge,
   }) {
     final buffer = <E>[];
     final controller = isBroadcast
         ? StreamController<List<E>>.broadcast()
         : StreamController<List<E>>();
-    StreamSubscription<E> sourceSubscription;
-    StreamSubscription triggerSubscription;
-    DateTime nextUpdate;
+    StreamSubscription<E>? sourceSubscription;
+    StreamSubscription? triggerSubscription;
+    DateTime? nextUpdate;
 
     // Helper functions for state management.
     void adjustNextUpdate() {
@@ -40,8 +40,7 @@ extension BufferExtension<E> on Stream<E> {
 
     void maybeFlush() {
       bool hasMaxLength() => maxLength != null && buffer.length >= maxLength;
-      bool hasMaxAge() =>
-          nextUpdate != null && nextUpdate.isBefore(DateTime.now());
+      bool hasMaxAge() => nextUpdate?.isBefore(DateTime.now()) ?? false;
       if (hasMaxLength() || hasMaxAge()) {
         flush();
       }

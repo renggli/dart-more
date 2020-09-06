@@ -181,7 +181,7 @@ void main() {
       ]);
     });
     test('pause/resume', () async {
-      StreamSubscription<int> subscription;
+      late StreamSubscription<int> subscription;
       final events = <String>[];
       final stream = Stream.fromIterable([
         Stream.value(1),
