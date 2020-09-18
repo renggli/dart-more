@@ -181,7 +181,7 @@ void main() {
     persistentCacheTests(newCache);
   });
   group('expiry', () {
-    late Duration offset;
+    Duration offset;
     DateTime offsetClock() => DateTime(2000).add(offset);
     setUp(() => offset = Duration.zero);
 
