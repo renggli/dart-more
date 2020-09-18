@@ -11,7 +11,7 @@ class NullsLastOrdering<T> extends Ordering<T> {
       return 0;
     } else if (a == null) {
       return 1;
-    } else if (identical(b, null)) {
+    } else if (b == null) {
       return -1;
     }
     return ordering.compare(a, b);
