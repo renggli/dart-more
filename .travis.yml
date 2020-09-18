@@ -11,7 +11,7 @@ jobs:
     - stage: valid
       name: "Dart Formatter"
       os: linux
-      script: dartfmt -n --set-exit-if-changed .
+      script: dartfmt --dry-run --set-exit-if-changed .
     - stage: test
       name: "VM Tests"
       os: linux
