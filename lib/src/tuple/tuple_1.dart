@@ -52,6 +52,9 @@ class Tuple1<T0> extends Tuple {
   }
 
   @override
+  R map<R>(R Function(T0 first) callback) => callback(first);
+
+  @override
   bool operator ==(Object other) =>
       identical(this, other) || (other is Tuple1 && first == other.first);
 

@@ -28,6 +28,9 @@ class Tuple0 extends Tuple {
   Iterable get iterable sync* {}
 
   @override
+  R map<R>(R Function() callback) => callback();
+
+  @override
   bool operator ==(Object other) => identical(this, other) || (other is Tuple0);
 
   @override

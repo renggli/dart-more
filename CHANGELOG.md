@@ -6,6 +6,7 @@
 * Split `Iterable.zip()` into `Interable.zip()`, `Iterable.zipPartial()` and `Iterable.zipPartialWith()`.
 * Fix a bug in `Ordering.nullsFirst` and `Ordering.nullsLast`.
 * Fix a race condition in cache value resolution.
+* Add a map function to `Tuple` classes.
 
 ## 2.7.0
 

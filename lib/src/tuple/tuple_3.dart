@@ -83,6 +83,10 @@ class Tuple3<T0, T1, T2> extends Tuple {
   }
 
   @override
+  R map<R>(R Function(T0 first, T1 second, T2 third) callback) =>
+      callback(first, second, third);
+
+  @override
   bool operator ==(Object other) =>
       identical(this, other) ||
       (other is Tuple3 &&

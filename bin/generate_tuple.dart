@@ -1,6 +1,8 @@
 import 'dart:io';
 import 'dart:math';
 
+import 'package:more/iterable.dart';
+
 /// Ordinal value names.
 const ordinals = [
   'first',
@@ -101,6 +103,9 @@ Future<void> generateParent(int max) async {
   out.writeln('');
   out.writeln('/// A (untyped) [Set] with the unique values of this tuple.');
   out.writeln('Set toSet() => Set.from(iterable);');
+  out.writeln('');
+  out.writeln('/// Applies the values of this tuple to an n-ary function.');
+  out.writeln('R map<R>(covariant Function callback);');
   out.writeln('');
   out.writeln('/// A string representation of this tuple.');
   out.writeln('@override');
@@ -241,6 +246,15 @@ Future<void> generateChild(int i, int max) async {
   }
   out.writeln('}');
 
+  // map
+  {
+    final typeAndValues = [types, values].zip().map((value) => value.join(' '));
+    out.writeln('');
+    out.writeln('@override');
+    out.writeln('R map<R>(R Function(${listify(typeAndValues)}) callback) => ');
+    out.writeln('callback(${listify(values)});');
+  }
+
   // equals
   {
     final equality = values.map((each) => ' && $each == other.$each').join();
@@ -255,7 +269,7 @@ Future<void> generateChild(int i, int max) async {
   {
     final hashCode = i == 0
         ? generator.nextInt(4294967296).toString()
-        : i <= 9 ? 'hash$i(${values.join(', ')})' : 'hash(iterable)';
+        : i <= 9 ? 'hash$i(${listify(values)})' : 'hash(iterable)';
     out.writeln('');
     out.writeln('@override');
     out.writeln('int get hashCode => $hashCode;');
@@ -288,7 +302,7 @@ Future<void> generateTest(int max) async {
       do {
         numbers = List.generate(i, (i) => '${generator.nextInt(256)}');
       } while (Set.of(numbers).length != i);
-      out.writeln('const tuple = Tuple$i(${numbers.join(', ')});');
+      out.writeln('const tuple = Tuple$i(${listify(numbers)});');
       nest('test', 'Tuple.fromList', () {
         final many = List.generate(max, (i) => '${generator.nextInt(256)}');
         out.writeln('final other = Tuple.fromList([${listify(numbers)}]);');
@@ -376,19 +390,35 @@ Future<void> generateTest(int max) async {
         out.writeln('expect(tuple.length, $i);');
       });
       nest('test', 'iterable', () {
-        out.writeln('expect(tuple.iterable, <Object>[${numbers.join(', ')}]);');
+        out.writeln('expect(tuple.iterable, <Object>[${listify(numbers)}]);');
       });
       nest('test', 'toList', () {
-        out.writeln('expect(tuple.toList(), <Object>[${numbers.join(', ')}]);');
+        out.writeln('expect(tuple.toList(), <Object>[${listify(numbers)}]);');
       });
       nest('test', 'toSet', () {
-        out.writeln('expect(tuple.toSet(), <Object>{${numbers.join(', ')}});');
+        out.writeln('expect(tuple.toSet(), <Object>{${listify(numbers)}});');
+      });
+      nest('test', 'map', () {
+        final values = ordinals.sublist(0, i);
+        final result = generator.nextInt(1024);
+        out.writeln('expect(tuple.map((${listify(values)}) ');
+        if (values.isEmpty) {
+          out.writeln('=> $result');
+        } else {
+          out.writeln('{');
+          for (var j = 0; j < i; j++) {
+            out.writeln('expect(${values[j]}, ${numbers[j]});');
+          }
+          out.writeln('return $result;');
+          out.writeln('}');
+        }
+        out.writeln('), $result);');
       });
       nest('test', 'toString', () {
-        out.writeln('expect(tuple.toString(), \'(${numbers.join(', ')})\');');
+        out.writeln('expect(tuple.toString(), \'(${listify(numbers)})\');');
       });
       final accessors =
-          List.generate(i, (j) => 'tuple.${ordinals[j]}').join(', ');
+          listify(List.generate(i, (j) => 'tuple.${ordinals[j]}'));
       if (i == 0) {
         out.writeln('// ignore: prefer_const_constructors');
       }

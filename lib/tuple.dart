@@ -71,6 +71,9 @@ abstract class Tuple {
   /// A (untyped) [Set] with the unique values of this tuple.
   Set toSet() => Set.from(iterable);
 
+  /// Applies the values of this tuple to an n-ary function.
+  R map<R>(covariant Function callback);
+
   /// A string representation of this tuple.
   @override
   String toString() => '(${iterable.join(', ')})';
