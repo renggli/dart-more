@@ -2,6 +2,7 @@
 
 ## 2.8.0
 
+* Dart 2.9 compatibility and requirement (in preparation of null-safety).
 * Remove `Iterable.concat()` in favor of `Iterable.flatten()`.
 * Split `Iterable.zip()` into `Interable.zip()`, `Iterable.zipPartial()` and `Iterable.zipPartialWith()`.
 * Fix a bug in `Ordering.nullsFirst` and `Ordering.nullsLast`.
