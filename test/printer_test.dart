@@ -75,7 +75,14 @@ void main() {
       });
     });
     group('double', () {
-      test('precision', () {
+      test('precision: 0', () {
+        final printer = Printer.fixed(precision: 0);
+        expect(printer(1.4), '1');
+        expect(printer(1.5), '2');
+        expect(printer(-1.4), '-1');
+        expect(printer(-1.5), '-2');
+      });
+      test('precision: 2', () {
         final printer = Printer.fixed(precision: 2);
         expect(printer(1.009), '1.01');
         expect(printer(1.01), '1.01');
@@ -361,7 +368,7 @@ void main() {
       test('nan', () {
         final printer = Printer.humanDecimal(infinity: 'huge');
         expect(printer(double.infinity), 'huge');
-        expect(printer(double.negativeInfinity), 'huge');
+        expect(printer(double.negativeInfinity), '-huge');
       });
       test('unitPrefix', () {
         final printer = Printer.humanDecimal(unitPrefix: true);
@@ -445,7 +452,7 @@ void main() {
       test('nan', () {
         final printer = Printer.humanBinary(infinity: 'huge');
         expect(printer(double.infinity), 'huge');
-        expect(printer(double.negativeInfinity), 'huge');
+        expect(printer(double.negativeInfinity), '-huge');
       });
       test('unitPrefix', () {
         final printer = Printer.humanBinary(unitPrefix: true);
