@@ -1,6 +1,6 @@
-import '../../printer.dart';
-import 'literal.dart';
-import 'utils.dart';
+import '../../../printer.dart';
+import '../literal.dart';
+import '../number.dart';
 
 /// A printer that omits the positive sign.
 const Printer omitPositiveSign = SignPrinter();
@@ -13,7 +13,7 @@ const Printer negativeAndPositiveSign =
     SignPrinter(positive: LiteralPrinter('+'));
 
 /// Prints numbers in various formats.
-class SignPrinter extends Printer {
+class SignPrinter extends NumberPrinter {
   final Printer negative;
   final Printer positive;
 

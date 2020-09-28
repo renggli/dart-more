@@ -1,3 +1,4 @@
+import 'package:more/math.dart';
 import 'package:more/printer.dart';
 import 'package:test/test.dart';
 
@@ -335,6 +336,169 @@ void main() {
     test('invalid', () {
       final printer = Printer.scientific();
       expect(() => printer('invalid'), throwsArgumentError);
+    });
+  });
+  group('human', () {
+    group('decimal', () {
+      test('default', () {
+        final printer = Printer.humanDecimal();
+        expect(printer(0), '0');
+        expect(printer(10), '10');
+        expect(printer(200), '200');
+        expect(printer(3000), '3 k');
+        expect(printer(4e4), '40 k');
+        expect(printer(-5e5), '-500 k');
+        expect(printer(-6e6), '-6 M');
+        expect(printer(7e-7), '700 n');
+        expect(printer(8e-8), '80 n');
+        expect(printer(-9e-9), '-9 n');
+        expect(printer(-1e-10), '-100 p');
+      });
+      test('nan', () {
+        final printer = Printer.humanDecimal(nan: 'n/a');
+        expect(printer(double.nan), 'n/a');
+      });
+      test('nan', () {
+        final printer = Printer.humanDecimal(infinity: 'huge');
+        expect(printer(double.infinity), 'huge');
+        expect(printer(double.negativeInfinity), 'huge');
+      });
+      test('unitPrefix', () {
+        final printer = Printer.humanDecimal(unitPrefix: true);
+        expect(printer(4), '4');
+        expect(printer(4e3), 'k 4');
+        expect(printer(4e7), 'M 40');
+        expect(printer(-4), '-4');
+        expect(printer(-4e3), 'k -4');
+        expect(printer(-4e7), 'M -40');
+      });
+      test('unitSeparator', () {
+        final printer = Printer.humanDecimal(unitSeparator: '*');
+        expect(printer(4), '4');
+        expect(printer(4e3), '4*k');
+        expect(printer(4e7), '40*M');
+        expect(printer(-4), '-4');
+        expect(printer(-4e3), '-4*k');
+        expect(printer(-4e7), '-40*M');
+      });
+      test('short (BigInt)', () {
+        final base = BigInt.from(1000);
+        final printer = Printer.humanDecimal(long: false);
+        final units = List.generate(10, (i) => printer(base.pow(i)));
+        expect(units, [
+          '1',
+          '1 k',
+          '1 M',
+          '1 G',
+          '1 T',
+          '1 P',
+          '1 E',
+          '1 Z',
+          '1 Y',
+          '1000 Y',
+        ]);
+      });
+      test('long (double)', () {
+        final base = 1000.toDouble();
+        final printer = Printer.humanDecimal(long: true);
+        final units = List.generate(19, (i) => printer(base.pow(i - 9)));
+        expect(units, [
+          '0 yocto',
+          '1 yocto',
+          '1 zepto',
+          '1 atto',
+          '1 femto',
+          '1 pico',
+          '1 nano',
+          '1 micro',
+          '1 milli',
+          '1',
+          '1 kilo',
+          '1 mega',
+          '1 giga',
+          '1 tera',
+          '1 peta',
+          '1 exa',
+          '1 zetta',
+          '1 yotta',
+          '1000 yotta',
+        ]);
+      });
+    });
+    group('binary', () {
+      test('default', () {
+        final printer = Printer.humanBinary();
+        expect(printer(0), '0');
+        expect(printer(10), '10');
+        expect(printer(200), '200');
+        expect(printer(3000), '3 Ki');
+        expect(printer(4e4), '39 Ki');
+        expect(printer(-5e5), '-488 Ki');
+        expect(printer(-6e6), '-6 Mi');
+        expect(printer(7e-7), '0');
+        expect(printer(-8e-8), '-0');
+      });
+      test('nan', () {
+        final printer = Printer.humanBinary(nan: 'n/a');
+        expect(printer(double.nan), 'n/a');
+      });
+      test('nan', () {
+        final printer = Printer.humanBinary(infinity: 'huge');
+        expect(printer(double.infinity), 'huge');
+        expect(printer(double.negativeInfinity), 'huge');
+      });
+      test('unitPrefix', () {
+        final printer = Printer.humanBinary(unitPrefix: true);
+        expect(printer(4), '4');
+        expect(printer(4e3), 'Ki 4');
+        expect(printer(4e7), 'Mi 38');
+        expect(printer(-4), '-4');
+        expect(printer(-4e3), 'Ki -4');
+        expect(printer(-4e7), 'Mi -38');
+      });
+      test('unitSeparator', () {
+        final printer = Printer.humanBinary(unitSeparator: '*');
+        expect(printer(4), '4');
+        expect(printer(4e3), '4*Ki');
+        expect(printer(4e7), '38*Mi');
+        expect(printer(-4), '-4');
+        expect(printer(-4e3), '-4*Ki');
+        expect(printer(-4e7), '-38*Mi');
+      });
+      test('short (BigInt)', () {
+        final base = BigInt.from(1024);
+        final printer = Printer.humanBinary(long: false);
+        final units = List.generate(10, (i) => printer(base.pow(i)));
+        expect(units, [
+          '1',
+          '1 Ki',
+          '1 Mi',
+          '1 Gi',
+          '1 Ti',
+          '1 Pi',
+          '1 Ei',
+          '1 Zi',
+          '1 Yi',
+          '1024 Yi',
+        ]);
+      });
+      test('long (double)', () {
+        final base = 1024.toDouble();
+        final printer = Printer.humanBinary(long: true);
+        final units = List.generate(10, (i) => printer(base.pow(i)));
+        expect(units, [
+          '1',
+          '1 kibi',
+          '1 mebi',
+          '1 gibi',
+          '1 tebi',
+          '1 pebi',
+          '1 exbi',
+          '1 zebi',
+          '1 yobi',
+          '1024 yobi',
+        ]);
+      });
     });
   });
   group('trim', () {
