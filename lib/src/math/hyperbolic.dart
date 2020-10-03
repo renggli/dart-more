@@ -24,7 +24,11 @@ extension HyperbolicNumberExtension on num {
   /// Returns the hyperbolic tangent of this [num].
   double tanh() {
     final a = exp(), b = (-this).exp();
-    return a.isInfinite ? 1 : b.isInfinite ? -1 : (a - b) / (a + b);
+    return a.isInfinite
+        ? 1
+        : b.isInfinite
+            ? -1
+            : (a - b) / (a + b);
   }
 
   /// Returns the hyperbolic arc-tangent of this [num].
