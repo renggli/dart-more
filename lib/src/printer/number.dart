@@ -25,7 +25,7 @@ abstract class NumberPrinter extends Printer {
 
   /// Calls the right callback based on the type of number.
   @protected
-  T checkNumericType<T>(Object object, T Function(num value) nativeCallback,
+  T checkNumericType<T>(Object? object, T Function(num value) nativeCallback,
       T Function(BigInt value) bigIntCallback) {
     if (object is num) {
       return nativeCallback(object);

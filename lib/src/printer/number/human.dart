@@ -121,6 +121,7 @@ class HumanNumberPrinter extends NumberPrinter {
 
   /// Prints numbers in a custom human readable string.
   HumanNumberPrinter({
+    required this.units,
     this.base = 10,
     this.characters = lowerCaseDigits,
     this.delimiter = delimiterString,
@@ -128,13 +129,12 @@ class HumanNumberPrinter extends NumberPrinter {
     this.nan = nanString,
     this.padding = 0,
     this.precision = 0,
-    this.separator,
+    this.separator = '',
     this.sign = omitPositiveSign,
     this.unitBase = 10,
     this.unitOffset = 0,
     this.unitPrefix = false,
     this.unitSeparator = ' ',
-    this.units,
   }) : _mantissa = FixedNumberPrinter(
           base: base,
           characters: characters,
@@ -160,7 +160,7 @@ class HumanNumberPrinter extends NumberPrinter {
     String nan = nanString,
     int padding = 0,
     int precision = 0,
-    String separator,
+    String separator = '',
     Printer sign = omitPositiveSign,
     bool unitPrefix = false,
     String unitSeparator = ' ',
@@ -195,7 +195,7 @@ class HumanNumberPrinter extends NumberPrinter {
     String nan = nanString,
     int padding = 0,
     int precision = 0,
-    String separator,
+    String separator = '',
     Printer sign = omitPositiveSign,
     bool unitPrefix = false,
     String unitSeparator = ' ',
@@ -218,7 +218,7 @@ class HumanNumberPrinter extends NumberPrinter {
       );
 
   @override
-  String call(Object object) {
+  String call(Object? object) {
     final value = checkNumericType(
       object,
       (value) => value.toDouble(),

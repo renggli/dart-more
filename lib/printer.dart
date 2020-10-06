@@ -41,7 +41,7 @@ abstract class Printer {
 
   /// Prints numbers in a custom fixed format.
   factory Printer.fixed({
-    double accuracy,
+    double? accuracy,
     int base,
     String characters,
     String delimiter,
@@ -72,6 +72,7 @@ abstract class Printer {
 
   /// Prints numbers in a custom human readable string.
   factory Printer.human({
+    required List<String> units,
     int base,
     String characters,
     String delimiter,
@@ -85,7 +86,6 @@ abstract class Printer {
     int unitOffset,
     bool unitPrefix,
     String unitSeparator,
-    List<String> units,
   }) = HumanNumberPrinter;
 
   /// Prints numbers using a decimal suffix for units measure to indicate a

@@ -63,7 +63,7 @@ class ScientificNumberPrinter extends NumberPrinter {
     this.nan = nanString,
     this.notation = notationString,
     this.precision = 3,
-    this.separator,
+    this.separator = '',
     this.significant = 1,
   })  : _mantissa = FixedNumberPrinter(
           base: base,
@@ -85,7 +85,7 @@ class ScientificNumberPrinter extends NumberPrinter {
         );
 
   @override
-  String call(Object object) {
+  String call(Object? object) {
     final value = checkNumericType(
       object,
       (value) => value.toDouble(),

@@ -1,25 +1,25 @@
 language: dart
 dart:
-  - dev
+  - stable
 
 jobs:
   include:
     - stage: valid
       name: "Dart Analyzer"
       os: linux
-      script: dartanalyzer --enable-experiment=non-nullable --fatal-warnings --fatal-infos .
+      script: dart --enable-experiment=non-nullable analyze --fatal-warnings --fatal-infos .
     - stage: valid
       name: "Dart Formatter"
       os: linux
-      script: dartfmt --dry-run --set-exit-if-changed .
+      script: dart --enable-experiment=non-nullable format --output=none .
     - stage: test
       name: "VM Tests"
       os: linux
-      script: pub run --enable-experiment=non-nullable test --platform vm
+      script: dart --enable-experiment=non-nullable test --platform vm test/all_test.dart
     - stage: test
       name: "Chrome Tests"
       os: linux
-      script: pub run --enable-experiment=non-nullable test --platform chrome
+      script: dart --enable-experiment=non-nullable test --platform chrome test/all_test.dart
 
 stages:
   - valid
