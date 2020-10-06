@@ -29,7 +29,7 @@ extension ZipExtension<E> on Iterable<Iterable<E>> {
   /// Combines the first, second, third, ... elements of each [Iterable] into a
   /// new list. The resulting iterable has the length of the longest input
   /// iterable, missing values are padded with `null`.
-  Iterable<List<E?>> zipPartial() => cast<Iterable<E?>>().zipPartialWith(null);
+  Iterable<List<E>> zipPartial() => cast<Iterable<E>>().zipPartialWith(null);
 
   /// Combines the first, second, third, ... elements of each [Iterable] into a
   /// new list. The resulting iterable has the length of the longest input

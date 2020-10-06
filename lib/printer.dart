@@ -3,12 +3,14 @@
 import 'package:meta/meta.dart' show immutable;
 
 import 'src/printer/literal.dart';
-import 'src/printer/number.dart';
+import 'src/printer/number/fixed.dart';
+import 'src/printer/number/human.dart';
+import 'src/printer/number/scientific.dart';
+import 'src/printer/number/sign.dart';
 import 'src/printer/pad.dart';
 import 'src/printer/pluggable.dart';
 import 'src/printer/separate.dart';
 import 'src/printer/sequence.dart';
-import 'src/printer/sign.dart';
 import 'src/printer/standard.dart';
 import 'src/printer/trim.dart';
 import 'src/printer/truncate.dart';
@@ -67,6 +69,62 @@ abstract class Printer {
     String separator,
     int significant,
   }) = ScientificNumberPrinter;
+
+  /// Prints numbers in a custom human readable string.
+  factory Printer.human({
+    int base,
+    String characters,
+    String delimiter,
+    String infinity,
+    String nan,
+    int padding,
+    int precision,
+    String separator,
+    Printer sign,
+    int unitBase,
+    int unitOffset,
+    bool unitPrefix,
+    String unitSeparator,
+    List<String> units,
+  }) = HumanNumberPrinter;
+
+  /// Prints numbers using a decimal suffix for units measure to indicate a
+  /// multiple or sub-multiple of the unit.
+  ///
+  /// For details, see https://en.wikipedia.org/wiki/Metric_prefix.
+  factory Printer.humanDecimal({
+    int base,
+    String characters,
+    String delimiter,
+    String infinity,
+    bool long,
+    String nan,
+    int padding,
+    int precision,
+    String separator,
+    Printer sign,
+    bool unitPrefix,
+    String unitSeparator,
+  }) = HumanNumberPrinter.decimal;
+
+  /// Prints numbers using a binary suffix for units in data processing, data
+  /// transmission, and digital information.
+  ///
+  /// For details, see https://en.wikipedia.org/wiki/Binary_prefix.
+  factory Printer.humanBinary({
+    int base,
+    String characters,
+    String delimiter,
+    String infinity,
+    bool long,
+    String nan,
+    int padding,
+    int precision,
+    String separator,
+    Printer sign,
+    bool unitPrefix,
+    String unitSeparator,
+  }) = HumanNumberPrinter.binary;
 
   /// Prints the object using an appropriate printer.
   factory Printer.of(Object object) {

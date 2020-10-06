@@ -1,12 +1,19 @@
 # Changelog
 
-## 2.8.0-nullsafety
+## 3.0.0-nullsafety
 
 * Dart 2.10 requirement and null-safety.
+
+## 2.8.0
+
+* Dart 2.9 compatibility and requirement (in preparation of null-safety).
 * Remove `Iterable.concat()` in favor of `Iterable.flatten()`.
 * Split `Iterable.zip()` into `Interable.zip()`, `Iterable.zipPartial()` and `Iterable.zipPartialWith()`.
 * Fix a bug in `Ordering.nullsFirst` and `Ordering.nullsLast`.
 * Fix a race condition in cache value resolution.
+* Fix a rounding bug of numeric formats with precision 0.
+* Add human number printer (1 kilo, 1 mega, ...).
+* Add a map function to `Tuple` classes.
 
 ## 2.7.0
 
