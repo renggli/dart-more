@@ -26,8 +26,8 @@ extension BufferExtension<E> on Stream<E> {
     // Helper functions for state management.
     void flush() {
       if (buffer.isNotEmpty) {
-        controller.add(buffer.toList(growable: false));
         maxAgeTimer?.cancel();
+        controller.add(buffer.toList(growable: false));
         buffer.clear();
       }
     }
@@ -35,8 +35,7 @@ extension BufferExtension<E> on Stream<E> {
     void maybeFlush() {
       if (maxLength != null && buffer.length >= maxLength) {
         flush();
-      }
-      if (maxAge != null) {
+      } else if (maxAge != null) {
         maxAgeTimer?.cancel();
         if (buffer.isNotEmpty) {
           maxAgeTimer = Timer(maxAge, flush);
