@@ -1,7 +1,5 @@
 import 'dart:async';
 
-import 'package:clock/clock.dart';
-
 extension BufferExtension<E> on Stream<E> {
   /// Gathers the elements of this [Stream] and bundles the items into a [List]
   /// until either
