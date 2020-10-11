@@ -1,13 +1,11 @@
 import 'dart:async' show Future, FutureOr;
 
-import 'src/cache/clock.dart';
 import 'src/cache/empty.dart';
 import 'src/cache/expiry.dart';
 import 'src/cache/fifo.dart';
 import 'src/cache/loader.dart';
 import 'src/cache/lru.dart';
 
-export 'src/cache/clock.dart';
 export 'src/cache/delegate.dart';
 export 'src/cache/loader.dart';
 
@@ -22,16 +20,15 @@ abstract class Cache<K, V> {
   ///
   /// The [loader] defines the function to construct items for the cache.
   ///
-  /// [updateExpiry] is the duration after which a loaded or set item expires.
-  /// [accessExpiry] is the maximal duration an item does not expire without
-  /// being accessed. Whatever happens first, causes the expiration. One of the
-  /// duration can be left `null`, if you don't care.
+  /// [updateExpiry] is the maximal duration after which an updated item
+  /// exists. [accessExpiry] is the maximal duration an item does not
+  /// expire without being accessed. Whatever happens last, causes the
+  /// expiration.
   ///
   /// Note that cached items do not magically disappear when they expire.
   /// Manually call [reap()], or setup a timer to regularly free items.
   factory Cache.expiry(
       {required Loader<K, V> loader,
-      Clock? clock,
       Duration? updateExpiry,
       Duration? accessExpiry}) {
     if (updateExpiry == null && accessExpiry == null) {
@@ -42,10 +39,10 @@ abstract class Cache<K, V> {
       throw ArgumentError("Negative 'updateExpire' provided.");
     }
     if (accessExpiry != null && accessExpiry.inMicroseconds <= 0) {
-      throw ArgumentError("Negative 'updateExpire' provided.");
+      throw ArgumentError("Negative 'accessExpiry' provided.");
     }
     return ExpiryCache<K, V>(
-        loader, clock ?? systemClock, updateExpiry, accessExpiry);
+        loader, updateExpiry ?? Duration.zero, accessExpiry ?? Duration.zero);
   }
 
   /// Constructs a First-in/First-out (FIFO) cache.

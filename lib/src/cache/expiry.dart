@@ -1,7 +1,8 @@
 import 'dart:async' show Future, FutureOr;
 
+import 'package:clock/clock.dart';
+
 import '../../cache.dart';
-import 'clock.dart';
 import 'item.dart';
 import 'loader.dart';
 
@@ -9,55 +10,57 @@ import 'loader.dart';
 class ExpiryCache<K, V> extends Cache<K, V> {
   final Loader<K, V> loader;
 
-  final Clock clock;
+  final Duration createExpiry;
 
-  final Duration? updateExpiry;
+  final Duration updateExpiry;
 
-  final Duration? accessExpiry;
+  final Duration accessExpiry;
 
   final Map<K, ExpiryCacheItem<V>> cached = {};
 
-  ExpiryCache(this.loader, this.clock, this.updateExpiry, this.accessExpiry);
+  ExpiryCache(this.loader, this.updateExpiry, this.accessExpiry)
+      : createExpiry =
+            accessExpiry < updateExpiry ? updateExpiry : accessExpiry;
 
   @override
   Future<V> get(K key) async {
-    final now = clock();
+    final now = clock.now();
     var item = cached[key];
     if (item == null) {
-      item = cached[key] = ExpiryCacheItem(loader(key), now);
-    } else if (item.isExpired(now, updateExpiry, accessExpiry)) {
+      item = cached[key] = ExpiryCacheItem(loader(key), now.add(createExpiry));
+    } else if (item.isExpired(now)) {
       item.value = loader(key);
-      item.lastAccess = item.lastUpdate = now;
+      item.expiry = max(item.expiry, now.add(updateExpiry));
     } else {
-      item.lastAccess = now;
+      item.expiry = max(item.expiry, now.add(accessExpiry));
     }
     return item.value;
   }
 
   @override
   Future<V?> getIfPresent(K key) async {
-    final now = clock();
+    final now = clock.now();
     final item = cached[key];
     if (item == null) {
       return null;
-    } else if (item.isExpired(now, updateExpiry, accessExpiry)) {
+    } else if (item.isExpired(now)) {
       cached.remove(key);
       return null;
     } else {
-      item.lastAccess = now;
+      item.expiry = max(item.expiry, now.add(accessExpiry));
     }
     return item.value;
   }
 
   @override
   Future<V> set(K key, FutureOr<V> value) async {
-    final now = clock();
+    final now = clock.now();
     var item = cached[key];
     if (item == null) {
-      item = cached[key] = ExpiryCacheItem(value, now);
+      item = cached[key] = ExpiryCacheItem(value, now.add(createExpiry));
     } else {
-      item.lastUpdate = item.lastAccess = now;
       item.value = value;
+      item.expiry = max(item.expiry, now.add(updateExpiry));
     }
     return item.value;
   }
@@ -73,10 +76,10 @@ class ExpiryCache<K, V> extends Cache<K, V> {
 
   @override
   Future<int> reap() async {
-    final now = clock();
+    final now = clock.now();
     final expired = <K>[];
     cached.forEach((key, value) {
-      if (value.isExpired(now, updateExpiry, accessExpiry)) {
+      if (value.isExpired(now)) {
         expired.add(key);
       }
     });
@@ -86,21 +89,11 @@ class ExpiryCache<K, V> extends Cache<K, V> {
 }
 
 class ExpiryCacheItem<V> extends CacheItem<V> {
-  DateTime lastUpdate;
-  DateTime lastAccess;
+  DateTime expiry;
 
-  ExpiryCacheItem(FutureOr<V> value, DateTime now)
-      : lastUpdate = now,
-        lastAccess = now,
-        super(value);
+  ExpiryCacheItem(FutureOr<V> value, this.expiry) : super(value);
 
-  bool isExpired(DateTime now, Duration? updateExpiry, Duration? accessExpiry) {
-    if (updateExpiry != null && lastUpdate.add(updateExpiry).isBefore(now)) {
-      return true;
-    }
-    if (accessExpiry != null && lastAccess.add(accessExpiry).isBefore(now)) {
-      return true;
-    }
-    return false;
-  }
+  bool isExpired(DateTime now) => now.isAfter(expiry);
 }
+
+DateTime max(DateTime a, DateTime b) => a.isAfter(b) ? a : b;

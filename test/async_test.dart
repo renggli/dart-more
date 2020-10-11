@@ -1,7 +1,14 @@
 import 'dart:async';
 
+import 'package:fake_async/fake_async.dart';
 import 'package:more/async.dart';
 import 'package:test/test.dart';
+
+const seconds1 = Duration(seconds: 1);
+const seconds2 = Duration(seconds: 2);
+const seconds3 = Duration(seconds: 3);
+const seconds4 = Duration(seconds: 4);
+const seconds5 = Duration(seconds: 5);
 
 void main() {
   group('buffer', () {
@@ -25,18 +32,20 @@ void main() {
           ]));
     });
     test('max age', () {
-      final stream = Stream.fromIterable([
-        Stream.fromIterable([1, 2]),
-        Stream.fromFuture(
-            Future.delayed(const Duration(milliseconds: 12), () => 3)),
-        Stream.fromIterable([4, 5]),
-      ]).flatten();
-      expect(
-          stream.buffer(maxAge: const Duration(milliseconds: 10)),
-          emitsInOrder([
-            [1, 2, 3],
-            [4, 5]
-          ]));
+      fakeAsync((async) {
+        final stream = Stream.fromIterable([
+          Stream.fromIterable([1, 2]),
+          Stream.fromFuture(Future.delayed(seconds3, () => 3)),
+          Stream.fromIterable([4, 5]),
+        ]).flatten();
+        expectLater(
+            stream.buffer(maxAge: seconds1),
+            emitsInOrder([
+              [1, 2],
+              [3, 4, 5],
+            ]));
+        async.elapse(seconds4);
+      });
     });
     test('errors', () {
       final stream = Stream.error(StateError('Data Error'));
@@ -46,39 +55,42 @@ void main() {
               .having((e) => e.message, 'message', 'Data Error')));
     });
     test('trigger', () {
-      final trigger = Stream.periodic(const Duration(milliseconds: 14));
-      final stream =
-          Stream.periodic(const Duration(milliseconds: 4), (count) => 1 + count)
-              .take(5);
-      expect(
-          stream.buffer(trigger: trigger),
-          emitsInOrder([
-            [1, 2, 3],
-            [4, 5]
-          ]));
+      fakeAsync((async) {
+        final trigger = Stream.periodic(seconds2);
+        final stream = Stream.periodic(seconds1, (count) => 1 + count).take(4);
+        expectLater(
+            stream.buffer(trigger: trigger),
+            emitsInOrder([
+              [1, 2],
+              [3, 4],
+            ]));
+        async.elapse(seconds5);
+      });
     });
     test('trigger (errors)', () {
-      final trigger = Stream.error(StateError('Trigger Error'));
-      final stream =
-          Stream.periodic(const Duration(milliseconds: 4), (count) => 1 + count)
-              .take(5);
-      expect(
-          stream.buffer(trigger: trigger),
-          emitsError(const TypeMatcher<StateError>()
-              .having((e) => e.message, 'message', 'Trigger Error')));
+      fakeAsync((async) {
+        final trigger = Stream.error(StateError('Trigger Error'));
+        final stream = Stream.periodic(seconds1, (count) => 1 + count).take(4);
+        expectLater(
+            stream.buffer(trigger: trigger),
+            emitsError(const TypeMatcher<StateError>()
+                .having((e) => e.message, 'message', 'Trigger Error')));
+        async.elapse(seconds5);
+      });
     });
     test('trigger (completes early)', () {
-      final trigger = Stream.periodic(const Duration(milliseconds: 14)).take(1);
-      final stream =
-          Stream.periodic(const Duration(milliseconds: 4), (count) => 1 + count)
-              .take(5);
-      expect(
-          stream.buffer(trigger: trigger),
-          emitsInOrder([
-            [1, 2, 3]
-          ]));
+      fakeAsync((async) {
+        final trigger = Stream.periodic(seconds2).take(1);
+        final stream = Stream.periodic(seconds1, (count) => 1 + count).take(4);
+        expectLater(
+            stream.buffer(trigger: trigger),
+            emitsInOrder([
+              [1, 2]
+            ]));
+        async.elapse(seconds5);
+      });
     });
-  }, onPlatform: {'browser': const Skip('Flaky due to timing')});
+  });
   group('flatMap', () {
     group('iterable', () {
       Iterable<String> mapper(int value) => ['$value', '$value'];

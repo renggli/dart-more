@@ -1,5 +1,7 @@
 import 'dart:async';
 
+import 'package:clock/clock.dart';
+
 extension BufferExtension<E> on Stream<E> {
   /// Gathers the elements of this [Stream] and bundles the items into a [List]
   /// until either
@@ -21,28 +23,26 @@ extension BufferExtension<E> on Stream<E> {
         : StreamController<List<E>>();
     StreamSubscription<E>? sourceSubscription;
     StreamSubscription? triggerSubscription;
-    DateTime? nextUpdate;
+    Timer? maxAgeTimer;
 
     // Helper functions for state management.
-    void adjustNextUpdate() {
-      if (maxAge != null) {
-        nextUpdate = DateTime.now().add(maxAge);
-      }
-    }
-
     void flush() {
       if (buffer.isNotEmpty) {
         controller.add(buffer.toList(growable: false));
+        maxAgeTimer?.cancel();
         buffer.clear();
-        adjustNextUpdate();
       }
     }
 
     void maybeFlush() {
-      bool hasMaxLength() => maxLength != null && buffer.length >= maxLength;
-      bool hasMaxAge() => nextUpdate?.isBefore(DateTime.now()) ?? false;
-      if (hasMaxLength() || hasMaxAge()) {
+      if (maxLength != null && buffer.length >= maxLength) {
         flush();
+      }
+      if (maxAge != null) {
+        maxAgeTimer?.cancel();
+        if (buffer.isNotEmpty) {
+          maxAgeTimer = Timer(maxAge, flush);
+        }
       }
     }
 
@@ -77,7 +77,6 @@ extension BufferExtension<E> on Stream<E> {
 
     // Setup the resulting stream controller.
     controller.onListen = () {
-      adjustNextUpdate();
       sourceSubscription =
           listen(onSourceData, onError: onSourceError, onDone: onSourceDone);
       triggerSubscription = trigger?.listen(onTriggerData,
@@ -92,6 +91,7 @@ extension BufferExtension<E> on Stream<E> {
       triggerSubscription?.resume();
     };
     controller.onCancel = () async {
+      maxAgeTimer?.cancel();
       await sourceSubscription?.cancel();
       await triggerSubscription?.cancel();
     };

@@ -1,5 +1,7 @@
 import 'dart:async';
 
+import 'package:clock/clock.dart';
+import 'package:fake_async/fake_async.dart';
 import 'package:more/cache.dart';
 import 'package:test/test.dart';
 
@@ -164,11 +166,6 @@ void persistentCacheTests(NewCache<int, String> newCache) {
 }
 
 void main() {
-  group('clock', () {
-    test('system clock', () {
-      expect(systemClock().difference(DateTime.now()).inSeconds, 0);
-    });
-  });
   group('empty', () {
     Cache<int, String> newCache(Loader<int, String> loader) =>
         Cache.empty(loader: loader);
@@ -181,21 +178,16 @@ void main() {
     persistentCacheTests(newCache);
   });
   group('expiry', () {
-    late Duration offset;
-    DateTime offsetClock() => DateTime(2000).add(offset);
-    setUp(() => offset = Duration.zero);
+    var offset = Duration.zero;
+    final current = DateTime.now();
+    void clockTest(String name, Future Function() body) =>
+        () => withClock(Clock(() => current.add(offset)), body);
 
     Cache<int, String> newUpdateExpireCache(Loader<int, String> loader) =>
-        Cache.expiry(
-            loader: loader,
-            clock: offsetClock,
-            updateExpiry: const Duration(seconds: 20));
+        Cache.expiry(loader: loader, updateExpiry: const Duration(seconds: 20));
 
     Cache<int, String> newAccessExpireCache(Loader<int, String> loader) =>
-        Cache.expiry(
-            loader: loader,
-            clock: offsetClock,
-            accessExpiry: const Duration(seconds: 20));
+        Cache.expiry(loader: loader, accessExpiry: const Duration(seconds: 20));
 
     statelessCacheTests(newUpdateExpireCache);
     persistentCacheTests(newUpdateExpireCache);
@@ -220,7 +212,7 @@ void main() {
     });
 
     group('update expire cache', () {
-      test('expire a set value after it has been updated', () async {
+      clockTest('expire a set value after it has been updated', () async {
         final cache = newUpdateExpireCache(immediateLoader);
         await expectLater(cache.set(1, '2'), completion('2'));
         offset = const Duration(seconds: 20);
@@ -231,7 +223,7 @@ void main() {
         offset = const Duration(seconds: 41);
         await expectLater(cache.getIfPresent(1), completion(isNull));
       });
-      test('loaded value expires', () async {
+      clockTest('loaded value expires', () async {
         final cache = newUpdateExpireCache(immediateLoader);
         await expectLater(cache.get(1), completion('1'));
         offset = const Duration(seconds: 20);
@@ -240,7 +232,7 @@ void main() {
         await expectLater(cache.getIfPresent(1), completion(isNull));
         await expectLater(cache.size(), completion(0));
       });
-      test('re-loaded value expires', () async {
+      clockTest('re-loaded value expires', () async {
         var counter = 0;
         final cache = newUpdateExpireCache((key) {
           counter++;
@@ -255,7 +247,7 @@ void main() {
         await expectLater(cache.get(0), completion('0'));
         expect(counter, 2);
       });
-      test('reap expired items', () async {
+      clockTest('reap expired items', () async {
         final cache = newUpdateExpireCache(immediateLoader);
         await cache.set(1, 'foo');
         offset = const Duration(seconds: 21);
@@ -265,7 +257,7 @@ void main() {
       });
     });
     group('access expire cache', () {
-      test('expire a set value after it has been updated', () async {
+      clockTest('expire a set value after it has been updated', () async {
         final cache = newAccessExpireCache(immediateLoader);
         await cache.set(1, 'foo');
         offset = const Duration(seconds: 20);
@@ -276,7 +268,7 @@ void main() {
         offset = const Duration(seconds: 61);
         await expectLater(cache.getIfPresent(1), completion(isNull));
       });
-      test('loaded value expires', () async {
+      clockTest('loaded value expires', () async {
         final cache = newAccessExpireCache(immediateLoader);
         await expectLater(cache.get(1), completion('1'));
         offset = const Duration(seconds: 20);
@@ -285,7 +277,7 @@ void main() {
         await expectLater(cache.getIfPresent(1), completion(isNull));
         await expectLater(cache.size(), completion(0));
       });
-      test('re-loaded value expires', () async {
+      clockTest('re-loaded value expires', () async {
         var counter = 0;
         final cache = newAccessExpireCache((key) {
           counter++;
@@ -300,7 +292,7 @@ void main() {
         await expectLater(cache.get(0), completion('0'));
         expect(counter, 2);
       });
-      test('reap expired items', () async {
+      clockTest('reap expired items', () async {
         final cache = newAccessExpireCache(immediateLoader);
         await cache.set(1, '1');
         offset = const Duration(seconds: 120);
