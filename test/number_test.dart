@@ -255,6 +255,18 @@ void main() {
       });
     });
     group('converting', () {
+      test('sign', () {
+        expect(Complex.zero.sign, Complex.zero);
+        expect(const Complex(2.5).sign, isClose(1, 0));
+        expect(const Complex(-2.5).sign, isClose(-1, 0));
+        expect(const Complex(0, 2.5).sign, isClose(0, 1));
+        expect(const Complex(0, -2.5).sign, isClose(0, -1));
+        expect(const Complex(2, 2).sign, isClose(math.sqrt1_2, math.sqrt1_2));
+        expect(const Complex(-2, 2).sign, isClose(-math.sqrt1_2, math.sqrt1_2));
+        expect(const Complex(2, -2).sign, isClose(math.sqrt1_2, -math.sqrt1_2));
+        expect(
+            const Complex(-2, -2).sign, isClose(-math.sqrt1_2, -math.sqrt1_2));
+      });
       test('round', () {
         expect(const Complex(2.7, 1.2).round(), const Complex(3, 1));
       });

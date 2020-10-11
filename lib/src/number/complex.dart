@@ -86,6 +86,12 @@ class Complex {
   /// the magnitude of the complex number.
   double abs() => norm().sqrt();
 
+  /// Returns the closest point on the unit circle.
+  Complex get sign {
+    final absolute = abs();
+    return absolute > 0 ? this / absolute : Complex.zero;
+  }
+
   /// Returns the squared magnitude.
   num norm() => a * a + b * b;
 
