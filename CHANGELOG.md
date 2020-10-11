@@ -4,7 +4,7 @@
 
 * Dart 2.10 requirement and null-safety.
 * Use `package:clock` and `package:fake_async` across the board.
-* Optimize the implementation of 'ExpiryCache'.
+* Optimize the implementation of `ExpiryCache`.
 * Fix `maxAge` of the `Stream.buffer` operator.
 * Add `Fraction.sign` and `Complex.sign`.
 
