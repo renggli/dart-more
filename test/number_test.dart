@@ -342,6 +342,7 @@ void main() {
       });
       group('fromDouble', () {
         test('basic', () {
+          expect(Fraction.fromDouble(0), Fraction.zero);
           expect(Fraction.fromDouble(2), Fraction(2));
           expect(Fraction.fromDouble(100), Fraction(100));
         });
@@ -509,6 +510,13 @@ void main() {
         expect(Fraction(-2, 3).abs(), Fraction(2, 3));
         expect(Fraction(2, -3).abs(), Fraction(2, 3));
         expect(Fraction(2, 3).abs(), Fraction(2, 3));
+      });
+      test('sign', () {
+        expect(Fraction(-2, -3).sign, 1);
+        expect(Fraction(-2, 3).sign, -1);
+        expect(Fraction(2, -3).sign, -1);
+        expect(Fraction(2, 3).sign, 1);
+        expect(Fraction.zero.sign, 0);
       });
       test('round', () {
         expect(Fraction(2, 3).round(), 1);

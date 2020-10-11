@@ -47,7 +47,10 @@ class Fraction implements Comparable<Fraction> {
     if (value.isInfinite || value.isNaN) {
       throw ArgumentError('$value cannot be represented as fraction');
     }
-    final sign = value < 0.0 ? -1 : 1;
+    final sign = value < 0 ? -1 : value > 0 ? 1 : 0;
+    if (sign == 0) {
+      return Fraction.zero;
+    }
     value *= sign;
     var numerator1 = value.floor(), numerator2 = 1;
     var denominator1 = 1, denominator2 = 0;
@@ -173,8 +176,11 @@ class Fraction implements Comparable<Fraction> {
   /// Tests if this fraction is infinite.
   bool get isInfinite => false;
 
-  /// Returns he absolute value of this fraction.
+  /// Returns the absolute value of this fraction.
   Fraction abs() => isNegative ? -this : this;
+
+  /// Returns the sign of this fraction.
+  int get sign => a.sign;
 
   /// Rounds this fraction to an integer.
   int round() => toDouble().round();
