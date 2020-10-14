@@ -4,6 +4,7 @@ import 'package:meta/meta.dart' show immutable;
 
 import 'src/char_matcher/any.dart';
 import 'src/char_matcher/ascii.dart';
+import 'src/char_matcher/char_match.dart';
 import 'src/char_matcher/char_set.dart';
 import 'src/char_matcher/digit.dart';
 import 'src/char_matcher/disjunctive.dart';
@@ -17,6 +18,7 @@ import 'src/char_matcher/range.dart';
 import 'src/char_matcher/single.dart';
 import 'src/char_matcher/upper_case.dart';
 import 'src/char_matcher/whitespace.dart';
+import 'src/collection/integer_range.dart';
 
 /// Abstract character matcher function.
 ///
@@ -35,7 +37,7 @@ import 'src/char_matcher/whitespace.dart';
 ///     String onlyDigits = CharMatcher.digit().retainFrom(string);
 ///
 @immutable
-abstract class CharMatcher {
+abstract class CharMatcher implements Pattern {
   /// A matcher that accepts any character.
   factory CharMatcher.any() => const AnyCharMatcher();
 
@@ -205,6 +207,21 @@ abstract class CharMatcher {
     }
     return sequence.substring(0, right + 1);
   }
+
+  @override
+  Iterable<Match> allMatches(String string, [int start = 0]) {
+    final codeUnits = string.codeUnits;
+    return start
+        .to(codeUnits.length - 1)
+        .where((index) => match(codeUnits[index]))
+        .map((index) => CharMatch(index, string, this));
+  }
+
+  @override
+  Match? matchAsPrefix(String string, [int start = 0]) =>
+      start < string.length && match(string.codeUnits[start])
+          ? CharMatch(start, string, this)
+          : null;
 }
 
 int _toCharCode(Object char) {

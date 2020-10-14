@@ -47,7 +47,11 @@ class Fraction implements Comparable<Fraction> {
     if (value.isInfinite || value.isNaN) {
       throw ArgumentError('$value cannot be represented as fraction');
     }
-    final sign = value < 0 ? -1 : value > 0 ? 1 : 0;
+    final sign = value < 0
+        ? -1
+        : value > 0
+            ? 1
+            : 0;
     if (sign == 0) {
       return Fraction.zero;
     }

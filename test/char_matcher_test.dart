@@ -335,4 +335,93 @@ void main() {
       expect(star.trimTailingFrom('*ab*'), '*ab');
     });
   });
+  group('pattern', () {
+    const input = 'a1b2c';
+    final pattern = CharMatcher.digit();
+    test('allMatches()', () {
+      final matches = pattern.allMatches(input);
+      expect(matches.map((matcher) => matcher.pattern), [pattern, pattern]);
+      expect(matches.map((matcher) => matcher.input), [input, input]);
+      expect(matches.map((matcher) => matcher.start), [1, 3]);
+      expect(matches.map((matcher) => matcher.end), [2, 4]);
+      expect(matches.map((matcher) => matcher.groupCount), [0, 0]);
+      expect(matches.map((matcher) => matcher[0]), ['1', '2']);
+      expect(matches.map((matcher) => matcher.group(0)), ['1', '2']);
+      expect(matches.map((matcher) => matcher.groups([0, 1])), [
+        ['1', null],
+        ['2', null],
+      ]);
+    });
+    test('matchAsPrefix()', () {
+      final match1 = pattern.matchAsPrefix(input, 0);
+      expect(match1, isNull);
+      final match2 = pattern.matchAsPrefix(input, 1)!;
+      expect(match2.pattern, pattern);
+      expect(match2.input, input);
+      expect(match2.start, 1);
+      expect(match2.end, 2);
+      expect(match2.groupCount, 0);
+      expect(match2[0], '1');
+      expect(match2.group(0), '1');
+      expect(match2.groups([0, 1]), ['1', null]);
+    });
+    test('startsWith()', () {
+      expect(input.startsWith(pattern), isFalse);
+      expect(input.startsWith(pattern, 0), isFalse);
+      expect(input.startsWith(pattern, 1), isTrue);
+      expect(input.startsWith(pattern, 2), isFalse);
+      expect(input.startsWith(pattern, 3), isTrue);
+      expect(input.startsWith(pattern, 4), isFalse);
+    });
+    test('indexOf()', () {
+      expect(input.indexOf(pattern), 1);
+      expect(input.indexOf(pattern, 0), 1);
+      expect(input.indexOf(pattern, 1), 1);
+      expect(input.indexOf(pattern, 2), 3);
+      expect(input.indexOf(pattern, 3), 3);
+      expect(input.indexOf(pattern, 4), -1);
+    });
+    test('lastIndexOf()', () {
+      expect(input.lastIndexOf(pattern), 3);
+      expect(input.lastIndexOf(pattern, 0), -1);
+      expect(input.lastIndexOf(pattern, 1), 1);
+      expect(input.lastIndexOf(pattern, 2), 1);
+      expect(input.lastIndexOf(pattern, 3), 3);
+      expect(input.lastIndexOf(pattern, 4), 3);
+    });
+    test('contains()', () {
+      expect(input.contains(pattern), isTrue);
+    });
+    test('replaceFirst()', () {
+      expect(input.replaceFirst(pattern, '!'), 'a!b2c');
+      expect(input.replaceFirst(pattern, '!', 0), 'a!b2c');
+      expect(input.replaceFirst(pattern, '!', 1), 'a!b2c');
+      expect(input.replaceFirst(pattern, '!', 2), 'a1b!c');
+      expect(input.replaceFirst(pattern, '!', 3), 'a1b!c');
+      expect(input.replaceFirst(pattern, '!', 4), 'a1b2c');
+    });
+    test('replaceFirstMapped()', () {
+      expect(input.replaceFirstMapped(pattern, (match) => '!${match[0]}!'),
+          'a!1!b2c');
+    });
+    test('replaceAll()', () {
+      expect(input.replaceAll(pattern, '!'), 'a!b!c');
+    }, onPlatform: {
+      'js': const Skip('String.replaceAll(Pattern) UNIMPLEMENTED')
+    });
+    test('replaceAllMapped()', () {
+      expect(input.replaceAllMapped(pattern, (match) => '!${match[0]}!'),
+          'a!1!b!2!c');
+    });
+    test('split()', () {
+      expect(input.split(pattern), ['a', 'b', 'c']);
+    });
+    test('splitMapJoin()', () {
+      expect(
+          input.splitMapJoin(pattern,
+              onMatch: (match) => '!${match[0]}!',
+              onNonMatch: (nonMatch) => '?$nonMatch?'),
+          '?a?!1!?b?!2!?c?');
+    });
+  });
 }
