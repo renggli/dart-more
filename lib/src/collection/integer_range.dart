@@ -74,7 +74,9 @@ class IntegerRange extends ListBase<int> with UnmodifiableListMixin<int> {
   final int length;
 
   @override
-  Iterator<int> get iterator => IntegerRangeIterator(start, step, length);
+  Iterator<int> get iterator => step > 0
+      ? PositiveStepIntegerRangeIterator(start, end, step)
+      : NegativeStepIntegerRangeIterator(start, end, step);
 
   @override
   int operator [](int index) {
@@ -165,25 +167,46 @@ extension IntegerRangeExtension on int {
   IntegerRange to(int end, {int? step}) => IntegerRange(this, end, step);
 }
 
-class IntegerRangeIterator extends Iterator<int> {
-  final int start;
+class PositiveStepIntegerRangeIterator extends Iterator<int> {
+  int start;
+  final int end;
   final int step;
-  final int length;
 
-  int index = 0;
-
-  IntegerRangeIterator(this.start, this.step, this.length);
+  PositiveStepIntegerRangeIterator(this.start, this.end, this.step)
+      : assert(step > 0, 'Step size must be positive.');
 
   @override
   late int current;
 
   @override
   bool moveNext() {
-    if (index == length) {
-      return false;
-    } else {
-      current = start + step * index++;
+    if (start < end) {
+      current = start;
+      start += step;
       return true;
     }
+    return false;
+  }
+}
+
+class NegativeStepIntegerRangeIterator extends Iterator<int> {
+  int start;
+  final int end;
+  final int step;
+
+  NegativeStepIntegerRangeIterator(this.start, this.end, this.step)
+      : assert(step < 0, 'Step size must be negative.');
+
+  @override
+  late int current;
+
+  @override
+  bool moveNext() {
+    if (start > end) {
+      current = start;
+      start += step;
+      return true;
+    }
+    return false;
   }
 }

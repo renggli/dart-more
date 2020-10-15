@@ -1570,6 +1570,208 @@ void main() {
         expect(() => list.sort(), throwsUnsupportedError);
       });
     });
+    group('BigInt', () {
+      void verify(List<BigInt> range, List/*<int|BigInt>*/ expected) {
+        final normalized = expected
+            .map((value) => value is BigInt ? value : BigInt.from(value))
+            .cast<BigInt>()
+            .toList(growable: false);
+        expect(range, normalized);
+        expect(range.reversed, normalized.reversed);
+        final iterator = range.iterator;
+        for (var i = 0; i < normalized.length; i++) {
+          expect(iterator.moveNext(), isTrue);
+          expect(iterator.current, range[i]);
+          expect(range.indexOf(iterator.current), i);
+          expect(range.indexOf(iterator.current, i), i);
+          expect(range.indexOf(iterator.current, -1), i);
+          expect(range.lastIndexOf(iterator.current), i);
+          expect(range.lastIndexOf(iterator.current, i), i);
+          expect(range.lastIndexOf(iterator.current, expected.length), i);
+        }
+        expect(iterator.moveNext(), isFalse);
+        expect(() => range[-1], throwsRangeError);
+        expect(() => range[normalized.length], throwsRangeError);
+        for (final value in normalized) {
+          expect(range.contains(value), isTrue);
+        }
+      }
+
+      group('constructor', () {
+        test('empty', () {
+          verify(BigIntRange(), []);
+          expect(BigIntRange().contains(0), isFalse);
+        });
+        test('1 argument', () {
+          verify(BigIntRange(BigInt.from(0)), []);
+          verify(BigIntRange(BigInt.from(1)), [0]);
+          verify(BigIntRange(BigInt.from(2)), [0, 1]);
+          verify(BigIntRange(BigInt.from(3)), [0, 1, 2]);
+        });
+        test('2 argument', () {
+          verify(BigIntRange(BigInt.from(0), BigInt.from(4)), [0, 1, 2, 3]);
+          verify(BigIntRange(BigInt.from(5), BigInt.from(9)), [5, 6, 7, 8]);
+          verify(BigIntRange(BigInt.from(9), BigInt.from(5)), [9, 8, 7, 6]);
+        });
+        test('3 argument (positive step)', () {
+          verify(BigIntRange(BigInt.from(2), BigInt.from(8), BigInt.two),
+              [2, 4, 6]);
+          verify(BigIntRange(BigInt.from(3), BigInt.from(8), BigInt.two),
+              [3, 5, 7]);
+          verify(
+              BigIntRange(BigInt.from(4), BigInt.from(8), BigInt.two), [4, 6]);
+          verify(BigIntRange(BigInt.from(2), BigInt.from(7), BigInt.two),
+              [2, 4, 6]);
+          verify(
+              BigIntRange(BigInt.from(2), BigInt.from(6), BigInt.two), [2, 4]);
+        });
+        test('3 argument (negative step)', () {
+          verify(BigIntRange(BigInt.from(8), BigInt.from(2), -BigInt.two),
+              [8, 6, 4]);
+          verify(BigIntRange(BigInt.from(8), BigInt.from(3), -BigInt.two),
+              [8, 6, 4]);
+          verify(
+              BigIntRange(BigInt.from(8), BigInt.from(4), -BigInt.two), [8, 6]);
+          verify(BigIntRange(BigInt.from(7), BigInt.from(2), -BigInt.two),
+              [7, 5, 3]);
+          verify(
+              BigIntRange(BigInt.from(6), BigInt.from(2), -BigInt.two), [6, 4]);
+        });
+        test('shorthand', () {
+          verify(BigInt.zero.to(BigInt.from(3)), [0, 1, 2]);
+          verify(BigInt.two.to(BigInt.from(8), step: BigInt.two), [2, 4, 6]);
+        });
+        test('invalid', () {
+          expect(
+              () => BigIntRange(BigInt.from(0), BigInt.from(2), BigInt.from(0)),
+              throwsArgumentError);
+          expect(
+              () =>
+                  BigIntRange(BigInt.from(0), BigInt.from(2), BigInt.from(-1)),
+              throwsArgumentError);
+          expect(
+              () => BigIntRange(BigInt.from(2), BigInt.from(0), BigInt.from(1)),
+              throwsArgumentError);
+          expect(() => BigIntRange(BigInt.zero, BigInt.from(pow(2.0, 65))),
+              throwsArgumentError);
+        });
+      });
+      group('sublist', () {
+        test('sublist (1 argument)', () {
+          verify(BigIntRange(BigInt.from(3)).sublist(0), [0, 1, 2]);
+          verify(BigIntRange(BigInt.from(3)).sublist(1), [1, 2]);
+          verify(BigIntRange(BigInt.from(3)).sublist(2), [2]);
+          verify(BigIntRange(BigInt.from(3)).sublist(3), []);
+          expect(
+              () => BigIntRange(BigInt.from(3)).sublist(4), throwsRangeError);
+        });
+        test('sublist (2 arguments)', () {
+          verify(BigIntRange(BigInt.from(3)).sublist(0, 3), [0, 1, 2]);
+          verify(BigIntRange(BigInt.from(3)).sublist(0, 2), [0, 1]);
+          verify(BigIntRange(BigInt.from(3)).sublist(0, 1), [0]);
+          verify(BigIntRange(BigInt.from(3)).sublist(0, 0), []);
+          expect(() => BigIntRange(BigInt.from(3)).sublist(0, 4),
+              throwsRangeError);
+        });
+        test('getRange', () {
+          verify(
+              BigIntRange(BigInt.from(3)).getRange(0, 3).toList(), [0, 1, 2]);
+          verify(BigIntRange(BigInt.from(3)).getRange(0, 2).toList(), [0, 1]);
+          verify(BigIntRange(BigInt.from(3)).getRange(0, 1).toList(), [0]);
+          verify(BigIntRange(BigInt.from(3)).getRange(0, 0).toList(), []);
+          expect(() => BigIntRange(BigInt.from(3)).getRange(0, 4),
+              throwsRangeError);
+        });
+      });
+      group('index', () {
+        test('indexOf (positive step)', () {
+          final r = BigIntRange(
+              BigInt.from(2), BigInt.from(7), BigInt.from(2)); // [2, 4, 6]
+          expect(r.indexOf(null), -1);
+          expect(r.indexOf(1), -1);
+          expect(r.indexOf(3), -1);
+          expect(r.indexOf(5), -1);
+          expect(r.indexOf(7), -1);
+          expect(r.indexOf(2, 1), -1);
+          expect(r.indexOf(4, 2), -1);
+          expect(r.indexOf(6, 3), -1);
+          expect(r.indexOf(8, 4), -1);
+        });
+        test('indexOf (negative step)', () {
+          final r = BigIntRange(
+              BigInt.from(7), BigInt.from(2), BigInt.from(-2)); // [7, 5, 3]
+          expect(r.indexOf(null), -1);
+          expect(r.indexOf(2), -1);
+          expect(r.indexOf(4), -1);
+          expect(r.indexOf(6), -1);
+          expect(r.indexOf(8), -1);
+          expect(r.indexOf(2, 1), -1);
+          expect(r.indexOf(4, 2), -1);
+          expect(r.indexOf(6, 3), -1);
+          expect(r.indexOf(8, 4), -1);
+        });
+        test('lastIndexOf (positive step)', () {
+          final r = BigIntRange(
+              BigInt.from(2), BigInt.from(7), BigInt.from(2)); // [2, 4, 6]
+          expect(r.lastIndexOf(null), -1);
+          expect(r.lastIndexOf(1), -1);
+          expect(r.lastIndexOf(3), -1);
+          expect(r.lastIndexOf(5), -1);
+          expect(r.lastIndexOf(7), -1);
+          expect(r.lastIndexOf(1, 1), -1);
+          expect(r.lastIndexOf(3, 2), -1);
+          expect(r.lastIndexOf(5, 3), -1);
+          expect(r.lastIndexOf(7, 4), -1);
+        });
+        test('lastIndexOf (negative step)', () {
+          final r = BigIntRange(
+              BigInt.from(7), BigInt.from(2), BigInt.from(-2)); // [7, 5, 3]
+          expect(r.lastIndexOf(null), -1);
+          expect(r.lastIndexOf(2), -1);
+          expect(r.lastIndexOf(4), -1);
+          expect(r.lastIndexOf(6), -1);
+          expect(r.lastIndexOf(8), -1);
+          expect(r.lastIndexOf(2, 1), -1);
+          expect(r.lastIndexOf(4, 2), -1);
+          expect(r.lastIndexOf(6, 3), -1);
+          expect(r.lastIndexOf(8, 4), -1);
+        });
+      });
+      test('printing', () {
+        expect(BigIntRange().toString(), 'BigIntRange()');
+        expect(BigIntRange(BigInt.from(1)).toString(), 'BigIntRange(1)');
+        expect(BigIntRange(BigInt.from(1), BigInt.from(2)).toString(),
+            'BigIntRange(1, 2)');
+        expect(
+            BigIntRange(BigInt.from(1), BigInt.from(5), BigInt.from(2))
+                .toString(),
+            'BigIntRange(1, 5, 2)');
+      });
+      test('unmodifiable', () {
+        final list = BigIntRange(BigInt.from(1), BigInt.from(5));
+        expect(() => list[0] = BigInt.from(5), throwsUnsupportedError);
+        expect(() => list.add(BigInt.from(5)), throwsUnsupportedError);
+        expect(() => list.addAll(list), throwsUnsupportedError);
+        expect(() => list.clear(), throwsUnsupportedError);
+        expect(
+            () => list.fillRange(2, 4, BigInt.from(5)), throwsUnsupportedError);
+        expect(() => list.insert(2, BigInt.from(5)), throwsUnsupportedError);
+        expect(() => list.insertAll(2, list), throwsUnsupportedError);
+        expect(() => list.length = 10, throwsUnsupportedError);
+        expect(() => list.remove(5), throwsUnsupportedError);
+        expect(() => list.removeAt(2), throwsUnsupportedError);
+        expect(() => list.removeLast(), throwsUnsupportedError);
+        expect(() => list.removeRange(2, 4), throwsUnsupportedError);
+        expect(() => list.removeWhere((value) => true), throwsUnsupportedError);
+        expect(() => list.replaceRange(2, 4, list), throwsUnsupportedError);
+        expect(
+            () => list.retainWhere((value) => false), throwsUnsupportedError);
+        expect(() => list.setAll(2, list), throwsUnsupportedError);
+        expect(() => list.setRange(2, 4, list), throwsUnsupportedError);
+        expect(() => list.shuffle(), throwsUnsupportedError);
+        expect(() => list.sort(), throwsUnsupportedError);
+      });
+    });
   });
   group('string', () {
     group('immutable', () {

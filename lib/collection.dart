@@ -1,3 +1,5 @@
+export 'src/collection/bigint_range.dart'
+    show BigIntRange, BigIntRangeExtension;
 export 'src/collection/bimap.dart' show BiMap, BiMapExtension;
 export 'src/collection/bitlist.dart' show BitList, BitListExtension;
 export 'src/collection/double_range.dart'
