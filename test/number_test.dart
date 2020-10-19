@@ -3,11 +3,12 @@ import 'dart:math' as math;
 import 'package:more/number.dart';
 import 'package:test/test.dart';
 
+const epsilon = 1e-5;
+Matcher isCloseTo<T extends CloseTo<T>>(T other) => isA<T>()
+    .having((value) => value.closeTo(other, epsilon), 'closeTo', isTrue);
+
 void main() {
-  const epsilon = 1e-5;
   group('complex', () {
-    bool Function(Complex) isClose(num a, num b) =>
-        (actual) => actual.closeTo(Complex(a, b), epsilon);
     group('construction', () {
       test('zero', () {
         const complex = Complex.zero;
@@ -154,14 +155,16 @@ void main() {
         expect(const Complex(1, -2).reciprocal(), const Complex(0.2, 0.4));
       });
       test('exp', () {
-        expect(const Complex(1, 2).exp(), isClose(-1.131204, 2.471726));
+        expect(const Complex(1, 2).exp(),
+            isCloseTo(const Complex(-1.131204, 2.471726)));
       });
       test('log', () {
-        expect(const Complex(1, 2).log(), isClose(0.804718, 1.107148));
+        expect(const Complex(1, 2).log(),
+            isCloseTo(const Complex(0.804718, 1.107148)));
       });
       test('pow', () {
         expect(const Complex(1, 2).pow(const Complex(3, 4)),
-            isClose(0.129009, 0.033924));
+            isCloseTo(const Complex(0.129009, 0.033924)));
       });
       test('square', () {
         expect(const Complex(2, 3).square(), const Complex(-5, 12));
@@ -170,11 +173,16 @@ void main() {
         expect(const Complex(-2, -3).square(), const Complex(-5, 12));
       });
       test('sqrt', () {
-        expect(const Complex(2, 3).sqrt(), isClose(1.674149, 0.895977));
-        expect(const Complex(-2, 3).sqrt(), isClose(0.895977, 1.674149));
-        expect(const Complex(2, -3).sqrt(), isClose(1.674149, -0.895977));
-        expect(const Complex(-2, -3).sqrt(), isClose(0.895977, -1.674149));
-        expect(const Complex(2, 3).sqrt().square(), isClose(2, 3));
+        expect(const Complex(2, 3).sqrt(),
+            isCloseTo(const Complex(1.674149, 0.895977)));
+        expect(const Complex(-2, 3).sqrt(),
+            isCloseTo(const Complex(0.895977, 1.674149)));
+        expect(const Complex(2, -3).sqrt(),
+            isCloseTo(const Complex(1.674149, -0.895977)));
+        expect(const Complex(-2, -3).sqrt(),
+            isCloseTo(const Complex(0.895977, -1.674149)));
+        expect(const Complex(2, 3).sqrt().square(),
+            isCloseTo(const Complex(2, 3)));
       });
       group('roots', () {
         const source = Complex(2, 3);
@@ -183,7 +191,7 @@ void main() {
             final roots = source.roots(n);
             expect(roots, hasLength(n.abs()));
             for (final root in roots) {
-              expect(root.pow(n), isClose(source.a, source.b));
+              expect(root.pow(n), isCloseTo(Complex(source.a, source.b)));
             }
           });
         }
@@ -203,40 +211,52 @@ void main() {
         testRoots(6);
       });
       test('sin', () {
-        expect(const Complex(2, 3).sin(), isClose(9.154499, 4.168906));
+        expect(const Complex(2, 3).sin(),
+            isCloseTo(const Complex(9.154499, 4.168906)));
       });
       test('asin', () {
-        expect(const Complex(2, 3).asin(), isClose(0.570652, 1.983387));
+        expect(const Complex(2, 3).asin(),
+            isCloseTo(const Complex(0.570652, 1.983387)));
       });
       test('sinh', () {
-        expect(const Complex(2, 3).sinh(), isClose(-3.590564, 0.530921));
+        expect(const Complex(2, 3).sinh(),
+            isCloseTo(const Complex(-3.590564, 0.530921)));
       });
       test('asinh', () {
-        expect(const Complex(2, 3).asinh(), isClose(1.968637, 0.964658));
+        expect(const Complex(2, 3).asinh(),
+            isCloseTo(const Complex(1.968637, 0.964658)));
       });
       test('cos', () {
-        expect(const Complex(2, 3).cos(), isClose(-4.189625, -9.109227));
+        expect(const Complex(2, 3).cos(),
+            isCloseTo(const Complex(-4.189625, -9.109227)));
       });
       test('acos', () {
-        expect(const Complex(2, 3).acos(), isClose(1.000143, -1.983387));
+        expect(const Complex(2, 3).acos(),
+            isCloseTo(const Complex(1.000143, -1.983387)));
       });
       test('cosh', () {
-        expect(const Complex(2, 3).cosh(), isClose(-3.724545, 0.511822));
+        expect(const Complex(2, 3).cosh(),
+            isCloseTo(const Complex(-3.724545, 0.511822)));
       });
       test('acosh', () {
-        expect(const Complex(2, 3).acosh(), isClose(1.983387, 1.000143));
+        expect(const Complex(2, 3).acosh(),
+            isCloseTo(const Complex(1.983387, 1.000143)));
       });
       test('tan', () {
-        expect(const Complex(2, 3).tan(), isClose(-0.003764, 1.003238));
+        expect(const Complex(2, 3).tan(),
+            isCloseTo(const Complex(-0.003764, 1.003238)));
       });
       test('atan', () {
-        expect(const Complex(2, 3).atan(), isClose(1.409921, 0.229072));
+        expect(const Complex(2, 3).atan(),
+            isCloseTo(const Complex(1.409921, 0.229072)));
       });
       test('tanh', () {
-        expect(const Complex(2, 3).tanh(), isClose(0.965385, -0.009884));
+        expect(const Complex(2, 3).tanh(),
+            isCloseTo(const Complex(0.965385, -0.009884)));
       });
       test('atanh', () {
-        expect(const Complex(2, 3).atanh(), isClose(0.146946, 1.338972));
+        expect(const Complex(2, 3).atanh(),
+            isCloseTo(const Complex(0.146946, 1.338972)));
       });
     });
     group('testing', () {
@@ -257,15 +277,18 @@ void main() {
     group('converting', () {
       test('sign', () {
         expect(Complex.zero.sign, Complex.zero);
-        expect(const Complex(2.5).sign, isClose(1, 0));
-        expect(const Complex(-2.5).sign, isClose(-1, 0));
-        expect(const Complex(0, 2.5).sign, isClose(0, 1));
-        expect(const Complex(0, -2.5).sign, isClose(0, -1));
-        expect(const Complex(2, 2).sign, isClose(math.sqrt1_2, math.sqrt1_2));
-        expect(const Complex(-2, 2).sign, isClose(-math.sqrt1_2, math.sqrt1_2));
-        expect(const Complex(2, -2).sign, isClose(math.sqrt1_2, -math.sqrt1_2));
-        expect(
-            const Complex(-2, -2).sign, isClose(-math.sqrt1_2, -math.sqrt1_2));
+        expect(const Complex(2.5).sign, isCloseTo(const Complex(1, 0)));
+        expect(const Complex(-2.5).sign, isCloseTo(const Complex(-1, 0)));
+        expect(const Complex(0, 2.5).sign, isCloseTo(const Complex(0, 1)));
+        expect(const Complex(0, -2.5).sign, isCloseTo(const Complex(0, -1)));
+        expect(const Complex(2, 2).sign,
+            isCloseTo(const Complex(math.sqrt1_2, math.sqrt1_2)));
+        expect(const Complex(-2, 2).sign,
+            isCloseTo(const Complex(-math.sqrt1_2, math.sqrt1_2)));
+        expect(const Complex(2, -2).sign,
+            isCloseTo(const Complex(math.sqrt1_2, -math.sqrt1_2)));
+        expect(const Complex(-2, -2).sign,
+            isCloseTo(const Complex(-math.sqrt1_2, -math.sqrt1_2)));
       });
       test('round', () {
         expect(const Complex(2.7, 1.2).round(), const Complex(3, 1));
@@ -606,8 +629,6 @@ void main() {
     });
   });
   group('quaternion', () {
-    bool Function(Quaternion) isClose(num a, num b, num c, num d) =>
-        (actual) => actual.closeTo(Quaternion(a, b, c, d), epsilon);
     group('construction', () {
       test('zero', () {
         const quaternion = Quaternion.zero;
@@ -675,18 +696,27 @@ void main() {
       });
       test('fromAxis', () {
         final quaternion = Quaternion.fromAxis(const [1, 2, 3], 4.0);
-        expect(quaternion, isClose(-0.416146, 0.243019, 0.486039, 0.729059));
+        expect(
+            quaternion,
+            isCloseTo(
+                const Quaternion(-0.416146, 0.243019, 0.486039, 0.729059)));
         expect(quaternion.abs(), closeTo(1.0, epsilon));
       });
       test('fromVectors', () {
         final quaternion =
             Quaternion.fromVectors(const [1, 2, 3], const [4, 5, 6]);
-        expect(quaternion, isClose(0.993637, -0.045978, 0.091956, -0.045978));
+        expect(
+            quaternion,
+            isCloseTo(
+                const Quaternion(0.993637, -0.045978, 0.091956, -0.045978)));
         expect(quaternion.abs(), closeTo(1.0, epsilon));
       });
       test('fromEuler', () {
         final quaternion = Quaternion.fromEuler(1, 2, 3);
-        expect(quaternion, isClose(-0.368871, -0.206149, 0.501509, 0.754933));
+        expect(
+            quaternion,
+            isCloseTo(
+                const Quaternion(-0.368871, -0.206149, 0.501509, 0.754933)));
         expect(quaternion.abs(), closeTo(1.0, epsilon));
       });
       test('tryParse', () {
@@ -768,10 +798,14 @@ void main() {
             () => const Quaternion(5, 6, -7, -8) * 'foo', throwsArgumentError);
       });
       test('division', () {
-        expect(const Quaternion(1, -2, 3, -4) / const Quaternion(5, 6, -7, -8),
-            isClose(0.133333, 1.200000, 2.066666, -0.266666));
-        expect(const Quaternion(5, 6, -7, -8) / const Quaternion(1, -2, 3, -4),
-            isClose(0.022988, -0.206896, -0.356321, 0.045977));
+        expect(
+            const Quaternion(1, -2, 3, -4) / const Quaternion(5, 6, -7, -8),
+            isCloseTo(
+                const Quaternion(0.133333, 1.200000, 2.066666, -0.266666)));
+        expect(
+            const Quaternion(5, 6, -7, -8) / const Quaternion(1, -2, 3, -4),
+            isCloseTo(
+                const Quaternion(0.022988, -0.206896, -0.356321, 0.045977)));
         expect(const Quaternion(6, 4, -8, -16) / 2,
             const Quaternion(3, 2, -4, -8));
         expect(
@@ -785,21 +819,28 @@ void main() {
             const Quaternion(1, 2, -3, 4));
       });
       test('reciprocal', () {
-        expect(const Quaternion(1, -2, 3, -4).reciprocal(),
-            isClose(0.033333, 0.066666, -0.100000, 0.133333));
+        expect(
+            const Quaternion(1, -2, 3, -4).reciprocal(),
+            isCloseTo(
+                const Quaternion(0.033333, 0.066666, -0.100000, 0.133333)));
       });
       test('exp', () {
-        expect(const Quaternion(1, -2, 3, -4).exp(),
-            isClose(1.693922, 0.789559, -1.184339, 1.579119));
+        expect(
+            const Quaternion(1, -2, 3, -4).exp(),
+            isCloseTo(
+                const Quaternion(1.693922, 0.789559, -1.184339, 1.579119)));
       });
       test('log', () {
-        expect(const Quaternion(1, -2, 3, -4).log(),
-            isClose(1.700598, -0.515190, 0.772785, -1.030380));
+        expect(
+            const Quaternion(1, -2, 3, -4).log(),
+            isCloseTo(
+                const Quaternion(1.700598, -0.515190, 0.772785, -1.030380)));
       });
       test('pow', () {
         expect(
             const Quaternion(1, -2, 3, -4).pow(const Quaternion(5, 6, -7, -8)),
-            isClose(-4948.167788, -841.118989, -2675.346637, -2885.798013));
+            isCloseTo(const Quaternion(
+                -4948.167788, -841.118989, -2675.346637, -2885.798013)));
       });
     });
     group('testing', () {

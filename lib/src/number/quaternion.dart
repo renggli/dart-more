@@ -2,10 +2,11 @@ import 'package:meta/meta.dart' show immutable;
 
 import '../../hash.dart';
 import '../../math.dart';
+import 'mixins/close_to.dart';
 
 /// A quaternion number of the form `w + x*i + y*j + z*k`.
 @immutable
-class Quaternion {
+class Quaternion implements CloseTo<Quaternion> {
   /// The neutral additive element, that is `0`.
   static const Quaternion zero = Quaternion(0);
 
@@ -247,7 +248,7 @@ class Quaternion {
   Quaternion truncate() =>
       Quaternion(w.truncate(), x.truncate(), y.truncate(), z.truncate());
 
-  /// Tests if this complex number is close to another complex number.
+  @override
   bool closeTo(Quaternion other, double epsilon) =>
       (this - other).abs() < epsilon;
 

@@ -3,10 +3,11 @@ import 'package:meta/meta.dart' show immutable;
 
 import '../../hash.dart';
 import '../../math.dart';
+import 'mixins/close_to.dart';
 
 /// A rational number.
 @immutable
-class Fraction implements Comparable<Fraction> {
+class Fraction implements Comparable<Fraction>, CloseTo<Fraction> {
   /// The neutral additive element, that is `0`.
   static const Fraction zero = Fraction._(0, 1);
 
@@ -204,7 +205,7 @@ class Fraction implements Comparable<Fraction> {
   /// Converts this fraction to a double.
   double toDouble() => a / b;
 
-  /// Tests if this fraction is close to another fraction.
+  @override
   bool closeTo(Fraction other, double epsilon) =>
       (toDouble() - other.toDouble()).abs() < epsilon;
 

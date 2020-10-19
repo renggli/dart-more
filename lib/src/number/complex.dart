@@ -4,10 +4,11 @@ import 'package:meta/meta.dart' show immutable;
 
 import '../../hash.dart';
 import '../../math.dart';
+import 'mixins/close_to.dart';
 
 /// A complex number of the form `a + b*i`.
 @immutable
-class Complex {
+class Complex implements CloseTo<Complex> {
   /// The neutral additive element, that is `0`.
   static const Complex zero = Complex(0);
 
@@ -259,7 +260,7 @@ class Complex {
   /// Truncates the values of this complex number to integers.
   Complex truncate() => Complex(a.truncate(), b.truncate());
 
-  /// Tests if this complex number is close to another complex number.
+  @override
   bool closeTo(Complex other, double epsilon) => (this - other).abs() < epsilon;
 
   @override
