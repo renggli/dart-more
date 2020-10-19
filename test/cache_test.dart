@@ -32,6 +32,10 @@ void statelessCacheTests(NewCache<int, String> newCache) {
     final cache = newCache(immediateFailingLoader);
     await expectLater(cache.getIfPresent(1), completion(isNull));
   });
+  test('set present value', () async {
+    final cache = newCache(immediateLoader);
+    await expectLater(cache.set(1, '2'), completion('2'));
+  });
   test('load immediate value', () async {
     final cache = newCache(immediateLoader);
     await expectLater(cache.get(1), completion('1'));
