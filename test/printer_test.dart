@@ -722,4 +722,70 @@ void main() {
       expect(printer(4), '4--4!');
     });
   });
+  group('iterable', () {
+    test('default', () {
+      final printer = Printer.standard().iterable();
+      expect(printer([]), '');
+      expect(printer([1]), '1');
+      expect(printer([1, 2]), '1, 2');
+      expect(printer([1, 2, 3]), '1, 2, 3');
+      expect(printer([1, 2, 3, 4]), '1, 2, 3, 4');
+      expect(printer([1, 2, 3, 4, 5]), '1, 2, 3, 4, 5');
+    });
+    test('separator', () {
+      final printer = Printer.standard().iterable(separator: ';');
+      expect(printer([]), '');
+      expect(printer([1]), '1');
+      expect(printer([1, 2]), '1;2');
+      expect(printer([1, 2, 3]), '1;2;3');
+      expect(printer([1, 2, 3, 4]), '1;2;3;4');
+      expect(printer([1, 2, 3, 4, 5]), '1;2;3;4;5');
+    });
+    test('lastSeparator', () {
+      final printer = Printer.standard().iterable(lastSeparator: ', and ');
+      expect(printer([]), '');
+      expect(printer([1]), '1');
+      expect(printer([1, 2]), '1, and 2');
+      expect(printer([1, 2, 3]), '1, 2, and 3');
+      expect(printer([1, 2, 3, 4]), '1, 2, 3, and 4');
+      expect(printer([1, 2, 3, 4, 5]), '1, 2, 3, 4, and 5');
+    });
+    test('leadingItems', () {
+      final printer = Printer.standard().iterable(leadingItems: 3);
+      expect(printer([]), '');
+      expect(printer([1]), '1');
+      expect(printer([1, 2]), '1, 2');
+      expect(printer([1, 2, 3]), '1, 2, 3');
+      expect(printer([1, 2, 3, 4]), '1, 2, 3, …');
+      expect(printer([1, 2, 3, 4, 5]), '1, 2, 3, …');
+      expect(printer([1, 2, 3, 4, 5, 6]), '1, 2, 3, …');
+      expect(printer([1, 2, 3, 4, 5, 6, 7]), '1, 2, 3, …');
+      expect(printer([1, 2, 3, 4, 5, 6, 7, 8]), '1, 2, 3, …');
+    });
+    test('trailingItems', () {
+      final printer = Printer.standard().iterable(trailingItems: 3);
+      expect(printer([]), '');
+      expect(printer([1]), '1');
+      expect(printer([1, 2]), '1, 2');
+      expect(printer([1, 2, 3]), '1, 2, 3');
+      expect(printer([1, 2, 3, 4]), '…, 2, 3, 4');
+      expect(printer([1, 2, 3, 4, 5]), '…, 3, 4, 5');
+      expect(printer([1, 2, 3, 4, 5, 6]), '…, 4, 5, 6');
+      expect(printer([1, 2, 3, 4, 5, 6, 7]), '…, 5, 6, 7');
+      expect(printer([1, 2, 3, 4, 5, 6, 7, 8]), '…, 6, 7, 8');
+    });
+    test('leadingItems and trailingItems', () {
+      final printer =
+          Printer.standard().iterable(leadingItems: 3, trailingItems: 3);
+      expect(printer([]), '');
+      expect(printer([1]), '1');
+      expect(printer([1, 2]), '1, 2');
+      expect(printer([1, 2, 3]), '1, 2, 3');
+      expect(printer([1, 2, 3, 4]), '1, 2, 3, 4');
+      expect(printer([1, 2, 3, 4, 5]), '1, 2, 3, 4, 5');
+      expect(printer([1, 2, 3, 4, 5, 6]), '1, 2, 3, 4, 5, 6');
+      expect(printer([1, 2, 3, 4, 5, 6, 7]), '1, 2, 3, …, 5, 6, 7');
+      expect(printer([1, 2, 3, 4, 5, 6, 7, 8]), '1, 2, 3, …, 6, 7, 8');
+    });
+  });
 }

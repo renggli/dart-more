@@ -8,6 +8,7 @@
 * Optimize the implementation of `ExpiryCache`.
 * Fix `maxAge` of the `Stream.buffer` operator.
 * Add `Fraction.sign` and `Complex.sign`.
+* Add `IterablePrinter` to print lists.
 * `CharMatcher` is now a `Pattern`.
 
 ## 2.8.0

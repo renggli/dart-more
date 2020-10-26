@@ -2,6 +2,7 @@
 /// and highly configurable formatting primitives.
 import 'package:meta/meta.dart' show immutable;
 
+import 'src/printer/iterable.dart';
 import 'src/printer/literal.dart';
 import 'src/printer/number/fixed.dart';
 import 'src/printer/number/human.dart';
@@ -186,6 +187,21 @@ abstract class Printer {
   /// Helper to modify a printer with a [callback], if a [condition] is met.
   Printer mapIf(bool condition, Printer Function(Printer printer) callback) =>
       condition ? callback(this) : this;
+
+  ///
+  Printer iterable({
+    String separator = commaSeparator,
+    String? lastSeparator,
+    int? leadingItems,
+    int? trailingItems,
+    String? ellipses = iterableEllipsis,
+  }) =>
+      IterablePrinter(this,
+          separator: separator,
+          lastSeparator: lastSeparator,
+          leadingItems: leadingItems,
+          trailingItems: trailingItems,
+          ellipses: ellipses);
 
   /// Concatenates this printer with [other].
   Printer operator +(Object other) =>
