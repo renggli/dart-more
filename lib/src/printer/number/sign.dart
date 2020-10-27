@@ -23,7 +23,7 @@ class SignPrinter extends NumberPrinter {
   });
 
   @override
-  String call(Object? object) {
+  String call(dynamic object) {
     final isNegative = checkNumericType(
       object,
       (value) => value.isNegative,

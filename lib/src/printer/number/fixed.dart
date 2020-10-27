@@ -64,10 +64,10 @@ class FixedNumberPrinter extends NumberPrinter {
                 (printer) => printer.separateLeft(3, 0, separator));
 
   @override
-  String call(Object? object) => _prependSign(
+  String call(dynamic object) => _prependSign(
       object, checkNumericType(object, _convertNum, _convertBigInt));
 
-  String _prependSign(Object? value, String result) => '${sign(value)}$result';
+  String _prependSign(dynamic value, String result) => '${sign(value)}$result';
 
   String _convertNum(num value) {
     if (value.isNaN) {

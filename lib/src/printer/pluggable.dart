@@ -1,7 +1,7 @@
 import '../../printer.dart';
 
 /// Printer callback function.
-typedef PrintCallback = String Function(Object? value);
+typedef PrintCallback = String Function(dynamic value);
 
 /// Prints an object using a callback function.
 class PluggablePrinter extends Printer {
@@ -10,5 +10,5 @@ class PluggablePrinter extends Printer {
   const PluggablePrinter(this.callback);
 
   @override
-  String call(Object? object) => callback(object);
+  String call(dynamic object) => callback(object);
 }

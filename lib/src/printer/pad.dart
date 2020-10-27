@@ -12,7 +12,7 @@ class PadLeftPrinter extends DelegatePrinter {
       : super(delegate);
 
   @override
-  String call(Object? object) {
+  String call(dynamic object) {
     final input = super.call(object).characters;
     final count = width - input.length;
     if (count > 0) {
@@ -31,7 +31,7 @@ class PadRightPrinter extends DelegatePrinter {
       : super(delegate);
 
   @override
-  String call(Object? object) {
+  String call(dynamic object) {
     final input = super.call(object).characters;
     final count = width - input.length;
     if (count > 0) {
@@ -50,7 +50,7 @@ class PadBothPrinter extends DelegatePrinter {
       : super(delegate);
 
   @override
-  String call(Object? object) {
+  String call(dynamic object) {
     final input = super.call(object).characters;
     final count = width - input.length;
     if (count > 0) {

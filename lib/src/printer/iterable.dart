@@ -33,7 +33,7 @@ class IterablePrinter extends DelegatePrinter {
   }) : super(delegate);
 
   @override
-  String call(Object? object) {
+  String call(dynamic object) {
     if (object is! Iterable) {
       throw ArgumentError.value(object, 'object', 'is not iterable.');
     }

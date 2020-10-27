@@ -138,8 +138,8 @@ abstract class Printer {
     }
   }
 
-  /// Prints the object.
-  String call(Object? object);
+  /// Prints the [object].
+  String call(dynamic object);
 
   /// Removes any leading and trailing whitespace.
   Printer trim() => TrimPrinter(this);
@@ -188,7 +188,8 @@ abstract class Printer {
   Printer mapIf(bool condition, Printer Function(Printer printer) callback) =>
       condition ? callback(this) : this;
 
-  ///
+  /// Joins the items in an [Iterable] with a separator, and possibly limits
+  /// the total amount of items to be printed.
   Printer iterable({
     String separator = commaSeparator,
     String? lastSeparator,

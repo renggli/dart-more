@@ -218,7 +218,7 @@ class HumanNumberPrinter extends NumberPrinter {
       );
 
   @override
-  String call(Object? object) {
+  String call(dynamic object) {
     final value = checkNumericType(
       object,
       (value) => value.toDouble(),

@@ -14,7 +14,7 @@ class SeparateLeftPrinter extends DelegatePrinter {
       : super(delegate);
 
   @override
-  String call(Object? object) {
+  String call(dynamic object) {
     final buffer = StringBuffer();
     final input = super.call(object).characters;
     final iterator = input.iterator;
@@ -39,7 +39,7 @@ class SeparateRightPrinter extends DelegatePrinter {
       : super(delegate);
 
   @override
-  String call(Object? object) {
+  String call(dynamic object) {
     final buffer = StringBuffer();
     final input = super.call(object).characters;
     final iterator = input.iterator;
