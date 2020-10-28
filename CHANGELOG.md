@@ -10,6 +10,7 @@
 * Add `Fraction.sign` and `Complex.sign`.
 * Add `IterablePrinter` to print lists.
 * `CharMatcher` is now a `Pattern`.
+* Add `package:more/feature.dart`.
 
 ## 2.8.0
 

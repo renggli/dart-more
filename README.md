@@ -15,6 +15,8 @@ Various extensions that make Dart a better place:
 - `cache.dart` is a collection of different caching strategies and their expiry policy.
 - `char_matcher.dart` is a model for character classes, their composition and operations on strings.
 - `collection.dart` is a collection of collection types: bi-map, bit-list, multi-set, set and list multi-map, range, and string.
+- `feature.dart` provides information about the runtime environment.
+- `hash.dart` combines multiple hash values.
 - `iterable.dart` is a collection of iterables and iterators.
 - `math.dart` is a collection of common mathematical functions.
 - `number.dart` provides fractional, complex and quaternion arithmetic.
