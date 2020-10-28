@@ -1,3 +1,4 @@
+/// Collection of different caching strategies and their expiry policy.
 import 'dart:async' show Future, FutureOr;
 
 import 'src/cache/empty.dart';

@@ -1,4 +1,4 @@
-/// Some fancy async code.
+/// Helpers to make async code better.
 export 'src/async/buffer.dart' show BufferExtension;
 export 'src/async/flat_map.dart' show FlatMapStreamExtension;
 export 'src/async/flatten_iterable.dart' show FlattenIterableExtension;

@@ -1,3 +1,5 @@
+/// Combines multiple hash values.
+
 /// The Jenkins hash function copied and adapted from 'package:math'.
 /// Helper to combine a [hash] with a new [value].
 int _combine(int hash, int value) {

@@ -1,3 +1,5 @@
+/// A collection of new collection types: bi-map, bit-list, multi-set, set and
+/// list multi-map, range, and string.
 export 'src/collection/bigint_range.dart'
     show BigIntRange, BigIntRangeExtension;
 export 'src/collection/bimap.dart' show BiMap, BiMapExtension;
