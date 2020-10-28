@@ -47,11 +47,11 @@ class DoubleRange extends ListBase<double> with UnmodifiableListMixin<double> {
       end = a;
     }
     if (step == 0) {
-      throw ArgumentError('Non-zero step-size expected');
+      throw ArgumentError.value(step, 'step', 'Non-zero step-size expected');
     } else if (start < end && step < 0) {
-      throw ArgumentError('Positive step-size expected');
+      throw ArgumentError.value(step, 'step', 'Positive step-size expected');
     } else if (start > end && step > 0) {
-      throw ArgumentError('Negative step-size expected');
+      throw ArgumentError.value(step, 'step', 'Negative step-size expected');
     }
     final span = end - start;
     var length = span ~/ step;

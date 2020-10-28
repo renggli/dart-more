@@ -1642,17 +1642,13 @@ void main() {
           verify(BigInt.two.to(BigInt.from(8), step: BigInt.two), [2, 4, 6]);
         });
         test('invalid', () {
-          expect(
-              () => BigIntRange(BigInt.from(0), BigInt.from(2), BigInt.from(0)),
+          expect(() => BigIntRange(BigInt.zero, BigInt.two, BigInt.zero),
               throwsArgumentError);
-          expect(
-              () =>
-                  BigIntRange(BigInt.from(0), BigInt.from(2), BigInt.from(-1)),
+          expect(() => BigIntRange(BigInt.zero, BigInt.two, -BigInt.one),
               throwsArgumentError);
-          expect(
-              () => BigIntRange(BigInt.from(2), BigInt.from(0), BigInt.from(1)),
+          expect(() => BigIntRange(BigInt.two, BigInt.zero, BigInt.one),
               throwsArgumentError);
-          expect(() => BigIntRange(BigInt.zero, BigInt.from(pow(2.0, 65))),
+          expect(() => BigIntRange(BigInt.zero, BigInt.two.pow(100)),
               throwsArgumentError);
         });
       });
