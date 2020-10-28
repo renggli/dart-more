@@ -14,27 +14,27 @@ int _finish(int hash) {
 }
 
 /// Combines the hash code of multiple objects.
-int hash(Iterable<Object?> objects) =>
+int hash(Iterable<dynamic> objects) =>
     _finish(objects.fold(0, (a, b) => _combine(a, b.hashCode)));
 
 /// Combines the hash code of one object [a].
-int hash1(Object? a) => _finish(_combine(0, a.hashCode));
+int hash1(dynamic a) => _finish(_combine(0, a.hashCode));
 
 /// Combines the hash code of two objects [a] and [b].
-int hash2(Object? a, Object? b) =>
+int hash2(dynamic a, dynamic b) =>
     _finish(_combine(_combine(0, a.hashCode), b.hashCode));
 
 /// Combines the hash code of three objects [a], [b] and [c].
-int hash3(Object? a, Object? b, Object? c) => _finish(
+int hash3(dynamic a, dynamic b, dynamic c) => _finish(
     _combine(_combine(_combine(0, a.hashCode), b.hashCode), c.hashCode));
 
 /// Combines the hash code of four objects [a], [b], [c] and [d].
-int hash4(Object? a, Object? b, Object? c, Object? d) => _finish(_combine(
+int hash4(dynamic a, dynamic b, dynamic c, dynamic d) => _finish(_combine(
     _combine(_combine(_combine(0, a.hashCode), b.hashCode), c.hashCode),
     d.hashCode));
 
 /// Combines the hash code of four objects [a], [b], [c], [d], and [e].
-int hash5(Object? a, Object? b, Object? c, Object? d, Object? e) =>
+int hash5(dynamic a, dynamic b, dynamic c, dynamic d, dynamic e) =>
     _finish(_combine(
         _combine(
             _combine(_combine(_combine(0, a.hashCode), b.hashCode), c.hashCode),
@@ -42,7 +42,7 @@ int hash5(Object? a, Object? b, Object? c, Object? d, Object? e) =>
         e.hashCode));
 
 /// Combines the hash code of four objects [a], [b], [c], [d], [e], and [f].
-int hash6(Object? a, Object? b, Object? c, Object? d, Object? e, Object? f) =>
+int hash6(dynamic a, dynamic b, dynamic c, dynamic d, dynamic e, dynamic f) =>
     _finish(_combine(
         _combine(
             _combine(
@@ -54,8 +54,8 @@ int hash6(Object? a, Object? b, Object? c, Object? d, Object? e, Object? f) =>
 
 /// Combines the hash code of four objects [a], [b], [c], [d], [e], [f], and
 /// [g].
-int hash7(Object? a, Object? b, Object? c, Object? d, Object? e, Object? f,
-        Object? g) =>
+int hash7(dynamic a, dynamic b, dynamic c, dynamic d, dynamic e, dynamic f,
+        dynamic g) =>
     _finish(_combine(
         _combine(
             _combine(
@@ -69,8 +69,8 @@ int hash7(Object? a, Object? b, Object? c, Object? d, Object? e, Object? f,
 
 /// Combines the hash code of four objects [a], [b], [c], [d], [e], [f], [g],
 /// and [h].
-int hash8(Object? a, Object? b, Object? c, Object? d, Object? e, Object? f,
-        Object? g, Object? h) =>
+int hash8(dynamic a, dynamic b, dynamic c, dynamic d, dynamic e, dynamic f,
+        dynamic g, dynamic h) =>
     _finish(_combine(
         _combine(
             _combine(
@@ -86,8 +86,8 @@ int hash8(Object? a, Object? b, Object? c, Object? d, Object? e, Object? f,
 
 /// Combines the hash code of four objects [a], [b], [c], [d], [e], [f], [g],
 /// [h], and [i].
-int hash9(Object? a, Object? b, Object? c, Object? d, Object? e, Object? f,
-        Object? g, Object? h, Object? i) =>
+int hash9(dynamic a, dynamic b, dynamic c, dynamic d, dynamic e, dynamic f,
+        dynamic g, dynamic h, dynamic i) =>
     _finish(_combine(
         _combine(
             _combine(
