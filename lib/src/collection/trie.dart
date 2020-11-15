@@ -189,33 +189,46 @@ class Trie<K, P extends Comparable<P>, V> extends MapBase<K, V> {
 
 /// Abstract implementation of the nodes in a [Trie].
 abstract class TrieNode<K, P, V> implements MapEntry<K, V> {
+  /// Parts of the child nodes.
   List<P> get parts;
 
+  /// Ordered child nodes.
   List<TrieNode<K, P, V>> get nodes;
 
+  /// Returns `true`, if the node has child nodes.
   bool get hasNodes;
 
+  /// Adds a new node with the provided [part], or returns the existing one.
   TrieNode<K, P, V> addNode(P part);
 
+  /// Returns the node with the provided [part], or `null`.
   TrieNode<K, P, V>? getNode(P part);
 
+  /// Returns the removed node with the provided [part], or `null`.
   TrieNode<K, P, V>? removeNode(P part);
 
+  /// Clears all the child nodes.
   void clearNodes();
 
+  /// Returns the key of the node, if this node has a key and value.
   @override
   K get key;
 
+  /// Returns the value of the node, if this node has a key and value.
   @override
   V get value;
 
+  /// Returns `true`, if the node has a key and value.
   bool get hasKeyAndValue;
 
+  /// Clears the key and value, if present.
   void clearKeyAndValue();
 
+  /// Sets (or replaces) the key and value.
   void setKeyAndValue(K key, V value);
 
-  Iterable<TrieNode<K, P, V>> get entries sync* {
+  /// An iterable over this node and all its  children
+  Iterable<MapEntry<K, V>> get entries sync* {
     final queue = [this];
     while (queue.isNotEmpty) {
       final element = queue.removeLast();
