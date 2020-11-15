@@ -11,6 +11,7 @@
 * Add `IterablePrinter` to print lists.
 * `CharMatcher` is now a `Pattern`.
 * Add `package:more/feature.dart`.
+* Add `Trie` (prefix tree) collection type.
 
 ## 2.8.0
 
