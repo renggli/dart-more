@@ -127,27 +127,30 @@ class Trie<K, P extends Comparable<P>, V> extends MapBase<K, V> {
   @override
   V? remove(Object? key) {
     if (key is K) {
+      final parts = <P>[];
       final nodes = <TrieNode<K, P, V>>[_root];
-      final parts = _getParts(key).toList();
       // Navigate to the right node.
-      for (final part in parts) {
+      for (final part in _getParts(key)) {
         final node = nodes.last.getNode(part);
         if (node == null) {
           return null;
         }
+        parts.add(part);
         nodes.add(node);
       }
       // Only proceed if this is a value-node.
-      final node = nodes.removeLast();
-      if (node.hasKeyAndValue) {
+      var current = nodes.removeLast();
+      if (current.hasKeyAndValue) {
         // Remove the value from the tree.
-        final value = node.value;
-        node.clearKeyAndValue();
+        final value = current.value;
+        current.clearKeyAndValue();
         _length--;
         // Cleanup no longer needed subtrees.
-        for (var current = node;
-            nodes.isNotEmpty && !current.hasKeyAndValue && !current.hasNodes;
-            current = nodes.removeLast()) {
+        while (nodes.isNotEmpty &&
+            parts.isNotEmpty &&
+            !current.hasKeyAndValue &&
+            !current.hasNodes) {
+          current = nodes.removeLast();
           current.removeNode(parts.removeLast());
         }
         // Return the value of the remove node.
@@ -182,10 +185,6 @@ class Trie<K, P extends Comparable<P>, V> extends MapBase<K, V> {
   /// An [Iterable] over all keys starting with [prefix].
   Iterable<K> keysWithPrefix(K prefix) =>
       entriesWithPrefix(prefix).map((entry) => entry.key);
-
-  /// An [Iterable] over the values of all keys starting with [prefix].
-  Iterable<V> valuesWithPrefix(K prefix) =>
-      entriesWithPrefix(prefix).map((entry) => entry.value);
 }
 
 /// Abstract implementation of the nodes in a [Trie].
