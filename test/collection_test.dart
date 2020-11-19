@@ -1,6 +1,7 @@
 import 'dart:math';
 
 import 'package:more/collection.dart';
+import 'package:more/math.dart';
 import 'package:test/test.dart';
 
 List<bool> randomBooleans(int seed, int length) {
@@ -1902,8 +1903,11 @@ void main() {
         expect(trie.keys, ['disobey']);
         expect(trie.values, [42]);
         expect(trie['disobey'], 42);
+        expect(trie.containsKey('disobey'), isTrue);
         expect(trie['dis'], isNull);
+        expect(trie.containsKey('dis'), isFalse);
         expect(trie['disobeying'], isNull);
+        expect(trie.containsKey('disobeying'), isFalse);
       });
       test('multiple', () {
         final trie = newTrie();
@@ -1919,11 +1923,17 @@ void main() {
         expect(trie.keysWithPrefix('diso'), ['disobey', 'disorder', 'disown']);
         expect(trie.keysWithPrefix('disobeying'), isEmpty);
         expect(trie['disobey'], 42);
+        expect(trie.containsKey('disobey'), isTrue);
         expect(trie['disorder'], 43);
+        expect(trie.containsKey('disorder'), isTrue);
         expect(trie['disown'], 44);
+        expect(trie.containsKey('disown'), isTrue);
         expect(trie['distrust'], 45);
+        expect(trie.containsKey('distrust'), isTrue);
         expect(trie['dis'], isNull);
+        expect(trie.containsKey('dis'), isFalse);
         expect(trie['disobeying'], isNull);
+        expect(trie.containsKey('disobeying'), isFalse);
       });
       test('root', () {
         final trie = newTrie();
@@ -1932,7 +1942,9 @@ void main() {
         expect(trie.keys, ['']);
         expect(trie.values, [42]);
         expect(trie[''], 42);
+        expect(trie.containsKey(''), isTrue);
         expect(trie['dis'], isNull);
+        expect(trie.containsKey('dis'), isFalse);
       });
       test('replace', () {
         final trie = newTrie();
@@ -1942,8 +1954,11 @@ void main() {
         expect(trie.keys, ['disobey']);
         expect(trie.values, [43]);
         expect(trie['disobey'], 43);
+        expect(trie.containsKey('disobey'), isTrue);
         expect(trie['dis'], isNull);
+        expect(trie.containsKey('dis'), isFalse);
         expect(trie['disobeying'], isNull);
+        expect(trie.containsKey('disobeying'), isFalse);
       });
       test('enhancing', () {
         final trie = newTrie();
@@ -1953,14 +1968,18 @@ void main() {
         expect(trie.keys, ['disobey', 'disobeying']);
         expect(trie.values, [43, 42]);
         expect(trie['disobeying'], 42);
+        expect(trie.containsKey('disobeying'), isTrue);
         expect(trie['disobey'], 43);
+        expect(trie.containsKey('disobey'), isTrue);
         expect(trie['dis'], isNull);
+        expect(trie.containsKey('dis'), isFalse);
       });
     });
     group('remove', () {
       test('missing', () {
         final trie = newTrie();
         expect(trie.remove('disobey'), isNull);
+        expect(trie.containsKey('disobey'), isFalse);
         expect(trie, hasLength(0));
         expect(trie.keys, []);
         expect(trie.values, []);
@@ -1969,6 +1988,7 @@ void main() {
         final trie = newTrie();
         trie[''] = 42;
         expect(trie.remove(''), 42);
+        expect(trie.containsKey(''), isFalse);
         expect(trie, hasLength(0));
         expect(trie.keys, []);
         expect(trie.values, []);
@@ -1977,6 +1997,7 @@ void main() {
         final trie = newTrie();
         trie['disobey'] = 42;
         expect(trie.remove('disobey'), 42);
+        expect(trie.containsKey('disobey'), isFalse);
         expect(trie, hasLength(0));
         expect(trie.keys, []);
         expect(trie.values, []);
@@ -1986,6 +2007,8 @@ void main() {
         trie['dis'] = 42;
         trie['disorder'] = 43;
         expect(trie.remove('dis'), 42);
+        expect(trie.containsKey('dis'), isFalse);
+        expect(trie.containsKey('disorder'), isTrue);
         expect(trie, hasLength(1));
         expect(trie.keys, ['disorder']);
         expect(trie.values, [43]);
@@ -1995,6 +2018,8 @@ void main() {
         trie[''] = 42;
         trie['disorder'] = 43;
         expect(trie.remove(''), 42);
+        expect(trie.containsKey(''), isFalse);
+        expect(trie.containsKey('disorder'), isTrue);
         expect(trie, hasLength(1));
         expect(trie.keys, ['disorder']);
         expect(trie.values, [43]);
@@ -2005,6 +2030,7 @@ void main() {
         final trie = newTrie();
         trie[''] = 42;
         trie.clear();
+        expect(trie.containsKey(''), isFalse);
         expect(trie, hasLength(0));
         expect(trie.keys, []);
         expect(trie.values, []);
@@ -2013,6 +2039,7 @@ void main() {
         final trie = newTrie();
         trie['disobey'] = 42;
         trie.clear();
+        expect(trie.containsKey('disobey'), isFalse);
         expect(trie, hasLength(0));
         expect(trie.keys, []);
         expect(trie.values, []);
@@ -2022,6 +2049,8 @@ void main() {
         trie['disobey'] = 42;
         trie['disobeying'] = 43;
         trie.clear();
+        expect(trie.containsKey('disobey'), isFalse);
+        expect(trie.containsKey('disobeying'), isFalse);
         expect(trie, hasLength(0));
         expect(trie.keys, []);
         expect(trie.values, []);
@@ -2070,6 +2099,45 @@ void main() {
                 ['abc', 'abcdef'], [42],
                 parts: (key) => key.toList()),
             throwsArgumentError);
+      });
+    });
+    group('other', () {
+      test('typed', () {
+        final trie = newTrie();
+        expect(trie.containsKey(42), isFalse);
+        expect(trie[42], isNull);
+      });
+      test('stress', () {
+        final random = Random(42);
+        final numbers = <int>{};
+        // Create 1000 unique numbers.
+        while (numbers.length < 1000) {
+          numbers.add(random.nextInt(0xffffff));
+        }
+        final values = List.of(numbers);
+        // Create a trie from digit of the values.
+        final trie = Trie<int, String, bool>(
+            parts: (value) => value.digits().map((digit) => digit.toString()));
+        for (final value in values) {
+          trie[value] = true;
+        }
+        // Verify all values are present.
+        expect(trie, hasLength(values.length));
+        for (final value in values) {
+          expect(trie.containsKey(value), isTrue);
+          expect(trie[value], isTrue);
+        }
+        // Remove values in different order.
+        values.shuffle(random);
+        for (final value in values) {
+          expect(trie.remove(value), isTrue);
+        }
+        // Verify all values are gone.
+        expect(trie, isEmpty);
+        for (final value in values) {
+          expect(trie.containsKey(value), isFalse);
+          expect(trie[value], isNull);
+        }
       });
     });
   });

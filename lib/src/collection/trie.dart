@@ -15,11 +15,8 @@ class Trie<K, P extends Comparable<P>, V> extends MapBase<K, V> {
   /// Creates trie from another instance. Optionally redefines how the [parts]
   /// of the keys are computed and optionally provides a custom [root] node.
   factory Trie.fromTrie(Trie<K, P, V> other,
-      {GetParts<K, P>? parts, TrieNode<K, P, V>? root}) {
-    final result = Trie<K, P, V>(parts: parts ?? other._getParts, root: root);
-    result.addAll(other);
-    return result;
-  }
+          {GetParts<K, P>? parts, TrieNode<K, P, V>? root}) =>
+      Trie<K, P, V>.fromMap(other, parts: parts ?? other._getParts, root: root);
 
   /// Creates trie from a [Map]. Optionally provides a custom root
   /// node [root], and/or redefines how the [parts] of the keys are computed.
@@ -103,6 +100,24 @@ class Trie<K, P extends Comparable<P>, V> extends MapBase<K, V> {
   }
 
   @override
+  bool containsKey(Object? key) {
+    if (key is K) {
+      var current = _root;
+      // Navigate to the right node,
+      for (final part in _getParts(key)) {
+        final node = current.getNode(part);
+        if (node == null) {
+          return false;
+        }
+        current = node;
+      }
+      // Verify we found the value node.
+      return current.hasKeyAndValue;
+    }
+    return false;
+  }
+
+  @override
   void operator []=(K key, V value) {
     var current = _root;
     // Navigate to the right node, create intermediaries if necessary.
@@ -138,7 +153,7 @@ class Trie<K, P extends Comparable<P>, V> extends MapBase<K, V> {
         parts.add(part);
         nodes.add(node);
       }
-      // Only proceed if this is a value-node.
+      // Only proceed if we have a value.
       var current = nodes.removeLast();
       if (current.hasKeyAndValue) {
         // Remove the value from the tree.
