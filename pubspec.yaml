@@ -1,12 +1,12 @@
 name: more
-version: 3.0.0-nullsafety.1
+version: 3.0.0-nullsafety.2
 
 homepage: https://github.com/renggli/dart-more
 description: More Dart — Literally. Collecting, iterating, caching, mathematics,
   matching, ordering, and formatting easily.
 
 environment:
-  sdk: '>=2.10.0 <3.0.0'
+  sdk: '>=2.12.0-0 <3.0.0'
 dependencies:
   characters: ^1.1.0-nullsafety
   clock: ^1.1.0-nullsafety
