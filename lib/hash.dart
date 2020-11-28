@@ -1,6 +1,6 @@
 /// Combines multiple hash values.
 
-/// The Jenkins hash function copied and adapted from 'package:math'.
+/// The Jenkins hash function copied and adapted from Dart SDK.
 /// Helper to combine a [hash] with a new [value].
 int _combine(int hash, int value) {
   hash = 0x1fffffff & (hash + value);
@@ -16,7 +16,7 @@ int _finish(int hash) {
 }
 
 /// Combines the hash code of multiple objects.
-int hash(Iterable<dynamic> objects) =>
+int hash(Iterable objects) =>
     _finish(objects.fold(0, (a, b) => _combine(a, b.hashCode)));
 
 /// Combines the hash code of one object [a].
