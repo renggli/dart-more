@@ -1113,7 +1113,7 @@ void main() {
       });
       test('all', () {
         final set = Multiset.of(['a', 'a', 'b', 'b', 'b']);
-        set.removeAll(['a', 'b', 'b']);
+        set.removeAll(['a', 'b', 'b', 123, null]);
         expect(set, isNot(isEmpty));
         expect(set, hasLength(2));
         expect(set, unorderedEquals(['a', 'b']));
@@ -1217,6 +1217,8 @@ void main() {
         expect(firstSet.containsAll(['x']), isFalse);
         expect(firstSet.containsAll(['a', 'b', 'b']), isFalse);
         expect(firstSet.containsAll(['a', 'b', 'd']), isFalse);
+        expect(firstSet.containsAll([1, 2]), isFalse);
+        expect(firstSet.containsAll(['a', null]), isFalse);
       });
       test('intersection', () {
         expect(firstSet.intersection(secondSet), unorderedEquals(['a', 'c']));
@@ -1229,6 +1231,7 @@ void main() {
       test('intersection (iterable)', () {
         expect(firstSet.intersection(secondList), unorderedEquals(['a', 'c']));
         expect(secondSet.intersection(firstList), unorderedEquals(['a', 'c']));
+        expect(firstSet.intersection(['a', 1, null]), unorderedEquals(['a']));
       });
       test('union', () {
         expect(firstSet.union(secondSet),
@@ -1256,6 +1259,8 @@ void main() {
       test('difference (iterable)', () {
         expect(firstSet.difference(secondList), unorderedEquals(['b', 'c']));
         expect(secondSet.difference(firstList), unorderedEquals(['d', 'd']));
+        expect(firstSet.difference(['a', 1, null]),
+            unorderedEquals(['b', 'c', 'c']));
       });
     });
   });

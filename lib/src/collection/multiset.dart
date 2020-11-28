@@ -96,7 +96,7 @@ class Multiset<E> extends IterableBase<E> {
   }
 
   /// Removes each element of [elements] from the receiver.
-  void removeAll(Iterable<Object> elements) {
+  void removeAll(Iterable elements) {
     elements.forEach(remove);
   }
 
@@ -132,12 +132,12 @@ class Multiset<E> extends IterableBase<E> {
   bool contains(Object? element) => _container.containsKey(element);
 
   /// Returns `true` if all elements of [other] are contained in the receiver.
-  bool containsAll(Iterable<Object> other) {
+  bool containsAll(Iterable other) {
     if (other.isEmpty) {
       return true;
     } else if (other.length == 1) {
       return contains(other.first);
-    } else if (other is Multiset<Object>) {
+    } else if (other is Multiset) {
       for (final element in other.distinct) {
         if (this[element] < other[element]) {
           return false;
@@ -151,8 +151,8 @@ class Multiset<E> extends IterableBase<E> {
 
   /// Returns a new [Multiset] with the elements that are in the receiver as
   /// well as those in [other].
-  Multiset<E> intersection(Iterable<Object> other) {
-    if (other is Multiset<Object>) {
+  Multiset<E> intersection(Iterable other) {
+    if (other is Multiset) {
       final result = Multiset<E>();
       for (final element in distinct) {
         result.add(element, min(this[element], other[element]));
@@ -169,7 +169,7 @@ class Multiset<E> extends IterableBase<E> {
 
   /// Returns a new [Multiset] with all the elements of the receiver that are
   /// not in [other].
-  Multiset<E> difference(Iterable<Object> other) =>
+  Multiset<E> difference(Iterable other) =>
       Multiset<E>.of(this)..removeAll(other);
 
   /// Iterator over the repeated elements of the receiver.
