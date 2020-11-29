@@ -12,4 +12,5 @@ export 'src/collection/multimap/list.dart' show ListMultimap;
 export 'src/collection/multimap/set.dart' show SetMultimap;
 export 'src/collection/multiset.dart' show Multiset, MultisetExtension;
 export 'src/collection/string.dart' show ListExtension;
-export 'src/collection/trie.dart' show Trie, TrieNode;
+export 'src/collection/trie.dart'
+    show Trie, TrieNode, TrieNodeEntry, TrieNodeList, TrieNodeMap;
