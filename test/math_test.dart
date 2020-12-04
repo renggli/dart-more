@@ -321,6 +321,13 @@ void main() {
       expect(math.e.log(), closeTo(1, epsilon));
       expect((1 / math.e).log(), closeTo(-1, epsilon));
     });
+    test('between', () {
+      expect(2.between(1, 3), isTrue);
+      expect(2.between(2, 3), isTrue);
+      expect(2.between(1, 2), isTrue);
+      expect(2.between(0, 1), isFalse);
+      expect(2.between(3, 4), isFalse);
+    });
   });
   group('polynomial', () {
     test('base 2', () {

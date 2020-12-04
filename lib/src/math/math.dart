@@ -33,4 +33,7 @@ extension MathNumberExtension on num {
 
   /// Returns the natural logarithm of this [num].
   double log() => math.log(this);
+
+  /// Returns true, if this [num] is between [min] and [max] (inclusive).
+  bool between(num min, num max) => min <= this && this <= max;
 }
