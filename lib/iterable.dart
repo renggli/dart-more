@@ -11,6 +11,7 @@ export 'src/iterable/periodical.dart'
     show Period, PeriodicalExtension, TruncateExtension;
 export 'src/iterable/permutations.dart' show PermutationsExtension;
 export 'src/iterable/product.dart' show ProductExtension;
+export 'src/iterable/random.dart' show RandomExtension;
 export 'src/iterable/repeat.dart' show RepeatExtension, repeat;
 export 'src/iterable/separated.dart' show SeparatedExtension;
 export 'src/iterable/unique.dart' show UniqueExtension;

@@ -14,6 +14,7 @@
 * `CharMatcher` is now a `Pattern`.
 * Add `package:more/feature.dart`.
 * Add `Trie` (prefix tree) collection type.
+* Add `Iterable.atRandom` to return random elements.
 
 ## 2.8.0
 

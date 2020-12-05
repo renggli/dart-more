@@ -1,3 +1,5 @@
+import 'dart:math' show Random;
+
 import 'package:more/collection.dart';
 import 'package:more/iterable.dart';
 import 'package:test/test.dart';
@@ -679,6 +681,32 @@ void main() {
             [1]
           ].product(),
           isEmpty);
+    });
+  });
+  group('random', () {
+    test('empty', () {
+      expect(() => [].atRandom(), throwsStateError);
+      expect([].atRandom(orElse: () => -1), -1);
+    });
+    test('single', () {
+      expect([1].atRandom(), 1);
+      expect([2].atRandom(), 2);
+      expect([3].atRandom(), 3);
+    });
+    test('larger', () {
+      final seen = <int>{};
+      final picks = 0.to(10);
+      while (seen.length < picks.length) {
+        seen.add(picks.atRandom());
+      }
+    });
+    test('secure', () {
+      final seen = <int>{};
+      final picks = 0.to(10);
+      final random = Random.secure();
+      while (seen.length < picks.length) {
+        seen.add(picks.atRandom(random: random));
+      }
     });
   });
   group('repeat', () {
