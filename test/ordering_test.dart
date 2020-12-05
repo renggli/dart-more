@@ -12,7 +12,10 @@ void verifyBasic<T>(String type, Ordering<T> ordering, Iterable<T> unsorted,
         reason: '$type.binarySearch');
   }
   if (sorted.isNotEmpty) {
-    expect(ordering.minOf(unsorted), expected.first, reason: '$type.minOf');
+    expect(ordering.minOf(unsorted), expected.first);
+    expect(ordering.percentile(unsorted, 0), expected.first);
+    expect(ordering.percentile(unsorted, 0), expected.first);
+
     expect(ordering.maxOf(unsorted), expected.last, reason: '$type.maxOf');
   }
 }
@@ -30,6 +33,12 @@ void verify<T>(
     ordering.reversed,
     unsorted,
     expected.toList().reversed,
+  );
+  verifyBasic(
+    'ordering.reversed.reversed',
+    ordering.reversed.reversed,
+    unsorted,
+    expected,
   );
   if (!unsorted.contains(null)) {
     verifyBasic(
@@ -358,6 +367,17 @@ void main() {
       expect(natural.percentile({2, 3, 1}, 50), 2);
       expect(natural.percentile({3, 1, 2}, 50), 2);
       expect(natural.percentile({3, 2, 1}, 50), 2);
+    });
+    test('percentile (isOrdered)', () {
+      expect(natural.percentile([1], 50, isOrdered: true), 1);
+      expect(natural.percentile([1, 2], 50, isOrdered: true), 2);
+      expect(natural.percentile([2, 1], 50, isOrdered: true), 1);
+      expect(natural.percentile([1, 2, 3], 50, isOrdered: true), 2);
+      expect(natural.percentile([1, 3, 2], 50, isOrdered: true), 3);
+      expect(natural.percentile([2, 1, 3], 50, isOrdered: true), 1);
+      expect(natural.percentile([2, 3, 1], 50, isOrdered: true), 3);
+      expect(natural.percentile([3, 1, 2], 50, isOrdered: true), 1);
+      expect(natural.percentile([3, 2, 1], 50, isOrdered: true), 2);
     });
     test('percentile (orElse)', () {
       expect(natural.percentile([1], 0, orElse: () => -1), 1);
