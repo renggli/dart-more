@@ -2,6 +2,7 @@
 /// operations on iterables.
 import 'package:meta/meta.dart' show immutable;
 
+import 'src/math/math.dart';
 import 'src/ordering/comparator.dart';
 import 'src/ordering/compound.dart';
 import 'src/ordering/explicit.dart';
@@ -179,6 +180,28 @@ abstract class Ordering<T> {
     }
     if (orElse == null) {
       throw StateError('Unable to find minimum in $iterable.');
+    }
+    return orElse();
+  }
+
+  /// Returns the value of the [iterable] at the given [percentile] between
+  /// 0 and 100. To return the median, use a percentile of `50`.
+  ///
+  /// This implementation is most efficient on sorted lists; as otherwise
+  /// the collection has to be copied first and/or traversed to access the
+  /// required element.
+  T percentile(Iterable<T> iterable, num percentile, {T Function()? orElse}) {
+    if (!percentile.between(0, 100)) {
+      throw RangeError.range(percentile, 0, 100);
+    }
+    if (iterable.isNotEmpty) {
+      final ordered = isOrdered(iterable) ? iterable : sorted(iterable);
+      final max = ordered.length - 1;
+      final index = (percentile * max / 100).round().clamp(0, max);
+      return ordered.elementAt(index);
+    }
+    if (orElse == null) {
+      throw StateError('Unable to compute percentile in $iterable.');
     }
     return orElse();
   }
