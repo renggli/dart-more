@@ -7,6 +7,7 @@ export 'src/iterable/flatten.dart' show FlattenExtension;
 export 'src/iterable/group.dart' show GroupExtension, Group;
 export 'src/iterable/indexed.dart' show IndexedExtension, Indexed;
 export 'src/iterable/iterate.dart' show iterate;
+export 'src/iterable/operators.dart' show OperatorsExtension;
 export 'src/iterable/periodical.dart'
     show Period, PeriodicalExtension, TruncateExtension;
 export 'src/iterable/permutations.dart' show PermutationsExtension;

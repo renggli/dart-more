@@ -57,7 +57,7 @@ abstract class Multimap<K, V, VS extends Iterable<V>> {
   }
 
   /// Returns the values for the given [key].
-  VS operator [](K key) => lookupValues(key) as VS; // ignore: avoid_as
+  VS operator [](K key) => lookupValues(key) as VS;
 
   /// Adds an association from [key] to [value].
   void add(K key, V value) => lookupValues(key).polymorphicAdd(value);

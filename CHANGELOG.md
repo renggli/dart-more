@@ -9,12 +9,12 @@
 * Fix `maxAge` of the `Stream.buffer` operator.
 * Add `Fraction.sign` and `Complex.sign`.
 * Add `IterablePrinter` to print lists.
-* Add `Ordering.percentile`. 
 * Relax the type constraints on `Ordering.natural`.
 * `CharMatcher` is now a `Pattern`.
 * Add `package:more/feature.dart`.
 * Add `Trie` (prefix tree) collection type.
-* Add `Iterable.atRandom` to return random elements.
+* Add `Ordering.percentile`. 
+* Add `Iterable.atRandom`, `Iterable.min`, `Iterable.max` and `Iterable.percentile`.
 
 ## 2.8.0
 

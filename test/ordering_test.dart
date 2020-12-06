@@ -335,49 +335,49 @@ void main() {
       expect(natural.percentile([3, 2, 1], 0), 1);
     });
     test('percentile (median = 50)', () {
-      expect(natural.percentile([1], 50), 1);
-      expect(natural.percentile([1, 2], 50), 2);
-      expect(natural.percentile([2, 1], 50), 2);
-      expect(natural.percentile([1, 2, 3], 50), 2);
-      expect(natural.percentile([1, 3, 2], 50), 2);
-      expect(natural.percentile([2, 1, 3], 50), 2);
-      expect(natural.percentile([2, 3, 1], 50), 2);
-      expect(natural.percentile([3, 1, 2], 50), 2);
-      expect(natural.percentile([3, 2, 1], 50), 2);
+      expect(natural.percentile([1], 0.5), 1);
+      expect(natural.percentile([1, 2], 0.5), 2);
+      expect(natural.percentile([2, 1], 0.5), 2);
+      expect(natural.percentile([1, 2, 3], 0.5), 2);
+      expect(natural.percentile([1, 3, 2], 0.5), 2);
+      expect(natural.percentile([2, 1, 3], 0.5), 2);
+      expect(natural.percentile([2, 3, 1], 0.5), 2);
+      expect(natural.percentile([3, 1, 2], 0.5), 2);
+      expect(natural.percentile([3, 2, 1], 0.5), 2);
     });
     test('percentile (max = 100)', () {
-      expect(natural.percentile([1], 100), 1);
-      expect(natural.percentile([1, 2], 100), 2);
-      expect(natural.percentile([2, 1], 100), 2);
-      expect(natural.percentile([1, 2, 3], 100), 3);
-      expect(natural.percentile([1, 3, 2], 100), 3);
-      expect(natural.percentile([2, 1, 3], 100), 3);
-      expect(natural.percentile([2, 3, 1], 100), 3);
-      expect(natural.percentile([3, 1, 2], 100), 3);
-      expect(natural.percentile([3, 2, 1], 100), 3);
+      expect(natural.percentile([1], 1), 1);
+      expect(natural.percentile([1, 2], 1), 2);
+      expect(natural.percentile([2, 1], 1), 2);
+      expect(natural.percentile([1, 2, 3], 1), 3);
+      expect(natural.percentile([1, 3, 2], 1), 3);
+      expect(natural.percentile([2, 1, 3], 1), 3);
+      expect(natural.percentile([2, 3, 1], 1), 3);
+      expect(natural.percentile([3, 1, 2], 1), 3);
+      expect(natural.percentile([3, 2, 1], 1), 3);
     });
 
     test('percentile (set)', () {
-      expect(natural.percentile({1}, 50), 1);
-      expect(natural.percentile({1, 2}, 50), 2);
-      expect(natural.percentile({2, 1}, 50), 2);
-      expect(natural.percentile({1, 2, 3}, 50), 2);
-      expect(natural.percentile({1, 3, 2}, 50), 2);
-      expect(natural.percentile({2, 1, 3}, 50), 2);
-      expect(natural.percentile({2, 3, 1}, 50), 2);
-      expect(natural.percentile({3, 1, 2}, 50), 2);
-      expect(natural.percentile({3, 2, 1}, 50), 2);
+      expect(natural.percentile({1}, 0.5), 1);
+      expect(natural.percentile({1, 2}, 0.5), 2);
+      expect(natural.percentile({2, 1}, 0.5), 2);
+      expect(natural.percentile({1, 2, 3}, 0.5), 2);
+      expect(natural.percentile({1, 3, 2}, 0.5), 2);
+      expect(natural.percentile({2, 1, 3}, 0.5), 2);
+      expect(natural.percentile({2, 3, 1}, 0.5), 2);
+      expect(natural.percentile({3, 1, 2}, 0.5), 2);
+      expect(natural.percentile({3, 2, 1}, 0.5), 2);
     });
     test('percentile (isOrdered)', () {
-      expect(natural.percentile([1], 50, isOrdered: true), 1);
-      expect(natural.percentile([1, 2], 50, isOrdered: true), 2);
-      expect(natural.percentile([2, 1], 50, isOrdered: true), 1);
-      expect(natural.percentile([1, 2, 3], 50, isOrdered: true), 2);
-      expect(natural.percentile([1, 3, 2], 50, isOrdered: true), 3);
-      expect(natural.percentile([2, 1, 3], 50, isOrdered: true), 1);
-      expect(natural.percentile([2, 3, 1], 50, isOrdered: true), 3);
-      expect(natural.percentile([3, 1, 2], 50, isOrdered: true), 1);
-      expect(natural.percentile([3, 2, 1], 50, isOrdered: true), 2);
+      expect(natural.percentile([1], 0.5, isOrdered: true), 1);
+      expect(natural.percentile([1, 2], 0.5, isOrdered: true), 2);
+      expect(natural.percentile([2, 1], 0.5, isOrdered: true), 1);
+      expect(natural.percentile([1, 2, 3], 0.5, isOrdered: true), 2);
+      expect(natural.percentile([1, 3, 2], 0.5, isOrdered: true), 3);
+      expect(natural.percentile([2, 1, 3], 0.5, isOrdered: true), 1);
+      expect(natural.percentile([2, 3, 1], 0.5, isOrdered: true), 3);
+      expect(natural.percentile([3, 1, 2], 0.5, isOrdered: true), 1);
+      expect(natural.percentile([3, 2, 1], 0.5, isOrdered: true), 2);
     });
     test('percentile (orElse)', () {
       expect(natural.percentile([1], 0, orElse: () => -1), 1);
@@ -386,7 +386,7 @@ void main() {
     test('percentile (errors)', () {
       expect(() => natural.percentile([], 0), throwsStateError);
       expect(() => natural.percentile([1], -1), throwsRangeError);
-      expect(() => natural.percentile([1], 101), throwsRangeError);
+      expect(() => natural.percentile([1], 2), throwsRangeError);
     });
   });
   group('regressions', () {

@@ -185,23 +185,22 @@ abstract class Ordering<T> {
   }
 
   /// Returns the value of the [iterable] at the given [percentile] between
-  /// 0 and 100. Throws a [RangeError] if [percentile] is outside that range.
-  /// To return the median, use a percentile of `50`.
+  /// 0.0 and 1.0. Throws a [RangeError] if [percentile] is outside that range.
+  /// To return the median, use a percentile of `0.5`.
   ///
   /// This implementation is most efficient on already sorted lists, as
   /// otherwise we have to copy and sort the collection first. You can
-  /// avoid this by setting [isOrdered] to `true`, which avoids this behavior
-  /// but might yield unexpected results.
+  /// avoid this expensive behavior by setting [isOrdered] to `true`.
   T percentile(Iterable<T> iterable, num percentile,
-      {T Function()? orElse, bool isOrdered = false}) {
-    if (!percentile.between(0, 100)) {
-      throw RangeError.range(percentile, 0, 100);
+      {bool isOrdered = false, T Function()? orElse}) {
+    if (!percentile.between(0, 1)) {
+      throw RangeError.range(percentile, 0, 1);
     }
     if (iterable.isNotEmpty) {
       final ordered =
           isOrdered || this.isOrdered(iterable) ? iterable : sorted(iterable);
       final max = ordered.length - 1;
-      final index = (percentile * max / 100).round().clamp(0, max);
+      final index = (percentile * max).round().clamp(0, max);
       return ordered.elementAt(index);
     }
     if (orElse == null) {
