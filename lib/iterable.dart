@@ -15,6 +15,8 @@ export 'src/iterable/product.dart' show ProductExtension;
 export 'src/iterable/random.dart' show RandomExtension;
 export 'src/iterable/repeat.dart' show RepeatExtension, repeat;
 export 'src/iterable/separated.dart' show SeparatedExtension;
+export 'src/iterable/statistics.dart'
+    show NumStatisticExtension, IntStatisticExtension;
 export 'src/iterable/unique.dart' show UniqueExtension;
 export 'src/iterable/window.dart' show WindowExtension;
 export 'src/iterable/zip.dart' show ZipExtension;

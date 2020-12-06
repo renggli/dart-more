@@ -15,6 +15,7 @@
 * Add `Trie` (prefix tree) collection type.
 * Add `Ordering.percentile`. 
 * Add `Iterable.atRandom`, `Iterable.min`, `Iterable.max` and `Iterable.percentile`.
+* Add numerous statistical extensions to `Iterable<num>` to compute averages, variances, etc.
 
 ## 2.8.0
 
