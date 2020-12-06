@@ -1043,7 +1043,7 @@ void main() {
     });
     test('harmonicMean', () {
       expect(<num>[].harmonicMean(), isNaN);
-      expect([1, -1].harmonicMean(), double.infinity);
+      expect([1, -1].harmonicMean(), isNaN);
       expect([2.5, 3, 10].harmonicMean(), closeTo(3.6, epsilon));
     });
     test('variance', () {
