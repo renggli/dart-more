@@ -1,4 +1,5 @@
 import 'dart:math' as math;
+import 'polynomial.dart';
 
 extension MathNumberExtension on num {
   /// Returns this [num] to the power of [exponent].
@@ -36,4 +37,27 @@ extension MathNumberExtension on num {
 
   /// Returns true, if this [num] is between [min] and [max] (inclusive).
   bool between(num min, num max) => min <= this && this <= max;
+
+  /// Returns an approximation of the error function, for details see
+  /// https://en.wikipedia.org/wiki/Error_function.
+  ///
+  /// This uses a Chebyshev fitting formula from Numerical Recipes, 6.2.
+  double erf() {
+    const p = [
+      -1.26551223,
+      1.00002368,
+      0.37409196,
+      0.09678418,
+      -0.18628806,
+      0.27886807,
+      -1.13520398,
+      1.48851587,
+      -0.82215223,
+      0.17087277,
+    ];
+    final t = 1.0 / (1.0 + 0.5 * abs());
+    final e = -this * this + p.polynomial(t);
+    final r = 1.0 - t * math.exp(e);
+    return isNegative ? -r : r;
+  }
 }
