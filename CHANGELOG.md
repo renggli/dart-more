@@ -11,11 +11,11 @@
 * Add `IterablePrinter` to print lists.
 * Relax the type constraints on `Ordering.natural`.
 * `CharMatcher` is now a `Pattern`.
-* Add `package:more/feature.dart`.
+* Introduce `package:more/feature.dart` to provide information about the runtime environment.
 * Add `Trie` (prefix tree) collection type.
 * Add `Ordering.percentile`. 
 * Add `Iterable.atRandom`, `Iterable.min`, `Iterable.max` and `Iterable.percentile`.
-* Add numerous statistical extensions to `Iterable<num>` to compute averages, variances, etc.
+* Introduce `package:more/stats.dart` to perform statistical computations.
 
 ## 2.8.0
 

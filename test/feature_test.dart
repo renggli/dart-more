@@ -1,7 +1,7 @@
+import 'dart:math';
+
 import 'package:more/feature.dart';
 import 'package:test/test.dart';
-
-import 'dart:math';
 
 void main() {
   group('isJavaScript', () {

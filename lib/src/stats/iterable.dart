@@ -1,6 +1,6 @@
 import 'dart:math';
 
-extension NumStatisticExtension on Iterable<num> {
+extension IterableNumExtension on Iterable<num> {
   /// Returns the sum of this [Iterable].
   ///
   /// Example: `[-1, 2.5].sum()` returns `1.5`.
@@ -121,7 +121,7 @@ extension NumStatisticExtension on Iterable<num> {
   double populationStandardDeviation() => sqrt(populationVariance());
 }
 
-extension IntStatisticExtension on Iterable<int> {
+extension IterableIntExtension on Iterable<int> {
   /// Returns the sum of this [Iterable].
   int sum() {
     var sum = 0;

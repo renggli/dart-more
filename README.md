@@ -22,6 +22,7 @@ Various extensions that make Dart a better place:
 - `number.dart` provides fractional, complex and quaternion arithmetic.
 - `ordering.dart` a fluent interface for building comparator functions.
 - `printer.dart` a fluent interface for configuring sophisticated formatter.
+- `stats.dart` provides functionality to perform statistical computations.
 - `tuple.dart` a generic sequence of typed values.
 
 And there are more to come ...
