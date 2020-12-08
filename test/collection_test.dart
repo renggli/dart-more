@@ -1,7 +1,6 @@
 import 'dart:math';
 
 import 'package:more/collection.dart';
-import 'package:more/feature.dart';
 import 'package:more/math.dart';
 import 'package:test/test.dart';
 

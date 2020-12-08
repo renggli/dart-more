@@ -6,11 +6,11 @@ export 'src/collection/multimap/list.dart' show ListMultimap;
 export 'src/collection/multimap/set.dart' show SetMultimap;
 export 'src/collection/multiset.dart' show Multiset, MultisetExtension;
 export 'src/collection/range.dart' show Range;
-export 'src/collection/range/bigint_range.dart'
+export 'src/collection/range/bigint.dart'
     show BigIntRange, BigIntRangeExtension;
-export 'src/collection/range/double_range.dart'
+export 'src/collection/range/double.dart'
     show DoubleRange, DoubleRangeExtension;
-export 'src/collection/range/integer_range.dart'
+export 'src/collection/range/integer.dart'
     show IntegerRange, IntegerRangeExtension, IndicesIterableExtension;
 export 'src/collection/string.dart' show ListExtension;
 export 'src/collection/trie.dart'

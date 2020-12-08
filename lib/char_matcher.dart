@@ -18,7 +18,7 @@ import 'src/char_matcher/range.dart';
 import 'src/char_matcher/single.dart';
 import 'src/char_matcher/upper_case.dart';
 import 'src/char_matcher/whitespace.dart';
-import 'src/collection/range/integer_range.dart';
+import 'src/collection/range/integer.dart';
 
 /// Abstract character matcher function.
 ///
