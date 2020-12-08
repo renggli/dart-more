@@ -1,7 +1,8 @@
 import 'dart:collection' show ListBase;
 
-import '../../feature.dart';
-import '../iterable/mixins/unmodifiable.dart' show UnmodifiableListMixin;
+import '../../../feature.dart';
+import '../../iterable/mixins/unmodifiable.dart' show UnmodifiableListMixin;
+import '../range.dart';
 
 /// A virtual range of [BigInt] containing an arithmetic progressions.
 ///
@@ -12,7 +13,8 @@ import '../iterable/mixins/unmodifiable.dart' show UnmodifiableListMixin;
 ///   for (BigInt i = start; i < stop; i += step) {
 ///     ...
 ///
-class BigIntRange extends ListBase<BigInt> with UnmodifiableListMixin<BigInt> {
+class BigIntRange extends ListBase<BigInt>
+    with Range<BigInt>, UnmodifiableListMixin<BigInt> {
   /// Creates a virtual range of numbers containing an arithmetic progressions
   /// of [BigInt] values.
   ///
@@ -49,35 +51,45 @@ class BigIntRange extends ListBase<BigInt> with UnmodifiableListMixin<BigInt> {
     } else if (a != null) {
       end = a;
     }
-    if (step == BigInt.zero) {
-      throw ArgumentError.value(step, 'step', 'Non-zero step-size expected');
-    } else if (start < end && step < BigInt.zero) {
-      throw ArgumentError.value(step, 'step', 'Positive step-size expected');
-    } else if (start > end && step > BigInt.zero) {
-      throw ArgumentError.value(step, 'step', 'Negative step-size expected');
+    if (start <= end) {
+      if (step == BigInt.one) {
+        return BigIntRange._(start, end, step, _toSafeLength(end - start));
+      } else if (step > BigInt.one) {
+        return BigIntRange._(start, end, step,
+            _toSafeLength((end - start + BigInt.one) ~/ step));
+      }
+    } else {
+      if (step == -BigInt.one) {
+        return BigIntRange._(start, end, step, _toSafeLength(start - end));
+      } else if (step < -BigInt.one) {
+        return BigIntRange._(start, end, step,
+            _toSafeLength((start - end + BigInt.one) ~/ -step));
+      }
     }
-    final span = end - start;
-    var length = span ~/ step;
-    if (span % step != BigInt.zero) {
-      length += BigInt.one;
+    throw ArgumentError.value(
+        step, 'step', 'Invalid step size for range $start..$end.');
+  }
+
+  static final _safeLength =
+      isJavaScript ? BigInt.two.pow(32) : BigInt.two.pow(64);
+
+  static int _toSafeLength(BigInt length) {
+    if (length <= _safeLength) {
+      return length.toInt();
     }
-    if (maxLength <= length) {
-      throw ArgumentError('The list has a length ($length) that can\'t be '
-          'represented as an `int` without losing precision ($maxLength). This '
-          'breaks the Dart collection API.');
-    }
-    return BigIntRange._(start, end, step, length.toInt());
+    throw ArgumentError.value(
+        length, 'length', 'Length cannot be represented using int.');
   }
 
   BigIntRange._(this.start, this.end, this.step, this.length);
 
-  /// The start of the range (inclusive).
+  @override
   final BigInt start;
 
-  /// The end of the range (exclusive).
+  @override
   final BigInt end;
 
-  /// The step size.
+  @override
   final BigInt step;
 
   @override
@@ -171,12 +183,6 @@ class BigIntRange extends ListBase<BigInt> with UnmodifiableListMixin<BigInt> {
   }
 }
 
-extension BigIntRangeExtension on BigInt {
-  /// Shorthand to create a range of [BigInt] numbers, starting with the
-  /// receiver (inclusive) up to but not including [end] (exclusive).
-  BigIntRange to(BigInt end, {BigInt? step}) => BigIntRange(this, end, step);
-}
-
 class PositiveStepBigIntRangeIterator extends Iterator<BigInt> {
   BigInt start;
   final BigInt end;
@@ -221,4 +227,8 @@ class NegativeStepBigIntRangeIterator extends Iterator<BigInt> {
   }
 }
 
-final maxLength = isJavaScript ? BigInt.two.pow(32) : BigInt.two.pow(64);
+extension BigIntRangeExtension on BigInt {
+  /// Shorthand to create a range of [BigInt] numbers, starting with the
+  /// receiver (inclusive) up to but not including [end] (exclusive).
+  BigIntRange to(BigInt end, {BigInt? step}) => BigIntRange(this, end, step);
+}

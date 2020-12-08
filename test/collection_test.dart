@@ -1,6 +1,7 @@
 import 'dart:math';
 
 import 'package:more/collection.dart';
+import 'package:more/feature.dart';
 import 'package:more/math.dart';
 import 'package:test/test.dart';
 
@@ -1265,8 +1266,21 @@ void main() {
     });
   });
   group('range', () {
-    void verify(List<num> range, List<num> expected) {
+    void verify(Range<num> range, List<num> expected) {
       expect(range, expected);
+      expect(range.step, isNot(0));
+      expect(range.length, expected.length);
+      if (expected.isEmpty) {
+        expect(range.isEmpty, isTrue);
+      } else {
+        expect(range.isNotEmpty, isTrue);
+        expect(range.start, expected.first);
+        if (range.step > 0) {
+          expect(range.start, lessThanOrEqualTo(range.end));
+        } else {
+          expect(range.start, greaterThanOrEqualTo(range.end));
+        }
+      }
       expect(range.reversed, expected.reversed);
       final iterator = range.iterator;
       for (var i = 0; i < expected.length; i++) {
@@ -1327,6 +1341,24 @@ void main() {
           expect(() => IntegerRange(0, 2, -1), throwsArgumentError);
           expect(() => IntegerRange(2, 0, 1), throwsArgumentError);
         });
+        group('indices', () {
+          test('empty', () {
+            verify([].indices(), []);
+            verify([].indices(step: -1), []);
+            expect(() => [].indices(step: 0), throwsArgumentError);
+          });
+          test('default', () {
+            verify([1, 2, 3].indices(), [0, 1, 2]);
+            verify([1, 2, 3].indices(step: -1), [2, 1, 0]);
+            expect(() => [1, 2, 3].indices(step: 0), throwsArgumentError);
+          });
+          test('step', () {
+            verify([1, 2, 3].indices(step: 2), [0, 2]);
+            verify([1, 2, 3, 4].indices(step: 2), [0, 2]);
+            verify([1, 2, 3].indices(step: -2), [2, 0]);
+            verify([1, 2, 3, 4].indices(step: -2), [3, 1]);
+          });
+        });
       });
       group('sublist', () {
         test('sublist (1 argument)', () {
@@ -1344,10 +1376,10 @@ void main() {
           expect(() => IntegerRange(3).sublist(0, 4), throwsRangeError);
         });
         test('getRange', () {
-          verify(IntegerRange(3).getRange(0, 3).toList(), [0, 1, 2]);
-          verify(IntegerRange(3).getRange(0, 2).toList(), [0, 1]);
-          verify(IntegerRange(3).getRange(0, 1).toList(), [0]);
-          verify(IntegerRange(3).getRange(0, 0).toList(), []);
+          verify(IntegerRange(3).getRange(0, 3), [0, 1, 2]);
+          verify(IntegerRange(3).getRange(0, 2), [0, 1]);
+          verify(IntegerRange(3).getRange(0, 1), [0]);
+          verify(IntegerRange(3).getRange(0, 0), []);
           expect(() => IntegerRange(3).getRange(0, 4), throwsRangeError);
         });
       });
@@ -1488,10 +1520,10 @@ void main() {
           expect(() => DoubleRange(3.0).sublist(0, 4), throwsRangeError);
         });
         test('getRange', () {
-          verify(DoubleRange(3.0).getRange(0, 3).toList(), [0.0, 1.0, 2.0]);
-          verify(DoubleRange(3.0).getRange(0, 2).toList(), [0.0, 1.0]);
-          verify(DoubleRange(3.0).getRange(0, 1).toList(), [0.0]);
-          verify(DoubleRange(3.0).getRange(0, 0).toList(), []);
+          verify(DoubleRange(3.0).getRange(0, 3), [0.0, 1.0, 2.0]);
+          verify(DoubleRange(3.0).getRange(0, 2), [0.0, 1.0]);
+          verify(DoubleRange(3.0).getRange(0, 1), [0.0]);
+          verify(DoubleRange(3.0).getRange(0, 0), []);
           expect(() => DoubleRange(3.0).getRange(0, 4), throwsRangeError);
         });
       });

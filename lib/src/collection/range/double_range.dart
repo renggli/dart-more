@@ -1,7 +1,8 @@
 import 'dart:collection' show ListBase;
 
-import '../../ordering.dart' show Ordering;
-import '../iterable/mixins/unmodifiable.dart' show UnmodifiableListMixin;
+import '../../../ordering.dart' show Ordering;
+import '../../iterable/mixins/unmodifiable.dart' show UnmodifiableListMixin;
+import '../range.dart';
 
 /// A virtual range of doubles containing an arithmetic progressions.
 ///
@@ -12,7 +13,8 @@ import '../iterable/mixins/unmodifiable.dart' show UnmodifiableListMixin;
 ///   for (double i = start; i < stop; i += step) {
 ///     ...
 ///
-class DoubleRange extends ListBase<double> with UnmodifiableListMixin<double> {
+class DoubleRange extends ListBase<double>
+    with Range<double>, UnmodifiableListMixin<double> {
   /// Creates a virtual range of numbers containing an arithmetic progressions
   /// of double values.
   ///
@@ -46,35 +48,32 @@ class DoubleRange extends ListBase<double> with UnmodifiableListMixin<double> {
     } else if (a != null) {
       end = a;
     }
-    if (step == 0) {
-      throw ArgumentError.value(step, 'step', 'Non-zero step-size expected');
-    } else if (start < end && step < 0) {
-      throw ArgumentError.value(step, 'step', 'Positive step-size expected');
-    } else if (start > end && step > 0) {
-      throw ArgumentError.value(step, 'step', 'Negative step-size expected');
-    }
-    final span = end - start;
-    var length = span ~/ step;
-    if (length > 0) {
-      // Due to truncation in the division above, it can happen that the last
-      // element is still within the requested range. Make sure to include it.
-      final last = start + length * step;
-      if ((step > 0.0 && last < end) || (step < 0.0 && last > end)) {
-        length++;
+    if (start <= end) {
+      if (step == 1.0) {
+        return DoubleRange._(start, end, step, (end - start).ceil());
+      } else if (step > 0.0) {
+        return DoubleRange._(start, end, step, ((end - start) / step).ceil());
+      }
+    } else {
+      if (step == -1.0) {
+        return DoubleRange._(start, end, step, (start - end).ceil());
+      } else if (step < 0.0) {
+        return DoubleRange._(start, end, step, ((start - end) / -step).ceil());
       }
     }
-    return DoubleRange._(start, end, step, length);
+    throw ArgumentError.value(
+        step, 'step', 'Invalid step size for range $start..$end.');
   }
 
   DoubleRange._(this.start, this.end, this.step, this.length);
 
-  /// The start of the range (inclusive).
+  @override
   final double start;
 
-  /// The end of the range (exclusive).
+  @override
   final double end;
 
-  /// The step size.
+  @override
   final double step;
 
   @override
@@ -163,12 +162,6 @@ class DoubleRange extends ListBase<double> with UnmodifiableListMixin<double> {
   }
 }
 
-extension DoubleRangeExtension on double {
-  /// Shorthand to create a range of [double] numbers, starting with the
-  /// receiver (inclusive) up to but not including [end] (exclusive).
-  DoubleRange to(double end, {double? step}) => DoubleRange(this, end, step);
-}
-
 class DoubleRangeIterator extends Iterator<double> {
   final double start;
   final double step;
@@ -190,4 +183,10 @@ class DoubleRangeIterator extends Iterator<double> {
       return true;
     }
   }
+}
+
+extension DoubleRangeExtension on double {
+  /// Shorthand to create a range of [double] numbers, starting with the
+  /// receiver (inclusive) up to but not including [end] (exclusive).
+  Range<double> to(double end, {double? step}) => DoubleRange(this, end, step);
 }

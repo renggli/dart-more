@@ -1,4 +1,5 @@
 import 'dart:math' as math;
+
 import 'polynomial.dart';
 
 extension MathNumberExtension on num {

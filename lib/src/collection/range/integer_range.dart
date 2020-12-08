@@ -1,6 +1,7 @@
 import 'dart:collection' show ListBase;
 
-import '../iterable/mixins/unmodifiable.dart' show UnmodifiableListMixin;
+import '../../iterable/mixins/unmodifiable.dart' show UnmodifiableListMixin;
+import '../range.dart';
 
 /// A virtual range of integers containing an arithmetic progressions.
 ///
@@ -11,7 +12,8 @@ import '../iterable/mixins/unmodifiable.dart' show UnmodifiableListMixin;
 ///   for (int i = start; i < stop; i += step) {
 ///     ...
 ///
-class IntegerRange extends ListBase<int> with UnmodifiableListMixin<int> {
+class IntegerRange extends ListBase<int>
+    with Range<int>, UnmodifiableListMixin<int> {
   /// Creates a virtual range of numbers containing an arithmetic progressions
   /// of integer values.
   ///
@@ -44,30 +46,32 @@ class IntegerRange extends ListBase<int> with UnmodifiableListMixin<int> {
     } else if (a != null) {
       end = a;
     }
-    if (step == 0) {
-      throw ArgumentError.value(step, 'step', 'Non-zero step-size expected');
-    } else if (start < end && step < 0) {
-      throw ArgumentError.value(step, 'step', 'Positive step-size expected');
-    } else if (start > end && step > 0) {
-      throw ArgumentError.value(step, 'step', 'Negative step-size expected');
+    if (start <= end) {
+      if (step == 1) {
+        return IntegerRange._(start, end, step, end - start);
+      } else if (step > 1) {
+        return IntegerRange._(start, end, step, (end - start + 1) ~/ step);
+      }
+    } else {
+      if (step == -1) {
+        return IntegerRange._(start, end, step, start - end);
+      } else if (step < -1) {
+        return IntegerRange._(start, end, step, (start - end + 1) ~/ -step);
+      }
     }
-    final span = end - start;
-    var length = span ~/ step;
-    if (span % step != 0) {
-      length++;
-    }
-    return IntegerRange._(start, end, step, length);
+    throw ArgumentError.value(
+        step, 'step', 'Invalid step size for range $start..$end.');
   }
 
   IntegerRange._(this.start, this.end, this.step, this.length);
 
-  /// The start of the range (inclusive).
+  @override
   final int start;
 
-  /// The end of the range (exclusive).
+  @override
   final int end;
 
-  /// The step size.
+  @override
   final int step;
 
   @override
@@ -161,12 +165,6 @@ class IntegerRange extends ListBase<int> with UnmodifiableListMixin<int> {
   }
 }
 
-extension IntegerRangeExtension on int {
-  /// Shorthand to create a range of [int] numbers, starting with the receiver
-  /// (inclusive) up to but not including [end] (exclusive).
-  IntegerRange to(int end, {int? step}) => IntegerRange(this, end, step);
-}
-
 class PositiveStepIntegerRangeIterator extends Iterator<int> {
   int start;
   final int end;
@@ -208,5 +206,43 @@ class NegativeStepIntegerRangeIterator extends Iterator<int> {
       return true;
     }
     return false;
+  }
+}
+
+extension IntegerRangeExtension on int {
+  /// Shorthand to create a range of [int] numbers, starting with the receiver
+  /// (inclusive) up to but not including [end] (exclusive).
+  Range<int> to(int end, {int? step}) => IntegerRange(this, end, step);
+}
+
+extension IndicesIterableExtension on Iterable {
+  /// Returns a [Range] of the indices of this iterable that can be accessed
+  /// with the `[]` operator.
+  ///
+  /// An optional non-zero [step] counter can be provided to skip over
+  /// indices. A negative [step] counter returns the indices in reverse
+  /// order.
+  ///
+  /// For example, the expression
+  ///
+  ///     ['a', 'b', 'c'].indices(step: 2)
+  ///
+  /// returns
+  ///
+  ///     [0, 2]
+  ///
+  Range<int> indices({int step = 1}) {
+    final count = length;
+    if (step == 1) {
+      return IntegerRange._(0, count, 1, count);
+    } else if (step == -1) {
+      return IntegerRange._(count - 1, -1, -1, count);
+    } else if (step > 1) {
+      return IntegerRange._(0, count, step, (count + 1) ~/ step);
+    } else if (step < -1) {
+      return IntegerRange._(count - 1, -1, step, (count + 1) ~/ -step);
+    } else {
+      throw ArgumentError.value(step, 'step', 'Non-zero step-size expected');
+    }
   }
 }
