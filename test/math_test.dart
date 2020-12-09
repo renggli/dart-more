@@ -328,19 +328,6 @@ void main() {
       expect(2.between(0, 1), isFalse);
       expect(2.between(3, 4), isFalse);
     });
-    test('erf', () {
-      expect(0.0.erf(), closeTo(0.00000000, epsilon));
-      expect(0.1.erf(), closeTo(0.11246291, epsilon));
-      expect(0.5.erf(), closeTo(0.52049987, epsilon));
-      expect(1.0.erf(), closeTo(0.84270079, epsilon));
-      expect(2.0.erf(), closeTo(0.99532226, epsilon));
-      expect(3.0.erf(), closeTo(0.99997791, epsilon));
-      expect(10.0.erf(), closeTo(1.0000000, epsilon));
-      expect(-1.0.erf(), closeTo(-0.84270079, epsilon));
-      expect(-2.0.erf(), closeTo(-0.99532226, epsilon));
-      expect(-3.0.erf(), closeTo(-0.99997791, epsilon));
-      expect(-10.0.erf(), closeTo(-1.0000000, epsilon));
-    });
   });
   group('polynomial', () {
     test('base 2', () {

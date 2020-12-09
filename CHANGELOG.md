@@ -15,7 +15,6 @@
 * Add `Trie` (prefix tree) collection type.
 * Add `Ordering.percentile`. 
 * Add `Iterable.atRandom`, `Iterable.min`, `Iterable.max` and `Iterable.percentile`.
-* Introduce `package:more/stats.dart` to perform statistical computations.
 * Optimize `Range` object creation and error reporting, and add `Iterable.indices`.
 
 ## 2.8.0
