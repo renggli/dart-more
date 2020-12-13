@@ -1,5 +1,5 @@
 extension ToMapExtension<E> on Iterable<E> {
-  /// Returns an [Map] from an [Iterable] of [MapEntry] objects.
+  /// Returns an [Map] from an [Iterable].
   ///
   /// For example, the expression
   ///
@@ -20,18 +20,4 @@ extension ToMapExtension<E> on Iterable<E> {
       for (var element in this) keyProvider(element): valueProvider(element),
     };
   }
-}
-
-extension ToMapFromEntriesExtension<K, V> on Iterable<MapEntry<K, V>> {
-  /// Returns an [Map] from an [Iterable] of [MapEntry] objects.
-  ///
-  /// For example, the expression
-  ///
-  ///     [MapEntry(1, 'a'), MapEntry(2, 'b')].toMapFromEntries()
-  ///
-  /// converts the input [Iterable] to a [Map]:
-  ///
-  ///     {1: a, 2: b}
-  ///
-  Map<K, V> toMapFromEntries() => Map.fromEntries(this);
 }
