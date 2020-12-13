@@ -15,6 +15,7 @@
 * Add `Trie` (prefix tree) collection type.
 * Add `Ordering.percentile`. 
 * Add `Iterable.atRandom`, `Iterable.min`, `Iterable.max` and `Iterable.percentile`.
+* Add `Iterable.entries` and variations of `Iterable.toMap`.
 * Optimize `Range` object creation and error reporting, and add `Iterable.indices`.
 
 ## 2.8.0

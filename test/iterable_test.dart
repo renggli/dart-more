@@ -218,6 +218,16 @@ void main() {
       expect(() => infinite.toSet(), throwsUnsupportedError);
     });
   });
+  group('indexed', () {
+    test('empty', () {
+      expect([].entries, []);
+    });
+    test('simple', () {
+      final iterable = ['a', 'b', 'c'].entries;
+      expect(iterable.map((each) => each.key), [0, 1, 2]);
+      expect(iterable.map((each) => each.value), ['a', 'b', 'c']);
+    });
+  });
   group('flatMap', () {
     test('empty', () {
       expect([].flatMap((each) => throw StateError('Never to be called')), []);
@@ -1018,6 +1028,41 @@ void main() {
         expect(s, 2);
         expect(b, 1);
         expect(a, 1);
+      });
+    });
+  });
+  group('toMap', () {
+    group('generic', () {
+      test('empty', () {
+        expect([].toMap(), {});
+      });
+      test('basic', () {
+        const iterable = ['a', 'bb', 'ccc'];
+        expect(iterable.toMap(), {'a': 'a', 'bb': 'bb', 'ccc': 'ccc'});
+      });
+      test('custom', () {
+        const iterable = ['a', 'bb', 'ccc'];
+        expect(
+            iterable.toMap(
+                key: (each) => each[0], value: (each) => each.length),
+            {'a': 1, 'b': 2, 'c': 3});
+      });
+      test('duplicates', () {
+        const iterable = [MapEntry('a', 1), MapEntry('b', 2), MapEntry('a', 3)];
+        expect(iterable.toMap(), {'a': 3, 'b': 2});
+      });
+    });
+    group('entries', () {
+      test('empty', () {
+        expect(<MapEntry<String, int>>[].toMap(), <String, int>{});
+      });
+      test('simple', () {
+        const iterable = [MapEntry('a', 1), MapEntry('b', 2), MapEntry('c', 3)];
+        expect(iterable.toMap(), {'a': 1, 'b': 2, 'c': 3});
+      });
+      test('duplicates', () {
+        const iterable = [MapEntry('a', 1), MapEntry('b', 2), MapEntry('a', 3)];
+        expect(iterable.toMap(), {'a': 3, 'b': 2});
       });
     });
   });
