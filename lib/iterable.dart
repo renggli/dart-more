@@ -17,7 +17,7 @@ export 'src/iterable/random.dart' show RandomExtension;
 export 'src/iterable/repeat.dart' show RepeatExtension, repeat;
 export 'src/iterable/separated.dart' show SeparatedExtension;
 export 'src/iterable/to_map.dart'
-    show ToMapIterableExtension, ToMapIterableMapEntryExtension;
+    show ToMapExtension, ToMapFromEntriesExtension;
 export 'src/iterable/unique.dart' show UniqueExtension;
 export 'src/iterable/window.dart' show WindowExtension;
 export 'src/iterable/zip.dart' show ZipExtension;

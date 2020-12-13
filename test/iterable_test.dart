@@ -1032,38 +1032,31 @@ void main() {
     });
   });
   group('toMap', () {
-    group('generic', () {
-      test('empty', () {
-        expect([].toMap(), {});
-      });
-      test('basic', () {
-        const iterable = ['a', 'bb', 'ccc'];
-        expect(iterable.toMap(), {'a': 'a', 'bb': 'bb', 'ccc': 'ccc'});
-      });
-      test('custom', () {
-        const iterable = ['a', 'bb', 'ccc'];
-        expect(
-            iterable.toMap(
-                key: (each) => each[0], value: (each) => each.length),
-            {'a': 1, 'b': 2, 'c': 3});
-      });
-      test('duplicates', () {
-        const iterable = [MapEntry('a', 1), MapEntry('b', 2), MapEntry('a', 3)];
-        expect(iterable.toMap(), {'a': 3, 'b': 2});
-      });
+    test('empty', () {
+      expect([].toMap(), {});
     });
-    group('entries', () {
-      test('empty', () {
-        expect(<MapEntry<String, int>>[].toMap(), <String, int>{});
-      });
-      test('simple', () {
-        const iterable = [MapEntry('a', 1), MapEntry('b', 2), MapEntry('c', 3)];
-        expect(iterable.toMap(), {'a': 1, 'b': 2, 'c': 3});
-      });
-      test('duplicates', () {
-        const iterable = [MapEntry('a', 1), MapEntry('b', 2), MapEntry('a', 3)];
-        expect(iterable.toMap(), {'a': 3, 'b': 2});
-      });
+    test('basic', () {
+      const iterable = ['a', 'bb', 'ccc'];
+      expect(iterable.toMap(), {'a': 'a', 'bb': 'bb', 'ccc': 'ccc'});
+    });
+    test('custom', () {
+      const iterable = ['a', 'bb', 'ccc'];
+      expect(
+          iterable.toMap(key: (each) => each[0], value: (each) => each.length),
+          {'a': 1, 'b': 2, 'c': 3});
+    });
+  });
+  group('toMapFromEntries', () {
+    test('empty', () {
+      expect(<MapEntry<String, int>>[].toMapFromEntries(), <String, int>{});
+    });
+    test('simple', () {
+      const iterable = [MapEntry('a', 1), MapEntry('b', 2), MapEntry('c', 3)];
+      expect(iterable.toMapFromEntries(), {'a': 1, 'b': 2, 'c': 3});
+    });
+    test('duplicates', () {
+      const iterable = [MapEntry('a', 1), MapEntry('b', 2), MapEntry('a', 3)];
+      expect(iterable.toMapFromEntries(), {'a': 3, 'b': 2});
     });
   });
   group('unique', () {

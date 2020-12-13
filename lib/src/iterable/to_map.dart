@@ -1,13 +1,16 @@
-extension ToMapIterableExtension<E> on Iterable<E> {
+extension ToMapExtension<E> on Iterable<E> {
   /// Returns an [Map] from an [Iterable] of [MapEntry] objects.
   ///
   /// For example, the expression
   ///
-  ///     ['a', 'b'].entries.toMap()
+  ///     ['a', 'bb', 'ccc'].toMap(
+  ///       key: (each) => each[0],
+  ///       value: (each) => each.length,
+  ///     )
   ///
   /// converts the input [Iterable] to a [Map]:
   ///
-  ///     {0: a, 1: b}
+  ///     {'a': 1, 'b': 2, 'c': 3}
   ///
   Map<K, V> toMap<K, V>(
       {K Function(E element)? key, V Function(E element)? value}) {
@@ -19,16 +22,16 @@ extension ToMapIterableExtension<E> on Iterable<E> {
   }
 }
 
-extension ToMapIterableMapEntryExtension<K, V> on Iterable<MapEntry<K, V>> {
+extension ToMapFromEntriesExtension<K, V> on Iterable<MapEntry<K, V>> {
   /// Returns an [Map] from an [Iterable] of [MapEntry] objects.
   ///
   /// For example, the expression
   ///
-  ///     ['a', 'b'].entries.toMap()
+  ///     [MapEntry(1, 'a'), MapEntry(2, 'b')].toMapFromEntries()
   ///
   /// converts the input [Iterable] to a [Map]:
   ///
-  ///     {0: a, 1: b}
+  ///     {1: a, 2: b}
   ///
-  Map<K, V> toMap() => Map.fromEntries(this);
+  Map<K, V> toMapFromEntries() => Map.fromEntries(this);
 }
