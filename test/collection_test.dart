@@ -14,7 +14,7 @@ List<bool> randomBooleans(int seed, int length) {
 }
 
 void main() {
-  group('bi-map', () {
+  group('bimap', () {
     final example = BiMap.of({1: 'a', 2: 'b', 3: 'c'});
     group('construction', () {
       test('empty', () {
@@ -70,8 +70,17 @@ void main() {
         expect(() => BiMap.fromIterables([1], []), throwsArgumentError);
         expect(() => BiMap.fromIterables([], [1]), throwsArgumentError);
       });
-      test('converter', () {
+      test('map converter', () {
         final target = example.toBiMap();
+        expect(target.keys, [1, 2, 3]);
+        expect(target.values, ['a', 'b', 'c']);
+      });
+      test('iterable converter', () {
+        final target = [
+          0,
+          1,
+          2
+        ].toBiMap(key: (e) => e + 1, value: (e) => String.fromCharCode(97 + e));
         expect(target.keys, [1, 2, 3]);
         expect(target.values, ['a', 'b', 'c']);
       });
@@ -574,6 +583,26 @@ void main() {
           expect(map['a'], [1]);
           expect(map['b'], [2, 3]);
         });
+        test('map converter', () {
+          final target = {'a': 1, 'b': 2, 'c': 3}.toListMultimap();
+          expect(target.keys, ['a', 'b', 'c']);
+          expect(target.values, [1, 2, 3]);
+          expect(target.asMap(), {
+            'a': [1],
+            'b': [2],
+            'c': [3]
+          });
+        });
+        test('iterable converter', () {
+          final target = ['a', 'abb', 'abb', 'bb']
+              .toListMultimap(key: (e) => e[0], value: (e) => e.length);
+          expect(target.keys, ['a', 'b']);
+          expect(target.values, [1, 3, 3, 2]);
+          expect(target.asMap(), {
+            'a': [1, 3, 3],
+            'b': [2],
+          });
+        });
       });
       group('accessor', () {
         test('containsKey', () {
@@ -798,6 +827,26 @@ void main() {
           });
           expect(map['a'], [1]);
           expect(map['b'], [2, 3]);
+        });
+        test('map converter', () {
+          final target = {'a': 1, 'b': 2, 'c': 3}.toSetMultimap();
+          expect(target.keys, ['a', 'b', 'c']);
+          expect(target.values, [1, 2, 3]);
+          expect(target.asMap(), {
+            'a': [1],
+            'b': [2],
+            'c': [3]
+          });
+        });
+        test('iterable converter', () {
+          final target = ['a', 'abb', 'abb', 'bb']
+              .toSetMultimap(key: (e) => e[0], value: (e) => e.length);
+          expect(target.keys, ['a', 'b']);
+          expect(target.values, [1, 3, 2]);
+          expect(target.asMap(), {
+            'a': {1, 3},
+            'b': {2},
+          });
         });
       });
       group('accessors', () {

@@ -100,4 +100,26 @@ class SetMultimapValues<K, V> extends MultimapValues<K, V, Set<V>>
   void polymorphicClear() => clear();
 }
 
+extension SetMultimapOnMapExtension<K, V> on Map<K, V> {
+  /// Converts this [Map] to an equivalent [SetMultimap].
+  SetMultimap<K, V> toSetMultimap(
+          {Map<K, Set<V>>? map, Factory<Set<V>>? factory}) =>
+      SetMultimap<K, V>.fromEntries(entries, map: map, factory: factory);
+}
+
+extension SetMultimapOnIterableExtension<E> on Iterable<E> {
+  /// Converts this [Iterable] to a [SetMultimap].
+  SetMultimap<K, V> toSetMultimap<K, V>(
+      {K Function(E element)? key,
+      V Function(E element)? value,
+      Map<K, Set<V>>? map,
+      Factory<Set<V>>? factory}) {
+    final keyProvider = key ?? (element) => element as K;
+    final valueProvider = value ?? (element) => element as V;
+    return SetMultimap<K, V>.fromIterables(
+        this.map(keyProvider), this.map(valueProvider),
+        map: map, factory: factory);
+  }
+}
+
 Set<V> defaultFactory<V>() => <V>{};

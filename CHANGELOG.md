@@ -16,6 +16,7 @@
 * Add `Ordering.percentile`. 
 * Add `Iterable.toMap`, `Iterable.atRandom`, `Iterable.min`, `Iterable.max` and `Iterable.percentile`.
 * Optimize `Range` object creation and error reporting, and add `Iterable.indices`.
+* Add converters `toBiMap`, `toListMultimap`, and `toSetMultimap`.
 
 ## 2.8.0
 

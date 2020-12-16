@@ -138,7 +138,17 @@ class BiMap<K, V> extends MapBase<K, V> {
   Iterable<V> get values => _backward.keys;
 }
 
-extension BiMapExtension<K, V> on Map<K, V> {
+extension BiMapOnMapExtension<K, V> on Map<K, V> {
   /// Converts this [Map] to an equivalent [BiMap].
   BiMap<K, V> toBiMap() => BiMap.of(this);
+}
+
+extension BiMapOnIterableExtension<E> on Iterable<E> {
+  /// Converts this [Iterable] to a [BiMap].
+  BiMap<K, V> toBiMap<K, V>(
+      {K Function(E element)? key, V Function(E element)? value}) {
+    final keyProvider = key ?? (element) => element as K;
+    final valueProvider = value ?? (element) => element as V;
+    return BiMap<K, V>.fromIterables(map(keyProvider), map(valueProvider));
+  }
 }

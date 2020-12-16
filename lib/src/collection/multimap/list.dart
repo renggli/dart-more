@@ -106,4 +106,26 @@ class ListMultimapValues<K, V> extends MultimapValues<K, V, List<V>>
   void polymorphicClear() => clear();
 }
 
+extension ListMultimapOnMapExtension<K, V> on Map<K, V> {
+  /// Converts this [Map] to an equivalent [ListMultimap].
+  ListMultimap<K, V> toListMultimap(
+          {Map<K, List<V>>? map, Factory<List<V>>? factory}) =>
+      ListMultimap<K, V>.fromEntries(entries, map: map, factory: factory);
+}
+
+extension ListMultimapOnIterableExtension<E> on Iterable<E> {
+  /// Converts this [Iterable] to a [ListMultimap].
+  ListMultimap<K, V> toListMultimap<K, V>(
+      {K Function(E element)? key,
+      V Function(E element)? value,
+      Map<K, List<V>>? map,
+      Factory<List<V>>? factory}) {
+    final keyProvider = key ?? (element) => element as K;
+    final valueProvider = value ?? (element) => element as V;
+    return ListMultimap<K, V>.fromIterables(
+        this.map(keyProvider), this.map(valueProvider),
+        map: map, factory: factory);
+  }
+}
+
 List<V> defaultFactory<V>() => <V>[];

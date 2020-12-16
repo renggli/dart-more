@@ -1,9 +1,15 @@
 /// A collection of new collection types: bi-map, bit-list, multi-set, set and
 /// list multi-map, range, and string.
-export 'src/collection/bimap.dart' show BiMap, BiMapExtension;
+export 'src/collection/bimap.dart'
+    show BiMap, BiMapOnMapExtension, BiMapOnIterableExtension;
 export 'src/collection/bitlist.dart' show BitList, BitListExtension;
-export 'src/collection/multimap/list.dart' show ListMultimap;
-export 'src/collection/multimap/set.dart' show SetMultimap;
+export 'src/collection/multimap/list.dart'
+    show
+        ListMultimap,
+        ListMultimapOnMapExtension,
+        ListMultimapOnIterableExtension;
+export 'src/collection/multimap/set.dart'
+    show SetMultimap, SetMultimapOnMapExtension, SetMultimapOnIterableExtension;
 export 'src/collection/multiset.dart' show Multiset, MultisetExtension;
 export 'src/collection/range.dart' show Range;
 export 'src/collection/range/bigint.dart'
