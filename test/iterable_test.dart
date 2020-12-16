@@ -292,6 +292,9 @@ void main() {
       final iterable = ['a', 'b', 'c'].indexed();
       expect(iterable.map((each) => each.index), [0, 1, 2]);
       expect(iterable.map((each) => each.value), ['a', 'b', 'c']);
+      expect(iterable.map((each) => each.key), [0, 1, 2]);
+      expect(iterable.map((each) => each.toString()),
+          ['Indexed(0: a)', 'Indexed(1: b)', 'Indexed(2: c)']);
     });
     test('offset', () {
       final actual = ['a', 'b']
@@ -300,6 +303,10 @@ void main() {
           .join(', ');
       const expected = 'a-1, b-2';
       expect(actual, expected);
+    });
+    test('entries', () {
+      final iterable = ['a', 'b', 'c'].indexed();
+      expect(Map.fromEntries(iterable), {0: 'a', 1: 'b', 2: 'c'});
     });
   });
   group('iterate', () {
