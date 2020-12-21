@@ -1977,6 +1977,34 @@ void main() {
             plenty.sublist(5, 7).toString(), plenty.toString().substring(5, 7));
       });
     });
+    group('remove prefix', () {
+      test('string', () {
+        expect('abcd'.removePrefix(''), 'abcd');
+        expect('abcd'.removePrefix('a'), 'bcd');
+        expect('abcd'.removePrefix('ab'), 'cd');
+        expect('abcd'.removePrefix('abc'), 'd');
+        expect('abcd'.removePrefix('abcd'), '');
+        expect('abcd'.removePrefix('xyz'), 'abcd');
+      });
+      test('regexp pattern', () {
+        expect('abcd'.removePrefix(RegExp('')), 'abcd');
+        expect('abcd'.removePrefix(RegExp('a')), 'bcd');
+        expect('abcd'.removePrefix(RegExp('ab')), 'cd');
+        expect('abcd'.removePrefix(RegExp('abc')), 'd');
+        expect('abcd'.removePrefix(RegExp('abcd')), '');
+        expect('abcd'.removePrefix(RegExp('xyz')), 'abcd');
+      });
+    });
+    group('remove suffix', () {
+      test('string', () {
+        expect('abcd'.removeSuffix(''), 'abcd');
+        expect('abcd'.removeSuffix('d'), 'abc');
+        expect('abcd'.removeSuffix('cd'), 'ab');
+        expect('abcd'.removeSuffix('bcd'), 'a');
+        expect('abcd'.removeSuffix('abcd'), '');
+        expect('abcd'.removeSuffix('xyz'), 'abcd');
+      });
+    });
   });
   group('trie', () {
     void allTrieTests(

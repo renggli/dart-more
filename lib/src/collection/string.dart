@@ -1,8 +1,7 @@
-import 'dart:collection' show ListBase;
+import 'string/immutable_list.dart';
+import 'string/mutable_list.dart';
 
-import '../iterable/mixins/unmodifiable.dart' show UnmodifiableListMixin;
-
-extension ListExtension on String {
+extension StringExtension on String {
   /// Returns a iterable list of the UTF-16 characters of this [String].
   ///
   /// The immutable version is very light-weight. To loop over the characters
@@ -31,61 +30,26 @@ extension ListExtension on String {
   List<String> toList({bool mutable = false}) => mutable
       ? MutableStringList(List.of(codeUnits))
       : ImmutableStringList(this);
-}
 
-/// A string as a mutable list.
-class MutableStringList extends ListBase<String> {
-  final List<int> codeUnits;
-
-  MutableStringList(this.codeUnits);
-
-  @override
-  int get length => codeUnits.length;
-
-  @override
-  set length(int newLength) => codeUnits.length = newLength;
-
-  @override
-  String operator [](int index) => String.fromCharCode(codeUnits[index]);
-
-  @override
-  void operator []=(int index, String character) {
-    if (character.length == 1) {
-      codeUnits[index] = character.codeUnitAt(0);
-    } else {
-      throw ArgumentError('Invalid character: $character');
+  /// If the string starts with the prefix pattern returns this [String]
+  /// with the prefix removed, otherwise return `this`.
+  String removePrefix(Pattern pattern) {
+    if (pattern is String && startsWith(pattern)) {
+      return substring(pattern.length);
     }
+    final match = pattern.matchAsPrefix(this);
+    if (match != null && match.end > 0) {
+      return substring(match.end);
+    }
+    return this;
   }
 
-  @override
-  void add(String element) => codeUnits.addAll(element.codeUnits);
-
-  @override
-  List<String> sublist(int start, [int? end]) =>
-      MutableStringList(codeUnits.sublist(start, end));
-
-  @override
-  String toString() => String.fromCharCodes(codeUnits);
-}
-
-/// A string as an immutable list.
-class ImmutableStringList extends ListBase<String>
-    with UnmodifiableListMixin<String> {
-  final String contents;
-
-  ImmutableStringList(this.contents);
-
-  @override
-  int get length => contents.length;
-
-  @override
-  String operator [](int index) =>
-      String.fromCharCode(contents.codeUnitAt(index));
-
-  @override
-  List<String> sublist(int start, [int? end]) =>
-      ImmutableStringList(contents.substring(start, end));
-
-  @override
-  String toString() => contents;
+  /// If the string ends with the suffix, return this [String] with the suffix
+  /// removed, otherwise return `this`.
+  String removeSuffix(String other) {
+    if (endsWith(other)) {
+      return substring(0, length - other.length);
+    }
+    return this;
+  }
 }

@@ -18,6 +18,6 @@ export 'src/collection/range/double.dart'
     show DoubleRange, DoubleRangeExtension;
 export 'src/collection/range/integer.dart'
     show IntegerRange, IntegerRangeExtension, IndicesIterableExtension;
-export 'src/collection/string.dart' show ListExtension;
+export 'src/collection/string.dart' show StringExtension;
 export 'src/collection/trie.dart'
     show Trie, TrieNode, TrieNodeEntry, TrieNodeList, TrieNodeMap;
