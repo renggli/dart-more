@@ -18,6 +18,7 @@
 * Optimize `Range` object creation and error reporting, and add `Iterable.indices`.
 * Add converters `toBiMap`, `toListMultimap`, and `toSetMultimap`.
 * Add `String.removePrefix` and `String.removeSuffix`.
+* Add `List.rotate` and `Queue.rotate`.
 
 ## 2.8.0
 

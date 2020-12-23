@@ -14,6 +14,8 @@ export 'src/iterable/permutations.dart' show PermutationsExtension;
 export 'src/iterable/product.dart' show ProductExtension;
 export 'src/iterable/random.dart' show RandomExtension;
 export 'src/iterable/repeat.dart' show RepeatExtension, repeat;
+export 'src/iterable/rotate.dart'
+    show RotateListExtension, RotateQueueExtension;
 export 'src/iterable/separated.dart' show SeparatedExtension;
 export 'src/iterable/to_map.dart' show ToMapExtension;
 export 'src/iterable/unique.dart' show UniqueExtension;

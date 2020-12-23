@@ -1,3 +1,4 @@
+import 'dart:collection';
 import 'dart:math' show Random;
 
 import 'package:more/collection.dart';
@@ -846,6 +847,142 @@ void main() {
       expect(repeat(1, count: 1), [1]);
       expect(repeat(1, count: 2), [1, 1]);
       expect(repeat(1, count: 3), [1, 1, 1]);
+    });
+  });
+  group('rotate', () {
+    group('list', () {
+      test('size = 0', () {
+        expect([]..rotate(-1), []);
+        expect([]..rotate(0), []);
+        expect([]..rotate(1), []);
+      });
+      group('size = 1', () {
+        test('offset = 0', () {
+          expect([0]..rotate(0), [0]);
+        });
+        test('offset = ±1', () {
+          expect([0]..rotate(-1), [0]);
+          expect([0]..rotate(1), [0]);
+        });
+      });
+      group('size = 2', () {
+        test('offset = 0', () {
+          expect([0, 1]..rotate(0), [0, 1]);
+        });
+        test('offset = ±1', () {
+          expect([0, 1]..rotate(-1), [1, 0]);
+          expect([0, 1]..rotate(1), [1, 0]);
+        });
+        test('offset = ±2', () {
+          expect([0, 1]..rotate(-2), [0, 1]);
+          expect([0, 1]..rotate(2), [0, 1]);
+        });
+      });
+      group('size = 3', () {
+        test('offset = 0', () {
+          expect([0, 1, 2]..rotate(0), [0, 1, 2]);
+        });
+        test('offset = ±1', () {
+          expect([0, 1, 2]..rotate(-1), [1, 2, 0]);
+          expect([0, 1, 2]..rotate(1), [2, 0, 1]);
+        });
+        test('offset = ±2', () {
+          expect([0, 1, 2]..rotate(-2), [2, 0, 1]);
+          expect([0, 1, 2]..rotate(2), [1, 2, 0]);
+        });
+        test('offset = ±3', () {
+          expect([0, 1, 2]..rotate(-3), [0, 1, 2]);
+          expect([0, 1, 2]..rotate(3), [0, 1, 2]);
+        });
+      });
+      group('size = 4', () {
+        test('offset = 0', () {
+          expect([0, 1, 2, 3]..rotate(0), [0, 1, 2, 3]);
+        });
+        test('offset = ±1', () {
+          expect([0, 1, 2, 3]..rotate(-1), [1, 2, 3, 0]);
+          expect([0, 1, 2, 3]..rotate(1), [3, 0, 1, 2]);
+        });
+        test('offset = ±2', () {
+          expect([0, 1, 2, 3]..rotate(-2), [2, 3, 0, 1]);
+          expect([0, 1, 2, 3]..rotate(2), [2, 3, 0, 1]);
+        });
+        test('offset = ±3', () {
+          expect([0, 1, 2, 3]..rotate(-3), [3, 0, 1, 2]);
+          expect([0, 1, 2, 3]..rotate(3), [1, 2, 3, 0]);
+        });
+        test('offset = ±4', () {
+          expect([0, 1, 2, 3]..rotate(-4), [0, 1, 2, 3]);
+          expect([0, 1, 2, 3]..rotate(4), [0, 1, 2, 3]);
+        });
+      });
+    });
+    group('queue', () {
+      test('size = 0', () {
+        expect(Queue.of([])..rotate(-1), []);
+        expect(Queue.of([])..rotate(0), []);
+        expect(Queue.of([])..rotate(1), []);
+      });
+      group('size = 1', () {
+        test('offset = 0', () {
+          expect(Queue.of([0])..rotate(0), [0]);
+        });
+        test('offset = ±1', () {
+          expect(Queue.of([0])..rotate(-1), [0]);
+          expect(Queue.of([0])..rotate(1), [0]);
+        });
+      });
+      group('size = 2', () {
+        test('offset = 0', () {
+          expect(Queue.of([0, 1])..rotate(0), [0, 1]);
+        });
+        test('offset = ±1', () {
+          expect(Queue.of([0, 1])..rotate(-1), [1, 0]);
+          expect(Queue.of([0, 1])..rotate(1), [1, 0]);
+        });
+        test('offset = ±2', () {
+          expect(Queue.of([0, 1])..rotate(-2), [0, 1]);
+          expect(Queue.of([0, 1])..rotate(2), [0, 1]);
+        });
+      });
+      group('size = 3', () {
+        test('offset = 0', () {
+          expect(Queue.of([0, 1, 2])..rotate(0), [0, 1, 2]);
+        });
+        test('offset = ±1', () {
+          expect(Queue.of([0, 1, 2])..rotate(-1), [1, 2, 0]);
+          expect(Queue.of([0, 1, 2])..rotate(1), [2, 0, 1]);
+        });
+        test('offset = ±2', () {
+          expect(Queue.of([0, 1, 2])..rotate(-2), [2, 0, 1]);
+          expect(Queue.of([0, 1, 2])..rotate(2), [1, 2, 0]);
+        });
+        test('offset = ±3', () {
+          expect(Queue.of([0, 1, 2])..rotate(-3), [0, 1, 2]);
+          expect(Queue.of([0, 1, 2])..rotate(3), [0, 1, 2]);
+        });
+      });
+      group('size = 4', () {
+        test('offset = 0', () {
+          expect(Queue.of([0, 1, 2, 3])..rotate(0), [0, 1, 2, 3]);
+        });
+        test('offset = ±1', () {
+          expect(Queue.of([0, 1, 2, 3])..rotate(-1), [1, 2, 3, 0]);
+          expect(Queue.of([0, 1, 2, 3])..rotate(1), [3, 0, 1, 2]);
+        });
+        test('offset = ±2', () {
+          expect(Queue.of([0, 1, 2, 3])..rotate(-2), [2, 3, 0, 1]);
+          expect(Queue.of([0, 1, 2, 3])..rotate(2), [2, 3, 0, 1]);
+        });
+        test('offset = ±3', () {
+          expect(Queue.of([0, 1, 2, 3])..rotate(-3), [3, 0, 1, 2]);
+          expect(Queue.of([0, 1, 2, 3])..rotate(3), [1, 2, 3, 0]);
+        });
+        test('offset = ±4', () {
+          expect(Queue.of([0, 1, 2, 3])..rotate(-4), [0, 1, 2, 3]);
+          expect(Queue.of([0, 1, 2, 3])..rotate(4), [0, 1, 2, 3]);
+        });
+      });
     });
   });
   group('separatedBy', () {
