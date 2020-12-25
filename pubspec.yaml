@@ -1,5 +1,5 @@
 name: more
-version: 3.0.0-nullsafety.5
+version: 3.0.0-nullsafety.6
 
 homepage: https://github.com/renggli/dart-more
 description: More Dart — Literally. Collecting, iterating, caching, mathematics,
