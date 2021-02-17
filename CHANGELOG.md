@@ -1,8 +1,8 @@
 # Changelog
 
-## 3.0.0-nullsafety
+## 3.0.0
 
-* Dart 2.10 requirement and null-safety.
+* Dart 2.12 requirement and null-safety.
 * Use `package:clock` and `package:fake_async` across the board.
 * Add `BigIntRange` and optimize iteration of `IntegerRange`.
 * Optimize the implementation of `ExpiryCache`.
