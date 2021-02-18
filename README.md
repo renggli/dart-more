@@ -7,7 +7,7 @@ More Dart — Literally
 [![GitHub Issues](https://img.shields.io/github/issues/renggli/dart-more.svg)](https://github.com/renggli/dart-more/issues)
 [![GitHub Forks](https://img.shields.io/github/forks/renggli/dart-more.svg)](https://github.com/renggli/dart-more/network)
 [![GitHub Stars](https://img.shields.io/github/stars/renggli/dart-more.svg)](https://github.com/renggli/dart-more/stargazers)
-[![GitHub License](https://img.shields.io/badge/license-MIT-blue.svg)](https://raw.githubusercontent.com/renggli/dart-more/master/LICENSE)
+[![GitHub License](https://img.shields.io/badge/license-MIT-blue.svg)](https://raw.githubusercontent.com/renggli/dart-more/main/LICENSE)
 
 Various extensions that make Dart a better place:
 
@@ -72,4 +72,4 @@ Some parts of this library are inspired by similar APIs in [Google Guava](https:
 
 ### License
 
-The MIT License, see [LICENSE](https://github.com/renggli/dart-more/raw/master/LICENSE).
+The MIT License, see [LICENSE](https://github.com/renggli/dart-more/raw/main/LICENSE).
