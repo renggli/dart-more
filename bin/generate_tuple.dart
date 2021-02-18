@@ -51,7 +51,7 @@ final Random generator = Random(42);
 
 /// Pretty prints and cleans up a dart file.
 Future<void> format(File file) async =>
-    Process.run('dartfmt', ['--overwrite', '--fix', file.absolute.path]);
+    Process.run('dart', ['format', '--fix', file.absolute.path]);
 
 Future<void> generateParent(int max) async {
   final file = parentFile;
