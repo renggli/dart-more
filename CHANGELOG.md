@@ -1,5 +1,9 @@
 # Changelog
 
+## 3.1.0
+
+* Add `String.toUpperCaseFirstCharacter()` and `String.toLowerCaseFirstCharacter()`.
+
 ## 3.0.0
 
 * Dart 2.12 requirement and null-safety.

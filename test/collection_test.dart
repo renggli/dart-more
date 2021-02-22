@@ -2005,6 +2005,118 @@ void main() {
         expect('abcd'.removeSuffix('xyz'), 'abcd');
       });
     });
+    group('converters', () {
+      test('convert first character', () {
+        expect(
+            ''.convertFirstCharacters((value) {
+              fail('Not supposed to be called');
+            }),
+            '');
+        expect(
+            'a'.convertFirstCharacters((value) {
+              expect(value, 'a');
+              return 'A';
+            }),
+            'A');
+        expect(
+            'ab'.convertFirstCharacters((value) {
+              expect(value, 'a');
+              return 'A';
+            }),
+            'Ab');
+        expect(
+            'abc'.convertFirstCharacters((value) {
+              expect(value, 'a');
+              return 'A';
+            }),
+            'Abc');
+      });
+      test('convert first two characters', () {
+        expect(
+            ''.convertFirstCharacters((value) {
+              fail('Not supposed to be called');
+            }, count: 2),
+            '');
+        expect(
+            'a'.convertFirstCharacters((value) {
+              fail('Not supposed to be called');
+            }, count: 2),
+            'a');
+        expect(
+            'ab'.convertFirstCharacters((value) {
+              expect(value, 'ab');
+              return '*';
+            }, count: 2),
+            '*');
+        expect(
+            'abc'.convertFirstCharacters((value) {
+              expect(value, 'ab');
+              return '*';
+            }, count: 2),
+            '*c');
+      });
+      test('convert last character', () {
+        expect(
+            ''.convertLastCharacters((value) {
+              fail('Not supposed to be called');
+            }),
+            '');
+        expect(
+            'a'.convertLastCharacters((value) {
+              expect(value, 'a');
+              return 'A';
+            }),
+            'A');
+        expect(
+            'ab'.convertLastCharacters((value) {
+              expect(value, 'b');
+              return 'B';
+            }),
+            'aB');
+        expect(
+            'abc'.convertLastCharacters((value) {
+              expect(value, 'c');
+              return 'C';
+            }),
+            'abC');
+      });
+      test('convert last two characters', () {
+        expect(
+            ''.convertLastCharacters((value) {
+              fail('Not supposed to be called');
+            }, count: 2),
+            '');
+        expect(
+            'a'.convertLastCharacters((value) {
+              fail('Not supposed to be called');
+            }, count: 2),
+            'a');
+        expect(
+            'ab'.convertLastCharacters((value) {
+              expect(value, 'ab');
+              return '*';
+            }, count: 2),
+            '*');
+        expect(
+            'abc'.convertLastCharacters((value) {
+              expect(value, 'bc');
+              return '*';
+            }, count: 2),
+            'a*');
+      });
+      test('convert first character to upper-case', () {
+        expect(''.toUpperCaseFirstCharacter(), '');
+        expect('a'.toUpperCaseFirstCharacter(), 'A');
+        expect('ab'.toUpperCaseFirstCharacter(), 'Ab');
+        expect('abc'.toUpperCaseFirstCharacter(), 'Abc');
+      });
+      test('convert first character to lower-case', () {
+        expect(''.toLowerCaseFirstCharacter(), '');
+        expect('A'.toLowerCaseFirstCharacter(), 'a');
+        expect('AB'.toLowerCaseFirstCharacter(), 'aB');
+        expect('ABC'.toLowerCaseFirstCharacter(), 'aBC');
+      });
+    });
   });
   group('trie', () {
     void allTrieTests(
