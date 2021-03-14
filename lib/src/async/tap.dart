@@ -18,38 +18,43 @@ extension TapExtension<E> on Stream<E> {
   }) {
     final controller =
         isBroadcast ? StreamController<E>.broadcast() : StreamController<E>();
-    StreamSubscription<E>? subscription;
+    late StreamSubscription<E> subscription;
+
+    void dispatchOnData(E element) {
+      onData?.call(element);
+      controller.add(element);
+    }
+
+    void dispatchOnError(Object error, [StackTrace? stackTrace]) {
+      onError?.call(error, stackTrace);
+      controller.addError(error, stackTrace);
+      subscription.cancel();
+    }
+
+    void dispatchOnDone() {
+      onDone?.call();
+      controller.close();
+      subscription.cancel();
+    }
+
     controller.onListen = () {
       onListen?.call();
-      subscription = listen(
-        (element) {
-          onData?.call(element);
-          controller.add(element);
-        },
-        onError: (error, stackTrace) {
-          onError?.call(error, stackTrace);
-          controller.addError(error, stackTrace);
-          subscription?.cancel();
-        },
-        onDone: () {
-          onDone?.call();
-          controller.close();
-          subscription?.cancel();
-        },
-      );
+      subscription = listen(dispatchOnData,
+          onError: dispatchOnError, onDone: dispatchOnDone);
     };
     controller.onPause = () {
       onPause?.call();
-      subscription?.pause();
+      subscription.pause();
     };
     controller.onResume = () {
       onResume?.call();
-      subscription?.resume();
+      subscription.resume();
     };
     controller.onCancel = () async {
       onCancel?.call();
-      await subscription?.cancel();
+      await subscription.cancel();
     };
+
     return controller.stream;
   }
 }

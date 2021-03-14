@@ -204,16 +204,16 @@ class MultimapAsMap<K, V, VS extends Iterable<V>> extends MapBase<K, VS> {
 }
 
 // Internal helper to populate a [multimap] from an [Iterable].
-void fillFromIterable<K, V, VS extends Iterable<V>>(
+void fillFromIterable<K, V, VS extends Iterable<V>, E>(
   Multimap<K, V, VS> multimap,
-  Iterable iterable,
-  // ignore: use_function_type_syntax_for_parameters, type_annotate_public_apis
-  K key(element)?,
-  // ignore: use_function_type_syntax_for_parameters, type_annotate_public_apis
-  V value(element)?,
+  Iterable<E> iterable,
+  // ignore: use_function_type_syntax_for_parameters
+  K key(E element)?,
+  // ignore: use_function_type_syntax_for_parameters
+  V value(E element)?,
 ) {
-  key ??= (x) => x;
-  value ??= (x) => x;
+  key ??= (x) => x as K;
+  value ??= (x) => x as V;
   for (final element in iterable) {
     multimap.add(key(element), value(element));
   }

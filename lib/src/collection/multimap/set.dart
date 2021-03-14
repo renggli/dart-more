@@ -19,11 +19,15 @@ class SetMultimap<K, V> extends Multimap<K, V, Set<V>> {
       SetMultimap(map: Map.identity(), factory: factory);
 
   /// Creates a [SetMultimap] with the keys and values computed from [iterable].
-  factory SetMultimap.fromIterable(Iterable iterable,
-      {K key(element)?, // ignore: use_function_type_syntax_for_parameters
-      V value(element)?, // ignore: use_function_type_syntax_for_parameters
-      Map<K, Set<V>>? map,
-      Factory<Set<V>>? factory}) {
+  factory SetMultimap.fromIterable/*<E>*/(
+    Iterable/*<E>*/ iterable, {
+    // ignore: use_function_type_syntax_for_parameters
+    K key(/*E*/ element)?,
+    // ignore: use_function_type_syntax_for_parameters
+    V value(/*E*/ element)?,
+    Map<K, Set<V>>? map,
+    Factory<Set<V>>? factory,
+  }) {
     final result = SetMultimap<K, V>(map: map, factory: factory);
     fillFromIterable(result, iterable, key, value);
     return result;

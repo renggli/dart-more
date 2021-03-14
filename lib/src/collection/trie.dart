@@ -30,12 +30,14 @@ class Trie<K, P extends Comparable<P>, V> extends MapBase<K, V> {
   /// Creates a [Trie] from an iterable (and possible transformation functions).
   /// The [parts] define how the keys are computed and optionally provides a
   /// custom [root] node.
-  factory Trie.fromIterable(
-    Iterable iterable, {
+  factory Trie.fromIterable/*<E>*/(
+    Iterable/*<E>*/ iterable, {
     required GetParts<K, P> parts,
     TrieNode<K, P, V>? root,
-    K key(element)?, // ignore: use_function_type_syntax_for_parameters
-    V value(element)?, // ignore: use_function_type_syntax_for_parameters
+    // ignore: use_function_type_syntax_for_parameters
+    K key(/*E*/ element)?,
+    // ignore: use_function_type_syntax_for_parameters
+    V value(/*E*/ element)?,
   }) =>
       Trie<K, P, V>.fromIterables(
           key == null ? iterable.cast<K>() : iterable.map(key),

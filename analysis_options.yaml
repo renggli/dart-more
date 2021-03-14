@@ -1,5 +1,9 @@
 # https://dart-lang.github.io/linter/lints/
 # https://github.com/dart-lang/linter/blob/master/example/all.yaml
+analyzer:
+  strong-mode:
+    implicit-casts: true
+    implicit-dynamic: true
 linter:
   rules:
     - always_declare_return_types

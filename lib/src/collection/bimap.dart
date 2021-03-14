@@ -28,10 +28,12 @@ class BiMap<K, V> extends MapBase<K, V> {
   factory BiMap.from(Map<K, V> other) => BiMap.of(other);
 
   /// Creates a bi-map from an iterable (and possible transformation functions).
-  factory BiMap.fromIterable(
-    Iterable iterable, {
-    K key(element)?, // ignore: use_function_type_syntax_for_parameters
-    V value(element)?, // ignore: use_function_type_syntax_for_parameters
+  factory BiMap.fromIterable/*<E>*/(
+    Iterable/*<E>*/ iterable, {
+    // ignore: use_function_type_syntax_for_parameters
+    K key(/*E*/ element)?,
+    // ignore: use_function_type_syntax_for_parameters
+    V value(/*E*/ element)?,
   }) =>
       BiMap<K, V>.fromIterables(
           key == null ? iterable.cast<K>() : iterable.map(key),
