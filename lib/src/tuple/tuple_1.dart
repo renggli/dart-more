@@ -2,7 +2,7 @@ import '../../hash.dart';
 import '../../tuple.dart';
 
 /// Tuple with 1 element.
-class Tuple1<T0> extends Tuple {
+class Tuple1<T1> extends Tuple {
   /// Const constructor.
   const Tuple1(this.first);
 
@@ -20,10 +20,10 @@ class Tuple1<T0> extends Tuple {
   int get length => 1;
 
   /// Returns the first element of this tuple.
-  final T0 first;
+  final T1 first;
 
   /// Returns the last element of this tuple.
-  T0 get last => first;
+  T1 get last => first;
 
   /// Returns a new tuple with the first element replaced by [value].
   Tuple1<T> withFirst<T>(T value) => Tuple1(value);
@@ -32,13 +32,13 @@ class Tuple1<T0> extends Tuple {
   Tuple1<T> withLast<T>(T value) => Tuple1(value);
 
   /// Returns a new tuple with [value] added at the first position.
-  Tuple2<T, T0> addFirst<T>(T value) => Tuple2(value, first);
+  Tuple2<T, T1> addFirst<T>(T value) => Tuple2(value, first);
 
   /// Returns a new tuple with [value] added at the second position.
-  Tuple2<T0, T> addSecond<T>(T value) => Tuple2(first, value);
+  Tuple2<T1, T> addSecond<T>(T value) => Tuple2(first, value);
 
   /// Returns a new tuple with [value] added at the last position.
-  Tuple2<T0, T> addLast<T>(T value) => Tuple2(first, value);
+  Tuple2<T1, T> addLast<T>(T value) => Tuple2(first, value);
 
   /// Returns a new tuple with the first element removed.
   Tuple0 removeFirst() => const Tuple0();
@@ -52,7 +52,7 @@ class Tuple1<T0> extends Tuple {
   }
 
   @override
-  R map<R>(R Function(T0 first) callback) => callback(first);
+  R map<R>(R Function(T1 first) callback) => callback(first);
 
   @override
   bool operator ==(Object other) =>

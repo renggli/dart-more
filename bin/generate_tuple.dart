@@ -24,7 +24,7 @@ final int max = ordinals.length;
 List<String> generateValues(int i) => List.generate(i, (i) => ordinals[i]);
 
 /// Generate the type names.
-List<String> generateTypes(int i) => List.generate(i, (i) => 'T$i');
+List<String> generateTypes(int i) => List.generate(i, (i) => 'T${i + 1}');
 
 /// Creates an argument list from types or variables.
 String listify(Iterable<String> values) => values.join(', ');
