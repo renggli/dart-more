@@ -9,6 +9,7 @@ import 'hash_test.dart' as hash_test;
 import 'iterable_test.dart' as iterable_test;
 import 'math_test.dart' as math_test;
 import 'number_test.dart' as number_test;
+import 'optional_test.dart' as optional_test;
 import 'ordering_test.dart' as ordering_test;
 import 'printer_test.dart' as printer_test;
 import 'tuple_test.dart' as tuple_test;
@@ -23,6 +24,7 @@ void main() {
   group('iterable', iterable_test.main);
   group('math', math_test.main);
   group('number', number_test.main);
+  group('optional', optional_test.main);
   group('ordering', ordering_test.main);
   group('printer', printer_test.main);
   group('tuple', tuple_test.main);
