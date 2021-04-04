@@ -3,7 +3,6 @@ More Dart — Literally
 
 [![Pub Package](https://img.shields.io/pub/v/more.svg)](https://pub.dev/packages/more)
 [![Build Status](https://github.com/renggli/dart-more/actions/workflows/dart.yml/badge.svg?branch=main)](https://github.com/renggli/dart-more/actions/workflows/dart.yml)
-[![Coverage Status](https://coveralls.io/repos/renggli/dart-more/badge.svg)](https://coveralls.io/r/renggli/dart-more)
 [![GitHub Issues](https://img.shields.io/github/issues/renggli/dart-more.svg)](https://github.com/renggli/dart-more/issues)
 [![GitHub Forks](https://img.shields.io/github/forks/renggli/dart-more.svg)](https://github.com/renggli/dart-more/network)
 [![GitHub Stars](https://img.shields.io/github/stars/renggli/dart-more.svg)](https://github.com/renggli/dart-more/stargazers)
