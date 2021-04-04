@@ -13,10 +13,10 @@ import 'src/optional/present.dart';
 @sealed
 abstract class Optional<T> {
   /// Returns a present [Optional] of the given [value].
-  const factory Optional.of(T value) = PresentOptional;
+  const factory Optional.of(T value) = PresentOptional<T>;
 
   /// Returns an absent [Optional] instance.
-  const factory Optional.absent() = AbsentOptional;
+  const factory Optional.absent() = AbsentOptional<T>;
 
   /// Returns a present [Optional] of the given [value] if the value is
   /// non-null, otherwise an absent [Optional] instance.

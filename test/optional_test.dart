@@ -3,12 +3,12 @@ import 'package:test/test.dart';
 
 void main() {
   group('optional', () {
-    final numberPresent = Optional<num>.of(42);
-    final numberAbsent = Optional<num>.absent();
-    final stringPresent = Optional<String>.of('foo');
-    final stringAbsent = Optional<String>.absent();
+    const intPresent = Optional.of(42);
+    const intAbsent = Optional<int>.absent();
+    const stringPresent = Optional.of('foo');
+    const stringAbsent = Optional<String>.absent();
     group('present', () {
-      final optional = stringPresent;
+      const optional = stringPresent;
       test('value', () {
         expect(optional.value, 'foo');
       });
@@ -48,7 +48,7 @@ void main() {
       });
       test('whereType (negative)', () {
         final filtered = optional.whereType<int>();
-        expect(filtered, isA<Optional<num>>());
+        expect(filtered, isA<Optional<int>>());
         expect(filtered.isPresent, isFalse);
       });
       test('map (same type)', () {
@@ -62,13 +62,13 @@ void main() {
         expect(other.value, 3);
       });
       test('flatMap (present)', () {
-        final other = optional.flatMap((value) => numberPresent);
-        expect(other, isA<Optional<num>>());
+        final other = optional.flatMap((value) => intPresent);
+        expect(other, isA<Optional<int>>());
         expect(other.value, 42);
       });
       test('flatMap (absent)', () {
-        final other = optional.flatMap((value) => numberAbsent);
-        expect(other, isA<Optional<num>>());
+        final other = optional.flatMap((value) => intAbsent);
+        expect(other, isA<Optional<int>>());
         expect(other.isPresent, isFalse);
       });
       test('or', () {
@@ -87,7 +87,7 @@ void main() {
       });
     });
     group('absent', () {
-      final optional = stringAbsent;
+      const optional = stringAbsent;
       test('value', () {
         expect(() => optional.value, throwsStateError);
       });
@@ -126,19 +126,19 @@ void main() {
       });
       test('whereType (negative)', () {
         final other = optional.whereType<int>();
-        expect(other, isA<Optional<num>>());
+        expect(other, isA<Optional<int>>());
         expect(other.isAbsent, isTrue);
       });
       test('map', () {
         final other =
-            optional.map<num>((value) => fail('Not expected to be called'));
-        expect(other, isA<Optional<num>>());
+            optional.map<int>((value) => fail('Not expected to be called'));
+        expect(other, isA<Optional<int>>());
         expect(other.isAbsent, isTrue);
       });
       test('flatMap', () {
         final other =
-            optional.flatMap<num>((value) => fail('Not expected to be called'));
-        expect(other, isA<Optional<num>>());
+            optional.flatMap<int>((value) => fail('Not expected to be called'));
+        expect(other, isA<Optional<int>>());
         expect(other.isAbsent, isTrue);
       });
       test('or', () {
