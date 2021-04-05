@@ -6,8 +6,8 @@ import 'src/optional/present.dart';
 
 /// A container object which may or may not contain a value of type [T].
 ///
-/// Note that depending on the type [T], a `null` value can be a perfectly
-/// valid present value.
+/// Note that depending on the nullability of type [T], a `null` value can be
+/// a perfectly valid present value.
 ///
 /// Also see https://en.wikipedia.org/wiki/Option_type.
 @immutable

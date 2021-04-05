@@ -85,6 +85,20 @@ void main() {
       test('orElseThrow', () {
         expect(optional.orElseThrow(), 'foo');
       });
+      test('==', () {
+        // ignore: unrelated_type_equality_checks
+        expect(optional == intPresent, isFalse);
+        // ignore: unrelated_type_equality_checks
+        expect(optional == intAbsent, isFalse);
+        expect(optional == stringPresent, isTrue);
+        expect(optional == stringAbsent, isFalse);
+      });
+      test('hashCode', () {
+        expect(optional.hashCode == intPresent.hashCode, isFalse);
+        expect(optional.hashCode == intAbsent.hashCode, isFalse);
+        expect(optional.hashCode == stringPresent.hashCode, isTrue);
+        expect(optional.hashCode == stringAbsent.hashCode, isFalse);
+      });
     });
     group('absent', () {
       const optional = stringAbsent;
@@ -157,6 +171,35 @@ void main() {
       test('orElseThrow (custom)', () {
         expect(() => optional.orElseThrow(UnimplementedError()),
             throwsUnimplementedError);
+      });
+      test('==', () {
+        // ignore: unrelated_type_equality_checks
+        expect(optional == intPresent, isFalse);
+        // ignore: unrelated_type_equality_checks
+        expect(optional == intAbsent, isFalse);
+        expect(optional == stringPresent, isFalse);
+        expect(optional == stringAbsent, isTrue);
+      });
+      test('hashCode', () {
+        expect(optional.hashCode == intPresent.hashCode, isFalse);
+        expect(optional.hashCode == intAbsent.hashCode, isFalse);
+        expect(optional.hashCode == stringPresent.hashCode, isFalse);
+        expect(optional.hashCode == stringAbsent.hashCode, isTrue);
+      });
+    });
+    group('ofNullable', () {
+      test('isAbsent', () {
+        const String? value = null;
+        final optional = Optional.ofNullable(value);
+        expect(optional, isA<Optional<String>>());
+        expect(optional.isAbsent, isTrue);
+      });
+      test('isPresent', () {
+        // ignore: unnecessary_nullable_for_final_variable_declarations
+        const String? value = 'foo';
+        final optional = Optional.ofNullable(value);
+        expect(optional, isA<Optional<String>>());
+        expect(optional.isPresent, isTrue);
       });
     });
   });
