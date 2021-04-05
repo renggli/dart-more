@@ -19,6 +19,7 @@ Various extensions that make Dart a better place:
 - `iterable.dart` is a collection of iterables and iterators.
 - `math.dart` is a collection of common mathematical functions.
 - `number.dart` provides fractional, complex and quaternion arithmetic.
+- `optional.dart` provides a container that may or may not contain a value.
 - `ordering.dart` a fluent interface for building comparator functions.
 - `printer.dart` a fluent interface for configuring sophisticated formatter.
 - `tuple.dart` a generic sequence of typed values.

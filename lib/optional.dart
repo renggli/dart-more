@@ -1,3 +1,4 @@
+/// A container that may or may not contain a value.
 import 'package:meta/meta.dart';
 
 import 'src/optional/absent.dart';
