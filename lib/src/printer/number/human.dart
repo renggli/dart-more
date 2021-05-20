@@ -213,7 +213,6 @@ class HumanNumberPrinter extends NumberPrinter {
         unitPrefix: unitPrefix,
         unitSeparator: unitSeparator,
         unitBase: binaryUnitBase,
-        unitOffset: binaryUnitOffset,
         units: long ? binaryUnitsLong : binaryUnitsShort,
       );
 

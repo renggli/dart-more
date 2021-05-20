@@ -58,22 +58,22 @@ Future<void> generateParent(int max) async {
   final out = file.openWrite();
   out.writeln('/// Tuple data type.');
   out.writeln('import \'package:meta/meta.dart\' show immutable;');
-  out.writeln('');
+  out.writeln();
   for (var i = 0; i < max; i++) {
     out.writeln('import \'src/tuple/tuple_$i.dart\';');
   }
-  out.writeln('');
+  out.writeln();
   for (var i = 0; i < max; i++) {
     out.writeln('export \'src/tuple/tuple_$i.dart\';');
   }
-  out.writeln('');
+  out.writeln();
   out.writeln('/// Abstract tuple class.');
   out.writeln('@immutable');
   out.writeln('abstract class Tuple {');
-  out.writeln('');
+  out.writeln();
   out.writeln('/// Const constructor.');
   out.writeln('const Tuple();');
-  out.writeln('');
+  out.writeln();
   out.writeln('/// List constructor.');
   out.writeln('static Tuple fromList<T>(List<T> list) {');
   out.writeln('switch (list.length) {');
@@ -90,23 +90,23 @@ Future<void> generateParent(int max) async {
       '\'Length \${list.length} not in range 0..${max - 1}.\');');
   out.writeln('}');
   out.writeln('}');
-  out.writeln('');
+  out.writeln();
   out.writeln('/// The number of elements in the tuple.');
   out.writeln('int get length;');
-  out.writeln('');
+  out.writeln();
   out.writeln('/// An [Iterable] over the values of this tuple.');
   out.writeln('Iterable get iterable;');
-  out.writeln('');
+  out.writeln();
   out.writeln('/// A (untyped) [List] with the values of this tuple.');
   out.writeln('List toList({bool growable: false}) => ');
   out.writeln('  List.from(iterable, growable: growable);');
-  out.writeln('');
+  out.writeln();
   out.writeln('/// A (untyped) [Set] with the unique values of this tuple.');
   out.writeln('Set toSet() => Set.from(iterable);');
-  out.writeln('');
+  out.writeln();
   out.writeln('/// Applies the values of this tuple to an n-ary function.');
   out.writeln('R map<R>(covariant Function callback);');
-  out.writeln('');
+  out.writeln();
   out.writeln('/// A string representation of this tuple.');
   out.writeln('@override');
   out.writeln('String toString() => \'(\${iterable.join(\', \')})\';');
@@ -125,7 +125,7 @@ Future<void> generateChild(int i, int max) async {
     out.writeln('import \'../../hash.dart\';');
   }
   out.writeln('import \'../../tuple.dart\';');
-  out.writeln('');
+  out.writeln();
   out.writeln('/// Tuple with $i element${i != 1 ? 's' : ''}.');
   out.writeln('class Tuple$i${generify(types)} extends Tuple {');
 
@@ -136,7 +136,7 @@ Future<void> generateChild(int i, int max) async {
 
   final listTypes = generify(List.generate(i, (i) => 'T'));
   final listAccessors = listify(List.generate(i, (i) => 'list[$i]'));
-  out.writeln('');
+  out.writeln();
   out.writeln('/// List constructor.');
   out.writeln('  // ignore: prefer_constructors_over_static_methods');
   out.writeln('static Tuple$i$listTypes fromList<T>(List<T> list) {');
@@ -152,18 +152,18 @@ Future<void> generateChild(int i, int max) async {
   out.writeln('}');
 
   // length
-  out.writeln('');
+  out.writeln();
   out.writeln('@override');
   out.writeln('int get length => $i;');
 
   // access
   for (var j = 0; j < i; j++) {
-    out.writeln('');
+    out.writeln();
     out.writeln('/// Returns the ${values[j]} element of this tuple.');
     out.writeln('final ${types[j]} ${values[j]};');
   }
   if (i > 0) {
-    out.writeln('');
+    out.writeln();
     out.writeln('/// Returns the last element of this tuple.');
     out.writeln('${types.last} get last => ${values.last};');
   }
@@ -174,14 +174,14 @@ Future<void> generateChild(int i, int max) async {
     final valuesReplaced = [...values];
     typesReplaced[j] = 'T';
     valuesReplaced[j] = 'value';
-    out.writeln('');
+    out.writeln();
     out.writeln('/// Returns a new tuple with the ${ordinals[j]} element '
         'replaced by [value].');
     out.writeln('Tuple$i${generify(typesReplaced)} '
         'with${capitalize(ordinals[j])}<T>(T value) => '
         'Tuple$i(${listify(valuesReplaced)});');
     if (j == i - 1) {
-      out.writeln('');
+      out.writeln();
       out.writeln('/// Returns a new tuple with the last element replaced by '
           '[value].');
       out.writeln('Tuple$i${generify(typesReplaced)} '
@@ -197,14 +197,14 @@ Future<void> generateChild(int i, int max) async {
           generify([...types.sublist(0, j), 'T', ...types.sublist(j, i)]);
       final addValues =
           listify([...values.sublist(0, j), 'value', ...values.sublist(j, i)]);
-      out.writeln('');
+      out.writeln();
       out.writeln('/// Returns a new tuple with [value] added at the '
           '${ordinals[j]} position.');
       out.writeln('Tuple${i + 1}$addTypes '
           'add${capitalize(ordinals[j])}<T>(T value) => '
           'Tuple${i + 1}($addValues);');
       if (j == i) {
-        out.writeln('');
+        out.writeln();
         out.writeln('/// Returns a new tuple with [value] added at the last '
             'position.');
         out.writeln('Tuple${i + 1}$addTypes '
@@ -221,14 +221,14 @@ Future<void> generateChild(int i, int max) async {
           generify([...types.sublist(0, j), ...types.sublist(j + 1)]);
       final removeValues =
           listify([...values.sublist(0, j), ...values.sublist(j + 1)]);
-      out.writeln('');
+      out.writeln();
       out.writeln('/// Returns a new tuple with the ${ordinals[j]} element '
           'removed.');
       out.writeln('Tuple${i - 1}$removeTypes '
           'remove${capitalize(ordinals[j])}() => '
           '${i - 1 == 0 ? 'const ' : ''}Tuple${i - 1}($removeValues);');
       if (j == i - 1) {
-        out.writeln('');
+        out.writeln();
         out.writeln('/// Returns a new tuple with the last element removed.');
         out.writeln('Tuple${i - 1}$removeTypes '
             'removeLast() => '
@@ -238,7 +238,7 @@ Future<void> generateChild(int i, int max) async {
   }
 
   // iterable
-  out.writeln('');
+  out.writeln();
   out.writeln('@override');
   out.writeln('Iterable get iterable sync* {');
   for (var j = 0; j < i; j++) {
@@ -249,7 +249,7 @@ Future<void> generateChild(int i, int max) async {
   // map
   {
     final typeAndValues = [types, values].zip().map((value) => value.join(' '));
-    out.writeln('');
+    out.writeln();
     out.writeln('@override');
     out.writeln('R map<R>(R Function(${listify(typeAndValues)}) callback) => ');
     out.writeln('callback(${listify(values)});');
@@ -258,7 +258,7 @@ Future<void> generateChild(int i, int max) async {
   // equals
   {
     final equality = values.map((each) => ' && $each == other.$each').join();
-    out.writeln('');
+    out.writeln();
     out.writeln('@override');
     out.writeln('bool operator ==(Object other) => '
         'identical(this, other) || '
@@ -272,7 +272,7 @@ Future<void> generateChild(int i, int max) async {
         : i <= 9
             ? 'hash$i(${listify(values)})'
             : 'hash(iterable)';
-    out.writeln('');
+    out.writeln();
     out.writeln('@override');
     out.writeln('int get hashCode => $hashCode;');
   }
@@ -294,7 +294,7 @@ Future<void> generateTest(int max) async {
 
   out.writeln('import \'package:more/tuple.dart\';');
   out.writeln('import \'package:test/test.dart\';');
-  out.writeln('');
+  out.writeln();
   out.writeln('void main() {');
 
   for (var i = 0; i < max; i++) {

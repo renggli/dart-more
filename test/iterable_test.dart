@@ -520,7 +520,7 @@ void main() {
         ]);
       });
       test('daily', () {
-        final iterable = date.periodical(period: Period.daily);
+        final iterable = date.periodical();
         expect(iterable.take(3), [
           DateTime(1980, DateTime.june, 11, 12, 34, 56, 78, 90),
           DateTime(1980, DateTime.june, 12, 12, 34, 56, 78, 90),
@@ -611,7 +611,7 @@ void main() {
         }
       });
       test('daily', () {
-        final truncated = date.truncate(period: Period.daily);
+        final truncated = date.truncate();
         expect(truncated, DateTime(1980, DateTime.june, 11));
       });
       test('hourly', () {

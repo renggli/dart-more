@@ -337,7 +337,7 @@ void main() {
       test('counting', () {
         for (var len = 0; len < 100; len++) {
           final list = BitList.of(randomBooleans(823 * len, len));
-          final trueCount = list.count(true);
+          final trueCount = list.count();
           final falseCount = list.count(false);
           expect(trueCount + falseCount, list.length);
           expect(trueCount, list.where((b) => b == true).length);
@@ -1686,7 +1686,7 @@ void main() {
       group('constructor', () {
         test('empty', () {
           verify(BigIntRange(), []);
-          expect(BigIntRange().contains(0), isFalse);
+          expect(BigIntRange().contains(BigInt.one), isFalse);
         });
         test('1 argument', () {
           verify(BigIntRange(BigInt.from(0)), []);
@@ -1840,7 +1840,7 @@ void main() {
         expect(() => list.insert(2, BigInt.from(5)), throwsUnsupportedError);
         expect(() => list.insertAll(2, list), throwsUnsupportedError);
         expect(() => list.length = 10, throwsUnsupportedError);
-        expect(() => list.remove(5), throwsUnsupportedError);
+        expect(() => list.remove(BigInt.one), throwsUnsupportedError);
         expect(() => list.removeAt(2), throwsUnsupportedError);
         expect(() => list.removeLast(), throwsUnsupportedError);
         expect(() => list.removeRange(2, 4), throwsUnsupportedError);

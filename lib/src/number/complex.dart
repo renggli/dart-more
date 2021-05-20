@@ -22,7 +22,7 @@ class Complex implements CloseTo<Complex> {
   const Complex(this.a, [this.b = 0]);
 
   /// Creates a complex number from a real number [a].
-  factory Complex.fromReal(num a) => Complex(a, 0);
+  factory Complex.fromReal(num a) => Complex(a);
 
   /// Creates a complex number from an imaginary number [b].
   factory Complex.fromImaginary(num b) => Complex(0, b);

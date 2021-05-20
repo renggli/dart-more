@@ -353,7 +353,7 @@ void main() {
       ]);
     });
     test('matchAsPrefix()', () {
-      final match1 = pattern.matchAsPrefix(input, 0);
+      final match1 = pattern.matchAsPrefix(input);
       expect(match1, isNull);
       final match2 = pattern.matchAsPrefix(input, 1)!;
       expect(match2.pattern, pattern);
@@ -367,7 +367,7 @@ void main() {
     });
     test('startsWith()', () {
       expect(input.startsWith(pattern), isFalse);
-      expect(input.startsWith(pattern, 0), isFalse);
+      expect(input.startsWith(pattern), isFalse);
       expect(input.startsWith(pattern, 1), isTrue);
       expect(input.startsWith(pattern, 2), isFalse);
       expect(input.startsWith(pattern, 3), isTrue);
@@ -375,7 +375,7 @@ void main() {
     });
     test('indexOf()', () {
       expect(input.indexOf(pattern), 1);
-      expect(input.indexOf(pattern, 0), 1);
+      expect(input.indexOf(pattern), 1);
       expect(input.indexOf(pattern, 1), 1);
       expect(input.indexOf(pattern, 2), 3);
       expect(input.indexOf(pattern, 3), 3);
@@ -394,7 +394,7 @@ void main() {
     });
     test('replaceFirst()', () {
       expect(input.replaceFirst(pattern, '!'), 'a!b2c');
-      expect(input.replaceFirst(pattern, '!', 0), 'a!b2c');
+      expect(input.replaceFirst(pattern, '!'), 'a!b2c');
       expect(input.replaceFirst(pattern, '!', 1), 'a!b2c');
       expect(input.replaceFirst(pattern, '!', 2), 'a1b!c');
       expect(input.replaceFirst(pattern, '!', 3), 'a1b!c');

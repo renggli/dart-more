@@ -89,20 +89,20 @@ void main() {
         expect(Complex.tryParse('2i+1'), const Complex(1, 2));
       });
       test('tryParse (real)', () {
-        expect(Complex.tryParse('1'), const Complex(1));
+        expect(Complex.tryParse('1'), Complex.one);
         expect(Complex.tryParse('1.2'), const Complex(1.2));
         expect(Complex.tryParse('-1.2'), const Complex(-1.2));
         expect(Complex.tryParse('1.2e2'), const Complex(120));
         expect(Complex.tryParse('1.2e-2'), const Complex(0.012));
       });
       test('tryParse (imaginary)', () {
-        expect(Complex.tryParse('i'), const Complex(0, 1));
-        expect(Complex.tryParse('1I'), const Complex(0, 1));
+        expect(Complex.tryParse('i'), Complex.i);
+        expect(Complex.tryParse('1I'), Complex.i);
         expect(Complex.tryParse('1.2i'), const Complex(0, 1.2));
         expect(Complex.tryParse('-1.2I'), const Complex(0, -1.2));
         expect(Complex.tryParse('1.2e2i'), const Complex(0, 120));
         expect(Complex.tryParse('1.2e-2I'), const Complex(0, 0.012));
-        expect(Complex.tryParse('1*i'), const Complex(0, 1));
+        expect(Complex.tryParse('1*i'), Complex.i);
         expect(Complex.tryParse('1.2*I'), const Complex(0, 1.2));
         expect(Complex.tryParse('1.2e2*i'), const Complex(0, 120));
         expect(Complex.tryParse('1.2e-2*I'), const Complex(0, 0.012));
@@ -261,15 +261,15 @@ void main() {
     });
     group('testing', () {
       test('isNan', () {
-        expect(const Complex(0, 0).isNaN, isFalse);
+        expect(Complex.zero.isNaN, isFalse);
         expect(const Complex(0, double.nan).isNaN, isTrue);
-        expect(const Complex(double.nan, 0).isNaN, isTrue);
+        expect(const Complex(double.nan).isNaN, isTrue);
         expect(const Complex(double.nan, double.nan).isNaN, isTrue);
       });
       test('isInfinite', () {
-        expect(const Complex(0, 0).isInfinite, isFalse);
+        expect(Complex.zero.isInfinite, isFalse);
         expect(const Complex(0, double.infinity).isInfinite, isTrue);
-        expect(const Complex(double.infinity, 0).isInfinite, isTrue);
+        expect(const Complex(double.infinity).isInfinite, isTrue);
         expect(
             const Complex(double.infinity, double.infinity).isInfinite, isTrue);
       });
@@ -277,9 +277,9 @@ void main() {
     group('converting', () {
       test('sign', () {
         expect(Complex.zero.sign, Complex.zero);
-        expect(const Complex(2.5).sign, isCloseTo(const Complex(1, 0)));
-        expect(const Complex(-2.5).sign, isCloseTo(const Complex(-1, 0)));
-        expect(const Complex(0, 2.5).sign, isCloseTo(const Complex(0, 1)));
+        expect(const Complex(2.5).sign, isCloseTo(Complex.one));
+        expect(const Complex(-2.5).sign, isCloseTo(const Complex(-1)));
+        expect(const Complex(0, 2.5).sign, isCloseTo(Complex.i));
         expect(const Complex(0, -2.5).sign, isCloseTo(const Complex(0, -1)));
         expect(const Complex(2, 2).sign,
             isCloseTo(const Complex(math.sqrt1_2, math.sqrt1_2)));
@@ -313,8 +313,7 @@ void main() {
     group('comparing', () {
       test('close', () {
         expect(
-          Complex.fromPolar(math.e, math.pi / 2)
-              .closeTo(const Complex(0, 0), 0.1),
+          Complex.fromPolar(math.e, math.pi / 2).closeTo(Complex.zero, 0.1),
           isFalse,
         );
         expect(
@@ -454,13 +453,13 @@ void main() {
         test('basic', () {
           final fractions = Fraction.positive.take(15);
           expect(fractions, [
-            Fraction(1, 1),
+            Fraction(1),
             Fraction(1, 2),
-            Fraction(2, 1),
+            Fraction(2),
             Fraction(1, 3),
             Fraction(3, 2),
             Fraction(2, 3),
-            Fraction(3, 1),
+            Fraction(3),
             Fraction(1, 4),
             Fraction(4, 3),
             Fraction(3, 5),
@@ -468,7 +467,7 @@ void main() {
             Fraction(2, 5),
             Fraction(5, 3),
             Fraction(3, 4),
-            Fraction(4, 1),
+            Fraction(4),
           ]);
         });
         test('irreducible', () {
@@ -488,14 +487,14 @@ void main() {
     });
     group('testing', () {
       test('isNan', () {
-        expect(Fraction(0, 1).isNaN, isFalse);
+        expect(Fraction(0).isNaN, isFalse);
       });
       test('isInfinite', () {
-        expect(Fraction(0, 1).isInfinite, isFalse);
+        expect(Fraction(0).isInfinite, isFalse);
       });
       test('isNegative', () {
-        expect(Fraction(1, 1).isNegative, isFalse);
-        expect(Fraction(-1, 1).isNegative, isTrue);
+        expect(Fraction(1).isNegative, isFalse);
+        expect(Fraction(-1).isNegative, isTrue);
         expect(Fraction(1, -1).isNegative, isTrue);
         expect(Fraction(-1, -1).isNegative, isFalse);
       });
@@ -741,16 +740,16 @@ void main() {
             const Quaternion(1, -2, 3, -4));
       });
       test('tryParse (real)', () {
-        expect(Quaternion.tryParse('1'), const Quaternion(1));
+        expect(Quaternion.tryParse('1'), Quaternion.one);
         expect(Quaternion.tryParse('1.2'), const Quaternion(1.2));
         expect(Quaternion.tryParse('-1.2'), const Quaternion(-1.2));
         expect(Quaternion.tryParse('1.2e2'), const Quaternion(120));
         expect(Quaternion.tryParse('1.2e-2'), const Quaternion(0.012));
       });
       test('tryParse (vector)', () {
-        expect(Quaternion.tryParse('i'), const Quaternion(0, 1));
-        expect(Quaternion.tryParse('j'), const Quaternion(0, 0, 1));
-        expect(Quaternion.tryParse('k'), const Quaternion(0, 0, 0, 1));
+        expect(Quaternion.tryParse('i'), Quaternion.i);
+        expect(Quaternion.tryParse('j'), Quaternion.j);
+        expect(Quaternion.tryParse('k'), Quaternion.k);
         expect(Quaternion.tryParse('1.2I'), const Quaternion(0, 1.2));
         expect(Quaternion.tryParse('1.2J'), const Quaternion(0, 0, 1.2));
         expect(Quaternion.tryParse('1.2K'), const Quaternion(0, 0, 0, 1.2));
