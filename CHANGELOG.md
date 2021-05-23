@@ -2,6 +2,8 @@
 
 ## 3.1.0
 
+* Dart 2.13 requirement.
+* Add `String.convertFirstCharacters()` and `String.convertLastCharacters()`.
 * Add `String.toUpperCaseFirstCharacter()` and `String.toLowerCaseFirstCharacter()`.
 
 ## 3.0.0
