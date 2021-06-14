@@ -3,6 +3,7 @@ import 'package:meta/meta.dart';
 import '../../../hash.dart';
 import '../either.dart';
 import '../optional.dart';
+import '../types/mapping.dart';
 
 @sealed
 class LeftEither<L, R> extends Either<L, R> {
@@ -30,35 +31,33 @@ class LeftEither<L, R> extends Either<L, R> {
   bool get isRight => false;
 
   @override
-  T fold<T>(
-          T Function(L left) leftFunction, T Function(R right) rightFunction) =>
+  T fold<T>(Map1<L, T> leftFunction, Map1<R, T> rightFunction) =>
       leftFunction(leftValue);
 
   @override
-  Either<L2, R2> map<L2, R2>(L2 Function(L left) leftFunction,
-          R2 Function(R left) rightFunction) =>
+  Either<L2, R2> map<L2, R2>(
+          Map1<L, L2> leftFunction, Map1<R, R2> rightFunction) =>
       Either<L2, R2>.left(leftFunction(leftValue));
 
   @override
-  Either<L2, R> mapLeft<L2>(L2 Function(L left) leftFunction) =>
+  Either<L2, R> mapLeft<L2>(Map1<L, L2> leftFunction) =>
       Either<L2, R>.left(leftFunction(leftValue));
 
   @override
-  Either<L, R2> mapRight<R2>(R2 Function(R right) rightFunction) =>
+  Either<L, R2> mapRight<R2>(Map1<R, R2> rightFunction) =>
       Either<L, R2>.left(leftValue);
 
   @override
-  Either<L2, R2> flatMap<L2, R2>(Either<L2, R2> Function(L left) leftFunction,
-          Either<L2, R2> Function(R left) rightFunction) =>
+  Either<L2, R2> flatMap<L2, R2>(Map1<L, Either<L2, R2>> leftFunction,
+          Map1<R, Either<L2, R2>> rightFunction) =>
       leftFunction(leftValue);
 
   @override
-  Either<L2, R> flatMapLeft<L2>(Either<L2, R> Function(L left) leftFunction) =>
+  Either<L2, R> flatMapLeft<L2>(Map1<L, Either<L2, R>> leftFunction) =>
       leftFunction(leftValue);
 
   @override
-  Either<L, R2> flatMapRight<R2>(
-          Either<L, R2> Function(R left) rightFunction) =>
+  Either<L, R2> flatMapRight<R2>(Map1<R, Either<L, R2>> rightFunction) =>
       Either<L, R2>.left(leftValue);
 
   @override

@@ -4,6 +4,7 @@ import 'package:meta/meta.dart';
 import 'either/left.dart';
 import 'either/right.dart';
 import 'optional.dart';
+import 'types/mapping.dart';
 
 /// A disjoint union with a value of either type [L] or type [R].
 ///
@@ -25,8 +26,8 @@ abstract class Either<L, R> {
   /// `true`. Otherwise, create a right-sided [Either] from the [rightProvider].
   factory Either.iff(
     bool condition,
-    L Function() leftProvider,
-    R Function() rightProvider,
+    Map0<L> leftProvider,
+    Map0<R> rightProvider,
   ) =>
       condition
           ? Either<L, R>.left(leftProvider())
@@ -37,8 +38,8 @@ abstract class Either<L, R> {
   /// [rightProvider] returns a non-null value, create a right-sided [Either].
   /// Otherwise, if both providers return a null-value, throw a [StateError].
   factory Either.either(
-    L? Function() leftProvider,
-    R? Function() rightProvider,
+    Map0<L?> leftProvider,
+    Map0<R?> rightProvider,
   ) {
     final leftValue = leftProvider();
     if (leftValue != null) {
@@ -75,40 +76,48 @@ abstract class Either<L, R> {
 
   /// Returns the appropriate transformation to type [T].
   T fold<T>(
-    T Function(L left) leftFunction,
-    T Function(R right) rightFunction,
+    Map1<L, T> leftFunction,
+    Map1<R, T> rightFunction,
   );
 
   /// Transforms the left value with [leftFunction] or the right value with
   /// [rightFunction]. The resulting [Either] contains the transformed value
   /// of the corresponding function.
   Either<L2, R2> map<L2, R2>(
-    L2 Function(L left) leftFunction,
-    R2 Function(R left) rightFunction,
+    Map1<L, L2> leftFunction,
+    Map1<R, R2> rightFunction,
   );
 
   /// Transforms the left value with [leftFunction]. If applicable, the
   /// resulting [Either] contains the transformed left value.
-  Either<L2, R> mapLeft<L2>(L2 Function(L left) leftFunction);
+  Either<L2, R> mapLeft<L2>(
+    Map1<L, L2> leftFunction,
+  );
 
   /// Transforms the right value with [rightFunction]. If applicable, the
   /// resulting [Either] contains the transformed right value.
-  Either<L, R2> mapRight<R2>(R2 Function(R right) rightFunction);
+  Either<L, R2> mapRight<R2>(
+    Map1<R, R2> rightFunction,
+  );
 
   /// Returns a new [Either] created by the either-returning transformation
   /// [leftFunction] or [rightFunction].
   Either<L2, R2> flatMap<L2, R2>(
-    Either<L2, R2> Function(L left) leftFunction,
-    Either<L2, R2> Function(R left) rightFunction,
+    Map1<L, Either<L2, R2>> leftFunction,
+    Map1<R, Either<L2, R2>> rightFunction,
   );
 
   /// Returns a new [Either] from the either-returning transformation
   /// [leftFunction], otherwise returns the wrapped right value.
-  Either<L2, R> flatMapLeft<L2>(Either<L2, R> Function(L left) leftFunction);
+  Either<L2, R> flatMapLeft<L2>(
+    Map1<L, Either<L2, R>> leftFunction,
+  );
 
   /// Returns a new [Either] from the either-returning transformation
   /// [rightFunction], otherwise returns the wrapped left value.
-  Either<L, R2> flatMapRight<R2>(Either<L, R2> Function(R left) rightFunction);
+  Either<L, R2> flatMapRight<R2>(
+    Map1<R, Either<L, R2>> rightFunction,
+  );
 
   /// Returns a new [Either] with the left and right value switched.
   Either<R, L> swap();
