@@ -53,7 +53,7 @@ final Random generator = Random(42);
 Future<void> format(File file) async =>
     Process.run('dart', ['format', '--fix', file.absolute.path]);
 
-Future<void> generateParent(int max) async {
+Future<void> generateParent() async {
   final file = parentFile;
   final out = file.openWrite();
   out.writeln('/// Tuple data type.');
@@ -115,7 +115,7 @@ Future<void> generateParent(int max) async {
   await format(file);
 }
 
-Future<void> generateChild(int i, int max) async {
+Future<void> generateChild(int i) async {
   final file = childFile(i);
   final out = file.openWrite();
   final types = generateTypes(i);
@@ -282,7 +282,7 @@ Future<void> generateChild(int i, int max) async {
   await format(file);
 }
 
-Future<void> generateTest(int max) async {
+Future<void> generateTest() async {
   final file = testFile;
   final out = file.openWrite();
 
@@ -452,10 +452,8 @@ Future<void> generateTest(int max) async {
   await format(file);
 }
 
-Future<void> main() async {
-  await generateParent(max);
-  for (var i = 0; i < max; i++) {
-    await generateChild(i, max);
-  }
-  await generateTest(max);
-}
+Future<void> main() => Future.wait([
+      generateParent(),
+      for (var i = 0; i < max; i++) generateChild(i),
+      generateTest(),
+    ]);

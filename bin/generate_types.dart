@@ -163,12 +163,12 @@ Future<void> generateThrowing() async {
   await format(file);
 }
 
-Future<void> main() async {
-  await generateCallback();
-  await generateMapping();
-  await generatePredicate();
-  await generateEmpty();
-  await generateIdentity();
-  await generateConstant();
-  await generateThrowing();
-}
+Future<void> main() => Future.wait([
+      generateCallback(),
+      generateMapping(),
+      generatePredicate(),
+      generateEmpty(),
+      generateIdentity(),
+      generateConstant(),
+      generateThrowing(),
+    ]);
