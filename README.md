@@ -15,10 +15,10 @@ Various extensions that make Dart a better place:
 - `char_matcher.dart` is a model for character classes, their composition and operations on strings.
 - `collection.dart` is a collection of collection types: bi-map, bit-list, multi-set, set and list multi-map, range, and string.
 - `feature.dart` provides information about the runtime environment.
+- `functional.dart` provides a collection of functional programming structures.
 - `hash.dart` combines multiple hash values.
 - `iterable.dart` is a collection of iterables and iterators.
 - `math.dart` is a collection of common mathematical functions.
-- `monad.dart` provides a collection of functional programming structures.
 - `number.dart` provides fractional, complex and quaternion arithmetic.
 - `ordering.dart` a fluent interface for building comparator functions.
 - `printer.dart` a fluent interface for configuring sophisticated formatter.
@@ -55,7 +55,7 @@ import 'package:more/feature.dart';
 import 'package:more/hash.dart';
 import 'package:more/iterable.dart';
 import 'package:more/math.dart';
-import 'package:more/monad.dart';
+import 'package:more/functional.dart';
 import 'package:more/number.dart';
 import 'package:more/ordering.dart';
 import 'package:more/printer.dart';

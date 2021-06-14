@@ -1,4 +1,4 @@
-import 'package:more/monad.dart';
+import 'package:more/functional.dart';
 import 'package:test/test.dart';
 
 void main() {
