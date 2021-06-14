@@ -1,6 +1,9 @@
 import 'package:meta/meta.dart';
 
 import '../optional.dart';
+import '../types/callback.dart';
+import '../types/mapping.dart';
+import '../types/predicate.dart';
 import 'absent.dart';
 
 @sealed
@@ -17,16 +20,16 @@ class PresentOptional<T> extends Optional<T> {
   bool get isPresent => true;
 
   @override
-  void ifPresent(void Function(T value) function) => function(value);
+  void ifPresent(Callback1<T> function) => function(value);
 
   @override
   bool get isAbsent => false;
 
   @override
-  void ifAbsent(void Function() function) {}
+  void ifAbsent(Callback0 function) {}
 
   @override
-  Optional<T> where(bool Function(T value) function) =>
+  Optional<T> where(Predicate1<T> function) =>
       function(value) ? this : AbsentOptional<T>();
 
   @override
@@ -34,21 +37,20 @@ class PresentOptional<T> extends Optional<T> {
       value is R ? PresentOptional<R>(value as R) : AbsentOptional<R>();
 
   @override
-  Optional<R> map<R>(R Function(T value) function) =>
+  Optional<R> map<R>(Map1<T, R> function) =>
       PresentOptional<R>(function(value));
 
   @override
-  Optional<R> flatMap<R>(Optional<R> Function(T value) function) =>
-      function(value);
+  Optional<R> flatMap<R>(Map1<T, Optional<R>> function) => function(value);
 
   @override
-  Optional<T> or(Optional<T> Function() function) => this;
+  Optional<T> or(Map0<Optional<T>> function) => this;
 
   @override
   T orElse(T value) => this.value;
 
   @override
-  T orElseGet(T Function() function) => value;
+  T orElseGet(Map0<T> function) => value;
 
   @override
   T orElseThrow([Object? error]) => value;

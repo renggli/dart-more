@@ -1,5 +1,4 @@
 /// The constant functions.
-
 import 'mapping.dart';
 
 /// Constant function with 0 arguments.

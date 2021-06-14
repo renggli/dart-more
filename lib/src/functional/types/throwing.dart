@@ -1,6 +1,6 @@
-/// The throwing functions.
 // ignore_for_file: only_throw_errors
 
+/// The throwing functions.
 import 'mapping.dart';
 
 /// Throwing function with 0 arguments.

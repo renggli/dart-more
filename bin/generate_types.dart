@@ -123,8 +123,6 @@ Future<void> generateConstant() async {
   final out = file.openWrite();
 
   out.writeln('/// The constant functions.');
-  out.writeln();
-
   out.writeln("import 'mapping.dart';");
   out.writeln();
 
@@ -145,10 +143,10 @@ Future<void> generateThrowing() async {
   final file = getFile('throwing');
   final out = file.openWrite();
 
-  out.writeln('/// The throwing functions.');
   out.writeln('// ignore_for_file: only_throw_errors');
   out.writeln();
 
+  out.writeln('/// The throwing functions.');
   out.writeln("import 'mapping.dart';");
   out.writeln();
 

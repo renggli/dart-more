@@ -3,6 +3,9 @@ import 'package:meta/meta.dart';
 
 import 'optional/absent.dart';
 import 'optional/present.dart';
+import 'types/callback.dart';
+import 'types/mapping.dart';
+import 'types/predicate.dart';
 
 /// A container object which may or may not contain a value of type [T].
 ///
@@ -40,18 +43,18 @@ abstract class Optional<T> {
 
   /// Evaluates the callback [function] with the present value, otherwise
   /// does nothing.
-  void ifPresent(void Function(T value) function);
+  void ifPresent(Callback1<T> function);
 
   /// Returns whether the value is absent.
   bool get isAbsent;
 
   /// Evaluates the callback [function] if the value is absent, otherwise does
   /// nothing.
-  void ifAbsent(void Function() function);
+  void ifAbsent(Callback0 function);
 
   /// Returns this [Optional] if the provided predicate [function] evaluates
   /// to `true`, otherwise returns an absent [Optional].
-  Optional<T> where(bool Function(T value) function);
+  Optional<T> where(Predicate1<T> function);
 
   /// Casts the present value of this [Optional] to [R], otherwise returns an
   /// absent [Optional].
@@ -59,22 +62,22 @@ abstract class Optional<T> {
 
   /// Transforms the present value of this [Optional] with the provided
   /// mapping [function], otherwise returns an absent [Optional].
-  Optional<R> map<R>(R Function(T value) function);
+  Optional<R> map<R>(Map1<T, R> function);
 
   /// Transforms the present value of this [Optional] with the provided
   /// mapping [function], otherwise returns an absent [Optional].
-  Optional<R> flatMap<R>(Optional<R> Function(T value) function);
+  Optional<R> flatMap<R>(Map1<T, Optional<R>> function);
 
   /// Returns the current optional if present, otherwise evaluates the
   /// [function] callback and returns its optional.
-  Optional<T> or(Optional<T> Function() function);
+  Optional<T> or(Map0<Optional<T>> function);
 
   /// Returns the current value if present, otherwise the argument [value].
   T orElse(T value);
 
   /// Returns the current value if present, otherwise evaluates the callback
   /// [function] and returns its value.
-  T orElseGet(T Function() function);
+  T orElseGet(Map0<T> function);
 
   /// Returns the current value if present, otherwise throws the provided
   /// [error] or a [StateError].
