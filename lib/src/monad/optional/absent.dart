@@ -1,6 +1,6 @@
 import 'package:meta/meta.dart';
 
-import '../../optional.dart';
+import '../optional.dart';
 
 @sealed
 class AbsentOptional<T> extends Optional<T> {

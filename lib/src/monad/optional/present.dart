@@ -1,6 +1,6 @@
 import 'package:meta/meta.dart';
 
-import '../../optional.dart';
+import '../optional.dart';
 import 'absent.dart';
 
 @sealed
@@ -59,4 +59,7 @@ class PresentOptional<T> extends Optional<T> {
 
   @override
   int get hashCode => value.hashCode;
+
+  @override
+  String toString() => '${super.toString()}[$value]';
 }

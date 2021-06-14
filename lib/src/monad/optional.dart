@@ -1,8 +1,8 @@
 /// A container that may or may not contain a value.
 import 'package:meta/meta.dart';
 
-import 'src/optional/absent.dart';
-import 'src/optional/present.dart';
+import 'optional/absent.dart';
+import 'optional/present.dart';
 
 /// A container object which may or may not contain a value of type [T].
 ///
@@ -13,6 +13,10 @@ import 'src/optional/present.dart';
 @immutable
 @sealed
 abstract class Optional<T> {
+  /// Internal const constructor.
+  @internal
+  const Optional();
+
   /// Returns a present [Optional] of the given [value].
   const factory Optional.of(T value) = PresentOptional<T>;
 
@@ -23,9 +27,6 @@ abstract class Optional<T> {
   /// non-null, otherwise an absent [Optional] instance.
   factory Optional.ofNullable(T? value) =>
       value != null ? Optional<T>.of(value) : Optional<T>.absent();
-
-  /// Internal const constructor.
-  const Optional();
 
   /// Returns the present value, otherwise throws a [StateError].
   T get value;

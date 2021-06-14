@@ -18,8 +18,8 @@ Various extensions that make Dart a better place:
 - `hash.dart` combines multiple hash values.
 - `iterable.dart` is a collection of iterables and iterators.
 - `math.dart` is a collection of common mathematical functions.
+- `monad.dart` provides a collection of functional programming structures.
 - `number.dart` provides fractional, complex and quaternion arithmetic.
-- `optional.dart` provides a container that may or may not contain a value.
 - `ordering.dart` a fluent interface for building comparator functions.
 - `printer.dart` a fluent interface for configuring sophisticated formatter.
 - `tuple.dart` a generic sequence of typed values.
@@ -55,8 +55,8 @@ import 'package:more/feature.dart';
 import 'package:more/hash.dart';
 import 'package:more/iterable.dart';
 import 'package:more/math.dart';
+import 'package:more/monad.dart';
 import 'package:more/number.dart';
-import 'package:more/optional.dart';
 import 'package:more/ordering.dart';
 import 'package:more/printer.dart';
 import 'package:more/tuple.dart';

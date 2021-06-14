@@ -3,6 +3,7 @@
 ## 3.1.0
 
 * Dart 2.13 requirement.
+* Add `Optional` and `Either` type.
 * Add `String.convertFirstCharacters()` and `String.convertLastCharacters()`.
 * Add `String.toUpperCaseFirstCharacter()` and `String.toLowerCaseFirstCharacter()`.
 

@@ -1,4 +1,4 @@
-import 'package:more/optional.dart';
+import 'package:more/monad.dart';
 import 'package:test/test.dart';
 
 void main() {
@@ -99,6 +99,10 @@ void main() {
         expect(optional.hashCode == stringPresent.hashCode, isTrue);
         expect(optional.hashCode == stringAbsent.hashCode, isFalse);
       });
+      test('toString', () {
+        expect(
+            optional.toString(), "Instance of 'PresentOptional<String>'[foo]");
+      });
     });
     group('absent', () {
       const optional = stringAbsent;
@@ -186,6 +190,9 @@ void main() {
         expect(optional.hashCode == stringPresent.hashCode, isFalse);
         expect(optional.hashCode == stringAbsent.hashCode, isTrue);
       });
+      test('toString', () {
+        expect(optional.toString(), "Instance of 'AbsentOptional<String>'");
+      });
     });
     group('ofNullable', () {
       test('isAbsent', () {
@@ -200,6 +207,181 @@ void main() {
         final optional = Optional.ofNullable(value);
         expect(optional, isA<Optional<String>>());
         expect(optional.isPresent, isTrue);
+      });
+    });
+  });
+  group('either', () {
+    group('left', () {
+      const value = 42;
+      const either = Either<int, bool>.left(value);
+      const otherEither = Either<int, bool>.left(value + 1);
+      test('iff', () {
+        final created = Either.iff(true, () => value, () => 'hello');
+        expect(created, either);
+      });
+      test('either', () {
+        final created = Either.either(() => value, () => 'hello');
+        expect(created, either);
+      });
+      test('value', () {
+        expect(either.value, value);
+      });
+      test('leftValue', () {
+        expect(either.leftValue, value);
+      });
+      test('leftOptional', () {
+        expect(either.leftOptional.orElseThrow(), value);
+      });
+      test('rightValue', () {
+        expect(() => either.rightValue, throwsStateError);
+      });
+      test('rightOptional', () {
+        expect(either.rightOptional.isAbsent, isTrue);
+      });
+      test('isLeft', () {
+        expect(either.isLeft, isTrue);
+      });
+      test('isRight', () {
+        expect(either.isRight, isFalse);
+      });
+      test('fold', () {
+        expect(either.fold((left) => 'l:$left', (right) => 'r:$right'),
+            'l:$value');
+      });
+      test('map', () {
+        expect(
+            either.map(
+              (each) => 'l:$each',
+              (each) => 'r:$each',
+            ),
+            const Either.left('l:$value'));
+      });
+      test('mapLeft', () {
+        expect(
+            either.mapLeft((each) => 'l:$each'), const Either.left('l:$value'));
+      });
+      test('mapRight', () {
+        expect(either.mapRight((each) => 'r:$each'), const Either.left(value));
+      });
+      test('flatMap', () {
+        expect(
+            either.flatMap(
+              (each) => Either.right('l:$each'),
+              (each) => Either.left('r:$each'),
+            ),
+            const Either.right('l:$value'));
+      });
+      test('flatMapLeft', () {
+        expect(either.flatMapLeft((each) => Either.left('l:$each')),
+            const Either.left('l:$value'));
+      });
+      test('flatMapRight', () {
+        expect(either.flatMapRight((each) => Either.right('r:$each')),
+            const Either.left(value));
+      });
+      test('swap', () {
+        expect(either.swap(), const Either.right(value));
+      });
+      test('==', () {
+        expect(either == either, isTrue);
+        expect(either == otherEither, isFalse);
+        // ignore: unrelated_type_equality_checks
+        expect(either == either.swap(), isFalse);
+      });
+      test('hashCode', () {
+        expect(either.hashCode == either.hashCode, isTrue);
+        expect(either.hashCode == otherEither.hashCode, isFalse);
+        expect(either.hashCode == either.swap().hashCode, isFalse);
+      });
+      test('toString', () {
+        expect(
+            either.toString(), "Instance of 'LeftEither<int, bool>'[$value]");
+      });
+    });
+    group('right', () {
+      const value = true;
+      const either = Either<int, bool>.right(value);
+      const otherEither = Either<int, bool>.right(!value);
+      test('iff', () {
+        final created = Either.iff(false, () => 'hello', () => value);
+        expect(created, either);
+      });
+      test('either', () {
+        final created = Either.either(() => null, () => value);
+        expect(created, either);
+      });
+      test('either (error)', () {
+        expect(() => Either.either(() => null, () => null), throwsStateError);
+      });
+      test('value', () {
+        expect(either.value, value);
+      });
+      test('leftValue', () {
+        expect(() => either.leftValue, throwsStateError);
+      });
+      test('leftOptional', () {
+        expect(either.leftOptional.isAbsent, isTrue);
+      });
+      test('rightValue', () {
+        expect(either.rightValue, value);
+      });
+      test('rightOptional', () {
+        expect(either.rightOptional.orElseThrow(), value);
+      });
+      test('isLeft', () {
+        expect(either.isLeft, isFalse);
+      });
+      test('isRight', () {
+        expect(either.isRight, isTrue);
+      });
+      test('fold', () {
+        expect(either.fold((left) => 'l:$left', (right) => 'r:$right'),
+            'r:$value');
+      });
+      test('map', () {
+        expect(
+            either.map(
+              (each) => 'l:$each',
+              (each) => 'r:$each',
+            ),
+            const Either.right('r:$value'));
+      });
+      test('mapLeft', () {
+        expect(either.mapLeft((each) => '$each'), const Either.right(value));
+      });
+      test('mapRight', () {
+        expect(
+            either.mapRight((each) => '$each'), const Either.right('$value'));
+      });
+      test('flatMap', () {
+        expect(
+            either.flatMap(
+              (each) => Either.right('l:$each'),
+              (each) => Either.left('r:$each'),
+            ),
+            const Either.left('r:$value'));
+      });
+      test('flatMapLeft', () {
+        expect(either.flatMapLeft((each) => Either.left('l:$each')),
+            const Either.right(value));
+      });
+      test('flatMapRight', () {
+        expect(either.flatMapRight((each) => Either.right('r:$each')),
+            const Either.right('r:$value'));
+      });
+      test('swap', () {
+        expect(either.swap(), const Either.left(value));
+      });
+      test('==', () {
+        expect(either == either, isTrue);
+        expect(either == otherEither, isFalse);
+        // ignore: unrelated_type_equality_checks
+        expect(either == either.swap(), isFalse);
+      });
+      test('hashCode', () {
+        expect(either.hashCode == either.hashCode, isTrue);
+        expect(either.hashCode == otherEither.hashCode, isFalse);
+        expect(either.hashCode == either.swap().hashCode, isFalse);
       });
     });
   });
