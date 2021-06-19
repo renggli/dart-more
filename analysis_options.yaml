@@ -6,31 +6,51 @@ analyzer:
     implicit-dynamic: true
 linter:
   rules:
+    # - always_specify_types
+    # - always_use_package_imports
+    # - avoid_annotating_with_dynamic
+    # - avoid_dynamic_calls
+    # - avoid_escaping_inner_quotes
+    # - avoid_multiple_declarations_per_line
+    # - avoid_positional_boolean_parameters
+    # - cascade_invocations
+    # - parameter_assignments
+    # - prefer_double_quotes
+    # - prefer_int_literals
+    # - prefer_interpolation_to_compose_strings
+    # - prefer_mixin
+    # - public_member_api_docs
+    # - sort_constructors_first
+    # - sort_unnamed_constructors_first
+    # - unnecessary_brace_in_string_interps
+    # - unnecessary_final
+    # - unnecessary_lambdas
+    # - use_to_and_as_if_applicable
+    # NEW: - depend_on_referenced_packages
+    # NEW: - library_private_types_in_public_api
+    # NEW: - noop_primitive_operations
+    # NEW: - prefer_final_parameters
+    # NEW: - prefer_null_aware_method_calls
+    # NEW: - require_trailing_commas
+    # NEW: - use_test_throws_matchers
     - always_declare_return_types
     - always_put_control_body_on_new_line
     - always_put_required_named_parameters_first
     - always_require_non_null_named_parameters
-    # - always_specify_types
-    # - always_use_package_imports
     - annotate_overrides
-    # - avoid_annotating_with_dynamic
     - avoid_bool_literals_in_conditional_expressions
     - avoid_catches_without_on_clauses
     - avoid_catching_errors
     - avoid_classes_with_only_static_members
     - avoid_double_and_int_checks
-    # - avoid_dynamic_calls
     - avoid_empty_else
     - avoid_equals_and_hash_code_on_mutable_classes
-    # - avoid_escaping_inner_quotes
     - avoid_field_initializers_in_const_classes
     - avoid_function_literals_in_foreach_calls
     - avoid_implementing_value_types
     - avoid_init_to_null
     - avoid_js_rounded_ints
-    # - avoid_multiple_declarations_per_line
     - avoid_null_checks_in_equality_operators
-    # - avoid_positional_boolean_parameters
     - avoid_print
     - avoid_private_typedef_functions
     - avoid_redundant_argument_values
@@ -56,14 +76,12 @@ linter:
     - camel_case_extensions
     - camel_case_types
     - cancel_subscriptions
-    # - cascade_invocations
     - cast_nullable_to_non_nullable
     - close_sinks
     - comment_references
     - constant_identifier_names
     - control_flow_in_finally
     - curly_braces_in_flow_control_structures
-    # NEW: - depend_on_referenced_packages
     - deprecated_consistency
     - diagnostic_describe_all_properties
     - directives_ordering
@@ -82,7 +100,6 @@ linter:
     - leading_newlines_in_multiline_strings
     - library_names
     - library_prefixes
-    # NEW: - library_private_types_in_public_api
     - lines_longer_than_80_chars
     - list_remove_unrelated_type
     - literal_only_boolean_expressions
@@ -93,17 +110,15 @@ linter:
     - no_logic_in_create_state
     - no_runtimeType_toString
     - non_constant_identifier_names
-    # NEW: - noop_primitive_operations
     - null_check_on_nullable_type_parameter
     - null_closures
-    # NEW: - omit_local_variable_types
+    - omit_local_variable_types
     - one_member_abstracts
     - only_throw_errors
     - overridden_fields
     - package_api_docs
     - package_names
     - package_prefixed_library_names
-    # - parameter_assignments
     - prefer_adjacent_string_concatenation
     - prefer_asserts_in_initializer_lists
     - prefer_asserts_with_message
@@ -115,13 +130,11 @@ linter:
     - prefer_const_literals_to_create_immutables
     - prefer_constructors_over_static_methods
     - prefer_contains
-    # - prefer_double_quotes
     - prefer_equal_for_default_values
     - prefer_expression_function_bodies
     - prefer_final_fields
     - prefer_final_in_for_each
     - prefer_final_locals
-    # NEW: - prefer_final_parameters
     - prefer_for_elements_to_map_fromIterable
     - prefer_foreach
     - prefer_function_declarations_over_variables
@@ -130,14 +143,10 @@ linter:
     - prefer_if_null_operators
     - prefer_initializing_formals
     - prefer_inlined_adds
-    # - prefer_int_literals
-    # - prefer_interpolation_to_compose_strings
     - prefer_is_empty
     - prefer_is_not_empty
     - prefer_is_not_operator
     - prefer_iterable_whereType
-    # - prefer_mixin
-    # NEW: - prefer_null_aware_method_calls
     - prefer_null_aware_operators
     - prefer_relative_imports
     - prefer_single_quotes
@@ -145,15 +154,11 @@ linter:
     - prefer_typing_uninitialized_variables
     - prefer_void_to_null
     - provide_deprecation_message
-    # - public_member_api_docs
     - recursive_getters
-    # NEW: - require_trailing_commas
     - sized_box_for_whitespace
     - slash_for_doc_comments
     - sort_child_properties_last
-    # - sort_constructors_first
     - sort_pub_dependencies
-    # - sort_unnamed_constructors_first
     - test_types_in_equals
     - throw_in_finally
     - tighten_type_of_initializing_formals
@@ -161,11 +166,8 @@ linter:
     - type_init_formals
     - unawaited_futures
     - unnecessary_await_in_return
-    # - unnecessary_brace_in_string_interps
     - unnecessary_const
-    # NEW: - unnecessary_final
     - unnecessary_getters_setters
-    # - unnecessary_lambdas
     - unnecessary_new
     - unnecessary_null_aware_assignments
     - unnecessary_null_checks
@@ -192,7 +194,5 @@ linter:
     - use_rethrow_when_possible
     - use_setters_to_change_properties
     - use_string_buffers
-    # NEW: - use_test_throws_matchers
-    # - use_to_and_as_if_applicable
     - valid_regexps
     - void_checks
