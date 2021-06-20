@@ -4,6 +4,7 @@
 
 * Dart 2.13 requirement.
 * Add `Optional` and `Either` type.
+* Add `TypeMap` that maps Dart types to an instance.
 * Add `String.convertFirstCharacters()` and `String.convertLastCharacters()`.
 * Add `String.toUpperCaseFirstCharacter()` and `String.toLowerCaseFirstCharacter()`.
 
