@@ -21,3 +21,4 @@ export 'src/collection/range/integer.dart'
 export 'src/collection/string.dart' show StringExtension;
 export 'src/collection/trie.dart'
     show Trie, TrieNode, TrieNodeEntry, TrieNodeList, TrieNodeMap;
+export 'src/collection/typemap.dart' show TypeMap;

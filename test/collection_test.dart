@@ -2128,6 +2128,52 @@ void main() {
         () => allTrieTests(
             <K, P extends Comparable<P>, V>() => TrieNodeMap<K, P, V>()));
   });
+  group('typemap', () {
+    test('empty', () {
+      final map = TypeMap<Object>();
+      expect(map.hasInstance<String>(), isFalse);
+      expect(map.getInstance<String>(), isNull);
+      expect(map.types, []);
+      expect(map.instances, []);
+      expect(map.length, 0);
+      expect(map.isEmpty, isTrue);
+      expect(map.isNotEmpty, isFalse);
+      expect(map.asMap(), {});
+      expect(map.toString(), '{}');
+    });
+    test('single', () {
+      final map = TypeMap<Object>();
+      map.setInstance('hello');
+      expect(map.hasInstance<String>(), isTrue);
+      expect(map.getInstance<String>(), 'hello');
+      expect(map.hasInstance<int>(), isFalse);
+      expect(map.getInstance<int>(), isNull);
+      expect(map.types, [String]);
+      expect(map.instances, ['hello']);
+      expect(map.length, 1);
+      expect(map.isEmpty, isFalse);
+      expect(map.isNotEmpty, isTrue);
+      expect(map.asMap(), {String: 'hello'});
+      expect(map.toString(), '{String: hello}');
+    });
+    test('double', () {
+      final map = TypeMap<Object>();
+      map.setInstance('hello');
+      expect(map.hasInstance<String>(), isTrue);
+      expect(map.getInstance<String>(), 'hello');
+      expect(map.hasInstance<int>(), isFalse);
+      expect(map.getInstance<int>(ifAbsentPut: () => 42), 42);
+      expect(map.hasInstance<int>(), isTrue);
+      expect(map.getInstance<int>(ifAbsentPut: () => 52), 42);
+      expect(map.types, [String, int]);
+      expect(map.instances, ['hello', 42]);
+      expect(map.length, 2);
+      expect(map.isEmpty, isFalse);
+      expect(map.isNotEmpty, isTrue);
+      expect(map.asMap(), {String: 'hello', int: 42});
+      expect(map.toString(), '{String: hello, int: 42}');
+    });
+  });
 }
 
 void allTrieTests(
