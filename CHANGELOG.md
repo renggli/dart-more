@@ -5,6 +5,14 @@
 * Dart 2.13 requirement.
 * Add `Optional` and `Either` type.
 * Add `TypeMap` that maps Dart types to an instance.
+* Add various kinds of function types and function factories: 
+    callback function types, 
+    constant functions, 
+    empty functions, 
+    identity functions, 
+    mapping function types, 
+    predicate function types, and 
+    throwing functions. 
 * Add `String.convertFirstCharacters()` and `String.convertLastCharacters()`.
 * Add `String.toUpperCaseFirstCharacter()` and `String.toLowerCaseFirstCharacter()`.
 
