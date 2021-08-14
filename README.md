@@ -36,7 +36,7 @@ Misc
 
 ### Installation
 
-Follow the installation instructions on [dart packages](https://pub.dev/packages/more#-installing-tab-).
+Follow the installation instructions on [dart packages](https://pub.dev/packages/more/install).
 
 Import the all-including parent package:
 
