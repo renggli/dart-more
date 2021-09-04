@@ -11,11 +11,9 @@ class SequencePrinter extends Printer {
       SequencePrinter([...printers, Printer.of(other)]);
 
   @override
-  String call(dynamic object) {
-    final buffer = StringBuffer();
+  void printOn(dynamic object, StringBuffer buffer) {
     for (final printer in printers) {
       buffer.write(printer(object));
     }
-    return buffer.toString();
   }
 }

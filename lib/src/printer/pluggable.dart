@@ -10,5 +10,6 @@ class PluggablePrinter extends Printer {
   const PluggablePrinter(this.callback);
 
   @override
-  String call(dynamic object) => callback(object);
+  void printOn(dynamic object, StringBuffer buffer) =>
+      buffer.write(callback(object));
 }

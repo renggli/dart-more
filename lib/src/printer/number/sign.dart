@@ -23,13 +23,13 @@ class SignPrinter extends NumberPrinter {
   });
 
   @override
-  String call(dynamic object) {
-    final isNegative = checkNumericType(
-      object,
-      (value) => value.isNegative,
-      (value) => value.isNegative,
-    );
+  void printOn(dynamic object, StringBuffer buffer) {
+    final isNegative = object is num
+        ? object.isNegative
+        : object is BigInt
+            ? object.isNegative
+            : invalidNumericType(object);
     final delegate = isNegative ? negative : positive;
-    return delegate(object);
+    delegate.printOn(object, buffer);
   }
 }

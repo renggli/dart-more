@@ -12,13 +12,13 @@ class PadLeftPrinter extends DelegatePrinter {
       : super(delegate);
 
   @override
-  String call(dynamic object) {
-    final input = super.call(object).characters;
+  void printOn(dynamic object, StringBuffer buffer) {
+    final input = delegate(object).characters;
     final count = width - input.length;
     if (count > 0) {
-      return '${padding * count}${input}';
+      buffer.write(padding * count);
     }
-    return input.toString();
+    buffer.write(input);
   }
 }
 
@@ -31,13 +31,13 @@ class PadRightPrinter extends DelegatePrinter {
       : super(delegate);
 
   @override
-  String call(dynamic object) {
-    final input = super.call(object).characters;
+  void printOn(dynamic object, StringBuffer buffer) {
+    final input = delegate(object).characters;
+    buffer.write(input);
     final count = width - input.length;
     if (count > 0) {
-      return '${input}${padding * count}';
+      buffer.write(padding * count);
     }
-    return input.toString();
   }
 }
 
@@ -50,14 +50,21 @@ class PadBothPrinter extends DelegatePrinter {
       : super(delegate);
 
   @override
-  String call(dynamic object) {
-    final input = super.call(object).characters;
+  void printOn(dynamic object, StringBuffer buffer) {
+    final input = delegate(object).characters;
     final count = width - input.length;
     if (count > 0) {
       final left = count ~/ 2;
-      final right = count ~/ 2 + count % 2;
-      return '${padding * left}${input}${padding * right}';
+      if (left > 0) {
+        buffer.write(padding * left);
+      }
+      buffer.write(input);
+      final right = left + count % 2;
+      if (right > 0) {
+        buffer.write(padding * right);
+      }
+    } else {
+      buffer.write(input);
     }
-    return input.toString();
   }
 }

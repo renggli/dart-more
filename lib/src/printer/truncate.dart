@@ -12,12 +12,14 @@ class TruncateLeftPrinter extends DelegatePrinter {
       : super(delegate);
 
   @override
-  String call(dynamic object) {
-    final input = super.call(object).characters;
+  void printOn(dynamic object, StringBuffer buffer) {
+    final input = delegate(object).characters;
     if (input.length > width) {
-      return ellipsis + input.takeLast(width).toString();
+      buffer.write(ellipsis);
+      buffer.write(input.takeLast(width));
+    } else {
+      buffer.write(input);
     }
-    return input.toString();
   }
 }
 
@@ -30,11 +32,13 @@ class TruncateRightPrinter extends DelegatePrinter {
       : super(delegate);
 
   @override
-  String call(dynamic object) {
-    final input = super.call(object).characters;
+  void printOn(dynamic object, StringBuffer buffer) {
+    final input = delegate(object).characters;
     if (input.length > width) {
-      return input.take(width).toString() + ellipsis;
+      buffer.write(input.take(width));
+      buffer.write(ellipsis);
+    } else {
+      buffer.write(input);
     }
-    return input.toString();
   }
 }

@@ -9,6 +9,7 @@ class UndefinedPrinter extends DelegatePrinter {
       : super(delegate);
 
   @override
-  String call(dynamic object) =>
-      object == null ? undefinedPrinter(object) : super.call(object);
+  void printOn(dynamic object, StringBuffer buffer) => object == null
+      ? undefinedPrinter.printOn(object, buffer)
+      : super.printOn(object, buffer);
 }

@@ -5,5 +5,5 @@ class StandardPrinter extends Printer {
   const StandardPrinter();
 
   @override
-  String call(dynamic object) => object.toString();
+  void printOn(dynamic object, StringBuffer buffer) => buffer.write(object);
 }

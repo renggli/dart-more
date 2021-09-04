@@ -6,7 +6,8 @@ class TrimPrinter extends DelegatePrinter {
   const TrimPrinter(Printer delegate) : super(delegate);
 
   @override
-  String call(dynamic object) => super.call(object).trim();
+  void printOn(dynamic object, StringBuffer buffer) =>
+      buffer.write(delegate(object).trim());
 }
 
 /// Removes any leading whitespace.
@@ -14,7 +15,8 @@ class TrimLeftPrinter extends DelegatePrinter {
   const TrimLeftPrinter(Printer delegate) : super(delegate);
 
   @override
-  String call(dynamic object) => super.call(object).trimLeft();
+  void printOn(dynamic object, StringBuffer buffer) =>
+      buffer.write(delegate(object).trimLeft());
 }
 
 /// Removes any trailing whitespace.
@@ -22,5 +24,6 @@ class TrimRightPrinter extends DelegatePrinter {
   const TrimRightPrinter(Printer delegate) : super(delegate);
 
   @override
-  String call(dynamic object) => super.call(object).trimRight();
+  void printOn(dynamic object, StringBuffer buffer) =>
+      buffer.write(delegate(object).trimRight());
 }

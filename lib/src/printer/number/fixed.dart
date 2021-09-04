@@ -64,53 +64,57 @@ class FixedNumberPrinter extends NumberPrinter {
                 (printer) => printer.separateLeft(3, 0, separator));
 
   @override
-  String call(dynamic object) => _prependSign(
-      object, checkNumericType(object, _convertNum, _convertBigInt));
-
-  String _prependSign(dynamic value, String result) => '${sign(value)}$result';
-
-  String _convertNum(num value) {
-    if (value.isNaN) {
-      return nan;
+  void printOn(dynamic object, StringBuffer buffer) {
+    sign.printOn(object, buffer);
+    if (object is num) {
+      _printNumOn(object, buffer);
+    } else if (object is BigInt) {
+      _printBigIntOn(object, buffer);
+    } else {
+      invalidNumericType(object);
     }
-    if (value.isInfinite) {
-      return infinity;
-    }
-    return _convertFloat(value);
   }
 
-  String _convertFloat(num value) {
-    final buffer = StringBuffer();
+  void _printNumOn(num value, StringBuffer buffer) {
+    if (value.isNaN) {
+      buffer.write(nan);
+    } else if (value.isInfinite) {
+      buffer.write(infinity);
+    } else {
+      _printFloatOn(value, buffer);
+    }
+  }
+
+  void _printFloatOn(num value, StringBuffer buffer) {
     final multiplier = base.pow(precision);
     final rounding = accuracy ?? 1.0 / multiplier;
     final rounded = (value / rounding).roundToDouble() * rounding;
-    buffer.write(_convertInteger(rounded));
+    _printIntegerOn(rounded, buffer);
     if (precision > 0) {
       buffer.write(delimiter);
       final fractional = rounded.abs() - rounded.abs().truncate();
-      buffer.write(_convertFraction(fractional * multiplier));
+      _printFractionOn(fractional * multiplier, buffer);
     }
-    return buffer.toString();
   }
 
-  String _convertInteger(num value) {
+  void _printIntegerOn(num value, StringBuffer buffer) {
     final digits = intDigits(value.abs().truncate(), base);
-    return _convertIntegerDigits(digits);
+    _printIntegerDigitsOn(digits, buffer);
   }
 
-  String _convertIntegerDigits(Iterable<int> digits) {
+  void _printIntegerDigitsOn(Iterable<int> digits, StringBuffer buffer) {
     final result = formatDigits(digits, characters);
-    return _integer(result);
+    _integer.printOn(result, buffer);
   }
 
-  String _convertFraction(double value) {
+  void _printFractionOn(double value, StringBuffer buffer) {
     final digits = intDigits(value.round(), base);
     final result = formatDigits(digits, characters);
-    return _fraction(result);
+    _fraction.printOn(result, buffer);
   }
 
-  String _convertBigInt(BigInt value) {
+  void _printBigIntOn(BigInt value, StringBuffer buffer) {
     final digits = bigIntDigits(value.abs(), base);
-    return _convertIntegerDigits(digits);
+    _printIntegerDigitsOn(digits, buffer);
   }
 }

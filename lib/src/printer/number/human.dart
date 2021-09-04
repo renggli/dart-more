@@ -217,26 +217,32 @@ class HumanNumberPrinter extends NumberPrinter {
       );
 
   @override
-  String call(dynamic object) {
-    final value = checkNumericType(
-      object,
-      (value) => value.toDouble(),
-      (value) => value.toDouble(),
-    );
+  void printOn(dynamic object, StringBuffer buffer) {
+    final value = object is num
+        ? object.toDouble()
+        : object is BigInt
+            ? object.toDouble()
+            : invalidNumericType(object);
     if (value.isInfinite || value.isNaN) {
-      return _mantissa(value);
+      _mantissa.printOn(object, buffer);
+    } else {
+      final index = _getExponent(value) + unitOffset;
+      final unitIndex = index.clamp(0, units.length - 1);
+      final unitString = units[unitIndex];
+      final unitExponent = unitIndex - unitOffset;
+      final mantissa = value / unitBase.toDouble().pow(unitExponent);
+      if (unitString.isEmpty) {
+        _mantissa.printOn(mantissa, buffer);
+      } else if (unitPrefix) {
+        buffer.write(unitString);
+        buffer.write(unitSeparator);
+        _mantissa.printOn(mantissa, buffer);
+      } else {
+        _mantissa.printOn(mantissa, buffer);
+        buffer.write(unitSeparator);
+        buffer.write(unitString);
+      }
     }
-    final index = _getExponent(value) + unitOffset;
-    final unitIndex = index.clamp(0, units.length - 1);
-    final unitString = units[unitIndex];
-    final unitExponent = unitIndex - unitOffset;
-    final mantissa = value / unitBase.toDouble().pow(unitExponent);
-    final result = [_mantissa(mantissa)];
-    if (unitString.isNotEmpty) {
-      result.add(unitSeparator);
-      result.add(unitString);
-    }
-    return unitPrefix ? result.reversed.join() : result.join();
   }
 
   int _getExponent(double value) {

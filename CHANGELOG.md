@@ -1,5 +1,9 @@
 # Changelog
 
+## 3.2.0 (unpublished)
+
+* Make `Printer` significantly faster by reusing a single `StringBuffer` instance where possible.
+
 ## 3.1.0
 
 * Dart 2.13 requirement.

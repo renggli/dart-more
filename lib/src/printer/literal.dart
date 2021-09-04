@@ -7,5 +7,5 @@ class LiteralPrinter extends Printer {
   const LiteralPrinter(this.value);
 
   @override
-  String call(dynamic object) => value;
+  void printOn(dynamic object, StringBuffer buffer) => buffer.write(value);
 }

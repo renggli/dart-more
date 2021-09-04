@@ -14,17 +14,15 @@ class SeparateLeftPrinter extends DelegatePrinter {
       : super(delegate);
 
   @override
-  String call(dynamic object) {
-    final buffer = StringBuffer();
-    final input = super.call(object).characters;
+  void printOn(dynamic object, StringBuffer buffer) {
+    final input = delegate(object).characters;
     final iterator = input.iterator;
     for (var i = 0; iterator.moveNext(); i++) {
-      if (buffer.isNotEmpty && i % width == offset) {
+      if (i != 0 && i % width == offset) {
         buffer.write(separator);
       }
       buffer.write(iterator.current);
     }
-    return buffer.toString();
   }
 }
 
@@ -39,16 +37,15 @@ class SeparateRightPrinter extends DelegatePrinter {
       : super(delegate);
 
   @override
-  String call(dynamic object) {
-    final buffer = StringBuffer();
-    final input = super.call(object).characters;
+  void printOn(dynamic object, StringBuffer buffer) {
+    final input = delegate(object).characters;
+    final inputLength = input.length;
     final iterator = input.iterator;
-    for (var i = input.length; iterator.moveNext(); i--) {
-      if (buffer.isNotEmpty && i % width == offset) {
+    for (var i = inputLength; iterator.moveNext(); i--) {
+      if (i != inputLength && i % width == offset) {
         buffer.write(separator);
       }
       buffer.write(iterator.current);
     }
-    return buffer.toString();
   }
 }

@@ -1,13 +1,16 @@
 import '../../printer.dart';
-import 'delegate.dart';
 
-/// Lower-case digits and letters by increasing value.
-const String commaSeparator = ', ';
+/// Standard separator between elements.
+const String iterableSeparator = ', ';
 
+/// Standard ellipsis separator.
 const String iterableEllipsis = '\u2026';
 
 /// Prints an iterable of values.
-class IterablePrinter extends DelegatePrinter {
+class IterablePrinter extends Printer {
+  /// Printer to be used for the elements.
+  final Printer delegate;
+
   /// String to be used as a separator between items.
   final String? separator;
 
@@ -24,22 +27,18 @@ class IterablePrinter extends DelegatePrinter {
   final String? ellipses;
 
   const IterablePrinter(
-    Printer delegate, {
-    this.separator = commaSeparator,
+    this.delegate, {
+    this.separator = iterableSeparator,
     this.lastSeparator,
     this.leadingItems,
     this.trailingItems,
     this.ellipses = iterableEllipsis,
-  }) : super(delegate);
+  });
 
   @override
-  String call(dynamic object) {
-    if (object is! Iterable) {
-      throw ArgumentError.value(object, 'object', 'is not iterable.');
-    }
+  void printOn(dynamic object, StringBuffer buffer) {
     final list = [...object];
     final length = list.length;
-    final buffer = StringBuffer();
     for (var i = 0; i < length; i++) {
       if (i > 0) {
         if (lastSeparator != null && i == length - 1) {
@@ -63,9 +62,8 @@ class IterablePrinter extends DelegatePrinter {
         }
         i = isLeading ? list.length : length - trailingItems! - 1;
       } else {
-        buffer.write(super.call(list[i]));
+        delegate.printOn(list[i], buffer);
       }
     }
-    return buffer.toString();
   }
 }

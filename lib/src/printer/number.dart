@@ -23,19 +23,10 @@ const String notationString = 'e';
 abstract class NumberPrinter extends Printer {
   const NumberPrinter();
 
-  /// Calls the right callback based on the type of number.
+  /// Throws an error indicating an invalid numeric type.
   @protected
-  T checkNumericType<T>(dynamic object, T Function(num value) nativeCallback,
-      T Function(BigInt value) bigIntCallback) {
-    if (object is num) {
-      return nativeCallback(object);
-    } else if (object is BigInt) {
-      return bigIntCallback(object);
-    } else {
-      throw ArgumentError.value(
-          object, 'value', 'is not a known numeric type.');
-    }
-  }
+  Never invalidNumericType(dynamic object) => throw ArgumentError.value(
+      object, 'object', 'is not a known numeric type.');
 
   /// Extracts digits of a positive `int` [value] in the provided [base].
   @protected

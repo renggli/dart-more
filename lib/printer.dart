@@ -1,6 +1,6 @@
 /// Provides a first-class model to convert object to strings using composition
 /// and highly configurable formatting primitives.
-import 'package:meta/meta.dart' show immutable;
+import 'package:meta/meta.dart' show immutable, nonVirtual;
 
 import 'src/printer/iterable.dart';
 import 'src/printer/literal.dart';
@@ -139,7 +139,15 @@ abstract class Printer {
   }
 
   /// Prints the [object].
-  String call(dynamic object);
+  @nonVirtual
+  String call(dynamic object) {
+    final buffer = StringBuffer();
+    printOn(object, buffer);
+    return buffer.toString();
+  }
+
+  /// Prints the `object` into `buffer`.
+  void printOn(dynamic object, StringBuffer buffer);
 
   /// Removes any leading and trailing whitespace.
   Printer trim() => TrimPrinter(this);
@@ -191,7 +199,7 @@ abstract class Printer {
   /// Joins the items in an [Iterable] with a separator, and possibly limits
   /// the total amount of items to be printed.
   Printer iterable({
-    String separator = commaSeparator,
+    String separator = iterableSeparator,
     String? lastSeparator,
     int? leadingItems,
     int? trailingItems,

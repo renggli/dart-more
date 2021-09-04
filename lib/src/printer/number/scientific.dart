@@ -85,22 +85,20 @@ class ScientificNumberPrinter extends NumberPrinter {
         );
 
   @override
-  String call(dynamic object) {
-    final value = checkNumericType(
-      object,
-      (value) => value.toDouble(),
-      (value) => value.toDouble(),
-    );
+  void printOn(dynamic object, StringBuffer buffer) {
+    final value = object is num
+        ? object.toDouble()
+        : object is BigInt
+            ? object.toDouble()
+            : invalidNumericType(object);
     if (value.isInfinite || value.isNaN) {
-      return _mantissa(value);
+      return _mantissa.printOn(value, buffer);
     }
     final exponent = _getExponent(value);
     final mantissa = value / base.toDouble().pow(exponent);
-    final buffer = StringBuffer();
-    buffer.write(_mantissa(mantissa));
+    _mantissa.printOn(mantissa, buffer);
     buffer.write(notation);
-    buffer.write(_exponent(exponent));
-    return buffer.toString();
+    _exponent.printOn(exponent, buffer);
   }
 
   int _getExponent(double value) {
