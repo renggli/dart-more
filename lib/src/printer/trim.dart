@@ -1,29 +1,45 @@
-import 'delegate.dart';
 import 'printer.dart';
 
+extension TrimPrinterExtension<T> on Printer<T> {
+  /// Removes any leading and trailing whitespace.
+  Printer<T> trim() => TrimPrinter<T>(this);
+
+  /// Removes any leading whitespace.
+  Printer<T> trimLeft() => TrimLeftPrinter<T>(this);
+
+  /// Removes any trailing whitespace.
+  Printer<T> trimRight() => TrimRightPrinter<T>(this);
+}
+
 /// Removes any leading and trailing whitespace.
-class TrimPrinter extends DelegatePrinter {
-  const TrimPrinter(Printer delegate) : super(delegate);
+class TrimPrinter<T> extends Printer<T> {
+  const TrimPrinter(this.printer);
+
+  final Printer<T> printer;
 
   @override
-  void printOn(dynamic object, StringBuffer buffer) =>
-      buffer.write(delegate(object).trim());
+  void printOn(T object, StringBuffer buffer) =>
+      buffer.write(printer(object).trim());
 }
 
 /// Removes any leading whitespace.
-class TrimLeftPrinter extends DelegatePrinter {
-  const TrimLeftPrinter(Printer delegate) : super(delegate);
+class TrimLeftPrinter<T> extends Printer<T> {
+  const TrimLeftPrinter(this.printer);
+
+  final Printer<T> printer;
 
   @override
-  void printOn(dynamic object, StringBuffer buffer) =>
-      buffer.write(delegate(object).trimLeft());
+  void printOn(T object, StringBuffer buffer) =>
+      buffer.write(printer(object).trimLeft());
 }
 
 /// Removes any trailing whitespace.
-class TrimRightPrinter extends DelegatePrinter {
-  const TrimRightPrinter(Printer delegate) : super(delegate);
+class TrimRightPrinter<T> extends Printer<T> {
+  const TrimRightPrinter(this.printer);
+
+  final Printer<T> printer;
 
   @override
-  void printOn(dynamic object, StringBuffer buffer) =>
-      buffer.write(delegate(object).trimRight());
+  void printOn(T object, StringBuffer buffer) =>
+      buffer.write(printer(object).trimRight());
 }

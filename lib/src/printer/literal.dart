@@ -1,11 +1,11 @@
 import 'printer.dart';
 
 /// Prints a string literal.
-class LiteralPrinter extends Printer {
+class LiteralPrinter<T> extends Printer<T> {
+  const LiteralPrinter([this.value = '']);
+
   final String value;
 
-  const LiteralPrinter(this.value);
-
   @override
-  void printOn(dynamic object, StringBuffer buffer) => buffer.write(value);
+  void printOn(void object, StringBuffer buffer) => buffer.write(value);
 }

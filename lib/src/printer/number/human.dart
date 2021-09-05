@@ -1,8 +1,8 @@
 import '../../../math.dart';
-import '../number.dart';
 import '../printer.dart';
 import 'fixed.dart';
 import 'sign.dart';
+import 'utils.dart';
 
 // https://en.wikipedia.org/wiki/Binary_prefix.
 const binaryUnitBase = 1024;
@@ -73,7 +73,7 @@ const decimalUnitsLong = [
 ];
 
 /// Prints numbers in a custom human readable string.
-class HumanNumberPrinter extends NumberPrinter {
+class HumanNumberPrinter<T extends num> extends Printer<T> {
   /// The numeric base to which the number should be printed.
   final int base;
 
@@ -99,7 +99,7 @@ class HumanNumberPrinter extends NumberPrinter {
   final String separator;
 
   /// The string to be prepended if the number is positive or negative.
-  final Printer sign;
+  final Printer<double>? sign;
 
   /// The base of the unit to be printed.
   final int unitBase;
@@ -117,7 +117,7 @@ class HumanNumberPrinter extends NumberPrinter {
   final List<String> units;
 
   /// The (internal) printer of the mantissa.
-  final Printer _mantissa;
+  final Printer<double> _mantissa;
 
   /// Prints numbers in a custom human readable string.
   HumanNumberPrinter({
@@ -130,7 +130,7 @@ class HumanNumberPrinter extends NumberPrinter {
     this.padding = 0,
     this.precision = 0,
     this.separator = '',
-    this.sign = omitPositiveSign,
+    this.sign,
     this.unitBase = 10,
     this.unitOffset = 0,
     this.unitPrefix = false,
@@ -144,7 +144,7 @@ class HumanNumberPrinter extends NumberPrinter {
           padding: padding,
           precision: precision,
           separator: separator,
-          sign: sign,
+          sign: sign ?? const SignNumberPrinter<double>.omitPositiveSign(),
         );
 
   /// Prints numbers using a decimal suffix for units measure to indicate a
@@ -161,7 +161,7 @@ class HumanNumberPrinter extends NumberPrinter {
     int padding = 0,
     int precision = 0,
     String separator = '',
-    Printer sign = omitPositiveSign,
+    Printer<double>? sign,
     bool unitPrefix = false,
     String unitSeparator = ' ',
   }) =>
@@ -196,7 +196,7 @@ class HumanNumberPrinter extends NumberPrinter {
     int padding = 0,
     int precision = 0,
     String separator = '',
-    Printer sign = omitPositiveSign,
+    Printer<double>? sign,
     bool unitPrefix = false,
     String unitSeparator = ' ',
   }) =>
@@ -217,14 +217,10 @@ class HumanNumberPrinter extends NumberPrinter {
       );
 
   @override
-  void printOn(dynamic object, StringBuffer buffer) {
-    final value = object is num
-        ? object.toDouble()
-        : object is BigInt
-            ? object.toDouble()
-            : invalidNumericType(object);
+  void printOn(T object, StringBuffer buffer) {
+    final value = object.toDouble();
     if (value.isInfinite || value.isNaN) {
-      _mantissa.printOn(object, buffer);
+      _mantissa.printOn(value, buffer);
     } else {
       final index = _getExponent(value) + unitOffset;
       final unitIndex = index.clamp(0, units.length - 1);

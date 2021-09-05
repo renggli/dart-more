@@ -1,15 +1,36 @@
 import 'printer.dart';
 
-/// Standard separator between elements.
-const String iterableSeparator = ', ';
-
-/// Standard ellipsis separator.
-const String iterableEllipsis = '\u2026';
+extension IterablePrinterExtension<T> on Printer<T> {
+  /// Joins the items in an [Iterable] with a separator, and possibly limits
+  /// the total amount of items to be printed.
+  Printer<Iterable<T>> iterable({
+    String separator = ', ',
+    String? lastSeparator,
+    int? leadingItems,
+    int? trailingItems,
+    String? ellipses = '\u2026',
+  }) =>
+      IterablePrinter<T>(this,
+          separator: separator,
+          lastSeparator: lastSeparator,
+          leadingItems: leadingItems,
+          trailingItems: trailingItems,
+          ellipses: ellipses);
+}
 
 /// Prints an iterable of values.
-class IterablePrinter extends Printer {
+class IterablePrinter<T> extends Printer<Iterable<T>> {
+  const IterablePrinter(
+    this.printer, {
+    this.separator,
+    this.lastSeparator,
+    this.leadingItems,
+    this.trailingItems,
+    this.ellipses,
+  });
+
   /// Printer to be used for the elements.
-  final Printer delegate;
+  final Printer<T> printer;
 
   /// String to be used as a separator between items.
   final String? separator;
@@ -26,18 +47,9 @@ class IterablePrinter extends Printer {
   /// Ellipses to print when skipping printing of elements.
   final String? ellipses;
 
-  const IterablePrinter(
-    this.delegate, {
-    this.separator = iterableSeparator,
-    this.lastSeparator,
-    this.leadingItems,
-    this.trailingItems,
-    this.ellipses = iterableEllipsis,
-  });
-
   @override
-  void printOn(dynamic object, StringBuffer buffer) {
-    final list = [...object];
+  void printOn(Iterable<T> object, StringBuffer buffer) {
+    final list = object.toList(growable: false);
     final length = list.length;
     for (var i = 0; i < length; i++) {
       if (i > 0) {
@@ -62,7 +74,7 @@ class IterablePrinter extends Printer {
         }
         i = isLeading ? list.length : length - trailingItems! - 1;
       } else {
-        delegate.printOn(list[i], buffer);
+        printer.printOn(list[i], buffer);
       }
     }
   }

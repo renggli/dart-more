@@ -3,6 +3,13 @@
 ## 3.2.0 (unpublished)
 
 * Make `Printer` significantly faster by reusing a single `StringBuffer` instance where possible.
+* Make `Printer` strongly typed, which unfortunately comes with some required API changes:
+  * Number printers do no longer support `BigInt`.
+  * Number printers are directly instantiated, instead of using a factory on Printer.
+* Improved the `Printer` library in various ways:
+  * Renamed `undefined` to the more intention revealing `ifNull`.
+  * Added `ifEmpty` to print something specific for empty `Iterables`.
+  * Added `map` and `cast` printers for more flexible printing.
 
 ## 3.1.0
 

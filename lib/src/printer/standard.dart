@@ -1,9 +1,9 @@
 import 'printer.dart';
 
 /// Calls the standard [toString] method.
-class StandardPrinter extends Printer {
+class StandardPrinter<T> extends Printer<T> {
   const StandardPrinter();
 
   @override
-  void printOn(dynamic object, StringBuffer buffer) => buffer.write(object);
+  void printOn(T object, StringBuffer buffer) => buffer.write(object);
 }

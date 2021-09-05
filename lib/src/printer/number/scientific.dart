@@ -1,11 +1,11 @@
 import '../../../math.dart';
-import '../number.dart';
 import '../printer.dart';
 import 'fixed.dart';
 import 'sign.dart';
+import 'utils.dart';
 
 /// Prints numbers in a scientific format.
-class ScientificNumberPrinter extends NumberPrinter {
+class ScientificNumberPrinter<T extends num> extends Printer<T> {
   /// The numeric base to which the number should be printed.
   final int base;
 
@@ -19,7 +19,7 @@ class ScientificNumberPrinter extends NumberPrinter {
   final int exponentPadding;
 
   /// The string to be prepended if the exponent is positive or negative.
-  final Printer exponentSign;
+  final Printer<int>? exponentSign;
 
   /// The string that should be displayed if the number is infinite.
   final String infinity;
@@ -28,7 +28,7 @@ class ScientificNumberPrinter extends NumberPrinter {
   final int mantissaPadding;
 
   /// The string to be prepended if the mantissa is positive or negative.
-  final Printer mantissaSign;
+  final Printer<double>? mantissaSign;
 
   /// The string that should be displayed if the number is not a number.
   final String nan;
@@ -46,26 +46,27 @@ class ScientificNumberPrinter extends NumberPrinter {
   final int significant;
 
   /// The (internal) printer of the mantissa.
-  final Printer _mantissa;
+  final Printer<double> _mantissa;
 
   /// The (internal) printer of the exponent.
-  final Printer _exponent;
+  final Printer<int> _exponent;
 
+  /// Prints numbers in a custom scientific format.
   ScientificNumberPrinter({
     this.base = 10,
     this.characters = lowerCaseDigits,
     this.delimiter = delimiterString,
     this.exponentPadding = 0,
-    this.exponentSign = omitPositiveSign,
+    this.exponentSign,
     this.infinity = infinityString,
     this.mantissaPadding = 0,
-    this.mantissaSign = omitPositiveSign,
+    this.mantissaSign,
     this.nan = nanString,
     this.notation = notationString,
     this.precision = 3,
     this.separator = '',
     this.significant = 1,
-  })  : _mantissa = FixedNumberPrinter(
+  })  : _mantissa = FixedNumberPrinter<double>(
           base: base,
           characters: characters,
           delimiter: delimiter,
@@ -74,23 +75,20 @@ class ScientificNumberPrinter extends NumberPrinter {
           padding: mantissaPadding,
           precision: precision,
           separator: separator,
-          sign: mantissaSign,
+          sign: mantissaSign ??
+              const SignNumberPrinter<double>.omitPositiveSign(),
         ),
-        _exponent = FixedNumberPrinter(
+        _exponent = FixedNumberPrinter<int>(
           base: base,
           characters: characters,
           padding: exponentPadding,
           separator: separator,
-          sign: exponentSign,
+          sign: exponentSign ?? const SignNumberPrinter<int>.omitPositiveSign(),
         );
 
   @override
-  void printOn(dynamic object, StringBuffer buffer) {
-    final value = object is num
-        ? object.toDouble()
-        : object is BigInt
-            ? object.toDouble()
-            : invalidNumericType(object);
+  void printOn(T object, StringBuffer buffer) {
+    final value = object.toDouble();
     if (value.isInfinite || value.isNaN) {
       return _mantissa.printOn(value, buffer);
     }
