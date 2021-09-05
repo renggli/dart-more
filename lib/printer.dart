@@ -12,6 +12,8 @@ export 'src/printer/number/sign.dart' show SignNumberPrinter;
 export 'src/printer/pad.dart' show PadPrinterExtension;
 export 'src/printer/printer.dart' show Printer;
 export 'src/printer/separate.dart' show SeparatePrinterExtension;
+export 'src/printer/sequence.dart'
+    show SequencePrinterExtension, SequencePrinter;
 export 'src/printer/standard.dart' show StandardPrinter;
 export 'src/printer/transform.dart' show TransformPrinterExtension;
 export 'src/printer/trim.dart' show TrimPrinterExtension;

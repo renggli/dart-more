@@ -1,15 +1,12 @@
+import '../functional/types/mapping.dart';
 import 'printer.dart';
 
-/// Printer callback function.
-typedef PrintCallback = String Function(dynamic value);
-
-/// Prints an object using a callback function.
-class PluggablePrinter extends Printer {
-  final PrintCallback callback;
-
+/// Pads the string on the left if it is shorter than width.
+class PluggablePrinter<T> extends Printer<T> {
   const PluggablePrinter(this.callback);
 
+  final Map1<T, String> callback;
+
   @override
-  void printOn(dynamic object, StringBuffer buffer) =>
-      buffer.write(callback(object));
+  void printOn(T object, StringBuffer buffer) => buffer.write(callback(object));
 }

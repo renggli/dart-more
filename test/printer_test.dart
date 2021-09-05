@@ -682,26 +682,30 @@ void main() {
       expect(printer('foo'), 'foo');
     });
   });
-  // group('sequence', () {
-  //   test('simple', () {
-  //     final printer = standard + standard;
-  //     expect(printer(1), '11');
-  //   });
-  //   test('coerce literal', () {
-  //     final printer = standard + '<--';
-  //     expect(printer(2), '2<--');
-  //   });
-  //   test('coerce function', () {
-  //     String increment(Object? value) =>
-  //         value is int ? (value + 1).toString() : 'n/a';
-  //     final printer = standard + increment;
-  //     expect(printer(3), '34');
-  //   });
-  //   test('multiple', () {
-  //     final printer = standard + '--' + standard + '!';
-  //     expect(printer(4), '4--4!');
-  //   });
-  // });
+  group('sequence', () {
+    test('default', () {
+      const printer = SequencePrinter<String>(
+          [standardString, LiteralPrinter<String>('-'), standardString]);
+      expect(printer('1'), '1-1');
+      expect(printer('12'), '12-12');
+    });
+    test('before', () {
+      final printer = standardString.before('*');
+      expect(printer('1'), '*1');
+    });
+    test('after', () {
+      final printer = standardString.after('*');
+      expect(printer('1'), '1*');
+    });
+    test('around (same)', () {
+      final printer = standardString.around('*');
+      expect(printer('1'), '*1*');
+    });
+    test('around (different)', () {
+      final printer = standardString.around('<', '>');
+      expect(printer('1'), '<1>');
+    });
+  });
   group('iterable', () {
     test('default', () {
       final printer = standardInt.iterable();
@@ -793,6 +797,28 @@ void main() {
       expect(() => printer(0), throwsA(isA<TypeError>()));
       expect(printer('1'), '1');
       expect(printer('12'), '12');
+    });
+  });
+  group('wrap', () {
+    test('printer', () {
+      final printer = Printer<String>.wrap(standardString);
+      expect(printer, standardString);
+      expect(printer('1'), '1');
+    });
+    test('callback', () {
+      final printer = Printer<int>.wrap((value) => (2 * value).toString());
+      expect(printer(1), '2');
+      expect(printer(12), '24');
+    });
+    test('string', () {
+      final printer = Printer<int>.wrap('*');
+      expect(printer(1), '*');
+      expect(printer(12), '*');
+    });
+    test('invalid', () {
+      expect(() => Printer<String>.wrap(standardInt), throwsArgumentError);
+      expect(() => Printer<String>.wrap(num.parse), throwsArgumentError);
+      expect(() => Printer<String>.wrap(12), throwsArgumentError);
     });
   });
 }
