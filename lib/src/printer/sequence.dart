@@ -1,4 +1,4 @@
-import '../../printer.dart';
+import 'printer.dart';
 
 /// Calls a sequence of other printers.
 class SequencePrinter extends Printer {

@@ -1,7 +1,7 @@
 import 'package:characters/characters.dart';
 
-import '../../printer.dart';
 import 'delegate.dart';
+import 'printer.dart';
 
 /// Pads the string on the left if it is shorter than width.
 class PadLeftPrinter extends DelegatePrinter {

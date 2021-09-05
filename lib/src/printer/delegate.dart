@@ -1,4 +1,4 @@
-import '../../printer.dart';
+import 'printer.dart';
 
 /// Delegates a printer to another one.
 class DelegatePrinter extends Printer {

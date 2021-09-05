@@ -1,6 +1,6 @@
-import '../../../printer.dart';
 import '../literal.dart';
 import '../number.dart';
+import '../printer.dart';
 
 /// A printer that omits the positive sign.
 const Printer omitPositiveSign = SignPrinter();

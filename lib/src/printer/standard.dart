@@ -1,4 +1,4 @@
-import '../../printer.dart';
+import 'printer.dart';
 
 /// Calls the standard [toString] method.
 class StandardPrinter extends Printer {

@@ -1,4 +1,4 @@
-import '../../printer.dart';
+import 'printer.dart';
 
 /// Prints a string literal.
 class LiteralPrinter extends Printer {

@@ -1,7 +1,7 @@
 import 'package:characters/characters.dart';
 
-import '../../printer.dart';
 import 'delegate.dart';
+import 'printer.dart';
 
 /// Truncates the string from the left side if it is longer than width.
 class TruncateLeftPrinter extends DelegatePrinter {

@@ -1,6 +1,6 @@
 import '../../../math.dart';
-import '../../../printer.dart';
 import '../number.dart';
+import '../printer.dart';
 import 'fixed.dart';
 import 'sign.dart';
 

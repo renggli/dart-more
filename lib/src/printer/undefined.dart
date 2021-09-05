@@ -1,5 +1,5 @@
-import '../../printer.dart';
 import 'delegate.dart';
+import 'printer.dart';
 
 /// Prints an object different if `null`.
 class UndefinedPrinter extends DelegatePrinter {

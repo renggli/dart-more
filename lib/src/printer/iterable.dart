@@ -1,4 +1,4 @@
-import '../../printer.dart';
+import 'printer.dart';
 
 /// Standard separator between elements.
 const String iterableSeparator = ', ';

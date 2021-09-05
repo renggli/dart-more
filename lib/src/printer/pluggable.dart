@@ -1,4 +1,4 @@
-import '../../printer.dart';
+import 'printer.dart';
 
 /// Printer callback function.
 typedef PrintCallback = String Function(dynamic value);

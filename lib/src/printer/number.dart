@@ -1,6 +1,6 @@
 import 'package:meta/meta.dart';
 
-import '../../printer.dart';
+import 'printer.dart';
 
 /// Lower-case digits and letters by increasing value.
 const String lowerCaseDigits = '0123456789abcdefghijklmnopqrstuvwxyz';
