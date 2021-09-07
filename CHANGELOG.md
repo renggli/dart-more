@@ -1,6 +1,6 @@
 # Changelog
 
-## 3.2.0 (unpublished)
+## 3.2.0
 
 * Make `Printer` significantly faster by reusing a single `StringBuffer` instance where possible.
 * Make `Printer` strongly typed, which unfortunately comes with some required API changes:
