@@ -1,5 +1,7 @@
 import 'package:more/math.dart';
 import 'package:more/printer.dart';
+import 'package:more/src/printer/object/object.dart';
+import 'package:more/tuple.dart';
 import 'package:test/test.dart';
 
 const standardString = StandardPrinter<String>();
@@ -819,6 +821,96 @@ void main() {
       expect(() => Printer<String>.wrap(standardInt), throwsArgumentError);
       expect(() => Printer<String>.wrap(num.parse), throwsArgumentError);
       expect(() => Printer<String>.wrap(12), throwsArgumentError);
+    });
+  });
+  group('object', () {
+    test('static', () {
+      final printer = ObjectPrinter<Tuple>.static();
+      expect(printer(const Tuple2(42, 'hello')), 'Tuple');
+    });
+    test('dynamic', () {
+      final printer = ObjectPrinter<Tuple>.dynamic();
+      expect(printer(const Tuple2(42, 'hello')), 'Tuple2<int, String>');
+    });
+    test('default', () {
+      final printer = ObjectPrinter<Tuple>.static()
+        ..add((object) => object.length);
+      expect(printer(const Tuple2(42, 'hello')), 'Tuple{2}');
+    });
+    test('name', () {
+      final printer = ObjectPrinter<Tuple>.static()
+        ..add((object) => object.length, name: 'size');
+      expect(printer(const Tuple2(42, 'hello')), 'Tuple{size=2}');
+    });
+    test('printer', () {
+      final printer = ObjectPrinter<Tuple>.static()
+        ..add((object) => object.length,
+            printer: const StandardPrinter().around('"'));
+      expect(printer(const Tuple2(42, 'hello')), 'Tuple{"2"}');
+    });
+    test('omitNull', () {
+      final printer = ObjectPrinter<Tuple2<int?, String?>>.static()
+        ..add((object) => object.first, omitNull: true, name: 'first')
+        ..add((object) => object.second, omitNull: false, name: 'second');
+      expect(printer(const Tuple2(42, 'hello')),
+          'Tuple2<int?, String?>{first=42, second=hello}');
+      expect(printer(const Tuple2(null, 'hello')),
+          'Tuple2<int?, String?>{second=hello}');
+      expect(printer(const Tuple2(42, null)),
+          'Tuple2<int?, String?>{first=42, second=null}');
+      expect(printer(const Tuple2(null, null)),
+          'Tuple2<int?, String?>{second=null}');
+    });
+    test('omitPredicate', () {
+      final printer = ObjectPrinter<Tuple2<int, int>>.static()
+        ..add<int>((object) => object.first, name: 'first')
+        ..add<int>(
+          (object) => object.second,
+          omitPredicate: (object, value) => value.isEven,
+          name: 'second',
+        );
+      expect(printer(const Tuple2(42, 43)),
+          'Tuple2<int, int>{first=42, second=43}');
+      expect(printer(const Tuple2(42, 44)), 'Tuple2<int, int>{first=42}');
+    });
+    test('omitNull and omitPredicate', () {
+      final printer = ObjectPrinter<Tuple1<int?>>.static()
+        ..add<int?>((object) => object.first,
+            omitNull: true, omitPredicate: (object, value) => value!.isEven);
+      expect(printer(const Tuple1(1)), 'Tuple1<int?>{1}');
+      expect(printer(const Tuple1(2)), 'Tuple1<int?>');
+      expect(printer(const Tuple1(null)), 'Tuple1<int?>');
+    });
+    test('before and afterFields', () {
+      final printer =
+          ObjectPrinter<Tuple1<int>>.static(beforeFields: '[', afterFields: ']')
+            ..add<int>((object) => object.first);
+      expect(printer(const Tuple1(1)), 'Tuple1<int>[1]');
+    });
+    test('fieldName', () {
+      final printer = ObjectPrinter<Tuple1<int>>.static(
+          fieldName: const StandardPrinter<String>().around('"'))
+        ..add<int>((object) => object.first, name: 'first');
+      expect(printer(const Tuple1(1)), 'Tuple1<int>{"first"=1}');
+    });
+    test('fieldNameSeparator', () {
+      final printer =
+          ObjectPrinter<Tuple1<int>>.static(fieldNameSeparator: ': ')
+            ..add<int>((object) => object.first, name: 'first');
+      expect(printer(const Tuple1(1)), 'Tuple1<int>{first: 1}');
+    });
+    test('fieldValue', () {
+      final printer = ObjectPrinter<Tuple1<int>>.static(
+          fieldValue: const StandardPrinter<String>().around('"'))
+        ..add<int>((object) => object.first);
+      expect(printer(const Tuple1(1)), 'Tuple1<int>{"1"}');
+    });
+    test('fieldSeparator', () {
+      final printer =
+          ObjectPrinter<Tuple2<int, int>>.static(fieldSeparator: ' ')
+            ..add<int>((object) => object.first, name: 'first')
+            ..add<int>((object) => object.second, name: 'second');
+      expect(printer(const Tuple2(1, 2)), 'Tuple2<int, int>{first=1 second=2}');
     });
   });
 }

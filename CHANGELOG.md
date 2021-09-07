@@ -10,6 +10,7 @@
   * Renamed `undefined` to the more intention revealing `ifNull`.
   * Added `ifEmpty` to print something specific for empty `Iterables`.
   * Added `map` and `cast` printers for more flexible printing.
+  * Added fully configurable object / `toString()` printer.
 
 ## 3.1.0
 
