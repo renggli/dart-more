@@ -1,4 +1,4 @@
-import 'printer.dart';
+import '../printer.dart';
 
 extension TrimPrinterExtension<T> on Printer<T> {
   /// Removes any leading and trailing whitespace.

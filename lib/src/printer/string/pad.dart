@@ -1,6 +1,6 @@
 import 'package:characters/characters.dart';
 
-import 'printer.dart';
+import '../printer.dart';
 
 extension PadPrinterExtension<T> on Printer<T> {
   /// Pads the string on the left if it is shorter than [width].

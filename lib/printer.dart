@@ -12,12 +12,12 @@ export 'src/printer/number/sign.dart' show SignNumberPrinter;
 export 'src/printer/object/field.dart' show FieldPrinter;
 export 'src/printer/object/object.dart' show ObjectPrinter;
 export 'src/printer/object/type.dart' show TypePrinter;
-export 'src/printer/pad.dart' show PadPrinterExtension;
 export 'src/printer/printer.dart' show Printer;
-export 'src/printer/separate.dart' show SeparatePrinterExtension;
 export 'src/printer/sequence.dart'
     show SequencePrinterExtension, SequencePrinter;
 export 'src/printer/standard.dart' show StandardPrinter;
+export 'src/printer/string/pad.dart' show PadPrinterExtension;
+export 'src/printer/string/separate.dart' show SeparatePrinterExtension;
+export 'src/printer/string/trim.dart' show TrimPrinterExtension;
+export 'src/printer/string/truncate.dart' show TruncatePrinterExtension;
 export 'src/printer/transform.dart' show TransformPrinterExtension;
-export 'src/printer/trim.dart' show TrimPrinterExtension;
-export 'src/printer/truncate.dart' show TruncatePrinterExtension;

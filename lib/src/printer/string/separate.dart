@@ -1,6 +1,6 @@
 import 'package:characters/characters.dart';
 
-import 'printer.dart';
+import '../printer.dart';
 
 extension SeparatePrinterExtension<T> on Printer<T> {
   /// Separates a string from the left side with a [separator] every [width]

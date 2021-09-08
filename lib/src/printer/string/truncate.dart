@@ -1,6 +1,6 @@
 import 'package:characters/characters.dart';
 
-import 'printer.dart';
+import '../printer.dart';
 
 extension TruncatePrinterExtension<T> on Printer<T> {
   /// Truncates the string from the left side if it is longer than width.

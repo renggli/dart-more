@@ -1,9 +1,9 @@
 import '../../../math.dart';
 import '../builder.dart';
-import '../pad.dart';
 import '../printer.dart';
-import '../separate.dart';
 import '../standard.dart';
+import '../string/pad.dart';
+import '../string/separate.dart';
 import 'sign.dart';
 import 'utils.dart';
 
