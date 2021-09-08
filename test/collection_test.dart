@@ -1091,7 +1091,9 @@ void main() {
     });
     group('adding', () {
       test('zero', () {
-        final set = Multiset()..add('a', 0)..add('b', 0);
+        final set = Multiset()
+          ..add('a', 0)
+          ..add('b', 0);
         expect(set, isEmpty);
         expect(set, hasLength(0));
         expect(set, unorderedEquals([]));
@@ -1099,7 +1101,10 @@ void main() {
         expect(set.counts, unorderedEquals([]));
       });
       test('single', () {
-        final set = Multiset()..add('a')..add('b')..add('b');
+        final set = Multiset()
+          ..add('a')
+          ..add('b')
+          ..add('b');
         expect(set, isNot(isEmpty));
         expect(set, hasLength(3));
         expect(set, unorderedEquals(['a', 'b', 'b']));
@@ -1107,7 +1112,9 @@ void main() {
         expect(set.counts, unorderedEquals([1, 2]));
       });
       test('multiple', () {
-        final set = Multiset()..add('a', 2)..add('b', 3);
+        final set = Multiset()
+          ..add('a', 2)
+          ..add('b', 3);
         expect(set, isNot(isEmpty));
         expect(set, hasLength(5));
         expect(set, unorderedEquals(['a', 'a', 'b', 'b', 'b']));
@@ -1135,7 +1142,9 @@ void main() {
     group('removing', () {
       test('zero', () {
         final set = Multiset.of(['a', 'a', 'b', 'b', 'b']);
-        set..remove('a', 0)..remove('b', 0);
+        set
+          ..remove('a', 0)
+          ..remove('b', 0);
         expect(set, isNot(isEmpty));
         expect(set, hasLength(5));
         expect(set, unorderedEquals(['a', 'a', 'b', 'b', 'b']));
@@ -1144,7 +1153,9 @@ void main() {
       });
       test('single', () {
         final set = Multiset.of(['a', 'a', 'b', 'b', 'b']);
-        set..remove('a')..remove('b');
+        set
+          ..remove('a')
+          ..remove('b');
         expect(set, isNot(isEmpty));
         expect(set, hasLength(3));
         expect(set, unorderedEquals(['a', 'b', 'b']));
@@ -1153,7 +1164,9 @@ void main() {
       });
       test('multiple', () {
         final set = Multiset.of(['a', 'a', 'b', 'b', 'b']);
-        set..remove('a', 3)..remove('b', 2);
+        set
+          ..remove('a', 3)
+          ..remove('b', 2);
         expect(set, isNot(isEmpty));
         expect(set, hasLength(1));
         expect(set, unorderedEquals(['b']));
