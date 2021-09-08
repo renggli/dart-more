@@ -39,10 +39,10 @@ import 'src/collection/range/integer.dart';
 @immutable
 abstract class CharMatcher implements Pattern {
   /// A matcher that accepts any character.
-  factory CharMatcher.any() => const AnyCharMatcher();
+  const factory CharMatcher.any() = AnyCharMatcher;
 
   /// A matcher that accepts no character.
-  factory CharMatcher.none() => const NoneCharMatcher();
+  const factory CharMatcher.none() = NoneCharMatcher;
 
   /// A matcher that accepts a single [character].
   factory CharMatcher.isChar(Object character) =>
@@ -59,25 +59,25 @@ abstract class CharMatcher implements Pattern {
   factory CharMatcher.pattern(String pattern) => fromPattern(pattern);
 
   /// A matcher that accepts ASCII characters.
-  factory CharMatcher.ascii() => const AsciiCharMatcher();
+  const factory CharMatcher.ascii() = AsciiCharMatcher;
 
   /// A matcher that accepts letters.
-  factory CharMatcher.letter() => const LetterCharMatcher();
+  const factory CharMatcher.letter() = LetterCharMatcher;
 
   /// A matcher that accepts upper-case letters.
-  factory CharMatcher.upperCaseLetter() => const UpperCaseLetterCharMatcher();
+  const factory CharMatcher.upperCaseLetter() = UpperCaseLetterCharMatcher;
 
   /// A matcher that accepts lower-case letters.
-  factory CharMatcher.lowerCaseLetter() => const LowerCaseLetterCharMatcher();
+  const factory CharMatcher.lowerCaseLetter() = LowerCaseLetterCharMatcher;
 
   /// A matcher that accepts letters or digits.
-  factory CharMatcher.letterOrDigit() => const LetterOrDigitCharMatcher();
+  const factory CharMatcher.letterOrDigit() = LetterOrDigitCharMatcher;
 
   /// A matcher that accepts digits.
-  factory CharMatcher.digit() => const DigitCharMatcher();
+  const factory CharMatcher.digit() = DigitCharMatcher;
 
   /// A matcher that accepts whitespaces.
-  factory CharMatcher.whitespace() => const WhitespaceCharMatcher();
+  const factory CharMatcher.whitespace() = WhitespaceCharMatcher;
 
   /// Internal constructor.
   const CharMatcher();

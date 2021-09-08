@@ -13,10 +13,10 @@ void verify(CharMatcher matcher, String included, String excluded) {
 void main() {
   group('basic', () {
     test('any', () {
-      verify(CharMatcher.any(), 'abc123_!@#', '');
+      verify(const CharMatcher.any(), 'abc123_!@#', '');
     });
     test('none', () {
-      verify(CharMatcher.none(), '', 'abc123_!@# ');
+      verify(const CharMatcher.none(), '', 'abc123_!@# ');
     });
     test('isChar', () {
       verify(CharMatcher.isChar('*'), '*', 'abc123_!@# ');
@@ -31,26 +31,26 @@ void main() {
       verify(CharMatcher.inRange('a', 'c'), 'abc', 'def123_!@# ');
     });
     test('ascii', () {
-      verify(CharMatcher.ascii(), 'def123_!@#', '\u2665');
+      verify(const CharMatcher.ascii(), 'def123_!@#', '\u2665');
     });
     test('digit', () {
-      verify(CharMatcher.digit(), '0123456789', 'abc_!@# ');
+      verify(const CharMatcher.digit(), '0123456789', 'abc_!@# ');
     });
     test('letter', () {
-      verify(CharMatcher.letter(),
+      verify(const CharMatcher.letter(),
           'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ', '123_!@# ');
     });
     test('lowerCaseLetter', () {
-      verify(CharMatcher.lowerCaseLetter(), 'abcdefghijklmnopqrstuvwxyz',
+      verify(const CharMatcher.lowerCaseLetter(), 'abcdefghijklmnopqrstuvwxyz',
           'ABCDEFGHIJKLMNOPQRSTUVWXYZ123_!@# ');
     });
     test('upperCaseLetter', () {
-      verify(CharMatcher.upperCaseLetter(), 'ABCDEFGHIJKLMNOPQRSTUVWXYZ',
+      verify(const CharMatcher.upperCaseLetter(), 'ABCDEFGHIJKLMNOPQRSTUVWXYZ',
           'abcdefghijklmnopqrstuvwxyz123_!@# ');
     });
     test('letterOrDigit', () {
       verify(
-          CharMatcher.letterOrDigit(),
+          const CharMatcher.letterOrDigit(),
           'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ01234567890_',
           '!@# ');
     });
@@ -83,7 +83,7 @@ void main() {
         12288,
         65279,
       ]);
-      verify(CharMatcher.whitespace(), string, 'abcABC_!@#\u0000');
+      verify(const CharMatcher.whitespace(), string, 'abcABC_!@#\u0000');
     });
   });
   group('char set', () {
@@ -161,11 +161,11 @@ void main() {
     });
   });
   group('operators', () {
-    final any = CharMatcher.any();
-    final none = CharMatcher.none();
-    final letter = CharMatcher.letter();
-    final digit = CharMatcher.digit();
-    final whitespace = CharMatcher.whitespace();
+    const any = CharMatcher.any();
+    const none = CharMatcher.none();
+    const letter = CharMatcher.letter();
+    const digit = CharMatcher.digit();
+    const whitespace = CharMatcher.whitespace();
     test('~', () {
       expect(~any, equals(none));
       expect(~none, equals(any));
@@ -337,7 +337,7 @@ void main() {
   });
   group('pattern', () {
     const input = 'a1b2c';
-    final pattern = CharMatcher.digit();
+    const pattern = CharMatcher.digit();
     test('allMatches()', () {
       final matches = pattern.allMatches(input);
       expect(matches.map((matcher) => matcher.pattern), [pattern, pattern]);
