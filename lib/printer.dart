@@ -16,6 +16,7 @@ export 'src/printer/printer.dart' show Printer;
 export 'src/printer/sequence.dart'
     show SequencePrinterExtension, SequencePrinter;
 export 'src/printer/standard.dart' show StandardPrinter;
+export 'src/printer/string/indent.dart' show IndentPrinterExtension;
 export 'src/printer/string/pad.dart' show PadPrinterExtension;
 export 'src/printer/string/separate.dart' show SeparatePrinterExtension;
 export 'src/printer/string/trim.dart' show TrimPrinterExtension;

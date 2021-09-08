@@ -913,4 +913,77 @@ void main() {
       expect(printer(const Tuple2(1, 2)), 'Tuple2<int, int>{first=1 second=2}');
     });
   });
+  group('indent', () {
+    test('default', () {
+      final printer = const StandardPrinter().indent('**');
+      expect(printer(''), '');
+      expect(printer('foo'), '**foo');
+      expect(printer('foo\nbar'), '**foo\n**bar');
+      expect(printer('foo\n\nbar'), '**foo\n\n**bar');
+      expect(printer(' zork '), '**zork');
+    });
+    test('firstPrefix', () {
+      final printer = const StandardPrinter().indent('**', firstPrefix: '!!');
+      expect(printer(''), '');
+      expect(printer('foo'), '!!foo');
+      expect(printer('foo\nbar'), '!!foo\n**bar');
+      expect(printer('foo\n\nbar'), '!!foo\n\n**bar');
+      expect(printer(' zork '), '!!zork');
+    });
+    test('trimWhitespace', () {
+      final printer =
+          const StandardPrinter().indent('**', trimWhitespace: false);
+      expect(printer(''), '');
+      expect(printer('foo'), '**foo');
+      expect(printer('foo\nbar'), '**foo\n**bar');
+      expect(printer('foo\n\nbar'), '**foo\n\n**bar');
+      expect(printer(' zork '), '** zork ');
+    });
+    test('indentEmpty', () {
+      final printer = const StandardPrinter().indent('**', indentEmpty: true);
+      expect(printer(''), '**');
+      expect(printer('foo'), '**foo');
+      expect(printer('foo\nbar'), '**foo\n**bar');
+      expect(printer('foo\n\nbar'), '**foo\n**\n**bar');
+      expect(printer(' zork '), '**zork');
+    });
+  });
+  group('dedent', () {
+    test('default', () {
+      final printer = const StandardPrinter().dedent();
+      expect(printer(''), '');
+      expect(printer('1\n2'), '1\n2');
+      expect(printer('1\n\n2'), '1\n\n2');
+      expect(printer(' 1\n\n 2'), '1\n\n2');
+      expect(printer(' 1'), '1');
+      expect(printer(' 1\n  2'), '1\n 2');
+      expect(printer('  2\n 1'), ' 2\n1');
+      expect(printer(' 1\n  2\n   3'), '1\n 2\n  3');
+      expect(printer('   3\n  2\n 1'), '  3\n 2\n1');
+    });
+    test('whitespace', () {
+      final printer = const StandardPrinter().dedent(whitespace: '\t');
+      expect(printer(''), '');
+      expect(printer('1\n2'), '1\n2');
+      expect(printer('1\n\n2'), '1\n\n2');
+      expect(printer('\t1\n\n\t2'), '1\n\n2');
+      expect(printer('\t1'), '1');
+      expect(printer('\t1\n\t\t2'), '1\n\t2');
+      expect(printer('\t\t2\n\t1'), '\t2\n1');
+      expect(printer('\t1\n\t\t2\n\t\t\t3'), '1\n\t2\n\t\t3');
+      expect(printer('\t\t\t3\n\t\t2\n\t1'), '\t\t3\n\t2\n1');
+    });
+    test('ignoreEmpty', () {
+      final printer = const StandardPrinter().dedent(ignoreEmpty: false);
+      expect(printer(''), '');
+      expect(printer('1\n2'), '1\n2');
+      expect(printer('1\n\n2'), '1\n\n2');
+      expect(printer(' 1\n\n 2'), ' 1\n\n 2');
+      expect(printer(' 1'), '1');
+      expect(printer(' 1\n  2'), '1\n 2');
+      expect(printer('  2\n 1'), ' 2\n1');
+      expect(printer(' 1\n  2\n   3'), '1\n 2\n  3');
+      expect(printer('   3\n  2\n 1'), '  3\n 2\n1');
+    });
+  });
 }
