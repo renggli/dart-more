@@ -31,7 +31,7 @@ class ObjectPrinter<T> extends Printer<T> {
   final String? afterFields;
 
   /// Fields to print.
-  final List<Field<T>> fields = [];
+  final List<FieldPrinter<T>> fields = [];
 
   /// Creates an object printer based on the static type.
   ObjectPrinter.static({
@@ -76,7 +76,7 @@ class ObjectPrinter<T> extends Printer<T> {
           printer ?? StandardPrinter<F>()));
 
   /// Adds a custom field printer.
-  void addField(Field<T> field) => fields.add(field);
+  void addField(FieldPrinter<T> field) => fields.add(field);
 
   @override
   void printOn(T object, StringBuffer buffer) {
@@ -105,7 +105,7 @@ class ObjectPrinter<T> extends Printer<T> {
   }
 
   @protected
-  void printFieldOn(T object, Field<T> field, StringBuffer buffer) {
+  void printFieldOn(T object, FieldPrinter<T> field, StringBuffer buffer) {
     final name = field.name;
     if (name != null) {
       if (fieldName != null) {
@@ -125,7 +125,7 @@ class ObjectPrinter<T> extends Printer<T> {
   }
 }
 
-class StandardField<T, F> extends Field<T> {
+class StandardField<T, F> extends FieldPrinter<T> {
   StandardField(this.name, this.callback, this.omitNull, this.omitPredicate,
       this.printer);
 

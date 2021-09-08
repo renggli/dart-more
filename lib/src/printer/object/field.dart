@@ -1,7 +1,7 @@
 import '../printer.dart';
 
 /// Abstract field description.
-abstract class Field<T> extends Printer<T> {
+abstract class FieldPrinter<T> extends Printer<T> {
   /// Returns an optional name for the field.
   String? get name;
 
