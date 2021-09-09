@@ -7,12 +7,6 @@ import 'package:test/test.dart';
 
 void main() {
   group('hash', () {
-    test('hash0', () {
-      expect(hash([]), isZero);
-    });
-    test('hash1', () {
-      expect(hash([1]), hash1(1));
-    });
     test('hash2', () {
       expect(hash([1, 2]), hash2(1, 2));
     });
