@@ -18,7 +18,11 @@ export 'src/collection/range/double.dart'
     show DoubleRange, DoubleRangeExtension;
 export 'src/collection/range/integer.dart'
     show IntegerRange, IntegerRangeExtension, IndicesIterableExtension;
-export 'src/collection/string.dart' show StringExtension;
+export 'src/collection/string/convert_first_last.dart'
+    show ConvertFirstLastStringExtension;
+export 'src/collection/string/prefix_suffix.dart'
+    show PrefixSuffixStringExtension;
+export 'src/collection/string/string_list.dart' show StringListExtension;
 export 'src/collection/trie.dart'
     show Trie, TrieNode, TrieNodeEntry, TrieNodeList, TrieNodeMap;
 export 'src/collection/typemap.dart' show TypeMap;

@@ -1,7 +1,7 @@
 import 'dart:math';
 
 import '../../char_matcher/whitespace.dart';
-import '../../collection/string.dart';
+import '../../collection/string/prefix_suffix.dart';
 import '../printer.dart';
 
 extension IndentPrinterExtension<T> on Printer<T> {
