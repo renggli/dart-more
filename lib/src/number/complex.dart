@@ -2,7 +2,6 @@ import 'dart:math' as math;
 
 import 'package:meta/meta.dart' show immutable;
 
-import '../../hash.dart';
 import '../../math.dart';
 import 'mixins/close_to.dart';
 
@@ -268,7 +267,7 @@ class Complex implements CloseTo<Complex> {
       other is Complex && a == other.a && b == other.b;
 
   @override
-  int get hashCode => hash2(a, b);
+  int get hashCode => Object.hash(a, b);
 
   @override
   String toString() => 'Complex($a, $b)';

@@ -1,6 +1,5 @@
 import 'package:meta/meta.dart' show immutable;
 
-import '../../hash.dart';
 import '../../math.dart';
 import 'mixins/close_to.dart';
 
@@ -261,7 +260,7 @@ class Quaternion implements CloseTo<Quaternion> {
       z == other.z;
 
   @override
-  int get hashCode => hash4(w, x, y, z);
+  int get hashCode => Object.hash(w, x, y, z);
 
   @override
   String toString() => 'Quaternion($w, $x, $y, $z)';

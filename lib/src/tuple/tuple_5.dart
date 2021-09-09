@@ -1,4 +1,3 @@
-import '../../hash.dart';
 import '../../tuple.dart';
 
 /// Tuple with 5 elements.
@@ -133,5 +132,5 @@ class Tuple5<T1, T2, T3, T4, T5> extends Tuple {
           fifth == other.fifth);
 
   @override
-  int get hashCode => hash5(first, second, third, fourth, fifth);
+  int get hashCode => Object.hash(first, second, third, fourth, fifth);
 }

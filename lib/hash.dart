@@ -1,107 +1,53 @@
 /// Combines multiple hash values.
 
-/// The Jenkins hash function copied and adapted from Dart SDK.
-/// Helper to combine a [hash] with a new [value].
-int _combine(int hash, int value) {
-  hash = 0x1fffffff & (hash + value);
-  hash = 0x1fffffff & (hash + ((0x0007ffff & hash) << 10));
-  return hash ^ (hash >> 6);
-}
-
-/// Helper to finish the creation of the [hash] value.
-int _finish(int hash) {
-  hash = 0x1fffffff & (hash + ((0x03ffffff & hash) << 3));
-  hash = hash ^ (hash >> 11);
-  return 0x1fffffff & (hash + ((0x00003fff & hash) << 15));
-}
-
 /// Combines the hash code of multiple objects.
-int hash(Iterable objects) =>
-    _finish(objects.fold(0, (a, b) => _combine(a, b.hashCode)));
+@Deprecated('Use Object.hashAll from the core library.')
+int hash(Iterable objects) => Object.hashAll(objects);
 
 /// Combines the hash code of one object [a].
-int hash1(dynamic a) => _finish(_combine(0, a.hashCode));
+@Deprecated('Use a.hashCode from the core library.')
+int hash1(dynamic a) => a.hashCode;
 
 /// Combines the hash code of two objects [a] and [b].
-int hash2(dynamic a, dynamic b) =>
-    _finish(_combine(_combine(0, a.hashCode), b.hashCode));
+@Deprecated('Use Object.hash from the core library.')
+int hash2(dynamic a, dynamic b) => Object.hash(a, b);
 
 /// Combines the hash code of three objects [a], [b] and [c].
-int hash3(dynamic a, dynamic b, dynamic c) => _finish(
-    _combine(_combine(_combine(0, a.hashCode), b.hashCode), c.hashCode));
+@Deprecated('Use Object.hash from the core library.')
+int hash3(dynamic a, dynamic b, dynamic c) => Object.hash(a, b, c);
 
 /// Combines the hash code of four objects [a], [b], [c] and [d].
-int hash4(dynamic a, dynamic b, dynamic c, dynamic d) => _finish(_combine(
-    _combine(_combine(_combine(0, a.hashCode), b.hashCode), c.hashCode),
-    d.hashCode));
+@Deprecated('Use Object.hash from the core library.')
+int hash4(dynamic a, dynamic b, dynamic c, dynamic d) =>
+    Object.hash(a, b, c, d);
 
 /// Combines the hash code of four objects [a], [b], [c], [d], and [e].
+@Deprecated('Use Object.hash from the core library.')
 int hash5(dynamic a, dynamic b, dynamic c, dynamic d, dynamic e) =>
-    _finish(_combine(
-        _combine(
-            _combine(_combine(_combine(0, a.hashCode), b.hashCode), c.hashCode),
-            d.hashCode),
-        e.hashCode));
+    Object.hash(a, b, c, d, e);
 
 /// Combines the hash code of four objects [a], [b], [c], [d], [e], and [f].
+@Deprecated('Use Object.hash from the core library.')
 int hash6(dynamic a, dynamic b, dynamic c, dynamic d, dynamic e, dynamic f) =>
-    _finish(_combine(
-        _combine(
-            _combine(
-                _combine(
-                    _combine(_combine(0, a.hashCode), b.hashCode), c.hashCode),
-                d.hashCode),
-            e.hashCode),
-        f.hashCode));
+    Object.hash(a, b, c, d, e, f);
 
 /// Combines the hash code of four objects [a], [b], [c], [d], [e], [f], and
 /// [g].
+@Deprecated('Use Object.hash from the core library.')
 int hash7(dynamic a, dynamic b, dynamic c, dynamic d, dynamic e, dynamic f,
         dynamic g) =>
-    _finish(_combine(
-        _combine(
-            _combine(
-                _combine(
-                    _combine(_combine(_combine(0, a.hashCode), b.hashCode),
-                        c.hashCode),
-                    d.hashCode),
-                e.hashCode),
-            f.hashCode),
-        g.hashCode));
+    Object.hash(a, b, c, d, e, f, g);
 
 /// Combines the hash code of four objects [a], [b], [c], [d], [e], [f], [g],
 /// and [h].
+@Deprecated('Use Object.hash from the core library.')
 int hash8(dynamic a, dynamic b, dynamic c, dynamic d, dynamic e, dynamic f,
         dynamic g, dynamic h) =>
-    _finish(_combine(
-        _combine(
-            _combine(
-                _combine(
-                    _combine(
-                        _combine(_combine(_combine(0, a.hashCode), b.hashCode),
-                            c.hashCode),
-                        d.hashCode),
-                    e.hashCode),
-                f.hashCode),
-            g.hashCode),
-        h.hashCode));
+    Object.hash(a, b, c, d, e, f, g, h);
 
 /// Combines the hash code of four objects [a], [b], [c], [d], [e], [f], [g],
 /// [h], and [i].
+@Deprecated('Use Object.hash from the core library.')
 int hash9(dynamic a, dynamic b, dynamic c, dynamic d, dynamic e, dynamic f,
         dynamic g, dynamic h, dynamic i) =>
-    _finish(_combine(
-        _combine(
-            _combine(
-                _combine(
-                    _combine(
-                        _combine(
-                            _combine(
-                                _combine(_combine(0, a.hashCode), b.hashCode),
-                                c.hashCode),
-                            d.hashCode),
-                        e.hashCode),
-                    f.hashCode),
-                g.hashCode),
-            h.hashCode),
-        i.hashCode));
+    Object.hash(a, b, c, d, e, f, g, h, i);

@@ -1,6 +1,5 @@
 import 'package:meta/meta.dart';
 
-import '../../../hash.dart';
 import '../either.dart';
 import '../optional.dart';
 import '../types/mapping.dart';
@@ -68,7 +67,7 @@ class RightEither<L, R> extends Either<L, R> {
       other is RightEither && rightValue == other.rightValue;
 
   @override
-  int get hashCode => hash2(RightEither, rightValue);
+  int get hashCode => Object.hash(RightEither, rightValue);
 
   @override
   String toString() => '${super.toString()}[$rightValue]';

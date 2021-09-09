@@ -1,5 +1,12 @@
 # Changelog
 
+## 3.3.0 (unpublished)
+* Dart 2.14 requirement.
+* Improved `String` and `Printer` extensions:
+    * Added `indent` and `dedent` operations.
+    * Added `wrap` and `unwrap` operations.
+* Deprecated `hashAll` and `hash1`, `hash2`, `hash3`, ... methods, since this is now supported through the core library on `Object`.
+
 ## 3.2.0
 
 * Make `Printer` significantly faster by reusing a single `StringBuffer` instance where possible.
@@ -10,8 +17,6 @@
   * Renamed `undefined` to the more intention revealing `ifNull`.
   * Added `ifEmpty` to print something specific for empty `Iterables`.
   * Added `map` and `cast` printers for more flexible printing.
-  * Added fully configurable object / `toString()` printer.
-  * Added `indent` and `dedent` printer.
 
 ## 3.1.0
 

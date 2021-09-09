@@ -121,9 +121,6 @@ Future<void> generateChild(int i) async {
   final types = generateTypes(i);
   final values = generateValues(i);
 
-  if (i > 0) {
-    out.writeln('import \'../../hash.dart\';');
-  }
   out.writeln('import \'../../tuple.dart\';');
   out.writeln();
   out.writeln('/// Tuple with $i element${i != 1 ? 's' : ''}.');
@@ -269,9 +266,9 @@ Future<void> generateChild(int i) async {
   {
     final hashCode = i == 0
         ? generator.nextInt(4294967296).toString()
-        : i <= 9
-            ? 'hash$i(${listify(values)})'
-            : 'hash(iterable)';
+        : i == 1
+            ? '${values.first}.hashCode'
+            : 'Object.hash(${listify(values)})';
     out.writeln();
     out.writeln('@override');
     out.writeln('int get hashCode => $hashCode;');

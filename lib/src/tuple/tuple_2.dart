@@ -1,4 +1,3 @@
-import '../../hash.dart';
 import '../../tuple.dart';
 
 /// Tuple with 2 elements.
@@ -73,5 +72,5 @@ class Tuple2<T1, T2> extends Tuple {
       (other is Tuple2 && first == other.first && second == other.second);
 
   @override
-  int get hashCode => hash2(first, second);
+  int get hashCode => Object.hash(first, second);
 }

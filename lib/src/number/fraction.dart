@@ -1,7 +1,6 @@
 import 'package:collection/collection.dart' show QueueList;
 import 'package:meta/meta.dart' show immutable;
 
-import '../../hash.dart';
 import '../../math.dart';
 import 'mixins/close_to.dart';
 
@@ -214,7 +213,7 @@ class Fraction implements Comparable<Fraction>, CloseTo<Fraction> {
       other is Fraction && a == other.a && b == other.b;
 
   @override
-  int get hashCode => hash2(a, b);
+  int get hashCode => Object.hash(a, b);
 
   @override
   int compareTo(Fraction other) => (a * other.b).compareTo(other.a * b);
