@@ -1,7 +1,6 @@
 import '../../../math.dart';
 import '../builder.dart';
 import '../printer.dart';
-import '../standard.dart';
 import '../string/pad.dart';
 import '../string/separate.dart';
 import 'sign.dart';
@@ -58,12 +57,12 @@ class FixedNumberPrinter<T extends num> extends Printer<T> {
     this.separator = '',
     Printer<T>? sign,
   })  : sign = sign ?? SignNumberPrinter<T>.omitPositiveSign(),
-        _integer = const StandardPrinter<String>()
+        _integer = const Printer<String>.standard()
             .mapIf(padding > 0,
                 (printer) => printer.padLeft(padding, characters[0]))
             .mapIf(separator.isNotEmpty,
                 (printer) => printer.separateRight(3, 0, separator)),
-        _fraction = const StandardPrinter<String>()
+        _fraction = const Printer<String>.standard()
             .mapIf(precision > 0,
                 (printer) => printer.padLeft(precision, characters[0]))
             .mapIf(separator.isNotEmpty,

@@ -4,34 +4,34 @@ import 'package:more/src/printer/object/object.dart';
 import 'package:more/tuple.dart';
 import 'package:test/test.dart';
 
-const standardString = StandardPrinter<String>();
-const standardInt = StandardPrinter<int>();
+const standardString = Printer<String>.standard();
+const standardInt = Printer<int>.standard();
 
 void main() {
   group('standard', () {
     test('untyped', () {
-      const printer = StandardPrinter();
+      const printer = Printer.standard();
       expect(printer(123), '123');
       expect(printer('abc'), 'abc');
     });
     test('typed', () {
-      const printer = StandardPrinter<num>();
+      const printer = Printer<num>.standard();
       expect(printer(123), '123');
       expect(printer(123.4), '123.4');
     });
   });
   group('literal', () {
     test('default', () {
-      const printer = LiteralPrinter<int>();
+      const printer = Printer<int>.literal();
       expect(printer(123), '');
     });
     test('untyped', () {
-      const printer = LiteralPrinter('hello');
+      const printer = Printer.literal('hello');
       expect(printer(123), 'hello');
       expect(printer('abc'), 'hello');
     });
     test('typed', () {
-      const printer = LiteralPrinter<num>('hello');
+      const printer = Printer<num>.literal('hello');
       expect(printer(123), 'hello');
       expect(printer(123.4), 'hello');
     });
@@ -45,8 +45,8 @@ void main() {
       });
       test('custom', () {
         const printer = SignNumberPrinter<int>(
-          negative: LiteralPrinter('--'),
-          positive: LiteralPrinter('++'),
+          negative: Printer.literal('--'),
+          positive: Printer.literal('++'),
         );
         expect(printer(-1), '--');
         expect(printer(1), '++');
@@ -75,8 +75,8 @@ void main() {
       });
       test('custom', () {
         const printer = SignNumberPrinter<double>(
-          negative: LiteralPrinter('--'),
-          positive: LiteralPrinter('++'),
+          negative: Printer.literal('--'),
+          positive: Printer.literal('++'),
         );
         expect(printer(-1.1), '--');
         expect(printer(1.1), '++');
@@ -687,7 +687,7 @@ void main() {
   group('sequence', () {
     test('default', () {
       const printer = SequencePrinter<String>(
-          [standardString, LiteralPrinter<String>('-'), standardString]);
+          [standardString, Printer.literal('-'), standardString]);
       expect(printer('1'), '1-1');
       expect(printer('12'), '12-12');
     });
@@ -845,7 +845,7 @@ void main() {
     test('printer', () {
       final printer = ObjectPrinter<Tuple>.static()
         ..add((object) => object.length,
-            printer: const StandardPrinter().around('"'));
+            printer: const Printer.standard().around('"'));
       expect(printer(const Tuple2(42, 'hello')), 'Tuple{"2"}');
     });
     test('omitNull', () {
@@ -889,7 +889,7 @@ void main() {
     });
     test('fieldName', () {
       final printer = ObjectPrinter<Tuple1<int>>.static(
-          fieldName: const StandardPrinter<String>().around('"'))
+          fieldName: const Printer<String>.standard().around('"'))
         ..add<int>((object) => object.first, name: 'first');
       expect(printer(const Tuple1(1)), 'Tuple1<int>{"first"=1}');
     });
@@ -901,7 +901,7 @@ void main() {
     });
     test('fieldValue', () {
       final printer = ObjectPrinter<Tuple1<int>>.static(
-          fieldValue: const StandardPrinter<String>().around('"'))
+          fieldValue: const Printer<String>.standard().around('"'))
         ..add<int>((object) => object.first);
       expect(printer(const Tuple1(1)), 'Tuple1<int>{"1"}');
     });
@@ -915,7 +915,7 @@ void main() {
   });
   group('indent', () {
     test('default', () {
-      final printer = const StandardPrinter().indent('**');
+      final printer = const Printer<String>.standard().indent('**');
       expect(printer(''), '');
       expect(printer('foo'), '**foo');
       expect(printer('foo\nbar'), '**foo\n**bar');
@@ -923,7 +923,8 @@ void main() {
       expect(printer(' zork '), '**zork');
     });
     test('firstPrefix', () {
-      final printer = const StandardPrinter().indent('**', firstPrefix: '!!');
+      final printer =
+          const Printer<String>.standard().indent('**', firstPrefix: '!!');
       expect(printer(''), '');
       expect(printer('foo'), '!!foo');
       expect(printer('foo\nbar'), '!!foo\n**bar');
@@ -931,8 +932,7 @@ void main() {
       expect(printer(' zork '), '!!zork');
     });
     test('trimWhitespace', () {
-      final printer =
-          const StandardPrinter().indent('**', trimWhitespace: false);
+      final printer = standardString.indent('**', trimWhitespace: false);
       expect(printer(''), '');
       expect(printer('foo'), '**foo');
       expect(printer('foo\nbar'), '**foo\n**bar');
@@ -940,7 +940,7 @@ void main() {
       expect(printer(' zork '), '** zork ');
     });
     test('indentEmpty', () {
-      final printer = const StandardPrinter().indent('**', indentEmpty: true);
+      final printer = standardString.indent('**', indentEmpty: true);
       expect(printer(''), '**');
       expect(printer('foo'), '**foo');
       expect(printer('foo\nbar'), '**foo\n**bar');
@@ -950,7 +950,7 @@ void main() {
   });
   group('dedent', () {
     test('default', () {
-      final printer = const StandardPrinter().dedent();
+      final printer = standardString.dedent();
       expect(printer(''), '');
       expect(printer('1\n2'), '1\n2');
       expect(printer('1\n\n2'), '1\n\n2');
@@ -962,7 +962,7 @@ void main() {
       expect(printer('   3\n  2\n 1'), '  3\n 2\n1');
     });
     test('whitespace', () {
-      final printer = const StandardPrinter().dedent(whitespace: '\t');
+      final printer = standardString.dedent(whitespace: '\t');
       expect(printer(''), '');
       expect(printer('1\n2'), '1\n2');
       expect(printer('1\n\n2'), '1\n\n2');
@@ -974,7 +974,7 @@ void main() {
       expect(printer('\t\t\t3\n\t\t2\n\t1'), '\t\t3\n\t2\n1');
     });
     test('ignoreEmpty', () {
-      final printer = const StandardPrinter().dedent(ignoreEmpty: false);
+      final printer = standardString.dedent(ignoreEmpty: false);
       expect(printer(''), '');
       expect(printer('1\n2'), '1\n2');
       expect(printer('1\n\n2'), '1\n\n2');

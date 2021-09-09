@@ -2,7 +2,6 @@ import 'package:meta/meta.dart';
 
 import '../../../functional.dart';
 import '../../../printer.dart';
-import '../standard.dart';
 import 'field.dart';
 import 'type.dart';
 import 'utils.dart';
@@ -41,7 +40,7 @@ class ObjectPrinter<T> extends Printer<T> {
     this.fieldValue,
     this.fieldSeparator = defaultFieldSeparator,
     this.afterFields = defaultAfterFields,
-  }) : type = LiteralPrinter<T>(T.toString());
+  }) : type = Printer<T>.literal(T.toString());
 
   /// Creates an object printer based on the dynamic type.
   ObjectPrinter.dynamic({
@@ -73,7 +72,7 @@ class ObjectPrinter<T> extends Printer<T> {
     Predicate2<T, F>? omitPredicate,
   }) =>
       addField(StandardField<T, F>(name, callback, omitNull, omitPredicate,
-          printer ?? StandardPrinter<F>()));
+          printer ?? Printer<F>.standard()));
 
   /// Adds a custom field printer.
   void addField(FieldPrinter<T> field) => fields.add(field);
