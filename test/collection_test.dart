@@ -2195,6 +2195,54 @@ void main() {
         expect('   3\n  2\n 1'.dedent(ignoreEmpty: false), '  3\n 2\n1');
       });
     });
+    group('wrap', () {
+      test('default', () {
+        expect('a'.wrap(4), 'a');
+        expect('a b'.wrap(4), 'a b');
+        expect('a b c'.wrap(4), 'a b\nc');
+        expect('aa bb cc'.wrap(4), 'aa\nbb\ncc');
+        expect('a\nb'.wrap(4), 'a\n\nb');
+        expect('1234'.wrap(4), '1234');
+        expect('12345'.wrap(4), '1234\n5');
+        expect('12345678'.wrap(4), '1234\n5678');
+        expect('123456789'.wrap(4), '1234\n5678\n9');
+      });
+      test('whitespace', () {
+        const whitespace = ' ';
+        expect('a'.wrap(4, whitespace: whitespace), 'a');
+        expect('a b'.wrap(4, whitespace: whitespace), 'a b');
+        expect('a b c'.wrap(4, whitespace: whitespace), 'a b\nc');
+        expect('aa bb cc'.wrap(4, whitespace: whitespace), 'aa\nbb\ncc');
+        expect('a\nb'.wrap(4, whitespace: whitespace), 'a\n\nb');
+        expect('1234'.wrap(4, whitespace: whitespace), '1234');
+        expect('12345'.wrap(4, whitespace: whitespace), '1234\n5');
+        expect('12345678'.wrap(4, whitespace: whitespace), '1234\n5678');
+        expect('123456789'.wrap(4, whitespace: whitespace), '1234\n5678\n9');
+      });
+      test('breakLongWords', () {
+        expect('a'.wrap(4, breakLongWords: false), 'a');
+        expect('a b'.wrap(4, breakLongWords: false), 'a b');
+        expect('a b c'.wrap(4, breakLongWords: false), 'a b\nc');
+        expect('aa bb cc'.wrap(4, breakLongWords: false), 'aa\nbb\ncc');
+        expect('a\nb'.wrap(4, breakLongWords: false), 'a\n\nb');
+        expect('1234'.wrap(4, breakLongWords: false), '1234');
+        expect('12345'.wrap(4, breakLongWords: false), '12345');
+        expect('12345678'.wrap(4, breakLongWords: false), '12345678');
+        expect('123456789'.wrap(4, breakLongWords: false), '123456789');
+      });
+    });
+    group('unwrap', () {
+      test('single', () {
+        expect('1'.unwrap(), '1');
+        expect('1\n2'.unwrap(), '1 2');
+        expect('1\n2\n3'.unwrap(), '1 2 3');
+      });
+      test('multiple', () {
+        expect('1\n\na'.unwrap(), '1\na');
+        expect('1\n2\n\na\nb'.unwrap(), '1 2\na b');
+        expect('1\n2\n3\n\na\nb\nc'.unwrap(), '1 2 3\na b c');
+      });
+    });
   });
   group('trie', () {
     group(

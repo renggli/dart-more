@@ -2,9 +2,7 @@
 
 ## 3.3.0 (unpublished)
 * Dart 2.14 requirement.
-* Improved `String` and `Printer` extensions:
-    * Added `indent` and `dedent` operations.
-    * Added `wrap` and `unwrap` operations.
+* Added `indent`/`dedent` and `wrap`/`unwrap` to `String`.
 * Deprecated `hashAll` and `hash1`, `hash2`, `hash3`, ... methods, since this is now supported through the core library on `Object`.
 
 ## 3.2.0
