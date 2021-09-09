@@ -2130,6 +2130,71 @@ void main() {
         expect('ABC'.toLowerCaseFirstCharacter(), 'aBC');
       });
     });
+    group('indent', () {
+      test('default', () {
+        expect(''.indent('*'), '');
+        expect('foo'.indent('*'), '*foo');
+        expect('foo\nbar'.indent('*'), '*foo\n*bar');
+        expect('foo\n\nbar'.indent('*'), '*foo\n\n*bar');
+        expect(' zork '.indent('*'), '*zork');
+      });
+      test('firstPrefix', () {
+        expect(''.indent('*', firstPrefix: '!'), '');
+        expect('foo'.indent('*', firstPrefix: '!'), '!foo');
+        expect('foo\nbar'.indent('*', firstPrefix: '!'), '!foo\n*bar');
+        expect('foo\n\nbar'.indent('*', firstPrefix: '!'), '!foo\n\n*bar');
+        expect(' zork '.indent('*', firstPrefix: '!'), '!zork');
+      });
+      test('trimWhitespace', () {
+        expect(''.indent('*', trimWhitespace: false), '');
+        expect('foo'.indent('*', trimWhitespace: false), '*foo');
+        expect('foo\nbar'.indent('*', trimWhitespace: false), '*foo\n*bar');
+        expect('foo\n\nbar'.indent('*', trimWhitespace: false), '*foo\n\n*bar');
+        expect(' zork '.indent('*', trimWhitespace: false), '* zork ');
+      });
+      test('indentEmpty', () {
+        expect(''.indent('*', indentEmpty: true), '*');
+        expect('foo'.indent('*', indentEmpty: true), '*foo');
+        expect('foo\nbar'.indent('*', indentEmpty: true), '*foo\n*bar');
+        expect('foo\n\nbar'.indent('*', indentEmpty: true), '*foo\n*\n*bar');
+        expect(' zork '.indent('*', indentEmpty: true), '*zork');
+      });
+    });
+    group('dedent', () {
+      test('default', () {
+        expect(''.dedent(), '');
+        expect('1\n2'.dedent(), '1\n2');
+        expect('1\n\n2'.dedent(), '1\n\n2');
+        expect(' 1\n\n 2'.dedent(), '1\n\n2');
+        expect(' 1'.dedent(), '1');
+        expect(' 1\n  2'.dedent(), '1\n 2');
+        expect('  2\n 1'.dedent(), ' 2\n1');
+        expect(' 1\n  2\n   3'.dedent(), '1\n 2\n  3');
+        expect('   3\n  2\n 1'.dedent(), '  3\n 2\n1');
+      });
+      test('whitespace', () {
+        expect(''.dedent(whitespace: '\t'), '');
+        expect('1\n2'.dedent(whitespace: '\t'), '1\n2');
+        expect('1\n\n2'.dedent(whitespace: '\t'), '1\n\n2');
+        expect('\t1\n\n\t2'.dedent(whitespace: '\t'), '1\n\n2');
+        expect('\t1'.dedent(whitespace: '\t'), '1');
+        expect('\t1\n\t\t2'.dedent(whitespace: '\t'), '1\n\t2');
+        expect('\t\t2\n\t1'.dedent(whitespace: '\t'), '\t2\n1');
+        expect('\t1\n\t\t2\n\t\t\t3'.dedent(whitespace: '\t'), '1\n\t2\n\t\t3');
+        expect('\t\t\t3\n\t\t2\n\t1'.dedent(whitespace: '\t'), '\t\t3\n\t2\n1');
+      });
+      test('ignoreEmpty', () {
+        expect(''.dedent(ignoreEmpty: false), '');
+        expect('1\n2'.dedent(ignoreEmpty: false), '1\n2');
+        expect('1\n\n2'.dedent(ignoreEmpty: false), '1\n\n2');
+        expect(' 1\n\n 2'.dedent(ignoreEmpty: false), ' 1\n\n 2');
+        expect(' 1'.dedent(ignoreEmpty: false), '1');
+        expect(' 1\n  2'.dedent(ignoreEmpty: false), '1\n 2');
+        expect('  2\n 1'.dedent(ignoreEmpty: false), ' 2\n1');
+        expect(' 1\n  2\n   3'.dedent(ignoreEmpty: false), '1\n 2\n  3');
+        expect('   3\n  2\n 1'.dedent(ignoreEmpty: false), '  3\n 2\n1');
+      });
+    });
   });
   group('trie', () {
     group(
