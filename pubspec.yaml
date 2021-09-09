@@ -1,12 +1,12 @@
 name: more
-version: 3.2.1
+version: 3.3.0
 
 homepage: https://github.com/renggli/dart-more
 description: More Dart — Literally. Collecting, iterating, caching, mathematics,
   matching, ordering, and formatting easily.
 
 environment:
-  sdk: '>=2.13.0 <3.0.0'
+  sdk: '>=2.14.0 <3.0.0'
 dependencies:
   characters: ^1.1.0
   clock: ^1.1.0
