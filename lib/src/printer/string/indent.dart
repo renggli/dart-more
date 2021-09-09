@@ -2,7 +2,7 @@ import '../../char_matcher/whitespace.dart';
 import '../../collection/string/indent_dedent.dart';
 import '../printer.dart';
 
-extension IndentDedentPrinterExtension<T> on Printer<T> {
+extension IndentPrinterExtension<T> on Printer<T> {
   /// Adds a [prefix] to the beginning of each line.
   Printer<T> indent(
     String prefix, {
