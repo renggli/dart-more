@@ -4,6 +4,7 @@ import 'package:more/number.dart';
 import 'package:test/test.dart';
 
 const epsilon = 1e-5;
+
 Matcher isCloseTo<T extends CloseTo<T>>(T other) => isA<T>()
     .having((value) => value.closeTo(other, epsilon), 'closeTo', isTrue);
 
