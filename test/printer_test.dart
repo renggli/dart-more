@@ -812,10 +812,15 @@ void main() {
       expect(printer(1), '2');
       expect(printer(12), '24');
     });
-    test('string', () {
+    test('literal', () {
       final printer = Printer<int>.wrap('*');
       expect(printer(1), '*');
       expect(printer(12), '*');
+    });
+    test('string', () {
+      final printer = Printer<int>.wrap(const [standardInt, standardInt]);
+      expect(printer(1), '11');
+      expect(printer(12), '1212');
     });
     test('invalid', () {
       expect(() => Printer<String>.wrap(standardInt), throwsArgumentError);

@@ -1,7 +1,7 @@
 import '../functional/types/mapping.dart';
 import 'printer.dart';
 
-/// Pads the string on the left if it is shorter than width.
+/// Evaluates the callback with the value to retrieve the string.
 class PluggablePrinter<T> extends Printer<T> {
   const PluggablePrinter(this.callback);
 
