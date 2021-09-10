@@ -8,7 +8,7 @@ More Dart — Literally
 [![GitHub Stars](https://img.shields.io/github/stars/renggli/dart-more.svg)](https://github.com/renggli/dart-more/stargazers)
 [![GitHub License](https://img.shields.io/badge/license-MIT-blue.svg)](https://raw.githubusercontent.com/renggli/dart-more/main/LICENSE)
 
-Various extensions that make Dart a better place:
+A collection of extensively tested extensions that make Dart a better place:
 
 - `async.dart` provides numerous helpers to make async code better.
 - `cache.dart` is a collection of different caching strategies and their expiry policy.
@@ -16,7 +16,6 @@ Various extensions that make Dart a better place:
 - `collection.dart` is a collection of collection types: bi-map, bit-list, multi-set, set and list multi-map, range, and string.
 - `feature.dart` provides information about the runtime environment.
 - `functional.dart` provides a collection of functional programming structures.
-- `hash.dart` combines multiple hash values.
 - `iterable.dart` is a collection of iterables and iterators.
 - `math.dart` is a collection of common mathematical functions.
 - `number.dart` provides fractional, complex and quaternion arithmetic.
@@ -52,7 +51,6 @@ import 'package:more/cache.dart';
 import 'package:more/char_matcher.dart';
 import 'package:more/collection.dart';
 import 'package:more/feature.dart';
-import 'package:more/hash.dart';
 import 'package:more/iterable.dart';
 import 'package:more/math.dart';
 import 'package:more/functional.dart';
