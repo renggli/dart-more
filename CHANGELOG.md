@@ -1,5 +1,8 @@
 # Changelog
 
+## 3.4.0 (unpublished)
+* Remove deprecated `hashAll` and `hash1`, `hash2`, `hash3`, ... methods.
+
 ## 3.3.0
 * Dart 2.14 requirement.
 * Added `indent`/`dedent` and `wrap`/`unwrap` to `String`.
