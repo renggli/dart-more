@@ -6,11 +6,15 @@ extension WrapUnwrapStringExtension on String {
     int width, {
     Pattern? whitespace,
     bool breakLongWords = true,
-  }) =>
-      split('\n')
-          .map((line) => line._wrap(
-              width, whitespace ?? defaultWhitespace, breakLongWords))
-          .join('\n\n');
+  }) {
+    if (width < 1) {
+      throw RangeError.range(width, 1, null, 'width', 'width must be positive');
+    }
+    return split('\n')
+        .map((line) =>
+            line._wrap(width, whitespace ?? defaultWhitespace, breakLongWords))
+        .join('\n');
+  }
 
   String _wrap(int width, Pattern whitespace, bool breakLongWords) {
     final result = <String>[];
@@ -51,7 +55,7 @@ extension WrapUnwrapStringExtension on String {
   /// Unwraps a long text.
   String unwrap() => split('\n\n')
       .map((paragraph) => paragraph.replaceAll('\n', ' '))
-      .join('\n');
+      .join('\n\n');
 }
 
 final defaultWhitespace = RegExp(r'\s+');
