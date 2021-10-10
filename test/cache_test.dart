@@ -180,9 +180,9 @@ void main() {
     persistentCacheTests(newCache);
   });
   group('expiry', () {
-    var offset = Duration.zero;
-    tearDown(() => offset = Duration.zero);
+    late Duration offset;
     final current = DateTime(2020);
+    setUp(() => offset = Duration.zero);
     @isTest
     void clockTest(String name, Future Function() body) =>
         test(name, () => withClock(Clock(() => current.add(offset)), body));
