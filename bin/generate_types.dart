@@ -163,6 +163,62 @@ Future<void> generateThrowing() async {
   await format(file);
 }
 
+Future<void> generateTest() async {
+  final file = File('test/functional_type_test.dart');
+  final out = file.openWrite();
+
+  void nest(String type, String name, void Function() callback) {
+    out.writeln('$type(\'$name\', () {');
+    callback();
+    out.writeln('});');
+  }
+
+  out.writeln('import \'package:more/functional.dart\';');
+  out.writeln('import \'package:test/test.dart\';');
+  out.writeln();
+  out.writeln('void main() {');
+
+  nest('group', 'constant', () {
+    for (var i = 0; i < max; i++) {
+      nest('test', 'constantFunction$i', () {
+        final types = generify([for (var j = 0; j < i; j++) 'int', 'String']);
+        final values = List.generate(i, (i) => i).join(', ');
+        out.writeln('final function = constantFunction$i$types(\'default\');');
+        out.writeln('expect(function($values), \'default\');');
+      });
+    }
+  });
+  nest('group', 'empty', () {
+    for (var i = 0; i < max; i++) {
+      nest('test', 'emptyFunction$i', () {
+        final values = List.generate(i, (i) => i).join(', ');
+        out.writeln(
+            'expect(() => emptyFunction$i($values), isNot(throwsException));');
+      });
+    }
+  });
+  nest('test', 'identity', () {
+    out.writeln('expect(identityFunction(42), 42);');
+    out.writeln('expect(identityFunction(\'foo\'), \'foo\');');
+  });
+  nest('group', 'throwing', () {
+    out.writeln('final throwable = UnimplementedError();');
+    for (var i = 0; i < max; i++) {
+      nest('test', 'throwFunction$i', () {
+        final types = generify([for (var j = 0; j < i; j++) 'int', 'void']);
+        final values = List.generate(i, (i) => i).join(', ');
+        out.writeln('final function = throwFunction$i$types(throwable);');
+        out.writeln(
+            'expect(() => function($values), throwsUnimplementedError);');
+      });
+    }
+  });
+  out.writeln('}');
+
+  await out.close();
+  await format(file);
+}
+
 Future<void> main() => Future.wait([
       generateCallback(),
       generateMapping(),
@@ -171,4 +227,5 @@ Future<void> main() => Future.wait([
       generateIdentity(),
       generateConstant(),
       generateThrowing(),
+      generateTest(),
     ]);
