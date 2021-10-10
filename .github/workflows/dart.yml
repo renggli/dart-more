@@ -36,4 +36,6 @@ jobs:
       - name: "Upload coverage"
         uses: codecov/codecov-action@v2
         with:
+          token: ${{ secrets.CODECOV_TOKEN }}
           files: ./test/all_test.dart.vm.json
+          verbose: true
