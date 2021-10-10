@@ -1,4 +1,5 @@
 import 'package:clock/clock.dart';
+import 'package:meta/meta.dart';
 import 'package:more/cache.dart';
 import 'package:test/test.dart';
 
@@ -180,38 +181,17 @@ void main() {
   });
   group('expiry', () {
     var offset = Duration.zero;
-    final current = DateTime.now();
+    tearDown(() => offset = Duration.zero);
+    final current = DateTime(2020);
+    @isTest
     void clockTest(String name, Future Function() body) =>
-        () => withClock(Clock(() => current.add(offset)), body);
-
+        test(name, () => withClock(Clock(() => current.add(offset)), body));
     Cache<int, String> newUpdateExpireCache(Loader<int, String> loader) =>
         Cache.expiry(loader: loader, updateExpiry: const Duration(seconds: 20));
-
     Cache<int, String> newAccessExpireCache(Loader<int, String> loader) =>
         Cache.expiry(loader: loader, accessExpiry: const Duration(seconds: 20));
-
     statelessCacheTests(newUpdateExpireCache);
     persistentCacheTests(newUpdateExpireCache);
-
-    group('constructors', () {
-      test('missing expiry', () {
-        expect(
-            () => Cache.expiry(loader: immediateLoader), throwsArgumentError);
-      });
-      test('negative access expiry', () {
-        expect(
-            () => Cache.expiry(
-                loader: immediateLoader, accessExpiry: Duration.zero),
-            throwsArgumentError);
-      });
-      test('negative update expiry', () {
-        expect(
-            () => Cache.expiry(
-                loader: immediateLoader, updateExpiry: Duration.zero),
-            throwsArgumentError);
-      });
-    });
-
     group('update expire cache', () {
       clockTest('expire a set value after it has been updated', () async {
         final cache = newUpdateExpireCache(immediateLoader);
@@ -229,7 +209,7 @@ void main() {
         await expectLater(cache.get(1), completion('1'));
         offset = const Duration(seconds: 20);
         await expectLater(cache.getIfPresent(1), completion('1'));
-        offset = const Duration(seconds: 21);
+        offset = const Duration(seconds: 40);
         await expectLater(cache.getIfPresent(1), completion(isNull));
         await expectLater(cache.size(), completion(0));
       });
@@ -306,17 +286,8 @@ void main() {
   group('lru', () {
     Cache<int, String> newCache(Loader<int, String> loader) =>
         Cache.lru(loader: loader, maximumSize: 5);
-
-    group('constructors', () {
-      test('non positive max size', () {
-        expect(() => Cache.lru(loader: immediateLoader, maximumSize: 0),
-            throwsArgumentError);
-      });
-    });
-
     statelessCacheTests(newCache);
     persistentCacheTests(newCache);
-
     cacheEvictionTest(
         newCache, 'linear expiry', [0, 1, 2, 3, 4, 5, 6], [2, 3, 4, 5, 6]);
     cacheEvictionTest(
@@ -325,14 +296,6 @@ void main() {
   group('fifo', () {
     Cache<int, String> newCache(Loader<int, String> loader) =>
         Cache.fifo(loader: loader, maximumSize: 5);
-
-    group('constructors', () {
-      test('non positive max size', () {
-        expect(() => Cache.fifo(loader: immediateLoader, maximumSize: 0),
-            throwsArgumentError);
-      });
-    });
-
     statelessCacheTests(newCache);
     persistentCacheTests(newCache);
     cacheEvictionTest(

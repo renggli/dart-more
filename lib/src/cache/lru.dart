@@ -12,7 +12,8 @@ class LruCache<K, V> extends Cache<K, V> {
 
   final Map<K, CacheItem<V>> cached = {};
 
-  LruCache(this.loader, this.maximumSize);
+  LruCache(this.loader, this.maximumSize)
+      : assert(maximumSize > 0, "Maximum size must be positive.");
 
   @override
   Future<V?> getIfPresent(K key) async => promote(key)?.value;

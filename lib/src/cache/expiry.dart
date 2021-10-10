@@ -10,30 +10,32 @@ import 'loader.dart';
 class ExpiryCache<K, V> extends Cache<K, V> {
   final Loader<K, V> loader;
 
-  final Duration createExpiry;
+  final Duration? updateExpiry;
 
-  final Duration updateExpiry;
-
-  final Duration accessExpiry;
+  final Duration? accessExpiry;
 
   final Map<K, ExpiryCacheItem<V>> cached = {};
 
   ExpiryCache(this.loader, this.updateExpiry, this.accessExpiry)
-      : createExpiry =
-            accessExpiry < updateExpiry ? updateExpiry : accessExpiry;
+      : assert(updateExpiry != null || accessExpiry != null,
+            'Either update or access expiry must be provided.'),
+        assert(updateExpiry == null || updateExpiry > Duration.zero,
+            'Update expiry must be positive.'),
+        assert(accessExpiry == null || accessExpiry > Duration.zero,
+            'Access expiry must be positive.');
 
   @override
   Future<V> get(K key) async {
     final now = clock.now();
     var item = cached[key];
     if (item == null) {
-      item = cached[key] = ExpiryCacheItem(loader(key), now.add(createExpiry));
+      item = cached[key] = ExpiryCacheItem(loader(key), now);
+      item.refreshExpiry(now, updateExpiry);
     } else if (item.isExpired(now)) {
       item.value = loader(key);
-      item.expiry = max(item.expiry, now.add(updateExpiry));
-    } else {
-      item.expiry = max(item.expiry, now.add(accessExpiry));
+      item.refreshExpiry(now, updateExpiry);
     }
+    item.refreshExpiry(now, accessExpiry);
     return item.value;
   }
 
@@ -46,9 +48,8 @@ class ExpiryCache<K, V> extends Cache<K, V> {
     } else if (item.isExpired(now)) {
       cached.remove(key);
       return null;
-    } else {
-      item.expiry = max(item.expiry, now.add(accessExpiry));
     }
+    item.refreshExpiry(now, accessExpiry);
     return item.value;
   }
 
@@ -57,11 +58,12 @@ class ExpiryCache<K, V> extends Cache<K, V> {
     final now = clock.now();
     var item = cached[key];
     if (item == null) {
-      item = cached[key] = ExpiryCacheItem(value, now.add(createExpiry));
+      item = cached[key] = ExpiryCacheItem(value, now);
     } else {
       item.value = value;
-      item.expiry = max(item.expiry, now.add(updateExpiry));
     }
+    item.refreshExpiry(now, updateExpiry);
+    item.refreshExpiry(now, accessExpiry);
     return item.value;
   }
 
@@ -94,6 +96,13 @@ class ExpiryCacheItem<V> extends CacheItem<V> {
   ExpiryCacheItem(FutureOr<V> value, this.expiry) : super(value);
 
   bool isExpired(DateTime now) => now.isAfter(expiry);
-}
 
-DateTime max(DateTime a, DateTime b) => a.isAfter(b) ? a : b;
+  void refreshExpiry(DateTime now, Duration? duration) {
+    if (duration != null) {
+      final updated = now.add(duration);
+      if (updated.isAfter(expiry)) {
+        expiry = updated;
+      }
+    }
+  }
+}

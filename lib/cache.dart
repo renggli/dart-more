@@ -29,44 +29,24 @@ abstract class Cache<K, V> {
   /// Note that cached items do not magically disappear when they expire.
   /// Manually call [reap()], or setup a timer to regularly free items.
   factory Cache.expiry(
-      {required Loader<K, V> loader,
-      Duration? updateExpiry,
-      Duration? accessExpiry}) {
-    if (updateExpiry == null && accessExpiry == null) {
-      throw ArgumentError(
-          "Either 'updateExpiry' or 'accessExpiry' must be provided.");
-    }
-    if (updateExpiry != null && updateExpiry.inMicroseconds <= 0) {
-      throw ArgumentError("Negative 'updateExpire' provided.");
-    }
-    if (accessExpiry != null && accessExpiry.inMicroseconds <= 0) {
-      throw ArgumentError("Negative 'accessExpiry' provided.");
-    }
-    return ExpiryCache<K, V>(
-        loader, updateExpiry ?? Duration.zero, accessExpiry ?? Duration.zero);
-  }
+          {required Loader<K, V> loader,
+          Duration? updateExpiry,
+          Duration? accessExpiry}) =>
+      ExpiryCache(loader, updateExpiry, accessExpiry);
 
   /// Constructs a First-in/First-out (FIFO) cache.
   ///
   /// The [loader] defines the function to construct items for the cache; and
   /// [maximumSize] defines the maximum number of items cached.
-  factory Cache.fifo({required Loader<K, V> loader, int maximumSize = 100}) {
-    if (maximumSize <= 0) {
-      throw ArgumentError("Non-positive 'maximumSize' provided.");
-    }
-    return FifoCache<K, V>(loader, maximumSize);
-  }
+  factory Cache.fifo({required Loader<K, V> loader, int maximumSize = 100}) =>
+      FifoCache<K, V>(loader, maximumSize);
 
   /// Constructs a Least Recently Used (LRU) cache.
   ///
   /// The [loader] defines the function to construct items for the cache; and
   /// [maximumSize] defines the maximum number of items cached.
-  factory Cache.lru({required Loader<K, V> loader, int maximumSize = 100}) {
-    if (maximumSize <= 0) {
-      throw ArgumentError("Non-positive 'maximumSize' provided.");
-    }
-    return LruCache<K, V>(loader, maximumSize);
-  }
+  factory Cache.lru({required Loader<K, V> loader, int maximumSize = 100}) =>
+      LruCache<K, V>(loader, maximumSize);
 
   /// Unnamed default constructor.
   const Cache();
