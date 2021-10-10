@@ -383,6 +383,10 @@ void main() {
         expect(either.hashCode == otherEither.hashCode, isFalse);
         expect(either.hashCode == either.swap().hashCode, isFalse);
       });
+      test('toString', () {
+        expect(
+            either.toString(), "Instance of 'RightEither<int, bool>'[$value]");
+      });
     });
   });
 }
