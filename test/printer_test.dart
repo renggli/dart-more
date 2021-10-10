@@ -829,6 +829,10 @@ void main() {
     });
   });
   group('object', () {
+    test('default', () {
+      final printer = ObjectPrinter<Tuple>(Printer.literal('*'));
+      expect(printer(const Tuple2(42, 'hello')), '*');
+    });
     test('static', () {
       final printer = ObjectPrinter<Tuple>.static();
       expect(printer(const Tuple2(42, 'hello')), 'Tuple');

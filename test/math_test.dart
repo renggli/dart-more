@@ -178,6 +178,7 @@ void main() {
     test('asinh', () {
       expect(1.asinh(), closeTo(0.881373587019543, epsilon));
       expect(0.asinh(), closeTo(0, epsilon));
+      expect(double.negativeInfinity.asinh(), double.negativeInfinity);
     });
     test('tanh', () {
       expect(0.tanh(), closeTo(0, epsilon));
