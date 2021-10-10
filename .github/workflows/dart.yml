@@ -36,7 +36,7 @@ jobs:
       - name: "Format coverage"
         run: |
           dart pub global activate coverage
-          dart pub global run coverage:format_coverage --base-directory=. --report-on=lib/ --packages=.packages --lcov --in=./test/all_test.dart.vm.json --out=./test/all_test.dart.lcov
-          rm ./test/all_test.dart.vm.json
+          dart pub global run coverage:format_coverage --base-directory=. --report-on=lib/ --packages=.packages --lcov --in=test/all_test.dart.vm.json --out=test/all_test.dart.lcov
+          rm test/all_test.dart.vm.json
       - name: "Upload coverage"
         uses: codecov/codecov-action@v2
