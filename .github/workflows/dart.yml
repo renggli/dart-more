@@ -35,8 +35,8 @@ jobs:
         run: dart test --platform chrome test test/all_test.dart
       - name: "Format coverage"
         run: |
-          pub global activate coverage
-          pub global run coverage:pub global run coverage:format_coverage --base-directory=. --report-on=lib/ --packages=.packages --lcov --in=./test/all_test.dart.vm.json --out=./test/all_test.dart.lcov
+          dart pub global activate coverage
+          dart pub global run coverage:format_coverage --base-directory=. --report-on=lib/ --packages=.packages --lcov --in=./test/all_test.dart.vm.json --out=./test/all_test.dart.lcov
           rm ./test/all_test.dart.vm.json
       - name: "Upload coverage"
         uses: codecov/codecov-action@v2
