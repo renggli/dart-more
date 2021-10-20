@@ -2,9 +2,11 @@ import 'package:meta/meta.dart';
 
 import '../../../functional.dart';
 import '../../../printer.dart';
+import 'config.dart';
 import 'field.dart';
+import 'field_callback.dart';
+import 'field_value.dart';
 import 'type.dart';
-import 'utils.dart';
 
 /// Configurable printer for standard objects.
 class ObjectPrinter<T> extends Printer<T> {
@@ -63,15 +65,41 @@ class ObjectPrinter<T> extends Printer<T> {
     this.afterFields = defaultAfterFields,
   });
 
-  /// Adds a standard field printer.
+  /// Adds a callback field printer.
+  @Deprecated('Use `ObjectPrinter.addCallback` instead.')
   void add<F>(
     Map1<T, F> callback, {
     String? name,
     Printer<F>? printer,
-    bool omitNull = false,
+    bool omitNull = defaultOmitNull,
     Predicate2<T, F>? omitPredicate,
   }) =>
-      addField(StandardField<T, F>(name, callback, omitNull, omitPredicate,
+      addCallback<F>(callback,
+          name: name,
+          printer: printer,
+          omitNull: omitNull,
+          omitPredicate: omitPredicate);
+
+  /// Adds a callback field printer.
+  void addCallback<F>(
+    Map1<T, F> callback, {
+    String? name,
+    Printer<F>? printer,
+    bool omitNull = defaultOmitNull,
+    Predicate2<T, F>? omitPredicate,
+  }) =>
+      addField(FieldCallback<T, F>(name, callback, omitNull, omitPredicate,
+          printer ?? Printer<F>.standard()));
+
+  /// Adds a value field printer.
+  void addValue<F>(
+    F value, {
+    String? name,
+    Printer<F>? printer,
+    bool omitNull = defaultOmitNull,
+    Predicate1<F>? omitPredicate,
+  }) =>
+      addField(FieldValue<T, F>(name, value, omitNull, omitPredicate,
           printer ?? Printer<F>.standard()));
 
   /// Adds a custom field printer.
@@ -122,34 +150,4 @@ class ObjectPrinter<T> extends Printer<T> {
       field.printOn(object, buffer);
     }
   }
-}
-
-class StandardField<T, F> extends FieldPrinter<T> {
-  StandardField(this.name, this.callback, this.omitNull, this.omitPredicate,
-      this.printer);
-
-  @override
-  final String? name;
-  final Map1<T, F> callback;
-  final bool omitNull;
-  final Predicate2<T, F>? omitPredicate;
-  final Printer<F> printer;
-
-  @override
-  bool isOmitted(T object) {
-    if (omitNull || omitPredicate != null) {
-      final value = callback(object);
-      if (omitNull && value == null) {
-        return true;
-      }
-      if (omitPredicate != null && omitPredicate!(object, value)) {
-        return true;
-      }
-    }
-    return false;
-  }
-
-  @override
-  void printOn(T object, StringBuffer buffer) =>
-      printer.printOn(callback(object), buffer);
 }

@@ -9,3 +9,6 @@ const defaultFieldSeparator = ', ';
 
 /// Default string to print after the fields.
 const defaultAfterFields = '}';
+
+/// Default value to omit null values.
+const defaultOmitNull = false;

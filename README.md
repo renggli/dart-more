@@ -55,7 +55,7 @@ import 'package:more/feature.dart';
 import 'package:more/iterable.dart';
 import 'package:more/math.dart';
 import 'package:more/functional.dart';
-import 'package:more/utils.dart';
+import 'package:more/config.dart';
 import 'package:more/ordering.dart';
 import 'package:more/printer.dart';
 import 'package:more/tuple.dart';
