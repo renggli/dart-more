@@ -20,4 +20,5 @@ export 'src/printer/string/pad.dart' show PadPrinterExtension;
 export 'src/printer/string/separate.dart' show SeparatePrinterExtension;
 export 'src/printer/string/trim.dart' show TrimPrinterExtension;
 export 'src/printer/string/truncate.dart' show TruncatePrinterExtension;
+export 'src/printer/to_string.dart' show ToStringPrinter;
 export 'src/printer/transform.dart' show TransformPrinterExtension;

@@ -2,6 +2,8 @@
 
 ## 3.4.0 (unpublished)
 * Remove deprecated `hashAll` and `hash1`, `hash2`, `hash3`, ... methods.
+* Add `ObjectPrinter.addValue` for more dynamic object printing.
+* Add `ToStringPrinter` mixin for simpler use of `ObjectPrinter`.
 
 ## 3.3.0
 * Dart 2.14 requirement.
@@ -18,6 +20,7 @@
   * Renamed `undefined` to the more intention revealing `ifNull`.
   * Added `ifEmpty` to print something specific for empty `Iterables`.
   * Added `map` and `cast` printers for more flexible printing.
+  * Add initial version of the `ObjectPrinter`.
 
 ## 3.1.0
 
