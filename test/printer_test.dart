@@ -1,6 +1,5 @@
 import 'package:more/math.dart';
 import 'package:more/printer.dart';
-import 'package:more/src/printer/object/object.dart';
 import 'package:more/tuple.dart';
 import 'package:test/test.dart';
 

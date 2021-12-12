@@ -1,7 +1,7 @@
 import 'package:meta/meta.dart';
 
 import '../../../functional.dart';
-import '../../../printer.dart';
+import '../printer.dart';
 import 'config.dart';
 import 'field.dart';
 import 'field_callback.dart';

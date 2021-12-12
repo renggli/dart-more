@@ -1,5 +1,5 @@
 import '../../../functional.dart';
-import '../../../printer.dart';
+import '../printer.dart';
 import 'field.dart';
 
 /// A field that is computed from a callback.

@@ -2,7 +2,7 @@ import 'dart:async' show Future, FutureOr;
 
 import 'package:clock/clock.dart';
 
-import '../../cache.dart';
+import 'cache.dart';
 import 'item.dart';
 import 'loader.dart';
 

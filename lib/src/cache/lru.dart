@@ -1,6 +1,6 @@
 import 'dart:async' show Future, FutureOr;
 
-import '../../cache.dart';
+import 'cache.dart';
 import 'item.dart';
 import 'loader.dart';
 

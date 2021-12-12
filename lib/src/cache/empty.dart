@@ -1,6 +1,7 @@
 import 'dart:async' show Future, FutureOr;
 
-import '../../cache.dart';
+import 'cache.dart';
+import 'loader.dart';
 
 /// An empty or null cache, useful mostly for testing.
 class EmptyCache<K, V> extends Cache<K, V> {

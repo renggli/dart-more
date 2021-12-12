@@ -1,5 +1,5 @@
 import '../../../functional.dart';
-import '../../../printer.dart';
+import '../printer.dart';
 import 'field.dart';
 
 /// A field with a constant value.

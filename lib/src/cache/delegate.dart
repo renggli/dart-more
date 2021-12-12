@@ -1,6 +1,6 @@
 import 'dart:async' show Future, FutureOr;
 
-import '../../cache.dart';
+import 'cache.dart';
 
 /// A cache that delegates to another one.
 class DelegateCache<K, V> extends Cache<K, V> {
