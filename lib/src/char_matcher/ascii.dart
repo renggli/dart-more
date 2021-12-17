@@ -1,4 +1,4 @@
-import '../../char_matcher.dart';
+import 'char_matcher.dart';
 
 class AsciiCharMatcher extends CharMatcher {
   const AsciiCharMatcher();

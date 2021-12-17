@@ -1,4 +1,4 @@
-import '../../char_matcher.dart';
+import 'char_matcher.dart';
 
 class RangesCharMatcher extends CharMatcher {
   final int length;

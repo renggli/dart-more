@@ -1,5 +1,5 @@
-import '../../char_matcher.dart';
 import '../collection/bitlist.dart';
+import 'char_matcher.dart';
 
 class LookupCharMatcher extends CharMatcher {
   final int start;

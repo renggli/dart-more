@@ -1,6 +1,6 @@
-import '../../char_matcher.dart';
 import '../collection/bitlist.dart';
 import 'any.dart';
+import 'char_matcher.dart';
 import 'lookup.dart';
 import 'none.dart';
 import 'range.dart';

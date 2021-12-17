@@ -1,5 +1,5 @@
-import '../../char_matcher.dart';
 import 'any.dart';
+import 'char_matcher.dart';
 
 class NoneCharMatcher extends CharMatcher {
   const NoneCharMatcher();

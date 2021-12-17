@@ -1,6 +1,6 @@
 import 'package:meta/meta.dart';
 
-import '../../char_matcher.dart';
+import 'char_matcher.dart';
 
 @immutable
 class CharMatch extends Match {

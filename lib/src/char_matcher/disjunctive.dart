@@ -1,5 +1,5 @@
-import '../../char_matcher.dart';
 import 'any.dart';
+import 'char_matcher.dart';
 import 'none.dart';
 
 class DisjunctiveCharMatcher extends CharMatcher {
