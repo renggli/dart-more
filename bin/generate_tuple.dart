@@ -37,11 +37,14 @@ String generify(Iterable<String> types) =>
 String capitalize(String value) =>
     value.replaceRange(0, 1, value[0].toUpperCase());
 
-/// Library file.
-final File parentFile = File('lib/tuple.dart');
+/// Export file.
+final File exportFile = File('lib/tuple.dart');
 
-/// Tuple filename.
-File childFile(int i) => File('lib/src/tuple/tuple_$i.dart');
+/// Abstract file.
+final File abstractFile = File('lib/src/tuple/tuple.dart');
+
+/// Implementation file.
+File implementationFile(int i) => File('lib/src/tuple/tuple_$i.dart');
 
 /// Library file.
 final File testFile = File('test/tuple_test.dart');
@@ -53,18 +56,25 @@ final Random generator = Random(42);
 Future<void> format(File file) async =>
     Process.run('dart', ['format', '--fix', file.absolute.path]);
 
-Future<void> generateParent() async {
-  final file = parentFile;
+Future<void> generateExport() async {
+  final file = exportFile;
   final out = file.openWrite();
   out.writeln('/// Tuple data type.');
+  out.writeln('export \'src/tuple/tuple.dart\';');
+  for (var i = 0; i < max; i++) {
+    out.writeln('export \'src/tuple/tuple_$i.dart\';');
+  }
+  await out.close();
+  await format(file);
+}
+
+Future<void> generateAbstract() async {
+  final file = abstractFile;
+  final out = file.openWrite();
   out.writeln('import \'package:meta/meta.dart\' show immutable;');
   out.writeln();
   for (var i = 0; i < max; i++) {
-    out.writeln('import \'src/tuple/tuple_$i.dart\';');
-  }
-  out.writeln();
-  for (var i = 0; i < max; i++) {
-    out.writeln('export \'src/tuple/tuple_$i.dart\';');
+    out.writeln('import \'tuple_$i.dart\';');
   }
   out.writeln();
   out.writeln('/// Abstract tuple class.');
@@ -115,13 +125,19 @@ Future<void> generateParent() async {
   await format(file);
 }
 
-Future<void> generateChild(int i) async {
-  final file = childFile(i);
+Future<void> generateImplementation(int i) async {
+  final file = implementationFile(i);
   final out = file.openWrite();
   final types = generateTypes(i);
   final values = generateValues(i);
 
-  out.writeln('import \'../../tuple.dart\';');
+  out.writeln('import \'tuple.dart\';');
+  if (i > 0) {
+    out.writeln('import \'tuple_${i - 1}.dart\';');
+  }
+  if (i < max - 1) {
+    out.writeln('import \'tuple_${i + 1}.dart\';');
+  }
   out.writeln();
   out.writeln('/// Tuple with $i element${i != 1 ? 's' : ''}.');
   out.writeln('class Tuple$i${generify(types)} extends Tuple {');
@@ -450,7 +466,8 @@ Future<void> generateTest() async {
 }
 
 Future<void> main() => Future.wait([
-      generateParent(),
-      for (var i = 0; i < max; i++) generateChild(i),
+      generateExport(),
+      generateAbstract(),
+      for (var i = 0; i < max; i++) generateImplementation(i),
       generateTest(),
     ]);

@@ -1,4 +1,6 @@
-import '../../tuple.dart';
+import 'tuple.dart';
+import 'tuple_4.dart';
+import 'tuple_6.dart';
 
 /// Tuple with 5 elements.
 class Tuple5<T1, T2, T3, T4, T5> extends Tuple {
