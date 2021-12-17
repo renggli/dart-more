@@ -1,18 +1,14 @@
 import '../../iterable.dart';
-import '../../ordering.dart';
+import 'ordering.dart';
 
 class ExplicitOrdering<T> extends Ordering<T> {
-  final Map<T, int> ranking;
-
-  factory ExplicitOrdering(Iterable<T> iterable) {
-    final ranking = <T, int>{};
+  ExplicitOrdering(Iterable<T> iterable) {
     for (final element in iterable.indexed()) {
       ranking[element.value] = element.index;
     }
-    return ExplicitOrdering<T>._(ranking);
   }
 
-  const ExplicitOrdering._(this.ranking);
+  final Map<T, int> ranking = {};
 
   @override
   int compare(T a, T b) => rank(a) - rank(b);

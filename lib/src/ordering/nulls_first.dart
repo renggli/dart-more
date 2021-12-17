@@ -1,9 +1,9 @@
-import '../../ordering.dart';
+import 'ordering.dart';
 
 class NullsFirstOrdering<T> extends Ordering<T?> {
-  final Ordering<T> ordering;
-
   const NullsFirstOrdering(this.ordering);
+
+  final Ordering<T> ordering;
 
   @override
   int compare(T? a, T? b) {

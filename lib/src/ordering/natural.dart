@@ -1,4 +1,4 @@
-import '../../ordering.dart';
+import 'ordering.dart';
 
 class NaturalOrdering<T extends Comparable> extends Ordering<T> {
   const NaturalOrdering();

@@ -1,9 +1,9 @@
-import '../../ordering.dart';
+import 'ordering.dart';
 
 class CompoundOrdering<T> extends Ordering<T> {
-  final List<Ordering<T>> orderings;
-
   const CompoundOrdering(this.orderings);
+
+  final List<Ordering<T>> orderings;
 
   @override
   int compare(T a, T b) {

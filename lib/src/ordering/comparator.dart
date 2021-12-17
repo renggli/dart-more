@@ -1,9 +1,9 @@
-import '../../ordering.dart';
+import 'ordering.dart';
 
 class ComparatorOrdering<T> extends Ordering<T> {
-  final Comparator<T> comparator;
-
   const ComparatorOrdering(this.comparator);
+
+  final Comparator<T> comparator;
 
   @override
   int compare(T a, T b) => comparator(a, b);

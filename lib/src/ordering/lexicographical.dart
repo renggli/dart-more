@@ -1,9 +1,9 @@
-import '../../ordering.dart';
+import 'ordering.dart';
 
 class LexicographicalOrdering<T> extends Ordering<Iterable<T>> {
-  final Ordering<T> ordering;
-
   const LexicographicalOrdering(this.ordering);
+
+  final Ordering<T> ordering;
 
   @override
   int compare(Iterable<T> a, Iterable<T> b) {

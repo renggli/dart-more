@@ -1,9 +1,9 @@
-import '../../ordering.dart';
+import 'ordering.dart';
 
 class ReversedOrdering<T> extends Ordering<T> {
-  final Ordering<T> ordering;
-
   const ReversedOrdering(this.ordering);
+
+  final Ordering<T> ordering;
 
   @override
   int compare(T a, T b) => ordering.compare(b, a);
