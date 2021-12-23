@@ -19,5 +19,5 @@ export 'src/iterable/rotate.dart'
 export 'src/iterable/separated.dart' show SeparatedExtension;
 export 'src/iterable/to_map.dart' show ToMapExtension;
 export 'src/iterable/unique.dart' show UniqueExtension;
-export 'src/iterable/window.dart' show WindowExtension, WindowStreamExtension;
+export 'src/iterable/window.dart' show WindowExtension;
 export 'src/iterable/zip.dart' show ZipExtension;
