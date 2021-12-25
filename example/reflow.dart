@@ -116,7 +116,7 @@ final runner = CommandRunner('reflow', 'Reflows text in different ways.')
 
 Future<void> main(List<String> arguments) async {
   await runner.run(arguments).catchError((error) {
-    print(error);
+    stdout.writeln(error);
     exit(1);
   }, test: (error) => error is UsageException);
 }
