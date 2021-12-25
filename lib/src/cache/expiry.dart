@@ -8,14 +8,6 @@ import 'loader.dart';
 
 /// A cache that expires after a certain amount of time.
 class ExpiryCache<K, V> extends Cache<K, V> {
-  final Loader<K, V> loader;
-
-  final Duration? updateExpiry;
-
-  final Duration? accessExpiry;
-
-  final Map<K, ExpiryCacheItem<V>> cached = {};
-
   ExpiryCache(this.loader, this.updateExpiry, this.accessExpiry)
       : assert(updateExpiry != null || accessExpiry != null,
             'Either update or access expiry must be provided.'),
@@ -23,6 +15,14 @@ class ExpiryCache<K, V> extends Cache<K, V> {
             'Update expiry must be positive.'),
         assert(accessExpiry == null || accessExpiry > Duration.zero,
             'Access expiry must be positive.');
+
+  final Loader<K, V> loader;
+
+  final Duration? updateExpiry;
+
+  final Duration? accessExpiry;
+
+  final Map<K, ExpiryCacheItem<V>> cached = {};
 
   @override
   Future<V> get(K key) async {

@@ -6,14 +6,14 @@ import 'loader.dart';
 
 /// Least Recently Used (LRU) cache.
 class LruCache<K, V> extends Cache<K, V> {
+  LruCache(this.loader, this.maximumSize)
+      : assert(maximumSize > 0, "Maximum size must be positive.");
+
   final Loader<K, V> loader;
 
   final int maximumSize;
 
   final Map<K, CacheItem<V>> cached = {};
-
-  LruCache(this.loader, this.maximumSize)
-      : assert(maximumSize > 0, "Maximum size must be positive.");
 
   @override
   Future<V?> getIfPresent(K key) async => promote(key)?.value;
