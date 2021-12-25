@@ -1,5 +1,7 @@
 # Changelog
 
+## 3.5.0 (unpublished)
+
 ## 3.4.0
 * Remove deprecated `hashAll` and `hash1`, `hash2`, `hash3`, ... methods.
 * Add `ObjectPrinter.addValue` for more dynamic object printing.
