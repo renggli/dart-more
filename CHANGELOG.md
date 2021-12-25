@@ -4,6 +4,7 @@
 * Remove deprecated `hashAll` and `hash1`, `hash2`, `hash3`, ... methods.
 * Add `ObjectPrinter.addValue` for more dynamic object printing.
 * Add `ToStringPrinter` mixin for simpler use of `ObjectPrinter`.
+* Add `Stream.window` along the existing `Iterable.window` extension.
 
 ## 3.3.0
 * Dart 2.14 requirement.
