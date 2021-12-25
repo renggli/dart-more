@@ -150,4 +150,15 @@ class ObjectPrinter<T> extends Printer<T> {
       field.printOn(object, buffer);
     }
   }
+
+  @override
+  ObjectPrinter get toStringPrinter => super.toStringPrinter
+    ..addValue(type, name: 'type')
+    ..addValue(beforeFields, name: 'beforeFields')
+    ..addValue(fieldName, name: 'fieldName')
+    ..addValue(fieldNameSeparator, name: 'fieldNameSeparator')
+    ..addValue(fieldValue, name: 'fieldValue')
+    ..addValue(fieldSeparator, name: 'fieldSeparator')
+    ..addValue(afterFields, name: 'afterFields')
+    ..addValue(fields, name: 'fields');
 }

@@ -1,6 +1,7 @@
 import '../../../functional.dart';
 import '../printer.dart';
 import 'field.dart';
+import 'object.dart';
 
 /// A field that is computed from a callback.
 class FieldCallback<T, F> extends FieldPrinter<T> {
@@ -31,4 +32,11 @@ class FieldCallback<T, F> extends FieldPrinter<T> {
   @override
   void printOn(T object, StringBuffer buffer) =>
       printer.printOn(callback(object), buffer);
+
+  @override
+  ObjectPrinter get toStringPrinter => super.toStringPrinter
+    ..addValue(callback, name: 'callback')
+    ..addValue(omitNull, name: 'omitNull')
+    ..addValue(omitPredicate, name: 'omitPredicate')
+    ..addValue(printer, name: 'printer');
 }

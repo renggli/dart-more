@@ -1,3 +1,4 @@
+import 'object/object.dart';
 import 'printer.dart';
 
 extension NullPrinterExtension<T> on Printer<T> {
@@ -16,4 +17,9 @@ class NullPrinter<T> extends Printer<T?> {
   @override
   void printOn(T? object, StringBuffer buffer) =>
       object == null ? buffer.write(label) : printer.printOn(object, buffer);
+
+  @override
+  ObjectPrinter get toStringPrinter => super.toStringPrinter
+    ..addValue(printer, name: 'printer')
+    ..addValue(label, name: 'label');
 }

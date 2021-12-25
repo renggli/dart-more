@@ -7,7 +7,8 @@ import 'object/object.dart';
 /// Add the mixin to the root of your object hierarchy and override the
 /// `toStringPrinter` accessor:
 ///
-///    Printer get toStringPrinter => super.toStringPrinter
+///    @override
+///    ObjectPrinter get toStringPrinter => super.toStringPrinter
 ///      ..addValue(someField, 'someField')
 ///      ..addValue(otherField, 'otherField');
 ///

@@ -1,3 +1,4 @@
+import 'object/object.dart';
 import 'printer.dart';
 
 extension IterablePrinterExtension<T> on Printer<T> {
@@ -78,4 +79,13 @@ class IterablePrinter<T> extends Printer<Iterable<T>> {
       }
     }
   }
+
+  @override
+  ObjectPrinter get toStringPrinter => super.toStringPrinter
+    ..addValue(printer, name: 'printer')
+    ..addValue(separator, name: 'separator')
+    ..addValue(lastSeparator, name: 'lastSeparator')
+    ..addValue(leadingItems, name: 'leadingItems')
+    ..addValue(trailingItems, name: 'trailingItems')
+    ..addValue(ellipses, name: 'ellipses');
 }

@@ -1,8 +1,9 @@
+import '../object/object.dart';
 import '../printer.dart';
 
 extension TrimPrinterExtension<T> on Printer<T> {
   /// Removes any leading and trailing whitespace.
-  Printer<T> trim() => TrimPrinter<T>(this);
+  Printer<T> trim() => TrimBothPrinter<T>(this);
 
   /// Removes any leading whitespace.
   Printer<T> trimLeft() => TrimLeftPrinter<T>(this);
@@ -11,11 +12,20 @@ extension TrimPrinterExtension<T> on Printer<T> {
   Printer<T> trimRight() => TrimRightPrinter<T>(this);
 }
 
-/// Removes any leading and trailing whitespace.
-class TrimPrinter<T> extends Printer<T> {
+/// Removes any leading and/or trailing whitespace.
+abstract class TrimPrinter<T> extends Printer<T> {
   const TrimPrinter(this.printer);
 
   final Printer<T> printer;
+
+  @override
+  ObjectPrinter get toStringPrinter =>
+      super.toStringPrinter..addValue(printer, name: 'printer');
+}
+
+/// Removes any leading and trailing whitespace.
+class TrimBothPrinter<T> extends TrimPrinter<T> {
+  const TrimBothPrinter(Printer<T> printer) : super(printer);
 
   @override
   void printOn(T object, StringBuffer buffer) =>
@@ -23,10 +33,8 @@ class TrimPrinter<T> extends Printer<T> {
 }
 
 /// Removes any leading whitespace.
-class TrimLeftPrinter<T> extends Printer<T> {
-  const TrimLeftPrinter(this.printer);
-
-  final Printer<T> printer;
+class TrimLeftPrinter<T> extends TrimPrinter<T> {
+  const TrimLeftPrinter(Printer<T> printer) : super(printer);
 
   @override
   void printOn(T object, StringBuffer buffer) =>
@@ -34,10 +42,8 @@ class TrimLeftPrinter<T> extends Printer<T> {
 }
 
 /// Removes any trailing whitespace.
-class TrimRightPrinter<T> extends Printer<T> {
-  const TrimRightPrinter(this.printer);
-
-  final Printer<T> printer;
+class TrimRightPrinter<T> extends TrimPrinter<T> {
+  const TrimRightPrinter(Printer<T> printer) : super(printer);
 
   @override
   void printOn(T object, StringBuffer buffer) =>

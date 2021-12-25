@@ -1,5 +1,6 @@
 import 'package:characters/characters.dart';
 
+import '../object/object.dart';
 import '../printer.dart';
 
 extension SeparatePrinterExtension<T> on Printer<T> {
@@ -14,15 +15,28 @@ extension SeparatePrinterExtension<T> on Printer<T> {
       SeparateRightPrinter<T>(this, width, offset, separator);
 }
 
-/// Separates a string from the left with a separator character.
-class SeparateLeftPrinter<T> extends Printer<T> {
-  const SeparateLeftPrinter(
-      this.printer, this.width, this.offset, this.separator);
+/// Separates a string with a separator character.
+abstract class SeparatePrinter<T> extends Printer<T> {
+  const SeparatePrinter(this.printer, this.width, this.offset, this.separator);
 
   final Printer<T> printer;
   final int width;
   final int offset;
   final String separator;
+
+  @override
+  ObjectPrinter get toStringPrinter => super.toStringPrinter
+    ..addValue(printer, name: 'printer')
+    ..addValue(width, name: 'width')
+    ..addValue(offset, name: 'offset')
+    ..addValue(separator, name: 'separator');
+}
+
+/// Separates a string from the left with a separator character.
+class SeparateLeftPrinter<T> extends SeparatePrinter<T> {
+  const SeparateLeftPrinter(
+      Printer<T> printer, int width, int offset, String separator)
+      : super(printer, width, offset, separator);
 
   @override
   void printOn(T object, StringBuffer buffer) {
@@ -38,14 +52,10 @@ class SeparateLeftPrinter<T> extends Printer<T> {
 }
 
 /// Separates a string from the right with a repeated separator character.
-class SeparateRightPrinter<T> extends Printer<T> {
+class SeparateRightPrinter<T> extends SeparatePrinter<T> {
   const SeparateRightPrinter(
-      this.printer, this.width, this.offset, this.separator);
-
-  final Printer<T> printer;
-  final int width;
-  final int offset;
-  final String separator;
+      Printer<T> printer, int width, int offset, String separator)
+      : super(printer, width, offset, separator);
 
   @override
   void printOn(T object, StringBuffer buffer) {

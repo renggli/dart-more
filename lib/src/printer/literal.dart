@@ -1,3 +1,4 @@
+import 'object/object.dart';
 import 'printer.dart';
 
 /// Prints a string literal.
@@ -8,4 +9,8 @@ class LiteralPrinter<T> extends Printer<T> {
 
   @override
   void printOn(void object, StringBuffer buffer) => buffer.write(value);
+
+  @override
+  ObjectPrinter get toStringPrinter =>
+      super.toStringPrinter..addValue(value, name: 'value');
 }

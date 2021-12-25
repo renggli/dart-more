@@ -5,10 +5,11 @@ import 'literal.dart';
 import 'pluggable.dart';
 import 'sequence.dart';
 import 'standard.dart';
+import 'to_string.dart';
 
 /// An abstract function that prints objects of type [T].
 @immutable
-abstract class Printer<T> {
+abstract class Printer<T> with ToStringPrinter {
   /// Generic const constructor.
   const Printer();
 

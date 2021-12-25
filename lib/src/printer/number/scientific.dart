@@ -1,4 +1,5 @@
 import '../../../math.dart';
+import '../object/object.dart';
 import '../printer.dart';
 import 'fixed.dart';
 import 'sign.dart';
@@ -107,4 +108,20 @@ class ScientificNumberPrinter<T extends num> extends Printer<T> {
       return logBase.floor() + 1 - significant;
     }
   }
+
+  @override
+  ObjectPrinter get toStringPrinter => super.toStringPrinter
+    ..addValue(base, name: 'base')
+    ..addValue(characters, name: 'characters')
+    ..addValue(delimiter, name: 'delimiter')
+    ..addValue(exponentPadding, name: 'exponentPadding')
+    ..addValue(exponentSign, name: 'exponentSign')
+    ..addValue(infinity, name: 'infinity')
+    ..addValue(mantissaPadding, name: 'mantissaPadding')
+    ..addValue(mantissaSign, name: 'mantissaSign')
+    ..addValue(nan, name: 'nan')
+    ..addValue(notation, name: 'notation')
+    ..addValue(precision, name: 'precision')
+    ..addValue(separator, name: 'separator')
+    ..addValue(significant, name: 'significant');
 }

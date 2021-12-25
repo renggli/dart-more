@@ -1,3 +1,4 @@
+import '../object/object.dart';
 import '../printer.dart';
 
 /// Prints numbers in various formats.
@@ -26,4 +27,9 @@ class SignNumberPrinter<T extends num> extends Printer<T> {
     final delegate = object.isNegative ? negative : positive;
     delegate.printOn(object, buffer);
   }
+
+  @override
+  ObjectPrinter get toStringPrinter => super.toStringPrinter
+    ..addValue(negative, name: 'negative')
+    ..addValue(positive, name: 'positive');
 }

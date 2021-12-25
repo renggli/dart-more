@@ -1,4 +1,5 @@
 import '../functional/types/mapping.dart';
+import 'object/object.dart';
 import 'printer.dart';
 
 extension TransformPrinterExtension<R> on Printer<R> {
@@ -22,4 +23,9 @@ class TransformPrinter<T, R> extends Printer<T> {
   @override
   void printOn(T object, StringBuffer buffer) =>
       printer.printOn(callback(object), buffer);
+
+  @override
+  ObjectPrinter get toStringPrinter => super.toStringPrinter
+    ..addValue(printer, name: 'printer')
+    ..addValue(callback, name: 'callback');
 }

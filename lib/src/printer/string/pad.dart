@@ -1,5 +1,6 @@
 import 'package:characters/characters.dart';
 
+import '../object/object.dart';
 import '../printer.dart';
 
 extension PadPrinterExtension<T> on Printer<T> {
@@ -16,13 +17,25 @@ extension PadPrinterExtension<T> on Printer<T> {
       PadBothPrinter<T>(this, width, padding);
 }
 
-/// Pads the string on the left if it is shorter than width.
-class PadLeftPrinter<T> extends Printer<T> {
-  const PadLeftPrinter(this.printer, this.width, this.padding);
+/// Pads the string if it is shorter than width.
+abstract class PadPrinter<T> extends Printer<T> {
+  const PadPrinter(this.printer, this.width, this.padding);
 
   final Printer<T> printer;
   final int width;
   final String padding;
+
+  @override
+  ObjectPrinter get toStringPrinter => super.toStringPrinter
+    ..addValue(printer, name: 'printer')
+    ..addValue(width, name: 'width')
+    ..addValue(padding, name: 'padding');
+}
+
+/// Pads the string on the left if it is shorter than width.
+class PadLeftPrinter<T> extends PadPrinter<T> {
+  const PadLeftPrinter(Printer<T> printer, int width, String padding)
+      : super(printer, width, padding);
 
   @override
   void printOn(T object, StringBuffer buffer) {
@@ -36,12 +49,9 @@ class PadLeftPrinter<T> extends Printer<T> {
 }
 
 /// Pads the string on the right if it is shorter than width.
-class PadRightPrinter<T> extends Printer<T> {
-  const PadRightPrinter(this.printer, this.width, this.padding);
-
-  final Printer<T> printer;
-  final int width;
-  final String padding;
+class PadRightPrinter<T> extends PadPrinter<T> {
+  const PadRightPrinter(Printer<T> printer, int width, String padding)
+      : super(printer, width, padding);
 
   @override
   void printOn(T object, StringBuffer buffer) {
@@ -55,12 +65,9 @@ class PadRightPrinter<T> extends Printer<T> {
 }
 
 /// Pads the string on both sides if it is shorter than width.
-class PadBothPrinter<T> extends Printer<T> {
-  const PadBothPrinter(this.printer, this.width, this.padding);
-
-  final Printer<T> printer;
-  final int width;
-  final String padding;
+class PadBothPrinter<T> extends PadPrinter<T> {
+  const PadBothPrinter(Printer<T> printer, int width, String padding)
+      : super(printer, width, padding);
 
   @override
   void printOn(T object, StringBuffer buffer) {

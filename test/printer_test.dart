@@ -18,6 +18,10 @@ void main() {
       expect(printer(123), '123');
       expect(printer(123.4), '123.4');
     });
+    test('toString', () {
+      const printer = Printer<double>.standard();
+      expect(printer.toString(), startsWith('StandardPrinter<double>'));
+    });
   });
   group('literal', () {
     test('default', () {
@@ -33,6 +37,10 @@ void main() {
       const printer = Printer<num>.literal('hello');
       expect(printer(123), 'hello');
       expect(printer(123.4), 'hello');
+    });
+    test('toString', () {
+      const printer = Printer<double>.literal('hello');
+      expect(printer.toString(), startsWith('LiteralPrinter<double>'));
     });
   });
   group('sign', () {
@@ -95,6 +103,14 @@ void main() {
         expect(printer(-1.1), '-');
         expect(printer(1.1), '+');
       });
+    });
+    test('toString', () {
+      const printer = SignNumberPrinter<num>.negativeAndPositiveSign();
+      expect(
+          printer.toString(),
+          'SignNumberPrinter<num>{'
+          'negative=LiteralPrinter<Never>{value=-}, '
+          'positive=LiteralPrinter<Never>{value=+}}');
     });
   });
   group('fixed', () {
@@ -192,6 +208,10 @@ void main() {
         expect(printer(0), '+0.0');
         expect(printer(1), '+1.0');
       });
+    });
+    test('toString', () {
+      final printer = FixedNumberPrinter<num>();
+      expect(printer.toString(), startsWith('FixedNumberPrinter<num>'));
     });
   });
   group('scientific', () {
@@ -359,6 +379,10 @@ void main() {
       expect(printer(0.2), '200.000e-3');
       expect(printer(0.00000000751), '751.000e-11');
     });
+    test('toString', () {
+      final printer = ScientificNumberPrinter();
+      expect(printer.toString(), startsWith('ScientificNumberPrinter<num>'));
+    });
   });
   group('human', () {
     group('decimal', () {
@@ -488,6 +512,10 @@ void main() {
         ]);
       });
     });
+    test('toString', () {
+      final printer = HumanNumberPrinter.decimal();
+      expect(printer.toString(), startsWith('HumanNumberPrinter<num>'));
+    });
   });
   group('trim', () {
     test('both', () {
@@ -507,6 +535,10 @@ void main() {
       expect(printer(''), '');
       expect(printer(' * '), ' *');
       expect(printer('  **  '), '  **');
+    });
+    test('toString', () {
+      final printer = standardString.trim();
+      expect(printer.toString(), startsWith('TrimBothPrinter<String>'));
     });
   });
   group('pad', () {
@@ -576,6 +608,10 @@ void main() {
       expect(printer('123456'), '123456');
       expect(printer('👋'), '**👋**');
     });
+    test('toString', () {
+      final printer = standardString.padBoth(5);
+      expect(printer.toString(), startsWith('PadBothPrinter<String>'));
+    });
   });
   group('truncate', () {
     test('left', () {
@@ -621,6 +657,10 @@ void main() {
       expect(printer('12345'), '123...');
       expect(printer('123456'), '123...');
       expect(printer('👨👩👧👦'), '👨👩👧...');
+    });
+    test('toString', () {
+      final printer = standardString.truncateLeft(3, '...');
+      expect(printer.toString(), startsWith('TruncateLeftPrinter<String>'));
     });
   });
   group('separate', () {
@@ -670,6 +710,10 @@ void main() {
       final right2 = standardString.separateRight(3, 2, '_');
       expect(right2('1234567890'), '12_345_678_90');
     });
+    test('toString', () {
+      final printer = standardString.separateLeft(3, 0, '_');
+      expect(printer.toString(), startsWith('SeparateLeftPrinter<String>'));
+    });
   });
   group('ifNull', () {
     test('default', () {
@@ -681,6 +725,10 @@ void main() {
       final printer = standardString.ifNull('n/a');
       expect(printer(null), 'n/a');
       expect(printer('foo'), 'foo');
+    });
+    test('toString', () {
+      final printer = standardString.ifNull();
+      expect(printer.toString(), startsWith('NullPrinter<String>'));
     });
   });
   group('sequence', () {
@@ -705,6 +753,10 @@ void main() {
     test('around (different)', () {
       final printer = standardString.around('<', '>');
       expect(printer('1'), '<1>');
+    });
+    test('toString', () {
+      final printer = standardString.around('<', '>');
+      expect(printer.toString(), startsWith('SequencePrinter<String>'));
     });
   });
   group('iterable', () {
@@ -771,6 +823,10 @@ void main() {
       expect(printer([1, 2, 3, 4, 5, 6, 7]), '1, 2, 3, …, 5, 6, 7');
       expect(printer([1, 2, 3, 4, 5, 6, 7, 8]), '1, 2, 3, …, 6, 7, 8');
     });
+    test('toString', () {
+      final printer = standardInt.iterable();
+      expect(printer.toString(), startsWith('IterablePrinter<int>'));
+    });
   });
   group('ifEmpty', () {
     test('default', () {
@@ -785,6 +841,10 @@ void main() {
       expect(printer([1]), '1');
       expect(printer([1, 2]), '1, 2');
     });
+    test('toString', () {
+      final printer = standardInt.iterable().ifEmpty();
+      expect(printer.toString(), startsWith('EmptyPrinter<int>'));
+    });
   });
   group('transform', () {
     test('map', () {
@@ -798,6 +858,10 @@ void main() {
       expect(() => printer(0), throwsA(isA<TypeError>()));
       expect(printer('1'), '1');
       expect(printer('12'), '12');
+    });
+    test('toString', () {
+      final printer = standardInt.map(int.parse);
+      expect(printer.toString(), startsWith('TransformPrinter<String, int>'));
     });
   });
   group('wrap', () {
@@ -966,6 +1030,12 @@ void main() {
             ..addCallback<int>((object) => object.first, name: 'first')
             ..addCallback<int>((object) => object.second, name: 'second');
       expect(printer(const Tuple2(1, 2)), 'Tuple2<int, int>{first=1 second=2}');
+    });
+    test('toString', () {
+      final printer = ObjectPrinter<Tuple>.dynamic()
+        ..addValue(true)
+        ..addCallback((value) => value);
+      expect(printer.toString(), startsWith('ObjectPrinter<Tuple>'));
     });
   });
 }

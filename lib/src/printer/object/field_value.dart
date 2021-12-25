@@ -1,6 +1,7 @@
 import '../../../functional.dart';
 import '../printer.dart';
 import 'field.dart';
+import 'object.dart';
 
 /// A field with a constant value.
 class FieldValue<T, F> extends FieldPrinter<T> {
@@ -27,4 +28,11 @@ class FieldValue<T, F> extends FieldPrinter<T> {
 
   @override
   void printOn(T object, StringBuffer buffer) => printer.printOn(value, buffer);
+
+  @override
+  ObjectPrinter get toStringPrinter => super.toStringPrinter
+    ..addValue(value, name: 'value')
+    ..addValue(omitNull, name: 'omitNull')
+    ..addValue(omitPredicate, name: 'omitPredicate')
+    ..addValue(printer, name: 'printer');
 }

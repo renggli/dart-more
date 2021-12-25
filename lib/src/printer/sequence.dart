@@ -1,3 +1,4 @@
+import 'object/object.dart';
 import 'printer.dart';
 
 extension SequencePrinterExtension<T> on Printer<T> {
@@ -26,4 +27,8 @@ class SequencePrinter<T> extends Printer<T> {
       printer.printOn(object, buffer);
     }
   }
+
+  @override
+  ObjectPrinter get toStringPrinter =>
+      super.toStringPrinter..addValue(printers, name: 'printers');
 }
