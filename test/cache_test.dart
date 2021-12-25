@@ -69,6 +69,10 @@ void statelessCacheTests(NewCache<int, String> newCache) {
     final cache = newCache(immediateFailingLoader);
     await expectLater(cache.reap(), completion(0));
   });
+  test('toString', () {
+    final cache = newCache(immediateFailingLoader);
+    expect(cache.toString(), startsWith(cache.runtimeType.toString()));
+  });
 }
 
 void cacheEvictionTest(NewCache<int, String> newCache, String name,

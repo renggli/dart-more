@@ -1,5 +1,6 @@
 import 'dart:async' show Future, FutureOr;
 
+import '../printer/object/object.dart';
 import 'cache.dart';
 import 'item.dart';
 import 'loader.dart';
@@ -65,4 +66,9 @@ class LruCache<K, V> extends Cache<K, V> {
       cached.remove(cached.keys.first);
     }
   }
+
+  @override
+  ObjectPrinter get toStringPrinter => super.toStringPrinter
+    ..addValue(cached.length, name: 'size')
+    ..addValue(maximumSize, name: 'maximumSize');
 }

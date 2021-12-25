@@ -2,6 +2,7 @@ import 'dart:async' show Future, FutureOr;
 
 import 'package:clock/clock.dart';
 
+import '../../printer.dart';
 import 'cache.dart';
 import 'item.dart';
 import 'loader.dart';
@@ -88,6 +89,12 @@ class ExpiryCache<K, V> extends Cache<K, V> {
     expired.forEach(cached.remove);
     return expired.length;
   }
+
+  @override
+  ObjectPrinter get toStringPrinter => super.toStringPrinter
+    ..addValue(cached.length, name: 'size')
+    ..addValue(updateExpiry, name: 'updateExpiry')
+    ..addValue(accessExpiry, name: 'accessExpiry');
 }
 
 class ExpiryCacheItem<V> extends CacheItem<V> {

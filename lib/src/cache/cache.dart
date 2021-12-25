@@ -1,12 +1,13 @@
 import 'dart:async' show Future, FutureOr;
 
+import '../../printer.dart';
 import 'empty.dart';
 import 'expiry.dart';
 import 'fifo.dart';
 import 'loader.dart';
 import 'lru.dart';
 
-abstract class Cache<K, V> {
+abstract class Cache<K, V> with ToStringPrinter {
   /// Constructs an empty or null cache, useful mostly for testing.
   ///
   /// The [loader] defines the function to construct items for the cache.

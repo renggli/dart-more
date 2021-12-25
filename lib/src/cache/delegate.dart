@@ -1,5 +1,6 @@
 import 'dart:async' show Future, FutureOr;
 
+import '../../printer.dart';
 import 'cache.dart';
 
 /// A cache that delegates to another one.
@@ -28,4 +29,8 @@ class DelegateCache<K, V> extends Cache<K, V> {
 
   @override
   Future<int> reap() => delegate.reap();
+
+  @override
+  ObjectPrinter get toStringPrinter =>
+      super.toStringPrinter..addValue(delegate, name: 'delegate');
 }
