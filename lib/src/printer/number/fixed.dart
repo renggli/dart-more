@@ -9,6 +9,30 @@ import 'utils.dart';
 
 /// Prints numbers in a fixed format.
 class FixedNumberPrinter<T extends num> extends Printer<T> {
+  /// Prints numbers in a custom fixed format.
+  FixedNumberPrinter({
+    this.accuracy,
+    this.base = 10,
+    this.characters = lowerCaseDigits,
+    this.delimiter = delimiterString,
+    this.infinity = infinityString,
+    this.nan = nanString,
+    this.padding = 0,
+    this.precision = 0,
+    this.separator = '',
+    Printer<T>? sign,
+  })  : sign = sign ?? SignNumberPrinter<T>.omitPositiveSign(),
+        _integer = const Printer<String>.standard()
+            .mapIf(padding > 0,
+                (printer) => printer.padLeft(padding, characters[0]))
+            .mapIf(separator.isNotEmpty,
+                (printer) => printer.separateRight(3, 0, separator)),
+        _fraction = const Printer<String>.standard()
+            .mapIf(precision > 0,
+                (printer) => printer.padLeft(precision, characters[0]))
+            .mapIf(separator.isNotEmpty,
+                (printer) => printer.separateLeft(3, 0, separator));
+
   /// Round towards the nearest number that is a multiple of accuracy.
   final double? accuracy;
 
@@ -44,30 +68,6 @@ class FixedNumberPrinter<T extends num> extends Printer<T> {
 
   /// Internal fraction printer.
   final Printer<String> _fraction;
-
-  /// Prints numbers in a custom fixed format.
-  FixedNumberPrinter({
-    this.accuracy,
-    this.base = 10,
-    this.characters = lowerCaseDigits,
-    this.delimiter = delimiterString,
-    this.infinity = infinityString,
-    this.nan = nanString,
-    this.padding = 0,
-    this.precision = 0,
-    this.separator = '',
-    Printer<T>? sign,
-  })  : sign = sign ?? SignNumberPrinter<T>.omitPositiveSign(),
-        _integer = const Printer<String>.standard()
-            .mapIf(padding > 0,
-                (printer) => printer.padLeft(padding, characters[0]))
-            .mapIf(separator.isNotEmpty,
-                (printer) => printer.separateRight(3, 0, separator)),
-        _fraction = const Printer<String>.standard()
-            .mapIf(precision > 0,
-                (printer) => printer.padLeft(precision, characters[0]))
-            .mapIf(separator.isNotEmpty,
-                (printer) => printer.separateLeft(3, 0, separator));
 
   @override
   void printOn(T object, StringBuffer buffer) {

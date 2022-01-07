@@ -41,20 +41,20 @@ extension CycleExtension<E> on Iterable<E> {
 
 class InfiniteCycleIterable<E> extends IterableBase<E>
     with InfiniteIterable<E> {
-  final Iterable<E> iterable;
-
   InfiniteCycleIterable(this.iterable);
+
+  final Iterable<E> iterable;
 
   @override
   Iterator<E> get iterator => InfiniteCycleIterator<E>(iterable);
 }
 
 class InfiniteCycleIterator<E> extends Iterator<E> {
+  InfiniteCycleIterator(this.iterable);
+
   final Iterable<E> iterable;
 
   Iterator<E> iterator = Iterable<E>.empty().iterator;
-
-  InfiniteCycleIterator(this.iterable);
 
   @override
   E get current => iterator.current;
@@ -70,23 +70,23 @@ class InfiniteCycleIterator<E> extends Iterator<E> {
 }
 
 class FiniteCycleIterable<E> extends IterableBase<E> {
+  FiniteCycleIterable(this.iterable, this.count);
+
   final Iterable<E> iterable;
   final int count;
-
-  FiniteCycleIterable(this.iterable, this.count);
 
   @override
   Iterator<E> get iterator => FiniteCycleIterator<E>(iterable, count);
 }
 
 class FiniteCycleIterator<E> extends Iterator<E> {
+  FiniteCycleIterator(this.iterable, this.count);
+
   final Iterable<E> iterable;
 
   Iterator<E> iterator = Iterable<E>.empty().iterator;
   bool completed = false;
   int count;
-
-  FiniteCycleIterator(this.iterable, this.count);
 
   @override
   E get current => iterator.current;

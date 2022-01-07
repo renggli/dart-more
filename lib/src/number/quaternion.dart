@@ -6,21 +6,6 @@ import 'mixins/close_to.dart';
 /// A quaternion number of the form `w + x*i + y*j + z*k`.
 @immutable
 class Quaternion implements CloseTo<Quaternion> {
-  /// The neutral additive element, that is `0`.
-  static const Quaternion zero = Quaternion(0);
-
-  /// The neutral multiplicative element, that is `1`.
-  static const Quaternion one = Quaternion(1);
-
-  /// The quaternion `i` unit.
-  static const Quaternion i = Quaternion(0, 1);
-
-  /// The quaternion `j` unit.
-  static const Quaternion j = Quaternion(0, 0, 1);
-
-  /// The quaternion `k` unit.
-  static const Quaternion k = Quaternion(0, 0, 0, 1);
-
   /// Constructs a quaternion from its components.
   const Quaternion(this.w, [this.x = 0, this.y = 0, this.z = 0]);
 
@@ -74,6 +59,21 @@ class Quaternion implements CloseTo<Quaternion> {
       cosTheta * cosPsi * sinPhi + sinTheta * sinPsi * cosPhi,
     );
   }
+
+  /// The neutral additive element, that is `0`.
+  static const Quaternion zero = Quaternion(0);
+
+  /// The neutral multiplicative element, that is `1`.
+  static const Quaternion one = Quaternion(1);
+
+  /// The quaternion `i` unit.
+  static const Quaternion i = Quaternion(0, 1);
+
+  /// The quaternion `j` unit.
+  static const Quaternion j = Quaternion(0, 0, 1);
+
+  /// The quaternion `k` unit.
+  static const Quaternion k = Quaternion(0, 0, 0, 1);
 
   /// Parses [source] as a [Quaternion]. Returns `null` in case of a problem.
   static Quaternion? tryParse(String source) {

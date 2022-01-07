@@ -37,9 +37,6 @@ import 'reversed.dart';
 ///
 @immutable
 abstract class Ordering<T> {
-  /// Returns a natural ordering of objects.
-  static Ordering<T> natural<T extends Comparable>() => NaturalOrdering<T>();
-
   /// Returns an ordering based on a [comparator] function.
   factory Ordering.of(Comparator<T> comparator) =>
       ComparatorOrdering<T>(comparator);
@@ -54,6 +51,9 @@ abstract class Ordering<T> {
 
   /// Internal default constructor for subclasses.
   const Ordering();
+
+  /// Returns a natural ordering of objects.
+  static Ordering<T> natural<T extends Comparable>() => NaturalOrdering<T>();
 
   /// Compares two objects [a] and [b] with each other and returns
   ///

@@ -30,12 +30,12 @@ extension SeparatedExtension<E> on Iterable<E> {
 }
 
 class SeparatedIterable<E> extends IterableBase<E> {
+  SeparatedIterable(this.iterable, this.separator, this.before, this.after);
+
   final Iterable<E> iterable;
   final Builder<E> separator;
   final Builder<E>? before;
   final Builder<E>? after;
-
-  SeparatedIterable(this.iterable, this.separator, this.before, this.after);
 
   @override
   Iterator<E> get iterator =>
@@ -43,6 +43,8 @@ class SeparatedIterable<E> extends IterableBase<E> {
 }
 
 class SeparatedIterator<E> extends Iterator<E> {
+  SeparatedIterator(this.iterator, this.separator, this.before, this.after);
+
   final Iterator<E> iterator;
   final Builder<E> separator;
   final Builder<E>? before;
@@ -51,8 +53,6 @@ class SeparatedIterator<E> extends Iterator<E> {
   @override
   late E current;
   State state = State.start;
-
-  SeparatedIterator(this.iterator, this.separator, this.before, this.after);
 
   @override
   bool moveNext() {

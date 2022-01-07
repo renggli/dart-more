@@ -1,9 +1,9 @@
 import 'char_matcher.dart';
 
 class NegateCharMatcher extends CharMatcher {
-  final CharMatcher matcher;
-
   const NegateCharMatcher(this.matcher);
+
+  final CharMatcher matcher;
 
   @override
   CharMatcher operator ~() => matcher;

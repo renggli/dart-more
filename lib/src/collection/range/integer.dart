@@ -166,12 +166,12 @@ class IntegerRange extends ListBase<int>
 }
 
 class PositiveStepIntegerRangeIterator extends Iterator<int> {
+  PositiveStepIntegerRangeIterator(this.start, this.end, this.step)
+      : assert(step > 0, 'Step size must be positive.');
+
   int start;
   final int end;
   final int step;
-
-  PositiveStepIntegerRangeIterator(this.start, this.end, this.step)
-      : assert(step > 0, 'Step size must be positive.');
 
   @override
   late int current;
@@ -188,12 +188,12 @@ class PositiveStepIntegerRangeIterator extends Iterator<int> {
 }
 
 class NegativeStepIntegerRangeIterator extends Iterator<int> {
+  NegativeStepIntegerRangeIterator(this.start, this.end, this.step)
+      : assert(step < 0, 'Step size must be negative.');
+
   int start;
   final int end;
   final int step;
-
-  NegativeStepIntegerRangeIterator(this.start, this.end, this.step)
-      : assert(step < 0, 'Step size must be negative.');
 
   @override
   late int current;

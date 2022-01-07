@@ -57,10 +57,14 @@ class BiMap<K, V> extends MapBase<K, V> {
     return result;
   }
 
-  final Map<K, V> _forward;
-  final Map<V, K> _backward;
-
+  /// Internal constructor.
   BiMap._(this._forward, this._backward);
+
+  /// Internal map with associations from `keys` to `values`.
+  final Map<K, V> _forward;
+
+  /// Internal map with associations from `values` to `keys`.
+  final Map<V, K> _backward;
 
   /// Returns the inverse bi-map onto the same data.
   BiMap<V, K> get inverse => BiMap._(_backward, _forward);

@@ -36,8 +36,8 @@ extension GroupExtension<V> on Iterable<V> {
 
 /// A group of values.
 class Group<K, V> {
+  const Group(this.key, this.values);
+
   final K key;
   final List<V> values;
-
-  const Group(this.key, this.values);
 }

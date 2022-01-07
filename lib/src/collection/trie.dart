@@ -65,21 +65,21 @@ class Trie<K, P extends Comparable<P>, V> extends MapBase<K, V> {
     return result;
   }
 
-  /// Function to extract the parts from the key.
-  final GetParts<K, P> _getParts;
-
-  /// Root node of the tree.
-  final TrieNode<K, P, V> _root;
-
-  /// Number of key-value pairs in the tree.
-  int _length = 0;
-
   /// Internal constructor of the [Trie].
   Trie._(this._root, this._getParts)
       : assert(!_root.hasKeyAndValue,
             'The initial root should not have a key or value.'),
         assert(!_root.hasChildren,
             'The initial root node should not have children.');
+
+  /// Internal function to extract the parts from the key.
+  final GetParts<K, P> _getParts;
+
+  /// Internal root node of the tree.
+  final TrieNode<K, P, V> _root;
+
+  /// Internal cache of the size of the tree.
+  int _length = 0;
 
   @override
   int get length => _length;

@@ -8,15 +8,6 @@ import 'mixins/close_to.dart';
 /// A complex number of the form `a + b*i`.
 @immutable
 class Complex implements CloseTo<Complex> {
-  /// The neutral additive element, that is `0`.
-  static const Complex zero = Complex(0);
-
-  /// The neutral multiplicative element, that is `1`.
-  static const Complex one = Complex(1);
-
-  /// The imaginary number, that is `i`.
-  static const Complex i = Complex(0, 1);
-
   /// Creates a complex number from a real part [a] and an imaginary part [b].
   const Complex(this.a, [this.b = 0]);
 
@@ -34,6 +25,15 @@ class Complex implements CloseTo<Complex> {
         radius * phase.cos(),
         radius * phase.sin(),
       );
+
+  /// The neutral additive element, that is `0`.
+  static const Complex zero = Complex(0);
+
+  /// The neutral multiplicative element, that is `1`.
+  static const Complex one = Complex(1);
+
+  /// The imaginary number, that is `i`.
+  static const Complex i = Complex(0, 1);
 
   /// Parses [source] as a [Complex]. Returns `null` in case of a problem.
   static Complex? tryParse(String source) {

@@ -37,19 +37,19 @@ Iterable<E> repeat<E>(E element, {int? count}) =>
     [element].repeat(count: count);
 
 class RepeatIterable<E> extends IterableBase<E> with InfiniteIterable<E> {
-  final Iterable<E> iterable;
-
   RepeatIterable(this.iterable);
+
+  final Iterable<E> iterable;
 
   @override
   Iterator<E> get iterator => RepeatIterator<E>(iterable);
 }
 
 class RepeatIterator<E> extends Iterator<E> {
+  RepeatIterator(this.iterable) : iterator = iterable.iterator;
+
   final Iterable<E> iterable;
   Iterator<E> iterator;
-
-  RepeatIterator(this.iterable) : iterator = iterable.iterator;
 
   @override
   E get current => iterator.current;

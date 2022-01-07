@@ -53,13 +53,14 @@ class Multiset<E> extends IterableBase<E> {
     return result;
   }
 
-  /// The backing container of the set.
+  /// Internal constructor.
+  Multiset._(this._container, this._length);
+
+  /// Internal backing container of the set.
   final Map<E, int> _container;
 
-  /// The cached number of elements.
+  /// Internal cache of the size of the size.
   int _length;
-
-  Multiset._(this._container, this._length);
 
   /// Adds [element] to the receiver [occurrences] number of times.
   ///

@@ -35,9 +35,9 @@ extension StringListExtension on String {
 
 /// A string as a mutable list.
 class MutableStringList extends ListBase<String> {
-  final List<int> codeUnits;
-
   MutableStringList(this.codeUnits);
+
+  final List<int> codeUnits;
 
   @override
   int get length => codeUnits.length;
@@ -71,9 +71,9 @@ class MutableStringList extends ListBase<String> {
 /// A string as an immutable list.
 class ImmutableStringList extends ListBase<String>
     with UnmodifiableListMixin<String> {
-  final String contents;
-
   ImmutableStringList(this.contents);
+
+  final String contents;
 
   @override
   int get length => contents.length;

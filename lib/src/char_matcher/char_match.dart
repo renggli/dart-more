@@ -4,6 +4,8 @@ import 'char_matcher.dart';
 
 @immutable
 class CharMatch extends Match {
+  CharMatch(this.start, this.input, this.pattern);
+
   @override
   final int start;
 
@@ -15,8 +17,6 @@ class CharMatch extends Match {
 
   @override
   final CharMatcher pattern;
-
-  CharMatch(this.start, this.input, this.pattern);
 
   @override
   String? group(int group) => this[group];

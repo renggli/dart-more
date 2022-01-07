@@ -75,51 +75,6 @@ const decimalUnitsLong = [
 
 /// Prints numbers in a custom human readable string.
 class HumanNumberPrinter<T extends num> extends Printer<T> {
-  /// The numeric base to which the number should be printed.
-  final int base;
-
-  /// The characters to be used to convert a number to a string.
-  final String characters;
-
-  /// The delimiter to separate the integer and fraction part of the number.
-  final String delimiter;
-
-  /// The string that should be displayed if the number is infinite.
-  final String infinity;
-
-  /// The string that should be displayed if the number is not a number.
-  final String nan;
-
-  /// The number of digits to be printed.
-  final int padding;
-
-  /// The number of digits to be printed in the fraction part.
-  final int precision;
-
-  /// The separator character to be used to group digits.
-  final String separator;
-
-  /// The string to be prepended if the number is positive or negative.
-  final Printer<double>? sign;
-
-  /// The base of the unit to be printed.
-  final int unitBase;
-
-  /// The exponent offset of the units to be printed.
-  final int unitOffset;
-
-  /// Whether the unit should be used as a prefix, instead of an suffix.
-  final bool unitPrefix;
-
-  /// Separator between value and unit.
-  final String unitSeparator;
-
-  /// The units to be used.
-  final List<String> units;
-
-  /// The (internal) printer of the mantissa.
-  final Printer<double> _mantissa;
-
   /// Prints numbers in a custom human readable string.
   HumanNumberPrinter({
     required this.units,
@@ -216,6 +171,51 @@ class HumanNumberPrinter<T extends num> extends Printer<T> {
         unitBase: binaryUnitBase,
         units: long ? binaryUnitsLong : binaryUnitsShort,
       );
+
+  /// The numeric base to which the number should be printed.
+  final int base;
+
+  /// The characters to be used to convert a number to a string.
+  final String characters;
+
+  /// The delimiter to separate the integer and fraction part of the number.
+  final String delimiter;
+
+  /// The string that should be displayed if the number is infinite.
+  final String infinity;
+
+  /// The string that should be displayed if the number is not a number.
+  final String nan;
+
+  /// The number of digits to be printed.
+  final int padding;
+
+  /// The number of digits to be printed in the fraction part.
+  final int precision;
+
+  /// The separator character to be used to group digits.
+  final String separator;
+
+  /// The string to be prepended if the number is positive or negative.
+  final Printer<double>? sign;
+
+  /// The base of the unit to be printed.
+  final int unitBase;
+
+  /// The exponent offset of the units to be printed.
+  final int unitOffset;
+
+  /// Whether the unit should be used as a prefix, instead of an suffix.
+  final bool unitPrefix;
+
+  /// Separator between value and unit.
+  final String unitSeparator;
+
+  /// The units to be used.
+  final List<String> units;
+
+  /// The (internal) printer of the mantissa.
+  final Printer<double> _mantissa;
 
   @override
   void printOn(T object, StringBuffer buffer) {

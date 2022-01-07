@@ -13,9 +13,9 @@ class ComparatorOrdering<T> extends Ordering<T> {
 }
 
 class ReverseComparatorOrdering<T> extends Ordering<T> {
-  final Comparator<T> comparator;
-
   const ReverseComparatorOrdering(this.comparator);
+
+  final Comparator<T> comparator;
 
   @override
   int compare(T a, T b) => comparator(b, a);

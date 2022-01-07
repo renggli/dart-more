@@ -1,11 +1,11 @@
 import 'char_matcher.dart';
 
 class RangesCharMatcher extends CharMatcher {
+  const RangesCharMatcher(this.length, this.starts, this.stops);
+
   final int length;
   final List<int> starts;
   final List<int> stops;
-
-  const RangesCharMatcher(this.length, this.starts, this.stops);
 
   @override
   bool match(int value) {

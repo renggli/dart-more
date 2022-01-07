@@ -3,12 +3,12 @@ import 'char_matcher.dart';
 import 'none.dart';
 
 class DisjunctiveCharMatcher extends CharMatcher {
-  final List<CharMatcher> matchers;
-
   factory DisjunctiveCharMatcher(Iterable<CharMatcher> matchers) =>
       DisjunctiveCharMatcher._(List.of(matchers, growable: false));
 
   const DisjunctiveCharMatcher._(this.matchers);
+
+  final List<CharMatcher> matchers;
 
   @override
   CharMatcher operator |(CharMatcher other) {

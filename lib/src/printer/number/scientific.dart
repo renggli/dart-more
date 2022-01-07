@@ -7,6 +7,41 @@ import 'utils.dart';
 
 /// Prints numbers in a scientific format.
 class ScientificNumberPrinter<T extends num> extends Printer<T> {
+  /// Prints numbers in a custom scientific format.
+  ScientificNumberPrinter({
+    this.base = 10,
+    this.characters = lowerCaseDigits,
+    this.delimiter = delimiterString,
+    this.exponentPadding = 0,
+    this.exponentSign,
+    this.infinity = infinityString,
+    this.mantissaPadding = 0,
+    this.mantissaSign,
+    this.nan = nanString,
+    this.notation = notationString,
+    this.precision = 3,
+    this.separator = '',
+    this.significant = 1,
+  })  : _mantissa = FixedNumberPrinter<double>(
+          base: base,
+          characters: characters,
+          delimiter: delimiter,
+          infinity: infinity,
+          nan: nan,
+          padding: mantissaPadding,
+          precision: precision,
+          separator: separator,
+          sign: mantissaSign ??
+              const SignNumberPrinter<double>.omitPositiveSign(),
+        ),
+        _exponent = FixedNumberPrinter<int>(
+          base: base,
+          characters: characters,
+          padding: exponentPadding,
+          separator: separator,
+          sign: exponentSign ?? const SignNumberPrinter<int>.omitPositiveSign(),
+        );
+
   /// The numeric base to which the number should be printed.
   final int base;
 
@@ -51,41 +86,6 @@ class ScientificNumberPrinter<T extends num> extends Printer<T> {
 
   /// The (internal) printer of the exponent.
   final Printer<int> _exponent;
-
-  /// Prints numbers in a custom scientific format.
-  ScientificNumberPrinter({
-    this.base = 10,
-    this.characters = lowerCaseDigits,
-    this.delimiter = delimiterString,
-    this.exponentPadding = 0,
-    this.exponentSign,
-    this.infinity = infinityString,
-    this.mantissaPadding = 0,
-    this.mantissaSign,
-    this.nan = nanString,
-    this.notation = notationString,
-    this.precision = 3,
-    this.separator = '',
-    this.significant = 1,
-  })  : _mantissa = FixedNumberPrinter<double>(
-          base: base,
-          characters: characters,
-          delimiter: delimiter,
-          infinity: infinity,
-          nan: nan,
-          padding: mantissaPadding,
-          precision: precision,
-          separator: separator,
-          sign: mantissaSign ??
-              const SignNumberPrinter<double>.omitPositiveSign(),
-        ),
-        _exponent = FixedNumberPrinter<int>(
-          base: base,
-          characters: characters,
-          padding: exponentPadding,
-          separator: separator,
-          sign: exponentSign ?? const SignNumberPrinter<int>.omitPositiveSign(),
-        );
 
   @override
   void printOn(T object, StringBuffer buffer) {

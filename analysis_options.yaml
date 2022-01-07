@@ -4,4 +4,5 @@ linter:
   rules:
     - avoid_print
     - prefer_relative_imports
+    - sort_constructors_first
     - unnecessary_statements

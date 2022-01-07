@@ -10,30 +10,6 @@ import 'type.dart';
 
 /// Configurable printer for standard objects.
 class ObjectPrinter<T> extends Printer<T> {
-  /// Printer of the object type.
-  final Printer<T> type;
-
-  /// String to print before the fields.
-  final String? beforeFields;
-
-  /// Printer of the field name.
-  final Printer<String>? fieldName;
-
-  /// String to print between field name and value.
-  final String? fieldNameSeparator;
-
-  /// Printer of the field value.
-  final Printer<String>? fieldValue;
-
-  /// String to print between fields themselves.
-  final String? fieldSeparator;
-
-  /// String to print after the fields.
-  final String? afterFields;
-
-  /// Fields to print.
-  final List<FieldPrinter<T>> fields = [];
-
   /// Creates an object printer based on the static type.
   ObjectPrinter.static({
     this.beforeFields = defaultBeforeFields,
@@ -64,6 +40,30 @@ class ObjectPrinter<T> extends Printer<T> {
     this.fieldSeparator = defaultFieldSeparator,
     this.afterFields = defaultAfterFields,
   });
+
+  /// Printer of the object type.
+  final Printer<T> type;
+
+  /// String to print before the fields.
+  final String? beforeFields;
+
+  /// Printer of the field name.
+  final Printer<String>? fieldName;
+
+  /// String to print between field name and value.
+  final String? fieldNameSeparator;
+
+  /// Printer of the field value.
+  final Printer<String>? fieldValue;
+
+  /// String to print between fields themselves.
+  final String? fieldSeparator;
+
+  /// String to print after the fields.
+  final String? afterFields;
+
+  /// Fields to print.
+  final List<FieldPrinter<T>> fields = [];
 
   /// Adds a callback field printer.
   @Deprecated('Use `ObjectPrinter.addCallback` instead.')

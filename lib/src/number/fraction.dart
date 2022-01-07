@@ -7,26 +7,6 @@ import 'mixins/close_to.dart';
 /// A rational number.
 @immutable
 class Fraction implements Comparable<Fraction>, CloseTo<Fraction> {
-  /// The neutral additive element, that is `0`.
-  static const Fraction zero = Fraction._(0, 1);
-
-  /// The neutral multiplicative element, that is `1`.
-  static const Fraction one = Fraction._(1, 1);
-
-  /// Infinite iterable over all positive fractions.
-  ///
-  /// This is the breadth-first traversal of the Calkin–Wilf tree:
-  /// https://en.m.wikipedia.org/wiki/Calkin%E2%80%93Wilf_tree
-  static Iterable<Fraction> get positive sync* {
-    final pending = QueueList.from([Fraction.one]);
-    for (;;) {
-      final current = pending.removeFirst();
-      pending.addLast(Fraction._(current.a, current.a + current.b));
-      pending.addLast(Fraction._(current.a + current.b, current.b));
-      yield current;
-    }
-  }
-
   /// Creates a fraction from a [numerator] and an optional [denominator].
   factory Fraction(int numerator, [int denominator = 1]) {
     if (denominator == 0) {
@@ -81,6 +61,29 @@ class Fraction implements Comparable<Fraction>, CloseTo<Fraction> {
     return Fraction(sign * numerator1, denominator1);
   }
 
+  /// Internal constructor for fractions.
+  const Fraction._(this.a, this.b) : assert(b > 0, 'b must be positive');
+
+  /// The neutral additive element, that is `0`.
+  static const Fraction zero = Fraction._(0, 1);
+
+  /// The neutral multiplicative element, that is `1`.
+  static const Fraction one = Fraction._(1, 1);
+
+  /// Infinite iterable over all positive fractions.
+  ///
+  /// This is the breadth-first traversal of the Calkin–Wilf tree:
+  /// https://en.m.wikipedia.org/wiki/Calkin%E2%80%93Wilf_tree
+  static Iterable<Fraction> get positive sync* {
+    final pending = QueueList.from([Fraction.one]);
+    for (;;) {
+      final current = pending.removeFirst();
+      pending.addLast(Fraction._(current.a, current.a + current.b));
+      pending.addLast(Fraction._(current.a + current.b, current.b));
+      yield current;
+    }
+  }
+
   /// Parses [source] as a [Fraction]. Returns `null` in case of a problem.
   static Fraction? tryParse(String source) {
     final values = source.split('/');
@@ -91,9 +94,6 @@ class Fraction implements Comparable<Fraction>, CloseTo<Fraction> {
     }
     return Fraction(numerator, denominator);
   }
-
-  /// Internal constructor for fractions.
-  const Fraction._(this.a, this.b) : assert(b > 0, 'b must be positive');
 
   /// Returns the numerator of the fraction.
   final int a;

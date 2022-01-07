@@ -70,17 +70,6 @@ class BigIntRange extends ListBase<BigInt>
         step, 'step', 'Invalid step size for range $start..$end.');
   }
 
-  static final _safeLength =
-      isJavaScript ? BigInt.two.pow(32) : BigInt.two.pow(64);
-
-  static int _toSafeLength(BigInt length) {
-    if (length <= _safeLength) {
-      return length.toInt();
-    }
-    throw ArgumentError.value(
-        length, 'length', 'Length cannot be represented using int.');
-  }
-
   BigIntRange._(this.start, this.end, this.step, this.length);
 
   @override
@@ -184,12 +173,12 @@ class BigIntRange extends ListBase<BigInt>
 }
 
 class PositiveStepBigIntRangeIterator extends Iterator<BigInt> {
+  PositiveStepBigIntRangeIterator(this.start, this.end, this.step)
+      : assert(step > BigInt.zero, 'Step size must be positive.');
+
   BigInt start;
   final BigInt end;
   final BigInt step;
-
-  PositiveStepBigIntRangeIterator(this.start, this.end, this.step)
-      : assert(step > BigInt.zero, 'Step size must be positive.');
 
   @override
   late BigInt current;
@@ -206,12 +195,12 @@ class PositiveStepBigIntRangeIterator extends Iterator<BigInt> {
 }
 
 class NegativeStepBigIntRangeIterator extends Iterator<BigInt> {
+  NegativeStepBigIntRangeIterator(this.start, this.end, this.step)
+      : assert(step < BigInt.zero, 'Step size must be negative.');
+
   BigInt start;
   final BigInt end;
   final BigInt step;
-
-  NegativeStepBigIntRangeIterator(this.start, this.end, this.step)
-      : assert(step < BigInt.zero, 'Step size must be negative.');
 
   @override
   late BigInt current;
@@ -231,4 +220,14 @@ extension BigIntRangeExtension on BigInt {
   /// Shorthand to create a range of [BigInt] numbers, starting with the
   /// receiver (inclusive) up to but not including [end] (exclusive).
   BigIntRange to(BigInt end, {BigInt? step}) => BigIntRange(this, end, step);
+}
+
+final _safeLength = isJavaScript ? BigInt.two.pow(32) : BigInt.two.pow(64);
+
+int _toSafeLength(BigInt length) {
+  if (length <= _safeLength) {
+    return length.toInt();
+  }
+  throw ArgumentError.value(
+      length, 'length', 'Length cannot be represented using int.');
 }

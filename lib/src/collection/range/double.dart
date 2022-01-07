@@ -163,13 +163,13 @@ class DoubleRange extends ListBase<double>
 }
 
 class DoubleRangeIterator extends Iterator<double> {
+  DoubleRangeIterator(this.start, this.step, this.length);
+
   final double start;
   final double step;
   final int length;
 
   int index = 0;
-
-  DoubleRangeIterator(this.start, this.step, this.length);
 
   @override
   late double current;
