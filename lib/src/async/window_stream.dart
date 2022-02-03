@@ -13,7 +13,7 @@ extension WindowStreamExtension<E> on Stream<E> {
     if (step < 1) {
       throw RangeError.value(step, 'step', 'step must be positive');
     }
-    int idx = 0; // to calculate step
+    var idx = 0; // to calculate step
     final memory = ListQueue<E>(size);
     await for (var elem in this) {
       if (memory.length >= size) memory.removeFirst();
