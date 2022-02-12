@@ -39,10 +39,8 @@ class Multiset<E> extends IterableBase<E> {
   /// collection. The default function returns the constant 1.
   factory Multiset.fromIterable/*<E>*/(
     Iterable/*<E>*/ iterable, {
-    // ignore: use_function_type_syntax_for_parameters
-    E key(/*E*/ element)?,
-    // ignore: use_function_type_syntax_for_parameters
-    int count(/*E*/ element)?,
+    E Function(dynamic /*E*/ element)? key,
+    int Function(dynamic /*E*/ element)? count,
   }) {
     final result = Multiset<E>();
     key ??= (element) => element as E;

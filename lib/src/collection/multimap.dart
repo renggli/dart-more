@@ -207,10 +207,8 @@ class MultimapAsMap<K, V, VS extends Iterable<V>> extends MapBase<K, VS> {
 void fillFromIterable<K, V, VS extends Iterable<V>, E>(
   Multimap<K, V, VS> multimap,
   Iterable<E> iterable,
-  // ignore: use_function_type_syntax_for_parameters
-  K key(E element)?,
-  // ignore: use_function_type_syntax_for_parameters
-  V value(E element)?,
+  K Function(E element)? key,
+  V Function(E element)? value,
 ) {
   key ??= (x) => x as K;
   value ??= (x) => x as V;

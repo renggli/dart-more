@@ -47,12 +47,14 @@ void main() {
         expect(target.values, [1, 2, 3]);
       });
       test('iterable (key)', () {
-        final target = BiMap.fromIterable(example.keys, key: (e) => e + 1);
+        final target =
+            BiMap.fromIterable(example.keys, key: (e) => (e as int) + 1);
         expect(target.keys, [2, 3, 4]);
         expect(target.values, [1, 2, 3]);
       });
       test('iterable (value)', () {
-        final target = BiMap.fromIterable(example.keys, value: (e) => e + 1);
+        final target =
+            BiMap.fromIterable(example.keys, value: (e) => (e as int) + 1);
         expect(target.keys, [1, 2, 3]);
         expect(target.values, [2, 3, 4]);
       });
@@ -527,7 +529,8 @@ void main() {
         });
         test('fromIterable', () {
           final map = ListMultimap<String, int>.fromIterable(IntegerRange(3),
-              key: (i) => String.fromCharCode(i + 97), value: (i) => i + 1);
+              key: (i) => String.fromCharCode((e as int) + 97),
+              value: (i) => (e as int) + 1);
           expect(map, hasLength(3));
           expect(map.keys, ['a', 'b', 'c']);
           expect(map.values, [1, 2, 3]);
@@ -772,7 +775,8 @@ void main() {
         });
         test('fromIterable', () {
           final map = SetMultimap.fromIterable(IntegerRange(3),
-              key: (i) => String.fromCharCode(i + 97), value: (i) => i + 1);
+              key: (i) => String.fromCharCode((e as int) + 97),
+              value: (i) => (e as int) + 1);
           expect(map, hasLength(3));
           expect(map.keys, ['a', 'b', 'c']);
           expect(map.values, [1, 2, 3]);
@@ -1064,7 +1068,7 @@ void main() {
       });
       test('generate with key', () {
         final set = Multiset.fromIterable(['a', 'a', 'a', 'b', 'b', 'c'],
-            key: (e) => e.codeUnitAt(0));
+            key: (e) => (e as String).codeUnitAt(0));
         expect(set, isNot(isEmpty));
         expect(set, hasLength(6));
         expect(set, unorderedEquals([97, 97, 97, 98, 98, 99]));
@@ -1073,7 +1077,8 @@ void main() {
       });
       test('generate with count', () {
         final set = Multiset.fromIterable(['aaa', 'bb', 'c'],
-            key: (e) => e.substring(0, 1), count: (e) => e.length);
+            key: (e) => (e as String).substring(0, 1),
+            count: (e) => (e as String).length);
         expect(set, isNot(isEmpty));
         expect(set, hasLength(6));
         expect(set, unorderedEquals(['a', 'a', 'a', 'b', 'b', 'c']));
@@ -2502,7 +2507,7 @@ void allTrieTests(
       final trie = Trie<String, String, int>.fromIterable(
         ['abc', 'abcdef'],
         parts: (key) => key.toList(),
-        value: (value) => value.length,
+        value: (value) => (value as String).length,
         root: createRoot(),
       );
       expect(trie, hasLength(2));
