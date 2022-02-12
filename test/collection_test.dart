@@ -529,8 +529,8 @@ void main() {
         });
         test('fromIterable', () {
           final map = ListMultimap<String, int>.fromIterable(IntegerRange(3),
-              key: (i) => String.fromCharCode((e as int) + 97),
-              value: (i) => (e as int) + 1);
+              key: (i) => String.fromCharCode((i as int) + 97),
+              value: (i) => (i as int) + 1);
           expect(map, hasLength(3));
           expect(map.keys, ['a', 'b', 'c']);
           expect(map.values, [1, 2, 3]);
@@ -775,8 +775,8 @@ void main() {
         });
         test('fromIterable', () {
           final map = SetMultimap.fromIterable(IntegerRange(3),
-              key: (i) => String.fromCharCode((e as int) + 97),
-              value: (i) => (e as int) + 1);
+              key: (i) => String.fromCharCode((i as int) + 97),
+              value: (i) => (i as int) + 1);
           expect(map, hasLength(3));
           expect(map.keys, ['a', 'b', 'c']);
           expect(map.values, [1, 2, 3]);
