@@ -8,7 +8,6 @@ class Tuple9<T1, T2, T3, T4, T5, T6, T7, T8, T9> extends Tuple {
       this.sixth, this.seventh, this.eighth, this.ninth);
 
   /// List constructor.
-  // ignore: prefer_constructors_over_static_methods
   static Tuple9<T, T, T, T, T, T, T, T, T> fromList<T>(List<T> list) {
     if (list.length != 9) {
       throw ArgumentError.value(

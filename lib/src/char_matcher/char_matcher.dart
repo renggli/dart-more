@@ -148,7 +148,6 @@ abstract class CharMatcher implements Pattern {
       if (match(codeUnit)) {
         do {
           i++;
-          // ignore: invariant_booleans
         } while (i < codeUnits.length && match(codeUnits[i]));
         list.addAll(replacementCodes);
       } else {

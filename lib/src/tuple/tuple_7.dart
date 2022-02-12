@@ -9,7 +9,6 @@ class Tuple7<T1, T2, T3, T4, T5, T6, T7> extends Tuple {
       this.sixth, this.seventh);
 
   /// List constructor.
-  // ignore: prefer_constructors_over_static_methods
   static Tuple7<T, T, T, T, T, T, T> fromList<T>(List<T> list) {
     if (list.length != 7) {
       throw ArgumentError.value(

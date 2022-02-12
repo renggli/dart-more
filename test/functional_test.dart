@@ -202,7 +202,6 @@ void main() {
         expect(optional.isAbsent, isTrue);
       });
       test('isPresent', () {
-        // ignore: unnecessary_nullable_for_final_variable_declarations
         const String? value = 'foo';
         final optional = Optional.ofNullable(value);
         expect(optional, isA<Optional<String>>());

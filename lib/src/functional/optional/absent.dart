@@ -49,7 +49,6 @@ class AbsentOptional<T> extends Optional<T> {
   T orElseGet(Map0<T> function) => function();
 
   @override
-  // ignore: only_throw_errors
   T orElseThrow([Object? error]) => throw error ?? noSuchElementError;
 
   @override

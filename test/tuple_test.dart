@@ -44,7 +44,6 @@ void main() {
     test('toString', () {
       expect(tuple.toString(), '()');
     });
-// ignore: prefer_const_constructors
     final copy = Tuple0();
     test('equals', () {
       expect(tuple == tuple, isTrue);

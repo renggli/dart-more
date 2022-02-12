@@ -151,7 +151,6 @@ Future<void> generateImplementation(int i) async {
   final listAccessors = listify(List.generate(i, (i) => 'list[$i]'));
   out.writeln();
   out.writeln('/// List constructor.');
-  out.writeln('  // ignore: prefer_constructors_over_static_methods');
   out.writeln('static Tuple$i$listTypes fromList<T>(List<T> list) {');
   if (i == 0) {
     out.writeln('if (list.isNotEmpty) {');
@@ -437,9 +436,6 @@ Future<void> generateTest() async {
       });
       final accessors =
           listify(List.generate(i, (j) => 'tuple.${ordinals[j]}'));
-      if (i == 0) {
-        out.writeln('// ignore: prefer_const_constructors');
-      }
       out.writeln('final copy = Tuple$i($accessors);');
       nest('test', 'equals', () {
         out.writeln('expect(tuple == tuple, isTrue);');
