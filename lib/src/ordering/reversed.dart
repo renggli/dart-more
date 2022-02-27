@@ -1,3 +1,4 @@
+import '../../printer.dart';
 import 'ordering.dart';
 
 class ReversedOrdering<T> extends Ordering<T> {
@@ -10,4 +11,8 @@ class ReversedOrdering<T> extends Ordering<T> {
 
   @override
   Ordering<T> get reversed => ordering;
+
+  @override
+  ObjectPrinter get toStringPrinter =>
+      super.toStringPrinter..addValue(ordering, name: 'ordering');
 }

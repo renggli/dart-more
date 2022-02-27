@@ -2,6 +2,8 @@
 
 ## 3.5.0 (unpublished)
 * Dart 2.16 requirement.
+* Better print strings across the library.
+* Avoid dynamic calls.
 
 ## 3.4.0
 * Remove deprecated `hashAll` and `hash1`, `hash2`, `hash3`, ... methods.

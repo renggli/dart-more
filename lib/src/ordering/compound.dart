@@ -1,3 +1,4 @@
+import '../../printer.dart';
 import 'ordering.dart';
 
 class CompoundOrdering<T> extends Ordering<T> {
@@ -19,4 +20,8 @@ class CompoundOrdering<T> extends Ordering<T> {
   @override
   Ordering<T> compound(Ordering<T> other) =>
       CompoundOrdering([...orderings, other]);
+
+  @override
+  ObjectPrinter get toStringPrinter =>
+      super.toStringPrinter..addValue(orderings, name: 'orderings');
 }

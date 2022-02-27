@@ -1,3 +1,4 @@
+import '../../printer.dart';
 import 'ordering.dart';
 
 class NullsLastOrdering<T> extends Ordering<T?> {
@@ -25,4 +26,8 @@ class NullsLastOrdering<T> extends Ordering<T?> {
 
   @override
   Ordering<T?> get nullsLast => this;
+
+  @override
+  ObjectPrinter get toStringPrinter =>
+      super.toStringPrinter..addValue(ordering, name: 'ordering');
 }

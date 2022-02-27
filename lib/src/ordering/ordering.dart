@@ -1,5 +1,6 @@
 import 'package:meta/meta.dart' show immutable;
 
+import '../../printer.dart';
 import '../math/math.dart';
 import 'comparator.dart';
 import 'compound.dart';
@@ -36,7 +37,7 @@ import 'reversed.dart';
 ///     natural.isOrdered(['ape', 'cat', 'dog']);  // true
 ///
 @immutable
-abstract class Ordering<T> {
+abstract class Ordering<T> with ToStringPrinter {
   /// Returns an ordering based on a [comparator] function.
   factory Ordering.of(Comparator<T> comparator) =>
       ComparatorOrdering<T>(comparator);

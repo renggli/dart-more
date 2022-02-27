@@ -1,4 +1,5 @@
 import '../../iterable.dart';
+import '../../printer.dart';
 import 'ordering.dart';
 
 class ExplicitOrdering<T> extends Ordering<T> {
@@ -20,4 +21,8 @@ class ExplicitOrdering<T> extends Ordering<T> {
     }
     return rank;
   }
+
+  @override
+  ObjectPrinter get toStringPrinter =>
+      super.toStringPrinter..addValue(ranking, name: 'ranking');
 }

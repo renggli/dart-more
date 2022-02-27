@@ -12,12 +12,14 @@ void verifyBasic<T>(String type, Ordering<T> ordering, Iterable<T> unsorted,
         reason: '$type.binarySearch');
   }
   if (sorted.isNotEmpty) {
-    expect(ordering.minOf(unsorted), expected.first);
-    expect(ordering.percentile(unsorted, 0), expected.first);
-    expect(ordering.percentile(unsorted, 0), expected.first);
-
+    expect(ordering.minOf(unsorted), expected.first,
+        reason: '$type.percentile');
+    expect(ordering.percentile(unsorted, 0.0), expected.first);
     expect(ordering.maxOf(unsorted), expected.last, reason: '$type.maxOf');
+    expect(ordering.percentile(unsorted, 1.0), expected.last,
+        reason: '$type.percentile');
   }
+  expect(ordering.toString(), startsWith(ordering.runtimeType.toString()));
 }
 
 void verify<T>(

@@ -1,3 +1,4 @@
+import '../../printer.dart';
 import 'ordering.dart';
 
 class LexicographicalOrdering<T> extends Ordering<Iterable<T>> {
@@ -19,4 +20,8 @@ class LexicographicalOrdering<T> extends Ordering<Iterable<T>> {
     }
     return ib.moveNext() ? -1 : 0;
   }
+
+  @override
+  ObjectPrinter get toStringPrinter =>
+      super.toStringPrinter..addValue(ordering, name: 'ordering');
 }
