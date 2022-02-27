@@ -1,5 +1,7 @@
 # Changelog
 
+## 3.6.0 (unpublished)
+
 ## 3.5.0
 * Dart 2.16 requirement.
 * Avoid dynamic calls.
