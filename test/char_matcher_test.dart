@@ -5,9 +5,11 @@ void verify(CharMatcher matcher, String included, String excluded) {
   final positive = matcher;
   expect(positive.everyOf(included), isTrue);
   expect(positive.anyOf(excluded), isFalse);
+  expect(positive.toString(), startsWith(positive.runtimeType.toString()));
   final negative = ~matcher;
   expect(negative.everyOf(excluded), isTrue);
   expect(negative.anyOf(included), isFalse);
+  expect(negative.toString(), startsWith(negative.runtimeType.toString()));
 }
 
 void main() {

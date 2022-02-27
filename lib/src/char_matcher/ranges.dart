@@ -1,3 +1,4 @@
+import '../../printer.dart';
 import 'char_matcher.dart';
 
 class RangesCharMatcher extends CharMatcher {
@@ -24,4 +25,10 @@ class RangesCharMatcher extends CharMatcher {
     }
     return 0 < min && value <= stops[min - 1];
   }
+
+  @override
+  ObjectPrinter get toStringPrinter => super.toStringPrinter
+    ..addValue(length, name: 'length')
+    ..addValue(starts, name: 'starts')
+    ..addValue(stops, name: 'stops');
 }

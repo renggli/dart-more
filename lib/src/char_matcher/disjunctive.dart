@@ -1,3 +1,4 @@
+import '../../printer.dart';
 import 'any.dart';
 import 'char_matcher.dart';
 import 'none.dart';
@@ -25,4 +26,8 @@ class DisjunctiveCharMatcher extends CharMatcher {
 
   @override
   bool match(int value) => matchers.any((matcher) => matcher.match(value));
+
+  @override
+  ObjectPrinter get toStringPrinter =>
+      super.toStringPrinter..addValue(matchers, name: 'matchers');
 }

@@ -1,3 +1,4 @@
+import '../../printer.dart';
 import 'char_matcher.dart';
 
 class NegateCharMatcher extends CharMatcher {
@@ -10,4 +11,8 @@ class NegateCharMatcher extends CharMatcher {
 
   @override
   bool match(int value) => !matcher.match(value);
+
+  @override
+  ObjectPrinter get toStringPrinter =>
+      super.toStringPrinter..addValue(matcher, name: 'matcher');
 }

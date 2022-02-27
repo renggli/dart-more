@@ -1,3 +1,4 @@
+import '../../printer.dart';
 import 'char_matcher.dart';
 
 class RangeCharMatcher extends CharMatcher {
@@ -12,4 +13,9 @@ class RangeCharMatcher extends CharMatcher {
 
   @override
   bool match(int value) => start <= value && value <= stop;
+
+  @override
+  ObjectPrinter get toStringPrinter => super.toStringPrinter
+    ..addValue(start, name: 'start')
+    ..addValue(stop, name: 'stop');
 }

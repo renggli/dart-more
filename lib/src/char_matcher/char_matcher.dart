@@ -2,6 +2,7 @@
 /// on strings.
 import 'package:meta/meta.dart' show immutable;
 
+import '../../printer.dart';
 import '../collection/range/integer.dart';
 import 'any.dart';
 import 'ascii.dart';
@@ -37,7 +38,7 @@ import 'whitespace.dart';
 ///     String onlyDigits = CharMatcher.digit().retainFrom(string);
 ///
 @immutable
-abstract class CharMatcher implements Pattern {
+abstract class CharMatcher with ToStringPrinter implements Pattern {
   /// A matcher that accepts any character.
   const factory CharMatcher.any() = AnyCharMatcher;
 
