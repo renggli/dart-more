@@ -491,6 +491,73 @@ void main() {
       expect(() => list.retainWhere((value) => false), throwsUnsupportedError);
     });
   });
+  group('heap', () {
+    group(
+        'of',
+        () => allHeapTests(<T>(List<T> list, {Comparator<T>? comparator}) =>
+            Heap<T>.of(list, comparator: comparator)));
+    group(
+        'pushAll',
+        () => allHeapTests(<T>(List<T> list, {Comparator<T>? comparator}) =>
+            Heap<T>(comparator: comparator)..pushAll(list)));
+
+    // const ordered = [1, 2, 3, 4, 5];
+    // group('constructor', () {
+    //   test('empty', () {
+    //     final heap = Heap<int>();
+    //     verifyHeapInvariants(heap, source: []);
+    //   });
+    //   for (var permutation in ordered.permutations()) {
+    //     test('of(${permutation.join(', ')})', () {
+    //       final heap = Heap<int>.of(permutation);
+    //       verifyHeapInvariants(heap, source: permutation);
+    //       for (var i = ordered.length - 1; i >= 0; i--) {
+    //         expect(heap.peek, ordered[i]);
+    //         expect(heap.pop(), ordered[i]);
+    //       }
+    //     });
+    //   }
+    // });
+    // group('push/pop', () {
+    //   for (var permutation in ordered.permutations()) {
+    //     test(permutation.join(', '), () {
+    //       final heap = Heap<int>();
+    //       heap.pushAll(permutation);
+    //       verifyHeapInvariants(heap, source: permutation);
+    //       for (var i = ordered.length - 1; i >= 0; i--) {
+    //         expect(heap.peek, ordered[i]);
+    //         expect(heap.pop(), ordered[i]);
+    //       }
+    //     });
+    //   }
+    // });
+    // group('stress', () {
+    //
+    //
+    //
+    //   final random = Random(314);
+    //   final unique = <int>{};
+    //   // Create 1000 unique numbers.
+    //   while (unique.length < 1000) {
+    //     unique.add(random.nextInt(0xffffff));
+    //   }
+    //   final list = unique.toList()..sort();
+    //   final heap1 = Heap<int>.of(unique);
+    //   final heap2 = Heap<int>()..pushAll(unique);
+    //   // Remove the 500 largest numbers
+    //   while (list.length > 500) {
+    //     final max = list.removeLast();
+    //     expect(heap1.length, list.length + 1);
+    //     expect(heap1.peek, max);
+    //     expect(heap1.pop(), max);
+    //     expect(heap2.length, list.length + 1);
+    //     expect(heap2.peek, max);
+    //     expect(heap2.pop(), max);
+    //   }
+    //   // Push and pop
+    //
+    // });
+  });
   group('multimap', () {
     group('list', () {
       group('constructor', () {
@@ -985,7 +1052,7 @@ void main() {
     });
   });
   group('multiset', () {
-    group('construct', () {
+    group('constructor', () {
       test('empty', () {
         final set = Multiset();
         expect(set, isEmpty);
@@ -2309,6 +2376,68 @@ void main() {
       expect(map.toString(), '{String: hello, int: 42}');
     });
   });
+}
+
+void allHeapTests(
+    Heap<T> Function<T>(List<T> list, {Comparator<T>? comparator}) createHeap) {
+  final comparators = {
+    'max': (int a, int b) => a.compareTo(b),
+    'min': (int a, int b) => b.compareTo(a),
+  };
+  test('empty', () {
+    final heap = createHeap<String>([]);
+    expect(heap.isEmpty, isTrue);
+    expect(heap.isNotEmpty, isFalse);
+    expect(heap.length, 0);
+    expect(() => heap.peek, throwsStateError);
+    expect(() => heap.pop(), throwsStateError);
+    expect(() => heap.popAndPush('Hello'), throwsStateError);
+    expect(heap.pushAndPop('World'), 'World');
+    expect(heap.length, 0);
+  });
+  test('popAndPush', () {
+    final heap = createHeap<String>(['Olivia', 'Emma', 'Sophia']);
+    expect(heap.popAndPush('Amelia'), 'Sophia');
+    expect(heap.popAndPush('Nora'), 'Olivia');
+    expect(heap.popAndPush('Violet'), 'Nora');
+    expect(heap.toList()..sort(), ['Amelia', 'Emma', 'Violet']);
+  });
+  test('pushAndPop', () {
+    final heap = createHeap<String>(['Olivia', 'Emma', 'Sophia']);
+    expect(heap.pushAndPop('Amelia'), 'Sophia');
+    expect(heap.pushAndPop('Nora'), 'Olivia');
+    expect(heap.pushAndPop('Violet'), 'Violet');
+    expect(heap.toList()..sort(), ['Amelia', 'Emma', 'Nora']);
+  });
+  test('clear', () {
+    final heap = createHeap<String>(['Olivia', 'Emma', 'Sophia']);
+    heap.clear();
+    expect(heap.isEmpty, isTrue);
+    expect(heap.isNotEmpty, isFalse);
+    expect(heap.length, 0);
+  });
+  for (var comparator in comparators.entries) {
+    test('stress ${comparator.key}', () {
+      final random = Random(comparator.key.hashCode);
+      final source = <int>[];
+      while (source.length < 2500) {
+        source.add(random.nextInt(0xffffff));
+      }
+      final heap = createHeap<int>(source, comparator: comparator.value);
+      source.sort(comparator.value);
+      while (source.isNotEmpty) {
+        expect(heap.isEmpty, isFalse);
+        expect(heap.isNotEmpty, isTrue);
+        expect(heap.length, source.length);
+        final value = source.removeLast();
+        expect(heap.peek, value);
+        expect(heap.pop(), value);
+      }
+      expect(heap.isEmpty, isTrue);
+      expect(heap.isNotEmpty, isFalse);
+      expect(heap.length, 0);
+    });
+  }
 }
 
 void allTrieTests(
