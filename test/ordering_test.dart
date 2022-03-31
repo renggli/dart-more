@@ -227,6 +227,12 @@ void main() {
       expect(natural.binarySearch([1, 2, 3, 5, 6, 7, 8], 5), 3);
       expect(natural.binarySearch([1, 2, 3, 4, 5, 6, 7, 8, 9], 5), 4);
     });
+    test('binarySearch simple (absent)', () {
+      expect(natural.binarySearch([1, 6], 5), -2);
+      expect(natural.binarySearch([1, 2, 6, 7], 5), -3);
+      expect(natural.binarySearch([1, 2, 3, 6, 7, 8], 5), -4);
+      expect(natural.binarySearch([1, 2, 3, 4, 6, 7, 8, 9], 5), -5);
+    });
     test('binarySearch right most', () {
       expect(natural.binarySearch([5], 5), 0);
       expect(natural.binarySearch([1, 5], 5), 1);
@@ -234,12 +240,24 @@ void main() {
       expect(natural.binarySearch([1, 2, 3, 5], 5), 3);
       expect(natural.binarySearch([1, 2, 3, 4, 5], 5), 4);
     });
+    test('binarySearch right most (absent)', () {
+      expect(natural.binarySearch([1], 5), -2);
+      expect(natural.binarySearch([1, 2], 5), -3);
+      expect(natural.binarySearch([1, 2, 3], 5), -4);
+      expect(natural.binarySearch([1, 2, 3, 4], 5), -5);
+    });
     test('binarySearch left most', () {
       expect(natural.binarySearch([5], 5), 0);
       expect(natural.binarySearch([5, 6], 5), 0);
       expect(natural.binarySearch([5, 6, 7], 5), 0);
       expect(natural.binarySearch([5, 6, 7, 8], 5), 0);
       expect(natural.binarySearch([5, 6, 7, 8, 9], 5), 0);
+    });
+    test('binarySearch left most (absent)', () {
+      expect(natural.binarySearch([6], 5), -1);
+      expect(natural.binarySearch([6, 7], 5), -1);
+      expect(natural.binarySearch([6, 7, 8], 5), -1);
+      expect(natural.binarySearch([6, 7, 8, 9], 5), -1);
     });
     test('sorted', () {
       expect(natural.sorted([]), []);

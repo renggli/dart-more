@@ -88,9 +88,12 @@ abstract class Ordering<T> with ToStringPrinter {
   ///
   /// The method returns the index of the element, or a negative value if the
   /// key was not found. The result is undefined if the list is not sorted.
-  int binarySearch(List<T> list, T value) {
-    var min = 0;
-    var max = list.length;
+  ///
+  /// By default the whole [list] is searched, but if [start] and/or [end] are
+  /// supplied, only that range is searched.
+  int binarySearch(List<T> list, T value, {int? start, int? end}) {
+    var min = start ?? 0;
+    var max = end ?? list.length;
     while (min < max) {
       final mid = min + ((max - min) >> 1);
       final comp = compare(list[mid], value);
