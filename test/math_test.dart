@@ -1,5 +1,6 @@
 import 'dart:math' as math;
 
+import 'package:more/iterable.dart';
 import 'package:more/math.dart';
 import 'package:more/number.dart';
 import 'package:test/test.dart';
@@ -351,8 +352,35 @@ void main() {
       expect([1, 2, 3, 4].polynomial(), 4321);
     });
   });
-  test('primes', () {
-    expect(10.primes, [2, 3, 5, 7]);
-    expect(20.primes, [2, 3, 5, 7, 11, 13, 17, 19]);
+  group('primes', () {
+    test('basic', () {
+      expect(10.primes, [2, 3, 5, 7]);
+      expect(20.primes, [2, 3, 5, 7, 11, 13, 17, 19]);
+    });
+    test('large', () {
+      expect(2000.primes.skipWhile((each) => each < 1000).take(5),
+          [1009, 1013, 1019, 1021, 1031]);
+      expect(20000.primes.skipWhile((each) => each < 10000).take(5),
+          [10007, 10009, 10037, 10039, 10061]);
+      expect(200000.primes.skipWhile((each) => each < 100000).take(5),
+          [100003, 100019, 100043, 100049, 100057]);
+    });
+    test('twins', () {
+      final twins =
+          150.primes.window(2).where((pair) => pair[0] + 2 == pair[1]);
+      expect(twins, [
+        [3, 5],
+        [5, 7],
+        [11, 13],
+        [17, 19],
+        [29, 31],
+        [41, 43],
+        [59, 61],
+        [71, 73],
+        [101, 103],
+        [107, 109],
+        [137, 139],
+      ]);
+    });
   });
 }

@@ -3,7 +3,7 @@ extension WindowExtension<E> on Iterable<E> {
   ///
   /// The following expression yields [1, 2, 3], [2, 3, 4], [3, 4, 5]:
   ///
-  ///     [1, 2, 3, 4, 5].window(2);
+  ///     [1, 2, 3, 4, 5].window(3);
   ///
   Iterable<List<E>> window(int size,
       {int step = 1, bool includePartial = false}) sync* {
