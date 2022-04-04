@@ -329,6 +329,13 @@ void main() {
       expect(2.between(0, 1), isFalse);
       expect(2.between(3, 4), isFalse);
     });
+    test('clip', () {
+      expect(-2.clip(-1, 1), -1);
+      expect(-1.clip(-1, 1), -1);
+      expect(0.clip(-1, 1), 0);
+      expect(1.clip(-1, 1), 1);
+      expect(2.clip(-1, 1), 1);
+    });
   });
   group('polynomial', () {
     test('base 2', () {

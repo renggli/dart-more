@@ -36,4 +36,11 @@ extension MathNumberExtension on num {
 
   /// Returns true, if this [num] is between [min] and [max] (inclusive).
   bool between(num min, num max) => min <= this && this <= max;
+
+  /// Clips (limits) this [num] to the range from [min] to [max] (inclusive).
+  num clip(num min, num max) => this < min
+      ? min
+      : max < this
+          ? max
+          : this;
 }
