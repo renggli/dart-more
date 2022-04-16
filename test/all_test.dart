@@ -7,6 +7,7 @@ import 'collection_test.dart' as collection_test;
 import 'feature_test.dart' as feature_test;
 import 'functional_test.dart' as functional_test;
 import 'functional_type_test.dart' as functional_type_test;
+import 'interval_test.dart' as interval_test;
 import 'iterable_test.dart' as iterable_test;
 import 'math_test.dart' as math_test;
 import 'number_test.dart' as number_test;
@@ -22,6 +23,7 @@ void main() {
   group('feature', feature_test.main);
   group('functional', functional_test.main);
   group('functional type', functional_type_test.main);
+  group('interval', interval_test.main);
   group('iterable', iterable_test.main);
   group('math', math_test.main);
   group('number', number_test.main);
