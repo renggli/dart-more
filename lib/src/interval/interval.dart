@@ -2,7 +2,7 @@ import 'bounds/empty.dart';
 import 'bounds/lower.dart';
 import 'bounds/upper.dart';
 
-/// An interval over an ordering of type T.
+/// An interval over an ordering of type [T].
 ///
 /// See https://en.wikipedia.org/wiki/Interval_(mathematics).
 class Interval<T extends Comparable<T>> {
@@ -107,6 +107,7 @@ class Interval<T extends Comparable<T>> {
     } else if (other.isEmpty) {
       return other;
     }
+    // Find lower bound.
     var newLower = lower;
     if (lower.isUnbounded) {
       newLower = other.lower;
@@ -116,6 +117,7 @@ class Interval<T extends Comparable<T>> {
         newLower = other.lower;
       }
     }
+    // Find upper bound.
     var newUpper = upper;
     if (upper.isUnbounded) {
       newUpper = other.upper;
@@ -125,6 +127,7 @@ class Interval<T extends Comparable<T>> {
         newUpper = other.upper;
       }
     }
+    // Swap bounds if necessary.
     if (newLower.isBounded && newUpper.isBounded) {
       final cmp = newLower.endpoint!.compareTo(newUpper.endpoint!);
       if (cmp > 0 || (cmp == 0 && (newLower.isOpen || newUpper.isOpen))) {
@@ -143,6 +146,7 @@ class Interval<T extends Comparable<T>> {
     } else if (other.isEmpty) {
       return this;
     }
+    // Find lower bound.
     var newLower = lower;
     if (other.lower.isUnbounded) {
       newLower = other.lower;
@@ -152,6 +156,7 @@ class Interval<T extends Comparable<T>> {
         newLower = other.lower;
       }
     }
+    // Find upper bound.
     var newUpper = upper;
     if (other.upper.isUnbounded) {
       newUpper = other.upper;

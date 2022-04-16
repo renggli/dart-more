@@ -93,6 +93,13 @@ verify<T extends Comparable<T>>(
   test('isSingle', () {
     expect(interval.isSingle, isSingle);
   });
+  test('equal', () {
+    expect(interval == interval, isTrue);
+    for (var other in intervals) {
+      expect(interval == other, isFalse);
+      expect(other == interval, isFalse);
+    }
+  });
   test('hash', () {
     expect(interval.hashCode == interval.hashCode, isTrue);
     for (var other in intervals) {
