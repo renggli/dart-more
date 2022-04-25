@@ -54,16 +54,20 @@ class Interval<T extends Comparable<T>> {
         BelowAll<T>(),
       );
 
-  /// Returns an empty interval of type [T].
-  factory Interval.empty() => Interval<T>._(Empty<T>(), Empty<T>());
+  /// Returns an empty interval of type [T]: `{} = ∅`
+  factory Interval.empty() => Interval<T>._(
+        Empty<T>(),
+        Empty<T>(),
+      );
 
-  /// Returns an interval containing a single value of type [T].
+  /// Returns an interval containing a single value of type [T]:
+  /// `{ x ∈ T | x = value }`.
   factory Interval.single(T value) => Interval<T>._(
         AboveOrEqual<T>(value),
         BelowOrEqual<T>(value),
       );
 
-  /// Returns a interval containing all values of type [T].
+  /// Returns a interval containing all values of type [T]: `{ x ∈ T }`
   factory Interval.all() => Interval<T>._(
         AboveAll<T>(),
         BelowAll<T>(),
