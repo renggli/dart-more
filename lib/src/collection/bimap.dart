@@ -50,7 +50,7 @@ class BiMap<K, V> extends MapBase<K, V> {
       moreValues = valueIterator.moveNext();
     }
     if (moreKeys || moreValues) {
-      throw ArgumentError('Keys and values iterables have different length.');
+      throw ArgumentError('Iterables do not have same length');
     }
     return result;
   }

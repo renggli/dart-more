@@ -10,7 +10,8 @@ class Fraction implements Comparable<Fraction>, CloseTo<Fraction> {
   /// Creates a fraction from a [numerator] and an optional [denominator].
   factory Fraction(int numerator, [int denominator = 1]) {
     if (denominator == 0) {
-      throw ArgumentError('Denominator needs to be non-zero.');
+      throw ArgumentError.value(
+          denominator, 'denominator', 'Expected non-zero denominator');
     }
     var d = numerator.gcd(denominator).abs();
     if (denominator < 0) {
@@ -25,7 +26,8 @@ class Fraction implements Comparable<Fraction>, CloseTo<Fraction> {
   /// Creates an approximate fraction from a floating point [value].
   factory Fraction.fromDouble(num value, [num maxDenominator = 1e10]) {
     if (value.isInfinite || value.isNaN) {
-      throw ArgumentError('$value cannot be represented as fraction');
+      throw ArgumentError.value(
+          value, 'value', 'Unable to represent as fraction');
     }
     final sign = value < 0
         ? -1
@@ -117,7 +119,7 @@ class Fraction implements Comparable<Fraction>, CloseTo<Fraction> {
     } else if (other is int) {
       return Fraction(a + other * b, b);
     } else {
-      throw ArgumentError.value(other);
+      throw ArgumentError.value(other, 'other', 'Invalid type');
     }
   }
 
@@ -128,7 +130,7 @@ class Fraction implements Comparable<Fraction>, CloseTo<Fraction> {
     } else if (other is int) {
       return Fraction(a - other * b, b);
     } else {
-      throw ArgumentError.value(other);
+      throw ArgumentError.value(other, 'other', 'Invalid type');
     }
   }
 
@@ -142,7 +144,7 @@ class Fraction implements Comparable<Fraction>, CloseTo<Fraction> {
     } else if (other is int) {
       return Fraction(a * other, b);
     } else {
-      throw ArgumentError.value(other);
+      throw ArgumentError.value(other, 'other', 'Invalid type');
     }
   }
 
@@ -153,7 +155,7 @@ class Fraction implements Comparable<Fraction>, CloseTo<Fraction> {
     } else if (other is int) {
       return Fraction(a, b * other);
     } else {
-      throw ArgumentError.value(other);
+      throw ArgumentError.value(other, 'other', 'Invalid type');
     }
   }
 

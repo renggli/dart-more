@@ -6,7 +6,7 @@ extension BinomialIntegerExtension on int {
   int binomial(int k) {
     var n = this;
     if (k < 0 || k > n) {
-      throw ArgumentError('$n.binomial($k) is undefined.');
+      throw ArgumentError('$n.binomial($k) is undefined');
     }
     if (k == 0 || k == n) {
       return 1;
@@ -34,7 +34,7 @@ extension BinomialBigIntExtension on BigInt {
   BigInt binomial(BigInt k) {
     var n = this;
     if (k < BigInt.zero || k > n) {
-      throw ArgumentError('$n.binomial($k) is undefined.');
+      throw ArgumentError('$n.binomial($k) is undefined');
     }
     if (k == BigInt.zero || k == n) {
       return BigInt.one;

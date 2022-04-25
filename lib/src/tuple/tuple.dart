@@ -42,7 +42,7 @@ abstract class Tuple {
         return Tuple9.fromList(list);
       default:
         throw ArgumentError.value(
-            list, 'list', 'Length ${list.length} not in range 0..9.');
+            list, 'list', 'Length ${list.length} not in range 0..9');
     }
   }
 

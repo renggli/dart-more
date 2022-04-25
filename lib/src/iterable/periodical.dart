@@ -49,7 +49,7 @@ extension PeriodicalExtension on DateTime {
     Period period = Period.daily,
   }) {
     if (step == 0) {
-      throw ArgumentError.value(step, 'step', 'invalid step size');
+      throw ArgumentError.value(step, 'step', 'Expected non-zero step size');
     }
     switch (period) {
       case Period.millennially:

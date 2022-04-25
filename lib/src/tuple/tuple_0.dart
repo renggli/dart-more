@@ -10,7 +10,7 @@ class Tuple0 extends Tuple {
   static Tuple0 fromList<T>(List<T> list) {
     if (list.isNotEmpty) {
       throw ArgumentError.value(
-          list, 'list', 'Expected list of length 0, but got ${list.length}.');
+          list, 'list', 'Expected list of length 0, but got ${list.length}');
     }
     return const Tuple0();
   }

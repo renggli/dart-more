@@ -12,7 +12,7 @@ class Tuple8<T1, T2, T3, T4, T5, T6, T7, T8> extends Tuple {
   static Tuple8<T, T, T, T, T, T, T, T> fromList<T>(List<T> list) {
     if (list.length != 8) {
       throw ArgumentError.value(
-          list, 'list', 'Expected list of length 8, but got ${list.length}.');
+          list, 'list', 'Expected list of length 8, but got ${list.length}');
     }
     return Tuple8(
         list[0], list[1], list[2], list[3], list[4], list[5], list[6], list[7]);

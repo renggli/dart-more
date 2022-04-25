@@ -11,7 +11,7 @@ class Tuple5<T1, T2, T3, T4, T5> extends Tuple {
   static Tuple5<T, T, T, T, T> fromList<T>(List<T> list) {
     if (list.length != 5) {
       throw ArgumentError.value(
-          list, 'list', 'Expected list of length 5, but got ${list.length}.');
+          list, 'list', 'Expected list of length 5, but got ${list.length}');
     }
     return Tuple5(list[0], list[1], list[2], list[3], list[4]);
   }

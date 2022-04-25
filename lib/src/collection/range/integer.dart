@@ -60,7 +60,7 @@ class IntegerRange extends ListBase<int>
       }
     }
     throw ArgumentError.value(
-        step, 'step', 'Invalid step size for range $start..$end.');
+        step, 'step', 'Invalid step size for range $start..$end');
   }
 
   IntegerRange._(this.start, this.end, this.step, this.length);

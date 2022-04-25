@@ -97,7 +97,7 @@ Future<void> generateAbstract() async {
   }
   out.writeln('default:');
   out.writeln('throw ArgumentError.value(list, \'list\', '
-      '\'Length \${list.length} not in range 0..${max - 1}.\');');
+      '\'Length \${list.length} not in range 0..${max - 1}\');');
   out.writeln('}');
   out.writeln('}');
   out.writeln();
@@ -158,7 +158,7 @@ Future<void> generateImplementation(int i) async {
     out.writeln('if (list.length != $i) {');
   }
   out.writeln('throw ArgumentError.value(list, \'list\', '
-      '\'Expected list of length $i, but got \${list.length}.\');');
+      '\'Expected list of length $i, but got \${list.length}\');');
   out.writeln('}');
   out.writeln('return ${i == 0 ? 'const ' : ''} Tuple$i($listAccessors);');
   out.writeln('}');

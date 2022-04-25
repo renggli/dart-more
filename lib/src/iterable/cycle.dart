@@ -34,7 +34,7 @@ extension CycleExtension<E> on Iterable<E> {
     } else if (count > 1) {
       return FiniteCycleIterable<E>(this, count);
     } else {
-      throw ArgumentError('Positive count expected, but got $count.');
+      throw ArgumentError.value(count, 'count', 'Expected positive count');
     }
   }
 }

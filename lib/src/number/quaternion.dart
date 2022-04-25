@@ -155,7 +155,7 @@ class Quaternion implements CloseTo<Quaternion> {
     } else if (other is num) {
       return Quaternion(w + other, x, y, z);
     } else {
-      throw ArgumentError.value(other);
+      throw ArgumentError.value(other, 'other', 'Invalid type');
     }
   }
 
@@ -166,7 +166,7 @@ class Quaternion implements CloseTo<Quaternion> {
     } else if (other is num) {
       return Quaternion(w - other, x, y, z);
     } else {
-      throw ArgumentError.value(other);
+      throw ArgumentError.value(other, 'other', 'Invalid type');
     }
   }
 
@@ -182,7 +182,7 @@ class Quaternion implements CloseTo<Quaternion> {
     } else if (other is num) {
       return Quaternion(w * other, x * other, y * other, z * other);
     } else {
-      throw ArgumentError.value(other);
+      throw ArgumentError.value(other, 'other', 'Invalid type');
     }
   }
 
@@ -205,7 +205,7 @@ class Quaternion implements CloseTo<Quaternion> {
     } else if (other is num) {
       return Quaternion(w / other, x / other, y / other, z / other);
     } else {
-      throw ArgumentError.value(other);
+      throw ArgumentError.value(other, 'other', 'Invalid type');
     }
   }
 

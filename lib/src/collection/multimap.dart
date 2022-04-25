@@ -222,15 +222,15 @@ void fillFromIterables<K, V, VS extends Iterable<V>>(
     Multimap<K, V, VS> multimap, Iterable<K> keys, Iterable<V> values) {
   final keyIterator = keys.iterator;
   final valueIterator = values.iterator;
-  var hasNextKey = keyIterator.moveNext();
-  var hasNextValue = valueIterator.moveNext();
-  while (hasNextKey && hasNextValue) {
+  var moreKeys = keyIterator.moveNext();
+  var moreValues = valueIterator.moveNext();
+  while (moreKeys && moreValues) {
     multimap.add(keyIterator.current, valueIterator.current);
-    hasNextKey = keyIterator.moveNext();
-    hasNextValue = valueIterator.moveNext();
+    moreKeys = keyIterator.moveNext();
+    moreValues = valueIterator.moveNext();
   }
-  if (hasNextKey || hasNextValue) {
-    throw ArgumentError('Iterables do not have same length.');
+  if (moreKeys || moreValues) {
+    throw ArgumentError('Iterables do not have same length');
   }
 }
 

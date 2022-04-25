@@ -230,7 +230,7 @@ int _toCharCode(Object char) {
   }
   final value = '$char';
   if (value.length != 1) {
-    throw ArgumentError('$value is not a character');
+    throw ArgumentError.value(value, 'value', 'Invalid character');
   }
   return value.codeUnitAt(0);
 }

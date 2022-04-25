@@ -111,7 +111,7 @@ class Complex implements CloseTo<Complex> {
     } else if (other is num) {
       return Complex(a + other, b);
     } else {
-      throw ArgumentError.value(other);
+      throw ArgumentError.value(other, 'other', 'Invalid type');
     }
   }
 
@@ -122,7 +122,7 @@ class Complex implements CloseTo<Complex> {
     } else if (other is num) {
       return Complex(a - other, b);
     } else {
-      throw ArgumentError.value(other);
+      throw ArgumentError.value(other, 'other', 'Invalid type');
     }
   }
 
@@ -133,7 +133,7 @@ class Complex implements CloseTo<Complex> {
     } else if (other is num) {
       return Complex(a * other, b * other);
     } else {
-      throw ArgumentError.value(other);
+      throw ArgumentError.value(other, 'other', 'Invalid type');
     }
   }
 
@@ -154,7 +154,7 @@ class Complex implements CloseTo<Complex> {
     } else if (other is num) {
       return Complex(a / other, b / other);
     } else {
-      throw ArgumentError.value(other);
+      throw ArgumentError.value(other, 'other', 'Invalid type');
     }
   }
 
@@ -185,7 +185,7 @@ class Complex implements CloseTo<Complex> {
   /// Computes the n-th roots of this complex number.
   List<Complex> roots(int n) {
     if (n == 0) {
-      throw ArgumentError.value(n, 'n', 'Can\'t compute 0th root.');
+      throw ArgumentError.value(n, 'n', 'Expected non-zero root');
     }
     final root = abs().pow(1 / n);
     final phiBase = arg() / n;

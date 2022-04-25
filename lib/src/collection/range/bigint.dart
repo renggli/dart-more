@@ -67,7 +67,7 @@ class BigIntRange extends ListBase<BigInt>
       }
     }
     throw ArgumentError.value(
-        step, 'step', 'Invalid step size for range $start..$end.');
+        step, 'step', 'Invalid step size for range $start..$end');
   }
 
   BigIntRange._(this.start, this.end, this.step, this.length);
@@ -229,5 +229,5 @@ int _toSafeLength(BigInt length) {
     return length.toInt();
   }
   throw ArgumentError.value(
-      length, 'length', 'Length cannot be represented using int.');
+      length, 'length', 'Length cannot be represented using int');
 }

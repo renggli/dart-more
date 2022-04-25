@@ -11,7 +11,7 @@ class Tuple1<T1> extends Tuple {
   static Tuple1<T> fromList<T>(List<T> list) {
     if (list.length != 1) {
       throw ArgumentError.value(
-          list, 'list', 'Expected list of length 1, but got ${list.length}.');
+          list, 'list', 'Expected list of length 1, but got ${list.length}');
     }
     return Tuple1(list[0]);
   }

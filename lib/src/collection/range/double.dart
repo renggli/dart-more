@@ -62,7 +62,7 @@ class DoubleRange extends ListBase<double>
       }
     }
     throw ArgumentError.value(
-        step, 'step', 'Invalid step size for range $start..$end.');
+        step, 'step', 'Invalid step size for range $start..$end');
   }
 
   DoubleRange._(this.start, this.end, this.step, this.length);

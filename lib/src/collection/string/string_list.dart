@@ -53,7 +53,7 @@ class MutableStringList extends ListBase<String> {
     if (character.length == 1) {
       codeUnits[index] = character.codeUnitAt(0);
     } else {
-      throw ArgumentError('Invalid character: $character');
+      throw ArgumentError.value(character, 'character', 'Invalid character');
     }
   }
 

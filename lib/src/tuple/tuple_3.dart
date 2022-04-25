@@ -11,7 +11,7 @@ class Tuple3<T1, T2, T3> extends Tuple {
   static Tuple3<T, T, T> fromList<T>(List<T> list) {
     if (list.length != 3) {
       throw ArgumentError.value(
-          list, 'list', 'Expected list of length 3, but got ${list.length}.');
+          list, 'list', 'Expected list of length 3, but got ${list.length}');
     }
     return Tuple3(list[0], list[1], list[2]);
   }

@@ -30,7 +30,7 @@ extension FactorialIntegerExtension on int {
   /// sequence.
   int factorial() {
     if (this < 0) {
-      throw ArgumentError('$this.factorial() is undefined for negatives.');
+      throw ArgumentError('$this.factorial() is undefined.');
     }
     if (this < factorials.length) {
       return factorials[this];
@@ -51,7 +51,7 @@ extension FactorialBigIntExtension on BigInt {
   BigInt factorial() {
     final n = toInt();
     if (n < 0) {
-      throw ArgumentError('$n.factorial() is undefined for negatives.');
+      throw ArgumentError('$this.factorial() is undefined.');
     }
     if (n < factorials.length) {
       return BigInt.from(factorials[n]);

@@ -11,7 +11,7 @@ class Tuple9<T1, T2, T3, T4, T5, T6, T7, T8, T9> extends Tuple {
   static Tuple9<T, T, T, T, T, T, T, T, T> fromList<T>(List<T> list) {
     if (list.length != 9) {
       throw ArgumentError.value(
-          list, 'list', 'Expected list of length 9, but got ${list.length}.');
+          list, 'list', 'Expected list of length 9, but got ${list.length}');
     }
     return Tuple9(list[0], list[1], list[2], list[3], list[4], list[5], list[6],
         list[7], list[8]);

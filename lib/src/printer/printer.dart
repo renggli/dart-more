@@ -39,7 +39,7 @@ abstract class Printer<T> with ToStringPrinter {
       return Printer<T>.sequence(
           object.map((each) => Printer<T>.wrap(each)).toList(growable: false));
     } else {
-      throw ArgumentError.value(object, 'object', 'Invalid object type');
+      throw ArgumentError.value(object, 'object', 'Invalid type');
     }
   }
 
