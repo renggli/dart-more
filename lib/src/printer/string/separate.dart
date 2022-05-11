@@ -35,8 +35,7 @@ abstract class SeparatePrinter<T> extends Printer<T> {
 /// Separates a string from the left with a separator character.
 class SeparateLeftPrinter<T> extends SeparatePrinter<T> {
   const SeparateLeftPrinter(
-      Printer<T> printer, int width, int offset, String separator)
-      : super(printer, width, offset, separator);
+      super.printer, super.width, super.offset, super.separator);
 
   @override
   void printOn(T object, StringBuffer buffer) {
@@ -54,8 +53,7 @@ class SeparateLeftPrinter<T> extends SeparatePrinter<T> {
 /// Separates a string from the right with a repeated separator character.
 class SeparateRightPrinter<T> extends SeparatePrinter<T> {
   const SeparateRightPrinter(
-      Printer<T> printer, int width, int offset, String separator)
-      : super(printer, width, offset, separator);
+      super.printer, super.width, super.offset, super.separator);
 
   @override
   void printOn(T object, StringBuffer buffer) {

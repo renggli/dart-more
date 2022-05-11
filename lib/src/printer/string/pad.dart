@@ -34,8 +34,7 @@ abstract class PadPrinter<T> extends Printer<T> {
 
 /// Pads the string on the left if it is shorter than width.
 class PadLeftPrinter<T> extends PadPrinter<T> {
-  const PadLeftPrinter(Printer<T> printer, int width, String padding)
-      : super(printer, width, padding);
+  const PadLeftPrinter(super.printer, super.width, super.padding);
 
   @override
   void printOn(T object, StringBuffer buffer) {
@@ -50,8 +49,7 @@ class PadLeftPrinter<T> extends PadPrinter<T> {
 
 /// Pads the string on the right if it is shorter than width.
 class PadRightPrinter<T> extends PadPrinter<T> {
-  const PadRightPrinter(Printer<T> printer, int width, String padding)
-      : super(printer, width, padding);
+  const PadRightPrinter(super.printer, super.width, super.padding);
 
   @override
   void printOn(T object, StringBuffer buffer) {
@@ -66,8 +64,7 @@ class PadRightPrinter<T> extends PadPrinter<T> {
 
 /// Pads the string on both sides if it is shorter than width.
 class PadBothPrinter<T> extends PadPrinter<T> {
-  const PadBothPrinter(Printer<T> printer, int width, String padding)
-      : super(printer, width, padding);
+  const PadBothPrinter(super.printer, super.width, super.padding);
 
   @override
   void printOn(T object, StringBuffer buffer) {

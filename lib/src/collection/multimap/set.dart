@@ -59,7 +59,7 @@ class SetMultimap<K, V> extends Multimap<K, V, Set<V>> {
 
 class SetMultimapValues<K, V> extends MultimapValues<K, V, Set<V>>
     with SetMixin<V> {
-  SetMultimapValues(SetMultimap<K, V> multimap, K key) : super(multimap, key);
+  SetMultimapValues(super.multimap, super.key);
 
   @override
   bool add(V value) => update((map, length) {

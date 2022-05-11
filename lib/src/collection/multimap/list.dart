@@ -59,7 +59,7 @@ class ListMultimap<K, V> extends Multimap<K, V, List<V>> {
 
 class ListMultimapValues<K, V> extends MultimapValues<K, V, List<V>>
     with ListMixin<V> {
-  ListMultimapValues(ListMultimap<K, V> multimap, K key) : super(multimap, key);
+  ListMultimapValues(super.multimap, super.key);
 
   @override
   V operator [](int index) {

@@ -196,13 +196,13 @@ void main() {
     });
     group('ofNullable', () {
       test('isAbsent', () {
-        const String? value = null;
+        String? value;
         final optional = Optional.ofNullable(value);
         expect(optional, isA<Optional<String>>());
         expect(optional.isAbsent, isTrue);
       });
       test('isPresent', () {
-        const String? value = 'foo';
+        String? value = 'foo';
         final optional = Optional.ofNullable(value);
         expect(optional, isA<Optional<String>>());
         expect(optional.isPresent, isTrue);

@@ -30,8 +30,7 @@ abstract class TruncatePrinter<T> extends Printer<T> {
 
 /// Truncates the string from the left side if it is longer than width.
 class TruncateLeftPrinter<T> extends TruncatePrinter<T> {
-  const TruncateLeftPrinter(Printer<T> printer, int width, String ellipsis)
-      : super(printer, width, ellipsis);
+  const TruncateLeftPrinter(super.printer, super.width, super.ellipsis);
 
   @override
   void printOn(T object, StringBuffer buffer) {
@@ -47,8 +46,7 @@ class TruncateLeftPrinter<T> extends TruncatePrinter<T> {
 
 /// Truncates the string from the right side if it is longer than width.
 class TruncateRightPrinter<T> extends TruncatePrinter<T> {
-  const TruncateRightPrinter(Printer<T> printer, int width, String ellipsis)
-      : super(printer, width, ellipsis);
+  const TruncateRightPrinter(super.printer, super.width, super.ellipsis);
 
   @override
   void printOn(T object, StringBuffer buffer) {

@@ -98,7 +98,7 @@ class ExpiryCache<K, V> extends Cache<K, V> {
 }
 
 class ExpiryCacheItem<V> extends CacheItem<V> {
-  ExpiryCacheItem(FutureOr<V> value, this.expiry) : super(value);
+  ExpiryCacheItem(super.value, this.expiry);
 
   DateTime expiry;
 

@@ -1,6 +1,7 @@
 # Changelog
 
 ## 3.6.0 (unpublished)
+* Dart 2.17 requirement.
 * Add a max-heap collection type.
 * Add interval data structure with open, closed, and infinite endpoints.
 
