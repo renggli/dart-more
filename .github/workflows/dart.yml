@@ -32,7 +32,7 @@ jobs:
       - name: "VM Tests"
         run: dart test --platform vm test/all_test.dart
       - name: "Chrome Tests"
-        run: dart test --platform chrome test test/all_test.dart
+        run: dart test --platform chrome test/all_test.dart
       - name: "Collect coverage"
         run: |
           dart pub global activate coverage
