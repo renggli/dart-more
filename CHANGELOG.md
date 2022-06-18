@@ -1,5 +1,7 @@
 # Changelog
 
+## 3.7.0 (Unpublished)
+
 ## 3.6.0
 * Dart 2.17 requirement.
 * Add a max-heap collection type.
