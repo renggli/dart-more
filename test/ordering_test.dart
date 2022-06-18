@@ -1,3 +1,4 @@
+import 'package:more/iterable.dart';
 import 'package:more/ordering.dart';
 import 'package:test/test.dart';
 
@@ -10,6 +11,36 @@ void verifyBasic<T>(String type, Ordering<T> ordering, Iterable<T> unsorted,
     expect(ordering.binarySearch(sorted, element),
         (index) => index is int && index >= 0,
         reason: '$type.binarySearch');
+  }
+
+  final uniques = sorted.unique().toList();
+  for (var i = 0; i < uniques.length - 1; i++) {
+    final curr = uniques[i];
+    final next = uniques[i + 1];
+    // equalTo
+    expect(ordering.equalTo(curr)(curr), isTrue);
+    expect(ordering.equalTo(curr)(next), isFalse);
+    expect(ordering.equalTo(next)(curr), isFalse);
+    // equalTo
+    expect(ordering.notEqualTo(curr)(curr), isFalse);
+    expect(ordering.notEqualTo(curr)(next), isTrue);
+    expect(ordering.notEqualTo(next)(curr), isTrue);
+    // lessThan
+    expect(ordering.lessThan(curr)(curr), isFalse);
+    expect(ordering.lessThan(curr)(next), isFalse);
+    expect(ordering.lessThan(next)(curr), isTrue);
+    // lessThanOrEqualTo
+    expect(ordering.lessThanOrEqualTo(curr)(curr), isTrue);
+    expect(ordering.lessThanOrEqualTo(curr)(next), isFalse);
+    expect(ordering.lessThanOrEqualTo(next)(curr), isTrue);
+    // greaterThan
+    expect(ordering.greaterThan(curr)(curr), isFalse);
+    expect(ordering.greaterThan(curr)(next), isTrue);
+    expect(ordering.greaterThan(next)(curr), isFalse);
+    // greaterThanOrEqualTo
+    expect(ordering.greaterThanOrEqualTo(curr)(curr), isTrue);
+    expect(ordering.greaterThanOrEqualTo(curr)(next), isTrue);
+    expect(ordering.greaterThanOrEqualTo(next)(curr), isFalse);
   }
   if (sorted.isNotEmpty) {
     expect(ordering.minOf(unsorted), expected.first,
