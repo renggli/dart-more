@@ -260,7 +260,7 @@ class Quaternion implements CloseTo<Quaternion> {
 
   @override
   bool closeTo(Quaternion other, double epsilon) =>
-      isFinite && other.isFinite && (this - other).abs() < epsilon;
+      isFinite && other.isFinite && (this - other).abs() <= epsilon;
 
   @override
   bool operator ==(Object other) =>

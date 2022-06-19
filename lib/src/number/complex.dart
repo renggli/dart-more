@@ -270,7 +270,7 @@ class Complex implements CloseTo<Complex> {
 
   @override
   bool closeTo(Complex other, double epsilon) =>
-      isFinite && other.isFinite && (this - other).abs() < epsilon;
+      isFinite && other.isFinite && (this - other).abs() <= epsilon;
 
   @override
   bool operator ==(Object other) =>

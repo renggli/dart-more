@@ -1,6 +1,8 @@
 # Changelog
 
 ## 3.7.0 (Unpublished)
+* Add `closeTo` extension to all numbers.
+* Make `Fraction` support non-finite numbers.
 
 ## 3.6.0
 * Dart 2.17 requirement.

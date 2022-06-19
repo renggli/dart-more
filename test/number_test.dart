@@ -390,8 +390,23 @@ void main() {
         expect(fraction.numerator, -1);
         expect(fraction.denominator, 2);
       });
-      test('denominator error', () {
-        expect(() => Fraction(2, 0), throwsArgumentError);
+      test('nan', () {
+        final fraction = Fraction(0, 0);
+        expect(fraction, same(Fraction.nan));
+        expect(fraction.isNaN, isTrue);
+        expect(fraction.isInfinite, isFalse);
+        expect(fraction.isNegative, isFalse);
+        expect(fraction.isFinite, isFalse);
+      });
+      test('infinity', () {
+        expect(Fraction(1, 0), Fraction.infinity);
+        expect(Fraction(2, 0), Fraction.infinity);
+        expect(Fraction(42, 0), Fraction.infinity);
+      });
+      test('negativeInfinity', () {
+        expect(Fraction(-1, 0), Fraction.negativeInfinity);
+        expect(Fraction(-2, 0), Fraction.negativeInfinity);
+        expect(Fraction(-42, 0), Fraction.negativeInfinity);
       });
       group('fromDouble', () {
         test('basic', () {
@@ -428,12 +443,29 @@ void main() {
             }
           }
         });
-        test('error', () {
-          expect(() => Fraction.fromDouble(double.nan), throwsArgumentError);
-          expect(
-              () => Fraction.fromDouble(double.infinity), throwsArgumentError);
-          expect(() => Fraction.fromDouble(double.negativeInfinity),
-              throwsArgumentError);
+        test('nan', () {
+          final fraction = Fraction.fromDouble(double.nan);
+          expect(fraction, same(Fraction.nan));
+          expect(fraction.isNaN, isTrue);
+          expect(fraction.isInfinite, isFalse);
+          expect(fraction.isNegative, isFalse);
+          expect(fraction.isFinite, isFalse);
+        });
+        test('infinity', () {
+          final fraction = Fraction.fromDouble(double.infinity);
+          expect(fraction, Fraction.infinity);
+          expect(fraction.isNaN, isFalse);
+          expect(fraction.isInfinite, isTrue);
+          expect(fraction.isNegative, isFalse);
+          expect(fraction.isFinite, isFalse);
+        });
+        test('negativeInfinity', () {
+          final fraction = Fraction.fromDouble(double.negativeInfinity);
+          expect(fraction, Fraction.negativeInfinity);
+          expect(fraction.isNaN, isFalse);
+          expect(fraction.isInfinite, isTrue);
+          expect(fraction.isNegative, isTrue);
+          expect(fraction.isFinite, isFalse);
         });
       });
       test('zero', () {
@@ -641,8 +673,12 @@ void main() {
       test('toString', () {
         expect(Fraction(1, 2).toString(), 'Fraction(1, 2)');
         expect(Fraction(5, 4).toString(), 'Fraction(5, 4)');
-        expect(Fraction(6).toString(), 'Fraction(6, 1)');
-        expect(Fraction(-6).toString(), 'Fraction(-6, 1)');
+        expect(Fraction(6).toString(), 'Fraction(6)');
+        expect(Fraction(-6).toString(), 'Fraction(-6)');
+        expect(Fraction.nan.toString(), 'Fraction.nan');
+        expect(Fraction.infinity.toString(), 'Fraction.infinity');
+        expect(
+            Fraction.negativeInfinity.toString(), 'Fraction.negativeInfinity');
       });
     });
   });

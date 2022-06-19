@@ -10,8 +10,13 @@ class Fraction implements Comparable<Fraction>, CloseTo<Fraction> {
   /// Creates a fraction from a [numerator] and an optional [denominator].
   factory Fraction(int numerator, [int denominator = 1]) {
     if (denominator == 0) {
-      throw ArgumentError.value(
-          denominator, 'denominator', 'Expected non-zero denominator');
+      if (numerator == 0) {
+        return Fraction.nan;
+      } else if (numerator < 0) {
+        return Fraction.negativeInfinity;
+      } else {
+        return Fraction.infinity;
+      }
     }
     var d = numerator.gcd(denominator).abs();
     if (denominator < 0) {
@@ -25,9 +30,14 @@ class Fraction implements Comparable<Fraction>, CloseTo<Fraction> {
 
   /// Creates an approximate fraction from a floating point [value].
   factory Fraction.fromDouble(num value, [num maxDenominator = 1e10]) {
-    if (value.isInfinite || value.isNaN) {
-      throw ArgumentError.value(
-          value, 'value', 'Unable to represent as fraction');
+    if (value.isNaN) {
+      return Fraction.nan;
+    } else if (value.isInfinite) {
+      if (value.isNegative) {
+        return Fraction.negativeInfinity;
+      } else {
+        return Fraction.infinity;
+      }
     }
     final sign = value < 0
         ? -1
@@ -64,13 +74,23 @@ class Fraction implements Comparable<Fraction>, CloseTo<Fraction> {
   }
 
   /// Internal constructor for fractions.
-  const Fraction._(this.a, this.b) : assert(b > 0, 'b must be positive');
+  const Fraction._(this.a, this.b)
+      : assert(b >= 0, 'b be greater or equal to 0');
 
   /// The neutral additive element, that is `0`.
   static const Fraction zero = Fraction._(0, 1);
 
   /// The neutral multiplicative element, that is `1`.
   static const Fraction one = Fraction._(1, 1);
+
+  /// The fraction that is not a number.
+  static const Fraction nan = Fraction._(0, 0);
+
+  /// The infinite fraction.
+  static const Fraction infinity = Fraction._(1, 0);
+
+  /// The negative infinite fraction.
+  static const Fraction negativeInfinity = Fraction._(-1, 0);
 
   /// Infinite iterable over all positive fractions.
   ///
@@ -174,13 +194,16 @@ class Fraction implements Comparable<Fraction>, CloseTo<Fraction> {
   }
 
   /// Tests if this fraction is not defined.
-  bool get isNaN => false;
+  bool get isNaN => a == 0 && b == 0;
 
   /// Tests if this fraction is negative.
   bool get isNegative => a.isNegative;
 
   /// Tests if this fraction is infinite.
-  bool get isInfinite => false;
+  bool get isInfinite => a != 0 && b == 0;
+
+  /// Tests if this fraction is finite.
+  bool get isFinite => b != 0;
 
   /// Returns the absolute value of this fraction.
   Fraction abs() => isNegative ? -this : this;
@@ -208,11 +231,20 @@ class Fraction implements Comparable<Fraction>, CloseTo<Fraction> {
 
   @override
   bool closeTo(Fraction other, double epsilon) =>
-      (toDouble() - other.toDouble()).abs() < epsilon;
+      isFinite &&
+      other.isFinite &&
+      (toDouble() - other.toDouble()).abs() <= epsilon;
 
   @override
-  bool operator ==(Object other) =>
-      other is Fraction && a == other.a && b == other.b;
+  bool operator ==(Object other) {
+    if (other is! Fraction) {
+      return false;
+    }
+    if (isNaN || other.isNaN) {
+      return false;
+    }
+    return a == other.a && b == other.b;
+  }
 
   @override
   int get hashCode => Object.hash(a, b);
@@ -229,5 +261,23 @@ class Fraction implements Comparable<Fraction>, CloseTo<Fraction> {
   bool operator >(Fraction other) => compareTo(other) > 0;
 
   @override
-  String toString() => 'Fraction($a, $b)';
+  String toString() {
+    final buffer = StringBuffer('Fraction');
+    if (isFinite) {
+      buffer.write('($numerator');
+      if (denominator != 1) {
+        buffer.write(', $denominator');
+      }
+      buffer.write(')');
+    } else if (isNaN) {
+      buffer.write('.nan');
+    } else if (isInfinite) {
+      if (isNegative) {
+        buffer.write('.negativeInfinity');
+      } else {
+        buffer.write('.infinity');
+      }
+    }
+    return buffer.toString();
+  }
 }
