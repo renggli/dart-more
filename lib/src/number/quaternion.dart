@@ -75,6 +75,14 @@ class Quaternion implements CloseTo<Quaternion> {
   /// The quaternion `k` unit.
   static const Quaternion k = Quaternion(0, 0, 0, 1);
 
+  /// The quaternion number with all parts being [double.nan].
+  static const Quaternion nan =
+      Quaternion(double.nan, double.nan, double.nan, double.nan);
+
+  /// The quaternion number with all parts being [double.infinity].
+  static const Quaternion infinity = Quaternion(
+      double.infinity, double.infinity, double.infinity, double.infinity);
+
   /// Parses [source] as a [Quaternion]. Returns `null` in case of a problem.
   static Quaternion? tryParse(String source) {
     final parts = numberAndUnitExtractor
@@ -227,29 +235,32 @@ class Quaternion implements CloseTo<Quaternion> {
   /// Computes the power of this quaternion number raised to `exponent`.
   Quaternion pow(Object exponent) => (log() * exponent).exp();
 
-  /// Tests if this complex number is not defined.
+  /// Tests if this quaternion is not defined.
   bool get isNaN => w.isNaN || x.isNaN || y.isNaN || z.isNaN;
 
-  /// Tests if this complex number is infinite.
+  /// Tests if this quaternion is infinite.
   bool get isInfinite =>
       w.isInfinite || x.isInfinite || y.isInfinite || z.isInfinite;
 
-  /// Rounds the values of this complex number to integers.
+  /// Tests if this quaternion is finite.
+  bool get isFinite => w.isFinite && x.isFinite && y.isFinite && z.isFinite;
+
+  /// Rounds the values of this quaternion to integers.
   Quaternion round() => Quaternion(w.round(), x.round(), y.round(), z.round());
 
-  /// Floors the values of this complex number to integers.
+  /// Floors the values of this quaternion to integers.
   Quaternion floor() => Quaternion(w.floor(), x.floor(), y.floor(), z.floor());
 
-  /// Ceils the values of this complex number to integers.
+  /// Ceils the values of this quaternion to integers.
   Quaternion ceil() => Quaternion(w.ceil(), x.ceil(), y.ceil(), z.ceil());
 
-  /// Truncates the values of this complex number to integers.
+  /// Truncates the values of this quaternion to integers.
   Quaternion truncate() =>
       Quaternion(w.truncate(), x.truncate(), y.truncate(), z.truncate());
 
   @override
   bool closeTo(Quaternion other, double epsilon) =>
-      (this - other).abs() < epsilon;
+      isFinite && other.isFinite && (this - other).abs() < epsilon;
 
   @override
   bool operator ==(Object other) =>

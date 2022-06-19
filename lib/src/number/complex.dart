@@ -35,6 +35,12 @@ class Complex implements CloseTo<Complex> {
   /// The imaginary number, that is `i`.
   static const Complex i = Complex(0, 1);
 
+  /// The complex number with both real and imaginary part to be [double.nan].
+  static const Complex nan = Complex(double.nan, double.nan);
+
+  /// The complex number with both real and imaginary part to be [double.infinity].
+  static const Complex infinity = Complex(double.infinity, double.infinity);
+
   /// Parses [source] as a [Complex]. Returns `null` in case of a problem.
   static Complex? tryParse(String source) {
     final parts = numberAndUnitExtractor
@@ -247,6 +253,9 @@ class Complex implements CloseTo<Complex> {
   /// Tests if this complex number is infinite.
   bool get isInfinite => a.isInfinite || b.isInfinite;
 
+  /// Tests if this complex number is finite.
+  bool get isFinite => a.isFinite && b.isFinite;
+
   /// Rounds the values of this complex number to integers.
   Complex round() => Complex(a.round(), b.round());
 
@@ -260,7 +269,8 @@ class Complex implements CloseTo<Complex> {
   Complex truncate() => Complex(a.truncate(), b.truncate());
 
   @override
-  bool closeTo(Complex other, double epsilon) => (this - other).abs() < epsilon;
+  bool closeTo(Complex other, double epsilon) =>
+      isFinite && other.isFinite && (this - other).abs() < epsilon;
 
   @override
   bool operator ==(Object other) =>

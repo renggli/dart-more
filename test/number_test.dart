@@ -263,16 +263,32 @@ void main() {
     group('testing', () {
       test('isNan', () {
         expect(Complex.zero.isNaN, isFalse);
+        expect(Complex.nan.isNaN, isTrue);
+        expect(Complex.infinity.isNaN, isFalse);
         expect(const Complex(0, double.nan).isNaN, isTrue);
         expect(const Complex(double.nan).isNaN, isTrue);
         expect(const Complex(double.nan, double.nan).isNaN, isTrue);
       });
       test('isInfinite', () {
         expect(Complex.zero.isInfinite, isFalse);
+        expect(Complex.nan.isInfinite, isFalse);
+        expect(Complex.infinity.isInfinite, isTrue);
         expect(const Complex(0, double.infinity).isInfinite, isTrue);
         expect(const Complex(double.infinity).isInfinite, isTrue);
         expect(
             const Complex(double.infinity, double.infinity).isInfinite, isTrue);
+      });
+      test('isFinite', () {
+        expect(Complex.zero.isFinite, isTrue);
+        expect(Complex.nan.isFinite, isFalse);
+        expect(Complex.infinity.isFinite, isFalse);
+        expect(const Complex(0, double.nan).isFinite, isFalse);
+        expect(const Complex(double.nan).isFinite, isFalse);
+        expect(const Complex(double.nan, double.nan).isFinite, isFalse);
+        expect(const Complex(0, double.infinity).isFinite, isFalse);
+        expect(const Complex(double.infinity).isFinite, isFalse);
+        expect(
+            const Complex(double.infinity, double.infinity).isFinite, isFalse);
       });
     });
     group('converting', () {
@@ -327,6 +343,8 @@ void main() {
         expect(const Complex(2, 3) == const Complex(2, 3), isTrue);
         expect(const Complex(2, 3) == const Complex(3, 2), isFalse);
         expect(const Complex(2, 3) == const Complex(2, 4), isFalse);
+        expect(Complex.nan == Complex.nan, isFalse);
+        expect(Complex.infinity == Complex.infinity, isTrue);
       });
       test('hash', () {
         expect(const Complex(2, 3).hashCode, const Complex(2, 3).hashCode);
@@ -850,6 +868,8 @@ void main() {
         expect(const Quaternion(1, double.nan, 3, 4).isNaN, isTrue);
         expect(const Quaternion(1, 2, double.nan, 4).isNaN, isTrue);
         expect(const Quaternion(1, 2, 3, double.nan).isNaN, isTrue);
+        expect(Quaternion.nan.isNaN, isTrue);
+        expect(Quaternion.infinity.isNaN, isFalse);
       });
       test('isInfinite', () {
         expect(const Quaternion(1, 2, 3, 4).isInfinite, isFalse);
@@ -859,6 +879,23 @@ void main() {
         expect(const Quaternion(1, 2, double.infinity, 4).isInfinite, isTrue);
         expect(const Quaternion(1, 2, 3, double.negativeInfinity).isInfinite,
             isTrue);
+        expect(Quaternion.nan.isInfinite, isFalse);
+        expect(Quaternion.infinity.isInfinite, isTrue);
+      });
+      test('isFinite', () {
+        expect(const Quaternion(1, 2, 3, 4).isFinite, isTrue);
+        expect(const Quaternion(double.nan, 2, 3, 4).isFinite, isFalse);
+        expect(const Quaternion(1, double.nan, 3, 4).isFinite, isFalse);
+        expect(const Quaternion(1, 2, double.nan, 4).isFinite, isFalse);
+        expect(const Quaternion(1, 2, 3, double.nan).isFinite, isFalse);
+        expect(const Quaternion(double.infinity, 2, 3, 4).isFinite, isFalse);
+        expect(const Quaternion(1, double.negativeInfinity, 3, 4).isFinite,
+            isFalse);
+        expect(const Quaternion(1, 2, double.infinity, 4).isFinite, isFalse);
+        expect(const Quaternion(1, 2, 3, double.negativeInfinity).isFinite,
+            isFalse);
+        expect(Quaternion.nan.isFinite, isFalse);
+        expect(Quaternion.infinity.isFinite, isFalse);
       });
     });
     group('converting', () {
@@ -902,6 +939,8 @@ void main() {
             isFalse);
         expect(const Quaternion(2, 3, 4, 5) == const Quaternion(2, 3, 4, 6),
             isFalse);
+        expect(Quaternion.nan == Quaternion.nan, isFalse);
+        expect(Quaternion.infinity == Quaternion.infinity, isTrue);
       });
       test('hash', () {
         expect(const Quaternion(2, 3, 4, 5).hashCode,
