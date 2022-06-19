@@ -1,6 +1,6 @@
 # Changelog
 
-## 3.7.0 (Unpublished)
+## 3.7.0
 * Add `closeTo` extension to all numbers.
 * Make `Fraction` support non-finite numbers.
 
