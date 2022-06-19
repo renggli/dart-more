@@ -1,6 +1,7 @@
 # Changelog
 
 ## 3.8.0 (Unpublished)
+* Add a `Printer.switcher` to use different printers based on conditions.
 
 ## 3.7.0
 * Add `closeTo` extension to all numbers.

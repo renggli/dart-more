@@ -731,6 +731,30 @@ void main() {
       expect(printer.toString(), startsWith('NullPrinter<String>'));
     });
   });
+  group('switcher', () {
+    test('default', () {
+      final printer = Printer<int>.switcher({
+        (value) => value < 1: Printer.literal('<1'),
+        (value) => value < 10: Printer.literal('<10'),
+        (value) => value < 100: Printer.literal('<100'),
+      }, otherwise: Printer.literal('larger'));
+      expect(printer(0), '<1');
+      expect(printer(5), '<10');
+      expect(printer(50), '<100');
+      expect(printer(500), 'larger');
+    });
+    test('missing otherwise', () {
+      final printer = Printer<int>.switcher({
+        (value) => value < 1: Printer.literal('<1'),
+        (value) => value < 10: Printer.literal('<10'),
+        (value) => value < 100: Printer.literal('<100'),
+      });
+      expect(printer(0), '<1');
+      expect(printer(5), '<10');
+      expect(printer(50), '<100');
+      expect(printer(500), '');
+    });
+  });
   group('sequence', () {
     test('default', () {
       const printer = SequencePrinter<String>(

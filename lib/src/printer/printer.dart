@@ -5,6 +5,7 @@ import 'literal.dart';
 import 'pluggable.dart';
 import 'sequence.dart';
 import 'standard.dart';
+import 'switcher.dart';
 import 'to_string.dart';
 
 /// An abstract function that prints objects of type [T].
@@ -26,6 +27,10 @@ abstract class Printer<T> with ToStringPrinter {
   /// Constructs a printer that emits a list of printers.
   const factory Printer.sequence(Iterable<Printer<T>> printers) =
       SequencePrinter<T>;
+
+  /// Constructs a printer that switches between other printers.
+  const factory Printer.switcher(Map<Predicate1<T>, Printer<T>> cases,
+      {Printer<T> otherwise}) = SwitcherPrinter<T>;
 
   /// Constructs a printer by wrapping `object`.
   factory Printer.wrap(Object? object) {
