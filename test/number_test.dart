@@ -9,6 +9,25 @@ Matcher isCloseTo<T extends CloseTo<T>>(T other) => isA<T>()
     .having((value) => value.closeTo(other, epsilon), 'closeTo', isTrue);
 
 void main() {
+  group('num', () {
+    test('int', () {
+      expect(1.closeTo(1, 0), isTrue);
+      expect(1.closeTo(2, 0), isFalse);
+      expect(2.closeTo(1, 0), isFalse);
+      expect(1.closeTo(2, 2), isTrue);
+      expect(2.closeTo(1, 2), isTrue);
+    });
+    test('double', () {
+      expect(1.25.closeTo(1.26, 0.1), isTrue);
+      expect(1.26.closeTo(1.25, 0.1), isTrue);
+      expect(1.11.closeTo(1.22, 0.1), isFalse);
+      expect(1.22.closeTo(1.11, 0.1), isFalse);
+      expect(double.nan.closeTo(double.nan, 0.1), isFalse);
+      expect(double.infinity.closeTo(double.infinity, 0.1), isFalse);
+      expect(double.negativeInfinity.closeTo(double.negativeInfinity, 0.1),
+          isFalse);
+    });
+  });
   group('complex', () {
     group('construction', () {
       test('zero', () {
