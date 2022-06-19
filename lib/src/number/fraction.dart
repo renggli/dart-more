@@ -33,7 +33,7 @@ class Fraction implements Comparable<Fraction>, CloseTo<Fraction> {
     if (value.isNaN) {
       return Fraction.nan;
     } else if (value.isInfinite) {
-      if (value.isNegative) {
+      if (value < 0) {
         return Fraction.negativeInfinity;
       } else {
         return Fraction.infinity;
@@ -197,7 +197,7 @@ class Fraction implements Comparable<Fraction>, CloseTo<Fraction> {
   bool get isNaN => a == 0 && b == 0;
 
   /// Tests if this fraction is negative.
-  bool get isNegative => a.isNegative;
+  bool get isNegative => a < 0;
 
   /// Tests if this fraction is infinite.
   bool get isInfinite => a != 0 && b == 0;
