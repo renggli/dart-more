@@ -26,6 +26,7 @@ export 'src/collection/string/indent_dedent.dart'
 export 'src/collection/string/prefix_suffix.dart'
     show PrefixSuffixStringExtension;
 export 'src/collection/string/string_list.dart' show StringListExtension;
+export 'src/collection/string/take_skip.dart' show TakeSkipStringExtension;
 export 'src/collection/string/wrap_unwrap.dart' show WrapUnwrapStringExtension;
 export 'src/collection/trie.dart'
     show Trie, TrieNode, TrieNodeEntry, TrieNodeList, TrieNodeMap;

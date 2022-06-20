@@ -2,6 +2,7 @@
 
 ## 3.8.0 (Unpublished)
 * Add a `Printer.switcher` to use different printers based on conditions.
+* Add `String.take`, `String.skip`, `String.takeLast` and `String.skipLast` helpers.
 
 ## 3.7.0
 * Add `closeTo` extension to all numbers.
