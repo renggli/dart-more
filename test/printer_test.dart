@@ -1,3 +1,4 @@
+import 'package:more/collection.dart';
 import 'package:more/math.dart';
 import 'package:more/printer.dart';
 import 'package:more/tuple.dart';
@@ -5,6 +6,15 @@ import 'package:test/test.dart';
 
 const standardString = Printer<String>.standard();
 const standardInt = Printer<int>.standard();
+
+const lorem = 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce '
+    'euismod varius nisi ac vulputate. Suspendisse potenti. Donec nisi eros, '
+    'venenatis et tristique mollis, pretium luctus tortor. In id ipsum diam. '
+    'Nulla turpis odio, faucibus id egestas iaculis, lacinia a est. Aliquam ut '
+    'ipsum ex. Maecenas ac nisl ante. Ut porta est fermentum maximus aliquet. '
+    'Aenean aliquam nisl felis, ac bibendum felis dictum at. Nullam a commodo '
+    'felis, vel faucibus ante. Fusce convallis maximus magna, eu interdum '
+    'tortor consequat vitae. Donec at hendrerit tellus.';
 
 void main() {
   group('standard', () {
@@ -614,52 +624,191 @@ void main() {
     });
   });
   group('truncate', () {
-    test('left', () {
-      final printer = standardString.truncateLeft(3);
-      expect(printer(''), '');
-      expect(printer('1'), '1');
-      expect(printer('12'), '12');
-      expect(printer('123'), '123');
-      expect(printer('1234'), '234');
-      expect(printer('12345'), '345');
-      expect(printer('123456'), '456');
-      expect(printer('👨👩👧👦'), '👩👧👦');
+    group('left', () {
+      test('default', () {
+        final printer = standardString.truncateLeft(3);
+        expect(printer(''), '');
+        expect(printer('1'), '1');
+        expect(printer('12'), '12');
+        expect(printer('123'), '123');
+        expect(printer('1234'), '…34');
+        expect(printer('12345'), '…45');
+        expect(printer('123456'), '…56');
+        expect(printer('👨👩👧👦'), '…👧👦');
+      });
+      test('on characters', () {
+        for (var i = 0; i <= lorem.length; i++) {
+          final printer =
+              standardString.truncateLeft(i, method: TruncateMethod.characters);
+          final result = printer(lorem);
+          expect(
+              result, anyOf(isEmpty, startsWith('…'), hasLength(lorem.length)),
+              reason: result);
+          expect(result.length, lessThanOrEqualTo(i), reason: result);
+        }
+      });
+      test('on words', () {
+        for (var i = 0; i <= lorem.length; i++) {
+          final printer =
+              standardString.truncateLeft(i, method: TruncateMethod.words);
+          final result = printer(lorem);
+          expect(
+              result, anyOf(isEmpty, startsWith('…'), hasLength(lorem.length)),
+              reason: result);
+          expect(result.length, lessThanOrEqualTo(i), reason: result);
+        }
+      });
+      test('on sentences', () {
+        for (var i = 0; i <= lorem.length; i++) {
+          final printer =
+              standardString.truncateLeft(i, method: TruncateMethod.sentences);
+          final result = printer(lorem);
+          expect(
+              result, anyOf(isEmpty, startsWith('…'), hasLength(lorem.length)),
+              reason: result);
+          expect(result.length, lessThanOrEqualTo(i), reason: result);
+        }
+      });
+      test('with ellipsis', () {
+        final printer = standardString.truncateLeft(6, ellipsis: '...');
+        expect(printer(''), '');
+        expect(printer('1'), '1');
+        expect(printer('12'), '12');
+        expect(printer('123'), '123');
+        expect(printer('1234'), '1234');
+        expect(printer('12345'), '12345');
+        expect(printer('123456'), '123456');
+        expect(printer('1234567'), '...567');
+        expect(printer('12345678'), '...678');
+        expect(printer('👨👩👧👦😺💩'), '👨👩👧👦😺💩');
+        expect(printer('👨👩👧👦😺💩🙉'), '...😺💩🙉');
+      });
     });
-    test('left with ellipsis', () {
-      final printer = standardString.truncateLeft(3, '...');
-      expect(printer(''), '');
-      expect(printer('1'), '1');
-      expect(printer('12'), '12');
-      expect(printer('123'), '123');
-      expect(printer('1234'), '...234');
-      expect(printer('12345'), '...345');
-      expect(printer('123456'), '...456');
-      expect(printer('👨👩👧👦'), '...👩👧👦');
+    group('right', () {
+      test('default', () {
+        final printer = standardString.truncateRight(3);
+        expect(printer(''), '');
+        expect(printer('1'), '1');
+        expect(printer('12'), '12');
+        expect(printer('123'), '123');
+        expect(printer('1234'), '12…');
+        expect(printer('12345'), '12…');
+        expect(printer('123456'), '12…');
+        expect(printer('👨👩👧👦'), '👨👩…');
+      });
+      test('on characters', () {
+        for (var i = 0; i <= lorem.length; i++) {
+          final printer = standardString.truncateRight(i,
+              method: TruncateMethod.characters);
+          final result = printer(lorem);
+          expect(lorem, startsWith(result.removeSuffix('…')));
+          expect(result, anyOf(isEmpty, endsWith('…'), hasLength(lorem.length)),
+              reason: result);
+          expect(result.length, lessThanOrEqualTo(i), reason: result);
+        }
+      });
+      test('on words', () {
+        for (var i = 0; i <= lorem.length; i++) {
+          final printer =
+              standardString.truncateRight(i, method: TruncateMethod.words);
+          final result = printer(lorem);
+          expect(lorem, startsWith(result.removeSuffix('…')));
+          expect(result, anyOf(isEmpty, endsWith('…'), hasLength(lorem.length)),
+              reason: result);
+          expect(result.length, lessThanOrEqualTo(i), reason: result);
+        }
+      });
+      test('on sentences', () {
+        for (var i = 0; i <= lorem.length; i++) {
+          final printer =
+              standardString.truncateRight(i, method: TruncateMethod.sentences);
+          final result = printer(lorem);
+          expect(lorem, startsWith(result.removeSuffix('…')));
+          expect(result, anyOf(isEmpty, endsWith('…'), hasLength(lorem.length)),
+              reason: result);
+          expect(result.length, lessThanOrEqualTo(i), reason: result);
+        }
+      });
+      test('with ellipsis', () {
+        final printer = standardString.truncateRight(6, ellipsis: '...');
+        expect(printer(''), '');
+        expect(printer('1'), '1');
+        expect(printer('12'), '12');
+        expect(printer('123'), '123');
+        expect(printer('1234'), '1234');
+        expect(printer('12345'), '12345');
+        expect(printer('123456'), '123456');
+        expect(printer('1234567'), '123...');
+        expect(printer('12345678'), '123...');
+        expect(printer('👨👩👧👦😺💩'), '👨👩👧👦😺💩');
+        expect(printer('👨👩👧👦😺💩🙉'), '👨👩👧...');
+      });
     });
-    test('right', () {
-      final printer = standardString.truncateRight(3);
-      expect(printer(''), '');
-      expect(printer('1'), '1');
-      expect(printer('12'), '12');
-      expect(printer('123'), '123');
-      expect(printer('1234'), '123');
-      expect(printer('12345'), '123');
-      expect(printer('123456'), '123');
-      expect(printer('👨👩👧👦'), '👨👩👧');
-    });
-    test('right with ellipsis', () {
-      final printer = standardString.truncateRight(3, '...');
-      expect(printer(''), '');
-      expect(printer('1'), '1');
-      expect(printer('12'), '12');
-      expect(printer('123'), '123');
-      expect(printer('1234'), '123...');
-      expect(printer('12345'), '123...');
-      expect(printer('123456'), '123...');
-      expect(printer('👨👩👧👦'), '👨👩👧...');
+    group('center', () {
+      test('default', () {
+        final printer = standardString.truncateCenter(3);
+        expect(printer(''), '');
+        expect(printer('1'), '1');
+        expect(printer('12'), '12');
+        expect(printer('123'), '123');
+        expect(printer('1234'), '1…4');
+        expect(printer('12345'), '1…5');
+        expect(printer('123456'), '1…6');
+        expect(printer('👨👩👧👦'), '👨…👦');
+      });
+      test('on characters', () {
+        for (var i = 0; i <= lorem.length; i++) {
+          final printer = standardString.truncateCenter(i,
+              method: TruncateMethod.characters);
+          final result = printer(lorem);
+          expect(lorem, startsWith(result.takeTo('…')));
+          expect(lorem, endsWith(result.skipTo('…')));
+          expect(result, anyOf(isEmpty, contains('…'), hasLength(lorem.length)),
+              reason: result);
+          expect(result.length, lessThanOrEqualTo(i), reason: result);
+        }
+      });
+      test('on words', () {
+        for (var i = 0; i <= lorem.length; i++) {
+          final printer =
+              standardString.truncateCenter(i, method: TruncateMethod.words);
+          final result = printer(lorem);
+          expect(lorem, startsWith(result.takeTo('…')));
+          expect(lorem, endsWith(result.skipTo('…')));
+          expect(result, anyOf(isEmpty, contains('…'), hasLength(lorem.length)),
+              reason: result);
+          expect(result.length, lessThanOrEqualTo(i), reason: result);
+        }
+      });
+      test('on sentences', () {
+        for (var i = 0; i <= lorem.length; i++) {
+          final printer = standardString.truncateCenter(i,
+              method: TruncateMethod.sentences);
+          final result = printer(lorem);
+          expect(lorem, startsWith(result.takeTo('…')));
+          expect(lorem, endsWith(result.skipTo('…')));
+          expect(result, anyOf(isEmpty, contains('…'), hasLength(lorem.length)),
+              reason: result);
+          expect(result.length, lessThanOrEqualTo(i), reason: result);
+        }
+      });
+      test('with ellipsis', () {
+        final printer = standardString.truncateCenter(6, ellipsis: '...');
+        expect(printer(''), '');
+        expect(printer('1'), '1');
+        expect(printer('12'), '12');
+        expect(printer('123'), '123');
+        expect(printer('1234'), '1234');
+        expect(printer('12345'), '12345');
+        expect(printer('123456'), '123456');
+        expect(printer('1234567'), '12...7');
+        expect(printer('12345678'), '12...8');
+        expect(printer('👨👩👧👦😺💩'), '👨👩👧👦😺💩');
+        expect(printer('👨👩👧👦😺💩🙉'), '👨👩...🙉');
+      });
     });
     test('toString', () {
-      final printer = standardString.truncateLeft(3, '...');
+      final printer = standardString.truncateLeft(3, ellipsis: '...');
       expect(printer.toString(), startsWith('TruncateLeftPrinter<String>'));
     });
   });
