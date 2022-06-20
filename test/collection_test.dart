@@ -2269,32 +2269,56 @@ void main() {
     });
     group('take/skip', () {
       test('take', () {
-        expect('abc'.take(0),'');
-        expect('abc'.take(1),'a');
-        expect('abc'.take(2),'ab');
-        expect('abc'.take(3),'abc');
-        expect('abc'.take(4),'abc');
+        expect('abc'.take(0), '');
+        expect('abc'.take(1), 'a');
+        expect('abc'.take(2), 'ab');
+        expect('abc'.take(3), 'abc');
+        expect('abc'.take(4), 'abc');
       });
-      test('skip', () {
-        expect('abc'.skip(0),'abc');
-        expect('abc'.skip(1),'bc');
-        expect('abc'.skip(2),'c');
-        expect('abc'.skip(3),'');
-        expect('abc'.skip(4),'');
+      test('takeTo', () {
+        expect('abc'.takeTo('a'), '');
+        expect('abc'.takeTo('b'), 'a');
+        expect('abc'.takeTo('c'), 'ab');
+        expect('abc'.takeTo('d'), 'abc');
       });
       test('takeLast', () {
-        expect('abc'.takeLast(0),'');
-        expect('abc'.takeLast(1),'c');
-        expect('abc'.takeLast(2),'bc');
-        expect('abc'.takeLast(3),'abc');
-        expect('abc'.takeLast(4),'abc');
+        expect('abc'.takeLast(0), '');
+        expect('abc'.takeLast(1), 'c');
+        expect('abc'.takeLast(2), 'bc');
+        expect('abc'.takeLast(3), 'abc');
+        expect('abc'.takeLast(4), 'abc');
+      });
+      test('takeLastTo', () {
+        expect('abc'.takeLastTo('a'), 'bc');
+        expect('abc'.takeLastTo('b'), 'c');
+        expect('abc'.takeLastTo('c'), '');
+        expect('abc'.takeLastTo('d'), 'abc');
+      });
+      test('skip', () {
+        expect('abc'.skip(0), 'abc');
+        expect('abc'.skip(1), 'bc');
+        expect('abc'.skip(2), 'c');
+        expect('abc'.skip(3), '');
+        expect('abc'.skip(4), '');
+      });
+      test('skipTo', () {
+        expect('abc'.skipTo('a'), 'bc');
+        expect('abc'.skipTo('b'), 'c');
+        expect('abc'.skipTo('c'), '');
+        expect('abc'.skipTo('d'), '');
       });
       test('skipLast', () {
-        expect('abc'.skipLast(0),'abc');
-        expect('abc'.skipLast(1),'ab');
-        expect('abc'.skipLast(2),'a');
-        expect('abc'.skipLast(3),'');
-        expect('abc'.skipLast(4),'');
+        expect('abc'.skipLast(0), 'abc');
+        expect('abc'.skipLast(1), 'ab');
+        expect('abc'.skipLast(2), 'a');
+        expect('abc'.skipLast(3), '');
+        expect('abc'.skipLast(4), '');
+      });
+      test('skipLastTo', () {
+        expect('abc'.skipLastTo('a'), '');
+        expect('abc'.skipLastTo('b'), 'a');
+        expect('abc'.skipLastTo('c'), 'ab');
+        expect('abc'.skipLastTo('d'), '');
       });
     });
     group('wrap', () {
