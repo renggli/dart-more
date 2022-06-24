@@ -7,9 +7,10 @@ extension TakeSkipStringExtension on String {
 
   /// Returns the string prefix up to the first occurrence of [pattern]. If the
   /// pattern is not found return the whole string.
-  String takeTo(String pattern) {
+  String takeTo(Pattern pattern) {
     final index = indexOf(pattern);
-    return index < 0 ? substring(0) : substring(0, index);
+    if (index < 0) return substring(0);
+    return substring(0, index);
   }
 
   /// Returns the string suffix with [count] characters. If [count] is larger
@@ -18,9 +19,10 @@ extension TakeSkipStringExtension on String {
 
   /// Returns the string suffix up to the last occurrence of [pattern]. If the
   /// pattern is not found return the whole string.
-  String takeLastTo(String pattern) {
+  String takeLastTo(Pattern pattern) {
     final index = lastIndexOf(pattern);
-    return index < 0 ? substring(0) : substring(index + pattern.length);
+    if (index < 0) return substring(0);
+    return substring(pattern.matchAsPrefix(this, index)!.end);
   }
 
   /// Returns the string suffix without the first [count] characters. If [count]
@@ -29,9 +31,10 @@ extension TakeSkipStringExtension on String {
 
   /// Returns the string suffix after the first occurrence of [pattern]. If the
   /// pattern is not found return the empty string.
-  String skipTo(String pattern) {
+  String skipTo(Pattern pattern) {
     final index = indexOf(pattern);
-    return index < 0 ? substring(0, 0) : substring(index + pattern.length);
+    if (index < 0) return substring(0, 0);
+    return substring(pattern.matchAsPrefix(this, index)!.end);
   }
 
   /// Returns the string prefix without the last [count] characters. If [count]
@@ -40,8 +43,9 @@ extension TakeSkipStringExtension on String {
 
   /// Returns the string prefix before the last occurrence of [pattern]. If the
   /// pattern is not found return the empty string.
-  String skipLastTo(String pattern) {
+  String skipLastTo(Pattern pattern) {
     final index = lastIndexOf(pattern);
-    return index < 0 ? substring(0, 0) : substring(0, index);
+    if (index < 0) return substring(0, 0);
+    return substring(0, index);
   }
 }
