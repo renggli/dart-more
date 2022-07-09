@@ -394,6 +394,30 @@ void main() {
       expect(printer.toString(), startsWith('ScientificNumberPrinter<num>'));
     });
   });
+  group('ordinal', () {
+    test('default', () {
+      final printer = OrdinalNumberPrinter();
+      expect(printer(0), '0th');
+      expect(printer(1), '1st');
+      expect(printer(2), '2nd');
+      expect(printer(3), '3rd');
+      expect(printer(4), '4th');
+      expect(printer(10), '10th');
+      expect(printer(11), '11th');
+      expect(printer(12), '12th');
+      expect(printer(13), '13th');
+      expect(printer(14), '14th');
+      expect(printer(20), '20th');
+      expect(printer(21), '21st');
+      expect(printer(22), '22nd');
+      expect(printer(23), '23rd');
+      expect(printer(24), '24th');
+    });
+    test('toString', () {
+      final printer = OrdinalNumberPrinter();
+      expect(printer.toString(), startsWith('OrdinalNumberPrinter'));
+    });
+  });
   group('human', () {
     group('decimal', () {
       test('default', () {

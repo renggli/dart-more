@@ -3,6 +3,7 @@
 ## 3.8.0 (Unpublished)
 * Add a `Printer.switcher` to use different printers based on conditions.
 * Add `Printer` support for `truncateRight`, `truncateLeft`, and `truncateCenter` to also operate on word and sentence boundaries. Include the ellipsis in the width constraint.
+* Add `OrdinalNumberPrinter` to print ordinal numbers: 1st, 2nd, 3rd, 4th, ...
 * Add `String` extensions `take`, `takeTo`, `skip`, `skipTo`, `takeLast`, `takeLastTo`, `skipLast`, and `skipLastTo`.
 
 ## 3.7.0

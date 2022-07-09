@@ -7,6 +7,7 @@ export 'src/printer/literal.dart' show LiteralPrinter;
 export 'src/printer/null.dart' show NullPrinterExtension;
 export 'src/printer/number/fixed.dart' show FixedNumberPrinter;
 export 'src/printer/number/human.dart' show HumanNumberPrinter;
+export 'src/printer/number/ordinal.dart' show OrdinalNumberPrinter;
 export 'src/printer/number/scientific.dart' show ScientificNumberPrinter;
 export 'src/printer/number/sign.dart' show SignNumberPrinter;
 export 'src/printer/object/field.dart' show FieldPrinter;
