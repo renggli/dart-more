@@ -19,6 +19,7 @@ export 'src/printer/sequence.dart'
 export 'src/printer/standard.dart' show StandardPrinter;
 export 'src/printer/string/pad.dart' show PadPrinterExtension;
 export 'src/printer/string/separate.dart' show SeparatePrinterExtension;
+export 'src/printer/string/take_skip.dart' show TakeSkipPrinterExtension;
 export 'src/printer/string/trim.dart' show TrimPrinterExtension;
 export 'src/printer/string/truncate.dart'
     show TruncateMethod, TruncatePrinterExtension;

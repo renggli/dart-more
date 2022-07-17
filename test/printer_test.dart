@@ -551,6 +551,40 @@ void main() {
       expect(printer.toString(), startsWith('HumanNumberPrinter<num>'));
     });
   });
+  group('take/skip', () {
+    test('take', () {
+      final printer = standardString.take(2);
+      expect(printer(''), '');
+      expect(printer('a'), 'a');
+      expect(printer('ab'), 'ab');
+      expect(printer('abc'), 'ab');
+      expect(printer('abcd'), 'ab');
+    });
+    test('takeLast', () {
+      final printer = standardString.takeLast(2);
+      expect(printer(''), '');
+      expect(printer('a'), 'a');
+      expect(printer('ab'), 'ab');
+      expect(printer('abc'), 'bc');
+      expect(printer('abcd'), 'cd');
+    });
+    test('skip', () {
+      final printer = standardString.skip(2);
+      expect(printer(''), '');
+      expect(printer('a'), '');
+      expect(printer('ab'), '');
+      expect(printer('abc'), 'c');
+      expect(printer('abcd'), 'cd');
+    });
+    test('skipLast', () {
+      final printer = standardString.skipLast(2);
+      expect(printer(''), '');
+      expect(printer('a'), '');
+      expect(printer('ab'), '');
+      expect(printer('abc'), 'a');
+      expect(printer('abcd'), 'ab');
+    });
+  });
   group('trim', () {
     test('both', () {
       final printer = standardString.trim();
