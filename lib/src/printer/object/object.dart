@@ -87,9 +87,12 @@ class ObjectPrinter<T> extends Printer<T> {
     Printer<F>? printer,
     bool omitNull = defaultOmitNull,
     Predicate2<T, F>? omitPredicate,
+    int? index,
   }) =>
-      addField(FieldCallback<T, F>(name, callback, omitNull, omitPredicate,
-          printer ?? Printer<F>.standard()));
+      addField(
+          FieldCallback<T, F>(name, callback, omitNull, omitPredicate,
+              printer ?? Printer<F>.standard()),
+          index: index);
 
   /// Adds a value field printer.
   void addValue<F>(
@@ -98,12 +101,16 @@ class ObjectPrinter<T> extends Printer<T> {
     Printer<F>? printer,
     bool omitNull = defaultOmitNull,
     Predicate1<F>? omitPredicate,
+    int? index,
   }) =>
-      addField(FieldValue<T, F>(name, value, omitNull, omitPredicate,
-          printer ?? Printer<F>.standard()));
+      addField(
+          FieldValue<T, F>(name, value, omitNull, omitPredicate,
+              printer ?? Printer<F>.standard()),
+          index: index);
 
   /// Adds a custom field printer.
-  void addField(FieldPrinter<T> field) => fields.add(field);
+  void addField(FieldPrinter<T> field, {int? index}) =>
+      index == null ? fields.add(field) : fields.insert(index, field);
 
   @override
   void printOn(T object, StringBuffer buffer) {
