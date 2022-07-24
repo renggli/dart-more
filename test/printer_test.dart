@@ -1077,8 +1077,8 @@ void main() {
       expect(printer.toString(), startsWith('EmptyPrinter<int>'));
     });
   });
-  group('transform', () {
-    test('map', () {
+  group('map', () {
+    test('printer', () {
       final printer = standardInt.map(int.parse);
       expect(() => printer(''), throwsFormatException);
       expect(printer('1'), '1');
@@ -1092,7 +1092,18 @@ void main() {
     });
     test('toString', () {
       final printer = standardInt.map(int.parse);
-      expect(printer.toString(), startsWith('TransformPrinter<String, int>'));
+      expect(printer.toString(), startsWith('MapPrinter<String, int>'));
+    });
+  });
+  group('where', () {
+    test('printer', () {
+      final printer = standardInt.where((value) => value > 0);
+      expect(printer(1), '1');
+      expect(printer(-1), '');
+    });
+    test('toString', () {
+      final printer = standardInt.where((value) => value > 0);
+      expect(printer.toString(), startsWith('WherePrinter<int>'));
     });
   });
   group('wrap', () {

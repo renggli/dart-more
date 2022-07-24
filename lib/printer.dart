@@ -4,6 +4,7 @@ export 'src/printer/builder.dart' show BuilderPrinterExtension;
 export 'src/printer/empty.dart' show EmptyPrinterExtension;
 export 'src/printer/iterable.dart' show IterablePrinterExtension;
 export 'src/printer/literal.dart' show LiteralPrinter;
+export 'src/printer/map.dart' show MapPrinterExtension;
 export 'src/printer/null.dart' show NullPrinterExtension;
 export 'src/printer/number/fixed.dart' show FixedNumberPrinter;
 export 'src/printer/number/human.dart' show HumanNumberPrinter;
@@ -24,4 +25,4 @@ export 'src/printer/string/trim.dart' show TrimPrinterExtension;
 export 'src/printer/string/truncate.dart'
     show TruncateMethod, TruncatePrinterExtension;
 export 'src/printer/to_string.dart' show ToStringPrinter;
-export 'src/printer/transform.dart' show TransformPrinterExtension;
+export 'src/printer/where.dart' show WherePrinterExtension;
