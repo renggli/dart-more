@@ -79,7 +79,7 @@ class DateTimePrinterBuilder {
   /// [names] specifies a list of 4 quarter names that are displayed instead
   /// of the numeric quarter number from `['Q1', ..., 'Q4']`.
   void quarter({int width = 0, List<String>? names}) {
-    assert(names == null || names.length == 4);
+    assert(names == null || names.length == 4, '4 quarter names expected');
     final printer = names == null
         ? FixedNumberPrinter<int>(padding: width)
         : Printer<int>.pluggable((quarter) => names[quarter - 1]);
@@ -93,7 +93,7 @@ class DateTimePrinterBuilder {
   /// [names] specifies a list of 12 month names that are displayed instead
   /// of the numeric month number from `['January', ..., 'December']`.
   void month({int width = 0, List<String>? names}) {
-    assert(names == null || names.length == 12);
+    assert(names == null || names.length == 12, '12 month names expected');
     final printer = names == null
         ? FixedNumberPrinter<int>(padding: width)
         : Printer<int>.pluggable((month) => names[month - 1]);
@@ -107,7 +107,7 @@ class DateTimePrinterBuilder {
   /// [names] specifies a list of 7 weekday names that are displayed instead
   /// of the numeric weekday number from `['Monday', ..., 'Sunday']`.
   void weekday({int width = 0, List<String>? names}) {
-    assert(names == null || names.length == 7);
+    assert(names == null || names.length == 7, '7 weekday names expected');
     final printer = names == null
         ? FixedNumberPrinter<int>(padding: width)
         : Printer<int>.pluggable((weekday) => names[weekday - 1]);
