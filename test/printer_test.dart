@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:more/collection.dart';
 import 'package:more/math.dart';
 import 'package:more/printer.dart';
@@ -549,6 +551,28 @@ void main() {
     test('toString', () {
       final printer = HumanNumberPrinter.decimal();
       expect(printer.toString(), startsWith('HumanNumberPrinter<num>'));
+    });
+  });
+  group('date & time', () {
+    test('iso8691', () {
+      final random = Random(8691);
+      final printer = DateTimePrinter.iso8691();
+      for (var i = 0; i < 100; i++) {
+        final dateTime = DateTime.utc(
+            random.nextInt(2200),
+            1 + random.nextInt(12),
+            1 + random.nextInt(31),
+            random.nextInt(24),
+            random.nextInt(60),
+            random.nextInt(60),
+            random.nextInt(999),
+            random.nextInt(999));
+        expect(printer(dateTime), dateTime.toIso8601String().takeTo('Z'));
+      }
+    });
+    test('toString', () {
+      final printer = DateTimePrinter.iso8691();
+      expect(printer.toString(), startsWith('DateTimePrinter'));
     });
   });
   group('take/skip', () {
