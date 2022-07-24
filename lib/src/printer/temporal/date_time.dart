@@ -12,6 +12,17 @@ import '../where.dart';
 import 'date_time_extension.dart';
 
 /// Prints [DateTime] objects in custom ways.
+///
+/// For example, to print dates in the format `YYYY-MM-DD` call the constructor
+/// and configure the printer as such:
+///
+///     final printer = DateTimePrinter((builder) => builder
+///         ..year(width: 4)
+///         ..literal('-')
+///         ..month(width: 2)
+///         ..literal('-')
+///         ..day(width: 2));
+///
 class DateTimePrinter extends SequencePrinter<DateTime> {
   /// Constructor to build a [DateTimePrinter].
   factory DateTimePrinter(Callback1<DateTimePrinterBuilder> callback) {
@@ -41,6 +52,7 @@ class DateTimePrinter extends SequencePrinter<DateTime> {
     ..microsecond(skipIfZero: true));
 }
 
+/// Builder of [DateTimePrinter] objects.
 class DateTimePrinterBuilder {
   /// Mutable list of printer objects.
   final List<Printer<DateTime>> printers = [];
