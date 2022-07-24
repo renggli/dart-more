@@ -1,5 +1,15 @@
-import '../../../printer.dart';
+import 'dart:math';
+
 import '../../functional/types/callback.dart';
+import '../builder.dart';
+import '../literal.dart';
+import '../map.dart';
+import '../number/fixed.dart';
+import '../printer.dart';
+import '../sequence.dart';
+import '../string/take_skip.dart';
+import '../where.dart';
+import 'date_time_extension.dart';
 
 /// Prints [DateTime] objects in custom ways.
 class DateTimePrinter extends SequencePrinter<DateTime> {
@@ -15,17 +25,17 @@ class DateTimePrinter extends SequencePrinter<DateTime> {
 
   /// Returns an ISO-8601 full-precision extended format representation.
   static DateTimePrinter iso8691() => DateTimePrinter((builder) => builder
-    ..year()
+    ..year(width: 4)
     ..literal('-')
-    ..month()
+    ..month(width: 2)
     ..literal('-')
-    ..day()
+    ..day(width: 2)
     ..literal('T')
-    ..hour()
+    ..hour(width: 2)
     ..literal(':')
-    ..minute()
+    ..minute(width: 2)
     ..literal(':')
-    ..second()
+    ..second(width: 2)
     ..literal('.')
     ..millisecond()
     ..microsecond(skipIfZero: true));
@@ -42,38 +52,102 @@ class DateTimePrinterBuilder {
   void literal(String value) => add(LiteralPrinter<DateTime>(value));
 
   /// Adds a [DateTime.year] field.
-  void year({int padding = 4}) => add(FixedNumberPrinter(padding: padding)
-      .mapIf(padding == 2, (printer) => printer.takeLast(2))
+  ///
+  /// [width] specifies the minimum number of digits to be displayed. If
+  /// [width] is `2`, just the two low-order digits of the year will be
+  /// displayed.
+  void year({int width = 4}) => add(FixedNumberPrinter(padding: width)
+      .mapIf(width == 2, (printer) => printer.takeLast(2))
       .map((dateTime) => dateTime.year));
 
+  /// Adds a [DateTimeExtension.quarter] field.
+  ///
+  /// [width] specifies the minimum number of digits to display.
+  ///
+  /// [names] specifies a list of 4 quarter names that are displayed instead
+  /// of the numeric quarter number from `['Q1', ..., 'Q4']`.
+  void quarter({int width = 0, List<String>? names}) {
+    assert(names == null || names.length == 4);
+    final printer = names == null
+        ? FixedNumberPrinter<int>(padding: width)
+        : Printer<int>.pluggable((quarter) => names[quarter - 1]);
+    add(printer.map((dateTime) => dateTime.quarter));
+  }
+
   /// Adds a [DateTime.month] field.
-  void month({int padding = 2}) => add(
-      FixedNumberPrinter(padding: padding).map((dateTime) => dateTime.month));
+  ///
+  /// [width] specifies the minimum number of digits to display.
+  ///
+  /// [names] specifies a list of 12 month names that are displayed instead
+  /// of the numeric month number from `['January', ..., 'December']`.
+  void month({int width = 0, List<String>? names}) {
+    assert(names == null || names.length == 12);
+    final printer = names == null
+        ? FixedNumberPrinter<int>(padding: width)
+        : Printer<int>.pluggable((month) => names[month - 1]);
+    add(printer.map((dateTime) => dateTime.month));
+  }
+
+  /// Adds a [DateTime.weekday] field.
+  ///
+  /// [width] specifies the minimum number of digits to display.
+  ///
+  /// [names] specifies a list of 7 weekday names that are displayed instead
+  /// of the numeric weekday number from `['Monday', ..., 'Sunday']`.
+  void weekday({int width = 0, List<String>? names}) {
+    assert(names == null || names.length == 7);
+    final printer = names == null
+        ? FixedNumberPrinter<int>(padding: width)
+        : Printer<int>.pluggable((weekday) => names[weekday - 1]);
+    add(printer.map((dateTime) => dateTime.weekday));
+  }
 
   /// Adds a [DateTime.day] field.
-  void day({int padding = 2}) =>
-      add(FixedNumberPrinter(padding: padding).map((dateTime) => dateTime.day));
+  ///
+  /// [width] specifies the minimum number of digits to display.
+  void day({int width = 0}) =>
+      add(FixedNumberPrinter(padding: width).map((dateTime) => dateTime.day));
+
+  /// Adds a [DateTimeExtension.dayInYear] field.
+  ///
+  /// [width] specifies the minimum number of digits to display.
+  void dayInYear({int width = 0}) => add(
+      FixedNumberPrinter(padding: width).map((dateTime) => dateTime.dayInYear));
 
   /// Adds a [DateTime.hour] field.
-  void hour({int padding = 2}) => add(
-      FixedNumberPrinter(padding: padding).map((dateTime) => dateTime.hour));
+  ///
+  /// [width] specifies the minimum number of digits to display.
+  void hour({int width = 0}) =>
+      add(FixedNumberPrinter(padding: width).map((dateTime) => dateTime.hour));
 
   /// Adds a [DateTime.minute] field.
-  void minute({int padding = 2}) => add(
-      FixedNumberPrinter(padding: padding).map((dateTime) => dateTime.minute));
+  ///
+  /// [width] specifies the minimum number of digits to display.
+  void minute({int width = 0}) => add(
+      FixedNumberPrinter(padding: width).map((dateTime) => dateTime.minute));
 
   /// Adds a [DateTime.second] field.
-  void second({int padding = 2}) => add(
-      FixedNumberPrinter(padding: padding).map((dateTime) => dateTime.second));
+  ///
+  /// [width] specifies the minimum number of digits to display.
+  void second({int width = 0}) => add(
+      FixedNumberPrinter(padding: width).map((dateTime) => dateTime.second));
 
   /// Adds a [DateTime.millisecond] field.
-  void millisecond({int padding = 3}) =>
-      add(FixedNumberPrinter(padding: padding)
+  ///
+  /// [width] specifies the number of digits to display. If [width] is less than
+  /// `3`, only the most significant digits are printed.
+  void millisecond({int width = 3}) =>
+      add(FixedNumberPrinter(padding: max(width, 3))
+          .mapIf(width < 3, (printer) => printer.take(width))
           .map((dateTime) => dateTime.millisecond));
 
   /// Adds a [DateTime.microsecond] field.
-  void microsecond({int padding = 3, bool skipIfZero = false}) =>
-      add(FixedNumberPrinter(padding: padding)
-          .where((microsecond) => skipIfZero && microsecond != 0)
+  ///
+  /// [width] specifies the number of digits to display. If [width] is less than
+  /// `3`, only the most significant digits are printed.
+  void microsecond({int width = 3, bool skipIfZero = false}) =>
+      add(FixedNumberPrinter(padding: max(width, 3))
+          .mapIf(width < 3, (printer) => printer.take(width))
+          .where((microsecond) => !skipIfZero || microsecond != 0)
           .map((dateTime) => dateTime.microsecond));
 }

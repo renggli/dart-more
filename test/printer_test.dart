@@ -1,5 +1,3 @@
-import 'dart:math';
-
 import 'package:more/collection.dart';
 import 'package:more/math.dart';
 import 'package:more/printer.dart';
@@ -554,21 +552,119 @@ void main() {
     });
   });
   group('date & time', () {
+    final dateTimes = [
+      DateTime.utc(0),
+      DateTime.utc(1980, 11, 6, 8, 25),
+      DateTime.utc(1969, 7, 20, 20, 18, 4, 12),
+      DateTime.utc(2023, 10, 24, 18, 8, 32, 271, 828),
+    ];
     test('iso8691', () {
-      final random = Random(8691);
       final printer = DateTimePrinter.iso8691();
-      for (var i = 0; i < 100; i++) {
-        final dateTime = DateTime.utc(
-            random.nextInt(2200),
-            1 + random.nextInt(12),
-            1 + random.nextInt(31),
-            random.nextInt(24),
-            random.nextInt(60),
-            random.nextInt(60),
-            random.nextInt(999),
-            random.nextInt(999));
-        expect(printer(dateTime), dateTime.toIso8601String().takeTo('Z'));
-      }
+      expect(dateTimes.map(printer), [
+        '0000-01-01T00:00:00.000',
+        '1980-11-06T08:25:00.000',
+        '1969-07-20T20:18:04.012',
+        '2023-10-24T18:08:32.271828',
+      ]);
+    });
+    group('year', () {
+      test('default', () {
+        final printer = DateTimePrinter((builder) => builder.year());
+        expect(dateTimes.map(printer), ['0000', '1980', '1969', '2023']);
+      });
+    });
+    group('quarter', () {
+      test('default', () {
+        final printer = DateTimePrinter((builder) => builder.quarter());
+        expect(dateTimes.map(printer), ['1', '4', '3', '4']);
+      });
+      test('names', () {
+        final names = ['Q1', 'Q2', 'Q3', 'Q4'];
+        final printer =
+            DateTimePrinter((builder) => builder.quarter(names: names));
+        expect(dateTimes.map(printer), ['Q1', 'Q4', 'Q3', 'Q4']);
+      });
+    });
+    group('month', () {
+      test('default', () {
+        final printer = DateTimePrinter((builder) => builder.month());
+        expect(dateTimes.map(printer), ['1', '11', '7', '10']);
+      });
+      test('names', () {
+        final names = 'JFMAMJJASOND'.split('');
+        final printer =
+            DateTimePrinter((builder) => builder.month(names: names));
+        expect(dateTimes.map(printer), ['J', 'N', 'J', 'O']);
+      });
+    });
+    group('weekday', () {
+      test('default', () {
+        final printer = DateTimePrinter((builder) => builder.weekday());
+        expect(dateTimes.map(printer), ['6', '4', '7', '2']);
+      });
+      test('names', () {
+        final names = 'MTWTFSS'.split('');
+        final printer =
+            DateTimePrinter((builder) => builder.weekday(names: names));
+        expect(dateTimes.map(printer), ['S', 'T', 'S', 'T']);
+      });
+    });
+    group('day', () {
+      test('default', () {
+        final printer = DateTimePrinter((builder) => builder.day());
+        expect(dateTimes.map(printer), ['1', '6', '20', '24']);
+      });
+    });
+    group('dayInYear', () {
+      test('default', () {
+        final printer = DateTimePrinter((builder) => builder.dayInYear());
+        expect(dateTimes.map(printer), ['1', '311', '201', '297']);
+      });
+    });
+    group('hour', () {
+      test('default', () {
+        final printer = DateTimePrinter((builder) => builder.hour());
+        expect(dateTimes.map(printer), ['0', '8', '20', '18']);
+      });
+    });
+    group('minute', () {
+      test('default', () {
+        final printer = DateTimePrinter((builder) => builder.minute());
+        expect(dateTimes.map(printer), ['0', '25', '18', '8']);
+      });
+    });
+    group('second', () {
+      test('default', () {
+        final printer = DateTimePrinter((builder) => builder.second());
+        expect(dateTimes.map(printer), ['0', '0', '4', '32']);
+      });
+    });
+    group('millisecond', () {
+      test('default', () {
+        final printer = DateTimePrinter((builder) => builder.millisecond());
+        expect(dateTimes.map(printer), ['000', '000', '012', '271']);
+      });
+      test('width: 2', () {
+        final printer =
+            DateTimePrinter((builder) => builder.millisecond(width: 2));
+        expect(dateTimes.map(printer), ['00', '00', '01', '27']);
+      });
+    });
+    group('microsecond', () {
+      test('default', () {
+        final printer = DateTimePrinter((builder) => builder.microsecond());
+        expect(dateTimes.map(printer), ['000', '000', '000', '828']);
+      });
+      test('width: 2', () {
+        final printer =
+            DateTimePrinter((builder) => builder.microsecond(width: 2));
+        expect(dateTimes.map(printer), ['00', '00', '00', '82']);
+      });
+      test('skipIfZero', () {
+        final printer =
+            DateTimePrinter((builder) => builder.microsecond(skipIfZero: true));
+        expect(dateTimes.map(printer), ['', '', '', '828']);
+      });
     });
     test('toString', () {
       final printer = DateTimePrinter.iso8691();
