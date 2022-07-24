@@ -46,7 +46,7 @@ final File abstractFile = File('lib/src/tuple/tuple.dart');
 /// Implementation file.
 File implementationFile(int i) => File('lib/src/tuple/tuple_$i.dart');
 
-/// Library file.
+/// Test file.
 final File testFile = File('test/tuple_test.dart');
 
 /// Random generator for hash values.
