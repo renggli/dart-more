@@ -56,7 +56,7 @@ class DateTimePrinterBuilder {
   /// [width] specifies the minimum number of digits to be displayed. If
   /// [width] is `2`, just the two low-order digits of the year will be
   /// displayed.
-  void year({int width = 4}) => add(FixedNumberPrinter(padding: width)
+  void year({int width = 0}) => add(FixedNumberPrinter(padding: width)
       .mapIf(width == 2, (printer) => printer.takeLast(2))
       .map((dateTime) => dateTime.year));
 
@@ -141,7 +141,7 @@ class DateTimePrinterBuilder {
           .mapIf(width < 3, (printer) => printer.take(width))
           .map((dateTime) => dateTime.millisecond));
 
-  /// Adds a [DateTime.microsecond] field.
+  /// Adds a [DateTime.microsecond] field. This field is always 0 in JavaScript.
   ///
   /// [width] specifies the number of digits to display. If [width] is less than
   /// `3`, only the most significant digits are printed.
