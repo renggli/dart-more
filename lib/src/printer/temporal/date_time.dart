@@ -1,6 +1,7 @@
 import 'dart:math';
 
 import '../../functional/types/callback.dart';
+import '../../math/math.dart';
 import '../builder.dart';
 import '../literal.dart';
 import '../map.dart';
@@ -63,6 +64,16 @@ class DateTimePrinterBuilder {
   /// Adds a literal string.
   void literal(String value) => add(LiteralPrinter<DateTime>(value));
 
+  /// Adds a era field.
+  ///
+  /// [names] specifies a list of 2 era names that are displayed instead
+  /// of the default ones `['BC', 'AD']`.
+  void era({List<String> names = const ['BC', 'AD']}) {
+    assert(names.length == 2, '2 era names expected');
+    add(Printer<int>.pluggable((index) => names[index])
+        .map((dateTime) => dateTime.year > 0 ? 1 : 0));
+  }
+
   /// Adds a [DateTime.year] field.
   ///
   /// [width] specifies the minimum number of digits to be displayed. If
@@ -120,17 +131,33 @@ class DateTimePrinterBuilder {
   void day({int width = 0}) =>
       add(FixedNumberPrinter(padding: width).map((dateTime) => dateTime.day));
 
-  /// Adds a [DateTimeExtension.dayInYear] field.
+  /// Adds a [DateTimeExtension.dayOfYear] field.
   ///
   /// [width] specifies the minimum number of digits to display.
-  void dayInYear({int width = 0}) => add(
-      FixedNumberPrinter(padding: width).map((dateTime) => dateTime.dayInYear));
+  void dayOfYear({int width = 0}) => add(
+      FixedNumberPrinter(padding: width).map((dateTime) => dateTime.dayOfYear));
 
-  /// Adds a [DateTime.hour] field.
+  /// Adds an am/pm field.
+  ///
+  /// [names] specifies a list of 2 meridiem that are displayed instead
+  /// of the default ones `['am', 'pm']`.
+  void meridiem({List<String> names = const ['am', 'pm']}) {
+    assert(names.length == 2, '2 meridiem names expected');
+    add(Printer<int>.pluggable((index) => names[index])
+        .map((dateTime) => dateTime.hour.between(12, 23) ? 1 : 0));
+  }
+
+  /// Adds a [DateTime.hour] field (24h-clock).
   ///
   /// [width] specifies the minimum number of digits to display.
   void hour({int width = 0}) =>
       add(FixedNumberPrinter(padding: width).map((dateTime) => dateTime.hour));
+
+  /// Adds a [DateTime.hour12] field (12h-clock).
+  ///
+  /// [width] specifies the minimum number of digits to display.
+  void hour12({int width = 0}) => add(
+      FixedNumberPrinter(padding: width).map((dateTime) => dateTime.hour12));
 
   /// Adds a [DateTime.minute] field.
   ///
