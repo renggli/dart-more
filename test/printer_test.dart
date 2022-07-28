@@ -742,6 +742,7 @@ void main() {
       expect(printer('ab'), 'ab');
       expect(printer('abc'), 'ab');
       expect(printer('abcd'), 'ab');
+      expect(printer.toString(), startsWith('TakePrinter'));
     });
     test('takeLast', () {
       final printer = standardString.takeLast(2);
@@ -750,6 +751,7 @@ void main() {
       expect(printer('ab'), 'ab');
       expect(printer('abc'), 'bc');
       expect(printer('abcd'), 'cd');
+      expect(printer.toString(), startsWith('TakeLastPrinter'));
     });
     test('skip', () {
       final printer = standardString.skip(2);
@@ -758,6 +760,7 @@ void main() {
       expect(printer('ab'), '');
       expect(printer('abc'), 'c');
       expect(printer('abcd'), 'cd');
+      expect(printer.toString(), startsWith('SkipPrinter'));
     });
     test('skipLast', () {
       final printer = standardString.skipLast(2);
@@ -766,6 +769,7 @@ void main() {
       expect(printer('ab'), '');
       expect(printer('abc'), 'a');
       expect(printer('abcd'), 'ab');
+      expect(printer.toString(), startsWith('SkipLastPrinter'));
     });
   });
   group('trim', () {
@@ -1144,6 +1148,10 @@ void main() {
       expect(printer(50), '<100');
       expect(printer(500), '');
     });
+    test('toString', () {
+      final printer = Printer<int>.switcher({});
+      expect(printer.toString(), startsWith('SwitcherPrinter'));
+    });
   });
   group('sequence', () {
     test('default', () {
@@ -1314,6 +1322,18 @@ void main() {
       expect(() => Printer<String>.wrap(standardInt), throwsArgumentError);
       expect(() => Printer<String>.wrap(num.parse), throwsArgumentError);
       expect(() => Printer<String>.wrap(12), throwsArgumentError);
+    });
+  });
+  group('pluggable', () {
+    test('default', () {
+      final printer = Printer<String>.pluggable((value) => '<$value>');
+      expect(printer('a'), '<a>');
+      expect(printer('bc'), '<bc>');
+      expect(printer('def'), '<def>');
+    });
+    test('toString', () {
+      final printer = Printer<int>.pluggable((value) => '$value');
+      expect(printer.toString(), startsWith('PluggablePrinter'));
     });
   });
   group('object', () {
