@@ -734,6 +734,23 @@ void main() {
       expect(printer.toString(), startsWith('DateTimePrinter'));
     });
   });
+  group('duration', () {
+    final durations = [
+      Duration.zero,
+      Duration(days: 123456789),
+      Duration(seconds: 123456789),
+      Duration(milliseconds: 123456789),
+    ];
+    test('iso8691', () {
+      final printer = DurationPrinter.iso8601();
+      expect(durations.map(printer), [
+        'P0DT0S',
+        'P246704Y7M3W2DT8H1M49S',
+        'P3Y11M3DT21H33M9S',
+        'P1DT10H17M36S',
+      ]);
+    });
+  });
   group('take/skip', () {
     test('take', () {
       final printer = standardString.take(2);

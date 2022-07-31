@@ -25,5 +25,6 @@ export 'src/printer/string/trim.dart' show TrimPrinterExtension;
 export 'src/printer/string/truncate.dart'
     show TruncateMethod, TruncatePrinterExtension;
 export 'src/printer/temporal/date_time.dart' show DateTimePrinter;
+export 'src/printer/temporal/duration.dart' show DurationPrinter;
 export 'src/printer/to_string.dart' show ToStringPrinter;
 export 'src/printer/where.dart' show WherePrinterExtension;

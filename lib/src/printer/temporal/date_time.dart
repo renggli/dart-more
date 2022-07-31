@@ -29,7 +29,7 @@ class DateTimePrinter extends SequencePrinter<DateTime> {
   factory DateTimePrinter(Callback1<DateTimePrinterBuilder> callback) {
     final builder = DateTimePrinterBuilder();
     callback(builder);
-    return DateTimePrinter._(builder.printers);
+    return DateTimePrinter._(builder._printers);
   }
 
   /// Internal constructor for [DateTimePrinter].
@@ -55,11 +55,12 @@ class DateTimePrinter extends SequencePrinter<DateTime> {
 
 /// Builder of [DateTimePrinter] objects.
 class DateTimePrinterBuilder {
-  /// Mutable list of printer objects.
-  final List<Printer<DateTime>> printers = [];
+  DateTimePrinterBuilder();
+
+  final List<Printer<DateTime>> _printers = [];
 
   /// Adds a printer.
-  void add(Printer<DateTime> printer) => printers.add(printer);
+  void add(Printer<DateTime> printer) => _printers.add(printer);
 
   /// Adds a literal string.
   void literal(String value) => add(LiteralPrinter<DateTime>(value));
