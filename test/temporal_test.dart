@@ -464,9 +464,9 @@ void main() {
       });
       test('normal', () {
         final interval = Interval<DateTime>.openClosed(
-            DateTime(1980, 6, 11), DateTime(2022, 7, 31));
+            DateTime(2020, 2, 28), DateTime(2022, 7, 31));
         final duration = interval.toDuration();
-        expect(duration, Duration(hours: 369359));
+        expect(duration, Duration(hours: 21215));
       });
     });
   });
