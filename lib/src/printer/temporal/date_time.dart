@@ -2,6 +2,7 @@ import 'dart:math';
 
 import '../../functional/types/callback.dart';
 import '../../math/math.dart';
+import '../../temporal/date_time/accessors.dart';
 import '../builder.dart';
 import '../literal.dart';
 import '../map.dart';
@@ -10,7 +11,6 @@ import '../printer.dart';
 import '../sequence.dart';
 import '../string/take_skip.dart';
 import '../where.dart';
-import 'date_time_extension.dart';
 
 /// Prints [DateTime] objects in custom ways.
 ///
@@ -32,7 +32,7 @@ class DateTimePrinter extends SequencePrinter<DateTime> {
     return DateTimePrinter._(builder.printers);
   }
 
-  /// Internal constructor for date time objects.
+  /// Internal constructor for [DateTimePrinter].
   DateTimePrinter._(super.printers);
 
   /// Returns an ISO-8601 full-precision extended format representation.

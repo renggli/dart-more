@@ -1,20 +1,39 @@
-import 'iterate.dart' show iterate;
+import '../temporal/date_time/periodical.dart';
+import '../temporal/date_time/truncate.dart';
+import '../temporal/time_unit.dart';
 
 /// Different kinds of repeating periodic timestamps.
 enum Period {
-  millennially,
-  centennially,
-  decennially,
-  yearly,
-  quarterly,
-  monthly,
-  weekly,
-  daily,
-  hourly,
-  minutely,
-  secondly,
-  millisecondly,
-  microsecondly,
+  @Deprecated('Instead use `TimeUnit.millennium`.')
+  millennially(TimeUnit.millennium),
+  @Deprecated('Instead use `TimeUnit.century`.')
+  centennially(TimeUnit.century),
+  @Deprecated('Instead use `TimeUnit.decade`.')
+  decennially(TimeUnit.decade),
+  @Deprecated('Instead use `TimeUnit.year`.')
+  yearly(TimeUnit.year),
+  @Deprecated('Instead use `TimeUnit.quarter`.')
+  quarterly(TimeUnit.quarter),
+  @Deprecated('Instead use `TimeUnit.month`.')
+  monthly(TimeUnit.month),
+  @Deprecated('Instead use `TimeUnit.week`.')
+  weekly(TimeUnit.week),
+  @Deprecated('Instead use `TimeUnit.day`.')
+  daily(TimeUnit.day),
+  @Deprecated('Instead use `TimeUnit.hour`.')
+  hourly(TimeUnit.hour),
+  @Deprecated('Instead use `TimeUnit.minute`.')
+  minutely(TimeUnit.minute),
+  @Deprecated('Instead use `TimeUnit.second`.')
+  secondly(TimeUnit.second),
+  @Deprecated('Instead use `TimeUnit.millisecond`.')
+  millisecondly(TimeUnit.millisecond),
+  @Deprecated('Instead use `TimeUnit.microsecond`.')
+  microsecondly(TimeUnit.microsecond);
+
+  const Period(this.timeUnit);
+
+  final TimeUnit timeUnit;
 }
 
 extension PeriodicalExtension on DateTime {
@@ -44,279 +63,21 @@ extension PeriodicalExtension on DateTime {
   ///     final offset = Duration(days: 1);
   ///     iterate(DateTime().now(), (prev) => prev.add(offset));
   ///
+  @Deprecated('Instead use `PeriodicalDateTimeExtension.periodical`')
   Iterable<DateTime> periodical({
     int step = 1,
     Period period = Period.daily,
-  }) {
-    if (step == 0) {
-      throw ArgumentError.value(step, 'step', 'Expected non-zero step size');
-    }
-    switch (period) {
-      case Period.millennially:
-        return iterate(
-            this,
-            (prev) => DateTime(
-                  prev.year + 1000 * step,
-                  prev.month,
-                  prev.day,
-                  prev.hour,
-                  prev.minute,
-                  prev.second,
-                  prev.millisecond,
-                  prev.microsecond,
-                ));
-      case Period.centennially:
-        return iterate(
-            this,
-            (prev) => DateTime(
-                  prev.year + 100 * step,
-                  prev.month,
-                  prev.day,
-                  prev.hour,
-                  prev.minute,
-                  prev.second,
-                  prev.millisecond,
-                  prev.microsecond,
-                ));
-      case Period.decennially:
-        return iterate(
-            this,
-            (prev) => DateTime(
-                  prev.year + 10 * step,
-                  prev.month,
-                  prev.day,
-                  prev.hour,
-                  prev.minute,
-                  prev.second,
-                  prev.millisecond,
-                  prev.microsecond,
-                ));
-      case Period.yearly:
-        return iterate(
-            this,
-            (prev) => DateTime(
-                  prev.year + step,
-                  prev.month,
-                  prev.day,
-                  prev.hour,
-                  prev.minute,
-                  prev.second,
-                  prev.millisecond,
-                  prev.microsecond,
-                ));
-      case Period.quarterly:
-        return iterate(
-            this,
-            (prev) => DateTime(
-                  prev.year,
-                  prev.month + 3 * step,
-                  prev.day,
-                  prev.hour,
-                  prev.minute,
-                  prev.second,
-                  prev.millisecond,
-                  prev.microsecond,
-                ));
-      case Period.monthly:
-        return iterate(
-            this,
-            (prev) => DateTime(
-                  prev.year,
-                  prev.month + step,
-                  prev.day,
-                  prev.hour,
-                  prev.minute,
-                  prev.second,
-                  prev.millisecond,
-                  prev.microsecond,
-                ));
-      case Period.weekly:
-        return iterate(
-            this,
-            (prev) => DateTime(
-                  prev.year,
-                  prev.month,
-                  prev.day + 7 * step,
-                  prev.hour,
-                  prev.minute,
-                  prev.second,
-                  prev.millisecond,
-                  prev.microsecond,
-                ));
-      case Period.daily:
-        return iterate(
-            this,
-            (prev) => DateTime(
-                  prev.year,
-                  prev.month,
-                  prev.day + step,
-                  prev.hour,
-                  prev.minute,
-                  prev.second,
-                  prev.millisecond,
-                  prev.microsecond,
-                ));
-      case Period.hourly:
-        return iterate(
-            this,
-            (prev) => DateTime(
-                  prev.year,
-                  prev.month,
-                  prev.day,
-                  prev.hour + step,
-                  prev.minute,
-                  prev.second,
-                  prev.millisecond,
-                  prev.microsecond,
-                ));
-      case Period.minutely:
-        return iterate(
-            this,
-            (prev) => DateTime(
-                  prev.year,
-                  prev.month,
-                  prev.day,
-                  prev.hour,
-                  prev.minute + step,
-                  prev.second,
-                  prev.millisecond,
-                  prev.microsecond,
-                ));
-      case Period.secondly:
-        return iterate(
-            this,
-            (prev) => DateTime(
-                  prev.year,
-                  prev.month,
-                  prev.day,
-                  prev.hour,
-                  prev.minute,
-                  prev.second + step,
-                  prev.millisecond,
-                  prev.microsecond,
-                ));
-      case Period.millisecondly:
-        return iterate(
-            this,
-            (prev) => DateTime(
-                  prev.year,
-                  prev.month,
-                  prev.day,
-                  prev.hour,
-                  prev.minute,
-                  prev.second,
-                  prev.millisecond + step,
-                  prev.microsecond,
-                ));
-      case Period.microsecondly:
-        return iterate(
-            this,
-            (prev) => DateTime(
-                  prev.year,
-                  prev.month,
-                  prev.day,
-                  prev.hour,
-                  prev.minute,
-                  prev.second,
-                  prev.millisecond,
-                  prev.microsecond + step,
-                ));
-    }
-  }
+  }) =>
+      PeriodicalDateTimeExtension(this).periodical(period.timeUnit, step: step);
 }
 
 extension TruncateExtension on DateTime {
   /// Truncates [DateTime] to the beginning of the provided [Period].
+  @Deprecated('Instead use `TruncateDateTimeExtension.truncate`')
   DateTime truncate({
     Period period = Period.daily,
     int startWeekday = DateTime.monday,
-  }) {
-    switch (period) {
-      case Period.millennially:
-        return DateTime(
-          year ~/ 1000 * 1000,
-        );
-      case Period.centennially:
-        return DateTime(
-          year ~/ 100 * 100,
-        );
-      case Period.decennially:
-        return DateTime(
-          year ~/ 10 * 10,
-        );
-      case Period.yearly:
-        return DateTime(
-          year,
-        );
-      case Period.quarterly:
-        return DateTime(
-          year,
-          (month - 1) ~/ 3 * 3 + 1,
-        );
-      case Period.monthly:
-        return DateTime(
-          year,
-          month,
-        );
-      case Period.weekly:
-        RangeError.checkValueInInterval(
-            startWeekday, DateTime.monday, DateTime.sunday, 'startWeekday');
-        return DateTime(
-          year,
-          month,
-          day - (7 + weekday - startWeekday) % 7,
-        );
-      case Period.daily:
-        return DateTime(
-          year,
-          month,
-          day,
-        );
-      case Period.hourly:
-        return DateTime(
-          year,
-          month,
-          day,
-          hour,
-        );
-      case Period.minutely:
-        return DateTime(
-          year,
-          month,
-          day,
-          hour,
-          minute,
-        );
-      case Period.secondly:
-        return DateTime(
-          year,
-          month,
-          day,
-          hour,
-          minute,
-          second,
-        );
-      case Period.millisecondly:
-        return DateTime(
-          year,
-          month,
-          day,
-          hour,
-          minute,
-          second,
-          millisecond,
-        );
-      case Period.microsecondly:
-        return DateTime(
-          year,
-          month,
-          day,
-          hour,
-          minute,
-          second,
-          millisecond,
-          microsecond,
-        );
-    }
-  }
+  }) =>
+      TruncateDateTimeExtension(this)
+          .truncate(period.timeUnit, startWeekday: startWeekday);
 }

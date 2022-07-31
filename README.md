@@ -17,11 +17,13 @@ A collection of extensively tested extensions that make Dart a better place:
 - `collection.dart` is a collection of collection types: bi-map, bit-list, multi-set, set and list multi-map, range, and string.
 - `feature.dart` provides information about the runtime environment.
 - `functional.dart` provides a collection of functional programming structures.
+- `interval.dart` provides a continuous interval over a [Comparable].
 - `iterable.dart` is a collection of iterables and iterators.
 - `math.dart` is a collection of common mathematical functions.
 - `number.dart` provides fractional, complex and quaternion arithmetic.
 - `ordering.dart` a fluent interface for building comparator functions.
 - `printer.dart` a fluent interface for configuring sophisticated formatter.
+- `temporal.dart` provides extensions to the built-in date, time and duration objects.
 - `tuple.dart` a generic sequence of typed values.
 
 And there are more to come ...
@@ -52,12 +54,14 @@ import 'package:more/cache.dart';
 import 'package:more/char_matcher.dart';
 import 'package:more/collection.dart';
 import 'package:more/feature.dart';
+import 'package:more/functional.dart';
+import 'package:more/interval.dart';
 import 'package:more/iterable.dart';
 import 'package:more/math.dart';
-import 'package:more/functional.dart';
-import 'package:more/config.dart';
+import 'package:more/number.dart';
 import 'package:more/ordering.dart';
 import 'package:more/printer.dart';
+import 'package:more/temporal.dart';
 import 'package:more/tuple.dart';
 ```
 
