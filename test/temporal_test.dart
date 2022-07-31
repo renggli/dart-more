@@ -1,3 +1,4 @@
+import 'package:more/interval.dart';
 import 'package:more/math.dart';
 import 'package:more/ordering.dart';
 import 'package:more/src/temporal/conversion.dart';
@@ -442,6 +443,30 @@ void main() {
               TimeUnit.day: 4,
               TimeUnit.microsecond: 21816000000
             });
+      });
+    });
+  });
+  group('interval', () {
+    group('toDuration', () {
+      test('empty', () {
+        final interval = Interval<DateTime>.empty();
+        final duration = interval.toDuration();
+        expect(duration, Duration.zero);
+      });
+      test('single', () {
+        final interval = Interval<DateTime>.single(DateTime(1980, 6, 11));
+        final duration = interval.toDuration();
+        expect(duration, Duration.zero);
+      });
+      test('open', () {
+        final interval = Interval<DateTime>.all();
+        expect(() => interval.toDuration(), throwsArgumentError);
+      });
+      test('normal', () {
+        final interval = Interval<DateTime>.openClosed(
+            DateTime(1980, 6, 11), DateTime(2022, 7, 31));
+        final duration = interval.toDuration();
+        expect(duration, Duration(hours: 369359));
       });
     });
   });

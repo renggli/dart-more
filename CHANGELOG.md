@@ -4,6 +4,7 @@
 * Add `String` extensions `take`, `takeTo`, `skip`, `skipTo`, `takeLast`, `takeLastTo`, `skipLast`, and `skipLastTo`.
 * Create a new `temporal` package unifying all `DateTime` and `Duration` related extensions:
   * Moved `DateTime.periodical` and `DateTime.truncate` to the new page, deprecated the old code.
+  * Add ability to convert `Interval<DateTime>` to a `Duration`.
 * Countless improvements and extensions to the `printer` package:
   * Add `DateTimePrinter` to print date and time objects.
   * Add `OrdinalNumberPrinter` to print ordinal numbers: 1st, 2nd, 3rd, 4th, ...

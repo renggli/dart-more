@@ -94,10 +94,10 @@ class Interval<T extends Comparable<T>> {
   /// Returns the lower bound of this interval.
   final UpperBound<T> upper;
 
-  /// Returns `true` if this is an empty interval.
+  /// Returns `true`, if this is an empty interval.
   bool get isEmpty => lower is Empty<T> || upper is Empty<T>;
 
-  /// Returns `true` if this is a degenerated interval with a single value.
+  /// Returns `true`, if this is a degenerated interval with a single value.
   bool get isSingle =>
       lower.isClosed && upper.isClosed && lower.endpoint == upper.endpoint;
 
