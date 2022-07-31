@@ -2,6 +2,7 @@
 
 ## 3.8.0 (Unpublished)
 * Add `String` extensions `take`, `takeTo`, `skip`, `skipTo`, `takeLast`, `takeLastTo`, `skipLast`, and `skipLastTo`.
+* Add the ability to measure the length of `Interval<num>` with `toIntLength()` and `toDoubleLength()`.
 * Create a new `temporal` package unifying all `DateTime` and `Duration` related extensions:
   * Moved `DateTime.periodical` and `DateTime.truncate` to the new page, deprecated the old code.
   * Add ability to convert `Duration` objects to one or more `TimeUnit`s.

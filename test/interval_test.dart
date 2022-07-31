@@ -9,6 +9,8 @@ verify<T extends Comparable<T>>(
   required Iterable<T> excluded,
   bool isEmpty = false,
   bool isSingle = false,
+  num? intLength,
+  num? doubleLength,
   required String toString,
 }) {
   final empty = Interval<T>.empty();
@@ -93,6 +95,27 @@ verify<T extends Comparable<T>>(
   test('isSingle', () {
     expect(interval.isSingle, isSingle);
   });
+  if (intLength != null) {
+    test('toIntLength', () {
+      if (intLength.isInfinite) {
+        expect(
+            () => LengthIntervalNumExtension(interval as Interval<num>)
+                .toIntLength(),
+            throwsArgumentError);
+      } else {
+        final result =
+            LengthIntervalNumExtension(interval as Interval<num>).toIntLength();
+        expect(result, intLength.toInt());
+      }
+    });
+  }
+  if (doubleLength != null) {
+    test('toDoubleLength', () {
+      final result = LengthIntervalNumExtension(interval as Interval<num>)
+          .toDoubleLength();
+      expect(result, doubleLength.toDouble());
+    });
+  }
   test('equal', () {
     expect(interval == interval, isTrue);
     for (var other in intervals) {
@@ -122,6 +145,8 @@ void main() {
         interval,
         included: [4],
         excluded: [2, 3, 5, 6],
+        intLength: 0,
+        doubleLength: 2,
         toString: '(3..5)',
       );
     });
@@ -131,6 +156,8 @@ void main() {
         interval,
         included: [3, 4, 5],
         excluded: [2, 6],
+        intLength: 2,
+        doubleLength: 2,
         toString: '[3..5]',
       );
     });
@@ -140,6 +167,8 @@ void main() {
         interval,
         included: [4, 5],
         excluded: [2, 3, 6],
+        intLength: 1,
+        doubleLength: 2,
         toString: '(3..5]',
       );
     });
@@ -149,6 +178,8 @@ void main() {
         interval,
         included: [3, 4],
         excluded: [2, 5, 6],
+        intLength: 1,
+        doubleLength: 2,
         toString: '[3..5)',
       );
     });
@@ -158,6 +189,8 @@ void main() {
         interval,
         included: [5, 6, 7],
         excluded: [2, 3, 4],
+        intLength: double.infinity,
+        doubleLength: double.infinity,
         toString: '(4..+∞)',
       );
     });
@@ -167,6 +200,8 @@ void main() {
         interval,
         included: [4, 5, 6],
         excluded: [1, 2, 3],
+        intLength: double.infinity,
+        doubleLength: double.infinity,
         toString: '[4..+∞)',
       );
     });
@@ -176,6 +211,8 @@ void main() {
         interval,
         included: [1, 2, 3],
         excluded: [4, 5, 6],
+        intLength: double.infinity,
+        doubleLength: double.infinity,
         toString: '(-∞..4)',
       );
     });
@@ -185,6 +222,8 @@ void main() {
         interval,
         included: [2, 3, 4],
         excluded: [5, 6, 7],
+        intLength: double.infinity,
+        doubleLength: double.infinity,
         toString: '(-∞..4]',
       );
     });
@@ -195,6 +234,8 @@ void main() {
         included: [],
         excluded: [1, 2, 3],
         isEmpty: true,
+        intLength: 0,
+        doubleLength: 0,
         toString: '∅',
       );
     });
@@ -205,6 +246,8 @@ void main() {
         included: [4],
         excluded: [2, 3, 5, 6],
         isSingle: true,
+        intLength: 1,
+        doubleLength: 0,
         toString: '[4..4]',
       );
     });
@@ -214,6 +257,8 @@ void main() {
         interval,
         included: [1, 2, 3],
         excluded: [],
+        intLength: double.infinity,
+        doubleLength: double.infinity,
         toString: '(-∞..+∞)',
       );
     });
