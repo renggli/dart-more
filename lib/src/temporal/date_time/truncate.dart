@@ -1,8 +1,8 @@
 import '../time_unit.dart';
 
-extension TruncateDateTimeExtension on DateTime {
+extension TruncateToDateTimeExtension on DateTime {
   /// Truncates [DateTime] to the beginning of the provided [TimeUnit].
-  DateTime truncate(TimeUnit unit, {int startWeekday = DateTime.monday}) {
+  DateTime truncateTo(TimeUnit unit, {int startWeekday = DateTime.monday}) {
     switch (unit) {
       case TimeUnit.millennium:
         return DateTime(

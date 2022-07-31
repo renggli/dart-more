@@ -1,4 +1,4 @@
-extension DateTimeAccessorsExtension on DateTime {
+extension AccessorsDateTimeExtension on DateTime {
   /// The quarter `[1...4]`.
   int get quarter => 1 + (month - 1) ~/ 3;
 

@@ -73,11 +73,11 @@ extension PeriodicalExtension on DateTime {
 
 extension TruncateExtension on DateTime {
   /// Truncates [DateTime] to the beginning of the provided [Period].
-  @Deprecated('Instead use `TruncateDateTimeExtension.truncate`')
+  @Deprecated('Instead use `TruncateToDateTimeExtension.truncateTo`')
   DateTime truncate({
     Period period = Period.daily,
     int startWeekday = DateTime.monday,
   }) =>
-      TruncateDateTimeExtension(this)
-          .truncate(period.timeUnit, startWeekday: startWeekday);
+      TruncateToDateTimeExtension(this)
+          .truncateTo(period.timeUnit, startWeekday: startWeekday);
 }

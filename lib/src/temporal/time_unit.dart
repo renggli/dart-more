@@ -1,4 +1,6 @@
 /// Different units of time.
+///
+/// See https://en.wikipedia.org/wiki/Unit_of_time#List.
 enum TimeUnit {
   microsecond,
   millisecond,
@@ -12,5 +14,5 @@ enum TimeUnit {
   year,
   decade,
   century,
-  millennium,
+  millennium;
 }

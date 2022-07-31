@@ -1,1 +1,1 @@
-extension DurationAccessorsExtension on Duration {}
+extension AccessorsDurationExtension on Duration {}
