@@ -1518,12 +1518,6 @@ void main() {
       });
     });
     group('addCallback', () {
-      test('deprecated', () {
-        final printer = ObjectPrinter<Tuple>.static()
-          // ignore: deprecated_member_use_from_same_package
-          ..add((object) => object.length);
-        expect(printer(const Tuple2(42, 'hello')), 'Tuple{2}');
-      });
       test('default', () {
         final printer = ObjectPrinter<Tuple>.static()
           ..addCallback((object) => object.length);

@@ -66,21 +66,6 @@ class ObjectPrinter<T> extends Printer<T> {
   final List<FieldPrinter<T>> fields = [];
 
   /// Adds a callback field printer.
-  @Deprecated('Use `ObjectPrinter.addCallback` instead.')
-  void add<F>(
-    Map1<T, F> callback, {
-    String? name,
-    Printer<F>? printer,
-    bool omitNull = defaultOmitNull,
-    Predicate2<T, F>? omitPredicate,
-  }) =>
-      addCallback<F>(callback,
-          name: name,
-          printer: printer,
-          omitNull: omitNull,
-          omitPredicate: omitPredicate);
-
-  /// Adds a callback field printer.
   void addCallback<F>(
     Map1<T, F> callback, {
     String? name,
