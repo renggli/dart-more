@@ -30,14 +30,17 @@ void main() {
           expect(firstDateOfNextYear.year, year + 1);
         }
       });
-      test('daysInMonth', (){
+      test('daysInMonth', () {
         for (var year = 1950; year <= 2050; year++) {
-          for (var month = DateTime.january; month <= DateTime.december; month++) {
+          for (var month = DateTime.january;
+              month <= DateTime.december;
+              month++) {
             final date = DateTime(year, month);
             expect(date.daysInMonth, anyOf(28, 29, 30, 31));
             final lastDateOfMonth = DateTime(year, month, date.daysInMonth);
             expect(lastDateOfMonth.month, month);
-            final firstDateOfNextMonth = DateTime(year, month, date.daysInMonth + 1);
+            final firstDateOfNextMonth =
+                DateTime(year, month, date.daysInMonth + 1);
             expect(firstDateOfNextMonth.month, 1 + month % 12);
             expect(firstDateOfNextMonth.day, 1);
           }

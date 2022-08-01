@@ -10,7 +10,7 @@ extension AccessorsDateTimeExtension on DateTime {
   /// The number of days in this month (`28`, `29`, `30`, or `31`).
   int get daysInMonth => month == DateTime.february
       ? (isLeapYear ? 29 : 28)
-      : const [31, 30, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31][month - 1];
+      : const [31, 0, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31][month - 1];
 
   /// The number of weeks in this year (`52` or `53`).
   int get weeksInYear {
@@ -26,16 +26,16 @@ extension AccessorsDateTimeExtension on DateTime {
   /// This is typically the current year, unless the week is part of the
   /// previous or next year, see https://en.wikipedia.org/wiki/ISO_week_date
   /// for details.
-  int get weekYear => _weekData.first;
+  int get weekYear => _isoWeekData.first;
 
   /// The ISO week number `[1..53]`.
   ///
   /// Check the [weekYear] to figure out what year this week is part of, see
   /// https://en.wikipedia.org/wiki/ISO_week_date for details.
-  int get weekNumber => _weekData.second;
+  int get weekNumber => _isoWeekData.second;
 
-  /// Internal helper to compute the week year and number.
-  Tuple2<int, int> get _weekData {
+  /// Internal helper to compute the ISO year and week number.
+  Tuple2<int, int> get _isoWeekData {
     var weekYear = year;
     var weekNumber = (dayOfYear - weekday + 10) ~/ 7;
     if (weekNumber < 1) {
