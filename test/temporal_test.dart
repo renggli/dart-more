@@ -13,43 +13,74 @@ Matcher relativeCloseTo(num expected, num epsilon) => wrapMatcher((actual) {
 
 void main() {
   group('date & time', () {
-    final date = DateTime(1980, DateTime.june, 11, 12, 34, 56, 78, 90);
     group('accessors', () {
       test('isLeapYear', () {
-        expect(DateTime(2016).isLeapYear, isTrue);
-        expect(DateTime(2013).isLeapYear, isFalse);
+        for (var year = 1950; year <= 2050; year++) {
+          final date = DateTime(year, DateTime.february, 29);
+          expect(date.isLeapYear, date.day == 29);
+        }
+      });
+      test('daysInYear', () {
+        for (var year = 1950; year <= 2050; year++) {
+          final date = DateTime(year);
+          expect(date.daysInYear, anyOf(365, 366));
+          final lastDateOfYear = DateTime(year, 1, date.daysInYear);
+          expect(lastDateOfYear.year, year);
+          final firstDateOfNextYear = DateTime(year, 1, date.daysInYear + 1);
+          expect(firstDateOfNextYear.year, year + 1);
+        }
+      });
+      test('weeksInYear', () {
+        for (var year = 1950; year <= 2050; year++) {
+          final date = DateTime(year);
+          expect(date.weeksInYear, anyOf(52, 53));
+        }
       });
       test('quarter', () {
-        final iterable = DateTime(1980).periodical(TimeUnit.day).take(365);
-        for (final dateTime in iterable) {
-          final month = dateTime.month;
-          if (month.between(DateTime.january, DateTime.march)) {
-            expect(dateTime.quarter, 1);
-          } else if (month.between(DateTime.april, DateTime.june)) {
-            expect(dateTime.quarter, 2);
-          } else if (month.between(DateTime.july, DateTime.september)) {
-            expect(dateTime.quarter, 3);
-          } else if (month.between(DateTime.october, DateTime.december)) {
-            expect(dateTime.quarter, 4);
+        for (var day = 1; day <= 365; day++) {
+          final date = DateTime(1980, 1, day);
+          if (date.month.between(DateTime.january, DateTime.march)) {
+            expect(date.quarter, 1);
+          } else if (date.month.between(DateTime.april, DateTime.june)) {
+            expect(date.quarter, 2);
+          } else if (date.month.between(DateTime.july, DateTime.september)) {
+            expect(date.quarter, 3);
+          } else if (date.month.between(DateTime.october, DateTime.december)) {
+            expect(date.quarter, 4);
           } else {
             throw StateError('Something is broken with the test.');
           }
         }
       });
-      test('weekOfYear', () {
-        expect(DateTime(2017, 5, 25).weekOfYear, 21);
-        for (var year = 1900; year <= 2100; year++) {
-          final firstDayOfYear = DateTime(year);
-          expect(firstDayOfYear.weekOfYear, anyOf(0, 1));
-          final lastDayOfYear = DateTime(year + 1, 1, 0);
-          expect(lastDayOfYear.weekOfYear, anyOf(52, 53));
+      test('weekYear & weekNumber', () {
+        expect(DateTime(2014, 12, 31).weekYear, 2015);
+        expect(DateTime(2017, 5, 25).weekNumber, 21);
+        for (var year = 1950; year <= 2050; year++) {
+          for (var day = 1;; day++) {
+            final date = DateTime(year, 1, day);
+            if (date.year != year) break;
+            final weekYear = date.weekYear;
+            final weekNumber = date.weekNumber;
+            if (weekYear == year) {
+              expect(weekNumber, (date.dayOfYear - date.weekday + 10) ~/ 7);
+            } else if (weekYear == year - 1) {
+              expect(weekNumber, DateTime(year - 1).weeksInYear);
+            } else if (weekYear == year + 1) {
+              expect(weekNumber, 1);
+            } else {
+              throw StateError('Invalid week year: $weekYear');
+            }
+          }
         }
       });
       test('dayOfYear', () {
-        final iterable = DateTime(1980).periodical(TimeUnit.day).iterator;
-        for (var i = 1; i <= 366; i++) {
-          iterable.moveNext();
-          expect(iterable.current.dayOfYear, i);
+        expect(DateTime(2017, 5, 25).dayOfYear, 145);
+        for (var year = 1950; year <= 2050; year++) {
+          for (var day = 1;; day++) {
+            final date = DateTime(year, 1, day);
+            if (date.year != year) break;
+            expect(date.dayOfYear, day);
+          }
         }
       });
       test('hour12', () {
@@ -65,6 +96,7 @@ void main() {
       });
     });
     group('periodical', () {
+      final date = DateTime(1980, DateTime.june, 11, 12, 34, 56, 78, 90);
       test('millennium', () {
         final iterable = date.periodical(TimeUnit.millennium);
         expect(iterable.take(3), [
@@ -175,6 +207,7 @@ void main() {
       });
     });
     group('truncate', () {
+      final date = DateTime(1980, DateTime.june, 11, 12, 34, 56, 78, 90);
       test('millennium', () {
         final truncated = date.truncateTo(TimeUnit.millennium);
         expect(truncated, DateTime(1000));

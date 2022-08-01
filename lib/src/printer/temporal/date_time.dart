@@ -126,11 +126,11 @@ class DateTimePrinterBuilder {
     add(printer.map((dateTime) => dateTime.weekday));
   }
 
-  /// Adds a [DateTimeExtension.weekOfYear] field.
+  /// Adds a [DateTimeExtension.weekNumber] field.
   ///
   /// [width] specifies the minimum number of digits to display.
-  void weekOfYear({int width = 0}) => add(FixedNumberPrinter(padding: width)
-      .map((dateTime) => dateTime.weekOfYear));
+  void weekNumber({int width = 0}) => add(FixedNumberPrinter(padding: width)
+      .map((dateTime) => dateTime.weekNumber));
 
   /// Adds a [DateTime.day] field.
   ///

@@ -5,7 +5,7 @@
 * Add the ability to measure the length of `Interval<num>` with `toIntLength()` and `toDoubleLength()`.
 * Create a new `temporal` package unifying all `DateTime` and `Duration` related extensions:
   * Moved `DateTime.periodical` and `DateTime.truncate` to the new page, deprecated the old code.
-  * Add various extension `DateTime.isLeapYear`, `DateTime.weekOfyear`, `DateTime.dayOfYear`, ...
+  * Add various convenience accessors to `DateTime`: `isLeapYear`, `daysInYear`, `weeksInYear`, `quarter`, `weekYear`, `weekNumber`, `dayOfYear`, and `hour12`.
   * Add ability to convert `Duration` objects to one or more (fractional) `TimeUnit`s.
   * Add ability to convert `Interval<DateTime>` to a `Duration`.
 * Countless improvements and extensions to the `printer` package:

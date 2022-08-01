@@ -626,15 +626,15 @@ void main() {
         expect(dateTimes.map(printer), ['S', 'T', 'S', 'T']);
       });
     });
-    group('weekOfYear', () {
+    group('weekNumber', () {
       test('default', () {
-        final printer = DateTimePrinter((builder) => builder.weekOfYear());
-        expect(dateTimes.map(printer), ['0', '45', '29', '43']);
+        final printer = DateTimePrinter((builder) => builder.weekNumber());
+        expect(dateTimes.map(printer), ['52', '45', '29', '43']);
       });
       test('width: 2', () {
         final printer =
-            DateTimePrinter((builder) => builder.weekOfYear(width: 2));
-        expect(dateTimes.map(printer), ['00', '45', '29', '43']);
+            DateTimePrinter((builder) => builder.weekNumber(width: 2));
+        expect(dateTimes.map(printer), ['52', '45', '29', '43']);
       });
     });
     group('day', () {
