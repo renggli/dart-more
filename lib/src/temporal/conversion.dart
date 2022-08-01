@@ -1,11 +1,14 @@
 import 'time_unit.dart';
 
+/// Type definition of a [Map] of conversion factors for different [TimeUnit]s.
+typedef UnitConversion = Map<TimeUnit, num>;
+
 /// Casual conversion scheme from different [TimeUnit]s to microseconds.
 ///
-/// This naive conversion assumes that a day has 30 days and a year has
+/// This naive conversion assumes that a month has 30 days and a year has
 /// 365 days. While this is the default for all operations, it is not typically
 /// correct or event consistent.
-const Map<TimeUnit, int> casualConversion = {
+const UnitConversion casualConversion = {
   TimeUnit.microsecond: 1,
   TimeUnit.millisecond: Duration.microsecondsPerMillisecond,
   TimeUnit.second: Duration.microsecondsPerSecond,
@@ -24,8 +27,8 @@ const Map<TimeUnit, int> casualConversion = {
 /// Accurate conversion scheme from different [TimeUnit]s to microseconds.
 ///
 /// This conversion scheme provides a more accurate conversion factors than
-/// [casualConversion] based on a 400-year calendar cycle.
-const Map<TimeUnit, num> accurateConversion = {
+/// [casualConversion] and is based on a 400-year calendar cycle.
+const UnitConversion accurateConversion = {
   TimeUnit.microsecond: 1,
   TimeUnit.millisecond: Duration.microsecondsPerMillisecond,
   TimeUnit.second: Duration.microsecondsPerSecond,
@@ -40,5 +43,5 @@ const Map<TimeUnit, num> accurateConversion = {
   TimeUnit.century: 100 * _daysInYear * Duration.microsecondsPerDay,
   TimeUnit.millennium: 1000 * _daysInYear * Duration.microsecondsPerDay,
 };
-const _daysInMonth = 146097.0 / 4800;
-const _daysInYear = 146097.0 / 400;
+const double _daysInMonth = 146097 / 4800;
+const double _daysInYear = 146097 / 400;

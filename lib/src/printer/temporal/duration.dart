@@ -5,6 +5,7 @@ import '../builder.dart';
 import '../literal.dart';
 import '../map.dart';
 import '../number/fixed.dart';
+import '../number/sign.dart';
 import '../printer.dart';
 import '../sequence.dart';
 import '../where.dart';
@@ -33,22 +34,35 @@ class DurationPrinter extends SequencePrinter<Duration> {
   /// Internal constructor for [DurationPrinter].
   DurationPrinter._(super.printers);
 
-  /// Returns an ISO-8601 full-precision extended format representation.
+  /// Returns the standard Dart duration format.
+  static DurationPrinter dart() => DurationPrinter((builder) => builder
+    ..sign()
+    ..part(TimeUnit.hour, FixedNumberPrinter<int>())
+    ..literal(':')
+    ..part(TimeUnit.minute, FixedNumberPrinter<int>(padding: 2))
+    ..literal(':')
+    ..part(TimeUnit.second, FixedNumberPrinter<int>(padding: 2))
+    ..literal('.')
+    ..part(TimeUnit.millisecond, FixedNumberPrinter<int>(padding: 3))
+    ..part(TimeUnit.microsecond, FixedNumberPrinter<int>(padding: 3)));
+
+  /// Returns an ISO-8601 extended format representation.
   static DurationPrinter iso8601() => DurationPrinter((builder) => builder
     ..literal('P')
-    ..addPart(TimeUnit.year, FixedNumberPrinter<int>().after('Y'),
+    ..sign()
+    ..part(TimeUnit.year, FixedNumberPrinter<int>().after('Y'),
         skipIfZero: true)
-    ..addPart(TimeUnit.month, FixedNumberPrinter<int>().after('M'),
+    ..part(TimeUnit.month, FixedNumberPrinter<int>().after('M'),
         skipIfZero: true)
-    ..addPart(TimeUnit.week, FixedNumberPrinter<int>().after('W'),
+    ..part(TimeUnit.week, FixedNumberPrinter<int>().after('W'),
         skipIfZero: true)
-    ..addPart(TimeUnit.day, FixedNumberPrinter<int>().after('D'))
+    ..part(TimeUnit.day, FixedNumberPrinter<int>().after('D'))
     ..literal('T')
-    ..addPart(TimeUnit.hour, FixedNumberPrinter<int>().after('H'),
+    ..part(TimeUnit.hour, FixedNumberPrinter<int>().after('H'),
         skipIfZero: true)
-    ..addPart(TimeUnit.minute, FixedNumberPrinter<int>().after('M'),
+    ..part(TimeUnit.minute, FixedNumberPrinter<int>().after('M'),
         skipIfZero: true)
-    ..addPart(TimeUnit.second, FixedNumberPrinter<int>().after('S')));
+    ..part(TimeUnit.second, FixedNumberPrinter<int>().after('S')));
 }
 
 /// Builder of [DurationPrinter] objects.
@@ -57,7 +71,7 @@ class DurationPrinterBuilder {
 
   final Map<TimeUnit, num> _conversion;
   final List<Printer<Duration>> _printers = [];
-  final Set<TimeUnit> _parts = {};
+  final Set<TimeUnit> _unitParts = {};
 
   /// Adds a printer.
   void add(Printer<Duration> printer) => _printers.add(printer);
@@ -65,12 +79,51 @@ class DurationPrinterBuilder {
   /// Adds a literal string.
   void literal(String value) => add(LiteralPrinter<Duration>(value));
 
+  /// Adds a sign printer.
+  void sign([SignNumberPrinter<int>? printer]) =>
+      add((printer ?? const SignNumberPrinter.omitPositiveSign())
+          .map((duration) => duration.inMicroseconds));
+
   /// Adds a printer that prints a part of a duration unit.
-  void addPart(TimeUnit unit, Printer<int> printer, {bool skipIfZero = false}) {
-    _parts.add(unit);
+  ///
+  /// The printed [int] value is a part of the duration and distributed among
+  /// all other parts of this printer. Larger units are preferred over smaller
+  /// units. Units below the smallest part are ignored.
+  ///
+  /// By default the absolute value of all units is printed, unless
+  /// `absoluteValue` is set to `false`.
+  ///
+  /// If `skipIfZero` is set to `true` the unit is skipped if it is zero.
+  ///
+  /// See [ConvertToAllDurationExtension.convertToAll] for details.
+  void part(TimeUnit unit, Printer<int> printer,
+      {bool absoluteValue = true, bool skipIfZero = false}) {
+    _unitParts.add(unit);
     add(printer
+        .mapIf(absoluteValue, (printer) => printer.map((value) => value.abs()))
         .mapIf(skipIfZero, (printer) => printer.where((value) => value != 0))
-        .map<Duration>((duration) =>
-            duration.convertToAll(_parts, conversion: _conversion)[unit]!));
+        .map((duration) => duration.convertToAll(
+              _unitParts,
+              conversion: _conversion,
+            )[unit]!));
+  }
+
+  /// Adds a printer that prints the full duration of the provided unit.
+  ///
+  /// The printed [double] value is fractional duration in the selected unit. It
+  /// represents the complete duration.
+  ///
+  /// By default signed value of the unit is printed, unless `absoluteValue` is
+  /// set to `true`.
+  ///
+  /// If `skipIfZero` is set to `true` the unit is skipped if it is zero.
+  ///
+  /// See [ConvertToDurationExtension.convertTo] for details.
+  void full(TimeUnit unit, Printer<double> printer,
+      {bool absoluteValue = false, bool skipIfZero = false}) {
+    add(printer
+        .mapIf(absoluteValue, (printer) => printer.map((value) => value.abs()))
+        .mapIf(skipIfZero, (printer) => printer.where((value) => value != 0))
+        .map((duration) => duration.convertTo(unit, conversion: _conversion)));
   }
 }

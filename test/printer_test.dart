@@ -2,6 +2,7 @@ import 'package:more/collection.dart';
 import 'package:more/feature.dart';
 import 'package:more/math.dart';
 import 'package:more/printer.dart';
+import 'package:more/temporal.dart';
 import 'package:more/tuple.dart';
 import 'package:test/test.dart';
 
@@ -735,20 +736,132 @@ void main() {
     });
   });
   group('duration', () {
-    final durations = [
+    const durations = [
       Duration.zero,
-      Duration(days: 123456789),
+      Duration(days: 12345),
       Duration(seconds: 123456789),
       Duration(milliseconds: 123456789),
+      Duration(hours: 1, minutes: 10, microseconds: 500),
+      Duration(days: 1, hours: 1, minutes: 33, microseconds: 500),
+      Duration(days: -2, hours: -3, minutes: -4),
     ];
+    test('dart', () {
+      final printer = DurationPrinter.dart();
+      expect(durations.map(printer),
+          durations.map((duration) => duration.toString()));
+    });
     test('iso8691', () {
       final printer = DurationPrinter.iso8601();
       expect(durations.map(printer), [
         'P0DT0S',
-        'P246704Y7M3W2DT8H1M49S',
+        'P33Y10M0DT0S',
         'P3Y11M3DT21H33M9S',
         'P1DT10H17M36S',
+        'P0DT1H10M0S',
+        'P1DT1H33M0S',
+        'P-2DT3H4M0S',
       ]);
+    });
+    group('sign', () {
+      test('default', () {
+        final printer = DurationPrinter((builder) => builder.sign());
+        expect(durations.map(printer), ['', '', '', '', '', '', '-']);
+      });
+      test('custom', () {
+        final printer = DurationPrinter((builder) =>
+            builder.sign(SignNumberPrinter.negativeAndPositiveSign()));
+        expect(durations.map(printer), ['+', '+', '+', '+', '+', '+', '-']);
+      });
+    });
+    group('part', () {
+      test('default', () {
+        final printer = DurationPrinter((builder) => builder
+          ..part(TimeUnit.day, FixedNumberPrinter())
+          ..literal('*')
+          ..part(TimeUnit.minute, FixedNumberPrinter()));
+        expect(durations.map(printer), [
+          '0*0',
+          '12345*0',
+          '1428*1293',
+          '1*617',
+          '0*70',
+          '1*93',
+          '2*184',
+        ]);
+      });
+      test('skipIfZero', () {
+        final printer = DurationPrinter((builder) => builder
+          ..part(TimeUnit.day, FixedNumberPrinter(), skipIfZero: true)
+          ..literal('*')
+          ..part(TimeUnit.minute, FixedNumberPrinter(), skipIfZero: true));
+        expect(durations.map(printer), [
+          '*',
+          '12345*',
+          '1428*1293',
+          '1*617',
+          '*70',
+          '1*93',
+          '2*184',
+        ]);
+      });
+      test('absoluteValue', () {
+        final printer = DurationPrinter((builder) => builder
+          ..part(TimeUnit.day, FixedNumberPrinter(), absoluteValue: false)
+          ..literal('*')
+          ..part(TimeUnit.minute, FixedNumberPrinter(), absoluteValue: false));
+        expect(durations.map(printer), [
+          '0*0',
+          '12345*0',
+          '1428*1293',
+          '1*617',
+          '0*70',
+          '1*93',
+          '-2*-184'
+        ]);
+      });
+    });
+    group('full', () {
+      test('default', () {
+        final printer = DurationPrinter((builder) =>
+            builder.full(TimeUnit.day, FixedNumberPrinter(precision: 6)));
+        expect(durations.map(printer), [
+          '0.000000',
+          '12345.000000',
+          '1428.898021',
+          '1.428898',
+          '0.048611',
+          '1.064583',
+          '-2.127778',
+        ]);
+      });
+      test('skipIfZero', () {
+        final printer = DurationPrinter((builder) => builder.full(
+            TimeUnit.day, FixedNumberPrinter(precision: 6),
+            skipIfZero: true));
+        expect(durations.map(printer), [
+          '',
+          '12345.000000',
+          '1428.898021',
+          '1.428898',
+          '0.048611',
+          '1.064583',
+          '-2.127778',
+        ]);
+      });
+      test('absoluteValue', () {
+        final printer = DurationPrinter((builder) => builder.full(
+            TimeUnit.day, FixedNumberPrinter(precision: 6),
+            absoluteValue: true));
+        expect(durations.map(printer), [
+          '0.000000',
+          '12345.000000',
+          '1428.898021',
+          '1.428898',
+          '0.048611',
+          '1.064583',
+          '2.127778',
+        ]);
+      });
     });
   });
   group('take/skip', () {
