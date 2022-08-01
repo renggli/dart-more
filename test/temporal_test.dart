@@ -15,6 +15,10 @@ void main() {
   group('date & time', () {
     final date = DateTime(1980, DateTime.june, 11, 12, 34, 56, 78, 90);
     group('accessors', () {
+      test('isLeapYear', () {
+        expect(DateTime(2016).isLeapYear, isTrue);
+        expect(DateTime(2013).isLeapYear, isFalse);
+      });
       test('quarter', () {
         final iterable = DateTime(1980).periodical(TimeUnit.day).take(365);
         for (final dateTime in iterable) {
@@ -30,6 +34,15 @@ void main() {
           } else {
             throw StateError('Something is broken with the test.');
           }
+        }
+      });
+      test('weekOfYear', () {
+        expect(DateTime(2017, 5, 25).weekOfYear, 21);
+        for (var year = 1900; year <= 2100; year++) {
+          final firstDayOfYear = DateTime(year);
+          expect(firstDayOfYear.weekOfYear, anyOf(0, 1));
+          final lastDayOfYear = DateTime(year + 1, 1, 0);
+          expect(lastDayOfYear.weekOfYear, anyOf(52, 53));
         }
       });
       test('dayOfYear', () {

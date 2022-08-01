@@ -126,6 +126,12 @@ class DateTimePrinterBuilder {
     add(printer.map((dateTime) => dateTime.weekday));
   }
 
+  /// Adds a [DateTimeExtension.weekOfYear] field.
+  ///
+  /// [width] specifies the minimum number of digits to display.
+  void weekOfYear({int width = 0}) => add(FixedNumberPrinter(padding: width)
+      .map((dateTime) => dateTime.weekOfYear));
+
   /// Adds a [DateTime.day] field.
   ///
   /// [width] specifies the minimum number of digits to display.
@@ -154,7 +160,7 @@ class DateTimePrinterBuilder {
   void hour({int width = 0}) =>
       add(FixedNumberPrinter(padding: width).map((dateTime) => dateTime.hour));
 
-  /// Adds a [DateTime.hour12] field (12h-clock).
+  /// Adds a [DateTimeExtension.hour12] field (12h-clock).
   ///
   /// [width] specifies the minimum number of digits to display.
   void hour12({int width = 0}) => add(
@@ -186,8 +192,8 @@ class DateTimePrinterBuilder {
   /// [width] specifies the number of digits to display. If [width] is less than
   /// `3`, only the most significant digits are printed.
   void microsecond({int width = 3, bool skipIfZero = false}) =>
-      add(FixedNumberPrinter(padding: max(width, 3))
+      add(FixedNumberPrinter<int>(padding: max(width, 3))
           .mapIf(width < 3, (printer) => printer.take(width))
-          .where((microsecond) => !skipIfZero || microsecond != 0)
+          .mapIf(skipIfZero, (printer) => printer.where((value) => value != 0))
           .map((dateTime) => dateTime.microsecond));
 }
