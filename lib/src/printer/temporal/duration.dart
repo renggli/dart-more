@@ -37,16 +37,16 @@ class DurationPrinter extends SequencePrinter<Duration> {
   /// Returns the standard Dart duration format.
   static DurationPrinter dart() => DurationPrinter((builder) => builder
     ..sign()
-    ..part(TimeUnit.hour, FixedNumberPrinter<int>())
+    ..part(TimeUnit.hour, FixedNumberPrinter())
     ..literal(':')
-    ..part(TimeUnit.minute, FixedNumberPrinter<int>(padding: 2))
+    ..part(TimeUnit.minute, FixedNumberPrinter(padding: 2))
     ..literal(':')
-    ..part(TimeUnit.second, FixedNumberPrinter<int>(padding: 2))
+    ..part(TimeUnit.second, FixedNumberPrinter(padding: 2))
     ..literal('.')
-    ..part(TimeUnit.millisecond, FixedNumberPrinter<int>(padding: 3))
-    ..part(TimeUnit.microsecond, FixedNumberPrinter<int>(padding: 3)));
+    ..part(TimeUnit.millisecond, FixedNumberPrinter(padding: 3))
+    ..part(TimeUnit.microsecond, FixedNumberPrinter(padding: 3)));
 
-  /// Returns an ISO-8601 extended format representation.
+  /// Returns an ISO-8601 extended full-precision format representation.
   static DurationPrinter iso8601() => DurationPrinter((builder) => builder
     ..literal('P')
     ..sign()
@@ -62,7 +62,11 @@ class DurationPrinter extends SequencePrinter<Duration> {
         skipIfZero: true)
     ..part(TimeUnit.minute, FixedNumberPrinter<int>().after('M'),
         skipIfZero: true)
-    ..part(TimeUnit.second, FixedNumberPrinter<int>().after('S')));
+    ..part(TimeUnit.second, FixedNumberPrinter<int>())
+    ..part(
+        TimeUnit.microsecond, FixedNumberPrinter<int>(padding: 6).before('.'),
+        skipIfZero: true)
+    ..literal('S'));
 }
 
 /// Builder of [DurationPrinter] objects.

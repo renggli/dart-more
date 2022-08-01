@@ -756,9 +756,9 @@ void main() {
         'P0DT0S',
         'P33Y10M0DT0S',
         'P3Y11M3DT21H33M9S',
-        'P1DT10H17M36S',
-        'P0DT1H10M0S',
-        'P1DT1H33M0S',
+        'P1DT10H17M36.789000S',
+        'P0DT1H10M0.000500S',
+        'P1DT1H33M0.000500S',
         'P-2DT3H4M0S',
       ]);
     });
