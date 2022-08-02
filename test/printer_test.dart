@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:more/collection.dart';
 import 'package:more/feature.dart';
 import 'package:more/math.dart';
@@ -139,8 +141,8 @@ void main() {
         expect(printer(123123), '1e0f3');
       });
       test('characters', () {
-        final printer =
-            FixedNumberPrinter<int>(base: 16, characters: '0123456789ABCDEF');
+        final printer = FixedNumberPrinter<int>(
+            base: 16, characters: '0123456789ABCDEF'.split(''));
         expect(printer(1234), '4D2');
         expect(printer(123123), '1E0F3');
       });
@@ -221,6 +223,90 @@ void main() {
         expect(printer(1), '+1.0');
       });
     });
+    group('numeral systems', () {
+      const allNumeralSystems = {
+        #lowerCaseLatin: NumeralSystem.lowerCaseLatin,
+        #upperCaseLatin: NumeralSystem.upperCaseLatin,
+        #arabicIndic: NumeralSystem.arabicIndic,
+        #extendedArabicIndic: NumeralSystem.extendedArabicIndic,
+        #nko: NumeralSystem.nko,
+        #devanagari: NumeralSystem.devanagari,
+        #bengali: NumeralSystem.bengali,
+        #gurmukhi: NumeralSystem.gurmukhi,
+        #gujarati: NumeralSystem.gujarati,
+        #oriya: NumeralSystem.oriya,
+        #tamil: NumeralSystem.tamil,
+        #telugu: NumeralSystem.telugu,
+        #kannada: NumeralSystem.kannada,
+        #malayalam: NumeralSystem.malayalam,
+        #sinhalaLith: NumeralSystem.sinhalaLith,
+        #thai: NumeralSystem.thai,
+        #lao: NumeralSystem.lao,
+        #tibetan: NumeralSystem.tibetan,
+        #myanmar: NumeralSystem.myanmar,
+        #myanmarShan: NumeralSystem.myanmarShan,
+        #khmer: NumeralSystem.khmer,
+        #mongolian: NumeralSystem.mongolian,
+        #limbu: NumeralSystem.limbu,
+        #newTaiLue: NumeralSystem.newTaiLue,
+        #taiThaamHora: NumeralSystem.taiThaamHora,
+        #taiThamTham: NumeralSystem.taiThamTham,
+        #balinese: NumeralSystem.balinese,
+        #sundanese: NumeralSystem.sundanese,
+        #lepcha: NumeralSystem.lepcha,
+        #olChiki: NumeralSystem.olChiki,
+        #vai: NumeralSystem.vai,
+        #saurashtra: NumeralSystem.saurashtra,
+        #kayahLi: NumeralSystem.kayahLi,
+        #javanese: NumeralSystem.javanese,
+        #myanmarTatLaing: NumeralSystem.myanmarTatLaing,
+        #cham: NumeralSystem.cham,
+        #meeteiMayek: NumeralSystem.meeteiMayek,
+        #fullwidth: NumeralSystem.fullwidth,
+        #osmanya: NumeralSystem.osmanya,
+        #hanifiRohigya: NumeralSystem.hanifiRohigya,
+        #brahmi: NumeralSystem.brahmi,
+        #soraSompeng: NumeralSystem.soraSompeng,
+        #chakma: NumeralSystem.chakma,
+        #sharada: NumeralSystem.sharada,
+        #khudawadi: NumeralSystem.khudawadi,
+        #newa: NumeralSystem.newa,
+        #tirhuta: NumeralSystem.tirhuta,
+        #modi: NumeralSystem.modi,
+        #takri: NumeralSystem.takri,
+        #ahom: NumeralSystem.ahom,
+        #warangCiti: NumeralSystem.warangCiti,
+        #divesAkuru: NumeralSystem.divesAkuru,
+        #bhaiksuki: NumeralSystem.bhaiksuki,
+        #masaramGondi: NumeralSystem.masaramGondi,
+        #gunjalaGondi: NumeralSystem.gunjalaGondi,
+        #mro: NumeralSystem.mro,
+        #tangsa: NumeralSystem.tangsa,
+        #pahawhHmong: NumeralSystem.pahawhHmong,
+        #mathematicalBold: NumeralSystem.mathematicalBold,
+        #mathematicalDoubleStruck: NumeralSystem.mathematicalDoubleStruck,
+        #mathematicalSansSerif: NumeralSystem.mathematicalSansSerif,
+        #mathematicalSansSerifBold: NumeralSystem.mathematicalSansSerifBold,
+        #mathematicalMonospace: NumeralSystem.mathematicalMonospace,
+        #nyiakengPuachueHmong: NumeralSystem.nyiakengPuachueHmong,
+        #wancho: NumeralSystem.wancho,
+        #adlam: NumeralSystem.adlam,
+        #segmented: NumeralSystem.segmented,
+      };
+      final random = Random(42);
+      for (final entry in allNumeralSystems.entries) {
+        test(entry.key, () {
+          expect(entry.value, hasLength(greaterThanOrEqualTo(10)),
+              reason: 'Expect numeral systems to support base 10.');
+          expect(entry.value, everyElement(hasLength(greaterThanOrEqualTo(1))),
+              reason: 'Expect each digit to not be empty.');
+          final printer = FixedNumberPrinter<num>(
+              characters: entry.value, base: entry.value.length, precision: 10);
+          expect(printer(random.nextDouble()),
+              hasLength(greaterThanOrEqualTo(12)));
+        });
+      }
+    });
     test('toString', () {
       final printer = FixedNumberPrinter<num>();
       expect(printer.toString(), startsWith('FixedNumberPrinter<num>'));
@@ -252,8 +338,8 @@ void main() {
       expect(printer(0.00000000751), '2.041e-7');
     });
     test('characters', () {
-      final printer =
-          ScientificNumberPrinter(base: 16, characters: '0123456789ABCDEF');
+      final printer = ScientificNumberPrinter(
+          base: 16, characters: '0123456789ABCDEF'.split(''));
       expect(printer(0), '0.000e0');
       expect(printer(2), '2.000e0');
       expect(printer(300), '1.2C0e2');

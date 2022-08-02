@@ -2,14 +2,14 @@ import '../../../math.dart';
 import '../object/object.dart';
 import '../printer.dart';
 import 'fixed.dart';
-import 'utils.dart';
+import 'numeral.dart';
 
 /// Prints numbers in an ordinal format.
 class OrdinalNumberPrinter extends Printer<int> {
   /// Prints numbers in an ordinal format.
   OrdinalNumberPrinter({
     this.base = 10,
-    this.characters = lowerCaseDigits,
+    this.characters = NumeralSystem.lowerCaseLatin,
     this.padding = 0,
     this.separator = '',
     this.sign,
@@ -24,7 +24,7 @@ class OrdinalNumberPrinter extends Printer<int> {
   final int base;
 
   /// The characters to be used to convert a number to a string.
-  final String characters;
+  final List<String> characters;
 
   /// The number of digits to be printed in the number part.
   final int padding;

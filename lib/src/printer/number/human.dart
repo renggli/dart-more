@@ -2,6 +2,7 @@ import '../../../math.dart';
 import '../object/object.dart';
 import '../printer.dart';
 import 'fixed.dart';
+import 'numeral.dart';
 import 'sign.dart';
 import 'utils.dart';
 
@@ -79,7 +80,7 @@ class HumanNumberPrinter<T extends num> extends Printer<T> {
   HumanNumberPrinter({
     required this.units,
     this.base = 10,
-    this.characters = lowerCaseDigits,
+    this.characters = NumeralSystem.lowerCaseLatin,
     this.delimiter = delimiterString,
     this.infinity = infinityString,
     this.nan = nanString,
@@ -109,7 +110,7 @@ class HumanNumberPrinter<T extends num> extends Printer<T> {
   /// For details, see https://en.wikipedia.org/wiki/Metric_prefix.
   factory HumanNumberPrinter.decimal({
     int base = 10,
-    String characters = lowerCaseDigits,
+    List<String> characters = NumeralSystem.lowerCaseLatin,
     String delimiter = delimiterString,
     String infinity = infinityString,
     bool long = false,
@@ -144,7 +145,7 @@ class HumanNumberPrinter<T extends num> extends Printer<T> {
   /// For details, see https://en.wikipedia.org/wiki/Binary_prefix.
   factory HumanNumberPrinter.binary({
     int base = 10,
-    String characters = lowerCaseDigits,
+    List<String> characters = NumeralSystem.lowerCaseLatin,
     String delimiter = delimiterString,
     String infinity = infinityString,
     bool long = false,
@@ -176,7 +177,7 @@ class HumanNumberPrinter<T extends num> extends Printer<T> {
   final int base;
 
   /// The characters to be used to convert a number to a string.
-  final String characters;
+  final List<String> characters;
 
   /// The delimiter to separate the integer and fraction part of the number.
   final String delimiter;

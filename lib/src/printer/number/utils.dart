@@ -1,9 +1,3 @@
-/// Lower-case digits and letters by increasing value.
-const String lowerCaseDigits = '0123456789abcdefghijklmnopqrstuvwxyz';
-
-/// Upper-case digits and letters by increasing value.
-const String upperCaseDigits = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ';
-
 /// Default string for number delimiters.
 const String delimiterString = '.';
 
@@ -32,5 +26,5 @@ Iterable<int> intDigits(int value, int base) {
 }
 
 /// Converts an iterable of [digits] to a string using [characters] mapping.
-String formatDigits(Iterable<int> digits, String characters) =>
+String formatDigits(Iterable<int> digits, List<String> characters) =>
     digits.map((digit) => characters[digit]).join();

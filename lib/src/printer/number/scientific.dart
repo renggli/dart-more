@@ -2,6 +2,7 @@ import '../../../math.dart';
 import '../object/object.dart';
 import '../printer.dart';
 import 'fixed.dart';
+import 'numeral.dart';
 import 'sign.dart';
 import 'utils.dart';
 
@@ -10,7 +11,7 @@ class ScientificNumberPrinter<T extends num> extends Printer<T> {
   /// Prints numbers in a custom scientific format.
   ScientificNumberPrinter({
     this.base = 10,
-    this.characters = lowerCaseDigits,
+    this.characters = NumeralSystem.lowerCaseLatin,
     this.delimiter = delimiterString,
     this.exponentPadding = 0,
     this.exponentSign,
@@ -46,7 +47,7 @@ class ScientificNumberPrinter<T extends num> extends Printer<T> {
   final int base;
 
   /// The characters to be used to convert a number to a string.
-  final String characters;
+  final List<String> characters;
 
   /// The delimiter to separate the integer and fraction part of the number.
   final String delimiter;

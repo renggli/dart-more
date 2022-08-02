@@ -8,6 +8,7 @@ export 'src/printer/map.dart' show MapPrinterExtension;
 export 'src/printer/null.dart' show NullPrinterExtension;
 export 'src/printer/number/fixed.dart' show FixedNumberPrinter;
 export 'src/printer/number/human.dart' show HumanNumberPrinter;
+export 'src/printer/number/numeral.dart' show NumeralSystem;
 export 'src/printer/number/ordinal.dart' show OrdinalNumberPrinter;
 export 'src/printer/number/scientific.dart' show ScientificNumberPrinter;
 export 'src/printer/number/sign.dart' show SignNumberPrinter;

@@ -4,6 +4,7 @@ import '../object/object.dart';
 import '../printer.dart';
 import '../string/pad.dart';
 import '../string/separate.dart';
+import 'numeral.dart';
 import 'sign.dart';
 import 'utils.dart';
 
@@ -13,7 +14,7 @@ class FixedNumberPrinter<T extends num> extends Printer<T> {
   FixedNumberPrinter({
     this.accuracy,
     this.base = 10,
-    this.characters = lowerCaseDigits,
+    this.characters = NumeralSystem.lowerCaseLatin,
     this.delimiter = delimiterString,
     this.infinity = infinityString,
     this.nan = nanString,
@@ -21,7 +22,8 @@ class FixedNumberPrinter<T extends num> extends Printer<T> {
     this.precision = 0,
     this.separator = '',
     Printer<T>? sign,
-  })  : sign = sign ?? SignNumberPrinter<T>.omitPositiveSign(),
+  })  : assert(base <= characters.length, 'Not enough characters for base'),
+        sign = sign ?? SignNumberPrinter<T>.omitPositiveSign(),
         _integer = const Printer<String>.standard()
             .mapIf(padding > 0,
                 (printer) => printer.padLeft(padding, characters[0]))
@@ -40,7 +42,7 @@ class FixedNumberPrinter<T extends num> extends Printer<T> {
   final int base;
 
   /// The characters to be used to convert a number to a string.
-  final String characters;
+  final List<String> characters;
 
   /// The delimiter to separate the integer and fraction part of the number.
   final String delimiter;
