@@ -103,7 +103,7 @@ abstract class Ordering<T> with ToStringPrinter {
   /// Creates a predicate that evaluates to `true` for values at least [a].
   Predicate1<T> greaterThanOrEqualTo(T a) => (T b) => compare(a, b) <= 0;
 
-  /// Searches the sorted [list] for the specified [value] using binary search.
+  /// Performs a binary search on the sorted [list] with a [value].
   ///
   /// The method returns the index of the element, or a negative value if the
   /// key was not found. The result is undefined if the list is not sorted.
@@ -125,6 +125,48 @@ abstract class Ordering<T> with ToStringPrinter {
       }
     }
     return -min - 1;
+  }
+
+  /// Performs a binary search on the sorted [list] with a [value].
+  ///
+  /// Returns the first suitable insertion index such that
+  /// `list[index - 1] < value <= list[index]`.
+  ///
+  /// By default the whole [list] is searched, but if [start] and/or [end] are
+  /// supplied, only that range is searched.
+  int binarySearchLeft(List<T> list, T value, {int? start, int? end}) {
+    var min = start ?? 0;
+    var max = end ?? list.length;
+    while (min < max) {
+      final mid = min + ((max - min) >> 1);
+      if (compare(list[mid], value) < 0) {
+        min = mid + 1;
+      } else {
+        max = mid;
+      }
+    }
+    return min;
+  }
+
+  /// Performs a binary search on the sorted [vector] with a [value].
+  ///
+  /// Returns the first suitable insertion index such that
+  /// `list[index - 1] <= value < list[index]`.
+  ///
+  /// By default the whole [list] is searched, but if [start] and/or [end] are
+  /// supplied, only that range is searched.
+  int binarySearchRight(List<T> list, T value, {int? start, int? end}) {
+    var min = start ?? 0;
+    var max = end ?? list.length;
+    while (min < max) {
+      final mid = min + ((max - min) >> 1);
+      if (compare(list[mid], value) <= 0) {
+        min = mid + 1;
+      } else {
+        max = mid;
+      }
+    }
+    return min;
   }
 
   /// Sorts the provided [list] in-place.

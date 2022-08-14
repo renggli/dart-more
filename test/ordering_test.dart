@@ -1,3 +1,4 @@
+import 'package:more/collection.dart';
 import 'package:more/iterable.dart';
 import 'package:more/ordering.dart';
 import 'package:test/test.dart';
@@ -248,48 +249,122 @@ void main() {
   });
   group('actions', () {
     final natural = Ordering.natural<num>();
-    test('binarySearch empty', () {
-      expect(natural.binarySearch([], 5), -1);
-    });
-    test('binarySearch simple', () {
-      expect(natural.binarySearch([5], 5), 0);
-      expect(natural.binarySearch([1, 5, 6], 5), 1);
-      expect(natural.binarySearch([1, 2, 5, 6, 7], 5), 2);
-      expect(natural.binarySearch([1, 2, 3, 5, 6, 7, 8], 5), 3);
-      expect(natural.binarySearch([1, 2, 3, 4, 5, 6, 7, 8, 9], 5), 4);
-    });
-    test('binarySearch simple (absent)', () {
-      expect(natural.binarySearch([1, 6], 5), -2);
-      expect(natural.binarySearch([1, 2, 6, 7], 5), -3);
-      expect(natural.binarySearch([1, 2, 3, 6, 7, 8], 5), -4);
-      expect(natural.binarySearch([1, 2, 3, 4, 6, 7, 8, 9], 5), -5);
-    });
-    test('binarySearch right most', () {
-      expect(natural.binarySearch([5], 5), 0);
-      expect(natural.binarySearch([1, 5], 5), 1);
-      expect(natural.binarySearch([1, 2, 5], 5), 2);
-      expect(natural.binarySearch([1, 2, 3, 5], 5), 3);
-      expect(natural.binarySearch([1, 2, 3, 4, 5], 5), 4);
-    });
-    test('binarySearch right most (absent)', () {
-      expect(natural.binarySearch([1], 5), -2);
-      expect(natural.binarySearch([1, 2], 5), -3);
-      expect(natural.binarySearch([1, 2, 3], 5), -4);
-      expect(natural.binarySearch([1, 2, 3, 4], 5), -5);
-    });
-    test('binarySearch left most', () {
-      expect(natural.binarySearch([5], 5), 0);
-      expect(natural.binarySearch([5, 6], 5), 0);
-      expect(natural.binarySearch([5, 6, 7], 5), 0);
-      expect(natural.binarySearch([5, 6, 7, 8], 5), 0);
-      expect(natural.binarySearch([5, 6, 7, 8, 9], 5), 0);
-    });
-    test('binarySearch left most (absent)', () {
-      expect(natural.binarySearch([6], 5), -1);
-      expect(natural.binarySearch([6, 7], 5), -1);
-      expect(natural.binarySearch([6, 7, 8], 5), -1);
-      expect(natural.binarySearch([6, 7, 8, 9], 5), -1);
-    });
+    void binarySearchTests(
+      String name, {
+      required List<List<int>> examples,
+      required List<int> values,
+      required List<int>? binarySearch,
+      required List<int>? binarySearchLeft,
+      required List<int>? binarySearchRight,
+    }) {
+      group(name, () {
+        test('binarySearch', () {
+          final results = IntegerRange(examples.length)
+              .map((i) => natural.binarySearch(examples[i], values[i]));
+          expect(results, binarySearch);
+        });
+        test('binarySearchLeft', () {
+          final results = IntegerRange(examples.length)
+              .map((i) => natural.binarySearchLeft(examples[i], values[i]));
+          expect(results, binarySearchLeft);
+        });
+        test('binarySearchRight', () {
+          final results = IntegerRange(examples.length)
+              .map((i) => natural.binarySearchRight(examples[i], values[i]));
+          expect(results, binarySearchRight);
+        });
+      });
+    }
+
+    binarySearchTests(
+      'binarySearch empty',
+      examples: [[]],
+      values: [5],
+      binarySearch: [-1],
+      binarySearchLeft: [0],
+      binarySearchRight: [0],
+    );
+    binarySearchTests(
+      'binarySearch simple',
+      examples: [
+        [5],
+        [1, 5, 6],
+        [1, 2, 5, 6, 7],
+        [1, 2, 3, 5, 6, 7, 8],
+        [1, 2, 3, 4, 5, 6, 7, 8, 9],
+      ],
+      values: [5, 5, 5, 5, 5],
+      binarySearch: [0, 1, 2, 3, 4],
+      binarySearchLeft: [0, 1, 2, 3, 4],
+      binarySearchRight: [1, 2, 3, 4, 5],
+    );
+    binarySearchTests(
+      'binarySearch simple (absent)',
+      examples: [
+        [1, 6],
+        [1, 2, 6, 7],
+        [1, 2, 3, 6, 7, 8],
+        [1, 2, 3, 4, 6, 7, 8, 9],
+      ],
+      values: [5, 5, 5, 5],
+      binarySearch: [-2, -3, -4, -5],
+      binarySearchLeft: [1, 2, 3, 4],
+      binarySearchRight: [1, 2, 3, 4],
+    );
+    binarySearchTests(
+      'binarySearch right most',
+      examples: [
+        [5],
+        [1, 5],
+        [1, 2, 5],
+        [1, 2, 3, 5],
+        [1, 2, 3, 4, 5],
+      ],
+      values: [5, 5, 5, 5, 5],
+      binarySearch: [0, 1, 2, 3, 4],
+      binarySearchLeft: [0, 1, 2, 3, 4],
+      binarySearchRight: [1, 2, 3, 4, 5],
+    );
+    binarySearchTests(
+      'binarySearch right most (absent)',
+      examples: [
+        [1],
+        [1, 2],
+        [1, 2, 3],
+        [1, 2, 3, 4],
+      ],
+      values: [5, 5, 5, 5],
+      binarySearch: [-2, -3, -4, -5],
+      binarySearchLeft: [1, 2, 3, 4],
+      binarySearchRight: [1, 2, 3, 4],
+    );
+    binarySearchTests(
+      'binarySearch left most',
+      examples: [
+        [5],
+        [5, 6],
+        [5, 6, 7],
+        [5, 6, 7, 8],
+        [5, 6, 7, 8, 9],
+      ],
+      values: [5, 5, 5, 5, 5],
+      binarySearch: [0, 0, 0, 0, 0],
+      binarySearchLeft: [0, 0, 0, 0, 0],
+      binarySearchRight: [1, 1, 1, 1, 1],
+    );
+    binarySearchTests(
+      'binarySearch left most (absent)',
+      examples: [
+        [6],
+        [6, 7],
+        [6, 7, 8],
+        [6, 7, 8, 9],
+      ],
+      values: [5, 5, 5, 5],
+      binarySearch: [-1, -1, -1, -1],
+      binarySearchLeft: [0, 0, 0, 0],
+      binarySearchRight: [0, 0, 0, 0],
+    );
     test('sorted', () {
       expect(natural.sorted([]), []);
       expect(natural.sorted([1]), [1]);
