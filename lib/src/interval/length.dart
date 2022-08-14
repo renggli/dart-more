@@ -16,7 +16,7 @@ extension LengthIntervalNumExtension on Interval<num> {
     } else {
       var lowerEndpoint = lower.endpoint!.ceil();
       if (lower.isOpen && lowerEndpoint == lower.endpoint) lowerEndpoint++;
-      var upperEndpoint = upper.endpoint!.truncate();
+      var upperEndpoint = upper.endpoint!.floor();
       if (upper.isOpen && upperEndpoint == upper.endpoint) upperEndpoint--;
       return lowerEndpoint < upperEndpoint ? upperEndpoint - lowerEndpoint : 0;
     }
