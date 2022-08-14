@@ -15,6 +15,8 @@
   * Add `Printer.where` to condition the printing on the printed object.
   * Add `Printer` support for `take`, `skip`, `takeLast` and `skipLast`.
   * Add `Printer` support for `truncateRight`, `truncateLeft`, and `truncateCenter` to also operate on word and sentence boundaries. Include the ellipsis in the width constraint.
+* Added `Ordering.binarySearchLeft` and `Ordering.binarySearchRight`.
+* Added `SortedList` collection type.
 
 ## 3.7.0
 * Add `closeTo` extension to all numbers.

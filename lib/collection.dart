@@ -19,6 +19,8 @@ export 'src/collection/range/double.dart'
     show DoubleRange, DoubleRangeExtension;
 export 'src/collection/range/integer.dart'
     show IntegerRange, IntegerRangeExtension, IndicesIterableExtension;
+export 'src/collection/sortedlist.dart'
+    show SortedList, SortedListIterableExtension;
 export 'src/collection/string/convert_first_last.dart'
     show ConvertFirstLastStringExtension;
 export 'src/collection/string/indent_dedent.dart'

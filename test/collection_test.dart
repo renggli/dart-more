@@ -2,6 +2,7 @@ import 'dart:math';
 
 import 'package:more/collection.dart';
 import 'package:more/math.dart';
+import 'package:more/src/ordering/ordering.dart';
 import 'package:test/test.dart';
 
 List<bool> randomBooleans(int seed, int length) {
@@ -1940,6 +1941,25 @@ void main() {
       });
     });
   });
+  group('sortedlist', () {
+    group('default constructor', () {
+      allSortedListTests(<E>(Iterable<E> elements,
+              {Ordering<E>? ordering, Comparator<E>? comparator}) =>
+          SortedList<E>(ordering: ordering, comparator: comparator)
+            ..addAll(elements));
+    });
+    group('iterable constructor', () {
+      allSortedListTests(<E>(Iterable<E> elements,
+              {Ordering<E>? ordering, Comparator<E>? comparator}) =>
+          SortedList<E>.of(elements,
+              ordering: ordering, comparator: comparator));
+    });
+    group('converting constructor', () {
+      allSortedListTests(<E>(Iterable<E> elements,
+              {Ordering<E>? ordering, Comparator<E>? comparator}) =>
+          elements.toSortedList(ordering: ordering, comparator: comparator));
+    });
+  });
   group('string', () {
     group('immutable', () {
       final empty = ''.toList();
@@ -2492,6 +2512,99 @@ void allHeapTests(
       expect(heap.length, 0);
     });
   }
+}
+
+void allSortedListTests(
+    SortedList<E> Function<E>(Iterable<E> list,
+            {Ordering<E>? ordering, Comparator<E>? comparator})
+        createSortedList) {
+  test('default ordering', () {
+    final list = createSortedList<int>([5, 1, 2, 4, 3]);
+    expect(list, [1, 2, 3, 4, 5]);
+  });
+  test('custom ordering', () {
+    final list = createSortedList<num>([5, 1, 2, 4, 3],
+        ordering: Ordering.natural<num>().reversed);
+    expect(list, [5, 4, 3, 2, 1]);
+  });
+  test('custom comparator', () {
+    final list =
+        createSortedList<int>([5, 1, 2, 4, 3], comparator: (a, b) => b - a);
+    expect(list, [5, 4, 3, 2, 1]);
+  });
+  test('empty list', () {
+    final list = createSortedList<int>([]);
+    expect(list, isEmpty);
+  });
+  test('accessors', () {
+    final list = createSortedList<int>([5, 1, 3]);
+    expect(list.length, 3);
+    expect(list.first, 1);
+    expect(list.last, 5);
+    expect(list[0], 1);
+    expect(list[2], 5);
+  });
+  test('contains', () {
+    final list = createSortedList<int>([5, 1, 3]);
+    expect(list.contains(0), isFalse);
+    expect(list.contains(1), isTrue);
+    expect(list.contains(2), isFalse);
+    expect(list.contains(3), isTrue);
+    expect(list.contains(4), isFalse);
+    expect(list.contains(5), isTrue);
+    expect(list.contains(6), isFalse);
+    expect(list.contains(null), isFalse);
+  });
+  test('add', () {
+    final list = createSortedList<int>([5, 1, 3]);
+    expect(list, [1, 3, 5]);
+    list.add(4);
+    expect(list, [1, 3, 4, 5]);
+  });
+  test('addAll', () {
+    final list = createSortedList<int>([5, 1, 3]);
+    expect(list, [1, 3, 5]);
+    list.addAll([2, 4]);
+    expect(list, [1, 2, 3, 4, 5]);
+  });
+  test('remove', () {
+    final list = createSortedList<int>([5, 1, 3]);
+    expect(list, [1, 3, 5]);
+    expect(list.remove(3), isTrue);
+    expect(list, [1, 5]);
+    expect(list.remove(3), isFalse);
+    expect(list.remove(null), isFalse);
+  });
+  test('stress', () {
+    final random = Random(6412);
+    final numbers = <int>{};
+    // Create 1000 unique numbers.
+    while (numbers.length < 1000) {
+      numbers.add(random.nextInt(0xffffff));
+    }
+    final values = List.of(numbers);
+    // Create a list from digit of the values.
+    final list = createSortedList<int>(values);
+    // Verify all values are present.
+    expect(list, hasLength(values.length));
+    for (final value in values) {
+      expect(list.contains(value), isTrue);
+    }
+    // Remove values in different order.
+    values.shuffle(random);
+    for (final value in values) {
+      expect(list.remove(value), isTrue);
+    }
+    // Verify all values are gone.
+    expect(list, isEmpty);
+  });
+  test('errors', () {
+    final list = createSortedList<int>([5, 1, 3]);
+    expect(() => list[0] = 2, throwsUnsupportedError);
+    expect(() => list.length = 2, throwsUnsupportedError);
+    expect(() => list.sort(), throwsUnsupportedError);
+    expect(() => list.shuffle(), throwsUnsupportedError);
+  });
 }
 
 void allTrieTests(
