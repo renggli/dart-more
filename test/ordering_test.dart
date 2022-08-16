@@ -253,9 +253,9 @@ void main() {
       String name, {
       required List<List<int>> examples,
       required List<int> values,
-      required List<int>? binarySearch,
-      required List<int>? binarySearchLeft,
-      required List<int>? binarySearchRight,
+      required List<int> binarySearch,
+      required List<int> binarySearchLower,
+      required List<int> binarySearchUpper,
     }) {
       group(name, () {
         test('binarySearch', () {
@@ -263,15 +263,15 @@ void main() {
               .map((i) => natural.binarySearch(examples[i], values[i]));
           expect(results, binarySearch);
         });
-        test('binarySearchLeft', () {
+        test('binarySearchLower', () {
           final results = IntegerRange(examples.length)
-              .map((i) => natural.binarySearchLeft(examples[i], values[i]));
-          expect(results, binarySearchLeft);
+              .map((i) => natural.binarySearchLower(examples[i], values[i]));
+          expect(results, binarySearchLower);
         });
-        test('binarySearchRight', () {
+        test('binarySearchUpper', () {
           final results = IntegerRange(examples.length)
-              .map((i) => natural.binarySearchRight(examples[i], values[i]));
-          expect(results, binarySearchRight);
+              .map((i) => natural.binarySearchUpper(examples[i], values[i]));
+          expect(results, binarySearchUpper);
         });
       });
     }
@@ -281,8 +281,8 @@ void main() {
       examples: [[]],
       values: [5],
       binarySearch: [-1],
-      binarySearchLeft: [0],
-      binarySearchRight: [0],
+      binarySearchLower: [0],
+      binarySearchUpper: [0],
     );
     binarySearchTests(
       'binarySearch simple',
@@ -295,8 +295,8 @@ void main() {
       ],
       values: [5, 5, 5, 5, 5],
       binarySearch: [0, 1, 2, 3, 4],
-      binarySearchLeft: [0, 1, 2, 3, 4],
-      binarySearchRight: [1, 2, 3, 4, 5],
+      binarySearchLower: [0, 1, 2, 3, 4],
+      binarySearchUpper: [1, 2, 3, 4, 5],
     );
     binarySearchTests(
       'binarySearch simple (absent)',
@@ -307,9 +307,9 @@ void main() {
         [1, 2, 3, 4, 6, 7, 8, 9],
       ],
       values: [5, 5, 5, 5],
-      binarySearch: [-2, -3, -4, -5],
-      binarySearchLeft: [1, 2, 3, 4],
-      binarySearchRight: [1, 2, 3, 4],
+      binarySearch: [-1, -1, -1, -1],
+      binarySearchLower: [1, 2, 3, 4],
+      binarySearchUpper: [1, 2, 3, 4],
     );
     binarySearchTests(
       'binarySearch right most',
@@ -322,8 +322,8 @@ void main() {
       ],
       values: [5, 5, 5, 5, 5],
       binarySearch: [0, 1, 2, 3, 4],
-      binarySearchLeft: [0, 1, 2, 3, 4],
-      binarySearchRight: [1, 2, 3, 4, 5],
+      binarySearchLower: [0, 1, 2, 3, 4],
+      binarySearchUpper: [1, 2, 3, 4, 5],
     );
     binarySearchTests(
       'binarySearch right most (absent)',
@@ -334,9 +334,9 @@ void main() {
         [1, 2, 3, 4],
       ],
       values: [5, 5, 5, 5],
-      binarySearch: [-2, -3, -4, -5],
-      binarySearchLeft: [1, 2, 3, 4],
-      binarySearchRight: [1, 2, 3, 4],
+      binarySearch: [-1, -1, -1, -1],
+      binarySearchLower: [1, 2, 3, 4],
+      binarySearchUpper: [1, 2, 3, 4],
     );
     binarySearchTests(
       'binarySearch left most',
@@ -349,8 +349,8 @@ void main() {
       ],
       values: [5, 5, 5, 5, 5],
       binarySearch: [0, 0, 0, 0, 0],
-      binarySearchLeft: [0, 0, 0, 0, 0],
-      binarySearchRight: [1, 1, 1, 1, 1],
+      binarySearchLower: [0, 0, 0, 0, 0],
+      binarySearchUpper: [1, 1, 1, 1, 1],
     );
     binarySearchTests(
       'binarySearch left most (absent)',
@@ -362,9 +362,43 @@ void main() {
       ],
       values: [5, 5, 5, 5],
       binarySearch: [-1, -1, -1, -1],
-      binarySearchLeft: [0, 0, 0, 0],
-      binarySearchRight: [0, 0, 0, 0],
+      binarySearchLower: [0, 0, 0, 0],
+      binarySearchUpper: [0, 0, 0, 0],
     );
+    binarySearchTests(
+      'binarySearch repeated',
+      examples: [
+        [1, 5, 9],
+        [1, 5, 5, 9],
+        [1, 5, 5, 5, 9],
+        [1, 5, 5, 5, 5, 9],
+        [1, 5, 5, 5, 5, 5, 9],
+      ],
+      values: [5, 5, 5, 5, 5],
+      binarySearch: [1, 2, 2, 3, 3],
+      binarySearchLower: [1, 1, 1, 1, 1],
+      binarySearchUpper: [2, 3, 4, 5, 6],
+    );
+    test('largest', () {
+      expect(natural.largest([], 0), []);
+      expect(natural.largest([2, 3, 1], 0), []);
+      expect(natural.largest([], 3), []);
+      expect(natural.largest([2, 3, 1], 3), [3, 2, 1]);
+      expect(natural.largest([2, 3, 1, 5, 4], 3), [5, 4, 3]);
+      expect(natural.largest([], 5), []);
+      expect(natural.largest([2, 3, 1], 5), [3, 2, 1]);
+      expect(natural.largest([2, 3, 1, 5, 4], 5), [5, 4, 3, 2, 1]);
+    });
+    test('smallest', () {
+      expect(natural.smallest([], 0), []);
+      expect(natural.smallest([2, 3, 1], 0), []);
+      expect(natural.smallest([], 3), []);
+      expect(natural.smallest([2, 3, 1], 3), [1, 2, 3]);
+      expect(natural.smallest([2, 3, 1, 5, 4], 3), [1, 2, 3]);
+      expect(natural.smallest([], 5), []);
+      expect(natural.smallest([2, 3, 1], 5), [1, 2, 3]);
+      expect(natural.smallest([2, 3, 1, 5, 4], 5), [1, 2, 3, 4, 5]);
+    });
     test('sorted', () {
       expect(natural.sorted([]), []);
       expect(natural.sorted([1]), [1]);

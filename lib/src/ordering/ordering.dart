@@ -1,7 +1,11 @@
+import 'dart:math' as math;
+
+import 'package:collection/collection.dart';
 import 'package:meta/meta.dart' show immutable;
 
 import '../../functional.dart';
 import '../../printer.dart';
+import '../collection/heap.dart';
 import '../math/math.dart';
 import 'comparator.dart';
 import 'compound.dart';
@@ -103,20 +107,43 @@ abstract class Ordering<T> with ToStringPrinter {
   /// Creates a predicate that evaluates to `true` for values at least [a].
   Predicate1<T> greaterThanOrEqualTo(T a) => (T b) => compare(a, b) <= 0;
 
-  /// Performs a binary search on the sorted [list] with a [value].
-  ///
-  /// The method returns the index of the element, or a negative value if the
-  /// key was not found. The result is undefined if the list is not sorted.
+  /// Returns a list of the [k] largest elements of the given iterable
+  /// according to this ordering, in order from largest to smallest.
+  List<T> largest(Iterable<T> iterable, int k) =>
+      reversed.smallest(iterable, k);
+
+  /// Returns a list of the [k] smallest elements from the given iterable
+  /// according to this ordering, in order from smallest to largest.
+  List<T> smallest(Iterable<T> iterable, int k) {
+    final heap = Heap<T>(comparator: compare);
+    for (final each in iterable) {
+      heap.push(each);
+      if (heap.length > k) {
+        heap.pop(); // drop the largest element
+      }
+    }
+    final result = List.generate(
+        math.min(k, heap.length), (index) => heap.pop(),
+        growable: false);
+    result.reverseRange(0, result.length);
+    return result;
+  }
+
+  /// Performs a binary search of [value] on the sorted [list]. Returns the
+  /// index of any element that compares equal, or `-1` if the value is not
+  /// found. The result is undefined if the list is not sorted.
   ///
   /// By default the whole [list] is searched, but if [start] and/or [end] are
   /// supplied, only that range is searched.
   int binarySearch(List<T> list, T value, {int? start, int? end}) {
-    var min = start ?? 0;
-    var max = end ?? list.length;
+    var min = (start ??= 0);
+    var max = (end ??= list.length);
     while (min < max) {
       final mid = min + ((max - min) >> 1);
       final comp = compare(list[mid], value);
       if (comp == 0) {
+        assert(start <= mid && mid <= end,
+            'Index $mid not in inclusive range $start..$end');
         return mid;
       } else if (comp < 0) {
         min = mid + 1;
@@ -124,19 +151,18 @@ abstract class Ordering<T> with ToStringPrinter {
         max = mid;
       }
     }
-    return -min - 1;
+    return -1;
   }
 
-  /// Performs a binary search on the sorted [list] with a [value].
-  ///
-  /// Returns the first suitable insertion index such that
-  /// `list[index - 1] < value <= list[index]`.
+  /// Performs a binary search of [value] on the sorted [list]. Returns the
+  /// the first suitable insertion index such that `list[index - 1] < value
+  /// <= list[index]`. The result is undefined if the list is not sorted.
   ///
   /// By default the whole [list] is searched, but if [start] and/or [end] are
   /// supplied, only that range is searched.
-  int binarySearchLeft(List<T> list, T value, {int? start, int? end}) {
-    var min = start ?? 0;
-    var max = end ?? list.length;
+  int binarySearchLower(List<T> list, T value, {int? start, int? end}) {
+    var min = (start ??= 0);
+    var max = (end ??= list.length);
     while (min < max) {
       final mid = min + ((max - min) >> 1);
       if (compare(list[mid], value) < 0) {
@@ -145,19 +171,20 @@ abstract class Ordering<T> with ToStringPrinter {
         max = mid;
       }
     }
+    assert(start <= min && min <= end,
+        'Index $min not in inclusive range $start..$end');
     return min;
   }
 
-  /// Performs a binary search on the sorted [vector] with a [value].
-  ///
-  /// Returns the first suitable insertion index such that
-  /// `list[index - 1] <= value < list[index]`.
+  /// Performs a binary search of [value] on the sorted [list]. Returns the
+  /// the last suitable insertion index such that `list[index - 1] <= value
+  /// < list[index]`. The result is undefined if the list is not sorted.
   ///
   /// By default the whole [list] is searched, but if [start] and/or [end] are
   /// supplied, only that range is searched.
-  int binarySearchRight(List<T> list, T value, {int? start, int? end}) {
-    var min = start ?? 0;
-    var max = end ?? list.length;
+  int binarySearchUpper(List<T> list, T value, {int? start, int? end}) {
+    var min = (start ??= 0);
+    var max = (end ??= list.length);
     while (min < max) {
       final mid = min + ((max - min) >> 1);
       if (compare(list[mid], value) <= 0) {
@@ -166,6 +193,8 @@ abstract class Ordering<T> with ToStringPrinter {
         max = mid;
       }
     }
+    assert(start <= min && min <= end,
+        'Index $min not in inclusive range $start..$end');
     return min;
   }
 

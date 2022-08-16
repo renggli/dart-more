@@ -46,7 +46,7 @@ class SortedList<E> extends ListBase<E> {
 
   @override
   void add(E element) {
-    final index = _ordering.binarySearchLeft(_values, element).abs();
+    final index = _ordering.binarySearchLower(_values, element).abs();
     _values.insert(index, element);
   }
 
