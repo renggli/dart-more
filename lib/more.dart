@@ -3,6 +3,7 @@ export 'package:more/async.dart';
 export 'package:more/cache.dart';
 export 'package:more/char_matcher.dart';
 export 'package:more/collection.dart';
+export 'package:more/comparator.dart';
 export 'package:more/feature.dart';
 export 'package:more/functional.dart';
 export 'package:more/interval.dart';

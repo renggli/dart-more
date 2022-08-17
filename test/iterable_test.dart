@@ -4,6 +4,7 @@ import 'dart:collection';
 import 'dart:math' show Random;
 
 import 'package:more/collection.dart';
+import 'package:more/comparator.dart';
 import 'package:more/iterable.dart';
 import 'package:test/test.dart';
 
@@ -324,9 +325,8 @@ void main() {
   });
   group('operators', () {
     final empty = <int>[];
-    final bools = {true, false};
     group('min', () {
-      test('empty error', () {
+      test('empty', () {
         expect(() => empty.min(), throwsStateError);
         expect(empty.min(orElse: () => -1), -1);
       });
@@ -334,19 +334,13 @@ void main() {
         expect([1, 2, 3].min(), 1);
         expect([3, 2, 1].min(), 1);
       });
-      test('comparable, with key', () {
-        expect([1, 2, 3].min(key: (value) => -value), 3);
-        expect([3, 2, 1].min(key: (value) => -value), 3);
-      });
-      test('not comparable', () {
-        expect(() => bools.min(), throwsA(isA<TypeError>()));
-      });
-      test('not comparable, with key', () {
-        expect(bools.min(key: (value) => value.toString().length), isTrue);
+      test('custom comparator', () {
+        expect([1, 2, 3].min(comparator: reverseComparator()), 3);
+        expect([3, 2, 1].min(comparator: reverseComparator()), 3);
       });
     });
     group('max', () {
-      test('empty error', () {
+      test('empty', () {
         expect(() => empty.max(), throwsStateError);
         expect(empty.max(orElse: () => -1), -1);
       });
@@ -354,59 +348,9 @@ void main() {
         expect([1, 2, 3].max(), 3);
         expect([3, 2, 1].max(), 3);
       });
-      test('comparable, with key', () {
-        expect([1, 2, 3].max(key: (value) => -value), 1);
-        expect([3, 2, 1].max(key: (value) => -value), 1);
-      });
-      test('not comparable', () {
-        expect(() => bools.max(), throwsA(isA<TypeError>()));
-      });
-      test('not comparable, with key', () {
-        expect(bools.max(key: (value) => value.toString().length), isFalse);
-      });
-    });
-    group('percentile', () {
-      test('empty error', () {
-        expect(() => empty.percentile(0.5), throwsStateError);
-        expect(empty.percentile(0.5, orElse: () => -1), -1);
-      });
-      test('range error', () {
-        expect(() => [0].percentile(-1), throwsRangeError);
-        expect(() => [0].percentile(2), throwsRangeError);
-      });
-      test('comparable', () {
-        expect([1, 2, 3].percentile(0.0), 1);
-        expect([1, 2, 3].percentile(0.5), 2);
-        expect([1, 2, 3].percentile(1.0), 3);
-        expect([3, 2, 1].percentile(0.0), 1);
-        expect([3, 2, 1].percentile(0.5), 2);
-        expect([3, 2, 1].percentile(1.0), 3);
-      });
-      test('comparable, with key', () {
-        expect([1, 2, 3].percentile(0.0, key: (value) => -value), 3);
-        expect([1, 2, 3].percentile(0.5, key: (value) => -value), 2);
-        expect([1, 2, 3].percentile(1.0, key: (value) => -value), 1);
-        expect([3, 2, 1].percentile(0.0, key: (value) => -value), 3);
-        expect([3, 2, 1].percentile(0.5, key: (value) => -value), 2);
-        expect([3, 2, 1].percentile(1.0, key: (value) => -value), 1);
-      });
-      test('not comparable', () {
-        expect(() => bools.percentile(0), throwsA(isA<TypeError>()));
-        expect(() => bools.percentile(1), throwsA(isA<TypeError>()));
-      });
-      test('not comparable, with key', () {
-        expect(bools.percentile(0, key: (value) => value.toString().length),
-            isTrue);
-        expect(bools.percentile(1, key: (value) => value.toString().length),
-            isFalse);
-      });
-      test('already ordered', () {
-        expect([1, 2, 3].percentile(0.0, isOrdered: true), 1);
-        expect([1, 2, 3].percentile(0.5, isOrdered: true), 2);
-        expect([1, 2, 3].percentile(1.0, isOrdered: true), 3);
-        expect([3, 2, 1].percentile(0.0, isOrdered: true), 3);
-        expect([3, 2, 1].percentile(0.5, isOrdered: true), 2);
-        expect([3, 2, 1].percentile(1.0, isOrdered: true), 1);
+      test('custom comparator', () {
+        expect([1, 2, 3].max(comparator: reverseComparator()), 1);
+        expect([3, 2, 1].max(comparator: reverseComparator()), 1);
       });
     });
   });

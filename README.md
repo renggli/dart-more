@@ -15,13 +15,13 @@ A collection of extensively tested extensions that make Dart a better place:
 - `cache.dart` is a collection of different caching strategies and their expiry policy.
 - `char_matcher.dart` is a model for character classes, their composition and operations on strings.
 - `collection.dart` is a collection of collection types: bi-map, bit-list, multi-set, set and list multi-map, range, and string.
+- `comparator.dart` provides [Comparator] constructors, and various static extension methods to modify and perform common operations on [Comparator] functions.
 - `feature.dart` provides information about the runtime environment.
 - `functional.dart` provides a collection of functional programming structures.
 - `interval.dart` provides a continuous interval over a [Comparable].
 - `iterable.dart` is a collection of iterables and iterators.
 - `math.dart` is a collection of common mathematical functions.
 - `number.dart` provides fractional, complex and quaternion arithmetic.
-- `ordering.dart` a fluent interface for building comparator functions.
 - `printer.dart` a fluent interface for configuring sophisticated formatter.
 - `temporal.dart` provides extensions to the built-in date, time and duration objects.
 - `tuple.dart` a generic sequence of typed values.

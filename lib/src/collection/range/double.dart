@@ -1,6 +1,6 @@
 import 'dart:collection' show ListBase;
 
-import '../../../ordering.dart' show Ordering;
+import '../../../comparator.dart';
 import '../../iterable/mixins/unmodifiable.dart' show UnmodifiableListMixin;
 import '../range.dart';
 
@@ -101,9 +101,8 @@ class DoubleRange extends ListBase<double>
       if (startIndex < 0) {
         startIndex = 0;
       }
-      final ordering =
-          step > 0 ? Ordering.natural<num>() : Ordering.natural<num>().reversed;
-      final index = ordering.binarySearch(this, element);
+      final comparator = step > 0 ? _naturalComparator : _reverseComparator;
+      final index = comparator.binarySearch(this, element);
       if (startIndex <= index) {
         return index;
       }
@@ -121,9 +120,8 @@ class DoubleRange extends ListBase<double>
       if (endIndex < 0) {
         return -1;
       }
-      final ordering =
-          step > 0 ? Ordering.natural<num>() : Ordering.natural<num>().reversed;
-      final index = ordering.binarySearch(this, element);
+      final comparator = step > 0 ? _naturalComparator : _reverseComparator;
+      final index = comparator.binarySearch(this, element);
       if (0 <= index && index <= endIndex) {
         return index;
       }
@@ -190,3 +188,6 @@ extension DoubleRangeExtension on double {
   /// receiver (inclusive) up to but not including [end] (exclusive).
   Range<double> to(double end, {double? step}) => DoubleRange(this, end, step);
 }
+
+final _naturalComparator = naturalComparator<double>();
+final _reverseComparator = reverseComparator<double>();

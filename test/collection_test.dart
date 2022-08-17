@@ -1,8 +1,8 @@
 import 'dart:math';
 
 import 'package:more/collection.dart';
+import 'package:more/comparator.dart';
 import 'package:more/math.dart';
-import 'package:more/src/ordering/ordering.dart';
 import 'package:test/test.dart';
 
 List<bool> randomBooleans(int seed, int length) {
@@ -1944,20 +1944,18 @@ void main() {
   group('sortedlist', () {
     group('default constructor', () {
       allSortedListTests(<E>(Iterable<E> elements,
-              {Ordering<E>? ordering, Comparator<E>? comparator}) =>
-          SortedList<E>(ordering: ordering, comparator: comparator)
-            ..addAll(elements));
+              {Comparator<E>? comparator}) =>
+          SortedList<E>(comparator: comparator)..addAll(elements));
     });
     group('iterable constructor', () {
       allSortedListTests(<E>(Iterable<E> elements,
-              {Ordering<E>? ordering, Comparator<E>? comparator}) =>
-          SortedList<E>.of(elements,
-              ordering: ordering, comparator: comparator));
+              {Comparator<E>? comparator}) =>
+          SortedList<E>.of(elements, comparator: comparator));
     });
     group('converting constructor', () {
       allSortedListTests(<E>(Iterable<E> elements,
-              {Ordering<E>? ordering, Comparator<E>? comparator}) =>
-          elements.toSortedList(ordering: ordering, comparator: comparator));
+              {Comparator<E>? comparator}) =>
+          elements.toSortedList(comparator: comparator));
     });
   });
   group('string', () {
@@ -2515,8 +2513,7 @@ void allHeapTests(
 }
 
 void allSortedListTests(
-    SortedList<E> Function<E>(Iterable<E> list,
-            {Ordering<E>? ordering, Comparator<E>? comparator})
+    SortedList<E> Function<E>(Iterable<E> list, {Comparator<E>? comparator})
         createSortedList) {
   test('default ordering', () {
     final list = createSortedList<int>([5, 1, 2, 4, 3]);
@@ -2524,7 +2521,7 @@ void allSortedListTests(
   });
   test('custom ordering', () {
     final list = createSortedList<num>([5, 1, 2, 4, 3],
-        ordering: Ordering.natural<num>().reversed);
+        comparator: reverseComparator<num>());
     expect(list, [5, 4, 3, 2, 1]);
   });
   test('custom comparator', () {

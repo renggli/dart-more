@@ -1,3 +1,5 @@
+// ignore_for_file: deprecated_member_use_from_same_package
+
 import 'package:more/collection.dart';
 import 'package:more/iterable.dart';
 import 'package:more/ordering.dart';
@@ -249,42 +251,24 @@ void main() {
   });
   group('actions', () {
     final natural = Ordering.natural<num>();
-    void binarySearchTests(
-      String name, {
-      required List<List<int>> examples,
-      required List<int> values,
-      required List<int> binarySearch,
-      required List<int> binarySearchLower,
-      required List<int> binarySearchUpper,
-    }) {
-      group(name, () {
-        test('binarySearch', () {
-          final results = IntegerRange(examples.length)
-              .map((i) => natural.binarySearch(examples[i], values[i]));
-          expect(results, binarySearch);
-        });
-        test('binarySearchLower', () {
-          final results = IntegerRange(examples.length)
-              .map((i) => natural.binarySearchLower(examples[i], values[i]));
-          expect(results, binarySearchLower);
-        });
-        test('binarySearchUpper', () {
-          final results = IntegerRange(examples.length)
-              .map((i) => natural.binarySearchUpper(examples[i], values[i]));
-          expect(results, binarySearchUpper);
-        });
+    void binarySearchTest(String name,
+        {required List<List<int>> examples,
+        required List<int> values,
+        required List<int> expected}) {
+      test(name, () {
+        final results = IntegerRange(examples.length)
+            .map((i) => natural.binarySearch(examples[i], values[i]));
+        expect(results, expected);
       });
     }
 
-    binarySearchTests(
+    binarySearchTest(
       'binarySearch empty',
       examples: [[]],
       values: [5],
-      binarySearch: [-1],
-      binarySearchLower: [0],
-      binarySearchUpper: [0],
+      expected: [-1],
     );
-    binarySearchTests(
+    binarySearchTest(
       'binarySearch simple',
       examples: [
         [5],
@@ -294,11 +278,9 @@ void main() {
         [1, 2, 3, 4, 5, 6, 7, 8, 9],
       ],
       values: [5, 5, 5, 5, 5],
-      binarySearch: [0, 1, 2, 3, 4],
-      binarySearchLower: [0, 1, 2, 3, 4],
-      binarySearchUpper: [1, 2, 3, 4, 5],
+      expected: [0, 1, 2, 3, 4],
     );
-    binarySearchTests(
+    binarySearchTest(
       'binarySearch simple (absent)',
       examples: [
         [1, 6],
@@ -307,11 +289,9 @@ void main() {
         [1, 2, 3, 4, 6, 7, 8, 9],
       ],
       values: [5, 5, 5, 5],
-      binarySearch: [-1, -1, -1, -1],
-      binarySearchLower: [1, 2, 3, 4],
-      binarySearchUpper: [1, 2, 3, 4],
+      expected: [-2, -3, -4, -5],
     );
-    binarySearchTests(
+    binarySearchTest(
       'binarySearch right most',
       examples: [
         [5],
@@ -321,11 +301,9 @@ void main() {
         [1, 2, 3, 4, 5],
       ],
       values: [5, 5, 5, 5, 5],
-      binarySearch: [0, 1, 2, 3, 4],
-      binarySearchLower: [0, 1, 2, 3, 4],
-      binarySearchUpper: [1, 2, 3, 4, 5],
+      expected: [0, 1, 2, 3, 4],
     );
-    binarySearchTests(
+    binarySearchTest(
       'binarySearch right most (absent)',
       examples: [
         [1],
@@ -334,11 +312,9 @@ void main() {
         [1, 2, 3, 4],
       ],
       values: [5, 5, 5, 5],
-      binarySearch: [-1, -1, -1, -1],
-      binarySearchLower: [1, 2, 3, 4],
-      binarySearchUpper: [1, 2, 3, 4],
+      expected: [-2, -3, -4, -5],
     );
-    binarySearchTests(
+    binarySearchTest(
       'binarySearch left most',
       examples: [
         [5],
@@ -348,11 +324,9 @@ void main() {
         [5, 6, 7, 8, 9],
       ],
       values: [5, 5, 5, 5, 5],
-      binarySearch: [0, 0, 0, 0, 0],
-      binarySearchLower: [0, 0, 0, 0, 0],
-      binarySearchUpper: [1, 1, 1, 1, 1],
+      expected: [0, 0, 0, 0, 0],
     );
-    binarySearchTests(
+    binarySearchTest(
       'binarySearch left most (absent)',
       examples: [
         [6],
@@ -361,11 +335,9 @@ void main() {
         [6, 7, 8, 9],
       ],
       values: [5, 5, 5, 5],
-      binarySearch: [-1, -1, -1, -1],
-      binarySearchLower: [0, 0, 0, 0],
-      binarySearchUpper: [0, 0, 0, 0],
+      expected: [-1, -1, -1, -1],
     );
-    binarySearchTests(
+    binarySearchTest(
       'binarySearch repeated',
       examples: [
         [1, 5, 9],
@@ -375,30 +347,8 @@ void main() {
         [1, 5, 5, 5, 5, 5, 9],
       ],
       values: [5, 5, 5, 5, 5],
-      binarySearch: [1, 2, 2, 3, 3],
-      binarySearchLower: [1, 1, 1, 1, 1],
-      binarySearchUpper: [2, 3, 4, 5, 6],
+      expected: [1, 2, 2, 3, 3],
     );
-    test('largest', () {
-      expect(natural.largest([], 0), []);
-      expect(natural.largest([2, 3, 1], 0), []);
-      expect(natural.largest([], 3), []);
-      expect(natural.largest([2, 3, 1], 3), [3, 2, 1]);
-      expect(natural.largest([2, 3, 1, 5, 4], 3), [5, 4, 3]);
-      expect(natural.largest([], 5), []);
-      expect(natural.largest([2, 3, 1], 5), [3, 2, 1]);
-      expect(natural.largest([2, 3, 1, 5, 4], 5), [5, 4, 3, 2, 1]);
-    });
-    test('smallest', () {
-      expect(natural.smallest([], 0), []);
-      expect(natural.smallest([2, 3, 1], 0), []);
-      expect(natural.smallest([], 3), []);
-      expect(natural.smallest([2, 3, 1], 3), [1, 2, 3]);
-      expect(natural.smallest([2, 3, 1, 5, 4], 3), [1, 2, 3]);
-      expect(natural.smallest([], 5), []);
-      expect(natural.smallest([2, 3, 1], 5), [1, 2, 3]);
-      expect(natural.smallest([2, 3, 1, 5, 4], 5), [1, 2, 3, 4, 5]);
-    });
     test('sorted', () {
       expect(natural.sorted([]), []);
       expect(natural.sorted([1]), [1]);

@@ -1,3 +1,5 @@
+// ignore_for_file: deprecated_member_use_from_same_package
+
 import 'ordering.dart';
 
 class NaturalOrdering<T extends Comparable> extends Ordering<T> {

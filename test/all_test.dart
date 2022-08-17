@@ -4,6 +4,7 @@ import 'async_test.dart' as async_test;
 import 'cache_test.dart' as cache_test;
 import 'char_matcher_test.dart' as char_matcher_test;
 import 'collection_test.dart' as collection_test;
+import 'comparator_test.dart' as comparator_test;
 import 'feature_test.dart' as feature_test;
 import 'functional_test.dart' as functional_test;
 import 'functional_type_test.dart' as functional_type_test;
@@ -21,6 +22,7 @@ void main() {
   group('cache', cache_test.main);
   group('char_matcher', char_matcher_test.main);
   group('collection', collection_test.main);
+  group('comparator', comparator_test.main);
   group('feature', feature_test.main);
   group('functional', functional_test.main);
   group('functional type', functional_type_test.main);

@@ -15,8 +15,10 @@
   * Add `Printer.where` to condition the printing on the printed object.
   * Add `Printer` support for `take`, `skip`, `takeLast` and `skipLast`.
   * Add `Printer` support for `truncateRight`, `truncateLeft`, and `truncateCenter` to also operate on word and sentence boundaries. Include the ellipsis in the width constraint.
-* Changed `Ordering.binarySearch` to return `-1` if the element is absent. Added `Ordering.binarySearchLower` and `Ordering.binarySearchUpper` to return a lower/upper insertion index.
-* Add `Ordering.largest` and `Ordering.smallest`.
+* Implement the functionality of `Ordering` as static extensions methods on `Comparator` functions:
+  * Add `Comparator.binarySearchLower` and `Comparator.binarySearchUpper` to return a lower/upper insertion index.
+  * Add `Comparator.largest` and `Comparator.smallest` to return the top/bottom-k elements.
+  * Deprecate the `Ordering` class and package.
 * Added `SortedList` collection type.
 
 ## 3.7.0

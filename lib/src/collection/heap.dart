@@ -1,18 +1,18 @@
-import 'comparator.dart';
+import '../../comparator.dart';
 
 /// A priority queue implemented using a binary heap.
 class Heap<E> extends Iterable<E> {
-  /// Constructs an empty max-heap with an optional comparator. To create a
+  /// Constructs an empty max-heap with an optional [comparator]. To create a
   /// min-heap invert the comparator.
   Heap({Comparator<E>? comparator})
       : _values = <E>[],
-        _comparator = comparator ?? getDefaultComparator<E>();
+        _comparator = comparator ?? naturalComparator<E>();
 
   /// Constructs a max-heap with an iterable of elements and an optional
-  /// comparator. To create a min-heap invert the comparator.
+  /// [comparator]. To create a min-heap invert the comparator.
   Heap.of(Iterable<E> iterable, {Comparator<E>? comparator})
       : _values = List<E>.of(iterable),
-        _comparator = comparator ?? getDefaultComparator<E>() {
+        _comparator = comparator ?? naturalComparator<E>() {
     if (_values.length > 1) {
       for (var i = _values.length ~/ 2; i >= 0; i--) {
         _siftUp(i);
