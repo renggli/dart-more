@@ -11,20 +11,22 @@ More Dart — Literally
 
 A collection of extensively tested extensions that make Dart a better place:
 
-- `async.dart` provides numerous helpers to make async code better.
-- `cache.dart` is a collection of different caching strategies and their expiry policy.
-- `char_matcher.dart` is a model for character classes, their composition and operations on strings.
-- `collection.dart` is a collection of collection types: bi-map, bit-list, multi-set, set and list multi-map, range, and string.
-- `comparator.dart` provides [Comparator] constructors, and various static extension methods to modify and perform common operations on [Comparator] functions.
-- `feature.dart` provides information about the runtime environment.
-- `functional.dart` provides a collection of functional programming structures.
-- `interval.dart` provides a continuous interval over a [Comparable].
-- `iterable.dart` is a collection of iterables and iterators.
-- `math.dart` is a collection of common mathematical functions.
-- `number.dart` provides fractional, complex and quaternion arithmetic.
-- `printer.dart` a fluent interface for configuring sophisticated formatter.
-- `temporal.dart` provides extensions to the built-in date, time and duration objects.
-- `tuple.dart` a generic sequence of typed values.
+| Library                                                                                          | Description                                                                                |
+|:-------------------------------------------------------------------------------------------------|:-------------------------------------------------------------------------------------------|
+| [async](https://pub.dev/documentation/more/latest/async/async-library.html)                      | Extensions to `Stream`.                                                                    | 
+| [cache](https://pub.dev/documentation/more/latest/cache/cache-library.html)                      | Caching strategies and their expiry policy.                                                |
+| [char_matcher](https://pub.dev/documentation/more/latest/char_matcher/char_matcher-library.html) | Character classes, their composition, and operations on strings.                           |
+| [collection](https://pub.dev/documentation/more/latest/collection/collection-library.html)       | Collection types: bi-map, bit-list, multi-set, sorted-list, set and list multi-map, range. |
+| [comparator](https://pub.dev/documentation/more/latest/collection/comparator-library.html)       | Common comparators, and extensions to perform advanced operations.                         | 
+| [feature](https://pub.dev/documentation/more/latest/feature/feature-library.html)                | Information about the runtime environment.                                                 |
+| [functional](https://pub.dev/documentation/more/latest/functional/functional-library.html)       | Types and features known from functional programming.                                      |
+| [interval](https://pub.dev/documentation/more/latest/interval/interval-library.html)             | Continuous interval data type over a comparable type.                                      |
+| [iterable](https://pub.dev/documentation/more/latest/iterable/iterable-library.html)             | Extensions to `Iterable`.                                                                  |
+| [math](https://pub.dev/documentation/more/latest/math/math-library.html)                         | Common mathematical functions.                                                             |
+| [number](https://pub.dev/documentation/more/latest/number/number-library.html)                   | Number types: fraction, complex, quaternion.                                               |
+| [printer](https://pub.dev/documentation/more/latest/printer/printer-library.html)                | Fluent interface to configure sophisticated formatter.                                     |
+| [temporal](https://pub.dev/documentation/more/latest/temporal/temporal-library.html)             | Extensions to `DateTime` and `Duration` types.                                             | 
+| [tuple](https://pub.dev/documentation/more/latest/tuple/tuple-library.html)                      | Generic sequence of typed values.                                                          |
 
 And there are more to come ...
 
