@@ -1,6 +1,7 @@
 import 'package:more/collection.dart';
 import 'package:more/comparator.dart';
 import 'package:more/iterable.dart';
+import 'package:more/tuple.dart';
 import 'package:test/test.dart';
 
 void verifyBasic<T>(String type, Comparator<T> comparator, Iterable<T> unsorted,
@@ -162,7 +163,7 @@ void main() {
       test('default', () {
         final comparator = naturalInt
             .onResultOf<String>((s) => s.length)
-            .compound(naturalString);
+            .thenCompare(naturalString);
         verify(
             comparator, ['333', '1', '4444', '22'], ['1', '22', '333', '4444']);
         verify(comparator, ['2', '333', '4444', '1', '22'],
@@ -172,7 +173,7 @@ void main() {
         verify(comparator, ['4444', '44', '2', '1', '333', '22', '33'],
             ['1', '2', '22', '33', '44', '333', '4444']);
       });
-      test('list', () {
+      test('input', () {
         final comparator = [
           naturalInt.onResultOf<List<int>>((value) => value[0]),
           naturalInt.onResultOf<List<int>>((value) => value[1]),
@@ -474,17 +475,54 @@ void main() {
       expect(naturalInt.smallest([2, 3, 1], 5), [1, 2, 3]);
       expect(naturalInt.smallest([2, 3, 1, 5, 4], 5), [1, 2, 3, 4, 5]);
     });
-    test('sorted', () {
-      expect(naturalInt.sorted([]), []);
-      expect(naturalInt.sorted([1]), [1]);
-      expect(naturalInt.sorted([1, 2]), [1, 2]);
-      expect(naturalInt.sorted([2, 1]), [1, 2]);
-      expect(naturalInt.sorted([1, 2, 3]), [1, 2, 3]);
-      expect(naturalInt.sorted([1, 3, 2]), [1, 2, 3]);
-      expect(naturalInt.sorted([2, 1, 3]), [1, 2, 3]);
-      expect(naturalInt.sorted([2, 3, 1]), [1, 2, 3]);
-      expect(naturalInt.sorted([3, 1, 2]), [1, 2, 3]);
-      expect(naturalInt.sorted([3, 2, 1]), [1, 2, 3]);
+    group('sort', () {
+      test('default', () {
+        expect(naturalInt.sorted([]), []);
+        expect(naturalInt.sorted([1]), [1]);
+        expect(naturalInt.sorted([1, 2]), [1, 2]);
+        expect(naturalInt.sorted([2, 1]), [1, 2]);
+        expect(naturalInt.sorted([1, 2, 3]), [1, 2, 3]);
+        expect(naturalInt.sorted([1, 3, 2]), [1, 2, 3]);
+        expect(naturalInt.sorted([2, 1, 3]), [1, 2, 3]);
+        expect(naturalInt.sorted([2, 3, 1]), [1, 2, 3]);
+        expect(naturalInt.sorted([3, 1, 2]), [1, 2, 3]);
+        expect(naturalInt.sorted([3, 2, 1]), [1, 2, 3]);
+      });
+      test('stable', () {
+        final input = IntegerRange(10)
+            .reversed
+            .expand((x) => IntegerRange(10).map((y) => Tuple2(x, y)));
+        final actual = naturalInt
+            .onResultOf<Tuple2<int, int>>((tuple) => tuple.first)
+            .sorted(input, stable: true);
+        final expected = IntegerRange(10)
+            .expand((x) => IntegerRange(10).map((y) => Tuple2(x, y)));
+        expect(actual, expected);
+      });
+      test('copy', () {
+        final input = [5, 4, 3, 2, 1];
+        final output = naturalInt.sorted(input);
+        expect(input, isNot(same(output)));
+        expect(input, [5, 4, 3, 2, 1]);
+        expect(output, [1, 2, 3, 4, 5]);
+      });
+      test('copy range', () {
+        final input = [5, 4, 3, 2, 1];
+        final output = naturalInt.sorted(input, start: 1, end: 4);
+        expect(input, isNot(same(output)));
+        expect(input, [5, 4, 3, 2, 1]);
+        expect(output, [5, 2, 3, 4, 1]);
+      });
+      test('in-place', () {
+        final input = [5, 4, 3, 2, 1];
+        naturalInt.sort(input);
+        expect(input, [1, 2, 3, 4, 5]);
+      });
+      test('in-place range', () {
+        final input = [5, 4, 3, 2, 1];
+        naturalInt.sort(input, start: 1, end: 4);
+        expect(input, [5, 2, 3, 4, 1]);
+      });
     });
   });
   group('regressions', () {

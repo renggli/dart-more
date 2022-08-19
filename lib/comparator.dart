@@ -4,7 +4,6 @@ export 'src/comparator/constructors/explicit.dart';
 export 'src/comparator/constructors/natural.dart';
 export 'src/comparator/constructors/reverse.dart';
 export 'src/comparator/modifiers/compound.dart';
-export 'src/comparator/modifiers/lexicographical.dart';
 export 'src/comparator/modifiers/nulls_first.dart';
 export 'src/comparator/modifiers/nulls_last.dart';
 export 'src/comparator/modifiers/result_of.dart';
