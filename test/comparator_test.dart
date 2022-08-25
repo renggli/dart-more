@@ -47,10 +47,7 @@ void verifyBasic<T>(String type, Comparator<T> comparator, Iterable<T> unsorted,
   if (sorted.isNotEmpty) {
     expect(comparator.minOf(unsorted), expected.first,
         reason: '$type.percentile');
-    //expect(comparator.percentile(unsorted, 0.0), expected.first);
     expect(comparator.maxOf(unsorted), expected.last, reason: '$type.maxOf');
-    // expect(comparator.percentile(unsorted, 1.0), expected.last,
-    //     reason: '$type.percentile');
   }
 }
 

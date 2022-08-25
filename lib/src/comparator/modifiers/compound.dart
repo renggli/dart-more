@@ -10,7 +10,8 @@ extension CompoundComparator<T> on Comparator<T> {
 
 extension CompoundIterableComparator<T> on Iterable<Comparator<T>> {
   /// Returns a [Comparator] that tries each of the comparators in this
-  /// iterable and returns the first result that doesn't end up in a tie.
+  /// iterable in order and returns the first result that doesn't end up
+  /// in a tie.
   Comparator<T> toComparator() => (a, b) {
         for (var comparator in this) {
           final result = comparator(a, b);
