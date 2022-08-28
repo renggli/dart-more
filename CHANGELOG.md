@@ -15,6 +15,7 @@
   * Add `Printer.where` to condition the printing on the printed object.
   * Add `Printer` support for `take`, `skip`, `takeLast` and `skipLast`.
   * Add `Printer` support for `truncateRight`, `truncateLeft`, and `truncateCenter` to also operate on word and sentence boundaries. Include the ellipsis in the width constraint.
+  * Deprecated `Printer.map`, and replace with more common and intention revealing `Printer.onResultOf`.
 * Implement the functionality of `Ordering` as static extensions methods on `Comparator` functions:
   * Add `Comparator.binarySearchLower` and `Comparator.binarySearchUpper` to return a lower/upper insertion index.
   * Add `Comparator.largest` and `Comparator.smallest` to return the top/bottom-k elements.

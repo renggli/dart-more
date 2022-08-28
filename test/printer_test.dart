@@ -1,3 +1,5 @@
+// ignore_for_file: deprecated_member_use_from_same_package
+
 import 'dart:math';
 
 import 'package:more/collection.dart';
@@ -1495,8 +1497,14 @@ void main() {
       expect(printer.toString(), startsWith('EmptyPrinter<int>'));
     });
   });
-  group('map', () {
+  group('onResultOf', () {
     test('printer', () {
+      final printer = standardInt.onResultOf(int.parse);
+      expect(() => printer(''), throwsFormatException);
+      expect(printer('1'), '1');
+      expect(printer('12'), '12');
+    });
+    test('deprecated', () {
       final printer = standardInt.map(int.parse);
       expect(() => printer(''), throwsFormatException);
       expect(printer('1'), '1');
@@ -1509,8 +1517,8 @@ void main() {
       expect(printer('12'), '12');
     });
     test('toString', () {
-      final printer = standardInt.map(int.parse);
-      expect(printer.toString(), startsWith('MapPrinter<String, int>'));
+      final printer = standardInt.onResultOf(int.parse);
+      expect(printer.toString(), startsWith('ResultOfPrinter<String, int>'));
     });
   });
   group('where', () {

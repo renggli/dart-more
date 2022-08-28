@@ -1,7 +1,7 @@
 import '../../../functional.dart';
 
-extension ResultOfComparator<T> on Comparator<T> {
-  /// Returns a [Comparator] that extracts a sort key of type [R].
-  Comparator<R> onResultOf<R>(Map1<R, T> function) =>
+extension ResultOfComparator<R> on Comparator<R> {
+  /// Returns a [Comparator] of type [T] that extracts a sort key of type [R].
+  Comparator<T> onResultOf<T>(Map1<T, R> function) =>
       (a, b) => this(function(a), function(b));
 }

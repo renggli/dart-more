@@ -4,7 +4,6 @@ export 'src/printer/builder.dart' show BuilderPrinterExtension;
 export 'src/printer/empty.dart' show EmptyPrinterExtension;
 export 'src/printer/iterable.dart' show IterablePrinterExtension;
 export 'src/printer/literal.dart' show LiteralPrinter;
-export 'src/printer/map.dart' show MapPrinterExtension;
 export 'src/printer/null.dart' show NullPrinterExtension;
 export 'src/printer/number/fixed.dart' show FixedNumberPrinter;
 export 'src/printer/number/human.dart' show HumanNumberPrinter;
@@ -16,8 +15,12 @@ export 'src/printer/object/field.dart' show FieldPrinter;
 export 'src/printer/object/object.dart' show ObjectPrinter;
 export 'src/printer/object/type.dart' show TypePrinter;
 export 'src/printer/printer.dart' show Printer;
+export 'src/printer/result_of.dart' show ResultOfPrinterExtension;
 export 'src/printer/sequence.dart'
-    show SequencePrinterExtension, SequencePrinter;
+    show
+        SequencePrinterPrinterExtension,
+        SequencePrinterIterableExtension,
+        SequencePrinter;
 export 'src/printer/standard.dart' show StandardPrinter;
 export 'src/printer/string/pad.dart' show PadPrinterExtension;
 export 'src/printer/string/separate.dart' show SeparatePrinterExtension;

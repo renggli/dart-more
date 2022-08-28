@@ -1,7 +1,7 @@
 import 'object/object.dart';
 import 'printer.dart';
 
-extension SequencePrinterExtension<T> on Printer<T> {
+extension SequencePrinterPrinterExtension<T> on Printer<T> {
   /// Prints before another printer.
   Printer<T> before(Object other) =>
       SequencePrinter<T>([Printer<T>.wrap(other), this]);
@@ -13,6 +13,11 @@ extension SequencePrinterExtension<T> on Printer<T> {
   /// Prints something before and after another printer.
   Printer<T> around(Object first, [Object? second]) => SequencePrinter<T>(
       [Printer<T>.wrap(first), this, Printer<T>.wrap(second ?? first)]);
+}
+
+extension SequencePrinterIterableExtension<T> on Iterable<Printer<T>> {
+  /// Constructs a sequence of printers.
+  Printer<T> toPrinter() => SequencePrinter<T>(this);
 }
 
 /// Prints a sequence of printers.

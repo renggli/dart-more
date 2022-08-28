@@ -3,10 +3,10 @@ import '../../../temporal.dart';
 import '../../temporal/conversion.dart';
 import '../builder.dart';
 import '../literal.dart';
-import '../map.dart';
 import '../number/fixed.dart';
 import '../number/sign.dart';
 import '../printer.dart';
+import '../result_of.dart';
 import '../sequence.dart';
 import '../where.dart';
 
@@ -86,7 +86,7 @@ class DurationPrinterBuilder {
   /// Adds a sign printer.
   void sign([SignNumberPrinter<int>? printer]) =>
       add((printer ?? const SignNumberPrinter.omitPositiveSign())
-          .map((duration) => duration.inMicroseconds));
+          .onResultOf((duration) => duration.inMicroseconds));
 
   /// Adds a printer that prints a part of a duration unit.
   ///
@@ -104,9 +104,10 @@ class DurationPrinterBuilder {
       {bool absoluteValue = true, bool skipIfZero = false}) {
     _unitParts.add(unit);
     add(printer
-        .mapIf(absoluteValue, (printer) => printer.map((value) => value.abs()))
+        .mapIf(absoluteValue,
+            (printer) => printer.onResultOf((value) => value.abs()))
         .mapIf(skipIfZero, (printer) => printer.where((value) => value != 0))
-        .map((duration) => duration.convertToAll(
+        .onResultOf((duration) => duration.convertToAll(
               _unitParts,
               conversion: _conversion,
             )[unit]!));
@@ -126,8 +127,10 @@ class DurationPrinterBuilder {
   void full(TimeUnit unit, Printer<double> printer,
       {bool absoluteValue = false, bool skipIfZero = false}) {
     add(printer
-        .mapIf(absoluteValue, (printer) => printer.map((value) => value.abs()))
+        .mapIf(absoluteValue,
+            (printer) => printer.onResultOf((value) => value.abs()))
         .mapIf(skipIfZero, (printer) => printer.where((value) => value != 0))
-        .map((duration) => duration.convertTo(unit, conversion: _conversion)));
+        .onResultOf(
+            (duration) => duration.convertTo(unit, conversion: _conversion)));
   }
 }

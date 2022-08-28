@@ -5,9 +5,9 @@ import '../../math/math.dart';
 import '../../temporal/date_time/accessors.dart';
 import '../builder.dart';
 import '../literal.dart';
-import '../map.dart';
 import '../number/fixed.dart';
 import '../printer.dart';
+import '../result_of.dart';
 import '../sequence.dart';
 import '../string/take_skip.dart';
 import '../where.dart';
@@ -72,7 +72,7 @@ class DateTimePrinterBuilder {
   void era({List<String> names = const ['BC', 'AD']}) {
     assert(names.length == 2, '2 era names expected');
     add(Printer<int>.pluggable((index) => names[index])
-        .map((dateTime) => dateTime.year > 0 ? 1 : 0));
+        .onResultOf((dateTime) => dateTime.year > 0 ? 1 : 0));
   }
 
   /// Adds a [DateTime.year] field.
@@ -82,7 +82,7 @@ class DateTimePrinterBuilder {
   /// displayed.
   void year({int width = 0}) => add(FixedNumberPrinter(padding: width)
       .mapIf(width == 2, (printer) => printer.takeLast(2))
-      .map((dateTime) => dateTime.year));
+      .onResultOf((dateTime) => dateTime.year));
 
   /// Adds a [DateTimeExtension.quarter] field.
   ///
@@ -95,7 +95,7 @@ class DateTimePrinterBuilder {
     final printer = names == null
         ? FixedNumberPrinter<int>(padding: width)
         : Printer<int>.pluggable((quarter) => names[quarter - 1]);
-    add(printer.map((dateTime) => dateTime.quarter));
+    add(printer.onResultOf((dateTime) => dateTime.quarter));
   }
 
   /// Adds a [DateTime.month] field.
@@ -109,7 +109,7 @@ class DateTimePrinterBuilder {
     final printer = names == null
         ? FixedNumberPrinter<int>(padding: width)
         : Printer<int>.pluggable((month) => names[month - 1]);
-    add(printer.map((dateTime) => dateTime.month));
+    add(printer.onResultOf((dateTime) => dateTime.month));
   }
 
   /// Adds a [DateTime.weekday] field.
@@ -123,26 +123,26 @@ class DateTimePrinterBuilder {
     final printer = names == null
         ? FixedNumberPrinter<int>(padding: width)
         : Printer<int>.pluggable((weekday) => names[weekday - 1]);
-    add(printer.map((dateTime) => dateTime.weekday));
+    add(printer.onResultOf((dateTime) => dateTime.weekday));
   }
 
   /// Adds a [DateTimeExtension.weekNumber] field.
   ///
   /// [width] specifies the minimum number of digits to display.
   void weekNumber({int width = 0}) => add(FixedNumberPrinter(padding: width)
-      .map((dateTime) => dateTime.weekNumber));
+      .onResultOf((dateTime) => dateTime.weekNumber));
 
   /// Adds a [DateTime.day] field.
   ///
   /// [width] specifies the minimum number of digits to display.
-  void day({int width = 0}) =>
-      add(FixedNumberPrinter(padding: width).map((dateTime) => dateTime.day));
+  void day({int width = 0}) => add(FixedNumberPrinter(padding: width)
+      .onResultOf((dateTime) => dateTime.day));
 
   /// Adds a [DateTimeExtension.dayOfYear] field.
   ///
   /// [width] specifies the minimum number of digits to display.
-  void dayOfYear({int width = 0}) => add(
-      FixedNumberPrinter(padding: width).map((dateTime) => dateTime.dayOfYear));
+  void dayOfYear({int width = 0}) => add(FixedNumberPrinter(padding: width)
+      .onResultOf((dateTime) => dateTime.dayOfYear));
 
   /// Adds an am/pm field.
   ///
@@ -151,32 +151,32 @@ class DateTimePrinterBuilder {
   void meridiem({List<String> names = const ['am', 'pm']}) {
     assert(names.length == 2, '2 meridiem names expected');
     add(Printer<int>.pluggable((index) => names[index])
-        .map((dateTime) => dateTime.hour.between(12, 23) ? 1 : 0));
+        .onResultOf((dateTime) => dateTime.hour.between(12, 23) ? 1 : 0));
   }
 
   /// Adds a [DateTime.hour] field (24h-clock).
   ///
   /// [width] specifies the minimum number of digits to display.
-  void hour({int width = 0}) =>
-      add(FixedNumberPrinter(padding: width).map((dateTime) => dateTime.hour));
+  void hour({int width = 0}) => add(FixedNumberPrinter(padding: width)
+      .onResultOf((dateTime) => dateTime.hour));
 
   /// Adds a [DateTimeExtension.hour12] field (12h-clock).
   ///
   /// [width] specifies the minimum number of digits to display.
-  void hour12({int width = 0}) => add(
-      FixedNumberPrinter(padding: width).map((dateTime) => dateTime.hour12));
+  void hour12({int width = 0}) => add(FixedNumberPrinter(padding: width)
+      .onResultOf((dateTime) => dateTime.hour12));
 
   /// Adds a [DateTime.minute] field.
   ///
   /// [width] specifies the minimum number of digits to display.
-  void minute({int width = 0}) => add(
-      FixedNumberPrinter(padding: width).map((dateTime) => dateTime.minute));
+  void minute({int width = 0}) => add(FixedNumberPrinter(padding: width)
+      .onResultOf((dateTime) => dateTime.minute));
 
   /// Adds a [DateTime.second] field.
   ///
   /// [width] specifies the minimum number of digits to display.
-  void second({int width = 0}) => add(
-      FixedNumberPrinter(padding: width).map((dateTime) => dateTime.second));
+  void second({int width = 0}) => add(FixedNumberPrinter(padding: width)
+      .onResultOf((dateTime) => dateTime.second));
 
   /// Adds a [DateTime.millisecond] field.
   ///
@@ -185,7 +185,7 @@ class DateTimePrinterBuilder {
   void millisecond({int width = 3}) =>
       add(FixedNumberPrinter(padding: max(width, 3))
           .mapIf(width < 3, (printer) => printer.take(width))
-          .map((dateTime) => dateTime.millisecond));
+          .onResultOf((dateTime) => dateTime.millisecond));
 
   /// Adds a [DateTime.microsecond] field. This field is always 0 in JavaScript.
   ///
@@ -195,5 +195,5 @@ class DateTimePrinterBuilder {
       add(FixedNumberPrinter<int>(padding: max(width, 3))
           .mapIf(width < 3, (printer) => printer.take(width))
           .mapIf(skipIfZero, (printer) => printer.where((value) => value != 0))
-          .map((dateTime) => dateTime.microsecond));
+          .onResultOf((dateTime) => dateTime.microsecond));
 }
