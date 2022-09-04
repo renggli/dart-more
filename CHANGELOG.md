@@ -1,7 +1,5 @@
 # Changelog
 
-## 3.9.0 (Unpublished)
-
 ## 3.8.0
 * Add `String` extensions `take`, `takeTo`, `skip`, `skipTo`, `takeLast`, `takeLastTo`, `skipLast`, and `skipLastTo`.
 * Add the ability to measure the length of `Interval<num>` with `toIntLength()` and `toDoubleLength()`.
@@ -23,6 +21,7 @@
   * Add `Comparator.largest` and `Comparator.smallest` to return the top/bottom-k elements.
   * Deprecate the `Ordering` class and package.
 * Added `SortedList` collection type.
+* Add `CompareOperators` mixin to provide operators given a `compareTo` method.
 
 ## 3.7.0
 * Add `closeTo` extension to all numbers.

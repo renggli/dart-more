@@ -1,12 +1,15 @@
 import 'package:collection/collection.dart' show QueueList;
 import 'package:meta/meta.dart' show immutable;
 
+import '../../comparator.dart';
 import '../../math.dart';
 import 'mixins/close_to.dart';
 
 /// A rational number.
 @immutable
-class Fraction implements Comparable<Fraction>, CloseTo<Fraction> {
+class Fraction
+    with CompareOperators<Fraction>
+    implements Comparable<Fraction>, CloseTo<Fraction> {
   /// Creates a fraction from a [numerator] and an optional [denominator].
   factory Fraction(int numerator, [int denominator = 1]) {
     if (denominator == 0) {
@@ -251,14 +254,6 @@ class Fraction implements Comparable<Fraction>, CloseTo<Fraction> {
 
   @override
   int compareTo(Fraction other) => (a * other.b).compareTo(other.a * b);
-
-  bool operator <(Fraction other) => compareTo(other) < 0;
-
-  bool operator <=(Fraction other) => compareTo(other) <= 0;
-
-  bool operator >=(Fraction other) => compareTo(other) >= 0;
-
-  bool operator >(Fraction other) => compareTo(other) > 0;
 
   @override
   String toString() {
