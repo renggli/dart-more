@@ -1522,50 +1522,109 @@ void main() {
           final r = IntegerRange(2, 7, 2); // [2, 4, 6]
           expect(r.indexOf(null), -1);
           expect(r.indexOf(1), -1);
+          expect(r.indexOf(2), 0);
           expect(r.indexOf(3), -1);
+          expect(r.indexOf(4), 1);
           expect(r.indexOf(5), -1);
+          expect(r.indexOf(6), 2);
           expect(r.indexOf(7), -1);
+          expect(r.indexOf(8), -1);
+          expect(r.indexOf(2, 0), 0);
           expect(r.indexOf(2, 1), -1);
+          expect(r.indexOf(4, 1), 1);
           expect(r.indexOf(4, 2), -1);
+          expect(r.indexOf(6, 2), 2);
           expect(r.indexOf(6, 3), -1);
-          expect(r.indexOf(8, 4), -1);
+        });
+        test('contains (positive step)', () {
+          final r = IntegerRange(2, 7, 2); // [2, 4, 6]
+          expect(r.contains(null), isFalse);
+          expect(r.contains(0), isFalse);
+          expect(r.contains(1), isFalse);
+          expect(r.contains(2), isTrue);
+          expect(r.contains(3), isFalse);
+          expect(r.contains(4), isTrue);
+          expect(r.contains(5), isFalse);
+          expect(r.contains(6), isTrue);
+          expect(r.contains(7), isFalse);
+          expect(r.contains(8), isFalse);
         });
         test('indexOf (negative step)', () {
           final r = IntegerRange(7, 2, -2); // [7, 5, 3]
           expect(r.indexOf(null), -1);
+          expect(r.indexOf(0), -1);
+          expect(r.indexOf(1), -1);
           expect(r.indexOf(2), -1);
+          expect(r.indexOf(3), 2);
           expect(r.indexOf(4), -1);
+          expect(r.indexOf(5), 1);
           expect(r.indexOf(6), -1);
+          expect(r.indexOf(7), 0);
           expect(r.indexOf(8), -1);
-          expect(r.indexOf(2, 1), -1);
-          expect(r.indexOf(4, 2), -1);
-          expect(r.indexOf(6, 3), -1);
-          expect(r.indexOf(8, 4), -1);
+          expect(r.indexOf(9), -1);
+          expect(r.indexOf(3, 2), 2);
+          expect(r.indexOf(3, 3), -1);
+          expect(r.indexOf(5, 1), 1);
+          expect(r.indexOf(5, 2), -1);
+          expect(r.indexOf(7, 0), 0);
+          expect(r.indexOf(7, 1), -1);
+        });
+        test('contains (negative step)', () {
+          final r = IntegerRange(7, 2, -2); // [7, 5, 3]
+          expect(r.contains(null), isFalse);
+          expect(r.contains(0), isFalse);
+          expect(r.contains(1), isFalse);
+          expect(r.contains(2), isFalse);
+          expect(r.contains(3), isTrue);
+          expect(r.contains(4), isFalse);
+          expect(r.contains(5), isTrue);
+          expect(r.contains(6), isFalse);
+          expect(r.contains(7), isTrue);
+          expect(r.contains(8), isFalse);
+          expect(r.contains(9), isFalse);
         });
         test('lastIndexOf (positive step)', () {
           final r = IntegerRange(2, 7, 2); // [2, 4, 6]
           expect(r.lastIndexOf(null), -1);
+          expect(r.lastIndexOf(0), -1);
           expect(r.lastIndexOf(1), -1);
+          expect(r.lastIndexOf(2), 0);
           expect(r.lastIndexOf(3), -1);
+          expect(r.lastIndexOf(4), 1);
           expect(r.lastIndexOf(5), -1);
+          expect(r.lastIndexOf(6), 2);
           expect(r.lastIndexOf(7), -1);
-          expect(r.lastIndexOf(1, 1), -1);
-          expect(r.lastIndexOf(3, 2), -1);
-          expect(r.lastIndexOf(5, 3), -1);
-          expect(r.lastIndexOf(7, 4), -1);
+          expect(r.lastIndexOf(8), -1);
+          expect(r.lastIndexOf(2, 0), 0);
+          expect(r.lastIndexOf(2, -1), -1);
+          expect(r.lastIndexOf(4, 1), 1);
+          expect(r.lastIndexOf(4, 0), -1);
+          expect(r.lastIndexOf(6, 2), 2);
+          expect(r.lastIndexOf(6, 1), -1);
         });
         test('lastIndexOf (negative step)', () {
           final r = IntegerRange(7, 2, -2); // [7, 5, 3]
           expect(r.lastIndexOf(null), -1);
+          expect(r.lastIndexOf(1), -1);
           expect(r.lastIndexOf(2), -1);
+          expect(r.lastIndexOf(3), 2);
           expect(r.lastIndexOf(4), -1);
+          expect(r.lastIndexOf(5), 1);
           expect(r.lastIndexOf(6), -1);
+          expect(r.lastIndexOf(7), 0);
           expect(r.lastIndexOf(8), -1);
-          expect(r.lastIndexOf(2, 1), -1);
-          expect(r.lastIndexOf(4, 2), -1);
-          expect(r.lastIndexOf(6, 3), -1);
-          expect(r.lastIndexOf(8, 4), -1);
+          expect(r.lastIndexOf(8), -1);
+          expect(r.lastIndexOf(3, 2), 2);
+          expect(r.lastIndexOf(3, 1), -1);
+          expect(r.lastIndexOf(5, 1), 1);
+          expect(r.lastIndexOf(5, 0), -1);
+          expect(r.lastIndexOf(7, 0), 0);
+          expect(r.lastIndexOf(7, -1), -1);
         });
+      });
+      test('regression', () {
+        final range = IntegerRange(500);
+        expect(range.contains(1000), isFalse);
       });
       test('printing', () {
         expect(IntegerRange().toString(), 'IntegerRange()');

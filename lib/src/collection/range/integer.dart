@@ -105,7 +105,7 @@ class IntegerRange extends ListBase<int>
         final value = element - start;
         if (value % step == 0) {
           final index = value ~/ step;
-          if (index >= startIndex) {
+          if (startIndex <= index && index < length) {
             return index;
           }
         }
@@ -125,7 +125,7 @@ class IntegerRange extends ListBase<int>
         final value = element - start;
         if (value % step == 0) {
           final index = value ~/ step;
-          if (index <= endIndex) {
+          if (0 <= index && index <= endIndex) {
             return index;
           }
         }
