@@ -1405,6 +1405,7 @@ void main() {
         {required List<T> included, required List<T> excluded}) {
       expect(range, included);
       expect(range.length, included.length);
+      expect(range.reversed, included.reversed);
       if (included.isEmpty) {
         expect(range.isEmpty, isTrue);
       } else {
@@ -1416,7 +1417,6 @@ void main() {
           expect(range.start, greaterThanOrEqualTo(range.end));
         }
       }
-      expect(range.reversed, included.reversed);
       for (var each in included.indexed()) {
         expect(each.value, range[each.index]);
         expect(range.contains(each.value), isTrue);
@@ -1554,111 +1554,6 @@ void main() {
           expect(() => IntegerRange(3).getRange(0, 4), throwsRangeError);
         });
       });
-      group('index', () {
-        test('indexOf (positive step)', () {
-          final r = IntegerRange(2, 7, 2); // [2, 4, 6]
-          expect(r.indexOf(null), -1);
-          expect(r.indexOf(1), -1);
-          expect(r.indexOf(2), 0);
-          expect(r.indexOf(3), -1);
-          expect(r.indexOf(4), 1);
-          expect(r.indexOf(5), -1);
-          expect(r.indexOf(6), 2);
-          expect(r.indexOf(7), -1);
-          expect(r.indexOf(8), -1);
-          expect(r.indexOf(2, 0), 0);
-          expect(r.indexOf(2, 1), -1);
-          expect(r.indexOf(4, 1), 1);
-          expect(r.indexOf(4, 2), -1);
-          expect(r.indexOf(6, 2), 2);
-          expect(r.indexOf(6, 3), -1);
-        });
-        test('contains (positive step)', () {
-          final r = IntegerRange(2, 7, 2); // [2, 4, 6]
-          expect(r.contains(null), isFalse);
-          expect(r.contains(0), isFalse);
-          expect(r.contains(1), isFalse);
-          expect(r.contains(2), isTrue);
-          expect(r.contains(3), isFalse);
-          expect(r.contains(4), isTrue);
-          expect(r.contains(5), isFalse);
-          expect(r.contains(6), isTrue);
-          expect(r.contains(7), isFalse);
-          expect(r.contains(8), isFalse);
-        });
-        test('indexOf (negative step)', () {
-          final r = IntegerRange(7, 2, -2); // [7, 5, 3]
-          expect(r.indexOf(null), -1);
-          expect(r.indexOf(0), -1);
-          expect(r.indexOf(1), -1);
-          expect(r.indexOf(2), -1);
-          expect(r.indexOf(3), 2);
-          expect(r.indexOf(4), -1);
-          expect(r.indexOf(5), 1);
-          expect(r.indexOf(6), -1);
-          expect(r.indexOf(7), 0);
-          expect(r.indexOf(8), -1);
-          expect(r.indexOf(9), -1);
-          expect(r.indexOf(3, 2), 2);
-          expect(r.indexOf(3, 3), -1);
-          expect(r.indexOf(5, 1), 1);
-          expect(r.indexOf(5, 2), -1);
-          expect(r.indexOf(7, 0), 0);
-          expect(r.indexOf(7, 1), -1);
-        });
-        test('contains (negative step)', () {
-          final r = IntegerRange(7, 2, -2); // [7, 5, 3]
-          expect(r.contains(null), isFalse);
-          expect(r.contains(0), isFalse);
-          expect(r.contains(1), isFalse);
-          expect(r.contains(2), isFalse);
-          expect(r.contains(3), isTrue);
-          expect(r.contains(4), isFalse);
-          expect(r.contains(5), isTrue);
-          expect(r.contains(6), isFalse);
-          expect(r.contains(7), isTrue);
-          expect(r.contains(8), isFalse);
-          expect(r.contains(9), isFalse);
-        });
-        test('lastIndexOf (positive step)', () {
-          final r = IntegerRange(2, 7, 2); // [2, 4, 6]
-          expect(r.lastIndexOf(null), -1);
-          expect(r.lastIndexOf(0), -1);
-          expect(r.lastIndexOf(1), -1);
-          expect(r.lastIndexOf(2), 0);
-          expect(r.lastIndexOf(3), -1);
-          expect(r.lastIndexOf(4), 1);
-          expect(r.lastIndexOf(5), -1);
-          expect(r.lastIndexOf(6), 2);
-          expect(r.lastIndexOf(7), -1);
-          expect(r.lastIndexOf(8), -1);
-          expect(r.lastIndexOf(2, 0), 0);
-          expect(r.lastIndexOf(2, -1), -1);
-          expect(r.lastIndexOf(4, 1), 1);
-          expect(r.lastIndexOf(4, 0), -1);
-          expect(r.lastIndexOf(6, 2), 2);
-          expect(r.lastIndexOf(6, 1), -1);
-        });
-        test('lastIndexOf (negative step)', () {
-          final r = IntegerRange(7, 2, -2); // [7, 5, 3]
-          expect(r.lastIndexOf(null), -1);
-          expect(r.lastIndexOf(1), -1);
-          expect(r.lastIndexOf(2), -1);
-          expect(r.lastIndexOf(3), 2);
-          expect(r.lastIndexOf(4), -1);
-          expect(r.lastIndexOf(5), 1);
-          expect(r.lastIndexOf(6), -1);
-          expect(r.lastIndexOf(7), 0);
-          expect(r.lastIndexOf(8), -1);
-          expect(r.lastIndexOf(8), -1);
-          expect(r.lastIndexOf(3, 2), 2);
-          expect(r.lastIndexOf(3, 1), -1);
-          expect(r.lastIndexOf(5, 1), 1);
-          expect(r.lastIndexOf(5, 0), -1);
-          expect(r.lastIndexOf(7, 0), 0);
-          expect(r.lastIndexOf(7, -1), -1);
-        });
-      });
       test('printing', () {
         expect(IntegerRange().toString(), 'IntegerRange()');
         expect(IntegerRange(1).toString(), 'IntegerRange(1)');
@@ -1773,80 +1668,14 @@ void main() {
         });
         test('getRange', () {
           verify<double>(DoubleRange(3.0).getRange(0, 3),
-              included: [0.0, 1.0, 2.0], excluded: []);
+              included: [0.0, 1.0, 2.0], excluded: [-1.0, 3.0]);
           verify<double>(DoubleRange(3.0).getRange(0, 2),
-              included: [0.0, 1.0], excluded: []);
+              included: [0.0, 1.0], excluded: [-1.0, 2.0, 3.0]);
           verify<double>(DoubleRange(3.0).getRange(0, 1),
-              included: [0.0], excluded: []);
+              included: [0.0], excluded: [-1.0, 1.0, 2.0, 3.0]);
           verify<double>(DoubleRange(3.0).getRange(0, 0),
-              included: [], excluded: []);
+              included: [], excluded: [-1.0, 0.0, 1.0, 2.0, 3.0]);
           expect(() => DoubleRange(3.0).getRange(0, 4), throwsRangeError);
-        });
-      });
-      group('index', () {
-        test('indexOf (positive step)', () {
-          final r = DoubleRange(2.0, 7.0, 1.5); // [2.0, 3.5, 5.0, 6.5]
-          expect(r.indexOf(null), -1);
-          expect(r.indexOf(1.0), -1);
-          expect(r.indexOf(2.0), 0);
-          expect(r.indexOf(3.0), -1);
-          expect(r.indexOf(3.5), 1);
-          expect(r.indexOf(7.0), -1);
-          expect(r.indexOf(5.0), 2);
-          expect(r.indexOf(6.0), -1);
-          expect(r.indexOf(6.5), 3);
-          expect(r.indexOf(8.0), -1);
-          expect(r.indexOf(2.0, 0), 0);
-          expect(r.indexOf(2.0, 1), -1);
-          expect(r.indexOf(3.5, 1), 1);
-          expect(r.indexOf(3.5, 2), -1);
-          expect(r.indexOf(5.0, 2), 2);
-          expect(r.indexOf(5.0, 3), -1);
-          expect(r.indexOf(6.5, 3), 3);
-          expect(r.indexOf(6.5, 4), -1);
-        });
-        test('indexOf (negative step)', () {
-          final r = DoubleRange(7.0, 2.0, -1.5); // [7.0, 5.5, 4.0, 2.5]
-          expect(r.indexOf(null), -1);
-          expect(r.indexOf(1.0), -1);
-          expect(r.indexOf(2.5), 3);
-          expect(r.indexOf(3.5), -1);
-          expect(r.indexOf(4.0), 2);
-          expect(r.indexOf(4.0), 2);
-          expect(r.indexOf(4.0), 2);
-          expect(r.indexOf(4.0), 2);
-
-          expect(r.indexOf(8.0), -1);
-          expect(r.indexOf(7.0, 1), -1);
-          expect(r.indexOf(5.5, 2), -1);
-          expect(r.indexOf(4.0, 3), -1);
-          expect(r.indexOf(2.5, 4), -1);
-        });
-        test('lastIndexOf (positive step)', () {
-          final r = DoubleRange(2.0, 7.0, 1.5); // [2.0, 3.5, 5.0, 6.5]
-          expect(r.lastIndexOf(null), -1);
-          expect(r.lastIndexOf(1.0), -1);
-          expect(r.lastIndexOf(3.0), -1);
-          expect(r.lastIndexOf(7.0), -1);
-          expect(r.lastIndexOf(2.0, -1), -1);
-          expect(r.lastIndexOf(3.5, 0), -1);
-          expect(r.lastIndexOf(5.0, 1), -1);
-          expect(r.lastIndexOf(6.5, 2), -1);
-          expect(r.lastIndexOf(7.0, 3), -1);
-          expect(r.lastIndexOf(8.5, 4), -1);
-        });
-        test('lastIndexOf (negative step)', () {
-          final r = DoubleRange(7.0, 2.0, -1.5); // [7.0, 5.5, 4.0, 2.5]
-          expect(r.lastIndexOf(null), -1);
-          expect(r.lastIndexOf(2.0), -1);
-          expect(r.lastIndexOf(5.0), -1);
-          expect(r.lastIndexOf(8.0), -1);
-          expect(r.lastIndexOf(7.0, -1), -1);
-          expect(r.lastIndexOf(5.5, 0), -1);
-          expect(r.lastIndexOf(4.0, 1), -1);
-          expect(r.lastIndexOf(2.5, 2), -1);
-          expect(r.lastIndexOf(1.0, 3), -1);
-          expect(r.lastIndexOf(0.0, 4), -1);
         });
       });
       test('printing', () {
@@ -1881,76 +1710,100 @@ void main() {
       });
     });
     group('BigInt', () {
-      void verify(List<BigInt> range, List/*<int|BigInt>*/ expected) {
-        final normalized = expected
-            .map((value) => value is BigInt ? value : BigInt.from(value))
-            .cast<BigInt>()
-            .toList(growable: false);
-        expect(range, normalized);
-        expect(range.reversed, normalized.reversed);
-        final iterator = range.iterator;
-        for (var i = 0; i < normalized.length; i++) {
-          expect(iterator.moveNext(), isTrue);
-          expect(iterator.current, range[i]);
-          expect(range.contains(iterator.current), isTrue);
-          expect(range.indexOf(iterator.current), i);
-          expect(range.indexOf(iterator.current, i), i);
-          expect(range.indexOf(iterator.current, -1), i);
-          expect(range.lastIndexOf(iterator.current), i);
-          expect(range.lastIndexOf(iterator.current, i), i);
-          expect(range.lastIndexOf(iterator.current, expected.length), i);
+      List<BigInt> normalize(List values) => values
+          .map((value) => value is BigInt ? value : BigInt.from(value))
+          .cast<BigInt>()
+          .toList(growable: false);
+      void verify(Range<BigInt> range,
+          {required List/*<int|BigInt>*/ included,
+          required List/*<int|BigInt>*/ excluded}) {
+        final nIncluded = normalize(included);
+        final nExcluded = normalize(excluded);
+        expect(range, nIncluded);
+        expect(range.length, nIncluded.length);
+        expect(range.reversed, nIncluded.reversed);
+        if (nIncluded.isEmpty) {
+          expect(range.isEmpty, isTrue);
+        } else {
+          expect(range.isNotEmpty, isTrue);
+          expect(range.start, nIncluded.first);
+          if (range.step > BigInt.zero) {
+            expect(range.start, lessThanOrEqualTo(range.end));
+          } else {
+            expect(range.start, greaterThanOrEqualTo(range.end));
+          }
         }
-        expect(iterator.moveNext(), isFalse);
-        expect(() => range[-1], throwsRangeError);
-        expect(() => range[normalized.length], throwsRangeError);
-        for (final value in normalized) {
-          expect(range.contains(value), isTrue);
+        for (var each in nIncluded.indexed()) {
+          expect(each.value, range[each.index]);
+          expect(range.contains(each.value), isTrue);
+          expect(range.indexOf(each.value), each.index);
+          expect(range.indexOf(each.value, each.index), each.index);
+          expect(range.indexOf(each.value, -1), each.index);
+          expect(range.lastIndexOf(each.value), each.index);
+          expect(range.lastIndexOf(each.value, each.index), each.index);
+          expect(range.lastIndexOf(each.value, nIncluded.length), each.index);
+        }
+        for (var value in nExcluded) {
+          expect(range.contains(value), isFalse);
+          expect(range.indexOf(value), -1);
+          expect(range.indexOf(value, 0), -1);
+          expect(range.indexOf(value, range.length), -1);
+          expect(range.lastIndexOf(value), -1);
+          expect(range.lastIndexOf(value, 0), -1);
+          expect(range.lastIndexOf(value, range.length), -1);
         }
       }
 
       group('constructor', () {
         test('empty', () {
-          verify(BigIntRange(), []);
-          expect(BigIntRange().contains(BigInt.one), isFalse);
+          verify(BigIntRange(), included: [], excluded: [0]);
         });
         test('1 argument', () {
-          verify(BigIntRange(BigInt.from(0)), []);
-          verify(BigIntRange(BigInt.from(1)), [0]);
-          verify(BigIntRange(BigInt.from(2)), [0, 1]);
-          verify(BigIntRange(BigInt.from(3)), [0, 1, 2]);
+          verify(BigIntRange(BigInt.from(0)),
+              included: [], excluded: [-1, 0, 1]);
+          verify(BigIntRange(BigInt.from(1)), included: [0], excluded: [-1, 1]);
+          verify(BigIntRange(BigInt.from(2)),
+              included: [0, 1], excluded: [-1, 2]);
+          verify(BigIntRange(BigInt.from(3)),
+              included: [0, 1, 2], excluded: [-1, 3]);
         });
         test('2 argument', () {
-          verify(BigIntRange(BigInt.from(0), BigInt.from(4)), [0, 1, 2, 3]);
-          verify(BigIntRange(BigInt.from(5), BigInt.from(9)), [5, 6, 7, 8]);
-          verify(BigIntRange(BigInt.from(9), BigInt.from(5)), [9, 8, 7, 6]);
+          verify(BigIntRange(BigInt.from(0), BigInt.from(4)),
+              included: [0, 1, 2, 3], excluded: [-1, 4]);
+          verify(BigIntRange(BigInt.from(5), BigInt.from(9)),
+              included: [5, 6, 7, 8], excluded: [4, 9]);
+          verify(BigIntRange(BigInt.from(9), BigInt.from(5)),
+              included: [9, 8, 7, 6], excluded: [10, 5]);
         });
         test('3 argument (positive step)', () {
           verify(BigIntRange(BigInt.from(2), BigInt.from(8), BigInt.two),
-              [2, 4, 6]);
+              included: [2, 4, 6], excluded: [0, 1, 3, 5, 7, 8]);
           verify(BigIntRange(BigInt.from(3), BigInt.from(8), BigInt.two),
-              [3, 5, 7]);
-          verify(
-              BigIntRange(BigInt.from(4), BigInt.from(8), BigInt.two), [4, 6]);
+              included: [3, 5, 7], excluded: [1, 2, 4, 6, 8, 9]);
+          verify(BigIntRange(BigInt.from(4), BigInt.from(8), BigInt.two),
+              included: [4, 6], excluded: [2, 3, 5, 7, 8]);
           verify(BigIntRange(BigInt.from(2), BigInt.from(7), BigInt.two),
-              [2, 4, 6]);
-          verify(
-              BigIntRange(BigInt.from(2), BigInt.from(6), BigInt.two), [2, 4]);
+              included: [2, 4, 6], excluded: [0, 1, 3, 5, 7, 8]);
+          verify(BigIntRange(BigInt.from(2), BigInt.from(6), BigInt.two),
+              included: [2, 4], excluded: [0, 1, 3, 5, 6, 7, 8]);
         });
         test('3 argument (negative step)', () {
           verify(BigIntRange(BigInt.from(8), BigInt.from(2), -BigInt.two),
-              [8, 6, 4]);
+              included: [8, 6, 4], excluded: [2, 3, 5, 7, 9, 10]);
           verify(BigIntRange(BigInt.from(8), BigInt.from(3), -BigInt.two),
-              [8, 6, 4]);
-          verify(
-              BigIntRange(BigInt.from(8), BigInt.from(4), -BigInt.two), [8, 6]);
+              included: [8, 6, 4], excluded: [2, 3, 5, 7, 9, 10]);
+          verify(BigIntRange(BigInt.from(8), BigInt.from(4), -BigInt.two),
+              included: [8, 6], excluded: [2, 3, 4, 5, 7, 9, 10]);
           verify(BigIntRange(BigInt.from(7), BigInt.from(2), -BigInt.two),
-              [7, 5, 3]);
-          verify(
-              BigIntRange(BigInt.from(6), BigInt.from(2), -BigInt.two), [6, 4]);
+              included: [7, 5, 3], excluded: [1, 2, 4, 6, 8, 9]);
+          verify(BigIntRange(BigInt.from(6), BigInt.from(2), -BigInt.two),
+              included: [6, 4], excluded: [2, 3, 5, 7, 8, 9]);
         });
         test('shorthand', () {
-          verify(BigInt.zero.to(BigInt.from(3)), [0, 1, 2]);
-          verify(BigInt.two.to(BigInt.from(8), step: BigInt.two), [2, 4, 6]);
+          verify(BigInt.zero.to(BigInt.from(3)),
+              included: [0, 1, 2], excluded: [-1, 4]);
+          verify(BigInt.two.to(BigInt.from(8), step: BigInt.two),
+              included: [2, 4, 6], excluded: [0, 1, 3, 5, 7, 8]);
         });
         test('invalid', () {
           expect(() => BigIntRange(BigInt.zero, BigInt.two, BigInt.zero),
@@ -1965,140 +1818,40 @@ void main() {
       });
       group('sublist', () {
         test('sublist (1 argument)', () {
-          verify(BigIntRange(BigInt.from(3)).sublist(0), [0, 1, 2]);
-          verify(BigIntRange(BigInt.from(3)).sublist(1), [1, 2]);
-          verify(BigIntRange(BigInt.from(3)).sublist(2), [2]);
-          verify(BigIntRange(BigInt.from(3)).sublist(3), []);
+          verify(BigIntRange(BigInt.from(3)).sublist(0),
+              included: [0, 1, 2], excluded: [-1, 3]);
+          verify(BigIntRange(BigInt.from(3)).sublist(1),
+              included: [1, 2], excluded: [-1, 0, 3]);
+          verify(BigIntRange(BigInt.from(3)).sublist(2),
+              included: [2], excluded: [-1, 0, 1, 3]);
+          verify(BigIntRange(BigInt.from(3)).sublist(3),
+              included: [], excluded: [-1, 0, 1, 2, 3]);
           expect(
               () => BigIntRange(BigInt.from(3)).sublist(4), throwsRangeError);
         });
         test('sublist (2 arguments)', () {
-          verify(BigIntRange(BigInt.from(3)).sublist(0, 3), [0, 1, 2]);
-          verify(BigIntRange(BigInt.from(3)).sublist(0, 2), [0, 1]);
-          verify(BigIntRange(BigInt.from(3)).sublist(0, 1), [0]);
-          verify(BigIntRange(BigInt.from(3)).sublist(0, 0), []);
+          verify(BigIntRange(BigInt.from(3)).sublist(0, 3),
+              included: [0, 1, 2], excluded: [-1, 3]);
+          verify(BigIntRange(BigInt.from(3)).sublist(0, 2),
+              included: [0, 1], excluded: [-1, 2, 3]);
+          verify(BigIntRange(BigInt.from(3)).sublist(0, 1),
+              included: [0], excluded: [-1, 1, 2, 3]);
+          verify(BigIntRange(BigInt.from(3)).sublist(0, 0),
+              included: [], excluded: [-1, 0, 1, 2, 3]);
           expect(() => BigIntRange(BigInt.from(3)).sublist(0, 4),
               throwsRangeError);
         });
         test('getRange', () {
-          verify(
-              BigIntRange(BigInt.from(3)).getRange(0, 3).toList(), [0, 1, 2]);
-          verify(BigIntRange(BigInt.from(3)).getRange(0, 2).toList(), [0, 1]);
-          verify(BigIntRange(BigInt.from(3)).getRange(0, 1).toList(), [0]);
-          verify(BigIntRange(BigInt.from(3)).getRange(0, 0).toList(), []);
+          verify(BigIntRange(BigInt.from(3)).getRange(0, 3),
+              included: [0, 1, 2], excluded: [-1, 3]);
+          verify(BigIntRange(BigInt.from(3)).getRange(0, 2),
+              included: [0, 1], excluded: [-1, 2, 3]);
+          verify(BigIntRange(BigInt.from(3)).getRange(0, 1),
+              included: [0], excluded: [-1, 1, 2, 3]);
+          verify(BigIntRange(BigInt.from(3)).getRange(0, 0),
+              included: [], excluded: [-1, 0, 1, 2, 3]);
           expect(() => BigIntRange(BigInt.from(3)).getRange(0, 4),
               throwsRangeError);
-        });
-      });
-      group('index', () {
-        test('indexOf (positive step)', () {
-          final r = BigIntRange(
-              BigInt.from(2), BigInt.from(7), BigInt.from(2)); // [2, 4, 6]
-          expect(r.indexOf(null), -1);
-          expect(r.indexOf(BigInt.from(1)), -1);
-          expect(r.indexOf(BigInt.from(2)), 0);
-          expect(r.indexOf(BigInt.from(3)), -1);
-          expect(r.indexOf(BigInt.from(4)), 1);
-          expect(r.indexOf(BigInt.from(5)), -1);
-          expect(r.indexOf(BigInt.from(6)), 2);
-          expect(r.indexOf(BigInt.from(7)), -1);
-          expect(r.indexOf(BigInt.from(8)), -1);
-          expect(r.indexOf(BigInt.from(2), 0), 0);
-          expect(r.indexOf(BigInt.from(2), 1), -1);
-          expect(r.indexOf(BigInt.from(4), 1), 1);
-          expect(r.indexOf(BigInt.from(4), 2), -1);
-          expect(r.indexOf(BigInt.from(6), 2), 2);
-          expect(r.indexOf(BigInt.from(6), 3), -1);
-        });
-        test('contains (positive step)', () {
-          final r = BigIntRange(
-              BigInt.from(2), BigInt.from(7), BigInt.from(2)); // [2, 4, 6]
-          expect(r.contains(null), isFalse);
-          expect(r.contains(BigInt.from(0)), isFalse);
-          expect(r.contains(BigInt.from(1)), isFalse);
-          expect(r.contains(BigInt.from(2)), isTrue);
-          expect(r.contains(BigInt.from(3)), isFalse);
-          expect(r.contains(BigInt.from(4)), isTrue);
-          expect(r.contains(BigInt.from(5)), isFalse);
-          expect(r.contains(BigInt.from(6)), isTrue);
-          expect(r.contains(BigInt.from(7)), isFalse);
-          expect(r.contains(BigInt.from(8)), isFalse);
-        });
-        test('indexOf (negative step)', () {
-          final r = BigIntRange(
-              BigInt.from(7), BigInt.from(2), BigInt.from(-2)); // [7, 5, 3]
-          expect(r.indexOf(null), -1);
-          expect(r.indexOf(BigInt.from(0)), -1);
-          expect(r.indexOf(BigInt.from(1)), -1);
-          expect(r.indexOf(BigInt.from(2)), -1);
-          expect(r.indexOf(BigInt.from(3)), 2);
-          expect(r.indexOf(BigInt.from(4)), -1);
-          expect(r.indexOf(BigInt.from(5)), 1);
-          expect(r.indexOf(BigInt.from(6)), -1);
-          expect(r.indexOf(BigInt.from(7)), 0);
-          expect(r.indexOf(BigInt.from(8)), -1);
-          expect(r.indexOf(BigInt.from(9)), -1);
-          expect(r.indexOf(BigInt.from(3), 2), 2);
-          expect(r.indexOf(BigInt.from(3), 3), -1);
-          expect(r.indexOf(BigInt.from(5), 1), 1);
-          expect(r.indexOf(BigInt.from(5), 2), -1);
-          expect(r.indexOf(BigInt.from(7), 0), 0);
-          expect(r.indexOf(BigInt.from(7), 1), -1);
-        });
-        test('contains (negative step)', () {
-          final r = BigIntRange(
-              BigInt.from(7), BigInt.from(2), BigInt.from(-2)); // [7, 5, 3]
-          expect(r.contains(null), isFalse);
-          expect(r.contains(BigInt.from(0)), isFalse);
-          expect(r.contains(BigInt.from(1)), isFalse);
-          expect(r.contains(BigInt.from(2)), isFalse);
-          expect(r.contains(BigInt.from(3)), isTrue);
-          expect(r.contains(BigInt.from(4)), isFalse);
-          expect(r.contains(BigInt.from(5)), isTrue);
-          expect(r.contains(BigInt.from(6)), isFalse);
-          expect(r.contains(BigInt.from(7)), isTrue);
-          expect(r.contains(BigInt.from(8)), isFalse);
-          expect(r.contains(BigInt.from(9)), isFalse);
-        });
-        test('lastIndexOf (positive step)', () {
-          final r = BigIntRange(
-              BigInt.from(2), BigInt.from(7), BigInt.from(2)); // [2, 4, 6]
-          expect(r.lastIndexOf(null), -1);
-          expect(r.lastIndexOf(BigInt.from(0)), -1);
-          expect(r.lastIndexOf(BigInt.from(1)), -1);
-          expect(r.lastIndexOf(BigInt.from(2)), 0);
-          expect(r.lastIndexOf(BigInt.from(3)), -1);
-          expect(r.lastIndexOf(BigInt.from(4)), 1);
-          expect(r.lastIndexOf(BigInt.from(5)), -1);
-          expect(r.lastIndexOf(BigInt.from(6)), 2);
-          expect(r.lastIndexOf(BigInt.from(7)), -1);
-          expect(r.lastIndexOf(BigInt.from(8)), -1);
-          expect(r.lastIndexOf(BigInt.from(2), 0), 0);
-          expect(r.lastIndexOf(BigInt.from(2), -1), -1);
-          expect(r.lastIndexOf(BigInt.from(4), 1), 1);
-          expect(r.lastIndexOf(BigInt.from(4), 0), -1);
-          expect(r.lastIndexOf(BigInt.from(6), 2), 2);
-          expect(r.lastIndexOf(BigInt.from(6), 1), -1);
-        });
-        test('lastIndexOf (negative step)', () {
-          final r = BigIntRange(
-              BigInt.from(7), BigInt.from(2), BigInt.from(-2)); // [7, 5, 3]
-          expect(r.lastIndexOf(null), -1);
-          expect(r.lastIndexOf(BigInt.from(1)), -1);
-          expect(r.lastIndexOf(BigInt.from(2)), -1);
-          expect(r.lastIndexOf(BigInt.from(3)), 2);
-          expect(r.lastIndexOf(BigInt.from(4)), -1);
-          expect(r.lastIndexOf(BigInt.from(5)), 1);
-          expect(r.lastIndexOf(BigInt.from(6)), -1);
-          expect(r.lastIndexOf(BigInt.from(7)), 0);
-          expect(r.lastIndexOf(BigInt.from(8)), -1);
-          expect(r.lastIndexOf(BigInt.from(8)), -1);
-          expect(r.lastIndexOf(BigInt.from(3), 2), 2);
-          expect(r.lastIndexOf(BigInt.from(3), 1), -1);
-          expect(r.lastIndexOf(BigInt.from(5), 1), 1);
-          expect(r.lastIndexOf(BigInt.from(5), 0), -1);
-          expect(r.lastIndexOf(BigInt.from(7), 0), 0);
-          expect(r.lastIndexOf(BigInt.from(7), -1), -1);
         });
       });
       test('printing', () {
