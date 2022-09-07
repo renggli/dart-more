@@ -2,6 +2,7 @@ import 'dart:math';
 
 import 'package:more/collection.dart';
 import 'package:more/comparator.dart';
+import 'package:more/iterable.dart';
 import 'package:more/math.dart';
 import 'package:test/test.dart';
 
@@ -1400,75 +1401,92 @@ void main() {
     });
   });
   group('range', () {
-    void verify(Range<num> range, List<num> expected) {
-      expect(range, expected);
-      expect(range.step, isNot(0));
-      expect(range.length, expected.length);
-      if (expected.isEmpty) {
+    void verify<T extends num>(Range<T> range,
+        {required List<T> included, required List<T> excluded}) {
+      expect(range, included);
+      expect(range.length, included.length);
+      if (included.isEmpty) {
         expect(range.isEmpty, isTrue);
       } else {
         expect(range.isNotEmpty, isTrue);
-        expect(range.start, expected.first);
+        expect(range.start, included.first);
         if (range.step > 0) {
           expect(range.start, lessThanOrEqualTo(range.end));
         } else {
           expect(range.start, greaterThanOrEqualTo(range.end));
         }
       }
-      expect(range.reversed, expected.reversed);
-      final iterator = range.iterator;
-      for (var i = 0; i < expected.length; i++) {
-        expect(iterator.moveNext(), isTrue);
-        expect(iterator.current, range[i]);
-        expect(range.indexOf(iterator.current), i);
-        expect(range.indexOf(iterator.current, i), i);
-        expect(range.indexOf(iterator.current, -1), i);
-        expect(range.lastIndexOf(iterator.current), i);
-        expect(range.lastIndexOf(iterator.current, i), i);
-        expect(range.lastIndexOf(iterator.current, expected.length), i);
+      expect(range.reversed, included.reversed);
+      for (var each in included.indexed()) {
+        expect(each.value, range[each.index]);
+        expect(range.contains(each.value), isTrue);
+        expect(range.indexOf(each.value), each.index);
+        expect(range.indexOf(each.value, each.index), each.index);
+        expect(range.indexOf(each.value, -1), each.index);
+        expect(range.lastIndexOf(each.value), each.index);
+        expect(range.lastIndexOf(each.value, each.index), each.index);
+        expect(range.lastIndexOf(each.value, included.length), each.index);
       }
-      expect(iterator.moveNext(), isFalse);
+      for (var value in excluded) {
+        expect(range.contains(value), isFalse);
+        expect(range.indexOf(value), -1);
+        expect(range.indexOf(value, 0), -1);
+        expect(range.indexOf(value, range.length), -1);
+        expect(range.lastIndexOf(value), -1);
+        expect(range.lastIndexOf(value, 0), -1);
+        expect(range.lastIndexOf(value, range.length), -1);
+      }
       expect(() => range[-1], throwsRangeError);
-      expect(() => range[expected.length], throwsRangeError);
-      for (final value in expected) {
-        expect(range.contains(value), isTrue);
-      }
+      expect(() => range[included.length], throwsRangeError);
     }
 
     group('int', () {
       group('constructor', () {
         test('empty', () {
-          verify(IntegerRange(), []);
-          expect(IntegerRange().contains(0), isFalse);
+          verify<int>(IntegerRange(), included: [], excluded: [0]);
         });
         test('1 argument', () {
-          verify(IntegerRange(0), []);
-          verify(IntegerRange(1), [0]);
-          verify(IntegerRange(2), [0, 1]);
-          verify(IntegerRange(3), [0, 1, 2]);
+          verify<int>(IntegerRange(0), included: [], excluded: [-1, 0, 1]);
+          verify<int>(IntegerRange(1), included: [0], excluded: [-1, 1]);
+          verify<int>(IntegerRange(2), included: [0, 1], excluded: [-1, 2]);
+          verify<int>(IntegerRange(3), included: [0, 1, 2], excluded: [-1, 3]);
         });
         test('2 argument', () {
-          verify(IntegerRange(0, 4), [0, 1, 2, 3]);
-          verify(IntegerRange(5, 9), [5, 6, 7, 8]);
-          verify(IntegerRange(9, 5), [9, 8, 7, 6]);
+          verify<int>(IntegerRange(0, 4),
+              included: [0, 1, 2, 3], excluded: [-1, 4]);
+          verify<int>(IntegerRange(5, 9),
+              included: [5, 6, 7, 8], excluded: [4, 9]);
+          verify<int>(IntegerRange(9, 5),
+              included: [9, 8, 7, 6], excluded: [10, 5]);
         });
         test('3 argument (positive step)', () {
-          verify(IntegerRange(2, 8, 2), [2, 4, 6]);
-          verify(IntegerRange(3, 8, 2), [3, 5, 7]);
-          verify(IntegerRange(4, 8, 2), [4, 6]);
-          verify(IntegerRange(2, 7, 2), [2, 4, 6]);
-          verify(IntegerRange(2, 6, 2), [2, 4]);
+          verify<int>(IntegerRange(2, 8, 2),
+              included: [2, 4, 6], excluded: [0, 1, 3, 5, 7, 8]);
+          verify<int>(IntegerRange(3, 8, 2),
+              included: [3, 5, 7], excluded: [1, 2, 4, 6, 8, 9]);
+          verify<int>(IntegerRange(4, 8, 2),
+              included: [4, 6], excluded: [2, 3, 5, 7, 8]);
+          verify<int>(IntegerRange(2, 7, 2),
+              included: [2, 4, 6], excluded: [0, 1, 3, 5, 7, 8]);
+          verify<int>(IntegerRange(2, 6, 2),
+              included: [2, 4], excluded: [0, 1, 3, 5, 6, 7, 8]);
         });
         test('3 argument (negative step)', () {
-          verify(IntegerRange(8, 2, -2), [8, 6, 4]);
-          verify(IntegerRange(8, 3, -2), [8, 6, 4]);
-          verify(IntegerRange(8, 4, -2), [8, 6]);
-          verify(IntegerRange(7, 2, -2), [7, 5, 3]);
-          verify(IntegerRange(6, 2, -2), [6, 4]);
+          verify<int>(IntegerRange(8, 2, -2),
+              included: [8, 6, 4], excluded: [2, 3, 5, 7, 9, 10]);
+          verify<int>(IntegerRange(8, 3, -2),
+              included: [8, 6, 4], excluded: [2, 3, 5, 7, 9, 10]);
+          verify<int>(IntegerRange(8, 4, -2),
+              included: [8, 6], excluded: [2, 3, 4, 5, 7, 9, 10]);
+          verify<int>(IntegerRange(7, 2, -2),
+              included: [7, 5, 3], excluded: [1, 2, 4, 6, 8, 9]);
+          verify<int>(IntegerRange(6, 2, -2),
+              included: [6, 4], excluded: [2, 3, 5, 7, 8, 9]);
         });
         test('shorthand', () {
-          verify(0.to(3), [0, 1, 2]);
-          verify(2.to(8, step: 2), [2, 4, 6]);
+          verify<int>(0.to(3), included: [0, 1, 2], excluded: [-1, 4]);
+          verify<int>(2.to(8, step: 2),
+              included: [2, 4, 6], excluded: [0, 1, 3, 5, 7, 8]);
         });
         test('invalid', () {
           expect(() => IntegerRange(0, 2, 0), throwsArgumentError);
@@ -1477,43 +1495,62 @@ void main() {
         });
         group('indices', () {
           test('empty', () {
-            verify([].indices(), []);
-            verify([].indices(step: -1), []);
+            verify<int>([].indices(), included: [], excluded: [0, 1, 2]);
+            verify<int>([].indices(step: -1),
+                included: [], excluded: [0, 1, 2]);
             expect(() => [].indices(step: 0), throwsArgumentError);
           });
           test('default', () {
-            verify([1, 2, 3].indices(), [0, 1, 2]);
-            verify([1, 2, 3].indices(step: -1), [2, 1, 0]);
+            verify<int>([1, 2, 3].indices(),
+                included: [0, 1, 2], excluded: [-1, 3]);
+            verify<int>([1, 2, 3].indices(step: -1),
+                included: [2, 1, 0], excluded: [-1, 3]);
             expect(() => [1, 2, 3].indices(step: 0), throwsArgumentError);
           });
           test('step', () {
-            verify([1, 2, 3].indices(step: 2), [0, 2]);
-            verify([1, 2, 3, 4].indices(step: 2), [0, 2]);
-            verify([1, 2, 3].indices(step: -2), [2, 0]);
-            verify([1, 2, 3, 4].indices(step: -2), [3, 1]);
+            verify<int>([1, 2, 3].indices(step: 2),
+                included: [0, 2], excluded: [-1, 1, 3]);
+            verify<int>([1, 2, 3, 4].indices(step: 2),
+                included: [0, 2], excluded: [-1, 1, 3]);
+            verify<int>([1, 2, 3].indices(step: -2),
+                included: [2, 0], excluded: [-1, 1, 3]);
+            verify<int>([1, 2, 3, 4].indices(step: -2),
+                included: [3, 1], excluded: [0, 2, 4, 6]);
           });
         });
       });
       group('sublist', () {
         test('sublist (1 argument)', () {
-          verify(IntegerRange(3).sublist(0), [0, 1, 2]);
-          verify(IntegerRange(3).sublist(1), [1, 2]);
-          verify(IntegerRange(3).sublist(2), [2]);
-          verify(IntegerRange(3).sublist(3), []);
+          verify<int>(IntegerRange(3).sublist(0),
+              included: [0, 1, 2], excluded: [-1, 3]);
+          verify<int>(IntegerRange(3).sublist(1),
+              included: [1, 2], excluded: [-1, 0, 3]);
+          verify<int>(IntegerRange(3).sublist(2),
+              included: [2], excluded: [-1, 0, 1, 3]);
+          verify<int>(IntegerRange(3).sublist(3),
+              included: [], excluded: [-1, 0, 1, 2, 3]);
           expect(() => IntegerRange(3).sublist(4), throwsRangeError);
         });
         test('sublist (2 arguments)', () {
-          verify(IntegerRange(3).sublist(0, 3), [0, 1, 2]);
-          verify(IntegerRange(3).sublist(0, 2), [0, 1]);
-          verify(IntegerRange(3).sublist(0, 1), [0]);
-          verify(IntegerRange(3).sublist(0, 0), []);
+          verify<int>(IntegerRange(3).sublist(0, 3),
+              included: [0, 1, 2], excluded: [-1, 3]);
+          verify<int>(IntegerRange(3).sublist(0, 2),
+              included: [0, 1], excluded: [-1, 2, 3]);
+          verify<int>(IntegerRange(3).sublist(0, 1),
+              included: [0], excluded: [-1, 1, 2, 3]);
+          verify<int>(IntegerRange(3).sublist(0, 0),
+              included: [], excluded: [-1, 0, 1, 2, 3]);
           expect(() => IntegerRange(3).sublist(0, 4), throwsRangeError);
         });
         test('getRange', () {
-          verify(IntegerRange(3).getRange(0, 3), [0, 1, 2]);
-          verify(IntegerRange(3).getRange(0, 2), [0, 1]);
-          verify(IntegerRange(3).getRange(0, 1), [0]);
-          verify(IntegerRange(3).getRange(0, 0), []);
+          verify<int>(IntegerRange(3).getRange(0, 3),
+              included: [0, 1, 2], excluded: [-1, 3]);
+          verify<int>(IntegerRange(3).getRange(0, 2),
+              included: [0, 1], excluded: [-1, 2, 3]);
+          verify<int>(IntegerRange(3).getRange(0, 1),
+              included: [0], excluded: [-1, 1, 2, 3]);
+          verify<int>(IntegerRange(3).getRange(0, 0),
+              included: [], excluded: [-1, 0, 1, 2, 3]);
           expect(() => IntegerRange(3).getRange(0, 4), throwsRangeError);
         });
       });
@@ -1655,37 +1692,55 @@ void main() {
     group('double', () {
       group('constructor', () {
         test('empty', () {
-          verify(DoubleRange(), []);
-          expect(DoubleRange().contains(0.0), isFalse);
+          verify<double>(DoubleRange(), included: [], excluded: [0.0]);
         });
         test('1 argument', () {
-          verify(DoubleRange(0.0), []);
-          verify(DoubleRange(1.0), [0.0]);
-          verify(DoubleRange(2.0), [0.0, 1.0]);
-          verify(DoubleRange(3.0), [0.0, 1.0, 2.0]);
+          verify<double>(DoubleRange(0.0),
+              included: [], excluded: [-1.0, 0.0, 1.0]);
+          verify<double>(DoubleRange(1.0),
+              included: [0.0], excluded: [-1.0, 1.0]);
+          verify<double>(DoubleRange(2.0),
+              included: [0.0, 1.0], excluded: [-1.0, 2.0]);
+          verify<double>(DoubleRange(3.0),
+              included: [0.0, 1.0, 2.0], excluded: [-1.0, 3.0]);
         });
         test('2 argument', () {
-          verify(DoubleRange(0.0, 4.0), [0.0, 1.0, 2.0, 3.0]);
-          verify(DoubleRange(5.0, 9.0), [5.0, 6.0, 7.0, 8.0]);
-          verify(DoubleRange(9.0, 5.0), [9.0, 8.0, 7.0, 6.0]);
+          verify<double>(DoubleRange(0.0, 4.0),
+              included: [0.0, 1.0, 2.0, 3.0], excluded: [-1.0, 4.0]);
+          verify<double>(DoubleRange(5.0, 9.0),
+              included: [5.0, 6.0, 7.0, 8.0], excluded: [4.0, 9.0]);
+          verify<double>(DoubleRange(9.0, 5.0),
+              included: [9.0, 8.0, 7.0, 6.0], excluded: [10.0, 5.0]);
         });
         test('3 argument (positive step)', () {
-          verify(DoubleRange(2.0, 8.0, 1.5), [2.0, 3.5, 5.0, 6.5]);
-          verify(DoubleRange(3.0, 8.0, 1.5), [3.0, 4.5, 6.0, 7.5]);
-          verify(DoubleRange(4.0, 8.0, 1.5), [4.0, 5.5, 7.0]);
-          verify(DoubleRange(2.0, 7.0, 1.5), [2.0, 3.5, 5.0, 6.5]);
-          verify(DoubleRange(2.0, 6.0, 1.5), [2.0, 3.5, 5.0]);
+          verify<double>(DoubleRange(2.0, 8.0, 1.5),
+              included: [2.0, 3.5, 5.0, 6.5], excluded: [0.5, 3.0, 8.0]);
+          verify<double>(DoubleRange(3.0, 8.0, 1.5),
+              included: [3.0, 4.5, 6.0, 7.5], excluded: [1.5, 5.0, 9.0]);
+          verify<double>(DoubleRange(4.0, 8.0, 1.5),
+              included: [4.0, 5.5, 7.0], excluded: [3.5, 5.0, 6.0, 8.5]);
+          verify<double>(DoubleRange(2.0, 7.0, 1.5),
+              included: [2.0, 3.5, 5.0, 6.5], excluded: [0.5, 4.0, 8.0]);
+          verify<double>(DoubleRange(2.0, 6.0, 1.5),
+              included: [2.0, 3.5, 5.0], excluded: [0.5, 3.0, 4.0, 6.0]);
         });
         test('3 argument (negative step)', () {
-          verify(DoubleRange(8.0, 2.0, -1.5), [8.0, 6.5, 5.0, 3.5]);
-          verify(DoubleRange(8.0, 3.0, -1.5), [8.0, 6.5, 5.0, 3.5]);
-          verify(DoubleRange(8.0, 4.0, -1.5), [8.0, 6.5, 5.0]);
-          verify(DoubleRange(7.0, 2.0, -1.5), [7.0, 5.5, 4.0, 2.5]);
-          verify(DoubleRange(6.0, 2.0, -1.5), [6.0, 4.5, 3.0]);
+          verify<double>(DoubleRange(8.0, 2.0, -1.5),
+              included: [8.0, 6.5, 5.0, 3.5], excluded: [9.5, 6.0, 2.0]);
+          verify<double>(DoubleRange(8.0, 3.0, -1.5),
+              included: [8.0, 6.5, 5.0, 3.5], excluded: [9.5, 6.0, 2.0]);
+          verify<double>(DoubleRange(8.0, 4.0, -1.5),
+              included: [8.0, 6.5, 5.0], excluded: [9.5, 5.5, 3.5]);
+          verify<double>(DoubleRange(7.0, 2.0, -1.5),
+              included: [7.0, 5.5, 4.0, 2.5], excluded: [8.5, 3.0, 2.0]);
+          verify<double>(DoubleRange(6.0, 2.0, -1.5),
+              included: [6.0, 4.5, 3.0], excluded: [7.5, 4.0, 1.5]);
         });
         test('shorthand', () {
-          verify(0.0.to(3.0), [0.0, 1.0, 2.0]);
-          verify(4.0.to(8.0, step: 1.5), [4.0, 5.5, 7.0]);
+          verify<double>(0.0.to(3.0),
+              included: [0.0, 1.0, 2.0], excluded: [-1.0, 0.5, 1.5, 2.5, 3.0]);
+          verify<double>(4.0.to(8.0, step: 1.5),
+              included: [4.0, 5.5, 7.0], excluded: [2.5, 5.0, 6.0, 8.5]);
         });
         test('invalid', () {
           expect(() => DoubleRange(0.0, 2.0, 0.0), throwsArgumentError);
@@ -1695,24 +1750,36 @@ void main() {
       });
       group('sublist', () {
         test('sublist (1 argument)', () {
-          verify(DoubleRange(3.0).sublist(0), [0.0, 1.0, 2.0]);
-          verify(DoubleRange(3.0).sublist(1), [1.0, 2.0]);
-          verify(DoubleRange(3.0).sublist(2), [2.0]);
-          verify(DoubleRange(3.0).sublist(3), []);
+          verify<double>(DoubleRange(3.0).sublist(0),
+              included: [0.0, 1.0, 2.0], excluded: [-1.0, 3.0]);
+          verify<double>(DoubleRange(3.0).sublist(1),
+              included: [1.0, 2.0], excluded: [-1.0, 0.0, 3.0]);
+          verify<double>(DoubleRange(3.0).sublist(2),
+              included: [2.0], excluded: [-1.0, 0.0, 1.0, 3.0]);
+          verify<double>(DoubleRange(3.0).sublist(3),
+              included: [], excluded: [-1.0, 0.0, 1.0, 2.0, 3.0]);
           expect(() => DoubleRange(3.0).sublist(4), throwsRangeError);
         });
         test('sublist (2 arguments)', () {
-          verify(DoubleRange(3.0).sublist(0, 3), [0.0, 1.0, 2.0]);
-          verify(DoubleRange(3.0).sublist(0, 2), [0.0, 1.0]);
-          verify(DoubleRange(3.0).sublist(0, 1), [0.0]);
-          verify(DoubleRange(3.0).sublist(0, 0), []);
+          verify<double>(DoubleRange(3.0).sublist(0, 3),
+              included: [0.0, 1.0, 2.0], excluded: [-1.0, 3.0]);
+          verify<double>(DoubleRange(3.0).sublist(0, 2),
+              included: [0.0, 1.0], excluded: [-1.0, 2.0, 3.0]);
+          verify<double>(DoubleRange(3.0).sublist(0, 1),
+              included: [0.0], excluded: [-1.0, 1.0, 2.0, 3.0]);
+          verify<double>(DoubleRange(3.0).sublist(0, 0),
+              included: [], excluded: [-1.0, 0.0, 1.0, 2.0, 3.0]);
           expect(() => DoubleRange(3.0).sublist(0, 4), throwsRangeError);
         });
         test('getRange', () {
-          verify(DoubleRange(3.0).getRange(0, 3), [0.0, 1.0, 2.0]);
-          verify(DoubleRange(3.0).getRange(0, 2), [0.0, 1.0]);
-          verify(DoubleRange(3.0).getRange(0, 1), [0.0]);
-          verify(DoubleRange(3.0).getRange(0, 0), []);
+          verify<double>(DoubleRange(3.0).getRange(0, 3),
+              included: [0.0, 1.0, 2.0], excluded: []);
+          verify<double>(DoubleRange(3.0).getRange(0, 2),
+              included: [0.0, 1.0], excluded: []);
+          verify<double>(DoubleRange(3.0).getRange(0, 1),
+              included: [0.0], excluded: []);
+          verify<double>(DoubleRange(3.0).getRange(0, 0),
+              included: [], excluded: []);
           expect(() => DoubleRange(3.0).getRange(0, 4), throwsRangeError);
         });
       });
@@ -1721,18 +1788,34 @@ void main() {
           final r = DoubleRange(2.0, 7.0, 1.5); // [2.0, 3.5, 5.0, 6.5]
           expect(r.indexOf(null), -1);
           expect(r.indexOf(1.0), -1);
+          expect(r.indexOf(2.0), 0);
           expect(r.indexOf(3.0), -1);
+          expect(r.indexOf(3.5), 1);
           expect(r.indexOf(7.0), -1);
+          expect(r.indexOf(5.0), 2);
+          expect(r.indexOf(6.0), -1);
+          expect(r.indexOf(6.5), 3);
+          expect(r.indexOf(8.0), -1);
+          expect(r.indexOf(2.0, 0), 0);
           expect(r.indexOf(2.0, 1), -1);
+          expect(r.indexOf(3.5, 1), 1);
           expect(r.indexOf(3.5, 2), -1);
+          expect(r.indexOf(5.0, 2), 2);
           expect(r.indexOf(5.0, 3), -1);
+          expect(r.indexOf(6.5, 3), 3);
           expect(r.indexOf(6.5, 4), -1);
         });
         test('indexOf (negative step)', () {
           final r = DoubleRange(7.0, 2.0, -1.5); // [7.0, 5.5, 4.0, 2.5]
           expect(r.indexOf(null), -1);
-          expect(r.indexOf(2.0), -1);
-          expect(r.indexOf(5.0), -1);
+          expect(r.indexOf(1.0), -1);
+          expect(r.indexOf(2.5), 3);
+          expect(r.indexOf(3.5), -1);
+          expect(r.indexOf(4.0), 2);
+          expect(r.indexOf(4.0), 2);
+          expect(r.indexOf(4.0), 2);
+          expect(r.indexOf(4.0), 2);
+
           expect(r.indexOf(8.0), -1);
           expect(r.indexOf(7.0, 1), -1);
           expect(r.indexOf(5.5, 2), -1);

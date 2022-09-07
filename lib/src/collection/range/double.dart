@@ -103,7 +103,7 @@ class DoubleRange extends ListBase<double>
       }
       final comparator = step > 0 ? _naturalComparator : _reverseComparator;
       final index = comparator.binarySearch(this, element);
-      if (startIndex <= index) {
+      if (startIndex <= index && index < length) {
         return index;
       }
     }
