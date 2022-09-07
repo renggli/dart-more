@@ -112,7 +112,7 @@ class BigIntRange extends ListBase<BigInt>
         final value = element - start;
         if (value % step == BigInt.zero) {
           final index = (value ~/ step).toInt();
-          if (index >= startIndex) {
+          if (startIndex <= index && index < length) {
             return index;
           }
         }
@@ -132,7 +132,7 @@ class BigIntRange extends ListBase<BigInt>
         final value = element - start;
         if (value % step == BigInt.zero) {
           final index = (value ~/ step).toInt();
-          if (index <= endIndex) {
+          if (0 <= index && index <= endIndex) {
             return index;
           }
         }
