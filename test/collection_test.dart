@@ -1401,11 +1401,20 @@ void main() {
     });
   });
   group('range', () {
-    void verify<T extends num>(Range<T> range,
-        {required List<T> included, required List<T> excluded}) {
+    void verify<T extends num>(
+      Range<T> range, {
+      required List<T> included,
+      required List<T> excluded,
+      bool reverse = true,
+    }) {
       expect(range, included);
       expect(range.length, included.length);
-      expect(range.reversed, included.reversed);
+      if (reverse) {
+        verify(range.reversed,
+            included: included.reversed.toList(),
+            excluded: excluded,
+            reverse: false);
+      }
       if (included.isEmpty) {
         expect(range.isEmpty, isTrue);
       } else {
@@ -1714,14 +1723,22 @@ void main() {
           .map((value) => value is BigInt ? value : BigInt.from(value))
           .cast<BigInt>()
           .toList(growable: false);
-      void verify(Range<BigInt> range,
-          {required List/*<int|BigInt>*/ included,
-          required List/*<int|BigInt>*/ excluded}) {
+      void verify(
+        Range<BigInt> range, {
+        required List/*<int|BigInt>*/ included,
+        required List/*<int|BigInt>*/ excluded,
+        bool reverse = true,
+      }) {
         final nIncluded = normalize(included);
         final nExcluded = normalize(excluded);
         expect(range, nIncluded);
         expect(range.length, nIncluded.length);
-        expect(range.reversed, nIncluded.reversed);
+        if (reverse) {
+          verify(range.reversed,
+              included: included.reversed.toList(),
+              excluded: excluded,
+              reverse: false);
+        }
         if (nIncluded.isEmpty) {
           expect(range.isEmpty, isTrue);
         } else {

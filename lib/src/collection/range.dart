@@ -12,4 +12,8 @@ abstract class Range<T> implements List<T> {
 
   /// The step size.
   T get step;
+
+  /// A [Range] in reverse order.
+  @override
+  Range<T> get reversed;
 }
