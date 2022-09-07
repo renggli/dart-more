@@ -88,6 +88,11 @@ void main() {
         expect(target.keys, [1, 2, 3]);
         expect(target.values, ['a', 'b', 'c']);
       });
+      test('iterable converter (default key and value providers)', () {
+        final target = ['a', 'b'].toBiMap();
+        expect(target.keys, ['a', 'b']);
+        expect(target.values, ['a', 'b']);
+      });
     });
     group('accessing', () {
       test('indexed', () {
@@ -502,63 +507,6 @@ void main() {
         'pushAll',
         () => allHeapTests(<T>(List<T> list, {Comparator<T>? comparator}) =>
             Heap<T>(comparator: comparator)..pushAll(list)));
-
-    // const ordered = [1, 2, 3, 4, 5];
-    // group('constructor', () {
-    //   test('empty', () {
-    //     final heap = Heap<int>();
-    //     verifyHeapInvariants(heap, source: []);
-    //   });
-    //   for (var permutation in ordered.permutations()) {
-    //     test('of(${permutation.join(', ')})', () {
-    //       final heap = Heap<int>.of(permutation);
-    //       verifyHeapInvariants(heap, source: permutation);
-    //       for (var i = ordered.length - 1; i >= 0; i--) {
-    //         expect(heap.peek, ordered[i]);
-    //         expect(heap.pop(), ordered[i]);
-    //       }
-    //     });
-    //   }
-    // });
-    // group('push/pop', () {
-    //   for (var permutation in ordered.permutations()) {
-    //     test(permutation.join(', '), () {
-    //       final heap = Heap<int>();
-    //       heap.pushAll(permutation);
-    //       verifyHeapInvariants(heap, source: permutation);
-    //       for (var i = ordered.length - 1; i >= 0; i--) {
-    //         expect(heap.peek, ordered[i]);
-    //         expect(heap.pop(), ordered[i]);
-    //       }
-    //     });
-    //   }
-    // });
-    // group('stress', () {
-    //
-    //
-    //
-    //   final random = Random(314);
-    //   final unique = <int>{};
-    //   // Create 1000 unique numbers.
-    //   while (unique.length < 1000) {
-    //     unique.add(random.nextInt(0xffffff));
-    //   }
-    //   final list = unique.toList()..sort();
-    //   final heap1 = Heap<int>.of(unique);
-    //   final heap2 = Heap<int>()..pushAll(unique);
-    //   // Remove the 500 largest numbers
-    //   while (list.length > 500) {
-    //     final max = list.removeLast();
-    //     expect(heap1.length, list.length + 1);
-    //     expect(heap1.peek, max);
-    //     expect(heap1.pop(), max);
-    //     expect(heap2.length, list.length + 1);
-    //     expect(heap2.peek, max);
-    //     expect(heap2.pop(), max);
-    //   }
-    //   // Push and pop
-    //
-    // });
   });
   group('multimap', () {
     group('list', () {
@@ -675,6 +623,15 @@ void main() {
             'b': [2],
           });
         });
+        test('iterable converter (no providers)', () {
+          final target = ['a', 'b', 'b'].toListMultimap();
+          expect(target.keys, ['a', 'b']);
+          expect(target.values, ['a', 'b', 'b']);
+          expect(target.asMap(), {
+            'a': ['a'],
+            'b': ['b', 'b']
+          });
+        });
       });
       group('accessor', () {
         test('containsKey', () {
@@ -689,6 +646,19 @@ void main() {
           expect(map.containsValue(2), isTrue);
           expect(map.containsValue(3), isTrue);
           expect(map.containsValue(4), isFalse);
+        });
+        test('read', () {
+          final map = ListMultimap.fromIterables(['a', 'b', 'b'], [1, 2, 3]);
+          expect(map['a'], [1]);
+          expect(map['b'], [2, 3]);
+        });
+        test('write', () {
+          final map = ListMultimap.fromIterables(['a', 'b', 'b'], [1, 2, 3]);
+          map['a'][0] = 4;
+          map['b'][0] = 5;
+          map['b'][1] = 6;
+          expect(map['a'], [4]);
+          expect(map['b'], [5, 6]);
         });
       });
       group('modifiers', () {
@@ -740,13 +710,6 @@ void main() {
           map.replaceAll('b', [3, 4, 5]);
           expect(map, hasLength(4));
           expect(collection, [3, 4, 5]);
-        });
-        test('clear', () {
-          final map = ListMultimap.fromIterables(['a', 'b', 'b'], [1, 2, 3]);
-          final collection = map['b'];
-          map.clear();
-          expect(map, isEmpty);
-          expect(collection, isEmpty);
         });
         test('clear', () {
           final map = ListMultimap.fromIterables(['a', 'b', 'b'], [1, 2, 3]);
@@ -919,6 +882,15 @@ void main() {
           expect(target.asMap(), {
             'a': {1, 3},
             'b': {2},
+          });
+        });
+        test('iterable converter (no providers)', () {
+          final target = ['a', 'b', 'b'].toSetMultimap();
+          expect(target.keys, ['a', 'b']);
+          expect(target.values, ['a', 'b']);
+          expect(target.asMap(), {
+            'a': {'a'},
+            'b': {'b'}
           });
         });
       });
@@ -2807,6 +2779,7 @@ void allTrieTests(
       final root = createRoot<String, String, num>();
       expect(root.hasKeyAndValue, isFalse);
       expect(root.hasChildren, isFalse);
+      expect(root.parts, isEmpty);
       final types = trie.entries.map((each) => each.runtimeType).toSet();
       expect(types.single, root.runtimeType);
     });
