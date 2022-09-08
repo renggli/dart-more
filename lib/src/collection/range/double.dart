@@ -92,38 +92,16 @@ class DoubleRange extends ListBase<double>
   }
 
   @override
-  bool contains(Object? element) => indexOf(element) >= 0;
-
-  @override
   // ignore: avoid_renaming_method_parameters
   int indexOf(Object? element, [int startIndex = 0]) {
     if (element is double) {
-      if (startIndex < 0) {
-        startIndex = 0;
-      }
-      final comparator = step > 0 ? _naturalComparator : _reverseComparator;
-      final index = comparator.binarySearch(this, element);
-      if (startIndex <= index && index < length) {
-        return index;
-      }
-    }
-    return -1;
-  }
-
-  @override
-  // ignore: avoid_renaming_method_parameters
-  int lastIndexOf(Object? element, [int? endIndex]) {
-    if (element is double) {
-      if (endIndex == null || length <= endIndex) {
-        endIndex = length - 1;
-      }
-      if (endIndex < 0) {
-        return -1;
-      }
-      final comparator = step > 0 ? _naturalComparator : _reverseComparator;
-      final index = comparator.binarySearch(this, element);
-      if (0 <= index && index <= endIndex) {
-        return index;
+      if (startIndex < 0) startIndex = 0;
+      if (startIndex < length) {
+        final comparator = step > 0 ? _naturalComparator : _reverseComparator;
+        final index = comparator.binarySearch(this, element);
+        if (startIndex <= index && index < length) {
+          return index;
+        }
       }
     }
     return -1;
@@ -134,12 +112,6 @@ class DoubleRange extends ListBase<double>
       isEmpty ? this : DoubleRange._(last, first - step, -step, length);
 
   @override
-  // ignore: avoid_renaming_method_parameters
-  DoubleRange sublist(int startIndex, [int? endIndex]) =>
-      getRange(startIndex, endIndex ?? length);
-
-  @override
-  // ignore: avoid_renaming_method_parameters
   DoubleRange getRange(int startIndex, int endIndex) {
     RangeError.checkValidRange(startIndex, endIndex, length);
     return DoubleRange._(start + startIndex * step, start + endIndex * step,

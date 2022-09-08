@@ -92,15 +92,10 @@ class IntegerRange extends ListBase<int>
   }
 
   @override
-  bool contains(Object? element) => indexOf(element) >= 0;
-
-  @override
   // ignore: avoid_renaming_method_parameters
   int indexOf(Object? element, [int startIndex = 0]) {
     if (element is int) {
-      if (startIndex < 0) {
-        startIndex = 0;
-      }
+      if (startIndex < 0) startIndex = 0;
       if (startIndex < length) {
         final value = element - start;
         if (value % step == 0) {
@@ -115,36 +110,10 @@ class IntegerRange extends ListBase<int>
   }
 
   @override
-  // ignore: avoid_renaming_method_parameters
-  int lastIndexOf(Object? element, [int? endIndex]) {
-    if (element is int) {
-      if (endIndex == null || length <= endIndex) {
-        endIndex = length - 1;
-      }
-      if (endIndex >= 0) {
-        final value = element - start;
-        if (value % step == 0) {
-          final index = value ~/ step;
-          if (0 <= index && index <= endIndex) {
-            return index;
-          }
-        }
-      }
-    }
-    return -1;
-  }
-
-  @override
   IntegerRange get reversed =>
       isEmpty ? this : IntegerRange._(last, first - step, -step, length);
 
   @override
-  // ignore: avoid_renaming_method_parameters
-  IntegerRange sublist(int startIndex, [int? endIndex]) =>
-      getRange(startIndex, endIndex ?? length);
-
-  @override
-  // ignore: avoid_renaming_method_parameters
   IntegerRange getRange(int startIndex, int endIndex) {
     RangeError.checkValidRange(startIndex, endIndex, length);
     return IntegerRange._(start + startIndex * step, start + endIndex * step,

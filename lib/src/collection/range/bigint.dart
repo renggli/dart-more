@@ -99,15 +99,10 @@ class BigIntRange extends ListBase<BigInt>
   }
 
   @override
-  bool contains(Object? element) => indexOf(element) >= 0;
-
-  @override
   // ignore: avoid_renaming_method_parameters
   int indexOf(Object? element, [int startIndex = 0]) {
     if (element is BigInt) {
-      if (startIndex < 0) {
-        startIndex = 0;
-      }
+      if (startIndex < 0) startIndex = 0;
       if (startIndex < length) {
         final value = element - start;
         if (value % step == BigInt.zero) {
@@ -122,36 +117,10 @@ class BigIntRange extends ListBase<BigInt>
   }
 
   @override
-  // ignore: avoid_renaming_method_parameters
-  int lastIndexOf(Object? element, [int? endIndex]) {
-    if (element is BigInt) {
-      if (endIndex == null || length <= endIndex) {
-        endIndex = length - 1;
-      }
-      if (endIndex >= 0) {
-        final value = element - start;
-        if (value % step == BigInt.zero) {
-          final index = (value ~/ step).toInt();
-          if (0 <= index && index <= endIndex) {
-            return index;
-          }
-        }
-      }
-    }
-    return -1;
-  }
-
-  @override
   BigIntRange get reversed =>
       isEmpty ? this : BigIntRange._(last, first - step, -step, length);
 
   @override
-  // ignore: avoid_renaming_method_parameters
-  BigIntRange sublist(int startIndex, [int? endIndex]) =>
-      getRange(startIndex, endIndex ?? length);
-
-  @override
-  // ignore: avoid_renaming_method_parameters
   BigIntRange getRange(int startIndex, int endIndex) {
     RangeError.checkValidRange(startIndex, endIndex, length);
     return BigIntRange._(start + BigInt.from(startIndex) * step,

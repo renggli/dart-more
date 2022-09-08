@@ -10,10 +10,29 @@ abstract class Range<T> implements List<T> {
   /// The (exclusive) end value of the range.
   T get end;
 
-  /// The step size.
+  /// The step size (non-zero).
   T get step;
 
-  /// A [Range] in reverse order.
+  @override
+  bool contains(Object? element) => indexOf(element) >= 0;
+
+  @override
+  int indexOf(Object? element, [int startIndex = 0]);
+
+  @override
+  int lastIndexOf(Object? element, [int? endIndex]) {
+    // Since elements appear only once, we can use `indexOf`.
+    final index = indexOf(element);
+    return 0 <= index && index <= (endIndex ?? length - 1) ? index : -1;
+  }
+
   @override
   Range<T> get reversed;
+
+  @override
+  Range<T> sublist(int startIndex, [int? endIndex]) =>
+      getRange(startIndex, endIndex ?? length);
+
+  @override
+  Range<T> getRange(int startIndex, int endIndex);
 }
