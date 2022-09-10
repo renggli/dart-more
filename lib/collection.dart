@@ -12,7 +12,7 @@ export 'src/collection/multimap/list.dart'
 export 'src/collection/multimap/set.dart'
     show SetMultimap, SetMultimapOnMapExtension, SetMultimapOnIterableExtension;
 export 'src/collection/multiset.dart' show Multiset, MultisetExtension;
-export 'src/collection/range.dart' show Range;
+export 'src/collection/range.dart' show Range, RangeIterator;
 export 'src/collection/range/bigint.dart'
     show BigIntRange, BigIntRangeExtension;
 export 'src/collection/range/double.dart'

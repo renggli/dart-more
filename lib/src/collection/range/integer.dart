@@ -78,18 +78,9 @@ class IntegerRange extends ListBase<int>
   final int length;
 
   @override
-  Iterator<int> get iterator => step > 0
-      ? PositiveStepIntegerRangeIterator(start, end, step)
-      : NegativeStepIntegerRangeIterator(start, end, step);
+  int getUnchecked(int index) => start + step * index;
 
   @override
-  int operator [](int index) {
-    RangeError.checkValidIndex(index, this, 'index', length);
-    return start + step * index;
-  }
-
-  @override
-  // ignore: avoid_renaming_method_parameters
   int indexOf(Object? element, [int startIndex = 0]) {
     if (element is int) {
       if (startIndex < 0) startIndex = 0;
@@ -128,50 +119,6 @@ class IntegerRange extends ListBase<int>
     } else {
       return 'IntegerRange($start, $end, $step)';
     }
-  }
-}
-
-class PositiveStepIntegerRangeIterator extends Iterator<int> {
-  PositiveStepIntegerRangeIterator(this.start, this.end, this.step)
-      : assert(step > 0, 'Step size must be positive.');
-
-  int start;
-  final int end;
-  final int step;
-
-  @override
-  late int current;
-
-  @override
-  bool moveNext() {
-    if (start < end) {
-      current = start;
-      start += step;
-      return true;
-    }
-    return false;
-  }
-}
-
-class NegativeStepIntegerRangeIterator extends Iterator<int> {
-  NegativeStepIntegerRangeIterator(this.start, this.end, this.step)
-      : assert(step < 0, 'Step size must be negative.');
-
-  int start;
-  final int end;
-  final int step;
-
-  @override
-  late int current;
-
-  @override
-  bool moveNext() {
-    if (start > end) {
-      current = start;
-      start += step;
-      return true;
-    }
-    return false;
   }
 }
 

@@ -85,18 +85,9 @@ class BigIntRange extends ListBase<BigInt>
   final int length;
 
   @override
-  Iterator<BigInt> get iterator => step > BigInt.zero
-      ? PositiveStepBigIntRangeIterator(start, end, step)
-      : NegativeStepBigIntRangeIterator(start, end, step);
+  BigInt getUnchecked(int index) => start + step * BigInt.from(index);
 
   @override
-  BigInt operator [](int index) {
-    RangeError.checkValidIndex(index, this, 'index', length);
-    return start + step * BigInt.from(index);
-  }
-
-  @override
-  // ignore: avoid_renaming_method_parameters
   int indexOf(Object? element, [int startIndex = 0]) {
     if (element is BigInt) {
       if (startIndex < 0) startIndex = 0;
@@ -135,50 +126,6 @@ class BigIntRange extends ListBase<BigInt>
     } else {
       return 'BigIntRange($start, $end, $step)';
     }
-  }
-}
-
-class PositiveStepBigIntRangeIterator extends Iterator<BigInt> {
-  PositiveStepBigIntRangeIterator(this.start, this.end, this.step)
-      : assert(step > BigInt.zero, 'Step size must be positive.');
-
-  BigInt start;
-  final BigInt end;
-  final BigInt step;
-
-  @override
-  late BigInt current;
-
-  @override
-  bool moveNext() {
-    if (start < end) {
-      current = start;
-      start += step;
-      return true;
-    }
-    return false;
-  }
-}
-
-class NegativeStepBigIntRangeIterator extends Iterator<BigInt> {
-  NegativeStepBigIntRangeIterator(this.start, this.end, this.step)
-      : assert(step < BigInt.zero, 'Step size must be negative.');
-
-  BigInt start;
-  final BigInt end;
-  final BigInt step;
-
-  @override
-  late BigInt current;
-
-  @override
-  bool moveNext() {
-    if (start > end) {
-      current = start;
-      start += step;
-      return true;
-    }
-    return false;
   }
 }
 

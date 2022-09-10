@@ -1,17 +1,36 @@
+import 'package:meta/meta.dart';
+
 /// Abstract superclass of an arithmetic progressions.
 ///
 /// The progression is defined by a `start`, `stop` and `step` parameter. A
 /// range essentially implements a sequence of values of type [T] as a [List].
 /// The advantage is that a range uses little memory no matter its size.
 abstract class Range<T> implements List<T> {
-  /// The (inclusive) start value of the range .
+  /// The start value of the range (inclusive).
   T get start;
 
-  /// The (exclusive) end value of the range.
+  /// The end value of the range (exclusive).
   T get end;
 
   /// The step size (non-zero).
   T get step;
+
+  @override
+  @nonVirtual
+  RangeIterator<T> get iterator => RangeIterator<T>(this);
+
+  @override
+  @nonVirtual
+  T operator [](int index) {
+    RangeError.checkValidIndex(index, this, 'index', length);
+    return getUnchecked(index);
+  }
+
+  /// Returns the element at the given [index] in the range.
+  ///
+  /// Does not perform range checks. The result is undefined, unless the [index]
+  /// is within the expected bounds `0 <= index < length`.
+  T getUnchecked(int index);
 
   @override
   bool contains(Object? element) => indexOf(element) >= 0;
@@ -35,4 +54,31 @@ abstract class Range<T> implements List<T> {
 
   @override
   Range<T> getRange(int startIndex, int endIndex);
+}
+
+/// An [Iterator] over a [Range], provides various additional accessors of the
+/// standard collection iterator.
+class RangeIterator<T> implements Iterator<T> {
+  /// Constructs a [RangeIterator] at the beginning of the range.
+  RangeIterator(this.range) : _index = -1;
+
+  /// The underlying range being iterated over.
+  final Range<T> range;
+
+  @override
+  T get current => _current as T;
+
+  int _index;
+  T? _current;
+
+  @override
+  bool moveNext() {
+    final index = _index + 1;
+    if (index < range.length) {
+      _current = range.getUnchecked(_index = index);
+      return true;
+    }
+    _current = null;
+    return false;
+  }
 }

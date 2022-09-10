@@ -1387,6 +1387,7 @@ void main() {
             excluded: excluded,
             reverse: false);
       }
+      expect(range.iterator.range, same(range));
       if (included.isEmpty) {
         expect(range.isEmpty, isTrue);
       } else {
@@ -1711,6 +1712,7 @@ void main() {
               excluded: excluded,
               reverse: false);
         }
+        expect(range.iterator.range, same(range));
         if (nIncluded.isEmpty) {
           expect(range.isEmpty, isTrue);
         } else {

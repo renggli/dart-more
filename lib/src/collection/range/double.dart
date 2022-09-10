@@ -80,16 +80,9 @@ class DoubleRange extends ListBase<double>
   final int length;
 
   @override
-  Iterator<double> get iterator => DoubleRangeIterator(start, step, length);
+  double getUnchecked(int index) => start + step * index;
 
   @override
-  double operator [](int index) {
-    RangeError.checkValidIndex(index, this, 'index', length);
-    return start + step * index;
-  }
-
-  @override
-  // ignore: avoid_renaming_method_parameters
   int indexOf(Object? element, [int startIndex = 0]) {
     if (element is double) {
       if (startIndex < 0) startIndex = 0;
@@ -125,29 +118,6 @@ class DoubleRange extends ListBase<double>
       return 'DoubleRange($start, $end)';
     } else {
       return 'DoubleRange($start, $end, $step)';
-    }
-  }
-}
-
-class DoubleRangeIterator extends Iterator<double> {
-  DoubleRangeIterator(this.start, this.step, this.length);
-
-  final double start;
-  final double step;
-  final int length;
-
-  int index = 0;
-
-  @override
-  late double current;
-
-  @override
-  bool moveNext() {
-    if (index == length) {
-      return false;
-    } else {
-      current = start + step * index++;
-      return true;
     }
   }
 }
