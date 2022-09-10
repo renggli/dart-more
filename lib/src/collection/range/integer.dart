@@ -84,11 +84,8 @@ class IntegerRange extends ListBase<int>
 
   @override
   int operator [](int index) {
-    if (0 <= index && index < length) {
-      return start + step * index;
-    } else {
-      throw RangeError.range(index, 0, length);
-    }
+    RangeError.checkValidIndex(index, this, 'index', length);
+    return start + step * index;
   }
 
   @override

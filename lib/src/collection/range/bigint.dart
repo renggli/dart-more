@@ -91,11 +91,8 @@ class BigIntRange extends ListBase<BigInt>
 
   @override
   BigInt operator [](int index) {
-    if (0 <= index && index < length) {
-      return start + step * BigInt.from(index);
-    } else {
-      throw RangeError.range(index, 0, length);
-    }
+    RangeError.checkValidIndex(index, this, 'index', length);
+    return start + step * BigInt.from(index);
   }
 
   @override
