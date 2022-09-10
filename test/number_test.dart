@@ -1,4 +1,5 @@
 import 'dart:math' as math;
+import 'dart:math';
 
 import 'package:more/number.dart';
 import 'package:test/test.dart';
@@ -471,7 +472,7 @@ void main() {
           expect(Fraction.fromDouble(-1 / 3), isFraction(Fraction(-1, 3)));
           expect(Fraction.fromDouble(-5 / 3), isFraction(Fraction(-5, 3)));
         });
-        test('all', () {
+        test('common', () {
           for (var num = -10; num <= 10; num++) {
             for (var den = -10; den <= 10; den++) {
               if (den != 0) {
@@ -480,6 +481,21 @@ void main() {
               }
             }
           }
+        });
+        group('stress', () {
+          final random = Random(1911);
+          void stress({required double min, required double max}) {
+            for (var i = 0; i < 100; i++) {
+              final floating = random.nextDouble() * (max - min) + min;
+              final fraction = Fraction.fromDouble(floating);
+              expect(
+                  fraction.toDouble(), closeTo(floating, (max - min) / 1e10));
+            }
+          }
+
+          test('unit', () => stress(min: -1, max: 1));
+          test('small', () => stress(min: -1e-10, max: 1e-10));
+          test('large', () => stress(min: -1e+5, max: 1e+5));
         });
         test('nan', () {
           final fraction = Fraction.fromDouble(double.nan);

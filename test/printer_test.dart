@@ -1389,6 +1389,18 @@ void main() {
       expect(printer('1'), '1-1');
       expect(printer('12'), '12-12');
     });
+    test('iterable', () {
+      final printer = <Printer<int>>[
+        Printer.standard(),
+        Printer.literal(' <-> '),
+        Printer.pluggable(
+            (value) => value.toString().split('').reversed.join('')),
+      ].toPrinter();
+      expect(printer(1), '1 <-> 1');
+      expect(printer(12), '12 <-> 21');
+      expect(printer(123), '123 <-> 321');
+      expect(printer(1234), '1234 <-> 4321');
+    });
     test('before', () {
       final printer = standardString.before('*');
       expect(printer('1'), '*1');

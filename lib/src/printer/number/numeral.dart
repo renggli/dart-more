@@ -1,3 +1,5 @@
+import 'package:meta/meta.dart';
+
 /// A class defining different numeral systems for number printing.
 ///
 /// To remain customizable the number systems are provided through immutable
@@ -5,9 +7,8 @@
 /// for 0, 1, 2, ... up to the maximally supported base.
 ///
 /// The default number system is [lowerCaseLatin].
-class NumeralSystem {
-  const NumeralSystem._();
-
+@sealed
+abstract class NumeralSystem {
   /// Lower-case latin number characters.
   static const lowerCaseLatin = [
     '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', // digits

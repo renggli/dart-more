@@ -55,7 +55,7 @@ class Fraction
     var denominator1 = 1, denominator2 = 0;
     var integerPart = numerator1;
     var fractionPart = value - numerator1;
-    while (fractionPart != 0) {
+    while (fractionPart != 0.0) {
       final newValue = 1.0 / fractionPart;
       integerPart = newValue.floor();
       fractionPart = newValue - integerPart;
@@ -66,7 +66,7 @@ class Fraction
       denominator2 = denominator1;
       denominator1 = integerPart * denominator1 + temporary;
       if (maxDenominator < denominator1) {
-        if (numerator2 == 0.0) {
+        if (numerator2 == 0) {
           return Fraction(sign * numerator1, denominator1);
         } else {
           return Fraction(sign * numerator2, denominator2);
