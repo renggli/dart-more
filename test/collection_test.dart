@@ -676,6 +676,27 @@ void main() {
           expect(map, hasLength(6));
           expect(collection, [2, 3, 3, 4, 5]);
         });
+        test('length increase', () {
+          final map = ListMultimap<String, int?>();
+          final collection = map['c'];
+          collection.length = 3;
+          expect(map, hasLength(3));
+          expect(collection, [null, null, null]);
+        });
+        test('length decrease', () {
+          final map = ListMultimap.fromIterables(['a', 'b', 'b'], [1, 2, 3]);
+          final collection = map['b'];
+          collection.length = 1;
+          expect(map, hasLength(2));
+          expect(collection, [2]);
+        });
+        test('length zero', () {
+          final map = ListMultimap.fromIterables(['a', 'b', 'b'], [1, 2, 3]);
+          final collection = map['b'];
+          collection.length = 0;
+          expect(map, hasLength(1));
+          expect(collection, []);
+        });
         test('remove', () {
           final map = ListMultimap.fromIterables(['a', 'b', 'b'], [1, 2, 3]);
           final collection = map['b'];
@@ -2196,6 +2217,7 @@ void main() {
         expect('1\n2'.dedent(), '1\n2');
         expect('1\n\n2'.dedent(), '1\n\n2');
         expect(' 1\n\n 2'.dedent(), '1\n\n2');
+        expect(' 1\n\n\t2'.dedent(), ' 1\n\n\t2');
         expect(' 1'.dedent(), '1');
         expect(' 1\n  2'.dedent(), '1\n 2');
         expect('  2\n 1'.dedent(), ' 2\n1');
@@ -2286,6 +2308,7 @@ void main() {
         expect('a b c'.wrap(4), 'a b\nc');
         expect('aa bb cc'.wrap(4), 'aa\nbb\ncc');
         expect('a\nb'.wrap(4), 'a\nb');
+        expect('a\n\nb'.wrap(4), 'a\n\nb');
         expect('1234'.wrap(4), '1234');
         expect('12345'.wrap(4), '1234\n5');
         expect('12345678'.wrap(4), '1234\n5678');
@@ -2295,6 +2318,7 @@ void main() {
         const whitespace = ' ';
         expect('a'.wrap(4, whitespace: whitespace), 'a');
         expect('a b'.wrap(4, whitespace: whitespace), 'a b');
+        expect('a  b'.wrap(4, whitespace: whitespace), 'a b');
         expect('a b c'.wrap(4, whitespace: whitespace), 'a b\nc');
         expect('aa bb cc'.wrap(4, whitespace: whitespace), 'aa\nbb\ncc');
         expect('a\nb'.wrap(4, whitespace: whitespace), 'a\nb');

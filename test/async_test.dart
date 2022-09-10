@@ -90,6 +90,23 @@ void main() {
         async.elapse(seconds5);
       });
     });
+    test('broadcast', () {
+      final controller = StreamController<int>.broadcast();
+      expectLater(
+          controller.stream.buffer(maxLength: 1),
+          emitsInOrder([
+            [1],
+            [2]
+          ]));
+      expectLater(
+          controller.stream.buffer(maxLength: 2),
+          emitsInOrder([
+            [1, 2]
+          ]));
+      controller
+        ..add(1)
+        ..add(2);
+    });
   });
   group('flatMap', () {
     group('iterable', () {

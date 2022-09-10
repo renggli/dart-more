@@ -79,14 +79,16 @@ extension BufferExtension<E> on Stream<E> {
       triggerSubscription = trigger?.listen(onTriggerData,
           onError: onTriggerError, onDone: onTriggerDone);
     };
-    controller.onPause = () {
-      sourceSubscription?.pause();
-      triggerSubscription?.pause();
-    };
-    controller.onResume = () {
-      sourceSubscription?.resume();
-      triggerSubscription?.resume();
-    };
+    if (!isBroadcast) {
+      controller.onPause = () {
+        sourceSubscription?.pause();
+        triggerSubscription?.pause();
+      };
+      controller.onResume = () {
+        sourceSubscription?.resume();
+        triggerSubscription?.resume();
+      };
+    }
     controller.onCancel = () async {
       maxAgeTimer?.cancel();
       await sourceSubscription?.cancel();
