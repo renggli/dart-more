@@ -513,9 +513,9 @@ void main() {
         final duration = interval.toDuration();
         expect(duration, Duration.zero);
       });
-      test('open', () {
+      test('unbounded', () {
         final interval = Interval<DateTime>.all();
-        expect(() => interval.toDuration(), throwsArgumentError);
+        expect(() => interval.toDuration(), throwsStateError);
       });
       test('normal', () {
         final interval = Interval<DateTime>.openClosed(

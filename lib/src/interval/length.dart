@@ -4,15 +4,13 @@ extension LengthIntervalIntExtension on Interval<int> {
   /// Returns the length an [Interval] as [int].
   ///
   /// Returns `0` if the interval is empty or `1` if the interval contains a
-  /// single value. Throws an [ArgumentError] if one of  the bounds is unbounded
+  /// single value. Throws an [StateError] if one of  the bounds is unbounded
   /// (infinite).
   int toIntLength() {
     if (isEmpty) {
       return 0;
     } else if (isSingle) {
       return 1;
-    } else if (lower.isUnbounded || upper.isUnbounded) {
-      throw ArgumentError.value(this, 'interval', 'Interval is unbounded');
     } else {
       final lowerEndpoint = lower.isOpen ? lower.endpoint + 1 : lower.endpoint;
       final upperEndpoint = upper.isOpen ? upper.endpoint - 1 : upper.endpoint;

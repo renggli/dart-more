@@ -123,7 +123,7 @@ void verify<T>(
         expect(
             () => LengthIntervalIntExtension(interval as Interval<int>)
                 .toIntLength(),
-            throwsArgumentError);
+            throwsStateError);
       } else {
         final result =
             LengthIntervalIntExtension(interval as Interval<int>).toIntLength();
