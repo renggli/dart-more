@@ -1,16 +1,21 @@
 import '../bound.dart';
 
 /// Abstract base-class for upper bounds.
-abstract class UpperBound<T extends Comparable<T>> extends Bound<T> {}
+abstract class UpperBound<T> extends Bound<T> {}
 
-class Below<T extends Comparable<T>> extends UpperBound<T> {
-  Below(this.endpoint);
+class Below<T> extends UpperBound<T> {
+  Below(this.comparator, this.endpoint);
+
+  final Comparator<T> comparator;
 
   @override
   final T endpoint;
 
   @override
-  bool contains(T value) => endpoint.compareTo(value) > 0;
+  bool get isBounded => true;
+
+  @override
+  bool contains(T value) => comparator(endpoint, value) > 0;
 
   @override
   int get hashCode => Object.hash(Below, endpoint);
@@ -23,17 +28,22 @@ class Below<T extends Comparable<T>> extends UpperBound<T> {
   String toString() => '$endpoint)';
 }
 
-class BelowOrEqual<T extends Comparable<T>> extends UpperBound<T> {
-  BelowOrEqual(this.endpoint);
+class BelowOrEqual<T> extends UpperBound<T> {
+  BelowOrEqual(this.comparator, this.endpoint);
+
+  final Comparator<T> comparator;
 
   @override
   final T endpoint;
 
   @override
+  bool get isBounded => true;
+
+  @override
   bool get isOpen => false;
 
   @override
-  bool contains(T value) => endpoint.compareTo(value) >= 0;
+  bool contains(T value) => comparator(endpoint, value) >= 0;
 
   @override
   int get hashCode => Object.hash(BelowOrEqual, endpoint);
@@ -46,7 +56,7 @@ class BelowOrEqual<T extends Comparable<T>> extends UpperBound<T> {
   String toString() => '$endpoint]';
 }
 
-class BelowAll<T extends Comparable<T>> extends UpperBound<T> {
+class BelowAll<T> extends UpperBound<T> {
   @override
   bool contains(T value) => true;
 

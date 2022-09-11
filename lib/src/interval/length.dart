@@ -1,6 +1,6 @@
 import 'interval.dart';
 
-extension LengthIntervalNumExtension on Interval<num> {
+extension LengthIntervalIntExtension on Interval<int> {
   /// Returns the length an [Interval] as [int].
   ///
   /// Returns `0` if the interval is empty or `1` if the interval contains a
@@ -14,14 +14,16 @@ extension LengthIntervalNumExtension on Interval<num> {
     } else if (lower.isUnbounded || upper.isUnbounded) {
       throw ArgumentError.value(this, 'interval', 'Interval is unbounded');
     } else {
-      var lowerEndpoint = lower.endpoint!.ceil();
-      if (lower.isOpen && lowerEndpoint == lower.endpoint) lowerEndpoint++;
-      var upperEndpoint = upper.endpoint!.floor();
-      if (upper.isOpen && upperEndpoint == upper.endpoint) upperEndpoint--;
-      return lowerEndpoint < upperEndpoint ? upperEndpoint - lowerEndpoint : 0;
+      final lowerEndpoint = lower.isOpen ? lower.endpoint + 1 : lower.endpoint;
+      final upperEndpoint = upper.isOpen ? upper.endpoint - 1 : upper.endpoint;
+      return comparator(lowerEndpoint, upperEndpoint) < 0
+          ? upperEndpoint - lowerEndpoint
+          : 0;
     }
   }
+}
 
+extension LengthIntervalNumExtension on Interval<num> {
   /// Returns the length an [Interval] as [double].
   ///
   /// Returns `0.0` if the interval is empty or contains a single value. Returns
@@ -32,7 +34,7 @@ extension LengthIntervalNumExtension on Interval<num> {
     } else if (lower.isUnbounded || upper.isUnbounded) {
       return double.infinity;
     } else {
-      return upper.endpoint!.toDouble() - lower.endpoint!.toDouble();
+      return upper.endpoint.toDouble() - lower.endpoint.toDouble();
     }
   }
 }

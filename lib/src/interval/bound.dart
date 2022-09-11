@@ -1,7 +1,7 @@
 import 'package:meta/meta.dart';
 
 /// Abstract base-class for bounds.
-abstract class Bound<T extends Comparable<T>> {
+abstract class Bound<T> {
   /// Returns `true`, if the [value] satisfies these bounds.
   bool contains(T value);
 
@@ -13,13 +13,12 @@ abstract class Bound<T extends Comparable<T>> {
   bool get isClosed => !isOpen;
 
   /// Returns `true` if this is bounded endpoint.
-  @nonVirtual
-  bool get isBounded => endpoint != null;
+  bool get isBounded => false;
 
   /// Returns `true`, if this is an unbounded endpoint.
   @nonVirtual
-  bool get isUnbounded => endpoint == null;
+  bool get isUnbounded => !isBounded;
 
-  /// Returns the endpoint, or `null`.
-  T? get endpoint => null;
+  /// Returns the endpoint, or throws a [StateError] if unbounded.
+  T get endpoint => throw StateError('$this is not bounded.');
 }

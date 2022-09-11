@@ -2,12 +2,10 @@
 
 ## 3.8.0
 * Add `String` extensions `take`, `takeTo`, `skip`, `skipTo`, `takeLast`, `takeLastTo`, `skipLast`, and `skipLastTo`.
-* Add the ability to measure the length of `Interval<num>` with `toIntLength()` and `toDoubleLength()`.
 * Create a new `temporal` package unifying all `DateTime` and `Duration` related extensions:
   * Moved `DateTime.periodical` and `DateTime.truncate` to the new page, deprecated the old code.
   * Add various convenience accessors to `DateTime`: `isLeapYear`, `daysInYear`, `daysInMonth`, `weeksInYear`, `quarter`, `weekYear`, `weekNumber`, `dayOfYear`, and `hour12`.
   * Add ability to convert `Duration` objects to one or more (fractional) `TimeUnit`s.
-  * Add ability to convert `Interval<DateTime>` to a `Duration`.
 * Countless improvements and extensions to the `printer` package:
   * Add `DateTimePrinter` to print date and time objects.
   * Add `OrdinalNumberPrinter` to print ordinal numbers: 1st, 2nd, 3rd, 4th, ...
@@ -20,6 +18,9 @@
   * Add `Comparator.binarySearchLower` and `Comparator.binarySearchUpper` to return a lower/upper insertion index.
   * Add `Comparator.largest` and `Comparator.smallest` to return the top/bottom-k elements.
   * Deprecate the `Ordering` class and package.
+* Create `Interval` to encapsulate bounded/unbounded and open/closed intervals across arbitrary `Comparable` objects.
+  * Add the ability to measure the length of `Interval<int>.toIntLength()` and `Interval<num>.toDoubleLength()`.
+  * Add ability to convert `Interval<DateTime>` to a `Duration`.
 * Added `SortedList` collection type.
 * Add `CompareOperators` mixin to provide operators given a `compareTo` method.
 

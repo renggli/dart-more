@@ -12,8 +12,8 @@ extension DurationIntervalDateTimeExtension on Interval<DateTime> {
       throw ArgumentError.value(this, 'interval', 'Interval is unbounded');
     } else {
       return Duration(
-          milliseconds: upper.endpoint!.millisecondsSinceEpoch -
-              lower.endpoint!.millisecondsSinceEpoch);
+          milliseconds: upper.endpoint.millisecondsSinceEpoch -
+              lower.endpoint.millisecondsSinceEpoch);
     }
   }
 }

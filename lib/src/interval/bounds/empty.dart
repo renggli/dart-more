@@ -2,8 +2,10 @@ import '../bound.dart';
 import 'lower.dart';
 import 'upper.dart';
 
-class Empty<T extends Comparable<T>> extends Bound<T>
-    implements LowerBound<T>, UpperBound<T> {
+class Empty<T> extends Bound<T> implements LowerBound<T>, UpperBound<T> {
+  @override
+  bool get isBounded => false;
+
   @override
   bool contains(T value) => false;
 

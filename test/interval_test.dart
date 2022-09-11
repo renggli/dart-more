@@ -1,9 +1,29 @@
 import 'package:more/interval.dart';
+import 'package:more/src/interval/bound.dart';
 import 'package:test/test.dart';
 
 final intervals = <Interval>[];
 
-verify<T extends Comparable<T>>(
+void verifyBound<T>(Bound<T> bound) {
+  test('isOpen / isClosed', () {
+    if (bound.isOpen) {
+      expect(bound.isClosed, isFalse);
+    } else {
+      expect(bound.isClosed, isTrue);
+    }
+  });
+  test('isBounded / isUnbounded', () {
+    if (bound.isBounded) {
+      expect(bound.isUnbounded, isFalse);
+      expect(bound.endpoint, isNotNull);
+    } else {
+      expect(bound.isUnbounded, isTrue);
+      expect(() => bound.endpoint, throwsStateError);
+    }
+  });
+}
+
+void verify<T>(
   Interval<T> interval, {
   required Iterable<T> included,
   required Iterable<T> excluded,
@@ -31,6 +51,8 @@ verify<T extends Comparable<T>>(
       expect(interval == other, isFalse);
     }
   });
+  group('lower', () => verifyBound<T>(interval.lower));
+  group('upper', () => verifyBound<T>(interval.upper));
   group('intersection', () {
     test('empty', () {
       expect(empty.intersection(interval), empty);
@@ -99,12 +121,12 @@ verify<T extends Comparable<T>>(
     test('toIntLength', () {
       if (intLength.isInfinite) {
         expect(
-            () => LengthIntervalNumExtension(interval as Interval<num>)
+            () => LengthIntervalIntExtension(interval as Interval<int>)
                 .toIntLength(),
             throwsArgumentError);
       } else {
         final result =
-            LengthIntervalNumExtension(interval as Interval<num>).toIntLength();
+            LengthIntervalIntExtension(interval as Interval<int>).toIntLength();
         expect(result, intLength.toInt());
       }
     });
@@ -140,7 +162,7 @@ verify<T extends Comparable<T>>(
 void main() {
   group('interval', () {
     group('open', () {
-      final interval = Interval<num>.open(3, 5);
+      final interval = Interval.open(3, 5);
       verify(
         interval,
         included: [4],
@@ -151,7 +173,7 @@ void main() {
       );
     });
     group('closed', () {
-      final interval = Interval<num>.closed(3, 5);
+      final interval = Interval.closed(3, 5);
       verify(
         interval,
         included: [3, 4, 5],
@@ -162,7 +184,7 @@ void main() {
       );
     });
     group('openClosed', () {
-      final interval = Interval<num>.openClosed(3, 5);
+      final interval = Interval.openClosed(3, 5);
       verify(
         interval,
         included: [4, 5],
@@ -173,7 +195,7 @@ void main() {
       );
     });
     group('closedOpen', () {
-      final interval = Interval<num>.closedOpen(3, 5);
+      final interval = Interval.closedOpen(3, 5);
       verify(
         interval,
         included: [3, 4],
@@ -184,7 +206,7 @@ void main() {
       );
     });
     group('greaterThan', () {
-      final interval = Interval<num>.greaterThan(4);
+      final interval = Interval.greaterThan(4);
       verify(
         interval,
         included: [5, 6, 7],
@@ -195,7 +217,7 @@ void main() {
       );
     });
     group('atLeast', () {
-      final interval = Interval<num>.atLeast(4);
+      final interval = Interval.atLeast(4);
       verify(
         interval,
         included: [4, 5, 6],
@@ -206,7 +228,7 @@ void main() {
       );
     });
     group('lessThan', () {
-      final interval = Interval<num>.lessThan(4);
+      final interval = Interval.lessThan(4);
       verify(
         interval,
         included: [1, 2, 3],
@@ -217,7 +239,7 @@ void main() {
       );
     });
     group('atMost', () {
-      final interval = Interval<num>.atMost(4);
+      final interval = Interval.atMost(4);
       verify(
         interval,
         included: [2, 3, 4],
@@ -228,10 +250,10 @@ void main() {
       );
     });
     group('empty', () {
-      final interval = Interval<num>.empty();
-      verify<num>(
+      final interval = Interval<int>.empty();
+      verify(
         interval,
-        included: [],
+        included: <int>[],
         excluded: [1, 2, 3],
         isEmpty: true,
         intLength: 0,
@@ -240,7 +262,7 @@ void main() {
       );
     });
     group('single', () {
-      final interval = Interval<num>.single(4);
+      final interval = Interval.single(4);
       verify(
         interval,
         included: [4],
@@ -252,11 +274,11 @@ void main() {
       );
     });
     group('all', () {
-      final interval = Interval<num>.all();
-      verify<num>(
+      final interval = Interval<int>.all();
+      verify(
         interval,
         included: [1, 2, 3],
-        excluded: [],
+        excluded: <int>[],
         intLength: double.infinity,
         doubleLength: double.infinity,
         toString: '(-∞..+∞)',
