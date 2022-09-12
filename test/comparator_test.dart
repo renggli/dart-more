@@ -199,6 +199,43 @@ void main() {
         ]);
       });
     });
+    test('lexicographical', () {
+      final comparator = naturalInt.lexicographical;
+      verify(
+        comparator,
+        <List<int>>[
+          [],
+          [1],
+          [1, 1],
+          [1, 2],
+          [2],
+        ],
+        <List<int>>[
+          [],
+          [1],
+          [1, 1],
+          [1, 2],
+          [2],
+        ],
+      );
+      verify(
+        comparator,
+        <List<int>>[
+          [2],
+          [1, 2],
+          [1, 1],
+          [1],
+          [],
+        ],
+        <List<int>>[
+          [],
+          [1],
+          [1, 1],
+          [1, 2],
+          [2],
+        ],
+      );
+    });
     test('nullsFirst', () {
       final comparator = naturalInt.nullsFirst;
       verify(comparator, [null, 1, 2, 3], [null, 1, 2, 3]);
