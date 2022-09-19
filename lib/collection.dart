@@ -19,6 +19,10 @@ export 'src/collection/range/double.dart'
     show DoubleRange, DoubleRangeExtension;
 export 'src/collection/range/integer.dart'
     show IntegerRange, IntegerRangeExtension, IndicesIterableExtension;
+export 'src/collection/rtree.dart' show RTree;
+export 'src/collection/rtree/bounds.dart' show Bounds;
+export 'src/collection/rtree/entry.dart' show RTreeEntry;
+export 'src/collection/rtree/node.dart' show RTreeNode;
 export 'src/collection/sortedlist.dart'
     show SortedList, SortedListIterableExtension;
 export 'src/collection/string/convert_first_last.dart'

@@ -1919,6 +1919,186 @@ void main() {
           elements.toSortedList(comparator: comparator));
     });
   });
+  group('rtree', () {
+    group('bounds', () {
+      final point1 = Bounds.fromPoint([1, 2, 3]);
+      final point2 = Bounds.fromLists([3, 2, 1], [3, 2, 1]);
+      final bound1 = Bounds.fromLists([-1, -1, -1], [1, 1, 1]);
+      final bound2 = Bounds.fromLists([-2, 1, 2], [2, 3, 5]);
+      test('length', () {
+        expect(point1.length, 3);
+        expect(point2.length, 3);
+        expect(bound1.length, 3);
+        expect(bound2.length, 3);
+      });
+      test('isPoint', () {
+        expect(point1.isPoint, isTrue);
+        expect(point2.isPoint, isTrue);
+        expect(bound1.isPoint, isFalse);
+        expect(bound2.isPoint, isFalse);
+      });
+      test('edges', () {
+        expect(point1.edges, [0, 0, 0]);
+        expect(point2.edges, [0, 0, 0]);
+        expect(bound1.edges, [2, 2, 2]);
+        expect(bound2.edges, [4, 2, 3]);
+      });
+      test('area', () {
+        expect(point1.area, 0);
+        expect(point2.area, 0);
+        expect(bound1.area, 8);
+        expect(bound2.area, 24);
+      });
+      test('center', () {
+        expect(point1.center, [1, 2, 3]);
+        expect(point2.center, [3, 2, 1]);
+        expect(bound1.center, [0, 0, 0]);
+        expect(bound2.center, [0, 2, 3.5]);
+      });
+      test('contains', () {
+        expect(point1.contains(point1), isTrue);
+        expect(point1.contains(point2), isFalse);
+        expect(point1.contains(bound1), isFalse);
+        expect(point1.contains(bound2), isFalse);
+
+        expect(point2.contains(point1), isFalse);
+        expect(point2.contains(point2), isTrue);
+        expect(point2.contains(bound1), isFalse);
+        expect(point2.contains(bound2), isFalse);
+
+        expect(bound1.contains(point1), isFalse);
+        expect(bound1.contains(point2), isFalse);
+        expect(bound1.contains(bound1), isTrue);
+        expect(bound1.contains(bound2), isFalse);
+
+        expect(bound2.contains(point1), isTrue);
+        expect(bound2.contains(point2), isFalse);
+        expect(bound2.contains(bound1), isFalse);
+        expect(bound2.contains(bound2), isTrue);
+      });
+      test('union', () {
+        final pointUnion = point1.union(point2);
+        expect(pointUnion.min, [1, 2, 1]);
+        expect(pointUnion.max, [3, 2, 3]);
+        final boundUnion = bound1.union(bound2);
+        expect(boundUnion.min, [-2, -1, -1]);
+        expect(boundUnion.max, [2, 3, 5]);
+        final pointBoundUnion = point1.union(bound1);
+        expect(pointBoundUnion.min, [-1, -1, -1]);
+        expect(pointBoundUnion.max, [1, 2, 3]);
+      });
+      test('intersects', () {
+        expect(point1.intersects(point1), isTrue);
+        expect(point1.intersects(point2), isFalse);
+        expect(point1.intersects(bound1), isFalse);
+        expect(point1.intersects(bound2), isTrue);
+
+        expect(point2.intersects(point1), isFalse);
+        expect(point2.intersects(point2), isTrue);
+        expect(point2.intersects(bound1), isFalse);
+        expect(point2.intersects(bound2), isFalse);
+
+        expect(bound1.intersects(point1), isFalse);
+        expect(bound1.intersects(point2), isFalse);
+        expect(bound1.intersects(bound1), isTrue);
+        expect(bound1.intersects(bound2), isFalse);
+
+        expect(bound2.intersects(point1), isTrue);
+        expect(bound2.intersects(point2), isFalse);
+        expect(bound2.intersects(bound1), isFalse);
+        expect(bound2.intersects(bound2), isTrue);
+      });
+      test('intersection', () {
+        expect(point1.intersection(point1), point1);
+        expect(point1.intersection(point2), isNull);
+        expect(point1.intersection(bound1), isNull);
+        expect(point1.intersection(bound2), point1);
+
+        expect(point2.intersection(point1), isNull);
+        expect(point2.intersection(point2), point2);
+        expect(point2.intersection(bound1), isNull);
+        expect(point2.intersection(bound2), isNull);
+
+        expect(bound1.intersection(point1), isNull);
+        expect(bound1.intersection(point2), isNull);
+        expect(bound1.intersection(bound1), bound1);
+        expect(bound1.intersection(bound2), isNull);
+
+        expect(bound2.intersection(point1), point1);
+        expect(bound2.intersection(point2), isNull);
+        expect(bound2.intersection(bound1), isNull);
+        expect(bound2.intersection(bound2), bound2);
+      });
+      test('==', () {
+        expect(point1, point1);
+        expect(point1, isNot(point2));
+        expect(point1, isNot(bound1));
+        expect(point1, isNot(bound2));
+
+        expect(point2, isNot(point1));
+        expect(point2, point2);
+        expect(point2, isNot(bound1));
+        expect(point2, isNot(bound2));
+
+        expect(bound1, isNot(point1));
+        expect(bound1, isNot(point2));
+        expect(bound1, bound1);
+        expect(bound1, isNot(bound2));
+
+        expect(bound2, isNot(point1));
+        expect(bound2, isNot(point2));
+        expect(bound2, isNot(bound1));
+        expect(bound2, bound2);
+      });
+      test('hashCode', () {
+        expect(point1.hashCode, point1.hashCode);
+        expect(point1.hashCode, isNot(point2.hashCode));
+        expect(point1.hashCode, isNot(bound1.hashCode));
+        expect(point1.hashCode, isNot(bound2.hashCode));
+
+        expect(point2.hashCode, isNot(point1.hashCode));
+        expect(point2.hashCode, point2.hashCode);
+        expect(point2.hashCode, isNot(bound1.hashCode));
+        expect(point2.hashCode, isNot(bound2.hashCode));
+
+        expect(bound1.hashCode, isNot(point1.hashCode));
+        expect(bound1.hashCode, isNot(point2.hashCode));
+        expect(bound1.hashCode, bound1.hashCode);
+        expect(bound1.hashCode, isNot(bound2.hashCode));
+
+        expect(bound2.hashCode, isNot(point1.hashCode));
+        expect(bound2.hashCode, isNot(point2.hashCode));
+        expect(bound2.hashCode, isNot(bound1.hashCode));
+        expect(bound2.hashCode, bound2.hashCode);
+      });
+      test('toString', () {
+        expect(point1.toString(), 'Bounds(1.0, 2.0, 3.0)');
+        expect(point2.toString(), 'Bounds(3.0, 2.0, 1.0)');
+        expect(bound1.toString(), 'Bounds(-1.0, -1.0, -1.0; 1.0, 1.0, 1.0)');
+        expect(bound2.toString(), 'Bounds(-2.0, 1.0, 2.0; 2.0, 3.0, 5.0)');
+      });
+      test('unionAll', () {
+        expect(() => Bounds.unionAll([]), throwsStateError);
+        final singleUnion = Bounds.unionAll([bound1]);
+        expect(singleUnion.min, bound1.min);
+        expect(singleUnion.max, bound1.max);
+        final fullUnion1 = Bounds.unionAll([point1, point2, bound1, bound2]);
+        expect(fullUnion1.min, [-2.0, -1.0, -1.0]);
+        expect(fullUnion1.max, [3.0, 3.0, 5.0]);
+        final fullUnion2 = Bounds.unionAll([bound1, bound2, point2]);
+        expect(fullUnion2.min, [-2.0, -1.0, -1.0]);
+        expect(fullUnion2.max, [3.0, 3.0, 5.0]);
+      });
+    });
+    group('guttman', () {
+      allRTreeTests(<T>({int? minEntries, int? maxEntries}) =>
+          RTree<T>.guttmann(minEntries: minEntries, maxEntries: maxEntries));
+    });
+    // group('rstar', () {
+    //   allRTreeTests(<T>({int? minEntries, int? maxEntries}) =>
+    //       RTree<T>.rstar(minEntries: minEntries, maxEntries: maxEntries));
+    // });
+  });
   group('string', () {
     group('immutable', () {
       final empty = ''.toList();
@@ -2565,6 +2745,45 @@ void allSortedListTests(
     expect(() => list.length = 2, throwsUnsupportedError);
     expect(() => list.sort(), throwsUnsupportedError);
     expect(() => list.shuffle(), throwsUnsupportedError);
+  });
+}
+
+void allRTreeTests(
+    RTree<T> Function<T>({int? minEntries, int? maxEntries}) createRTree) {
+  void validate<T>(RTree<T> tree, [RTreeNode<T>? parent, RTreeNode<T>? node]) {
+    node ??= tree.root;
+    expect(node.tree, same(tree));
+    expect(node.parent, same(parent));
+    if (node.isRoot) expect(node, same(tree.root));
+    if (parent != null) {
+      final parentEntry = node.parentEntry!;
+      expect(node, same(parentEntry.child));
+      for (final entry in node.entries) {
+        expect(parentEntry.bounds.contains(entry.bounds), isTrue);
+      }
+    }
+    for (final entry in node.entries) {
+      if (entry.isLeaf) {
+        expect(entry.data, isNotNull);
+        expect(entry.child, isNull);
+      } else {
+        expect(entry.data, isNull);
+        expect(entry.child, isNotNull);
+        validate(tree, node, entry.child);
+      }
+    }
+  }
+
+  test('stress', () {
+    final rtree = createRTree<int>();
+    final random = Random(3212312);
+    for (var i = 0; i < 2500; i++) {
+      rtree.insert(
+          Bounds.fromPoint(
+              List.generate(3, (index) => 2000 * random.nextDouble() - 1000)),
+          i);
+    }
+    validate(rtree);
   });
 }
 
