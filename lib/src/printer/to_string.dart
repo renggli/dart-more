@@ -26,7 +26,8 @@ mixin ToStringPrinter {
   @mustCallSuper
   ObjectPrinter get toStringPrinter => defaultToStringPrinter;
 
-  /// Standard `toString` implementation using the [toStringPrinter].
+  /// Standard `toString` implementation. Do not override, instead implement
+  /// [toStringPrinter] to customize.
   @override
   @nonVirtual
   String toString() => toStringPrinter.print(this);
