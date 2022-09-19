@@ -202,11 +202,17 @@ void main() {
       for (var i = 0; i < max; i++) {
         expect(i.isProbablyPrime, primes.contains(i));
       }
+      const mersenne = 2305843009213693951;
+      expect(mersenne.isProbablyPrime, isTrue);
+      expect((mersenne + 2).isProbablyPrime, isFalse);
     });
     test('BigInt', () {
       for (var i = 0; i < max; i++) {
         expect(BigInt.from(i).isProbablyPrime, primes.contains(i));
       }
+      final mersenne = BigInt.parse('170141183460469231731687303715884105727');
+      expect(mersenne.isProbablyPrime, isTrue);
+      expect((mersenne + BigInt.two).isProbablyPrime, isFalse);
     });
     test('Complex', () {
       const a002145 = [3, 7, 11, 19, 23, 31, 43, 47, 59, 67, 71, 79, 83, 103];
