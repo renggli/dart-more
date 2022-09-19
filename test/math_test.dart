@@ -367,7 +367,7 @@ void main() {
     });
     test('twins', () {
       final twins =
-          150.primes.window(2).where((pair) => pair[0] + 2 == pair[1]);
+          150.primes.window(2).where((pair) => pair[1] - pair[0] == 2);
       expect(twins, [
         [3, 5],
         [5, 7],
