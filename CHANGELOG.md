@@ -1,8 +1,10 @@
 # Changelog
 
-## 3.9.0
-* Generalize the `PrimeSieve` implementation.
+## 3.9.0 (Unpublished)
 * Add iterator over `BitList.indices` that are true or false.
+* Add experimental `RTree` implementation.
+* Various optimizations and improvements to mathematical functions.
+* Generalize the prime sieve implementation and add support for more efficient primality check and factorization.
 
 ## 3.8.0
 * Add `String` extensions `take`, `takeTo`, `skip`, `skipTo`, `takeLast`, `takeLastTo`, `skipLast`, and `skipLastTo`.
