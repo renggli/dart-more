@@ -102,9 +102,7 @@ class BitList extends ListBase<bool> with NonGrowableListMixin<bool> {
   int count([bool expected = true]) {
     var tally = 0;
     for (var index = 0; index < length; index++) {
-      final actual =
-          (buffer[index >> bitShift] & bitSetMask[index & bitOffset]) != 0;
-      if (actual == expected) {
+      if (getUnchecked(index) == expected) {
         tally++;
       }
     }
@@ -114,9 +112,7 @@ class BitList extends ListBase<bool> with NonGrowableListMixin<bool> {
   /// Returns an iterable over the indexes with the bit set to [expected].
   Iterable<int> indexes([bool expected = true]) sync* {
     for (var index = 0; index < length; index++) {
-      final actual =
-          (buffer[index >> bitShift] & bitSetMask[index & bitOffset]) != 0;
-      if (actual == expected) {
+      if (getUnchecked(index) == expected) {
         yield index;
       }
     }
