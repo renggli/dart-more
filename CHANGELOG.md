@@ -1,5 +1,9 @@
 # Changelog
 
+## 3.9.0
+* Generalize the `PrimeSieve` implementation.
+* Add iterator over `BitList.indices` that are true or false.
+
 ## 3.8.0
 * Add `String` extensions `take`, `takeTo`, `skip`, `skipTo`, `takeLast`, `takeLastTo`, `skipLast`, and `skipLastTo`.
 * Create a new `temporal` package unifying all `DateTime` and `Duration` related extensions:

@@ -1,5 +1,6 @@
 import 'dart:math' as math;
 
+import 'package:more/collection.dart';
 import 'package:more/iterable.dart';
 import 'package:more/math.dart';
 import 'package:more/number.dart';
@@ -197,22 +198,22 @@ void main() {
   });
   group('isProbablyPrime', () {
     const max = 100000;
-    final primes = max.primes.toSet();
+    final primes = EratosthenesPrimeSieve(max);
     test('int', () {
       for (var i = 0; i < max; i++) {
-        expect(i.isProbablyPrime, primes.contains(i));
+        expect(i.isProbablyPrime, primes.isPrime(i));
       }
-      const mersenne = 2305843009213693951;
-      expect(mersenne.isProbablyPrime, isTrue);
-      expect((mersenne + 2).isProbablyPrime, isFalse);
+      const prime = 228204732751;
+      expect(prime.isProbablyPrime, isTrue);
+      expect((prime + 2).isProbablyPrime, isFalse);
     });
     test('BigInt', () {
       for (var i = 0; i < max; i++) {
-        expect(BigInt.from(i).isProbablyPrime, primes.contains(i));
+        expect(BigInt.from(i).isProbablyPrime, primes.isPrime(i));
       }
-      final mersenne = BigInt.parse('170141183460469231731687303715884105727');
-      expect(mersenne.isProbablyPrime, isTrue);
-      expect((mersenne + BigInt.two).isProbablyPrime, isFalse);
+      final prime = BigInt.parse('170141183460469231731687303715884105727');
+      expect(prime.isProbablyPrime, isTrue);
+      expect((prime + BigInt.two).isProbablyPrime, isFalse);
     });
     test('Complex', () {
       const a002145 = [3, 7, 11, 19, 23, 31, 43, 47, 59, 67, 71, 79, 83, 103];
@@ -358,35 +359,115 @@ void main() {
       expect([1, 2, 3, 4].polynomial(), 4321);
     });
   });
-  group('primes', () {
-    test('basic', () {
-      expect(10.primes, [2, 3, 5, 7]);
-      expect(20.primes, [2, 3, 5, 7, 11, 13, 17, 19]);
+  group('prime sieves', () {
+    void primeSieveTests(PrimeSieve Function(int n) create) {
+      test('primes', () {
+        expect(create(7).primes, [2, 3, 5, 7]);
+        expect(create(12).primes, [2, 3, 5, 7, 11]);
+        expect(create(20).primes, [2, 3, 5, 7, 11, 13, 17, 19]);
+        expect(create(31).primes, [2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31]);
+      });
+      test('primes (edge cases)', () {
+        expect(() => create(-1).primes, throwsRangeError);
+        expect(create(0).primes, []);
+        expect(create(1).primes, []);
+        expect(create(2).primes, [2]);
+      });
+      test('isPrime', () {
+        const primes = [
+          2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47, 53, //
+          59, 61, 67, 71, 73, 79, 83, 89, 97, 101, 103, 107, 109, 113, //
+          127, 131, 137, 139, 149, 151, 157, 163, 167, 173, 179, 181, //
+          191, 193, 197, 199, 211, 223, 227, 229, 233, 239, 241, 251, //
+          257, 263, 269, 271, 277, 281, 283, 293, 307, 311, 313, 317 //
+        ];
+        final sieve = create(primes.last);
+        for (var i = 0; i <= primes.last; i++) {
+          final isPrime = primes.contains(i);
+          expect(sieve.isPrime(i), isPrime,
+              reason: '$i expected to ${isPrime ? '' : 'not'} be prime');
+        }
+      });
+      test('isPrime (edge cases)', () {
+        final sieve = create(5);
+        expect(() => sieve.isPrime(-1), throwsRangeError);
+        expect(() => sieve.isPrime(6), throwsRangeError);
+      });
+      test('large', () {
+        expect(create(2000).primes.skipWhile((each) => each < 1000).take(5),
+            [1009, 1013, 1019, 1021, 1031]);
+        expect(create(20000).primes.skipWhile((each) => each < 10000).take(5),
+            [10007, 10009, 10037, 10039, 10061]);
+        expect(create(200000).primes.skipWhile((each) => each < 100000).take(5),
+            [100003, 100019, 100043, 100049, 100057]);
+      });
+      test('twins', () {
+        final twins = create(150)
+            .primes
+            .window(2)
+            .where((pair) => pair[1] - pair[0] == 2);
+        expect(twins, [
+          [3, 5],
+          [5, 7],
+          [11, 13],
+          [17, 19],
+          [29, 31],
+          [41, 43],
+          [59, 61],
+          [71, 73],
+          [101, 103],
+          [107, 109],
+          [137, 139],
+        ]);
+      });
+    }
+
+    group('eratosthenes', () {
+      primeSieveTests((n) => EratosthenesPrimeSieve(n));
     });
-    test('large', () {
-      expect(2000.primes.skipWhile((each) => each < 1000).take(5),
-          [1009, 1013, 1019, 1021, 1031]);
-      expect(20000.primes.skipWhile((each) => each < 10000).take(5),
-          [10007, 10009, 10037, 10039, 10061]);
-      expect(200000.primes.skipWhile((each) => each < 100000).take(5),
-          [100003, 100019, 100043, 100049, 100057]);
-    });
-    test('twins', () {
-      final twins =
-          150.primes.window(2).where((pair) => pair[1] - pair[0] == 2);
-      expect(twins, [
-        [3, 5],
-        [5, 7],
-        [11, 13],
-        [17, 19],
-        [29, 31],
-        [41, 43],
-        [59, 61],
-        [71, 73],
-        [101, 103],
-        [107, 109],
-        [137, 139],
-      ]);
+    group('euler', () {
+      primeSieveTests((n) => EulerPrimeSieve(n));
+      test('factorization', () {
+        final sieve = EulerPrimeSieve(20);
+        final factorization = 0
+            .to(sieve.max + 1)
+            .toMap<int, List<int>>(value: (each) => sieve.factorize(each));
+        expect(factorization, <int, List<int>>{
+          0: [],
+          1: [],
+          2: [2],
+          3: [3],
+          4: [2, 2],
+          5: [5],
+          6: [2, 3],
+          7: [7],
+          8: [2, 2, 2],
+          9: [3, 3],
+          10: [2, 5],
+          11: [11],
+          12: [2, 2, 3],
+          13: [13],
+          14: [2, 7],
+          15: [3, 5],
+          16: [2, 2, 2, 2],
+          17: [17],
+          18: [2, 3, 3],
+          19: [19],
+          20: [2, 2, 5],
+        });
+      });
+      test('factorization (large)', () {
+        final sieve = EulerPrimeSieve(100000);
+        for (var i = 2; i <= sieve.max; i++) {
+          final factors = sieve.factorize(i);
+          expect(factors.reduce((a, b) => a * b), i);
+        }
+      });
+      test('factorization (edge cases)', () {
+        final sieve = EulerPrimeSieve(20);
+        expect(() => sieve.factorize(-1), throwsRangeError);
+        expect(() => sieve.factorize(21), throwsRangeError);
+      });
     });
   });
 }
