@@ -110,7 +110,7 @@ class BitList extends ListBase<bool> with NonGrowableListMixin<bool> {
   }
 
   /// Returns an iterable over the indexes with the bit set to [expected].
-  Iterable<int> indexes([bool expected = true]) sync* {
+  Iterable<int> indices([bool expected = true]) sync* {
     for (var index = 0; index < length; index++) {
       if (getUnchecked(index) == expected) {
         yield index;

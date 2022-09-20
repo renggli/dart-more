@@ -356,9 +356,9 @@ void main() {
       test('indexes', () {
         for (var len = 0; len < 100; len++) {
           final list = BitList.of(randomBooleans(823 * len, len));
-          final trueList = list.indexes().toList();
+          final trueList = list.indices().toList();
           final trueSet = trueList.toSet();
-          final falseList = list.indexes(false).toList();
+          final falseList = list.indices(false).toList();
           final falseSet = falseList.toSet();
           expect(trueSet.length, trueList.length);
           expect(falseSet.length, falseList.length);
@@ -2090,10 +2090,18 @@ void main() {
         expect(bound2.hashCode, bound2.hashCode);
       });
       test('toString', () {
-        expect(point1.toString(), 'Bounds(1.0, 2.0, 3.0)');
-        expect(point2.toString(), 'Bounds(3.0, 2.0, 1.0)');
-        expect(bound1.toString(), 'Bounds(-1.0, -1.0, -1.0; 1.0, 1.0, 1.0)');
-        expect(bound2.toString(), 'Bounds(-2.0, 1.0, 2.0; 2.0, 3.0, 5.0)');
+        expect(point1.toString(),
+            matches(RegExp(r'Bounds\(1(.0)?, 2(.0)?, 3(.0)?\)')));
+        expect(point2.toString(),
+            matches(RegExp(r'Bounds\(3(.0)?, 2(.0)?, 1(.0)?\)')));
+        expect(
+            bound1.toString(),
+            matches(RegExp(
+                r'Bounds\(-1(.0)?, -1(.0)?, -1(.0)?; 1(.0)?, 1(.0)?, 1(.0)?\)')));
+        expect(
+            bound2.toString(),
+            matches(RegExp(
+                r'Bounds\(-2(.0)?, 1(.0)?, 2(.0)?; 2(.0)?, 3(.0)?, 5(.0)?\)')));
       });
       test('unionAll', () {
         expect(() => Bounds.unionAll([]), throwsStateError);
