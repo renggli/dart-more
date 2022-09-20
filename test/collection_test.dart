@@ -353,6 +353,24 @@ void main() {
           expect(falseCount, list.where((b) => b == false).length);
         }
       });
+      test('indexes', () {
+        for (var len = 0; len < 100; len++) {
+          final list = BitList.of(randomBooleans(823 * len, len));
+          final trueList = list.indexes().toList();
+          final trueSet = trueList.toSet();
+          final falseList = list.indexes(false).toList();
+          final falseSet = falseList.toSet();
+          expect(trueSet.length, trueList.length);
+          expect(falseSet.length, falseList.length);
+          expect(trueSet.union(falseSet).length, list.length);
+          for (var trueIndex in trueSet) {
+            expect(list[trueIndex], isTrue);
+          }
+          for (var falseIndex in falseSet) {
+            expect(list[falseIndex], isFalse);
+          }
+        }
+      });
     });
     group('operators', () {
       test('concatenate', () {

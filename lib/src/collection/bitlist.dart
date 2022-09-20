@@ -111,6 +111,17 @@ class BitList extends ListBase<bool> with NonGrowableListMixin<bool> {
     return tally;
   }
 
+  /// Returns an iterable over the indexes with the bit set to [expected].
+  Iterable<int> indexes([bool expected = true]) sync* {
+    for (var index = 0; index < length; index++) {
+      final actual =
+          (buffer[index >> bitShift] & bitSetMask[index & bitOffset]) != 0;
+      if (actual == expected) {
+        yield index;
+      }
+    }
+  }
+
   /// Returns the complement of the receiver.
   ///
   /// The new [BitList] has all the bits of the receiver inverted.
