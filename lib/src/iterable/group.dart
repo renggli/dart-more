@@ -35,9 +35,18 @@ extension GroupExtension<V> on Iterable<V> {
 }
 
 /// A group of values.
-class Group<K, V> {
-  const Group(this.key, this.values);
+class Group<K, V> implements MapEntry<K, List<V>> {
+  const Group(this.key, this.value);
 
+  @override
   final K key;
-  final List<V> values;
+
+  @override
+  final List<V> value;
+
+  /// The values of the group.
+  List<V> get values => value;
+
+  @override
+  String toString() => 'Group($key: $value)';
 }

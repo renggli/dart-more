@@ -23,16 +23,17 @@ extension IndexedExtension<E> on Iterable<E> {
 
 /// An indexed value.
 class Indexed<E> implements MapEntry<int, E> {
-  const Indexed(this.index, this.value);
+  const Indexed(this.key, this.value);
 
-  final int index;
+  @override
+  final int key;
 
   @override
   final E value;
 
-  @override
-  int get key => index;
+  /// The index of the entry.
+  int get index => key;
 
   @override
-  String toString() => 'Indexed($index: $value)';
+  String toString() => 'Indexed($key: $value)';
 }
