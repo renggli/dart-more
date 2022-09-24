@@ -751,7 +751,32 @@ void main() {
       }
     });
   });
-  group('repeat', () {
+  group('repeat element', () {
+    test('default', () {
+      expect(repeat(1).take(3), [1, 1, 1]);
+      expect(repeat('a').take(3), ['a', 'a', 'a']);
+    });
+    test('zero', () {
+      expect(repeat(2, count: 0), []);
+      expect(repeat('b', count: 0), []);
+    });
+    test('one', () {
+      expect(repeat(3, count: 1), [3]);
+      expect(repeat('c', count: 1), ['c']);
+    });
+    test('two', () {
+      expect(repeat(4, count: 2), [4, 4]);
+      expect(repeat('d', count: 2), ['d', 'd']);
+    });
+    test('tree', () {
+      expect(repeat(5, count: 3), [5, 5, 5]);
+      expect(repeat('e', count: 3), ['e', 'e', 'e']);
+    });
+    test('error', () {
+      expect(() => repeat(6, count: -1), throwsRangeError);
+    });
+  });
+  group('repeat iterable', () {
     test('empty', () {
       expect([].repeat(), []);
       expect([].repeat(count: 0), []);
@@ -788,11 +813,8 @@ void main() {
       expect(infinite.repeat(count: 2).take(7), [0, 1, 2, 3, 4, 5, 6]);
       expect(infinite.repeat(count: 3).take(7), [0, 1, 2, 3, 4, 5, 6]);
     });
-    test('constructor', () {
-      expect(repeat(1, count: 0), []);
-      expect(repeat(1, count: 1), [1]);
-      expect(repeat(1, count: 2), [1, 1]);
-      expect(repeat(1, count: 3), [1, 1, 1]);
+    test('error', () {
+      expect(() => [1, 2, 3].repeat(count: -1), throwsRangeError);
     });
   });
   group('rotate', () {

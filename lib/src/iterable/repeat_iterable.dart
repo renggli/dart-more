@@ -2,7 +2,7 @@ import 'dart:collection' show IterableBase;
 
 import 'mixins/infinite.dart';
 
-extension RepeatExtension<E> on Iterable<E> {
+extension RepeatIterableExtension<E> on Iterable<E> {
   /// Returns an infinite iterable with the elements of this iterable. If
   /// [count] is provided the resulting iterator is limited to [count]
   /// repetitions.
@@ -16,37 +16,27 @@ extension RepeatExtension<E> on Iterable<E> {
     if (isEmpty || count == 0) {
       return const Iterable.empty();
     } else if (count == null) {
-      return RepeatIterable(this);
+      return RepeatIterableIterable<E>(this);
     } else if (this is InfiniteIterable) {
       return this;
     }
     RangeError.checkNotNegative(count, 'count');
-    return RepeatIterable(this).take(length * count);
+    return RepeatIterableIterable<E>(this).take(length * count);
   }
 }
 
-/// Returns an infinite iterable with a constant [element]. If [count] is
-/// provided the resulting iterator is limited to [count] elements.
-///
-/// Example expressions:
-///
-///     repeat(2);               // [2, 2, 2, 2, 2, 2, ...]
-///     repeat('a', count: 3);   // ['a', 'a', 'a']
-///
-Iterable<E> repeat<E>(E element, {int? count}) =>
-    [element].repeat(count: count);
-
-class RepeatIterable<E> extends IterableBase<E> with InfiniteIterable<E> {
-  RepeatIterable(this.iterable);
+class RepeatIterableIterable<E> extends IterableBase<E>
+    with InfiniteIterable<E> {
+  RepeatIterableIterable(this.iterable);
 
   final Iterable<E> iterable;
 
   @override
-  Iterator<E> get iterator => RepeatIterator<E>(iterable);
+  Iterator<E> get iterator => RepeatIterableIterator<E>(iterable);
 }
 
-class RepeatIterator<E> extends Iterator<E> {
-  RepeatIterator(this.iterable) : iterator = iterable.iterator;
+class RepeatIterableIterator<E> extends Iterator<E> {
+  RepeatIterableIterator(this.iterable) : iterator = iterable.iterator;
 
   final Iterable<E> iterable;
   Iterator<E> iterator;

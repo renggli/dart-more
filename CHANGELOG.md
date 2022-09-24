@@ -5,6 +5,7 @@
 * Add experimental `RTree` implementation.
 * Various optimizations and improvements to mathematical functions.
 * Generalize the prime sieve implementation and add support for more efficient primality check and factorization.
+* More efficient implementation of `repeat` for a single element.
 
 ## 3.8.0
 * Add `String` extensions `take`, `takeTo`, `skip`, `skipTo`, `takeLast`, `takeLastTo`, `skipLast`, and `skipLastTo`.

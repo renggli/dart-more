@@ -13,7 +13,8 @@ export 'src/iterable/periodical.dart'
 export 'src/iterable/permutations.dart' show PermutationsExtension;
 export 'src/iterable/product.dart' show ProductExtension;
 export 'src/iterable/random.dart' show RandomExtension;
-export 'src/iterable/repeat.dart' show RepeatExtension, repeat;
+export 'src/iterable/repeat_element.dart' show repeat;
+export 'src/iterable/repeat_iterable.dart' show RepeatIterableExtension;
 export 'src/iterable/rotate.dart'
     show RotateListExtension, RotateQueueExtension;
 export 'src/iterable/separated.dart' show SeparatedExtension;
