@@ -6,6 +6,8 @@
 * Various optimizations and improvements to mathematical functions.
 * Generalize the prime sieve implementation and add support for more efficient primality check and factorization.
 * More efficient implementation of `repeat` for a single element.
+* Deprecate `Iterable.cycle` in favor of `Iterable.repeat`.
+* Make `Iterable.groupBy` and `Iterable.indexed` return instances of `MapEntry` for easier interoperability with `Map`.
 
 ## 3.8.0
 * Add `String` extensions `take`, `takeTo`, `skip`, `skipTo`, `takeLast`, `takeLastTo`, `skipLast`, and `skipLastTo`.

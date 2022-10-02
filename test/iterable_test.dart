@@ -1168,119 +1168,156 @@ void main() {
     test('size = 1', () {
       expect([].window(1), []);
       expect([1].window(1), [
-        [1]
+        [1],
       ]);
       expect([1, 2].window(1), [
         [1],
-        [2]
+        [2],
       ]);
       expect([1, 2, 3].window(1), [
         [1],
         [2],
-        [3]
+        [3],
       ]);
       expect([1, 2, 3, 4].window(1), [
         [1],
         [2],
         [3],
-        [4]
+        [4],
+      ]);
+      expect([1, 2, 3, 4, 5].window(1), [
+        [1],
+        [2],
+        [3],
+        [4],
+        [5],
       ]);
     });
     test('size = 2', () {
       expect([].window(2), []);
       expect([1].window(2), []);
       expect([1, 2].window(2), [
-        [1, 2]
+        [1, 2],
       ]);
       expect([1, 2, 3].window(2), [
         [1, 2],
-        [2, 3]
+        [2, 3],
       ]);
       expect([1, 2, 3, 4].window(2), [
         [1, 2],
         [2, 3],
-        [3, 4]
+        [3, 4],
+      ]);
+      expect([1, 2, 3, 4, 5].window(2), [
+        [1, 2],
+        [2, 3],
+        [3, 4],
+        [4, 5],
       ]);
     });
     test('size = 2, step = 2', () {
       expect([].window(2, step: 2), []);
       expect([1].window(2, step: 2), []);
       expect([1, 2].window(2, step: 2), [
-        [1, 2]
+        [1, 2],
       ]);
       expect([1, 2, 3].window(2, step: 2), [
-        [1, 2]
+        [1, 2],
       ]);
       expect([1, 2, 3, 4].window(2, step: 2), [
         [1, 2],
-        [3, 4]
+        [3, 4],
+      ]);
+      expect([1, 2, 3, 4, 5].window(2, step: 2), [
+        [1, 2],
+        [3, 4],
       ]);
     });
     test('size = 2, step = 3', () {
       expect([].window(2, step: 3), []);
       expect([1].window(2, step: 3), []);
       expect([1, 2].window(2, step: 3), [
-        [1, 2]
+        [1, 2],
       ]);
       expect([1, 2, 3].window(2, step: 3), [
-        [1, 2]
+        [1, 2],
       ]);
       expect([1, 2, 3, 4].window(2, step: 3), [
-        [1, 2]
+        [1, 2],
+      ]);
+      expect([1, 2, 3, 4, 5].window(2, step: 3), [
+        [1, 2],
+        [4, 5],
       ]);
     });
     test('size = 2, includePartial', () {
       expect([].window(2, includePartial: true), []);
       expect([1].window(2, includePartial: true), [
-        [1]
+        [1],
       ]);
       expect([1, 2].window(2, includePartial: true), [
         [1, 2],
-        [2]
+        [2],
       ]);
       expect([1, 2, 3].window(2, includePartial: true), [
         [1, 2],
         [2, 3],
-        [3]
+        [3],
       ]);
       expect([1, 2, 3, 4].window(2, includePartial: true), [
         [1, 2],
         [2, 3],
         [3, 4],
-        [4]
+        [4],
+      ]);
+      expect([1, 2, 3, 4, 5].window(2, includePartial: true), [
+        [1, 2],
+        [2, 3],
+        [3, 4],
+        [4, 5],
+        [5],
       ]);
     });
     test('size = 2, step = 2, includePartial', () {
       expect([].window(2, step: 2, includePartial: true), []);
       expect([1].window(2, step: 2, includePartial: true), [
-        [1]
+        [1],
       ]);
       expect([1, 2].window(2, step: 2, includePartial: true), [
-        [1, 2]
+        [1, 2],
       ]);
       expect([1, 2, 3].window(2, step: 2, includePartial: true), [
         [1, 2],
-        [3]
+        [3],
       ]);
       expect([1, 2, 3, 4].window(2, step: 2, includePartial: true), [
         [1, 2],
-        [3, 4]
+        [3, 4],
+      ]);
+      expect([1, 2, 3, 4, 5].window(2, step: 2, includePartial: true), [
+        [1, 2],
+        [3, 4],
+        [5],
       ]);
     });
     test('size = 2, step = 3, includePartial', () {
       expect([].window(2, step: 3, includePartial: true), []);
       expect([1].window(2, step: 3, includePartial: true), [
-        [1]
+        [1],
       ]);
       expect([1, 2].window(2, step: 3, includePartial: true), [
-        [1, 2]
+        [1, 2],
       ]);
       expect([1, 2, 3].window(2, step: 3, includePartial: true), [
-        [1, 2]
+        [1, 2],
       ]);
       expect([1, 2, 3, 4].window(2, step: 3, includePartial: true), [
         [1, 2],
-        [4]
+        [4],
+      ]);
+      expect([1, 2, 3, 4, 5].window(2, step: 3, includePartial: true), [
+        [1, 2],
+        [4, 5],
       ]);
     });
   });

@@ -13,16 +13,21 @@ extension RepeatIterableExtension<E> on Iterable<E> {
   ///    [1, 2, 3].repeat(count: 2);    // [1, 2, 3, 1, 2, 3]
   ///
   Iterable<E> repeat({int? count}) {
-    if (isEmpty || count == 0) {
+    if (count == 0 || isEmpty) {
       return const Iterable.empty();
+    } else if (count == 1 || this is InfiniteIterable) {
+      return this;
     } else if (count == null) {
       return RepeatIterableIterable<E>(this);
-    } else if (this is InfiniteIterable) {
-      return this;
+    } else {
+      RangeError.checkNotNegative(count, 'count');
+      return RepeatIterableIterable<E>(this).take(count * length);
     }
-    RangeError.checkNotNegative(count, 'count');
-    return RepeatIterableIterable<E>(this).take(length * count);
   }
+
+  /// Deprecated alias for [repeat].
+  @Deprecated('Use RepeatIterableExtension.repeat instead.')
+  Iterable<E> cycle([int? count]) => repeat(count: count);
 }
 
 class RepeatIterableIterable<E> extends IterableBase<E>

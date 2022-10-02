@@ -1,7 +1,6 @@
 /// Some fancy iterables and iterators.
 export 'src/iterable/chunked.dart' show ChunkedExtension;
 export 'src/iterable/combinations.dart' show CombinationsExtension;
-export 'src/iterable/cycle.dart' show CycleExtension;
 export 'src/iterable/flat_map.dart' show FlatMapExtension;
 export 'src/iterable/flatten.dart' show FlattenExtension;
 export 'src/iterable/group.dart' show GroupExtension, Group;
