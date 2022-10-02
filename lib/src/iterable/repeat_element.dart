@@ -15,9 +15,10 @@ Iterable<E> repeat<E>(E element, {int? count}) {
     return const Iterable.empty();
   } else if (count == null) {
     return RepeatElementIterable<E>(element);
+  } else {
+    RangeError.checkNotNegative(count, 'count');
+    return RepeatElementIterable<E>(element).take(count);
   }
-  RangeError.checkNotNegative(count, 'count');
-  return RepeatElementIterable<E>(element).take(count);
 }
 
 class RepeatElementIterable<E> extends IterableBase<E>
