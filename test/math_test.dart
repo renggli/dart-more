@@ -422,6 +422,9 @@ void main() {
       });
     }
 
+    group('atkin', () {
+      primeSieveTests((n) => AtkinPrimeSieve(n));
+    });
     group('eratosthenes', () {
       primeSieveTests((n) => EratosthenesPrimeSieve(n));
     });

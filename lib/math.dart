@@ -15,6 +15,7 @@ export 'src/math/lcm.dart' show LcmIntegerExtension, LcmBigIntExtension;
 export 'src/math/math.dart' show MathNumberExtension;
 export 'src/math/polynomial.dart' show PolynomialIterableExtension;
 export 'src/math/primes.dart' show PrimesIntegerExtension;
+export 'src/math/primes/atkin.dart' show AtkinPrimeSieve;
 export 'src/math/primes/eratosthenes.dart' show EratosthenesPrimeSieve;
 export 'src/math/primes/euler.dart' show EulerPrimeSieve;
 export 'src/math/primes/sieve.dart' show PrimeSieve;
