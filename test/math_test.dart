@@ -44,6 +44,44 @@ void main() {
       });
     });
   });
+  group('bitCount', () {
+    expectBitCount(int value, int expectedBitCount) {
+      expect(value.bitCount, expectedBitCount,
+          reason: 'Expected $value (0b${value.toRadixString(2)}) '
+              'to have $expectedBitCount bits set.');
+    }
+
+    test('small', () {
+      const bitCount = [
+        0, 1, 1, 2, 1, 2, 2, 3, 1, 2, 2, 3, 2, 3, 3, 4, 1, 2, 2, 3, 2, 3, 3, //
+        4, 2, 3, 3, 4, 3, 4, 4, 5, 1, 2, 2, 3, 2, 3, 3, 4, 2, 3, 3, 4, 3, 4, //
+        4, 5, 2, 3, 3, 4, 3, 4, 4, 5, 3, 4, 4, 5, 4, 5, 5, 6, 1, 2, 2, 3, 2, //
+        3, 3, 4, 2, 3, 3, 4, 3, 4, 4, 5, 2, 3, 3, 4, 3, 4, 4, 5, 3, 4, 4, 5, //
+        4, 5, 5, 6, 2, 3, 3, 4, 3, 4, 4, 5, 3, //
+      ];
+      for (var i = 0; i < bitCount.length; i++) {
+        expectBitCount(i, bitCount[i]);
+      }
+    });
+    test('single bit set', () {
+      for (var i = 1; i <= 0xffffffff; i *= 2) {
+        expectBitCount(i, 1);
+      }
+    });
+    test('all bit set', () {
+      for (var i = 1; i <= 0xffffffff; i *= 2) {
+        expectBitCount(i - 1, i.bitLength - 1);
+      }
+      expectBitCount(0xffffffff, 32);
+    });
+    test('random numbers', () {
+      final random = math.Random(1121);
+      for (var i = 0; i < 1121; i++) {
+        final value = random.nextInt(0xffffffff);
+        expectBitCount(value, '1'.allMatches(value.toRadixString(2)).length);
+      }
+    });
+  });
   group('digits', () {
     group('base 10', () {
       test('int', () {
