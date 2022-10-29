@@ -61,6 +61,8 @@ class BitList extends ListBase<bool> with NonGrowableListMixin<bool> {
 
   /// Returns the value of the bit with the given [index]. The behavior is
   /// undefined if [index] is outside of bounds.
+  @pragma('vm:prefer-inline')
+  @pragma('dart2js:tryInline')
   bool getUnchecked(int index) =>
       (buffer[index >> bitShift] & bitSetMask[index & bitOffset]) != 0;
 
@@ -71,15 +73,13 @@ class BitList extends ListBase<bool> with NonGrowableListMixin<bool> {
     setUnchecked(index, value);
   }
 
-  /// Sets the [value] of the bit with the given [index].  The behavior is
+  /// Sets the [value] of the bit with the given [index]. The behavior is
   /// undefined if [index] is outside of bounds.
-  void setUnchecked(int index, bool value) {
-    if (value) {
-      buffer[index >> bitShift] |= bitSetMask[index & bitOffset];
-    } else {
-      buffer[index >> bitShift] &= bitClearMask[index & bitOffset];
-    }
-  }
+  @pragma('vm:prefer-inline')
+  @pragma('dart2js:tryInline')
+  void setUnchecked(int index, bool value) => value
+      ? buffer[index >> bitShift] |= bitSetMask[index & bitOffset]
+      : buffer[index >> bitShift] &= bitClearMask[index & bitOffset];
 
   @override
   BitList operator +(List<bool> other) {
@@ -95,8 +95,15 @@ class BitList extends ListBase<bool> with NonGrowableListMixin<bool> {
   /// value.
   void flip(int index) {
     RangeError.checkValidIndex(index, this);
-    buffer[index >> bitShift] ^= bitSetMask[index & bitOffset];
+    flipUnchecked(index);
   }
+
+  /// Sets the bit at the specified [index] to the complement of its current
+  /// value. The behavior is undefined if [index] is outside of bounds.
+  @pragma('vm:prefer-inline')
+  @pragma('dart2js:tryInline')
+  void flipUnchecked(int index) =>
+      buffer[index >> bitShift] ^= bitSetMask[index & bitOffset];
 
   /// Counts the number of bits that are set to [expected].
   int count([bool expected = true]) {
@@ -269,6 +276,7 @@ extension BitListExtension on Iterable<bool> {
 // Constants specific to mapping bits into a [UInt32List].
 const int bitShift = 5;
 const int bitOffset = 31;
+const int bitCount = bitOffset + 1;
 const int bitMask = 0xffffffff;
 const List<int> bitSetMask = [
   1,
