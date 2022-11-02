@@ -44,41 +44,81 @@ void main() {
       });
     });
   });
-  group('bitCount', () {
-    expectBitCount(int value, int expectedBitCount) {
-      expect(value.bitCount, expectedBitCount,
-          reason: 'Expected $value (0b${value.toRadixString(2)}) '
-              'to have $expectedBitCount bits set.');
-    }
+  group('bit', () {
+    final powersOf2 = List.generate(32, (i) => math.pow(2, i).toInt());
+    group('bitCount', () {
+      expectBitCount(int value, int expectedBitCount) {
+        final bitCount = value.bitCount;
+        expect(bitCount, expectedBitCount,
+            reason: 'Expected $value (0b${value.toRadixString(2)}) '
+                'to have $expectedBitCount bits, but got $bitCount bit.');
+        expect(value.hasSingleBit, expectedBitCount == 1);
+      }
 
-    test('small', () {
-      const bitCount = [
-        0, 1, 1, 2, 1, 2, 2, 3, 1, 2, 2, 3, 2, 3, 3, 4, 1, 2, 2, 3, 2, 3, 3, //
-        4, 2, 3, 3, 4, 3, 4, 4, 5, 1, 2, 2, 3, 2, 3, 3, 4, 2, 3, 3, 4, 3, 4, //
-        4, 5, 2, 3, 3, 4, 3, 4, 4, 5, 3, 4, 4, 5, 4, 5, 5, 6, 1, 2, 2, 3, 2, //
-        3, 3, 4, 2, 3, 3, 4, 3, 4, 4, 5, 2, 3, 3, 4, 3, 4, 4, 5, 3, 4, 4, 5, //
-        4, 5, 5, 6, 2, 3, 3, 4, 3, 4, 4, 5, 3, //
-      ];
-      for (var i = 0; i < bitCount.length; i++) {
-        expectBitCount(i, bitCount[i]);
+      test('small', () {
+        const bitCount = [
+          0, 1, 1, 2, 1, 2, 2, 3, 1, 2, 2, 3, 2, 3, 3, 4, 1, 2, 2, 3, 2, 3,
+          3, 4, 2, 3, 3, 4, 3, 4, 4, 5, 1, 2, 2, 3, 2, 3, 3, 4, 2, 3, 3, 4,
+          3, 4, 4, 5, 2, 3, 3, 4, 3, 4, 4, 5, 3, 4, 4, 5, 4, 5, 5, 6, 1, 2,
+          2, 3, 2, 3, 3, 4, 2, 3, 3, 4, 3, 4, 4, 5, 2, 3, 3, 4, 3, 4, 4, 5,
+          3, 4, 4, 5, 4, 5, 5, 6, 2, 3, 3, 4, 3, 4, 4, 5, 3, //
+        ];
+        for (var i = 0; i < bitCount.length; i++) {
+          expectBitCount(i, bitCount[i]);
+        }
+      });
+      test('single bit set', () {
+        for (var i = 1; i <= 0xffffffff; i *= 2) {
+          expectBitCount(i, 1);
+        }
+      });
+      test('all bit set', () {
+        for (var i = 1; i <= 0xffffffff; i *= 2) {
+          expectBitCount(i - 1, i.bitLength - 1);
+        }
+        expectBitCount(0xffffffff, 32);
+      });
+      test('random numbers', () {
+        final random = math.Random(1121);
+        for (var i = 0; i < 1121; i++) {
+          final value = random.nextInt(0xffffffff);
+          expectBitCount(value, '1'.allMatches(value.toRadixString(2)).length);
+        }
+      });
+    });
+    test('hasSingleBit', () {
+      for (var value in powersOf2) {
+        expect(value.hasSingleBit, isTrue,
+            reason: 'Expected $value to have a single bit.');
+        if (value > 2) {
+          final smaller = value - 1, bigger = value + 1;
+          expect(smaller.hasSingleBit, isFalse);
+          expect(bigger.hasSingleBit, isFalse);
+        }
       }
     });
-    test('single bit set', () {
-      for (var i = 1; i <= 0xffffffff; i *= 2) {
-        expectBitCount(i, 1);
+    test('bitFloor', () {
+      for (var i = 0; i < powersOf2.length; i++) {
+        final previous = i > 0 ? powersOf2[i - 1] : 0;
+        final current = powersOf2[i];
+        final middle = (previous + current) ~/ 2;
+        expect(previous.bitFloor, previous);
+        if (!middle.hasSingleBit) {
+          expect(middle.bitFloor, previous);
+        }
+        expect(current.bitFloor, current);
       }
     });
-    test('all bit set', () {
-      for (var i = 1; i <= 0xffffffff; i *= 2) {
-        expectBitCount(i - 1, i.bitLength - 1);
-      }
-      expectBitCount(0xffffffff, 32);
-    });
-    test('random numbers', () {
-      final random = math.Random(1121);
-      for (var i = 0; i < 1121; i++) {
-        final value = random.nextInt(0xffffffff);
-        expectBitCount(value, '1'.allMatches(value.toRadixString(2)).length);
+    test('bitCeil', () {
+      for (var i = 0; i < powersOf2.length; i++) {
+        final previous = i > 0 ? powersOf2[i - 1] : 1;
+        final current = powersOf2[i];
+        final middle = (previous + current) ~/ 2;
+        expect(previous.bitCeil, previous);
+        if (!middle.hasSingleBit) {
+          expect(middle.bitCeil, current);
+        }
+        expect(current.bitCeil, current);
       }
     });
   });

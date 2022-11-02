@@ -1,7 +1,7 @@
 /// A collection of common mathematical functions.
 export 'src/math/binomial.dart'
     show BinomialIntegerExtension, BinomialBigIntExtension;
-export 'src/math/bits.dart' show BitCountExtension;
+export 'src/math/bit.dart' show BitUint32Extension;
 export 'src/math/digits.dart'
     show DigitsIntegerExtension, DigitsBigIntExtension;
 export 'src/math/factorial.dart'
