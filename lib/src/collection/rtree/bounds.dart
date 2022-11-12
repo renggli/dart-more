@@ -84,9 +84,7 @@ class Bounds {
     for (var i = 0; i < length; i++) {
       final lower = math.max(min[i], other.min[i]);
       final upper = math.min(max[i], other.max[i]);
-      if (lower > upper) {
-        return false;
-      }
+      if (lower > upper) return false;
     }
     return true;
   }
@@ -97,18 +95,16 @@ class Bounds {
     for (var i = 0; i < length; i++) {
       final lower = math.max(min[i], other.min[i]);
       final upper = math.min(max[i], other.max[i]);
-      if (lower <= upper) {
-        result.min[i] = lower;
-        result.max[i] = upper;
-      } else {
-        return null;
-      }
+      if (lower > upper) return null;
+      result.min[i] = lower;
+      result.max[i] = upper;
     }
     return result;
   }
 
   @override
   bool operator ==(Object other) {
+    if (identical(this, other)) return true;
     if (other is! Bounds) return false;
     if (other.length != length) return false;
     for (var i = 0; i < length; i++) {
