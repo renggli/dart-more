@@ -233,7 +233,7 @@ class Fraction
   double toDouble() => a / b;
 
   @override
-  bool closeTo(Fraction other, double epsilon) =>
+  bool closeTo(Fraction other, num epsilon) =>
       isFinite &&
       other.isFinite &&
       (toDouble() - other.toDouble()).abs() <= epsilon;

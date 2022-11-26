@@ -259,7 +259,7 @@ class Quaternion implements CloseTo<Quaternion> {
       Quaternion(w.truncate(), x.truncate(), y.truncate(), z.truncate());
 
   @override
-  bool closeTo(Quaternion other, double epsilon) =>
+  bool closeTo(Quaternion other, num epsilon) =>
       isFinite && other.isFinite && (this - other).abs() <= epsilon;
 
   @override

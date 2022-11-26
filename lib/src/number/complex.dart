@@ -269,7 +269,7 @@ class Complex implements CloseTo<Complex> {
   Complex truncate() => Complex(a.truncate(), b.truncate());
 
   @override
-  bool closeTo(Complex other, double epsilon) =>
+  bool closeTo(Complex other, num epsilon) =>
       isFinite && other.isFinite && (this - other).abs() <= epsilon;
 
   @override
