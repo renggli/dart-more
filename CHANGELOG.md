@@ -1,6 +1,7 @@
 # Changelog
 
-## 3.9.0 (Unpublished)
+## 3.9.0
+* Various extension to work with bits.
 * Add iterator over `BitList.indices` that are true or false.
 * Add experimental `RTree` implementation.
 * Various optimizations and improvements to mathematical functions.
