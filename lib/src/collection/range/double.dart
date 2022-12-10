@@ -48,17 +48,21 @@ class DoubleRange extends ListBase<double>
     } else if (a != null) {
       end = a;
     }
-    if (start <= end) {
+    if (start < end) {
       if (step == 1.0) {
         return DoubleRange._(start, end, step, (end - start).ceil());
       } else if (step > 0.0) {
         return DoubleRange._(start, end, step, ((end - start) / step).ceil());
       }
-    } else {
+    } else if (start > end) {
       if (step == -1.0) {
         return DoubleRange._(start, end, step, (start - end).ceil());
       } else if (step < 0.0) {
         return DoubleRange._(start, end, step, ((start - end) / -step).ceil());
+      }
+    } else {
+      if (step != 0) {
+        return DoubleRange._(start, end, step, 0);
       }
     }
     throw ArgumentError.value(

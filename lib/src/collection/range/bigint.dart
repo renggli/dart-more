@@ -51,19 +51,23 @@ class BigIntRange extends ListBase<BigInt>
     } else if (a != null) {
       end = a;
     }
-    if (start <= end) {
+    if (start < end) {
       if (step == BigInt.one) {
         return BigIntRange._(start, end, step, _toSafeLength(end - start));
       } else if (step > BigInt.one) {
         return BigIntRange._(start, end, step,
             _toSafeLength((end - start + step - BigInt.one) ~/ step));
       }
-    } else {
+    } else if (start > end) {
       if (step == -BigInt.one) {
         return BigIntRange._(start, end, step, _toSafeLength(start - end));
       } else if (step < -BigInt.one) {
         return BigIntRange._(start, end, step,
             _toSafeLength((start - end - step - BigInt.one) ~/ -step));
+      }
+    } else {
+      if (step != BigInt.zero) {
+        return BigIntRange._(start, end, step, 0);
       }
     }
     throw ArgumentError.value(

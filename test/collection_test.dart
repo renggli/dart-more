@@ -1473,6 +1473,7 @@ void main() {
           verify<int>(IntegerRange(3), included: [0, 1, 2], excluded: [-1, 3]);
         });
         test('2 argument', () {
+          verify<int>(IntegerRange(0, 0), included: [], excluded: [-1, 0, 1]);
           verify<int>(IntegerRange(0, 4),
               included: [0, 1, 2, 3], excluded: [-1, 4]);
           verify<int>(IntegerRange(5, 9),
@@ -1481,6 +1482,8 @@ void main() {
               included: [9, 8, 7, 6], excluded: [10, 5]);
         });
         test('3 argument (positive step)', () {
+          verify<int>(IntegerRange(0, 0, 1),
+              included: [], excluded: [-1, 0, 1]);
           verify<int>(IntegerRange(2, 8, 2),
               included: [2, 4, 6], excluded: [0, 1, 3, 5, 7, 8]);
           verify<int>(IntegerRange(3, 8, 2),
@@ -1493,6 +1496,8 @@ void main() {
               included: [2, 4], excluded: [0, 1, 3, 5, 6, 7, 8]);
         });
         test('3 argument (negative step)', () {
+          verify<int>(IntegerRange(0, 0, -1),
+              included: [], excluded: [-1, 0, 1]);
           verify<int>(IntegerRange(8, 2, -2),
               included: [8, 6, 4], excluded: [2, 3, 5, 7, 9, 10]);
           verify<int>(IntegerRange(8, 3, -2),
@@ -1522,6 +1527,21 @@ void main() {
           verify<int>(0.to(3), included: [0, 1, 2], excluded: [-1, 4]);
           verify<int>(2.to(8, step: 2),
               included: [2, 4, 6], excluded: [0, 1, 3, 5, 7, 8]);
+        });
+        test('stress', () {
+          final random = Random(1618033);
+          for (var i = 0; i < 250; i++) {
+            final start = random.nextInt(0xffff) - 0xffff ~/ 2;
+            final end = random.nextInt(0xffff) - 0xffff ~/ 2;
+            final step = start < end
+                ? 1 + random.nextInt(0xfff)
+                : -1 - random.nextInt(0xfff);
+            final expected = start < end
+                ? <int>[for (var j = start; j < end; j += step) j]
+                : <int>[for (var j = start; j > end; j += step) j];
+            verify<int>(IntegerRange(start, end, step),
+                included: expected, excluded: []);
+          }
         });
         test('invalid', () {
           expect(() => IntegerRange(0, 2, 0), throwsArgumentError);
@@ -1635,6 +1655,8 @@ void main() {
               included: [0.0, 1.0, 2.0], excluded: [-1.0, 3.0]);
         });
         test('2 argument', () {
+          verify<double>(DoubleRange(0.0, 0.0),
+              included: [], excluded: [-1.0, 0.0, 1.0]);
           verify<double>(DoubleRange(0.0, 4.0),
               included: [0.0, 1.0, 2.0, 3.0], excluded: [-1.0, 4.0]);
           verify<double>(DoubleRange(5.0, 9.0),
@@ -1643,6 +1665,8 @@ void main() {
               included: [9.0, 8.0, 7.0, 6.0], excluded: [10.0, 5.0]);
         });
         test('3 argument (positive step)', () {
+          verify<double>(DoubleRange(0.0, 0.0, 1.0),
+              included: [], excluded: [-1.0, 0.0, 1.0]);
           verify<double>(DoubleRange(2.0, 8.0, 1.5),
               included: [2.0, 3.5, 5.0, 6.5], excluded: [0.5, 3.0, 8.0]);
           verify<double>(DoubleRange(3.0, 8.0, 1.5),
@@ -1655,6 +1679,8 @@ void main() {
               included: [2.0, 3.5, 5.0], excluded: [0.5, 3.0, 4.0, 6.0]);
         });
         test('3 argument (negative step)', () {
+          verify<double>(DoubleRange(0.0, 0.0, -1.0),
+              included: [], excluded: [-1.0, 0.0, 1.0]);
           verify<double>(DoubleRange(8.0, 2.0, -1.5),
               included: [8.0, 6.5, 5.0, 3.5], excluded: [9.5, 6.0, 2.0]);
           verify<double>(DoubleRange(8.0, 3.0, -1.5),
@@ -1812,6 +1838,8 @@ void main() {
               included: [0, 1, 2], excluded: [-1, 3]);
         });
         test('2 argument', () {
+          verify(BigIntRange(BigInt.from(0), BigInt.from(0)),
+              included: [], excluded: [-1, 0, 1]);
           verify(BigIntRange(BigInt.from(0), BigInt.from(4)),
               included: [0, 1, 2, 3], excluded: [-1, 4]);
           verify(BigIntRange(BigInt.from(5), BigInt.from(9)),
@@ -1820,6 +1848,8 @@ void main() {
               included: [9, 8, 7, 6], excluded: [10, 5]);
         });
         test('3 argument (positive step)', () {
+          verify(BigIntRange(BigInt.from(0), BigInt.from(0), BigInt.one),
+              included: [], excluded: [-1, 0, 1]);
           verify(BigIntRange(BigInt.from(2), BigInt.from(8), BigInt.two),
               included: [2, 4, 6], excluded: [0, 1, 3, 5, 7, 8]);
           verify(BigIntRange(BigInt.from(3), BigInt.from(8), BigInt.two),
@@ -1832,6 +1862,8 @@ void main() {
               included: [2, 4], excluded: [0, 1, 3, 5, 6, 7, 8]);
         });
         test('3 argument (negative step)', () {
+          verify(BigIntRange(BigInt.from(0), BigInt.from(0), -BigInt.one),
+              included: [], excluded: [-1, 0, 1]);
           verify(BigIntRange(BigInt.from(8), BigInt.from(2), -BigInt.two),
               included: [8, 6, 4], excluded: [2, 3, 5, 7, 9, 10]);
           verify(BigIntRange(BigInt.from(8), BigInt.from(3), -BigInt.two),
@@ -1863,6 +1895,21 @@ void main() {
               included: [0, 1, 2], excluded: [-1, 4]);
           verify(BigInt.two.to(BigInt.from(8), step: BigInt.two),
               included: [2, 4, 6], excluded: [0, 1, 3, 5, 7, 8]);
+        });
+        test('stress', () {
+          final random = Random(6180340);
+          for (var i = 0; i < 100; i++) {
+            final start = BigInt.from(random.nextInt(0xffff) - 0xffff ~/ 2);
+            final end = BigInt.from(random.nextInt(0xffff) - 0xffff ~/ 2);
+            final step = BigInt.from(start < end
+                ? 1 + random.nextInt(0xfff)
+                : -1 - random.nextInt(0xfff));
+            final expected = start < end
+                ? <BigInt>[for (var j = start; j < end; j += step) j]
+                : <BigInt>[for (var j = start; j > end; j += step) j];
+            verify(BigIntRange(start, end, step),
+                included: expected, excluded: []);
+          }
         });
         test('invalid', () {
           expect(() => BigIntRange(BigInt.zero, BigInt.two, BigInt.zero),

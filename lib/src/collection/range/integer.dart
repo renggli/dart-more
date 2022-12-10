@@ -46,19 +46,23 @@ class IntegerRange extends ListBase<int>
     } else if (a != null) {
       end = a;
     }
-    if (start <= end) {
+    if (start < end) {
       if (step == 1) {
         return IntegerRange._(start, end, step, end - start);
       } else if (step > 1) {
         return IntegerRange._(
             start, end, step, (end - start + step - 1) ~/ step);
       }
-    } else {
+    } else if (start > end) {
       if (step == -1) {
         return IntegerRange._(start, end, step, start - end);
       } else if (step < -1) {
         return IntegerRange._(
             start, end, step, (start - end - step - 1) ~/ -step);
+      }
+    } else {
+      if (step != 0) {
+        return IntegerRange._(start, end, step, 0);
       }
     }
     throw ArgumentError.value(
