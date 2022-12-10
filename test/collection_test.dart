@@ -1504,6 +1504,20 @@ void main() {
           verify<int>(IntegerRange(6, 2, -2),
               included: [6, 4], excluded: [2, 3, 5, 7, 8, 9]);
         });
+        test('positive step size', () {
+          for (var end = 31; end <= 40; end++) {
+            final range = IntegerRange(10, end, 10);
+            verify<int>(range,
+                included: [10, 20, 30], excluded: [5, 15, 25, 35, 40]);
+          }
+        });
+        test('negative step size', () {
+          for (var end = 9; end >= 0; end--) {
+            final range = IntegerRange(30, end, -10);
+            verify<int>(range,
+                included: [30, 20, 10], excluded: [0, 5, 15, 25, 35]);
+          }
+        });
         test('shorthand', () {
           verify<int>(0.to(3), included: [0, 1, 2], excluded: [-1, 4]);
           verify<int>(2.to(8, step: 2),
@@ -1828,6 +1842,21 @@ void main() {
               included: [7, 5, 3], excluded: [1, 2, 4, 6, 8, 9]);
           verify(BigIntRange(BigInt.from(6), BigInt.from(2), -BigInt.two),
               included: [6, 4], excluded: [2, 3, 5, 7, 8, 9]);
+        });
+        test('positive step size', () {
+          for (var end = 31; end <= 40; end++) {
+            final range =
+                BigIntRange(BigInt.from(10), BigInt.from(end), BigInt.from(10));
+            verify(range,
+                included: [10, 20, 30], excluded: [5, 15, 25, 35, 40]);
+          }
+        });
+        test('negative step size', () {
+          for (var end = 9; end >= 0; end--) {
+            final range = BigIntRange(
+                BigInt.from(30), BigInt.from(end), BigInt.from(-10));
+            verify(range, included: [30, 20, 10], excluded: [0, 5, 15, 25, 35]);
+          }
         });
         test('shorthand', () {
           verify(BigInt.zero.to(BigInt.from(3)),

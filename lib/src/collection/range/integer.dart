@@ -50,13 +50,15 @@ class IntegerRange extends ListBase<int>
       if (step == 1) {
         return IntegerRange._(start, end, step, end - start);
       } else if (step > 1) {
-        return IntegerRange._(start, end, step, (end - start + 1) ~/ step);
+        return IntegerRange._(
+            start, end, step, (end - start + step - 1) ~/ step);
       }
     } else {
       if (step == -1) {
         return IntegerRange._(start, end, step, start - end);
       } else if (step < -1) {
-        return IntegerRange._(start, end, step, (start - end + 1) ~/ -step);
+        return IntegerRange._(
+            start, end, step, (start - end - step - 1) ~/ -step);
       }
     }
     throw ArgumentError.value(
