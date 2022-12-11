@@ -868,7 +868,7 @@ void main() {
       });
       test('custom', () {
         final printer = DurationPrinter((builder) =>
-            builder.sign(SignNumberPrinter.negativeAndPositiveSign()));
+            builder.sign(const SignNumberPrinter.negativeAndPositiveSign()));
         expect(durations.map(printer), ['+', '+', '+', '+', '+', '+', '-']);
       });
     });
@@ -1357,10 +1357,10 @@ void main() {
   group('switcher', () {
     test('default', () {
       final printer = Printer<int>.switcher({
-        (value) => value < 1: Printer.literal('<1'),
-        (value) => value < 10: Printer.literal('<10'),
-        (value) => value < 100: Printer.literal('<100'),
-      }, otherwise: Printer.literal('larger'));
+        (value) => value < 1: const Printer.literal('<1'),
+        (value) => value < 10: const Printer.literal('<10'),
+        (value) => value < 100: const Printer.literal('<100'),
+      }, otherwise: const Printer.literal('larger'));
       expect(printer(0), '<1');
       expect(printer(5), '<10');
       expect(printer(50), '<100');
@@ -1368,9 +1368,9 @@ void main() {
     });
     test('missing otherwise', () {
       final printer = Printer<int>.switcher({
-        (value) => value < 1: Printer.literal('<1'),
-        (value) => value < 10: Printer.literal('<10'),
-        (value) => value < 100: Printer.literal('<100'),
+        (value) => value < 1: const Printer.literal('<1'),
+        (value) => value < 10: const Printer.literal('<10'),
+        (value) => value < 100: const Printer.literal('<100'),
       });
       expect(printer(0), '<1');
       expect(printer(5), '<10');
@@ -1378,7 +1378,7 @@ void main() {
       expect(printer(500), '');
     });
     test('toString', () {
-      final printer = Printer<int>.switcher({});
+      const printer = Printer<int>.switcher({});
       expect(printer.toString(), startsWith('SwitcherPrinter'));
     });
   });
@@ -1391,8 +1391,8 @@ void main() {
     });
     test('iterable', () {
       final printer = <Printer<int>>[
-        Printer.standard(),
-        Printer.literal(' <-> '),
+        const Printer.standard(),
+        const Printer.literal(' <-> '),
         Printer.pluggable(
             (value) => value.toString().split('').reversed.join('')),
       ].toPrinter();
@@ -1585,7 +1585,7 @@ void main() {
   });
   group('object', () {
     test('default', () {
-      final printer = ObjectPrinter<Tuple>(Printer.literal('*'));
+      final printer = ObjectPrinter<Tuple>(const Printer.literal('*'));
       expect(printer(const Tuple2(42, 'hello')), '*');
     });
     test('static', () {

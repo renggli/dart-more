@@ -288,7 +288,7 @@ void main() {
           throwsRangeError);
     });
     test('size = 1', () async {
-      expect(await Stream.empty().window(1).toList(), []);
+      expect(await const Stream.empty().window(1).toList(), []);
       expect(await Stream.fromIterable([1]).window(1).toList(), [
         [1]
       ]);

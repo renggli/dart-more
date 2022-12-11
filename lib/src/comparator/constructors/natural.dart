@@ -1,6 +1,6 @@
 /// Returns a natural [Comparator] for objects of type `T`.
 Comparator<T> naturalComparator<T>() {
-  final Object compare = _staticCompare;
+  const Object compare = _staticCompare;
   return compare is Comparator<T> ? compare : _dynamicCompare;
 }
 

@@ -33,7 +33,7 @@ class DateTimePrinter extends SequencePrinter<DateTime> {
   }
 
   /// Internal constructor for [DateTimePrinter].
-  DateTimePrinter._(super.printers);
+  const DateTimePrinter._(super.printers);
 
   /// Returns an ISO-8601 full-precision extended format representation.
   static DateTimePrinter iso8691() => DateTimePrinter((builder) => builder

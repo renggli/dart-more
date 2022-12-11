@@ -19,7 +19,7 @@ extension TakeSkipPrinterExtension<T> on Printer<T> {
 
 /// Cuts the string if it is longer than width.
 abstract class TakeSkipPrinter<T> extends Printer<T> {
-  TakeSkipPrinter(this.printer, this.count);
+  const TakeSkipPrinter(this.printer, this.count);
 
   final Printer<T> printer;
   final int count;
@@ -32,7 +32,7 @@ abstract class TakeSkipPrinter<T> extends Printer<T> {
 
 /// Takes the first [count] characters.
 class TakePrinter<T> extends TakeSkipPrinter<T> {
-  TakePrinter(super.printer, super.count);
+  const TakePrinter(super.printer, super.count);
 
   @override
   void printOn(T object, StringBuffer buffer) {
@@ -43,7 +43,7 @@ class TakePrinter<T> extends TakeSkipPrinter<T> {
 
 /// Takes the last [count] characters.
 class TakeLastPrinter<T> extends TakeSkipPrinter<T> {
-  TakeLastPrinter(super.printer, super.count);
+  const TakeLastPrinter(super.printer, super.count);
 
   @override
   void printOn(T object, StringBuffer buffer) {
@@ -54,7 +54,7 @@ class TakeLastPrinter<T> extends TakeSkipPrinter<T> {
 
 /// Skips all but the first [count] characters.
 class SkipPrinter<T> extends TakeSkipPrinter<T> {
-  SkipPrinter(super.printer, super.count);
+  const SkipPrinter(super.printer, super.count);
 
   @override
   void printOn(T object, StringBuffer buffer) {
@@ -65,7 +65,7 @@ class SkipPrinter<T> extends TakeSkipPrinter<T> {
 
 /// Skips all but the last [count] characters.
 class SkipLastPrinter<T> extends TakeSkipPrinter<T> {
-  SkipLastPrinter(super.printer, super.count);
+  const SkipLastPrinter(super.printer, super.count);
 
   @override
   void printOn(T object, StringBuffer buffer) {

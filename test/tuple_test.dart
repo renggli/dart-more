@@ -44,7 +44,7 @@ void main() {
     test('toString', () {
       expect(tuple.toString(), '()');
     });
-    final copy = Tuple0();
+    const copy = Tuple0();
     test('equals', () {
       expect(tuple == tuple, isTrue);
       expect(tuple == copy, isTrue);

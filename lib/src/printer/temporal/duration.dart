@@ -32,7 +32,7 @@ class DurationPrinter extends SequencePrinter<Duration> {
   }
 
   /// Internal constructor for [DurationPrinter].
-  DurationPrinter._(super.printers);
+  const DurationPrinter._(super.printers);
 
   /// Returns the standard Dart duration format.
   static DurationPrinter dart() => DurationPrinter((builder) => builder
