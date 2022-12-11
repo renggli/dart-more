@@ -130,7 +130,7 @@ class Tuple6<T1, T2, T3, T4, T5, T6> extends Tuple {
       Tuple5(first, second, third, fourth, fifth);
 
   @override
-  Iterable get iterable sync* {
+  Iterable<Object?> get iterable sync* {
     yield first;
     yield second;
     yield third;

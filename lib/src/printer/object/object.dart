@@ -9,6 +9,7 @@ import 'field_value.dart';
 import 'type.dart';
 
 /// Configurable printer for standard objects.
+@optionalTypeArgs
 class ObjectPrinter<T> extends Printer<T> {
   /// Creates an object printer based on the static type.
   ObjectPrinter.static({

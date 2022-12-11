@@ -191,8 +191,8 @@ void main() {
   });
   group('cycle', () {
     test('empty', () {
-      expect([].cycle(), isEmpty);
-      expect([].cycle(5), isEmpty);
+      expect(<int>[].cycle(), isEmpty);
+      expect(<int>[].cycle(5), isEmpty);
       expect([1, 2].cycle(0), isEmpty);
     });
     test('fixed', () {
@@ -224,18 +224,21 @@ void main() {
   });
   group('flatMap', () {
     test('empty', () {
-      expect([].flatMap((each) => throw StateError('Never to be called')), []);
+      expect(
+          <int>[].flatMap<String>(
+              (each) => throw StateError('Never to be called')),
+          isEmpty);
     });
     test('expand', () {
       expect(['a'].flatMap((each) => [1, 2]), [1, 2]);
     });
     test('collapse', () {
-      expect(['a', 'b'].flatMap((each) => []), []);
+      expect(['a', 'b'].flatMap((each) => []), isEmpty);
     });
   });
   group('flatten', () {
     test('empty', () {
-      expect([[], [], []].flatten(), []);
+      expect(<Iterable<int>>[[], [], []].flatten(), isEmpty);
     });
     test('single', () {
       expect(
@@ -259,11 +262,11 @@ void main() {
   group('groupBy', () {
     final example = 'aaaabbbccdaabbb'.toList();
     test('groupBy empty', () {
-      final iterable = [].groupBy();
-      expect(iterable, []);
+      final iterable = <int>[].groupBy<int>();
+      expect(iterable, isEmpty);
     });
     test('groupBy basic', () {
-      final iterable = example.groupBy();
+      final iterable = example.groupBy<String>();
       expect(iterable.map((each) => each.key), ['a', 'b', 'c', 'd', 'a', 'b']);
       expect(iterable.map((each) => each.values), [
         ['a', 'a', 'a', 'a'],
@@ -289,8 +292,8 @@ void main() {
   });
   group('indexed', () {
     test('empty', () {
-      final iterable = [].indexed();
-      expect(iterable, []);
+      final iterable = <int>[].indexed();
+      expect(iterable, isEmpty);
     });
     test('simple', () {
       final iterable = ['a', 'b', 'c'].indexed();
@@ -357,7 +360,7 @@ void main() {
   group('permutations', () {
     test('0', () {
       final iterator = ''.toList().permutations();
-      expect(iterator, []);
+      expect(iterator, isEmpty);
     });
     test('1', () {
       final iterator = 'a'.toList().permutations();
@@ -646,7 +649,7 @@ void main() {
       ]);
     });
     test('repeat 0', () {
-      expect(() => <Iterable>[].product(repeat: 0), throwsRangeError);
+      expect(() => <Iterable<int>>[].product(repeat: 0), throwsRangeError);
     });
     test('2 x repeat 2', () {
       final iterable = [
@@ -703,21 +706,21 @@ void main() {
     });
     test('empty', () {
       expect(<Iterable<int>>[].product(), isEmpty);
-      expect([[]].product(), isEmpty);
+      expect(<Iterable<int>>[[]].product(), isEmpty);
       expect(
-          [
+          <Iterable<int>>[
             [1],
             []
           ].product(),
           isEmpty);
       expect(
-          [
+          <Iterable<int>>[
             [],
             [1]
           ].product(),
           isEmpty);
       expect(
-          [
+          <Iterable<int>>[
             [1],
             [],
             [1]
@@ -727,8 +730,8 @@ void main() {
   });
   group('random', () {
     test('empty', () {
-      expect(() => [].atRandom(), throwsStateError);
-      expect([].atRandom(orElse: () => -1), -1);
+      expect(() => <int>[].atRandom(), throwsStateError);
+      expect(<int>[].atRandom(orElse: () => -1), -1);
     });
     test('single', () {
       expect([1].atRandom(), 1);
@@ -757,8 +760,8 @@ void main() {
       expect(repeat('a').take(3), ['a', 'a', 'a']);
     });
     test('zero', () {
-      expect(repeat(2, count: 0), []);
-      expect(repeat('b', count: 0), []);
+      expect(repeat(2, count: 0), isEmpty);
+      expect(repeat('b', count: 0), isEmpty);
     });
     test('one', () {
       expect(repeat(3, count: 1), [3]);
@@ -778,29 +781,29 @@ void main() {
   });
   group('repeat iterable', () {
     test('empty', () {
-      expect([].repeat(), []);
-      expect([].repeat(count: 0), []);
-      expect([].repeat(count: 1), []);
-      expect([].repeat(count: 2), []);
-      expect([].repeat(count: 3), []);
+      expect(<int>[].repeat(), isEmpty);
+      expect(<int>[].repeat(count: 0), isEmpty);
+      expect(<int>[].repeat(count: 1), isEmpty);
+      expect(<int>[].repeat(count: 2), isEmpty);
+      expect(<int>[].repeat(count: 3), isEmpty);
     });
     test('single', () {
       expect([1].repeat().take(3), [1, 1, 1]);
-      expect([1].repeat(count: 0), []);
+      expect([1].repeat(count: 0), isEmpty);
       expect([1].repeat(count: 1), [1]);
       expect([1].repeat(count: 2), [1, 1]);
       expect([1].repeat(count: 3), [1, 1, 1]);
     });
     test('double', () {
       expect([1, 2].repeat().take(5), [1, 2, 1, 2, 1]);
-      expect([1, 2].repeat(count: 0), []);
+      expect([1, 2].repeat(count: 0), isEmpty);
       expect([1, 2].repeat(count: 1), [1, 2]);
       expect([1, 2].repeat(count: 2), [1, 2, 1, 2]);
       expect([1, 2].repeat(count: 3), [1, 2, 1, 2, 1, 2]);
     });
     test('triple', () {
       expect([1, 2, 3].repeat().take(7), [1, 2, 3, 1, 2, 3, 1]);
-      expect([1, 2, 3].repeat(count: 0), []);
+      expect([1, 2, 3].repeat(count: 0), isEmpty);
       expect([1, 2, 3].repeat(count: 1), [1, 2, 3]);
       expect([1, 2, 3].repeat(count: 2), [1, 2, 3, 1, 2, 3]);
       expect([1, 2, 3].repeat(count: 3), [1, 2, 3, 1, 2, 3, 1, 2, 3]);
@@ -808,7 +811,7 @@ void main() {
     test('infinite', () {
       final infinite = iterate<int>(0, (n) => n + 1);
       expect(infinite.repeat().take(7), [0, 1, 2, 3, 4, 5, 6]);
-      expect(infinite.repeat(count: 0), []);
+      expect(infinite.repeat(count: 0), isEmpty);
       expect(infinite.repeat(count: 1).take(7), [0, 1, 2, 3, 4, 5, 6]);
       expect(infinite.repeat(count: 2).take(7), [0, 1, 2, 3, 4, 5, 6]);
       expect(infinite.repeat(count: 3).take(7), [0, 1, 2, 3, 4, 5, 6]);
@@ -820,9 +823,9 @@ void main() {
   group('rotate', () {
     group('list', () {
       test('size = 0', () {
-        expect([]..rotate(-1), []);
-        expect([]..rotate(0), []);
-        expect([]..rotate(1), []);
+        expect(<int>[]..rotate(-1), isEmpty);
+        expect(<int>[]..rotate(0), isEmpty);
+        expect(<int>[]..rotate(1), isEmpty);
       });
       group('size = 1', () {
         test('offset = 0', () {
@@ -887,9 +890,9 @@ void main() {
     });
     group('queue', () {
       test('size = 0', () {
-        expect(Queue.of([])..rotate(-1), []);
-        expect(Queue.of([])..rotate(0), []);
-        expect(Queue.of([])..rotate(1), []);
+        expect(Queue.of([])..rotate(-1), isEmpty);
+        expect(Queue.of([])..rotate(0), isEmpty);
+        expect(Queue.of([])..rotate(1), isEmpty);
       });
       group('size = 1', () {
         test('offset = 0', () {
@@ -957,7 +960,7 @@ void main() {
     group('without before or after', () {
       test('empty', () {
         var s = 0;
-        expect([].separatedBy(() => s++), []);
+        expect(<int>[].separatedBy(() => s++), isEmpty);
         expect(s, 0);
       });
       test('single', () {
@@ -990,11 +993,11 @@ void main() {
       test('empty', () {
         var s = 0, b = 0;
         expect(
-            [].separatedBy(
+            <int>[].separatedBy(
               () => s++,
               before: () => b++ + 5,
             ),
-            []);
+            isEmpty);
         expect(s, 0);
         expect(b, 0);
       });
@@ -1036,11 +1039,11 @@ void main() {
       test('empty', () {
         var s = 0, a = 0;
         expect(
-            [].separatedBy(
+            <int>[].separatedBy(
               () => s++,
               after: () => a++ + 15,
             ),
-            []);
+            isEmpty);
         expect(s, 0);
         expect(a, 0);
       });
@@ -1082,12 +1085,12 @@ void main() {
       test('empty', () {
         var s = 0, b = 0, a = 0;
         expect(
-            [].separatedBy(
+            <int>[].separatedBy(
               () => s++,
               before: () => b++ + 5,
               after: () => a++ + 15,
             ),
-            []);
+            isEmpty);
         expect(s, 0);
         expect(b, 0);
         expect(a, 0);
@@ -1135,11 +1138,12 @@ void main() {
   });
   group('toMap', () {
     test('empty', () {
-      expect([].toMap(), {});
+      expect(<int>[].toMap<int, int>(), isEmpty);
     });
     test('default', () {
       const iterable = ['a', 'bb', 'ccc'];
-      expect(iterable.toMap(), {'a': 'a', 'bb': 'bb', 'ccc': 'ccc'});
+      expect(iterable.toMap<String, String>(),
+          {'a': 'a', 'bb': 'bb', 'ccc': 'ccc'});
     });
     test('custom', () {
       const iterable = ['a', 'bb', 'ccc'];
@@ -1166,7 +1170,7 @@ void main() {
       expect(() => [1, 2, 3].window(1, step: 0), throwsRangeError);
     });
     test('size = 1', () {
-      expect([].window(1), []);
+      expect(<int>[].window(1), isEmpty);
       expect([1].window(1), [
         [1],
       ]);
@@ -1194,8 +1198,8 @@ void main() {
       ]);
     });
     test('size = 2', () {
-      expect([].window(2), []);
-      expect([1].window(2), []);
+      expect(<int>[].window(2), isEmpty);
+      expect([1].window(2), isEmpty);
       expect([1, 2].window(2), [
         [1, 2],
       ]);
@@ -1216,8 +1220,8 @@ void main() {
       ]);
     });
     test('size = 2, step = 2', () {
-      expect([].window(2, step: 2), []);
-      expect([1].window(2, step: 2), []);
+      expect(<int>[].window(2, step: 2), isEmpty);
+      expect([1].window(2, step: 2), isEmpty);
       expect([1, 2].window(2, step: 2), [
         [1, 2],
       ]);
@@ -1234,8 +1238,8 @@ void main() {
       ]);
     });
     test('size = 2, step = 3', () {
-      expect([].window(2, step: 3), []);
-      expect([1].window(2, step: 3), []);
+      expect(<int>[].window(2, step: 3), isEmpty);
+      expect([1].window(2, step: 3), isEmpty);
       expect([1, 2].window(2, step: 3), [
         [1, 2],
       ]);
@@ -1251,7 +1255,7 @@ void main() {
       ]);
     });
     test('size = 2, includePartial', () {
-      expect([].window(2, includePartial: true), []);
+      expect(<int>[].window(2, includePartial: true), isEmpty);
       expect([1].window(2, includePartial: true), [
         [1],
       ]);
@@ -1279,7 +1283,7 @@ void main() {
       ]);
     });
     test('size = 2, step = 2, includePartial', () {
-      expect([].window(2, step: 2, includePartial: true), []);
+      expect(<int>[].window(2, step: 2, includePartial: true), isEmpty);
       expect([1].window(2, step: 2, includePartial: true), [
         [1],
       ]);
@@ -1301,7 +1305,7 @@ void main() {
       ]);
     });
     test('size = 2, step = 3, includePartial', () {
-      expect([].window(2, step: 3, includePartial: true), []);
+      expect(<int>[].window(2, step: 3, includePartial: true), isEmpty);
       expect([1].window(2, step: 3, includePartial: true), [
         [1],
       ]);

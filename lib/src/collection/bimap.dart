@@ -29,9 +29,9 @@ class BiMap<K, V> extends MapBase<K, V> {
 
   /// Creates a bi-map from an iterable (and possible transformation functions).
   factory BiMap.fromIterable/*<E>*/(
-    Iterable/*<E>*/ iterable, {
-    K Function(dynamic /*E*/ element)? key,
-    V Function(dynamic /*E*/ element)? value,
+    Iterable<Object?> /*<E>*/ iterable, {
+    K Function(Object? /*E*/ element)? key,
+    V Function(Object? /*E*/ element)? value,
   }) =>
       BiMap<K, V>.fromIterables(
           key == null ? iterable.cast<K>() : iterable.map(key),
@@ -104,7 +104,8 @@ class BiMap<K, V> extends MapBase<K, V> {
     return value;
   }
 
-  void _remove(Object? key, Map forward, Map backward) {
+  void _remove(Object? key, Map<Object?, Object?> forward,
+      Map<Object?, Object?> backward) {
     if (forward.containsKey(key)) {
       _remove(forward.remove(key), backward, forward);
     }

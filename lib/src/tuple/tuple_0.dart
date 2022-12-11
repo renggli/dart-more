@@ -25,7 +25,7 @@ class Tuple0 extends Tuple {
   Tuple1<T> addLast<T>(T value) => Tuple1(value);
 
   @override
-  Iterable get iterable sync* {}
+  Iterable<Object?> get iterable sync* {}
 
   @override
   R map<R>(R Function() callback) => callback();

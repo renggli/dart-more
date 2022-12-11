@@ -20,9 +20,9 @@ class ListMultimap<K, V> extends Multimap<K, V, List<V>> {
 
   /// Creates a [ListMultimap] with the keys and values from [iterable].
   factory ListMultimap.fromIterable/*<E>*/(
-    Iterable/*<E>*/ iterable, {
-    K Function(dynamic /*E*/ element)? key,
-    V Function(dynamic /*E*/ element)? value,
+    Iterable<Object?> /*<E>*/ iterable, {
+    K Function(Object? /*E*/ element)? key,
+    V Function(Object? /*E*/ element)? value,
     Map<K, List<V>>? map,
     Factory<List<V>>? factory,
   }) {

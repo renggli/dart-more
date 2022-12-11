@@ -25,7 +25,7 @@ const lorem = 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce '
 void main() {
   group('standard', () {
     test('untyped', () {
-      const printer = Printer.standard();
+      const printer = Printer<Object?>.standard();
       expect(printer(123), '123');
       expect(printer('abc'), 'abc');
     });
@@ -45,7 +45,7 @@ void main() {
       expect(printer(123), '');
     });
     test('untyped', () {
-      const printer = Printer.literal('hello');
+      const printer = Printer<Object?>.literal('hello');
       expect(printer(123), 'hello');
       expect(printer('abc'), 'hello');
     });
@@ -1551,7 +1551,7 @@ void main() {
       expect(printer('1'), '1');
     });
     test('callback', () {
-      final printer = Printer<int>.wrap((value) => (2 * value).toString());
+      final printer = Printer<int>.wrap((int value) => (2 * value).toString());
       expect(printer(1), '2');
       expect(printer(12), '24');
     });
@@ -1608,7 +1608,7 @@ void main() {
       });
       test('printer', () {
         final printer = ObjectPrinter<Tuple>.static()
-          ..addValue(42, printer: const Printer.standard().around('"'));
+          ..addValue(42, printer: const Printer<int>.standard().around('"'));
         expect(printer(const Tuple0()), 'Tuple{"42"}');
       });
       test('omitNull', () {
@@ -1648,7 +1648,7 @@ void main() {
       test('printer', () {
         final printer = ObjectPrinter<Tuple>.static()
           ..addCallback((object) => object.length,
-              printer: const Printer.standard().around('"'));
+              printer: const Printer<int>.standard().around('"'));
         expect(printer(const Tuple2(42, 'hello')), 'Tuple{"2"}');
       });
       test('omitNull', () {

@@ -50,14 +50,14 @@ abstract class Tuple {
   int get length;
 
   /// An [Iterable] over the values of this tuple.
-  Iterable get iterable;
+  Iterable<Object?> get iterable;
 
   /// A (untyped) [List] with the values of this tuple.
-  List toList({bool growable = false}) =>
+  List<Object?> toList({bool growable = false}) =>
       List.from(iterable, growable: growable);
 
   /// A (untyped) [Set] with the unique values of this tuple.
-  Set toSet() => Set.from(iterable);
+  Set<Object?> toSet() => Set.from(iterable);
 
   /// Applies the values of this tuple to an n-ary function.
   R map<R>(covariant Function callback);

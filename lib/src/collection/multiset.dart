@@ -38,9 +38,9 @@ class Multiset<E> extends IterableBase<E> {
   /// The [count] function specifies the number of elements added to the
   /// collection. The default function returns the constant 1.
   factory Multiset.fromIterable/*<E>*/(
-    Iterable/*<E>*/ iterable, {
-    E Function(dynamic /*E*/ element)? key,
-    int Function(dynamic /*E*/ element)? count,
+    Iterable<Object?> /*<E>*/ iterable, {
+    E Function(Object? /*E*/ element)? key,
+    int Function(Object? /*E*/ element)? count,
   }) {
     final result = Multiset<E>();
     key ??= (element) => element as E;
@@ -99,7 +99,7 @@ class Multiset<E> extends IterableBase<E> {
   }
 
   /// Removes each element of [elements] from the receiver.
-  void removeAll(Iterable elements) {
+  void removeAll(Iterable<Object?> elements) {
     elements.forEach(remove);
   }
 
@@ -136,7 +136,7 @@ class Multiset<E> extends IterableBase<E> {
   bool contains(Object? element) => _container.containsKey(element);
 
   /// Returns `true` if all elements of [other] are contained in the receiver.
-  bool containsAll(Iterable other) {
+  bool containsAll(Iterable<Object?> other) {
     if (other.isEmpty) {
       return true;
     } else if (other.length == 1) {
@@ -155,7 +155,7 @@ class Multiset<E> extends IterableBase<E> {
 
   /// Returns a new [Multiset] with the elements that are in the receiver as
   /// well as those in [other].
-  Multiset<E> intersection(Iterable other) {
+  Multiset<E> intersection(Iterable<Object?> other) {
     if (other is Multiset) {
       final result = Multiset<E>();
       for (final element in distinct) {
@@ -173,7 +173,7 @@ class Multiset<E> extends IterableBase<E> {
 
   /// Returns a new [Multiset] with all the elements of the receiver that are
   /// not in [other].
-  Multiset<E> difference(Iterable other) =>
+  Multiset<E> difference(Iterable<Object?> other) =>
       Multiset<E>.of(this)..removeAll(other);
 
   /// Iterator over the repeated elements of the receiver.

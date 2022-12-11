@@ -11,7 +11,7 @@ extension BufferExtension<E> on Stream<E> {
   /// If none of the arguments are given, the stream will buffer results until
   /// the source completes.
   Stream<List<E>> buffer({
-    Stream? trigger,
+    Stream<void>? trigger,
     int? maxLength,
     Duration? maxAge,
   }) {
@@ -20,7 +20,7 @@ extension BufferExtension<E> on Stream<E> {
         ? StreamController<List<E>>.broadcast()
         : StreamController<List<E>>();
     StreamSubscription<E>? sourceSubscription;
-    StreamSubscription? triggerSubscription;
+    StreamSubscription<void>? triggerSubscription;
     Timer? maxAgeTimer;
 
     // Helper functions for state management.

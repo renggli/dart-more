@@ -94,7 +94,7 @@ class Tuple4<T1, T2, T3, T4> extends Tuple {
   Tuple3<T1, T2, T3> removeLast() => Tuple3(first, second, third);
 
   @override
-  Iterable get iterable sync* {
+  Iterable<Object?> get iterable sync* {
     yield first;
     yield second;
     yield third;

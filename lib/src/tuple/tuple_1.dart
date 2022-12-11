@@ -47,7 +47,7 @@ class Tuple1<T1> extends Tuple {
   Tuple0 removeLast() => const Tuple0();
 
   @override
-  Iterable get iterable sync* {
+  Iterable<Object?> get iterable sync* {
     yield first;
   }
 

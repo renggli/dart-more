@@ -10,8 +10,7 @@ void verifyBasic<T>(String type, Comparator<T> comparator, Iterable<T> unsorted,
   expect(sorted, expected, reason: '$type.sorted');
   expect(comparator.isOrdered(sorted), isTrue, reason: '$type.isOrdered');
   for (final element in unsorted) {
-    expect(comparator.binarySearch(sorted, element),
-        (index) => index is int && index >= 0,
+    expect(comparator.binarySearch(sorted, element), (int index) => index >= 0,
         reason: '$type.binarySearch');
   }
 
@@ -124,7 +123,7 @@ void main() {
         verify(comparator, [3, 2, 1], [1, 2, 3]);
       });
       test('dynamic', () {
-        final comparator = naturalComparator();
+        final comparator = naturalComparator<Object?>();
         verify(comparator, [1, 2, 3], [1, 2, 3]);
         verify(comparator, [2, 3, 1], [1, 2, 3]);
         verify(comparator, [3, 1, 2], [1, 2, 3]);
@@ -147,7 +146,7 @@ void main() {
         verify(comparator, [3, 2, 1], [3, 2, 1]);
       });
       test('dynamic', () {
-        final comparator = reverseComparator();
+        final comparator = reverseComparator<Object?>();
         verify(comparator, [1, 2, 3], [3, 2, 1]);
         verify(comparator, [2, 3, 1], [3, 2, 1]);
         verify(comparator, [3, 1, 2], [3, 2, 1]);
@@ -383,12 +382,12 @@ void main() {
       );
     });
     test('largest', () {
-      expect(naturalInt.largest([], 0), []);
-      expect(naturalInt.largest([2, 3, 1], 0), []);
-      expect(naturalInt.largest([], 3), []);
+      expect(naturalInt.largest([], 0), isEmpty);
+      expect(naturalInt.largest([2, 3, 1], 0), isEmpty);
+      expect(naturalInt.largest([], 3), isEmpty);
       expect(naturalInt.largest([2, 3, 1], 3), [3, 2, 1]);
       expect(naturalInt.largest([2, 3, 1, 5, 4], 3), [5, 4, 3]);
-      expect(naturalInt.largest([], 5), []);
+      expect(naturalInt.largest([], 5), isEmpty);
       expect(naturalInt.largest([2, 3, 1], 5), [3, 2, 1]);
       expect(naturalInt.largest([2, 3, 1, 5, 4], 5), [5, 4, 3, 2, 1]);
     });
@@ -471,18 +470,18 @@ void main() {
       });
     });
     test('smallest', () {
-      expect(naturalInt.smallest([], 0), []);
-      expect(naturalInt.smallest([2, 3, 1], 0), []);
-      expect(naturalInt.smallest([], 3), []);
+      expect(naturalInt.smallest([], 0), isEmpty);
+      expect(naturalInt.smallest([2, 3, 1], 0), isEmpty);
+      expect(naturalInt.smallest([], 3), isEmpty);
       expect(naturalInt.smallest([2, 3, 1], 3), [1, 2, 3]);
       expect(naturalInt.smallest([2, 3, 1, 5, 4], 3), [1, 2, 3]);
-      expect(naturalInt.smallest([], 5), []);
+      expect(naturalInt.smallest([], 5), isEmpty);
       expect(naturalInt.smallest([2, 3, 1], 5), [1, 2, 3]);
       expect(naturalInt.smallest([2, 3, 1, 5, 4], 5), [1, 2, 3, 4, 5]);
     });
     group('sort', () {
       test('default', () {
-        expect(naturalInt.sorted([]), []);
+        expect(naturalInt.sorted([]), isEmpty);
         expect(naturalInt.sorted([1]), [1]);
         expect(naturalInt.sorted([1, 2]), [1, 2]);
         expect(naturalInt.sorted([2, 1]), [1, 2]);

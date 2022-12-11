@@ -134,7 +134,7 @@ extension IntegerRangeExtension on int {
   Range<int> to(int end, {int? step}) => IntegerRange(this, end, step);
 }
 
-extension IndicesIterableExtension on Iterable {
+extension IndicesIterableExtension on Iterable<Object?> {
   /// Returns a [Range] of the indices of this iterable that can be accessed
   /// with the `[]` operator.
   ///

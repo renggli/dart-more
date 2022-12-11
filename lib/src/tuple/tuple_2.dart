@@ -59,7 +59,7 @@ class Tuple2<T1, T2> extends Tuple {
   Tuple1<T1> removeLast() => Tuple1(first);
 
   @override
-  Iterable get iterable sync* {
+  Iterable<Object?> get iterable sync* {
     yield first;
     yield second;
   }

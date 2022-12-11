@@ -2,7 +2,7 @@
 
 import 'ordering.dart';
 
-class NaturalOrdering<T extends Comparable> extends Ordering<T> {
+class NaturalOrdering<T extends Comparable<Object?>> extends Ordering<T> {
   const NaturalOrdering();
 
   @override
@@ -12,7 +12,8 @@ class NaturalOrdering<T extends Comparable> extends Ordering<T> {
   Ordering<T> get reversed => ReverseNaturalOrdering<T>();
 }
 
-class ReverseNaturalOrdering<T extends Comparable> extends Ordering<T> {
+class ReverseNaturalOrdering<T extends Comparable<Object?>>
+    extends Ordering<T> {
   const ReverseNaturalOrdering();
 
   @override

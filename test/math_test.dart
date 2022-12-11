@@ -447,8 +447,8 @@ void main() {
       });
       test('primes (edge cases)', () {
         expect(() => create(-1).primes, throwsRangeError);
-        expect(create(0).primes, []);
-        expect(create(1).primes, []);
+        expect(create(0).primes, isEmpty);
+        expect(create(1).primes, isEmpty);
         expect(create(2).primes, [2]);
       });
       test('isPrime', () {

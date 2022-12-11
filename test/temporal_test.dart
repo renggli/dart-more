@@ -5,7 +5,7 @@ import 'package:more/src/temporal/conversion.dart';
 import 'package:more/temporal.dart';
 import 'package:test/test.dart';
 
-Matcher relativeCloseTo(num expected, num epsilon) => wrapMatcher((actual) {
+Matcher relativeCloseTo(num expected, num epsilon) => wrapMatcher((num actual) {
       final difference = (expected - actual).abs();
       final relative = difference > 0 ? difference / actual : 0;
       return relative <= epsilon;

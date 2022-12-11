@@ -188,7 +188,7 @@ void main() {
     final current = DateTime(2020);
     setUp(() => offset = Duration.zero);
     @isTest
-    void clockTest(String name, Future Function() body) =>
+    void clockTest(String name, Future<void> Function() body) =>
         test(name, () => withClock(Clock(() => current.add(offset)), body));
     Cache<int, String> newUpdateExpireCache(Loader<int, String> loader) =>
         Cache.expiry(loader: loader, updateExpiry: const Duration(seconds: 20));

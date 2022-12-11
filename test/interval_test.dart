@@ -2,7 +2,7 @@ import 'package:more/interval.dart';
 import 'package:more/src/interval/bound.dart';
 import 'package:test/test.dart';
 
-final intervals = <Interval>[];
+final intervals = <Interval<Object?>>[];
 
 void verifyBound<T>(Bound<T> bound) {
   test('isOpen / isClosed', () {

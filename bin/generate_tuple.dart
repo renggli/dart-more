@@ -105,14 +105,14 @@ Future<void> generateAbstract() async {
   out.writeln('int get length;');
   out.writeln();
   out.writeln('/// An [Iterable] over the values of this tuple.');
-  out.writeln('Iterable get iterable;');
+  out.writeln('Iterable<Object?> get iterable;');
   out.writeln();
   out.writeln('/// A (untyped) [List] with the values of this tuple.');
-  out.writeln('List toList({bool growable: false}) => ');
+  out.writeln('List<Object?> toList({bool growable: false}) => ');
   out.writeln('  List.from(iterable, growable: growable);');
   out.writeln();
   out.writeln('/// A (untyped) [Set] with the unique values of this tuple.');
-  out.writeln('Set toSet() => Set.from(iterable);');
+  out.writeln('Set<Object?> toSet() => Set.from(iterable);');
   out.writeln();
   out.writeln('/// Applies the values of this tuple to an n-ary function.');
   out.writeln('R map<R>(covariant Function callback);');
@@ -252,7 +252,7 @@ Future<void> generateImplementation(int i) async {
   // iterable
   out.writeln();
   out.writeln('@override');
-  out.writeln('Iterable get iterable sync* {');
+  out.writeln('Iterable<Object?> get iterable sync* {');
   for (var j = 0; j < i; j++) {
     out.writeln('yield ${values[j]};');
   }
@@ -436,7 +436,7 @@ Future<void> generateTest() async {
       });
       final accessors =
           listify(List.generate(i, (j) => 'tuple.${ordinals[j]}'));
-      out.writeln('final copy = Tuple$i($accessors);');
+      out.writeln('${i == 0 ? 'const' : 'final'} copy = Tuple$i($accessors);');
       nest('test', 'equals', () {
         out.writeln('expect(tuple == tuple, isTrue);');
         out.writeln('expect(tuple == copy, isTrue);');

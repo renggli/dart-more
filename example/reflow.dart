@@ -18,6 +18,8 @@ abstract class ReflowCommand extends Command<void> {
     }
   }
 
+  T getArgument<T>(String name) => argResults![name] as T;
+
   String transform(String input);
 }
 
@@ -47,10 +49,10 @@ class IndentCommand extends ReflowCommand {
   String get description => 'Adds a prefix to each line.';
 
   @override
-  String transform(String input) => input.indent(argResults!['prefix'],
-      firstPrefix: argResults!['first-prefix'],
-      trimWhitespace: argResults!['trim-whitespace'],
-      indentEmpty: argResults!['indent-empty']);
+  String transform(String input) => input.indent(getArgument('prefix'),
+      firstPrefix: getArgument('first-prefix'),
+      trimWhitespace: getArgument('trim-whitespace'),
+      indentEmpty: getArgument('indent-empty'));
 }
 
 class DedentCommand extends ReflowCommand {
@@ -69,7 +71,7 @@ class DedentCommand extends ReflowCommand {
 
   @override
   String transform(String input) =>
-      input.dedent(ignoreEmpty: argResults!['ignore-empty']);
+      input.dedent(ignoreEmpty: getArgument('ignore-empty'));
 }
 
 class WrapCommand extends ReflowCommand {
@@ -93,8 +95,8 @@ class WrapCommand extends ReflowCommand {
   String get description => 'Wraps a long text.';
 
   @override
-  String transform(String input) => input.wrap(int.parse(argResults!['width']),
-      breakLongWords: argResults!['break-long-words']);
+  String transform(String input) => input.wrap(int.parse(getArgument('width')),
+      breakLongWords: getArgument('break-long-words'));
 }
 
 class UnwrapCommand extends ReflowCommand {
@@ -115,7 +117,7 @@ final runner = CommandRunner('reflow', 'Reflows text in different ways.')
   ..addCommand(UnwrapCommand());
 
 Future<void> main(List<String> arguments) async {
-  await runner.run(arguments).catchError((error) {
+  await runner.run(arguments).catchError((Object error) {
     stdout.writeln(error);
     exit(1);
   }, test: (error) => error is UsageException);

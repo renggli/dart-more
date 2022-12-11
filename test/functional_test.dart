@@ -111,7 +111,7 @@ void main() {
       });
       test('iterable', () {
         expect(optional.iterable, isA<Iterable<String>>());
-        expect(optional.iterable, []);
+        expect(optional.iterable, isEmpty);
       });
       test('isPresent', () {
         expect(optional.isPresent, isFalse);
@@ -253,33 +253,36 @@ void main() {
               (each) => 'l:$each',
               (each) => 'r:$each',
             ),
-            const Either.left('l:$value'));
+            const Either<String, String>.left('l:$value'));
       });
       test('mapLeft', () {
-        expect(
-            either.mapLeft((each) => 'l:$each'), const Either.left('l:$value'));
+        expect(either.mapLeft((each) => 'l:$each'),
+            const Either<String, bool>.left('l:$value'));
       });
       test('mapRight', () {
-        expect(either.mapRight((each) => 'r:$each'), const Either.left(value));
+        expect(either.mapRight((each) => 'r:$each'),
+            const Either<int, String>.left(value));
       });
       test('flatMap', () {
         expect(
             either.flatMap(
-              (each) => Either.right('l:$each'),
-              (each) => Either.left('r:$each'),
+              (each) => Either<String, String>.right('l:$each'),
+              (each) => Either<String, String>.left('r:$each'),
             ),
-            const Either.right('l:$value'));
+            const Either<String, String>.right('l:$value'));
       });
       test('flatMapLeft', () {
-        expect(either.flatMapLeft((each) => Either.left('l:$each')),
-            const Either.left('l:$value'));
+        expect(
+            either.flatMapLeft((each) => Either<String, bool>.left('l:$each')),
+            const Either<String, bool>.left('l:$value'));
       });
       test('flatMapRight', () {
-        expect(either.flatMapRight((each) => Either.right('r:$each')),
-            const Either.left(value));
+        expect(
+            either.flatMapRight((each) => Either<int, String>.right('r:$each')),
+            const Either<int, String>.left(value));
       });
       test('swap', () {
-        expect(either.swap(), const Either.right(value));
+        expect(either.swap(), const Either<bool, int>.right(value));
       });
       test('==', () {
         expect(either == either, isTrue);
@@ -343,33 +346,36 @@ void main() {
               (each) => 'l:$each',
               (each) => 'r:$each',
             ),
-            const Either.right('r:$value'));
+            const Either<String, String>.right('r:$value'));
       });
       test('mapLeft', () {
-        expect(either.mapLeft((each) => '$each'), const Either.right(value));
+        expect(either.mapLeft((each) => '$each'),
+            const Either<String, bool>.right(value));
       });
       test('mapRight', () {
-        expect(
-            either.mapRight((each) => '$each'), const Either.right('$value'));
+        expect(either.mapRight((each) => '$each'),
+            const Either<int, String>.right('$value'));
       });
       test('flatMap', () {
         expect(
             either.flatMap(
-              (each) => Either.right('l:$each'),
-              (each) => Either.left('r:$each'),
+              (each) => Either<String, String>.right('l:$each'),
+              (each) => Either<String, String>.left('r:$each'),
             ),
-            const Either.left('r:$value'));
+            const Either<String, String>.left('r:$value'));
       });
       test('flatMapLeft', () {
-        expect(either.flatMapLeft((each) => Either.left('l:$each')),
-            const Either.right(value));
+        expect(
+            either.flatMapLeft((each) => Either<String, bool>.left('l:$each')),
+            const Either<String, bool>.right(value));
       });
       test('flatMapRight', () {
-        expect(either.flatMapRight((each) => Either.right('r:$each')),
-            const Either.right('r:$value'));
+        expect(
+            either.flatMapRight((each) => Either<int, String>.right('r:$each')),
+            const Either<int, String>.right('r:$value'));
       });
       test('swap', () {
-        expect(either.swap(), const Either.left(value));
+        expect(either.swap(), const Either<bool, int>.left(value));
       });
       test('==', () {
         expect(either == either, isTrue);

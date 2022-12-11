@@ -20,43 +20,43 @@ void main() {
     final example = BiMap.of({1: 'a', 2: 'b', 3: 'c'});
     group('construction', () {
       test('empty', () {
-        final target = BiMap();
+        final target = BiMap<int, String>();
         expect(target, isEmpty);
         expect(target.isEmpty, isTrue);
         expect(target.isNotEmpty, isFalse);
         expect(target, hasLength(0));
       });
       test('identity', () {
-        final target = BiMap.identity();
+        final target = BiMap<int, String>.identity();
         expect(target, isEmpty);
         expect(target.isEmpty, isTrue);
         expect(target.isNotEmpty, isFalse);
         expect(target, hasLength(0));
       });
       test('of', () {
-        final target = BiMap.of(example);
+        final target = BiMap<int, String>.of(example);
         expect(target.keys, [1, 2, 3]);
         expect(target.values, ['a', 'b', 'c']);
       });
       test('from', () {
-        final target = BiMap.from(example);
+        final target = BiMap<int, String>.from(example);
         expect(target.keys, [1, 2, 3]);
         expect(target.values, ['a', 'b', 'c']);
       });
       test('iterable', () {
-        final target = BiMap.fromIterable(example.keys);
+        final target = BiMap<int, int>.fromIterable(example.keys);
         expect(target.keys, [1, 2, 3]);
         expect(target.values, [1, 2, 3]);
       });
       test('iterable (key)', () {
-        final target =
-            BiMap.fromIterable(example.keys, key: (e) => (e as int) + 1);
+        final target = BiMap<int, int>.fromIterable(example.keys,
+            key: (e) => (e as int) + 1);
         expect(target.keys, [2, 3, 4]);
         expect(target.values, [1, 2, 3]);
       });
       test('iterable (value)', () {
-        final target =
-            BiMap.fromIterable(example.keys, value: (e) => (e as int) + 1);
+        final target = BiMap<int, int>.fromIterable(example.keys,
+            value: (e) => (e as int) + 1);
         expect(target.keys, [1, 2, 3]);
         expect(target.values, [2, 3, 4]);
       });
@@ -89,7 +89,7 @@ void main() {
         expect(target.values, ['a', 'b', 'c']);
       });
       test('iterable converter (default key and value providers)', () {
-        final target = ['a', 'b'].toBiMap();
+        final target = ['a', 'b'].toBiMap<String, String>();
         expect(target.keys, ['a', 'b']);
         expect(target.values, ['a', 'b']);
       });
@@ -172,13 +172,13 @@ void main() {
     });
     group('writing', () {
       test('define', () {
-        final target = BiMap();
+        final target = BiMap<int, String>();
         target[1] = 'a';
         expect(target.keys, [1]);
         expect(target.values, ['a']);
       });
       test('define inverse', () {
-        final target = BiMap();
+        final target = BiMap<String, int>();
         target.inverse[1] = 'a';
         expect(target.keys, ['a']);
         expect(target.values, [1]);
@@ -237,7 +237,7 @@ void main() {
         final target = BitList(0);
         expect(target, isEmpty);
         expect(target, hasLength(0));
-        expect(target, []);
+        expect(target, isEmpty);
       });
       test('with elements', () {
         for (var len = 1; len < 100; len++) {
@@ -530,14 +530,14 @@ void main() {
     group('list', () {
       group('constructor', () {
         test('empty', () {
-          final map = ListMultimap();
+          final map = ListMultimap<String, int>();
           expect(map, isEmpty);
           expect(map, hasLength(0));
           expect(map.isEmpty, isTrue);
           expect(map.isNotEmpty, isFalse);
-          expect(map.asMap(), {});
-          expect(map.keys, []);
-          expect(map.values, []);
+          expect(map.asMap(), isEmpty);
+          expect(map.keys, isEmpty);
+          expect(map.values, isEmpty);
         });
         test('of', () {
           final map = ListMultimap.of(
@@ -555,12 +555,12 @@ void main() {
           expect(map['b'], [2, 3]);
         });
         test('identity', () {
-          final map = ListMultimap.identity();
+          final map = ListMultimap<String, int>.identity();
           expect(map, isEmpty);
           expect(map, hasLength(0));
-          expect(map.asMap(), {});
-          expect(map.keys, []);
-          expect(map.values, []);
+          expect(map.asMap(), isEmpty);
+          expect(map.keys, isEmpty);
+          expect(map.values, isEmpty);
         });
         test('fromIterable', () {
           final map = ListMultimap<String, int>.fromIterable(IntegerRange(3),
@@ -579,7 +579,7 @@ void main() {
           expect(map['c'], [3]);
         });
         test('fromIterable (no providers)', () {
-          final map = ListMultimap.fromIterable(IntegerRange(3));
+          final map = ListMultimap<int, int>.fromIterable(IntegerRange(3));
           expect(map, hasLength(3));
           expect(map.keys, [0, 1, 2]);
           expect(map.values, [0, 1, 2]);
@@ -642,7 +642,7 @@ void main() {
           });
         });
         test('iterable converter (no providers)', () {
-          final target = ['a', 'b', 'b'].toListMultimap();
+          final target = ['a', 'b', 'b'].toListMultimap<String, String>();
           expect(target.keys, ['a', 'b']);
           expect(target.values, ['a', 'b', 'b']);
           expect(target.asMap(), {
@@ -713,7 +713,7 @@ void main() {
           final collection = map['b'];
           collection.length = 0;
           expect(map, hasLength(1));
-          expect(collection, []);
+          expect(collection, isEmpty);
         });
         test('remove', () {
           final map = ListMultimap.fromIterables(['a', 'b', 'b'], [1, 2, 3]);
@@ -812,14 +812,14 @@ void main() {
     group('set', () {
       group('constructor', () {
         test('empty', () {
-          final map = SetMultimap();
+          final map = SetMultimap<String, int>();
           expect(map, isEmpty);
           expect(map, hasLength(0));
           expect(map.isEmpty, isTrue);
           expect(map.isNotEmpty, isFalse);
-          expect(map.asMap(), {});
-          expect(map.keys, []);
-          expect(map.values, []);
+          expect(map.asMap(), isEmpty);
+          expect(map.keys, isEmpty);
+          expect(map.values, isEmpty);
         });
         test('of', () {
           final map = SetMultimap.of(
@@ -837,15 +837,15 @@ void main() {
           expect(map['b'], [2, 3]);
         });
         test('identity', () {
-          final map = SetMultimap.identity();
+          final map = SetMultimap<String, int>.identity();
           expect(map, isEmpty);
           expect(map, hasLength(0));
-          expect(map.asMap(), {});
-          expect(map.keys, []);
-          expect(map.values, []);
+          expect(map.asMap(), isEmpty);
+          expect(map.keys, isEmpty);
+          expect(map.values, isEmpty);
         });
         test('fromIterable', () {
-          final map = SetMultimap.fromIterable(IntegerRange(3),
+          final map = SetMultimap<String, int>.fromIterable(IntegerRange(3),
               key: (i) => String.fromCharCode((i as int) + 97),
               value: (i) => (i as int) + 1);
           expect(map, hasLength(3));
@@ -861,7 +861,7 @@ void main() {
           expect(map['c'], [3]);
         });
         test('fromIterable (no providers)', () {
-          final map = SetMultimap.fromIterable(IntegerRange(3));
+          final map = SetMultimap<int, int>.fromIterable(IntegerRange(3));
           expect(map, hasLength(3));
           expect(map.keys, [0, 1, 2]);
           expect(map.values, [0, 1, 2]);
@@ -924,7 +924,7 @@ void main() {
           });
         });
         test('iterable converter (no providers)', () {
-          final target = ['a', 'b', 'b'].toSetMultimap();
+          final target = ['a', 'b', 'b'].toSetMultimap<String, String>();
           expect(target.keys, ['a', 'b']);
           expect(target.values, ['a', 'b']);
           expect(target.asMap(), {
@@ -1067,7 +1067,7 @@ void main() {
   group('multiset', () {
     group('constructor', () {
       test('empty', () {
-        final set = Multiset();
+        final set = Multiset<String>();
         expect(set, isEmpty);
         expect(set, hasLength(0));
         expect(set, unorderedEquals([]));
@@ -1075,7 +1075,7 @@ void main() {
         expect(set.counts, unorderedEquals([]));
       });
       test('empty identity', () {
-        final set = Multiset.identity();
+        final set = Multiset<String>.identity();
         expect(set, isEmpty);
         expect(set, hasLength(0));
         expect(set, unorderedEquals([]));
@@ -1139,7 +1139,8 @@ void main() {
         expect(set.counts, unorderedEquals([3, 2, 1]));
       });
       test('generate', () {
-        final set = Multiset.fromIterable(['a', 'a', 'a', 'b', 'b', 'c']);
+        final set =
+            Multiset<String>.fromIterable(['a', 'a', 'a', 'b', 'b', 'c']);
         expect(set, isNot(isEmpty));
         expect(set, hasLength(6));
         expect(set, unorderedEquals(['a', 'a', 'a', 'b', 'b', 'c']));
@@ -1147,7 +1148,7 @@ void main() {
         expect(set.counts, unorderedEquals([3, 2, 1]));
       });
       test('generate with key', () {
-        final set = Multiset.fromIterable(['a', 'a', 'a', 'b', 'b', 'c'],
+        final set = Multiset<int>.fromIterable(['a', 'a', 'a', 'b', 'b', 'c'],
             key: (e) => (e as String).codeUnitAt(0));
         expect(set, isNot(isEmpty));
         expect(set, hasLength(6));
@@ -1176,7 +1177,7 @@ void main() {
     });
     group('adding', () {
       test('zero', () {
-        final set = Multiset()
+        final set = Multiset<String>()
           ..add('a', 0)
           ..add('b', 0);
         expect(set, isEmpty);
@@ -1186,7 +1187,7 @@ void main() {
         expect(set.counts, unorderedEquals([]));
       });
       test('single', () {
-        final set = Multiset()
+        final set = Multiset<String>()
           ..add('a')
           ..add('b')
           ..add('b');
@@ -1197,7 +1198,7 @@ void main() {
         expect(set.counts, unorderedEquals([1, 2]));
       });
       test('multiple', () {
-        final set = Multiset()
+        final set = Multiset<String>()
           ..add('a', 2)
           ..add('b', 3);
         expect(set, isNot(isEmpty));
@@ -1207,7 +1208,7 @@ void main() {
         expect(set.counts, unorderedEquals([2, 3]));
       });
       test('all', () {
-        final set = Multiset()..addAll(['a', 'a', 'b', 'b', 'b']);
+        final set = Multiset<String>()..addAll(['a', 'a', 'b', 'b', 'b']);
         expect(set, isNot(isEmpty));
         expect(set, hasLength(5));
         expect(set, unorderedEquals(['a', 'a', 'b', 'b', 'b']));
@@ -1215,7 +1216,7 @@ void main() {
         expect(set.counts, unorderedEquals([3, 2]));
       });
       test('error', () {
-        final set = Multiset();
+        final set = Multiset<String>();
         expect(() => set.add('a', -1), throwsArgumentError);
         expect(set, isEmpty);
         expect(set, hasLength(0));
@@ -1298,7 +1299,7 @@ void main() {
     });
     group('access', () {
       test('single', () {
-        final set = Multiset();
+        final set = Multiset<String>();
         set['a'] = 2;
         expect(set['a'], 2);
         expect(set, isNot(isEmpty));
@@ -1308,7 +1309,7 @@ void main() {
         expect(set.counts, unorderedEquals([2]));
       });
       test('multiple', () {
-        final set = Multiset();
+        final set = Multiset<String>();
         set['a'] = 2;
         set['b'] = 3;
         expect(set['a'], 2);
@@ -1412,7 +1413,7 @@ void main() {
     });
   });
   group('range', () {
-    void verify<T extends num>(
+    void verify<T>(
       Range<T> range, {
       required List<T> included,
       required List<T> excluded,
@@ -1429,14 +1430,11 @@ void main() {
       expect(range.iterator.range, same(range));
       if (included.isEmpty) {
         expect(range.isEmpty, isTrue);
+        expect(range.start, range.end);
       } else {
         expect(range.isNotEmpty, isTrue);
         expect(range.start, included.first);
-        if (range.step > 0) {
-          expect(range.start, lessThanOrEqualTo(range.end));
-        } else {
-          expect(range.start, greaterThanOrEqualTo(range.end));
-        }
+        expect(range.start, isNot(range.end));
       }
       for (var each in included.indexed()) {
         expect(each.value, range[each.index]);
@@ -1464,68 +1462,62 @@ void main() {
     group('int', () {
       group('constructor', () {
         test('empty', () {
-          verify<int>(IntegerRange(), included: [], excluded: [0]);
+          verify(IntegerRange(), included: [], excluded: [0]);
         });
         test('1 argument', () {
-          verify<int>(IntegerRange(0), included: [], excluded: [-1, 0, 1]);
-          verify<int>(IntegerRange(1), included: [0], excluded: [-1, 1]);
-          verify<int>(IntegerRange(2), included: [0, 1], excluded: [-1, 2]);
-          verify<int>(IntegerRange(3), included: [0, 1, 2], excluded: [-1, 3]);
+          verify(IntegerRange(0), included: [], excluded: [-1, 0, 1]);
+          verify(IntegerRange(1), included: [0], excluded: [-1, 1]);
+          verify(IntegerRange(2), included: [0, 1], excluded: [-1, 2]);
+          verify(IntegerRange(3), included: [0, 1, 2], excluded: [-1, 3]);
         });
         test('2 argument', () {
-          verify<int>(IntegerRange(0, 0), included: [], excluded: [-1, 0, 1]);
-          verify<int>(IntegerRange(0, 4),
-              included: [0, 1, 2, 3], excluded: [-1, 4]);
-          verify<int>(IntegerRange(5, 9),
-              included: [5, 6, 7, 8], excluded: [4, 9]);
-          verify<int>(IntegerRange(9, 5),
-              included: [9, 8, 7, 6], excluded: [10, 5]);
+          verify(IntegerRange(0, 0), included: [], excluded: [-1, 0, 1]);
+          verify(IntegerRange(0, 4), included: [0, 1, 2, 3], excluded: [-1, 4]);
+          verify(IntegerRange(5, 9), included: [5, 6, 7, 8], excluded: [4, 9]);
+          verify(IntegerRange(9, 5), included: [9, 8, 7, 6], excluded: [10, 5]);
         });
         test('3 argument (positive step)', () {
-          verify<int>(IntegerRange(0, 0, 1),
-              included: [], excluded: [-1, 0, 1]);
-          verify<int>(IntegerRange(2, 8, 2),
+          verify(IntegerRange(0, 0, 1), included: [], excluded: [-1, 0, 1]);
+          verify(IntegerRange(2, 8, 2),
               included: [2, 4, 6], excluded: [0, 1, 3, 5, 7, 8]);
-          verify<int>(IntegerRange(3, 8, 2),
+          verify(IntegerRange(3, 8, 2),
               included: [3, 5, 7], excluded: [1, 2, 4, 6, 8, 9]);
-          verify<int>(IntegerRange(4, 8, 2),
+          verify(IntegerRange(4, 8, 2),
               included: [4, 6], excluded: [2, 3, 5, 7, 8]);
-          verify<int>(IntegerRange(2, 7, 2),
+          verify(IntegerRange(2, 7, 2),
               included: [2, 4, 6], excluded: [0, 1, 3, 5, 7, 8]);
-          verify<int>(IntegerRange(2, 6, 2),
+          verify(IntegerRange(2, 6, 2),
               included: [2, 4], excluded: [0, 1, 3, 5, 6, 7, 8]);
         });
         test('3 argument (negative step)', () {
-          verify<int>(IntegerRange(0, 0, -1),
-              included: [], excluded: [-1, 0, 1]);
-          verify<int>(IntegerRange(8, 2, -2),
+          verify(IntegerRange(0, 0, -1), included: [], excluded: [-1, 0, 1]);
+          verify(IntegerRange(8, 2, -2),
               included: [8, 6, 4], excluded: [2, 3, 5, 7, 9, 10]);
-          verify<int>(IntegerRange(8, 3, -2),
+          verify(IntegerRange(8, 3, -2),
               included: [8, 6, 4], excluded: [2, 3, 5, 7, 9, 10]);
-          verify<int>(IntegerRange(8, 4, -2),
+          verify(IntegerRange(8, 4, -2),
               included: [8, 6], excluded: [2, 3, 4, 5, 7, 9, 10]);
-          verify<int>(IntegerRange(7, 2, -2),
+          verify(IntegerRange(7, 2, -2),
               included: [7, 5, 3], excluded: [1, 2, 4, 6, 8, 9]);
-          verify<int>(IntegerRange(6, 2, -2),
+          verify(IntegerRange(6, 2, -2),
               included: [6, 4], excluded: [2, 3, 5, 7, 8, 9]);
         });
         test('positive step size', () {
           for (var end = 31; end <= 40; end++) {
             final range = IntegerRange(10, end, 10);
-            verify<int>(range,
+            verify(range,
                 included: [10, 20, 30], excluded: [5, 15, 25, 35, 40]);
           }
         });
         test('negative step size', () {
           for (var end = 9; end >= 0; end--) {
             final range = IntegerRange(30, end, -10);
-            verify<int>(range,
-                included: [30, 20, 10], excluded: [0, 5, 15, 25, 35]);
+            verify(range, included: [30, 20, 10], excluded: [0, 5, 15, 25, 35]);
           }
         });
         test('shorthand', () {
-          verify<int>(0.to(3), included: [0, 1, 2], excluded: [-1, 4]);
-          verify<int>(2.to(8, step: 2),
+          verify(0.to(3), included: [0, 1, 2], excluded: [-1, 4]);
+          verify(2.to(8, step: 2),
               included: [2, 4, 6], excluded: [0, 1, 3, 5, 7, 8]);
         });
         test('stress', () {
@@ -1539,7 +1531,7 @@ void main() {
             final expected = start < end
                 ? <int>[for (var j = start; j < end; j += step) j]
                 : <int>[for (var j = start; j > end; j += step) j];
-            verify<int>(IntegerRange(start, end, step),
+            verify(IntegerRange(start, end, step),
                 included: expected, excluded: []);
           }
         });
@@ -1550,61 +1542,60 @@ void main() {
         });
         group('indices', () {
           test('empty', () {
-            verify<int>([].indices(), included: [], excluded: [0, 1, 2]);
-            verify<int>([].indices(step: -1),
+            verify(<int>[].indices(), included: [], excluded: [0, 1, 2]);
+            verify(<int>[].indices(step: -1),
                 included: [], excluded: [0, 1, 2]);
-            expect(() => [].indices(step: 0), throwsArgumentError);
+            expect(() => <int>[].indices(step: 0), throwsArgumentError);
           });
           test('default', () {
-            verify<int>([1, 2, 3].indices(),
-                included: [0, 1, 2], excluded: [-1, 3]);
-            verify<int>([1, 2, 3].indices(step: -1),
+            verify([1, 2, 3].indices(), included: [0, 1, 2], excluded: [-1, 3]);
+            verify([1, 2, 3].indices(step: -1),
                 included: [2, 1, 0], excluded: [-1, 3]);
             expect(() => [1, 2, 3].indices(step: 0), throwsArgumentError);
           });
           test('step', () {
-            verify<int>([1, 2, 3].indices(step: 2),
+            verify([1, 2, 3].indices(step: 2),
                 included: [0, 2], excluded: [-1, 1, 3]);
-            verify<int>([1, 2, 3, 4].indices(step: 2),
+            verify([1, 2, 3, 4].indices(step: 2),
                 included: [0, 2], excluded: [-1, 1, 3]);
-            verify<int>([1, 2, 3].indices(step: -2),
+            verify([1, 2, 3].indices(step: -2),
                 included: [2, 0], excluded: [-1, 1, 3]);
-            verify<int>([1, 2, 3, 4].indices(step: -2),
+            verify([1, 2, 3, 4].indices(step: -2),
                 included: [3, 1], excluded: [0, 2, 4, 6]);
           });
         });
       });
       group('sublist', () {
         test('sublist (1 argument)', () {
-          verify<int>(IntegerRange(3).sublist(0),
+          verify(IntegerRange(3).sublist(0),
               included: [0, 1, 2], excluded: [-1, 3]);
-          verify<int>(IntegerRange(3).sublist(1),
+          verify(IntegerRange(3).sublist(1),
               included: [1, 2], excluded: [-1, 0, 3]);
-          verify<int>(IntegerRange(3).sublist(2),
+          verify(IntegerRange(3).sublist(2),
               included: [2], excluded: [-1, 0, 1, 3]);
-          verify<int>(IntegerRange(3).sublist(3),
+          verify(IntegerRange(3).sublist(3),
               included: [], excluded: [-1, 0, 1, 2, 3]);
           expect(() => IntegerRange(3).sublist(4), throwsRangeError);
         });
         test('sublist (2 arguments)', () {
-          verify<int>(IntegerRange(3).sublist(0, 3),
+          verify(IntegerRange(3).sublist(0, 3),
               included: [0, 1, 2], excluded: [-1, 3]);
-          verify<int>(IntegerRange(3).sublist(0, 2),
+          verify(IntegerRange(3).sublist(0, 2),
               included: [0, 1], excluded: [-1, 2, 3]);
-          verify<int>(IntegerRange(3).sublist(0, 1),
+          verify(IntegerRange(3).sublist(0, 1),
               included: [0], excluded: [-1, 1, 2, 3]);
-          verify<int>(IntegerRange(3).sublist(0, 0),
+          verify(IntegerRange(3).sublist(0, 0),
               included: [], excluded: [-1, 0, 1, 2, 3]);
           expect(() => IntegerRange(3).sublist(0, 4), throwsRangeError);
         });
         test('getRange', () {
-          verify<int>(IntegerRange(3).getRange(0, 3),
+          verify(IntegerRange(3).getRange(0, 3),
               included: [0, 1, 2], excluded: [-1, 3]);
-          verify<int>(IntegerRange(3).getRange(0, 2),
+          verify(IntegerRange(3).getRange(0, 2),
               included: [0, 1], excluded: [-1, 2, 3]);
-          verify<int>(IntegerRange(3).getRange(0, 1),
+          verify(IntegerRange(3).getRange(0, 1),
               included: [0], excluded: [-1, 1, 2, 3]);
-          verify<int>(IntegerRange(3).getRange(0, 0),
+          verify(IntegerRange(3).getRange(0, 0),
               included: [], excluded: [-1, 0, 1, 2, 3]);
           expect(() => IntegerRange(3).getRange(0, 4), throwsRangeError);
         });
@@ -1642,60 +1633,57 @@ void main() {
     group('double', () {
       group('constructor', () {
         test('empty', () {
-          verify<double>(DoubleRange(), included: [], excluded: [0.0]);
+          verify(DoubleRange(), included: [], excluded: [0.0]);
         });
         test('1 argument', () {
-          verify<double>(DoubleRange(0.0),
-              included: [], excluded: [-1.0, 0.0, 1.0]);
-          verify<double>(DoubleRange(1.0),
-              included: [0.0], excluded: [-1.0, 1.0]);
-          verify<double>(DoubleRange(2.0),
-              included: [0.0, 1.0], excluded: [-1.0, 2.0]);
-          verify<double>(DoubleRange(3.0),
+          verify(DoubleRange(0.0), included: [], excluded: [-1.0, 0.0, 1.0]);
+          verify(DoubleRange(1.0), included: [0.0], excluded: [-1.0, 1.0]);
+          verify(DoubleRange(2.0), included: [0.0, 1.0], excluded: [-1.0, 2.0]);
+          verify(DoubleRange(3.0),
               included: [0.0, 1.0, 2.0], excluded: [-1.0, 3.0]);
         });
         test('2 argument', () {
-          verify<double>(DoubleRange(0.0, 0.0),
+          verify(DoubleRange(0.0, 0.0),
               included: [], excluded: [-1.0, 0.0, 1.0]);
-          verify<double>(DoubleRange(0.0, 4.0),
+          verify(DoubleRange(0.0, 4.0),
               included: [0.0, 1.0, 2.0, 3.0], excluded: [-1.0, 4.0]);
-          verify<double>(DoubleRange(5.0, 9.0),
+          verify(DoubleRange(5.0, 9.0),
               included: [5.0, 6.0, 7.0, 8.0], excluded: [4.0, 9.0]);
-          verify<double>(DoubleRange(9.0, 5.0),
+          verify(DoubleRange(9.0, 5.0),
               included: [9.0, 8.0, 7.0, 6.0], excluded: [10.0, 5.0]);
         });
         test('3 argument (positive step)', () {
-          verify<double>(DoubleRange(0.0, 0.0, 1.0),
+          verify(DoubleRange(0.0, 0.0, 1.0),
               included: [], excluded: [-1.0, 0.0, 1.0]);
-          verify<double>(DoubleRange(2.0, 8.0, 1.5),
+          verify(DoubleRange(2.0, 8.0, 1.5),
               included: [2.0, 3.5, 5.0, 6.5], excluded: [0.5, 3.0, 8.0]);
-          verify<double>(DoubleRange(3.0, 8.0, 1.5),
+          verify(DoubleRange(3.0, 8.0, 1.5),
               included: [3.0, 4.5, 6.0, 7.5], excluded: [1.5, 5.0, 9.0]);
-          verify<double>(DoubleRange(4.0, 8.0, 1.5),
+          verify(DoubleRange(4.0, 8.0, 1.5),
               included: [4.0, 5.5, 7.0], excluded: [3.5, 5.0, 6.0, 8.5]);
-          verify<double>(DoubleRange(2.0, 7.0, 1.5),
+          verify(DoubleRange(2.0, 7.0, 1.5),
               included: [2.0, 3.5, 5.0, 6.5], excluded: [0.5, 4.0, 8.0]);
-          verify<double>(DoubleRange(2.0, 6.0, 1.5),
+          verify(DoubleRange(2.0, 6.0, 1.5),
               included: [2.0, 3.5, 5.0], excluded: [0.5, 3.0, 4.0, 6.0]);
         });
         test('3 argument (negative step)', () {
-          verify<double>(DoubleRange(0.0, 0.0, -1.0),
+          verify(DoubleRange(0.0, 0.0, -1.0),
               included: [], excluded: [-1.0, 0.0, 1.0]);
-          verify<double>(DoubleRange(8.0, 2.0, -1.5),
+          verify(DoubleRange(8.0, 2.0, -1.5),
               included: [8.0, 6.5, 5.0, 3.5], excluded: [9.5, 6.0, 2.0]);
-          verify<double>(DoubleRange(8.0, 3.0, -1.5),
+          verify(DoubleRange(8.0, 3.0, -1.5),
               included: [8.0, 6.5, 5.0, 3.5], excluded: [9.5, 6.0, 2.0]);
-          verify<double>(DoubleRange(8.0, 4.0, -1.5),
+          verify(DoubleRange(8.0, 4.0, -1.5),
               included: [8.0, 6.5, 5.0], excluded: [9.5, 5.5, 3.5]);
-          verify<double>(DoubleRange(7.0, 2.0, -1.5),
+          verify(DoubleRange(7.0, 2.0, -1.5),
               included: [7.0, 5.5, 4.0, 2.5], excluded: [8.5, 3.0, 2.0]);
-          verify<double>(DoubleRange(6.0, 2.0, -1.5),
+          verify(DoubleRange(6.0, 2.0, -1.5),
               included: [6.0, 4.5, 3.0], excluded: [7.5, 4.0, 1.5]);
         });
         test('shorthand', () {
-          verify<double>(0.0.to(3.0),
+          verify(0.0.to(3.0),
               included: [0.0, 1.0, 2.0], excluded: [-1.0, 0.5, 1.5, 2.5, 3.0]);
-          verify<double>(4.0.to(8.0, step: 1.5),
+          verify(4.0.to(8.0, step: 1.5),
               included: [4.0, 5.5, 7.0], excluded: [2.5, 5.0, 6.0, 8.5]);
         });
         test('invalid', () {
@@ -1706,35 +1694,35 @@ void main() {
       });
       group('sublist', () {
         test('sublist (1 argument)', () {
-          verify<double>(DoubleRange(3.0).sublist(0),
+          verify(DoubleRange(3.0).sublist(0),
               included: [0.0, 1.0, 2.0], excluded: [-1.0, 3.0]);
-          verify<double>(DoubleRange(3.0).sublist(1),
+          verify(DoubleRange(3.0).sublist(1),
               included: [1.0, 2.0], excluded: [-1.0, 0.0, 3.0]);
-          verify<double>(DoubleRange(3.0).sublist(2),
+          verify(DoubleRange(3.0).sublist(2),
               included: [2.0], excluded: [-1.0, 0.0, 1.0, 3.0]);
-          verify<double>(DoubleRange(3.0).sublist(3),
+          verify(DoubleRange(3.0).sublist(3),
               included: [], excluded: [-1.0, 0.0, 1.0, 2.0, 3.0]);
           expect(() => DoubleRange(3.0).sublist(4), throwsRangeError);
         });
         test('sublist (2 arguments)', () {
-          verify<double>(DoubleRange(3.0).sublist(0, 3),
+          verify(DoubleRange(3.0).sublist(0, 3),
               included: [0.0, 1.0, 2.0], excluded: [-1.0, 3.0]);
-          verify<double>(DoubleRange(3.0).sublist(0, 2),
+          verify(DoubleRange(3.0).sublist(0, 2),
               included: [0.0, 1.0], excluded: [-1.0, 2.0, 3.0]);
-          verify<double>(DoubleRange(3.0).sublist(0, 1),
+          verify(DoubleRange(3.0).sublist(0, 1),
               included: [0.0], excluded: [-1.0, 1.0, 2.0, 3.0]);
-          verify<double>(DoubleRange(3.0).sublist(0, 0),
+          verify(DoubleRange(3.0).sublist(0, 0),
               included: [], excluded: [-1.0, 0.0, 1.0, 2.0, 3.0]);
           expect(() => DoubleRange(3.0).sublist(0, 4), throwsRangeError);
         });
         test('getRange', () {
-          verify<double>(DoubleRange(3.0).getRange(0, 3),
+          verify(DoubleRange(3.0).getRange(0, 3),
               included: [0.0, 1.0, 2.0], excluded: [-1.0, 3.0]);
-          verify<double>(DoubleRange(3.0).getRange(0, 2),
+          verify(DoubleRange(3.0).getRange(0, 2),
               included: [0.0, 1.0], excluded: [-1.0, 2.0, 3.0]);
-          verify<double>(DoubleRange(3.0).getRange(0, 1),
+          verify(DoubleRange(3.0).getRange(0, 1),
               included: [0.0], excluded: [-1.0, 1.0, 2.0, 3.0]);
-          verify<double>(DoubleRange(3.0).getRange(0, 0),
+          verify(DoubleRange(3.0).getRange(0, 0),
               included: [], excluded: [-1.0, 0.0, 1.0, 2.0, 3.0]);
           expect(() => DoubleRange(3.0).getRange(0, 4), throwsRangeError);
         });
@@ -1771,130 +1759,100 @@ void main() {
       });
     });
     group('BigInt', () {
-      List<BigInt> normalize(List values) => values
-          .map((value) => value is BigInt ? value : BigInt.from(value))
-          .cast<BigInt>()
-          .toList(growable: false);
-      void verify(
-        Range<BigInt> range, {
-        required List/*<int|BigInt>*/ included,
-        required List/*<int|BigInt>*/ excluded,
-        bool reverse = true,
-      }) {
-        final nIncluded = normalize(included);
-        final nExcluded = normalize(excluded);
-        expect(range, nIncluded);
-        expect(range.length, nIncluded.length);
-        if (reverse) {
-          verify(range.reversed,
-              included: included.reversed.toList(),
-              excluded: excluded,
-              reverse: false);
-        }
-        expect(range.iterator.range, same(range));
-        if (nIncluded.isEmpty) {
-          expect(range.isEmpty, isTrue);
-        } else {
-          expect(range.isNotEmpty, isTrue);
-          expect(range.start, nIncluded.first);
-          if (range.step > BigInt.zero) {
-            expect(range.start, lessThanOrEqualTo(range.end));
-          } else {
-            expect(range.start, greaterThanOrEqualTo(range.end));
-          }
-        }
-        for (var each in nIncluded.indexed()) {
-          expect(each.value, range[each.index]);
-          expect(range.contains(each.value), isTrue);
-          expect(range.indexOf(each.value), each.index);
-          expect(range.indexOf(each.value, each.index), each.index);
-          expect(range.indexOf(each.value, -1), each.index);
-          expect(range.lastIndexOf(each.value), each.index);
-          expect(range.lastIndexOf(each.value, each.index), each.index);
-          expect(range.lastIndexOf(each.value, nIncluded.length), each.index);
-        }
-        for (var value in nExcluded) {
-          expect(range.contains(value), isFalse);
-          expect(range.indexOf(value), -1);
-          expect(range.indexOf(value, 0), -1);
-          expect(range.indexOf(value, range.length), -1);
-          expect(range.lastIndexOf(value), -1);
-          expect(range.lastIndexOf(value, 0), -1);
-          expect(range.lastIndexOf(value, range.length), -1);
-        }
-      }
-
+      List<BigInt> toBigIntList(List<int> values) =>
+          values.map(BigInt.from).toList();
       group('constructor', () {
         test('empty', () {
-          verify(BigIntRange(), included: [], excluded: [0]);
+          verify(BigIntRange(),
+              included: <BigInt>[], excluded: toBigIntList([0]));
         });
         test('1 argument', () {
           verify(BigIntRange(BigInt.from(0)),
-              included: [], excluded: [-1, 0, 1]);
-          verify(BigIntRange(BigInt.from(1)), included: [0], excluded: [-1, 1]);
+              included: <BigInt>[], excluded: toBigIntList([-1, 0, 1]));
+          verify(BigIntRange(BigInt.from(1)),
+              included: toBigIntList([0]), excluded: toBigIntList([-1, 1]));
           verify(BigIntRange(BigInt.from(2)),
-              included: [0, 1], excluded: [-1, 2]);
+              included: toBigIntList([0, 1]), excluded: toBigIntList([-1, 2]));
           verify(BigIntRange(BigInt.from(3)),
-              included: [0, 1, 2], excluded: [-1, 3]);
+              included: toBigIntList([0, 1, 2]),
+              excluded: toBigIntList([-1, 3]));
         });
         test('2 argument', () {
           verify(BigIntRange(BigInt.from(0), BigInt.from(0)),
-              included: [], excluded: [-1, 0, 1]);
+              included: <BigInt>[], excluded: toBigIntList([-1, 0, 1]));
           verify(BigIntRange(BigInt.from(0), BigInt.from(4)),
-              included: [0, 1, 2, 3], excluded: [-1, 4]);
+              included: toBigIntList([0, 1, 2, 3]),
+              excluded: toBigIntList([-1, 4]));
           verify(BigIntRange(BigInt.from(5), BigInt.from(9)),
-              included: [5, 6, 7, 8], excluded: [4, 9]);
+              included: toBigIntList([5, 6, 7, 8]),
+              excluded: toBigIntList([4, 9]));
           verify(BigIntRange(BigInt.from(9), BigInt.from(5)),
-              included: [9, 8, 7, 6], excluded: [10, 5]);
+              included: toBigIntList([9, 8, 7, 6]),
+              excluded: toBigIntList([10, 5]));
         });
         test('3 argument (positive step)', () {
           verify(BigIntRange(BigInt.from(0), BigInt.from(0), BigInt.one),
-              included: [], excluded: [-1, 0, 1]);
+              included: <BigInt>[], excluded: toBigIntList([-1, 0, 1]));
           verify(BigIntRange(BigInt.from(2), BigInt.from(8), BigInt.two),
-              included: [2, 4, 6], excluded: [0, 1, 3, 5, 7, 8]);
+              included: toBigIntList([2, 4, 6]),
+              excluded: toBigIntList([0, 1, 3, 5, 7, 8]));
           verify(BigIntRange(BigInt.from(3), BigInt.from(8), BigInt.two),
-              included: [3, 5, 7], excluded: [1, 2, 4, 6, 8, 9]);
+              included: toBigIntList([3, 5, 7]),
+              excluded: toBigIntList([1, 2, 4, 6, 8, 9]));
           verify(BigIntRange(BigInt.from(4), BigInt.from(8), BigInt.two),
-              included: [4, 6], excluded: [2, 3, 5, 7, 8]);
+              included: toBigIntList([4, 6]),
+              excluded: toBigIntList([2, 3, 5, 7, 8]));
           verify(BigIntRange(BigInt.from(2), BigInt.from(7), BigInt.two),
-              included: [2, 4, 6], excluded: [0, 1, 3, 5, 7, 8]);
+              included: toBigIntList([2, 4, 6]),
+              excluded: toBigIntList([0, 1, 3, 5, 7, 8]));
           verify(BigIntRange(BigInt.from(2), BigInt.from(6), BigInt.two),
-              included: [2, 4], excluded: [0, 1, 3, 5, 6, 7, 8]);
+              included: toBigIntList([2, 4]),
+              excluded: toBigIntList([0, 1, 3, 5, 6, 7, 8]));
         });
         test('3 argument (negative step)', () {
           verify(BigIntRange(BigInt.from(0), BigInt.from(0), -BigInt.one),
-              included: [], excluded: [-1, 0, 1]);
+              included: <BigInt>[], excluded: toBigIntList([-1, 0, 1]));
           verify(BigIntRange(BigInt.from(8), BigInt.from(2), -BigInt.two),
-              included: [8, 6, 4], excluded: [2, 3, 5, 7, 9, 10]);
+              included: toBigIntList([8, 6, 4]),
+              excluded: toBigIntList([2, 3, 5, 7, 9, 10]));
           verify(BigIntRange(BigInt.from(8), BigInt.from(3), -BigInt.two),
-              included: [8, 6, 4], excluded: [2, 3, 5, 7, 9, 10]);
+              included: toBigIntList([8, 6, 4]),
+              excluded: toBigIntList([2, 3, 5, 7, 9, 10]));
           verify(BigIntRange(BigInt.from(8), BigInt.from(4), -BigInt.two),
-              included: [8, 6], excluded: [2, 3, 4, 5, 7, 9, 10]);
+              included: toBigIntList([8, 6]),
+              excluded: toBigIntList([2, 3, 4, 5, 7, 9, 10]));
           verify(BigIntRange(BigInt.from(7), BigInt.from(2), -BigInt.two),
-              included: [7, 5, 3], excluded: [1, 2, 4, 6, 8, 9]);
+              included: toBigIntList([7, 5, 3]),
+              excluded: toBigIntList([1, 2, 4, 6, 8, 9]));
           verify(BigIntRange(BigInt.from(6), BigInt.from(2), -BigInt.two),
-              included: [6, 4], excluded: [2, 3, 5, 7, 8, 9]);
+              included: toBigIntList([6, 4]),
+              excluded: toBigIntList([2, 3, 5, 7, 8, 9]));
         });
         test('positive step size', () {
           for (var end = 31; end <= 40; end++) {
             final range =
                 BigIntRange(BigInt.from(10), BigInt.from(end), BigInt.from(10));
             verify(range,
-                included: [10, 20, 30], excluded: [5, 15, 25, 35, 40]);
+                included: toBigIntList([10, 20, 30]),
+                excluded: toBigIntList([5, 15, 25, 35, 40]));
           }
         });
         test('negative step size', () {
           for (var end = 9; end >= 0; end--) {
             final range = BigIntRange(
                 BigInt.from(30), BigInt.from(end), BigInt.from(-10));
-            verify(range, included: [30, 20, 10], excluded: [0, 5, 15, 25, 35]);
+            verify(range,
+                included: toBigIntList([30, 20, 10]),
+                excluded: toBigIntList([0, 5, 15, 25, 35]));
           }
         });
         test('shorthand', () {
           verify(BigInt.zero.to(BigInt.from(3)),
-              included: [0, 1, 2], excluded: [-1, 4]);
+              included: toBigIntList([0, 1, 2]),
+              excluded: toBigIntList([-1, 4]));
           verify(BigInt.two.to(BigInt.from(8), step: BigInt.two),
-              included: [2, 4, 6], excluded: [0, 1, 3, 5, 7, 8]);
+              included: toBigIntList([2, 4, 6]),
+              excluded: toBigIntList([0, 1, 3, 5, 7, 8]));
         });
         test('stress', () {
           final random = Random(6180340);
@@ -1908,7 +1866,7 @@ void main() {
                 ? <BigInt>[for (var j = start; j < end; j += step) j]
                 : <BigInt>[for (var j = start; j > end; j += step) j];
             verify(BigIntRange(start, end, step),
-                included: expected, excluded: []);
+                included: expected, excluded: <BigInt>[]);
           }
         });
         test('invalid', () {
@@ -1925,37 +1883,47 @@ void main() {
       group('sublist', () {
         test('sublist (1 argument)', () {
           verify(BigIntRange(BigInt.from(3)).sublist(0),
-              included: [0, 1, 2], excluded: [-1, 3]);
+              included: toBigIntList([0, 1, 2]),
+              excluded: toBigIntList([-1, 3]));
           verify(BigIntRange(BigInt.from(3)).sublist(1),
-              included: [1, 2], excluded: [-1, 0, 3]);
+              included: toBigIntList([1, 2]),
+              excluded: toBigIntList([-1, 0, 3]));
           verify(BigIntRange(BigInt.from(3)).sublist(2),
-              included: [2], excluded: [-1, 0, 1, 3]);
+              included: toBigIntList([2]),
+              excluded: toBigIntList([-1, 0, 1, 3]));
           verify(BigIntRange(BigInt.from(3)).sublist(3),
-              included: [], excluded: [-1, 0, 1, 2, 3]);
+              included: <BigInt>[], excluded: toBigIntList([-1, 0, 1, 2, 3]));
           expect(
               () => BigIntRange(BigInt.from(3)).sublist(4), throwsRangeError);
         });
         test('sublist (2 arguments)', () {
           verify(BigIntRange(BigInt.from(3)).sublist(0, 3),
-              included: [0, 1, 2], excluded: [-1, 3]);
+              included: toBigIntList([0, 1, 2]),
+              excluded: toBigIntList([-1, 3]));
           verify(BigIntRange(BigInt.from(3)).sublist(0, 2),
-              included: [0, 1], excluded: [-1, 2, 3]);
+              included: toBigIntList([0, 1]),
+              excluded: toBigIntList([-1, 2, 3]));
           verify(BigIntRange(BigInt.from(3)).sublist(0, 1),
-              included: [0], excluded: [-1, 1, 2, 3]);
+              included: toBigIntList([0]),
+              excluded: toBigIntList([-1, 1, 2, 3]));
           verify(BigIntRange(BigInt.from(3)).sublist(0, 0),
-              included: [], excluded: [-1, 0, 1, 2, 3]);
+              included: <BigInt>[], excluded: toBigIntList([-1, 0, 1, 2, 3]));
           expect(() => BigIntRange(BigInt.from(3)).sublist(0, 4),
               throwsRangeError);
         });
         test('getRange', () {
           verify(BigIntRange(BigInt.from(3)).getRange(0, 3),
-              included: [0, 1, 2], excluded: [-1, 3]);
+              included: toBigIntList([0, 1, 2]),
+              excluded: toBigIntList([-1, 3]));
           verify(BigIntRange(BigInt.from(3)).getRange(0, 2),
-              included: [0, 1], excluded: [-1, 2, 3]);
+              included: toBigIntList([0, 1]),
+              excluded: toBigIntList([-1, 2, 3]));
           verify(BigIntRange(BigInt.from(3)).getRange(0, 1),
-              included: [0], excluded: [-1, 1, 2, 3]);
+              included: toBigIntList([0]),
+              excluded: toBigIntList([-1, 1, 2, 3]));
           verify(BigIntRange(BigInt.from(3)).getRange(0, 0),
-              included: [], excluded: [-1, 0, 1, 2, 3]);
+              included: toBigIntList([]),
+              excluded: toBigIntList([-1, 0, 1, 2, 3]));
           expect(() => BigIntRange(BigInt.from(3)).getRange(0, 4),
               throwsRangeError);
         });
@@ -2235,7 +2203,7 @@ void main() {
         expect(() => plenty[9], throwsRangeError);
       });
       test('converting', () {
-        expect(empty.toList(), []);
+        expect(empty.toList(), isEmpty);
         expect(plenty.toList(), ['M', 'o', 'r', 'e', ' ', 'D', 'a', 'r', 't']);
         expect(empty.toSet(), <String>{});
         expect(plenty.toSet(), {'M', 'o', 'r', 'e', ' ', 'D', 'a', 't'});
@@ -2310,7 +2278,7 @@ void main() {
         expect(mutable.toString(), 'bc');
       });
       test('converting', () {
-        expect(empty.toList(), []);
+        expect(empty.toList(), isEmpty);
         expect(plenty.toList(), ['M', 'o', 'r', 'e', ' ', 'D', 'a', 'r', 't']);
         expect(empty.toSet(), <String>{});
         expect(plenty.toSet(), {'M', 'o', 'r', 'e', ' ', 'D', 'a', 't'});
@@ -2653,12 +2621,12 @@ void main() {
       final map = TypeMap<Object>();
       expect(map.hasInstance<String>(), isFalse);
       expect(map.getInstance<String>(), isNull);
-      expect(map.types, []);
-      expect(map.instances, []);
+      expect(map.types, isEmpty);
+      expect(map.instances, isEmpty);
       expect(map.length, 0);
       expect(map.isEmpty, isTrue);
       expect(map.isNotEmpty, isFalse);
-      expect(map.asMap(), {});
+      expect(map.asMap(), isEmpty);
       expect(map.toString(), '{}');
     });
     test('single', () {
@@ -2979,8 +2947,8 @@ void allTrieTests(
       expect(trie.remove('disobey'), isNull);
       expect(trie.containsKey('disobey'), isFalse);
       expect(trie, hasLength(0));
-      expect(trie.keys, []);
-      expect(trie.values, []);
+      expect(trie.keys, isEmpty);
+      expect(trie.values, isEmpty);
     });
     test('root', () {
       final trie = newTrie();
@@ -2988,8 +2956,8 @@ void allTrieTests(
       expect(trie.remove(''), 42);
       expect(trie.containsKey(''), isFalse);
       expect(trie, hasLength(0));
-      expect(trie.keys, []);
-      expect(trie.values, []);
+      expect(trie.keys, isEmpty);
+      expect(trie.values, isEmpty);
     });
     test('single', () {
       final trie = newTrie();
@@ -2997,8 +2965,8 @@ void allTrieTests(
       expect(trie.remove('disobey'), 42);
       expect(trie.containsKey('disobey'), isFalse);
       expect(trie, hasLength(0));
-      expect(trie.keys, []);
-      expect(trie.values, []);
+      expect(trie.keys, isEmpty);
+      expect(trie.values, isEmpty);
     });
     test('prefix', () {
       final trie = newTrie();
@@ -3030,8 +2998,8 @@ void allTrieTests(
       trie.clear();
       expect(trie.containsKey(''), isFalse);
       expect(trie, hasLength(0));
-      expect(trie.keys, []);
-      expect(trie.values, []);
+      expect(trie.keys, isEmpty);
+      expect(trie.values, isEmpty);
     });
     test('single', () {
       final trie = newTrie();
@@ -3039,8 +3007,8 @@ void allTrieTests(
       trie.clear();
       expect(trie.containsKey('disobey'), isFalse);
       expect(trie, hasLength(0));
-      expect(trie.keys, []);
-      expect(trie.values, []);
+      expect(trie.keys, isEmpty);
+      expect(trie.values, isEmpty);
     });
     test('multiple', () {
       final trie = newTrie();
@@ -3050,8 +3018,8 @@ void allTrieTests(
       expect(trie.containsKey('disobey'), isFalse);
       expect(trie.containsKey('disobeying'), isFalse);
       expect(trie, hasLength(0));
-      expect(trie.keys, []);
-      expect(trie.values, []);
+      expect(trie.keys, isEmpty);
+      expect(trie.values, isEmpty);
     });
   });
   group('constructor', () {

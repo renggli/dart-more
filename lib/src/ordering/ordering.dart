@@ -58,7 +58,8 @@ abstract class Ordering<T> with ToStringPrinter {
   const Ordering();
 
   /// Returns a natural ordering of objects.
-  static Ordering<T> natural<T extends Comparable>() => NaturalOrdering<T>();
+  static Ordering<T> natural<T extends Comparable<Object?>>() =>
+      NaturalOrdering<T>();
 
   /// Compares two objects [a] and [b] with each other and returns
   ///

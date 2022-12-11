@@ -76,7 +76,7 @@ class Tuple3<T1, T2, T3> extends Tuple {
   Tuple2<T1, T2> removeLast() => Tuple2(first, second);
 
   @override
-  Iterable get iterable sync* {
+  Iterable<Object?> get iterable sync* {
     yield first;
     yield second;
     yield third;

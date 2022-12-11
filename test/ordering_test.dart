@@ -11,8 +11,7 @@ void verifyBasic<T>(String type, Ordering<T> ordering, Iterable<T> unsorted,
   expect(sorted, expected, reason: '$type.sorted');
   expect(ordering.isOrdered(sorted), isTrue, reason: '$type.isOrdered');
   for (final element in unsorted) {
-    expect(ordering.binarySearch(sorted, element),
-        (index) => index is int && index >= 0,
+    expect(ordering.binarySearch(sorted, element), (int index) => index >= 0,
         reason: '$type.binarySearch');
   }
 
@@ -350,7 +349,7 @@ void main() {
       expected: [1, 2, 2, 3, 3],
     );
     test('sorted', () {
-      expect(natural.sorted([]), []);
+      expect(natural.sorted([]), isEmpty);
       expect(natural.sorted([1]), [1]);
       expect(natural.sorted([1, 2]), [1, 2]);
       expect(natural.sorted([2, 1]), [1, 2]);

@@ -1,9 +1,4 @@
 /// Returns a reversed natural [Comparator] for objects of type `T`.
-Comparator<T> reverseComparator<T>() {
-  const Object compare = _staticCompare;
-  return compare is Comparator<T> ? compare : _dynamicCompare;
-}
+Comparator<T> reverseComparator<T>() => _compare;
 
-int _staticCompare(Comparable a, Comparable b) => b.compareTo(a);
-
-int _dynamicCompare(dynamic a, dynamic b) => Comparable.compare(b, a);
+int _compare(Object? a, Object? b) => (b as Comparable<Object?>).compareTo(a);
