@@ -328,6 +328,7 @@ void main() {
   });
   group('operators', () {
     final empty = <int>[];
+    final reverse = reverseComparator<int>();
     group('min', () {
       test('empty', () {
         expect(() => empty.min(), throwsStateError);
@@ -338,8 +339,8 @@ void main() {
         expect([3, 2, 1].min(), 1);
       });
       test('custom comparator', () {
-        expect([1, 2, 3].min(comparator: reverseComparator()), 3);
-        expect([3, 2, 1].min(comparator: reverseComparator()), 3);
+        expect([1, 2, 3].min(comparator: reverse), 3);
+        expect([3, 2, 1].min(comparator: reverse), 3);
       });
     });
     group('max', () {
@@ -352,8 +353,53 @@ void main() {
         expect([3, 2, 1].max(), 3);
       });
       test('custom comparator', () {
-        expect([1, 2, 3].max(comparator: reverseComparator()), 1);
-        expect([3, 2, 1].max(comparator: reverseComparator()), 1);
+        expect([1, 2, 3].max(comparator: reverse), 1);
+        expect([3, 2, 1].max(comparator: reverse), 1);
+      });
+    });
+    group('smallest', () {
+      test('empty', () {
+        expect(empty.smallest(0), isEmpty);
+        expect(empty.smallest(1), isEmpty);
+        expect(empty.smallest(2), isEmpty);
+        expect(empty.smallest(3), isEmpty);
+        expect(empty.smallest(4), isEmpty);
+      });
+      test('comparable', () {
+        expect([3, 1, 2].smallest(0), isEmpty);
+        expect([3, 1, 2].smallest(1), [1]);
+        expect([3, 1, 2].smallest(2), [1, 2]);
+        expect([3, 1, 2].smallest(3), [1, 2, 3]);
+        expect([3, 1, 2].smallest(4), [1, 2, 3]);
+      });
+      test('custom comparator', () {
+        expect([3, 1, 2].smallest(0, comparator: reverse), isEmpty);
+        expect([3, 1, 2].smallest(1, comparator: reverse), [3]);
+        expect([3, 1, 2].smallest(2, comparator: reverse), [3, 2]);
+        expect([3, 1, 2].smallest(3, comparator: reverse), [3, 2, 1]);
+        expect([3, 1, 2].smallest(4, comparator: reverse), [3, 2, 1]);
+      });
+    });
+    group('largest', () {
+      test('empty', () {
+        expect(empty.largest(0), isEmpty);
+        expect(empty.largest(1), isEmpty);
+        expect(empty.largest(2), isEmpty);
+        expect(empty.largest(3), isEmpty);
+      });
+      test('comparable', () {
+        expect([3, 1, 2].largest(0), isEmpty);
+        expect([3, 1, 2].largest(1), [3]);
+        expect([3, 1, 2].largest(2), [3, 2]);
+        expect([3, 1, 2].largest(3), [3, 2, 1]);
+        expect([3, 1, 2].largest(4), [3, 2, 1]);
+      });
+      test('custom comparator', () {
+        expect([3, 1, 2].largest(0, comparator: reverse), isEmpty);
+        expect([3, 1, 2].largest(1, comparator: reverse), [1]);
+        expect([3, 1, 2].largest(2, comparator: reverse), [1, 2]);
+        expect([3, 1, 2].largest(3, comparator: reverse), [1, 2, 3]);
+        expect([3, 1, 2].largest(4, comparator: reverse), [1, 2, 3]);
       });
     });
   });

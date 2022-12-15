@@ -2,7 +2,7 @@ import '../../comparator.dart';
 
 extension OperatorsExtension<E> on Iterable<E> {
   /// Returns the minimum of this [Iterable]. The elements need to be
-  /// [Comparable], unless a [key] extractor is provided.
+  /// [Comparable], unless a custom [comparator] is provided.
   ///
   /// Throws a [StateError] if the iterable is empty, unless an [orElse]
   /// function is provided.
@@ -16,8 +16,21 @@ extension OperatorsExtension<E> on Iterable<E> {
   E min({Comparator<E>? comparator, E Function()? orElse}) =>
       (comparator ?? naturalComparator<E>()).minOf(this, orElse: orElse);
 
+  /// Returns a list of the [count] smallest elements of this [Iterable]. The
+  /// elements need to be [Comparable], unless a custom [comparator] is
+  /// provided.
+  ///
+  /// For example
+  ///
+  ///    [3, 1, 2].smallest(2)
+  ///
+  /// returns `[1, 2]`.
+  ///
+  List<E> smallest(int count, {Comparator<E>? comparator}) =>
+      (comparator ?? naturalComparator<E>()).smallest(this, count);
+
   /// Returns the maximum of this [Iterable]. The elements need to be
-  /// [Comparable], unless a [key] extractor is provided.
+  /// [Comparable], unless a custom [comparator] is provided.
   ///
   /// Throws a [StateError] if the iterable is empty, unless an [orElse]
   /// function is provided.
@@ -30,4 +43,17 @@ extension OperatorsExtension<E> on Iterable<E> {
   ///
   E max({Comparator<E>? comparator, E Function()? orElse}) =>
       (comparator ?? naturalComparator<E>()).maxOf(this, orElse: orElse);
+
+  /// Returns a list of the [count] largest elements of this [Iterable]. The
+  /// elements need to be [Comparable], unless a custom [comparator] is
+  /// provided.
+  ///
+  /// For example
+  ///
+  ///    [3, 1, 2].largest(2)
+  ///
+  /// returns `[3, 2]`.
+  ///
+  List<E> largest(int count, {Comparator<E>? comparator}) =>
+      (comparator ?? naturalComparator<E>()).largest(this, count);
 }
