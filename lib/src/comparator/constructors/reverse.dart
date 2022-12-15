@@ -1,4 +1,10 @@
-/// Returns a reversed natural [Comparator] for objects of type `T`.
-Comparator<T> reverseComparator<T>() => _compare;
+/// Returns a reversed [Comparator] for objects of type `T`.
+@Deprecated("Prefer `reverseCompare` or `reverseComparable<T>` instead")
+Comparator<T> reverseComparator<T>() => reverseCompare;
 
-int _compare(Object? a, Object? b) => (b as Comparable<Object?>).compareTo(a);
+/// Reversed dynamic [Comparator] function.
+int reverseCompare(Object? a, Object? b) =>
+    (b as Comparable<Object?>).compareTo(a);
+
+/// Reversed static [Comparator] function using [Comparable] arguments.
+int reverseComparable<T extends Comparable<T>>(T a, T b) => b.compareTo(a);

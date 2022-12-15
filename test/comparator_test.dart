@@ -1,3 +1,5 @@
+// ignore_for_file: deprecated_member_use_from_same_package
+
 import 'package:more/collection.dart';
 import 'package:more/comparator.dart';
 import 'package:more/iterable.dart';
@@ -75,28 +77,27 @@ void binarySearchTests<T>(
   required List<T> binarySearchUpper,
 }) {
   group(name, () {
-    final comparator = naturalComparator<T>();
     test('binarySearch', () {
       final results = IntegerRange(examples.length)
-          .map((i) => comparator.binarySearch(examples[i], values[i]));
+          .map((i) => naturalCompare.binarySearch(examples[i], values[i]));
       expect(results, binarySearch);
     });
     test('binarySearchLower', () {
       final results = IntegerRange(examples.length)
-          .map((i) => comparator.binarySearchLower(examples[i], values[i]));
+          .map((i) => naturalCompare.binarySearchLower(examples[i], values[i]));
       expect(results, binarySearchLower);
     });
     test('binarySearchUpper', () {
       final results = IntegerRange(examples.length)
-          .map((i) => comparator.binarySearchUpper(examples[i], values[i]));
+          .map((i) => naturalCompare.binarySearchUpper(examples[i], values[i]));
       expect(results, binarySearchUpper);
     });
   });
 }
 
 void main() {
-  final naturalInt = naturalComparator<int>();
-  final naturalString = naturalComparator<String>();
+  const Comparator<int> naturalInt = naturalComparable<num>;
+  const naturalString = naturalComparable<String>;
   group('constructors', () {
     test('explicit', () {
       final comparator = explicitComparator(const [2, 3, 1]);
@@ -129,6 +130,20 @@ void main() {
         verify(comparator, [3, 1, 2], [1, 2, 3]);
         verify(comparator, [3, 2, 1], [1, 2, 3]);
       });
+      test('compare function', () {
+        const comparator = naturalCompare;
+        verify(comparator, [1, 2, 3], [1, 2, 3]);
+        verify(comparator, [2, 3, 1], [1, 2, 3]);
+        verify(comparator, [3, 1, 2], [1, 2, 3]);
+        verify(comparator, [3, 2, 1], [1, 2, 3]);
+      });
+      test('comparator function', () {
+        const Comparator<int> comparator = naturalComparable<num>;
+        verify(comparator, [1, 2, 3], [1, 2, 3]);
+        verify(comparator, [2, 3, 1], [1, 2, 3]);
+        verify(comparator, [3, 1, 2], [1, 2, 3]);
+        verify(comparator, [3, 2, 1], [1, 2, 3]);
+      });
     });
     group('reverse', () {
       test('int', () {
@@ -147,6 +162,20 @@ void main() {
       });
       test('dynamic', () {
         final comparator = reverseComparator<Object?>();
+        verify(comparator, [1, 2, 3], [3, 2, 1]);
+        verify(comparator, [2, 3, 1], [3, 2, 1]);
+        verify(comparator, [3, 1, 2], [3, 2, 1]);
+        verify(comparator, [3, 2, 1], [3, 2, 1]);
+      });
+      test('compare function', () {
+        const comparator = reverseCompare;
+        verify(comparator, [1, 2, 3], [3, 2, 1]);
+        verify(comparator, [2, 3, 1], [3, 2, 1]);
+        verify(comparator, [3, 1, 2], [3, 2, 1]);
+        verify(comparator, [3, 2, 1], [3, 2, 1]);
+      });
+      test('comparator function', () {
+        const Comparator<int> comparator = reverseComparable<num>;
         verify(comparator, [1, 2, 3], [3, 2, 1]);
         verify(comparator, [2, 3, 1], [3, 2, 1]);
         verify(comparator, [3, 1, 2], [3, 2, 1]);

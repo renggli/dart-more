@@ -1,4 +1,10 @@
 /// Returns a natural [Comparator] for objects of type `T`.
-Comparator<T> naturalComparator<T>() => _compare;
+@Deprecated("Prefer `naturalCompare` or `naturalComparable<T>` instead")
+Comparator<T> naturalComparator<T>() => naturalCompare;
 
-int _compare(Object? a, Object? b) => (a as Comparable<Object?>).compareTo(b);
+/// Natural dynamic [Comparator] function.
+int naturalCompare(Object? a, Object? b) =>
+    (a as Comparable<Object?>).compareTo(b);
+
+/// Natural static [Comparator] function using [Comparable] arguments.
+int naturalComparable<T extends Comparable<T>>(T a, T b) => a.compareTo(b);

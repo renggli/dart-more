@@ -132,5 +132,5 @@ extension DoubleRangeExtension on double {
   Range<double> to(double end, {double? step}) => DoubleRange(this, end, step);
 }
 
-final _naturalComparator = naturalComparator<double>();
-final _reverseComparator = reverseComparator<double>();
+const _naturalComparator = naturalComparable<num>;
+const _reverseComparator = reverseComparable<num>;

@@ -308,7 +308,7 @@ void main() {
         });
         test('monotonic increase', () {
           final values = TimeUnit.values.map((unit) => conversion[unit]!);
-          expect(naturalComparator<num>().isStrictlyOrdered(values), isTrue);
+          expect(naturalComparable<num>.isStrictlyOrdered(values), isTrue);
         });
         test('known values', () {
           const epsilon = 0.1;

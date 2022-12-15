@@ -8,12 +8,12 @@ class SortedList<E> extends ListBase<E> {
   /// Constructs an empty sorted-list with an optional `ordering`.
   SortedList({Comparator<E>? comparator})
       : _values = <E>[],
-        _comparator = comparator ?? naturalComparator<E>();
+        _comparator = comparator ?? naturalCompare;
 
   /// Constructs a sorted-list from an iterable with an optional `ordering`.
   SortedList.of(Iterable<E> iterable, {Comparator<E>? comparator})
       : _values = List<E>.of(iterable),
-        _comparator = comparator ?? naturalComparator<E>() {
+        _comparator = comparator ?? naturalCompare {
     _comparator.sort(_values);
   }
 

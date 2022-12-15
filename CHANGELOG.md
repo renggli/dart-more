@@ -10,6 +10,7 @@
 * Deprecate `Iterable.cycle` in favor of `Iterable.repeat`.
 * Make `Iterable.groupBy` and `Iterable.indexed` return instances of `MapEntry` for easier interoperability with `Map`.
 * Fix various edge cases with `Range` iterables.
+* Deprecated `naturalComparator` in favor of `naturalCompare` and `naturalComparable<T>`.
 
 ## 3.8.0
 * Add `String` extensions `take`, `takeTo`, `skip`, `skipTo`, `takeLast`, `takeLastTo`, `skipLast`, and `skipLastTo`.

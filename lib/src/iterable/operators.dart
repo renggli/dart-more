@@ -14,7 +14,7 @@ extension OperatorsExtension<E> on Iterable<E> {
   /// returns `1`.
   ///
   E min({Comparator<E>? comparator, E Function()? orElse}) =>
-      (comparator ?? naturalComparator<E>()).minOf(this, orElse: orElse);
+      (comparator ?? naturalCompare).minOf(this, orElse: orElse);
 
   /// Returns a list of the [count] smallest elements of this [Iterable]. The
   /// elements need to be [Comparable], unless a custom [comparator] is
@@ -27,7 +27,7 @@ extension OperatorsExtension<E> on Iterable<E> {
   /// returns `[1, 2]`.
   ///
   List<E> smallest(int count, {Comparator<E>? comparator}) =>
-      (comparator ?? naturalComparator<E>()).smallest(this, count);
+      (comparator ?? naturalCompare).smallest(this, count);
 
   /// Returns the maximum of this [Iterable]. The elements need to be
   /// [Comparable], unless a custom [comparator] is provided.
@@ -42,7 +42,7 @@ extension OperatorsExtension<E> on Iterable<E> {
   /// returns `3`.
   ///
   E max({Comparator<E>? comparator, E Function()? orElse}) =>
-      (comparator ?? naturalComparator<E>()).maxOf(this, orElse: orElse);
+      (comparator ?? naturalCompare).maxOf(this, orElse: orElse);
 
   /// Returns a list of the [count] largest elements of this [Iterable]. The
   /// elements need to be [Comparable], unless a custom [comparator] is
@@ -55,5 +55,5 @@ extension OperatorsExtension<E> on Iterable<E> {
   /// returns `[3, 2]`.
   ///
   List<E> largest(int count, {Comparator<E>? comparator}) =>
-      (comparator ?? naturalComparator<E>()).largest(this, count);
+      (comparator ?? naturalCompare).largest(this, count);
 }

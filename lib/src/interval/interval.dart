@@ -9,7 +9,7 @@ import 'bounds/upper.dart';
 class Interval<T> {
   /// Returns a interval containing `{ x ∈ T | lower < x < upper }`.
   factory Interval.open(T lower, T upper, {Comparator<T>? comparator}) {
-    comparator ??= naturalComparator<T>();
+    comparator ??= naturalCompare;
     return Interval<T>._(
       Above<T>(comparator, lower),
       Below<T>(comparator, upper),
@@ -19,7 +19,7 @@ class Interval<T> {
 
   /// Returns a interval containing `{ x ∈ T | lower <= x <= upper }`.
   factory Interval.closed(T lower, T upper, {Comparator<T>? comparator}) {
-    comparator ??= naturalComparator<T>();
+    comparator ??= naturalCompare;
     return Interval<T>._(
       AboveOrEqual<T>(comparator, lower),
       BelowOrEqual<T>(comparator, upper),
@@ -29,7 +29,7 @@ class Interval<T> {
 
   /// Returns a interval containing `{ x ∈ T | lower < x <= upper }`.
   factory Interval.openClosed(T lower, T upper, {Comparator<T>? comparator}) {
-    comparator ??= naturalComparator<T>();
+    comparator ??= naturalCompare;
     return Interval<T>._(
       Above<T>(comparator, lower),
       BelowOrEqual<T>(comparator, upper),
@@ -39,7 +39,7 @@ class Interval<T> {
 
   /// Returns a interval containing `{ x ∈ T | lower <= x < upper }`.
   factory Interval.closedOpen(T lower, T upper, {Comparator<T>? comparator}) {
-    comparator ??= naturalComparator<T>();
+    comparator ??= naturalCompare;
     return Interval<T>._(
       AboveOrEqual<T>(comparator, lower),
       Below<T>(comparator, upper),
@@ -49,7 +49,7 @@ class Interval<T> {
 
   /// Returns a interval containing `{ x ∈ T | x < upper }`.
   factory Interval.lessThan(T upper, {Comparator<T>? comparator}) {
-    comparator ??= naturalComparator<T>();
+    comparator ??= naturalCompare;
     return Interval<T>._(
       AboveAll<T>(),
       Below<T>(comparator, upper),
@@ -59,7 +59,7 @@ class Interval<T> {
 
   /// Returns a interval containing `{ x ∈ T | x <= upper }`.
   factory Interval.atMost(T upper, {Comparator<T>? comparator}) {
-    comparator ??= naturalComparator<T>();
+    comparator ??= naturalCompare;
     return Interval<T>._(
       AboveAll<T>(),
       BelowOrEqual<T>(comparator, upper),
@@ -69,7 +69,7 @@ class Interval<T> {
 
   /// Returns a interval containing `{ x ∈ T | lower < x }`.
   factory Interval.greaterThan(T lower, {Comparator<T>? comparator}) {
-    comparator ??= naturalComparator<T>();
+    comparator ??= naturalCompare;
     return Interval<T>._(
       Above<T>(comparator, lower),
       BelowAll<T>(),
@@ -79,7 +79,7 @@ class Interval<T> {
 
   /// Returns a interval containing `{ x ∈ T | lower <= x }`.
   factory Interval.atLeast(T lower, {Comparator<T>? comparator}) {
-    comparator ??= naturalComparator<T>();
+    comparator ??= naturalCompare;
     return Interval<T>._(
       AboveOrEqual<T>(comparator, lower),
       BelowAll<T>(),
@@ -89,7 +89,7 @@ class Interval<T> {
 
   /// Returns an empty interval of type [T]: `{} = ∅`
   factory Interval.empty({Comparator<T>? comparator}) {
-    comparator ??= naturalComparator<T>();
+    comparator ??= naturalCompare;
     return Interval<T>._(
       Empty<T>(),
       Empty<T>(),
@@ -100,7 +100,7 @@ class Interval<T> {
   /// Returns an interval containing a single value of type [T]:
   /// `{ x ∈ T | x = value }`.
   factory Interval.single(T value, {Comparator<T>? comparator}) {
-    comparator ??= naturalComparator<T>();
+    comparator ??= naturalCompare;
     return Interval<T>._(
       AboveOrEqual<T>(comparator, value),
       BelowOrEqual<T>(comparator, value),
@@ -110,7 +110,7 @@ class Interval<T> {
 
   /// Returns a interval containing all values of type [T]: `{ x ∈ T }`
   factory Interval.all({Comparator<T>? comparator}) {
-    comparator ??= naturalComparator<T>();
+    comparator ??= naturalCompare;
     return Interval<T>._(
       AboveAll<T>(),
       BelowAll<T>(),

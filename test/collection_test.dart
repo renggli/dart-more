@@ -2735,7 +2735,7 @@ void allSortedListTests(
   });
   test('custom ordering', () {
     final list = createSortedList<num>([5, 1, 2, 4, 3],
-        comparator: reverseComparator<num>());
+        comparator: reverseComparable<num>);
     expect(list, [5, 4, 3, 2, 1]);
   });
   test('custom comparator', () {

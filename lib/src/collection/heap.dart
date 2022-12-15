@@ -6,13 +6,13 @@ class Heap<E> extends Iterable<E> {
   /// min-heap invert the comparator.
   Heap({Comparator<E>? comparator})
       : _values = <E>[],
-        _comparator = comparator ?? naturalComparator<E>();
+        _comparator = comparator ?? naturalCompare;
 
   /// Constructs a max-heap with an iterable of elements and an optional
   /// [comparator]. To create a min-heap invert the comparator.
   Heap.of(Iterable<E> iterable, {Comparator<E>? comparator})
       : _values = List<E>.of(iterable),
-        _comparator = comparator ?? naturalComparator<E>() {
+        _comparator = comparator ?? naturalCompare {
     if (_values.length > 1) {
       for (var i = _values.length ~/ 2; i >= 0; i--) {
         _siftUp(i);
