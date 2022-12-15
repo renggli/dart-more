@@ -145,6 +145,9 @@ class Interval<T> {
   /// Returns `true`, if this is an empty interval.
   bool get isEmpty => lower is Empty<T> || upper is Empty<T>;
 
+  /// Returns `true`, if this is a non-empty interval.
+  bool get isNotEmpty => !isEmpty;
+
   /// Returns `true`, if this is a degenerated interval with a single value.
   bool get isSingle =>
       lower.isClosed &&
@@ -153,7 +156,7 @@ class Interval<T> {
       upper.isBounded &&
       lower.endpoint == upper.endpoint;
 
-  /// Returns true if the [value] is included in this interval.
+  /// Returns true, if the [value] is included in this interval.
   bool contains(T value) => lower.contains(value) && upper.contains(value);
 
   /// Returns the interaction of this interval and [other].
