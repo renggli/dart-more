@@ -526,6 +526,63 @@ void main() {
         () => allHeapTests(<T>(List<T> list, {Comparator<T>? comparator}) =>
             Heap<T>(comparator: comparator)..pushAll(list)));
   });
+  group('list', () {
+    group('take/skip', () {
+      const list = ['a', 'b', 'c'];
+      test('take', () {
+        expect(list.take(0), isEmpty);
+        expect(list.take(1), ['a']);
+        expect(list.take(2), ['a', 'b']);
+        expect(list.take(3), ['a', 'b', 'c']);
+        expect(list.take(4), ['a', 'b', 'c']);
+      });
+      test('takeTo', () {
+        expect(list.takeTo('a'), isEmpty);
+        expect(list.takeTo('b'), ['a']);
+        expect(list.takeTo('c'), ['a', 'b']);
+        expect(list.takeTo('d'), ['a', 'b', 'c']);
+      });
+      test('takeLast', () {
+        expect(list.takeLast(0), isEmpty);
+        expect(list.takeLast(1), ['c']);
+        expect(list.takeLast(2), ['b', 'c']);
+        expect(list.takeLast(3), ['a', 'b', 'c']);
+        expect(list.takeLast(4), ['a', 'b', 'c']);
+      });
+      test('takeLastTo', () {
+        expect(list.takeLastTo('a'), ['b', 'c']);
+        expect(list.takeLastTo('b'), ['c']);
+        expect(list.takeLastTo('c'), isEmpty);
+        expect(list.takeLastTo('d'), ['a', 'b', 'c']);
+      });
+      test('skip', () {
+        expect(list.skip(0), ['a', 'b', 'c']);
+        expect(list.skip(1), ['b', 'c']);
+        expect(list.skip(2), ['c']);
+        expect(list.skip(3), isEmpty);
+        expect(list.skip(4), isEmpty);
+      });
+      test('skipTo', () {
+        expect(list.skipTo('a'), ['b', 'c']);
+        expect(list.skipTo('b'), ['c']);
+        expect(list.skipTo('c'), isEmpty);
+        expect(list.skipTo('d'), isEmpty);
+      });
+      test('skipLast', () {
+        expect(list.skipLast(0), ['a', 'b', 'c']);
+        expect(list.skipLast(1), ['a', 'b']);
+        expect(list.skipLast(2), ['a']);
+        expect(list.skipLast(3), isEmpty);
+        expect(list.skipLast(4), isEmpty);
+      });
+      test('skipLastTo', () {
+        expect(list.skipLastTo('a'), isEmpty);
+        expect(list.skipLastTo('b'), ['a']);
+        expect(list.skipLastTo('c'), ['a', 'b']);
+        expect(list.skipLastTo('d'), isEmpty);
+      });
+    });
+  });
   group('multimap', () {
     group('list', () {
       group('constructor', () {

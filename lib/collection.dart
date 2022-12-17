@@ -4,6 +4,7 @@ export 'src/collection/bimap.dart'
     show BiMap, BiMapOnMapExtension, BiMapOnIterableExtension;
 export 'src/collection/bitlist.dart' show BitList, BitListExtension;
 export 'src/collection/heap.dart' show Heap;
+export 'src/collection/list/take_skip.dart' show TakeSkipListExtension;
 export 'src/collection/multimap/list.dart'
     show
         ListMultimap,
