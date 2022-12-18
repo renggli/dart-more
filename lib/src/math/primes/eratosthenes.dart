@@ -1,4 +1,4 @@
-import '../../collection/bitlist.dart';
+import '../../../collection.dart' show BitList;
 import 'sieve.dart';
 
 /// Prime sieve of Eratosthenes.

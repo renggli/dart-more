@@ -1,4 +1,4 @@
-import '../../collection/iterable/indexed.dart';
+import '../../../collection.dart';
 
 /// Returns an explicit [Comparator] based on an `iterable` of elements.
 Comparator<T> explicitComparator<T>(Iterable<T> iterable) {

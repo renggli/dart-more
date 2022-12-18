@@ -2,7 +2,7 @@ import 'dart:math' as math;
 
 import 'package:collection/collection.dart';
 
-import '../../collection/heap.dart';
+import '../../../collection.dart';
 
 extension SmallestComparator<T> on Comparator<T> {
   /// Returns a list of the [k] smallest elements from the given iterable

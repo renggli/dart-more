@@ -1,4 +1,4 @@
-import '../../functional/types/predicate.dart';
+import '../../../functional.dart';
 
 extension PredicateComparator<T> on Comparator<T> {
   /// Creates a predicate that evaluates to `true` for values equal to [a].

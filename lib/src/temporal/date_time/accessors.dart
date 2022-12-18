@@ -1,4 +1,4 @@
-import '../../tuple/tuple_2.dart';
+import '../../../tuple.dart';
 
 extension AccessorsDateTimeExtension on DateTime {
   /// Whether this is a leap year, or not.

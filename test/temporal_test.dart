@@ -1,7 +1,6 @@
 import 'package:more/comparator.dart';
 import 'package:more/interval.dart';
 import 'package:more/math.dart';
-import 'package:more/src/temporal/conversion.dart';
 import 'package:more/temporal.dart';
 import 'package:test/test.dart';
 

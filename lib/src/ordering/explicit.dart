@@ -1,6 +1,6 @@
 // ignore_for_file: deprecated_member_use_from_same_package
 
-import '../../iterable.dart';
+import '../../collection.dart';
 import '../../printer.dart';
 import 'ordering.dart';
 

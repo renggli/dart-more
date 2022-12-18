@@ -1,6 +1,6 @@
 import 'dart:math';
 
-import '../../char_matcher/whitespace.dart';
+import '../../../char_matcher.dart';
 import 'prefix_suffix.dart';
 
 extension IndentDedentStringExtension<T> on String {
@@ -38,7 +38,7 @@ extension IndentDedentStringExtension<T> on String {
   /// - [whitespace] matches the leading prefix.
   /// - [ignoreEmpty] is used to skip over empty lines.
   String dedent({
-    Pattern whitespace = const WhitespaceCharMatcher(),
+    Pattern whitespace = const CharMatcher.whitespace(),
     bool ignoreEmpty = true,
   }) {
     final lines = split('\n');

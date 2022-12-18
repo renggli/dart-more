@@ -1,5 +1,4 @@
-import '../../functional/types/mapping.dart';
-import '../../functional/types/predicate.dart';
+import '../../../functional.dart';
 import '../rtree.dart';
 import 'bounds.dart';
 import 'entry.dart';
