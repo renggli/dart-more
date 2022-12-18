@@ -1,5 +1,6 @@
-/// One argument function returning an object of the same type.
-typedef IterateCallback<E> = E Function(E value);
+import 'dart:collection' show IterableBase;
+
+import 'mixins/infinite.dart';
 
 /// Returns a lazy infinite list of repeated applications of the [function] to
 /// the initial [value].
@@ -12,9 +13,32 @@ typedef IterateCallback<E> = E Function(E value);
 ///
 ///     [0, 1, 2, 3, 4, ...]
 ///
-Iterable<E> iterate<E>(E value, IterateCallback<E> function) sync* {
-  while (true) {
-    yield value;
-    value = function(value);
+Iterable<E> iterate<E>(E value, E Function(E element) callback) =>
+    IterateIterable<E>(value, callback);
+
+class IterateIterable<E> extends IterableBase<E> with InfiniteIterable<E> {
+  IterateIterable(this.value, this.function);
+
+  final E value;
+  final E Function(E element) function;
+
+  @override
+  Iterator<E> get iterator => IterateIterator<E>(value, function);
+}
+
+class IterateIterator<E> extends Iterator<E> {
+  IterateIterator(this.next, this.function) : current = next;
+
+  final E Function(E element) function;
+  E next;
+
+  @override
+  E current;
+
+  @override
+  bool moveNext() {
+    current = next;
+    next = function(next);
+    return true;
   }
 }
