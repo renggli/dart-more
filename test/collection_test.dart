@@ -578,7 +578,7 @@ void main() {
       group('with repetitions', () {
         test('take 0', () {
           final iterable = letters.combinations(0, repetitions: true);
-          expect(iterable, isEmpty);
+          expect(iterable, <List<String>>[[]]);
         });
         test('take 1', () {
           final iterable = letters.combinations(1, repetitions: true);
@@ -675,7 +675,7 @@ void main() {
       group('without repetions', () {
         test('take 0', () {
           final iterable = letters.combinations(0, repetitions: false);
-          expect(iterable, isEmpty);
+          expect(iterable, <List<String>>[[]]);
         });
         test('take 1', () {
           final iterable = letters.combinations(1, repetitions: false);
@@ -1183,6 +1183,23 @@ void main() {
                   period: Period.weekly, startWeekday: DateTime.sunday + 1),
               throwsArgumentError);
         });
+      });
+    });
+    group('powerSet', () {
+      test('empty', () {
+        expect(<String>[].powerSet(), <List<String>>[[]]);
+      });
+      test('example', () {
+        expect(['x', 'y', 'z'].powerSet(), <List<String>>[
+          [],
+          ['x'],
+          ['y'],
+          ['z'],
+          ['x', 'y'],
+          ['x', 'z'],
+          ['y', 'z'],
+          ['x', 'y', 'z'],
+        ]);
       });
     });
     group('product', () {

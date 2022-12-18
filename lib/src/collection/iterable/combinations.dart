@@ -22,17 +22,15 @@ extension CombinationsExtension<E> on Iterable<E> {
   ///     ['x', 'y', 'z'].combinations(2, repetitions: false);
   ///
   Iterable<List<E>> combinations(int count, {bool repetitions = false}) {
+    final list = toList(growable: false);
     if (count < 0) {
       throw RangeError.value(count);
-    } else if (!repetitions && length < count) {
-      throw RangeError.range(count, 0, length);
-    } else if (count == 0 || isEmpty) {
-      return const Iterable.empty();
-    }
-    if (repetitions) {
-      return combinationsWithRepetitions<E>(toList(growable: false), count);
+    } else if (!repetitions && list.length < count) {
+      throw RangeError.range(count, 0, list.length);
+    } else if (repetitions) {
+      return combinationsWithRepetitions<E>(list, count);
     } else {
-      return combinationsWithoutRepetitions<E>(toList(growable: false), count);
+      return combinationsWithoutRepetitions<E>(list, count);
     }
   }
 }
