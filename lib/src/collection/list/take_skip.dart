@@ -13,7 +13,7 @@ extension TakeSkipListExtension<E> on List<E> {
   /// [length] return the whole list.
   Iterable<E> takeLast(int count) => getRange(max(length - count, 0), length);
 
-  /// Returns the list suffix up to the last occurrence of [element]. If the
+  /// Returns the list suffix after the last occurrence of [element]. If the
   /// element is not found return the whole list.
   Iterable<E> takeLastTo(E element) {
     final index = lastIndexOf(element);

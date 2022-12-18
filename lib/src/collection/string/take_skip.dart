@@ -17,7 +17,7 @@ extension TakeSkipStringExtension on String {
   /// than [length] return the whole string.
   String takeLast(int count) => substring(max(length - count, 0));
 
-  /// Returns the string suffix up to the last occurrence of [pattern]. If the
+  /// Returns the string suffix after the last occurrence of [pattern]. If the
   /// pattern is not found return the whole string.
   String takeLastTo(Pattern pattern) {
     final index = lastIndexOf(pattern);
