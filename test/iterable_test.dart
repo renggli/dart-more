@@ -189,6 +189,26 @@ void main() {
           () => letters.combinations(5, repetitions: false), throwsRangeError);
     });
   });
+  group('count', () {
+    test('true', () {
+      expect(<int>[].count((each) => true), 0);
+      expect(<int>[1].count((each) => true), 1);
+      expect(<int>[1, 2, 3].count((each) => true), 3);
+      expect(<int>[1, 2, 3, 4, 5].count((each) => true), 5);
+    });
+    test('false', () {
+      expect(<int>[].count((each) => false), 0);
+      expect(<int>[1].count((each) => false), 0);
+      expect(<int>[1, 2, 3].count((each) => false), 0);
+      expect(<int>[1, 2, 3, 4, 5].count((each) => false), 0);
+    });
+    test('isOdd', () {
+      expect(<int>[].count((each) => each.isOdd), 0);
+      expect(<int>[1].count((each) => each.isOdd), 1);
+      expect(<int>[1, 2, 3].count((each) => each.isOdd), 2);
+      expect(<int>[1, 2, 3, 4, 5].count((each) => each.isOdd), 3);
+    });
+  });
   group('cycle', () {
     test('empty', () {
       expect(<int>[].cycle(), isEmpty);

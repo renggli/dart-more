@@ -12,6 +12,7 @@
 * Fix various edge cases with `Range` iterables.
 * Deprecated `naturalComparator` in favor of `naturalCompare` and `naturalComparable<T>`.
 * Add `List` extensions `takeTo`, `skipTo`, `takeLast`, `takeLastTo`, `skipLast`, and `skipLastTo`.
+* Add `Iterable` extension `count`.
 
 ## 3.8.0
 * Add `String` extensions `take`, `takeTo`, `skip`, `skipTo`, `takeLast`, `takeLastTo`, `skipLast`, and `skipLastTo`.
