@@ -1,6 +1,6 @@
 import 'dart:io';
 
-import 'package:more/iterable.dart';
+import 'package:more/collection.dart';
 
 /// Number of tuples to generate (exclusive).
 const int max = 11;

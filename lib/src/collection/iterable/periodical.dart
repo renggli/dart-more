@@ -1,6 +1,4 @@
-import '../temporal/date_time/periodical.dart';
-import '../temporal/date_time/truncate.dart';
-import '../temporal/time_unit.dart';
+import '../../../temporal.dart';
 
 /// Different kinds of repeating periodic timestamps.
 enum Period {

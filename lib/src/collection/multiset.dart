@@ -1,7 +1,7 @@
 import 'dart:collection' show IterableBase;
 import 'dart:math' show min;
 
-import '../iterable/repeat_element.dart';
+import 'iterable/repeat_element.dart';
 
 /// A generalized [Set] (or Bag) in which members are allowed to appear  more
 /// than once.

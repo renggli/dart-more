@@ -1,24 +1,25 @@
 /// Some fancy iterables and iterators.
-export 'src/iterable/chunked.dart' show ChunkedExtension;
-export 'src/iterable/combinations.dart' show CombinationsExtension;
-export 'src/iterable/count.dart' show CountIterableExtension;
-export 'src/iterable/flat_map.dart' show FlatMapExtension;
-export 'src/iterable/flatten.dart' show FlattenExtension;
-export 'src/iterable/group.dart' show GroupExtension, Group;
-export 'src/iterable/indexed.dart' show IndexedExtension, Indexed;
-export 'src/iterable/iterate.dart' show iterate;
-export 'src/iterable/operators.dart' show OperatorsExtension;
-export 'src/iterable/periodical.dart'
+@Deprecated('Instead import `package:more/collection.dart`')
+export 'src/collection/iterable/chunked.dart' show ChunkedExtension;
+export 'src/collection/iterable/combinations.dart' show CombinationsExtension;
+export 'src/collection/iterable/count.dart' show CountIterableExtension;
+export 'src/collection/iterable/flat_map.dart' show FlatMapExtension;
+export 'src/collection/iterable/flatten.dart' show FlattenExtension;
+export 'src/collection/iterable/group.dart' show GroupExtension, Group;
+export 'src/collection/iterable/indexed.dart' show IndexedExtension, Indexed;
+export 'src/collection/iterable/iterate.dart' show iterate;
+export 'src/collection/iterable/operators.dart' show OperatorsExtension;
+export 'src/collection/iterable/periodical.dart'
     show Period, PeriodicalExtension, TruncateExtension;
-export 'src/iterable/permutations.dart' show PermutationsExtension;
-export 'src/iterable/product.dart' show ProductExtension;
-export 'src/iterable/random.dart' show RandomExtension;
-export 'src/iterable/repeat_element.dart' show repeat;
-export 'src/iterable/repeat_iterable.dart' show RepeatIterableExtension;
-export 'src/iterable/rotate.dart'
-    show RotateListExtension, RotateQueueExtension;
-export 'src/iterable/separated.dart' show SeparatedExtension;
-export 'src/iterable/to_map.dart' show ToMapExtension;
-export 'src/iterable/unique.dart' show UniqueExtension;
-export 'src/iterable/window.dart' show WindowExtension;
-export 'src/iterable/zip.dart' show ZipExtension;
+export 'src/collection/iterable/permutations.dart' show PermutationsExtension;
+export 'src/collection/iterable/product.dart' show ProductExtension;
+export 'src/collection/iterable/random.dart' show RandomExtension;
+export 'src/collection/iterable/repeat_element.dart' show repeat;
+export 'src/collection/iterable/repeat_iterable.dart'
+    show RepeatIterableExtension;
+export 'src/collection/iterable/separated.dart' show SeparatedExtension;
+export 'src/collection/iterable/to_map.dart' show ToMapExtension;
+export 'src/collection/iterable/unique.dart' show UniqueExtension;
+export 'src/collection/iterable/window.dart' show WindowExtension;
+export 'src/collection/iterable/zip.dart' show ZipExtension;
+export 'src/collection/list/rotate.dart' show RotateListExtension;

@@ -1,8 +1,10 @@
+// ignore_for_file: deprecated_member_use_from_same_package
+
+import 'dart:collection';
 import 'dart:math';
 
 import 'package:more/collection.dart';
 import 'package:more/comparator.dart';
-import 'package:more/iterable.dart';
 import 'package:more/math.dart';
 import 'package:test/test.dart';
 
@@ -14,6 +16,8 @@ List<bool> randomBooleans(int seed, int length) {
   }
   return list;
 }
+
+String joiner(List<String> input) => input.join('');
 
 void main() {
   group('bimap', () {
@@ -526,7 +530,1537 @@ void main() {
         () => allHeapTests(<T>(List<T> list, {Comparator<T>? comparator}) =>
             Heap<T>(comparator: comparator)..pushAll(list)));
   });
+  group('iterable', () {
+    group('chunked', () {
+      test('empty', () {
+        final iterable = <int>[].chunked(2);
+        expect(iterable, <int>[]);
+      });
+      test('even', () {
+        final iterable = [1, 2, 3, 4].chunked(2);
+        expect(iterable, [
+          [1, 2],
+          [3, 4]
+        ]);
+      });
+      test('odd', () {
+        final iterable = [1, 2, 3, 4, 5].chunked(2);
+        expect(iterable, [
+          [1, 2],
+          [3, 4],
+          [5]
+        ]);
+      });
+      group('with padding', () {
+        test('empty', () {
+          final iterable = <int>[].chunkedWithPadding(2, 0);
+          expect(iterable, <int>[]);
+        });
+        test('even', () {
+          final iterable = [1, 2, 3, 4].chunkedWithPadding(2, 0);
+          expect(iterable, [
+            [1, 2],
+            [3, 4]
+          ]);
+        });
+        test('odd', () {
+          final iterable = [1, 2, 3, 4, 5].chunkedWithPadding(2, 0);
+          expect(iterable, [
+            [1, 2],
+            [3, 4],
+            [5, 0]
+          ]);
+        });
+      });
+    });
+    group('combinations', () {
+      final letters = 'abcd'.toList();
+      group('with repetitions', () {
+        test('take 0', () {
+          final iterable = letters.combinations(0, repetitions: true);
+          expect(iterable, isEmpty);
+        });
+        test('take 1', () {
+          final iterable = letters.combinations(1, repetitions: true);
+          expect(iterable, [
+            ['a'],
+            ['b'],
+            ['c'],
+            ['d']
+          ]);
+        });
+        test('take 2', () {
+          final iterable = letters.combinations(2, repetitions: true);
+          expect(iterable.map(joiner),
+              ['aa', 'ab', 'ac', 'ad', 'bb', 'bc', 'bd', 'cc', 'cd', 'dd']);
+        });
+        test('take 3', () {
+          final iterable = letters.combinations(3, repetitions: true);
+          expect(iterable.map(joiner), [
+            'aaa',
+            'aab',
+            'aac',
+            'aad',
+            'abb',
+            'abc',
+            'abd',
+            'acc',
+            'acd',
+            'add',
+            'bbb',
+            'bbc',
+            'bbd',
+            'bcc',
+            'bcd',
+            'bdd',
+            'ccc',
+            'ccd',
+            'cdd',
+            'ddd'
+          ]);
+        });
+        test('take 4', () {
+          final iterable = letters.combinations(4, repetitions: true);
+          expect(iterable.map(joiner), [
+            'aaaa',
+            'aaab',
+            'aaac',
+            'aaad',
+            'aabb',
+            'aabc',
+            'aabd',
+            'aacc',
+            'aacd',
+            'aadd',
+            'abbb',
+            'abbc',
+            'abbd',
+            'abcc',
+            'abcd',
+            'abdd',
+            'accc',
+            'accd',
+            'acdd',
+            'addd',
+            'bbbb',
+            'bbbc',
+            'bbbd',
+            'bbcc',
+            'bbcd',
+            'bbdd',
+            'bccc',
+            'bccd',
+            'bcdd',
+            'bddd',
+            'cccc',
+            'cccd',
+            'ccdd',
+            'cddd',
+            'dddd'
+          ]);
+        });
+        test('take 5', () {
+          final iterable = letters.combinations(5, repetitions: true);
+          expect(iterable.first.join(), 'aaaaa');
+          expect(iterable.last.join(), 'ddddd');
+          expect(iterable.length, 56);
+        });
+        test('take 6', () {
+          final iterable = letters.combinations(6, repetitions: true);
+          expect(iterable.first.join(), 'aaaaaa');
+          expect(iterable.last.join(), 'dddddd');
+          expect(iterable.length, 84);
+        });
+      });
+      group('without repetions', () {
+        test('take 0', () {
+          final iterable = letters.combinations(0, repetitions: false);
+          expect(iterable, isEmpty);
+        });
+        test('take 1', () {
+          final iterable = letters.combinations(1, repetitions: false);
+          expect(iterable, [
+            ['a'],
+            ['b'],
+            ['c'],
+            ['d']
+          ]);
+        });
+        test('take 2', () {
+          final iterable = letters.combinations(2, repetitions: false);
+          expect(iterable.map(joiner), ['ab', 'ac', 'ad', 'bc', 'bd', 'cd']);
+        });
+        test('take 3', () {
+          final iterable = letters.combinations(3, repetitions: false);
+          expect(iterable.map(joiner), ['abc', 'abd', 'acd', 'bcd']);
+        });
+        test('take 4', () {
+          final iterable = letters.combinations(4, repetitions: false);
+          expect(iterable.map(joiner), ['abcd']);
+        });
+      });
+      test('range error', () {
+        expect(() => letters.combinations(-1), throwsRangeError);
+        expect(() => letters.combinations(-1, repetitions: true),
+            throwsRangeError);
+        expect(() => letters.combinations(-1, repetitions: false),
+            throwsRangeError);
+        expect(() => letters.combinations(5, repetitions: false),
+            throwsRangeError);
+      });
+    });
+    group('count', () {
+      test('true', () {
+        expect(<int>[].count((each) => true), 0);
+        expect(<int>[1].count((each) => true), 1);
+        expect(<int>[1, 2, 3].count((each) => true), 3);
+        expect(<int>[1, 2, 3, 4, 5].count((each) => true), 5);
+      });
+      test('false', () {
+        expect(<int>[].count((each) => false), 0);
+        expect(<int>[1].count((each) => false), 0);
+        expect(<int>[1, 2, 3].count((each) => false), 0);
+        expect(<int>[1, 2, 3, 4, 5].count((each) => false), 0);
+      });
+      test('isOdd', () {
+        expect(<int>[].count((each) => each.isOdd), 0);
+        expect(<int>[1].count((each) => each.isOdd), 1);
+        expect(<int>[1, 2, 3].count((each) => each.isOdd), 2);
+        expect(<int>[1, 2, 3, 4, 5].count((each) => each.isOdd), 3);
+      });
+    });
+    group('cycle', () {
+      test('empty', () {
+        expect(<int>[].cycle(), isEmpty);
+        expect(<int>[].cycle(5), isEmpty);
+        expect([1, 2].cycle(0), isEmpty);
+      });
+      test('fixed', () {
+        expect([1, 2].cycle(1), [1, 2]);
+        expect([1, 2].cycle(2), [1, 2, 1, 2]);
+        expect([1, 2].cycle(3), [1, 2, 1, 2, 1, 2]);
+      });
+      test('infinite', () {
+        expect([1, 2].cycle().isEmpty, isFalse);
+        expect([1, 2].cycle().isNotEmpty, isTrue);
+        expect([1, 2].cycle().take(3), [1, 2, 1]);
+        expect([1, 2].cycle().skip(3).take(3), [2, 1, 2]);
+      });
+      test('invalid', () {
+        expect(() => [1, 2].cycle(-1), throwsArgumentError);
+      });
+      test('infinite', () {
+        final infinite = [1, 2].cycle();
+        expect(infinite.cycle().isEmpty, isFalse);
+        expect(infinite.isNotEmpty, isTrue);
+        expect(() => infinite.length, throwsUnsupportedError);
+        expect(() => infinite.last, throwsUnsupportedError);
+        expect(() => infinite.lastWhere((e) => false), throwsUnsupportedError);
+        expect(() => infinite.single, throwsUnsupportedError);
+        expect(
+            () => infinite.singleWhere((e) => false), throwsUnsupportedError);
+        expect(() => infinite.toList(), throwsUnsupportedError);
+        expect(() => infinite.toSet(), throwsUnsupportedError);
+      });
+    });
+    group('flatMap', () {
+      test('empty', () {
+        expect(
+            <int>[].flatMap<String>(
+                (each) => throw StateError('Never to be called')),
+            isEmpty);
+      });
+      test('expand', () {
+        expect(['a'].flatMap((each) => [1, 2]), [1, 2]);
+      });
+      test('collapse', () {
+        expect(['a', 'b'].flatMap((each) => []), isEmpty);
+      });
+    });
+    group('flatten', () {
+      test('empty', () {
+        expect(<Iterable<int>>[[], [], []].flatten(), isEmpty);
+      });
+      test('single', () {
+        expect(
+            [
+              [1],
+              [2],
+              [3],
+            ].flatten(),
+            [1, 2, 3]);
+      });
+      test('double', () {
+        expect(
+            [
+              [1, 2],
+              [3, 4],
+              [5, 6],
+            ].flatten(),
+            [1, 2, 3, 4, 5, 6]);
+      });
+    });
+    group('groupBy', () {
+      final example = 'aaaabbbccdaabbb'.toList();
+      test('groupBy empty', () {
+        final iterable = <int>[].groupBy<int>();
+        expect(iterable, isEmpty);
+      });
+      test('groupBy basic', () {
+        final iterable = example.groupBy<String>();
+        expect(
+            iterable.map((each) => each.key), ['a', 'b', 'c', 'd', 'a', 'b']);
+        expect(iterable.map((each) => each.values), [
+          ['a', 'a', 'a', 'a'],
+          ['b', 'b', 'b'],
+          ['c', 'c'],
+          ['d'],
+          ['a', 'a'],
+          ['b', 'b', 'b'],
+        ]);
+      });
+      test('groupBy mapping', () {
+        final iterable = example.reversed.groupBy((key) => key.codeUnitAt(0));
+        expect(iterable.map((each) => each.key), [98, 97, 100, 99, 98, 97]);
+        expect(iterable.map((each) => each.values), [
+          ['b', 'b', 'b'],
+          ['a', 'a'],
+          ['d'],
+          ['c', 'c'],
+          ['b', 'b', 'b'],
+          ['a', 'a', 'a', 'a']
+        ]);
+      });
+    });
+    group('indexed', () {
+      test('empty', () {
+        final iterable = <int>[].indexed();
+        expect(iterable, isEmpty);
+      });
+      test('simple', () {
+        final iterable = ['a', 'b', 'c'].indexed();
+        expect(iterable.map((each) => each.index), [0, 1, 2]);
+        expect(iterable.map((each) => each.value), ['a', 'b', 'c']);
+        expect(iterable.map((each) => each.key), [0, 1, 2]);
+        expect(iterable.map((each) => each.toString()),
+            ['Indexed(0: a)', 'Indexed(1: b)', 'Indexed(2: c)']);
+      });
+      test('offset', () {
+        final actual = ['a', 'b']
+            .indexed(offset: 1)
+            .map((each) => '${each.value}-${each.index}')
+            .join(', ');
+        const expected = 'a-1, b-2';
+        expect(actual, expected);
+      });
+      test('entries', () {
+        final iterable = ['a', 'b', 'c'].indexed();
+        expect(Map.fromEntries(iterable), {0: 'a', 1: 'b', 2: 'c'});
+      });
+    });
+    group('iterate', () {
+      test('natural numbers', () {
+        final iterable = iterate<int>(0, (a) => a + 1);
+        expect(iterable.take(10), [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]);
+      });
+      test('powers of two', () {
+        final iterable = iterate<int>(1, (a) => 2 * a);
+        expect(iterable.take(10), [1, 2, 4, 8, 16, 32, 64, 128, 256, 512]);
+      });
+    });
+    group('operators', () {
+      final empty = <int>[];
+      final reverse = reverseComparator<int>();
+      group('min', () {
+        test('empty', () {
+          expect(() => empty.min(), throwsStateError);
+          expect(empty.min(orElse: () => -1), -1);
+        });
+        test('comparable', () {
+          expect([1, 2, 3].min(), 1);
+          expect([3, 2, 1].min(), 1);
+        });
+        test('custom comparator', () {
+          expect([1, 2, 3].min(comparator: reverse), 3);
+          expect([3, 2, 1].min(comparator: reverse), 3);
+        });
+      });
+      group('max', () {
+        test('empty', () {
+          expect(() => empty.max(), throwsStateError);
+          expect(empty.max(orElse: () => -1), -1);
+        });
+        test('comparable', () {
+          expect([1, 2, 3].max(), 3);
+          expect([3, 2, 1].max(), 3);
+        });
+        test('custom comparator', () {
+          expect([1, 2, 3].max(comparator: reverse), 1);
+          expect([3, 2, 1].max(comparator: reverse), 1);
+        });
+      });
+      group('smallest', () {
+        test('empty', () {
+          expect(empty.smallest(0), isEmpty);
+          expect(empty.smallest(1), isEmpty);
+          expect(empty.smallest(2), isEmpty);
+          expect(empty.smallest(3), isEmpty);
+          expect(empty.smallest(4), isEmpty);
+        });
+        test('comparable', () {
+          expect([3, 1, 2].smallest(0), isEmpty);
+          expect([3, 1, 2].smallest(1), [1]);
+          expect([3, 1, 2].smallest(2), [1, 2]);
+          expect([3, 1, 2].smallest(3), [1, 2, 3]);
+          expect([3, 1, 2].smallest(4), [1, 2, 3]);
+        });
+        test('custom comparator', () {
+          expect([3, 1, 2].smallest(0, comparator: reverse), isEmpty);
+          expect([3, 1, 2].smallest(1, comparator: reverse), [3]);
+          expect([3, 1, 2].smallest(2, comparator: reverse), [3, 2]);
+          expect([3, 1, 2].smallest(3, comparator: reverse), [3, 2, 1]);
+          expect([3, 1, 2].smallest(4, comparator: reverse), [3, 2, 1]);
+        });
+      });
+      group('largest', () {
+        test('empty', () {
+          expect(empty.largest(0), isEmpty);
+          expect(empty.largest(1), isEmpty);
+          expect(empty.largest(2), isEmpty);
+          expect(empty.largest(3), isEmpty);
+        });
+        test('comparable', () {
+          expect([3, 1, 2].largest(0), isEmpty);
+          expect([3, 1, 2].largest(1), [3]);
+          expect([3, 1, 2].largest(2), [3, 2]);
+          expect([3, 1, 2].largest(3), [3, 2, 1]);
+          expect([3, 1, 2].largest(4), [3, 2, 1]);
+        });
+        test('custom comparator', () {
+          expect([3, 1, 2].largest(0, comparator: reverse), isEmpty);
+          expect([3, 1, 2].largest(1, comparator: reverse), [1]);
+          expect([3, 1, 2].largest(2, comparator: reverse), [1, 2]);
+          expect([3, 1, 2].largest(3, comparator: reverse), [1, 2, 3]);
+          expect([3, 1, 2].largest(4, comparator: reverse), [1, 2, 3]);
+        });
+      });
+    });
+    group('permutations', () {
+      test('0', () {
+        final iterator = ''.toList().permutations();
+        expect(iterator, isEmpty);
+      });
+      test('1', () {
+        final iterator = 'a'.toList().permutations();
+        expect(iterator, [
+          ['a']
+        ]);
+      });
+      test('2', () {
+        final iterator = 'ab'.toList().permutations();
+        expect(iterator, [
+          ['a', 'b'],
+          ['b', 'a']
+        ]);
+      });
+      test('3', () {
+        final iterator = 'abc'.toList().permutations();
+        expect(
+            iterator.map(joiner), ['abc', 'acb', 'bac', 'bca', 'cab', 'cba']);
+      });
+      test('4', () {
+        final iterator = 'abcd'.toList().permutations();
+        expect(iterator.map(joiner), [
+          'abcd',
+          'abdc',
+          'acbd',
+          'acdb',
+          'adbc',
+          'adcb',
+          'bacd',
+          'badc',
+          'bcad',
+          'bcda',
+          'bdac',
+          'bdca',
+          'cabd',
+          'cadb',
+          'cbad',
+          'cbda',
+          'cdab',
+          'cdba',
+          'dabc',
+          'dacb',
+          'dbac',
+          'dbca',
+          'dcab',
+          'dcba'
+        ]);
+      });
+    });
+    group('periodical', () {
+      final date = DateTime(1980, DateTime.june, 11, 12, 34, 56, 78, 90);
+      group('periodical', () {
+        test('millennially', () {
+          final iterable = date.periodical(period: Period.millennially);
+          expect(iterable.take(3), [
+            DateTime(1980, DateTime.june, 11, 12, 34, 56, 78, 90),
+            DateTime(2980, DateTime.june, 11, 12, 34, 56, 78, 90),
+            DateTime(3980, DateTime.june, 11, 12, 34, 56, 78, 90),
+          ]);
+        });
+        test('centennially', () {
+          final iterable = date.periodical(period: Period.centennially);
+          expect(iterable.take(3), [
+            DateTime(1980, DateTime.june, 11, 12, 34, 56, 78, 90),
+            DateTime(2080, DateTime.june, 11, 12, 34, 56, 78, 90),
+            DateTime(2180, DateTime.june, 11, 12, 34, 56, 78, 90),
+          ]);
+        });
+        test('decennially', () {
+          final iterable = date.periodical(period: Period.decennially);
+          expect(iterable.take(3), [
+            DateTime(1980, DateTime.june, 11, 12, 34, 56, 78, 90),
+            DateTime(1990, DateTime.june, 11, 12, 34, 56, 78, 90),
+            DateTime(2000, DateTime.june, 11, 12, 34, 56, 78, 90),
+          ]);
+        });
+        test('yearly', () {
+          final iterable = date.periodical(period: Period.yearly);
+          expect(iterable.take(3), [
+            DateTime(1980, DateTime.june, 11, 12, 34, 56, 78, 90),
+            DateTime(1981, DateTime.june, 11, 12, 34, 56, 78, 90),
+            DateTime(1982, DateTime.june, 11, 12, 34, 56, 78, 90),
+          ]);
+        });
+        test('quarterly', () {
+          final iterable = date.periodical(period: Period.quarterly);
+          expect(iterable.take(3), [
+            DateTime(1980, DateTime.june, 11, 12, 34, 56, 78, 90),
+            DateTime(1980, DateTime.september, 11, 12, 34, 56, 78, 90),
+            DateTime(1980, DateTime.december, 11, 12, 34, 56, 78, 90),
+          ]);
+        });
+        test('monthly', () {
+          final iterable = date.periodical(period: Period.monthly);
+          expect(iterable.take(3), [
+            DateTime(1980, DateTime.june, 11, 12, 34, 56, 78, 90),
+            DateTime(1980, DateTime.july, 11, 12, 34, 56, 78, 90),
+            DateTime(1980, DateTime.august, 11, 12, 34, 56, 78, 90),
+          ]);
+        });
+        test('weekly', () {
+          final iterable = date.periodical(period: Period.weekly);
+          expect(iterable.take(3), [
+            DateTime(1980, DateTime.june, 11, 12, 34, 56, 78, 90),
+            DateTime(1980, DateTime.june, 18, 12, 34, 56, 78, 90),
+            DateTime(1980, DateTime.june, 25, 12, 34, 56, 78, 90),
+          ]);
+        });
+        test('daily', () {
+          final iterable = date.periodical();
+          expect(iterable.take(3), [
+            DateTime(1980, DateTime.june, 11, 12, 34, 56, 78, 90),
+            DateTime(1980, DateTime.june, 12, 12, 34, 56, 78, 90),
+            DateTime(1980, DateTime.june, 13, 12, 34, 56, 78, 90),
+          ]);
+        });
+        test('hourly', () {
+          final iterable = date.periodical(period: Period.hourly);
+          expect(iterable.take(3), [
+            DateTime(1980, DateTime.june, 11, 12, 34, 56, 78, 90),
+            DateTime(1980, DateTime.june, 11, 13, 34, 56, 78, 90),
+            DateTime(1980, DateTime.june, 11, 14, 34, 56, 78, 90),
+          ]);
+        });
+        test('minutely', () {
+          final iterable = date.periodical(period: Period.minutely);
+          expect(iterable.take(3), [
+            DateTime(1980, DateTime.june, 11, 12, 34, 56, 78, 90),
+            DateTime(1980, DateTime.june, 11, 12, 35, 56, 78, 90),
+            DateTime(1980, DateTime.june, 11, 12, 36, 56, 78, 90),
+          ]);
+        });
+        test('secondly', () {
+          final iterable = date.periodical(period: Period.secondly);
+          expect(iterable.take(3), [
+            DateTime(1980, DateTime.june, 11, 12, 34, 56, 78, 90),
+            DateTime(1980, DateTime.june, 11, 12, 34, 57, 78, 90),
+            DateTime(1980, DateTime.june, 11, 12, 34, 58, 78, 90),
+          ]);
+        });
+        test('millisecondly', () {
+          final iterable = date.periodical(period: Period.millisecondly);
+          expect(iterable.take(3), [
+            DateTime(1980, DateTime.june, 11, 12, 34, 56, 78, 90),
+            DateTime(1980, DateTime.june, 11, 12, 34, 56, 79, 90),
+            DateTime(1980, DateTime.june, 11, 12, 34, 56, 80, 90),
+          ]);
+        });
+        test('microsecondly', () {
+          final iterable = date.periodical(period: Period.microsecondly);
+          expect(iterable.take(3), [
+            DateTime(1980, DateTime.june, 11, 12, 34, 56, 78, 90),
+            DateTime(1980, DateTime.june, 11, 12, 34, 56, 78, 91),
+            DateTime(1980, DateTime.june, 11, 12, 34, 56, 78, 92),
+          ]);
+        });
+        test('invalid step', () {
+          expect(() => date.periodical(step: 0), throwsArgumentError);
+        });
+      });
+      group('truncate', () {
+        test('millennially', () {
+          final truncated = date.truncate(period: Period.millennially);
+          expect(truncated, DateTime(1000));
+        });
+        test('centennially', () {
+          final truncated = date.truncate(period: Period.centennially);
+          expect(truncated, DateTime(1900));
+        });
+        test('decennially', () {
+          final truncated = date.truncate(period: Period.decennially);
+          expect(truncated, DateTime(1980));
+        });
+        test('yearly', () {
+          final truncated = date.truncate(period: Period.yearly);
+          expect(truncated, DateTime(1980));
+        });
+        test('quarterly', () {
+          final truncated = date.truncate(period: Period.quarterly);
+          expect(truncated, DateTime(1980, DateTime.april));
+        });
+        test('monthly', () {
+          final truncated = date.truncate(period: Period.monthly);
+          expect(truncated, DateTime(1980, DateTime.june));
+        });
+        test('weekly', () {
+          final truncated = date.truncate(period: Period.weekly);
+          expect(truncated, DateTime(1980, DateTime.june, 9));
+        });
+        test('weekly (custom start of the week)', () {
+          for (var weekday = DateTime.monday;
+              weekday <= DateTime.sunday;
+              weekday++) {
+            final truncated =
+                date.truncate(period: Period.weekly, startWeekday: weekday);
+            expect(truncated.isBefore(date), isTrue);
+            expect(truncated.weekday, weekday);
+          }
+        });
+        test('daily', () {
+          final truncated = date.truncate();
+          expect(truncated, DateTime(1980, DateTime.june, 11));
+        });
+        test('hourly', () {
+          final truncated = date.truncate(period: Period.hourly);
+          expect(truncated, DateTime(1980, DateTime.june, 11, 12));
+        });
+        test('minutely', () {
+          final truncated = date.truncate(period: Period.minutely);
+          expect(truncated, DateTime(1980, DateTime.june, 11, 12, 34));
+        });
+        test('secondly', () {
+          final truncated = date.truncate(period: Period.secondly);
+          expect(truncated, DateTime(1980, DateTime.june, 11, 12, 34, 56));
+        });
+        test('millisecondly', () {
+          final truncated = date.truncate(period: Period.millisecondly);
+          expect(truncated, DateTime(1980, DateTime.june, 11, 12, 34, 56, 78));
+        });
+        test('microsecondly', () {
+          final truncated = date.truncate(period: Period.microsecondly);
+          expect(
+              truncated, DateTime(1980, DateTime.june, 11, 12, 34, 56, 78, 90));
+        });
+        test('invalid start weekday', () {
+          expect(
+              () => date.truncate(
+                  period: Period.weekly, startWeekday: DateTime.monday - 1),
+              throwsArgumentError);
+          expect(
+              () => date.truncate(
+                  period: Period.weekly, startWeekday: DateTime.sunday + 1),
+              throwsArgumentError);
+        });
+      });
+    });
+    group('product', () {
+      test('2', () {
+        final iterable = [
+          [1, 2],
+        ].product();
+        expect(iterable, [
+          [1],
+          [2],
+        ]);
+      });
+      test('2 x 2', () {
+        final iterable = [
+          [1, 2],
+          [3, 4],
+        ].product();
+        expect(iterable, [
+          [1, 3],
+          [1, 4],
+          [2, 3],
+          [2, 4],
+        ]);
+      });
+      test('1 x 2 x 3', () {
+        final iterable = [
+          [1],
+          [2, 3],
+          [4, 5, 6],
+        ].product();
+        expect(iterable, [
+          [1, 2, 4],
+          [1, 2, 5],
+          [1, 2, 6],
+          [1, 3, 4],
+          [1, 3, 5],
+          [1, 3, 6],
+        ]);
+      });
+      test('3 x 2 x 1', () {
+        final iterable = [
+          [1, 2, 3],
+          [4, 5],
+          [6],
+        ].product();
+        expect(iterable, [
+          [1, 4, 6],
+          [1, 5, 6],
+          [2, 4, 6],
+          [2, 5, 6],
+          [3, 4, 6],
+          [3, 5, 6],
+        ]);
+      });
+      test('repeat 0', () {
+        expect(() => <Iterable<int>>[].product(repeat: 0), throwsRangeError);
+      });
+      test('2 x repeat 2', () {
+        final iterable = [
+          [0, 1],
+        ].product(repeat: 2);
+        expect(iterable, [
+          [0, 0],
+          [0, 1],
+          [1, 0],
+          [1, 1],
+        ]);
+      });
+      test('2 x 1 x repeat 2', () {
+        final iterable = [
+          [0, 1],
+          [3],
+        ].product(repeat: 2);
+        expect(iterable, [
+          [0, 3, 0, 3],
+          [0, 3, 1, 3],
+          [1, 3, 0, 3],
+          [1, 3, 1, 3],
+        ]);
+      });
+      test('2 x repeat 3', () {
+        final iterable = [
+          [0, 1],
+        ].product(repeat: 3);
+        expect(iterable, [
+          [0, 0, 0],
+          [0, 0, 1],
+          [0, 1, 0],
+          [0, 1, 1],
+          [1, 0, 0],
+          [1, 0, 1],
+          [1, 1, 0],
+          [1, 1, 1],
+        ]);
+      });
+      test('1 x 2, repeat 3', () {
+        final iterable = [
+          [0, 1],
+        ].product(repeat: 3);
+        expect(iterable, [
+          [0, 0, 0],
+          [0, 0, 1],
+          [0, 1, 0],
+          [0, 1, 1],
+          [1, 0, 0],
+          [1, 0, 1],
+          [1, 1, 0],
+          [1, 1, 1],
+        ]);
+      });
+      test('empty', () {
+        expect(<Iterable<int>>[].product(), isEmpty);
+        expect(<Iterable<int>>[[]].product(), isEmpty);
+        expect(
+            <Iterable<int>>[
+              [1],
+              []
+            ].product(),
+            isEmpty);
+        expect(
+            <Iterable<int>>[
+              [],
+              [1]
+            ].product(),
+            isEmpty);
+        expect(
+            <Iterable<int>>[
+              [1],
+              [],
+              [1]
+            ].product(),
+            isEmpty);
+      });
+    });
+    group('random', () {
+      test('empty', () {
+        expect(() => <int>[].atRandom(), throwsStateError);
+        expect(<int>[].atRandom(orElse: () => -1), -1);
+      });
+      test('single', () {
+        expect([1].atRandom(), 1);
+        expect([2].atRandom(), 2);
+        expect([3].atRandom(), 3);
+      });
+      test('larger', () {
+        final seen = <int>{};
+        final picks = 0.to(10);
+        while (seen.length < picks.length) {
+          seen.add(picks.atRandom());
+        }
+      });
+      test('secure', () {
+        final seen = <int>{};
+        final picks = 0.to(10);
+        final random = Random.secure();
+        while (seen.length < picks.length) {
+          seen.add(picks.atRandom(random: random));
+        }
+      });
+    });
+    group('repeat element', () {
+      test('default', () {
+        expect(repeat(1).take(3), [1, 1, 1]);
+        expect(repeat('a').take(3), ['a', 'a', 'a']);
+      });
+      test('zero', () {
+        expect(repeat(2, count: 0), isEmpty);
+        expect(repeat('b', count: 0), isEmpty);
+      });
+      test('one', () {
+        expect(repeat(3, count: 1), [3]);
+        expect(repeat('c', count: 1), ['c']);
+      });
+      test('two', () {
+        expect(repeat(4, count: 2), [4, 4]);
+        expect(repeat('d', count: 2), ['d', 'd']);
+      });
+      test('tree', () {
+        expect(repeat(5, count: 3), [5, 5, 5]);
+        expect(repeat('e', count: 3), ['e', 'e', 'e']);
+      });
+      test('error', () {
+        expect(() => repeat(6, count: -1), throwsRangeError);
+      });
+    });
+    group('repeat iterable', () {
+      test('empty', () {
+        expect(<int>[].repeat(), isEmpty);
+        expect(<int>[].repeat(count: 0), isEmpty);
+        expect(<int>[].repeat(count: 1), isEmpty);
+        expect(<int>[].repeat(count: 2), isEmpty);
+        expect(<int>[].repeat(count: 3), isEmpty);
+      });
+      test('single', () {
+        expect([1].repeat().take(3), [1, 1, 1]);
+        expect([1].repeat(count: 0), isEmpty);
+        expect([1].repeat(count: 1), [1]);
+        expect([1].repeat(count: 2), [1, 1]);
+        expect([1].repeat(count: 3), [1, 1, 1]);
+      });
+      test('double', () {
+        expect([1, 2].repeat().take(5), [1, 2, 1, 2, 1]);
+        expect([1, 2].repeat(count: 0), isEmpty);
+        expect([1, 2].repeat(count: 1), [1, 2]);
+        expect([1, 2].repeat(count: 2), [1, 2, 1, 2]);
+        expect([1, 2].repeat(count: 3), [1, 2, 1, 2, 1, 2]);
+      });
+      test('triple', () {
+        expect([1, 2, 3].repeat().take(7), [1, 2, 3, 1, 2, 3, 1]);
+        expect([1, 2, 3].repeat(count: 0), isEmpty);
+        expect([1, 2, 3].repeat(count: 1), [1, 2, 3]);
+        expect([1, 2, 3].repeat(count: 2), [1, 2, 3, 1, 2, 3]);
+        expect([1, 2, 3].repeat(count: 3), [1, 2, 3, 1, 2, 3, 1, 2, 3]);
+      });
+      test('infinite', () {
+        final infinite = iterate<int>(0, (n) => n + 1);
+        expect(infinite.repeat().take(7), [0, 1, 2, 3, 4, 5, 6]);
+        expect(infinite.repeat(count: 0), isEmpty);
+        expect(infinite.repeat(count: 1).take(7), [0, 1, 2, 3, 4, 5, 6]);
+        expect(infinite.repeat(count: 2).take(7), [0, 1, 2, 3, 4, 5, 6]);
+        expect(infinite.repeat(count: 3).take(7), [0, 1, 2, 3, 4, 5, 6]);
+      });
+      test('error', () {
+        expect(() => [1, 2, 3].repeat(count: -1), throwsRangeError);
+      });
+    });
+    group('separatedBy', () {
+      group('without before or after', () {
+        test('empty', () {
+          var s = 0;
+          expect(<int>[].separatedBy(() => s++), isEmpty);
+          expect(s, 0);
+        });
+        test('single', () {
+          var s = 0;
+          expect([10].separatedBy(() => s++), [10]);
+          expect(s, 0);
+        });
+        test('double', () {
+          var s = 0;
+          expect([10, 20].separatedBy(() => s++), [10, 0, 20]);
+          expect(s, 1);
+        });
+        test('triple', () {
+          var s = 0;
+          expect([10, 20, 30].separatedBy(() => s++), [10, 0, 20, 1, 30]);
+          expect(s, 2);
+        });
+        test('iterator', () {
+          final iterator = [42].separatedBy(() => 0).iterator;
+          expect(iterator.moveNext(), isTrue);
+          for (var i = 0; i <= 3; i++) {
+            expect(iterator.current, 42);
+          }
+          for (var i = 0; i <= 3; i++) {
+            expect(iterator.moveNext(), isFalse);
+          }
+        });
+      });
+      group('with before', () {
+        test('empty', () {
+          var s = 0, b = 0;
+          expect(
+              <int>[].separatedBy(
+                () => s++,
+                before: () => b++ + 5,
+              ),
+              isEmpty);
+          expect(s, 0);
+          expect(b, 0);
+        });
+        test('single', () {
+          var s = 0, b = 0;
+          expect(
+              [10].separatedBy(
+                () => s++,
+                before: () => b++ + 5,
+              ),
+              [5, 10]);
+          expect(s, 0);
+          expect(b, 1);
+        });
+        test('double', () {
+          var s = 0, b = 0;
+          expect(
+              [10, 20].separatedBy(
+                () => s++,
+                before: () => b++ + 5,
+              ),
+              [5, 10, 0, 20]);
+          expect(s, 1);
+          expect(b, 1);
+        });
+        test('triple', () {
+          var s = 0, b = 0;
+          expect(
+              [10, 20, 30].separatedBy(
+                () => s++,
+                before: () => b++ + 5,
+              ),
+              [5, 10, 0, 20, 1, 30]);
+          expect(s, 2);
+          expect(b, 1);
+        });
+      });
+      group('with after', () {
+        test('empty', () {
+          var s = 0, a = 0;
+          expect(
+              <int>[].separatedBy(
+                () => s++,
+                after: () => a++ + 15,
+              ),
+              isEmpty);
+          expect(s, 0);
+          expect(a, 0);
+        });
+        test('single', () {
+          var s = 0, a = 0;
+          expect(
+              [10].separatedBy(
+                () => s++,
+                after: () => a++ + 15,
+              ),
+              [10, 15]);
+          expect(s, 0);
+          expect(a, 1);
+        });
+        test('double', () {
+          var s = 0, a = 0;
+          expect(
+              [10, 20].separatedBy(
+                () => s++,
+                after: () => a++ + 15,
+              ),
+              [10, 0, 20, 15]);
+          expect(s, 1);
+          expect(a, 1);
+        });
+        test('triple', () {
+          var s = 0, a = 0;
+          expect(
+              [10, 20, 30].separatedBy(
+                () => s++,
+                after: () => a++ + 15,
+              ),
+              [10, 0, 20, 1, 30, 15]);
+          expect(s, 2);
+          expect(a, 1);
+        });
+      });
+      group('with before and after', () {
+        test('empty', () {
+          var s = 0, b = 0, a = 0;
+          expect(
+              <int>[].separatedBy(
+                () => s++,
+                before: () => b++ + 5,
+                after: () => a++ + 15,
+              ),
+              isEmpty);
+          expect(s, 0);
+          expect(b, 0);
+          expect(a, 0);
+        });
+        test('single', () {
+          var s = 0, b = 0, a = 0;
+          expect(
+              [10].separatedBy(
+                () => s++,
+                before: () => b++ + 5,
+                after: () => a++ + 15,
+              ),
+              [5, 10, 15]);
+          expect(s, 0);
+          expect(b, 1);
+          expect(a, 1);
+        });
+        test('double', () {
+          var s = 0, b = 0, a = 0;
+          expect(
+              [10, 20].separatedBy(
+                () => s++,
+                before: () => b++ + 5,
+                after: () => a++ + 15,
+              ),
+              [5, 10, 0, 20, 15]);
+          expect(s, 1);
+          expect(b, 1);
+          expect(a, 1);
+        });
+        test('triple', () {
+          var s = 0, b = 0, a = 0;
+          expect(
+              [10, 20, 30].separatedBy(
+                () => s++,
+                before: () => b++ + 5,
+                after: () => a++ + 15,
+              ),
+              [5, 10, 0, 20, 1, 30, 15]);
+          expect(s, 2);
+          expect(b, 1);
+          expect(a, 1);
+        });
+      });
+    });
+    group('toMap', () {
+      test('empty', () {
+        expect(<int>[].toMap<int, int>(), isEmpty);
+      });
+      test('default', () {
+        const iterable = ['a', 'bb', 'ccc'];
+        expect(iterable.toMap<String, String>(),
+            {'a': 'a', 'bb': 'bb', 'ccc': 'ccc'});
+      });
+      test('custom', () {
+        const iterable = ['a', 'bb', 'ccc'];
+        expect(
+            iterable.toMap(
+                key: (each) => each[0], value: (each) => each.length),
+            {'a': 1, 'b': 2, 'c': 3});
+      });
+    });
+    group('unique', () {
+      test('identity', () {
+        expect([1].unique(), [1]);
+        expect([1, 2].unique(), [1, 2]);
+        expect([1, 2, 3].unique(), [1, 2, 3]);
+      });
+      test('duplicates', () {
+        expect([1, 1].unique(), [1]);
+        expect([1, 2, 2, 1].unique(), [1, 2]);
+        expect([1, 2, 3, 3, 2, 1].unique(), [1, 2, 3]);
+      });
+    });
+    group('window', () {
+      test('error', () {
+        expect(() => [1, 2, 3].window(0), throwsRangeError);
+        expect(() => [1, 2, 3].window(1, step: 0), throwsRangeError);
+      });
+      test('size = 1', () {
+        expect(<int>[].window(1), isEmpty);
+        expect([1].window(1), [
+          [1],
+        ]);
+        expect([1, 2].window(1), [
+          [1],
+          [2],
+        ]);
+        expect([1, 2, 3].window(1), [
+          [1],
+          [2],
+          [3],
+        ]);
+        expect([1, 2, 3, 4].window(1), [
+          [1],
+          [2],
+          [3],
+          [4],
+        ]);
+        expect([1, 2, 3, 4, 5].window(1), [
+          [1],
+          [2],
+          [3],
+          [4],
+          [5],
+        ]);
+      });
+      test('size = 2', () {
+        expect(<int>[].window(2), isEmpty);
+        expect([1].window(2), isEmpty);
+        expect([1, 2].window(2), [
+          [1, 2],
+        ]);
+        expect([1, 2, 3].window(2), [
+          [1, 2],
+          [2, 3],
+        ]);
+        expect([1, 2, 3, 4].window(2), [
+          [1, 2],
+          [2, 3],
+          [3, 4],
+        ]);
+        expect([1, 2, 3, 4, 5].window(2), [
+          [1, 2],
+          [2, 3],
+          [3, 4],
+          [4, 5],
+        ]);
+      });
+      test('size = 2, step = 2', () {
+        expect(<int>[].window(2, step: 2), isEmpty);
+        expect([1].window(2, step: 2), isEmpty);
+        expect([1, 2].window(2, step: 2), [
+          [1, 2],
+        ]);
+        expect([1, 2, 3].window(2, step: 2), [
+          [1, 2],
+        ]);
+        expect([1, 2, 3, 4].window(2, step: 2), [
+          [1, 2],
+          [3, 4],
+        ]);
+        expect([1, 2, 3, 4, 5].window(2, step: 2), [
+          [1, 2],
+          [3, 4],
+        ]);
+      });
+      test('size = 2, step = 3', () {
+        expect(<int>[].window(2, step: 3), isEmpty);
+        expect([1].window(2, step: 3), isEmpty);
+        expect([1, 2].window(2, step: 3), [
+          [1, 2],
+        ]);
+        expect([1, 2, 3].window(2, step: 3), [
+          [1, 2],
+        ]);
+        expect([1, 2, 3, 4].window(2, step: 3), [
+          [1, 2],
+        ]);
+        expect([1, 2, 3, 4, 5].window(2, step: 3), [
+          [1, 2],
+          [4, 5],
+        ]);
+      });
+      test('size = 2, includePartial', () {
+        expect(<int>[].window(2, includePartial: true), isEmpty);
+        expect([1].window(2, includePartial: true), [
+          [1],
+        ]);
+        expect([1, 2].window(2, includePartial: true), [
+          [1, 2],
+          [2],
+        ]);
+        expect([1, 2, 3].window(2, includePartial: true), [
+          [1, 2],
+          [2, 3],
+          [3],
+        ]);
+        expect([1, 2, 3, 4].window(2, includePartial: true), [
+          [1, 2],
+          [2, 3],
+          [3, 4],
+          [4],
+        ]);
+        expect([1, 2, 3, 4, 5].window(2, includePartial: true), [
+          [1, 2],
+          [2, 3],
+          [3, 4],
+          [4, 5],
+          [5],
+        ]);
+      });
+      test('size = 2, step = 2, includePartial', () {
+        expect(<int>[].window(2, step: 2, includePartial: true), isEmpty);
+        expect([1].window(2, step: 2, includePartial: true), [
+          [1],
+        ]);
+        expect([1, 2].window(2, step: 2, includePartial: true), [
+          [1, 2],
+        ]);
+        expect([1, 2, 3].window(2, step: 2, includePartial: true), [
+          [1, 2],
+          [3],
+        ]);
+        expect([1, 2, 3, 4].window(2, step: 2, includePartial: true), [
+          [1, 2],
+          [3, 4],
+        ]);
+        expect([1, 2, 3, 4, 5].window(2, step: 2, includePartial: true), [
+          [1, 2],
+          [3, 4],
+          [5],
+        ]);
+      });
+      test('size = 2, step = 3, includePartial', () {
+        expect(<int>[].window(2, step: 3, includePartial: true), isEmpty);
+        expect([1].window(2, step: 3, includePartial: true), [
+          [1],
+        ]);
+        expect([1, 2].window(2, step: 3, includePartial: true), [
+          [1, 2],
+        ]);
+        expect([1, 2, 3].window(2, step: 3, includePartial: true), [
+          [1, 2],
+        ]);
+        expect([1, 2, 3, 4].window(2, step: 3, includePartial: true), [
+          [1, 2],
+          [4],
+        ]);
+        expect([1, 2, 3, 4, 5].window(2, step: 3, includePartial: true), [
+          [1, 2],
+          [4, 5],
+        ]);
+      });
+    });
+    group('zip', () {
+      group('default', () {
+        test('empty', () {
+          expect(<Iterable<int>>[].zip(), <int>[]);
+        });
+        test('single', () {
+          expect(
+              [
+                [1, 2, 3]
+              ].zip(),
+              [
+                [1],
+                [2],
+                [3]
+              ]);
+        });
+        test('pair', () {
+          expect(
+              [
+                [1, 2, 3],
+                ['a', 'b', 'c'],
+              ].zip(),
+              [
+                [1, 'a'],
+                [2, 'b'],
+                [3, 'c'],
+              ]);
+          expect(
+              [
+                [1, 2],
+                ['a', 'b', 'c'],
+              ].zip(),
+              [
+                [1, 'a'],
+                [2, 'b'],
+              ]);
+          expect(
+              [
+                [1, 2, 3],
+                ['a', 'b'],
+              ].zip(),
+              [
+                [1, 'a'],
+                [2, 'b'],
+              ]);
+        });
+      });
+      group('partial', () {
+        test('empty', () {
+          expect(<Iterable<int>>[].zipPartial(), <int>[]);
+        });
+        test('single', () {
+          expect(
+              [
+                [1, 2, 3]
+              ].zipPartial(),
+              [
+                [1],
+                [2],
+                [3]
+              ]);
+        });
+        test('pair', () {
+          expect(
+              [
+                [1, 2, 3],
+                ['a', 'b', 'c'],
+              ].zipPartial(),
+              [
+                [1, 'a'],
+                [2, 'b'],
+                [3, 'c'],
+              ]);
+          expect(
+              [
+                [1, 2],
+                ['a', 'b', 'c'],
+              ].zipPartial(),
+              [
+                [1, 'a'],
+                [2, 'b'],
+                [null, 'c'],
+              ]);
+          expect(
+              [
+                [1, 2, 3],
+                ['a', 'b'],
+              ].zipPartial(),
+              [
+                [1, 'a'],
+                [2, 'b'],
+                [3, null],
+              ]);
+        });
+      });
+      group('partial with', () {
+        test('empty', () {
+          expect(<Iterable<int>>[].zipPartialWith(0), <int>[]);
+        });
+        test('single', () {
+          expect(
+              [
+                [1, 2, 3]
+              ].zipPartialWith(0),
+              [
+                [1],
+                [2],
+                [3]
+              ]);
+        });
+        test('pair', () {
+          expect(
+              [
+                [1, 2, 3],
+                ['a', 'b', 'c'],
+              ].zipPartialWith(0),
+              [
+                [1, 'a'],
+                [2, 'b'],
+                [3, 'c'],
+              ]);
+          expect(
+              [
+                [1, 2],
+                ['a', 'b', 'c'],
+              ].zipPartialWith(0),
+              [
+                [1, 'a'],
+                [2, 'b'],
+                [0, 'c'],
+              ]);
+          expect(
+              [
+                [1, 2, 3],
+                ['a', 'b'],
+              ].zipPartialWith(0),
+              [
+                [1, 'a'],
+                [2, 'b'],
+                [3, 0],
+              ]);
+        });
+      });
+    });
+  });
   group('list', () {
+    group('rotate', () {
+      group('list', () {
+        test('size = 0', () {
+          expect(<int>[]..rotate(-1), isEmpty);
+          expect(<int>[]..rotate(0), isEmpty);
+          expect(<int>[]..rotate(1), isEmpty);
+        });
+        group('size = 1', () {
+          test('offset = 0', () {
+            expect([0]..rotate(0), [0]);
+          });
+          test('offset = ±1', () {
+            expect([0]..rotate(-1), [0]);
+            expect([0]..rotate(1), [0]);
+          });
+        });
+        group('size = 2', () {
+          test('offset = 0', () {
+            expect([0, 1]..rotate(0), [0, 1]);
+          });
+          test('offset = ±1', () {
+            expect([0, 1]..rotate(-1), [1, 0]);
+            expect([0, 1]..rotate(1), [1, 0]);
+          });
+          test('offset = ±2', () {
+            expect([0, 1]..rotate(-2), [0, 1]);
+            expect([0, 1]..rotate(2), [0, 1]);
+          });
+        });
+        group('size = 3', () {
+          test('offset = 0', () {
+            expect([0, 1, 2]..rotate(0), [0, 1, 2]);
+          });
+          test('offset = ±1', () {
+            expect([0, 1, 2]..rotate(-1), [1, 2, 0]);
+            expect([0, 1, 2]..rotate(1), [2, 0, 1]);
+          });
+          test('offset = ±2', () {
+            expect([0, 1, 2]..rotate(-2), [2, 0, 1]);
+            expect([0, 1, 2]..rotate(2), [1, 2, 0]);
+          });
+          test('offset = ±3', () {
+            expect([0, 1, 2]..rotate(-3), [0, 1, 2]);
+            expect([0, 1, 2]..rotate(3), [0, 1, 2]);
+          });
+        });
+        group('size = 4', () {
+          test('offset = 0', () {
+            expect([0, 1, 2, 3]..rotate(0), [0, 1, 2, 3]);
+          });
+          test('offset = ±1', () {
+            expect([0, 1, 2, 3]..rotate(-1), [1, 2, 3, 0]);
+            expect([0, 1, 2, 3]..rotate(1), [3, 0, 1, 2]);
+          });
+          test('offset = ±2', () {
+            expect([0, 1, 2, 3]..rotate(-2), [2, 3, 0, 1]);
+            expect([0, 1, 2, 3]..rotate(2), [2, 3, 0, 1]);
+          });
+          test('offset = ±3', () {
+            expect([0, 1, 2, 3]..rotate(-3), [3, 0, 1, 2]);
+            expect([0, 1, 2, 3]..rotate(3), [1, 2, 3, 0]);
+          });
+          test('offset = ±4', () {
+            expect([0, 1, 2, 3]..rotate(-4), [0, 1, 2, 3]);
+            expect([0, 1, 2, 3]..rotate(4), [0, 1, 2, 3]);
+          });
+        });
+      });
+      group('queue', () {
+        test('size = 0', () {
+          expect(Queue.of([])..rotate(-1), isEmpty);
+          expect(Queue.of([])..rotate(0), isEmpty);
+          expect(Queue.of([])..rotate(1), isEmpty);
+        });
+        group('size = 1', () {
+          test('offset = 0', () {
+            expect(Queue.of([0])..rotate(0), [0]);
+          });
+          test('offset = ±1', () {
+            expect(Queue.of([0])..rotate(-1), [0]);
+            expect(Queue.of([0])..rotate(1), [0]);
+          });
+        });
+        group('size = 2', () {
+          test('offset = 0', () {
+            expect(Queue.of([0, 1])..rotate(0), [0, 1]);
+          });
+          test('offset = ±1', () {
+            expect(Queue.of([0, 1])..rotate(-1), [1, 0]);
+            expect(Queue.of([0, 1])..rotate(1), [1, 0]);
+          });
+          test('offset = ±2', () {
+            expect(Queue.of([0, 1])..rotate(-2), [0, 1]);
+            expect(Queue.of([0, 1])..rotate(2), [0, 1]);
+          });
+        });
+        group('size = 3', () {
+          test('offset = 0', () {
+            expect(Queue.of([0, 1, 2])..rotate(0), [0, 1, 2]);
+          });
+          test('offset = ±1', () {
+            expect(Queue.of([0, 1, 2])..rotate(-1), [1, 2, 0]);
+            expect(Queue.of([0, 1, 2])..rotate(1), [2, 0, 1]);
+          });
+          test('offset = ±2', () {
+            expect(Queue.of([0, 1, 2])..rotate(-2), [2, 0, 1]);
+            expect(Queue.of([0, 1, 2])..rotate(2), [1, 2, 0]);
+          });
+          test('offset = ±3', () {
+            expect(Queue.of([0, 1, 2])..rotate(-3), [0, 1, 2]);
+            expect(Queue.of([0, 1, 2])..rotate(3), [0, 1, 2]);
+          });
+        });
+        group('size = 4', () {
+          test('offset = 0', () {
+            expect(Queue.of([0, 1, 2, 3])..rotate(0), [0, 1, 2, 3]);
+          });
+          test('offset = ±1', () {
+            expect(Queue.of([0, 1, 2, 3])..rotate(-1), [1, 2, 3, 0]);
+            expect(Queue.of([0, 1, 2, 3])..rotate(1), [3, 0, 1, 2]);
+          });
+          test('offset = ±2', () {
+            expect(Queue.of([0, 1, 2, 3])..rotate(-2), [2, 3, 0, 1]);
+            expect(Queue.of([0, 1, 2, 3])..rotate(2), [2, 3, 0, 1]);
+          });
+          test('offset = ±3', () {
+            expect(Queue.of([0, 1, 2, 3])..rotate(-3), [3, 0, 1, 2]);
+            expect(Queue.of([0, 1, 2, 3])..rotate(3), [1, 2, 3, 0]);
+          });
+          test('offset = ±4', () {
+            expect(Queue.of([0, 1, 2, 3])..rotate(-4), [0, 1, 2, 3]);
+            expect(Queue.of([0, 1, 2, 3])..rotate(4), [0, 1, 2, 3]);
+          });
+        });
+      });
+    });
     group('take/skip', () {
       const list = ['a', 'b', 'c'];
       test('take', () {

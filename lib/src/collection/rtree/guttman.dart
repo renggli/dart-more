@@ -1,4 +1,4 @@
-import '../../../iterable.dart';
+import '../iterable/combinations.dart';
 import '../rtree.dart';
 import 'bounds.dart';
 import 'entry.dart';

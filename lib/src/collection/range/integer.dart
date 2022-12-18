@@ -1,6 +1,6 @@
 import 'dart:collection' show ListBase;
 
-import '../../iterable/mixins/unmodifiable.dart' show UnmodifiableListMixin;
+import '../iterable/mixins/unmodifiable.dart';
 import '../range.dart';
 
 /// A virtual range of integers containing an arithmetic progressions.

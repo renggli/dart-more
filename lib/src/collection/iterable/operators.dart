@@ -1,4 +1,4 @@
-import '../../comparator.dart';
+import '../../../comparator.dart';
 
 extension OperatorsExtension<E> on Iterable<E> {
   /// Returns the minimum of this [Iterable]. The elements need to be

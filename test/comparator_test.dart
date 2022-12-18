@@ -2,7 +2,6 @@
 
 import 'package:more/collection.dart';
 import 'package:more/comparator.dart';
-import 'package:more/iterable.dart';
 import 'package:more/tuple.dart';
 import 'package:test/test.dart';
 

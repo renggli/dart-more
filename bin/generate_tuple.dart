@@ -1,7 +1,7 @@
 import 'dart:io';
 import 'dart:math';
 
-import 'package:more/iterable.dart';
+import 'package:more/collection.dart';
 
 /// Ordinal value names.
 const ordinals = [

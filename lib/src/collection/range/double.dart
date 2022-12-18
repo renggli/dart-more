@@ -1,7 +1,7 @@
 import 'dart:collection' show ListBase;
 
 import '../../../comparator.dart';
-import '../../iterable/mixins/unmodifiable.dart' show UnmodifiableListMixin;
+import '../iterable/mixins/unmodifiable.dart';
 import '../range.dart';
 
 /// A virtual range of doubles containing an arithmetic progressions.

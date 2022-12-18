@@ -1,7 +1,6 @@
 import 'dart:math' as math;
 
 import 'package:more/collection.dart';
-import 'package:more/iterable.dart';
 import 'package:more/math.dart';
 import 'package:more/number.dart';
 import 'package:test/test.dart';

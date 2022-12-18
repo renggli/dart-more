@@ -1,7 +1,6 @@
 // ignore_for_file: deprecated_member_use_from_same_package
 
 import 'package:more/collection.dart';
-import 'package:more/iterable.dart';
 import 'package:more/ordering.dart';
 import 'package:test/test.dart';
 

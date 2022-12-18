@@ -11,22 +11,21 @@ More Dart — Literally
 
 A collection of extensively tested extensions that make Dart a better place:
 
-| Library                                                                                          | Description                                                                                |
-|:-------------------------------------------------------------------------------------------------|:-------------------------------------------------------------------------------------------|
-| [async](https://pub.dev/documentation/more/latest/async/async-library.html)                      | Extensions to `Stream`.                                                                    | 
-| [cache](https://pub.dev/documentation/more/latest/cache/cache-library.html)                      | Caching strategies and their expiry policy.                                                |
-| [char_matcher](https://pub.dev/documentation/more/latest/char_matcher/char_matcher-library.html) | Character classes, their composition, and operations on strings.                           |
-| [collection](https://pub.dev/documentation/more/latest/collection/collection-library.html)       | Collection types: bi-map, bit-list, multi-set, sorted-list, set and list multi-map, range. |
-| [comparator](https://pub.dev/documentation/more/latest/collection/comparator-library.html)       | Common comparators, and extensions to perform advanced operations.                         | 
-| [feature](https://pub.dev/documentation/more/latest/feature/feature-library.html)                | Information about the runtime environment.                                                 |
-| [functional](https://pub.dev/documentation/more/latest/functional/functional-library.html)       | Types and features known from functional programming.                                      |
-| [interval](https://pub.dev/documentation/more/latest/interval/interval-library.html)             | Continuous interval data type over a comparable type.                                      |
-| [iterable](https://pub.dev/documentation/more/latest/iterable/iterable-library.html)             | Extensions to `Iterable`.                                                                  |
-| [math](https://pub.dev/documentation/more/latest/math/math-library.html)                         | Common mathematical functions.                                                             |
-| [number](https://pub.dev/documentation/more/latest/number/number-library.html)                   | Number types: fraction, complex, quaternion.                                               |
-| [printer](https://pub.dev/documentation/more/latest/printer/printer-library.html)                | Fluent interface to configure sophisticated formatter.                                     |
-| [temporal](https://pub.dev/documentation/more/latest/temporal/temporal-library.html)             | Extensions to `DateTime` and `Duration` types.                                             | 
-| [tuple](https://pub.dev/documentation/more/latest/tuple/tuple-library.html)                      | Generic sequence of typed values.                                                          |
+| Library                                                                                          | Description                                                        |
+|:-------------------------------------------------------------------------------------------------|:-------------------------------------------------------------------|
+| [async](https://pub.dev/documentation/more/latest/async/async-library.html)                      | Extensions to `Stream`.                                            | 
+| [cache](https://pub.dev/documentation/more/latest/cache/cache-library.html)                      | Caching strategies and their expiry policy.                        |
+| [char_matcher](https://pub.dev/documentation/more/latest/char_matcher/char_matcher-library.html) | Character classes, their composition, and operations on strings.   |
+| [collection](https://pub.dev/documentation/more/latest/collection/collection-library.html)       | Extensions to `Iterable` and new collection types.                 |
+| [comparator](https://pub.dev/documentation/more/latest/collection/comparator-library.html)       | Common comparators, and extensions to perform advanced operations. | 
+| [feature](https://pub.dev/documentation/more/latest/feature/feature-library.html)                | Information about the runtime environment.                         |
+| [functional](https://pub.dev/documentation/more/latest/functional/functional-library.html)       | Types and features known from functional programming.              |
+| [interval](https://pub.dev/documentation/more/latest/interval/interval-library.html)             | Continuous interval data type over a comparable type.              |
+| [math](https://pub.dev/documentation/more/latest/math/math-library.html)                         | Common mathematical functions.                                     |
+| [number](https://pub.dev/documentation/more/latest/number/number-library.html)                   | Number types: fraction, complex, quaternion.                       |
+| [printer](https://pub.dev/documentation/more/latest/printer/printer-library.html)                | Fluent interface to configure sophisticated formatter.             |
+| [temporal](https://pub.dev/documentation/more/latest/temporal/temporal-library.html)             | Extensions to `DateTime` and `Duration` types.                     | 
+| [tuple](https://pub.dev/documentation/more/latest/tuple/tuple-library.html)                      | Generic sequence of typed values.                                  |
 
 And there are more to come ...
 
@@ -58,7 +57,6 @@ import 'package:more/collection.dart';
 import 'package:more/feature.dart';
 import 'package:more/functional.dart';
 import 'package:more/interval.dart';
-import 'package:more/iterable.dart';
 import 'package:more/math.dart';
 import 'package:more/number.dart';
 import 'package:more/ordering.dart';

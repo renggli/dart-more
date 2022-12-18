@@ -1,4 +1,4 @@
-import '../../iterable/iterate.dart';
+import '../../../collection.dart';
 import '../time_unit.dart';
 
 extension PeriodicalDateTimeExtension on DateTime {

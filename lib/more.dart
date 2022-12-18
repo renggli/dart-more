@@ -7,7 +7,6 @@ export 'package:more/comparator.dart';
 export 'package:more/feature.dart';
 export 'package:more/functional.dart';
 export 'package:more/interval.dart';
-export 'package:more/iterable.dart';
 export 'package:more/math.dart';
 export 'package:more/number.dart';
 export 'package:more/ordering.dart';
