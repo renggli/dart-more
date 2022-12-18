@@ -10,7 +10,7 @@ extension ResultOfPrinterExtension<R> on Printer<R> {
 
   /// Returns a printer that accepts values of type [T] and invokes the provided
   /// `callback` to transform it to type [R] for printing.
-  @Deprecated('Use `onResultOf` instead.')
+  @Deprecated('Use `ResultOfPrinterExtension.onResultOf` instead')
   Printer<T> map<T>(Map1<T, R> function) => onResultOf<T>(function);
 
   /// Returns a printer that accepts values of type [T] and casts them to [R]

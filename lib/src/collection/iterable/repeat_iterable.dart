@@ -26,7 +26,7 @@ extension RepeatIterableExtension<E> on Iterable<E> {
   }
 
   /// Deprecated alias for [repeat].
-  @Deprecated('Use RepeatIterableExtension.repeat instead.')
+  @Deprecated('Use `RepeatIterableExtension.repeat` instead')
   Iterable<E> cycle([int? count]) => repeat(count: count);
 }
 

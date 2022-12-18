@@ -40,7 +40,7 @@ import 'reversed.dart';
 ///     natural.isOrdered(['ape', 'cat', 'dog']);  // true
 ///
 @immutable
-@Deprecated("Use the extension methods on the built-in 'Comparator' instead")
+@Deprecated("Use the extension methods on the built-in `Comparator` instead")
 abstract class Ordering<T> with ToStringPrinter {
   /// Returns an ordering based on a [comparator] function.
   factory Ordering.of(Comparator<T> comparator) =>

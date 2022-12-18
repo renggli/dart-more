@@ -2,31 +2,31 @@ import '../../../temporal.dart';
 
 /// Different kinds of repeating periodic timestamps.
 enum Period {
-  @Deprecated('Instead use `TimeUnit.millennium`.')
+  @Deprecated('Use `TimeUnit.millennium` instead')
   millennially(TimeUnit.millennium),
-  @Deprecated('Instead use `TimeUnit.century`.')
+  @Deprecated('Use `TimeUnit.century` instead')
   centennially(TimeUnit.century),
-  @Deprecated('Instead use `TimeUnit.decade`.')
+  @Deprecated('Use `TimeUnit.decade` instead')
   decennially(TimeUnit.decade),
-  @Deprecated('Instead use `TimeUnit.year`.')
+  @Deprecated('Use `TimeUnit.year` instead')
   yearly(TimeUnit.year),
-  @Deprecated('Instead use `TimeUnit.quarter`.')
+  @Deprecated('Use `TimeUnit.quarter` instead')
   quarterly(TimeUnit.quarter),
-  @Deprecated('Instead use `TimeUnit.month`.')
+  @Deprecated('Use `TimeUnit.month` instead')
   monthly(TimeUnit.month),
-  @Deprecated('Instead use `TimeUnit.week`.')
+  @Deprecated('Use `TimeUnit.week` instead')
   weekly(TimeUnit.week),
-  @Deprecated('Instead use `TimeUnit.day`.')
+  @Deprecated('Use `TimeUnit.day` instead')
   daily(TimeUnit.day),
-  @Deprecated('Instead use `TimeUnit.hour`.')
+  @Deprecated('Use `TimeUnit.hour` instead')
   hourly(TimeUnit.hour),
-  @Deprecated('Instead use `TimeUnit.minute`.')
+  @Deprecated('Use `TimeUnit.minute` instead')
   minutely(TimeUnit.minute),
-  @Deprecated('Instead use `TimeUnit.second`.')
+  @Deprecated('Use `TimeUnit.second` instead')
   secondly(TimeUnit.second),
-  @Deprecated('Instead use `TimeUnit.millisecond`.')
+  @Deprecated('Use `TimeUnit.millisecond` instead')
   millisecondly(TimeUnit.millisecond),
-  @Deprecated('Instead use `TimeUnit.microsecond`.')
+  @Deprecated('Use `TimeUnit.microsecond` instead')
   microsecondly(TimeUnit.microsecond);
 
   const Period(this.timeUnit);
@@ -61,7 +61,7 @@ extension PeriodicalExtension on DateTime {
   ///     final offset = Duration(days: 1);
   ///     iterate(DateTime().now(), (prev) => prev.add(offset));
   ///
-  @Deprecated('Instead use `PeriodicalDateTimeExtension.periodical`')
+  @Deprecated('Use `PeriodicalDateTimeExtension.periodical` instead')
   Iterable<DateTime> periodical({
     int step = 1,
     Period period = Period.daily,
@@ -71,7 +71,7 @@ extension PeriodicalExtension on DateTime {
 
 extension TruncateExtension on DateTime {
   /// Truncates [DateTime] to the beginning of the provided [Period].
-  @Deprecated('Instead use `TruncateToDateTimeExtension.truncateTo`')
+  @Deprecated('Use `TruncateToDateTimeExtension.truncateTo` instead')
   DateTime truncate({
     Period period = Period.daily,
     int startWeekday = DateTime.monday,

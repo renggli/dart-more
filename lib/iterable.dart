@@ -1,5 +1,5 @@
 /// Some fancy iterables and iterators.
-@Deprecated('Instead import `package:more/collection.dart`')
+@Deprecated('Import `package:more/collection.dart` instead')
 export 'src/collection/iterable/chunked.dart' show ChunkedExtension;
 export 'src/collection/iterable/combinations.dart' show CombinationsExtension;
 export 'src/collection/iterable/count.dart' show CountIterableExtension;

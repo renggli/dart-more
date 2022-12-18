@@ -1,5 +1,5 @@
 /// Returns a natural [Comparator] for objects of type `T`.
-@Deprecated("Prefer `naturalCompare` or `naturalComparable<T>` instead")
+@Deprecated('Use `naturalCompare` or `naturalComparable<T>` instead')
 Comparator<T> naturalComparator<T>() => naturalCompare;
 
 /// Natural dynamic [Comparator] function.

@@ -7,6 +7,6 @@ extension PrimesIntegerExtension on int {
   ///
   /// Deprecated: Use [EratosthenesPrimeSieve] or [EulerPrimeSieve] for a
   /// better and more performant interface.
-  @Deprecated('Use EratosthenesPrimeSieve or EulerPrimeSieve directly')
+  @Deprecated('Use `EratosthenesPrimeSieve` instead')
   Iterable<int> get primes => EratosthenesPrimeSieve(this).primes;
 }
