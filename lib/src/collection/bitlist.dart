@@ -98,7 +98,7 @@ abstract class BitList extends ListBase<bool> {
     final result = BitList(length + other.length);
     result.buffer.setRange(0, buffer.length, buffer);
     for (var i = 0; i < other.length; i++) {
-      result[length + i] = other[i];
+      result.setUnchecked(length + i, other[i]);
     }
     return result;
   }
@@ -167,13 +167,7 @@ abstract class BitList extends ListBase<bool> {
   /// Returns the complement of the receiver.
   ///
   /// The new [BitList] has all the bits of the receiver inverted.
-  BitList operator ~() {
-    final result = BitList(length);
-    for (var i = 0; i < buffer.length; i++) {
-      result.buffer[i] = ~buffer[i];
-    }
-    return result;
-  }
+  BitList operator ~() => BitList.of(this)..not();
 
   /// Computes the complement of the receiver in-place.
   void not() {
@@ -187,14 +181,7 @@ abstract class BitList extends ListBase<bool> {
   /// The new [BitList] has all the bits set that are set in the receiver and in
   /// [other]. The receiver and [other] need to have the same length, otherwise
   /// an exception is thrown.
-  BitList operator &(BitList other) {
-    _checkLength(other);
-    final result = BitList(length);
-    for (var i = 0; i < buffer.length; i++) {
-      result.buffer[i] = buffer[i] & other.buffer[i];
-    }
-    return result;
-  }
+  BitList operator &(BitList other) => BitList.of(this)..and(other);
 
   /// Computes the intersection of the receiver and [other] in-place.
   void and(BitList other) {
@@ -209,14 +196,7 @@ abstract class BitList extends ListBase<bool> {
   /// The new [BitList] has all the bits set that are either set in the receiver
   /// or in [other]. The receiver and [other] need to have the same length,
   /// otherwise an exception is thrown.
-  BitList operator |(BitList other) {
-    _checkLength(other);
-    final result = BitList(length);
-    for (var i = 0; i < buffer.length; i++) {
-      result.buffer[i] = buffer[i] | other.buffer[i];
-    }
-    return result;
-  }
+  BitList operator |(BitList other) => BitList.of(this)..or(other);
 
   /// Computes the union of the receiver and [other] in-place.
   void or(BitList other) {
@@ -231,13 +211,14 @@ abstract class BitList extends ListBase<bool> {
   /// The new [BitList] has all the bits set that are set in the receiver, but
   /// not in [other]. The receiver and [other] need to have the same length,
   /// otherwise an exception is thrown.
-  BitList operator -(BitList other) {
+  BitList operator -(BitList other) => BitList.of(this)..difference(other);
+
+  /// Computes the difference of the receiver and [other] in-place.
+  void difference(BitList other) {
     _checkLength(other);
-    final result = BitList(length);
     for (var i = 0; i < buffer.length; i++) {
-      result.buffer[i] = buffer[i] & ~other.buffer[i];
+      buffer[i] &= ~other.buffer[i];
     }
-    return result;
   }
 
   /// Returns a [BitList] of the same length, but with the bits of the receiver
