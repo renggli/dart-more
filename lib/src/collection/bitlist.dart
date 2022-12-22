@@ -1,27 +1,42 @@
 import 'dart:collection' show ListBase;
+import 'dart:math';
 import 'dart:typed_data' show Uint32List;
 
 import 'package:collection/collection.dart' show NonGrowableListMixin;
 
-/// An space efficient fixed length [List] that stores boolean values.
-class BitList extends ListBase<bool> with NonGrowableListMixin<bool> {
+import 'range/integer.dart' show IntegerRange;
+
+/// An space efficient [List] that stores boolean values.
+abstract class BitList extends ListBase<bool> {
   /// Constructs a bit list of the given [length].
-  factory BitList(int length) => BitList.filled(length, false);
+  factory BitList(int length, {bool fill = false, bool growable = false}) =>
+      BitList.filled(length, fill, growable: growable);
+
+  /// Constructs an empty bit list.
+  factory BitList.empty({bool growable = false}) =>
+      BitList.filled(0, false, growable: growable);
 
   /// Constructs a bit list of the given [length], and initializes the value at
   /// each position with [fill].
-  factory BitList.filled(int length, bool fill) {
+  factory BitList.filled(int length, bool fill, {bool growable = false}) {
     final buffer = Uint32List((length + bitOffset) >> bitShift);
-    if (fill) {
-      buffer.fillRange(0, buffer.length, bitMask);
-    }
-    return BitList._(buffer, length);
+    if (fill) buffer.fillRange(0, buffer.length, bitMask);
+    return growable
+        ? GrowableBitList(buffer, length)
+        : FixedBitList(buffer, length);
   }
 
+  /// Constructs a bit list of the given [length] by calling a [generator]
+  /// function for each index.
+  factory BitList.generate(int length, bool Function(int index) generator,
+          {bool growable = false}) =>
+      BitList.of(IntegerRange(length).map(generator), growable: growable);
+
   /// Constructs a new list from a given [Iterable] of booleans.
-  factory BitList.of(Iterable<bool> other) {
+  factory BitList.of(Iterable<bool> other, {bool growable = false}) {
     final length = other.length;
-    final buffer = Uint32List((length + bitOffset) >> bitShift);
+    final result = BitList(length, growable: growable);
+    final buffer = result.buffer;
     if (other is BitList) {
       buffer.setAll(0, other.buffer);
     } else {
@@ -36,21 +51,18 @@ class BitList extends ListBase<bool> with NonGrowableListMixin<bool> {
         buffer[i] = value;
       }
     }
-    return BitList._(buffer, length);
+    return result;
   }
 
   /// Constructs a new list from a given [Iterable] of booleans.
-  factory BitList.from(Iterable<bool> other) => BitList.of(other);
+  factory BitList.from(Iterable<bool> other, {bool growable = false}) =>
+      BitList.of(other, growable: growable);
 
-  /// Internal constructor for this object.
-  BitList._(this.buffer, this.length);
+  /// Internal generative constructor.
+  BitList._();
 
   /// The underlying typed buffer of this object.
-  final Uint32List buffer;
-
-  /// Returns the number of bits in this object.
-  @override
-  final int length;
+  Uint32List get buffer;
 
   /// Returns the value of the bit with the given [index].
   @override
@@ -89,6 +101,33 @@ class BitList extends ListBase<bool> with NonGrowableListMixin<bool> {
       result[length + i] = other[i];
     }
     return result;
+  }
+
+  @override
+  void fillRange(int start, int end, [bool? fill]) {
+    RangeError.checkValidRange(start, end, length);
+    if (start == end) return;
+    final startIndex = start >> bitShift;
+    final startBit = start & bitOffset;
+    final endIndex = (end - 1) >> bitShift;
+    final endBit = (end - 1) & bitOffset;
+    if (startIndex == endIndex) {
+      if (fill == true) {
+        buffer[startIndex] |= ((1 << (endBit - startBit + 1)) - 1) << startBit;
+      } else {
+        buffer[startIndex] &= ((1 << startBit) - 1) | (-1 << (endBit + 1));
+      }
+    } else {
+      if (fill == true) {
+        buffer[startIndex] |= bitMask << startBit;
+        buffer.fillRange(startIndex + 1, endIndex, bitMask);
+        buffer[endIndex] |= (1 << (endBit + 1)) - 1;
+      } else {
+        buffer[startIndex] &= (1 << startBit) - 1;
+        buffer.fillRange(startIndex + 1, endIndex, 0);
+        buffer[endIndex] &= bitMask << (endBit + 1);
+      }
+    }
   }
 
   /// Sets the bit at the specified [index] to the complement of its current
@@ -268,9 +307,48 @@ class BitList extends ListBase<bool> with NonGrowableListMixin<bool> {
   }
 }
 
+class GrowableBitList extends BitList {
+  GrowableBitList(this.buffer, this._length) : super._();
+
+  @override
+  Uint32List buffer;
+
+  int _length;
+
+  @override
+  int get length => _length;
+
+  @override
+  set length(int length) {
+    RangeError.checkNotNegative(length, 'length');
+    final requested = (length + bitOffset) >> bitShift;
+    if (buffer.length < requested) {
+      final newBuffer = Uint32List(max(2 * buffer.length, requested));
+      newBuffer.setRange(0, buffer.length, buffer);
+      buffer = newBuffer;
+    } else if (2 * requested < buffer.length) {
+      final newBuffer = Uint32List(requested);
+      newBuffer.setRange(0, newBuffer.length, buffer);
+      buffer = newBuffer;
+    }
+    _length = length;
+  }
+}
+
+class FixedBitList extends BitList with NonGrowableListMixin<bool> {
+  FixedBitList(this.buffer, this.length) : super._();
+
+  @override
+  final Uint32List buffer;
+
+  @override
+  final int length;
+}
+
 extension BitListExtension on Iterable<bool> {
   /// Converts this [Iterable] to a space-efficient [BitList].
-  BitList toBitList() => BitList.of(this);
+  BitList toBitList({bool growable = false}) =>
+      BitList.of(this, growable: growable);
 }
 
 // Constants specific to mapping bits into a [UInt32List].
