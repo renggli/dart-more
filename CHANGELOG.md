@@ -3,6 +3,7 @@
 ## 3.10.0
 * Add a growable `BitList`, make it behave more like `List<bool>`.
 * Optimize  `BitList` operations: `fill`, `count`, and `indices`.
+* Add graph algorithms and data structures.
 
 ## 3.9.0
 * Various extension to work with bits.
