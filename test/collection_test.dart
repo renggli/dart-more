@@ -384,20 +384,36 @@ void main() {
               expect(target, source);
             }
           });
-          test('counting', () {
+          test('count', () {
             for (var len = 0; len < 100; len++) {
-              final list = BitList.of(randomBooleans(823 * len, len),
+              final list = BitList.of(randomBooleans(743 * len, len),
                   growable: growable);
               final trueCount = list.count();
-              final falseCount = list.count(false);
+              final falseCount = list.count(expected: false);
               expect(trueCount + falseCount, list.length);
               expect(trueCount, list.where((b) => b == true).length);
               expect(falseCount, list.where((b) => b == false).length);
             }
           });
-          test('indexes', () {
+          test('countRange', () {
+            final generator = Random(926);
+            final list =
+                BitList.of(randomBooleans(744, 500), growable: growable);
+            for (var i = 0; i < 250; i++) {
+              final startIndex = generator.nextInt(list.length ~/ 2);
+              final endIndex = startIndex + generator.nextInt(list.length ~/ 2);
+              final trueCount = list.countRange(startIndex, endIndex);
+              final falseCount =
+                  list.countRange(startIndex, endIndex, expected: false);
+              expect(trueCount + falseCount, endIndex - startIndex);
+              final range = list.getRange(startIndex, endIndex);
+              expect(trueCount, range.where((b) => b == true).length);
+              expect(falseCount, range.where((b) => b == false).length);
+            }
+          });
+          test('indices', () {
             for (var len = 0; len < 100; len++) {
-              final list = BitList.of(randomBooleans(823 * len, len),
+              final list = BitList.of(randomBooleans(743 * len, len),
                   growable: growable);
               final trueList = list.indices().toList();
               final trueSet = trueList.toSet();

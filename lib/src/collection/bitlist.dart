@@ -4,6 +4,7 @@ import 'dart:typed_data' show Uint32List;
 
 import 'package:collection/collection.dart' show NonGrowableListMixin;
 
+import '../math/bit.dart';
 import 'range/integer.dart' show IntegerRange;
 
 /// An space efficient [List] that stores boolean values.
@@ -107,15 +108,13 @@ abstract class BitList extends ListBase<bool> {
   void fillRange(int start, int end, [bool? fill]) {
     RangeError.checkValidRange(start, end, length);
     if (start == end) return;
-    final startIndex = start >> bitShift;
-    final startBit = start & bitOffset;
-    final endIndex = (end - 1) >> bitShift;
-    final endBit = (end - 1) & bitOffset;
+    final startIndex = start >> bitShift, startBit = start & bitOffset;
+    final endIndex = (end - 1) >> bitShift, endBit = (end - 1) & bitOffset;
     if (startIndex == endIndex) {
       if (fill == true) {
         buffer[startIndex] |= ((1 << (endBit - startBit + 1)) - 1) << startBit;
       } else {
-        buffer[startIndex] &= ((1 << startBit) - 1) | (-1 << (endBit + 1));
+        buffer[startIndex] &= ((1 << startBit) - 1) | (bitMask << (endBit + 1));
       }
     } else {
       if (fill == true) {
@@ -144,15 +143,30 @@ abstract class BitList extends ListBase<bool> {
   void flipUnchecked(int index) =>
       buffer[index >> bitShift] ^= bitSetMask[index & bitOffset];
 
-  /// Counts the number of bits that are set to [expected].
-  int count([bool expected = true]) {
-    var tally = 0;
-    for (var index = 0; index < length; index++) {
-      if (getUnchecked(index) == expected) {
-        tally++;
+  /// Counts the number of bits set to [expected].
+  int count({bool expected = true}) =>
+      countRange(0, length, expected: expected);
+
+  /// Counts the number of bits set to [expected] in the range of [start]
+  /// (inclusive) to [end] (exclusive).
+  int countRange(int start, int end, {bool expected = true}) {
+    RangeError.checkValidRange(start, end, length);
+    if (start == end) return 0;
+    final startIndex = start >> bitShift, startBit = start & bitOffset;
+    final endIndex = (end - 1) >> bitShift, endBit = (end - 1) & bitOffset;
+    var result = 0;
+    if (startIndex == endIndex) {
+      result += (buffer[startIndex] &
+              (((1 << (endBit - startBit + 1)) - 1) << startBit))
+          .bitCount;
+    } else {
+      result += (buffer[startIndex] & (bitMask << startBit)).bitCount;
+      for (var i = startIndex + 1; i < endIndex; i++) {
+        result += buffer[i].bitCount;
       }
+      result += (buffer[endIndex] & ((1 << (endBit + 1)) - 1)).bitCount;
     }
-    return tally;
+    return expected ? result : (end - start) - result;
   }
 
   /// Returns an iterable over the indexes with the bit set to [expected].
