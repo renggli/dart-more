@@ -417,7 +417,7 @@ void main() {
                   growable: growable);
               final trueList = list.indices().toList();
               final trueSet = trueList.toSet();
-              final falseList = list.indices(false).toList();
+              final falseList = list.indices(expected: false).toList();
               final falseSet = falseList.toSet();
               expect(trueSet.length, trueList.length);
               expect(falseSet.length, falseList.length);

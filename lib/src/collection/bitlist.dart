@@ -170,11 +170,17 @@ abstract class BitList extends ListBase<bool> {
   }
 
   /// Returns an iterable over the indexes with the bit set to [expected].
-  Iterable<int> indices([bool expected = true]) sync* {
-    for (var index = 0; index < length; index++) {
-      if (getUnchecked(index) == expected) {
-        yield index;
+  Iterable<int> indices({bool expected = true}) sync* {
+    var mask = 0, index = 0, value = 0;
+    for (var i = 0; i < length; i++) {
+      if (mask == 0) {
+        value = buffer[index++];
+        mask = 1;
       }
+      if ((value & mask != 0) == expected) {
+        yield i;
+      }
+      mask = (mask << 1) & bitMask;
     }
   }
 
