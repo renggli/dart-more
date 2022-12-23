@@ -179,30 +179,30 @@ void main() {
       });
     });
   });
-  // group('topological', () {
-  //   test('basic graph', () {
-  //     final traversal = Traversal.topological(nextVertices: basicGraph);
-  //     expect(traversal.start(0).map((path) => path.tail), [3, 4, 1, 5, 2, 0]);
-  //   });
-  //   test('cyclic graph', skip: true, () {
-  //     final traversal = Traversal.topological(nextVertices: cyclicGraph);
-  //     expect(traversal.start(0), [
-  //       isPath<int>(head: 0, tail: 0, cost: 0, depth: 0, length: 1),
-  //       isPath<int>(head: 0, tail: 3, cost: 1, depth: 1, length: 2),
-  //       isPath<int>(head: 0, tail: 1, cost: 2, depth: 2, length: 3),
-  //       isPath<int>(head: 0, tail: 2, cost: 3, depth: 3, length: 4),
-  //       isPath<int>(head: 0, tail: 4, cost: 2, depth: 2, length: 3),
-  //     ]);
-  //   });
-  //   test('weighted graph', () {
-  //     final traversal = Traversal.topological(nextEdges: weightedGraph);
-  //     expect(traversal.start(0), [
-  //       isPath<int>(head: 0, tail: 0, cost: 0, depth: 0, length: 1),
-  //       isPath<int>(head: 0, tail: 1, cost: 1, depth: 1, length: 2),
-  //       isPath<int>(head: 0, tail: 2, cost: 3, depth: 2, length: 3),
-  //       isPath<int>(head: 0, tail: 3, cost: 6, depth: 3, length: 4),
-  //       isPath<int>(head: 0, tail: 4, cost: 4, depth: 1, length: 2),
-  //     ]);
-  //   });
-  // });
+  group('topological', () {
+    test('basic graph', () {
+      final traversal = Traversal.topological(nextVertices: basicGraph);
+      expect(traversal.start(0).map((path) => path.tail), [0, 1, 2, 4, 5, 3]);
+    });
+    // test('cyclic graph', skip: true, () {
+    //   final traversal = Traversal.topological(nextVertices: cyclicGraph);
+    //   expect(traversal.start(0), [
+    //     isPath<int>(head: 0, tail: 0, cost: 0, depth: 0, length: 1),
+    //     isPath<int>(head: 0, tail: 3, cost: 1, depth: 1, length: 2),
+    //     isPath<int>(head: 0, tail: 1, cost: 2, depth: 2, length: 3),
+    //     isPath<int>(head: 0, tail: 2, cost: 3, depth: 3, length: 4),
+    //     isPath<int>(head: 0, tail: 4, cost: 2, depth: 2, length: 3),
+    //   ]);
+    // });
+    // test('weighted graph', () {
+    //   final traversal = Traversal.topological(nextEdges: weightedGraph);
+    //   expect(traversal.start(0), [
+    //     isPath<int>(head: 0, tail: 0, cost: 0, depth: 0, length: 1),
+    //     isPath<int>(head: 0, tail: 1, cost: 1, depth: 1, length: 2),
+    //     isPath<int>(head: 0, tail: 2, cost: 3, depth: 2, length: 3),
+    //     isPath<int>(head: 0, tail: 3, cost: 6, depth: 3, length: 4),
+    //     isPath<int>(head: 0, tail: 4, cost: 4, depth: 1, length: 2),
+    //   ]);
+    // });
+  });
 }

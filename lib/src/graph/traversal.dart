@@ -2,6 +2,7 @@ import 'path.dart';
 import 'strategy.dart';
 import 'traversal/breadth_first.dart';
 import 'traversal/depth_first.dart';
+import 'traversal/topological.dart';
 import 'utils/next.dart';
 
 /// Implements various traversal techniques over a graph-like structure with
@@ -28,6 +29,13 @@ abstract class Traversal<V> {
     NextVertices<V>? nextVertices,
     GraphStrategy<V>? vertexStrategy,
   }) = DepthFirstTraversal;
+
+  /// Creates a topological traversal.
+  factory Traversal.topological({
+    NextEdges<V>? nextEdges,
+    NextVertices<V>? nextVertices,
+    GraphStrategy<V>? vertexStrategy,
+  }) = TopologicalTraversal;
 
   /// Returns the outgoing edges of a `vertex`.
   final NextEdges<V> nextEdges;

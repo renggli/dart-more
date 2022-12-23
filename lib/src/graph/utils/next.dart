@@ -1,5 +1,7 @@
 import 'package:meta/meta.dart';
 
+import 'defaults.dart';
+
 /// A function type returning the outgoing edges.
 typedef NextEdges<V> = Iterable<NextEdge<V>> Function(V vertex);
 
@@ -9,7 +11,7 @@ typedef NextVertices<V> = Iterable<V> Function(V vertex);
 /// A data class holding the data of an outgoing edge.
 @immutable
 class NextEdge<V> {
-  const NextEdge(this.target, {this.weight = 1});
+  const NextEdge(this.target, {this.weight = defaultWeight});
 
   /// The target vertex this edge is pointing to.
   final V target;
