@@ -19,7 +19,6 @@ class NextEdge<V> {
 }
 
 /// Internal creator of [NextEdges] functions.
-@internal
 NextEdges<V> createNextEdges<V>({
   NextEdges<V>? nextEdges,
   NextVertices<V>? nextVertices,

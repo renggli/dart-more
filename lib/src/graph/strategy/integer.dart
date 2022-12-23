@@ -16,6 +16,7 @@ class IntegerSet extends SetBase<int> {
 
   @override
   bool add(int value) {
+    RangeError.checkNotNegative(value, 'value');
     if (value >= storage.length) {
       storage.length = 1 + value;
     } else if (storage.getUnchecked(value)) {
@@ -62,7 +63,8 @@ class IntegerMap<T> extends MapBase<int, T> {
 
   @override
   void operator []=(int key, T value) {
-    if (key >= storage.length) storage.length = key;
+    RangeError.checkNotNegative(key, 'key');
+    if (key >= storage.length) storage.length = 1 + key;
     storage[key] = value;
   }
 
