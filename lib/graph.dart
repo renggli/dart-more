@@ -1,3 +1,12 @@
+export 'src/graph/builder.dart' show GraphBuilder;
+export 'src/graph/edge.dart' show Edge;
+export 'src/graph/generator/complete.dart' show CompleteGraphBuilder;
+export 'src/graph/generator/partite.dart' show PartiteGraphBuilder;
+export 'src/graph/generator/path.dart' show PathGraphBuilder;
+export 'src/graph/generator/ring.dart' show RingGraphBuilder;
+export 'src/graph/generator/star.dart' show StarGraphBuilder;
+export 'src/graph/graph.dart' show Graph;
+export 'src/graph/model/reversed.dart' show ReversedGraphExtension;
 export 'src/graph/path.dart';
 export 'src/graph/strategy/integer.dart';
 export 'src/graph/traversal.dart';
