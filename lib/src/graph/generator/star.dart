@@ -2,7 +2,7 @@ import '../builder.dart';
 import '../graph.dart';
 
 /// https://mathworld.wolfram.com/StarGraph.html
-extension StarGraphBuilder<V, E> on GraphBuilder<V, E> {
+extension StarGraphBuilderExtension<V, E> on GraphBuilder<V, E> {
   Graph<V, E> star({required int vertexCount}) {
     final graph = empty();
     if (vertexCount <= 0) {

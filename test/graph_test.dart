@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:more/graph.dart';
 import 'package:more/src/graph/strategy/default.dart';
 import 'package:test/test.dart';
@@ -270,6 +272,53 @@ void main() {
         reversed.removeVertex('World');
         expect(reversed.vertices, ['Hello']);
         expect(reversed.edges, isEmpty);
+      });
+    });
+  });
+  group('operation', () {
+    group('map', () {
+      final graph = GraphBuilder<int, Point<int>>(
+              edgeProvider: (source, target) => Point(source, target))
+          .ring(vertexCount: 3);
+      test('none', () {
+        final result = graph.map<int, Point<int>>();
+        expect(result.vertices, [0, 1, 2]);
+        expect(result.edges, [
+          isEdge(source: 0, target: 1, data: const Point(0, 1)),
+          isEdge(source: 1, target: 2, data: const Point(1, 2)),
+          isEdge(source: 2, target: 0, data: const Point(2, 0)),
+        ]);
+      });
+      test('vertex only', () {
+        final result = graph.map<String, Point<int>>(
+            vertex: (vertex) => vertex.toString());
+        expect(result.vertices, ['0', '1', '2']);
+        expect(result.edges, [
+          isEdge(source: '0', target: '1', data: const Point(0, 1)),
+          isEdge(source: '1', target: '2', data: const Point(1, 2)),
+          isEdge(source: '2', target: '0', data: const Point(2, 0)),
+        ]);
+      });
+      test('edge only', () {
+        final result = graph.map<int, String>(
+            edge: (edge) => '${edge.data.x} -> ${edge.data.y}');
+        expect(result.vertices, [0, 1, 2]);
+        expect(result.edges, [
+          isEdge(source: 0, target: 1, data: '0 -> 1'),
+          isEdge(source: 1, target: 2, data: '1 -> 2'),
+          isEdge(source: 2, target: 0, data: '2 -> 0'),
+        ]);
+      });
+      test('vertex and edge', () {
+        final result = graph.map<String, String>(
+            vertex: (vertex) => vertex.toString(),
+            edge: (edge) => '${edge.data.x} -> ${edge.data.y}');
+        expect(result.vertices, ['0', '1', '2']);
+        expect(result.edges, [
+          isEdge(source: '0', target: '1', data: '0 -> 1'),
+          isEdge(source: '1', target: '2', data: '1 -> 2'),
+          isEdge(source: '2', target: '0', data: '2 -> 0'),
+        ]);
       });
     });
   });

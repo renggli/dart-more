@@ -2,7 +2,7 @@ import '../builder.dart';
 import '../graph.dart';
 
 /// https://mathworld.wolfram.com/Completek-PartiteGraph.html
-extension PartiteGraphBuilder<V, E> on GraphBuilder<V, E> {
+extension PartiteGraphBuilderExtension<V, E> on GraphBuilder<V, E> {
   Graph<V, E> partite({required Iterable<int> vertexCounts}) {
     final parts = vertexCounts.toList();
     final offsets = parts

@@ -1,7 +1,7 @@
 import '../builder.dart';
 import '../graph.dart';
 
-extension RingGraphBuilder<V, E> on GraphBuilder<V, E> {
+extension RingGraphBuilderExtension<V, E> on GraphBuilder<V, E> {
   Graph<V, E> ring({required int vertexCount}) {
     final graph = empty();
     if (vertexCount <= 0) {

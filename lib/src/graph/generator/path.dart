@@ -2,7 +2,7 @@ import '../builder.dart';
 import '../graph.dart';
 
 /// https://mathworld.wolfram.com/PathGraph.html
-extension PathGraphBuilder<V, E> on GraphBuilder<V, E> {
+extension PathGraphBuilderExtension<V, E> on GraphBuilder<V, E> {
   Graph<V, E> path({required int vertexCount}) {
     final graph = empty();
     if (vertexCount <= 0) {
