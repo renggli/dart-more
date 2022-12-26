@@ -1,7 +1,7 @@
 import 'dart:math';
 
 import 'package:more/graph.dart';
-import 'package:more/src/graph/generator/adjacency.dart';
+import 'package:more/src/graph/generator/collection.dart';
 import 'package:test/test.dart';
 
 Matcher isEdge({
@@ -270,6 +270,98 @@ void main() {
     });
   });
   group('generate', () {
+    group('collection', () {
+      group('path', () {
+        test('empty', () {
+          final graph = GraphBuilder<String, Never>().fromPath([]);
+          expect(graph.vertices, isEmpty);
+          expect(graph.edges, isEmpty);
+        });
+        test('single', () {
+          final graph = GraphBuilder<String, Never>().fromPath(['a']);
+          expect(graph.vertices, ['a']);
+          expect(graph.edges, isEmpty);
+        });
+        test('multiple', () {
+          final graph = GraphBuilder<String, Never>().fromPath(['a', 'b', 'c']);
+          expect(graph.vertices, ['a', 'b', 'c']);
+          expect(graph.edges, [
+            isEdge(source: 'a', target: 'b'),
+            isEdge(source: 'b', target: 'c'),
+          ]);
+        });
+      });
+      group('paths', () {
+        test('empty', () {
+          final graph = GraphBuilder<String, Never>().fromPaths([]);
+          expect(graph.vertices, isEmpty);
+          expect(graph.edges, isEmpty);
+        });
+        test('simple', () {
+          final graph = GraphBuilder<String, Never>().fromPaths([
+            ['a'],
+            ['b', 'c'],
+          ]);
+          expect(graph.vertices, ['a', 'b', 'c']);
+          expect(graph.edges, [
+            isEdge(source: 'b', target: 'c'),
+          ]);
+        });
+        test('multiple', () {
+          final graph = GraphBuilder<String, Never>().fromPaths([
+            ['a', 'b', 'c'],
+            ['d', 'b', 'e'],
+          ]);
+          expect(graph.vertices, unorderedMatches(['a', 'b', 'c', 'd', 'e']));
+          expect(
+              graph.edges,
+              unorderedMatches([
+                isEdge(source: 'a', target: 'b'),
+                isEdge(source: 'b', target: 'c'),
+                isEdge(source: 'd', target: 'b'),
+                isEdge(source: 'b', target: 'e'),
+              ]));
+        });
+      });
+      group('predecessors', () {
+        test('empty', () {
+          final graph = GraphBuilder<String, Never>().fromPredecessors({});
+          expect(graph.vertices, isEmpty);
+          expect(graph.edges, isEmpty);
+        });
+        test('simple', () {
+          final graph = GraphBuilder<String, Never>().fromPredecessors({
+            'a': ['b', 'c'],
+          });
+          expect(graph.vertices, unorderedMatches(['a', 'b', 'c']));
+          expect(
+              graph.edges,
+              unorderedMatches([
+                isEdge(source: 'b', target: 'a'),
+                isEdge(source: 'c', target: 'a'),
+              ]));
+        });
+      });
+      group('successors', () {
+        test('empty', () {
+          final graph = GraphBuilder<String, Never>().fromSuccessors({});
+          expect(graph.vertices, isEmpty);
+          expect(graph.edges, isEmpty);
+        });
+        test('simple', () {
+          final graph = GraphBuilder<String, Never>().fromSuccessors({
+            'a': ['b', 'c'],
+          });
+          expect(graph.vertices, unorderedMatches(['a', 'b', 'c']));
+          expect(
+              graph.edges,
+              unorderedMatches([
+                isEdge(source: 'a', target: 'b'),
+                isEdge(source: 'a', target: 'c'),
+              ]));
+        });
+      });
+    });
     group('bipartite', () {
       test('empty', () {
         final graph = GraphBuilder<int, Never>().partite(vertexCounts: []);
@@ -496,7 +588,7 @@ void main() {
       });
       test('basic', () {
         final traverser =
-            GraphBuilder<int, Never>().adjacency(basicGraphData).traverse;
+            GraphBuilder<int, Never>().fromSuccessors(basicGraphData).traverse;
         expect(traverser.topological(0), [0, 1, 4, 2, 5, 3]);
       });
     });
