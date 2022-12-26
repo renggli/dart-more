@@ -3,7 +3,7 @@ import 'dart:collection';
 import '../../../collection.dart';
 import '../strategy.dart';
 
-class IntegerGraphStrategy implements GraphStrategy<int> {
+class IntegerStrategy implements Strategy<int> {
   @override
   Set<int> createSet() => IntegerSet();
 

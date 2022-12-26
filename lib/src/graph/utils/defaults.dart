@@ -1,1 +1,0 @@
-const defaultWeight = 1;

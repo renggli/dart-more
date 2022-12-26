@@ -1,6 +1,6 @@
 import '../strategy.dart';
 
-class DefaultGraphStrategy<T> implements GraphStrategy<T> {
+class DefaultStrategy<T> implements Strategy<T> {
   @override
   Set<T> createSet() => <T>{};
 
