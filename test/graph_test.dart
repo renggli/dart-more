@@ -1,6 +1,7 @@
 import 'dart:math';
 
 import 'package:more/graph.dart';
+import 'package:more/src/graph/generator/adjacency.dart';
 import 'package:test/test.dart';
 
 Matcher isEdge({
@@ -19,14 +20,16 @@ Matcher isEdge({
 // 0 ---> 2 ---> 5    /
 //  \                /
 //   +--> 1 ---> 4 -+
-Iterable<int> basicGraph(int vertex) => const {
-      0: [3, 2, 1],
-      1: [4],
-      2: [5],
-      3: <int>[],
-      4: [3],
-      5: [3],
-    }[vertex]!;
+const basicGraphData = {
+  0: [3, 2, 1],
+  1: [4],
+  2: [5],
+  3: <int>[],
+  4: [3],
+  5: [3],
+};
+
+Iterable<int> basicGraph(int vertex) => basicGraphData[vertex]!;
 
 // A cyclic graph:
 //
@@ -38,13 +41,15 @@ Iterable<int> basicGraph(int vertex) => const {
 //                 ^    |
 //                 \----/
 //
-Iterable<int> cyclicGraph(int vertex) => const {
-      0: [3],
-      1: [2, 3],
-      2: [3],
-      3: [1, 4],
-      4: [4],
-    }[vertex]!;
+const cyclicGraphData = {
+  0: [3],
+  1: [2, 3],
+  2: [3],
+  3: [1, 4],
+  4: [4],
+};
+
+Iterable<int> cyclicGraph(int vertex) => cyclicGraphData[vertex]!;
 
 // The reverse collatz graph:
 // https://en.wikipedia.org/wiki/Collatz_conjecture#In_reverse
@@ -402,6 +407,18 @@ void main() {
   });
   group('traverser', () {
     group('breadth-first', () {
+      test('path', () {
+        final graph = GraphBuilder<int, Never>().path(vertexCount: 10);
+        final traverser = graph.traverse;
+        expect(traverser.breadthFirst(graph.vertices.first),
+            [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]);
+      });
+      test('ring', () {
+        final graph = GraphBuilder<int, Never>().ring(vertexCount: 10);
+        final traverser = graph.traverse;
+        expect(traverser.breadthFirst(graph.vertices.first),
+            [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]);
+      });
       test('basic', () {
         final traverser = Traverser.fromFunction(basicGraph);
         expect(traverser.breadthFirst(0), [0, 3, 2, 1, 5, 4]);
@@ -415,33 +432,47 @@ void main() {
         expect(traverser.breadthFirst(1).take(10),
             [1, 2, 4, 8, 16, 5, 32, 10, 64, 3]);
       });
-      test('ring', () {
-        final ring = GraphBuilder<int, Never>().ring(vertexCount: 10);
-        expect(ring.traverse.breadthFirst(ring.vertices.first),
+    });
+    group('depth-first', () {
+      test('path', () {
+        final graph = GraphBuilder<int, Never>().path(vertexCount: 10);
+        final traverser = graph.traverse;
+        expect(traverser.depthFirst(graph.vertices.first),
             [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]);
       });
-    });
-    group('depth-first (pre-order)', () {
+      test('ring', () {
+        final graph = GraphBuilder<int, Never>().ring(vertexCount: 10);
+        final traverser = graph.traverse;
+        expect(traverser.depthFirst(graph.vertices.first),
+            [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]);
+      });
       test('basic', () {
         final traverser = Traverser.fromFunction(basicGraph);
-        expect(traverser.depthFirstPreOrder(0), [0, 3, 2, 5, 1, 4]);
+        expect(traverser.depthFirst(0), [0, 3, 2, 5, 1, 4]);
       });
       test('cyclic', () {
         final traverser = Traverser.fromFunction(cyclicGraph);
-        expect(traverser.depthFirstPreOrder(0), [0, 3, 1, 2, 4]);
+        expect(traverser.depthFirst(0), [0, 3, 1, 2, 4]);
       });
       test('infinite', () {
         final traverser = Traverser.fromFunction(reverseCollatzGraph);
-        expect(traverser.depthFirstPreOrder(1).take(10),
+        expect(traverser.depthFirst(1).take(10),
             [1, 2, 4, 8, 16, 5, 10, 3, 6, 12]);
-      });
-      test('ring', () {
-        final ring = GraphBuilder<int, Never>().ring(vertexCount: 10);
-        expect(ring.traverse.depthFirstPreOrder(ring.vertices.first),
-            [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]);
       });
     });
     group('depth-first (post-order)', () {
+      test('path', () {
+        final graph = GraphBuilder<int, Never>().path(vertexCount: 10);
+        final traverser = graph.traverse;
+        expect(traverser.depthFirstPostOrder(graph.vertices.first),
+            [9, 8, 7, 6, 5, 4, 3, 2, 1, 0]);
+      });
+      test('ring', () {
+        final graph = GraphBuilder<int, Never>().ring(vertexCount: 10);
+        final traverser = graph.traverse;
+        expect(traverser.depthFirstPostOrder(graph.vertices.first),
+            [9, 8, 7, 6, 5, 4, 3, 2, 1, 0]);
+      });
       test('basic', () {
         final traverser = Traverser.fromFunction(basicGraph);
         expect(traverser.depthFirstPostOrder(0), [3, 5, 2, 4, 1, 0]);
@@ -450,10 +481,23 @@ void main() {
         final traverser = Traverser.fromFunction(cyclicGraph);
         expect(traverser.depthFirstPostOrder(0), [2, 1, 4, 3, 0]);
       });
+    });
+    group('topological', () {
+      test('path', () {
+        final graph = GraphBuilder<int, Never>().path(vertexCount: 10);
+        final traverser = graph.traverse;
+        expect(traverser.topological(graph.vertices.first),
+            [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]);
+      });
       test('ring', () {
-        final ring = GraphBuilder<int, Never>().ring(vertexCount: 10);
-        expect(ring.traverse.depthFirstPostOrder(ring.vertices.first),
-            [9, 8, 7, 6, 5, 4, 3, 2, 1, 0]);
+        final graph = GraphBuilder<int, Never>().ring(vertexCount: 10);
+        final traverser = graph.traverse;
+        expect(traverser.topological(graph.vertices.first), isEmpty);
+      });
+      test('basic', () {
+        final traverser =
+            GraphBuilder<int, Never>().adjacency(basicGraphData).traverse;
+        expect(traverser.topological(0), [0, 1, 4, 2, 5, 3]);
       });
     });
   });

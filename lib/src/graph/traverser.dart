@@ -1,7 +1,7 @@
 import 'graph.dart';
 import 'strategy.dart';
 
-typedef SuccessorFunction<V> = Iterable<V> Function(V vertex);
+typedef VertexFunction<V> = Iterable<V> Function(V vertex);
 
 extension TraverseGraphExtension<V, E> on Graph<V, E> {
   Traverser<V> get traverse =>
@@ -11,13 +11,21 @@ extension TraverseGraphExtension<V, E> on Graph<V, E> {
 class Traverser<V> {
   Traverser.fromGraph(Graph<V, void> graph,
       {StorageStrategy<V>? vertexStrategy})
-      : this.fromFunction(graph.successorsOf, vertexStrategy: vertexStrategy);
+      : this.fromFunction(
+          graph.successorsOf,
+          predecessorFunction: graph.predecessorsOf,
+          vertexStrategy: vertexStrategy ?? graph.vertexStrategy,
+        );
 
-  Traverser.fromFunction(this.successorFunction,
-      {StorageStrategy<V>? vertexStrategy})
-      : vertexStrategy = vertexStrategy ?? StorageStrategy.defaultStrategy();
+  Traverser.fromFunction(
+    this.successorFunction, {
+    this.predecessorFunction,
+    StorageStrategy<V>? vertexStrategy,
+  }) : vertexStrategy = vertexStrategy ?? StorageStrategy.defaultStrategy();
 
-  final SuccessorFunction<V> successorFunction;
+  final VertexFunction<V>? predecessorFunction;
+
+  final VertexFunction<V> successorFunction;
 
   final StorageStrategy<V> vertexStrategy;
 }

@@ -13,3 +13,7 @@ export 'src/graph/traverser.dart' show TraverseGraphExtension, Traverser;
 export 'src/graph/traverser/breadth_first.dart'
     show BreadthFirstTraverserExtension;
 export 'src/graph/traverser/depth_first.dart' show DepthFirstTraverserExtension;
+export 'src/graph/traverser/depth_first_post_order.dart'
+    show DepthFirstPostOrderTraverserExtension;
+export 'src/graph/traverser/topological.dart'
+    show TopologicalTraverserExtension;
