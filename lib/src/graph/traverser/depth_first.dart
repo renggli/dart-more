@@ -2,6 +2,9 @@ import 'package:collection/collection.dart';
 
 import '../traverser.dart';
 
+/// Performs a depth-first traversal of vertices.
+///
+/// See https://en.wikipedia.org/wiki/Depth-first_search.
 extension DepthFirstTraverserExtension<V> on Traverser<V> {
   /// Traverses the vertices in a pre-order depth-first search (when they are
   /// first discovered), starting with [vertex].

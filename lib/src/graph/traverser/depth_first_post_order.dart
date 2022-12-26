@@ -3,6 +3,9 @@ import 'package:collection/collection.dart';
 import '../traverser.dart';
 import 'depth_first.dart';
 
+/// Performs a post-order depth-first traversal of vertices.
+///
+/// See https://en.wikipedia.org/wiki/Depth-first_search#Vertex_orderings.
 extension DepthFirstPostOrderTraverserExtension<V> on Traverser<V> {
   /// Traverses the vertices in a post-order depth-first search (after all its
   /// descendants have been discovered), starting with [vertex].
