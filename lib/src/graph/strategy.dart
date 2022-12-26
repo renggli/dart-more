@@ -2,10 +2,10 @@ import 'strategy/default.dart';
 import 'strategy/integer.dart';
 
 /// Encapsulates data structures used for the various graph algorithms.
-abstract class Strategy<T> {
+abstract class StorageStrategy<T> {
   /// Returns a suitable default strategy.
-  factory Strategy.defaultStrategy() =>
-      T == int ? IntegerStrategy() as Strategy<T> : DefaultStrategy<T>();
+  factory StorageStrategy.defaultStrategy() =>
+      T == int ? IntegerStrategy() as StorageStrategy<T> : DefaultStrategy<T>();
 
   Set<T> createSet();
 

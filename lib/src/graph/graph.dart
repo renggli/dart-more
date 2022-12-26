@@ -1,17 +1,25 @@
 import 'edge.dart';
 import 'model/directed.dart';
 import 'model/undirected.dart';
+import 'strategy.dart';
 
 /// Abstract base class of graphs.
 abstract class Graph<V, E> {
   /// Directed graph.
-  factory Graph.directed() = DirectedGraph;
+  factory Graph.directed({StorageStrategy<V>? vertexStrategy}) = DirectedGraph;
 
   /// Undirected graph.
-  factory Graph.undirected() = UndirectedGraph;
+  factory Graph.undirected({StorageStrategy<V>? vertexStrategy}) =
+      UndirectedGraph;
 
   /// Generative constructor.
   Graph();
+
+  /// Returns a strategy to store vertices.
+  StorageStrategy<V> get vertexStrategy;
+
+  /// Returns `true` if the graph is directed.
+  bool get isDirected;
 
   /// Returns the vertices of this graph.
   Iterable<V> get vertices;
@@ -40,9 +48,6 @@ abstract class Graph<V, E> {
   /// Returns the vertices that come after a `vertex`.
   Iterable<V> successorsOf(V vertex) =>
       outgoingEdgesOf(vertex).map((edge) => edge.target);
-
-  /// Returns `true` if the graph is directed.
-  bool get isDirected;
 
   /// Adds a vertex to this graph.
   void addVertex(V vertex);

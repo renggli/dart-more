@@ -415,6 +415,11 @@ void main() {
         expect(traverser.breadthFirst(1).take(10),
             [1, 2, 4, 8, 16, 5, 32, 10, 64, 3]);
       });
+      test('ring', () {
+        final ring = GraphBuilder<int, Never>().ring(vertexCount: 10);
+        expect(ring.traverse.breadthFirst(ring.vertices.first),
+            [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]);
+      });
     });
     group('depth-first (pre-order)', () {
       test('basic', () {
@@ -430,6 +435,11 @@ void main() {
         expect(traverser.depthFirstPreOrder(1).take(10),
             [1, 2, 4, 8, 16, 5, 10, 3, 6, 12]);
       });
+      test('ring', () {
+        final ring = GraphBuilder<int, Never>().ring(vertexCount: 10);
+        expect(ring.traverse.depthFirstPreOrder(ring.vertices.first),
+            [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]);
+      });
     });
     group('depth-first (post-order)', () {
       test('basic', () {
@@ -439,6 +449,11 @@ void main() {
       test('cyclic', () {
         final traverser = Traverser.fromFunction(cyclicGraph);
         expect(traverser.depthFirstPostOrder(0), [2, 1, 4, 3, 0]);
+      });
+      test('ring', () {
+        final ring = GraphBuilder<int, Never>().ring(vertexCount: 10);
+        expect(ring.traverse.depthFirstPostOrder(ring.vertices.first),
+            [9, 8, 7, 6, 5, 4, 3, 2, 1, 0]);
       });
     });
   });

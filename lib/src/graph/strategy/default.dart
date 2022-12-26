@@ -1,6 +1,6 @@
 import '../strategy.dart';
 
-class DefaultStrategy<T> implements Strategy<T> {
+class DefaultStrategy<T> implements StorageStrategy<T> {
   @override
   Set<T> createSet() => <T>{};
 

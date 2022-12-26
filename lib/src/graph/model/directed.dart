@@ -2,9 +2,22 @@ import 'package:meta/meta.dart';
 
 import '../edge.dart';
 import '../graph.dart';
+import '../strategy.dart';
 
 class DirectedGraph<V, E> extends Graph<V, E> {
-  final Map<V, VertexWrapper<V, E>> vertexWrappers = {};
+  factory DirectedGraph({StorageStrategy<V>? vertexStrategy}) =>
+      DirectedGraph._(vertexStrategy ?? StorageStrategy<V>.defaultStrategy());
+
+  DirectedGraph._(this.vertexStrategy)
+      : vertexWrappers = vertexStrategy.createMap<VertexWrapper<V, E>>();
+
+  final Map<V, VertexWrapper<V, E>> vertexWrappers;
+
+  @override
+  final StorageStrategy<V> vertexStrategy;
+
+  @override
+  bool get isDirected => true;
 
   @override
   Iterable<V> get vertices => vertexWrappers.keys;
@@ -20,9 +33,6 @@ class DirectedGraph<V, E> extends Graph<V, E> {
   @override
   Iterable<Edge<V, E>> outgoingEdgesOf(V vertex) =>
       vertexWrappers[vertex]?.outgoingWrappers ?? <Edge<V, E>>[];
-
-  @override
-  bool get isDirected => true;
 
   @override
   void addVertex(V vertex) => getVertexWrapper(vertex);

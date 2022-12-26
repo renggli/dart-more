@@ -1,9 +1,19 @@
 import '../edge.dart';
 import '../graph.dart';
+import '../strategy.dart';
 import 'directed.dart';
 
 class UndirectedGraph<V, E> extends Graph<V, E> {
-  final delegate = DirectedGraph<V, E>();
+  UndirectedGraph({StorageStrategy<V>? vertexStrategy})
+      : delegate = DirectedGraph<V, E>(vertexStrategy: vertexStrategy);
+
+  final Graph<V, E> delegate;
+
+  @override
+  StorageStrategy<V> get vertexStrategy => delegate.vertexStrategy;
+
+  @override
+  bool get isDirected => false;
 
   @override
   Iterable<V> get vertices => delegate.vertices;
@@ -18,9 +28,6 @@ class UndirectedGraph<V, E> extends Graph<V, E> {
   @override
   Iterable<Edge<V, E>> outgoingEdgesOf(V vertex) =>
       delegate.outgoingEdgesOf(vertex);
-
-  @override
-  bool get isDirected => false;
 
   @override
   void addVertex(V vertex) => delegate.addVertex(vertex);

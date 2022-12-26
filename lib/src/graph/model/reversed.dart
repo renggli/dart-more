@@ -1,5 +1,6 @@
 import '../edge.dart';
 import '../graph.dart';
+import '../strategy.dart';
 import 'reversed_edge.dart';
 
 extension ReversedGraphExtension<V, E> on Graph<V, E> {
@@ -20,6 +21,12 @@ class ReversedGraph<V, E> extends Graph<V, E> {
   final Graph<V, E> delegate;
 
   @override
+  StorageStrategy<V> get vertexStrategy => delegate.vertexStrategy;
+
+  @override
+  bool get isDirected => delegate.isDirected;
+
+  @override
   Iterable<V> get vertices => delegate.vertices;
 
   @override
@@ -32,9 +39,6 @@ class ReversedGraph<V, E> extends Graph<V, E> {
   @override
   Iterable<Edge<V, E>> outgoingEdgesOf(V vertex) =>
       delegate.outgoingEdgesOf(vertex).map((edge) => edge.reversed);
-
-  @override
-  bool get isDirected => delegate.isDirected;
 
   @override
   void addVertex(V vertex) => delegate.addVertex(vertex);

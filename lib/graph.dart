@@ -9,7 +9,7 @@ export 'src/graph/graph.dart' show Graph;
 export 'src/graph/model/reversed.dart' show ReversedGraphExtension;
 export 'src/graph/operations/map.dart' show MapGraphExtension;
 export 'src/graph/strategy/integer.dart';
-export 'src/graph/traverser.dart' show Traverser;
+export 'src/graph/traverser.dart' show TraverseGraphExtension, Traverser;
 export 'src/graph/traverser/breadth_first.dart'
     show BreadthFirstTraverserExtension;
 export 'src/graph/traverser/depth_first.dart' show DepthFirstTraverserExtension;
