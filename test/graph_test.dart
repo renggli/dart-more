@@ -67,47 +67,228 @@ void main() {
         expect(graph.vertices, isEmpty);
         expect(graph.edges, isEmpty);
       });
-      test('add vertex', () {
-        final graph = Graph<String, int>.directed();
-        graph.addVertex('Hello');
-        expect(graph.vertices, ['Hello']);
-        expect(graph.edges, isEmpty);
+      group('modifying', () {
+        test('add vertex', () {
+          final graph = Graph<String, int>.directed();
+          graph.addVertex('Hello');
+          expect(graph.vertices, ['Hello']);
+          expect(graph.edges, isEmpty);
+        });
+        test('remove vertex', () {
+          final graph = Graph<String, int>.directed();
+          graph.addVertex('Hello');
+          graph.removeVertex('Hello');
+          expect(graph.vertices, isEmpty);
+          expect(graph.edges, isEmpty);
+        });
+        test('add edge', () {
+          final graph = Graph<String, int>.directed();
+          graph.addEdge('Hello', 'World', data: 42);
+          expect(graph.vertices, unorderedEquals(['Hello', 'World']));
+          expect(graph.edges, [
+            isEdge(source: 'Hello', target: 'World', data: 42),
+          ]);
+        });
+        test('remove edge', () {
+          final graph = Graph<String, int>.directed();
+          graph.addEdge('Hello', 'World');
+          graph.removeEdge('Hello', 'World');
+          expect(graph.vertices, unorderedEquals(['Hello', 'World']));
+          expect(graph.edges, isEmpty);
+        });
+        test('add edge, remove first vertex', () {
+          final graph = Graph<String, int>.directed();
+          graph.addEdge('Hello', 'World');
+          graph.removeVertex('Hello');
+          expect(graph.vertices, ['World']);
+          expect(graph.edges, isEmpty);
+        });
+        test('add edge, remove second vertex', () {
+          final graph = Graph<String, int>.directed();
+          graph.addEdge('Hello', 'World');
+          graph.removeVertex('World');
+          expect(graph.vertices, ['Hello']);
+          expect(graph.edges, isEmpty);
+        });
       });
-      test('remove vertex', () {
-        final graph = Graph<String, int>.directed();
-        graph.addVertex('Hello');
-        graph.removeVertex('Hello');
+      group('querying', () {
+        final graph = Graph<int, String>.directed()
+          ..addEdge(0, 1, data: 'a')
+          ..addEdge(1, 2, data: 'b');
+        test('vertices', () {
+          expect(graph.vertices, unorderedEquals([0, 1, 2]));
+        });
+        test('edges', () {
+          expect(
+              graph.edges,
+              unorderedEquals([
+                isEdge(source: 0, target: 1, data: 'a'),
+                isEdge(source: 1, target: 2, data: 'b'),
+              ]));
+        });
+        test('edgesOf', () {
+          expect(graph.edgesOf(0), [
+            isEdge(source: 0, target: 1, data: 'a'),
+          ]);
+          expect(
+              graph.edgesOf(1),
+              unorderedEquals([
+                isEdge(source: 0, target: 1, data: 'a'),
+                isEdge(source: 1, target: 2, data: 'b'),
+              ]));
+          expect(graph.edgesOf(2), [
+            isEdge(source: 1, target: 2, data: 'b'),
+          ]);
+        });
+        test('incomingEdgesOf', () {
+          expect(graph.incomingEdgesOf(0), isEmpty);
+          expect(graph.incomingEdgesOf(1), [
+            isEdge(source: 0, target: 1, data: 'a'),
+          ]);
+          expect(graph.incomingEdgesOf(2), [
+            isEdge(source: 1, target: 2, data: 'b'),
+          ]);
+        });
+        test('outgoingEdgesOf', () {
+          expect(graph.outgoingEdgesOf(0), [
+            isEdge(source: 0, target: 1, data: 'a'),
+          ]);
+          expect(graph.outgoingEdgesOf(1), [
+            isEdge(source: 1, target: 2, data: 'b'),
+          ]);
+          expect(graph.outgoingEdgesOf(2), isEmpty);
+        });
+        test('neighboursOf', () {
+          expect(graph.neighboursOf(0), [1]);
+          expect(graph.neighboursOf(1), [0, 2]);
+          expect(graph.neighboursOf(2), [1]);
+        });
+        test('predecessorsOf', () {
+          expect(graph.predecessorsOf(0), isEmpty);
+          expect(graph.predecessorsOf(1), [0]);
+          expect(graph.predecessorsOf(2), [1]);
+        });
+        test('successorsOf', () {
+          expect(graph.successorsOf(0), [1]);
+          expect(graph.successorsOf(1), [2]);
+          expect(graph.successorsOf(2), isEmpty);
+        });
+      });
+    });
+    group('reversed', () {
+      test('empty', () {
+        final graph = Graph<String, int>.directed().reversed;
+        expect(graph.isDirected, isTrue);
         expect(graph.vertices, isEmpty);
         expect(graph.edges, isEmpty);
       });
-      test('add edge', () {
-        final graph = Graph<String, int>.directed();
-        graph.addEdge('Hello', 'World');
-        expect(graph.vertices, ['Hello', 'World']);
-        expect(graph.edges, [
-          isEdge(source: 'Hello', target: 'World'),
-        ]);
+      group('modifying', () {
+        test('add vertex', () {
+          final graph = Graph<String, int>.directed().reversed;
+          graph.addVertex('Hello');
+          expect(graph.vertices, ['Hello']);
+          expect(graph.edges, isEmpty);
+        });
+        test('remove vertex', () {
+          final graph = Graph<String, int>.directed().reversed;
+          graph.addVertex('Hello');
+          graph.removeVertex('Hello');
+          expect(graph.vertices, isEmpty);
+          expect(graph.edges, isEmpty);
+        });
+        test('add edge', () {
+          final graph = Graph<String, int>.directed().reversed;
+          graph.addEdge('Hello', 'World', data: 42);
+          expect(graph.vertices, unorderedEquals(['Hello', 'World']));
+          expect(graph.edges, [
+            isEdge(source: 'Hello', target: 'World', data: 42),
+          ]);
+        });
+        test('remove edge', () {
+          final graph = Graph<String, int>.directed().reversed;
+          graph.addEdge('Hello', 'World');
+          graph.removeEdge('Hello', 'World');
+          expect(graph.vertices, unorderedEquals(['Hello', 'World']));
+          expect(graph.edges, isEmpty);
+        });
+        test('add edge, remove first vertex', () {
+          final graph = Graph<String, int>.directed().reversed;
+          graph.addEdge('Hello', 'World');
+          graph.removeVertex('Hello');
+          expect(graph.vertices, ['World']);
+          expect(graph.edges, isEmpty);
+        });
+        test('add edge, remove second vertex', () {
+          final graph = Graph<String, int>.directed().reversed;
+          graph.addEdge('Hello', 'World');
+          graph.removeVertex('World');
+          expect(graph.vertices, ['Hello']);
+          expect(graph.edges, isEmpty);
+        });
       });
-      test('remove edge', () {
-        final graph = Graph<String, int>.directed();
-        graph.addEdge('Hello', 'World');
-        graph.removeEdge('Hello', 'World');
-        expect(graph.vertices, ['Hello', 'World']);
-        expect(graph.edges, isEmpty);
-      });
-      test('add edge, remove first vertex', () {
-        final graph = Graph<String, int>.directed();
-        graph.addEdge('Hello', 'World');
-        graph.removeVertex('Hello');
-        expect(graph.vertices, ['World']);
-        expect(graph.edges, isEmpty);
-      });
-      test('add edge, remove second vertex', () {
-        final graph = Graph<String, int>.directed();
-        graph.addEdge('Hello', 'World');
-        graph.removeVertex('World');
-        expect(graph.vertices, ['Hello']);
-        expect(graph.edges, isEmpty);
+      group('querying', () {
+        final directed = Graph<int, String>.directed()
+          ..addEdge(0, 1, data: 'a')
+          ..addEdge(1, 2, data: 'b');
+        final graph = directed.reversed;
+        test('vertices', () {
+          expect(graph.vertices, unorderedEquals([0, 1, 2]));
+        });
+        test('edges', () {
+          expect(
+              graph.edges,
+              unorderedEquals([
+                isEdge(source: 1, target: 0, data: 'a'),
+                isEdge(source: 2, target: 1, data: 'b'),
+              ]));
+        });
+        test('edgesOf', () {
+          expect(graph.edgesOf(0), [
+            isEdge(source: 1, target: 0, data: 'a'),
+          ]);
+          expect(
+              graph.edgesOf(1),
+              unorderedEquals([
+                isEdge(source: 1, target: 0, data: 'a'),
+                isEdge(source: 2, target: 1, data: 'b'),
+              ]));
+          expect(graph.edgesOf(2), [
+            isEdge(source: 2, target: 1, data: 'b'),
+          ]);
+        });
+        test('incomingEdgesOf', () {
+          expect(graph.incomingEdgesOf(0), [
+            isEdge(source: 1, target: 0, data: 'a'),
+          ]);
+          expect(graph.incomingEdgesOf(1), [
+            isEdge(source: 2, target: 1, data: 'b'),
+          ]);
+          expect(graph.incomingEdgesOf(2), isEmpty);
+        });
+        test('outgoingEdgesOf', () {
+          expect(graph.outgoingEdgesOf(0), isEmpty);
+          expect(graph.outgoingEdgesOf(1), [
+            isEdge(source: 1, target: 0, data: 'a'),
+          ]);
+          expect(graph.outgoingEdgesOf(2), [
+            isEdge(source: 2, target: 1, data: 'b'),
+          ]);
+        });
+        test('neighboursOf', () {
+          expect(graph.neighboursOf(0), [1]);
+          expect(graph.neighboursOf(1), unorderedEquals([0, 2]));
+          expect(graph.neighboursOf(2), [1]);
+        });
+        test('predecessorsOf', () {
+          expect(graph.predecessorsOf(0), [1]);
+          expect(graph.predecessorsOf(1), [2]);
+          expect(graph.predecessorsOf(2), isEmpty);
+        });
+        test('successorsOf', () {
+          expect(graph.successorsOf(0), isEmpty);
+          expect(graph.successorsOf(1), [0]);
+          expect(graph.successorsOf(2), [1]);
+        });
       });
     });
     group('undirected', () {
@@ -116,109 +297,131 @@ void main() {
         expect(graph.vertices, isEmpty);
         expect(graph.edges, isEmpty);
       });
-      test('add vertex', () {
-        final graph = Graph<String, int>.undirected();
-        graph.addVertex('Hello');
-        expect(graph.vertices, ['Hello']);
-        expect(graph.edges, isEmpty);
+      group('modifying', () {
+        test('add vertex', () {
+          final graph = Graph<String, int>.undirected();
+          graph.addVertex('Hello');
+          expect(graph.vertices, ['Hello']);
+          expect(graph.edges, isEmpty);
+        });
+        test('remove vertex', () {
+          final graph = Graph<String, int>.undirected();
+          graph.addVertex('Hello');
+          graph.removeVertex('Hello');
+          expect(graph.vertices, isEmpty);
+          expect(graph.edges, isEmpty);
+        });
+        test('add edge', () {
+          final graph = Graph<String, int>.undirected();
+          graph.addEdge('Hello', 'World', data: 42);
+          expect(graph.vertices, unorderedEquals(['Hello', 'World']));
+          expect(
+              graph.edges,
+              unorderedEquals([
+                isEdge(source: 'Hello', target: 'World', data: 42),
+                isEdge(source: 'World', target: 'Hello', data: 42),
+              ]));
+        });
+        test('remove edge', () {
+          final graph = Graph<String, int>.undirected();
+          graph.addEdge('Hello', 'World');
+          graph.removeEdge('Hello', 'World');
+          expect(graph.vertices, unorderedEquals(['Hello', 'World']));
+          expect(graph.edges, isEmpty);
+        });
+        test('add edge, remove first vertex', () {
+          final graph = Graph<String, int>.undirected();
+          graph.addEdge('Hello', 'World');
+          graph.removeVertex('Hello');
+          expect(graph.vertices, ['World']);
+          expect(graph.edges, isEmpty);
+        });
+        test('add edge, remove second vertex', () {
+          final graph = Graph<String, int>.undirected();
+          graph.addEdge('Hello', 'World');
+          graph.removeVertex('World');
+          expect(graph.vertices, ['Hello']);
+          expect(graph.edges, isEmpty);
+        });
       });
-      test('remove vertex', () {
-        final graph = Graph<String, int>.undirected();
-        graph.addVertex('Hello');
-        graph.removeVertex('Hello');
-        expect(graph.vertices, isEmpty);
-        expect(graph.edges, isEmpty);
-      });
-      test('add edge', () {
-        final graph = Graph<String, int>.undirected();
-        graph.addEdge('Hello', 'World');
-        expect(graph.vertices, ['Hello', 'World']);
-        expect(graph.edges, [
-          isEdge(source: 'Hello', target: 'World'),
-          isEdge(source: 'World', target: 'Hello'),
-        ]);
-      });
-      test('remove edge', () {
-        final graph = Graph<String, int>.undirected();
-        graph.addEdge('Hello', 'World');
-        graph.removeEdge('Hello', 'World');
-        expect(graph.vertices, ['Hello', 'World']);
-        expect(graph.edges, isEmpty);
-      });
-      test('add edge, remove first vertex', () {
-        final graph = Graph<String, int>.undirected();
-        graph.addEdge('Hello', 'World');
-        graph.removeVertex('Hello');
-        expect(graph.vertices, ['World']);
-        expect(graph.edges, isEmpty);
-      });
-      test('add edge, remove second vertex', () {
-        final graph = Graph<String, int>.undirected();
-        graph.addEdge('Hello', 'World');
-        graph.removeVertex('World');
-        expect(graph.vertices, ['Hello']);
-        expect(graph.edges, isEmpty);
+      group('querying', () {
+        final graph = Graph<int, String>.undirected()
+          ..addEdge(0, 1, data: 'a')
+          ..addEdge(1, 2, data: 'b');
+        test('vertices', () {
+          expect(graph.vertices, unorderedEquals([0, 1, 2]));
+        });
+        test('edges', () {
+          expect(
+              graph.edges,
+              unorderedEquals([
+                isEdge(source: 0, target: 1, data: 'a'),
+                isEdge(source: 1, target: 0, data: 'a'),
+                isEdge(source: 1, target: 2, data: 'b'),
+                isEdge(source: 2, target: 1, data: 'b'),
+              ]));
+        });
+        test('edgesOf', () {
+          expect(graph.edgesOf(0), [
+            isEdge(source: 0, target: 1, data: 'a'),
+          ]);
+          expect(
+              graph.edgesOf(1),
+              unorderedEquals([
+                isEdge(source: 1, target: 0, data: 'a'),
+                isEdge(source: 1, target: 2, data: 'b'),
+              ]));
+          expect(graph.edgesOf(2), [
+            isEdge(source: 2, target: 1, data: 'b'),
+          ]);
+        });
+        test('incomingEdgesOf', () {
+          expect(graph.incomingEdgesOf(0), [
+            isEdge(source: 1, target: 0, data: 'a'),
+          ]);
+          expect(
+              graph.incomingEdgesOf(1),
+              unorderedEquals([
+                isEdge(source: 0, target: 1, data: 'a'),
+                isEdge(source: 2, target: 1, data: 'b'),
+              ]));
+          expect(graph.incomingEdgesOf(2), [
+            isEdge(source: 1, target: 2, data: 'b'),
+          ]);
+        });
+        test('outgoingEdgesOf', () {
+          expect(graph.outgoingEdgesOf(0), [
+            isEdge(source: 0, target: 1, data: 'a'),
+          ]);
+          expect(
+              graph.outgoingEdgesOf(1),
+              unorderedEquals([
+                isEdge(source: 1, target: 0, data: 'a'),
+                isEdge(source: 1, target: 2, data: 'b'),
+              ]));
+          expect(graph.outgoingEdgesOf(2), [
+            isEdge(source: 2, target: 1, data: 'b'),
+          ]);
+        });
+        test('neighboursOf', () {
+          expect(graph.neighboursOf(0), [1]);
+          expect(graph.neighboursOf(1), unorderedEquals([0, 2]));
+          expect(graph.neighboursOf(2), [1]);
+        });
+        test('predecessorsOf', () {
+          expect(graph.predecessorsOf(0), [1]);
+          expect(graph.predecessorsOf(1), unorderedEquals([0, 2]));
+          expect(graph.predecessorsOf(2), [1]);
+        });
+        test('successorsOf', () {
+          expect(graph.successorsOf(0), [1]);
+          expect(graph.successorsOf(1), unorderedEquals([0, 2]));
+          expect(graph.successorsOf(2), [1]);
+        });
       });
       test('reversed', () {
         final graph = Graph<String, int>.undirected();
         expect(graph.reversed, same(graph));
-      });
-    });
-    group('reversed', () {
-      test('empty', () {
-        final graph = Graph<String, int>.directed();
-        final reversed = graph.reversed;
-        expect(reversed.isDirected, isTrue);
-        expect(reversed.vertices, isEmpty);
-        expect(reversed.edges, isEmpty);
-      });
-      test('add vertex', () {
-        final graph = Graph<String, int>.directed();
-        final reversed = graph.reversed;
-        reversed.addVertex('Hello');
-        expect(reversed.vertices, ['Hello']);
-        expect(reversed.edges, isEmpty);
-      });
-      test('remove vertex', () {
-        final graph = Graph<String, int>.directed();
-        final reversed = graph.reversed;
-        reversed.addVertex('Hello');
-        reversed.removeVertex('Hello');
-        expect(reversed.vertices, isEmpty);
-        expect(reversed.edges, isEmpty);
-      });
-      test('add edge', () {
-        final graph = Graph<String, int>.directed();
-        final reversed = graph.reversed;
-        reversed.addEdge('Hello', 'World');
-        expect(reversed.vertices, ['World', 'Hello']);
-        expect(reversed.edges, [
-          isEdge(source: 'Hello', target: 'World'),
-        ]);
-      });
-      test('remove edge', () {
-        final graph = Graph<String, int>.directed();
-        final reversed = graph.reversed;
-        reversed.addEdge('Hello', 'World');
-        reversed.removeEdge('Hello', 'World');
-        expect(reversed.vertices, ['World', 'Hello']);
-        expect(reversed.edges, isEmpty);
-      });
-      test('add edge, remove first vertex', () {
-        final graph = Graph<String, int>.directed();
-        final reversed = graph.reversed;
-        reversed.addEdge('Hello', 'World');
-        reversed.removeVertex('Hello');
-        expect(reversed.vertices, ['World']);
-        expect(reversed.edges, isEmpty);
-      });
-      test('add edge, remove second vertex', () {
-        final graph = Graph<String, int>.directed();
-        final reversed = graph.reversed;
-        reversed.addEdge('Hello', 'World');
-        reversed.removeVertex('World');
-        expect(reversed.vertices, ['Hello']);
-        expect(reversed.edges, isEmpty);
       });
     });
   });
@@ -229,43 +432,51 @@ void main() {
           .ring(vertexCount: 3);
       test('none', () {
         final result = graph.map<int, Point<int>>();
-        expect(result.vertices, [0, 1, 2]);
-        expect(result.edges, [
-          isEdge(source: 0, target: 1, data: const Point(0, 1)),
-          isEdge(source: 1, target: 2, data: const Point(1, 2)),
-          isEdge(source: 2, target: 0, data: const Point(2, 0)),
-        ]);
+        expect(result.vertices, unorderedEquals([0, 1, 2]));
+        expect(
+            result.edges,
+            unorderedEquals([
+              isEdge(source: 0, target: 1, data: const Point(0, 1)),
+              isEdge(source: 1, target: 2, data: const Point(1, 2)),
+              isEdge(source: 2, target: 0, data: const Point(2, 0)),
+            ]));
       });
       test('vertex only', () {
         final result = graph.map<String, Point<int>>(
             vertex: (vertex) => vertex.toString());
-        expect(result.vertices, ['0', '1', '2']);
-        expect(result.edges, [
-          isEdge(source: '0', target: '1', data: const Point(0, 1)),
-          isEdge(source: '1', target: '2', data: const Point(1, 2)),
-          isEdge(source: '2', target: '0', data: const Point(2, 0)),
-        ]);
+        expect(result.vertices, unorderedEquals(['0', '1', '2']));
+        expect(
+            result.edges,
+            unorderedEquals([
+              isEdge(source: '0', target: '1', data: const Point(0, 1)),
+              isEdge(source: '1', target: '2', data: const Point(1, 2)),
+              isEdge(source: '2', target: '0', data: const Point(2, 0)),
+            ]));
       });
       test('edge only', () {
         final result = graph.map<int, String>(
             edge: (edge) => '${edge.data.x} -> ${edge.data.y}');
-        expect(result.vertices, [0, 1, 2]);
-        expect(result.edges, [
-          isEdge(source: 0, target: 1, data: '0 -> 1'),
-          isEdge(source: 1, target: 2, data: '1 -> 2'),
-          isEdge(source: 2, target: 0, data: '2 -> 0'),
-        ]);
+        expect(result.vertices, unorderedEquals([0, 1, 2]));
+        expect(
+            result.edges,
+            unorderedEquals([
+              isEdge(source: 0, target: 1, data: '0 -> 1'),
+              isEdge(source: 1, target: 2, data: '1 -> 2'),
+              isEdge(source: 2, target: 0, data: '2 -> 0'),
+            ]));
       });
       test('vertex and edge', () {
         final result = graph.map<String, String>(
             vertex: (vertex) => vertex.toString(),
             edge: (edge) => '${edge.data.x} -> ${edge.data.y}');
-        expect(result.vertices, ['0', '1', '2']);
-        expect(result.edges, [
-          isEdge(source: '0', target: '1', data: '0 -> 1'),
-          isEdge(source: '1', target: '2', data: '1 -> 2'),
-          isEdge(source: '2', target: '0', data: '2 -> 0'),
-        ]);
+        expect(result.vertices, unorderedEquals(['0', '1', '2']));
+        expect(
+            result.edges,
+            unorderedEquals([
+              isEdge(source: '0', target: '1', data: '0 -> 1'),
+              isEdge(source: '1', target: '2', data: '1 -> 2'),
+              isEdge(source: '2', target: '0', data: '2 -> 0'),
+            ]));
       });
     });
   });
@@ -284,7 +495,7 @@ void main() {
         });
         test('multiple', () {
           final graph = GraphBuilder<String, Never>().fromPath(['a', 'b', 'c']);
-          expect(graph.vertices, ['a', 'b', 'c']);
+          expect(graph.vertices, unorderedEquals(['a', 'b', 'c']));
           expect(graph.edges, [
             isEdge(source: 'a', target: 'b'),
             isEdge(source: 'b', target: 'c'),
@@ -302,7 +513,7 @@ void main() {
             ['a'],
             ['b', 'c'],
           ]);
-          expect(graph.vertices, ['a', 'b', 'c']);
+          expect(graph.vertices, unorderedEquals(['a', 'b', 'c']));
           expect(graph.edges, [
             isEdge(source: 'b', target: 'c'),
           ]);
@@ -312,10 +523,10 @@ void main() {
             ['a', 'b', 'c'],
             ['d', 'b', 'e'],
           ]);
-          expect(graph.vertices, unorderedMatches(['a', 'b', 'c', 'd', 'e']));
+          expect(graph.vertices, unorderedEquals(['a', 'b', 'c', 'd', 'e']));
           expect(
               graph.edges,
-              unorderedMatches([
+              unorderedEquals([
                 isEdge(source: 'a', target: 'b'),
                 isEdge(source: 'b', target: 'c'),
                 isEdge(source: 'd', target: 'b'),
@@ -329,14 +540,21 @@ void main() {
           expect(graph.vertices, isEmpty);
           expect(graph.edges, isEmpty);
         });
-        test('simple', () {
+        test('single', () {
+          final graph = GraphBuilder<String, Never>().fromPredecessors({
+            'a': null,
+          });
+          expect(graph.vertices, ['a']);
+          expect(graph.edges, isEmpty);
+        });
+        test('basic', () {
           final graph = GraphBuilder<String, Never>().fromPredecessors({
             'a': ['b', 'c'],
           });
-          expect(graph.vertices, unorderedMatches(['a', 'b', 'c']));
+          expect(graph.vertices, unorderedEquals(['a', 'b', 'c']));
           expect(
               graph.edges,
-              unorderedMatches([
+              unorderedEquals([
                 isEdge(source: 'b', target: 'a'),
                 isEdge(source: 'c', target: 'a'),
               ]));
@@ -348,14 +566,21 @@ void main() {
           expect(graph.vertices, isEmpty);
           expect(graph.edges, isEmpty);
         });
-        test('simple', () {
+        test('single', () {
+          final graph = GraphBuilder<String, Never>().fromSuccessors({
+            'a': null,
+          });
+          expect(graph.vertices, ['a']);
+          expect(graph.edges, isEmpty);
+        });
+        test('basic', () {
           final graph = GraphBuilder<String, Never>().fromSuccessors({
             'a': ['b', 'c'],
           });
-          expect(graph.vertices, unorderedMatches(['a', 'b', 'c']));
+          expect(graph.vertices, unorderedEquals(['a', 'b', 'c']));
           expect(
               graph.edges,
-              unorderedMatches([
+              unorderedEquals([
                 isEdge(source: 'a', target: 'b'),
                 isEdge(source: 'a', target: 'c'),
               ]));
@@ -370,44 +595,50 @@ void main() {
       });
       test('path graph (p: 1, q: 1)', () {
         final graph = GraphBuilder<int, Never>().partite(vertexCounts: [1, 1]);
-        expect(graph.vertices, [0, 1]);
+        expect(graph.vertices, unorderedEquals([0, 1]));
         expect(graph.edges, [
           isEdge(source: 0, target: 1),
         ]);
       });
       test('claw graph (p: 1, q: 3)', () {
         final graph = GraphBuilder<int, Never>().partite(vertexCounts: [1, 3]);
-        expect(graph.vertices, [0, 1, 2, 3]);
-        expect(graph.edges, [
-          isEdge(source: 0, target: 1),
-          isEdge(source: 0, target: 2),
-          isEdge(source: 0, target: 3),
-        ]);
+        expect(graph.vertices, unorderedEquals([0, 1, 2, 3]));
+        expect(
+            graph.edges,
+            unorderedEquals([
+              isEdge(source: 0, target: 1),
+              isEdge(source: 0, target: 2),
+              isEdge(source: 0, target: 3),
+            ]));
       });
       test('square graph (p: 2, q: 2)', () {
         final graph = GraphBuilder<int, Never>().partite(vertexCounts: [2, 2]);
-        expect(graph.vertices, [0, 1, 2, 3]);
-        expect(graph.edges, [
-          isEdge(source: 0, target: 2),
-          isEdge(source: 0, target: 3),
-          isEdge(source: 1, target: 2),
-          isEdge(source: 1, target: 3),
-        ]);
+        expect(graph.vertices, unorderedEquals([0, 1, 2, 3]));
+        expect(
+            graph.edges,
+            unorderedEquals([
+              isEdge(source: 0, target: 2),
+              isEdge(source: 0, target: 3),
+              isEdge(source: 1, target: 2),
+              isEdge(source: 1, target: 3),
+            ]));
       });
       test('utility graph (p: 3, q: 3)', () {
         final graph = GraphBuilder<int, Never>().partite(vertexCounts: [3, 3]);
-        expect(graph.vertices, [0, 1, 2, 3, 4, 5]);
-        expect(graph.edges, [
-          isEdge(source: 0, target: 3),
-          isEdge(source: 0, target: 4),
-          isEdge(source: 0, target: 5),
-          isEdge(source: 1, target: 3),
-          isEdge(source: 1, target: 4),
-          isEdge(source: 1, target: 5),
-          isEdge(source: 2, target: 3),
-          isEdge(source: 2, target: 4),
-          isEdge(source: 2, target: 5),
-        ]);
+        expect(graph.vertices, unorderedEquals([0, 1, 2, 3, 4, 5]));
+        expect(
+            graph.edges,
+            unorderedEquals([
+              isEdge(source: 0, target: 3),
+              isEdge(source: 0, target: 4),
+              isEdge(source: 0, target: 5),
+              isEdge(source: 1, target: 3),
+              isEdge(source: 1, target: 4),
+              isEdge(source: 1, target: 5),
+              isEdge(source: 2, target: 3),
+              isEdge(source: 2, target: 4),
+              isEdge(source: 2, target: 5),
+            ]));
       });
     });
     group('complete', () {
@@ -423,15 +654,17 @@ void main() {
       });
       test('full', () {
         final graph = GraphBuilder<int, Never>().complete(vertexCount: 3);
-        expect(graph.vertices, [0, 1, 2]);
-        expect(graph.edges, [
-          isEdge(source: 0, target: 1),
-          isEdge(source: 0, target: 2),
-          isEdge(source: 1, target: 0),
-          isEdge(source: 1, target: 2),
-          isEdge(source: 2, target: 0),
-          isEdge(source: 2, target: 1),
-        ]);
+        expect(graph.vertices, unorderedEquals([0, 1, 2]));
+        expect(
+            graph.edges,
+            unorderedEquals([
+              isEdge(source: 0, target: 1),
+              isEdge(source: 0, target: 2),
+              isEdge(source: 1, target: 0),
+              isEdge(source: 1, target: 2),
+              isEdge(source: 2, target: 0),
+              isEdge(source: 2, target: 1),
+            ]));
       });
     });
     group('path', () {
@@ -447,11 +680,13 @@ void main() {
       });
       test('full', () {
         final graph = GraphBuilder<int, Never>().path(vertexCount: 3);
-        expect(graph.vertices, [0, 1, 2]);
-        expect(graph.edges, [
-          isEdge(source: 0, target: 1),
-          isEdge(source: 1, target: 2),
-        ]);
+        expect(graph.vertices, unorderedEquals([0, 1, 2]));
+        expect(
+            graph.edges,
+            unorderedEquals([
+              isEdge(source: 0, target: 1),
+              isEdge(source: 1, target: 2),
+            ]));
       });
     });
     group('ring', () {
@@ -467,12 +702,14 @@ void main() {
       });
       test('full', () {
         final graph = GraphBuilder<int, Never>().ring(vertexCount: 3);
-        expect(graph.vertices, [0, 1, 2]);
-        expect(graph.edges, [
-          isEdge(source: 0, target: 1),
-          isEdge(source: 1, target: 2),
-          isEdge(source: 2, target: 0),
-        ]);
+        expect(graph.vertices, unorderedEquals([0, 1, 2]));
+        expect(
+            graph.edges,
+            unorderedEquals([
+              isEdge(source: 0, target: 1),
+              isEdge(source: 1, target: 2),
+              isEdge(source: 2, target: 0),
+            ]));
       });
     });
     group('star', () {
@@ -488,12 +725,14 @@ void main() {
       });
       test('full', () {
         final graph = GraphBuilder<int, Never>().star(vertexCount: 4);
-        expect(graph.vertices, [0, 1, 2, 3]);
-        expect(graph.edges, [
-          isEdge(source: 0, target: 1),
-          isEdge(source: 0, target: 2),
-          isEdge(source: 0, target: 3),
-        ]);
+        expect(graph.vertices, unorderedEquals([0, 1, 2, 3]));
+        expect(
+            graph.edges,
+            unorderedEquals([
+              isEdge(source: 0, target: 1),
+              isEdge(source: 0, target: 2),
+              isEdge(source: 0, target: 3),
+            ]));
       });
     });
   });

@@ -38,7 +38,7 @@ class ReversedGraph<V, E> extends Graph<V, E> {
 
   @override
   Iterable<Edge<V, E>> outgoingEdgesOf(V vertex) =>
-      delegate.outgoingEdgesOf(vertex).map((edge) => edge.reversed);
+      delegate.incomingEdgesOf(vertex).map((edge) => edge.reversed);
 
   @override
   void addVertex(V vertex) => delegate.addVertex(vertex);
