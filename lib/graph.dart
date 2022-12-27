@@ -1,3 +1,4 @@
+/// Graph-theory objects and algorithms.
 export 'src/graph/builder.dart' show GraphBuilder;
 export 'src/graph/edge.dart' show Edge;
 export 'src/graph/generator/complete.dart' show CompleteGraphBuilderExtension;
