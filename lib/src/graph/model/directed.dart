@@ -99,9 +99,6 @@ class VertexWrapper<V, E> {
   final List<EdgeWrapper<V, E>> incomingWrappers = [];
 
   final List<EdgeWrapper<V, E>> outgoingWrappers = [];
-
-  @override
-  String toString() => 'VertexWrapper{vertex: $vertex}';
 }
 
 class EdgeWrapper<V, E> extends Edge<V, E> {
