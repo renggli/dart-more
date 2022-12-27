@@ -1,45 +1,41 @@
 import 'package:collection/collection.dart';
 
+import '../../../collection.dart';
 import '../../../functional.dart';
-import '../edge.dart';
 import '../path.dart';
 import '../search.dart';
 
 extension DijkstraGraphSearchExtension<V, E> on GraphSearch<V, E> {
-  DijkstraPath<V, E>? dijkstraTo(V source, V target) =>
+  DijkstraPath<V>? dijkstra(V source, V target) =>
       dijkstraAll(source, (vertex) => vertex == target).firstOrNull;
 
-  DijkstraPath<V, E>? dijkstraToAll(V source, V target) =>
-      dijkstraAll(source, (vertex) => vertex == target).firstOrNull;
-
-  Iterable<DijkstraPath<V, E>> dijkstraAll(
-      V source, Predicate1<V> isTarget) sync* {
-    final totalCost = vertexStrategy.createMap<num>()..[source] = 0;
-    final edges = vertexStrategy.createMap<Edge<V, E>>();
-    final todo = PriorityQueue<V>((a, b) => (totalCost[a] ?? double.infinity)
-        .compareTo(totalCost[b] ?? double.infinity));
+  /// Returns an [Iterable] over all Dijkstra paths that start in `source` and
+  /// end in a vertex that satisfies the `target` predicate.
+  Iterable<DijkstraPath<V>> dijkstraAll(V source, Predicate1<V> target) sync* {
+    final cost = vertexStrategy.createMap<num>().withDefault(double.infinity)
+      ..[source] = 0;
+    final todo = PriorityQueue<V>((a, b) => cost[a].compareTo(cost[b]))
+      ..add(source);
+    final parents = vertexStrategy.createMap<V>();
     while (todo.isNotEmpty) {
       final current = todo.removeFirst();
-      if (isTarget(current)) {
-        final result = <Edge<V, E>>[];
-        for (var edge = edges[current];
-            edge != null;
-            edge = edges[edge.source]) {
-          result.add(edge);
+      if (target(current)) {
+        final vertices = QueueList<V>();
+        for (V? parent = current; parent != null; parent = parents[parent]) {
+          vertices.addFirst(parent);
         }
-        yield DijkstraPath<V, E>(
-          source: source,
-          target: current,
-          edges: result,
-          cost: totalCost[current]!,
+        yield DijkstraPath<V>(
+          vertices: vertices,
+          cost: cost[current],
         );
       }
       for (final edge in outgoingEdgesOf(current)) {
         final target = edge.target;
-        final cost = totalCost[current]! + edgeCost(edge);
-        if (cost < (totalCost[target] ?? double.infinity)) {
-          totalCost[target] = cost;
-          edges[target] = edge;
+        final targetCost = cost[current] + edgeCost(edge);
+        if (targetCost < cost[target]) {
+          cost[target] = targetCost;
+          parents[target] = current;
+          todo.remove(target);
           todo.add(target);
         }
       }
@@ -47,26 +43,21 @@ extension DijkstraGraphSearchExtension<V, E> on GraphSearch<V, E> {
   }
 }
 
-class DijkstraPath<V, E> extends Path<V, E> {
+class DijkstraPath<V> extends Path<V> {
   DijkstraPath({
-    required this.source,
-    required this.target,
-    required this.edges,
+    required this.vertices,
     required this.cost,
   });
 
   @override
-  final V source;
+  V get source => vertices.first;
 
   @override
-  final V target;
+  V get target => vertices.last;
 
+  @override
+  final List<V> vertices;
+
+  @override
   final num cost;
-
-  @override
-  List<Edge<V, E>> edges;
-
-  @override
-  // TODO: implement vertices
-  Iterable<V> get vertices => throw UnimplementedError();
 }

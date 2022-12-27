@@ -9,8 +9,9 @@ typedef EdgeCostFunction<V, E> = num Function(Edge<V, E> edge);
 
 extension SearchGraphExtension<V, E> on Graph<V, E> {
   /// Returns a graph search strategy.
-  GraphSearch<V, E> get search =>
-      GraphSearch<V, E>.fromGraph(this, vertexStrategy: vertexStrategy);
+  GraphSearch<V, E> search({EdgeCostFunction<V, E>? edgeCost}) =>
+      GraphSearch<V, E>.fromGraph(this,
+          edgeCost: edgeCost, vertexStrategy: vertexStrategy);
 }
 
 /// Generic strategy to search graphs.

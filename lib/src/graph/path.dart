@@ -1,11 +1,24 @@
-import 'edge.dart';
+import '../../more.dart';
 
-abstract class Path<V, E> {
-  V get source;
+/// Abstract definition of a path.
+abstract class Path<V> with ToStringPrinter {
+  /// The start vertex of this path.
+  V get source => vertices.first;
 
-  V get target;
+  /// The end vertex of this path.
+  V get target => vertices.last;
 
+  /// The vertices in this path.
   Iterable<V> get vertices;
 
-  Iterable<Edge<V, E>> get edges;
+  /// The cost of the path (if available).
+  num get cost;
+
+  @override
+  ObjectPrinter get toStringPrinter => super.toStringPrinter
+    ..addValue(vertices,
+        name: 'vertices',
+        printer: Printer<V>.standard()
+            .iterable(separator: ' ⟶ ', leadingItems: 3, trailingItems: 3))
+    ..addValue(cost, name: 'cost');
 }
