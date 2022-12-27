@@ -9,12 +9,15 @@ export 'src/graph/generator/star.dart' show StarGraphBuilderExtension;
 export 'src/graph/graph.dart' show Graph;
 export 'src/graph/model/reversed.dart' show ReversedGraphExtension;
 export 'src/graph/operations/map.dart' show MapGraphExtension;
+export 'src/graph/search.dart' show SearchGraphExtension, GraphSearch;
+export 'src/graph/search/dijkstra.dart' show DijkstraGraphSearchExtension;
 export 'src/graph/strategy/integer.dart';
-export 'src/graph/traverser.dart' show TraverseGraphExtension, Traverser;
-export 'src/graph/traverser/breadth_first.dart'
-    show BreadthFirstTraverserExtension;
-export 'src/graph/traverser/depth_first.dart' show DepthFirstTraverserExtension;
-export 'src/graph/traverser/depth_first_post_order.dart'
-    show DepthFirstPostOrderTraverserExtension;
-export 'src/graph/traverser/topological.dart'
-    show TopologicalTraverserExtension;
+export 'src/graph/traverse.dart' show TraverseGraphExtension, GraphTraverse;
+export 'src/graph/traverse/breadth_first.dart'
+    show BreadthFirstGraphTraverseExtension;
+export 'src/graph/traverse/depth_first.dart'
+    show DepthFirstGraphTraverseExtension;
+export 'src/graph/traverse/depth_first_post_order.dart'
+    show DepthFirstPostOrderGraphTraverseExtension;
+export 'src/graph/traverse/topological.dart'
+    show TopologicalGraphTraverseExtension;

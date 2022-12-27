@@ -1,10 +1,10 @@
-import '../traverser.dart';
+import '../traverse.dart';
 import 'depth_first.dart';
 
 /// Performs a topological sorting of vertices.
 ///
 /// See https://en.wikipedia.org/wiki/Topological_sorting.
-extension TopologicalTraverserExtension<V> on Traverser<V> {
+extension TopologicalGraphTraverseExtension<V> on GraphTraverse<V> {
   /// Traverses the vertices in a topological order, starting with [vertex].
   ///
   /// This traversal requires a predecessor-function, and ignores nodes that
@@ -16,10 +16,10 @@ extension TopologicalTraverserExtension<V> on Traverser<V> {
   /// This traversal requires a predecessor-function, and ignores nodes that
   /// are part of cycles.
   Iterable<V> topologicalAll(Iterable<V> vertices) sync* {
-    ArgumentError.checkNotNull(predecessorFunction, 'predecessorFunction');
+    ArgumentError.checkNotNull(predecessorsOf, 'predecessorFunction');
     final stack = <V>[];
     for (final vertex in depthFirstAll(vertices)) {
-      if (predecessorFunction!(vertex).isEmpty) {
+      if (predecessorsOf!(vertex).isEmpty) {
         stack.add(vertex);
       }
     }
@@ -29,9 +29,8 @@ extension TopologicalTraverserExtension<V> on Traverser<V> {
       if (seen.add(current)) {
         yield current;
         // Find successors with all visited predecessors to visit next.
-        for (final next in successorFunction(current)) {
-          if (predecessorFunction!(next)
-              .every((other) => seen.contains(other))) {
+        for (final next in successorsOf(current)) {
+          if (predecessorsOf!(next).every((other) => seen.contains(other))) {
             stack.add(next);
           }
         }

@@ -751,15 +751,16 @@ void main() {
             [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]);
       });
       test('basic', () {
-        final traverser = Traverser.fromFunction(basicGraph);
+        final traverser = GraphTraverse.fromFunction(successorsOf: basicGraph);
         expect(traverser.breadthFirst(0), [0, 3, 2, 1, 5, 4]);
       });
       test('cyclic', () {
-        final traverser = Traverser.fromFunction(cyclicGraph);
+        final traverser = GraphTraverse.fromFunction(successorsOf: cyclicGraph);
         expect(traverser.breadthFirst(0), [0, 3, 1, 4, 2]);
       });
       test('infinite', () {
-        final traverser = Traverser.fromFunction(reverseCollatzGraph);
+        final traverser =
+            GraphTraverse.fromFunction(successorsOf: reverseCollatzGraph);
         expect(traverser.breadthFirst(1).take(10),
             [1, 2, 4, 8, 16, 5, 32, 10, 64, 3]);
       });
@@ -778,15 +779,16 @@ void main() {
             [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]);
       });
       test('basic', () {
-        final traverser = Traverser.fromFunction(basicGraph);
+        final traverser = GraphTraverse.fromFunction(successorsOf: basicGraph);
         expect(traverser.depthFirst(0), [0, 3, 2, 5, 1, 4]);
       });
       test('cyclic', () {
-        final traverser = Traverser.fromFunction(cyclicGraph);
+        final traverser = GraphTraverse.fromFunction(successorsOf: cyclicGraph);
         expect(traverser.depthFirst(0), [0, 3, 1, 2, 4]);
       });
       test('infinite', () {
-        final traverser = Traverser.fromFunction(reverseCollatzGraph);
+        final traverser =
+            GraphTraverse.fromFunction(successorsOf: reverseCollatzGraph);
         expect(traverser.depthFirst(1).take(10),
             [1, 2, 4, 8, 16, 5, 10, 3, 6, 12]);
       });
@@ -805,11 +807,11 @@ void main() {
             [9, 8, 7, 6, 5, 4, 3, 2, 1, 0]);
       });
       test('basic', () {
-        final traverser = Traverser.fromFunction(basicGraph);
+        final traverser = GraphTraverse.fromFunction(successorsOf: basicGraph);
         expect(traverser.depthFirstPostOrder(0), [3, 5, 2, 4, 1, 0]);
       });
       test('cyclic', () {
-        final traverser = Traverser.fromFunction(cyclicGraph);
+        final traverser = GraphTraverse.fromFunction(successorsOf: cyclicGraph);
         expect(traverser.depthFirstPostOrder(0), [2, 1, 4, 3, 0]);
       });
     });

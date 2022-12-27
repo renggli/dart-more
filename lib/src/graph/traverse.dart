@@ -1,34 +1,55 @@
+import '../../functional.dart';
 import 'graph.dart';
 import 'strategy.dart';
 
 typedef VertexFunction<V> = Iterable<V> Function(V vertex);
 
 extension TraverseGraphExtension<V, E> on Graph<V, E> {
-  Traverser<V> get traverse =>
-      Traverser.fromGraph(this, vertexStrategy: vertexStrategy);
+  /// Returns a graph traversal strategy.
+  GraphTraverse<V> get traverse =>
+      GraphTraverse.fromGraph(this, vertexStrategy: vertexStrategy);
 }
 
-class Traverser<V> {
-  Traverser.fromGraph(Graph<V, void> graph,
-      {StorageStrategy<V>? vertexStrategy})
-      : this.fromFunction(
-          graph.successorsOf,
-          predecessorFunction: graph.predecessorsOf,
+/// Generic strategy to traverse graphs.
+class GraphTraverse<V> {
+  /// Constructs a traversal strategy from a [Graph].
+  GraphTraverse.fromGraph(
+    Graph<V, void> graph, {
+    StorageStrategy<V>? vertexStrategy,
+  }) : this._(
+          successorsOf: graph.successorsOf,
+          predecessorsOf: graph.predecessorsOf,
           vertexStrategy: vertexStrategy ?? graph.vertexStrategy,
         );
 
-  Traverser.fromFunction(
-    this.successorFunction, {
-    this.predecessorFunction,
+  /// Constructs a traversal strategy from functions.
+  GraphTraverse.fromFunction({
+    VertexFunction<V>? successorsOf,
+    VertexFunction<V>? predecessorsOf,
     StorageStrategy<V>? vertexStrategy,
-  }) : vertexStrategy = vertexStrategy ?? StorageStrategy.defaultStrategy();
+  }) : this._(
+          successorsOf: successorsOf ?? successorsOfRequired,
+          predecessorsOf: predecessorsOf ?? predecessorsOfRequired,
+          vertexStrategy: vertexStrategy ?? StorageStrategy.defaultStrategy(),
+        );
 
-  final VertexFunction<V>? predecessorFunction;
+  GraphTraverse._({
+    required this.successorsOf,
+    required this.predecessorsOf,
+    required this.vertexStrategy,
+  });
 
-  final VertexFunction<V> successorFunction;
+  final VertexFunction<V> successorsOf;
+
+  final VertexFunction<V>? predecessorsOf;
 
   final StorageStrategy<V> vertexStrategy;
 }
+
+final successorsOfRequired =
+    throwFunction1(ArgumentError.notNull('successorsOf'));
+final predecessorsOfRequired =
+    throwFunction1(ArgumentError.notNull('predecessorsOf'));
 
 //
 // // /// Finds the path with the lowest cost starting at [source] and ending in

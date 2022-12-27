@@ -1,11 +1,11 @@
 import 'dart:collection';
 
-import '../traverser.dart';
+import '../traverse.dart';
 
 /// Performs a breadth-first traversal of vertices.
 ///
 /// See https://en.wikipedia.org/wiki/Breadth-first_search.
-extension BreadthFirstTraverserExtension<V> on Traverser<V> {
+extension BreadthFirstGraphTraverseExtension<V> on GraphTraverse<V> {
   /// Traverses the vertices in a breadth-first search, starting with [vertex].
   Iterable<V> breadthFirst(V vertex) => breadthFirstAll([vertex]);
 
@@ -16,7 +16,7 @@ extension BreadthFirstTraverserExtension<V> on Traverser<V> {
     while (queue.isNotEmpty) {
       final current = queue.removeFirst();
       yield current;
-      for (final next in successorFunction(current)) {
+      for (final next in successorsOf(current)) {
         if (seen.add(next)) {
           queue.add(next);
         }
