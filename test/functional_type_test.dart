@@ -101,55 +101,54 @@ void main() {
   group('throwing', () {
     final throwable = UnimplementedError();
     test('throwFunction0', () {
-      final function = throwFunction0<void>(throwable);
+      final function = throwFunction0(throwable);
       expect(() => function(), throwsUnimplementedError);
     });
     test('throwFunction1', () {
-      final function = throwFunction1<int, void>(throwable);
+      final function = throwFunction1<int>(throwable);
       expect(() => function(0), throwsUnimplementedError);
     });
     test('throwFunction2', () {
-      final function = throwFunction2<int, int, void>(throwable);
+      final function = throwFunction2<int, int>(throwable);
       expect(() => function(0, 1), throwsUnimplementedError);
     });
     test('throwFunction3', () {
-      final function = throwFunction3<int, int, int, void>(throwable);
+      final function = throwFunction3<int, int, int>(throwable);
       expect(() => function(0, 1, 2), throwsUnimplementedError);
     });
     test('throwFunction4', () {
-      final function = throwFunction4<int, int, int, int, void>(throwable);
+      final function = throwFunction4<int, int, int, int>(throwable);
       expect(() => function(0, 1, 2, 3), throwsUnimplementedError);
     });
     test('throwFunction5', () {
-      final function = throwFunction5<int, int, int, int, int, void>(throwable);
+      final function = throwFunction5<int, int, int, int, int>(throwable);
       expect(() => function(0, 1, 2, 3, 4), throwsUnimplementedError);
     });
     test('throwFunction6', () {
-      final function =
-          throwFunction6<int, int, int, int, int, int, void>(throwable);
+      final function = throwFunction6<int, int, int, int, int, int>(throwable);
       expect(() => function(0, 1, 2, 3, 4, 5), throwsUnimplementedError);
     });
     test('throwFunction7', () {
       final function =
-          throwFunction7<int, int, int, int, int, int, int, void>(throwable);
+          throwFunction7<int, int, int, int, int, int, int>(throwable);
       expect(() => function(0, 1, 2, 3, 4, 5, 6), throwsUnimplementedError);
     });
     test('throwFunction8', () {
       final function =
-          throwFunction8<int, int, int, int, int, int, int, int, void>(
-              throwable);
+          throwFunction8<int, int, int, int, int, int, int, int>(throwable);
       expect(() => function(0, 1, 2, 3, 4, 5, 6, 7), throwsUnimplementedError);
     });
     test('throwFunction9', () {
       final function =
-          throwFunction9<int, int, int, int, int, int, int, int, int, void>(
+          throwFunction9<int, int, int, int, int, int, int, int, int>(
               throwable);
       expect(
           () => function(0, 1, 2, 3, 4, 5, 6, 7, 8), throwsUnimplementedError);
     });
     test('throwFunction10', () {
-      final function = throwFunction10<int, int, int, int, int, int, int, int,
-          int, int, void>(throwable);
+      final function =
+          throwFunction10<int, int, int, int, int, int, int, int, int, int>(
+              throwable);
       expect(() => function(0, 1, 2, 3, 4, 5, 6, 7, 8, 9),
           throwsUnimplementedError);
     });

@@ -3,6 +3,7 @@
 ## 3.10.0
 * Add a growable `BitList`, make it behave more like `List<bool>`.
 * Optimize  `BitList` operations: `fill`, `count`, and `indices`.
+* Change return type of generic `throwFunction` to `Never`.
 * Add graph algorithms and data structures.
 
 ## 3.9.0

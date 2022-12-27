@@ -151,9 +151,10 @@ Future<void> generateThrowing() async {
   out.writeln();
 
   for (var i = 0; i < max; i++) {
-    final prefix = '$i${generify([...generateTypes(i), 'R'])}';
+    final mapType = '$i${generify([...generateTypes(i), 'Never'])}';
+    final throwType = '$i${generify([...generateTypes(i)])}';
     out.writeln('/// Throwing function with $i argument${i == 1 ? '' : 's'}.');
-    out.writeln('Map$prefix throwFunction$prefix(Object throwable) '
+    out.writeln('Map$mapType throwFunction$throwType(Object throwable) '
         '=> (${listify(generateArgs(i))}) '
         '=> throw throwable;');
     out.writeln();
@@ -205,7 +206,7 @@ Future<void> generateTest() async {
     out.writeln('final throwable = UnimplementedError();');
     for (var i = 0; i < max; i++) {
       nest('test', 'throwFunction$i', () {
-        final types = generify([for (var j = 0; j < i; j++) 'int', 'void']);
+        final types = generify([for (var j = 0; j < i; j++) 'int']);
         final values = List.generate(i, (i) => i).join(', ');
         out.writeln('final function = throwFunction$i$types(throwable);');
         out.writeln(
