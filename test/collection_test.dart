@@ -2253,6 +2253,27 @@ void main() {
       });
     });
   });
+  group('map', () {
+    group('default', () {
+      test('basic', () {
+        final map = {'a': 1}.withDefault(42);
+        expect(map.containsKey('a'), isTrue);
+        expect(map['a'], 1);
+        expect(map.containsKey('z'), isFalse);
+        expect(map['z'], 42);
+      });
+      test('typing', () {
+        final map = <String, int>{}.withDefault(42);
+        expect(map['what'] + map['ever'], 84);
+      });
+      test('modify', () {
+        final map = {'a': 1}.withDefault(-1);
+        expect(map['b'], -1);
+        map['b'] = 42;
+        expect(map['b'], 42);
+      });
+    });
+  });
   group('multimap', () {
     group('list', () {
       group('constructor', () {

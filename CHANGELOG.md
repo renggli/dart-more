@@ -5,6 +5,7 @@
 * Optimize  `BitList` operations: `fill`, `count`, and `indices`.
 * Change return type of generic `throwFunction` to `Never`.
 * Add graph algorithms and data structures.
+* Add `Map.withDefault` providing a default value for non-existing keys.
 
 ## 3.9.0
 * Various extension to work with bits.
