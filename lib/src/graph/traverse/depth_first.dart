@@ -6,13 +6,11 @@ import '../graph.dart';
 import '../strategy.dart';
 
 extension DepthFirstGraphExtension<V, E> on Graph<V, E> {
-  /// Traverses the vertices in a pre-order depth-first search (when they are
-  /// first discovered), starting with [vertex].
+  /// Traverses the vertices in a depth-first order, starting with [vertex].
   Iterable<V> depthFirst(V vertex, {StorageStrategy<V>? vertexStrategy}) =>
       depthFirstAll([vertex], vertexStrategy: vertexStrategy);
 
-  /// Traverses the vertices in a pre-order depth-first search (when they are
-  /// first discovered), starting with [vertices].
+  /// Traverses the vertices in a depth-first order, starting with [vertices].
   Iterable<V> depthFirstAll(Iterable<V> vertices,
           {StorageStrategy<V>? vertexStrategy}) =>
       DepthFirstIterable<V>(vertices,
@@ -20,7 +18,8 @@ extension DepthFirstGraphExtension<V, E> on Graph<V, E> {
           vertexStrategy: vertexStrategy ?? this.vertexStrategy);
 }
 
-/// Iterable over the depth-first traversal of vertices.
+/// Iterable over the depth-first traversal of vertices. The vertices are
+/// emitted pre-order, that is right when they are first discovered.
 ///
 /// See https://en.wikipedia.org/wiki/Depth-first_search.
 class DepthFirstIterable<V> extends IterableBase<V> {

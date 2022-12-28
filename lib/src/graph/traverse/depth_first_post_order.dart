@@ -7,14 +7,12 @@ import '../strategy.dart';
 import 'depth_first.dart';
 
 extension DepthFirstPostOrderGraphExtension<V, E> on Graph<V, E> {
-  /// Traverses the vertices in a post-order depth-first search (after all its
-  /// descendants have been discovered), starting with [vertex].
+  /// Traverses the vertices in a depth-first order, starting with [vertex].
   Iterable<V> depthFirstPostOrder(V vertex,
           {StorageStrategy<V>? vertexStrategy}) =>
       depthFirstPostOrderAll([vertex], vertexStrategy: vertexStrategy);
 
-  /// Traverses the vertices in a post-order depth-first search (after all its
-  /// descendants have been discovered), starting with [vertices].
+  /// Traverses the vertices in a depth-first order, starting with [vertices].
   Iterable<V> depthFirstPostOrderAll(Iterable<V> vertices,
           {StorageStrategy<V>? vertexStrategy}) =>
       DepthFirstPostOrderIterable<V>(vertices,
@@ -22,7 +20,9 @@ extension DepthFirstPostOrderGraphExtension<V, E> on Graph<V, E> {
           vertexStrategy: vertexStrategy ?? this.vertexStrategy);
 }
 
-/// Iterable over the post-order depth-first traversal of vertices.
+/// Iterable over the post-order depth-first traversal of vertices. The vertices
+/// are emitted post-order, that is after all its descendants have been
+/// discovered.
 ///
 /// See https://en.wikipedia.org/wiki/Depth-first_search#Vertex_orderings.
 class DepthFirstPostOrderIterable<V> extends IterableBase<V> {

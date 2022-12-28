@@ -6,13 +6,10 @@ import 'depth_first.dart';
 
 extension TopologicalGraphExtension<V, E> on Graph<V, E> {
   /// Traverses the vertices in a topological order, starting with [vertex].
-  ///
-  /// This traversal requires a predecessor-function, and ignores nodes that
-  /// are part of cycles.
   Iterable<V> topological(V vertex, {StorageStrategy<V>? vertexStrategy}) =>
       topologicalAll([vertex], vertexStrategy: vertexStrategy);
 
-  /// Traverses the vertices in a breadth-first search, starting with [vertices].
+  /// Traverses the vertices in a topological order, starting with [vertices].
   Iterable<V> topologicalAll(Iterable<V> vertices,
           {StorageStrategy<V>? vertexStrategy}) =>
       TopologicalIterable<V>(vertices,
@@ -21,7 +18,8 @@ extension TopologicalGraphExtension<V, E> on Graph<V, E> {
           vertexStrategy: vertexStrategy ?? this.vertexStrategy);
 }
 
-/// Iterable over the topological sorting of vertices.
+/// Iterable over the topological sorting of vertices. This traversal requires a
+/// predecessor-function, and ignores nodes that are part of cycles.
 ///
 /// See https://en.wikipedia.org/wiki/Topological_sorting.
 class TopologicalIterable<V> extends IterableBase<V> {
