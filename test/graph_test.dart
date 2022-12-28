@@ -84,6 +84,38 @@ final dijkstraGraph = Graph<int, int>.undirected()
   ..addEdge(4, 5, data: 6)
   ..addEdge(5, 6, data: 9);
 
+void expectInvariants<V, E>(Graph<V, E> graph) {
+  for (final vertex in graph.vertices) {
+    for (final edge in graph.edgesOf(vertex)) {
+      expect(graph.edges,
+          contains(isEdge(source: edge.source, target: edge.target)));
+      expect([edge.source, edge.target], contains(vertex));
+    }
+    for (final outgoingEdge in graph.outgoingEdgesOf(vertex)) {
+      expect(outgoingEdge.source, vertex);
+      expect(graph.predecessorsOf(outgoingEdge.target), contains(vertex));
+      expect(graph.successorsOf(vertex), contains(outgoingEdge.target));
+      expect(
+          graph.edges,
+          contains(isEdge(
+              source: outgoingEdge.source, target: outgoingEdge.target)));
+    }
+    for (final incomingEdge in graph.incomingEdgesOf(vertex)) {
+      expect(incomingEdge.target, vertex);
+      expect(graph.predecessorsOf(vertex), contains(incomingEdge.source));
+      expect(graph.successorsOf(incomingEdge.source), contains(vertex));
+      expect(
+          graph.edges,
+          contains(isEdge(
+              source: incomingEdge.source, target: incomingEdge.target)));
+    }
+  }
+  for (final edge in graph.edges) {
+    expect(graph.vertices, contains(edge.source));
+    expect(graph.vertices, contains(edge.target));
+  }
+}
+
 void main() {
   group('graph', () {
     group('directed', () {
@@ -92,6 +124,7 @@ void main() {
         expect(graph.isDirected, isTrue);
         expect(graph.vertices, isEmpty);
         expect(graph.edges, isEmpty);
+        expectInvariants(graph);
       });
       group('modifying', () {
         test('add vertex', () {
@@ -99,6 +132,7 @@ void main() {
           graph.addVertex('Hello');
           expect(graph.vertices, ['Hello']);
           expect(graph.edges, isEmpty);
+          expectInvariants(graph);
         });
         test('remove vertex', () {
           final graph = Graph<String, int>.directed();
@@ -106,6 +140,7 @@ void main() {
           graph.removeVertex('Hello');
           expect(graph.vertices, isEmpty);
           expect(graph.edges, isEmpty);
+          expectInvariants(graph);
         });
         test('add edge', () {
           final graph = Graph<String, int>.directed();
@@ -114,6 +149,7 @@ void main() {
           expect(graph.edges, [
             isEdge(source: 'Hello', target: 'World', data: 42),
           ]);
+          expectInvariants(graph);
         });
         test('remove edge', () {
           final graph = Graph<String, int>.directed();
@@ -121,6 +157,7 @@ void main() {
           graph.removeEdge('Hello', 'World');
           expect(graph.vertices, unorderedEquals(['Hello', 'World']));
           expect(graph.edges, isEmpty);
+          expectInvariants(graph);
         });
         test('add edge, remove first vertex', () {
           final graph = Graph<String, int>.directed();
@@ -128,6 +165,7 @@ void main() {
           graph.removeVertex('Hello');
           expect(graph.vertices, ['World']);
           expect(graph.edges, isEmpty);
+          expectInvariants(graph);
         });
         test('add edge, remove second vertex', () {
           final graph = Graph<String, int>.directed();
@@ -135,12 +173,16 @@ void main() {
           graph.removeVertex('World');
           expect(graph.vertices, ['Hello']);
           expect(graph.edges, isEmpty);
+          expectInvariants(graph);
         });
       });
       group('querying', () {
         final graph = Graph<int, String>.directed()
           ..addEdge(0, 1, data: 'a')
           ..addEdge(1, 2, data: 'b');
+        test('invariants', () {
+          expectInvariants(graph);
+        });
         test('vertices', () {
           expect(graph.vertices, unorderedEquals([0, 1, 2]));
         });
@@ -207,6 +249,7 @@ void main() {
         expect(graph.isDirected, isTrue);
         expect(graph.vertices, isEmpty);
         expect(graph.edges, isEmpty);
+        expectInvariants(graph);
       });
       group('modifying', () {
         test('add vertex', () {
@@ -214,6 +257,7 @@ void main() {
           graph.addVertex('Hello');
           expect(graph.vertices, ['Hello']);
           expect(graph.edges, isEmpty);
+          expectInvariants(graph);
         });
         test('remove vertex', () {
           final graph = Graph<String, int>.directed().reversed;
@@ -221,6 +265,7 @@ void main() {
           graph.removeVertex('Hello');
           expect(graph.vertices, isEmpty);
           expect(graph.edges, isEmpty);
+          expectInvariants(graph);
         });
         test('add edge', () {
           final graph = Graph<String, int>.directed().reversed;
@@ -229,6 +274,7 @@ void main() {
           expect(graph.edges, [
             isEdge(source: 'Hello', target: 'World', data: 42),
           ]);
+          expectInvariants(graph);
         });
         test('remove edge', () {
           final graph = Graph<String, int>.directed().reversed;
@@ -236,6 +282,7 @@ void main() {
           graph.removeEdge('Hello', 'World');
           expect(graph.vertices, unorderedEquals(['Hello', 'World']));
           expect(graph.edges, isEmpty);
+          expectInvariants(graph);
         });
         test('add edge, remove first vertex', () {
           final graph = Graph<String, int>.directed().reversed;
@@ -243,6 +290,7 @@ void main() {
           graph.removeVertex('Hello');
           expect(graph.vertices, ['World']);
           expect(graph.edges, isEmpty);
+          expectInvariants(graph);
         });
         test('add edge, remove second vertex', () {
           final graph = Graph<String, int>.directed().reversed;
@@ -250,6 +298,7 @@ void main() {
           graph.removeVertex('World');
           expect(graph.vertices, ['Hello']);
           expect(graph.edges, isEmpty);
+          expectInvariants(graph);
         });
       });
       group('querying', () {
@@ -257,6 +306,9 @@ void main() {
           ..addEdge(0, 1, data: 'a')
           ..addEdge(1, 2, data: 'b');
         final graph = directed.reversed;
+        test('invariants', () {
+          expectInvariants(graph);
+        });
         test('vertices', () {
           expect(graph.vertices, unorderedEquals([0, 1, 2]));
         });
@@ -322,6 +374,7 @@ void main() {
         final graph = Graph<String, int>.undirected();
         expect(graph.vertices, isEmpty);
         expect(graph.edges, isEmpty);
+        expectInvariants(graph);
       });
       group('modifying', () {
         test('add vertex', () {
@@ -329,6 +382,7 @@ void main() {
           graph.addVertex('Hello');
           expect(graph.vertices, ['Hello']);
           expect(graph.edges, isEmpty);
+          expectInvariants(graph);
         });
         test('remove vertex', () {
           final graph = Graph<String, int>.undirected();
@@ -336,6 +390,7 @@ void main() {
           graph.removeVertex('Hello');
           expect(graph.vertices, isEmpty);
           expect(graph.edges, isEmpty);
+          expectInvariants(graph);
         });
         test('add edge', () {
           final graph = Graph<String, int>.undirected();
@@ -347,6 +402,7 @@ void main() {
                 isEdge(source: 'Hello', target: 'World', data: 42),
                 isEdge(source: 'World', target: 'Hello', data: 42),
               ]));
+          expectInvariants(graph);
         });
         test('remove edge', () {
           final graph = Graph<String, int>.undirected();
@@ -354,6 +410,7 @@ void main() {
           graph.removeEdge('Hello', 'World');
           expect(graph.vertices, unorderedEquals(['Hello', 'World']));
           expect(graph.edges, isEmpty);
+          expectInvariants(graph);
         });
         test('add edge, remove first vertex', () {
           final graph = Graph<String, int>.undirected();
@@ -361,6 +418,7 @@ void main() {
           graph.removeVertex('Hello');
           expect(graph.vertices, ['World']);
           expect(graph.edges, isEmpty);
+          expectInvariants(graph);
         });
         test('add edge, remove second vertex', () {
           final graph = Graph<String, int>.undirected();
@@ -368,12 +426,16 @@ void main() {
           graph.removeVertex('World');
           expect(graph.vertices, ['Hello']);
           expect(graph.edges, isEmpty);
+          expectInvariants(graph);
         });
       });
       group('querying', () {
         final graph = Graph<int, String>.undirected()
           ..addEdge(0, 1, data: 'a')
           ..addEdge(1, 2, data: 'b');
+        test('invariants', () {
+          expectInvariants(graph);
+        });
         test('vertices', () {
           expect(graph.vertices, unorderedEquals([0, 1, 2]));
         });
@@ -466,6 +528,7 @@ void main() {
               isEdge(source: 1, target: 2, data: const Point(1, 2)),
               isEdge(source: 2, target: 0, data: const Point(2, 0)),
             ]));
+        expectInvariants(result);
       });
       test('vertex only', () {
         final result = graph.map<String, Point<int>>(
@@ -478,6 +541,7 @@ void main() {
               isEdge(source: '1', target: '2', data: const Point(1, 2)),
               isEdge(source: '2', target: '0', data: const Point(2, 0)),
             ]));
+        expectInvariants(result);
       });
       test('edge only', () {
         final result = graph.map<int, String>(
@@ -490,6 +554,7 @@ void main() {
               isEdge(source: 1, target: 2, data: '1 -> 2'),
               isEdge(source: 2, target: 0, data: '2 -> 0'),
             ]));
+        expectInvariants(result);
       });
       test('vertex and edge', () {
         final result = graph.map<String, String>(
@@ -503,6 +568,7 @@ void main() {
               isEdge(source: '1', target: '2', data: '1 -> 2'),
               isEdge(source: '2', target: '0', data: '2 -> 0'),
             ]));
+        expectInvariants(result);
       });
     });
   });
@@ -513,11 +579,13 @@ void main() {
           final graph = GraphBuilder<String, Never>().fromPath([]);
           expect(graph.vertices, isEmpty);
           expect(graph.edges, isEmpty);
+          expectInvariants(graph);
         });
         test('single', () {
           final graph = GraphBuilder<String, Never>().fromPath(['a']);
           expect(graph.vertices, ['a']);
           expect(graph.edges, isEmpty);
+          expectInvariants(graph);
         });
         test('multiple', () {
           final graph = GraphBuilder<String, Never>().fromPath(['a', 'b', 'c']);
@@ -526,6 +594,7 @@ void main() {
             isEdge(source: 'a', target: 'b'),
             isEdge(source: 'b', target: 'c'),
           ]);
+          expectInvariants(graph);
         });
       });
       group('paths', () {
@@ -533,6 +602,7 @@ void main() {
           final graph = GraphBuilder<String, Never>().fromPaths([]);
           expect(graph.vertices, isEmpty);
           expect(graph.edges, isEmpty);
+          expectInvariants(graph);
         });
         test('simple', () {
           final graph = GraphBuilder<String, Never>().fromPaths([
@@ -543,6 +613,7 @@ void main() {
           expect(graph.edges, [
             isEdge(source: 'b', target: 'c'),
           ]);
+          expectInvariants(graph);
         });
         test('multiple', () {
           final graph = GraphBuilder<String, Never>().fromPaths([
@@ -558,6 +629,7 @@ void main() {
                 isEdge(source: 'd', target: 'b'),
                 isEdge(source: 'b', target: 'e'),
               ]));
+          expectInvariants(graph);
         });
       });
       group('predecessors', () {
@@ -565,6 +637,7 @@ void main() {
           final graph = GraphBuilder<String, Never>().fromPredecessors({});
           expect(graph.vertices, isEmpty);
           expect(graph.edges, isEmpty);
+          expectInvariants(graph);
         });
         test('single', () {
           final graph = GraphBuilder<String, Never>().fromPredecessors({
@@ -572,6 +645,7 @@ void main() {
           });
           expect(graph.vertices, ['a']);
           expect(graph.edges, isEmpty);
+          expectInvariants(graph);
         });
         test('basic', () {
           final graph = GraphBuilder<String, Never>().fromPredecessors({
@@ -584,6 +658,7 @@ void main() {
                 isEdge(source: 'b', target: 'a'),
                 isEdge(source: 'c', target: 'a'),
               ]));
+          expectInvariants(graph);
         });
       });
       group('successors', () {
@@ -591,6 +666,7 @@ void main() {
           final graph = GraphBuilder<String, Never>().fromSuccessors({});
           expect(graph.vertices, isEmpty);
           expect(graph.edges, isEmpty);
+          expectInvariants(graph);
         });
         test('single', () {
           final graph = GraphBuilder<String, Never>().fromSuccessors({
@@ -598,6 +674,7 @@ void main() {
           });
           expect(graph.vertices, ['a']);
           expect(graph.edges, isEmpty);
+          expectInvariants(graph);
         });
         test('basic', () {
           final graph = GraphBuilder<String, Never>().fromSuccessors({
@@ -610,6 +687,7 @@ void main() {
                 isEdge(source: 'a', target: 'b'),
                 isEdge(source: 'a', target: 'c'),
               ]));
+          expectInvariants(graph);
         });
       });
     });
@@ -618,6 +696,7 @@ void main() {
         final graph = GraphBuilder<int, Never>().partite(vertexCounts: []);
         expect(graph.vertices, isEmpty);
         expect(graph.edges, isEmpty);
+        expectInvariants(graph);
       });
       test('path graph (p: 1, q: 1)', () {
         final graph = GraphBuilder<int, Never>().partite(vertexCounts: [1, 1]);
@@ -625,6 +704,7 @@ void main() {
         expect(graph.edges, [
           isEdge(source: 0, target: 1),
         ]);
+        expectInvariants(graph);
       });
       test('claw graph (p: 1, q: 3)', () {
         final graph = GraphBuilder<int, Never>().partite(vertexCounts: [1, 3]);
@@ -636,6 +716,7 @@ void main() {
               isEdge(source: 0, target: 2),
               isEdge(source: 0, target: 3),
             ]));
+        expectInvariants(graph);
       });
       test('square graph (p: 2, q: 2)', () {
         final graph = GraphBuilder<int, Never>().partite(vertexCounts: [2, 2]);
@@ -648,6 +729,7 @@ void main() {
               isEdge(source: 1, target: 2),
               isEdge(source: 1, target: 3),
             ]));
+        expectInvariants(graph);
       });
       test('utility graph (p: 3, q: 3)', () {
         final graph = GraphBuilder<int, Never>().partite(vertexCounts: [3, 3]);
@@ -665,6 +747,7 @@ void main() {
               isEdge(source: 2, target: 4),
               isEdge(source: 2, target: 5),
             ]));
+        expectInvariants(graph);
       });
     });
     group('complete', () {
@@ -672,11 +755,13 @@ void main() {
         final graph = GraphBuilder<int, Never>().complete(vertexCount: 0);
         expect(graph.vertices, isEmpty);
         expect(graph.edges, isEmpty);
+        expectInvariants(graph);
       });
       test('single', () {
         final graph = GraphBuilder<int, Never>().complete(vertexCount: 1);
         expect(graph.vertices, [0]);
         expect(graph.edges, isEmpty);
+        expectInvariants(graph);
       });
       test('full', () {
         final graph = GraphBuilder<int, Never>().complete(vertexCount: 3);
@@ -691,6 +776,7 @@ void main() {
               isEdge(source: 2, target: 0),
               isEdge(source: 2, target: 1),
             ]));
+        expectInvariants(graph);
       });
     });
     group('path', () {
@@ -698,11 +784,13 @@ void main() {
         final graph = GraphBuilder<int, Never>().path(vertexCount: 0);
         expect(graph.vertices, isEmpty);
         expect(graph.edges, isEmpty);
+        expectInvariants(graph);
       });
       test('single', () {
         final graph = GraphBuilder<int, Never>().path(vertexCount: 1);
         expect(graph.vertices, [0]);
         expect(graph.edges, isEmpty);
+        expectInvariants(graph);
       });
       test('full', () {
         final graph = GraphBuilder<int, Never>().path(vertexCount: 3);
@@ -713,6 +801,7 @@ void main() {
               isEdge(source: 0, target: 1),
               isEdge(source: 1, target: 2),
             ]));
+        expectInvariants(graph);
       });
     });
     group('ring', () {
@@ -720,11 +809,13 @@ void main() {
         final graph = GraphBuilder<int, Never>().ring(vertexCount: 0);
         expect(graph.vertices, isEmpty);
         expect(graph.edges, isEmpty);
+        expectInvariants(graph);
       });
       test('single', () {
         final graph = GraphBuilder<int, Never>().ring(vertexCount: 1);
         expect(graph.vertices, [0]);
         expect(graph.edges, isEmpty);
+        expectInvariants(graph);
       });
       test('full', () {
         final graph = GraphBuilder<int, Never>().ring(vertexCount: 3);
@@ -736,6 +827,7 @@ void main() {
               isEdge(source: 1, target: 2),
               isEdge(source: 2, target: 0),
             ]));
+        expectInvariants(graph);
       });
     });
     group('star', () {
@@ -743,11 +835,13 @@ void main() {
         final graph = GraphBuilder<int, Never>().star(vertexCount: 0);
         expect(graph.vertices, isEmpty);
         expect(graph.edges, isEmpty);
+        expectInvariants(graph);
       });
       test('single', () {
         final graph = GraphBuilder<int, Never>().star(vertexCount: 1);
         expect(graph.vertices, [0]);
         expect(graph.edges, isEmpty);
+        expectInvariants(graph);
       });
       test('full', () {
         final graph = GraphBuilder<int, Never>().star(vertexCount: 4);
@@ -759,6 +853,7 @@ void main() {
               isEdge(source: 0, target: 2),
               isEdge(source: 0, target: 3),
             ]));
+        expectInvariants(graph);
       });
     });
   });

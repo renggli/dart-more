@@ -1,5 +1,7 @@
+import '../../printer.dart';
+
 /// Abstract definition of an edge.
-abstract class Edge<V, E> {
+abstract class Edge<V, E> with ToStringPrinter {
   const Edge();
 
   /// Origin vertex of this edge.
@@ -13,4 +15,10 @@ abstract class Edge<V, E> {
 
   /// Nullable edge specific data.
   E? get dataOrNull;
+
+  @override
+  ObjectPrinter get toStringPrinter => super.toStringPrinter
+    ..addValue([source, target],
+        printer: Printer<V>.standard().iterable(separator: ' → '))
+    ..addValue(dataOrNull, name: 'data', omitNull: true);
 }

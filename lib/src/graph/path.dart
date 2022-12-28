@@ -17,8 +17,7 @@ abstract class Path<V> with ToStringPrinter {
   @override
   ObjectPrinter get toStringPrinter => super.toStringPrinter
     ..addValue(vertices,
-        name: 'vertices',
         printer: Printer<V>.standard()
-            .iterable(separator: ' ⟶ ', leadingItems: 3, trailingItems: 3))
+            .iterable(separator: ' → ', leadingItems: 3, trailingItems: 3))
     ..addValue(cost, name: 'cost');
 }
