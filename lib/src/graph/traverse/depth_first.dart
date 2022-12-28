@@ -1,25 +1,50 @@
 import 'package:collection/collection.dart';
 
-import '../traverse.dart';
+import '../../../collection.dart';
+import '../graph.dart';
+import '../strategy.dart';
+
+extension DepthFirstGraphExtension<V, E> on Graph<V, E> {
+  /// Traverses the vertices in a pre-order depth-first search (when they are
+  /// first discovered), starting with [vertex].
+  Iterable<V> depthFirst(V vertex, {StorageStrategy<V>? vertexStrategy}) =>
+      depthFirstAll([vertex], vertexStrategy: vertexStrategy);
+
+  /// Traverses the vertices in a pre-order depth-first search (when they are
+  /// first discovered), starting with [vertices].
+  Iterable<V> depthFirstAll(Iterable<V> vertices,
+          {StorageStrategy<V>? vertexStrategy}) =>
+      PluggableIterable<V>(() => DepthFirstIterator<V>(
+            vertices,
+            successorsOf: successorsOf,
+            vertexStrategy: vertexStrategy ?? this.vertexStrategy,
+          ));
+}
 
 /// Performs a depth-first traversal of vertices.
 ///
 /// See https://en.wikipedia.org/wiki/Depth-first_search.
-extension DepthFirstGraphTraverseExtension<V> on GraphTraverse<V> {
-  /// Traverses the vertices in a pre-order depth-first search (when they are
-  /// first discovered), starting with [vertex].
-  Iterable<V> depthFirst(V vertex) => depthFirstAll([vertex]);
+class DepthFirstIterator<V> extends Iterator<V> {
+  DepthFirstIterator(
+    Iterable<V> vertices, {
+    required this.successorsOf,
+    required StorageStrategy<V> vertexStrategy,
+  })  : stack = addAllReversed(<V>[], vertices),
+        seen = vertexStrategy.createSet()..addAll(vertices);
 
-  /// Traverses the vertices in a pre-order depth-first search (when they are
-  /// first discovered), starting with [vertices].
-  Iterable<V> depthFirstAll(Iterable<V> vertices) sync* {
-    final seen = vertexStrategy.createSet()..addAll(vertices);
-    final stack = addAllReversed(<V>[], vertices);
-    while (stack.isNotEmpty) {
-      final current = stack.removeLast();
-      yield current;
-      addAllReversed(stack, successorsOf(current).where(seen.add));
-    }
+  final Iterable<V> Function(V vertex) successorsOf;
+  final List<V> stack;
+  final Set<V> seen;
+
+  @override
+  late V current;
+
+  @override
+  bool moveNext() {
+    if (stack.isEmpty) return false;
+    current = stack.removeLast();
+    addAllReversed(stack, successorsOf(current).where(seen.add));
+    return true;
   }
 }
 

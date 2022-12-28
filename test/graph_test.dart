@@ -64,13 +64,6 @@ const cyclicGraphData = {
 
 Iterable<int> cyclicGraph(int vertex) => cyclicGraphData[vertex]!;
 
-// The reverse collatz graph:
-// https://en.wikipedia.org/wiki/Collatz_conjecture#In_reverse
-Iterable<int> reverseCollatzGraph(int vertex) =>
-    vertex > 1 && (vertex - 1) % 3 == 0
-        ? [(vertex - 1) ~/ 3, 2 * vertex]
-        : [2 * vertex];
-
 // Undirected graph for weighted searches:
 // https://en.wikipedia.org/wiki/File:Dijkstra_Animation.gif
 final dijkstraGraph = Graph<int, int>.undirected()
@@ -506,7 +499,7 @@ void main() {
       });
     });
   });
-  group('generate', () {
+  group('builder', () {
     group('collection', () {
       group('path', () {
         test('empty', () {
@@ -838,97 +831,79 @@ void main() {
     group('breadth-first', () {
       test('path', () {
         final graph = GraphBuilder<int, Never>().path(vertexCount: 10);
-        final traverse = graph.traverse;
-        expect(traverse.breadthFirst(graph.vertices.first),
+        expect(graph.breadthFirst(graph.vertices.first),
             [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]);
       });
       test('ring', () {
         final graph = GraphBuilder<int, Never>().ring(vertexCount: 10);
-        final traverse = graph.traverse;
-        expect(traverse.breadthFirst(graph.vertices.first),
+        expect(graph.breadthFirst(graph.vertices.first),
             [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]);
       });
       test('basic', () {
-        final traverse = GraphTraverse.fromFunction(successorsOf: basicGraph);
-        expect(traverse.breadthFirst(0), [0, 3, 2, 1, 5, 4]);
+        final graph = GraphBuilder<int, Never>().fromSuccessors(basicGraphData);
+        expect(graph.breadthFirst(0), [0, 3, 2, 1, 5, 4]);
       });
       test('cyclic', () {
-        final traverse = GraphTraverse.fromFunction(successorsOf: cyclicGraph);
-        expect(traverse.breadthFirst(0), [0, 3, 1, 4, 2]);
-      });
-      test('infinite', () {
-        final traverse =
-            GraphTraverse.fromFunction(successorsOf: reverseCollatzGraph);
-        expect(traverse.breadthFirst(1).take(10),
-            [1, 2, 4, 8, 16, 5, 32, 10, 64, 3]);
+        final graph =
+            GraphBuilder<int, Never>().fromSuccessors(cyclicGraphData);
+        expect(graph.breadthFirst(0), [0, 3, 1, 4, 2]);
       });
     });
     group('depth-first', () {
       test('path', () {
         final graph = GraphBuilder<int, Never>().path(vertexCount: 10);
-        final traverse = graph.traverse;
-        expect(traverse.depthFirst(graph.vertices.first),
+        expect(graph.depthFirst(graph.vertices.first),
             [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]);
       });
       test('ring', () {
         final graph = GraphBuilder<int, Never>().ring(vertexCount: 10);
-        final traverse = graph.traverse;
-        expect(traverse.depthFirst(graph.vertices.first),
+        expect(graph.depthFirst(graph.vertices.first),
             [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]);
       });
       test('basic', () {
-        final traverse = GraphTraverse.fromFunction(successorsOf: basicGraph);
-        expect(traverse.depthFirst(0), [0, 3, 2, 5, 1, 4]);
+        final graph = GraphBuilder<int, Never>().fromSuccessors(basicGraphData);
+        expect(graph.depthFirst(0), [0, 3, 2, 5, 1, 4]);
       });
       test('cyclic', () {
-        final traverse = GraphTraverse.fromFunction(successorsOf: cyclicGraph);
-        expect(traverse.depthFirst(0), [0, 3, 1, 2, 4]);
-      });
-      test('infinite', () {
-        final traverse =
-            GraphTraverse.fromFunction(successorsOf: reverseCollatzGraph);
-        expect(
-            traverse.depthFirst(1).take(10), [1, 2, 4, 8, 16, 5, 10, 3, 6, 12]);
+        final graph =
+            GraphBuilder<int, Never>().fromSuccessors(cyclicGraphData);
+        expect(graph.depthFirst(0), [0, 3, 1, 2, 4]);
       });
     });
     group('depth-first (post-order)', () {
       test('path', () {
         final graph = GraphBuilder<int, Never>().path(vertexCount: 10);
-        final traverse = graph.traverse;
-        expect(traverse.depthFirstPostOrder(graph.vertices.first),
+        expect(graph.depthFirstPostOrder(graph.vertices.first),
             [9, 8, 7, 6, 5, 4, 3, 2, 1, 0]);
       });
       test('ring', () {
         final graph = GraphBuilder<int, Never>().ring(vertexCount: 10);
-        final traverse = graph.traverse;
-        expect(traverse.depthFirstPostOrder(graph.vertices.first),
+        expect(graph.depthFirstPostOrder(graph.vertices.first),
             [9, 8, 7, 6, 5, 4, 3, 2, 1, 0]);
       });
       test('basic', () {
-        final traverse = GraphTraverse.fromFunction(successorsOf: basicGraph);
-        expect(traverse.depthFirstPostOrder(0), [3, 5, 2, 4, 1, 0]);
+        final graph = GraphBuilder<int, Never>().fromSuccessors(basicGraphData);
+        expect(graph.depthFirstPostOrder(0), [3, 5, 2, 4, 1, 0]);
       });
       test('cyclic', () {
-        final traverse = GraphTraverse.fromFunction(successorsOf: cyclicGraph);
-        expect(traverse.depthFirstPostOrder(0), [2, 1, 4, 3, 0]);
+        final graph =
+            GraphBuilder<int, Never>().fromSuccessors(cyclicGraphData);
+        expect(graph.depthFirstPostOrder(0), [2, 1, 4, 3, 0]);
       });
     });
     group('topological', () {
       test('path', () {
         final graph = GraphBuilder<int, Never>().path(vertexCount: 10);
-        final traverse = graph.traverse;
-        expect(traverse.topological(graph.vertices.first),
+        expect(graph.topological(graph.vertices.first),
             [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]);
       });
       test('ring', () {
         final graph = GraphBuilder<int, Never>().ring(vertexCount: 10);
-        final traverse = graph.traverse;
-        expect(traverse.topological(graph.vertices.first), isEmpty);
+        expect(graph.topological(graph.vertices.first), isEmpty);
       });
       test('basic', () {
-        final traverse =
-            GraphBuilder<int, Never>().fromSuccessors(basicGraphData).traverse;
-        expect(traverse.topological(0), [0, 1, 4, 2, 5, 3]);
+        final graph = GraphBuilder<int, Never>().fromSuccessors(basicGraphData);
+        expect(graph.topological(0), [0, 1, 4, 2, 5, 3]);
       });
     });
   });

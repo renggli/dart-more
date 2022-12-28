@@ -2,7 +2,6 @@ import '../../functional.dart';
 import 'edge.dart';
 import 'graph.dart';
 import 'strategy.dart';
-import 'traverse.dart';
 
 typedef OutgoingEdgesFunction<V, E> = Iterable<Edge<V, E>> Function(V vertex);
 typedef EdgeCostFunction<V, E> = num Function(Edge<V, E> edge);
@@ -25,18 +24,6 @@ class GraphSearch<V, E> {
           outgoingEdgesOf: graph.outgoingEdgesOf,
           edgeCost: edgeCost ?? constantFunction1(1),
           vertexStrategy: vertexStrategy ?? graph.vertexStrategy,
-        );
-
-  /// Constructs a search strategy from functions.
-  GraphSearch.fromFunction({
-    VertexFunction<V>? successorsOf,
-    OutgoingEdgesFunction<V, E>? outgoingEdgesOf,
-    EdgeCostFunction<V, E>? edgeCost,
-    StorageStrategy<V>? vertexStrategy,
-  }) : this._(
-          outgoingEdgesOf: outgoingEdgesOf ?? throwFunction1('Unimplemented'),
-          edgeCost: edgeCost ?? constantFunction1(1),
-          vertexStrategy: vertexStrategy ?? StorageStrategy.defaultStrategy(),
         );
 
   /// Constructs a traversal strategy from a successor function.
