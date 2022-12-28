@@ -64,6 +64,13 @@ const cyclicGraphData = {
 
 Iterable<int> cyclicGraph(int vertex) => cyclicGraphData[vertex]!;
 
+// The reverse collatz graph:
+// https://en.wikipedia.org/wiki/Collatz_conjecture#In_reverse
+Iterable<int> reverseCollatzGraph(int vertex) =>
+    vertex > 1 && (vertex - 1) % 3 == 0
+        ? [(vertex - 1) ~/ 3, 2 * vertex]
+        : [2 * vertex];
+
 // Undirected graph for weighted searches:
 // https://en.wikipedia.org/wiki/File:Dijkstra_Animation.gif
 final dijkstraGraph = Graph<int, int>.undirected()
@@ -848,6 +855,11 @@ void main() {
             GraphBuilder<int, Never>().fromSuccessors(cyclicGraphData);
         expect(graph.breadthFirst(0), [0, 3, 1, 4, 2]);
       });
+      test('infinite', () {
+        final iterable =
+            BreadthFirstIterable([1], successorsOf: reverseCollatzGraph);
+        expect(iterable.take(10), [1, 2, 4, 8, 16, 5, 32, 10, 64, 3]);
+      });
     });
     group('depth-first', () {
       test('path', () {
@@ -868,6 +880,11 @@ void main() {
         final graph =
             GraphBuilder<int, Never>().fromSuccessors(cyclicGraphData);
         expect(graph.depthFirst(0), [0, 3, 1, 2, 4]);
+      });
+      test('infinite', () {
+        final iterable =
+            DepthFirstIterable([1], successorsOf: reverseCollatzGraph);
+        expect(iterable.take(10), [1, 2, 4, 8, 16, 5, 10, 3, 6, 12]);
       });
     });
     group('depth-first (post-order)', () {
