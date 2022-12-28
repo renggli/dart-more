@@ -1,6 +1,7 @@
+import 'dart:collection';
+
 import 'package:collection/collection.dart';
 
-import '../../../collection.dart';
 import '../graph.dart';
 import '../strategy.dart';
 
@@ -12,25 +13,33 @@ extension BreadthFirstGraphExtension<V, E> on Graph<V, E> {
   /// Traverses the vertices in a breadth-first search, starting with [vertices].
   Iterable<V> breadthFirstAll(Iterable<V> vertices,
           {StorageStrategy<V>? vertexStrategy}) =>
-      PluggableIterable<V>(() => BreadthFirstIterator<V>(
-            vertices,
-            successorsOf: successorsOf,
-            vertexStrategy: vertexStrategy ?? this.vertexStrategy,
-          ));
+      BreadthFirstIterable<V>(vertices,
+          successorsOf: successorsOf,
+          vertexStrategy: vertexStrategy ?? this.vertexStrategy);
 }
 
-/// Performs a breadth-first traversal of vertices.
+/// Iterable over the breadth-first traversal of vertices.
 ///
 /// See https://en.wikipedia.org/wiki/Breadth-first_search.
-class BreadthFirstIterator<V> extends Iterator<V> {
-  BreadthFirstIterator(
-    Iterable<V> vertices, {
-    required this.successorsOf,
-    required StorageStrategy<V> vertexStrategy,
-  })  : todo = QueueList<V>()..addAll(vertices),
-        seen = vertexStrategy.createSet()..addAll(vertices);
+class BreadthFirstIterable<V> extends IterableBase<V> {
+  BreadthFirstIterable(this.vertices,
+      {required this.successorsOf, StorageStrategy<V>? vertexStrategy})
+      : vertexStrategy = vertexStrategy ?? StorageStrategy.defaultStrategy();
 
+  final Iterable<V> vertices;
   final Iterable<V> Function(V vertex) successorsOf;
+  final StorageStrategy<V> vertexStrategy;
+
+  @override
+  Iterator<V> get iterator => _BreadthFirstIterator<V>(this);
+}
+
+class _BreadthFirstIterator<V> extends Iterator<V> {
+  _BreadthFirstIterator(this.iterable)
+      : todo = QueueList<V>.from(iterable.vertices),
+        seen = iterable.vertexStrategy.createSet()..addAll(iterable.vertices);
+
+  final BreadthFirstIterable<V> iterable;
   final QueueList<V> todo;
   final Set<V> seen;
 
@@ -41,7 +50,7 @@ class BreadthFirstIterator<V> extends Iterator<V> {
   bool moveNext() {
     if (todo.isEmpty) return false;
     current = todo.removeFirst();
-    for (final next in successorsOf(current)) {
+    for (final next in iterable.successorsOf(current)) {
       if (seen.add(next)) {
         todo.addLast(next);
       }

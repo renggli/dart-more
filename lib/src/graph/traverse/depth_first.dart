@@ -1,6 +1,7 @@
+import 'dart:collection';
+
 import 'package:collection/collection.dart';
 
-import '../../../collection.dart';
 import '../graph.dart';
 import '../strategy.dart';
 
@@ -14,26 +15,34 @@ extension DepthFirstGraphExtension<V, E> on Graph<V, E> {
   /// first discovered), starting with [vertices].
   Iterable<V> depthFirstAll(Iterable<V> vertices,
           {StorageStrategy<V>? vertexStrategy}) =>
-      PluggableIterable<V>(() => DepthFirstIterator<V>(
-            vertices,
-            successorsOf: successorsOf,
-            vertexStrategy: vertexStrategy ?? this.vertexStrategy,
-          ));
+      DepthFirstIterable<V>(vertices,
+          successorsOf: successorsOf,
+          vertexStrategy: vertexStrategy ?? this.vertexStrategy);
 }
 
-/// Performs a depth-first traversal of vertices.
+/// Iterable over the depth-first traversal of vertices.
 ///
 /// See https://en.wikipedia.org/wiki/Depth-first_search.
-class DepthFirstIterator<V> extends Iterator<V> {
-  DepthFirstIterator(
-    Iterable<V> vertices, {
-    required this.successorsOf,
-    required StorageStrategy<V> vertexStrategy,
-  })  : stack = addAllReversed(<V>[], vertices),
-        seen = vertexStrategy.createSet()..addAll(vertices);
+class DepthFirstIterable<V> extends IterableBase<V> {
+  DepthFirstIterable(this.vertices,
+      {required this.successorsOf, StorageStrategy<V>? vertexStrategy})
+      : vertexStrategy = vertexStrategy ?? StorageStrategy.defaultStrategy();
 
+  final Iterable<V> vertices;
   final Iterable<V> Function(V vertex) successorsOf;
-  final List<V> stack;
+  final StorageStrategy<V> vertexStrategy;
+
+  @override
+  Iterator<V> get iterator => _DepthFirstIterator<V>(this);
+}
+
+class _DepthFirstIterator<V> extends Iterator<V> {
+  _DepthFirstIterator(this.iterable)
+      : todo = addAllReversed(<V>[], iterable.vertices),
+        seen = iterable.vertexStrategy.createSet()..addAll(iterable.vertices);
+
+  final DepthFirstIterable<V> iterable;
+  final List<V> todo;
   final Set<V> seen;
 
   @override
@@ -41,9 +50,9 @@ class DepthFirstIterator<V> extends Iterator<V> {
 
   @override
   bool moveNext() {
-    if (stack.isEmpty) return false;
-    current = stack.removeLast();
-    addAllReversed(stack, successorsOf(current).where(seen.add));
+    if (todo.isEmpty) return false;
+    current = todo.removeLast();
+    addAllReversed(todo, iterable.successorsOf(current).where(seen.add));
     return true;
   }
 }

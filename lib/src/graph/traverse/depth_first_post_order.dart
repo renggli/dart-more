@@ -1,6 +1,7 @@
+import 'dart:collection';
+
 import 'package:collection/collection.dart';
 
-import '../../../collection.dart';
 import '../graph.dart';
 import '../strategy.dart';
 import 'depth_first.dart';
@@ -16,26 +17,34 @@ extension DepthFirstPostOrderGraphExtension<V, E> on Graph<V, E> {
   /// descendants have been discovered), starting with [vertices].
   Iterable<V> depthFirstPostOrderAll(Iterable<V> vertices,
           {StorageStrategy<V>? vertexStrategy}) =>
-      PluggableIterable<V>(() => DepthFirstPostOrderIterator<V>(
-            vertices,
-            successorsOf: successorsOf,
-            vertexStrategy: vertexStrategy ?? this.vertexStrategy,
-          ));
+      DepthFirstPostOrderIterable<V>(vertices,
+          successorsOf: successorsOf,
+          vertexStrategy: vertexStrategy ?? this.vertexStrategy);
 }
 
-/// Performs a post-order depth-first traversal of vertices.
+/// Iterable over the post-order depth-first traversal of vertices.
 ///
 /// See https://en.wikipedia.org/wiki/Depth-first_search#Vertex_orderings.
-class DepthFirstPostOrderIterator<V> extends Iterator<V> {
-  DepthFirstPostOrderIterator(
-    Iterable<V> vertices, {
-    required this.successorsOf,
-    required StorageStrategy<V> vertexStrategy,
-  })  : stack = addAllReversed(<V>[], vertices),
-        seen = vertexStrategy.createSet();
+class DepthFirstPostOrderIterable<V> extends IterableBase<V> {
+  DepthFirstPostOrderIterable(this.vertices,
+      {required this.successorsOf, StorageStrategy<V>? vertexStrategy})
+      : vertexStrategy = vertexStrategy ?? StorageStrategy.defaultStrategy();
 
+  final Iterable<V> vertices;
   final Iterable<V> Function(V vertex) successorsOf;
-  final List<V> stack;
+  final StorageStrategy<V> vertexStrategy;
+
+  @override
+  Iterator<V> get iterator => _DepthFirstPostOrderIterator<V>(this);
+}
+
+class _DepthFirstPostOrderIterator<V> extends Iterator<V> {
+  _DepthFirstPostOrderIterator(this.iterable)
+      : todo = addAllReversed(<V>[], iterable.vertices),
+        seen = iterable.vertexStrategy.createSet();
+
+  final DepthFirstPostOrderIterable<V> iterable;
+  final List<V> todo;
   final Set<V> seen;
 
   @override
@@ -43,11 +52,12 @@ class DepthFirstPostOrderIterator<V> extends Iterator<V> {
 
   @override
   bool moveNext() {
-    while (stack.isNotEmpty) {
-      if (seen.add(stack.last)) {
-        addAllReversed(stack, successorsOf(stack.last).whereNot(seen.contains));
+    while (todo.isNotEmpty) {
+      if (seen.add(todo.last)) {
+        addAllReversed(
+            todo, iterable.successorsOf(todo.last).whereNot(seen.contains));
       } else {
-        current = stack.removeLast();
+        current = todo.removeLast();
         return true;
       }
     }

@@ -13,8 +13,11 @@ export 'src/graph/path.dart' show Path;
 export 'src/graph/search.dart' show SearchGraphExtension, GraphSearch;
 export 'src/graph/search/dijkstra.dart' show DijkstraGraphSearchExtension;
 export 'src/graph/strategy/integer.dart';
-export 'src/graph/traverse/breadth_first.dart' show BreadthFirstGraphExtension;
-export 'src/graph/traverse/depth_first.dart' show DepthFirstGraphExtension;
+export 'src/graph/traverse/breadth_first.dart'
+    show BreadthFirstGraphExtension, BreadthFirstIterable;
+export 'src/graph/traverse/depth_first.dart'
+    show DepthFirstGraphExtension, DepthFirstIterable;
 export 'src/graph/traverse/depth_first_post_order.dart'
-    show DepthFirstPostOrderGraphExtension;
-export 'src/graph/traverse/topological.dart' show TopologicalGraphExtension;
+    show DepthFirstPostOrderGraphExtension, DepthFirstPostOrderIterable;
+export 'src/graph/traverse/topological.dart'
+    show TopologicalGraphExtension, TopologicalIterable;
