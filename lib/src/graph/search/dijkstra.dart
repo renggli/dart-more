@@ -2,16 +2,17 @@ import 'package:collection/collection.dart';
 
 import '../../../collection.dart';
 import '../../../functional.dart';
+import '../model/path.dart';
 import '../path.dart';
 import '../search.dart';
 
 extension DijkstraGraphSearchExtension<V, E> on GraphSearch<V, E> {
-  DijkstraPath<V>? dijkstra(V source, V target) =>
+  Path<V>? dijkstra(V source, V target) =>
       dijkstraAll(source, (vertex) => vertex == target).firstOrNull;
 
   /// Returns an [Iterable] over all Dijkstra paths that start in `source` and
   /// end in a vertex that satisfies the `target` predicate.
-  Iterable<DijkstraPath<V>> dijkstraAll(V source, Predicate1<V> target) sync* {
+  Iterable<Path<V>> dijkstraAll(V source, Predicate1<V> target) sync* {
     final cost = vertexStrategy.createMap<num>().withDefault(double.infinity)
       ..[source] = 0;
     final todo = PriorityQueue<V>((a, b) => cost[a].compareTo(cost[b]))
@@ -24,10 +25,7 @@ extension DijkstraGraphSearchExtension<V, E> on GraphSearch<V, E> {
         for (V? parent = current; parent != null; parent = parents[parent]) {
           vertices.addFirst(parent);
         }
-        yield DijkstraPath<V>(
-          vertices: vertices,
-          cost: cost[current],
-        );
+        yield DefaultPath<V>(vertices, cost[current]);
       }
       for (final edge in outgoingEdgesOf(current)) {
         final target = edge.target;
@@ -41,23 +39,4 @@ extension DijkstraGraphSearchExtension<V, E> on GraphSearch<V, E> {
       }
     }
   }
-}
-
-class DijkstraPath<V> extends Path<V> {
-  DijkstraPath({
-    required this.vertices,
-    required this.cost,
-  });
-
-  @override
-  V get source => vertices.first;
-
-  @override
-  V get target => vertices.last;
-
-  @override
-  final List<V> vertices;
-
-  @override
-  final num cost;
 }
