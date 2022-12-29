@@ -875,19 +875,14 @@ void main() {
       });
       test('directed path with cost', () {
         final graph = GraphBuilder<int, Never>().path(vertexCount: 10);
-        num edgeCost(Edge<int, Never> edge) {
-          expect(edge.source, edge.target - 1);
-          return edge.target;
-        }
-
         for (var i = 0; i < 10; i++) {
           expect(
-            graph.shortestPath(0, i, edgeCost: edgeCost),
+            graph.shortestPath(0, i, edgeCost: (edge) => edge.target),
             isPath(source: 0, target: i, cost: i * (i + 1) ~/ 2),
           );
           if (i != 0) {
             expect(
-              graph.shortestPath(i, 0, edgeCost: edgeCost),
+              graph.shortestPath(i, 0, edgeCost: (edge) => edge.target),
               isNull,
             );
           }
@@ -948,6 +943,24 @@ void main() {
         );
         expect(
             dijkstraGraph.shortestPathAll(1, constantFunction1(true)),
+            unorderedEquals([
+              isPath(vertices: [1], cost: 0),
+              isPath(vertices: [1, 6], cost: 1),
+              isPath(vertices: [1, 3], cost: 1),
+              isPath(vertices: [1, 2], cost: 1),
+              isPath(vertices: [1, 3, 4], cost: 2),
+              isPath(vertices: [1, 6, 5], cost: 2),
+            ]));
+      });
+      test('undirected graph with cost estimate', () {
+        expect(
+          dijkstraGraph.shortestPath(1, 5,
+              costEstimate: (vertex) => 6 - vertex),
+          isPath(source: 1, target: 5, vertices: [1, 6, 5], cost: 2),
+        );
+        expect(
+            dijkstraGraph.shortestPathAll(1, constantFunction1(true),
+                costEstimate: (vertex) => 6 - vertex),
             unorderedEquals([
               isPath(vertices: [1], cost: 0),
               isPath(vertices: [1, 6], cost: 1),

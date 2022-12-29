@@ -2,7 +2,6 @@ import 'dart:collection';
 
 import 'package:collection/collection.dart';
 
-import '../../../collection.dart';
 import '../../../functional.dart';
 import '../model/path.dart';
 import '../path.dart';
@@ -36,26 +35,21 @@ class AStarSearchIterable<V> extends IterableBase<Path<V>> {
 
 class _AStarSearchIterator<V> extends Iterator<Path<V>> {
   _AStarSearchIterator(this.iterable)
-      : fScore = iterable.vertexStrategy
-            .createMap<num>()
-            .withDefault(double.infinity),
-        gScore = iterable.vertexStrategy
-            .createMap<num>()
-            .withDefault(double.infinity),
-        parents = iterable.vertexStrategy.createMap<V>() {
-    todo = PriorityQueue<V>((a, b) => fScore[a].compareTo(fScore[b]));
+      : states = iterable.vertexStrategy.createMap<_State<V>>() {
     for (final vertex in iterable.startVertices) {
-      fScore[vertex] = iterable.costEstimate(vertex);
-      gScore[vertex] = 0;
-      todo.add(vertex);
+      final state = _State<V>(
+        vertex: vertex,
+        cost: 0,
+        estimate: iterable.costEstimate(vertex),
+      );
+      states[vertex] = state;
+      todo.add(state);
     }
   }
 
   final AStarSearchIterable<V> iterable;
-  late final PriorityQueue<V> todo;
-  final MapWithDefault<V, num> fScore;
-  final MapWithDefault<V, num> gScore;
-  final Map<V, V> parents;
+  final Map<V, _State<V>> states;
+  final PriorityQueue<_State<V>> todo = PriorityQueue();
 
   @override
   late Path<V> current;
@@ -63,26 +57,48 @@ class _AStarSearchIterator<V> extends Iterator<Path<V>> {
   @override
   bool moveNext() {
     while (todo.isNotEmpty) {
-      final vertex = todo.removeFirst();
-      for (final target in iterable.successorsOf(vertex)) {
-        final cost = gScore[vertex] + iterable.edgeCost(vertex, target);
-        if (cost < gScore[target]) {
-          gScore[target] = cost;
-          fScore[target] = cost + iterable.costEstimate(target);
-          parents[target] = vertex;
-          todo.remove(target);
-          todo.add(target);
+      final sourceState = todo.removeFirst();
+      for (final target in iterable.successorsOf(sourceState.vertex)) {
+        final cost =
+            sourceState.cost + iterable.edgeCost(sourceState.vertex, target);
+        final targetState =
+            states.putIfAbsent(target, () => _State<V>(vertex: target));
+        if (cost < targetState.cost) {
+          targetState.cost = cost;
+          targetState.estimate = cost + iterable.costEstimate(target);
+          targetState.parent = sourceState;
+          todo.remove(targetState);
+          todo.add(targetState);
         }
       }
-      if (iterable.targetPredicate(vertex)) {
+      if (iterable.targetPredicate(sourceState.vertex)) {
         final vertices = QueueList<V>();
-        for (V? parent = vertex; parent != null; parent = parents[parent]) {
-          vertices.addFirst(parent);
+        for (_State<V>? state = sourceState;
+            state != null;
+            state = state.parent) {
+          vertices.addFirst(state.vertex);
         }
-        current = DefaultPath<V>(vertices, gScore[vertex]);
+        current = DefaultPath<V>(vertices, sourceState.cost);
         return true;
       }
     }
     return false;
   }
+}
+
+class _State<V> extends Comparable<_State<V>> {
+  _State({
+    required this.vertex,
+    this.parent,
+    this.estimate = double.infinity,
+    this.cost = double.infinity,
+  });
+
+  final V vertex;
+  _State<V>? parent;
+  num cost;
+  num estimate;
+
+  @override
+  int compareTo(_State<V> other) => estimate.compareTo(other.estimate);
 }
