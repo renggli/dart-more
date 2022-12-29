@@ -13,6 +13,7 @@ export 'src/graph/model/reversed.dart' show ReversedGraphExtension;
 export 'src/graph/operations/map.dart' show MapGraphExtension;
 export 'src/graph/path.dart' show Path;
 export 'src/graph/search.dart' show SearchGraphExtension;
+export 'src/graph/search/a_star.dart' show AStarSearchIterable;
 export 'src/graph/search/dijkstra.dart' show DijkstraSearchIterable;
 export 'src/graph/strategy/integer.dart';
 export 'src/graph/traverse/breadth_first.dart'

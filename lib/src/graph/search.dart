@@ -4,6 +4,7 @@ import '../../functional.dart';
 import 'edge.dart';
 import 'graph.dart';
 import 'path.dart';
+import 'search/a_star.dart';
 import 'search/dijkstra.dart';
 import 'strategy.dart';
 
@@ -13,14 +14,14 @@ extension SearchGraphExtension<V, E> on Graph<V, E> {
     V source,
     V target, {
     num Function(Edge<V, E> edge)? edgeCost,
-    num Function(V target)? estimateCost,
+    num Function(V target)? costEstimate,
     StorageStrategy<V>? vertexStrategy,
   }) =>
       shortestPathAll(
         source,
         (vertex) => target == vertex,
         edgeCost: edgeCost,
-        estimateCost: estimateCost,
+        costEstimate: costEstimate,
         vertexStrategy: vertexStrategy,
       ).firstOrNull;
 
@@ -30,16 +31,29 @@ extension SearchGraphExtension<V, E> on Graph<V, E> {
     V source,
     Predicate1<V> target, {
     num Function(Edge<V, E> edge)? edgeCost,
-    num Function(V target)? estimateCost,
+    num Function(V target)? costEstimate,
     StorageStrategy<V>? vertexStrategy,
-  }) =>
-      DijkstraSearchIterable<V>(
-        startVertices: [source],
-        targetPredicate: target,
-        successorsOf: successorsOf,
-        edgeCost: edgeCost == null
-            ? null
-            : ((source, target) => edgeCost(getEdges(source, target).first)),
-        vertexStrategy: vertexStrategy,
-      );
+  }) {
+    num Function(V source, V target)? vertexEdgeCost;
+    if (edgeCost != null) {
+      vertexEdgeCost =
+          (source, target) => edgeCost(getEdges(source, target).first);
+    }
+    return costEstimate == null
+        ? DijkstraSearchIterable<V>(
+            startVertices: [source],
+            targetPredicate: target,
+            successorsOf: successorsOf,
+            edgeCost: vertexEdgeCost,
+            vertexStrategy: vertexStrategy,
+          )
+        : AStarSearchIterable<V>(
+            startVertices: [source],
+            targetPredicate: target,
+            successorsOf: successorsOf,
+            costEstimate: costEstimate,
+            edgeCost: vertexEdgeCost,
+            vertexStrategy: vertexStrategy,
+          );
+  }
 }
