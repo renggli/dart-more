@@ -2,7 +2,6 @@ import 'dart:math';
 
 import 'package:more/functional.dart';
 import 'package:more/graph.dart';
-import 'package:more/src/graph/generator/collection.dart';
 import 'package:test/test.dart';
 
 Matcher isEdge({
@@ -861,48 +860,78 @@ void main() {
     group('dijkstra', () {
       test('directed path', () {
         final graph = GraphBuilder<int, Never>().path(vertexCount: 10);
-        final search = graph.search();
         for (var i = 0; i < 10; i++) {
-          expect(search.dijkstra(0, i), isPath(source: 0, target: i, cost: i));
-          if (i != 0) expect(search.dijkstra(i, 0), isNull);
+          expect(
+            graph.shortestPath(0, i),
+            isPath(source: 0, target: i, cost: i),
+          );
+          if (i != 0) {
+            expect(
+              graph.shortestPath(i, 0),
+              isNull,
+            );
+          }
         }
       });
       test('directed path with cost', () {
         final graph = GraphBuilder<int, Never>().path(vertexCount: 10);
-        final search = graph.search(edgeCost: (edge) {
+        num edgeCost(Edge<int, Never> edge) {
           expect(edge.source, edge.target - 1);
           return edge.target;
-        });
+        }
+
         for (var i = 0; i < 10; i++) {
-          expect(search.dijkstra(0, i),
-              isPath(source: 0, target: i, cost: i * (i + 1) ~/ 2));
-          if (i != 0) expect(search.dijkstra(i, 0), isNull);
+          expect(
+            graph.shortestPath(0, i, edgeCost: edgeCost),
+            isPath(source: 0, target: i, cost: i * (i + 1) ~/ 2),
+          );
+          if (i != 0) {
+            expect(
+              graph.shortestPath(i, 0, edgeCost: edgeCost),
+              isNull,
+            );
+          }
         }
       });
       test('directed path with cost on edge', () {
         final graph =
             GraphBuilder<int, int>(edgeProvider: (source, target) => target)
                 .path(vertexCount: 10);
-        final search = graph.search(edgeCost: (edge) => edge.data);
         for (var i = 0; i < 10; i++) {
-          expect(search.dijkstra(0, i),
-              isPath(source: 0, target: i, cost: i * (i + 1) ~/ 2));
-          if (i != 0) expect(search.dijkstra(i, 0), isNull);
+          expect(
+            graph.shortestPath(0, i, edgeCost: (edge) => edge.data),
+            isPath(source: 0, target: i, cost: i * (i + 1) ~/ 2),
+          );
+          if (i != 0) {
+            expect(
+              graph.shortestPath(i, 0, edgeCost: (edge) => edge.data),
+              isNull,
+            );
+          }
         }
       });
       test('undirected path', () {
         final graph =
             GraphBuilder<int, Never>(isDirected: false).path(vertexCount: 10);
-        final search = graph.search();
-        expect(search.dijkstra(0, 9), isPath(source: 0, target: 9, cost: 9));
-        expect(search.dijkstra(9, 0), isPath(source: 9, target: 0, cost: 9));
+        for (var i = 0; i < 10; i++) {
+          expect(
+            graph.shortestPath(0, i),
+            isPath(source: 0, target: i, cost: i),
+          );
+          expect(
+            graph.shortestPath(i, 0),
+            isPath(source: i, target: 0, cost: i),
+          );
+        }
       });
       test('undirected graph', () {
-        final search = dijkstraGraph.search(edgeCost: (edge) => edge.data);
-        expect(search.dijkstra(1, 5),
-            isPath(source: 1, target: 5, vertices: [1, 3, 6, 5], cost: 20));
         expect(
-            search.dijkstraAll(1, constantFunction1(true)),
+          dijkstraGraph.shortestPath(1, 5, edgeCost: (edge) => edge.data),
+          isPath(source: 1, target: 5, vertices: [1, 3, 6, 5], cost: 20),
+        );
+        expect(
+            dijkstraGraph.shortestPathAll(1, constantFunction1(true),
+                edgeCost: (edge) => edge.data),
             unorderedEquals([
               isPath(vertices: [1], cost: 0),
               isPath(vertices: [1, 2], cost: 7),
@@ -913,11 +942,12 @@ void main() {
             ]));
       });
       test('undirected graph with default cost', () {
-        final search = dijkstraGraph.search();
-        expect(search.dijkstra(1, 5),
-            isPath(source: 1, target: 5, vertices: [1, 6, 5], cost: 2));
         expect(
-            search.dijkstraAll(1, constantFunction1(true)),
+          dijkstraGraph.shortestPath(1, 5),
+          isPath(source: 1, target: 5, vertices: [1, 6, 5], cost: 2),
+        );
+        expect(
+            dijkstraGraph.shortestPathAll(1, constantFunction1(true)),
             unorderedEquals([
               isPath(vertices: [1], cost: 0),
               isPath(vertices: [1, 6], cost: 1),

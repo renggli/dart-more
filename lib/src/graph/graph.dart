@@ -27,43 +27,42 @@ abstract class Graph<V, E> {
   /// Returns the edges of this graph.
   Iterable<Edge<V, E>> get edges;
 
-  /// Returns the incoming and outgoing edges of `vertex`.
+  /// Returns the incoming and outgoing edges of [vertex].
   Iterable<Edge<V, E>> edgesOf(V vertex) =>
       incomingEdgesOf(vertex).followedBy(outgoingEdgesOf(vertex));
 
-  /// Returns the incoming edges of `vertex`.
+  /// Returns the incoming edges of [vertex].
   Iterable<Edge<V, E>> incomingEdgesOf(V vertex);
 
-  /// Returns the outgoing edges of `vertex`.
+  /// Returns the outgoing edges of [vertex].
   Iterable<Edge<V, E>> outgoingEdgesOf(V vertex);
+
+  /// Returns the edges between [source] and [target].
+  Iterable<Edge<V, E>> getEdges(V source, V target) =>
+      outgoingEdgesOf(source).where((edge) => edge.target == target);
 
   /// Returns the vertices that are adjacent to a `vertex`.
   Iterable<V> neighboursOf(V vertex) =>
       predecessorsOf(vertex).followedBy(successorsOf(vertex));
 
-  /// Returns the vertices that come before a `vertex`.
+  /// Returns the vertices that come before a [vertex].
   Iterable<V> predecessorsOf(V vertex) =>
       incomingEdgesOf(vertex).map((edge) => edge.source);
 
-  /// Returns the vertices that come after a `vertex`.
+  /// Returns the vertices that come after a [vertex].
   Iterable<V> successorsOf(V vertex) =>
       outgoingEdgesOf(vertex).map((edge) => edge.target);
 
-  /// Adds a vertex to this graph.
+  /// Adds a [vertex] to this graph.
   void addVertex(V vertex);
 
-  /// Adds an edge between `source` and `target` vertex. Optionally
-  /// associates the provided `data` with the edge.
+  /// Adds an edge between [source] and [target] vertex. Optionally
+  /// associates the provided [data] with the edge.
   void addEdge(V source, V target, {E? data});
 
-  void addEdgeObject(Edge<V, E> edge) =>
-      addEdge(edge.source, edge.target, data: edge.dataOrNull);
-
-  /// Removes a vertex from this graph.
+  /// Removes a [vertex] from this graph.
   void removeVertex(V vertex);
 
+  /// Removes an edge between [source] and [target] from this graph.
   void removeEdge(V source, V target, {E? data});
-
-  void removeEdgeObject(Edge<V, E> edge) =>
-      removeEdge(edge.source, edge.target, data: edge.dataOrNull);
 }

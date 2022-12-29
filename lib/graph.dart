@@ -1,6 +1,8 @@
 /// Graph-theory objects and algorithms.
 export 'src/graph/builder.dart' show GraphBuilder;
 export 'src/graph/edge.dart' show Edge;
+export 'src/graph/generator/collection.dart'
+    show CollectionGraphBuilderExtension;
 export 'src/graph/generator/complete.dart' show CompleteGraphBuilderExtension;
 export 'src/graph/generator/partite.dart' show PartiteGraphBuilderExtension;
 export 'src/graph/generator/path.dart' show PathGraphBuilderExtension;
@@ -10,8 +12,8 @@ export 'src/graph/graph.dart' show Graph;
 export 'src/graph/model/reversed.dart' show ReversedGraphExtension;
 export 'src/graph/operations/map.dart' show MapGraphExtension;
 export 'src/graph/path.dart' show Path;
-export 'src/graph/search.dart' show SearchGraphExtension, GraphSearch;
-export 'src/graph/search/dijkstra.dart' show DijkstraGraphSearchExtension;
+export 'src/graph/search.dart' show SearchGraphExtension;
+export 'src/graph/search/dijkstra.dart' show DijkstraSearchIterable;
 export 'src/graph/strategy/integer.dart';
 export 'src/graph/traverse/breadth_first.dart'
     show BreadthFirstGraphExtension, BreadthFirstIterable;

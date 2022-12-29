@@ -1,7 +1,7 @@
 import '../builder.dart';
 import '../graph.dart';
 
-extension CollectionGraphBuilder<V, E> on GraphBuilder<V, E> {
+extension CollectionGraphBuilderExtension<V, E> on GraphBuilder<V, E> {
   /// Creates a [Graph] from a [Iterable] of chains.
   Graph<V, E> fromPath(Iterable<V> chain) => fromPaths([chain]);
 
