@@ -23,9 +23,10 @@ abstract class RTree<T> {
   /// Maximum number of entries per node.
   final int maxEntries;
 
-  ///
+  /// The root node of the tree.
   late RTreeNode<T> root = RTreeNode<T>(this, isLeaf: true);
 
+  /// Associates [data] with the provided [bounds].
   RTreeEntry<T> insert(Bounds bound, T data);
 
   /// Queries leaf entries for a location (either a point or a rectangle),

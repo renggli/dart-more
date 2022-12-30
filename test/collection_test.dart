@@ -4595,11 +4595,17 @@ void allRTreeTests(
   test('stress', () {
     final rtree = createRTree<int>();
     final random = Random(3212312);
+    final bounds = <Bounds>[];
     for (var i = 0; i < 2500; i++) {
-      rtree.insert(
-          Bounds.fromPoint(
-              List.generate(3, (index) => 2000 * random.nextDouble() - 1000)),
-          i);
+      final bound = Bounds.fromPoint(
+          List.generate(3, (index) => 2000 * random.nextDouble() - 1000));
+      rtree.insert(bound, i);
+      bounds.add(bound);
+    }
+    for (var i = 0; i < bounds.length; i++) {
+      expect(rtree.queryEntries(bounds[i]), isNotEmpty);
+      expect(rtree.queryNodes(bounds[i], leaves: true), isNotEmpty);
+      expect(rtree.queryNodes(bounds[i], leaves: false), isNotEmpty);
     }
     validate(rtree);
   });
