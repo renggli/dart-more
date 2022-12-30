@@ -114,6 +114,9 @@ void verify<T>(
   test('isEmpty', () {
     expect(interval.isEmpty, isEmpty);
   });
+  test('isNotEmpty', () {
+    expect(interval.isNotEmpty, !isEmpty);
+  });
   test('isSingle', () {
     expect(interval.isSingle, isSingle);
   });
