@@ -1432,6 +1432,48 @@ void main() {
       expect(printer([1, 2, 3, 4]), '1, 2, 3, 4');
       expect(printer([1, 2, 3, 4, 5]), '1, 2, 3, 4, 5');
     });
+    test('emptyPrinter', () {
+      final printer =
+          standardInt.iterable(emptyPrinter: const Printer.literal('n/a'));
+      expect(printer([]), 'n/a');
+      expect(printer([1]), '1');
+      expect(printer([1, 2]), '1, 2');
+      expect(printer([1, 2, 3]), '1, 2, 3');
+      expect(printer([1, 2, 3, 4]), '1, 2, 3, 4');
+      expect(printer([1, 2, 3, 4, 5]), '1, 2, 3, 4, 5');
+    });
+    test('beforePrinter', () {
+      final printer =
+          standardInt.iterable(beforePrinter: const Printer.literal('['));
+      expect(printer([]), '');
+      expect(printer([1]), '[1');
+      expect(printer([1, 2]), '[1, 2');
+      expect(printer([1, 2, 3]), '[1, 2, 3');
+      expect(printer([1, 2, 3, 4]), '[1, 2, 3, 4');
+      expect(printer([1, 2, 3, 4, 5]), '[1, 2, 3, 4, 5');
+    });
+    test('afterPrinter', () {
+      final printer =
+          standardInt.iterable(afterPrinter: const Printer.literal(']'));
+      expect(printer([]), '');
+      expect(printer([1]), '1]');
+      expect(printer([1, 2]), '1, 2]');
+      expect(printer([1, 2, 3]), '1, 2, 3]');
+      expect(printer([1, 2, 3, 4]), '1, 2, 3, 4]');
+      expect(printer([1, 2, 3, 4, 5]), '1, 2, 3, 4, 5]');
+    });
+    test('afterPrinter', () {
+      final printer = standardInt.iterable(
+          emptyPrinter: const Printer.literal('∅'),
+          beforePrinter: const Printer.literal('['),
+          afterPrinter: const Printer.literal(']'));
+      expect(printer([]), '∅');
+      expect(printer([1]), '[1]');
+      expect(printer([1, 2]), '[1, 2]');
+      expect(printer([1, 2, 3]), '[1, 2, 3]');
+      expect(printer([1, 2, 3, 4]), '[1, 2, 3, 4]');
+      expect(printer([1, 2, 3, 4, 5]), '[1, 2, 3, 4, 5]');
+    });
     test('separator', () {
       final printer = standardInt.iterable(separator: ';');
       expect(printer([]), '');
