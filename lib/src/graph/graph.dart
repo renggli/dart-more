@@ -1,10 +1,11 @@
+import '../../printer.dart';
 import 'edge.dart';
 import 'model/directed.dart';
 import 'model/undirected.dart';
 import 'strategy.dart';
 
 /// Abstract base class of graphs.
-abstract class Graph<V, E> {
+abstract class Graph<V, E> with ToStringPrinter {
   /// Directed graph.
   factory Graph.directed({StorageStrategy<V>? vertexStrategy}) = DirectedGraph;
 
@@ -65,4 +66,19 @@ abstract class Graph<V, E> {
 
   /// Removes an edge between [source] and [target] from this graph.
   void removeEdge(V source, V target, {E? data});
+
+  @override
+  ObjectPrinter get toStringPrinter => super.toStringPrinter
+    ..addValue(vertices,
+        name: 'vertices',
+        printer: Printer<V>.standard().iterable(
+            leadingItems: 3,
+            trailingItems: 0,
+            afterPrinter: Printer.literal(' (${vertices.length} total)')))
+    ..addValue(edges,
+        name: 'edges',
+        printer: Printer<Edge<V, E>>.standard().iterable(
+            leadingItems: 3,
+            trailingItems: 0,
+            afterPrinter: Printer.literal(' (${edges.length} total)')));
 }

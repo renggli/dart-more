@@ -13,7 +13,8 @@ Matcher isEdge({
     isA<Edge<void, void>>()
         .having((edge) => edge.source, 'source', source)
         .having((edge) => edge.target, 'target', target)
-        .having((edge) => edge.dataOrNull, 'data', data);
+        .having((edge) => edge.dataOrNull, 'data', data)
+        .having((edge) => edge.toString(), 'toString', contains('Edge'));
 
 Matcher isPath({
   dynamic source = anything,
@@ -28,7 +29,8 @@ Matcher isPath({
         .having((path) => path.vertices, 'vertices', vertices)
         .having((path) => path.vertices.length == path.vertices.toSet().length,
             'vertices (unique)', isTrue)
-        .having((path) => path.cost, 'cost', cost);
+        .having((path) => path.cost, 'cost', cost)
+        .having((path) => path.toString(), 'toString', contains('Path'));
 
 // A basic graph:
 //   +-------------+-> 3
@@ -66,6 +68,10 @@ const cyclicGraphData = {
 };
 
 Iterable<int> cyclicGraph(int vertex) => cyclicGraphData[vertex]!;
+
+// The collatz graph:
+Iterable<int> collatzGraph(int vertex) =>
+    vertex.isEven ? [vertex ~/ 2] : [3 * vertex + 1];
 
 // The reverse collatz graph:
 // https://en.wikipedia.org/wiki/Collatz_conjecture#In_reverse
@@ -117,6 +123,13 @@ void expectInvariants<V, E>(Graph<V, E> graph) {
     expect(graph.vertices, contains(edge.source));
     expect(graph.vertices, contains(edge.target));
   }
+  expect(
+      graph.toString(),
+      allOf(
+        contains('Graph'),
+        contains('vertices='),
+        contains('edges='),
+      ));
 }
 
 void main() {
@@ -1230,6 +1243,11 @@ void main() {
             GraphBuilder<int, Never>().fromSuccessors(cyclicGraphData);
         expect(graph.depthFirstPostOrder(0), [2, 1, 4, 3, 0]);
       });
+      test('custom', () {
+        final iterable =
+            DepthFirstPostOrderIterable<int>([27], successorsOf: collatzGraph);
+        expect(iterable, allOf(hasLength(112), contains(9232), contains(1)));
+      });
     });
     group('topological', () {
       test('path', () {
@@ -1244,6 +1262,18 @@ void main() {
       test('basic', () {
         final graph = GraphBuilder<int, Never>().fromSuccessors(basicGraphData);
         expect(graph.topological(0), [0, 1, 4, 2, 5, 3]);
+      });
+      test('custom', () {
+        final iterable = TopologicalIterable<int>([1],
+            successorsOf: (vertex) => [
+                  2 * vertex,
+                  3 * vertex,
+                ].where((each) => each < 50),
+            predecessorsOf: (vertex) => [
+                  if (vertex > 0 && vertex % 2 == 0) vertex ~/ 2,
+                  if (vertex > 0 && vertex % 3 == 0) vertex ~/ 3,
+                ]);
+        expect(iterable, [1, 3, 9, 27, 2, 6, 18, 4, 12, 36, 8, 24, 16, 48, 32]);
       });
     });
   });
