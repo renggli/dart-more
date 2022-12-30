@@ -86,7 +86,7 @@ class _AStarSearchIterator<V> extends Iterator<Path<V>> {
   }
 }
 
-class _State<V> extends Comparable<_State<V>> {
+class _State<V> implements Comparable<_State<V>> {
   _State({
     required this.vertex,
     this.parent,

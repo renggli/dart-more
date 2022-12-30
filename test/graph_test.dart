@@ -1,7 +1,9 @@
+import 'dart:io';
 import 'dart:math';
 
 import 'package:more/functional.dart';
 import 'package:more/graph.dart';
+import 'package:more/math.dart';
 import 'package:test/test.dart';
 
 Matcher isEdge({
@@ -19,11 +21,14 @@ Matcher isPath({
   dynamic target = anything,
   dynamic vertices = anything,
   dynamic cost = anything,
+  dynamic depth = anything,
 }) =>
     isA<Path<void>>()
         .having((path) => path.source, 'source', source)
         .having((path) => path.target, 'target', target)
         .having((path) => path.vertices, 'vertices', vertices)
+        .having((path) => path.vertices.length == path.vertices.toSet().length,
+            'vertices (unique)', isTrue)
         .having((path) => path.cost, 'cost', cost);
 
 // A basic graph:
@@ -857,118 +862,299 @@ void main() {
     });
   });
   group('search', () {
-    group('dijkstra', () {
-      test('directed path', () {
-        final graph = GraphBuilder<int, Never>().path(vertexCount: 10);
-        for (var i = 0; i < 10; i++) {
-          expect(
-            graph.shortestPath(0, i),
-            isPath(source: 0, target: i, cost: i),
-          );
-          if (i != 0) {
-            expect(
-              graph.shortestPath(i, 0),
-              isNull,
-            );
-          }
-        }
-      });
-      test('directed path with cost', () {
-        final graph = GraphBuilder<int, Never>().path(vertexCount: 10);
-        for (var i = 0; i < 10; i++) {
-          expect(
-            graph.shortestPath(0, i, edgeCost: (edge) => edge.target),
-            isPath(source: 0, target: i, cost: i * (i + 1) ~/ 2),
-          );
-          if (i != 0) {
-            expect(
-              graph.shortestPath(i, 0, edgeCost: (edge) => edge.target),
-              isNull,
-            );
-          }
-        }
-      });
-      test('directed path with cost on edge', () {
-        final graph =
-            GraphBuilder<int, int>(edgeProvider: (source, target) => target)
-                .path(vertexCount: 10);
-        for (var i = 0; i < 10; i++) {
-          expect(
-            graph.shortestPath(0, i, edgeCost: (edge) => edge.data),
-            isPath(source: 0, target: i, cost: i * (i + 1) ~/ 2),
-          );
-          if (i != 0) {
-            expect(
-              graph.shortestPath(i, 0, edgeCost: (edge) => edge.data),
-              isNull,
-            );
-          }
-        }
-      });
-      test('undirected path', () {
-        final graph =
-            GraphBuilder<int, Never>(isDirected: false).path(vertexCount: 10);
-        for (var i = 0; i < 10; i++) {
-          expect(
-            graph.shortestPath(0, i),
-            isPath(source: 0, target: i, cost: i),
-          );
+    test('directed path', () {
+      final graph = GraphBuilder<int, Never>().path(vertexCount: 10);
+      for (var i = 0; i < 10; i++) {
+        expect(
+          graph.shortestPath(0, i),
+          isPath(source: 0, target: i, cost: i),
+        );
+        if (i != 0) {
           expect(
             graph.shortestPath(i, 0),
-            isPath(source: i, target: 0, cost: i),
+            isNull,
           );
         }
-      });
-      test('undirected graph', () {
+      }
+    });
+    test('directed path with cost', () {
+      final graph = GraphBuilder<int, Never>().path(vertexCount: 10);
+      for (var i = 0; i < 10; i++) {
         expect(
-          dijkstraGraph.shortestPath(1, 5, edgeCost: (edge) => edge.data),
-          isPath(source: 1, target: 5, vertices: [1, 3, 6, 5], cost: 20),
+          graph.shortestPath(0, i, edgeCost: (edge) => edge.target),
+          isPath(source: 0, target: i, cost: i * (i + 1) ~/ 2),
+        );
+        if (i != 0) {
+          expect(
+            graph.shortestPath(i, 0, edgeCost: (edge) => edge.target),
+            isNull,
+          );
+        }
+      }
+    });
+    test('directed path with cost on edge', () {
+      final graph =
+          GraphBuilder<int, int>(edgeProvider: (source, target) => target)
+              .path(vertexCount: 10);
+      for (var i = 0; i < 10; i++) {
+        expect(
+          graph.shortestPath(0, i, edgeCost: (edge) => edge.data),
+          isPath(source: 0, target: i, cost: i * (i + 1) ~/ 2),
+        );
+        if (i != 0) {
+          expect(
+            graph.shortestPath(i, 0, edgeCost: (edge) => edge.data),
+            isNull,
+          );
+        }
+      }
+    });
+    test('undirected path', () {
+      final graph =
+          GraphBuilder<int, Never>(isDirected: false).path(vertexCount: 10);
+      for (var i = 0; i < 10; i++) {
+        expect(
+          graph.shortestPath(0, i),
+          isPath(source: 0, target: i, cost: i),
         );
         expect(
-            dijkstraGraph.shortestPathAll(1, constantFunction1(true),
-                edgeCost: (edge) => edge.data),
-            unorderedEquals([
-              isPath(vertices: [1], cost: 0),
-              isPath(vertices: [1, 2], cost: 7),
-              isPath(vertices: [1, 3], cost: 9),
-              isPath(vertices: [1, 3, 6], cost: 11),
-              isPath(vertices: [1, 3, 6, 5], cost: 20),
-              isPath(vertices: [1, 3, 4], cost: 20),
-            ]));
-      });
-      test('undirected graph with default cost', () {
-        expect(
-          dijkstraGraph.shortestPath(1, 5),
-          isPath(source: 1, target: 5, vertices: [1, 6, 5], cost: 2),
+          graph.shortestPath(i, 0),
+          isPath(source: i, target: 0, cost: i),
         );
-        expect(
-            dijkstraGraph.shortestPathAll(1, constantFunction1(true)),
-            unorderedEquals([
-              isPath(vertices: [1], cost: 0),
-              isPath(vertices: [1, 6], cost: 1),
-              isPath(vertices: [1, 3], cost: 1),
-              isPath(vertices: [1, 2], cost: 1),
-              isPath(vertices: [1, 3, 4], cost: 2),
-              isPath(vertices: [1, 6, 5], cost: 2),
-            ]));
-      });
-      test('undirected graph with cost estimate', () {
-        expect(
-          dijkstraGraph.shortestPath(1, 5,
+      }
+    });
+    test('undirected graph', () {
+      expect(
+        dijkstraGraph.shortestPath(1, 5, edgeCost: (edge) => edge.data),
+        isPath(source: 1, target: 5, vertices: [1, 3, 6, 5], cost: 20),
+      );
+      expect(
+          dijkstraGraph.shortestPathAll(1, constantFunction1(true),
+              edgeCost: (edge) => edge.data),
+          unorderedEquals([
+            isPath(vertices: [1], cost: 0),
+            isPath(vertices: [1, 2], cost: 7),
+            isPath(vertices: [1, 3], cost: 9),
+            isPath(vertices: [1, 3, 6], cost: 11),
+            isPath(vertices: [1, 3, 6, 5], cost: 20),
+            isPath(vertices: [1, 3, 4], cost: 20),
+          ]));
+    });
+    test('undirected graph with default cost', () {
+      expect(
+        dijkstraGraph.shortestPath(1, 5),
+        isPath(source: 1, target: 5, vertices: [1, 6, 5], cost: 2),
+      );
+      expect(
+          dijkstraGraph.shortestPathAll(1, constantFunction1(true)),
+          unorderedEquals([
+            isPath(vertices: [1], cost: 0),
+            isPath(vertices: [1, 6], cost: 1),
+            isPath(vertices: [1, 3], cost: 1),
+            isPath(vertices: [1, 2], cost: 1),
+            isPath(vertices: [1, 3, 4], cost: 2),
+            isPath(vertices: [1, 6, 5], cost: 2),
+          ]));
+    });
+    test('undirected graph with cost estimate', () {
+      expect(
+        dijkstraGraph.shortestPath(1, 5, costEstimate: (vertex) => 6 - vertex),
+        isPath(source: 1, target: 5, vertices: [1, 6, 5], cost: 2),
+      );
+      expect(
+          dijkstraGraph.shortestPathAll(1, constantFunction1(true),
               costEstimate: (vertex) => 6 - vertex),
-          isPath(source: 1, target: 5, vertices: [1, 6, 5], cost: 2),
-        );
+          unorderedEquals([
+            isPath(vertices: [1], cost: 0),
+            isPath(vertices: [1, 6], cost: 1),
+            isPath(vertices: [1, 3], cost: 1),
+            isPath(vertices: [1, 2], cost: 1),
+            isPath(vertices: [1, 3, 4], cost: 2),
+            isPath(vertices: [1, 6, 5], cost: 2),
+          ]));
+    });
+    group('hills', () {
+      final hills = [
+        '00000002345677899876543355557775557777',
+        '00110023456678899876543555677777777777',
+        '00011234566778998776654555667777777877',
+        '00000234566788998776654355666888778777',
+        '11000234567778999876554244666888888777',
+        '11000034566677899876543244666888888777',
+        '21111023456677898776542244466888887777',
+        '22221002335667787765432444666888999777',
+        '22221001123566777654322444668888777777',
+        '22221111112356666543224446668877777777',
+        '33222111111135555332224466688888877788',
+        '44322211111113331112244466688888877788',
+        '54332221111111111112244466666886887777',
+      ].map((line) => line.split('').map(int.parse).toList()).toList();
+      const source = Point(0, 0), target = Point(12, 37);
+      bool targetPredicate(Point<int> vertex) => target == vertex;
+      Iterable<Point<int>> successorsOf(Point<int> vertex) => const [
+            Point(-1, -1), Point(-1, 0), Point(-1, 1), Point(0, -1), //
+            Point(0, 1), Point(1, -1), Point(1, 0), Point(1, 1),
+          ].map((offset) => vertex + offset).where((point) =>
+              point.x.between(source.x, target.x) &&
+              point.y.between(source.y, target.y) &&
+              hills[point.x][point.y] < 8);
+      num edgeCost(Point<int> source, Point<int> target) =>
+          ((source.x - target.x).pow(2) +
+                  (source.y - target.y).pow(2) +
+                  (2 * hills[source.x][source.y] -
+                          2 * hills[target.x][target.y])
+                      .pow(2))
+              .sqrt();
+      num costEstimate(Point<int> vertex) => ((vertex.x - target.x).pow(2) +
+              (vertex.y - target.y).pow(2) +
+              (2 * hills[vertex.x][vertex.y] - 2 * hills[target.x][target.y])
+                  .pow(2))
+          .sqrt();
+      test('dijkstra', () {
+        final search = DijkstraSearchIterable<Point<int>>(
+            startVertices: [source],
+            successorsOf: successorsOf,
+            targetPredicate: targetPredicate);
         expect(
-            dijkstraGraph.shortestPathAll(1, constantFunction1(true),
-                costEstimate: (vertex) => 6 - vertex),
-            unorderedEquals([
-              isPath(vertices: [1], cost: 0),
-              isPath(vertices: [1, 6], cost: 1),
-              isPath(vertices: [1, 3], cost: 1),
-              isPath(vertices: [1, 2], cost: 1),
-              isPath(vertices: [1, 3, 4], cost: 2),
-              isPath(vertices: [1, 6, 5], cost: 2),
-            ]));
+            search.single,
+            isPath(
+                source: source,
+                target: target,
+                vertices: hasLength(46),
+                cost: 45));
+      });
+      test('dijkstra (custom cost)', () {
+        final search = DijkstraSearchIterable<Point<int>>(
+            startVertices: [source],
+            successorsOf: successorsOf,
+            targetPredicate: targetPredicate,
+            edgeCost: edgeCost);
+        expect(
+            search.single,
+            isPath(
+                source: source,
+                target: target,
+                vertices: hasLength(47),
+                cost: closeTo(63.79, 0.1)));
+      });
+      test('a-star', () {
+        final search = AStarSearchIterable<Point<int>>(
+            startVertices: [source],
+            successorsOf: successorsOf,
+            targetPredicate: targetPredicate,
+            costEstimate: costEstimate);
+        expect(
+            search.single,
+            isPath(
+                source: source,
+                target: target,
+                vertices: hasLength(46),
+                cost: 45));
+      });
+      test('a-star (custom cost)', () {
+        final search = AStarSearchIterable<Point<int>>(
+            startVertices: [source],
+            successorsOf: successorsOf,
+            targetPredicate: targetPredicate,
+            edgeCost: edgeCost,
+            costEstimate: costEstimate);
+        expect(
+            search.single,
+            isPath(
+                source: source,
+                target: target,
+                vertices: hasLength(47),
+                cost: closeTo(63.79, 0.1)));
+      });
+    });
+    group('maze', () {
+      final maze = [
+        '#########################',
+        '        #     #         #',
+        '# ### ### # ### ##### # #',
+        '# #   #   #     #     # #',
+        '# # ### ######### # #####',
+        '# #   # #   # #   #     #',
+        '# ### # # # # # # # #####',
+        '# #   #   #   # # # #   #',
+        '# # # ####### # ### # # #',
+        '# # #   #     #   # # # #',
+        '# # ##### ####### ##### #',
+        '# #             #        ',
+        '#########################',
+      ].map((line) => line.split('').toList()).toList();
+      const source = Point(1, 0), target = Point(11, 24);
+      bool targetPredicate(Point<int> vertex) => target == vertex;
+      Iterable<Point<int>> successorsOf(Point<int> vertex) => const [
+            Point(-1, 0), Point(0, -1), Point(0, 1), Point(1, 0), //
+          ].map((offset) => vertex + offset).where((point) =>
+              point.x.between(source.x, target.x) &&
+              point.y.between(source.y, target.y) &&
+              maze[point.x][point.y] != '#');
+      num costEstimate(Point<int> vertex) =>
+          ((vertex.x - target.x).pow(2) + (vertex.y - target.y).pow(2)).sqrt();
+      const solution = <Point<int>>[
+        Point(1, 0), Point(1, 1), Point(1, 2), Point(1, 3), Point(1, 4), //
+        Point(1, 5), Point(2, 5), Point(3, 5), Point(3, 4), Point(3, 3),
+        Point(4, 3), Point(5, 3), Point(5, 4), Point(5, 5), Point(6, 5),
+        Point(7, 5), Point(7, 4), Point(7, 3), Point(8, 3), Point(9, 3),
+        Point(10, 3), Point(11, 3), Point(11, 4), Point(11, 5), Point(11, 6),
+        Point(11, 7), Point(11, 8), Point(11, 9), Point(10, 9), Point(9, 9),
+        Point(9, 10), Point(9, 11), Point(9, 12), Point(9, 13), Point(8, 13),
+        Point(7, 13), Point(7, 12), Point(7, 11), Point(6, 11), Point(5, 11),
+        Point(5, 10), Point(5, 9), Point(6, 9), Point(7, 9), Point(7, 8),
+        Point(7, 7), Point(6, 7), Point(5, 7), Point(4, 7), Point(3, 7),
+        Point(3, 8), Point(3, 9), Point(2, 9), Point(1, 9), Point(1, 10),
+        Point(1, 11), Point(2, 11), Point(3, 11), Point(3, 12), Point(3, 13),
+        Point(3, 14), Point(3, 15), Point(2, 15), Point(1, 15), Point(1, 16),
+        Point(1, 17), Point(1, 18), Point(1, 19), Point(1, 20), Point(1, 21),
+        Point(2, 21), Point(3, 21), Point(3, 20), Point(3, 19), Point(3, 18),
+        Point(3, 17), Point(4, 17), Point(5, 17), Point(5, 16), Point(5, 15),
+        Point(6, 15), Point(7, 15), Point(8, 15), Point(9, 15), Point(9, 16),
+        Point(9, 17), Point(10, 17), Point(11, 17), Point(11, 18),
+        Point(11, 19), Point(11, 20), Point(11, 21), Point(11, 22),
+        Point(11, 23), Point(11, 24),
+      ];
+      test('dijkstra', () {
+        expect(
+            DijkstraSearchIterable<Point<int>>(
+                    startVertices: [source],
+                    successorsOf: successorsOf,
+                    targetPredicate: targetPredicate)
+                .single,
+            isPath(
+                source: source,
+                target: target,
+                vertices: solution,
+                cost: solution.length - 1));
+      });
+      test('a-star', () {
+        expect(
+            AStarSearchIterable<Point<int>>(
+                    startVertices: [source],
+                    successorsOf: successorsOf,
+                    targetPredicate: targetPredicate,
+                    costEstimate: costEstimate)
+                .single,
+            isPath(
+                source: source,
+                target: target,
+                vertices: solution,
+                cost: solution.length - 1));
+      });
+      test('a-star (bad estimate)', () {
+        final generator = Random(85642);
+        expect(
+            AStarSearchIterable<Point<int>>(
+                startVertices: [source],
+                successorsOf: successorsOf,
+                targetPredicate: targetPredicate,
+                costEstimate: (vertex) => generator.nextDouble()).single,
+            isPath(
+                source: source,
+                target: target,
+                vertices: solution,
+                cost: solution.length - 1));
       });
     });
   });
