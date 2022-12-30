@@ -14,11 +14,10 @@ class DijkstraSearchIterable<V> extends IterableBase<Path<V>> {
   DijkstraSearchIterable({
     required this.startVertices,
     required this.successorsOf,
-    bool Function(V vertex)? targetPredicate,
+    required this.targetPredicate,
     num Function(V source, V target)? edgeCost,
     StorageStrategy<V>? vertexStrategy,
-  })  : targetPredicate = targetPredicate ?? constantFunction1(true),
-        edgeCost = edgeCost ?? constantFunction2(1),
+  })  : edgeCost = edgeCost ?? constantFunction2(1),
         vertexStrategy = vertexStrategy ?? StorageStrategy.defaultStrategy();
 
   final Iterable<V> startVertices;
