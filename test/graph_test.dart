@@ -270,6 +270,15 @@ void main() {
         expect(graph.edges, isEmpty);
         expectInvariants(graph);
       });
+      test('reversing', () {
+        final graph = Graph<String, int>.directed();
+        graph.addEdge('a', 'b');
+        final reversedGraph = graph.reversed;
+        expect(reversedGraph.reversed, same(graph));
+        final edge = graph.edges.single;
+        final reversedEdge = edge.reversed;
+        expect(reversedEdge.reversed, same(edge));
+      });
       group('modifying', () {
         test('add vertex', () {
           final graph = Graph<String, int>.directed().reversed;

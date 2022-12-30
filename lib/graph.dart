@@ -10,6 +10,7 @@ export 'src/graph/generator/ring.dart' show RingGraphBuilderExtension;
 export 'src/graph/generator/star.dart' show StarGraphBuilderExtension;
 export 'src/graph/graph.dart' show Graph;
 export 'src/graph/model/reversed.dart' show ReversedGraphExtension;
+export 'src/graph/model/reversed_edge.dart' show ReversedEdgeExtension;
 export 'src/graph/operations/map.dart' show MapGraphExtension;
 export 'src/graph/path.dart' show Path;
 export 'src/graph/search.dart' show SearchGraphExtension;
