@@ -123,6 +123,7 @@ void expectInvariants<V, E>(Graph<V, E> graph) {
     expect(graph.vertices, contains(edge.source));
     expect(graph.vertices, contains(edge.target));
   }
+  expect(graph.vertexStrategy, isNotNull);
   expect(
       graph.toString(),
       allOf(
@@ -165,11 +166,13 @@ void main() {
           expect(graph.edges, [
             isEdge(source: 'Hello', target: 'World', data: 42),
           ]);
+          expect(graph.edges.single.data, 42);
           expectInvariants(graph);
         });
         test('remove edge', () {
           final graph = Graph<String, int>.directed();
           graph.addEdge('Hello', 'World');
+          expect(() => graph.edges.single.data, throwsUnimplementedError);
           graph.removeEdge('Hello', 'World');
           expect(graph.vertices, unorderedEquals(['Hello', 'World']));
           expect(graph.edges, isEmpty);
@@ -290,11 +293,13 @@ void main() {
           expect(graph.edges, [
             isEdge(source: 'Hello', target: 'World', data: 42),
           ]);
+          expect(graph.edges.single.data, 42);
           expectInvariants(graph);
         });
         test('remove edge', () {
           final graph = Graph<String, int>.directed().reversed;
           graph.addEdge('Hello', 'World');
+          expect(() => graph.edges.single.data, throwsUnimplementedError);
           graph.removeEdge('Hello', 'World');
           expect(graph.vertices, unorderedEquals(['Hello', 'World']));
           expect(graph.edges, isEmpty);
