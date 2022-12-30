@@ -3,15 +3,15 @@ import 'integer_map.dart';
 import 'integer_set.dart';
 
 /// Strategy for [int] objects.
-class PositiveIntegerStrategy implements StorageStrategy<int> {
+class PositiveIntegerStorageStrategy implements StorageStrategy<int> {
   @override
-  Set<int> createSet() => IntegerSet(positiveInteger, positiveInteger);
+  Set<int> createSet() => IntegerSet(identity, identity);
 
   @override
-  Map<int, T> createMap<T>() => IntegerMap<T>(positiveInteger, positiveInteger);
+  Map<int, T> createMap<T>() => IntegerMap<T>(identity, identity);
 }
 
-int positiveInteger(int x) {
-  assert(x >= 0, '$x is expected to be positive');
+int identity(int x) {
+  assert(x >= 0, 'Expected non-negative integer value, but got $x.');
   return x;
 }

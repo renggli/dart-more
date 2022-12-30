@@ -3,7 +3,7 @@ import 'integer_map.dart';
 import 'integer_set.dart';
 
 /// Strategy for [int] objects.
-class IntegerStrategy implements StorageStrategy<int> {
+class IntegerStorageStrategy implements StorageStrategy<int> {
   @override
   Set<int> createSet() => IntegerSet(forward, backward);
 

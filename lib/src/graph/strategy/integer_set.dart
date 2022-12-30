@@ -32,6 +32,9 @@ class IntegerSet extends SetBase<int> {
   }
 
   @override
+  void clear() => storage.length = 0;
+
+  @override
   Iterator<int> get iterator => storage.indices().map(backward).iterator;
 
   @override
@@ -53,5 +56,5 @@ class IntegerSet extends SetBase<int> {
   }
 
   @override
-  Set<int> toSet() => throw UnimplementedError();
+  Set<int> toSet() => IntegerSet(forward, backward)..addAll(this);
 }

@@ -29,7 +29,7 @@ class IntegerMap<T> extends MapBase<int, T> {
   }
 
   @override
-  void clear() => storage.clear();
+  void clear() => storage.length = 0;
 
   @override
   Iterable<int> get keys => IntegerRange(storage.length)

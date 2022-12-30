@@ -5,18 +5,19 @@ import 'strategy/positive_integer.dart';
 /// Encapsulates data structures used for the various graph algorithms.
 abstract class StorageStrategy<T> {
   /// Returns a suitable default strategy.
-  factory StorageStrategy.defaultStrategy() =>
-      T == int ? IntegerStrategy() as StorageStrategy<T> : ObjectStrategy<T>();
+  factory StorageStrategy.defaultStrategy() => T == int
+      ? IntegerStorageStrategy() as StorageStrategy<T>
+      : ObjectStorageStrategy<T>();
 
   /// Returns a strategy using canonical collection objects.
-  factory StorageStrategy.objectStrategy() = ObjectStrategy;
+  factory StorageStrategy.object() = ObjectStorageStrategy;
 
   /// Returns a strategy for [int] objects.
-  static StorageStrategy<int> integerStrategy() => IntegerStrategy();
+  static StorageStrategy<int> integer() => IntegerStorageStrategy();
 
   /// Returns a strategy for positive [int] objects.
-  static StorageStrategy<int> positiveIntegerStrategy() =>
-      PositiveIntegerStrategy();
+  static StorageStrategy<int> positiveInteger() =>
+      PositiveIntegerStorageStrategy();
 
   /// Creates an empty set of type `Set<T>`.
   Set<T> createSet();

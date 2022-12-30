@@ -3,6 +3,7 @@ import 'dart:math';
 import 'package:more/functional.dart';
 import 'package:more/graph.dart';
 import 'package:more/math.dart';
+import 'package:more/src/graph/strategy.dart';
 import 'package:test/test.dart';
 
 Matcher isEdge({
@@ -134,6 +135,98 @@ void expectInvariants<V, E>(Graph<V, E> graph) {
 }
 
 void main() {
+  group('strategy', () {
+    group('object', () {
+      final strategy = StorageStrategy<String>.object();
+      test('set', () {
+        final set = strategy.createSet();
+        set.addAll(['foo', 'bar', 'foo']);
+        expect(set, ['foo', 'bar']);
+      });
+      test('map', () {
+        final map = strategy.createMap<int>();
+        map['foo'] = 42;
+        map['bar'] = 43;
+        expect(map, {'foo': 42, 'bar': 43});
+      });
+    });
+    group('integer', () {
+      final strategy = StorageStrategy.integer();
+      test('set', () {
+        final set = strategy.createSet();
+        expect(set.add(42), isTrue);
+        expect(set.add(-43), isTrue);
+        expect(set.add(42), isFalse);
+        expect(set.contains(42), isTrue);
+        expect(set.contains(41), isFalse);
+        expect(set.contains('foo' as dynamic), isFalse);
+        expect(set, unorderedEquals([42, -43]));
+        expect(set.length, 2);
+        expect(() => set.lookup(42), throwsUnimplementedError);
+        expect(set.remove(42), isTrue);
+        expect(set.remove(42), isFalse);
+        expect(set.remove('foo' as dynamic), isFalse);
+        expect(set.toSet(), {-43});
+        set.clear();
+        expect(set, isEmpty);
+      });
+      test('map', () {
+        final map = strategy.createMap<String>();
+        map[-42] = 'foo';
+        map[43] = 'bar';
+        map[43] = 'baz';
+        expect(map[-42], 'foo');
+        expect(map[43], 'baz');
+        expect(map[44], isNull);
+        expect(map['foo' as dynamic], isNull);
+        expect(map.keys, unorderedEquals([-42, 43]));
+        expect(map.values, unorderedEquals(['foo', 'baz']));
+        expect(map.remove(-42), 'foo');
+        expect(map.remove(-42), isNull);
+        expect(map.remove('foo' as dynamic), isNull);
+        map.clear();
+        expect(map, isEmpty);
+      });
+    });
+    group('positive integer', () {
+      final strategy = StorageStrategy.positiveInteger();
+      test('set', () {
+        final set = strategy.createSet();
+        expect(set.add(42), isTrue);
+        expect(set.add(43), isTrue);
+        expect(set.add(42), isFalse);
+        expect(set.contains(42), isTrue);
+        expect(set.contains(41), isFalse);
+        expect(set.contains('foo' as dynamic), isFalse);
+        expect(set, unorderedEquals([42, 43]));
+        expect(set.length, 2);
+        expect(() => set.lookup(42), throwsUnimplementedError);
+        expect(set.remove(42), isTrue);
+        expect(set.remove(42), isFalse);
+        expect(set.remove('foo' as dynamic), isFalse);
+        expect(set.toSet(), {43});
+        set.clear();
+        expect(set, isEmpty);
+      });
+      test('map', () {
+        final map = strategy.createMap<String>();
+        map[42] = 'foo';
+        map[43] = 'bar';
+        map[43] = 'baz';
+        expect(map[42], 'foo');
+        expect(map[43], 'baz');
+        expect(map[44], isNull);
+        expect(map['foo' as dynamic], isNull);
+        expect(map.keys, unorderedEquals([42, 43]));
+        expect(map.values, unorderedEquals(['foo', 'baz']));
+        expect(map.remove(42), 'foo');
+        expect(map.remove(42), isNull);
+        expect(map.remove('foo' as dynamic), isNull);
+        map.clear();
+        expect(map, isEmpty);
+      });
+    });
+  });
   group('graph', () {
     group('directed', () {
       test('empty', () {
