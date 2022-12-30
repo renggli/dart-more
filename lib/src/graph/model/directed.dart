@@ -85,9 +85,9 @@ class DirectedGraph<V, E> extends Graph<V, E> {
   EdgeWrapper<V, E> getEdgeWrapper(V source, V target, {E? data}) {
     final sourceWrapper = getVertexWrapper(source);
     final targetWrapper = getVertexWrapper(target);
-    return data == null
-        ? EdgeWrapper<V, E>(sourceWrapper, targetWrapper)
-        : EdgeWrapperWithData<V, E>(sourceWrapper, targetWrapper, data);
+    return data is E
+        ? EdgeWrapperWithData<V, E>(sourceWrapper, targetWrapper, data)
+        : EdgeWrapper<V, E>(sourceWrapper, targetWrapper);
   }
 }
 
