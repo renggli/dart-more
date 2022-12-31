@@ -4,7 +4,8 @@ import '../graph.dart';
 extension MapGraphExtension<V, E> on Graph<V, E> {
   /// Creates a new graph by mapping vertices and edges to new values.
   ///
-  /// The optional `vertex` function maps an edge
+  /// The optional `vertex` function maps vertices of type [V] to type [VE].
+  /// The optional `edge` function maps edges of type [E] to type [ER].
   Graph<VR, ER> map<VR, ER>({
     VR Function(V vertex)? vertex,
     ER? Function(Edge<V, E> edge)? edge,

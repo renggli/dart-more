@@ -637,6 +637,61 @@ void main() {
     });
   });
   group('operation', () {
+    group('connected', () {
+      test('empty', () {
+        final graph = Graph<int, String>.directed();
+        final connected = graph.connected().toList();
+        expect(connected, isEmpty);
+      });
+      test('single graph', () {
+        final graph = Graph<int, String>.directed();
+        graph.addEdge(42, 43, data: 'Hello World');
+        final connected = graph.connected().toList();
+        expect(connected, hasLength(1));
+        expect(connected[0].vertices, unorderedEquals([42, 43]));
+        expect(
+            connected[0].edges,
+            unorderedEquals([
+              isEdge(source: 42, target: 43, data: 'Hello World'),
+            ]));
+      });
+      test('two graphs', () {
+        final graph = Graph<int, String>.directed();
+        graph.addEdge(1, 2, data: 'Foo');
+        graph.addEdge(3, 4, data: 'Bar');
+        final connected = graph.connected().toList();
+        expect(connected, hasLength(2));
+        expect(connected[0].vertices, unorderedEquals([1, 2]));
+        expect(
+            connected[0].edges,
+            unorderedEquals([
+              isEdge(source: 1, target: 2, data: 'Foo'),
+            ]));
+        expect(connected[1].vertices, unorderedEquals([3, 4]));
+        expect(
+            connected[1].edges,
+            unorderedEquals([
+              isEdge(source: 3, target: 4, data: 'Bar'),
+            ]));
+      });
+      test('incoming/outgoing edges', () {
+        final graph = Graph<int, String>.directed();
+        graph.addVertex(1);
+        graph.addVertex(2);
+        graph.addVertex(3);
+        graph.addEdge(2, 1, data: 'Incoming');
+        graph.addEdge(1, 3, data: 'Outgoing');
+        final connected = graph.connected().toList();
+        expect(connected, hasLength(1));
+        expect(connected[0].vertices, unorderedEquals([1, 2, 3]));
+        expect(
+            connected[0].edges,
+            unorderedEquals([
+              isEdge(source: 2, target: 1, data: 'Incoming'),
+              isEdge(source: 1, target: 3, data: 'Outgoing'),
+            ]));
+      });
+    });
     group('map', () {
       final graph = GraphBuilder<int, Point<int>>(
               edgeProvider: (source, target) => Point(source, target))
