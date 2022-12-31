@@ -5,24 +5,12 @@ import 'entry.dart';
 import 'node.dart';
 import 'utils.dart';
 
+/// Guttman R-Tree described in this paper:
 /// http://www-db.deis.unibo.it/courses/SI-LS/papers/Gut84.pdf
 class GuttmanTree<T> extends RTree<T> {
   GuttmanTree({super.minEntries, super.maxEntries});
 
   @override
-  RTreeEntry<T> insert(Bounds bound, T data) {
-    final entry = RTreeEntry<T>(bound, data: data);
-    final node = chooseLeaf(entry);
-    node.entries.add(entry);
-    final splitNode =
-        node.entries.length > maxEntries ? quadraticSplit(node) : null;
-    adjustTree(node, splitNode);
-    return entry;
-  }
-
-  /// Select a leaf node in which to place a new index entry. This strategy
-  /// always inserts into the subtree that requires least enlargement of its
-  /// bounding box.
   RTreeNode<T> chooseLeaf(RTreeEntry<T> entry) {
     var node = root;
     while (!node.isLeaf) {
@@ -33,12 +21,8 @@ class GuttmanTree<T> extends RTree<T> {
     return node;
   }
 
-  /// Split an overflowing node. This algorithm attempts to find a small-area
-  /// split, but is not guaranteed to find one with the smallest area possible.
-  /// It's a good tradeoff between runtime efficiency and optimal area. Pages in
-  /// this tree tend to overlap a lot, but the bounding rectangles are generally
-  /// small, which makes for fast lookup.
-  RTreeNode<T>? quadraticSplit(RTreeNode<T> node) {
+  @override
+  RTreeNode<T>? overflowStrategy(RTreeNode<T> node) {
     final entries = node.entries.toList();
     final seeds = _pickSeeds(entries);
     final seed1 = seeds[0], seed2 = seeds[1];
@@ -99,6 +83,7 @@ class GuttmanTree<T> extends RTree<T> {
     return splitNode(node, group1, group2);
   }
 
+  @override
   void adjustTree(RTreeNode<T> node, RTreeNode<T>? splitNode) {
     while (!node.isRoot) {
       final parent = node.parent!;
@@ -110,7 +95,7 @@ class GuttmanTree<T> extends RTree<T> {
         final entry = RTreeEntry<T>(bounds, child: splitNode);
         parent.entries.add(entry);
         if (parent.entries.length > maxEntries) {
-          splitNode = quadraticSplit(parent);
+          splitNode = overflowStrategy(parent);
         } else {
           splitNode = null;
         }

@@ -144,4 +144,22 @@ class Bounds {
     }
     return result;
   }
+
+  /// Computes the intersection of all bounding boxes.
+  static Bounds? intersectionAll(Iterable<Bounds> bounds) {
+    final iterator = bounds.iterator;
+    if (!iterator.moveNext()) throw StateError('Empty bounds: $bounds');
+    final result = Bounds.fromLists(iterator.current.min, iterator.current.max);
+    while (iterator.moveNext()) {
+      final current = iterator.current;
+      for (var i = 0; i < result.length; i++) {
+        final lower = math.max(result.min[i], current.min[i]);
+        final upper = math.min(result.max[i], current.max[i]);
+        if (lower > upper) return null;
+        result.min[i] = lower;
+        result.max[i] = upper;
+      }
+    }
+    return result;
+  }
 }

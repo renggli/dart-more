@@ -8,6 +8,9 @@
   <style>
     #select { width: 20em; }
     #canvas { width: 100%; height: 380px; border: 1px solid #9b4dca; }
+
+    body { display: flex; flex-flow: column; height: 100vh; margin: 0; padding: 8px; }
+    #canvas { flex-grow: 1; padding: 0; }
   </style>
 </head>
 <body>
@@ -15,15 +18,15 @@
 
   <p>
     <select id="select">
-      <option value="guttman">Guttman</option>
-      <option value="rstar">R*</option>
+      <option value="guttmann_4_8">Guttman (min: 4, max: 8)</option>
+      <option value="guttmann_4_12">Guttman (min: 4, max: 12)</option>
+      <option value="guttmann_8_24">Guttman (min: 8, max: 24)</option>
     </select>
+    <button id="random">Random</button>
     <button id="clear">Clear</button>
   </p>
 
-  <p class="button-outline">
-    <canvas id="canvas"></canvas>
-  </p>
+  <canvas id="canvas" class="button-outline"></canvas>
 
   <script src="rtree.dart.js"></script>
 </body>

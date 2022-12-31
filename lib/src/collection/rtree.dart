@@ -5,14 +5,16 @@ import 'rtree/bounds.dart';
 import 'rtree/entry.dart';
 import 'rtree/guttman.dart';
 import 'rtree/node.dart';
-import 'rtree/rstar.dart';
 
+/// Abstract base implementation of the R-Tree data structure, based on the
+/// Python implementation from https://github.com/lukas-shawford/rtreelib.
 @experimental
 abstract class RTree<T> {
+  /// Constructs a Guttman R-Tree described in this paper:
+  /// http://www-db.deis.unibo.it/courses/SI-LS/papers/Gut84.pdf
   factory RTree.guttmann({int? minEntries, int? maxEntries}) = GuttmanTree<T>;
 
-  factory RTree.rstar({int? minEntries, int? maxEntries}) = RStarTree<T>;
-
+  /// Internal constructor for the R-Tree.
   RTree({int? minEntries, int? maxEntries})
       : minEntries = minEntries ?? 4,
         maxEntries = maxEntries ?? 8;
@@ -27,7 +29,15 @@ abstract class RTree<T> {
   late RTreeNode<T> root = RTreeNode<T>(this, isLeaf: true);
 
   /// Associates [data] with the provided [bounds].
-  RTreeEntry<T> insert(Bounds bound, T data);
+  RTreeEntry<T> insert(Bounds bound, T data) {
+    final entry = RTreeEntry<T>(bound, data: data);
+    final node = chooseLeaf(entry);
+    node.entries.add(entry);
+    final splitNode =
+        node.entries.length > maxEntries ? overflowStrategy(node) : null;
+    adjustTree(node, splitNode);
+    return entry;
+  }
 
   /// Queries leaf entries for a location (either a point or a rectangle),
   /// returning an iterable.
@@ -87,6 +97,19 @@ abstract class RTree<T> {
   Iterable<R> traverse<R>(Map1<RTreeNode<T>, Iterable<R>> callback,
           {Predicate1<RTreeNode<T>>? condition}) =>
       root.traverse(callback, condition: condition);
+
+  /// Select a leaf node in which to place a new index entry.
+  @protected
+  RTreeNode<T> chooseLeaf(RTreeEntry<T> entry);
+
+  /// Split an overflowing node.
+  @protected
+  RTreeNode<T>? overflowStrategy(RTreeNode<T> node);
+
+  /// Ascend from a leaf node to the root, adjusting covering rectangles and
+  /// propagating node splits as necessary.
+  @protected
+  void adjustTree(RTreeNode<T> node, RTreeNode<T>? splitNode);
 
   /// Grows the R-Tree by creating a new root node, with the given nodes as
   /// children.

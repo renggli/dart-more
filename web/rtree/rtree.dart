@@ -1,9 +1,13 @@
 import 'dart:html';
+import 'dart:math';
 
-import 'package:more/collection.dart' show RTree, Bounds;
+import 'package:more/collection.dart';
+
+const guttmann = 'guttmann_';
 
 final select = querySelector('#select')! as SelectElement;
 final clear = querySelector('#clear')! as ButtonElement;
+final random = querySelector('#random')! as ButtonElement;
 final canvas = querySelector('#canvas')! as CanvasElement;
 final console = querySelector('#console')! as ParagraphElement;
 
@@ -11,14 +15,13 @@ var tree = createTree();
 var index = 0;
 
 RTree<int> createTree() {
-  switch (select.value) {
-    case 'guttman':
-      return RTree<int>.guttmann();
-    case 'rstar':
-      return RTree<int>.rstar();
-    default:
-      throw StateError('Invalid tree type: ${select.value}');
+  final name = select.value ?? '';
+  if (name.startsWith(guttmann)) {
+    final values =
+        name.removePrefix(guttmann).split('_').map(int.parse).toList();
+    return RTree<int>.guttmann(minEntries: values[0], maxEntries: values[1]);
   }
+  throw StateError('Invalid tree type: ${select.value}');
 }
 
 void selectImplementation(Event event) {
@@ -35,6 +38,19 @@ void selectImplementation(Event event) {
 void clearTree(MouseEvent event) {
   tree = createTree();
   index = 0;
+  update();
+}
+
+void addPoints(MouseEvent event) {
+  final random = Random();
+  final rect = canvas.getBoundingClientRect();
+  for (var i = 0; i < 100; i++) {
+    final point = Bounds.fromPoint([
+      rect.width * random.nextDouble(),
+      rect.height * random.nextDouble(),
+    ]);
+    tree.insert(point, index++);
+  }
   update();
 }
 
@@ -89,6 +105,7 @@ void update() {
 void main() {
   select.onChange.listen(selectImplementation);
   clear.onClick.listen(clearTree);
+  random.onClick.listen(addPoints);
   canvas.onClick.listen(addPoint);
   update();
 }

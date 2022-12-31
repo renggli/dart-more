@@ -3735,6 +3735,8 @@ void main() {
       final point2 = Bounds.fromLists([3, 2, 1], [3, 2, 1]);
       final bound1 = Bounds.fromLists([-1, -1, -1], [1, 1, 1]);
       final bound2 = Bounds.fromLists([-2, 1, 2], [2, 3, 5]);
+      final bound3 = Bounds.fromLists([-1, 2, 1], [3, 4, 4]);
+      final bound4 = Bounds.fromLists([-1, 2, 2], [2, 3, 4]);
       test('length', () {
         expect(point1.length, 3);
         expect(point2.length, 3);
@@ -3817,6 +3819,9 @@ void main() {
         expect(bound2.intersects(point2), isFalse);
         expect(bound2.intersects(bound1), isFalse);
         expect(bound2.intersects(bound2), isTrue);
+
+        expect(bound2.intersects(bound3), isTrue);
+        expect(bound3.intersects(bound2), isTrue);
       });
       test('intersection', () {
         expect(point1.intersection(point1), point1);
@@ -3838,6 +3843,9 @@ void main() {
         expect(bound2.intersection(point2), isNull);
         expect(bound2.intersection(bound1), isNull);
         expect(bound2.intersection(bound2), bound2);
+
+        expect(bound2.intersection(bound3), bound4);
+        expect(bound3.intersection(bound2), bound4);
       });
       test('==', () {
         expect(point1, point1);
@@ -3907,15 +3915,25 @@ void main() {
         expect(fullUnion2.min, [-2.0, -1.0, -1.0]);
         expect(fullUnion2.max, [3.0, 3.0, 5.0]);
       });
+      test('intersectionAll', () {
+        expect(() => Bounds.intersectionAll([]), throwsStateError);
+        final singleUnion = Bounds.intersectionAll([bound1]);
+        expect(singleUnion?.min, bound1.min);
+        expect(singleUnion?.max, bound1.max);
+        final emptyUnion = Bounds.intersectionAll([bound1, bound2]);
+        expect(emptyUnion, isNull);
+        final fullUnion1 = Bounds.intersectionAll([bound2, bound3]);
+        expect(fullUnion1?.min, bound4.min);
+        expect(fullUnion1?.max, bound4.max);
+        final fullUnion2 = Bounds.intersectionAll([bound2, bound3, point1]);
+        expect(fullUnion2?.min, point1.min);
+        expect(fullUnion2?.max, point1.max);
+      });
     });
     group('guttman', () {
       allRTreeTests(<T>({int? minEntries, int? maxEntries}) =>
           RTree<T>.guttmann(minEntries: minEntries, maxEntries: maxEntries));
     });
-    // group('rstar', () {
-    //   allRTreeTests(<T>({int? minEntries, int? maxEntries}) =>
-    //       RTree<T>.rstar(minEntries: minEntries, maxEntries: maxEntries));
-    // });
   });
   group('string', () {
     group('immutable', () {
@@ -4596,13 +4614,15 @@ void allRTreeTests(
     final rtree = createRTree<int>();
     final random = Random(3212312);
     final bounds = <Bounds>[];
-    for (var i = 0; i < 2500; i++) {
+    for (var i = 0; i < 1000; i++) {
       final bound = Bounds.fromPoint(
           List.generate(3, (index) => 2000 * random.nextDouble() - 1000));
       rtree.insert(bound, i);
       bounds.add(bound);
     }
     for (var i = 0; i < bounds.length; i++) {
+      expect(rtree.searchNodes(), isNotEmpty);
+      expect(rtree.searchEntries(), isNotEmpty);
       expect(rtree.queryEntries(bounds[i]), isNotEmpty);
       expect(rtree.queryNodes(bounds[i], leaves: true), isNotEmpty);
       expect(rtree.queryNodes(bounds[i], leaves: false), isNotEmpty);
