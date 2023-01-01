@@ -854,6 +854,24 @@ void main() {
     });
   });
   group('builder', () {
+    group('atlas', () {
+      final random = Random(1252);
+      final builder = GraphBuilder<int, Never>(isDirected: false);
+      test('numbered', () {
+        for (var i = 0; i <= 1252; i += random.nextInt(100)) {
+          final graph = builder.atlas(i);
+          expectInvariants(graph);
+        }
+      });
+      test('vertex match', () {
+        final graphs = builder.atlasMatching(vertexCount: 3);
+        expect(graphs.map((each) => each.vertices.length), everyElement(3));
+      });
+      test('edge match', () {
+        final graphs = builder.atlasMatching(edgeCount: 3);
+        expect(graphs.map((each) => each.edges.length), everyElement(6));
+      });
+    });
     group('collection', () {
       group('path', () {
         test('empty', () {
