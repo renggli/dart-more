@@ -12,6 +12,7 @@ export 'src/graph/graph.dart' show Graph;
 export 'src/graph/model/reversed.dart' show ReversedGraphExtension;
 export 'src/graph/model/reversed_edge.dart' show ReversedEdgeExtension;
 export 'src/graph/operations/connected.dart' show ConnectedGraphExtension;
+export 'src/graph/operations/logical.dart' show LogicalGraphExtension;
 export 'src/graph/operations/map.dart' show MapGraphExtension;
 export 'src/graph/path.dart' show Path;
 export 'src/graph/search.dart' show SearchGraphExtension;

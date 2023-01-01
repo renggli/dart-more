@@ -692,6 +692,78 @@ void main() {
             ]));
       });
     });
+    group('logical', () {
+      group('union', () {
+        test('disjoint', () {
+          final a =
+              GraphBuilder<String, String>().fromPath(['a', 'b'], data: 'a->b');
+          final b =
+              GraphBuilder<String, String>().fromPath(['c', 'd'], data: 'c->d');
+          final result = a.union(b);
+          expect(result.vertices, unorderedEquals(['a', 'b', 'c', 'd']));
+          expect(
+              result.edges,
+              unorderedEquals([
+                isEdge(source: 'a', target: 'b', data: 'a->b'),
+                isEdge(source: 'c', target: 'd', data: 'c->d'),
+              ]));
+        });
+        test('shared vertex', () {
+          final a =
+              GraphBuilder<String, String>().fromPath(['a', 'b'], data: 'a->b');
+          final b =
+              GraphBuilder<String, String>().fromPath(['b', 'c'], data: 'b->c');
+          final result = a.union(b);
+          expect(result.vertices, unorderedEquals(['a', 'b', 'c']));
+          expect(
+              result.edges,
+              unorderedEquals([
+                isEdge(source: 'a', target: 'b', data: 'a->b'),
+                isEdge(source: 'b', target: 'c', data: 'b->c'),
+              ]));
+        });
+        test('shared edge', () {
+          final a = GraphBuilder<String, Never>().fromPath(['a', 'b', 'c']);
+          final b = GraphBuilder<String, Never>().fromPath(['b', 'c', 'd']);
+          final result = a.union(b);
+          expect(result.vertices, unorderedEquals(['a', 'b', 'c', 'd']));
+          expect(
+              result.edges,
+              unorderedEquals([
+                isEdge(source: 'a', target: 'b'),
+                isEdge(source: 'b', target: 'c'),
+                isEdge(source: 'c', target: 'd'),
+              ]));
+        });
+      });
+      group('intersection', () {
+        test('disjoint', () {
+          final a =
+              GraphBuilder<String, String>().fromPath(['a', 'b'], data: 'a->b');
+          final b =
+              GraphBuilder<String, String>().fromPath(['c', 'd'], data: 'c->d');
+          final result = a.intersection(b);
+          expect(result.vertices, isEmpty);
+          expect(result.edges, isEmpty);
+        });
+        test('shared vertex', () {
+          final a =
+              GraphBuilder<String, String>().fromPath(['a', 'b'], data: 'a->b');
+          final b =
+              GraphBuilder<String, String>().fromPath(['b', 'c'], data: 'b->c');
+          final result = a.intersection(b);
+          expect(result.vertices, unorderedEquals(['b']));
+          expect(result.edges, isEmpty);
+        });
+        test('shared edge', () {
+          final a = GraphBuilder<String, Never>().fromPath(['a', 'b', 'c']);
+          final b = GraphBuilder<String, Never>().fromPath(['b', 'c', 'd']);
+          final result = a.intersection(b);
+          expect(result.vertices, unorderedEquals(['b', 'c']));
+          expect(result.edges, [isEdge(source: 'b', target: 'c')]);
+        });
+      });
+    });
     group('map', () {
       final graph = GraphBuilder<int, Point<int>>(
               edgeProvider: (source, target) => Point(source, target))

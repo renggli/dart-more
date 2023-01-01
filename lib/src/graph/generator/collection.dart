@@ -3,10 +3,11 @@ import '../graph.dart';
 
 extension CollectionGraphBuilderExtension<V, E> on GraphBuilder<V, E> {
   /// Creates a [Graph] from a [Iterable] of chains.
-  Graph<V, E> fromPath(Iterable<V> chain) => fromPaths([chain]);
+  Graph<V, E> fromPath(Iterable<V> chain, {E? data}) =>
+      fromPaths([chain], data: data);
 
   /// Creates a [Graph] from a [Iterable] of chains.
-  Graph<V, E> fromPaths(Iterable<Iterable<V>> chains) {
+  Graph<V, E> fromPaths(Iterable<Iterable<V>> chains, {E? data}) {
     final graph = empty();
     for (var chain in chains) {
       final vertices = chain.toList(growable: false);
@@ -14,7 +15,7 @@ extension CollectionGraphBuilderExtension<V, E> on GraphBuilder<V, E> {
         addVertex(graph, vertices.first);
       } else {
         for (var i = 0; i < vertices.length - 1; i++) {
-          addEdge(graph, vertices[i], vertices[i + 1]);
+          addEdge(graph, vertices[i], vertices[i + 1], data: data);
         }
       }
     }

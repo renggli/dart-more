@@ -1,4 +1,5 @@
 import '../graph.dart';
+import '../model/utils.dart';
 import '../traverse/breadth_first.dart';
 
 extension ConnectedGraphExtension<V, E> on Graph<V, E> {
@@ -7,8 +8,7 @@ extension ConnectedGraphExtension<V, E> on Graph<V, E> {
     final seen = vertexStrategy.createSet();
     for (var start in vertices) {
       if (seen.add(start)) {
-        final graph =
-            isDirected ? Graph<V, E>.directed() : Graph<V, E>.undirected();
+        final graph = copyEmpty(this);
         final traversal = BreadthFirstIterable([start],
             successorsOf: neighboursOf, vertexStrategy: vertexStrategy);
         for (final vertex in traversal) {

@@ -23,16 +23,25 @@ class GraphBuilder<V, E> {
   void addVertex(Graph<V, E> graph, V vertex) => graph.addVertex(vertex);
 
   @internal
-  void addVertexIndex(Graph<V, E> graph, int index) =>
-      addVertex(graph, vertexProvider?.call(index) ?? (index as V));
+  void addVertexIndex(Graph<V, E> graph, int index) => addVertex(
+        graph,
+        vertexProvider?.call(index) ?? (index as V),
+      );
 
   @internal
-  void addEdge(Graph<V, E> graph, V source, V target) =>
-      graph.addEdge(source, target, data: edgeProvider?.call(source, target));
+  void addEdge(Graph<V, E> graph, V source, V target, {E? data}) =>
+      graph.addEdge(
+        source,
+        target,
+        data: data ?? edgeProvider?.call(source, target),
+      );
 
   @internal
-  void addEdgeIndex(Graph<V, E> graph, int source, int target) => addEdge(
-      graph,
-      vertexProvider?.call(source) ?? (source as V),
-      vertexProvider?.call(target) ?? (target as V));
+  void addEdgeIndex(Graph<V, E> graph, int source, int target, {E? data}) =>
+      addEdge(
+        graph,
+        vertexProvider?.call(source) ?? (source as V),
+        vertexProvider?.call(target) ?? (target as V),
+        data: data,
+      );
 }
