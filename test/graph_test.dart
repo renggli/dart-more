@@ -763,6 +763,37 @@ void main() {
           expect(result.edges, [isEdge(source: 'b', target: 'c')]);
         });
       });
+      group('intersection', () {
+        test('simple directed', () {
+          final input = Graph<String, String>.directed();
+          input.addEdge('a', 'b');
+          final result = input.complement();
+          expect(result.vertices, unorderedEquals(['a', 'b']));
+          expect(result.edges, [isEdge(source: 'b', target: 'a')]);
+        });
+        test('simple undirected', () {
+          final input = Graph<String, String>.undirected();
+          input.addEdge('a', 'b');
+          final result = input.complement();
+          expect(result.vertices, unorderedEquals(['a', 'b']));
+          expect(result.edges, isEmpty);
+        });
+        // test('undirected with edge provider', () {
+        //   final input = Graph<String, String>.undirected();
+        //   input.addEdge('a', 'b');
+        //   input.addVertex('c');
+        //   final result = input.complement();
+        //   expect(result.vertices, unorderedEquals(['a', 'b', 'c']));
+        //   expect(
+        //       result.edges,
+        //       unorderedEquals([
+        //         isEdge(source: 'a', target: 'c'),
+        //         isEdge(source: 'b', target: 'c'),
+        //         isEdge(source: 'c', target: 'a'),
+        //         isEdge(source: 'c', target: 'b'),
+        //       ]));
+        // });
+      });
     });
     group('map', () {
       final graph = GraphBuilder<int, Point<int>>(
