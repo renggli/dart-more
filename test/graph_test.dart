@@ -1,30 +1,33 @@
 import 'dart:math';
 
+import 'package:meta/meta.dart';
 import 'package:more/functional.dart';
 import 'package:more/graph.dart';
 import 'package:more/math.dart';
 import 'package:more/src/graph/strategy.dart';
 import 'package:test/test.dart';
 
-Matcher isEdge({
+@optionalTypeArgs
+Matcher isEdge<E, V>({
   dynamic source = anything,
   dynamic target = anything,
   dynamic data = anything,
 }) =>
-    isA<Edge<void, void>>()
+    isA<Edge<E, V>>()
         .having((edge) => edge.source, 'source', source)
         .having((edge) => edge.target, 'target', target)
         .having((edge) => edge.dataOrNull, 'data', data)
         .having((edge) => edge.toString(), 'toString', contains('Edge'));
 
-Matcher isPath({
+@optionalTypeArgs
+Matcher isPath<V>({
   dynamic source = anything,
   dynamic target = anything,
   dynamic vertices = anything,
   dynamic cost = anything,
   dynamic depth = anything,
 }) =>
-    isA<Path<void>>()
+    isA<Path<V>>()
         .having((path) => path.source, 'source', source)
         .having((path) => path.target, 'target', target)
         .having((path) => path.vertices, 'vertices', vertices)
@@ -179,10 +182,32 @@ void main() {
         expect(map[43], 'baz');
         expect(map[44], isNull);
         expect(map['foo' as dynamic], isNull);
+        expect(map.containsKey(-42), isTrue);
+        expect(map.containsKey(43), isTrue);
+        expect(map.containsKey(44), isFalse);
         expect(map.keys, unorderedEquals([-42, 43]));
         expect(map.values, unorderedEquals(['foo', 'baz']));
         expect(map.remove(-42), 'foo');
         expect(map.remove(-42), isNull);
+        expect(map.remove('foo' as dynamic), isNull);
+        map.clear();
+        expect(map, isEmpty);
+      });
+      test('map (nullable)', () {
+        final map = strategy.createMap<String?>();
+        map[-3] = 'foo';
+        map[2] = 'bar';
+        map[2] = null;
+        expect(map[-3], 'foo');
+        expect(map[2], isNull);
+        expect(map[3], isNull);
+        expect(map['foo' as dynamic], isNull);
+        expect(map.containsKey(-3), isTrue);
+        expect(map.containsKey(2), isTrue);
+        expect(map.containsKey(3), isFalse);
+        expect(map.keys, unorderedEquals([2, -3]));
+        expect(map.values, unorderedEquals([null, 'foo']));
+        expect(map.remove(2), isNull);
         expect(map.remove('foo' as dynamic), isNull);
         map.clear();
         expect(map, isEmpty);
@@ -217,10 +242,32 @@ void main() {
         expect(map[43], 'baz');
         expect(map[44], isNull);
         expect(map['foo' as dynamic], isNull);
+        expect(map.containsKey(42), isTrue);
+        expect(map.containsKey(43), isTrue);
+        expect(map.containsKey(44), isFalse);
         expect(map.keys, unorderedEquals([42, 43]));
         expect(map.values, unorderedEquals(['foo', 'baz']));
         expect(map.remove(42), 'foo');
         expect(map.remove(42), isNull);
+        expect(map.remove('foo' as dynamic), isNull);
+        map.clear();
+        expect(map, isEmpty);
+      });
+      test('map (nullable)', () {
+        final map = strategy.createMap<String?>();
+        map[3] = 'foo';
+        map[2] = 'bar';
+        map[2] = null;
+        expect(map[3], 'foo');
+        expect(map[2], isNull);
+        expect(map[1], isNull);
+        expect(map['foo' as dynamic], isNull);
+        expect(map.containsKey(3), isTrue);
+        expect(map.containsKey(2), isTrue);
+        expect(map.containsKey(1), isFalse);
+        expect(map.keys, unorderedEquals([2, 3]));
+        expect(map.values, unorderedEquals([null, 'foo']));
+        expect(map.remove(2), isNull);
         expect(map.remove('foo' as dynamic), isNull);
         map.clear();
         expect(map, isEmpty);

@@ -2,43 +2,48 @@ import 'dart:collection';
 
 import '../../../collection.dart';
 
+/// A [Set] with integer values.
+///
+/// The presence of values is stored in an efficient [BitList]. The [_forward]
+/// and [_backward] functions are used to map the values to the list indices
+/// and vice-versa.
 class IntegerSet extends SetBase<int> {
-  IntegerSet(this.forward, this.backward);
+  IntegerSet(this._forward, this._backward);
 
-  final int Function(int x) forward;
-  final int Function(int x) backward;
+  final int Function(int x) _forward;
+  final int Function(int x) _backward;
 
-  final storage = BitList.empty(growable: true);
+  final _presence = BitList.empty(growable: true);
 
   @override
   bool add(int value) {
-    final index = forward(value);
-    if (index >= storage.length) {
-      storage.length = 1 + index;
-    } else if (storage.getUnchecked(index)) {
+    final index = _forward(value);
+    if (index >= _presence.length) {
+      _presence.length = 1 + index;
+    } else if (_presence.getUnchecked(index)) {
       return false;
     }
-    storage.setUnchecked(index, true);
+    _presence.setUnchecked(index, true);
     return true;
   }
 
   @override
   bool contains(Object? element) {
     if (element is int) {
-      final index = forward(element);
-      return index < storage.length && storage.getUnchecked(index);
+      final index = _forward(element);
+      return index < _presence.length && _presence.getUnchecked(index);
     }
     return false;
   }
 
   @override
-  void clear() => storage.length = 0;
+  void clear() => _presence.length = 0;
 
   @override
-  Iterator<int> get iterator => storage.indices().map(backward).iterator;
+  Iterator<int> get iterator => _presence.indices().map(_backward).iterator;
 
   @override
-  int get length => storage.count();
+  int get length => _presence.count();
 
   @override
   int? lookup(Object? element) => throw UnimplementedError();
@@ -46,9 +51,9 @@ class IntegerSet extends SetBase<int> {
   @override
   bool remove(Object? value) {
     if (value is int) {
-      final index = forward(value);
-      if (index < storage.length && storage.getUnchecked(index)) {
-        storage.setUnchecked(index, false);
+      final index = _forward(value);
+      if (index < _presence.length && _presence.getUnchecked(index)) {
+        _presence.setUnchecked(index, false);
         return true;
       }
     }
@@ -56,5 +61,5 @@ class IntegerSet extends SetBase<int> {
   }
 
   @override
-  Set<int> toSet() => IntegerSet(forward, backward)..addAll(this);
+  Set<int> toSet() => IntegerSet(_forward, _backward)..addAll(this);
 }
