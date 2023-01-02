@@ -1202,6 +1202,106 @@ void main() {
         expectInvariants(graph);
       });
     });
+    group('tree', () {
+      group('complete', () {
+        test('empty', () {
+          final graph = GraphBuilder<int, Never>().completeTree(vertexCount: 0);
+          expect(graph.vertices, isEmpty);
+          expect(graph.edges, isEmpty);
+          expectInvariants(graph);
+        });
+        test('unary', () {
+          final graph =
+              GraphBuilder<int, Never>().completeTree(vertexCount: 3, arity: 1);
+          expect(graph.vertices, unorderedEquals([0, 1, 2]));
+          expect(
+              graph.edges,
+              unorderedEquals([
+                isEdge(source: 0, target: 1),
+                isEdge(source: 1, target: 2),
+              ]));
+          expectInvariants(graph);
+        });
+        test('binary', () {
+          final graph = GraphBuilder<int, Never>().completeTree(vertexCount: 6);
+          expect(graph.vertices, unorderedEquals([0, 1, 2, 3, 4, 5]));
+          expect(
+              graph.edges,
+              unorderedEquals([
+                isEdge(source: 0, target: 1),
+                isEdge(source: 0, target: 2),
+                isEdge(source: 1, target: 3),
+                isEdge(source: 1, target: 4),
+                isEdge(source: 2, target: 5),
+              ]));
+          expectInvariants(graph);
+        });
+        test('ternary', () {
+          final graph =
+              GraphBuilder<int, Never>().completeTree(vertexCount: 7, arity: 3);
+          expect(graph.vertices, unorderedEquals([0, 1, 2, 3, 4, 5, 6]));
+          expect(
+              graph.edges,
+              unorderedEquals([
+                isEdge(source: 0, target: 1),
+                isEdge(source: 0, target: 2),
+                isEdge(source: 0, target: 3),
+                isEdge(source: 1, target: 4),
+                isEdge(source: 1, target: 5),
+                isEdge(source: 1, target: 6),
+              ]));
+          expectInvariants(graph);
+        });
+      });
+      group('perfect', () {
+        test('empty', () {
+          final graph = GraphBuilder<int, Never>().prefectTree(height: 0);
+          expect(graph.vertices, [0]);
+          expect(graph.edges, isEmpty);
+          expectInvariants(graph);
+        });
+        test('unary', () {
+          final graph =
+              GraphBuilder<int, Never>().prefectTree(height: 2, arity: 1);
+          expect(graph.vertices, unorderedEquals([0, 1, 2]));
+          expect(
+              graph.edges,
+              unorderedEquals([
+                isEdge(source: 0, target: 1),
+                isEdge(source: 1, target: 2),
+              ]));
+          expectInvariants(graph);
+        });
+        test('binary', () {
+          final graph = GraphBuilder<int, Never>().prefectTree(height: 2);
+          expect(graph.vertices, unorderedEquals([0, 1, 2, 3, 4, 5, 6]));
+          expect(
+              graph.edges,
+              unorderedEquals([
+                isEdge(source: 0, target: 1),
+                isEdge(source: 0, target: 2),
+                isEdge(source: 1, target: 3),
+                isEdge(source: 1, target: 4),
+                isEdge(source: 2, target: 5),
+                isEdge(source: 2, target: 6),
+              ]));
+          expectInvariants(graph);
+        });
+        test('ternary', () {
+          final graph =
+              GraphBuilder<int, Never>().prefectTree(height: 1, arity: 3);
+          expect(graph.vertices, unorderedEquals([0, 1, 2, 3]));
+          expect(
+              graph.edges,
+              unorderedEquals([
+                isEdge(source: 0, target: 1),
+                isEdge(source: 0, target: 2),
+                isEdge(source: 0, target: 3),
+              ]));
+          expectInvariants(graph);
+        });
+      });
+    });
   });
   group('search', () {
     test('directed path', () {

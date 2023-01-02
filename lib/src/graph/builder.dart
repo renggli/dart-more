@@ -1,6 +1,7 @@
 import 'package:meta/meta.dart';
 
 import '../../graph.dart';
+import 'strategy.dart';
 
 typedef VertexProvider<V> = V Function(int index);
 typedef EdgeProvider<V, E> = E Function(V source, V target);
@@ -10,14 +11,17 @@ class GraphBuilder<V, E> {
     this.isDirected = true,
     this.vertexProvider,
     this.edgeProvider,
-  });
+    StorageStrategy<V>? vertexStrategy,
+  }) : vertexStrategy = vertexStrategy ?? StorageStrategy<V>.defaultStrategy();
 
   final bool isDirected;
   final VertexProvider<V>? vertexProvider;
   final EdgeProvider<V, E>? edgeProvider;
+  final StorageStrategy<V> vertexStrategy;
 
-  Graph<V, E> empty() =>
-      isDirected ? Graph<V, E>.directed() : Graph<V, E>.undirected();
+  Graph<V, E> empty() => isDirected
+      ? Graph<V, E>.directed(vertexStrategy: vertexStrategy)
+      : Graph<V, E>.undirected(vertexStrategy: vertexStrategy);
 
   @internal
   void addVertex(Graph<V, E> graph, V vertex) => graph.addVertex(vertex);

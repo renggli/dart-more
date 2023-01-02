@@ -7,6 +7,7 @@ export 'src/graph/builder/partite.dart' show PartiteGraphBuilderExtension;
 export 'src/graph/builder/path.dart' show PathGraphBuilderExtension;
 export 'src/graph/builder/ring.dart' show RingGraphBuilderExtension;
 export 'src/graph/builder/star.dart' show StarGraphBuilderExtension;
+export 'src/graph/builder/tree.dart' show TreeGraphBuilderExtension;
 export 'src/graph/edge.dart' show Edge;
 export 'src/graph/graph.dart' show Graph;
 export 'src/graph/model/reversed.dart' show ReversedGraphExtension;
