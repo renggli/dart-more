@@ -12,10 +12,13 @@ extension AtlasGraphBuilderExtension<V, E> on GraphBuilder<V, E> {
   Graph<V, E> atlas(int number) {
     final data = _atlas[number];
     final graph = empty();
+    assert(data[0] >= 0, 'Invalid number of vertices');
     for (var i = 0; i < data[0]; i++) {
       addVertexIndex(graph, i);
     }
+    assert(2 + 2 * data[1] == data.length, 'Invalid number of edges');
     for (var i = 0, o = 2; i < data[1]; i++, o += 2) {
+      assert(data[o] != data[o + 1], 'Invalid edge pair');
       addEdgeIndex(graph, data[o], data[o + 1]);
     }
     return graph;
