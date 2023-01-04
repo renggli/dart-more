@@ -5,9 +5,7 @@ import 'strategy/positive_integer.dart';
 /// Encapsulates data structures used for the various graph algorithms.
 abstract class StorageStrategy<T> {
   /// Returns a suitable default strategy.
-  factory StorageStrategy.defaultStrategy() => T == int
-      ? IntegerStorageStrategy() as StorageStrategy<T>
-      : ObjectStorageStrategy<T>();
+  factory StorageStrategy.defaultStrategy() = ObjectStorageStrategy;
 
   /// Returns a strategy using canonical collection objects.
   factory StorageStrategy.object() = ObjectStorageStrategy;

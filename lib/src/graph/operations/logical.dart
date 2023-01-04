@@ -16,9 +16,9 @@ extension LogicalGraphExtension<V, E> on Graph<V, E> {
         for (final edge in graph.outgoingEdgesOf(vertex)) {
           if (result
               .getEdges(edge.source, edge.target)
-              .where((each) => edge.dataOrNull == each.dataOrNull)
+              .where((each) => edge.data == each.data)
               .isEmpty) {
-            result.addEdge(edge.source, edge.target, data: edge.dataOrNull);
+            result.addEdge(edge.source, edge.target, data: edge.data);
           }
         }
       }
@@ -43,9 +43,9 @@ extension LogicalGraphExtension<V, E> on Graph<V, E> {
           result.vertices.contains(edge.target) &&
           other
               .getEdges(edge.source, edge.target)
-              .where((each) => edge.dataOrNull == each.dataOrNull)
+              .where((each) => edge.data == each.data)
               .isNotEmpty) {
-        result.addEdge(edge.source, edge.target, data: edge.dataOrNull);
+        result.addEdge(edge.source, edge.target, data: edge.data);
       }
     }
     return result;

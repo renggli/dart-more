@@ -23,7 +23,4 @@ class ReversedEdge<V, E> extends Edge<V, E> {
 
   @override
   E get data => delegate.data;
-
-  @override
-  E? get dataOrNull => delegate.dataOrNull;
 }

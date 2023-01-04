@@ -29,8 +29,7 @@ abstract class Graph<V, E> with ToStringPrinter {
   Iterable<Edge<V, E>> get edges;
 
   /// Returns the incoming and outgoing edges of [vertex].
-  Iterable<Edge<V, E>> edgesOf(V vertex) =>
-      incomingEdgesOf(vertex).followedBy(outgoingEdgesOf(vertex));
+  Iterable<Edge<V, E>> edgesOf(V vertex);
 
   /// Returns the incoming edges of [vertex].
   Iterable<Edge<V, E>> incomingEdgesOf(V vertex);
@@ -39,20 +38,16 @@ abstract class Graph<V, E> with ToStringPrinter {
   Iterable<Edge<V, E>> outgoingEdgesOf(V vertex);
 
   /// Returns the edges between [source] and [target].
-  Iterable<Edge<V, E>> getEdges(V source, V target) =>
-      outgoingEdgesOf(source).where((edge) => edge.target == target);
+  Iterable<Edge<V, E>> getEdges(V source, V target);
 
   /// Returns the vertices that are adjacent to a `vertex`.
-  Iterable<V> neighboursOf(V vertex) =>
-      predecessorsOf(vertex).followedBy(successorsOf(vertex));
+  Iterable<V> neighboursOf(V vertex);
 
   /// Returns the vertices that come before a [vertex].
-  Iterable<V> predecessorsOf(V vertex) =>
-      incomingEdgesOf(vertex).map((edge) => edge.source);
+  Iterable<V> predecessorsOf(V vertex);
 
   /// Returns the vertices that come after a [vertex].
-  Iterable<V> successorsOf(V vertex) =>
-      outgoingEdgesOf(vertex).map((edge) => edge.target);
+  Iterable<V> successorsOf(V vertex);
 
   /// Adds a [vertex] to this graph.
   void addVertex(V vertex);

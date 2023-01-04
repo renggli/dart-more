@@ -13,7 +13,7 @@ extension ConnectedGraphExtension<V, E> on Graph<V, E> {
             successorsOf: neighboursOf, vertexStrategy: vertexStrategy);
         for (final vertex in traversal) {
           for (final edge in outgoingEdgesOf(vertex)) {
-            graph.addEdge(edge.source, edge.target, data: edge.dataOrNull);
+            graph.addEdge(edge.source, edge.target, data: edge.data);
           }
           seen.add(vertex);
         }

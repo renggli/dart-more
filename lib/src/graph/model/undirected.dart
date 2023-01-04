@@ -1,59 +1,104 @@
 import '../edge.dart';
 import '../graph.dart';
 import '../strategy.dart';
-import 'directed.dart';
 
 class UndirectedGraph<V, E> extends Graph<V, E> {
   UndirectedGraph({StorageStrategy<V>? vertexStrategy})
-      : delegate = DirectedGraph<V, E>(vertexStrategy: vertexStrategy);
+      : this._(vertexStrategy ?? StorageStrategy<V>.defaultStrategy());
 
-  final DirectedGraph<V, E> delegate;
+  UndirectedGraph._(this.vertexStrategy)
+      : adjacency = vertexStrategy.createMap<Map<V, E>>();
+
+  final Map<V, Map<V, E>> adjacency;
 
   @override
-  StorageStrategy<V> get vertexStrategy => delegate.vertexStrategy;
+  final StorageStrategy<V> vertexStrategy;
 
   @override
   bool get isDirected => false;
 
   @override
-  Iterable<V> get vertices => delegate.vertices;
+  Iterable<V> get vertices => adjacency.keys;
 
   @override
-  Iterable<Edge<V, E>> get edges => delegate.edges;
+  Iterable<Edge<V, E>> get edges => adjacency.entries.expand((outer) => outer
+      .value.entries
+      .map((inner) => UndirectedEdge<V, E>(outer.key, inner.key, inner.value)));
 
   @override
-  Iterable<Edge<V, E>> edgesOf(V vertex) => delegate.outgoingEdgesOf(vertex);
+  Iterable<Edge<V, E>> edgesOf(V vertex) => outgoingEdgesOf(vertex);
 
   @override
   Iterable<Edge<V, E>> incomingEdgesOf(V vertex) =>
-      delegate.incomingEdgesOf(vertex);
+      adjacency[vertex]?.entries.map(
+          (inner) => UndirectedEdge<V, E>(inner.key, vertex, inner.value)) ??
+      <Edge<V, E>>[];
 
   @override
   Iterable<Edge<V, E>> outgoingEdgesOf(V vertex) =>
-      delegate.outgoingEdgesOf(vertex);
+      adjacency[vertex]?.entries.map(
+          (inner) => UndirectedEdge<V, E>(vertex, inner.key, inner.value)) ??
+      <Edge<V, E>>[];
 
   @override
-  Iterable<V> neighboursOf(V vertex) => delegate.successorsOf(vertex);
+  Iterable<Edge<V, E>> getEdges(V source, V target) {
+    final sourceAdjacency = adjacency[source];
+    return sourceAdjacency != null && sourceAdjacency.containsKey(target)
+        ? [UndirectedEdge<V, E>(source, target, sourceAdjacency[target] as E)]
+        : <Edge<V, E>>[];
+  }
 
   @override
-  Iterable<V> predecessorsOf(V vertex) => delegate.predecessorsOf(vertex);
+  Iterable<V> neighboursOf(V vertex) => adjacency[vertex]?.keys ?? <V>[];
 
   @override
-  Iterable<V> successorsOf(V vertex) => delegate.successorsOf(vertex);
+  Iterable<V> predecessorsOf(V vertex) => neighboursOf(vertex);
 
   @override
-  void addVertex(V vertex) => delegate.addVertex(vertex);
+  Iterable<V> successorsOf(V vertex) => neighboursOf(vertex);
 
   @override
-  void addEdge(V source, V target, {E? data}) => delegate
-    ..addEdge(source, target, data: data)
-    ..addEdge(target, source, data: data);
+  void addVertex(V vertex) => _getVertex(vertex);
 
   @override
-  void removeVertex(V vertex) => delegate.removeVertex(vertex);
+  void addEdge(V source, V target, {E? data}) {
+    _getVertex(source)[target] = data as E;
+    _getVertex(target)[source] = data;
+  }
 
   @override
-  void removeEdge(V source, V target, {E? data}) => delegate
-    ..removeEdge(source, target, data: data)
-    ..removeEdge(target, source, data: data);
+  void removeVertex(V vertex) {
+    final vertexAdjacency = adjacency[vertex];
+    if (vertexAdjacency == null) return;
+    for (final target in vertexAdjacency.keys) {
+      adjacency[target]?.remove(vertex);
+    }
+    adjacency.remove(vertex);
+  }
+
+  @override
+  void removeEdge(V source, V target, {E? data}) {
+    final sourceAdjacency = adjacency[source];
+    if (sourceAdjacency == null) return;
+    final targetAdjacency = adjacency[target];
+    if (targetAdjacency == null) return;
+    sourceAdjacency.remove(target);
+    targetAdjacency.remove(source);
+  }
+
+  Map<V, E> _getVertex(V vertex) =>
+      adjacency.putIfAbsent(vertex, vertexStrategy.createMap<E>);
+}
+
+class UndirectedEdge<V, E> extends Edge<V, E> {
+  UndirectedEdge(this.source, this.target, this.data);
+
+  @override
+  final V source;
+
+  @override
+  final V target;
+
+  @override
+  final E data;
 }

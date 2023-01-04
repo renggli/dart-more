@@ -13,12 +13,9 @@ abstract class Edge<V, E> with ToStringPrinter {
   /// Edge specific data
   E get data;
 
-  /// Nullable edge specific data.
-  E? get dataOrNull;
-
   @override
   ObjectPrinter get toStringPrinter => super.toStringPrinter
     ..addValue([source, target],
         printer: Printer<V>.standard().iterable(separator: ' → '))
-    ..addValue(dataOrNull, name: 'data', omitNull: true);
+    ..addValue(data, name: 'data', omitNull: true);
 }

@@ -19,7 +19,7 @@ extension MapGraphExtension<V, E> on Graph<V, E> {
       vertexMap[oldVertex] = newVertex;
       graph.addVertex(newVertex);
     }
-    final edgeMapper = edge ?? (edge) => edge.dataOrNull as ER?;
+    final edgeMapper = edge ?? (edge) => edge.data as ER;
     for (final oldVertex in vertices) {
       for (final oldEdge in outgoingEdgesOf(oldVertex)) {
         graph.addEdge(

@@ -1,5 +1,6 @@
-import 'package:collection/collection.dart';
 import 'dart:math';
+
+import 'package:collection/collection.dart';
 
 import '../builder.dart';
 import '../graph.dart';

@@ -28,7 +28,7 @@ extension CollectionGraphBuilderExtension<V, E> on GraphBuilder<V, E> {
     final graph = empty();
     for (var entry in mapping.entries) {
       final predecessors = entry.value;
-      if (predecessors == null) {
+      if (predecessors == null || predecessors.isEmpty) {
         addVertex(graph, entry.key);
       } else {
         for (var predecessor in predecessors) {
@@ -45,7 +45,7 @@ extension CollectionGraphBuilderExtension<V, E> on GraphBuilder<V, E> {
     final graph = empty();
     for (var entry in mapping.entries) {
       final successors = entry.value;
-      if (successors == null) {
+      if (successors == null || successors.isEmpty) {
         addVertex(graph, entry.key);
       } else {
         for (var successor in successors) {
