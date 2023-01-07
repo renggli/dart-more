@@ -26,5 +26,7 @@ export 'src/graph/traverse/depth_first.dart'
     show DepthFirstGraphExtension, DepthFirstIterable;
 export 'src/graph/traverse/depth_first_post_order.dart'
     show DepthFirstPostOrderGraphExtension, DepthFirstPostOrderIterable;
+export 'src/graph/traverse/random.dart'
+    show RandomWalkGraphExtension, RandomWalkIterable;
 export 'src/graph/traverse/topological.dart'
     show TopologicalGraphExtension, TopologicalIterable;
