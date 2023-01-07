@@ -182,6 +182,10 @@ class Multiset<E> extends IterableBase<E> {
       .expand((entry) => repeat(entry.key, count: entry.value))
       .iterator;
 
+  /// Returns an unmodifiable view of the underlying data in a [Map] with the
+  /// elements as the key and their counts as the value.
+  Map<E, int> asMap() => Map.unmodifiable(_container);
+
   /// Returns a view on the distinct elements of the receiver.
   Iterable<E> get distinct => _container.keys;
 

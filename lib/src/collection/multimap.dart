@@ -93,7 +93,7 @@ abstract class Multimap<K, V, VS extends Iterable<V>> {
     _length = 0;
   }
 
-  /// Returns a view onto the underlying map.
+  /// Returns a mutable view onto the underlying map.
   Map<K, VS> asMap() => MultimapAsMap(this);
 
   @override

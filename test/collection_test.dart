@@ -3158,6 +3158,16 @@ void main() {
         expect(firstSet.difference(['a', 1, null]),
             unorderedEquals(['b', 'c', 'c']));
       });
+      test('asMap', () {
+        expect(firstSet.asMap(), {'a': 1, 'b': 1, 'c': 2});
+        expect(secondSet.asMap(), {'a': 1, 'c': 1, 'd': 2});
+      });
+      test('asMap (unmodifiable)', () {
+        final map = firstSet.asMap();
+        expect(() => map['a'] = 2, throwsUnsupportedError);
+        expect(() => map.remove('a'), throwsUnsupportedError);
+        expect(() => map.clear(), throwsUnsupportedError);
+      });
     });
   });
   group('range', () {
