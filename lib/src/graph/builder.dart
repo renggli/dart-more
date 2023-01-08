@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:meta/meta.dart';
 
 import '../../graph.dart';
@@ -11,12 +13,15 @@ class GraphBuilder<V, E> {
     this.isDirected = true,
     this.vertexProvider,
     this.edgeProvider,
+    Random? random,
     StorageStrategy<V>? vertexStrategy,
-  }) : vertexStrategy = vertexStrategy ?? StorageStrategy<V>.defaultStrategy();
+  })  : random = random ?? Random(),
+        vertexStrategy = vertexStrategy ?? StorageStrategy<V>.defaultStrategy();
 
   final bool isDirected;
   final VertexProvider<V>? vertexProvider;
   final EdgeProvider<V, E>? edgeProvider;
+  final Random random;
   final StorageStrategy<V> vertexStrategy;
 
   Graph<V, E> empty() => isDirected

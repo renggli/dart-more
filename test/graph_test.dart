@@ -5,6 +5,7 @@ import 'package:more/collection.dart';
 import 'package:more/functional.dart';
 import 'package:more/graph.dart';
 import 'package:more/math.dart';
+import 'package:more/src/graph/builder/random.dart';
 import 'package:more/src/graph/strategy.dart';
 import 'package:test/test.dart';
 
@@ -1306,6 +1307,28 @@ void main() {
                 isEdge(source: 0, target: 3),
               ]));
           expectInvariants(graph);
+        });
+      });
+      group('random', () {
+        group('Erdős–Rényi', () {
+          test('directed', () {
+            final graph = GraphBuilder<int, void>(
+                    isDirected: true, random: Random(235711))
+                .randomErdosRenyi(vertexCount: 10, probability: 0.5);
+            expect(graph.isDirected, isTrue);
+            expect(graph.vertices, hasLength(10));
+            expect(graph.edges.length, allOf(greaterThan(40), lessThan(60)));
+            expectInvariants(graph);
+          });
+          test('undirected', () {
+            final graph = GraphBuilder<int, void>(
+                    isDirected: false, random: Random(131719))
+                .randomErdosRenyi(vertexCount: 10, probability: 0.5);
+            expect(graph.isDirected, isFalse);
+            expect(graph.vertices, hasLength(10));
+            expect(graph.edges.length, allOf(greaterThan(40), lessThan(60)));
+            expectInvariants(graph);
+          });
         });
       });
     });
