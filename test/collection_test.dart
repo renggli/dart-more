@@ -1558,10 +1558,10 @@ void main() {
           seen.add(picks.atRandom());
         }
       });
-      test('secure', () {
+      test('custom', () {
         final seen = <int>{};
         final picks = 0.to(10);
-        final random = Random.secure();
+        final random = Random(123456);
         while (seen.length < picks.length) {
           seen.add(picks.atRandom(random: random));
         }
