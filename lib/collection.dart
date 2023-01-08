@@ -15,7 +15,8 @@ export 'src/collection/iterable/iterate.dart' show iterate;
 export 'src/collection/iterable/operators.dart' show OperatorsExtension;
 export 'src/collection/iterable/periodical.dart'
     show Period, PeriodicalExtension, TruncateExtension;
-export 'src/collection/iterable/permutations.dart' show PermutationsExtension;
+export 'src/collection/iterable/permutations.dart'
+    show PermutationIterableExtension, PermutationComparableListExtension;
 export 'src/collection/iterable/power_set.dart' show PowerSetExtension;
 export 'src/collection/iterable/product.dart' show ProductExtension;
 export 'src/collection/iterable/random.dart' show RandomExtension;

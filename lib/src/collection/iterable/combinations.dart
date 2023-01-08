@@ -24,9 +24,9 @@ extension CombinationsExtension<E> on Iterable<E> {
   Iterable<List<E>> combinations(int count, {bool repetitions = false}) {
     final list = toList(growable: false);
     if (count < 0) {
-      throw RangeError.value(count);
+      throw RangeError.value(count, 'count');
     } else if (!repetitions && list.length < count) {
-      throw RangeError.range(count, 0, list.length);
+      throw RangeError.range(count, 0, list.length, 'count');
     } else if (repetitions) {
       return combinationsWithRepetitions<E>(list, count);
     } else {

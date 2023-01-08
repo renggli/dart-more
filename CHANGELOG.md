@@ -6,6 +6,7 @@
 * Change return type of generic `throwFunction` to `Never`.
 * Add graph algorithms and data structures.
 * Add `Map.withDefault` providing a default value for non-existing keys.
+* Add support to generate permutations with a specified length, as well as extensions to generate the previous and next permutation.
 
 ## 3.9.0
 * Various extension to work with bits.

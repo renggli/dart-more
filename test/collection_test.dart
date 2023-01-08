@@ -1065,56 +1065,144 @@ void main() {
       });
     });
     group('permutations', () {
-      test('0', () {
-        final iterator = ''.toList().permutations();
-        expect(iterator, isEmpty);
+      group('full permutations', () {
+        test('empty', () {
+          final iterator = ''.toList().permutations();
+          expect(iterator, isEmpty);
+        });
+        test('single', () {
+          final iterator = 'a'.toList().permutations();
+          expect(iterator.map(joiner), ['a']);
+        });
+        test('2 element list', () {
+          final iterator = 'ab'.toList().permutations();
+          expect(iterator.map(joiner), ['ab', 'ba']);
+        });
+        test('3 element list', () {
+          final iterator = 'abc'.toList().permutations();
+          expect(iterator.map(joiner), [
+            'abc',
+            'acb',
+            'bac',
+            'bca',
+            'cab',
+            'cba',
+          ]);
+        });
       });
-      test('1', () {
-        final iterator = 'a'.toList().permutations();
-        expect(iterator, [
-          ['a']
-        ]);
+      group('partial permutations', () {
+        test('0 of 2', () {
+          final iterator = 'abc'.toList().permutations(0);
+          expect(iterator.map(joiner), isEmpty);
+        });
+        test('1 of 3', () {
+          final iterator = 'abc'.toList().permutations(1);
+          expect(iterator.map(joiner), ['a', 'b', 'c']);
+        });
+        test('2 of 3', () {
+          final iterator = 'abc'.toList().permutations(2);
+          expect(iterator.map(joiner), [
+            'ab',
+            'ac',
+            'ba',
+            'bc',
+            'ca',
+            'cb',
+          ]);
+        });
+        test('2 of 4', () {
+          final iterator = 'abcd'.toList().permutations(2);
+          expect(iterator.map(joiner), [
+            'ab',
+            'ac',
+            'ad',
+            'ba',
+            'bc',
+            'bd',
+            'ca',
+            'cb',
+            'cd',
+            'da',
+            'db',
+            'dc',
+          ]);
+        });
+        test('error', () {
+          expect(() => 'abc'.toList().permutations(4), throwsRangeError);
+          expect(() => 'abc'.toList().permutations(-1), throwsRangeError);
+        });
       });
-      test('2', () {
-        final iterator = 'ab'.toList().permutations();
-        expect(iterator, [
-          ['a', 'b'],
-          ['b', 'a']
-        ]);
+      group('nextPermutation', () {
+        test('none', () {
+          expect(<int>[].nextPermutation(), isFalse);
+          expect([1].nextPermutation(), isFalse);
+        });
+        test('default', () {
+          final list = [1, 2, 3];
+          expect(list.nextPermutation(), isTrue);
+          expect(list, [1, 3, 2]);
+          expect(list.nextPermutation(), isTrue);
+          expect(list, [2, 1, 3]);
+          expect(list.nextPermutation(), isTrue);
+          expect(list, [2, 3, 1]);
+          expect(list.nextPermutation(), isTrue);
+          expect(list, [3, 1, 2]);
+          expect(list.nextPermutation(), isTrue);
+          expect(list, [3, 2, 1]);
+          expect(list.nextPermutation(), isFalse);
+          expect(list, [3, 2, 1]);
+        });
+        test('custom', () {
+          final list = [
+            const Point<int>(2, 2),
+            const Point<int>(3, 3),
+            const Point<int>(1, 1),
+          ];
+          expect(list.nextPermutation(comparator: (a, b) => a.x.compareTo(b.x)),
+              isTrue);
+          expect(list, [
+            const Point<int>(3, 3),
+            const Point<int>(1, 1),
+            const Point<int>(2, 2),
+          ]);
+        });
       });
-      test('3', () {
-        final iterator = 'abc'.toList().permutations();
-        expect(
-            iterator.map(joiner), ['abc', 'acb', 'bac', 'bca', 'cab', 'cba']);
-      });
-      test('4', () {
-        final iterator = 'abcd'.toList().permutations();
-        expect(iterator.map(joiner), [
-          'abcd',
-          'abdc',
-          'acbd',
-          'acdb',
-          'adbc',
-          'adcb',
-          'bacd',
-          'badc',
-          'bcad',
-          'bcda',
-          'bdac',
-          'bdca',
-          'cabd',
-          'cadb',
-          'cbad',
-          'cbda',
-          'cdab',
-          'cdba',
-          'dabc',
-          'dacb',
-          'dbac',
-          'dbca',
-          'dcab',
-          'dcba'
-        ]);
+      group('previousPermutation', () {
+        test('none', () {
+          expect(<int>[].previousPermutation(), isFalse);
+          expect([1].previousPermutation(), isFalse);
+        });
+        test('default', () {
+          final list = [3, 2, 1];
+          expect(list.previousPermutation(), isTrue);
+          expect(list, [3, 1, 2]);
+          expect(list.previousPermutation(), isTrue);
+          expect(list, [2, 3, 1]);
+          expect(list.previousPermutation(), isTrue);
+          expect(list, [2, 1, 3]);
+          expect(list.previousPermutation(), isTrue);
+          expect(list, [1, 3, 2]);
+          expect(list.previousPermutation(), isTrue);
+          expect(list, [1, 2, 3]);
+          expect(list.previousPermutation(), isFalse);
+          expect(list, [1, 2, 3]);
+        });
+        test('custom', () {
+          final list = [
+            const Point<int>(2, 2),
+            const Point<int>(3, 3),
+            const Point<int>(1, 1),
+          ];
+          expect(
+              list.previousPermutation(
+                  comparator: (a, b) => a.x.compareTo(b.x)),
+              isTrue);
+          expect(list, [
+            const Point<int>(2, 2),
+            const Point<int>(1, 1),
+            const Point<int>(3, 3),
+          ]);
+        });
       });
     });
     group('periodical', () {
