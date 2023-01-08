@@ -169,7 +169,7 @@ abstract class BitList extends ListBase<bool> {
     return expected ? result : (end - start) - result;
   }
 
-  /// Returns an iterable over the indexes with the bit set to [expected].
+  /// Returns an iterable over the indices with the bit set to [expected].
   Iterable<int> indices({bool expected = true}) sync* {
     var mask = 0, index = 0, value = 0;
     for (var i = 0; i < length; i++) {

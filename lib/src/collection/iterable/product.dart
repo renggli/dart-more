@@ -35,7 +35,7 @@ extension ProductExtension<E> on Iterable<Iterable<E>> {
 }
 
 Iterable<List<E>> productNotEmpty<E>(List<List<E>> elements, int repeat) sync* {
-  final indexes = List<int>.filled(elements.length * repeat, 0);
+  final indices = List<int>.filled(elements.length * repeat, 0);
   final current = List<E>.generate(
     elements.length * repeat,
     (i) => elements[i % elements.length][0],
@@ -44,16 +44,16 @@ Iterable<List<E>> productNotEmpty<E>(List<List<E>> elements, int repeat) sync* {
   do {
     yield current.toList(growable: false);
     hasMore = false;
-    for (var i = indexes.length - 1; i >= 0; i--) {
+    for (var i = indices.length - 1; i >= 0; i--) {
       final e = i % elements.length;
-      if (indexes[i] + 1 < elements[e].length) {
-        indexes[i]++;
-        current[i] = elements[e][indexes[i]];
+      if (indices[i] + 1 < elements[e].length) {
+        indices[i]++;
+        current[i] = elements[e][indices[i]];
         hasMore = true;
         break;
       } else {
-        for (var j = indexes.length - 1; j >= i; j--) {
-          indexes[j] = 0;
+        for (var j = indices.length - 1; j >= i; j--) {
+          indices[j] = 0;
           current[j] = elements[j % elements.length][0];
         }
       }
