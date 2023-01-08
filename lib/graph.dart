@@ -5,6 +5,7 @@ export 'src/graph/builder/collection.dart' show CollectionGraphBuilderExtension;
 export 'src/graph/builder/complete.dart' show CompleteGraphBuilderExtension;
 export 'src/graph/builder/partite.dart' show PartiteGraphBuilderExtension;
 export 'src/graph/builder/path.dart' show PathGraphBuilderExtension;
+export 'src/graph/builder/random.dart' show RandomGraphBuilderExtension;
 export 'src/graph/builder/ring.dart' show RingGraphBuilderExtension;
 export 'src/graph/builder/star.dart' show StarGraphBuilderExtension;
 export 'src/graph/builder/tree.dart' show TreeGraphBuilderExtension;
@@ -19,7 +20,7 @@ export 'src/graph/path.dart' show Path;
 export 'src/graph/search.dart' show SearchGraphExtension;
 export 'src/graph/search/a_star.dart' show AStarSearchIterable;
 export 'src/graph/search/dijkstra.dart' show DijkstraSearchIterable;
-export 'src/graph/strategy/integer.dart';
+export 'src/graph/strategy.dart';
 export 'src/graph/traverse/breadth_first.dart'
     show BreadthFirstGraphExtension, BreadthFirstIterable;
 export 'src/graph/traverse/depth_first.dart'

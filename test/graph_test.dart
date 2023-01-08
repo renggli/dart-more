@@ -5,8 +5,6 @@ import 'package:more/collection.dart';
 import 'package:more/functional.dart';
 import 'package:more/graph.dart';
 import 'package:more/math.dart';
-import 'package:more/src/graph/builder/random.dart';
-import 'package:more/src/graph/strategy.dart';
 import 'package:test/test.dart';
 
 @optionalTypeArgs
