@@ -77,6 +77,10 @@ Iterable<int> cyclicGraph(int vertex) => cyclicGraphData[vertex]!;
 Iterable<int> collatzGraph(int vertex) =>
     vertex.isEven ? [vertex ~/ 2] : [3 * vertex + 1];
 
+// The finite collatz graph:
+Iterable<int> finiteCollatzGraph(int vertex) =>
+    vertex == 1 ? [] : collatzGraph(vertex);
+
 // The reverse collatz graph:
 // https://en.wikipedia.org/wiki/Collatz_conjecture#In_reverse
 Iterable<int> reverseCollatzGraph(int vertex) =>
@@ -1012,6 +1016,30 @@ void main() {
           expectInvariants(graph);
         });
       });
+      group('predecessor function', () {
+        test('empty', () {
+          final graph = GraphBuilder<int, void>()
+              .fromPredecessorFunction([], finiteCollatzGraph);
+          expect(graph.vertices, isEmpty);
+          expect(graph.edges, isEmpty);
+          expectInvariants(graph);
+        });
+        test('basic', () {
+          final graph = GraphBuilder<int, void>()
+              .fromPredecessorFunction([5], finiteCollatzGraph);
+          expect(graph.vertices, unorderedEquals([1, 2, 4, 5, 8, 16]));
+          expect(
+              graph.edges,
+              unorderedEquals([
+                isEdge(source: 1, target: 2),
+                isEdge(source: 2, target: 4),
+                isEdge(source: 4, target: 8),
+                isEdge(source: 8, target: 16),
+                isEdge(source: 16, target: 5),
+              ]));
+          expectInvariants(graph);
+        });
+      });
       group('successors', () {
         test('empty', () {
           final graph = GraphBuilder<String, void>().fromSuccessors({});
@@ -1038,6 +1066,30 @@ void main() {
               unorderedEquals([
                 isEdge(source: 'a', target: 'b'),
                 isEdge(source: 'a', target: 'c'),
+              ]));
+          expectInvariants(graph);
+        });
+      });
+      group('successor function', () {
+        test('empty', () {
+          final graph = GraphBuilder<int, void>()
+              .fromSuccessorFunction([], finiteCollatzGraph);
+          expect(graph.vertices, isEmpty);
+          expect(graph.edges, isEmpty);
+          expectInvariants(graph);
+        });
+        test('basic', () {
+          final graph = GraphBuilder<int, void>()
+              .fromSuccessorFunction([5], finiteCollatzGraph);
+          expect(graph.vertices, unorderedEquals([1, 2, 4, 5, 8, 16]));
+          expect(
+              graph.edges,
+              unorderedEquals([
+                isEdge(source: 2, target: 1),
+                isEdge(source: 4, target: 2),
+                isEdge(source: 5, target: 16),
+                isEdge(source: 8, target: 4),
+                isEdge(source: 16, target: 8),
               ]));
           expectInvariants(graph);
         });
