@@ -1,6 +1,7 @@
 import 'dart:collection' show ListBase;
 
 import '../../../feature.dart';
+import '../../number/bigint.dart';
 import '../iterable/mixins/unmodifiable.dart';
 import '../range.dart';
 
@@ -47,7 +48,7 @@ class BigIntRange extends ListBase<BigInt>
     } else if (b != null) {
       start = a!;
       end = b;
-      step = start <= end ? BigInt.one : -BigInt.one;
+      step = start <= end ? BigInt.one : BigIntExtension.negativeOne;
     } else if (a != null) {
       end = a;
     }
@@ -59,9 +60,9 @@ class BigIntRange extends ListBase<BigInt>
             _toSafeLength((end - start + step - BigInt.one) ~/ step));
       }
     } else if (start > end) {
-      if (step == -BigInt.one) {
+      if (step == BigIntExtension.negativeOne) {
         return BigIntRange._(start, end, step, _toSafeLength(start - end));
-      } else if (step < -BigInt.one) {
+      } else if (step < BigIntExtension.negativeOne) {
         return BigIntRange._(start, end, step,
             _toSafeLength((start - end - step - BigInt.one) ~/ -step));
       }

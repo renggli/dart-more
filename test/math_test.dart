@@ -235,7 +235,8 @@ void main() {
         expect(() => (-1).factorial(), throwsArgumentError);
       });
       test('BigInt', () {
-        expect(() => (-BigInt.one).factorial(), throwsArgumentError);
+        expect(
+            () => BigIntExtension.negativeOne.factorial(), throwsArgumentError);
       });
     });
   });

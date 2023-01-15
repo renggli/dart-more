@@ -29,6 +29,12 @@ void main() {
           isFalse);
     });
   });
+  group('BigInt', () {
+    test('static', () {
+      expect(BigIntExtension.negativeOne, -BigInt.one);
+      expect(BigIntExtension.negativeTwo, -BigInt.two);
+    });
+  });
   group('complex', () {
     group('construction', () {
       test('zero', () {
