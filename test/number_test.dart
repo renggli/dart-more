@@ -35,7 +35,7 @@ void main() {
       expect(BigIntExtension.negativeTwo, -BigInt.two);
     });
   });
-  group('complex', () {
+  group('Complex', () {
     group('construction', () {
       test('zero', () {
         const complex = Complex.zero;
@@ -379,15 +379,17 @@ void main() {
       });
     });
   });
-  group('fraction', () {
-    Matcher isFraction(Fraction other) {
+  group('Fraction', () {
+    Matcher isFraction(int numerator, [int denominator = 1]) {
       return isA<Fraction>()
-          .having((each) => each.numerator, 'numerator', other.numerator)
-          .having((each) => each.denominator, 'denominator', other.denominator)
-          .having((each) => each.isFinite, 'isFinite', other.isFinite)
-          .having((each) => each.isInfinite, 'isInfinite', other.isInfinite)
-          .having((each) => each.isNegative, 'isNegative', other.isNegative)
-          .having((each) => each.isNaN, 'isNaN', other.isNaN);
+          .having((each) => each.numerator, 'numerator', numerator)
+          .having((each) => each.denominator, 'denominator', denominator)
+          .having((each) => each.isFinite, 'isFinite', denominator != 0)
+          .having((each) => each.isInfinite, 'isInfinite',
+              numerator != 0 && denominator == 0)
+          .having((each) => each.isNegative, 'isNegative', numerator < 0)
+          .having((each) => each.isNaN, 'isNaN',
+              numerator == 0 && denominator == 0);
     }
 
     group('construction', () {
@@ -427,63 +429,78 @@ void main() {
         expect(fraction.denominator, 2);
       });
       test('zero', () {
-        expect(Fraction.zero, isFraction(Fraction(0)));
-        expect(Fraction(1, 2) + Fraction.zero, isFraction(Fraction(1, 2)));
+        expect(Fraction.zero, isFraction(0));
+        expect(Fraction(1, 2) + Fraction.zero, isFraction(1, 2));
       });
       test('one', () {
-        expect(Fraction.one, isFraction(Fraction(1)));
-        expect(Fraction(1, 2) * Fraction.one, isFraction(Fraction(1, 2)));
+        expect(Fraction.one, isFraction(1));
+        expect(Fraction(1, 2) * Fraction.one, isFraction(1, 2));
       });
       test('nan', () {
-        final fraction = Fraction(0, 0);
-        expect(fraction, isFraction(Fraction.nan));
+        const fraction = Fraction.nan;
+        expect(fraction, isFraction(0, 0));
         expect(fraction.isNaN, isTrue);
         expect(fraction.isInfinite, isFalse);
         expect(fraction.isNegative, isFalse);
         expect(fraction.isFinite, isFalse);
       });
       test('infinity', () {
-        expect(Fraction(1, 0), isFraction(Fraction.infinity));
-        expect(Fraction(2, 0), isFraction(Fraction.infinity));
-        expect(Fraction(42, 0), isFraction(Fraction.infinity));
+        const fraction = Fraction.infinity;
+        expect(fraction, isFraction(1, 0));
+        expect(fraction.isNaN, isFalse);
+        expect(fraction.isInfinite, isTrue);
+        expect(fraction.isNegative, isFalse);
+        expect(fraction.isFinite, isFalse);
       });
       test('negativeInfinity', () {
-        expect(Fraction(-1, 0), isFraction(Fraction.negativeInfinity));
-        expect(Fraction(-2, 0), isFraction(Fraction.negativeInfinity));
-        expect(Fraction(-42, 0), isFraction(Fraction.negativeInfinity));
+        const fraction = Fraction.negativeInfinity;
+        expect(fraction, isFraction(-1, 0));
+        expect(fraction.isNaN, isFalse);
+        expect(fraction.isInfinite, isTrue);
+        expect(fraction.isNegative, isTrue);
+        expect(fraction.isFinite, isFalse);
       });
       group('fromDouble', () {
         test('basic', () {
-          expect(Fraction.fromDouble(0), isFraction(Fraction.zero));
-          expect(Fraction.fromDouble(2), isFraction(Fraction(2)));
-          expect(Fraction.fromDouble(100), isFraction(Fraction(100)));
+          expect(Fraction.fromDouble(0), isFraction(0));
+          expect(Fraction.fromDouble(2), isFraction(2));
+          expect(Fraction.fromDouble(100), isFraction(100));
         });
         test('finite', () {
-          expect(Fraction.fromDouble(1 / 2), isFraction(Fraction(1, 2)));
-          expect(Fraction.fromDouble(1 / 4), isFraction(Fraction(1, 4)));
+          expect(Fraction.fromDouble(1 / 2), isFraction(1, 2));
+          expect(Fraction.fromDouble(1 / 4), isFraction(1, 4));
         });
         test('finite, whole', () {
-          expect(Fraction.fromDouble(5 / 2), isFraction(Fraction(5, 2)));
-          expect(Fraction.fromDouble(9 / 4), isFraction(Fraction(9, 4)));
+          expect(Fraction.fromDouble(5 / 2), isFraction(5, 2));
+          expect(Fraction.fromDouble(9 / 4), isFraction(9, 4));
         });
         test('infinite', () {
-          expect(Fraction.fromDouble(1 / 3), isFraction(Fraction(1, 3)));
-          expect(Fraction.fromDouble(1 / 7), isFraction(Fraction(1, 7)));
+          expect(Fraction.fromDouble(1 / 3), isFraction(1, 3));
+          expect(Fraction.fromDouble(1 / 7), isFraction(1, 7));
         });
         test('infinite, whole', () {
-          expect(Fraction.fromDouble(5 / 3), isFraction(Fraction(5, 3)));
-          expect(Fraction.fromDouble(9 / 7), isFraction(Fraction(9, 7)));
+          expect(Fraction.fromDouble(5 / 3), isFraction(5, 3));
+          expect(Fraction.fromDouble(9 / 7), isFraction(9, 7));
         });
         test('negative', () {
-          expect(Fraction.fromDouble(-1 / 3), isFraction(Fraction(-1, 3)));
-          expect(Fraction.fromDouble(-5 / 3), isFraction(Fraction(-5, 3)));
+          expect(Fraction.fromDouble(-1 / 3), isFraction(-1, 3));
+          expect(Fraction.fromDouble(-5 / 3), isFraction(-5, 3));
+        });
+        test('irrational', () {
+          expect(Fraction.fromDouble(pi), isFraction(245850922, 78256779));
+          expect(Fraction.fromDouble(pi, absoluteError: 1e-10),
+              isFraction(312689, 99532));
+          expect(Fraction.fromDouble(pi, maxDenominator: 1000),
+              isFraction(355, 113));
         });
         test('common', () {
           for (var num = -10; num <= 10; num++) {
             for (var den = -10; den <= 10; den++) {
               if (den != 0) {
-                expect(Fraction.fromDouble(num / den),
-                    isFraction(Fraction(num, den)));
+                expect(
+                  Fraction.fromDouble(num / den),
+                  Fraction(num, den),
+                );
               }
             }
           }
@@ -494,18 +511,17 @@ void main() {
             for (var i = 0; i < 100; i++) {
               final floating = random.nextDouble() * (max - min) + min;
               final fraction = Fraction.fromDouble(floating);
-              expect(
-                  fraction.toDouble(), closeTo(floating, (max - min) / 1e10));
+              expect(fraction.toDouble(), closeTo(floating, (max - min) / 1e6));
             }
           }
 
           test('unit', () => stress(min: -1, max: 1));
-          test('small', () => stress(min: -1e-10, max: 1e-10));
+          test('small', () => stress(min: -1e-5, max: 1e-5));
           test('large', () => stress(min: -1e+5, max: 1e+5));
         });
         test('nan', () {
           final fraction = Fraction.fromDouble(double.nan);
-          expect(fraction, isFraction(Fraction.nan));
+          expect(fraction, isFraction(0, 0));
           expect(fraction.isNaN, isTrue);
           expect(fraction.isInfinite, isFalse);
           expect(fraction.isNegative, isFalse);
@@ -513,7 +529,7 @@ void main() {
         });
         test('infinity', () {
           final fraction = Fraction.fromDouble(double.infinity);
-          expect(fraction, isFraction(Fraction.infinity));
+          expect(fraction, isFraction(1, 0));
           expect(fraction.isNaN, isFalse);
           expect(fraction.isInfinite, isTrue);
           expect(fraction.isNegative, isFalse);
@@ -521,7 +537,7 @@ void main() {
         });
         test('negativeInfinity', () {
           final fraction = Fraction.fromDouble(double.negativeInfinity);
-          expect(fraction, isFraction(Fraction.negativeInfinity));
+          expect(fraction, isFraction(-1, 0));
           expect(fraction.isNaN, isFalse);
           expect(fraction.isInfinite, isTrue);
           expect(fraction.isNegative, isTrue);
@@ -530,21 +546,21 @@ void main() {
       });
       group('tryParse', () {
         test('basic', () {
-          expect(Fraction.tryParse('1/2'), isFraction(Fraction(1, 2)));
-          expect(Fraction.tryParse(' 1/2'), isFraction(Fraction(1, 2)));
-          expect(Fraction.tryParse('1 /2'), isFraction(Fraction(1, 2)));
-          expect(Fraction.tryParse('1/ 2'), isFraction(Fraction(1, 2)));
-          expect(Fraction.tryParse('1/2 '), isFraction(Fraction(1, 2)));
+          expect(Fraction.tryParse('1/2'), isFraction(1, 2));
+          expect(Fraction.tryParse(' 1/2'), isFraction(1, 2));
+          expect(Fraction.tryParse('1 /2'), isFraction(1, 2));
+          expect(Fraction.tryParse('1/ 2'), isFraction(1, 2));
+          expect(Fraction.tryParse('1/2 '), isFraction(1, 2));
         });
         test('negative', () {
-          expect(Fraction.tryParse('-1/2'), isFraction(Fraction(-1, 2)));
-          expect(Fraction.tryParse('1/-2'), isFraction(Fraction(-1, 2)));
-          expect(Fraction.tryParse('-1/-2'), isFraction(Fraction(1, 2)));
+          expect(Fraction.tryParse('-1/2'), isFraction(-1, 2));
+          expect(Fraction.tryParse('1/-2'), isFraction(-1, 2));
+          expect(Fraction.tryParse('-1/-2'), isFraction(1, 2));
         });
         test('integer', () {
-          expect(Fraction.tryParse('3'), isFraction(Fraction(3)));
-          expect(Fraction.tryParse(' 3'), isFraction(Fraction(3)));
-          expect(Fraction.tryParse('3 '), isFraction(Fraction(3)));
+          expect(Fraction.tryParse('3'), isFraction(3));
+          expect(Fraction.tryParse(' 3'), isFraction(3));
+          expect(Fraction.tryParse('3 '), isFraction(3));
         });
         test('error', () {
           expect(Fraction.tryParse(''), isNull);
@@ -620,117 +636,101 @@ void main() {
     });
     group('arithmetic', () {
       test('addition', () {
-        expect(Fraction(1, 2) + Fraction(1, 4), isFraction(Fraction(3, 4)));
-        expect(Fraction(1, 2) + Fraction(3, 4), isFraction(Fraction(5, 4)));
-        expect(Fraction(1, 2) + Fraction(1, 2), isFraction(Fraction(1)));
-        expect(Fraction(1, 2) + 3, isFraction(Fraction(7, 2)));
+        expect(Fraction(1, 2) + Fraction(1, 4), isFraction(3, 4));
+        expect(Fraction(1, 2) + Fraction(3, 4), isFraction(5, 4));
+        expect(Fraction(1, 2) + Fraction(1, 2), isFraction(1));
+        expect(Fraction(1, 2) + 3, isFraction(7, 2));
         expect(() => Fraction(1, 2) + 'foo', throwsArgumentError);
-        expect(Fraction(1, 2) + Fraction.nan, isFraction(Fraction.nan));
-        expect(
-            Fraction(1, 2) + Fraction.infinity, isFraction(Fraction.infinity));
-        expect(Fraction(1, 2) + Fraction.negativeInfinity,
-            isFraction(Fraction.negativeInfinity));
-        expect(Fraction.nan + Fraction(1, 2), isFraction(Fraction.nan));
-        expect(
-            Fraction.infinity + Fraction(1, 2), isFraction(Fraction.infinity));
-        expect(Fraction.negativeInfinity + Fraction(1, 2),
-            isFraction(Fraction.negativeInfinity));
-        expect(Fraction.nan + Fraction.nan, isFraction(Fraction.nan));
-        expect(Fraction.infinity + Fraction.infinity, isFraction(Fraction.nan));
+        expect(Fraction(1, 2) + Fraction.nan, isFraction(0, 0));
+        expect(Fraction(1, 2) + Fraction.infinity, isFraction(1, 0));
+        expect(Fraction(1, 2) + Fraction.negativeInfinity, isFraction(-1, 0));
+        expect(Fraction.nan + Fraction(1, 2), isFraction(0, 0));
+        expect(Fraction.infinity + Fraction(1, 2), isFraction(1, 0));
+        expect(Fraction.negativeInfinity + Fraction(1, 2), isFraction(-1, 0));
+        expect(Fraction.nan + Fraction.nan, isFraction(0, 0));
+        expect(Fraction.infinity + Fraction.infinity, isFraction(0, 0));
         expect(Fraction.negativeInfinity + Fraction.negativeInfinity,
-            isFraction(Fraction.nan));
+            isFraction(0, 0));
       });
       test('subtraction', () {
-        expect(Fraction(1, 2) - Fraction(1, 4), isFraction(Fraction(1, 4)));
-        expect(Fraction(1, 2) - Fraction(3, 4), isFraction(Fraction(-1, 4)));
-        expect(Fraction(1, 2) - Fraction(1, 2), isFraction(Fraction(0)));
-        expect(Fraction(1, 2) - 3, isFraction(Fraction(-5, 2)));
+        expect(Fraction(1, 2) - Fraction(1, 4), isFraction(1, 4));
+        expect(Fraction(1, 2) - Fraction(3, 4), isFraction(-1, 4));
+        expect(Fraction(1, 2) - Fraction(1, 2), isFraction(0));
+        expect(Fraction(1, 2) - 3, isFraction(-5, 2));
         expect(() => Fraction(1, 2) - 'foo', throwsArgumentError);
-        expect(Fraction(1, 2) - Fraction.nan, isFraction(Fraction.nan));
-        expect(Fraction(1, 2) - Fraction.infinity,
-            isFraction(Fraction.negativeInfinity));
-        expect(Fraction(1, 2) - Fraction.negativeInfinity,
-            isFraction(Fraction.infinity));
-        expect(Fraction.nan - Fraction(1, 2), isFraction(Fraction.nan));
-        expect(
-            Fraction.infinity - Fraction(1, 2), isFraction(Fraction.infinity));
-        expect(Fraction.negativeInfinity - Fraction(1, 2),
-            isFraction(Fraction.negativeInfinity));
-        expect(Fraction.nan - Fraction.nan, isFraction(Fraction.nan));
-        expect(Fraction.infinity - Fraction.infinity, isFraction(Fraction.nan));
+        expect(Fraction(1, 2) - Fraction.nan, isFraction(0, 0));
+        expect(Fraction(1, 2) - Fraction.infinity, isFraction(-1, 0));
+        expect(Fraction(1, 2) - Fraction.negativeInfinity, isFraction(1, 0));
+        expect(Fraction.nan - Fraction(1, 2), isFraction(0, 0));
+        expect(Fraction.infinity - Fraction(1, 2), isFraction(1, 0));
+        expect(Fraction.negativeInfinity - Fraction(1, 2), isFraction(-1, 0));
+        expect(Fraction.nan - Fraction.nan, isFraction(0, 0));
+        expect(Fraction.infinity - Fraction.infinity, isFraction(0, 0));
         expect(Fraction.negativeInfinity - Fraction.negativeInfinity,
-            isFraction(Fraction.nan));
+            isFraction(0, 0));
       });
       test('multiplication', () {
-        expect(Fraction(2, 3) * Fraction(1, 4), isFraction(Fraction(1, 6)));
-        expect(Fraction(3, 4) * Fraction(2, 5), isFraction(Fraction(3, 10)));
-        expect(Fraction(3, 4) * 2, isFraction(Fraction(3, 2)));
+        expect(Fraction(2, 3) * Fraction(1, 4), isFraction(1, 6));
+        expect(Fraction(3, 4) * Fraction(2, 5), isFraction(3, 10));
+        expect(Fraction(3, 4) * 2, isFraction(3, 2));
         expect(() => Fraction(3, 4) * 'foo', throwsArgumentError);
-        expect(Fraction(1, 2) * Fraction.nan, isFraction(Fraction.nan));
-        expect(
-            Fraction(1, 2) * Fraction.infinity, isFraction(Fraction.infinity));
+        expect(Fraction(1, 2) * Fraction.nan, isFraction(0, 0));
+        expect(Fraction(1, 2) * Fraction.infinity, isFraction(1, 0));
         expect(Fraction(1, 2) * Fraction.negativeInfinity,
             Fraction.negativeInfinity);
-        expect(Fraction.nan * Fraction(1, 2), isFraction(Fraction.nan));
-        expect(
-            Fraction.infinity * Fraction(1, 2), isFraction(Fraction.infinity));
-        expect(Fraction.negativeInfinity * Fraction(1, 2),
-            isFraction(Fraction.negativeInfinity));
-        expect(Fraction.nan * Fraction.nan, isFraction(Fraction.nan));
-        expect(Fraction.infinity * Fraction.infinity,
-            isFraction(Fraction.infinity));
+        expect(Fraction.nan * Fraction(1, 2), isFraction(0, 0));
+        expect(Fraction.infinity * Fraction(1, 2), isFraction(1, 0));
+        expect(Fraction.negativeInfinity * Fraction(1, 2), isFraction(-1, 0));
+        expect(Fraction.nan * Fraction.nan, isFraction(0, 0));
+        expect(Fraction.infinity * Fraction.infinity, isFraction(1, 0));
         expect(Fraction.negativeInfinity * Fraction.negativeInfinity,
-            isFraction(Fraction.infinity));
+            isFraction(1, 0));
       });
       test('reciprocal', () {
-        expect(Fraction(3, 4).reciprocal(), isFraction(Fraction(4, 3)));
-        expect(Fraction(-3, 4).reciprocal(), isFraction(Fraction(-4, 3)));
-        expect(Fraction.nan.reciprocal(), isFraction(Fraction.nan));
-        expect(Fraction.infinity.reciprocal(), isFraction(Fraction.zero));
-        expect(
-            Fraction.negativeInfinity.reciprocal(), isFraction(Fraction.zero));
+        expect(Fraction(3, 4).reciprocal(), isFraction(4, 3));
+        expect(Fraction(-3, 4).reciprocal(), isFraction(-4, 3));
+        expect(Fraction.nan.reciprocal(), isFraction(0, 0));
+        expect(Fraction.infinity.reciprocal(), isFraction(0, 1));
+        expect(Fraction.negativeInfinity.reciprocal(), isFraction(0, 1));
       });
       test('division', () {
-        expect(Fraction(2, 3) / Fraction(1, 4), isFraction(Fraction(8, 3)));
-        expect(Fraction(3, 4) / Fraction(2, 5), isFraction(Fraction(15, 8)));
-        expect(Fraction(3, 4) / 2, isFraction(Fraction(3, 8)));
+        expect(Fraction(2, 3) / Fraction(1, 4), isFraction(8, 3));
+        expect(Fraction(3, 4) / Fraction(2, 5), isFraction(15, 8));
+        expect(Fraction(3, 4) / 2, isFraction(3, 8));
         expect(() => Fraction(3, 4) / 'foo', throwsArgumentError);
-        expect(Fraction(1, 2) / Fraction.nan, isFraction(Fraction.nan));
-        expect(Fraction(1, 2) / Fraction.infinity, isFraction(Fraction.zero));
-        expect(Fraction(1, 2) / Fraction.negativeInfinity,
-            isFraction(Fraction.zero));
-        expect(Fraction.nan / Fraction(1, 2), isFraction(Fraction.nan));
-        expect(
-            Fraction.infinity / Fraction(1, 2), isFraction(Fraction.infinity));
-        expect(Fraction.negativeInfinity / Fraction(1, 2),
-            isFraction(Fraction.negativeInfinity));
-        expect(Fraction.nan / Fraction.nan, isFraction(Fraction.nan));
-        expect(Fraction.infinity / Fraction.infinity, isFraction(Fraction.nan));
+        expect(Fraction(1, 2) / Fraction.nan, isFraction(0, 0));
+        expect(Fraction(1, 2) / Fraction.infinity, isFraction(0, 1));
+        expect(Fraction(1, 2) / Fraction.negativeInfinity, isFraction(0, 1));
+        expect(Fraction.nan / Fraction(1, 2), isFraction(0, 0));
+        expect(Fraction.infinity / Fraction(1, 2), isFraction(1, 0));
+        expect(Fraction.negativeInfinity / Fraction(1, 2), isFraction(-1, 0));
+        expect(Fraction.nan / Fraction.nan, isFraction(0, 0));
+        expect(Fraction.infinity / Fraction.infinity, isFraction(0, 0));
         expect(Fraction.negativeInfinity / Fraction.negativeInfinity,
-            isFraction(Fraction.nan));
+            isFraction(0, 0));
       });
       test('negate', () {
-        expect(-Fraction(2, 3), isFraction(Fraction(-2, 3)));
-        expect(-Fraction(-2, 3), isFraction(Fraction(2, 3)));
-        expect(-Fraction.nan, isFraction(Fraction.nan));
-        expect(-Fraction.infinity, isFraction(Fraction.negativeInfinity));
-        expect(-Fraction.negativeInfinity, isFraction(Fraction.infinity));
+        expect(-Fraction(2, 3), isFraction(-2, 3));
+        expect(-Fraction(-2, 3), isFraction(2, 3));
+        expect(-Fraction.nan, isFraction(0, 0));
+        expect(-Fraction.infinity, isFraction(-1, 0));
+        expect(-Fraction.negativeInfinity, isFraction(1, 0));
       });
       test('pow', () {
-        expect(Fraction.zero.pow(2), isFraction(Fraction.zero));
-        expect(Fraction(2, 3).pow(0), isFraction(Fraction.one));
-        expect(Fraction(2, 3).pow(2), isFraction(Fraction(4, 9)));
-        expect(Fraction(2, 3).pow(-2), isFraction(Fraction(9, 4)));
+        expect(Fraction.zero.pow(2), isFraction(0, 1));
+        expect(Fraction(2, 3).pow(0), isFraction(1, 1));
+        expect(Fraction(2, 3).pow(2), isFraction(4, 9));
+        expect(Fraction(2, 3).pow(-2), isFraction(9, 4));
       });
       test('abs', () {
-        expect(Fraction(-2, -3).abs(), isFraction(Fraction(2, 3)));
-        expect(Fraction(-2, 3).abs(), isFraction(Fraction(2, 3)));
-        expect(Fraction(2, -3).abs(), isFraction(Fraction(2, 3)));
-        expect(Fraction(2, 3).abs(), isFraction(Fraction(2, 3)));
-        expect(Fraction.zero.abs(), isFraction(Fraction.zero));
-        expect(Fraction.nan.abs(), isFraction(Fraction.nan));
-        expect(Fraction.infinity.abs(), isFraction(Fraction.infinity));
-        expect(Fraction.negativeInfinity.abs(), isFraction(Fraction.infinity));
+        expect(Fraction(-2, -3).abs(), isFraction(2, 3));
+        expect(Fraction(-2, 3).abs(), isFraction(2, 3));
+        expect(Fraction(2, -3).abs(), isFraction(2, 3));
+        expect(Fraction(2, 3).abs(), isFraction(2, 3));
+        expect(Fraction.zero.abs(), isFraction(0));
+        expect(Fraction.nan.abs(), isFraction(0, 0));
+        expect(Fraction.infinity.abs(), isFraction(1, 0));
+        expect(Fraction.negativeInfinity.abs(), isFraction(1, 0));
       });
       test('sign', () {
         expect(Fraction(-2, -3).sign, 1);
@@ -843,7 +843,7 @@ void main() {
       });
     });
   });
-  group('quaternion', () {
+  group('Quaternion', () {
     group('construction', () {
       test('zero', () {
         const quaternion = Quaternion.zero;

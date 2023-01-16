@@ -3657,21 +3657,34 @@ void main() {
               excluded: toBigIntList([0, 1, 3, 5, 6, 7, 8]));
         });
         test('3 argument (negative step)', () {
-          verify(BigIntRange(BigInt.from(0), BigInt.from(0), BigIntExtension.negativeOne),
-              included: <BigInt>[], excluded: toBigIntList([-1, 0, 1]));
-          verify(BigIntRange(BigInt.from(8), BigInt.from(2), BigIntExtension.negativeTwo),
+          verify(
+              BigIntRange(
+                  BigInt.from(0), BigInt.from(0), BigIntExtension.negativeOne),
+              included: <BigInt>[],
+              excluded: toBigIntList([-1, 0, 1]));
+          verify(
+              BigIntRange(
+                  BigInt.from(8), BigInt.from(2), BigIntExtension.negativeTwo),
               included: toBigIntList([8, 6, 4]),
               excluded: toBigIntList([2, 3, 5, 7, 9, 10]));
-          verify(BigIntRange(BigInt.from(8), BigInt.from(3), BigIntExtension.negativeTwo),
+          verify(
+              BigIntRange(
+                  BigInt.from(8), BigInt.from(3), BigIntExtension.negativeTwo),
               included: toBigIntList([8, 6, 4]),
               excluded: toBigIntList([2, 3, 5, 7, 9, 10]));
-          verify(BigIntRange(BigInt.from(8), BigInt.from(4), BigIntExtension.negativeTwo),
+          verify(
+              BigIntRange(
+                  BigInt.from(8), BigInt.from(4), BigIntExtension.negativeTwo),
               included: toBigIntList([8, 6]),
               excluded: toBigIntList([2, 3, 4, 5, 7, 9, 10]));
-          verify(BigIntRange(BigInt.from(7), BigInt.from(2), BigIntExtension.negativeTwo),
+          verify(
+              BigIntRange(
+                  BigInt.from(7), BigInt.from(2), BigIntExtension.negativeTwo),
               included: toBigIntList([7, 5, 3]),
               excluded: toBigIntList([1, 2, 4, 6, 8, 9]));
-          verify(BigIntRange(BigInt.from(6), BigInt.from(2), BigIntExtension.negativeTwo),
+          verify(
+              BigIntRange(
+                  BigInt.from(6), BigInt.from(2), BigIntExtension.negativeTwo),
               included: toBigIntList([6, 4]),
               excluded: toBigIntList([2, 3, 5, 7, 8, 9]));
         });
@@ -3719,7 +3732,9 @@ void main() {
         test('invalid', () {
           expect(() => BigIntRange(BigInt.zero, BigInt.two, BigInt.zero),
               throwsArgumentError);
-          expect(() => BigIntRange(BigInt.zero, BigInt.two, BigIntExtension.negativeOne),
+          expect(
+              () => BigIntRange(
+                  BigInt.zero, BigInt.two, BigIntExtension.negativeOne),
               throwsArgumentError);
           expect(() => BigIntRange(BigInt.two, BigInt.zero, BigInt.one),
               throwsArgumentError);

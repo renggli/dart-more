@@ -13,64 +13,57 @@ class Fraction
   /// Creates a fraction from a [numerator] and an optional [denominator].
   factory Fraction(int numerator, [int denominator = 1]) {
     if (denominator == 0) {
-      if (numerator == 0) {
-        return Fraction.nan;
-      } else if (numerator < 0) {
-        return Fraction.negativeInfinity;
-      } else {
-        return Fraction.infinity;
-      }
+      return numerator == 0
+          ? Fraction.nan
+          : numerator < 0
+              ? Fraction.negativeInfinity
+              : Fraction.infinity;
     }
-    var d = numerator.gcd(denominator).abs();
+    var divisor = numerator.gcd(denominator).abs();
     if (denominator < 0) {
-      d *= -1;
+      divisor *= -1;
     }
-    if (d != 1) {
-      return Fraction._(numerator ~/ d, denominator ~/ d);
-    }
-    return Fraction._(numerator, denominator);
+    return divisor == 1
+        ? Fraction._(numerator, denominator)
+        : Fraction._(numerator ~/ divisor, denominator ~/ divisor);
   }
 
   /// Creates an approximate fraction from a floating point [value].
-  factory Fraction.fromDouble(num value, [num maxDenominator = 1e10]) {
+  ///
+  /// The algorithm uses an expansion of the continued fraction of the floating
+  /// point value. The resulting fraction is returned once the [maxDenominator]
+  /// has been reached, or the result is better than [absoluteError].
+  factory Fraction.fromDouble(num value,
+      {int maxDenominator = 1000000000, double absoluteError = 0.0}) {
     if (value.isNaN) {
       return Fraction.nan;
     } else if (value.isInfinite) {
-      if (value < 0) {
-        return Fraction.negativeInfinity;
-      } else {
-        return Fraction.infinity;
-      }
+      return value < 0 ? Fraction.negativeInfinity : Fraction.infinity;
     }
-    final sign = value < 0
-        ? -1
-        : value > 0
-            ? 1
-            : 0;
-    if (sign == 0) {
-      return Fraction.zero;
+    var sign = 1;
+    if (value < 0) {
+      sign = -1;
+      value *= -1;
     }
-    value *= sign;
-    var numerator1 = value.floor(), numerator2 = 1;
-    var denominator1 = 1, denominator2 = 0;
+    var numerator1 = value.floor(), denominator1 = 1;
+    var numerator2 = 1, denominator2 = 0;
     var integerPart = numerator1;
-    var fractionPart = value - numerator1;
-    while (fractionPart != 0.0) {
+    var fractionPart = value - numerator1.toDouble();
+    while (fractionPart != 0.0 &&
+        (value - numerator1 / denominator1).abs() > absoluteError) {
       final newValue = 1.0 / fractionPart;
       integerPart = newValue.floor();
-      fractionPart = newValue - integerPart;
-      var temporary = numerator2;
+      fractionPart = newValue - integerPart.toDouble();
+      final temp1 = numerator2;
       numerator2 = numerator1;
-      numerator1 = numerator1 * integerPart + temporary;
-      temporary = denominator2;
+      numerator1 = numerator1 * integerPart + temp1;
+      final temp2 = denominator2;
       denominator2 = denominator1;
-      denominator1 = integerPart * denominator1 + temporary;
+      denominator1 = denominator1 * integerPart + temp2;
       if (maxDenominator < denominator1) {
-        if (numerator2 == 0) {
-          return Fraction(sign * numerator1, denominator1);
-        } else {
-          return Fraction(sign * numerator2, denominator2);
-        }
+        return numerator2 == 0
+            ? Fraction(sign * numerator1, denominator1)
+            : Fraction(sign * numerator2, denominator2);
       }
     }
     return Fraction(sign * numerator1, denominator1);
