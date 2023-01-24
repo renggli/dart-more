@@ -110,7 +110,7 @@ class UnwrapCommand extends ReflowCommand {
   String transform(String input) => input.unwrap();
 }
 
-final runner = CommandRunner('reflow', 'Reflows text in different ways.')
+final runner = CommandRunner<void>('reflow', 'Reflows text in different ways.')
   ..addCommand(IndentCommand())
   ..addCommand(DedentCommand())
   ..addCommand(WrapCommand())

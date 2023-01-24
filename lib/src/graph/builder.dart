@@ -2,7 +2,7 @@ import 'dart:math';
 
 import 'package:meta/meta.dart';
 
-import '../../graph.dart';
+import 'graph.dart';
 import 'strategy.dart';
 
 typedef VertexProvider<V> = V Function(int index);
