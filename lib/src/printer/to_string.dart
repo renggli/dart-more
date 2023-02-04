@@ -9,8 +9,8 @@ import 'object/object.dart';
 ///
 ///    @override
 ///    ObjectPrinter get toStringPrinter => super.toStringPrinter
-///      ..addValue(someField, 'someField')
-///      ..addValue(otherField, 'otherField');
+///      ..addValue(someField, name: 'someField')
+///      ..addValue(otherField, name: 'otherField');
 ///
 /// Note: Due to the lack of a `Self` type in Dart, this is working with a
 /// dynamically typed printer Object. To avoid loosing the type information
