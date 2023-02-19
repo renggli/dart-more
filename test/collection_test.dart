@@ -1842,6 +1842,11 @@ void main() {
         expect([1, 2, 2, 1].unique(), [1, 2]);
         expect([1, 2, 3, 3, 2, 1].unique(), [1, 2, 3]);
       });
+      test('repeated', () {
+        final uniques = [1, 2, 2, 3, 3, 3].unique();
+        expect(uniques, [1, 2, 3]);
+        expect(uniques, [1, 2, 3]);
+      });
     });
     group('window', () {
       test('error', () {
