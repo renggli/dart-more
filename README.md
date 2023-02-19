@@ -17,10 +17,10 @@ A collection of extensively tested extensions that make Dart a better place:
 | [cache](https://pub.dev/documentation/more/latest/cache/cache-library.html)                      | Caching strategies and their expiry policy.                        |
 | [char_matcher](https://pub.dev/documentation/more/latest/char_matcher/char_matcher-library.html) | Character classes, their composition, and operations on strings.   |
 | [collection](https://pub.dev/documentation/more/latest/collection/collection-library.html)       | Extensions to `Iterable` and new collection types.                 |
-| [comparator](https://pub.dev/documentation/more/latest/collection/comparator-library.html)       | Common comparators, and extensions to perform advanced operations. | 
+| [comparator](https://pub.dev/documentation/more/latest/comparator/comparator-library.html)       | Common comparators, and extensions to perform advanced operations. | 
 | [feature](https://pub.dev/documentation/more/latest/feature/feature-library.html)                | Information about the runtime environment.                         |
 | [functional](https://pub.dev/documentation/more/latest/functional/functional-library.html)       | Types and features known from functional programming.              |
-| [graph](https://pub.dev/documentation/more/latest/functional/graph-library.html)                 | Graph-theory objects and algorithms.                               |
+| [graph](https://pub.dev/documentation/more/latest/graph/graph-library.html)                      | Graph-theory objects and algorithms.                               |
 | [interval](https://pub.dev/documentation/more/latest/interval/interval-library.html)             | Continuous interval data type over a comparable type.              |
 | [math](https://pub.dev/documentation/more/latest/math/math-library.html)                         | Common mathematical functions.                                     |
 | [number](https://pub.dev/documentation/more/latest/number/number-library.html)                   | Number types: fraction, complex, quaternion.                       |
