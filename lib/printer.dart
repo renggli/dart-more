@@ -4,7 +4,7 @@ export 'src/printer/builder.dart' show BuilderPrinterExtension;
 export 'src/printer/empty.dart' show EmptyPrinterExtension;
 export 'src/printer/iterable.dart' show IterablePrinterExtension;
 export 'src/printer/literal.dart' show LiteralPrinter;
-export 'src/printer/null.dart' show NullPrinterExtension;
+export 'src/printer/null_printer.dart' show NullPrinterExtension;
 export 'src/printer/number/fixed.dart' show FixedNumberPrinter;
 export 'src/printer/number/human.dart' show HumanNumberPrinter;
 export 'src/printer/number/numeral.dart' show NumeralSystem;
