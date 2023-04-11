@@ -4,7 +4,7 @@ import '../../../collection.dart';
 Comparator<T> explicitComparator<T>(Iterable<T> iterable) {
   final ranks = <T, int>{};
   for (final element in iterable.indexed()) {
-    ranks[element.value] = element.index;
+    ranks[element.value] = element.key;
   }
   return (a, b) => _rank(ranks, a) - _rank(ranks, b);
 }

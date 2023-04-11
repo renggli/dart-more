@@ -30,7 +30,7 @@ class DijkstraSearchIterable<V> extends IterableBase<Path<V>> {
   Iterator<Path<V>> get iterator => _DijkstraSearchIterator<V>(this);
 }
 
-class _DijkstraSearchIterator<V> extends Iterator<Path<V>> {
+class _DijkstraSearchIterator<V> implements Iterator<Path<V>> {
   _DijkstraSearchIterator(this.iterable)
       : states = iterable.vertexStrategy.createMap<_State<V>>() {
     for (final vertex in iterable.startVertices) {

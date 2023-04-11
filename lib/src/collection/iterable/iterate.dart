@@ -26,7 +26,7 @@ class IterateIterable<E> extends IterableBase<E> with InfiniteIterable<E> {
   Iterator<E> get iterator => IterateIterator<E>(value, function);
 }
 
-class IterateIterator<E> extends Iterator<E> {
+class IterateIterator<E> implements Iterator<E> {
   IterateIterator(this.next, this.function) : current = next;
 
   final E Function(E element) function;

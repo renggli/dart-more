@@ -51,7 +51,7 @@ class RandomWalkIterable<V> extends IterableBase<V> {
   Iterator<V> get iterator => _RandomWalkIterator<V>(this);
 }
 
-class _RandomWalkIterator<V> extends Iterator<V> {
+class _RandomWalkIterator<V> implements Iterator<V> {
   _RandomWalkIterator(this.iterable)
       : seen = iterable.vertexStrategy.createSet(),
         next = iterable.vertex {

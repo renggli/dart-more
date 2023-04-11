@@ -1,6 +1,3 @@
-import 'dart:collection' show ListBase;
-
-import '../iterable/mixins/unmodifiable.dart';
 import '../range.dart';
 
 /// A virtual range of integers containing an arithmetic progressions.
@@ -12,8 +9,7 @@ import '../range.dart';
 ///   for (int i = start; i < stop; i += step) {
 ///     ...
 ///
-class IntegerRange extends ListBase<int>
-    with Range<int>, UnmodifiableListMixin<int> {
+class IntegerRange extends Range<int> {
   /// Creates a virtual range of numbers containing an arithmetic progressions
   /// of integer values.
   ///

@@ -38,7 +38,7 @@ class TopologicalIterable<V> extends IterableBase<V> {
   Iterator<V> get iterator => _TopologicalIterator<V>(this);
 }
 
-class _TopologicalIterator<V> extends Iterator<V> {
+class _TopologicalIterator<V> implements Iterator<V> {
   _TopologicalIterator(this.iterable)
       : seen = iterable.vertexStrategy.createSet() {
     for (final vertex in DepthFirstIterable(iterable.vertices,

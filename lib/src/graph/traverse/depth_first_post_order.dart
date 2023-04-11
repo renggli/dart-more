@@ -38,7 +38,7 @@ class DepthFirstPostOrderIterable<V> extends IterableBase<V> {
   Iterator<V> get iterator => _DepthFirstPostOrderIterator<V>(this);
 }
 
-class _DepthFirstPostOrderIterator<V> extends Iterator<V> {
+class _DepthFirstPostOrderIterator<V> implements Iterator<V> {
   _DepthFirstPostOrderIterator(this.iterable)
       : todo = addAllReversed(<V>[], iterable.vertices),
         seen = iterable.vertexStrategy.createSet();

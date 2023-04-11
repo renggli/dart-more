@@ -1,8 +1,5 @@
-import 'dart:collection' show ListBase;
-
 import '../../../feature.dart';
 import '../../number/bigint.dart';
-import '../iterable/mixins/unmodifiable.dart';
 import '../range.dart';
 
 /// A virtual range of [BigInt] containing an arithmetic progressions.
@@ -14,8 +11,7 @@ import '../range.dart';
 ///   for (BigInt i = start; i < stop; i += step) {
 ///     ...
 ///
-class BigIntRange extends ListBase<BigInt>
-    with Range<BigInt>, UnmodifiableListMixin<BigInt> {
+class BigIntRange extends Range<BigInt> {
   /// Creates a virtual range of numbers containing an arithmetic progressions
   /// of [BigInt] values.
   ///

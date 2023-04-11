@@ -3,8 +3,8 @@ import 'package:meta/meta.dart';
 import 'char_matcher.dart';
 
 @immutable
-class CharMatch extends Match {
-  CharMatch(this.start, this.input, this.pattern);
+class CharMatch implements Match {
+  const CharMatch(this.start, this.input, this.pattern);
 
   @override
   final int start;

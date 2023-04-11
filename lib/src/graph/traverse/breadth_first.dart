@@ -34,7 +34,7 @@ class BreadthFirstIterable<V> extends IterableBase<V> {
   Iterator<V> get iterator => _BreadthFirstIterator<V>(this);
 }
 
-class _BreadthFirstIterator<V> extends Iterator<V> {
+class _BreadthFirstIterator<V> implements Iterator<V> {
   _BreadthFirstIterator(this.iterable)
       : todo = QueueList<V>.from(iterable.vertices),
         seen = iterable.vertexStrategy.createSet()..addAll(iterable.vertices);

@@ -1,11 +1,15 @@
+import 'dart:collection';
+
 import 'package:meta/meta.dart';
+
+import 'iterable/mixins/unmodifiable.dart';
 
 /// Abstract superclass of an arithmetic progressions.
 ///
 /// The progression is defined by a `start`, `stop` and `step` parameter. A
 /// range essentially implements a sequence of values of type [T] as a [List].
 /// The advantage is that a range uses little memory no matter its size.
-abstract class Range<T> implements List<T> {
+abstract class Range<T> extends ListBase<T> with UnmodifiableListMixin<T> {
   /// The start value of the range (inclusive).
   T get start;
 

@@ -170,7 +170,6 @@ abstract class MultimapValues<K, V, VS extends Iterable<V>>
 }
 
 // Internal wrapper around the underlying [Map] of a [Multimap].
-@immutable
 class MultimapAsMap<K, V, VS extends Iterable<V>> extends MapBase<K, VS> {
   MultimapAsMap(this._multimap);
 

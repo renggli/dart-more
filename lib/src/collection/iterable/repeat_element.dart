@@ -31,7 +31,7 @@ class RepeatElementIterable<E> extends IterableBase<E>
   Iterator<E> get iterator => RepeatElementIterator<E>(element);
 }
 
-class RepeatElementIterator<E> extends Iterator<E> {
+class RepeatElementIterator<E> implements Iterator<E> {
   RepeatElementIterator(this.current);
 
   @override

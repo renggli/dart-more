@@ -206,8 +206,7 @@ class Trie<K, P extends Comparable<P>, V> extends MapBase<K, V> {
 }
 
 /// Abstract implementation of the nodes in a [Trie].
-abstract class TrieNode<K, P extends Comparable<P>, V>
-    implements MapEntry<K, V> {
+abstract class TrieNode<K, P extends Comparable<P>, V> {
   /// Parts of the child nodes.
   Iterable<P> get parts;
 
@@ -230,11 +229,9 @@ abstract class TrieNode<K, P extends Comparable<P>, V>
   void clearChildren();
 
   /// Returns the key of the node, if this node has a key and value.
-  @override
   K get key;
 
   /// Returns the value of the node, if this node has a key and value.
-  @override
   V get value;
 
   /// Returns `true`, if the node has a key and value.
@@ -252,7 +249,7 @@ abstract class TrieNode<K, P extends Comparable<P>, V>
     while (queue.isNotEmpty) {
       final element = queue.removeLast();
       if (element.hasKeyAndValue) {
-        yield element;
+        yield MapEntry(element.key, element.value);
       }
       final children = element.children
           .where((element) => element.hasKeyAndValue || element.hasChildren);

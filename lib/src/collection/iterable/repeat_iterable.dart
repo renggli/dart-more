@@ -40,7 +40,7 @@ class RepeatIterableIterable<E> extends IterableBase<E>
   Iterator<E> get iterator => RepeatIterableIterator<E>(iterable);
 }
 
-class RepeatIterableIterator<E> extends Iterator<E> {
+class RepeatIterableIterator<E> implements Iterator<E> {
   RepeatIterableIterator(this.iterable) : iterator = iterable.iterator;
 
   final Iterable<E> iterable;

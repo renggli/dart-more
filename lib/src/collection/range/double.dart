@@ -1,7 +1,4 @@
-import 'dart:collection' show ListBase;
-
 import '../../../comparator.dart';
-import '../iterable/mixins/unmodifiable.dart';
 import '../range.dart';
 
 /// A virtual range of doubles containing an arithmetic progressions.
@@ -13,8 +10,7 @@ import '../range.dart';
 ///   for (double i = start; i < stop; i += step) {
 ///     ...
 ///
-class DoubleRange extends ListBase<double>
-    with Range<double>, UnmodifiableListMixin<double> {
+class DoubleRange extends Range<double> {
   /// Creates a virtual range of numbers containing an arithmetic progressions
   /// of double values.
   ///

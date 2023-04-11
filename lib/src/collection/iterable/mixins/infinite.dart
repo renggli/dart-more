@@ -1,8 +1,8 @@
 /// Mixin for infinitely sized iterables.
 ///
 /// Intended to mix-in on top of `IterableBase<E>`.
-mixin InfiniteIterable<E> implements Iterable<E> {
-  static T _throw<T>() =>
+mixin InfiniteIterable<E> on Iterable<E> {
+  static Never _throw() =>
       throw UnsupportedError('Cannot perform operation on infinite iterable');
 
   @override

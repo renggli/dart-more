@@ -32,7 +32,7 @@ class AStarSearchIterable<V> extends IterableBase<Path<V>> {
   Iterator<Path<V>> get iterator => _AStarSearchIterator<V>(this);
 }
 
-class _AStarSearchIterator<V> extends Iterator<Path<V>> {
+class _AStarSearchIterator<V> implements Iterator<Path<V>> {
   _AStarSearchIterator(this.iterable)
       : states = iterable.vertexStrategy.createMap<_State<V>>() {
     for (final vertex in iterable.startVertices) {

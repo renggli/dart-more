@@ -23,7 +23,7 @@ extension GroupExtension<V> on Iterable<V> {
       while (iterator.moveNext()) {
         final nextKey = grouper(iterator.current);
         if (group.key == nextKey) {
-          group.values.add(iterator.current);
+          group.value.add(iterator.current);
         } else {
           yield group;
           group = Group<K, V>(grouper(iterator.current), <V>[iterator.current]);
@@ -35,18 +35,4 @@ extension GroupExtension<V> on Iterable<V> {
 }
 
 /// A group of values.
-class Group<K, V> implements MapEntry<K, List<V>> {
-  const Group(this.key, this.value);
-
-  @override
-  final K key;
-
-  @override
-  final List<V> value;
-
-  /// The values of the group.
-  List<V> get values => value;
-
-  @override
-  String toString() => 'Group($key: $value)';
-}
+typedef Group<K, V> = MapEntry<K, List<V>>;

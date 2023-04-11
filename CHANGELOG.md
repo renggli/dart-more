@@ -1,5 +1,8 @@
 # Changelog
 
+## 4.0.0
+* Dart 3.0 requirement.
+
 ## 3.10.0
 * Add a growable `BitList`, make it behave more like `List<bool>`.
 * Optimize  `BitList` operations: `fill`, `count`, and `indices`.
