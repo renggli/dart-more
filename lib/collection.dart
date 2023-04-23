@@ -9,8 +9,10 @@ export 'src/collection/iterable/combinations.dart' show CombinationsExtension;
 export 'src/collection/iterable/count.dart' show CountIterableExtension;
 export 'src/collection/iterable/flat_map.dart' show FlatMapExtension;
 export 'src/collection/iterable/flatten.dart' show FlattenExtension;
-export 'src/collection/iterable/group.dart' show GroupExtension, Group;
-export 'src/collection/iterable/indexed.dart' show IndexedExtension, Indexed;
+export 'src/collection/iterable/group.dart'
+    show GroupIterableExtension, GroupMapEntryExtension, Group;
+export 'src/collection/iterable/indexed.dart'
+    show IndexedIterableExtension, IndexedMapEntryExtension, Indexed;
 export 'src/collection/iterable/iterate.dart' show iterate;
 export 'src/collection/iterable/operators.dart' show OperatorsExtension;
 export 'src/collection/iterable/periodical.dart'

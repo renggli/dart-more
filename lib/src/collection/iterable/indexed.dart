@@ -1,4 +1,4 @@
-extension IndexedExtension<E> on Iterable<E> {
+extension IndexedIterableExtension<E> on Iterable<E> {
   /// Returns a iterable that combines the index and value of this [Iterable].
   ///
   /// By default the index is zero based, but an arbitrary [offset] can be
@@ -23,3 +23,9 @@ extension IndexedExtension<E> on Iterable<E> {
 
 /// An indexed value.
 typedef Indexed<E> = MapEntry<int, E>;
+
+/// Extension to access the index on a [Indexed] value.
+extension IndexedMapEntryExtension<E> on Indexed<E> {
+  /// The index of the entry.
+  int get index => key;
+}

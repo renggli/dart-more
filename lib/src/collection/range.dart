@@ -1,3 +1,5 @@
+// ignore_for_file: avoid_renaming_method_parameters
+
 import 'dart:collection';
 
 import 'package:meta/meta.dart';

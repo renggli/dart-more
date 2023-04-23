@@ -2,9 +2,6 @@ import 'dart:math' show Random;
 
 /// Mixin for an unmodifiable [List] class.
 mixin UnmodifiableListMixin<E> on List<E> {
-  static Never _throw() =>
-      throw UnsupportedError('Cannot modify an unmodifiable list');
-
   @override
   void operator []=(int index, E value) => _throw();
 
@@ -70,3 +67,5 @@ mixin UnmodifiableListMixin<E> on List<E> {
   @override
   void replaceRange(int start, int end, Iterable<E> iterable) => _throw();
 }
+
+Never _throw() => throw UnsupportedError('Cannot modify an unmodifiable list');

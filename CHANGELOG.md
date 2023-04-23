@@ -1,7 +1,7 @@
 # Changelog
 
 ## 4.0.0
-* Dart 3.0 requirement.
+* Dart 3.0 requirement and compatibility.
 
 ## 3.10.0
 * Add a growable `BitList`, make it behave more like `List<bool>`.

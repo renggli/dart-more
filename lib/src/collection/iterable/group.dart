@@ -1,4 +1,4 @@
-extension GroupExtension<V> on Iterable<V> {
+extension GroupIterableExtension<V> on Iterable<V> {
   /// Groups consecutive keys of this [Iterable].
   ///
   /// The [key] is a function computing a key value for each element. If none is
@@ -36,3 +36,9 @@ extension GroupExtension<V> on Iterable<V> {
 
 /// A group of values.
 typedef Group<K, V> = MapEntry<K, List<V>>;
+
+/// Extension to access the index on the [Group] values.
+extension GroupMapEntryExtension<K, V> on Group<K, V> {
+  /// The values of the group.
+  List<V> get values => value;
+}

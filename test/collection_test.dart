@@ -930,7 +930,7 @@ void main() {
         final iterable = example.groupBy<String>();
         expect(
             iterable.map((each) => each.key), ['a', 'b', 'c', 'd', 'a', 'b']);
-        expect(iterable.map((each) => each.value), [
+        expect(iterable.map((each) => each.values), [
           ['a', 'a', 'a', 'a'],
           ['b', 'b', 'b'],
           ['c', 'c'],
@@ -942,7 +942,7 @@ void main() {
       test('groupBy mapping', () {
         final iterable = example.reversed.groupBy((key) => key.codeUnitAt(0));
         expect(iterable.map((each) => each.key), [98, 97, 100, 99, 98, 97]);
-        expect(iterable.map((each) => each.value), [
+        expect(iterable.map((each) => each.values), [
           ['b', 'b', 'b'],
           ['a', 'a'],
           ['d'],
@@ -967,7 +967,7 @@ void main() {
       test('offset', () {
         final actual = ['a', 'b']
             .indexed(offset: 1)
-            .map((each) => '${each.value}-${each.key}')
+            .map((each) => '${each.value}-${each.index}')
             .join(', ');
         const expected = 'a-1, b-2';
         expect(actual, expected);
@@ -3288,14 +3288,14 @@ void main() {
         expect(range.start, isNot(range.end));
       }
       for (var each in included.indexed()) {
-        expect(each.value, range[each.key]);
+        expect(each.value, range[each.index]);
         expect(range.contains(each.value), isTrue);
-        expect(range.indexOf(each.value), each.key);
-        expect(range.indexOf(each.value, each.key), each.key);
-        expect(range.indexOf(each.value, -1), each.key);
-        expect(range.lastIndexOf(each.value), each.key);
-        expect(range.lastIndexOf(each.value, each.key), each.key);
-        expect(range.lastIndexOf(each.value, included.length), each.key);
+        expect(range.indexOf(each.value), each.index);
+        expect(range.indexOf(each.value, each.index), each.index);
+        expect(range.indexOf(each.value, -1), each.index);
+        expect(range.lastIndexOf(each.value), each.index);
+        expect(range.lastIndexOf(each.value, each.index), each.index);
+        expect(range.lastIndexOf(each.value, included.length), each.index);
       }
       for (var value in excluded) {
         expect(range.contains(value), isFalse);

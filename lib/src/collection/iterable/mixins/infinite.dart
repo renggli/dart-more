@@ -2,9 +2,6 @@
 ///
 /// Intended to mix-in on top of `IterableBase<E>`.
 mixin InfiniteIterable<E> on Iterable<E> {
-  static Never _throw() =>
-      throw UnsupportedError('Cannot perform operation on infinite iterable');
-
   @override
   int get length => _throw();
 
@@ -34,3 +31,6 @@ mixin InfiniteIterable<E> on Iterable<E> {
   @override
   Set<E> toSet() => _throw();
 }
+
+Never _throw() =>
+    throw UnsupportedError('Cannot perform operation on infinite iterable');

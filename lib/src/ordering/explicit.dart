@@ -7,7 +7,7 @@ import 'ordering.dart';
 class ExplicitOrdering<T> extends Ordering<T> {
   ExplicitOrdering(Iterable<T> iterable) {
     for (final element in iterable.indexed()) {
-      ranking[element.value] = element.key;
+      ranking[element.value] = element.index;
     }
   }
 
