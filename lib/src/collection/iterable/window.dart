@@ -1,3 +1,5 @@
+import 'dart:collection';
+
 extension WindowIterableExtension<E> on Iterable<E> {
   /// Sliding window of given `size` over this [Iterable].
   ///
@@ -13,11 +15,11 @@ extension WindowIterableExtension<E> on Iterable<E> {
     if (step < 1) {
       throw RangeError.value(step, 'step', 'step must be positive');
     }
-    final current = <E>[];
+    final current = ListQueue<E>(size);
     final iterator = this.iterator;
     for (;;) {
       while (current.length < size && iterator.moveNext()) {
-        current.add(iterator.current);
+        current.addLast(iterator.current);
       }
       if (current.length == size || (includePartial && current.isNotEmpty)) {
         yield current.toList(growable: false);
@@ -25,7 +27,9 @@ extension WindowIterableExtension<E> on Iterable<E> {
         return;
       }
       if (step < size) {
-        current.removeRange(0, step);
+        for (var i = 0; i < step; i++) {
+          current.removeFirst();
+        }
       } else {
         current.clear();
         for (var i = 0; i < step - size; i++) {
