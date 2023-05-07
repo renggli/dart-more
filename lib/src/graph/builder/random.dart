@@ -1,4 +1,6 @@
-import '../../../collection.dart';
+import '../../collection/iterable/combinations.dart';
+import '../../collection/iterable/permutations.dart';
+import '../../collection/range/integer.dart';
 import '../builder.dart';
 import '../graph.dart';
 import 'complete.dart';

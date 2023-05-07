@@ -1,4 +1,4 @@
-extension CombinationsExtension<E> on Iterable<E> {
+extension CombinationsIterableExtension<E> on Iterable<E> {
   /// Returns an iterable over the combinations of this [Iterable] of length
   /// [count]. The combinations are emitted in lexicographical order based on
   /// the input.

@@ -1,4 +1,4 @@
-extension ToMapExtension<E> on Iterable<E> {
+extension ToMapIterableExtension<E> on Iterable<E> {
   /// Returns an [Map] from an [Iterable].
   ///
   /// For example, the expression

@@ -1,7 +1,7 @@
 /// Function type to build elements.
 typedef Builder<E> = E Function();
 
-extension SeparatedExtension<E> on Iterable<E> {
+extension SeparatedIterableExtension<E> on Iterable<E> {
   /// Returns an [Iterable] where every element is separated by an element
   /// built by a [separator] builder. Optionally specified [before] and [after]
   /// builders can provide an element at the beginning or the end of the

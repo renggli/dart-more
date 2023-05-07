@@ -34,7 +34,7 @@ enum Period {
   final TimeUnit timeUnit;
 }
 
-extension PeriodicalExtension on DateTime {
+extension PeriodicalIterableExtension on DateTime {
   /// Creates an infinitely long [Iterable] of periodic [DateTime] timestamps.
   ///
   /// Called without arguments, the period starts at this [DateTime] and
@@ -69,7 +69,7 @@ extension PeriodicalExtension on DateTime {
       PeriodicalDateTimeExtension(this).periodical(period.timeUnit, step: step);
 }
 
-extension TruncateExtension on DateTime {
+extension TruncateIterableExtension on DateTime {
   /// Truncates [DateTime] to the beginning of the provided [Period].
   @Deprecated('Use `TruncateToDateTimeExtension.truncateTo` instead')
   DateTime truncate({

@@ -1,6 +1,6 @@
 import 'dart:collection' show HashSet;
 
-extension UniqueExtension<E> on Iterable<E> {
+extension UniqueIterableExtension<E> on Iterable<E> {
   /// Returns a lazy iterable that filters out duplicates from this [Iterator].
   /// If [equals] and [hashCode] are omitted, the iterator uses the objects'
   /// intrinsic [Object.operator==] and [Object.hashCode] for comparison.

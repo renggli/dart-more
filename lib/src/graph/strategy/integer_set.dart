@@ -1,6 +1,6 @@
 import 'dart:collection';
 
-import '../../../collection.dart';
+import '../../collection/bitlist.dart';
 
 /// A [Set] with integer values.
 ///

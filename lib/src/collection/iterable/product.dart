@@ -1,4 +1,4 @@
-extension ProductExtension<E> on Iterable<Iterable<E>> {
+extension ProductIterableExtension<E> on Iterable<Iterable<E>> {
   /// Returns an iterable over the cross product of this [Iterable].
   ///
   /// The resulting iterable is equivalent to nested for-loops. The rightmost

@@ -1,4 +1,4 @@
-extension WindowExtension<E> on Iterable<E> {
+extension WindowIterableExtension<E> on Iterable<E> {
   /// Sliding window of given `size` over this [Iterable].
   ///
   /// The following expression yields [1, 2, 3], [2, 3, 4], [3, 4, 5]:

@@ -1,4 +1,4 @@
-extension ZipExtension<E> on Iterable<Iterable<E>> {
+extension ZipIterableExtension<E> on Iterable<Iterable<E>> {
   /// Combines the first, second, third, ... elements of each [Iterable] into a
   /// new list. The resulting iterable has the length of the shortest input
   /// iterable.

@@ -1,4 +1,4 @@
-extension ChunkedExtension<E> on Iterable<E> {
+extension ChunkedIterableExtension<E> on Iterable<E> {
   /// Divides this [Iterable] into sub-lists of a given `size`. The final list
   /// might be smaller or equal to the desired size.
   ///
