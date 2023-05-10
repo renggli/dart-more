@@ -1,3 +1,5 @@
+import '../../shared/exceptions.dart';
+
 extension ProductIterableExtension<E> on Iterable<Iterable<E>> {
   /// Returns an iterable over the cross product of this [Iterable].
   ///
@@ -20,9 +22,7 @@ extension ProductIterableExtension<E> on Iterable<Iterable<E>> {
   ///    ['y', 3]
   ///
   Iterable<List<E>> product({int repeat = 1}) {
-    if (repeat < 1) {
-      throw RangeError.value(repeat, 'repeat', 'repeat must be positive');
-    }
+    checkNonZeroPositive(repeat, 'repeat');
     if (isEmpty || any((iterable) => iterable.isEmpty)) {
       return const Iterable.empty();
     } else {

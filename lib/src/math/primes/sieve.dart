@@ -2,7 +2,7 @@
 abstract class PrimeSieve {
   /// Constructs a prime sieve up to [max].
   /// Throws a [RangeError] if [max] is negative.
-  PrimeSieve(int max) : max = RangeError.checkNotNegative(max, 'n');
+  PrimeSieve(int max) : max = RangeError.checkNotNegative(max, 'max');
 
   /// The maximum number this sieve supports.
   final int max;

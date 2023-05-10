@@ -1,5 +1,7 @@
 import 'dart:collection';
 
+import '../shared/exceptions.dart';
+
 extension WindowStreamExtension<E> on Stream<E> {
   /// Sliding window [Stream] of given `size` over this [Stream].
   ///
@@ -7,12 +9,8 @@ extension WindowStreamExtension<E> on Stream<E> {
   /// will be of type `List<E>`.
   Stream<List<E>> window(int size,
       {int step = 1, bool includePartial = false}) async* {
-    if (size < 1) {
-      throw RangeError.value(size, 'size', 'size must be positive');
-    }
-    if (step < 1) {
-      throw RangeError.value(step, 'step', 'step must be positive');
-    }
+    checkNonZeroPositive(size, 'size');
+    checkNonZeroPositive(step, 'step');
     var index = 0;
     final current = ListQueue<E>(size);
     await for (var element in this) {

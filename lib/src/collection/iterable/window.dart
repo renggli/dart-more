@@ -1,5 +1,7 @@
 import 'dart:collection';
 
+import '../../shared/exceptions.dart';
+
 extension WindowIterableExtension<E> on Iterable<E> {
   /// Sliding window of given `size` over this [Iterable].
   ///
@@ -9,12 +11,8 @@ extension WindowIterableExtension<E> on Iterable<E> {
   ///
   Iterable<List<E>> window(int size,
       {int step = 1, bool includePartial = false}) sync* {
-    if (size < 1) {
-      throw RangeError.value(size, 'size', 'size must be positive');
-    }
-    if (step < 1) {
-      throw RangeError.value(step, 'step', 'step must be positive');
-    }
+    checkNonZeroPositive(size, 'size');
+    checkNonZeroPositive(step, 'step');
     final current = ListQueue<E>(size);
     final iterator = this.iterator;
     for (;;) {

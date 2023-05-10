@@ -22,10 +22,9 @@ extension CombinationsIterableExtension<E> on Iterable<E> {
   ///     ['x', 'y', 'z'].combinations(2, repetitions: false);
   ///
   Iterable<List<E>> combinations(int count, {bool repetitions = false}) {
+    RangeError.checkNotNegative(count, 'count');
     final list = toList(growable: false);
-    if (count < 0) {
-      throw RangeError.value(count, 'count');
-    } else if (!repetitions && list.length < count) {
+    if (!repetitions && list.length < count) {
       throw RangeError.range(count, 0, list.length, 'count');
     } else if (repetitions) {
       return combinationsWithRepetitions<E>(list, count);

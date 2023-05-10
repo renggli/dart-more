@@ -1,5 +1,7 @@
 import 'dart:math';
 
+import '../../shared/exceptions.dart';
+
 extension WrapUnwrapStringExtension on String {
   /// Wraps a long text so that every line is at most [width] characters long.
   String wrap(
@@ -7,9 +9,7 @@ extension WrapUnwrapStringExtension on String {
     Pattern? whitespace,
     bool breakLongWords = true,
   }) {
-    if (width < 1) {
-      throw RangeError.range(width, 1, null, 'width', 'width must be positive');
-    }
+    checkNonZeroPositive(width, 'width');
     return split('\n')
         .map((line) =>
             line._wrap(width, whitespace ?? defaultWhitespace, breakLongWords))
