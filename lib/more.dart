@@ -10,7 +10,6 @@ export 'package:more/graph.dart';
 export 'package:more/interval.dart';
 export 'package:more/math.dart';
 export 'package:more/number.dart';
-export 'package:more/ordering.dart';
 export 'package:more/printer.dart';
 export 'package:more/temporal.dart';
 export 'package:more/tuple.dart';

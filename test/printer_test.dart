@@ -1558,12 +1558,6 @@ void main() {
       expect(printer('1'), '1');
       expect(printer('12'), '12');
     });
-    test('deprecated', () {
-      final printer = standardInt.map(int.parse);
-      expect(() => printer(''), throwsFormatException);
-      expect(printer('1'), '1');
-      expect(printer('12'), '12');
-    });
     test('cast', () {
       final printer = standardString.cast<Object>();
       expect(() => printer(0), throwsA(isA<TypeError>()));

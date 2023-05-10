@@ -1,5 +1,3 @@
-
-
 extension AccessorsDateTimeExtension on DateTime {
   /// Whether this is a leap year, or not.
   bool get isLeapYear => year % 4 == 0 && (year % 100 != 0 || year % 400 == 0);

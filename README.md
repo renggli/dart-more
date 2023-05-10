@@ -62,7 +62,6 @@ import 'package:more/graph.dart';
 import 'package:more/interval.dart';
 import 'package:more/math.dart';
 import 'package:more/number.dart';
-import 'package:more/ordering.dart';
 import 'package:more/printer.dart';
 import 'package:more/temporal.dart';
 import 'package:more/tuple.dart';

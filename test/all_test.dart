@@ -12,7 +12,6 @@ import 'graph_test.dart' as graph_test;
 import 'interval_test.dart' as interval_test;
 import 'math_test.dart' as math_test;
 import 'number_test.dart' as number_test;
-import 'ordering_test.dart' as ordering_test;
 import 'printer_test.dart' as printer_test;
 import 'temporal_test.dart' as temporal_test;
 import 'tuple_test.dart' as tuple_test;
@@ -30,7 +29,6 @@ void main() {
   group('interval', interval_test.main);
   group('math', math_test.main);
   group('number', number_test.main);
-  group('ordering', ordering_test.main);
   group('printer', printer_test.main);
   group('temporal', temporal_test.main);
   group('tuple', tuple_test.main);

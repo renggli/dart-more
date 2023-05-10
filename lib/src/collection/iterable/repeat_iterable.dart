@@ -24,10 +24,6 @@ extension RepeatIterableExtension<E> on Iterable<E> {
       return RepeatIterableIterable<E>(this).take(count * length);
     }
   }
-
-  /// Deprecated alias for [repeat].
-  @Deprecated('Use `RepeatIterableExtension.repeat` instead')
-  Iterable<E> cycle([int? count]) => repeat(count: count);
 }
 
 class RepeatIterableIterable<E> extends IterableBase<E>

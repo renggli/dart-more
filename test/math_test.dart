@@ -552,8 +552,5 @@ void main() {
         expect(() => sieve.factorize(21), throwsRangeError);
       });
     });
-    test('deprecated', () {
-      expect(30.primes, [2, 3, 5, 7, 11, 13, 17, 19, 23, 29]);
-    });
   });
 }

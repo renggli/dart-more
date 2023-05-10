@@ -109,35 +109,21 @@ void main() {
     });
     group('natural', () {
       test('int', () {
-        final comparator = naturalComparator<int>();
+        const Comparator<int> comparator = naturalComparable<num>;
         verify(comparator, [1, 2, 3], [1, 2, 3]);
         verify(comparator, [2, 3, 1], [1, 2, 3]);
         verify(comparator, [3, 1, 2], [1, 2, 3]);
         verify(comparator, [3, 2, 1], [1, 2, 3]);
       });
       test('num', () {
-        final comparator = naturalComparator<num>();
+        const comparator = naturalComparable<num>;
         verify(comparator, [1, 2, 3], [1, 2, 3]);
         verify(comparator, [2, 3, 1], [1, 2, 3]);
         verify(comparator, [3, 1, 2], [1, 2, 3]);
         verify(comparator, [3, 2, 1], [1, 2, 3]);
       });
       test('dynamic', () {
-        final comparator = naturalComparator<Object?>();
-        verify(comparator, [1, 2, 3], [1, 2, 3]);
-        verify(comparator, [2, 3, 1], [1, 2, 3]);
-        verify(comparator, [3, 1, 2], [1, 2, 3]);
-        verify(comparator, [3, 2, 1], [1, 2, 3]);
-      });
-      test('compare function', () {
         const comparator = naturalCompare;
-        verify(comparator, [1, 2, 3], [1, 2, 3]);
-        verify(comparator, [2, 3, 1], [1, 2, 3]);
-        verify(comparator, [3, 1, 2], [1, 2, 3]);
-        verify(comparator, [3, 2, 1], [1, 2, 3]);
-      });
-      test('comparator function', () {
-        const Comparator<int> comparator = naturalComparable<num>;
         verify(comparator, [1, 2, 3], [1, 2, 3]);
         verify(comparator, [2, 3, 1], [1, 2, 3]);
         verify(comparator, [3, 1, 2], [1, 2, 3]);
@@ -146,35 +132,21 @@ void main() {
     });
     group('reverse', () {
       test('int', () {
-        final comparator = reverseComparator<int>();
+        const Comparator<int> comparator = reverseComparable<num>;
         verify(comparator, [1, 2, 3], [3, 2, 1]);
         verify(comparator, [2, 3, 1], [3, 2, 1]);
         verify(comparator, [3, 1, 2], [3, 2, 1]);
         verify(comparator, [3, 2, 1], [3, 2, 1]);
       });
       test('num', () {
-        final comparator = reverseComparator<num>();
+        const comparator = reverseComparable<num>;
         verify(comparator, [1, 2, 3], [3, 2, 1]);
         verify(comparator, [2, 3, 1], [3, 2, 1]);
         verify(comparator, [3, 1, 2], [3, 2, 1]);
         verify(comparator, [3, 2, 1], [3, 2, 1]);
       });
       test('dynamic', () {
-        final comparator = reverseComparator<Object?>();
-        verify(comparator, [1, 2, 3], [3, 2, 1]);
-        verify(comparator, [2, 3, 1], [3, 2, 1]);
-        verify(comparator, [3, 1, 2], [3, 2, 1]);
-        verify(comparator, [3, 2, 1], [3, 2, 1]);
-      });
-      test('compare function', () {
         const comparator = reverseCompare;
-        verify(comparator, [1, 2, 3], [3, 2, 1]);
-        verify(comparator, [2, 3, 1], [3, 2, 1]);
-        verify(comparator, [3, 1, 2], [3, 2, 1]);
-        verify(comparator, [3, 2, 1], [3, 2, 1]);
-      });
-      test('comparator function', () {
-        const Comparator<int> comparator = reverseComparable<num>;
         verify(comparator, [1, 2, 3], [3, 2, 1]);
         verify(comparator, [2, 3, 1], [3, 2, 1]);
         verify(comparator, [3, 1, 2], [3, 2, 1]);
