@@ -1,77 +1,68 @@
-import 'tuple.dart';
-import 'tuple_1.dart';
-import 'tuple_3.dart';
-
 /// Tuple with 2 elements.
-class Tuple2<T1, T2> extends Tuple {
-  /// Const constructor.
-  const Tuple2(this.first, this.second);
-
+extension Tuple2<T1, T2> on (T1, T2) {
   /// List constructor.
-  static Tuple2<T, T> fromList<T>(List<T> list) {
+  static (T, T) fromList<T>(List<T> list) {
     if (list.length != 2) {
       throw ArgumentError.value(
           list, 'list', 'Expected list of length 2, but got ${list.length}');
     }
-    return Tuple2(list[0], list[1]);
+    return (list[0], list[1]);
   }
 
-  @override
+  /// Returns the number of elements in the tuple.
   int get length => 2;
 
   /// Returns the first element of this tuple.
-  final T1 first;
+  T1 get first => $1;
 
   /// Returns the second element of this tuple.
-  final T2 second;
+  T2 get second => $2;
 
   /// Returns the last element of this tuple.
-  T2 get last => second;
+  T2 get last => $2;
 
   /// Returns a new tuple with the first element replaced by [value].
-  Tuple2<T, T2> withFirst<T>(T value) => Tuple2(value, second);
+  (T, T2) withFirst<T>(T value) => (value, $2);
 
   /// Returns a new tuple with the second element replaced by [value].
-  Tuple2<T1, T> withSecond<T>(T value) => Tuple2(first, value);
+  (T1, T) withSecond<T>(T value) => ($1, value);
 
   /// Returns a new tuple with the last element replaced by [value].
-  Tuple2<T1, T> withLast<T>(T value) => Tuple2(first, value);
+  (T1, T) withLast<T>(T value) => ($1, value);
 
   /// Returns a new tuple with [value] added at the first position.
-  Tuple3<T, T1, T2> addFirst<T>(T value) => Tuple3(value, first, second);
+  (T, T1, T2) addFirst<T>(T value) => (value, $1, $2);
 
   /// Returns a new tuple with [value] added at the second position.
-  Tuple3<T1, T, T2> addSecond<T>(T value) => Tuple3(first, value, second);
+  (T1, T, T2) addSecond<T>(T value) => ($1, value, $2);
 
   /// Returns a new tuple with [value] added at the third position.
-  Tuple3<T1, T2, T> addThird<T>(T value) => Tuple3(first, second, value);
+  (T1, T2, T) addThird<T>(T value) => ($1, $2, value);
 
   /// Returns a new tuple with [value] added at the last position.
-  Tuple3<T1, T2, T> addLast<T>(T value) => Tuple3(first, second, value);
+  (T1, T2, T) addLast<T>(T value) => ($1, $2, value);
 
   /// Returns a new tuple with the first element removed.
-  Tuple1<T2> removeFirst() => Tuple1(second);
+  (T2,) removeFirst() => ($2,);
 
   /// Returns a new tuple with the second element removed.
-  Tuple1<T1> removeSecond() => Tuple1(first);
+  (T1,) removeSecond() => ($1,);
 
   /// Returns a new tuple with the last element removed.
-  Tuple1<T1> removeLast() => Tuple1(first);
+  (T1,) removeLast() => ($1,);
 
-  @override
+  /// An (untyped) [Iterable] over the values of this tuple.
   Iterable<Object?> get iterable sync* {
-    yield first;
-    yield second;
+    yield $1;
+    yield $2;
   }
 
-  @override
-  R map<R>(R Function(T1 first, T2 second) callback) => callback(first, second);
+  /// An (untyped) [List] with the values of this tuple.
+  List<Object?> toList() => [$1, $2];
 
-  @override
-  bool operator ==(Object other) =>
-      identical(this, other) ||
-      (other is Tuple2 && first == other.first && second == other.second);
+  /// An (untyped) [Set] with the unique values of this tuple.
+  Set<Object?> toSet() => {$1, $2};
 
-  @override
-  int get hashCode => Object.hash(first, second);
+  /// Applies the values of this tuple to an 2-ary function.
+  R map<R>(R Function(T1 first, T2 second) callback) => callback($1, $2);
 }

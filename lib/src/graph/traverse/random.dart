@@ -92,16 +92,16 @@ class _RandomWalkIterator<V> implements Iterator<V> {
     return true;
   }
 
-  Iterable<Tuple2<V, num>> _candidatesAndProbabilities(V source) {
+  Iterable<(V, num)> _candidatesAndProbabilities(V source) {
     num probabilitySum = 0;
-    final candidates = <Tuple2<V, num>>[];
+    final candidates = <(V, num)>[];
     for (final target in iterable.successorsOf(source)) {
       if (iterable.selfAvoiding && seen.add(target) == false) {
         continue;
       }
       final probability = iterable.edgeProbability?.call(source, target) ?? 1;
       if (probability > 0) {
-        candidates.add(Tuple2(target, probability));
+        candidates.add((target, probability));
         probabilitySum += probability;
       }
     }

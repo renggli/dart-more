@@ -1,5 +1,12 @@
 # Changelog
 
+## 4.0.0
+* Dart 3.0 requirement.
+* Removed deprecated code.
+* Reimplement `Tuple` on top of records:
+  * Replace types like `Tuple2<String, int>` with `(String, int)`.
+  * Replace constructors like `Tuple2('hello', 42)` with `('hello', 42)`.
+
 ## 3.10.0
 * Add a growable `BitList`, make it behave more like `List<bool>`.
 * Optimize  `BitList` operations: `fill`, `count`, and `indices`.

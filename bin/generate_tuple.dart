@@ -1,7 +1,7 @@
 import 'dart:io';
 import 'dart:math';
 
-import 'package:more/collection.dart';
+import 'package:more/src/collection/iterable/zip.dart';
 
 /// Ordinal value names.
 const ordinals = [
@@ -21,17 +21,24 @@ const ordinals = [
 final int max = ordinals.length;
 
 /// Generate the variable names.
-List<String> generateValues(int i) => List.generate(i, (i) => ordinals[i]);
+List<String> generateValues(int i) => List.generate(i, (i) => '\$${i + 1}');
 
 /// Generate the type names.
 List<String> generateTypes(int i) => List.generate(i, (i) => 'T${i + 1}');
+
+/// Generate the ordinal names.
+List<String> generateOrdinals(int i) => List.generate(i, (i) => ordinals[i]);
 
 /// Creates an argument list from types or variables.
 String listify(Iterable<String> values) => values.join(', ');
 
 /// Wraps a list of types in generics brackets.
-String generify(Iterable<String> types) =>
-    types.isEmpty ? '' : '<${listify(types)}>';
+String generify(Iterable<String> values) =>
+    values.isEmpty ? '' : '<${listify(values)}>';
+
+/// Creates a record type.
+String recordify(Iterable<String> values) =>
+    '(${listify(values)}${values.length == 1 ? ', ' : ''})';
 
 /// Capitalizes the first character of a string.
 String capitalize(String value) =>
@@ -59,68 +66,10 @@ Future<void> format(File file) async =>
 Future<void> generateExport() async {
   final file = exportFile;
   final out = file.openWrite();
-  out.writeln('/// Tuple data type.');
-  out.writeln('export \'src/tuple/tuple.dart\';');
+  out.writeln('/// Tuple operations based on generic records.');
   for (var i = 0; i < max; i++) {
     out.writeln('export \'src/tuple/tuple_$i.dart\';');
   }
-  await out.close();
-  await format(file);
-}
-
-Future<void> generateAbstract() async {
-  final file = abstractFile;
-  final out = file.openWrite();
-  out.writeln('import \'package:meta/meta.dart\' show immutable;');
-  out.writeln();
-  for (var i = 0; i < max; i++) {
-    out.writeln('import \'tuple_$i.dart\';');
-  }
-  out.writeln();
-  out.writeln('/// Abstract tuple class.');
-  out.writeln('@immutable');
-  out.writeln('abstract class Tuple {');
-  out.writeln();
-  out.writeln('/// Const constructor.');
-  out.writeln('const Tuple();');
-  out.writeln();
-  out.writeln('/// List constructor.');
-  out.writeln('static Tuple fromList<T>(List<T> list) {');
-  out.writeln('switch (list.length) {');
-  for (var i = 0; i < max; i++) {
-    out.writeln('case $i:');
-    if (i > 0) {
-      out.writeln('return Tuple$i.fromList(list);');
-    } else {
-      out.writeln('return const Tuple0();');
-    }
-  }
-  out.writeln('default:');
-  out.writeln('throw ArgumentError.value(list, \'list\', '
-      '\'Length \${list.length} not in range 0..${max - 1}\');');
-  out.writeln('}');
-  out.writeln('}');
-  out.writeln();
-  out.writeln('/// The number of elements in the tuple.');
-  out.writeln('int get length;');
-  out.writeln();
-  out.writeln('/// An [Iterable] over the values of this tuple.');
-  out.writeln('Iterable<Object?> get iterable;');
-  out.writeln();
-  out.writeln('/// A (untyped) [List] with the values of this tuple.');
-  out.writeln('List<Object?> toList({bool growable: false}) => ');
-  out.writeln('  List.from(iterable, growable: growable);');
-  out.writeln();
-  out.writeln('/// A (untyped) [Set] with the unique values of this tuple.');
-  out.writeln('Set<Object?> toSet() => Set.from(iterable);');
-  out.writeln();
-  out.writeln('/// Applies the values of this tuple to an n-ary function.');
-  out.writeln('R map<R>(covariant Function callback);');
-  out.writeln();
-  out.writeln('/// A string representation of this tuple.');
-  out.writeln('@override');
-  out.writeln('String toString() => \'(\${iterable.join(\', \')})\';');
-  out.writeln('}');
   await out.close();
   await format(file);
 }
@@ -131,27 +80,14 @@ Future<void> generateImplementation(int i) async {
   final types = generateTypes(i);
   final values = generateValues(i);
 
-  out.writeln('import \'tuple.dart\';');
-  if (i > 0) {
-    out.writeln('import \'tuple_${i - 1}.dart\';');
-  }
-  if (i < max - 1) {
-    out.writeln('import \'tuple_${i + 1}.dart\';');
-  }
-  out.writeln();
   out.writeln('/// Tuple with $i element${i != 1 ? 's' : ''}.');
-  out.writeln('class Tuple$i${generify(types)} extends Tuple {');
+  out.writeln('extension Tuple$i${generify(types)} on ${recordify(types)} {');
 
   // constructors
-  final constructorVariables = listify(values.map((value) => 'this.$value'));
-  out.writeln('/// Const constructor.');
-  out.writeln('const Tuple$i($constructorVariables);');
-
-  final listTypes = generify(List.generate(i, (i) => 'T'));
-  final listAccessors = listify(List.generate(i, (i) => 'list[$i]'));
-  out.writeln();
+  final listTypes = List.generate(i, (i) => 'T');
+  final listAccessors = List.generate(i, (i) => 'list[$i]');
   out.writeln('/// List constructor.');
-  out.writeln('static Tuple$i$listTypes fromList<T>(List<T> list) {');
+  out.writeln('static ${recordify(listTypes)} fromList<T>(List<T> list) {');
   if (i == 0) {
     out.writeln('if (list.isNotEmpty) {');
   } else {
@@ -160,19 +96,19 @@ Future<void> generateImplementation(int i) async {
   out.writeln('throw ArgumentError.value(list, \'list\', '
       '\'Expected list of length $i, but got \${list.length}\');');
   out.writeln('}');
-  out.writeln('return ${i == 0 ? 'const ' : ''} Tuple$i($listAccessors);');
+  out.writeln('return ${recordify(listAccessors)};');
   out.writeln('}');
 
   // length
   out.writeln();
-  out.writeln('@override');
+  out.writeln('/// Returns the number of elements in the tuple.');
   out.writeln('int get length => $i;');
 
   // access
   for (var j = 0; j < i; j++) {
     out.writeln();
-    out.writeln('/// Returns the ${values[j]} element of this tuple.');
-    out.writeln('final ${types[j]} ${values[j]};');
+    out.writeln('/// Returns the ${ordinals[j]} element of this tuple.');
+    out.writeln('${types[j]} get ${ordinals[j]} => ${values[j]};');
   }
   if (i > 0) {
     out.writeln();
@@ -189,39 +125,39 @@ Future<void> generateImplementation(int i) async {
     out.writeln();
     out.writeln('/// Returns a new tuple with the ${ordinals[j]} element '
         'replaced by [value].');
-    out.writeln('Tuple$i${generify(typesReplaced)} '
+    out.writeln('${recordify(typesReplaced)} '
         'with${capitalize(ordinals[j])}<T>(T value) => '
-        'Tuple$i(${listify(valuesReplaced)});');
+        '${recordify(valuesReplaced)};');
     if (j == i - 1) {
       out.writeln();
       out.writeln('/// Returns a new tuple with the last element replaced by '
           '[value].');
-      out.writeln('Tuple$i${generify(typesReplaced)} '
-          'withLast<T>(T value) => '
-          'Tuple$i(${listify(valuesReplaced)});');
+      out.writeln('${recordify(typesReplaced)} '
+          'withLast<T>(T value) => ${recordify(valuesReplaced)};');
     }
   }
 
   // add
   if (i < max - 1) {
     for (var j = 0; j <= i; j++) {
-      final addTypes =
-          generify([...types.sublist(0, j), 'T', ...types.sublist(j, i)]);
-      final addValues =
-          listify([...values.sublist(0, j), 'value', ...values.sublist(j, i)]);
+      final addTypes = [...types.sublist(0, j), 'T', ...types.sublist(j, i)];
+      final addValues = [
+        ...values.sublist(0, j),
+        'value',
+        ...values.sublist(j, i)
+      ];
       out.writeln();
       out.writeln('/// Returns a new tuple with [value] added at the '
           '${ordinals[j]} position.');
-      out.writeln('Tuple${i + 1}$addTypes '
+      out.writeln('${recordify(addTypes)} '
           'add${capitalize(ordinals[j])}<T>(T value) => '
-          'Tuple${i + 1}($addValues);');
+          '${recordify(addValues)};');
       if (j == i) {
         out.writeln();
         out.writeln('/// Returns a new tuple with [value] added at the last '
             'position.');
-        out.writeln('Tuple${i + 1}$addTypes '
-            'addLast<T>(T value) => '
-            'Tuple${i + 1}($addValues);');
+        out.writeln('${recordify(addTypes)} '
+            'addLast<T>(T value) => ${recordify(addValues)};');
       }
     }
   }
@@ -229,65 +165,44 @@ Future<void> generateImplementation(int i) async {
   // remove
   if (i > 0) {
     for (var j = 0; j < i; j++) {
-      final removeTypes =
-          generify([...types.sublist(0, j), ...types.sublist(j + 1)]);
-      final removeValues =
-          listify([...values.sublist(0, j), ...values.sublist(j + 1)]);
+      final removeTypes = [...types.sublist(0, j), ...types.sublist(j + 1)];
+      final removeValues = [...values.sublist(0, j), ...values.sublist(j + 1)];
       out.writeln();
       out.writeln('/// Returns a new tuple with the ${ordinals[j]} element '
           'removed.');
-      out.writeln('Tuple${i - 1}$removeTypes '
-          'remove${capitalize(ordinals[j])}() => '
-          '${i - 1 == 0 ? 'const ' : ''}Tuple${i - 1}($removeValues);');
+      out.writeln('${recordify(removeTypes)} '
+          'remove${capitalize(ordinals[j])}() => ${recordify(removeValues)};');
       if (j == i - 1) {
         out.writeln();
         out.writeln('/// Returns a new tuple with the last element removed.');
-        out.writeln('Tuple${i - 1}$removeTypes '
-            'removeLast() => '
-            '${i - 1 == 0 ? 'const ' : ''}Tuple${i - 1}($removeValues);');
+        out.writeln('${recordify(removeTypes)} '
+            'removeLast() => ${recordify(removeValues)};');
       }
     }
   }
 
   // iterable
   out.writeln();
-  out.writeln('@override');
+  out.writeln('/// An (untyped) [Iterable] over the values of this tuple.');
   out.writeln('Iterable<Object?> get iterable sync* {');
   for (var j = 0; j < i; j++) {
     out.writeln('yield ${values[j]};');
   }
   out.writeln('}');
+  out.writeln();
+  out.writeln('/// An (untyped) [List] with the values of this tuple.');
+  out.writeln('List<Object?> toList() => [${listify(values)}];');
+  out.writeln();
+  out.writeln('/// An (untyped) [Set] with the unique values of this tuple.');
+  out.writeln('Set<Object?> toSet() => {${listify(values)}};');
 
   // map
-  {
-    final typeAndValues = [types, values].zip().map((value) => value.join(' '));
-    out.writeln();
-    out.writeln('@override');
-    out.writeln('R map<R>(R Function(${listify(typeAndValues)}) callback) => ');
-    out.writeln('callback(${listify(values)});');
-  }
-
-  // equals
-  {
-    final equality = values.map((each) => ' && $each == other.$each').join();
-    out.writeln();
-    out.writeln('@override');
-    out.writeln('bool operator ==(Object other) => '
-        'identical(this, other) || '
-        '(other is Tuple$i$equality);');
-  }
-
-  // hashCode
-  {
-    final hashCode = i == 0
-        ? generator.nextInt(4294967296).toString()
-        : i == 1
-            ? '${values.first}.hashCode'
-            : 'Object.hash(${listify(values)})';
-    out.writeln();
-    out.writeln('@override');
-    out.writeln('int get hashCode => $hashCode;');
-  }
+  final typeAndOrdinals =
+      [types, ordinals].zip().map((value) => value.join(' '));
+  out.writeln();
+  out.writeln('/// Applies the values of this tuple to an $i-ary function.');
+  out.writeln('R map<R>(R Function(${listify(typeAndOrdinals)}) callback) => ');
+  out.writeln('callback(${listify(values)});');
 
   out.writeln('}');
   await out.close();
@@ -316,14 +231,7 @@ Future<void> generateTest() async {
       do {
         numbers = List.generate(i, (i) => '${generator.nextInt(256)}');
       } while (Set.of(numbers).length != i);
-      out.writeln('const tuple = Tuple$i(${listify(numbers)});');
-      nest('test', 'Tuple.fromList', () {
-        final many = List.generate(max, (i) => '${generator.nextInt(256)}');
-        out.writeln('final other = Tuple.fromList([${listify(numbers)}]);');
-        out.writeln('expect(other, tuple);');
-        out.writeln('expect(() => Tuple.fromList([${listify(many)}]), '
-            'throwsArgumentError);');
-      });
+      out.writeln('const tuple = ${recordify(numbers)};');
       nest('test', 'fromList', () {
         final many = List.generate(i + 1, (i) => '${generator.nextInt(256)}');
         out.writeln('final other = Tuple$i.fromList([${listify(numbers)}]);');
@@ -431,28 +339,6 @@ Future<void> generateTest() async {
         }
         out.writeln('), $result);');
       });
-      nest('test', 'toString', () {
-        out.writeln('expect(tuple.toString(), \'(${listify(numbers)})\');');
-      });
-      final accessors =
-          listify(List.generate(i, (j) => 'tuple.${ordinals[j]}'));
-      out.writeln('${i == 0 ? 'const' : 'final'} copy = Tuple$i($accessors);');
-      nest('test', 'equals', () {
-        out.writeln('expect(tuple == tuple, isTrue);');
-        out.writeln('expect(tuple == copy, isTrue);');
-        out.writeln('expect(copy == tuple, isTrue);');
-        for (var j = 0; j < i; j++) {
-          out.writeln('expect(tuple == '
-              'tuple.with${capitalize(ordinals[j])}(-1), isFalse);');
-        }
-      });
-      nest('test', 'hashCode', () {
-        out.writeln('expect(tuple.hashCode == copy.hashCode, isTrue);');
-        for (var j = 0; j < i; j++) {
-          out.writeln('expect(tuple.hashCode == '
-              'tuple.with${capitalize(ordinals[j])}(-1).hashCode, isFalse);');
-        }
-      });
     });
   }
   out.writeln('}');
@@ -463,7 +349,6 @@ Future<void> generateTest() async {
 
 Future<void> main() => Future.wait([
       generateExport(),
-      generateAbstract(),
       for (var i = 0; i < max; i++) generateImplementation(i),
       generateTest(),
     ]);

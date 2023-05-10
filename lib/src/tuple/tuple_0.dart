@@ -1,38 +1,32 @@
-import 'tuple.dart';
-import 'tuple_1.dart';
-
 /// Tuple with 0 elements.
-class Tuple0 extends Tuple {
-  /// Const constructor.
-  const Tuple0();
-
+extension Tuple0 on () {
   /// List constructor.
-  static Tuple0 fromList<T>(List<T> list) {
+  static () fromList<T>(List<T> list) {
     if (list.isNotEmpty) {
       throw ArgumentError.value(
           list, 'list', 'Expected list of length 0, but got ${list.length}');
     }
-    return const Tuple0();
+    return ();
   }
 
-  @override
+  /// Returns the number of elements in the tuple.
   int get length => 0;
 
   /// Returns a new tuple with [value] added at the first position.
-  Tuple1<T> addFirst<T>(T value) => Tuple1(value);
+  (T,) addFirst<T>(T value) => (value,);
 
   /// Returns a new tuple with [value] added at the last position.
-  Tuple1<T> addLast<T>(T value) => Tuple1(value);
+  (T,) addLast<T>(T value) => (value,);
 
-  @override
+  /// An (untyped) [Iterable] over the values of this tuple.
   Iterable<Object?> get iterable sync* {}
 
-  @override
+  /// An (untyped) [List] with the values of this tuple.
+  List<Object?> toList() => [];
+
+  /// An (untyped) [Set] with the unique values of this tuple.
+  Set<Object?> toSet() => {};
+
+  /// Applies the values of this tuple to an 0-ary function.
   R map<R>(R Function() callback) => callback();
-
-  @override
-  bool operator ==(Object other) => identical(this, other) || (other is Tuple0);
-
-  @override
-  int get hashCode => 2895809587;
 }

@@ -1,5 +1,4 @@
-/// Tuple data type.
-export 'src/tuple/tuple.dart';
+/// Fluent extensions on generic records.
 export 'src/tuple/tuple_0.dart';
 export 'src/tuple/tuple_1.dart';
 export 'src/tuple/tuple_2.dart';

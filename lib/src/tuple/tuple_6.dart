@@ -1,162 +1,132 @@
-import 'tuple.dart';
-import 'tuple_5.dart';
-import 'tuple_7.dart';
-
 /// Tuple with 6 elements.
-class Tuple6<T1, T2, T3, T4, T5, T6> extends Tuple {
-  /// Const constructor.
-  const Tuple6(
-      this.first, this.second, this.third, this.fourth, this.fifth, this.sixth);
-
+extension Tuple6<T1, T2, T3, T4, T5, T6> on (T1, T2, T3, T4, T5, T6) {
   /// List constructor.
-  static Tuple6<T, T, T, T, T, T> fromList<T>(List<T> list) {
+  static (T, T, T, T, T, T) fromList<T>(List<T> list) {
     if (list.length != 6) {
       throw ArgumentError.value(
           list, 'list', 'Expected list of length 6, but got ${list.length}');
     }
-    return Tuple6(list[0], list[1], list[2], list[3], list[4], list[5]);
+    return (list[0], list[1], list[2], list[3], list[4], list[5]);
   }
 
-  @override
+  /// Returns the number of elements in the tuple.
   int get length => 6;
 
   /// Returns the first element of this tuple.
-  final T1 first;
+  T1 get first => $1;
 
   /// Returns the second element of this tuple.
-  final T2 second;
+  T2 get second => $2;
 
   /// Returns the third element of this tuple.
-  final T3 third;
+  T3 get third => $3;
 
   /// Returns the fourth element of this tuple.
-  final T4 fourth;
+  T4 get fourth => $4;
 
   /// Returns the fifth element of this tuple.
-  final T5 fifth;
+  T5 get fifth => $5;
 
   /// Returns the sixth element of this tuple.
-  final T6 sixth;
+  T6 get sixth => $6;
 
   /// Returns the last element of this tuple.
-  T6 get last => sixth;
+  T6 get last => $6;
 
   /// Returns a new tuple with the first element replaced by [value].
-  Tuple6<T, T2, T3, T4, T5, T6> withFirst<T>(T value) =>
-      Tuple6(value, second, third, fourth, fifth, sixth);
+  (T, T2, T3, T4, T5, T6) withFirst<T>(T value) => (value, $2, $3, $4, $5, $6);
 
   /// Returns a new tuple with the second element replaced by [value].
-  Tuple6<T1, T, T3, T4, T5, T6> withSecond<T>(T value) =>
-      Tuple6(first, value, third, fourth, fifth, sixth);
+  (T1, T, T3, T4, T5, T6) withSecond<T>(T value) => ($1, value, $3, $4, $5, $6);
 
   /// Returns a new tuple with the third element replaced by [value].
-  Tuple6<T1, T2, T, T4, T5, T6> withThird<T>(T value) =>
-      Tuple6(first, second, value, fourth, fifth, sixth);
+  (T1, T2, T, T4, T5, T6) withThird<T>(T value) => ($1, $2, value, $4, $5, $6);
 
   /// Returns a new tuple with the fourth element replaced by [value].
-  Tuple6<T1, T2, T3, T, T5, T6> withFourth<T>(T value) =>
-      Tuple6(first, second, third, value, fifth, sixth);
+  (T1, T2, T3, T, T5, T6) withFourth<T>(T value) => ($1, $2, $3, value, $5, $6);
 
   /// Returns a new tuple with the fifth element replaced by [value].
-  Tuple6<T1, T2, T3, T4, T, T6> withFifth<T>(T value) =>
-      Tuple6(first, second, third, fourth, value, sixth);
+  (T1, T2, T3, T4, T, T6) withFifth<T>(T value) => ($1, $2, $3, $4, value, $6);
 
   /// Returns a new tuple with the sixth element replaced by [value].
-  Tuple6<T1, T2, T3, T4, T5, T> withSixth<T>(T value) =>
-      Tuple6(first, second, third, fourth, fifth, value);
+  (T1, T2, T3, T4, T5, T) withSixth<T>(T value) => ($1, $2, $3, $4, $5, value);
 
   /// Returns a new tuple with the last element replaced by [value].
-  Tuple6<T1, T2, T3, T4, T5, T> withLast<T>(T value) =>
-      Tuple6(first, second, third, fourth, fifth, value);
+  (T1, T2, T3, T4, T5, T) withLast<T>(T value) => ($1, $2, $3, $4, $5, value);
 
   /// Returns a new tuple with [value] added at the first position.
-  Tuple7<T, T1, T2, T3, T4, T5, T6> addFirst<T>(T value) =>
-      Tuple7(value, first, second, third, fourth, fifth, sixth);
+  (T, T1, T2, T3, T4, T5, T6) addFirst<T>(T value) =>
+      (value, $1, $2, $3, $4, $5, $6);
 
   /// Returns a new tuple with [value] added at the second position.
-  Tuple7<T1, T, T2, T3, T4, T5, T6> addSecond<T>(T value) =>
-      Tuple7(first, value, second, third, fourth, fifth, sixth);
+  (T1, T, T2, T3, T4, T5, T6) addSecond<T>(T value) =>
+      ($1, value, $2, $3, $4, $5, $6);
 
   /// Returns a new tuple with [value] added at the third position.
-  Tuple7<T1, T2, T, T3, T4, T5, T6> addThird<T>(T value) =>
-      Tuple7(first, second, value, third, fourth, fifth, sixth);
+  (T1, T2, T, T3, T4, T5, T6) addThird<T>(T value) =>
+      ($1, $2, value, $3, $4, $5, $6);
 
   /// Returns a new tuple with [value] added at the fourth position.
-  Tuple7<T1, T2, T3, T, T4, T5, T6> addFourth<T>(T value) =>
-      Tuple7(first, second, third, value, fourth, fifth, sixth);
+  (T1, T2, T3, T, T4, T5, T6) addFourth<T>(T value) =>
+      ($1, $2, $3, value, $4, $5, $6);
 
   /// Returns a new tuple with [value] added at the fifth position.
-  Tuple7<T1, T2, T3, T4, T, T5, T6> addFifth<T>(T value) =>
-      Tuple7(first, second, third, fourth, value, fifth, sixth);
+  (T1, T2, T3, T4, T, T5, T6) addFifth<T>(T value) =>
+      ($1, $2, $3, $4, value, $5, $6);
 
   /// Returns a new tuple with [value] added at the sixth position.
-  Tuple7<T1, T2, T3, T4, T5, T, T6> addSixth<T>(T value) =>
-      Tuple7(first, second, third, fourth, fifth, value, sixth);
+  (T1, T2, T3, T4, T5, T, T6) addSixth<T>(T value) =>
+      ($1, $2, $3, $4, $5, value, $6);
 
   /// Returns a new tuple with [value] added at the seventh position.
-  Tuple7<T1, T2, T3, T4, T5, T6, T> addSeventh<T>(T value) =>
-      Tuple7(first, second, third, fourth, fifth, sixth, value);
+  (T1, T2, T3, T4, T5, T6, T) addSeventh<T>(T value) =>
+      ($1, $2, $3, $4, $5, $6, value);
 
   /// Returns a new tuple with [value] added at the last position.
-  Tuple7<T1, T2, T3, T4, T5, T6, T> addLast<T>(T value) =>
-      Tuple7(first, second, third, fourth, fifth, sixth, value);
+  (T1, T2, T3, T4, T5, T6, T) addLast<T>(T value) =>
+      ($1, $2, $3, $4, $5, $6, value);
 
   /// Returns a new tuple with the first element removed.
-  Tuple5<T2, T3, T4, T5, T6> removeFirst() =>
-      Tuple5(second, third, fourth, fifth, sixth);
+  (T2, T3, T4, T5, T6) removeFirst() => ($2, $3, $4, $5, $6);
 
   /// Returns a new tuple with the second element removed.
-  Tuple5<T1, T3, T4, T5, T6> removeSecond() =>
-      Tuple5(first, third, fourth, fifth, sixth);
+  (T1, T3, T4, T5, T6) removeSecond() => ($1, $3, $4, $5, $6);
 
   /// Returns a new tuple with the third element removed.
-  Tuple5<T1, T2, T4, T5, T6> removeThird() =>
-      Tuple5(first, second, fourth, fifth, sixth);
+  (T1, T2, T4, T5, T6) removeThird() => ($1, $2, $4, $5, $6);
 
   /// Returns a new tuple with the fourth element removed.
-  Tuple5<T1, T2, T3, T5, T6> removeFourth() =>
-      Tuple5(first, second, third, fifth, sixth);
+  (T1, T2, T3, T5, T6) removeFourth() => ($1, $2, $3, $5, $6);
 
   /// Returns a new tuple with the fifth element removed.
-  Tuple5<T1, T2, T3, T4, T6> removeFifth() =>
-      Tuple5(first, second, third, fourth, sixth);
+  (T1, T2, T3, T4, T6) removeFifth() => ($1, $2, $3, $4, $6);
 
   /// Returns a new tuple with the sixth element removed.
-  Tuple5<T1, T2, T3, T4, T5> removeSixth() =>
-      Tuple5(first, second, third, fourth, fifth);
+  (T1, T2, T3, T4, T5) removeSixth() => ($1, $2, $3, $4, $5);
 
   /// Returns a new tuple with the last element removed.
-  Tuple5<T1, T2, T3, T4, T5> removeLast() =>
-      Tuple5(first, second, third, fourth, fifth);
+  (T1, T2, T3, T4, T5) removeLast() => ($1, $2, $3, $4, $5);
 
-  @override
+  /// An (untyped) [Iterable] over the values of this tuple.
   Iterable<Object?> get iterable sync* {
-    yield first;
-    yield second;
-    yield third;
-    yield fourth;
-    yield fifth;
-    yield sixth;
+    yield $1;
+    yield $2;
+    yield $3;
+    yield $4;
+    yield $5;
+    yield $6;
   }
 
-  @override
+  /// An (untyped) [List] with the values of this tuple.
+  List<Object?> toList() => [$1, $2, $3, $4, $5, $6];
+
+  /// An (untyped) [Set] with the unique values of this tuple.
+  Set<Object?> toSet() => {$1, $2, $3, $4, $5, $6};
+
+  /// Applies the values of this tuple to an 6-ary function.
   R map<R>(
           R Function(
                   T1 first, T2 second, T3 third, T4 fourth, T5 fifth, T6 sixth)
               callback) =>
-      callback(first, second, third, fourth, fifth, sixth);
-
-  @override
-  bool operator ==(Object other) =>
-      identical(this, other) ||
-      (other is Tuple6 &&
-          first == other.first &&
-          second == other.second &&
-          third == other.third &&
-          fourth == other.fourth &&
-          fifth == other.fifth &&
-          sixth == other.sixth);
-
-  @override
-  int get hashCode => Object.hash(first, second, third, fourth, fifth, sixth);
+      callback($1, $2, $3, $4, $5, $6);
 }

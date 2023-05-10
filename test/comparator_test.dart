@@ -523,12 +523,12 @@ void main() {
       test('stable', () {
         final input = IntegerRange(10)
             .reversed
-            .expand((x) => IntegerRange(10).map((y) => Tuple2(x, y)));
+            .expand((x) => IntegerRange(10).map((y) => (x, y)));
         final actual = naturalInt
-            .onResultOf<Tuple2<int, int>>((tuple) => tuple.first)
+            .onResultOf<(int, int)>((tuple) => tuple.first)
             .sorted(input, stable: true);
-        final expected = IntegerRange(10)
-            .expand((x) => IntegerRange(10).map((y) => Tuple2(x, y)));
+        final expected =
+            IntegerRange(10).expand((x) => IntegerRange(10).map((y) => (x, y)));
         expect(actual, expected);
       });
       test('copy', () {
