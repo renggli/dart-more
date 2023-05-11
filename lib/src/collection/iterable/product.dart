@@ -34,6 +34,32 @@ extension ProductIterableExtension<E> on Iterable<Iterable<E>> {
   }
 }
 
+extension Product2IterableExtension<T1, T2> on (Iterable<T1>, Iterable<T2>) {
+  /// Combines a tuple of iterables with the cross product to an iterable of
+  /// tuples.
+  ///
+  /// For example, the product of `['x', 'y']` and `[1, 2, 3]` is created with
+  ///
+  ///    (['x', 'y'], [1, 2, 3]).product();
+  ///
+  /// and results in an iterable with the following tuples:
+  ///
+  ///    ('x', 1)
+  ///    ('x', 2)
+  ///    ('x', 3)
+  ///    ('y', 1)
+  ///    ('y', 2)
+  ///    ('y', 3)
+  ///
+  Iterable<(T1, T2)> product() sync* {
+    for (final v1 in $1) {
+      for (final v2 in $2) {
+        yield (v1, v2);
+      }
+    }
+  }
+}
+
 Iterable<List<E>> productNotEmpty<E>(List<List<E>> elements, int repeat) sync* {
   final indices = List<int>.filled(elements.length * repeat, 0);
   final current = List<E>.generate(

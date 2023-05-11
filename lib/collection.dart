@@ -20,7 +20,8 @@ export 'src/collection/iterable/pairwise.dart' show PairwiseIterableExtension;
 export 'src/collection/iterable/permutations.dart'
     show PermutationIterableExtension, PermutationComparableListExtension;
 export 'src/collection/iterable/power_set.dart' show PowerSetIterableExtension;
-export 'src/collection/iterable/product.dart' show ProductIterableExtension;
+export 'src/collection/iterable/product.dart'
+    show ProductIterableExtension, Product2IterableExtension;
 export 'src/collection/iterable/random.dart' show RandomIterableExtension;
 export 'src/collection/iterable/repeat_element.dart' show repeat;
 export 'src/collection/iterable/repeat_iterable.dart'

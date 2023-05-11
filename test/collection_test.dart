@@ -1341,6 +1341,17 @@ void main() {
             ].product(),
             isEmpty);
       });
+      group('tuple', () {
+        test('basic', () {
+          expect((['x', 'y'], [1, 2, 3]).product(),
+              [('x', 1), ('x', 2), ('x', 3), ('y', 1), ('y', 2), ('y', 3)]);
+        });
+        test('empty', () {
+          expect((<String>[], <int>[]).product(), isEmpty);
+          expect((['x'], <int>[]).product(), isEmpty);
+          expect((<String>[], [42]).product(), isEmpty);
+        });
+      });
     });
     group('random', () {
       test('empty', () {
