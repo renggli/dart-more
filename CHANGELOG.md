@@ -1,6 +1,6 @@
 # Changelog
 
-## 4.0.0
+## 4.0.0 (Unpublished)
 * Dart 3.0 requirement.
 * Removed deprecated code.
 * Reimplement `Tuple` on top of records:

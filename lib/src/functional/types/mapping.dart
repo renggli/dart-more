@@ -1,42 +1,42 @@
 /// Function type for generic mapping functions.
 
-/// Function callback with 0 arguments.
+/// Mapping function type with 0 positional arguments.
 typedef Map0<R> = R Function();
 
-/// Function callback with 1 argument.
+/// Mapping function type with 1 positional argument.
 typedef Map1<T0, R> = R Function(T0 arg0);
 
-/// Function callback with 2 arguments.
+/// Mapping function type with 2 positional arguments.
 typedef Map2<T0, T1, R> = R Function(T0 arg0, T1 arg1);
 
-/// Function callback with 3 arguments.
+/// Mapping function type with 3 positional arguments.
 typedef Map3<T0, T1, T2, R> = R Function(T0 arg0, T1 arg1, T2 arg2);
 
-/// Function callback with 4 arguments.
+/// Mapping function type with 4 positional arguments.
 typedef Map4<T0, T1, T2, T3, R> = R Function(
     T0 arg0, T1 arg1, T2 arg2, T3 arg3);
 
-/// Function callback with 5 arguments.
+/// Mapping function type with 5 positional arguments.
 typedef Map5<T0, T1, T2, T3, T4, R> = R Function(
     T0 arg0, T1 arg1, T2 arg2, T3 arg3, T4 arg4);
 
-/// Function callback with 6 arguments.
+/// Mapping function type with 6 positional arguments.
 typedef Map6<T0, T1, T2, T3, T4, T5, R> = R Function(
     T0 arg0, T1 arg1, T2 arg2, T3 arg3, T4 arg4, T5 arg5);
 
-/// Function callback with 7 arguments.
+/// Mapping function type with 7 positional arguments.
 typedef Map7<T0, T1, T2, T3, T4, T5, T6, R> = R Function(
     T0 arg0, T1 arg1, T2 arg2, T3 arg3, T4 arg4, T5 arg5, T6 arg6);
 
-/// Function callback with 8 arguments.
+/// Mapping function type with 8 positional arguments.
 typedef Map8<T0, T1, T2, T3, T4, T5, T6, T7, R> = R Function(
     T0 arg0, T1 arg1, T2 arg2, T3 arg3, T4 arg4, T5 arg5, T6 arg6, T7 arg7);
 
-/// Function callback with 9 arguments.
+/// Mapping function type with 9 positional arguments.
 typedef Map9<T0, T1, T2, T3, T4, T5, T6, T7, T8, R> = R Function(T0 arg0,
     T1 arg1, T2 arg2, T3 arg3, T4 arg4, T5 arg5, T6 arg6, T7 arg7, T8 arg8);
 
-/// Function callback with 10 arguments.
+/// Mapping function type with 10 positional arguments.
 typedef Map10<T0, T1, T2, T3, T4, T5, T6, T7, T8, T9, R> = R Function(
     T0 arg0,
     T1 arg1,

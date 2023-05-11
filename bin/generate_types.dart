@@ -39,7 +39,8 @@ Future<void> generateCallback() async {
   out.writeln();
 
   for (var i = 0; i < max; i++) {
-    out.writeln('/// Function callback with $i argument${i == 1 ? '' : 's'}.');
+    out.writeln('/// Callback function type with $i positional '
+        'argument${i == 1 ? '' : 's'}.');
     out.writeln('typedef Callback$i${generify(generateTypes(i))} = '
         'void Function(${listify(generateTypeAndArgs(i))});');
     out.writeln();
@@ -57,7 +58,8 @@ Future<void> generateMapping() async {
   out.writeln();
 
   for (var i = 0; i < max; i++) {
-    out.writeln('/// Function callback with $i argument${i == 1 ? '' : 's'}.');
+    out.writeln('/// Mapping function type with $i positional '
+        'argument${i == 1 ? '' : 's'}.');
     out.writeln('typedef Map$i${generify([...generateTypes(i), 'R'])} = '
         'R Function(${listify(generateTypeAndArgs(i))});');
     out.writeln();
@@ -75,7 +77,8 @@ Future<void> generatePredicate() async {
   out.writeln();
 
   for (var i = 0; i < max; i++) {
-    out.writeln('/// Function predicate with $i argument${i == 1 ? '' : 's'}.');
+    out.writeln('/// Predicate function type with $i positional '
+        'argument${i == 1 ? '' : 's'}.');
     out.writeln('typedef Predicate$i${generify(generateTypes(i))} = '
         'bool Function(${listify(generateTypeAndArgs(i))});');
     out.writeln();
@@ -93,7 +96,8 @@ Future<void> generateEmpty() async {
   out.writeln();
 
   for (var i = 0; i < max; i++) {
-    out.writeln('/// Empty function with $i argument${i == 1 ? '' : 's'}.');
+    out.writeln('/// Empty function with $i positional '
+        'argument${i == 1 ? '' : 's'}.');
     out.writeln('void emptyFunction$i${generify(generateTypes(i))} '
         '(${listify(generateTypeAndArgs(i))}) {}');
     out.writeln();
@@ -110,7 +114,7 @@ Future<void> generateIdentity() async {
   out.writeln('/// Generic identity functions.');
   out.writeln();
 
-  out.writeln('/// Canonical identity function with 1 argument.');
+  out.writeln('/// Generic identity function with 1 positional argument.');
   out.writeln('T identityFunction<T>(T arg) => arg;');
   out.writeln();
 
@@ -128,7 +132,8 @@ Future<void> generateConstant() async {
 
   for (var i = 0; i < max; i++) {
     final prefix = '$i${generify([...generateTypes(i), 'R'])}';
-    out.writeln('/// Constant function with $i argument${i == 1 ? '' : 's'}.');
+    out.writeln('/// Constant function with $i positional '
+        'argument${i == 1 ? '' : 's'}.');
     out.writeln('Map$prefix constantFunction$prefix(R value) '
         '=> (${listify(generateArgs(i))}) '
         '=> value;');
@@ -143,9 +148,6 @@ Future<void> generateThrowing() async {
   final file = getFile('throwing');
   final out = file.openWrite();
 
-  out.writeln('// ignore_for_file: only_throw_errors');
-  out.writeln();
-
   out.writeln('/// The throwing functions.');
   out.writeln("import 'mapping.dart';");
   out.writeln();
@@ -153,7 +155,8 @@ Future<void> generateThrowing() async {
   for (var i = 0; i < max; i++) {
     final mapType = '$i${generify([...generateTypes(i), 'Never'])}';
     final throwType = '$i${generify([...generateTypes(i)])}';
-    out.writeln('/// Throwing function with $i argument${i == 1 ? '' : 's'}.');
+    out.writeln('/// Throwing function with $i positional '
+        'argument${i == 1 ? '' : 's'}.');
     out.writeln('Map$mapType throwFunction$throwType(Object throwable) '
         '=> (${listify(generateArgs(i))}) '
         '=> throw throwable;');

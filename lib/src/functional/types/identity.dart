@@ -1,4 +1,4 @@
 /// Generic identity functions.
 
-/// Canonical identity function with 1 argument.
+/// Generic identity function with 1 positional argument.
 T identityFunction<T>(T arg) => arg;
