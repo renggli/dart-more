@@ -1,4 +1,4 @@
-/// Tuple with 1 element.
+/// Extension methods on [Record] with 1 positional element.
 extension Tuple1<T1> on (T1,) {
   /// List constructor.
   static (T,) fromList<T>(List<T> list) {
@@ -39,6 +39,9 @@ extension Tuple1<T1> on (T1,) {
   /// Returns a new tuple with the last element removed.
   () removeLast() => ();
 
+  /// Applies the values of this tuple to an 1-ary function.
+  R map<R>(R Function(T1 first) callback) => callback($1);
+
   /// An (untyped) [Iterable] over the values of this tuple.
   Iterable<Object?> get iterable sync* {
     yield $1;
@@ -49,7 +52,4 @@ extension Tuple1<T1> on (T1,) {
 
   /// An (untyped) [Set] with the unique values of this tuple.
   Set<Object?> toSet() => {$1};
-
-  /// Applies the values of this tuple to an 1-ary function.
-  R map<R>(R Function(T1 first) callback) => callback($1);
 }

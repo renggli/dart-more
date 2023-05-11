@@ -1,4 +1,4 @@
-/// Tuple with 4 elements.
+/// Extension methods on [Record] with 4 positional elements.
 extension Tuple4<T1, T2, T3, T4> on (T1, T2, T3, T4) {
   /// List constructor.
   static (T, T, T, T) fromList<T>(List<T> list) {
@@ -75,6 +75,10 @@ extension Tuple4<T1, T2, T3, T4> on (T1, T2, T3, T4) {
   /// Returns a new tuple with the last element removed.
   (T1, T2, T3) removeLast() => ($1, $2, $3);
 
+  /// Applies the values of this tuple to an 4-ary function.
+  R map<R>(R Function(T1 first, T2 second, T3 third, T4 fourth) callback) =>
+      callback($1, $2, $3, $4);
+
   /// An (untyped) [Iterable] over the values of this tuple.
   Iterable<Object?> get iterable sync* {
     yield $1;
@@ -88,8 +92,4 @@ extension Tuple4<T1, T2, T3, T4> on (T1, T2, T3, T4) {
 
   /// An (untyped) [Set] with the unique values of this tuple.
   Set<Object?> toSet() => {$1, $2, $3, $4};
-
-  /// Applies the values of this tuple to an 4-ary function.
-  R map<R>(R Function(T1 first, T2 second, T3 third, T4 fourth) callback) =>
-      callback($1, $2, $3, $4);
 }

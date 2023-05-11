@@ -1,4 +1,5 @@
-/// Fluent extensions on generic records.
+/// Tuple extension methods on generic records.
+export 'src/tuple/tuple.dart';
 export 'src/tuple/tuple_0.dart';
 export 'src/tuple/tuple_1.dart';
 export 'src/tuple/tuple_2.dart';

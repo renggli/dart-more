@@ -1,4 +1,4 @@
-/// Tuple with 0 elements.
+/// Extension methods on [Record] with 0 positional elements.
 extension Tuple0 on () {
   /// List constructor.
   static () fromList<T>(List<T> list) {
@@ -18,6 +18,9 @@ extension Tuple0 on () {
   /// Returns a new tuple with [value] added at the last position.
   (T,) addLast<T>(T value) => (value,);
 
+  /// Applies the values of this tuple to an 0-ary function.
+  R map<R>(R Function() callback) => callback();
+
   /// An (untyped) [Iterable] over the values of this tuple.
   Iterable<Object?> get iterable sync* {}
 
@@ -26,7 +29,4 @@ extension Tuple0 on () {
 
   /// An (untyped) [Set] with the unique values of this tuple.
   Set<Object?> toSet() => {};
-
-  /// Applies the values of this tuple to an 0-ary function.
-  R map<R>(R Function() callback) => callback();
 }

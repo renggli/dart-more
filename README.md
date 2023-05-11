@@ -26,7 +26,7 @@ A collection of extensively tested extensions that make Dart a better place:
 | [number](https://pub.dev/documentation/more/latest/number/number-library.html)                   | Number types: fraction, complex, quaternion.                       |
 | [printer](https://pub.dev/documentation/more/latest/printer/printer-library.html)                | Fluent interface to configure sophisticated formatter.             |
 | [temporal](https://pub.dev/documentation/more/latest/temporal/temporal-library.html)             | Extensions to `DateTime` and `Duration` types.                     | 
-| [tuple](https://pub.dev/documentation/more/latest/tuple/tuple-library.html)                      | Fluent extensions on generic records.                              |
+| [tuple](https://pub.dev/documentation/more/latest/tuple/tuple-library.html)                      | Tuple extension methods on generic records.                       |
 
 And there are more to come ...
 

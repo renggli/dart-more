@@ -1,4 +1,4 @@
-/// Tuple with 9 elements.
+/// Extension methods on [Record] with 9 positional elements.
 extension Tuple9<T1, T2, T3, T4, T5, T6, T7, T8, T9> on (
   T1,
   T2,
@@ -142,6 +142,13 @@ extension Tuple9<T1, T2, T3, T4, T5, T6, T7, T8, T9> on (
   (T1, T2, T3, T4, T5, T6, T7, T8) removeLast() =>
       ($1, $2, $3, $4, $5, $6, $7, $8);
 
+  /// Applies the values of this tuple to an 9-ary function.
+  R map<R>(
+          R Function(T1 first, T2 second, T3 third, T4 fourth, T5 fifth,
+                  T6 sixth, T7 seventh, T8 eighth, T9 ninth)
+              callback) =>
+      callback($1, $2, $3, $4, $5, $6, $7, $8, $9);
+
   /// An (untyped) [Iterable] over the values of this tuple.
   Iterable<Object?> get iterable sync* {
     yield $1;
@@ -160,11 +167,4 @@ extension Tuple9<T1, T2, T3, T4, T5, T6, T7, T8, T9> on (
 
   /// An (untyped) [Set] with the unique values of this tuple.
   Set<Object?> toSet() => {$1, $2, $3, $4, $5, $6, $7, $8, $9};
-
-  /// Applies the values of this tuple to an 9-ary function.
-  R map<R>(
-          R Function(T1 first, T2 second, T3 third, T4 fourth, T5 fifth,
-                  T6 sixth, T7 seventh, T8 eighth, T9 ninth)
-              callback) =>
-      callback($1, $2, $3, $4, $5, $6, $7, $8, $9);
 }

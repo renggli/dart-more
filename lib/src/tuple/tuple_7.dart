@@ -1,4 +1,4 @@
-/// Tuple with 7 elements.
+/// Extension methods on [Record] with 7 positional elements.
 extension Tuple7<T1, T2, T3, T4, T5, T6, T7> on (T1, T2, T3, T4, T5, T6, T7) {
   /// List constructor.
   static (T, T, T, T, T, T, T) fromList<T>(List<T> list) {
@@ -128,6 +128,13 @@ extension Tuple7<T1, T2, T3, T4, T5, T6, T7> on (T1, T2, T3, T4, T5, T6, T7) {
   /// Returns a new tuple with the last element removed.
   (T1, T2, T3, T4, T5, T6) removeLast() => ($1, $2, $3, $4, $5, $6);
 
+  /// Applies the values of this tuple to an 7-ary function.
+  R map<R>(
+          R Function(T1 first, T2 second, T3 third, T4 fourth, T5 fifth,
+                  T6 sixth, T7 seventh)
+              callback) =>
+      callback($1, $2, $3, $4, $5, $6, $7);
+
   /// An (untyped) [Iterable] over the values of this tuple.
   Iterable<Object?> get iterable sync* {
     yield $1;
@@ -144,11 +151,4 @@ extension Tuple7<T1, T2, T3, T4, T5, T6, T7> on (T1, T2, T3, T4, T5, T6, T7) {
 
   /// An (untyped) [Set] with the unique values of this tuple.
   Set<Object?> toSet() => {$1, $2, $3, $4, $5, $6, $7};
-
-  /// Applies the values of this tuple to an 7-ary function.
-  R map<R>(
-          R Function(T1 first, T2 second, T3 third, T4 fourth, T5 fifth,
-                  T6 sixth, T7 seventh)
-              callback) =>
-      callback($1, $2, $3, $4, $5, $6, $7);
 }

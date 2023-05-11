@@ -66,10 +66,39 @@ Future<void> format(File file) async =>
 Future<void> generateExport() async {
   final file = exportFile;
   final out = file.openWrite();
-  out.writeln('/// Tuple operations based on generic records.');
+  out.writeln('/// Tuple extension methods on generic records.');
+  out.writeln('export \'src/tuple/tuple.dart\';');
   for (var i = 0; i < max; i++) {
     out.writeln('export \'src/tuple/tuple_$i.dart\';');
   }
+  await out.close();
+  await format(file);
+}
+
+Future<void> generateAbstract() async {
+  final file = abstractFile;
+  final out = file.openWrite();
+  for (var i = 0; i < max; i++) {
+    out.writeln('import \'tuple_$i.dart\';');
+  }
+  out.writeln();
+
+  out.writeln('/// Extension methods on [Record].');
+  out.writeln('extension Tuple on Record {');
+
+  out.writeln('/// List constructor.');
+  out.writeln('static Record fromList<T>(List<T> list) =>');
+  out.writeln('switch (list.length) {');
+  for (var i = 0; i < max; i++) {
+    out.writeln('$i => Tuple$i.fromList(list),');
+  }
+  out.writeln('_ =>');
+  out.writeln('throw ArgumentError.value(list, \'list\', '
+      '\'Length \${list.length} not in range 0..${max - 1}\'),');
+  out.writeln('};');
+  out.writeln();
+
+  out.writeln('}');
   await out.close();
   await format(file);
 }
@@ -80,7 +109,8 @@ Future<void> generateImplementation(int i) async {
   final types = generateTypes(i);
   final values = generateValues(i);
 
-  out.writeln('/// Tuple with $i element${i != 1 ? 's' : ''}.');
+  out.writeln('/// Extension methods on [Record] with $i positional '
+      'element${i != 1 ? 's' : ''}.');
   out.writeln('extension Tuple$i${generify(types)} on ${recordify(types)} {');
 
   // constructors
@@ -181,6 +211,14 @@ Future<void> generateImplementation(int i) async {
     }
   }
 
+  // map
+  final typeAndOrdinals =
+      [types, ordinals].zip().map((value) => value.join(' '));
+  out.writeln();
+  out.writeln('/// Applies the values of this tuple to an $i-ary function.');
+  out.writeln('R map<R>(R Function(${listify(typeAndOrdinals)}) callback) => ');
+  out.writeln('callback(${listify(values)});');
+
   // iterable
   out.writeln();
   out.writeln('/// An (untyped) [Iterable] over the values of this tuple.');
@@ -195,14 +233,6 @@ Future<void> generateImplementation(int i) async {
   out.writeln();
   out.writeln('/// An (untyped) [Set] with the unique values of this tuple.');
   out.writeln('Set<Object?> toSet() => {${listify(values)}};');
-
-  // map
-  final typeAndOrdinals =
-      [types, ordinals].zip().map((value) => value.join(' '));
-  out.writeln();
-  out.writeln('/// Applies the values of this tuple to an $i-ary function.');
-  out.writeln('R map<R>(R Function(${listify(typeAndOrdinals)}) callback) => ');
-  out.writeln('callback(${listify(values)});');
 
   out.writeln('}');
   await out.close();
@@ -232,6 +262,13 @@ Future<void> generateTest() async {
         numbers = List.generate(i, (i) => '${generator.nextInt(256)}');
       } while (Set.of(numbers).length != i);
       out.writeln('const tuple = ${recordify(numbers)};');
+      nest('test', 'Tuple.fromList', () {
+        final many = List.generate(max, (i) => '${generator.nextInt(256)}');
+        out.writeln('final other = Tuple.fromList([${listify(numbers)}]);');
+        out.writeln('expect(other, tuple);');
+        out.writeln('expect(() => Tuple.fromList([${listify(many)}]), '
+            'throwsArgumentError);');
+      });
       nest('test', 'fromList', () {
         final many = List.generate(i + 1, (i) => '${generator.nextInt(256)}');
         out.writeln('final other = Tuple$i.fromList([${listify(numbers)}]);');
@@ -314,15 +351,6 @@ Future<void> generateTest() async {
       nest('test', 'length', () {
         out.writeln('expect(tuple.length, $i);');
       });
-      nest('test', 'iterable', () {
-        out.writeln('expect(tuple.iterable, <Object>[${listify(numbers)}]);');
-      });
-      nest('test', 'toList', () {
-        out.writeln('expect(tuple.toList(), <Object>[${listify(numbers)}]);');
-      });
-      nest('test', 'toSet', () {
-        out.writeln('expect(tuple.toSet(), <Object>{${listify(numbers)}});');
-      });
       nest('test', 'map', () {
         final values = ordinals.sublist(0, i);
         final result = generator.nextInt(1024);
@@ -339,6 +367,15 @@ Future<void> generateTest() async {
         }
         out.writeln('), $result);');
       });
+      nest('test', 'iterable', () {
+        out.writeln('expect(tuple.iterable, <Object>[${listify(numbers)}]);');
+      });
+      nest('test', 'toList', () {
+        out.writeln('expect(tuple.toList(), <Object>[${listify(numbers)}]);');
+      });
+      nest('test', 'toSet', () {
+        out.writeln('expect(tuple.toSet(), <Object>{${listify(numbers)}});');
+      });
     });
   }
   out.writeln('}');
@@ -349,6 +386,7 @@ Future<void> generateTest() async {
 
 Future<void> main() => Future.wait([
       generateExport(),
+      generateAbstract(),
       for (var i = 0; i < max; i++) generateImplementation(i),
       generateTest(),
     ]);
