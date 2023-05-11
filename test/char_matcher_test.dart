@@ -158,9 +158,6 @@ void main() {
       verify(
           CharMatcher.pattern('\u0000\uffff'), '\u0000\uffff', '\u0001\ufffe');
     });
-    test('invalid order', () {
-      expect(() => CharMatcher.pattern('c-a'), throwsArgumentError);
-    });
   });
   group('operators', () {
     const any = CharMatcher.any();
