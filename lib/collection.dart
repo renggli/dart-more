@@ -29,7 +29,8 @@ export 'src/collection/iterable/separated.dart' show SeparatedIterableExtension;
 export 'src/collection/iterable/to_map.dart' show ToMapIterableExtension;
 export 'src/collection/iterable/unique.dart' show UniqueIterableExtension;
 export 'src/collection/iterable/window.dart' show WindowIterableExtension;
-export 'src/collection/iterable/zip.dart' show ZipIterableExtension;
+export 'src/collection/iterable/zip.dart'
+    show ZipIterableExtension, Zip2IterableExtension;
 export 'src/collection/list/rotate.dart'
     show RotateListExtension, RotateQueueExtension;
 export 'src/collection/list/take_skip.dart' show TakeSkipListExtension;

@@ -1,7 +1,5 @@
 import 'dart:math' show Random;
 
-final _defaultRandom = Random();
-
 extension RandomIterableExtension<E> on Iterable<E> {
   /// Returns a random element from this [Iterable].
   ///
@@ -22,3 +20,5 @@ extension RandomIterableExtension<E> on Iterable<E> {
     return orElse();
   }
 }
+
+final _defaultRandom = Random();

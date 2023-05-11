@@ -1855,6 +1855,21 @@ void main() {
                 [2, 'b'],
               ]);
         });
+        test('tuple', () {
+          expect(([1, 2, 3], ['a', 'b', 'c']).zip(), [
+            (1, 'a'),
+            (2, 'b'),
+            (3, 'c'),
+          ]);
+          expect(([1, 2], ['a', 'b', 'c']).zip(), [
+            (1, 'a'),
+            (2, 'b'),
+          ]);
+          expect(([1, 2, 3], ['a', 'b']).zip(), [
+            (1, 'a'),
+            (2, 'b'),
+          ]);
+        });
       });
       group('partial', () {
         test('empty', () {
@@ -1903,6 +1918,23 @@ void main() {
                 [3, null],
               ]);
         });
+        test('tuple', () {
+          expect(([1, 2, 3], ['a', 'b', 'c']).zipPartial(), [
+            (1, 'a'),
+            (2, 'b'),
+            (3, 'c'),
+          ]);
+          expect(([1, 2], ['a', 'b', 'c']).zipPartial(), [
+            (1, 'a'),
+            (2, 'b'),
+            (null, 'c'),
+          ]);
+          expect(([1, 2, 3], ['a', 'b']).zipPartial(), [
+            (1, 'a'),
+            (2, 'b'),
+            (3, null),
+          ]);
+        });
       });
       group('partial with', () {
         test('empty', () {
@@ -1950,6 +1982,23 @@ void main() {
                 [2, 'b'],
                 [3, 0],
               ]);
+        });
+        test('tuple', () {
+          expect(([1, 2, 3], ['a', 'b', 'c']).zipPartialWith((4, 'd')), [
+            (1, 'a'),
+            (2, 'b'),
+            (3, 'c'),
+          ]);
+          expect(([1, 2], ['a', 'b', 'c']).zipPartialWith((4, 'd')), [
+            (1, 'a'),
+            (2, 'b'),
+            (4, 'c'),
+          ]);
+          expect(([1, 2, 3], ['a', 'b']).zipPartialWith((4, 'd')), [
+            (1, 'a'),
+            (2, 'b'),
+            (3, 'd'),
+          ]);
         });
       });
     });
