@@ -6,6 +6,7 @@
 * Reimplement `Tuple` on top of records:
   * Replace types like `Tuple2<String, int>` with `(String, int)`.
   * Replace constructors like `Tuple2('hello', 42)` with `('hello', 42)`.
+* Add `Iterable.pairwise` over the successive overlapping pairs.
 
 ## 3.10.0
 * Add a growable `BitList`, make it behave more like `List<bool>`.

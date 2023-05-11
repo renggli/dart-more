@@ -1030,6 +1030,28 @@ void main() {
         });
       });
     });
+    group('pairwise', () {
+      test('empty', () {
+        final iterator = <int>[].pairwise();
+        expect(iterator, isEmpty);
+      });
+      test('1 element', () {
+        final iterator = <int>[1].pairwise();
+        expect(iterator, isEmpty);
+      });
+      test('2 elements', () {
+        final iterator = <int>[1, 2].pairwise();
+        expect(iterator, [(1, 2)]);
+      });
+      test('3 elements', () {
+        final iterator = <int>[1, 2, 3].pairwise();
+        expect(iterator, [(1, 2), (2, 3)]);
+      });
+      test('4 elements', () {
+        final iterator = <int>[1, 2, 3, 4].pairwise();
+        expect(iterator, [(1, 2), (2, 3), (3, 4)]);
+      });
+    });
     group('permutations', () {
       group('full permutations', () {
         test('empty', () {

@@ -16,6 +16,7 @@ export 'src/collection/iterable/indexed.dart'
     show IndexedIterableExtension, IndexedMapEntryExtension, Indexed;
 export 'src/collection/iterable/iterate.dart' show iterate;
 export 'src/collection/iterable/operators.dart' show OperatorsIterableExtension;
+export 'src/collection/iterable/pairwise.dart' show PairwiseIterableExtension;
 export 'src/collection/iterable/permutations.dart'
     show PermutationIterableExtension, PermutationComparableListExtension;
 export 'src/collection/iterable/power_set.dart' show PowerSetIterableExtension;
