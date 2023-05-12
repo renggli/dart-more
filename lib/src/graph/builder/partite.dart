@@ -1,8 +1,10 @@
 import '../builder.dart';
 import '../graph.dart';
+import 'empty.dart';
 
 /// https://mathworld.wolfram.com/Completek-PartiteGraph.html
 extension PartiteGraphBuilderExtension<V, E> on GraphBuilder<V, E> {
+  /// Creates a partite [Graph] with a number of vertices on each layer.
   Graph<V, E> partite({required Iterable<int> vertexCounts}) {
     final parts = vertexCounts.toList();
     final offsets = parts

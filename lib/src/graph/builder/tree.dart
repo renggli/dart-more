@@ -4,13 +4,14 @@ import 'package:collection/collection.dart';
 
 import '../builder.dart';
 import '../graph.dart';
+import 'empty.dart';
 
 /// Creates m-ary trees (also known as n-ary, k-ary or k-way tree) in which each
 /// node has no more than m children.
 ///
 /// See https://en.wikipedia.org/wiki/M-ary_tree.
 extension TreeGraphBuilderExtension<V, E> on GraphBuilder<V, E> {
-  /// Returns a complete tree with [vertexCount] nodes and a branching factor of
+  /// Creates a complete tree with [vertexCount] nodes and a branching factor of
   /// [arity]. By definition it is completely filled on every level except for
   /// the last one; where all the nodes are as far left as possible.
   Graph<V, E> completeTree({required int vertexCount, int arity = 2}) {
@@ -32,7 +33,7 @@ extension TreeGraphBuilderExtension<V, E> on GraphBuilder<V, E> {
     return graph;
   }
 
-  /// Returns a perfectly balanced tree of [height] and a branching factor of
+  /// Creates a perfectly balanced tree of [height] and a branching factor of
   /// [arity]. In the resulting tree all leaf nodes are at the same depth.
   Graph<V, E> prefectTree({required int height, int arity = 2}) => completeTree(
         vertexCount: arity == 1

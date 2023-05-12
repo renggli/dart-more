@@ -4,6 +4,7 @@ import '../../collection/range/integer.dart';
 import '../builder.dart';
 import '../graph.dart';
 import 'complete.dart';
+import 'empty.dart';
 
 /// Creates random graphs using different models.
 extension RandomGraphBuilderExtension<V, E> on GraphBuilder<V, E> {

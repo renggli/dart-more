@@ -3,6 +3,7 @@ export 'src/graph/builder.dart' show GraphBuilder;
 export 'src/graph/builder/atlas.dart' show AtlasGraphBuilderExtension;
 export 'src/graph/builder/collection.dart' show CollectionGraphBuilderExtension;
 export 'src/graph/builder/complete.dart' show CompleteGraphBuilderExtension;
+export 'src/graph/builder/empty.dart' show EmptyGraphBuilderExtension;
 export 'src/graph/builder/partite.dart' show PartiteGraphBuilderExtension;
 export 'src/graph/builder/path.dart' show PathGraphBuilderExtension;
 export 'src/graph/builder/random.dart' show RandomGraphBuilderExtension;

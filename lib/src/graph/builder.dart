@@ -8,6 +8,7 @@ import 'strategy.dart';
 typedef VertexProvider<V> = V Function(int index);
 typedef EdgeProvider<V, E> = E Function(V source, V target);
 
+/// Builds common graphs efficiently.
 class GraphBuilder<V, E> {
   GraphBuilder({
     this.isDirected = true,
@@ -18,15 +19,20 @@ class GraphBuilder<V, E> {
   })  : random = random ?? Random(),
         vertexStrategy = vertexStrategy ?? StorageStrategy<V>.defaultStrategy();
 
+  /// Flag indicating if the graph is directed.
   final bool isDirected;
-  final VertexProvider<V>? vertexProvider;
-  final EdgeProvider<V, E>? edgeProvider;
-  final Random random;
-  final StorageStrategy<V> vertexStrategy;
 
-  Graph<V, E> empty() => isDirected
-      ? Graph<V, E>.directed(vertexStrategy: vertexStrategy)
-      : Graph<V, E>.undirected(vertexStrategy: vertexStrategy);
+  /// Optional provider of vertex data.
+  final VertexProvider<V>? vertexProvider;
+
+  /// Optional provider of edge data.
+  final EdgeProvider<V, E>? edgeProvider;
+
+  /// Random generator used when creating random graphs.
+  final Random random;
+
+  /// The strategy describing how vertices are stored.
+  final StorageStrategy<V> vertexStrategy;
 
   @internal
   void addVertex(Graph<V, E> graph, V vertex) => graph.addVertex(vertex);

@@ -1,8 +1,10 @@
 import '../builder.dart';
 import '../graph.dart';
+import 'empty.dart';
 
 /// https://mathworld.wolfram.com/StarGraph.html
 extension StarGraphBuilderExtension<V, E> on GraphBuilder<V, E> {
+  /// Creates a [Graph] that forms a star.
   Graph<V, E> star({required int vertexCount}) {
     final graph = empty();
     if (vertexCount <= 0) {

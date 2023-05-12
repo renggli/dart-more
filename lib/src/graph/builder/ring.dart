@@ -1,7 +1,9 @@
 import '../builder.dart';
 import '../graph.dart';
+import 'empty.dart';
 
 extension RingGraphBuilderExtension<V, E> on GraphBuilder<V, E> {
+  /// Creates a [Graph] that forms a closed ring.
   Graph<V, E> ring({required int vertexCount}) {
     final graph = empty();
     if (vertexCount <= 0) {

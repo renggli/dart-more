@@ -1,8 +1,11 @@
 import '../builder.dart';
 import '../graph.dart';
+import 'empty.dart';
 
 /// https://mathworld.wolfram.com/CompleteGraph.html
 extension CompleteGraphBuilderExtension<V, E> on GraphBuilder<V, E> {
+  /// Creates a complete [Graph] where all vertices are connected with each
+  /// other.
   Graph<V, E> complete({required int vertexCount}) {
     final graph = empty();
     for (var i = 0; i < vertexCount; i++) {

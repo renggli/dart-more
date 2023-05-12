@@ -1,8 +1,10 @@
 import '../builder.dart';
 import '../graph.dart';
+import 'empty.dart';
 
 /// https://mathworld.wolfram.com/PathGraph.html
 extension PathGraphBuilderExtension<V, E> on GraphBuilder<V, E> {
+  /// Creates a [Graph] that forms a linear path.
   Graph<V, E> path({required int vertexCount}) {
     final graph = empty();
     if (vertexCount <= 0) {

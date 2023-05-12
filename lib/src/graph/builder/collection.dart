@@ -2,6 +2,7 @@ import 'package:collection/collection.dart';
 
 import '../builder.dart';
 import '../graph.dart';
+import 'empty.dart';
 
 extension CollectionGraphBuilderExtension<V, E> on GraphBuilder<V, E> {
   /// Creates a [Graph] from a [Iterable] of chains.

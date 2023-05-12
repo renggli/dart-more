@@ -1,5 +1,6 @@
 import '../builder.dart';
 import '../graph.dart';
+import 'empty.dart';
 
 extension AtlasGraphBuilderExtension<V, E> on GraphBuilder<V, E> {
   /// Returns a graph from "An Atlas of Graphs" by Ronald C. Read and Robin J.

@@ -31,7 +31,7 @@ class Trie<K, P extends Comparable<P>, V> extends MapBase<K, V> {
   /// The [parts] define how the keys are computed and optionally provides a
   /// custom [root] node.
   factory Trie.fromIterable/*<E>*/(
-    Iterable<Object?> /*<E>*/ iterable, {
+    Iterable<Object?> /*Iterable<E>*/ iterable, {
     required GetParts<K, P> parts,
     TrieNode<K, P, V>? root,
     K Function(Object? /*E*/ element)? key,
