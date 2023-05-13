@@ -5,14 +5,11 @@ import 'reversed_edge.dart';
 
 extension ReversedGraphExtension<V, E> on Graph<V, E> {
   /// Returns a graph where all edges point in the opposite direction.
-  Graph<V, E> get reversed {
-    final self = this;
-    return self is ReversedGraph<V, E>
-        ? self.delegate
-        : self.isDirected
-            ? ReversedGraph<V, E>(self)
-            : self;
-  }
+  Graph<V, E> get reversed => switch (this) {
+        ReversedGraph<V, E>(delegate: final delegate) => delegate,
+        Graph<V, E>(isDirected: true) => ReversedGraph<V, E>(this),
+        _ => this
+      };
 }
 
 class ReversedGraph<V, E> extends Graph<V, E> {

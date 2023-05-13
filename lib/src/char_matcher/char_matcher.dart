@@ -88,17 +88,13 @@ abstract class CharMatcher with ToStringPrinter implements Pattern {
 
   /// Returns a matcher that matches any character matched by either this
   /// matcher or [other].
-  CharMatcher operator |(CharMatcher other) {
-    if (other is AnyCharMatcher) {
-      return other;
-    } else if (other is NoneCharMatcher) {
-      return this;
-    } else if (other is DisjunctiveCharMatcher) {
-      return DisjunctiveCharMatcher([this, ...other.matchers]);
-    } else {
-      return DisjunctiveCharMatcher([this, other]);
-    }
-  }
+  CharMatcher operator |(CharMatcher other) => switch (other) {
+        AnyCharMatcher() => other,
+        NoneCharMatcher() => this,
+        DisjunctiveCharMatcher(matchers: final matchers) =>
+          DisjunctiveCharMatcher([this, ...matchers]),
+        _ => DisjunctiveCharMatcher([this, other])
+      };
 
   /// Determines if the given character code belongs to the character class.
   bool match(int value);
