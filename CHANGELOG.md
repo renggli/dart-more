@@ -7,6 +7,7 @@
   * Replace types like `Tuple2<String, int>` with `(String, int)`.
   * Replace constructors like `Tuple2('hello', 42)` with `('hello', 42)`.
 * Add `Iterable.pairwise` over the successive overlapping pairs.
+* Add `Iterable.deepFlatten` over arbitrarily nested iterables.
 * Add `product` and `zip` extensions on tuples of iterables.
 
 ## 3.10.0

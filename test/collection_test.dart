@@ -886,6 +886,31 @@ void main() {
             [1, 2, 3, 4, 5, 6]);
       });
     });
+    group('deepFlatten', () {
+      test('empty', () {
+        expect(<int>[].deepFlatten<int>(), isEmpty);
+      });
+      test('flat', () {
+        expect([1, 2, 3, 4, 5, 6].deepFlatten<int>(), [1, 2, 3, 4, 5, 6]);
+      });
+      test('nested', () {
+        expect(
+            [
+              1,
+              2,
+              [
+                3,
+                4,
+                [5, 6]
+              ]
+            ].deepFlatten<int>(),
+            [1, 2, 3, 4, 5, 6]);
+      });
+      test('error', () {
+        expect(() => [1, "hello"].deepFlatten<int>(), throwsArgumentError);
+        expect(() => [1, null].deepFlatten<int>(), throwsArgumentError);
+      });
+    });
     group('groupBy', () {
       final example = 'aaaabbbccdaabbb'.toList();
       test('groupBy empty', () {
