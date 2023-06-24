@@ -977,6 +977,18 @@ void main() {
         final iterable = iterate<int>(1, (a) => 2 * a);
         expect(iterable.take(10), [1, 2, 4, 8, 16, 32, 64, 128, 256, 512]);
       });
+      test('infinite', () {
+        final iterable = iterate<int>(1, (a) => 2 * a);
+        expect(iterable.isEmpty, isFalse);
+        expect(iterable.isNotEmpty, isTrue);
+        expect(() => iterable.length, throwsUnsupportedError);
+        expect(() => iterable.last, throwsUnsupportedError);
+        expect(() => iterable.lastWhere((e) => true), throwsUnsupportedError);
+        expect(() => iterable.single, throwsUnsupportedError);
+        expect(() => iterable.singleWhere((e) => true), throwsUnsupportedError);
+        expect(() => iterable.toList(), throwsUnsupportedError);
+        expect(() => iterable.toSet(), throwsUnsupportedError);
+      });
     });
     group('operators', () {
       const empty = <int>[];
@@ -1428,6 +1440,18 @@ void main() {
       test('error', () {
         expect(() => repeat(6, count: -1), throwsRangeError);
       });
+      test('infinite', () {
+        final iterable = repeat(42);
+        expect(iterable.isEmpty, isFalse);
+        expect(iterable.isNotEmpty, isTrue);
+        expect(() => iterable.length, throwsUnsupportedError);
+        expect(() => iterable.last, throwsUnsupportedError);
+        expect(() => iterable.lastWhere((e) => true), throwsUnsupportedError);
+        expect(() => iterable.single, throwsUnsupportedError);
+        expect(() => iterable.singleWhere((e) => true), throwsUnsupportedError);
+        expect(() => iterable.toList(), throwsUnsupportedError);
+        expect(() => iterable.toSet(), throwsUnsupportedError);
+      });
     });
     group('repeat iterable', () {
       test('empty', () {
@@ -1459,12 +1483,16 @@ void main() {
         expect([1, 2, 3].repeat(count: 3), [1, 2, 3, 1, 2, 3, 1, 2, 3]);
       });
       test('infinite', () {
-        final infinite = iterate<int>(0, (n) => n + 1);
-        expect(infinite.repeat().take(7), [0, 1, 2, 3, 4, 5, 6]);
-        expect(infinite.repeat(count: 0), isEmpty);
-        expect(infinite.repeat(count: 1).take(7), [0, 1, 2, 3, 4, 5, 6]);
-        expect(infinite.repeat(count: 2).take(7), [0, 1, 2, 3, 4, 5, 6]);
-        expect(infinite.repeat(count: 3).take(7), [0, 1, 2, 3, 4, 5, 6]);
+        final iterable = [1, 2, 3].repeat();
+        expect(iterable.isEmpty, isFalse);
+        expect(iterable.isNotEmpty, isTrue);
+        expect(() => iterable.length, throwsUnsupportedError);
+        expect(() => iterable.last, throwsUnsupportedError);
+        expect(() => iterable.lastWhere((e) => true), throwsUnsupportedError);
+        expect(() => iterable.single, throwsUnsupportedError);
+        expect(() => iterable.singleWhere((e) => true), throwsUnsupportedError);
+        expect(() => iterable.toList(), throwsUnsupportedError);
+        expect(() => iterable.toSet(), throwsUnsupportedError);
       });
       test('error', () {
         expect(() => [1, 2, 3].repeat(count: -1), throwsRangeError);
@@ -3346,6 +3374,8 @@ void main() {
       test('unmodifiable', () {
         final list = IntegerRange(1, 5);
         expect(() => list[0] = 5, throwsUnsupportedError);
+        expect(() => list.first = 5, throwsUnsupportedError);
+        expect(() => list.last = 5, throwsUnsupportedError);
         expect(() => list.add(5), throwsUnsupportedError);
         expect(() => list.addAll([5, 6]), throwsUnsupportedError);
         expect(() => list.clear(), throwsUnsupportedError);
@@ -3474,6 +3504,8 @@ void main() {
       test('unmodifiable', () {
         final list = DoubleRange(1.0, 5.0);
         expect(() => list[0] = 5.0, throwsUnsupportedError);
+        expect(() => list.first = 5.0, throwsUnsupportedError);
+        expect(() => list.last = 5.0, throwsUnsupportedError);
         expect(() => list.add(5.0), throwsUnsupportedError);
         expect(() => list.addAll([5.0, 6.0]), throwsUnsupportedError);
         expect(() => list.clear(), throwsUnsupportedError);
@@ -3693,6 +3725,8 @@ void main() {
       test('unmodifiable', () {
         final list = BigIntRange(BigInt.from(1), BigInt.from(5));
         expect(() => list[0] = BigInt.from(5), throwsUnsupportedError);
+        expect(() => list.first = BigInt.from(5), throwsUnsupportedError);
+        expect(() => list.last = BigInt.from(5), throwsUnsupportedError);
         expect(() => list.add(BigInt.from(5)), throwsUnsupportedError);
         expect(() => list.addAll(list), throwsUnsupportedError);
         expect(() => list.clear(), throwsUnsupportedError);

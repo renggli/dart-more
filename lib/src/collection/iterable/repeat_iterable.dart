@@ -14,7 +14,7 @@ extension RepeatIterableExtension<E> on Iterable<E> {
   ///
   Iterable<E> repeat({int? count}) {
     if (count == 0 || isEmpty) {
-      return const Iterable.empty();
+      return const [];
     } else if (count == 1 || this is InfiniteIterable) {
       return this;
     } else if (count == null) {

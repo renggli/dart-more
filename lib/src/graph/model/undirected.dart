@@ -32,24 +32,24 @@ class UndirectedGraph<V, E> extends Graph<V, E> {
   Iterable<Edge<V, E>> incomingEdgesOf(V vertex) =>
       adjacency[vertex]?.entries.map(
           (inner) => UndirectedEdge<V, E>(inner.key, vertex, inner.value)) ??
-      <Edge<V, E>>[];
+      const [];
 
   @override
   Iterable<Edge<V, E>> outgoingEdgesOf(V vertex) =>
       adjacency[vertex]?.entries.map(
           (inner) => UndirectedEdge<V, E>(vertex, inner.key, inner.value)) ??
-      <Edge<V, E>>[];
+      const [];
 
   @override
   Iterable<Edge<V, E>> getEdges(V source, V target) {
     final sourceAdjacency = adjacency[source];
     return sourceAdjacency != null && sourceAdjacency.containsKey(target)
         ? [UndirectedEdge<V, E>(source, target, sourceAdjacency[target] as E)]
-        : <Edge<V, E>>[];
+        : const [];
   }
 
   @override
-  Iterable<V> neighboursOf(V vertex) => adjacency[vertex]?.keys ?? <V>[];
+  Iterable<V> neighboursOf(V vertex) => adjacency[vertex]?.keys ?? const [];
 
   @override
   Iterable<V> predecessorsOf(V vertex) => neighboursOf(vertex);

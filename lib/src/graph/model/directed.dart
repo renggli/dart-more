@@ -35,7 +35,7 @@ class DirectedGraph<V, E> extends Graph<V, E> {
           ?.incoming
           .entries
           .map((entry) => DirectedEdge<V, E>(entry.key, vertex, entry.value)) ??
-      <Edge<V, E>>[];
+      const [];
 
   @override
   Iterable<Edge<V, E>> outgoingEdgesOf(V vertex) =>
@@ -43,14 +43,14 @@ class DirectedGraph<V, E> extends Graph<V, E> {
           ?.outgoing
           .entries
           .map((entry) => DirectedEdge<V, E>(vertex, entry.key, entry.value)) ??
-      <Edge<V, E>>[];
+      const [];
 
   @override
   Iterable<Edge<V, E>> getEdges(V source, V target) {
     final targetAdjacency = adjacency[source]?.outgoing;
     return targetAdjacency != null && targetAdjacency.containsKey(target)
         ? [DirectedEdge<V, E>(source, target, targetAdjacency[target] as E)]
-        : [];
+        : const [];
   }
 
   @override
@@ -61,11 +61,11 @@ class DirectedGraph<V, E> extends Graph<V, E> {
 
   @override
   Iterable<V> predecessorsOf(V vertex) =>
-      adjacency[vertex]?.incoming.keys ?? <V>[];
+      adjacency[vertex]?.incoming.keys ?? const [];
 
   @override
   Iterable<V> successorsOf(V vertex) =>
-      adjacency[vertex]?.outgoing.keys ?? <V>[];
+      adjacency[vertex]?.outgoing.keys ?? const [];
 
   @override
   void addVertex(V vertex) => _getVertex(vertex);

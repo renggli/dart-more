@@ -530,6 +530,16 @@ void main() {
             isEdge(source: 2, target: 1, data: 'b'),
           ]);
         });
+        test('getEdges', () {
+          expect(graph.getEdges(0, 1), isEmpty);
+          expect(graph.getEdges(1, 0), [
+            isEdge(source: 1, target: 0, data: 'a'),
+          ]);
+          expect(graph.getEdges(1, 2), isEmpty);
+          expect(graph.getEdges(2, 1), [
+            isEdge(source: 2, target: 1, data: 'b'),
+          ]);
+        });
         test('neighboursOf', () {
           expect(graph.neighboursOf(0), [1]);
           expect(graph.neighboursOf(1), unorderedEquals([0, 2]));
@@ -903,6 +913,27 @@ void main() {
               isEdge(source: '0', target: '1', data: '0 -> 1'),
               isEdge(source: '1', target: '2', data: '1 -> 2'),
               isEdge(source: '2', target: '0', data: '2 -> 0'),
+            ]));
+        expectInvariants(result);
+      });
+      test('vertex and edge', () {
+        final graph = GraphBuilder<int, Point<int>>(
+                edgeProvider: (source, target) => Point(source, target),
+                isDirected: false)
+            .ring(vertexCount: 3);
+        final result = graph.map<String, String>(
+            vertex: (vertex) => vertex.toString(),
+            edge: (edge) => '${edge.data.x} <-> ${edge.data.y}');
+        expect(result.vertices, unorderedEquals(['0', '1', '2']));
+        expect(
+            result.edges,
+            unorderedEquals([
+              isEdge(source: '0', target: '1', data: '0 <-> 1'),
+              isEdge(source: '0', target: '2', data: '2 <-> 0'),
+              isEdge(source: '1', target: '0', data: '0 <-> 1'),
+              isEdge(source: '1', target: '2', data: '1 <-> 2'),
+              isEdge(source: '2', target: '0', data: '2 <-> 0'),
+              isEdge(source: '2', target: '1', data: '1 <-> 2'),
             ]));
         expectInvariants(result);
       });
@@ -1361,6 +1392,20 @@ void main() {
       });
       group('random', () {
         group('Erdős–Rényi', () {
+          test('empty', () {
+            final graph = GraphBuilder<int, void>()
+                .randomErdosRenyi(vertexCount: 3, probability: 0.0);
+            expect(graph.vertices, hasLength(3));
+            expect(graph.edges, isEmpty);
+            expectInvariants(graph);
+          });
+          test('complete', () {
+            final graph = GraphBuilder<int, void>()
+                .randomErdosRenyi(vertexCount: 3, probability: 1.0);
+            expect(graph.vertices, hasLength(3));
+            expect(graph.edges, hasLength(6));
+            expectInvariants(graph);
+          });
           test('directed', () {
             final graph = GraphBuilder<int, void>(
                     isDirected: true, random: Random(235711))

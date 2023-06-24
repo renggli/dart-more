@@ -43,7 +43,7 @@ class ReversedGraph<V, E> extends Graph<V, E> {
 
   @override
   Iterable<Edge<V, E>> getEdges(V source, V target) =>
-      delegate.getEdges(source, target).map((edge) => edge.reversed);
+      delegate.getEdges(target, source).map((edge) => edge.reversed);
 
   @override
   Iterable<V> neighboursOf(V vertex) => delegate.neighboursOf(vertex);

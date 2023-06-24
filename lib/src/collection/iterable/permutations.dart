@@ -22,7 +22,7 @@ extension PermutationIterableExtension<E> on Iterable<E> {
     final elements = toList(growable: false);
     count ??= elements.length;
     if (count == 0 || elements.isEmpty) {
-      return const Iterable.empty();
+      return const [];
     } else if (count == elements.length) {
       return _fullPermutations(elements);
     } else if (0 < count && count < elements.length) {

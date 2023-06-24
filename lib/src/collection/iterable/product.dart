@@ -24,7 +24,7 @@ extension ProductIterableExtension<E> on Iterable<Iterable<E>> {
   Iterable<List<E>> product({int repeat = 1}) {
     checkNonZeroPositive(repeat, 'repeat');
     if (isEmpty || any((iterable) => iterable.isEmpty)) {
-      return const Iterable.empty();
+      return const [];
     } else {
       return productNotEmpty(
           map((iterable) => iterable.toList(growable: false))

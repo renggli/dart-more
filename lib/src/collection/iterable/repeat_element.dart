@@ -12,7 +12,7 @@ import 'mixins/infinite.dart';
 ///
 Iterable<E> repeat<E>(E element, {int? count}) {
   if (count == 0) {
-    return const Iterable.empty();
+    return const [];
   } else if (count == null) {
     return RepeatElementIterable<E>(element);
   } else {
