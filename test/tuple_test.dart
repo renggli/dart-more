@@ -33,13 +33,13 @@ void main() {
       expect(tuple.map(() => 740), 740);
     });
     test('iterable', () {
-      expect(tuple.iterable, <Object>[]);
+      expect(tuple.iterable, <dynamic>[]);
     });
     test('toList', () {
-      expect(tuple.toList(), <Object>[]);
+      expect(tuple.toList(), <dynamic>[]);
     });
     test('toSet', () {
-      expect(tuple.toSet(), <Object>{});
+      expect(tuple.toSet(), <dynamic>{});
     });
   });
   group('Tuple1', () {
@@ -104,13 +104,13 @@ void main() {
       }), 100);
     });
     test('iterable', () {
-      expect(tuple.iterable, <Object>[51]);
+      expect(tuple.iterable, <dynamic>[51]);
     });
     test('toList', () {
-      expect(tuple.toList(), <Object>[51]);
+      expect(tuple.toList(), <dynamic>[51]);
     });
     test('toSet', () {
-      expect(tuple.toSet(), <Object>{51});
+      expect(tuple.toSet(), <dynamic>{51});
     });
   });
   group('Tuple2', () {
@@ -202,13 +202,13 @@ void main() {
       }), 686);
     });
     test('iterable', () {
-      expect(tuple.iterable, <Object>[110, 80]);
+      expect(tuple.iterable, <dynamic>[110, 80]);
     });
     test('toList', () {
-      expect(tuple.toList(), <Object>[110, 80]);
+      expect(tuple.toList(), <dynamic>[110, 80]);
     });
     test('toSet', () {
-      expect(tuple.toSet(), <Object>{110, 80});
+      expect(tuple.toSet(), <dynamic>{110, 80});
     });
   });
   group('Tuple3', () {
@@ -331,13 +331,13 @@ void main() {
       }), 298);
     });
     test('iterable', () {
-      expect(tuple.iterable, <Object>[10, 221, 217]);
+      expect(tuple.iterable, <dynamic>[10, 221, 217]);
     });
     test('toList', () {
-      expect(tuple.toList(), <Object>[10, 221, 217]);
+      expect(tuple.toList(), <dynamic>[10, 221, 217]);
     });
     test('toSet', () {
-      expect(tuple.toSet(), <Object>{10, 221, 217});
+      expect(tuple.toSet(), <dynamic>{10, 221, 217});
     });
   });
   group('Tuple4', () {
@@ -500,13 +500,13 @@ void main() {
       }), 498);
     });
     test('iterable', () {
-      expect(tuple.iterable, <Object>[211, 158, 121, 55]);
+      expect(tuple.iterable, <dynamic>[211, 158, 121, 55]);
     });
     test('toList', () {
-      expect(tuple.toList(), <Object>[211, 158, 121, 55]);
+      expect(tuple.toList(), <dynamic>[211, 158, 121, 55]);
     });
     test('toSet', () {
-      expect(tuple.toSet(), <Object>{211, 158, 121, 55});
+      expect(tuple.toSet(), <dynamic>{211, 158, 121, 55});
     });
   });
   group('Tuple5', () {
@@ -712,13 +712,13 @@ void main() {
       }), 558);
     });
     test('iterable', () {
-      expect(tuple.iterable, <Object>[32, 108, 10, 131, 83]);
+      expect(tuple.iterable, <dynamic>[32, 108, 10, 131, 83]);
     });
     test('toList', () {
-      expect(tuple.toList(), <Object>[32, 108, 10, 131, 83]);
+      expect(tuple.toList(), <dynamic>[32, 108, 10, 131, 83]);
     });
     test('toSet', () {
-      expect(tuple.toSet(), <Object>{32, 108, 10, 131, 83});
+      expect(tuple.toSet(), <dynamic>{32, 108, 10, 131, 83});
     });
   });
   group('Tuple6', () {
@@ -973,13 +973,13 @@ void main() {
       }), 533);
     });
     test('iterable', () {
-      expect(tuple.iterable, <Object>[5, 70, 64, 157, 108, 217]);
+      expect(tuple.iterable, <dynamic>[5, 70, 64, 157, 108, 217]);
     });
     test('toList', () {
-      expect(tuple.toList(), <Object>[5, 70, 64, 157, 108, 217]);
+      expect(tuple.toList(), <dynamic>[5, 70, 64, 157, 108, 217]);
     });
     test('toSet', () {
-      expect(tuple.toSet(), <Object>{5, 70, 64, 157, 108, 217});
+      expect(tuple.toSet(), <dynamic>{5, 70, 64, 157, 108, 217});
     });
   });
   group('Tuple7', () {
@@ -1291,13 +1291,13 @@ void main() {
       }), 439);
     });
     test('iterable', () {
-      expect(tuple.iterable, <Object>[81, 171, 110, 138, 191, 17, 53]);
+      expect(tuple.iterable, <dynamic>[81, 171, 110, 138, 191, 17, 53]);
     });
     test('toList', () {
-      expect(tuple.toList(), <Object>[81, 171, 110, 138, 191, 17, 53]);
+      expect(tuple.toList(), <dynamic>[81, 171, 110, 138, 191, 17, 53]);
     });
     test('toSet', () {
-      expect(tuple.toSet(), <Object>{81, 171, 110, 138, 191, 17, 53});
+      expect(tuple.toSet(), <dynamic>{81, 171, 110, 138, 191, 17, 53});
     });
   });
   group('Tuple8', () {
@@ -1672,13 +1672,13 @@ void main() {
       }), 777);
     });
     test('iterable', () {
-      expect(tuple.iterable, <Object>[153, 63, 4, 238, 254, 200, 37, 244]);
+      expect(tuple.iterable, <dynamic>[153, 63, 4, 238, 254, 200, 37, 244]);
     });
     test('toList', () {
-      expect(tuple.toList(), <Object>[153, 63, 4, 238, 254, 200, 37, 244]);
+      expect(tuple.toList(), <dynamic>[153, 63, 4, 238, 254, 200, 37, 244]);
     });
     test('toSet', () {
-      expect(tuple.toSet(), <Object>{153, 63, 4, 238, 254, 200, 37, 244});
+      expect(tuple.toSet(), <dynamic>{153, 63, 4, 238, 254, 200, 37, 244});
     });
   });
   group('Tuple9', () {
@@ -1970,16 +1970,16 @@ void main() {
       }), 757);
     });
     test('iterable', () {
-      expect(
-          tuple.iterable, <Object>[209, 229, 246, 244, 122, 206, 164, 55, 173]);
+      expect(tuple.iterable,
+          <dynamic>[209, 229, 246, 244, 122, 206, 164, 55, 173]);
     });
     test('toList', () {
-      expect(
-          tuple.toList(), <Object>[209, 229, 246, 244, 122, 206, 164, 55, 173]);
+      expect(tuple.toList(),
+          <dynamic>[209, 229, 246, 244, 122, 206, 164, 55, 173]);
     });
     test('toSet', () {
       expect(
-          tuple.toSet(), <Object>{209, 229, 246, 244, 122, 206, 164, 55, 173});
+          tuple.toSet(), <dynamic>{209, 229, 246, 244, 122, 206, 164, 55, 173});
     });
   });
 }

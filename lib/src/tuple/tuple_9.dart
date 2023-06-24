@@ -150,7 +150,7 @@ extension Tuple9<T1, T2, T3, T4, T5, T6, T7, T8, T9> on (
       callback($1, $2, $3, $4, $5, $6, $7, $8, $9);
 
   /// An (untyped) [Iterable] over the values of this tuple.
-  Iterable<Object?> get iterable sync* {
+  Iterable<dynamic> get iterable sync* {
     yield $1;
     yield $2;
     yield $3;
@@ -163,8 +163,8 @@ extension Tuple9<T1, T2, T3, T4, T5, T6, T7, T8, T9> on (
   }
 
   /// An (untyped) [List] with the values of this tuple.
-  List<Object?> toList() => [$1, $2, $3, $4, $5, $6, $7, $8, $9];
+  List<dynamic> toList() => [$1, $2, $3, $4, $5, $6, $7, $8, $9];
 
   /// An (untyped) [Set] with the unique values of this tuple.
-  Set<Object?> toSet() => {$1, $2, $3, $4, $5, $6, $7, $8, $9};
+  Set<dynamic> toSet() => {$1, $2, $3, $4, $5, $6, $7, $8, $9};
 }

@@ -43,13 +43,13 @@ extension Tuple1<T1> on (T1,) {
   R map<R>(R Function(T1 first) callback) => callback($1);
 
   /// An (untyped) [Iterable] over the values of this tuple.
-  Iterable<Object?> get iterable sync* {
+  Iterable<dynamic> get iterable sync* {
     yield $1;
   }
 
   /// An (untyped) [List] with the values of this tuple.
-  List<Object?> toList() => [$1];
+  List<dynamic> toList() => [$1];
 
   /// An (untyped) [Set] with the unique values of this tuple.
-  Set<Object?> toSet() => {$1};
+  Set<dynamic> toSet() => {$1};
 }

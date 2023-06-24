@@ -237,6 +237,9 @@ void main() {
       test('rightOptional', () {
         expect(either.rightOptional.isAbsent, isTrue);
       });
+      test('tuple', () {
+        expect(either.tuple, (value, null));
+      });
       test('isLeft', () {
         expect(either.isLeft, isTrue);
       });
@@ -329,6 +332,9 @@ void main() {
       });
       test('rightOptional', () {
         expect(either.rightOptional.orElseThrow(), value);
+      });
+      test('tuple', () {
+        expect(either.tuple, (null, value));
       });
       test('isLeft', () {
         expect(either.isLeft, isFalse);

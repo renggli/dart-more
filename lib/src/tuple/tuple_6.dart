@@ -115,7 +115,7 @@ extension Tuple6<T1, T2, T3, T4, T5, T6> on (T1, T2, T3, T4, T5, T6) {
       callback($1, $2, $3, $4, $5, $6);
 
   /// An (untyped) [Iterable] over the values of this tuple.
-  Iterable<Object?> get iterable sync* {
+  Iterable<dynamic> get iterable sync* {
     yield $1;
     yield $2;
     yield $3;
@@ -125,8 +125,8 @@ extension Tuple6<T1, T2, T3, T4, T5, T6> on (T1, T2, T3, T4, T5, T6) {
   }
 
   /// An (untyped) [List] with the values of this tuple.
-  List<Object?> toList() => [$1, $2, $3, $4, $5, $6];
+  List<dynamic> toList() => [$1, $2, $3, $4, $5, $6];
 
   /// An (untyped) [Set] with the unique values of this tuple.
-  Set<Object?> toSet() => {$1, $2, $3, $4, $5, $6};
+  Set<dynamic> toSet() => {$1, $2, $3, $4, $5, $6};
 }

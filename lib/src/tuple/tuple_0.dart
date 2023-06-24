@@ -22,11 +22,11 @@ extension Tuple0 on () {
   R map<R>(R Function() callback) => callback();
 
   /// An (untyped) [Iterable] over the values of this tuple.
-  Iterable<Object?> get iterable sync* {}
+  Iterable<dynamic> get iterable sync* {}
 
   /// An (untyped) [List] with the values of this tuple.
-  List<Object?> toList() => [];
+  List<dynamic> toList() => [];
 
   /// An (untyped) [Set] with the unique values of this tuple.
-  Set<Object?> toSet() => {};
+  Set<dynamic> toSet() => {};
 }

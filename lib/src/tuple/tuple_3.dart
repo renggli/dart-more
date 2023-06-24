@@ -68,15 +68,15 @@ extension Tuple3<T1, T2, T3> on (T1, T2, T3) {
       callback($1, $2, $3);
 
   /// An (untyped) [Iterable] over the values of this tuple.
-  Iterable<Object?> get iterable sync* {
+  Iterable<dynamic> get iterable sync* {
     yield $1;
     yield $2;
     yield $3;
   }
 
   /// An (untyped) [List] with the values of this tuple.
-  List<Object?> toList() => [$1, $2, $3];
+  List<dynamic> toList() => [$1, $2, $3];
 
   /// An (untyped) [Set] with the unique values of this tuple.
-  Set<Object?> toSet() => {$1, $2, $3};
+  Set<dynamic> toSet() => {$1, $2, $3};
 }

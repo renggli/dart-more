@@ -64,6 +64,9 @@ sealed class Either<L, R> {
   /// Returns the right value as an [Optional].
   Optional<R> get rightOptional;
 
+  /// Returns a tuple with either the left or right value defined.
+  (L?, R?) get tuple;
+
   /// Returns `true`, if this is a left value.
   bool get isLeft;
 
@@ -139,6 +142,9 @@ class LeftEither<L, R> extends Either<L, R> {
   Optional<R> get rightOptional => Optional<R>.absent();
 
   @override
+  (L, R?) get tuple => (leftValue, null);
+
+  @override
   bool get isLeft => true;
 
   @override
@@ -206,6 +212,9 @@ class RightEither<L, R> extends Either<L, R> {
 
   @override
   Optional<R> get rightOptional => Optional<R>.of(rightValue);
+
+  @override
+  (L?, R) get tuple => (null, rightValue);
 
   @override
   bool get isLeft => false;

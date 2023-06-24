@@ -222,17 +222,17 @@ Future<void> generateImplementation(int i) async {
   // iterable
   out.writeln();
   out.writeln('/// An (untyped) [Iterable] over the values of this tuple.');
-  out.writeln('Iterable<Object?> get iterable sync* {');
+  out.writeln('Iterable<dynamic> get iterable sync* {');
   for (var j = 0; j < i; j++) {
     out.writeln('yield ${values[j]};');
   }
   out.writeln('}');
   out.writeln();
   out.writeln('/// An (untyped) [List] with the values of this tuple.');
-  out.writeln('List<Object?> toList() => [${listify(values)}];');
+  out.writeln('List<dynamic> toList() => [${listify(values)}];');
   out.writeln();
   out.writeln('/// An (untyped) [Set] with the unique values of this tuple.');
-  out.writeln('Set<Object?> toSet() => {${listify(values)}};');
+  out.writeln('Set<dynamic> toSet() => {${listify(values)}};');
 
   out.writeln('}');
   await out.close();
@@ -368,13 +368,13 @@ Future<void> generateTest() async {
         out.writeln('), $result);');
       });
       nest('test', 'iterable', () {
-        out.writeln('expect(tuple.iterable, <Object>[${listify(numbers)}]);');
+        out.writeln('expect(tuple.iterable, <dynamic>[${listify(numbers)}]);');
       });
       nest('test', 'toList', () {
-        out.writeln('expect(tuple.toList(), <Object>[${listify(numbers)}]);');
+        out.writeln('expect(tuple.toList(), <dynamic>[${listify(numbers)}]);');
       });
       nest('test', 'toSet', () {
-        out.writeln('expect(tuple.toSet(), <Object>{${listify(numbers)}});');
+        out.writeln('expect(tuple.toSet(), <dynamic>{${listify(numbers)}});');
       });
     });
   }
