@@ -1,21 +1,19 @@
-import '../../../functional.dart';
-
 extension PredicateComparator<T> on Comparator<T> {
-  /// Creates a predicate that evaluates to `true` for values equal to [a].
-  Predicate1<T> equalTo(T a) => (T b) => this(a, b) == 0;
+  /// A predicate that evaluates to `true` if [a] equals [b].
+  bool equalTo(T a, T b) => this(a, b) == 0;
 
-  /// Creates a predicate that evaluates to `true` for values equal to [a].
-  Predicate1<T> notEqualTo(T a) => (T b) => this(a, b) != 0;
+  /// A predicate that evaluates to `true` if [a] not equals to [b].
+  bool notEqualTo(T a, T b) => this(a, b) != 0;
 
-  /// Creates a predicate that evaluates to `true` for values smaller than [a].
-  Predicate1<T> lessThan(T a) => (T b) => this(a, b) > 0;
+  /// A predicate that evaluates to `true` if [a] is smaller than [b].
+  bool lessThan(T a, T b) => this(a, b) < 0;
 
-  /// Creates a predicate that evaluates to `true` for values at most [a].
-  Predicate1<T> lessThanOrEqualTo(T a) => (T b) => this(a, b) >= 0;
+  /// A predicate that evaluates to `true` if [a] is smaller or equal to [b].
+  bool lessThanOrEqualTo(T a, T b) => this(a, b) <= 0;
 
-  /// Creates a predicate that evaluates to `true` for values more than [a].
-  Predicate1<T> greaterThan(T a) => (T b) => this(a, b) < 0;
+  /// A predicate that evaluates to `true` if [a] is larger than [b].
+  bool greaterThan(T a, T b) => this(a, b) > 0;
 
-  /// Creates a predicate that evaluates to `true` for values at least [a].
-  Predicate1<T> greaterThanOrEqualTo(T a) => (T b) => this(a, b) <= 0;
+  /// A predicate that evaluates to `true` if [a] is larger or equal to [b].
+  bool greaterThanOrEqualTo(T a, T b) => this(a, b) >= 0;
 }

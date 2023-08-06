@@ -20,29 +20,29 @@ void verifyBasic<T>(String type, Comparator<T> comparator, Iterable<T> unsorted,
     final curr = uniques[i];
     final next = uniques[i + 1];
     // equalTo
-    expect(comparator.equalTo(curr)(curr), isTrue);
-    expect(comparator.equalTo(curr)(next), isFalse);
-    expect(comparator.equalTo(next)(curr), isFalse);
-    // equalTo
-    expect(comparator.notEqualTo(curr)(curr), isFalse);
-    expect(comparator.notEqualTo(curr)(next), isTrue);
-    expect(comparator.notEqualTo(next)(curr), isTrue);
+    expect(comparator.equalTo(curr, curr), isTrue);
+    expect(comparator.equalTo(curr, next), isFalse);
+    expect(comparator.equalTo(next, curr), isFalse);
+    // notEqualTo
+    expect(comparator.notEqualTo(curr, curr), isFalse);
+    expect(comparator.notEqualTo(curr, next), isTrue);
+    expect(comparator.notEqualTo(next, curr), isTrue);
     // lessThan
-    expect(comparator.lessThan(curr)(curr), isFalse);
-    expect(comparator.lessThan(curr)(next), isFalse);
-    expect(comparator.lessThan(next)(curr), isTrue);
+    expect(comparator.lessThan(curr, curr), isFalse);
+    expect(comparator.lessThan(curr, next), isTrue);
+    expect(comparator.lessThan(next, curr), isFalse);
     // lessThanOrEqualTo
-    expect(comparator.lessThanOrEqualTo(curr)(curr), isTrue);
-    expect(comparator.lessThanOrEqualTo(curr)(next), isFalse);
-    expect(comparator.lessThanOrEqualTo(next)(curr), isTrue);
+    expect(comparator.lessThanOrEqualTo(curr, curr), isTrue);
+    expect(comparator.lessThanOrEqualTo(curr, next), isTrue);
+    expect(comparator.lessThanOrEqualTo(next, curr), isFalse);
     // greaterThan
-    expect(comparator.greaterThan(curr)(curr), isFalse);
-    expect(comparator.greaterThan(curr)(next), isTrue);
-    expect(comparator.greaterThan(next)(curr), isFalse);
+    expect(comparator.greaterThan(curr, curr), isFalse);
+    expect(comparator.greaterThan(curr, next), isFalse);
+    expect(comparator.greaterThan(next, curr), isTrue);
     // greaterThanOrEqualTo
-    expect(comparator.greaterThanOrEqualTo(curr)(curr), isTrue);
-    expect(comparator.greaterThanOrEqualTo(curr)(next), isTrue);
-    expect(comparator.greaterThanOrEqualTo(next)(curr), isFalse);
+    expect(comparator.greaterThanOrEqualTo(curr, curr), isTrue);
+    expect(comparator.greaterThanOrEqualTo(curr, next), isFalse);
+    expect(comparator.greaterThanOrEqualTo(next, curr), isTrue);
   }
   if (sorted.isNotEmpty) {
     expect(comparator.minOf(unsorted), expected.first,
