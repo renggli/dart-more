@@ -1,6 +1,6 @@
 import 'dart:io';
 
-import 'package:more/collection.dart';
+import 'package:more/more.dart';
 
 /// Number of tuples to generate (exclusive).
 const int max = 11;
@@ -30,6 +30,9 @@ String listify(Iterable<String> values) => values.join(', ');
 /// Wraps a list of types in generics brackets.
 String generify(Iterable<String> types) =>
     types.isEmpty ? '' : '<${listify(types)}>';
+
+/// Pretty printer for ordinal numbers.
+final ordinal = OrdinalNumberPrinter();
 
 Future<void> generateCallback() async {
   final file = getFile('callback');
@@ -167,6 +170,80 @@ Future<void> generateThrowing() async {
   await format(file);
 }
 
+Future<void> generatePartial() async {
+  final file = getFile('partial');
+  final out = file.openWrite();
+
+  out.writeln('/// Binds positional arguments and returns a new function:');
+  out.writeln('/// https://en.wikipedia.org/wiki/Partial_application');
+  out.writeln("import 'mapping.dart';");
+  out.writeln();
+
+  for (var i = 1; i < max; i++) {
+    final types = [...generateTypes(i), 'R'];
+    final argsAndTypes = generateTypeAndArgs(i);
+    final args = generateArgs(i);
+
+    out.writeln('extension Partial$i${generify(types)} '
+        'on Map$i${generify(types)} {');
+
+    for (var j = 0; j < i; j++) {
+      final resultType = types.toList()..removeAt(j);
+      final unboundArgs = argsAndTypes.toList()..removeAt(j);
+      out.writeln('/// Returns a new function with the ${ordinal.print(j)} '
+          'argument bound to `arg$j`.');
+      out.writeln('Map${i - 1}${generify(resultType)} '
+          'bind$j(${argsAndTypes[j]}) => ');
+      out.writeln('(${listify(unboundArgs)}) => this(${listify(args)});');
+      out.writeln();
+    }
+
+    out.writeln('}');
+    out.writeln();
+  }
+
+  await out.close();
+  await format(file);
+}
+
+Future<void> generateCurry() async {
+  final file = getFile('curry');
+  final out = file.openWrite();
+
+  out.writeln('/// Converts a function with positional arguments into a '
+      'sequence of functions ');
+  out.writeln('/// taking a single argument: '
+      'https://en.wikipedia.org/wiki/Currying');
+  out.writeln("import 'mapping.dart';");
+  out.writeln();
+
+  for (var i = 1; i < max; i++) {
+    final types = [...generateTypes(i), 'R'];
+    final argsAndTypes = generateTypeAndArgs(i);
+    final args = generateArgs(i);
+
+    out.writeln('extension Curry$i${generify(types)} '
+        'on Map$i${generify(types)} {');
+    out.writeln('/// Converts a function with $i positional arguments into a '
+        'sequence of $i ');
+    out.writeln('/// functions taking a single argument.');
+    for (var j = 0; j < i; j++) {
+      out.write('Map1<${types[j]}, ');
+    }
+    out.write('${types.last}${'>' * i} get curry => ');
+    for (var j = 0; j < i; j++) {
+      out.write('(${argsAndTypes[j]}) =>');
+    }
+    out.writeln('this(${listify(args)});');
+
+    out.writeln('}');
+    out.writeln();
+  }
+
+  await out.close();
+  await format(file);
+}
+
 Future<void> generateTest() async {
   final file = File('test/functional_type_test.dart');
   final out = file.openWrite();
@@ -186,7 +263,7 @@ Future<void> generateTest() async {
     for (var i = 0; i < max; i++) {
       nest('test', 'constantFunction$i', () {
         final types = generify([for (var j = 0; j < i; j++) 'int', 'String']);
-        final values = List.generate(i, (i) => i).join(', ');
+        final values = listify(List.generate(i, (i) => '$i'));
         out.writeln('final function = constantFunction$i$types(\'default\');');
         out.writeln('expect(function($values), \'default\');');
       });
@@ -195,9 +272,9 @@ Future<void> generateTest() async {
   nest('group', 'empty', () {
     for (var i = 0; i < max; i++) {
       nest('test', 'emptyFunction$i', () {
-        final values = List.generate(i, (i) => i).join(', ');
-        out.writeln(
-            'expect(() => emptyFunction$i($values), isNot(throwsException));');
+        final values = listify(List.generate(i, (i) => '$i'));
+        out.writeln('expect(() => emptyFunction$i($values), '
+            'isNot(throwsException));');
       });
     }
   });
@@ -210,10 +287,43 @@ Future<void> generateTest() async {
     for (var i = 0; i < max; i++) {
       nest('test', 'throwFunction$i', () {
         final types = generify([for (var j = 0; j < i; j++) 'int']);
-        final values = List.generate(i, (i) => i).join(', ');
+        final values = listify(List.generate(i, (i) => '$i'));
         out.writeln('final function = throwFunction$i$types(throwable);');
-        out.writeln(
-            'expect(() => function($values), throwsUnimplementedError);');
+        out.writeln('expect(() => function($values), '
+            'throwsUnimplementedError);');
+      });
+    }
+  });
+  nest('group', 'partial', () {
+    for (var i = 1; i < max; i++) {
+      nest('group', '$i-ary function', () {
+        for (var j = 0; j < i; j++) {
+          nest('test', 'bind ${ordinal.print(j)} argument', () {
+            final args = generateArgs(i);
+            final typesAndArgs = args.map((each) => 'int $each');
+            out.writeln('List<int> function(${listify(typesAndArgs)}) => '
+                '[${listify(args)}];');
+            out.writeln('final bound = function.bind$j(-1);');
+            final arguments = List.generate(i - 1, (i) => '$i');
+            final expected = arguments.toList()..insert(j, '-1');
+            out.writeln('expect(bound(${listify(arguments)}), '
+                '[${listify(expected)}]);');
+          });
+        }
+      });
+    }
+  });
+  nest('group', 'curry', () {
+    for (var i = 1; i < max; i++) {
+      nest('test', '$i-ary function', () {
+        final args = generateArgs(i);
+        final typesAndArgs = args.map((each) => 'int $each');
+        out.writeln('List<int> function(${listify(typesAndArgs)}) => '
+            '[${listify(args)}];');
+        final calls = List.generate(i, (i) => '($i)');
+        final result = List.generate(i, (i) => '$i');
+        out.writeln('expect(function.curry${calls.join()}, '
+            '[${listify(result)}]);');
       });
     }
   });
@@ -225,11 +335,13 @@ Future<void> generateTest() async {
 
 Future<void> main() => Future.wait([
       generateCallback(),
-      generateMapping(),
-      generatePredicate(),
+      generateConstant(),
+      generateCurry(),
       generateEmpty(),
       generateIdentity(),
-      generateConstant(),
+      generateMapping(),
+      generatePartial(),
+      generatePredicate(),
       generateThrowing(),
       generateTest(),
     ]);

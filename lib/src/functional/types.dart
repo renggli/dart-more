@@ -5,3 +5,5 @@ export 'types/identity.dart';
 export 'types/mapping.dart';
 export 'types/predicate.dart';
 export 'types/throwing.dart';
+export 'types/curry.dart';
+export 'types/partial.dart';
