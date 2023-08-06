@@ -1,5 +1,5 @@
 name: more
-version: 4.0.0
+version: 4.0.1
 
 homepage: https://github.com/renggli/dart-more
 description: More Dart — Literally. Collecting, iterating, caching, mathematics,
@@ -10,7 +10,7 @@ environment:
 dependencies:
   characters: ^1.3.0
   clock: ^1.1.0
-  collection: ^1.17.0
+  collection: ^1.18.0
   meta: ^1.9.0
 dev_dependencies:
   args: ^2.4.0
