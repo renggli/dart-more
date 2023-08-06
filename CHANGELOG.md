@@ -9,6 +9,7 @@
 * Add `Iterable.pairwise` over the successive overlapping pairs.
 * Add `Iterable.deepFlatten` over arbitrarily nested iterables.
 * Add `product` and `zip` extensions on tuples of iterables.
+* Add partial function evaluation, and currying extensions.
 
 ## 3.10.0
 * Add a growable `BitList`, make it behave more like `List<bool>`.
