@@ -4,6 +4,12 @@ version: 4.0.1
 homepage: https://github.com/renggli/dart-more
 description: More Dart — Literally. Collecting, iterating, caching, mathematics,
   matching, ordering, and formatting easily.
+topics:
+  - collections
+  - data-structures
+  - formatting
+  - functional
+  - graph
 
 environment:
   sdk: ^3.0.0
