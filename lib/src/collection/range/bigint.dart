@@ -8,8 +8,8 @@ import '../range.dart';
 /// range essentially implements a lazy list that is also produced by the
 /// following for-loop:
 ///
-///   for (BigInt i = start; i < stop; i += step) {
-///     ...
+///     for (BigInt i = start; i < stop; i += step) {
+///       ...
 ///
 class BigIntRange extends Range<BigInt> {
   /// Creates a virtual range of numbers containing an arithmetic progressions

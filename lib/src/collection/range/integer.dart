@@ -6,8 +6,8 @@ import '../range.dart';
 /// range essentially implements a lazy list that is also produced by the
 /// following for-loop:
 ///
-///   for (int i = start; i < stop; i += step) {
-///     ...
+///     for (int i = start; i < stop; i += step) {
+///       ...
 ///
 class IntegerRange extends Range<int> {
   /// Creates a virtual range of numbers containing an arithmetic progressions

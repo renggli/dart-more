@@ -3,7 +3,7 @@ extension ZipIterableExtension<E> on Iterable<Iterable<E>> {
   /// new list. The resulting iterable has the length of the shortest input
   /// iterable.
   ///
-  /// The following expression yields [1, 'a'], [2, 'b']:
+  /// The following expression yields `[1, 'a']` and `[2, 'b']`:
   ///
   ///     [[1, 2],  ['a', 'b']].zip();
   ///

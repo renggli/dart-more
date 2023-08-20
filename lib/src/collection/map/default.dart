@@ -6,9 +6,9 @@ extension DefaultMapExtension<K, V> on Map<K, V> {
   ///
   /// For example:
   ///
-  ///    final map = {'a': 1}.withDefault(42);
-  ///    print(map['z']);                // prints '42'
-  ///    print(map.containsKey('z'));    // prints 'false'
+  ///     final map = {'a': 1}.withDefault(42);
+  ///     print(map['z']);                // prints '42'
+  ///     print(map.containsKey('z'));    // prints 'false'
   ///
   MapWithDefault<K, V> withDefault(V value) => MapWithDefault(this, value);
 }

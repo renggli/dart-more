@@ -5,7 +5,7 @@ extension RandomIterableExtension<E> on Iterable<E> {
   ///
   /// For example
   ///
-  ///    [1, 2, 3, 4, 5, 6].atRandom()
+  ///     [1, 2, 3, 4, 5, 6].atRandom()
   ///
   /// returns a random dice roll each time you call it.
   ///

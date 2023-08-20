@@ -9,7 +9,7 @@ extension OperatorsIterableExtension<E> on Iterable<E> {
   ///
   /// For example
   ///
-  ///    [3, 1, 2].min()
+  ///     [3, 1, 2].min()
   ///
   /// returns `1`.
   ///
@@ -22,7 +22,7 @@ extension OperatorsIterableExtension<E> on Iterable<E> {
   ///
   /// For example
   ///
-  ///    [3, 1, 2].smallest(2)
+  ///     [3, 1, 2].smallest(2)
   ///
   /// returns `[1, 2]`.
   ///
@@ -37,7 +37,7 @@ extension OperatorsIterableExtension<E> on Iterable<E> {
   ///
   /// For example
   ///
-  ///    [3, 1, 2].max()
+  ///     [3, 1, 2].max()
   ///
   /// returns `3`.
   ///
@@ -50,7 +50,7 @@ extension OperatorsIterableExtension<E> on Iterable<E> {
   ///
   /// For example
   ///
-  ///    [3, 1, 2].largest(2)
+  ///     [3, 1, 2].largest(2)
   ///
   /// returns `[3, 2]`.
   ///

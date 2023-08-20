@@ -5,7 +5,7 @@ import '../../shared/exceptions.dart';
 extension WindowIterableExtension<E> on Iterable<E> {
   /// Sliding window of given `size` over this [Iterable].
   ///
-  /// The following expression yields [1, 2, 3], [2, 3, 4], [3, 4, 5]:
+  /// The following expression yields `[1, 2, 3]`, `[2, 3, 4]`, and `[3, 4, 5]`:
   ///
   ///     [1, 2, 3, 4, 5].window(3);
   ///

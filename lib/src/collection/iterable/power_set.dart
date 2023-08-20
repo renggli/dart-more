@@ -12,14 +12,14 @@ extension PowerSetIterableExtension<E> on Iterable<E> {
   ///
   /// For example `['x', 'y', 'z'].powerSet()` yields the following sets:
   ///
-  ///    []
-  ///    ['x']
-  ///    ['y']
-  ///    ['z']
-  ///    ['x', 'y']
-  ///    ['x', 'z']
-  ///    ['y', 'z']
-  ///    ['x', 'y', 'z']
+  ///     []
+  ///     ['x']
+  ///     ['y']
+  ///     ['z']
+  ///     ['x', 'y']
+  ///     ['x', 'z']
+  ///     ['y', 'z']
+  ///     ['x', 'y', 'z']
   ///
   Iterable<List<E>> powerSet() sync* {
     final list = toList(growable: false);

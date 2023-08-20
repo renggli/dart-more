@@ -2,8 +2,8 @@ import 'dart:collection' show IterableBase;
 
 import 'mixins/infinite.dart';
 
-/// Returns a lazy infinite list of repeated applications of the [function] to
-/// the initial [value].
+/// Returns a lazy infinite list of repeated applications of [callback] to the
+/// initial [value].
 ///
 /// For example, the expression
 ///

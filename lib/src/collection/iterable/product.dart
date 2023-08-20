@@ -10,16 +10,16 @@ extension ProductIterableExtension<E> on Iterable<Iterable<E>> {
   ///
   /// For example, the product of `['x', 'y']` and `[1, 2, 3]` is created with
   ///
-  ///    [['x', 'y'], [1, 2, 3]].product();
+  ///     [['x', 'y'], [1, 2, 3]].product();
   ///
   /// and results in an iterable with the following elements:
   ///
-  ///    ['x', 1]
-  ///    ['x', 2]
-  ///    ['x', 3]
-  ///    ['y', 1]
-  ///    ['y', 2]
-  ///    ['y', 3]
+  ///     ['x', 1]
+  ///     ['x', 2]
+  ///     ['x', 3]
+  ///     ['y', 1]
+  ///     ['y', 2]
+  ///     ['y', 3]
   ///
   Iterable<List<E>> product({int repeat = 1}) {
     checkNonZeroPositive(repeat, 'repeat');
@@ -40,16 +40,16 @@ extension Product2IterableExtension<T1, T2> on (Iterable<T1>, Iterable<T2>) {
   ///
   /// For example, the product of `['x', 'y']` and `[1, 2, 3]` is created with
   ///
-  ///    (['x', 'y'], [1, 2, 3]).product();
+  ///     (['x', 'y'], [1, 2, 3]).product();
   ///
   /// and results in an iterable with the following tuples:
   ///
-  ///    ('x', 1)
-  ///    ('x', 2)
-  ///    ('x', 3)
-  ///    ('y', 1)
-  ///    ('y', 2)
-  ///    ('y', 3)
+  ///     ('x', 1)
+  ///     ('x', 2)
+  ///     ('x', 3)
+  ///     ('y', 1)
+  ///     ('y', 2)
+  ///     ('y', 3)
   ///
   Iterable<(T1, T2)> product() sync* {
     for (final v1 in $1) {

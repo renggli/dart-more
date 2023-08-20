@@ -9,8 +9,8 @@ extension SeparatedIterableExtension<E> on Iterable<E> {
   ///
   /// Examples:
   ///
-  ///    [1, 2, 3].separatedBy(() => 0);   // [1, 0, 2, 0, 3]
-  ///    [1, 2].separateBy(() => 0, after: () => -1);   // [1, 0, 2, -1]
+  ///     [1, 2, 3].separatedBy(() => 0);   // [1, 0, 2, 0, 3]
+  ///     [1, 2].separateBy(() => 0, after: () => -1);   // [1, 0, 2, -1]
   ///
   Iterable<E> separatedBy(Builder<E> separator,
       {Builder<E>? before, Builder<E>? after}) sync* {

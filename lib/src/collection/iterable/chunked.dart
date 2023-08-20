@@ -2,7 +2,7 @@ extension ChunkedIterableExtension<E> on Iterable<E> {
   /// Divides this [Iterable] into sub-lists of a given `size`. The final list
   /// might be smaller or equal to the desired size.
   ///
-  /// The following expression yields [1, 2], [3, 4], [5]:
+  /// The following expression yields `[1, 2]`, `[3, 4]`, and `[5]`:
   ///
   ///     [1, 2, 3, 4, 5].chunked(2);
   ///
@@ -20,7 +20,7 @@ extension ChunkedIterableExtension<E> on Iterable<E> {
   /// Divides this [Iterable] into sub-lists of a given `size`. The final list
   /// is expanded with the provided `padding`, or `null`.
   ///
-  /// The following expression yields [1, 2], [3, 4], [5, -1]:
+  /// The following expression yields `[1, 2]`, `[3, 4]`, and `[5, -1]`:
   ///
   ///     [1, 2, 3, 4, 5].chunkedWithPadding(2, -1);
   ///
