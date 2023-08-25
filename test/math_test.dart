@@ -48,7 +48,7 @@ void main() {
   group('bit', () {
     final powersOf2 = List.generate(32, (i) => math.pow(2, i).toInt());
     group('bitCount', () {
-      expectBitCount(int value, int expectedBitCount) {
+      void expectBitCount(int value, int expectedBitCount) {
         final bitCount = value.bitCount;
         expect(bitCount, expectedBitCount,
             reason: 'Expected $value (0b${value.toRadixString(2)}) '

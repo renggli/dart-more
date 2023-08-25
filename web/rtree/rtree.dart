@@ -5,11 +5,11 @@ import 'package:more/collection.dart';
 
 const guttmann = 'guttmann_';
 
-final select = querySelector('#select')! as SelectElement;
-final clear = querySelector('#clear')! as ButtonElement;
-final random = querySelector('#random')! as ButtonElement;
-final canvas = querySelector('#canvas')! as CanvasElement;
-final console = querySelector('#console')! as ParagraphElement;
+final select = querySelector('#select') as SelectElement;
+final clear = querySelector('#clear') as ButtonElement;
+final random = querySelector('#random') as ButtonElement;
+final canvas = querySelector('#canvas') as CanvasElement;
+final console = querySelector('#console') as ParagraphElement;
 
 var tree = createTree();
 var index = 0;
