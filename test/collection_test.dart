@@ -607,6 +607,23 @@ void main() {
             target.length -= 2;
             expect(target.buffer, same(buffer));
           });
+          test('length (cleared)', () {
+            final generator = Random(584);
+            for (var i = 0; i < 0xff; i++) {
+              final original = 1 + generator.nextInt(0xff);
+              final smaller = generator.nextInt(original);
+              final larger = original + generator.nextInt(0xff);
+              final target = BitList.filled(original, true, growable: growable);
+              target.length = smaller;
+              target.length = larger;
+              for (var i = 0; i < smaller; i++) {
+                expect(target[i], isTrue);
+              }
+              for (var i = smaller; i < larger; i++) {
+                expect(target[i], isFalse);
+              }
+            }
+          });
           test('removeLast', () {
             final source = randomBooleans(453, 500);
             final target = BitList.of(source, growable: growable);

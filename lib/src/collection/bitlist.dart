@@ -107,26 +107,7 @@ abstract class BitList extends ListBase<bool> {
   @override
   void fillRange(int start, int end, [bool? fill]) {
     RangeError.checkValidRange(start, end, length);
-    if (start == end) return;
-    final startIndex = start >> bitShift, startBit = start & bitOffset;
-    final endIndex = (end - 1) >> bitShift, endBit = (end - 1) & bitOffset;
-    if (startIndex == endIndex) {
-      if (fill == true) {
-        buffer[startIndex] |= ((1 << (endBit - startBit + 1)) - 1) << startBit;
-      } else {
-        buffer[startIndex] &= ((1 << startBit) - 1) | (bitMask << (endBit + 1));
-      }
-    } else {
-      if (fill == true) {
-        buffer[startIndex] |= bitMask << startBit;
-        buffer.fillRange(startIndex + 1, endIndex, bitMask);
-        buffer[endIndex] |= (1 << (endBit + 1)) - 1;
-      } else {
-        buffer[startIndex] &= (1 << startBit) - 1;
-        buffer.fillRange(startIndex + 1, endIndex, 0);
-        buffer[endIndex] &= bitMask << (endBit + 1);
-      }
-    }
+    _fillRange(buffer, start, end, fill ?? false);
   }
 
   /// Sets the bit at the specified [index] to the complement of its current
@@ -332,6 +313,10 @@ class GrowableBitList extends BitList {
       newBuffer.setRange(0, newBuffer.length, buffer);
       buffer = newBuffer;
     }
+    if (_length < length) {
+      // When growing, make sure we always have predictable state.
+      _fillRange(buffer, _length, length, false);
+    }
     _length = length;
   }
 }
@@ -425,3 +410,26 @@ const List<int> bitClearMask = [
   -1073741825,
   -2147483649
 ];
+
+void _fillRange(Uint32List buffer, int start, int end, bool? fill) {
+  if (start == end) return;
+  final startIndex = start >> bitShift, startBit = start & bitOffset;
+  final endIndex = (end - 1) >> bitShift, endBit = (end - 1) & bitOffset;
+  if (startIndex == endIndex) {
+    if (fill == true) {
+      buffer[startIndex] |= ((1 << (endBit - startBit + 1)) - 1) << startBit;
+    } else {
+      buffer[startIndex] &= ((1 << startBit) - 1) | (bitMask << (endBit + 1));
+    }
+  } else {
+    if (fill == true) {
+      buffer[startIndex] |= bitMask << startBit;
+      buffer.fillRange(startIndex + 1, endIndex, bitMask);
+      buffer[endIndex] |= (1 << (endBit + 1)) - 1;
+    } else {
+      buffer[startIndex] &= (1 << startBit) - 1;
+      buffer.fillRange(startIndex + 1, endIndex, 0);
+      buffer[endIndex] &= bitMask << (endBit + 1);
+    }
+  }
+}
