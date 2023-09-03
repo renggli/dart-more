@@ -411,21 +411,21 @@ const List<int> bitClearMask = [
   -2147483649
 ];
 
-void _fillRange(Uint32List buffer, int start, int end, bool? fill) {
+void _fillRange(Uint32List buffer, int start, int end, bool value) {
   if (start == end) return;
   final startIndex = start >> bitShift, startBit = start & bitOffset;
   final endIndex = (end - 1) >> bitShift, endBit = (end - 1) & bitOffset;
-  if (startIndex == endIndex) {
-    if (fill == true) {
+  if (value) {
+    if (startIndex == endIndex) {
       buffer[startIndex] |= ((1 << (endBit - startBit + 1)) - 1) << startBit;
     } else {
-      buffer[startIndex] &= ((1 << startBit) - 1) | (bitMask << (endBit + 1));
-    }
-  } else {
-    if (fill == true) {
       buffer[startIndex] |= bitMask << startBit;
       buffer.fillRange(startIndex + 1, endIndex, bitMask);
       buffer[endIndex] |= (1 << (endBit + 1)) - 1;
+    }
+  } else {
+    if (startIndex == endIndex) {
+      buffer[startIndex] &= ((1 << startBit) - 1) | (bitMask << (endBit + 1));
     } else {
       buffer[startIndex] &= (1 << startBit) - 1;
       buffer.fillRange(startIndex + 1, endIndex, 0);
