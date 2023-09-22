@@ -650,7 +650,7 @@ void main() {
     ];
     test('iso8691', () {
       final printer = DateTimePrinter.iso8691();
-      expect(dateTimes.map(printer), [
+      expect(dateTimes.map(printer.print), [
         '0000-01-01T00:00:00.000',
         '1980-11-06T08:25:00.000',
         '1969-07-20T20:18:04.012',
@@ -660,143 +660,143 @@ void main() {
     group('era', () {
       test('default', () {
         final printer = DateTimePrinter((builder) => builder.era());
-        expect(dateTimes.map(printer), ['BC', 'AD', 'AD', 'AD']);
+        expect(dateTimes.map(printer.print), ['BC', 'AD', 'AD', 'AD']);
       });
     });
     group('year', () {
       test('default', () {
         final printer = DateTimePrinter((builder) => builder.year());
-        expect(dateTimes.map(printer), ['0', '1980', '1969', '2023']);
+        expect(dateTimes.map(printer.print), ['0', '1980', '1969', '2023']);
       });
       test('width: 6', () {
         final printer = DateTimePrinter((builder) => builder.year(width: 6));
-        expect(
-            dateTimes.map(printer), ['000000', '001980', '001969', '002023']);
+        expect(dateTimes.map(printer.print),
+            ['000000', '001980', '001969', '002023']);
       });
     });
     group('quarter', () {
       test('default', () {
         final printer = DateTimePrinter((builder) => builder.quarter());
-        expect(dateTimes.map(printer), ['1', '4', '3', '4']);
+        expect(dateTimes.map(printer.print), ['1', '4', '3', '4']);
       });
       test('names', () {
         final names = ['Q1', 'Q2', 'Q3', 'Q4'];
         final printer =
             DateTimePrinter((builder) => builder.quarter(names: names));
-        expect(dateTimes.map(printer), ['Q1', 'Q4', 'Q3', 'Q4']);
+        expect(dateTimes.map(printer.print), ['Q1', 'Q4', 'Q3', 'Q4']);
       });
     });
     group('month', () {
       test('default', () {
         final printer = DateTimePrinter((builder) => builder.month());
-        expect(dateTimes.map(printer), ['1', '11', '7', '10']);
+        expect(dateTimes.map(printer.print), ['1', '11', '7', '10']);
       });
       test('width: 2', () {
         final printer = DateTimePrinter((builder) => builder.month(width: 2));
-        expect(dateTimes.map(printer), ['01', '11', '07', '10']);
+        expect(dateTimes.map(printer.print), ['01', '11', '07', '10']);
       });
       test('names', () {
         final names = 'JFMAMJJASOND'.split('');
         final printer =
             DateTimePrinter((builder) => builder.month(names: names));
-        expect(dateTimes.map(printer), ['J', 'N', 'J', 'O']);
+        expect(dateTimes.map(printer.print), ['J', 'N', 'J', 'O']);
       });
     });
     group('weekday', () {
       test('default', () {
         final printer = DateTimePrinter((builder) => builder.weekday());
-        expect(dateTimes.map(printer), ['6', '4', '7', '2']);
+        expect(dateTimes.map(printer.print), ['6', '4', '7', '2']);
       });
       test('names', () {
         final names = 'MTWTFSS'.split('');
         final printer =
             DateTimePrinter((builder) => builder.weekday(names: names));
-        expect(dateTimes.map(printer), ['S', 'T', 'S', 'T']);
+        expect(dateTimes.map(printer.print), ['S', 'T', 'S', 'T']);
       });
     });
     group('weekNumber', () {
       test('default', () {
         final printer = DateTimePrinter((builder) => builder.weekNumber());
-        expect(dateTimes.map(printer), ['52', '45', '29', '43']);
+        expect(dateTimes.map(printer.print), ['52', '45', '29', '43']);
       });
       test('width: 2', () {
         final printer =
             DateTimePrinter((builder) => builder.weekNumber(width: 2));
-        expect(dateTimes.map(printer), ['52', '45', '29', '43']);
+        expect(dateTimes.map(printer.print), ['52', '45', '29', '43']);
       });
     });
     group('day', () {
       test('default', () {
         final printer = DateTimePrinter((builder) => builder.day());
-        expect(dateTimes.map(printer), ['1', '6', '20', '24']);
+        expect(dateTimes.map(printer.print), ['1', '6', '20', '24']);
       });
       test('width: 2', () {
         final printer = DateTimePrinter((builder) => builder.day(width: 2));
-        expect(dateTimes.map(printer), ['01', '06', '20', '24']);
+        expect(dateTimes.map(printer.print), ['01', '06', '20', '24']);
       });
     });
     group('dayOfYear', () {
       test('default', () {
         final printer = DateTimePrinter((builder) => builder.dayOfYear());
-        expect(dateTimes.map(printer), ['1', '311', '201', '297']);
+        expect(dateTimes.map(printer.print), ['1', '311', '201', '297']);
       });
       test('width: 3', () {
         final printer =
             DateTimePrinter((builder) => builder.dayOfYear(width: 3));
-        expect(dateTimes.map(printer), ['001', '311', '201', '297']);
+        expect(dateTimes.map(printer.print), ['001', '311', '201', '297']);
       });
     });
     group('meridiem', () {
       test('default', () {
         final printer = DateTimePrinter((builder) => builder.meridiem());
-        expect(dateTimes.map(printer), ['am', 'am', 'pm', 'pm']);
+        expect(dateTimes.map(printer.print), ['am', 'am', 'pm', 'pm']);
       });
     });
     group('hour', () {
       test('default', () {
         final printer = DateTimePrinter((builder) => builder.hour());
-        expect(dateTimes.map(printer), ['0', '8', '20', '18']);
+        expect(dateTimes.map(printer.print), ['0', '8', '20', '18']);
       });
       test('width: 2', () {
         final printer = DateTimePrinter((builder) => builder.hour(width: 2));
-        expect(dateTimes.map(printer), ['00', '08', '20', '18']);
+        expect(dateTimes.map(printer.print), ['00', '08', '20', '18']);
       });
     });
     group('hour12', () {
       test('default', () {
         final printer = DateTimePrinter((builder) => builder.hour12());
-        expect(dateTimes.map(printer), ['12', '8', '8', '6']);
+        expect(dateTimes.map(printer.print), ['12', '8', '8', '6']);
       });
       test('width: 2', () {
         final printer = DateTimePrinter((builder) => builder.hour12(width: 2));
-        expect(dateTimes.map(printer), ['12', '08', '08', '06']);
+        expect(dateTimes.map(printer.print), ['12', '08', '08', '06']);
       });
     });
     group('minute', () {
       test('default', () {
         final printer = DateTimePrinter((builder) => builder.minute());
-        expect(dateTimes.map(printer), ['0', '25', '18', '8']);
+        expect(dateTimes.map(printer.print), ['0', '25', '18', '8']);
       });
       test('width: 2', () {
         final printer = DateTimePrinter((builder) => builder.minute(width: 2));
-        expect(dateTimes.map(printer), ['00', '25', '18', '08']);
+        expect(dateTimes.map(printer.print), ['00', '25', '18', '08']);
       });
     });
     group('second', () {
       test('default', () {
         final printer = DateTimePrinter((builder) => builder.second());
-        expect(dateTimes.map(printer), ['0', '0', '4', '32']);
+        expect(dateTimes.map(printer.print), ['0', '0', '4', '32']);
       });
       test('width: 2', () {
         final printer = DateTimePrinter((builder) => builder.second(width: 2));
-        expect(dateTimes.map(printer), ['00', '00', '04', '32']);
+        expect(dateTimes.map(printer.print), ['00', '00', '04', '32']);
       });
     });
     group('millisecond', () {
       test('default', () {
         final printer = DateTimePrinter((builder) => builder.millisecond());
         expect(
-            dateTimes.map(printer),
+            dateTimes.map(printer.print),
             isJavaScript
                 ? ['000', '000', '012', '272']
                 : ['000', '000', '012', '271']);
@@ -804,14 +804,14 @@ void main() {
       test('width: 2', () {
         final printer =
             DateTimePrinter((builder) => builder.millisecond(width: 2));
-        expect(dateTimes.map(printer), ['00', '00', '01', '27']);
+        expect(dateTimes.map(printer.print), ['00', '00', '01', '27']);
       });
     });
     group('microsecond', () {
       test('default', () {
         final printer = DateTimePrinter((builder) => builder.microsecond());
         expect(
-            dateTimes.map(printer),
+            dateTimes.map(printer.print),
             isJavaScript
                 ? ['000', '000', '000', '000']
                 : ['000', '000', '000', '828']);
@@ -819,13 +819,13 @@ void main() {
       test('width: 2', () {
         final printer =
             DateTimePrinter((builder) => builder.microsecond(width: 2));
-        expect(dateTimes.map(printer),
+        expect(dateTimes.map(printer.print),
             isJavaScript ? ['00', '00', '00', '00'] : ['00', '00', '00', '82']);
       });
       test('skipIfZero', () {
         final printer =
             DateTimePrinter((builder) => builder.microsecond(skipIfZero: true));
-        expect(dateTimes.map(printer),
+        expect(dateTimes.map(printer.print),
             isJavaScript ? ['', '', '', ''] : ['', '', '', '828']);
       });
     });
@@ -846,12 +846,12 @@ void main() {
     ];
     test('dart', () {
       final printer = DurationPrinter.dart();
-      expect(durations.map(printer),
+      expect(durations.map(printer.print),
           durations.map((duration) => duration.toString()));
     });
     test('iso8691', () {
       final printer = DurationPrinter.iso8601();
-      expect(durations.map(printer), [
+      expect(durations.map(printer.print), [
         'P0DT0S',
         'P33Y10M0DT0S',
         'P3Y11M3DT21H33M9S',
@@ -864,12 +864,13 @@ void main() {
     group('sign', () {
       test('default', () {
         final printer = DurationPrinter((builder) => builder.sign());
-        expect(durations.map(printer), ['', '', '', '', '', '', '-']);
+        expect(durations.map(printer.print), ['', '', '', '', '', '', '-']);
       });
       test('custom', () {
         final printer = DurationPrinter((builder) =>
             builder.sign(const SignNumberPrinter.negativeAndPositiveSign()));
-        expect(durations.map(printer), ['+', '+', '+', '+', '+', '+', '-']);
+        expect(
+            durations.map(printer.print), ['+', '+', '+', '+', '+', '+', '-']);
       });
     });
     group('part', () {
@@ -878,7 +879,7 @@ void main() {
           ..part(TimeUnit.day, FixedNumberPrinter())
           ..literal('*')
           ..part(TimeUnit.minute, FixedNumberPrinter()));
-        expect(durations.map(printer), [
+        expect(durations.map(printer.print), [
           '0*0',
           '12345*0',
           '1428*1293',
@@ -893,7 +894,7 @@ void main() {
           ..part(TimeUnit.day, FixedNumberPrinter(), skipIfZero: true)
           ..literal('*')
           ..part(TimeUnit.minute, FixedNumberPrinter(), skipIfZero: true));
-        expect(durations.map(printer), [
+        expect(durations.map(printer.print), [
           '*',
           '12345*',
           '1428*1293',
@@ -908,7 +909,7 @@ void main() {
           ..part(TimeUnit.day, FixedNumberPrinter(), absoluteValue: false)
           ..literal('*')
           ..part(TimeUnit.minute, FixedNumberPrinter(), absoluteValue: false));
-        expect(durations.map(printer), [
+        expect(durations.map(printer.print), [
           '0*0',
           '12345*0',
           '1428*1293',
@@ -923,7 +924,7 @@ void main() {
       test('default', () {
         final printer = DurationPrinter((builder) =>
             builder.full(TimeUnit.day, FixedNumberPrinter(precision: 6)));
-        expect(durations.map(printer), [
+        expect(durations.map(printer.print), [
           '0.000000',
           '12345.000000',
           '1428.898021',
@@ -937,7 +938,7 @@ void main() {
         final printer = DurationPrinter((builder) => builder.full(
             TimeUnit.day, FixedNumberPrinter(precision: 6),
             skipIfZero: true));
-        expect(durations.map(printer), [
+        expect(durations.map(printer.print), [
           '',
           '12345.000000',
           '1428.898021',
@@ -951,7 +952,7 @@ void main() {
         final printer = DurationPrinter((builder) => builder.full(
             TimeUnit.day, FixedNumberPrinter(precision: 6),
             absoluteValue: true));
-        expect(durations.map(printer), [
+        expect(durations.map(printer.print), [
           '0.000000',
           '12345.000000',
           '1428.898021',

@@ -108,13 +108,10 @@ class Quaternion implements CloseTo<Quaternion> {
         switch (unit) {
           case 'i':
             x = number ?? 1;
-            break;
           case 'j':
             y = number ?? 1;
-            break;
           case 'k':
             z = number ?? 1;
-            break;
           default:
             return null; // invalid unit
         }

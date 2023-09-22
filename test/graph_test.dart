@@ -51,8 +51,6 @@ const basicGraphData = {
   5: [3],
 };
 
-Iterable<int> basicGraph(int vertex) => basicGraphData[vertex]!;
-
 // A cyclic graph:
 //
 //        1 --> 2
@@ -70,8 +68,6 @@ const cyclicGraphData = {
   3: [1, 4],
   4: [4],
 };
-
-Iterable<int> cyclicGraph(int vertex) => cyclicGraphData[vertex]!;
 
 // The collatz graph:
 Iterable<int> collatzGraph(int vertex) =>

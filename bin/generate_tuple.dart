@@ -26,9 +26,6 @@ List<String> generateValues(int i) => List.generate(i, (i) => '\$${i + 1}');
 /// Generate the type names.
 List<String> generateTypes(int i) => List.generate(i, (i) => 'T${i + 1}');
 
-/// Generate the ordinal names.
-List<String> generateOrdinals(int i) => List.generate(i, (i) => ordinals[i]);
-
 /// Creates an argument list from types or variables.
 String listify(Iterable<String> values) => values.join(', ');
 
