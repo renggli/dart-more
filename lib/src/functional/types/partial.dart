@@ -1,5 +1,7 @@
 /// Binds positional arguments and returns a new function:
 /// https://en.wikipedia.org/wiki/Partial_application
+library partial;
+
 import 'mapping.dart';
 
 extension Partial1<T0, R> on Map1<T0, R> {

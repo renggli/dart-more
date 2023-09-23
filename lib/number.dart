@@ -1,4 +1,6 @@
 /// Support for fractional and complex arithmetic.
+library number;
+
 export 'src/number/bigint.dart' show BigIntExtension;
 export 'src/number/complex.dart' show Complex;
 export 'src/number/fraction.dart' show Fraction;

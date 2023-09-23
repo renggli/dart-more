@@ -6,7 +6,7 @@ extension ConnectedGraphExtension<V, E> on Graph<V, E> {
   /// Returns an iterable of the connected sub-graphs.
   Iterable<Graph<V, E>> connected() sync* {
     final seen = vertexStrategy.createSet();
-    for (var start in vertices) {
+    for (final start in vertices) {
       if (seen.add(start)) {
         final graph = copyEmpty(this);
         final traversal = BreadthFirstIterable([start],

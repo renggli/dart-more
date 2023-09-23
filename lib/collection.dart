@@ -1,7 +1,9 @@
 /// A collection of iterable extensions and new collection types: bi-map,
 /// bit-list, multi-set, set and list multi-map, range, and string.
+library collection;
+
 export 'src/collection/bimap.dart'
-    show BiMap, BiMapOnMapExtension, BiMapOnIterableExtension;
+    show BiMap, BiMapOnIterableExtension, BiMapOnMapExtension;
 export 'src/collection/bitlist.dart' show BitList, BitListExtension;
 export 'src/collection/heap.dart' show Heap;
 export 'src/collection/iterable/chunked.dart' show ChunkedIterableExtension;
@@ -10,19 +12,19 @@ export 'src/collection/iterable/combinations.dart'
 export 'src/collection/iterable/count.dart' show CountIterableExtension;
 export 'src/collection/iterable/flat_map.dart' show FlatMapIterableExtension;
 export 'src/collection/iterable/flatten.dart'
-    show FlattenIterableExtension, DeepFlattenIterableExtension;
+    show DeepFlattenIterableExtension, FlattenIterableExtension;
 export 'src/collection/iterable/group.dart'
-    show GroupIterableExtension, GroupMapEntryExtension, Group;
+    show Group, GroupIterableExtension, GroupMapEntryExtension;
 export 'src/collection/iterable/indexed.dart'
-    show IndexedIterableExtension, IndexedMapEntryExtension, Indexed;
+    show Indexed, IndexedIterableExtension, IndexedMapEntryExtension;
 export 'src/collection/iterable/iterate.dart' show iterate;
 export 'src/collection/iterable/operators.dart' show OperatorsIterableExtension;
 export 'src/collection/iterable/pairwise.dart' show PairwiseIterableExtension;
 export 'src/collection/iterable/permutations.dart'
-    show PermutationIterableExtension, PermutationComparableListExtension;
+    show PermutationComparableListExtension, PermutationIterableExtension;
 export 'src/collection/iterable/power_set.dart' show PowerSetIterableExtension;
 export 'src/collection/iterable/product.dart'
-    show ProductIterableExtension, Product2IterableExtension;
+    show Product2IterableExtension, ProductIterableExtension;
 export 'src/collection/iterable/random.dart' show RandomIterableExtension;
 export 'src/collection/iterable/repeat_element.dart' show repeat;
 export 'src/collection/iterable/repeat_iterable.dart'
@@ -32,7 +34,7 @@ export 'src/collection/iterable/to_map.dart' show ToMapIterableExtension;
 export 'src/collection/iterable/unique.dart' show UniqueIterableExtension;
 export 'src/collection/iterable/window.dart' show WindowIterableExtension;
 export 'src/collection/iterable/zip.dart'
-    show ZipIterableExtension, Zip2IterableExtension;
+    show Zip2IterableExtension, ZipIterableExtension;
 export 'src/collection/list/rotate.dart'
     show RotateListExtension, RotateQueueExtension;
 export 'src/collection/list/take_skip.dart' show TakeSkipListExtension;
@@ -41,10 +43,10 @@ export 'src/collection/map/default.dart'
 export 'src/collection/multimap/list.dart'
     show
         ListMultimap,
-        ListMultimapOnMapExtension,
-        ListMultimapOnIterableExtension;
+        ListMultimapOnIterableExtension,
+        ListMultimapOnMapExtension;
 export 'src/collection/multimap/set.dart'
-    show SetMultimap, SetMultimapOnMapExtension, SetMultimapOnIterableExtension;
+    show SetMultimap, SetMultimapOnIterableExtension, SetMultimapOnMapExtension;
 export 'src/collection/multiset.dart' show Multiset, MultisetExtension;
 export 'src/collection/range.dart' show Range, RangeIterator;
 export 'src/collection/range/bigint.dart'
@@ -52,7 +54,7 @@ export 'src/collection/range/bigint.dart'
 export 'src/collection/range/double.dart'
     show DoubleRange, DoubleRangeExtension;
 export 'src/collection/range/integer.dart'
-    show IntegerRange, IntegerRangeExtension, IndicesIterableExtension;
+    show IndicesIterableExtension, IntegerRange, IntegerRangeExtension;
 export 'src/collection/rtree.dart' show RTree;
 export 'src/collection/rtree/bounds.dart' show Bounds;
 export 'src/collection/rtree/entry.dart' show RTreeEntry;

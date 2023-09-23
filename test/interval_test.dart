@@ -36,18 +36,18 @@ void verify<T>(
   final empty = Interval<T>.empty();
   final all = Interval<T>.all();
   test('included', () {
-    for (var value in included) {
+    for (final value in included) {
       expect(interval.contains(value), isTrue);
     }
   });
   test('excluded', () {
-    for (var value in excluded) {
+    for (final value in excluded) {
       expect(interval.contains(value), isFalse);
     }
   });
   test('equals', () {
     expect(interval == interval, isTrue);
-    for (var other in intervals) {
+    for (final other in intervals) {
       expect(interval == other, isFalse);
     }
   });
@@ -59,14 +59,14 @@ void verify<T>(
       expect(interval.intersection(empty), empty);
     });
     test('single (included)', () {
-      for (var value in included) {
+      for (final value in included) {
         final single = Interval<T>.single(value);
         expect(single.intersection(interval), single);
         expect(interval.intersection(single), single);
       }
     });
     test('single (excluded)', () {
-      for (var value in excluded) {
+      for (final value in excluded) {
         final single = Interval<T>.single(value);
         expect(single.intersection(interval), empty);
         expect(interval.intersection(single), empty);
@@ -83,14 +83,14 @@ void verify<T>(
       expect(interval.span(empty), interval);
     });
     test('single (included)', () {
-      for (var value in included) {
+      for (final value in included) {
         final single = Interval<T>.single(value);
         expect(single.span(interval), interval);
         expect(interval.span(single), interval);
       }
     });
     test('single (excluded)', () {
-      for (var value in excluded) {
+      for (final value in excluded) {
         final single = Interval<T>.single(value);
         final one = single.span(interval);
         expect(
@@ -143,14 +143,14 @@ void verify<T>(
   }
   test('equal', () {
     expect(interval == interval, isTrue);
-    for (var other in intervals) {
+    for (final other in intervals) {
       expect(interval == other, isFalse);
       expect(other == interval, isFalse);
     }
   });
   test('hash', () {
     expect(interval.hashCode == interval.hashCode, isTrue);
-    for (var other in intervals) {
+    for (final other in intervals) {
       expect(interval.hashCode == other.hashCode, isFalse);
     }
   });

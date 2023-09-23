@@ -13,7 +13,7 @@ extension WindowStreamExtension<E> on Stream<E> {
     checkNonZeroPositive(step, 'step');
     var index = 0;
     final current = ListQueue<E>(size);
-    await for (var element in this) {
+    await for (final element in this) {
       while (current.length >= size) {
         current.removeFirst();
       }

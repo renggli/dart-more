@@ -1,4 +1,4 @@
-// ignore_for_file: deprecated_member_use_from_same_package
+// ignore_for_file: deprecated_member_use_from_same_package, unnecessary_lambdas
 
 import 'dart:collection';
 import 'dart:math';
@@ -237,7 +237,7 @@ void main() {
     });
   });
   group('bitlist', () {
-    for (var growable in [false, true]) {
+    for (final growable in [false, true]) {
       group(growable ? 'growable' : 'fixed-length', () {
         group('construction', () {
           test('default', () {
@@ -423,10 +423,10 @@ void main() {
               expect(trueSet.length, trueList.length);
               expect(falseSet.length, falseList.length);
               expect(trueSet.union(falseSet).length, list.length);
-              for (var trueIndex in trueSet) {
+              for (final trueIndex in trueSet) {
                 expect(list[trueIndex], isTrue);
               }
-              for (var falseIndex in falseSet) {
+              for (final falseIndex in falseSet) {
                 expect(list[falseIndex], isFalse);
               }
             }
@@ -3218,7 +3218,7 @@ void main() {
         expect(range.start, included.first);
         expect(range.start, isNot(range.end));
       }
-      for (var each in included.indexed()) {
+      for (final each in included.indexed()) {
         expect(each.value, range[each.index]);
         expect(range.contains(each.value), isTrue);
         expect(range.indexOf(each.value), each.index);
@@ -3228,7 +3228,7 @@ void main() {
         expect(range.lastIndexOf(each.value, each.index), each.index);
         expect(range.lastIndexOf(each.value, included.length), each.index);
       }
-      for (var value in excluded) {
+      for (final value in excluded) {
         expect(range.contains(value), isFalse);
         expect(range.indexOf(value), -1);
         expect(range.indexOf(value, 0), -1);
@@ -4523,7 +4523,7 @@ void allHeapTests(
     expect(heap.isNotEmpty, isFalse);
     expect(heap.length, 0);
   });
-  for (var comparator in comparators.entries) {
+  for (final comparator in comparators.entries) {
     test('stress ${comparator.key}', () {
       final random = Random(comparator.key.hashCode);
       final source = <int>[];

@@ -1,4 +1,6 @@
 /// A container that may or may not contain a value.
+library optional;
+
 import 'package:meta/meta.dart';
 
 import 'types/callback.dart';

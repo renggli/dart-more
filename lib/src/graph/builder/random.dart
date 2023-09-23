@@ -26,7 +26,7 @@ extension RandomGraphBuilderExtension<V, E> on GraphBuilder<V, E> {
       final edges = isDirected
           ? IntegerRange(vertexCount).permutations(2)
           : IntegerRange(vertexCount).combinations(2);
-      for (var edge in edges) {
+      for (final edge in edges) {
         if (random.nextDouble() < probability) {
           addEdgeIndex(graph, edge[0], edge[1]);
         }

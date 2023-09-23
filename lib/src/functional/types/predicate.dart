@@ -1,4 +1,5 @@
 /// Function type for generic predicate functions.
+library predicate;
 
 /// Predicate function type with 0 positional arguments.
 typedef Predicate0 = bool Function();

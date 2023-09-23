@@ -380,17 +380,15 @@ void main() {
     });
   });
   group('Fraction', () {
-    Matcher isFraction(int numerator, [int denominator = 1]) {
-      return isA<Fraction>()
-          .having((each) => each.numerator, 'numerator', numerator)
-          .having((each) => each.denominator, 'denominator', denominator)
-          .having((each) => each.isFinite, 'isFinite', denominator != 0)
-          .having((each) => each.isInfinite, 'isInfinite',
-              numerator != 0 && denominator == 0)
-          .having((each) => each.isNegative, 'isNegative', numerator < 0)
-          .having((each) => each.isNaN, 'isNaN',
-              numerator == 0 && denominator == 0);
-    }
+    Matcher isFraction(int numerator, [int denominator = 1]) => isA<Fraction>()
+        .having((each) => each.numerator, 'numerator', numerator)
+        .having((each) => each.denominator, 'denominator', denominator)
+        .having((each) => each.isFinite, 'isFinite', denominator != 0)
+        .having((each) => each.isInfinite, 'isInfinite',
+            numerator != 0 && denominator == 0)
+        .having((each) => each.isNegative, 'isNegative', numerator < 0)
+        .having(
+            (each) => each.isNaN, 'isNaN', numerator == 0 && denominator == 0);
 
     group('construction', () {
       test('irreducible', () {

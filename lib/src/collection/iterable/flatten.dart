@@ -19,7 +19,7 @@ extension DeepFlattenIterableExtension on Iterable<dynamic> {
   ///     print(input.deepFlatten());   // [1, 2, 3, 4, 5, 6]
   ///
   Iterable<E> deepFlatten<E>() sync* {
-    for (var value in this) {
+    for (final value in this) {
       if (value is E) {
         yield value;
       } else if (value is Iterable) {

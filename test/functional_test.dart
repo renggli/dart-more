@@ -202,7 +202,8 @@ void main() {
         expect(optional.isAbsent, isTrue);
       });
       test('isPresent', () {
-        String? value = 'foo';
+        String? value;
+        value = 'foo';
         final optional = Optional.ofNullable(value);
         expect(optional, isA<Optional<String>>());
         expect(optional.isPresent, isTrue);

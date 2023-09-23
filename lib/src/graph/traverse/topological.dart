@@ -62,9 +62,7 @@ class _TopologicalIterator<V> implements Iterator<V> {
       current = todo.removeLast();
       if (seen.add(current)) {
         for (final next in iterable.successorsOf(current)) {
-          if (iterable
-              .predecessorsOf(next)
-              .every((other) => seen.contains(other))) {
+          if (iterable.predecessorsOf(next).every(seen.contains)) {
             todo.add(next);
           }
         }

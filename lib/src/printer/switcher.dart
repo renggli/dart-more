@@ -14,7 +14,7 @@ class SwitcherPrinter<T> extends Printer<T> {
 
   @override
   void printOn(T object, StringBuffer buffer) {
-    for (var entry in cases.entries) {
+    for (final entry in cases.entries) {
       if (entry.key(object)) {
         entry.value.printOn(object, buffer);
         return;

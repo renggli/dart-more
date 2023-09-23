@@ -1,4 +1,5 @@
 /// Function type for generic mapping functions.
+library mapping;
 
 /// Mapping function type with 0 positional arguments.
 typedef Map0<R> = R Function();

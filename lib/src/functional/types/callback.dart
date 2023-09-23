@@ -1,4 +1,5 @@
 /// Function types for generic callbacks.
+library callback;
 
 /// Callback function type with 0 positional arguments.
 typedef Callback0 = void Function();

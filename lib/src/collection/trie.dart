@@ -305,7 +305,7 @@ class TrieNodeMap<K, P extends Comparable<P>, V>
 
   @override
   TrieNode<K, P, V> addChild(P part) =>
-      _children.putIfAbsent(part, () => TrieNodeMap<K, P, V>());
+      _children.putIfAbsent(part, TrieNodeMap<K, P, V>.new);
 
   @override
   TrieNode<K, P, V>? getChild(P part) => _children[part];

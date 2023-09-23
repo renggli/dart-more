@@ -857,8 +857,7 @@ void main() {
       });
     });
     group('map', () {
-      final graph = GraphBuilder<int, Point<int>>(
-              edgeProvider: (source, target) => Point(source, target))
+      final graph = GraphBuilder<int, Point<int>>(edgeProvider: Point.new)
           .ring(vertexCount: 3);
       test('none', () {
         final result = graph.map<int, Point<int>>();
@@ -914,8 +913,7 @@ void main() {
       });
       test('vertex and edge', () {
         final graph = GraphBuilder<int, Point<int>>(
-                edgeProvider: (source, target) => Point(source, target),
-                isDirected: false)
+                edgeProvider: Point.new, isDirected: false)
             .ring(vertexCount: 3);
         final result = graph.map<String, String>(
             vertex: (vertex) => vertex.toString(),

@@ -84,7 +84,7 @@ class DateTimePrinterBuilder {
       .mapIf(width == 2, (printer) => printer.takeLast(2))
       .onResultOf((dateTime) => dateTime.year));
 
-  /// Adds a [DateTimeExtension.quarter] field.
+  /// Adds a [AccessorsDateTimeExtension.quarter] field.
   ///
   /// [width] specifies the minimum number of digits to display.
   ///
@@ -126,7 +126,7 @@ class DateTimePrinterBuilder {
     add(printer.onResultOf((dateTime) => dateTime.weekday));
   }
 
-  /// Adds a [DateTimeExtension.weekNumber] field.
+  /// Adds a [AccessorsDateTimeExtension.weekNumber] field.
   ///
   /// [width] specifies the minimum number of digits to display.
   void weekNumber({int width = 0}) => add(FixedNumberPrinter(padding: width)
@@ -138,7 +138,7 @@ class DateTimePrinterBuilder {
   void day({int width = 0}) => add(FixedNumberPrinter(padding: width)
       .onResultOf((dateTime) => dateTime.day));
 
-  /// Adds a [DateTimeExtension.dayOfYear] field.
+  /// Adds a [AccessorsDateTimeExtension.dayOfYear] field.
   ///
   /// [width] specifies the minimum number of digits to display.
   void dayOfYear({int width = 0}) => add(FixedNumberPrinter(padding: width)
@@ -160,7 +160,7 @@ class DateTimePrinterBuilder {
   void hour({int width = 0}) => add(FixedNumberPrinter(padding: width)
       .onResultOf((dateTime) => dateTime.hour));
 
-  /// Adds a [DateTimeExtension.hour12] field (12h-clock).
+  /// Adds a [AccessorsDateTimeExtension.hour12] field (12h-clock).
   ///
   /// [width] specifies the minimum number of digits to display.
   void hour12({int width = 0}) => add(FixedNumberPrinter(padding: width)

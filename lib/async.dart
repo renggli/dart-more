@@ -1,4 +1,6 @@
 /// Helpers to make async code better.
+library async;
+
 export 'src/async/buffer.dart' show BufferExtension;
 export 'src/async/flat_map.dart' show FlatMapStreamExtension;
 export 'src/async/flatten_iterable.dart' show FlattenStreamIterableExtension;

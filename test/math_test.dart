@@ -88,7 +88,7 @@ void main() {
       });
     });
     test('hasSingleBit', () {
-      for (var value in powersOf2) {
+      for (final value in powersOf2) {
         expect(value.hasSingleBit, isTrue,
             reason: 'Expected $value to have a single bit.');
         if (value > 2) {
@@ -235,8 +235,7 @@ void main() {
         expect(() => (-1).factorial(), throwsArgumentError);
       });
       test('BigInt', () {
-        expect(
-            () => BigIntExtension.negativeOne.factorial(), throwsArgumentError);
+        expect(BigIntExtension.negativeOne.factorial, throwsArgumentError);
       });
     });
   });
@@ -503,18 +502,17 @@ void main() {
     }
 
     group('atkin', () {
-      primeSieveTests((n) => AtkinPrimeSieve(n));
+      primeSieveTests(AtkinPrimeSieve.new);
     });
     group('eratosthenes', () {
-      primeSieveTests((n) => EratosthenesPrimeSieve(n));
+      primeSieveTests(EratosthenesPrimeSieve.new);
     });
     group('euler', () {
-      primeSieveTests((n) => EulerPrimeSieve(n));
+      primeSieveTests(EulerPrimeSieve.new);
       test('factorization', () {
         final sieve = EulerPrimeSieve(20);
-        final factorization = 0
-            .to(sieve.max + 1)
-            .toMap<int, List<int>>(value: (each) => sieve.factorize(each));
+        final factorization =
+            0.to(sieve.max + 1).toMap<int, List<int>>(value: sieve.factorize);
         expect(factorization, <int, List<int>>{
           0: [],
           1: [],

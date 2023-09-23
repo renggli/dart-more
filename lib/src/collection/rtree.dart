@@ -28,7 +28,7 @@ abstract class RTree<T> {
   /// The root node of the tree.
   late RTreeNode<T> root = RTreeNode<T>(this, isLeaf: true);
 
-  /// Associates [data] with the provided [bounds].
+  /// Associates [data] with the provided [bound].
   RTreeEntry<T> insert(Bounds bound, T data) {
     final entry = RTreeEntry<T>(bound, data: data);
     final node = chooseLeaf(entry);

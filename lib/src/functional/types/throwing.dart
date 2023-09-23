@@ -1,4 +1,6 @@
 /// The throwing functions.
+library throwing;
+
 import 'mapping.dart';
 
 /// Throwing function with 0 positional arguments.

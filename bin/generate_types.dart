@@ -39,6 +39,7 @@ Future<void> generateCallback() async {
   final out = file.openWrite();
 
   out.writeln('/// Function types for generic callbacks.');
+  out.writeln('library callback;');
   out.writeln();
 
   for (var i = 0; i < max; i++) {
@@ -58,6 +59,7 @@ Future<void> generateMapping() async {
   final out = file.openWrite();
 
   out.writeln('/// Function type for generic mapping functions.');
+  out.writeln('library mapping;');
   out.writeln();
 
   for (var i = 0; i < max; i++) {
@@ -77,6 +79,7 @@ Future<void> generatePredicate() async {
   final out = file.openWrite();
 
   out.writeln('/// Function type for generic predicate functions.');
+  out.writeln('library predicate;');
   out.writeln();
 
   for (var i = 0; i < max; i++) {
@@ -96,6 +99,7 @@ Future<void> generateEmpty() async {
   final out = file.openWrite();
 
   out.writeln('/// Generic empty functions returning nothing.');
+  out.writeln('library empty;');
   out.writeln();
 
   for (var i = 0; i < max; i++) {
@@ -115,6 +119,7 @@ Future<void> generateIdentity() async {
   final out = file.openWrite();
 
   out.writeln('/// Generic identity functions.');
+  out.writeln('library identity;');
   out.writeln();
 
   out.writeln('/// Generic identity function with 1 positional argument.');
@@ -130,6 +135,9 @@ Future<void> generateConstant() async {
   final out = file.openWrite();
 
   out.writeln('/// The constant functions.');
+  out.writeln('library constant;');
+  out.writeln();
+
   out.writeln("import 'mapping.dart';");
   out.writeln();
 
@@ -152,6 +160,9 @@ Future<void> generateThrowing() async {
   final out = file.openWrite();
 
   out.writeln('/// The throwing functions.');
+  out.writeln('library throwing;');
+  out.writeln();
+
   out.writeln("import 'mapping.dart';");
   out.writeln();
 
@@ -176,6 +187,9 @@ Future<void> generatePartial() async {
 
   out.writeln('/// Binds positional arguments and returns a new function:');
   out.writeln('/// https://en.wikipedia.org/wiki/Partial_application');
+  out.writeln('library partial;');
+  out.writeln();
+
   out.writeln("import 'mapping.dart';");
   out.writeln();
 
@@ -214,6 +228,9 @@ Future<void> generateCurry() async {
       'sequence of functions ');
   out.writeln('/// taking a single argument: '
       'https://en.wikipedia.org/wiki/Currying');
+  out.writeln('library curry;');
+  out.writeln();
+
   out.writeln("import 'mapping.dart';");
   out.writeln();
 
@@ -254,9 +271,13 @@ Future<void> generateTest() async {
     out.writeln('});');
   }
 
+  out.writeln('// ignore_for_file: unnecessary_lambdas');
+  out.writeln();
+
   out.writeln('import \'package:more/functional.dart\';');
   out.writeln('import \'package:test/test.dart\';');
   out.writeln();
+
   out.writeln('void main() {');
 
   nest('group', 'constant', () {

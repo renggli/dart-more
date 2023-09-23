@@ -1,6 +1,7 @@
 import 'dart:typed_data';
 
 import '../../../feature.dart';
+import 'eratosthenes.dart';
 import 'sieve.dart';
 
 /// Prime sieve of Euler (linear sieve).

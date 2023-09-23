@@ -1,5 +1,3 @@
-/// A first-class model of character classes, their composition and operations
-/// on strings.
 import 'package:meta/meta.dart' show immutable;
 
 import '../../printer.dart';

@@ -1,4 +1,6 @@
 /// Various extensions to the built-in date, time and duration objects.
+library temporal;
+
 export 'src/temporal/conversion.dart';
 export 'src/temporal/date_time/accessors.dart';
 export 'src/temporal/date_time/periodical.dart';

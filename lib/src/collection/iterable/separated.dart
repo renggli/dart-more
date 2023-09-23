@@ -15,7 +15,7 @@ extension SeparatedIterableExtension<E> on Iterable<E> {
   Iterable<E> separatedBy(Builder<E> separator,
       {Builder<E>? before, Builder<E>? after}) sync* {
     var index = 0;
-    for (var iterator = this.iterator; iterator.moveNext(); index++) {
+    for (final iterator = this.iterator; iterator.moveNext(); index++) {
       if (index == 0 && before != null) yield before();
       if (index > 0) yield separator();
       yield iterator.current;

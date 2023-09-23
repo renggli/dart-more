@@ -42,7 +42,7 @@ abstract class Printer<T> with ToStringPrinter {
       return Printer<T>.literal(object);
     } else if (object is Iterable) {
       return Printer<T>.sequence(
-          object.map((each) => Printer<T>.wrap(each)).toList(growable: false));
+          object.map(Printer<T>.wrap).toList(growable: false));
     } else {
       throw ArgumentError.value(object, 'object', 'Invalid type');
     }

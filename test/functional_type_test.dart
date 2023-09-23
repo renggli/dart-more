@@ -1,3 +1,5 @@
+// ignore_for_file: unnecessary_lambdas
+
 import 'package:more/functional.dart';
 import 'package:test/test.dart';
 

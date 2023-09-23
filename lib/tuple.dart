@@ -1,4 +1,6 @@
 /// Tuple extension methods on generic records.
+library tuple;
+
 export 'src/tuple/tuple.dart';
 export 'src/tuple/tuple_0.dart';
 export 'src/tuple/tuple_1.dart';

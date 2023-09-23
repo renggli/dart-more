@@ -1,4 +1,5 @@
 /// Generic empty functions returning nothing.
+library empty;
 
 /// Empty function with 0 positional arguments.
 void emptyFunction0() {}

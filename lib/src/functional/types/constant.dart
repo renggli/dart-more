@@ -1,4 +1,6 @@
 /// The constant functions.
+library constant;
+
 import 'mapping.dart';
 
 /// Constant function with 0 positional arguments.

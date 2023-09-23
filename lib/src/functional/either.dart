@@ -1,4 +1,6 @@
 /// A container that may contain one or the other value.
+library either;
+
 import 'package:meta/meta.dart';
 
 import 'optional.dart';

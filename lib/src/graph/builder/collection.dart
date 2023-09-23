@@ -12,7 +12,7 @@ extension CollectionGraphBuilderExtension<V, E> on GraphBuilder<V, E> {
   /// Creates a [Graph] from a [Iterable] of chains.
   Graph<V, E> fromPaths(Iterable<Iterable<V>> chains, {E? data}) {
     final graph = empty();
-    for (var chain in chains) {
+    for (final chain in chains) {
       final vertices = chain.toList(growable: false);
       if (vertices.length == 1) {
         addVertex(graph, vertices.first);
@@ -29,12 +29,12 @@ extension CollectionGraphBuilderExtension<V, E> on GraphBuilder<V, E> {
   /// preceding vertices (incoming adjacency).
   Graph<V, E> fromPredecessors(Map<V, Iterable<V>?> mapping) {
     final graph = empty();
-    for (var entry in mapping.entries) {
+    for (final entry in mapping.entries) {
       final predecessors = entry.value;
       if (predecessors == null || predecessors.isEmpty) {
         addVertex(graph, entry.key);
       } else {
-        for (var predecessor in predecessors) {
+        for (final predecessor in predecessors) {
           addEdge(graph, predecessor, entry.key);
         }
       }
@@ -70,12 +70,12 @@ extension CollectionGraphBuilderExtension<V, E> on GraphBuilder<V, E> {
   /// succeeding vertices (outgoing adjacency).
   Graph<V, E> fromSuccessors(Map<V, Iterable<V>?> mapping) {
     final graph = empty();
-    for (var entry in mapping.entries) {
+    for (final entry in mapping.entries) {
       final successors = entry.value;
       if (successors == null || successors.isEmpty) {
         addVertex(graph, entry.key);
       } else {
-        for (var successor in successors) {
+        for (final successor in successors) {
           addEdge(graph, entry.key, successor);
         }
       }

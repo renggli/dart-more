@@ -1,5 +1,7 @@
 /// Provides a first-class model to convert object to strings using composition
 /// and highly configurable formatting primitives.
+library printer;
+
 export 'src/printer/builder.dart' show BuilderPrinterExtension;
 export 'src/printer/empty.dart' show EmptyPrinterExtension;
 export 'src/printer/iterable.dart' show IterablePrinterExtension;
@@ -18,9 +20,9 @@ export 'src/printer/printer.dart' show Printer;
 export 'src/printer/result_of.dart' show ResultOfPrinterExtension;
 export 'src/printer/sequence.dart'
     show
-        SequencePrinterPrinterExtension,
+        SequencePrinter,
         SequencePrinterIterableExtension,
-        SequencePrinter;
+        SequencePrinterPrinterExtension;
 export 'src/printer/standard.dart' show StandardPrinter;
 export 'src/printer/string/pad.dart' show PadPrinterExtension;
 export 'src/printer/string/separate.dart' show SeparatePrinterExtension;

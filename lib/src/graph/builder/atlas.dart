@@ -4,7 +4,7 @@ import 'empty.dart';
 
 extension AtlasGraphBuilderExtension<V, E> on GraphBuilder<V, E> {
   /// Returns a graph from "An Atlas of Graphs" by Ronald C. Read and Robin J.
-  /// Wilson, Oxford University Press, 1998. [index] is a number between `0`
+  /// Wilson, Oxford University Press, 1998. [number] is a number between `0`
   /// and `1252`.
   ///
   /// The graphs are sorted by the number of nodes, the number of vertices,

@@ -10,7 +10,7 @@ extension ProbablyPrimeIntegerExtension on int {
     if (this <= _bases.last) {
       return _bases.contains(this);
     }
-    for (var base in _bases) {
+    for (final base in _bases) {
       if (this % base == 0) {
         return false;
       }
@@ -53,7 +53,7 @@ extension ProbablyPrimeBigIntExtension on BigInt {
     if (this <= _bases.last) {
       return _bases.contains(this);
     }
-    for (var base in _bases) {
+    for (final base in _bases) {
       if (this % base == BigInt.zero) {
         return false;
       }

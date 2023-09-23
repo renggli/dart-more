@@ -1,4 +1,6 @@
 /// Graph-theory objects and algorithms.
+library graph;
+
 export 'src/graph/builder.dart' show GraphBuilder;
 export 'src/graph/builder/atlas.dart' show AtlasGraphBuilderExtension;
 export 'src/graph/builder/collection.dart' show CollectionGraphBuilderExtension;

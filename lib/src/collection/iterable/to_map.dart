@@ -17,7 +17,7 @@ extension ToMapIterableExtension<E> on Iterable<E> {
     final keyProvider = key ?? (element) => element as K;
     final valueProvider = value ?? (element) => element as V;
     return {
-      for (var element in this) keyProvider(element): valueProvider(element),
+      for (final element in this) keyProvider(element): valueProvider(element),
     };
   }
 }

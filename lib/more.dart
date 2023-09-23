@@ -1,4 +1,6 @@
 /// More Dart — Literally.
+library more;
+
 export 'package:more/async.dart';
 export 'package:more/cache.dart';
 export 'package:more/char_matcher.dart';

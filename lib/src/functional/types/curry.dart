@@ -1,5 +1,7 @@
 /// Converts a function with positional arguments into a sequence of functions
 /// taking a single argument: https://en.wikipedia.org/wiki/Currying
+library curry;
+
 import 'mapping.dart';
 
 extension Curry1<T0, R> on Map1<T0, R> {
