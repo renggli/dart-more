@@ -223,11 +223,11 @@ class HumanNumberPrinter<T extends num> extends Printer<T> {
   /// The exponent offset of the units to be printed.
   final int unitOffset;
 
-  /// Whether the unit should be used as a prefix, instead of an suffix.
-  final bool unitPrefix;
-
   /// The number of digits to be printed for unit numbers.
   final int unitPrecision;
+
+  /// Whether the unit should be used as a prefix, instead of an suffix.
+  final bool unitPrefix;
 
   /// Separator between value and unit.
   final String unitSeparator;
@@ -235,7 +235,7 @@ class HumanNumberPrinter<T extends num> extends Printer<T> {
   /// The units to be used.
   final List<String> units;
 
-  /// The printer for integral values.
+  /// The printer for unit values.
   final Printer<double> _unit;
 
   /// The printer for scaled values.
@@ -286,6 +286,7 @@ class HumanNumberPrinter<T extends num> extends Printer<T> {
     ..addValue(sign, name: 'sign')
     ..addValue(unitBase, name: 'unitBase')
     ..addValue(unitOffset, name: 'unitOffset')
+    ..addValue(unitPrecision, name: 'unitPrecision')
     ..addValue(unitPrefix, name: 'unitPrefix')
     ..addValue(unitSeparator, name: 'unitSeparator')
     ..addValue(units, name: 'units');
