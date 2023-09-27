@@ -296,14 +296,15 @@ void main() {
         #segmented: NumeralSystem.segmented,
       };
       final random = Random(42);
-      for (final entry in allNumeralSystems.entries) {
-        test(entry.key, () {
-          expect(entry.value, hasLength(greaterThanOrEqualTo(10)),
+      for (final MapEntry(key: name, value: characters)
+          in allNumeralSystems.entries) {
+        test(name, () {
+          expect(characters, hasLength(greaterThanOrEqualTo(10)),
               reason: 'Expect numeral systems to support base 10.');
-          expect(entry.value, everyElement(hasLength(greaterThanOrEqualTo(1))),
+          expect(characters, everyElement(hasLength(greaterThanOrEqualTo(1))),
               reason: 'Expect each digit to not be empty.');
           final printer = FixedNumberPrinter<num>(
-              characters: entry.value, base: entry.value.length, precision: 10);
+              characters: characters, base: characters.length, precision: 10);
           expect(printer(random.nextDouble()),
               hasLength(greaterThanOrEqualTo(12)));
         });

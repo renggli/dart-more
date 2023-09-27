@@ -29,13 +29,12 @@ extension CollectionGraphBuilderExtension<V, E> on GraphBuilder<V, E> {
   /// preceding vertices (incoming adjacency).
   Graph<V, E> fromPredecessors(Map<V, Iterable<V>?> mapping) {
     final graph = empty();
-    for (final entry in mapping.entries) {
-      final predecessors = entry.value;
+    for (final MapEntry(key: vertex, value: predecessors) in mapping.entries) {
       if (predecessors == null || predecessors.isEmpty) {
-        addVertex(graph, entry.key);
+        addVertex(graph, vertex);
       } else {
         for (final predecessor in predecessors) {
-          addEdge(graph, predecessor, entry.key);
+          addEdge(graph, predecessor, vertex);
         }
       }
     }
@@ -70,13 +69,12 @@ extension CollectionGraphBuilderExtension<V, E> on GraphBuilder<V, E> {
   /// succeeding vertices (outgoing adjacency).
   Graph<V, E> fromSuccessors(Map<V, Iterable<V>?> mapping) {
     final graph = empty();
-    for (final entry in mapping.entries) {
-      final successors = entry.value;
+    for (final MapEntry(key: vertex, value: successors) in mapping.entries) {
       if (successors == null || successors.isEmpty) {
-        addVertex(graph, entry.key);
+        addVertex(graph, vertex);
       } else {
         for (final successor in successors) {
-          addEdge(graph, entry.key, successor);
+          addEdge(graph, vertex, successor);
         }
       }
     }

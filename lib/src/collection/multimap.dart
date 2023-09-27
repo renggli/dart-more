@@ -36,9 +36,9 @@ abstract class Multimap<K, V, VS extends Iterable<V>> {
 
   /// Applies [callback] to each key/value of this multimap.
   void forEach(void Function(K key, V value) callback) {
-    for (final entry in _map.entries) {
-      for (final value in entry.value) {
-        callback(entry.key, value);
+    for (final MapEntry(:key, value: values) in _map.entries) {
+      for (final value in values) {
+        callback(key, value);
       }
     }
   }
@@ -236,7 +236,7 @@ void fillFromIterables<K, V, VS extends Iterable<V>>(
 // Internal helper to populate a [multimap] from an [Iterable] of entries.
 void fillFromEntries<K, V, VS extends Iterable<V>>(
     Multimap<K, V, VS> multimap, Iterable<MapEntry<K, V>> entries) {
-  for (final entry in entries) {
-    multimap.add(entry.key, entry.value);
+  for (final MapEntry(:key, :value) in entries) {
+    multimap.add(key, value);
   }
 }

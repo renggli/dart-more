@@ -4523,15 +4523,15 @@ void allHeapTests(
     expect(heap.isNotEmpty, isFalse);
     expect(heap.length, 0);
   });
-  for (final comparator in comparators.entries) {
-    test('stress ${comparator.key}', () {
-      final random = Random(comparator.key.hashCode);
+  for (final MapEntry(key: name, value: comparator) in comparators.entries) {
+    test('stress $name', () {
+      final random = Random(name.hashCode);
       final source = <int>[];
       while (source.length < 2500) {
         source.add(random.nextInt(0xffffff));
       }
-      final heap = createHeap<int>(source, comparator: comparator.value);
-      source.sort(comparator.value);
+      final heap = createHeap<int>(source, comparator: comparator);
+      source.sort(comparator);
       while (source.isNotEmpty) {
         expect(heap.isEmpty, isFalse);
         expect(heap.isNotEmpty, isTrue);
