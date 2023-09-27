@@ -90,9 +90,21 @@ class HumanNumberPrinter<T extends num> extends Printer<T> {
     this.sign,
     this.unitBase = 10,
     this.unitOffset = 0,
+    this.unitPrecision = 0,
     this.unitPrefix = false,
     this.unitSeparator = ' ',
-  }) : _mantissa = FixedNumberPrinter(
+  })  : _unit = FixedNumberPrinter(
+          base: base,
+          characters: characters,
+          delimiter: delimiter,
+          infinity: infinity,
+          nan: nan,
+          padding: padding,
+          precision: unitPrecision,
+          separator: separator,
+          sign: sign ?? const SignNumberPrinter<double>.omitPositiveSign(),
+        ),
+        _scaled = FixedNumberPrinter(
           base: base,
           characters: characters,
           delimiter: delimiter,
@@ -119,11 +131,12 @@ class HumanNumberPrinter<T extends num> extends Printer<T> {
     int precision = 0,
     String separator = '',
     Printer<double>? sign,
+    int unitPrecision = 0,
     bool unitPrefix = false,
     String unitSeparator = ' ',
   }) =>
       HumanNumberPrinter(
-        base: base = 10,
+        base: base,
         characters: characters,
         delimiter: delimiter,
         infinity: infinity,
@@ -132,10 +145,11 @@ class HumanNumberPrinter<T extends num> extends Printer<T> {
         precision: precision,
         separator: separator,
         sign: sign,
-        unitPrefix: unitPrefix,
-        unitSeparator: unitSeparator,
         unitBase: decimalUnitBase,
         unitOffset: decimalUnitOffset,
+        unitPrecision: unitPrecision,
+        unitPrefix: unitPrefix,
+        unitSeparator: unitSeparator,
         units: long ? decimalUnitsLong : decimalUnitsShort,
       );
 
@@ -153,6 +167,7 @@ class HumanNumberPrinter<T extends num> extends Printer<T> {
     int padding = 0,
     int precision = 0,
     String separator = '',
+    int unitPrecision = 0,
     Printer<double>? sign,
     bool unitPrefix = false,
     String unitSeparator = ' ',
@@ -167,9 +182,11 @@ class HumanNumberPrinter<T extends num> extends Printer<T> {
         precision: precision,
         separator: separator,
         sign: sign,
+        unitBase: binaryUnitBase,
+        unitOffset: binaryUnitOffset,
+        unitPrecision: unitPrecision,
         unitPrefix: unitPrefix,
         unitSeparator: unitSeparator,
-        unitBase: binaryUnitBase,
         units: long ? binaryUnitsLong : binaryUnitsShort,
       );
 
@@ -209,34 +226,39 @@ class HumanNumberPrinter<T extends num> extends Printer<T> {
   /// Whether the unit should be used as a prefix, instead of an suffix.
   final bool unitPrefix;
 
+  /// The number of digits to be printed for unit numbers.
+  final int unitPrecision;
+
   /// Separator between value and unit.
   final String unitSeparator;
 
   /// The units to be used.
   final List<String> units;
 
-  /// The (internal) printer of the mantissa.
-  final Printer<double> _mantissa;
+  /// The printer for integral values.
+  final Printer<double> _unit;
+
+  /// The printer for scaled values.
+  final Printer<double> _scaled;
 
   @override
   void printOn(T object, StringBuffer buffer) {
     final value = object.toDouble();
     if (value.isInfinite || value.isNaN) {
-      _mantissa.printOn(value, buffer);
+      _unit.printOn(value, buffer);
     } else {
       final index = _getExponent(value) + unitOffset;
       final unitIndex = index.clamp(0, units.length - 1);
       final unitString = units[unitIndex];
       final unitExponent = unitIndex - unitOffset;
       final mantissa = value / unitBase.toDouble().pow(unitExponent);
-      if (unitString.isEmpty) {
-        _mantissa.printOn(mantissa, buffer);
-      } else if (unitPrefix) {
+      if (unitString.isNotEmpty && unitPrefix) {
         buffer.write(unitString);
         buffer.write(unitSeparator);
-        _mantissa.printOn(mantissa, buffer);
-      } else {
-        _mantissa.printOn(mantissa, buffer);
+      }
+      final printer = unitIndex == unitOffset ? _unit : _scaled;
+      printer.printOn(mantissa, buffer);
+      if (unitString.isNotEmpty && !unitPrefix) {
         buffer.write(unitSeparator);
         buffer.write(unitString);
       }

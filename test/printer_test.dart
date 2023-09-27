@@ -528,10 +528,33 @@ void main() {
         final printer = HumanNumberPrinter.decimal(nan: 'n/a');
         expect(printer(double.nan), 'n/a');
       });
-      test('nan', () {
+      test('infinity', () {
         final printer = HumanNumberPrinter.decimal(infinity: 'huge');
         expect(printer(double.infinity), 'huge');
         expect(printer(double.negativeInfinity), '-huge');
+      });
+      test('precision', () {
+        final printer = HumanNumberPrinter.decimal(precision: 1);
+        expect(printer(0), '0');
+        expect(printer(27), '27');
+        expect(printer(999), '999');
+        expect(printer(1000), '1.0 k');
+        expect(printer(1023), '1.0 k');
+        expect(printer(1024), '1.0 k');
+        expect(printer(1728), '1.7 k');
+        expect(printer(1855425871872), '1.9 T');
+      });
+      test('unitPrecision', () {
+        final printer =
+            HumanNumberPrinter.decimal(precision: 2, unitPrecision: 1);
+        expect(printer(0), '0.0');
+        expect(printer(27), '27.0');
+        expect(printer(999), '999.0');
+        expect(printer(1000), '1.00 k');
+        expect(printer(1023), '1.02 k');
+        expect(printer(1024), '1.02 k');
+        expect(printer(1728), '1.73 k');
+        expect(printer(1855425871872), '1.86 T');
       });
       test('unitPrefix', () {
         final printer = HumanNumberPrinter.decimal(unitPrefix: true);
@@ -595,10 +618,33 @@ void main() {
         final printer = HumanNumberPrinter.binary(nan: 'n/a');
         expect(printer(double.nan), 'n/a');
       });
-      test('nan', () {
+      test('infinity', () {
         final printer = HumanNumberPrinter.binary(infinity: 'huge');
         expect(printer(double.infinity), 'huge');
         expect(printer(double.negativeInfinity), '-huge');
+      });
+      test('precision', () {
+        final printer = HumanNumberPrinter.binary(precision: 1);
+        expect(printer(0), '0');
+        expect(printer(27), '27');
+        expect(printer(999), '999');
+        expect(printer(1000), '1000');
+        expect(printer(1023), '1023');
+        expect(printer(1024), '1.0 Ki');
+        expect(printer(1728), '1.7 Ki');
+        expect(printer(1855425871872), '1.7 Ti');
+      });
+      test('unitPrecision', () {
+        final printer =
+            HumanNumberPrinter.binary(precision: 2, unitPrecision: 1);
+        expect(printer(0), '0.0');
+        expect(printer(27), '27.0');
+        expect(printer(999), '999.0');
+        expect(printer(1000), '1000.0');
+        expect(printer(1023), '1023.0');
+        expect(printer(1024), '1.00 Ki');
+        expect(printer(1728), '1.69 Ki');
+        expect(printer(1855425871872), '1.69 Ti');
       });
       test('unitPrefix', () {
         final printer = HumanNumberPrinter.binary(unitPrefix: true);
