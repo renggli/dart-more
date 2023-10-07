@@ -1,19 +1,18 @@
 import '../builder.dart';
 import '../graph.dart';
-import 'empty.dart';
 
 /// https://mathworld.wolfram.com/StarGraph.html
 extension StarGraphBuilderExtension<V, E> on GraphBuilder<V, E> {
   /// Creates a [Graph] that forms a star.
   Graph<V, E> star({required int vertexCount}) {
-    final graph = empty();
+    final factory = newFactory();
     if (vertexCount <= 0) {
-      return graph;
+      return factory.build();
     }
-    addVertexIndex(graph, 0);
+    factory.addVertexIndex(0);
     for (var i = 1; i < vertexCount; i++) {
-      addEdgeIndex(graph, 0, i);
+      factory.addEdgeIndex(0, i);
     }
-    return graph;
+    return factory.build();
   }
 }

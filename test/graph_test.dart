@@ -696,6 +696,24 @@ void main() {
         expect(graph.reversed, same(graph));
       });
     });
+    group('unmodifiable', () {
+      test('empty', () {
+        final graph = Graph<String, int>.directed();
+        expect(graph.isUnmodifiable, isFalse);
+        final unmodifiable = graph.unmodifiable;
+        expect(unmodifiable.isUnmodifiable, isTrue);
+        expect(unmodifiable.unmodifiable, same(unmodifiable));
+        expectInvariants(graph);
+      });
+      test('errors', () {
+        final graph = Graph<String, void>.directed().unmodifiable;
+        expect(() => graph.addVertex('a'), throwsUnsupportedError);
+        expect(() => graph.addEdge('a', 'b'), throwsUnsupportedError);
+        expect(() => graph.removeVertex('a'), throwsUnsupportedError);
+        expect(() => graph.removeEdge('a', 'b'), throwsUnsupportedError);
+        expectInvariants(graph);
+      });
+    });
   });
   group('operation', () {
     group('connected', () {
@@ -1120,7 +1138,59 @@ void main() {
         });
       });
     });
-    group('bipartite', () {
+    group('complete', () {
+      test('empty', () {
+        final graph = GraphBuilder<int, void>().complete(vertexCount: 0);
+        expect(graph.vertices, isEmpty);
+        expect(graph.edges, isEmpty);
+        expectInvariants(graph);
+      });
+      test('single', () {
+        final graph = GraphBuilder<int, void>().complete(vertexCount: 1);
+        expect(graph.vertices, [0]);
+        expect(graph.edges, isEmpty);
+        expectInvariants(graph);
+      });
+      test('full', () {
+        final graph = GraphBuilder<int, void>().complete(vertexCount: 3);
+        expect(graph.vertices, unorderedEquals([0, 1, 2]));
+        expect(
+            graph.edges,
+            unorderedEquals([
+              isEdge(source: 0, target: 1),
+              isEdge(source: 0, target: 2),
+              isEdge(source: 1, target: 0),
+              isEdge(source: 1, target: 2),
+              isEdge(source: 2, target: 0),
+              isEdge(source: 2, target: 1),
+            ]));
+        expectInvariants(graph);
+      });
+    });
+    group('empty', () {
+      test('basic', () {
+        final graph = GraphBuilder<int, String>().empty();
+        expect(graph.vertices, isEmpty);
+        expect(graph.edges, isEmpty);
+        expect(graph.isDirected, isTrue);
+        expect(graph.isUnmodifiable, isFalse);
+      });
+      test('unmodifiable', () {
+        final graph = GraphBuilder<int, String>(isDirected: false).empty();
+        expect(graph.vertices, isEmpty);
+        expect(graph.edges, isEmpty);
+        expect(graph.isDirected, isFalse);
+        expect(graph.isUnmodifiable, isFalse);
+      });
+      test('unmodifiable', () {
+        final graph = GraphBuilder<int, String>(isUnmodifiable: true).empty();
+        expect(graph.vertices, isEmpty);
+        expect(graph.edges, isEmpty);
+        expect(graph.isDirected, isTrue);
+        expect(graph.isUnmodifiable, isTrue);
+      });
+    });
+    group('partite', () {
       test('empty', () {
         final graph = GraphBuilder<int, void>().partite(vertexCounts: []);
         expect(graph.vertices, isEmpty);
@@ -1175,35 +1245,6 @@ void main() {
               isEdge(source: 2, target: 3),
               isEdge(source: 2, target: 4),
               isEdge(source: 2, target: 5),
-            ]));
-        expectInvariants(graph);
-      });
-    });
-    group('complete', () {
-      test('empty', () {
-        final graph = GraphBuilder<int, void>().complete(vertexCount: 0);
-        expect(graph.vertices, isEmpty);
-        expect(graph.edges, isEmpty);
-        expectInvariants(graph);
-      });
-      test('single', () {
-        final graph = GraphBuilder<int, void>().complete(vertexCount: 1);
-        expect(graph.vertices, [0]);
-        expect(graph.edges, isEmpty);
-        expectInvariants(graph);
-      });
-      test('full', () {
-        final graph = GraphBuilder<int, void>().complete(vertexCount: 3);
-        expect(graph.vertices, unorderedEquals([0, 1, 2]));
-        expect(
-            graph.edges,
-            unorderedEquals([
-              isEdge(source: 0, target: 1),
-              isEdge(source: 0, target: 2),
-              isEdge(source: 1, target: 0),
-              isEdge(source: 1, target: 2),
-              isEdge(source: 2, target: 0),
-              isEdge(source: 2, target: 1),
             ]));
         expectInvariants(graph);
       });

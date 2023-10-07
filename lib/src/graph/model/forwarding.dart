@@ -11,6 +11,9 @@ abstract class ForwardingGraph<V, E> extends Graph<V, E> {
   bool get isDirected => delegate.isDirected;
 
   @override
+  bool get isUnmodifiable => delegate.isUnmodifiable;
+
+  @override
   StorageStrategy<V> get vertexStrategy => delegate.vertexStrategy;
 
   @override

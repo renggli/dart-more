@@ -1,6 +1,5 @@
 import '../builder.dart';
 import '../graph.dart';
-import 'empty.dart';
 
 extension AtlasGraphBuilderExtension<V, E> on GraphBuilder<V, E> {
   /// Returns a graph from "An Atlas of Graphs" by Ronald C. Read and Robin J.
@@ -12,17 +11,17 @@ extension AtlasGraphBuilderExtension<V, E> on GraphBuilder<V, E> {
   /// automorphisms.
   Graph<V, E> atlas(int number) {
     final data = _atlas[number];
-    final graph = empty();
+    final factory = newFactory();
     assert(data[0] >= 0, 'Invalid number of vertices');
     for (var i = 0; i < data[0]; i++) {
-      addVertexIndex(graph, i);
+      factory.addVertexIndex(i);
     }
     assert(2 + 2 * data[1] == data.length, 'Invalid number of edges');
     for (var i = 0, o = 2; i < data[1]; i++, o += 2) {
       assert(data[o] != data[o + 1], 'Invalid edge pair');
-      addEdgeIndex(graph, data[o], data[o + 1]);
+      factory.addEdgeIndex(data[o], data[o + 1]);
     }
-    return graph;
+    return factory.build();
   }
 
   /// Returns an iterable over all the graphs in the atlas with the provided

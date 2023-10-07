@@ -1,21 +1,20 @@
 import '../builder.dart';
 import '../graph.dart';
-import 'empty.dart';
 
 extension RingGraphBuilderExtension<V, E> on GraphBuilder<V, E> {
   /// Creates a [Graph] that forms a closed ring.
   Graph<V, E> ring({required int vertexCount}) {
-    final graph = empty();
+    final factory = newFactory();
     if (vertexCount <= 0) {
-      return graph;
+      return factory.build();
     }
-    addVertexIndex(graph, 0);
+    factory.addVertexIndex(0);
     for (var i = 1; i < vertexCount; i++) {
-      addEdgeIndex(graph, i - 1, i);
+      factory.addEdgeIndex(i - 1, i);
     }
     if (vertexCount != 1) {
-      addEdgeIndex(graph, vertexCount - 1, 0);
+      factory.addEdgeIndex(vertexCount - 1, 0);
     }
-    return graph;
+    return factory.build();
   }
 }

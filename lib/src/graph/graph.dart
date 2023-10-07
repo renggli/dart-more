@@ -16,11 +16,14 @@ abstract class Graph<V, E> with ToStringPrinter {
   /// Generative constructor.
   Graph();
 
+  /// Returns `true`, if the graph is directed.
+  bool get isDirected;
+
+  /// Returns `true`, if the graph is unmodifiable.
+  bool get isUnmodifiable => false;
+
   /// Returns a strategy to store vertices.
   StorageStrategy<V> get vertexStrategy;
-
-  /// Returns `true` if the graph is directed.
-  bool get isDirected;
 
   /// Returns the vertices of this graph.
   Iterable<V> get vertices;

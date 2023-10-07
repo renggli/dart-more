@@ -2,7 +2,7 @@ import 'dart:math';
 
 import 'package:meta/meta.dart';
 
-import 'graph.dart';
+import 'builder/factory.dart';
 import 'strategy.dart';
 
 typedef VertexProvider<V> = V Function(int index);
@@ -12,6 +12,7 @@ typedef EdgeProvider<V, E> = E Function(V source, V target);
 class GraphBuilder<V, E> {
   GraphBuilder({
     this.isDirected = true,
+    this.isUnmodifiable = false,
     this.vertexProvider,
     this.edgeProvider,
     Random? random,
@@ -21,6 +22,9 @@ class GraphBuilder<V, E> {
 
   /// Flag indicating if the graph is directed.
   final bool isDirected;
+
+  /// Flag indicating if the resulting graph can be further modified.
+  final bool isUnmodifiable;
 
   /// Optional provider of vertex data.
   final VertexProvider<V>? vertexProvider;
@@ -34,29 +38,8 @@ class GraphBuilder<V, E> {
   /// The strategy describing how vertices are stored.
   final StorageStrategy<V> vertexStrategy;
 
+  /// Internal factory to create a graph without depending on the underlying
+  /// implementation.
   @internal
-  void addVertex(Graph<V, E> graph, V vertex) => graph.addVertex(vertex);
-
-  @internal
-  void addVertexIndex(Graph<V, E> graph, int index) => addVertex(
-        graph,
-        vertexProvider?.call(index) ?? (index as V),
-      );
-
-  @internal
-  void addEdge(Graph<V, E> graph, V source, V target, {E? data}) =>
-      graph.addEdge(
-        source,
-        target,
-        data: data ?? edgeProvider?.call(source, target),
-      );
-
-  @internal
-  void addEdgeIndex(Graph<V, E> graph, int source, int target, {E? data}) =>
-      addEdge(
-        graph,
-        vertexProvider?.call(source) ?? (source as V),
-        vertexProvider?.call(target) ?? (target as V),
-        data: data,
-      );
+  GraphFactory<V, E> newFactory() => GraphFactory<V, E>(this);
 }

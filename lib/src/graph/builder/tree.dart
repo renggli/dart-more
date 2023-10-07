@@ -4,7 +4,6 @@ import 'package:collection/collection.dart';
 
 import '../builder.dart';
 import '../graph.dart';
-import 'empty.dart';
 
 /// Creates m-ary trees (also known as n-ary, k-ary or k-way tree) in which each
 /// node has no more than m children.
@@ -16,21 +15,21 @@ extension TreeGraphBuilderExtension<V, E> on GraphBuilder<V, E> {
   /// the last one; where all the nodes are as far left as possible.
   Graph<V, E> completeTree({required int vertexCount, int arity = 2}) {
     assert(arity >= 1, 'Branching factor must be positive');
-    final graph = empty();
+    final factory = newFactory();
     if (vertexCount <= 0) {
-      return graph;
+      return factory.build();
     }
     final parents = QueueList<int>.from([0]);
-    addVertexIndex(graph, 0);
+    factory.addVertexIndex(0);
     for (var child = 1; child < vertexCount;) {
       final parent = parents.removeFirst();
       for (var i = 0; i < arity && child < vertexCount; i++, child++) {
         parents.addLast(child);
-        addVertexIndex(graph, child);
-        addEdgeIndex(graph, parent, child);
+        factory.addVertexIndex(child);
+        factory.addEdgeIndex(parent, child);
       }
     }
-    return graph;
+    return factory.build();
   }
 
   /// Creates a perfectly balanced tree of [height] and a branching factor of

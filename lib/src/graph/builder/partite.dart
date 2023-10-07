@@ -1,6 +1,5 @@
 import '../builder.dart';
 import '../graph.dart';
-import 'empty.dart';
 
 /// https://mathworld.wolfram.com/Completek-PartiteGraph.html
 extension PartiteGraphBuilderExtension<V, E> on GraphBuilder<V, E> {
@@ -9,21 +8,21 @@ extension PartiteGraphBuilderExtension<V, E> on GraphBuilder<V, E> {
     final parts = vertexCounts.toList();
     final offsets = parts
         .fold<List<int>>(<int>[0], (list, each) => list..add(list.last + each));
-    final graph = empty();
+    final factory = newFactory();
     for (var l = 0; l < parts.length; l++) {
       for (var i = 0; i < parts[l]; i++) {
-        addVertexIndex(graph, offsets[l] + i);
+        factory.addVertexIndex(offsets[l] + i);
       }
     }
     for (var s = 0; s < parts.length - 1; s++) {
       for (var t = s + 1; t < parts.length; t++) {
         for (var i = 0; i < parts[s]; i++) {
           for (var j = 0; j < parts[t]; j++) {
-            addEdgeIndex(graph, offsets[s] + i, offsets[t] + j);
+            factory.addEdgeIndex(offsets[s] + i, offsets[t] + j);
           }
         }
       }
     }
-    return graph;
+    return factory.build();
   }
 }

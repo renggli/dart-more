@@ -4,7 +4,6 @@ import '../../collection/range/integer.dart';
 import '../builder.dart';
 import '../graph.dart';
 import 'complete.dart';
-import 'empty.dart';
 
 /// Creates random graphs using different models.
 extension RandomGraphBuilderExtension<V, E> on GraphBuilder<V, E> {
@@ -18,9 +17,9 @@ extension RandomGraphBuilderExtension<V, E> on GraphBuilder<V, E> {
     if (probability >= 1) {
       return complete(vertexCount: vertexCount);
     }
-    final graph = empty();
+    final factory = newFactory();
     for (var i = 0; i < vertexCount; i++) {
-      addVertexIndex(graph, i);
+      factory.addVertexIndex(i);
     }
     if (probability > 0) {
       final edges = isDirected
@@ -28,10 +27,10 @@ extension RandomGraphBuilderExtension<V, E> on GraphBuilder<V, E> {
           : IntegerRange(vertexCount).combinations(2);
       for (final edge in edges) {
         if (random.nextDouble() < probability) {
-          addEdgeIndex(graph, edge[0], edge[1]);
+          factory.addEdgeIndex(edge[0], edge[1]);
         }
       }
     }
-    return graph;
+    return factory.build();
   }
 }
