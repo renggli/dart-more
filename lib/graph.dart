@@ -1,19 +1,19 @@
 /// Graph-theory objects and algorithms.
 library graph;
 
-export 'src/graph/builder.dart' show GraphBuilder;
-export 'src/graph/builder/atlas.dart' show AtlasGraphBuilderExtension;
-export 'src/graph/builder/collection.dart' show CollectionGraphBuilderExtension;
-export 'src/graph/builder/complete.dart' show CompleteGraphBuilderExtension;
-export 'src/graph/builder/empty.dart' show EmptyGraphBuilderExtension;
-export 'src/graph/builder/partite.dart' show PartiteGraphBuilderExtension;
-export 'src/graph/builder/path.dart' show PathGraphBuilderExtension;
-export 'src/graph/builder/random.dart' show RandomGraphBuilderExtension;
-export 'src/graph/builder/ring.dart' show RingGraphBuilderExtension;
-export 'src/graph/builder/star.dart' show StarGraphBuilderExtension;
-export 'src/graph/builder/tree.dart' show TreeGraphBuilderExtension;
 export 'src/graph/edge.dart' show Edge;
 export 'src/graph/graph.dart' show Graph;
+export 'src/graph/library.dart' show GraphLibrary;
+export 'src/graph/library/atlas.dart' show AtlasGraphLibraryExtension;
+export 'src/graph/library/collection.dart' show CollectionGraphLibraryExtension;
+export 'src/graph/library/complete.dart' show CompleteGraphLibraryExtension;
+export 'src/graph/library/empty.dart' show EmptyGraphLibraryExtension;
+export 'src/graph/library/partite.dart' show PartiteGraphLibraryExtension;
+export 'src/graph/library/path.dart' show PathGraphLibraryExtension;
+export 'src/graph/library/random.dart' show RandomGraphLibraryExtension;
+export 'src/graph/library/ring.dart' show RingGraphLibraryExtension;
+export 'src/graph/library/star.dart' show StarGraphLibraryExtension;
+export 'src/graph/library/tree.dart' show TreeGraphLibraryExtension;
 export 'src/graph/model/reversed.dart' show ReversedGraphExtension;
 export 'src/graph/model/unmodifiable.dart' show UnmodifiableGraphExtension;
 export 'src/graph/operations/connected.dart' show ConnectedGraphExtension;

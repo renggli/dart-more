@@ -1,12 +1,12 @@
 import '../../collection/iterable/combinations.dart';
 import '../../collection/iterable/permutations.dart';
 import '../../collection/range/integer.dart';
-import '../builder.dart';
 import '../graph.dart';
+import '../library.dart';
 import 'complete.dart';
 
 /// Creates random graphs using different models.
-extension RandomGraphBuilderExtension<V, E> on GraphBuilder<V, E> {
+extension RandomGraphLibraryExtension<V, E> on GraphLibrary<V, E> {
   /// Generates a graph using the Erdős–Rényi model with [vertexCount] vertices
   /// and a constant [probability] of creating an edge between any pair of
   /// vertices.
@@ -17,9 +17,9 @@ extension RandomGraphBuilderExtension<V, E> on GraphBuilder<V, E> {
     if (probability >= 1) {
       return complete(vertexCount: vertexCount);
     }
-    final factory = newFactory();
+    final builder = newBuilder();
     for (var i = 0; i < vertexCount; i++) {
-      factory.addVertexIndex(i);
+      builder.addVertexIndex(i);
     }
     if (probability > 0) {
       final edges = isDirected
@@ -27,10 +27,10 @@ extension RandomGraphBuilderExtension<V, E> on GraphBuilder<V, E> {
           : IntegerRange(vertexCount).combinations(2);
       for (final edge in edges) {
         if (random.nextDouble() < probability) {
-          factory.addEdgeIndex(edge[0], edge[1]);
+          builder.addEdgeIndex(edge[0], edge[1]);
         }
       }
     }
-    return factory.build();
+    return builder.build();
   }
 }

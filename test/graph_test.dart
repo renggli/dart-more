@@ -825,9 +825,9 @@ void main() {
       group('union', () {
         test('disjoint', () {
           final a =
-              GraphBuilder<String, String>().fromPath(['a', 'b'], data: 'a->b');
+              GraphLibrary<String, String>().fromPath(['a', 'b'], data: 'a->b');
           final b =
-              GraphBuilder<String, String>().fromPath(['c', 'd'], data: 'c->d');
+              GraphLibrary<String, String>().fromPath(['c', 'd'], data: 'c->d');
           final result = a.union(b);
           expect(result.vertices, unorderedEquals(['a', 'b', 'c', 'd']));
           expect(
@@ -839,9 +839,9 @@ void main() {
         });
         test('shared vertex', () {
           final a =
-              GraphBuilder<String, String>().fromPath(['a', 'b'], data: 'a->b');
+              GraphLibrary<String, String>().fromPath(['a', 'b'], data: 'a->b');
           final b =
-              GraphBuilder<String, String>().fromPath(['b', 'c'], data: 'b->c');
+              GraphLibrary<String, String>().fromPath(['b', 'c'], data: 'b->c');
           final result = a.union(b);
           expect(result.vertices, unorderedEquals(['a', 'b', 'c']));
           expect(
@@ -852,8 +852,8 @@ void main() {
               ]));
         });
         test('shared edge', () {
-          final a = GraphBuilder<String, void>().fromPath(['a', 'b', 'c']);
-          final b = GraphBuilder<String, void>().fromPath(['b', 'c', 'd']);
+          final a = GraphLibrary<String, void>().fromPath(['a', 'b', 'c']);
+          final b = GraphLibrary<String, void>().fromPath(['b', 'c', 'd']);
           final result = a.union(b);
           expect(result.vertices, unorderedEquals(['a', 'b', 'c', 'd']));
           expect(
@@ -868,25 +868,25 @@ void main() {
       group('intersection', () {
         test('disjoint', () {
           final a =
-              GraphBuilder<String, String>().fromPath(['a', 'b'], data: 'a->b');
+              GraphLibrary<String, String>().fromPath(['a', 'b'], data: 'a->b');
           final b =
-              GraphBuilder<String, String>().fromPath(['c', 'd'], data: 'c->d');
+              GraphLibrary<String, String>().fromPath(['c', 'd'], data: 'c->d');
           final result = a.intersection(b);
           expect(result.vertices, isEmpty);
           expect(result.edges, isEmpty);
         });
         test('shared vertex', () {
           final a =
-              GraphBuilder<String, String>().fromPath(['a', 'b'], data: 'a->b');
+              GraphLibrary<String, String>().fromPath(['a', 'b'], data: 'a->b');
           final b =
-              GraphBuilder<String, String>().fromPath(['b', 'c'], data: 'b->c');
+              GraphLibrary<String, String>().fromPath(['b', 'c'], data: 'b->c');
           final result = a.intersection(b);
           expect(result.vertices, unorderedEquals(['b']));
           expect(result.edges, isEmpty);
         });
         test('shared edge', () {
-          final a = GraphBuilder<String, void>().fromPath(['a', 'b', 'c']);
-          final b = GraphBuilder<String, void>().fromPath(['b', 'c', 'd']);
+          final a = GraphLibrary<String, void>().fromPath(['a', 'b', 'c']);
+          final b = GraphLibrary<String, void>().fromPath(['b', 'c', 'd']);
           final result = a.intersection(b);
           expect(result.vertices, unorderedEquals(['b', 'c']));
           expect(result.edges, [isEdge(source: 'b', target: 'c')]);
@@ -925,7 +925,7 @@ void main() {
       });
     });
     group('map', () {
-      final graph = GraphBuilder<int, Point<int>>(edgeProvider: Point.new)
+      final graph = GraphLibrary<int, Point<int>>(edgeProvider: Point.new)
           .ring(vertexCount: 3);
       test('none', () {
         final result = graph.map<int, Point<int>>();
@@ -980,7 +980,7 @@ void main() {
         expectInvariants(result);
       });
       test('vertex and edge', () {
-        final graph = GraphBuilder<int, Point<int>>(
+        final graph = GraphLibrary<int, Point<int>>(
                 edgeProvider: Point.new, isDirected: false)
             .ring(vertexCount: 3);
         final result = graph.map<String, String>(
@@ -1001,10 +1001,10 @@ void main() {
       });
     });
   });
-  group('builder', () {
+  group('library', () {
     group('atlas', () {
       final random = Random(1252);
-      final builder = GraphBuilder<int, void>(isDirected: false);
+      final builder = GraphLibrary<int, void>(isDirected: false);
       test('numbered', () {
         for (var i = 0; i <= 1252; i += random.nextInt(100)) {
           final graph = builder.atlas(i);
@@ -1023,19 +1023,19 @@ void main() {
     group('collection', () {
       group('path', () {
         test('empty', () {
-          final graph = GraphBuilder<String, void>().fromPath([]);
+          final graph = GraphLibrary<String, void>().fromPath([]);
           expect(graph.vertices, isEmpty);
           expect(graph.edges, isEmpty);
           expectInvariants(graph);
         });
         test('single', () {
-          final graph = GraphBuilder<String, void>().fromPath(['a']);
+          final graph = GraphLibrary<String, void>().fromPath(['a']);
           expect(graph.vertices, ['a']);
           expect(graph.edges, isEmpty);
           expectInvariants(graph);
         });
         test('multiple', () {
-          final graph = GraphBuilder<String, void>().fromPath(['a', 'b', 'c']);
+          final graph = GraphLibrary<String, void>().fromPath(['a', 'b', 'c']);
           expect(graph.vertices, unorderedEquals(['a', 'b', 'c']));
           expect(graph.edges, [
             isEdge(source: 'a', target: 'b'),
@@ -1046,13 +1046,13 @@ void main() {
       });
       group('paths', () {
         test('empty', () {
-          final graph = GraphBuilder<String, void>().fromPaths([]);
+          final graph = GraphLibrary<String, void>().fromPaths([]);
           expect(graph.vertices, isEmpty);
           expect(graph.edges, isEmpty);
           expectInvariants(graph);
         });
         test('simple', () {
-          final graph = GraphBuilder<String, void>().fromPaths([
+          final graph = GraphLibrary<String, void>().fromPaths([
             ['a'],
             ['b', 'c'],
           ]);
@@ -1063,7 +1063,7 @@ void main() {
           expectInvariants(graph);
         });
         test('multiple', () {
-          final graph = GraphBuilder<String, void>().fromPaths([
+          final graph = GraphLibrary<String, void>().fromPaths([
             ['a', 'b', 'c'],
             ['d', 'b', 'e'],
           ]);
@@ -1081,13 +1081,13 @@ void main() {
       });
       group('predecessors', () {
         test('empty', () {
-          final graph = GraphBuilder<String, void>().fromPredecessors({});
+          final graph = GraphLibrary<String, void>().fromPredecessors({});
           expect(graph.vertices, isEmpty);
           expect(graph.edges, isEmpty);
           expectInvariants(graph);
         });
         test('single', () {
-          final graph = GraphBuilder<String, void>().fromPredecessors({
+          final graph = GraphLibrary<String, void>().fromPredecessors({
             'a': null,
             'b': [],
           });
@@ -1096,7 +1096,7 @@ void main() {
           expectInvariants(graph);
         });
         test('basic', () {
-          final graph = GraphBuilder<String, void>().fromPredecessors({
+          final graph = GraphLibrary<String, void>().fromPredecessors({
             'a': ['b', 'c'],
           });
           expect(graph.vertices, unorderedEquals(['a', 'b', 'c']));
@@ -1111,14 +1111,14 @@ void main() {
       });
       group('predecessor function', () {
         test('empty', () {
-          final graph = GraphBuilder<int, void>()
+          final graph = GraphLibrary<int, void>()
               .fromPredecessorFunction([], finiteCollatzGraph);
           expect(graph.vertices, isEmpty);
           expect(graph.edges, isEmpty);
           expectInvariants(graph);
         });
         test('basic', () {
-          final graph = GraphBuilder<int, void>()
+          final graph = GraphLibrary<int, void>()
               .fromPredecessorFunction([5], finiteCollatzGraph);
           expect(graph.vertices, unorderedEquals([1, 2, 4, 5, 8, 16]));
           expect(
@@ -1135,13 +1135,13 @@ void main() {
       });
       group('successors', () {
         test('empty', () {
-          final graph = GraphBuilder<String, void>().fromSuccessors({});
+          final graph = GraphLibrary<String, void>().fromSuccessors({});
           expect(graph.vertices, isEmpty);
           expect(graph.edges, isEmpty);
           expectInvariants(graph);
         });
         test('single', () {
-          final graph = GraphBuilder<String, void>().fromSuccessors({
+          final graph = GraphLibrary<String, void>().fromSuccessors({
             'a': null,
             'b': [],
           });
@@ -1150,7 +1150,7 @@ void main() {
           expectInvariants(graph);
         });
         test('basic', () {
-          final graph = GraphBuilder<String, void>().fromSuccessors({
+          final graph = GraphLibrary<String, void>().fromSuccessors({
             'a': ['b', 'c'],
           });
           expect(graph.vertices, unorderedEquals(['a', 'b', 'c']));
@@ -1165,14 +1165,14 @@ void main() {
       });
       group('successor function', () {
         test('empty', () {
-          final graph = GraphBuilder<int, void>()
+          final graph = GraphLibrary<int, void>()
               .fromSuccessorFunction([], finiteCollatzGraph);
           expect(graph.vertices, isEmpty);
           expect(graph.edges, isEmpty);
           expectInvariants(graph);
         });
         test('basic', () {
-          final graph = GraphBuilder<int, void>()
+          final graph = GraphLibrary<int, void>()
               .fromSuccessorFunction([5], finiteCollatzGraph);
           expect(graph.vertices, unorderedEquals([1, 2, 4, 5, 8, 16]));
           expect(
@@ -1190,19 +1190,19 @@ void main() {
     });
     group('complete', () {
       test('empty', () {
-        final graph = GraphBuilder<int, void>().complete(vertexCount: 0);
+        final graph = GraphLibrary<int, void>().complete(vertexCount: 0);
         expect(graph.vertices, isEmpty);
         expect(graph.edges, isEmpty);
         expectInvariants(graph);
       });
       test('single', () {
-        final graph = GraphBuilder<int, void>().complete(vertexCount: 1);
+        final graph = GraphLibrary<int, void>().complete(vertexCount: 1);
         expect(graph.vertices, [0]);
         expect(graph.edges, isEmpty);
         expectInvariants(graph);
       });
       test('full', () {
-        final graph = GraphBuilder<int, void>().complete(vertexCount: 3);
+        final graph = GraphLibrary<int, void>().complete(vertexCount: 3);
         expect(graph.vertices, unorderedEquals([0, 1, 2]));
         expect(
             graph.edges,
@@ -1219,21 +1219,21 @@ void main() {
     });
     group('empty', () {
       test('basic', () {
-        final graph = GraphBuilder<int, String>().empty();
+        final graph = GraphLibrary<int, String>().empty();
         expect(graph.vertices, isEmpty);
         expect(graph.edges, isEmpty);
         expect(graph.isDirected, isTrue);
         expect(graph.isUnmodifiable, isFalse);
       });
       test('unmodifiable', () {
-        final graph = GraphBuilder<int, String>(isDirected: false).empty();
+        final graph = GraphLibrary<int, String>(isDirected: false).empty();
         expect(graph.vertices, isEmpty);
         expect(graph.edges, isEmpty);
         expect(graph.isDirected, isFalse);
         expect(graph.isUnmodifiable, isFalse);
       });
       test('unmodifiable', () {
-        final graph = GraphBuilder<int, String>(isUnmodifiable: true).empty();
+        final graph = GraphLibrary<int, String>(isUnmodifiable: true).empty();
         expect(graph.vertices, isEmpty);
         expect(graph.edges, isEmpty);
         expect(graph.isDirected, isTrue);
@@ -1242,13 +1242,13 @@ void main() {
     });
     group('partite', () {
       test('empty', () {
-        final graph = GraphBuilder<int, void>().partite(vertexCounts: []);
+        final graph = GraphLibrary<int, void>().partite(vertexCounts: []);
         expect(graph.vertices, isEmpty);
         expect(graph.edges, isEmpty);
         expectInvariants(graph);
       });
       test('path graph (p: 1, q: 1)', () {
-        final graph = GraphBuilder<int, void>().partite(vertexCounts: [1, 1]);
+        final graph = GraphLibrary<int, void>().partite(vertexCounts: [1, 1]);
         expect(graph.vertices, unorderedEquals([0, 1]));
         expect(graph.edges, [
           isEdge(source: 0, target: 1),
@@ -1256,7 +1256,7 @@ void main() {
         expectInvariants(graph);
       });
       test('claw graph (p: 1, q: 3)', () {
-        final graph = GraphBuilder<int, void>().partite(vertexCounts: [1, 3]);
+        final graph = GraphLibrary<int, void>().partite(vertexCounts: [1, 3]);
         expect(graph.vertices, unorderedEquals([0, 1, 2, 3]));
         expect(
             graph.edges,
@@ -1268,7 +1268,7 @@ void main() {
         expectInvariants(graph);
       });
       test('square graph (p: 2, q: 2)', () {
-        final graph = GraphBuilder<int, void>().partite(vertexCounts: [2, 2]);
+        final graph = GraphLibrary<int, void>().partite(vertexCounts: [2, 2]);
         expect(graph.vertices, unorderedEquals([0, 1, 2, 3]));
         expect(
             graph.edges,
@@ -1281,7 +1281,7 @@ void main() {
         expectInvariants(graph);
       });
       test('utility graph (p: 3, q: 3)', () {
-        final graph = GraphBuilder<int, void>().partite(vertexCounts: [3, 3]);
+        final graph = GraphLibrary<int, void>().partite(vertexCounts: [3, 3]);
         expect(graph.vertices, unorderedEquals([0, 1, 2, 3, 4, 5]));
         expect(
             graph.edges,
@@ -1301,19 +1301,19 @@ void main() {
     });
     group('path', () {
       test('empty', () {
-        final graph = GraphBuilder<int, void>().path(vertexCount: 0);
+        final graph = GraphLibrary<int, void>().path(vertexCount: 0);
         expect(graph.vertices, isEmpty);
         expect(graph.edges, isEmpty);
         expectInvariants(graph);
       });
       test('single', () {
-        final graph = GraphBuilder<int, void>().path(vertexCount: 1);
+        final graph = GraphLibrary<int, void>().path(vertexCount: 1);
         expect(graph.vertices, [0]);
         expect(graph.edges, isEmpty);
         expectInvariants(graph);
       });
       test('full', () {
-        final graph = GraphBuilder<int, void>().path(vertexCount: 3);
+        final graph = GraphLibrary<int, void>().path(vertexCount: 3);
         expect(graph.vertices, unorderedEquals([0, 1, 2]));
         expect(
             graph.edges,
@@ -1326,19 +1326,19 @@ void main() {
     });
     group('ring', () {
       test('empty', () {
-        final graph = GraphBuilder<int, void>().ring(vertexCount: 0);
+        final graph = GraphLibrary<int, void>().ring(vertexCount: 0);
         expect(graph.vertices, isEmpty);
         expect(graph.edges, isEmpty);
         expectInvariants(graph);
       });
       test('single', () {
-        final graph = GraphBuilder<int, void>().ring(vertexCount: 1);
+        final graph = GraphLibrary<int, void>().ring(vertexCount: 1);
         expect(graph.vertices, [0]);
         expect(graph.edges, isEmpty);
         expectInvariants(graph);
       });
       test('full', () {
-        final graph = GraphBuilder<int, void>().ring(vertexCount: 3);
+        final graph = GraphLibrary<int, void>().ring(vertexCount: 3);
         expect(graph.vertices, unorderedEquals([0, 1, 2]));
         expect(
             graph.edges,
@@ -1352,19 +1352,19 @@ void main() {
     });
     group('star', () {
       test('empty', () {
-        final graph = GraphBuilder<int, void>().star(vertexCount: 0);
+        final graph = GraphLibrary<int, void>().star(vertexCount: 0);
         expect(graph.vertices, isEmpty);
         expect(graph.edges, isEmpty);
         expectInvariants(graph);
       });
       test('single', () {
-        final graph = GraphBuilder<int, void>().star(vertexCount: 1);
+        final graph = GraphLibrary<int, void>().star(vertexCount: 1);
         expect(graph.vertices, [0]);
         expect(graph.edges, isEmpty);
         expectInvariants(graph);
       });
       test('full', () {
-        final graph = GraphBuilder<int, void>().star(vertexCount: 4);
+        final graph = GraphLibrary<int, void>().star(vertexCount: 4);
         expect(graph.vertices, unorderedEquals([0, 1, 2, 3]));
         expect(
             graph.edges,
@@ -1379,14 +1379,14 @@ void main() {
     group('tree', () {
       group('complete', () {
         test('empty', () {
-          final graph = GraphBuilder<int, void>().completeTree(vertexCount: 0);
+          final graph = GraphLibrary<int, void>().completeTree(vertexCount: 0);
           expect(graph.vertices, isEmpty);
           expect(graph.edges, isEmpty);
           expectInvariants(graph);
         });
         test('unary', () {
           final graph =
-              GraphBuilder<int, void>().completeTree(vertexCount: 3, arity: 1);
+              GraphLibrary<int, void>().completeTree(vertexCount: 3, arity: 1);
           expect(graph.vertices, unorderedEquals([0, 1, 2]));
           expect(
               graph.edges,
@@ -1397,7 +1397,7 @@ void main() {
           expectInvariants(graph);
         });
         test('binary', () {
-          final graph = GraphBuilder<int, void>().completeTree(vertexCount: 6);
+          final graph = GraphLibrary<int, void>().completeTree(vertexCount: 6);
           expect(graph.vertices, unorderedEquals([0, 1, 2, 3, 4, 5]));
           expect(
               graph.edges,
@@ -1412,7 +1412,7 @@ void main() {
         });
         test('ternary', () {
           final graph =
-              GraphBuilder<int, void>().completeTree(vertexCount: 7, arity: 3);
+              GraphLibrary<int, void>().completeTree(vertexCount: 7, arity: 3);
           expect(graph.vertices, unorderedEquals([0, 1, 2, 3, 4, 5, 6]));
           expect(
               graph.edges,
@@ -1429,14 +1429,14 @@ void main() {
       });
       group('perfect', () {
         test('empty', () {
-          final graph = GraphBuilder<int, void>().prefectTree(height: 0);
+          final graph = GraphLibrary<int, void>().prefectTree(height: 0);
           expect(graph.vertices, [0]);
           expect(graph.edges, isEmpty);
           expectInvariants(graph);
         });
         test('unary', () {
           final graph =
-              GraphBuilder<int, void>().prefectTree(height: 2, arity: 1);
+              GraphLibrary<int, void>().prefectTree(height: 2, arity: 1);
           expect(graph.vertices, unorderedEquals([0, 1, 2]));
           expect(
               graph.edges,
@@ -1447,7 +1447,7 @@ void main() {
           expectInvariants(graph);
         });
         test('binary', () {
-          final graph = GraphBuilder<int, void>().prefectTree(height: 2);
+          final graph = GraphLibrary<int, void>().prefectTree(height: 2);
           expect(graph.vertices, unorderedEquals([0, 1, 2, 3, 4, 5, 6]));
           expect(
               graph.edges,
@@ -1463,7 +1463,7 @@ void main() {
         });
         test('ternary', () {
           final graph =
-              GraphBuilder<int, void>().prefectTree(height: 1, arity: 3);
+              GraphLibrary<int, void>().prefectTree(height: 1, arity: 3);
           expect(graph.vertices, unorderedEquals([0, 1, 2, 3]));
           expect(
               graph.edges,
@@ -1478,21 +1478,21 @@ void main() {
       group('random', () {
         group('Erdős–Rényi', () {
           test('empty', () {
-            final graph = GraphBuilder<int, void>()
+            final graph = GraphLibrary<int, void>()
                 .randomErdosRenyi(vertexCount: 3, probability: 0.0);
             expect(graph.vertices, hasLength(3));
             expect(graph.edges, isEmpty);
             expectInvariants(graph);
           });
           test('complete', () {
-            final graph = GraphBuilder<int, void>()
+            final graph = GraphLibrary<int, void>()
                 .randomErdosRenyi(vertexCount: 3, probability: 1.0);
             expect(graph.vertices, hasLength(3));
             expect(graph.edges, hasLength(6));
             expectInvariants(graph);
           });
           test('directed', () {
-            final graph = GraphBuilder<int, void>(
+            final graph = GraphLibrary<int, void>(
                     isDirected: true, random: Random(235711))
                 .randomErdosRenyi(vertexCount: 10, probability: 0.5);
             expect(graph.isDirected, isTrue);
@@ -1501,7 +1501,7 @@ void main() {
             expectInvariants(graph);
           });
           test('undirected', () {
-            final graph = GraphBuilder<int, void>(
+            final graph = GraphLibrary<int, void>(
                     isDirected: false, random: Random(131719))
                 .randomErdosRenyi(vertexCount: 10, probability: 0.5);
             expect(graph.isDirected, isFalse);
@@ -1515,7 +1515,7 @@ void main() {
   });
   group('search', () {
     test('directed path', () {
-      final graph = GraphBuilder<int, void>().path(vertexCount: 10);
+      final graph = GraphLibrary<int, void>().path(vertexCount: 10);
       for (var i = 0; i < 10; i++) {
         expect(
           graph.shortestPath(0, i),
@@ -1530,7 +1530,7 @@ void main() {
       }
     });
     test('directed path with cost', () {
-      final graph = GraphBuilder<int, void>().path(vertexCount: 10);
+      final graph = GraphLibrary<int, void>().path(vertexCount: 10);
       for (var i = 0; i < 10; i++) {
         expect(
           graph.shortestPath(0, i, edgeCost: (source, target) => target),
@@ -1546,7 +1546,7 @@ void main() {
     });
     test('directed path with cost on edge', () {
       final graph =
-          GraphBuilder<int, int>(edgeProvider: (source, target) => target)
+          GraphLibrary<int, int>(edgeProvider: (source, target) => target)
               .path(vertexCount: 10);
       for (var i = 0; i < 10; i++) {
         expect(
@@ -1567,7 +1567,7 @@ void main() {
     });
     test('undirected path', () {
       final graph =
-          GraphBuilder<int, void>(isDirected: false).path(vertexCount: 10);
+          GraphLibrary<int, void>(isDirected: false).path(vertexCount: 10);
       for (var i = 0; i < 10; i++) {
         expect(
           graph.shortestPath(0, i),
@@ -1820,21 +1820,21 @@ void main() {
   group('traverse', () {
     group('breadth-first', () {
       test('path', () {
-        final graph = GraphBuilder<int, void>().path(vertexCount: 10);
+        final graph = GraphLibrary<int, void>().path(vertexCount: 10);
         expect(graph.breadthFirst(graph.vertices.first),
             [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]);
       });
       test('ring', () {
-        final graph = GraphBuilder<int, void>().ring(vertexCount: 10);
+        final graph = GraphLibrary<int, void>().ring(vertexCount: 10);
         expect(graph.breadthFirst(graph.vertices.first),
             [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]);
       });
       test('basic', () {
-        final graph = GraphBuilder<int, void>().fromSuccessors(basicGraphData);
+        final graph = GraphLibrary<int, void>().fromSuccessors(basicGraphData);
         expect(graph.breadthFirst(0), [0, 3, 2, 1, 5, 4]);
       });
       test('cyclic', () {
-        final graph = GraphBuilder<int, void>().fromSuccessors(cyclicGraphData);
+        final graph = GraphLibrary<int, void>().fromSuccessors(cyclicGraphData);
         expect(graph.breadthFirst(0), [0, 3, 1, 4, 2]);
       });
       test('infinite', () {
@@ -1845,21 +1845,21 @@ void main() {
     });
     group('depth-first', () {
       test('path', () {
-        final graph = GraphBuilder<int, void>().path(vertexCount: 10);
+        final graph = GraphLibrary<int, void>().path(vertexCount: 10);
         expect(graph.depthFirst(graph.vertices.first),
             [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]);
       });
       test('ring', () {
-        final graph = GraphBuilder<int, void>().ring(vertexCount: 10);
+        final graph = GraphLibrary<int, void>().ring(vertexCount: 10);
         expect(graph.depthFirst(graph.vertices.first),
             [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]);
       });
       test('basic', () {
-        final graph = GraphBuilder<int, void>().fromSuccessors(basicGraphData);
+        final graph = GraphLibrary<int, void>().fromSuccessors(basicGraphData);
         expect(graph.depthFirst(0), [0, 3, 2, 5, 1, 4]);
       });
       test('cyclic', () {
-        final graph = GraphBuilder<int, void>().fromSuccessors(cyclicGraphData);
+        final graph = GraphLibrary<int, void>().fromSuccessors(cyclicGraphData);
         expect(graph.depthFirst(0), [0, 3, 1, 2, 4]);
       });
       test('infinite', () {
@@ -1870,21 +1870,21 @@ void main() {
     });
     group('depth-first (post-order)', () {
       test('path', () {
-        final graph = GraphBuilder<int, void>().path(vertexCount: 10);
+        final graph = GraphLibrary<int, void>().path(vertexCount: 10);
         expect(graph.depthFirstPostOrder(graph.vertices.first),
             [9, 8, 7, 6, 5, 4, 3, 2, 1, 0]);
       });
       test('ring', () {
-        final graph = GraphBuilder<int, void>().ring(vertexCount: 10);
+        final graph = GraphLibrary<int, void>().ring(vertexCount: 10);
         expect(graph.depthFirstPostOrder(graph.vertices.first),
             [9, 8, 7, 6, 5, 4, 3, 2, 1, 0]);
       });
       test('basic', () {
-        final graph = GraphBuilder<int, void>().fromSuccessors(basicGraphData);
+        final graph = GraphLibrary<int, void>().fromSuccessors(basicGraphData);
         expect(graph.depthFirstPostOrder(0), [3, 5, 2, 4, 1, 0]);
       });
       test('cyclic', () {
-        final graph = GraphBuilder<int, void>().fromSuccessors(cyclicGraphData);
+        final graph = GraphLibrary<int, void>().fromSuccessors(cyclicGraphData);
         expect(graph.depthFirstPostOrder(0), [2, 1, 4, 3, 0]);
       });
       test('custom', () {
@@ -1895,16 +1895,16 @@ void main() {
     });
     group('topological', () {
       test('path', () {
-        final graph = GraphBuilder<int, void>().path(vertexCount: 10);
+        final graph = GraphLibrary<int, void>().path(vertexCount: 10);
         expect(graph.topological(graph.vertices.first),
             [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]);
       });
       test('ring', () {
-        final graph = GraphBuilder<int, void>().ring(vertexCount: 10);
+        final graph = GraphLibrary<int, void>().ring(vertexCount: 10);
         expect(graph.topological(graph.vertices.first), isEmpty);
       });
       test('basic', () {
-        final graph = GraphBuilder<int, void>().fromSuccessors(basicGraphData);
+        final graph = GraphLibrary<int, void>().fromSuccessors(basicGraphData);
         expect(graph.topological(0), [0, 1, 4, 2, 5, 3]);
       });
       test('custom', () {
@@ -1922,21 +1922,21 @@ void main() {
     });
     group('random walk', () {
       test('path', () {
-        final graph = GraphBuilder<int, void>().path(vertexCount: 10);
+        final graph = GraphLibrary<int, void>().path(vertexCount: 10);
         expect(graph.randomWalk(5), [5, 6, 7, 8, 9]);
       });
       test('ring (infinite)', () {
-        final graph = GraphBuilder<int, void>().ring(vertexCount: 4);
+        final graph = GraphLibrary<int, void>().ring(vertexCount: 4);
         expect(graph.randomWalk(0).take(10), [0, 1, 2, 3, 0, 1, 2, 3, 0, 1]);
       });
       test('ring (avoid duplicates)', () {
-        final graph = GraphBuilder<int, void>().ring(vertexCount: 4);
+        final graph = GraphLibrary<int, void>().ring(vertexCount: 4);
         expect(graph.randomWalk(0, selfAvoiding: true), [0, 1, 2, 3]);
       });
       test('star (default probabilities)', () {
         final random = Random(3527);
         final graph =
-            GraphBuilder<int, void>(isDirected: false).star(vertexCount: 4);
+            GraphLibrary<int, void>(isDirected: false).star(vertexCount: 4);
         final observations =
             graph.randomWalk(0, random: random).take(100).toMultiset();
         expect(observations.distinct, {0, 1, 2, 3},
@@ -1945,7 +1945,7 @@ void main() {
       test('star (tweaked probabilities)', () {
         final random = Random(3527);
         final graph =
-            GraphBuilder<int, void>(isDirected: false).star(vertexCount: 4);
+            GraphLibrary<int, void>(isDirected: false).star(vertexCount: 4);
         final observations = graph
             .randomWalk(0,
                 random: random,

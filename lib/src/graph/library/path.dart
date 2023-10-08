@@ -1,18 +1,18 @@
-import '../builder.dart';
 import '../graph.dart';
+import '../library.dart';
 
 /// https://mathworld.wolfram.com/PathGraph.html
-extension PathGraphBuilderExtension<V, E> on GraphBuilder<V, E> {
+extension PathGraphLibraryExtension<V, E> on GraphLibrary<V, E> {
   /// Creates a [Graph] that forms a linear path.
   Graph<V, E> path({required int vertexCount}) {
-    final factory = newFactory();
+    final builder = newBuilder();
     if (vertexCount <= 0) {
-      return factory.build();
+      return builder.build();
     }
-    factory.addVertexIndex(0);
+    builder.addVertexIndex(0);
     for (var i = 1; i < vertexCount; i++) {
-      factory.addEdgeIndex(i - 1, i);
+      builder.addEdgeIndex(i - 1, i);
     }
-    return factory.build();
+    return builder.build();
   }
 }
