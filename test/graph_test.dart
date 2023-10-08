@@ -309,6 +309,19 @@ void main() {
           expect(graph.edges.single.data, 42);
           expectInvariants(graph);
         });
+        test('put edge', () {
+          final graph = Graph<String, List<int>>.directed();
+          graph.putEdge('a', 'b', () => []).add(1);
+          graph.putEdge('b', 'a', () => []).add(2);
+          expect(graph.vertices, unorderedEquals(['a', 'b']));
+          expect(
+              graph.edges,
+              unorderedEquals([
+                isEdge(source: 'a', target: 'b', data: [1]),
+                isEdge(source: 'b', target: 'a', data: [2]),
+              ]));
+          expectInvariants(graph);
+        });
         test('remove edge', () {
           final graph = Graph<String, void>.directed();
           graph.addEdge('Hello', 'World');
@@ -458,6 +471,19 @@ void main() {
           expect(graph.edges.single.data, 42);
           expectInvariants(graph);
         });
+        test('put edge', () {
+          final graph = Graph<String, List<int>>.directed().reversed;
+          graph.putEdge('a', 'b', () => []).add(1);
+          graph.putEdge('b', 'a', () => []).add(2);
+          expect(graph.vertices, unorderedEquals(['a', 'b']));
+          expect(
+              graph.edges,
+              unorderedEquals([
+                isEdge(source: 'a', target: 'b', data: [1]),
+                isEdge(source: 'b', target: 'a', data: [2]),
+              ]));
+          expectInvariants(graph);
+        });
         test('remove edge', () {
           final graph = Graph<String, void>.directed().reversed;
           graph.addEdge('Hello', 'World');
@@ -591,6 +617,19 @@ void main() {
               unorderedEquals([
                 isEdge(source: 'Hello', target: 'World', data: 42),
                 isEdge(source: 'World', target: 'Hello', data: 42),
+              ]));
+          expectInvariants(graph);
+        });
+        test('put edge', () {
+          final graph = Graph<String, List<int>>.undirected();
+          graph.putEdge('a', 'b', () => []).add(1);
+          graph.putEdge('b', 'a', () => []).add(2);
+          expect(graph.vertices, unorderedEquals(['a', 'b']));
+          expect(
+              graph.edges,
+              unorderedEquals([
+                isEdge(source: 'a', target: 'b', data: [1, 2]),
+                isEdge(source: 'b', target: 'a', data: [1, 2]),
               ]));
           expectInvariants(graph);
         });

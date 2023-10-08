@@ -63,9 +63,19 @@ abstract class Graph<V, E> with ToStringPrinter {
   /// Adds a [vertex] to this graph.
   void addVertex(V vertex);
 
-  /// Adds an edge between [source] and [target] vertex. Optionally
-  /// associates the provided [data] with the edge.
+  /// Adds an edge between [source] and [target] vertex. Optionally associates
+  /// the provided [data] with the edge. If the edge already exists, replaces
+  /// the existing edge data.
   void addEdge(V source, V target, {E? data});
+
+  /// Returns an edge between [source] and [target] vertex and return the
+  E putEdge(V source, V target, E Function() ifAbsent) {
+    final edge = getEdge(source, target);
+    if (edge != null) return edge.data;
+    final data = ifAbsent();
+    addEdge(source, target, data: data);
+    return data;
+  }
 
   /// Removes a [vertex] from this graph.
   void removeVertex(V vertex);
