@@ -1,8 +1,8 @@
+import '../factory.dart';
 import '../graph.dart';
-import '../library.dart';
 
 /// https://mathworld.wolfram.com/CompleteGraph.html
-extension CompleteGraphLibraryExtension<V, E> on GraphLibrary<V, E> {
+extension CompleteGraphFactoryExtension<V, E> on GraphFactory<V, E> {
   /// Creates a complete [Graph] where all vertices are connected with each
   /// other.
   Graph<V, E> complete({required int vertexCount}) {

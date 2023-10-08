@@ -1,8 +1,8 @@
+import '../factory.dart';
 import '../graph.dart';
-import '../library.dart';
 
 /// https://mathworld.wolfram.com/StarGraph.html
-extension StarGraphLibraryExtension<V, E> on GraphLibrary<V, E> {
+extension StarGraphFactoryExtension<V, E> on GraphFactory<V, E> {
   /// Creates a [Graph] that forms a star.
   Graph<V, E> star({required int vertexCount}) {
     final builder = newBuilder();

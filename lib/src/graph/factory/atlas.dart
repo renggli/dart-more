@@ -1,7 +1,7 @@
+import '../factory.dart';
 import '../graph.dart';
-import '../library.dart';
 
-extension AtlasGraphLibraryExtension<V, E> on GraphLibrary<V, E> {
+extension AtlasGraphFactoryExtension<V, E> on GraphFactory<V, E> {
   /// Returns a graph from "An Atlas of Graphs" by Ronald C. Read and Robin J.
   /// Wilson, Oxford University Press, 1998. [number] is a number between `0`
   /// and `1252`.

@@ -1,11 +1,11 @@
+import '../factory.dart';
 import '../graph.dart';
-import '../library.dart';
 import '../model/unmodifiable.dart';
 
 class GraphBuilder<V, E> {
   GraphBuilder(this.library) : graph = create<V, E>(library);
 
-  final GraphLibrary<V, E> library;
+  final GraphFactory<V, E> library;
   final Graph<V, E> graph;
 
   /// Adds a [vertex] to this graph.
@@ -24,7 +24,7 @@ class GraphBuilder<V, E> {
       library.vertexProvider?.call(target) ?? (target as V),
       data: data);
 
-  static Graph<V, E> create<V, E>(GraphLibrary<V, E> builder) =>
+  static Graph<V, E> create<V, E>(GraphFactory<V, E> builder) =>
       builder.isDirected
           ? Graph<V, E>.directed(vertexStrategy: builder.vertexStrategy)
           : Graph<V, E>.undirected(vertexStrategy: builder.vertexStrategy);

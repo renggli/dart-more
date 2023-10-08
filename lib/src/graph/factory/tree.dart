@@ -2,14 +2,14 @@ import 'dart:math';
 
 import 'package:collection/collection.dart';
 
+import '../factory.dart';
 import '../graph.dart';
-import '../library.dart';
 
 /// Creates m-ary trees (also known as n-ary, k-ary or k-way tree) in which each
 /// node has no more than m children.
 ///
 /// See https://en.wikipedia.org/wiki/M-ary_tree.
-extension TreeGraphLibraryExtension<V, E> on GraphLibrary<V, E> {
+extension TreeGraphFactoryExtension<V, E> on GraphFactory<V, E> {
   /// Creates a complete tree with [vertexCount] nodes and a branching factor of
   /// [arity]. By definition it is completely filled on every level except for
   /// the last one; where all the nodes are as far left as possible.

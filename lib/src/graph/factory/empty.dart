@@ -1,7 +1,7 @@
+import '../factory.dart';
 import '../graph.dart';
-import '../library.dart';
 
-extension EmptyGraphLibraryExtension<V, E> on GraphLibrary<V, E> {
+extension EmptyGraphFactoryExtension<V, E> on GraphFactory<V, E> {
   /// Creates an empty graph.
   Graph<V, E> empty() => newBuilder().build();
 }

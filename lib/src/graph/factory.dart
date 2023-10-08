@@ -2,15 +2,15 @@ import 'dart:math';
 
 import 'package:meta/meta.dart';
 
-import 'library/builder.dart';
+import 'factory/builder.dart';
 import 'strategy.dart';
 
 typedef VertexProvider<V> = V Function(int index);
 typedef EdgeProvider<V, E> = E Function(V source, V target);
 
-/// Builds common graphs efficiently.
-class GraphLibrary<V, E> {
-  GraphLibrary({
+/// Factory methods to create commmon graphs types efficiently.
+class GraphFactory<V, E> {
+  GraphFactory({
     this.isDirected = true,
     this.isUnmodifiable = false,
     this.vertexProvider,

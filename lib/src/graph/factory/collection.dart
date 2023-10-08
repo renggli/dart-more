@@ -1,9 +1,9 @@
 import 'package:collection/collection.dart';
 
+import '../factory.dart';
 import '../graph.dart';
-import '../library.dart';
 
-extension CollectionGraphLibraryExtension<V, E> on GraphLibrary<V, E> {
+extension CollectionGraphFactoryExtension<V, E> on GraphFactory<V, E> {
   /// Creates a [Graph] from a [Iterable] of chains.
   Graph<V, E> fromPath(Iterable<V> chain, {E? data}) =>
       fromPaths([chain], data: data);

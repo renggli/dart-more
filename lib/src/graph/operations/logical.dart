@@ -66,7 +66,8 @@ extension LogicalGraphExtension<V, E> on Graph<V, E> {
 
   /// Returns the complement of this graph, that is a graph with the same
   /// vertices but with edges between vertices that had no edge.
-  Graph<V, E> complement({E? Function(V source, V target)? edge}) {
+  Graph<V, E> complement(
+      {bool allowSelfLoops = false, E? Function(V source, V target)? edge}) {
     final result = copyEmpty<V, E>(this);
     // Copy all the vertices over.
     for (final vertex in vertices) {
@@ -76,8 +77,10 @@ extension LogicalGraphExtension<V, E> on Graph<V, E> {
     for (final source in vertices) {
       final targets = vertexStrategy.createSet()
         ..addAll(vertices)
-        ..removeAll(successorsOf(source))
-        ..remove(source);
+        ..removeAll(successorsOf(source));
+      if (!allowSelfLoops) {
+        targets.remove(source);
+      }
       for (final target in targets) {
         result.addEdge(source, target, data: edge?.call(source, target));
       }

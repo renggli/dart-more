@@ -1,12 +1,12 @@
 import '../../collection/iterable/combinations.dart';
 import '../../collection/iterable/permutations.dart';
 import '../../collection/range/integer.dart';
+import '../factory.dart';
 import '../graph.dart';
-import '../library.dart';
 import 'complete.dart';
 
 /// Creates random graphs using different models.
-extension RandomGraphLibraryExtension<V, E> on GraphLibrary<V, E> {
+extension RandomGraphFactoryExtension<V, E> on GraphFactory<V, E> {
   /// Generates a graph using the Erdős–Rényi model with [vertexCount] vertices
   /// and a constant [probability] of creating an edge between any pair of
   /// vertices.
