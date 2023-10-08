@@ -46,11 +46,13 @@ class DirectedGraph<V, E> extends Graph<V, E> {
       const [];
 
   @override
-  Iterable<Edge<V, E>> getEdges(V source, V target) {
-    final targetAdjacency = adjacency[source]?.outgoing;
-    return targetAdjacency != null && targetAdjacency.containsKey(target)
-        ? [DirectedEdge<V, E>(source, target, targetAdjacency[target] as E)]
-        : const [];
+  Edge<V, E>? getEdge(V source, V target) {
+    if (adjacency[source]?.outgoing case final targetAdjacency?) {
+      if (targetAdjacency[target] case final E data) {
+        return DirectedEdge<V, E>(source, target, data);
+      }
+    }
+    return null;
   }
 
   @override

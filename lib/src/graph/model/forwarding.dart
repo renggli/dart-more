@@ -34,8 +34,7 @@ abstract class ForwardingGraph<V, E> extends Graph<V, E> {
       delegate.outgoingEdgesOf(vertex);
 
   @override
-  Iterable<Edge<V, E>> getEdges(V source, V target) =>
-      delegate.getEdges(source, target);
+  Edge<V, E>? getEdge(V source, V target) => delegate.getEdge(source, target);
 
   @override
   Iterable<V> neighboursOf(V vertex) => delegate.neighboursOf(vertex);

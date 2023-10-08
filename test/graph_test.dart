@@ -384,6 +384,14 @@ void main() {
           ]);
           expect(graph.outgoingEdgesOf(2), isEmpty);
         });
+        test('getEdge', () {
+          expect(graph.getEdge(0, 1), isEdge(source: 0, target: 1, data: 'a'));
+          expect(graph.getEdge(1, 0), isNull);
+          expect(graph.getEdge(1, 2), isEdge(source: 1, target: 2, data: 'b'));
+          expect(graph.getEdge(2, 1), isNull);
+          expect(graph.getEdge(0, 2), isNull);
+          expect(graph.getEdge(2, 0), isNull);
+        });
         test('neighboursOf', () {
           expect(graph.neighboursOf(0), [1]);
           expect(graph.neighboursOf(1), [0, 2]);
@@ -526,15 +534,13 @@ void main() {
             isEdge(source: 2, target: 1, data: 'b'),
           ]);
         });
-        test('getEdges', () {
-          expect(graph.getEdges(0, 1), isEmpty);
-          expect(graph.getEdges(1, 0), [
-            isEdge(source: 1, target: 0, data: 'a'),
-          ]);
-          expect(graph.getEdges(1, 2), isEmpty);
-          expect(graph.getEdges(2, 1), [
-            isEdge(source: 2, target: 1, data: 'b'),
-          ]);
+        test('getEdge', () {
+          expect(graph.getEdge(0, 1), isNull);
+          expect(graph.getEdge(1, 0), isEdge(source: 1, target: 0, data: 'a'));
+          expect(graph.getEdge(1, 2), isNull);
+          expect(graph.getEdge(2, 1), isEdge(source: 2, target: 1, data: 'b'));
+          expect(graph.getEdge(0, 2), isNull);
+          expect(graph.getEdge(2, 0), isNull);
         });
         test('neighboursOf', () {
           expect(graph.neighboursOf(0), [1]);
@@ -674,6 +680,14 @@ void main() {
           expect(graph.outgoingEdgesOf(2), [
             isEdge(source: 2, target: 1, data: 'b'),
           ]);
+        });
+        test('getEdge', () {
+          expect(graph.getEdge(0, 1), isEdge(source: 0, target: 1, data: 'a'));
+          expect(graph.getEdge(1, 0), isEdge(source: 1, target: 0, data: 'a'));
+          expect(graph.getEdge(1, 2), isEdge(source: 1, target: 2, data: 'b'));
+          expect(graph.getEdge(2, 1), isEdge(source: 2, target: 1, data: 'b'));
+          expect(graph.getEdge(0, 2), isNull);
+          expect(graph.getEdge(2, 0), isNull);
         });
         test('neighboursOf', () {
           expect(graph.neighboursOf(0), [1]);
@@ -1483,12 +1497,12 @@ void main() {
       final graph = GraphBuilder<int, void>().path(vertexCount: 10);
       for (var i = 0; i < 10; i++) {
         expect(
-          graph.shortestPath(0, i, edgeCost: (edge) => edge.target),
+          graph.shortestPath(0, i, edgeCost: (source, target) => target),
           isPath(source: 0, target: i, cost: i * (i + 1) ~/ 2),
         );
         if (i != 0) {
           expect(
-            graph.shortestPath(i, 0, edgeCost: (edge) => edge.target),
+            graph.shortestPath(i, 0, edgeCost: (source, target) => target),
             isNull,
           );
         }
@@ -1500,12 +1514,16 @@ void main() {
               .path(vertexCount: 10);
       for (var i = 0; i < 10; i++) {
         expect(
-          graph.shortestPath(0, i, edgeCost: (edge) => edge.data),
+          graph.shortestPath(0, i,
+              edgeCost: (source, target) =>
+                  graph.getEdge(source, target)!.data),
           isPath(source: 0, target: i, cost: i * (i + 1) ~/ 2),
         );
         if (i != 0) {
           expect(
-            graph.shortestPath(i, 0, edgeCost: (edge) => edge.data),
+            graph.shortestPath(i, 0,
+                edgeCost: (source, target) =>
+                    graph.getEdge(source, target)!.data),
             isNull,
           );
         }
@@ -1527,12 +1545,15 @@ void main() {
     });
     test('undirected graph', () {
       expect(
-        dijkstraGraph.shortestPath(1, 5, edgeCost: (edge) => edge.data),
+        dijkstraGraph.shortestPath(1, 5,
+            edgeCost: (source, target) =>
+                dijkstraGraph.getEdge(source, target)!.data),
         isPath(source: 1, target: 5, vertices: [1, 3, 6, 5], cost: 20),
       );
       expect(
           dijkstraGraph.shortestPathAll(1, constantFunction1(true),
-              edgeCost: (edge) => edge.data),
+              edgeCost: (source, target) =>
+                  dijkstraGraph.getEdge(source, target)!.data),
           unorderedEquals([
             isPath(vertices: [1], cost: 0),
             isPath(vertices: [1, 2], cost: 7),

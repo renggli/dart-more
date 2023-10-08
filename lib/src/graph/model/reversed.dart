@@ -31,8 +31,8 @@ class ReversedGraph<V, E> extends ForwardingGraph<V, E> {
       delegate.incomingEdgesOf(vertex).map((edge) => edge.reversed);
 
   @override
-  Iterable<Edge<V, E>> getEdges(V source, V target) =>
-      delegate.getEdges(target, source).map((edge) => edge.reversed);
+  Edge<V, E>? getEdge(V source, V target) =>
+      delegate.getEdge(target, source)?.reversed;
 
   @override
   Iterable<V> predecessorsOf(V vertex) => delegate.successorsOf(vertex);

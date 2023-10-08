@@ -48,8 +48,8 @@ abstract class Graph<V, E> with ToStringPrinter {
   /// Returns the outgoing edges of [vertex].
   Iterable<Edge<V, E>> outgoingEdgesOf(V vertex);
 
-  /// Returns the edges between [source] and [target].
-  Iterable<Edge<V, E>> getEdges(V source, V target);
+  /// Returns the edge between [source] and [target], or `null`.
+  Edge<V, E>? getEdge(V source, V target);
 
   /// Returns the vertices that are adjacent to a `vertex`.
   Iterable<V> neighboursOf(V vertex);

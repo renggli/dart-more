@@ -41,11 +41,13 @@ class UndirectedGraph<V, E> extends Graph<V, E> {
       const [];
 
   @override
-  Iterable<Edge<V, E>> getEdges(V source, V target) {
-    final sourceAdjacency = adjacency[source];
-    return sourceAdjacency != null && sourceAdjacency.containsKey(target)
-        ? [UndirectedEdge<V, E>(source, target, sourceAdjacency[target] as E)]
-        : const [];
+  Edge<V, E>? getEdge(V source, V target) {
+    if (adjacency[source] case final sourceAdjacency?) {
+      if (sourceAdjacency[target] case final E data) {
+        return UndirectedEdge<V, E>(source, target, data);
+      }
+    }
+    return null;
   }
 
   @override
