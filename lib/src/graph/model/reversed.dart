@@ -1,7 +1,6 @@
 import '../edge.dart';
 import '../graph.dart';
 import 'forwarding.dart';
-import 'reversed_edge.dart';
 
 extension ReversedGraphExtension<V, E> on Graph<V, E> {
   /// Returns a graph where all edges point in the opposite direction.
@@ -16,23 +15,25 @@ class ReversedGraph<V, E> extends ForwardingGraph<V, E> {
   ReversedGraph(super.delegate);
 
   @override
-  Iterable<Edge<V, E>> get edges => delegate.edges.map((edge) => edge.reversed);
+  Iterable<Edge<V, E>> get edges => delegate.edges.map(_reverse);
 
   @override
   Iterable<Edge<V, E>> edgesOf(V vertex) =>
-      delegate.edgesOf(vertex).map((edge) => edge.reversed);
+      delegate.edgesOf(vertex).map(_reverse);
 
   @override
   Iterable<Edge<V, E>> incomingEdgesOf(V vertex) =>
-      delegate.outgoingEdgesOf(vertex).map((edge) => edge.reversed);
+      delegate.outgoingEdgesOf(vertex).map(_reverse);
 
   @override
   Iterable<Edge<V, E>> outgoingEdgesOf(V vertex) =>
-      delegate.incomingEdgesOf(vertex).map((edge) => edge.reversed);
+      delegate.incomingEdgesOf(vertex).map(_reverse);
 
   @override
-  Edge<V, E>? getEdge(V source, V target) =>
-      delegate.getEdge(target, source)?.reversed;
+  Edge<V, E>? getEdge(V source, V target) {
+    final edge = delegate.getEdge(target, source);
+    return edge != null ? _reverse(edge) : null;
+  }
 
   @override
   Iterable<V> predecessorsOf(V vertex) => delegate.successorsOf(vertex);
@@ -48,3 +49,6 @@ class ReversedGraph<V, E> extends ForwardingGraph<V, E> {
   void removeEdge(V source, V target, {E? data}) =>
       delegate.removeEdge(target, source, data: data);
 }
+
+Edge<V, E> _reverse<V, E>(Edge<V, E> edge) =>
+    Edge<V, E>(edge.target, edge.source, edge.data);

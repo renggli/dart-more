@@ -3,7 +3,6 @@ import 'dart:collection';
 import 'package:collection/collection.dart';
 
 import '../../../functional.dart';
-import '../model/path.dart';
 import '../path.dart';
 import '../strategy.dart';
 
@@ -77,7 +76,7 @@ class _AStarSearchIterator<V> implements Iterator<Path<V>> {
             state = state.parent) {
           vertices.addFirst(state.vertex);
         }
-        current = DefaultPath<V>(vertices, sourceState.cost);
+        current = Path<V>(vertices, sourceState.cost);
         return true;
       }
     }

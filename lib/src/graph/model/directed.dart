@@ -21,9 +21,9 @@ class DirectedGraph<V, E> extends Graph<V, E> {
   Iterable<V> get vertices => adjacency.keys;
 
   @override
-  Iterable<Edge<V, E>> get edges => adjacency.entries.expand((outer) => outer
-      .value.outgoing.entries
-      .map((inner) => DirectedEdge<V, E>(outer.key, inner.key, inner.value)));
+  Iterable<Edge<V, E>> get edges =>
+      adjacency.entries.expand((outer) => outer.value.outgoing.entries
+          .map((inner) => Edge<V, E>(outer.key, inner.key, inner.value)));
 
   @override
   Iterable<Edge<V, E>> edgesOf(V vertex) =>
@@ -34,7 +34,7 @@ class DirectedGraph<V, E> extends Graph<V, E> {
       adjacency[vertex]
           ?.incoming
           .entries
-          .map((entry) => DirectedEdge<V, E>(entry.key, vertex, entry.value)) ??
+          .map((entry) => Edge<V, E>(entry.key, vertex, entry.value)) ??
       const [];
 
   @override
@@ -42,14 +42,14 @@ class DirectedGraph<V, E> extends Graph<V, E> {
       adjacency[vertex]
           ?.outgoing
           .entries
-          .map((entry) => DirectedEdge<V, E>(vertex, entry.key, entry.value)) ??
+          .map((entry) => Edge<V, E>(vertex, entry.key, entry.value)) ??
       const [];
 
   @override
   Edge<V, E>? getEdge(V source, V target) {
     if (adjacency[source]?.outgoing case final targetAdjacency?) {
       if (targetAdjacency[target] case final E data) {
-        return DirectedEdge<V, E>(source, target, data);
+        return Edge<V, E>(source, target, data);
       }
     }
     return null;
@@ -109,17 +109,4 @@ class VertexWrapper<V, E> {
   final Map<V, E> incoming;
 
   final Map<V, E> outgoing;
-}
-
-class DirectedEdge<V, E> extends Edge<V, E> {
-  DirectedEdge(this.source, this.target, this.data);
-
-  @override
-  final V source;
-
-  @override
-  final V target;
-
-  @override
-  final E data;
 }

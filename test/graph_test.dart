@@ -435,9 +435,6 @@ void main() {
         graph.addEdge('a', 'b');
         final reversedGraph = graph.reversed;
         expect(reversedGraph.reversed, same(graph));
-        final edge = graph.edges.single;
-        final reversedEdge = edge.reversed;
-        expect(reversedEdge.reversed, same(edge));
       });
       test('reversing undirected', () {
         final graph = Graph<String, void>.undirected();

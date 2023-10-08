@@ -1,7 +1,10 @@
 import '../../more.dart';
 
 /// Abstract definition of a path.
-abstract class Path<V> with ToStringPrinter {
+class Path<V> with ToStringPrinter {
+  /// Constructs a path of vertices.
+  Path(this.vertices, this.cost);
+
   /// The start vertex of this path.
   V get source => vertices.first;
 
@@ -9,10 +12,10 @@ abstract class Path<V> with ToStringPrinter {
   V get target => vertices.last;
 
   /// The vertices in this path.
-  Iterable<V> get vertices;
+  final Iterable<V> vertices;
 
   /// The cost of the path (if available).
-  num get cost;
+  final num cost;
 
   @override
   ObjectPrinter get toStringPrinter => super.toStringPrinter

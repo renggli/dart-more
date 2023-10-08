@@ -21,30 +21,32 @@ class UndirectedGraph<V, E> extends Graph<V, E> {
   Iterable<V> get vertices => adjacency.keys;
 
   @override
-  Iterable<Edge<V, E>> get edges => adjacency.entries.expand((outer) => outer
-      .value.entries
-      .map((inner) => UndirectedEdge<V, E>(outer.key, inner.key, inner.value)));
+  Iterable<Edge<V, E>> get edges =>
+      adjacency.entries.expand((outer) => outer.value.entries
+          .map((inner) => Edge<V, E>(outer.key, inner.key, inner.value)));
 
   @override
   Iterable<Edge<V, E>> edgesOf(V vertex) => outgoingEdgesOf(vertex);
 
   @override
   Iterable<Edge<V, E>> incomingEdgesOf(V vertex) =>
-      adjacency[vertex]?.entries.map(
-          (inner) => UndirectedEdge<V, E>(inner.key, vertex, inner.value)) ??
+      adjacency[vertex]
+          ?.entries
+          .map((inner) => Edge<V, E>(inner.key, vertex, inner.value)) ??
       const [];
 
   @override
   Iterable<Edge<V, E>> outgoingEdgesOf(V vertex) =>
-      adjacency[vertex]?.entries.map(
-          (inner) => UndirectedEdge<V, E>(vertex, inner.key, inner.value)) ??
+      adjacency[vertex]
+          ?.entries
+          .map((inner) => Edge<V, E>(vertex, inner.key, inner.value)) ??
       const [];
 
   @override
   Edge<V, E>? getEdge(V source, V target) {
     if (adjacency[source] case final sourceAdjacency?) {
       if (sourceAdjacency[target] case final E data) {
-        return UndirectedEdge<V, E>(source, target, data);
+        return Edge<V, E>(source, target, data);
       }
     }
     return null;
@@ -90,17 +92,4 @@ class UndirectedGraph<V, E> extends Graph<V, E> {
 
   Map<V, E> _getVertex(V vertex) =>
       adjacency.putIfAbsent(vertex, vertexStrategy.createMap<E>);
-}
-
-class UndirectedEdge<V, E> extends Edge<V, E> {
-  UndirectedEdge(this.source, this.target, this.data);
-
-  @override
-  final V source;
-
-  @override
-  final V target;
-
-  @override
-  final E data;
 }

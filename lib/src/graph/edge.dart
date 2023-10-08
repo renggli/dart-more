@@ -1,17 +1,18 @@
 import '../../printer.dart';
 
 /// Abstract definition of an edge.
-abstract class Edge<V, E> with ToStringPrinter {
-  const Edge();
+class Edge<V, E> with ToStringPrinter {
+  /// Constructs
+  Edge(this.source, this.target, this.data);
 
   /// Origin vertex of this edge.
-  V get source;
+  final V source;
 
   /// Destination vertex of this edge.
-  V get target;
+  final V target;
 
   /// Edge specific data
-  E get data;
+  final E data;
 
   @override
   ObjectPrinter get toStringPrinter => super.toStringPrinter
