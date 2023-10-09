@@ -17,13 +17,13 @@ class UnmodifiableGraph<V, E> extends ForwardingGraph<V, E> {
   void addVertex(V vertex) => _throw();
 
   @override
-  void addEdge(V source, V target, {E? data}) => _throw();
+  void addEdge(V source, V target, {E? value}) => _throw();
 
   @override
   void removeVertex(V vertex) => _throw();
 
   @override
-  void removeEdge(V source, V target, {E? data}) => _throw();
+  void removeEdge(V source, V target) => _throw();
 
   Never _throw() =>
       throw UnsupportedError('Cannot modify an unmodifiable graph');

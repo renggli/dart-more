@@ -49,13 +49,12 @@ abstract class ForwardingGraph<V, E> extends Graph<V, E> {
   void addVertex(V vertex) => delegate.addVertex(vertex);
 
   @override
-  void addEdge(V source, V target, {E? data}) =>
-      delegate.addEdge(source, target, data: data);
+  void addEdge(V source, V target, {E? value}) =>
+      delegate.addEdge(source, target, value: value);
 
   @override
   void removeVertex(V vertex) => delegate.removeVertex(vertex);
 
   @override
-  void removeEdge(V source, V target, {E? data}) =>
-      delegate.removeEdge(source, target, data: data);
+  void removeEdge(V source, V target) => delegate.removeEdge(source, target);
 }

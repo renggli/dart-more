@@ -5,11 +5,11 @@ import '../graph.dart';
 
 extension CollectionGraphFactoryExtension<V, E> on GraphFactory<V, E> {
   /// Creates a [Graph] from a [Iterable] of chains.
-  Graph<V, E> fromPath(Iterable<V> chain, {E? data}) =>
-      fromPaths([chain], data: data);
+  Graph<V, E> fromPath(Iterable<V> chain, {E? value}) =>
+      fromPaths([chain], value: value);
 
   /// Creates a [Graph] from a [Iterable] of chains.
-  Graph<V, E> fromPaths(Iterable<Iterable<V>> chains, {E? data}) {
+  Graph<V, E> fromPaths(Iterable<Iterable<V>> chains, {E? value}) {
     final builder = newBuilder();
     for (final chain in chains) {
       final vertices = chain.toList(growable: false);
@@ -17,7 +17,7 @@ extension CollectionGraphFactoryExtension<V, E> on GraphFactory<V, E> {
         builder.addVertex(vertices.first);
       } else {
         for (var i = 0; i < vertices.length - 1; i++) {
-          builder.addEdge(vertices[i], vertices[i + 1], data: data);
+          builder.addEdge(vertices[i], vertices[i + 1], value: value);
         }
       }
     }

@@ -1,9 +1,21 @@
 import '../../more.dart';
 
-/// Abstract definition of a path.
-class Path<V> with ToStringPrinter {
-  /// Constructs a path of vertices.
-  Path(this.vertices, this.cost);
+/// A [path](https://en.wikipedia.org/wiki/Glossary_of_graph_theory#path)
+/// withing a graph connects a series of [vertices] through their respective
+/// [edges] and [values].
+class Path<V, E> with ToStringPrinter {
+  Path.fromVertices(Iterable<V> vertices, Iterable<E> values)
+      : vertices = vertices.toList(growable: false),
+        values = values.toList(growable: false) {
+    assert(vertices.isNotEmpty);
+    assert(vertices.length - 1 == values.length);
+  }
+
+  /// The vertices on this path.
+  final List<V> vertices;
+
+  /// The values on this path.
+  final List<E> values;
 
   /// The start vertex of this path.
   V get source => vertices.first;
@@ -11,11 +23,12 @@ class Path<V> with ToStringPrinter {
   /// The end vertex of this path.
   V get target => vertices.last;
 
-  /// The vertices in this path.
-  final Iterable<V> vertices;
-
-  /// The cost of the path (if available).
-  final num cost;
+  /// The edges on this path.
+  Iterable<Edge<V, E>> get edges sync* {
+    for (var i = 0; i < values.length; i++) {
+      yield Edge<V, E>(vertices[i], vertices[i + 1], value: values[i]);
+    }
+  }
 
   @override
   ObjectPrinter get toStringPrinter => super.toStringPrinter
@@ -24,6 +37,10 @@ class Path<V> with ToStringPrinter {
             separator: ' → ',
             leadingItems: 3,
             trailingItems: 3,
-            afterPrinter: Printer.literal(' (${vertices.length - 1} edges)')))
-    ..addValue(cost, name: 'cost');
+            afterPrinter: Printer.literal(' (${vertices.length - 1} edges)')));
+}
+
+extension NumericPathExtension<V> on Path<V, num> {
+  /// Computes the sum of all values along the edges of this path.
+  num get cost => values.fold(0, (a, b) => a + b);
 }

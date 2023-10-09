@@ -25,13 +25,13 @@ extension MapGraphExtension<V, E> on Graph<V, E> {
       vertexMap[oldVertex] = newVertex;
       graph.addVertex(newVertex);
     }
-    final edgeMapper = edge ?? (edge) => edge.data as ER;
+    final edgeMapper = edge ?? (edge) => edge.value as ER;
     for (final oldVertex in vertices) {
       for (final oldEdge in outgoingEdgesOf(oldVertex)) {
         graph.addEdge(
           vertexMap[oldEdge.source] as VR,
           vertexMap[oldEdge.target] as VR,
-          data: edgeMapper(oldEdge),
+          value: edgeMapper(oldEdge),
         );
       }
     }

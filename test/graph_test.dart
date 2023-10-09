@@ -16,24 +16,31 @@ Matcher isEdge<E, V>({
     isA<Edge<E, V>>()
         .having((edge) => edge.source, 'source', source)
         .having((edge) => edge.target, 'target', target)
-        .having((edge) => edge.data, 'data', data)
+        .having((edge) => edge.value, 'data', data)
         .having((edge) => edge.toString(), 'toString', contains('Edge'));
 
 @optionalTypeArgs
-Matcher isPath<V>({
+Matcher isPath<V, E>({
   dynamic source = anything,
   dynamic target = anything,
   dynamic vertices = anything,
+  dynamic values = anything,
+  dynamic edges = anything,
   dynamic cost = anything,
   dynamic depth = anything,
 }) =>
-    isA<Path<V>>()
+    isA<Path<V, E>>()
         .having((path) => path.source, 'source', source)
         .having((path) => path.target, 'target', target)
         .having((path) => path.vertices, 'vertices', vertices)
         .having((path) => path.vertices.length == path.vertices.toSet().length,
             'vertices (unique)', isTrue)
-        .having((path) => path.cost, 'cost', cost)
+        .having((path) => path.values, 'values', values)
+        .having((path) => path.values.length == path.vertices.length - 1,
+            'values (for each edge)', isTrue)
+        .having((path) => path.edges, 'edges', edges)
+        .having((path) => cost != anything ? (path as Path<V, num>).cost : num,
+            'cost', cost)
         .having((path) => path.toString(), 'toString', contains('Path'));
 
 // A basic graph:
@@ -87,15 +94,15 @@ Iterable<int> reverseCollatzGraph(int vertex) =>
 // Undirected graph for weighted searches:
 // https://en.wikipedia.org/wiki/File:Dijkstra_Animation.gif
 final dijkstraGraph = Graph<int, int>.undirected()
-  ..addEdge(1, 2, data: 7)
-  ..addEdge(1, 3, data: 9)
-  ..addEdge(1, 6, data: 14)
-  ..addEdge(2, 3, data: 10)
-  ..addEdge(2, 4, data: 15)
-  ..addEdge(3, 4, data: 11)
-  ..addEdge(3, 6, data: 2)
-  ..addEdge(4, 5, data: 6)
-  ..addEdge(5, 6, data: 9);
+  ..addEdge(1, 2, value: 7)
+  ..addEdge(1, 3, value: 9)
+  ..addEdge(1, 6, value: 14)
+  ..addEdge(2, 3, value: 10)
+  ..addEdge(2, 4, value: 15)
+  ..addEdge(3, 4, value: 11)
+  ..addEdge(3, 6, value: 2)
+  ..addEdge(4, 5, value: 6)
+  ..addEdge(5, 6, value: 9);
 
 void expectInvariants<V, E>(Graph<V, E> graph) {
   for (final vertex in graph.vertices) {
@@ -301,12 +308,12 @@ void main() {
         });
         test('add edge', () {
           final graph = Graph<String, int>.directed();
-          graph.addEdge('Hello', 'World', data: 42);
+          graph.addEdge('Hello', 'World', value: 42);
           expect(graph.vertices, unorderedEquals(['Hello', 'World']));
           expect(graph.edges, [
             isEdge(source: 'Hello', target: 'World', data: 42),
           ]);
-          expect(graph.edges.single.data, 42);
+          expect(graph.edges.single.value, 42);
           expectInvariants(graph);
         });
         test('put edge', () {
@@ -349,8 +356,8 @@ void main() {
       });
       group('querying', () {
         final graph = Graph<int, String>.directed()
-          ..addEdge(0, 1, data: 'a')
-          ..addEdge(1, 2, data: 'b');
+          ..addEdge(0, 1, value: 'a')
+          ..addEdge(1, 2, value: 'b');
         test('invariants', () {
           expectInvariants(graph);
         });
@@ -460,12 +467,12 @@ void main() {
         });
         test('add edge', () {
           final graph = Graph<String, int>.directed().reversed;
-          graph.addEdge('Hello', 'World', data: 42);
+          graph.addEdge('Hello', 'World', value: 42);
           expect(graph.vertices, unorderedEquals(['Hello', 'World']));
           expect(graph.edges, [
             isEdge(source: 'Hello', target: 'World', data: 42),
           ]);
-          expect(graph.edges.single.data, 42);
+          expect(graph.edges.single.value, 42);
           expectInvariants(graph);
         });
         test('put edge', () {
@@ -508,8 +515,8 @@ void main() {
       });
       group('querying', () {
         final directed = Graph<int, String>.directed()
-          ..addEdge(0, 1, data: 'a')
-          ..addEdge(1, 2, data: 'b');
+          ..addEdge(0, 1, value: 'a')
+          ..addEdge(1, 2, value: 'b');
         final graph = directed.reversed;
         test('invariants', () {
           expectInvariants(graph);
@@ -607,7 +614,7 @@ void main() {
         });
         test('add edge', () {
           final graph = Graph<String, int>.undirected();
-          graph.addEdge('Hello', 'World', data: 42);
+          graph.addEdge('Hello', 'World', value: 42);
           expect(graph.vertices, unorderedEquals(['Hello', 'World']));
           expect(
               graph.edges,
@@ -657,8 +664,8 @@ void main() {
       });
       group('querying', () {
         final graph = Graph<int, String>.undirected()
-          ..addEdge(0, 1, data: 'a')
-          ..addEdge(1, 2, data: 'b');
+          ..addEdge(0, 1, value: 'a')
+          ..addEdge(1, 2, value: 'b');
         test('invariants', () {
           expectInvariants(graph);
         });
@@ -774,7 +781,7 @@ void main() {
       });
       test('single graph', () {
         final graph = Graph<int, String>.directed();
-        graph.addEdge(42, 43, data: 'Hello World');
+        graph.addEdge(42, 43, value: 'Hello World');
         final connected = graph.connected().toList();
         expect(connected, hasLength(1));
         expect(connected[0].vertices, unorderedEquals([42, 43]));
@@ -786,8 +793,8 @@ void main() {
       });
       test('two graphs', () {
         final graph = Graph<int, String>.directed();
-        graph.addEdge(1, 2, data: 'Foo');
-        graph.addEdge(3, 4, data: 'Bar');
+        graph.addEdge(1, 2, value: 'Foo');
+        graph.addEdge(3, 4, value: 'Bar');
         final connected = graph.connected().toList();
         expect(connected, hasLength(2));
         expect(connected[0].vertices, unorderedEquals([1, 2]));
@@ -808,8 +815,8 @@ void main() {
         graph.addVertex(1);
         graph.addVertex(2);
         graph.addVertex(3);
-        graph.addEdge(2, 1, data: 'Incoming');
-        graph.addEdge(1, 3, data: 'Outgoing');
+        graph.addEdge(2, 1, value: 'Incoming');
+        graph.addEdge(1, 3, value: 'Outgoing');
         final connected = graph.connected().toList();
         expect(connected, hasLength(1));
         expect(connected[0].vertices, unorderedEquals([1, 2, 3]));
@@ -848,8 +855,8 @@ void main() {
               ]));
         });
         test('shared edge', () {
-          final a = GraphFactory<int, String>().fromPath([1, 2, 3], data: 'a');
-          final b = GraphFactory<int, String>().fromPath([2, 3, 4], data: 'b');
+          final a = GraphFactory<int, String>().fromPath([1, 2, 3], value: 'a');
+          final b = GraphFactory<int, String>().fromPath([2, 3, 4], value: 'b');
           final result = a.union(b);
           expect(result.vertices, unorderedEquals([1, 2, 3, 4]));
           expect(
@@ -861,8 +868,8 @@ void main() {
               ]));
         });
         test('shared edge (custom merger)', () {
-          final a = GraphFactory<int, String>().fromPath([1, 2, 3], data: 'a');
-          final b = GraphFactory<int, String>().fromPath([2, 3, 4], data: 'b');
+          final a = GraphFactory<int, String>().fromPath([1, 2, 3], value: 'a');
+          final b = GraphFactory<int, String>().fromPath([2, 3, 4], value: 'b');
           final result =
               a.union(b, edgeMerge: (source, target, a, b) => '$a, $b');
           expect(result.vertices, unorderedEquals([1, 2, 3, 4]));
@@ -891,23 +898,23 @@ void main() {
           expect(result.edges, isEmpty);
         });
         test('shared edge', () {
-          final a = GraphFactory<int, String>().fromPath([1, 2, 3], data: 'a');
-          final b = GraphFactory<int, String>().fromPath([2, 3, 4], data: 'b');
+          final a = GraphFactory<int, String>().fromPath([1, 2, 3], value: 'a');
+          final b = GraphFactory<int, String>().fromPath([2, 3, 4], value: 'b');
           final result = a.intersection(b);
           expect(result.vertices, unorderedEquals([2, 3]));
           expect(result.edges, [isEdge(source: 2, target: 3, data: 'b')]);
         });
         test('shared edge (custom compare)', () {
-          final a = GraphFactory<int, String>().fromPath([1, 2, 3], data: 'a');
-          final b = GraphFactory<int, String>().fromPath([2, 3, 4], data: 'b');
+          final a = GraphFactory<int, String>().fromPath([1, 2, 3], value: 'a');
+          final b = GraphFactory<int, String>().fromPath([2, 3, 4], value: 'b');
           final result =
               a.intersection(b, edgeCompare: (source, target, a, b) => a == b);
           expect(result.vertices, unorderedEquals([2, 3]));
           expect(result.edges, isEmpty);
         });
         test('shared edge (custom merge)', () {
-          final a = GraphFactory<int, String>().fromPath([1, 2, 3], data: 'a');
-          final b = GraphFactory<int, String>().fromPath([2, 3, 4], data: 'b');
+          final a = GraphFactory<int, String>().fromPath([1, 2, 3], value: 'a');
+          final b = GraphFactory<int, String>().fromPath([2, 3, 4], value: 'b');
           final result =
               a.intersection(b, edgeMerge: (source, target, a, b) => '$a, $b');
           expect(result.vertices, unorderedEquals([2, 3]));
@@ -944,7 +951,7 @@ void main() {
         });
         test('simple directed (with edge data)', () {
           final input = Graph<int, String>.directed();
-          input.addEdge(1, 2, data: 'next');
+          input.addEdge(1, 2, value: 'next');
           final result = input.complement(edge: (source, target) => 'prev');
           expect(result.vertices, unorderedEquals([1, 2]));
           expect(result.edges, [isEdge(source: 2, target: 1, data: 'prev')]);
@@ -981,7 +988,7 @@ void main() {
       });
       test('edge only', () {
         final result = graph.map<int, String>(
-            edge: (edge) => '${edge.data.x} -> ${edge.data.y}');
+            edge: (edge) => '${edge.value.x} -> ${edge.value.y}');
         expect(result.vertices, unorderedEquals([0, 1, 2]));
         expect(
             result.edges,
@@ -995,7 +1002,7 @@ void main() {
       test('vertex and edge', () {
         final result = graph.map<String, String>(
             vertex: (vertex) => vertex.toString(),
-            edge: (edge) => '${edge.data.x} -> ${edge.data.y}');
+            edge: (edge) => '${edge.value.x} -> ${edge.value.y}');
         expect(result.vertices, unorderedEquals(['0', '1', '2']));
         expect(
             result.edges,
@@ -1012,7 +1019,7 @@ void main() {
             .ring(vertexCount: 3);
         final result = graph.map<String, String>(
             vertex: (vertex) => vertex.toString(),
-            edge: (edge) => '${edge.data.x} <-> ${edge.data.y}');
+            edge: (edge) => '${edge.value.x} <-> ${edge.value.y}');
         expect(result.vertices, unorderedEquals(['0', '1', '2']));
         expect(
             result.edges,
@@ -1579,14 +1586,14 @@ void main() {
         expect(
           graph.shortestPath(0, i,
               edgeCost: (source, target) =>
-                  graph.getEdge(source, target)!.data),
+                  graph.getEdge(source, target)!.value),
           isPath(source: 0, target: i, cost: i * (i + 1) ~/ 2),
         );
         if (i != 0) {
           expect(
             graph.shortestPath(i, 0,
                 edgeCost: (source, target) =>
-                    graph.getEdge(source, target)!.data),
+                    graph.getEdge(source, target)!.value),
             isNull,
           );
         }
@@ -1610,13 +1617,13 @@ void main() {
       expect(
         dijkstraGraph.shortestPath(1, 5,
             edgeCost: (source, target) =>
-                dijkstraGraph.getEdge(source, target)!.data),
+                dijkstraGraph.getEdge(source, target)!.value),
         isPath(source: 1, target: 5, vertices: [1, 3, 6, 5], cost: 20),
       );
       expect(
           dijkstraGraph.shortestPathAll(1, constantFunction1(true),
               edgeCost: (source, target) =>
-                  dijkstraGraph.getEdge(source, target)!.data),
+                  dijkstraGraph.getEdge(source, target)!.value),
           unorderedEquals([
             isPath(vertices: [1], cost: 0),
             isPath(vertices: [1, 2], cost: 7),

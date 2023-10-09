@@ -10,16 +10,16 @@ extension AtlasGraphFactoryExtension<V, E> on GraphFactory<V, E> {
   /// in increasing order of degree sequence, and in increasing number of
   /// automorphisms.
   Graph<V, E> atlas(int number) {
-    final data = _atlas[number];
+    final encoded = _atlas[number];
     final builder = newBuilder();
-    assert(data[0] >= 0, 'Invalid number of vertices');
-    for (var i = 0; i < data[0]; i++) {
+    assert(encoded[0] >= 0, 'Invalid number of vertices');
+    for (var i = 0; i < encoded[0]; i++) {
       builder.addVertexIndex(i);
     }
-    assert(2 + 2 * data[1] == data.length, 'Invalid number of edges');
-    for (var i = 0, o = 2; i < data[1]; i++, o += 2) {
-      assert(data[o] != data[o + 1], 'Invalid edge pair');
-      builder.addEdgeIndex(data[o], data[o + 1]);
+    assert(2 + 2 * encoded[1] == encoded.length, 'Invalid number of edges');
+    for (var i = 0, o = 2; i < encoded[1]; i++, o += 2) {
+      assert(encoded[o] != encoded[o + 1], 'Invalid edge pair');
+      builder.addEdgeIndex(encoded[o], encoded[o + 1]);
     }
     return builder.build();
   }
@@ -30,9 +30,9 @@ extension AtlasGraphFactoryExtension<V, E> on GraphFactory<V, E> {
   Iterable<Graph<V, E>> atlasMatching(
       {int? vertexCount, int? edgeCount}) sync* {
     for (var i = 0; i < _atlas.length; i++) {
-      final data = _atlas[i];
-      if ((vertexCount == null || vertexCount == data[0]) &&
-          (edgeCount == null || edgeCount == data[1])) {
+      final encoded = _atlas[i];
+      if ((vertexCount == null || vertexCount == encoded[0]) &&
+          (edgeCount == null || edgeCount == encoded[1])) {
         yield atlas(i);
       }
     }

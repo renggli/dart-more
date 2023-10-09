@@ -21,9 +21,9 @@ class DirectedGraph<V, E> extends Graph<V, E> {
   Iterable<V> get vertices => adjacency.keys;
 
   @override
-  Iterable<Edge<V, E>> get edges =>
-      adjacency.entries.expand((outer) => outer.value.outgoing.entries
-          .map((inner) => Edge<V, E>(outer.key, inner.key, inner.value)));
+  Iterable<Edge<V, E>> get edges => adjacency.entries.expand((outer) => outer
+      .value.outgoing.entries
+      .map((inner) => Edge<V, E>(outer.key, inner.key, value: inner.value)));
 
   @override
   Iterable<Edge<V, E>> edgesOf(V vertex) =>
@@ -34,7 +34,7 @@ class DirectedGraph<V, E> extends Graph<V, E> {
       adjacency[vertex]
           ?.incoming
           .entries
-          .map((entry) => Edge<V, E>(entry.key, vertex, entry.value)) ??
+          .map((entry) => Edge<V, E>(entry.key, vertex, value: entry.value)) ??
       const [];
 
   @override
@@ -42,14 +42,14 @@ class DirectedGraph<V, E> extends Graph<V, E> {
       adjacency[vertex]
           ?.outgoing
           .entries
-          .map((entry) => Edge<V, E>(vertex, entry.key, entry.value)) ??
+          .map((entry) => Edge<V, E>(vertex, entry.key, value: entry.value)) ??
       const [];
 
   @override
   Edge<V, E>? getEdge(V source, V target) {
     if (adjacency[source]?.outgoing case final targetAdjacency?) {
-      if (targetAdjacency[target] case final E data) {
-        return Edge<V, E>(source, target, data);
+      if (targetAdjacency[target] case final E value) {
+        return Edge<V, E>(source, target, value: value);
       }
     }
     return null;
@@ -73,9 +73,9 @@ class DirectedGraph<V, E> extends Graph<V, E> {
   void addVertex(V vertex) => _getVertex(vertex);
 
   @override
-  void addEdge(V source, V target, {E? data}) {
-    _getVertex(source).outgoing[target] = data as E;
-    _getVertex(target).incoming[source] = data;
+  void addEdge(V source, V target, {E? value}) {
+    _getVertex(source).outgoing[target] = value as E;
+    _getVertex(target).incoming[source] = value;
   }
 
   @override
@@ -92,7 +92,7 @@ class DirectedGraph<V, E> extends Graph<V, E> {
   }
 
   @override
-  void removeEdge(V source, V target, {E? data}) {
+  void removeEdge(V source, V target) {
     adjacency[source]?.outgoing.remove(target);
     adjacency[target]?.incoming.remove(source);
   }

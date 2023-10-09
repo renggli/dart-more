@@ -18,7 +18,7 @@ extension SearchGraphExtension<V, E> on Graph<V, E> {
   ///   provided vertex. If an estimate is provided a faster _A*-Search_ is
   ///   performed, otherwise a _Dijkstra Search_.
   ///
-  Path<V>? shortestPath(
+  Path<V, num>? shortestPath(
     V source,
     V target, {
     num Function(V source, V target)? edgeCost,
@@ -44,7 +44,7 @@ extension SearchGraphExtension<V, E> on Graph<V, E> {
   ///   provided vertex. If an estimate is provided a faster _A*-Search_ is
   ///   performed, otherwise a _Dijkstra Search_.
   ///
-  Iterable<Path<V>> shortestPathAll(
+  Iterable<Path<V, num>> shortestPathAll(
     V source,
     Predicate1<V> targetPredicate, {
     num Function(V source, V target)? edgeCost,

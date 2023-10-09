@@ -9,7 +9,7 @@ import '../strategy.dart';
 /// Generalized A-Star search algorithm.
 ///
 /// See https://en.wikipedia.org/wiki/A*_search_algorithm.
-class AStarSearchIterable<V> extends IterableBase<Path<V>> {
+class AStarSearchIterable<V> extends IterableBase<Path<V, num>> {
   AStarSearchIterable({
     required this.startVertices,
     required this.successorsOf,
@@ -28,16 +28,15 @@ class AStarSearchIterable<V> extends IterableBase<Path<V>> {
   final StorageStrategy<V> vertexStrategy;
 
   @override
-  Iterator<Path<V>> get iterator => _AStarSearchIterator<V>(this);
+  Iterator<Path<V, num>> get iterator => _AStarSearchIterator<V>(this);
 }
 
-class _AStarSearchIterator<V> implements Iterator<Path<V>> {
+class _AStarSearchIterator<V> implements Iterator<Path<V, num>> {
   _AStarSearchIterator(this.iterable)
       : states = iterable.vertexStrategy.createMap<_State<V>>() {
     for (final vertex in iterable.startVertices) {
       final state = _State<V>(
         vertex: vertex,
-        cost: 0,
         estimate: iterable.costEstimate(vertex),
       );
       states[vertex] = state;
@@ -50,33 +49,36 @@ class _AStarSearchIterator<V> implements Iterator<Path<V>> {
   final PriorityQueue<_State<V>> todo = PriorityQueue();
 
   @override
-  late Path<V> current;
+  late Path<V, num> current;
 
   @override
   bool moveNext() {
     while (todo.isNotEmpty) {
       final sourceState = todo.removeFirst();
       for (final target in iterable.successorsOf(sourceState.vertex)) {
-        final cost =
-            sourceState.cost + iterable.edgeCost(sourceState.vertex, target);
-        final targetState =
-            states.putIfAbsent(target, () => _State<V>(vertex: target));
-        if (cost < targetState.cost) {
-          targetState.cost = cost;
-          targetState.estimate = cost + iterable.costEstimate(target);
+        final value = iterable.edgeCost(sourceState.vertex, target);
+        final total = sourceState.total + value;
+        final targetState = states.putIfAbsent(
+            target, () => _State<V>(vertex: target, total: double.infinity));
+        if (total < targetState.total) {
           targetState.parent = sourceState;
+          targetState.value = value;
+          targetState.total = total;
+          targetState.estimate = total + iterable.costEstimate(target);
           todo.remove(targetState);
           todo.add(targetState);
         }
       }
       if (iterable.targetPredicate(sourceState.vertex)) {
-        final vertices = QueueList<V>();
+        final vertices = <V>[], values = <num>[];
         for (_State<V>? state = sourceState;
             state != null;
             state = state.parent) {
-          vertices.addFirst(state.vertex);
+          vertices.add(state.vertex);
+          values.add(state.value);
         }
-        current = Path<V>(vertices, sourceState.cost);
+        if (values.isNotEmpty) values.removeLast();
+        current = Path<V, num>.fromVertices(vertices.reversed, values.reversed);
         return true;
       }
     }
@@ -88,13 +90,15 @@ class _State<V> implements Comparable<_State<V>> {
   _State({
     required this.vertex,
     this.parent,
+    this.value = 0,
+    this.total = 0,
     this.estimate = double.infinity,
-    this.cost = double.infinity,
   });
 
   final V vertex;
   _State<V>? parent;
-  num cost;
+  num value;
+  num total;
   num estimate;
 
   @override

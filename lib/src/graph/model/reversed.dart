@@ -42,13 +42,12 @@ class ReversedGraph<V, E> extends ForwardingGraph<V, E> {
   Iterable<V> successorsOf(V vertex) => delegate.predecessorsOf(vertex);
 
   @override
-  void addEdge(V source, V target, {E? data}) =>
-      delegate.addEdge(target, source, data: data);
+  void addEdge(V source, V target, {E? value}) =>
+      delegate.addEdge(target, source, value: value);
 
   @override
-  void removeEdge(V source, V target, {E? data}) =>
-      delegate.removeEdge(target, source, data: data);
+  void removeEdge(V source, V target) => delegate.removeEdge(target, source);
 }
 
 Edge<V, E> _reverse<V, E>(Edge<V, E> edge) =>
-    Edge<V, E>(edge.target, edge.source, edge.data);
+    Edge<V, E>(edge.target, edge.source, value: edge.value);

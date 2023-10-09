@@ -15,14 +15,14 @@ class GraphBuilder<V, E> {
       addVertex(library.vertexProvider?.call(index) ?? (index as V));
 
   /// Adds an edge between [source] and [target] vertex. Optionally
-  /// associates the provided [data] with the edge.
-  void addEdge(V source, V target, {E? data}) => graph.addEdge(source, target,
-      data: data ?? library.edgeProvider?.call(source, target));
+  /// associates the provided [value] with the edge.
+  void addEdge(V source, V target, {E? value}) => graph.addEdge(source, target,
+      value: value ?? library.edgeProvider?.call(source, target));
 
-  void addEdgeIndex(int source, int target, {E? data}) => addEdge(
+  void addEdgeIndex(int source, int target, {E? value}) => addEdge(
       library.vertexProvider?.call(source) ?? (source as V),
       library.vertexProvider?.call(target) ?? (target as V),
-      data: data);
+      value: value);
 
   static Graph<V, E> create<V, E>(GraphFactory<V, E> builder) =>
       builder.isDirected

@@ -21,9 +21,9 @@ class UndirectedGraph<V, E> extends Graph<V, E> {
   Iterable<V> get vertices => adjacency.keys;
 
   @override
-  Iterable<Edge<V, E>> get edges =>
-      adjacency.entries.expand((outer) => outer.value.entries
-          .map((inner) => Edge<V, E>(outer.key, inner.key, inner.value)));
+  Iterable<Edge<V, E>> get edges => adjacency.entries.expand((outer) => outer
+      .value.entries
+      .map((inner) => Edge<V, E>(outer.key, inner.key, value: inner.value)));
 
   @override
   Iterable<Edge<V, E>> edgesOf(V vertex) => outgoingEdgesOf(vertex);
@@ -32,21 +32,21 @@ class UndirectedGraph<V, E> extends Graph<V, E> {
   Iterable<Edge<V, E>> incomingEdgesOf(V vertex) =>
       adjacency[vertex]
           ?.entries
-          .map((inner) => Edge<V, E>(inner.key, vertex, inner.value)) ??
+          .map((inner) => Edge<V, E>(inner.key, vertex, value: inner.value)) ??
       const [];
 
   @override
   Iterable<Edge<V, E>> outgoingEdgesOf(V vertex) =>
       adjacency[vertex]
           ?.entries
-          .map((inner) => Edge<V, E>(vertex, inner.key, inner.value)) ??
+          .map((inner) => Edge<V, E>(vertex, inner.key, value: inner.value)) ??
       const [];
 
   @override
   Edge<V, E>? getEdge(V source, V target) {
     if (adjacency[source] case final sourceAdjacency?) {
-      if (sourceAdjacency[target] case final E data) {
-        return Edge<V, E>(source, target, data);
+      if (sourceAdjacency[target] case final E value) {
+        return Edge<V, E>(source, target, value: value);
       }
     }
     return null;
@@ -65,9 +65,9 @@ class UndirectedGraph<V, E> extends Graph<V, E> {
   void addVertex(V vertex) => _getVertex(vertex);
 
   @override
-  void addEdge(V source, V target, {E? data}) {
-    _getVertex(source)[target] = data as E;
-    _getVertex(target)[source] = data;
+  void addEdge(V source, V target, {E? value}) {
+    _getVertex(source)[target] = value as E;
+    _getVertex(target)[source] = value;
   }
 
   @override
@@ -81,7 +81,7 @@ class UndirectedGraph<V, E> extends Graph<V, E> {
   }
 
   @override
-  void removeEdge(V source, V target, {E? data}) {
+  void removeEdge(V source, V target) {
     final sourceAdjacency = adjacency[source];
     if (sourceAdjacency == null) return;
     final targetAdjacency = adjacency[target];

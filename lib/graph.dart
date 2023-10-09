@@ -19,7 +19,7 @@ export 'src/graph/model/unmodifiable.dart' show UnmodifiableGraphExtension;
 export 'src/graph/operations/connected.dart' show ConnectedGraphExtension;
 export 'src/graph/operations/logical.dart' show LogicalGraphExtension;
 export 'src/graph/operations/map.dart' show MapGraphExtension;
-export 'src/graph/path.dart' show Path;
+export 'src/graph/path.dart' show NumericPathExtension, Path;
 export 'src/graph/search.dart' show SearchGraphExtension;
 export 'src/graph/search/a_star.dart' show AStarSearchIterable;
 export 'src/graph/search/dijkstra.dart' show DijkstraSearchIterable;

@@ -25,10 +25,10 @@ extension LogicalGraphExtension<V, E> on Graph<V, E> {
       for (final vertex in graph.vertices) {
         for (final edge in graph.outgoingEdgesOf(vertex)) {
           final existing = result.getEdge(edge.source, edge.target);
-          final data = existing == null || edgeMerge == null
-              ? edge.data
-              : edgeMerge(edge.source, edge.target, existing.data, edge.data);
-          result.addEdge(edge.source, edge.target, data: data);
+          final value = existing == null || edgeMerge == null
+              ? edge.value
+              : edgeMerge(edge.source, edge.target, existing.value, edge.value);
+          result.addEdge(edge.source, edge.target, value: value);
         }
       }
     }
@@ -54,11 +54,11 @@ extension LogicalGraphExtension<V, E> on Graph<V, E> {
       if (otherEdge != null &&
           (edgeCompare == null ||
               edgeCompare(
-                  edge.source, edge.target, edge.data, otherEdge.data))) {
-        final data = edgeMerge == null
-            ? otherEdge.data
-            : edgeMerge(edge.source, edge.target, edge.data, otherEdge.data);
-        result.addEdge(edge.source, edge.target, data: data);
+                  edge.source, edge.target, edge.value, otherEdge.value))) {
+        final value = edgeMerge == null
+            ? otherEdge.value
+            : edgeMerge(edge.source, edge.target, edge.value, otherEdge.value);
+        result.addEdge(edge.source, edge.target, value: value);
       }
     }
     return result;
@@ -82,7 +82,7 @@ extension LogicalGraphExtension<V, E> on Graph<V, E> {
         targets.remove(source);
       }
       for (final target in targets) {
-        result.addEdge(source, target, data: edge?.call(source, target));
+        result.addEdge(source, target, value: edge?.call(source, target));
       }
     }
     return result;
