@@ -102,6 +102,25 @@ class Fraction
     }
   }
 
+  /// Iterable over the Farey sequence of order [n].
+  ///
+  /// Returns an ordered sequence of the reduced fractions between _0_ and
+  /// _1_ with denominators less than or equal to _order_.
+  ///
+  /// For details, see https://en.wikipedia.org/wiki/Farey_sequence.
+  static Iterable<Fraction> farey(int n, {bool ascending = true}) sync* {
+    if (n < 1) {
+      throw ArgumentError.value(n, 'order', 'positive integer expected');
+    }
+    var (a, b, c, d) = (ascending ? 0 : 1, 1, ascending ? 1 : n - 1, n);
+    yield Fraction._(a, b);
+    while (c <= n && ascending || a > 0 && !ascending) {
+      final k = (n + b) ~/ d;
+      (a, b, c, d) = (c, d, k * c - a, k * d - b);
+      yield Fraction._(a, b);
+    }
+  }
+
   /// Parses [source] as a [Fraction]. Returns `null` in case of a problem.
   static Fraction? tryParse(String source) {
     final values = source.split('/');

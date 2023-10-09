@@ -1,6 +1,7 @@
 import 'dart:math' as math;
 import 'dart:math';
 
+import 'package:more/comparator.dart';
 import 'package:more/number.dart';
 import 'package:test/test.dart';
 
@@ -599,6 +600,88 @@ void main() {
           for (final fraction in fractions) {
             expect(seen.add(fraction), isTrue);
           }
+        });
+      });
+      group('farey', () {
+        void verifyFarey(int n, {dynamic expected = anything}) {
+          expect(Fraction.farey(n), expected);
+          expect(Fraction.farey(n, ascending: true), expected);
+          expect(Fraction.farey(n, ascending: false),
+              expected is List ? expected.reversed : anything);
+          // denominator is less than n
+          expect(
+              Fraction.farey(n, ascending: true)
+                  .map((each) => each.denominator),
+              everyElement(lessThanOrEqualTo(n)));
+          expect(
+              Fraction.farey(n, ascending: false)
+                  .map((each) => each.denominator),
+              everyElement(lessThanOrEqualTo(n)));
+          // sequence is strictly ordered
+          expect(
+              naturalComparable<Fraction>.isStrictlyOrdered(
+                  Fraction.farey(n, ascending: true)),
+              isTrue);
+          expect(
+              naturalComparable<Fraction>
+                  .reversed
+                  .isStrictlyOrdered(Fraction.farey(n, ascending: false)),
+              isTrue);
+        }
+
+        test(
+            'n = 1',
+            () => verifyFarey(1, expected: [
+                  Fraction(0),
+                  Fraction(1),
+                ]));
+        test(
+            'n = 2',
+            () => verifyFarey(2, expected: [
+                  Fraction(0),
+                  Fraction(1, 2),
+                  Fraction(1),
+                ]));
+        test(
+            'n = 3',
+            () => verifyFarey(3, expected: [
+                  Fraction(0),
+                  Fraction(1, 3),
+                  Fraction(1, 2),
+                  Fraction(2, 3),
+                  Fraction(1),
+                ]));
+        test(
+            'n = 4',
+            () => verifyFarey(4, expected: [
+                  Fraction(0),
+                  Fraction(1, 4),
+                  Fraction(1, 3),
+                  Fraction(1, 2),
+                  Fraction(2, 3),
+                  Fraction(3, 4),
+                  Fraction(1),
+                ]));
+        test(
+            'n = 5',
+            () => verifyFarey(5, expected: [
+                  Fraction(0),
+                  Fraction(1, 5),
+                  Fraction(1, 4),
+                  Fraction(1, 3),
+                  Fraction(2, 5),
+                  Fraction(1, 2),
+                  Fraction(3, 5),
+                  Fraction(2, 3),
+                  Fraction(3, 4),
+                  Fraction(4, 5),
+                  Fraction(1),
+                ]));
+        test('n = 100', () => verifyFarey(100));
+        test('n = 1000', () => verifyFarey(1000));
+        test('error', () {
+          expect(() => Fraction.farey(0), throwsArgumentError);
+          expect(() => Fraction.farey(-1), throwsArgumentError);
         });
       });
     });
