@@ -78,7 +78,8 @@ class _AStarSearchIterator<V> implements Iterator<Path<V, num>> {
           values.add(state.value);
         }
         if (values.isNotEmpty) values.removeLast();
-        current = Path<V, num>.fromVertices(vertices.reversed, values.reversed);
+        current = Path<V, num>.fromVertices(vertices.reversed,
+            values: values.reversed);
         return true;
       }
     }

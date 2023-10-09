@@ -4,7 +4,22 @@ import '../../more.dart';
 /// withing a graph connects a series of [vertices] through their respective
 /// [edges] and [values].
 class Path<V, E> with ToStringPrinter {
-  Path.fromVertices(Iterable<V> vertices, Iterable<E> values)
+  /// Constructs a path from an iterable of vertices and corresponding values.
+  Path.fromVertices(Iterable<V> vertices, {Iterable<E>? values})
+      : this._(
+          vertices: vertices,
+          values: values ?? repeat<E>(null as E, count: vertices.length - 1),
+        );
+
+  /// Constructs a path from an iterable of [Edge] instances.
+  Path.fromEdges(Iterable<Edge<V, E>> edges)
+      : this._(
+          vertices: [edges.first.source, ...edges.map((edge) => edge.target)],
+          values: edges.map((edge) => edge.value),
+        );
+
+  /// Internal constructor.
+  Path._({required Iterable<V> vertices, required Iterable<E> values})
       : vertices = vertices.toList(growable: false),
         values = values.toList(growable: false) {
     assert(vertices.isNotEmpty);
