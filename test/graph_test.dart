@@ -1096,19 +1096,19 @@ void main() {
   group('factory', () {
     group('atlas', () {
       final random = Random(1252);
-      final builder = GraphFactory<int, void>(isDirected: false);
+      final factory = GraphFactory<int, void>(isDirected: false);
       test('numbered', () {
         for (var i = 0; i <= 1252; i += random.nextInt(100)) {
-          final graph = builder.atlas(i);
+          final graph = factory.atlas(i);
           expectInvariants(graph);
         }
       });
       test('vertex match', () {
-        final graphs = builder.atlasMatching(vertexCount: 3);
+        final graphs = factory.atlasMatching(vertexCount: 3);
         expect(graphs.map((each) => each.vertices.length), everyElement(3));
       });
       test('edge match', () {
-        final graphs = builder.atlasMatching(edgeCount: 3);
+        final graphs = factory.atlasMatching(edgeCount: 3);
         expect(graphs.map((each) => each.edges.length), everyElement(6));
       });
     });

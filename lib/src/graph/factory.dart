@@ -5,10 +5,7 @@ import 'package:meta/meta.dart';
 import 'factory/builder.dart';
 import 'strategy.dart';
 
-typedef VertexProvider<V> = V Function(int index);
-typedef EdgeProvider<V, E> = E Function(V source, V target);
-
-/// Factory methods to create commmon graphs types efficiently.
+/// Factory methods to create common graphs types efficiently.
 class GraphFactory<V, E> {
   GraphFactory({
     this.isDirected = true,
@@ -27,10 +24,10 @@ class GraphFactory<V, E> {
   final bool isUnmodifiable;
 
   /// Optional provider of vertex data.
-  final VertexProvider<V>? vertexProvider;
+  final V Function(int index)? vertexProvider;
 
   /// Optional provider of edge data.
-  final EdgeProvider<V, E>? edgeProvider;
+  final E Function(V source, V target)? edgeProvider;
 
   /// Random generator used when creating random graphs.
   final Random random;
@@ -38,8 +35,7 @@ class GraphFactory<V, E> {
   /// The strategy describing how vertices are stored.
   final StorageStrategy<V> vertexStrategy;
 
-  /// Internal factory to create a graph without depending on the underlying
-  /// implementation.
+  /// Internal graph builder based on this configuration.
   @internal
   GraphBuilder<V, E> newBuilder() => GraphBuilder<V, E>(this);
 }
