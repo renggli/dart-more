@@ -8,15 +8,15 @@ import 'package:more/math.dart';
 import 'package:test/test.dart';
 
 @optionalTypeArgs
-Matcher isEdge<E, V>({
-  dynamic source = anything,
-  dynamic target = anything,
-  dynamic data = anything,
+Matcher isEdge<E, V>(
+  dynamic source,
+  dynamic target, {
+  dynamic value = anything,
 }) =>
     isA<Edge<E, V>>()
         .having((edge) => edge.source, 'source', source)
         .having((edge) => edge.target, 'target', target)
-        .having((edge) => edge.value, 'data', data)
+        .having((edge) => edge.value, 'value', value)
         .having((edge) => edge.toString(), 'toString', contains('Edge'));
 
 @optionalTypeArgs
@@ -107,27 +107,22 @@ final dijkstraGraph = Graph<int, int>.undirected()
 void expectInvariants<V, E>(Graph<V, E> graph) {
   for (final vertex in graph.vertices) {
     for (final edge in graph.edgesOf(vertex)) {
-      expect(graph.edges,
-          contains(isEdge(source: edge.source, target: edge.target)));
+      expect(graph.edges, contains(isEdge(edge.source, edge.target)));
       expect([edge.source, edge.target], contains(vertex));
     }
     for (final outgoingEdge in graph.outgoingEdgesOf(vertex)) {
       expect(outgoingEdge.source, vertex);
       expect(graph.predecessorsOf(outgoingEdge.target), contains(vertex));
       expect(graph.successorsOf(vertex), contains(outgoingEdge.target));
-      expect(
-          graph.edges,
-          contains(isEdge(
-              source: outgoingEdge.source, target: outgoingEdge.target)));
+      expect(graph.edges,
+          contains(isEdge(outgoingEdge.source, outgoingEdge.target)));
     }
     for (final incomingEdge in graph.incomingEdgesOf(vertex)) {
       expect(incomingEdge.target, vertex);
       expect(graph.predecessorsOf(vertex), contains(incomingEdge.source));
       expect(graph.successorsOf(incomingEdge.source), contains(vertex));
-      expect(
-          graph.edges,
-          contains(isEdge(
-              source: incomingEdge.source, target: incomingEdge.target)));
+      expect(graph.edges,
+          contains(isEdge(incomingEdge.source, incomingEdge.target)));
     }
   }
   for (final edge in graph.edges) {
@@ -311,7 +306,7 @@ void main() {
           graph.addEdge('Hello', 'World', value: 42);
           expect(graph.vertices, unorderedEquals(['Hello', 'World']));
           expect(graph.edges, [
-            isEdge(source: 'Hello', target: 'World', data: 42),
+            isEdge('Hello', 'World', value: 42),
           ]);
           expect(graph.edges.single.value, 42);
           expectInvariants(graph);
@@ -324,8 +319,8 @@ void main() {
           expect(
               graph.edges,
               unorderedEquals([
-                isEdge(source: 'a', target: 'b', data: [1]),
-                isEdge(source: 'b', target: 'a', data: [2]),
+                isEdge('a', 'b', value: [1]),
+                isEdge('b', 'a', value: [2]),
               ]));
           expectInvariants(graph);
         });
@@ -368,46 +363,46 @@ void main() {
           expect(
               graph.edges,
               unorderedEquals([
-                isEdge(source: 0, target: 1, data: 'a'),
-                isEdge(source: 1, target: 2, data: 'b'),
+                isEdge(0, 1, value: 'a'),
+                isEdge(1, 2, value: 'b'),
               ]));
         });
         test('edgesOf', () {
           expect(graph.edgesOf(0), [
-            isEdge(source: 0, target: 1, data: 'a'),
+            isEdge(0, 1, value: 'a'),
           ]);
           expect(
               graph.edgesOf(1),
               unorderedEquals([
-                isEdge(source: 0, target: 1, data: 'a'),
-                isEdge(source: 1, target: 2, data: 'b'),
+                isEdge(0, 1, value: 'a'),
+                isEdge(1, 2, value: 'b'),
               ]));
           expect(graph.edgesOf(2), [
-            isEdge(source: 1, target: 2, data: 'b'),
+            isEdge(1, 2, value: 'b'),
           ]);
         });
         test('incomingEdgesOf', () {
           expect(graph.incomingEdgesOf(0), isEmpty);
           expect(graph.incomingEdgesOf(1), [
-            isEdge(source: 0, target: 1, data: 'a'),
+            isEdge(0, 1, value: 'a'),
           ]);
           expect(graph.incomingEdgesOf(2), [
-            isEdge(source: 1, target: 2, data: 'b'),
+            isEdge(1, 2, value: 'b'),
           ]);
         });
         test('outgoingEdgesOf', () {
           expect(graph.outgoingEdgesOf(0), [
-            isEdge(source: 0, target: 1, data: 'a'),
+            isEdge(0, 1, value: 'a'),
           ]);
           expect(graph.outgoingEdgesOf(1), [
-            isEdge(source: 1, target: 2, data: 'b'),
+            isEdge(1, 2, value: 'b'),
           ]);
           expect(graph.outgoingEdgesOf(2), isEmpty);
         });
         test('getEdge', () {
-          expect(graph.getEdge(0, 1), isEdge(source: 0, target: 1, data: 'a'));
+          expect(graph.getEdge(0, 1), isEdge(0, 1, value: 'a'));
           expect(graph.getEdge(1, 0), isNull);
-          expect(graph.getEdge(1, 2), isEdge(source: 1, target: 2, data: 'b'));
+          expect(graph.getEdge(1, 2), isEdge(1, 2, value: 'b'));
           expect(graph.getEdge(2, 1), isNull);
           expect(graph.getEdge(0, 2), isNull);
           expect(graph.getEdge(2, 0), isNull);
@@ -470,7 +465,7 @@ void main() {
           graph.addEdge('Hello', 'World', value: 42);
           expect(graph.vertices, unorderedEquals(['Hello', 'World']));
           expect(graph.edges, [
-            isEdge(source: 'Hello', target: 'World', data: 42),
+            isEdge('Hello', 'World', value: 42),
           ]);
           expect(graph.edges.single.value, 42);
           expectInvariants(graph);
@@ -483,8 +478,8 @@ void main() {
           expect(
               graph.edges,
               unorderedEquals([
-                isEdge(source: 'a', target: 'b', data: [1]),
-                isEdge(source: 'b', target: 'a', data: [2]),
+                isEdge('a', 'b', value: [1]),
+                isEdge('b', 'a', value: [2]),
               ]));
           expectInvariants(graph);
         });
@@ -528,47 +523,47 @@ void main() {
           expect(
               graph.edges,
               unorderedEquals([
-                isEdge(source: 1, target: 0, data: 'a'),
-                isEdge(source: 2, target: 1, data: 'b'),
+                isEdge(1, 0, value: 'a'),
+                isEdge(2, 1, value: 'b'),
               ]));
         });
         test('edgesOf', () {
           expect(graph.edgesOf(0), [
-            isEdge(source: 1, target: 0, data: 'a'),
+            isEdge(1, 0, value: 'a'),
           ]);
           expect(
               graph.edgesOf(1),
               unorderedEquals([
-                isEdge(source: 1, target: 0, data: 'a'),
-                isEdge(source: 2, target: 1, data: 'b'),
+                isEdge(1, 0, value: 'a'),
+                isEdge(2, 1, value: 'b'),
               ]));
           expect(graph.edgesOf(2), [
-            isEdge(source: 2, target: 1, data: 'b'),
+            isEdge(2, 1, value: 'b'),
           ]);
         });
         test('incomingEdgesOf', () {
           expect(graph.incomingEdgesOf(0), [
-            isEdge(source: 1, target: 0, data: 'a'),
+            isEdge(1, 0, value: 'a'),
           ]);
           expect(graph.incomingEdgesOf(1), [
-            isEdge(source: 2, target: 1, data: 'b'),
+            isEdge(2, 1, value: 'b'),
           ]);
           expect(graph.incomingEdgesOf(2), isEmpty);
         });
         test('outgoingEdgesOf', () {
           expect(graph.outgoingEdgesOf(0), isEmpty);
           expect(graph.outgoingEdgesOf(1), [
-            isEdge(source: 1, target: 0, data: 'a'),
+            isEdge(1, 0, value: 'a'),
           ]);
           expect(graph.outgoingEdgesOf(2), [
-            isEdge(source: 2, target: 1, data: 'b'),
+            isEdge(2, 1, value: 'b'),
           ]);
         });
         test('getEdge', () {
           expect(graph.getEdge(0, 1), isNull);
-          expect(graph.getEdge(1, 0), isEdge(source: 1, target: 0, data: 'a'));
+          expect(graph.getEdge(1, 0), isEdge(1, 0, value: 'a'));
           expect(graph.getEdge(1, 2), isNull);
-          expect(graph.getEdge(2, 1), isEdge(source: 2, target: 1, data: 'b'));
+          expect(graph.getEdge(2, 1), isEdge(2, 1, value: 'b'));
           expect(graph.getEdge(0, 2), isNull);
           expect(graph.getEdge(2, 0), isNull);
         });
@@ -619,8 +614,8 @@ void main() {
           expect(
               graph.edges,
               unorderedEquals([
-                isEdge(source: 'Hello', target: 'World', data: 42),
-                isEdge(source: 'World', target: 'Hello', data: 42),
+                isEdge('Hello', 'World', value: 42),
+                isEdge('World', 'Hello', value: 42),
               ]));
           expectInvariants(graph);
         });
@@ -632,8 +627,8 @@ void main() {
           expect(
               graph.edges,
               unorderedEquals([
-                isEdge(source: 'a', target: 'b', data: [1, 2]),
-                isEdge(source: 'b', target: 'a', data: [1, 2]),
+                isEdge('a', 'b', value: [1, 2]),
+                isEdge('b', 'a', value: [1, 2]),
               ]));
           expectInvariants(graph);
         });
@@ -676,59 +671,59 @@ void main() {
           expect(
               graph.edges,
               unorderedEquals([
-                isEdge(source: 0, target: 1, data: 'a'),
-                isEdge(source: 1, target: 0, data: 'a'),
-                isEdge(source: 1, target: 2, data: 'b'),
-                isEdge(source: 2, target: 1, data: 'b'),
+                isEdge(0, 1, value: 'a'),
+                isEdge(1, 0, value: 'a'),
+                isEdge(1, 2, value: 'b'),
+                isEdge(2, 1, value: 'b'),
               ]));
         });
         test('edgesOf', () {
           expect(graph.edgesOf(0), [
-            isEdge(source: 0, target: 1, data: 'a'),
+            isEdge(0, 1, value: 'a'),
           ]);
           expect(
               graph.edgesOf(1),
               unorderedEquals([
-                isEdge(source: 1, target: 0, data: 'a'),
-                isEdge(source: 1, target: 2, data: 'b'),
+                isEdge(1, 0, value: 'a'),
+                isEdge(1, 2, value: 'b'),
               ]));
           expect(graph.edgesOf(2), [
-            isEdge(source: 2, target: 1, data: 'b'),
+            isEdge(2, 1, value: 'b'),
           ]);
         });
         test('incomingEdgesOf', () {
           expect(graph.incomingEdgesOf(0), [
-            isEdge(source: 1, target: 0, data: 'a'),
+            isEdge(1, 0, value: 'a'),
           ]);
           expect(
               graph.incomingEdgesOf(1),
               unorderedEquals([
-                isEdge(source: 0, target: 1, data: 'a'),
-                isEdge(source: 2, target: 1, data: 'b'),
+                isEdge(0, 1, value: 'a'),
+                isEdge(2, 1, value: 'b'),
               ]));
           expect(graph.incomingEdgesOf(2), [
-            isEdge(source: 1, target: 2, data: 'b'),
+            isEdge(1, 2, value: 'b'),
           ]);
         });
         test('outgoingEdgesOf', () {
           expect(graph.outgoingEdgesOf(0), [
-            isEdge(source: 0, target: 1, data: 'a'),
+            isEdge(0, 1, value: 'a'),
           ]);
           expect(
               graph.outgoingEdgesOf(1),
               unorderedEquals([
-                isEdge(source: 1, target: 0, data: 'a'),
-                isEdge(source: 1, target: 2, data: 'b'),
+                isEdge(1, 0, value: 'a'),
+                isEdge(1, 2, value: 'b'),
               ]));
           expect(graph.outgoingEdgesOf(2), [
-            isEdge(source: 2, target: 1, data: 'b'),
+            isEdge(2, 1, value: 'b'),
           ]);
         });
         test('getEdge', () {
-          expect(graph.getEdge(0, 1), isEdge(source: 0, target: 1, data: 'a'));
-          expect(graph.getEdge(1, 0), isEdge(source: 1, target: 0, data: 'a'));
-          expect(graph.getEdge(1, 2), isEdge(source: 1, target: 2, data: 'b'));
-          expect(graph.getEdge(2, 1), isEdge(source: 2, target: 1, data: 'b'));
+          expect(graph.getEdge(0, 1), isEdge(0, 1, value: 'a'));
+          expect(graph.getEdge(1, 0), isEdge(1, 0, value: 'a'));
+          expect(graph.getEdge(1, 2), isEdge(1, 2, value: 'b'));
+          expect(graph.getEdge(2, 1), isEdge(2, 1, value: 'b'));
           expect(graph.getEdge(0, 2), isNull);
           expect(graph.getEdge(2, 0), isNull);
         });
@@ -753,6 +748,55 @@ void main() {
         expect(graph.reversed, same(graph));
       });
     });
+    group('forwarding', () {
+      test('directed', () {
+        final base = Graph<String, int>.directed();
+        final graph = ForwardingGraph<String, int>(base);
+        expect(graph.isDirected, isTrue);
+        expect(graph.isUnmodifiable, isFalse);
+        expect(graph.vertexStrategy, isNotNull);
+        graph.addVertex('a');
+        graph.addEdge('b', 'c', value: 42);
+        expectInvariants(base);
+        expect(graph.vertices, unorderedEquals(['a', 'b', 'c']));
+        expect(graph.edges, [isEdge('b', 'c', value: 42)]);
+        expect(graph.edgesOf('b'), [isEdge('b', 'c', value: 42)]);
+        expect(graph.incomingEdgesOf('c'), [isEdge('b', 'c', value: 42)]);
+        expect(graph.outgoingEdgesOf('b'), [isEdge('b', 'c', value: 42)]);
+        expect(graph.getEdge('b', 'c'), isEdge('b', 'c', value: 42));
+        expect(graph.neighboursOf('b'), ['c']);
+        expect(graph.predecessorsOf('c'), ['b']);
+        expect(graph.successorsOf('b'), ['c']);
+        graph.removeEdge('b', 'c');
+        graph.removeVertex('a');
+      });
+      test('undirected', () {
+        final base = Graph<String, int>.undirected();
+        final graph = ForwardingGraph<String, int>(base);
+        expect(graph.isDirected, isFalse);
+        expect(graph.isUnmodifiable, isFalse);
+        expect(graph.vertexStrategy, isNotNull);
+        graph.addVertex('a');
+        graph.addEdge('b', 'c', value: 42);
+        expectInvariants(base);
+        expect(graph.vertices, unorderedEquals(['a', 'b', 'c']));
+        expect(
+            graph.edges,
+            unorderedEquals([
+              isEdge('b', 'c', value: 42),
+              isEdge('c', 'b', value: 42),
+            ]));
+        expect(graph.edgesOf('b'), [isEdge('b', 'c', value: 42)]);
+        expect(graph.incomingEdgesOf('c'), [isEdge('b', 'c', value: 42)]);
+        expect(graph.outgoingEdgesOf('b'), [isEdge('b', 'c', value: 42)]);
+        expect(graph.getEdge('b', 'c'), isEdge('b', 'c', value: 42));
+        expect(graph.neighboursOf('b'), ['c']);
+        expect(graph.predecessorsOf('c'), ['b']);
+        expect(graph.successorsOf('b'), ['c']);
+        graph.removeEdge('b', 'c');
+        graph.removeVertex('a');
+      });
+    });
     group('unmodifiable', () {
       test('empty', () {
         final graph = Graph<String, int>.directed();
@@ -761,6 +805,20 @@ void main() {
         expect(unmodifiable.isUnmodifiable, isTrue);
         expect(unmodifiable.unmodifiable, same(unmodifiable));
         expectInvariants(graph);
+      });
+      test('delegates', () {
+        final graph = Graph<String, int>.directed();
+        graph.addEdge('a', 'b', value: 42);
+        final unmodifiable = graph.unmodifiable;
+        expect(unmodifiable.neighboursOf('a'), ['b']);
+        expect(unmodifiable.predecessorsOf('b'), ['a']);
+        expect(unmodifiable.successorsOf('a'), ['b']);
+        expect(unmodifiable.edgesOf('a'), [isEdge('a', 'b', value: 42)]);
+        expect(
+            unmodifiable.incomingEdgesOf('b'), [isEdge('a', 'b', value: 42)]);
+        expect(
+            unmodifiable.outgoingEdgesOf('a'), [isEdge('a', 'b', value: 42)]);
+        expect(unmodifiable.getEdge('a', 'b'), isEdge('a', 'b', value: 42));
       });
       test('errors', () {
         final graph = Graph<String, void>.directed().unmodifiable;
@@ -788,7 +846,7 @@ void main() {
         expect(
             connected[0].edges,
             unorderedEquals([
-              isEdge(source: 42, target: 43, data: 'Hello World'),
+              isEdge(42, 43, value: 'Hello World'),
             ]));
       });
       test('two graphs', () {
@@ -801,13 +859,13 @@ void main() {
         expect(
             connected[0].edges,
             unorderedEquals([
-              isEdge(source: 1, target: 2, data: 'Foo'),
+              isEdge(1, 2, value: 'Foo'),
             ]));
         expect(connected[1].vertices, unorderedEquals([3, 4]));
         expect(
             connected[1].edges,
             unorderedEquals([
-              isEdge(source: 3, target: 4, data: 'Bar'),
+              isEdge(3, 4, value: 'Bar'),
             ]));
       });
       test('incoming/outgoing edges', () {
@@ -823,8 +881,8 @@ void main() {
         expect(
             connected[0].edges,
             unorderedEquals([
-              isEdge(source: 2, target: 1, data: 'Incoming'),
-              isEdge(source: 1, target: 3, data: 'Outgoing'),
+              isEdge(2, 1, value: 'Incoming'),
+              isEdge(1, 3, value: 'Outgoing'),
             ]));
       });
     });
@@ -838,8 +896,8 @@ void main() {
           expect(
               result.edges,
               unorderedEquals([
-                isEdge(source: 'a', target: 'b'),
-                isEdge(source: 'c', target: 'd'),
+                isEdge('a', 'b'),
+                isEdge('c', 'd'),
               ]));
         });
         test('shared vertex', () {
@@ -850,8 +908,8 @@ void main() {
           expect(
               result.edges,
               unorderedEquals([
-                isEdge(source: 'a', target: 'b'),
-                isEdge(source: 'b', target: 'c'),
+                isEdge('a', 'b'),
+                isEdge('b', 'c'),
               ]));
         });
         test('shared edge', () {
@@ -862,9 +920,9 @@ void main() {
           expect(
               result.edges,
               unorderedEquals([
-                isEdge(source: 1, target: 2, data: 'a'),
-                isEdge(source: 2, target: 3, data: 'b'),
-                isEdge(source: 3, target: 4, data: 'b'),
+                isEdge(1, 2, value: 'a'),
+                isEdge(2, 3, value: 'b'),
+                isEdge(3, 4, value: 'b'),
               ]));
         });
         test('shared edge (custom merger)', () {
@@ -876,9 +934,9 @@ void main() {
           expect(
               result.edges,
               unorderedEquals([
-                isEdge(source: 1, target: 2, data: 'a'),
-                isEdge(source: 2, target: 3, data: 'a, b'),
-                isEdge(source: 3, target: 4, data: 'b'),
+                isEdge(1, 2, value: 'a'),
+                isEdge(2, 3, value: 'a, b'),
+                isEdge(3, 4, value: 'b'),
               ]));
         });
       });
@@ -902,7 +960,7 @@ void main() {
           final b = GraphFactory<int, String>().fromPath([2, 3, 4], value: 'b');
           final result = a.intersection(b);
           expect(result.vertices, unorderedEquals([2, 3]));
-          expect(result.edges, [isEdge(source: 2, target: 3, data: 'b')]);
+          expect(result.edges, [isEdge(2, 3, value: 'b')]);
         });
         test('shared edge (custom compare)', () {
           final a = GraphFactory<int, String>().fromPath([1, 2, 3], value: 'a');
@@ -918,7 +976,7 @@ void main() {
           final result =
               a.intersection(b, edgeMerge: (source, target, a, b) => '$a, $b');
           expect(result.vertices, unorderedEquals([2, 3]));
-          expect(result.edges, [isEdge(source: 2, target: 3, data: 'a, b')]);
+          expect(result.edges, [isEdge(2, 3, value: 'a, b')]);
         });
       });
       group('complement', () {
@@ -934,7 +992,7 @@ void main() {
           input.addEdge('a', 'b');
           final result = input.complement();
           expect(result.vertices, unorderedEquals(['a', 'b']));
-          expect(result.edges, [isEdge(source: 'b', target: 'a')]);
+          expect(result.edges, [isEdge('b', 'a')]);
         });
         test('simple directed (with self-loops)', () {
           final input = Graph<String, void>.directed();
@@ -944,9 +1002,9 @@ void main() {
           expect(
               result.edges,
               unorderedEquals([
-                isEdge(source: 'a', target: 'a'),
-                isEdge(source: 'b', target: 'a'),
-                isEdge(source: 'b', target: 'b'),
+                isEdge('a', 'a'),
+                isEdge('b', 'a'),
+                isEdge('b', 'b'),
               ]));
         });
         test('simple directed (with edge data)', () {
@@ -954,7 +1012,7 @@ void main() {
           input.addEdge(1, 2, value: 'next');
           final result = input.complement(edge: (source, target) => 'prev');
           expect(result.vertices, unorderedEquals([1, 2]));
-          expect(result.edges, [isEdge(source: 2, target: 1, data: 'prev')]);
+          expect(result.edges, [isEdge(2, 1, value: 'prev')]);
         });
       });
     });
@@ -967,9 +1025,9 @@ void main() {
         expect(
             result.edges,
             unorderedEquals([
-              isEdge(source: 0, target: 1, data: const Point(0, 1)),
-              isEdge(source: 1, target: 2, data: const Point(1, 2)),
-              isEdge(source: 2, target: 0, data: const Point(2, 0)),
+              isEdge(0, 1, value: const Point(0, 1)),
+              isEdge(1, 2, value: const Point(1, 2)),
+              isEdge(2, 0, value: const Point(2, 0)),
             ]));
         expectInvariants(result);
       });
@@ -980,9 +1038,9 @@ void main() {
         expect(
             result.edges,
             unorderedEquals([
-              isEdge(source: '0', target: '1', data: const Point(0, 1)),
-              isEdge(source: '1', target: '2', data: const Point(1, 2)),
-              isEdge(source: '2', target: '0', data: const Point(2, 0)),
+              isEdge('0', '1', value: const Point(0, 1)),
+              isEdge('1', '2', value: const Point(1, 2)),
+              isEdge('2', '0', value: const Point(2, 0)),
             ]));
         expectInvariants(result);
       });
@@ -993,9 +1051,9 @@ void main() {
         expect(
             result.edges,
             unorderedEquals([
-              isEdge(source: 0, target: 1, data: '0 -> 1'),
-              isEdge(source: 1, target: 2, data: '1 -> 2'),
-              isEdge(source: 2, target: 0, data: '2 -> 0'),
+              isEdge(0, 1, value: '0 -> 1'),
+              isEdge(1, 2, value: '1 -> 2'),
+              isEdge(2, 0, value: '2 -> 0'),
             ]));
         expectInvariants(result);
       });
@@ -1007,9 +1065,9 @@ void main() {
         expect(
             result.edges,
             unorderedEquals([
-              isEdge(source: '0', target: '1', data: '0 -> 1'),
-              isEdge(source: '1', target: '2', data: '1 -> 2'),
-              isEdge(source: '2', target: '0', data: '2 -> 0'),
+              isEdge('0', '1', value: '0 -> 1'),
+              isEdge('1', '2', value: '1 -> 2'),
+              isEdge('2', '0', value: '2 -> 0'),
             ]));
         expectInvariants(result);
       });
@@ -1024,12 +1082,12 @@ void main() {
         expect(
             result.edges,
             unorderedEquals([
-              isEdge(source: '0', target: '1', data: '0 <-> 1'),
-              isEdge(source: '0', target: '2', data: '2 <-> 0'),
-              isEdge(source: '1', target: '0', data: '0 <-> 1'),
-              isEdge(source: '1', target: '2', data: '1 <-> 2'),
-              isEdge(source: '2', target: '0', data: '2 <-> 0'),
-              isEdge(source: '2', target: '1', data: '1 <-> 2'),
+              isEdge('0', '1', value: '0 <-> 1'),
+              isEdge('0', '2', value: '2 <-> 0'),
+              isEdge('1', '0', value: '0 <-> 1'),
+              isEdge('1', '2', value: '1 <-> 2'),
+              isEdge('2', '0', value: '2 <-> 0'),
+              isEdge('2', '1', value: '1 <-> 2'),
             ]));
         expectInvariants(result);
       });
@@ -1072,8 +1130,8 @@ void main() {
           final graph = GraphFactory<String, void>().fromPath(['a', 'b', 'c']);
           expect(graph.vertices, unorderedEquals(['a', 'b', 'c']));
           expect(graph.edges, [
-            isEdge(source: 'a', target: 'b'),
-            isEdge(source: 'b', target: 'c'),
+            isEdge('a', 'b'),
+            isEdge('b', 'c'),
           ]);
           expectInvariants(graph);
         });
@@ -1092,7 +1150,7 @@ void main() {
           ]);
           expect(graph.vertices, unorderedEquals(['a', 'b', 'c']));
           expect(graph.edges, [
-            isEdge(source: 'b', target: 'c'),
+            isEdge('b', 'c'),
           ]);
           expectInvariants(graph);
         });
@@ -1105,10 +1163,10 @@ void main() {
           expect(
               graph.edges,
               unorderedEquals([
-                isEdge(source: 'a', target: 'b'),
-                isEdge(source: 'b', target: 'c'),
-                isEdge(source: 'd', target: 'b'),
-                isEdge(source: 'b', target: 'e'),
+                isEdge('a', 'b'),
+                isEdge('b', 'c'),
+                isEdge('d', 'b'),
+                isEdge('b', 'e'),
               ]));
           expectInvariants(graph);
         });
@@ -1137,8 +1195,8 @@ void main() {
           expect(
               graph.edges,
               unorderedEquals([
-                isEdge(source: 'b', target: 'a'),
-                isEdge(source: 'c', target: 'a'),
+                isEdge('b', 'a'),
+                isEdge('c', 'a'),
               ]));
           expectInvariants(graph);
         });
@@ -1158,11 +1216,11 @@ void main() {
           expect(
               graph.edges,
               unorderedEquals([
-                isEdge(source: 1, target: 2),
-                isEdge(source: 2, target: 4),
-                isEdge(source: 4, target: 8),
-                isEdge(source: 8, target: 16),
-                isEdge(source: 16, target: 5),
+                isEdge(1, 2),
+                isEdge(2, 4),
+                isEdge(4, 8),
+                isEdge(8, 16),
+                isEdge(16, 5),
               ]));
           expectInvariants(graph);
         });
@@ -1191,8 +1249,8 @@ void main() {
           expect(
               graph.edges,
               unorderedEquals([
-                isEdge(source: 'a', target: 'b'),
-                isEdge(source: 'a', target: 'c'),
+                isEdge('a', 'b'),
+                isEdge('a', 'c'),
               ]));
           expectInvariants(graph);
         });
@@ -1212,11 +1270,11 @@ void main() {
           expect(
               graph.edges,
               unorderedEquals([
-                isEdge(source: 2, target: 1),
-                isEdge(source: 4, target: 2),
-                isEdge(source: 5, target: 16),
-                isEdge(source: 8, target: 4),
-                isEdge(source: 16, target: 8),
+                isEdge(2, 1),
+                isEdge(4, 2),
+                isEdge(5, 16),
+                isEdge(8, 4),
+                isEdge(16, 8),
               ]));
           expectInvariants(graph);
         });
@@ -1241,12 +1299,12 @@ void main() {
         expect(
             graph.edges,
             unorderedEquals([
-              isEdge(source: 0, target: 1),
-              isEdge(source: 0, target: 2),
-              isEdge(source: 1, target: 0),
-              isEdge(source: 1, target: 2),
-              isEdge(source: 2, target: 0),
-              isEdge(source: 2, target: 1),
+              isEdge(0, 1),
+              isEdge(0, 2),
+              isEdge(1, 0),
+              isEdge(1, 2),
+              isEdge(2, 0),
+              isEdge(2, 1),
             ]));
         expectInvariants(graph);
       });
@@ -1285,7 +1343,7 @@ void main() {
         final graph = GraphFactory<int, void>().partite(vertexCounts: [1, 1]);
         expect(graph.vertices, unorderedEquals([0, 1]));
         expect(graph.edges, [
-          isEdge(source: 0, target: 1),
+          isEdge(0, 1),
         ]);
         expectInvariants(graph);
       });
@@ -1295,9 +1353,9 @@ void main() {
         expect(
             graph.edges,
             unorderedEquals([
-              isEdge(source: 0, target: 1),
-              isEdge(source: 0, target: 2),
-              isEdge(source: 0, target: 3),
+              isEdge(0, 1),
+              isEdge(0, 2),
+              isEdge(0, 3),
             ]));
         expectInvariants(graph);
       });
@@ -1307,10 +1365,10 @@ void main() {
         expect(
             graph.edges,
             unorderedEquals([
-              isEdge(source: 0, target: 2),
-              isEdge(source: 0, target: 3),
-              isEdge(source: 1, target: 2),
-              isEdge(source: 1, target: 3),
+              isEdge(0, 2),
+              isEdge(0, 3),
+              isEdge(1, 2),
+              isEdge(1, 3),
             ]));
         expectInvariants(graph);
       });
@@ -1320,15 +1378,15 @@ void main() {
         expect(
             graph.edges,
             unorderedEquals([
-              isEdge(source: 0, target: 3),
-              isEdge(source: 0, target: 4),
-              isEdge(source: 0, target: 5),
-              isEdge(source: 1, target: 3),
-              isEdge(source: 1, target: 4),
-              isEdge(source: 1, target: 5),
-              isEdge(source: 2, target: 3),
-              isEdge(source: 2, target: 4),
-              isEdge(source: 2, target: 5),
+              isEdge(0, 3),
+              isEdge(0, 4),
+              isEdge(0, 5),
+              isEdge(1, 3),
+              isEdge(1, 4),
+              isEdge(1, 5),
+              isEdge(2, 3),
+              isEdge(2, 4),
+              isEdge(2, 5),
             ]));
         expectInvariants(graph);
       });
@@ -1352,8 +1410,8 @@ void main() {
         expect(
             graph.edges,
             unorderedEquals([
-              isEdge(source: 0, target: 1),
-              isEdge(source: 1, target: 2),
+              isEdge(0, 1),
+              isEdge(1, 2),
             ]));
         expectInvariants(graph);
       });
@@ -1377,9 +1435,9 @@ void main() {
         expect(
             graph.edges,
             unorderedEquals([
-              isEdge(source: 0, target: 1),
-              isEdge(source: 1, target: 2),
-              isEdge(source: 2, target: 0),
+              isEdge(0, 1),
+              isEdge(1, 2),
+              isEdge(2, 0),
             ]));
         expectInvariants(graph);
       });
@@ -1403,9 +1461,9 @@ void main() {
         expect(
             graph.edges,
             unorderedEquals([
-              isEdge(source: 0, target: 1),
-              isEdge(source: 0, target: 2),
-              isEdge(source: 0, target: 3),
+              isEdge(0, 1),
+              isEdge(0, 2),
+              isEdge(0, 3),
             ]));
         expectInvariants(graph);
       });
@@ -1425,8 +1483,8 @@ void main() {
           expect(
               graph.edges,
               unorderedEquals([
-                isEdge(source: 0, target: 1),
-                isEdge(source: 1, target: 2),
+                isEdge(0, 1),
+                isEdge(1, 2),
               ]));
           expectInvariants(graph);
         });
@@ -1436,11 +1494,11 @@ void main() {
           expect(
               graph.edges,
               unorderedEquals([
-                isEdge(source: 0, target: 1),
-                isEdge(source: 0, target: 2),
-                isEdge(source: 1, target: 3),
-                isEdge(source: 1, target: 4),
-                isEdge(source: 2, target: 5),
+                isEdge(0, 1),
+                isEdge(0, 2),
+                isEdge(1, 3),
+                isEdge(1, 4),
+                isEdge(2, 5),
               ]));
           expectInvariants(graph);
         });
@@ -1451,12 +1509,12 @@ void main() {
           expect(
               graph.edges,
               unorderedEquals([
-                isEdge(source: 0, target: 1),
-                isEdge(source: 0, target: 2),
-                isEdge(source: 0, target: 3),
-                isEdge(source: 1, target: 4),
-                isEdge(source: 1, target: 5),
-                isEdge(source: 1, target: 6),
+                isEdge(0, 1),
+                isEdge(0, 2),
+                isEdge(0, 3),
+                isEdge(1, 4),
+                isEdge(1, 5),
+                isEdge(1, 6),
               ]));
           expectInvariants(graph);
         });
@@ -1475,8 +1533,8 @@ void main() {
           expect(
               graph.edges,
               unorderedEquals([
-                isEdge(source: 0, target: 1),
-                isEdge(source: 1, target: 2),
+                isEdge(0, 1),
+                isEdge(1, 2),
               ]));
           expectInvariants(graph);
         });
@@ -1486,12 +1544,12 @@ void main() {
           expect(
               graph.edges,
               unorderedEquals([
-                isEdge(source: 0, target: 1),
-                isEdge(source: 0, target: 2),
-                isEdge(source: 1, target: 3),
-                isEdge(source: 1, target: 4),
-                isEdge(source: 2, target: 5),
-                isEdge(source: 2, target: 6),
+                isEdge(0, 1),
+                isEdge(0, 2),
+                isEdge(1, 3),
+                isEdge(1, 4),
+                isEdge(2, 5),
+                isEdge(2, 6),
               ]));
           expectInvariants(graph);
         });
@@ -1502,9 +1560,9 @@ void main() {
           expect(
               graph.edges,
               unorderedEquals([
-                isEdge(source: 0, target: 1),
-                isEdge(source: 0, target: 2),
-                isEdge(source: 0, target: 3),
+                isEdge(0, 1),
+                isEdge(0, 2),
+                isEdge(0, 3),
               ]));
           expectInvariants(graph);
         });

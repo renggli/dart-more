@@ -14,6 +14,7 @@ export 'src/graph/factory/ring.dart' show RingGraphFactoryExtension;
 export 'src/graph/factory/star.dart' show StarGraphFactoryExtension;
 export 'src/graph/factory/tree.dart' show TreeGraphFactoryExtension;
 export 'src/graph/graph.dart' show Graph;
+export 'src/graph/model/forwarding.dart' show ForwardingGraph;
 export 'src/graph/model/reversed.dart' show ReversedGraphExtension;
 export 'src/graph/model/unmodifiable.dart' show UnmodifiableGraphExtension;
 export 'src/graph/operations/connected.dart' show ConnectedGraphExtension;

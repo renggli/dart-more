@@ -2,7 +2,8 @@ import '../edge.dart';
 import '../graph.dart';
 import '../strategy.dart';
 
-abstract class ForwardingGraph<V, E> extends Graph<V, E> {
+///
+class ForwardingGraph<V, E> extends Graph<V, E> {
   ForwardingGraph(this.delegate);
 
   final Graph<V, E> delegate;
