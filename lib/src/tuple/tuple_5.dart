@@ -94,13 +94,7 @@ extension Tuple5<T1, T2, T3, T4, T5> on (T1, T2, T3, T4, T5) {
       callback($1, $2, $3, $4, $5);
 
   /// An (untyped) [Iterable] over the values of this tuple.
-  Iterable<dynamic> get iterable sync* {
-    yield $1;
-    yield $2;
-    yield $3;
-    yield $4;
-    yield $5;
-  }
+  Iterable<dynamic> get iterable => toList();
 
   /// An (untyped) [List] with the values of this tuple.
   List<dynamic> toList() => [$1, $2, $3, $4, $5];

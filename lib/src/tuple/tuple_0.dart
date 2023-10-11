@@ -22,7 +22,7 @@ extension Tuple0 on () {
   R map<R>(R Function() callback) => callback();
 
   /// An (untyped) [Iterable] over the values of this tuple.
-  Iterable<dynamic> get iterable => const [];
+  Iterable<dynamic> get iterable => toList();
 
   /// An (untyped) [List] with the values of this tuple.
   List<dynamic> toList() => const [];

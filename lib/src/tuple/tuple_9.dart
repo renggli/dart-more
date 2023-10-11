@@ -150,17 +150,7 @@ extension Tuple9<T1, T2, T3, T4, T5, T6, T7, T8, T9> on (
       callback($1, $2, $3, $4, $5, $6, $7, $8, $9);
 
   /// An (untyped) [Iterable] over the values of this tuple.
-  Iterable<dynamic> get iterable sync* {
-    yield $1;
-    yield $2;
-    yield $3;
-    yield $4;
-    yield $5;
-    yield $6;
-    yield $7;
-    yield $8;
-    yield $9;
-  }
+  Iterable<dynamic> get iterable => toList();
 
   /// An (untyped) [List] with the values of this tuple.
   List<dynamic> toList() => [$1, $2, $3, $4, $5, $6, $7, $8, $9];

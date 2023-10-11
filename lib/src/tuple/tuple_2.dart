@@ -55,10 +55,7 @@ extension Tuple2<T1, T2> on (T1, T2) {
   R map<R>(R Function(T1 first, T2 second) callback) => callback($1, $2);
 
   /// An (untyped) [Iterable] over the values of this tuple.
-  Iterable<dynamic> get iterable sync* {
-    yield $1;
-    yield $2;
-  }
+  Iterable<dynamic> get iterable => toList();
 
   /// An (untyped) [List] with the values of this tuple.
   List<dynamic> toList() => [$1, $2];

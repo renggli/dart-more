@@ -43,9 +43,7 @@ extension Tuple1<T1> on (T1,) {
   R map<R>(R Function(T1 first) callback) => callback($1);
 
   /// An (untyped) [Iterable] over the values of this tuple.
-  Iterable<dynamic> get iterable sync* {
-    yield $1;
-  }
+  Iterable<dynamic> get iterable => toList();
 
   /// An (untyped) [List] with the values of this tuple.
   List<dynamic> toList() => [$1];

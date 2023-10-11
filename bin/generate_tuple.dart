@@ -64,6 +64,8 @@ Future<void> generateExport() async {
   final file = exportFile;
   final out = file.openWrite();
   out.writeln('/// Tuple extension methods on generic records.');
+  out.writeln('library tuple;');
+  out.writeln();
   out.writeln('export \'src/tuple/tuple.dart\';');
   for (var i = 0; i < max; i++) {
     out.writeln('export \'src/tuple/tuple_$i.dart\';');
@@ -220,16 +222,7 @@ Future<void> generateImplementation(int i) async {
   final prefix = i == 0 ? 'const ' : '';
   out.writeln();
   out.writeln('/// An (untyped) [Iterable] over the values of this tuple.');
-  out.write('Iterable<dynamic> get iterable ');
-  if (i == 0) {
-    out.writeln('=> const [];');
-  } else {
-    out.writeln('sync* {');
-    for (var j = 0; j < i; j++) {
-      out.writeln('yield ${values[j]};');
-    }
-    out.writeln('}');
-  }
+  out.writeln('Iterable<dynamic> get iterable => toList();');
   out.writeln();
   out.writeln('/// An (untyped) [List] with the values of this tuple.');
   out.writeln('List<dynamic> toList() => $prefix[${listify(values)}];');
