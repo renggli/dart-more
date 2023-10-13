@@ -6,13 +6,13 @@ import 'strategy.dart';
 
 /// Abstract base class of graphs.
 ///
+/// [Graph] does not support parallel edges. If you re-add an edge with the same
+/// source and target vertex the previous edge is replaced with the new one. Use
+/// an [Iterable] as the edge-value, if you'd like to model a graph with
+/// parallel edges.
+///
 /// [Graph] allows self-loops (edges from a vertex to itself). If you do not
 /// want self-loops, do not create self-loops.
-///
-/// [Graph] does not support parallel edges. If you repeatedly add an edge with
-/// the same source and target vertex the previous edge is replaced with the new
-/// one. Use an [Iterable] as the edge-value, if you'd like to model a graph
-/// with parallel edges.
 abstract class Graph<V, E> with ToStringPrinter {
   /// Directed graph.
   factory Graph.directed({StorageStrategy<V>? vertexStrategy}) = DirectedGraph;

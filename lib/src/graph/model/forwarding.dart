@@ -2,7 +2,7 @@ import '../edge.dart';
 import '../graph.dart';
 import '../strategy.dart';
 
-///
+/// Graph that forwards to a [delegate] implementation.
 class ForwardingGraph<V, E> extends Graph<V, E> {
   ForwardingGraph(this.delegate);
 

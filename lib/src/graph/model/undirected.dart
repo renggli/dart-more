@@ -2,6 +2,7 @@ import '../edge.dart';
 import '../graph.dart';
 import '../strategy.dart';
 
+/// Undirected graph implementation using adjacency lists.
 class UndirectedGraph<V, E> extends Graph<V, E> {
   UndirectedGraph({StorageStrategy<V>? vertexStrategy})
       : this._(vertexStrategy ?? StorageStrategy<V>.defaultStrategy());
@@ -12,10 +13,10 @@ class UndirectedGraph<V, E> extends Graph<V, E> {
   final Map<V, Map<V, E>> adjacency;
 
   @override
-  final StorageStrategy<V> vertexStrategy;
+  bool get isDirected => false;
 
   @override
-  bool get isDirected => false;
+  final StorageStrategy<V> vertexStrategy;
 
   @override
   Iterable<V> get vertices => adjacency.keys;
@@ -32,20 +33,20 @@ class UndirectedGraph<V, E> extends Graph<V, E> {
   Iterable<Edge<V, E>> incomingEdgesOf(V vertex) =>
       adjacency[vertex]
           ?.entries
-          .map((inner) => Edge<V, E>(inner.key, vertex, value: inner.value)) ??
+          .map((entry) => Edge<V, E>(entry.key, vertex, value: entry.value)) ??
       const [];
 
   @override
   Iterable<Edge<V, E>> outgoingEdgesOf(V vertex) =>
       adjacency[vertex]
           ?.entries
-          .map((inner) => Edge<V, E>(vertex, inner.key, value: inner.value)) ??
+          .map((entry) => Edge<V, E>(vertex, entry.key, value: entry.value)) ??
       const [];
 
   @override
   Edge<V, E>? getEdge(V source, V target) {
-    if (adjacency[source] case final sourceAdjacency?) {
-      if (sourceAdjacency[target] case final E value) {
+    if (adjacency[source] case final targetAdjacency?) {
+      if (targetAdjacency[target] case final E value) {
         return Edge<V, E>(source, target, value: value);
       }
     }
@@ -82,14 +83,10 @@ class UndirectedGraph<V, E> extends Graph<V, E> {
 
   @override
   void removeEdge(V source, V target) {
-    final sourceAdjacency = adjacency[source];
-    if (sourceAdjacency == null) return;
-    final targetAdjacency = adjacency[target];
-    if (targetAdjacency == null) return;
-    sourceAdjacency.remove(target);
-    targetAdjacency.remove(source);
+    adjacency[source]?.remove(target);
+    adjacency[target]?.remove(source);
   }
 
   Map<V, E> _getVertex(V vertex) =>
-      adjacency.putIfAbsent(vertex, vertexStrategy.createMap<E>);
+      adjacency.putIfAbsent(vertex, () => vertexStrategy.createMap<E>());
 }

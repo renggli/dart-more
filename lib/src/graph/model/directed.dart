@@ -2,6 +2,7 @@ import '../edge.dart';
 import '../graph.dart';
 import '../strategy.dart';
 
+/// Directed graph implementation using adjacency lists.
 class DirectedGraph<V, E> extends Graph<V, E> {
   DirectedGraph({StorageStrategy<V>? vertexStrategy})
       : this._(vertexStrategy ?? StorageStrategy<V>.defaultStrategy());
@@ -12,10 +13,10 @@ class DirectedGraph<V, E> extends Graph<V, E> {
   final Map<V, VertexWrapper<V, E>> adjacency;
 
   @override
-  final StorageStrategy<V> vertexStrategy;
+  bool get isDirected => true;
 
   @override
-  bool get isDirected => true;
+  final StorageStrategy<V> vertexStrategy;
 
   @override
   Iterable<V> get vertices => adjacency.keys;
@@ -56,10 +57,8 @@ class DirectedGraph<V, E> extends Graph<V, E> {
   }
 
   @override
-  Iterable<V> neighboursOf(V vertex) => {
-        ...predecessorsOf(vertex),
-        ...successorsOf(vertex),
-      };
+  Iterable<V> neighboursOf(V vertex) =>
+      predecessorsOf(vertex).followedBy(successorsOf(vertex));
 
   @override
   Iterable<V> predecessorsOf(V vertex) =>
@@ -97,16 +96,13 @@ class DirectedGraph<V, E> extends Graph<V, E> {
     adjacency[target]?.incoming.remove(source);
   }
 
-  VertexWrapper<V, E> _getVertex(V vertex) => adjacency.putIfAbsent(
-      vertex,
-      () => VertexWrapper<V, E>(
-          vertexStrategy.createMap<E>(), vertexStrategy.createMap<E>()));
+  VertexWrapper<V, E> _getVertex(V vertex) =>
+      adjacency.putIfAbsent(vertex, () => _createVertex(vertex));
+
+  VertexWrapper<V, E> _createVertex(V vertex) => (
+        incoming: vertexStrategy.createMap<E>(),
+        outgoing: vertexStrategy.createMap<E>(),
+      );
 }
 
-class VertexWrapper<V, E> {
-  VertexWrapper(this.incoming, this.outgoing);
-
-  final Map<V, E> incoming;
-
-  final Map<V, E> outgoing;
-}
+typedef VertexWrapper<V, E> = ({Map<V, E> incoming, Map<V, E> outgoing});

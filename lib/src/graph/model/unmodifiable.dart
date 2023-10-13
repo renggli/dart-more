@@ -7,6 +7,7 @@ extension UnmodifiableGraphExtension<V, E> on Graph<V, E> {
       isUnmodifiable ? this : UnmodifiableGraph<V, E>(this);
 }
 
+/// The view of a graph that throws an [UnsupportedError] when modified.
 class UnmodifiableGraph<V, E> extends ForwardingGraph<V, E> {
   UnmodifiableGraph(super.delegate);
 
