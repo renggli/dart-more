@@ -7,8 +7,8 @@ extension AlgorithmsGraphExtension<V, E> on Graph<V, E> {
   /// Performs a search for the shortest path between [source] and [target].
   ///
   /// - [edgeCost] is a function that returns the cost to traverse an edge
-  ///   between two vertices. If no function is provided, the cost is assumed
-  ///   to be constant with a weight of _1_.
+  ///   between two vertices. If no function is provided, the numeric edge
+  ///   value or a constant weight of _1_ is used.
   ///
   /// - [costEstimate] is a function that returns the remaining cost from the
   ///   provided vertex. If an estimate is provided a faster _A*-Search_ is
@@ -24,17 +24,17 @@ extension AlgorithmsGraphExtension<V, E> on Graph<V, E> {
       shortestPathAll(
         source,
         (vertex) => target == vertex,
-        edgeCost: edgeCost,
+        edgeCost: edgeCost ?? _getDefaultEdgeValueOr(1),
         costEstimate: costEstimate,
-        vertexStrategy: vertexStrategy,
+        vertexStrategy: vertexStrategy ?? this.vertexStrategy,
       ).firstOrNull;
 
   /// Performs a search for the shortest paths between [source] and the
   /// [targetPredicate] predicate.
   ///
   /// - [edgeCost] is a function that returns the cost to traverse an edge
-  ///   between two vertices. If no function is provided, the cost is assumed
-  ///   to be constant with a weight of _1_.
+  ///   between two vertices. If no function is provided, the numeric edge
+  ///   value or a constant weight of _1_ is used.
   ///
   /// - [costEstimate] is a function that returns the remaining cost from the
   ///   provided vertex. If an estimate is provided a faster _A*-Search_ is
@@ -52,20 +52,25 @@ extension AlgorithmsGraphExtension<V, E> on Graph<V, E> {
               startVertices: [source],
               targetPredicate: targetPredicate,
               successorsOf: successorsOf,
-              edgeCost: edgeCost,
-              vertexStrategy: vertexStrategy,
+              edgeCost: edgeCost ?? _getDefaultEdgeValueOr(1),
+              vertexStrategy: vertexStrategy ?? this.vertexStrategy,
             )
           : AStarSearchIterable<V>(
               startVertices: [source],
               targetPredicate: targetPredicate,
               successorsOf: successorsOf,
               costEstimate: costEstimate,
-              edgeCost: edgeCost,
-              vertexStrategy: vertexStrategy,
+              edgeCost: edgeCost ?? _getDefaultEdgeValueOr(1),
+              vertexStrategy: vertexStrategy ?? this.vertexStrategy,
             );
 
   /// Returns an object that can compute the maximum flow between different
   /// vertices of this graph using the Dinic max flow algorithm.
+  ///
+  /// - [edgeCapacity] is a function function that returns the positive maximum
+  ///   capacity between two vertices. If no function is provided, the numeric
+  ///   edge value or a constant weight of _1_ is used.
+  ///
   DinicMaxFlow<V> maxFlow({
     num Function(V source, V target)? edgeCapacity,
     StorageStrategy<V>? vertexStrategy,
@@ -73,7 +78,12 @@ extension AlgorithmsGraphExtension<V, E> on Graph<V, E> {
       DinicMaxFlow<V>(
         seedVertices: vertices,
         successorsOf: successorsOf,
-        edgeCapacity: edgeCapacity,
-        vertexStrategy: vertexStrategy,
+        edgeCapacity: edgeCapacity ?? _getDefaultEdgeValueOr(1),
+        vertexStrategy: vertexStrategy ?? this.vertexStrategy,
       );
+
+  num Function(V source, V target) _getDefaultEdgeValueOr(num value) =>
+      this is Graph<V, num>
+          ? (source, target) => getEdge(source, target)!.value as num
+          : constantFunction2(value);
 }

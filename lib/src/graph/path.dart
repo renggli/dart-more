@@ -52,7 +52,9 @@ class Path<V, E> with ToStringPrinter {
             separator: ' → ',
             leadingItems: 3,
             trailingItems: 3,
-            afterPrinter: Printer.literal(' (${vertices.length - 1} edges)')));
+            afterPrinter: Printer.literal(' (${vertices.length - 1} edges)')))
+    ..addValue(this is Path<V, num> ? (this as Path<V, num>).cost : null,
+        name: 'cost', omitNull: true);
 }
 
 extension NumericPathExtension<V> on Path<V, num> {

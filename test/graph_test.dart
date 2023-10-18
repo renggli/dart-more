@@ -39,8 +39,10 @@ Matcher isPath<V, E>({
         .having((path) => path.values.length == path.vertices.length - 1,
             'values (for each edge)', isTrue)
         .having((path) => path.edges, 'edges', edges)
-        .having((path) => cost != anything ? (path as Path<V, num>).cost : num,
-            'cost', cost)
+        .having(
+            (path) => cost != anything ? (path as Path<void, num>).cost : num,
+            'cost',
+            cost)
         .having((path) => path.toString(), 'toString', contains('Path'));
 
 // A basic graph:
@@ -1674,11 +1676,10 @@ void main() {
       });
       test('undirected graph', () {
         expect(
-          dijkstraGraph.shortestPath(1, 5,
-              edgeCost: (source, target) =>
-                  dijkstraGraph.getEdge(source, target)!.value),
-          isPath(source: 1, target: 5, vertices: [1, 3, 6, 5], cost: 20),
-        );
+            dijkstraGraph.shortestPath(1, 5,
+                edgeCost: (source, target) =>
+                    dijkstraGraph.getEdge(source, target)!.value),
+            isPath(source: 1, target: 5, vertices: [1, 3, 6, 5], cost: 20));
         expect(
             dijkstraGraph.shortestPathAll(1, constantFunction1(true),
                 edgeCost: (source, target) =>
@@ -1692,13 +1693,26 @@ void main() {
               isPath(vertices: [1, 3, 4], cost: 20),
             ]));
       });
-      test('undirected graph with default cost', () {
-        expect(
-          dijkstraGraph.shortestPath(1, 5),
-          isPath(source: 1, target: 5, vertices: [1, 6, 5], cost: 2),
-        );
+      test('undirected graph with edge cost', () {
+        expect(dijkstraGraph.shortestPath(1, 5),
+            isPath(source: 1, target: 5, vertices: [1, 3, 6, 5], cost: 20));
         expect(
             dijkstraGraph.shortestPathAll(1, constantFunction1(true)),
+            unorderedEquals([
+              isPath(vertices: [1], cost: 0),
+              isPath(vertices: [1, 2], cost: 7),
+              isPath(vertices: [1, 3], cost: 9),
+              isPath(vertices: [1, 3, 4], cost: 20),
+              isPath(vertices: [1, 3, 6, 5], cost: 20),
+              isPath(vertices: [1, 3, 6], cost: 11),
+            ]));
+      });
+      test('undirected graph with constant cost', () {
+        expect(dijkstraGraph.shortestPath(1, 5, edgeCost: constantFunction2(1)),
+            isPath(source: 1, target: 5, vertices: [1, 6, 5], cost: 2));
+        expect(
+            dijkstraGraph.shortestPathAll(1, constantFunction1(true),
+                edgeCost: constantFunction2(1)),
             unorderedEquals([
               isPath(vertices: [1], cost: 0),
               isPath(vertices: [1, 6], cost: 1),
@@ -1710,12 +1724,13 @@ void main() {
       });
       test('undirected graph with cost estimate', () {
         expect(
-          dijkstraGraph.shortestPath(1, 5,
-              costEstimate: (vertex) => 6 - vertex),
-          isPath(source: 1, target: 5, vertices: [1, 6, 5], cost: 2),
-        );
+            dijkstraGraph.shortestPath(1, 5,
+                edgeCost: constantFunction2(1),
+                costEstimate: (vertex) => 6 - vertex),
+            isPath(source: 1, target: 5, vertices: [1, 6, 5], cost: 2));
         expect(
             dijkstraGraph.shortestPathAll(1, constantFunction1(true),
+                edgeCost: constantFunction2(1),
                 costEstimate: (vertex) => 6 - vertex),
             unorderedEquals([
               isPath(vertices: [1], cost: 0),
@@ -1920,8 +1935,7 @@ void main() {
         graph.addEdge('1', 'E', value: 2);
         graph.addEdge('2', 'E', value: 2);
         graph.addEdge('1', '2', value: 1);
-        final flow =
-            graph.maxFlow(edgeCapacity: (a, b) => graph.getEdge(a, b)!.value);
+        final flow = graph.maxFlow();
         expect(flow('S', 'E'), 4);
         expect(flow('E', 'S'), 0);
       });
@@ -1937,8 +1951,7 @@ void main() {
         graph.addEdge(3, 5, value: 20);
         graph.addEdge(4, 3, value: 7);
         graph.addEdge(4, 5, value: 4);
-        final flow =
-            graph.maxFlow(edgeCapacity: (a, b) => graph.getEdge(a, b)!.value);
+        final flow = graph.maxFlow();
         expect(flow(0, 5), 23);
         expect(flow(5, 0), 0);
       });
@@ -1955,8 +1968,7 @@ void main() {
         graph.addEdge('E', 'B', value: 1);
         graph.addEdge('E', 'G', value: 1);
         graph.addEdge('F', 'G', value: 9);
-        final flow =
-            graph.maxFlow(edgeCapacity: (a, b) => graph.getEdge(a, b)!.value);
+        final flow = graph.maxFlow();
         expect(flow('A', 'G'), 5);
         expect(flow('G', 'A'), 0);
       });
@@ -1970,8 +1982,7 @@ void main() {
         graph.addEdge('c', 'd', value: 10);
         graph.addEdge('d', 'a', value: 5);
         graph.addEdge('d', 't', value: 10);
-        final flow =
-            graph.maxFlow(edgeCapacity: (a, b) => graph.getEdge(a, b)!.value);
+        final flow = graph.maxFlow();
         expect(flow('s', 't'), 14);
         expect(flow('t', 's'), 0);
       });

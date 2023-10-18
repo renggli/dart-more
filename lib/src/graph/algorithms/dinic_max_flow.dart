@@ -61,10 +61,10 @@ class DinicMaxFlow<V> {
     final mappedSource = _mapping[source], mappedTarget = _mapping[target];
     if (mappedSource == null) throw ArgumentError.value(source, 'source');
     if (mappedTarget == null) throw ArgumentError.value(target, 'target');
-    return _findMaxFlow(mappedSource, mappedTarget);
+    return _maxFlow(mappedSource, mappedTarget);
   }
 
-  num _findMaxFlow(_Vertex<V> source, _Vertex<V> target) {
+  num _maxFlow(_Vertex<V> source, _Vertex<V> target) {
     num flow = 0;
     for (final edge in _edges) {
       edge.flow = 0;
