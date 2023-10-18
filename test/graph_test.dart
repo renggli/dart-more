@@ -1928,6 +1928,30 @@ void main() {
       });
     });
     group('max flow', () {
+      test('line with default edge capacity', () {
+        final graph =
+            GraphFactory<String, void>().fromPath(['A', 'B', 'C', 'D']);
+        final flow = graph.maxFlow();
+        expect(flow('A', 'D'), 1);
+      });
+      test('line with custom edge capacity', () {
+        final graph =
+            GraphFactory<String, void>().fromPath(['A', 'B', 'C', 'D']);
+        final flow = graph.maxFlow(edgeCapacity: constantFunction2(2));
+        expect(flow('A', 'D'), 2);
+      });
+      test('line with standard edge capacity', () {
+        final graph = GraphFactory<String, num>(edgeProvider: (a, b) => 3)
+            .fromPath(['A', 'B', 'C', 'D']);
+        final flow = graph.maxFlow();
+        expect(flow('A', 'D'), 3);
+      });
+      test('undirected graph', () {
+        final graph =
+            GraphFactory<int, void>(isDirected: false).ring(vertexCount: 10);
+        final flow = graph.maxFlow();
+        expect(flow(0, 4), 2);
+      });
       test('example 1', () {
         final graph = Graph<String, int>.directed();
         graph.addEdge('S', '1', value: 2);
