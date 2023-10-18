@@ -1,13 +1,9 @@
 import 'package:collection/collection.dart';
 
 import '../../functional.dart';
-import 'graph.dart';
-import 'path.dart';
-import 'search/a_star.dart';
-import 'search/dijkstra.dart';
-import 'strategy.dart';
+import '../../graph.dart';
 
-extension SearchGraphExtension<V, E> on Graph<V, E> {
+extension AlgorithmsGraphExtension<V, E> on Graph<V, E> {
   /// Performs a search for the shortest path between [source] and [target].
   ///
   /// - [edgeCost] is a function that returns the cost to traverse an edge
@@ -67,4 +63,17 @@ extension SearchGraphExtension<V, E> on Graph<V, E> {
               edgeCost: edgeCost,
               vertexStrategy: vertexStrategy,
             );
+
+  /// Returns an object that can compute the maximum flow between different
+  /// vertices of this graph using the Dinic max flow algorithm.
+  DinicMaxFlow<V> maxFlow({
+    num Function(V source, V target)? edgeCapacity,
+    StorageStrategy<V>? vertexStrategy,
+  }) =>
+      DinicMaxFlow<V>(
+        seedVertices: vertices,
+        successorsOf: successorsOf,
+        edgeCapacity: edgeCapacity,
+        vertexStrategy: vertexStrategy,
+      );
 }

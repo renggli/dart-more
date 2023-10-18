@@ -6,14 +6,13 @@ import '../../../functional.dart';
 import '../path.dart';
 import '../strategy.dart';
 
-/// Generalized A-Star search algorithm.
+/// Dijkstra's search algorithm.
 ///
-/// See https://en.wikipedia.org/wiki/A*_search_algorithm.
-class AStarSearchIterable<V> extends IterableBase<Path<V, num>> {
-  AStarSearchIterable({
+/// See https://en.wikipedia.org/wiki/Dijkstra%27s_algorithm.
+class DijkstraSearchIterable<V> extends IterableBase<Path<V, num>> {
+  DijkstraSearchIterable({
     required this.startVertices,
     required this.successorsOf,
-    required this.costEstimate,
     required this.targetPredicate,
     num Function(V source, V target)? edgeCost,
     StorageStrategy<V>? vertexStrategy,
@@ -24,27 +23,23 @@ class AStarSearchIterable<V> extends IterableBase<Path<V, num>> {
   final bool Function(V vertex) targetPredicate;
   final Iterable<V> Function(V vertex) successorsOf;
   final num Function(V source, V target) edgeCost;
-  final num Function(V vertex) costEstimate;
   final StorageStrategy<V> vertexStrategy;
 
   @override
-  Iterator<Path<V, num>> get iterator => _AStarSearchIterator<V>(this);
+  Iterator<Path<V, num>> get iterator => _DijkstraSearchIterator<V>(this);
 }
 
-class _AStarSearchIterator<V> implements Iterator<Path<V, num>> {
-  _AStarSearchIterator(this.iterable)
+class _DijkstraSearchIterator<V> implements Iterator<Path<V, num>> {
+  _DijkstraSearchIterator(this.iterable)
       : states = iterable.vertexStrategy.createMap<_State<V>>() {
     for (final vertex in iterable.startVertices) {
-      final state = _State<V>(
-        vertex: vertex,
-        estimate: iterable.costEstimate(vertex),
-      );
+      final state = _State<V>(vertex: vertex);
       states[vertex] = state;
       todo.add(state);
     }
   }
 
-  final AStarSearchIterable<V> iterable;
+  final DijkstraSearchIterable<V> iterable;
   final Map<V, _State<V>> states;
   final PriorityQueue<_State<V>> todo = PriorityQueue();
 
@@ -64,7 +59,6 @@ class _AStarSearchIterator<V> implements Iterator<Path<V, num>> {
           targetState.parent = sourceState;
           targetState.value = value;
           targetState.total = total;
-          targetState.estimate = total + iterable.costEstimate(target);
           todo.remove(targetState);
           todo.add(targetState);
         }
@@ -93,15 +87,13 @@ class _State<V> implements Comparable<_State<V>> {
     this.parent,
     this.value = 0,
     this.total = 0,
-    this.estimate = double.infinity,
   });
 
   final V vertex;
   _State<V>? parent;
   num value;
   num total;
-  num estimate;
 
   @override
-  int compareTo(_State<V> other) => estimate.compareTo(other.estimate);
+  int compareTo(_State<V> other) => total.compareTo(other.total);
 }

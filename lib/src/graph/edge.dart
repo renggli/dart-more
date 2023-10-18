@@ -30,7 +30,6 @@ class Edge<V, E> with ToStringPrinter {
 
   @override
   ObjectPrinter get toStringPrinter => super.toStringPrinter
-    ..addValue([source, target],
-        printer: Printer<V>.standard().iterable(separator: ' → '))
-    ..addValue(value, name: 'data', omitNull: true);
+    ..addValue('$source → $target')
+    ..addValue(value, name: 'value', omitNull: true);
 }

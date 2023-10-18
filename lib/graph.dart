@@ -1,6 +1,10 @@
 /// Graph-theory objects and algorithms.
 library graph;
 
+export 'src/graph/algorithms.dart' show AlgorithmsGraphExtension;
+export 'src/graph/algorithms/a_star_search.dart' show AStarSearchIterable;
+export 'src/graph/algorithms/dijkstra_search.dart' show DijkstraSearchIterable;
+export 'src/graph/algorithms/dinic_max_flow.dart' show DinicMaxFlow;
 export 'src/graph/edge.dart' show Edge;
 export 'src/graph/factory.dart' show GraphFactory;
 export 'src/graph/factory/atlas.dart' show AtlasGraphFactoryExtension;
@@ -21,9 +25,6 @@ export 'src/graph/operations/connected.dart' show ConnectedGraphExtension;
 export 'src/graph/operations/logical.dart' show LogicalGraphExtension;
 export 'src/graph/operations/map.dart' show MapGraphExtension;
 export 'src/graph/path.dart' show NumericPathExtension, Path;
-export 'src/graph/search.dart' show SearchGraphExtension;
-export 'src/graph/search/a_star.dart' show AStarSearchIterable;
-export 'src/graph/search/dijkstra.dart' show DijkstraSearchIterable;
 export 'src/graph/strategy.dart';
 export 'src/graph/traverse/breadth_first.dart'
     show BreadthFirstGraphExtension, BreadthFirstIterable;
