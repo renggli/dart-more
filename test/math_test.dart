@@ -1,6 +1,7 @@
 // ignore_for_file: deprecated_member_use_from_same_package
 
 import 'dart:math' as math;
+import 'dart:math';
 
 import 'package:more/collection.dart';
 import 'package:more/math.dart';
@@ -121,6 +122,137 @@ void main() {
         }
         expect(current.bitCeil, current);
       }
+    });
+  });
+  group('double', () {
+    group('nextDown', () {
+      double nextDown(double value) {
+        final result = value.nextDown;
+        if (value.isNaN) {
+          expect(result, isNaN);
+        } else if (value == double.negativeInfinity) {
+          expect(result, double.negativeInfinity);
+        } else {
+          expect(result, lessThan(value));
+          expect(result.nextUp, value);
+        }
+        return result;
+      }
+
+      test('basic', () {
+        expect(nextDown(-1.0), -1.0000000000000002);
+        expect(nextDown(1.0), 0.9999999999999999);
+      });
+      test('special', () {
+        expect(nextDown(double.nan), isNaN);
+        expect(nextDown(double.infinity), double.maxFinite);
+        expect(nextDown(double.negativeInfinity), double.negativeInfinity);
+        expect(nextDown(-double.maxFinite), double.negativeInfinity);
+        expect(nextDown(double.minPositive), 0.0);
+        expect(nextDown(0.0), -double.minPositive);
+      });
+      test('stress', () {
+        final random = Random(4678);
+        for (var i = 0; i < 1000; i++) {
+          nextDown(2 *
+              (random.nextDouble() - 0.5) *
+              pow(10, random.nextInt(51) - 25));
+        }
+      });
+    });
+    group('nextUp', () {
+      double nextUp(double value) {
+        final result = value.nextUp;
+        if (value.isNaN) {
+          expect(result, isNaN);
+        } else if (value == double.infinity) {
+          expect(result, double.infinity);
+        } else {
+          expect(result, greaterThan(value));
+          expect(result.nextDown, value);
+        }
+        return result;
+      }
+
+      test('basic', () {
+        expect(nextUp(-1.0), -0.9999999999999999);
+        expect(nextUp(1.0), 1.0000000000000002);
+      });
+      test('special', () {
+        expect(nextUp(double.nan), isNaN);
+        expect(nextUp(double.infinity), double.infinity);
+        expect(nextUp(double.negativeInfinity), -double.maxFinite);
+        expect(nextUp(double.maxFinite), double.infinity);
+        expect(nextUp(-double.minPositive), 0.0);
+        expect(nextUp(0.0), double.minPositive);
+      });
+      test('stress', () {
+        final random = Random(8913);
+        for (var i = 0; i < 1000; i++) {
+          nextUp(2 *
+              (random.nextDouble() - 0.5) *
+              pow(10, random.nextInt(51) - 25));
+        }
+      });
+    });
+    group('ulp', () {
+      double ulp(double value) {
+        final result = value.ulp;
+        if (value.isNaN) {
+          expect(result, isNaN);
+        } else {
+          expect(result, greaterThan(0));
+          expect((-value).ulp, result);
+        }
+        return result;
+      }
+
+      test('basic', () {
+        expect(ulp(1e-52), 1.8546030753437107e-68);
+        expect(ulp(1e-25), 1.1479437019748901e-41);
+        expect(ulp(1e-10), 1.2924697071141057e-26);
+        expect(ulp(0.25), 5.551115123125783e-17);
+        expect(ulp(0.5), 1.1102230246251565e-16);
+        expect(ulp(0.6), 1.1102230246251565e-16);
+        expect(ulp(1), 2.220446049250313e-16);
+        expect(ulp(1e10), 0.0000019073486328125);
+        expect(ulp(1e25), 2147483648.0);
+        expect(ulp(1e52), 1.329227995784916e+36);
+      });
+      test('special', () {
+        expect(ulp(0.0), double.minPositive);
+        expect(ulp(double.nan), isNaN);
+        expect(ulp(double.infinity), double.infinity);
+        expect(ulp(double.negativeInfinity), double.infinity);
+      });
+    });
+    group('nextTowards', () {
+      test('basic', () {
+        expect(-1.0.nextTowards(0.0), -0.9999999999999999);
+        expect(1.0.nextTowards(0.0), 0.9999999999999999);
+      });
+      test('special', () {
+        expect(double.nan.nextTowards(0.0), isNaN);
+        expect(double.infinity.nextTowards(0.0), double.maxFinite);
+        expect(double.negativeInfinity.nextTowards(0.0), -double.maxFinite);
+        expect(0.0.nextTowards(0.0), 0.0);
+      });
+      test('stress', () {
+        final random = Random(8913);
+        for (var i = 0; i < 1000; i++) {
+          final value = 2 *
+              (random.nextDouble() - 0.5) *
+              pow(10, random.nextInt(51) - 25);
+          final result = value.nextTowards(0.0);
+          if (value < 0.0) {
+            expect(result, value.nextUp);
+          } else if (value > 0.0) {
+            expect(result, value.nextDown);
+          } else {
+            expect(result, 0.0);
+          }
+        }
+      });
     });
   });
   group('digits', () {

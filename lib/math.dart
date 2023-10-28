@@ -6,6 +6,7 @@ export 'src/math/binomial.dart'
 export 'src/math/bit.dart' show BitUint32Extension;
 export 'src/math/digits.dart'
     show DigitsBigIntExtension, DigitsIntegerExtension;
+export 'src/math/double.dart' show DoubleExtension;
 export 'src/math/factorial.dart'
     show FactorialBigIntExtension, FactorialIntegerExtension;
 export 'src/math/hyperbolic.dart' show HyperbolicNumberExtension;
