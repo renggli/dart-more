@@ -82,6 +82,8 @@ extension AlgorithmsGraphExtension<V, E> on Graph<V, E> {
         vertexStrategy: vertexStrategy ?? this.vertexStrategy,
       );
 
+  /// Internal helper that returns a function using the numeric edge value
+  /// of this graph, or otherwise a constant value for each edge.
   num Function(V source, V target) _getDefaultEdgeValueOr(num value) =>
       this is Graph<V, num>
           ? (source, target) => getEdge(source, target)!.value as num
