@@ -1,3 +1,5 @@
+// AUTO-GENERATED CODE: DO NOT EDIT
+
 import 'tuple_0.dart';
 import 'tuple_1.dart';
 import 'tuple_2.dart';

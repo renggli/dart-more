@@ -1,3 +1,5 @@
+// AUTO-GENERATED CODE: DO NOT EDIT
+
 import 'package:more/tuple.dart';
 import 'package:test/test.dart';
 

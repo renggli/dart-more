@@ -1,3 +1,5 @@
+// AUTO-GENERATED CODE: DO NOT EDIT
+
 /// Extension methods on [Record] with 7 positional elements.
 extension Tuple7<T1, T2, T3, T4, T5, T6, T7> on (T1, T2, T3, T4, T5, T6, T7) {
   /// List constructor.

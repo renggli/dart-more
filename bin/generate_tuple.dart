@@ -1,7 +1,9 @@
 import 'dart:io';
 import 'dart:math';
 
-import 'package:more/src/collection/iterable/zip.dart';
+import 'package:more/collection.dart';
+
+import '_utils.dart';
 
 /// Ordinal value names.
 const ordinals = [
@@ -19,27 +21,6 @@ const ordinals = [
 
 /// Number of tuples to generate (exclusive).
 final int max = ordinals.length;
-
-/// Generate the variable names.
-List<String> generateValues(int i) => List.generate(i, (i) => '\$${i + 1}');
-
-/// Generate the type names.
-List<String> generateTypes(int i) => List.generate(i, (i) => 'T${i + 1}');
-
-/// Creates an argument list from types or variables.
-String listify(Iterable<String> values) => values.join(', ');
-
-/// Wraps a list of types in generics brackets.
-String generify(Iterable<String> values) =>
-    values.isEmpty ? '' : '<${listify(values)}>';
-
-/// Creates a record type.
-String recordify(Iterable<String> values) =>
-    '(${listify(values)}${values.length == 1 ? ', ' : ''})';
-
-/// Capitalizes the first character of a string.
-String capitalize(String value) =>
-    value.replaceRange(0, 1, value[0].toUpperCase());
 
 /// Export file.
 final File exportFile = File('lib/tuple.dart');
@@ -63,6 +44,8 @@ Future<void> format(File file) async =>
 Future<void> generateExport() async {
   final file = exportFile;
   final out = file.openWrite();
+  generateWarning(out);
+
   out.writeln('/// Tuple extension methods on generic records.');
   out.writeln('library tuple;');
   out.writeln();
@@ -77,6 +60,8 @@ Future<void> generateExport() async {
 Future<void> generateAbstract() async {
   final file = abstractFile;
   final out = file.openWrite();
+  generateWarning(out);
+
   for (var i = 0; i < max; i++) {
     out.writeln('import \'tuple_$i.dart\';');
   }
@@ -105,6 +90,8 @@ Future<void> generateAbstract() async {
 Future<void> generateImplementation(int i) async {
   final file = implementationFile(i);
   final out = file.openWrite();
+  generateWarning(out);
+
   final types = generateTypes(i);
   final values = generateValues(i);
 
@@ -238,6 +225,7 @@ Future<void> generateImplementation(int i) async {
 Future<void> generateTest() async {
   final file = testFile;
   final out = file.openWrite();
+  generateWarning(out);
 
   void nest(String type, String name, void Function() callback) {
     out.writeln('$type(\'$name\', () {');

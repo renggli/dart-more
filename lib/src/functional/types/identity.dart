@@ -1,3 +1,5 @@
+// AUTO-GENERATED CODE: DO NOT EDIT
+
 /// Generic identity functions.
 library identity;
 

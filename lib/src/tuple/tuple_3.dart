@@ -1,3 +1,5 @@
+// AUTO-GENERATED CODE: DO NOT EDIT
+
 /// Extension methods on [Record] with 3 positional elements.
 extension Tuple3<T1, T2, T3> on (T1, T2, T3) {
   /// List constructor.

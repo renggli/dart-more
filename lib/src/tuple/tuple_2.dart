@@ -1,3 +1,5 @@
+// AUTO-GENERATED CODE: DO NOT EDIT
+
 /// Extension methods on [Record] with 2 positional elements.
 extension Tuple2<T1, T2> on (T1, T2) {
   /// List constructor.

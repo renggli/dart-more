@@ -1,3 +1,5 @@
+// AUTO-GENERATED CODE: DO NOT EDIT
+
 /// Extension methods on [Record] with 0 positional elements.
 extension Tuple0 on () {
   /// List constructor.

@@ -1,3 +1,5 @@
+// AUTO-GENERATED CODE: DO NOT EDIT
+
 /// Extension methods on [Record] with 4 positional elements.
 extension Tuple4<T1, T2, T3, T4> on (T1, T2, T3, T4) {
   /// List constructor.

@@ -1,3 +1,5 @@
+// AUTO-GENERATED CODE: DO NOT EDIT
+
 /// Extension methods on [Record] with 6 positional elements.
 extension Tuple6<T1, T2, T3, T4, T5, T6> on (T1, T2, T3, T4, T5, T6) {
   /// List constructor.

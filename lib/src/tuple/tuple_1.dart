@@ -1,3 +1,5 @@
+// AUTO-GENERATED CODE: DO NOT EDIT
+
 /// Extension methods on [Record] with 1 positional element.
 extension Tuple1<T1> on (T1,) {
   /// List constructor.

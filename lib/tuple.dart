@@ -1,3 +1,5 @@
+// AUTO-GENERATED CODE: DO NOT EDIT
+
 /// Tuple extension methods on generic records.
 library tuple;
 
