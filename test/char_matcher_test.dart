@@ -1,33 +1,48 @@
+// ignore_for_file: deprecated_member_use_from_same_package
+
 import 'package:more/char_matcher.dart';
 import 'package:test/test.dart';
 
-void verify(CharMatcher matcher, String included, String excluded) {
-  final positive = matcher;
-  expect(positive.everyOf(included), isTrue);
-  expect(positive.anyOf(excluded), isFalse);
-  expect(positive.toString(), startsWith(positive.runtimeType.toString()));
-  final negative = ~matcher;
-  expect(negative.everyOf(excluded), isTrue);
-  expect(negative.anyOf(included), isFalse);
-  expect(negative.toString(), startsWith(negative.runtimeType.toString()));
+void verify(CharMatcher matcher, String included, String excluded,
+    {bool negate = true}) {
+  for (final iterator = included.runes.iterator; iterator.moveNext();) {
+    expect(matcher.match(iterator.current), isTrue,
+        reason: '${iterator.currentAsString} should match');
+  }
+  for (final iterator = excluded.runes.iterator; iterator.moveNext();) {
+    expect(matcher.match(iterator.current), isFalse,
+        reason: '${iterator.currentAsString} should not match');
+  }
+  expect(matcher.everyOf(included), isTrue,
+      reason: 'all of "$included" should match');
+  expect(matcher.noneOf(excluded), isTrue,
+      reason: 'none of "$excluded" should match');
+  if (negate) verify(~matcher, excluded, included, negate: false);
 }
 
 void main() {
   group('basic', () {
     test('any', () {
-      verify(const CharMatcher.any(), 'abc123_!@#', '');
+      verify(const CharMatcher.any(), 'abc123_!@# 💩', '');
+      verify(const CharMatcher.any(), '👱🧑🏼', '');
     });
     test('none', () {
-      verify(const CharMatcher.none(), '', 'abc123_!@# ');
+      verify(const CharMatcher.none(), '', 'abc123_!@# 💩');
+      verify(const CharMatcher.none(), '', '👱🧑🏼');
     });
     test('isChar', () {
       verify(CharMatcher.isChar('*'), '*', 'abc123_!@# ');
+      verify(CharMatcher.isChar('👱'), '👱', 'abc123_!@# 💩');
     });
     test('isChar number', () {
       verify(CharMatcher.isChar(42), '*', 'abc123_!@# ');
+      verify(CharMatcher.isChar(42.0), '*', 'abc123_!@# ');
     });
     test('isChar invalid', () {
-      expect(() => CharMatcher.isChar('ab'), throwsArgumentError);
+      expect(() => CharMatcher.isChar('ab'), throwsArgumentError,
+          reason: 'multiple characters');
+      expect(() => CharMatcher.isChar('🧑🏼'), throwsArgumentError,
+          reason: 'composite emoji');
     });
     test('inRange', () {
       verify(CharMatcher.inRange('a', 'c'), 'abc', 'def123_!@# ');
@@ -39,15 +54,15 @@ void main() {
       verify(const CharMatcher.digit(), '0123456789', 'abc_!@# ');
     });
     test('letter', () {
-      verify(const CharMatcher.letter(),
+      verify(CharMatcher.letter(),
           'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ', '123_!@# ');
     });
     test('lowerCaseLetter', () {
-      verify(const CharMatcher.lowerCaseLetter(), 'abcdefghijklmnopqrstuvwxyz',
+      verify(CharMatcher.lowerCaseLetter(), 'abcdefghijklmnopqrstuvwxyz',
           'ABCDEFGHIJKLMNOPQRSTUVWXYZ123_!@# ');
     });
     test('upperCaseLetter', () {
-      verify(const CharMatcher.upperCaseLetter(), 'ABCDEFGHIJKLMNOPQRSTUVWXYZ',
+      verify(CharMatcher.upperCaseLetter(), 'ABCDEFGHIJKLMNOPQRSTUVWXYZ',
           'abcdefghijklmnopqrstuvwxyz123_!@# ');
     });
     test('letterOrDigit', () {
@@ -83,7 +98,6 @@ void main() {
         8239,
         8287,
         12288,
-        65279,
       ]);
       verify(const CharMatcher.whitespace(), string, 'abcABC_!@#\u0000');
     });
@@ -158,19 +172,27 @@ void main() {
       verify(
           CharMatcher.pattern('\u0000\uffff'), '\u0000\uffff', '\u0001\ufffe');
     });
+    test('class subtraction', () {
+      verify(CharMatcher.pattern('a-z-[aeiuo]'), 'bcdfghjklmnpqrstvwxyz',
+          '123aeiuo');
+      verify(CharMatcher.pattern('^1234-[3456]'), 'abc7890', '123456');
+      verify(CharMatcher.pattern('0-9-[0-6-[0-3]]'), '0123789', 'abc456');
+    });
   });
   group('operators', () {
     const any = CharMatcher.any();
     const none = CharMatcher.none();
-    const letter = CharMatcher.letter();
+    final letter = CharMatcher.letter();
     const digit = CharMatcher.digit();
     const whitespace = CharMatcher.whitespace();
-    test('~', () {
+    final hex = CharMatcher.pattern('0-9a-f');
+    final even = CharMatcher.pattern('02468');
+    test('~ (negation)', () {
       expect(~any, equals(none));
       expect(~none, equals(any));
       expect(~~whitespace, equals(whitespace));
     });
-    test('|', () {
+    test('| (disjunctive)', () {
       expect(any | letter, equals(any));
       expect(letter | any, equals(any));
       expect(none | letter, equals(letter));
@@ -182,9 +204,29 @@ void main() {
       verify((letter | digit) | whitespace, 'abc123 ', '_!@#');
       verify((letter | digit) | (whitespace | digit), 'abc123 ', '_!@#');
     });
+    test('& (conjunctive)', () {
+      expect(any & letter, equals(letter));
+      expect(letter & any, equals(letter));
+      expect(none & letter, equals(none));
+      expect(letter & none, equals(none));
+      verify(hex & letter, 'abcdef', '012_!@# ');
+      verify(letter & hex, 'abcdef', '012_!@# ');
+      verify(hex & digit & even, '0248', 'abc13_!@# ');
+      verify(hex & (digit & even), '0248', 'abc13_!@# ');
+      verify((hex & digit) & even, '0248', 'abc13_!@# ');
+    });
   });
   group('action', () {
     final star = CharMatcher.isChar('*');
+    test('anyOf', () {
+      expect(star.anyOf(''), isFalse);
+      expect(star.anyOf('a'), isFalse);
+      expect(star.anyOf('*'), isTrue);
+      expect(star.anyOf('ab'), isFalse);
+      expect(star.anyOf('a*'), isTrue);
+      expect(star.anyOf('*b'), isTrue);
+      expect(star.anyOf('**'), isTrue);
+    });
     test('everyOf', () {
       expect(star.everyOf(''), isTrue);
       expect(star.everyOf('a'), isFalse);
@@ -194,14 +236,15 @@ void main() {
       expect(star.everyOf('*b'), isFalse);
       expect(star.everyOf('**'), isTrue);
     });
-    test('anyOf', () {
-      expect(star.anyOf(''), isFalse);
-      expect(star.anyOf('a'), isFalse);
-      expect(star.anyOf('*'), isTrue);
-      expect(star.anyOf('ab'), isFalse);
-      expect(star.anyOf('a*'), isTrue);
-      expect(star.anyOf('*b'), isTrue);
-      expect(star.anyOf('**'), isTrue);
+
+    test('noneOf', () {
+      expect(star.noneOf(''), isTrue);
+      expect(star.noneOf('a'), isTrue);
+      expect(star.noneOf('*'), isFalse);
+      expect(star.noneOf('ab'), isTrue);
+      expect(star.noneOf('a*'), isFalse);
+      expect(star.noneOf('*b'), isFalse);
+      expect(star.noneOf('**'), isFalse);
     });
     test('firstIndexIn', () {
       expect(star.firstIndexIn(''), -1);
@@ -243,6 +286,12 @@ void main() {
       expect(star.collapseFrom('**', ''), '');
       expect(star.collapseFrom('**', '!'), '!');
       expect(star.collapseFrom('**', '!!'), '!!');
+      expect(star.collapseFrom('*a*', ''), 'a');
+      expect(star.collapseFrom('*a*', '!'), '!a!');
+      expect(star.collapseFrom('*a*', '!!'), '!!a!!');
+      expect(star.collapseFrom('**a**', ''), 'a');
+      expect(star.collapseFrom('**a**', '!'), '!a!');
+      expect(star.collapseFrom('**a**', '!!'), '!!a!!');
       expect(star.collapseFrom('a*b*c', ''), 'abc');
       expect(star.collapseFrom('a*b*c', '!'), 'a!b!c');
       expect(star.collapseFrom('a*b*c', '!!'), 'a!!b!!c');
@@ -260,6 +309,12 @@ void main() {
       expect(star.replaceFrom('**', ''), '');
       expect(star.replaceFrom('**', '!'), '!!');
       expect(star.replaceFrom('**', '!!'), '!!!!');
+      expect(star.replaceFrom('*a*', ''), 'a');
+      expect(star.replaceFrom('*a*', '!'), '!a!');
+      expect(star.replaceFrom('*a*', '!!'), '!!a!!');
+      expect(star.replaceFrom('**a**', ''), 'a');
+      expect(star.replaceFrom('**a**', '!'), '!!a!!');
+      expect(star.replaceFrom('**a**', '!!'), '!!!!a!!!!');
       expect(star.replaceFrom('a*b*c', ''), 'abc');
       expect(star.replaceFrom('a*b*c', '!'), 'a!b!c');
       expect(star.replaceFrom('a*b*c', '!!'), 'a!!b!!c');

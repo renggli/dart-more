@@ -12,4 +12,7 @@ class AnyCharMatcher extends CharMatcher {
 
   @override
   CharMatcher operator |(CharMatcher other) => this;
+
+  @override
+  CharMatcher operator &(CharMatcher other) => other;
 }

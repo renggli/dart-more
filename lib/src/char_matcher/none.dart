@@ -12,4 +12,7 @@ class NoneCharMatcher extends CharMatcher {
 
   @override
   CharMatcher operator |(CharMatcher other) => other;
+
+  @override
+  CharMatcher operator &(CharMatcher other) => this;
 }

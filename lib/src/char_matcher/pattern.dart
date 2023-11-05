@@ -2,32 +2,43 @@ import 'char_matcher.dart';
 import 'optimize.dart';
 import 'range.dart';
 
-CharMatcher fromPattern(String pattern) {
-  // Check if negated.
-  final isNegated = pattern.startsWith('^');
-  if (isNegated) {
-    pattern = pattern.substring(1);
-  }
+CharMatcher fromPattern(String input) => _fromPattern(input.runes.toList());
 
-  // Build the range lists.
+CharMatcher _fromPattern(List<int> pattern) {
+  // Negation: ^pattern.
+  final isNegated = pattern.isNotEmpty && _negateMatcher.match(pattern[0]);
+  if (isNegated) pattern = pattern.sublist(1);
+
   final ranges = <RangeCharMatcher>[];
   while (pattern.isNotEmpty) {
-    if (pattern.length >= 3 && pattern[1] == '-') {
-      final charMatcher =
-          RangeCharMatcher(pattern.codeUnitAt(0), pattern.codeUnitAt(2));
-      ranges.add(charMatcher);
-      pattern = pattern.substring(3);
+    if (ranges.isNotEmpty &&
+        pattern.length > 2 &&
+        _rangeMatcher.match(pattern[0]) &&
+        _openMatcher.match(pattern[1]) &&
+        _closeMatcher.match(pattern.last)) {
+      // Subtraction: base-[subtract]
+      final base = _completePattern(ranges, isNegated);
+      final subtract = _fromPattern(pattern.sublist(2, pattern.length - 1));
+      return base & ~subtract;
+    } else if (pattern.length > 2 && _rangeMatcher.match(pattern[1])) {
+      // Ranges: start-stop
+      ranges.add(RangeCharMatcher(pattern[0], pattern[2]));
+      pattern = pattern.sublist(3);
     } else {
-      final charMatcher =
-          RangeCharMatcher(pattern.codeUnitAt(0), pattern.codeUnitAt(0));
-      ranges.add(charMatcher);
-      pattern = pattern.substring(1);
+      // Single character
+      ranges.add(RangeCharMatcher(pattern[0], pattern[0]));
+      pattern = pattern.sublist(1);
     }
   }
+  return _completePattern(ranges, isNegated);
+}
 
-  // Build the matcher from the ranges.
+CharMatcher _completePattern(List<RangeCharMatcher> ranges, bool isNegated) {
   final predicate = optimize(ranges);
-
-  // Negate, if necessary.
   return isNegated ? ~predicate : predicate;
 }
+
+final _negateMatcher = CharMatcher.isChar('^');
+final _rangeMatcher = CharMatcher.isChar('-');
+final _openMatcher = CharMatcher.isChar('[');
+final _closeMatcher = CharMatcher.isChar(']');

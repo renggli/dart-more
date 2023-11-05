@@ -1,6 +1,6 @@
 import 'dart:io';
 
-import '_utils.dart';
+import 'utils.dart';
 
 /// Number of types to generate (exclusive).
 const int max = 11;

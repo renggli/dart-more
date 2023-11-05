@@ -1,5 +1,10 @@
 # Changelog
 
+## 4.1.0
+- `CharMatcher` now works on all unicode code-points, correctly and efficiently matching unicode characters beyond UTF-16 bytes.
+  - Add support for all [Unicode General Categories](https://www.unicode.org/reports/tr44/#General_Category_Values).
+  - Add support for _Character Class Subtraction_ to `CharMatcher.pattern`.
+
 ## 4.0.0
 * Dart 3.0 requirement.
 * Removed deprecated code.

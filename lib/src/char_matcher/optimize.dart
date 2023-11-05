@@ -7,6 +7,7 @@ import 'range.dart';
 import 'ranges.dart';
 import 'single.dart';
 
+/// Creates a [CharMatcher] from a unordered [Iterable] of [RangeCharMatcher].
 CharMatcher optimize(Iterable<RangeCharMatcher> ranges) {
   // Sort the range lists.
   final sortedRanges = List.of(ranges, growable: false);
