@@ -9,7 +9,7 @@ import 'char_set.dart';
 import 'conjunctive.dart';
 import 'digit.dart';
 import 'disjunctive.dart';
-import 'generated/general_categories.dart' as unicode;
+import 'generated/general_categories.dart';
 import 'letter_or_digit.dart';
 import 'negate.dart';
 import 'none.dart';
@@ -61,123 +61,134 @@ abstract class CharMatcher with ToStringPrinter implements Pattern {
   /// A matcher that accepts ASCII characters.
   const factory CharMatcher.ascii() = AsciiCharMatcher;
 
+  /// A matcher that accepts a C0 or C1 control code.
+  const factory CharMatcher.control() = ControlCharMatcher;
+
+  /// A matcher that accepts a format control character.
+  const factory CharMatcher.format() = FormatCharMatcher;
+
+  /// A matcher that accepts a private-use character.
+  const factory CharMatcher.privateUse() = PrivateUseCharMatcher;
+
+  /// A matcher that accepts a surrogate code point.
+  const factory CharMatcher.surrogate() = SurrogateCharMatcher;
+
+  /// A matcher that accepts any unassigned code-point.
+  const factory CharMatcher.unassigned() = UnassignedCharMatcher;
+
   /// A matcher that accepts a lowercase letter.
-  factory CharMatcher.letterLowercase() => unicode.letterLowercase;
+  const factory CharMatcher.letterLowercase() = LetterLowercaseCharMatcher;
 
   /// A matcher that accepts a modifier letter.
-  factory CharMatcher.letterModifier() => unicode.letterModifier;
+  const factory CharMatcher.letterModifier() = LetterModifierCharMatcher;
 
   /// A matcher that accepts other letters, including syllables and ideographs.
-  factory CharMatcher.letterOther() => unicode.letterOther;
+  const factory CharMatcher.letterOther() = LetterOtherCharMatcher;
 
   /// A matcher that accepts a digraph encoded as a single character, with first
   /// part uppercase.
-  factory CharMatcher.letterTitlecase() => unicode.letterTitlecase;
+  const factory CharMatcher.letterTitlecase() = LetterTitlecaseCharMatcher;
 
   /// A matcher that accepts an uppercase letter.
-  factory CharMatcher.letterUppercase() => unicode.letterUppercase;
-
-  ///  A matcher that accept any cased letter.
-  factory CharMatcher.letterCased() => unicode.letterCased;
-
-  /// A matcher that accepts any letter.
-  factory CharMatcher.letter() => unicode.letter;
-
-  /// A matcher that accepts an enclosing combining mark.
-  factory CharMatcher.markEnclosing() => unicode.markEnclosing;
-
-  /// A matcher that accepts a non-spacing combining mark (zero advance width).
-  factory CharMatcher.markNonSpacing() => unicode.markNonSpacing;
+  const factory CharMatcher.letterUppercase() = LetterUppercaseCharMatcher;
 
   /// A matcher that accepts a spacing combining mark (positive advance width).
-  factory CharMatcher.markSpacingCombining() => unicode.markSpacingCombining;
+  const factory CharMatcher.markSpacingCombining() =
+      MarkSpacingCombiningCharMatcher;
 
-  /// A matcher that accepts any mark.
-  factory CharMatcher.mark() => unicode.mark;
+  /// A matcher that accepts an enclosing combining mark.
+  const factory CharMatcher.markEnclosing() = MarkEnclosingCharMatcher;
+
+  /// A matcher that accepts a non-spacing combining mark (zero advance width).
+  const factory CharMatcher.markNonSpacing() = MarkNonSpacingCharMatcher;
 
   /// A matcher that accepts a decimal digit.
-  factory CharMatcher.numberDecimalDigit() => unicode.numberDecimalDigit;
+  const factory CharMatcher.numberDecimalDigit() =
+      NumberDecimalDigitCharMatcher;
 
   /// A matcher that accepts a letter-like numeric character.
-  factory CharMatcher.numberLetter() => unicode.numberLetter;
+  const factory CharMatcher.numberLetter() = NumberLetterCharMatcher;
 
   /// A matcher that accepts a numeric character of other type.
-  factory CharMatcher.numberOther() => unicode.numberOther;
-
-  /// A matcher that accepts any number.
-  factory CharMatcher.number() => unicode.number;
-
-  /// A matcher that accepts a C0 or C1 control code.
-  factory CharMatcher.control() => unicode.control;
-
-  /// A matcher that accepts a format control character.
-  factory CharMatcher.format() => unicode.format;
-
-  /// A matcher that accepts a private-use character.
-  factory CharMatcher.privateUse() => unicode.privateUse;
-
-  /// A matcher that accepts a surrogate code point.
-  factory CharMatcher.surrogate() => unicode.surrogate;
-
-  /// A matcher that accepts a closing punctuation mark.
-  factory CharMatcher.punctuationClose() => unicode.punctuationClose;
+  const factory CharMatcher.numberOther() = NumberOtherCharMatcher;
 
   /// A matcher that accepts a connecting punctuation mark.
-  factory CharMatcher.punctuationConnector() => unicode.punctuationConnector;
+  const factory CharMatcher.punctuationConnector() =
+      PunctuationConnectorCharMatcher;
 
   /// A matcher that accepts a dash or hyphen punctuation mark.
-  factory CharMatcher.punctuationDash() => unicode.punctuationDash;
+  const factory CharMatcher.punctuationDash() = PunctuationDashCharMatcher;
+
+  /// A matcher that accepts a closing punctuation mark.
+  const factory CharMatcher.punctuationClose() = PunctuationCloseCharMatcher;
 
   /// A matcher that accepts a final quotation mark.
-  factory CharMatcher.punctuationFinalQuote() => unicode.punctuationFinalQuote;
+  const factory CharMatcher.punctuationFinalQuote() =
+      PunctuationFinalQuoteCharMatcher;
 
   /// A matcher that accepts an initial quotation mark.
-  factory CharMatcher.punctuationInitialQuote() =>
-      unicode.punctuationInitialQuote;
-
-  /// A matcher that accepts an opening punctuation mark.
-  factory CharMatcher.punctuationOpen() => unicode.punctuationOpen;
+  const factory CharMatcher.punctuationInitialQuote() =
+      PunctuationInitialQuoteCharMatcher;
 
   /// A matcher that accepts a punctuation mark of other type.
-  factory CharMatcher.punctuationOther() => unicode.punctuationOther;
+  const factory CharMatcher.punctuationOther() = PunctuationOtherCharMatcher;
 
-  /// A matcher that accepts any punctuation mark.
-  factory CharMatcher.punctuation() => unicode.punctuation;
-
-  /// A matcher that accepts a line separator.
-  factory CharMatcher.separatorLine() => unicode.separatorLine;
-
-  /// A matcher that accepts a paragraph separator.
-  factory CharMatcher.separatorParagraph() => unicode.separatorParagraph;
-
-  /// A matcher that accepts a space character (of various non-zero widths).
-  factory CharMatcher.separatorSpace() => unicode.separatorSpace;
-
-  // A matcher that accept any space separator.
-  factory CharMatcher.separator() => unicode.separator;
+  /// A matcher that accepts an opening punctuation mark.
+  const factory CharMatcher.punctuationOpen() = PunctuationOpenCharMatcher;
 
   /// A matcher that accepts a currency sign.
-  factory CharMatcher.symbolCurrency() => unicode.symbolCurrency;
-
-  /// A matcher that accepts a symbol of mathematical use.
-  factory CharMatcher.symbolMath() => unicode.symbolMath;
+  const factory CharMatcher.symbolCurrency() = SymbolCurrencyCharMatcher;
 
   /// A matcher that accepts a non-letter-like modifier symbol.
-  factory CharMatcher.symbolModifier() => unicode.symbolModifier;
+  const factory CharMatcher.symbolModifier() = SymbolModifierCharMatcher;
+
+  /// A matcher that accepts a symbol of mathematical use.
+  const factory CharMatcher.symbolMath() = SymbolMathCharMatcher;
 
   /// A matcher that accepts a symbol of other type.
-  factory CharMatcher.symbolOther() => unicode.symbolOther;
+  const factory CharMatcher.symbolOther() = SymbolOtherCharMatcher;
+
+  /// A matcher that accepts a line separator.
+  const factory CharMatcher.separatorLine() = SeparatorLineCharMatcher;
+
+  /// A matcher that accepts a paragraph separator.
+  const factory CharMatcher.separatorParagraph() =
+      SeparatorParagraphCharMatcher;
+
+  /// A matcher that accepts a space character (of various non-zero widths).
+  const factory CharMatcher.separatorSpace() = SeparatorSpaceCharMatcher;
+
+  /// A matcher that accepts other control, format, ... and private characters.
+  const factory CharMatcher.other() = OtherCharMatcher;
+
+  /// A matcher that accepts any letter.
+  const factory CharMatcher.letter() = LetterCharMatcher;
+
+  ///  A matcher that accept any cased letter.
+  const factory CharMatcher.letterCased() = LetterCasedCharMatcher;
+
+  /// A matcher that accepts any mark.
+  const factory CharMatcher.mark() = MarkCharMatcher;
+
+  /// A matcher that accepts any number.
+  const factory CharMatcher.number() = NumberCharMatcher;
+
+  /// A matcher that accepts any punctuation mark.
+  const factory CharMatcher.punctuation() = PunctuationCharMatcher;
 
   /// A matcher that accepts a symbol of any type.
-  factory CharMatcher.symbol() => unicode.symbol;
+  const factory CharMatcher.symbol() = SymbolCharMatcher;
+
+  // A matcher that accept any space separator.
+  const factory CharMatcher.separator() = SeparatorCharMatcher;
 
   /// A matcher that accepts upper-case letters.
   @Deprecated('Use `CharMatcher.letterUppercase` instead.')
-  factory CharMatcher.upperCaseLetter() = CharMatcher.letterUppercase;
+  const factory CharMatcher.upperCaseLetter() = CharMatcher.letterUppercase;
 
   /// A matcher that accepts lower-case letters.
   @Deprecated('Use `CharMatcher.letterLowercase` instead.')
-  factory CharMatcher.lowerCaseLetter() = CharMatcher.letterLowercase;
+  const factory CharMatcher.lowerCaseLetter() = CharMatcher.letterLowercase;
 
   /// A matcher that accepts letters or digits.
   const factory CharMatcher.letterOrDigit() = LetterOrDigitCharMatcher;

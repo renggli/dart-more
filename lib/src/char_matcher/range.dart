@@ -13,6 +13,6 @@ class RangeCharMatcher extends CharMatcher {
 
   @override
   ObjectPrinter get toStringPrinter => super.toStringPrinter
-    ..addValue(start, name: 'start')
-    ..addValue(stop, name: 'stop');
+    ..addValue(start, name: 'start', printer: unicodeCodePointPrinter)
+    ..addValue(stop, name: 'stop', printer: unicodeCodePointPrinter);
 }

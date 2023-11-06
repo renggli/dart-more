@@ -1,17 +1,18 @@
 // ignore_for_file: deprecated_member_use_from_same_package
 
-import 'package:more/char_matcher.dart';
+import 'package:more/more.dart';
 import 'package:test/test.dart';
 
 void verify(CharMatcher matcher, String included, String excluded,
     {bool negate = true}) {
   for (final iterator = included.runes.iterator; iterator.moveNext();) {
     expect(matcher.match(iterator.current), isTrue,
-        reason: '${iterator.currentAsString} should match');
+        reason: '${unicodeCodePointPrinter(iterator.current)} should match');
   }
   for (final iterator = excluded.runes.iterator; iterator.moveNext();) {
     expect(matcher.match(iterator.current), isFalse,
-        reason: '${iterator.currentAsString} should not match');
+        reason:
+            '${unicodeCodePointPrinter(iterator.current)} should not match');
   }
   expect(matcher.everyOf(included), isTrue,
       reason: 'all of "$included" should match');
@@ -54,15 +55,15 @@ void main() {
       verify(const CharMatcher.digit(), '0123456789', 'abc_!@# ');
     });
     test('letter', () {
-      verify(CharMatcher.letter(),
+      verify(const CharMatcher.letter(),
           'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ', '123_!@# ');
     });
     test('lowerCaseLetter', () {
-      verify(CharMatcher.lowerCaseLetter(), 'abcdefghijklmnopqrstuvwxyz',
+      verify(const CharMatcher.lowerCaseLetter(), 'abcdefghijklmnopqrstuvwxyz',
           'ABCDEFGHIJKLMNOPQRSTUVWXYZ123_!@# ');
     });
     test('upperCaseLetter', () {
-      verify(CharMatcher.upperCaseLetter(), 'ABCDEFGHIJKLMNOPQRSTUVWXYZ',
+      verify(const CharMatcher.upperCaseLetter(), 'ABCDEFGHIJKLMNOPQRSTUVWXYZ',
           'abcdefghijklmnopqrstuvwxyz123_!@# ');
     });
     test('letterOrDigit', () {
@@ -105,191 +106,196 @@ void main() {
   group('unicode', () {
     test('control', () {
       verify(
-          CharMatcher.control(),
+          const CharMatcher.control(),
           '\u{13}\u{b}\u{9c}\u{8}\u{11}\u{8d}\u{8a}\u{17}\u{91}\u{10}',
           '012abcABC_!@# ');
     });
     test('format', () {
       verify(
-          CharMatcher.format(),
-          '\u{206a}\u{200c}\u{feff}\u{e0053}\u{200f}\u{e0031}\u{e0030}\u{e0025}\u{e003b}\u{e0022}',
+          const CharMatcher.format(),
+          '\u{206a}\u{200c}\u{feff}\u{e0053}\u{200f}\u{e0031}\u{e0030}',
           '012abcABC_!@# ');
     });
     test('privateUse', () {
       verify(
-          CharMatcher.privateUse(),
-          '\u{f384a}\u{100e70}\u{1010a4}\u{10c920}\u{1090f4}\u{f280d}\u{fccb9}\u{fd730}\u{e25e}\u{105e4a}',
+          const CharMatcher.privateUse(),
+          '\u{f384a}\u{100e70}\u{1010a4}\u{10c920}\u{1090f4}\u{f280d}\u{fccb9}',
           '012abcABC_!@# ');
     });
     test('surrogate', () {
       for (final code in [0xd851, 0xd97c, 0xdcc4, 0xd96c, 0xded6, 0xd948]) {
-        expect(CharMatcher.surrogate().match(code), isTrue);
+        expect(const CharMatcher.surrogate().match(code), isTrue);
       }
+    });
+    test('unassigned', () {
+      verify(const CharMatcher.unassigned(),
+          '\u{0590}\u{05ff}\u{07bf}\u{10fff}', '012ABC_!@# \u{feff}\u{fe70}');
     });
     test('letterLowercase', () {
       // 𝼀, 𝒿, ᵹ, 𐐴, ꞿ, ъ, ꟶ, ꚕ, ꞟ, 𝕤
       verify(
-          CharMatcher.letterLowercase(),
-          '\u{1df00}\u{1d4bf}\u{1d79}\u{10434}\u{a7bf}\u{44a}\u{a7f6}\u{a695}\u{a79f}\u{1d564}',
+          const CharMatcher.letterLowercase(),
+          '\u{1df00}\u{1d4bf}\u{1d79}\u{10434}\u{a7bf}\u{44a}\u{a7f6}\u{a695}',
           '012ABC_!@# ');
     });
     test('letterModifier', () {
       // ߵ, ᶯ, ₖ, ᵢ, 𖭁, 𖿡, 𞁃, ࣉ, ᶩ, ꚝ
       verify(
-          CharMatcher.letterModifier(),
-          '\u{7f5}\u{1daf}\u{2096}\u{1d62}\u{16b41}\u{16fe1}\u{1e043}\u{8c9}\u{1da9}\u{a69d}',
+          const CharMatcher.letterModifier(),
+          '\u{7f5}\u{1daf}\u{2096}\u{1d62}\u{16b41}\u{16fe1}\u{1e043}\u{8c9}',
           '012abcABC_!@# ');
     });
     test('letterOther', () {
       // 𪞉, 鮁, ജ, 𨖫, 䵅, ᗎ, 𤳾, 㢎, 𢓧, 𧫀
       verify(
-          CharMatcher.letterOther(),
-          '\u{2a789}\u{9b81}\u{d1c}\u{285ab}\u{4d45}\u{15ce}\u{24cfe}\u{388e}\u{224e7}\u{27ac0}',
+          const CharMatcher.letterOther(),
+          '\u{2a789}\u{9b81}\u{d1c}\u{285ab}\u{4d45}\u{15ce}\u{24cfe}\u{388e}',
           '012abcABC_!@# ');
     });
     test('letterTitlecase', () {
       // ǅ, ᾞ, ᾫ, ᾮ, ᾙ, ᾌ, ǈ, ᾭ, ᾝ, ᾜ
       verify(
-          CharMatcher.letterTitlecase(),
-          '\u{1c5}\u{1f9e}\u{1fab}\u{1fae}\u{1f99}\u{1f8c}\u{1c8}\u{1fad}\u{1f9d}\u{1f9c}',
+          const CharMatcher.letterTitlecase(),
+          '\u{1c5}\u{1f9e}\u{1fab}\u{1fae}\u{1f99}\u{1f8c}\u{1c8}\u{1fad}',
           '012abcABC_!@# ');
     });
     test('letterUppercase', () {
       // Ɨ, 𐐌, 𝔒, ϔ, Ꮉ, Ⴊ, Ｑ, 𝑵, 𝕳, Ҵ
       verify(
-          CharMatcher.letterUppercase(),
-          '\u{197}\u{1040c}\u{1d512}\u{3d4}\u{13b9}\u{10aa}\u{ff31}\u{1d475}\u{1d573}\u{4b4}',
+          const CharMatcher.letterUppercase(),
+          '\u{197}\u{1040c}\u{1d512}\u{3d4}\u{13b9}\u{10aa}\u{ff31}\u{1d475}',
           '012abc_!@# ');
     });
     test('markSpacingCombining', () {
       // ೖ, 𑤱, 𑧤, 𖽫, 𖽜, 𑶔, 〮, 𑧓, ឿ, ೕ
       verify(
-          CharMatcher.markSpacingCombining(),
-          '\u{cd6}\u{11931}\u{119e4}\u{16f6b}\u{16f5c}\u{11d94}\u{302e}\u{119d3}\u{17bf}\u{cd5}',
+          const CharMatcher.markSpacingCombining(),
+          '\u{cd6}\u{11931}\u{119e4}\u{16f6b}\u{16f5c}\u{11d94}\u{302e}',
           '012abcABC_!@# ');
     });
     test('markEnclosing', () {
       // ⃟, ⃠, ⃝, ꙲, ⃞, ꙱, ҈, ꙰, ⃣, ⃢
       verify(
-          CharMatcher.markEnclosing(),
-          '\u{20df}\u{20e0}\u{20dd}\u{a672}\u{20de}\u{a671}\u{488}\u{a670}\u{20e3}\u{20e2}',
+          const CharMatcher.markEnclosing(),
+          '\u{20df}\u{20e0}\u{20dd}\u{a672}\u{20de}\u{a671}\u{488}\u{a670}',
           '012abcABC_!@# ');
     });
     test('markNonSpacing', () {
       // ఼, ᝳ, ྵ, ᩛ, ꪿, 󠄩, 𑒸, ૿, ۢ, ਂ
       verify(
-          CharMatcher.markNonSpacing(),
-          '\u{c3c}\u{1773}\u{fb5}\u{1a5b}\u{aabf}\u{e0129}\u{114b8}\u{aff}\u{6e2}\u{a02}',
+          const CharMatcher.markNonSpacing(),
+          '\u{c3c}\u{1773}\u{fb5}\u{1a5b}\u{aabf}\u{e0129}\u{114b8}\u{aff}',
           '012abcABC_!@# ');
     });
     test('numberDecimalDigit', () {
       // 𑣦, 𝟖, 𝟟, 𑃴, 🯶, ꘣, 𑇑, ᪙, ๕, ६
       verify(
-          CharMatcher.numberDecimalDigit(),
-          '\u{118e6}\u{1d7d6}\u{1d7df}\u{110f4}\u{1fbf6}\u{a623}\u{111d1}\u{1a99}\u{e55}\u{96c}',
+          const CharMatcher.numberDecimalDigit(),
+          '\u{118e6}\u{1d7d6}\u{1d7df}\u{110f4}\u{1fbf6}\u{a623}\u{111d1}',
           'abcABC_!@# ');
     });
     test('numberLetter', () {
       // ⅵ, 𐍁, 𐏒, 𐅝, 𒐛, ⅴ, 𐅐, ᛮ, 𒑛, 𐅤
       verify(
-          CharMatcher.numberLetter(),
-          '\u{2175}\u{10341}\u{103d2}\u{1015d}\u{1241b}\u{2174}\u{10150}\u{16ee}\u{1245b}\u{10164}',
+          const CharMatcher.numberLetter(),
+          '\u{2175}\u{10341}\u{103d2}\u{1015d}\u{1241b}\u{2174}\u{10150}',
           '012abcABC_!@# ');
     });
     test('numberOther', () {
       // 𞱶, ❷, 𐢧, 𐌢, ൝, ൱, 𑿎, 𐣻, 𐤘, 𞣏
       verify(
-          CharMatcher.numberOther(),
-          '\u{1ec76}\u{2777}\u{108a7}\u{10322}\u{d5d}\u{d71}\u{11fce}\u{108fb}\u{10918}\u{1e8cf}',
+          const CharMatcher.numberOther(),
+          '\u{1ec76}\u{2777}\u{108a7}\u{10322}\u{d5d}\u{d71}\u{11fce}',
           '012abcABC_!@# ');
     });
     test('punctuationConnector', () {
       // ︴, _, ﹎, ﹍, ⁔, ⁀, ﹏, ＿, ‿, ︳
       verify(
-          CharMatcher.punctuationConnector(),
-          '\u{fe34}\u{5f}\u{fe4e}\u{fe4d}\u{2054}\u{2040}\u{fe4f}\u{ff3f}\u{203f}\u{fe33}',
+          const CharMatcher.punctuationConnector(),
+          '\u{fe34}\u{5f}\u{fe4e}\u{fe4d}\u{2054}\u{2040}\u{fe4f}\u{ff3f}',
           '012abcABC!@# ');
     });
     test('punctuationDash', () {
       // ⸗, ᠆, ⸚, 〜, 〰, ―, ⹀, —, ⸻, 𐺭
       verify(
-          CharMatcher.punctuationDash(),
-          '\u{2e17}\u{1806}\u{2e1a}\u{301c}\u{3030}\u{2015}\u{2e40}\u{2014}\u{2e3b}\u{10ead}',
+          const CharMatcher.punctuationDash(),
+          '\u{2e17}\u{1806}\u{2e1a}\u{301c}\u{3030}\u{2015}\u{2e40}\u{2014}',
           '012abcABC_!@# ');
     });
     test('punctuationClose', () {
       // 〞, ⁾, ❩, ⧽, ）, 』, ⁆, ︶, ⦔, ⟧
       verify(
-          CharMatcher.punctuationClose(),
-          '\u{301e}\u{207e}\u{2769}\u{29fd}\u{ff09}\u{300f}\u{2046}\u{fe36}\u{2994}\u{27e7}',
+          const CharMatcher.punctuationClose(),
+          '\u{301e}\u{207e}\u{2769}\u{29fd}\u{ff09}\u{300f}\u{2046}\u{fe36}',
           '012abcABC_!@# ');
     });
     test('punctuationFinalQuote', () {
       // ⸍, ⸃, ⸝, ›, ⸊, ⸡, ⸅, ’, ”, »
       verify(
-          CharMatcher.punctuationFinalQuote(),
-          '\u{2e0d}\u{2e03}\u{2e1d}\u{203a}\u{2e0a}\u{2e21}\u{2e05}\u{2019}\u{201d}\u{bb}',
+          const CharMatcher.punctuationFinalQuote(),
+          '\u{2e0d}\u{2e03}\u{2e1d}\u{203a}\u{2e0a}\u{2e21}\u{2e05}\u{2019}',
           '012abcABC_!@# ');
     });
     test('punctuationInitialQuote', () {
       // ⸌, ‟, ⸜, «, ⸂, ⸉, ⸄, ‹, ⸠, “
       verify(
-          CharMatcher.punctuationInitialQuote(),
-          '\u{2e0c}\u{201f}\u{2e1c}\u{ab}\u{2e02}\u{2e09}\u{2e04}\u{2039}\u{2e20}\u{201c}',
+          const CharMatcher.punctuationInitialQuote(),
+          '\u{2e0c}\u{201f}\u{2e1c}\u{ab}\u{2e02}\u{2e09}\u{2e04}\u{2039}',
           '012abcABC_!@# ');
     });
     test('punctuationOther', () {
       // ⳻, ᠊, ။, ᪩, 𑗕, ¶, ࠺, 𖺗, ꩝, '
       verify(
-          CharMatcher.punctuationOther(),
-          '\u{2cfb}\u{180a}\u{104b}\u{1aa9}\u{115d5}\u{b6}\u{83a}\u{16e97}\u{aa5d}\u{27}',
+          const CharMatcher.punctuationOther(),
+          '\u{2cfb}\u{180a}\u{104b}\u{1aa9}\u{115d5}\u{b6}\u{83a}\u{16e97}',
           '012abcABC_ ');
     });
     test('punctuationOpen', () {
       // ︿, ︵, ⸦, ⹂, 〝, ⸨, ❰, ｟, ⹙, 〈
       verify(
-          CharMatcher.punctuationOpen(),
-          '\u{fe3f}\u{fe35}\u{2e26}\u{2e42}\u{301d}\u{2e28}\u{2770}\u{ff5f}\u{2e59}\u{2329}',
+          const CharMatcher.punctuationOpen(),
+          '\u{fe3f}\u{fe35}\u{2e26}\u{2e42}\u{301d}\u{2e28}\u{2770}\u{ff5f}',
           '012abcABC_!@# ');
     });
     test('symbolCurrency', () {
       // $, £, ￡, ₻, ₿, ₠, €, ₵, ﹩, ￥
       verify(
-          CharMatcher.symbolCurrency(),
-          '\u{24}\u{a3}\u{ffe1}\u{20bb}\u{20bf}\u{20a0}\u{20ac}\u{20b5}\u{fe69}\u{ffe5}',
+          const CharMatcher.symbolCurrency(),
+          '\u{24}\u{a3}\u{ffe1}\u{20bb}\u{20bf}\u{20a0}\u{20ac}\u{20b5}',
           '012abcABC_!@# ');
     });
     test('symbolModifier', () {
       // ꜋, ˫, `, ﮷, ꜕, ﯀, ᾿, ˓, ꜖, ῎
       verify(
-          CharMatcher.symbolModifier(),
-          '\u{a70b}\u{2eb}\u{60}\u{fbb7}\u{a715}\u{fbc0}\u{1fbf}\u{2d3}\u{a716}\u{1fce}',
+          const CharMatcher.symbolModifier(),
+          '\u{a70b}\u{2eb}\u{60}\u{fbb7}\u{a715}\u{fbc0}\u{1fbf}\u{2d3}',
           '012abcABC_!@# ');
     });
     test('symbolMath', () {
       // ⊺, ≎, ≫, ＋, ⊚, ⨜, ⩙, ⬽, ⏜, ⩑
       verify(
-          CharMatcher.symbolMath(),
-          '\u{22ba}\u{224e}\u{226b}\u{ff0b}\u{229a}\u{2a1c}\u{2a59}\u{2b3d}\u{23dc}\u{2a51}',
+          const CharMatcher.symbolMath(),
+          '\u{22ba}\u{224e}\u{226b}\u{ff0b}\u{229a}\u{2a1c}\u{2a59}\u{2b3d}',
           '012abcABC_!@# ');
     });
     test('symbolOther', () {
       // 𝈷, ╖, 🌾, 𐅹, ☛, 🀟, 🀛, ⍰, 𝉁, 𐆜
       verify(
-          CharMatcher.symbolOther(),
-          '\u{1d237}\u{2556}\u{1f33e}\u{10179}\u{261b}\u{1f01f}\u{1f01b}\u{2370}\u{1d241}\u{1019c}',
+          const CharMatcher.symbolOther(),
+          '\u{1d237}\u{2556}\u{1f33e}\u{10179}\u{261b}\u{1f01f}\u{1f01b}',
           '012abcABC_!@# ');
     });
     test('separatorLine', () {
-      verify(CharMatcher.separatorLine(), '\u{2028}', '012abcABC_!@# ');
+      verify(const CharMatcher.separatorLine(), '\u{2028}', '012abcABC_!@# ');
     });
     test('separatorParagraph', () {
-      verify(CharMatcher.separatorParagraph(), '\u{2029}', '012abcABC_!@# ');
+      verify(
+          const CharMatcher.separatorParagraph(), '\u{2029}', '012abcABC_!@# ');
     });
     test('separatorSpace', () {
       verify(
-          CharMatcher.separatorSpace(),
-          '\u{2008}\u{2007}\u{202f}\u{2005}\u{2000}\u{2001}\u{2006}\u{2002}\u{2004}\u{2009}',
+          const CharMatcher.separatorSpace(),
+          '\u{2008}\u{2007}\u{202f}\u{2005}\u{2000}\u{2001}\u{2006}\u{2002}',
           '012abcABC_!@#');
     });
   });
@@ -376,7 +382,7 @@ void main() {
   group('operators', () {
     const any = CharMatcher.any();
     const none = CharMatcher.none();
-    final letter = CharMatcher.letter();
+    const letter = CharMatcher.letter();
     const digit = CharMatcher.digit();
     const whitespace = CharMatcher.whitespace();
     final hex = CharMatcher.pattern('0-9a-f');
