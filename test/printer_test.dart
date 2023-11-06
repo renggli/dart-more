@@ -1806,4 +1806,23 @@ void main() {
       expect(printer.toString(), startsWith('ObjectPrinter<(int, int)>'));
     });
   });
+  group('unicode', () {
+    test('basic', () {
+      expect(unicodeCodePointPrinter(76), 'U+004C "L"');
+      expect(unicodeCodePointPrinter(82), 'U+0052 "R"');
+    });
+    test('emoji', () {
+      expect(unicodeCodePointPrinter(128579), 'U+1F643 "🙃"');
+      expect(unicodeCodePointPrinter(128572), 'U+1F63C "😼"');
+    });
+    test('unprintable', () {
+      expect(unicodeCodePointPrinter(0), 'U+0000');
+      expect(unicodeCodePointPrinter(133), 'U+0085');
+      expect(unicodeCodePointPrinter(55624), 'U+D948');
+    });
+    test('invalid', () {
+      expect(unicodeCodePointPrinter(-1), 'U-0001 (invalid)');
+      expect(unicodeCodePointPrinter(1114112), 'U+110000 (invalid)');
+    });
+  });
 }

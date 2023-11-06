@@ -13,6 +13,7 @@ export 'src/printer/number/numeral.dart' show NumeralSystem;
 export 'src/printer/number/ordinal.dart' show OrdinalNumberPrinter;
 export 'src/printer/number/scientific.dart' show ScientificNumberPrinter;
 export 'src/printer/number/sign.dart' show SignNumberPrinter;
+export 'src/printer/number/unicode.dart' show unicodeCodePointPrinter;
 export 'src/printer/object/field.dart' show FieldPrinter;
 export 'src/printer/object/object.dart' show ObjectPrinter;
 export 'src/printer/object/type.dart' show TypePrinter;
