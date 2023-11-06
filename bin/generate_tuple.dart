@@ -3,7 +3,7 @@ import 'dart:math';
 
 import 'package:more/collection.dart';
 
-import 'utils.dart';
+import 'utils/generating.dart';
 
 /// Ordinal value names.
 const ordinals = [
