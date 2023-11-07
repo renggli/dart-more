@@ -43,5 +43,4 @@ String recordify(Iterable<String> values) =>
     '(${listify(values)}${values.length == 1 ? ', ' : ''})';
 
 /// Capitalizes the first character of a string.
-String capitalize(String value) =>
-    value.replaceRange(0, 1, value[0].toUpperCase());
+String capitalize(String value) => value.toUpperCaseFirstCharacter();

@@ -3,77 +3,36 @@ import 'dart:io';
 
 import 'package:more/collection.dart';
 
-/// Unicode database: https://www.unicode.org/versions/latest
-
 /// Version of the data.
 const unicodeVersion = '15.1.0';
 
 /// Last unicode code-point.
 const unicodeMaxCodePoint = 0x10ffff;
 
-/// Url of the unicode data.
-final unicodeDataUrl = Uri.parse(
-    'https://www.unicode.org/Public/$unicodeVersion/ucd/UnicodeData.txt');
+/// URLs of the unicode data.
+final unicodePropertyListUrl = Uri.parse(
+    'https://www.unicode.org/Public/$unicodeVersion/ucd/PropList.txt');
+final unicodeCategoryListUrl = Uri.parse(
+    'https://www.unicode.org/Public/$unicodeVersion/ucd/extracted/DerivedGeneralCategory.txt');
 
-/// Datatype describing an unicode character.
-typedef UnicodeChar = ({
-  int code,
-  String name,
-  String generalCategory,
-});
-
-/// Future to the unicode database sorted by character code.
-final unicodeData = _fetchUnicodeData(unicodeDataUrl);
-
-/// Helper to fetch and parse the unicode database.
-Future<List<UnicodeChar>> _fetchUnicodeData(Uri uri) async {
-  final request = await HttpClient().getUrl(unicodeDataUrl);
+/// Reads a Unicode file of the form `START[..STOP] ; NAME` into a
+/// [ListMultimap] with `NAME` as key to its values.
+Future<ListMultimap<String, (int, int)>> getPropertyData(Uri uri) async {
+  final request = await HttpClient().getUrl(uri);
   final response = await request.close();
-  final lines = await response
+  return response
       .transform(utf8.decoder)
       .transform(const LineSplitter())
-      .map((line) => line.split(';'))
-      .toList();
-  final lineIterator = lines.iterator;
-  final results = <UnicodeChar>[];
-  while (lineIterator.moveNext()) {
-    final codeStart = int.parse(lineIterator.current[0], radix: 16);
-    if (results.isNotEmpty) {
-      for (var code = results.last.code + 1; code < codeStart; code++) {
-        results.add((code: code, name: '<unassigned>', generalCategory: 'Cn'));
-      }
-    }
-    var codeEnd = codeStart;
-    var name = lineIterator.current[1];
-    final generalCategory = lineIterator.current[2];
-    if (name.endsWith(', First>')) {
-      lineIterator.moveNext();
-      name = name.removePrefix('<').removeSuffix(', First>');
-      codeEnd = int.parse(lineIterator.current[0], radix: 16);
-    }
-    for (var code = codeStart; code <= codeEnd; code++) {
-      results.add((code: code, name: name, generalCategory: generalCategory));
-    }
-  }
-  for (var code = results.last.code + 1; code < unicodeMaxCodePoint; code++) {
-    results.add((code: code, name: '<unassigned>', generalCategory: 'Cn'));
-  }
-  return results;
-}
-
-/// Generates a list of unicode code-point ranges satisfying the filter.
-Future<List<int>> filterUnicodeData(bool Function(UnicodeChar) filter) async {
-  final result = <int>[];
-  final data = await unicodeData;
-  for (final character in data.where(filter).toList()) {
-    if (result.isNotEmpty && result.last == character.code - 1) {
-      result.last = character.code;
-    } else {
-      result.add(character.code);
-      result.add(character.code);
-    }
-  }
-  return result;
+      .map((line) => line.takeTo('#').trim())
+      .where((line) => line.isNotEmpty)
+      .fold<ListMultimap<String, (int, int)>>(
+          ListMultimap<String, (int, int)>(), (result, line) {
+    final [values, name] = line.split(';').map((each) => each.trim()).toList();
+    final range =
+        values.split('..').map((each) => int.parse(each, radix: 16)).toList();
+    result.add(name, (range.first, range.last));
+    return result;
+  });
 }
 
 /// Encodes a list of integers using run-length encoding. A negative number
