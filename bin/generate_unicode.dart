@@ -75,7 +75,7 @@ Future<void> generateGeneralCategory() async {
   final out = file.openWrite();
   generateWarning(out);
 
-  out.writeln('import \'../unicode.dart\';');
+  out.writeln('import \'../classifiers/unicode.dart\';');
   out.writeln();
 
   for (final MapEntry(key: abbr, value: desc) in generalCategories.entries) {
@@ -99,8 +99,8 @@ Future<void> generateGeneralCategory() async {
     out.writeln();
   }
 
-  out.writeln(
-      '// RLE encoded general category mask for each unicode character.');
+  out.writeln('// RLE encoded general category mask from Unicode '
+      '$unicodeVersion.');
   out.writeln('const generalCategoriesLength = ${hex(mask.length)};');
   out.writeln('const generalCategories = [');
   out.writeln('${rle(mask).join(', ')} //'.wrap(78).indent('  '));

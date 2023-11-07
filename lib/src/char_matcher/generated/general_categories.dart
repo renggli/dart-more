@@ -192,7 +192,7 @@ class SeparatorCharMatcher extends UnicodeCharMatcher {
   const SeparatorCharMatcher() : super(0x38000000);
 }
 
-// RLE encoded general category mask for each unicode character.
+// RLE encoded general category mask from Unicode 15.1.0.
 const generalCategoriesLength = 0x10ffff;
 const generalCategories = [
   -32, 1, 536870912, -3, 2097152, 8388608, -3, 2097152, 4194304, 262144,
