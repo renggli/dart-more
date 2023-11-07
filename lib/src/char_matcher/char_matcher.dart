@@ -1,5 +1,5 @@
 import 'package:collection/collection.dart';
-import 'package:meta/meta.dart' show immutable;
+import 'package:meta/meta.dart' show immutable, nonVirtual;
 
 import '../../printer.dart';
 import 'basic/range.dart';
@@ -56,6 +56,18 @@ abstract class CharMatcher with ToStringPrinter implements Pattern {
   factory CharMatcher.charSet(String chars) => fromCharSet(chars);
 
   /// A matcher that accepts a regular expression character class.
+  ///
+  /// Characters match themselves. A dash `-` between two characters matches the
+  /// range of those characters. A caret `^` at the beginning negates the pattern.
+  /// `-[pattern]` at the end of the pattern, subtracts the pattern within the
+  /// square brackets.
+  ///
+  /// For example, the pattern `pattern('aou')` accepts the character 'a', 'o',
+  /// or 'u', and fails for any other input. The `pattern('1-3')` accepts either
+  /// '1', '2', or '3'; and fails for any other character. The `pattern('^aou')`
+  /// accepts any character, but fails for the characters 'a', 'o', or 'u'. The
+  /// `pattern('a-z-[aeiou]')` accepts lower-case letters, but fails for
+  /// consonants.
   factory CharMatcher.pattern(String pattern) => fromPattern(pattern);
 
   /// A matcher that accepts ASCII characters.
@@ -225,8 +237,16 @@ abstract class CharMatcher with ToStringPrinter implements Pattern {
         _ => ConjunctiveCharMatcher([this, other])
       };
 
-  /// Determines if the given Unicode code-point [value] belongs to this
+  /// Determines if the given Unicode code-point `value` belongs to this
+  /// character class. See [match] for details.
+  @nonVirtual
+  bool call(int value) => match(value);
+
+  /// Determines if the given Unicode code-point `value` belongs to this
   /// character class.
+  ///
+  /// The behavior is undefined if the value is outside of the valid unicode
+  /// code range.
   bool match(int value);
 
   /// Returns `true` if the [sequence] contains only matching characters.

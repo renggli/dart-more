@@ -5,32 +5,34 @@ import 'package:test/test.dart';
 
 void verify(CharMatcher matcher, String included, String excluded,
     {bool negate = true}) {
+  // Test inclusion and exclusion.
   for (final iterator = included.runes.iterator; iterator.moveNext();) {
-    expect(matcher.match(iterator.current), isTrue,
+    expect(matcher(iterator.current), isTrue,
         reason: '${unicodeCodePointPrinter(iterator.current)} should match');
   }
   for (final iterator = excluded.runes.iterator; iterator.moveNext();) {
-    expect(matcher.match(iterator.current), isFalse,
+    expect(matcher(iterator.current), isFalse,
         reason:
             '${unicodeCodePointPrinter(iterator.current)} should not match');
   }
+  // Test basic operators.
   expect(matcher.everyOf(included), isTrue,
       reason: 'all of "$included" should match');
   expect(matcher.noneOf(excluded), isTrue,
       reason: 'none of "$excluded" should match');
+  expect(matcher.countIn(included), included.runes.length);
+  expect(matcher.replaceFrom(included, ''), '');
+  expect(matcher.removeFrom(included), '');
+  expect(matcher.retainFrom(included), included);
+  expect(matcher.trimLeadingFrom(included), '');
+  expect(matcher.trimTailingFrom(included), '');
+  expect(matcher.toString(), startsWith(matcher.runtimeType.toString()));
+  // Negated version of the matcher.
   if (negate) verify(~matcher, excluded, included, negate: false);
 }
 
 void main() {
   group('basic', () {
-    test('any', () {
-      verify(const CharMatcher.any(), 'abc123_!@# 💩', '');
-      verify(const CharMatcher.any(), '👱🧑🏼', '');
-    });
-    test('none', () {
-      verify(const CharMatcher.none(), '', 'abc123_!@# 💩');
-      verify(const CharMatcher.none(), '', '👱🧑🏼');
-    });
     test('isChar', () {
       verify(CharMatcher.isChar('*'), '*', 'abc123_!@# ');
       verify(CharMatcher.isChar('👱'), '👱', 'abc123_!@# 💩');
@@ -295,7 +297,53 @@ void main() {
     test('separatorSpace', () {
       verify(
           const CharMatcher.separatorSpace(),
-          '\u{2008}\u{2007}\u{202f}\u{2005}\u{2000}\u{2001}\u{2006}\u{2002}',
+          ' \u{2008}\u{2007}\u{202f}\u{2005}\u{2000}\u{2001}\u{2006}\u{2002}',
+          '012abcABC_!@#');
+    });
+    test('other', () {
+      verify(
+          const CharMatcher.other(),
+          '\u{13}\u{b}\u{206a}\u{200c}\u{f384a}\u{100e70}\u{07bf}\u{10fff}',
+          '012abcABC_!@# ');
+    });
+    test('letter', () {
+      verify(
+          const CharMatcher.letter(),
+          '\u{1df00}\u{1daf}\u{9b81}\u{1fab}\u{3d4}\u{24cfe}\u{388e}',
+          '012_!@# ');
+    });
+    test('letterCased', () {
+      verify(
+          const CharMatcher.letterCased(),
+          '\u{1fae}\u{1f99}\u{3d4}\u{13b9}\u{10aa}\u{10434}\u{a7bf}',
+          '\u{d1c}\u{285ab}\u{2096}\u{1d62}012_!@# ');
+    });
+    test('mark', () {
+      verify(
+          const CharMatcher.mark(),
+          '\u{16f6b}\u{16f5c}\u{a672}\u{20de}\u{1a5b}\u{aabf}',
+          '012abcABC_!@# ');
+    });
+    test('number', () {
+      verify(
+          const CharMatcher.number(),
+          '\u{110f4}\u{1fbf6}\u{103d2}\u{1015d}\u{1015d}\u{d5d}\u{d71}',
+          'abcABC_!@# ');
+    });
+    test('punctuation', () {
+      verify(const CharMatcher.punctuation(),
+          '\u{2040}\u{2015}\u{300f}\u{2e0a}\u{ab}\u{115d5}\u{301d}', 'abcABC ');
+    });
+    test('symbol', () {
+      verify(
+          const CharMatcher.symbol(),
+          '\u{20bb}\u{20bf}\u{fbb7}\u{a715}\u{ff0b}\u{229a}\u{10179}\u{261b}',
+          'abcABC_!@# ');
+    });
+    test('separator', () {
+      verify(
+          const CharMatcher.separator(),
+          ' \u{2028}\u{2029}\u{202f}\u{2005}\u{2000}\u{2001}\u{2006}\u{2002}',
           '012abcABC_!@#');
     });
   });
@@ -387,6 +435,14 @@ void main() {
     const whitespace = CharMatcher.whitespace();
     final hex = CharMatcher.pattern('0-9a-f');
     final even = CharMatcher.pattern('02468');
+    test('any', () {
+      verify(any, 'abc123_!@# 💩', '');
+      verify(any, '👱🧑🏼', '');
+    });
+    test('none', () {
+      verify(none, '', 'abc123_!@# 💩');
+      verify(none, '', '👱🧑🏼');
+    });
     test('~ (negation)', () {
       expect(~any, equals(none));
       expect(~none, equals(any));
