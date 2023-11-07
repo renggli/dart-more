@@ -1,6 +1,6 @@
 // AUTO-GENERATED CODE: DO NOT EDIT
 
-import '../unicode.dart';
+import '../classifiers/unicode.dart';
 
 // Cc: Control
 class ControlCharMatcher extends UnicodeCharMatcher {

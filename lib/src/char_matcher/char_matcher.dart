@@ -2,21 +2,21 @@ import 'package:collection/collection.dart';
 import 'package:meta/meta.dart' show immutable;
 
 import '../../printer.dart';
-import 'any.dart';
-import 'ascii.dart';
+import 'basic/range.dart';
+import 'basic/single.dart';
 import 'char_match.dart';
-import 'char_set.dart';
-import 'conjunctive.dart';
-import 'digit.dart';
-import 'disjunctive.dart';
+import 'classifiers/ascii.dart';
+import 'classifiers/char_set.dart';
+import 'classifiers/digit.dart';
+import 'classifiers/letter_or_digit.dart';
+import 'classifiers/pattern.dart';
+import 'classifiers/whitespace.dart';
 import 'generated/general_categories.dart';
-import 'letter_or_digit.dart';
-import 'negate.dart';
-import 'none.dart';
-import 'pattern.dart';
-import 'range.dart';
-import 'single.dart';
-import 'whitespace.dart';
+import 'operators/any.dart';
+import 'operators/conjunctive.dart';
+import 'operators/disjunctive.dart';
+import 'operators/negate.dart';
+import 'operators/none.dart';
 
 /// Abstract character matcher function.
 ///

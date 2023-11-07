@@ -1,6 +1,6 @@
-import 'char_matcher.dart';
+import '../basic/range.dart';
+import '../char_matcher.dart';
 import 'optimize.dart';
-import 'range.dart';
 
 CharMatcher fromPattern(String input) => _fromPattern(input.runes.toList());
 

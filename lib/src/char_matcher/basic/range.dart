@@ -1,5 +1,5 @@
-import '../../printer.dart';
-import 'char_matcher.dart';
+import '../../../printer.dart';
+import '../char_matcher.dart';
 
 class RangeCharMatcher extends CharMatcher {
   const RangeCharMatcher(this.start, this.stop)

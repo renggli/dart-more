@@ -1,6 +1,6 @@
-import '../../printer.dart';
-import '../collection/bitlist.dart';
-import 'char_matcher.dart';
+import '../../../printer.dart';
+import '../../collection/bitlist.dart';
+import '../char_matcher.dart';
 
 class LookupCharMatcher extends CharMatcher {
   const LookupCharMatcher(this.start, this.stop, this.buffer);

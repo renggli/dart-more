@@ -1,5 +1,5 @@
-import '../../printer.dart';
-import 'char_matcher.dart';
+import '../../../printer.dart';
+import '../char_matcher.dart';
 
 class NegateCharMatcher extends CharMatcher {
   const NegateCharMatcher(this.matcher);

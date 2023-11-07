@@ -1,11 +1,11 @@
-import '../collection/bitlist.dart';
-import 'any.dart';
-import 'char_matcher.dart';
-import 'lookup.dart';
-import 'none.dart';
-import 'range.dart';
-import 'ranges.dart';
-import 'single.dart';
+import '../../collection/bitlist.dart';
+import '../basic/lookup.dart';
+import '../basic/range.dart';
+import '../basic/ranges.dart';
+import '../basic/single.dart';
+import '../char_matcher.dart';
+import '../operators/any.dart';
+import '../operators/none.dart';
 
 /// Creates a [CharMatcher] from a unordered [Iterable] of [RangeCharMatcher].
 CharMatcher optimize(Iterable<RangeCharMatcher> ranges) {

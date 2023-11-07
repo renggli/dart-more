@@ -1,7 +1,7 @@
 import 'dart:typed_data';
 
-import 'char_matcher.dart';
-import 'generated/general_categories.dart' as generated;
+import '../char_matcher.dart';
+import '../generated/general_categories.dart' as generated;
 
 class UnicodeCharMatcher extends CharMatcher {
   const UnicodeCharMatcher(this.mask);
@@ -9,10 +9,7 @@ class UnicodeCharMatcher extends CharMatcher {
   final int mask;
 
   @override
-  bool match(int value) =>
-      0 <= value &&
-      value < generalCategories.length &&
-      generalCategories[value] & mask != 0;
+  bool match(int value) => generalCategories[value] & mask != 0;
 }
 
 final generalCategories = (() {
