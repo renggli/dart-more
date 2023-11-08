@@ -7,7 +7,9 @@ import 'property.dart' as property;
 /// Character matcher function that classifies characters using official Unicode
 /// categories and properties.
 class UnicodeCharMatcher extends CharMatcher {
-  const UnicodeCharMatcher(this.data, this.mask);
+  const UnicodeCharMatcher(this.data, this.mask)
+      : assert(data.length == _unicodeCharCount),
+        assert(mask <= 0xffffffff);
 
   /// General Category
   factory UnicodeCharMatcher.letterUppercase() =>
@@ -134,116 +136,116 @@ class UnicodeCharMatcher extends CharMatcher {
 
   /// Properties
   factory UnicodeCharMatcher.whiteSpace() =>
-      UnicodeCharMatcher(_propertyData, property.whiteSpace);
+      UnicodeCharMatcher(_propertyData1, property.whiteSpace);
 
   factory UnicodeCharMatcher.bidiControl() =>
-      UnicodeCharMatcher(_propertyData, property.bidiControl);
+      UnicodeCharMatcher(_propertyData1, property.bidiControl);
 
   factory UnicodeCharMatcher.joinControl() =>
-      UnicodeCharMatcher(_propertyData, property.joinControl);
+      UnicodeCharMatcher(_propertyData1, property.joinControl);
 
   factory UnicodeCharMatcher.dash() =>
-      UnicodeCharMatcher(_propertyData, property.dash);
+      UnicodeCharMatcher(_propertyData1, property.dash);
 
   factory UnicodeCharMatcher.hyphen() =>
-      UnicodeCharMatcher(_propertyData, property.hyphen);
+      UnicodeCharMatcher(_propertyData1, property.hyphen);
 
   factory UnicodeCharMatcher.quotationMark() =>
-      UnicodeCharMatcher(_propertyData, property.quotationMark);
+      UnicodeCharMatcher(_propertyData1, property.quotationMark);
 
   factory UnicodeCharMatcher.terminalPunctuation() =>
-      UnicodeCharMatcher(_propertyData, property.terminalPunctuation);
+      UnicodeCharMatcher(_propertyData1, property.terminalPunctuation);
 
   factory UnicodeCharMatcher.otherMath() =>
-      UnicodeCharMatcher(_propertyData, property.otherMath);
+      UnicodeCharMatcher(_propertyData1, property.otherMath);
 
   factory UnicodeCharMatcher.hexDigit() =>
-      UnicodeCharMatcher(_propertyData, property.hexDigit);
+      UnicodeCharMatcher(_propertyData1, property.hexDigit);
 
   factory UnicodeCharMatcher.asciiHexDigit() =>
-      UnicodeCharMatcher(_propertyData, property.asciiHexDigit);
+      UnicodeCharMatcher(_propertyData1, property.asciiHexDigit);
 
   factory UnicodeCharMatcher.otherAlphabetic() =>
-      UnicodeCharMatcher(_propertyData, property.otherAlphabetic);
+      UnicodeCharMatcher(_propertyData1, property.otherAlphabetic);
 
   factory UnicodeCharMatcher.ideographic() =>
-      UnicodeCharMatcher(_propertyData, property.ideographic);
+      UnicodeCharMatcher(_propertyData1, property.ideographic);
 
   factory UnicodeCharMatcher.diacritic() =>
-      UnicodeCharMatcher(_propertyData, property.diacritic);
+      UnicodeCharMatcher(_propertyData1, property.diacritic);
 
   factory UnicodeCharMatcher.extender() =>
-      UnicodeCharMatcher(_propertyData, property.extender);
+      UnicodeCharMatcher(_propertyData1, property.extender);
 
   factory UnicodeCharMatcher.otherLowercase() =>
-      UnicodeCharMatcher(_propertyData, property.otherLowercase);
+      UnicodeCharMatcher(_propertyData1, property.otherLowercase);
 
   factory UnicodeCharMatcher.otherUppercase() =>
-      UnicodeCharMatcher(_propertyData, property.otherUppercase);
+      UnicodeCharMatcher(_propertyData1, property.otherUppercase);
 
   factory UnicodeCharMatcher.noncharacterCodePoint() =>
-      UnicodeCharMatcher(_propertyData, property.noncharacterCodePoint);
+      UnicodeCharMatcher(_propertyData1, property.noncharacterCodePoint);
 
   factory UnicodeCharMatcher.otherGraphemeExtend() =>
-      UnicodeCharMatcher(_propertyData, property.otherGraphemeExtend);
+      UnicodeCharMatcher(_propertyData1, property.otherGraphemeExtend);
 
   factory UnicodeCharMatcher.idsBinaryOperator() =>
-      UnicodeCharMatcher(_propertyData, property.idsBinaryOperator);
+      UnicodeCharMatcher(_propertyData1, property.idsBinaryOperator);
 
   factory UnicodeCharMatcher.idsTrinaryOperator() =>
-      UnicodeCharMatcher(_propertyData, property.idsTrinaryOperator);
+      UnicodeCharMatcher(_propertyData1, property.idsTrinaryOperator);
 
   factory UnicodeCharMatcher.idsUnaryOperator() =>
-      UnicodeCharMatcher(_propertyData, property.idsUnaryOperator);
+      UnicodeCharMatcher(_propertyData1, property.idsUnaryOperator);
 
   factory UnicodeCharMatcher.radical() =>
-      UnicodeCharMatcher(_propertyData, property.radical);
+      UnicodeCharMatcher(_propertyData1, property.radical);
 
   factory UnicodeCharMatcher.unifiedIdeograph() =>
-      UnicodeCharMatcher(_propertyData, property.unifiedIdeograph);
+      UnicodeCharMatcher(_propertyData1, property.unifiedIdeograph);
 
   factory UnicodeCharMatcher.otherDefaultIgnorableCodePoint() =>
       UnicodeCharMatcher(
-          _propertyData, property.otherDefaultIgnorableCodePoint);
+          _propertyData1, property.otherDefaultIgnorableCodePoint);
 
   factory UnicodeCharMatcher.deprecated() =>
-      UnicodeCharMatcher(_propertyData, property.deprecated);
+      UnicodeCharMatcher(_propertyData1, property.deprecated);
 
   factory UnicodeCharMatcher.softDotted() =>
-      UnicodeCharMatcher(_propertyData, property.softDotted);
+      UnicodeCharMatcher(_propertyData1, property.softDotted);
 
   factory UnicodeCharMatcher.logicalOrderException() =>
-      UnicodeCharMatcher(_propertyData, property.logicalOrderException);
+      UnicodeCharMatcher(_propertyData1, property.logicalOrderException);
 
   factory UnicodeCharMatcher.otherIdStart() =>
-      UnicodeCharMatcher(_propertyData, property.otherIdStart);
+      UnicodeCharMatcher(_propertyData1, property.otherIdStart);
 
   factory UnicodeCharMatcher.otherIdContinue() =>
-      UnicodeCharMatcher(_propertyData, property.otherIdContinue);
+      UnicodeCharMatcher(_propertyData1, property.otherIdContinue);
 
   factory UnicodeCharMatcher.idCompatMathContinue() =>
-      UnicodeCharMatcher(_propertyData, property.idCompatMathContinue);
+      UnicodeCharMatcher(_propertyData1, property.idCompatMathContinue);
 
   factory UnicodeCharMatcher.idCompatMathStart() =>
-      UnicodeCharMatcher(_propertyData, property.idCompatMathStart);
+      UnicodeCharMatcher(_propertyData1, property.idCompatMathStart);
 
   factory UnicodeCharMatcher.sentenceTerminal() =>
-      UnicodeCharMatcher(_propertyData, property.sentenceTerminal);
+      UnicodeCharMatcher(_propertyData1, property.sentenceTerminal);
 
   factory UnicodeCharMatcher.variationSelector() =>
-      UnicodeCharMatcher(_propertyData, property.variationSelector);
+      UnicodeCharMatcher(_propertyData2, property.variationSelector);
 
   factory UnicodeCharMatcher.patternWhiteSpace() =>
-      UnicodeCharMatcher(_propertyData, property.patternWhiteSpace);
+      UnicodeCharMatcher(_propertyData2, property.patternWhiteSpace);
 
   factory UnicodeCharMatcher.patternSyntax() =>
-      UnicodeCharMatcher(_propertyData, property.patternSyntax);
+      UnicodeCharMatcher(_propertyData2, property.patternSyntax);
 
   factory UnicodeCharMatcher.prependedConcatenationMark() =>
-      UnicodeCharMatcher(_propertyData, property.prependedConcatenationMark);
+      UnicodeCharMatcher(_propertyData2, property.prependedConcatenationMark);
 
   factory UnicodeCharMatcher.regionalIndicator() =>
-      UnicodeCharMatcher(_propertyData, property.regionalIndicator);
+      UnicodeCharMatcher(_propertyData2, property.regionalIndicator);
 
   final List<int> data;
   final int mask;
@@ -252,11 +254,13 @@ class UnicodeCharMatcher extends CharMatcher {
   bool match(int value) => data[value] & mask != 0;
 }
 
+const _unicodeCharCount = 0x10ffff + 1;
 final _categoryData = _decode(category.data);
-final _propertyData = _decode(property.data);
+final _propertyData1 = _decode(property.data1);
+final _propertyData2 = _decode(property.data2);
 
 List<int> _decode(List<int> input) {
-  final output = Int32List(0x10ffff + 1);
+  final output = Int32List(_unicodeCharCount);
   for (var i = 0, o = 0; o < output.length;) {
     final i1 = input[i++];
     if (i1 < 0) {
