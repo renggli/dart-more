@@ -26,7 +26,7 @@ class Edge<V, E> with ToStringPrinter {
       (other is Edge && source == other.source && target == other.target);
 
   @override
-  int get hashCode => source.hashCode ^ target.hashCode;
+  int get hashCode => Object.hash(source, target);
 
   @override
   ObjectPrinter get toStringPrinter => super.toStringPrinter

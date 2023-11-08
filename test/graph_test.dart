@@ -831,6 +831,83 @@ void main() {
         expectInvariants(graph);
       });
     });
+    group('edge', () {
+      final a = Edge<int, void>(1, 2);
+      final b = Edge<int, void>(2, 1);
+      final c = Edge<int, double>(1, 2, value: 3.14);
+      test('create (without data)', () {
+        expect(a.source, 1);
+        expect(a.target, 2);
+      });
+      test('create (with data)', () {
+        expect(c.source, 1);
+        expect(c.target, 2);
+        expect(c.value, 3.14);
+      });
+      test('equals', () {
+        expect(a == a, isTrue);
+        expect(a == b, isFalse);
+        expect(a == c, isTrue);
+        expect(b == a, isFalse);
+        expect(b == b, isTrue);
+        expect(b == c, isFalse);
+        expect(c == a, isTrue);
+        expect(c == b, isFalse);
+        expect(c == c, isTrue);
+      });
+      test('hashCode', () {
+        expect(a.hashCode == b.hashCode, isFalse);
+        expect(a.hashCode == c.hashCode, isTrue);
+      });
+      test('toString', () {
+        expect(a.toString(), endsWith('{1 → 2}'));
+        expect(c.toString(), endsWith('1 → 2, value=3.14}'));
+      });
+    });
+    group('path', () {
+      test('fromVertices (without data)', () {
+        final path = Path<int, void>.fromVertices([1, 2, 3]);
+        expect(path.vertices, [1, 2, 3]);
+        expect(path.values, [null, null]);
+        expect(path.source, 1);
+        expect(path.target, 3);
+        expect(path.edges, [isEdge(1, 2), isEdge(2, 3)]);
+        expect(path.toString(), endsWith('{1 → 2 → 3 (2 edges)}'));
+      });
+      test('fromVertices (with data)', () {
+        final path =
+            Path<String, int>.fromVertices(['a', 'b', 'c'], values: [2, 3]);
+        expect(path.vertices, ['a', 'b', 'c']);
+        expect(path.values, [2, 3]);
+        expect(path.source, 'a');
+        expect(path.target, 'c');
+        expect(path.edges, [isEdge('a', 'b'), isEdge('b', 'c')]);
+        expect(path.cost, 5);
+        expect(path.toString(),
+            endsWith('a → b → c (2 edges), values=[2, 3], cost=5}'));
+      });
+      test('fromEdges (without data)', () {
+        final path = Path<int, void>.fromEdges([Edge(4, 5), Edge(5, 6)]);
+        expect(path.vertices, [4, 5, 6]);
+        expect(path.values, [null, null]);
+        expect(path.source, 4);
+        expect(path.target, 6);
+        expect(path.edges, [isEdge(4, 5), isEdge(5, 6)]);
+        expect(path.toString(), endsWith('{4 → 5 → 6 (2 edges)}'));
+      });
+      test('fromEdges (with data)', () {
+        final path = Path<String, int>.fromEdges(
+            [Edge('x', 'y', value: 4), Edge('y', 'z', value: 5)]);
+        expect(path.vertices, ['x', 'y', 'z']);
+        expect(path.values, [4, 5]);
+        expect(path.source, 'x');
+        expect(path.target, 'z');
+        expect(path.edges, [isEdge('x', 'y'), isEdge('y', 'z')]);
+        expect(path.cost, 9);
+        expect(path.toString(),
+            endsWith('x → y → z (2 edges), values=[4, 5], cost=9}'));
+      });
+    });
   });
   group('operation', () {
     group('connected', () {
@@ -1951,6 +2028,12 @@ void main() {
             GraphFactory<int, void>(isDirected: false).ring(vertexCount: 10);
         final flow = graph.maxFlow();
         expect(flow(0, 4), 2);
+      });
+      test('error', () {
+        final graph = GraphFactory<int, void>().path(vertexCount: 3);
+        final flow = graph.maxFlow();
+        expect(() => flow(0, 4), throwsArgumentError);
+        expect(() => flow(4, 0), throwsArgumentError);
       });
       test('example 1', () {
         final graph = Graph<String, int>.directed();
