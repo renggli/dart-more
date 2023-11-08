@@ -1,9 +1,11 @@
 import 'dart:typed_data';
 
 import '../char_matcher.dart';
-import '../generated/category.dart' as category;
-import '../generated/property.dart' as property;
+import 'category.dart' as category;
+import 'property.dart' as property;
 
+/// Character matcher function that classifies characters using official Unicode
+/// categories and properties.
 class UnicodeCharMatcher extends CharMatcher {
   const UnicodeCharMatcher(this.data, this.mask);
 

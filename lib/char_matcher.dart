@@ -3,4 +3,4 @@
 library char_matcher;
 
 export 'src/char_matcher/char_matcher.dart';
-export 'src/char_matcher/classifiers/unicode.dart';
+export 'src/char_matcher/unicode/unicode.dart';

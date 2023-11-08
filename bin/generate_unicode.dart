@@ -6,7 +6,7 @@ import 'utils/generating.dart';
 import 'utils/unicode.dart';
 
 Future<void> generatePropertyData(String name, Uri url) async {
-  final file = File('lib/src/char_matcher/generated/$name.dart');
+  final file = File('lib/src/char_matcher/unicode/$name.dart');
   final data = await getPropertyData(url);
   final out = file.openWrite();
   generateWarning(out);

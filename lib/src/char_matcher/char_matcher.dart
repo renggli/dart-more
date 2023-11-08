@@ -2,29 +2,30 @@ import 'package:collection/collection.dart';
 import 'package:meta/meta.dart' show immutable, nonVirtual;
 
 import '../../printer.dart';
+import 'ascii/ascii.dart';
+import 'ascii/digit.dart';
+import 'ascii/letter.dart';
+import 'ascii/letter_or_digit.dart';
+import 'ascii/lower_case.dart';
+import 'ascii/upper_case.dart';
+import 'ascii/whitespace.dart';
 import 'basic/range.dart';
 import 'basic/single.dart';
 import 'char_match.dart';
-import 'classifiers/ascii.dart';
-import 'classifiers/char_set.dart';
-import 'classifiers/digit.dart';
-import 'classifiers/letter.dart';
-import 'classifiers/letter_or_digit.dart';
-import 'classifiers/lower_case.dart';
-import 'classifiers/pattern.dart';
-import 'classifiers/upper_case.dart';
-import 'classifiers/whitespace.dart';
+import 'custom/char_set.dart';
+import 'custom/pattern.dart';
 import 'operators/any.dart';
 import 'operators/conjunctive.dart';
 import 'operators/disjunctive.dart';
 import 'operators/negate.dart';
 import 'operators/none.dart';
+import 'unicode/unicode.dart';
 
 /// Abstract character matcher function.
 ///
-/// The [CharMatcher] is a boolean predicate on Unicode code-units. The
-/// inclusion of a character can be determined by calling [match] with the
-/// code-unit as the function argument, for example:
+/// The [CharMatcher] is a boolean predicate on Unicode code-points. The
+/// inclusion of a character can be determined by calling the char matcher with
+/// the code-unit as the function argument, for example:
 ///
 ///     CharMatcher.whitespace().match(' '.runes.first); // true
 ///     CharMatcher.digit().match('a'.runes.first); // false
@@ -46,11 +47,15 @@ abstract class CharMatcher with ToStringPrinter implements Pattern {
 
   /// A matcher that accepts a single [character].
   ///
-  /// The argument can be either given as a [String] or a Unicode code-point.
+  /// The argument can be either given as a Unicode code-point or a string
+  /// with a single Unicode character.
   factory CharMatcher.isChar(Object character) =>
       SingleCharMatcher(_toCharCode(character, 'character'));
 
   /// A matcher that accepts a character range from [start] to [stop].
+  ///
+  /// The arguments can be either given as a Unicode code-points or a strings
+  /// with single Unicode character.
   factory CharMatcher.inRange(Object start, Object stop) =>
       RangeCharMatcher(_toCharCode(start, 'start'), _toCharCode(stop, 'stop'));
 
@@ -75,19 +80,23 @@ abstract class CharMatcher with ToStringPrinter implements Pattern {
   /// A matcher that accepts ASCII characters.
   const factory CharMatcher.ascii() = AsciiCharMatcher;
 
-  /// A matcher that accepts upper-case letters.
+  /// A matcher that accepts ASCII upper-case letters, see
+  /// [UnicodeCharMatcher.letterUppercase] for the Unicode variant.
   const factory CharMatcher.upperCaseLetter() = UpperCaseLetterCharMatcher;
 
-  /// A matcher that accepts lower-case letters.
+  /// A matcher that accepts ASCII lower-case letters, see
+  /// [UnicodeCharMatcher.letterLowercase] for the Unicode variant.
   const factory CharMatcher.lowerCaseLetter() = LowerCaseLetterCharMatcher;
 
-  /// A matcher that accepts letters or digits.
+  /// A matcher that accepts ASCII letters or digits.
   const factory CharMatcher.letterOrDigit() = LetterOrDigitCharMatcher;
 
-  /// A matcher that accepts letters.
+  /// A matcher that accepts ASCII letters, see
+  /// [UnicodeCharMatcher.letter] for the Unicode variant.
   const factory CharMatcher.letter() = LetterCharMatcher;
 
-  /// A matcher that accepts digits.
+  /// A matcher that accepts ASCII digits, see
+  /// [UnicodeCharMatcher.numberDecimalDigit] for the Unicode variant.
   const factory CharMatcher.digit() = DigitCharMatcher;
 
   /// A matcher that accepts whitespaces.
