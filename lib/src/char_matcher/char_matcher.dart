@@ -14,11 +14,11 @@ import 'basic/single.dart';
 import 'char_match.dart';
 import 'custom/char_set.dart';
 import 'custom/pattern.dart';
-import 'operators/any.dart';
-import 'operators/conjunctive.dart';
-import 'operators/disjunctive.dart';
-import 'operators/negate.dart';
-import 'operators/none.dart';
+import 'operator/any.dart';
+import 'operator/conjunctive.dart';
+import 'operator/disjunctive.dart';
+import 'operator/negate.dart';
+import 'operator/none.dart';
 import 'unicode/unicode.dart';
 
 /// Abstract character matcher function.
