@@ -1,4 +1,6 @@
-import 'package:meta/meta.dart';
+// AUTO-GENERATED CODE: DO NOT EDIT
+
+// https://www.unicode.org/Public/15.1.0/ucd/UnicodeData.txt
 
 /// A class defining different numeral systems for number printing.
 ///
@@ -6,23 +8,84 @@ import 'package:meta/meta.dart';
 /// `List<String>` instances. Each list starts with the string representations
 /// for 0, 1, 2, ... up to the maximally supported base.
 ///
-/// The default number system is [lowerCaseLatin].
-@sealed
+/// The default number system is [latin].
 abstract class NumeralSystem {
-  /// Lower-case latin number characters.
+  static const latin = lowerCaseLatin;
   static const lowerCaseLatin = [
-    '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', // digits
-    'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', // letters
-    'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't',
-    'u', 'v', 'w', 'x', 'y', 'z',
+    '0',
+    '1',
+    '2',
+    '3',
+    '4',
+    '5',
+    '6',
+    '7',
+    '8',
+    '9',
+    'a',
+    'b',
+    'c',
+    'd',
+    'e',
+    'f',
+    'g',
+    'h',
+    'i',
+    'j',
+    'k',
+    'l',
+    'm',
+    'n',
+    'o',
+    'p',
+    'q',
+    'r',
+    's',
+    't',
+    'u',
+    'v',
+    'w',
+    'x',
+    'y',
+    'z'
   ];
-
-  /// Upper-case latin number characters.
   static const upperCaseLatin = [
-    '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', // digits
-    'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', // letters
-    'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T',
-    'U', 'V', 'W', 'X', 'Y', 'Z',
+    '0',
+    '1',
+    '2',
+    '3',
+    '4',
+    '5',
+    '6',
+    '7',
+    '8',
+    '9',
+    'A',
+    'B',
+    'C',
+    'D',
+    'E',
+    'F',
+    'G',
+    'H',
+    'I',
+    'J',
+    'K',
+    'L',
+    'M',
+    'N',
+    'O',
+    'P',
+    'Q',
+    'R',
+    'S',
+    'T',
+    'U',
+    'V',
+    'W',
+    'X',
+    'Y',
+    'Z'
   ];
 
   static const arabicIndic = ['٠', '١', '٢', '٣', '٤', '٥', '٦', '٧', '٨', '٩'];
@@ -58,18 +121,7 @@ abstract class NumeralSystem {
   static const mongolian = ['᠐', '᠑', '᠒', '᠓', '᠔', '᠕', '᠖', '᠗', '᠘', '᠙'];
   static const limbu = ['᥆', '᥇', '᥈', '᥉', '᥊', '᥋', '᥌', '᥍', '᥎', '᥏'];
   static const newTaiLue = ['᧐', '᧑', '᧒', '᧓', '᧔', '᧕', '᧖', '᧗', '᧘', '᧙'];
-  static const taiThaamHora = [
-    '᪀',
-    '᪁',
-    '᪂',
-    '᪃',
-    '᪄',
-    '᪅',
-    '᪆',
-    '᪇',
-    '᪈',
-    '᪉'
-  ];
+  static const taiThamHora = ['᪀', '᪁', '᪂', '᪃', '᪄', '᪅', '᪆', '᪇', '᪈', '᪉'];
   static const taiThamTham = ['᪐', '᪑', '᪒', '᪓', '᪔', '᪕', '᪖', '᪗', '᪘', '᪙'];
   static const balinese = ['᭐', '᭑', '᭒', '᭓', '᭔', '᭕', '᭖', '᭗', '᭘', '᭙'];
   static const sundanese = ['᮰', '᮱', '᮲', '᮳', '᮴', '᮵', '᮶', '᮷', '᮸', '᮹'];
@@ -79,7 +131,7 @@ abstract class NumeralSystem {
   static const saurashtra = ['꣐', '꣑', '꣒', '꣓', '꣔', '꣕', '꣖', '꣗', '꣘', '꣙'];
   static const kayahLi = ['꤀', '꤁', '꤂', '꤃', '꤄', '꤅', '꤆', '꤇', '꤈', '꤉'];
   static const javanese = ['꧐', '꧑', '꧒', '꧓', '꧔', '꧕', '꧖', '꧗', '꧘', '꧙'];
-  static const myanmarTatLaing = [
+  static const myanmarTaiLaing = [
     '꧰',
     '꧱',
     '꧲',
@@ -106,7 +158,7 @@ abstract class NumeralSystem {
     '𐒨',
     '𐒩'
   ];
-  static const hanifiRohigya = [
+  static const hanifiRohingya = [
     '𐴰',
     '𐴱',
     '𐴲',
@@ -298,6 +350,18 @@ abstract class NumeralSystem {
     '𑶨',
     '𑶩'
   ];
+  static const kawi = [
+    '𑽐',
+    '𑽑',
+    '𑽒',
+    '𑽓',
+    '𑽔',
+    '𑽕',
+    '𑽖',
+    '𑽗',
+    '𑽘',
+    '𑽙'
+  ];
   static const mro = [
     '𖩠',
     '𖩡',
@@ -417,6 +481,18 @@ abstract class NumeralSystem {
     '𞋷',
     '𞋸',
     '𞋹'
+  ];
+  static const nagMundari = [
+    '𞓰',
+    '𞓱',
+    '𞓲',
+    '𞓳',
+    '𞓴',
+    '𞓵',
+    '𞓶',
+    '𞓷',
+    '𞓸',
+    '𞓹'
   ];
   static const adlam = [
     '𞥐',

@@ -14,7 +14,7 @@ class FixedNumberPrinter<T extends num> extends Printer<T> {
   FixedNumberPrinter({
     this.accuracy,
     this.base = 10,
-    this.characters = NumeralSystem.lowerCaseLatin,
+    this.characters = NumeralSystem.latin,
     this.delimiter = delimiterString,
     this.infinity = infinityString,
     this.nan = nanString,

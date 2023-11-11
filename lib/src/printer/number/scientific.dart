@@ -11,7 +11,7 @@ class ScientificNumberPrinter<T extends num> extends Printer<T> {
   /// Prints numbers in a custom scientific format.
   ScientificNumberPrinter({
     this.base = 10,
-    this.characters = NumeralSystem.lowerCaseLatin,
+    this.characters = NumeralSystem.latin,
     this.delimiter = delimiterString,
     this.exponentPadding = 0,
     this.exponentSign,

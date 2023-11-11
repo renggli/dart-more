@@ -80,7 +80,7 @@ class HumanNumberPrinter<T extends num> extends Printer<T> {
   HumanNumberPrinter({
     required this.units,
     this.base = 10,
-    this.characters = NumeralSystem.lowerCaseLatin,
+    this.characters = NumeralSystem.latin,
     this.delimiter = delimiterString,
     this.infinity = infinityString,
     this.nan = nanString,
@@ -122,7 +122,7 @@ class HumanNumberPrinter<T extends num> extends Printer<T> {
   /// For details, see https://en.wikipedia.org/wiki/Metric_prefix.
   factory HumanNumberPrinter.decimal({
     int base = 10,
-    List<String> characters = NumeralSystem.lowerCaseLatin,
+    List<String> characters = NumeralSystem.latin,
     String delimiter = delimiterString,
     String infinity = infinityString,
     bool long = false,
@@ -159,7 +159,7 @@ class HumanNumberPrinter<T extends num> extends Printer<T> {
   /// For details, see https://en.wikipedia.org/wiki/Binary_prefix.
   factory HumanNumberPrinter.binary({
     int base = 10,
-    List<String> characters = NumeralSystem.lowerCaseLatin,
+    List<String> characters = NumeralSystem.latin,
     String delimiter = delimiterString,
     String infinity = infinityString,
     bool long = false,

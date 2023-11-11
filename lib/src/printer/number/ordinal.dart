@@ -9,7 +9,7 @@ class OrdinalNumberPrinter extends Printer<int> {
   /// Prints numbers in an ordinal format.
   OrdinalNumberPrinter({
     this.base = 10,
-    this.characters = NumeralSystem.lowerCaseLatin,
+    this.characters = NumeralSystem.latin,
     this.padding = 0,
     this.separator = '',
     this.sign,

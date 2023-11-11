@@ -52,7 +52,68 @@ void writeList(IOSink out, String name, List<int> values) {
   out.writeln();
 }
 
+Future<void> generateDecimalData() async {
+  final file = File('lib/src/printer/number/numeral.dart');
+  final data = await unicodeData;
+  final out = file.openWrite();
+  generateWarning(out);
+
+  out.writeln('// $unicodeDataUrl');
+  out.writeln();
+
+  out.writeln(
+      '/// A class defining different numeral systems for number printing.');
+  out.writeln('///');
+  out.writeln(
+      '/// To remain customizable the number systems are provided through immutable');
+  out.writeln(
+      '/// `List<String>` instances. Each list starts with the string representations');
+  out.writeln('/// for 0, 1, 2, ... up to the maximally supported base.');
+  out.writeln('///');
+  out.writeln('/// The default number system is [latin].');
+  out.writeln('abstract class NumeralSystem {');
+
+  final iterator = data.iterator;
+  while (iterator.moveNext()) {
+    if (iterator.current.decimalDigit == 0) {
+      final def = StringBuffer();
+      final name = iterator.current.characterName
+          .takeTo(' DIGIT')
+          .split(RegExp(r'[ _-]'))
+          .map((each) => each.toLowerCase().toUpperCaseFirstCharacter())
+          .join()
+          .toLowerCaseFirstCharacter();
+      do {
+        def.writeCharCode(iterator.current.codePoint);
+      } while (iterator.current.decimalDigit! < 9 && iterator.moveNext());
+      if (name == 'digitZero') {
+        // Special casing of default latin characters, so that they also work
+        // with arbitrary base printing (i.e. hexadecimal).
+        for (var c = 'a'.codeUnitAt(0); c <= 'z'.codeUnitAt(0); c++) {
+          def.writeCharCode(c);
+        }
+        out.writeln('static const latin = lowerCaseLatin;');
+        out.writeln('static const lowerCaseLatin = '
+            '${characterList(def.toString().toLowerCase())};');
+        out.writeln('static const upperCaseLatin = '
+            '${characterList(def.toString().toUpperCase())};');
+        out.writeln();
+      } else {
+        out.writeln('static const $name = ${characterList(def.toString())};');
+      }
+    }
+  }
+  out.writeln('}');
+
+  await out.close();
+  await format(file);
+}
+
+String characterList(String input) =>
+    '[${input.runes.map(String.fromCharCode).map((each) => "'$each'").join(', ')}]';
+
 Future<void> main() => Future.wait([
       generatePropertyData('category', unicodeCategoryListUrl),
       generatePropertyData('property', unicodePropertyListUrl),
+      generateDecimalData(),
     ]);
