@@ -7,6 +7,7 @@ import 'ascii/digit.dart';
 import 'ascii/letter.dart';
 import 'ascii/letter_or_digit.dart';
 import 'ascii/lower_case.dart';
+import 'ascii/punctuation.dart';
 import 'ascii/upper_case.dart';
 import 'ascii/whitespace.dart';
 import 'basic/range.dart';
@@ -99,7 +100,12 @@ abstract class CharMatcher with ToStringPrinter implements Pattern {
   /// [UnicodeCharMatcher.numberDecimalDigit] for the Unicode variant.
   const factory CharMatcher.digit() = DigitCharMatcher;
 
-  /// A matcher that accepts whitespaces.
+  /// A matcher that accepts ASCII punctuation characters, see
+  /// [UnicodeCharMatcher.punctuation] for the Unicode variant.
+  const factory CharMatcher.punctuation() = PunctuationCharMatcher;
+
+  /// A matcher that accepts ASCII whitespaces, see
+  /// [UnicodeCharMatcher.whiteSpace] for the Unicode variant.
   const factory CharMatcher.whitespace() = WhitespaceCharMatcher;
 
   /// Internal constructor.

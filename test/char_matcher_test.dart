@@ -36,20 +36,13 @@ void main() {
     test('ascii', () {
       verify(const CharMatcher.ascii(), 'def123_!@#', '\u2665');
     });
-    test('digit', () {
-      verify(const CharMatcher.digit(), '0123456789', 'abc_!@# ');
-    });
-    test('letter', () {
-      verify(const CharMatcher.letter(),
-          'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ', '123_!@# ');
+    test('upperCaseLetter', () {
+      verify(const CharMatcher.upperCaseLetter(), 'ABCDEFGHIJKLMNOPQRSTUVWXYZ',
+          'abcdefghijklmnopqrstuvwxyz123_!@# ');
     });
     test('lowerCaseLetter', () {
       verify(const CharMatcher.lowerCaseLetter(), 'abcdefghijklmnopqrstuvwxyz',
           'ABCDEFGHIJKLMNOPQRSTUVWXYZ123_!@# ');
-    });
-    test('upperCaseLetter', () {
-      verify(const CharMatcher.upperCaseLetter(), 'ABCDEFGHIJKLMNOPQRSTUVWXYZ',
-          'abcdefghijklmnopqrstuvwxyz123_!@# ');
     });
     test('letterOrDigit', () {
       verify(
@@ -57,12 +50,19 @@ void main() {
           'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ01234567890_',
           '!@# ');
     });
+    test('digit', () {
+      verify(const CharMatcher.digit(), '0123456789', 'abc_!@# ');
+    });
+    test('letter', () {
+      verify(const CharMatcher.letter(),
+          'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ', '123_!@# ');
+    });
+    test('punctuation', () {
+      verify(const CharMatcher.punctuation(),
+          '!"#\$%&\'()*+,-./:;<=>?@[\\]^_`{|}~', 'abc123 ');
+    });
     test('whitespace', () {
-      final string = String.fromCharCodes([
-        9, 10, 11, 12, 13, 32, 133, 160, 5760, 8192, 8193, 8194, 8195, 8196,
-        8197, 8198, 8199, 8200, 8201, 8202, 8232, 8233, 8239, 8287, 12288, //
-      ]);
-      verify(const CharMatcher.whitespace(), string, 'abcABC_!@#\u0000');
+      verify(const CharMatcher.whitespace(), '\t\n\r\v\f ', 'abcABC_!@#\u0000');
     });
   });
   group('basic', () {
@@ -458,8 +458,11 @@ void main() {
     });
     group('property', () {
       test('whiteSpace', () {
-        verify(UnicodeCharMatcher.whiteSpace(),
-            ' \u{0009}\u{1680}\u{205F}\u{3000}', '012abcABC_!@#');
+        final string = String.fromCharCodes([
+          9, 10, 11, 12, 13, 32, 133, 160, 5760, 8192, 8193, 8194, 8195, 8196,
+          8197, 8198, 8199, 8200, 8201, 8202, 8232, 8233, 8239, 8287, 12288, //
+        ]);
+        verify(UnicodeCharMatcher.whiteSpace(), string, '012abcABC_!@#');
       });
       test('bidiControl', () {
         verify(UnicodeCharMatcher.bidiControl(),

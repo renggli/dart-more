@@ -1,9 +1,11 @@
 # Changelog
 
 ## 4.1.0
-- `CharMatcher` now works on all unicode code-points, correctly and efficiently matching unicode characters beyond UTF-16 bytes.
-  - Add support for all [Unicode General Categories](https://www.unicode.org/reports/tr44/#General_Category_Values).
+- `CharMatcher` now works on all unicode code-points, correctly and efficiently matching unicode characters beyond UTF-16 bytes:
+  - Add support for all [Unicode General Categories](https://www.unicode.org/reports/tr44/#General_Category_Values) and [Unicode Properties](https://www.unicode.org/reports/tr44/#Properties).
   - Add support for _Character Class Subtraction_ to `CharMatcher.pattern`.
+  - For consistency `CharMatcher.whitespace()` is only matching ASCII whitespaces, to get the Unicode variant use `UnicodeCharMatcher.whiteSpace()`.
+  - Add `CharMatcher.punctuation()` for ASCII punctuation characters.
 
 ## 4.0.0
 * Dart 3.0 requirement.
