@@ -23,12 +23,7 @@ Future<void> generatePropertyData(String name, Uri url) async {
       values.fillRange(0, values.length, 0);
       index = 1;
     }
-    final label = key
-        .split('_')
-        .map((each) => each.toLowerCase().toUpperCaseFirstCharacter())
-        .join()
-        .toLowerCaseFirstCharacter();
-    out.writeln('const $label = 0x${index.toRadixString(16)};');
+    out.writeln('const ${namify(key)} = 0x${index.toRadixString(16)};');
     for (final range in ranges) {
       for (var code = range.$1; code <= range.$2; code++) {
         values[code] |= index;
@@ -52,6 +47,29 @@ void writeList(IOSink out, String name, List<int> values) {
   out.writeln();
 }
 
+Future<void> generateUnicodeBlocks() async {
+  final file = File('lib/src/char_matcher/unicode/blocks.dart');
+  final data = await getPropertyData(unicodeBlocksUrl);
+  final out = file.openWrite();
+  generateWarning(out);
+
+  out.writeln('// $unicodeBlocksUrl');
+  out.writeln();
+
+  out.writeln('import \'../basic/range.dart\';');
+  out.writeln();
+
+  for (final MapEntry(:key, value: ranges) in data.asMap().entries) {
+    final range = ranges.single;
+    out.writeln('const ${namify(key)} = RangeCharMatcher('
+        '0x${range.$1.toRadixString(16)}, '
+        '0x${range.$2.toRadixString(16)});');
+  }
+
+  await out.close();
+  await format(file);
+}
+
 Future<void> generateDecimalData() async {
   final file = File('lib/src/printer/number/numeral.dart');
   final data = await unicodeData;
@@ -61,13 +79,13 @@ Future<void> generateDecimalData() async {
   out.writeln('// $unicodeDataUrl');
   out.writeln();
 
-  out.writeln(
-      '/// A class defining different numeral systems for number printing.');
+  out.writeln('/// A class defining different numeral systems for '
+      'number printing.');
   out.writeln('///');
-  out.writeln(
-      '/// To remain customizable the number systems are provided through immutable');
-  out.writeln(
-      '/// `List<String>` instances. Each list starts with the string representations');
+  out.writeln('/// To remain customizable the number systems are provided '
+      'through immutable');
+  out.writeln('/// `List<String>` instances. Each list starts with the string '
+      'representations');
   out.writeln('/// for 0, 1, 2, ... up to the maximally supported base.');
   out.writeln('///');
   out.writeln('/// The default number system is [latin].');
@@ -77,12 +95,7 @@ Future<void> generateDecimalData() async {
   while (iterator.moveNext()) {
     if (iterator.current.decimalDigit == 0) {
       final def = StringBuffer();
-      final name = iterator.current.characterName
-          .takeTo(' DIGIT')
-          .split(RegExp(r'[ _-]'))
-          .map((each) => each.toLowerCase().toUpperCaseFirstCharacter())
-          .join()
-          .toLowerCaseFirstCharacter();
+      final name = namify(iterator.current.characterName.takeTo(' DIGIT'));
       do {
         def.writeCharCode(iterator.current.codePoint);
       } while (iterator.current.decimalDigit! < 9 && iterator.moveNext());
@@ -115,5 +128,6 @@ String characterList(String input) =>
 Future<void> main() => Future.wait([
       generatePropertyData('category', unicodeCategoryListUrl),
       generatePropertyData('property', unicodePropertyListUrl),
+      generateUnicodeBlocks(),
       generateDecimalData(),
     ]);

@@ -32,6 +32,8 @@ final unicodeDataUrl = Uri.parse(
     'https://www.unicode.org/Public/$unicodeVersion/ucd/UnicodeData.txt');
 final unicodePropertyListUrl = Uri.parse(
     'https://www.unicode.org/Public/$unicodeVersion/ucd/PropList.txt');
+final unicodeBlocksUrl =
+    Uri.parse('https://www.unicode.org/Public/$unicodeVersion/ucd/Blocks.txt');
 final unicodeCategoryListUrl = Uri.parse(
     'https://www.unicode.org/Public/$unicodeVersion/ucd/extracted/DerivedGeneralCategory.txt');
 

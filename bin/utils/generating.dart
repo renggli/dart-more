@@ -44,3 +44,10 @@ String recordify(Iterable<String> values) =>
 
 /// Capitalizes the first character of a string.
 String capitalize(String value) => value.toUpperCaseFirstCharacter();
+
+/// Converts a label with separators into a camel-case name.
+String namify(String value) => value
+    .split(RegExp(r'[ /_-]'))
+    .map((each) => each.toLowerCase().toUpperCaseFirstCharacter())
+    .join()
+    .toLowerCaseFirstCharacter();
