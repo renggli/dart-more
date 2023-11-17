@@ -1,5 +1,3 @@
-import 'dart:math';
-
 import 'package:more/feature.dart';
 import 'package:test/test.dart';
 
@@ -12,8 +10,13 @@ void main() {
       expect(isJavaScript, isFalse);
     }, testOn: '!js');
   });
-  test('int', () {
-    expect(minSafeInteger, -pow(2, safeIntegerBits - 1));
-    expect(maxSafeInteger, pow(2, safeIntegerBits - 1) - 1);
+  test('minSafeInteger', () {
+    expect(minSafeInteger, lessThan(-0xfffffffffff));
+    expect(minSafeInteger, -BigInt.two.pow(safeIntegerBits - 1).toInt());
+  });
+  test('maxSafeInteger', () {
+    expect(maxSafeInteger, greaterThan(0xfffffffffff));
+    expect(maxSafeInteger,
+        (BigInt.two.pow(safeIntegerBits - 1) - BigInt.one).toInt());
   });
 }
