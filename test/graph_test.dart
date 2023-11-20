@@ -136,8 +136,8 @@ void expectInvariants<V, E>(Graph<V, E> graph) {
       graph.toString(),
       allOf(
         contains('Graph'),
-        contains('vertices='),
-        contains('edges='),
+        contains('vertices: '),
+        contains('edges: '),
       ));
 }
 
@@ -860,8 +860,8 @@ void main() {
         expect(a.hashCode == c.hashCode, isTrue);
       });
       test('toString', () {
-        expect(a.toString(), endsWith('{1 → 2}'));
-        expect(c.toString(), endsWith('1 → 2, value=3.14}'));
+        expect(a.toString(), endsWith('(1 → 2)'));
+        expect(c.toString(), endsWith('(1 → 2, value: 3.14)'));
       });
     });
     group('path', () {
@@ -872,7 +872,7 @@ void main() {
         expect(path.source, 1);
         expect(path.target, 3);
         expect(path.edges, [isEdge(1, 2), isEdge(2, 3)]);
-        expect(path.toString(), endsWith('{1 → 2 → 3 (2 edges)}'));
+        expect(path.toString(), endsWith('(1 → 2 → 3 (2 edges))'));
       });
       test('fromVertices (with data)', () {
         final path =
@@ -884,7 +884,7 @@ void main() {
         expect(path.edges, [isEdge('a', 'b'), isEdge('b', 'c')]);
         expect(path.cost, 5);
         expect(path.toString(),
-            endsWith('a → b → c (2 edges), values=[2, 3], cost=5}'));
+            endsWith('(a → b → c (2 edges), values: [2, 3], cost: 5)'));
       });
       test('fromEdges (without data)', () {
         final path = Path<int, void>.fromEdges([Edge(4, 5), Edge(5, 6)]);
@@ -893,7 +893,7 @@ void main() {
         expect(path.source, 4);
         expect(path.target, 6);
         expect(path.edges, [isEdge(4, 5), isEdge(5, 6)]);
-        expect(path.toString(), endsWith('{4 → 5 → 6 (2 edges)}'));
+        expect(path.toString(), endsWith('(4 → 5 → 6 (2 edges))'));
       });
       test('fromEdges (with data)', () {
         final path = Path<String, int>.fromEdges(
@@ -905,7 +905,7 @@ void main() {
         expect(path.edges, [isEdge('x', 'y'), isEdge('y', 'z')]);
         expect(path.cost, 9);
         expect(path.toString(),
-            endsWith('x → y → z (2 edges), values=[4, 5], cost=9}'));
+            endsWith('(x → y → z (2 edges), values: [4, 5], cost: 9)'));
       });
     });
   });
