@@ -78,7 +78,7 @@ const wikipediaTarget = [
   'to this document.',
 ];
 
-Matcher isMatchBlock({
+Matcher isMatch({
   dynamic sourceStart = anything,
   dynamic targetStart = anything,
   dynamic length = anything,
@@ -103,115 +103,148 @@ Matcher isOperation(
         .having((m) => m.targetEnd, 'targetEnd', targetEnd);
 
 void main() {
-  test('a', () {
-    final matcher =
-        SequenceMatcher(source: 'abcd'.split(''), target: 'bcde'.split(''));
-    expect(matcher.ratio, 0.75);
-    matcher.source = 'bcde'.split('');
-    expect(matcher.ratio, 1.00);
-  });
-  test('b', () {
-    final matcher =
-        SequenceMatcher(source: 'abcd'.split(''), target: 'bcde'.split(''));
-    expect(matcher.ratio, 0.75);
-    matcher.target = 'abcd'.split('');
-    expect(matcher.ratio, 1.00);
-  });
-  test('findLongestMatch', () {
-    final matcher = SequenceMatcher(
-        source: ' abcd'.split(''), target: 'abcd abcd'.split(''));
-    expect(matcher.findLongestMatch(),
-        isMatchBlock(sourceStart: 0, targetStart: 4, length: 5));
-  });
-  test('findLongestMatch (with junk)', () {
-    final matcher = SequenceMatcher(
-        source: ' abcd'.split(''),
-        target: 'abcd abcd'.split(''),
-        isJunk: (char) => char == ' ');
-    expect(matcher.findLongestMatch(),
-        isMatchBlock(sourceStart: 1, targetStart: 0, length: 4));
-  });
-  test('findLongestMatch (without match)', () {
-    final matcher =
-        SequenceMatcher(source: 'ab'.split(''), target: 'c'.split(''));
-    expect(matcher.findLongestMatch(),
-        isMatchBlock(sourceStart: 0, targetStart: 0, length: 0));
-  });
-  test('matchingBlocks', () {
-    final matcher =
-        SequenceMatcher(source: 'abxcd'.split(''), target: 'abcd'.split(''));
-    expect(matcher.matches, [
-      isMatchBlock(sourceStart: 0, targetStart: 0, length: 2),
-      isMatchBlock(sourceStart: 3, targetStart: 2, length: 2),
-      isMatchBlock(sourceStart: 5, targetStart: 4, length: 0),
-    ]);
-  });
-  test('opcodes', () {
-    final matcher =
-        SequenceMatcher(source: 'qabxcd'.split(''), target: 'abycdf'.split(''));
-    expect(matcher.operations, [
-      isOperation(OperationType.delete,
-          sourceStart: 0, sourceEnd: 1, targetStart: 0, targetEnd: 0),
-      isOperation(OperationType.equal,
-          sourceStart: 1, sourceEnd: 3, targetStart: 0, targetEnd: 2),
-      isOperation(OperationType.replace,
-          sourceStart: 3, sourceEnd: 4, targetStart: 2, targetEnd: 3),
-      isOperation(OperationType.equal,
-          sourceStart: 4, sourceEnd: 6, targetStart: 3, targetEnd: 5),
-      isOperation(OperationType.insert,
-          sourceStart: 6, sourceEnd: 6, targetStart: 5, targetEnd: 6),
-    ]);
-  });
-  test('groupedOpcodes', () {
-    final source = IntegerRange(1, 40).map((each) => each.toString()).toList();
-    final target = [...source];
-    target.insert(8, 'i'); // make an insertion
-    target[20] += 'x'; // make a replacement
-    target.removeRange(23, 28); // make a deletion
-    target[30] += 'y'; // make another replacement
-    final matcher = SequenceMatcher(source: source, target: target);
-    expect(matcher.groupedOperations(), [
-      [
-        isOperation(OperationType.equal,
-            sourceStart: 5, sourceEnd: 8, targetStart: 5, targetEnd: 8),
-        isOperation(OperationType.insert,
-            sourceStart: 8, sourceEnd: 8, targetStart: 8, targetEnd: 9),
-        isOperation(OperationType.equal,
-            sourceStart: 8, sourceEnd: 11, targetStart: 9, targetEnd: 12)
-      ],
-      [
-        isOperation(OperationType.equal,
-            sourceStart: 16, sourceEnd: 19, targetStart: 17, targetEnd: 20),
-        isOperation(OperationType.replace,
-            sourceStart: 19, sourceEnd: 20, targetStart: 20, targetEnd: 21),
-        isOperation(OperationType.equal,
-            sourceStart: 20, sourceEnd: 22, targetStart: 21, targetEnd: 23),
+  group('sequence matcher', () {
+    final abcd = 'abcd'.split(''), bcde = 'bcde'.split('');
+    test('source', () {
+      final matcher = SequenceMatcher(source: abcd, target: bcde);
+      expect(matcher.source, abcd);
+      expect(matcher.ratio, 0.75);
+      matcher.source = bcde;
+      expect(matcher.source, bcde);
+      expect(matcher.ratio, 1.00);
+    });
+    test('target', () {
+      final matcher = SequenceMatcher(source: abcd, target: bcde);
+      expect(matcher.target, bcde);
+      expect(matcher.ratio, 0.75);
+      matcher.target = abcd;
+      expect(matcher.target, abcd);
+      expect(matcher.ratio, 1.00);
+    });
+    test('findLongestMatch', () {
+      final matcher = SequenceMatcher(
+          source: ' abcd'.split(''), target: 'abcd abcd'.split(''));
+      expect(matcher.findLongestMatch(),
+          isMatch(sourceStart: 0, targetStart: 4, length: 5));
+    });
+    test('findLongestMatch (with junk)', () {
+      final matcher = SequenceMatcher(
+          source: '  abcd  '.split(''),
+          target: ' abcd abcd '.split(''),
+          isJunk: (char) => char == ' ');
+      expect(matcher.findLongestMatch(),
+          isMatch(sourceStart: 1, targetStart: 0, length: 6));
+    });
+    test('findLongestMatch (without match)', () {
+      final matcher =
+          SequenceMatcher(source: 'ab'.split(''), target: 'c'.split(''));
+      expect(matcher.findLongestMatch(),
+          isMatch(sourceStart: 0, targetStart: 0, length: 0));
+    });
+    test('match', () {
+      const match = Match(sourceStart: 1, targetStart: 2, length: 3);
+      const other = Match(sourceStart: 4, targetStart: 5, length: 6);
+      expect(
+          match.toString(),
+          endsWith('(sourceStart: 1, targetStart: 2, '
+              'length: 3)'));
+      expect(match == other, isFalse);
+      expect(match == match, isTrue);
+      expect(match.hashCode, isNot(other.hashCode));
+      expect(match.compareTo(other), -1);
+      expect(other.compareTo(match), 1);
+      expect(match.compareTo(match), 0);
+    });
+    test('matches', () {
+      final matcher =
+          SequenceMatcher(source: 'abxcd'.split(''), target: 'abcd'.split(''));
+      expect(matcher.matches, [
+        isMatch(sourceStart: 0, targetStart: 0, length: 2),
+        isMatch(sourceStart: 3, targetStart: 2, length: 2),
+        isMatch(sourceStart: 5, targetStart: 4, length: 0),
+      ]);
+    });
+    test('operation', () {
+      const operation = Operation(OperationType.equal,
+          sourceStart: 1, sourceEnd: 2, targetStart: 2, targetEnd: 3);
+      const other = Operation(OperationType.replace,
+          sourceStart: 4, sourceEnd: 5, targetStart: 6, targetEnd: 7);
+      expect(
+          operation.toString(),
+          endsWith('sourceStart: 1, sourceEnd: 2, '
+              'targetStart: 2, targetEnd: 3)'));
+      expect(operation == other, isFalse);
+      expect(operation == operation, isTrue);
+      expect(operation.hashCode, isNot(other.hashCode));
+    });
+    test('operations', () {
+      final matcher = SequenceMatcher(
+          source: 'qabxcd'.split(''), target: 'abycdf'.split(''));
+      expect(matcher.operations, [
         isOperation(OperationType.delete,
-            sourceStart: 22, sourceEnd: 27, targetStart: 23, targetEnd: 23),
+            sourceStart: 0, sourceEnd: 1, targetStart: 0, targetEnd: 0),
         isOperation(OperationType.equal,
-            sourceStart: 27, sourceEnd: 30, targetStart: 23, targetEnd: 26)
-      ],
-      [
-        isOperation(OperationType.equal,
-            sourceStart: 31, sourceEnd: 34, targetStart: 27, targetEnd: 30),
+            sourceStart: 1, sourceEnd: 3, targetStart: 0, targetEnd: 2),
         isOperation(OperationType.replace,
-            sourceStart: 34, sourceEnd: 35, targetStart: 30, targetEnd: 31),
+            sourceStart: 3, sourceEnd: 4, targetStart: 2, targetEnd: 3),
         isOperation(OperationType.equal,
-            sourceStart: 35, sourceEnd: 38, targetStart: 31, targetEnd: 34)
-      ]
-    ]);
-  });
-  test('empty', () {
-    final matcher = SequenceMatcher(source: <String>[], target: <String>[]);
-    expect(matcher.ratio, closeTo(1, epsilon));
-    expect(matcher.quickRatio, closeTo(1, epsilon));
-    expect(matcher.realQuickRatio, closeTo(1, epsilon));
-    expect(matcher.matches,
-        [isMatchBlock(sourceStart: 0, targetStart: 0, length: 0)]);
-    expect(matcher.operations, isEmpty);
-    expect(matcher.groupedOperations(), isEmpty);
-    expect(matcher.targetJunk, isEmpty);
-    expect(matcher.targetPopular, isEmpty);
+            sourceStart: 4, sourceEnd: 6, targetStart: 3, targetEnd: 5),
+        isOperation(OperationType.insert,
+            sourceStart: 6, sourceEnd: 6, targetStart: 5, targetEnd: 6),
+      ]);
+    });
+    test('groupedOperations', () {
+      final source =
+          IntegerRange(1, 40).map((each) => each.toString()).toList();
+      final target = [...source];
+      target.insert(8, 'i'); // make an insertion
+      target[20] += 'x'; // make a replacement
+      target.removeRange(23, 28); // make a deletion
+      target[30] += 'y'; // make another replacement
+      final matcher = SequenceMatcher(source: source, target: target);
+      expect(matcher.groupedOperations(), [
+        [
+          isOperation(OperationType.equal,
+              sourceStart: 5, sourceEnd: 8, targetStart: 5, targetEnd: 8),
+          isOperation(OperationType.insert,
+              sourceStart: 8, sourceEnd: 8, targetStart: 8, targetEnd: 9),
+          isOperation(OperationType.equal,
+              sourceStart: 8, sourceEnd: 11, targetStart: 9, targetEnd: 12)
+        ],
+        [
+          isOperation(OperationType.equal,
+              sourceStart: 16, sourceEnd: 19, targetStart: 17, targetEnd: 20),
+          isOperation(OperationType.replace,
+              sourceStart: 19, sourceEnd: 20, targetStart: 20, targetEnd: 21),
+          isOperation(OperationType.equal,
+              sourceStart: 20, sourceEnd: 22, targetStart: 21, targetEnd: 23),
+          isOperation(OperationType.delete,
+              sourceStart: 22, sourceEnd: 27, targetStart: 23, targetEnd: 23),
+          isOperation(OperationType.equal,
+              sourceStart: 27, sourceEnd: 30, targetStart: 23, targetEnd: 26)
+        ],
+        [
+          isOperation(OperationType.equal,
+              sourceStart: 31, sourceEnd: 34, targetStart: 27, targetEnd: 30),
+          isOperation(OperationType.replace,
+              sourceStart: 34, sourceEnd: 35, targetStart: 30, targetEnd: 31),
+          isOperation(OperationType.equal,
+              sourceStart: 35, sourceEnd: 38, targetStart: 31, targetEnd: 34)
+        ]
+      ]);
+    });
+    test('empty', () {
+      final matcher = SequenceMatcher(source: <String>[], target: <String>[]);
+      expect(matcher.ratio, closeTo(1, epsilon));
+      expect(matcher.quickRatio, closeTo(1, epsilon));
+      expect(matcher.realQuickRatio, closeTo(1, epsilon));
+      expect(matcher.matches,
+          [isMatch(sourceStart: 0, targetStart: 0, length: 0)]);
+      expect(matcher.operations, isEmpty);
+      expect(matcher.groupedOperations(), isEmpty);
+      expect(matcher.targetJunk, isEmpty);
+      expect(matcher.targetPopular, isEmpty);
+    });
   });
   group('caching', () {
     final source = ['a', 'b', 'c'];
