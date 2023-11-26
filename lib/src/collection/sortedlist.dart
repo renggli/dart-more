@@ -6,13 +6,14 @@ import '../../comparator.dart';
 /// A sorted-list that remains sorted by a [Comparator] as elements get added.
 class SortedList<E> extends ListBase<E> {
   /// Constructs an empty sorted-list with an optional `ordering`.
-  SortedList({Comparator<E>? comparator})
-      : _values = <E>[],
+  SortedList({Comparator<E>? comparator, bool growable = true})
+      : _values = List.empty(growable: growable),
         _comparator = comparator ?? naturalCompare;
 
   /// Constructs a sorted-list from an iterable with an optional `ordering`.
-  SortedList.of(Iterable<E> iterable, {Comparator<E>? comparator})
-      : _values = List<E>.of(iterable),
+  SortedList.of(Iterable<E> iterable,
+      {Comparator<E>? comparator, bool growable = true})
+      : _values = List<E>.of(iterable, growable: growable),
         _comparator = comparator ?? naturalCompare {
     _comparator.sort(_values);
   }
@@ -46,11 +47,13 @@ class SortedList<E> extends ListBase<E> {
   }
 
   @override
-  void addAll(Iterable<E> iterable) {
-    for (final element in iterable) {
-      add(element);
-    }
-  }
+  void addAll(Iterable<E> iterable) => iterable.forEach(add);
+
+  @override
+  void insert(int index, E element) => _throw();
+
+  @override
+  void insertAll(int index, Iterable<E> iterable) => _throw();
 
   @override
   bool remove(Object? element) {
@@ -73,6 +76,7 @@ class SortedList<E> extends ListBase<E> {
 
 extension SortedListIterableExtension<E> on Iterable<E> {
   /// Converts this [Iterable] to a [SortedList].
-  SortedList<E> toSortedList({Comparator<E>? comparator}) =>
-      SortedList.of(this, comparator: comparator);
+  SortedList<E> toSortedList(
+          {Comparator<E>? comparator, bool growable = true}) =>
+      SortedList.of(this, comparator: comparator, growable: growable);
 }

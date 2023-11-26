@@ -3770,18 +3770,23 @@ void main() {
   group('sortedlist', () {
     group('default constructor', () {
       allSortedListTests(<E>(Iterable<E> elements,
-              {Comparator<E>? comparator}) =>
-          SortedList<E>(comparator: comparator)..addAll(elements));
+          {Comparator<E>? comparator, bool growable = true}) {
+        final list = SortedList<E>(comparator: comparator)..addAll(elements);
+        return growable == false
+            ? list.toSortedList(comparator: comparator, growable: growable)
+            : list;
+      });
     });
     group('iterable constructor', () {
       allSortedListTests(<E>(Iterable<E> elements,
-              {Comparator<E>? comparator}) =>
-          SortedList<E>.of(elements, comparator: comparator));
+              {Comparator<E>? comparator, bool growable = true}) =>
+          SortedList<E>.of(elements,
+              comparator: comparator, growable: growable));
     });
     group('converting constructor', () {
       allSortedListTests(<E>(Iterable<E> elements,
-              {Comparator<E>? comparator}) =>
-          elements.toSortedList(comparator: comparator));
+              {Comparator<E>? comparator, bool growable = true}) =>
+          elements.toSortedList(comparator: comparator, growable: growable));
     });
   });
   group('rtree', () {
@@ -4548,7 +4553,8 @@ void allHeapTests(
 }
 
 void allSortedListTests(
-    SortedList<E> Function<E>(Iterable<E> list, {Comparator<E>? comparator})
+    SortedList<E> Function<E>(Iterable<E> list,
+            {Comparator<E>? comparator, bool growable})
         createSortedList) {
   test('default ordering', () {
     final list = createSortedList<int>([5, 1, 2, 4, 3]);
@@ -4593,11 +4599,19 @@ void allSortedListTests(
     list.add(4);
     expect(list, [1, 3, 4, 5]);
   });
+  test('add (not growable)', () {
+    final list = createSortedList<int>([5, 1, 3], growable: false);
+    expect(() => list.add(4), throwsUnsupportedError);
+  });
   test('addAll', () {
     final list = createSortedList<int>([5, 1, 3]);
     expect(list, [1, 3, 5]);
     list.addAll([2, 4]);
     expect(list, [1, 2, 3, 4, 5]);
+  });
+  test('addAll (not growable)', () {
+    final list = createSortedList<int>([5, 1, 3], growable: false);
+    expect(() => list.addAll([2, 4]), throwsUnsupportedError);
   });
   test('remove', () {
     final list = createSortedList<int>([5, 1, 3]);
@@ -4606,6 +4620,10 @@ void allSortedListTests(
     expect(list, [1, 5]);
     expect(list.remove(3), isFalse);
     expect(list.remove(null), isFalse);
+  });
+  test('remove (not growable)', () {
+    final list = createSortedList<int>([5, 1, 3], growable: false);
+    expect(() => list.remove(3), throwsUnsupportedError);
   });
   test('stress', () {
     final random = Random(6412);
