@@ -135,16 +135,16 @@ abstract class CharMatcher with ToStringPrinter implements Pattern {
       };
 
   /// Determines if the given Unicode code-point `value` belongs to this
-  /// character class. See [match] for details.
-  @nonVirtual
-  bool call(int value) => match(value);
-
-  /// Determines if the given Unicode code-point `value` belongs to this
   /// character class.
   ///
   /// The behavior is undefined if the value is outside of the valid unicode
   /// code range.
   bool match(int value);
+
+  /// Determines if the given Unicode code-point `value` belongs to this
+  /// character class. See [match] for details.
+  @nonVirtual
+  bool call(int value) => match(value);
 
   /// Returns `true` if the [sequence] contains only matching characters.
   bool everyOf(String sequence) => sequence.runes.every(match);
