@@ -153,6 +153,21 @@ class Multiset<E> extends IterableBase<E> {
     }
   }
 
+  /// Returns a new [Multiset] by evaluating [callback] element-wise for each
+  /// distinct element of `this` and [other].
+  Multiset<E> combine(
+      Iterable<E> other, int Function(E element, int a, int b) callback) {
+    if (other is Multiset<E>) {
+      final result = Multiset<E>();
+      for (final element in {...distinct, ...other.distinct}) {
+        result.add(element, callback(element, this[element], other[element]));
+      }
+      return result;
+    } else {
+      return combine(Multiset.of(other), callback);
+    }
+  }
+
   /// Returns a new [Multiset] with the elements that are in the receiver as
   /// well as those in [other].
   Multiset<E> intersection(Iterable<Object?> other) {
