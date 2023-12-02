@@ -1,11 +1,22 @@
 # Changelog
 
 ## 4.1.0
+- Add a port of Python's difflib.
 - `CharMatcher` now works on all unicode code-points, correctly and efficiently matching unicode characters beyond UTF-16 bytes:
   - Add support for all [Unicode General Categories](https://www.unicode.org/reports/tr44/#General_Category_Values) and [Unicode Properties](https://www.unicode.org/reports/tr44/#Properties).
   - Add support for _Character Class Subtraction_ to `CharMatcher.pattern`.
   - For consistency `CharMatcher.whitespace()` is only matching ASCII whitespaces, to get the Unicode variant use `UnicodeCharMatcher.whiteSpace()`.
   - Add `CharMatcher.punctuation()` for ASCII punctuation characters.
+- Various improvements to graph library:
+  - Add support for unmodifiable graphs.
+  - Add support to compute the max-flow.
+  - Rename `GraphBuilder` with `GraphFactory`.
+  - Replace `Graph.getEdges` with `Graph.getEdge`, add `Graph.putEdge`.
+- Make object printer syntax to look like tuples, no need to have these weird curly braces anymore.
+- Add `double.nextUp`, `double.nextDown`, `double.nextTowards(double)`, and `double.ulp`.
+- Add growable flag to `SortedList` constructors.
+- Add Farey sequence to `Fraction`.
+- Improve documentation across many parts of the library.
 
 ## 4.0.0
 * Dart 3.0 requirement.

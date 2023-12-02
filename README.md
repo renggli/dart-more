@@ -12,12 +12,13 @@ More Dart — Literally
 A collection of extensively tested extensions that make Dart a better place:
 
 | Library                                                                                          | Description                                                        |
-|:-------------------------------------------------------------------------------------------------|:-------------------------------------------------------------------|
+|--------------------------------------------------------------------------------------------------|:-------------------------------------------------------------------|
 | [async](https://pub.dev/documentation/more/latest/async/async-library.html)                      | Extensions to `Stream`.                                            | 
 | [cache](https://pub.dev/documentation/more/latest/cache/cache-library.html)                      | Caching strategies and their expiry policy.                        |
-| [char_matcher](https://pub.dev/documentation/more/latest/char_matcher/char_matcher-library.html) | Character classes, their composition, and operations on strings.   |
+| [char_matcher](https://pub.dev/documentation/more/latest/char_matcher/char_matcher-library.html) |  Character classes, their composition, and operations on strings.  |
 | [collection](https://pub.dev/documentation/more/latest/collection/collection-library.html)       | Extensions to `Iterable` and new collection types.                 |
 | [comparator](https://pub.dev/documentation/more/latest/comparator/comparator-library.html)       | Common comparators, and extensions to perform advanced operations. | 
+| [diff](https://pub.dev/documentation/more/latest/comparator/diff-library.html)                   | Tools for comparing lists.                                         | 
 | [feature](https://pub.dev/documentation/more/latest/feature/feature-library.html)                | Information about the runtime environment.                         |
 | [functional](https://pub.dev/documentation/more/latest/functional/functional-library.html)       | Types and features known from functional programming.              |
 | [graph](https://pub.dev/documentation/more/latest/graph/graph-library.html)                      | Graph-theory objects and algorithms.                               |
@@ -56,6 +57,7 @@ import 'package:more/cache.dart';
 import 'package:more/char_matcher.dart';
 import 'package:more/collection.dart';
 import 'package:more/comparator.dart';
+import 'package:more/diff.dart';
 import 'package:more/feature.dart';
 import 'package:more/functional.dart';
 import 'package:more/graph.dart';
