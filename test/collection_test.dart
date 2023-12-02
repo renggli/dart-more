@@ -3141,25 +3141,23 @@ void main() {
         expect(firstSet.containsAll(['a', null]), isFalse);
       });
       test('combine', () {
-        expect(firstSet.combine(secondSet, (element, a, b) => a + b),
+        expect(firstSet.combine(secondSet, (_, a, b) => a + b),
             unorderedEquals(['a', 'a', 'b', 'c', 'c', 'c', 'd', 'd']));
-        expect(firstSet.combine(secondSet, (element, a, b) => min(a, b)),
+        expect(firstSet.combine(secondSet, (_, a, b) => min(a, b)),
             unorderedEquals(['a', 'c']));
-        expect(firstSet.combine(secondSet, (element, a, b) => max(0, a - b)),
+        expect(firstSet.combine(secondSet, (_, a, b) => max(0, a - b)),
             unorderedEquals(['b', 'c']));
-        expect(
-            firstSet.combine(secondSet, (element, a, b) => max(a - b, b - a)),
+        expect(firstSet.combine(secondSet, (_, a, b) => max(a - b, b - a)),
             unorderedEquals(['b', 'c', 'd', 'd']));
       });
       test('combine (iterable)', () {
-        expect(firstSet.combine(secondList, (element, a, b) => a + b),
+        expect(firstSet.combine(secondList, (_, a, b) => a + b),
             unorderedEquals(['a', 'a', 'b', 'c', 'c', 'c', 'd', 'd']));
-        expect(firstSet.combine(secondList, (element, a, b) => min(a, b)),
+        expect(firstSet.combine(secondList, (_, a, b) => min(a, b)),
             unorderedEquals(['a', 'c']));
-        expect(firstSet.combine(secondList, (element, a, b) => max(0, a - b)),
+        expect(firstSet.combine(secondList, (_, a, b) => max(0, a - b)),
             unorderedEquals(['b', 'c']));
-        expect(
-            firstSet.combine(secondList, (element, a, b) => max(a - b, b - a)),
+        expect(firstSet.combine(secondList, (_, a, b) => max(a - b, b - a)),
             unorderedEquals(['b', 'c', 'd', 'd']));
       });
       test('intersection', () {
