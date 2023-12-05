@@ -4,7 +4,7 @@ import 'upper.dart';
 
 class Empty<T> extends Bound<T> implements LowerBound<T>, UpperBound<T> {
   @override
-  bool contains(T value) => false;
+  bool contains(Comparator<T> comparator, T value) => false;
 
   @override
   int get hashCode => 81966051;

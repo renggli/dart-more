@@ -3,7 +3,7 @@ import 'package:meta/meta.dart';
 /// Abstract base-class for bounds.
 abstract class Bound<T> {
   /// Returns `true`, if the [value] satisfies these bounds.
-  bool contains(T value);
+  bool contains(Comparator<T> comparator, T value);
 
   /// Returns `true`, if the endpoint is excluded from these bounds.
   bool get isOpen => true;

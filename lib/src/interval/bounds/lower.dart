@@ -4,9 +4,7 @@ import '../bound.dart';
 abstract class LowerBound<T> extends Bound<T> {}
 
 class Above<T> extends LowerBound<T> {
-  Above(this.comparator, this.endpoint);
-
-  final Comparator<T> comparator;
+  Above(this.endpoint);
 
   @override
   final T endpoint;
@@ -15,7 +13,8 @@ class Above<T> extends LowerBound<T> {
   bool get isBounded => true;
 
   @override
-  bool contains(T value) => comparator(endpoint, value) < 0;
+  bool contains(Comparator<T> comparator, T value) =>
+      comparator(endpoint, value) < 0;
 
   @override
   int get hashCode => Object.hash(Above, endpoint);
@@ -29,9 +28,7 @@ class Above<T> extends LowerBound<T> {
 }
 
 class AboveOrEqual<T> extends LowerBound<T> {
-  AboveOrEqual(this.comparator, this.endpoint);
-
-  final Comparator<T> comparator;
+  AboveOrEqual(this.endpoint);
 
   @override
   final T endpoint;
@@ -43,7 +40,8 @@ class AboveOrEqual<T> extends LowerBound<T> {
   bool get isOpen => false;
 
   @override
-  bool contains(T value) => comparator(endpoint, value) <= 0;
+  bool contains(Comparator<T> comparator, T value) =>
+      comparator(endpoint, value) <= 0;
 
   @override
   int get hashCode => Object.hash(AboveOrEqual, endpoint);
@@ -58,7 +56,7 @@ class AboveOrEqual<T> extends LowerBound<T> {
 
 class AboveAll<T> extends LowerBound<T> {
   @override
-  bool contains(T value) => true;
+  bool contains(Comparator<T> comparator, T value) => true;
 
   @override
   int get hashCode => 9859154;

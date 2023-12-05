@@ -8,115 +8,58 @@ import 'bounds/upper.dart';
 /// See https://en.wikipedia.org/wiki/Interval_(mathematics).
 class Interval<T> {
   /// Returns a interval containing `{ x ∈ T | lower < x < upper }`.
-  factory Interval.open(T lower, T upper, {Comparator<T>? comparator}) {
-    comparator ??= naturalCompare;
-    return Interval<T>._(
-      Above<T>(comparator, lower),
-      Below<T>(comparator, upper),
-      comparator,
-    );
-  }
+  factory Interval.open(T lower, T upper,
+          {Comparator<T> comparator = naturalCompare}) =>
+      Interval<T>._(Above<T>(lower), Below<T>(upper), comparator);
 
   /// Returns a interval containing `{ x ∈ T | lower <= x <= upper }`.
-  factory Interval.closed(T lower, T upper, {Comparator<T>? comparator}) {
-    comparator ??= naturalCompare;
-    return Interval<T>._(
-      AboveOrEqual<T>(comparator, lower),
-      BelowOrEqual<T>(comparator, upper),
-      comparator,
-    );
-  }
+  factory Interval.closed(T lower, T upper,
+          {Comparator<T> comparator = naturalCompare}) =>
+      Interval<T>._(AboveOrEqual<T>(lower), BelowOrEqual<T>(upper), comparator);
 
   /// Returns a interval containing `{ x ∈ T | lower < x <= upper }`.
-  factory Interval.openClosed(T lower, T upper, {Comparator<T>? comparator}) {
-    comparator ??= naturalCompare;
-    return Interval<T>._(
-      Above<T>(comparator, lower),
-      BelowOrEqual<T>(comparator, upper),
-      comparator,
-    );
-  }
+  factory Interval.openClosed(T lower, T upper,
+          {Comparator<T> comparator = naturalCompare}) =>
+      Interval<T>._(Above<T>(lower), BelowOrEqual<T>(upper), comparator);
 
   /// Returns a interval containing `{ x ∈ T | lower <= x < upper }`.
-  factory Interval.closedOpen(T lower, T upper, {Comparator<T>? comparator}) {
-    comparator ??= naturalCompare;
-    return Interval<T>._(
-      AboveOrEqual<T>(comparator, lower),
-      Below<T>(comparator, upper),
-      comparator,
-    );
-  }
+  factory Interval.closedOpen(T lower, T upper,
+          {Comparator<T> comparator = naturalCompare}) =>
+      Interval<T>._(AboveOrEqual<T>(lower), Below<T>(upper), comparator);
 
   /// Returns a interval containing `{ x ∈ T | x < upper }`.
-  factory Interval.lessThan(T upper, {Comparator<T>? comparator}) {
-    comparator ??= naturalCompare;
-    return Interval<T>._(
-      AboveAll<T>(),
-      Below<T>(comparator, upper),
-      comparator,
-    );
-  }
+  factory Interval.lessThan(T upper,
+          {Comparator<T> comparator = naturalCompare}) =>
+      Interval<T>._(AboveAll<T>(), Below<T>(upper), comparator);
 
   /// Returns a interval containing `{ x ∈ T | x <= upper }`.
-  factory Interval.atMost(T upper, {Comparator<T>? comparator}) {
-    comparator ??= naturalCompare;
-    return Interval<T>._(
-      AboveAll<T>(),
-      BelowOrEqual<T>(comparator, upper),
-      comparator,
-    );
-  }
+  factory Interval.atMost(T upper,
+          {Comparator<T> comparator = naturalCompare}) =>
+      Interval<T>._(AboveAll<T>(), BelowOrEqual<T>(upper), comparator);
 
   /// Returns a interval containing `{ x ∈ T | lower < x }`.
-  factory Interval.greaterThan(T lower, {Comparator<T>? comparator}) {
-    comparator ??= naturalCompare;
-    return Interval<T>._(
-      Above<T>(comparator, lower),
-      BelowAll<T>(),
-      comparator,
-    );
-  }
+  factory Interval.greaterThan(T lower,
+          {Comparator<T> comparator = naturalCompare}) =>
+      Interval<T>._(Above<T>(lower), BelowAll<T>(), comparator);
 
   /// Returns a interval containing `{ x ∈ T | lower <= x }`.
-  factory Interval.atLeast(T lower, {Comparator<T>? comparator}) {
-    comparator ??= naturalCompare;
-    return Interval<T>._(
-      AboveOrEqual<T>(comparator, lower),
-      BelowAll<T>(),
-      comparator,
-    );
-  }
+  factory Interval.atLeast(T lower,
+          {Comparator<T> comparator = naturalCompare}) =>
+      Interval<T>._(AboveOrEqual<T>(lower), BelowAll<T>(), comparator);
 
   /// Returns an empty interval of type [T]: `{} = ∅`
-  factory Interval.empty({Comparator<T>? comparator}) {
-    comparator ??= naturalCompare;
-    return Interval<T>._(
-      Empty<T>(),
-      Empty<T>(),
-      comparator,
-    );
-  }
+  factory Interval.empty({Comparator<T> comparator = naturalCompare}) =>
+      Interval<T>._(Empty<T>(), Empty<T>(), comparator);
 
   /// Returns an interval containing a single value of type [T]:
   /// `{ x ∈ T | x = value }`.
-  factory Interval.single(T value, {Comparator<T>? comparator}) {
-    comparator ??= naturalCompare;
-    return Interval<T>._(
-      AboveOrEqual<T>(comparator, value),
-      BelowOrEqual<T>(comparator, value),
-      comparator,
-    );
-  }
+  factory Interval.single(T value,
+          {Comparator<T> comparator = naturalCompare}) =>
+      Interval<T>._(AboveOrEqual<T>(value), BelowOrEqual<T>(value), comparator);
 
   /// Returns a interval containing all values of type [T]: `{ x ∈ T }`
-  factory Interval.all({Comparator<T>? comparator}) {
-    comparator ??= naturalCompare;
-    return Interval<T>._(
-      AboveAll<T>(),
-      BelowAll<T>(),
-      comparator,
-    );
-  }
+  factory Interval.all({Comparator<T> comparator = naturalCompare}) =>
+      Interval<T>._(AboveAll<T>(), BelowAll<T>(), comparator);
 
   /// Constructs an interval from a [lower] and [upper] bound.
   Interval._(this.lower, this.upper, this.comparator)
@@ -148,6 +91,9 @@ class Interval<T> {
   /// Returns `true`, if this is a non-empty interval.
   bool get isNotEmpty => !isEmpty;
 
+  /// Returns `true`, if this is interval has a definite upper and lower bound.
+  bool get isBounded => lower.isBounded && upper.isBounded;
+
   /// Returns `true`, if this is a degenerated interval with a single value.
   bool get isSingle =>
       lower.isClosed &&
@@ -157,9 +103,10 @@ class Interval<T> {
       lower.endpoint == upper.endpoint;
 
   /// Returns true, if the [value] is included in this interval.
-  bool contains(T value) => lower.contains(value) && upper.contains(value);
+  bool contains(T value) =>
+      lower.contains(comparator, value) && upper.contains(comparator, value);
 
-  /// Returns the interaction of this interval and [other].
+  /// Returns the intersection of this interval and [other].
   Interval<T> intersection(Interval<T> other) {
     if (isEmpty) {
       return this;
