@@ -972,17 +972,41 @@ void main() {
         expect(iterable.map((each) => each.toString()),
             ['MapEntry(0: a)', 'MapEntry(1: b)', 'MapEntry(2: c)']);
       });
-      test('offset', () {
+      test('start', () {
+        final actual = ['a', 'b']
+            .indexed(start: 1)
+            .map((each) => '${each.value}-${each.index}')
+            .join(', ');
+        const expected = 'a-1, b-2';
+        expect(actual, expected);
+      });
+      test('step', () {
+        final actual = ['a', 'b']
+            .indexed(step: 2)
+            .map((each) => '${each.value}-${each.index}')
+            .join(', ');
+        const expected = 'a-0, b-2';
+        expect(actual, expected);
+      });
+      test('reverse', () {
+        final actual = ['a', 'b']
+            .indexed(start: 1, step: -1)
+            .map((each) => '${each.value}-${each.index}')
+            .join(', ');
+        const expected = 'a-1, b-0';
+        expect(actual, expected);
+      });
+      test('entries', () {
+        final iterable = ['a', 'b', 'c'].indexed();
+        expect(Map.fromEntries(iterable), {0: 'a', 1: 'b', 2: 'c'});
+      });
+      test('offset (deprecated)', () {
         final actual = ['a', 'b']
             .indexed(offset: 1)
             .map((each) => '${each.value}-${each.index}')
             .join(', ');
         const expected = 'a-1, b-2';
         expect(actual, expected);
-      });
-      test('entries', () {
-        final iterable = ['a', 'b', 'c'].indexed();
-        expect(Map.fromEntries(iterable), {0: 'a', 1: 'b', 2: 'c'});
       });
     });
     group('iterate', () {

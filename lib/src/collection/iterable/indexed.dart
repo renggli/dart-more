@@ -6,7 +6,7 @@ extension IndexedIterableExtension<E> on Iterable<E> {
   ///
   /// For example, the expression
   ///
-  ///     ['a', 'b'].indexed(offset: 1)
+  ///     ['a', 'b'].indexed(start: 1)
   ///       .map((each) => '${each.index}: ${each.value}')
   ///       .join(', ');
   ///
@@ -14,9 +14,15 @@ extension IndexedIterableExtension<E> on Iterable<E> {
   ///
   ///     '1: a, 2: b'
   ///
-  Iterable<Indexed<E>> indexed({int offset = 0}) sync* {
+  Iterable<Indexed<E>> indexed({
+    int start = 0,
+    int step = 1,
+    @Deprecated('Use `start` instead of `offset`') int? offset,
+  }) sync* {
+    var index = offset ?? start;
     for (final element in this) {
-      yield Indexed<E>(offset++, element);
+      yield Indexed<E>(index, element);
+      index += step;
     }
   }
 }
