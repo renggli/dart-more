@@ -401,4 +401,25 @@ void main() {
       });
     });
   });
+  group('scope', () {
+    test('also 1', () {
+      final results = <String>[];
+      [1, 2, 3]
+        ..also((list) => results.add('Before: $list'))
+        ..add(4)
+        ..also((list) => results.add('After: $list'));
+      expect(results, ['Before: [1, 2, 3]', 'After: [1, 2, 3, 4]']);
+    });
+    test('also 2', () {
+      final results = <String>[];
+      for (final value in <int?>[null, 42]) {
+        final result = value?.also((value) {
+          results.add('Value: $value');
+          return value;
+        });
+        expect(result, value);
+      }
+      expect(results, ['Value: 42']);
+    });
+  });
 }
