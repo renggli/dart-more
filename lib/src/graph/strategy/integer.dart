@@ -8,7 +8,7 @@ class IntegerStorageStrategy implements StorageStrategy<int> {
   Set<int> createSet() => IntegerSet(forward, backward);
 
   @override
-  Map<int, T> createMap<T>() => IntegerMap<T>(forward, backward);
+  Map<int, R> createMap<R>() => IntegerMap<R>(forward, backward);
 }
 
 int forward(int x) => x < 0 ? -2 * x + 1 : 2 * x;

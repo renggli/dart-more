@@ -8,7 +8,7 @@ class PositiveIntegerStorageStrategy implements StorageStrategy<int> {
   Set<int> createSet() => IntegerSet(identity, identity);
 
   @override
-  Map<int, T> createMap<T>() => IntegerMap<T>(identity, identity);
+  Map<int, R> createMap<R>() => IntegerMap<R>(identity, identity);
 }
 
 int identity(int x) {

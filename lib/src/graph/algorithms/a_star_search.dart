@@ -24,7 +24,7 @@ class AStarSearchIterable<V> extends IterableBase<Path<V, num>> {
   final bool Function(V vertex) targetPredicate;
   final Iterable<V> Function(V vertex) successorsOf;
   final num Function(V source, V target) edgeCost;
-  final num Function(V vertex) costEstimate;
+  final num Function(V source) costEstimate;
   final StorageStrategy<V> vertexStrategy;
 
   @override
@@ -34,12 +34,12 @@ class AStarSearchIterable<V> extends IterableBase<Path<V, num>> {
 class _AStarSearchIterator<V> implements Iterator<Path<V, num>> {
   _AStarSearchIterator(this.iterable)
       : states = iterable.vertexStrategy.createMap<_State<V>>() {
-    for (final vertex in iterable.startVertices) {
+    for (final source in iterable.startVertices) {
       final state = _State<V>(
-        vertex: vertex,
-        estimate: iterable.costEstimate(vertex),
+        vertex: source,
+        estimate: iterable.costEstimate(source),
       );
-      states[vertex] = state;
+      states[source] = state;
       todo.add(state);
     }
   }
