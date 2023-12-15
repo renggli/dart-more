@@ -1,6 +1,6 @@
 extension ScopeFunctionExtension<T> on T {
-  /// Evaluates the [callback] with the receiver as the argument and returns
-  /// its return value.
+  /// Evaluates the [callback] with the receiver as the argument. Returns
+  /// the results of [callback] as the return value.
   ///
   /// In a cascade, this is useful to chain calls to other functions:
   ///
@@ -10,9 +10,10 @@ extension ScopeFunctionExtension<T> on T {
   ///       ..also((list) => print('After: $list'));
   ///
   /// On a nullable value, this is useful to only evaluate code on non-null
-  /// objects:
+  /// objects. For example, to convert a nullable string to an int, one could
+  /// write:
   ///
-  ///     nullableObject?.also((nonNull) => print('Not null: $nonNull'));
+  ///     final value = nullableString?.also(int.tryParse);
   ///
   S also<S>(S Function(T value) callback) => callback(this);
 }
