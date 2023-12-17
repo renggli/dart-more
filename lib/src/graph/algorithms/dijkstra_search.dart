@@ -41,7 +41,7 @@ class _DijkstraSearchIterator<V> implements Iterator<Path<V, num>> {
 
   final DijkstraSearchIterable<V> iterable;
   final Map<V, _State<V>> states;
-  final PriorityQueue<_State<V>> todo = PriorityQueue();
+  final todo = PriorityQueue<_State<V>>();
 
   @override
   late Path<V, num> current;
@@ -56,10 +56,10 @@ class _DijkstraSearchIterator<V> implements Iterator<Path<V, num>> {
         final targetState = states.putIfAbsent(
             target, () => _State<V>(vertex: target, total: double.infinity));
         if (total < targetState.total) {
+          if (targetState.total.isFinite) todo.remove(targetState);
           targetState.parent = sourceState;
           targetState.value = value;
           targetState.total = total;
-          todo.remove(targetState);
           todo.add(targetState);
         }
       }
