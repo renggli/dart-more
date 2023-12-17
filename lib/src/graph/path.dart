@@ -1,3 +1,5 @@
+import 'package:collection/collection.dart';
+
 import '../../more.dart';
 
 /// A [path](https://en.wikipedia.org/wiki/Glossary_of_graph_theory#path)
@@ -46,15 +48,31 @@ class Path<V, E> with ToStringPrinter {
   }
 
   @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is Path<V, E> &&
+          vertices.length == other.vertices.length &&
+          ListEquality<V>().equals(vertices, other.vertices) &&
+          ListEquality<E>().equals(values, other.values));
+
+  @override
+  int get hashCode =>
+      ListEquality<V>().hash(vertices) ^ ListEquality<E>().hash(values);
+
+  @override
   ObjectPrinter get toStringPrinter => super.toStringPrinter
     ..addValue(vertices,
         printer: Printer<V>.standard().iterable(
             separator: ' → ',
             leadingItems: 3,
             trailingItems: 3,
-            afterPrinter: Printer.literal(' (${vertices.length - 1} edges)')))
+            afterPrinter: vertices.length > 6
+                ? Printer.literal(' (${vertices.length} total)')
+                : null))
     ..addValue(values,
         name: 'values',
+        printer:
+            Printer<E>.standard().iterable(leadingItems: 3, trailingItems: 3),
         omitPredicate: (values) => values.every((each) => each == null))
     ..addValue(this is Path<V, num> ? (this as Path<V, num>).cost : null,
         name: 'cost', omitNull: true);

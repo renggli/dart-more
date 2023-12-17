@@ -891,7 +891,7 @@ void main() {
         expect(path.source, 1);
         expect(path.target, 3);
         expect(path.edges, [isEdge(1, 2), isEdge(2, 3)]);
-        expect(path.toString(), endsWith('(1 → 2 → 3 (2 edges))'));
+        expect(path.toString(), endsWith('(1 → 2 → 3)'));
       });
       test('fromVertices (with data)', () {
         final path =
@@ -902,8 +902,7 @@ void main() {
         expect(path.target, 'c');
         expect(path.edges, [isEdge('a', 'b'), isEdge('b', 'c')]);
         expect(path.cost, 5);
-        expect(path.toString(),
-            endsWith('(a → b → c (2 edges), values: [2, 3], cost: 5)'));
+        expect(path.toString(), endsWith('(a → b → c, values: 2, 3, cost: 5)'));
       });
       test('fromEdges (without data)', () {
         final path = Path<int, void>.fromEdges([Edge(4, 5), Edge(5, 6)]);
@@ -912,7 +911,7 @@ void main() {
         expect(path.source, 4);
         expect(path.target, 6);
         expect(path.edges, [isEdge(4, 5), isEdge(5, 6)]);
-        expect(path.toString(), endsWith('(4 → 5 → 6 (2 edges))'));
+        expect(path.toString(), endsWith('(4 → 5 → 6)'));
       });
       test('fromEdges (with data)', () {
         final path = Path<String, int>.fromEdges(
@@ -923,8 +922,49 @@ void main() {
         expect(path.target, 'z');
         expect(path.edges, [isEdge('x', 'y'), isEdge('y', 'z')]);
         expect(path.cost, 9);
-        expect(path.toString(),
-            endsWith('(x → y → z (2 edges), values: [4, 5], cost: 9)'));
+        expect(path.toString(), endsWith('(x → y → z, values: 4, 5, cost: 9)'));
+      });
+      test('long path', () {
+        final vertices = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h'];
+        final values = [1, 2, 3, 4, 5, 6, 7];
+        final path = Path<String, int>.fromVertices(vertices, values: values);
+        expect(path.vertices, vertices);
+        expect(path.values, values);
+        expect(path.source, 'a');
+        expect(path.target, 'h');
+        expect(path.edges, [
+          isEdge('a', 'b', value: 1),
+          isEdge('b', 'c', value: 2),
+          isEdge('c', 'd', value: 3),
+          isEdge('d', 'e', value: 4),
+          isEdge('e', 'f', value: 5),
+          isEdge('f', 'g', value: 6),
+          isEdge('g', 'h', value: 7),
+        ]);
+        expect(
+            path.toString(),
+            endsWith('(a → b → c → … → f → g → h (8 total), '
+                'values: 1, 2, 3, …, 5, 6, 7, '
+                'cost: 28)'));
+      });
+      final a = Path<String, int>.fromVertices(['a', 'b', 'c'], values: [1, 2]);
+      final b = Path<String, int>.fromVertices(['a', 'b', 'd'], values: [2, 1]);
+      final c = Path<String, int>.fromEdges(
+          [Edge('a', 'b', value: 1), Edge('b', 'c', value: 2)]);
+      test('equals', () {
+        expect(a == a, isTrue);
+        expect(a == b, isFalse);
+        expect(a == c, isTrue);
+        expect(b == a, isFalse);
+        expect(b == b, isTrue);
+        expect(b == c, isFalse);
+        expect(c == a, isTrue);
+        expect(c == b, isFalse);
+        expect(c == c, isTrue);
+      });
+      test('hashCode', () {
+        expect(a.hashCode == b.hashCode, isFalse);
+        expect(a.hashCode == c.hashCode, isTrue);
       });
     });
   });
