@@ -53,10 +53,12 @@ class _DijkstraSearchIterator<V> implements Iterator<Path<V, num>> {
       for (final target in iterable.successorsOf(sourceState.vertex)) {
         final value = iterable.edgeCost(sourceState.vertex, target);
         final total = sourceState.total + value;
-        final targetState = states.putIfAbsent(
-            target, () => _State<V>(vertex: target, total: double.infinity));
+        final targetState =
+            states[target] ?? _State<V>(vertex: target, total: double.infinity);
         if (total < targetState.total) {
-          if (targetState.total.isFinite) todo.remove(targetState);
+          targetState.total.isFinite
+              ? todo.remove(targetState)
+              : states[target] = targetState;
           targetState.parent = sourceState;
           targetState.value = value;
           targetState.total = total;
