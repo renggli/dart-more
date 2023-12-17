@@ -1,3 +1,4 @@
+import 'strategy/identity.dart';
 import 'strategy/integer.dart';
 import 'strategy/object.dart';
 import 'strategy/positive_integer.dart';
@@ -9,6 +10,9 @@ abstract class StorageStrategy<T> {
 
   /// Returns a strategy using canonical collection objects.
   factory StorageStrategy.object() = ObjectStorageStrategy;
+
+  /// Returns a strategy using canonical collection objects and object identity.
+  factory StorageStrategy.identity() = IdentityStorageStrategy;
 
   /// Returns a strategy for [int] objects.
   static StorageStrategy<int> integer() => IntegerStorageStrategy();

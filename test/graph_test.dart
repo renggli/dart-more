@@ -148,13 +148,32 @@ void main() {
       test('set', () {
         final set = strategy.createSet();
         set.addAll(['foo', 'bar', 'foo']);
-        expect(set, ['foo', 'bar']);
+        expect(set, hasLength(2));
+        expect(set, unorderedEquals(['foo', 'bar']));
       });
       test('map', () {
         final map = strategy.createMap<int>();
         map['foo'] = 42;
         map['bar'] = 43;
+        expect(map, hasLength(2));
         expect(map, {'foo': 42, 'bar': 43});
+      });
+    });
+    group('identity', () {
+      final strategy = StorageStrategy<Point<int>>.identity();
+      final first = const Point(1, 2),
+          second = const Point(2, 3) - const Point(1, 1);
+      test('set', () {
+        final set = strategy.createSet();
+        set.addAll([first, second]);
+        expect(set, unorderedEquals([first, second]));
+      });
+      test('map', () {
+        final map = strategy.createMap<int>();
+        map[first] = 42;
+        map[second] = 43;
+        expect(map.keys, unorderedEquals([first, second]));
+        expect(map.values, unorderedEquals([42, 43]));
       });
     });
     group('integer', () {
