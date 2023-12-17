@@ -99,7 +99,7 @@ class _State<V> implements Comparable<_State<V>> {
     this.parent,
     this.value = 0,
     this.total = 0,
-    this.estimate = double.infinity,
+    required this.estimate,
   });
 
   final V vertex;
