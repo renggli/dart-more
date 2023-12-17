@@ -58,12 +58,16 @@ class _AStarSearchIterator<V> implements Iterator<Path<V, num>> {
       for (final target in iterable.successorsOf(sourceState.vertex)) {
         final value = iterable.edgeCost(sourceState.vertex, target);
         final total = sourceState.total + value;
-        final targetState =
-            states[target] ?? _State<V>(vertex: target, total: double.infinity);
-        if (total < targetState.total) {
-          targetState.total.isFinite
-              ? todo.remove(targetState)
-              : states[target] = targetState;
+        final targetState = states[target];
+        if (targetState == null) {
+          todo.add(states[target] = _State<V>(
+              vertex: target,
+              parent: sourceState,
+              value: value,
+              total: total,
+              estimate: total + iterable.costEstimate(target)));
+        } else if (total < targetState.total) {
+          todo.remove(targetState);
           targetState.parent = sourceState;
           targetState.value = value;
           targetState.total = total;
