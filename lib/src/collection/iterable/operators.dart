@@ -16,19 +16,6 @@ extension OperatorsIterableExtension<E> on Iterable<E> {
   E min({Comparator<E>? comparator, E Function()? orElse}) =>
       (comparator ?? naturalCompare).minOf(this, orElse: orElse);
 
-  /// Returns a list of the [count] smallest elements of this [Iterable]. The
-  /// elements need to be [Comparable], unless a custom [comparator] is
-  /// provided.
-  ///
-  /// For example
-  ///
-  ///     [3, 1, 2].smallest(2)
-  ///
-  /// returns `[1, 2]`.
-  ///
-  List<E> smallest(int count, {Comparator<E>? comparator}) =>
-      (comparator ?? naturalCompare).smallest(this, count);
-
   /// Returns the maximum of this [Iterable]. The elements need to be
   /// [Comparable], unless a custom [comparator] is provided.
   ///
@@ -43,6 +30,35 @@ extension OperatorsIterableExtension<E> on Iterable<E> {
   ///
   E max({Comparator<E>? comparator, E Function()? orElse}) =>
       (comparator ?? naturalCompare).maxOf(this, orElse: orElse);
+
+  /// Returns the minimum and maximum of this [Iterable] at once. The elements
+  /// need to be [Comparable], unless a custom [comparator] is provided.
+  ///
+  /// Throws a [StateError] if the iterable is empty, unless an [orElse]
+  /// function is provided.
+  ///
+  /// For example
+  ///
+  ///     [3, 1, 2].minMax()
+  ///
+  /// returns `(min: 1, max: 3)`.
+  ///
+  ({E min, E max}) minMax(
+          {Comparator<E>? comparator, ({E min, E max}) Function()? orElse}) =>
+      (comparator ?? naturalCompare).minMaxOf(this, orElse: orElse);
+
+  /// Returns a list of the [count] smallest elements of this [Iterable]. The
+  /// elements need to be [Comparable], unless a custom [comparator] is
+  /// provided.
+  ///
+  /// For example
+  ///
+  ///     [3, 1, 2].smallest(2)
+  ///
+  /// returns `[1, 2]`.
+  ///
+  List<E> smallest(int count, {Comparator<E>? comparator}) =>
+      (comparator ?? naturalCompare).smallest(this, count);
 
   /// Returns a list of the [count] largest elements of this [Iterable]. The
   /// elements need to be [Comparable], unless a custom [comparator] is

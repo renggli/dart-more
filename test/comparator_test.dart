@@ -391,6 +391,32 @@ void main() {
       expect(naturalInt.largest([2, 3, 1], 5), [3, 2, 1]);
       expect(naturalInt.largest([2, 3, 1, 5, 4], 5), [5, 4, 3, 2, 1]);
     });
+    group('min', () {
+      test('min', () {
+        expect(naturalInt.min(1, 1), 1);
+        expect(naturalInt.min(1, 2), 1);
+        expect(naturalInt.min(2, 1), 1);
+        expect(naturalInt.min(2, 2), 2);
+      });
+      test('minOf', () {
+        expect(() => naturalInt.minOf([]), throwsStateError);
+        expect(naturalInt.minOf([1]), 1);
+        expect(naturalInt.minOf([1, 2]), 1);
+        expect(naturalInt.minOf([2, 1]), 1);
+        expect(naturalInt.minOf([1, 2, 3]), 1);
+        expect(naturalInt.minOf([1, 3, 2]), 1);
+        expect(naturalInt.minOf([2, 1, 3]), 1);
+        expect(naturalInt.minOf([2, 3, 1]), 1);
+        expect(naturalInt.minOf([3, 1, 2]), 1);
+        expect(naturalInt.minOf([3, 2, 1]), 1);
+      });
+      test('minOf orElse', () {
+        expect(naturalInt.minOf([], orElse: () => -1), -1);
+        expect(naturalInt.minOf([1], orElse: () => -1), 1);
+        expect(naturalInt.minOf([1, 2], orElse: () => -1), 1);
+        expect(naturalInt.minOf([1, 2, 3], orElse: () => -1), 1);
+      });
+    });
     group('max', () {
       test('max', () {
         expect(naturalInt.max(1, 1), 1);
@@ -417,30 +443,28 @@ void main() {
         expect(naturalInt.maxOf([1, 2, 3], orElse: () => -1), 3);
       });
     });
-    group('min', () {
-      test('min', () {
-        expect(naturalInt.min(1, 1), 1);
-        expect(naturalInt.min(1, 2), 1);
-        expect(naturalInt.min(2, 1), 1);
-        expect(naturalInt.min(2, 2), 2);
+    group('min & max', () {
+      test('minMaxOf', () {
+        expect(() => naturalInt.maxOf([]), throwsStateError);
+        expect(naturalInt.minMaxOf([1]), (min: 1, max: 1));
+        expect(naturalInt.minMaxOf([1, 2]), (min: 1, max: 2));
+        expect(naturalInt.minMaxOf([2, 1]), (min: 1, max: 2));
+        expect(naturalInt.minMaxOf([1, 2, 3]), (min: 1, max: 3));
+        expect(naturalInt.minMaxOf([1, 3, 2]), (min: 1, max: 3));
+        expect(naturalInt.minMaxOf([2, 1, 3]), (min: 1, max: 3));
+        expect(naturalInt.minMaxOf([2, 3, 1]), (min: 1, max: 3));
+        expect(naturalInt.minMaxOf([3, 1, 2]), (min: 1, max: 3));
+        expect(naturalInt.minMaxOf([3, 2, 1]), (min: 1, max: 3));
       });
-      test('minOf', () {
-        expect(() => naturalInt.minOf([]), throwsStateError);
-        expect(naturalInt.minOf([1]), 1);
-        expect(naturalInt.minOf([1, 2]), 1);
-        expect(naturalInt.minOf([2, 1]), 1);
-        expect(naturalInt.minOf([1, 2, 3]), 1);
-        expect(naturalInt.minOf([1, 3, 2]), 1);
-        expect(naturalInt.minOf([2, 1, 3]), 1);
-        expect(naturalInt.minOf([2, 3, 1]), 1);
-        expect(naturalInt.minOf([3, 1, 2]), 1);
-        expect(naturalInt.minOf([3, 2, 1]), 1);
-      });
-      test('minOf orElse', () {
-        expect(naturalInt.minOf([], orElse: () => -1), -1);
-        expect(naturalInt.minOf([1], orElse: () => -1), 1);
-        expect(naturalInt.minOf([1, 2], orElse: () => -1), 1);
-        expect(naturalInt.minOf([1, 2, 3], orElse: () => -1), 1);
+      test('minMaxOf orElse', () {
+        const sentinel = (min: -1, max: -1);
+        expect(naturalInt.minMaxOf([], orElse: () => sentinel), sentinel);
+        expect(
+            naturalInt.minMaxOf([1], orElse: () => sentinel), (min: 1, max: 1));
+        expect(naturalInt.minMaxOf([1, 2], orElse: () => sentinel),
+            (min: 1, max: 2));
+        expect(naturalInt.minMaxOf([1, 2, 3], orElse: () => sentinel),
+            (min: 1, max: 3));
       });
     });
     group('ordered', () {

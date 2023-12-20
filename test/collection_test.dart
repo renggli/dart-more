@@ -1062,6 +1062,21 @@ void main() {
           expect([3, 2, 1].max(comparator: reverse), 1);
         });
       });
+      group('min/max', () {
+        const sentinel = (min: -1, max: -1);
+        test('empty', () {
+          expect(() => empty.minMax(), throwsStateError);
+          expect(empty.minMax(orElse: () => sentinel), sentinel);
+        });
+        test('comparable', () {
+          expect([1, 2, 3].minMax(), (min: 1, max: 3));
+          expect([3, 2, 1].minMax(), (min: 1, max: 3));
+        });
+        test('custom comparator', () {
+          expect([1, 2, 3].minMax(comparator: reverse), (min: 3, max: 1));
+          expect([3, 2, 1].minMax(comparator: reverse), (min: 3, max: 1));
+        });
+      });
       group('smallest', () {
         test('empty', () {
           expect(empty.smallest(0), isEmpty);
