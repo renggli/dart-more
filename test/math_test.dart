@@ -461,11 +461,52 @@ void main() {
       expect(5.lcm(0), 0);
       expect(0.lcm(5), 0);
     });
+    test('Iterable<int>', () {
+      expect([4].lcm(), 4);
+      expect([2, 5].lcm(), 10);
+      expect([2, 3, 5].lcm(), 30);
+      expect([2, 9, 3, 2].lcm(), 18);
+    });
     test('BigInt', () {
       expect(BigInt.from(5).lcm(BigInt.from(2)), BigInt.from(10));
       expect(BigInt.from(2).lcm(BigInt.from(5)), BigInt.from(10));
       expect(BigInt.from(5).lcm(BigInt.from(0)), BigInt.from(0));
       expect(BigInt.from(0).lcm(BigInt.from(5)), BigInt.from(0));
+    });
+    test('Iterable<BigInt>', () {
+      expect([BigInt.from(4)].lcm(), BigInt.from(4));
+      expect([BigInt.from(2), BigInt.from(5)].lcm(), BigInt.from(10));
+      expect([BigInt.from(2), BigInt.from(3), BigInt.from(5)].lcm(),
+          BigInt.from(30));
+      expect(
+          [BigInt.from(2), BigInt.from(9), BigInt.from(3), BigInt.from(2)]
+              .lcm(),
+          BigInt.from(18));
+    });
+  });
+  group('gcd', () {
+    test('int', () {
+      expect(48.gcd(18), 6);
+      expect(18.gcd(48), 6);
+      expect(41.gcd(53), 1);
+      expect(53.gcd(41), 1);
+    });
+    test('Iterable<int>', () {
+      expect([48].gcd(), 48);
+      expect([48, 18].gcd(), 6);
+      expect([48, 18, 53].gcd(), 1);
+    });
+    test('BigInt', () {
+      expect(BigInt.from(48).gcd(BigInt.from(18)), BigInt.from(6));
+      expect(BigInt.from(18).gcd(BigInt.from(48)), BigInt.from(6));
+      expect(BigInt.from(41).gcd(BigInt.from(53)), BigInt.from(1));
+      expect(BigInt.from(53).gcd(BigInt.from(41)), BigInt.from(1));
+    });
+    test('Iterable<BigInt>', () {
+      expect([BigInt.from(48)].gcd(), BigInt.from(48));
+      expect([BigInt.from(48), BigInt.from(18)].gcd(), BigInt.from(6));
+      expect([BigInt.from(48), BigInt.from(18), BigInt.from(53)].gcd(),
+          BigInt.from(1));
     });
   });
   group('math', () {
