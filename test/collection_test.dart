@@ -4218,6 +4218,7 @@ void main() {
         expect('abcd'.removePrefix('ab'), 'cd');
         expect('abcd'.removePrefix('abc'), 'd');
         expect('abcd'.removePrefix('abcd'), '');
+        expect('abcd'.removePrefix('bcd'), 'abcd');
         expect('abcd'.removePrefix('xyz'), 'abcd');
       });
       test('regexp', () {
@@ -4226,6 +4227,7 @@ void main() {
         expect('abcd'.removePrefix(RegExp('ab')), 'cd');
         expect('abcd'.removePrefix(RegExp('abc')), 'd');
         expect('abcd'.removePrefix(RegExp('abcd')), '');
+        expect('abcd'.removePrefix(RegExp('bcd')), 'abcd');
         expect('abcd'.removePrefix(RegExp('xyz')), 'abcd');
       });
     });
@@ -4236,7 +4238,17 @@ void main() {
         expect('abcd'.removeSuffix('cd'), 'ab');
         expect('abcd'.removeSuffix('bcd'), 'a');
         expect('abcd'.removeSuffix('abcd'), '');
+        expect('abcd'.removeSuffix('abc'), 'abcd');
         expect('abcd'.removeSuffix('xyz'), 'abcd');
+      });
+      test('regexp', () {
+        expect('abcd'.removeSuffix(RegExp('')), 'abcd');
+        expect('abcd'.removeSuffix(RegExp('d')), 'abc');
+        expect('abcd'.removeSuffix(RegExp('cd')), 'ab');
+        expect('abcd'.removeSuffix(RegExp('bcd')), 'a');
+        expect('abcd'.removeSuffix(RegExp('abcd')), '');
+        expect('abcd'.removeSuffix(RegExp('abc')), 'abcd');
+        expect('abcd'.removeSuffix(RegExp('xyz')), 'abcd');
       });
     });
     group('converters', () {

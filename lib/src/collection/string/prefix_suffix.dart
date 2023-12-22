@@ -12,12 +12,16 @@ extension PrefixSuffixStringExtension on String {
     return this;
   }
 
-  /// If the string ends with the suffix, return this [String] with the suffix
-  /// removed, otherwise return `this`.
-  String removeSuffix(String other) {
-    if (endsWith(other)) {
-      return substring(0, length - other.length);
+  /// If the string ends with the suffix pattern returns this [String]
+  /// with the suffix removed, otherwise return `this`.
+  String removeSuffix(Pattern pattern) {
+    if (pattern is String && endsWith(pattern)) {
+      return substring(0, length - pattern.length);
     }
-    return this;
+    final end = lastIndexOf(pattern);
+    if (end == -1) return this;
+    final match = pattern.matchAsPrefix(this, end)!;
+    if (match.end < length) return this;
+    return substring(0, end);
   }
 }
