@@ -65,6 +65,7 @@ export 'src/collection/string/convert_first_last.dart'
     show ConvertFirstLastStringExtension;
 export 'src/collection/string/indent_dedent.dart'
     show IndentDedentStringExtension;
+export 'src/collection/string/partition.dart' show PartitionStringExtension;
 export 'src/collection/string/prefix_suffix.dart'
     show PrefixSuffixStringExtension;
 export 'src/collection/string/string_list.dart' show StringListExtension;

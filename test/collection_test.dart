@@ -4176,6 +4176,41 @@ void main() {
             plenty.sublist(5, 7).toString(), plenty.toString().substring(5, 7));
       });
     });
+    group('partition', () {
+      final regexp = RegExp(r',+');
+      group('partition', () {
+        test('string', () {
+          expect('123,456,789'.partition(','), ['123', ',', '456,789']);
+          expect('123;456;789'.partition(','), ['123;456;789', '', '']);
+        });
+        test('regexp', () {
+          expect('123,,456,,789'.partition(regexp), ['123', ',,', '456,,789']);
+          expect('123;;456;;789'.partition(regexp), ['123;;456;;789', '', '']);
+        });
+        test('start', () {
+          expect('123,456,789'.partition(',', 3), ['123', ',', '456,789']);
+          expect('123,456,789'.partition(',', 6), ['123,456', ',', '789']);
+          expect('123,456,789'.partition(',', 9), ['123,456,789', '', '']);
+        });
+      });
+      group('last partition', () {
+        test('string', () {
+          expect('123,456,789'.lastPartition(','), ['123,456', ',', '789']);
+          expect('123;456;789'.lastPartition(','), ['', '', '123;456;789']);
+        });
+        test('regexp', () {
+          expect(
+              '123,,456,,789'.lastPartition(regexp), ['123,,456,', ',', '789']);
+          expect(
+              '123;;456;;789'.lastPartition(regexp), ['', '', '123;;456;;789']);
+        });
+        test('start', () {
+          expect('123,456,789'.lastPartition(',', 2), ['', '', '123,456,789']);
+          expect('123,456,789'.lastPartition(',', 5), ['123', ',', '456,789']);
+          expect('123,456,789'.lastPartition(',', 7), ['123,456', ',', '789']);
+        });
+      });
+    });
     group('remove prefix', () {
       test('string', () {
         expect('abcd'.removePrefix(''), 'abcd');
@@ -4185,7 +4220,7 @@ void main() {
         expect('abcd'.removePrefix('abcd'), '');
         expect('abcd'.removePrefix('xyz'), 'abcd');
       });
-      test('regexp pattern', () {
+      test('regexp', () {
         expect('abcd'.removePrefix(RegExp('')), 'abcd');
         expect('abcd'.removePrefix(RegExp('a')), 'bcd');
         expect('abcd'.removePrefix(RegExp('ab')), 'cd');
