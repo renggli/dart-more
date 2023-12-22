@@ -20,6 +20,7 @@ export 'src/collection/iterable/indexed.dart'
 export 'src/collection/iterable/iterate.dart' show iterate;
 export 'src/collection/iterable/operators.dart' show OperatorsIterableExtension;
 export 'src/collection/iterable/pairwise.dart' show PairwiseIterableExtension;
+export 'src/collection/iterable/partition.dart' show PartitionIterableExtension;
 export 'src/collection/iterable/permutations.dart'
     show PermutationComparableListExtension, PermutationIterableExtension;
 export 'src/collection/iterable/power_set.dart' show PowerSetIterableExtension;

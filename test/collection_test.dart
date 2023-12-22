@@ -1145,6 +1145,28 @@ void main() {
         expect(iterator, [(1, 2), (2, 3), (3, 4)]);
       });
     });
+    group('pairwise', () {
+      test('empty', () {
+        final result = <int>[].partition((each) => each.isEven);
+        expect(result.truthy, isEmpty);
+        expect(result.falsey, isEmpty);
+      });
+      test('single true', () {
+        final result = ['hello'].partition((each) => true);
+        expect(result.truthy, ['hello']);
+        expect(result.falsey, isEmpty);
+      });
+      test('single false', () {
+        final result = ['world'].partition((each) => false);
+        expect(result.truthy, isEmpty);
+        expect(result.falsey, ['world']);
+      });
+      test('example', () {
+        final result = [1, 2, 3, 4].partition((each) => each.isEven);
+        expect(result.truthy, [2, 4]);
+        expect(result.falsey, [1, 3]);
+      });
+    });
     group('permutations', () {
       group('full permutations', () {
         test('empty', () {
