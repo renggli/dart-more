@@ -48,7 +48,7 @@ class ReversedGraph<V, E> extends ForwardingGraph<V, E> {
 
   @override
   void removeEdge(V source, V target) => delegate.removeEdge(target, source);
-}
 
-Edge<V, E> _reverse<V, E>(Edge<V, E> edge) =>
-    Edge<V, E>(edge.target, edge.source, value: edge.value);
+  Edge<V, E> _reverse(Edge<V, E> edge) =>
+      Edge<V, E>.directed(edge.target, edge.source, value: edge.value);
+}

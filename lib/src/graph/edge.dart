@@ -1,15 +1,30 @@
 import '../../printer.dart';
+import 'model/directed.dart';
+import 'model/undirected.dart';
 
 /// An [edge](https://en.wikipedia.org/wiki/Glossary_of_graph_theory#edge)
 /// withing a graph connects a [source] and a [target] vertex.
 ///
-/// Edges are typically ephemeral objects and only created on demand.
+/// Edges are typically ephemeral objects and are only created on demand.
 ///
-/// Two edges are considered equal if they have matching [source] and [target]
-/// vertices; the [value] is not used for comparison.
-class Edge<V, E> with ToStringPrinter {
-  /// Constructs
-  Edge(this.source, this.target, {E? value}) : value = value as E;
+/// There are two types of edges, [DirectedEdge] and [UndirectedEdge]. The
+/// only difference is that undirected edges consider [source] and [target]
+/// interchangeable for comparison operations. The [value] is never used
+/// for comparison.
+abstract class Edge<V, E> with ToStringPrinter {
+  /// Constructs a directed edge.
+  const factory Edge.directed(V source, V target, {E? value}) =
+      DirectedEdge<V, E>;
+
+  /// Constructs an undirected edge.
+  const factory Edge.undirected(V source, V target, {E? value}) =
+      UndirectedEdge<V, E>;
+
+  /// Generative constructor.
+  const Edge(this.source, this.target, {E? value}) : value = value as E;
+
+  /// Returns `true`, if the edge is directed.
+  bool get isDirected;
 
   /// Origin vertex of this edge.
   final V source;
@@ -19,17 +34,4 @@ class Edge<V, E> with ToStringPrinter {
 
   /// Edge specific data.
   final E value;
-
-  @override
-  bool operator ==(Object other) =>
-      identical(this, other) ||
-      (other is Edge && source == other.source && target == other.target);
-
-  @override
-  int get hashCode => Object.hash(source, target);
-
-  @override
-  ObjectPrinter get toStringPrinter => super.toStringPrinter
-    ..addValue('$source → $target')
-    ..addValue(value, name: 'value', omitNull: true);
 }

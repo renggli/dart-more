@@ -1,3 +1,4 @@
+import '../../printer/object/object.dart';
 import '../edge.dart';
 import '../graph.dart';
 import '../strategy.dart';
@@ -22,9 +23,9 @@ class DirectedGraph<V, E> extends Graph<V, E> {
   Iterable<V> get vertices => adjacency.keys;
 
   @override
-  Iterable<Edge<V, E>> get edges => adjacency.entries.expand((outer) => outer
-      .value.outgoing.entries
-      .map((inner) => Edge<V, E>(outer.key, inner.key, value: inner.value)));
+  Iterable<Edge<V, E>> get edges => adjacency.entries.expand((outer) =>
+      outer.value.outgoing.entries.map((inner) =>
+          DirectedEdge<V, E>(outer.key, inner.key, value: inner.value)));
 
   @override
   Iterable<Edge<V, E>> edgesOf(V vertex) =>
@@ -32,25 +33,21 @@ class DirectedGraph<V, E> extends Graph<V, E> {
 
   @override
   Iterable<Edge<V, E>> incomingEdgesOf(V vertex) =>
-      adjacency[vertex]
-          ?.incoming
-          .entries
-          .map((entry) => Edge<V, E>(entry.key, vertex, value: entry.value)) ??
+      adjacency[vertex]?.incoming.entries.map((entry) =>
+          DirectedEdge<V, E>(entry.key, vertex, value: entry.value)) ??
       const [];
 
   @override
   Iterable<Edge<V, E>> outgoingEdgesOf(V vertex) =>
-      adjacency[vertex]
-          ?.outgoing
-          .entries
-          .map((entry) => Edge<V, E>(vertex, entry.key, value: entry.value)) ??
+      adjacency[vertex]?.outgoing.entries.map((entry) =>
+          DirectedEdge<V, E>(vertex, entry.key, value: entry.value)) ??
       const [];
 
   @override
   Edge<V, E>? getEdge(V source, V target) {
     if (adjacency[source]?.outgoing case final targetAdjacency?) {
       if (targetAdjacency[target] case final E value) {
-        return Edge<V, E>(source, target, value: value);
+        return DirectedEdge<V, E>(source, target, value: value);
       }
     }
     return null;
@@ -105,4 +102,26 @@ class DirectedGraph<V, E> extends Graph<V, E> {
       );
 }
 
+/// Directed edge implementation.
+class DirectedEdge<V, E> extends Edge<V, E> {
+  const DirectedEdge(super.source, super.target, {super.value});
+
+  @override
+  bool get isDirected => true;
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is Edge && source == other.source && target == other.target);
+
+  @override
+  int get hashCode => Object.hash(source, target);
+
+  @override
+  ObjectPrinter get toStringPrinter => super.toStringPrinter
+    ..addValue('$source → $target')
+    ..addValue(value, name: 'value', omitNull: true);
+}
+
+/// Record to keep track of incoming and outgoing edges in adjacency [Map].
 typedef VertexWrapper<V, E> = ({Map<V, E> incoming, Map<V, E> outgoing});

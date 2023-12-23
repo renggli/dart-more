@@ -12,11 +12,13 @@ Matcher isEdge<E, V>(
   dynamic source,
   dynamic target, {
   dynamic value = anything,
+  dynamic isDirected = anything,
 }) =>
     isA<Edge<E, V>>()
         .having((edge) => edge.source, 'source', source)
         .having((edge) => edge.target, 'target', target)
         .having((edge) => edge.value, 'value', value)
+        .having((edge) => edge.isDirected, 'isDirected', isDirected)
         .having((edge) => edge.toString(), 'toString', contains('Edge'));
 
 @optionalTypeArgs
@@ -327,9 +329,20 @@ void main() {
           graph.addEdge('Hello', 'World', value: 42);
           expect(graph.vertices, unorderedEquals(['Hello', 'World']));
           expect(graph.edges, [
-            isEdge('Hello', 'World', value: 42),
+            isEdge('Hello', 'World', value: 42, isDirected: true),
           ]);
           expect(graph.edges.single.value, 42);
+          expectInvariants(graph);
+        });
+        test('add self-edge', () {
+          final graph = Graph<String, int>.directed();
+          graph.addEdge('Myself', 'Myself', value: 42);
+          expect(graph.vertices, unorderedEquals(['Myself']));
+          expect(
+              graph.edges,
+              unorderedEquals([
+                isEdge('Myself', 'Myself', value: 42, isDirected: true),
+              ]));
           expectInvariants(graph);
         });
         test('put edge', () {
@@ -340,8 +353,8 @@ void main() {
           expect(
               graph.edges,
               unorderedEquals([
-                isEdge('a', 'b', value: [1]),
-                isEdge('b', 'a', value: [2]),
+                isEdge('a', 'b', value: [1], isDirected: true),
+                isEdge('b', 'a', value: [2], isDirected: true),
               ]));
           expectInvariants(graph);
         });
@@ -384,46 +397,48 @@ void main() {
           expect(
               graph.edges,
               unorderedEquals([
-                isEdge(0, 1, value: 'a'),
-                isEdge(1, 2, value: 'b'),
+                isEdge(0, 1, value: 'a', isDirected: true),
+                isEdge(1, 2, value: 'b', isDirected: true),
               ]));
         });
         test('edgesOf', () {
           expect(graph.edgesOf(0), [
-            isEdge(0, 1, value: 'a'),
+            isEdge(0, 1, value: 'a', isDirected: true),
           ]);
           expect(
               graph.edgesOf(1),
               unorderedEquals([
-                isEdge(0, 1, value: 'a'),
-                isEdge(1, 2, value: 'b'),
+                isEdge(0, 1, value: 'a', isDirected: true),
+                isEdge(1, 2, value: 'b', isDirected: true),
               ]));
           expect(graph.edgesOf(2), [
-            isEdge(1, 2, value: 'b'),
+            isEdge(1, 2, value: 'b', isDirected: true),
           ]);
         });
         test('incomingEdgesOf', () {
           expect(graph.incomingEdgesOf(0), isEmpty);
           expect(graph.incomingEdgesOf(1), [
-            isEdge(0, 1, value: 'a'),
+            isEdge(0, 1, value: 'a', isDirected: true),
           ]);
           expect(graph.incomingEdgesOf(2), [
-            isEdge(1, 2, value: 'b'),
+            isEdge(1, 2, value: 'b', isDirected: true),
           ]);
         });
         test('outgoingEdgesOf', () {
           expect(graph.outgoingEdgesOf(0), [
-            isEdge(0, 1, value: 'a'),
+            isEdge(0, 1, value: 'a', isDirected: true),
           ]);
           expect(graph.outgoingEdgesOf(1), [
-            isEdge(1, 2, value: 'b'),
+            isEdge(1, 2, value: 'b', isDirected: true),
           ]);
           expect(graph.outgoingEdgesOf(2), isEmpty);
         });
         test('getEdge', () {
-          expect(graph.getEdge(0, 1), isEdge(0, 1, value: 'a'));
+          expect(
+              graph.getEdge(0, 1), isEdge(0, 1, value: 'a', isDirected: true));
           expect(graph.getEdge(1, 0), isNull);
-          expect(graph.getEdge(1, 2), isEdge(1, 2, value: 'b'));
+          expect(
+              graph.getEdge(1, 2), isEdge(1, 2, value: 'b', isDirected: true));
           expect(graph.getEdge(2, 1), isNull);
           expect(graph.getEdge(0, 2), isNull);
           expect(graph.getEdge(2, 0), isNull);
@@ -486,9 +501,20 @@ void main() {
           graph.addEdge('Hello', 'World', value: 42);
           expect(graph.vertices, unorderedEquals(['Hello', 'World']));
           expect(graph.edges, [
-            isEdge('Hello', 'World', value: 42),
+            isEdge('Hello', 'World', value: 42, isDirected: true),
           ]);
           expect(graph.edges.single.value, 42);
+          expectInvariants(graph);
+        });
+        test('add self-edge', () {
+          final graph = Graph<String, int>.directed().reversed;
+          graph.addEdge('Myself', 'Myself', value: 42);
+          expect(graph.vertices, unorderedEquals(['Myself']));
+          expect(
+              graph.edges,
+              unorderedEquals([
+                isEdge('Myself', 'Myself', value: 42, isDirected: true),
+              ]));
           expectInvariants(graph);
         });
         test('put edge', () {
@@ -499,8 +525,8 @@ void main() {
           expect(
               graph.edges,
               unorderedEquals([
-                isEdge('a', 'b', value: [1]),
-                isEdge('b', 'a', value: [2]),
+                isEdge('a', 'b', value: [1], isDirected: true),
+                isEdge('b', 'a', value: [2], isDirected: true),
               ]));
           expectInvariants(graph);
         });
@@ -544,47 +570,49 @@ void main() {
           expect(
               graph.edges,
               unorderedEquals([
-                isEdge(1, 0, value: 'a'),
-                isEdge(2, 1, value: 'b'),
+                isEdge(1, 0, value: 'a', isDirected: true),
+                isEdge(2, 1, value: 'b', isDirected: true),
               ]));
         });
         test('edgesOf', () {
           expect(graph.edgesOf(0), [
-            isEdge(1, 0, value: 'a'),
+            isEdge(1, 0, value: 'a', isDirected: true),
           ]);
           expect(
               graph.edgesOf(1),
               unorderedEquals([
-                isEdge(1, 0, value: 'a'),
-                isEdge(2, 1, value: 'b'),
+                isEdge(1, 0, value: 'a', isDirected: true),
+                isEdge(2, 1, value: 'b', isDirected: true),
               ]));
           expect(graph.edgesOf(2), [
-            isEdge(2, 1, value: 'b'),
+            isEdge(2, 1, value: 'b', isDirected: true),
           ]);
         });
         test('incomingEdgesOf', () {
           expect(graph.incomingEdgesOf(0), [
-            isEdge(1, 0, value: 'a'),
+            isEdge(1, 0, value: 'a', isDirected: true),
           ]);
           expect(graph.incomingEdgesOf(1), [
-            isEdge(2, 1, value: 'b'),
+            isEdge(2, 1, value: 'b', isDirected: true),
           ]);
           expect(graph.incomingEdgesOf(2), isEmpty);
         });
         test('outgoingEdgesOf', () {
           expect(graph.outgoingEdgesOf(0), isEmpty);
           expect(graph.outgoingEdgesOf(1), [
-            isEdge(1, 0, value: 'a'),
+            isEdge(1, 0, value: 'a', isDirected: true),
           ]);
           expect(graph.outgoingEdgesOf(2), [
-            isEdge(2, 1, value: 'b'),
+            isEdge(2, 1, value: 'b', isDirected: true),
           ]);
         });
         test('getEdge', () {
           expect(graph.getEdge(0, 1), isNull);
-          expect(graph.getEdge(1, 0), isEdge(1, 0, value: 'a'));
+          expect(
+              graph.getEdge(1, 0), isEdge(1, 0, value: 'a', isDirected: true));
           expect(graph.getEdge(1, 2), isNull);
-          expect(graph.getEdge(2, 1), isEdge(2, 1, value: 'b'));
+          expect(
+              graph.getEdge(2, 1), isEdge(2, 1, value: 'b', isDirected: true));
           expect(graph.getEdge(0, 2), isNull);
           expect(graph.getEdge(2, 0), isNull);
         });
@@ -635,8 +663,19 @@ void main() {
           expect(
               graph.edges,
               unorderedEquals([
-                isEdge('Hello', 'World', value: 42),
-                isEdge('World', 'Hello', value: 42),
+                isEdge('Hello', 'World', value: 42, isDirected: false),
+                isEdge('World', 'Hello', value: 42, isDirected: false),
+              ]));
+          expectInvariants(graph);
+        });
+        test('add self-edge', () {
+          final graph = Graph<String, int>.undirected();
+          graph.addEdge('Myself', 'Myself', value: 42);
+          expect(graph.vertices, unorderedEquals(['Myself']));
+          expect(
+              graph.edges,
+              unorderedEquals([
+                isEdge('Myself', 'Myself', value: 42, isDirected: false),
               ]));
           expectInvariants(graph);
         });
@@ -648,8 +687,8 @@ void main() {
           expect(
               graph.edges,
               unorderedEquals([
-                isEdge('a', 'b', value: [1, 2]),
-                isEdge('b', 'a', value: [1, 2]),
+                isEdge('a', 'b', value: [1, 2], isDirected: false),
+                isEdge('b', 'a', value: [1, 2], isDirected: false),
               ]));
           expectInvariants(graph);
         });
@@ -692,35 +731,35 @@ void main() {
           expect(
               graph.edges,
               unorderedEquals([
-                isEdge(0, 1, value: 'a'),
-                isEdge(1, 0, value: 'a'),
-                isEdge(1, 2, value: 'b'),
-                isEdge(2, 1, value: 'b'),
+                isEdge(0, 1, value: 'a', isDirected: false),
+                isEdge(1, 0, value: 'a', isDirected: false),
+                isEdge(1, 2, value: 'b', isDirected: false),
+                isEdge(2, 1, value: 'b', isDirected: false),
               ]));
         });
         test('edgesOf', () {
           expect(graph.edgesOf(0), [
-            isEdge(0, 1, value: 'a'),
+            isEdge(0, 1, value: 'a', isDirected: false),
           ]);
           expect(
               graph.edgesOf(1),
               unorderedEquals([
-                isEdge(1, 0, value: 'a'),
-                isEdge(1, 2, value: 'b'),
+                isEdge(1, 0, value: 'a', isDirected: false),
+                isEdge(1, 2, value: 'b', isDirected: false),
               ]));
           expect(graph.edgesOf(2), [
-            isEdge(2, 1, value: 'b'),
+            isEdge(2, 1, value: 'b', isDirected: false),
           ]);
         });
         test('incomingEdgesOf', () {
           expect(graph.incomingEdgesOf(0), [
-            isEdge(1, 0, value: 'a'),
+            isEdge(1, 0, value: 'a', isDirected: false),
           ]);
           expect(
               graph.incomingEdgesOf(1),
               unorderedEquals([
-                isEdge(0, 1, value: 'a'),
-                isEdge(2, 1, value: 'b'),
+                isEdge(0, 1, value: 'a', isDirected: false),
+                isEdge(2, 1, value: 'b', isDirected: false),
               ]));
           expect(graph.incomingEdgesOf(2), [
             isEdge(1, 2, value: 'b'),
@@ -728,23 +767,27 @@ void main() {
         });
         test('outgoingEdgesOf', () {
           expect(graph.outgoingEdgesOf(0), [
-            isEdge(0, 1, value: 'a'),
+            isEdge(0, 1, value: 'a', isDirected: false),
           ]);
           expect(
               graph.outgoingEdgesOf(1),
               unorderedEquals([
-                isEdge(1, 0, value: 'a'),
-                isEdge(1, 2, value: 'b'),
+                isEdge(1, 0, value: 'a', isDirected: false),
+                isEdge(1, 2, value: 'b', isDirected: false),
               ]));
           expect(graph.outgoingEdgesOf(2), [
-            isEdge(2, 1, value: 'b'),
+            isEdge(2, 1, value: 'b', isDirected: false),
           ]);
         });
         test('getEdge', () {
-          expect(graph.getEdge(0, 1), isEdge(0, 1, value: 'a'));
-          expect(graph.getEdge(1, 0), isEdge(1, 0, value: 'a'));
-          expect(graph.getEdge(1, 2), isEdge(1, 2, value: 'b'));
-          expect(graph.getEdge(2, 1), isEdge(2, 1, value: 'b'));
+          expect(
+              graph.getEdge(0, 1), isEdge(0, 1, value: 'a', isDirected: false));
+          expect(
+              graph.getEdge(1, 0), isEdge(1, 0, value: 'a', isDirected: false));
+          expect(
+              graph.getEdge(1, 2), isEdge(1, 2, value: 'b', isDirected: false));
+          expect(
+              graph.getEdge(2, 1), isEdge(2, 1, value: 'b', isDirected: false));
           expect(graph.getEdge(0, 2), isNull);
           expect(graph.getEdge(2, 0), isNull);
         });
@@ -780,11 +823,15 @@ void main() {
         graph.addEdge('b', 'c', value: 42);
         expectInvariants(base);
         expect(graph.vertices, unorderedEquals(['a', 'b', 'c']));
-        expect(graph.edges, [isEdge('b', 'c', value: 42)]);
-        expect(graph.edgesOf('b'), [isEdge('b', 'c', value: 42)]);
-        expect(graph.incomingEdgesOf('c'), [isEdge('b', 'c', value: 42)]);
-        expect(graph.outgoingEdgesOf('b'), [isEdge('b', 'c', value: 42)]);
-        expect(graph.getEdge('b', 'c'), isEdge('b', 'c', value: 42));
+        expect(graph.edges, [isEdge('b', 'c', value: 42, isDirected: true)]);
+        expect(graph.edgesOf('b'),
+            [isEdge('b', 'c', value: 42, isDirected: true)]);
+        expect(graph.incomingEdgesOf('c'),
+            [isEdge('b', 'c', value: 42, isDirected: true)]);
+        expect(graph.outgoingEdgesOf('b'),
+            [isEdge('b', 'c', value: 42, isDirected: true)]);
+        expect(graph.getEdge('b', 'c'),
+            isEdge('b', 'c', value: 42, isDirected: true));
         expect(graph.neighboursOf('b'), ['c']);
         expect(graph.predecessorsOf('c'), ['b']);
         expect(graph.successorsOf('b'), ['c']);
@@ -804,13 +851,17 @@ void main() {
         expect(
             graph.edges,
             unorderedEquals([
-              isEdge('b', 'c', value: 42),
-              isEdge('c', 'b', value: 42),
+              isEdge('b', 'c', value: 42, isDirected: false),
+              isEdge('c', 'b', value: 42, isDirected: false),
             ]));
-        expect(graph.edgesOf('b'), [isEdge('b', 'c', value: 42)]);
-        expect(graph.incomingEdgesOf('c'), [isEdge('b', 'c', value: 42)]);
-        expect(graph.outgoingEdgesOf('b'), [isEdge('b', 'c', value: 42)]);
-        expect(graph.getEdge('b', 'c'), isEdge('b', 'c', value: 42));
+        expect(graph.edgesOf('b'),
+            [isEdge('b', 'c', value: 42, isDirected: false)]);
+        expect(graph.incomingEdgesOf('c'),
+            [isEdge('b', 'c', value: 42, isDirected: false)]);
+        expect(graph.outgoingEdgesOf('b'),
+            [isEdge('b', 'c', value: 42, isDirected: false)]);
+        expect(graph.getEdge('b', 'c'),
+            isEdge('b', 'c', value: 42, isDirected: false));
         expect(graph.neighboursOf('b'), ['c']);
         expect(graph.predecessorsOf('c'), ['b']);
         expect(graph.successorsOf('b'), ['c']);
@@ -851,36 +902,73 @@ void main() {
       });
     });
     group('edge', () {
-      final a = Edge<int, void>(1, 2);
-      final b = Edge<int, void>(2, 1);
-      final c = Edge<int, double>(1, 2, value: 3.14);
-      test('create (without data)', () {
-        expect(a.source, 1);
-        expect(a.target, 2);
+      group('directed', () {
+        const a = Edge<int, void>.directed(1, 2);
+        const b = Edge<int, String>.directed(2, 1, value: 'b');
+        const c = Edge<int, String>.directed(2, 1, value: 'c');
+        test('create (without data)', () {
+          expect(a.source, 1);
+          expect(a.target, 2);
+        });
+        test('create (with data)', () {
+          expect(c.source, 2);
+          expect(c.target, 1);
+          expect(c.value, 'c');
+        });
+        test('equals', () {
+          expect(a == a, isTrue);
+          expect(a == b, isFalse);
+          expect(a == c, isFalse);
+          expect(b == a, isFalse);
+          expect(b == b, isTrue);
+          expect(b == c, isTrue);
+          expect(c == a, isFalse);
+          expect(c == b, isTrue);
+          expect(c == c, isTrue);
+        });
+        test('hashCode', () {
+          expect(a.hashCode == b.hashCode, isFalse);
+          expect(b.hashCode == c.hashCode, isTrue);
+        });
+        test('toString', () {
+          expect(a.toString(), endsWith('(1 → 2)'));
+          expect(b.toString(), endsWith('(2 → 1, value: b)'));
+          expect(c.toString(), endsWith('(2 → 1, value: c)'));
+        });
       });
-      test('create (with data)', () {
-        expect(c.source, 1);
-        expect(c.target, 2);
-        expect(c.value, 3.14);
-      });
-      test('equals', () {
-        expect(a == a, isTrue);
-        expect(a == b, isFalse);
-        expect(a == c, isTrue);
-        expect(b == a, isFalse);
-        expect(b == b, isTrue);
-        expect(b == c, isFalse);
-        expect(c == a, isTrue);
-        expect(c == b, isFalse);
-        expect(c == c, isTrue);
-      });
-      test('hashCode', () {
-        expect(a.hashCode == b.hashCode, isFalse);
-        expect(a.hashCode == c.hashCode, isTrue);
-      });
-      test('toString', () {
-        expect(a.toString(), endsWith('(1 → 2)'));
-        expect(c.toString(), endsWith('(1 → 2, value: 3.14)'));
+      group('undirected', () {
+        const a = Edge<int, void>.undirected(1, 2);
+        const b = Edge<int, String>.undirected(2, 1, value: 'b');
+        const c = Edge<int, String>.undirected(2, 3, value: 'c');
+        test('create (without data)', () {
+          expect(a.source, 1);
+          expect(a.target, 2);
+        });
+        test('create (with data)', () {
+          expect(c.source, 2);
+          expect(c.target, 3);
+          expect(c.value, 'c');
+        });
+        test('equals', () {
+          expect(a == a, isTrue);
+          expect(a == b, isTrue);
+          expect(a == c, isFalse);
+          expect(b == a, isTrue);
+          expect(b == b, isTrue);
+          expect(b == c, isFalse);
+          expect(c == a, isFalse);
+          expect(c == b, isFalse);
+          expect(c == c, isTrue);
+        });
+        test('hashCode', () {
+          expect(a.hashCode == b.hashCode, isTrue);
+          expect(a.hashCode == c.hashCode, isFalse);
+        });
+        test('toString', () {
+          expect(a.toString(), endsWith('(1 — 2)'));
+          expect(b.toString(), endsWith('(2 — 1, value: b)'));
+          expect(c.toString(), endsWith('(2 — 3, value: c)'));
+        });
       });
     });
     group('path', () {
@@ -905,7 +993,10 @@ void main() {
         expect(path.toString(), endsWith('(a → b → c, values: 2, 3, cost: 5)'));
       });
       test('fromEdges (without data)', () {
-        final path = Path<int, void>.fromEdges([Edge(4, 5), Edge(5, 6)]);
+        final path = Path<int, void>.fromEdges(const [
+          Edge.directed(4, 5),
+          Edge.undirected(5, 6),
+        ]);
         expect(path.vertices, [4, 5, 6]);
         expect(path.values, [null, null]);
         expect(path.source, 4);
@@ -914,8 +1005,10 @@ void main() {
         expect(path.toString(), endsWith('(4 → 5 → 6)'));
       });
       test('fromEdges (with data)', () {
-        final path = Path<String, int>.fromEdges(
-            [Edge('x', 'y', value: 4), Edge('y', 'z', value: 5)]);
+        final path = Path<String, int>.fromEdges(const [
+          Edge.undirected('x', 'y', value: 4),
+          Edge.directed('y', 'z', value: 5),
+        ]);
         expect(path.vertices, ['x', 'y', 'z']);
         expect(path.values, [4, 5]);
         expect(path.source, 'x');
@@ -949,8 +1042,10 @@ void main() {
       });
       final a = Path<String, int>.fromVertices(['a', 'b', 'c'], values: [1, 2]);
       final b = Path<String, int>.fromVertices(['a', 'b', 'd'], values: [2, 1]);
-      final c = Path<String, int>.fromEdges(
-          [Edge('a', 'b', value: 1), Edge('b', 'c', value: 2)]);
+      final c = Path<String, int>.fromEdges(const [
+        Edge.undirected('a', 'b', value: 1),
+        Edge.undirected('b', 'c', value: 2),
+      ]);
       test('equals', () {
         expect(a == a, isTrue);
         expect(a == b, isFalse);

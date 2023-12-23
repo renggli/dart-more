@@ -43,7 +43,7 @@ class Path<V, E> with ToStringPrinter {
   /// The edges on this path.
   Iterable<Edge<V, E>> get edges sync* {
     for (var i = 0; i < values.length; i++) {
-      yield Edge<V, E>(vertices[i], vertices[i + 1], value: values[i]);
+      yield Edge<V, E>.directed(vertices[i], vertices[i + 1], value: values[i]);
     }
   }
 

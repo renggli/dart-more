@@ -1,3 +1,4 @@
+import '../../printer/object/object.dart';
 import '../edge.dart';
 import '../graph.dart';
 import '../strategy.dart';
@@ -22,32 +23,30 @@ class UndirectedGraph<V, E> extends Graph<V, E> {
   Iterable<V> get vertices => adjacency.keys;
 
   @override
-  Iterable<Edge<V, E>> get edges => adjacency.entries.expand((outer) => outer
-      .value.entries
-      .map((inner) => Edge<V, E>(outer.key, inner.key, value: inner.value)));
+  Iterable<Edge<V, E>> get edges =>
+      adjacency.entries.expand((outer) => outer.value.entries.map((inner) =>
+          UndirectedEdge<V, E>(outer.key, inner.key, value: inner.value)));
 
   @override
   Iterable<Edge<V, E>> edgesOf(V vertex) => outgoingEdgesOf(vertex);
 
   @override
   Iterable<Edge<V, E>> incomingEdgesOf(V vertex) =>
-      adjacency[vertex]
-          ?.entries
-          .map((entry) => Edge<V, E>(entry.key, vertex, value: entry.value)) ??
+      adjacency[vertex]?.entries.map((entry) =>
+          UndirectedEdge<V, E>(entry.key, vertex, value: entry.value)) ??
       const [];
 
   @override
   Iterable<Edge<V, E>> outgoingEdgesOf(V vertex) =>
-      adjacency[vertex]
-          ?.entries
-          .map((entry) => Edge<V, E>(vertex, entry.key, value: entry.value)) ??
+      adjacency[vertex]?.entries.map((entry) =>
+          UndirectedEdge<V, E>(vertex, entry.key, value: entry.value)) ??
       const [];
 
   @override
   Edge<V, E>? getEdge(V source, V target) {
     if (adjacency[source] case final targetAdjacency?) {
       if (targetAdjacency[target] case final E value) {
-        return Edge<V, E>(source, target, value: value);
+        return UndirectedEdge<V, E>(source, target, value: value);
       }
     }
     return null;
@@ -89,4 +88,27 @@ class UndirectedGraph<V, E> extends Graph<V, E> {
 
   Map<V, E> _getVertex(V vertex) =>
       adjacency.putIfAbsent(vertex, () => vertexStrategy.createMap<E>());
+}
+
+/// Undirected edge implementation.
+class UndirectedEdge<V, E> extends Edge<V, E> {
+  const UndirectedEdge(super.source, super.target, {super.value});
+
+  @override
+  bool get isDirected => false;
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is UndirectedEdge &&
+          ((source == other.source && target == other.target) ||
+              (source == other.target && target == other.source)));
+
+  @override
+  int get hashCode => source.hashCode ^ target.hashCode;
+
+  @override
+  ObjectPrinter get toStringPrinter => super.toStringPrinter
+    ..addValue('$source — $target')
+    ..addValue(value, name: 'value', omitNull: true);
 }
