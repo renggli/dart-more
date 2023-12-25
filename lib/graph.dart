@@ -21,6 +21,7 @@ export 'src/graph/graph.dart' show Graph;
 export 'src/graph/model/forwarding.dart' show ForwardingGraph;
 export 'src/graph/model/reversed.dart' show ReversedGraphExtension;
 export 'src/graph/model/unmodifiable.dart' show UnmodifiableGraphExtension;
+export 'src/graph/model/where.dart' show WhereGraphExtension;
 export 'src/graph/operations/connected.dart' show ConnectedGraphExtension;
 export 'src/graph/operations/copy.dart' show CopyGraphExtension;
 export 'src/graph/operations/export.dart' show ExportGraphExtension;
