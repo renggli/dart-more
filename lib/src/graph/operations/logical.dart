@@ -1,5 +1,5 @@
 import '../graph.dart';
-import '../model/utils.dart';
+import 'copy.dart';
 
 extension LogicalGraphExtension<V, E> on Graph<V, E> {
   /// Returns the union of this graph and [other]. This is a graph with the
@@ -7,7 +7,7 @@ extension LogicalGraphExtension<V, E> on Graph<V, E> {
   /// how parallel edges are merged, if unspecified the last one is used.
   Graph<V, E> union(Graph<V, E> other,
       {E Function(V source, V target, E a, E b)? edgeMerge}) {
-    final result = copyEmpty<V, E>(this);
+    final result = copy(empty: true);
     unionAll<V, E>(result, [this, other], edgeMerge: edgeMerge);
     return result;
   }
@@ -40,7 +40,7 @@ extension LogicalGraphExtension<V, E> on Graph<V, E> {
   Graph<V, E> intersection(Graph<V, E> other,
       {bool Function(V source, V target, E a, E b)? edgeCompare,
       E Function(V source, V target, E a, E b)? edgeMerge}) {
-    final result = copyEmpty<V, E>(this);
+    final result = copy(empty: true);
     // Create all the vertices present in both graphs.
     for (final vertex in vertices) {
       if (other.vertices.contains(vertex)) {
@@ -68,7 +68,7 @@ extension LogicalGraphExtension<V, E> on Graph<V, E> {
   /// vertices but with edges between vertices that had no edge.
   Graph<V, E> complement(
       {bool allowSelfLoops = false, E? Function(V source, V target)? edge}) {
-    final result = copyEmpty<V, E>(this);
+    final result = copy(empty: true);
     // Copy all the vertices over.
     for (final vertex in vertices) {
       result.addVertex(vertex);

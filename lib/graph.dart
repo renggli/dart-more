@@ -22,6 +22,7 @@ export 'src/graph/model/forwarding.dart' show ForwardingGraph;
 export 'src/graph/model/reversed.dart' show ReversedGraphExtension;
 export 'src/graph/model/unmodifiable.dart' show UnmodifiableGraphExtension;
 export 'src/graph/operations/connected.dart' show ConnectedGraphExtension;
+export 'src/graph/operations/copy.dart' show CopyGraphExtension;
 export 'src/graph/operations/export.dart' show ExportGraphExtension;
 export 'src/graph/operations/logical.dart' show LogicalGraphExtension;
 export 'src/graph/operations/map.dart' show MapGraphExtension;

@@ -1119,6 +1119,44 @@ void main() {
             ]));
       });
     });
+    group('copy', () {
+      test('directed', () {
+        final graph = GraphFactory<int, void>(isDirected: true)
+            .fromSuccessors(cyclicGraphData);
+        final copy = graph.copy();
+        expect(copy.isDirected, true);
+        expect(copy.vertexStrategy, graph.vertexStrategy);
+        expect(copy.vertices, unorderedEquals(graph.vertices));
+        expect(copy.edges, unorderedEquals(graph.edges));
+      });
+      test('undirected', () {
+        final graph = GraphFactory<int, void>(isDirected: false)
+            .fromSuccessors(cyclicGraphData);
+        final copy = graph.copy();
+        expect(copy.isDirected, false);
+        expect(copy.vertexStrategy, graph.vertexStrategy);
+        expect(copy.vertices, unorderedEquals(graph.vertices));
+        expect(copy.edges, unorderedEquals(graph.edges));
+      });
+      test('directed empty', () {
+        final graph = GraphFactory<int, void>(isDirected: true)
+            .fromSuccessors(cyclicGraphData);
+        final copy = graph.copy(empty: true);
+        expect(copy.isDirected, true);
+        expect(copy.vertexStrategy, graph.vertexStrategy);
+        expect(copy.vertices, isEmpty);
+        expect(copy.edges, isEmpty);
+      });
+      test('undirected empty', () {
+        final graph = GraphFactory<int, void>(isDirected: false)
+            .fromSuccessors(cyclicGraphData);
+        final copy = graph.copy(empty: true);
+        expect(copy.isDirected, false);
+        expect(copy.vertexStrategy, graph.vertexStrategy);
+        expect(copy.vertices, isEmpty);
+        expect(copy.edges, isEmpty);
+      });
+    });
     group('export', () {
       group('toDot', () {
         test('directed', () {

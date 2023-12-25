@@ -1,6 +1,6 @@
 import '../graph.dart';
-import '../model/utils.dart';
 import '../traverse/breadth_first.dart';
+import 'copy.dart';
 
 extension ConnectedGraphExtension<V, E> on Graph<V, E> {
   /// Returns an iterable of the connected sub-graphs.
@@ -8,7 +8,7 @@ extension ConnectedGraphExtension<V, E> on Graph<V, E> {
     final seen = vertexStrategy.createSet();
     for (final start in vertices) {
       if (seen.add(start)) {
-        final graph = copyEmpty(this);
+        final graph = copy(empty: true);
         final traversal = BreadthFirstIterable([start],
             successorsOf: neighboursOf, vertexStrategy: vertexStrategy);
         for (final vertex in traversal) {
