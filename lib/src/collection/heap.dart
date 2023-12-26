@@ -1,7 +1,9 @@
+import 'package:collection/collection.dart' show PriorityQueue;
+
 import '../../comparator.dart';
 
 /// A priority queue implemented using a binary heap.
-class Heap<E> extends Iterable<E> {
+class Heap<E> extends Iterable<E> implements PriorityQueue<E> {
   /// Constructs an empty max-heap with an optional [comparator]. To create a
   /// min-heap invert the comparator.
   Heap({Comparator<E>? comparator})
@@ -38,27 +40,31 @@ class Heap<E> extends Iterable<E> {
   @override
   bool get isNotEmpty => _values.isNotEmpty;
 
-  /// Returns an [Iterator] over the underlying values.
-  @override
-  Iterator<E> get iterator => _values.iterator;
-
   /// Returns the last/largest value from this heap.
-  E get peek {
+  @override
+  E get first {
     _checkNotEmpty();
     return _values[0];
   }
 
   /// Adds a new value onto this heap.
-  void push(E value) {
+  @override
+  void add(E value) {
     _values.add(value);
     _siftDown(0, _values.length - 1);
   }
 
   /// Adds multiple new values onto this heap.
-  void pushAll(Iterable<E> values) => values.forEach(push);
+  @override
+  void addAll(Iterable<E> values) => values.forEach(add);
+
+  /// Removes all objects from this heap.
+  @override
+  void clear() => _values.clear();
 
   /// Removes and returns the last/largest value from this heap.
-  E pop() {
+  @override
+  E removeFirst() {
     _checkNotEmpty();
     final value = _values.removeLast();
     if (_values.isNotEmpty) {
@@ -70,9 +76,21 @@ class Heap<E> extends Iterable<E> {
     return value;
   }
 
-  /// A pop immediately followed by a push. Contrary to [pushAndPop] this
+  /// Remove an element from the heap.
+  @override
+  bool remove(E value) => _values.remove(value);
+
+  /// Removes all objects from this heap.
+  @override
+  Iterable<E> removeAll() {
+    final result = _values.toList();
+    _values.clear();
+    return result;
+  }
+
+  /// A pop immediately followed by a push. Contrary to [addAndRemoveFirst] this
   /// requires a non-empty heap and never returns `value`.
-  E popAndPush(E value) {
+  E removeFirstAndAdd(E value) {
     _checkNotEmpty();
     final result = _values[0];
     _values[0] = value;
@@ -80,9 +98,9 @@ class Heap<E> extends Iterable<E> {
     return result;
   }
 
-  /// A push immediately followed by a pop. Contrary to [popAndPush] this
+  /// A push immediately followed by a pop. Contrary to [removeFirstAndAdd] this
   /// works on an empty heap and might directly return `value`.
-  E pushAndPop(E value) {
+  E addAndRemoveFirst(E value) {
     if (_values.isEmpty || _comparator(_values[0], value) < 0) {
       return value;
     }
@@ -92,13 +110,17 @@ class Heap<E> extends Iterable<E> {
     return result;
   }
 
-  /// Removes all objects from this heap.
-  void clear() => _values.clear();
+  @override
+  Iterator<E> get iterator => _values.iterator;
+
+  @override
+  Iterable<E> get unorderedElements => _values;
+
+  @override
+  List<E> toUnorderedList() => _values.toList();
 
   void _checkNotEmpty() {
-    if (_values.isEmpty) {
-      throw StateError('No element');
-    }
+    if (_values.isEmpty) throw StateError('No element');
   }
 
   void _siftDown(int start, int stop) {

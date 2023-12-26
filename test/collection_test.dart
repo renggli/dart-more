@@ -665,7 +665,7 @@ void main() {
     group(
         'pushAll',
         () => allHeapTests(<T>(List<T> list, {Comparator<T>? comparator}) =>
-            Heap<T>(comparator: comparator)..pushAll(list)));
+            Heap<T>(comparator: comparator)..addAll(list)));
   });
   group('iterable', () {
     group('chunked', () {
@@ -4629,24 +4629,24 @@ void allHeapTests(
     expect(heap.isEmpty, isTrue);
     expect(heap.isNotEmpty, isFalse);
     expect(heap.length, 0);
-    expect(() => heap.peek, throwsStateError);
-    expect(() => heap.pop(), throwsStateError);
-    expect(() => heap.popAndPush('Hello'), throwsStateError);
-    expect(heap.pushAndPop('World'), 'World');
+    expect(() => heap.first, throwsStateError);
+    expect(() => heap.removeFirst(), throwsStateError);
+    expect(() => heap.removeFirstAndAdd('Hello'), throwsStateError);
+    expect(heap.addAndRemoveFirst('World'), 'World');
     expect(heap.length, 0);
   });
-  test('popAndPush', () {
+  test('removeFirstAndAdd', () {
     final heap = createHeap<String>(['Olivia', 'Emma', 'Sophia']);
-    expect(heap.popAndPush('Amelia'), 'Sophia');
-    expect(heap.popAndPush('Nora'), 'Olivia');
-    expect(heap.popAndPush('Violet'), 'Nora');
+    expect(heap.removeFirstAndAdd('Amelia'), 'Sophia');
+    expect(heap.removeFirstAndAdd('Nora'), 'Olivia');
+    expect(heap.removeFirstAndAdd('Violet'), 'Nora');
     expect(heap.toList()..sort(), ['Amelia', 'Emma', 'Violet']);
   });
-  test('pushAndPop', () {
+  test('addAndRemoveFirst', () {
     final heap = createHeap<String>(['Olivia', 'Emma', 'Sophia']);
-    expect(heap.pushAndPop('Amelia'), 'Sophia');
-    expect(heap.pushAndPop('Nora'), 'Olivia');
-    expect(heap.pushAndPop('Violet'), 'Violet');
+    expect(heap.addAndRemoveFirst('Amelia'), 'Sophia');
+    expect(heap.addAndRemoveFirst('Nora'), 'Olivia');
+    expect(heap.addAndRemoveFirst('Violet'), 'Violet');
     expect(heap.toList()..sort(), ['Amelia', 'Emma', 'Nora']);
   });
   test('clear', () {
@@ -4670,8 +4670,8 @@ void allHeapTests(
         expect(heap.isNotEmpty, isTrue);
         expect(heap.length, source.length);
         final value = source.removeLast();
-        expect(heap.peek, value);
-        expect(heap.pop(), value);
+        expect(heap.first, value);
+        expect(heap.removeFirst(), value);
       }
       expect(heap.isEmpty, isTrue);
       expect(heap.isNotEmpty, isFalse);
@@ -4741,6 +4741,11 @@ void allSortedListTests(
     final list = createSortedList<int>([5, 1, 3], growable: false);
     expect(() => list.addAll([2, 4]), throwsUnsupportedError);
   });
+  test('clear', () {
+    final list = createSortedList<int>([5, 1, 3]);
+    list.clear();
+    expect(list, isEmpty);
+  });
   test('remove', () {
     final list = createSortedList<int>([5, 1, 3]);
     expect(list, [1, 3, 5]);
@@ -4752,6 +4757,34 @@ void allSortedListTests(
   test('remove (not growable)', () {
     final list = createSortedList<int>([5, 1, 3], growable: false);
     expect(() => list.remove(3), throwsUnsupportedError);
+  });
+  test('removeAt', () {
+    final list = createSortedList<int>([5, 1, 3]);
+    expect(list.removeAt(1), 3);
+    expect(list, [1, 5]);
+  });
+  test('removeFirst', () {
+    final list = createSortedList<int>([5, 1, 3]);
+    expect(list.removeFirst(), 1);
+    expect(list, [3, 5]);
+  });
+  test('removeLast', () {
+    final list = createSortedList<int>([5, 1, 3]);
+    expect(list.removeLast(), 5);
+    expect(list, [1, 3]);
+  });
+  test('removeAll', () {
+    final list = createSortedList<int>([5, 1, 3]);
+    expect(list.removeAll(), [1, 3, 5]);
+    expect(list, isEmpty);
+  });
+  test('toUnorderedList', () {
+    final list = createSortedList<int>([5, 1, 3]);
+    expect(list.toUnorderedList(), [1, 3, 5]);
+  });
+  test('unorderedElements', () {
+    final list = createSortedList<int>([5, 1, 3]);
+    expect(list.unorderedElements, [1, 3, 5]);
   });
   test('stress', () {
     final random = Random(6412);

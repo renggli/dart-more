@@ -10,13 +10,13 @@ extension SmallestComparator<T> on Comparator<T> {
   List<T> smallest(Iterable<T> iterable, int k) {
     final heap = Heap<T>(comparator: this);
     for (final each in iterable) {
-      heap.push(each);
+      heap.add(each);
       if (heap.length > k) {
-        heap.pop(); // drop the largest element
+        heap.removeFirst(); // drop the largest element
       }
     }
     final result = List.generate(
-        math.min(k, heap.length), (index) => heap.pop(),
+        math.min(k, heap.length), (index) => heap.removeFirst(),
         growable: false);
     result.reverseRange(0, result.length);
     return result;

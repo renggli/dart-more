@@ -1,10 +1,12 @@
 import 'dart:collection' show ListBase;
 import 'dart:math';
 
+import 'package:collection/collection.dart' show PriorityQueue;
+
 import '../../comparator.dart';
 
 /// A sorted-list that remains sorted by a [Comparator] as elements get added.
-class SortedList<E> extends ListBase<E> {
+class SortedList<E> extends ListBase<E> implements PriorityQueue<E> {
   /// Constructs an empty sorted-list with an optional `ordering`.
   SortedList({Comparator<E>? comparator, bool growable = true})
       : _values = List.empty(growable: growable),
@@ -65,10 +67,35 @@ class SortedList<E> extends ListBase<E> {
   }
 
   @override
+  Iterable<E> removeAll() {
+    final result = _values.toList();
+    _values.clear();
+    return result;
+  }
+
+  @override
+  E removeAt(int index) => _values.removeAt(index);
+
+  @override
+  E removeFirst() => _values.removeAt(0);
+
+  @override
+  E removeLast() => _values.removeLast();
+
+  @override
+  void clear() => _values.clear();
+
+  @override
   void sort([int Function(E a, E b)? compare]) => _throw();
 
   @override
   void shuffle([Random? random]) => _throw();
+
+  @override
+  Iterable<E> get unorderedElements => _values;
+
+  @override
+  List<E> toUnorderedList() => _values.toList();
 
   static void _throw() =>
       throw UnsupportedError('Cannot modify the order of a sorted list');
