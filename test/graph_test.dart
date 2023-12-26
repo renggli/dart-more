@@ -2458,6 +2458,130 @@ void main() {
         expect(flow('t', 's'), 0);
       });
     });
+    group('min cut', () {
+      test('example 1', () {
+        final graph = Graph<int, int>.undirected();
+        graph.addEdge(1, 2, value: 2);
+        graph.addEdge(1, 5, value: 3);
+        graph.addEdge(2, 1, value: 2);
+        graph.addEdge(2, 3, value: 3);
+        graph.addEdge(2, 5, value: 2);
+        graph.addEdge(2, 6, value: 2);
+        graph.addEdge(3, 2, value: 3);
+        graph.addEdge(3, 4, value: 4);
+        graph.addEdge(3, 7, value: 2);
+        graph.addEdge(4, 3, value: 4);
+        graph.addEdge(4, 7, value: 2);
+        graph.addEdge(4, 8, value: 2);
+        graph.addEdge(5, 1, value: 3);
+        graph.addEdge(5, 6, value: 3);
+        graph.addEdge(5, 2, value: 2);
+        graph.addEdge(6, 2, value: 2);
+        graph.addEdge(6, 5, value: 3);
+        graph.addEdge(6, 7, value: 1);
+        graph.addEdge(7, 6, value: 1);
+        graph.addEdge(7, 3, value: 2);
+        graph.addEdge(7, 4, value: 2);
+        graph.addEdge(7, 8, value: 3);
+        graph.addEdge(8, 4, value: 2);
+        graph.addEdge(8, 7, value: 3);
+        final minCut = graph.minCut();
+        expect(minCut.first.vertices, [3, 4, 7, 8]);
+        expect(minCut.second.vertices, [1, 2, 5, 6]);
+        expect(
+            minCut.edges,
+            unorderedEquals([
+              isEdge(2, 3, value: 3),
+              isEdge(3, 2, value: 3),
+              isEdge(6, 7, value: 1),
+              isEdge(7, 6, value: 1),
+            ]));
+        expect(minCut.weight, 4);
+      });
+      test('example 2', () {
+        final graph = Graph<int, void>.undirected();
+        graph.addEdge(0, 3);
+        graph.addEdge(3, 2);
+        graph.addEdge(2, 1);
+        graph.addEdge(1, 0);
+        graph.addEdge(0, 2);
+        graph.addEdge(2, 4);
+        graph.addEdge(4, 1);
+        final minCut = graph.minCut();
+        expect(minCut.first.vertices, unorderedEquals([3]));
+        expect(minCut.second.vertices, unorderedEquals([0, 1, 2, 4]));
+        expect(
+            minCut.edges,
+            unorderedEquals([
+              isEdge(0, 3),
+              isEdge(3, 0),
+              isEdge(2, 3),
+              isEdge(3, 2),
+            ]));
+        expect(minCut.weight, 2);
+      });
+      test('example 3', () {
+        final graph = Graph<int, int>.undirected();
+        graph.addEdge(0, 1, value: 2);
+        graph.addEdge(0, 4, value: 3);
+        graph.addEdge(1, 2, value: 3);
+        graph.addEdge(1, 4, value: 2);
+        graph.addEdge(1, 5, value: 2);
+        graph.addEdge(2, 3, value: 4);
+        graph.addEdge(2, 6, value: 2);
+        graph.addEdge(3, 6, value: 2);
+        graph.addEdge(3, 7, value: 2);
+        graph.addEdge(4, 5, value: 3);
+        graph.addEdge(5, 6, value: 1);
+        graph.addEdge(6, 7, value: 3);
+        final minCut = graph.minCut();
+        expect(minCut.first.vertices, unorderedEquals([2, 3, 6, 7]));
+        expect(minCut.second.vertices, unorderedEquals([0, 1, 4, 5]));
+        expect(
+            minCut.edges,
+            unorderedEquals([
+              isEdge(1, 2, value: 3),
+              isEdge(2, 1, value: 3),
+              isEdge(5, 6, value: 1),
+              isEdge(6, 5, value: 1),
+            ]));
+        expect(minCut.weight, 4);
+      });
+      test('example 4', () {
+        final graph = Graph<String, int>.undirected();
+        graph.addEdge('x', 'a', value: 3);
+        graph.addEdge('x', 'b', value: 1);
+        graph.addEdge('a', 'c', value: 3);
+        graph.addEdge('b', 'c', value: 5);
+        graph.addEdge('b', 'd', value: 4);
+        graph.addEdge('d', 'e', value: 2);
+        graph.addEdge('c', 'y', value: 2);
+        graph.addEdge('e', 'y', value: 3);
+        final minCut = graph.minCut();
+        expect(minCut.first.vertices, unorderedEquals(['e', 'y']));
+        expect(
+            minCut.second.vertices, unorderedEquals(['x', 'a', 'b', 'c', 'd']));
+        expect(
+            minCut.edges,
+            unorderedEquals([
+              isEdge('c', 'y', value: 2),
+              isEdge('y', 'c', value: 2),
+              isEdge('d', 'e', value: 2),
+              isEdge('e', 'd', value: 2),
+            ]));
+        expect(minCut.weight, 4);
+      });
+      test('empty graph errors', () {
+        final graph = Graph<String, void>.undirected();
+        expect(graph.minCut, throwsArgumentError);
+      });
+      test('directed graph errors', () {
+        final graph = Graph<int, void>.directed()
+          ..addEdge(0, 1)
+          ..addEdge(1, 2);
+        expect(graph.minCut, throwsArgumentError);
+      });
+    });
   });
   group('traverse', () {
     group('breadth-first', () {

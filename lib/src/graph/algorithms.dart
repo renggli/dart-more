@@ -82,6 +82,23 @@ extension AlgorithmsGraphExtension<V, E> on Graph<V, E> {
         vertexStrategy: vertexStrategy ?? this.vertexStrategy,
       );
 
+  /// Returns an object that computes the min-cut using the Stoer-Wagner
+  /// algorithm.
+  ///
+  /// - [edgeWeight] is a function function that returns the positive weight
+  ///   between two edges. If no function is provided, the numeric edge value
+  ///   or a constant weight of _1_ is used.
+  ///
+  StoerWagnerMinCut<V, E> minCut({
+    num Function(V source, V target)? edgeWeight,
+    StorageStrategy<V>? vertexStrategy,
+  }) =>
+      StoerWagnerMinCut<V, E>(
+        graph: this,
+        edgeWeight: edgeWeight ?? _getDefaultEdgeValueOr(1),
+        vertexStrategy: vertexStrategy ?? this.vertexStrategy,
+      );
+
   /// Internal helper that returns a function using the numeric edge value
   /// of this graph, or otherwise a constant value for each edge.
   num Function(V source, V target) _getDefaultEdgeValueOr(num value) =>

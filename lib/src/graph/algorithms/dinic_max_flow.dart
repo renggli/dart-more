@@ -2,10 +2,11 @@ import 'dart:collection';
 import 'dart:math' as math;
 
 import '../../../functional.dart';
+import '../errors.dart';
 import '../strategy.dart';
 import '../traverse/depth_first.dart';
 
-/// Dinic max flow algorithm in O(V^2*E).
+/// Dinic max flow algorithm in _O(V^2*E)_.
 ///
 /// See https://en.wikipedia.org/wiki/Dinic%27s_algorithm.
 class DinicMaxFlow<V> {
@@ -59,8 +60,12 @@ class DinicMaxFlow<V> {
   /// Computes the maximum flow between [source] and [target].
   num call(V source, V target) {
     final mappedSource = _mapping[source], mappedTarget = _mapping[target];
-    if (mappedSource == null) throw ArgumentError.value(source, 'source');
-    if (mappedTarget == null) throw ArgumentError.value(target, 'target');
+    if (mappedSource == null) {
+      throw GraphError(source, 'source', 'Unknown vertex');
+    }
+    if (mappedTarget == null) {
+      throw GraphError(target, 'target', 'Unknown vertex');
+    }
     return _maxFlow(mappedSource, mappedTarget);
   }
 
