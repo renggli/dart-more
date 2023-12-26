@@ -4,6 +4,7 @@ import 'package:collection/collection.dart';
 
 import '../../../collection.dart';
 import '../../../graph.dart';
+import '../../functional/scope.dart';
 import '../../functional/types.dart';
 
 /// Stoer–Wagner minimum cut algorithm in _O(V*E + V*log(V))_.
@@ -31,10 +32,10 @@ class StoerWagnerMinCut<V, E> {
     // Initialize the vertices of the working graph.
     final vertexMap = graph.vertexStrategy.createMap<Set<V>>();
     for (final vertex in graph.vertices) {
-      final list = graph.vertexStrategy.createSet();
-      _workingGraph.addVertex(list);
-      vertexMap[vertex] = list;
-      list.add(vertex);
+      final set = graph.vertexStrategy.createSet();
+      _workingGraph.addVertex(set);
+      vertexMap[vertex] = set;
+      set.add(vertex);
     }
 
     // Initialize the edges of the working graph.
@@ -57,7 +58,7 @@ class StoerWagnerMinCut<V, E> {
   }
 
   // Internal state.
-  final Graph<Set<V>, num> _workingGraph =
+  final _workingGraph =
       Graph<Set<V>, num>.undirected(vertexStrategy: StorageStrategy.identity());
   Set<V> _bestPartition = const {};
   num _bestWeight = double.infinity;
@@ -71,32 +72,32 @@ class StoerWagnerMinCut<V, E> {
   /// The vertex strategy to store vertices of type V.
   final StorageStrategy<V> vertexStrategy;
 
-  /// Returns a view of the graph onto the first side of the cut.
-  Graph<V, E> get first =>
-      graph.where(vertexPredicate: _bestPartition.contains);
-
-  /// Returns a view of the graph onto the second side of the cut.
-  Graph<V, E> get second {
-    final vertices = vertexStrategy.createSet();
-    vertices.addAll(graph.vertices);
-    vertices.removeAll(_bestPartition);
-    return graph.where(vertexPredicate: vertices.contains);
-  }
+  /// Returns a list with the graphs on each side of the cut.
+  late final List<Graph<V, E>> graphs = [
+    graph.where(vertexPredicate: _bestPartition.contains),
+    vertexStrategy.createSet().also((vertices) {
+      vertices.addAll(graph.vertices);
+      vertices.removeAll(_bestPartition);
+      return graph.where(vertexPredicate: vertices.contains);
+    }),
+  ];
 
   /// Returns an iterable over the edges that are cut.
   ///
   /// Each undirected edge appears for each direction once, to de-duplicate
   /// use `minCut.edges.unique()`.
-  Iterable<Edge<V, E>> get edges => graph.edges.where((edge) =>
-      _bestPartition.contains(edge.source) !=
-      _bestPartition.contains(edge.target));
+  late final List<Edge<V, E>> edges = graph.edges
+      .where((edge) =>
+          _bestPartition.contains(edge.source) !=
+          _bestPartition.contains(edge.target))
+      .toList();
 
   /// Returns the weight of the cut vertices.
   num get weight => _bestWeight;
 
   void _minimumCutPhase(Set<V> seed) {
     final queue = Heap<_State<V>>();
-    final states = <Set<V>, _State<V>>{};
+    final states = _workingGraph.vertexStrategy.createMap<_State<V>>();
     var current = seed, previous = vertexStrategy.createSet();
     for (final vertex in _workingGraph.vertices) {
       if (vertex == seed) continue;
@@ -112,8 +113,7 @@ class StoerWagnerMinCut<V, E> {
       previous = current;
       current = source;
       for (final edge in _workingGraph.outgoingEdgesOf(source)) {
-        final target = edge.target;
-        final state = states[target];
+        final state = states[edge.target];
         if (state != null) {
           queue.remove(state);
           state.active = true;

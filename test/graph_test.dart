@@ -2486,8 +2486,9 @@ void main() {
         graph.addEdge(8, 4, value: 2);
         graph.addEdge(8, 7, value: 3);
         final minCut = graph.minCut();
-        expect(minCut.first.vertices, [3, 4, 7, 8]);
-        expect(minCut.second.vertices, [1, 2, 5, 6]);
+        expect(minCut.graphs, hasLength(2));
+        expect(minCut.graphs.first.vertices, [3, 4, 7, 8]);
+        expect(minCut.graphs.last.vertices, [1, 2, 5, 6]);
         expect(
             minCut.edges,
             unorderedEquals([
@@ -2508,8 +2509,9 @@ void main() {
         graph.addEdge(2, 4);
         graph.addEdge(4, 1);
         final minCut = graph.minCut();
-        expect(minCut.first.vertices, unorderedEquals([3]));
-        expect(minCut.second.vertices, unorderedEquals([0, 1, 2, 4]));
+        expect(minCut.graphs, hasLength(2));
+        expect(minCut.graphs.first.vertices, unorderedEquals([3]));
+        expect(minCut.graphs.last.vertices, unorderedEquals([0, 1, 2, 4]));
         expect(
             minCut.edges,
             unorderedEquals([
@@ -2535,8 +2537,9 @@ void main() {
         graph.addEdge(5, 6, value: 1);
         graph.addEdge(6, 7, value: 3);
         final minCut = graph.minCut();
-        expect(minCut.first.vertices, unorderedEquals([2, 3, 6, 7]));
-        expect(minCut.second.vertices, unorderedEquals([0, 1, 4, 5]));
+        expect(minCut.graphs, hasLength(2));
+        expect(minCut.graphs.first.vertices, unorderedEquals([2, 3, 6, 7]));
+        expect(minCut.graphs.last.vertices, unorderedEquals([0, 1, 4, 5]));
         expect(
             minCut.edges,
             unorderedEquals([
@@ -2558,9 +2561,10 @@ void main() {
         graph.addEdge('c', 'y', value: 2);
         graph.addEdge('e', 'y', value: 3);
         final minCut = graph.minCut();
-        expect(minCut.first.vertices, unorderedEquals(['e', 'y']));
-        expect(
-            minCut.second.vertices, unorderedEquals(['x', 'a', 'b', 'c', 'd']));
+        expect(minCut.graphs, hasLength(2));
+        expect(minCut.graphs.first.vertices, unorderedEquals(['e', 'y']));
+        expect(minCut.graphs.last.vertices,
+            unorderedEquals(['x', 'a', 'b', 'c', 'd']));
         expect(
             minCut.edges,
             unorderedEquals([
