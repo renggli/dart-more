@@ -53,6 +53,7 @@ class StoerWagnerMinCut<V, E> {
     while (_workingGraph.vertices.length > 1) {
       _minimumCutPhase(vertex);
     }
+    _workingGraph.removeVertex(_workingGraph.vertices.single);
   }
 
   // Internal state.
