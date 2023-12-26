@@ -91,11 +91,17 @@ abstract class Graph<V, E> with ToStringPrinter {
         printer: Printer<V>.standard().iterable(
             leadingItems: 3,
             trailingItems: 0,
-            afterPrinter: Printer.literal(' (${vertices.length} total)')))
+            emptyPrinter: const Printer.literal('∅'),
+            afterPrinter: vertices.length > 3
+                ? Printer.literal(' (${vertices.length} total)')
+                : null))
     ..addValue(edges,
         name: 'edges',
         printer: Printer<Edge<V, E>>.standard().iterable(
             leadingItems: 3,
             trailingItems: 0,
-            afterPrinter: Printer.literal(' (${edges.length} total)')));
+            emptyPrinter: const Printer.literal('∅'),
+            afterPrinter: edges.length > 3
+                ? Printer.literal(' (${edges.length} total)')
+                : null));
 }
