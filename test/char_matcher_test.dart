@@ -231,6 +231,9 @@ void main() {
             '\u{f384a}\u{100e70}\u{1010a4}\u{10c920}\u{1090f4}\u{f280d}\u{fccb9}',
             '012abcABC_!@# ');
       });
+      test('otherNotAssigned', () {
+        verify(UnicodeCharMatcher.otherNotAssigned(), '', '012abcABC_!@# ');
+      });
       test('otherSurrogate', () {
         final matcher = UnicodeCharMatcher.otherSurrogate();
         for (final code in [0xd851, 0xd97c, 0xdcc4, 0xd96c, 0xded6, 0xd948]) {

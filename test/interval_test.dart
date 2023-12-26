@@ -120,6 +120,10 @@ void verify<T>(
   test('isSingle', () {
     expect(interval.isSingle, isSingle);
   });
+  test('isBounded', () {
+    expect(interval.isBounded,
+        interval.lower.isBounded && interval.upper.isBounded);
+  });
   if (intLength != null) {
     test('toIntLength', () {
       if (intLength.isInfinite) {

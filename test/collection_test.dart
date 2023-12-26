@@ -5,6 +5,7 @@ import 'dart:math';
 
 import 'package:more/collection.dart';
 import 'package:more/comparator.dart';
+import 'package:more/graph.dart';
 import 'package:more/math.dart';
 import 'package:more/number.dart';
 import 'package:test/test.dart';
@@ -663,7 +664,7 @@ void main() {
         () => allHeapTests(<T>(List<T> list, {Comparator<T>? comparator}) =>
             Heap<T>.of(list, comparator: comparator)));
     group(
-        'pushAll',
+        'addAll',
         () => allHeapTests(<T>(List<T> list, {Comparator<T>? comparator}) =>
             Heap<T>(comparator: comparator)..addAll(list)));
   });
@@ -1788,6 +1789,20 @@ void main() {
         final uniques = [1, 2, 2, 3, 3, 3].unique();
         expect(uniques, [1, 2, 3]);
         expect(uniques, [1, 2, 3]);
+      });
+      test('factory', () {
+        final uniques = [1, 2, 2, 3, 3, 3]
+            .unique(factory: StorageStrategy.positiveInteger().createSet);
+        expect(uniques, [1, 2, 3]);
+        expect(uniques, [1, 2, 3]);
+      });
+      test('equals and hashCode', () {
+        final a = const Point(1, 2), b = const Point(1, 1) + const Point(0, 1);
+        final uniques = [a, b, a].unique(
+            equals: (a, b) => identical(a, b),
+            hashCode: (a) => identityHashCode(a));
+        expect(uniques, [a, b]);
+        expect(uniques, [a, b]);
       });
     });
     group('window', () {
@@ -4635,6 +4650,17 @@ void allHeapTests(
     expect(heap.addAndRemoveFirst('World'), 'World');
     expect(heap.length, 0);
   });
+  test('remove', () {
+    final heap = createHeap<String>(['Olivia', 'Emma', 'Sophia']);
+    expect(heap.remove('Emma'), isTrue);
+    expect(heap.remove('Emma'), isFalse);
+    expect(heap, unorderedEquals(['Olivia', 'Sophia']));
+  });
+  test('removeAll', () {
+    final heap = createHeap<String>(['Olivia', 'Emma', 'Sophia']);
+    expect(heap.removeAll(), unorderedEquals(['Olivia', 'Emma', 'Sophia']));
+    expect(heap, isEmpty);
+  });
   test('removeFirstAndAdd', () {
     final heap = createHeap<String>(['Olivia', 'Emma', 'Sophia']);
     expect(heap.removeFirstAndAdd('Amelia'), 'Sophia');
@@ -4647,7 +4673,17 @@ void allHeapTests(
     expect(heap.addAndRemoveFirst('Amelia'), 'Sophia');
     expect(heap.addAndRemoveFirst('Nora'), 'Olivia');
     expect(heap.addAndRemoveFirst('Violet'), 'Violet');
-    expect(heap.toList()..sort(), ['Amelia', 'Emma', 'Nora']);
+    expect(heap, unorderedEquals(['Amelia', 'Emma', 'Nora']));
+  });
+  test('unorderedElements', () {
+    final heap = createHeap<String>(['Olivia', 'Emma', 'Sophia']);
+    expect(
+        heap.unorderedElements, unorderedEquals(['Olivia', 'Emma', 'Sophia']));
+  });
+  test('unorderedList', () {
+    final heap = createHeap<String>(['Olivia', 'Emma', 'Sophia']);
+    expect(
+        heap.toUnorderedList(), unorderedEquals(['Olivia', 'Emma', 'Sophia']));
   });
   test('clear', () {
     final heap = createHeap<String>(['Olivia', 'Emma', 'Sophia']);
@@ -4813,6 +4849,8 @@ void allSortedListTests(
     final list = createSortedList<int>([5, 1, 3]);
     expect(() => list[0] = 2, throwsUnsupportedError);
     expect(() => list.length = 2, throwsUnsupportedError);
+    expect(() => list.insert(1, 4), throwsUnsupportedError);
+    expect(() => list.insertAll(1, [2, 4]), throwsUnsupportedError);
     expect(() => list.sort(), throwsUnsupportedError);
     expect(() => list.shuffle(), throwsUnsupportedError);
   });

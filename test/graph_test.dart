@@ -2571,14 +2571,20 @@ void main() {
             ]));
         expect(minCut.weight, 4);
       });
-      test('empty graph errors', () {
+      test('empty graph error', () {
         final graph = Graph<String, void>.undirected();
         expect(graph.minCut, throwsArgumentError);
       });
-      test('directed graph errors', () {
+      test('directed graph error', () {
         final graph = Graph<int, void>.directed()
           ..addEdge(0, 1)
           ..addEdge(1, 2);
+        expect(graph.minCut, throwsArgumentError);
+      });
+      test('negative edge error', () {
+        final graph = Graph<int, int>.undirected()
+          ..addEdge(0, 1, value: 1)
+          ..addEdge(1, 2, value: -1);
         expect(graph.minCut, throwsArgumentError);
       });
     });
