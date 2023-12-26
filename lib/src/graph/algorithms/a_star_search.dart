@@ -1,8 +1,7 @@
 import 'dart:collection';
 
-import 'package:collection/collection.dart';
-
 import '../../../functional.dart';
+import '../../collection/heap.dart';
 import '../path.dart';
 import '../strategy.dart';
 
@@ -35,10 +34,8 @@ class _AStarSearchIterator<V> implements Iterator<Path<V, num>> {
   _AStarSearchIterator(this.iterable)
       : states = iterable.vertexStrategy.createMap<_State<V>>() {
     for (final source in iterable.startVertices) {
-      final state = _State<V>(
-        vertex: source,
-        estimate: iterable.costEstimate(source),
-      );
+      final state =
+          _State<V>(vertex: source, estimate: iterable.costEstimate(source));
       states[source] = state;
       todo.add(state);
     }
@@ -46,7 +43,7 @@ class _AStarSearchIterator<V> implements Iterator<Path<V, num>> {
 
   final AStarSearchIterable<V> iterable;
   final Map<V, _State<V>> states;
-  final todo = PriorityQueue<_State<V>>();
+  final todo = Heap<_State<V>>();
 
   @override
   late Path<V, num> current;
@@ -60,12 +57,14 @@ class _AStarSearchIterator<V> implements Iterator<Path<V, num>> {
         final total = sourceState.total + value;
         final targetState = states[target];
         if (targetState == null) {
-          todo.add(states[target] = _State<V>(
+          final state = _State<V>(
               vertex: target,
               parent: sourceState,
               value: value,
               total: total,
-              estimate: total + iterable.costEstimate(target)));
+              estimate: total + iterable.costEstimate(target));
+          states[target] = state;
+          todo.add(state);
         } else if (total < targetState.total) {
           todo.remove(targetState);
           targetState.parent = sourceState;
@@ -110,4 +109,7 @@ class _State<V> implements Comparable<_State<V>> {
 
   @override
   int compareTo(_State<V> other) => estimate.compareTo(other.estimate);
+
+  @override
+  String toString() => '$vertex|$estimate';
 }

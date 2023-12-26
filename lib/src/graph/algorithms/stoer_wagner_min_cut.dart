@@ -95,29 +95,30 @@ class StoerWagnerMinCut<V, E> {
   num get weight => _bestWeight;
 
   void _minimumCutPhase(Set<V> seed) {
-    final queue = PriorityQueue<_VertexWeight<V>>();
-    final mapping = <Set<V>, _VertexWeight<V>>{};
+    final queue = Heap<_State<V>>();
+    final states = <Set<V>, _State<V>>{};
     var current = seed, previous = vertexStrategy.createSet();
     for (final vertex in _workingGraph.vertices) {
       if (vertex == seed) continue;
       final edge = _workingGraph.getEdge(vertex, seed);
-      final data = _VertexWeight<V>(vertex, edge?.value ?? 0, edge != null);
-      queue.add(data);
-      mapping[vertex] = data;
+      final state = _State<V>(
+          vertex: vertex, weight: edge?.value ?? 0, active: edge != null);
+      states[vertex] = state;
+      queue.add(state);
     }
     while (queue.isNotEmpty) {
       final source = queue.removeFirst().vertex;
-      mapping.remove(source);
+      states.remove(source);
       previous = current;
       current = source;
       for (final edge in _workingGraph.outgoingEdgesOf(source)) {
         final target = edge.target;
-        final data = mapping[target];
-        if (data != null) {
-          queue.remove(data);
-          data.active = true;
-          data.weight += edge.value;
-          queue.add(data);
+        final state = states[target];
+        if (state != null) {
+          queue.remove(state);
+          state.active = true;
+          state.weight += edge.value;
+          queue.add(state);
         }
       }
     }
@@ -152,15 +153,15 @@ class StoerWagnerMinCut<V, E> {
   }
 }
 
-class _VertexWeight<V> implements Comparable<_VertexWeight<V>> {
-  _VertexWeight(this.vertex, this.weight, this.active);
+class _State<V> implements Comparable<_State<V>> {
+  _State({required this.vertex, required this.weight, required this.active});
 
   final Set<V> vertex;
   num weight;
   bool active;
 
   @override
-  int compareTo(_VertexWeight<V> other) {
+  int compareTo(_State<V> other) {
     if (active && other.active) return -weight.compareTo(other.weight);
     if (active && !other.active) return -1;
     if (!active && other.active) return 1;

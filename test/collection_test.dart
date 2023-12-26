@@ -4636,8 +4636,8 @@ void main() {
 void allHeapTests(
     Heap<T> Function<T>(List<T> list, {Comparator<T>? comparator}) createHeap) {
   final comparators = {
-    'max': (int a, int b) => a.compareTo(b),
-    'min': (int a, int b) => b.compareTo(a),
+    'min': (int a, int b) => a.compareTo(b),
+    'max': (int a, int b) => b.compareTo(a),
   };
   test('empty', () {
     final heap = createHeap<String>([]);
@@ -4649,6 +4649,16 @@ void allHeapTests(
     expect(() => heap.removeFirstAndAdd('Hello'), throwsStateError);
     expect(heap.addAndRemoveFirst('World'), 'World');
     expect(heap.length, 0);
+  });
+  test('repeated', () {
+    final heap = createHeap<int>([42, 28, 28, 42]);
+    expect(heap.toList(), unorderedEquals([28, 28, 42, 42]));
+    expect(heap.removeFirst(), 28);
+    expect(heap.removeFirst(), 28);
+    expect(heap.unorderedElements, [42, 42]);
+    expect(heap.remove(42), isTrue);
+    expect(heap.remove(42), isTrue);
+    expect(heap, isEmpty);
   });
   test('remove', () {
     final heap = createHeap<String>(['Olivia', 'Emma', 'Sophia']);
@@ -4663,17 +4673,17 @@ void allHeapTests(
   });
   test('removeFirstAndAdd', () {
     final heap = createHeap<String>(['Olivia', 'Emma', 'Sophia']);
-    expect(heap.removeFirstAndAdd('Amelia'), 'Sophia');
-    expect(heap.removeFirstAndAdd('Nora'), 'Olivia');
+    expect(heap.removeFirstAndAdd('Amelia'), 'Emma');
+    expect(heap.removeFirstAndAdd('Nora'), 'Amelia');
     expect(heap.removeFirstAndAdd('Violet'), 'Nora');
-    expect(heap.toList()..sort(), ['Amelia', 'Emma', 'Violet']);
+    expect(heap.toList(), unorderedEquals(['Olivia', 'Violet', 'Sophia']));
   });
   test('addAndRemoveFirst', () {
     final heap = createHeap<String>(['Olivia', 'Emma', 'Sophia']);
-    expect(heap.addAndRemoveFirst('Amelia'), 'Sophia');
-    expect(heap.addAndRemoveFirst('Nora'), 'Olivia');
-    expect(heap.addAndRemoveFirst('Violet'), 'Violet');
-    expect(heap, unorderedEquals(['Amelia', 'Emma', 'Nora']));
+    expect(heap.addAndRemoveFirst('Amelia'), 'Amelia');
+    expect(heap.addAndRemoveFirst('Nora'), 'Emma');
+    expect(heap.addAndRemoveFirst('Violet'), 'Nora');
+    expect(heap, unorderedEquals(['Olivia', 'Violet', 'Sophia']));
   });
   test('unorderedElements', () {
     final heap = createHeap<String>(['Olivia', 'Emma', 'Sophia']);
@@ -4695,17 +4705,14 @@ void allHeapTests(
   for (final MapEntry(key: name, value: comparator) in comparators.entries) {
     test('stress $name', () {
       final random = Random(name.hashCode);
-      final source = <int>[];
-      while (source.length < 2500) {
-        source.add(random.nextInt(0xffffff));
-      }
+      final source = List.generate(5000, (_) => random.nextInt(5000));
       final heap = createHeap<int>(source, comparator: comparator);
       source.sort(comparator);
       while (source.isNotEmpty) {
         expect(heap.isEmpty, isFalse);
         expect(heap.isNotEmpty, isTrue);
         expect(heap.length, source.length);
-        final value = source.removeLast();
+        final value = source.removeAt(0);
         expect(heap.first, value);
         expect(heap.removeFirst(), value);
       }

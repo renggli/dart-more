@@ -1,8 +1,7 @@
 import 'dart:collection';
 
-import 'package:collection/collection.dart';
-
 import '../../../functional.dart';
+import '../../collection/heap.dart';
 import '../path.dart';
 import '../strategy.dart';
 
@@ -41,7 +40,7 @@ class _DijkstraSearchIterator<V> implements Iterator<Path<V, num>> {
 
   final DijkstraSearchIterable<V> iterable;
   final Map<V, _State<V>> states;
-  final todo = PriorityQueue<_State<V>>();
+  final todo = Heap<_State<V>>();
 
   @override
   late Path<V, num> current;
@@ -55,8 +54,10 @@ class _DijkstraSearchIterator<V> implements Iterator<Path<V, num>> {
         final total = sourceState.total + value;
         final targetState = states[target];
         if (targetState == null) {
-          todo.add(states[target] = _State<V>(
-              vertex: target, parent: sourceState, value: value, total: total));
+          final state = _State<V>(
+              vertex: target, parent: sourceState, value: value, total: total);
+          states[target] = state;
+          todo.add(state);
         } else if (total < targetState.total) {
           todo.remove(targetState);
           targetState.parent = sourceState;

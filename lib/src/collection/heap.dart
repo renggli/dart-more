@@ -4,13 +4,13 @@ import '../../comparator.dart';
 
 /// A priority queue implemented using a binary heap.
 class Heap<E> extends Iterable<E> implements PriorityQueue<E> {
-  /// Constructs an empty max-heap with an optional [comparator]. To create a
-  /// min-heap invert the comparator.
+  /// Constructs an empty min-heap with an optional [comparator]. To create a
+  /// max-heap invert the comparator.
   Heap({Comparator<E>? comparator})
       : _values = <E>[],
         _comparator = comparator ?? naturalCompare;
 
-  /// Constructs a max-heap with an iterable of elements and an optional
+  /// Constructs a min-heap with an iterable of elements and an optional
   /// [comparator]. To create a min-heap invert the comparator.
   Heap.of(Iterable<E> iterable, {Comparator<E>? comparator})
       : _values = List<E>.of(iterable),
@@ -40,7 +40,7 @@ class Heap<E> extends Iterable<E> implements PriorityQueue<E> {
   @override
   bool get isNotEmpty => _values.isNotEmpty;
 
-  /// Returns the last/largest value from this heap.
+  /// Returns the smallest value on this heap.
   @override
   E get first {
     _checkNotEmpty();
@@ -62,7 +62,7 @@ class Heap<E> extends Iterable<E> implements PriorityQueue<E> {
   @override
   void clear() => _values.clear();
 
-  /// Removes and returns the last/largest value from this heap.
+  /// Removes and returns the smallest value from this heap.
   @override
   E removeFirst() {
     _checkNotEmpty();
@@ -101,7 +101,7 @@ class Heap<E> extends Iterable<E> implements PriorityQueue<E> {
   /// A push immediately followed by a pop. Contrary to [removeFirstAndAdd] this
   /// works on an empty heap and might directly return `value`.
   E addAndRemoveFirst(E value) {
-    if (_values.isEmpty || _comparator(_values[0], value) < 0) {
+    if (_values.isEmpty || 0 < _comparator(_values[0], value)) {
       return value;
     }
     final result = _values[0];
@@ -128,7 +128,7 @@ class Heap<E> extends Iterable<E> implements PriorityQueue<E> {
     while (start < stop) {
       final parentIndex = (stop - 1) >> 1;
       final parent = _values[parentIndex];
-      if (_comparator(value, parent) < 0) {
+      if (0 < _comparator(value, parent)) {
         break;
       }
       _values[stop] = parent;
@@ -145,7 +145,7 @@ class Heap<E> extends Iterable<E> implements PriorityQueue<E> {
     while (childLeft < end) {
       final childRight = childLeft + 1;
       if (childRight < end &&
-          _comparator(_values[childLeft], _values[childRight]) < 0) {
+          0 < _comparator(_values[childLeft], _values[childRight])) {
         childLeft = childRight;
       }
       _values[pos] = _values[childLeft];
