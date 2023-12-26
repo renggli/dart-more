@@ -64,7 +64,7 @@ class StoerWagnerMinCut<V, E> {
   /// The underlying graph on which this cut was computed.
   final Graph<V, E> graph;
 
-  /// The edge weight to be used.
+  /// The edge weight used to compute the cut.
   final num Function(V source, V target) edgeWeight;
 
   /// The vertex strategy to store vertices of type V.
@@ -83,6 +83,9 @@ class StoerWagnerMinCut<V, E> {
   }
 
   /// Returns an iterable over the edges that are cut.
+  ///
+  /// Each undirected edge appears for each direction once, to de-duplicate
+  /// use `minCut.edges.unique()`.
   Iterable<Edge<V, E>> get edges => graph.edges.where((edge) =>
       _bestPartition.contains(edge.source) !=
       _bestPartition.contains(edge.target));
