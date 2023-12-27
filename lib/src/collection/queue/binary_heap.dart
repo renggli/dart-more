@@ -1,20 +1,21 @@
-import 'package:collection/collection.dart' show PriorityQueue;
+import 'package:collection/collection.dart'
+    show HeapPriorityQueue, PriorityQueue;
 
 import '../../../comparator.dart';
 
 /// A priority queue implemented using a binary heap.
 ///
-/// This implementation is very similar to the one included with the standard
-/// library but for some relevant benchmarks around 25% faster.
+/// This implementation is compatible to [PriorityQueue] and has the same
+/// asymptotic performance characteristics as [HeapPriorityQueue] included with
+/// the Dart standard library, but is significantly faster for most operations.
 class BinaryHeapPriorityQueue<E> implements PriorityQueue<E> {
-  /// Constructs an empty min-heap with an optional [comparator]. To create a
-  /// max-heap invert the comparator.
+  /// Constructs an empty binary min-heap with an optional [comparator].
   BinaryHeapPriorityQueue([Comparator<E>? comparator])
       : _values = <E>[],
         _comparator = comparator ?? naturalCompare;
 
-  /// Constructs a min-heap with an iterable of elements and an optional
-  /// [comparator]. To create a min-heap invert the comparator.
+  /// Constructs a binary min-heap with an iterable of elements and an optional
+  /// [comparator].
   BinaryHeapPriorityQueue.of(Iterable<E> iterable, [Comparator<E>? comparator])
       : _values = List<E>.of(iterable),
         _comparator = comparator ?? naturalCompare {
