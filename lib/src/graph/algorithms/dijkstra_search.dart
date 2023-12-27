@@ -1,7 +1,7 @@
 import 'dart:collection';
 
 import '../../../functional.dart';
-import '../../collection/heap.dart';
+import '../../collection/queue/binary_heap.dart';
 import '../path.dart';
 import '../strategy.dart';
 
@@ -40,7 +40,7 @@ class _DijkstraSearchIterator<V> implements Iterator<Path<V, num>> {
 
   final DijkstraSearchIterable<V> iterable;
   final Map<V, _State<V>> states;
-  final todo = Heap<_State<V>>();
+  final todo = BinaryHeapPriorityQueue<_State<V>>();
 
   @override
   late Path<V, num> current;

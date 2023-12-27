@@ -1,18 +1,21 @@
 import 'package:collection/collection.dart' show PriorityQueue;
 
-import '../../comparator.dart';
+import '../../../comparator.dart';
 
 /// A priority queue implemented using a binary heap.
-class Heap<E> extends Iterable<E> implements PriorityQueue<E> {
+///
+/// This implementation is very similar to the one included with the standard
+/// library but for some relevant benchmarks around 25% faster.
+class BinaryHeapPriorityQueue<E> implements PriorityQueue<E> {
   /// Constructs an empty min-heap with an optional [comparator]. To create a
   /// max-heap invert the comparator.
-  Heap({Comparator<E>? comparator})
+  BinaryHeapPriorityQueue([Comparator<E>? comparator])
       : _values = <E>[],
         _comparator = comparator ?? naturalCompare;
 
   /// Constructs a min-heap with an iterable of elements and an optional
   /// [comparator]. To create a min-heap invert the comparator.
-  Heap.of(Iterable<E> iterable, {Comparator<E>? comparator})
+  BinaryHeapPriorityQueue.of(Iterable<E> iterable, [Comparator<E>? comparator])
       : _values = List<E>.of(iterable),
         _comparator = comparator ?? naturalCompare {
     if (_values.length > 1) {
@@ -28,41 +31,36 @@ class Heap<E> extends Iterable<E> implements PriorityQueue<E> {
   // Underlying comparator.
   final Comparator<E> _comparator;
 
-  /// Returns the number of elements in this heap.
   @override
   int get length => _values.length;
 
-  /// Whether this heap has no elements.
   @override
   bool get isEmpty => _values.isEmpty;
 
-  /// Whether this heap has at least one element.
   @override
   bool get isNotEmpty => _values.isNotEmpty;
 
-  /// Returns the smallest value on this heap.
   @override
-  E get first {
-    _checkNotEmpty();
-    return _values[0];
-  }
+  bool contains(E object) => _values.contains(object);
 
-  /// Adds a new value onto this heap.
+  @override
+  Iterable<E> get unorderedElements => _values;
+
   @override
   void add(E value) {
     _values.add(value);
     _siftDown(0, _values.length - 1);
   }
 
-  /// Adds multiple new values onto this heap.
   @override
   void addAll(Iterable<E> values) => values.forEach(add);
 
-  /// Removes all objects from this heap.
   @override
-  void clear() => _values.clear();
+  E get first {
+    _checkNotEmpty();
+    return _values[0];
+  }
 
-  /// Removes and returns the smallest value from this heap.
   @override
   E removeFirst() {
     _checkNotEmpty();
@@ -76,11 +74,9 @@ class Heap<E> extends Iterable<E> implements PriorityQueue<E> {
     return value;
   }
 
-  /// Remove an element from the heap.
   @override
   bool remove(E value) => _values.remove(value);
 
-  /// Removes all objects from this heap.
   @override
   Iterable<E> removeAll() {
     final result = _values.toList();
@@ -88,36 +84,17 @@ class Heap<E> extends Iterable<E> implements PriorityQueue<E> {
     return result;
   }
 
-  /// A pop immediately followed by a push. Contrary to [addAndRemoveFirst] this
-  /// requires a non-empty heap and never returns `value`.
-  E removeFirstAndAdd(E value) {
-    _checkNotEmpty();
-    final result = _values[0];
-    _values[0] = value;
-    _siftUp(0);
-    return result;
-  }
-
-  /// A push immediately followed by a pop. Contrary to [removeFirstAndAdd] this
-  /// works on an empty heap and might directly return `value`.
-  E addAndRemoveFirst(E value) {
-    if (_values.isEmpty || 0 < _comparator(_values[0], value)) {
-      return value;
-    }
-    final result = _values[0];
-    _values[0] = value;
-    _siftUp(0);
-    return result;
-  }
+  @override
+  void clear() => _values.clear();
 
   @override
-  Iterator<E> get iterator => _values.iterator;
-
-  @override
-  Iterable<E> get unorderedElements => _values;
+  List<E> toList() => _values.toList()..sort(_comparator);
 
   @override
   List<E> toUnorderedList() => _values.toList();
+
+  @override
+  Set<E> toSet() => _values.toSet();
 
   void _checkNotEmpty() {
     if (_values.isEmpty) throw StateError('No element');

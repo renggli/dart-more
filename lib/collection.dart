@@ -5,7 +5,6 @@ library collection;
 export 'src/collection/bimap.dart'
     show BiMap, BiMapOnIterableExtension, BiMapOnMapExtension;
 export 'src/collection/bitlist.dart' show BitList, BitListExtension;
-export 'src/collection/heap.dart' show Heap;
 export 'src/collection/iterable/chunked.dart' show ChunkedIterableExtension;
 export 'src/collection/iterable/combinations.dart'
     show CombinationsIterableExtension;
@@ -49,6 +48,7 @@ export 'src/collection/multimap/list.dart'
 export 'src/collection/multimap/set.dart'
     show SetMultimap, SetMultimapOnIterableExtension, SetMultimapOnMapExtension;
 export 'src/collection/multiset.dart' show Multiset, MultisetExtension;
+export 'src/collection/queue/binary_heap.dart' show BinaryHeapPriorityQueue;
 export 'src/collection/range.dart' show Range, RangeIterator;
 export 'src/collection/range/bigint.dart'
     show BigIntRange, BigIntRangeExtension;

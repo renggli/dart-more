@@ -3,6 +3,7 @@
 import 'dart:collection';
 import 'dart:math';
 
+import 'package:collection/collection.dart' show ListExtensions, PriorityQueue;
 import 'package:more/collection.dart';
 import 'package:more/comparator.dart';
 import 'package:more/graph.dart';
@@ -658,15 +659,22 @@ void main() {
       });
     }
   });
-  group('heap', () {
+  group('queue', () {
     group(
-        'of',
-        () => allHeapTests(<T>(List<T> list, {Comparator<T>? comparator}) =>
-            Heap<T>.of(list, comparator: comparator)));
+        'PriorityQueue (Dart)',
+        () => allPriorityQueueTests(<T>(List<T> list,
+                [Comparator<T>? comparator]) =>
+            PriorityQueue<T>(comparator)..addAll(list)));
     group(
-        'addAll',
-        () => allHeapTests(<T>(List<T> list, {Comparator<T>? comparator}) =>
-            Heap<T>(comparator: comparator)..addAll(list)));
+        'BinaryHeapPriorityQueue',
+        () => allPriorityQueueTests(<T>(List<T> list,
+                [Comparator<T>? comparator]) =>
+            BinaryHeapPriorityQueue<T>(comparator)..addAll(list)));
+    group(
+        'BinaryHeapPriorityQueue.of',
+        () => allPriorityQueueTests(<T>(List<T> list,
+                [Comparator<T>? comparator]) =>
+            BinaryHeapPriorityQueue<T>.of(list, comparator)));
   });
   group('iterable', () {
     group('chunked', () {
@@ -4633,92 +4641,110 @@ void main() {
   });
 }
 
-void allHeapTests(
-    Heap<T> Function<T>(List<T> list, {Comparator<T>? comparator}) createHeap) {
+void allPriorityQueueTests(
+    PriorityQueue<T> Function<T>(List<T>, [Comparator<T>?]) create) {
   final comparators = {
+    'natural': null,
     'min': (int a, int b) => a.compareTo(b),
     'max': (int a, int b) => b.compareTo(a),
   };
   test('empty', () {
-    final heap = createHeap<String>([]);
-    expect(heap.isEmpty, isTrue);
-    expect(heap.isNotEmpty, isFalse);
-    expect(heap.length, 0);
-    expect(() => heap.first, throwsStateError);
-    expect(() => heap.removeFirst(), throwsStateError);
-    expect(() => heap.removeFirstAndAdd('Hello'), throwsStateError);
-    expect(heap.addAndRemoveFirst('World'), 'World');
-    expect(heap.length, 0);
+    final queue = create<String>([]);
+    expect(queue.isEmpty, isTrue);
+    expect(queue.isNotEmpty, isFalse);
+    expect(queue.length, 0);
+    expect(() => queue.first, throwsStateError);
+    expect(() => queue.removeFirst(), throwsStateError);
+    expect(queue.unorderedElements, isEmpty);
+    expect(queue.toUnorderedList(), isEmpty);
+    expect(queue.toList(), isEmpty);
+    expect(queue.toSet(), isEmpty);
   });
-  test('repeated', () {
-    final heap = createHeap<int>([42, 28, 28, 42]);
-    expect(heap.toList(), unorderedEquals([28, 28, 42, 42]));
-    expect(heap.removeFirst(), 28);
-    expect(heap.removeFirst(), 28);
-    expect(heap.unorderedElements, [42, 42]);
-    expect(heap.remove(42), isTrue);
-    expect(heap.remove(42), isTrue);
-    expect(heap, isEmpty);
+  test('filled', () {
+    final queue = create<String>(['Nora', 'Emma', 'Jana']);
+    expect(queue.isEmpty, isFalse);
+    expect(queue.isNotEmpty, isTrue);
+    expect(queue.length, 3);
+    expect(queue.first, 'Emma');
+    expect(queue.unorderedElements, unorderedEquals(['Nora', 'Emma', 'Jana']));
+    expect(queue.toUnorderedList(), unorderedEquals(['Nora', 'Emma', 'Jana']));
+    expect(queue.toList(), ['Emma', 'Jana', 'Nora']);
+    expect(queue.toSet(), {'Nora', 'Emma', 'Jana'});
+  });
+  test('filled (repeated elements)', () {
+    final queue = create<int>([3, 2, 1, 3, 2, 3]);
+    expect(queue.isEmpty, isFalse);
+    expect(queue.isNotEmpty, isTrue);
+    expect(queue.length, 6);
+    expect(queue.first, 1);
+    expect(queue.unorderedElements, unorderedEquals([3, 2, 1, 3, 2, 3]));
+    expect(queue.toUnorderedList(), unorderedEquals([3, 2, 1, 3, 2, 3]));
+    expect(queue.toList(), [1, 2, 2, 3, 3, 3]);
+    expect(queue.toSet(), {1, 2, 3});
+  });
+  test('removeFirst', () {
+    final queue = create<String>(['Nora', 'Emma', 'Jana']);
+    expect(queue.removeFirst(), 'Emma');
+    expect(queue.removeFirst(), 'Jana');
+    expect(queue.removeFirst(), 'Nora');
+    expect(queue.isEmpty, isTrue);
   });
   test('remove', () {
-    final heap = createHeap<String>(['Olivia', 'Emma', 'Sophia']);
-    expect(heap.remove('Emma'), isTrue);
-    expect(heap.remove('Emma'), isFalse);
-    expect(heap, unorderedEquals(['Olivia', 'Sophia']));
+    final queue = create<String>(['Nora', 'Emma', 'Jana']);
+    expect(queue.remove('Emma'), isTrue);
+    expect(queue.unorderedElements, unorderedEquals(['Nora', 'Jana']));
+    expect(queue.remove('Emma'), isFalse);
   });
   test('removeAll', () {
-    final heap = createHeap<String>(['Olivia', 'Emma', 'Sophia']);
-    expect(heap.removeAll(), unorderedEquals(['Olivia', 'Emma', 'Sophia']));
-    expect(heap, isEmpty);
-  });
-  test('removeFirstAndAdd', () {
-    final heap = createHeap<String>(['Olivia', 'Emma', 'Sophia']);
-    expect(heap.removeFirstAndAdd('Amelia'), 'Emma');
-    expect(heap.removeFirstAndAdd('Nora'), 'Amelia');
-    expect(heap.removeFirstAndAdd('Violet'), 'Nora');
-    expect(heap.toList(), unorderedEquals(['Olivia', 'Violet', 'Sophia']));
-  });
-  test('addAndRemoveFirst', () {
-    final heap = createHeap<String>(['Olivia', 'Emma', 'Sophia']);
-    expect(heap.addAndRemoveFirst('Amelia'), 'Amelia');
-    expect(heap.addAndRemoveFirst('Nora'), 'Emma');
-    expect(heap.addAndRemoveFirst('Violet'), 'Nora');
-    expect(heap, unorderedEquals(['Olivia', 'Violet', 'Sophia']));
-  });
-  test('unorderedElements', () {
-    final heap = createHeap<String>(['Olivia', 'Emma', 'Sophia']);
-    expect(
-        heap.unorderedElements, unorderedEquals(['Olivia', 'Emma', 'Sophia']));
-  });
-  test('unorderedList', () {
-    final heap = createHeap<String>(['Olivia', 'Emma', 'Sophia']);
-    expect(
-        heap.toUnorderedList(), unorderedEquals(['Olivia', 'Emma', 'Sophia']));
+    final queue = create<String>(['Nora', 'Emma', 'Jana']);
+    expect(queue.removeAll(), unorderedEquals(['Nora', 'Emma', 'Jana']));
+    expect(queue.isEmpty, isTrue);
   });
   test('clear', () {
-    final heap = createHeap<String>(['Olivia', 'Emma', 'Sophia']);
-    heap.clear();
-    expect(heap.isEmpty, isTrue);
-    expect(heap.isNotEmpty, isFalse);
-    expect(heap.length, 0);
+    final queue = create<String>(['Nora', 'Emma', 'Jana']);
+    queue.clear();
+    expect(queue.isEmpty, isTrue);
+  });
+  test('removeFirst, add', () {
+    final queue = create<String>(['Olivia', 'Emma', 'Sophia']);
+    expect(queue.removeFirst(), 'Emma');
+    queue.add('Amelia');
+    expect(queue.removeFirst(), 'Amelia');
+    queue.add('Nora');
+    expect(queue.removeFirst(), 'Nora');
+    queue.add('Violet');
+    expect(queue.unorderedElements,
+        unorderedEquals(['Olivia', 'Violet', 'Sophia']));
+  });
+  test('add, removeFirst', () {
+    final queue = create<String>(['Olivia', 'Emma', 'Sophia']);
+    queue.add('Amelia');
+    expect(queue.removeFirst(), 'Amelia');
+    queue.add('Nora');
+    expect(queue.removeFirst(), 'Emma');
+    queue.add('Violet');
+    expect(queue.removeFirst(), 'Nora');
+    expect(queue.unorderedElements,
+        unorderedEquals(['Olivia', 'Violet', 'Sophia']));
   });
   for (final MapEntry(key: name, value: comparator) in comparators.entries) {
     test('stress $name', () {
-      final random = Random(name.hashCode);
-      final source = List.generate(5000, (_) => random.nextInt(5000));
-      final heap = createHeap<int>(source, comparator: comparator);
+      final random = Random(69003), max = 5000;
+      final source = List.generate(max, (_) => random.nextInt(max));
+      final queue = create<int>(source, comparator);
       source.sort(comparator);
+      source.reverseRange(0, source.length);
       while (source.isNotEmpty) {
-        expect(heap.isEmpty, isFalse);
-        expect(heap.isNotEmpty, isTrue);
-        expect(heap.length, source.length);
-        final value = source.removeAt(0);
-        expect(heap.first, value);
-        expect(heap.removeFirst(), value);
+        expect(queue.isEmpty, isFalse);
+        expect(queue.isNotEmpty, isTrue);
+        expect(queue.length, source.length);
+        final value = source.removeLast();
+        expect(queue.first, value);
+        expect(queue.removeFirst(), value);
       }
-      expect(heap.isEmpty, isTrue);
-      expect(heap.isNotEmpty, isFalse);
-      expect(heap.length, 0);
+      expect(queue.isEmpty, isTrue);
+      expect(queue.isNotEmpty, isFalse);
+      expect(queue.length, 0);
     });
   }
 }
