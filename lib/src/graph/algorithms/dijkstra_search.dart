@@ -1,7 +1,8 @@
 import 'dart:collection';
 
+import 'package:collection/collection.dart';
+
 import '../../../functional.dart';
-import '../../collection/heap.dart';
 import '../path.dart';
 import '../strategy.dart';
 
@@ -40,7 +41,7 @@ class _DijkstraSearchIterator<V> implements Iterator<Path<V, num>> {
 
   final DijkstraSearchIterable<V> iterable;
   final Map<V, _State<V>> states;
-  final queue = Heap<_State<V>>();
+  final queue = PriorityQueue<_State<V>>();
 
   @override
   late Path<V, num> current;
@@ -49,21 +50,17 @@ class _DijkstraSearchIterator<V> implements Iterator<Path<V, num>> {
   bool moveNext() {
     while (queue.isNotEmpty) {
       final sourceState = queue.removeFirst();
+      if (sourceState.isObsolete) continue;
       for (final target in iterable.successorsOf(sourceState.vertex)) {
         final value = iterable.edgeCost(sourceState.vertex, target);
         final total = sourceState.total + value;
         final targetState = states[target];
-        if (targetState == null) {
+        if (targetState == null || total < targetState.total) {
           final state = _State<V>(
               vertex: target, parent: sourceState, value: value, total: total);
+          targetState?.isObsolete = true;
           states[target] = state;
           queue.add(state);
-        } else if (total < targetState.total) {
-          queue.remove(targetState);
-          targetState.parent = sourceState;
-          targetState.value = value;
-          targetState.total = total;
-          queue.add(targetState);
         }
       }
       if (iterable.targetPredicate(sourceState.vertex)) {
@@ -84,7 +81,7 @@ class _DijkstraSearchIterator<V> implements Iterator<Path<V, num>> {
   }
 }
 
-class _State<V> extends HeapEntry<_State<V>> {
+class _State<V> implements Comparable<_State<V>> {
   _State({
     required this.vertex,
     this.parent,
@@ -93,9 +90,10 @@ class _State<V> extends HeapEntry<_State<V>> {
   });
 
   final V vertex;
-  _State<V>? parent;
-  num value;
-  num total;
+  final _State<V>? parent;
+  final num value;
+  final num total;
+  bool isObsolete = false;
 
   @override
   int compareTo(_State<V> other) => total.compareTo(other.total);

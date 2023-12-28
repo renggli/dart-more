@@ -5,8 +5,6 @@ library collection;
 export 'src/collection/bimap.dart'
     show BiMap, BiMapOnIterableExtension, BiMapOnMapExtension;
 export 'src/collection/bitlist.dart' show BitList, BitListExtension;
-export 'src/collection/heap.dart'
-    show Heap, HeapEntry, KeyValueHeapEntry, ValueHeapEntry;
 export 'src/collection/iterable/chunked.dart' show ChunkedIterableExtension;
 export 'src/collection/iterable/combinations.dart'
     show CombinationsIterableExtension;

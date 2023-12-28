@@ -3,7 +3,6 @@
 import 'package:collection/collection.dart';
 
 import '../../../graph.dart';
-import '../../collection/heap.dart';
 import '../../collection/iterable/unique.dart';
 import '../../functional/scope.dart';
 import '../../functional/types.dart';
@@ -97,7 +96,7 @@ class StoerWagnerMinCut<V, E> {
   num get weight => _bestWeight;
 
   void _minimumCutPhase(Set<V> seed) {
-    final queue = Heap<_State<V>>();
+    final queue = PriorityQueue<_State<V>>();
     final states = _workingGraph.vertexStrategy.createMap<_State<V>>();
     var current = seed, previous = vertexStrategy.createSet();
     for (final vertex in _workingGraph.vertices) {
@@ -109,17 +108,23 @@ class StoerWagnerMinCut<V, E> {
       queue.add(state);
     }
     while (queue.isNotEmpty) {
-      final source = queue.removeFirst().vertex;
+      final sourceState = queue.removeFirst();
+      if (sourceState.isObsolete) continue;
+      final source = sourceState.vertex;
       states.remove(source);
       previous = current;
       current = source;
       for (final edge in _workingGraph.outgoingEdgesOf(source)) {
         final state = states[edge.target];
         if (state != null) {
-          queue.remove(state);
-          state.active = true;
-          state.weight += edge.value;
-          queue.add(state);
+          state.isObsolete = true;
+          final newState = _State<V>(
+            vertex: state.vertex,
+            weight: state.weight + edge.value,
+            active: true,
+          );
+          states[edge.target] = newState;
+          queue.add(newState);
         }
       }
     }
@@ -154,12 +159,13 @@ class StoerWagnerMinCut<V, E> {
   }
 }
 
-class _State<V> extends HeapEntry<_State<V>> {
+class _State<V> implements Comparable<_State<V>> {
   _State({required this.vertex, required this.weight, required this.active});
 
   final Set<V> vertex;
-  num weight;
-  bool active;
+  final num weight;
+  final bool active;
+  bool isObsolete = false;
 
   @override
   int compareTo(_State<V> other) {
