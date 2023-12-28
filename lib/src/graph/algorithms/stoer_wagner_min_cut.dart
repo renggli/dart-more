@@ -1,5 +1,3 @@
-// https://github.com/thomasjungblut/tjungblut-graph/blob/master/src/de/jungblut/graph/partition/StoerWagnerMinCut.java
-
 import 'package:collection/collection.dart';
 
 import '../../../graph.dart';
@@ -28,8 +26,6 @@ class StoerWagnerMinCut<V, E> {
   }) {
     GraphError.checkUndirected(graph);
     GraphError.checkVertexCount(graph, 2);
-
-    // Initialize the vertices of the working graph.
     final vertexMap = graph.vertexStrategy.createMap<Set<V>>();
     for (final vertex in graph.vertices) {
       final set = graph.vertexStrategy.createSet();
@@ -37,22 +33,15 @@ class StoerWagnerMinCut<V, E> {
       vertexMap[vertex] = set;
       set.add(vertex);
     }
-
-    // Initialize the edges of the working graph.
     for (final edge in graph.edges.unique()) {
       final weight = edgeWeight(edge.source, edge.target);
-      if (weight < 0) {
-        throw GraphError(
-            weight, 'edgeWeight', 'Expected positive edge weight for $edge');
-      }
+      assert(weight >= 0, 'Expected positive edge weight for $edge');
       _workingGraph.addEdge(vertexMap[edge.source]!, vertexMap[edge.target]!,
           value: weight);
     }
-
-    // Perform the minimum cut of Stoer–Wagner.
     final vertex = _workingGraph.vertices.first;
     while (_workingGraph.vertices.length > 1) {
-      _minimumCutPhase(vertex);
+      _minimumCut(vertex);
     }
     _workingGraph.removeVertex(_workingGraph.vertices.single);
   }
@@ -95,8 +84,8 @@ class StoerWagnerMinCut<V, E> {
   /// Returns the weight of the cut vertices.
   num get weight => _bestWeight;
 
-  void _minimumCutPhase(Set<V> seed) {
-    final queue = PriorityQueue<_State<V>>();
+  void _minimumCut(Set<V> seed) {
+    final queue = PriorityQueue<_State<V>>(_stateCompare);
     final states = _workingGraph.vertexStrategy.createMap<_State<V>>();
     var current = seed, previous = vertexStrategy.createSet();
     for (final vertex in _workingGraph.vertices) {
@@ -159,19 +148,18 @@ class StoerWagnerMinCut<V, E> {
   }
 }
 
-class _State<V> implements Comparable<_State<V>> {
+final class _State<V> {
   _State({required this.vertex, required this.weight, required this.active});
 
   final Set<V> vertex;
   final num weight;
   final bool active;
   bool isObsolete = false;
+}
 
-  @override
-  int compareTo(_State<V> other) {
-    if (active && other.active) return -weight.compareTo(other.weight);
-    if (active && !other.active) return -1;
-    if (!active && other.active) return 1;
-    return 0;
-  }
+int _stateCompare<V>(_State<V> a, _State<V> b) {
+  if (a.active && b.active) return -a.weight.compareTo(b.weight);
+  if (a.active && !b.active) return -1;
+  if (!a.active && b.active) return 1;
+  return 0;
 }

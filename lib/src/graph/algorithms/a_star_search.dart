@@ -33,18 +33,19 @@ class AStarSearchIterable<V> extends IterableBase<Path<V, num>> {
 
 class _AStarSearchIterator<V> implements Iterator<Path<V, num>> {
   _AStarSearchIterator(this.iterable)
-      : states = iterable.vertexStrategy.createMap<_State<V>>() {
-    for (final source in iterable.startVertices) {
+      : states = iterable.vertexStrategy.createMap<_State<V>>(),
+        queue = PriorityQueue<_State<V>>(_stateCompare) {
+    for (final vertex in iterable.startVertices) {
       final state =
-          _State<V>(vertex: source, estimate: iterable.costEstimate(source));
-      states[source] = state;
+          _State<V>(vertex: vertex, estimate: iterable.costEstimate(vertex));
+      states[vertex] = state;
       queue.add(state);
     }
   }
 
   final AStarSearchIterable<V> iterable;
   final Map<V, _State<V>> states;
-  final queue = PriorityQueue<_State<V>>();
+  final PriorityQueue<_State<V>> queue;
 
   @override
   late Path<V, num> current;
@@ -56,6 +57,10 @@ class _AStarSearchIterator<V> implements Iterator<Path<V, num>> {
       if (sourceState.isObsolete) continue;
       for (final target in iterable.successorsOf(sourceState.vertex)) {
         final value = iterable.edgeCost(sourceState.vertex, target);
+        assert(
+            value >= 0,
+            'Expected positive edge weight between '
+            '${sourceState.vertex} and $target');
         final total = sourceState.total + value;
         final targetState = states[target];
         if (targetState == null || total < targetState.total) {
@@ -88,7 +93,7 @@ class _AStarSearchIterator<V> implements Iterator<Path<V, num>> {
   }
 }
 
-class _State<V> implements Comparable<_State<V>> {
+final class _State<V> {
   _State({
     required this.vertex,
     this.parent,
@@ -99,11 +104,11 @@ class _State<V> implements Comparable<_State<V>> {
 
   final V vertex;
   final _State<V>? parent;
-  final num estimate;
   final num value;
   final num total;
+  final num estimate;
   bool isObsolete = false;
-
-  @override
-  int compareTo(_State<V> other) => estimate.compareTo(other.estimate);
 }
+
+int _stateCompare<V>(_State<V> a, _State<V> b) =>
+    a.estimate.compareTo(b.estimate);

@@ -124,7 +124,7 @@ class DinicMaxFlow<V> {
   }
 }
 
-class _Vertex<V> {
+final class _Vertex<V> {
   _Vertex(this.vertex);
 
   final V vertex;
@@ -133,7 +133,7 @@ class _Vertex<V> {
   int index = 0;
 }
 
-class _Edge<V> {
+final class _Edge<V> {
   _Edge(this.source, this.target, {this.capacity = 0});
 
   final _Vertex<V> source;
