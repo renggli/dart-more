@@ -1,7 +1,7 @@
 import 'dart:collection';
 
+import '../../../collection.dart';
 import '../../../functional.dart';
-import '../../collection/queue/binary_heap.dart';
 import '../path.dart';
 import '../strategy.dart';
 
@@ -37,21 +37,21 @@ class _AStarSearchIterator<V> implements Iterator<Path<V, num>> {
       final state =
           _State<V>(vertex: source, estimate: iterable.costEstimate(source));
       states[source] = state;
-      todo.add(state);
+      queue.add(state);
     }
   }
 
   final AStarSearchIterable<V> iterable;
   final Map<V, _State<V>> states;
-  final todo = BinaryHeapPriorityQueue<_State<V>>();
+  final queue = Heap<_State<V>>();
 
   @override
   late Path<V, num> current;
 
   @override
   bool moveNext() {
-    while (todo.isNotEmpty) {
-      final sourceState = todo.removeFirst();
+    while (queue.isNotEmpty) {
+      final sourceState = queue.removeFirst();
       for (final target in iterable.successorsOf(sourceState.vertex)) {
         final value = iterable.edgeCost(sourceState.vertex, target);
         final total = sourceState.total + value;
@@ -64,14 +64,14 @@ class _AStarSearchIterator<V> implements Iterator<Path<V, num>> {
               total: total,
               estimate: total + iterable.costEstimate(target));
           states[target] = state;
-          todo.add(state);
+          queue.add(state);
         } else if (total < targetState.total) {
-          todo.remove(targetState);
+          queue.remove(targetState);
           targetState.parent = sourceState;
           targetState.value = value;
           targetState.total = total;
           targetState.estimate = total + iterable.costEstimate(target);
-          todo.add(targetState);
+          queue.add(targetState);
         }
       }
       if (iterable.targetPredicate(sourceState.vertex)) {
@@ -92,7 +92,7 @@ class _AStarSearchIterator<V> implements Iterator<Path<V, num>> {
   }
 }
 
-class _State<V> implements Comparable<_State<V>> {
+class _State<V> extends HeapEntry<_State<V>> {
   _State({
     required this.vertex,
     this.parent,

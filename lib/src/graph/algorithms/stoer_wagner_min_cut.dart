@@ -3,8 +3,8 @@
 import 'package:collection/collection.dart';
 
 import '../../../graph.dart';
+import '../../collection/heap.dart';
 import '../../collection/iterable/unique.dart';
-import '../../collection/queue/binary_heap.dart';
 import '../../functional/scope.dart';
 import '../../functional/types.dart';
 
@@ -97,7 +97,7 @@ class StoerWagnerMinCut<V, E> {
   num get weight => _bestWeight;
 
   void _minimumCutPhase(Set<V> seed) {
-    final queue = BinaryHeapPriorityQueue<_State<V>>();
+    final queue = Heap<_State<V>>();
     final states = _workingGraph.vertexStrategy.createMap<_State<V>>();
     var current = seed, previous = vertexStrategy.createSet();
     for (final vertex in _workingGraph.vertices) {
@@ -154,7 +154,7 @@ class StoerWagnerMinCut<V, E> {
   }
 }
 
-class _State<V> implements Comparable<_State<V>> {
+class _State<V> extends HeapEntry<_State<V>> {
   _State({required this.vertex, required this.weight, required this.active});
 
   final Set<V> vertex;

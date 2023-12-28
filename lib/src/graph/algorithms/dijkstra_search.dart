@@ -1,7 +1,7 @@
 import 'dart:collection';
 
 import '../../../functional.dart';
-import '../../collection/queue/binary_heap.dart';
+import '../../collection/heap.dart';
 import '../path.dart';
 import '../strategy.dart';
 
@@ -34,21 +34,21 @@ class _DijkstraSearchIterator<V> implements Iterator<Path<V, num>> {
     for (final vertex in iterable.startVertices) {
       final state = _State<V>(vertex: vertex);
       states[vertex] = state;
-      todo.add(state);
+      queue.add(state);
     }
   }
 
   final DijkstraSearchIterable<V> iterable;
   final Map<V, _State<V>> states;
-  final todo = BinaryHeapPriorityQueue<_State<V>>();
+  final queue = Heap<_State<V>>();
 
   @override
   late Path<V, num> current;
 
   @override
   bool moveNext() {
-    while (todo.isNotEmpty) {
-      final sourceState = todo.removeFirst();
+    while (queue.isNotEmpty) {
+      final sourceState = queue.removeFirst();
       for (final target in iterable.successorsOf(sourceState.vertex)) {
         final value = iterable.edgeCost(sourceState.vertex, target);
         final total = sourceState.total + value;
@@ -57,13 +57,13 @@ class _DijkstraSearchIterator<V> implements Iterator<Path<V, num>> {
           final state = _State<V>(
               vertex: target, parent: sourceState, value: value, total: total);
           states[target] = state;
-          todo.add(state);
+          queue.add(state);
         } else if (total < targetState.total) {
-          todo.remove(targetState);
+          queue.remove(targetState);
           targetState.parent = sourceState;
           targetState.value = value;
           targetState.total = total;
-          todo.add(targetState);
+          queue.add(targetState);
         }
       }
       if (iterable.targetPredicate(sourceState.vertex)) {
@@ -84,7 +84,7 @@ class _DijkstraSearchIterator<V> implements Iterator<Path<V, num>> {
   }
 }
 
-class _State<V> implements Comparable<_State<V>> {
+class _State<V> extends HeapEntry<_State<V>> {
   _State({
     required this.vertex,
     this.parent,
