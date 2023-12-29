@@ -1,5 +1,21 @@
 # Changelog
 
+## 4.2.0
+- Improved `Iterable.index` to more common argument names, and support `step`.
+- Add `also` scope operator, which significantly improves the possibility to write one-liners.
+- Numerous improvements to the Graph library:
+  - Various performance critical fixes, better use of priority queues.
+  - Easy export to [GraphViz](https://graphviz.org/) with `Graph.toDot()`.
+  - Add support for filtered vertex views with `Graph.where({Predicate<V> vertexPrediate})`.
+  - Add support to copy graphs with `Graph.copy({bool empty})`.
+  - Improve `toString` of `Graph`, `Edge` and `Path` classes.
+  - Add the Stoer-Wagner min-cut algorithm.
+- Numerous smaller improvements:
+  - Add support for patterns in `String.removeSuffix`; and add `String.partition` and `String.lastPartition`.
+  - Add support to compute `Iterable.minMax` in one pass, and `Iterable.gcd` and `Iterable.lcm`.
+- Removed `Heap`: `PriorityQueue` from the Dart standard library provides the same functionality.
+- Made the `SortedList` implement `PriorityQueue`.
+
 ## 4.1.0
 - Add a port of Python's difflib.
 - `CharMatcher` now works on all unicode code-points, correctly and efficiently matching unicode characters beyond UTF-16 bytes:
