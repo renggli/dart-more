@@ -502,23 +502,14 @@ void main() {
   });
   group('interval', () {
     group('toDuration', () {
-      test('empty', () {
-        final interval = Interval<DateTime>.empty();
-        final duration = interval.toDuration();
-        expect(duration, Duration.zero);
-      });
       test('single', () {
-        final interval = Interval<DateTime>.single(DateTime(1980, 6, 11));
+        final interval = Interval<DateTime>(DateTime(1980, 6, 11));
         final duration = interval.toDuration();
         expect(duration, Duration.zero);
       });
-      test('unbounded', () {
-        final interval = Interval<DateTime>.all();
-        expect(interval.toDuration, throwsStateError);
-      });
-      test('normal', () {
-        final interval = Interval<DateTime>.openClosed(
-            DateTime(2022, 7, 30), DateTime(2022, 7, 31));
+      test('range', () {
+        final interval =
+            Interval<DateTime>(DateTime(2022, 7, 30), DateTime(2022, 7, 31));
         expect(interval.toDuration().inHours, 24);
       });
     });

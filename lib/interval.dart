@@ -1,5 +1,4 @@
-/// Provides a continuous interval over a [Comparable].
+/// Provides a continuous interval.
 library interval;
 
 export 'src/interval/interval.dart';
-export 'src/interval/length.dart';

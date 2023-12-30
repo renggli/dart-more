@@ -26,7 +26,7 @@ extension MinMaxComparator<T> on Comparator<T> {
       }
       return (min: minValue, max: maxValue);
     }
-    if (orElse == null) throw StateError("No element");
+    if (orElse == null) throw StateError('No element');
     return orElse();
   }
 }

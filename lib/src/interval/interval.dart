@@ -1,187 +1,76 @@
-import '../../comparator.dart';
-import 'bounds/empty.dart';
-import 'bounds/lower.dart';
-import 'bounds/upper.dart';
+import 'package:meta/meta.dart';
 
-/// An interval over an ordering of type [T].
+import '../collection/range.dart';
+
+/// An interval over a continuous ordering of type [T].
+///
+/// Contrary to the [Range] collection, this object includes both the lower and
+/// upper endpoint; and provides efficient means to compute the [intersection]
+/// and [union] between objects.
 ///
 /// See https://en.wikipedia.org/wiki/Interval_(mathematics).
-class Interval<T> {
-  /// Returns a interval containing `{ x ∈ T | lower < x < upper }`.
-  factory Interval.open(T lower, T upper,
-          {Comparator<T> comparator = naturalCompare}) =>
-      Interval<T>._(Above<T>(lower), Below<T>(upper), comparator);
+@immutable
+class Interval<T extends Comparable<T>> {
+  /// Returns a interval between [lower] and [upper] (inclusive):
+  /// `{ x ∈ T | lower <= x <= upper }`.
+  ///
+  /// If [upper] is omitted the interval contains the single value:
+  /// `{ x ∈ T | lower = x }`.
+  Interval(T lower, [T? upper]) : this._(lower, upper ?? lower);
 
-  /// Returns a interval containing `{ x ∈ T | lower <= x <= upper }`.
-  factory Interval.closed(T lower, T upper,
-          {Comparator<T> comparator = naturalCompare}) =>
-      Interval<T>._(AboveOrEqual<T>(lower), BelowOrEqual<T>(upper), comparator);
-
-  /// Returns a interval containing `{ x ∈ T | lower < x <= upper }`.
-  factory Interval.openClosed(T lower, T upper,
-          {Comparator<T> comparator = naturalCompare}) =>
-      Interval<T>._(Above<T>(lower), BelowOrEqual<T>(upper), comparator);
-
-  /// Returns a interval containing `{ x ∈ T | lower <= x < upper }`.
-  factory Interval.closedOpen(T lower, T upper,
-          {Comparator<T> comparator = naturalCompare}) =>
-      Interval<T>._(AboveOrEqual<T>(lower), Below<T>(upper), comparator);
-
-  /// Returns a interval containing `{ x ∈ T | x < upper }`.
-  factory Interval.lessThan(T upper,
-          {Comparator<T> comparator = naturalCompare}) =>
-      Interval<T>._(AboveAll<T>(), Below<T>(upper), comparator);
-
-  /// Returns a interval containing `{ x ∈ T | x <= upper }`.
-  factory Interval.atMost(T upper,
-          {Comparator<T> comparator = naturalCompare}) =>
-      Interval<T>._(AboveAll<T>(), BelowOrEqual<T>(upper), comparator);
-
-  /// Returns a interval containing `{ x ∈ T | lower < x }`.
-  factory Interval.greaterThan(T lower,
-          {Comparator<T> comparator = naturalCompare}) =>
-      Interval<T>._(Above<T>(lower), BelowAll<T>(), comparator);
-
-  /// Returns a interval containing `{ x ∈ T | lower <= x }`.
-  factory Interval.atLeast(T lower,
-          {Comparator<T> comparator = naturalCompare}) =>
-      Interval<T>._(AboveOrEqual<T>(lower), BelowAll<T>(), comparator);
-
-  /// Returns an empty interval of type [T]: `{} = ∅`
-  factory Interval.empty({Comparator<T> comparator = naturalCompare}) =>
-      Interval<T>._(Empty<T>(), Empty<T>(), comparator);
-
-  /// Returns an interval containing a single value of type [T]:
-  /// `{ x ∈ T | x = value }`.
-  factory Interval.single(T value,
-          {Comparator<T> comparator = naturalCompare}) =>
-      Interval<T>._(AboveOrEqual<T>(value), BelowOrEqual<T>(value), comparator);
-
-  /// Returns a interval containing all values of type [T]: `{ x ∈ T }`
-  factory Interval.all({Comparator<T> comparator = naturalCompare}) =>
-      Interval<T>._(AboveAll<T>(), BelowAll<T>(), comparator);
-
-  /// Constructs an interval from a [lower] and [upper] bound.
-  Interval._(this.lower, this.upper, this.comparator)
-      : assert(
-            lower.isBounded && upper.isBounded
-                ? comparator(lower.endpoint, upper.endpoint) <= 0
-                : true,
-            'Invalid endpoints for $lower..$upper'),
-        assert(
-            lower.isBounded &&
-                    upper.isBounded &&
-                    comparator(lower.endpoint, upper.endpoint) == 0
-                ? lower.isClosed && upper.isClosed
-                : true,
-            'Invalid bounds $lower..$upper');
+  Interval._(this.lower, this.upper)
+      : assert(lower.compareTo(upper) <= 0,
+            'Invalid endpoints for $lower..$upper');
 
   /// Returns the upper bound of this interval.
-  final LowerBound<T> lower;
+  final T lower;
 
   /// Returns the lower bound of this interval.
-  final UpperBound<T> upper;
+  final T upper;
 
-  /// Returns the underlying comparator of this interval.
-  final Comparator<T> comparator;
+  /// Returns `true`, if this is an interval with a single value.
+  bool get isSingle => lower.compareTo(upper) == 0;
 
-  /// Returns `true`, if this is an empty interval.
-  bool get isEmpty => lower is Empty<T> || upper is Empty<T>;
-
-  /// Returns `true`, if this is a non-empty interval.
-  bool get isNotEmpty => !isEmpty;
-
-  /// Returns `true`, if this is interval has a definite upper and lower bound.
-  bool get isBounded => lower.isBounded && upper.isBounded;
-
-  /// Returns `true`, if this is a degenerated interval with a single value.
-  bool get isSingle =>
-      lower.isClosed &&
-      lower.isBounded &&
-      upper.isClosed &&
-      upper.isBounded &&
-      lower.endpoint == upper.endpoint;
-
-  /// Returns true, if the [value] is included in this interval.
+  /// Returns true, if [value] is included in this interval.
   bool contains(T value) =>
-      lower.contains(comparator, value) && upper.contains(comparator, value);
+      lower.compareTo(value) <= 0 && value.compareTo(upper) <= 0;
 
-  /// Returns the intersection of this interval and [other].
-  Interval<T> intersection(Interval<T> other) {
-    if (isEmpty) {
-      return this;
-    } else if (other.isEmpty) {
-      return other;
+  /// Returns true, if this and [other] interval are overlapping.
+  bool hasIntersection(Interval<T> other) =>
+      lower.compareTo(other.upper) <= 0 && other.lower.compareTo(upper) <= 0;
+
+  /// Returns the interval where this and [other] interval overlap. If the
+  /// intervals do not intersect, return `null`.
+  Interval<T>? intersection(Interval<T> other) {
+    final lowerComparison = lower.compareTo(other.lower);
+    final upperComparison = upper.compareTo(other.upper);
+    if (lowerComparison >= 0 && upperComparison <= 0) {
+      return this; // this contains other
+    } else if (lowerComparison <= 0 && upperComparison >= 0) {
+      return other; // other contains this
+    } else {
+      final newLower = lowerComparison >= 0 ? lower : other.lower;
+      final newUpper = upperComparison <= 0 ? upper : other.upper;
+      return newLower.compareTo(newUpper) <= 0
+          ? Interval<T>(newLower, newUpper)
+          : null;
     }
-    // Find lower bound.
-    var newLower = lower;
-    if (lower.isUnbounded) {
-      newLower = other.lower;
-    } else if (other.lower.isBounded) {
-      final cmp = comparator(lower.endpoint, other.lower.endpoint);
-      if (cmp < 0 || (cmp == 0 && other.lower.isOpen)) {
-        newLower = other.lower;
-      }
-    }
-    // Find upper bound.
-    var newUpper = upper;
-    if (upper.isUnbounded) {
-      newUpper = other.upper;
-    } else if (other.upper.isBounded) {
-      final cmp = comparator(upper.endpoint, other.upper.endpoint);
-      if (cmp > 0 || (cmp == 0 && other.upper.isOpen)) {
-        newUpper = other.upper;
-      }
-    }
-    // Swap bounds if necessary.
-    if (newLower.isBounded && newUpper.isBounded) {
-      final cmp = comparator(newLower.endpoint, newUpper.endpoint);
-      if (cmp > 0 || (cmp == 0 && (newLower.isOpen || newUpper.isOpen))) {
-        return Interval<T>.empty();
-      } else if (cmp == 0) {
-        return Interval<T>.single(newLower.endpoint);
-      }
-    }
-    return Interval<T>._(newLower, newUpper, comparator);
   }
 
-  /// Returns the minimal interval enclosing this interval and [other].
-  Interval<T> span(Interval<T> other) {
-    if (isEmpty) {
-      return other;
-    } else if (other.isEmpty) {
-      return this;
-    }
-    // Find lower bound.
-    var newLower = lower;
-    if (other.lower.isUnbounded) {
-      newLower = other.lower;
-    } else if (lower.isBounded) {
-      final cmp = comparator(lower.endpoint, other.lower.endpoint);
-      if (cmp > 0 || (cmp == 0 && other.lower.isClosed)) {
-        newLower = other.lower;
-      }
-    }
-    // Find upper bound.
-    var newUpper = upper;
-    if (other.upper.isUnbounded) {
-      newUpper = other.upper;
-    } else if (upper.isBounded) {
-      final cmp = comparator(upper.endpoint, other.upper.endpoint);
-      if (cmp < 0 || (cmp == 0 && other.upper.isClosed)) {
-        newUpper = other.upper;
-      }
-    }
-    return Interval<T>._(newLower, newUpper, comparator);
-  }
+  /// Returns the minimal interval enclosing this and [other] interval.
+  Interval<T> union(Interval<T> other) => Interval<T>(
+        lower.compareTo(other.lower) < 0 ? lower : other.lower,
+        upper.compareTo(other.upper) > 0 ? upper : other.upper,
+      );
 
   @override
   bool operator ==(Object other) =>
-      other is Interval<T> && lower == other.lower && upper == other.upper;
+      identical(this, other) ||
+      (other is Interval && lower == other.lower && upper == other.upper);
 
   @override
   int get hashCode => Object.hash(lower, upper);
 
   @override
-  String toString() => isEmpty ? '$lower' : '$lower..$upper';
+  String toString() => isSingle ? '$lower' : '$lower..$upper';
 }

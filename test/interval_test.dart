@@ -1,295 +1,132 @@
 import 'package:more/interval.dart';
-import 'package:more/src/interval/bound.dart';
 import 'package:test/test.dart';
-
-final intervals = <Interval<Object?>>[];
-
-void verifyBound<T>(Bound<T> bound) {
-  test('isOpen / isClosed', () {
-    if (bound.isOpen) {
-      expect(bound.isClosed, isFalse);
-    } else {
-      expect(bound.isClosed, isTrue);
-    }
-  });
-  test('isBounded / isUnbounded', () {
-    if (bound.isBounded) {
-      expect(bound.isUnbounded, isFalse);
-      expect(bound.endpoint, isNotNull);
-    } else {
-      expect(bound.isUnbounded, isTrue);
-      expect(() => bound.endpoint, throwsStateError);
-    }
-  });
-}
-
-void verify<T>(
-  Interval<T> interval, {
-  required Iterable<T> included,
-  required Iterable<T> excluded,
-  bool isEmpty = false,
-  bool isSingle = false,
-  num? intLength,
-  num? doubleLength,
-  required String toString,
-}) {
-  final empty = Interval<T>.empty();
-  final all = Interval<T>.all();
-  test('included', () {
-    for (final value in included) {
-      expect(interval.contains(value), isTrue);
-    }
-  });
-  test('excluded', () {
-    for (final value in excluded) {
-      expect(interval.contains(value), isFalse);
-    }
-  });
-  test('equals', () {
-    expect(interval == interval, isTrue);
-    for (final other in intervals) {
-      expect(interval == other, isFalse);
-    }
-  });
-  group('lower', () => verifyBound<T>(interval.lower));
-  group('upper', () => verifyBound<T>(interval.upper));
-  group('intersection', () {
-    test('empty', () {
-      expect(empty.intersection(interval), empty);
-      expect(interval.intersection(empty), empty);
-    });
-    test('single (included)', () {
-      for (final value in included) {
-        final single = Interval<T>.single(value);
-        expect(single.intersection(interval), single);
-        expect(interval.intersection(single), single);
-      }
-    });
-    test('single (excluded)', () {
-      for (final value in excluded) {
-        final single = Interval<T>.single(value);
-        expect(single.intersection(interval), empty);
-        expect(interval.intersection(single), empty);
-      }
-    });
-    test('all', () {
-      expect(all.intersection(interval), interval);
-      expect(interval.intersection(all), interval);
-    });
-  });
-  group('span', () {
-    test('empty', () {
-      expect(empty.span(interval), interval);
-      expect(interval.span(empty), interval);
-    });
-    test('single (included)', () {
-      for (final value in included) {
-        final single = Interval<T>.single(value);
-        expect(single.span(interval), interval);
-        expect(interval.span(single), interval);
-      }
-    });
-    test('single (excluded)', () {
-      for (final value in excluded) {
-        final single = Interval<T>.single(value);
-        final one = single.span(interval);
-        expect(
-            (one.lower == single.lower && one.upper == interval.upper) ||
-                (one.lower == interval.lower && one.upper == single.upper) ||
-                (interval.isEmpty && one == single),
-            isTrue);
-        final two = single.span(interval);
-        expect(
-            (two.lower == single.lower && two.upper == interval.upper) ||
-                (two.lower == interval.lower && two.upper == single.upper) ||
-                (interval.isEmpty && two == single),
-            isTrue);
-      }
-    });
-    test('all', () {
-      expect(all.span(interval), all);
-      expect(interval.span(all), all);
-    });
-  });
-  test('isEmpty', () {
-    expect(interval.isEmpty, isEmpty);
-  });
-  test('isNotEmpty', () {
-    expect(interval.isNotEmpty, !isEmpty);
-  });
-  test('isSingle', () {
-    expect(interval.isSingle, isSingle);
-  });
-  test('isBounded', () {
-    expect(interval.isBounded,
-        interval.lower.isBounded && interval.upper.isBounded);
-  });
-  if (intLength != null) {
-    test('toIntLength', () {
-      if (intLength.isInfinite) {
-        expect(
-            () => LengthIntervalIntExtension(interval as Interval<int>)
-                .toIntLength(),
-            throwsStateError);
-      } else {
-        final result =
-            LengthIntervalIntExtension(interval as Interval<int>).toIntLength();
-        expect(result, intLength.toInt());
-      }
-    });
-  }
-  if (doubleLength != null) {
-    test('toDoubleLength', () {
-      final result = LengthIntervalNumExtension(interval as Interval<num>)
-          .toDoubleLength();
-      expect(result, doubleLength.toDouble());
-    });
-  }
-  test('equal', () {
-    expect(interval == interval, isTrue);
-    for (final other in intervals) {
-      expect(interval == other, isFalse);
-      expect(other == interval, isFalse);
-    }
-  });
-  test('hash', () {
-    expect(interval.hashCode == interval.hashCode, isTrue);
-    for (final other in intervals) {
-      expect(interval.hashCode == other.hashCode, isFalse);
-    }
-  });
-  test('toString', () {
-    expect(interval.toString(), toString);
-  });
-  tearDownAll(() {
-    intervals.add(interval);
-  });
-}
 
 void main() {
   group('interval', () {
-    group('open', () {
-      final interval = Interval.open(3, 5);
-      verify(
-        interval,
-        included: [4],
-        excluded: [2, 3, 5, 6],
-        intLength: 0,
-        doubleLength: 2,
-        toString: '(3..5)',
-      );
+    final interval3to5 = Interval<num>(3, 5);
+    final interval4to7 = Interval<num>(4, 7);
+    final interval6to9 = Interval<num>(6, 9);
+    final interval5to5 = Interval<num>(5);
+    test('lower', () {
+      expect(interval3to5.lower, 3);
+      expect(interval4to7.lower, 4);
+      expect(interval5to5.lower, 5);
     });
-    group('closed', () {
-      final interval = Interval.closed(3, 5);
-      verify(
-        interval,
-        included: [3, 4, 5],
-        excluded: [2, 6],
-        intLength: 2,
-        doubleLength: 2,
-        toString: '[3..5]',
-      );
+    test('upper', () {
+      expect(interval3to5.upper, 5);
+      expect(interval4to7.upper, 7);
+      expect(interval5to5.upper, 5);
     });
-    group('openClosed', () {
-      final interval = Interval.openClosed(3, 5);
-      verify(
-        interval,
-        included: [4, 5],
-        excluded: [2, 3, 6],
-        intLength: 1,
-        doubleLength: 2,
-        toString: '(3..5]',
-      );
+    test('isSingle', () {
+      expect(interval3to5.isSingle, isFalse);
+      expect(interval4to7.isSingle, isFalse);
+      expect(interval5to5.isSingle, isTrue);
     });
-    group('closedOpen', () {
-      final interval = Interval.closedOpen(3, 5);
-      verify(
-        interval,
-        included: [3, 4],
-        excluded: [2, 5, 6],
-        intLength: 1,
-        doubleLength: 2,
-        toString: '[3..5)',
-      );
+    test('contains', () {
+      expect(interval3to5.contains(2), isFalse);
+      expect(interval3to5.contains(3), isTrue);
+      expect(interval3to5.contains(4), isTrue);
+      expect(interval3to5.contains(5), isTrue);
+      expect(interval3to5.contains(6), isFalse);
+      expect(interval5to5.contains(4), isFalse);
+      expect(interval5to5.contains(5), isTrue);
+      expect(interval5to5.contains(6), isFalse);
     });
-    group('greaterThan', () {
-      final interval = Interval.greaterThan(4);
-      verify(
-        interval,
-        included: [5, 6, 7],
-        excluded: [2, 3, 4],
-        intLength: double.infinity,
-        doubleLength: double.infinity,
-        toString: '(4..+∞)',
-      );
+    test('hasIntersection', () {
+      expect(interval3to5.hasIntersection(interval3to5), isTrue);
+      expect(interval3to5.hasIntersection(interval4to7), isTrue);
+      expect(interval3to5.hasIntersection(interval6to9), isFalse);
+      expect(interval3to5.hasIntersection(interval5to5), isTrue);
+      expect(interval4to7.hasIntersection(interval3to5), isTrue);
+      expect(interval4to7.hasIntersection(interval4to7), isTrue);
+      expect(interval4to7.hasIntersection(interval6to9), isTrue);
+      expect(interval4to7.hasIntersection(interval5to5), isTrue);
+      expect(interval6to9.hasIntersection(interval3to5), isFalse);
+      expect(interval6to9.hasIntersection(interval4to7), isTrue);
+      expect(interval6to9.hasIntersection(interval6to9), isTrue);
+      expect(interval6to9.hasIntersection(interval5to5), isFalse);
+      expect(interval5to5.hasIntersection(interval3to5), isTrue);
+      expect(interval5to5.hasIntersection(interval4to7), isTrue);
+      expect(interval5to5.hasIntersection(interval6to9), isFalse);
+      expect(interval5to5.hasIntersection(interval5to5), isTrue);
     });
-    group('atLeast', () {
-      final interval = Interval.atLeast(4);
-      verify(
-        interval,
-        included: [4, 5, 6],
-        excluded: [1, 2, 3],
-        intLength: double.infinity,
-        doubleLength: double.infinity,
-        toString: '[4..+∞)',
-      );
+    test('intersection', () {
+      expect(interval3to5.intersection(interval3to5), interval3to5);
+      expect(interval3to5.intersection(interval4to7), Interval<num>(4, 5));
+      expect(interval3to5.intersection(interval6to9), isNull);
+      expect(interval3to5.intersection(interval5to5), interval5to5);
+      expect(interval4to7.intersection(interval3to5), Interval<num>(4, 5));
+      expect(interval4to7.intersection(interval4to7), interval4to7);
+      expect(interval4to7.intersection(interval6to9), Interval<num>(6, 7));
+      expect(interval4to7.intersection(interval5to5), interval5to5);
+      expect(interval6to9.intersection(interval3to5), isNull);
+      expect(interval6to9.intersection(interval4to7), Interval<num>(6, 7));
+      expect(interval6to9.intersection(interval6to9), interval6to9);
+      expect(interval6to9.intersection(interval5to5), isNull);
+      expect(interval5to5.intersection(interval3to5), interval5to5);
+      expect(interval5to5.intersection(interval4to7), interval5to5);
+      expect(interval5to5.intersection(interval6to9), isNull);
+      expect(interval5to5.intersection(interval5to5), interval5to5);
     });
-    group('lessThan', () {
-      final interval = Interval.lessThan(4);
-      verify(
-        interval,
-        included: [1, 2, 3],
-        excluded: [4, 5, 6],
-        intLength: double.infinity,
-        doubleLength: double.infinity,
-        toString: '(-∞..4)',
-      );
+    test('union', () {
+      expect(interval3to5.union(interval3to5), interval3to5);
+      expect(interval3to5.union(interval4to7), Interval<num>(3, 7));
+      expect(interval3to5.union(interval6to9), Interval<num>(3, 9));
+      expect(interval3to5.union(interval5to5), interval3to5);
+      expect(interval4to7.union(interval3to5), Interval<num>(3, 7));
+      expect(interval4to7.union(interval4to7), interval4to7);
+      expect(interval4to7.union(interval6to9), Interval<num>(4, 9));
+      expect(interval4to7.union(interval5to5), Interval<num>(4, 7));
+      expect(interval6to9.union(interval3to5), Interval<num>(3, 9));
+      expect(interval6to9.union(interval4to7), Interval<num>(4, 9));
+      expect(interval6to9.union(interval6to9), interval6to9);
+      expect(interval6to9.union(interval5to5), Interval<num>(5, 9));
+      expect(interval5to5.union(interval3to5), Interval<num>(3, 5));
+      expect(interval5to5.union(interval4to7), interval4to7);
+      expect(interval5to5.union(interval6to9), Interval<num>(5, 9));
+      expect(interval5to5.union(interval5to5), interval5to5);
     });
-    group('atMost', () {
-      final interval = Interval.atMost(4);
-      verify(
-        interval,
-        included: [2, 3, 4],
-        excluded: [5, 6, 7],
-        intLength: double.infinity,
-        doubleLength: double.infinity,
-        toString: '(-∞..4]',
-      );
+    test('equals', () {
+      expect(interval3to5 == interval3to5, isTrue);
+      expect(interval3to5 == interval4to7, isFalse);
+      expect(interval3to5 == interval6to9, isFalse);
+      expect(interval3to5 == interval5to5, isFalse);
+      expect(interval4to7 == interval3to5, isFalse);
+      expect(interval4to7 == interval4to7, isTrue);
+      expect(interval4to7 == interval6to9, isFalse);
+      expect(interval4to7 == interval5to5, isFalse);
+      expect(interval6to9 == interval3to5, isFalse);
+      expect(interval6to9 == interval4to7, isFalse);
+      expect(interval6to9 == interval6to9, isTrue);
+      expect(interval6to9 == interval5to5, isFalse);
+      expect(interval5to5 == interval3to5, isFalse);
+      expect(interval5to5 == interval4to7, isFalse);
+      expect(interval5to5 == interval6to9, isFalse);
+      expect(interval5to5 == interval5to5, isTrue);
     });
-    group('empty', () {
-      final interval = Interval<int>.empty();
-      verify(
-        interval,
-        included: <int>[],
-        excluded: [1, 2, 3],
-        isEmpty: true,
-        intLength: 0,
-        doubleLength: 0,
-        toString: '∅',
-      );
+    test('hashCode', () {
+      expect(interval3to5.hashCode == interval3to5.hashCode, isTrue);
+      expect(interval3to5.hashCode == interval4to7.hashCode, isFalse);
+      expect(interval3to5.hashCode == interval6to9.hashCode, isFalse);
+      expect(interval3to5.hashCode == interval5to5.hashCode, isFalse);
+      expect(interval4to7.hashCode == interval3to5.hashCode, isFalse);
+      expect(interval4to7.hashCode == interval4to7.hashCode, isTrue);
+      expect(interval4to7.hashCode == interval6to9.hashCode, isFalse);
+      expect(interval4to7.hashCode == interval5to5.hashCode, isFalse);
+      expect(interval6to9.hashCode == interval3to5.hashCode, isFalse);
+      expect(interval6to9.hashCode == interval4to7.hashCode, isFalse);
+      expect(interval6to9.hashCode == interval6to9.hashCode, isTrue);
+      expect(interval6to9.hashCode == interval5to5.hashCode, isFalse);
+      expect(interval5to5.hashCode == interval3to5.hashCode, isFalse);
+      expect(interval5to5.hashCode == interval4to7.hashCode, isFalse);
+      expect(interval5to5.hashCode == interval6to9.hashCode, isFalse);
+      expect(interval5to5.hashCode == interval5to5.hashCode, isTrue);
     });
-    group('single', () {
-      final interval = Interval.single(4);
-      verify(
-        interval,
-        included: [4],
-        excluded: [2, 3, 5, 6],
-        isSingle: true,
-        intLength: 1,
-        doubleLength: 0,
-        toString: '[4..4]',
-      );
-    });
-    group('all', () {
-      final interval = Interval<int>.all();
-      verify(
-        interval,
-        included: [1, 2, 3],
-        excluded: <int>[],
-        intLength: double.infinity,
-        doubleLength: double.infinity,
-        toString: '(-∞..+∞)',
-      );
+    test('toString', () {
+      expect(interval3to5.toString(), '3..5');
+      expect(interval4to7.toString(), '4..7');
+      expect(interval6to9.toString(), '6..9');
+      expect(interval5to5.toString(), '5');
     });
   });
 }
