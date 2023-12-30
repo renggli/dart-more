@@ -38,7 +38,7 @@ extension ExportGraphExtension<V, E> on Graph<V, E> {
     for (final edge in edges.unique()) {
       buffer.write('  ${ids[edge.source]} $arrow ${ids[edge.target]}');
       buffer.write(_encodeNodeEdgeAttributes({
-        'label': edgeLabel?.call(edge) ?? edge.value?.toString() ?? "",
+        'label': edgeLabel?.call(edge) ?? edge.value?.toString() ?? '',
         if (edgeAttributes != null) ...edgeAttributes(edge),
       }));
       buffer.writeln(';');

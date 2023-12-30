@@ -915,7 +915,7 @@ void main() {
             [1, 2, 3, 4, 5, 6]);
       });
       test('error', () {
-        expect(() => [1, "hello"].deepFlatten<int>(), throwsArgumentError);
+        expect(() => [1, 'hello'].deepFlatten<int>(), throwsArgumentError);
         expect(() => [1, null].deepFlatten<int>(), throwsArgumentError);
       });
     });
