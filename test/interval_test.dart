@@ -383,9 +383,12 @@ void main() {
       expect(set.length, 0);
       expect(set.isEmpty, isTrue);
       expect(set.isNotEmpty, isFalse);
+      expect(set.contains(null), isFalse);
+      expect(set.lookup(null), isNull);
       expect(set.containingPoint(0), isEmpty);
       expect(set.intersectingInterval(Interval(-1, 1)), isEmpty);
       expect(set.enclosingInterval(Interval(-1, 1)), isEmpty);
+      expect(set.toSet(), isEmpty);
       expect(set.toString(), '{}');
     });
     test('single', () {
@@ -396,6 +399,7 @@ void main() {
       expect(set.isEmpty, isFalse);
       expect(set.isNotEmpty, isTrue);
       expect(set.contains(interval), isTrue);
+      expect(set.lookup(interval), interval);
       expect(set.containingPoint(1979), isEmpty);
       expect(set.containingPoint(1980), [interval]);
       expect(set.containingPoint(2000), [interval]);
@@ -413,6 +417,8 @@ void main() {
       expect(set.enclosingInterval(Interval(2000, 2010)), [interval]);
       expect(set.enclosingInterval(Interval(2020, 2030)), isEmpty);
       expect(set.enclosingInterval(Interval(2024, 2100)), isEmpty);
+      expect(set.toSet(), {interval});
+      expect(set.toString(), '{1980..2023}');
     });
     test('composers', () {
       final set = createComposers();
@@ -426,6 +432,9 @@ void main() {
       expect(set.remove(composers.first.lifetime), isTrue);
       expect(set.contains(composers.first.lifetime), isFalse);
       expect(set.remove(composers.first.lifetime), isFalse);
+      expect(set, hasLength(composers.length - 1));
+      set.removeAll([composers.first.lifetime, composers.last.lifetime]);
+      expect(set, hasLength(composers.length - 2));
       set.clear();
       expect(set, isEmpty);
     });
