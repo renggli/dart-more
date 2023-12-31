@@ -1,9 +1,7 @@
 import 'dart:collection' show MapBase;
 
-import 'package:collection/collection.dart' show QueueList;
-
-import '../functional/scope.dart';
 import 'interval.dart';
+import 'tree.dart';
 
 /// A [IntervalMap] associates intervals with a value.
 ///
@@ -27,12 +25,14 @@ class IntervalMap<K extends Comparable<K>, V>
   /// Internal [Map] delegate.
   final Map<Interval<K>, V> _map = {};
 
-  /// Internal root of the balanced interval tree.
-  _IntervalNode<K, V>? _root;
+  /// Internal root node of the balanced interval tree.
+  IntervalTreeNode<K, MapEntry<Interval<K>, V>>? _node;
 
   /// Returns an [Iterable] over all entries that contain a [value].
-  Iterable<MapEntry<Interval<K>, V>> entriesContainingPoint(K value) =>
-      _queryPoint(value);
+  Iterable<MapEntry<Interval<K>, V>> entriesContainingPoint(K value) {
+    _refresh();
+    return queryPoint(_node, value).where((each) => each.key.contains(value));
+  }
 
   /// Returns an [Iterable] over all keys that contain a [value].
   Iterable<Interval<K>> keysContainingPoint(K value) =>
@@ -44,8 +44,11 @@ class IntervalMap<K extends Comparable<K>, V>
 
   /// Returns an [Iterable] over all entries that overlap with [interval].
   Iterable<MapEntry<Interval<K>, V>> entriesIntersectingInterval(
-          Interval<K> interval) =>
-      _queryInterval(interval).where((entry) => entry.key.intersects(interval));
+      Interval<K> interval) {
+    _refresh();
+    return queryInterval(_node, interval)
+        .where((entry) => entry.key.intersects(interval));
+  }
 
   /// Returns an [Iterable] over all keys that overlap with [interval].
   Iterable<Interval<K>> keysIntersectingInterval(Interval<K> interval) =>
@@ -57,8 +60,11 @@ class IntervalMap<K extends Comparable<K>, V>
 
   /// Returns an [Iterable] over all entries that cover [interval].
   Iterable<MapEntry<Interval<K>, V>> entriesEnclosingInterval(
-          Interval<K> interval) =>
-      _queryInterval(interval).where((entry) => entry.key.encloses(interval));
+      Interval<K> interval) {
+    _refresh();
+    return queryInterval(_node, interval)
+        .where((entry) => entry.key.encloses(interval));
+  }
 
   /// Returns an [Iterable] over all keys that cover [interval].
   Iterable<Interval<K>> keysEnclosingInterval(Interval<K> interval) =>
@@ -91,98 +97,26 @@ class IntervalMap<K extends Comparable<K>, V>
 
   @override
   void operator []=(Interval<K> key, V value) {
-    _root = null;
+    _node = null;
     _map[key] = value;
   }
 
   @override
   void clear() {
-    _root = null;
+    _node = null;
     _map.clear();
   }
 
   @override
   V? remove(Object? key) {
-    _root = null;
+    _node = null;
     return _map.remove(key);
   }
 
   void _refresh() {
-    if (isEmpty || _root != null) return;
-    _root = _createNode(_map.entries);
+    if (isEmpty || _node != null) return;
+    _node = createTreeNode(_map.entries, _value);
   }
 
-  Iterable<MapEntry<Interval<K>, V>> _queryPoint(K value) sync* {
-    _refresh();
-    var node = _root;
-    while (node != null) {
-      for (final entry in node.entries) {
-        if (entry.key.contains(value)) {
-          yield entry;
-        }
-      }
-      final comparison = value.compareTo(node.median);
-      node = comparison < 0
-          ? node.left
-          : comparison > 0
-              ? node.right
-              : null;
-    }
-  }
-
-  Iterable<MapEntry<Interval<K>, V>> _queryInterval(
-      Interval<K> interval) sync* {
-    _refresh();
-    final nodes = QueueList<_IntervalNode<K, V>>();
-    if (_root case final root?) nodes.add(root);
-    while (nodes.isNotEmpty) {
-      final node = nodes.removeFirst();
-      yield* node.entries;
-      if (interval.upper.compareTo(node.median) < 0) {
-        node.left?.also(nodes.add);
-      }
-      if (node.median.compareTo(interval.lower) < 0) {
-        node.right?.also(nodes.add);
-      }
-    }
-  }
-}
-
-class _IntervalNode<K extends Comparable<K>, V> {
-  final K median;
-  final _IntervalNode<K, V>? left;
-  final List<MapEntry<Interval<K>, V>> entries;
-  final _IntervalNode<K, V>? right;
-
-  _IntervalNode(this.median, this.left, this.entries, this.right);
-}
-
-_IntervalNode<K, V>? _createNode<K extends Comparable<K>, V>(
-    Iterable<MapEntry<Interval<K>, V>> entries) {
-  if (entries.isEmpty) return null;
-  final endpoints = <K>[];
-  for (final entry in entries) {
-    endpoints.add(entry.key.lower);
-    endpoints.add(entry.key.upper);
-  }
-  endpoints.sort();
-  final median = endpoints[endpoints.length ~/ 2];
-  final left = <MapEntry<Interval<K>, V>>[];
-  final center = <MapEntry<Interval<K>, V>>[];
-  final right = <MapEntry<Interval<K>, V>>[];
-  for (final entry in entries) {
-    if (entry.key.upper.compareTo(median) < 0) {
-      left.add(entry);
-    } else if (median.compareTo(entry.key.lower) < 0) {
-      right.add(entry);
-    } else {
-      center.add(entry);
-    }
-  }
-  return _IntervalNode<K, V>(
-    median,
-    _createNode(left),
-    center,
-    _createNode(right),
-  );
+  Interval<K> _value(MapEntry<Interval<K>, V> entry) => entry.key;
 }

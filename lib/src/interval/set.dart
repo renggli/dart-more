@@ -1,9 +1,7 @@
 import 'dart:collection' show SetBase;
 
-import 'package:collection/collection.dart' show QueueList;
-
-import '../functional/scope.dart';
 import 'interval.dart';
+import 'tree.dart';
 
 /// A [IntervalSet] contains unique intervals.
 ///
@@ -24,22 +22,31 @@ class IntervalSet<E extends Comparable<E>>
   /// Internal [Map] delegate.
   final Set<Interval<E>> _set = {};
 
-  /// Internal root of the balanced interval tree.
-  _IntervalNode<E>? _root;
+  /// Internal root node of the balanced interval tree.
+  IntervalTreeNode<E, Interval<E>>? _node;
 
   /// Returns an [Iterable] over all intervals in arbitrary order that contain
   /// a [value].
-  Iterable<Interval<E>> containingPoint(E value) => _queryPoint(value);
+  Iterable<Interval<E>> containingPoint(E value) {
+    _refresh();
+    return queryPoint(_node, value).where((each) => each.contains(value));
+  }
 
   /// Returns an [Iterable] over all intervals in arbitrary order that overlap
   /// with [interval] in arbitrary order.
-  Iterable<Interval<E>> intersectingInterval(Interval<E> interval) =>
-      _queryInterval(interval).where((each) => each.intersects(interval));
+  Iterable<Interval<E>> intersectingInterval(Interval<E> interval) {
+    _refresh();
+    return queryInterval(_node, interval)
+        .where((each) => each.intersects(interval));
+  }
 
   /// Returns an [Iterable] over all intervals in arbitrary order that are
   /// covering [interval] in arbitrary order.
-  Iterable<Interval<E>> enclosingInterval(Interval<E> interval) =>
-      _queryInterval(interval).where((each) => each.encloses(interval));
+  Iterable<Interval<E>> enclosingInterval(Interval<E> interval) {
+    _refresh();
+    return queryInterval(_node, interval)
+        .where((each) => each.encloses(interval));
+  }
 
   @override
   int get length => _set.length;
@@ -62,7 +69,7 @@ class IntervalSet<E extends Comparable<E>>
   @override
   bool add(Interval<E> value) {
     final result = _set.add(value);
-    if (result) _root = null;
+    if (result) _node = null;
     return result;
   }
 
@@ -72,19 +79,19 @@ class IntervalSet<E extends Comparable<E>>
     for (final element in elements) {
       changed |= _set.add(element);
     }
-    if (changed) _root = null;
+    if (changed) _node = null;
   }
 
   @override
   void clear() {
     _set.clear();
-    _root = null;
+    _node = null;
   }
 
   @override
   bool remove(Object? value) {
     final result = _set.remove(value);
-    if (result) _root = null;
+    if (result) _node = null;
     return result;
   }
 
@@ -94,87 +101,16 @@ class IntervalSet<E extends Comparable<E>>
     for (final element in elements) {
       changed |= _set.remove(element);
     }
-    if (changed) _root = null;
+    if (changed) _node = null;
   }
 
   @override
   Set<Interval<E>> toSet() => _set.toSet();
 
   void _refresh() {
-    if (isEmpty || _root != null) return;
-    _root = _createNode(this);
+    if (isEmpty || _node != null) return;
+    _node = createTreeNode(this, _identity);
   }
 
-  Iterable<Interval<E>> _queryPoint(E value) sync* {
-    _refresh();
-    var node = _root;
-    while (node != null) {
-      for (final interval in node.intervals) {
-        if (interval.contains(value)) {
-          yield interval;
-        }
-      }
-      final comparison = value.compareTo(node.median);
-      node = comparison < 0
-          ? node.left
-          : comparison > 0
-              ? node.right
-              : null;
-    }
-  }
-
-  Iterable<Interval<E>> _queryInterval(Interval<E> interval) sync* {
-    _refresh();
-    final nodes = QueueList<_IntervalNode<E>>();
-    if (_root case final root?) nodes.add(root);
-    while (nodes.isNotEmpty) {
-      final node = nodes.removeFirst();
-      yield* node.intervals;
-      if (interval.upper.compareTo(node.median) < 0) {
-        node.left?.also(nodes.add);
-      }
-      if (node.median.compareTo(interval.lower) < 0) {
-        node.right?.also(nodes.add);
-      }
-    }
-  }
-}
-
-class _IntervalNode<E extends Comparable<E>> {
-  final E median;
-  final _IntervalNode<E>? left;
-  final List<Interval<E>> intervals;
-  final _IntervalNode<E>? right;
-
-  _IntervalNode(this.median, this.left, this.intervals, this.right);
-}
-
-_IntervalNode<E>? _createNode<E extends Comparable<E>>(
-    Iterable<Interval<E>> intervals) {
-  if (intervals.isEmpty) return null;
-  final endpoints = <E>[];
-  for (final interval in intervals) {
-    endpoints.add(interval.lower);
-    endpoints.add(interval.upper);
-  }
-  endpoints.sort();
-  final median = endpoints[endpoints.length ~/ 2];
-  final left = <Interval<E>>[];
-  final center = <Interval<E>>[];
-  final right = <Interval<E>>[];
-  for (final interval in intervals) {
-    if (interval.upper.compareTo(median) < 0) {
-      left.add(interval);
-    } else if (median.compareTo(interval.lower) < 0) {
-      right.add(interval);
-    } else {
-      center.add(interval);
-    }
-  }
-  return _IntervalNode<E>(
-    median,
-    _createNode(left),
-    center,
-    _createNode(right),
-  );
+  Interval<E> _identity(Interval<E> interval) => interval;
 }
