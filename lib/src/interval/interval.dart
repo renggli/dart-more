@@ -14,8 +14,8 @@ class Interval<T extends Comparable<T>> {
   /// Returns a interval between [lower] and [upper] (inclusive):
   /// `{ x ∈ T | lower <= x <= upper }`.
   ///
-  /// If [upper] is omitted the interval contains the single value:
-  /// `{ x ∈ T | lower = x }`.
+  /// If the [upper] argument is omitted, this interval is assumed to contain
+  /// the single element [lower].
   Interval(T lower, [T? upper]) : this._(lower, upper ?? lower);
 
   Interval._(this.lower, this.upper)
@@ -31,13 +31,17 @@ class Interval<T extends Comparable<T>> {
   /// Returns `true`, if this is an interval with a single value.
   bool get isSingle => lower.compareTo(upper) == 0;
 
-  /// Returns true, if [value] is included in this interval.
+  /// Whether [value] is included in this interval.
   bool contains(T value) =>
       lower.compareTo(value) <= 0 && value.compareTo(upper) <= 0;
 
-  /// Returns true, if this and [other] interval are overlapping.
-  bool hasIntersection(Interval<T> other) =>
+  /// Whether this interval and [other] overlap.
+  bool intersects(Interval<T> other) =>
       lower.compareTo(other.upper) <= 0 && other.lower.compareTo(upper) <= 0;
+
+  /// Whether this interval completely covers [other].
+  bool encloses(Interval<T> other) =>
+      lower.compareTo(other.lower) <= 0 && other.upper.compareTo(upper) <= 0;
 
   /// Returns the interval where this and [other] interval overlap. If the
   /// intervals do not intersect, return `null`.
@@ -72,5 +76,5 @@ class Interval<T extends Comparable<T>> {
   int get hashCode => Object.hash(lower, upper);
 
   @override
-  String toString() => isSingle ? '$lower' : '$lower..$upper';
+  String toString() => '$lower..$upper';
 }
