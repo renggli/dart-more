@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:more/collection.dart';
 import 'package:more/interval.dart';
 import 'package:test/test.dart';
@@ -488,5 +490,37 @@ void main() {
       }
       expect(set.enclosingInterval(interval), isEmpty);
     });
+  });
+  test('stress', () {
+    const min = 0, max = 10000, size = 100, count = 50000;
+    final random = Random(71729);
+    final intervals = <Interval<num>>[];
+    for (var i = 0; i < count; i++) {
+      final a = random.nextInt(max - size), c = random.nextInt(size);
+      intervals.add(Interval<num>(a, a + c));
+    }
+    final node = IntervalTreeNode.fromIntervals(intervals);
+    expect(node?.iterable.length, intervals.length);
+    expect(node?.queryInterval(Interval(min, max)).length, intervals.length);
+    for (final interval in intervals) {
+      final midpoint = (interval.lower + interval.upper) ~/ 2;
+      expect(node?.queryPoint(midpoint), contains(same(interval)));
+      expect(node?.queryPoint(interval.lower), contains(same(interval)));
+      expect(node?.queryPoint(interval.upper), contains(same(interval)));
+      expect(node?.queryInterval(interval), contains(same(interval)));
+      expect(node?.queryInterval(Interval(interval.lower)),
+          contains(same(interval)));
+      expect(
+          node?.queryInterval(Interval(interval.lower - 1, interval.lower + 1)),
+          contains(same(interval)));
+      expect(node?.queryInterval(Interval(midpoint)), contains(same(interval)));
+      expect(node?.queryInterval(Interval(midpoint - 1, midpoint + 1)),
+          contains(same(interval)));
+      expect(node?.queryInterval(Interval(interval.upper)),
+          contains(same(interval)));
+      expect(
+          node?.queryInterval(Interval(interval.upper - 1, interval.upper + 1)),
+          contains(same(interval)));
+    }
   });
 }

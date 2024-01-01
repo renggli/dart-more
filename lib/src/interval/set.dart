@@ -23,29 +23,34 @@ class IntervalSet<E extends Comparable<E>>
   final Set<Interval<E>> _set = {};
 
   /// Internal root node of the balanced interval tree.
-  IntervalTreeNode<E, Interval<E>>? _node;
+  IntervalTreeNode<E, Interval<E>>? _tree;
 
   /// Returns an [Iterable] over all intervals in arbitrary order that contain
   /// a [value].
   Iterable<Interval<E>> containingPoint(E value) {
     _refresh();
-    return queryPoint(_node, value).where((each) => each.contains(value));
+    return _tree?.queryPoint(value).where((each) => each.contains(value)) ??
+        const [];
   }
 
   /// Returns an [Iterable] over all intervals in arbitrary order that overlap
   /// with [interval] in arbitrary order.
   Iterable<Interval<E>> intersectingInterval(Interval<E> interval) {
     _refresh();
-    return queryInterval(_node, interval)
-        .where((each) => each.intersects(interval));
+    return _tree
+            ?.queryInterval(interval)
+            .where((each) => each.intersects(interval)) ??
+        const [];
   }
 
   /// Returns an [Iterable] over all intervals in arbitrary order that are
   /// covering [interval] in arbitrary order.
   Iterable<Interval<E>> enclosingInterval(Interval<E> interval) {
     _refresh();
-    return queryInterval(_node, interval)
-        .where((each) => each.encloses(interval));
+    return _tree
+            ?.queryInterval(interval)
+            .where((each) => each.encloses(interval)) ??
+        const [];
   }
 
   @override
@@ -69,7 +74,7 @@ class IntervalSet<E extends Comparable<E>>
   @override
   bool add(Interval<E> value) {
     final result = _set.add(value);
-    if (result) _node = null;
+    if (result) _tree = null;
     return result;
   }
 
@@ -79,19 +84,19 @@ class IntervalSet<E extends Comparable<E>>
     for (final element in elements) {
       changed |= _set.add(element);
     }
-    if (changed) _node = null;
+    if (changed) _tree = null;
   }
 
   @override
   void clear() {
     _set.clear();
-    _node = null;
+    _tree = null;
   }
 
   @override
   bool remove(Object? value) {
     final result = _set.remove(value);
-    if (result) _node = null;
+    if (result) _tree = null;
     return result;
   }
 
@@ -101,16 +106,14 @@ class IntervalSet<E extends Comparable<E>>
     for (final element in elements) {
       changed |= _set.remove(element);
     }
-    if (changed) _node = null;
+    if (changed) _tree = null;
   }
 
   @override
   Set<Interval<E>> toSet() => _set.toSet();
 
   void _refresh() {
-    if (isEmpty || _node != null) return;
-    _node = createTreeNode(this, _identity);
+    if (isEmpty || _tree != null) return;
+    _tree = IntervalTreeNode.fromIntervals(this);
   }
-
-  Interval<E> _identity(Interval<E> interval) => interval;
 }

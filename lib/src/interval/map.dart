@@ -26,12 +26,13 @@ class IntervalMap<K extends Comparable<K>, V>
   final Map<Interval<K>, V> _map = {};
 
   /// Internal root node of the balanced interval tree.
-  IntervalTreeNode<K, MapEntry<Interval<K>, V>>? _node;
+  IntervalTreeNode<K, MapEntry<Interval<K>, V>>? _tree;
 
   /// Returns an [Iterable] over all entries that contain a [value].
   Iterable<MapEntry<Interval<K>, V>> entriesContainingPoint(K value) {
     _refresh();
-    return queryPoint(_node, value).where((each) => each.key.contains(value));
+    return _tree?.queryPoint(value).where((each) => each.key.contains(value)) ??
+        const [];
   }
 
   /// Returns an [Iterable] over all keys that contain a [value].
@@ -46,8 +47,10 @@ class IntervalMap<K extends Comparable<K>, V>
   Iterable<MapEntry<Interval<K>, V>> entriesIntersectingInterval(
       Interval<K> interval) {
     _refresh();
-    return queryInterval(_node, interval)
-        .where((entry) => entry.key.intersects(interval));
+    return _tree
+            ?.queryInterval(interval)
+            .where((entry) => entry.key.intersects(interval)) ??
+        const [];
   }
 
   /// Returns an [Iterable] over all keys that overlap with [interval].
@@ -62,8 +65,10 @@ class IntervalMap<K extends Comparable<K>, V>
   Iterable<MapEntry<Interval<K>, V>> entriesEnclosingInterval(
       Interval<K> interval) {
     _refresh();
-    return queryInterval(_node, interval)
-        .where((entry) => entry.key.encloses(interval));
+    return _tree
+            ?.queryInterval(interval)
+            .where((entry) => entry.key.encloses(interval)) ??
+        const [];
   }
 
   /// Returns an [Iterable] over all keys that cover [interval].
@@ -97,26 +102,24 @@ class IntervalMap<K extends Comparable<K>, V>
 
   @override
   void operator []=(Interval<K> key, V value) {
-    _node = null;
+    _tree = null;
     _map[key] = value;
   }
 
   @override
   void clear() {
-    _node = null;
+    _tree = null;
     _map.clear();
   }
 
   @override
   V? remove(Object? key) {
-    _node = null;
+    _tree = null;
     return _map.remove(key);
   }
 
   void _refresh() {
-    if (isEmpty || _node != null) return;
-    _node = createTreeNode(_map.entries, _value);
+    if (isEmpty || _tree != null) return;
+    _tree = IntervalTreeNode.fromNodes(_map.entries, (entry) => entry.key);
   }
-
-  Interval<K> _value(MapEntry<Interval<K>, V> entry) => entry.key;
 }

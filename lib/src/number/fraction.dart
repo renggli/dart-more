@@ -109,9 +109,7 @@ class Fraction
   ///
   /// For details, see https://en.wikipedia.org/wiki/Farey_sequence.
   static Iterable<Fraction> farey(int n, {bool ascending = true}) sync* {
-    if (n < 1) {
-      throw ArgumentError.value(n, 'order', 'Expected positive');
-    }
+    if (n < 1) throw ArgumentError.value(n, 'order', 'Expected positive');
     var (a, b, c, d) = (ascending ? 0 : 1, 1, ascending ? 1 : n - 1, n);
     yield Fraction._(a, b);
     while (c <= n && ascending || a > 0 && !ascending) {
