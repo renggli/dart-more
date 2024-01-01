@@ -344,7 +344,7 @@ void main() {
       stress('very small intervals in large range',
           count: 500, range: 1000000, size: 10);
       stress('very large intervals in large range',
-          count: 500, range: 1000000, size: 100000);
+          count: 500, range: 1000000, size: 1000000);
     });
   });
 }

@@ -1,9 +1,5 @@
-import 'dart:collection';
-
-import 'package:collection/collection.dart' show QueueList;
 import 'package:meta/meta.dart';
 
-import '../functional/scope.dart';
 import 'interval.dart';
 
 /// Immutable [IntervalTree] that can hold arbitrary elements of type [V] with
@@ -68,9 +64,9 @@ class IntervalTree<K extends Comparable<K>, V> with Iterable<V> {
   /// An [Iterable] over all values whose [Interval] intersects with [interval].
   Iterable<V> queryInterval(Interval<K> interval) sync* {
     if (_root == null) return;
-    final queue = QueueList<_IntervalTreeNode<K, V>>()..add(_root);
+    final queue = <_IntervalTreeNode<K, V>>[_root];
     while (queue.isNotEmpty) {
-      final node = queue.removeFirst();
+      final node = queue.removeLast();
       if (interval.upper.compareTo(node._median) < 0) {
         for (final leftValue in node._leftValues) {
           final valueInterval = getter(leftValue);
