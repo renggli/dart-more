@@ -2,6 +2,4 @@
 library interval;
 
 export 'src/interval/interval.dart' show Interval;
-export 'src/interval/map.dart' show IntervalMap;
-export 'src/interval/set.dart' show IntervalSet;
-export 'src/interval/tree.dart' show IntervalTreeNode;
+export 'src/interval/tree.dart' show IntervalTree;
