@@ -319,6 +319,24 @@ void main() {
       expect(tree.queryInterval(Interval(2015, 2030)), [second]);
       verifyInvariants(tree);
     });
+    test('repeat', () {
+      final first = Interval<num>(1980, 2023);
+      final second = Interval<num>(1980, 2023);
+      final tree = IntervalTree.fromIntervals<num>([first, second]);
+      expect(tree, isNotEmpty);
+      expect(tree.length, 2);
+      expect(tree.isEmpty, isFalse);
+      expect(tree.queryPoint(1970), isEmpty);
+      expect(tree.queryPoint(1980), [first, second]);
+      expect(tree.queryPoint(2000), [first, second]);
+      expect(tree.queryPoint(2023), [first, second]);
+      expect(tree.queryPoint(2030), isEmpty);
+      expect(tree.queryInterval(Interval(1900, 1950)), isEmpty);
+      expect(tree.queryInterval(first), unorderedEquals([first, second]));
+      expect(tree.queryInterval(second), unorderedEquals([first, second]));
+      expect(tree.queryInterval(Interval(2100, 2200)), isEmpty);
+      verifyInvariants(tree);
+    });
     group('stress', () {
       void stress(
         String name, {

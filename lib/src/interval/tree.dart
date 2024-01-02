@@ -3,8 +3,8 @@ import 'package:meta/meta.dart';
 import 'interval.dart';
 
 /// Immutable [IntervalTree] that can hold arbitrary elements of type [V] with
-/// [Interval] of type [K]. The data structure is built in _O(n*log(n))_ and
-/// can be searched in _O(log(n))_.
+/// [Interval]s of type [K]. The data structure is built in _O(n*log(n))_ and
+/// can be queried in _O(log(n))_.
 ///
 /// The implementation is loosely based on the slide-deck of
 /// https://www.cs.cmu.edu/~ckingsf/bioinfo-lectures/intervaltrees.pdf.
@@ -16,14 +16,14 @@ class IntervalTree<K extends Comparable<K>, V> with Iterable<V> {
       fromValues<K, Interval<K>>(intervals, _identityGetter<K>);
 
   /// Creates an [IntervalTree] form an [Iterable] of [values] and a [getter]
-  /// function that returns the associated interval.
+  /// function that returns the associated [Interval].
   static IntervalTree<K, V> fromValues<K extends Comparable<K>, V>(
-          Iterable<V> values, Interval<K> Function(V node) getter) =>
+          Iterable<V> values, Interval<K> Function(V value) getter) =>
       IntervalTree<K, V>._(
           _IntervalTreeNode.fromValues(values, getter), getter);
 
-  /// Internal constructor of the [_IntervalTreeNode].
-  IntervalTree._(this._root, this.getter);
+  /// Internal constructor of the [IntervalTree].
+  const IntervalTree._(this._root, this.getter);
 
   /// The root node of this tree, or `null` if empty.
   final _IntervalTreeNode<K, V>? _root;
@@ -37,7 +37,7 @@ class IntervalTree<K extends Comparable<K>, V> with Iterable<V> {
   @override
   Iterator<V> get iterator => _IntervalTreeIterator(_root);
 
-  /// An [Iterable] over all values whose [Interval] intersects [value].
+  /// An [Iterable] over all values whose [Interval] contains [value].
   Iterable<V> queryPoint(K value) sync* {
     var node = _root;
     while (node != null) {
@@ -64,27 +64,27 @@ class IntervalTree<K extends Comparable<K>, V> with Iterable<V> {
   /// An [Iterable] over all values whose [Interval] intersects with [interval].
   Iterable<V> queryInterval(Interval<K> interval) sync* {
     if (_root == null) return;
-    final queue = <_IntervalTreeNode<K, V>>[_root];
-    while (queue.isNotEmpty) {
-      final node = queue.removeLast();
+    final nodes = <_IntervalTreeNode<K, V>>[_root];
+    while (nodes.isNotEmpty) {
+      final node = nodes.removeLast();
       if (interval.upper.compareTo(node._median) < 0) {
         for (final leftValue in node._leftValues) {
           final valueInterval = getter(leftValue);
           if (interval.upper.compareTo(valueInterval.lower) < 0) break;
           yield leftValue;
         }
-        if (node._leftNode != null) queue.add(node._leftNode);
+        if (node._leftNode != null) nodes.add(node._leftNode);
       } else if (interval.lower.compareTo(node._median) > 0) {
         for (final rightValue in node._rightValues) {
           final valueInterval = getter(rightValue);
           if (interval.lower.compareTo(valueInterval.upper) > 0) break;
           yield rightValue;
         }
-        if (node._rightNode != null) queue.add(node._rightNode);
+        if (node._rightNode != null) nodes.add(node._rightNode);
       } else {
         yield* node._leftValues;
-        if (node._leftNode != null) queue.add(node._leftNode);
-        if (node._rightNode != null) queue.add(node._rightNode);
+        if (node._leftNode != null) nodes.add(node._leftNode);
+        if (node._rightNode != null) nodes.add(node._rightNode);
       }
     }
   }
@@ -123,11 +123,11 @@ final class _IntervalTreeIterator<K extends Comparable<K>, V>
 @immutable
 final class _IntervalTreeNode<K extends Comparable<K>, V> {
   static _IntervalTreeNode<K, V>? fromValues<K extends Comparable<K>, V>(
-      Iterable<V> values, Interval<K> Function(V node) getter) {
+      Iterable<V> values, Interval<K> Function(V value) getter) {
     if (values.isEmpty) return null;
     final endpoints = <K>[];
-    for (final node in values) {
-      final interval = getter(node);
+    for (final value in values) {
+      final interval = getter(value);
       endpoints.add(interval.lower);
       endpoints.add(interval.upper);
     }
@@ -158,13 +158,13 @@ final class _IntervalTreeNode<K extends Comparable<K>, V> {
   /// All nodes smaller than the median point, or `null`.
   final _IntervalTreeNode<K, V>? _leftNode;
 
-  /// All nodes containing the median point in increasing order by lower bound.
+  /// All values containing the median point in increasing order by lower bound.
   final List<V> _leftValues;
 
   /// The median point.
   final K _median;
 
-  /// All nodes containing the median point in decreasing order by upper bound.
+  /// All values containing the median point in decreasing order by upper bound.
   final List<V> _rightValues;
 
   /// All nodes larger than the median point, or `null`.
