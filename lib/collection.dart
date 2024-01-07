@@ -5,6 +5,7 @@ library collection;
 export 'src/collection/bimap.dart'
     show BiMap, BiMapOnIterableExtension, BiMapOnMapExtension;
 export 'src/collection/bitlist.dart' show BitList, BitListExtension;
+export 'src/collection/fenwick.dart' show FenwickTree;
 export 'src/collection/iterable/chunked.dart' show ChunkedIterableExtension;
 export 'src/collection/iterable/combinations.dart'
     show CombinationsIterableExtension;
