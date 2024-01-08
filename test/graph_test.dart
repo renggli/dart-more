@@ -902,7 +902,7 @@ void main() {
       });
     });
     group('where', () {
-      test('directed', () {
+      test('vertex predicate on directed graph', () {
         final base = Graph<String, void>.directed();
         base
           ..addEdge('a', 'b')
@@ -936,7 +936,7 @@ void main() {
         expect(graph.successorsOf('b'), isEmpty);
         expect(graph.successorsOf('c'), ['a']);
       });
-      test('undirected', () {
+      test('vertex predicate on undirected graph', () {
         final base = Graph<String, void>.undirected();
         base
           ..addEdge('a', 'b')
@@ -974,7 +974,7 @@ void main() {
         expect(graph.successorsOf('b'), isEmpty);
         expect(graph.successorsOf('c'), ['a']);
       });
-      test('filter everything', () {
+      test('vertex predicate filtering nothing', () {
         final base = Graph<String, void>.directed();
         base
           ..addEdge('a', 'b')
@@ -985,7 +985,7 @@ void main() {
         expect(graph.vertices, unorderedEquals(base.vertices));
         expect(graph.edges, unorderedEquals(base.edges));
       });
-      test('filter nothing', () {
+      test('vertex predicate filtering everything', () {
         final base = Graph<String, void>.directed();
         base
           ..addEdge('a', 'b')
@@ -995,6 +995,107 @@ void main() {
         expectInvariants(graph);
         expect(graph.vertices, isEmpty);
         expect(graph.edges, isEmpty);
+      });
+      test('edge predicate on directed graph', () {
+        final base = Graph<String, void>.directed();
+        base
+          ..addEdge('a', 'b')
+          ..addEdge('b', 'c')
+          ..addEdge('c', 'a');
+        final graph = base.where(
+            edgePredicate: (edge) => edge.source != 'b' && edge.target != 'b');
+        expect(graph.isDirected, isTrue);
+        expect(graph.vertexStrategy, isNotNull);
+        expectInvariants(graph);
+        expect(graph.vertices, unorderedEquals(base.vertices));
+        expect(graph.edges, [isEdge('c', 'a')]);
+        expect(graph.edgesOf('a'), [isEdge('c', 'a')]);
+        expect(graph.edgesOf('b'), isEmpty);
+        expect(graph.edgesOf('c'), [isEdge('c', 'a')]);
+        expect(graph.incomingEdgesOf('a'), [isEdge('c', 'a')]);
+        expect(graph.incomingEdgesOf('b'), isEmpty);
+        expect(graph.incomingEdgesOf('c'), isEmpty);
+        expect(graph.outgoingEdgesOf('a'), isEmpty);
+        expect(graph.outgoingEdgesOf('b'), isEmpty);
+        expect(graph.outgoingEdgesOf('c'), [isEdge('c', 'a')]);
+        expect(graph.getEdge('a', 'b'), isNull);
+        expect(graph.getEdge('b', 'c'), isNull);
+        expect(graph.getEdge('c', 'a'), isEdge('c', 'a'));
+        expect(graph.neighboursOf('a'), ['c']);
+        expect(graph.neighboursOf('b'), isEmpty);
+        expect(graph.neighboursOf('c'), ['a']);
+        expect(graph.predecessorsOf('a'), ['c']);
+        expect(graph.predecessorsOf('b'), isEmpty);
+        expect(graph.predecessorsOf('c'), isEmpty);
+        expect(graph.successorsOf('a'), isEmpty);
+        expect(graph.successorsOf('b'), isEmpty);
+        expect(graph.successorsOf('c'), ['a']);
+      });
+      test('edge predicate on undirected graph', () {
+        final base = Graph<String, void>.undirected();
+        base
+          ..addEdge('a', 'b')
+          ..addEdge('b', 'c')
+          ..addEdge('c', 'a');
+        final graph = base.where(
+            edgePredicate: (edge) => edge.source != 'b' && edge.target != 'b');
+        expect(graph.isDirected, isFalse);
+        expect(graph.vertexStrategy, isNotNull);
+        expectInvariants(graph);
+        expect(graph.vertices, unorderedEquals(base.vertices));
+        expect(
+            graph.edges, unorderedEquals([isEdge('a', 'c'), isEdge('c', 'a')]));
+        expect(graph.edgesOf('a'), [isEdge('a', 'c')]);
+        expect(graph.edgesOf('b'), isEmpty);
+        expect(graph.edgesOf('c'), [isEdge('c', 'a')]);
+        expect(graph.incomingEdgesOf('a'), [isEdge('c', 'a')]);
+        expect(graph.incomingEdgesOf('b'), isEmpty);
+        expect(graph.incomingEdgesOf('c'), [isEdge('a', 'c')]);
+        expect(graph.outgoingEdgesOf('a'), [isEdge('a', 'c')]);
+        expect(graph.outgoingEdgesOf('b'), isEmpty);
+        expect(graph.outgoingEdgesOf('c'), [isEdge('c', 'a')]);
+        expect(graph.getEdge('a', 'b'), isNull);
+        expect(graph.getEdge('a', 'c'), isEdge('a', 'c'));
+        expect(graph.getEdge('b', 'c'), isNull);
+        expect(graph.getEdge('b', 'a'), isNull);
+        expect(graph.getEdge('c', 'a'), isEdge('c', 'a'));
+        expect(graph.getEdge('c', 'b'), isNull);
+        expect(graph.neighboursOf('a'), ['c']);
+        expect(graph.neighboursOf('b'), isEmpty);
+        expect(graph.neighboursOf('c'), ['a']);
+        expect(graph.predecessorsOf('a'), ['c']);
+        expect(graph.predecessorsOf('b'), isEmpty);
+        expect(graph.predecessorsOf('c'), ['a']);
+        expect(graph.successorsOf('a'), ['c']);
+        expect(graph.successorsOf('b'), isEmpty);
+        expect(graph.successorsOf('c'), ['a']);
+      });
+      test('edge predicate filtering nothing', () {
+        final base = Graph<String, void>.directed();
+        base
+          ..addEdge('a', 'b')
+          ..addEdge('b', 'c')
+          ..addEdge('c', 'a');
+        final graph = base.where(edgePredicate: (vertex) => true);
+        expectInvariants(graph);
+        expect(graph.vertices, unorderedEquals(base.vertices));
+        expect(graph.edges, unorderedEquals(base.edges));
+      });
+      test('edge predicate filtering everything', () {
+        final base = Graph<String, void>.directed();
+        base
+          ..addEdge('a', 'b')
+          ..addEdge('b', 'c')
+          ..addEdge('c', 'a');
+        final graph = base.where(edgePredicate: (vertex) => false);
+        expectInvariants(graph);
+        expect(graph.vertices, unorderedEquals(base.vertices));
+        expect(graph.edges, isEmpty);
+      });
+      test('no predicates', () {
+        final base = Graph<int, int>.directed();
+        final graph = base.where();
+        expect(graph, same(base));
       });
     });
     group('edge', () {
