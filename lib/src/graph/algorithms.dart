@@ -2,6 +2,7 @@ import 'package:collection/collection.dart';
 
 import '../../functional.dart';
 import '../../graph.dart';
+import 'algorithms/prims_min_spanning_tree.dart';
 
 extension AlgorithmsGraphExtension<V, E> on Graph<V, E> {
   /// Performs a search for the shortest path between [source] and [target].
@@ -95,6 +96,27 @@ extension AlgorithmsGraphExtension<V, E> on Graph<V, E> {
   }) =>
       StoerWagnerMinCut<V, E>(
         graph: this,
+        edgeWeight: edgeWeight ?? _getDefaultEdgeValueOr(1),
+        vertexStrategy: vertexStrategy ?? this.vertexStrategy,
+      );
+
+  /// Returns the minimum spanning graphs using Prim's algorithm. If the graph
+  /// is disconnected, a single graph containing only the nodes reachable from
+  /// the start vertex is returned.
+  ///
+  /// - [startVertex] is the root node of the new graph. If omitted, a random
+  ///   node of the graph is picked.
+  /// - [edgeWeight] is a function function that returns the positive weight
+  ///   between two edges. If no function is provided, the numeric edge value
+  ///   or a constant weight of _1_ is used.
+  Graph<V, E> minSpanning({
+    V? startVertex,
+    num Function(V source, V target)? edgeWeight,
+    StorageStrategy<V>? vertexStrategy,
+  }) =>
+      prims(
+        this,
+        startVertex: startVertex,
         edgeWeight: edgeWeight ?? _getDefaultEdgeValueOr(1),
         vertexStrategy: vertexStrategy ?? this.vertexStrategy,
       );
