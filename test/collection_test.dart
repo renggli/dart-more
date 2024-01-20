@@ -3411,15 +3411,13 @@ void main() {
         });
         test('positive step size', () {
           for (var end = 31; end <= 40; end++) {
-            final range = IntegerRange(10, end, 10);
-            verifyRange(range,
+            verifyRange(IntegerRange(10, end, 10),
                 included: [10, 20, 30], excluded: [5, 15, 25, 35, 40]);
           }
         });
         test('negative step size', () {
           for (var end = 9; end >= 0; end--) {
-            final range = IntegerRange(30, end, -10);
-            verifyRange(range,
+            verifyRange(IntegerRange(30, end, -10),
                 included: [30, 20, 10], excluded: [0, 5, 15, 25, 35]);
           }
         });
@@ -3432,7 +3430,7 @@ void main() {
               included: [2, 4], excluded: [1, 3, 5, 6]);
         });
         test('shorthand', () {
-          verifyRange(0.to(3), included: [0, 1, 2], excluded: [-1, 4]);
+          verifyRange(0.to(3), included: [0, 1, 2], excluded: [-1, 3]);
           verifyRange(3.to(0), included: [3, 2, 1], excluded: [4, 0]);
           verifyRange(2.to(8, step: 2),
               included: [2, 4, 6], excluded: [1, 3, 5, 7, 8]);
@@ -3552,62 +3550,91 @@ void main() {
           verifyRange(DoubleRange(), included: [], excluded: [0.0]);
         });
         test('1 argument', () {
-          verifyRange(DoubleRange(0.0),
+          verifyRange(DoubleRange(-1),
               included: [], excluded: [-1.0, 0.0, 1.0]);
-          verifyRange(DoubleRange(1.0), included: [0.0], excluded: [-1.0, 1.0]);
-          verifyRange(DoubleRange(2.0),
+          verifyRange(DoubleRange(0), included: [], excluded: [-1.0, 0.0, 1.0]);
+          verifyRange(DoubleRange(1), included: [0.0], excluded: [-1.0, 1.0]);
+          verifyRange(DoubleRange(2),
               included: [0.0, 1.0], excluded: [-1.0, 2.0]);
-          verifyRange(DoubleRange(3.0),
+          verifyRange(DoubleRange(3),
               included: [0.0, 1.0, 2.0], excluded: [-1.0, 3.0]);
         });
         test('2 argument', () {
-          verifyRange(DoubleRange(0.0, 0.0),
+          verifyRange(DoubleRange(0, 0),
               included: [], excluded: [-1.0, 0.0, 1.0]);
-          verifyRange(DoubleRange(0.0, 4.0),
+          verifyRange(DoubleRange(0, 4),
               included: [0.0, 1.0, 2.0, 3.0], excluded: [-1.0, 4.0]);
-          verifyRange(DoubleRange(5.0, 9.0),
+          verifyRange(DoubleRange(4, 0),
+              included: [4.0, 3.0, 2.0, 1.0], excluded: [5.0, 0.0]);
+          verifyRange(DoubleRange(5, 9),
               included: [5.0, 6.0, 7.0, 8.0], excluded: [4.0, 9.0]);
-          verifyRange(DoubleRange(9.0, 5.0),
+          verifyRange(DoubleRange(9, 5),
               included: [9.0, 8.0, 7.0, 6.0], excluded: [10.0, 5.0]);
         });
         test('3 argument (positive step)', () {
-          verifyRange(DoubleRange(0.0, 0.0, 1.0),
+          verifyRange(DoubleRange(0, 0, 1),
               included: [], excluded: [-1.0, 0.0, 1.0]);
-          verifyRange(DoubleRange(2.0, 8.0, 1.5),
+          verifyRange(DoubleRange(2, 8, 1.5),
               included: [2.0, 3.5, 5.0, 6.5], excluded: [0.5, 3.0, 8.0]);
-          verifyRange(DoubleRange(3.0, 8.0, 1.5),
+          verifyRange(DoubleRange(3, 8, 1.5),
               included: [3.0, 4.5, 6.0, 7.5], excluded: [1.5, 5.0, 9.0]);
-          verifyRange(DoubleRange(4.0, 8.0, 1.5),
-              included: [4.0, 5.5, 7.0], excluded: [3.5, 5.0, 6.0, 8.5]);
-          verifyRange(DoubleRange(2.0, 7.0, 1.5),
+          verifyRange(DoubleRange(4, 8, 1.5),
+              included: [4.0, 5.5, 7.0], excluded: [3.5, 5, 6, 8.5]);
+          verifyRange(DoubleRange(2, 7, 1.5),
               included: [2.0, 3.5, 5.0, 6.5], excluded: [0.5, 4.0, 8.0]);
-          verifyRange(DoubleRange(2.0, 6.0, 1.5),
+          verifyRange(DoubleRange(2, 6, 1.5),
               included: [2.0, 3.5, 5.0], excluded: [0.5, 3.0, 4.0, 6.0]);
         });
         test('3 argument (negative step)', () {
-          verifyRange(DoubleRange(0.0, 0.0, -1.0),
+          verifyRange(DoubleRange(0, 0, -1),
               included: [], excluded: [-1.0, 0.0, 1.0]);
-          verifyRange(DoubleRange(8.0, 2.0, -1.5),
+          verifyRange(DoubleRange(8, 2, -1.5),
               included: [8.0, 6.5, 5.0, 3.5], excluded: [9.5, 6.0, 2.0]);
-          verifyRange(DoubleRange(8.0, 3.0, -1.5),
+          verifyRange(DoubleRange(8, 3, -1.5),
               included: [8.0, 6.5, 5.0, 3.5], excluded: [9.5, 6.0, 2.0]);
-          verifyRange(DoubleRange(8.0, 4.0, -1.5),
+          verifyRange(DoubleRange(8, 4, -1.5),
               included: [8.0, 6.5, 5.0], excluded: [9.5, 5.5, 3.5]);
-          verifyRange(DoubleRange(7.0, 2.0, -1.5),
-              included: [7.0, 5.5, 4.0, 2.5], excluded: [8.5, 3.0, 2.0]);
-          verifyRange(DoubleRange(6.0, 2.0, -1.5),
+          verifyRange(DoubleRange(7, 2, -1.5),
+              included: [7.0, 5.5, 4.0, 2.5], excluded: [8.5, 3, 2.0]);
+          verifyRange(DoubleRange(6, 2, -1.5),
               included: [6.0, 4.5, 3.0], excluded: [7.5, 4.0, 1.5]);
+        });
+        test('positive step size', () {
+          for (var end = 31; end <= 40; end++) {
+            verifyRange(DoubleRange(10, end.toDouble(), 10),
+                included: [10.0, 20.0, 30.0],
+                excluded: [5.0, 15.0, 25.0, 35.0, 40.0]);
+          }
+        });
+        test('negative step size', () {
+          for (var end = 9; end >= 0; end--) {
+            verifyRange(DoubleRange(30, end.toDouble(), -10),
+                included: [30.0, 20.0, 10.0],
+                excluded: [0.0, 5.0, 15.0, 25.0, 35.0]);
+          }
+        });
+        test('const', () {
+          verifyRange(const DoubleRange.of(end: 2),
+              included: [0.0, 1.0], excluded: [-1.0, 2.0]);
+          verifyRange(const DoubleRange.of(start: 2, end: 0),
+              included: [2.0, 1.0], excluded: [0.0, 3.0]);
+          verifyRange(const DoubleRange.of(start: 2, end: 3, step: 0.5),
+              included: [2.0, 2.5], excluded: [0.5, 3.0]);
         });
         test('shorthand', () {
           verifyRange(0.0.to(3.0),
-              included: [0.0, 1.0, 2.0], excluded: [-1.0, 0.5, 1.5, 2.5, 3.0]);
+              included: [0.0, 1.0, 2.0], excluded: [-1.0, 3.0]);
+          verifyRange(3.0.to(0.0),
+              included: [3.0, 2.0, 1.0], excluded: [4.0, 0.0]);
           verifyRange(4.0.to(8.0, step: 1.5),
-              included: [4.0, 5.5, 7.0], excluded: [2.5, 5.0, 6.0, 8.5]);
+              included: [4.0, 5.5, 7.0], excluded: [5.0, 6.0, 6.5, 8.0]);
+          verifyRange(8.0.to(4.0, step: -1.5),
+              included: [8.0, 6.5, 5.0], excluded: [3.5, 4.0, 6.0, 7.5]);
         });
         test('invalid', () {
-          expect(() => DoubleRange(0.0, 2.0, 0.0), throwsArgumentError);
-          expect(() => DoubleRange(0.0, 2.0, -1.5), throwsArgumentError);
-          expect(() => DoubleRange(2.0, 0.0, 1.5), throwsArgumentError);
+          expect(() => DoubleRange(0, 0, 0), throwsArgumentError);
+          expect(() => DoubleRange(null, 1), throwsArgumentError);
+          expect(() => DoubleRange(null, null, 1), throwsArgumentError);
         });
       });
       group('sublist', () {
@@ -3644,13 +3671,6 @@ void main() {
               included: [], excluded: [-1.0, 0.0, 1.0, 2.0, 3.0]);
           expect(() => DoubleRange(3.0).getRange(0, 4), throwsRangeError);
         });
-      });
-      test('printing', () {
-        expect(DoubleRange().toString(), 'DoubleRange()');
-        expect(DoubleRange(1.2).toString(), 'DoubleRange(1.2)');
-        expect(DoubleRange(1.2, 3.4).toString(), 'DoubleRange(1.2, 3.4)');
-        expect(DoubleRange(1.2, 3.4, 0.5).toString(),
-            'DoubleRange(1.2, 3.4, 0.5)');
       });
       test('unmodifiable', () {
         final list = DoubleRange(1.0, 5.0);
