@@ -24,9 +24,14 @@ abstract class Range<T> extends ListBase<T> with UnmodifiableListMixin<T> {
   /// The step size (non-zero).
   T get step;
 
+  /// Returns an iterator positioned at the front of the range.
   @override
   @nonVirtual
-  RangeIterator<T> get iterator => RangeIterator<T>(this);
+  RangeIterator<T> get iterator => RangeIterator<T>.atStart(this);
+
+  /// Returns an iterator positioned at the end of the range.
+  @nonVirtual
+  RangeIterator<T> get iteratorAtEnd => RangeIterator<T>.atEnd(this);
 
   @override
   @nonVirtual
@@ -65,11 +70,13 @@ abstract class Range<T> extends ListBase<T> with UnmodifiableListMixin<T> {
   Range<T> getRange(int startIndex, int endIndex);
 }
 
-/// An [Iterator] over a [Range], provides various additional accessors of the
-/// standard collection iterator.
+/// An [Iterator] over a [Range].
 class RangeIterator<T> implements Iterator<T> {
   /// Constructs a [RangeIterator] at the beginning of the range.
-  RangeIterator(this.range) : _index = -1;
+  RangeIterator.atStart(this.range) : _index = -1;
+
+  /// Constructs a [RangeIterator] at the end of the range.
+  RangeIterator.atEnd(this.range) : _index = range.length;
 
   /// The underlying range being iterated over.
   final Range<T> range;
@@ -80,10 +87,22 @@ class RangeIterator<T> implements Iterator<T> {
   int _index;
   T? _current;
 
+  /// Advances the iterator to the next element of the iteration.
   @override
   bool moveNext() {
     final index = _index + 1;
     if (index < range.length) {
+      _current = range.getUnchecked(_index = index);
+      return true;
+    }
+    _current = null;
+    return false;
+  }
+
+  /// Advances the iterator to the previous element of the iteration.
+  bool movePrevious() {
+    final index = _index - 1;
+    if (0 <= index) {
       _current = range.getUnchecked(_index = index);
       return true;
     }

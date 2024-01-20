@@ -4705,14 +4705,16 @@ void verifyRange<T>(
         excluded: excluded,
         reverse: false);
   }
-  expect(range.iterator.range, same(range));
   if (included.isEmpty) {
     expect(range.isEmpty, isTrue);
   } else {
     expect(range.isNotEmpty, isTrue);
     expect(range.start, included.first);
     expect(range.start, isNot(range.end));
+    expect(range.first, included.first);
+    expect(range.last, included.last);
   }
+  // Test included indexes.
   for (final each in included.indexed()) {
     expect(each.value, range[each.index]);
     expect(range.contains(each.value), isTrue);
@@ -4723,6 +4725,7 @@ void verifyRange<T>(
     expect(range.lastIndexOf(each.value, each.index), each.index);
     expect(range.lastIndexOf(each.value, included.length), each.index);
   }
+  // Test excluded indexes.
   for (final value in excluded) {
     expect(range.contains(value), isFalse);
     expect(range.indexOf(value), -1);
@@ -4732,6 +4735,27 @@ void verifyRange<T>(
     expect(range.lastIndexOf(value, 0), -1);
     expect(range.lastIndexOf(value, range.length), -1);
   }
+  // Validate forward iteration.
+  final forward1 = range.iterator;
+  expect(forward1.range, same(range));
+  final forward2 = included.iterator;
+  while (true) {
+    final hasMore = forward1.moveNext();
+    expect(hasMore, forward2.moveNext());
+    if (hasMore == false) break;
+    expect(forward1.current, forward2.current);
+  }
+  // Validate backward iteration.
+  final backward1 = range.iteratorAtEnd;
+  expect(backward1.range, same(range));
+  final backward2 = included.reversed.iterator;
+  while (true) {
+    final hasMore = backward1.movePrevious();
+    expect(hasMore, backward2.moveNext());
+    if (hasMore == false) break;
+    expect(backward1.current, backward2.current);
+  }
+  // Test range errors.
   expect(() => range[-1], throwsRangeError);
   expect(() => range[included.length], throwsRangeError);
 }
