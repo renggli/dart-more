@@ -1,6 +1,6 @@
 import '../range.dart';
 
-/// A virtual range of integers containing an arithmetic progressions.
+/// A range of integers containing an arithmetic progressions.
 ///
 /// The progression is defined by a `start`, `stop` and `step` parameter. A
 /// range essentially implements a lazy list that is also produced by the
@@ -10,62 +10,59 @@ import '../range.dart';
 ///       ...
 ///
 class IntegerRange extends Range<int> {
-  /// Creates a virtual range of numbers containing an arithmetic progressions
-  /// of integer values.
+  /// Creates an arithmetic progressions of [int] values.
   ///
   /// The constructor called without any arguments returns the empty range.
   /// For example, `IntegerRange()` yields `<int>[]`.
   ///
   /// The constructor called with one argument returns the range of all
   /// numbers up to, but excluding the end. For example, `IntegerRange(3)`
-  /// yields `<int>[0, 1, 2]`.
+  /// yields `<int>[0, 1, 2]`. Negative arguments yield an empty sequence.
   ///
   /// The constructor called with two arguments returns the range between
   /// the two numbers (including the start, but excluding the end). For example,
-  /// `IntegerRange(3, 6)` yields `<int>[3, 4, 5]`.
+  /// `IntegerRange(3, 6)` yields `<int>[3, 4, 5]`. If the second number is
+  /// smaller than the first return a decreasing range, for example
+  /// `IntegerRange(6, 3)` yields `<int>[6, 5, 4]`.
   ///
   /// The constructor called with three arguments returns the range between
   /// the first two numbers (including the start, but excluding the end) and the
   /// step value. For example, `IntegerRange(1, 7, 2)` yields `<int>[1, 3, 5]`.
   factory IntegerRange([int? a, int? b, int? c]) {
-    var start = 0;
-    var end = 0;
-    var step = 1;
-    if (c != null) {
-      start = a!;
-      end = b!;
-      step = c;
-    } else if (b != null) {
-      start = a!;
-      end = b;
-      step = start <= end ? 1 : -1;
-    } else if (a != null) {
-      end = a;
+    if (a != null && b != null && c != null) {
+      if (c == 0) throw ArgumentError.value(c, 'step');
+      return IntegerRange.of(start: a, end: b, step: c);
+    } else if (a != null && b != null && c == null) {
+      return IntegerRange.of(start: a, end: b);
+    } else if (a != null && b == null && c == null) {
+      return IntegerRange.of(end: a, step: 1);
+    } else if (a == null && b == null && c == null) {
+      return const IntegerRange._c3(0, 0, 1);
     }
-    if (start < end) {
-      if (step == 1) {
-        return IntegerRange._(start, end, step, end - start);
-      } else if (step > 1) {
-        return IntegerRange._(
-            start, end, step, (end - start + step - 1) ~/ step);
-      }
-    } else if (start > end) {
-      if (step == -1) {
-        return IntegerRange._(start, end, step, start - end);
-      } else if (step < -1) {
-        return IntegerRange._(
-            start, end, step, (start - end - step - 1) ~/ -step);
-      }
-    } else {
-      if (step != 0) {
-        return IntegerRange._(start, end, step, 0);
-      }
-    }
-    throw ArgumentError.value(
-        step, 'step', 'Invalid step size for range $start..$end');
+    throw ArgumentError('Invalid range: $a, $b, $c');
   }
 
-  IntegerRange._(this.start, this.end, this.step, this.length);
+  /// Const constructor to create an arithmetic progressions of [int] values
+  /// between [start] (inclusive) and [end] (exclusive); and a step-value
+  /// [step].
+  const IntegerRange.of({int start = 0, int end = 0, int? step})
+      : this._c3(start, end, step ?? (start <= end ? 1 : -1));
+
+  // Internal const-constructor that infers the length.
+  const IntegerRange._c3(int start, int end, int step)
+      : this._c4(
+            start,
+            end,
+            step,
+            0 < step && start < end
+                ? 1 + (end - start - 1) ~/ step
+                : 0 > step && start > end
+                    ? 1 + (start - end - 1) ~/ -step
+                    : 0);
+
+  // Internal const-constructor that initializes all state.
+  const IntegerRange._c4(this.start, this.end, this.step, this.length)
+      : assert(step != 0, 'step must not be zero');
 
   @override
   final int start;
@@ -100,34 +97,22 @@ class IntegerRange extends Range<int> {
   }
 
   @override
-  IntegerRange get reversed =>
-      isEmpty ? this : IntegerRange._(last, first - step, -step, length);
+  IntegerRange get reversed => IntegerRange._c4(
+      start + (length - 1) * step, start - step, -step, length);
 
   @override
   IntegerRange getRange(int startIndex, int endIndex) {
     RangeError.checkValidRange(startIndex, endIndex, length);
-    return IntegerRange._(start + startIndex * step, start + endIndex * step,
+    return IntegerRange._c4(start + startIndex * step, start + endIndex * step,
         step, endIndex - startIndex);
-  }
-
-  @override
-  String toString() {
-    if (length == 0) {
-      return 'IntegerRange()';
-    } else if (start == 0 && step == 1) {
-      return 'IntegerRange($end)';
-    } else if (step == 1) {
-      return 'IntegerRange($start, $end)';
-    } else {
-      return 'IntegerRange($start, $end, $step)';
-    }
   }
 }
 
 extension IntegerRangeExtension on int {
   /// Shorthand to create a range of [int] numbers, starting with the receiver
   /// (inclusive) up to but not including [end] (exclusive).
-  Range<int> to(int end, {int? step}) => IntegerRange(this, end, step);
+  Range<int> to(int end, {int? step}) =>
+      IntegerRange.of(start: this, end: end, step: step);
 }
 
 extension IndicesIterableExtension on Iterable<Object?> {
@@ -146,18 +131,9 @@ extension IndicesIterableExtension on Iterable<Object?> {
   ///
   ///     [0, 2]
   ///
-  Range<int> indices({int step = 1}) {
-    final count = length;
-    if (step == 1) {
-      return IntegerRange._(0, count, 1, count);
-    } else if (step == -1) {
-      return IntegerRange._(count - 1, -1, -1, count);
-    } else if (step > 1) {
-      return IntegerRange._(0, count, step, (count + 1) ~/ step);
-    } else if (step < -1) {
-      return IntegerRange._(count - 1, -1, step, (count + 1) ~/ -step);
-    } else {
-      throw ArgumentError.value(step, 'step', 'Non-zero step-size expected');
-    }
-  }
+  Range<int> indices({int step = 1}) => step > 0
+      ? IntegerRange._c3(0, length, step)
+      : step < 0
+          ? IntegerRange._c3(length - 1, -1, step)
+          : throw ArgumentError.value(step, 'step');
 }
