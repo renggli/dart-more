@@ -3361,7 +3361,22 @@ void main() {
     group('int', () {
       group('constructor', () {
         test('empty', () {
-          verifyRange(IntegerRange(), included: [], excluded: [0]);
+          verifyRange(IntegerRange.empty, included: [], excluded: [0]);
+        });
+        test('of', () {
+          verifyRange(const IntegerRange.of(), included: [], excluded: [0]);
+          verifyRange(const IntegerRange.of(start: -2),
+              included: [-2, -1], excluded: [-3, 0]);
+          verifyRange(const IntegerRange.of(end: 2),
+              included: [0, 1], excluded: [-1, 3]);
+          verifyRange(const IntegerRange.of(start: 1, end: 3),
+              included: [1, 2], excluded: [0, 3]);
+          verifyRange(const IntegerRange.of(start: 3, end: 1),
+              included: [3, 2], excluded: [1, 4]);
+          verifyRange(const IntegerRange.of(start: 1, end: 5, step: 2),
+              included: [1, 3], excluded: [2, 4, 5]);
+          verifyRange(const IntegerRange.of(start: 5, end: 1, step: -2),
+              included: [5, 3], excluded: [4, 2, 1]);
         });
         test('1 argument', () {
           verifyRange(IntegerRange(-1), included: [], excluded: [-1, 0, 1]);
@@ -3547,17 +3562,22 @@ void main() {
     group('double', () {
       group('constructor', () {
         test('empty', () {
-          verifyRange(DoubleRange(), included: [], excluded: [0.0]);
+          verifyRange(DoubleRange.empty, included: [], excluded: [0.0]);
         });
-        test('1 argument', () {
-          verifyRange(DoubleRange(-1),
-              included: [], excluded: [-1.0, 0.0, 1.0]);
-          verifyRange(DoubleRange(0), included: [], excluded: [-1.0, 0.0, 1.0]);
-          verifyRange(DoubleRange(1), included: [0.0], excluded: [-1.0, 1.0]);
-          verifyRange(DoubleRange(2),
-              included: [0.0, 1.0], excluded: [-1.0, 2.0]);
-          verifyRange(DoubleRange(3),
-              included: [0.0, 1.0, 2.0], excluded: [-1.0, 3.0]);
+        test('of', () {
+          verifyRange(const DoubleRange.of(), included: [], excluded: [0.0]);
+          verifyRange(const DoubleRange.of(start: -2),
+              included: [-2.0, -1.0], excluded: [-3.0, 0.0]);
+          verifyRange(const DoubleRange.of(end: 2),
+              included: [0.0, 1.0], excluded: [-1, 3]);
+          verifyRange(const DoubleRange.of(start: 1, end: 3),
+              included: [1.0, 2.0], excluded: [0.0, 3.0]);
+          verifyRange(const DoubleRange.of(start: 3, end: 1),
+              included: [3.0, 2.0], excluded: [1.0, 4.0]);
+          verifyRange(const DoubleRange.of(start: 1, end: 5, step: 2),
+              included: [1.0, 3.0], excluded: [2.0, 4.0, 5.0]);
+          verifyRange(const DoubleRange.of(start: 5, end: 1, step: -2),
+              included: [5.0, 3.0], excluded: [4.0, 2.0, 1.0]);
         });
         test('2 argument', () {
           verifyRange(DoubleRange(0, 0),
@@ -3703,8 +3723,39 @@ void main() {
           values.map(BigInt.from).toList();
       group('constructor', () {
         test('empty', () {
-          verifyRange(BigIntRange(),
+          verifyRange(BigIntRange.empty,
               included: <BigInt>[], excluded: toBigIntList([0]));
+        });
+        test('of', () {
+          verifyRange(BigIntRange.of(),
+              included: <BigInt>[], excluded: toBigIntList([0]));
+          verifyRange(BigIntRange.of(start: BigInt.from(-2)),
+              included: toBigIntList([-2, -1]),
+              excluded: toBigIntList([-3, 0]));
+          verifyRange(BigIntRange.of(end: BigInt.from(2)),
+              included: toBigIntList([0, 1]), excluded: toBigIntList([-1, 3]));
+          verifyRange(
+              BigIntRange.of(start: BigInt.from(1), end: BigInt.from(3)),
+              included: toBigIntList([1, 2]),
+              excluded: toBigIntList([0, 3]));
+          verifyRange(
+              BigIntRange.of(start: BigInt.from(3), end: BigInt.from(1)),
+              included: toBigIntList([3, 2]),
+              excluded: toBigIntList([1, 4]));
+          verifyRange(
+              BigIntRange.of(
+                  start: BigInt.from(1),
+                  end: BigInt.from(5),
+                  step: BigInt.from(2)),
+              included: toBigIntList([1, 3]),
+              excluded: toBigIntList([2, 4, 5]));
+          verifyRange(
+              BigIntRange.of(
+                  start: BigInt.from(5),
+                  end: BigInt.from(1),
+                  step: BigInt.from(-2)),
+              included: toBigIntList([5, 3]),
+              excluded: toBigIntList([4, 2, 1]));
         });
         test('1 argument', () {
           verifyRange(BigIntRange(BigInt.from(-1)),

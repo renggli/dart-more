@@ -43,10 +43,13 @@ class BigIntRange extends Range<BigInt> {
     } else if (a != null && b == null && c == null) {
       return BigIntRange.of(end: a, step: BigInt.one);
     } else if (a == null && b == null && c == null) {
-      return BigIntRange._c3(BigInt.zero, BigInt.zero, BigInt.one);
+      return empty;
     }
     throw ArgumentError('Invalid range: $a, $b, $c');
   }
+
+  /// The empty range.
+  static final empty = BigIntRange._c4(BigInt.zero, BigInt.zero, BigInt.one, 0);
 
   /// Const constructor to create an arithmetic progressions of [int] values
   /// between [start] (inclusive) and [end] (exclusive); and a step-value

@@ -39,10 +39,13 @@ class DoubleRange extends Range<double> {
     } else if (a != null && b == null && c == null) {
       return DoubleRange.of(end: a, step: 1);
     } else if (a == null && b == null && c == null) {
-      return const DoubleRange._c3(0, 0, 1);
+      return empty;
     }
     throw ArgumentError('Invalid range: $a, $b, $c');
   }
+
+  /// The empty range.
+  static const empty = DoubleRange._c4(0, 0, 1, 0);
 
   /// Const constructor to create an arithmetic progressions of [double] values
   /// between [start] (inclusive) and [end] (exclusive); and a step-value
