@@ -1,8 +1,6 @@
-import '../../../feature.dart';
-import '../../number/bigint.dart';
 import '../range.dart';
 
-/// A virtual range of [BigInt] containing an arithmetic progressions.
+/// A range of [BigInt] containing an arithmetic progressions.
 ///
 /// The progression is defined by a `start`, `stop` and `step` parameter. A
 /// range essentially implements a lazy list that is also produced by the
@@ -12,8 +10,7 @@ import '../range.dart';
 ///       ...
 ///
 class BigIntRange extends Range<BigInt> {
-  /// Creates a virtual range of numbers containing an arithmetic progressions
-  /// of [BigInt] values.
+  /// Creates an arithmetic progressions of [BigInt] values.
   ///
   /// The constructor called without any arguments returns the empty range.
   /// For example, `BigIntRange()` yields `<BigInt>[]`.
@@ -21,12 +18,16 @@ class BigIntRange extends Range<BigInt> {
   /// The constructor called with one argument returns the range of all
   /// numbers up to, but excluding the end. For example,
   /// `BigIntRange(BigInt.from(3))` yields
-  /// `<BigInt>[BigInt.zero, BigInt.one, BigInt.two]`.
+  /// `<BigInt>[BigInt.zero, BigInt.one, BigInt.two]`. Negative arguments yield
+  /// an empty sequence.
   ///
   /// The constructor called with two arguments returns the range between
   /// the two numbers (including the start, but excluding the end). For example,
   /// `BigIntRange(BigInt.from(3), BigInt.from(6))` yields
-  /// `<BigInt>[BigInt.from(3), BigInt.from(4), BigInt.from(5)]`.
+  /// `<BigInt>[BigInt.from(3), BigInt.from(4), BigInt.from(5)]`.  If the second
+  /// number is smaller than the first return a decreasing range, for example
+  /// `BigIntRange(BigInt.from(6), BigInt.from(3))` yields
+  /// `<BigInt>[BigInt.from(6), BigInt.from(5), BigInt.from(4)]`.
   ///
   /// The constructor called with three arguments returns the range between
   /// the first two numbers (including the start, but excluding the end) and the
@@ -34,44 +35,48 @@ class BigIntRange extends Range<BigInt> {
   /// `BigIntRange(BigInt.from(1), BigInt.from(7), BigInt.from(2))` yields
   /// `<BigInt>[BigInt.from(1), BigInt.from(3), BigInt.from(5)]`.
   factory BigIntRange([BigInt? a, BigInt? b, BigInt? c]) {
-    var start = BigInt.zero;
-    var end = BigInt.zero;
-    var step = BigInt.one;
-    if (c != null) {
-      start = a!;
-      end = b!;
-      step = c;
-    } else if (b != null) {
-      start = a!;
-      end = b;
-      step = start <= end ? BigInt.one : BigIntExtension.negativeOne;
-    } else if (a != null) {
-      end = a;
+    if (a != null && b != null && c != null) {
+      if (c == BigInt.zero) throw ArgumentError.value(c, 'step');
+      return BigIntRange.of(start: a, end: b, step: c);
+    } else if (a != null && b != null && c == null) {
+      return BigIntRange.of(start: a, end: b);
+    } else if (a != null && b == null && c == null) {
+      return BigIntRange.of(end: a, step: BigInt.one);
+    } else if (a == null && b == null && c == null) {
+      return BigIntRange._c3(BigInt.zero, BigInt.zero, BigInt.one);
     }
-    if (start < end) {
-      if (step == BigInt.one) {
-        return BigIntRange._(start, end, step, _toSafeLength(end - start));
-      } else if (step > BigInt.one) {
-        return BigIntRange._(start, end, step,
-            _toSafeLength((end - start + step - BigInt.one) ~/ step));
-      }
-    } else if (start > end) {
-      if (step == BigIntExtension.negativeOne) {
-        return BigIntRange._(start, end, step, _toSafeLength(start - end));
-      } else if (step < BigIntExtension.negativeOne) {
-        return BigIntRange._(start, end, step,
-            _toSafeLength((start - end - step - BigInt.one) ~/ -step));
-      }
-    } else {
-      if (step != BigInt.zero) {
-        return BigIntRange._(start, end, step, 0);
-      }
-    }
-    throw ArgumentError.value(
-        step, 'step', 'Invalid step size for range $start..$end');
+    throw ArgumentError('Invalid range: $a, $b, $c');
   }
 
-  BigIntRange._(this.start, this.end, this.step, this.length);
+  /// Const constructor to create an arithmetic progressions of [int] values
+  /// between [start] (inclusive) and [end] (exclusive); and a step-value
+  /// [step].
+  factory BigIntRange.of({BigInt? start, BigInt? end, BigInt? step}) {
+    start ??= BigInt.zero;
+    end ??= BigInt.zero;
+    step ??= start <= end ? BigInt.one : -BigInt.one;
+    return BigIntRange._c3(start, end, step);
+  }
+
+  // Internal const-constructor that infers the length.
+  factory BigIntRange._c3(BigInt start, BigInt end, BigInt step) {
+    final length = BigInt.zero < step && start < end
+        ? BigInt.one + (end - start - BigInt.one) ~/ step
+        : BigInt.zero > step && start > end
+            ? BigInt.one + (start - end - BigInt.one) ~/ -step
+            : BigInt.zero;
+    if (!length.isValidInt) {
+      throw ArgumentError.value(length, 'length', 'Range exceeds valid length');
+    }
+    return BigIntRange._c4(start, end, step, length.toInt());
+  }
+
+  // Internal const-constructor that initializes all state.
+  BigIntRange._c4(this.start, this.end, this.step, this.length) {
+    if (step == BigInt.zero) {
+      throw ArgumentError.value(step, 'step', 'step must not be zero');
+    }
+  }
 
   @override
   final BigInt start;
@@ -106,42 +111,20 @@ class BigIntRange extends Range<BigInt> {
   }
 
   @override
-  BigIntRange get reversed =>
-      isEmpty ? this : BigIntRange._(last, first - step, -step, length);
+  BigIntRange get reversed => BigIntRange._c4(
+      start + BigInt.from(length - 1) * step, start - step, -step, length);
 
   @override
   BigIntRange getRange(int startIndex, int endIndex) {
     RangeError.checkValidRange(startIndex, endIndex, length);
-    return BigIntRange._(start + BigInt.from(startIndex) * step,
+    return BigIntRange._c4(start + BigInt.from(startIndex) * step,
         start + BigInt.from(endIndex) * step, step, endIndex - startIndex);
-  }
-
-  @override
-  String toString() {
-    if (length == 0) {
-      return 'BigIntRange()';
-    } else if (start == BigInt.zero && step == BigInt.one) {
-      return 'BigIntRange($end)';
-    } else if (step == BigInt.one) {
-      return 'BigIntRange($start, $end)';
-    } else {
-      return 'BigIntRange($start, $end, $step)';
-    }
   }
 }
 
 extension BigIntRangeExtension on BigInt {
   /// Shorthand to create a range of [BigInt] numbers, starting with the
   /// receiver (inclusive) up to but not including [end] (exclusive).
-  BigIntRange to(BigInt end, {BigInt? step}) => BigIntRange(this, end, step);
-}
-
-final _safeLength = isJavaScript ? BigInt.two.pow(32) : BigInt.two.pow(64);
-
-int _toSafeLength(BigInt length) {
-  if (length <= _safeLength) {
-    return length.toInt();
-  }
-  throw ArgumentError.value(
-      length, 'length', 'Length cannot be represented using int');
+  BigIntRange to(BigInt end, {BigInt? step}) =>
+      BigIntRange.of(start: this, end: end, step: step);
 }

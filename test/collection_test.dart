@@ -3707,9 +3707,11 @@ void main() {
               included: <BigInt>[], excluded: toBigIntList([0]));
         });
         test('1 argument', () {
-          verifyRange(BigIntRange(BigInt.from(0)),
+          verifyRange(BigIntRange(BigInt.from(-1)),
               included: <BigInt>[], excluded: toBigIntList([-1, 0, 1]));
-          verifyRange(BigIntRange(BigInt.from(1)),
+          verifyRange(BigIntRange(BigInt.zero),
+              included: <BigInt>[], excluded: toBigIntList([-1, 0, 1]));
+          verifyRange(BigIntRange(BigInt.one),
               included: toBigIntList([0]), excluded: toBigIntList([-1, 1]));
           verifyRange(BigIntRange(BigInt.from(2)),
               included: toBigIntList([0, 1]), excluded: toBigIntList([-1, 2]));
@@ -3718,11 +3720,14 @@ void main() {
               excluded: toBigIntList([-1, 3]));
         });
         test('2 argument', () {
-          verifyRange(BigIntRange(BigInt.from(0), BigInt.from(0)),
+          verifyRange(BigIntRange(BigInt.zero, BigInt.zero),
               included: <BigInt>[], excluded: toBigIntList([-1, 0, 1]));
-          verifyRange(BigIntRange(BigInt.from(0), BigInt.from(4)),
+          verifyRange(BigIntRange(BigInt.zero, BigInt.from(4)),
               included: toBigIntList([0, 1, 2, 3]),
               excluded: toBigIntList([-1, 4]));
+          verifyRange(BigIntRange(BigInt.from(4), BigInt.zero),
+              included: toBigIntList([4, 3, 2, 1]),
+              excluded: toBigIntList([5, 0]));
           verifyRange(BigIntRange(BigInt.from(5), BigInt.from(9)),
               included: toBigIntList([5, 6, 7, 8]),
               excluded: toBigIntList([4, 9]));
@@ -3731,7 +3736,7 @@ void main() {
               excluded: toBigIntList([10, 5]));
         });
         test('3 argument (positive step)', () {
-          verifyRange(BigIntRange(BigInt.from(0), BigInt.from(0), BigInt.one),
+          verifyRange(BigIntRange(BigInt.zero, BigInt.zero, BigInt.one),
               included: <BigInt>[], excluded: toBigIntList([-1, 0, 1]));
           verifyRange(BigIntRange(BigInt.from(2), BigInt.from(8), BigInt.two),
               included: toBigIntList([2, 4, 6]),
@@ -3752,7 +3757,7 @@ void main() {
         test('3 argument (negative step)', () {
           verifyRange(
               BigIntRange(
-                  BigInt.from(0), BigInt.from(0), BigIntExtension.negativeOne),
+                  BigInt.zero, BigInt.zero, BigIntExtension.negativeOne),
               included: <BigInt>[],
               excluded: toBigIntList([-1, 0, 1]));
           verifyRange(
@@ -3783,18 +3788,17 @@ void main() {
         });
         test('positive step size', () {
           for (var end = 31; end <= 40; end++) {
-            final range =
-                BigIntRange(BigInt.from(10), BigInt.from(end), BigInt.from(10));
-            verifyRange(range,
+            verifyRange(
+                BigIntRange(BigInt.from(10), BigInt.from(end), BigInt.from(10)),
                 included: toBigIntList([10, 20, 30]),
                 excluded: toBigIntList([5, 15, 25, 35, 40]));
           }
         });
         test('negative step size', () {
           for (var end = 9; end >= 0; end--) {
-            final range = BigIntRange(
-                BigInt.from(30), BigInt.from(end), BigInt.from(-10));
-            verifyRange(range,
+            verifyRange(
+                BigIntRange(
+                    BigInt.from(30), BigInt.from(end), BigInt.from(-10)),
                 included: toBigIntList([30, 20, 10]),
                 excluded: toBigIntList([0, 5, 15, 25, 35]));
           }
@@ -3802,10 +3806,16 @@ void main() {
         test('shorthand', () {
           verifyRange(BigInt.zero.to(BigInt.from(3)),
               included: toBigIntList([0, 1, 2]),
-              excluded: toBigIntList([-1, 4]));
+              excluded: toBigIntList([-1, 3]));
+          verifyRange(BigInt.from(3).to(BigInt.zero),
+              included: toBigIntList([3, 2, 1]),
+              excluded: toBigIntList([4, 0]));
           verifyRange(BigInt.two.to(BigInt.from(8), step: BigInt.two),
               included: toBigIntList([2, 4, 6]),
               excluded: toBigIntList([0, 1, 3, 5, 7, 8]));
+          verifyRange(BigInt.from(8).to(BigInt.two, step: -BigInt.two),
+              included: toBigIntList([8, 6, 4]),
+              excluded: toBigIntList([2, 3, 5, 7, 9]));
         });
         test('stress', () {
           final random = Random(6180340);
@@ -3823,16 +3833,19 @@ void main() {
           }
         });
         test('invalid', () {
-          expect(() => BigIntRange(BigInt.zero, BigInt.two, BigInt.zero),
+          expect(() => BigIntRange(BigInt.zero, BigInt.zero, BigInt.zero),
               throwsArgumentError);
+          expect(() => BigIntRange(null, BigInt.one), throwsArgumentError);
           expect(
-              () => BigIntRange(
-                  BigInt.zero, BigInt.two, BigIntExtension.negativeOne),
-              throwsArgumentError);
-          expect(() => BigIntRange(BigInt.two, BigInt.zero, BigInt.one),
-              throwsArgumentError);
-          expect(() => BigIntRange(BigInt.zero, BigInt.two.pow(100)),
-              throwsArgumentError);
+              () => BigIntRange(null, null, BigInt.one), throwsArgumentError);
+        });
+        test('invalid length', () {
+          final enormous = BigInt.two.pow(100);
+          expect(() => BigIntRange(BigInt.zero, enormous), throwsArgumentError);
+          expect(() => BigIntRange(enormous, BigInt.zero), throwsArgumentError);
+          verifyRange(BigIntRange(enormous, enormous + BigInt.one),
+              included: [enormous],
+              excluded: [enormous - BigInt.one, enormous + BigInt.two]);
         });
       });
       group('sublist', () {
@@ -3883,18 +3896,8 @@ void main() {
               throwsRangeError);
         });
       });
-      test('printing', () {
-        expect(BigIntRange().toString(), 'BigIntRange()');
-        expect(BigIntRange(BigInt.from(1)).toString(), 'BigIntRange(1)');
-        expect(BigIntRange(BigInt.from(1), BigInt.from(2)).toString(),
-            'BigIntRange(1, 2)');
-        expect(
-            BigIntRange(BigInt.from(1), BigInt.from(5), BigInt.from(2))
-                .toString(),
-            'BigIntRange(1, 5, 2)');
-      });
       test('unmodifiable', () {
-        final list = BigIntRange(BigInt.from(1), BigInt.from(5));
+        final list = BigIntRange(BigInt.one, BigInt.from(5));
         expect(() => list[0] = BigInt.from(5), throwsUnsupportedError);
         expect(() => list.first = BigInt.from(5), throwsUnsupportedError);
         expect(() => list.last = BigInt.from(5), throwsUnsupportedError);
@@ -4714,7 +4717,7 @@ void verifyRange<T>(
     expect(range.first, included.first);
     expect(range.last, included.last);
   }
-  // Test included indexes.
+// Test included indexes.
   for (final each in included.indexed()) {
     expect(each.value, range[each.index]);
     expect(range.contains(each.value), isTrue);
@@ -4725,7 +4728,7 @@ void verifyRange<T>(
     expect(range.lastIndexOf(each.value, each.index), each.index);
     expect(range.lastIndexOf(each.value, included.length), each.index);
   }
-  // Test excluded indexes.
+// Test excluded indexes.
   for (final value in excluded) {
     expect(range.contains(value), isFalse);
     expect(range.indexOf(value), -1);
@@ -4735,7 +4738,7 @@ void verifyRange<T>(
     expect(range.lastIndexOf(value, 0), -1);
     expect(range.lastIndexOf(value, range.length), -1);
   }
-  // Validate forward iteration.
+// Validate forward iteration.
   final forward1 = range.iterator;
   expect(forward1.range, same(range));
   final forward2 = included.iterator;
@@ -4745,7 +4748,7 @@ void verifyRange<T>(
     if (hasMore == false) break;
     expect(forward1.current, forward2.current);
   }
-  // Validate backward iteration.
+// Validate backward iteration.
   final backward1 = range.iteratorAtEnd;
   expect(backward1.range, same(range));
   final backward2 = included.reversed.iterator;
@@ -4755,7 +4758,7 @@ void verifyRange<T>(
     if (hasMore == false) break;
     expect(backward1.current, backward2.current);
   }
-  // Test range errors.
+// Test range errors.
   expect(() => range[-1], throwsRangeError);
   expect(() => range[included.length], throwsRangeError);
 }
@@ -4869,24 +4872,24 @@ void allSortedListTests(
   test('stress', () {
     final random = Random(6412);
     final numbers = <int>{};
-    // Create 1000 unique numbers.
+// Create 1000 unique numbers.
     while (numbers.length < 1000) {
       numbers.add(random.nextInt(0xffffff));
     }
     final values = List.of(numbers);
-    // Create a list from digit of the values.
+// Create a list from digit of the values.
     final list = createSortedList<int>(values);
-    // Verify all values are present.
+// Verify all values are present.
     expect(list, hasLength(values.length));
     for (final value in values) {
       expect(list.contains(value), isTrue);
     }
-    // Remove values in different order.
+// Remove values in different order.
     values.shuffle(random);
     for (final value in values) {
       expect(list.remove(value), isTrue);
     }
-    // Verify all values are gone.
+// Verify all values are gone.
     expect(list, isEmpty);
   });
   test('errors', () {
@@ -5189,12 +5192,12 @@ void allTrieTests(
     test('stress', () {
       final random = Random(42);
       final numbers = <int>{};
-      // Create 1000 unique numbers.
+// Create 1000 unique numbers.
       while (numbers.length < 1000) {
         numbers.add(random.nextInt(0xffffff));
       }
       final values = List.of(numbers);
-      // Create a trie from digit of the values.
+// Create a trie from digit of the values.
       final trie = Trie<int, String, bool>(
         parts: (value) => value.digits().map((digit) => digit.toString()),
         root: createRoot(),
@@ -5202,18 +5205,18 @@ void allTrieTests(
       for (final value in values) {
         trie[value] = true;
       }
-      // Verify all values are present.
+// Verify all values are present.
       expect(trie, hasLength(values.length));
       for (final value in values) {
         expect(trie.containsKey(value), isTrue);
         expect(trie[value], isTrue);
       }
-      // Remove values in different order.
+// Remove values in different order.
       values.shuffle(random);
       for (final value in values) {
         expect(trie.remove(value), isTrue);
       }
-      // Verify all values are gone.
+// Verify all values are gone.
       expect(trie, isEmpty);
       for (final value in values) {
         expect(trie.containsKey(value), isFalse);
