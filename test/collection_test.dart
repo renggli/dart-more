@@ -4038,7 +4038,7 @@ void main() {
           verifyRange(BigIntRange(enormous, enormous + BigInt.one),
               included: [enormous],
               excluded: [enormous - BigInt.one, enormous + BigInt.two]);
-        });
+        }, testOn: '!js');
       });
       group('sublist', () {
         test('sublist (1 argument)', () {
