@@ -11,6 +11,9 @@ import '../range.dart';
 ///       ...
 ///
 class DoubleRange extends Range<double> {
+  /// The empty range.
+  static const empty = DoubleRange._(0, 0, 1, 0);
+
   /// Creates an arithmetic progressions of [double] values.
   ///
   /// The constructor called without any arguments returns the empty range.
@@ -44,31 +47,46 @@ class DoubleRange extends Range<double> {
     throw ArgumentError('Invalid range: $a, $b, $c');
   }
 
-  /// The empty range.
-  static const empty = DoubleRange._c4(0, 0, 1, 0);
-
   /// Const constructor to create an arithmetic progressions of [double] values
-  /// between [start] (inclusive) and [end] (exclusive); and a step-value
-  /// [step].
+  /// between [start] (inclusive), [end] (exclusive), and a step-value [step].
+  ///
+  /// Warning: Due to rounding errors this constructor can result in ranges
+  /// with unexpected length. To avoid such problems use [DoubleRange.length].
+  ///
+  /// Implementation note: The length is computed using `(start - end) ~/ step +
+  /// ((start - end) % step == 0 ? 0 : 1)`. However due to rounding errors we
+  /// have to make sure the module is close to `0` or [step].
   const DoubleRange.of({double start = 0, double end = 0, double? step})
-      : this._c3(start, end, step ?? (start <= end ? 1 : -1));
+      : this._of1(start, end, step ?? (start <= end ? 1 : -1));
 
-  // Internal const-constructor that infers the length.
-  const DoubleRange._c3(double start, double end, double step)
-      : this._c4(
-            start,
-            end,
-            step,
-            0 < step && start < end
-                ? (end - start) ~/ step + ((end - start) % step > 0 ? 1 : 0)
-                : 0 > step && start > end
-                    ? (start - end) ~/ -step +
-                        ((start - end) % -step > 0 ? 1 : 0)
-                    : 0);
+  const DoubleRange._of1(double start, double end, double step)
+      : this._of2(start, end, step, start < end ? end - start : start - end,
+            0 < step ? step : -step);
 
-  // Internal const-constructor that initializes all state.
-  const DoubleRange._c4(this.start, this.end, this.step, this.length)
-      : assert(step != 0, 'step must not be zero');
+  const DoubleRange._of2(
+      double start, double end, double step, double deltaAbs, double stepAbs)
+      : this._of3(
+            start, end, step, deltaAbs ~/ stepAbs, deltaAbs % stepAbs, stepAbs);
+
+  const DoubleRange._of3(double start, double end, double step, int div,
+      double mod, double stepAbs)
+      : this._(start, end, step,
+            div + (mod < _epsilon || stepAbs - mod < _epsilon ? 0 : 1));
+
+  static const _epsilon = 1e-16;
+
+  /// Const constructor to create an arithmetic progression of [double] values.
+  /// The resulting [Range] is of the given [length], starts at [start], and
+  /// uses the step-value [step].
+  const DoubleRange.length(int length, {double start = 0, double step = 1})
+      : this._(start, start + length * step, step, length);
+
+  // Internal const-constructor that initializes the state.
+  const DoubleRange._(this.start, this.end, this.step, this.length)
+      : assert(step != 0, '`step` must not be zero'),
+        assert(step < 0 || start <= end, '`step` must be positive'),
+        assert(step > 0 || start >= end, '`step` must be negative'),
+        assert(0 <= length, '`length` must be positive');
 
   @override
   final double start;
@@ -102,12 +120,12 @@ class DoubleRange extends Range<double> {
 
   @override
   DoubleRange get reversed =>
-      DoubleRange._c4(start + (length - 1) * step, start - step, -step, length);
+      DoubleRange._(start + (length - 1) * step, start - step, -step, length);
 
   @override
   DoubleRange getRange(int startIndex, int endIndex) {
     RangeError.checkValidRange(startIndex, endIndex, length);
-    return DoubleRange._c4(start + startIndex * step, start + endIndex * step,
+    return DoubleRange._(start + startIndex * step, start + endIndex * step,
         step, endIndex - startIndex);
   }
 }

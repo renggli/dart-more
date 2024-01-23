@@ -3378,8 +3378,21 @@ void main() {
           verifyRange(const IntegerRange.of(start: 5, end: 1, step: -2),
               included: [5, 3], excluded: [4, 2, 1]);
         });
+        test('length', () {
+          verifyRange(const IntegerRange.length(0),
+              included: [], excluded: [0]);
+          verifyRange(const IntegerRange.length(1),
+              included: [0], excluded: [-1, 1]);
+          verifyRange(const IntegerRange.length(2),
+              included: [0, 1], excluded: [-1, 2]);
+          verifyRange(const IntegerRange.length(2, start: 10),
+              included: [10, 11], excluded: [-1, 2]);
+          verifyRange(const IntegerRange.length(2, step: 2),
+              included: [0, 2], excluded: [-1, 1, 3]);
+          verifyRange(const IntegerRange.length(2, step: -2),
+              included: [0, -2], excluded: [-3, -1, 1]);
+        });
         test('1 argument', () {
-          verifyRange(IntegerRange(-1), included: [], excluded: [-1, 0, 1]);
           verifyRange(IntegerRange(0), included: [], excluded: [-1, 0, 1]);
           verifyRange(IntegerRange(1), included: [0], excluded: [-1, 1]);
           verifyRange(IntegerRange(2), included: [0, 1], excluded: [-1, 2]);
@@ -3436,13 +3449,17 @@ void main() {
                 included: [30, 20, 10], excluded: [0, 5, 15, 25, 35]);
           }
         });
-        test('const', () {
-          verifyRange(const IntegerRange.of(end: 2),
-              included: [0, 1], excluded: [-1, 2]);
-          verifyRange(const IntegerRange.of(start: 2, end: 0),
-              included: [2, 1], excluded: [0, 3]);
-          verifyRange(const IntegerRange.of(start: 2, end: 5, step: 2),
-              included: [2, 4], excluded: [1, 3, 5, 6]);
+        test('length with positive step size', () {
+          expect(const IntegerRange.of(end: 12, step: 2), hasLength(6));
+          expect(const IntegerRange.of(end: 12, step: 3), hasLength(4));
+          expect(const IntegerRange.of(end: 12, step: 4), hasLength(3));
+          expect(const IntegerRange.of(end: 12, step: 6), hasLength(2));
+        });
+        test('length with negative step size', () {
+          expect(const IntegerRange.of(start: 12, step: -2), hasLength(6));
+          expect(const IntegerRange.of(start: 12, step: -3), hasLength(4));
+          expect(const IntegerRange.of(start: 12, step: -4), hasLength(3));
+          expect(const IntegerRange.of(start: 12, step: -6), hasLength(2));
         });
         test('shorthand', () {
           verifyRange(0.to(3), included: [0, 1, 2], excluded: [-1, 3]);
@@ -3477,14 +3494,12 @@ void main() {
             verifyRange(<int>[].indices(), included: [], excluded: [0, 1, 2]);
             verifyRange(<int>[].indices(step: -1),
                 included: [], excluded: [0, 1, 2]);
-            expect(() => <int>[].indices(step: 0), throwsArgumentError);
           });
           test('default', () {
             verifyRange([1, 2, 3].indices(),
                 included: [0, 1, 2], excluded: [-1, 3]);
             verifyRange([1, 2, 3].indices(step: -1),
                 included: [2, 1, 0], excluded: [-1, 3]);
-            expect(() => [1, 2, 3].indices(step: 0), throwsArgumentError);
           });
           test('step', () {
             verifyRange([1, 2, 3].indices(step: 2),
@@ -3579,6 +3594,29 @@ void main() {
           verifyRange(const DoubleRange.of(start: 5, end: 1, step: -2),
               included: [5.0, 3.0], excluded: [4.0, 2.0, 1.0]);
         });
+        test('length', () {
+          verifyRange(const DoubleRange.length(0),
+              included: [], excluded: [0.0]);
+          verifyRange(const DoubleRange.length(1),
+              included: [0.0], excluded: [-1.0, 1.0]);
+          verifyRange(const DoubleRange.length(2),
+              included: [0.0, 1.0], excluded: [-1.0, 2.0]);
+          verifyRange(const DoubleRange.length(2, start: 10),
+              included: [10.0, 11.0], excluded: [-1.0, 2.0]);
+          verifyRange(const DoubleRange.length(2, step: 2),
+              included: [0.0, 2.0], excluded: [-1.0, 1.0, 3.0]);
+          verifyRange(const DoubleRange.length(2, step: -2),
+              included: [0.0, -2.0], excluded: [-3.0, -1.0, 1.0]);
+        });
+
+        test('1 argument', () {
+          verifyRange(DoubleRange(0), included: [], excluded: [-1.0, 0.0, 1.0]);
+          verifyRange(DoubleRange(1), included: [0.0], excluded: [-1.0, 1.0]);
+          verifyRange(DoubleRange(2),
+              included: [0.0, 1.0], excluded: [-1.0, 2.0]);
+          verifyRange(DoubleRange(3),
+              included: [0.0, 1.0, 2.0], excluded: [-1.0, 3.0]);
+        });
         test('2 argument', () {
           verifyRange(DoubleRange(0, 0),
               included: [], excluded: [-1.0, 0.0, 1.0]);
@@ -3619,27 +3657,115 @@ void main() {
           verifyRange(DoubleRange(6, 2, -1.5),
               included: [6.0, 4.5, 3.0], excluded: [7.5, 4.0, 1.5]);
         });
-        test('positive step size', () {
+        test('exceeding positive step size', () {
           for (var end = 31; end <= 40; end++) {
             verifyRange(DoubleRange(10, end.toDouble(), 10),
                 included: [10.0, 20.0, 30.0],
                 excluded: [5.0, 15.0, 25.0, 35.0, 40.0]);
           }
         });
-        test('negative step size', () {
+        test('exceeding negative step size', () {
           for (var end = 9; end >= 0; end--) {
             verifyRange(DoubleRange(30, end.toDouble(), -10),
                 included: [30.0, 20.0, 10.0],
                 excluded: [0.0, 5.0, 15.0, 25.0, 35.0]);
           }
         });
-        test('const', () {
-          verifyRange(const DoubleRange.of(end: 2),
-              included: [0.0, 1.0], excluded: [-1.0, 2.0]);
-          verifyRange(const DoubleRange.of(start: 2, end: 0),
-              included: [2.0, 1.0], excluded: [0.0, 3.0]);
-          verifyRange(const DoubleRange.of(start: 2, end: 3, step: 0.5),
-              included: [2.0, 2.5], excluded: [0.5, 3.0]);
+        test('decimal positive step size', () {
+          expect(
+              const DoubleRange.of(start: 1, end: 2, step: 0.1), hasLength(10));
+          expect(
+              const DoubleRange.of(start: 1, end: 2, step: 0.2), hasLength(5));
+          expect(
+              const DoubleRange.of(start: 1, end: 2, step: 0.3), hasLength(4));
+          expect(
+              const DoubleRange.of(start: 1, end: 2, step: 0.4), hasLength(3));
+          expect(
+              const DoubleRange.of(start: 1, end: 2, step: 0.5), hasLength(2));
+          expect(
+              const DoubleRange.of(start: 1, end: 2, step: 0.6), hasLength(2));
+          expect(
+              const DoubleRange.of(start: 1, end: 2, step: 0.7), hasLength(2));
+          expect(
+              const DoubleRange.of(start: 1, end: 2, step: 0.8), hasLength(2));
+          expect(
+              const DoubleRange.of(start: 1, end: 2, step: 0.9), hasLength(2));
+          expect(
+              const DoubleRange.of(start: 1, end: 2, step: 1.0), hasLength(1));
+          expect(
+              const DoubleRange.of(start: 1, end: 2, step: 1.1), hasLength(1));
+          expect(
+              const DoubleRange.of(start: 1, end: 2, step: 1.2), hasLength(1));
+        });
+        test('decimal negative step size', () {
+          expect(const DoubleRange.of(start: 2, end: 1, step: -0.1),
+              hasLength(10));
+          expect(
+              const DoubleRange.of(start: 2, end: 1, step: -0.2), hasLength(5));
+          expect(
+              const DoubleRange.of(start: 2, end: 1, step: -0.3), hasLength(4));
+          expect(
+              const DoubleRange.of(start: 2, end: 1, step: -0.4), hasLength(3));
+          expect(
+              const DoubleRange.of(start: 2, end: 1, step: -0.5), hasLength(2));
+          expect(
+              const DoubleRange.of(start: 2, end: 1, step: -0.6), hasLength(2));
+          expect(
+              const DoubleRange.of(start: 2, end: 1, step: -0.7), hasLength(2));
+          expect(
+              const DoubleRange.of(start: 2, end: 1, step: -0.8), hasLength(2));
+          expect(
+              const DoubleRange.of(start: 2, end: 1, step: -0.9), hasLength(2));
+          expect(
+              const DoubleRange.of(start: 2, end: 1, step: -1.0), hasLength(1));
+          expect(
+              const DoubleRange.of(start: 2, end: 1, step: -1.1), hasLength(1));
+          expect(
+              const DoubleRange.of(start: 2, end: 1, step: -1.2), hasLength(1));
+        });
+        test('fractional positive step size', () {
+          expect(const DoubleRange.of(start: 1, end: 2, step: 1 / 1),
+              hasLength(1));
+          expect(const DoubleRange.of(start: 1, end: 2, step: 1 / 2),
+              hasLength(2));
+          expect(const DoubleRange.of(start: 1, end: 2, step: 1 / 3),
+              hasLength(3));
+          expect(const DoubleRange.of(start: 1, end: 2, step: 1 / 4),
+              hasLength(4));
+          expect(const DoubleRange.of(start: 1, end: 2, step: 1 / 5),
+              hasLength(5));
+          expect(const DoubleRange.of(start: 1, end: 2, step: 1 / 6),
+              hasLength(6));
+          expect(const DoubleRange.of(start: 1, end: 2, step: 1 / 7),
+              hasLength(7));
+          expect(const DoubleRange.of(start: 1, end: 2, step: 1 / 8),
+              hasLength(8));
+          expect(const DoubleRange.of(start: 1, end: 2, step: 1 / 9),
+              hasLength(9));
+          expect(const DoubleRange.of(start: 1, end: 2, step: 1 / 10),
+              hasLength(10));
+        });
+        test('fractional negative step size', () {
+          expect(const DoubleRange.of(start: 2, end: 1, step: -1 / 1),
+              hasLength(1));
+          expect(const DoubleRange.of(start: 2, end: 1, step: -1 / 2),
+              hasLength(2));
+          expect(const DoubleRange.of(start: 2, end: 1, step: -1 / 3),
+              hasLength(3));
+          expect(const DoubleRange.of(start: 2, end: 1, step: -1 / 4),
+              hasLength(4));
+          expect(const DoubleRange.of(start: 2, end: 1, step: -1 / 5),
+              hasLength(5));
+          expect(const DoubleRange.of(start: 2, end: 1, step: -1 / 6),
+              hasLength(6));
+          expect(const DoubleRange.of(start: 2, end: 1, step: -1 / 7),
+              hasLength(7));
+          expect(const DoubleRange.of(start: 2, end: 1, step: -1 / 8),
+              hasLength(8));
+          expect(const DoubleRange.of(start: 2, end: 1, step: -1 / 9),
+              hasLength(9));
+          expect(const DoubleRange.of(start: 2, end: 1, step: -1 / 10),
+              hasLength(10));
         });
         test('shorthand', () {
           verifyRange(0.0.to(3.0),
@@ -3757,9 +3883,24 @@ void main() {
               included: toBigIntList([5, 3]),
               excluded: toBigIntList([4, 2, 1]));
         });
+        test('length', () {
+          verifyRange(BigIntRange.length(0),
+              included: toBigIntList([]), excluded: toBigIntList([0]));
+          verifyRange(BigIntRange.length(1),
+              included: toBigIntList([0]), excluded: toBigIntList([-1, 1]));
+          verifyRange(BigIntRange.length(2),
+              included: toBigIntList([0, 1]), excluded: toBigIntList([-1, 2]));
+          verifyRange(BigIntRange.length(2, start: BigInt.from(10)),
+              included: toBigIntList([10, 11]),
+              excluded: toBigIntList([-1, 2]));
+          verifyRange(BigIntRange.length(2, step: BigInt.from(2)),
+              included: toBigIntList([0, 2]),
+              excluded: toBigIntList([-1, 1, 3]));
+          verifyRange(BigIntRange.length(2, step: BigInt.from(-2)),
+              included: toBigIntList([0, -2]),
+              excluded: toBigIntList([-3, -1, 1]));
+        });
         test('1 argument', () {
-          verifyRange(BigIntRange(BigInt.from(-1)),
-              included: <BigInt>[], excluded: toBigIntList([-1, 0, 1]));
           verifyRange(BigIntRange(BigInt.zero),
               included: <BigInt>[], excluded: toBigIntList([-1, 0, 1]));
           verifyRange(BigIntRange(BigInt.one),

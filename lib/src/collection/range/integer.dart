@@ -10,6 +10,9 @@ import '../range.dart';
 ///       ...
 ///
 class IntegerRange extends Range<int> {
+  /// The empty range.
+  static const empty = IntegerRange._(0, 0, 1, 0);
+
   /// Creates an arithmetic progressions of [int] values.
   ///
   /// The constructor called without any arguments returns the empty range.
@@ -17,7 +20,7 @@ class IntegerRange extends Range<int> {
   ///
   /// The constructor called with one argument returns the range of all
   /// numbers up to, but excluding the end. For example, `IntegerRange(3)`
-  /// yields `<int>[0, 1, 2]`. Negative arguments yield an empty sequence.
+  /// yields `<int>[0, 1, 2]`.
   ///
   /// The constructor called with two arguments returns the range between
   /// the two numbers (including the start, but excluding the end). For example,
@@ -42,18 +45,14 @@ class IntegerRange extends Range<int> {
     throw ArgumentError('Invalid range: $a, $b, $c');
   }
 
-  /// The empty range.
-  static const empty = IntegerRange._c4(0, 0, 1, 0);
-
   /// Const constructor to create an arithmetic progressions of [int] values
   /// between [start] (inclusive) and [end] (exclusive); and a step-value
   /// [step].
   const IntegerRange.of({int start = 0, int end = 0, int? step})
-      : this._c3(start, end, step ?? (start <= end ? 1 : -1));
+      : this._of1(start, end, step ?? (start <= end ? 1 : -1));
 
-  // Internal const-constructor that infers the length.
-  const IntegerRange._c3(int start, int end, int step)
-      : this._c4(
+  const IntegerRange._of1(int start, int end, int step)
+      : this._(
             start,
             end,
             step,
@@ -63,9 +62,18 @@ class IntegerRange extends Range<int> {
                     ? 1 + (start - end - 1) ~/ -step
                     : 0);
 
-  // Internal const-constructor that initializes all state.
-  const IntegerRange._c4(this.start, this.end, this.step, this.length)
-      : assert(step != 0, 'step must not be zero');
+  /// Const constructor to create an arithmetic progression of [int] values.
+  /// The resulting [Range] is of the given [length], starts at [start], and
+  /// uses the step-value [step].
+  const IntegerRange.length(int length, {int start = 0, int step = 1})
+      : this._(start, start + length * step, step, length);
+
+  // Internal const-constructor that initializes the state.
+  const IntegerRange._(this.start, this.end, this.step, this.length)
+      : assert(step != 0, '`step` must not be zero'),
+        assert(step < 0 || start <= end, '`step` must be positive'),
+        assert(step > 0 || start >= end, '`step` must be negative'),
+        assert(0 <= length, '`length` must be positive');
 
   @override
   final int start;
@@ -100,13 +108,13 @@ class IntegerRange extends Range<int> {
   }
 
   @override
-  IntegerRange get reversed => IntegerRange._c4(
-      start + (length - 1) * step, start - step, -step, length);
+  IntegerRange get reversed =>
+      IntegerRange._(start + (length - 1) * step, start - step, -step, length);
 
   @override
   IntegerRange getRange(int startIndex, int endIndex) {
     RangeError.checkValidRange(startIndex, endIndex, length);
-    return IntegerRange._c4(start + startIndex * step, start + endIndex * step,
+    return IntegerRange._(start + startIndex * step, start + endIndex * step,
         step, endIndex - startIndex);
   }
 }
@@ -135,8 +143,6 @@ extension IndicesIterableExtension on Iterable<Object?> {
   ///     [0, 2]
   ///
   Range<int> indices({int step = 1}) => step > 0
-      ? IntegerRange._c3(0, length, step)
-      : step < 0
-          ? IntegerRange._c3(length - 1, -1, step)
-          : throw ArgumentError.value(step, 'step');
+      ? IntegerRange.of(start: 0, end: length, step: step)
+      : IntegerRange.of(start: length - 1, end: -1, step: step);
 }

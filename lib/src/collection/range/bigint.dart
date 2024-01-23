@@ -10,6 +10,9 @@ import '../range.dart';
 ///       ...
 ///
 class BigIntRange extends Range<BigInt> {
+  /// The empty range.
+  static final empty = BigIntRange._(BigInt.zero, BigInt.zero, BigInt.one, 0);
+
   /// Creates an arithmetic progressions of [BigInt] values.
   ///
   /// The constructor called without any arguments returns the empty range.
@@ -18,8 +21,7 @@ class BigIntRange extends Range<BigInt> {
   /// The constructor called with one argument returns the range of all
   /// numbers up to, but excluding the end. For example,
   /// `BigIntRange(BigInt.from(3))` yields
-  /// `<BigInt>[BigInt.zero, BigInt.one, BigInt.two]`. Negative arguments yield
-  /// an empty sequence.
+  /// `<BigInt>[BigInt.zero, BigInt.one, BigInt.two]`.
   ///
   /// The constructor called with two arguments returns the range between
   /// the two numbers (including the start, but excluding the end). For example,
@@ -48,9 +50,6 @@ class BigIntRange extends Range<BigInt> {
     throw ArgumentError('Invalid range: $a, $b, $c');
   }
 
-  /// The empty range.
-  static final empty = BigIntRange._c4(BigInt.zero, BigInt.zero, BigInt.one, 0);
-
   /// Const constructor to create an arithmetic progressions of [int] values
   /// between [start] (inclusive) and [end] (exclusive); and a step-value
   /// [step].
@@ -58,11 +57,10 @@ class BigIntRange extends Range<BigInt> {
     start ??= BigInt.zero;
     end ??= BigInt.zero;
     step ??= start <= end ? BigInt.one : -BigInt.one;
-    return BigIntRange._c3(start, end, step);
+    return BigIntRange._of1(start, end, step);
   }
 
-  // Internal const-constructor that infers the length.
-  factory BigIntRange._c3(BigInt start, BigInt end, BigInt step) {
+  factory BigIntRange._of1(BigInt start, BigInt end, BigInt step) {
     final length = BigInt.zero < step && start < end
         ? BigInt.one + (end - start - BigInt.one) ~/ step
         : BigInt.zero > step && start > end
@@ -71,15 +69,25 @@ class BigIntRange extends Range<BigInt> {
     if (!length.isValidInt) {
       throw ArgumentError.value(length, 'length', 'Range exceeds valid length');
     }
-    return BigIntRange._c4(start, end, step, length.toInt());
+    return BigIntRange._(start, end, step, length.toInt());
+  }
+
+  /// Const constructor to create an arithmetic progression of [BigInt] values.
+  /// The resulting [Range] is of the given [length], starts at [start], and
+  /// uses the step-value [step].
+  factory BigIntRange.length(int length, {BigInt? start, BigInt? step}) {
+    start ??= BigInt.zero;
+    step ??= BigInt.one;
+    return BigIntRange._(
+        start, start + BigInt.from(length) * step, step, length);
   }
 
   // Internal const-constructor that initializes all state.
-  BigIntRange._c4(this.start, this.end, this.step, this.length) {
-    if (step == BigInt.zero) {
-      throw ArgumentError.value(step, 'step', 'step must not be zero');
-    }
-  }
+  BigIntRange._(this.start, this.end, this.step, this.length)
+      : assert(step != BigInt.zero, '`step` must not be zero'),
+        assert(step < BigInt.zero || start <= end, '`step` must be positive'),
+        assert(step > BigInt.zero || start >= end, '`step` must be negative'),
+        assert(0 <= length, '`length` must be positive');
 
   @override
   final BigInt start;
@@ -114,13 +122,13 @@ class BigIntRange extends Range<BigInt> {
   }
 
   @override
-  BigIntRange get reversed => BigIntRange._c4(
+  BigIntRange get reversed => BigIntRange._(
       start + BigInt.from(length - 1) * step, start - step, -step, length);
 
   @override
   BigIntRange getRange(int startIndex, int endIndex) {
     RangeError.checkValidRange(startIndex, endIndex, length);
-    return BigIntRange._c4(start + BigInt.from(startIndex) * step,
+    return BigIntRange._(start + BigInt.from(startIndex) * step,
         start + BigInt.from(endIndex) * step, step, endIndex - startIndex);
   }
 }
