@@ -31,7 +31,8 @@ abstract class BitList extends ListBase<bool> {
   /// function for each index.
   factory BitList.generate(int length, bool Function(int index) generator,
           {bool growable = false}) =>
-      BitList.of(IntegerRange(length).map(generator), growable: growable);
+      BitList.of(IntegerRange.length(length).map(generator),
+          growable: growable);
 
   /// Constructs a new list from a given [Iterable] of booleans.
   factory BitList.of(Iterable<bool> other, {bool growable = false}) {

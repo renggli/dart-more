@@ -23,8 +23,8 @@ extension RandomGraphFactoryExtension<V, E> on GraphFactory<V, E> {
     }
     if (probability > 0) {
       final edges = isDirected
-          ? IntegerRange(vertexCount).permutations(2)
-          : IntegerRange(vertexCount).combinations(2);
+          ? IntegerRange.length(vertexCount).permutations(2)
+          : IntegerRange.length(vertexCount).combinations(2);
       for (final edge in edges) {
         if (random.nextDouble() < probability) {
           builder.addEdgeIndex(edge[0], edge[1]);
