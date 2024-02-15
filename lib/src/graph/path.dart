@@ -23,10 +23,9 @@ class Path<V, E> with ToStringPrinter {
   /// Internal constructor.
   Path._({required Iterable<V> vertices, required Iterable<E> values})
       : vertices = vertices.toList(growable: false),
-        values = values.toList(growable: false) {
-    assert(vertices.isNotEmpty);
-    assert(vertices.length - 1 == values.length);
-  }
+        values = values.toList(growable: false),
+        assert(vertices.isNotEmpty),
+        assert(vertices.length - 1 == values.length);
 
   /// The vertices on this path.
   final List<V> vertices;
