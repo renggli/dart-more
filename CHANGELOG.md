@@ -1,5 +1,14 @@
 # Changelog
 
+## 4.3.0 (unpublished)
+- Dart 3.4 requirement.
+- Make `IntegerRange` and `DoubleRange` const constructable.
+- Numerous improvements to the Graph library:
+  - Add `Graph.where(edgePredicate)` for filtering by edge.
+  - Add Prim's minimum spanning tree.
+- Simplify the `Interval` implementation to only support closed intervals.
+- Add a `Fenwick` and `Interval` trees.
+
 ## 4.2.0
 - Improved `Iterable.index` to more common argument names, and support `step`.
 - Add `also` scope operator, which significantly improves the possibility to write one-liners.
