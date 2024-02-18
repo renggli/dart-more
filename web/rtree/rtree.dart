@@ -1,23 +1,23 @@
-import 'dart:html';
+import 'dart:js_interop';
 import 'dart:math';
 
 import 'package:more/collection.dart';
+import 'package:web/web.dart';
 
 const guttmann = 'guttmann_';
 
-final select = querySelector('#select') as SelectElement;
-final clear = querySelector('#clear') as ButtonElement;
-final random = querySelector('#random') as ButtonElement;
-final canvas = querySelector('#canvas') as CanvasElement;
+final select = document.querySelector('#select') as HTMLSelectElement;
+final clear = document.querySelector('#clear') as HTMLButtonElement;
+final random = document.querySelector('#random') as HTMLButtonElement;
+final canvas = document.querySelector('#canvas') as HTMLCanvasElement;
 
 var tree = createTree();
 var index = 0;
 
 RTree<int> createTree() {
-  final name = select.value ?? '';
-  if (name.startsWith(guttmann)) {
+  if (select.value.startsWith(guttmann)) {
     final values =
-        name.removePrefix(guttmann).split('_').map(int.parse).toList();
+        select.value.removePrefix(guttmann).split('_').map(int.parse).toList();
     return RTree<int>.guttmann(minEntries: values[0], maxEntries: values[1]);
   }
   throw StateError('Invalid tree type: ${select.value}');
@@ -55,8 +55,8 @@ void addPoints(MouseEvent event) {
 
 void addPoint(MouseEvent event) {
   final point = Bounds.fromPoint([
-    event.offset.x.toDouble(),
-    event.offset.y.toDouble(),
+    event.offsetX.toDouble(),
+    event.offsetY.toDouble(),
   ]);
   tree.insert(point, index++);
   update();
@@ -79,14 +79,14 @@ void update() {
   // Draw all the entries.
   for (final entry in tree.traverse((node) => node.entries)) {
     if (entry.isLeaf) {
-      context.fillStyle = 'black';
+      context.fillStyle = 'black'.toJS;
       context.textAlign = 'center';
       context.textBaseline = 'middle';
       context.fillText(
           entry.data.toString(), entry.bounds.min[0], entry.bounds.min[1]);
     } else {
-      context.fillStyle = 'gray';
-      context.strokeStyle = 'gray';
+      context.fillStyle = 'gray'.toJS;
+      context.strokeStyle = 'gray'.toJS;
       context.strokeRect(
         entry.bounds.min[0] - 5,
         entry.bounds.min[1] - 5,
