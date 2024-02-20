@@ -1,6 +1,6 @@
 // AUTO-GENERATED CODE: DO NOT EDIT
 
-// https://www.unicode.org/Public/15.1.0/ucd/UnicodeData.txt
+// https://www.unicode.org/Public/16.0.0/ucd/UnicodeData.txt
 
 /// A class defining different numeral systems for number printing.
 ///
@@ -170,6 +170,18 @@ abstract class NumeralSystem {
     '𐴸',
     '𐴹'
   ];
+  static const garay = [
+    '𐵀',
+    '𐵁',
+    '𐵂',
+    '𐵃',
+    '𐵄',
+    '𐵅',
+    '𐵆',
+    '𐵇',
+    '𐵈',
+    '𐵉'
+  ];
   static const brahmi = [
     '𑁦',
     '𑁧',
@@ -278,6 +290,30 @@ abstract class NumeralSystem {
     '𑛈',
     '𑛉'
   ];
+  static const myanmarPao = [
+    '𑛐',
+    '𑛑',
+    '𑛒',
+    '𑛓',
+    '𑛔',
+    '𑛕',
+    '𑛖',
+    '𑛗',
+    '𑛘',
+    '𑛙'
+  ];
+  static const myanmarEasternPwoKaren = [
+    '𑛚',
+    '𑛛',
+    '𑛜',
+    '𑛝',
+    '𑛞',
+    '𑛟',
+    '𑛠',
+    '𑛡',
+    '𑛢',
+    '𑛣'
+  ];
   static const ahom = [
     '𑜰',
     '𑜱',
@@ -313,6 +349,18 @@ abstract class NumeralSystem {
     '𑥗',
     '𑥘',
     '𑥙'
+  ];
+  static const sunuwar = [
+    '𑯰',
+    '𑯱',
+    '𑯲',
+    '𑯳',
+    '𑯴',
+    '𑯵',
+    '𑯶',
+    '𑯷',
+    '𑯸',
+    '𑯹'
   ];
   static const bhaiksuki = [
     '𑱐',
@@ -362,6 +410,18 @@ abstract class NumeralSystem {
     '𑽘',
     '𑽙'
   ];
+  static const gurungKhema = [
+    '𖄰',
+    '𖄱',
+    '𖄲',
+    '𖄳',
+    '𖄴',
+    '𖄵',
+    '𖄶',
+    '𖄷',
+    '𖄸',
+    '𖄹'
+  ];
   static const mro = [
     '𖩠',
     '𖩡',
@@ -397,6 +457,30 @@ abstract class NumeralSystem {
     '𖭗',
     '𖭘',
     '𖭙'
+  ];
+  static const kiratRai = [
+    '𖵰',
+    '𖵱',
+    '𖵲',
+    '𖵳',
+    '𖵴',
+    '𖵵',
+    '𖵶',
+    '𖵷',
+    '𖵸',
+    '𖵹'
+  ];
+  static const outlined = [
+    '𜳰',
+    '𜳱',
+    '𜳲',
+    '𜳳',
+    '𜳴',
+    '𜳵',
+    '𜳶',
+    '𜳷',
+    '𜳸',
+    '𜳹'
   ];
   static const mathematicalBold = [
     '𝟎',
@@ -493,6 +577,18 @@ abstract class NumeralSystem {
     '𞓷',
     '𞓸',
     '𞓹'
+  ];
+  static const olOnal = [
+    '𞗱',
+    '𞗲',
+    '𞗳',
+    '𞗴',
+    '𞗵',
+    '𞗶',
+    '𞗷',
+    '𞗸',
+    '𞗹',
+    '𞗺'
   ];
   static const adlam = [
     '𞥐',

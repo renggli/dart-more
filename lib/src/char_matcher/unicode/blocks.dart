@@ -1,6 +1,6 @@
 // AUTO-GENERATED CODE: DO NOT EDIT
 
-// https://www.unicode.org/Public/15.1.0/ucd/Blocks.txt
+// https://www.unicode.org/Public/16.0.0/ucd/Blocks.txt
 
 import '../basic/range.dart';
 
@@ -190,6 +190,7 @@ const osage = RangeCharMatcher(0x104b0, 0x104ff);
 const elbasan = RangeCharMatcher(0x10500, 0x1052f);
 const caucasianAlbanian = RangeCharMatcher(0x10530, 0x1056f);
 const vithkuqi = RangeCharMatcher(0x10570, 0x105bf);
+const todhri = RangeCharMatcher(0x105c0, 0x105ff);
 const linearA = RangeCharMatcher(0x10600, 0x1077f);
 const latinExtendedF = RangeCharMatcher(0x10780, 0x107bf);
 const cypriotSyllabary = RangeCharMatcher(0x10800, 0x1083f);
@@ -212,6 +213,7 @@ const psalterPahlavi = RangeCharMatcher(0x10b80, 0x10baf);
 const oldTurkic = RangeCharMatcher(0x10c00, 0x10c4f);
 const oldHungarian = RangeCharMatcher(0x10c80, 0x10cff);
 const hanifiRohingya = RangeCharMatcher(0x10d00, 0x10d3f);
+const garay = RangeCharMatcher(0x10d40, 0x10d8f);
 const rumiNumeralSymbols = RangeCharMatcher(0x10e60, 0x10e7f);
 const yezidi = RangeCharMatcher(0x10e80, 0x10ebf);
 const arabicExtendedC = RangeCharMatcher(0x10ec0, 0x10eff);
@@ -231,12 +233,14 @@ const khojki = RangeCharMatcher(0x11200, 0x1124f);
 const multani = RangeCharMatcher(0x11280, 0x112af);
 const khudawadi = RangeCharMatcher(0x112b0, 0x112ff);
 const grantha = RangeCharMatcher(0x11300, 0x1137f);
+const tuluTigalari = RangeCharMatcher(0x11380, 0x113ff);
 const newa = RangeCharMatcher(0x11400, 0x1147f);
 const tirhuta = RangeCharMatcher(0x11480, 0x114df);
 const siddham = RangeCharMatcher(0x11580, 0x115ff);
 const modi = RangeCharMatcher(0x11600, 0x1165f);
 const mongolianSupplement = RangeCharMatcher(0x11660, 0x1167f);
 const takri = RangeCharMatcher(0x11680, 0x116cf);
+const myanmarExtendedC = RangeCharMatcher(0x116d0, 0x116ff);
 const ahom = RangeCharMatcher(0x11700, 0x1174f);
 const dogra = RangeCharMatcher(0x11800, 0x1184f);
 const warangCiti = RangeCharMatcher(0x118a0, 0x118ff);
@@ -248,6 +252,7 @@ const unifiedCanadianAboriginalSyllabicsExtendedA =
     RangeCharMatcher(0x11ab0, 0x11abf);
 const pauCinHau = RangeCharMatcher(0x11ac0, 0x11aff);
 const devanagariExtendedA = RangeCharMatcher(0x11b00, 0x11b5f);
+const sunuwar = RangeCharMatcher(0x11bc0, 0x11bff);
 const bhaiksuki = RangeCharMatcher(0x11c00, 0x11c6f);
 const marchen = RangeCharMatcher(0x11c70, 0x11cbf);
 const masaramGondi = RangeCharMatcher(0x11d00, 0x11d5f);
@@ -262,12 +267,15 @@ const earlyDynasticCuneiform = RangeCharMatcher(0x12480, 0x1254f);
 const cyproMinoan = RangeCharMatcher(0x12f90, 0x12fff);
 const egyptianHieroglyphs = RangeCharMatcher(0x13000, 0x1342f);
 const egyptianHieroglyphFormatControls = RangeCharMatcher(0x13430, 0x1345f);
+const egyptianHieroglyphsExtendedA = RangeCharMatcher(0x13460, 0x143ff);
 const anatolianHieroglyphs = RangeCharMatcher(0x14400, 0x1467f);
+const gurungKhema = RangeCharMatcher(0x16100, 0x1613f);
 const bamumSupplement = RangeCharMatcher(0x16800, 0x16a3f);
 const mro = RangeCharMatcher(0x16a40, 0x16a6f);
 const tangsa = RangeCharMatcher(0x16a70, 0x16acf);
 const bassaVah = RangeCharMatcher(0x16ad0, 0x16aff);
 const pahawhHmong = RangeCharMatcher(0x16b00, 0x16b8f);
+const kiratRai = RangeCharMatcher(0x16d40, 0x16d7f);
 const medefaidrin = RangeCharMatcher(0x16e40, 0x16e9f);
 const miao = RangeCharMatcher(0x16f00, 0x16f9f);
 const ideographicSymbolsAndPunctuation = RangeCharMatcher(0x16fe0, 0x16fff);
@@ -282,6 +290,7 @@ const smallKanaExtension = RangeCharMatcher(0x1b130, 0x1b16f);
 const nushu = RangeCharMatcher(0x1b170, 0x1b2ff);
 const duployan = RangeCharMatcher(0x1bc00, 0x1bc9f);
 const shorthandFormatControls = RangeCharMatcher(0x1bca0, 0x1bcaf);
+const symbolsForLegacyComputingSupplement = RangeCharMatcher(0x1cc00, 0x1cebf);
 const znamennyMusicalNotation = RangeCharMatcher(0x1cf00, 0x1cfcf);
 const byzantineMusicalSymbols = RangeCharMatcher(0x1d000, 0x1d0ff);
 const musicalSymbols = RangeCharMatcher(0x1d100, 0x1d1ff);
@@ -299,6 +308,7 @@ const nyiakengPuachueHmong = RangeCharMatcher(0x1e100, 0x1e14f);
 const toto = RangeCharMatcher(0x1e290, 0x1e2bf);
 const wancho = RangeCharMatcher(0x1e2c0, 0x1e2ff);
 const nagMundari = RangeCharMatcher(0x1e4d0, 0x1e4ff);
+const olOnal = RangeCharMatcher(0x1e5d0, 0x1e5ff);
 const ethiopicExtendedB = RangeCharMatcher(0x1e7e0, 0x1e7ff);
 const mendeKikakui = RangeCharMatcher(0x1e800, 0x1e8df);
 const adlam = RangeCharMatcher(0x1e900, 0x1e95f);

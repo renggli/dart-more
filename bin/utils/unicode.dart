@@ -5,7 +5,7 @@ import 'package:more/collection.dart';
 import 'package:more/number.dart';
 
 /// Version of the data.
-const unicodeVersion = '15.1.0';
+const unicodeVersion = '16.0.0';
 
 /// Last unicode code-point.
 const unicodeMaxCodePoint = 0x10ffff;
