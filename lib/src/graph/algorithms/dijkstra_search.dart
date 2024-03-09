@@ -61,9 +61,9 @@ class _DijkstraSearchIterator<V> implements Iterator<Path<V, num>> {
         final total = sourceState.total + value;
         final targetState = states[target];
         if (targetState == null || total < targetState.total) {
+          targetState?.isObsolete = true;
           final state = _State<V>(
               vertex: target, parent: sourceState, value: value, total: total);
-          targetState?.isObsolete = true;
           states[target] = state;
           queue.add(state);
         }
