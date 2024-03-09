@@ -20,7 +20,7 @@ abstract class BitList extends ListBase<bool> {
   /// Constructs a bit list of the given [length], and initializes the value at
   /// each position with [fill].
   factory BitList.filled(int length, bool fill, {bool growable = false}) {
-    final buffer = Uint32List((length + bitOffset) >> bitShift);
+    final buffer = Uint32List((length + bitOffset) >>> bitShift);
     if (fill) buffer.fillRange(0, buffer.length, bitMask);
     return growable
         ? GrowableBitList(buffer, length)
@@ -78,7 +78,7 @@ abstract class BitList extends ListBase<bool> {
   @pragma('vm:prefer-inline')
   @pragma('dart2js:tryInline')
   bool getUnchecked(int index) =>
-      (buffer[index >> bitShift] & bitSetMask[index & bitOffset]) != 0;
+      (buffer[index >>> bitShift] & bitSetMask[index & bitOffset]) != 0;
 
   /// Sets the [value] of the bit with the given [index].
   @override
@@ -92,8 +92,8 @@ abstract class BitList extends ListBase<bool> {
   @pragma('vm:prefer-inline')
   @pragma('dart2js:tryInline')
   void setUnchecked(int index, bool value) => value
-      ? buffer[index >> bitShift] |= bitSetMask[index & bitOffset]
-      : buffer[index >> bitShift] &= bitClearMask[index & bitOffset];
+      ? buffer[index >>> bitShift] |= bitSetMask[index & bitOffset]
+      : buffer[index >>> bitShift] &= bitClearMask[index & bitOffset];
 
   @override
   BitList operator +(List<bool> other) {
@@ -123,7 +123,7 @@ abstract class BitList extends ListBase<bool> {
   @pragma('vm:prefer-inline')
   @pragma('dart2js:tryInline')
   void flipUnchecked(int index) =>
-      buffer[index >> bitShift] ^= bitSetMask[index & bitOffset];
+      buffer[index >>> bitShift] ^= bitSetMask[index & bitOffset];
 
   /// Counts the number of bits set to [expected].
   int count({bool expected = true}) =>
@@ -134,8 +134,8 @@ abstract class BitList extends ListBase<bool> {
   int countRange(int start, int end, {bool expected = true}) {
     RangeError.checkValidRange(start, end, length);
     if (start == end) return 0;
-    final startIndex = start >> bitShift, startBit = start & bitOffset;
-    final endIndex = (end - 1) >> bitShift, endBit = (end - 1) & bitOffset;
+    final startIndex = start >>> bitShift, startBit = start & bitOffset;
+    final endIndex = (end - 1) >>> bitShift, endBit = (end - 1) & bitOffset;
     var result = 0;
     if (startIndex == endIndex) {
       result += (buffer[startIndex] &
@@ -232,7 +232,7 @@ abstract class BitList extends ListBase<bool> {
     if (amount == 0 || length == 0) {
       return BitList.of(this);
     }
-    final shift = amount >> bitShift;
+    final shift = amount >>> bitShift;
     final offset = amount & bitOffset;
     final result = BitList(length);
     if (offset == 0) {
@@ -261,7 +261,7 @@ abstract class BitList extends ListBase<bool> {
     if (amount == 0 || length == 0) {
       return BitList.of(this);
     }
-    final shift = amount >> bitShift;
+    final shift = amount >>> bitShift;
     final offset = amount & bitOffset;
     final result = BitList(length);
     if (offset == 0) {
@@ -304,7 +304,7 @@ class GrowableBitList extends BitList {
   @override
   set length(int length) {
     RangeError.checkNotNegative(length, 'length');
-    final requested = (length + bitOffset) >> bitShift;
+    final requested = (length + bitOffset) >>> bitShift;
     if (buffer.length < requested) {
       final newBuffer = Uint32List(max(2 * buffer.length, requested));
       newBuffer.setRange(0, buffer.length, buffer);
@@ -414,8 +414,8 @@ const List<int> bitClearMask = [
 
 void _fillRange(Uint32List buffer, int start, int end, bool value) {
   if (start == end) return;
-  final startIndex = start >> bitShift, startBit = start & bitOffset;
-  final endIndex = (end - 1) >> bitShift, endBit = (end - 1) & bitOffset;
+  final startIndex = start >>> bitShift, startBit = start & bitOffset;
+  final endIndex = (end - 1) >>> bitShift, endBit = (end - 1) & bitOffset;
   if (value) {
     if (startIndex == endIndex) {
       buffer[startIndex] |= ((1 << (endBit - startBit + 1)) - 1) << startBit;

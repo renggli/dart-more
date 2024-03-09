@@ -9,12 +9,11 @@ extension CopyGraphExtension<V, E> on Graph<V, E> {
     final result = isDirected
         ? Graph<V, E>.directed(vertexStrategy: vertexStrategy)
         : Graph<V, E>.undirected(vertexStrategy: vertexStrategy);
-    if (!empty) {
-      for (final vertex in vertices) {
-        result.addVertex(vertex);
-        for (final edge in outgoingEdgesOf(vertex)) {
-          result.addEdge(edge.source, edge.target, value: edge.value);
-        }
+    if (empty) return result;
+    for (final vertex in vertices) {
+      result.addVertex(vertex);
+      for (final edge in outgoingEdgesOf(vertex)) {
+        result.addEdge(edge.source, edge.target, value: edge.value);
       }
     }
     return result;
