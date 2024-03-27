@@ -8,6 +8,18 @@ import 'package:more/math.dart';
 import 'package:test/test.dart';
 
 @optionalTypeArgs
+Matcher isGraph<E, V>({
+  dynamic vertices = anything,
+  dynamic edges = anything,
+  dynamic isDirected = anything,
+}) =>
+    isA<Graph<E, V>>()
+        .having((graph) => graph.vertices, 'vertices', vertices)
+        .having((graph) => graph.edges, 'edges', edges)
+        .having((graph) => graph.isDirected, 'isDirected', isDirected)
+        .having((graph) => graph.toString(), 'toString', contains('Graph'));
+
+@optionalTypeArgs
 Matcher isEdge<E, V>(
   dynamic source,
   dynamic target, {
@@ -2772,6 +2784,96 @@ void main() {
               isEdge('x', 'y', value: 1),
               isEdge('y', 'z', value: 1),
             ]));
+      });
+    });
+    group('strongly connected', () {
+      test('empty graph', () {
+        final graph = Graph<int, void>.directed();
+        expect(graph.stronglyConnected().vertices, isEmpty);
+        expect(graph.stronglyConnected().graphs, isEmpty);
+      });
+      test('single vertex', () {
+        final graph = Graph<int, void>.directed();
+        graph.addVertex(1);
+        expect(graph.stronglyConnected().vertices, {
+          {1},
+        });
+        expect(graph.stronglyConnected().graphs, {
+          isGraph<int, void>(vertices: [1], edges: isEmpty, isDirected: true),
+        });
+      });
+      test('self-connected vertex', () {
+        final graph = Graph<int, void>.directed();
+        graph.addEdge(1, 1);
+        expect(graph.stronglyConnected().vertices, {
+          {1},
+        });
+        expect(graph.stronglyConnected().graphs, {
+          isGraph<int, void>(
+              vertices: [1], edges: [isEdge(1, 1)], isDirected: true),
+        });
+      });
+      test('disconnected pair', () {
+        final graph = Graph<int, void>.directed();
+        graph.addVertex(1);
+        graph.addVertex(2);
+        expect(graph.stronglyConnected().vertices, {
+          {1},
+          {2},
+        });
+        expect(graph.stronglyConnected().graphs, {
+          isGraph<int, void>(vertices: [1], edges: isEmpty, isDirected: true),
+          isGraph<int, void>(vertices: [2], edges: isEmpty, isDirected: true),
+        });
+      });
+      test('weakly connected pair', () {
+        final graph = Graph<int, void>.directed();
+        graph.addEdge(2, 1);
+        expect(graph.stronglyConnected().vertices, {
+          {1},
+          {2},
+        });
+        expect(graph.stronglyConnected().graphs, {
+          isGraph<int, void>(vertices: [1], edges: isEmpty, isDirected: true),
+          isGraph<int, void>(vertices: [2], edges: isEmpty, isDirected: true),
+        });
+      });
+      test('strongly connected pair', () {
+        final graph = Graph<int, void>.directed();
+        graph.addEdge(1, 2);
+        graph.addEdge(2, 1);
+        expect(graph.stronglyConnected().vertices, {
+          {1, 2},
+        });
+        expect(graph.stronglyConnected().graphs, {
+          isGraph<int, void>(
+              vertices: [1, 2],
+              edges: [isEdge(1, 2), isEdge(2, 1)],
+              isDirected: true),
+        });
+      });
+      test('wikipedia', () {
+        final graph = Graph<int, void>.directed();
+        graph.addEdge(1, 5);
+        graph.addEdge(2, 1);
+        graph.addEdge(3, 2);
+        graph.addEdge(3, 4);
+        graph.addEdge(4, 3);
+        graph.addEdge(5, 2);
+        graph.addEdge(6, 2);
+        graph.addEdge(6, 5);
+        graph.addEdge(6, 7);
+        graph.addEdge(7, 3);
+        graph.addEdge(7, 6);
+        graph.addEdge(8, 4);
+        graph.addEdge(8, 7);
+        graph.addEdge(8, 8);
+        expect(graph.stronglyConnected().vertices, {
+          {1, 2, 5},
+          {3, 4},
+          {6, 7},
+          {8}
+        });
       });
     });
   });

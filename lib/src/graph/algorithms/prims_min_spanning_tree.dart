@@ -8,7 +8,7 @@ import '../strategy.dart';
 /// Prim's algorithm to find the minimum spanning tree in _O(E*log(V))_.
 ///
 /// See https://en.wikipedia.org/wiki/Prim%27s_algorithm.
-Graph<V, E> prims<V, E>(
+Graph<V, E> primsMinSpanningTree<V, E>(
   Graph<V, E> graph, {
   required V? startVertex,
   required num Function(V source, V target) edgeWeight,

@@ -1,8 +1,15 @@
 import 'package:collection/collection.dart';
 
 import '../../functional.dart';
-import '../../graph.dart';
+import 'algorithms/a_star_search.dart';
+import 'algorithms/dijkstra_search.dart';
+import 'algorithms/dinic_max_flow.dart';
 import 'algorithms/prims_min_spanning_tree.dart';
+import 'algorithms/stoer_wagner_min_cut.dart';
+import 'algorithms/tarjan_strongly_connected.dart';
+import 'graph.dart';
+import 'path.dart';
+import 'strategy.dart';
 
 extension AlgorithmsGraphExtension<V, E> on Graph<V, E> {
   /// Performs a search for the shortest path between [source] and [target].
@@ -114,12 +121,20 @@ extension AlgorithmsGraphExtension<V, E> on Graph<V, E> {
     num Function(V source, V target)? edgeWeight,
     StorageStrategy<V>? vertexStrategy,
   }) =>
-      prims(
+      primsMinSpanningTree<V, E>(
         this,
         startVertex: startVertex,
         edgeWeight: edgeWeight ?? _getDefaultEdgeValueOr(1),
         vertexStrategy: vertexStrategy ?? this.vertexStrategy,
       );
+
+  /// Returns the strongly connected components in this graph. The
+  /// implementation uses the Tarjan's algorithm and runs in linear time.
+  TarjanStronglyConnected<V, E> stronglyConnected({
+    StorageStrategy<V>? vertexStrategy,
+  }) =>
+      TarjanStronglyConnected<V, E>(this,
+          vertexStrategy: vertexStrategy ?? this.vertexStrategy);
 
   /// Internal helper that returns a function using the numeric edge value
   /// of this graph, or otherwise a constant value for each edge.
