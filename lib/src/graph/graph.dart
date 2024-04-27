@@ -63,6 +63,13 @@ abstract class Graph<V, E> with ToStringPrinter {
   /// Adds a [vertex] to this graph.
   void addVertex(V vertex);
 
+  /// Adds all [vertices] to this graph.
+  void addVertices(Iterable<V> vertices) {
+    for (final vertex in vertices) {
+      addVertex(vertex);
+    }
+  }
+
   /// Adds an edge between [source] and [target] vertex. Optionally associates
   /// the provided [value] with the edge. If the edge already exists, replaces
   /// the existing edge data.

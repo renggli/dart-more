@@ -1,26 +1,29 @@
 import 'package:collection/collection.dart' show PriorityQueue;
 
+import '../../comparator/modifiers/result_of.dart';
 import '../edge.dart';
 import '../graph.dart';
 import '../operations/copy.dart';
 import '../strategy.dart';
 
-/// Prim's algorithm to find the minimum spanning tree in _O(E*log(V))_.
+/// Prim's algorithm to find the spanning tree in _O(E*log(V))_.
 ///
 /// See https://en.wikipedia.org/wiki/Prim%27s_algorithm.
-Graph<V, E> primsMinSpanningTree<V, E>(
+Graph<V, E> primSpanningTree<V, E>(
   Graph<V, E> graph, {
   required V? startVertex,
   required num Function(V source, V target) edgeWeight,
+  required Comparator<num> weightComparator,
   required StorageStrategy<V> vertexStrategy,
 }) {
   // Create an empty copy of the graph.
   final result = graph.copy(empty: true);
-  if (graph.vertices.isEmpty) return result;
 
   // Queue for the shortest remaining edges.
-  final queue = PriorityQueue<_State<V, E>>(_stateCompare);
+  final queue = PriorityQueue<_State<V, E>>(
+      weightComparator.onResultOf((state) => state.cost));
   void addOutgoingEdgesToQueue(V vertex) {
+    result.addVertex(vertex);
     for (final edge in graph.outgoingEdgesOf(vertex)) {
       if (!result.vertices.contains(edge.target)) {
         queue.add(_State<V, E>(edge, edgeWeight(edge.source, edge.target)));
@@ -50,6 +53,3 @@ final class _State<V, E> {
   final Edge<V, E> edge;
   final num cost;
 }
-
-int _stateCompare<V, E>(_State<V, E> a, _State<V, E> b) =>
-    a.cost.compareTo(b.cost);

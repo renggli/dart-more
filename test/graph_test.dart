@@ -2,6 +2,7 @@ import 'dart:math';
 
 import 'package:meta/meta.dart';
 import 'package:more/collection.dart';
+import 'package:more/comparator.dart';
 import 'package:more/functional.dart';
 import 'package:more/graph.dart';
 import 'package:more/math.dart';
@@ -328,6 +329,13 @@ void main() {
           expect(graph.edges, isEmpty);
           expectInvariants(graph);
         });
+        test('add vertices', () {
+          final graph = Graph<String, int>.directed();
+          graph.addVertices(['Hello', 'World']);
+          expect(graph.vertices, ['Hello', 'World']);
+          expect(graph.edges, isEmpty);
+          expectInvariants(graph);
+        });
         test('remove vertex', () {
           final graph = Graph<String, int>.directed();
           graph.addVertex('Hello');
@@ -500,6 +508,13 @@ void main() {
           expect(graph.edges, isEmpty);
           expectInvariants(graph);
         });
+        test('add vertices', () {
+          final graph = Graph<String, int>.directed().reversed;
+          graph.addVertices(['Hello', 'World']);
+          expect(graph.vertices, ['Hello', 'World']);
+          expect(graph.edges, isEmpty);
+          expectInvariants(graph);
+        });
         test('remove vertex', () {
           final graph = Graph<String, int>.directed().reversed;
           graph.addVertex('Hello');
@@ -657,6 +672,13 @@ void main() {
           final graph = Graph<String, int>.undirected();
           graph.addVertex('Hello');
           expect(graph.vertices, ['Hello']);
+          expect(graph.edges, isEmpty);
+          expectInvariants(graph);
+        });
+        test('add vertices', () {
+          final graph = Graph<String, int>.undirected();
+          graph.addVertices(['Hello', 'World']);
+          expect(graph.vertices, ['Hello', 'World']);
           expect(graph.edges, isEmpty);
           expectInvariants(graph);
         });
@@ -2699,11 +2721,23 @@ void main() {
         expect(graph.minCut, throwsArgumentError);
       });
     });
-    group('min spanning tree', () {
+    group('spanning tree', () {
       test('empty', () {
         final graph = Graph<String, int>.undirected();
-        final spanning = graph.minSpanning();
+        final spanning = graph.spanningTree();
         expect(spanning.vertices, isEmpty);
+        expect(spanning.edges, isEmpty);
+      });
+      test('edgeless', () {
+        final graph = Graph<String, int>.undirected()..addVertices(['a', 'b']);
+        final spanning = graph.spanningTree();
+        expect(spanning.vertices, ['a', 'b']);
+        expect(spanning.edges, isEmpty);
+      });
+      test('edgeless (with start vertex)', () {
+        final graph = Graph<String, int>.undirected()..addVertices(['a', 'b']);
+        final spanning = graph.spanningTree(startVertex: 'a');
+        expect(spanning.vertices, ['a']);
         expect(spanning.edges, isEmpty);
       });
       test('undirected', () {
@@ -2712,7 +2746,24 @@ void main() {
           ..addEdge('a', 'd', value: 1)
           ..addEdge('b', 'd', value: 2)
           ..addEdge('d', 'c', value: 3);
-        final spanning = graph.minSpanning();
+        final spanning = graph.spanningTree();
+        expect(spanning.isDirected, isFalse);
+        expect(spanning.vertices, unorderedEquals(graph.vertices));
+        expect(
+            spanning.edges.unique(),
+            unorderedEquals([
+              isEdge('a', 'd', value: 1),
+              isEdge('a', 'b', value: 2),
+              isEdge('d', 'c', value: 3),
+            ]));
+      });
+      test('undirected (with start vertex)', () {
+        final graph = Graph<String, int>.undirected()
+          ..addEdge('a', 'b', value: 2)
+          ..addEdge('a', 'd', value: 1)
+          ..addEdge('b', 'd', value: 2)
+          ..addEdge('d', 'c', value: 3);
+        final spanning = graph.spanningTree(startVertex: 'a');
         expect(spanning.isDirected, isFalse);
         expect(spanning.vertices, unorderedEquals(graph.vertices));
         expect(
@@ -2723,13 +2774,49 @@ void main() {
               isEdge('d', 'c', value: 3),
             ]));
       });
+      test('maximum', () {
+        final graph = Graph<String, int>.undirected()
+          ..addEdge('a', 'b', value: 2)
+          ..addEdge('a', 'd', value: 1)
+          ..addEdge('b', 'd', value: 2)
+          ..addEdge('d', 'c', value: 3);
+        final spanning =
+            graph.spanningTree(weightComparator: reverseComparable<num>);
+        expect(spanning.isDirected, isFalse);
+        expect(spanning.vertices, unorderedEquals(graph.vertices));
+        expect(
+            spanning.edges.unique(),
+            unorderedEquals([
+              isEdge('a', 'b', value: 2),
+              isEdge('b', 'd', value: 2),
+              isEdge('d', 'c', value: 3),
+            ]));
+      });
+      test('maximum (with start vertex)', () {
+        final graph = Graph<String, int>.undirected()
+          ..addEdge('a', 'b', value: 2)
+          ..addEdge('a', 'd', value: 1)
+          ..addEdge('b', 'd', value: 2)
+          ..addEdge('d', 'c', value: 3);
+        final spanning = graph.spanningTree(
+            weightComparator: reverseComparable<num>, startVertex: 'a');
+        expect(spanning.isDirected, isFalse);
+        expect(spanning.vertices, unorderedEquals(graph.vertices));
+        expect(
+            spanning.edges.unique(),
+            unorderedEquals([
+              isEdge('a', 'b', value: 2),
+              isEdge('b', 'd', value: 2),
+              isEdge('d', 'c', value: 3),
+            ]));
+      });
       test('directed', () {
         final graph = Graph<String, int>.directed()
           ..addEdge('a', 'b', value: 2)
           ..addEdge('a', 'd', value: 1)
           ..addEdge('b', 'd', value: 2)
           ..addEdge('d', 'c', value: 3);
-        final spanning = graph.minSpanning();
+        final spanning = graph.spanningTree();
         expect(spanning.isDirected, isTrue);
         expect(spanning.vertices, unorderedEquals(graph.vertices));
         expect(
@@ -2751,7 +2838,30 @@ void main() {
           ..addEdge(3, 4, value: 5)
           ..addEdge(3, 6, value: 8)
           ..addEdge(4, 5, value: 9);
-        final spanning = graph.minSpanning(startVertex: 1);
+        final spanning = graph.spanningTree();
+        expect(spanning.vertices, unorderedEquals(graph.vertices));
+        expect(
+            spanning.edges.unique(),
+            unorderedEquals([
+              isEdge(1, 2, value: 2),
+              isEdge(1, 4, value: 1),
+              isEdge(1, 5, value: 4),
+              isEdge(2, 3, value: 3),
+              isEdge(2, 6, value: 7),
+            ]));
+      });
+      test('large (with start vertex)', () {
+        final graph = Graph<int, int>.undirected()
+          ..addEdge(1, 2, value: 2)
+          ..addEdge(1, 4, value: 1)
+          ..addEdge(1, 5, value: 4)
+          ..addEdge(2, 3, value: 3)
+          ..addEdge(2, 4, value: 3)
+          ..addEdge(2, 6, value: 7)
+          ..addEdge(3, 4, value: 5)
+          ..addEdge(3, 6, value: 8)
+          ..addEdge(4, 5, value: 9);
+        final spanning = graph.spanningTree(startVertex: 1);
         expect(spanning.vertices, unorderedEquals(graph.vertices));
         expect(
             spanning.edges.unique(),
@@ -2769,14 +2879,30 @@ void main() {
           ..addEdge('x', 'y', value: 1)
           ..addEdge('x', 'z', value: 5)
           ..addEdge('y', 'z', value: 1);
-        final spanning1 = graph.minSpanning(startVertex: 'a');
+        final spanning = graph.spanningTree();
+        expect(spanning.vertices, ['a', 'b', 'x', 'y', 'z']);
+        expect(
+            spanning.edges.unique(),
+            unorderedEquals([
+              isEdge('a', 'b', value: 1),
+              isEdge('x', 'y', value: 1),
+              isEdge('y', 'z', value: 1),
+            ]));
+      });
+      test('disconnected (with start vertices)', () {
+        final graph = Graph<String, int>.undirected()
+          ..addEdge('a', 'b', value: 1)
+          ..addEdge('x', 'y', value: 1)
+          ..addEdge('x', 'z', value: 5)
+          ..addEdge('y', 'z', value: 1);
+        final spanning1 = graph.spanningTree(startVertex: 'a');
         expect(spanning1.vertices, ['a', 'b']);
         expect(
             spanning1.edges.unique(),
             unorderedEquals([
               isEdge('a', 'b', value: 1),
             ]));
-        final spanning2 = graph.minSpanning(startVertex: 'x');
+        final spanning2 = graph.spanningTree(startVertex: 'x');
         expect(spanning2.vertices, ['x', 'y', 'z']);
         expect(
             spanning2.edges.unique(),

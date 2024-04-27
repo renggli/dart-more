@@ -5,6 +5,9 @@ export 'src/graph/algorithms.dart' show AlgorithmsGraphExtension;
 export 'src/graph/algorithms/a_star_search.dart' show AStarSearchIterable;
 export 'src/graph/algorithms/dijkstra_search.dart' show DijkstraSearchIterable;
 export 'src/graph/algorithms/dinic_max_flow.dart' show DinicMaxFlow;
+export 'src/graph/algorithms/kruskal_spanning_tree.dart'
+    show kruskalSpanningTree;
+export 'src/graph/algorithms/prim_spanning_tree.dart' show primSpanningTree;
 export 'src/graph/algorithms/stoer_wagner_min_cut.dart' show StoerWagnerMinCut;
 export 'src/graph/edge.dart' show Edge;
 export 'src/graph/errors.dart' show GraphError;

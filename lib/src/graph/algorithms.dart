@@ -1,10 +1,13 @@
 import 'package:collection/collection.dart';
 
-import '../../functional.dart';
+import '../comparator/constructors/natural.dart';
+import '../functional/types/constant.dart';
+import '../functional/types/predicate.dart';
 import 'algorithms/a_star_search.dart';
 import 'algorithms/dijkstra_search.dart';
 import 'algorithms/dinic_max_flow.dart';
-import 'algorithms/prims_min_spanning_tree.dart';
+import 'algorithms/kruskal_spanning_tree.dart';
+import 'algorithms/prim_spanning_tree.dart';
 import 'algorithms/stoer_wagner_min_cut.dart';
 import 'algorithms/tarjan_strongly_connected.dart';
 import 'graph.dart';
@@ -107,26 +110,41 @@ extension AlgorithmsGraphExtension<V, E> on Graph<V, E> {
         vertexStrategy: vertexStrategy ?? this.vertexStrategy,
       );
 
-  /// Returns the minimum spanning graphs using Prim's algorithm. If the graph
-  /// is disconnected, a single graph containing only the nodes reachable from
-  /// the start vertex is returned.
+  /// Returns the spanning tree of the graph.
   ///
-  /// - [startVertex] is the root node of the new graph. If omitted, a random
-  ///   node of the graph is picked.
-  /// - [edgeWeight] is a function function that returns the positive weight
-  ///   between two edges. If no function is provided, the numeric edge value
-  ///   or a constant weight of _1_ is used.
-  Graph<V, E> minSpanning({
+  /// - [startVertex] is the root node of the new graph. If specified, Prim's
+  ///   algorithm is returning the spanning tree starting at that vertex;
+  ///   disconnected parts of the graph will be missing. Otherwise Kruskal's
+  ///   algorithm is used, which always returns all vertices of the graph.
+  ///
+  /// - [edgeWeight] is a function that returns the weight between two edges. If
+  ///   no function is provided, the numeric edge value or a constant weight of
+  ///   _1_ is used.
+  ///
+  ///  - [weightComparator] is a function that compares two weights. If no
+  ///    function is provided, the standard comparator is used yielding a
+  ///    minimum spanning tree.
+  ///
+  Graph<V, E> spanningTree({
     V? startVertex,
     num Function(V source, V target)? edgeWeight,
+    Comparator<num>? weightComparator,
     StorageStrategy<V>? vertexStrategy,
   }) =>
-      primsMinSpanningTree<V, E>(
-        this,
-        startVertex: startVertex,
-        edgeWeight: edgeWeight ?? _getDefaultEdgeValueOr(1),
-        vertexStrategy: vertexStrategy ?? this.vertexStrategy,
-      );
+      startVertex == null
+          ? kruskalSpanningTree<V, E>(
+              this,
+              edgeWeight: edgeWeight ?? _getDefaultEdgeValueOr(1),
+              weightComparator: weightComparator ?? naturalComparable<num>,
+              vertexStrategy: vertexStrategy ?? this.vertexStrategy,
+            )
+          : primSpanningTree<V, E>(
+              this,
+              startVertex: startVertex,
+              edgeWeight: edgeWeight ?? _getDefaultEdgeValueOr(1),
+              weightComparator: weightComparator ?? naturalComparable<num>,
+              vertexStrategy: vertexStrategy ?? this.vertexStrategy,
+            );
 
   /// Returns the strongly connected components in this graph. The
   /// implementation uses the Tarjan's algorithm and runs in linear time.
