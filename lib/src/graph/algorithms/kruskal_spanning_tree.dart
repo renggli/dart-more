@@ -16,7 +16,6 @@ Graph<V, E> kruskalSpanningTree<V, E>(
   // Create an empty copy of the graph.
   final result = graph.copy(empty: true);
   result.addVertices(graph.vertices);
-
   // Fetch and sort the edges, if any.
   final edges = graph.edges.toList(growable: false);
   if (edges.isEmpty) return result;
@@ -24,12 +23,10 @@ Graph<V, E> kruskalSpanningTree<V, E>(
     (value) => edgeWeight(value.source, value.target),
     weightComparator,
   );
-
   // State for each vertex.
   final states = vertexStrategy.createMap<_State<V>>();
   _State<V> getState(V vertex) =>
       states.putIfAbsent(vertex, () => _State(vertex));
-
   // Process all the edges.
   for (final edge in edges) {
     final source = getState(edge.source);
@@ -46,7 +43,6 @@ Graph<V, E> kruskalSpanningTree<V, E>(
       result.addEdge(edge.source, edge.target, value: edge.value);
     }
   }
-
   return result;
 }
 

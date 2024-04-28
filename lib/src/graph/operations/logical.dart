@@ -18,9 +18,7 @@ extension LogicalGraphExtension<V, E> on Graph<V, E> {
       {E Function(V source, V target, E a, E b)? edgeMerge}) {
     for (final graph in others) {
       // Create all vertices present in any graph.
-      for (final vertex in graph.vertices) {
-        result.addVertex(vertex);
-      }
+      result.addVertices(graph.vertices);
       // Create all edges present in any graph.
       for (final vertex in graph.vertices) {
         for (final edge in graph.outgoingEdgesOf(vertex)) {

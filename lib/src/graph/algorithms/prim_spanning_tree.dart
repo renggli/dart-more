@@ -18,7 +18,6 @@ Graph<V, E> primSpanningTree<V, E>(
 }) {
   // Create an empty copy of the graph.
   final result = graph.copy(empty: true);
-
   // Queue for the shortest remaining edges.
   final queue = PriorityQueue<_State<V, E>>(
       weightComparator.onResultOf((state) => state.cost));
@@ -33,7 +32,6 @@ Graph<V, E> primSpanningTree<V, E>(
 
   // Prepare the initial outgoing edges.
   addOutgoingEdgesToQueue(startVertex ?? graph.vertices.first);
-
   // Pick the shortest edge that connects to a not yet connected vertex.
   while (queue.isNotEmpty) {
     final state = queue.removeFirst();
@@ -43,7 +41,6 @@ Graph<V, E> primSpanningTree<V, E>(
       addOutgoingEdgesToQueue(state.edge.target);
     }
   }
-
   return result;
 }
 
