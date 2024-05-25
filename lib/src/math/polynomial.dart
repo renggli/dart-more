@@ -4,7 +4,9 @@ extension PolynomialIterableExtension on Iterable<num> {
   ///
   /// For example, if the [Iterable] has 4 elements the function computes:
   ///
-  ///     c[0]*x^0 + c[1]*x^1 + c[2]*x^3 + c[3]*x^3
+  /// ```dart
+  /// c[0]*x^0 + c[1]*x^1 + c[2]*x^3 + c[3]*x^3
+  /// ```
   num polynomial([num x = 10]) {
     num r = 0, e = 1;
     for (final c in this) {

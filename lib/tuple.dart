@@ -1,7 +1,7 @@
 // AUTO-GENERATED CODE: DO NOT EDIT
 
 /// Tuple extension methods on generic records.
-library tuple;
+library;
 
 export 'src/tuple/tuple.dart';
 export 'src/tuple/tuple_0.dart';

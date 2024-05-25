@@ -1,6 +1,6 @@
 /// Provides default [Comparator] constructors, and various static extension
 /// methods to modify and perform common operations on [Comparator] functions.
-library comparator;
+library;
 
 export 'src/comparator/compare_operators.dart';
 export 'src/comparator/constructors/explicit.dart';

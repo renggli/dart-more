@@ -14,13 +14,15 @@ import '../where.dart';
 /// For example, to print dates in the format `YYYY-MM-DD` call the constructor
 /// and configure the printer as such:
 ///
-///     final printer = DurationPrinter((builder) => builder
-///         ..year(width: 4)
-///         ..literal('-')
-///         ..month(width: 2)
-///         ..literal('-')
-///         ..day(width: 2));
-///
+/// ```dart
+///  final printer = DurationPrinter((builder) => builder
+///   ..part(TimeUnit.year, printer: FixedNumberPrinter<int>(padding: 4))
+///   ..literal(':')
+///   ..part(TimeUnit.month, printer: FixedNumberPrinter<int>(padding: 2))
+///   ..literal(':')
+///   ..part(TimeUnit.day, printer: FixedNumberPrinter<int>(padding: 2)));
+/// print(printer(const Duration(days: 1234, seconds: 56789)));  // 0003-04-19
+/// ```
 class DurationPrinter extends SequencePrinter<Duration> {
   /// Constructor to build a [DurationPrinter].
   factory DurationPrinter(Callback1<DurationPrinterBuilder> callback,
@@ -36,34 +38,34 @@ class DurationPrinter extends SequencePrinter<Duration> {
   /// Returns the standard Dart duration format.
   static DurationPrinter dart() => DurationPrinter((builder) => builder
     ..sign()
-    ..part(TimeUnit.hour, FixedNumberPrinter())
+    ..part(TimeUnit.hour)
     ..literal(':')
-    ..part(TimeUnit.minute, FixedNumberPrinter(padding: 2))
+    ..part(TimeUnit.minute, printer: FixedNumberPrinter(padding: 2))
     ..literal(':')
-    ..part(TimeUnit.second, FixedNumberPrinter(padding: 2))
+    ..part(TimeUnit.second, printer: FixedNumberPrinter(padding: 2))
     ..literal('.')
-    ..part(TimeUnit.millisecond, FixedNumberPrinter(padding: 3))
-    ..part(TimeUnit.microsecond, FixedNumberPrinter(padding: 3)));
+    ..part(TimeUnit.millisecond, printer: FixedNumberPrinter(padding: 3))
+    ..part(TimeUnit.microsecond, printer: FixedNumberPrinter(padding: 3)));
 
   /// Returns an ISO-8601 extended full-precision format representation.
   static DurationPrinter iso8601() => DurationPrinter((builder) => builder
     ..literal('P')
     ..sign()
-    ..part(TimeUnit.year, FixedNumberPrinter<int>().after('Y'),
-        skipIfZero: true)
-    ..part(TimeUnit.month, FixedNumberPrinter<int>().after('M'),
-        skipIfZero: true)
-    ..part(TimeUnit.week, FixedNumberPrinter<int>().after('W'),
-        skipIfZero: true)
-    ..part(TimeUnit.day, FixedNumberPrinter<int>().after('D'))
+    ..part(TimeUnit.year,
+        printer: FixedNumberPrinter<int>().after('Y'), skipIfZero: true)
+    ..part(TimeUnit.month,
+        printer: FixedNumberPrinter<int>().after('M'), skipIfZero: true)
+    ..part(TimeUnit.week,
+        printer: FixedNumberPrinter<int>().after('W'), skipIfZero: true)
+    ..part(TimeUnit.day, printer: FixedNumberPrinter<int>().after('D'))
     ..literal('T')
-    ..part(TimeUnit.hour, FixedNumberPrinter<int>().after('H'),
-        skipIfZero: true)
-    ..part(TimeUnit.minute, FixedNumberPrinter<int>().after('M'),
-        skipIfZero: true)
-    ..part(TimeUnit.second, FixedNumberPrinter<int>())
-    ..part(
-        TimeUnit.microsecond, FixedNumberPrinter<int>(padding: 6).before('.'),
+    ..part(TimeUnit.hour,
+        printer: FixedNumberPrinter<int>().after('H'), skipIfZero: true)
+    ..part(TimeUnit.minute,
+        printer: FixedNumberPrinter<int>().after('M'), skipIfZero: true)
+    ..part(TimeUnit.second)
+    ..part(TimeUnit.microsecond,
+        printer: FixedNumberPrinter<int>(padding: 6).before('.'),
         skipIfZero: true)
     ..literal('S'));
 }
@@ -99,10 +101,12 @@ class DurationPrinterBuilder {
   /// If `skipIfZero` is set to `true` the unit is skipped if it is zero.
   ///
   /// See [ConvertToAllDurationExtension.convertToAll] for details.
-  void part(TimeUnit unit, Printer<int> printer,
-      {bool absoluteValue = true, bool skipIfZero = false}) {
+  void part(TimeUnit unit,
+      {Printer<int>? printer,
+      bool absoluteValue = true,
+      bool skipIfZero = false}) {
     _unitParts.add(unit);
-    add(printer
+    add((printer ?? FixedNumberPrinter<int>())
         .mapIf(absoluteValue,
             (printer) => printer.onResultOf((value) => value.abs()))
         .mapIf(skipIfZero, (printer) => printer.where((value) => value != 0))

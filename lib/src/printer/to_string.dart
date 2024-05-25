@@ -7,10 +7,12 @@ import 'object/object.dart';
 /// Add the mixin to the root of your object hierarchy and override the
 /// `toStringPrinter` accessor:
 ///
-///     @override
-///     ObjectPrinter get toStringPrinter => super.toStringPrinter
-///       ..addValue(someField, name: 'someField')
-///       ..addValue(otherField, name: 'otherField');
+/// ```dart
+/// @override
+/// ObjectPrinter get toStringPrinter => super.toStringPrinter
+///   ..addValue(someField, name: 'someField')
+///   ..addValue(otherField, name: 'otherField');
+/// ```
 ///
 /// Note: Due to the lack of a `Self` type in Dart, this is working with a
 /// dynamically typed printer Object. To avoid loosing the type information

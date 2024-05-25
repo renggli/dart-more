@@ -6,9 +6,11 @@ import '../range.dart';
 /// range essentially implements a lazy list that is also produced by the
 /// following for-loop:
 ///
-///     for (BigInt i = start; i < stop; i += step) {
-///       ...
-///
+/// ```dart
+///  for (BigInt i = start; i < stop; i += step) {
+///    // ...
+/// }
+/// ```
 class BigIntRange extends Range<BigInt> {
   /// The empty range.
   static final empty = BigIntRange._(BigInt.zero, BigInt.zero, BigInt.one, 0);

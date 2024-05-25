@@ -3,9 +3,10 @@ extension FlattenIterableExtension<E> on Iterable<Iterable<E>> {
   ///
   /// For example:
   ///
-  ///     final input = [[1, 2], [3, 4]];
-  ///     print(input.flatten());   // [1, 2, 3, 4]
-  ///
+  /// ```dart
+  /// final input = [[1, 2], [3, 4]];
+  /// print(input.flatten());   // [1, 2, 3, 4]
+  /// ```
   Iterable<E> flatten() => expand((values) => values);
 }
 
@@ -15,9 +16,10 @@ extension DeepFlattenIterableExtension on Iterable<dynamic> {
   ///
   /// For example:
   ///
-  ///     final input = [1, 2, [3, 4, [5, 6]]];
-  ///     print(input.deepFlatten());   // [1, 2, 3, 4, 5, 6]
-  ///
+  /// ```dart
+  /// final input = [1, 2, [3, 4, [5, 6]]];
+  /// print(input.deepFlatten());   // [1, 2, 3, 4, 5, 6]
+  /// ```
   Iterable<E> deepFlatten<E>() sync* {
     for (final value in this) {
       if (value is E) {

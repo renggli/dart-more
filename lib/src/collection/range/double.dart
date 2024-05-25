@@ -7,9 +7,11 @@ import '../range.dart';
 /// range essentially implements a lazy list that is also produced by the
 /// following for-loop:
 ///
-///     for (double i = start; i < stop; i += step) {
-///       ...
-///
+/// ```dart
+/// for (double i = start; i < stop; i += step) {
+///    // ...
+/// }
+/// ```
 class DoubleRange extends Range<double> {
   /// The empty range.
   static const empty = DoubleRange._(0, 0, 1, 0);

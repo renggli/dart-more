@@ -1,5 +1,5 @@
 /// Information about the runtime environment.
-library feature;
+library;
 
 import 'dart:math';
 

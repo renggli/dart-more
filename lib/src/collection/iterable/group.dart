@@ -5,16 +5,12 @@ extension GroupIterableExtension<V> on Iterable<V> {
   /// specified, the value itself is used as the key. Generally, the iterable
   /// should be sorted on the same key function.
   ///
-  /// For example, the expression
+  /// For example:
   ///
-  ///     ['a', 'a', 'a', 'b', 'b', 'c'].groupBy()
-  ///         .map((group) => '${group.key}: ${group.values}'
-  ///         .join(', ')
-  ///
-  /// returns
-  ///
-  ///     'a: aaa, b: bb, c: c'
-  ///
+  /// ```dart
+  /// final input = ['a', 'a', 'a', 'b', 'b', 'c'];
+  /// print(input.groupBy());  // [a: [a, a, a], b: [b, b], c: [c]]
+  /// ```
   Iterable<Group<K, V>> groupBy<K>([K Function(V element)? key]) sync* {
     final iterator = this.iterator;
     if (iterator.moveNext()) {

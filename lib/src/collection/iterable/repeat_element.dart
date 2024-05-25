@@ -5,11 +5,12 @@ import 'mixins/infinite.dart';
 /// Returns an infinite iterable with a constant [element]. If [count] is
 /// provided the resulting iterator is limited to [count] elements.
 ///
-/// Example expressions:
+/// For example:
 ///
-///     repeat(2);               // [2, 2, 2, 2, 2, 2, ...]
-///     repeat('a', count: 3);   // ['a', 'a', 'a']
-///
+/// ```dart
+/// repeat(2);               // [2, 2, 2, 2, 2, 2, ...]
+/// repeat('a', count: 3);   // ['a', 'a', 'a']
+/// ```
 Iterable<E> repeat<E>(E element, {int? count}) {
   if (count == 0) {
     return const [];

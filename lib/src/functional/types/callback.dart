@@ -1,7 +1,7 @@
 // AUTO-GENERATED CODE: DO NOT EDIT
 
 /// Function types for generic callbacks.
-library callback;
+library;
 
 /// Callback function type with 0 positional arguments.
 typedef Callback0 = void Function();

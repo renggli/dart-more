@@ -1,7 +1,7 @@
 // AUTO-GENERATED CODE: DO NOT EDIT
 
 /// The throwing functions.
-library throwing;
+library;
 
 import 'mapping.dart';
 

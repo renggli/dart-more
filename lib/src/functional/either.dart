@@ -1,5 +1,5 @@
 /// A container that may contain one or the other value.
-library either;
+library;
 
 import 'package:meta/meta.dart';
 

@@ -1,6 +1,6 @@
 /// Provides a first-class model to convert object to strings using composition
 /// and highly configurable formatting primitives.
-library printer;
+library;
 
 export 'src/printer/builder.dart' show BuilderPrinterExtension;
 export 'src/printer/empty.dart' show EmptyPrinterExtension;

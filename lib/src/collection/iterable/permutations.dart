@@ -11,13 +11,16 @@ extension PermutationIterableExtension<E> on Iterable<E> {
   /// The following expression iterates over `xyz`, `xzy`, `yxz`, `yzx`, `zxy`,
   /// and `zyx:`
   ///
-  ///     ['x', 'y', 'z'].permutations();
+  /// ```dart
+  /// ['x', 'y', 'z'].permutations();
+  /// ```
   ///
   /// The following expression iterates over the permutations of length 2, these
   /// are: `xy`, `xz`, `yx`, `yz`, `zx`, and `zy`:
   ///
-  ///     ['x', 'y', 'z'].permutations(2);
-  ///
+  /// ```dart
+  /// ['x', 'y', 'z'].permutations(2);
+  /// ```
   Iterable<List<E>> permutations([int? count]) {
     final elements = toList(growable: false);
     count ??= elements.length;

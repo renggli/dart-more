@@ -13,8 +13,10 @@ extension UniqueIterableExtension<E> on Iterable<E> {
   /// The following expression iterates over 1, 2, 3, and 4; skipping the second
   /// occurrence of 2:
   ///
-  ///     [1, 2, 3, 2, 4].unique()
-  ///
+  /// ```dart
+  /// final input = [1, 2, 3, 2, 4];
+  /// print(input.unique());  // [1, 2, 3, 4]
+  /// ```
   Iterable<E> unique({
     Set<E> Function()? factory,
     bool Function(E e1, E e2)? equals,

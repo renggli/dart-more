@@ -1,14 +1,12 @@
 extension PairwiseIterableExtension<E> on Iterable<E> {
   /// An iterable over the successive overlapping pairs of this iterable.
   ///
-  /// For example, the expression
+  /// For example:
   ///
-  ///     [1, 2, 3, 4].pairwise()
-  ///
-  /// results in the following output:
-  ///
-  ///     [(1, 2), (2, 3), (3, 4)]
-  ///
+  /// ```dart
+  /// final input = [1, 2, 3, 4];
+  /// print(input.pairwise());  // [(1, 2), (2, 3), (3, 4)]
+  /// ```
   Iterable<(E, E)> pairwise() sync* {
     final iterator = this.iterator;
     if (!iterator.moveNext()) return;

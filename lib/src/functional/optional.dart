@@ -1,5 +1,5 @@
 /// A container that may or may not contain a value.
-library optional;
+library;
 
 import 'package:meta/meta.dart';
 

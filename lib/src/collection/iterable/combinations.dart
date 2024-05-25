@@ -6,21 +6,28 @@ extension CombinationsIterableExtension<E> on Iterable<E> {
   /// If [repetitions] is set to `true` the iterable allows individual elements
   /// to be repeated more than once. The number of items returned is:
   ///
-  ///     (elements.length + count - 1)! / count! / (elements.length - 1)!
+  /// ```dart
+  /// (elements.length + count - 1)! / count! / (elements.length - 1)!
+  ///  ```
   ///
   /// The following expression iterates over xx, xy, xz, yy, yz, and zz:
   ///
-  ///     ['x', 'y', 'z'].combinations(2, repetitions: true);
+  /// ```dart
+  /// ['x', 'y', 'z'].combinations(2, repetitions: true);
+  /// ```
   ///
   /// If [repetitions] is set to `false` the iterable generates all the
   /// sub-sequences of length [count]. The number of items returned is:
   ///
-  ///     elements.length! / count! / (elements.length - count)!
+  /// ```dart
+  /// elements.length! / count! / (elements.length - count)!
+  /// ```
   ///
   /// The following expression iterates over xy, xz, yz:
   ///
-  ///     ['x', 'y', 'z'].combinations(2, repetitions: false);
-  ///
+  /// ```dart
+  /// ['x', 'y', 'z'].combinations(2, repetitions: false);
+  /// ```
   Iterable<List<E>> combinations(int count, {bool repetitions = false}) {
     RangeError.checkNotNegative(count, 'count');
     final list = toList(growable: false);

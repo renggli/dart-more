@@ -1,6 +1,6 @@
 /// A collection of iterable extensions and new collection types: bi-map,
 /// bit-list, multi-set, set and list multi-map, range, and string.
-library collection;
+library;
 
 export 'src/collection/bimap.dart'
     show BiMap, BiMapOnIterableExtension, BiMapOnMapExtension;

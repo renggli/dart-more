@@ -8,26 +8,31 @@ extension StringListExtension on String {
   /// The immutable version is very light-weight. To loop over the characters
   /// of a string simply write:
   ///
-  ///     for (String char in 'Hello World'.toList()) {
-  ///       print(char);
-  ///     }
+  /// ```dart
+  /// for (String char in 'Hello World'.toList()) {
+  ///   print(char);
+  /// }
+  /// ```
   ///
   /// Of course, also all other more functional operations from [List] work too:
   ///
-  ///     'Hello World'.toList()
-  ///       .where((char) => char != 'o')
-  ///       .forEach(print);
+  /// ```dart
+  /// 'Hello World'.toList()
+  ///   .where((char) => char != 'o')
+  ///   .forEach(print);`
+  /// ```
   ///
   /// For a mutable copy of the string set the parameter [mutable] to `true`.
   ///
-  /// For example the following code prints 'Hello Brave World!':
+  /// For example:
   ///
-  ///       var result = 'Hello World'.toList(mutable: true);
-  ///       result.insertAll(6, 'brave '.toList());
-  ///       result[6] = 'B';
-  ///       result.add('!');
-  ///       print(result);
-  ///
+  /// ```dart
+  /// final result = 'Hello World'.toList(mutable: true);
+  /// result.insertAll(6, 'brave '.toList());
+  /// result[6] = 'B';
+  /// result.add('!');
+  /// print(result);  // Hello Brave World!
+  /// ```
   List<String> toList({bool mutable = false}) => mutable
       ? MutableStringList(List.of(codeUnits))
       : ImmutableStringList(this);

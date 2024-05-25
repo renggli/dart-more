@@ -2,7 +2,7 @@
 
 /// Converts a function with positional arguments into a sequence of functions
 /// taking a single argument: https://en.wikipedia.org/wiki/Currying
-library curry;
+library;
 
 import 'mapping.dart';
 

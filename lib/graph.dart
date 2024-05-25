@@ -1,5 +1,5 @@
 /// Graph-theory objects and algorithms.
-library graph;
+library;
 
 export 'src/graph/algorithms.dart' show AlgorithmsGraphExtension;
 export 'src/graph/algorithms/a_star_search.dart' show AStarSearchIterable;

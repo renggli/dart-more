@@ -14,7 +14,7 @@ Future<void> generateCallback() async {
   generateWarning(out);
 
   out.writeln('/// Function types for generic callbacks.');
-  out.writeln('library callback;');
+  out.writeln('library;');
   out.writeln();
 
   for (var i = 0; i < max; i++) {
@@ -35,7 +35,7 @@ Future<void> generateMapping() async {
   generateWarning(out);
 
   out.writeln('/// Function type for generic mapping functions.');
-  out.writeln('library mapping;');
+  out.writeln('library;');
   out.writeln();
 
   for (var i = 0; i < max; i++) {
@@ -56,7 +56,7 @@ Future<void> generatePredicate() async {
   generateWarning(out);
 
   out.writeln('/// Function type for generic predicate functions.');
-  out.writeln('library predicate;');
+  out.writeln('library;');
   out.writeln();
 
   for (var i = 0; i < max; i++) {
@@ -77,7 +77,7 @@ Future<void> generateEmpty() async {
   generateWarning(out);
 
   out.writeln('/// Generic empty functions returning nothing.');
-  out.writeln('library empty;');
+  out.writeln('library;');
   out.writeln();
 
   for (var i = 0; i < max; i++) {
@@ -98,7 +98,7 @@ Future<void> generateIdentity() async {
   generateWarning(out);
 
   out.writeln('/// Generic identity functions.');
-  out.writeln('library identity;');
+  out.writeln('library;');
   out.writeln();
 
   out.writeln('/// Generic identity function with 1 positional argument.');
@@ -115,7 +115,7 @@ Future<void> generateConstant() async {
   generateWarning(out);
 
   out.writeln('/// The constant functions.');
-  out.writeln('library constant;');
+  out.writeln('library;');
   out.writeln();
 
   out.writeln("import 'mapping.dart';");
@@ -141,7 +141,7 @@ Future<void> generateThrowing() async {
   generateWarning(out);
 
   out.writeln('/// The throwing functions.');
-  out.writeln('library throwing;');
+  out.writeln('library;');
   out.writeln();
 
   out.writeln("import 'mapping.dart';");
@@ -169,7 +169,7 @@ Future<void> generatePartial() async {
 
   out.writeln('/// Binds positional arguments and returns a new function:');
   out.writeln('/// https://en.wikipedia.org/wiki/Partial_application');
-  out.writeln('library partial;');
+  out.writeln('library;');
   out.writeln();
 
   out.writeln("import 'mapping.dart';");
@@ -211,7 +211,7 @@ Future<void> generateCurry() async {
       'sequence of functions ');
   out.writeln('/// taking a single argument: '
       'https://en.wikipedia.org/wiki/Currying');
-  out.writeln('library curry;');
+  out.writeln('library;');
   out.writeln();
 
   out.writeln("import 'mapping.dart';");

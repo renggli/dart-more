@@ -1,7 +1,7 @@
 // AUTO-GENERATED CODE: DO NOT EDIT
 
 /// The constant functions.
-library constant;
+library;
 
 import 'mapping.dart';
 

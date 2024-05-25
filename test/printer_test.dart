@@ -927,9 +927,9 @@ void main() {
     group('part', () {
       test('default', () {
         final printer = DurationPrinter((builder) => builder
-          ..part(TimeUnit.day, FixedNumberPrinter())
+          ..part(TimeUnit.day)
           ..literal('*')
-          ..part(TimeUnit.minute, FixedNumberPrinter()));
+          ..part(TimeUnit.minute));
         expect(durations.map(printer.print), [
           '0*0',
           '12345*0',
@@ -942,9 +942,9 @@ void main() {
       });
       test('skipIfZero', () {
         final printer = DurationPrinter((builder) => builder
-          ..part(TimeUnit.day, FixedNumberPrinter(), skipIfZero: true)
+          ..part(TimeUnit.day, skipIfZero: true)
           ..literal('*')
-          ..part(TimeUnit.minute, FixedNumberPrinter(), skipIfZero: true));
+          ..part(TimeUnit.minute, skipIfZero: true));
         expect(durations.map(printer.print), [
           '*',
           '12345*',
@@ -957,9 +957,9 @@ void main() {
       });
       test('absoluteValue', () {
         final printer = DurationPrinter((builder) => builder
-          ..part(TimeUnit.day, FixedNumberPrinter(), absoluteValue: false)
+          ..part(TimeUnit.day, absoluteValue: false)
           ..literal('*')
-          ..part(TimeUnit.minute, FixedNumberPrinter(), absoluteValue: false));
+          ..part(TimeUnit.minute, absoluteValue: false));
         expect(durations.map(printer.print), [
           '0*0',
           '12345*0',

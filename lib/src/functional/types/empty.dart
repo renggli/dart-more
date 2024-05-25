@@ -1,7 +1,7 @@
 // AUTO-GENERATED CODE: DO NOT EDIT
 
 /// Generic empty functions returning nothing.
-library empty;
+library;
 
 /// Empty function with 0 positional arguments.
 void emptyFunction0() {}

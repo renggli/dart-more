@@ -2,7 +2,7 @@
 
 /// Binds positional arguments and returns a new function:
 /// https://en.wikipedia.org/wiki/Partial_application
-library partial;
+library;
 
 import 'mapping.dart';
 

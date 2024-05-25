@@ -4,16 +4,13 @@ extension IndexedIterableExtension<E> on Iterable<E> {
   /// By default the index is zero based, but an arbitrary [offset] can be
   /// provided.
   ///
-  /// For example, the expression
+  /// For example, the following expression returns `'1: a, 2: b'`:
   ///
-  ///     ['a', 'b'].indexed(start: 1)
-  ///       .map((each) => '${each.index}: ${each.value}')
-  ///       .join(', ');
-  ///
-  /// returns
-  ///
-  ///     '1: a, 2: b'
-  ///
+  /// ```dart
+  /// ['a', 'b'].indexed(start: 1)
+  ///   .map((each) => '${each.index}: ${each.value}')
+  ///   .join(', ');
+  /// ```
   Iterable<Indexed<E>> indexed({
     int start = 0,
     int step = 1,

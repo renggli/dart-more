@@ -12,22 +12,27 @@ extension PeriodicalDateTimeExtension on DateTime {
   /// [Iterable.take]; and to limit iteration to a specific end-timestamp use
   /// [Iterable.takeWhile]. For example:
   ///
-  ///     // Enumerate 10 days after September 2, 2017.
-  ///     DateTime(2017, DateTime.SEPTEMBER, 2).periodical().take(10)
+  /// ```dart
+  /// // Enumerate 10 days after September 2, 2017.
+  /// DateTime(2017, DateTime.SEPTEMBER, 2).periodical().take(10)
+  /// ```
   ///
-  ///     // Enumerate the remaining days in the current year.
-  ///     final today = DateTime.now();
-  ///     final nextYear = DateTime(today.year + 1);
-  ///     today.periodical(period: Period.daily)
-  ///         .takeWhile((timestamp) => timestamp.isBefore(nextYear));
+  /// ```dart
+  /// // Enumerate the remaining days in the current year.
+  /// final today = DateTime.now();
+  /// final nextYear = DateTime(today.year + 1);
+  /// today.periodical(period: Period.daily)
+  ///     .takeWhile((timestamp) => timestamp.isBefore(nextYear));
+  /// ```
   ///
   /// Note: Due to leap seconds and daylight saving time, not all periods are
   /// of equal length. To produce an infinite sequence of timestamps that are
   /// equally spaced, simply use `iterate` and an offset instead. For example:
   ///
-  ///     final offset = Duration(days: 1);
-  ///     iterate(DateTime().now(), (prev) => prev.add(offset));
-  ///
+  /// ```dart
+  /// final offset = Duration(days: 1);
+  /// iterate(DateTime().now(), (prev) => prev.add(offset));
+  /// ```
   Iterable<DateTime> periodical(TimeUnit unit, {int step = 1}) {
     if (step == 0) {
       throw ArgumentError.value(step, 'step', 'Expected non-zero step size');

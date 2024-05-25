@@ -6,9 +6,11 @@ import '../range.dart';
 /// range essentially implements a lazy list that is also produced by the
 /// following for-loop:
 ///
-///     for (int i = start; i < stop; i += step) {
-///       ...
-///
+/// ```dart
+/// for (int i = start; i < stop; i += step) {
+///    // ...
+/// }
+/// ```
 class IntegerRange extends Range<int> {
   /// The empty range.
   static const empty = IntegerRange._(0, 0, 1, 0);
@@ -134,14 +136,12 @@ extension IndicesIterableExtension on Iterable<Object?> {
   /// indices. A negative [step] counter returns the indices in reverse
   /// order.
   ///
-  /// For example, the expression
+  /// For example:
   ///
-  ///     ['a', 'b', 'c'].indices(step: 2)
-  ///
-  /// returns
-  ///
-  ///     [0, 2]
-  ///
+  /// ```dart
+  /// final input = ['a', 'b', 'c'];
+  /// print(input.indices(step: 2));  // [0, 2]
+  /// ```
   Range<int> indices({int step = 1}) => step > 0
       ? IntegerRange.of(start: 0, end: length, step: step)
       : IntegerRange.of(start: length - 1, end: -1, step: step);

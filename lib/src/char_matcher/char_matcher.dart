@@ -28,16 +28,19 @@ import 'unicode/unicode.dart';
 /// inclusion of a character can be determined by calling the char matcher with
 /// the code-unit as the function argument, for example:
 ///
-///     CharMatcher.whitespace().match(' '.runes.first); // true
-///     CharMatcher.digit().match('a'.runes.first); // false
+/// ```dart
+/// CharMatcher.whitespace().match(' '.runes.first); // true
+/// CharMatcher.digit().match('a'.runes.first); // false
+/// ```
 ///
 /// A large collection of helper methods let you perform string operations on
 /// the occurrences of the specified class of characters: trimming, collapsing,
 /// replacing, removing, retaining, etc. For example:
 ///
-///     String withoutWhitespace = CharMatcher.whitespace().removeFrom(string);
-///     String onlyDigits = CharMatcher.digit().retainFrom(string);
-///
+/// ```dart
+/// String withoutWhitespace = CharMatcher.whitespace().removeFrom(string);
+/// String onlyDigits = CharMatcher.digit().retainFrom(string);
+/// ```
 @immutable
 abstract class CharMatcher with ToStringPrinter implements Pattern {
   /// A matcher that accepts any character.

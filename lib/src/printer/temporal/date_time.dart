@@ -17,13 +17,15 @@ import '../where.dart';
 /// For example, to print dates in the format `YYYY-MM-DD` call the constructor
 /// and configure the printer as such:
 ///
-///     final printer = DateTimePrinter((builder) => builder
-///         ..year(width: 4)
-///         ..literal('-')
-///         ..month(width: 2)
-///         ..literal('-')
-///         ..day(width: 2));
-///
+/// ```dart
+/// final printer = DateTimePrinter((builder) => builder
+///     ..year(width: 4)
+///     ..literal('-')
+///     ..month(width: 2)
+///     ..literal('-')
+///     ..day(width: 2));
+/// print(printer(DateTime(1975, 1, 9, 15, 45)));  // 1975-01-09
+/// ```
 class DateTimePrinter extends SequencePrinter<DateTime> {
   /// Constructor to build a [DateTimePrinter].
   factory DateTimePrinter(Callback1<DateTimePrinterBuilder> callback) {

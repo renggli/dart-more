@@ -2,10 +2,12 @@ extension ChunkedIterableExtension<E> on Iterable<E> {
   /// Divides this [Iterable] into sub-lists of a given `size`. The final list
   /// might be smaller or equal to the desired size.
   ///
-  /// The following expression yields `[1, 2]`, `[3, 4]`, and `[5]`:
+  /// For example:
   ///
-  ///     [1, 2, 3, 4, 5].chunked(2);
-  ///
+  /// ```dart
+  /// final input = [1, 2, 3, 4, 5];
+  /// print(input.chunked(2));  // [[1, 2], [3, 4], [5]]
+  /// ```
   Iterable<List<E>> chunked(int size) sync* {
     final iterator = this.iterator;
     while (iterator.moveNext()) {
@@ -20,10 +22,12 @@ extension ChunkedIterableExtension<E> on Iterable<E> {
   /// Divides this [Iterable] into sub-lists of a given `size`. The final list
   /// is expanded with the provided `padding`, or `null`.
   ///
-  /// The following expression yields `[1, 2]`, `[3, 4]`, and `[5, -1]`:
+  /// For example:
   ///
-  ///     [1, 2, 3, 4, 5].chunkedWithPadding(2, -1);
-  ///
+  /// ```dart
+  /// final input = [1, 2, 3, 4, 5];
+  /// print(input.chunkedWithPadding(2, -1));  // [[1, 2], [3, 4], [5, -1]]
+  /// ```
   Iterable<Iterable<E>> chunkedWithPadding(int size, E padding) sync* {
     final iterator = this.iterator;
     while (iterator.moveNext()) {

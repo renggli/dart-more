@@ -5,14 +5,12 @@ import 'mixins/infinite.dart';
 /// Returns a lazy infinite list of repeated applications of [callback] to the
 /// initial [value].
 ///
-/// For example, the expression
+/// For example, the following expression results in an infinite iterable of all
+/// natural numbers `[0, 1, 2, 3, 4, ...]`:
 ///
-///     iterate(0, (n) => n + 1);
-///
-/// results in the infinite iterable of all natural numbers:
-///
-///     [0, 1, 2, 3, 4, ...]
-///
+/// ```dart
+/// iterate(0, (n) => n + 1);
+/// ```
 Iterable<E> iterate<E>(E value, E Function(E element) callback) =>
     IterateIterable<E>(value, callback);
 

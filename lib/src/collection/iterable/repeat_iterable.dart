@@ -7,11 +7,12 @@ extension RepeatIterableExtension<E> on Iterable<E> {
   /// [count] is provided the resulting iterator is limited to [count]
   /// repetitions.
   ///
-  /// Example expressions:
+  /// For example:
   ///
-  ///     [1, 2].repeat();               // [1, 2, 1, 2, ...]
-  ///     [1, 2, 3].repeat(count: 2);    // [1, 2, 3, 1, 2, 3]
-  ///
+  /// ```dart
+  /// [1, 2].repeat();               // [1, 2, 1, 2, ...]
+  /// [1, 2, 3].repeat(count: 2);    // [1, 2, 3, 1, 2, 3]
+  /// ```
   Iterable<E> repeat({int? count}) {
     if (count == 0 || isEmpty) {
       return const [];

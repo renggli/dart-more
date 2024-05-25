@@ -1,5 +1,5 @@
 /// More Dart — Literally.
-library more;
+library;
 
 export 'package:more/async.dart';
 export 'package:more/cache.dart';

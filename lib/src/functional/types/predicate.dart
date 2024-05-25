@@ -1,7 +1,7 @@
 // AUTO-GENERATED CODE: DO NOT EDIT
 
 /// Function type for generic predicate functions.
-library predicate;
+library;
 
 /// Predicate function type with 0 positional arguments.
 typedef Predicate0 = bool Function();

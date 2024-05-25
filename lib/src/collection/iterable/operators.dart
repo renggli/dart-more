@@ -7,12 +7,11 @@ extension OperatorsIterableExtension<E> on Iterable<E> {
   /// Throws a [StateError] if the iterable is empty, unless an [orElse]
   /// function is provided.
   ///
-  /// For example
+  /// For example:
   ///
-  ///     [3, 1, 2].min()
-  ///
-  /// returns `1`.
-  ///
+  /// ```dart
+  /// print([3, 1, 2].min());  // 1
+  /// ```
   E min({Comparator<E>? comparator, E Function()? orElse}) =>
       (comparator ?? naturalCompare).minOf(this, orElse: orElse);
 
@@ -22,12 +21,11 @@ extension OperatorsIterableExtension<E> on Iterable<E> {
   /// Throws a [StateError] if the iterable is empty, unless an [orElse]
   /// function is provided.
   ///
-  /// For example
+  /// For example:
   ///
-  ///     [3, 1, 2].max()
-  ///
-  /// returns `3`.
-  ///
+  /// ```dart
+  /// print([3, 1, 2].max());  // 3
+  /// ```
   E max({Comparator<E>? comparator, E Function()? orElse}) =>
       (comparator ?? naturalCompare).maxOf(this, orElse: orElse);
 
@@ -37,12 +35,11 @@ extension OperatorsIterableExtension<E> on Iterable<E> {
   /// Throws a [StateError] if the iterable is empty, unless an [orElse]
   /// function is provided.
   ///
-  /// For example
+  /// For example:
   ///
-  ///     [3, 1, 2].minMax()
-  ///
-  /// returns `(min: 1, max: 3)`.
-  ///
+  /// ```dart
+  /// print([3, 1, 2].minMax());  // (min: 1, max: 3)
+  /// ```
   ({E min, E max}) minMax(
           {Comparator<E>? comparator, ({E min, E max}) Function()? orElse}) =>
       (comparator ?? naturalCompare).minMaxOf(this, orElse: orElse);
@@ -51,12 +48,11 @@ extension OperatorsIterableExtension<E> on Iterable<E> {
   /// elements need to be [Comparable], unless a custom [comparator] is
   /// provided.
   ///
-  /// For example
+  /// For example:
   ///
-  ///     [3, 1, 2].smallest(2)
-  ///
-  /// returns `[1, 2]`.
-  ///
+  /// ```dart
+  /// print([3, 1, 2].smallest(2));  // [1, 2]
+  /// ```
   List<E> smallest(int count, {Comparator<E>? comparator}) =>
       (comparator ?? naturalCompare).smallest(this, count);
 
@@ -64,12 +60,11 @@ extension OperatorsIterableExtension<E> on Iterable<E> {
   /// elements need to be [Comparable], unless a custom [comparator] is
   /// provided.
   ///
-  /// For example
+  /// For example:
   ///
-  ///     [3, 1, 2].largest(2)
-  ///
-  /// returns `[3, 2]`.
-  ///
+  /// ```dart
+  /// print([3, 1, 2].largest(2));  // [3, 2]
+  /// ```
   List<E> largest(int count, {Comparator<E>? comparator}) =>
       (comparator ?? naturalCompare).largest(this, count);
 }
