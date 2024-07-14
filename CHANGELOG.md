@@ -1,6 +1,6 @@
 # Changelog
 
-## 4.3.0 (unpublished)
+## 4.3.0
 - Dart 3.4 requirement.
 - Make `IntegerRange` and `DoubleRange` const constructable.
 - Numerous improvements to the Graph library:
@@ -8,6 +8,7 @@
   - Add Prim's minimum spanning tree.
 - Simplify the `Interval` implementation to only support closed intervals.
 - Add a `Fenwick` and `Interval` trees.
+- Minor bug-fixes.
 
 ## 4.2.0
 - Improved `Iterable.index` to more common argument names, and support `step`.
