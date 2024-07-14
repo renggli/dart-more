@@ -134,13 +134,13 @@ class Fraction
   final int a;
 
   /// Alternative way to access the numerator of the fraction.
-  num get numerator => a;
+  int get numerator => a;
 
   /// Returns the denominator of the fraction.
   final int b;
 
   /// Alternative way to access the denominator of the fraction.
-  num get denominator => b;
+  int get denominator => b;
 
   /// Returns the negation of this fraction.
   Fraction operator -() => Fraction._(-a, b);
