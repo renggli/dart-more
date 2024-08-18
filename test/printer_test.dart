@@ -3,7 +3,6 @@
 import 'dart:math';
 
 import 'package:more/collection.dart';
-import 'package:more/feature.dart';
 import 'package:more/math.dart';
 import 'package:more/printer.dart';
 import 'package:more/temporal.dart';
@@ -702,10 +701,7 @@ void main() {
         '0000-01-01T00:00:00.000',
         '1980-11-06T08:25:00.000',
         '1969-07-20T20:18:04.012',
-        if (isJavaScript)
-          '2023-10-24T18:08:32.272'
-        else
-          '2023-10-24T18:08:32.271828',
+        '2023-10-24T18:08:32.271828',
       ]);
     });
     group('era', () {
@@ -846,11 +842,7 @@ void main() {
     group('millisecond', () {
       test('default', () {
         final printer = DateTimePrinter((builder) => builder.millisecond());
-        expect(
-            dateTimes.map(printer.print),
-            isJavaScript
-                ? ['000', '000', '012', '272']
-                : ['000', '000', '012', '271']);
+        expect(dateTimes.map(printer.print), ['000', '000', '012', '271']);
       });
       test('width: 2', () {
         final printer =
@@ -861,23 +853,17 @@ void main() {
     group('microsecond', () {
       test('default', () {
         final printer = DateTimePrinter((builder) => builder.microsecond());
-        expect(
-            dateTimes.map(printer.print),
-            isJavaScript
-                ? ['000', '000', '000', '000']
-                : ['000', '000', '000', '828']);
+        expect(dateTimes.map(printer.print), ['000', '000', '000', '828']);
       });
       test('width: 2', () {
         final printer =
             DateTimePrinter((builder) => builder.microsecond(width: 2));
-        expect(dateTimes.map(printer.print),
-            isJavaScript ? ['00', '00', '00', '00'] : ['00', '00', '00', '82']);
+        expect(dateTimes.map(printer.print), ['00', '00', '00', '82']);
       });
       test('skipIfZero', () {
         final printer =
             DateTimePrinter((builder) => builder.microsecond(skipIfZero: true));
-        expect(dateTimes.map(printer.print),
-            isJavaScript ? ['', '', '', ''] : ['', '', '', '828']);
+        expect(dateTimes.map(printer.print), ['', '', '', '828']);
       });
     });
     test('toString', () {
