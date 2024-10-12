@@ -16,12 +16,13 @@ Future<void> generateCallback() async {
   out.writeln('/// Function types for generic callbacks.');
   out.writeln('library;');
   out.writeln();
+  out.writeln("import 'mapping.dart';");
 
   for (var i = 0; i < max; i++) {
     out.writeln('/// Callback function type with $i positional '
         'argument${i == 1 ? '' : 's'}.');
     out.writeln('typedef Callback$i${generify(generateTypes(i))} = '
-        'void Function(${listify(generateTypeAndArgs(i))});');
+        'Map$i${generify([...generateTypes(i), 'void'])};');
     out.writeln();
   }
 
@@ -58,12 +59,13 @@ Future<void> generatePredicate() async {
   out.writeln('/// Function type for generic predicate functions.');
   out.writeln('library;');
   out.writeln();
+  out.writeln("import 'mapping.dart';");
 
   for (var i = 0; i < max; i++) {
     out.writeln('/// Predicate function type with $i positional '
         'argument${i == 1 ? '' : 's'}.');
     out.writeln('typedef Predicate$i${generify(generateTypes(i))} = '
-        'bool Function(${listify(generateTypeAndArgs(i))});');
+        'Map$i${generify([...generateTypes(i), 'bool'])};');
     out.writeln();
   }
 
