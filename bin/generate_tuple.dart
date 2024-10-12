@@ -37,10 +37,6 @@ final File testFile = File('test/tuple_test.dart');
 /// Random generator for hash values.
 final Random generator = Random(42);
 
-/// Pretty prints and cleans up a dart file.
-Future<void> format(File file) async =>
-    Process.run('dart', ['format', '--fix', file.absolute.path]);
-
 Future<void> generateExport() async {
   final file = exportFile;
   final out = file.openWrite();
