@@ -1,6 +1,7 @@
 import 'dart:typed_data';
 
 import '../char_matcher.dart';
+import 'bidi_class.dart' as bidi_class;
 import 'category.dart' as category;
 import 'property.dart' as property;
 
@@ -247,6 +248,105 @@ class UnicodeCharMatcher extends CharMatcher {
   factory UnicodeCharMatcher.regionalIndicator() =>
       UnicodeCharMatcher(_propertyData2, property.regionalIndicator);
 
+  /// Bidi Classes
+  factory UnicodeCharMatcher.bidiLeftToRight() =>
+      UnicodeCharMatcher(_bidiClassData, bidi_class.l);
+
+  factory UnicodeCharMatcher.bidiRightToLeft() =>
+      UnicodeCharMatcher(_bidiClassData, bidi_class.r);
+
+  factory UnicodeCharMatcher.bidiRightToLeftArabic() =>
+      UnicodeCharMatcher(_bidiClassData, bidi_class.al);
+
+  factory UnicodeCharMatcher.bidiEuropeanNumber() =>
+      UnicodeCharMatcher(_bidiClassData, bidi_class.en);
+
+  factory UnicodeCharMatcher.bidiEuropeanNumberSeparator() =>
+      UnicodeCharMatcher(_bidiClassData, bidi_class.es);
+
+  factory UnicodeCharMatcher.bidiEuropeanNumberTerminator() =>
+      UnicodeCharMatcher(_bidiClassData, bidi_class.et);
+
+  factory UnicodeCharMatcher.bidiArabicNumber() =>
+      UnicodeCharMatcher(_bidiClassData, bidi_class.an);
+
+  factory UnicodeCharMatcher.bidiCommonNumberSeparator() =>
+      UnicodeCharMatcher(_bidiClassData, bidi_class.cs);
+
+  factory UnicodeCharMatcher.bidiNonspacingMark() =>
+      UnicodeCharMatcher(_bidiClassData, bidi_class.nsm);
+
+  factory UnicodeCharMatcher.bidiBoundaryNeutral() =>
+      UnicodeCharMatcher(_bidiClassData, bidi_class.bn);
+
+  factory UnicodeCharMatcher.bidiParagraphSeparator() =>
+      UnicodeCharMatcher(_bidiClassData, bidi_class.b);
+
+  factory UnicodeCharMatcher.bidiSegmentSeparator() =>
+      UnicodeCharMatcher(_bidiClassData, bidi_class.s);
+
+  factory UnicodeCharMatcher.bidiWhitespace() =>
+      UnicodeCharMatcher(_bidiClassData, bidi_class.ws);
+
+  factory UnicodeCharMatcher.bidiOtherNeutrals() =>
+      UnicodeCharMatcher(_bidiClassData, bidi_class.on);
+
+  factory UnicodeCharMatcher.bidiLeftToRightEmbedding() =>
+      UnicodeCharMatcher(_bidiClassData, bidi_class.lre);
+
+  factory UnicodeCharMatcher.bidiLeftToRightOverride() =>
+      UnicodeCharMatcher(_bidiClassData, bidi_class.lro);
+
+  factory UnicodeCharMatcher.bidiRightToLeftEmbedding() =>
+      UnicodeCharMatcher(_bidiClassData, bidi_class.rle);
+
+  factory UnicodeCharMatcher.bidiRightToLeftOverride() =>
+      UnicodeCharMatcher(_bidiClassData, bidi_class.rlo);
+
+  factory UnicodeCharMatcher.bidiPopDirectionalFormat() =>
+      UnicodeCharMatcher(_bidiClassData, bidi_class.pdf);
+
+  factory UnicodeCharMatcher.bidiLeftToRightIsolate() =>
+      UnicodeCharMatcher(_bidiClassData, bidi_class.lri);
+
+  factory UnicodeCharMatcher.bidiRightToLeftIsolate() =>
+      UnicodeCharMatcher(_bidiClassData, bidi_class.rli);
+
+  factory UnicodeCharMatcher.bidiFirstStrongIsolate() =>
+      UnicodeCharMatcher(_bidiClassData, bidi_class.fsi);
+
+  factory UnicodeCharMatcher.bidiPopDirectionalIsolate() =>
+      UnicodeCharMatcher(_bidiClassData, bidi_class.pdi);
+
+  /// Bidi Class Categories
+  factory UnicodeCharMatcher.bidiStrong() => UnicodeCharMatcher(
+      _bidiClassData, bidi_class.l | bidi_class.r | bidi_class.al);
+
+  factory UnicodeCharMatcher.bidiWeak() => UnicodeCharMatcher(
+      _bidiClassData,
+      bidi_class.en |
+          bidi_class.es |
+          bidi_class.et |
+          bidi_class.an |
+          bidi_class.cs |
+          bidi_class.nsm |
+          bidi_class.bn);
+
+  factory UnicodeCharMatcher.bidiNeutral() => UnicodeCharMatcher(_bidiClassData,
+      bidi_class.b | bidi_class.s | bidi_class.ws | bidi_class.on);
+
+  factory UnicodeCharMatcher.bidiExplicitFormatting() => UnicodeCharMatcher(
+      _bidiClassData,
+      bidi_class.lre |
+          bidi_class.lro |
+          bidi_class.rle |
+          bidi_class.rlo |
+          bidi_class.pdf |
+          bidi_class.lri |
+          bidi_class.rli |
+          bidi_class.fsi |
+          bidi_class.pdi);
+
   final List<int> data;
   final int mask;
 
@@ -258,6 +358,7 @@ const _unicodeCharCount = 0x10ffff + 1;
 final _categoryData = _decode(category.data);
 final _propertyData1 = _decode(property.data1);
 final _propertyData2 = _decode(property.data2);
+final _bidiClassData = _decode(bidi_class.data);
 
 List<int> _decode(List<int> input) {
   final output = Int32List(_unicodeCharCount);

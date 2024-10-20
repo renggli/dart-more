@@ -36,6 +36,8 @@ final unicodeBlocksUrl =
     Uri.parse('https://www.unicode.org/Public/$unicodeVersion/ucd/Blocks.txt');
 final unicodeCategoryListUrl = Uri.parse(
     'https://www.unicode.org/Public/$unicodeVersion/ucd/extracted/DerivedGeneralCategory.txt');
+final unicodeBidiClassListUrl = Uri.parse(
+    'https://www.unicode.org/Public/$unicodeVersion/ucd/extracted/DerivedBidiClass.txt');
 
 /// Reads the unicode database.
 final Future<List<UnicodeData>> unicodeData = _getUnicodeData();
