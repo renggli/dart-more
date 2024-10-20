@@ -128,6 +128,7 @@ String characterList(String input) =>
 Future<void> main() => Future.wait([
       generatePropertyData('category', unicodeCategoryListUrl),
       generatePropertyData('property', unicodePropertyListUrl),
+      generatePropertyData('bidi_class', unicodeBidiClassListUrl),
       generateUnicodeBlocks(),
       generateDecimalData(),
     ]);
