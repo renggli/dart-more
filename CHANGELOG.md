@@ -1,5 +1,10 @@
 # Changelog
 
+## 4.4.0 (unpublished)
+- Add [Bidirectional Character Types](https://www.unicode.org/reports/tr9/#Table_Bidirectional_Character_Types) to `UnicodeCharMatcher` (thanks to https://github.com/amake).
+- Remove no longer necessary JavaScript specific code.
+- Optimize function types.
+
 ## 4.3.0
 - Dart 3.4 requirement.
 - Make `IntegerRange` and `DoubleRange` const constructable.
