@@ -1,6 +1,6 @@
 # Changelog
 
-## 4.4.0 (unpublished)
+## 4.4.0
 - Add [Bidirectional Character Types](https://www.unicode.org/reports/tr9/#Table_Bidirectional_Character_Types) to `UnicodeCharMatcher` (thanks to https://github.com/amake).
 - Remove no longer necessary JavaScript specific code.
 - Optimize function types.
