@@ -695,7 +695,47 @@ void main() {
       DateTime.utc(1969, 7, 20, 20, 18, 4, 12),
       DateTime.utc(2023, 10, 24, 18, 8, 32, 271, 828),
     ];
-    test('iso8691', () {
+    test('date', () {
+      final printer = DateTimePrinter.date(separator: '.');
+      expect(dateTimes.map(printer.print), [
+        '0000.01.01',
+        '1980.11.06',
+        '1969.07.20',
+        '2023.10.24',
+      ]);
+    });
+    test('time', () {
+      final printer = DateTimePrinter.time(separator: '.', milliseconds: false);
+      expect(dateTimes.map(printer.print), [
+        '00.00.00',
+        '08.25.00',
+        '20.18.04',
+        '18.08.32',
+      ]);
+    });
+    test('dateTime', () {
+      final printer = DateTimePrinter.dateTime(
+          dateSeparator: '.',
+          timeSeparator: '.',
+          dateTimeSeparator: ' ',
+          microseconds: false);
+      expect(dateTimes.map(printer.print), [
+        '0000.01.01 00.00.00.000',
+        '1980.11.06 08.25.00.000',
+        '1969.07.20 20.18.04.012',
+        '2023.10.24 18.08.32.271',
+      ]);
+    });
+    test('iso8601', () {
+      final printer = DateTimePrinter.iso8601();
+      expect(dateTimes.map(printer.print), [
+        '0000-01-01T00:00:00.000',
+        '1980-11-06T08:25:00.000',
+        '1969-07-20T20:18:04.012',
+        '2023-10-24T18:08:32.271828',
+      ]);
+    });
+    test('iso8691 (deprecated)', () {
       final printer = DateTimePrinter.iso8691();
       expect(dateTimes.map(printer.print), [
         '0000-01-01T00:00:00.000',
@@ -867,7 +907,7 @@ void main() {
       });
     });
     test('toString', () {
-      final printer = DateTimePrinter.iso8691();
+      final printer = DateTimePrinter.iso8601();
       expect(printer.toString(), startsWith('DateTimePrinter'));
     });
   });

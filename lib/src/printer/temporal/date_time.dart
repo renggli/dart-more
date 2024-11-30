@@ -37,22 +37,58 @@ class DateTimePrinter extends SequencePrinter<DateTime> {
   /// Internal constructor for [DateTimePrinter].
   const DateTimePrinter._(super.printers);
 
-  /// Returns an ISO-8601 full-precision extended format representation.
-  static DateTimePrinter iso8691() => DateTimePrinter((builder) => builder
-    ..year(width: 4)
-    ..literal('-')
-    ..month(width: 2)
-    ..literal('-')
-    ..day(width: 2)
-    ..literal('T')
-    ..hour(width: 2)
-    ..literal(':')
-    ..minute(width: 2)
-    ..literal(':')
-    ..second(width: 2)
-    ..literal('.')
-    ..millisecond()
-    ..microsecond(skipIfZero: true));
+  /// Returns a configurable date printer.
+  static DateTimePrinter date({String separator = '-'}) =>
+      DateTimePrinter((builder) => builder
+        ..year(width: 4)
+        ..literal(separator)
+        ..month(width: 2)
+        ..literal(separator)
+        ..day(width: 2));
+
+  /// Returns a configurable time printer.
+  static DateTimePrinter time(
+          {String separator = ':',
+          bool milliseconds = true,
+          bool microseconds = true}) =>
+      DateTimePrinter((builder) {
+        builder
+          ..hour(width: 2)
+          ..literal(separator)
+          ..minute(width: 2)
+          ..literal(separator)
+          ..second(width: 2);
+        if (milliseconds) {
+          builder
+            ..literal('.')
+            ..millisecond();
+          if (microseconds) {
+            builder.microsecond(skipIfZero: true);
+          }
+        }
+      });
+
+  /// Returns a configurable time printer.
+  static DateTimePrinter dateTime({
+    String dateSeparator = '-',
+    String dateTimeSeparator = 'T',
+    String timeSeparator = ':',
+    bool milliseconds = true,
+    bool microseconds = true,
+  }) =>
+      DateTimePrinter((builder) => builder
+        ..add(date(separator: dateSeparator))
+        ..literal(dateTimeSeparator)
+        ..add(time(
+            separator: timeSeparator,
+            milliseconds: milliseconds,
+            microseconds: microseconds)));
+
+  /// Returns an ISO-8601 full-precision extended format printer.
+  static DateTimePrinter iso8601() => dateTime();
+
+  @Deprecated('Use `iso8601()` as this method was wrongly named.')
+  static DateTimePrinter iso8691() => iso8601();
 }
 
 /// Builder of [DateTimePrinter] objects.
