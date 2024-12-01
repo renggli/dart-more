@@ -933,6 +933,12 @@ void main() {
         expect(<int>[1, 2, 3].count((each) => each.isOdd), 2);
         expect(<int>[1, 2, 3, 4, 5].count((each) => each.isOdd), 3);
       });
+      test('occurrences', () {
+        expect(<int>[].occurrences(5), 0);
+        expect(<int>[5].occurrences(5), 1);
+        expect(<int>[1].occurrences(5), 0);
+        expect(<int>[1, 5, 4, 5, 2].occurrences(5), 2);
+      });
     });
     group('flatMap', () {
       test('empty', () {
