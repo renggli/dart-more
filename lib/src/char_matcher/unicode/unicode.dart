@@ -365,10 +365,7 @@ List<int> _decode(List<int> input) {
   for (var i = 0, o = 0; o < output.length;) {
     final i1 = input[i++];
     if (i1 < 0) {
-      final i2 = input[i++];
-      for (var j = i1; j < 0; j++) {
-        output[o++] = i2;
-      }
+      output.fillRange(o, o -= i1, input[i++]);
     } else {
       output[o++] = i1;
     }
