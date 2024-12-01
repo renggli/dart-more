@@ -49,7 +49,7 @@ extension SearchComparator<T> on Comparator<T> {
 
   /// Performs a binary search of [value] on the sorted [list]. Returns the
   /// the last suitable insertion index such that
-  /// `list[index - 1] <= value< list[index]` (upper bound). The result is
+  /// `list[index - 1] <= value < list[index]` (upper bound). The result is
   /// undefined if the list is not sorted.
   ///
   /// By default the whole [list] is searched, but if [start] and/or [end]

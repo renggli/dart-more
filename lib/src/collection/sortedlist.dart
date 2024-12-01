@@ -42,6 +42,13 @@ class SortedList<E> extends ListBase<E> implements PriorityQueue<E> {
   bool contains(Object? element) =>
       element is E && _comparator.binarySearch(_values, element) >= 0;
 
+  /// Returns the number of times the element appears in the sorted list.
+  int occurrences(E element) {
+    final lower = _comparator.binarySearchLower(_values, element);
+    final upper = _comparator.binarySearchUpper(_values, element);
+    return upper - lower;
+  }
+
   @override
   void add(E element) {
     final index = _comparator.binarySearchLower(_values, element).abs();

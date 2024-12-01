@@ -4996,6 +4996,15 @@ void allSortedListTests(
     expect(list.contains(6), isFalse);
     expect(list.contains(null), isFalse);
   });
+  test('occurrences', () {
+    final list = createSortedList<int>([1, 2, 2, 3, 3, 3, 4, 4, 4, 4]);
+    expect(list.occurrences(0), 0);
+    expect(list.occurrences(1), 1);
+    expect(list.occurrences(2), 2);
+    expect(list.occurrences(3), 3);
+    expect(list.occurrences(4), 4);
+    expect(list.occurrences(5), 0);
+  });
   test('add', () {
     final list = createSortedList<int>([5, 1, 3]);
     expect(list, [1, 3, 5]);
