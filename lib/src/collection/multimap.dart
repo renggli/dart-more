@@ -34,6 +34,10 @@ abstract class Multimap<K, V, VS extends Iterable<V>> {
   /// The values of this multimap.
   Iterable<V> get values => _map.values.expand((values) => values);
 
+  /// The entries of this multimap.
+  Iterable<MapEntry<K, V>> get entries => _map.entries.expand(
+      (entry) => entry.value.map((value) => MapEntry(entry.key, value)));
+
   /// Applies [callback] to each key/value of this multimap.
   void forEach(void Function(K key, V value) callback) {
     for (final MapEntry(:key, value: values) in _map.entries) {
@@ -43,10 +47,10 @@ abstract class Multimap<K, V, VS extends Iterable<V>> {
     }
   }
 
-  /// Returns true if this map contains the given [key].
+  /// Returns true, if this map contains the given [key].
   bool containsKey(K? key) => _map.containsKey(key);
 
-  /// Returns true if this map contains the given [value].
+  /// Returns true, if this map contains the given [value].
   bool containsValue(V? value) {
     for (final values in _map.values) {
       if (values.contains(value)) {
@@ -55,6 +59,9 @@ abstract class Multimap<K, V, VS extends Iterable<V>> {
     }
     return false;
   }
+
+  /// Returns true, if this map contains a [key] and [value] entry.
+  bool containsEntry(K? key, V? value) => _map[key]?.contains(value) ?? false;
 
   /// Returns the values for the given [key].
   VS operator [](K key) => lookupValues(key) as VS;

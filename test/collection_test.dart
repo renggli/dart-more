@@ -21,6 +21,10 @@ List<bool> randomBooleans(int seed, int length) {
 
 String joiner(List<String> input) => input.join('');
 
+Matcher isMapEntry<K, V>(K key, V value) => isA<MapEntry<K, V>>()
+    .having((entry) => entry.key, 'key', key)
+    .having((entry) => entry.value, 'value', value);
+
 void main() {
   group('bimap', () {
     final example = BiMap.of({1: 'a', 2: 'b', 3: 'c'});
@@ -2459,6 +2463,7 @@ void main() {
           expect(map.asMap(), isEmpty);
           expect(map.keys, isEmpty);
           expect(map.values, isEmpty);
+          expect(map.entries, isEmpty);
         });
         test('of', () {
           final map = ListMultimap.of(
@@ -2468,6 +2473,8 @@ void main() {
           expect(map.isNotEmpty, isTrue);
           expect(map.keys, ['a', 'b']);
           expect(map.values, [1, 2, 3]);
+          expect(map.entries,
+              [isMapEntry('a', 1), isMapEntry('b', 2), isMapEntry('b', 3)]);
           expect(map.asMap(), {
             'a': [1],
             'b': [2, 3]
@@ -2482,6 +2489,7 @@ void main() {
           expect(map.asMap(), isEmpty);
           expect(map.keys, isEmpty);
           expect(map.values, isEmpty);
+          expect(map.entries, isEmpty);
         });
         test('fromIterable', () {
           final map = ListMultimap<String, int>.fromIterable(IntegerRange(3),
@@ -2490,6 +2498,8 @@ void main() {
           expect(map, hasLength(3));
           expect(map.keys, ['a', 'b', 'c']);
           expect(map.values, [1, 2, 3]);
+          expect(map.entries,
+              [isMapEntry('a', 1), isMapEntry('b', 2), isMapEntry('c', 3)]);
           expect(map.asMap(), {
             'a': [1],
             'b': [2],
@@ -2504,6 +2514,8 @@ void main() {
           expect(map, hasLength(3));
           expect(map.keys, [0, 1, 2]);
           expect(map.values, [0, 1, 2]);
+          expect(map.entries,
+              [isMapEntry(0, 0), isMapEntry(1, 1), isMapEntry(2, 2)]);
           expect(map.asMap(), {
             0: [0],
             1: [1],
@@ -2518,6 +2530,8 @@ void main() {
           expect(map, hasLength(3));
           expect(map.keys, ['a', 'b']);
           expect(map.values, [1, 2, 3]);
+          expect(map.entries,
+              [isMapEntry('a', 1), isMapEntry('b', 2), isMapEntry('b', 3)]);
           expect(map.asMap(), {
             'a': [1],
             'b': [2, 3]
@@ -2535,6 +2549,8 @@ void main() {
           expect(map, hasLength(3));
           expect(map.keys, ['a', 'b']);
           expect(map.values, [1, 2, 3]);
+          expect(map.entries,
+              [isMapEntry('a', 1), isMapEntry('b', 2), isMapEntry('b', 3)]);
           expect(map.asMap(), {
             'a': [1],
             'b': [2, 3]
@@ -2546,6 +2562,8 @@ void main() {
           final target = {'a': 1, 'b': 2, 'c': 3}.toListMultimap();
           expect(target.keys, ['a', 'b', 'c']);
           expect(target.values, [1, 2, 3]);
+          expect(target.entries,
+              [isMapEntry('a', 1), isMapEntry('b', 2), isMapEntry('c', 3)]);
           expect(target.asMap(), {
             'a': [1],
             'b': [2],
@@ -2557,6 +2575,12 @@ void main() {
               .toListMultimap(key: (e) => e[0], value: (e) => e.length);
           expect(target.keys, ['a', 'b']);
           expect(target.values, [1, 3, 3, 2]);
+          expect(target.entries, [
+            isMapEntry('a', 1),
+            isMapEntry('a', 3),
+            isMapEntry('a', 3),
+            isMapEntry('b', 2)
+          ]);
           expect(target.asMap(), {
             'a': [1, 3, 3],
             'b': [2],
@@ -2566,6 +2590,11 @@ void main() {
           final target = ['a', 'b', 'b'].toListMultimap<String, String>();
           expect(target.keys, ['a', 'b']);
           expect(target.values, ['a', 'b', 'b']);
+          expect(target.entries, [
+            isMapEntry('a', 'a'),
+            isMapEntry('b', 'b'),
+            isMapEntry('b', 'b')
+          ]);
           expect(target.asMap(), {
             'a': ['a'],
             'b': ['b', 'b']
@@ -2585,6 +2614,12 @@ void main() {
           expect(map.containsValue(2), isTrue);
           expect(map.containsValue(3), isTrue);
           expect(map.containsValue(4), isFalse);
+        });
+        test('containsEntry', () {
+          final map = ListMultimap.fromIterables(['a', 'b', 'b'], [1, 2, 3]);
+          expect(map.containsEntry('a', 1), isTrue);
+          expect(map.containsEntry('a', 2), isFalse);
+          expect(map.containsEntry('c', 3), isFalse);
         });
         test('read', () {
           final map = ListMultimap.fromIterables(['a', 'b', 'b'], [1, 2, 3]);
@@ -2741,6 +2776,7 @@ void main() {
           expect(map.asMap(), isEmpty);
           expect(map.keys, isEmpty);
           expect(map.values, isEmpty);
+          expect(map.entries, isEmpty);
         });
         test('of', () {
           final map = SetMultimap.of(
@@ -2750,6 +2786,8 @@ void main() {
           expect(map.isNotEmpty, isTrue);
           expect(map.keys, ['a', 'b']);
           expect(map.values, [1, 2, 3]);
+          expect(map.entries,
+              [isMapEntry('a', 1), isMapEntry('b', 2), isMapEntry('b', 3)]);
           expect(map.asMap(), {
             'a': [1],
             'b': [2, 3]
@@ -2764,6 +2802,7 @@ void main() {
           expect(map.asMap(), isEmpty);
           expect(map.keys, isEmpty);
           expect(map.values, isEmpty);
+          expect(map.entries, isEmpty);
         });
         test('fromIterable', () {
           final map = SetMultimap<String, int>.fromIterable(IntegerRange(3),
@@ -2772,6 +2811,8 @@ void main() {
           expect(map, hasLength(3));
           expect(map.keys, ['a', 'b', 'c']);
           expect(map.values, [1, 2, 3]);
+          expect(map.entries,
+              [isMapEntry('a', 1), isMapEntry('b', 2), isMapEntry('c', 3)]);
           expect(map.asMap(), {
             'a': [1],
             'b': [2],
@@ -2786,6 +2827,8 @@ void main() {
           expect(map, hasLength(3));
           expect(map.keys, [0, 1, 2]);
           expect(map.values, [0, 1, 2]);
+          expect(map.entries,
+              [isMapEntry(0, 0), isMapEntry(1, 1), isMapEntry(2, 2)]);
           expect(map.asMap(), {
             0: [0],
             1: [1],
@@ -2800,6 +2843,8 @@ void main() {
           expect(map, hasLength(3));
           expect(map.keys, ['a', 'b']);
           expect(map.values, [1, 2, 3]);
+          expect(map.entries,
+              [isMapEntry('a', 1), isMapEntry('b', 2), isMapEntry('b', 3)]);
           expect(map.asMap(), {
             'a': [1],
             'b': [2, 3]
@@ -2817,6 +2862,8 @@ void main() {
           expect(map, hasLength(3));
           expect(map.keys, ['a', 'b']);
           expect(map.values, [1, 2, 3]);
+          expect(map.entries,
+              [isMapEntry('a', 1), isMapEntry('b', 2), isMapEntry('b', 3)]);
           expect(map.asMap(), {
             'a': [1],
             'b': [2, 3]
@@ -2828,6 +2875,8 @@ void main() {
           final target = {'a': 1, 'b': 2, 'c': 3}.toSetMultimap();
           expect(target.keys, ['a', 'b', 'c']);
           expect(target.values, [1, 2, 3]);
+          expect(target.entries,
+              [isMapEntry('a', 1), isMapEntry('b', 2), isMapEntry('c', 3)]);
           expect(target.asMap(), {
             'a': [1],
             'b': [2],
@@ -2839,6 +2888,8 @@ void main() {
               .toSetMultimap(key: (e) => e[0], value: (e) => e.length);
           expect(target.keys, ['a', 'b']);
           expect(target.values, [1, 3, 2]);
+          expect(target.entries,
+              [isMapEntry('a', 1), isMapEntry('a', 3), isMapEntry('b', 2)]);
           expect(target.asMap(), {
             'a': {1, 3},
             'b': {2},
@@ -2848,6 +2899,7 @@ void main() {
           final target = ['a', 'b', 'b'].toSetMultimap<String, String>();
           expect(target.keys, ['a', 'b']);
           expect(target.values, ['a', 'b']);
+          expect(target.entries, [isMapEntry('a', 'a'), isMapEntry('b', 'b')]);
           expect(target.asMap(), {
             'a': {'a'},
             'b': {'b'}
@@ -2867,6 +2919,12 @@ void main() {
           expect(map.containsValue(2), isTrue);
           expect(map.containsValue(3), isTrue);
           expect(map.containsValue(4), isFalse);
+        });
+        test('containsEntry', () {
+          final map = SetMultimap.fromIterables(['a', 'b', 'b'], [1, 2, 3]);
+          expect(map.containsEntry('a', 1), isTrue);
+          expect(map.containsEntry('a', 2), isFalse);
+          expect(map.containsEntry('c', 3), isFalse);
         });
         test('lookup', () {
           final map = SetMultimap.fromIterables(['a', 'b', 'b'], [1, 2, 3]);
