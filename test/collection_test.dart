@@ -3050,6 +3050,8 @@ void main() {
         expect(set, isEmpty);
         expect(set, hasLength(0));
         expect(set, unorderedEquals([]));
+        expect(set.entrySet, unorderedEquals([]));
+        expect(set.elementSet, unorderedEquals([]));
         expect(set.distinct, unorderedEquals([]));
         expect(set.counts, unorderedEquals([]));
       });
@@ -3058,6 +3060,8 @@ void main() {
         expect(set, isEmpty);
         expect(set, hasLength(0));
         expect(set, unorderedEquals([]));
+        expect(set.entrySet, unorderedEquals([]));
+        expect(set.elementSet, unorderedEquals([]));
         expect(set.distinct, unorderedEquals([]));
         expect(set.counts, unorderedEquals([]));
       });
@@ -3066,6 +3070,8 @@ void main() {
         expect(set, isNot(isEmpty));
         expect(set, hasLength(1));
         expect(set, unorderedEquals(['a']));
+        expect(set.entrySet, unorderedEquals([isMapEntry('a', 1)]));
+        expect(set.elementSet, unorderedEquals(['a']));
         expect(set.distinct, unorderedEquals(['a']));
         expect(set.counts, unorderedEquals([1]));
       });
@@ -3074,6 +3080,11 @@ void main() {
         expect(set, isNot(isEmpty));
         expect(set, hasLength(3));
         expect(set, unorderedEquals(['a', 'b', 'c']));
+        expect(
+            set.entrySet,
+            unorderedEquals(
+                [isMapEntry('a', 1), isMapEntry('b', 1), isMapEntry('c', 1)]));
+        expect(set.elementSet, unorderedEquals(['a', 'b', 'c']));
         expect(set.distinct, unorderedEquals(['a', 'b', 'c']));
         expect(set.counts, unorderedEquals([1, 1, 1]));
       });
@@ -3082,6 +3093,8 @@ void main() {
         expect(set, isNot(isEmpty));
         expect(set, hasLength(3));
         expect(set, unorderedEquals(['a', 'a', 'a']));
+        expect(set.entrySet, unorderedEquals([isMapEntry('a', 3)]));
+        expect(set.elementSet, unorderedEquals(['a']));
         expect(set.distinct, unorderedEquals(['a']));
         expect(set.counts, unorderedEquals([3]));
       });
@@ -3090,6 +3103,11 @@ void main() {
         expect(set, isNot(isEmpty));
         expect(set, hasLength(6));
         expect(set, unorderedEquals(['a', 'a', 'a', 'b', 'b', 'c']));
+        expect(
+            set.entrySet,
+            unorderedEquals(
+                [isMapEntry('a', 3), isMapEntry('b', 2), isMapEntry('c', 1)]));
+        expect(set.elementSet, unorderedEquals(['a', 'b', 'c']));
         expect(set.distinct, unorderedEquals(['a', 'b', 'c']));
         expect(set.counts, unorderedEquals([3, 2, 1]));
       });
@@ -3098,6 +3116,11 @@ void main() {
         expect(set, isNot(isEmpty));
         expect(set, hasLength(3));
         expect(set, unorderedEquals(['a', 'b', 'c']));
+        expect(
+            set.entrySet,
+            unorderedEquals(
+                [isMapEntry('a', 1), isMapEntry('b', 1), isMapEntry('c', 1)]));
+        expect(set.elementSet, unorderedEquals(['a', 'b', 'c']));
         expect(set.distinct, unorderedEquals(['a', 'b', 'c']));
         expect(set.counts, unorderedEquals([1, 1, 1]));
       });
@@ -3106,6 +3129,11 @@ void main() {
         expect(set, isNot(isEmpty));
         expect(set, hasLength(6));
         expect(set, unorderedEquals(['a', 'a', 'a', 'b', 'b', 'c']));
+        expect(
+            set.entrySet,
+            unorderedEquals(
+                [isMapEntry('a', 3), isMapEntry('b', 2), isMapEntry('c', 1)]));
+        expect(set.elementSet, unorderedEquals(['a', 'b', 'c']));
         expect(set.distinct, unorderedEquals(['a', 'b', 'c']));
         expect(set.counts, unorderedEquals([3, 2, 1]));
       });
@@ -3114,6 +3142,11 @@ void main() {
         expect(set, isNot(isEmpty));
         expect(set, hasLength(6));
         expect(set, unorderedEquals(['a', 'a', 'a', 'b', 'b', 'c']));
+        expect(
+            set.entrySet,
+            unorderedEquals(
+                [isMapEntry('a', 3), isMapEntry('b', 2), isMapEntry('c', 1)]));
+        expect(set.elementSet, unorderedEquals(['a', 'b', 'c']));
         expect(set.distinct, unorderedEquals(['a', 'b', 'c']));
         expect(set.counts, unorderedEquals([3, 2, 1]));
       });
@@ -3123,6 +3156,11 @@ void main() {
         expect(set, isNot(isEmpty));
         expect(set, hasLength(6));
         expect(set, unorderedEquals(['a', 'a', 'a', 'b', 'b', 'c']));
+        expect(
+            set.entrySet,
+            unorderedEquals(
+                [isMapEntry('a', 3), isMapEntry('b', 2), isMapEntry('c', 1)]));
+        expect(set.elementSet, unorderedEquals(['a', 'b', 'c']));
         expect(set.distinct, unorderedEquals(['a', 'b', 'c']));
         expect(set.counts, unorderedEquals([3, 2, 1]));
       });
@@ -3132,6 +3170,11 @@ void main() {
         expect(set, isNot(isEmpty));
         expect(set, hasLength(6));
         expect(set, unorderedEquals([97, 97, 97, 98, 98, 99]));
+        expect(
+            set.entrySet,
+            unorderedEquals(
+                [isMapEntry(97, 3), isMapEntry(98, 2), isMapEntry(99, 1)]));
+        expect(set.elementSet, unorderedEquals([97, 98, 99]));
         expect(set.distinct, unorderedEquals([97, 98, 99]));
         expect(set.counts, unorderedEquals([3, 2, 1]));
       });
@@ -3142,6 +3185,11 @@ void main() {
         expect(set, isNot(isEmpty));
         expect(set, hasLength(6));
         expect(set, unorderedEquals(['a', 'a', 'a', 'b', 'b', 'c']));
+        expect(
+            set.entrySet,
+            unorderedEquals(
+                [isMapEntry('a', 3), isMapEntry('b', 2), isMapEntry('c', 1)]));
+        expect(set.elementSet, unorderedEquals(['a', 'b', 'c']));
         expect(set.distinct, unorderedEquals(['a', 'b', 'c']));
         expect(set.counts, unorderedEquals([3, 2, 1]));
       });
@@ -3150,6 +3198,11 @@ void main() {
         expect(set, isNot(isEmpty));
         expect(set, hasLength(6));
         expect(set, unorderedEquals(['a', 'a', 'a', 'b', 'b', 'c']));
+        expect(
+            set.entrySet,
+            unorderedEquals(
+                [isMapEntry('a', 3), isMapEntry('b', 2), isMapEntry('c', 1)]));
+        expect(set.elementSet, unorderedEquals(['a', 'b', 'c']));
         expect(set.distinct, unorderedEquals(['a', 'b', 'c']));
         expect(set.counts, unorderedEquals([3, 2, 1]));
       });
@@ -3162,6 +3215,8 @@ void main() {
         expect(set, isEmpty);
         expect(set, hasLength(0));
         expect(set, unorderedEquals([]));
+        expect(set.entrySet, unorderedEquals([]));
+        expect(set.elementSet, unorderedEquals([]));
         expect(set.distinct, unorderedEquals([]));
         expect(set.counts, unorderedEquals([]));
       });
@@ -3173,6 +3228,9 @@ void main() {
         expect(set, isNot(isEmpty));
         expect(set, hasLength(3));
         expect(set, unorderedEquals(['a', 'b', 'b']));
+        expect(set.entrySet,
+            unorderedEquals([isMapEntry('a', 1), isMapEntry('b', 2)]));
+        expect(set.elementSet, unorderedEquals(['a', 'b']));
         expect(set.distinct, unorderedEquals(['a', 'b']));
         expect(set.counts, unorderedEquals([1, 2]));
       });
@@ -3183,6 +3241,9 @@ void main() {
         expect(set, isNot(isEmpty));
         expect(set, hasLength(5));
         expect(set, unorderedEquals(['a', 'a', 'b', 'b', 'b']));
+        expect(set.entrySet,
+            unorderedEquals([isMapEntry('a', 2), isMapEntry('b', 3)]));
+        expect(set.elementSet, unorderedEquals(['a', 'b']));
         expect(set.distinct, unorderedEquals(['a', 'b']));
         expect(set.counts, unorderedEquals([2, 3]));
       });
@@ -3191,6 +3252,9 @@ void main() {
         expect(set, isNot(isEmpty));
         expect(set, hasLength(5));
         expect(set, unorderedEquals(['a', 'a', 'b', 'b', 'b']));
+        expect(set.entrySet,
+            unorderedEquals([isMapEntry('a', 2), isMapEntry('b', 3)]));
+        expect(set.elementSet, unorderedEquals(['a', 'b']));
         expect(set.distinct, unorderedEquals(['a', 'b']));
         expect(set.counts, unorderedEquals([3, 2]));
       });
@@ -3200,6 +3264,8 @@ void main() {
         expect(set, isEmpty);
         expect(set, hasLength(0));
         expect(set, unorderedEquals([]));
+        expect(set.entrySet, unorderedEquals([]));
+        expect(set.elementSet, unorderedEquals([]));
         expect(set.distinct, unorderedEquals([]));
         expect(set.counts, unorderedEquals([]));
       });
@@ -3213,6 +3279,9 @@ void main() {
         expect(set, isNot(isEmpty));
         expect(set, hasLength(5));
         expect(set, unorderedEquals(['a', 'a', 'b', 'b', 'b']));
+        expect(set.entrySet,
+            unorderedEquals([isMapEntry('a', 2), isMapEntry('b', 3)]));
+        expect(set.elementSet, unorderedEquals(['a', 'b']));
         expect(set.distinct, unorderedEquals(['a', 'b']));
         expect(set.counts, unorderedEquals([2, 3]));
       });
@@ -3224,6 +3293,9 @@ void main() {
         expect(set, isNot(isEmpty));
         expect(set, hasLength(3));
         expect(set, unorderedEquals(['a', 'b', 'b']));
+        expect(set.entrySet,
+            unorderedEquals([isMapEntry('a', 1), isMapEntry('b', 2)]));
+        expect(set.elementSet, unorderedEquals(['a', 'b']));
         expect(set.distinct, unorderedEquals(['a', 'b']));
         expect(set.counts, unorderedEquals([1, 2]));
       });
@@ -3235,6 +3307,8 @@ void main() {
         expect(set, isNot(isEmpty));
         expect(set, hasLength(1));
         expect(set, unorderedEquals(['b']));
+        expect(set.entrySet, unorderedEquals([isMapEntry('b', 1)]));
+        expect(set.elementSet, unorderedEquals(['b']));
         expect(set.distinct, unorderedEquals(['b']));
         expect(set.counts, unorderedEquals([1]));
       });
@@ -3244,6 +3318,9 @@ void main() {
         expect(set, isNot(isEmpty));
         expect(set, hasLength(2));
         expect(set, unorderedEquals(['a', 'b']));
+        expect(set.entrySet,
+            unorderedEquals([isMapEntry('a', 1), isMapEntry('b', 1)]));
+        expect(set.elementSet, unorderedEquals(['a', 'b']));
         expect(set.distinct, unorderedEquals(['a', 'b']));
         expect(set.counts, unorderedEquals([1, 1]));
       });
@@ -3253,6 +3330,8 @@ void main() {
         expect(set, isEmpty);
         expect(set, hasLength(0));
         expect(set, unorderedEquals([]));
+        expect(set.entrySet, unorderedEquals([]));
+        expect(set.elementSet, unorderedEquals([]));
         expect(set.distinct, unorderedEquals([]));
         expect(set.counts, unorderedEquals([]));
       });
@@ -3263,6 +3342,9 @@ void main() {
         expect(set, isNot(isEmpty));
         expect(set, hasLength(5));
         expect(set, unorderedEquals(['a', 'a', 'b', 'b', 'b']));
+        expect(set.entrySet,
+            unorderedEquals([isMapEntry('a', 2), isMapEntry('b', 3)]));
+        expect(set.elementSet, unorderedEquals(['a', 'b']));
         expect(set.distinct, unorderedEquals(['a', 'b']));
         expect(set.counts, unorderedEquals([2, 3]));
       });
@@ -3272,6 +3354,9 @@ void main() {
         expect(set, isNot(isEmpty));
         expect(set, hasLength(5));
         expect(set, unorderedEquals(['a', 'a', 'b', 'b', 'b']));
+        expect(set.entrySet,
+            unorderedEquals([isMapEntry('a', 2), isMapEntry('b', 3)]));
+        expect(set.elementSet, unorderedEquals(['a', 'b']));
         expect(set.distinct, unorderedEquals(['a', 'b']));
         expect(set.counts, unorderedEquals([2, 3]));
       });
@@ -3284,6 +3369,8 @@ void main() {
         expect(set, isNot(isEmpty));
         expect(set, hasLength(2));
         expect(set, unorderedEquals(['a', 'a']));
+        expect(set.entrySet, unorderedEquals([isMapEntry('a', 2)]));
+        expect(set.elementSet, unorderedEquals(['a']));
         expect(set.distinct, unorderedEquals(['a']));
         expect(set.counts, unorderedEquals([2]));
       });
@@ -3296,6 +3383,9 @@ void main() {
         expect(set, isNot(isEmpty));
         expect(set, hasLength(5));
         expect(set, unorderedEquals(['a', 'a', 'b', 'b', 'b']));
+        expect(set.entrySet,
+            unorderedEquals([isMapEntry('a', 2), isMapEntry('b', 3)]));
+        expect(set.elementSet, unorderedEquals(['a', 'b']));
         expect(set.distinct, unorderedEquals(['a', 'b']));
         expect(set.counts, unorderedEquals([3, 2]));
       });
@@ -3305,6 +3395,8 @@ void main() {
         expect(set, isNot(isEmpty));
         expect(set, hasLength(2));
         expect(set, unorderedEquals(['a', 'a']));
+        expect(set.entrySet, unorderedEquals([isMapEntry('a', 2)]));
+        expect(set.elementSet, unorderedEquals(['a']));
         expect(set.distinct, unorderedEquals(['a']));
         expect(set.counts, unorderedEquals([2]));
       });
@@ -3314,6 +3406,9 @@ void main() {
         expect(set, isNot(isEmpty));
         expect(set, hasLength(5));
         expect(set, unorderedEquals(['a', 'a', 'b', 'b', 'b']));
+        expect(set.entrySet,
+            unorderedEquals([isMapEntry('a', 2), isMapEntry('b', 3)]));
+        expect(set.elementSet, unorderedEquals(['a', 'b']));
         expect(set.distinct, unorderedEquals(['a', 'b']));
         expect(set.counts, unorderedEquals([2, 3]));
       });

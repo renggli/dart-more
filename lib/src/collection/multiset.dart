@@ -142,7 +142,7 @@ class Multiset<E> extends IterableBase<E> {
     } else if (other.length == 1) {
       return contains(other.first);
     } else if (other is Multiset) {
-      for (final element in other.distinct) {
+      for (final element in other.elementSet) {
         if (this[element] < other[element]) {
           return false;
         }
@@ -159,7 +159,7 @@ class Multiset<E> extends IterableBase<E> {
       Iterable<E> other, int Function(E element, int a, int b) callback) {
     if (other is Multiset<E>) {
       final result = Multiset<E>();
-      for (final element in {...distinct, ...other.distinct}) {
+      for (final element in {...elementSet, ...other.elementSet}) {
         result.add(element, callback(element, this[element], other[element]));
       }
       return result;
@@ -173,7 +173,7 @@ class Multiset<E> extends IterableBase<E> {
   Multiset<E> intersection(Iterable<Object?> other) {
     if (other is Multiset) {
       final result = Multiset<E>();
-      for (final element in distinct) {
+      for (final element in elementSet) {
         result.add(element, min(this[element], other[element]));
       }
       return result;
@@ -201,10 +201,20 @@ class Multiset<E> extends IterableBase<E> {
   /// elements as the key and their counts as the value.
   Map<E, int> asMap() => Map.unmodifiable(_container);
 
-  /// Returns a view on the distinct elements of the receiver.
+  /// Returns an iterable over the distinct elements `key` and their respective
+  /// count `value`.
+  Iterable<MapEntry<E, int>> get entrySet => _container.entries;
+
+  /// Returns an iterable over the distinct elements of the receiver.
+  Iterable<E> get elementSet => _container.keys;
+
+  /// Returns an iterable over the distinct elements of the receiver.
+  @Deprecated('Use `elementSet` instead.')
   Iterable<E> get distinct => _container.keys;
 
-  /// Returns a view on the counts of the distinct elements of the receiver.
+  /// Returns an iterable over the counts of the distinct elements of the
+  /// receiver.
+  @Deprecated('Use `entrySet.map((entry) => each.value)` instead.')
   Iterable<int> get counts => _container.values;
 
   /// Returns the total number of elements in the receiver.

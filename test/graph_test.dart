@@ -3125,7 +3125,7 @@ void main() {
             GraphFactory<int, void>(isDirected: false).star(vertexCount: 4);
         final observations =
             graph.randomWalk(0, random: random).take(100).toMultiset();
-        expect(observations.distinct, {0, 1, 2, 3},
+        expect(observations.elementSet, {0, 1, 2, 3},
             reason: 'All vertices should be visited.');
       });
       test('star (tweaked probabilities)', () {
