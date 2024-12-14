@@ -208,13 +208,17 @@ class Multiset<E> extends IterableBase<E> {
   /// Returns an iterable over the distinct elements of the receiver.
   Iterable<E> get elementSet => _container.keys;
 
+  /// Returns an iterable over the counts of the distinct elements of the
+  /// receiver.
+  Iterable<int> get elementCounts => _container.values;
+
   /// Returns an iterable over the distinct elements of the receiver.
   @Deprecated('Use `elementSet` instead.')
   Iterable<E> get distinct => _container.keys;
 
   /// Returns an iterable over the counts of the distinct elements of the
   /// receiver.
-  @Deprecated('Use `entrySet.map((entry) => each.value)` instead.')
+  @Deprecated('Use `elementCounts` instead.')
   Iterable<int> get counts => _container.values;
 
   /// Returns the total number of elements in the receiver.
