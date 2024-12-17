@@ -70,8 +70,9 @@ class Path<V, E> with ToStringPrinter {
                 : null))
     ..addValue(values,
         name: 'values',
-        printer:
-            Printer<E>.standard().iterable(leadingItems: 3, trailingItems: 3),
+        printer: Printer<E>.standard()
+            .iterable(leadingItems: 3, trailingItems: 3)
+            .around('[', ']'),
         omitPredicate: (values) => values.every((each) => each == null))
     ..addValue(this is Path<V, num> ? (this as Path<V, num>).cost : null,
         name: 'cost', omitNull: true);

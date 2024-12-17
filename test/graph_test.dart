@@ -1221,7 +1221,8 @@ void main() {
         expect(path.target, 'c');
         expect(path.edges, [isEdge('a', 'b'), isEdge('b', 'c')]);
         expect(path.cost, 5);
-        expect(path.toString(), endsWith('(a → b → c, values: 2, 3, cost: 5)'));
+        expect(
+            path.toString(), endsWith('(a → b → c, values: [2, 3], cost: 5)'));
       });
       test('fromEdges (without data)', () {
         final path = Path<int, void>.fromEdges(const [
@@ -1246,7 +1247,8 @@ void main() {
         expect(path.target, 'z');
         expect(path.edges, [isEdge('x', 'y'), isEdge('y', 'z')]);
         expect(path.cost, 9);
-        expect(path.toString(), endsWith('(x → y → z, values: 4, 5, cost: 9)'));
+        expect(
+            path.toString(), endsWith('(x → y → z, values: [4, 5], cost: 9)'));
       });
       test('long path', () {
         final vertices = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h'];
@@ -1268,7 +1270,7 @@ void main() {
         expect(
             path.toString(),
             endsWith('(a → b → c → … → f → g → h (8 total), '
-                'values: 1, 2, 3, …, 5, 6, 7, '
+                'values: [1, 2, 3, …, 5, 6, 7], '
                 'cost: 28)'));
       });
       final a = Path<String, int>.fromVertices(['a', 'b', 'c'], values: [1, 2]);
@@ -2200,6 +2202,30 @@ void main() {
           }
         }
       });
+      test('directed path with alternatives', () {
+        final builder = GraphFactory<int, void>().newBuilder()
+          ..addEdge(0, 1)
+          ..addEdge(0, 2)
+          ..addEdge(1, 3)
+          ..addEdge(2, 3)
+          ..addEdge(3, 4)
+          ..addEdge(3, 5)
+          ..addEdge(4, 6)
+          ..addEdge(5, 6)
+          ..addEdge(6, 7);
+        final graph = builder.build();
+        expect(graph.shortestPath(0, 7), isNot(isNull));
+        expect(graph.shortestPathAll(0), hasLength(8));
+        expect(
+            graph.shortestPathAll(0,
+                targetPredicate: (v) => v == 7, includeAlternativePaths: true),
+            unorderedEquals([
+              isPath(vertices: [0, 1, 3, 4, 6, 7], cost: 5),
+              isPath(vertices: [0, 1, 3, 5, 6, 7], cost: 5),
+              isPath(vertices: [0, 2, 3, 4, 6, 7], cost: 5),
+              isPath(vertices: [0, 2, 3, 5, 6, 7], cost: 5),
+            ]));
+      });
       test('directed path with cost', () {
         final graph = GraphFactory<int, void>().path(vertexCount: 10);
         for (var i = 0; i < 10; i++) {
@@ -2257,7 +2283,7 @@ void main() {
                     dijkstraGraph.getEdge(source, target)!.value),
             isPath(source: 1, target: 5, vertices: [1, 3, 6, 5], cost: 20));
         expect(
-            dijkstraGraph.shortestPathAll(1, constantFunction1(true),
+            dijkstraGraph.shortestPathAll(1,
                 edgeCost: (source, target) =>
                     dijkstraGraph.getEdge(source, target)!.value),
             unorderedEquals([
@@ -2273,22 +2299,21 @@ void main() {
         expect(dijkstraGraph.shortestPath(1, 5),
             isPath(source: 1, target: 5, vertices: [1, 3, 6, 5], cost: 20));
         expect(
-            dijkstraGraph.shortestPathAll(1, constantFunction1(true)),
+            dijkstraGraph.shortestPathAll(1),
             unorderedEquals([
               isPath(vertices: [1], cost: 0),
               isPath(vertices: [1, 2], cost: 7),
               isPath(vertices: [1, 3], cost: 9),
+              isPath(vertices: [1, 3, 6], cost: 11),
               isPath(vertices: [1, 3, 4], cost: 20),
               isPath(vertices: [1, 3, 6, 5], cost: 20),
-              isPath(vertices: [1, 3, 6], cost: 11),
             ]));
       });
       test('undirected graph with constant cost', () {
         expect(dijkstraGraph.shortestPath(1, 5, edgeCost: constantFunction2(1)),
             isPath(source: 1, target: 5, vertices: [1, 6, 5], cost: 2));
         expect(
-            dijkstraGraph.shortestPathAll(1, constantFunction1(true),
-                edgeCost: constantFunction2(1)),
+            dijkstraGraph.shortestPathAll(1, edgeCost: constantFunction2(1)),
             unorderedEquals([
               isPath(vertices: [1], cost: 0),
               isPath(vertices: [1, 6], cost: 1),
@@ -2305,7 +2330,7 @@ void main() {
                 costEstimate: (vertex) => 6 - vertex),
             isPath(source: 1, target: 5, vertices: [1, 6, 5], cost: 2));
         expect(
-            dijkstraGraph.shortestPathAll(1, constantFunction1(true),
+            dijkstraGraph.shortestPathAll(1,
                 edgeCost: constantFunction2(1),
                 costEstimate: (vertex) => 6 - vertex),
             unorderedEquals([
@@ -2355,10 +2380,8 @@ void main() {
                     .pow(2))
             .sqrt();
         test('dijkstra', () {
-          final search = DijkstraSearchIterable<Point<int>>(
-              startVertices: [source],
-              successorsOf: successorsOf,
-              targetPredicate: targetPredicate);
+          final search = DijkstraSearch<Point<int>>(successorsOf: successorsOf)
+              .find(startVertices: [source], targetPredicate: targetPredicate);
           expect(
               search.single,
               isPath(
@@ -2368,11 +2391,9 @@ void main() {
                   cost: 45));
         });
         test('dijkstra (custom cost)', () {
-          final search = DijkstraSearchIterable<Point<int>>(
-              startVertices: [source],
-              successorsOf: successorsOf,
-              targetPredicate: targetPredicate,
-              edgeCost: edgeCost);
+          final search = DijkstraSearch<Point<int>>(
+                  successorsOf: successorsOf, edgeCost: edgeCost)
+              .find(startVertices: [source], targetPredicate: targetPredicate);
           expect(
               search.single,
               isPath(
@@ -2382,11 +2403,9 @@ void main() {
                   cost: closeTo(63.79, 0.1)));
         });
         test('a-star', () {
-          final search = AStarSearchIterable<Point<int>>(
-              startVertices: [source],
-              successorsOf: successorsOf,
-              targetPredicate: targetPredicate,
-              costEstimate: costEstimate);
+          final search = AStarSearch<Point<int>>(
+                  successorsOf: successorsOf, costEstimate: costEstimate)
+              .find(startVertices: [source], targetPredicate: targetPredicate);
           expect(
               search.single,
               isPath(
@@ -2396,12 +2415,14 @@ void main() {
                   cost: 45));
         });
         test('a-star (custom cost)', () {
-          final search = AStarSearchIterable<Point<int>>(
-              startVertices: [source],
-              successorsOf: successorsOf,
-              targetPredicate: targetPredicate,
-              edgeCost: edgeCost,
-              costEstimate: costEstimate);
+          final search = AStarSearch<Point<int>>(
+                  successorsOf: successorsOf,
+                  edgeCost: edgeCost,
+                  costEstimate: costEstimate)
+              .find(
+            startVertices: [source],
+            targetPredicate: targetPredicate,
+          );
           expect(
               search.single,
               isPath(
@@ -2462,11 +2483,9 @@ void main() {
         ];
         test('dijkstra', () {
           expect(
-              DijkstraSearchIterable<Point<int>>(
-                      startVertices: [source],
-                      successorsOf: successorsOf,
-                      targetPredicate: targetPredicate)
-                  .single,
+              DijkstraSearch<Point<int>>(successorsOf: successorsOf).find(
+                  startVertices: [source],
+                  targetPredicate: targetPredicate).single,
               isPath(
                   source: source,
                   target: target,
@@ -2475,12 +2494,11 @@ void main() {
         });
         test('a-star', () {
           expect(
-              AStarSearchIterable<Point<int>>(
+              AStarSearch<Point<int>>(
+                      successorsOf: successorsOf, costEstimate: costEstimate)
+                  .find(
                       startVertices: [source],
-                      successorsOf: successorsOf,
-                      targetPredicate: targetPredicate,
-                      costEstimate: costEstimate)
-                  .single,
+                      targetPredicate: targetPredicate).single,
               isPath(
                   source: source,
                   target: target,
@@ -2490,11 +2508,12 @@ void main() {
         test('a-star (bad estimate)', () {
           final generator = Random(85642);
           expect(
-              AStarSearchIterable<Point<int>>(
-                  startVertices: [source],
+              AStarSearch<Point<int>>(
                   successorsOf: successorsOf,
-                  targetPredicate: targetPredicate,
-                  costEstimate: (vertex) => generator.nextDouble()).single,
+                  costEstimate: (vertex) => generator.nextDouble()).find(
+                startVertices: [source],
+                targetPredicate: targetPredicate,
+              ).single,
               isPath(
                   source: source,
                   target: target,

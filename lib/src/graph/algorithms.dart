@@ -15,13 +15,13 @@ import 'path.dart';
 import 'strategy.dart';
 
 extension AlgorithmsGraphExtension<V, E> on Graph<V, E> {
-  /// Performs a search for the shortest path between [source] and [target].
+  /// Performs a search for the shortest path between `source` and `target`.
   ///
-  /// - [edgeCost] is a function that returns the cost to traverse an edge
+  /// - `edgeCost` is a function that returns the cost to traverse an edge
   ///   between two vertices. If no function is provided, the numeric edge
   ///   value or a constant weight of _1_ is used.
   ///
-  /// - [costEstimate] is a function that returns the remaining cost from the
+  /// - `costEstimate` is a function that returns the remaining cost from the
   ///   provided vertex. If an estimate is provided a faster _A*-Search_ is
   ///   performed, otherwise a _Dijkstra Search_.
   ///
@@ -30,50 +30,61 @@ extension AlgorithmsGraphExtension<V, E> on Graph<V, E> {
     V target, {
     num Function(V source, V target)? edgeCost,
     num Function(V vertex)? costEstimate,
+    bool includeAlternativePaths = false,
     StorageStrategy<V>? vertexStrategy,
   }) =>
       shortestPathAll(
         source,
-        (vertex) => target == vertex,
+        targetPredicate: (vertex) => target == vertex,
         edgeCost: edgeCost ?? _getDefaultEdgeValueOr(1),
         costEstimate: costEstimate,
         vertexStrategy: vertexStrategy ?? this.vertexStrategy,
       ).firstOrNull;
 
-  /// Performs a search for the shortest paths between [source] and the
-  /// [targetPredicate] predicate.
+  /// Performs a search for the shortest paths starting at [source].
   ///
-  /// - [edgeCost] is a function that returns the cost to traverse an edge
+  /// - `targetPredicate` is a predicate function that decides if the target
+  ///   vertex has been reached. If no predicate is provided, the shortest
+  ///   paths to all reachable vertices are returned.
+  ///
+  /// - `edgeCost` is a function that returns the cost to traverse an edge
   ///   between two vertices. If no function is provided, the numeric edge
   ///   value or a constant weight of _1_ is used.
   ///
-  /// - [costEstimate] is a function that returns the remaining cost from the
+  /// - `costEstimate` is a function that returns the remaining cost from the
   ///   provided vertex. If an estimate is provided a faster _A*-Search_ is
   ///   performed, otherwise a _Dijkstra Search_.
   ///
+  /// - If `includeAlternativePaths` is set to `true`, multiple equal cost
+  ///   paths to the same target are returned. The default is to not include
+  ///   such alternatives.
+  ///
   Iterable<Path<V, num>> shortestPathAll(
-    V source,
-    Predicate1<V> targetPredicate, {
+    V source, {
+    Predicate1<V>? targetPredicate,
     num Function(V source, V target)? edgeCost,
     num Function(V target)? costEstimate,
     StorageStrategy<V>? vertexStrategy,
+    bool includeAlternativePaths = false,
   }) =>
       costEstimate == null
-          ? DijkstraSearchIterable<V>(
-              startVertices: [source],
-              targetPredicate: targetPredicate,
-              successorsOf: successorsOf,
-              edgeCost: edgeCost ?? _getDefaultEdgeValueOr(1),
-              vertexStrategy: vertexStrategy ?? this.vertexStrategy,
-            )
-          : AStarSearchIterable<V>(
-              startVertices: [source],
-              targetPredicate: targetPredicate,
-              successorsOf: successorsOf,
-              costEstimate: costEstimate,
-              edgeCost: edgeCost ?? _getDefaultEdgeValueOr(1),
-              vertexStrategy: vertexStrategy ?? this.vertexStrategy,
-            );
+          ? DijkstraSearch(
+                  successorsOf: successorsOf,
+                  edgeCost: edgeCost ?? _getDefaultEdgeValueOr(1),
+                  vertexStrategy: vertexStrategy ?? this.vertexStrategy,
+                  includeAlternativePaths: includeAlternativePaths)
+              .find(
+                  startVertices: [source],
+                  targetPredicate: targetPredicate ?? constantFunction1(true))
+          : AStarSearch<V>(
+                  successorsOf: successorsOf,
+                  costEstimate: costEstimate,
+                  edgeCost: edgeCost ?? _getDefaultEdgeValueOr(1),
+                  vertexStrategy: vertexStrategy ?? this.vertexStrategy,
+                  includeAlternativePaths: includeAlternativePaths)
+              .find(
+                  startVertices: [source],
+                  targetPredicate: targetPredicate ?? constantFunction1(true));
 
   /// Returns an object that can compute the maximum flow between different
   /// vertices of this graph using the Dinic max flow algorithm.
