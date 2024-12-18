@@ -2380,8 +2380,10 @@ void main() {
                     .pow(2))
             .sqrt();
         test('dijkstra', () {
-          final search = DijkstraSearch<Point<int>>(successorsOf: successorsOf)
-              .find(startVertices: [source], targetPredicate: targetPredicate);
+          final search = dijkstraSearch<Point<int>>(
+              startVertices: [source],
+              targetPredicate: targetPredicate,
+              successorsOf: successorsOf);
           expect(
               search.single,
               isPath(
@@ -2391,9 +2393,11 @@ void main() {
                   cost: 45));
         });
         test('dijkstra (custom cost)', () {
-          final search = DijkstraSearch<Point<int>>(
-                  successorsOf: successorsOf, edgeCost: edgeCost)
-              .find(startVertices: [source], targetPredicate: targetPredicate);
+          final search = dijkstraSearch<Point<int>>(
+              startVertices: [source],
+              targetPredicate: targetPredicate,
+              successorsOf: successorsOf,
+              edgeCost: edgeCost);
           expect(
               search.single,
               isPath(
@@ -2403,9 +2407,11 @@ void main() {
                   cost: closeTo(63.79, 0.1)));
         });
         test('a-star', () {
-          final search = AStarSearch<Point<int>>(
-                  successorsOf: successorsOf, costEstimate: costEstimate)
-              .find(startVertices: [source], targetPredicate: targetPredicate);
+          final search = aStarSearch<Point<int>>(
+              startVertices: [source],
+              targetPredicate: targetPredicate,
+              successorsOf: successorsOf,
+              costEstimate: costEstimate);
           expect(
               search.single,
               isPath(
@@ -2415,14 +2421,12 @@ void main() {
                   cost: 45));
         });
         test('a-star (custom cost)', () {
-          final search = AStarSearch<Point<int>>(
-                  successorsOf: successorsOf,
-                  edgeCost: edgeCost,
-                  costEstimate: costEstimate)
-              .find(
-            startVertices: [source],
-            targetPredicate: targetPredicate,
-          );
+          final search = aStarSearch<Point<int>>(
+              startVertices: [source],
+              targetPredicate: targetPredicate,
+              successorsOf: successorsOf,
+              edgeCost: edgeCost,
+              costEstimate: costEstimate);
           expect(
               search.single,
               isPath(
@@ -2483,9 +2487,11 @@ void main() {
         ];
         test('dijkstra', () {
           expect(
-              DijkstraSearch<Point<int>>(successorsOf: successorsOf).find(
-                  startVertices: [source],
-                  targetPredicate: targetPredicate).single,
+              dijkstraSearch<Point<int>>(
+                      startVertices: [source],
+                      targetPredicate: targetPredicate,
+                      successorsOf: successorsOf)
+                  .single,
               isPath(
                   source: source,
                   target: target,
@@ -2494,11 +2500,12 @@ void main() {
         });
         test('a-star', () {
           expect(
-              AStarSearch<Point<int>>(
-                      successorsOf: successorsOf, costEstimate: costEstimate)
-                  .find(
+              aStarSearch<Point<int>>(
                       startVertices: [source],
-                      targetPredicate: targetPredicate).single,
+                      targetPredicate: targetPredicate,
+                      successorsOf: successorsOf,
+                      costEstimate: costEstimate)
+                  .single,
               isPath(
                   source: source,
                   target: target,
@@ -2508,12 +2515,11 @@ void main() {
         test('a-star (bad estimate)', () {
           final generator = Random(85642);
           expect(
-              AStarSearch<Point<int>>(
+              aStarSearch<Point<int>>(
+                  startVertices: [source],
+                  targetPredicate: targetPredicate,
                   successorsOf: successorsOf,
-                  costEstimate: (vertex) => generator.nextDouble()).find(
-                startVertices: [source],
-                targetPredicate: targetPredicate,
-              ).single,
+                  costEstimate: (vertex) => generator.nextDouble()).single,
               isPath(
                   source: source,
                   target: target,

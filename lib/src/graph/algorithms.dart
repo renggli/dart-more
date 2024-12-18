@@ -3,11 +3,11 @@ import 'package:collection/collection.dart';
 import '../comparator/constructors/natural.dart';
 import '../functional/types/constant.dart';
 import '../functional/types/predicate.dart';
-import 'algorithms/a_star_search.dart';
-import 'algorithms/dijkstra_search.dart';
 import 'algorithms/dinic_max_flow.dart';
 import 'algorithms/kruskal_spanning_tree.dart';
 import 'algorithms/prim_spanning_tree.dart';
+import 'algorithms/search/a_star.dart';
+import 'algorithms/search/dijkstra.dart';
 import 'algorithms/stoer_wagner_min_cut.dart';
 import 'algorithms/tarjan_strongly_connected.dart';
 import 'graph.dart';
@@ -64,27 +64,27 @@ extension AlgorithmsGraphExtension<V, E> on Graph<V, E> {
     Predicate1<V>? targetPredicate,
     num Function(V source, V target)? edgeCost,
     num Function(V target)? costEstimate,
-    StorageStrategy<V>? vertexStrategy,
     bool includeAlternativePaths = false,
+    StorageStrategy<V>? vertexStrategy,
   }) =>
       costEstimate == null
-          ? DijkstraSearch(
-                  successorsOf: successorsOf,
-                  edgeCost: edgeCost ?? _getDefaultEdgeValueOr(1),
-                  vertexStrategy: vertexStrategy ?? this.vertexStrategy,
-                  includeAlternativePaths: includeAlternativePaths)
-              .find(
-                  startVertices: [source],
-                  targetPredicate: targetPredicate ?? constantFunction1(true))
-          : AStarSearch<V>(
-                  successorsOf: successorsOf,
-                  costEstimate: costEstimate,
-                  edgeCost: edgeCost ?? _getDefaultEdgeValueOr(1),
-                  vertexStrategy: vertexStrategy ?? this.vertexStrategy,
-                  includeAlternativePaths: includeAlternativePaths)
-              .find(
-                  startVertices: [source],
-                  targetPredicate: targetPredicate ?? constantFunction1(true));
+          ? dijkstraSearch<V>(
+              startVertices: [source],
+              targetPredicate: targetPredicate ?? constantFunction1(true),
+              successorsOf: successorsOf,
+              edgeCost: edgeCost ?? _getDefaultEdgeValueOr(1),
+              includeAlternativePaths: includeAlternativePaths,
+              vertexStrategy: vertexStrategy ?? this.vertexStrategy,
+            )
+          : aStarSearch<V>(
+              startVertices: [source],
+              targetPredicate: targetPredicate ?? constantFunction1(true),
+              successorsOf: successorsOf,
+              costEstimate: costEstimate,
+              edgeCost: edgeCost ?? _getDefaultEdgeValueOr(1),
+              includeAlternativePaths: includeAlternativePaths,
+              vertexStrategy: vertexStrategy ?? this.vertexStrategy,
+            );
 
   /// Returns an object that can compute the maximum flow between different
   /// vertices of this graph using the Dinic max flow algorithm.
