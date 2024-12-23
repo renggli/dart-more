@@ -98,6 +98,14 @@ void main() {
   const Comparator<int> naturalInt = naturalComparable<num>;
   const naturalString = naturalComparable<String>;
   group('constructors', () {
+    test('delegate', () {
+      final comparator =
+          delegateComparator<String, num>((string) => string.length);
+      verify(comparator, ['abc', 'ab'], ['ab', 'abc']);
+      verify(comparator, ['ab', 'a'], ['a', 'ab']);
+      verify(comparator, ['ab', 'abc', 'a'], ['a', 'ab', 'abc']);
+      verify(comparator, ['ab', 'abc', 'a'], ['a', 'ab', 'abc']);
+    });
     test('explicit', () {
       final comparator = explicitComparator(const [2, 3, 1]);
       verify(comparator, [3, 2], [2, 3]);

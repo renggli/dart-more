@@ -3,6 +3,7 @@
 library;
 
 export 'src/comparator/compare_operators.dart';
+export 'src/comparator/constructors/delegate.dart';
 export 'src/comparator/constructors/explicit.dart';
 export 'src/comparator/constructors/natural.dart';
 export 'src/comparator/constructors/reverse.dart';
