@@ -24,7 +24,9 @@ extension CloseMatchesOnIterable<T> on Iterable<Iterable<T>> {
     }
     return candidates
         .largest(count,
-            comparator: naturalComparable<num>.onResultOf((each) => each.ratio))
+            comparator: delegateComparator<
+                ({Iterable<T> candidate, double ratio}),
+                num>((each) => each.ratio))
         .map((each) => each.candidate);
   }
 }

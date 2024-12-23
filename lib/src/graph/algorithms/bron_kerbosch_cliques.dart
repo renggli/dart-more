@@ -5,9 +5,9 @@ import '../../comparator/constructors/delegate.dart';
 import '../strategy.dart';
 
 /// The Bron–Kerbosch algorithm enumerates all *maximal cliques* in an
-/// undirected graph. The code implements the variation with pivoting and
+/// undirected graph. This implementation uses the variation with pivoting and
 /// vertex ordering. The algorithm has exponential complexity, but for graphs
-/// with small outgoing vertex degree is considerably faster.
+/// with small outgoing vertex degree is fast.
 ///
 /// `vertices` should be the nodes of the graph. `neighboursOf` is a function
 /// that returns the neighbours of a vertex.

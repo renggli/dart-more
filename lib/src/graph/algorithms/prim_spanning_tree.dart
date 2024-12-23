@@ -19,13 +19,13 @@ Graph<V, E> primSpanningTree<V, E>(
   // Create an empty copy of the graph.
   final result = graph.copy(empty: true);
   // Queue for the shortest remaining edges.
-  final queue = PriorityQueue<_State<V, E>>(
+  final queue = PriorityQueue<({Edge<V, E> edge, num cost})>(
       weightComparator.onResultOf((state) => state.cost));
   void addOutgoingEdgesToQueue(V vertex) {
     result.addVertex(vertex);
     for (final edge in graph.outgoingEdgesOf(vertex)) {
       if (!result.vertices.contains(edge.target)) {
-        queue.add(_State<V, E>(edge, edgeWeight(edge.source, edge.target)));
+        queue.add((edge: edge, cost: edgeWeight(edge.source, edge.target)));
       }
     }
   }
@@ -34,19 +34,11 @@ Graph<V, E> primSpanningTree<V, E>(
   addOutgoingEdgesToQueue(startVertex ?? graph.vertices.first);
   // Pick the shortest edge that connects to a not yet connected vertex.
   while (queue.isNotEmpty) {
-    final state = queue.removeFirst();
-    if (!result.vertices.contains(state.edge.target)) {
-      result.addEdge(state.edge.source, state.edge.target,
-          value: state.edge.value);
-      addOutgoingEdgesToQueue(state.edge.target);
+    final (:edge, :cost) = queue.removeFirst();
+    if (!result.vertices.contains(edge.target)) {
+      result.addEdge(edge.source, edge.target, value: edge.value);
+      addOutgoingEdgesToQueue(edge.target);
     }
   }
   return result;
-}
-
-final class _State<V, E> {
-  _State(this.edge, this.cost);
-
-  final Edge<V, E> edge;
-  final num cost;
 }
