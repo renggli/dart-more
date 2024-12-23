@@ -9,6 +9,7 @@ import 'package:more/math.dart';
 import 'package:test/test.dart';
 
 @optionalTypeArgs
+// ignore: unreachable_from_main
 Matcher isGraph<E, V>({
   dynamic vertices = anything,
   dynamic edges = anything,
