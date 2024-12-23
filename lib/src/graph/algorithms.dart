@@ -11,6 +11,7 @@ import 'algorithms/search/a_star.dart';
 import 'algorithms/search/dijkstra.dart';
 import 'algorithms/stoer_wagner_min_cut.dart';
 import 'algorithms/tarjan_strongly_connected.dart';
+import 'errors.dart';
 import 'graph.dart';
 import 'path.dart';
 import 'strategy.dart';
@@ -160,15 +161,21 @@ extension AlgorithmsGraphExtension<V, E> on Graph<V, E> {
 
   /// Returns the strongly connected components in this directed graph. The
   /// implementation uses the Tarjan's algorithm and runs in linear time.
-  TarjanStronglyConnected<V, E> stronglyConnected({
-    StorageStrategy<V>? vertexStrategy,
-  }) =>
-      TarjanStronglyConnected<V, E>(this,
-          vertexStrategy: vertexStrategy ?? this.vertexStrategy);
+  Iterable<Set<V>> stronglyConnected({StorageStrategy<V>? vertexStrategy}) {
+    GraphError.checkDirected(this);
+    return tarjanStronglyConnected<V>(vertices,
+        successorsOf: successorsOf,
+        vertexStrategy: vertexStrategy ?? this.vertexStrategy);
+  }
 
   /// Returns the maximal cliques in this undirected graph. The implementation
   /// uses the Bron–Kerbosch algorithm and runs in exponential time.
-  BronKerboschCliques<V, E> maximalCliques() => BronKerboschCliques<V, E>(this);
+  Iterable<Set<V>> findCliques({StorageStrategy<V>? vertexStrategy}) {
+    GraphError.checkNotDirected(this);
+    return bronKerboschCliques<V>(vertices,
+        neighboursOf: neighboursOf,
+        vertexStrategy: vertexStrategy ?? this.vertexStrategy);
+  }
 
   /// Internal helper that returns a function using the numeric edge value
   /// of this graph, or otherwise a constant value for each edge.

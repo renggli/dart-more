@@ -2942,43 +2942,29 @@ void main() {
     group('maximal cliques', () {
       test('empty graph', () {
         final graph = Graph<int, void>.undirected();
-        expect(graph.maximalCliques().vertices, isEmpty);
-        expect(graph.maximalCliques().graphs, isEmpty);
+        expect(graph.findCliques(), isEmpty);
       });
       test('single vertex', () {
         final graph = Graph<int, void>.undirected();
         graph.addVertex(1);
-        expect(graph.maximalCliques().vertices, {
+        expect(graph.findCliques(), {
           {1}
-        });
-        expect(graph.maximalCliques().graphs, {
-          isGraph<int, void>(vertices: [1], edges: isEmpty, isDirected: false),
         });
       });
       test('disconnected pair', () {
         final graph = Graph<int, void>.undirected();
         graph.addVertex(1);
         graph.addVertex(2);
-        expect(graph.maximalCliques().vertices, {
+        expect(graph.findCliques(), {
           {1},
           {2},
-        });
-        expect(graph.maximalCliques().graphs, {
-          isGraph<int, void>(vertices: [1], edges: isEmpty, isDirected: false),
-          isGraph<int, void>(vertices: [2], edges: isEmpty, isDirected: false),
         });
       });
       test('connected pair', () {
         final graph = Graph<int, void>.undirected();
         graph.addEdge(2, 1);
-        expect(graph.maximalCliques().vertices, {
+        expect(graph.findCliques(), {
           {1, 2}
-        });
-        expect(graph.maximalCliques().graphs, {
-          isGraph<int, void>(
-              vertices: unorderedEquals([1, 2]),
-              edges: unorderedEquals([isEdge(1, 2), isEdge(2, 1)]),
-              isDirected: false)
         });
       });
       test('wikipedia', () {
@@ -2991,7 +2977,7 @@ void main() {
         graph.addEdge(4, 6);
         graph.addEdge(4, 5);
         graph.addEdge(4, 6);
-        expect(graph.maximalCliques().vertices, {
+        expect(graph.findCliques(), {
           {1, 2, 5},
           {2, 3},
           {3, 4},
@@ -2999,75 +2985,109 @@ void main() {
           {4, 6},
         });
       });
+      test('aoc', () {
+        final graph = Graph<String, void>.undirected();
+        for (final (source, target) in [
+          ('kh', 'tc'),
+          ('qp', 'kh'),
+          ('de', 'cg'),
+          ('ka', 'co'),
+          ('yn', 'aq'),
+          ('qp', 'ub'),
+          ('cg', 'tb'),
+          ('vc', 'aq'),
+          ('tb', 'ka'),
+          ('wh', 'tc'),
+          ('yn', 'cg'),
+          ('kh', 'ub'),
+          ('ta', 'co'),
+          ('de', 'co'),
+          ('tc', 'td'),
+          ('tb', 'wq'),
+          ('wh', 'td'),
+          ('ta', 'ka'),
+          ('td', 'qp'),
+          ('aq', 'cg'),
+          ('wq', 'ub'),
+          ('ub', 'vc'),
+          ('de', 'ta'),
+          ('wq', 'aq'),
+          ('wq', 'vc'),
+          ('wh', 'yn'),
+          ('ka', 'de'),
+          ('kh', 'ta'),
+          ('co', 'tc'),
+          ('wh', 'qp'),
+          ('tb', 'vc'),
+          ('td', 'yn'),
+        ]) {
+          graph.addEdge(source, target);
+        }
+        expect(graph.findCliques(), {
+          {'cg', 'de'},
+          {'cg', 'tb'},
+          {'co', 'tc'},
+          {'ka', 'tb'},
+          {'kh', 'ta'},
+          {'kh', 'tc'},
+          {'aq', 'cg', 'yn'},
+          {'aq', 'vc', 'wq'},
+          {'kh', 'qp', 'ub'},
+          {'qp', 'td', 'wh'},
+          {'tb', 'vc', 'wq'},
+          {'tc', 'td', 'wh'},
+          {'td', 'wh', 'yn'},
+          {'ub', 'vc', 'wq'},
+          {'co', 'de', 'ka', 'ta'},
+        });
+      });
       test('directed graph error', () {
         final graph = Graph<int, void>.directed();
-        expect(graph.maximalCliques, throwsGraphError);
+        expect(graph.findCliques, throwsGraphError);
       });
     });
     group('strongly connected', () {
       test('empty graph', () {
         final graph = Graph<int, void>.directed();
-        expect(graph.stronglyConnected().vertices, isEmpty);
-        expect(graph.stronglyConnected().graphs, isEmpty);
+        expect(graph.stronglyConnected(), isEmpty);
       });
       test('single vertex', () {
         final graph = Graph<int, void>.directed();
         graph.addVertex(1);
-        expect(graph.stronglyConnected().vertices, {
+        expect(graph.stronglyConnected(), {
           {1},
-        });
-        expect(graph.stronglyConnected().graphs, {
-          isGraph<int, void>(vertices: [1], edges: isEmpty, isDirected: true),
         });
       });
       test('self-connected vertex', () {
         final graph = Graph<int, void>.directed();
         graph.addEdge(1, 1);
-        expect(graph.stronglyConnected().vertices, {
+        expect(graph.stronglyConnected(), {
           {1},
-        });
-        expect(graph.stronglyConnected().graphs, {
-          isGraph<int, void>(
-              vertices: [1], edges: [isEdge(1, 1)], isDirected: true),
         });
       });
       test('disconnected pair', () {
         final graph = Graph<int, void>.directed();
         graph.addVertex(1);
         graph.addVertex(2);
-        expect(graph.stronglyConnected().vertices, {
+        expect(graph.stronglyConnected(), {
           {1},
           {2},
-        });
-        expect(graph.stronglyConnected().graphs, {
-          isGraph<int, void>(vertices: [1], edges: isEmpty, isDirected: true),
-          isGraph<int, void>(vertices: [2], edges: isEmpty, isDirected: true),
         });
       });
       test('weakly connected pair', () {
         final graph = Graph<int, void>.directed();
         graph.addEdge(2, 1);
-        expect(graph.stronglyConnected().vertices, {
+        expect(graph.stronglyConnected(), {
           {1},
           {2},
-        });
-        expect(graph.stronglyConnected().graphs, {
-          isGraph<int, void>(vertices: [1], edges: isEmpty, isDirected: true),
-          isGraph<int, void>(vertices: [2], edges: isEmpty, isDirected: true),
         });
       });
       test('strongly connected pair', () {
         final graph = Graph<int, void>.directed();
         graph.addEdge(1, 2);
         graph.addEdge(2, 1);
-        expect(graph.stronglyConnected().vertices, {
+        expect(graph.stronglyConnected(), {
           {1, 2},
-        });
-        expect(graph.stronglyConnected().graphs, {
-          isGraph<int, void>(
-              vertices: [1, 2],
-              edges: [isEdge(1, 2), isEdge(2, 1)],
-              isDirected: true),
         });
       });
       test('wikipedia', () {
@@ -3086,7 +3106,7 @@ void main() {
         graph.addEdge(8, 4);
         graph.addEdge(8, 7);
         graph.addEdge(8, 8);
-        expect(graph.stronglyConnected().vertices, {
+        expect(graph.stronglyConnected(), {
           {1, 2, 5},
           {3, 4},
           {6, 7},
