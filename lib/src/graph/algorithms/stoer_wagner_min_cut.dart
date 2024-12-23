@@ -24,7 +24,7 @@ class StoerWagnerMinCut<V, E> {
     required this.edgeWeight,
     required this.vertexStrategy,
   }) {
-    GraphError.checkUndirected(graph);
+    GraphError.checkNotDirected(graph);
     GraphError.checkVertexCount(graph, 2);
     final vertexMap = graph.vertexStrategy.createMap<Set<V>>();
     for (final vertex in graph.vertices) {

@@ -1,16 +1,15 @@
 import 'dart:math';
 
-import '../graph.dart';
-import '../model/where.dart';
-import '../strategy.dart';
+import '../../../graph.dart';
 
 /// Tarjan's strongly connected components.
 ///
-/// https://en.wikipedia.org/wiki/Tarjan%27s_strongly_connected_components_algorithm.
+/// See https://en.wikipedia.org/wiki/Tarjan%27s_strongly_connected_components_algorithm.
 class TarjanStronglyConnected<V, E> {
   TarjanStronglyConnected(this.graph,
       {required StorageStrategy<V> vertexStrategy})
       : _states = vertexStrategy.createMap<_State<V>>() {
+    GraphError.checkDirected(graph);
     for (final vertex in graph.vertices) {
       if (!_states.containsKey(vertex)) {
         _connect(vertex);

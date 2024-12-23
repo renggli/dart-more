@@ -3,6 +3,7 @@ import 'package:collection/collection.dart';
 import '../comparator/constructors/natural.dart';
 import '../functional/types/constant.dart';
 import '../functional/types/predicate.dart';
+import 'algorithms/bron_kerbosch_cliques.dart';
 import 'algorithms/dinic_max_flow.dart';
 import 'algorithms/kruskal_spanning_tree.dart';
 import 'algorithms/prim_spanning_tree.dart';
@@ -157,13 +158,17 @@ extension AlgorithmsGraphExtension<V, E> on Graph<V, E> {
               vertexStrategy: vertexStrategy ?? this.vertexStrategy,
             );
 
-  /// Returns the strongly connected components in this graph. The
+  /// Returns the strongly connected components in this directed graph. The
   /// implementation uses the Tarjan's algorithm and runs in linear time.
   TarjanStronglyConnected<V, E> stronglyConnected({
     StorageStrategy<V>? vertexStrategy,
   }) =>
       TarjanStronglyConnected<V, E>(this,
           vertexStrategy: vertexStrategy ?? this.vertexStrategy);
+
+  /// Returns the maximal cliques in this undirected graph. The implementation
+  /// uses the Bron–Kerbosch algorithm and runs in exponential time.
+  BronKerboschCliques<V, E> maximalCliques() => BronKerboschCliques<V, E>(this);
 
   /// Internal helper that returns a function using the numeric edge value
   /// of this graph, or otherwise a constant value for each edge.

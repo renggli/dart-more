@@ -60,6 +60,8 @@ Matcher isPath<V, E>({
             cost)
         .having((path) => path.toString(), 'toString', contains('Path'));
 
+final throwsGraphError = throwsA(isA<GraphError>());
+
 // A basic graph:
 //   +-------------+-> 3
 //  /             /    ^
@@ -2937,6 +2939,71 @@ void main() {
             ]));
       });
     });
+    group('maximal cliques', () {
+      test('empty graph', () {
+        final graph = Graph<int, void>.undirected();
+        expect(graph.maximalCliques().vertices, isEmpty);
+        expect(graph.maximalCliques().graphs, isEmpty);
+      });
+      test('single vertex', () {
+        final graph = Graph<int, void>.undirected();
+        graph.addVertex(1);
+        expect(graph.maximalCliques().vertices, {
+          {1}
+        });
+        expect(graph.maximalCliques().graphs, {
+          isGraph<int, void>(vertices: [1], edges: isEmpty, isDirected: false),
+        });
+      });
+      test('disconnected pair', () {
+        final graph = Graph<int, void>.undirected();
+        graph.addVertex(1);
+        graph.addVertex(2);
+        expect(graph.maximalCliques().vertices, {
+          {1},
+          {2},
+        });
+        expect(graph.maximalCliques().graphs, {
+          isGraph<int, void>(vertices: [1], edges: isEmpty, isDirected: false),
+          isGraph<int, void>(vertices: [2], edges: isEmpty, isDirected: false),
+        });
+      });
+      test('connected pair', () {
+        final graph = Graph<int, void>.undirected();
+        graph.addEdge(2, 1);
+        expect(graph.maximalCliques().vertices, {
+          {1, 2}
+        });
+        expect(graph.maximalCliques().graphs, {
+          isGraph<int, void>(
+              vertices: unorderedEquals([1, 2]),
+              edges: unorderedEquals([isEdge(1, 2), isEdge(2, 1)]),
+              isDirected: false)
+        });
+      });
+      test('wikipedia', () {
+        final graph = Graph<int, void>.undirected();
+        graph.addEdge(1, 2);
+        graph.addEdge(1, 5);
+        graph.addEdge(2, 5);
+        graph.addEdge(2, 3);
+        graph.addEdge(3, 4);
+        graph.addEdge(4, 6);
+        graph.addEdge(4, 5);
+        graph.addEdge(4, 6);
+        expect(graph.maximalCliques().vertices, {
+          {1, 2, 5},
+          {2, 3},
+          {3, 4},
+          {4, 5},
+          {4, 6},
+        });
+      });
+      test('directed graph error', () {
+        final graph = Graph<int, void>.directed();
+        expect(graph.maximalCliques, throwsGraphError);
+      });
+    });
     group('strongly connected', () {
       test('empty graph', () {
         final graph = Graph<int, void>.directed();
@@ -3025,6 +3092,10 @@ void main() {
           {6, 7},
           {8}
         });
+      });
+      test('undirected graph error', () {
+        final graph = Graph<int, void>.undirected();
+        expect(graph.stronglyConnected, throwsGraphError);
       });
     });
   });
