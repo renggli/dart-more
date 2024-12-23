@@ -1,13 +1,9 @@
-import 'package:collection/collection.dart';
-
-import '../../../collection.dart';
-import '../../comparator/constructors/delegate.dart';
 import '../strategy.dart';
 
 /// The Bron–Kerbosch algorithm enumerates all *maximal cliques* in an
-/// undirected graph. This implementation uses the variation with pivoting and
-/// vertex ordering. The algorithm has exponential complexity, but for graphs
-/// with small outgoing vertex degree is fast.
+/// undirected graph. This implementation uses the variation with pivoting. The
+/// algorithm has exponential complexity, but for graphs with small outgoing
+/// vertex degree is fast.
 ///
 /// `vertices` should be the nodes of the graph. `neighboursOf` is a function
 /// that returns the neighbours of a vertex.
@@ -32,10 +28,7 @@ Iterable<Set<V>> bronKerboschCliques<V>(
       }
       continue;
     }
-    // Pick a pivot with the highest degree.
-    final pivot = CombinedIterableView([some, none]).max(
-        comparator: delegateComparator<V, num>(
-            (vertex) => neighboursOf(vertex).length));
+    final pivot = some.isNotEmpty ? some.first : none.first;
     final vertices = vertexStrategy.createSet()
       ..addAll(some)
       ..removeAll(neighboursOf(pivot));
