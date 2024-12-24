@@ -87,6 +87,8 @@ class HumanNumberPrinter<T extends num> extends Printer<T> {
     this.padding = 0,
     this.precision = 0,
     this.separator = '',
+    this.separatorWidth = 3,
+    this.separatorOffset = 0,
     this.sign,
     this.unitBase = 10,
     this.unitOffset = 0,
@@ -102,6 +104,8 @@ class HumanNumberPrinter<T extends num> extends Printer<T> {
           padding: padding,
           precision: unitPrecision,
           separator: separator,
+          separatorWidth: separatorWidth,
+          separatorOffset: separatorOffset,
           sign: sign ?? const SignNumberPrinter<double>.omitPositiveSign(),
         ),
         _scaled = FixedNumberPrinter(
@@ -113,6 +117,8 @@ class HumanNumberPrinter<T extends num> extends Printer<T> {
           padding: padding,
           precision: precision,
           separator: separator,
+          separatorWidth: separatorWidth,
+          separatorOffset: separatorOffset,
           sign: sign ?? const SignNumberPrinter<double>.omitPositiveSign(),
         );
 
@@ -130,6 +136,8 @@ class HumanNumberPrinter<T extends num> extends Printer<T> {
     int padding = 0,
     int precision = 0,
     String separator = '',
+    int separatorWidth = 3,
+    int separatorOffset = 0,
     Printer<double>? sign,
     int unitPrecision = 0,
     bool unitPrefix = false,
@@ -144,6 +152,8 @@ class HumanNumberPrinter<T extends num> extends Printer<T> {
         padding: padding,
         precision: precision,
         separator: separator,
+        separatorWidth: separatorWidth,
+        separatorOffset: separatorOffset,
         sign: sign,
         unitBase: decimalUnitBase,
         unitOffset: decimalUnitOffset,
@@ -167,6 +177,8 @@ class HumanNumberPrinter<T extends num> extends Printer<T> {
     int padding = 0,
     int precision = 0,
     String separator = '',
+    int separatorWidth = 3,
+    int separatorOffset = 0,
     int unitPrecision = 0,
     Printer<double>? sign,
     bool unitPrefix = false,
@@ -181,6 +193,8 @@ class HumanNumberPrinter<T extends num> extends Printer<T> {
         padding: padding,
         precision: precision,
         separator: separator,
+        separatorWidth: separatorWidth,
+        separatorOffset: separatorOffset,
         sign: sign,
         unitBase: binaryUnitBase,
         unitOffset: binaryUnitOffset,
@@ -213,6 +227,12 @@ class HumanNumberPrinter<T extends num> extends Printer<T> {
 
   /// The separator character to be used to group digits.
   final String separator;
+
+  /// The number of characters to be separated in a group.
+  final int separatorWidth;
+
+  /// The offset of characters to be separated in a group.
+  final int separatorOffset;
 
   /// The string to be prepended if the number is positive or negative.
   final Printer<double>? sign;

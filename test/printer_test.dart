@@ -157,6 +157,18 @@ void main() {
         expect(printer(1234), '1.234');
         expect(printer(1234567), '1.234.567');
       });
+      test('separator width', () {
+        final printer =
+            FixedNumberPrinter<int>(base: 2, separator: '_', separatorWidth: 8);
+        expect(printer(1234), '100_11010010');
+        expect(printer(1234567), '10010_11010110_10000111');
+      });
+      test('separator offset', () {
+        final printer = FixedNumberPrinter<int>(
+            base: 8, separator: '*', separatorWidth: 4, separatorOffset: 2);
+        expect(printer(1234), '23*22');
+        expect(printer(1234567), '4*5532*07');
+      });
       test('sign', () {
         final printer = FixedNumberPrinter<int>(
             sign: const SignNumberPrinter<int>.negativeAndPositiveSign());
@@ -214,6 +226,16 @@ void main() {
             FixedNumberPrinter<double>(precision: 8, separator: '!');
         expect(printer(12345.0), '12!345.000!000!00');
         expect(printer(0.6789), '0.678!900!00');
+      });
+      test('separator width and offset', () {
+        final printer = FixedNumberPrinter<double>(
+            base: 2,
+            precision: 16,
+            separator: '_',
+            separatorWidth: 8,
+            separatorOffset: 4);
+        expect(printer(12345.0), '11_00000011_1001.0000_00000000_0000');
+        expect(printer(0.6789), '0.1010_11011100_1100');
       });
       test('sign', () {
         final printer = FixedNumberPrinter<double>(
@@ -468,6 +490,23 @@ void main() {
       expect(printer(6720000000), '6,720.000,0e6');
       expect(printer(0.2), '2,000.000,0e-4');
       expect(printer(0.00000000751), '7,510.000,0e-12');
+    });
+    test('separator with width and offset', () {
+      final printer = ScientificNumberPrinter(
+          base: 2,
+          precision: 8,
+          significant: 4,
+          separator: '_',
+          separatorWidth: 4,
+          separatorOffset: 2);
+      expect(printer(0), '0.00_0000_00e0');
+      expect(printer(2), '10_00.00_0000_00e-10');
+      expect(printer(300), '10_01.01_1000_00e1_01');
+      expect(printer(4321.768), '10_00.01_1100_01e10_01');
+      expect(printer(-53000), '-11_00.11_1100_01e11_00');
+      expect(printer(6720000000), '11_00.10_0001_00e111_01');
+      expect(printer(0.2), '11_00.11_0011_01e-1_10');
+      expect(printer(0.00000000751), '10_00.00_0100_00e-111_10');
     });
     test('significant', () {
       final printer = ScientificNumberPrinter(significant: 3);

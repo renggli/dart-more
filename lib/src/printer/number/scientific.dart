@@ -22,6 +22,8 @@ class ScientificNumberPrinter<T extends num> extends Printer<T> {
     this.notation = notationString,
     this.precision = 3,
     this.separator = '',
+    this.separatorWidth = 3,
+    this.separatorOffset = 0,
     this.significant = 1,
   })  : _mantissa = FixedNumberPrinter<double>(
           base: base,
@@ -32,6 +34,8 @@ class ScientificNumberPrinter<T extends num> extends Printer<T> {
           padding: mantissaPadding,
           precision: precision,
           separator: separator,
+          separatorWidth: separatorWidth,
+          separatorOffset: separatorOffset,
           sign: mantissaSign ??
               const SignNumberPrinter<double>.omitPositiveSign(),
         ),
@@ -40,6 +44,8 @@ class ScientificNumberPrinter<T extends num> extends Printer<T> {
           characters: characters,
           padding: exponentPadding,
           separator: separator,
+          separatorWidth: separatorWidth,
+          separatorOffset: separatorOffset,
           sign: exponentSign ?? const SignNumberPrinter<int>.omitPositiveSign(),
         );
 
@@ -78,6 +84,12 @@ class ScientificNumberPrinter<T extends num> extends Printer<T> {
 
   /// The separator character to be used to group digits.
   final String separator;
+
+  /// The number of characters to be separated in a group.
+  final int separatorWidth;
+
+  /// The offset of characters to be separated in a group.
+  final int separatorOffset;
 
   /// The number of significant digits to be printed.
   final int significant;

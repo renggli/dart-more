@@ -21,19 +21,25 @@ class FixedNumberPrinter<T extends num> extends Printer<T> {
     this.padding = 0,
     this.precision = 0,
     this.separator = '',
+    this.separatorWidth = 3,
+    this.separatorOffset = 0,
     Printer<T>? sign,
   })  : assert(base <= characters.length, 'Not enough characters for base'),
         sign = sign ?? SignNumberPrinter<T>.omitPositiveSign(),
         _integer = const Printer<String>.standard()
             .mapIf(padding > 0,
                 (printer) => printer.padLeft(padding, characters[0]))
-            .mapIf(separator.isNotEmpty,
-                (printer) => printer.separateRight(3, 0, separator)),
+            .mapIf(
+                separator.isNotEmpty,
+                (printer) => printer.separateRight(
+                    separatorWidth, separatorOffset, separator)),
         _fraction = const Printer<String>.standard()
             .mapIf(precision > 0,
                 (printer) => printer.padLeft(precision, characters[0]))
-            .mapIf(separator.isNotEmpty,
-                (printer) => printer.separateLeft(3, 0, separator));
+            .mapIf(
+                separator.isNotEmpty,
+                (printer) => printer.separateLeft(
+                    separatorWidth, separatorOffset, separator));
 
   /// Round towards the nearest number that is a multiple of accuracy.
   final double? accuracy;
@@ -61,6 +67,12 @@ class FixedNumberPrinter<T extends num> extends Printer<T> {
 
   /// The separator character to be used to group digits.
   final String separator;
+
+  /// The number of characters to be separated in a group.
+  final int separatorWidth;
+
+  /// The offset of characters to be separated in a group.
+  final int separatorOffset;
 
   /// The printer used for negative or positive numbers.
   final Printer<T> sign;
@@ -122,5 +134,7 @@ class FixedNumberPrinter<T extends num> extends Printer<T> {
     ..addValue(padding, name: 'padding')
     ..addValue(precision, name: 'precision')
     ..addValue(separator, name: 'separator')
+    ..addValue(separatorWidth, name: 'separatorWidth')
+    ..addValue(separatorOffset, name: 'separatorOffset')
     ..addValue(sign, name: 'sign');
 }

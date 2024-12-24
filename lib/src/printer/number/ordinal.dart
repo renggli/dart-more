@@ -12,12 +12,16 @@ class OrdinalNumberPrinter extends Printer<int> {
     this.characters = NumeralSystem.latin,
     this.padding = 0,
     this.separator = '',
+    this.separatorWidth = 3,
+    this.separatorOffset = 0,
     this.sign,
   }) : _number = FixedNumberPrinter<int>(
             base: base,
             characters: characters,
             padding: padding,
             separator: separator,
+            separatorWidth: separatorWidth,
+            separatorOffset: separatorOffset,
             sign: sign);
 
   /// The numeric base to which the number should be printed.
@@ -31,6 +35,12 @@ class OrdinalNumberPrinter extends Printer<int> {
 
   /// The separator character to be used to group digits.
   final String separator;
+
+  /// The number of characters to be separated in a group.
+  final int separatorWidth;
+
+  /// The offset of characters to be separated in a group.
+  final int separatorOffset;
 
   /// The printer used for negative or positive numbers.
   final Printer<int>? sign;

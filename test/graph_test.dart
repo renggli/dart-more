@@ -3042,6 +3042,30 @@ void main() {
           {'co', 'de', 'ka', 'ta'},
         });
       });
+      test('complete graph', () {
+        for (var i = 1; i < 25; i++) {
+          final graph = GraphFactory<int, void>(isDirected: false)
+              .complete(vertexCount: i);
+          expect(graph.findCliques().single, 0.to(i).toSet());
+        }
+      });
+      test('complete graph with missing edge', () {
+        const count = 10;
+        for (var x = 0; x < count; x++) {
+          for (var y = 0; y < count; y++) {
+            if (x == y) continue;
+            final graph = GraphFactory<int, void>(isDirected: false)
+                .complete(vertexCount: count);
+            graph.removeEdge(x, y);
+            expect(
+                graph.findCliques(),
+                unorderedEquals([
+                  0.to(count).toSet()..remove(x),
+                  0.to(count).toSet()..remove(y),
+                ]));
+          }
+        }
+      });
       test('directed graph error', () {
         final graph = Graph<int, void>.directed();
         expect(graph.findCliques, throwsGraphError);
