@@ -30,14 +30,14 @@ class FixedNumberPrinter<T extends num> extends Printer<T> {
             .mapIf(padding > 0,
                 (printer) => printer.padLeft(padding, characters[0]))
             .mapIf(
-                separator.isNotEmpty,
+                separator.isNotEmpty && separatorWidth > 0,
                 (printer) => printer.separateRight(
                     separatorWidth, separatorOffset, separator)),
         _fraction = const Printer<String>.standard()
             .mapIf(precision > 0,
                 (printer) => printer.padLeft(precision, characters[0]))
             .mapIf(
-                separator.isNotEmpty,
+                separator.isNotEmpty && separatorWidth > 0,
                 (printer) => printer.separateLeft(
                     separatorWidth, separatorOffset, separator));
 
