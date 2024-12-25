@@ -8,34 +8,39 @@ import 'iterable/mixins/unmodifiable.dart';
 
 /// Abstract superclass of an arithmetic progressions.
 ///
-/// The progression is defined by a `start`, `stop` and `step` parameter. A
-/// range essentially implements a sequence of values of type [T] as a [List].
-/// The advantage is that a range uses little memory no matter its size.
-abstract class Range<T> extends ListBase<T> with UnmodifiableListMixin<T> {
+/// The progression is defined by a [Range.start], [Range.end] and [Range.step]
+/// parameters. A range essentially implements a sequence of values of type [E]
+/// as a [List]. The advantage is that a range uses very little memory no matter
+/// its size.
+abstract class Range<E> extends ListBase<E> with UnmodifiableListMixin<E> {
   /// Constructor of the abstract [Range].
   const Range();
 
   /// The start value of the range (inclusive).
-  T get start;
+  E get start;
 
   /// The end value of the range (exclusive).
-  T get end;
+  E get end;
 
   /// The step size (non-zero).
-  T get step;
+  E get step;
+
+  /// Returns the number of elements in the range.
+  @override
+  int get length;
 
   /// Returns an iterator positioned at the front of the range.
   @override
   @nonVirtual
-  RangeIterator<T> get iterator => RangeIterator<T>.atStart(this);
+  RangeIterator<E> get iterator => RangeIterator<E>.atStart(this);
 
   /// Returns an iterator positioned at the end of the range.
   @nonVirtual
-  RangeIterator<T> get iteratorAtEnd => RangeIterator<T>.atEnd(this);
+  RangeIterator<E> get iteratorAtEnd => RangeIterator<E>.atEnd(this);
 
   @override
   @nonVirtual
-  T operator [](int index) {
+  E operator [](int index) {
     RangeError.checkValidIndex(index, this, 'index', length);
     return getUnchecked(index);
   }
@@ -44,7 +49,7 @@ abstract class Range<T> extends ListBase<T> with UnmodifiableListMixin<T> {
   ///
   /// Does not perform range checks. The result is undefined, unless the [index]
   /// is within the expected bounds `0 <= index < length`.
-  T getUnchecked(int index);
+  E getUnchecked(int index);
 
   @override
   bool contains(Object? element) => indexOf(element) >= 0;
@@ -60,14 +65,14 @@ abstract class Range<T> extends ListBase<T> with UnmodifiableListMixin<T> {
   }
 
   @override
-  Range<T> get reversed;
+  Range<E> get reversed;
 
   @override
-  Range<T> sublist(int startIndex, [int? endIndex]) =>
+  Range<E> sublist(int startIndex, [int? endIndex]) =>
       getRange(startIndex, endIndex ?? length);
 
   @override
-  Range<T> getRange(int startIndex, int endIndex);
+  Range<E> getRange(int startIndex, int endIndex);
 }
 
 /// An [Iterator] over a [Range].
