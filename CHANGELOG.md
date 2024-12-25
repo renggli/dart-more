@@ -1,5 +1,14 @@
 # Changelog
 
+## 4.5.0
+- Add `occurences` helper to `Iterable`and `SortedList`.
+- More customization for number grouping in all numeric formatters.
+- Split date-time formatters into configurable constructors for date and times.
+- Deprecate some obscure and introduce more readable naming in `Multiset` and `Multimap`.
+- Add the possibility to convert a lambda returning a `Comparable` to a `Comparator` with `delegateComparator`.
+- Various improvements to graph search, strongly connected components, and find cliques algorithms.
+- Various optimization, such as the decoding of unicode data.
+
 ## 4.4.0
 - Add [Bidirectional Character Types](https://www.unicode.org/reports/tr9/#Table_Bidirectional_Character_Types) to `UnicodeCharMatcher` (thanks to https://github.com/amake).
 - Remove no longer necessary JavaScript specific code.

@@ -1,5 +1,5 @@
 name: more
-version: 4.4.0
+version: 4.5.0
 
 homepage: https://github.com/renggli/dart-more
 description: More Dart — Literally. Collecting, iterating, caching, mathematics,
@@ -12,17 +12,17 @@ topics:
   - unicode
 
 environment:
-  sdk: ^3.5.0
+  sdk: ^3.6.0
 dependencies:
   characters: ^1.3.0
   clock: ^1.1.0
-  collection: ^1.18.0
-  meta: ^1.15.0
+  collection: ^1.19.0
+  meta: ^1.16.0
 dev_dependencies:
-  args: ^2.5.0
+  args: ^2.6.0
   build_runner: ^2.4.0
-  build_web_compilers: ^4.0.0
+  build_web_compilers: ^4.1.0
   fake_async: ^1.3.0
-  lints: ^5.0.0
+  lints: ^5.1.0
   test: ^1.25.0
   web: ^1.1.0
