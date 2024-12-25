@@ -5,10 +5,10 @@ import '../strategy.dart';
 extension MapGraphExtension<V, E> on Graph<V, E> {
   /// Creates a new graph by mapping vertices and edges to new values.
   ///
-  /// The optional `vertex` function maps vertices of type [V] to type [VR].
-  /// The optional `edge` function maps edges of type [E] to type [ER].
+  /// The optional [vertex] function maps vertices of type [V] to type [VR].
+  /// The optional [edge] function maps edges of type [E] to type [ER].
   ///
-  /// If no `vertex` and `edge` function is provided a copy of the current graph
+  /// If no [vertex] and [edge] function is provided a copy of the current graph
   /// is returned.
   Graph<VR, ER> map<VR, ER>({
     VR Function(V vertex)? vertex,

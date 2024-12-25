@@ -17,13 +17,13 @@ import 'path.dart';
 import 'strategy.dart';
 
 extension AlgorithmsGraphExtension<V, E> on Graph<V, E> {
-  /// Performs a search for the shortest path between `source` and `target`.
+  /// Performs a search for the shortest path between [source] and [target].
   ///
-  /// - `edgeCost` is a function that returns the cost to traverse an edge
+  /// - [edgeCost] is a function that returns the cost to traverse an edge
   ///   between two vertices. If no function is provided, the numeric edge
   ///   value or a constant weight of _1_ is used.
   ///
-  /// - `costEstimate` is a function that returns the remaining cost from the
+  /// - [costEstimate] is a function that returns the remaining cost from the
   ///   provided vertex. If an estimate is provided a faster _A*-Search_ is
   ///   performed, otherwise a _Dijkstra Search_.
   ///
@@ -45,19 +45,19 @@ extension AlgorithmsGraphExtension<V, E> on Graph<V, E> {
 
   /// Performs a search for the shortest paths starting at [source].
   ///
-  /// - `targetPredicate` is a predicate function that decides if the target
+  /// - [targetPredicate] is a predicate function that decides if the target
   ///   vertex has been reached. If no predicate is provided, the shortest
   ///   paths to all reachable vertices are returned.
   ///
-  /// - `edgeCost` is a function that returns the cost to traverse an edge
+  /// - [edgeCost] is a function that returns the cost to traverse an edge
   ///   between two vertices. If no function is provided, the numeric edge
   ///   value or a constant weight of _1_ is used.
   ///
-  /// - `costEstimate` is a function that returns the remaining cost from the
+  /// - [costEstimate] is a function that returns the remaining cost from the
   ///   provided vertex. If an estimate is provided a faster _A*-Search_ is
   ///   performed, otherwise a _Dijkstra Search_.
   ///
-  /// - If `includeAlternativePaths` is set to `true`, multiple equal cost
+  /// - If [includeAlternativePaths] is set to `true`, multiple equal cost
   ///   paths to the same target are returned. The default is to not include
   ///   such alternatives.
   ///

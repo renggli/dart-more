@@ -5,7 +5,7 @@ import '../strategy.dart';
 /// algorithm has exponential complexity, but for graphs with small outgoing
 /// vertex degree is fast.
 ///
-/// `vertices` should be the nodes of the graph. `neighboursOf` is a function
+/// [vertices] should be the nodes of the graph. [neighboursOf] is a function
 /// that returns the neighbours of a vertex.
 ///
 /// See https://en.wikipedia.org/wiki/Bron%E2%80%93Kerbosch_algorithm.

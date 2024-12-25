@@ -124,7 +124,7 @@ sealed class Either<L, R> {
   Either<R, L> swap();
 }
 
-/// Implementation of an [Either] with `leftValue` populated.
+/// Implementation of an [Either] with [leftValue] populated.
 class LeftEither<L, R> extends Either<L, R> {
   const LeftEither._(this.leftValue) : super._();
 
@@ -196,7 +196,7 @@ class LeftEither<L, R> extends Either<L, R> {
   String toString() => '${super.toString()}[$leftValue]';
 }
 
-/// Implementation of an [Either] with `rightValue` populated.
+/// Implementation of an [Either] with [rightValue] populated.
 class RightEither<L, R> extends Either<L, R> {
   const RightEither._(this.rightValue) : super._();
 

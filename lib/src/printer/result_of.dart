@@ -4,7 +4,7 @@ import 'printer.dart';
 
 extension ResultOfPrinterExtension<R> on Printer<R> {
   /// Returns a printer that accepts values of type [T] and invokes the provided
-  /// `callback` to transform it to type [R] for printing.
+  /// [function] to transform it to type [R] for printing.
   Printer<T> onResultOf<T>(Map1<T, R> function) =>
       ResultOfPrinter<T, R>(this, function);
 

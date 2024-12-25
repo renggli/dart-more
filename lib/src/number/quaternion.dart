@@ -229,7 +229,7 @@ class Quaternion implements CloseTo<Quaternion> {
     return Quaternion(0.5 * norm().log(), x * scale, y * scale, z * scale);
   }
 
-  /// Computes the power of this quaternion number raised to `exponent`.
+  /// Computes the power of this quaternion number raised to [exponent].
   Quaternion pow(Object exponent) => (log() * exponent).exp();
 
   /// Tests if this quaternion is not defined.

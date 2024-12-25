@@ -1,6 +1,6 @@
 import '../../../collection.dart';
 
-/// Returns an explicit [Comparator] based on an `iterable` of elements.
+/// Returns an explicit [Comparator] based on an [iterable] of elements.
 Comparator<T> explicitComparator<T>(Iterable<T> iterable) {
   final ranks = <T, int>{};
   for (final element in iterable.indexed()) {

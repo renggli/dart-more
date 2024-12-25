@@ -3,12 +3,12 @@ import '../range.dart';
 
 /// A range of doubles containing an arithmetic progressions.
 ///
-/// The progression is defined by a `start`, `stop` and `step` parameter. A
-/// range essentially implements a lazy list that is also produced by the
-/// following for-loop:
+/// The progression is defined by a [DoubleRange.start], [DoubleRange.end] and
+/// [DoubleRange.step] parameters. A range essentially implements a lazy list
+/// that is also produced by the following for-loop:
 ///
 /// ```dart
-/// for (double i = start; i < stop; i += step) {
+/// for (double i = start; i < end; i += step) {
 ///    // ...
 /// }
 /// ```

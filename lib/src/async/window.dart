@@ -3,10 +3,10 @@ import 'dart:collection';
 import '../shared/exceptions.dart';
 
 extension WindowStreamExtension<E> on Stream<E> {
-  /// Sliding window [Stream] of given `size` over this [Stream].
+  /// Sliding window [Stream] of given [size] over this [Stream].
   ///
-  /// If the stream is of type `E`, the returned stream
-  /// will be of type `List<E>`.
+  /// If the stream is of type [E], the returned stream will be of type
+  /// `List<E>`.
   Stream<List<E>> window(int size,
       {int step = 1, bool includePartial = false}) async* {
     checkNonZeroPositive(size, 'size');

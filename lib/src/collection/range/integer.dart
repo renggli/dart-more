@@ -2,12 +2,12 @@ import '../range.dart';
 
 /// A range of integers containing an arithmetic progressions.
 ///
-/// The progression is defined by a `start`, `stop` and `step` parameter. A
-/// range essentially implements a lazy list that is also produced by the
-/// following for-loop:
+/// The progression is defined by a [IntegerRange.start], [IntegerRange.end]
+/// and [IntegerRange.step] parameters. A range essentially implements a lazy
+/// list that is also produced by the following for-loop:
 ///
 /// ```dart
-/// for (int i = start; i < stop; i += step) {
+/// for (int i = start; i < end; i += step) {
 ///    // ...
 /// }
 /// ```

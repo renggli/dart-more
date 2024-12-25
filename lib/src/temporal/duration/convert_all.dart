@@ -3,9 +3,9 @@ import '../time_unit.dart';
 
 extension ConvertToAllDurationExtension on Duration {
   /// Converts this [Duration] into one or more [int] representations over the
-  /// provided [TimeUnit] `units`.
+  /// provided [TimeUnit] [units].
   ///
-  /// The result is a [Map] with the selected [TimeUnit] `units` as the key,
+  /// The result is a [Map] with the selected [TimeUnit] [units] as the key,
   /// including [TimeUnit.microsecond] with the remainder of the conversion.
   ///
   /// If this [Duration] is negative the resulting values are all negative too.

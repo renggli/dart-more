@@ -176,7 +176,7 @@ class Complex implements CloseTo<Complex> {
   /// Computes the natural logarithm of this complex number.
   Complex log() => Complex(norm().sqrt().log(), b.atan2(a));
 
-  /// Computes the power of this complex number raised to `exponent`.
+  /// Computes the power of this complex number raised to [exponent].
   Complex pow(Object exponent) => (log() * exponent).exp();
 
   /// Computes the square of this complex number.

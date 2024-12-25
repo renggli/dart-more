@@ -7,12 +7,12 @@ import '../../comparator.dart';
 
 /// A sorted-list that remains sorted by a [Comparator] as elements get added.
 class SortedList<E> extends ListBase<E> implements PriorityQueue<E> {
-  /// Constructs an empty sorted-list with an optional `ordering`.
+  /// Constructs an empty sorted-list with an optional [comparator].
   SortedList({Comparator<E>? comparator, bool growable = true})
       : _values = List.empty(growable: growable),
         _comparator = comparator ?? naturalCompare;
 
-  /// Constructs a sorted-list from an iterable with an optional `ordering`.
+  /// Constructs a sorted-list from an iterable with an optional [comparator].
   SortedList.of(Iterable<E> iterable,
       {Comparator<E>? comparator, bool growable = true})
       : _values = List<E>.of(iterable, growable: growable),

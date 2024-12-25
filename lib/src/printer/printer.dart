@@ -32,7 +32,7 @@ abstract class Printer<T> with ToStringPrinter {
   const factory Printer.switcher(Map<Predicate1<T>, Printer<T>> cases,
       {Printer<T> otherwise}) = SwitcherPrinter<T>;
 
-  /// Constructs a printer by wrapping `object`.
+  /// Constructs a printer by wrapping [object].
   factory Printer.wrap(Object? object) {
     if (object is Printer<T>) {
       return object;
@@ -52,7 +52,7 @@ abstract class Printer<T> with ToStringPrinter {
   @nonVirtual
   String call(T object) => print(object);
 
-  /// Returns the printed `object`.
+  /// Returns the printed [object].
   @nonVirtual
   String print(T object) {
     final buffer = StringBuffer();
@@ -60,6 +60,6 @@ abstract class Printer<T> with ToStringPrinter {
     return buffer.toString();
   }
 
-  /// Prints the `object` into `buffer`.
+  /// Prints the [object] into [buffer].
   void printOn(T object, StringBuffer buffer);
 }

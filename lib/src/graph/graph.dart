@@ -51,7 +51,7 @@ abstract class Graph<V, E> with ToStringPrinter {
   /// Returns the edge between [source] and [target], or `null`.
   Edge<V, E>? getEdge(V source, V target);
 
-  /// Returns the vertices that are adjacent to a `vertex`.
+  /// Returns the vertices that are adjacent to a [vertex].
   Iterable<V> neighboursOf(V vertex);
 
   /// Returns the vertices that come before a [vertex].

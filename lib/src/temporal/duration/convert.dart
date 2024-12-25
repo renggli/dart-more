@@ -3,7 +3,7 @@ import '../time_unit.dart';
 
 extension ConvertToDurationExtension on Duration {
   /// Converts the [Duration] into a [double] representation of the provided
-  /// [TimeUnit] `unit`. The resulting duration has the same sign as this
+  /// [TimeUnit] [unit]. The resulting duration has the same sign as this
   /// duration.
   ///
   /// If you are not interested in the fractional part use the preferred

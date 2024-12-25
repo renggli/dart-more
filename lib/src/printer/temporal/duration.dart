@@ -96,9 +96,9 @@ class DurationPrinterBuilder {
   /// units. Units below the smallest part are ignored.
   ///
   /// By default the absolute value of all units is printed, unless
-  /// `absoluteValue` is set to `false`.
+  /// [absoluteValue] is set to `false`.
   ///
-  /// If `skipIfZero` is set to `true` the unit is skipped if it is zero.
+  /// If [skipIfZero] is set to `true` the unit is skipped if it is zero.
   ///
   /// See [ConvertToAllDurationExtension.convertToAll] for details.
   void part(TimeUnit unit,
@@ -121,10 +121,10 @@ class DurationPrinterBuilder {
   /// The printed [double] value is fractional duration in the selected unit. It
   /// represents the complete duration.
   ///
-  /// By default signed value of the unit is printed, unless `absoluteValue` is
+  /// By default signed value of the unit is printed, unless [absoluteValue] is
   /// set to `true`.
   ///
-  /// If `skipIfZero` is set to `true` the unit is skipped if it is zero.
+  /// If [skipIfZero] is set to `true` the unit is skipped if it is zero.
   ///
   /// See [ConvertToDurationExtension.convertTo] for details.
   void full(TimeUnit unit, Printer<double> printer,

@@ -5,8 +5,8 @@ extension PeriodicalDateTimeExtension on DateTime {
   /// Creates an infinitely long [Iterable] of periodic [DateTime] timestamps
   /// starting at this [DateTime].
   ///
-  /// The step size is configured using a required [TimeUnit] `unit`, and an
-  /// optional `step` size that defaults to `1`.
+  /// The step size is configured using a required [TimeUnit] [unit], and an
+  /// optional [step] size that defaults to `1`.
   ///
   /// To limit the iteration to a specific number of timestamps use
   /// [Iterable.take]; and to limit iteration to a specific end-timestamp use

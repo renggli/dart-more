@@ -1,7 +1,7 @@
 import 'package:characters/characters.dart';
 
 extension ConvertFirstLastStringExtension on String {
-  /// Converts the first [count] characters of this string with `callback`. If
+  /// Converts the first [count] characters of this string with [callback]. If
   /// this is shorter than [count], this [String] is returned.
   String convertFirstCharacters(String Function(String) callback,
       {int count = 1}) {
@@ -13,7 +13,7 @@ extension ConvertFirstLastStringExtension on String {
     return this;
   }
 
-  /// Converts the last [count] characters of this string with `callback`. If
+  /// Converts the last [count] characters of this string with [callback]. If
   /// this is shorter than [count], this [String] is returned.
   String convertLastCharacters(String Function(String value) callback,
       {int count = 1}) {
