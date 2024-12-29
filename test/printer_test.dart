@@ -1742,12 +1742,12 @@ void main() {
       expect(printer(42), '*');
     });
     test('static', () {
-      final printer = ObjectPrinter<Object>.static();
-      expect(printer('hello'), 'Object');
+      final printer = ObjectPrinter<Point<num>>.static();
+      expect(printer(const Point<int>(1, 2)), 'Point<num>');
     });
     test('dynamic', () {
-      final printer = ObjectPrinter<Object>.dynamic();
-      expect(printer('hello'), 'String');
+      final printer = ObjectPrinter<Point<num>>.dynamic();
+      expect(printer(const Point<int>(1, 2)), 'Point<int>');
     });
     group('addValue', () {
       test('default', () {
