@@ -2431,6 +2431,29 @@ void main() {
     });
   });
   group('map', () {
+    group('computed', () {
+      test('basic', () {
+        final map = <String, int>{}.withComputed(int.parse);
+        expect(map.containsKey('42'), false);
+        expect(map['42'], 42);
+        expect(map.containsKey('42'), true);
+      });
+      test('typing', () {
+        final map = <String, int>{}.withComputed(int.parse);
+        expect(map['5'] + map['42'], 47);
+      });
+      test('modify', () {
+        final map = {'1': -1}.withComputed(int.parse);
+        expect(map['1'], -1);
+        map['2'] = -2;
+        expect(map['2'], -2);
+      });
+      test('throws', () {
+        final map = <String, int>{}.withComputed(int.parse);
+        expect(() => map['a'], throwsFormatException);
+        expect(map.isEmpty, isTrue);
+      });
+    });
     group('default', () {
       test('basic', () {
         final map = {'a': 1}.withDefault(42);

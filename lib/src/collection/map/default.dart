@@ -1,8 +1,11 @@
 import 'dart:collection';
 
 extension DefaultMapExtension<K, V> on Map<K, V> {
-  /// Returns a mutable view of this map that responds with the provided
+  /// Returns a mutable view of this [Map] that responds with the provided
   /// default value, when the caller tries to access a non-existent key.
+  ///
+  /// As a consequence, the return type of the accessor `V operator [](Object?
+  /// key)` is `V` and not `V?` like with a standard [Map].
   ///
   /// For example:
   ///

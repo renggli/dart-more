@@ -39,6 +39,8 @@ export 'src/collection/iterable/zip.dart'
 export 'src/collection/list/rotate.dart'
     show RotateListExtension, RotateQueueExtension;
 export 'src/collection/list/take_skip.dart' show TakeSkipListExtension;
+export 'src/collection/map/computed.dart'
+    show ComputedMapExtension, MapWithComputed;
 export 'src/collection/map/default.dart'
     show DefaultMapExtension, MapWithDefault;
 export 'src/collection/multimap/list.dart'
