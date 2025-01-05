@@ -10,6 +10,21 @@ void main() {
       expect(isJavaScript, isFalse);
     }, testOn: '!js');
   });
+  group('hasAssertionsEnabled', () {
+    if (hasAssertionsEnabled) {
+      test('isTrue', () {
+        expect(() {
+          assert(false);
+        }, throwsA(isA<AssertionError>()));
+      });
+    } else {
+      test('isFalse', () {
+        expect(() {
+          assert(false);
+        }, isNot(throwsA(isA<AssertionError>())));
+      });
+    }
+  });
   test('minSafeInteger', () {
     expect(minSafeInteger, lessThan(-0xfffffffffff));
     expect(minSafeInteger, -BigInt.two.pow(safeIntegerBits - 1).toInt());

@@ -6,6 +6,13 @@ import 'dart:math';
 /// True, if the code is running in JavaScript.
 const bool isJavaScript = identical(1, 1.0);
 
+/// True, if the code has assertions enabled.
+final bool hasAssertionsEnabled = () {
+  var enabled = false;
+  assert(enabled = true);
+  return enabled;
+}();
+
 /// The safe bits of an [int] value. In the Dart VM integer are represented
 /// using 63 bits, in JavaScript we only have 53.
 const int safeIntegerBits = isJavaScript ? 53 : 63;
