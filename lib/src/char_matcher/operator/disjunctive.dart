@@ -3,7 +3,7 @@ import '../char_matcher.dart';
 import 'any.dart';
 import 'none.dart';
 
-class DisjunctiveCharMatcher extends CharMatcher {
+final class DisjunctiveCharMatcher extends CharMatcher {
   factory DisjunctiveCharMatcher(Iterable<CharMatcher> matchers) =>
       DisjunctiveCharMatcher._(List.of(matchers, growable: false));
 

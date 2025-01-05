@@ -2,7 +2,7 @@ import '../../../printer.dart';
 import '../../collection/bitlist.dart';
 import '../char_matcher.dart';
 
-class LookupCharMatcher extends CharMatcher {
+final class LookupCharMatcher extends CharMatcher {
   const LookupCharMatcher(this.start, this.stop, this.buffer);
 
   final int start;

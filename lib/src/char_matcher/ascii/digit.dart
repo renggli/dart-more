@@ -1,6 +1,6 @@
 import '../char_matcher.dart';
 
-class DigitCharMatcher extends CharMatcher {
+final class DigitCharMatcher extends CharMatcher {
   const DigitCharMatcher();
 
   @override

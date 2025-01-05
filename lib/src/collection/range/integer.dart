@@ -11,7 +11,7 @@ import '../range.dart';
 ///    // ...
 /// }
 /// ```
-class IntegerRange extends Range<int> {
+final class IntegerRange extends Range<int> {
   /// The empty range.
   static const empty = IntegerRange._(0, 0, 1, 0);
 

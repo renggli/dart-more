@@ -7,7 +7,7 @@ import 'property.dart' as property;
 
 /// Character matcher function that classifies characters using official Unicode
 /// categories and properties.
-class UnicodeCharMatcher extends CharMatcher {
+final class UnicodeCharMatcher extends CharMatcher {
   const UnicodeCharMatcher(this.data, this.mask)
       : assert(data.length == _unicodeCharCount),
         assert(mask <= 0xffffffff);

@@ -1,6 +1,6 @@
 import '../char_matcher.dart';
 
-class PunctuationCharMatcher extends CharMatcher {
+final class PunctuationCharMatcher extends CharMatcher {
   const PunctuationCharMatcher();
 
   @override

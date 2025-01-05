@@ -12,6 +12,7 @@ import 'iterable/mixins/unmodifiable.dart';
 /// parameters. A range essentially implements a sequence of values of type [E]
 /// as a [List]. The advantage is that a range uses very little memory no matter
 /// its size.
+@immutable
 abstract class Range<E> extends ListBase<E> with UnmodifiableListMixin<E> {
   /// Constructor of the abstract [Range].
   const Range();

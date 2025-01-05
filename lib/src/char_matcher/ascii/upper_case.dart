@@ -1,6 +1,6 @@
 import '../char_matcher.dart';
 
-class UpperCaseLetterCharMatcher extends CharMatcher {
+final class UpperCaseLetterCharMatcher extends CharMatcher {
   const UpperCaseLetterCharMatcher();
 
   @override

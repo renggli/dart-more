@@ -1,6 +1,6 @@
 import '../char_matcher.dart';
 
-class LetterCharMatcher extends CharMatcher {
+final class LetterCharMatcher extends CharMatcher {
   const LetterCharMatcher();
 
   @override

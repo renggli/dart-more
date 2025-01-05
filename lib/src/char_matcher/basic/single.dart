@@ -1,7 +1,7 @@
 import '../../../printer.dart';
 import '../char_matcher.dart';
 
-class SingleCharMatcher extends CharMatcher {
+final class SingleCharMatcher extends CharMatcher {
   const SingleCharMatcher(this.codePoint);
 
   final int codePoint;

@@ -1,6 +1,6 @@
 import '../char_matcher.dart';
 
-class AsciiCharMatcher extends CharMatcher {
+final class AsciiCharMatcher extends CharMatcher {
   const AsciiCharMatcher();
 
   @override

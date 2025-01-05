@@ -1,7 +1,7 @@
 import '../char_matcher.dart';
 import 'any.dart';
 
-class NoneCharMatcher extends CharMatcher {
+final class NoneCharMatcher extends CharMatcher {
   const NoneCharMatcher();
 
   @override

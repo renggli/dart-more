@@ -11,7 +11,7 @@ import '../range.dart';
 ///    // ...
 /// }
 /// ```
-class BigIntRange extends Range<BigInt> {
+final class BigIntRange extends Range<BigInt> {
   /// The empty range.
   static final empty = BigIntRange._(BigInt.zero, BigInt.zero, BigInt.one, 0);
 

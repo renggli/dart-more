@@ -1,7 +1,7 @@
 import '../../../printer.dart';
 import '../char_matcher.dart';
 
-class RangesCharMatcher extends CharMatcher {
+final class RangesCharMatcher extends CharMatcher {
   const RangesCharMatcher(this.length, this.starts, this.stops)
       : assert(starts.length == length, '`starts` has invalid length'),
         assert(stops.length == length, '`stops` has invalid length');

@@ -1,6 +1,6 @@
 import '../char_matcher.dart';
 
-class LowerCaseLetterCharMatcher extends CharMatcher {
+final class LowerCaseLetterCharMatcher extends CharMatcher {
   const LowerCaseLetterCharMatcher();
 
   @override

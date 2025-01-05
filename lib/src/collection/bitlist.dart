@@ -4,8 +4,7 @@ import 'dart:typed_data' show Uint32List;
 
 import 'package:collection/collection.dart' show NonGrowableListMixin;
 
-import '../math/bit.dart';
-import 'range/integer.dart' show IntegerRange;
+import '../../more.dart';
 
 /// An space efficient [List] that stores boolean values.
 abstract class BitList extends ListBase<bool> {
@@ -75,8 +74,8 @@ abstract class BitList extends ListBase<bool> {
 
   /// Returns the value of the bit with the given [index]. The behavior is
   /// undefined if [index] is outside of bounds.
-  @pragma('vm:prefer-inline')
-  @pragma('dart2js:tryInline')
+  @preferInline
+  @noBoundsChecks
   bool getUnchecked(int index) =>
       (buffer[index >>> bitShift] & bitSetMask[index & bitOffset]) != 0;
 
@@ -89,8 +88,8 @@ abstract class BitList extends ListBase<bool> {
 
   /// Sets the [value] of the bit with the given [index]. The behavior is
   /// undefined if [index] is outside of bounds.
-  @pragma('vm:prefer-inline')
-  @pragma('dart2js:tryInline')
+  @preferInline
+  @noBoundsChecks
   void setUnchecked(int index, bool value) => value
       ? buffer[index >>> bitShift] |= bitSetMask[index & bitOffset]
       : buffer[index >>> bitShift] &= bitClearMask[index & bitOffset];
@@ -120,8 +119,8 @@ abstract class BitList extends ListBase<bool> {
 
   /// Sets the bit at the specified [index] to the complement of its current
   /// value. The behavior is undefined if [index] is outside of bounds.
-  @pragma('vm:prefer-inline')
-  @pragma('dart2js:tryInline')
+  @preferInline
+  @noBoundsChecks
   void flipUnchecked(int index) =>
       buffer[index >>> bitShift] ^= bitSetMask[index & bitOffset];
 

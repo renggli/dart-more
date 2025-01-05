@@ -1,6 +1,6 @@
 import '../char_matcher.dart';
 
-class WhitespaceCharMatcher extends CharMatcher {
+final class WhitespaceCharMatcher extends CharMatcher {
   const WhitespaceCharMatcher();
 
   @override

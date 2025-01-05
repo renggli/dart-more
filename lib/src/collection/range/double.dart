@@ -12,7 +12,7 @@ import '../range.dart';
 ///    // ...
 /// }
 /// ```
-class DoubleRange extends Range<double> {
+final class DoubleRange extends Range<double> {
   /// The empty range.
   static const empty = DoubleRange._(0, 0, 1, 0);
 
