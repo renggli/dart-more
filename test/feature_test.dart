@@ -10,6 +10,14 @@ void main() {
       expect(isJavaScript, isFalse);
     }, testOn: '!js');
   });
+  group('isWasm', () {
+    test('isTrue', () {
+      expect(isWasm, isTrue);
+    }, testOn: 'wasm');
+    test('isFalse', () {
+      expect(isWasm, isFalse);
+    }, testOn: '!wasm');
+  });
   group('hasAssertionsEnabled', () {
     if (hasAssertionsEnabled) {
       test('isTrue', () {

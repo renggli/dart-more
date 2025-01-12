@@ -4,7 +4,10 @@ library;
 import 'dart:math';
 
 /// True, if the code is running in JavaScript.
-const bool isJavaScript = identical(1, 1.0);
+const isJavaScript = identical(1, 1.0);
+
+/// True, if the code is running in WASM.
+const isWasm = bool.fromEnvironment('dart.tool.dart2wasm');
 
 /// True, if the code has assertions enabled.
 final bool hasAssertionsEnabled = () {

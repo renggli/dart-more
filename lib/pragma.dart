@@ -13,14 +13,24 @@ import 'feature.dart';
 // region Pragmas for general use.
 
 /// Never inline a function or method.
-const neverInline = isJavaScript ? neverInlineJs : neverInlineVm;
+const neverInline = isJavaScript
+    ? neverInlineJs
+    : isWasm
+        ? neverInlineWasm
+        : neverInlineVm;
 const neverInlineJs = pragma('dart2js:never-inline');
 const neverInlineVm = pragma('vm:never-inline');
+const neverInlineWasm = pragma('wasm:never-inline');
 
 /// Inline a function or method when possible.
-const preferInline = isJavaScript ? preferInlineJs : preferInlineVm;
+const preferInline = isJavaScript
+    ? preferInlineJs
+    : isWasm
+        ? preferInlineWasm
+        : preferInlineVm;
 const preferInlineJs = pragma('dart2js:prefer-inline');
 const preferInlineVm = pragma('vm:prefer-inline');
+const preferInlineWasm = pragma('wasm:prefer-inline');
 
 // endregion
 
@@ -28,7 +38,7 @@ const preferInlineVm = pragma('vm:prefer-inline');
 
 /// Removes all array bounds checks.
 const noBoundsChecks = isJavaScript ? noBoundsChecksJs : noBoundsChecksVm;
-const noBoundsChecksVm = pragma('vm:unsafe:no-bounds-checks');
 const noBoundsChecksJs = pragma('dart2js:index-bounds:trust');
+const noBoundsChecksVm = pragma('vm:unsafe:no-bounds-checks');
 
 // endregion
