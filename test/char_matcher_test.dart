@@ -990,5 +990,18 @@ void main() {
               onNonMatch: (nonMatch) => '?$nonMatch?'),
           '?a?!1!?b?!2!?c?');
     });
+    test('astral plane', () {
+      expect('🌐'.startsWith(pattern), isFalse);
+      expect('🌐'.indexOf(pattern), -1);
+      expect('🌐'.lastIndexOf(pattern), -1);
+      expect('🌐'.contains(pattern), isFalse);
+      expect('🌐'.replaceFirst(pattern, '!'), '🌐');
+      expect(
+          '🌐'.replaceFirstMapped(pattern, (match) => '!${match[0]}!'), '🌐');
+      expect('🌐'.replaceAll(pattern, '!'), '🌐');
+      expect('🌐'.replaceAllMapped(pattern, (match) => '!${match[0]}!'), '🌐');
+      expect('🌐'.split(pattern), ['🌐']);
+      expect('🌐'.splitMapJoin(pattern), '🌐');
+    });
   });
 }
