@@ -770,6 +770,7 @@ void main() {
       expect(star.firstIndexIn('a**'), 1);
       expect(star.firstIndexIn('*', 1), -1);
       expect(star.firstIndexIn('**', 1), 1);
+      expect(star.firstIndexIn('\u{10000}*', 1), 2);
     });
     test('lastIndexIn', () {
       expect(star.lastIndexIn(''), -1);
@@ -780,6 +781,7 @@ void main() {
       expect(star.lastIndexIn('**a'), 1);
       expect(star.lastIndexIn('*', 0), 0);
       expect(star.lastIndexIn('**', 0), 0);
+      expect(star.lastIndexIn('*\u{10000}', 2), 0);
     });
     test('countIn', () {
       expect(star.countIn(''), 0);
