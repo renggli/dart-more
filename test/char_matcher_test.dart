@@ -668,7 +668,7 @@ void main() {
             'ABCabcあ亜ㄅ아012@#!,אבגابج');
       });
       test('otherNeutrals', () {
-        verify(UnicodeCharMatcher.bidiOtherNeutrals(), '!"&\'()*;<=>?@[\\]￼',
+        verify(UnicodeCharMatcher.bidiOtherNeutrals(), '''!"&'()*;<=>?@[\\]￼''',
             'ABCabcあ亜ㄅ아012#, אבגابج');
       });
       test('leftToRightEmbedding', () {
@@ -991,17 +991,19 @@ void main() {
           '?a?!1!?b?!2!?c?');
     });
     test('astral plane', () {
-      expect('🌐'.startsWith(pattern), isFalse);
-      expect('🌐'.indexOf(pattern), -1);
-      expect('🌐'.lastIndexOf(pattern), -1);
-      expect('🌐'.contains(pattern), isFalse);
-      expect('🌐'.replaceFirst(pattern, '!'), '🌐');
+      expect('\u{10000}'.startsWith(pattern), isFalse);
+      expect('\u{10000}'.indexOf(pattern), -1);
+      expect('\u{10000}'.lastIndexOf(pattern), -1);
+      expect('\u{10000}'.contains(pattern), isFalse);
+      expect('\u{10000}'.replaceFirst(pattern, '!'), '\u{10000}');
       expect(
-          '🌐'.replaceFirstMapped(pattern, (match) => '!${match[0]}!'), '🌐');
-      expect('🌐'.replaceAll(pattern, '!'), '🌐');
-      expect('🌐'.replaceAllMapped(pattern, (match) => '!${match[0]}!'), '🌐');
-      expect('🌐'.split(pattern), ['🌐']);
-      expect('🌐'.splitMapJoin(pattern), '🌐');
+          '\u{10000}'.replaceFirstMapped(pattern, (match) => '!${match[0]}!'),
+          '\u{10000}');
+      expect('\u{10000}'.replaceAll(pattern, '!'), '\u{10000}');
+      expect('\u{10000}'.replaceAllMapped(pattern, (match) => '!${match[0]}!'),
+          '\u{10000}');
+      expect('\u{10000}'.split(pattern), ['\u{10000}']);
+      expect('\u{10000}'.splitMapJoin(pattern), '\u{10000}');
     });
   });
 }
