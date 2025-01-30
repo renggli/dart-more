@@ -161,8 +161,9 @@ abstract class CharMatcher with ToStringPrinter implements Pattern {
   /// Returns the first matching index in [sequence] starting at [start]
   /// (inclusive). Returns `-1` if it could not be found.
   int firstIndexIn(String sequence, [int start = 0]) {
+    if (_insideSplitSurrogate(sequence, start)) start++;
+
     final iterator = _runeIteratorAt(sequence, start);
-    if (iterator == null) return -1;
     while (iterator.moveNext()) {
       if (match(iterator.current)) {
         return iterator.rawIndex;
@@ -174,9 +175,10 @@ abstract class CharMatcher with ToStringPrinter implements Pattern {
   /// Returns the first matching index in [sequence], searching backward
   /// starting at [start] (inclusive). Returns `-1` if it could not be found.
   int lastIndexIn(String sequence, [int? start]) {
-    final index = start == null ? sequence.length : start + 1;
+    var index = start == null ? sequence.length : start + 1;
+    if (_insideSplitSurrogate(sequence, index)) index--;
+
     final iterator = _runeIteratorAt(sequence, index);
-    if (iterator == null) return -1;
     while (iterator.movePrevious()) {
       if (match(iterator.current)) {
         return iterator.rawIndex;
@@ -192,7 +194,7 @@ abstract class CharMatcher with ToStringPrinter implements Pattern {
   /// with the specified [replacement].
   String collapseFrom(String sequence, String replacement) {
     final result = <int>[];
-    final iterator = _runeIteratorAt(sequence, 0)!;
+    final iterator = _runeIteratorAt(sequence, 0);
     while (iterator.moveNext()) {
       if (match(iterator.current)) {
         while (iterator.moveNext() && match(iterator.current)) {}
@@ -225,7 +227,7 @@ abstract class CharMatcher with ToStringPrinter implements Pattern {
   /// Removes leading matching characters in [sequence].
   String trimLeadingFrom(String sequence) {
     if (sequence.isEmpty) return sequence;
-    final iterator = _runeIteratorAt(sequence, 0)!;
+    final iterator = _runeIteratorAt(sequence, 0);
     while (iterator.moveNext() && match(iterator.current)) {}
     return iterator.currentSize > 0
         ? sequence.substring(iterator.rawIndex)
@@ -236,7 +238,6 @@ abstract class CharMatcher with ToStringPrinter implements Pattern {
   String trimTailingFrom(String sequence) {
     if (sequence.isEmpty) return sequence;
     final iterator = _runeIteratorAt(sequence, sequence.length);
-    if (iterator == null) return sequence;
     while (iterator.movePrevious() && match(iterator.current)) {}
     return iterator.currentSize > 0
         ? sequence.substring(0, iterator.rawIndex + 1)
@@ -245,8 +246,8 @@ abstract class CharMatcher with ToStringPrinter implements Pattern {
 
   @override
   Iterable<Match> allMatches(String sequence, [int start = 0]) sync* {
+    if (_insideSplitSurrogate(sequence, start)) start++;
     final iterator = _runeIteratorAt(sequence, start);
-    if (iterator == null) return;
     while (iterator.moveNext()) {
       if (match(iterator.current)) {
         final start = iterator.rawIndex;
@@ -257,8 +258,9 @@ abstract class CharMatcher with ToStringPrinter implements Pattern {
 
   @override
   Match? matchAsPrefix(String sequence, [int start = 0]) {
+    if (_insideSplitSurrogate(sequence, start)) return null;
+
     final iterator = _runeIteratorAt(sequence, start);
-    if (iterator == null) return null;
     if (iterator.moveNext() && match(iterator.current)) {
       final start = iterator.rawIndex;
       return CharMatch(start, start + iterator.currentSize, sequence, this);
@@ -267,14 +269,10 @@ abstract class CharMatcher with ToStringPrinter implements Pattern {
   }
 }
 
-RuneIterator? _runeIteratorAt(String sequence, int index) {
-  if (index == 0) return RuneIterator(sequence);
-  if (_insideSplitSurrogate(sequence, index)) {
-    // RuneIterator.at will throw in this case
-    return null;
-  }
-  return RuneIterator.at(sequence, index);
-}
+// This will throw if the index points inside a surrogate pair, so check
+// beforehand.
+RuneIterator _runeIteratorAt(String sequence, int index) =>
+    index == 0 ? RuneIterator(sequence) : RuneIterator.at(sequence, index);
 
 // Tests if the code is a UTF-16 lead surrogate.
 bool _isLeadSurrogate(int code) => (code & 0xFC00) == 0xD800;
