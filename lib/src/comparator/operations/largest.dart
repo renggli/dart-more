@@ -14,8 +14,10 @@ extension LargestComparator<T> on Comparator<T> {
       }
     }
     final result = List.generate(
-        math.min(k, heap.length), (index) => heap.removeFirst(),
-        growable: false);
+      math.min(k, heap.length),
+      (index) => heap.removeFirst(),
+      growable: false,
+    );
     result.reverseRange(0, result.length);
     return result;
   }

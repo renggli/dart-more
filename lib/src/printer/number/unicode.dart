@@ -10,10 +10,12 @@ final unicodeCodePointPrinter = Printer<int>.sequence([
     sign: const SignNumberPrinter<int>.negativeAndPositiveSign(),
   ),
   Printer<int>.switcher({
-    (value) => !value.between(0, 0x10ffff):
-        const Printer<int>.literal(' (invalid)'),
-    _printableCharacters.match:
-        const Printer<int>.pluggable(String.fromCharCode).around(' "', '"'),
+    (value) => !value.between(0, 0x10ffff): const Printer<int>.literal(
+      ' (invalid)',
+    ),
+    _printableCharacters.match: const Printer<int>.pluggable(
+      String.fromCharCode,
+    ).around(' "', '"'),
   }, otherwise: const Printer<int>.literal('')),
 ]);
 

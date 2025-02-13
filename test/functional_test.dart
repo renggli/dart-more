@@ -80,7 +80,9 @@ void main() {
       });
       test('orElseGet', () {
         expect(
-            optional.orElseGet(() => fail('Not expected to be called')), 'foo');
+          optional.orElseGet(() => fail('Not expected to be called')),
+          'foo',
+        );
       });
       test('orElseThrow', () {
         expect(optional.orElseThrow(), 'foo');
@@ -101,7 +103,9 @@ void main() {
       });
       test('toString', () {
         expect(
-            optional.toString(), "Instance of 'PresentOptional<String>'[foo]");
+          optional.toString(),
+          "Instance of 'PresentOptional<String>'[foo]",
+        );
       });
     });
     group('absent', () {
@@ -128,13 +132,15 @@ void main() {
         expect(called, 1);
       });
       test('where (positive)', () {
-        final other =
-            optional.where((value) => fail('Not expected to be called'));
+        final other = optional.where(
+          (value) => fail('Not expected to be called'),
+        );
         expect(other, same(optional));
       });
       test('where (negative)', () {
-        final other =
-            optional.where((value) => fail('Not expected to be called'));
+        final other = optional.where(
+          (value) => fail('Not expected to be called'),
+        );
         expect(other, same(optional));
       });
       test('whereType (positive)', () {
@@ -148,14 +154,16 @@ void main() {
         expect(other.isAbsent, isTrue);
       });
       test('map', () {
-        final other =
-            optional.map<int>((value) => fail('Not expected to be called'));
+        final other = optional.map<int>(
+          (value) => fail('Not expected to be called'),
+        );
         expect(other, isA<Optional<int>>());
         expect(other.isAbsent, isTrue);
       });
       test('flatMap', () {
-        final other =
-            optional.flatMap<int>((value) => fail('Not expected to be called'));
+        final other = optional.flatMap<int>(
+          (value) => fail('Not expected to be called'),
+        );
         expect(other, isA<Optional<int>>());
         expect(other.isAbsent, isTrue);
       });
@@ -173,8 +181,10 @@ void main() {
         expect(() => optional.orElseThrow(), throwsStateError);
       });
       test('orElseThrow (custom)', () {
-        expect(() => optional.orElseThrow(UnimplementedError()),
-            throwsUnimplementedError);
+        expect(
+          () => optional.orElseThrow(UnimplementedError()),
+          throwsUnimplementedError,
+        );
       });
       test('==', () {
         // ignore: unrelated_type_equality_checks
@@ -248,42 +258,49 @@ void main() {
         expect(either.isRight, isFalse);
       });
       test('fold', () {
-        expect(either.fold((left) => 'l:$left', (right) => 'r:$right'),
-            'l:$value');
+        expect(
+          either.fold((left) => 'l:$left', (right) => 'r:$right'),
+          'l:$value',
+        );
       });
       test('map', () {
         expect(
-            either.map(
-              (each) => 'l:$each',
-              (each) => 'r:$each',
-            ),
-            const Either<String, String>.left('l:$value'));
+          either.map((each) => 'l:$each', (each) => 'r:$each'),
+          const Either<String, String>.left('l:$value'),
+        );
       });
       test('mapLeft', () {
-        expect(either.mapLeft((each) => 'l:$each'),
-            const Either<String, bool>.left('l:$value'));
+        expect(
+          either.mapLeft((each) => 'l:$each'),
+          const Either<String, bool>.left('l:$value'),
+        );
       });
       test('mapRight', () {
-        expect(either.mapRight((each) => 'r:$each'),
-            const Either<int, String>.left(value));
+        expect(
+          either.mapRight((each) => 'r:$each'),
+          const Either<int, String>.left(value),
+        );
       });
       test('flatMap', () {
         expect(
-            either.flatMap(
-              (each) => Either<String, String>.right('l:$each'),
-              (each) => Either<String, String>.left('r:$each'),
-            ),
-            const Either<String, String>.right('l:$value'));
+          either.flatMap(
+            (each) => Either<String, String>.right('l:$each'),
+            (each) => Either<String, String>.left('r:$each'),
+          ),
+          const Either<String, String>.right('l:$value'),
+        );
       });
       test('flatMapLeft', () {
         expect(
-            either.flatMapLeft((each) => Either<String, bool>.left('l:$each')),
-            const Either<String, bool>.left('l:$value'));
+          either.flatMapLeft((each) => Either<String, bool>.left('l:$each')),
+          const Either<String, bool>.left('l:$value'),
+        );
       });
       test('flatMapRight', () {
         expect(
-            either.flatMapRight((each) => Either<int, String>.right('r:$each')),
-            const Either<int, String>.left(value));
+          either.flatMapRight((each) => Either<int, String>.right('r:$each')),
+          const Either<int, String>.left(value),
+        );
       });
       test('swap', () {
         expect(either.swap(), const Either<bool, int>.right(value));
@@ -301,7 +318,9 @@ void main() {
       });
       test('toString', () {
         expect(
-            either.toString(), "Instance of 'LeftEither<int, bool>'[$value]");
+          either.toString(),
+          "Instance of 'LeftEither<int, bool>'[$value]",
+        );
       });
     });
     group('right', () {
@@ -344,42 +363,49 @@ void main() {
         expect(either.isRight, isTrue);
       });
       test('fold', () {
-        expect(either.fold((left) => 'l:$left', (right) => 'r:$right'),
-            'r:$value');
+        expect(
+          either.fold((left) => 'l:$left', (right) => 'r:$right'),
+          'r:$value',
+        );
       });
       test('map', () {
         expect(
-            either.map(
-              (each) => 'l:$each',
-              (each) => 'r:$each',
-            ),
-            const Either<String, String>.right('r:$value'));
+          either.map((each) => 'l:$each', (each) => 'r:$each'),
+          const Either<String, String>.right('r:$value'),
+        );
       });
       test('mapLeft', () {
-        expect(either.mapLeft((each) => '$each'),
-            const Either<String, bool>.right(value));
+        expect(
+          either.mapLeft((each) => '$each'),
+          const Either<String, bool>.right(value),
+        );
       });
       test('mapRight', () {
-        expect(either.mapRight((each) => '$each'),
-            const Either<int, String>.right('$value'));
+        expect(
+          either.mapRight((each) => '$each'),
+          const Either<int, String>.right('$value'),
+        );
       });
       test('flatMap', () {
         expect(
-            either.flatMap(
-              (each) => Either<String, String>.right('l:$each'),
-              (each) => Either<String, String>.left('r:$each'),
-            ),
-            const Either<String, String>.left('r:$value'));
+          either.flatMap(
+            (each) => Either<String, String>.right('l:$each'),
+            (each) => Either<String, String>.left('r:$each'),
+          ),
+          const Either<String, String>.left('r:$value'),
+        );
       });
       test('flatMapLeft', () {
         expect(
-            either.flatMapLeft((each) => Either<String, bool>.left('l:$each')),
-            const Either<String, bool>.right(value));
+          either.flatMapLeft((each) => Either<String, bool>.left('l:$each')),
+          const Either<String, bool>.right(value),
+        );
       });
       test('flatMapRight', () {
         expect(
-            either.flatMapRight((each) => Either<int, String>.right('r:$each')),
-            const Either<int, String>.right('r:$value'));
+          either.flatMapRight((each) => Either<int, String>.right('r:$each')),
+          const Either<int, String>.right('r:$value'),
+        );
       });
       test('swap', () {
         expect(either.swap(), const Either<bool, int>.left(value));
@@ -397,7 +423,9 @@ void main() {
       });
       test('toString', () {
         expect(
-            either.toString(), "Instance of 'RightEither<int, bool>'[$value]");
+          either.toString(),
+          "Instance of 'RightEither<int, bool>'[$value]",
+        );
       });
     });
   });
@@ -415,8 +443,11 @@ void main() {
         final input = [null, 'abc', '42'];
         final output = [null, null, 42];
         for (var i = 0; i < input.length; i++) {
-          expect(input[i]?.also(int.tryParse), output[i],
-              reason: 'Input $i with "${input[i]}"');
+          expect(
+            input[i]?.also(int.tryParse),
+            output[i],
+            reason: 'Input $i with "${input[i]}"',
+          );
         }
       });
     });

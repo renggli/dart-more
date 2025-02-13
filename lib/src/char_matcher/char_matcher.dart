@@ -120,22 +120,26 @@ abstract class CharMatcher with ToStringPrinter implements Pattern {
   /// Returns a matcher that matches any character matched by either this
   /// matcher or [other].
   CharMatcher operator |(CharMatcher other) => switch (other) {
-        AnyCharMatcher() => other,
-        NoneCharMatcher() => this,
-        DisjunctiveCharMatcher(matchers: final matchers) =>
-          DisjunctiveCharMatcher([this, ...matchers]),
-        _ => DisjunctiveCharMatcher([this, other])
-      };
+    AnyCharMatcher() => other,
+    NoneCharMatcher() => this,
+    DisjunctiveCharMatcher(matchers: final matchers) => DisjunctiveCharMatcher([
+      this,
+      ...matchers,
+    ]),
+    _ => DisjunctiveCharMatcher([this, other]),
+  };
 
   /// Returns a matcher that matches any character matched by either this
   /// matcher or [other].
   CharMatcher operator &(CharMatcher other) => switch (other) {
-        AnyCharMatcher() => this,
-        NoneCharMatcher() => other,
-        ConjunctiveCharMatcher(matchers: final matchers) =>
-          ConjunctiveCharMatcher([this, ...matchers]),
-        _ => ConjunctiveCharMatcher([this, other])
-      };
+    AnyCharMatcher() => this,
+    NoneCharMatcher() => other,
+    ConjunctiveCharMatcher(matchers: final matchers) => ConjunctiveCharMatcher([
+      this,
+      ...matchers,
+    ]),
+    _ => ConjunctiveCharMatcher([this, other]),
+  };
 
   /// Determines if the given Unicode code-point [value] belongs to this
   /// character class.
@@ -210,8 +214,11 @@ abstract class CharMatcher with ToStringPrinter implements Pattern {
   /// Replaces each matched character in [sequence] with the specified
   /// [replacement].
   String replaceFrom(String sequence, String replacement) =>
-      String.fromCharCodes(sequence.runes
-          .expand((value) => match(value) ? replacement.runes : [value]));
+      String.fromCharCodes(
+        sequence.runes.expand(
+          (value) => match(value) ? replacement.runes : [value],
+        ),
+      );
 
   /// Removes all matched characters in [sequence].
   String removeFrom(String sequence) => (~this).retainFrom(sequence);

@@ -12,8 +12,10 @@ extension RandomGraphFactoryExtension<V, E> on GraphFactory<V, E> {
   /// vertices.
   ///
   /// See https://en.wikipedia.org/wiki/Erd%C5%91s%E2%80%93R%C3%A9nyi_model.
-  Graph<V, E> randomErdosRenyi(
-      {required int vertexCount, required double probability}) {
+  Graph<V, E> randomErdosRenyi({
+    required int vertexCount,
+    required double probability,
+  }) {
     if (probability >= 1) {
       return complete(vertexCount: vertexCount);
     }
@@ -22,9 +24,10 @@ extension RandomGraphFactoryExtension<V, E> on GraphFactory<V, E> {
       builder.addVertexIndex(i);
     }
     if (probability > 0) {
-      final edges = isDirected
-          ? IntegerRange.length(vertexCount).permutations(2)
-          : IntegerRange.length(vertexCount).combinations(2);
+      final edges =
+          isDirected
+              ? IntegerRange.length(vertexCount).permutations(2)
+              : IntegerRange.length(vertexCount).combinations(2);
       for (final edge in edges) {
         if (random.nextDouble() < probability) {
           builder.addEdgeIndex(edge[0], edge[1]);

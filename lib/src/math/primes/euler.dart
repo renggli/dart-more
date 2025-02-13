@@ -17,18 +17,20 @@ import 'sieve.dart';
 class EulerPrimeSieve extends PrimeSieve {
   /// Constructs the prime sieve of Euler.
   EulerPrimeSieve(super.max)
-      : _primes = [],
-        _factors = isJavaScript ? Uint32List(max + 1) : Uint64List(max + 1) {
+    : _primes = [],
+      _factors = isJavaScript ? Uint32List(max + 1) : Uint64List(max + 1) {
     for (var i = 2; i <= max; i++) {
       if (_factors[i] == 0) {
         _factors[i] = i;
         _primes.add(i);
       }
-      for (var j = 0;
-          j < _primes.length &&
-              _primes[j] <= _factors[i] &&
-              i * _primes[j] <= max;
-          j++) {
+      for (
+        var j = 0;
+        j < _primes.length &&
+            _primes[j] <= _factors[i] &&
+            i * _primes[j] <= max;
+        j++
+      ) {
         _factors[i * _primes[j]] = _primes[j];
       }
     }

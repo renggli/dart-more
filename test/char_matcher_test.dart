@@ -3,23 +3,38 @@
 import 'package:more/more.dart';
 import 'package:test/test.dart';
 
-void verify(CharMatcher matcher, String included, String excluded,
-    {bool negate = true}) {
+void verify(
+  CharMatcher matcher,
+  String included,
+  String excluded, {
+  bool negate = true,
+}) {
   // Test inclusion and exclusion.
   for (final iterator = included.runes.iterator; iterator.moveNext();) {
-    expect(matcher(iterator.current), isTrue,
-        reason: '${unicodeCodePointPrinter(iterator.current)} should match');
+    expect(
+      matcher(iterator.current),
+      isTrue,
+      reason: '${unicodeCodePointPrinter(iterator.current)} should match',
+    );
   }
   for (final iterator = excluded.runes.iterator; iterator.moveNext();) {
-    expect(matcher(iterator.current), isFalse,
-        reason:
-            '${unicodeCodePointPrinter(iterator.current)} should not match');
+    expect(
+      matcher(iterator.current),
+      isFalse,
+      reason: '${unicodeCodePointPrinter(iterator.current)} should not match',
+    );
   }
   // Test basic operators.
-  expect(matcher.everyOf(included), isTrue,
-      reason: 'all of "$included" should match');
-  expect(matcher.noneOf(excluded), isTrue,
-      reason: 'none of "$excluded" should match');
+  expect(
+    matcher.everyOf(included),
+    isTrue,
+    reason: 'all of "$included" should match',
+  );
+  expect(
+    matcher.noneOf(excluded),
+    isTrue,
+    reason: 'none of "$excluded" should match',
+  );
   expect(matcher.countIn(included), included.runes.length);
   expect(matcher.replaceFrom(included, ''), '');
   expect(matcher.removeFrom(included), '');
@@ -37,29 +52,42 @@ void main() {
       verify(const CharMatcher.ascii(), 'def123_!@#', '\u2665');
     });
     test('upperCaseLetter', () {
-      verify(const CharMatcher.upperCaseLetter(), 'ABCDEFGHIJKLMNOPQRSTUVWXYZ',
-          'abcdefghijklmnopqrstuvwxyz123_!@# ');
+      verify(
+        const CharMatcher.upperCaseLetter(),
+        'ABCDEFGHIJKLMNOPQRSTUVWXYZ',
+        'abcdefghijklmnopqrstuvwxyz123_!@# ',
+      );
     });
     test('lowerCaseLetter', () {
-      verify(const CharMatcher.lowerCaseLetter(), 'abcdefghijklmnopqrstuvwxyz',
-          'ABCDEFGHIJKLMNOPQRSTUVWXYZ123_!@# ');
+      verify(
+        const CharMatcher.lowerCaseLetter(),
+        'abcdefghijklmnopqrstuvwxyz',
+        'ABCDEFGHIJKLMNOPQRSTUVWXYZ123_!@# ',
+      );
     });
     test('letterOrDigit', () {
       verify(
-          const CharMatcher.letterOrDigit(),
-          'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ01234567890_',
-          '!@# ');
+        const CharMatcher.letterOrDigit(),
+        'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ01234567890_',
+        '!@# ',
+      );
     });
     test('digit', () {
       verify(const CharMatcher.digit(), '0123456789', 'abc_!@# ');
     });
     test('letter', () {
-      verify(const CharMatcher.letter(),
-          'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ', '123_!@# ');
+      verify(
+        const CharMatcher.letter(),
+        'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ',
+        '123_!@# ',
+      );
     });
     test('punctuation', () {
-      verify(const CharMatcher.punctuation(),
-          '!"#\$%&\'()*+,-./:;<=>?@[\\]^_`{|}~', 'abc123 ');
+      verify(
+        const CharMatcher.punctuation(),
+        '!"#\$%&\'()*+,-./:;<=>?@[\\]^_`{|}~',
+        'abc123 ',
+      );
     });
     test('whitespace', () {
       verify(const CharMatcher.whitespace(), '\t\n\r\v\f ', 'abcABC_!@#\u0000');
@@ -75,10 +103,16 @@ void main() {
       verify(CharMatcher.isChar(42.0), '*', 'abc123_!@# ');
     });
     test('isChar (error)', () {
-      expect(() => CharMatcher.isChar('ab'), throwsArgumentError,
-          reason: 'multiple characters');
-      expect(() => CharMatcher.isChar('🧑🏼'), throwsArgumentError,
-          reason: 'composite emoji');
+      expect(
+        () => CharMatcher.isChar('ab'),
+        throwsArgumentError,
+        reason: 'multiple characters',
+      );
+      expect(
+        () => CharMatcher.isChar('🧑🏼'),
+        throwsArgumentError,
+        reason: 'composite emoji',
+      );
     });
     test('inRange', () {
       verify(CharMatcher.inRange('a', 'c'), 'abc', 'def123_!@# ');
@@ -151,16 +185,25 @@ void main() {
         verify(CharMatcher.pattern('\u0000-\uffff'), '\u0000\u7777\uffff', '');
       });
       test('large range', () {
-        verify(CharMatcher.pattern('\u2200-\u22ff\u27c0-\u27ef\u2980-\u29ff'),
-            '∉⟃⦻', 'a');
+        verify(
+          CharMatcher.pattern('\u2200-\u22ff\u27c0-\u27ef\u2980-\u29ff'),
+          '∉⟃⦻',
+          'a',
+        );
       });
       test('far range', () {
-        verify(CharMatcher.pattern('\u0000\uffff'), '\u0000\uffff',
-            '\u0001\ufffe');
+        verify(
+          CharMatcher.pattern('\u0000\uffff'),
+          '\u0000\uffff',
+          '\u0001\ufffe',
+        );
       });
       test('class subtraction', () {
-        verify(CharMatcher.pattern('a-z-[aeiuo]'), 'bcdfghjklmnpqrstvwxyz',
-            '123aeiuo');
+        verify(
+          CharMatcher.pattern('a-z-[aeiuo]'),
+          'bcdfghjklmnpqrstvwxyz',
+          '123aeiuo',
+        );
         verify(CharMatcher.pattern('^1234-[3456]'), 'abc7890', '123456');
         verify(CharMatcher.pattern('0-9-[0-6-[0-3]]'), '0123789', 'abc456');
       });
@@ -215,21 +258,24 @@ void main() {
     group('general category', () {
       test('otherControl', () {
         verify(
-            UnicodeCharMatcher.otherControl(),
-            '\u{13}\u{b}\u{9c}\u{8}\u{11}\u{8d}\u{8a}\u{17}\u{91}\u{10}',
-            '012abcABC_!@# ');
+          UnicodeCharMatcher.otherControl(),
+          '\u{13}\u{b}\u{9c}\u{8}\u{11}\u{8d}\u{8a}\u{17}\u{91}\u{10}',
+          '012abcABC_!@# ',
+        );
       });
       test('otherFormat', () {
         verify(
-            UnicodeCharMatcher.otherFormat(),
-            '\u{206a}\u{200c}\u{feff}\u{e0053}\u{200f}\u{e0031}\u{e0030}',
-            '012abcABC_!@# ');
+          UnicodeCharMatcher.otherFormat(),
+          '\u{206a}\u{200c}\u{feff}\u{e0053}\u{200f}\u{e0031}\u{e0030}',
+          '012abcABC_!@# ',
+        );
       });
       test('otherPrivateUse', () {
         verify(
-            UnicodeCharMatcher.otherPrivateUse(),
-            '\u{f384a}\u{100e70}\u{1010a4}\u{10c920}\u{1090f4}\u{f280d}\u{fccb9}',
-            '012abcABC_!@# ');
+          UnicodeCharMatcher.otherPrivateUse(),
+          '\u{f384a}\u{100e70}\u{1010a4}\u{10c920}\u{1090f4}\u{f280d}\u{fccb9}',
+          '012abcABC_!@# ',
+        );
       });
       test('otherNotAssigned', () {
         verify(UnicodeCharMatcher.otherNotAssigned(), '', '012abcABC_!@# ');
@@ -243,220 +289,257 @@ void main() {
       test('letterLowercase', () {
         // 𝼀, 𝒿, ᵹ, 𐐴, ꞿ, ъ, ꟶ, ꚕ, ꞟ, 𝕤
         verify(
-            UnicodeCharMatcher.letterLowercase(),
-            '\u{1df00}\u{1d4bf}\u{1d79}\u{10434}\u{a7bf}\u{44a}\u{a7f6}\u{a695}',
-            '012ABC_!@# ');
+          UnicodeCharMatcher.letterLowercase(),
+          '\u{1df00}\u{1d4bf}\u{1d79}\u{10434}\u{a7bf}\u{44a}\u{a7f6}\u{a695}',
+          '012ABC_!@# ',
+        );
       });
       test('letterModifier', () {
         // ߵ, ᶯ, ₖ, ᵢ, 𖭁, 𖿡, 𞁃, ࣉ, ᶩ, ꚝ
         verify(
-            UnicodeCharMatcher.letterModifier(),
-            '\u{7f5}\u{1daf}\u{2096}\u{1d62}\u{16b41}\u{16fe1}\u{1e043}\u{8c9}',
-            '012abcABC_!@# ');
+          UnicodeCharMatcher.letterModifier(),
+          '\u{7f5}\u{1daf}\u{2096}\u{1d62}\u{16b41}\u{16fe1}\u{1e043}\u{8c9}',
+          '012abcABC_!@# ',
+        );
       });
       test('letterOther', () {
         // 𪞉, 鮁, ജ, 𨖫, 䵅, ᗎ, 𤳾, 㢎, 𢓧, 𧫀
         verify(
-            UnicodeCharMatcher.letterOther(),
-            '\u{2a789}\u{9b81}\u{d1c}\u{285ab}\u{4d45}\u{15ce}\u{24cfe}\u{388e}',
-            '012abcABC_!@# ');
+          UnicodeCharMatcher.letterOther(),
+          '\u{2a789}\u{9b81}\u{d1c}\u{285ab}\u{4d45}\u{15ce}\u{24cfe}\u{388e}',
+          '012abcABC_!@# ',
+        );
       });
       test('letterTitlecase', () {
         // ǅ, ᾞ, ᾫ, ᾮ, ᾙ, ᾌ, ǈ, ᾭ, ᾝ, ᾜ
         verify(
-            UnicodeCharMatcher.letterTitlecase(),
-            '\u{1c5}\u{1f9e}\u{1fab}\u{1fae}\u{1f99}\u{1f8c}\u{1c8}\u{1fad}',
-            '012abcABC_!@# ');
+          UnicodeCharMatcher.letterTitlecase(),
+          '\u{1c5}\u{1f9e}\u{1fab}\u{1fae}\u{1f99}\u{1f8c}\u{1c8}\u{1fad}',
+          '012abcABC_!@# ',
+        );
       });
       test('letterUppercase', () {
         // Ɨ, 𐐌, 𝔒, ϔ, Ꮉ, Ⴊ, Ｑ, 𝑵, 𝕳, Ҵ
         verify(
-            UnicodeCharMatcher.letterUppercase(),
-            '\u{197}\u{1040c}\u{1d512}\u{3d4}\u{13b9}\u{10aa}\u{ff31}\u{1d475}',
-            '012abc_!@# ');
+          UnicodeCharMatcher.letterUppercase(),
+          '\u{197}\u{1040c}\u{1d512}\u{3d4}\u{13b9}\u{10aa}\u{ff31}\u{1d475}',
+          '012abc_!@# ',
+        );
       });
       test('markSpacingCombining', () {
         // ೖ, 𑤱, 𑧤, 𖽫, 𖽜, 𑶔, 〮, 𑧓, ឿ, ೕ
         verify(
-            UnicodeCharMatcher.markSpacingCombining(),
-            '\u{cd6}\u{11931}\u{119e4}\u{16f6b}\u{16f5c}\u{11d94}\u{302e}',
-            '012abcABC_!@# ');
+          UnicodeCharMatcher.markSpacingCombining(),
+          '\u{cd6}\u{11931}\u{119e4}\u{16f6b}\u{16f5c}\u{11d94}\u{302e}',
+          '012abcABC_!@# ',
+        );
       });
       test('markEnclosing', () {
         // ⃟, ⃠, ⃝, ꙲, ⃞, ꙱, ҈, ꙰, ⃣, ⃢
         verify(
-            UnicodeCharMatcher.markEnclosing(),
-            '\u{20df}\u{20e0}\u{20dd}\u{a672}\u{20de}\u{a671}\u{488}\u{a670}',
-            '012abcABC_!@# ');
+          UnicodeCharMatcher.markEnclosing(),
+          '\u{20df}\u{20e0}\u{20dd}\u{a672}\u{20de}\u{a671}\u{488}\u{a670}',
+          '012abcABC_!@# ',
+        );
       });
       test('markNonspacing', () {
         // ఼, ᝳ, ྵ, ᩛ, ꪿, 󠄩, 𑒸, ૿, ۢ, ਂ
         verify(
-            UnicodeCharMatcher.markNonspacing(),
-            '\u{c3c}\u{1773}\u{fb5}\u{1a5b}\u{aabf}\u{e0129}\u{114b8}\u{aff}',
-            '012abcABC_!@# ');
+          UnicodeCharMatcher.markNonspacing(),
+          '\u{c3c}\u{1773}\u{fb5}\u{1a5b}\u{aabf}\u{e0129}\u{114b8}\u{aff}',
+          '012abcABC_!@# ',
+        );
       });
       test('numberDecimalDigit', () {
         // 𑣦, 𝟖, 𝟟, 𑃴, 🯶, ꘣, 𑇑, ᪙, ๕, ६
         verify(
-            UnicodeCharMatcher.numberDecimalDigit(),
-            '\u{118e6}\u{1d7d6}\u{1d7df}\u{110f4}\u{1fbf6}\u{a623}\u{111d1}',
-            'abcABC_!@# ');
+          UnicodeCharMatcher.numberDecimalDigit(),
+          '\u{118e6}\u{1d7d6}\u{1d7df}\u{110f4}\u{1fbf6}\u{a623}\u{111d1}',
+          'abcABC_!@# ',
+        );
       });
       test('numberLetter', () {
         // ⅵ, 𐍁, 𐏒, 𐅝, 𒐛, ⅴ, 𐅐, ᛮ, 𒑛, 𐅤
         verify(
-            UnicodeCharMatcher.numberLetter(),
-            '\u{2175}\u{10341}\u{103d2}\u{1015d}\u{1241b}\u{2174}\u{10150}',
-            '012abcABC_!@# ');
+          UnicodeCharMatcher.numberLetter(),
+          '\u{2175}\u{10341}\u{103d2}\u{1015d}\u{1241b}\u{2174}\u{10150}',
+          '012abcABC_!@# ',
+        );
       });
       test('numberOther', () {
         // 𞱶, ❷, 𐢧, 𐌢, ൝, ൱, 𑿎, 𐣻, 𐤘, 𞣏
         verify(
-            UnicodeCharMatcher.numberOther(),
-            '\u{1ec76}\u{2777}\u{108a7}\u{10322}\u{d5d}\u{d71}\u{11fce}',
-            '012abcABC_!@# ');
+          UnicodeCharMatcher.numberOther(),
+          '\u{1ec76}\u{2777}\u{108a7}\u{10322}\u{d5d}\u{d71}\u{11fce}',
+          '012abcABC_!@# ',
+        );
       });
       test('punctuationConnector', () {
         // ︴, _, ﹎, ﹍, ⁔, ⁀, ﹏, ＿, ‿, ︳
         verify(
-            UnicodeCharMatcher.punctuationConnector(),
-            '\u{fe34}\u{5f}\u{fe4e}\u{fe4d}\u{2054}\u{2040}\u{fe4f}\u{ff3f}',
-            '012abcABC!@# ');
+          UnicodeCharMatcher.punctuationConnector(),
+          '\u{fe34}\u{5f}\u{fe4e}\u{fe4d}\u{2054}\u{2040}\u{fe4f}\u{ff3f}',
+          '012abcABC!@# ',
+        );
       });
       test('punctuationDash', () {
         // ⸗, ᠆, ⸚, 〜, 〰, ―, ⹀, —, ⸻, 𐺭
         verify(
-            UnicodeCharMatcher.punctuationDash(),
-            '\u{2e17}\u{1806}\u{2e1a}\u{301c}\u{3030}\u{2015}\u{2e40}\u{2014}',
-            '012abcABC_!@# ');
+          UnicodeCharMatcher.punctuationDash(),
+          '\u{2e17}\u{1806}\u{2e1a}\u{301c}\u{3030}\u{2015}\u{2e40}\u{2014}',
+          '012abcABC_!@# ',
+        );
       });
       test('punctuationClose', () {
         // 〞, ⁾, ❩, ⧽, ）, 』, ⁆, ︶, ⦔, ⟧
         verify(
-            UnicodeCharMatcher.punctuationClose(),
-            '\u{301e}\u{207e}\u{2769}\u{29fd}\u{ff09}\u{300f}\u{2046}\u{fe36}',
-            '012abcABC_!@# ');
+          UnicodeCharMatcher.punctuationClose(),
+          '\u{301e}\u{207e}\u{2769}\u{29fd}\u{ff09}\u{300f}\u{2046}\u{fe36}',
+          '012abcABC_!@# ',
+        );
       });
       test('punctuationFinalQuote', () {
         // ⸍, ⸃, ⸝, ›, ⸊, ⸡, ⸅, ’, ”, »
         verify(
-            UnicodeCharMatcher.punctuationFinalQuote(),
-            '\u{2e0d}\u{2e03}\u{2e1d}\u{203a}\u{2e0a}\u{2e21}\u{2e05}\u{2019}',
-            '012abcABC_!@# ');
+          UnicodeCharMatcher.punctuationFinalQuote(),
+          '\u{2e0d}\u{2e03}\u{2e1d}\u{203a}\u{2e0a}\u{2e21}\u{2e05}\u{2019}',
+          '012abcABC_!@# ',
+        );
       });
       test('punctuationInitialQuote', () {
         // ⸌, ‟, ⸜, «, ⸂, ⸉, ⸄, ‹, ⸠, “
         verify(
-            UnicodeCharMatcher.punctuationInitialQuote(),
-            '\u{2e0c}\u{201f}\u{2e1c}\u{ab}\u{2e02}\u{2e09}\u{2e04}\u{2039}',
-            '012abcABC_!@# ');
+          UnicodeCharMatcher.punctuationInitialQuote(),
+          '\u{2e0c}\u{201f}\u{2e1c}\u{ab}\u{2e02}\u{2e09}\u{2e04}\u{2039}',
+          '012abcABC_!@# ',
+        );
       });
       test('punctuationOther', () {
         // ⳻, ᠊, ။, ᪩, 𑗕, ¶, ࠺, 𖺗, ꩝, '
         verify(
-            UnicodeCharMatcher.punctuationOther(),
-            '\u{2cfb}\u{180a}\u{104b}\u{1aa9}\u{115d5}\u{b6}\u{83a}\u{16e97}',
-            '012abcABC_ ');
+          UnicodeCharMatcher.punctuationOther(),
+          '\u{2cfb}\u{180a}\u{104b}\u{1aa9}\u{115d5}\u{b6}\u{83a}\u{16e97}',
+          '012abcABC_ ',
+        );
       });
       test('punctuationOpen', () {
         // ︿, ︵, ⸦, ⹂, 〝, ⸨, ❰, ｟, ⹙, 〈
         verify(
-            UnicodeCharMatcher.punctuationOpen(),
-            '\u{fe3f}\u{fe35}\u{2e26}\u{2e42}\u{301d}\u{2e28}\u{2770}\u{ff5f}',
-            '012abcABC_!@# ');
+          UnicodeCharMatcher.punctuationOpen(),
+          '\u{fe3f}\u{fe35}\u{2e26}\u{2e42}\u{301d}\u{2e28}\u{2770}\u{ff5f}',
+          '012abcABC_!@# ',
+        );
       });
       test('symbolCurrency', () {
         // $, £, ￡, ₻, ₿, ₠, €, ₵, ﹩, ￥
         verify(
-            UnicodeCharMatcher.symbolCurrency(),
-            '\u{24}\u{a3}\u{ffe1}\u{20bb}\u{20bf}\u{20a0}\u{20ac}\u{20b5}',
-            '012abcABC_!@# ');
+          UnicodeCharMatcher.symbolCurrency(),
+          '\u{24}\u{a3}\u{ffe1}\u{20bb}\u{20bf}\u{20a0}\u{20ac}\u{20b5}',
+          '012abcABC_!@# ',
+        );
       });
       test('symbolModifier', () {
         // ꜋, ˫, `, ﮷, ꜕, ﯀, ᾿, ˓, ꜖, ῎
         verify(
-            UnicodeCharMatcher.symbolModifier(),
-            '\u{a70b}\u{2eb}\u{60}\u{fbb7}\u{a715}\u{fbc0}\u{1fbf}\u{2d3}',
-            '012abcABC_!@# ');
+          UnicodeCharMatcher.symbolModifier(),
+          '\u{a70b}\u{2eb}\u{60}\u{fbb7}\u{a715}\u{fbc0}\u{1fbf}\u{2d3}',
+          '012abcABC_!@# ',
+        );
       });
       test('symbolMath', () {
         // ⊺, ≎, ≫, ＋, ⊚, ⨜, ⩙, ⬽, ⏜, ⩑
         verify(
-            UnicodeCharMatcher.symbolMath(),
-            '\u{22ba}\u{224e}\u{226b}\u{ff0b}\u{229a}\u{2a1c}\u{2a59}\u{2b3d}',
-            '012abcABC_!@# ');
+          UnicodeCharMatcher.symbolMath(),
+          '\u{22ba}\u{224e}\u{226b}\u{ff0b}\u{229a}\u{2a1c}\u{2a59}\u{2b3d}',
+          '012abcABC_!@# ',
+        );
       });
       test('symbolOther', () {
         // 𝈷, ╖, 🌾, 𐅹, ☛, 🀟, 🀛, ⍰, 𝉁, 𐆜
         verify(
-            UnicodeCharMatcher.symbolOther(),
-            '\u{1d237}\u{2556}\u{1f33e}\u{10179}\u{261b}\u{1f01f}\u{1f01b}',
-            '012abcABC_!@# ');
+          UnicodeCharMatcher.symbolOther(),
+          '\u{1d237}\u{2556}\u{1f33e}\u{10179}\u{261b}\u{1f01f}\u{1f01b}',
+          '012abcABC_!@# ',
+        );
       });
       test('separatorLine', () {
         verify(
-            UnicodeCharMatcher.separatorLine(), '\u{2028}', '012abcABC_!@# ');
+          UnicodeCharMatcher.separatorLine(),
+          '\u{2028}',
+          '012abcABC_!@# ',
+        );
       });
       test('separatorParagraph', () {
-        verify(UnicodeCharMatcher.separatorParagraph(), '\u{2029}',
-            '012abcABC_!@# ');
+        verify(
+          UnicodeCharMatcher.separatorParagraph(),
+          '\u{2029}',
+          '012abcABC_!@# ',
+        );
       });
       test('separatorSpace', () {
         verify(
-            UnicodeCharMatcher.separatorSpace(),
-            ' \u{2008}\u{2007}\u{202f}\u{2005}\u{2000}\u{2001}\u{2006}\u{2002}',
-            '012abcABC_!@#');
+          UnicodeCharMatcher.separatorSpace(),
+          ' \u{2008}\u{2007}\u{202f}\u{2005}\u{2000}\u{2001}\u{2006}\u{2002}',
+          '012abcABC_!@#',
+        );
       });
     });
     group('general category group', () {
       test('other', () {
         verify(
-            UnicodeCharMatcher.other(),
-            '\u{13}\u{b}\u{206a}\u{200c}\u{f384a}\u{100e70}\u{07bf}\u{10fff}',
-            '012abcABC_!@# ');
+          UnicodeCharMatcher.other(),
+          '\u{13}\u{b}\u{206a}\u{200c}\u{f384a}\u{100e70}\u{07bf}\u{10fff}',
+          '012abcABC_!@# ',
+        );
       });
       test('letter', () {
         verify(
-            UnicodeCharMatcher.letter(),
-            '\u{1df00}\u{1daf}\u{9b81}\u{1fab}\u{3d4}\u{24cfe}\u{388e}',
-            '012_!@# ');
+          UnicodeCharMatcher.letter(),
+          '\u{1df00}\u{1daf}\u{9b81}\u{1fab}\u{3d4}\u{24cfe}\u{388e}',
+          '012_!@# ',
+        );
       });
       test('casedLetter', () {
         verify(
-            UnicodeCharMatcher.casedLetter(),
-            '\u{1fae}\u{1f99}\u{3d4}\u{13b9}\u{10aa}\u{10434}\u{a7bf}',
-            '\u{d1c}\u{285ab}\u{2096}\u{1d62}012_!@# ');
+          UnicodeCharMatcher.casedLetter(),
+          '\u{1fae}\u{1f99}\u{3d4}\u{13b9}\u{10aa}\u{10434}\u{a7bf}',
+          '\u{d1c}\u{285ab}\u{2096}\u{1d62}012_!@# ',
+        );
       });
       test('mark', () {
         verify(
-            UnicodeCharMatcher.mark(),
-            '\u{16f6b}\u{16f5c}\u{a672}\u{20de}\u{1a5b}\u{aabf}',
-            '012abcABC_!@# ');
+          UnicodeCharMatcher.mark(),
+          '\u{16f6b}\u{16f5c}\u{a672}\u{20de}\u{1a5b}\u{aabf}',
+          '012abcABC_!@# ',
+        );
       });
       test('number', () {
         verify(
-            UnicodeCharMatcher.number(),
-            '\u{110f4}\u{1fbf6}\u{103d2}\u{1015d}\u{1015d}\u{d5d}\u{d71}',
-            'abcABC_!@# ');
+          UnicodeCharMatcher.number(),
+          '\u{110f4}\u{1fbf6}\u{103d2}\u{1015d}\u{1015d}\u{d5d}\u{d71}',
+          'abcABC_!@# ',
+        );
       });
       test('punctuation', () {
         verify(
-            UnicodeCharMatcher.punctuation(),
-            '\u{2040}\u{2015}\u{300f}\u{2e0a}\u{ab}\u{115d5}\u{301d}',
-            'abcABC ');
+          UnicodeCharMatcher.punctuation(),
+          '\u{2040}\u{2015}\u{300f}\u{2e0a}\u{ab}\u{115d5}\u{301d}',
+          'abcABC ',
+        );
       });
       test('symbol', () {
         verify(
-            UnicodeCharMatcher.symbol(),
-            '\u{20bb}\u{20bf}\u{fbb7}\u{a715}\u{ff0b}\u{229a}\u{10179}\u{261b}',
-            'abcABC_!@# ');
+          UnicodeCharMatcher.symbol(),
+          '\u{20bb}\u{20bf}\u{fbb7}\u{a715}\u{ff0b}\u{229a}\u{10179}\u{261b}',
+          'abcABC_!@# ',
+        );
       });
       test('separator', () {
         verify(
-            UnicodeCharMatcher.separator(),
-            ' \u{2028}\u{2029}\u{202f}\u{2005}\u{2000}\u{2001}\u{2006}\u{2002}',
-            '012abcABC_!@#');
+          UnicodeCharMatcher.separator(),
+          ' \u{2028}\u{2029}\u{202f}\u{2005}\u{2000}\u{2001}\u{2006}\u{2002}',
+          '012abcABC_!@#',
+        );
       });
     });
     group('property', () {
@@ -468,266 +551,441 @@ void main() {
         verify(UnicodeCharMatcher.whiteSpace(), string, '012abcABC_!@#');
       });
       test('bidiControl', () {
-        verify(UnicodeCharMatcher.bidiControl(),
-            '\u{061C}\u{200F}\u{202E}\u{2066}', '012abcABC_!@# ');
+        verify(
+          UnicodeCharMatcher.bidiControl(),
+          '\u{061C}\u{200F}\u{202E}\u{2066}',
+          '012abcABC_!@# ',
+        );
       });
       test('joinControl', () {
-        verify(UnicodeCharMatcher.joinControl(), '\u{200C}\u{200D}',
-            '012abcABC_!@# ');
+        verify(
+          UnicodeCharMatcher.joinControl(),
+          '\u{200C}\u{200D}',
+          '012abcABC_!@# ',
+        );
       });
       test('dash', () {
-        verify(UnicodeCharMatcher.dash(),
-            '\u{002D}\u{2053}\u{2E3B}\u{FE31}\u{10EAD}', '012abcABC_!@# ');
+        verify(
+          UnicodeCharMatcher.dash(),
+          '\u{002D}\u{2053}\u{2E3B}\u{FE31}\u{10EAD}',
+          '012abcABC_!@# ',
+        );
       });
       test('hyphen', () {
-        verify(UnicodeCharMatcher.hyphen(),
-            '\u{002D}\u{058A}\u{2011}\u{30FB}\u{FF65}', '012abcABC_!@# ');
+        verify(
+          UnicodeCharMatcher.hyphen(),
+          '\u{002D}\u{058A}\u{2011}\u{30FB}\u{FF65}',
+          '012abcABC_!@# ',
+        );
       });
       test('quotationMark', () {
-        verify(UnicodeCharMatcher.quotationMark(),
-            '\u{0022}\u{00AB}\u{00BB}\u{301F}\u{FF63}', '012abcABC_!@# ');
+        verify(
+          UnicodeCharMatcher.quotationMark(),
+          '\u{0022}\u{00AB}\u{00BB}\u{301F}\u{FF63}',
+          '012abcABC_!@# ',
+        );
       });
       test('terminalPunctuation', () {
-        verify(UnicodeCharMatcher.terminalPunctuation(),
-            '!,.:;\u{060C}\u{0700}\u{203C}\u{A6F7}\u{11944}', '012abcABC_@# ');
+        verify(
+          UnicodeCharMatcher.terminalPunctuation(),
+          '!,.:;\u{060C}\u{0700}\u{203C}\u{A6F7}\u{11944}',
+          '012abcABC_@# ',
+        );
       });
       test('otherMath', () {
-        verify(UnicodeCharMatcher.otherMath(),
-            '\u{005E}\u{2040}\u{2149}\u{1EE52}\u{1EEBB}', '012abcABC_!@# ');
+        verify(
+          UnicodeCharMatcher.otherMath(),
+          '\u{005E}\u{2040}\u{2149}\u{1EE52}\u{1EEBB}',
+          '012abcABC_!@# ',
+        );
       });
       test('hexDigit', () {
-        verify(UnicodeCharMatcher.hexDigit(),
-            '\u{0030}\u{FF10}\u{FF24}\u{FF26}\u{FF41}', 'xyzXYZ_!@# ');
+        verify(
+          UnicodeCharMatcher.hexDigit(),
+          '\u{0030}\u{FF10}\u{FF24}\u{FF26}\u{FF41}',
+          'xyzXYZ_!@# ',
+        );
       });
       test('asciiHexDigit', () {
-        verify(UnicodeCharMatcher.asciiHexDigit(), '0123456789abcdefABCDEF',
-            'xyzXYZ_!@# ');
+        verify(
+          UnicodeCharMatcher.asciiHexDigit(),
+          '0123456789abcdefABCDEF',
+          'xyzXYZ_!@# ',
+        );
       });
       test('otherAlphabetic', () {
-        verify(UnicodeCharMatcher.otherAlphabetic(),
-            '\u{0345}\u{0730}\u{0981}\u{0BCB}\u{1A55}', '012abcABC_!@# ');
+        verify(
+          UnicodeCharMatcher.otherAlphabetic(),
+          '\u{0345}\u{0730}\u{0981}\u{0BCB}\u{1A55}',
+          '012abcABC_!@# ',
+        );
       });
       test('ideographic', () {
-        verify(UnicodeCharMatcher.ideographic(),
-            '\u{3006}\u{16FE4}\u{2B820}\u{2B740}\u{323AF}', '012abcABC_!@# ');
+        verify(
+          UnicodeCharMatcher.ideographic(),
+          '\u{3006}\u{16FE4}\u{2B820}\u{2B740}\u{323AF}',
+          '012abcABC_!@# ',
+        );
       });
       test('diacritic', () {
-        verify(UnicodeCharMatcher.diacritic(),
-            '\u{005E}\u{05C4}\u{0C4D}\u{11D45}\u{1E2AE}', '012abcABC_!@# ');
+        verify(
+          UnicodeCharMatcher.diacritic(),
+          '\u{005E}\u{05C4}\u{0C4D}\u{11D45}\u{1E2AE}',
+          '012abcABC_!@# ',
+        );
       });
       test('extender', () {
-        verify(UnicodeCharMatcher.extender(),
-            '\u{00B7}\u{1843}\u{30FC}\u{10781}\u{16FE3}', '012abcABC_!@# ');
+        verify(
+          UnicodeCharMatcher.extender(),
+          '\u{00B7}\u{1843}\u{30FC}\u{10781}\u{16FE3}',
+          '012abcABC_!@# ',
+        );
       });
       test('otherLowercase', () {
-        verify(UnicodeCharMatcher.otherLowercase(),
-            '\u{00AA}\u{0345}\u{A770}\u{1E06D}', '012abcABC_!@# ');
+        verify(
+          UnicodeCharMatcher.otherLowercase(),
+          '\u{00AA}\u{0345}\u{A770}\u{1E06D}',
+          '012abcABC_!@# ',
+        );
       });
       test('otherUppercase', () {
-        verify(UnicodeCharMatcher.otherUppercase(),
-            '\u{2160}\u{24B6}\u{1F149}\u{1F170}\u{1F189}', '012abcABC_!@# ');
+        verify(
+          UnicodeCharMatcher.otherUppercase(),
+          '\u{2160}\u{24B6}\u{1F149}\u{1F170}\u{1F189}',
+          '012abcABC_!@# ',
+        );
       });
       test('noncharacterCodePoint', () {
-        verify(UnicodeCharMatcher.noncharacterCodePoint(),
-            '\u{FDD0}\u{1FFFE}\u{CFFFE}\u{10FFFF}', '012abcABC_!@# ');
+        verify(
+          UnicodeCharMatcher.noncharacterCodePoint(),
+          '\u{FDD0}\u{1FFFE}\u{CFFFE}\u{10FFFF}',
+          '012abcABC_!@# ',
+        );
       });
       test('otherGraphemeExtend', () {
-        verify(UnicodeCharMatcher.otherGraphemeExtend(),
-            '\u{09BE}\u{0CD5}\u{FF9E}\u{1D16E}\u{E0020}', '012abcABC_!@# ');
+        verify(
+          UnicodeCharMatcher.otherGraphemeExtend(),
+          '\u{09BE}\u{0CD5}\u{FF9E}\u{1D16E}\u{E0020}',
+          '012abcABC_!@# ',
+        );
       });
       test('idsBinaryOperator', () {
-        verify(UnicodeCharMatcher.idsBinaryOperator(),
-            '\u{2FF0}\u{2FF1}\u{2FF4}\u{2FFD}\u{31EF}', '012abcABC_!@# ');
+        verify(
+          UnicodeCharMatcher.idsBinaryOperator(),
+          '\u{2FF0}\u{2FF1}\u{2FF4}\u{2FFD}\u{31EF}',
+          '012abcABC_!@# ',
+        );
       });
       test('idsTrinaryOperator', () {
-        verify(UnicodeCharMatcher.idsTrinaryOperator(), '\u{2FF2}\u{2FF3}',
-            '012abcABC_!@# ');
+        verify(
+          UnicodeCharMatcher.idsTrinaryOperator(),
+          '\u{2FF2}\u{2FF3}',
+          '012abcABC_!@# ',
+        );
       });
       test('idsUnaryOperator', () {
-        verify(UnicodeCharMatcher.idsUnaryOperator(), '\u{2FFE}\u{2FFF}',
-            '012abcABC_!@# ');
+        verify(
+          UnicodeCharMatcher.idsUnaryOperator(),
+          '\u{2FFE}\u{2FFF}',
+          '012abcABC_!@# ',
+        );
       });
       test('radical', () {
-        verify(UnicodeCharMatcher.radical(), '\u{2E80}\u{2E99}\u{2E9B}\u{2FD5}',
-            '012abcABC_!@# ');
+        verify(
+          UnicodeCharMatcher.radical(),
+          '\u{2E80}\u{2E99}\u{2E9B}\u{2FD5}',
+          '012abcABC_!@# ',
+        );
       });
       test('unifiedIdeograph', () {
-        verify(UnicodeCharMatcher.unifiedIdeograph(),
-            '\u{3400}\u{FA21}\u{2EE5D}\u{323AF}', '012abcABC_!@# ');
+        verify(
+          UnicodeCharMatcher.unifiedIdeograph(),
+          '\u{3400}\u{FA21}\u{2EE5D}\u{323AF}',
+          '012abcABC_!@# ',
+        );
       });
       test('otherDefaultIgnorableCodePoint', () {
-        verify(UnicodeCharMatcher.otherDefaultIgnorableCodePoint(),
-            '\u{034F}\u{FFF7}\u{E0002}\u{E0FFF}', '012abcABC_!@# ');
+        verify(
+          UnicodeCharMatcher.otherDefaultIgnorableCodePoint(),
+          '\u{034F}\u{FFF7}\u{E0002}\u{E0FFF}',
+          '012abcABC_!@# ',
+        );
       });
       test('deprecated', () {
-        verify(UnicodeCharMatcher.deprecated(),
-            '\u{0149}\u{0F77}\u{206C}\u{E0001}', '012abcABC_!@# ');
+        verify(
+          UnicodeCharMatcher.deprecated(),
+          '\u{0149}\u{0F77}\u{206C}\u{E0001}',
+          '012abcABC_!@# ',
+        );
       });
       test('softDotted', () {
-        verify(UnicodeCharMatcher.softDotted(),
-            '\u{0069}\u{1D62}\u{1D422}\u{1D65F}', '012abcABC_!@# ');
+        verify(
+          UnicodeCharMatcher.softDotted(),
+          '\u{0069}\u{1D62}\u{1D422}\u{1D65F}',
+          '012abcABC_!@# ',
+        );
       });
       test('logicalOrderException', () {
-        verify(UnicodeCharMatcher.logicalOrderException(),
-            '\u{19BA}\u{AAB6}\u{AABB}\u{AABC}', '012abcABC_!@# ');
+        verify(
+          UnicodeCharMatcher.logicalOrderException(),
+          '\u{19BA}\u{AAB6}\u{AABB}\u{AABC}',
+          '012abcABC_!@# ',
+        );
       });
       test('otherIdStart', () {
-        verify(UnicodeCharMatcher.otherIdStart(),
-            '\u{1885}\u{1886}\u{2118}\u{309C}', '012abcABC_!@# ');
+        verify(
+          UnicodeCharMatcher.otherIdStart(),
+          '\u{1885}\u{1886}\u{2118}\u{309C}',
+          '012abcABC_!@# ',
+        );
       });
       test('otherIdContinue', () {
-        verify(UnicodeCharMatcher.otherIdContinue(),
-            '\u{00B7}\u{1371}\u{30FB}\u{FF65}', '012abcABC_!@# ');
+        verify(
+          UnicodeCharMatcher.otherIdContinue(),
+          '\u{00B7}\u{1371}\u{30FB}\u{FF65}',
+          '012abcABC_!@# ',
+        );
       });
       test('idCompatMathContinue', () {
-        verify(UnicodeCharMatcher.idCompatMathContinue(),
-            '\u{00B2}\u{2080}\u{1D6C1}\u{1D76F}', '012abcABC_!@# ');
+        verify(
+          UnicodeCharMatcher.idCompatMathContinue(),
+          '\u{00B2}\u{2080}\u{1D6C1}\u{1D76F}',
+          '012abcABC_!@# ',
+        );
       });
       test('idCompatMathStart', () {
-        verify(UnicodeCharMatcher.idCompatMathStart(),
-            '\u{2202}\u{1D735}\u{1D76F}\u{1D7C3}', '012abcABC_!@# ');
+        verify(
+          UnicodeCharMatcher.idCompatMathStart(),
+          '\u{2202}\u{1D735}\u{1D76F}\u{1D7C3}',
+          '012abcABC_!@# ',
+        );
       });
       test('sentenceTerminal', () {
-        verify(UnicodeCharMatcher.sentenceTerminal(),
-            '\u{002E}\u{0700}\u{0964}\u{16E98}', '012abcABC_@# ');
+        verify(
+          UnicodeCharMatcher.sentenceTerminal(),
+          '\u{002E}\u{0700}\u{0964}\u{16E98}',
+          '012abcABC_@# ',
+        );
       });
       test('variationSelector', () {
-        verify(UnicodeCharMatcher.variationSelector(),
-            '\u{180B}\u{180F}\u{FE0F}\u{E0100}', '012abcABC_!@# ');
+        verify(
+          UnicodeCharMatcher.variationSelector(),
+          '\u{180B}\u{180F}\u{FE0F}\u{E0100}',
+          '012abcABC_!@# ',
+        );
       });
       test('patternWhiteSpace', () {
-        verify(UnicodeCharMatcher.patternWhiteSpace(),
-            '\u{0020}\u{200E}\u{200F}\u{2029}', '012abcABC_!@#');
+        verify(
+          UnicodeCharMatcher.patternWhiteSpace(),
+          '\u{0020}\u{200E}\u{200F}\u{2029}',
+          '012abcABC_!@#',
+        );
       });
       test('patternSyntax', () {
-        verify(UnicodeCharMatcher.patternSyntax(),
-            '\u{0029}\u{007B}\u{00A7}\u{FD3F}', '012abcABC_ ');
+        verify(
+          UnicodeCharMatcher.patternSyntax(),
+          '\u{0029}\u{007B}\u{00A7}\u{FD3F}',
+          '012abcABC_ ',
+        );
       });
       test('prependedConcatenationMark', () {
-        verify(UnicodeCharMatcher.prependedConcatenationMark(),
-            '\u{0600}\u{0890}\u{110BD}\u{110CD}', '012abcABC_!@# ');
+        verify(
+          UnicodeCharMatcher.prependedConcatenationMark(),
+          '\u{0600}\u{0890}\u{110BD}\u{110CD}',
+          '012abcABC_!@# ',
+        );
       });
       test('regionalIndicator', () {
-        verify(UnicodeCharMatcher.regionalIndicator(),
-            '\u{1F1E6}\u{1F1EE}\u{1F1F2}\u{1F1FF}', '012abcABC_!@# ');
+        verify(
+          UnicodeCharMatcher.regionalIndicator(),
+          '\u{1F1E6}\u{1F1EE}\u{1F1F2}\u{1F1FF}',
+          '012abcABC_!@# ',
+        );
       });
     });
     group('bidi class', () {
       test('leftToRight', () {
-        verify(UnicodeCharMatcher.bidiLeftToRight(), 'ABCabcあ亜ㄅ아',
-            '012@#!, אבגابج');
+        verify(
+          UnicodeCharMatcher.bidiLeftToRight(),
+          'ABCabcあ亜ㄅ아',
+          '012@#!, אבגابج',
+        );
       });
       test('rightToLeft', () {
-        verify(UnicodeCharMatcher.bidiRightToLeft(), 'אבג',
-            'ABCabcあ亜ㄅ아012@#!, ابج');
+        verify(
+          UnicodeCharMatcher.bidiRightToLeft(),
+          'אבג',
+          'ABCabcあ亜ㄅ아012@#!, ابج',
+        );
       });
       test('rightToLeftArabic', () {
-        verify(UnicodeCharMatcher.bidiRightToLeftArabic(), 'ابج',
-            'ABCabcあ亜ㄅ아012@#!, אבג');
+        verify(
+          UnicodeCharMatcher.bidiRightToLeftArabic(),
+          'ابج',
+          'ABCabcあ亜ㄅ아012@#!, אבג',
+        );
       });
       test('europeanNumber', () {
-        verify(UnicodeCharMatcher.bidiEuropeanNumber(), '0123456789',
-            'ABCabcあ亜ㄅ아@#!, אבגابج');
+        verify(
+          UnicodeCharMatcher.bidiEuropeanNumber(),
+          '0123456789',
+          'ABCabcあ亜ㄅ아@#!, אבגابج',
+        );
       });
       test('europeanNumberSeparator', () {
-        verify(UnicodeCharMatcher.bidiEuropeanNumberSeparator(), '+-',
-            'ABCabcあ亜ㄅ아012@#!, אבגابج');
+        verify(
+          UnicodeCharMatcher.bidiEuropeanNumberSeparator(),
+          '+-',
+          'ABCabcあ亜ㄅ아012@#!, אבגابج',
+        );
       });
       test('europeanNumberTerminator', () {
-        verify(UnicodeCharMatcher.bidiEuropeanNumberTerminator(), r'°$€#',
-            'ABCabcあ亜ㄅ아012@!, אבגابج');
+        verify(
+          UnicodeCharMatcher.bidiEuropeanNumberTerminator(),
+          r'°$€#',
+          'ABCabcあ亜ㄅ아012@!, אבגابج',
+        );
       });
       test('arabicNumber', () {
-        verify(UnicodeCharMatcher.bidiArabicNumber(), '٠١٢٣٤٥٦٧٨٩',
-            'ABCabcあ亜ㄅ아012@#!, אבגابج');
+        verify(
+          UnicodeCharMatcher.bidiArabicNumber(),
+          '٠١٢٣٤٥٦٧٨٩',
+          'ABCabcあ亜ㄅ아012@#!, אבגابج',
+        );
       });
       test('commonNumberSeparator', () {
-        verify(UnicodeCharMatcher.bidiCommonNumberSeparator(), ':,.\u00a0',
-            'ABCabcあ亜ㄅ아012@#! אבגابج');
+        verify(
+          UnicodeCharMatcher.bidiCommonNumberSeparator(),
+          ':,.\u00a0',
+          'ABCabcあ亜ㄅ아012@#! אבגابج',
+        );
       });
       test('nonspacingMark', () {
         verify(
-            UnicodeCharMatcher.bidiNonspacingMark(),
-            '\u0300\u0483\u0591\u0610\u0900\u0eb1\u1ab0\ufe00',
-            'ABCabcあ亜ㄅ아012@#!, אבגابج');
+          UnicodeCharMatcher.bidiNonspacingMark(),
+          '\u0300\u0483\u0591\u0610\u0900\u0eb1\u1ab0\ufe00',
+          'ABCabcあ亜ㄅ아012@#!, אבגابج',
+        );
       });
       test('boundaryNeutral', () {
-        verify(UnicodeCharMatcher.bidiBoundaryNeutral(),
-            '\u0000\u00ad\u180e\u200b\u{e0030}', 'ABCabcあ亜ㄅ아012@#!, אבגابج');
+        verify(
+          UnicodeCharMatcher.bidiBoundaryNeutral(),
+          '\u0000\u00ad\u180e\u200b\u{e0030}',
+          'ABCabcあ亜ㄅ아012@#!, אבגابج',
+        );
       });
       test('paragraphSeparator', () {
-        verify(UnicodeCharMatcher.bidiParagraphSeparator(), '\u2029',
-            'ABCabcあ亜ㄅ아012@#!, אבגابج');
+        verify(
+          UnicodeCharMatcher.bidiParagraphSeparator(),
+          '\u2029',
+          'ABCabcあ亜ㄅ아012@#!, אבגابج',
+        );
       });
       test('segmentSeparator', () {
-        verify(UnicodeCharMatcher.bidiSegmentSeparator(),
-            '\t\u0009\u000b\u001f', 'ABCabcあ亜ㄅ아012@#!, אבגابج');
+        verify(
+          UnicodeCharMatcher.bidiSegmentSeparator(),
+          '\t\u0009\u000b\u001f',
+          'ABCabcあ亜ㄅ아012@#!, אבגابج',
+        );
       });
       test('whitespace', () {
-        verify(UnicodeCharMatcher.bidiWhitespace(), '\u000c \u1680\u2000\u3000',
-            'ABCabcあ亜ㄅ아012@#!,אבגابج');
+        verify(
+          UnicodeCharMatcher.bidiWhitespace(),
+          '\u000c \u1680\u2000\u3000',
+          'ABCabcあ亜ㄅ아012@#!,אבגابج',
+        );
       });
       test('otherNeutrals', () {
-        verify(UnicodeCharMatcher.bidiOtherNeutrals(), '''!"&'()*;<=>?@[\\]￼''',
-            'ABCabcあ亜ㄅ아012#, אבגابج');
+        verify(
+          UnicodeCharMatcher.bidiOtherNeutrals(),
+          '''!"&'()*;<=>?@[\\]￼''',
+          'ABCabcあ亜ㄅ아012#, אבגابج',
+        );
       });
       test('leftToRightEmbedding', () {
-        verify(UnicodeCharMatcher.bidiLeftToRightEmbedding(), '\u202a',
-            'ABCabcあ亜ㄅ아012@#!, אבגابج');
+        verify(
+          UnicodeCharMatcher.bidiLeftToRightEmbedding(),
+          '\u202a',
+          'ABCabcあ亜ㄅ아012@#!, אבגابج',
+        );
       });
       test('leftToRightOverride', () {
-        verify(UnicodeCharMatcher.bidiLeftToRightOverride(), '\u202d',
-            'ABCabcあ亜ㄅ아012@#!, אבגابج');
+        verify(
+          UnicodeCharMatcher.bidiLeftToRightOverride(),
+          '\u202d',
+          'ABCabcあ亜ㄅ아012@#!, אבגابج',
+        );
       });
       test('rightToLeftEmbedding', () {
-        verify(UnicodeCharMatcher.bidiRightToLeftEmbedding(), '\u202b',
-            'ABCabcあ亜ㄅ아012@#!, אבגابج');
+        verify(
+          UnicodeCharMatcher.bidiRightToLeftEmbedding(),
+          '\u202b',
+          'ABCabcあ亜ㄅ아012@#!, אבגابج',
+        );
       });
       test('rightToLeftOverride', () {
-        verify(UnicodeCharMatcher.bidiRightToLeftOverride(), '\u202e',
-            'ABCabcあ亜ㄅ아012@#!, אבגابج');
+        verify(
+          UnicodeCharMatcher.bidiRightToLeftOverride(),
+          '\u202e',
+          'ABCabcあ亜ㄅ아012@#!, אבגابج',
+        );
       });
       test('popDirectionalFormat', () {
-        verify(UnicodeCharMatcher.bidiPopDirectionalFormat(), '\u202c',
-            'ABCabcあ亜ㄅ아012@#!, אבגابج');
+        verify(
+          UnicodeCharMatcher.bidiPopDirectionalFormat(),
+          '\u202c',
+          'ABCabcあ亜ㄅ아012@#!, אבגابج',
+        );
       });
       test('leftToRightIsolate', () {
-        verify(UnicodeCharMatcher.bidiLeftToRightIsolate(), '\u2066',
-            'ABCabcあ亜ㄅ아012@#!, אבגابج');
+        verify(
+          UnicodeCharMatcher.bidiLeftToRightIsolate(),
+          '\u2066',
+          'ABCabcあ亜ㄅ아012@#!, אבגابج',
+        );
       });
       test('rightToLeftIsolate', () {
-        verify(UnicodeCharMatcher.bidiRightToLeftIsolate(), '\u2067',
-            'ABCabcあ亜ㄅ아012@#!, אבגابج');
+        verify(
+          UnicodeCharMatcher.bidiRightToLeftIsolate(),
+          '\u2067',
+          'ABCabcあ亜ㄅ아012@#!, אבגابج',
+        );
       });
       test('firstStrongIsolate', () {
-        verify(UnicodeCharMatcher.bidiFirstStrongIsolate(), '\u2068',
-            'ABCabcあ亜ㄅ아012@#!, אבגابج');
+        verify(
+          UnicodeCharMatcher.bidiFirstStrongIsolate(),
+          '\u2068',
+          'ABCabcあ亜ㄅ아012@#!, אבגابج',
+        );
       });
       test('popDirectionalIsolate', () {
-        verify(UnicodeCharMatcher.bidiPopDirectionalIsolate(), '\u2069',
-            'ABCabcあ亜ㄅ아012@#!, אבגابج');
+        verify(
+          UnicodeCharMatcher.bidiPopDirectionalIsolate(),
+          '\u2069',
+          'ABCabcあ亜ㄅ아012@#!, אבגابج',
+        );
       });
     });
     group('bidi class category', () {
       test('strong', () {
-        verify(
-          UnicodeCharMatcher.bidiStrong(),
-          'ABCabcあ亜ㄅ아אבגابج',
-          '012@#!, ',
-        );
+        verify(UnicodeCharMatcher.bidiStrong(), 'ABCabcあ亜ㄅ아אבגابج', '012@#!, ');
       });
       test('weak', () {
         verify(UnicodeCharMatcher.bidiWeak(), '012#,', 'ABCabcあ亜ㄅ아@! אבגابج');
       });
       test('neutral', () {
-        verify(UnicodeCharMatcher.bidiNeutral(), '\u2029\t ￼',
-            'ABCabcあ亜ㄅ아012#,אבגابج');
+        verify(
+          UnicodeCharMatcher.bidiNeutral(),
+          '\u2029\t ￼',
+          'ABCabcあ亜ㄅ아012#,אבגابج',
+        );
       });
       test('explicitFormatting', () {
         verify(
-            UnicodeCharMatcher.bidiExplicitFormatting(),
-            '\u202a\u202b\u202c\u202d\u202e\u2066\u2067\u2068\u2069',
-            'ABCabcあ亜ㄅ아012@#!, אבגابج');
+          UnicodeCharMatcher.bidiExplicitFormatting(),
+          '\u202a\u202b\u202c\u202d\u202e\u2066\u2067\u2068\u2069',
+          'ABCabcあ亜ㄅ아012@#!, אבגابج',
+        );
       });
     });
   });
@@ -972,25 +1230,32 @@ void main() {
       expect(input.replaceFirst(pattern, '!', 4), 'a1b2c');
     });
     test('replaceFirstMapped()', () {
-      expect(input.replaceFirstMapped(pattern, (match) => '!${match[0]}!'),
-          'a!1!b2c');
+      expect(
+        input.replaceFirstMapped(pattern, (match) => '!${match[0]}!'),
+        'a!1!b2c',
+      );
     });
     test('replaceAll()', () {
       expect(input.replaceAll(pattern, '!'), 'a!b!c');
     });
     test('replaceAllMapped()', () {
-      expect(input.replaceAllMapped(pattern, (match) => '!${match[0]}!'),
-          'a!1!b!2!c');
+      expect(
+        input.replaceAllMapped(pattern, (match) => '!${match[0]}!'),
+        'a!1!b!2!c',
+      );
     });
     test('split()', () {
       expect(input.split(pattern), ['a', 'b', 'c']);
     });
     test('splitMapJoin()', () {
       expect(
-          input.splitMapJoin(pattern,
-              onMatch: (match) => '!${match[0]}!',
-              onNonMatch: (nonMatch) => '?$nonMatch?'),
-          '?a?!1!?b?!2!?c?');
+        input.splitMapJoin(
+          pattern,
+          onMatch: (match) => '!${match[0]}!',
+          onNonMatch: (nonMatch) => '?$nonMatch?',
+        ),
+        '?a?!1!?b?!2!?c?',
+      );
     });
     test('astral plane', () {
       expect('\u{10000}'.startsWith(pattern), isFalse);
@@ -999,11 +1264,14 @@ void main() {
       expect('\u{10000}'.contains(pattern), isFalse);
       expect('\u{10000}'.replaceFirst(pattern, '!'), '\u{10000}');
       expect(
-          '\u{10000}'.replaceFirstMapped(pattern, (match) => '!${match[0]}!'),
-          '\u{10000}');
+        '\u{10000}'.replaceFirstMapped(pattern, (match) => '!${match[0]}!'),
+        '\u{10000}',
+      );
       expect('\u{10000}'.replaceAll(pattern, '!'), '\u{10000}');
-      expect('\u{10000}'.replaceAllMapped(pattern, (match) => '!${match[0]}!'),
-          '\u{10000}');
+      expect(
+        '\u{10000}'.replaceAllMapped(pattern, (match) => '!${match[0]}!'),
+        '\u{10000}',
+      );
       expect('\u{10000}'.split(pattern), ['\u{10000}']);
       expect('\u{10000}'.splitMapJoin(pattern), '\u{10000}');
     });

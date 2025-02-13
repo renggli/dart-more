@@ -21,8 +21,11 @@ class NormalDiffer extends Differ {
 
   @override
   Iterable<String> compareLines(
-      Iterable<String> source, Iterable<String> target,
-      {String? sourceLabel, String? targetLabel}) sync* {
+    Iterable<String> source,
+    Iterable<String> target, {
+    String? sourceLabel,
+    String? targetLabel,
+  }) sync* {
     final matcher = SequenceMatcher(source: source, target: target);
     for (final operation in matcher.operations) {
       final sourceRange = _range(operation.sourceStart, operation.sourceEnd);
@@ -47,7 +50,11 @@ class NormalDiffer extends Differ {
 }
 
 Iterable<String> _dump(
-    String tag, Iterable<String> iterable, int start, int end) sync* {
+  String tag,
+  Iterable<String> iterable,
+  int start,
+  int end,
+) sync* {
   for (var i = start; i < end; i++) {
     yield '$tag ${iterable.elementAt(i)}';
   }

@@ -5,10 +5,10 @@ import 'forwarding.dart';
 extension ReversedGraphExtension<V, E> on Graph<V, E> {
   /// Returns a graph where all edges point in the opposite direction.
   Graph<V, E> get reversed => switch (this) {
-        ReversedGraph<V, E>(delegate: final delegate) => delegate,
-        Graph<V, E>(isDirected: true) => ReversedGraph<V, E>(this),
-        _ => this
-      };
+    ReversedGraph<V, E>(delegate: final delegate) => delegate,
+    Graph<V, E>(isDirected: true) => ReversedGraph<V, E>(this),
+    _ => this,
+  };
 }
 
 /// The view of a graph where all edges point in the opposite direction.

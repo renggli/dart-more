@@ -6,7 +6,12 @@ import 'object.dart';
 /// A field with a constant value.
 class FieldValue<T, F> extends FieldPrinter<T> {
   FieldValue(
-      this.name, this.value, this.omitNull, this.omitPredicate, this.printer);
+    this.name,
+    this.value,
+    this.omitNull,
+    this.omitPredicate,
+    this.printer,
+  );
 
   @override
   final String? name;
@@ -30,9 +35,10 @@ class FieldValue<T, F> extends FieldPrinter<T> {
   void printOn(T object, StringBuffer buffer) => printer.printOn(value, buffer);
 
   @override
-  ObjectPrinter get toStringPrinter => super.toStringPrinter
-    ..addValue(value, name: 'value')
-    ..addValue(omitNull, name: 'omitNull')
-    ..addValue(omitPredicate, name: 'omitPredicate')
-    ..addValue(printer, name: 'printer');
+  ObjectPrinter get toStringPrinter =>
+      super.toStringPrinter
+        ..addValue(value, name: 'value')
+        ..addValue(omitNull, name: 'omitNull')
+        ..addValue(omitPredicate, name: 'omitPredicate')
+        ..addValue(printer, name: 'printer');
 }

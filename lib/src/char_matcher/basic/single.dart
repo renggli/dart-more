@@ -10,6 +10,10 @@ final class SingleCharMatcher extends CharMatcher {
   bool match(int value) => identical(codePoint, value);
 
   @override
-  ObjectPrinter get toStringPrinter => super.toStringPrinter
-    ..addValue(codePoint, name: 'codePoint', printer: unicodeCodePointPrinter);
+  ObjectPrinter get toStringPrinter =>
+      super.toStringPrinter..addValue(
+        codePoint,
+        name: 'codePoint',
+        printer: unicodeCodePointPrinter,
+      );
 }

@@ -6,7 +6,10 @@ extension Tuple0 on () {
   static () fromList<T>(List<T> list) {
     if (list.isNotEmpty) {
       throw ArgumentError.value(
-          list, 'list', 'Expected list of length 0, but got ${list.length}');
+        list,
+        'list',
+        'Expected list of length 0, but got ${list.length}',
+      );
     }
     return ();
   }

@@ -25,17 +25,22 @@ abstract class SeparatePrinter<T> extends Printer<T> {
   final String separator;
 
   @override
-  ObjectPrinter get toStringPrinter => super.toStringPrinter
-    ..addValue(printer, name: 'printer')
-    ..addValue(width, name: 'width')
-    ..addValue(offset, name: 'offset')
-    ..addValue(separator, name: 'separator');
+  ObjectPrinter get toStringPrinter =>
+      super.toStringPrinter
+        ..addValue(printer, name: 'printer')
+        ..addValue(width, name: 'width')
+        ..addValue(offset, name: 'offset')
+        ..addValue(separator, name: 'separator');
 }
 
 /// Separates a string from the left with a separator character.
 class SeparateLeftPrinter<T> extends SeparatePrinter<T> {
   const SeparateLeftPrinter(
-      super.printer, super.width, super.offset, super.separator);
+    super.printer,
+    super.width,
+    super.offset,
+    super.separator,
+  );
 
   @override
   void printOn(T object, StringBuffer buffer) {
@@ -53,7 +58,11 @@ class SeparateLeftPrinter<T> extends SeparatePrinter<T> {
 /// Separates a string from the right with a repeated separator character.
 class SeparateRightPrinter<T> extends SeparatePrinter<T> {
   const SeparateRightPrinter(
-      super.printer, super.width, super.offset, super.separator);
+    super.printer,
+    super.width,
+    super.offset,
+    super.separator,
+  );
 
   @override
   void printOn(T object, StringBuffer buffer) {

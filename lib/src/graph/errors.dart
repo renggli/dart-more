@@ -17,8 +17,11 @@ class GraphError extends ArgumentError {
   }
 
   /// Asserts that the [graph] has at least at least [count] vertices.
-  static void checkVertexCount<V, E>(Graph<V, E> graph, int count,
-      [String? name]) {
+  static void checkVertexCount<V, E>(
+    Graph<V, E> graph,
+    int count, [
+    String? name,
+  ]) {
     if (graph.vertices.length < count) {
       throw GraphError(graph, name, 'Graph must have at least $count vertices');
     }

@@ -20,10 +20,15 @@ class Quaternion implements CloseTo<Quaternion> {
   /// Constructs a quaternion from an [axis] and a rotation [angle].
   factory Quaternion.fromAxis(List<num> axis, num angle) {
     final halfAngle = 0.5 * angle;
-    final norm = halfAngle.sin() /
+    final norm =
+        halfAngle.sin() /
         (axis[0] * axis[0] + axis[1] * axis[1] + axis[2] * axis[2]).sqrt();
     return Quaternion(
-        halfAngle.cos(), axis[0] * norm, axis[1] * norm, axis[2] * norm);
+      halfAngle.cos(),
+      axis[0] * norm,
+      axis[1] * norm,
+      axis[2] * norm,
+    );
   }
 
   /// Constructs a quaternion from the rotation between two vectors [source]
@@ -34,8 +39,12 @@ class Quaternion implements CloseTo<Quaternion> {
     final x = source[1] * target[2] - source[2] * target[1];
     final y = source[2] * target[0] - source[0] * target[2];
     final z = source[0] * target[1] - source[1] * target[0];
-    return Quaternion(w + (w * w + x * x + y * y + z * z).sqrt(), x, y, z)
-        .normalize();
+    return Quaternion(
+      w + (w * w + x * x + y * y + z * z).sqrt(),
+      x,
+      y,
+      z,
+    ).normalize();
   }
 
   /// Constructs a quaternion from an euler rotation.
@@ -76,19 +85,28 @@ class Quaternion implements CloseTo<Quaternion> {
   static const Quaternion k = Quaternion(0, 0, 0, 1);
 
   /// The quaternion number with all parts being [double.nan].
-  static const Quaternion nan =
-      Quaternion(double.nan, double.nan, double.nan, double.nan);
+  static const Quaternion nan = Quaternion(
+    double.nan,
+    double.nan,
+    double.nan,
+    double.nan,
+  );
 
   /// The quaternion number with all parts being [double.infinity].
   static const Quaternion infinity = Quaternion(
-      double.infinity, double.infinity, double.infinity, double.infinity);
+    double.infinity,
+    double.infinity,
+    double.infinity,
+    double.infinity,
+  );
 
   /// Parses [source] as a [Quaternion]. Returns `null` in case of a problem.
   static Quaternion? tryParse(String source) {
-    final parts = numberAndUnitExtractor
-        .allMatches(source.replaceAll(' ', ''))
-        .where((match) => match.start < match.end)
-        .toList();
+    final parts =
+        numberAndUnitExtractor
+            .allMatches(source.replaceAll(' ', ''))
+            .where((match) => match.start < match.end)
+            .toList();
     if (parts.isEmpty) {
       return null;
     }
@@ -274,5 +292,7 @@ class Quaternion implements CloseTo<Quaternion> {
   String toString() => 'Quaternion($w, $x, $y, $z)';
 }
 
-final RegExp numberAndUnitExtractor =
-    RegExp(r'([+-]?\d*(\.\d+)?(e[+-]?\d+)?)\*?(\w?)', caseSensitive: false);
+final RegExp numberAndUnitExtractor = RegExp(
+  r'([+-]?\d*(\.\d+)?(e[+-]?\d+)?)\*?(\w?)',
+  caseSensitive: false,
+);

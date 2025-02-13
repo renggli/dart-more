@@ -33,15 +33,19 @@ Iterable<Path<V, num>> dijkstraSearch<V>({
     for (final target in successorsOf(sourceState.vertex)) {
       final value = edgeCost(sourceState.vertex, target);
       assert(
-          value >= 0,
-          'Expected positive edge weight between '
-          '${sourceState.vertex} and $target');
+        value >= 0,
+        'Expected positive edge weight between '
+        '${sourceState.vertex} and $target',
+      );
       final total = sourceState.total + value;
       final targetState = states[target];
       if (targetState == null || total < targetState.total) {
         targetState?.isObsolete = true;
-        final state =
-            DijkstraState<V>(vertex: target, value: value, total: total);
+        final state = DijkstraState<V>(
+          vertex: target,
+          value: value,
+          total: total,
+        );
         state.parents.add(sourceState);
         states[target] = state;
         queue.add(state);
@@ -60,11 +64,8 @@ Iterable<Path<V, num>> dijkstraSearch<V>({
 }
 
 final class DijkstraState<V> extends SearchState<V, num> {
-  DijkstraState({
-    required super.vertex,
-    super.value = 0,
-    this.total = 0,
-  }) : super();
+  DijkstraState({required super.vertex, super.value = 0, this.total = 0})
+    : super();
 
   final num total;
   bool isObsolete = false;

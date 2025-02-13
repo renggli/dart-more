@@ -11,8 +11,11 @@ extension SequencePrinterPrinterExtension<T> on Printer<T> {
       SequencePrinter<T>([this, Printer<T>.wrap(other)]);
 
   /// Prints something before and after another printer.
-  Printer<T> around(Object first, [Object? second]) => SequencePrinter<T>(
-      [Printer<T>.wrap(first), this, Printer<T>.wrap(second ?? first)]);
+  Printer<T> around(Object first, [Object? second]) => SequencePrinter<T>([
+    Printer<T>.wrap(first),
+    this,
+    Printer<T>.wrap(second ?? first),
+  ]);
 }
 
 extension SequencePrinterIterableExtension<T> on Iterable<Printer<T>> {

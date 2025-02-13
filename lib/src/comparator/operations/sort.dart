@@ -30,8 +30,13 @@ extension SortComparator<T> on Comparator<T> {
   ///
   /// By default a more efficient fixed-length list is returned, unless
   /// [growable] is set to `true`.
-  List<T> sorted(Iterable<T> iterable,
-      {int? start, int? end, bool stable = false, bool growable = false}) {
+  List<T> sorted(
+    Iterable<T> iterable, {
+    int? start,
+    int? end,
+    bool stable = false,
+    bool growable = false,
+  }) {
     final list = List.of(iterable, growable: growable);
     sort(list, start: start, end: end, stable: stable);
     return list;

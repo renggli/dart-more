@@ -39,8 +39,11 @@ extension TapExtension<E> on Stream<E> {
 
     controller.onListen = () {
       onListen?.call();
-      subscription = listen(dispatchOnData,
-          onError: dispatchOnError, onDone: dispatchOnDone);
+      subscription = listen(
+        dispatchOnData,
+        onError: dispatchOnError,
+        onDone: dispatchOnDone,
+      );
     };
     controller.onPause = () {
       onPause?.call();

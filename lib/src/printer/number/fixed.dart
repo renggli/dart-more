@@ -24,22 +24,34 @@ class FixedNumberPrinter<T extends num> extends Printer<T> {
     this.separatorWidth = 3,
     this.separatorOffset = 0,
     Printer<T>? sign,
-  })  : assert(base <= characters.length, 'Not enough characters for base'),
-        sign = sign ?? SignNumberPrinter<T>.omitPositiveSign(),
-        _integer = const Printer<String>.standard()
-            .mapIf(padding > 0,
-                (printer) => printer.padLeft(padding, characters[0]))
-            .mapIf(
-                separator.isNotEmpty && separatorWidth > 0,
-                (printer) => printer.separateRight(
-                    separatorWidth, separatorOffset, separator)),
-        _fraction = const Printer<String>.standard()
-            .mapIf(precision > 0,
-                (printer) => printer.padLeft(precision, characters[0]))
-            .mapIf(
-                separator.isNotEmpty && separatorWidth > 0,
-                (printer) => printer.separateLeft(
-                    separatorWidth, separatorOffset, separator));
+  }) : assert(base <= characters.length, 'Not enough characters for base'),
+       sign = sign ?? SignNumberPrinter<T>.omitPositiveSign(),
+       _integer = const Printer<String>.standard()
+           .mapIf(
+             padding > 0,
+             (printer) => printer.padLeft(padding, characters[0]),
+           )
+           .mapIf(
+             separator.isNotEmpty && separatorWidth > 0,
+             (printer) => printer.separateRight(
+               separatorWidth,
+               separatorOffset,
+               separator,
+             ),
+           ),
+       _fraction = const Printer<String>.standard()
+           .mapIf(
+             precision > 0,
+             (printer) => printer.padLeft(precision, characters[0]),
+           )
+           .mapIf(
+             separator.isNotEmpty && separatorWidth > 0,
+             (printer) => printer.separateLeft(
+               separatorWidth,
+               separatorOffset,
+               separator,
+             ),
+           );
 
   /// Round towards the nearest number that is a multiple of accuracy.
   final double? accuracy;
@@ -124,17 +136,18 @@ class FixedNumberPrinter<T extends num> extends Printer<T> {
   }
 
   @override
-  ObjectPrinter get toStringPrinter => super.toStringPrinter
-    ..addValue(accuracy, name: 'accuracy')
-    ..addValue(base, name: 'base')
-    ..addValue(characters, name: 'characters')
-    ..addValue(delimiter, name: 'delimiter')
-    ..addValue(infinity, name: 'infinity')
-    ..addValue(nan, name: 'nan')
-    ..addValue(padding, name: 'padding')
-    ..addValue(precision, name: 'precision')
-    ..addValue(separator, name: 'separator')
-    ..addValue(separatorWidth, name: 'separatorWidth')
-    ..addValue(separatorOffset, name: 'separatorOffset')
-    ..addValue(sign, name: 'sign');
+  ObjectPrinter get toStringPrinter =>
+      super.toStringPrinter
+        ..addValue(accuracy, name: 'accuracy')
+        ..addValue(base, name: 'base')
+        ..addValue(characters, name: 'characters')
+        ..addValue(delimiter, name: 'delimiter')
+        ..addValue(infinity, name: 'infinity')
+        ..addValue(nan, name: 'nan')
+        ..addValue(padding, name: 'padding')
+        ..addValue(precision, name: 'precision')
+        ..addValue(separator, name: 'separator')
+        ..addValue(separatorWidth, name: 'separatorWidth')
+        ..addValue(separatorOffset, name: 'separatorOffset')
+        ..addValue(sign, name: 'sign');
 }

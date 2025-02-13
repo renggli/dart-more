@@ -11,8 +11,9 @@ import '../operator/none.dart';
 CharMatcher optimize(Iterable<RangeCharMatcher> ranges) {
   // Sort the range lists.
   final sortedRanges = List.of(ranges, growable: false);
-  sortedRanges
-      .sort((a, b) => a.start != b.start ? a.start - b.start : a.stop - b.stop);
+  sortedRanges.sort(
+    (a, b) => a.start != b.start ? a.start - b.start : a.stop - b.stop,
+  );
 
   // Merge adjacent or overlapping ranges.
   final mergedRanges = <RangeCharMatcher>[];
@@ -32,7 +33,9 @@ CharMatcher optimize(Iterable<RangeCharMatcher> ranges) {
 
   // Build the best resulting predicate.
   final matchingCount = mergedRanges.fold<int>(
-      0, (current, range) => current + (range.stop - range.start + 1));
+    0,
+    (current, range) => current + (range.stop - range.start + 1),
+  );
   if (matchingCount == 0) {
     return const NoneCharMatcher();
   } else if (matchingCount - 1 == 0xffff) {
@@ -57,12 +60,16 @@ CharMatcher optimize(Iterable<RangeCharMatcher> ranges) {
         }
       }
       return LookupCharMatcher(
-          mergedRanges.first.start, mergedRanges.last.stop, buffer);
+        mergedRanges.first.start,
+        mergedRanges.last.stop,
+        buffer,
+      );
     } else {
       return RangesCharMatcher(
-          mergedRanges.length,
-          mergedRanges.map((range) => range.start).toList(growable: false),
-          mergedRanges.map((range) => range.stop).toList(growable: false));
+        mergedRanges.length,
+        mergedRanges.map((range) => range.start).toList(growable: false),
+        mergedRanges.map((range) => range.stop).toList(growable: false),
+      );
     }
   }
 }

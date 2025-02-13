@@ -10,8 +10,11 @@ extension WindowIterableExtension<E> on Iterable<E> {
   /// ```dart
   /// [1, 2, 3, 4, 5].window(3);
   /// ```
-  Iterable<List<E>> window(int size,
-      {int step = 1, bool includePartial = false}) sync* {
+  Iterable<List<E>> window(
+    int size, {
+    int step = 1,
+    bool includePartial = false,
+  }) sync* {
     checkNonZeroPositive(size, 'size');
     checkNonZeroPositive(step, 'step');
     final current = ListQueue<E>(size);

@@ -8,6 +8,5 @@ extension BuilderPrinterExtension<T> on Printer<T> {
   Printer<T> mapIf(
     bool condition,
     Printer<T> Function(Printer<T> printer) callback,
-  ) =>
-      condition ? callback(this) : this;
+  ) => condition ? callback(this) : this;
 }

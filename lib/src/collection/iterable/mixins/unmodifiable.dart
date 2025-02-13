@@ -54,9 +54,12 @@ mixin UnmodifiableListMixin<E> on List<E> {
   void retainWhere(bool Function(E element) test) => _throw();
 
   @override
-  void setRange(int start, int end, Iterable<E> iterable,
-          [int skipCount = 0]) =>
-      _throw();
+  void setRange(
+    int start,
+    int end,
+    Iterable<E> iterable, [
+    int skipCount = 0,
+  ]) => _throw();
 
   @override
   void removeRange(int start, int end) => _throw();

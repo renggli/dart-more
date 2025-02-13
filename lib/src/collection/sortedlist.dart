@@ -9,14 +9,16 @@ import '../../comparator.dart';
 class SortedList<E> extends ListBase<E> implements PriorityQueue<E> {
   /// Constructs an empty sorted-list with an optional [comparator].
   SortedList({Comparator<E>? comparator, bool growable = true})
-      : _values = List.empty(growable: growable),
-        _comparator = comparator ?? naturalCompare;
+    : _values = List.empty(growable: growable),
+      _comparator = comparator ?? naturalCompare;
 
   /// Constructs a sorted-list from an iterable with an optional [comparator].
-  SortedList.of(Iterable<E> iterable,
-      {Comparator<E>? comparator, bool growable = true})
-      : _values = List<E>.of(iterable, growable: growable),
-        _comparator = comparator ?? naturalCompare {
+  SortedList.of(
+    Iterable<E> iterable, {
+    Comparator<E>? comparator,
+    bool growable = true,
+  }) : _values = List<E>.of(iterable, growable: growable),
+       _comparator = comparator ?? naturalCompare {
     _comparator.sort(_values);
   }
 
@@ -110,7 +112,8 @@ class SortedList<E> extends ListBase<E> implements PriorityQueue<E> {
 
 extension SortedListIterableExtension<E> on Iterable<E> {
   /// Converts this [Iterable] to a [SortedList].
-  SortedList<E> toSortedList(
-          {Comparator<E>? comparator, bool growable = true}) =>
-      SortedList.of(this, comparator: comparator, growable: growable);
+  SortedList<E> toSortedList({
+    Comparator<E>? comparator,
+    bool growable = true,
+  }) => SortedList.of(this, comparator: comparator, growable: growable);
 }

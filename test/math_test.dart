@@ -39,10 +39,14 @@ void main() {
         expect(() => 7.binomial(8), throwsArgumentError);
       });
       test('BigInt', () {
-        expect(() => BigInt.from(7).binomial(BigInt.from(-1)),
-            throwsArgumentError);
         expect(
-            () => BigInt.from(7).binomial(BigInt.from(8)), throwsArgumentError);
+          () => BigInt.from(7).binomial(BigInt.from(-1)),
+          throwsArgumentError,
+        );
+        expect(
+          () => BigInt.from(7).binomial(BigInt.from(8)),
+          throwsArgumentError,
+        );
       });
     });
   });
@@ -51,9 +55,13 @@ void main() {
     group('bitCount', () {
       void expectBitCount(int value, int expectedBitCount) {
         final bitCount = value.bitCount;
-        expect(bitCount, expectedBitCount,
-            reason: 'Expected $value (0b${value.toRadixString(2)}) '
-                'to have $expectedBitCount bits, but got $bitCount bit.');
+        expect(
+          bitCount,
+          expectedBitCount,
+          reason:
+              'Expected $value (0b${value.toRadixString(2)}) '
+              'to have $expectedBitCount bits, but got $bitCount bit.',
+        );
         expect(value.hasSingleBit, expectedBitCount == 1);
       }
 
@@ -90,8 +98,11 @@ void main() {
     });
     test('hasSingleBit', () {
       for (final value in powersOf2) {
-        expect(value.hasSingleBit, isTrue,
-            reason: 'Expected $value to have a single bit.');
+        expect(
+          value.hasSingleBit,
+          isTrue,
+          reason: 'Expected $value to have a single bit.',
+        );
         if (value > 2) {
           final smaller = value - 1, bigger = value + 1;
           expect(smaller.hasSingleBit, isFalse);
@@ -154,9 +165,9 @@ void main() {
       test('stress', () {
         final random = Random(4678);
         for (var i = 0; i < 1000; i++) {
-          nextDown(2 *
-              (random.nextDouble() - 0.5) *
-              pow(10, random.nextInt(51) - 25));
+          nextDown(
+            2 * (random.nextDouble() - 0.5) * pow(10, random.nextInt(51) - 25),
+          );
         }
       });
     });
@@ -189,9 +200,9 @@ void main() {
       test('stress', () {
         final random = Random(8913);
         for (var i = 0; i < 1000; i++) {
-          nextUp(2 *
-              (random.nextDouble() - 0.5) *
-              pow(10, random.nextInt(51) - 25));
+          nextUp(
+            2 * (random.nextDouble() - 0.5) * pow(10, random.nextInt(51) - 25),
+          );
         }
       });
     });
@@ -240,7 +251,8 @@ void main() {
       test('stress', () {
         final random = Random(8913);
         for (var i = 0; i < 1000; i++) {
-          final value = 2 *
+          final value =
+              2 *
               (random.nextDouble() - 0.5) *
               pow(10, random.nextInt(51) - 25);
           final result = value.nextTowards(0.0);
@@ -295,11 +307,39 @@ void main() {
         expect(BigInt.from(12).digits(2), [0, 0, 1, 1]);
         expect(BigInt.from(123).digits(2), [1, 1, 0, 1, 1, 1, 1]);
         expect(BigInt.from(1001).digits(2), [1, 0, 0, 1, 0, 1, 1, 1, 1, 1]);
-        expect(BigInt.from(10001).digits(2),
-            [1, 0, 0, 0, 1, 0, 0, 0, 1, 1, 1, 0, 0, 1]);
+        expect(BigInt.from(10001).digits(2), [
+          1,
+          0,
+          0,
+          0,
+          1,
+          0,
+          0,
+          0,
+          1,
+          1,
+          1,
+          0,
+          0,
+          1,
+        ]);
         expect(BigInt.from(1000).digits(2), [0, 0, 0, 1, 0, 1, 1, 1, 1, 1]);
-        expect(BigInt.from(10000).digits(2),
-            [0, 0, 0, 0, 1, 0, 0, 0, 1, 1, 1, 0, 0, 1]);
+        expect(BigInt.from(10000).digits(2), [
+          0,
+          0,
+          0,
+          0,
+          1,
+          0,
+          0,
+          0,
+          1,
+          1,
+          1,
+          0,
+          0,
+          1,
+        ]);
       });
     });
     group('base 16', () {
@@ -356,10 +396,14 @@ void main() {
         expect(BigInt.from(5).factorial(), BigInt.from(120));
         expect(BigInt.from(12).factorial(), BigInt.from(479001600));
         expect(BigInt.from(20).factorial(), BigInt.from(2432902008176640000));
-        expect(BigInt.from(21).factorial(),
-            BigInt.from(2432902008176640000) * BigInt.from(21));
-        expect(BigInt.from(22).factorial(),
-            BigInt.from(2432902008176640000) * BigInt.from(21 * 22));
+        expect(
+          BigInt.from(21).factorial(),
+          BigInt.from(2432902008176640000) * BigInt.from(21),
+        );
+        expect(
+          BigInt.from(22).factorial(),
+          BigInt.from(2432902008176640000) * BigInt.from(21 * 22),
+        );
       });
     });
     group('bounds', () {
@@ -429,8 +473,12 @@ void main() {
     test('Complex', () {
       const a002145 = [3, 7, 11, 19, 23, 31, 43, 47, 59, 67, 71, 79, 83, 103];
       for (var i = 0; i < a002145.last; i++) {
-        final values = [Complex(-i), Complex(i), Complex(0, -i), Complex(0, i)]
-            .map((value) => value.isProbablyGaussianPrime);
+        final values = [
+          Complex(-i),
+          Complex(i),
+          Complex(0, -i),
+          Complex(0, i),
+        ].map((value) => value.isProbablyGaussianPrime);
         expect(values, everyElement(a002145.contains(i)));
       }
       const norm5 = [
@@ -476,12 +524,14 @@ void main() {
     test('Iterable<BigInt>', () {
       expect([BigInt.from(4)].lcm(), BigInt.from(4));
       expect([BigInt.from(2), BigInt.from(5)].lcm(), BigInt.from(10));
-      expect([BigInt.from(2), BigInt.from(3), BigInt.from(5)].lcm(),
-          BigInt.from(30));
       expect(
-          [BigInt.from(2), BigInt.from(9), BigInt.from(3), BigInt.from(2)]
-              .lcm(),
-          BigInt.from(18));
+        [BigInt.from(2), BigInt.from(3), BigInt.from(5)].lcm(),
+        BigInt.from(30),
+      );
+      expect(
+        [BigInt.from(2), BigInt.from(9), BigInt.from(3), BigInt.from(2)].lcm(),
+        BigInt.from(18),
+      );
     });
   });
   group('gcd', () {
@@ -505,8 +555,10 @@ void main() {
     test('Iterable<BigInt>', () {
       expect([BigInt.from(48)].gcd(), BigInt.from(48));
       expect([BigInt.from(48), BigInt.from(18)].gcd(), BigInt.from(6));
-      expect([BigInt.from(48), BigInt.from(18), BigInt.from(53)].gcd(),
-          BigInt.from(1));
+      expect(
+        [BigInt.from(48), BigInt.from(18), BigInt.from(53)].gcd(),
+        BigInt.from(1),
+      );
     });
   });
   group('math', () {
@@ -631,13 +683,16 @@ void main() {
           59, 61, 67, 71, 73, 79, 83, 89, 97, 101, 103, 107, 109, 113, //
           127, 131, 137, 139, 149, 151, 157, 163, 167, 173, 179, 181, //
           191, 193, 197, 199, 211, 223, 227, 229, 233, 239, 241, 251, //
-          257, 263, 269, 271, 277, 281, 283, 293, 307, 311, 313, 317 //
+          257, 263, 269, 271, 277, 281, 283, 293, 307, 311, 313, 317, //
         ];
         final sieve = create(primes.last);
         for (var i = 0; i <= primes.last; i++) {
           final isPrime = primes.contains(i);
-          expect(sieve.isPrime(i), isPrime,
-              reason: '$i expected to ${isPrime ? '' : 'not'} be prime');
+          expect(
+            sieve.isPrime(i),
+            isPrime,
+            reason: '$i expected to ${isPrime ? '' : 'not'} be prime',
+          );
         }
       });
       test('isPrime (edge cases)', () {
@@ -646,18 +701,29 @@ void main() {
         expect(() => sieve.isPrime(6), throwsRangeError);
       });
       test('large', () {
-        expect(create(2000).primes.skipWhile((each) => each < 1000).take(5),
-            [1009, 1013, 1019, 1021, 1031]);
-        expect(create(20000).primes.skipWhile((each) => each < 10000).take(5),
-            [10007, 10009, 10037, 10039, 10061]);
-        expect(create(200000).primes.skipWhile((each) => each < 100000).take(5),
-            [100003, 100019, 100043, 100049, 100057]);
+        expect(create(2000).primes.skipWhile((each) => each < 1000).take(5), [
+          1009,
+          1013,
+          1019,
+          1021,
+          1031,
+        ]);
+        expect(create(20000).primes.skipWhile((each) => each < 10000).take(5), [
+          10007,
+          10009,
+          10037,
+          10039,
+          10061,
+        ]);
+        expect(
+          create(200000).primes.skipWhile((each) => each < 100000).take(5),
+          [100003, 100019, 100043, 100049, 100057],
+        );
       });
       test('twins', () {
-        final twins = create(150)
-            .primes
-            .window(2)
-            .where((pair) => pair[1] - pair[0] == 2);
+        final twins = create(
+          150,
+        ).primes.window(2).where((pair) => pair[1] - pair[0] == 2);
         expect(twins, [
           [3, 5],
           [5, 7],
@@ -684,8 +750,9 @@ void main() {
       primeSieveTests(EulerPrimeSieve.new);
       test('factorization', () {
         final sieve = EulerPrimeSieve(20);
-        final factorization =
-            0.to(sieve.max + 1).toMap<int, List<int>>(value: sieve.factorize);
+        final factorization = 0
+            .to(sieve.max + 1)
+            .toMap<int, List<int>>(value: sieve.factorize);
         expect(factorization, <int, List<int>>{
           0: [],
           1: [],

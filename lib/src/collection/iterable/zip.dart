@@ -11,8 +11,9 @@ extension ZipIterableExtension<E> on Iterable<Iterable<E>> {
   /// ```
   Iterable<List<E>> zip() sync* {
     if (isEmpty) return;
-    final iterators =
-        map((iterable) => iterable.iterator).toList(growable: false);
+    final iterators = map(
+      (iterable) => iterable.iterator,
+    ).toList(growable: false);
     for (;;) {
       final result = <E>[];
       for (final iterator in iterators) {
@@ -38,8 +39,9 @@ extension ZipIterableExtension<E> on Iterable<Iterable<E>> {
     if (isEmpty) {
       return;
     }
-    final iterators =
-        map((iterable) => iterable.iterator).toList(growable: false);
+    final iterators = map(
+      (iterable) => iterable.iterator,
+    ).toList(growable: false);
     for (;;) {
       var hasAny = false;
       final result = <E>[];

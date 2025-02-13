@@ -34,16 +34,21 @@ Iterable<Path<V, num>> aStarSearch<V>({
     for (final target in successorsOf(sourceState.vertex)) {
       final value = edgeCost(sourceState.vertex, target);
       assert(
-          value >= 0,
-          'Expected positive edge weight between '
-          '${sourceState.vertex} and $target');
+        value >= 0,
+        'Expected positive edge weight between '
+        '${sourceState.vertex} and $target',
+      );
       final total = sourceState.total + value;
       final targetState = states[target];
       if (targetState == null || total < targetState.total) {
         targetState?.isObsolete = true;
         final estimate = total + costEstimate(target);
         final state = AStarState<V>(
-            vertex: target, value: value, total: total, estimate: estimate);
+          vertex: target,
+          value: value,
+          total: total,
+          estimate: estimate,
+        );
         state.parents.add(sourceState);
         states[target] = state;
         queue.add(state);

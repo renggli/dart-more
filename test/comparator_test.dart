@@ -5,14 +5,21 @@ import 'package:more/comparator.dart';
 import 'package:more/tuple.dart';
 import 'package:test/test.dart';
 
-void verifyBasic<T>(String type, Comparator<T> comparator, Iterable<T> unsorted,
-    Iterable<T> expected) {
+void verifyBasic<T>(
+  String type,
+  Comparator<T> comparator,
+  Iterable<T> unsorted,
+  Iterable<T> expected,
+) {
   final sorted = comparator.sorted(unsorted);
   expect(sorted, expected, reason: '$type.sorted');
   expect(comparator.isOrdered(sorted), isTrue, reason: '$type.isOrdered');
   for (final element in unsorted) {
-    expect(comparator.binarySearch(sorted, element), (int index) => index >= 0,
-        reason: '$type.binarySearch');
+    expect(
+      comparator.binarySearch(sorted, element),
+      (int index) => index >= 0,
+      reason: '$type.binarySearch',
+    );
   }
 
   final uniques = sorted.unique().toList();
@@ -45,20 +52,21 @@ void verifyBasic<T>(String type, Comparator<T> comparator, Iterable<T> unsorted,
     expect(comparator.greaterThanOrEqualTo(next, curr), isTrue);
   }
   if (sorted.isNotEmpty) {
-    expect(comparator.minOf(unsorted), expected.first,
-        reason: '$type.percentile');
+    expect(
+      comparator.minOf(unsorted),
+      expected.first,
+      reason: '$type.percentile',
+    );
     expect(comparator.maxOf(unsorted), expected.last, reason: '$type.maxOf');
   }
 }
 
 void verify<T>(
-    Comparator<T> comparator, Iterable<T> unsorted, Iterable<T> expected) {
-  verifyBasic<T>(
-    'comparator',
-    comparator,
-    unsorted,
-    expected,
-  );
+  Comparator<T> comparator,
+  Iterable<T> unsorted,
+  Iterable<T> expected,
+) {
+  verifyBasic<T>('comparator', comparator, unsorted, expected);
   verifyBasic<T>(
     'comparator.reversed',
     comparator.reversed,
@@ -77,18 +85,21 @@ void binarySearchTests<T>(
 }) {
   group(name, () {
     test('binarySearch', () {
-      final results = IntegerRange(examples.length)
-          .map((i) => naturalCompare.binarySearch(examples[i], values[i]));
+      final results = IntegerRange(
+        examples.length,
+      ).map((i) => naturalCompare.binarySearch(examples[i], values[i]));
       expect(results, binarySearch);
     });
     test('binarySearchLower', () {
-      final results = IntegerRange(examples.length)
-          .map((i) => naturalCompare.binarySearchLower(examples[i], values[i]));
+      final results = IntegerRange(
+        examples.length,
+      ).map((i) => naturalCompare.binarySearchLower(examples[i], values[i]));
       expect(results, binarySearchLower);
     });
     test('binarySearchUpper', () {
-      final results = IntegerRange(examples.length)
-          .map((i) => naturalCompare.binarySearchUpper(examples[i], values[i]));
+      final results = IntegerRange(
+        examples.length,
+      ).map((i) => naturalCompare.binarySearchUpper(examples[i], values[i]));
       expect(results, binarySearchUpper);
     });
   });
@@ -99,8 +110,9 @@ void main() {
   const naturalString = naturalComparable<String>;
   group('constructors', () {
     test('delegate', () {
-      final comparator =
-          delegateComparator<String, num>((string) => string.length);
+      final comparator = delegateComparator<String, num>(
+        (string) => string.length,
+      );
       verify(comparator, ['abc', 'ab'], ['ab', 'abc']);
       verify(comparator, ['ab', 'a'], ['a', 'ab']);
       verify(comparator, ['ab', 'abc', 'a'], ['a', 'ab', 'abc']);
@@ -169,41 +181,66 @@ void main() {
             .onResultOf<String>((s) => s.length)
             .thenCompare(naturalString);
         verify(
-            comparator, ['333', '1', '4444', '22'], ['1', '22', '333', '4444']);
-        verify(comparator, ['2', '333', '4444', '1', '22'],
-            ['1', '2', '22', '333', '4444']);
-        verify(comparator, ['33', '333', '2', '22', '1', '4444'],
-            ['1', '2', '22', '33', '333', '4444']);
-        verify(comparator, ['4444', '44', '2', '1', '333', '22', '33'],
-            ['1', '2', '22', '33', '44', '333', '4444']);
+          comparator,
+          ['333', '1', '4444', '22'],
+          ['1', '22', '333', '4444'],
+        );
+        verify(
+          comparator,
+          ['2', '333', '4444', '1', '22'],
+          ['1', '2', '22', '333', '4444'],
+        );
+        verify(
+          comparator,
+          ['33', '333', '2', '22', '1', '4444'],
+          ['1', '2', '22', '33', '333', '4444'],
+        );
+        verify(
+          comparator,
+          ['4444', '44', '2', '1', '333', '22', '33'],
+          ['1', '2', '22', '33', '44', '333', '4444'],
+        );
       });
       test('input', () {
-        final comparator = [
-          naturalInt.onResultOf<List<int>>((value) => value[0]),
-          naturalInt.onResultOf<List<int>>((value) => value[1]),
-          naturalInt.onResultOf<List<int>>((value) => value[2]),
-        ].toComparator();
-        verify(comparator, [
-          [2, 0, 0],
-          [1, 0, 0]
-        ], [
-          [1, 0, 0],
-          [2, 0, 0]
-        ]);
-        verify(comparator, [
-          [0, 2, 0],
-          [0, 1, 0]
-        ], [
-          [0, 1, 0],
-          [0, 2, 0]
-        ]);
-        verify(comparator, [
-          [0, 0, 2],
-          [0, 0, 1]
-        ], [
-          [0, 0, 1],
-          [0, 0, 2]
-        ]);
+        final comparator =
+            [
+              naturalInt.onResultOf<List<int>>((value) => value[0]),
+              naturalInt.onResultOf<List<int>>((value) => value[1]),
+              naturalInt.onResultOf<List<int>>((value) => value[2]),
+            ].toComparator();
+        verify(
+          comparator,
+          [
+            [2, 0, 0],
+            [1, 0, 0],
+          ],
+          [
+            [1, 0, 0],
+            [2, 0, 0],
+          ],
+        );
+        verify(
+          comparator,
+          [
+            [0, 2, 0],
+            [0, 1, 0],
+          ],
+          [
+            [0, 1, 0],
+            [0, 2, 0],
+          ],
+        );
+        verify(
+          comparator,
+          [
+            [0, 0, 2],
+            [0, 0, 1],
+          ],
+          [
+            [0, 0, 1],
+            [0, 0, 2],
+          ],
+        );
       });
     });
     test('lexicographical', () {
@@ -467,12 +504,18 @@ void main() {
       test('minMaxOf orElse', () {
         const sentinel = (min: -1, max: -1);
         expect(naturalInt.minMaxOf([], orElse: () => sentinel), sentinel);
-        expect(
-            naturalInt.minMaxOf([1], orElse: () => sentinel), (min: 1, max: 1));
-        expect(naturalInt.minMaxOf([1, 2], orElse: () => sentinel),
-            (min: 1, max: 2));
-        expect(naturalInt.minMaxOf([1, 2, 3], orElse: () => sentinel),
-            (min: 1, max: 3));
+        expect(naturalInt.minMaxOf([1], orElse: () => sentinel), (
+          min: 1,
+          max: 1,
+        ));
+        expect(naturalInt.minMaxOf([1, 2], orElse: () => sentinel), (
+          min: 1,
+          max: 2,
+        ));
+        expect(naturalInt.minMaxOf([1, 2, 3], orElse: () => sentinel), (
+          min: 1,
+          max: 3,
+        ));
       });
     });
     group('ordered', () {
@@ -525,14 +568,15 @@ void main() {
         expect(naturalInt.sorted([3, 2, 1]), [1, 2, 3]);
       });
       test('stable', () {
-        final input = IntegerRange(10)
-            .reversed
-            .expand((x) => IntegerRange(10).map((y) => (x, y)));
+        final input = IntegerRange(
+          10,
+        ).reversed.expand((x) => IntegerRange(10).map((y) => (x, y)));
         final actual = naturalInt
             .onResultOf<(int, int)>((tuple) => tuple.first)
             .sorted(input, stable: true);
-        final expected =
-            IntegerRange(10).expand((x) => IntegerRange(10).map((y) => (x, y)));
+        final expected = IntegerRange(
+          10,
+        ).expand((x) => IntegerRange(10).map((y) => (x, y)));
         expect(actual, expected);
       });
       test('copy', () {

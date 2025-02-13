@@ -3,7 +3,7 @@ import '../char_matcher.dart';
 
 final class RangeCharMatcher extends CharMatcher {
   const RangeCharMatcher(this.start, this.stop)
-      : assert(start <= stop, 'Invalid range: $start-$stop');
+    : assert(start <= stop, 'Invalid range: $start-$stop');
 
   final int start;
   final int stop;
@@ -12,7 +12,8 @@ final class RangeCharMatcher extends CharMatcher {
   bool match(int value) => start <= value && value <= stop;
 
   @override
-  ObjectPrinter get toStringPrinter => super.toStringPrinter
-    ..addValue(start, name: 'start', printer: unicodeCodePointPrinter)
-    ..addValue(stop, name: 'stop', printer: unicodeCodePointPrinter);
+  ObjectPrinter get toStringPrinter =>
+      super.toStringPrinter
+        ..addValue(start, name: 'start', printer: unicodeCodePointPrinter)
+        ..addValue(stop, name: 'stop', printer: unicodeCodePointPrinter);
 }

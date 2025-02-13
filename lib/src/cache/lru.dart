@@ -8,7 +8,7 @@ import 'loader.dart';
 /// Least Recently Used (LRU) cache.
 class LruCache<K, V> extends Cache<K, V> {
   LruCache(this.loader, this.maximumSize)
-      : assert(maximumSize > 0, 'Maximum size must be positive.');
+    : assert(maximumSize > 0, 'Maximum size must be positive.');
 
   final Loader<K, V> loader;
 
@@ -68,7 +68,8 @@ class LruCache<K, V> extends Cache<K, V> {
   }
 
   @override
-  ObjectPrinter get toStringPrinter => super.toStringPrinter
-    ..addValue(cached.length, name: 'size')
-    ..addValue(maximumSize, name: 'maximumSize');
+  ObjectPrinter get toStringPrinter =>
+      super.toStringPrinter
+        ..addValue(cached.length, name: 'size')
+        ..addValue(maximumSize, name: 'maximumSize');
 }

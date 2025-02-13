@@ -16,54 +16,65 @@ void main() {
     test('no constraints', () {
       final stream = Stream.fromIterable(input);
       expect(
-          stream.buffer(),
-          emitsInOrder([
-            [1, 2, 3, 4, 5]
-          ]));
+        stream.buffer(),
+        emitsInOrder([
+          [1, 2, 3, 4, 5],
+        ]),
+      );
     });
     test('max length', () {
       final stream = Stream.fromIterable(input);
       expect(
-          stream.buffer(maxLength: 2),
-          emitsInOrder([
-            [1, 2],
-            [3, 4],
-            [5]
-          ]));
+        stream.buffer(maxLength: 2),
+        emitsInOrder([
+          [1, 2],
+          [3, 4],
+          [5],
+        ]),
+      );
     });
     test('max age', () {
       fakeAsync((async) {
-        final stream = Stream.fromIterable([
-          Stream.fromIterable([1, 2]),
-          Stream.fromFuture(Future.delayed(seconds3, () => 3)),
-          Stream.fromIterable([4, 5]),
-        ]).flatten();
+        final stream =
+            Stream.fromIterable([
+              Stream.fromIterable([1, 2]),
+              Stream.fromFuture(Future.delayed(seconds3, () => 3)),
+              Stream.fromIterable([4, 5]),
+            ]).flatten();
         expectLater(
-            stream.buffer(maxAge: seconds1),
-            emitsInOrder([
-              [1, 2],
-              [3, 4, 5],
-            ]));
+          stream.buffer(maxAge: seconds1),
+          emitsInOrder([
+            [1, 2],
+            [3, 4, 5],
+          ]),
+        );
         async.elapse(seconds4);
       });
     });
     test('errors', () {
       final stream = Stream<void>.error(StateError('Data Error'));
       expect(
-          stream.buffer(),
-          emitsError(const TypeMatcher<StateError>()
-              .having((e) => e.message, 'message', 'Data Error')));
+        stream.buffer(),
+        emitsError(
+          const TypeMatcher<StateError>().having(
+            (e) => e.message,
+            'message',
+            'Data Error',
+          ),
+        ),
+      );
     });
     test('trigger', () {
       fakeAsync((async) {
         final trigger = Stream<void>.periodic(seconds2);
         final stream = Stream.periodic(seconds1, (count) => 1 + count).take(4);
         expectLater(
-            stream.buffer(trigger: trigger),
-            emitsInOrder([
-              [1, 2],
-              [3, 4],
-            ]));
+          stream.buffer(trigger: trigger),
+          emitsInOrder([
+            [1, 2],
+            [3, 4],
+          ]),
+        );
         async.elapse(seconds5);
       });
     });
@@ -72,9 +83,15 @@ void main() {
         final trigger = Stream<void>.error(StateError('Trigger Error'));
         final stream = Stream.periodic(seconds1, (count) => 1 + count).take(4);
         expectLater(
-            stream.buffer(trigger: trigger),
-            emitsError(const TypeMatcher<StateError>()
-                .having((e) => e.message, 'message', 'Trigger Error')));
+          stream.buffer(trigger: trigger),
+          emitsError(
+            const TypeMatcher<StateError>().having(
+              (e) => e.message,
+              'message',
+              'Trigger Error',
+            ),
+          ),
+        );
         async.elapse(seconds5);
       });
     });
@@ -83,26 +100,29 @@ void main() {
         final trigger = Stream<void>.periodic(seconds2).take(1);
         final stream = Stream.periodic(seconds1, (count) => 1 + count).take(4);
         expectLater(
-            stream.buffer(trigger: trigger),
-            emitsInOrder([
-              [1, 2]
-            ]));
+          stream.buffer(trigger: trigger),
+          emitsInOrder([
+            [1, 2],
+          ]),
+        );
         async.elapse(seconds5);
       });
     });
     test('broadcast', () {
       final controller = StreamController<int>.broadcast();
       expectLater(
-          controller.stream.buffer(maxLength: 1),
-          emitsInOrder([
-            [1],
-            [2]
-          ]));
+        controller.stream.buffer(maxLength: 1),
+        emitsInOrder([
+          [1],
+          [2],
+        ]),
+      );
       expectLater(
-          controller.stream.buffer(maxLength: 2),
-          emitsInOrder([
-            [1, 2]
-          ]));
+        controller.stream.buffer(maxLength: 2),
+        emitsInOrder([
+          [1, 2],
+        ]),
+      );
       controller
         ..add(1)
         ..add(2);
@@ -143,7 +163,7 @@ void main() {
         final stream = Stream.fromIterable(<Iterable<int>>[
           [],
           [1],
-          [2, 3]
+          [2, 3],
         ]);
         expect(stream.flatten(), emitsInOrder([1, 2, 3]));
       });
@@ -157,7 +177,7 @@ void main() {
         final stream = Stream.fromIterable([
           const Stream<int>.empty(),
           Stream.fromIterable([1]),
-          Stream.fromIterable([2, 3])
+          Stream.fromIterable([2, 3]),
         ]);
         expect(stream.flatten(), emitsInOrder([1, 2, 3]));
       });
@@ -165,19 +185,21 @@ void main() {
   });
   group('tap', () {
     Stream<T> wrap<T>(List<String> events, Stream<T> stream) => stream.tap(
-          onListen: () => events.add('onListen'),
-          onData: (value) => events.add('onData: $value'),
-          onError: (error, [stackTrace]) => events.add('onError: $error'),
-          onPause: () => events.add('onPause'),
-          onResume: () => events.add('onResume'),
-          onCancel: () => events.add('onCancel'),
-          onDone: () => events.add('onDone'),
-        );
+      onListen: () => events.add('onListen'),
+      onData: (value) => events.add('onData: $value'),
+      onError: (error, [stackTrace]) => events.add('onError: $error'),
+      onPause: () => events.add('onPause'),
+      onResume: () => events.add('onResume'),
+      onCancel: () => events.add('onCancel'),
+      onDone: () => events.add('onDone'),
+    );
     test('basic', () async {
       final events = <String>[];
       final stream = Stream.fromIterable([1, 2, 3]);
-      await wrap(events, stream)
-          .forEach((value) => events.add('value: $value'));
+      await wrap(
+        events,
+        stream,
+      ).forEach((value) => events.add('value: $value'));
       expect(events, [
         'onListen',
         'onData: 1',
@@ -192,10 +214,11 @@ void main() {
     });
     test('error', () async {
       final events = <String>[];
-      final stream = Stream.fromIterable(<Stream<int>>[
-        Stream.value(42),
-        Stream.error('Expected error'),
-      ]).flatten();
+      final stream =
+          Stream.fromIterable(<Stream<int>>[
+            Stream.value(42),
+            Stream.error('Expected error'),
+          ]).flatten();
       await wrap(events, stream)
           .listen((value) => events.add('value: $value'))
           .asFuture<void>()
@@ -206,23 +229,28 @@ void main() {
         'value: 42',
         'onError: Expected error',
         'onCancel',
-        'error: Expected error'
+        'error: Expected error',
       ]);
     });
     test('pause/resume', () async {
       late StreamSubscription<int> subscription;
       final events = <String>[];
-      final stream = Stream.fromIterable([
-        Stream.value(1),
-        Stream.fromFuture(Future(() {
-          subscription.pause();
-          subscription.resume();
-          return 2;
-        })),
-        Stream.value(3),
-      ]).flatten();
-      subscription =
-          wrap(events, stream).listen((value) => events.add('value: $value'));
+      final stream =
+          Stream.fromIterable([
+            Stream.value(1),
+            Stream.fromFuture(
+              Future(() {
+                subscription.pause();
+                subscription.resume();
+                return 2;
+              }),
+            ),
+            Stream.value(3),
+          ]).flatten();
+      subscription = wrap(
+        events,
+        stream,
+      ).listen((value) => events.add('value: $value'));
       await subscription.asFuture<void>();
       await subscription.cancel();
       expect(events, [
@@ -242,22 +270,21 @@ void main() {
     test('cancel', () async {
       StreamSubscription<int> subscription;
       final events = <String>[];
-      final stream = Stream.fromIterable([
-        Stream.value(1),
-        Stream.fromFuture(
-            Future.delayed(const Duration(milliseconds: 10), () => 2)),
-        Stream.value(3),
-      ]).flatten();
-      subscription =
-          wrap(events, stream).listen((value) => events.add('value: $value'));
+      final stream =
+          Stream.fromIterable([
+            Stream.value(1),
+            Stream.fromFuture(
+              Future.delayed(const Duration(milliseconds: 10), () => 2),
+            ),
+            Stream.value(3),
+          ]).flatten();
+      subscription = wrap(
+        events,
+        stream,
+      ).listen((value) => events.add('value: $value'));
       await Future<void>.delayed(const Duration(milliseconds: 5));
       await subscription.cancel();
-      expect(events, [
-        'onListen',
-        'onData: 1',
-        'value: 1',
-        'onCancel',
-      ]);
+      expect(events, ['onListen', 'onData: 1', 'value: 1', 'onCancel']);
     });
   });
   group('whereType', () {
@@ -282,194 +309,239 @@ void main() {
   group('window stream', () {
     // all tests are based from iterable window
     test('error', () {
-      expect(() => Stream.fromIterable([1, 2, 3]).window(0).toList(),
-          throwsRangeError);
-      expect(() => Stream.fromIterable([1, 2, 3]).window(1, step: 0).toList(),
-          throwsRangeError);
+      expect(
+        () => Stream.fromIterable([1, 2, 3]).window(0).toList(),
+        throwsRangeError,
+      );
+      expect(
+        () => Stream.fromIterable([1, 2, 3]).window(1, step: 0).toList(),
+        throwsRangeError,
+      );
     });
     test('size = 1', () async {
       expect(await const Stream<int>.empty().window(1).toList(), isEmpty);
       expect(await Stream.fromIterable([1]).window(1).toList(), [
-        [1]
+        [1],
       ]);
       expect(await Stream.fromIterable([1, 2]).window(1).toList(), [
         [1],
-        [2]
+        [2],
       ]);
       expect(await Stream.fromIterable([1, 2, 3]).window(1).toList(), [
         [1],
         [2],
-        [3]
+        [3],
       ]);
       expect(await Stream.fromIterable([1, 2, 3, 4]).window(1).toList(), [
         [1],
         [2],
         [3],
-        [4]
+        [4],
       ]);
     });
     test('size = 2', () async {
       expect(await Stream.fromIterable([]).window(2).toList(), isEmpty);
       expect(await Stream.fromIterable([1]).window(2).toList(), isEmpty);
       expect(await Stream.fromIterable([1, 2]).window(2).toList(), [
-        [1, 2]
+        [1, 2],
       ]);
       expect(await Stream.fromIterable([1, 2, 3]).window(2).toList(), [
         [1, 2],
-        [2, 3]
+        [2, 3],
       ]);
       expect(await Stream.fromIterable([1, 2, 3, 4]).window(2).toList(), [
         [1, 2],
         [2, 3],
-        [3, 4]
+        [3, 4],
       ]);
     });
     test('size = 2, step = 2', () async {
       expect(
-          await Stream.fromIterable([]).window(2, step: 2).toList(), isEmpty);
+        await Stream.fromIterable([]).window(2, step: 2).toList(),
+        isEmpty,
+      );
       expect(
-          await Stream.fromIterable([1]).window(2, step: 2).toList(), isEmpty);
+        await Stream.fromIterable([1]).window(2, step: 2).toList(),
+        isEmpty,
+      );
       expect(await Stream.fromIterable([1, 2]).window(2, step: 2).toList(), [
-        [1, 2]
+        [1, 2],
       ]);
       expect(await Stream.fromIterable([1, 2, 3]).window(2, step: 2).toList(), [
-        [1, 2]
+        [1, 2],
       ]);
       expect(
-          await Stream.fromIterable([1, 2, 3, 4]).window(2, step: 2).toList(), [
-        [1, 2],
-        [3, 4]
-      ]);
+        await Stream.fromIterable([1, 2, 3, 4]).window(2, step: 2).toList(),
+        [
+          [1, 2],
+          [3, 4],
+        ],
+      );
     });
     test('size = 2, step = 3', () async {
       expect(
-          await Stream.fromIterable([]).window(2, step: 3).toList(), isEmpty);
+        await Stream.fromIterable([]).window(2, step: 3).toList(),
+        isEmpty,
+      );
       expect(
-          await Stream.fromIterable([1]).window(2, step: 3).toList(), isEmpty);
+        await Stream.fromIterable([1]).window(2, step: 3).toList(),
+        isEmpty,
+      );
       expect(await Stream.fromIterable([1, 2]).window(2, step: 3).toList(), [
-        [1, 2]
+        [1, 2],
       ]);
       expect(await Stream.fromIterable([1, 2, 3]).window(2, step: 3).toList(), [
-        [1, 2]
+        [1, 2],
       ]);
       expect(
-          await Stream.fromIterable([1, 2, 3, 4]).window(2, step: 3).toList(), [
-        [1, 2]
-      ]);
+        await Stream.fromIterable([1, 2, 3, 4]).window(2, step: 3).toList(),
+        [
+          [1, 2],
+        ],
+      );
     });
     test('size = 2, includePartial', () async {
       expect(
-          await Stream.fromIterable([])
-              .window(2, includePartial: true)
-              .toList(),
-          isEmpty);
+        await Stream.fromIterable([]).window(2, includePartial: true).toList(),
+        isEmpty,
+      );
       expect(
-          await Stream.fromIterable([1])
-              .window(2, includePartial: true)
-              .toList(),
-          [
-            [1]
-          ]);
+        await Stream.fromIterable([1]).window(2, includePartial: true).toList(),
+        [
+          [1],
+        ],
+      );
       expect(
-          await Stream.fromIterable([1, 2])
-              .window(2, includePartial: true)
-              .toList(),
-          [
-            [1, 2],
-            [2]
-          ]);
+        await Stream.fromIterable([
+          1,
+          2,
+        ]).window(2, includePartial: true).toList(),
+        [
+          [1, 2],
+          [2],
+        ],
+      );
       expect(
-          await Stream.fromIterable([1, 2, 3])
-              .window(2, includePartial: true)
-              .toList(),
-          [
-            [1, 2],
-            [2, 3],
-            [3]
-          ]);
+        await Stream.fromIterable([
+          1,
+          2,
+          3,
+        ]).window(2, includePartial: true).toList(),
+        [
+          [1, 2],
+          [2, 3],
+          [3],
+        ],
+      );
       expect(
-          await Stream.fromIterable([1, 2, 3, 4])
-              .window(2, includePartial: true)
-              .toList(),
-          [
-            [1, 2],
-            [2, 3],
-            [3, 4],
-            [4]
-          ]);
+        await Stream.fromIterable([
+          1,
+          2,
+          3,
+          4,
+        ]).window(2, includePartial: true).toList(),
+        [
+          [1, 2],
+          [2, 3],
+          [3, 4],
+          [4],
+        ],
+      );
     });
     test('size = 2, step = 2, includePartial', () async {
       expect(
-          await Stream.fromIterable([])
-              .window(2, step: 2, includePartial: true)
-              .toList(),
-          isEmpty);
+        await Stream.fromIterable(
+          [],
+        ).window(2, step: 2, includePartial: true).toList(),
+        isEmpty,
+      );
       expect(
-          await Stream.fromIterable([1])
-              .window(2, step: 2, includePartial: true)
-              .toList(),
-          [
-            [1]
-          ]);
+        await Stream.fromIterable([
+          1,
+        ]).window(2, step: 2, includePartial: true).toList(),
+        [
+          [1],
+        ],
+      );
       expect(
-          await Stream.fromIterable([1, 2])
-              .window(2, step: 2, includePartial: true)
-              .toList(),
-          [
-            [1, 2]
-          ]);
+        await Stream.fromIterable([
+          1,
+          2,
+        ]).window(2, step: 2, includePartial: true).toList(),
+        [
+          [1, 2],
+        ],
+      );
       expect(
-          await Stream.fromIterable([1, 2, 3])
-              .window(2, step: 2, includePartial: true)
-              .toList(),
-          [
-            [1, 2],
-            [3]
-          ]);
+        await Stream.fromIterable([
+          1,
+          2,
+          3,
+        ]).window(2, step: 2, includePartial: true).toList(),
+        [
+          [1, 2],
+          [3],
+        ],
+      );
       expect(
-          await Stream.fromIterable([1, 2, 3, 4])
-              .window(2, step: 2, includePartial: true)
-              .toList(),
-          [
-            [1, 2],
-            [3, 4]
-          ]);
+        await Stream.fromIterable([
+          1,
+          2,
+          3,
+          4,
+        ]).window(2, step: 2, includePartial: true).toList(),
+        [
+          [1, 2],
+          [3, 4],
+        ],
+      );
     });
     test('size = 2, step = 3, includePartial', () async {
       expect(
-          await Stream.fromIterable([])
-              .window(2, step: 3, includePartial: true)
-              .toList(),
-          isEmpty);
+        await Stream.fromIterable(
+          [],
+        ).window(2, step: 3, includePartial: true).toList(),
+        isEmpty,
+      );
       expect(
-          await Stream.fromIterable([1])
-              .window(2, step: 3, includePartial: true)
-              .toList(),
-          [
-            [1]
-          ]);
+        await Stream.fromIterable([
+          1,
+        ]).window(2, step: 3, includePartial: true).toList(),
+        [
+          [1],
+        ],
+      );
       expect(
-          await Stream.fromIterable([1, 2])
-              .window(2, step: 3, includePartial: true)
-              .toList(),
-          [
-            [1, 2]
-          ]);
+        await Stream.fromIterable([
+          1,
+          2,
+        ]).window(2, step: 3, includePartial: true).toList(),
+        [
+          [1, 2],
+        ],
+      );
       expect(
-          await Stream.fromIterable([1, 2, 3])
-              .window(2, step: 3, includePartial: true)
-              .toList(),
-          [
-            [1, 2]
-          ]);
+        await Stream.fromIterable([
+          1,
+          2,
+          3,
+        ]).window(2, step: 3, includePartial: true).toList(),
+        [
+          [1, 2],
+        ],
+      );
       expect(
-          await Stream.fromIterable([1, 2, 3, 4])
-              .window(2, step: 3, includePartial: true)
-              .toList(),
-          [
-            [1, 2],
-            [4]
-          ]);
+        await Stream.fromIterable([
+          1,
+          2,
+          3,
+          4,
+        ]).window(2, step: 3, includePartial: true).toList(),
+        [
+          [1, 2],
+          [4],
+        ],
+      );
     });
   });
 }

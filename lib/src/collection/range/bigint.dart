@@ -63,9 +63,10 @@ final class BigIntRange extends Range<BigInt> {
   }
 
   factory BigIntRange._of1(BigInt start, BigInt end, BigInt step) {
-    final length = BigInt.zero < step && start < end
-        ? BigInt.one + (end - start - BigInt.one) ~/ step
-        : BigInt.zero > step && start > end
+    final length =
+        BigInt.zero < step && start < end
+            ? BigInt.one + (end - start - BigInt.one) ~/ step
+            : BigInt.zero > step && start > end
             ? BigInt.one + (start - end - BigInt.one) ~/ -step
             : BigInt.zero;
     if (!length.isValidInt) {
@@ -81,15 +82,19 @@ final class BigIntRange extends Range<BigInt> {
     start ??= BigInt.zero;
     step ??= BigInt.one;
     return BigIntRange._(
-        start, start + BigInt.from(length) * step, step, length);
+      start,
+      start + BigInt.from(length) * step,
+      step,
+      length,
+    );
   }
 
   // Internal const-constructor that initializes all state.
   BigIntRange._(this.start, this.end, this.step, this.length)
-      : assert(step != BigInt.zero, '`step` must not be zero'),
-        assert(step < BigInt.zero || start <= end, '`step` must be positive'),
-        assert(step > BigInt.zero || start >= end, '`step` must be negative'),
-        assert(0 <= length, '`length` must be positive');
+    : assert(step != BigInt.zero, '`step` must not be zero'),
+      assert(step < BigInt.zero || start <= end, '`step` must be positive'),
+      assert(step > BigInt.zero || start >= end, '`step` must be negative'),
+      assert(0 <= length, '`length` must be positive');
 
   @override
   final BigInt start;
@@ -126,14 +131,22 @@ final class BigIntRange extends Range<BigInt> {
 
   @override
   BigIntRange get reversed => BigIntRange._(
-      start + BigInt.from(length - 1) * step, start - step, -step, length);
+    start + BigInt.from(length - 1) * step,
+    start - step,
+    -step,
+    length,
+  );
 
   @override
   // ignore: avoid_renaming_method_parameters
   BigIntRange getRange(int startIndex, int endIndex) {
     RangeError.checkValidRange(startIndex, endIndex, length);
-    return BigIntRange._(start + BigInt.from(startIndex) * step,
-        start + BigInt.from(endIndex) * step, step, endIndex - startIndex);
+    return BigIntRange._(
+      start + BigInt.from(startIndex) * step,
+      start + BigInt.from(endIndex) * step,
+      step,
+      endIndex - startIndex,
+    );
   }
 }
 

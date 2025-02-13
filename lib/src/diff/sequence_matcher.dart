@@ -19,8 +19,8 @@ class SequenceMatcher<T> {
     Iterable<T>? target,
     Predicate1<T>? isJunk,
     bool autoJunk = true,
-  })  : _isJunk = isJunk,
-        _autoJunk = autoJunk {
+  }) : _isJunk = isJunk,
+       _autoJunk = autoJunk {
     this.source = source ?? <T>[];
     this.target = target ?? <T>[];
   }
@@ -175,15 +175,16 @@ class SequenceMatcher<T> {
         sourceEnd: _source.length,
         targetStart: 0,
         targetEnd: _target.length,
-      )
+      ),
     ]);
     while (queue.isNotEmpty) {
       final current = queue.removeFirst();
       final match = findLongestMatch(
-          sourceStart: current.sourceStart,
-          sourceEnd: current.sourceEnd,
-          targetStart: current.targetStart,
-          targetEnd: current.targetEnd);
+        sourceStart: current.sourceStart,
+        sourceEnd: current.sourceEnd,
+        targetStart: current.targetStart,
+        targetEnd: current.targetEnd,
+      );
       if (match.length > 0) {
         if (current.sourceStart < match.sourceStart &&
             current.targetStart < match.targetStart) {
@@ -215,10 +216,13 @@ class SequenceMatcher<T> {
         length += block.length;
       } else {
         if (length > 0) {
-          _matches.add(Match(
+          _matches.add(
+            Match(
               sourceStart: sourceStart,
               targetStart: targetStart,
-              length: length));
+              length: length,
+            ),
+          );
         }
         sourceStart = block.sourceStart;
         targetStart = block.targetStart;
@@ -226,11 +230,21 @@ class SequenceMatcher<T> {
       }
     }
     if (length > 0) {
-      _matches.add(Match(
-          sourceStart: sourceStart, targetStart: targetStart, length: length));
+      _matches.add(
+        Match(
+          sourceStart: sourceStart,
+          targetStart: targetStart,
+          length: length,
+        ),
+      );
     }
-    _matches.add(Match(
-        sourceStart: _source.length, targetStart: _target.length, length: 0));
+    _matches.add(
+      Match(
+        sourceStart: _source.length,
+        targetStart: _target.length,
+        length: 0,
+      ),
+    );
     return _matches;
   }
 
@@ -244,30 +258,34 @@ class SequenceMatcher<T> {
           sourceStart < block.sourceStart && targetStart < block.targetStart
               ? OperationType.replace
               : sourceStart < block.sourceStart
-                  ? OperationType.delete
-                  : targetStart < block.targetStart
-                      ? OperationType.insert
-                      : null;
+              ? OperationType.delete
+              : targetStart < block.targetStart
+              ? OperationType.insert
+              : null;
 
       if (type != null) {
-        _operations.add(Operation(
-          type,
-          sourceStart: sourceStart,
-          sourceEnd: block.sourceStart,
-          targetStart: targetStart,
-          targetEnd: block.targetStart,
-        ));
+        _operations.add(
+          Operation(
+            type,
+            sourceStart: sourceStart,
+            sourceEnd: block.sourceStart,
+            targetStart: targetStart,
+            targetEnd: block.targetStart,
+          ),
+        );
       }
       sourceStart = block.sourceStart + block.length;
       targetStart = block.targetStart + block.length;
       if (block.length > 0) {
-        _operations.add(Operation(
-          OperationType.equal,
-          sourceStart: block.sourceStart,
-          sourceEnd: sourceStart,
-          targetStart: block.targetStart,
-          targetEnd: targetStart,
-        ));
+        _operations.add(
+          Operation(
+            OperationType.equal,
+            sourceStart: block.sourceStart,
+            sourceEnd: sourceStart,
+            targetStart: block.targetStart,
+            targetEnd: targetStart,
+          ),
+        );
       }
     }
     return _operations;
@@ -285,7 +303,7 @@ class SequenceMatcher<T> {
         :sourceStart,
         :sourceEnd,
         :targetStart,
-        :targetEnd
+        :targetEnd,
       ) = codes.first;
       codes.first = Operation(
         type,
@@ -301,7 +319,7 @@ class SequenceMatcher<T> {
         :sourceStart,
         :sourceEnd,
         :targetStart,
-        :targetEnd
+        :targetEnd,
       ) = codes.last;
       codes.last = Operation(
         type,
@@ -317,25 +335,29 @@ class SequenceMatcher<T> {
           code;
       if (type == OperationType.equal &&
           sourceEnd - sourceStart > 2 * context) {
-        group.add(Operation(
-          type,
-          sourceStart: sourceStart,
-          sourceEnd: min(sourceEnd, sourceStart + context),
-          targetStart: targetStart,
-          targetEnd: min(targetEnd, targetStart + context),
-        ));
+        group.add(
+          Operation(
+            type,
+            sourceStart: sourceStart,
+            sourceEnd: min(sourceEnd, sourceStart + context),
+            targetStart: targetStart,
+            targetEnd: min(targetEnd, targetStart + context),
+          ),
+        );
         yield group;
         group.clear();
         sourceStart = max(sourceStart, sourceEnd - context);
         targetStart = max(targetStart, targetEnd - context);
       }
-      group.add(Operation(
-        type,
-        sourceStart: sourceStart,
-        sourceEnd: sourceEnd,
-        targetStart: targetStart,
-        targetEnd: targetEnd,
-      ));
+      group.add(
+        Operation(
+          type,
+          sourceStart: sourceStart,
+          sourceEnd: sourceEnd,
+          targetStart: targetStart,
+          targetEnd: targetEnd,
+        ),
+      );
     }
     if (group.isNotEmpty &&
         !(group.length == 1 && group.first.type == OperationType.equal)) {
@@ -347,21 +369,21 @@ class SequenceMatcher<T> {
   /// sequences are identical, and _0.0_ if the sequences have nothing in
   /// common.
   double get ratio => _calculateRatio(
-        matches.map((each) => each.length).sum,
-        _source.length + _target.length,
-      );
+    matches.map((each) => each.length).sum,
+    _source.length + _target.length,
+  );
 
   /// Return an upper bound on [ratio] relatively quickly.
   double get quickRatio => _calculateRatio(
-        Multiset.from(_source).intersection(_target).length,
-        _source.length + _target.length,
-      );
+    Multiset.from(_source).intersection(_target).length,
+    _source.length + _target.length,
+  );
 
   /// Return an upper bound on [ratio] really quickly.
   double get realQuickRatio => _calculateRatio(
-        min(_source.length, _target.length),
-        _source.length + _target.length,
-      );
+    min(_source.length, _target.length),
+    _source.length + _target.length,
+  );
 }
 
 double _calculateRatio(int count, int total) =>

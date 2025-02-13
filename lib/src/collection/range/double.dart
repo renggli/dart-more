@@ -59,21 +59,45 @@ final class DoubleRange extends Range<double> {
   /// ((start - end) % step == 0 ? 0 : 1)`. However due to rounding errors we
   /// have to make sure the module is close to `0` or [step].
   const DoubleRange.of({double start = 0, double end = 0, double? step})
-      : this._of1(start, end, step ?? (start <= end ? 1 : -1));
+    : this._of1(start, end, step ?? (start <= end ? 1 : -1));
 
   const DoubleRange._of1(double start, double end, double step)
-      : this._of2(start, end, step, start < end ? end - start : start - end,
-            0 < step ? step : -step);
+    : this._of2(
+        start,
+        end,
+        step,
+        start < end ? end - start : start - end,
+        0 < step ? step : -step,
+      );
 
   const DoubleRange._of2(
-      double start, double end, double step, double deltaAbs, double stepAbs)
-      : this._of3(
-            start, end, step, deltaAbs ~/ stepAbs, deltaAbs % stepAbs, stepAbs);
+    double start,
+    double end,
+    double step,
+    double deltaAbs,
+    double stepAbs,
+  ) : this._of3(
+        start,
+        end,
+        step,
+        deltaAbs ~/ stepAbs,
+        deltaAbs % stepAbs,
+        stepAbs,
+      );
 
-  const DoubleRange._of3(double start, double end, double step, int div,
-      double mod, double stepAbs)
-      : this._(start, end, step,
-            div + (mod < _epsilon || stepAbs - mod < _epsilon ? 0 : 1));
+  const DoubleRange._of3(
+    double start,
+    double end,
+    double step,
+    int div,
+    double mod,
+    double stepAbs,
+  ) : this._(
+        start,
+        end,
+        step,
+        div + (mod < _epsilon || stepAbs - mod < _epsilon ? 0 : 1),
+      );
 
   static const _epsilon = 1e-16;
 
@@ -81,14 +105,14 @@ final class DoubleRange extends Range<double> {
   /// The resulting [Range] is of the given [length], starts at [start], and
   /// uses the step-value [step].
   const DoubleRange.length(int length, {double start = 0, double step = 1})
-      : this._(start, start + length * step, step, length);
+    : this._(start, start + length * step, step, length);
 
   // Internal const-constructor that initializes the state.
   const DoubleRange._(this.start, this.end, this.step, this.length)
-      : assert(step != 0, '`step` must not be zero'),
-        assert(step < 0 || start <= end, '`step` must be positive'),
-        assert(step > 0 || start >= end, '`step` must be negative'),
-        assert(0 <= length, '`length` must be positive');
+    : assert(step != 0, '`step` must not be zero'),
+      assert(step < 0 || start <= end, '`step` must be positive'),
+      assert(step > 0 || start >= end, '`step` must be negative'),
+      assert(0 <= length, '`length` must be positive');
 
   @override
   final double start;
@@ -129,8 +153,12 @@ final class DoubleRange extends Range<double> {
   // ignore: avoid_renaming_method_parameters
   DoubleRange getRange(int startIndex, int endIndex) {
     RangeError.checkValidRange(startIndex, endIndex, length);
-    return DoubleRange._(start + startIndex * step, start + endIndex * step,
-        step, endIndex - startIndex);
+    return DoubleRange._(
+      start + startIndex * step,
+      start + endIndex * step,
+      step,
+      endIndex - startIndex,
+    );
   }
 }
 

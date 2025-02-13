@@ -5,10 +5,10 @@ import 'package:more/temporal.dart';
 import 'package:test/test.dart';
 
 Matcher relativeCloseTo(num expected, num epsilon) => wrapMatcher((num actual) {
-      final difference = (expected - actual).abs();
-      final relative = difference > 0 ? difference / actual : 0;
-      return relative <= epsilon;
-    });
+  final difference = (expected - actual).abs();
+  final relative = difference > 0 ? difference / actual : 0;
+  return relative <= epsilon;
+});
 
 void main() {
   group('date & time', () {
@@ -31,15 +31,20 @@ void main() {
       });
       test('daysInMonth', () {
         for (var year = 1950; year <= 2050; year++) {
-          for (var month = DateTime.january;
-              month <= DateTime.december;
-              month++) {
+          for (
+            var month = DateTime.january;
+            month <= DateTime.december;
+            month++
+          ) {
             final date = DateTime(year, month);
             expect(date.daysInMonth, anyOf(28, 29, 30, 31));
             final lastDateOfMonth = DateTime(year, month, date.daysInMonth);
             expect(lastDateOfMonth.month, month);
-            final firstDateOfNextMonth =
-                DateTime(year, month, date.daysInMonth + 1);
+            final firstDateOfNextMonth = DateTime(
+              year,
+              month,
+              date.daysInMonth + 1,
+            );
             expect(firstDateOfNextMonth.month, 1 + month % 12);
             expect(firstDateOfNextMonth.day, 1);
           }
@@ -71,7 +76,7 @@ void main() {
         expect(DateTime(2014, 12, 31).weekYear, 2015);
         expect(DateTime(2017, 5, 25).weekNumber, 21);
         for (var year = 1950; year <= 2050; year++) {
-          for (var day = 1;; day++) {
+          for (var day = 1; ; day++) {
             final date = DateTime(year, 1, day);
             if (date.year != year) break;
             final weekYear = date.weekYear;
@@ -91,7 +96,7 @@ void main() {
       test('dayOfYear', () {
         expect(DateTime(2017, 5, 25).dayOfYear, 145);
         for (var year = 1950; year <= 2050; year++) {
-          for (var day = 1;; day++) {
+          for (var day = 1; ; day++) {
             final date = DateTime(year, 1, day);
             if (date.year != year) break;
             expect(date.dayOfYear, day);
@@ -100,14 +105,15 @@ void main() {
       });
       test('hour12', () {
         expect(
-            DateTime(1980)
-                .periodical(TimeUnit.hour)
-                .map((dateTime) => dateTime.hour12)
-                .take(24),
-            [
-              12, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, // am
-              12, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, // pm
-            ]);
+          DateTime(1980)
+              .periodical(TimeUnit.hour)
+              .map((dateTime) => dateTime.hour12)
+              .take(24),
+          [
+            12, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, // am
+            12, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, // pm
+          ],
+        );
       });
     });
     group('periodical', () {
@@ -218,7 +224,9 @@ void main() {
       });
       test('invalid step', () {
         expect(
-            () => date.periodical(TimeUnit.day, step: 0), throwsArgumentError);
+          () => date.periodical(TimeUnit.day, step: 0),
+          throwsArgumentError,
+        );
       });
     });
     group('truncate', () {
@@ -252,11 +260,15 @@ void main() {
         expect(truncated, DateTime(1980, DateTime.june, 9));
       });
       test('week (custom start of the week)', () {
-        for (var weekday = DateTime.monday;
-            weekday <= DateTime.sunday;
-            weekday++) {
-          final truncated =
-              date.truncateTo(TimeUnit.week, startWeekday: weekday);
+        for (
+          var weekday = DateTime.monday;
+          weekday <= DateTime.sunday;
+          weekday++
+        ) {
+          final truncated = date.truncateTo(
+            TimeUnit.week,
+            startWeekday: weekday,
+          );
           expect(truncated.isBefore(date), isTrue);
           expect(truncated.weekday, weekday);
         }
@@ -284,17 +296,21 @@ void main() {
       test('microsecond', () {
         final truncated = date.truncateTo(TimeUnit.microsecond);
         expect(
-            truncated, DateTime(1980, DateTime.june, 11, 12, 34, 56, 78, 90));
+          truncated,
+          DateTime(1980, DateTime.june, 11, 12, 34, 56, 78, 90),
+        );
       });
       test('invalid start weekday', () {
         expect(
-            () => date.truncateTo(TimeUnit.week,
-                startWeekday: DateTime.monday - 1),
-            throwsArgumentError);
+          () =>
+              date.truncateTo(TimeUnit.week, startWeekday: DateTime.monday - 1),
+          throwsArgumentError,
+        );
         expect(
-            () => date.truncateTo(TimeUnit.week,
-                startWeekday: DateTime.sunday + 1),
-            throwsArgumentError);
+          () =>
+              date.truncateTo(TimeUnit.week, startWeekday: DateTime.sunday + 1),
+          throwsArgumentError,
+        );
       });
     });
   });
@@ -319,10 +335,7 @@ void main() {
             conversion[TimeUnit.millisecond],
             relativeCloseTo(1e3, epsilon),
           );
-          expect(
-            conversion[TimeUnit.second],
-            relativeCloseTo(1e6, epsilon),
-          );
+          expect(conversion[TimeUnit.second], relativeCloseTo(1e6, epsilon));
           expect(
             conversion[TimeUnit.minute],
             relativeCloseTo(60 * 1e6, epsilon),
@@ -374,130 +387,203 @@ void main() {
     const epsilon = 1e-6;
     test('convertTo', () {
       const duration = Duration(microseconds: 123456789012345);
-      expect(duration.convertTo(TimeUnit.microsecond),
-          relativeCloseTo(123456789012345.0, epsilon));
-      expect(duration.convertTo(TimeUnit.millisecond),
-          relativeCloseTo(123456789012.345, epsilon));
-      expect(duration.convertTo(TimeUnit.second),
-          relativeCloseTo(123456789.012345, epsilon));
-      expect(duration.convertTo(TimeUnit.minute),
-          relativeCloseTo(2057613.15020575, epsilon));
-      expect(duration.convertTo(TimeUnit.hour),
-          relativeCloseTo(34293.552503429164, epsilon));
-      expect(duration.convertTo(TimeUnit.day),
-          relativeCloseTo(1428.8980209762153, epsilon));
-      expect(duration.convertTo(TimeUnit.week),
-          relativeCloseTo(204.1282887108879, epsilon));
-      expect(duration.convertTo(TimeUnit.month),
-          relativeCloseTo(47.62993403254051, epsilon));
-      expect(duration.convertTo(TimeUnit.quarter),
-          relativeCloseTo(15.876644677513504, epsilon));
-      expect(duration.convertTo(TimeUnit.year),
-          relativeCloseTo(3.9147890985649734, epsilon));
-      expect(duration.convertTo(TimeUnit.decade),
-          relativeCloseTo(0.39147890985649736, epsilon));
-      expect(duration.convertTo(TimeUnit.century),
-          relativeCloseTo(0.03914789098564973, epsilon));
-      expect(duration.convertTo(TimeUnit.millennium),
-          relativeCloseTo(0.003914789098564973, epsilon));
+      expect(
+        duration.convertTo(TimeUnit.microsecond),
+        relativeCloseTo(123456789012345.0, epsilon),
+      );
+      expect(
+        duration.convertTo(TimeUnit.millisecond),
+        relativeCloseTo(123456789012.345, epsilon),
+      );
+      expect(
+        duration.convertTo(TimeUnit.second),
+        relativeCloseTo(123456789.012345, epsilon),
+      );
+      expect(
+        duration.convertTo(TimeUnit.minute),
+        relativeCloseTo(2057613.15020575, epsilon),
+      );
+      expect(
+        duration.convertTo(TimeUnit.hour),
+        relativeCloseTo(34293.552503429164, epsilon),
+      );
+      expect(
+        duration.convertTo(TimeUnit.day),
+        relativeCloseTo(1428.8980209762153, epsilon),
+      );
+      expect(
+        duration.convertTo(TimeUnit.week),
+        relativeCloseTo(204.1282887108879, epsilon),
+      );
+      expect(
+        duration.convertTo(TimeUnit.month),
+        relativeCloseTo(47.62993403254051, epsilon),
+      );
+      expect(
+        duration.convertTo(TimeUnit.quarter),
+        relativeCloseTo(15.876644677513504, epsilon),
+      );
+      expect(
+        duration.convertTo(TimeUnit.year),
+        relativeCloseTo(3.9147890985649734, epsilon),
+      );
+      expect(
+        duration.convertTo(TimeUnit.decade),
+        relativeCloseTo(0.39147890985649736, epsilon),
+      );
+      expect(
+        duration.convertTo(TimeUnit.century),
+        relativeCloseTo(0.03914789098564973, epsilon),
+      );
+      expect(
+        duration.convertTo(TimeUnit.millennium),
+        relativeCloseTo(0.003914789098564973, epsilon),
+      );
     });
     test('convertTo (accurate)', () {
       const duration = Duration(microseconds: 123456789012345);
       expect(
-          duration.convertTo(TimeUnit.microsecond,
-              conversion: accurateConversion),
-          relativeCloseTo(123456789012345.0, epsilon));
+        duration.convertTo(
+          TimeUnit.microsecond,
+          conversion: accurateConversion,
+        ),
+        relativeCloseTo(123456789012345.0, epsilon),
+      );
       expect(
-          duration.convertTo(TimeUnit.millisecond,
-              conversion: accurateConversion),
-          relativeCloseTo(123456789012.345, epsilon));
+        duration.convertTo(
+          TimeUnit.millisecond,
+          conversion: accurateConversion,
+        ),
+        relativeCloseTo(123456789012.345, epsilon),
+      );
       expect(
-          duration.convertTo(TimeUnit.second, conversion: accurateConversion),
-          relativeCloseTo(123456789.012345, epsilon));
+        duration.convertTo(TimeUnit.second, conversion: accurateConversion),
+        relativeCloseTo(123456789.012345, epsilon),
+      );
       expect(
-          duration.convertTo(TimeUnit.minute, conversion: accurateConversion),
-          relativeCloseTo(2057613.15020575, epsilon));
-      expect(duration.convertTo(TimeUnit.hour, conversion: accurateConversion),
-          relativeCloseTo(34293.552503429164, epsilon));
-      expect(duration.convertTo(TimeUnit.day, conversion: accurateConversion),
-          relativeCloseTo(1428.8980209762153, epsilon));
-      expect(duration.convertTo(TimeUnit.week, conversion: accurateConversion),
-          relativeCloseTo(204.1282887108879, epsilon));
-      expect(duration.convertTo(TimeUnit.month, conversion: accurateConversion),
-          relativeCloseTo(46.94627884683349, epsilon));
+        duration.convertTo(TimeUnit.minute, conversion: accurateConversion),
+        relativeCloseTo(2057613.15020575, epsilon),
+      );
       expect(
-          duration.convertTo(TimeUnit.quarter, conversion: accurateConversion),
-          relativeCloseTo(15.648759615611166, epsilon));
-      expect(duration.convertTo(TimeUnit.year, conversion: accurateConversion),
-          relativeCloseTo(3.9121899039027914, epsilon));
+        duration.convertTo(TimeUnit.hour, conversion: accurateConversion),
+        relativeCloseTo(34293.552503429164, epsilon),
+      );
       expect(
-          duration.convertTo(TimeUnit.decade, conversion: accurateConversion),
-          relativeCloseTo(0.39121899039027913, epsilon));
+        duration.convertTo(TimeUnit.day, conversion: accurateConversion),
+        relativeCloseTo(1428.8980209762153, epsilon),
+      );
       expect(
-          duration.convertTo(TimeUnit.century, conversion: accurateConversion),
-          relativeCloseTo(0.039121899039027914, epsilon));
+        duration.convertTo(TimeUnit.week, conversion: accurateConversion),
+        relativeCloseTo(204.1282887108879, epsilon),
+      );
       expect(
-          duration.convertTo(TimeUnit.millennium,
-              conversion: accurateConversion),
-          relativeCloseTo(0.003912189903902791, epsilon));
+        duration.convertTo(TimeUnit.month, conversion: accurateConversion),
+        relativeCloseTo(46.94627884683349, epsilon),
+      );
+      expect(
+        duration.convertTo(TimeUnit.quarter, conversion: accurateConversion),
+        relativeCloseTo(15.648759615611166, epsilon),
+      );
+      expect(
+        duration.convertTo(TimeUnit.year, conversion: accurateConversion),
+        relativeCloseTo(3.9121899039027914, epsilon),
+      );
+      expect(
+        duration.convertTo(TimeUnit.decade, conversion: accurateConversion),
+        relativeCloseTo(0.39121899039027913, epsilon),
+      );
+      expect(
+        duration.convertTo(TimeUnit.century, conversion: accurateConversion),
+        relativeCloseTo(0.039121899039027914, epsilon),
+      );
+      expect(
+        duration.convertTo(TimeUnit.millennium, conversion: accurateConversion),
+        relativeCloseTo(0.003912189903902791, epsilon),
+      );
     });
     test('convertToAll', () {
       const duration = Duration(days: 140);
-      expect(duration.convertToAll({TimeUnit.day}),
-          {TimeUnit.day: 140, TimeUnit.microsecond: 0});
-      expect(duration.convertToAll({TimeUnit.week, TimeUnit.hour}),
-          {TimeUnit.week: 20, TimeUnit.hour: 0, TimeUnit.microsecond: 0});
-      expect(duration.convertToAll({TimeUnit.month, TimeUnit.hour}),
-          {TimeUnit.month: 4, TimeUnit.hour: 480, TimeUnit.microsecond: 0});
-      expect(duration.convertToAll({TimeUnit.year, TimeUnit.day}),
-          {TimeUnit.year: 0, TimeUnit.day: 140, TimeUnit.microsecond: 0});
+      expect(duration.convertToAll({TimeUnit.day}), {
+        TimeUnit.day: 140,
+        TimeUnit.microsecond: 0,
+      });
+      expect(duration.convertToAll({TimeUnit.week, TimeUnit.hour}), {
+        TimeUnit.week: 20,
+        TimeUnit.hour: 0,
+        TimeUnit.microsecond: 0,
+      });
+      expect(duration.convertToAll({TimeUnit.month, TimeUnit.hour}), {
+        TimeUnit.month: 4,
+        TimeUnit.hour: 480,
+        TimeUnit.microsecond: 0,
+      });
+      expect(duration.convertToAll({TimeUnit.year, TimeUnit.day}), {
+        TimeUnit.year: 0,
+        TimeUnit.day: 140,
+        TimeUnit.microsecond: 0,
+      });
       expect(
-          duration.convertToAll({
-            TimeUnit.quarter,
-            TimeUnit.month,
-            TimeUnit.week,
-            TimeUnit.day,
-          }),
-          {
-            TimeUnit.quarter: 1,
-            TimeUnit.month: 1,
-            TimeUnit.week: 2,
-            TimeUnit.day: 6,
-            TimeUnit.microsecond: 0,
-          });
+        duration.convertToAll({
+          TimeUnit.quarter,
+          TimeUnit.month,
+          TimeUnit.week,
+          TimeUnit.day,
+        }),
+        {
+          TimeUnit.quarter: 1,
+          TimeUnit.month: 1,
+          TimeUnit.week: 2,
+          TimeUnit.day: 6,
+          TimeUnit.microsecond: 0,
+        },
+      );
     });
     test('convertToAll (accurate)', () {
       const duration = Duration(days: 140);
       expect(
-          duration.convertToAll({TimeUnit.day}, conversion: accurateConversion),
-          {TimeUnit.day: 140, TimeUnit.microsecond: 0});
+        duration.convertToAll({TimeUnit.day}, conversion: accurateConversion),
+        {TimeUnit.day: 140, TimeUnit.microsecond: 0},
+      );
       expect(
-          duration.convertToAll({TimeUnit.week, TimeUnit.hour},
-              conversion: accurateConversion),
-          {TimeUnit.week: 20, TimeUnit.hour: 0, TimeUnit.microsecond: 0});
+        duration.convertToAll({
+          TimeUnit.week,
+          TimeUnit.hour,
+        }, conversion: accurateConversion),
+        {TimeUnit.week: 20, TimeUnit.hour: 0, TimeUnit.microsecond: 0},
+      );
       expect(
-          duration.convertToAll({TimeUnit.month, TimeUnit.hour},
-              conversion: accurateConversion),
-          {
-            TimeUnit.month: 4,
-            TimeUnit.hour: 438,
-            TimeUnit.microsecond: 216000000
-          });
+        duration.convertToAll({
+          TimeUnit.month,
+          TimeUnit.hour,
+        }, conversion: accurateConversion),
+        {
+          TimeUnit.month: 4,
+          TimeUnit.hour: 438,
+          TimeUnit.microsecond: 216000000,
+        },
+      );
       expect(
-          duration.convertToAll({TimeUnit.year, TimeUnit.day},
-              conversion: accurateConversion),
-          {TimeUnit.year: 0, TimeUnit.day: 140, TimeUnit.microsecond: 0});
+        duration.convertToAll({
+          TimeUnit.year,
+          TimeUnit.day,
+        }, conversion: accurateConversion),
+        {TimeUnit.year: 0, TimeUnit.day: 140, TimeUnit.microsecond: 0},
+      );
       expect(
-          duration.convertToAll(
-              {TimeUnit.quarter, TimeUnit.month, TimeUnit.week, TimeUnit.day},
-              conversion: accurateConversion),
-          {
-            TimeUnit.quarter: 1,
-            TimeUnit.month: 1,
-            TimeUnit.week: 2,
-            TimeUnit.day: 4,
-            TimeUnit.microsecond: 21816000000
-          });
+        duration.convertToAll({
+          TimeUnit.quarter,
+          TimeUnit.month,
+          TimeUnit.week,
+          TimeUnit.day,
+        }, conversion: accurateConversion),
+        {
+          TimeUnit.quarter: 1,
+          TimeUnit.month: 1,
+          TimeUnit.week: 2,
+          TimeUnit.day: 4,
+          TimeUnit.microsecond: 21816000000,
+        },
+      );
     });
   });
   group('interval', () {
@@ -508,8 +594,10 @@ void main() {
         expect(duration, Duration.zero);
       });
       test('range', () {
-        final interval =
-            Interval<DateTime>(DateTime(2022, 7, 30), DateTime(2022, 7, 31));
+        final interval = Interval<DateTime>(
+          DateTime(2022, 7, 30),
+          DateTime(2022, 7, 31),
+        );
         expect(interval.toDuration().inHours, 24);
       });
     });

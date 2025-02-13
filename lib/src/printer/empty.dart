@@ -20,7 +20,8 @@ class EmptyPrinter<T> extends Printer<Iterable<T>> {
       object.isEmpty ? buffer.write(label) : printer.printOn(object, buffer);
 
   @override
-  ObjectPrinter get toStringPrinter => super.toStringPrinter
-    ..addValue(printer, name: 'printer')
-    ..addValue(label, name: 'label');
+  ObjectPrinter get toStringPrinter =>
+      super.toStringPrinter
+        ..addValue(printer, name: 'printer')
+        ..addValue(label, name: 'label');
 }

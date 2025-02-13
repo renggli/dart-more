@@ -71,22 +71,22 @@ extension AlgorithmsGraphExtension<V, E> on Graph<V, E> {
   }) =>
       costEstimate == null
           ? dijkstraSearch<V>(
-              startVertices: [source],
-              targetPredicate: targetPredicate ?? constantFunction1(true),
-              successorsOf: successorsOf,
-              edgeCost: edgeCost ?? _getDefaultEdgeValueOr(1),
-              includeAlternativePaths: includeAlternativePaths,
-              vertexStrategy: vertexStrategy ?? this.vertexStrategy,
-            )
+            startVertices: [source],
+            targetPredicate: targetPredicate ?? constantFunction1(true),
+            successorsOf: successorsOf,
+            edgeCost: edgeCost ?? _getDefaultEdgeValueOr(1),
+            includeAlternativePaths: includeAlternativePaths,
+            vertexStrategy: vertexStrategy ?? this.vertexStrategy,
+          )
           : aStarSearch<V>(
-              startVertices: [source],
-              targetPredicate: targetPredicate ?? constantFunction1(true),
-              successorsOf: successorsOf,
-              costEstimate: costEstimate,
-              edgeCost: edgeCost ?? _getDefaultEdgeValueOr(1),
-              includeAlternativePaths: includeAlternativePaths,
-              vertexStrategy: vertexStrategy ?? this.vertexStrategy,
-            );
+            startVertices: [source],
+            targetPredicate: targetPredicate ?? constantFunction1(true),
+            successorsOf: successorsOf,
+            costEstimate: costEstimate,
+            edgeCost: edgeCost ?? _getDefaultEdgeValueOr(1),
+            includeAlternativePaths: includeAlternativePaths,
+            vertexStrategy: vertexStrategy ?? this.vertexStrategy,
+          );
 
   /// Returns an object that can compute the maximum flow between different
   /// vertices of this graph using the Dinic max flow algorithm.
@@ -98,13 +98,12 @@ extension AlgorithmsGraphExtension<V, E> on Graph<V, E> {
   DinicMaxFlow<V> maxFlow({
     num Function(V source, V target)? edgeCapacity,
     StorageStrategy<V>? vertexStrategy,
-  }) =>
-      DinicMaxFlow<V>(
-        seedVertices: vertices,
-        successorsOf: successorsOf,
-        edgeCapacity: edgeCapacity ?? _getDefaultEdgeValueOr(1),
-        vertexStrategy: vertexStrategy ?? this.vertexStrategy,
-      );
+  }) => DinicMaxFlow<V>(
+    seedVertices: vertices,
+    successorsOf: successorsOf,
+    edgeCapacity: edgeCapacity ?? _getDefaultEdgeValueOr(1),
+    vertexStrategy: vertexStrategy ?? this.vertexStrategy,
+  );
 
   /// Returns an object that computes the min-cut using the Stoer-Wagner
   /// algorithm.
@@ -116,12 +115,11 @@ extension AlgorithmsGraphExtension<V, E> on Graph<V, E> {
   StoerWagnerMinCut<V, E> minCut({
     num Function(V source, V target)? edgeWeight,
     StorageStrategy<V>? vertexStrategy,
-  }) =>
-      StoerWagnerMinCut<V, E>(
-        graph: this,
-        edgeWeight: edgeWeight ?? _getDefaultEdgeValueOr(1),
-        vertexStrategy: vertexStrategy ?? this.vertexStrategy,
-      );
+  }) => StoerWagnerMinCut<V, E>(
+    graph: this,
+    edgeWeight: edgeWeight ?? _getDefaultEdgeValueOr(1),
+    vertexStrategy: vertexStrategy ?? this.vertexStrategy,
+  );
 
   /// Returns the spanning tree of the graph.
   ///
@@ -146,35 +144,39 @@ extension AlgorithmsGraphExtension<V, E> on Graph<V, E> {
   }) =>
       startVertex == null
           ? kruskalSpanningTree<V, E>(
-              this,
-              edgeWeight: edgeWeight ?? _getDefaultEdgeValueOr(1),
-              weightComparator: weightComparator ?? naturalComparable<num>,
-              vertexStrategy: vertexStrategy ?? this.vertexStrategy,
-            )
+            this,
+            edgeWeight: edgeWeight ?? _getDefaultEdgeValueOr(1),
+            weightComparator: weightComparator ?? naturalComparable<num>,
+            vertexStrategy: vertexStrategy ?? this.vertexStrategy,
+          )
           : primSpanningTree<V, E>(
-              this,
-              startVertex: startVertex,
-              edgeWeight: edgeWeight ?? _getDefaultEdgeValueOr(1),
-              weightComparator: weightComparator ?? naturalComparable<num>,
-              vertexStrategy: vertexStrategy ?? this.vertexStrategy,
-            );
+            this,
+            startVertex: startVertex,
+            edgeWeight: edgeWeight ?? _getDefaultEdgeValueOr(1),
+            weightComparator: weightComparator ?? naturalComparable<num>,
+            vertexStrategy: vertexStrategy ?? this.vertexStrategy,
+          );
 
   /// Returns the strongly connected components in this directed graph. The
   /// implementation uses the Tarjan's algorithm and runs in linear time.
   Iterable<Set<V>> stronglyConnected({StorageStrategy<V>? vertexStrategy}) {
     GraphError.checkDirected(this);
-    return tarjanStronglyConnected<V>(vertices,
-        successorsOf: successorsOf,
-        vertexStrategy: vertexStrategy ?? this.vertexStrategy);
+    return tarjanStronglyConnected<V>(
+      vertices,
+      successorsOf: successorsOf,
+      vertexStrategy: vertexStrategy ?? this.vertexStrategy,
+    );
   }
 
   /// Returns the maximal cliques in this undirected graph. The implementation
   /// uses the Bron–Kerbosch algorithm and runs in exponential time.
   Iterable<Set<V>> findCliques({StorageStrategy<V>? vertexStrategy}) {
     GraphError.checkNotDirected(this);
-    return bronKerboschCliques<V>(vertices,
-        neighboursOf: neighboursOf,
-        vertexStrategy: vertexStrategy ?? this.vertexStrategy);
+    return bronKerboschCliques<V>(
+      vertices,
+      neighboursOf: neighboursOf,
+      vertexStrategy: vertexStrategy ?? this.vertexStrategy,
+    );
   }
 
   /// Internal helper that returns a function using the numeric edge value

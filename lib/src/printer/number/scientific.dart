@@ -25,29 +25,29 @@ class ScientificNumberPrinter<T extends num> extends Printer<T> {
     this.separatorWidth = 3,
     this.separatorOffset = 0,
     this.significant = 1,
-  })  : _mantissa = FixedNumberPrinter<double>(
-          base: base,
-          characters: characters,
-          delimiter: delimiter,
-          infinity: infinity,
-          nan: nan,
-          padding: mantissaPadding,
-          precision: precision,
-          separator: separator,
-          separatorWidth: separatorWidth,
-          separatorOffset: separatorOffset,
-          sign: mantissaSign ??
-              const SignNumberPrinter<double>.omitPositiveSign(),
-        ),
-        _exponent = FixedNumberPrinter<int>(
-          base: base,
-          characters: characters,
-          padding: exponentPadding,
-          separator: separator,
-          separatorWidth: separatorWidth,
-          separatorOffset: separatorOffset,
-          sign: exponentSign ?? const SignNumberPrinter<int>.omitPositiveSign(),
-        );
+  }) : _mantissa = FixedNumberPrinter<double>(
+         base: base,
+         characters: characters,
+         delimiter: delimiter,
+         infinity: infinity,
+         nan: nan,
+         padding: mantissaPadding,
+         precision: precision,
+         separator: separator,
+         separatorWidth: separatorWidth,
+         separatorOffset: separatorOffset,
+         sign:
+             mantissaSign ?? const SignNumberPrinter<double>.omitPositiveSign(),
+       ),
+       _exponent = FixedNumberPrinter<int>(
+         base: base,
+         characters: characters,
+         padding: exponentPadding,
+         separator: separator,
+         separatorWidth: separatorWidth,
+         separatorOffset: separatorOffset,
+         sign: exponentSign ?? const SignNumberPrinter<int>.omitPositiveSign(),
+       );
 
   /// The numeric base to which the number should be printed.
   final int base;
@@ -123,18 +123,19 @@ class ScientificNumberPrinter<T extends num> extends Printer<T> {
   }
 
   @override
-  ObjectPrinter get toStringPrinter => super.toStringPrinter
-    ..addValue(base, name: 'base')
-    ..addValue(characters, name: 'characters')
-    ..addValue(delimiter, name: 'delimiter')
-    ..addValue(exponentPadding, name: 'exponentPadding')
-    ..addValue(exponentSign, name: 'exponentSign')
-    ..addValue(infinity, name: 'infinity')
-    ..addValue(mantissaPadding, name: 'mantissaPadding')
-    ..addValue(mantissaSign, name: 'mantissaSign')
-    ..addValue(nan, name: 'nan')
-    ..addValue(notation, name: 'notation')
-    ..addValue(precision, name: 'precision')
-    ..addValue(separator, name: 'separator')
-    ..addValue(significant, name: 'significant');
+  ObjectPrinter get toStringPrinter =>
+      super.toStringPrinter
+        ..addValue(base, name: 'base')
+        ..addValue(characters, name: 'characters')
+        ..addValue(delimiter, name: 'delimiter')
+        ..addValue(exponentPadding, name: 'exponentPadding')
+        ..addValue(exponentSign, name: 'exponentSign')
+        ..addValue(infinity, name: 'infinity')
+        ..addValue(mantissaPadding, name: 'mantissaPadding')
+        ..addValue(mantissaSign, name: 'mantissaSign')
+        ..addValue(nan, name: 'nan')
+        ..addValue(notation, name: 'notation')
+        ..addValue(precision, name: 'precision')
+        ..addValue(separator, name: 'separator')
+        ..addValue(significant, name: 'significant');
 }

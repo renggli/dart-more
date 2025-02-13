@@ -20,7 +20,7 @@ const List<int> factorials = [
   355687428096000,
   6402373705728000,
   121645100408832000,
-  2432902008176640000
+  2432902008176640000,
 ];
 
 extension FactorialIntegerExtension on int {

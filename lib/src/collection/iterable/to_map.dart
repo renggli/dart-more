@@ -10,8 +10,10 @@ extension ToMapIterableExtension<E> on Iterable<E> {
   ///   value: (each) => each.length,
   /// )
   /// ```
-  Map<K, V> toMap<K, V>(
-      {K Function(E element)? key, V Function(E element)? value}) {
+  Map<K, V> toMap<K, V>({
+    K Function(E element)? key,
+    V Function(E element)? value,
+  }) {
     final keyProvider = key ?? (element) => element as K;
     final valueProvider = value ?? (element) => element as V;
     return {

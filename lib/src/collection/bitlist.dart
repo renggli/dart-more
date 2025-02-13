@@ -28,10 +28,14 @@ abstract class BitList extends ListBase<bool> {
 
   /// Constructs a bit list of the given [length] by calling a [generator]
   /// function for each index.
-  factory BitList.generate(int length, bool Function(int index) generator,
-          {bool growable = false}) =>
-      BitList.of(IntegerRange.length(length).map(generator),
-          growable: growable);
+  factory BitList.generate(
+    int length,
+    bool Function(int index) generator, {
+    bool growable = false,
+  }) => BitList.of(
+    IntegerRange.length(length).map(generator),
+    growable: growable,
+  );
 
   /// Constructs a new list from a given [Iterable] of booleans.
   factory BitList.of(Iterable<bool> other, {bool growable = false}) {
@@ -90,9 +94,10 @@ abstract class BitList extends ListBase<bool> {
   /// undefined if [index] is outside of bounds.
   @preferInline
   @noBoundsChecks
-  void setUnchecked(int index, bool value) => value
-      ? buffer[index >>> bitShift] |= bitSetMask[index & bitOffset]
-      : buffer[index >>> bitShift] &= bitClearMask[index & bitOffset];
+  void setUnchecked(int index, bool value) =>
+      value
+          ? buffer[index >>> bitShift] |= bitSetMask[index & bitOffset]
+          : buffer[index >>> bitShift] &= bitClearMask[index & bitOffset];
 
   @override
   BitList operator +(List<bool> other) {
@@ -137,9 +142,10 @@ abstract class BitList extends ListBase<bool> {
     final endIndex = (end - 1) >>> bitShift, endBit = (end - 1) & bitOffset;
     var result = 0;
     if (startIndex == endIndex) {
-      result += (buffer[startIndex] &
-              (((1 << (endBit - startBit + 1)) - 1) << startBit))
-          .bitCount;
+      result +=
+          (buffer[startIndex] &
+                  (((1 << (endBit - startBit + 1)) - 1) << startBit))
+              .bitCount;
     } else {
       result += (buffer[startIndex] & (bitMask << startBit)).bitCount;
       for (var i = startIndex + 1; i < endIndex; i++) {
@@ -227,7 +233,10 @@ abstract class BitList extends ListBase<bool> {
   /// negative.
   BitList operator <<(int amount) {
     RangeError.checkNotNegative(
-        amount, 'amount', 'Unable to left-shift by $amount');
+      amount,
+      'amount',
+      'Unable to left-shift by $amount',
+    );
     if (amount == 0 || length == 0) {
       return BitList.of(this);
     }
@@ -241,7 +250,8 @@ abstract class BitList extends ListBase<bool> {
     } else {
       final otherOffset = 1 + bitOffset - offset;
       for (var i = shift + 1; i < buffer.length; i++) {
-        result.buffer[i] = ((buffer[i - shift] << offset) & bitMask) |
+        result.buffer[i] =
+            ((buffer[i - shift] << offset) & bitMask) |
             ((buffer[i - shift - 1] >> otherOffset) & bitMask);
       }
       if (shift < buffer.length) {
@@ -256,7 +266,10 @@ abstract class BitList extends ListBase<bool> {
   /// negative.
   BitList operator >>(int amount) {
     RangeError.checkNotNegative(
-        amount, 'amount', 'Unable to right-shift by $amount');
+      amount,
+      'amount',
+      'Unable to right-shift by $amount',
+    );
     if (amount == 0 || length == 0) {
       return BitList.of(this);
     }
@@ -271,7 +284,8 @@ abstract class BitList extends ListBase<bool> {
       final last = buffer.length - shift - 1;
       final otherOffset = 1 + bitOffset - offset;
       for (var i = 0; i < last; i++) {
-        result.buffer[i] = ((buffer[i + shift] >> offset) & bitMask) |
+        result.buffer[i] =
+            ((buffer[i + shift] >> offset) & bitMask) |
             ((buffer[i + shift + 1] << otherOffset) & bitMask);
       }
       if (0 <= last) {
@@ -283,8 +297,11 @@ abstract class BitList extends ListBase<bool> {
 
   void _checkLength(BitList other) {
     if (length != other.length) {
-      throw ArgumentError.value(other, 'other',
-          'Expected list with length $length, but got ${other.length}');
+      throw ArgumentError.value(
+        other,
+        'other',
+        'Expected list with length $length, but got ${other.length}',
+      );
     }
   }
 }
@@ -374,7 +391,7 @@ const List<int> bitSetMask = [
   268435456,
   536870912,
   1073741824,
-  2147483648
+  2147483648,
 ];
 const List<int> bitClearMask = [
   -2,
@@ -408,7 +425,7 @@ const List<int> bitClearMask = [
   -268435457,
   -536870913,
   -1073741825,
-  -2147483649
+  -2147483649,
 ];
 
 void _fillRange(Uint32List buffer, int start, int end, bool value) {

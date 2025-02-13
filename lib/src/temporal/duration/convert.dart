@@ -15,6 +15,5 @@ extension ConvertToDurationExtension on Duration {
   double convertTo(
     TimeUnit unit, {
     UnitConversion conversion = casualConversion,
-  }) =>
-      inMicroseconds / conversion[unit]!;
+  }) => inMicroseconds / conversion[unit]!;
 }

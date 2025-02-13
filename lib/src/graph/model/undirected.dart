@@ -6,10 +6,10 @@ import '../strategy.dart';
 /// Undirected graph implementation using adjacency lists.
 class UndirectedGraph<V, E> extends Graph<V, E> {
   UndirectedGraph({StorageStrategy<V>? vertexStrategy})
-      : this._(vertexStrategy ?? StorageStrategy<V>.defaultStrategy());
+    : this._(vertexStrategy ?? StorageStrategy<V>.defaultStrategy());
 
   UndirectedGraph._(this.vertexStrategy)
-      : adjacency = vertexStrategy.createMap<Map<V, E>>();
+    : adjacency = vertexStrategy.createMap<Map<V, E>>();
 
   final Map<V, Map<V, E>> adjacency;
 
@@ -23,23 +23,27 @@ class UndirectedGraph<V, E> extends Graph<V, E> {
   Iterable<V> get vertices => adjacency.keys;
 
   @override
-  Iterable<Edge<V, E>> get edges =>
-      adjacency.entries.expand((outer) => outer.value.entries.map((inner) =>
-          UndirectedEdge<V, E>(outer.key, inner.key, value: inner.value)));
+  Iterable<Edge<V, E>> get edges => adjacency.entries.expand(
+    (outer) => outer.value.entries.map(
+      (inner) => UndirectedEdge<V, E>(outer.key, inner.key, value: inner.value),
+    ),
+  );
 
   @override
   Iterable<Edge<V, E>> edgesOf(V vertex) => outgoingEdgesOf(vertex);
 
   @override
   Iterable<Edge<V, E>> incomingEdgesOf(V vertex) =>
-      adjacency[vertex]?.entries.map((entry) =>
-          UndirectedEdge<V, E>(entry.key, vertex, value: entry.value)) ??
+      adjacency[vertex]?.entries.map(
+        (entry) => UndirectedEdge<V, E>(entry.key, vertex, value: entry.value),
+      ) ??
       const [];
 
   @override
   Iterable<Edge<V, E>> outgoingEdgesOf(V vertex) =>
-      adjacency[vertex]?.entries.map((entry) =>
-          UndirectedEdge<V, E>(vertex, entry.key, value: entry.value)) ??
+      adjacency[vertex]?.entries.map(
+        (entry) => UndirectedEdge<V, E>(vertex, entry.key, value: entry.value),
+      ) ??
       const [];
 
   @override
@@ -108,7 +112,8 @@ class UndirectedEdge<V, E> extends Edge<V, E> {
   int get hashCode => source.hashCode ^ target.hashCode;
 
   @override
-  ObjectPrinter get toStringPrinter => super.toStringPrinter
-    ..addValue('$source — $target')
-    ..addValue(value, name: 'value', omitNull: true);
+  ObjectPrinter get toStringPrinter =>
+      super.toStringPrinter
+        ..addValue('$source — $target')
+        ..addValue(value, name: 'value', omitNull: true);
 }

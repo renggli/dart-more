@@ -38,35 +38,37 @@ class DateTimePrinter extends SequencePrinter<DateTime> {
   const DateTimePrinter._(super.printers);
 
   /// Returns a configurable date printer.
-  static DateTimePrinter date({String separator = '-'}) =>
-      DateTimePrinter((builder) => builder
-        ..year(width: 4)
-        ..literal(separator)
-        ..month(width: 2)
-        ..literal(separator)
-        ..day(width: 2));
+  static DateTimePrinter date({String separator = '-'}) => DateTimePrinter(
+    (builder) =>
+        builder
+          ..year(width: 4)
+          ..literal(separator)
+          ..month(width: 2)
+          ..literal(separator)
+          ..day(width: 2),
+  );
 
   /// Returns a configurable time printer.
-  static DateTimePrinter time(
-          {String separator = ':',
-          bool milliseconds = true,
-          bool microseconds = true}) =>
-      DateTimePrinter((builder) {
-        builder
-          ..hour(width: 2)
-          ..literal(separator)
-          ..minute(width: 2)
-          ..literal(separator)
-          ..second(width: 2);
-        if (milliseconds) {
-          builder
-            ..literal('.')
-            ..millisecond();
-          if (microseconds) {
-            builder.microsecond(skipIfZero: true);
-          }
-        }
-      });
+  static DateTimePrinter time({
+    String separator = ':',
+    bool milliseconds = true,
+    bool microseconds = true,
+  }) => DateTimePrinter((builder) {
+    builder
+      ..hour(width: 2)
+      ..literal(separator)
+      ..minute(width: 2)
+      ..literal(separator)
+      ..second(width: 2);
+    if (milliseconds) {
+      builder
+        ..literal('.')
+        ..millisecond();
+      if (microseconds) {
+        builder.microsecond(skipIfZero: true);
+      }
+    }
+  });
 
   /// Returns a configurable time printer.
   static DateTimePrinter dateTime({
@@ -75,14 +77,19 @@ class DateTimePrinter extends SequencePrinter<DateTime> {
     String timeSeparator = ':',
     bool milliseconds = true,
     bool microseconds = true,
-  }) =>
-      DateTimePrinter((builder) => builder
-        ..add(date(separator: dateSeparator))
-        ..literal(dateTimeSeparator)
-        ..add(time(
-            separator: timeSeparator,
-            milliseconds: milliseconds,
-            microseconds: microseconds)));
+  }) => DateTimePrinter(
+    (builder) =>
+        builder
+          ..add(date(separator: dateSeparator))
+          ..literal(dateTimeSeparator)
+          ..add(
+            time(
+              separator: timeSeparator,
+              milliseconds: milliseconds,
+              microseconds: microseconds,
+            ),
+          ),
+  );
 
   /// Returns an ISO-8601 full-precision extended format printer.
   static DateTimePrinter iso8601() => dateTime();
@@ -109,8 +116,11 @@ class DateTimePrinterBuilder {
   /// of the default ones `['BC', 'AD']`.
   void era({List<String> names = const ['BC', 'AD']}) {
     assert(names.length == 2, '2 era names expected');
-    add(Printer<int>.pluggable((index) => names[index])
-        .onResultOf((dateTime) => dateTime.year > 0 ? 1 : 0));
+    add(
+      Printer<int>.pluggable(
+        (index) => names[index],
+      ).onResultOf((dateTime) => dateTime.year > 0 ? 1 : 0),
+    );
   }
 
   /// Adds a [DateTime.year] field.
@@ -118,9 +128,11 @@ class DateTimePrinterBuilder {
   /// [width] specifies the minimum number of digits to be displayed. If
   /// [width] is `2`, just the two low-order digits of the year will be
   /// displayed.
-  void year({int width = 0}) => add(FixedNumberPrinter(padding: width)
-      .mapIf(width == 2, (printer) => printer.takeLast(2))
-      .onResultOf((dateTime) => dateTime.year));
+  void year({int width = 0}) => add(
+    FixedNumberPrinter(padding: width)
+        .mapIf(width == 2, (printer) => printer.takeLast(2))
+        .onResultOf((dateTime) => dateTime.year),
+  );
 
   /// Adds a [AccessorsDateTimeExtension.quarter] field.
   ///
@@ -130,9 +142,10 @@ class DateTimePrinterBuilder {
   /// of the numeric quarter number from `['Q1', ..., 'Q4']`.
   void quarter({int width = 0, List<String>? names}) {
     assert(names == null || names.length == 4, '4 quarter names expected');
-    final printer = names == null
-        ? FixedNumberPrinter<int>(padding: width)
-        : Printer<int>.pluggable((quarter) => names[quarter - 1]);
+    final printer =
+        names == null
+            ? FixedNumberPrinter<int>(padding: width)
+            : Printer<int>.pluggable((quarter) => names[quarter - 1]);
     add(printer.onResultOf((dateTime) => dateTime.quarter));
   }
 
@@ -144,9 +157,10 @@ class DateTimePrinterBuilder {
   /// of the numeric month number from `['January', ..., 'December']`.
   void month({int width = 0, List<String>? names}) {
     assert(names == null || names.length == 12, '12 month names expected');
-    final printer = names == null
-        ? FixedNumberPrinter<int>(padding: width)
-        : Printer<int>.pluggable((month) => names[month - 1]);
+    final printer =
+        names == null
+            ? FixedNumberPrinter<int>(padding: width)
+            : Printer<int>.pluggable((month) => names[month - 1]);
     add(printer.onResultOf((dateTime) => dateTime.month));
   }
 
@@ -158,29 +172,37 @@ class DateTimePrinterBuilder {
   /// of the numeric weekday number from `['Monday', ..., 'Sunday']`.
   void weekday({int width = 0, List<String>? names}) {
     assert(names == null || names.length == 7, '7 weekday names expected');
-    final printer = names == null
-        ? FixedNumberPrinter<int>(padding: width)
-        : Printer<int>.pluggable((weekday) => names[weekday - 1]);
+    final printer =
+        names == null
+            ? FixedNumberPrinter<int>(padding: width)
+            : Printer<int>.pluggable((weekday) => names[weekday - 1]);
     add(printer.onResultOf((dateTime) => dateTime.weekday));
   }
 
   /// Adds a [AccessorsDateTimeExtension.weekNumber] field.
   ///
   /// [width] specifies the minimum number of digits to display.
-  void weekNumber({int width = 0}) => add(FixedNumberPrinter(padding: width)
-      .onResultOf((dateTime) => dateTime.weekNumber));
+  void weekNumber({int width = 0}) => add(
+    FixedNumberPrinter(
+      padding: width,
+    ).onResultOf((dateTime) => dateTime.weekNumber),
+  );
 
   /// Adds a [DateTime.day] field.
   ///
   /// [width] specifies the minimum number of digits to display.
-  void day({int width = 0}) => add(FixedNumberPrinter(padding: width)
-      .onResultOf((dateTime) => dateTime.day));
+  void day({int width = 0}) => add(
+    FixedNumberPrinter(padding: width).onResultOf((dateTime) => dateTime.day),
+  );
 
   /// Adds a [AccessorsDateTimeExtension.dayOfYear] field.
   ///
   /// [width] specifies the minimum number of digits to display.
-  void dayOfYear({int width = 0}) => add(FixedNumberPrinter(padding: width)
-      .onResultOf((dateTime) => dateTime.dayOfYear));
+  void dayOfYear({int width = 0}) => add(
+    FixedNumberPrinter(
+      padding: width,
+    ).onResultOf((dateTime) => dateTime.dayOfYear),
+  );
 
   /// Adds an am/pm field.
   ///
@@ -188,50 +210,65 @@ class DateTimePrinterBuilder {
   /// of the default ones `['am', 'pm']`.
   void meridiem({List<String> names = const ['am', 'pm']}) {
     assert(names.length == 2, '2 meridiem names expected');
-    add(Printer<int>.pluggable((index) => names[index])
-        .onResultOf((dateTime) => dateTime.hour.between(12, 23) ? 1 : 0));
+    add(
+      Printer<int>.pluggable(
+        (index) => names[index],
+      ).onResultOf((dateTime) => dateTime.hour.between(12, 23) ? 1 : 0),
+    );
   }
 
   /// Adds a [DateTime.hour] field (24h-clock).
   ///
   /// [width] specifies the minimum number of digits to display.
-  void hour({int width = 0}) => add(FixedNumberPrinter(padding: width)
-      .onResultOf((dateTime) => dateTime.hour));
+  void hour({int width = 0}) => add(
+    FixedNumberPrinter(padding: width).onResultOf((dateTime) => dateTime.hour),
+  );
 
   /// Adds a [AccessorsDateTimeExtension.hour12] field (12h-clock).
   ///
   /// [width] specifies the minimum number of digits to display.
-  void hour12({int width = 0}) => add(FixedNumberPrinter(padding: width)
-      .onResultOf((dateTime) => dateTime.hour12));
+  void hour12({int width = 0}) => add(
+    FixedNumberPrinter(
+      padding: width,
+    ).onResultOf((dateTime) => dateTime.hour12),
+  );
 
   /// Adds a [DateTime.minute] field.
   ///
   /// [width] specifies the minimum number of digits to display.
-  void minute({int width = 0}) => add(FixedNumberPrinter(padding: width)
-      .onResultOf((dateTime) => dateTime.minute));
+  void minute({int width = 0}) => add(
+    FixedNumberPrinter(
+      padding: width,
+    ).onResultOf((dateTime) => dateTime.minute),
+  );
 
   /// Adds a [DateTime.second] field.
   ///
   /// [width] specifies the minimum number of digits to display.
-  void second({int width = 0}) => add(FixedNumberPrinter(padding: width)
-      .onResultOf((dateTime) => dateTime.second));
+  void second({int width = 0}) => add(
+    FixedNumberPrinter(
+      padding: width,
+    ).onResultOf((dateTime) => dateTime.second),
+  );
 
   /// Adds a [DateTime.millisecond] field.
   ///
   /// [width] specifies the number of digits to display. If [width] is less than
   /// `3`, only the most significant digits are printed.
-  void millisecond({int width = 3}) =>
-      add(FixedNumberPrinter(padding: max(width, 3))
-          .mapIf(width < 3, (printer) => printer.take(width))
-          .onResultOf((dateTime) => dateTime.millisecond));
+  void millisecond({int width = 3}) => add(
+    FixedNumberPrinter(padding: max(width, 3))
+        .mapIf(width < 3, (printer) => printer.take(width))
+        .onResultOf((dateTime) => dateTime.millisecond),
+  );
 
   /// Adds a [DateTime.microsecond] field. This field is always 0 in JavaScript.
   ///
   /// [width] specifies the number of digits to display. If [width] is less than
   /// `3`, only the most significant digits are printed.
-  void microsecond({int width = 3, bool skipIfZero = false}) =>
-      add(FixedNumberPrinter<int>(padding: max(width, 3))
-          .mapIf(width < 3, (printer) => printer.take(width))
-          .mapIf(skipIfZero, (printer) => printer.where((value) => value != 0))
-          .onResultOf((dateTime) => dateTime.microsecond));
+  void microsecond({int width = 3, bool skipIfZero = false}) => add(
+    FixedNumberPrinter<int>(padding: max(width, 3))
+        .mapIf(width < 3, (printer) => printer.take(width))
+        .mapIf(skipIfZero, (printer) => printer.where((value) => value != 0))
+        .onResultOf((dateTime) => dateTime.microsecond),
+  );
 }

@@ -9,17 +9,7 @@ import 'utils.dart';
 // https://en.wikipedia.org/wiki/Binary_prefix.
 const binaryUnitBase = 1024;
 const binaryUnitOffset = 0;
-const binaryUnitsShort = [
-  '',
-  'Ki',
-  'Mi',
-  'Gi',
-  'Ti',
-  'Pi',
-  'Ei',
-  'Zi',
-  'Yi',
-];
+const binaryUnitsShort = ['', 'Ki', 'Mi', 'Gi', 'Ti', 'Pi', 'Ei', 'Zi', 'Yi'];
 const binaryUnitsLong = [
   '',
   'kibi',
@@ -95,32 +85,32 @@ class HumanNumberPrinter<T extends num> extends Printer<T> {
     this.unitPrecision = 0,
     this.unitPrefix = false,
     this.unitSeparator = ' ',
-  })  : _unit = FixedNumberPrinter(
-          base: base,
-          characters: characters,
-          delimiter: delimiter,
-          infinity: infinity,
-          nan: nan,
-          padding: padding,
-          precision: unitPrecision,
-          separator: separator,
-          separatorWidth: separatorWidth,
-          separatorOffset: separatorOffset,
-          sign: sign ?? const SignNumberPrinter<double>.omitPositiveSign(),
-        ),
-        _scaled = FixedNumberPrinter(
-          base: base,
-          characters: characters,
-          delimiter: delimiter,
-          infinity: infinity,
-          nan: nan,
-          padding: padding,
-          precision: precision,
-          separator: separator,
-          separatorWidth: separatorWidth,
-          separatorOffset: separatorOffset,
-          sign: sign ?? const SignNumberPrinter<double>.omitPositiveSign(),
-        );
+  }) : _unit = FixedNumberPrinter(
+         base: base,
+         characters: characters,
+         delimiter: delimiter,
+         infinity: infinity,
+         nan: nan,
+         padding: padding,
+         precision: unitPrecision,
+         separator: separator,
+         separatorWidth: separatorWidth,
+         separatorOffset: separatorOffset,
+         sign: sign ?? const SignNumberPrinter<double>.omitPositiveSign(),
+       ),
+       _scaled = FixedNumberPrinter(
+         base: base,
+         characters: characters,
+         delimiter: delimiter,
+         infinity: infinity,
+         nan: nan,
+         padding: padding,
+         precision: precision,
+         separator: separator,
+         separatorWidth: separatorWidth,
+         separatorOffset: separatorOffset,
+         sign: sign ?? const SignNumberPrinter<double>.omitPositiveSign(),
+       );
 
   /// Prints numbers using a decimal suffix for units measure to indicate a
   /// multiple or sub-multiple of the unit.
@@ -142,26 +132,25 @@ class HumanNumberPrinter<T extends num> extends Printer<T> {
     int unitPrecision = 0,
     bool unitPrefix = false,
     String unitSeparator = ' ',
-  }) =>
-      HumanNumberPrinter(
-        base: base,
-        characters: characters,
-        delimiter: delimiter,
-        infinity: infinity,
-        nan: nan,
-        padding: padding,
-        precision: precision,
-        separator: separator,
-        separatorWidth: separatorWidth,
-        separatorOffset: separatorOffset,
-        sign: sign,
-        unitBase: decimalUnitBase,
-        unitOffset: decimalUnitOffset,
-        unitPrecision: unitPrecision,
-        unitPrefix: unitPrefix,
-        unitSeparator: unitSeparator,
-        units: long ? decimalUnitsLong : decimalUnitsShort,
-      );
+  }) => HumanNumberPrinter(
+    base: base,
+    characters: characters,
+    delimiter: delimiter,
+    infinity: infinity,
+    nan: nan,
+    padding: padding,
+    precision: precision,
+    separator: separator,
+    separatorWidth: separatorWidth,
+    separatorOffset: separatorOffset,
+    sign: sign,
+    unitBase: decimalUnitBase,
+    unitOffset: decimalUnitOffset,
+    unitPrecision: unitPrecision,
+    unitPrefix: unitPrefix,
+    unitSeparator: unitSeparator,
+    units: long ? decimalUnitsLong : decimalUnitsShort,
+  );
 
   /// Prints numbers using a binary suffix for units in data processing, data
   /// transmission, and digital information.
@@ -183,26 +172,25 @@ class HumanNumberPrinter<T extends num> extends Printer<T> {
     Printer<double>? sign,
     bool unitPrefix = false,
     String unitSeparator = ' ',
-  }) =>
-      HumanNumberPrinter(
-        base: base,
-        characters: characters,
-        delimiter: delimiter,
-        infinity: infinity,
-        nan: nan,
-        padding: padding,
-        precision: precision,
-        separator: separator,
-        separatorWidth: separatorWidth,
-        separatorOffset: separatorOffset,
-        sign: sign,
-        unitBase: binaryUnitBase,
-        unitOffset: binaryUnitOffset,
-        unitPrecision: unitPrecision,
-        unitPrefix: unitPrefix,
-        unitSeparator: unitSeparator,
-        units: long ? binaryUnitsLong : binaryUnitsShort,
-      );
+  }) => HumanNumberPrinter(
+    base: base,
+    characters: characters,
+    delimiter: delimiter,
+    infinity: infinity,
+    nan: nan,
+    padding: padding,
+    precision: precision,
+    separator: separator,
+    separatorWidth: separatorWidth,
+    separatorOffset: separatorOffset,
+    sign: sign,
+    unitBase: binaryUnitBase,
+    unitOffset: binaryUnitOffset,
+    unitPrecision: unitPrecision,
+    unitPrefix: unitPrefix,
+    unitSeparator: unitSeparator,
+    units: long ? binaryUnitsLong : binaryUnitsShort,
+  );
 
   /// The numeric base to which the number should be printed.
   final int base;
@@ -294,20 +282,21 @@ class HumanNumberPrinter<T extends num> extends Printer<T> {
   }
 
   @override
-  ObjectPrinter get toStringPrinter => super.toStringPrinter
-    ..addValue(base, name: 'base')
-    ..addValue(characters, name: 'characters')
-    ..addValue(delimiter, name: 'delimiter')
-    ..addValue(infinity, name: 'infinity')
-    ..addValue(nan, name: 'nan')
-    ..addValue(padding, name: 'padding')
-    ..addValue(precision, name: 'precision')
-    ..addValue(separator, name: 'separator')
-    ..addValue(sign, name: 'sign')
-    ..addValue(unitBase, name: 'unitBase')
-    ..addValue(unitOffset, name: 'unitOffset')
-    ..addValue(unitPrecision, name: 'unitPrecision')
-    ..addValue(unitPrefix, name: 'unitPrefix')
-    ..addValue(unitSeparator, name: 'unitSeparator')
-    ..addValue(units, name: 'units');
+  ObjectPrinter get toStringPrinter =>
+      super.toStringPrinter
+        ..addValue(base, name: 'base')
+        ..addValue(characters, name: 'characters')
+        ..addValue(delimiter, name: 'delimiter')
+        ..addValue(infinity, name: 'infinity')
+        ..addValue(nan, name: 'nan')
+        ..addValue(padding, name: 'padding')
+        ..addValue(precision, name: 'precision')
+        ..addValue(separator, name: 'separator')
+        ..addValue(sign, name: 'sign')
+        ..addValue(unitBase, name: 'unitBase')
+        ..addValue(unitOffset, name: 'unitOffset')
+        ..addValue(unitPrecision, name: 'unitPrecision')
+        ..addValue(unitPrefix, name: 'unitPrefix')
+        ..addValue(unitSeparator, name: 'unitSeparator')
+        ..addValue(units, name: 'units');
 }

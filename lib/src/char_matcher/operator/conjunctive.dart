@@ -13,12 +13,12 @@ final class ConjunctiveCharMatcher extends CharMatcher {
 
   @override
   CharMatcher operator &(CharMatcher other) => switch (other) {
-        AnyCharMatcher() => this,
-        NoneCharMatcher() => other,
-        ConjunctiveCharMatcher(matchers: final otherMatchers) =>
-          ConjunctiveCharMatcher([...matchers, ...otherMatchers]),
-        _ => ConjunctiveCharMatcher([...matchers, other])
-      };
+    AnyCharMatcher() => this,
+    NoneCharMatcher() => other,
+    ConjunctiveCharMatcher(matchers: final otherMatchers) =>
+      ConjunctiveCharMatcher([...matchers, ...otherMatchers]),
+    _ => ConjunctiveCharMatcher([...matchers, other]),
+  };
 
   @override
   bool match(int value) => matchers.every((matcher) => matcher.match(value));

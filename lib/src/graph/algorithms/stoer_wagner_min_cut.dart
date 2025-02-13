@@ -14,10 +14,10 @@ class StoerWagnerMinCut<V, E> {
     num Function(V source, V target)? edgeWeight,
     StorageStrategy<V>? vertexStrategy,
   }) : this._(
-          graph: graph,
-          edgeWeight: edgeWeight ?? constantFunction2(1),
-          vertexStrategy: vertexStrategy ?? StorageStrategy.defaultStrategy(),
-        );
+         graph: graph,
+         edgeWeight: edgeWeight ?? constantFunction2(1),
+         vertexStrategy: vertexStrategy ?? StorageStrategy.defaultStrategy(),
+       );
 
   StoerWagnerMinCut._({
     required this.graph,
@@ -36,8 +36,11 @@ class StoerWagnerMinCut<V, E> {
     for (final edge in graph.edges.unique()) {
       final weight = edgeWeight(edge.source, edge.target);
       assert(weight >= 0, 'Expected positive edge weight for $edge');
-      _workingGraph.addEdge(vertexMap[edge.source]!, vertexMap[edge.target]!,
-          value: weight);
+      _workingGraph.addEdge(
+        vertexMap[edge.source]!,
+        vertexMap[edge.target]!,
+        value: weight,
+      );
     }
     final vertex = _workingGraph.vertices.first;
     while (_workingGraph.vertices.length > 1) {
@@ -47,8 +50,9 @@ class StoerWagnerMinCut<V, E> {
   }
 
   // Internal state.
-  final _workingGraph =
-      Graph<Set<V>, num>.undirected(vertexStrategy: StorageStrategy.identity());
+  final _workingGraph = Graph<Set<V>, num>.undirected(
+    vertexStrategy: StorageStrategy.identity(),
+  );
   Set<V> _bestPartition = const {};
   num _bestWeight = double.infinity;
 
@@ -75,11 +79,14 @@ class StoerWagnerMinCut<V, E> {
   ///
   /// Each undirected edge appears for each direction once, to de-duplicate
   /// use `minCut.edges.unique()`.
-  late final List<Edge<V, E>> edges = graph.edges
-      .where((edge) =>
-          _bestPartition.contains(edge.source) !=
-          _bestPartition.contains(edge.target))
-      .toList();
+  late final List<Edge<V, E>> edges =
+      graph.edges
+          .where(
+            (edge) =>
+                _bestPartition.contains(edge.source) !=
+                _bestPartition.contains(edge.target),
+          )
+          .toList();
 
   /// Returns the weight of the cut vertices.
   num get weight => _bestWeight;
@@ -92,7 +99,10 @@ class StoerWagnerMinCut<V, E> {
       if (vertex == seed) continue;
       final edge = _workingGraph.getEdge(vertex, seed);
       final state = _State<V>(
-          vertex: vertex, weight: edge?.value ?? 0, active: edge != null);
+        vertex: vertex,
+        weight: edge?.value ?? 0,
+        active: edge != null,
+      );
       states[vertex] = state;
       queue.add(state);
     }
@@ -127,9 +137,10 @@ class StoerWagnerMinCut<V, E> {
   }
 
   void _mergeVertices(Set<V> source, Set<V> target) {
-    final merged = vertexStrategy.createSet()
-      ..addAll(source)
-      ..addAll(target);
+    final merged =
+        vertexStrategy.createSet()
+          ..addAll(source)
+          ..addAll(target);
     _workingGraph.addVertex(merged);
     for (final vertex in _workingGraph.vertices) {
       if (source != vertex && target != vertex) {

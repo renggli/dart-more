@@ -43,7 +43,9 @@ extension CollectionGraphFactoryExtension<V, E> on GraphFactory<V, E> {
   /// Creates a [Graph] from start [vertices] and a function [predecessors]
   /// returning its preceding vertices (incoming adjacency).
   Graph<V, E> fromPredecessorFunction(
-      Iterable<V> vertices, Iterable<V> Function(V vertex) predecessors) {
+    Iterable<V> vertices,
+    Iterable<V> Function(V vertex) predecessors,
+  ) {
     final builder = newBuilder();
     final todo = QueueList<V>();
     final seen = vertexStrategy.createSet();
@@ -83,7 +85,9 @@ extension CollectionGraphFactoryExtension<V, E> on GraphFactory<V, E> {
   /// Creates a [Graph] from start [vertices] and a function [successors]
   /// returning its succeeding vertices (outgoing adjacency).
   Graph<V, E> fromSuccessorFunction(
-      Iterable<V> vertices, Iterable<V> Function(V vertex) successors) {
+    Iterable<V> vertices,
+    Iterable<V> Function(V vertex) successors,
+  ) {
     final builder = newBuilder();
     final todo = QueueList<V>();
     final seen = vertexStrategy.createSet();

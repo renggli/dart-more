@@ -82,11 +82,10 @@ Matcher isMatch({
   dynamic sourceStart = anything,
   dynamic targetStart = anything,
   dynamic length = anything,
-}) =>
-    isA<Match>()
-        .having((m) => m.sourceStart, 'sourceStart', sourceStart)
-        .having((m) => m.targetStart, 'targetStart', targetStart)
-        .having((m) => m.length, 'length', length);
+}) => isA<Match>()
+    .having((m) => m.sourceStart, 'sourceStart', sourceStart)
+    .having((m) => m.targetStart, 'targetStart', targetStart)
+    .having((m) => m.length, 'length', length);
 
 Matcher isOperation(
   dynamic type, {
@@ -94,13 +93,12 @@ Matcher isOperation(
   dynamic sourceEnd = anything,
   dynamic targetStart = anything,
   dynamic targetEnd = anything,
-}) =>
-    isA<Operation>()
-        .having((m) => m.type, 'type', type)
-        .having((m) => m.sourceStart, 'sourceStart', sourceStart)
-        .having((m) => m.sourceEnd, 'sourceEnd', sourceEnd)
-        .having((m) => m.targetStart, 'targetStart', targetStart)
-        .having((m) => m.targetEnd, 'targetEnd', targetEnd);
+}) => isA<Operation>()
+    .having((m) => m.type, 'type', type)
+    .having((m) => m.sourceStart, 'sourceStart', sourceStart)
+    .having((m) => m.sourceEnd, 'sourceEnd', sourceEnd)
+    .having((m) => m.targetStart, 'targetStart', targetStart)
+    .having((m) => m.targetEnd, 'targetEnd', targetEnd);
 
 void main() {
   group('sequence matcher', () {
@@ -123,31 +121,45 @@ void main() {
     });
     test('findLongestMatch', () {
       final matcher = SequenceMatcher(
-          source: ' abcd'.split(''), target: 'abcd abcd'.split(''));
-      expect(matcher.findLongestMatch(),
-          isMatch(sourceStart: 0, targetStart: 4, length: 5));
+        source: ' abcd'.split(''),
+        target: 'abcd abcd'.split(''),
+      );
+      expect(
+        matcher.findLongestMatch(),
+        isMatch(sourceStart: 0, targetStart: 4, length: 5),
+      );
     });
     test('findLongestMatch (with junk)', () {
       final matcher = SequenceMatcher(
-          source: '  abcd  '.split(''),
-          target: ' abcd abcd '.split(''),
-          isJunk: (char) => char == ' ');
-      expect(matcher.findLongestMatch(),
-          isMatch(sourceStart: 1, targetStart: 0, length: 6));
+        source: '  abcd  '.split(''),
+        target: ' abcd abcd '.split(''),
+        isJunk: (char) => char == ' ',
+      );
+      expect(
+        matcher.findLongestMatch(),
+        isMatch(sourceStart: 1, targetStart: 0, length: 6),
+      );
     });
     test('findLongestMatch (without match)', () {
-      final matcher =
-          SequenceMatcher(source: 'ab'.split(''), target: 'c'.split(''));
-      expect(matcher.findLongestMatch(),
-          isMatch(sourceStart: 0, targetStart: 0, length: 0));
+      final matcher = SequenceMatcher(
+        source: 'ab'.split(''),
+        target: 'c'.split(''),
+      );
+      expect(
+        matcher.findLongestMatch(),
+        isMatch(sourceStart: 0, targetStart: 0, length: 0),
+      );
     });
     test('match', () {
       const match = Match(sourceStart: 1, targetStart: 2, length: 3);
       const other = Match(sourceStart: 4, targetStart: 5, length: 6);
       expect(
-          match.toString(),
-          endsWith('(sourceStart: 1, targetStart: 2, '
-              'length: 3)'));
+        match.toString(),
+        endsWith(
+          '(sourceStart: 1, targetStart: 2, '
+          'length: 3)',
+        ),
+      );
       expect(match == other, isFalse);
       expect(match == match, isTrue);
       expect(match.hashCode, isNot(other.hashCode));
@@ -156,8 +168,10 @@ void main() {
       expect(match.compareTo(match), 0);
     });
     test('matches', () {
-      final matcher =
-          SequenceMatcher(source: 'abxcd'.split(''), target: 'abcd'.split(''));
+      final matcher = SequenceMatcher(
+        source: 'abxcd'.split(''),
+        target: 'abcd'.split(''),
+      );
       expect(matcher.matches, [
         isMatch(sourceStart: 0, targetStart: 0, length: 2),
         isMatch(sourceStart: 3, targetStart: 2, length: 2),
@@ -165,32 +179,72 @@ void main() {
       ]);
     });
     test('operation', () {
-      const operation = Operation(OperationType.equal,
-          sourceStart: 1, sourceEnd: 2, targetStart: 2, targetEnd: 3);
-      const other = Operation(OperationType.replace,
-          sourceStart: 4, sourceEnd: 5, targetStart: 6, targetEnd: 7);
+      const operation = Operation(
+        OperationType.equal,
+        sourceStart: 1,
+        sourceEnd: 2,
+        targetStart: 2,
+        targetEnd: 3,
+      );
+      const other = Operation(
+        OperationType.replace,
+        sourceStart: 4,
+        sourceEnd: 5,
+        targetStart: 6,
+        targetEnd: 7,
+      );
       expect(
-          operation.toString(),
-          endsWith('sourceStart: 1, sourceEnd: 2, '
-              'targetStart: 2, targetEnd: 3)'));
+        operation.toString(),
+        endsWith(
+          'sourceStart: 1, sourceEnd: 2, '
+          'targetStart: 2, targetEnd: 3)',
+        ),
+      );
       expect(operation == other, isFalse);
       expect(operation == operation, isTrue);
       expect(operation.hashCode, isNot(other.hashCode));
     });
     test('operations', () {
       final matcher = SequenceMatcher(
-          source: 'qabxcd'.split(''), target: 'abycdf'.split(''));
+        source: 'qabxcd'.split(''),
+        target: 'abycdf'.split(''),
+      );
       expect(matcher.operations, [
-        isOperation(OperationType.delete,
-            sourceStart: 0, sourceEnd: 1, targetStart: 0, targetEnd: 0),
-        isOperation(OperationType.equal,
-            sourceStart: 1, sourceEnd: 3, targetStart: 0, targetEnd: 2),
-        isOperation(OperationType.replace,
-            sourceStart: 3, sourceEnd: 4, targetStart: 2, targetEnd: 3),
-        isOperation(OperationType.equal,
-            sourceStart: 4, sourceEnd: 6, targetStart: 3, targetEnd: 5),
-        isOperation(OperationType.insert,
-            sourceStart: 6, sourceEnd: 6, targetStart: 5, targetEnd: 6),
+        isOperation(
+          OperationType.delete,
+          sourceStart: 0,
+          sourceEnd: 1,
+          targetStart: 0,
+          targetEnd: 0,
+        ),
+        isOperation(
+          OperationType.equal,
+          sourceStart: 1,
+          sourceEnd: 3,
+          targetStart: 0,
+          targetEnd: 2,
+        ),
+        isOperation(
+          OperationType.replace,
+          sourceStart: 3,
+          sourceEnd: 4,
+          targetStart: 2,
+          targetEnd: 3,
+        ),
+        isOperation(
+          OperationType.equal,
+          sourceStart: 4,
+          sourceEnd: 6,
+          targetStart: 3,
+          targetEnd: 5,
+        ),
+        isOperation(
+          OperationType.insert,
+          sourceStart: 6,
+          sourceEnd: 6,
+          targetStart: 5,
+          targetEnd: 6,
+        ),
       ]);
     });
     test('groupedOperations', () {
@@ -204,33 +258,88 @@ void main() {
       final matcher = SequenceMatcher(source: source, target: target);
       expect(matcher.groupedOperations(), [
         [
-          isOperation(OperationType.equal,
-              sourceStart: 5, sourceEnd: 8, targetStart: 5, targetEnd: 8),
-          isOperation(OperationType.insert,
-              sourceStart: 8, sourceEnd: 8, targetStart: 8, targetEnd: 9),
-          isOperation(OperationType.equal,
-              sourceStart: 8, sourceEnd: 11, targetStart: 9, targetEnd: 12)
+          isOperation(
+            OperationType.equal,
+            sourceStart: 5,
+            sourceEnd: 8,
+            targetStart: 5,
+            targetEnd: 8,
+          ),
+          isOperation(
+            OperationType.insert,
+            sourceStart: 8,
+            sourceEnd: 8,
+            targetStart: 8,
+            targetEnd: 9,
+          ),
+          isOperation(
+            OperationType.equal,
+            sourceStart: 8,
+            sourceEnd: 11,
+            targetStart: 9,
+            targetEnd: 12,
+          ),
         ],
         [
-          isOperation(OperationType.equal,
-              sourceStart: 16, sourceEnd: 19, targetStart: 17, targetEnd: 20),
-          isOperation(OperationType.replace,
-              sourceStart: 19, sourceEnd: 20, targetStart: 20, targetEnd: 21),
-          isOperation(OperationType.equal,
-              sourceStart: 20, sourceEnd: 22, targetStart: 21, targetEnd: 23),
-          isOperation(OperationType.delete,
-              sourceStart: 22, sourceEnd: 27, targetStart: 23, targetEnd: 23),
-          isOperation(OperationType.equal,
-              sourceStart: 27, sourceEnd: 30, targetStart: 23, targetEnd: 26)
+          isOperation(
+            OperationType.equal,
+            sourceStart: 16,
+            sourceEnd: 19,
+            targetStart: 17,
+            targetEnd: 20,
+          ),
+          isOperation(
+            OperationType.replace,
+            sourceStart: 19,
+            sourceEnd: 20,
+            targetStart: 20,
+            targetEnd: 21,
+          ),
+          isOperation(
+            OperationType.equal,
+            sourceStart: 20,
+            sourceEnd: 22,
+            targetStart: 21,
+            targetEnd: 23,
+          ),
+          isOperation(
+            OperationType.delete,
+            sourceStart: 22,
+            sourceEnd: 27,
+            targetStart: 23,
+            targetEnd: 23,
+          ),
+          isOperation(
+            OperationType.equal,
+            sourceStart: 27,
+            sourceEnd: 30,
+            targetStart: 23,
+            targetEnd: 26,
+          ),
         ],
         [
-          isOperation(OperationType.equal,
-              sourceStart: 31, sourceEnd: 34, targetStart: 27, targetEnd: 30),
-          isOperation(OperationType.replace,
-              sourceStart: 34, sourceEnd: 35, targetStart: 30, targetEnd: 31),
-          isOperation(OperationType.equal,
-              sourceStart: 35, sourceEnd: 38, targetStart: 31, targetEnd: 34)
-        ]
+          isOperation(
+            OperationType.equal,
+            sourceStart: 31,
+            sourceEnd: 34,
+            targetStart: 27,
+            targetEnd: 30,
+          ),
+          isOperation(
+            OperationType.replace,
+            sourceStart: 34,
+            sourceEnd: 35,
+            targetStart: 30,
+            targetEnd: 31,
+          ),
+          isOperation(
+            OperationType.equal,
+            sourceStart: 35,
+            sourceEnd: 38,
+            targetStart: 31,
+            targetEnd: 34,
+          ),
+        ],
       ]);
     });
     test('empty', () {
@@ -238,8 +347,9 @@ void main() {
       expect(matcher.ratio, closeTo(1, epsilon));
       expect(matcher.quickRatio, closeTo(1, epsilon));
       expect(matcher.realQuickRatio, closeTo(1, epsilon));
-      expect(matcher.matches,
-          [isMatch(sourceStart: 0, targetStart: 0, length: 0)]);
+      expect(matcher.matches, [
+        isMatch(sourceStart: 0, targetStart: 0, length: 0),
+      ]);
       expect(matcher.operations, isEmpty);
       expect(matcher.groupedOperations(), isEmpty);
       expect(matcher.targetJunk, isEmpty);
@@ -269,10 +379,20 @@ void main() {
       expect(matcher.quickRatio, closeTo(0.995, epsilon));
       expect(matcher.realQuickRatio, closeTo(0.995, epsilon));
       expect(matcher.operations, [
-        isOperation(OperationType.insert,
-            sourceStart: 0, sourceEnd: 0, targetStart: 0, targetEnd: 1),
-        isOperation(OperationType.equal,
-            sourceStart: 0, sourceEnd: 100, targetStart: 1, targetEnd: 101)
+        isOperation(
+          OperationType.insert,
+          sourceStart: 0,
+          sourceEnd: 0,
+          targetStart: 0,
+          targetEnd: 1,
+        ),
+        isOperation(
+          OperationType.equal,
+          sourceStart: 0,
+          sourceEnd: 100,
+          targetStart: 1,
+          targetEnd: 101,
+        ),
       ]);
       expect(matcher.targetJunk, isEmpty);
       expect(matcher.targetPopular, isEmpty);
@@ -285,12 +405,27 @@ void main() {
       expect(matcher.quickRatio, closeTo(0.995, epsilon));
       expect(matcher.realQuickRatio, closeTo(0.995, epsilon));
       expect(matcher.operations, [
-        isOperation(OperationType.equal,
-            sourceStart: 0, sourceEnd: 50, targetStart: 0, targetEnd: 50),
-        isOperation(OperationType.insert,
-            sourceStart: 50, sourceEnd: 50, targetStart: 50, targetEnd: 51),
-        isOperation(OperationType.equal,
-            sourceStart: 50, sourceEnd: 100, targetStart: 51, targetEnd: 101)
+        isOperation(
+          OperationType.equal,
+          sourceStart: 0,
+          sourceEnd: 50,
+          targetStart: 0,
+          targetEnd: 50,
+        ),
+        isOperation(
+          OperationType.insert,
+          sourceStart: 50,
+          sourceEnd: 50,
+          targetStart: 50,
+          targetEnd: 51,
+        ),
+        isOperation(
+          OperationType.equal,
+          sourceStart: 50,
+          sourceEnd: 100,
+          targetStart: 51,
+          targetEnd: 101,
+        ),
       ]);
       expect(matcher.targetJunk, isEmpty);
       expect(matcher.targetPopular, isEmpty);
@@ -303,10 +438,20 @@ void main() {
       expect(matcher.quickRatio, closeTo(0.995, epsilon));
       expect(matcher.realQuickRatio, closeTo(0.995, epsilon));
       expect(matcher.operations, [
-        isOperation(OperationType.equal,
-            sourceStart: 0, sourceEnd: 100, targetStart: 0, targetEnd: 100),
-        isOperation(OperationType.insert,
-            sourceStart: 100, sourceEnd: 100, targetStart: 100, targetEnd: 101)
+        isOperation(
+          OperationType.equal,
+          sourceStart: 0,
+          sourceEnd: 100,
+          targetStart: 0,
+          targetEnd: 100,
+        ),
+        isOperation(
+          OperationType.insert,
+          sourceStart: 100,
+          sourceEnd: 100,
+          targetStart: 100,
+          targetEnd: 101,
+        ),
       ]);
       expect(matcher.targetJunk, isEmpty);
       expect(matcher.targetPopular, isEmpty);
@@ -321,10 +466,20 @@ void main() {
       expect(matcher.quickRatio, closeTo(0.990, epsilon));
       expect(matcher.realQuickRatio, closeTo(1, epsilon));
       expect(matcher.operations, [
-        isOperation(OperationType.replace,
-            sourceStart: 0, sourceEnd: 1, targetStart: 0, targetEnd: 1),
-        isOperation(OperationType.equal,
-            sourceStart: 1, sourceEnd: 101, targetStart: 1, targetEnd: 101)
+        isOperation(
+          OperationType.replace,
+          sourceStart: 0,
+          sourceEnd: 1,
+          targetStart: 0,
+          targetEnd: 1,
+        ),
+        isOperation(
+          OperationType.equal,
+          sourceStart: 1,
+          sourceEnd: 101,
+          targetStart: 1,
+          targetEnd: 101,
+        ),
       ]);
       expect(matcher.targetJunk, isEmpty);
       expect(matcher.targetPopular, isEmpty);
@@ -337,12 +492,27 @@ void main() {
       expect(matcher.quickRatio, closeTo(0.990, epsilon));
       expect(matcher.realQuickRatio, closeTo(1, epsilon));
       expect(matcher.operations, [
-        isOperation(OperationType.equal,
-            sourceStart: 0, sourceEnd: 50, targetStart: 0, targetEnd: 50),
-        isOperation(OperationType.replace,
-            sourceStart: 50, sourceEnd: 51, targetStart: 50, targetEnd: 51),
-        isOperation(OperationType.equal,
-            sourceStart: 51, sourceEnd: 101, targetStart: 51, targetEnd: 101)
+        isOperation(
+          OperationType.equal,
+          sourceStart: 0,
+          sourceEnd: 50,
+          targetStart: 0,
+          targetEnd: 50,
+        ),
+        isOperation(
+          OperationType.replace,
+          sourceStart: 50,
+          sourceEnd: 51,
+          targetStart: 50,
+          targetEnd: 51,
+        ),
+        isOperation(
+          OperationType.equal,
+          sourceStart: 51,
+          sourceEnd: 101,
+          targetStart: 51,
+          targetEnd: 101,
+        ),
       ]);
       expect(matcher.targetJunk, isEmpty);
       expect(matcher.targetPopular, isEmpty);
@@ -355,10 +525,20 @@ void main() {
       expect(matcher.quickRatio, closeTo(0.990, epsilon));
       expect(matcher.realQuickRatio, closeTo(1, epsilon));
       expect(matcher.operations, [
-        isOperation(OperationType.equal,
-            sourceStart: 0, sourceEnd: 100, targetStart: 0, targetEnd: 100),
-        isOperation(OperationType.replace,
-            sourceStart: 100, sourceEnd: 101, targetStart: 100, targetEnd: 101)
+        isOperation(
+          OperationType.equal,
+          sourceStart: 0,
+          sourceEnd: 100,
+          targetStart: 0,
+          targetEnd: 100,
+        ),
+        isOperation(
+          OperationType.replace,
+          sourceStart: 100,
+          sourceEnd: 101,
+          targetStart: 100,
+          targetEnd: 101,
+        ),
       ]);
       expect(matcher.targetJunk, isEmpty);
       expect(matcher.targetPopular, isEmpty);
@@ -373,10 +553,20 @@ void main() {
       expect(matcher.quickRatio, closeTo(0.995, epsilon));
       expect(matcher.realQuickRatio, closeTo(0.995, epsilon));
       expect(matcher.operations, [
-        isOperation(OperationType.delete,
-            sourceStart: 0, sourceEnd: 1, targetStart: 0, targetEnd: 0),
-        isOperation(OperationType.equal,
-            sourceStart: 1, sourceEnd: 101, targetStart: 0, targetEnd: 100)
+        isOperation(
+          OperationType.delete,
+          sourceStart: 0,
+          sourceEnd: 1,
+          targetStart: 0,
+          targetEnd: 0,
+        ),
+        isOperation(
+          OperationType.equal,
+          sourceStart: 1,
+          sourceEnd: 101,
+          targetStart: 0,
+          targetEnd: 100,
+        ),
       ]);
       expect(matcher.targetJunk, isEmpty);
       expect(matcher.targetPopular, isEmpty);
@@ -389,12 +579,27 @@ void main() {
       expect(matcher.quickRatio, closeTo(0.995, epsilon));
       expect(matcher.realQuickRatio, closeTo(0.995, epsilon));
       expect(matcher.operations, [
-        isOperation(OperationType.equal,
-            sourceStart: 0, sourceEnd: 50, targetStart: 0, targetEnd: 50),
-        isOperation(OperationType.delete,
-            sourceStart: 50, sourceEnd: 51, targetStart: 50, targetEnd: 50),
-        isOperation(OperationType.equal,
-            sourceStart: 51, sourceEnd: 101, targetStart: 50, targetEnd: 100)
+        isOperation(
+          OperationType.equal,
+          sourceStart: 0,
+          sourceEnd: 50,
+          targetStart: 0,
+          targetEnd: 50,
+        ),
+        isOperation(
+          OperationType.delete,
+          sourceStart: 50,
+          sourceEnd: 51,
+          targetStart: 50,
+          targetEnd: 50,
+        ),
+        isOperation(
+          OperationType.equal,
+          sourceStart: 51,
+          sourceEnd: 101,
+          targetStart: 50,
+          targetEnd: 100,
+        ),
       ]);
       expect(matcher.targetJunk, isEmpty);
       expect(matcher.targetPopular, isEmpty);
@@ -407,10 +612,20 @@ void main() {
       expect(matcher.quickRatio, closeTo(0.995, epsilon));
       expect(matcher.realQuickRatio, closeTo(0.995, epsilon));
       expect(matcher.operations, [
-        isOperation(OperationType.equal,
-            sourceStart: 0, sourceEnd: 100, targetStart: 0, targetEnd: 100),
-        isOperation(OperationType.insert,
-            sourceStart: 100, sourceEnd: 100, targetStart: 100, targetEnd: 101)
+        isOperation(
+          OperationType.equal,
+          sourceStart: 0,
+          sourceEnd: 100,
+          targetStart: 0,
+          targetEnd: 100,
+        ),
+        isOperation(
+          OperationType.insert,
+          sourceStart: 100,
+          sourceEnd: 100,
+          targetStart: 100,
+          targetEnd: 101,
+        ),
       ]);
       expect(matcher.targetJunk, isEmpty);
       expect(matcher.targetPopular, isEmpty);
@@ -420,22 +635,31 @@ void main() {
     test('no junk', () {
       final a = [...repeat('a', count: 5), ...repeat('b', count: 5)];
       final b = [...repeat('a', count: 5), ...repeat('b', count: 5)];
-      final matcher =
-          SequenceMatcher(source: a, target: b, isJunk: (char) => false);
+      final matcher = SequenceMatcher(
+        source: a,
+        target: b,
+        isJunk: (char) => false,
+      );
       expect(matcher.targetJunk, isEmpty);
     });
     test('some junk', () {
       final a = [...repeat('a', count: 5), ...repeat('b', count: 5)];
       final b = [...repeat('a', count: 5), ...repeat('b', count: 5)];
-      final matcher =
-          SequenceMatcher(source: a, target: b, isJunk: {'a'}.contains);
+      final matcher = SequenceMatcher(
+        source: a,
+        target: b,
+        isJunk: {'a'}.contains,
+      );
       expect(matcher.targetJunk, {'a'});
     });
     test('all junk', () {
       final a = [...repeat('a', count: 5), ...repeat('b', count: 5)];
       final b = [...repeat('a', count: 5), ...repeat('b', count: 5)];
-      final matcher =
-          SequenceMatcher(source: a, target: b, isJunk: {'a', 'b'}.contains);
+      final matcher = SequenceMatcher(
+        source: a,
+        target: b,
+        isJunk: {'a', 'b'}.contains,
+      );
       expect(matcher.targetJunk, {'a', 'b'});
     });
   });
@@ -455,8 +679,10 @@ void main() {
   });
   group('closeMatches', () {
     test('basic', () {
-      expect(['ape', 'apple', 'peach', 'puppy'].closeMatches('appel'),
-          ['apple', 'ape']);
+      expect(['ape', 'apple', 'peach', 'puppy'].closeMatches('appel'), [
+        'apple',
+        'ape',
+      ]);
     });
     test('keywords', () {
       final keywords = 'abstract as assert async await base break case catch '
@@ -476,84 +702,99 @@ void main() {
     final differ = ContextDiffer();
     test('empty', () {
       expect(
-          differ.compareStrings('', '',
-              sourceLabel: 'original', targetLabel: 'current'),
-          ['*** original', '--- current']);
+        differ.compareStrings(
+          '',
+          '',
+          sourceLabel: 'original',
+          targetLabel: 'current',
+        ),
+        ['*** original', '--- current'],
+      );
     });
     test('python', () {
       expect(
-          differ.compareLines(pythonSource, pythonTarget,
-              sourceLabel: 'original', targetLabel: 'current'),
-          [
-            '*** original',
-            '--- current',
-            '***************',
-            '*** 1,4 ****',
-            '  1. Beautiful is better than ugly.',
-            '! 2. Explicit is better than implicit.',
-            '! 3. Simple is better than complex.',
-            '! 4. Complex is better than complicated.',
-            '--- 1,4 ----',
-            '  1. Beautiful is better than ugly.',
-            '! 3.   Simple is better than complex.',
-            '! 4. Complicated is better than complex.',
-            '! 5. Flat is better than nested.',
-          ]);
+        differ.compareLines(
+          pythonSource,
+          pythonTarget,
+          sourceLabel: 'original',
+          targetLabel: 'current',
+        ),
+        [
+          '*** original',
+          '--- current',
+          '***************',
+          '*** 1,4 ****',
+          '  1. Beautiful is better than ugly.',
+          '! 2. Explicit is better than implicit.',
+          '! 3. Simple is better than complex.',
+          '! 4. Complex is better than complicated.',
+          '--- 1,4 ----',
+          '  1. Beautiful is better than ugly.',
+          '! 3.   Simple is better than complex.',
+          '! 4. Complicated is better than complex.',
+          '! 5. Flat is better than nested.',
+        ],
+      );
     });
     test('wikipedia', () {
       expect(
-          differ.compareLines(wikipediaSource, wikipediaTarget,
-              sourceLabel: 'original', targetLabel: 'current'),
-          [
-            '*** original',
-            '--- current',
-            '***************',
-            '*** 1,3 ****',
-            '--- 1,9 ----',
-            '+ This is an important',
-            '+ notice! It should',
-            '+ therefore be located at',
-            '+ the beginning of this',
-            '+ document!',
-            '+ ',
-            '  This part of the',
-            '  document has stayed the',
-            '  same from version to',
-            '***************',
-            '*** 8,20 ****',
-            '  compress the size of the',
-            '  changes.',
-            '  ',
-            '- This paragraph contains',
-            '- text that is outdated.',
-            '- It will be deleted in the',
-            '- near future.',
-            '- ',
-            '  It is important to spell',
-            '! check this dokument. On',
-            '  the other hand, a',
-            '  misspelled word isn\'t',
-            '  the end of the world.',
-            '--- 14,21 ----',
-            '  compress the size of the',
-            '  changes.',
-            '  ',
-            '  It is important to spell',
-            '! check this document. On',
-            '  the other hand, a',
-            '  misspelled word isn\'t',
-            '  the end of the world.',
-            '***************',
-            '*** 22,24 ****',
-            '--- 23,29 ----',
-            '  this paragraph needs to',
-            '  be changed. Things can',
-            '  be added after it.',
-            '+ ',
-            '+ This paragraph contains',
-            '+ important new additions',
-            '+ to this document.',
-          ]);
+        differ.compareLines(
+          wikipediaSource,
+          wikipediaTarget,
+          sourceLabel: 'original',
+          targetLabel: 'current',
+        ),
+        [
+          '*** original',
+          '--- current',
+          '***************',
+          '*** 1,3 ****',
+          '--- 1,9 ----',
+          '+ This is an important',
+          '+ notice! It should',
+          '+ therefore be located at',
+          '+ the beginning of this',
+          '+ document!',
+          '+ ',
+          '  This part of the',
+          '  document has stayed the',
+          '  same from version to',
+          '***************',
+          '*** 8,20 ****',
+          '  compress the size of the',
+          '  changes.',
+          '  ',
+          '- This paragraph contains',
+          '- text that is outdated.',
+          '- It will be deleted in the',
+          '- near future.',
+          '- ',
+          '  It is important to spell',
+          '! check this dokument. On',
+          '  the other hand, a',
+          '  misspelled word isn\'t',
+          '  the end of the world.',
+          '--- 14,21 ----',
+          '  compress the size of the',
+          '  changes.',
+          '  ',
+          '  It is important to spell',
+          '! check this document. On',
+          '  the other hand, a',
+          '  misspelled word isn\'t',
+          '  the end of the world.',
+          '***************',
+          '*** 22,24 ****',
+          '--- 23,29 ----',
+          '  this paragraph needs to',
+          '  be changed. Things can',
+          '  be added after it.',
+          '+ ',
+          '+ This paragraph contains',
+          '+ important new additions',
+          '+ to this document.',
+        ],
+      );
     });
   });
   group('default differ', () {
@@ -665,68 +906,83 @@ void main() {
     final differ = UnifiedDiffer();
     test('empty', () {
       expect(
-          differ.compareLines([], [],
-              sourceLabel: 'original', targetLabel: 'current'),
-          ['--- original', '+++ current']);
+        differ.compareLines(
+          [],
+          [],
+          sourceLabel: 'original',
+          targetLabel: 'current',
+        ),
+        ['--- original', '+++ current'],
+      );
     });
     test('python', () {
       expect(
-          differ.compareLines(pythonSource, pythonTarget,
-              sourceLabel: 'original', targetLabel: 'current'),
-          [
-            '--- original',
-            '+++ current',
-            '@@ -1,4 +1,4 @@',
-            ' 1. Beautiful is better than ugly.',
-            '-2. Explicit is better than implicit.',
-            '-3. Simple is better than complex.',
-            '-4. Complex is better than complicated.',
-            '+3.   Simple is better than complex.',
-            '+4. Complicated is better than complex.',
-            '+5. Flat is better than nested.',
-          ]);
+        differ.compareLines(
+          pythonSource,
+          pythonTarget,
+          sourceLabel: 'original',
+          targetLabel: 'current',
+        ),
+        [
+          '--- original',
+          '+++ current',
+          '@@ -1,4 +1,4 @@',
+          ' 1. Beautiful is better than ugly.',
+          '-2. Explicit is better than implicit.',
+          '-3. Simple is better than complex.',
+          '-4. Complex is better than complicated.',
+          '+3.   Simple is better than complex.',
+          '+4. Complicated is better than complex.',
+          '+5. Flat is better than nested.',
+        ],
+      );
     });
     test('wikipedia', () {
       expect(
-          differ.compareLines(wikipediaSource, wikipediaTarget,
-              sourceLabel: 'original', targetLabel: 'current'),
-          [
-            '--- original',
-            '+++ current',
-            '@@ -1,3 +1,9 @@',
-            '+This is an important',
-            '+notice! It should',
-            '+therefore be located at',
-            '+the beginning of this',
-            '+document!',
-            '+',
-            ' This part of the',
-            ' document has stayed the',
-            ' same from version to',
-            '@@ -8,13 +14,8 @@',
-            ' compress the size of the',
-            ' changes.',
-            ' ',
-            '-This paragraph contains',
-            '-text that is outdated.',
-            '-It will be deleted in the',
-            '-near future.',
-            '-',
-            ' It is important to spell',
-            '-check this dokument. On',
-            '+check this document. On',
-            ' the other hand, a',
-            ' misspelled word isn\'t',
-            ' the end of the world.',
-            '@@ -22,3 +23,7 @@',
-            ' this paragraph needs to',
-            ' be changed. Things can',
-            ' be added after it.',
-            '+',
-            '+This paragraph contains',
-            '+important new additions',
-            '+to this document.',
-          ]);
+        differ.compareLines(
+          wikipediaSource,
+          wikipediaTarget,
+          sourceLabel: 'original',
+          targetLabel: 'current',
+        ),
+        [
+          '--- original',
+          '+++ current',
+          '@@ -1,3 +1,9 @@',
+          '+This is an important',
+          '+notice! It should',
+          '+therefore be located at',
+          '+the beginning of this',
+          '+document!',
+          '+',
+          ' This part of the',
+          ' document has stayed the',
+          ' same from version to',
+          '@@ -8,13 +14,8 @@',
+          ' compress the size of the',
+          ' changes.',
+          ' ',
+          '-This paragraph contains',
+          '-text that is outdated.',
+          '-It will be deleted in the',
+          '-near future.',
+          '-',
+          ' It is important to spell',
+          '-check this dokument. On',
+          '+check this document. On',
+          ' the other hand, a',
+          ' misspelled word isn\'t',
+          ' the end of the world.',
+          '@@ -22,3 +23,7 @@',
+          ' this paragraph needs to',
+          ' be changed. Things can',
+          ' be added after it.',
+          '+',
+          '+This paragraph contains',
+          '+important new additions',
+          '+to this document.',
+        ],
+      );
     });
   });
 }

@@ -12,8 +12,10 @@ extension SearchComparator<T> on Comparator<T> {
       final mid = min + ((max - min) >> 1);
       final comp = this(list[mid], value);
       if (comp == 0) {
-        assert(start <= mid && mid <= end,
-            'Index $mid not in inclusive range $start..$end');
+        assert(
+          start <= mid && mid <= end,
+          'Index $mid not in inclusive range $start..$end',
+        );
         return mid;
       } else if (comp < 0) {
         min = mid + 1;
@@ -42,8 +44,10 @@ extension SearchComparator<T> on Comparator<T> {
         max = mid;
       }
     }
-    assert(start <= min && min <= end,
-        'Index $min not in inclusive range $start..$end');
+    assert(
+      start <= min && min <= end,
+      'Index $min not in inclusive range $start..$end',
+    );
     return min;
   }
 
@@ -65,8 +69,10 @@ extension SearchComparator<T> on Comparator<T> {
         max = mid;
       }
     }
-    assert(start <= min && min <= end,
-        'Index $min not in inclusive range $start..$end');
+    assert(
+      start <= min && min <= end,
+      'Index $min not in inclusive range $start..$end',
+    );
     return min;
   }
 }

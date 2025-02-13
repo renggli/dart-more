@@ -12,7 +12,8 @@ import 'package:test/test.dart';
 const standardString = Printer<String>.standard();
 const standardInt = Printer<int>.standard();
 
-const lorem = 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce '
+const lorem =
+    'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce '
     'euismod varius nisi ac vulputate. Suspendisse potenti. Donec nisi eros, '
     'venenatis et tristique mollis, pretium luctus tortor. In id ipsum diam. '
     'Nulla turpis odio, faucibus id egestas iaculis, lacinia a est. Aliquam ut '
@@ -122,10 +123,11 @@ void main() {
     test('toString', () {
       const printer = SignNumberPrinter<num>.negativeAndPositiveSign();
       expect(
-          printer.toString(),
-          'SignNumberPrinter<num>('
-          'negative: LiteralPrinter<Never>(value: -), '
-          'positive: LiteralPrinter<Never>(value: +))');
+        printer.toString(),
+        'SignNumberPrinter<num>('
+        'negative: LiteralPrinter<Never>(value: -), '
+        'positive: LiteralPrinter<Never>(value: +))',
+      );
     });
   });
   group('fixed', () {
@@ -143,7 +145,9 @@ void main() {
       });
       test('characters', () {
         final printer = FixedNumberPrinter<int>(
-            base: 16, characters: '0123456789ABCDEF'.split(''));
+          base: 16,
+          characters: '0123456789ABCDEF'.split(''),
+        );
         expect(printer(1234), '4D2');
         expect(printer(123123), '1E0F3');
       });
@@ -158,20 +162,28 @@ void main() {
         expect(printer(1234567), '1.234.567');
       });
       test('separator width', () {
-        final printer =
-            FixedNumberPrinter<int>(base: 2, separator: '_', separatorWidth: 8);
+        final printer = FixedNumberPrinter<int>(
+          base: 2,
+          separator: '_',
+          separatorWidth: 8,
+        );
         expect(printer(1234), '100_11010010');
         expect(printer(1234567), '10010_11010110_10000111');
       });
       test('separator offset', () {
         final printer = FixedNumberPrinter<int>(
-            base: 8, separator: '*', separatorWidth: 4, separatorOffset: 2);
+          base: 8,
+          separator: '*',
+          separatorWidth: 4,
+          separatorOffset: 2,
+        );
         expect(printer(1234), '23*22');
         expect(printer(1234567), '4*5532*07');
       });
       test('sign', () {
         final printer = FixedNumberPrinter<int>(
-            sign: const SignNumberPrinter<int>.negativeAndPositiveSign());
+          sign: const SignNumberPrinter<int>.negativeAndPositiveSign(),
+        );
         expect(printer(0), '+0');
         expect(printer(1234), '+1234');
         expect(printer(-1234), '-1234');
@@ -222,25 +234,29 @@ void main() {
         expect(printer(double.nan), 'Not a Number');
       });
       test('separator', () {
-        final printer =
-            FixedNumberPrinter<double>(precision: 8, separator: '!');
+        final printer = FixedNumberPrinter<double>(
+          precision: 8,
+          separator: '!',
+        );
         expect(printer(12345.0), '12!345.000!000!00');
         expect(printer(0.6789), '0.678!900!00');
       });
       test('separator width and offset', () {
         final printer = FixedNumberPrinter<double>(
-            base: 2,
-            precision: 16,
-            separator: '_',
-            separatorWidth: 8,
-            separatorOffset: 4);
+          base: 2,
+          precision: 16,
+          separator: '_',
+          separatorWidth: 8,
+          separatorOffset: 4,
+        );
         expect(printer(12345.0), '11_00000011_1001.0000_00000000_0000');
         expect(printer(0.6789), '0.1010_11011100_1100');
       });
       test('sign', () {
         final printer = FixedNumberPrinter<double>(
-            precision: 1,
-            sign: const SignNumberPrinter<double>.negativeAndPositiveSign());
+          precision: 1,
+          sign: const SignNumberPrinter<double>.negativeAndPositiveSign(),
+        );
         expect(printer(-1), '-1.0');
         expect(printer(0), '+0.0');
         expect(printer(1), '+1.0');
@@ -322,12 +338,21 @@ void main() {
       for (final MapEntry(key: name, value: characters)
           in allNumeralSystems.entries) {
         test(name, () {
-          expect(characters, hasLength(greaterThanOrEqualTo(10)),
-              reason: 'Expect numeral systems to support base 10.');
-          expect(characters, everyElement(hasLength(greaterThanOrEqualTo(1))),
-              reason: 'Expect each digit to not be empty.');
+          expect(
+            characters,
+            hasLength(greaterThanOrEqualTo(10)),
+            reason: 'Expect numeral systems to support base 10.',
+          );
+          expect(
+            characters,
+            everyElement(hasLength(greaterThanOrEqualTo(1))),
+            reason: 'Expect each digit to not be empty.',
+          );
           final printer = FixedNumberPrinter<num>(
-              characters: characters, base: characters.length, precision: 10);
+            characters: characters,
+            base: characters.length,
+            precision: 10,
+          );
           expect(printer(pi), hasLength(greaterThanOrEqualTo(12)));
         });
       }
@@ -364,7 +389,9 @@ void main() {
     });
     test('characters', () {
       final printer = ScientificNumberPrinter(
-          base: 16, characters: '0123456789ABCDEF'.split(''));
+        base: 16,
+        characters: '0123456789ABCDEF'.split(''),
+      );
       expect(printer(0), '0.000e0');
       expect(printer(2), '2.000e0');
       expect(printer(300), '1.2C0e2');
@@ -400,7 +427,8 @@ void main() {
     });
     test('exponentSign', () {
       final printer = ScientificNumberPrinter(
-          exponentSign: const SignNumberPrinter.negativeAndPositiveSign());
+        exponentSign: const SignNumberPrinter.negativeAndPositiveSign(),
+      );
       expect(printer(0), '0.000e+0');
       expect(printer(2), '2.000e+0');
       expect(printer(300), '3.000e+2');
@@ -436,7 +464,8 @@ void main() {
     });
     test('mantissaSign', () {
       final printer = ScientificNumberPrinter(
-          mantissaSign: const SignNumberPrinter.negativeAndPositiveSign());
+        mantissaSign: const SignNumberPrinter.negativeAndPositiveSign(),
+      );
       expect(printer(0), '+0.000e0');
       expect(printer(2), '+2.000e0');
       expect(printer(300), '+3.000e2');
@@ -480,8 +509,11 @@ void main() {
       expect(printer(0.00000000751), '7.510000e-9');
     });
     test('separator', () {
-      final printer =
-          ScientificNumberPrinter(precision: 4, separator: ',', significant: 4);
+      final printer = ScientificNumberPrinter(
+        precision: 4,
+        separator: ',',
+        significant: 4,
+      );
       expect(printer(0), '0.000,0e0');
       expect(printer(2), '2,000.000,0e-3');
       expect(printer(300), '3,000.000,0e-1');
@@ -493,12 +525,13 @@ void main() {
     });
     test('separator with width and offset', () {
       final printer = ScientificNumberPrinter(
-          base: 2,
-          precision: 8,
-          significant: 4,
-          separator: '_',
-          separatorWidth: 4,
-          separatorOffset: 2);
+        base: 2,
+        precision: 8,
+        significant: 4,
+        separator: '_',
+        separatorWidth: 4,
+        separatorOffset: 2,
+      );
       expect(printer(0), '0.00_0000_00e0');
       expect(printer(2), '10_00.00_0000_00e-10');
       expect(printer(300), '10_01.01_1000_00e1_01');
@@ -585,8 +618,10 @@ void main() {
         expect(printer(1855425871872), '1.9 T');
       });
       test('unitPrecision', () {
-        final printer =
-            HumanNumberPrinter.decimal(precision: 2, unitPrecision: 1);
+        final printer = HumanNumberPrinter.decimal(
+          precision: 2,
+          unitPrecision: 1,
+        );
         expect(printer(0), '0.0');
         expect(printer(27), '27.0');
         expect(printer(999), '999.0');
@@ -675,8 +710,10 @@ void main() {
         expect(printer(1855425871872), '1.7 Ti');
       });
       test('unitPrecision', () {
-        final printer =
-            HumanNumberPrinter.binary(precision: 2, unitPrecision: 1);
+        final printer = HumanNumberPrinter.binary(
+          precision: 2,
+          unitPrecision: 1,
+        );
         expect(printer(0), '0.0');
         expect(printer(27), '27.0');
         expect(printer(999), '999.0');
@@ -754,10 +791,11 @@ void main() {
     });
     test('dateTime', () {
       final printer = DateTimePrinter.dateTime(
-          dateSeparator: '.',
-          timeSeparator: '.',
-          dateTimeSeparator: ' ',
-          microseconds: false);
+        dateSeparator: '.',
+        timeSeparator: '.',
+        dateTimeSeparator: ' ',
+        microseconds: false,
+      );
       expect(dateTimes.map(printer.print), [
         '0000.01.01 00.00.00.000',
         '1980.11.06 08.25.00.000',
@@ -796,8 +834,12 @@ void main() {
       });
       test('width: 6', () {
         final printer = DateTimePrinter((builder) => builder.year(width: 6));
-        expect(dateTimes.map(printer.print),
-            ['000000', '001980', '001969', '002023']);
+        expect(dateTimes.map(printer.print), [
+          '000000',
+          '001980',
+          '001969',
+          '002023',
+        ]);
       });
     });
     group('quarter', () {
@@ -807,8 +849,9 @@ void main() {
       });
       test('names', () {
         final names = ['Q1', 'Q2', 'Q3', 'Q4'];
-        final printer =
-            DateTimePrinter((builder) => builder.quarter(names: names));
+        final printer = DateTimePrinter(
+          (builder) => builder.quarter(names: names),
+        );
         expect(dateTimes.map(printer.print), ['Q1', 'Q4', 'Q3', 'Q4']);
       });
     });
@@ -823,8 +866,9 @@ void main() {
       });
       test('names', () {
         final names = 'JFMAMJJASOND'.split('');
-        final printer =
-            DateTimePrinter((builder) => builder.month(names: names));
+        final printer = DateTimePrinter(
+          (builder) => builder.month(names: names),
+        );
         expect(dateTimes.map(printer.print), ['J', 'N', 'J', 'O']);
       });
     });
@@ -835,8 +879,9 @@ void main() {
       });
       test('names', () {
         final names = 'MTWTFSS'.split('');
-        final printer =
-            DateTimePrinter((builder) => builder.weekday(names: names));
+        final printer = DateTimePrinter(
+          (builder) => builder.weekday(names: names),
+        );
         expect(dateTimes.map(printer.print), ['S', 'T', 'S', 'T']);
       });
     });
@@ -846,8 +891,9 @@ void main() {
         expect(dateTimes.map(printer.print), ['52', '45', '29', '43']);
       });
       test('width: 2', () {
-        final printer =
-            DateTimePrinter((builder) => builder.weekNumber(width: 2));
+        final printer = DateTimePrinter(
+          (builder) => builder.weekNumber(width: 2),
+        );
         expect(dateTimes.map(printer.print), ['52', '45', '29', '43']);
       });
     });
@@ -867,8 +913,9 @@ void main() {
         expect(dateTimes.map(printer.print), ['1', '311', '201', '297']);
       });
       test('width: 3', () {
-        final printer =
-            DateTimePrinter((builder) => builder.dayOfYear(width: 3));
+        final printer = DateTimePrinter(
+          (builder) => builder.dayOfYear(width: 3),
+        );
         expect(dateTimes.map(printer.print), ['001', '311', '201', '297']);
       });
     });
@@ -924,8 +971,9 @@ void main() {
         expect(dateTimes.map(printer.print), ['000', '000', '012', '271']);
       });
       test('width: 2', () {
-        final printer =
-            DateTimePrinter((builder) => builder.millisecond(width: 2));
+        final printer = DateTimePrinter(
+          (builder) => builder.millisecond(width: 2),
+        );
         expect(dateTimes.map(printer.print), ['00', '00', '01', '27']);
       });
     });
@@ -935,13 +983,15 @@ void main() {
         expect(dateTimes.map(printer.print), ['000', '000', '000', '828']);
       });
       test('width: 2', () {
-        final printer =
-            DateTimePrinter((builder) => builder.microsecond(width: 2));
+        final printer = DateTimePrinter(
+          (builder) => builder.microsecond(width: 2),
+        );
         expect(dateTimes.map(printer.print), ['00', '00', '00', '82']);
       });
       test('skipIfZero', () {
-        final printer =
-            DateTimePrinter((builder) => builder.microsecond(skipIfZero: true));
+        final printer = DateTimePrinter(
+          (builder) => builder.microsecond(skipIfZero: true),
+        );
         expect(dateTimes.map(printer.print), ['', '', '', '828']);
       });
     });
@@ -962,8 +1012,10 @@ void main() {
     ];
     test('dart', () {
       final printer = DurationPrinter.dart();
-      expect(durations.map(printer.print),
-          durations.map((duration) => duration.toString()));
+      expect(
+        durations.map(printer.print),
+        durations.map((duration) => duration.toString()),
+      );
     });
     test('iso8691', () {
       final printer = DurationPrinter.iso8601();
@@ -983,18 +1035,30 @@ void main() {
         expect(durations.map(printer.print), ['', '', '', '', '', '', '-']);
       });
       test('custom', () {
-        final printer = DurationPrinter((builder) =>
-            builder.sign(const SignNumberPrinter.negativeAndPositiveSign()));
-        expect(
-            durations.map(printer.print), ['+', '+', '+', '+', '+', '+', '-']);
+        final printer = DurationPrinter(
+          (builder) =>
+              builder.sign(const SignNumberPrinter.negativeAndPositiveSign()),
+        );
+        expect(durations.map(printer.print), [
+          '+',
+          '+',
+          '+',
+          '+',
+          '+',
+          '+',
+          '-',
+        ]);
       });
     });
     group('part', () {
       test('default', () {
-        final printer = DurationPrinter((builder) => builder
-          ..part(TimeUnit.day)
-          ..literal('*')
-          ..part(TimeUnit.minute));
+        final printer = DurationPrinter(
+          (builder) =>
+              builder
+                ..part(TimeUnit.day)
+                ..literal('*')
+                ..part(TimeUnit.minute),
+        );
         expect(durations.map(printer.print), [
           '0*0',
           '12345*0',
@@ -1006,10 +1070,13 @@ void main() {
         ]);
       });
       test('skipIfZero', () {
-        final printer = DurationPrinter((builder) => builder
-          ..part(TimeUnit.day, skipIfZero: true)
-          ..literal('*')
-          ..part(TimeUnit.minute, skipIfZero: true));
+        final printer = DurationPrinter(
+          (builder) =>
+              builder
+                ..part(TimeUnit.day, skipIfZero: true)
+                ..literal('*')
+                ..part(TimeUnit.minute, skipIfZero: true),
+        );
         expect(durations.map(printer.print), [
           '*',
           '12345*',
@@ -1021,10 +1088,13 @@ void main() {
         ]);
       });
       test('absoluteValue', () {
-        final printer = DurationPrinter((builder) => builder
-          ..part(TimeUnit.day, absoluteValue: false)
-          ..literal('*')
-          ..part(TimeUnit.minute, absoluteValue: false));
+        final printer = DurationPrinter(
+          (builder) =>
+              builder
+                ..part(TimeUnit.day, absoluteValue: false)
+                ..literal('*')
+                ..part(TimeUnit.minute, absoluteValue: false),
+        );
         expect(durations.map(printer.print), [
           '0*0',
           '12345*0',
@@ -1032,14 +1102,16 @@ void main() {
           '1*617',
           '0*70',
           '1*93',
-          '-2*-184'
+          '-2*-184',
         ]);
       });
     });
     group('full', () {
       test('default', () {
-        final printer = DurationPrinter((builder) =>
-            builder.full(TimeUnit.day, FixedNumberPrinter(precision: 6)));
+        final printer = DurationPrinter(
+          (builder) =>
+              builder.full(TimeUnit.day, FixedNumberPrinter(precision: 6)),
+        );
         expect(durations.map(printer.print), [
           '0.000000',
           '12345.000000',
@@ -1051,9 +1123,13 @@ void main() {
         ]);
       });
       test('skipIfZero', () {
-        final printer = DurationPrinter((builder) => builder.full(
-            TimeUnit.day, FixedNumberPrinter(precision: 6),
-            skipIfZero: true));
+        final printer = DurationPrinter(
+          (builder) => builder.full(
+            TimeUnit.day,
+            FixedNumberPrinter(precision: 6),
+            skipIfZero: true,
+          ),
+        );
         expect(durations.map(printer.print), [
           '',
           '12345.000000',
@@ -1065,9 +1141,13 @@ void main() {
         ]);
       });
       test('absoluteValue', () {
-        final printer = DurationPrinter((builder) => builder.full(
-            TimeUnit.day, FixedNumberPrinter(precision: 6),
-            absoluteValue: true));
+        final printer = DurationPrinter(
+          (builder) => builder.full(
+            TimeUnit.day,
+            FixedNumberPrinter(precision: 6),
+            absoluteValue: true,
+          ),
+        );
         expect(durations.map(printer.print), [
           '0.000000',
           '12345.000000',
@@ -1229,34 +1309,46 @@ void main() {
       });
       test('on characters', () {
         for (var i = 0; i <= lorem.length; i++) {
-          final printer =
-              standardString.truncateLeft(i, method: TruncateMethod.characters);
+          final printer = standardString.truncateLeft(
+            i,
+            method: TruncateMethod.characters,
+          );
           final result = printer(lorem);
           expect(
-              result, anyOf(isEmpty, startsWith('…'), hasLength(lorem.length)),
-              reason: result);
+            result,
+            anyOf(isEmpty, startsWith('…'), hasLength(lorem.length)),
+            reason: result,
+          );
           expect(result.length, lessThanOrEqualTo(i), reason: result);
         }
       });
       test('on words', () {
         for (var i = 0; i <= lorem.length; i++) {
-          final printer =
-              standardString.truncateLeft(i, method: TruncateMethod.words);
+          final printer = standardString.truncateLeft(
+            i,
+            method: TruncateMethod.words,
+          );
           final result = printer(lorem);
           expect(
-              result, anyOf(isEmpty, startsWith('…'), hasLength(lorem.length)),
-              reason: result);
+            result,
+            anyOf(isEmpty, startsWith('…'), hasLength(lorem.length)),
+            reason: result,
+          );
           expect(result.length, lessThanOrEqualTo(i), reason: result);
         }
       });
       test('on sentences', () {
         for (var i = 0; i <= lorem.length; i++) {
-          final printer =
-              standardString.truncateLeft(i, method: TruncateMethod.sentences);
+          final printer = standardString.truncateLeft(
+            i,
+            method: TruncateMethod.sentences,
+          );
           final result = printer(lorem);
           expect(
-              result, anyOf(isEmpty, startsWith('…'), hasLength(lorem.length)),
-              reason: result);
+            result,
+            anyOf(isEmpty, startsWith('…'), hasLength(lorem.length)),
+            reason: result,
+          );
           expect(result.length, lessThanOrEqualTo(i), reason: result);
         }
       });
@@ -1289,34 +1381,49 @@ void main() {
       });
       test('on characters', () {
         for (var i = 0; i <= lorem.length; i++) {
-          final printer = standardString.truncateRight(i,
-              method: TruncateMethod.characters);
+          final printer = standardString.truncateRight(
+            i,
+            method: TruncateMethod.characters,
+          );
           final result = printer(lorem);
           expect(lorem, startsWith(result.removeSuffix('…')));
-          expect(result, anyOf(isEmpty, endsWith('…'), hasLength(lorem.length)),
-              reason: result);
+          expect(
+            result,
+            anyOf(isEmpty, endsWith('…'), hasLength(lorem.length)),
+            reason: result,
+          );
           expect(result.length, lessThanOrEqualTo(i), reason: result);
         }
       });
       test('on words', () {
         for (var i = 0; i <= lorem.length; i++) {
-          final printer =
-              standardString.truncateRight(i, method: TruncateMethod.words);
+          final printer = standardString.truncateRight(
+            i,
+            method: TruncateMethod.words,
+          );
           final result = printer(lorem);
           expect(lorem, startsWith(result.removeSuffix('…')));
-          expect(result, anyOf(isEmpty, endsWith('…'), hasLength(lorem.length)),
-              reason: result);
+          expect(
+            result,
+            anyOf(isEmpty, endsWith('…'), hasLength(lorem.length)),
+            reason: result,
+          );
           expect(result.length, lessThanOrEqualTo(i), reason: result);
         }
       });
       test('on sentences', () {
         for (var i = 0; i <= lorem.length; i++) {
-          final printer =
-              standardString.truncateRight(i, method: TruncateMethod.sentences);
+          final printer = standardString.truncateRight(
+            i,
+            method: TruncateMethod.sentences,
+          );
           final result = printer(lorem);
           expect(lorem, startsWith(result.removeSuffix('…')));
-          expect(result, anyOf(isEmpty, endsWith('…'), hasLength(lorem.length)),
-              reason: result);
+          expect(
+            result,
+            anyOf(isEmpty, endsWith('…'), hasLength(lorem.length)),
+            reason: result,
+          );
           expect(result.length, lessThanOrEqualTo(i), reason: result);
         }
       });
@@ -1349,37 +1456,52 @@ void main() {
       });
       test('on characters', () {
         for (var i = 0; i <= lorem.length; i++) {
-          final printer = standardString.truncateCenter(i,
-              method: TruncateMethod.characters);
+          final printer = standardString.truncateCenter(
+            i,
+            method: TruncateMethod.characters,
+          );
           final result = printer(lorem);
           expect(lorem, startsWith(result.takeTo('…')));
           expect(lorem, endsWith(result.skipTo('…')));
-          expect(result, anyOf(isEmpty, contains('…'), hasLength(lorem.length)),
-              reason: result);
+          expect(
+            result,
+            anyOf(isEmpty, contains('…'), hasLength(lorem.length)),
+            reason: result,
+          );
           expect(result.length, lessThanOrEqualTo(i), reason: result);
         }
       });
       test('on words', () {
         for (var i = 0; i <= lorem.length; i++) {
-          final printer =
-              standardString.truncateCenter(i, method: TruncateMethod.words);
+          final printer = standardString.truncateCenter(
+            i,
+            method: TruncateMethod.words,
+          );
           final result = printer(lorem);
           expect(lorem, startsWith(result.takeTo('…')));
           expect(lorem, endsWith(result.skipTo('…')));
-          expect(result, anyOf(isEmpty, contains('…'), hasLength(lorem.length)),
-              reason: result);
+          expect(
+            result,
+            anyOf(isEmpty, contains('…'), hasLength(lorem.length)),
+            reason: result,
+          );
           expect(result.length, lessThanOrEqualTo(i), reason: result);
         }
       });
       test('on sentences', () {
         for (var i = 0; i <= lorem.length; i++) {
-          final printer = standardString.truncateCenter(i,
-              method: TruncateMethod.sentences);
+          final printer = standardString.truncateCenter(
+            i,
+            method: TruncateMethod.sentences,
+          );
           final result = printer(lorem);
           expect(lorem, startsWith(result.takeTo('…')));
           expect(lorem, endsWith(result.skipTo('…')));
-          expect(result, anyOf(isEmpty, contains('…'), hasLength(lorem.length)),
-              reason: result);
+          expect(
+            result,
+            anyOf(isEmpty, contains('…'), hasLength(lorem.length)),
+            reason: result,
+          );
           expect(result.length, lessThanOrEqualTo(i), reason: result);
         }
       });
@@ -1501,18 +1623,23 @@ void main() {
   });
   group('sequence', () {
     test('default', () {
-      const printer = SequencePrinter<String>(
-          [standardString, Printer.literal('-'), standardString]);
+      const printer = SequencePrinter<String>([
+        standardString,
+        Printer.literal('-'),
+        standardString,
+      ]);
       expect(printer('1'), '1-1');
       expect(printer('12'), '12-12');
     });
     test('iterable', () {
-      final printer = <Printer<int>>[
-        const Printer.standard(),
-        const Printer.literal(' <-> '),
-        Printer.pluggable(
-            (value) => value.toString().split('').reversed.join('')),
-      ].toPrinter();
+      final printer =
+          <Printer<int>>[
+            const Printer.standard(),
+            const Printer.literal(' <-> '),
+            Printer.pluggable(
+              (value) => value.toString().split('').reversed.join(''),
+            ),
+          ].toPrinter();
       expect(printer(1), '1 <-> 1');
       expect(printer(12), '12 <-> 21');
       expect(printer(123), '123 <-> 321');
@@ -1550,8 +1677,9 @@ void main() {
       expect(printer([1, 2, 3, 4, 5]), '1, 2, 3, 4, 5');
     });
     test('emptyPrinter', () {
-      final printer =
-          standardInt.iterable(emptyPrinter: const Printer.literal('n/a'));
+      final printer = standardInt.iterable(
+        emptyPrinter: const Printer.literal('n/a'),
+      );
       expect(printer([]), 'n/a');
       expect(printer([1]), '1');
       expect(printer([1, 2]), '1, 2');
@@ -1560,8 +1688,9 @@ void main() {
       expect(printer([1, 2, 3, 4, 5]), '1, 2, 3, 4, 5');
     });
     test('beforePrinter', () {
-      final printer =
-          standardInt.iterable(beforePrinter: const Printer.literal('['));
+      final printer = standardInt.iterable(
+        beforePrinter: const Printer.literal('['),
+      );
       expect(printer([]), '');
       expect(printer([1]), '[1');
       expect(printer([1, 2]), '[1, 2');
@@ -1570,8 +1699,9 @@ void main() {
       expect(printer([1, 2, 3, 4, 5]), '[1, 2, 3, 4, 5');
     });
     test('afterPrinter', () {
-      final printer =
-          standardInt.iterable(afterPrinter: const Printer.literal(']'));
+      final printer = standardInt.iterable(
+        afterPrinter: const Printer.literal(']'),
+      );
       expect(printer([]), '');
       expect(printer([1]), '1]');
       expect(printer([1, 2]), '1, 2]');
@@ -1581,9 +1711,10 @@ void main() {
     });
     test('afterPrinter', () {
       final printer = standardInt.iterable(
-          emptyPrinter: const Printer.literal('∅'),
-          beforePrinter: const Printer.literal('['),
-          afterPrinter: const Printer.literal(']'));
+        emptyPrinter: const Printer.literal('∅'),
+        beforePrinter: const Printer.literal('['),
+        afterPrinter: const Printer.literal(']'),
+      );
       expect(printer([]), '∅');
       expect(printer([1]), '[1]');
       expect(printer([1, 2]), '[1, 2]');
@@ -1755,97 +1886,133 @@ void main() {
         expect(printer('hello'), 'String(42)');
       });
       test('name', () {
-        final printer = ObjectPrinter<String>.static()
-          ..addValue(42, name: 'size');
+        final printer =
+            ObjectPrinter<String>.static()..addValue(42, name: 'size');
         expect(printer('hello'), 'String(size: 42)');
       });
       test('printer', () {
-        final printer = ObjectPrinter<String>.static()
-          ..addValue(42, printer: const Printer<int>.standard().around('"'));
+        final printer =
+            ObjectPrinter<String>.static()..addValue(
+              42,
+              printer: const Printer<int>.standard().around('"'),
+            );
         expect(printer('hello'), 'String("42")');
       });
       test('omitNull', () {
-        final printer = ObjectPrinter<String>.static()
-          ..addValue<int?>(null, omitNull: true)
-          ..addValue<int?>(42, omitNull: true);
+        final printer =
+            ObjectPrinter<String>.static()
+              ..addValue<int?>(null, omitNull: true)
+              ..addValue<int?>(42, omitNull: true);
         expect(printer('hello'), 'String(42)');
       });
       test('omitPredicate', () {
-        final printer = ObjectPrinter<String>.static()
-          ..addValue<int>(42, omitPredicate: (value) => value.isEven)
-          ..addValue<int>(43, omitPredicate: (value) => value.isEven);
+        final printer =
+            ObjectPrinter<String>.static()
+              ..addValue<int>(42, omitPredicate: (value) => value.isEven)
+              ..addValue<int>(43, omitPredicate: (value) => value.isEven);
         expect(printer('hello'), 'String(43)');
       });
       test('omitNull and omitPredicate', () {
-        final printer = ObjectPrinter<String>.static()
-          ..addValue<int?>(null,
-              omitNull: true, omitPredicate: (value) => value!.isEven)
-          ..addValue<int?>(42,
-              omitNull: true, omitPredicate: (value) => value!.isEven)
-          ..addValue<int?>(43,
-              omitNull: true, omitPredicate: (value) => value!.isEven);
+        final printer =
+            ObjectPrinter<String>.static()
+              ..addValue<int?>(
+                null,
+                omitNull: true,
+                omitPredicate: (value) => value!.isEven,
+              )
+              ..addValue<int?>(
+                42,
+                omitNull: true,
+                omitPredicate: (value) => value!.isEven,
+              )
+              ..addValue<int?>(
+                43,
+                omitNull: true,
+                omitPredicate: (value) => value!.isEven,
+              );
         expect(printer('hello'), 'String(43)');
       });
     });
     group('addCallback', () {
       test('default', () {
-        final printer = ObjectPrinter<String>.static()
-          ..addCallback((object) => object.length);
+        final printer =
+            ObjectPrinter<String>.static()
+              ..addCallback((object) => object.length);
         expect(printer('hello'), 'String(5)');
       });
       test('name', () {
-        final printer = ObjectPrinter<String>.static()
-          ..addCallback((object) => object.length, name: 'size');
+        final printer =
+            ObjectPrinter<String>.static()
+              ..addCallback((object) => object.length, name: 'size');
         expect(printer('hello'), 'String(size: 5)');
       });
       test('printer', () {
-        final printer = ObjectPrinter<String>.static()
-          ..addCallback((object) => object.length,
-              printer: const Printer<int>.standard().around('"'));
+        final printer =
+            ObjectPrinter<String>.static()..addCallback(
+              (object) => object.length,
+              printer: const Printer<int>.standard().around('"'),
+            );
         expect(printer('hello'), 'String("5")');
       });
       test('omitNull', () {
-        final printer = ObjectPrinter<(String?, String?)>.static()
-          ..addCallback((object) => object.first, omitNull: true, name: 'first')
-          ..addCallback((object) => object.second,
-              omitNull: false, name: 'second');
-        expect(printer(('hello', 'world')),
-            '(String?, String?)(first: hello, second: world)');
+        final printer =
+            ObjectPrinter<(String?, String?)>.static()
+              ..addCallback(
+                (object) => object.first,
+                omitNull: true,
+                name: 'first',
+              )
+              ..addCallback(
+                (object) => object.second,
+                omitNull: false,
+                name: 'second',
+              );
+        expect(
+          printer(('hello', 'world')),
+          '(String?, String?)(first: hello, second: world)',
+        );
         expect(printer((null, 'world')), '(String?, String?)(second: world)');
-        expect(printer(('hello', null)),
-            '(String?, String?)(first: hello, second: null)');
+        expect(
+          printer(('hello', null)),
+          '(String?, String?)(first: hello, second: null)',
+        );
         expect(printer((null, null)), '(String?, String?)(second: null)');
       });
       test('omitPredicate', () {
-        final printer = ObjectPrinter<(int, int)>.static()
-          ..addCallback<int>((object) => object.first, name: 'first')
-          ..addCallback<int>(
-            (object) => object.second,
-            omitPredicate: (object, value) => value.isEven,
-            name: 'second',
-          );
+        final printer =
+            ObjectPrinter<(int, int)>.static()
+              ..addCallback<int>((object) => object.first, name: 'first')
+              ..addCallback<int>(
+                (object) => object.second,
+                omitPredicate: (object, value) => value.isEven,
+                name: 'second',
+              );
         expect(printer((42, 43)), '(int, int)(first: 42, second: 43)');
         expect(printer((42, 44)), '(int, int)(first: 42)');
       });
       test('omitNull and omitPredicate', () {
-        final printer = ObjectPrinter<(int?,)>.static()
-          ..addCallback<int?>((object) => object.first,
-              omitNull: true, omitPredicate: (object, value) => value!.isEven);
+        final printer =
+            ObjectPrinter<(int?,)>.static()..addCallback<int?>(
+              (object) => object.first,
+              omitNull: true,
+              omitPredicate: (object, value) => value!.isEven,
+            );
         expect(printer((1,)), '(int?)(1)');
         expect(printer((2,)), '(int?)');
         expect(printer((null,)), '(int?)');
       });
     });
     test('before and afterFields', () {
-      final printer =
-          ObjectPrinter<String>.static(beforeFields: '[', afterFields: ']')
-            ..addCallback<int>((object) => object.length);
+      final printer = ObjectPrinter<String>.static(
+        beforeFields: '[',
+        afterFields: ']',
+      )..addCallback<int>((object) => object.length);
       expect(printer('hello'), 'String[5]');
     });
     test('fieldName', () {
       final printer = ObjectPrinter<String>.static(
-          fieldName: const Printer<String>.standard().around('"'))
-        ..addCallback<String>((object) => object[0], name: 'first');
+        fieldName: const Printer<String>.standard().around('"'),
+      )..addCallback<String>((object) => object[0], name: 'first');
       expect(printer('hello'), 'String("first": h)');
     });
     test('fieldNameSeparator', () {
@@ -1855,20 +2022,22 @@ void main() {
     });
     test('fieldValue', () {
       final printer = ObjectPrinter<String>.static(
-          fieldValue: const Printer<String>.standard().around('"'))
-        ..addCallback<String>((object) => object[0]);
+        fieldValue: const Printer<String>.standard().around('"'),
+      )..addCallback<String>((object) => object[0]);
       expect(printer('hello'), 'String("h")');
     });
     test('fieldSeparator', () {
-      final printer = ObjectPrinter<(int, int)>.static(fieldSeparator: ';')
-        ..addCallback<int>((object) => object.first, name: 'first')
-        ..addCallback<int>((object) => object.second, name: 'second');
+      final printer =
+          ObjectPrinter<(int, int)>.static(fieldSeparator: ';')
+            ..addCallback<int>((object) => object.first, name: 'first')
+            ..addCallback<int>((object) => object.second, name: 'second');
       expect(printer((1, 2)), '(int, int)(first: 1;second: 2)');
     });
     test('toString', () {
-      final printer = ObjectPrinter<(int, int)>.dynamic()
-        ..addValue(true)
-        ..addCallback((value) => value);
+      final printer =
+          ObjectPrinter<(int, int)>.dynamic()
+            ..addValue(true)
+            ..addCallback((value) => value);
       expect(printer.toString(), startsWith('ObjectPrinter<(int, int)>'));
     });
   });

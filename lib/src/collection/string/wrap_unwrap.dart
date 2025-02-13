@@ -4,15 +4,16 @@ import '../../shared/exceptions.dart';
 
 extension WrapUnwrapStringExtension on String {
   /// Wraps a long text so that every line is at most [width] characters long.
-  String wrap(
-    int width, {
-    Pattern? whitespace,
-    bool breakLongWords = true,
-  }) {
+  String wrap(int width, {Pattern? whitespace, bool breakLongWords = true}) {
     checkNonZeroPositive(width, 'width');
     return split('\n')
-        .map((line) =>
-            line._wrap(width, whitespace ?? defaultWhitespace, breakLongWords))
+        .map(
+          (line) => line._wrap(
+            width,
+            whitespace ?? defaultWhitespace,
+            breakLongWords,
+          ),
+        )
         .join('\n');
   }
 
@@ -53,9 +54,9 @@ extension WrapUnwrapStringExtension on String {
   }
 
   /// Unwraps a long text.
-  String unwrap() => split('\n\n')
-      .map((paragraph) => paragraph.replaceAll('\n', ' '))
-      .join('\n\n');
+  String unwrap() => split(
+    '\n\n',
+  ).map((paragraph) => paragraph.replaceAll('\n', ' ')).join('\n\n');
 }
 
 final defaultWhitespace = RegExp(r'\s+');

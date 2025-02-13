@@ -16,11 +16,11 @@ class DinicMaxFlow<V> {
     num Function(V source, V target)? edgeCapacity,
     StorageStrategy<V>? vertexStrategy,
   }) : this._(
-          seedVertices: seedVertices,
-          successorsOf: successorsOf,
-          edgeCapacity: edgeCapacity ?? constantFunction2(1),
-          vertexStrategy: vertexStrategy ?? StorageStrategy.defaultStrategy(),
-        );
+         seedVertices: seedVertices,
+         successorsOf: successorsOf,
+         edgeCapacity: edgeCapacity ?? constantFunction2(1),
+         vertexStrategy: vertexStrategy ?? StorageStrategy.defaultStrategy(),
+       );
 
   DinicMaxFlow._({
     required Iterable<V> seedVertices,
@@ -28,8 +28,11 @@ class DinicMaxFlow<V> {
     required num Function(V source, V target) edgeCapacity,
     required StorageStrategy<V> vertexStrategy,
   }) : _mapping = vertexStrategy.createMap<_Vertex<V>>() {
-    for (final originalVertex in DepthFirstIterable(seedVertices,
-        successorsOf: successorsOf, vertexStrategy: vertexStrategy)) {
+    for (final originalVertex in DepthFirstIterable(
+      seedVertices,
+      successorsOf: successorsOf,
+      vertexStrategy: vertexStrategy,
+    )) {
       final vertex = _Vertex<V>(originalVertex);
       _mapping[originalVertex] = vertex;
       _vertices.add(vertex);

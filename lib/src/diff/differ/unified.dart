@@ -16,8 +16,11 @@ class UnifiedDiffer extends Differ {
 
   @override
   Iterable<String> compareLines(
-      Iterable<String> source, Iterable<String> target,
-      {String? sourceLabel, String? targetLabel}) sync* {
+    Iterable<String> source,
+    Iterable<String> target, {
+    String? sourceLabel,
+    String? targetLabel,
+  }) sync* {
     if (sourceLabel != null) yield '--- $sourceLabel';
     if (targetLabel != null) yield '+++ $targetLabel';
     final matcher = SequenceMatcher(source: source, target: target);
@@ -43,7 +46,11 @@ class UnifiedDiffer extends Differ {
 }
 
 Iterable<String> _dump(
-    String tag, Iterable<String> iterable, int start, int end) sync* {
+  String tag,
+  Iterable<String> iterable,
+  int start,
+  int end,
+) sync* {
   for (var i = start; i < end; i++) {
     yield '$tag${iterable.elementAt(i)}';
   }

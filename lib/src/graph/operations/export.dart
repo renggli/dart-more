@@ -28,28 +28,33 @@ extension ExportGraphExtension<V, E> on Graph<V, E> {
     final ids = vertexStrategy.createMap<int>();
     for (final vertex in vertices) {
       buffer.write('  ${ids[vertex] = ids.length}');
-      buffer.write(_encodeNodeEdgeAttributes({
-        'label': vertexLabel?.call(vertex) ?? vertex.toString(),
-        if (vertexAttributes != null) ...vertexAttributes(vertex),
-      }));
+      buffer.write(
+        _encodeNodeEdgeAttributes({
+          'label': vertexLabel?.call(vertex) ?? vertex.toString(),
+          if (vertexAttributes != null) ...vertexAttributes(vertex),
+        }),
+      );
       buffer.writeln(';');
     }
     final arrow = isDirected ? '->' : '--';
     for (final edge in edges.unique()) {
       buffer.write('  ${ids[edge.source]} $arrow ${ids[edge.target]}');
-      buffer.write(_encodeNodeEdgeAttributes({
-        'label': edgeLabel?.call(edge) ?? edge.value?.toString() ?? '',
-        if (edgeAttributes != null) ...edgeAttributes(edge),
-      }));
+      buffer.write(
+        _encodeNodeEdgeAttributes({
+          'label': edgeLabel?.call(edge) ?? edge.value?.toString() ?? '',
+          if (edgeAttributes != null) ...edgeAttributes(edge),
+        }),
+      );
       buffer.writeln(';');
     }
     buffer.write('}');
     return buffer.toString();
   }
 
-  String _encodeId(String input) => _validId.matchAsPrefix(input) == null
-      ? '"${input.replaceAll('"', '\\"')}"'
-      : input;
+  String _encodeId(String input) =>
+      _validId.matchAsPrefix(input) == null
+          ? '"${input.replaceAll('"', '\\"')}"'
+          : input;
 
   Iterable<String> _encodeAttributes(Map<String, String> attributes) =>
       attributes.entries

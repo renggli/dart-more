@@ -14,9 +14,11 @@ class SearchState<V, E> {
 Path<V, E> createShortestPath<V, E>(SearchState<V, E> last) {
   final vertices = QueueList<V>();
   final values = QueueList<E>();
-  for (SearchState<V, E>? state = last;
-      state != null;
-      state = state.parents.firstOrNull) {
+  for (
+    SearchState<V, E>? state = last;
+    state != null;
+    state = state.parents.firstOrNull
+  ) {
     vertices.addFirst(state.vertex);
     values.addFirst(state.value);
   }
@@ -26,7 +28,8 @@ Path<V, E> createShortestPath<V, E>(SearchState<V, E> last) {
 
 @internal
 Iterable<Path<V, E>> createAllShortestPaths<V, E>(
-    SearchState<V, E> state) sync* {
+  SearchState<V, E> state,
+) sync* {
   final seen = {state};
   final stack = [(state, 0)];
   var top = 0;

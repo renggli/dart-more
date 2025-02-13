@@ -40,9 +40,10 @@ extension OperatorsIterableExtension<E> on Iterable<E> {
   /// ```dart
   /// print([3, 1, 2].minMax());  // (min: 1, max: 3)
   /// ```
-  ({E min, E max}) minMax(
-          {Comparator<E>? comparator, ({E min, E max}) Function()? orElse}) =>
-      (comparator ?? naturalCompare).minMaxOf(this, orElse: orElse);
+  ({E min, E max}) minMax({
+    Comparator<E>? comparator,
+    ({E min, E max}) Function()? orElse,
+  }) => (comparator ?? naturalCompare).minMaxOf(this, orElse: orElse);
 
   /// Returns a list of the [count] smallest elements of this [Iterable]. The
   /// elements need to be [Comparable], unless a custom [comparator] is

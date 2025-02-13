@@ -26,20 +26,30 @@ abstract class ReflowCommand extends Command<void> {
 class IndentCommand extends ReflowCommand {
   IndentCommand() {
     argParser
-      ..addOption('prefix',
-          abbr: 'p',
-          help: 'Prefix to be prepended to each line.',
-          defaultsTo: '  ')
-      ..addOption('first-prefix',
-          abbr: 'f',
-          help: 'Prefix to be prepended to the first line.',
-          defaultsTo: null)
-      ..addFlag('trim-whitespace',
-          abbr: 't',
-          help: 'Trims each line from existing whitespace.',
-          defaultsTo: true)
-      ..addFlag('indent-empty',
-          abbr: 'e', help: 'Indents empty lines as well.', defaultsTo: false);
+      ..addOption(
+        'prefix',
+        abbr: 'p',
+        help: 'Prefix to be prepended to each line.',
+        defaultsTo: '  ',
+      )
+      ..addOption(
+        'first-prefix',
+        abbr: 'f',
+        help: 'Prefix to be prepended to the first line.',
+        defaultsTo: null,
+      )
+      ..addFlag(
+        'trim-whitespace',
+        abbr: 't',
+        help: 'Trims each line from existing whitespace.',
+        defaultsTo: true,
+      )
+      ..addFlag(
+        'indent-empty',
+        abbr: 'e',
+        help: 'Indents empty lines as well.',
+        defaultsTo: false,
+      );
   }
 
   @override
@@ -49,18 +59,22 @@ class IndentCommand extends ReflowCommand {
   String get description => 'Adds a prefix to each line.';
 
   @override
-  String transform(String input) => input.indent(getArgument('prefix'),
-      firstPrefix: getArgument('first-prefix'),
-      trimWhitespace: getArgument('trim-whitespace'),
-      indentEmpty: getArgument('indent-empty'));
+  String transform(String input) => input.indent(
+    getArgument('prefix'),
+    firstPrefix: getArgument('first-prefix'),
+    trimWhitespace: getArgument('trim-whitespace'),
+    indentEmpty: getArgument('indent-empty'),
+  );
 }
 
 class DedentCommand extends ReflowCommand {
   DedentCommand() {
-    argParser.addFlag('ignore-empty',
-        abbr: 'e',
-        help: 'Ignore empty lines when detecting the prefix.',
-        defaultsTo: true);
+    argParser.addFlag(
+      'ignore-empty',
+      abbr: 'e',
+      help: 'Ignore empty lines when detecting the prefix.',
+      defaultsTo: true,
+    );
   }
 
   @override
@@ -77,15 +91,19 @@ class DedentCommand extends ReflowCommand {
 class WrapCommand extends ReflowCommand {
   WrapCommand() {
     argParser
-      ..addOption('width',
-          abbr: 'w',
-          help: 'The width in characters to target.',
-          defaultsTo:
-              stdout.hasTerminal ? stdout.terminalColumns.toString() : '80')
-      ..addFlag('break-long-words',
-          abbr: 'b',
-          help: 'Break long words that do not fit.',
-          defaultsTo: true);
+      ..addOption(
+        'width',
+        abbr: 'w',
+        help: 'The width in characters to target.',
+        defaultsTo:
+            stdout.hasTerminal ? stdout.terminalColumns.toString() : '80',
+      )
+      ..addFlag(
+        'break-long-words',
+        abbr: 'b',
+        help: 'Break long words that do not fit.',
+        defaultsTo: true,
+      );
   }
 
   @override
@@ -95,8 +113,10 @@ class WrapCommand extends ReflowCommand {
   String get description => 'Wraps a long text.';
 
   @override
-  String transform(String input) => input.wrap(int.parse(getArgument('width')),
-      breakLongWords: getArgument('break-long-words'));
+  String transform(String input) => input.wrap(
+    int.parse(getArgument('width')),
+    breakLongWords: getArgument('break-long-words'),
+  );
 }
 
 class UnwrapCommand extends ReflowCommand {
@@ -110,11 +130,12 @@ class UnwrapCommand extends ReflowCommand {
   String transform(String input) => input.unwrap();
 }
 
-final runner = CommandRunner<void>('reflow', 'Reflows text in different ways.')
-  ..addCommand(IndentCommand())
-  ..addCommand(DedentCommand())
-  ..addCommand(WrapCommand())
-  ..addCommand(UnwrapCommand());
+final runner =
+    CommandRunner<void>('reflow', 'Reflows text in different ways.')
+      ..addCommand(IndentCommand())
+      ..addCommand(DedentCommand())
+      ..addCommand(WrapCommand())
+      ..addCommand(UnwrapCommand());
 
 Future<void> main(List<String> arguments) async {
   await runner.run(arguments).catchError((Object error) {

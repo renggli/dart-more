@@ -14,8 +14,8 @@ class GraphFactory<V, E> {
     this.edgeProvider,
     Random? random,
     StorageStrategy<V>? vertexStrategy,
-  })  : random = random ?? Random(),
-        vertexStrategy = vertexStrategy ?? StorageStrategy<V>.defaultStrategy();
+  }) : random = random ?? Random(),
+       vertexStrategy = vertexStrategy ?? StorageStrategy<V>.defaultStrategy();
 
   /// Flag indicating if the graph is directed.
   final bool isDirected;

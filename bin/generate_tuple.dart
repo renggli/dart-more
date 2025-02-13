@@ -73,8 +73,10 @@ Future<void> generateAbstract() async {
     out.writeln('$i => Tuple$i.fromList(list),');
   }
   out.writeln('_ =>');
-  out.writeln('throw ArgumentError.value(list, \'list\', '
-      '\'Length \${list.length} not in range 0..${max - 1}\'),');
+  out.writeln(
+    'throw ArgumentError.value(list, \'list\', '
+    '\'Length \${list.length} not in range 0..${max - 1}\'),',
+  );
   out.writeln('};');
   out.writeln();
 
@@ -91,8 +93,10 @@ Future<void> generateImplementation(int i) async {
   final types = generateTypes(i);
   final values = generateValues(i);
 
-  out.writeln('/// Extension methods on [Record] with $i positional '
-      'element${i != 1 ? 's' : ''}.');
+  out.writeln(
+    '/// Extension methods on [Record] with $i positional '
+    'element${i != 1 ? 's' : ''}.',
+  );
   out.writeln('extension Tuple$i${generify(types)} on ${recordify(types)} {');
 
   // constructors
@@ -105,8 +109,10 @@ Future<void> generateImplementation(int i) async {
   } else {
     out.writeln('if (list.length != $i) {');
   }
-  out.writeln('throw ArgumentError.value(list, \'list\', '
-      '\'Expected list of length $i, but got \${list.length}\');');
+  out.writeln(
+    'throw ArgumentError.value(list, \'list\', '
+    '\'Expected list of length $i, but got \${list.length}\');',
+  );
   out.writeln('}');
   out.writeln('return ${recordify(listAccessors)};');
   out.writeln('}');
@@ -135,17 +141,25 @@ Future<void> generateImplementation(int i) async {
     typesReplaced[j] = 'T';
     valuesReplaced[j] = 'value';
     out.writeln();
-    out.writeln('/// Returns a new tuple with the ${ordinals[j]} element '
-        'replaced by [value].');
-    out.writeln('${recordify(typesReplaced)} '
-        'with${capitalize(ordinals[j])}<T>(T value) => '
-        '${recordify(valuesReplaced)};');
+    out.writeln(
+      '/// Returns a new tuple with the ${ordinals[j]} element '
+      'replaced by [value].',
+    );
+    out.writeln(
+      '${recordify(typesReplaced)} '
+      'with${capitalize(ordinals[j])}<T>(T value) => '
+      '${recordify(valuesReplaced)};',
+    );
     if (j == i - 1) {
       out.writeln();
-      out.writeln('/// Returns a new tuple with the last element replaced by '
-          '[value].');
-      out.writeln('${recordify(typesReplaced)} '
-          'withLast<T>(T value) => ${recordify(valuesReplaced)};');
+      out.writeln(
+        '/// Returns a new tuple with the last element replaced by '
+        '[value].',
+      );
+      out.writeln(
+        '${recordify(typesReplaced)} '
+        'withLast<T>(T value) => ${recordify(valuesReplaced)};',
+      );
     }
   }
 
@@ -156,20 +170,28 @@ Future<void> generateImplementation(int i) async {
       final addValues = [
         ...values.sublist(0, j),
         'value',
-        ...values.sublist(j, i)
+        ...values.sublist(j, i),
       ];
       out.writeln();
-      out.writeln('/// Returns a new tuple with [value] added at the '
-          '${ordinals[j]} position.');
-      out.writeln('${recordify(addTypes)} '
-          'add${capitalize(ordinals[j])}<T>(T value) => '
-          '${recordify(addValues)};');
+      out.writeln(
+        '/// Returns a new tuple with [value] added at the '
+        '${ordinals[j]} position.',
+      );
+      out.writeln(
+        '${recordify(addTypes)} '
+        'add${capitalize(ordinals[j])}<T>(T value) => '
+        '${recordify(addValues)};',
+      );
       if (j == i) {
         out.writeln();
-        out.writeln('/// Returns a new tuple with [value] added at the last '
-            'position.');
-        out.writeln('${recordify(addTypes)} '
-            'addLast<T>(T value) => ${recordify(addValues)};');
+        out.writeln(
+          '/// Returns a new tuple with [value] added at the last '
+          'position.',
+        );
+        out.writeln(
+          '${recordify(addTypes)} '
+          'addLast<T>(T value) => ${recordify(addValues)};',
+        );
       }
     }
   }
@@ -180,22 +202,30 @@ Future<void> generateImplementation(int i) async {
       final removeTypes = [...types.sublist(0, j), ...types.sublist(j + 1)];
       final removeValues = [...values.sublist(0, j), ...values.sublist(j + 1)];
       out.writeln();
-      out.writeln('/// Returns a new tuple with the ${ordinals[j]} element '
-          'removed.');
-      out.writeln('${recordify(removeTypes)} '
-          'remove${capitalize(ordinals[j])}() => ${recordify(removeValues)};');
+      out.writeln(
+        '/// Returns a new tuple with the ${ordinals[j]} element '
+        'removed.',
+      );
+      out.writeln(
+        '${recordify(removeTypes)} '
+        'remove${capitalize(ordinals[j])}() => ${recordify(removeValues)};',
+      );
       if (j == i - 1) {
         out.writeln();
         out.writeln('/// Returns a new tuple with the last element removed.');
-        out.writeln('${recordify(removeTypes)} '
-            'removeLast() => ${recordify(removeValues)};');
+        out.writeln(
+          '${recordify(removeTypes)} '
+          'removeLast() => ${recordify(removeValues)};',
+        );
       }
     }
   }
 
   // map
-  final typeAndOrdinals =
-      [types, ordinals].zip().map((value) => value.join(' '));
+  final typeAndOrdinals = [
+    types,
+    ordinals,
+  ].zip().map((value) => value.join(' '));
   out.writeln();
   out.writeln('/// Applies the values of this tuple to an $i-ary function.');
   out.writeln('R map<R>(R Function(${listify(typeAndOrdinals)}) callback) => ');
@@ -246,15 +276,19 @@ Future<void> generateTest() async {
         final many = List.generate(max, (i) => '${generator.nextInt(256)}');
         out.writeln('final other = Tuple.fromList([${listify(numbers)}]);');
         out.writeln('expect(other, tuple);');
-        out.writeln('expect(() => Tuple.fromList([${listify(many)}]), '
-            'throwsArgumentError);');
+        out.writeln(
+          'expect(() => Tuple.fromList([${listify(many)}]), '
+          'throwsArgumentError);',
+        );
       });
       nest('test', 'fromList', () {
         final many = List.generate(i + 1, (i) => '${generator.nextInt(256)}');
         out.writeln('final other = Tuple$i.fromList([${listify(numbers)}]);');
         out.writeln('expect(other, tuple);');
-        out.writeln('expect(() => Tuple$i.fromList([${listify(many)}]), '
-            'throwsArgumentError);');
+        out.writeln(
+          'expect(() => Tuple$i.fromList([${listify(many)}]), '
+          'throwsArgumentError);',
+        );
       });
       if (i > 0) {
         nest('test', 'read', () {
@@ -266,19 +300,25 @@ Future<void> generateTest() async {
       }
       for (var j = 0; j < i; j++) {
         nest('test', 'with${capitalize(ordinals[j])}', () {
-          out.writeln('final other = '
-              'tuple.with${capitalize(ordinals[j])}(\'a\');');
+          out.writeln(
+            'final other = '
+            'tuple.with${capitalize(ordinals[j])}(\'a\');',
+          );
           for (var k = 0; k < i; k++) {
-            out.writeln('expect(other.${ordinals[k]}, '
-                '${j == k ? '\'a\'' : numbers[k]});');
+            out.writeln(
+              'expect(other.${ordinals[k]}, '
+              '${j == k ? '\'a\'' : numbers[k]});',
+            );
           }
         });
         if (j == i - 1) {
           nest('test', 'withLast', () {
             out.writeln('final other = tuple.withLast(\'a\');');
             for (var k = 0; k < i; k++) {
-              out.writeln('expect(other.${ordinals[k]}, '
-                  '${j == k ? '\'a\'' : numbers[k]});');
+              out.writeln(
+                'expect(other.${ordinals[k]}, '
+                '${j == k ? '\'a\'' : numbers[k]});',
+              );
             }
           });
         }
@@ -286,13 +326,16 @@ Future<void> generateTest() async {
       if (i < max - 1) {
         for (var j = 0; j <= i; j++) {
           nest('test', 'add${capitalize(ordinals[j])}', () {
-            out.writeln('final other = '
-                'tuple.add${capitalize(ordinals[j])}(\'a\');');
+            out.writeln(
+              'final other = '
+              'tuple.add${capitalize(ordinals[j])}(\'a\');',
+            );
             out.writeln('expect(other.length, tuple.length + 1);');
             for (var k = 0; k < i + 1; k++) {
-              final expected = k == j
-                  ? '\'a\''
-                  : k < j
+              final expected =
+                  k == j
+                      ? '\'a\''
+                      : k < j
                       ? numbers[k]
                       : numbers[k - 1];
               out.writeln('expect(other.${ordinals[k]}, $expected);');
@@ -311,8 +354,10 @@ Future<void> generateTest() async {
       if (i > 0) {
         for (var j = 0; j < i; j++) {
           nest('test', 'remove${capitalize(ordinals[j])}', () {
-            out.writeln('final other = '
-                'tuple.remove${capitalize(ordinals[j])}();');
+            out.writeln(
+              'final other = '
+              'tuple.remove${capitalize(ordinals[j])}();',
+            );
             out.writeln('expect(other.length, tuple.length - 1);');
             for (var k = 0; k < i - 1; k++) {
               final expected = k < j ? numbers[k] : numbers[k + 1];
@@ -365,8 +410,8 @@ Future<void> generateTest() async {
 }
 
 Future<void> main() => Future.wait([
-      generateExport(),
-      generateAbstract(),
-      for (var i = 0; i < max; i++) generateImplementation(i),
-      generateTest(),
-    ]);
+  generateExport(),
+  generateAbstract(),
+  for (var i = 0; i < max; i++) generateImplementation(i),
+  generateTest(),
+]);

@@ -16,8 +16,8 @@ class Fraction
       return numerator == 0
           ? Fraction.nan
           : numerator < 0
-              ? Fraction.negativeInfinity
-              : Fraction.infinity;
+          ? Fraction.negativeInfinity
+          : Fraction.infinity;
     }
     var divisor = numerator.gcd(denominator).abs();
     if (denominator < 0) {
@@ -33,8 +33,11 @@ class Fraction
   /// The algorithm uses an expansion of the continued fraction of the floating
   /// point value. The resulting fraction is returned once the [maxDenominator]
   /// has been reached, or the result is better than [absoluteError].
-  factory Fraction.fromDouble(num value,
-      {int maxDenominator = 1000000000, double absoluteError = 0.0}) {
+  factory Fraction.fromDouble(
+    num value, {
+    int maxDenominator = 1000000000,
+    double absoluteError = 0.0,
+  }) {
     if (value.isNaN) {
       return Fraction.nan;
     } else if (value.isInfinite) {
@@ -71,7 +74,7 @@ class Fraction
 
   /// Internal constructor for fractions.
   const Fraction._(this.a, this.b)
-      : assert(b >= 0, 'b be greater or equal to 0');
+    : assert(b >= 0, 'b be greater or equal to 0');
 
   /// The neutral additive element, that is `0`.
   static const Fraction zero = Fraction._(0, 1);

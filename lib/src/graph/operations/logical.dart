@@ -5,8 +5,10 @@ extension LogicalGraphExtension<V, E> on Graph<V, E> {
   /// Returns the union of this graph and [other]. This is a graph with the
   /// nodes and edges present in either of the two graphs. [edgeMerge] specifies
   /// how parallel edges are merged, if unspecified the last one is used.
-  Graph<V, E> union(Graph<V, E> other,
-      {E Function(V source, V target, E a, E b)? edgeMerge}) {
+  Graph<V, E> union(
+    Graph<V, E> other, {
+    E Function(V source, V target, E a, E b)? edgeMerge,
+  }) {
     final result = copy(empty: true);
     unionAll<V, E>(result, [this, other], edgeMerge: edgeMerge);
     return result;
@@ -14,8 +16,11 @@ extension LogicalGraphExtension<V, E> on Graph<V, E> {
 
   /// Merges [others] into [result]. [edgeMerge] specifies how parallel edges
   /// are merged, if unspecified the last one is used.
-  static void unionAll<V, E>(Graph<V, E> result, Iterable<Graph<V, E>> others,
-      {E Function(V source, V target, E a, E b)? edgeMerge}) {
+  static void unionAll<V, E>(
+    Graph<V, E> result,
+    Iterable<Graph<V, E>> others, {
+    E Function(V source, V target, E a, E b)? edgeMerge,
+  }) {
     for (final graph in others) {
       // Create all vertices present in any graph.
       result.addVertices(graph.vertices);
@@ -23,9 +28,15 @@ extension LogicalGraphExtension<V, E> on Graph<V, E> {
       for (final vertex in graph.vertices) {
         for (final edge in graph.outgoingEdgesOf(vertex)) {
           final existing = result.getEdge(edge.source, edge.target);
-          final value = existing == null || edgeMerge == null
-              ? edge.value
-              : edgeMerge(edge.source, edge.target, existing.value, edge.value);
+          final value =
+              existing == null || edgeMerge == null
+                  ? edge.value
+                  : edgeMerge(
+                    edge.source,
+                    edge.target,
+                    existing.value,
+                    edge.value,
+                  );
           result.addEdge(edge.source, edge.target, value: value);
         }
       }
@@ -35,9 +46,11 @@ extension LogicalGraphExtension<V, E> on Graph<V, E> {
   /// Returns the intersection of this graph and [other]. This is a graph with
   /// the nodes and edges present in both graphs. [edgeMerge] specifies
   /// how parallel edges are merged, if unspecified the last one is used.
-  Graph<V, E> intersection(Graph<V, E> other,
-      {bool Function(V source, V target, E a, E b)? edgeCompare,
-      E Function(V source, V target, E a, E b)? edgeMerge}) {
+  Graph<V, E> intersection(
+    Graph<V, E> other, {
+    bool Function(V source, V target, E a, E b)? edgeCompare,
+    E Function(V source, V target, E a, E b)? edgeMerge,
+  }) {
     final result = copy(empty: true);
     // Create all the vertices present in both graphs.
     for (final vertex in vertices) {
@@ -52,10 +65,20 @@ extension LogicalGraphExtension<V, E> on Graph<V, E> {
       if (otherEdge != null &&
           (edgeCompare == null ||
               edgeCompare(
-                  edge.source, edge.target, edge.value, otherEdge.value))) {
-        final value = edgeMerge == null
-            ? otherEdge.value
-            : edgeMerge(edge.source, edge.target, edge.value, otherEdge.value);
+                edge.source,
+                edge.target,
+                edge.value,
+                otherEdge.value,
+              ))) {
+        final value =
+            edgeMerge == null
+                ? otherEdge.value
+                : edgeMerge(
+                  edge.source,
+                  edge.target,
+                  edge.value,
+                  otherEdge.value,
+                );
         result.addEdge(edge.source, edge.target, value: value);
       }
     }
@@ -64,8 +87,10 @@ extension LogicalGraphExtension<V, E> on Graph<V, E> {
 
   /// Returns the complement of this graph, that is a graph with the same
   /// vertices but with edges between vertices that had no edge.
-  Graph<V, E> complement(
-      {bool allowSelfLoops = false, E? Function(V source, V target)? edge}) {
+  Graph<V, E> complement({
+    bool allowSelfLoops = false,
+    E? Function(V source, V target)? edge,
+  }) {
     final result = copy(empty: true);
     // Copy all the vertices over.
     for (final vertex in vertices) {
@@ -73,9 +98,10 @@ extension LogicalGraphExtension<V, E> on Graph<V, E> {
     }
     // Identify all the edges to be created.
     for (final source in vertices) {
-      final targets = vertexStrategy.createSet()
-        ..addAll(vertices)
-        ..removeAll(successorsOf(source));
+      final targets =
+          vertexStrategy.createSet()
+            ..addAll(vertices)
+            ..removeAll(successorsOf(source));
       if (!allowSelfLoops) {
         targets.remove(source);
       }

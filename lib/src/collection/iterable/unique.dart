@@ -22,9 +22,10 @@ extension UniqueIterableExtension<E> on Iterable<E> {
     bool Function(E e1, E e2)? equals,
     int Function(E e)? hashCode,
   }) sync* {
-    final uniques = factory == null
-        ? HashSet(equals: equals, hashCode: hashCode)
-        : factory();
+    final uniques =
+        factory == null
+            ? HashSet(equals: equals, hashCode: hashCode)
+            : factory();
     for (final element in this) {
       if (uniques.add(element)) {
         yield element;

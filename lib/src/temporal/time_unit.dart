@@ -14,5 +14,5 @@ enum TimeUnit {
   year,
   decade,
   century,
-  millennium;
+  millennium,
 }

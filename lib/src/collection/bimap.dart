@@ -28,14 +28,14 @@ class BiMap<K, V> extends MapBase<K, V> {
   factory BiMap.from(Map<K, V> other) => BiMap.of(other);
 
   /// Creates a bi-map from an iterable (and possible transformation functions).
-  factory BiMap.fromIterable/*<E>*/(
+  factory BiMap.fromIterable /*<E>*/ (
     Iterable<Object?> /*<E>*/ iterable, {
     K Function(Object? /*E*/ element)? key,
     V Function(Object? /*E*/ element)? value,
-  }) =>
-      BiMap<K, V>.fromIterables(
-          key == null ? iterable.cast<K>() : iterable.map(key),
-          value == null ? iterable.cast<V>() : iterable.map(value));
+  }) => BiMap<K, V>.fromIterables(
+    key == null ? iterable.cast<K>() : iterable.map(key),
+    value == null ? iterable.cast<V>() : iterable.map(value),
+  );
 
   /// Creates a bi-map from two equal length iterables.
   factory BiMap.fromIterables(Iterable<K> keys, Iterable<V> values) {
@@ -104,8 +104,11 @@ class BiMap<K, V> extends MapBase<K, V> {
     return value;
   }
 
-  void _remove(Object? key, Map<Object?, Object?> forward,
-      Map<Object?, Object?> backward) {
+  void _remove(
+    Object? key,
+    Map<Object?, Object?> forward,
+    Map<Object?, Object?> backward,
+  ) {
     if (forward.containsKey(key)) {
       _remove(forward.remove(key), backward, forward);
     }
@@ -150,8 +153,10 @@ extension BiMapOnMapExtension<K, V> on Map<K, V> {
 
 extension BiMapOnIterableExtension<E> on Iterable<E> {
   /// Converts this [Iterable] to a [BiMap].
-  BiMap<K, V> toBiMap<K, V>(
-      {K Function(E element)? key, V Function(E element)? value}) {
+  BiMap<K, V> toBiMap<K, V>({
+    K Function(E element)? key,
+    V Function(E element)? value,
+  }) {
     final keyProvider = key ?? (element) => element as K;
     final valueProvider = value ?? (element) => element as V;
     return BiMap<K, V>.fromIterables(map(keyProvider), map(valueProvider));

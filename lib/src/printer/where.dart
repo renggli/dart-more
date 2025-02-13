@@ -22,7 +22,8 @@ class WherePrinter<T> extends Printer<T> {
   }
 
   @override
-  ObjectPrinter get toStringPrinter => super.toStringPrinter
-    ..addValue(printer, name: 'printer')
-    ..addValue(callback, name: 'callback');
+  ObjectPrinter get toStringPrinter =>
+      super.toStringPrinter
+        ..addValue(printer, name: 'printer')
+        ..addValue(callback, name: 'callback');
 }

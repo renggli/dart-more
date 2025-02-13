@@ -19,7 +19,8 @@ class NullPrinter<T> extends Printer<T?> {
       object == null ? buffer.write(label) : printer.printOn(object, buffer);
 
   @override
-  ObjectPrinter get toStringPrinter => super.toStringPrinter
-    ..addValue(printer, name: 'printer')
-    ..addValue(label, name: 'label');
+  ObjectPrinter get toStringPrinter =>
+      super.toStringPrinter
+        ..addValue(printer, name: 'printer')
+        ..addValue(label, name: 'label');
 }

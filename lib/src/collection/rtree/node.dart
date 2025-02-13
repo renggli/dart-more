@@ -40,8 +40,10 @@ class RTreeNode<T> {
   /// optionally be passed to filter which nodes get traversed. If condition
   /// returns False, then neither the node nor any of its descendants will be
   /// traversed.
-  Iterable<R> traverse<R>(Map1<RTreeNode<T>, Iterable<R>> callback,
-      {Predicate1<RTreeNode<T>>? condition}) sync* {
+  Iterable<R> traverse<R>(
+    Map1<RTreeNode<T>, Iterable<R>> callback, {
+    Predicate1<RTreeNode<T>>? condition,
+  }) sync* {
     if (condition == null || condition(this)) {
       yield* callback(this);
       if (!isLeaf) {

@@ -59,14 +59,18 @@ void main() {
         expect(target.values, [1, 2, 3]);
       });
       test('iterable (key)', () {
-        final target = BiMap<int, int>.fromIterable(example.keys,
-            key: (e) => (e as int) + 1);
+        final target = BiMap<int, int>.fromIterable(
+          example.keys,
+          key: (e) => (e as int) + 1,
+        );
         expect(target.keys, [2, 3, 4]);
         expect(target.values, [1, 2, 3]);
       });
       test('iterable (value)', () {
-        final target = BiMap<int, int>.fromIterable(example.keys,
-            value: (e) => (e as int) + 1);
+        final target = BiMap<int, int>.fromIterable(
+          example.keys,
+          value: (e) => (e as int) + 1,
+        );
         expect(target.keys, [1, 2, 3]);
         expect(target.values, [2, 3, 4]);
       });
@@ -93,7 +97,7 @@ void main() {
         final target = [
           0,
           1,
-          2
+          2,
         ].toBiMap(key: (e) => e + 1, value: (e) => String.fromCharCode(97 + e));
         expect(target.keys, [1, 2, 3]);
         expect(target.values, ['a', 'b', 'c']);
@@ -293,8 +297,11 @@ void main() {
           test('generate', () {
             for (var len = 0; len < 100; len++) {
               final source = randomBooleans(902 * len, len);
-              final target =
-                  BitList.generate(len, (i) => source[i], growable: growable);
+              final target = BitList.generate(
+                len,
+                (i) => source[i],
+                growable: growable,
+              );
               expect(source, target);
               expect(source, target.toList());
             }
@@ -377,8 +384,10 @@ void main() {
           });
           test('flipping', () {
             for (var len = 0; len < 100; len++) {
-              final source = BitList.of(randomBooleans(385 * len, len),
-                  growable: growable);
+              final source = BitList.of(
+                randomBooleans(385 * len, len),
+                growable: growable,
+              );
               final target = ~source;
               expect(() => target.flip(-1), throwsRangeError);
               for (var i = 0; i < len; i++) {
@@ -392,8 +401,10 @@ void main() {
           });
           test('count', () {
             for (var len = 0; len < 100; len++) {
-              final list = BitList.of(randomBooleans(743 * len, len),
-                  growable: growable);
+              final list = BitList.of(
+                randomBooleans(743 * len, len),
+                growable: growable,
+              );
               final trueCount = list.count();
               final falseCount = list.count(expected: false);
               expect(trueCount + falseCount, list.length);
@@ -403,14 +414,19 @@ void main() {
           });
           test('countRange', () {
             final generator = Random(926);
-            final list =
-                BitList.of(randomBooleans(744, 500), growable: growable);
+            final list = BitList.of(
+              randomBooleans(744, 500),
+              growable: growable,
+            );
             for (var i = 0; i < 250; i++) {
               final startIndex = generator.nextInt(list.length ~/ 2);
               final endIndex = startIndex + generator.nextInt(list.length ~/ 2);
               final trueCount = list.countRange(startIndex, endIndex);
-              final falseCount =
-                  list.countRange(startIndex, endIndex, expected: false);
+              final falseCount = list.countRange(
+                startIndex,
+                endIndex,
+                expected: false,
+              );
               expect(trueCount + falseCount, endIndex - startIndex);
               final range = list.getRange(startIndex, endIndex);
               expect(trueCount, range.where((b) => b == true).length);
@@ -419,8 +435,10 @@ void main() {
           });
           test('indices', () {
             for (var len = 0; len < 100; len++) {
-              final list = BitList.of(randomBooleans(743 * len, len),
-                  growable: growable);
+              final list = BitList.of(
+                randomBooleans(743 * len, len),
+                growable: growable,
+              );
               final trueList = list.indices().toList();
               final trueSet = trueList.toSet();
               final falseList = list.indices(expected: false).toList();
@@ -441,10 +459,14 @@ void main() {
           test('concatenate', () {
             for (var len1 = 0; len1 < 100; len1++) {
               for (var len2 = 0; len2 < 100; len2++) {
-                final source1 = BitList.of(randomBooleans(954 * len1, len1),
-                    growable: growable);
-                final source2 = BitList.of(randomBooleans(713 * len2, len2),
-                    growable: growable);
+                final source1 = BitList.of(
+                  randomBooleans(954 * len1, len1),
+                  growable: growable,
+                );
+                final source2 = BitList.of(
+                  randomBooleans(713 * len2, len2),
+                  growable: growable,
+                );
                 final target = source1 + source2;
                 expect(target.length, len1 + len2);
                 for (var i = 0; i < len1 + len2; i++) {
@@ -455,16 +477,20 @@ void main() {
           });
           group('complement', () {
             test('operator', () {
-              final source =
-                  BitList.of(randomBooleans(702, 100), growable: growable);
+              final source = BitList.of(
+                randomBooleans(702, 100),
+                growable: growable,
+              );
               final target = ~source;
               for (var i = 0; i < target.length; i++) {
                 expect(target[i], !source[i]);
               }
             });
             test('in-place', () {
-              final source =
-                  BitList.of(randomBooleans(702, 100), growable: growable);
+              final source = BitList.of(
+                randomBooleans(702, 100),
+                growable: growable,
+              );
               final target = BitList.of(source);
               target.not();
               for (var i = 0; i < target.length; i++) {
@@ -474,10 +500,14 @@ void main() {
           });
           group('intersection', () {
             test('operator', () {
-              final source1 =
-                  BitList.of(randomBooleans(439, 100), growable: growable);
-              final source2 =
-                  BitList.of(randomBooleans(902, 100), growable: growable);
+              final source1 = BitList.of(
+                randomBooleans(439, 100),
+                growable: growable,
+              );
+              final source2 = BitList.of(
+                randomBooleans(902, 100),
+                growable: growable,
+              );
               final target = source1 & source2;
               for (var i = 0; i < target.length; i++) {
                 expect(target[i], source1[i] && source2[i]);
@@ -488,10 +518,14 @@ void main() {
               expect(() => source1 & other, throwsArgumentError);
             });
             test('in-place', () {
-              final source1 =
-                  BitList.of(randomBooleans(439, 100), growable: growable);
-              final source2 =
-                  BitList.of(randomBooleans(902, 100), growable: growable);
+              final source1 = BitList.of(
+                randomBooleans(439, 100),
+                growable: growable,
+              );
+              final source2 = BitList.of(
+                randomBooleans(902, 100),
+                growable: growable,
+              );
               final target = BitList.of(source1);
               target.and(source2);
               for (var i = 0; i < target.length; i++) {
@@ -501,10 +535,14 @@ void main() {
           });
           group('union', () {
             test('operator', () {
-              final source1 =
-                  BitList.of(randomBooleans(817, 100), growable: growable);
-              final source2 =
-                  BitList.of(randomBooleans(858, 100), growable: growable);
+              final source1 = BitList.of(
+                randomBooleans(817, 100),
+                growable: growable,
+              );
+              final source2 = BitList.of(
+                randomBooleans(858, 100),
+                growable: growable,
+              );
               final target = source1 | source2;
               for (var i = 0; i < target.length; i++) {
                 expect(target[i], source1[i] || source2[i]);
@@ -515,10 +553,14 @@ void main() {
               expect(() => source1 | other, throwsArgumentError);
             });
             test('in-place', () {
-              final source1 =
-                  BitList.of(randomBooleans(439, 100), growable: growable);
-              final source2 =
-                  BitList.of(randomBooleans(902, 100), growable: growable);
+              final source1 = BitList.of(
+                randomBooleans(439, 100),
+                growable: growable,
+              );
+              final source2 = BitList.of(
+                randomBooleans(902, 100),
+                growable: growable,
+              );
               final target = BitList.of(source1);
               target.or(source2);
               for (var i = 0; i < target.length; i++) {
@@ -527,10 +569,14 @@ void main() {
             });
           });
           test('difference', () {
-            final source1 =
-                BitList.of(randomBooleans(364, 100), growable: growable);
-            final source2 =
-                BitList.of(randomBooleans(243, 100), growable: growable);
+            final source1 = BitList.of(
+              randomBooleans(364, 100),
+              growable: growable,
+            );
+            final source2 = BitList.of(
+              randomBooleans(243, 100),
+              growable: growable,
+            );
             final target = source1 - source2;
             for (var i = 0; i < target.length; i++) {
               expect(target[i], source1[i] && !source2[i]);
@@ -542,8 +588,10 @@ void main() {
           });
           test('shift-left', () {
             for (var len = 0; len < 100; len++) {
-              final source = BitList.of(randomBooleans(836 * len, len),
-                  growable: growable);
+              final source = BitList.of(
+                randomBooleans(836 * len, len),
+                growable: growable,
+              );
               for (var shift = 0; shift <= len + 10; shift++) {
                 final target = source << shift;
                 if (shift == 0) {
@@ -561,8 +609,10 @@ void main() {
           });
           test('shift-right', () {
             for (var len = 0; len < 100; len++) {
-              final source = BitList.of(randomBooleans(963 * len, len),
-                  growable: growable);
+              final source = BitList.of(
+                randomBooleans(963 * len, len),
+                growable: growable,
+              );
               for (var shift = 0; shift <= len + 10; shift++) {
                 final target = source >> shift;
                 if (shift == 0) {
@@ -645,18 +695,26 @@ void main() {
             expect(() => list.clear(), throwsUnsupportedError);
             expect(() => list.insert(2, true), throwsUnsupportedError);
             expect(
-                () => list.insertAll(2, [true, false]), throwsUnsupportedError);
+              () => list.insertAll(2, [true, false]),
+              throwsUnsupportedError,
+            );
             expect(() => list.length = 10, throwsUnsupportedError);
             expect(() => list.remove(true), throwsUnsupportedError);
             expect(() => list.removeAt(2), throwsUnsupportedError);
             expect(() => list.removeLast(), throwsUnsupportedError);
             expect(() => list.removeRange(2, 4), throwsUnsupportedError);
-            expect(() => list.removeWhere((value) => true),
-                throwsUnsupportedError);
-            expect(() => list.replaceRange(2, 4, [true, false]),
-                throwsUnsupportedError);
-            expect(() => list.retainWhere((value) => false),
-                throwsUnsupportedError);
+            expect(
+              () => list.removeWhere((value) => true),
+              throwsUnsupportedError,
+            );
+            expect(
+              () => list.replaceRange(2, 4, [true, false]),
+              throwsUnsupportedError,
+            );
+            expect(
+              () => list.retainWhere((value) => false),
+              throwsUnsupportedError,
+            );
           });
         }
       });
@@ -702,16 +760,20 @@ void main() {
           test('prefix', () {
             for (var i = 0; i <= list.length; i++) {
               expect(
-                  tree.prefix(i), list.getRange(0, i).fold(0, (a, b) => a + b),
-                  reason: '$i');
+                tree.prefix(i),
+                list.getRange(0, i).fold(0, (a, b) => a + b),
+                reason: '$i',
+              );
             }
           });
           test('range', () {
             for (var i = 0; i <= list.length; i++) {
               for (var j = i; j <= list.length; j++) {
-                expect(tree.range(i, j),
-                    list.getRange(i, j).fold(0, (a, b) => a + b),
-                    reason: '$i..$j');
+                expect(
+                  tree.range(i, j),
+                  list.getRange(i, j).fold(0, (a, b) => a + b),
+                  reason: '$i..$j',
+                );
               }
             }
           });
@@ -729,7 +791,9 @@ void main() {
       final random = Random(572315);
       for (var i = 0; i < 10; i++) {
         final list = List.generate(
-            random.nextInt(10000), (index) => random.nextInt(1000));
+          random.nextInt(10000),
+          (index) => random.nextInt(1000),
+        );
         final tree = FenwickTree.of(list);
         expect(tree.toList(), list);
         expect(List.of(tree), list);
@@ -749,7 +813,7 @@ void main() {
         final iterable = [1, 2, 3, 4].chunked(2);
         expect(iterable, [
           [1, 2],
-          [3, 4]
+          [3, 4],
         ]);
       });
       test('odd', () {
@@ -757,7 +821,7 @@ void main() {
         expect(iterable, [
           [1, 2],
           [3, 4],
-          [5]
+          [5],
         ]);
       });
       group('with padding', () {
@@ -769,7 +833,7 @@ void main() {
           final iterable = [1, 2, 3, 4].chunkedWithPadding(2, 0);
           expect(iterable, [
             [1, 2],
-            [3, 4]
+            [3, 4],
           ]);
         });
         test('odd', () {
@@ -777,7 +841,7 @@ void main() {
           expect(iterable, [
             [1, 2],
             [3, 4],
-            [5, 0]
+            [5, 0],
           ]);
         });
       });
@@ -795,13 +859,23 @@ void main() {
             ['a'],
             ['b'],
             ['c'],
-            ['d']
+            ['d'],
           ]);
         });
         test('take 2', () {
           final iterable = letters.combinations(2, repetitions: true);
-          expect(iterable.map(joiner),
-              ['aa', 'ab', 'ac', 'ad', 'bb', 'bc', 'bd', 'cc', 'cd', 'dd']);
+          expect(iterable.map(joiner), [
+            'aa',
+            'ab',
+            'ac',
+            'ad',
+            'bb',
+            'bc',
+            'bd',
+            'cc',
+            'cd',
+            'dd',
+          ]);
         });
         test('take 3', () {
           final iterable = letters.combinations(3, repetitions: true);
@@ -825,7 +899,7 @@ void main() {
             'ccc',
             'ccd',
             'cdd',
-            'ddd'
+            'ddd',
           ]);
         });
         test('take 4', () {
@@ -865,7 +939,7 @@ void main() {
             'cccd',
             'ccdd',
             'cddd',
-            'dddd'
+            'dddd',
           ]);
         });
         test('take 5', () {
@@ -892,7 +966,7 @@ void main() {
             ['a'],
             ['b'],
             ['c'],
-            ['d']
+            ['d'],
           ]);
         });
         test('take 2', () {
@@ -910,12 +984,18 @@ void main() {
       });
       test('range error', () {
         expect(() => letters.combinations(-1), throwsRangeError);
-        expect(() => letters.combinations(-1, repetitions: true),
-            throwsRangeError);
-        expect(() => letters.combinations(-1, repetitions: false),
-            throwsRangeError);
-        expect(() => letters.combinations(5, repetitions: false),
-            throwsRangeError);
+        expect(
+          () => letters.combinations(-1, repetitions: true),
+          throwsRangeError,
+        );
+        expect(
+          () => letters.combinations(-1, repetitions: false),
+          throwsRangeError,
+        );
+        expect(
+          () => letters.combinations(5, repetitions: false),
+          throwsRangeError,
+        );
       });
     });
     group('count', () {
@@ -947,9 +1027,11 @@ void main() {
     group('flatMap', () {
       test('empty', () {
         expect(
-            <int>[].flatMap<String>(
-                (each) => throw StateError('Never to be called')),
-            isEmpty);
+          <int>[].flatMap<String>(
+            (each) => throw StateError('Never to be called'),
+          ),
+          isEmpty,
+        );
       });
       test('expand', () {
         expect(['a'].flatMap((each) => [1, 2]), [1, 2]);
@@ -964,21 +1046,23 @@ void main() {
       });
       test('single', () {
         expect(
-            [
-              [1],
-              [2],
-              [3],
-            ].flatten(),
-            [1, 2, 3]);
+          [
+            [1],
+            [2],
+            [3],
+          ].flatten(),
+          [1, 2, 3],
+        );
       });
       test('double', () {
         expect(
-            [
-              [1, 2],
-              [3, 4],
-              [5, 6],
-            ].flatten(),
-            [1, 2, 3, 4, 5, 6]);
+          [
+            [1, 2],
+            [3, 4],
+            [5, 6],
+          ].flatten(),
+          [1, 2, 3, 4, 5, 6],
+        );
       });
     });
     group('deepFlatten', () {
@@ -990,16 +1074,17 @@ void main() {
       });
       test('nested', () {
         expect(
+          [
+            1,
+            2,
             [
-              1,
-              2,
-              [
-                3,
-                4,
-                [5, 6]
-              ]
-            ].deepFlatten<int>(),
-            [1, 2, 3, 4, 5, 6]);
+              3,
+              4,
+              [5, 6],
+            ],
+          ].deepFlatten<int>(),
+          [1, 2, 3, 4, 5, 6],
+        );
       });
       test('error', () {
         expect(() => [1, 'hello'].deepFlatten<int>(), throwsArgumentError);
@@ -1014,8 +1099,14 @@ void main() {
       });
       test('groupBy basic', () {
         final iterable = example.groupBy<String>();
-        expect(
-            iterable.map((each) => each.key), ['a', 'b', 'c', 'd', 'a', 'b']);
+        expect(iterable.map((each) => each.key), [
+          'a',
+          'b',
+          'c',
+          'd',
+          'a',
+          'b',
+        ]);
         expect(iterable.map((each) => each.values), [
           ['a', 'a', 'a', 'a'],
           ['b', 'b', 'b'],
@@ -1034,7 +1125,7 @@ void main() {
           ['d'],
           ['c', 'c'],
           ['b', 'b', 'b'],
-          ['a', 'a', 'a', 'a']
+          ['a', 'a', 'a', 'a'],
         ]);
       });
     });
@@ -1047,8 +1138,11 @@ void main() {
         final iterable = ['a', 'b', 'c'].indexed();
         expect(iterable.map((each) => each.key), [0, 1, 2]);
         expect(iterable.map((each) => each.value), ['a', 'b', 'c']);
-        expect(iterable.map((each) => each.toString()),
-            ['MapEntry(0: a)', 'MapEntry(1: b)', 'MapEntry(2: c)']);
+        expect(iterable.map((each) => each.toString()), [
+          'MapEntry(0: a)',
+          'MapEntry(1: b)',
+          'MapEntry(2: c)',
+        ]);
       });
       test('start', () {
         final actual = ['a', 'b']
@@ -1282,14 +1376,7 @@ void main() {
         });
         test('2 of 3', () {
           final iterator = 'abc'.toList().permutations(2);
-          expect(iterator.map(joiner), [
-            'ab',
-            'ac',
-            'ba',
-            'bc',
-            'ca',
-            'cb',
-          ]);
+          expect(iterator.map(joiner), ['ab', 'ac', 'ba', 'bc', 'ca', 'cb']);
         });
         test('2 of 4', () {
           final iterator = 'abcd'.toList().permutations(2);
@@ -1339,8 +1426,10 @@ void main() {
             const Point<int>(3, 3),
             const Point<int>(1, 1),
           ];
-          expect(list.nextPermutation(comparator: (a, b) => a.x.compareTo(b.x)),
-              isTrue);
+          expect(
+            list.nextPermutation(comparator: (a, b) => a.x.compareTo(b.x)),
+            isTrue,
+          );
           expect(list, [
             const Point<int>(3, 3),
             const Point<int>(1, 1),
@@ -1375,9 +1464,9 @@ void main() {
             const Point<int>(1, 1),
           ];
           expect(
-              list.previousPermutation(
-                  comparator: (a, b) => a.x.compareTo(b.x)),
-              isTrue);
+            list.previousPermutation(comparator: (a, b) => a.x.compareTo(b.x)),
+            isTrue,
+          );
           expect(list, [
             const Point<int>(2, 2),
             const Point<int>(1, 1),
@@ -1405,19 +1494,21 @@ void main() {
     });
     group('product', () {
       test('2', () {
-        final iterable = [
-          [1, 2],
-        ].product();
+        final iterable =
+            [
+              [1, 2],
+            ].product();
         expect(iterable, [
           [1],
           [2],
         ]);
       });
       test('2 x 2', () {
-        final iterable = [
-          [1, 2],
-          [3, 4],
-        ].product();
+        final iterable =
+            [
+              [1, 2],
+              [3, 4],
+            ].product();
         expect(iterable, [
           [1, 3],
           [1, 4],
@@ -1426,11 +1517,12 @@ void main() {
         ]);
       });
       test('1 x 2 x 3', () {
-        final iterable = [
-          [1],
-          [2, 3],
-          [4, 5, 6],
-        ].product();
+        final iterable =
+            [
+              [1],
+              [2, 3],
+              [4, 5, 6],
+            ].product();
         expect(iterable, [
           [1, 2, 4],
           [1, 2, 5],
@@ -1441,11 +1533,12 @@ void main() {
         ]);
       });
       test('3 x 2 x 1', () {
-        final iterable = [
-          [1, 2, 3],
-          [4, 5],
-          [6],
-        ].product();
+        final iterable =
+            [
+              [1, 2, 3],
+              [4, 5],
+              [6],
+            ].product();
         expect(iterable, [
           [1, 4, 6],
           [1, 5, 6],
@@ -1515,29 +1608,38 @@ void main() {
         expect(<Iterable<int>>[].product(), isEmpty);
         expect(<Iterable<int>>[[]].product(), isEmpty);
         expect(
-            <Iterable<int>>[
-              [1],
-              []
-            ].product(),
-            isEmpty);
+          <Iterable<int>>[
+            [1],
+            [],
+          ].product(),
+          isEmpty,
+        );
         expect(
-            <Iterable<int>>[
-              [],
-              [1]
-            ].product(),
-            isEmpty);
+          <Iterable<int>>[
+            [],
+            [1],
+          ].product(),
+          isEmpty,
+        );
         expect(
-            <Iterable<int>>[
-              [1],
-              [],
-              [1]
-            ].product(),
-            isEmpty);
+          <Iterable<int>>[
+            [1],
+            [],
+            [1],
+          ].product(),
+          isEmpty,
+        );
       });
       group('tuple', () {
         test('basic', () {
-          expect((['x', 'y'], [1, 2, 3]).product(),
-              [('x', 1), ('x', 2), ('x', 3), ('y', 1), ('y', 2), ('y', 3)]);
+          expect((['x', 'y'], [1, 2, 3]).product(), [
+            ('x', 1),
+            ('x', 2),
+            ('x', 3),
+            ('y', 1),
+            ('y', 2),
+            ('y', 3),
+          ]);
         });
         test('empty', () {
           expect((<String>[], <int>[]).product(), isEmpty);
@@ -1691,44 +1793,39 @@ void main() {
         test('empty', () {
           var s = 0, b = 0;
           expect(
-              <int>[].separatedBy(
-                () => s++,
-                before: () => b++ + 5,
-              ),
-              isEmpty);
+            <int>[].separatedBy(() => s++, before: () => b++ + 5),
+            isEmpty,
+          );
           expect(s, 0);
           expect(b, 0);
         });
         test('single', () {
           var s = 0, b = 0;
-          expect(
-              [10].separatedBy(
-                () => s++,
-                before: () => b++ + 5,
-              ),
-              [5, 10]);
+          expect([10].separatedBy(() => s++, before: () => b++ + 5), [5, 10]);
           expect(s, 0);
           expect(b, 1);
         });
         test('double', () {
           var s = 0, b = 0;
-          expect(
-              [10, 20].separatedBy(
-                () => s++,
-                before: () => b++ + 5,
-              ),
-              [5, 10, 0, 20]);
+          expect([10, 20].separatedBy(() => s++, before: () => b++ + 5), [
+            5,
+            10,
+            0,
+            20,
+          ]);
           expect(s, 1);
           expect(b, 1);
         });
         test('triple', () {
           var s = 0, b = 0;
-          expect(
-              [10, 20, 30].separatedBy(
-                () => s++,
-                before: () => b++ + 5,
-              ),
-              [5, 10, 0, 20, 1, 30]);
+          expect([10, 20, 30].separatedBy(() => s++, before: () => b++ + 5), [
+            5,
+            10,
+            0,
+            20,
+            1,
+            30,
+          ]);
           expect(s, 2);
           expect(b, 1);
         });
@@ -1737,44 +1834,39 @@ void main() {
         test('empty', () {
           var s = 0, a = 0;
           expect(
-              <int>[].separatedBy(
-                () => s++,
-                after: () => a++ + 15,
-              ),
-              isEmpty);
+            <int>[].separatedBy(() => s++, after: () => a++ + 15),
+            isEmpty,
+          );
           expect(s, 0);
           expect(a, 0);
         });
         test('single', () {
           var s = 0, a = 0;
-          expect(
-              [10].separatedBy(
-                () => s++,
-                after: () => a++ + 15,
-              ),
-              [10, 15]);
+          expect([10].separatedBy(() => s++, after: () => a++ + 15), [10, 15]);
           expect(s, 0);
           expect(a, 1);
         });
         test('double', () {
           var s = 0, a = 0;
-          expect(
-              [10, 20].separatedBy(
-                () => s++,
-                after: () => a++ + 15,
-              ),
-              [10, 0, 20, 15]);
+          expect([10, 20].separatedBy(() => s++, after: () => a++ + 15), [
+            10,
+            0,
+            20,
+            15,
+          ]);
           expect(s, 1);
           expect(a, 1);
         });
         test('triple', () {
           var s = 0, a = 0;
-          expect(
-              [10, 20, 30].separatedBy(
-                () => s++,
-                after: () => a++ + 15,
-              ),
-              [10, 0, 20, 1, 30, 15]);
+          expect([10, 20, 30].separatedBy(() => s++, after: () => a++ + 15), [
+            10,
+            0,
+            20,
+            1,
+            30,
+            15,
+          ]);
           expect(s, 2);
           expect(a, 1);
         });
@@ -1783,12 +1875,13 @@ void main() {
         test('empty', () {
           var s = 0, b = 0, a = 0;
           expect(
-              <int>[].separatedBy(
-                () => s++,
-                before: () => b++ + 5,
-                after: () => a++ + 15,
-              ),
-              isEmpty);
+            <int>[].separatedBy(
+              () => s++,
+              before: () => b++ + 5,
+              after: () => a++ + 15,
+            ),
+            isEmpty,
+          );
           expect(s, 0);
           expect(b, 0);
           expect(a, 0);
@@ -1796,12 +1889,13 @@ void main() {
         test('single', () {
           var s = 0, b = 0, a = 0;
           expect(
-              [10].separatedBy(
-                () => s++,
-                before: () => b++ + 5,
-                after: () => a++ + 15,
-              ),
-              [5, 10, 15]);
+            [10].separatedBy(
+              () => s++,
+              before: () => b++ + 5,
+              after: () => a++ + 15,
+            ),
+            [5, 10, 15],
+          );
           expect(s, 0);
           expect(b, 1);
           expect(a, 1);
@@ -1809,12 +1903,13 @@ void main() {
         test('double', () {
           var s = 0, b = 0, a = 0;
           expect(
-              [10, 20].separatedBy(
-                () => s++,
-                before: () => b++ + 5,
-                after: () => a++ + 15,
-              ),
-              [5, 10, 0, 20, 15]);
+            [10, 20].separatedBy(
+              () => s++,
+              before: () => b++ + 5,
+              after: () => a++ + 15,
+            ),
+            [5, 10, 0, 20, 15],
+          );
           expect(s, 1);
           expect(b, 1);
           expect(a, 1);
@@ -1822,12 +1917,13 @@ void main() {
         test('triple', () {
           var s = 0, b = 0, a = 0;
           expect(
-              [10, 20, 30].separatedBy(
-                () => s++,
-                before: () => b++ + 5,
-                after: () => a++ + 15,
-              ),
-              [5, 10, 0, 20, 1, 30, 15]);
+            [10, 20, 30].separatedBy(
+              () => s++,
+              before: () => b++ + 5,
+              after: () => a++ + 15,
+            ),
+            [5, 10, 0, 20, 1, 30, 15],
+          );
           expect(s, 2);
           expect(b, 1);
           expect(a, 1);
@@ -1840,15 +1936,18 @@ void main() {
       });
       test('default', () {
         const iterable = ['a', 'bb', 'ccc'];
-        expect(iterable.toMap<String, String>(),
-            {'a': 'a', 'bb': 'bb', 'ccc': 'ccc'});
+        expect(iterable.toMap<String, String>(), {
+          'a': 'a',
+          'bb': 'bb',
+          'ccc': 'ccc',
+        });
       });
       test('custom', () {
         const iterable = ['a', 'bb', 'ccc'];
         expect(
-            iterable.toMap(
-                key: (each) => each[0], value: (each) => each.length),
-            {'a': 1, 'b': 2, 'c': 3});
+          iterable.toMap(key: (each) => each[0], value: (each) => each.length),
+          {'a': 1, 'b': 2, 'c': 3},
+        );
       });
     });
     group('unique', () {
@@ -1868,16 +1967,23 @@ void main() {
         expect(uniques, [1, 2, 3]);
       });
       test('factory', () {
-        final uniques = [1, 2, 2, 3, 3, 3]
-            .unique(factory: StorageStrategy.positiveInteger().createSet);
+        final uniques = [
+          1,
+          2,
+          2,
+          3,
+          3,
+          3,
+        ].unique(factory: StorageStrategy.positiveInteger().createSet);
         expect(uniques, [1, 2, 3]);
         expect(uniques, [1, 2, 3]);
       });
       test('equals and hashCode', () {
         final a = const Point(1, 2), b = const Point(1, 1) + const Point(0, 1);
         final uniques = [a, b, a].unique(
-            equals: (a, b) => identical(a, b),
-            hashCode: (a) => identityHashCode(a));
+          equals: (a, b) => identical(a, b),
+          hashCode: (a) => identityHashCode(a),
+        );
         expect(uniques, [a, b]);
         expect(uniques, [a, b]);
       });
@@ -2050,44 +2156,48 @@ void main() {
         });
         test('single', () {
           expect(
-              [
-                [1, 2, 3]
-              ].zip(),
-              [
-                [1],
-                [2],
-                [3]
-              ]);
+            [
+              [1, 2, 3],
+            ].zip(),
+            [
+              [1],
+              [2],
+              [3],
+            ],
+          );
         });
         test('pair', () {
           expect(
-              [
-                [1, 2, 3],
-                ['a', 'b', 'c'],
-              ].zip(),
-              [
-                [1, 'a'],
-                [2, 'b'],
-                [3, 'c'],
-              ]);
+            [
+              [1, 2, 3],
+              ['a', 'b', 'c'],
+            ].zip(),
+            [
+              [1, 'a'],
+              [2, 'b'],
+              [3, 'c'],
+            ],
+          );
           expect(
-              [
-                [1, 2],
-                ['a', 'b', 'c'],
-              ].zip(),
-              [
-                [1, 'a'],
-                [2, 'b'],
-              ]);
+            [
+              [1, 2],
+              ['a', 'b', 'c'],
+            ].zip(),
+            [
+              [1, 'a'],
+              [2, 'b'],
+            ],
+          );
           expect(
-              [
-                [1, 2, 3],
-                ['a', 'b'],
-              ].zip(),
-              [
-                [1, 'a'],
-                [2, 'b'],
-              ]);
+            [
+              [1, 2, 3],
+              ['a', 'b'],
+            ].zip(),
+            [
+              [1, 'a'],
+              [2, 'b'],
+            ],
+          );
         });
         test('tuple', () {
           expect(([1, 2, 3], ['a', 'b', 'c']).zip(), [
@@ -2095,14 +2205,8 @@ void main() {
             (2, 'b'),
             (3, 'c'),
           ]);
-          expect(([1, 2], ['a', 'b', 'c']).zip(), [
-            (1, 'a'),
-            (2, 'b'),
-          ]);
-          expect(([1, 2, 3], ['a', 'b']).zip(), [
-            (1, 'a'),
-            (2, 'b'),
-          ]);
+          expect(([1, 2], ['a', 'b', 'c']).zip(), [(1, 'a'), (2, 'b')]);
+          expect(([1, 2, 3], ['a', 'b']).zip(), [(1, 'a'), (2, 'b')]);
         });
       });
       group('partial', () {
@@ -2111,46 +2215,50 @@ void main() {
         });
         test('single', () {
           expect(
-              [
-                [1, 2, 3]
-              ].zipPartial(),
-              [
-                [1],
-                [2],
-                [3]
-              ]);
+            [
+              [1, 2, 3],
+            ].zipPartial(),
+            [
+              [1],
+              [2],
+              [3],
+            ],
+          );
         });
         test('pair', () {
           expect(
-              [
-                [1, 2, 3],
-                ['a', 'b', 'c'],
-              ].zipPartial(),
-              [
-                [1, 'a'],
-                [2, 'b'],
-                [3, 'c'],
-              ]);
+            [
+              [1, 2, 3],
+              ['a', 'b', 'c'],
+            ].zipPartial(),
+            [
+              [1, 'a'],
+              [2, 'b'],
+              [3, 'c'],
+            ],
+          );
           expect(
-              [
-                [1, 2],
-                ['a', 'b', 'c'],
-              ].zipPartial(),
-              [
-                [1, 'a'],
-                [2, 'b'],
-                [null, 'c'],
-              ]);
+            [
+              [1, 2],
+              ['a', 'b', 'c'],
+            ].zipPartial(),
+            [
+              [1, 'a'],
+              [2, 'b'],
+              [null, 'c'],
+            ],
+          );
           expect(
-              [
-                [1, 2, 3],
-                ['a', 'b'],
-              ].zipPartial(),
-              [
-                [1, 'a'],
-                [2, 'b'],
-                [3, null],
-              ]);
+            [
+              [1, 2, 3],
+              ['a', 'b'],
+            ].zipPartial(),
+            [
+              [1, 'a'],
+              [2, 'b'],
+              [3, null],
+            ],
+          );
         });
         test('tuple', () {
           expect(([1, 2, 3], ['a', 'b', 'c']).zipPartial(), [
@@ -2176,46 +2284,50 @@ void main() {
         });
         test('single', () {
           expect(
-              [
-                [1, 2, 3]
-              ].zipPartialWith(0),
-              [
-                [1],
-                [2],
-                [3]
-              ]);
+            [
+              [1, 2, 3],
+            ].zipPartialWith(0),
+            [
+              [1],
+              [2],
+              [3],
+            ],
+          );
         });
         test('pair', () {
           expect(
-              [
-                [1, 2, 3],
-                ['a', 'b', 'c'],
-              ].zipPartialWith(0),
-              [
-                [1, 'a'],
-                [2, 'b'],
-                [3, 'c'],
-              ]);
+            [
+              [1, 2, 3],
+              ['a', 'b', 'c'],
+            ].zipPartialWith(0),
+            [
+              [1, 'a'],
+              [2, 'b'],
+              [3, 'c'],
+            ],
+          );
           expect(
-              [
-                [1, 2],
-                ['a', 'b', 'c'],
-              ].zipPartialWith(0),
-              [
-                [1, 'a'],
-                [2, 'b'],
-                [0, 'c'],
-              ]);
+            [
+              [1, 2],
+              ['a', 'b', 'c'],
+            ].zipPartialWith(0),
+            [
+              [1, 'a'],
+              [2, 'b'],
+              [0, 'c'],
+            ],
+          );
           expect(
-              [
-                [1, 2, 3],
-                ['a', 'b'],
-              ].zipPartialWith(0),
-              [
-                [1, 'a'],
-                [2, 'b'],
-                [3, 0],
-              ]);
+            [
+              [1, 2, 3],
+              ['a', 'b'],
+            ].zipPartialWith(0),
+            [
+              [1, 'a'],
+              [2, 'b'],
+              [3, 0],
+            ],
+          );
         });
         test('tuple', () {
           expect(([1, 2, 3], ['a', 'b', 'c']).zipPartialWith((4, 'd')), [
@@ -2490,17 +2602,21 @@ void main() {
         });
         test('of', () {
           final map = ListMultimap.of(
-              ListMultimap.fromIterables(['a', 'b', 'b'], [1, 2, 3]));
+            ListMultimap.fromIterables(['a', 'b', 'b'], [1, 2, 3]),
+          );
           expect(map, hasLength(3));
           expect(map.isEmpty, isFalse);
           expect(map.isNotEmpty, isTrue);
           expect(map.keys, ['a', 'b']);
           expect(map.values, [1, 2, 3]);
-          expect(map.entries,
-              [isMapEntry('a', 1), isMapEntry('b', 2), isMapEntry('b', 3)]);
+          expect(map.entries, [
+            isMapEntry('a', 1),
+            isMapEntry('b', 2),
+            isMapEntry('b', 3),
+          ]);
           expect(map.asMap(), {
             'a': [1],
-            'b': [2, 3]
+            'b': [2, 3],
           });
           expect(map['a'], [1]);
           expect(map['b'], [2, 3]);
@@ -2515,18 +2631,23 @@ void main() {
           expect(map.entries, isEmpty);
         });
         test('fromIterable', () {
-          final map = ListMultimap<String, int>.fromIterable(IntegerRange(3),
-              key: (i) => String.fromCharCode((i as int) + 97),
-              value: (i) => (i as int) + 1);
+          final map = ListMultimap<String, int>.fromIterable(
+            IntegerRange(3),
+            key: (i) => String.fromCharCode((i as int) + 97),
+            value: (i) => (i as int) + 1,
+          );
           expect(map, hasLength(3));
           expect(map.keys, ['a', 'b', 'c']);
           expect(map.values, [1, 2, 3]);
-          expect(map.entries,
-              [isMapEntry('a', 1), isMapEntry('b', 2), isMapEntry('c', 3)]);
+          expect(map.entries, [
+            isMapEntry('a', 1),
+            isMapEntry('b', 2),
+            isMapEntry('c', 3),
+          ]);
           expect(map.asMap(), {
             'a': [1],
             'b': [2],
-            'c': [3]
+            'c': [3],
           });
           expect(map['a'], [1]);
           expect(map['b'], [2]);
@@ -2537,12 +2658,15 @@ void main() {
           expect(map, hasLength(3));
           expect(map.keys, [0, 1, 2]);
           expect(map.values, [0, 1, 2]);
-          expect(map.entries,
-              [isMapEntry(0, 0), isMapEntry(1, 1), isMapEntry(2, 2)]);
+          expect(map.entries, [
+            isMapEntry(0, 0),
+            isMapEntry(1, 1),
+            isMapEntry(2, 2),
+          ]);
           expect(map.asMap(), {
             0: [0],
             1: [1],
-            2: [2]
+            2: [2],
           });
           expect(map[0], [0]);
           expect(map[1], [1]);
@@ -2553,30 +2677,41 @@ void main() {
           expect(map, hasLength(3));
           expect(map.keys, ['a', 'b']);
           expect(map.values, [1, 2, 3]);
-          expect(map.entries,
-              [isMapEntry('a', 1), isMapEntry('b', 2), isMapEntry('b', 3)]);
+          expect(map.entries, [
+            isMapEntry('a', 1),
+            isMapEntry('b', 2),
+            isMapEntry('b', 3),
+          ]);
           expect(map.asMap(), {
             'a': [1],
-            'b': [2, 3]
+            'b': [2, 3],
           });
           expect(map['a'], [1]);
           expect(map['b'], [2, 3]);
         });
         test('fromIterables (error)', () {
-          expect(() => ListMultimap.fromIterables(['a', 'b', 'b'], [1, 2]),
-              throwsArgumentError);
+          expect(
+            () => ListMultimap.fromIterables(['a', 'b', 'b'], [1, 2]),
+            throwsArgumentError,
+          );
         });
         test('fromEntries', () {
-          final map = ListMultimap.fromEntries(
-              const [MapEntry('a', 1), MapEntry('b', 2), MapEntry('b', 3)]);
+          final map = ListMultimap.fromEntries(const [
+            MapEntry('a', 1),
+            MapEntry('b', 2),
+            MapEntry('b', 3),
+          ]);
           expect(map, hasLength(3));
           expect(map.keys, ['a', 'b']);
           expect(map.values, [1, 2, 3]);
-          expect(map.entries,
-              [isMapEntry('a', 1), isMapEntry('b', 2), isMapEntry('b', 3)]);
+          expect(map.entries, [
+            isMapEntry('a', 1),
+            isMapEntry('b', 2),
+            isMapEntry('b', 3),
+          ]);
           expect(map.asMap(), {
             'a': [1],
-            'b': [2, 3]
+            'b': [2, 3],
           });
           expect(map['a'], [1]);
           expect(map['b'], [2, 3]);
@@ -2585,24 +2720,31 @@ void main() {
           final target = {'a': 1, 'b': 2, 'c': 3}.toListMultimap();
           expect(target.keys, ['a', 'b', 'c']);
           expect(target.values, [1, 2, 3]);
-          expect(target.entries,
-              [isMapEntry('a', 1), isMapEntry('b', 2), isMapEntry('c', 3)]);
+          expect(target.entries, [
+            isMapEntry('a', 1),
+            isMapEntry('b', 2),
+            isMapEntry('c', 3),
+          ]);
           expect(target.asMap(), {
             'a': [1],
             'b': [2],
-            'c': [3]
+            'c': [3],
           });
         });
         test('iterable converter', () {
-          final target = ['a', 'abb', 'abb', 'bb']
-              .toListMultimap(key: (e) => e[0], value: (e) => e.length);
+          final target = [
+            'a',
+            'abb',
+            'abb',
+            'bb',
+          ].toListMultimap(key: (e) => e[0], value: (e) => e.length);
           expect(target.keys, ['a', 'b']);
           expect(target.values, [1, 3, 3, 2]);
           expect(target.entries, [
             isMapEntry('a', 1),
             isMapEntry('a', 3),
             isMapEntry('a', 3),
-            isMapEntry('b', 2)
+            isMapEntry('b', 2),
           ]);
           expect(target.asMap(), {
             'a': [1, 3, 3],
@@ -2616,11 +2758,11 @@ void main() {
           expect(target.entries, [
             isMapEntry('a', 'a'),
             isMapEntry('b', 'b'),
-            isMapEntry('b', 'b')
+            isMapEntry('b', 'b'),
           ]);
           expect(target.asMap(), {
             'a': ['a'],
-            'b': ['b', 'b']
+            'b': ['b', 'b'],
           });
         });
       });
@@ -2803,17 +2945,21 @@ void main() {
         });
         test('of', () {
           final map = SetMultimap.of(
-              SetMultimap.fromIterables(['a', 'b', 'b'], [1, 2, 3]));
+            SetMultimap.fromIterables(['a', 'b', 'b'], [1, 2, 3]),
+          );
           expect(map, hasLength(3));
           expect(map.isEmpty, isFalse);
           expect(map.isNotEmpty, isTrue);
           expect(map.keys, ['a', 'b']);
           expect(map.values, [1, 2, 3]);
-          expect(map.entries,
-              [isMapEntry('a', 1), isMapEntry('b', 2), isMapEntry('b', 3)]);
+          expect(map.entries, [
+            isMapEntry('a', 1),
+            isMapEntry('b', 2),
+            isMapEntry('b', 3),
+          ]);
           expect(map.asMap(), {
             'a': [1],
-            'b': [2, 3]
+            'b': [2, 3],
           });
           expect(map['a'], [1]);
           expect(map['b'], [2, 3]);
@@ -2828,18 +2974,23 @@ void main() {
           expect(map.entries, isEmpty);
         });
         test('fromIterable', () {
-          final map = SetMultimap<String, int>.fromIterable(IntegerRange(3),
-              key: (i) => String.fromCharCode((i as int) + 97),
-              value: (i) => (i as int) + 1);
+          final map = SetMultimap<String, int>.fromIterable(
+            IntegerRange(3),
+            key: (i) => String.fromCharCode((i as int) + 97),
+            value: (i) => (i as int) + 1,
+          );
           expect(map, hasLength(3));
           expect(map.keys, ['a', 'b', 'c']);
           expect(map.values, [1, 2, 3]);
-          expect(map.entries,
-              [isMapEntry('a', 1), isMapEntry('b', 2), isMapEntry('c', 3)]);
+          expect(map.entries, [
+            isMapEntry('a', 1),
+            isMapEntry('b', 2),
+            isMapEntry('c', 3),
+          ]);
           expect(map.asMap(), {
             'a': [1],
             'b': [2],
-            'c': [3]
+            'c': [3],
           });
           expect(map['a'], [1]);
           expect(map['b'], [2]);
@@ -2850,12 +3001,15 @@ void main() {
           expect(map, hasLength(3));
           expect(map.keys, [0, 1, 2]);
           expect(map.values, [0, 1, 2]);
-          expect(map.entries,
-              [isMapEntry(0, 0), isMapEntry(1, 1), isMapEntry(2, 2)]);
+          expect(map.entries, [
+            isMapEntry(0, 0),
+            isMapEntry(1, 1),
+            isMapEntry(2, 2),
+          ]);
           expect(map.asMap(), {
             0: [0],
             1: [1],
-            2: [2]
+            2: [2],
           });
           expect(map[0], [0]);
           expect(map[1], [1]);
@@ -2866,30 +3020,41 @@ void main() {
           expect(map, hasLength(3));
           expect(map.keys, ['a', 'b']);
           expect(map.values, [1, 2, 3]);
-          expect(map.entries,
-              [isMapEntry('a', 1), isMapEntry('b', 2), isMapEntry('b', 3)]);
+          expect(map.entries, [
+            isMapEntry('a', 1),
+            isMapEntry('b', 2),
+            isMapEntry('b', 3),
+          ]);
           expect(map.asMap(), {
             'a': [1],
-            'b': [2, 3]
+            'b': [2, 3],
           });
           expect(map['a'], [1]);
           expect(map['b'], [2, 3]);
         });
         test('fromIterables (error)', () {
-          expect(() => SetMultimap.fromIterables(['a', 'b', 'b'], [1, 2]),
-              throwsArgumentError);
+          expect(
+            () => SetMultimap.fromIterables(['a', 'b', 'b'], [1, 2]),
+            throwsArgumentError,
+          );
         });
         test('fromEntries', () {
-          final map = SetMultimap.fromEntries(
-              const [MapEntry('a', 1), MapEntry('b', 2), MapEntry('b', 3)]);
+          final map = SetMultimap.fromEntries(const [
+            MapEntry('a', 1),
+            MapEntry('b', 2),
+            MapEntry('b', 3),
+          ]);
           expect(map, hasLength(3));
           expect(map.keys, ['a', 'b']);
           expect(map.values, [1, 2, 3]);
-          expect(map.entries,
-              [isMapEntry('a', 1), isMapEntry('b', 2), isMapEntry('b', 3)]);
+          expect(map.entries, [
+            isMapEntry('a', 1),
+            isMapEntry('b', 2),
+            isMapEntry('b', 3),
+          ]);
           expect(map.asMap(), {
             'a': [1],
-            'b': [2, 3]
+            'b': [2, 3],
           });
           expect(map['a'], [1]);
           expect(map['b'], [2, 3]);
@@ -2898,21 +3063,31 @@ void main() {
           final target = {'a': 1, 'b': 2, 'c': 3}.toSetMultimap();
           expect(target.keys, ['a', 'b', 'c']);
           expect(target.values, [1, 2, 3]);
-          expect(target.entries,
-              [isMapEntry('a', 1), isMapEntry('b', 2), isMapEntry('c', 3)]);
+          expect(target.entries, [
+            isMapEntry('a', 1),
+            isMapEntry('b', 2),
+            isMapEntry('c', 3),
+          ]);
           expect(target.asMap(), {
             'a': [1],
             'b': [2],
-            'c': [3]
+            'c': [3],
           });
         });
         test('iterable converter', () {
-          final target = ['a', 'abb', 'abb', 'bb']
-              .toSetMultimap(key: (e) => e[0], value: (e) => e.length);
+          final target = [
+            'a',
+            'abb',
+            'abb',
+            'bb',
+          ].toSetMultimap(key: (e) => e[0], value: (e) => e.length);
           expect(target.keys, ['a', 'b']);
           expect(target.values, [1, 3, 2]);
-          expect(target.entries,
-              [isMapEntry('a', 1), isMapEntry('a', 3), isMapEntry('b', 2)]);
+          expect(target.entries, [
+            isMapEntry('a', 1),
+            isMapEntry('a', 3),
+            isMapEntry('b', 2),
+          ]);
           expect(target.asMap(), {
             'a': {1, 3},
             'b': {2},
@@ -2925,7 +3100,7 @@ void main() {
           expect(target.entries, [isMapEntry('a', 'a'), isMapEntry('b', 'b')]);
           expect(target.asMap(), {
             'a': {'a'},
-            'b': {'b'}
+            'b': {'b'},
           });
         });
       });
@@ -3107,9 +3282,13 @@ void main() {
         expect(set, hasLength(3));
         expect(set, unorderedEquals(['a', 'b', 'c']));
         expect(
-            set.entrySet,
-            unorderedEquals(
-                [isMapEntry('a', 1), isMapEntry('b', 1), isMapEntry('c', 1)]));
+          set.entrySet,
+          unorderedEquals([
+            isMapEntry('a', 1),
+            isMapEntry('b', 1),
+            isMapEntry('c', 1),
+          ]),
+        );
         expect(set.elementSet, unorderedEquals(['a', 'b', 'c']));
         expect(set.elementCounts, unorderedEquals([1, 1, 1]));
         expect(set.distinct, unorderedEquals(['a', 'b', 'c']));
@@ -3132,9 +3311,13 @@ void main() {
         expect(set, hasLength(6));
         expect(set, unorderedEquals(['a', 'a', 'a', 'b', 'b', 'c']));
         expect(
-            set.entrySet,
-            unorderedEquals(
-                [isMapEntry('a', 3), isMapEntry('b', 2), isMapEntry('c', 1)]));
+          set.entrySet,
+          unorderedEquals([
+            isMapEntry('a', 3),
+            isMapEntry('b', 2),
+            isMapEntry('c', 1),
+          ]),
+        );
         expect(set.elementSet, unorderedEquals(['a', 'b', 'c']));
         expect(set.elementCounts, unorderedEquals([3, 2, 1]));
         expect(set.distinct, unorderedEquals(['a', 'b', 'c']));
@@ -3146,9 +3329,13 @@ void main() {
         expect(set, hasLength(3));
         expect(set, unorderedEquals(['a', 'b', 'c']));
         expect(
-            set.entrySet,
-            unorderedEquals(
-                [isMapEntry('a', 1), isMapEntry('b', 1), isMapEntry('c', 1)]));
+          set.entrySet,
+          unorderedEquals([
+            isMapEntry('a', 1),
+            isMapEntry('b', 1),
+            isMapEntry('c', 1),
+          ]),
+        );
         expect(set.elementSet, unorderedEquals(['a', 'b', 'c']));
         expect(set.elementCounts, unorderedEquals([1, 1, 1]));
         expect(set.distinct, unorderedEquals(['a', 'b', 'c']));
@@ -3160,9 +3347,13 @@ void main() {
         expect(set, hasLength(6));
         expect(set, unorderedEquals(['a', 'a', 'a', 'b', 'b', 'c']));
         expect(
-            set.entrySet,
-            unorderedEquals(
-                [isMapEntry('a', 3), isMapEntry('b', 2), isMapEntry('c', 1)]));
+          set.entrySet,
+          unorderedEquals([
+            isMapEntry('a', 3),
+            isMapEntry('b', 2),
+            isMapEntry('c', 1),
+          ]),
+        );
         expect(set.elementSet, unorderedEquals(['a', 'b', 'c']));
         expect(set.elementCounts, unorderedEquals([3, 2, 1]));
         expect(set.distinct, unorderedEquals(['a', 'b', 'c']));
@@ -3174,55 +3365,85 @@ void main() {
         expect(set, hasLength(6));
         expect(set, unorderedEquals(['a', 'a', 'a', 'b', 'b', 'c']));
         expect(
-            set.entrySet,
-            unorderedEquals(
-                [isMapEntry('a', 3), isMapEntry('b', 2), isMapEntry('c', 1)]));
+          set.entrySet,
+          unorderedEquals([
+            isMapEntry('a', 3),
+            isMapEntry('b', 2),
+            isMapEntry('c', 1),
+          ]),
+        );
         expect(set.elementSet, unorderedEquals(['a', 'b', 'c']));
         expect(set.elementCounts, unorderedEquals([3, 2, 1]));
         expect(set.distinct, unorderedEquals(['a', 'b', 'c']));
         expect(set.counts, unorderedEquals([3, 2, 1]));
       });
       test('generate', () {
-        final set =
-            Multiset<String>.fromIterable(['a', 'a', 'a', 'b', 'b', 'c']);
+        final set = Multiset<String>.fromIterable([
+          'a',
+          'a',
+          'a',
+          'b',
+          'b',
+          'c',
+        ]);
         expect(set, isNot(isEmpty));
         expect(set, hasLength(6));
         expect(set, unorderedEquals(['a', 'a', 'a', 'b', 'b', 'c']));
         expect(
-            set.entrySet,
-            unorderedEquals(
-                [isMapEntry('a', 3), isMapEntry('b', 2), isMapEntry('c', 1)]));
+          set.entrySet,
+          unorderedEquals([
+            isMapEntry('a', 3),
+            isMapEntry('b', 2),
+            isMapEntry('c', 1),
+          ]),
+        );
         expect(set.elementSet, unorderedEquals(['a', 'b', 'c']));
         expect(set.elementCounts, unorderedEquals([3, 2, 1]));
         expect(set.distinct, unorderedEquals(['a', 'b', 'c']));
         expect(set.counts, unorderedEquals([3, 2, 1]));
       });
       test('generate with key', () {
-        final set = Multiset<int>.fromIterable(['a', 'a', 'a', 'b', 'b', 'c'],
-            key: (e) => (e as String).codeUnitAt(0));
+        final set = Multiset<int>.fromIterable([
+          'a',
+          'a',
+          'a',
+          'b',
+          'b',
+          'c',
+        ], key: (e) => (e as String).codeUnitAt(0));
         expect(set, isNot(isEmpty));
         expect(set, hasLength(6));
         expect(set, unorderedEquals([97, 97, 97, 98, 98, 99]));
         expect(
-            set.entrySet,
-            unorderedEquals(
-                [isMapEntry(97, 3), isMapEntry(98, 2), isMapEntry(99, 1)]));
+          set.entrySet,
+          unorderedEquals([
+            isMapEntry(97, 3),
+            isMapEntry(98, 2),
+            isMapEntry(99, 1),
+          ]),
+        );
         expect(set.elementSet, unorderedEquals([97, 98, 99]));
         expect(set.elementCounts, unorderedEquals([3, 2, 1]));
         expect(set.distinct, unorderedEquals([97, 98, 99]));
         expect(set.counts, unorderedEquals([3, 2, 1]));
       });
       test('generate with count', () {
-        final set = Multiset.fromIterable(['aaa', 'bb', 'c'],
-            key: (e) => (e as String).substring(0, 1),
-            count: (e) => (e as String).length);
+        final set = Multiset.fromIterable(
+          ['aaa', 'bb', 'c'],
+          key: (e) => (e as String).substring(0, 1),
+          count: (e) => (e as String).length,
+        );
         expect(set, isNot(isEmpty));
         expect(set, hasLength(6));
         expect(set, unorderedEquals(['a', 'a', 'a', 'b', 'b', 'c']));
         expect(
-            set.entrySet,
-            unorderedEquals(
-                [isMapEntry('a', 3), isMapEntry('b', 2), isMapEntry('c', 1)]));
+          set.entrySet,
+          unorderedEquals([
+            isMapEntry('a', 3),
+            isMapEntry('b', 2),
+            isMapEntry('c', 1),
+          ]),
+        );
         expect(set.elementSet, unorderedEquals(['a', 'b', 'c']));
         expect(set.elementCounts, unorderedEquals([3, 2, 1]));
         expect(set.distinct, unorderedEquals(['a', 'b', 'c']));
@@ -3234,9 +3455,13 @@ void main() {
         expect(set, hasLength(6));
         expect(set, unorderedEquals(['a', 'a', 'a', 'b', 'b', 'c']));
         expect(
-            set.entrySet,
-            unorderedEquals(
-                [isMapEntry('a', 3), isMapEntry('b', 2), isMapEntry('c', 1)]));
+          set.entrySet,
+          unorderedEquals([
+            isMapEntry('a', 3),
+            isMapEntry('b', 2),
+            isMapEntry('c', 1),
+          ]),
+        );
         expect(set.elementSet, unorderedEquals(['a', 'b', 'c']));
         expect(set.elementCounts, unorderedEquals([3, 2, 1]));
         expect(set.distinct, unorderedEquals(['a', 'b', 'c']));
@@ -3245,9 +3470,10 @@ void main() {
     });
     group('adding', () {
       test('zero', () {
-        final set = Multiset<String>()
-          ..add('a', 0)
-          ..add('b', 0);
+        final set =
+            Multiset<String>()
+              ..add('a', 0)
+              ..add('b', 0);
         expect(set, isEmpty);
         expect(set, hasLength(0));
         expect(set, unorderedEquals([]));
@@ -3258,29 +3484,35 @@ void main() {
         expect(set.counts, unorderedEquals([]));
       });
       test('single', () {
-        final set = Multiset<String>()
-          ..add('a')
-          ..add('b')
-          ..add('b');
+        final set =
+            Multiset<String>()
+              ..add('a')
+              ..add('b')
+              ..add('b');
         expect(set, isNot(isEmpty));
         expect(set, hasLength(3));
         expect(set, unorderedEquals(['a', 'b', 'b']));
-        expect(set.entrySet,
-            unorderedEquals([isMapEntry('a', 1), isMapEntry('b', 2)]));
+        expect(
+          set.entrySet,
+          unorderedEquals([isMapEntry('a', 1), isMapEntry('b', 2)]),
+        );
         expect(set.elementSet, unorderedEquals(['a', 'b']));
         expect(set.elementCounts, unorderedEquals([1, 2]));
         expect(set.distinct, unorderedEquals(['a', 'b']));
         expect(set.counts, unorderedEquals([1, 2]));
       });
       test('multiple', () {
-        final set = Multiset<String>()
-          ..add('a', 2)
-          ..add('b', 3);
+        final set =
+            Multiset<String>()
+              ..add('a', 2)
+              ..add('b', 3);
         expect(set, isNot(isEmpty));
         expect(set, hasLength(5));
         expect(set, unorderedEquals(['a', 'a', 'b', 'b', 'b']));
-        expect(set.entrySet,
-            unorderedEquals([isMapEntry('a', 2), isMapEntry('b', 3)]));
+        expect(
+          set.entrySet,
+          unorderedEquals([isMapEntry('a', 2), isMapEntry('b', 3)]),
+        );
         expect(set.elementSet, unorderedEquals(['a', 'b']));
         expect(set.elementCounts, unorderedEquals([2, 3]));
         expect(set.distinct, unorderedEquals(['a', 'b']));
@@ -3291,8 +3523,10 @@ void main() {
         expect(set, isNot(isEmpty));
         expect(set, hasLength(5));
         expect(set, unorderedEquals(['a', 'a', 'b', 'b', 'b']));
-        expect(set.entrySet,
-            unorderedEquals([isMapEntry('a', 2), isMapEntry('b', 3)]));
+        expect(
+          set.entrySet,
+          unorderedEquals([isMapEntry('a', 2), isMapEntry('b', 3)]),
+        );
         expect(set.elementSet, unorderedEquals(['a', 'b']));
         expect(set.elementCounts, unorderedEquals([3, 2]));
         expect(set.distinct, unorderedEquals(['a', 'b']));
@@ -3320,8 +3554,10 @@ void main() {
         expect(set, isNot(isEmpty));
         expect(set, hasLength(5));
         expect(set, unorderedEquals(['a', 'a', 'b', 'b', 'b']));
-        expect(set.entrySet,
-            unorderedEquals([isMapEntry('a', 2), isMapEntry('b', 3)]));
+        expect(
+          set.entrySet,
+          unorderedEquals([isMapEntry('a', 2), isMapEntry('b', 3)]),
+        );
         expect(set.elementSet, unorderedEquals(['a', 'b']));
         expect(set.elementCounts, unorderedEquals([2, 3]));
         expect(set.distinct, unorderedEquals(['a', 'b']));
@@ -3335,8 +3571,10 @@ void main() {
         expect(set, isNot(isEmpty));
         expect(set, hasLength(3));
         expect(set, unorderedEquals(['a', 'b', 'b']));
-        expect(set.entrySet,
-            unorderedEquals([isMapEntry('a', 1), isMapEntry('b', 2)]));
+        expect(
+          set.entrySet,
+          unorderedEquals([isMapEntry('a', 1), isMapEntry('b', 2)]),
+        );
         expect(set.elementSet, unorderedEquals(['a', 'b']));
         expect(set.elementCounts, unorderedEquals([1, 2]));
         expect(set.distinct, unorderedEquals(['a', 'b']));
@@ -3362,8 +3600,10 @@ void main() {
         expect(set, isNot(isEmpty));
         expect(set, hasLength(2));
         expect(set, unorderedEquals(['a', 'b']));
-        expect(set.entrySet,
-            unorderedEquals([isMapEntry('a', 1), isMapEntry('b', 1)]));
+        expect(
+          set.entrySet,
+          unorderedEquals([isMapEntry('a', 1), isMapEntry('b', 1)]),
+        );
         expect(set.elementSet, unorderedEquals(['a', 'b']));
         expect(set.elementCounts, unorderedEquals([1, 1]));
         expect(set.distinct, unorderedEquals(['a', 'b']));
@@ -3388,8 +3628,10 @@ void main() {
         expect(set, isNot(isEmpty));
         expect(set, hasLength(5));
         expect(set, unorderedEquals(['a', 'a', 'b', 'b', 'b']));
-        expect(set.entrySet,
-            unorderedEquals([isMapEntry('a', 2), isMapEntry('b', 3)]));
+        expect(
+          set.entrySet,
+          unorderedEquals([isMapEntry('a', 2), isMapEntry('b', 3)]),
+        );
         expect(set.elementSet, unorderedEquals(['a', 'b']));
         expect(set.elementCounts, unorderedEquals([2, 3]));
         expect(set.distinct, unorderedEquals(['a', 'b']));
@@ -3401,8 +3643,10 @@ void main() {
         expect(set, isNot(isEmpty));
         expect(set, hasLength(5));
         expect(set, unorderedEquals(['a', 'a', 'b', 'b', 'b']));
-        expect(set.entrySet,
-            unorderedEquals([isMapEntry('a', 2), isMapEntry('b', 3)]));
+        expect(
+          set.entrySet,
+          unorderedEquals([isMapEntry('a', 2), isMapEntry('b', 3)]),
+        );
         expect(set.elementSet, unorderedEquals(['a', 'b']));
         expect(set.elementCounts, unorderedEquals([2, 3]));
         expect(set.distinct, unorderedEquals(['a', 'b']));
@@ -3432,8 +3676,10 @@ void main() {
         expect(set, isNot(isEmpty));
         expect(set, hasLength(5));
         expect(set, unorderedEquals(['a', 'a', 'b', 'b', 'b']));
-        expect(set.entrySet,
-            unorderedEquals([isMapEntry('a', 2), isMapEntry('b', 3)]));
+        expect(
+          set.entrySet,
+          unorderedEquals([isMapEntry('a', 2), isMapEntry('b', 3)]),
+        );
         expect(set.elementSet, unorderedEquals(['a', 'b']));
         expect(set.elementCounts, unorderedEquals([3, 2]));
         expect(set.distinct, unorderedEquals(['a', 'b']));
@@ -3457,8 +3703,10 @@ void main() {
         expect(set, isNot(isEmpty));
         expect(set, hasLength(5));
         expect(set, unorderedEquals(['a', 'a', 'b', 'b', 'b']));
-        expect(set.entrySet,
-            unorderedEquals([isMapEntry('a', 2), isMapEntry('b', 3)]));
+        expect(
+          set.entrySet,
+          unorderedEquals([isMapEntry('a', 2), isMapEntry('b', 3)]),
+        );
         expect(set.elementSet, unorderedEquals(['a', 'b']));
         expect(set.elementCounts, unorderedEquals([2, 3]));
         expect(set.distinct, unorderedEquals(['a', 'b']));
@@ -3495,32 +3743,52 @@ void main() {
         expect(firstSet.containsAll(['a', null]), isFalse);
       });
       test('combine', () {
-        expect(firstSet.combine(secondSet, (_, a, b) => a + b),
-            unorderedEquals(['a', 'a', 'b', 'c', 'c', 'c', 'd', 'd']));
-        expect(firstSet.combine(secondSet, (_, a, b) => min(a, b)),
-            unorderedEquals(['a', 'c']));
-        expect(firstSet.combine(secondSet, (_, a, b) => max(0, a - b)),
-            unorderedEquals(['b', 'c']));
-        expect(firstSet.combine(secondSet, (_, a, b) => max(a - b, b - a)),
-            unorderedEquals(['b', 'c', 'd', 'd']));
+        expect(
+          firstSet.combine(secondSet, (_, a, b) => a + b),
+          unorderedEquals(['a', 'a', 'b', 'c', 'c', 'c', 'd', 'd']),
+        );
+        expect(
+          firstSet.combine(secondSet, (_, a, b) => min(a, b)),
+          unorderedEquals(['a', 'c']),
+        );
+        expect(
+          firstSet.combine(secondSet, (_, a, b) => max(0, a - b)),
+          unorderedEquals(['b', 'c']),
+        );
+        expect(
+          firstSet.combine(secondSet, (_, a, b) => max(a - b, b - a)),
+          unorderedEquals(['b', 'c', 'd', 'd']),
+        );
       });
       test('combine (iterable)', () {
-        expect(firstSet.combine(secondList, (_, a, b) => a + b),
-            unorderedEquals(['a', 'a', 'b', 'c', 'c', 'c', 'd', 'd']));
-        expect(firstSet.combine(secondList, (_, a, b) => min(a, b)),
-            unorderedEquals(['a', 'c']));
-        expect(firstSet.combine(secondList, (_, a, b) => max(0, a - b)),
-            unorderedEquals(['b', 'c']));
-        expect(firstSet.combine(secondList, (_, a, b) => max(a - b, b - a)),
-            unorderedEquals(['b', 'c', 'd', 'd']));
+        expect(
+          firstSet.combine(secondList, (_, a, b) => a + b),
+          unorderedEquals(['a', 'a', 'b', 'c', 'c', 'c', 'd', 'd']),
+        );
+        expect(
+          firstSet.combine(secondList, (_, a, b) => min(a, b)),
+          unorderedEquals(['a', 'c']),
+        );
+        expect(
+          firstSet.combine(secondList, (_, a, b) => max(0, a - b)),
+          unorderedEquals(['b', 'c']),
+        );
+        expect(
+          firstSet.combine(secondList, (_, a, b) => max(a - b, b - a)),
+          unorderedEquals(['b', 'c', 'd', 'd']),
+        );
       });
       test('intersection', () {
         expect(firstSet.intersection(secondSet), unorderedEquals(['a', 'c']));
-        expect(firstSet.intersection(secondSet).distinct,
-            unorderedEquals(['a', 'c']));
+        expect(
+          firstSet.intersection(secondSet).distinct,
+          unorderedEquals(['a', 'c']),
+        );
         expect(secondSet.intersection(firstSet), unorderedEquals(['a', 'c']));
-        expect(secondSet.intersection(firstSet).distinct,
-            unorderedEquals(['a', 'c']));
+        expect(
+          secondSet.intersection(firstSet).distinct,
+          unorderedEquals(['a', 'c']),
+        );
       });
       test('intersection (iterable)', () {
         expect(firstSet.intersection(secondList), unorderedEquals(['a', 'c']));
@@ -3528,33 +3796,49 @@ void main() {
         expect(firstSet.intersection(['a', 1, null]), unorderedEquals(['a']));
       });
       test('union', () {
-        expect(firstSet.union(secondSet),
-            unorderedEquals(['a', 'a', 'b', 'c', 'c', 'c', 'd', 'd']));
-        expect(firstSet.union(secondSet).distinct,
-            unorderedEquals(['a', 'b', 'c', 'd']));
-        expect(secondSet.union(firstSet),
-            unorderedEquals(['a', 'a', 'b', 'c', 'c', 'c', 'd', 'd']));
-        expect(secondSet.union(firstSet).distinct,
-            unorderedEquals(['a', 'b', 'c', 'd']));
+        expect(
+          firstSet.union(secondSet),
+          unorderedEquals(['a', 'a', 'b', 'c', 'c', 'c', 'd', 'd']),
+        );
+        expect(
+          firstSet.union(secondSet).distinct,
+          unorderedEquals(['a', 'b', 'c', 'd']),
+        );
+        expect(
+          secondSet.union(firstSet),
+          unorderedEquals(['a', 'a', 'b', 'c', 'c', 'c', 'd', 'd']),
+        );
+        expect(
+          secondSet.union(firstSet).distinct,
+          unorderedEquals(['a', 'b', 'c', 'd']),
+        );
       });
       test('union (iterable)', () {
-        expect(firstSet.union(secondList),
-            unorderedEquals(['a', 'a', 'b', 'c', 'c', 'c', 'd', 'd']));
-        expect(secondSet.union(firstList),
-            unorderedEquals(['a', 'a', 'b', 'c', 'c', 'c', 'd', 'd']));
+        expect(
+          firstSet.union(secondList),
+          unorderedEquals(['a', 'a', 'b', 'c', 'c', 'c', 'd', 'd']),
+        );
+        expect(
+          secondSet.union(firstList),
+          unorderedEquals(['a', 'a', 'b', 'c', 'c', 'c', 'd', 'd']),
+        );
       });
       test('difference', () {
         expect(firstSet.difference(secondSet), unorderedEquals(['b', 'c']));
-        expect(firstSet.difference(secondSet).distinct,
-            unorderedEquals(['b', 'c']));
+        expect(
+          firstSet.difference(secondSet).distinct,
+          unorderedEquals(['b', 'c']),
+        );
         expect(secondSet.difference(firstSet), unorderedEquals(['d', 'd']));
         expect(secondSet.difference(firstSet).distinct, unorderedEquals(['d']));
       });
       test('difference (iterable)', () {
         expect(firstSet.difference(secondList), unorderedEquals(['b', 'c']));
         expect(secondSet.difference(firstList), unorderedEquals(['d', 'd']));
-        expect(firstSet.difference(['a', 1, null]),
-            unorderedEquals(['b', 'c', 'c']));
+        expect(
+          firstSet.difference(['a', 1, null]),
+          unorderedEquals(['b', 'c', 'c']),
+        );
       });
       test('asMap', () {
         expect(firstSet.asMap(), {'a': 1, 'b': 1, 'c': 2});
@@ -3576,32 +3860,68 @@ void main() {
         });
         test('of', () {
           verifyRange(const IntegerRange.of(), included: [], excluded: [0]);
-          verifyRange(const IntegerRange.of(start: -2),
-              included: [-2, -1], excluded: [-3, 0]);
-          verifyRange(const IntegerRange.of(end: 2),
-              included: [0, 1], excluded: [-1, 3]);
-          verifyRange(const IntegerRange.of(start: 1, end: 3),
-              included: [1, 2], excluded: [0, 3]);
-          verifyRange(const IntegerRange.of(start: 3, end: 1),
-              included: [3, 2], excluded: [1, 4]);
-          verifyRange(const IntegerRange.of(start: 1, end: 5, step: 2),
-              included: [1, 3], excluded: [2, 4, 5]);
-          verifyRange(const IntegerRange.of(start: 5, end: 1, step: -2),
-              included: [5, 3], excluded: [4, 2, 1]);
+          verifyRange(
+            const IntegerRange.of(start: -2),
+            included: [-2, -1],
+            excluded: [-3, 0],
+          );
+          verifyRange(
+            const IntegerRange.of(end: 2),
+            included: [0, 1],
+            excluded: [-1, 3],
+          );
+          verifyRange(
+            const IntegerRange.of(start: 1, end: 3),
+            included: [1, 2],
+            excluded: [0, 3],
+          );
+          verifyRange(
+            const IntegerRange.of(start: 3, end: 1),
+            included: [3, 2],
+            excluded: [1, 4],
+          );
+          verifyRange(
+            const IntegerRange.of(start: 1, end: 5, step: 2),
+            included: [1, 3],
+            excluded: [2, 4, 5],
+          );
+          verifyRange(
+            const IntegerRange.of(start: 5, end: 1, step: -2),
+            included: [5, 3],
+            excluded: [4, 2, 1],
+          );
         });
         test('length', () {
-          verifyRange(const IntegerRange.length(0),
-              included: [], excluded: [0]);
-          verifyRange(const IntegerRange.length(1),
-              included: [0], excluded: [-1, 1]);
-          verifyRange(const IntegerRange.length(2),
-              included: [0, 1], excluded: [-1, 2]);
-          verifyRange(const IntegerRange.length(2, start: 10),
-              included: [10, 11], excluded: [-1, 2]);
-          verifyRange(const IntegerRange.length(2, step: 2),
-              included: [0, 2], excluded: [-1, 1, 3]);
-          verifyRange(const IntegerRange.length(2, step: -2),
-              included: [0, -2], excluded: [-3, -1, 1]);
+          verifyRange(
+            const IntegerRange.length(0),
+            included: [],
+            excluded: [0],
+          );
+          verifyRange(
+            const IntegerRange.length(1),
+            included: [0],
+            excluded: [-1, 1],
+          );
+          verifyRange(
+            const IntegerRange.length(2),
+            included: [0, 1],
+            excluded: [-1, 2],
+          );
+          verifyRange(
+            const IntegerRange.length(2, start: 10),
+            included: [10, 11],
+            excluded: [-1, 2],
+          );
+          verifyRange(
+            const IntegerRange.length(2, step: 2),
+            included: [0, 2],
+            excluded: [-1, 1, 3],
+          );
+          verifyRange(
+            const IntegerRange.length(2, step: -2),
+            included: [0, -2],
+            excluded: [-3, -1, 1],
+          );
         });
         test('1 argument', () {
           verifyRange(IntegerRange(0), included: [], excluded: [-1, 0, 1]);
@@ -3611,53 +3931,107 @@ void main() {
         });
         test('2 arguments', () {
           verifyRange(IntegerRange(0, 0), included: [], excluded: [-1, 0, 1]);
-          verifyRange(IntegerRange(0, 4),
-              included: [0, 1, 2, 3], excluded: [-1, 4]);
-          verifyRange(IntegerRange(4, 0),
-              included: [4, 3, 2, 1], excluded: [5, 0]);
-          verifyRange(IntegerRange(5, 9),
-              included: [5, 6, 7, 8], excluded: [4, 9]);
-          verifyRange(IntegerRange(9, 5),
-              included: [9, 8, 7, 6], excluded: [10, 5]);
+          verifyRange(
+            IntegerRange(0, 4),
+            included: [0, 1, 2, 3],
+            excluded: [-1, 4],
+          );
+          verifyRange(
+            IntegerRange(4, 0),
+            included: [4, 3, 2, 1],
+            excluded: [5, 0],
+          );
+          verifyRange(
+            IntegerRange(5, 9),
+            included: [5, 6, 7, 8],
+            excluded: [4, 9],
+          );
+          verifyRange(
+            IntegerRange(9, 5),
+            included: [9, 8, 7, 6],
+            excluded: [10, 5],
+          );
         });
         test('3 argument (positive step)', () {
-          verifyRange(IntegerRange(0, 0, 1),
-              included: [], excluded: [-1, 0, 1]);
-          verifyRange(IntegerRange(2, 8, 2),
-              included: [2, 4, 6], excluded: [0, 1, 3, 5, 7, 8]);
-          verifyRange(IntegerRange(3, 8, 2),
-              included: [3, 5, 7], excluded: [1, 2, 4, 6, 8, 9]);
-          verifyRange(IntegerRange(4, 8, 2),
-              included: [4, 6], excluded: [2, 3, 5, 7, 8]);
-          verifyRange(IntegerRange(2, 7, 2),
-              included: [2, 4, 6], excluded: [0, 1, 3, 5, 7, 8]);
-          verifyRange(IntegerRange(2, 6, 2),
-              included: [2, 4], excluded: [0, 1, 3, 5, 6, 7, 8]);
+          verifyRange(
+            IntegerRange(0, 0, 1),
+            included: [],
+            excluded: [-1, 0, 1],
+          );
+          verifyRange(
+            IntegerRange(2, 8, 2),
+            included: [2, 4, 6],
+            excluded: [0, 1, 3, 5, 7, 8],
+          );
+          verifyRange(
+            IntegerRange(3, 8, 2),
+            included: [3, 5, 7],
+            excluded: [1, 2, 4, 6, 8, 9],
+          );
+          verifyRange(
+            IntegerRange(4, 8, 2),
+            included: [4, 6],
+            excluded: [2, 3, 5, 7, 8],
+          );
+          verifyRange(
+            IntegerRange(2, 7, 2),
+            included: [2, 4, 6],
+            excluded: [0, 1, 3, 5, 7, 8],
+          );
+          verifyRange(
+            IntegerRange(2, 6, 2),
+            included: [2, 4],
+            excluded: [0, 1, 3, 5, 6, 7, 8],
+          );
         });
         test('3 argument (negative step)', () {
-          verifyRange(IntegerRange(0, 0, -1),
-              included: [], excluded: [-1, 0, 1]);
-          verifyRange(IntegerRange(8, 2, -2),
-              included: [8, 6, 4], excluded: [2, 3, 5, 7, 9, 10]);
-          verifyRange(IntegerRange(8, 3, -2),
-              included: [8, 6, 4], excluded: [2, 3, 5, 7, 9, 10]);
-          verifyRange(IntegerRange(8, 4, -2),
-              included: [8, 6], excluded: [2, 3, 4, 5, 7, 9, 10]);
-          verifyRange(IntegerRange(7, 2, -2),
-              included: [7, 5, 3], excluded: [1, 2, 4, 6, 8, 9]);
-          verifyRange(IntegerRange(6, 2, -2),
-              included: [6, 4], excluded: [2, 3, 5, 7, 8, 9]);
+          verifyRange(
+            IntegerRange(0, 0, -1),
+            included: [],
+            excluded: [-1, 0, 1],
+          );
+          verifyRange(
+            IntegerRange(8, 2, -2),
+            included: [8, 6, 4],
+            excluded: [2, 3, 5, 7, 9, 10],
+          );
+          verifyRange(
+            IntegerRange(8, 3, -2),
+            included: [8, 6, 4],
+            excluded: [2, 3, 5, 7, 9, 10],
+          );
+          verifyRange(
+            IntegerRange(8, 4, -2),
+            included: [8, 6],
+            excluded: [2, 3, 4, 5, 7, 9, 10],
+          );
+          verifyRange(
+            IntegerRange(7, 2, -2),
+            included: [7, 5, 3],
+            excluded: [1, 2, 4, 6, 8, 9],
+          );
+          verifyRange(
+            IntegerRange(6, 2, -2),
+            included: [6, 4],
+            excluded: [2, 3, 5, 7, 8, 9],
+          );
         });
         test('positive step size', () {
           for (var end = 31; end <= 40; end++) {
-            verifyRange(IntegerRange(10, end, 10),
-                included: [10, 20, 30], excluded: [5, 15, 25, 35, 40]);
+            verifyRange(
+              IntegerRange(10, end, 10),
+              included: [10, 20, 30],
+              excluded: [5, 15, 25, 35, 40],
+            );
           }
         });
         test('negative step size', () {
           for (var end = 9; end >= 0; end--) {
-            verifyRange(IntegerRange(30, end, -10),
-                included: [30, 20, 10], excluded: [0, 5, 15, 25, 35]);
+            verifyRange(
+              IntegerRange(30, end, -10),
+              included: [30, 20, 10],
+              excluded: [0, 5, 15, 25, 35],
+            );
           }
         });
         test('length with positive step size', () {
@@ -3675,24 +4049,35 @@ void main() {
         test('shorthand', () {
           verifyRange(0.to(3), included: [0, 1, 2], excluded: [-1, 3]);
           verifyRange(3.to(0), included: [3, 2, 1], excluded: [4, 0]);
-          verifyRange(2.to(8, step: 2),
-              included: [2, 4, 6], excluded: [1, 3, 5, 7, 8]);
-          verifyRange(8.to(2, step: -2),
-              included: [8, 6, 4], excluded: [2, 3, 5, 7, 9]);
+          verifyRange(
+            2.to(8, step: 2),
+            included: [2, 4, 6],
+            excluded: [1, 3, 5, 7, 8],
+          );
+          verifyRange(
+            8.to(2, step: -2),
+            included: [8, 6, 4],
+            excluded: [2, 3, 5, 7, 9],
+          );
         });
         test('stress', () {
           final random = Random(1618033);
           for (var i = 0; i < 250; i++) {
             final start = random.nextInt(0xffff) - 0xffff ~/ 2;
             final end = random.nextInt(0xffff) - 0xffff ~/ 2;
-            final step = start < end
-                ? 1 + random.nextInt(0xfff)
-                : -1 - random.nextInt(0xfff);
-            final expected = start < end
-                ? <int>[for (var j = start; j < end; j += step) j]
-                : <int>[for (var j = start; j > end; j += step) j];
-            verifyRange(IntegerRange(start, end, step),
-                included: expected, excluded: []);
+            final step =
+                start < end
+                    ? 1 + random.nextInt(0xfff)
+                    : -1 - random.nextInt(0xfff);
+            final expected =
+                start < end
+                    ? <int>[for (var j = start; j < end; j += step) j]
+                    : <int>[for (var j = start; j > end; j += step) j];
+            verifyRange(
+              IntegerRange(start, end, step),
+              included: expected,
+              excluded: [],
+            );
           }
         });
         test('invalid', () {
@@ -3703,59 +4088,116 @@ void main() {
         group('indices', () {
           test('empty', () {
             verifyRange(<int>[].indices(), included: [], excluded: [0, 1, 2]);
-            verifyRange(<int>[].indices(step: -1),
-                included: [], excluded: [0, 1, 2]);
+            verifyRange(
+              <int>[].indices(step: -1),
+              included: [],
+              excluded: [0, 1, 2],
+            );
           });
           test('default', () {
-            verifyRange([1, 2, 3].indices(),
-                included: [0, 1, 2], excluded: [-1, 3]);
-            verifyRange([1, 2, 3].indices(step: -1),
-                included: [2, 1, 0], excluded: [-1, 3]);
+            verifyRange(
+              [1, 2, 3].indices(),
+              included: [0, 1, 2],
+              excluded: [-1, 3],
+            );
+            verifyRange(
+              [1, 2, 3].indices(step: -1),
+              included: [2, 1, 0],
+              excluded: [-1, 3],
+            );
           });
           test('step', () {
-            verifyRange([1, 2, 3].indices(step: 2),
-                included: [0, 2], excluded: [-1, 1, 3]);
-            verifyRange([1, 2, 3, 4].indices(step: 2),
-                included: [0, 2], excluded: [-1, 1, 3]);
-            verifyRange([1, 2, 3].indices(step: -2),
-                included: [2, 0], excluded: [-1, 1, 3]);
-            verifyRange([1, 2, 3, 4].indices(step: -2),
-                included: [3, 1], excluded: [0, 2, 4, 6]);
+            verifyRange(
+              [1, 2, 3].indices(step: 2),
+              included: [0, 2],
+              excluded: [-1, 1, 3],
+            );
+            verifyRange(
+              [1, 2, 3, 4].indices(step: 2),
+              included: [0, 2],
+              excluded: [-1, 1, 3],
+            );
+            verifyRange(
+              [1, 2, 3].indices(step: -2),
+              included: [2, 0],
+              excluded: [-1, 1, 3],
+            );
+            verifyRange(
+              [1, 2, 3, 4].indices(step: -2),
+              included: [3, 1],
+              excluded: [0, 2, 4, 6],
+            );
           });
         });
       });
       group('sublist', () {
         test('sublist (1 argument)', () {
-          verifyRange(IntegerRange(3).sublist(0),
-              included: [0, 1, 2], excluded: [-1, 3]);
-          verifyRange(IntegerRange(3).sublist(1),
-              included: [1, 2], excluded: [-1, 0, 3]);
-          verifyRange(IntegerRange(3).sublist(2),
-              included: [2], excluded: [-1, 0, 1, 3]);
-          verifyRange(IntegerRange(3).sublist(3),
-              included: [], excluded: [-1, 0, 1, 2, 3]);
+          verifyRange(
+            IntegerRange(3).sublist(0),
+            included: [0, 1, 2],
+            excluded: [-1, 3],
+          );
+          verifyRange(
+            IntegerRange(3).sublist(1),
+            included: [1, 2],
+            excluded: [-1, 0, 3],
+          );
+          verifyRange(
+            IntegerRange(3).sublist(2),
+            included: [2],
+            excluded: [-1, 0, 1, 3],
+          );
+          verifyRange(
+            IntegerRange(3).sublist(3),
+            included: [],
+            excluded: [-1, 0, 1, 2, 3],
+          );
           expect(() => IntegerRange(3).sublist(4), throwsRangeError);
         });
         test('sublist (2 arguments)', () {
-          verifyRange(IntegerRange(3).sublist(0, 3),
-              included: [0, 1, 2], excluded: [-1, 3]);
-          verifyRange(IntegerRange(3).sublist(0, 2),
-              included: [0, 1], excluded: [-1, 2, 3]);
-          verifyRange(IntegerRange(3).sublist(0, 1),
-              included: [0], excluded: [-1, 1, 2, 3]);
-          verifyRange(IntegerRange(3).sublist(0, 0),
-              included: [], excluded: [-1, 0, 1, 2, 3]);
+          verifyRange(
+            IntegerRange(3).sublist(0, 3),
+            included: [0, 1, 2],
+            excluded: [-1, 3],
+          );
+          verifyRange(
+            IntegerRange(3).sublist(0, 2),
+            included: [0, 1],
+            excluded: [-1, 2, 3],
+          );
+          verifyRange(
+            IntegerRange(3).sublist(0, 1),
+            included: [0],
+            excluded: [-1, 1, 2, 3],
+          );
+          verifyRange(
+            IntegerRange(3).sublist(0, 0),
+            included: [],
+            excluded: [-1, 0, 1, 2, 3],
+          );
           expect(() => IntegerRange(3).sublist(0, 4), throwsRangeError);
         });
         test('getRange', () {
-          verifyRange(IntegerRange(3).getRange(0, 3),
-              included: [0, 1, 2], excluded: [-1, 3]);
-          verifyRange(IntegerRange(3).getRange(0, 2),
-              included: [0, 1], excluded: [-1, 2, 3]);
-          verifyRange(IntegerRange(3).getRange(0, 1),
-              included: [0], excluded: [-1, 1, 2, 3]);
-          verifyRange(IntegerRange(3).getRange(0, 0),
-              included: [], excluded: [-1, 0, 1, 2, 3]);
+          verifyRange(
+            IntegerRange(3).getRange(0, 3),
+            included: [0, 1, 2],
+            excluded: [-1, 3],
+          );
+          verifyRange(
+            IntegerRange(3).getRange(0, 2),
+            included: [0, 1],
+            excluded: [-1, 2, 3],
+          );
+          verifyRange(
+            IntegerRange(3).getRange(0, 1),
+            included: [0],
+            excluded: [-1, 1, 2, 3],
+          );
+          verifyRange(
+            IntegerRange(3).getRange(0, 0),
+            included: [],
+            excluded: [-1, 0, 1, 2, 3],
+          );
           expect(() => IntegerRange(3).getRange(0, 4), throwsRangeError);
         });
       });
@@ -3778,7 +4220,9 @@ void main() {
         expect(() => list.removeWhere((value) => true), throwsUnsupportedError);
         expect(() => list.replaceRange(2, 4, [5, 6]), throwsUnsupportedError);
         expect(
-            () => list.retainWhere((value) => false), throwsUnsupportedError);
+          () => list.retainWhere((value) => false),
+          throwsUnsupportedError,
+        );
         expect(() => list.setAll(2, [5, 6]), throwsUnsupportedError);
         expect(() => list.setRange(2, 4, [5, 6]), throwsUnsupportedError);
         expect(() => list.shuffle(), throwsUnsupportedError);
@@ -3792,201 +4236,398 @@ void main() {
         });
         test('of', () {
           verifyRange(const DoubleRange.of(), included: [], excluded: [0.0]);
-          verifyRange(const DoubleRange.of(start: -2),
-              included: [-2.0, -1.0], excluded: [-3.0, 0.0]);
-          verifyRange(const DoubleRange.of(end: 2),
-              included: [0.0, 1.0], excluded: [-1, 3]);
-          verifyRange(const DoubleRange.of(start: 1, end: 3),
-              included: [1.0, 2.0], excluded: [0.0, 3.0]);
-          verifyRange(const DoubleRange.of(start: 3, end: 1),
-              included: [3.0, 2.0], excluded: [1.0, 4.0]);
-          verifyRange(const DoubleRange.of(start: 1, end: 5, step: 2),
-              included: [1.0, 3.0], excluded: [2.0, 4.0, 5.0]);
-          verifyRange(const DoubleRange.of(start: 5, end: 1, step: -2),
-              included: [5.0, 3.0], excluded: [4.0, 2.0, 1.0]);
+          verifyRange(
+            const DoubleRange.of(start: -2),
+            included: [-2.0, -1.0],
+            excluded: [-3.0, 0.0],
+          );
+          verifyRange(
+            const DoubleRange.of(end: 2),
+            included: [0.0, 1.0],
+            excluded: [-1, 3],
+          );
+          verifyRange(
+            const DoubleRange.of(start: 1, end: 3),
+            included: [1.0, 2.0],
+            excluded: [0.0, 3.0],
+          );
+          verifyRange(
+            const DoubleRange.of(start: 3, end: 1),
+            included: [3.0, 2.0],
+            excluded: [1.0, 4.0],
+          );
+          verifyRange(
+            const DoubleRange.of(start: 1, end: 5, step: 2),
+            included: [1.0, 3.0],
+            excluded: [2.0, 4.0, 5.0],
+          );
+          verifyRange(
+            const DoubleRange.of(start: 5, end: 1, step: -2),
+            included: [5.0, 3.0],
+            excluded: [4.0, 2.0, 1.0],
+          );
         });
         test('length', () {
-          verifyRange(const DoubleRange.length(0),
-              included: [], excluded: [0.0]);
-          verifyRange(const DoubleRange.length(1),
-              included: [0.0], excluded: [-1.0, 1.0]);
-          verifyRange(const DoubleRange.length(2),
-              included: [0.0, 1.0], excluded: [-1.0, 2.0]);
-          verifyRange(const DoubleRange.length(2, start: 10),
-              included: [10.0, 11.0], excluded: [-1.0, 2.0]);
-          verifyRange(const DoubleRange.length(2, step: 2),
-              included: [0.0, 2.0], excluded: [-1.0, 1.0, 3.0]);
-          verifyRange(const DoubleRange.length(2, step: -2),
-              included: [0.0, -2.0], excluded: [-3.0, -1.0, 1.0]);
+          verifyRange(
+            const DoubleRange.length(0),
+            included: [],
+            excluded: [0.0],
+          );
+          verifyRange(
+            const DoubleRange.length(1),
+            included: [0.0],
+            excluded: [-1.0, 1.0],
+          );
+          verifyRange(
+            const DoubleRange.length(2),
+            included: [0.0, 1.0],
+            excluded: [-1.0, 2.0],
+          );
+          verifyRange(
+            const DoubleRange.length(2, start: 10),
+            included: [10.0, 11.0],
+            excluded: [-1.0, 2.0],
+          );
+          verifyRange(
+            const DoubleRange.length(2, step: 2),
+            included: [0.0, 2.0],
+            excluded: [-1.0, 1.0, 3.0],
+          );
+          verifyRange(
+            const DoubleRange.length(2, step: -2),
+            included: [0.0, -2.0],
+            excluded: [-3.0, -1.0, 1.0],
+          );
         });
 
         test('1 argument', () {
           verifyRange(DoubleRange(0), included: [], excluded: [-1.0, 0.0, 1.0]);
           verifyRange(DoubleRange(1), included: [0.0], excluded: [-1.0, 1.0]);
-          verifyRange(DoubleRange(2),
-              included: [0.0, 1.0], excluded: [-1.0, 2.0]);
-          verifyRange(DoubleRange(3),
-              included: [0.0, 1.0, 2.0], excluded: [-1.0, 3.0]);
+          verifyRange(
+            DoubleRange(2),
+            included: [0.0, 1.0],
+            excluded: [-1.0, 2.0],
+          );
+          verifyRange(
+            DoubleRange(3),
+            included: [0.0, 1.0, 2.0],
+            excluded: [-1.0, 3.0],
+          );
         });
         test('2 argument', () {
-          verifyRange(DoubleRange(0, 0),
-              included: [], excluded: [-1.0, 0.0, 1.0]);
-          verifyRange(DoubleRange(0, 4),
-              included: [0.0, 1.0, 2.0, 3.0], excluded: [-1.0, 4.0]);
-          verifyRange(DoubleRange(4, 0),
-              included: [4.0, 3.0, 2.0, 1.0], excluded: [5.0, 0.0]);
-          verifyRange(DoubleRange(5, 9),
-              included: [5.0, 6.0, 7.0, 8.0], excluded: [4.0, 9.0]);
-          verifyRange(DoubleRange(9, 5),
-              included: [9.0, 8.0, 7.0, 6.0], excluded: [10.0, 5.0]);
+          verifyRange(
+            DoubleRange(0, 0),
+            included: [],
+            excluded: [-1.0, 0.0, 1.0],
+          );
+          verifyRange(
+            DoubleRange(0, 4),
+            included: [0.0, 1.0, 2.0, 3.0],
+            excluded: [-1.0, 4.0],
+          );
+          verifyRange(
+            DoubleRange(4, 0),
+            included: [4.0, 3.0, 2.0, 1.0],
+            excluded: [5.0, 0.0],
+          );
+          verifyRange(
+            DoubleRange(5, 9),
+            included: [5.0, 6.0, 7.0, 8.0],
+            excluded: [4.0, 9.0],
+          );
+          verifyRange(
+            DoubleRange(9, 5),
+            included: [9.0, 8.0, 7.0, 6.0],
+            excluded: [10.0, 5.0],
+          );
         });
         test('3 argument (positive step)', () {
-          verifyRange(DoubleRange(0, 0, 1),
-              included: [], excluded: [-1.0, 0.0, 1.0]);
-          verifyRange(DoubleRange(2, 8, 1.5),
-              included: [2.0, 3.5, 5.0, 6.5], excluded: [0.5, 3.0, 8.0]);
-          verifyRange(DoubleRange(3, 8, 1.5),
-              included: [3.0, 4.5, 6.0, 7.5], excluded: [1.5, 5.0, 9.0]);
-          verifyRange(DoubleRange(4, 8, 1.5),
-              included: [4.0, 5.5, 7.0], excluded: [3.5, 5, 6, 8.5]);
-          verifyRange(DoubleRange(2, 7, 1.5),
-              included: [2.0, 3.5, 5.0, 6.5], excluded: [0.5, 4.0, 8.0]);
-          verifyRange(DoubleRange(2, 6, 1.5),
-              included: [2.0, 3.5, 5.0], excluded: [0.5, 3.0, 4.0, 6.0]);
+          verifyRange(
+            DoubleRange(0, 0, 1),
+            included: [],
+            excluded: [-1.0, 0.0, 1.0],
+          );
+          verifyRange(
+            DoubleRange(2, 8, 1.5),
+            included: [2.0, 3.5, 5.0, 6.5],
+            excluded: [0.5, 3.0, 8.0],
+          );
+          verifyRange(
+            DoubleRange(3, 8, 1.5),
+            included: [3.0, 4.5, 6.0, 7.5],
+            excluded: [1.5, 5.0, 9.0],
+          );
+          verifyRange(
+            DoubleRange(4, 8, 1.5),
+            included: [4.0, 5.5, 7.0],
+            excluded: [3.5, 5, 6, 8.5],
+          );
+          verifyRange(
+            DoubleRange(2, 7, 1.5),
+            included: [2.0, 3.5, 5.0, 6.5],
+            excluded: [0.5, 4.0, 8.0],
+          );
+          verifyRange(
+            DoubleRange(2, 6, 1.5),
+            included: [2.0, 3.5, 5.0],
+            excluded: [0.5, 3.0, 4.0, 6.0],
+          );
         });
         test('3 argument (negative step)', () {
-          verifyRange(DoubleRange(0, 0, -1),
-              included: [], excluded: [-1.0, 0.0, 1.0]);
-          verifyRange(DoubleRange(8, 2, -1.5),
-              included: [8.0, 6.5, 5.0, 3.5], excluded: [9.5, 6.0, 2.0]);
-          verifyRange(DoubleRange(8, 3, -1.5),
-              included: [8.0, 6.5, 5.0, 3.5], excluded: [9.5, 6.0, 2.0]);
-          verifyRange(DoubleRange(8, 4, -1.5),
-              included: [8.0, 6.5, 5.0], excluded: [9.5, 5.5, 3.5]);
-          verifyRange(DoubleRange(7, 2, -1.5),
-              included: [7.0, 5.5, 4.0, 2.5], excluded: [8.5, 3, 2.0]);
-          verifyRange(DoubleRange(6, 2, -1.5),
-              included: [6.0, 4.5, 3.0], excluded: [7.5, 4.0, 1.5]);
+          verifyRange(
+            DoubleRange(0, 0, -1),
+            included: [],
+            excluded: [-1.0, 0.0, 1.0],
+          );
+          verifyRange(
+            DoubleRange(8, 2, -1.5),
+            included: [8.0, 6.5, 5.0, 3.5],
+            excluded: [9.5, 6.0, 2.0],
+          );
+          verifyRange(
+            DoubleRange(8, 3, -1.5),
+            included: [8.0, 6.5, 5.0, 3.5],
+            excluded: [9.5, 6.0, 2.0],
+          );
+          verifyRange(
+            DoubleRange(8, 4, -1.5),
+            included: [8.0, 6.5, 5.0],
+            excluded: [9.5, 5.5, 3.5],
+          );
+          verifyRange(
+            DoubleRange(7, 2, -1.5),
+            included: [7.0, 5.5, 4.0, 2.5],
+            excluded: [8.5, 3, 2.0],
+          );
+          verifyRange(
+            DoubleRange(6, 2, -1.5),
+            included: [6.0, 4.5, 3.0],
+            excluded: [7.5, 4.0, 1.5],
+          );
         });
         test('exceeding positive step size', () {
           for (var end = 31; end <= 40; end++) {
-            verifyRange(DoubleRange(10, end.toDouble(), 10),
-                included: [10.0, 20.0, 30.0],
-                excluded: [5.0, 15.0, 25.0, 35.0, 40.0]);
+            verifyRange(
+              DoubleRange(10, end.toDouble(), 10),
+              included: [10.0, 20.0, 30.0],
+              excluded: [5.0, 15.0, 25.0, 35.0, 40.0],
+            );
           }
         });
         test('exceeding negative step size', () {
           for (var end = 9; end >= 0; end--) {
-            verifyRange(DoubleRange(30, end.toDouble(), -10),
-                included: [30.0, 20.0, 10.0],
-                excluded: [0.0, 5.0, 15.0, 25.0, 35.0]);
+            verifyRange(
+              DoubleRange(30, end.toDouble(), -10),
+              included: [30.0, 20.0, 10.0],
+              excluded: [0.0, 5.0, 15.0, 25.0, 35.0],
+            );
           }
         });
         test('decimal positive step size', () {
           expect(
-              const DoubleRange.of(start: 1, end: 2, step: 0.1), hasLength(10));
+            const DoubleRange.of(start: 1, end: 2, step: 0.1),
+            hasLength(10),
+          );
           expect(
-              const DoubleRange.of(start: 1, end: 2, step: 0.2), hasLength(5));
+            const DoubleRange.of(start: 1, end: 2, step: 0.2),
+            hasLength(5),
+          );
           expect(
-              const DoubleRange.of(start: 1, end: 2, step: 0.3), hasLength(4));
+            const DoubleRange.of(start: 1, end: 2, step: 0.3),
+            hasLength(4),
+          );
           expect(
-              const DoubleRange.of(start: 1, end: 2, step: 0.4), hasLength(3));
+            const DoubleRange.of(start: 1, end: 2, step: 0.4),
+            hasLength(3),
+          );
           expect(
-              const DoubleRange.of(start: 1, end: 2, step: 0.5), hasLength(2));
+            const DoubleRange.of(start: 1, end: 2, step: 0.5),
+            hasLength(2),
+          );
           expect(
-              const DoubleRange.of(start: 1, end: 2, step: 0.6), hasLength(2));
+            const DoubleRange.of(start: 1, end: 2, step: 0.6),
+            hasLength(2),
+          );
           expect(
-              const DoubleRange.of(start: 1, end: 2, step: 0.7), hasLength(2));
+            const DoubleRange.of(start: 1, end: 2, step: 0.7),
+            hasLength(2),
+          );
           expect(
-              const DoubleRange.of(start: 1, end: 2, step: 0.8), hasLength(2));
+            const DoubleRange.of(start: 1, end: 2, step: 0.8),
+            hasLength(2),
+          );
           expect(
-              const DoubleRange.of(start: 1, end: 2, step: 0.9), hasLength(2));
+            const DoubleRange.of(start: 1, end: 2, step: 0.9),
+            hasLength(2),
+          );
           expect(
-              const DoubleRange.of(start: 1, end: 2, step: 1.0), hasLength(1));
+            const DoubleRange.of(start: 1, end: 2, step: 1.0),
+            hasLength(1),
+          );
           expect(
-              const DoubleRange.of(start: 1, end: 2, step: 1.1), hasLength(1));
+            const DoubleRange.of(start: 1, end: 2, step: 1.1),
+            hasLength(1),
+          );
           expect(
-              const DoubleRange.of(start: 1, end: 2, step: 1.2), hasLength(1));
+            const DoubleRange.of(start: 1, end: 2, step: 1.2),
+            hasLength(1),
+          );
         });
         test('decimal negative step size', () {
-          expect(const DoubleRange.of(start: 2, end: 1, step: -0.1),
-              hasLength(10));
           expect(
-              const DoubleRange.of(start: 2, end: 1, step: -0.2), hasLength(5));
+            const DoubleRange.of(start: 2, end: 1, step: -0.1),
+            hasLength(10),
+          );
           expect(
-              const DoubleRange.of(start: 2, end: 1, step: -0.3), hasLength(4));
+            const DoubleRange.of(start: 2, end: 1, step: -0.2),
+            hasLength(5),
+          );
           expect(
-              const DoubleRange.of(start: 2, end: 1, step: -0.4), hasLength(3));
+            const DoubleRange.of(start: 2, end: 1, step: -0.3),
+            hasLength(4),
+          );
           expect(
-              const DoubleRange.of(start: 2, end: 1, step: -0.5), hasLength(2));
+            const DoubleRange.of(start: 2, end: 1, step: -0.4),
+            hasLength(3),
+          );
           expect(
-              const DoubleRange.of(start: 2, end: 1, step: -0.6), hasLength(2));
+            const DoubleRange.of(start: 2, end: 1, step: -0.5),
+            hasLength(2),
+          );
           expect(
-              const DoubleRange.of(start: 2, end: 1, step: -0.7), hasLength(2));
+            const DoubleRange.of(start: 2, end: 1, step: -0.6),
+            hasLength(2),
+          );
           expect(
-              const DoubleRange.of(start: 2, end: 1, step: -0.8), hasLength(2));
+            const DoubleRange.of(start: 2, end: 1, step: -0.7),
+            hasLength(2),
+          );
           expect(
-              const DoubleRange.of(start: 2, end: 1, step: -0.9), hasLength(2));
+            const DoubleRange.of(start: 2, end: 1, step: -0.8),
+            hasLength(2),
+          );
           expect(
-              const DoubleRange.of(start: 2, end: 1, step: -1.0), hasLength(1));
+            const DoubleRange.of(start: 2, end: 1, step: -0.9),
+            hasLength(2),
+          );
           expect(
-              const DoubleRange.of(start: 2, end: 1, step: -1.1), hasLength(1));
+            const DoubleRange.of(start: 2, end: 1, step: -1.0),
+            hasLength(1),
+          );
           expect(
-              const DoubleRange.of(start: 2, end: 1, step: -1.2), hasLength(1));
+            const DoubleRange.of(start: 2, end: 1, step: -1.1),
+            hasLength(1),
+          );
+          expect(
+            const DoubleRange.of(start: 2, end: 1, step: -1.2),
+            hasLength(1),
+          );
         });
         test('fractional positive step size', () {
-          expect(const DoubleRange.of(start: 1, end: 2, step: 1 / 1),
-              hasLength(1));
-          expect(const DoubleRange.of(start: 1, end: 2, step: 1 / 2),
-              hasLength(2));
-          expect(const DoubleRange.of(start: 1, end: 2, step: 1 / 3),
-              hasLength(3));
-          expect(const DoubleRange.of(start: 1, end: 2, step: 1 / 4),
-              hasLength(4));
-          expect(const DoubleRange.of(start: 1, end: 2, step: 1 / 5),
-              hasLength(5));
-          expect(const DoubleRange.of(start: 1, end: 2, step: 1 / 6),
-              hasLength(6));
-          expect(const DoubleRange.of(start: 1, end: 2, step: 1 / 7),
-              hasLength(7));
-          expect(const DoubleRange.of(start: 1, end: 2, step: 1 / 8),
-              hasLength(8));
-          expect(const DoubleRange.of(start: 1, end: 2, step: 1 / 9),
-              hasLength(9));
-          expect(const DoubleRange.of(start: 1, end: 2, step: 1 / 10),
-              hasLength(10));
+          expect(
+            const DoubleRange.of(start: 1, end: 2, step: 1 / 1),
+            hasLength(1),
+          );
+          expect(
+            const DoubleRange.of(start: 1, end: 2, step: 1 / 2),
+            hasLength(2),
+          );
+          expect(
+            const DoubleRange.of(start: 1, end: 2, step: 1 / 3),
+            hasLength(3),
+          );
+          expect(
+            const DoubleRange.of(start: 1, end: 2, step: 1 / 4),
+            hasLength(4),
+          );
+          expect(
+            const DoubleRange.of(start: 1, end: 2, step: 1 / 5),
+            hasLength(5),
+          );
+          expect(
+            const DoubleRange.of(start: 1, end: 2, step: 1 / 6),
+            hasLength(6),
+          );
+          expect(
+            const DoubleRange.of(start: 1, end: 2, step: 1 / 7),
+            hasLength(7),
+          );
+          expect(
+            const DoubleRange.of(start: 1, end: 2, step: 1 / 8),
+            hasLength(8),
+          );
+          expect(
+            const DoubleRange.of(start: 1, end: 2, step: 1 / 9),
+            hasLength(9),
+          );
+          expect(
+            const DoubleRange.of(start: 1, end: 2, step: 1 / 10),
+            hasLength(10),
+          );
         });
         test('fractional negative step size', () {
-          expect(const DoubleRange.of(start: 2, end: 1, step: -1 / 1),
-              hasLength(1));
-          expect(const DoubleRange.of(start: 2, end: 1, step: -1 / 2),
-              hasLength(2));
-          expect(const DoubleRange.of(start: 2, end: 1, step: -1 / 3),
-              hasLength(3));
-          expect(const DoubleRange.of(start: 2, end: 1, step: -1 / 4),
-              hasLength(4));
-          expect(const DoubleRange.of(start: 2, end: 1, step: -1 / 5),
-              hasLength(5));
-          expect(const DoubleRange.of(start: 2, end: 1, step: -1 / 6),
-              hasLength(6));
-          expect(const DoubleRange.of(start: 2, end: 1, step: -1 / 7),
-              hasLength(7));
-          expect(const DoubleRange.of(start: 2, end: 1, step: -1 / 8),
-              hasLength(8));
-          expect(const DoubleRange.of(start: 2, end: 1, step: -1 / 9),
-              hasLength(9));
-          expect(const DoubleRange.of(start: 2, end: 1, step: -1 / 10),
-              hasLength(10));
+          expect(
+            const DoubleRange.of(start: 2, end: 1, step: -1 / 1),
+            hasLength(1),
+          );
+          expect(
+            const DoubleRange.of(start: 2, end: 1, step: -1 / 2),
+            hasLength(2),
+          );
+          expect(
+            const DoubleRange.of(start: 2, end: 1, step: -1 / 3),
+            hasLength(3),
+          );
+          expect(
+            const DoubleRange.of(start: 2, end: 1, step: -1 / 4),
+            hasLength(4),
+          );
+          expect(
+            const DoubleRange.of(start: 2, end: 1, step: -1 / 5),
+            hasLength(5),
+          );
+          expect(
+            const DoubleRange.of(start: 2, end: 1, step: -1 / 6),
+            hasLength(6),
+          );
+          expect(
+            const DoubleRange.of(start: 2, end: 1, step: -1 / 7),
+            hasLength(7),
+          );
+          expect(
+            const DoubleRange.of(start: 2, end: 1, step: -1 / 8),
+            hasLength(8),
+          );
+          expect(
+            const DoubleRange.of(start: 2, end: 1, step: -1 / 9),
+            hasLength(9),
+          );
+          expect(
+            const DoubleRange.of(start: 2, end: 1, step: -1 / 10),
+            hasLength(10),
+          );
         });
         test('shorthand', () {
-          verifyRange(0.0.to(3.0),
-              included: [0.0, 1.0, 2.0], excluded: [-1.0, 3.0]);
-          verifyRange(3.0.to(0.0),
-              included: [3.0, 2.0, 1.0], excluded: [4.0, 0.0]);
-          verifyRange(4.0.to(8.0, step: 1.5),
-              included: [4.0, 5.5, 7.0], excluded: [5.0, 6.0, 6.5, 8.0]);
-          verifyRange(8.0.to(4.0, step: -1.5),
-              included: [8.0, 6.5, 5.0], excluded: [3.5, 4.0, 6.0, 7.5]);
+          verifyRange(
+            0.0.to(3.0),
+            included: [0.0, 1.0, 2.0],
+            excluded: [-1.0, 3.0],
+          );
+          verifyRange(
+            3.0.to(0.0),
+            included: [3.0, 2.0, 1.0],
+            excluded: [4.0, 0.0],
+          );
+          verifyRange(
+            4.0.to(8.0, step: 1.5),
+            included: [4.0, 5.5, 7.0],
+            excluded: [5.0, 6.0, 6.5, 8.0],
+          );
+          verifyRange(
+            8.0.to(4.0, step: -1.5),
+            included: [8.0, 6.5, 5.0],
+            excluded: [3.5, 4.0, 6.0, 7.5],
+          );
         });
         test('invalid', () {
           expect(() => DoubleRange(0, 0, 0), throwsArgumentError);
@@ -3996,36 +4637,72 @@ void main() {
       });
       group('sublist', () {
         test('sublist (1 argument)', () {
-          verifyRange(DoubleRange(3.0).sublist(0),
-              included: [0.0, 1.0, 2.0], excluded: [-1.0, 3.0]);
-          verifyRange(DoubleRange(3.0).sublist(1),
-              included: [1.0, 2.0], excluded: [-1.0, 0.0, 3.0]);
-          verifyRange(DoubleRange(3.0).sublist(2),
-              included: [2.0], excluded: [-1.0, 0.0, 1.0, 3.0]);
-          verifyRange(DoubleRange(3.0).sublist(3),
-              included: [], excluded: [-1.0, 0.0, 1.0, 2.0, 3.0]);
+          verifyRange(
+            DoubleRange(3.0).sublist(0),
+            included: [0.0, 1.0, 2.0],
+            excluded: [-1.0, 3.0],
+          );
+          verifyRange(
+            DoubleRange(3.0).sublist(1),
+            included: [1.0, 2.0],
+            excluded: [-1.0, 0.0, 3.0],
+          );
+          verifyRange(
+            DoubleRange(3.0).sublist(2),
+            included: [2.0],
+            excluded: [-1.0, 0.0, 1.0, 3.0],
+          );
+          verifyRange(
+            DoubleRange(3.0).sublist(3),
+            included: [],
+            excluded: [-1.0, 0.0, 1.0, 2.0, 3.0],
+          );
           expect(() => DoubleRange(3.0).sublist(4), throwsRangeError);
         });
         test('sublist (2 arguments)', () {
-          verifyRange(DoubleRange(3.0).sublist(0, 3),
-              included: [0.0, 1.0, 2.0], excluded: [-1.0, 3.0]);
-          verifyRange(DoubleRange(3.0).sublist(0, 2),
-              included: [0.0, 1.0], excluded: [-1.0, 2.0, 3.0]);
-          verifyRange(DoubleRange(3.0).sublist(0, 1),
-              included: [0.0], excluded: [-1.0, 1.0, 2.0, 3.0]);
-          verifyRange(DoubleRange(3.0).sublist(0, 0),
-              included: [], excluded: [-1.0, 0.0, 1.0, 2.0, 3.0]);
+          verifyRange(
+            DoubleRange(3.0).sublist(0, 3),
+            included: [0.0, 1.0, 2.0],
+            excluded: [-1.0, 3.0],
+          );
+          verifyRange(
+            DoubleRange(3.0).sublist(0, 2),
+            included: [0.0, 1.0],
+            excluded: [-1.0, 2.0, 3.0],
+          );
+          verifyRange(
+            DoubleRange(3.0).sublist(0, 1),
+            included: [0.0],
+            excluded: [-1.0, 1.0, 2.0, 3.0],
+          );
+          verifyRange(
+            DoubleRange(3.0).sublist(0, 0),
+            included: [],
+            excluded: [-1.0, 0.0, 1.0, 2.0, 3.0],
+          );
           expect(() => DoubleRange(3.0).sublist(0, 4), throwsRangeError);
         });
         test('getRange', () {
-          verifyRange(DoubleRange(3.0).getRange(0, 3),
-              included: [0.0, 1.0, 2.0], excluded: [-1.0, 3.0]);
-          verifyRange(DoubleRange(3.0).getRange(0, 2),
-              included: [0.0, 1.0], excluded: [-1.0, 2.0, 3.0]);
-          verifyRange(DoubleRange(3.0).getRange(0, 1),
-              included: [0.0], excluded: [-1.0, 1.0, 2.0, 3.0]);
-          verifyRange(DoubleRange(3.0).getRange(0, 0),
-              included: [], excluded: [-1.0, 0.0, 1.0, 2.0, 3.0]);
+          verifyRange(
+            DoubleRange(3.0).getRange(0, 3),
+            included: [0.0, 1.0, 2.0],
+            excluded: [-1.0, 3.0],
+          );
+          verifyRange(
+            DoubleRange(3.0).getRange(0, 2),
+            included: [0.0, 1.0],
+            excluded: [-1.0, 2.0, 3.0],
+          );
+          verifyRange(
+            DoubleRange(3.0).getRange(0, 1),
+            included: [0.0],
+            excluded: [-1.0, 1.0, 2.0, 3.0],
+          );
+          verifyRange(
+            DoubleRange(3.0).getRange(0, 0),
+            included: [],
+            excluded: [-1.0, 0.0, 1.0, 2.0, 3.0],
+          );
           expect(() => DoubleRange(3.0).getRange(0, 4), throwsRangeError);
         });
       });
@@ -4047,9 +4724,13 @@ void main() {
         expect(() => list.removeRange(2, 4), throwsUnsupportedError);
         expect(() => list.removeWhere((value) => true), throwsUnsupportedError);
         expect(
-            () => list.replaceRange(2, 4, [5.0, 6.0]), throwsUnsupportedError);
+          () => list.replaceRange(2, 4, [5.0, 6.0]),
+          throwsUnsupportedError,
+        );
         expect(
-            () => list.retainWhere((value) => false), throwsUnsupportedError);
+          () => list.retainWhere((value) => false),
+          throwsUnsupportedError,
+        );
         expect(() => list.setAll(2, [5.0, 6.0]), throwsUnsupportedError);
         expect(() => list.setRange(2, 4, [5.0, 6.0]), throwsUnsupportedError);
         expect(() => list.sort(), throwsUnsupportedError);
@@ -4060,243 +4741,383 @@ void main() {
           values.map(BigInt.from).toList();
       group('constructor', () {
         test('empty', () {
-          verifyRange(BigIntRange.empty,
-              included: <BigInt>[], excluded: toBigIntList([0]));
+          verifyRange(
+            BigIntRange.empty,
+            included: <BigInt>[],
+            excluded: toBigIntList([0]),
+          );
         });
         test('of', () {
-          verifyRange(BigIntRange.of(),
-              included: <BigInt>[], excluded: toBigIntList([0]));
-          verifyRange(BigIntRange.of(start: BigInt.from(-2)),
-              included: toBigIntList([-2, -1]),
-              excluded: toBigIntList([-3, 0]));
-          verifyRange(BigIntRange.of(end: BigInt.from(2)),
-              included: toBigIntList([0, 1]), excluded: toBigIntList([-1, 3]));
           verifyRange(
-              BigIntRange.of(start: BigInt.from(1), end: BigInt.from(3)),
-              included: toBigIntList([1, 2]),
-              excluded: toBigIntList([0, 3]));
+            BigIntRange.of(),
+            included: <BigInt>[],
+            excluded: toBigIntList([0]),
+          );
           verifyRange(
-              BigIntRange.of(start: BigInt.from(3), end: BigInt.from(1)),
-              included: toBigIntList([3, 2]),
-              excluded: toBigIntList([1, 4]));
+            BigIntRange.of(start: BigInt.from(-2)),
+            included: toBigIntList([-2, -1]),
+            excluded: toBigIntList([-3, 0]),
+          );
           verifyRange(
-              BigIntRange.of(
-                  start: BigInt.from(1),
-                  end: BigInt.from(5),
-                  step: BigInt.from(2)),
-              included: toBigIntList([1, 3]),
-              excluded: toBigIntList([2, 4, 5]));
+            BigIntRange.of(end: BigInt.from(2)),
+            included: toBigIntList([0, 1]),
+            excluded: toBigIntList([-1, 3]),
+          );
           verifyRange(
-              BigIntRange.of(
-                  start: BigInt.from(5),
-                  end: BigInt.from(1),
-                  step: BigInt.from(-2)),
-              included: toBigIntList([5, 3]),
-              excluded: toBigIntList([4, 2, 1]));
+            BigIntRange.of(start: BigInt.from(1), end: BigInt.from(3)),
+            included: toBigIntList([1, 2]),
+            excluded: toBigIntList([0, 3]),
+          );
+          verifyRange(
+            BigIntRange.of(start: BigInt.from(3), end: BigInt.from(1)),
+            included: toBigIntList([3, 2]),
+            excluded: toBigIntList([1, 4]),
+          );
+          verifyRange(
+            BigIntRange.of(
+              start: BigInt.from(1),
+              end: BigInt.from(5),
+              step: BigInt.from(2),
+            ),
+            included: toBigIntList([1, 3]),
+            excluded: toBigIntList([2, 4, 5]),
+          );
+          verifyRange(
+            BigIntRange.of(
+              start: BigInt.from(5),
+              end: BigInt.from(1),
+              step: BigInt.from(-2),
+            ),
+            included: toBigIntList([5, 3]),
+            excluded: toBigIntList([4, 2, 1]),
+          );
         });
         test('length', () {
-          verifyRange(BigIntRange.length(0),
-              included: toBigIntList([]), excluded: toBigIntList([0]));
-          verifyRange(BigIntRange.length(1),
-              included: toBigIntList([0]), excluded: toBigIntList([-1, 1]));
-          verifyRange(BigIntRange.length(2),
-              included: toBigIntList([0, 1]), excluded: toBigIntList([-1, 2]));
-          verifyRange(BigIntRange.length(2, start: BigInt.from(10)),
-              included: toBigIntList([10, 11]),
-              excluded: toBigIntList([-1, 2]));
-          verifyRange(BigIntRange.length(2, step: BigInt.from(2)),
-              included: toBigIntList([0, 2]),
-              excluded: toBigIntList([-1, 1, 3]));
-          verifyRange(BigIntRange.length(2, step: BigInt.from(-2)),
-              included: toBigIntList([0, -2]),
-              excluded: toBigIntList([-3, -1, 1]));
+          verifyRange(
+            BigIntRange.length(0),
+            included: toBigIntList([]),
+            excluded: toBigIntList([0]),
+          );
+          verifyRange(
+            BigIntRange.length(1),
+            included: toBigIntList([0]),
+            excluded: toBigIntList([-1, 1]),
+          );
+          verifyRange(
+            BigIntRange.length(2),
+            included: toBigIntList([0, 1]),
+            excluded: toBigIntList([-1, 2]),
+          );
+          verifyRange(
+            BigIntRange.length(2, start: BigInt.from(10)),
+            included: toBigIntList([10, 11]),
+            excluded: toBigIntList([-1, 2]),
+          );
+          verifyRange(
+            BigIntRange.length(2, step: BigInt.from(2)),
+            included: toBigIntList([0, 2]),
+            excluded: toBigIntList([-1, 1, 3]),
+          );
+          verifyRange(
+            BigIntRange.length(2, step: BigInt.from(-2)),
+            included: toBigIntList([0, -2]),
+            excluded: toBigIntList([-3, -1, 1]),
+          );
         });
         test('1 argument', () {
-          verifyRange(BigIntRange(BigInt.zero),
-              included: <BigInt>[], excluded: toBigIntList([-1, 0, 1]));
-          verifyRange(BigIntRange(BigInt.one),
-              included: toBigIntList([0]), excluded: toBigIntList([-1, 1]));
-          verifyRange(BigIntRange(BigInt.from(2)),
-              included: toBigIntList([0, 1]), excluded: toBigIntList([-1, 2]));
-          verifyRange(BigIntRange(BigInt.from(3)),
-              included: toBigIntList([0, 1, 2]),
-              excluded: toBigIntList([-1, 3]));
+          verifyRange(
+            BigIntRange(BigInt.zero),
+            included: <BigInt>[],
+            excluded: toBigIntList([-1, 0, 1]),
+          );
+          verifyRange(
+            BigIntRange(BigInt.one),
+            included: toBigIntList([0]),
+            excluded: toBigIntList([-1, 1]),
+          );
+          verifyRange(
+            BigIntRange(BigInt.from(2)),
+            included: toBigIntList([0, 1]),
+            excluded: toBigIntList([-1, 2]),
+          );
+          verifyRange(
+            BigIntRange(BigInt.from(3)),
+            included: toBigIntList([0, 1, 2]),
+            excluded: toBigIntList([-1, 3]),
+          );
         });
         test('2 argument', () {
-          verifyRange(BigIntRange(BigInt.zero, BigInt.zero),
-              included: <BigInt>[], excluded: toBigIntList([-1, 0, 1]));
-          verifyRange(BigIntRange(BigInt.zero, BigInt.from(4)),
-              included: toBigIntList([0, 1, 2, 3]),
-              excluded: toBigIntList([-1, 4]));
-          verifyRange(BigIntRange(BigInt.from(4), BigInt.zero),
-              included: toBigIntList([4, 3, 2, 1]),
-              excluded: toBigIntList([5, 0]));
-          verifyRange(BigIntRange(BigInt.from(5), BigInt.from(9)),
-              included: toBigIntList([5, 6, 7, 8]),
-              excluded: toBigIntList([4, 9]));
-          verifyRange(BigIntRange(BigInt.from(9), BigInt.from(5)),
-              included: toBigIntList([9, 8, 7, 6]),
-              excluded: toBigIntList([10, 5]));
+          verifyRange(
+            BigIntRange(BigInt.zero, BigInt.zero),
+            included: <BigInt>[],
+            excluded: toBigIntList([-1, 0, 1]),
+          );
+          verifyRange(
+            BigIntRange(BigInt.zero, BigInt.from(4)),
+            included: toBigIntList([0, 1, 2, 3]),
+            excluded: toBigIntList([-1, 4]),
+          );
+          verifyRange(
+            BigIntRange(BigInt.from(4), BigInt.zero),
+            included: toBigIntList([4, 3, 2, 1]),
+            excluded: toBigIntList([5, 0]),
+          );
+          verifyRange(
+            BigIntRange(BigInt.from(5), BigInt.from(9)),
+            included: toBigIntList([5, 6, 7, 8]),
+            excluded: toBigIntList([4, 9]),
+          );
+          verifyRange(
+            BigIntRange(BigInt.from(9), BigInt.from(5)),
+            included: toBigIntList([9, 8, 7, 6]),
+            excluded: toBigIntList([10, 5]),
+          );
         });
         test('3 argument (positive step)', () {
-          verifyRange(BigIntRange(BigInt.zero, BigInt.zero, BigInt.one),
-              included: <BigInt>[], excluded: toBigIntList([-1, 0, 1]));
-          verifyRange(BigIntRange(BigInt.from(2), BigInt.from(8), BigInt.two),
-              included: toBigIntList([2, 4, 6]),
-              excluded: toBigIntList([0, 1, 3, 5, 7, 8]));
-          verifyRange(BigIntRange(BigInt.from(3), BigInt.from(8), BigInt.two),
-              included: toBigIntList([3, 5, 7]),
-              excluded: toBigIntList([1, 2, 4, 6, 8, 9]));
-          verifyRange(BigIntRange(BigInt.from(4), BigInt.from(8), BigInt.two),
-              included: toBigIntList([4, 6]),
-              excluded: toBigIntList([2, 3, 5, 7, 8]));
-          verifyRange(BigIntRange(BigInt.from(2), BigInt.from(7), BigInt.two),
-              included: toBigIntList([2, 4, 6]),
-              excluded: toBigIntList([0, 1, 3, 5, 7, 8]));
-          verifyRange(BigIntRange(BigInt.from(2), BigInt.from(6), BigInt.two),
-              included: toBigIntList([2, 4]),
-              excluded: toBigIntList([0, 1, 3, 5, 6, 7, 8]));
+          verifyRange(
+            BigIntRange(BigInt.zero, BigInt.zero, BigInt.one),
+            included: <BigInt>[],
+            excluded: toBigIntList([-1, 0, 1]),
+          );
+          verifyRange(
+            BigIntRange(BigInt.from(2), BigInt.from(8), BigInt.two),
+            included: toBigIntList([2, 4, 6]),
+            excluded: toBigIntList([0, 1, 3, 5, 7, 8]),
+          );
+          verifyRange(
+            BigIntRange(BigInt.from(3), BigInt.from(8), BigInt.two),
+            included: toBigIntList([3, 5, 7]),
+            excluded: toBigIntList([1, 2, 4, 6, 8, 9]),
+          );
+          verifyRange(
+            BigIntRange(BigInt.from(4), BigInt.from(8), BigInt.two),
+            included: toBigIntList([4, 6]),
+            excluded: toBigIntList([2, 3, 5, 7, 8]),
+          );
+          verifyRange(
+            BigIntRange(BigInt.from(2), BigInt.from(7), BigInt.two),
+            included: toBigIntList([2, 4, 6]),
+            excluded: toBigIntList([0, 1, 3, 5, 7, 8]),
+          );
+          verifyRange(
+            BigIntRange(BigInt.from(2), BigInt.from(6), BigInt.two),
+            included: toBigIntList([2, 4]),
+            excluded: toBigIntList([0, 1, 3, 5, 6, 7, 8]),
+          );
         });
         test('3 argument (negative step)', () {
           verifyRange(
-              BigIntRange(
-                  BigInt.zero, BigInt.zero, BigIntExtension.negativeOne),
-              included: <BigInt>[],
-              excluded: toBigIntList([-1, 0, 1]));
+            BigIntRange(BigInt.zero, BigInt.zero, BigIntExtension.negativeOne),
+            included: <BigInt>[],
+            excluded: toBigIntList([-1, 0, 1]),
+          );
           verifyRange(
-              BigIntRange(
-                  BigInt.from(8), BigInt.from(2), BigIntExtension.negativeTwo),
-              included: toBigIntList([8, 6, 4]),
-              excluded: toBigIntList([2, 3, 5, 7, 9, 10]));
+            BigIntRange(
+              BigInt.from(8),
+              BigInt.from(2),
+              BigIntExtension.negativeTwo,
+            ),
+            included: toBigIntList([8, 6, 4]),
+            excluded: toBigIntList([2, 3, 5, 7, 9, 10]),
+          );
           verifyRange(
-              BigIntRange(
-                  BigInt.from(8), BigInt.from(3), BigIntExtension.negativeTwo),
-              included: toBigIntList([8, 6, 4]),
-              excluded: toBigIntList([2, 3, 5, 7, 9, 10]));
+            BigIntRange(
+              BigInt.from(8),
+              BigInt.from(3),
+              BigIntExtension.negativeTwo,
+            ),
+            included: toBigIntList([8, 6, 4]),
+            excluded: toBigIntList([2, 3, 5, 7, 9, 10]),
+          );
           verifyRange(
-              BigIntRange(
-                  BigInt.from(8), BigInt.from(4), BigIntExtension.negativeTwo),
-              included: toBigIntList([8, 6]),
-              excluded: toBigIntList([2, 3, 4, 5, 7, 9, 10]));
+            BigIntRange(
+              BigInt.from(8),
+              BigInt.from(4),
+              BigIntExtension.negativeTwo,
+            ),
+            included: toBigIntList([8, 6]),
+            excluded: toBigIntList([2, 3, 4, 5, 7, 9, 10]),
+          );
           verifyRange(
-              BigIntRange(
-                  BigInt.from(7), BigInt.from(2), BigIntExtension.negativeTwo),
-              included: toBigIntList([7, 5, 3]),
-              excluded: toBigIntList([1, 2, 4, 6, 8, 9]));
+            BigIntRange(
+              BigInt.from(7),
+              BigInt.from(2),
+              BigIntExtension.negativeTwo,
+            ),
+            included: toBigIntList([7, 5, 3]),
+            excluded: toBigIntList([1, 2, 4, 6, 8, 9]),
+          );
           verifyRange(
-              BigIntRange(
-                  BigInt.from(6), BigInt.from(2), BigIntExtension.negativeTwo),
-              included: toBigIntList([6, 4]),
-              excluded: toBigIntList([2, 3, 5, 7, 8, 9]));
+            BigIntRange(
+              BigInt.from(6),
+              BigInt.from(2),
+              BigIntExtension.negativeTwo,
+            ),
+            included: toBigIntList([6, 4]),
+            excluded: toBigIntList([2, 3, 5, 7, 8, 9]),
+          );
         });
         test('positive step size', () {
           for (var end = 31; end <= 40; end++) {
             verifyRange(
-                BigIntRange(BigInt.from(10), BigInt.from(end), BigInt.from(10)),
-                included: toBigIntList([10, 20, 30]),
-                excluded: toBigIntList([5, 15, 25, 35, 40]));
+              BigIntRange(BigInt.from(10), BigInt.from(end), BigInt.from(10)),
+              included: toBigIntList([10, 20, 30]),
+              excluded: toBigIntList([5, 15, 25, 35, 40]),
+            );
           }
         });
         test('negative step size', () {
           for (var end = 9; end >= 0; end--) {
             verifyRange(
-                BigIntRange(
-                    BigInt.from(30), BigInt.from(end), BigInt.from(-10)),
-                included: toBigIntList([30, 20, 10]),
-                excluded: toBigIntList([0, 5, 15, 25, 35]));
+              BigIntRange(BigInt.from(30), BigInt.from(end), BigInt.from(-10)),
+              included: toBigIntList([30, 20, 10]),
+              excluded: toBigIntList([0, 5, 15, 25, 35]),
+            );
           }
         });
         test('shorthand', () {
-          verifyRange(BigInt.zero.to(BigInt.from(3)),
-              included: toBigIntList([0, 1, 2]),
-              excluded: toBigIntList([-1, 3]));
-          verifyRange(BigInt.from(3).to(BigInt.zero),
-              included: toBigIntList([3, 2, 1]),
-              excluded: toBigIntList([4, 0]));
-          verifyRange(BigInt.two.to(BigInt.from(8), step: BigInt.two),
-              included: toBigIntList([2, 4, 6]),
-              excluded: toBigIntList([0, 1, 3, 5, 7, 8]));
-          verifyRange(BigInt.from(8).to(BigInt.two, step: -BigInt.two),
-              included: toBigIntList([8, 6, 4]),
-              excluded: toBigIntList([2, 3, 5, 7, 9]));
+          verifyRange(
+            BigInt.zero.to(BigInt.from(3)),
+            included: toBigIntList([0, 1, 2]),
+            excluded: toBigIntList([-1, 3]),
+          );
+          verifyRange(
+            BigInt.from(3).to(BigInt.zero),
+            included: toBigIntList([3, 2, 1]),
+            excluded: toBigIntList([4, 0]),
+          );
+          verifyRange(
+            BigInt.two.to(BigInt.from(8), step: BigInt.two),
+            included: toBigIntList([2, 4, 6]),
+            excluded: toBigIntList([0, 1, 3, 5, 7, 8]),
+          );
+          verifyRange(
+            BigInt.from(8).to(BigInt.two, step: -BigInt.two),
+            included: toBigIntList([8, 6, 4]),
+            excluded: toBigIntList([2, 3, 5, 7, 9]),
+          );
         });
         test('stress', () {
           final random = Random(6180340);
           for (var i = 0; i < 100; i++) {
             final start = BigInt.from(random.nextInt(0xffff) - 0xffff ~/ 2);
             final end = BigInt.from(random.nextInt(0xffff) - 0xffff ~/ 2);
-            final step = BigInt.from(start < end
-                ? 1 + random.nextInt(0xfff)
-                : -1 - random.nextInt(0xfff));
-            final expected = start < end
-                ? <BigInt>[for (var j = start; j < end; j += step) j]
-                : <BigInt>[for (var j = start; j > end; j += step) j];
-            verifyRange(BigIntRange(start, end, step),
-                included: expected, excluded: <BigInt>[]);
+            final step = BigInt.from(
+              start < end
+                  ? 1 + random.nextInt(0xfff)
+                  : -1 - random.nextInt(0xfff),
+            );
+            final expected =
+                start < end
+                    ? <BigInt>[for (var j = start; j < end; j += step) j]
+                    : <BigInt>[for (var j = start; j > end; j += step) j];
+            verifyRange(
+              BigIntRange(start, end, step),
+              included: expected,
+              excluded: <BigInt>[],
+            );
           }
         });
         test('invalid', () {
-          expect(() => BigIntRange(BigInt.zero, BigInt.zero, BigInt.zero),
-              throwsArgumentError);
+          expect(
+            () => BigIntRange(BigInt.zero, BigInt.zero, BigInt.zero),
+            throwsArgumentError,
+          );
           expect(() => BigIntRange(null, BigInt.one), throwsArgumentError);
           expect(
-              () => BigIntRange(null, null, BigInt.one), throwsArgumentError);
+            () => BigIntRange(null, null, BigInt.one),
+            throwsArgumentError,
+          );
         });
         test('invalid length', () {
           final enormous = BigInt.two.pow(100);
           expect(() => BigIntRange(BigInt.zero, enormous), throwsArgumentError);
           expect(() => BigIntRange(enormous, BigInt.zero), throwsArgumentError);
-          verifyRange(BigIntRange(enormous, enormous + BigInt.one),
-              included: [enormous],
-              excluded: [enormous - BigInt.one, enormous + BigInt.two]);
+          verifyRange(
+            BigIntRange(enormous, enormous + BigInt.one),
+            included: [enormous],
+            excluded: [enormous - BigInt.one, enormous + BigInt.two],
+          );
         }, testOn: '!js');
       });
       group('sublist', () {
         test('sublist (1 argument)', () {
-          verifyRange(BigIntRange(BigInt.from(3)).sublist(0),
-              included: toBigIntList([0, 1, 2]),
-              excluded: toBigIntList([-1, 3]));
-          verifyRange(BigIntRange(BigInt.from(3)).sublist(1),
-              included: toBigIntList([1, 2]),
-              excluded: toBigIntList([-1, 0, 3]));
-          verifyRange(BigIntRange(BigInt.from(3)).sublist(2),
-              included: toBigIntList([2]),
-              excluded: toBigIntList([-1, 0, 1, 3]));
-          verifyRange(BigIntRange(BigInt.from(3)).sublist(3),
-              included: <BigInt>[], excluded: toBigIntList([-1, 0, 1, 2, 3]));
+          verifyRange(
+            BigIntRange(BigInt.from(3)).sublist(0),
+            included: toBigIntList([0, 1, 2]),
+            excluded: toBigIntList([-1, 3]),
+          );
+          verifyRange(
+            BigIntRange(BigInt.from(3)).sublist(1),
+            included: toBigIntList([1, 2]),
+            excluded: toBigIntList([-1, 0, 3]),
+          );
+          verifyRange(
+            BigIntRange(BigInt.from(3)).sublist(2),
+            included: toBigIntList([2]),
+            excluded: toBigIntList([-1, 0, 1, 3]),
+          );
+          verifyRange(
+            BigIntRange(BigInt.from(3)).sublist(3),
+            included: <BigInt>[],
+            excluded: toBigIntList([-1, 0, 1, 2, 3]),
+          );
           expect(
-              () => BigIntRange(BigInt.from(3)).sublist(4), throwsRangeError);
+            () => BigIntRange(BigInt.from(3)).sublist(4),
+            throwsRangeError,
+          );
         });
         test('sublist (2 arguments)', () {
-          verifyRange(BigIntRange(BigInt.from(3)).sublist(0, 3),
-              included: toBigIntList([0, 1, 2]),
-              excluded: toBigIntList([-1, 3]));
-          verifyRange(BigIntRange(BigInt.from(3)).sublist(0, 2),
-              included: toBigIntList([0, 1]),
-              excluded: toBigIntList([-1, 2, 3]));
-          verifyRange(BigIntRange(BigInt.from(3)).sublist(0, 1),
-              included: toBigIntList([0]),
-              excluded: toBigIntList([-1, 1, 2, 3]));
-          verifyRange(BigIntRange(BigInt.from(3)).sublist(0, 0),
-              included: <BigInt>[], excluded: toBigIntList([-1, 0, 1, 2, 3]));
-          expect(() => BigIntRange(BigInt.from(3)).sublist(0, 4),
-              throwsRangeError);
+          verifyRange(
+            BigIntRange(BigInt.from(3)).sublist(0, 3),
+            included: toBigIntList([0, 1, 2]),
+            excluded: toBigIntList([-1, 3]),
+          );
+          verifyRange(
+            BigIntRange(BigInt.from(3)).sublist(0, 2),
+            included: toBigIntList([0, 1]),
+            excluded: toBigIntList([-1, 2, 3]),
+          );
+          verifyRange(
+            BigIntRange(BigInt.from(3)).sublist(0, 1),
+            included: toBigIntList([0]),
+            excluded: toBigIntList([-1, 1, 2, 3]),
+          );
+          verifyRange(
+            BigIntRange(BigInt.from(3)).sublist(0, 0),
+            included: <BigInt>[],
+            excluded: toBigIntList([-1, 0, 1, 2, 3]),
+          );
+          expect(
+            () => BigIntRange(BigInt.from(3)).sublist(0, 4),
+            throwsRangeError,
+          );
         });
         test('getRange', () {
-          verifyRange(BigIntRange(BigInt.from(3)).getRange(0, 3),
-              included: toBigIntList([0, 1, 2]),
-              excluded: toBigIntList([-1, 3]));
-          verifyRange(BigIntRange(BigInt.from(3)).getRange(0, 2),
-              included: toBigIntList([0, 1]),
-              excluded: toBigIntList([-1, 2, 3]));
-          verifyRange(BigIntRange(BigInt.from(3)).getRange(0, 1),
-              included: toBigIntList([0]),
-              excluded: toBigIntList([-1, 1, 2, 3]));
-          verifyRange(BigIntRange(BigInt.from(3)).getRange(0, 0),
-              included: toBigIntList([]),
-              excluded: toBigIntList([-1, 0, 1, 2, 3]));
-          expect(() => BigIntRange(BigInt.from(3)).getRange(0, 4),
-              throwsRangeError);
+          verifyRange(
+            BigIntRange(BigInt.from(3)).getRange(0, 3),
+            included: toBigIntList([0, 1, 2]),
+            excluded: toBigIntList([-1, 3]),
+          );
+          verifyRange(
+            BigIntRange(BigInt.from(3)).getRange(0, 2),
+            included: toBigIntList([0, 1]),
+            excluded: toBigIntList([-1, 2, 3]),
+          );
+          verifyRange(
+            BigIntRange(BigInt.from(3)).getRange(0, 1),
+            included: toBigIntList([0]),
+            excluded: toBigIntList([-1, 1, 2, 3]),
+          );
+          verifyRange(
+            BigIntRange(BigInt.from(3)).getRange(0, 0),
+            included: toBigIntList([]),
+            excluded: toBigIntList([-1, 0, 1, 2, 3]),
+          );
+          expect(
+            () => BigIntRange(BigInt.from(3)).getRange(0, 4),
+            throwsRangeError,
+          );
         });
       });
       test('unmodifiable', () {
@@ -4308,7 +5129,9 @@ void main() {
         expect(() => list.addAll(list), throwsUnsupportedError);
         expect(() => list.clear(), throwsUnsupportedError);
         expect(
-            () => list.fillRange(2, 4, BigInt.from(5)), throwsUnsupportedError);
+          () => list.fillRange(2, 4, BigInt.from(5)),
+          throwsUnsupportedError,
+        );
         expect(() => list.insert(2, BigInt.from(5)), throwsUnsupportedError);
         expect(() => list.insertAll(2, list), throwsUnsupportedError);
         expect(() => list.length = 10, throwsUnsupportedError);
@@ -4319,7 +5142,9 @@ void main() {
         expect(() => list.removeWhere((value) => true), throwsUnsupportedError);
         expect(() => list.replaceRange(2, 4, list), throwsUnsupportedError);
         expect(
-            () => list.retainWhere((value) => false), throwsUnsupportedError);
+          () => list.retainWhere((value) => false),
+          throwsUnsupportedError,
+        );
         expect(() => list.setAll(2, list), throwsUnsupportedError);
         expect(() => list.setRange(2, 4, list), throwsUnsupportedError);
         expect(() => list.shuffle(), throwsUnsupportedError);
@@ -4329,8 +5154,11 @@ void main() {
   });
   group('sortedlist', () {
     group('default constructor', () {
-      allSortedListTests(<E>(Iterable<E> elements,
-          {Comparator<E>? comparator, bool growable = true}) {
+      allSortedListTests(<E>(
+        Iterable<E> elements, {
+        Comparator<E>? comparator,
+        bool growable = true,
+      }) {
         final list = SortedList<E>(comparator: comparator)..addAll(elements);
         return growable == false
             ? list.toSortedList(comparator: comparator, growable: growable)
@@ -4338,15 +5166,26 @@ void main() {
       });
     });
     group('iterable constructor', () {
-      allSortedListTests(<E>(Iterable<E> elements,
-              {Comparator<E>? comparator, bool growable = true}) =>
-          SortedList<E>.of(elements,
-              comparator: comparator, growable: growable));
+      allSortedListTests(
+        <E>(
+          Iterable<E> elements, {
+          Comparator<E>? comparator,
+          bool growable = true,
+        }) => SortedList<E>.of(
+          elements,
+          comparator: comparator,
+          growable: growable,
+        ),
+      );
     });
     group('converting constructor', () {
-      allSortedListTests(<E>(Iterable<E> elements,
-              {Comparator<E>? comparator, bool growable = true}) =>
-          elements.toSortedList(comparator: comparator, growable: growable));
+      allSortedListTests(
+        <E>(
+          Iterable<E> elements, {
+          Comparator<E>? comparator,
+          bool growable = true,
+        }) => elements.toSortedList(comparator: comparator, growable: growable),
+      );
     });
   });
   group('rtree', () {
@@ -4510,18 +5349,30 @@ void main() {
         expect(bound2.hashCode, bound2.hashCode);
       });
       test('toString', () {
-        expect(point1.toString(),
-            matches(RegExp(r'Bounds\(1(.0)?, 2(.0)?, 3(.0)?\)')));
-        expect(point2.toString(),
-            matches(RegExp(r'Bounds\(3(.0)?, 2(.0)?, 1(.0)?\)')));
         expect(
-            bound1.toString(),
-            matches(RegExp(
-                r'Bounds\(-1(.0)?, -1(.0)?, -1(.0)?; 1(.0)?, 1(.0)?, 1(.0)?\)')));
+          point1.toString(),
+          matches(RegExp(r'Bounds\(1(.0)?, 2(.0)?, 3(.0)?\)')),
+        );
         expect(
-            bound2.toString(),
-            matches(RegExp(
-                r'Bounds\(-2(.0)?, 1(.0)?, 2(.0)?; 2(.0)?, 3(.0)?, 5(.0)?\)')));
+          point2.toString(),
+          matches(RegExp(r'Bounds\(3(.0)?, 2(.0)?, 1(.0)?\)')),
+        );
+        expect(
+          bound1.toString(),
+          matches(
+            RegExp(
+              r'Bounds\(-1(.0)?, -1(.0)?, -1(.0)?; 1(.0)?, 1(.0)?, 1(.0)?\)',
+            ),
+          ),
+        );
+        expect(
+          bound2.toString(),
+          matches(
+            RegExp(
+              r'Bounds\(-2(.0)?, 1(.0)?, 2(.0)?; 2(.0)?, 3(.0)?, 5(.0)?\)',
+            ),
+          ),
+        );
       });
       test('unionAll', () {
         expect(() => Bounds.unionAll([]), throwsStateError);
@@ -4551,8 +5402,10 @@ void main() {
       });
     });
     group('guttman', () {
-      allRTreeTests(<T>({int? minEntries, int? maxEntries}) =>
-          RTree<T>.guttmann(minEntries: minEntries, maxEntries: maxEntries));
+      allRTreeTests(
+        <T>({int? minEntries, int? maxEntries}) =>
+            RTree<T>.guttmann(minEntries: minEntries, maxEntries: maxEntries),
+      );
     });
   });
   group('string', () {
@@ -4605,7 +5458,9 @@ void main() {
       test('sublist', () {
         expect(plenty.sublist(5).toString(), plenty.toString().substring(5));
         expect(
-            plenty.sublist(5, 7).toString(), plenty.toString().substring(5, 7));
+          plenty.sublist(5, 7).toString(),
+          plenty.toString().substring(5, 7),
+        );
       });
     });
     group('mutable', () {
@@ -4674,7 +5529,9 @@ void main() {
       test('sublist', () {
         expect(plenty.sublist(5).toString(), plenty.toString().substring(5));
         expect(
-            plenty.sublist(5, 7).toString(), plenty.toString().substring(5, 7));
+          plenty.sublist(5, 7).toString(),
+          plenty.toString().substring(5, 7),
+        );
       });
     });
     group('partition', () {
@@ -4700,10 +5557,16 @@ void main() {
           expect('123;456;789'.lastPartition(','), ['', '', '123;456;789']);
         });
         test('regexp', () {
-          expect(
-              '123,,456,,789'.lastPartition(regexp), ['123,,456,', ',', '789']);
-          expect(
-              '123;;456;;789'.lastPartition(regexp), ['', '', '123;;456;;789']);
+          expect('123,,456,,789'.lastPartition(regexp), [
+            '123,,456,',
+            ',',
+            '789',
+          ]);
+          expect('123;;456;;789'.lastPartition(regexp), [
+            '',
+            '',
+            '123;;456;;789',
+          ]);
         });
         test('start', () {
           expect('123,456,789'.lastPartition(',', 2), ['', '', '123,456,789']);
@@ -4755,101 +5618,117 @@ void main() {
     group('converters', () {
       test('convert first character', () {
         expect(
-            ''.convertFirstCharacters((value) {
-              fail('Not supposed to be called');
-            }),
-            '');
+          ''.convertFirstCharacters((value) {
+            fail('Not supposed to be called');
+          }),
+          '',
+        );
         expect(
-            'a'.convertFirstCharacters((value) {
-              expect(value, 'a');
-              return 'A';
-            }),
-            'A');
+          'a'.convertFirstCharacters((value) {
+            expect(value, 'a');
+            return 'A';
+          }),
+          'A',
+        );
         expect(
-            'ab'.convertFirstCharacters((value) {
-              expect(value, 'a');
-              return 'A';
-            }),
-            'Ab');
+          'ab'.convertFirstCharacters((value) {
+            expect(value, 'a');
+            return 'A';
+          }),
+          'Ab',
+        );
         expect(
-            'abc'.convertFirstCharacters((value) {
-              expect(value, 'a');
-              return 'A';
-            }),
-            'Abc');
+          'abc'.convertFirstCharacters((value) {
+            expect(value, 'a');
+            return 'A';
+          }),
+          'Abc',
+        );
       });
       test('convert first two characters', () {
         expect(
-            ''.convertFirstCharacters((value) {
-              fail('Not supposed to be called');
-            }, count: 2),
-            '');
+          ''.convertFirstCharacters((value) {
+            fail('Not supposed to be called');
+          }, count: 2),
+          '',
+        );
         expect(
-            'a'.convertFirstCharacters((value) {
-              fail('Not supposed to be called');
-            }, count: 2),
-            'a');
+          'a'.convertFirstCharacters((value) {
+            fail('Not supposed to be called');
+          }, count: 2),
+          'a',
+        );
         expect(
-            'ab'.convertFirstCharacters((value) {
-              expect(value, 'ab');
-              return '*';
-            }, count: 2),
-            '*');
+          'ab'.convertFirstCharacters((value) {
+            expect(value, 'ab');
+            return '*';
+          }, count: 2),
+          '*',
+        );
         expect(
-            'abc'.convertFirstCharacters((value) {
-              expect(value, 'ab');
-              return '*';
-            }, count: 2),
-            '*c');
+          'abc'.convertFirstCharacters((value) {
+            expect(value, 'ab');
+            return '*';
+          }, count: 2),
+          '*c',
+        );
       });
       test('convert last character', () {
         expect(
-            ''.convertLastCharacters((value) {
-              fail('Not supposed to be called');
-            }),
-            '');
+          ''.convertLastCharacters((value) {
+            fail('Not supposed to be called');
+          }),
+          '',
+        );
         expect(
-            'a'.convertLastCharacters((value) {
-              expect(value, 'a');
-              return 'A';
-            }),
-            'A');
+          'a'.convertLastCharacters((value) {
+            expect(value, 'a');
+            return 'A';
+          }),
+          'A',
+        );
         expect(
-            'ab'.convertLastCharacters((value) {
-              expect(value, 'b');
-              return 'B';
-            }),
-            'aB');
+          'ab'.convertLastCharacters((value) {
+            expect(value, 'b');
+            return 'B';
+          }),
+          'aB',
+        );
         expect(
-            'abc'.convertLastCharacters((value) {
-              expect(value, 'c');
-              return 'C';
-            }),
-            'abC');
+          'abc'.convertLastCharacters((value) {
+            expect(value, 'c');
+            return 'C';
+          }),
+          'abC',
+        );
       });
       test('convert last two characters', () {
         expect(
-            ''.convertLastCharacters((value) {
-              fail('Not supposed to be called');
-            }, count: 2),
-            '');
+          ''.convertLastCharacters((value) {
+            fail('Not supposed to be called');
+          }, count: 2),
+          '',
+        );
         expect(
-            'a'.convertLastCharacters((value) {
-              fail('Not supposed to be called');
-            }, count: 2),
-            'a');
+          'a'.convertLastCharacters((value) {
+            fail('Not supposed to be called');
+          }, count: 2),
+          'a',
+        );
         expect(
-            'ab'.convertLastCharacters((value) {
-              expect(value, 'ab');
-              return '*';
-            }, count: 2),
-            '*');
+          'ab'.convertLastCharacters((value) {
+            expect(value, 'ab');
+            return '*';
+          }, count: 2),
+          '*',
+        );
         expect(
-            'abc'.convertLastCharacters((value) {
-              expect(value, 'bc');
-              return '*';
-            }, count: 2),
-            'a*');
+          'abc'.convertLastCharacters((value) {
+            expect(value, 'bc');
+            return '*';
+          }, count: 2),
+          'a*',
+        );
       });
       test('convert first character to upper-case', () {
         expect(''.toUpperCaseFirstCharacter(), '');
@@ -5041,13 +5920,17 @@ void main() {
   });
   group('trie', () {
     group(
-        'list-based',
-        () => allTrieTests(
-            <K, P extends Comparable<P>, V>() => TrieNodeList<K, P, V>()));
+      'list-based',
+      () => allTrieTests(
+        <K, P extends Comparable<P>, V>() => TrieNodeList<K, P, V>(),
+      ),
+    );
     group(
-        'map-based',
-        () => allTrieTests(
-            <K, P extends Comparable<P>, V>() => TrieNodeMap<K, P, V>()));
+      'map-based',
+      () => allTrieTests(
+        <K, P extends Comparable<P>, V>() => TrieNodeMap<K, P, V>(),
+      ),
+    );
   });
   group('typemap', () {
     test('empty', () {
@@ -5106,10 +5989,12 @@ void verifyRange<T>(
   expect(range, included);
   expect(range.length, included.length);
   if (reverse) {
-    verifyRange(range.reversed,
-        included: included.reversed.toList(),
-        excluded: excluded,
-        reverse: false);
+    verifyRange(
+      range.reversed,
+      included: included.reversed.toList(),
+      excluded: excluded,
+      reverse: false,
+    );
   }
   if (included.isEmpty) {
     expect(range.isEmpty, isTrue);
@@ -5120,7 +6005,7 @@ void verifyRange<T>(
     expect(range.first, included.first);
     expect(range.last, included.last);
   }
-// Test included indexes.
+  // Test included indexes.
   for (final each in included.indexed()) {
     expect(each.value, range[each.index]);
     expect(range.contains(each.value), isTrue);
@@ -5131,7 +6016,7 @@ void verifyRange<T>(
     expect(range.lastIndexOf(each.value, each.index), each.index);
     expect(range.lastIndexOf(each.value, included.length), each.index);
   }
-// Test excluded indexes.
+  // Test excluded indexes.
   for (final value in excluded) {
     expect(range.contains(value), isFalse);
     expect(range.indexOf(value), -1);
@@ -5141,7 +6026,7 @@ void verifyRange<T>(
     expect(range.lastIndexOf(value, 0), -1);
     expect(range.lastIndexOf(value, range.length), -1);
   }
-// Validate forward iteration.
+  // Validate forward iteration.
   final forward1 = range.iterator;
   expect(forward1.range, same(range));
   final forward2 = included.iterator;
@@ -5151,7 +6036,7 @@ void verifyRange<T>(
     if (hasMore == false) break;
     expect(forward1.current, forward2.current);
   }
-// Validate backward iteration.
+  // Validate backward iteration.
   final backward1 = range.iteratorAtEnd;
   expect(backward1.range, same(range));
   final backward2 = included.reversed.iterator;
@@ -5161,27 +6046,41 @@ void verifyRange<T>(
     if (hasMore == false) break;
     expect(backward1.current, backward2.current);
   }
-// Test range errors.
+  // Test range errors.
   expect(() => range[-1], throwsRangeError);
   expect(() => range[included.length], throwsRangeError);
 }
 
 void allSortedListTests(
-    SortedList<E> Function<E>(Iterable<E> list,
-            {Comparator<E>? comparator, bool growable})
-        createSortedList) {
+  SortedList<E> Function<E>(
+    Iterable<E> list, {
+    Comparator<E>? comparator,
+    bool growable,
+  })
+  createSortedList,
+) {
   test('default ordering', () {
     final list = createSortedList<int>([5, 1, 2, 4, 3]);
     expect(list, [1, 2, 3, 4, 5]);
   });
   test('custom ordering', () {
-    final list = createSortedList<num>([5, 1, 2, 4, 3],
-        comparator: reverseComparable<num>);
+    final list = createSortedList<num>([
+      5,
+      1,
+      2,
+      4,
+      3,
+    ], comparator: reverseComparable<num>);
     expect(list, [5, 4, 3, 2, 1]);
   });
   test('custom comparator', () {
-    final list =
-        createSortedList<int>([5, 1, 2, 4, 3], comparator: (a, b) => b - a);
+    final list = createSortedList<int>([
+      5,
+      1,
+      2,
+      4,
+      3,
+    ], comparator: (a, b) => b - a);
     expect(list, [5, 4, 3, 2, 1]);
   });
   test('empty list', () {
@@ -5284,24 +6183,24 @@ void allSortedListTests(
   test('stress', () {
     final random = Random(6412);
     final numbers = <int>{};
-// Create 1000 unique numbers.
+    // Create 1000 unique numbers.
     while (numbers.length < 1000) {
       numbers.add(random.nextInt(0xffffff));
     }
     final values = List.of(numbers);
-// Create a list from digit of the values.
+    // Create a list from digit of the values.
     final list = createSortedList<int>(values);
-// Verify all values are present.
+    // Verify all values are present.
     expect(list, hasLength(values.length));
     for (final value in values) {
       expect(list.contains(value), isTrue);
     }
-// Remove values in different order.
+    // Remove values in different order.
     values.shuffle(random);
     for (final value in values) {
       expect(list.remove(value), isTrue);
     }
-// Verify all values are gone.
+    // Verify all values are gone.
     expect(list, isEmpty);
   });
   test('errors', () {
@@ -5316,7 +6215,8 @@ void allSortedListTests(
 }
 
 void allRTreeTests(
-    RTree<T> Function<T>({int? minEntries, int? maxEntries}) createRTree) {
+  RTree<T> Function<T>({int? minEntries, int? maxEntries}) createRTree,
+) {
   void validate<T>(RTree<T> tree, [RTreeNode<T>? parent, RTreeNode<T>? node]) {
     node ??= tree.root;
     expect(node.tree, same(tree));
@@ -5347,7 +6247,8 @@ void allRTreeTests(
     final bounds = <Bounds>[];
     for (var i = 0; i < 1000; i++) {
       final bound = Bounds.fromPoint(
-          List.generate(3, (index) => 2000 * random.nextDouble() - 1000));
+        List.generate(3, (index) => 2000 * random.nextDouble() - 1000),
+      );
       rtree.insert(bound, i);
       bounds.add(bound);
     }
@@ -5363,9 +6264,12 @@ void allRTreeTests(
 }
 
 void allTrieTests(
-    TrieNode<K, P, V> Function<K, P extends Comparable<P>, V>() createRoot) {
+  TrieNode<K, P, V> Function<K, P extends Comparable<P>, V>() createRoot,
+) {
   Trie<String, String, num> newTrie() => Trie<String, String, num>(
-      parts: (key) => key.toList(), root: createRoot<String, String, num>());
+    parts: (key) => key.toList(),
+    root: createRoot<String, String, num>(),
+  );
   group('add', () {
     test('single', () {
       final trie = newTrie();
@@ -5389,8 +6293,12 @@ void allTrieTests(
       expect(trie, hasLength(4));
       expect(trie.keys, ['disobey', 'disorder', 'disown', 'distrust']);
       expect(trie.values, [42, 43, 44, 45]);
-      expect(trie.keysWithPrefix('dis'),
-          ['disobey', 'disorder', 'disown', 'distrust']);
+      expect(trie.keysWithPrefix('dis'), [
+        'disobey',
+        'disorder',
+        'disown',
+        'distrust',
+      ]);
       expect(trie.keysWithPrefix('diso'), ['disobey', 'disorder', 'disown']);
       expect(trie.keysWithPrefix('disobeying'), isEmpty);
       expect(trie['disobey'], 42);
@@ -5531,8 +6439,10 @@ void allTrieTests(
     test('fromTrie', () {
       final firstTrie = newTrie();
       firstTrie['abc'] = 42;
-      final secondTrie = Trie<String, String, num>.fromTrie(firstTrie,
-          root: createRoot<String, String, num>());
+      final secondTrie = Trie<String, String, num>.fromTrie(
+        firstTrie,
+        root: createRoot<String, String, num>(),
+      );
       secondTrie['abcdef'] = 43;
       expect(firstTrie, hasLength(1));
       expect(firstTrie.keys, ['abc']);
@@ -5543,10 +6453,7 @@ void allTrieTests(
     });
     test('fromMap', () {
       final trie = Trie<String, String, int>.fromMap(
-        {
-          'abc': 42,
-          'abcdef': 43,
-        },
+        {'abc': 42, 'abcdef': 43},
         parts: (key) => key.toList(),
         root: createRoot(),
       );
@@ -5578,13 +6485,14 @@ void allTrieTests(
     });
     test('fromIterables (error)', () {
       expect(
-          () => Trie<String, String, int>.fromIterables(
-                ['abc', 'abcdef'],
-                [42],
-                parts: (key) => key.toList(),
-                root: createRoot(),
-              ),
-          throwsArgumentError);
+        () => Trie<String, String, int>.fromIterables(
+          ['abc', 'abcdef'],
+          [42],
+          parts: (key) => key.toList(),
+          root: createRoot(),
+        ),
+        throwsArgumentError,
+      );
     });
   });
   group('other', () {
@@ -5604,12 +6512,12 @@ void allTrieTests(
     test('stress', () {
       final random = Random(42);
       final numbers = <int>{};
-// Create 1000 unique numbers.
+      // Create 1000 unique numbers.
       while (numbers.length < 1000) {
         numbers.add(random.nextInt(0xffffff));
       }
       final values = List.of(numbers);
-// Create a trie from digit of the values.
+      // Create a trie from digit of the values.
       final trie = Trie<int, String, bool>(
         parts: (value) => value.digits().map((digit) => digit.toString()),
         root: createRoot(),
@@ -5617,18 +6525,18 @@ void allTrieTests(
       for (final value in values) {
         trie[value] = true;
       }
-// Verify all values are present.
+      // Verify all values are present.
       expect(trie, hasLength(values.length));
       for (final value in values) {
         expect(trie.containsKey(value), isTrue);
         expect(trie[value], isTrue);
       }
-// Remove values in different order.
+      // Remove values in different order.
       values.shuffle(random);
       for (final value in values) {
         expect(trie.remove(value), isTrue);
       }
-// Verify all values are gone.
+      // Verify all values are gone.
       expect(trie, isEmpty);
       for (final value in values) {
         expect(trie.containsKey(value), isFalse);

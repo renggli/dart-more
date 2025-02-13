@@ -22,9 +22,11 @@ extension ProductIterableExtension<E> on Iterable<Iterable<E>> {
       return const [];
     } else {
       return productNotEmpty(
-          map((iterable) => iterable.toList(growable: false))
-              .toList(growable: false),
-          repeat);
+        map(
+          (iterable) => iterable.toList(growable: false),
+        ).toList(growable: false),
+        repeat,
+      );
     }
   }
 }

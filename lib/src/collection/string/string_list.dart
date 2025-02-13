@@ -33,9 +33,10 @@ extension StringListExtension on String {
   /// result.add('!');
   /// print(result);  // Hello Brave World!
   /// ```
-  List<String> toList({bool mutable = false}) => mutable
-      ? MutableStringList(List.of(codeUnits))
-      : ImmutableStringList(this);
+  List<String> toList({bool mutable = false}) =>
+      mutable
+          ? MutableStringList(List.of(codeUnits))
+          : ImmutableStringList(this);
 }
 
 /// A string as a mutable list.

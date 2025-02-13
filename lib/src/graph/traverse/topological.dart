@@ -10,12 +10,15 @@ extension TopologicalGraphExtension<V, E> on Graph<V, E> {
       topologicalAll([vertex], vertexStrategy: vertexStrategy);
 
   /// Traverses the vertices in a topological order, starting with [vertices].
-  Iterable<V> topologicalAll(Iterable<V> vertices,
-          {StorageStrategy<V>? vertexStrategy}) =>
-      TopologicalIterable<V>(vertices,
-          predecessorsOf: predecessorsOf,
-          successorsOf: successorsOf,
-          vertexStrategy: vertexStrategy ?? this.vertexStrategy);
+  Iterable<V> topologicalAll(
+    Iterable<V> vertices, {
+    StorageStrategy<V>? vertexStrategy,
+  }) => TopologicalIterable<V>(
+    vertices,
+    predecessorsOf: predecessorsOf,
+    successorsOf: successorsOf,
+    vertexStrategy: vertexStrategy ?? this.vertexStrategy,
+  );
 }
 
 /// Iterable over the topological sorting of vertices. This traversal requires a
@@ -23,11 +26,12 @@ extension TopologicalGraphExtension<V, E> on Graph<V, E> {
 ///
 /// See https://en.wikipedia.org/wiki/Topological_sorting.
 class TopologicalIterable<V> extends IterableBase<V> {
-  TopologicalIterable(this.vertices,
-      {required this.predecessorsOf,
-      required this.successorsOf,
-      StorageStrategy<V>? vertexStrategy})
-      : vertexStrategy = vertexStrategy ?? StorageStrategy.defaultStrategy();
+  TopologicalIterable(
+    this.vertices, {
+    required this.predecessorsOf,
+    required this.successorsOf,
+    StorageStrategy<V>? vertexStrategy,
+  }) : vertexStrategy = vertexStrategy ?? StorageStrategy.defaultStrategy();
 
   final Iterable<V> vertices;
   final Iterable<V> Function(V vertex) predecessorsOf;
@@ -40,9 +44,11 @@ class TopologicalIterable<V> extends IterableBase<V> {
 
 class _TopologicalIterator<V> implements Iterator<V> {
   _TopologicalIterator(this.iterable)
-      : seen = iterable.vertexStrategy.createSet() {
-    for (final vertex in DepthFirstIterable(iterable.vertices,
-        successorsOf: iterable.successorsOf)) {
+    : seen = iterable.vertexStrategy.createSet() {
+    for (final vertex in DepthFirstIterable(
+      iterable.vertices,
+      successorsOf: iterable.successorsOf,
+    )) {
       if (iterable.predecessorsOf(vertex).isEmpty) {
         todo.add(vertex);
       }

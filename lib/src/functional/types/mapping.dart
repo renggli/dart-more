@@ -16,38 +16,59 @@ typedef Map2<T1, T2, R> = R Function(T1 arg1, T2 arg2);
 typedef Map3<T1, T2, T3, R> = R Function(T1 arg1, T2 arg2, T3 arg3);
 
 /// Mapping function type with 4 positional arguments.
-typedef Map4<T1, T2, T3, T4, R> = R Function(
-    T1 arg1, T2 arg2, T3 arg3, T4 arg4);
+typedef Map4<T1, T2, T3, T4, R> =
+    R Function(T1 arg1, T2 arg2, T3 arg3, T4 arg4);
 
 /// Mapping function type with 5 positional arguments.
-typedef Map5<T1, T2, T3, T4, T5, R> = R Function(
-    T1 arg1, T2 arg2, T3 arg3, T4 arg4, T5 arg5);
+typedef Map5<T1, T2, T3, T4, T5, R> =
+    R Function(T1 arg1, T2 arg2, T3 arg3, T4 arg4, T5 arg5);
 
 /// Mapping function type with 6 positional arguments.
-typedef Map6<T1, T2, T3, T4, T5, T6, R> = R Function(
-    T1 arg1, T2 arg2, T3 arg3, T4 arg4, T5 arg5, T6 arg6);
+typedef Map6<T1, T2, T3, T4, T5, T6, R> =
+    R Function(T1 arg1, T2 arg2, T3 arg3, T4 arg4, T5 arg5, T6 arg6);
 
 /// Mapping function type with 7 positional arguments.
-typedef Map7<T1, T2, T3, T4, T5, T6, T7, R> = R Function(
-    T1 arg1, T2 arg2, T3 arg3, T4 arg4, T5 arg5, T6 arg6, T7 arg7);
+typedef Map7<T1, T2, T3, T4, T5, T6, T7, R> =
+    R Function(T1 arg1, T2 arg2, T3 arg3, T4 arg4, T5 arg5, T6 arg6, T7 arg7);
 
 /// Mapping function type with 8 positional arguments.
-typedef Map8<T1, T2, T3, T4, T5, T6, T7, T8, R> = R Function(
-    T1 arg1, T2 arg2, T3 arg3, T4 arg4, T5 arg5, T6 arg6, T7 arg7, T8 arg8);
+typedef Map8<T1, T2, T3, T4, T5, T6, T7, T8, R> =
+    R Function(
+      T1 arg1,
+      T2 arg2,
+      T3 arg3,
+      T4 arg4,
+      T5 arg5,
+      T6 arg6,
+      T7 arg7,
+      T8 arg8,
+    );
 
 /// Mapping function type with 9 positional arguments.
-typedef Map9<T1, T2, T3, T4, T5, T6, T7, T8, T9, R> = R Function(T1 arg1,
-    T2 arg2, T3 arg3, T4 arg4, T5 arg5, T6 arg6, T7 arg7, T8 arg8, T9 arg9);
+typedef Map9<T1, T2, T3, T4, T5, T6, T7, T8, T9, R> =
+    R Function(
+      T1 arg1,
+      T2 arg2,
+      T3 arg3,
+      T4 arg4,
+      T5 arg5,
+      T6 arg6,
+      T7 arg7,
+      T8 arg8,
+      T9 arg9,
+    );
 
 /// Mapping function type with 10 positional arguments.
-typedef Map10<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, R> = R Function(
-    T1 arg1,
-    T2 arg2,
-    T3 arg3,
-    T4 arg4,
-    T5 arg5,
-    T6 arg6,
-    T7 arg7,
-    T8 arg8,
-    T9 arg9,
-    T10 arg10);
+typedef Map10<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, R> =
+    R Function(
+      T1 arg1,
+      T2 arg2,
+      T3 arg3,
+      T4 arg4,
+      T5 arg5,
+      T6 arg6,
+      T7 arg7,
+      T8 arg8,
+      T9 arg9,
+      T10 arg10,
+    );

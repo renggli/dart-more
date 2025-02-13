@@ -25,9 +25,10 @@ abstract class TakeSkipPrinter<T> extends Printer<T> {
   final int count;
 
   @override
-  ObjectPrinter get toStringPrinter => super.toStringPrinter
-    ..addValue(printer, name: 'printer')
-    ..addValue(count, name: 'count');
+  ObjectPrinter get toStringPrinter =>
+      super.toStringPrinter
+        ..addValue(printer, name: 'printer')
+        ..addValue(count, name: 'count');
 }
 
 /// Takes the first [count] characters.

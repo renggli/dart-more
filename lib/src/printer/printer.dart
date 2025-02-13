@@ -29,8 +29,10 @@ abstract class Printer<T> with ToStringPrinter {
       SequencePrinter<T>;
 
   /// Constructs a printer that switches between other printers.
-  const factory Printer.switcher(Map<Predicate1<T>, Printer<T>> cases,
-      {Printer<T> otherwise}) = SwitcherPrinter<T>;
+  const factory Printer.switcher(
+    Map<Predicate1<T>, Printer<T>> cases, {
+    Printer<T> otherwise,
+  }) = SwitcherPrinter<T>;
 
   /// Constructs a printer by wrapping [object].
   factory Printer.wrap(Object? object) {
@@ -42,7 +44,8 @@ abstract class Printer<T> with ToStringPrinter {
       return Printer<T>.literal(object);
     } else if (object is Iterable) {
       return Printer<T>.sequence(
-          object.map(Printer<T>.wrap).toList(growable: false));
+        object.map(Printer<T>.wrap).toList(growable: false),
+      );
     } else {
       throw ArgumentError.value(object, 'object', 'Invalid type');
     }

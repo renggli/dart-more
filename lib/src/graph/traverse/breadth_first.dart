@@ -11,20 +11,25 @@ extension BreadthFirstGraphExtension<V, E> on Graph<V, E> {
       breadthFirstAll([vertex], vertexStrategy: vertexStrategy);
 
   /// Traverses the vertices in a breadth-first order, starting with [vertices].
-  Iterable<V> breadthFirstAll(Iterable<V> vertices,
-          {StorageStrategy<V>? vertexStrategy}) =>
-      BreadthFirstIterable<V>(vertices,
-          successorsOf: successorsOf,
-          vertexStrategy: vertexStrategy ?? this.vertexStrategy);
+  Iterable<V> breadthFirstAll(
+    Iterable<V> vertices, {
+    StorageStrategy<V>? vertexStrategy,
+  }) => BreadthFirstIterable<V>(
+    vertices,
+    successorsOf: successorsOf,
+    vertexStrategy: vertexStrategy ?? this.vertexStrategy,
+  );
 }
 
 /// Iterable over the breadth-first traversal of vertices.
 ///
 /// See https://en.wikipedia.org/wiki/Breadth-first_search.
 class BreadthFirstIterable<V> extends IterableBase<V> {
-  BreadthFirstIterable(this.vertices,
-      {required this.successorsOf, StorageStrategy<V>? vertexStrategy})
-      : vertexStrategy = vertexStrategy ?? StorageStrategy.defaultStrategy();
+  BreadthFirstIterable(
+    this.vertices, {
+    required this.successorsOf,
+    StorageStrategy<V>? vertexStrategy,
+  }) : vertexStrategy = vertexStrategy ?? StorageStrategy.defaultStrategy();
 
   final Iterable<V> vertices;
   final Iterable<V> Function(V vertex) successorsOf;
@@ -36,8 +41,8 @@ class BreadthFirstIterable<V> extends IterableBase<V> {
 
 class _BreadthFirstIterator<V> implements Iterator<V> {
   _BreadthFirstIterator(this.iterable)
-      : todo = QueueList<V>.from(iterable.vertices),
-        seen = iterable.vertexStrategy.createSet()..addAll(iterable.vertices);
+    : todo = QueueList<V>.from(iterable.vertices),
+      seen = iterable.vertexStrategy.createSet()..addAll(iterable.vertices);
 
   final BreadthFirstIterable<V> iterable;
   final QueueList<V> todo;

@@ -6,7 +6,10 @@ extension Tuple2<T1, T2> on (T1, T2) {
   static (T, T) fromList<T>(List<T> list) {
     if (list.length != 2) {
       throw ArgumentError.value(
-          list, 'list', 'Expected list of length 2, but got ${list.length}');
+        list,
+        'list',
+        'Expected list of length 2, but got ${list.length}',
+      );
     }
     return (list[0], list[1]);
   }

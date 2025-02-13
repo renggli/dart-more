@@ -19,10 +19,14 @@ Future<void> generateCallback() async {
   out.writeln("import 'mapping.dart';");
 
   for (var i = 0; i < max; i++) {
-    out.writeln('/// Callback function type with $i positional '
-        'argument${i == 1 ? '' : 's'}.');
-    out.writeln('typedef Callback$i${generify(generateTypes(i))} = '
-        'Map$i${generify([...generateTypes(i), 'void'])};');
+    out.writeln(
+      '/// Callback function type with $i positional '
+      'argument${i == 1 ? '' : 's'}.',
+    );
+    out.writeln(
+      'typedef Callback$i${generify(generateTypes(i))} = '
+      'Map$i${generify([...generateTypes(i), 'void'])};',
+    );
     out.writeln();
   }
 
@@ -40,10 +44,14 @@ Future<void> generateMapping() async {
   out.writeln();
 
   for (var i = 0; i < max; i++) {
-    out.writeln('/// Mapping function type with $i positional '
-        'argument${i == 1 ? '' : 's'}.');
-    out.writeln('typedef Map$i${generify([...generateTypes(i), 'R'])} = '
-        'R Function(${listify(generateTypeAndArgs(i))});');
+    out.writeln(
+      '/// Mapping function type with $i positional '
+      'argument${i == 1 ? '' : 's'}.',
+    );
+    out.writeln(
+      'typedef Map$i${generify([...generateTypes(i), 'R'])} = '
+      'R Function(${listify(generateTypeAndArgs(i))});',
+    );
     out.writeln();
   }
 
@@ -62,10 +70,14 @@ Future<void> generatePredicate() async {
   out.writeln("import 'mapping.dart';");
 
   for (var i = 0; i < max; i++) {
-    out.writeln('/// Predicate function type with $i positional '
-        'argument${i == 1 ? '' : 's'}.');
-    out.writeln('typedef Predicate$i${generify(generateTypes(i))} = '
-        'Map$i${generify([...generateTypes(i), 'bool'])};');
+    out.writeln(
+      '/// Predicate function type with $i positional '
+      'argument${i == 1 ? '' : 's'}.',
+    );
+    out.writeln(
+      'typedef Predicate$i${generify(generateTypes(i))} = '
+      'Map$i${generify([...generateTypes(i), 'bool'])};',
+    );
     out.writeln();
   }
 
@@ -83,10 +95,14 @@ Future<void> generateEmpty() async {
   out.writeln();
 
   for (var i = 0; i < max; i++) {
-    out.writeln('/// Empty function with $i positional '
-        'argument${i == 1 ? '' : 's'}.');
-    out.writeln('void emptyFunction$i${generify(generateTypes(i))} '
-        '(${listify(generateTypeAndArgs(i))}) {}');
+    out.writeln(
+      '/// Empty function with $i positional '
+      'argument${i == 1 ? '' : 's'}.',
+    );
+    out.writeln(
+      'void emptyFunction$i${generify(generateTypes(i))} '
+      '(${listify(generateTypeAndArgs(i))}) {}',
+    );
     out.writeln();
   }
 
@@ -125,11 +141,15 @@ Future<void> generateConstant() async {
 
   for (var i = 0; i < max; i++) {
     final prefix = '$i${generify([...generateTypes(i), 'R'])}';
-    out.writeln('/// Constant function with $i positional '
-        'argument${i == 1 ? '' : 's'}.');
-    out.writeln('Map$prefix constantFunction$prefix(R value) '
-        '=> (${listify(generateArgs(i))}) '
-        '=> value;');
+    out.writeln(
+      '/// Constant function with $i positional '
+      'argument${i == 1 ? '' : 's'}.',
+    );
+    out.writeln(
+      'Map$prefix constantFunction$prefix(R value) '
+      '=> (${listify(generateArgs(i))}) '
+      '=> value;',
+    );
     out.writeln();
   }
 
@@ -152,11 +172,15 @@ Future<void> generateThrowing() async {
   for (var i = 0; i < max; i++) {
     final mapType = '$i${generify([...generateTypes(i), 'Never'])}';
     final throwType = '$i${generify([...generateTypes(i)])}';
-    out.writeln('/// Throwing function with $i positional '
-        'argument${i == 1 ? '' : 's'}.');
-    out.writeln('Map$mapType throwFunction$throwType(Object throwable) '
-        '=> (${listify(generateArgs(i))}) '
-        '=> throw throwable;');
+    out.writeln(
+      '/// Throwing function with $i positional '
+      'argument${i == 1 ? '' : 's'}.',
+    );
+    out.writeln(
+      'Map$mapType throwFunction$throwType(Object throwable) '
+      '=> (${listify(generateArgs(i))}) '
+      '=> throw throwable;',
+    );
     out.writeln();
   }
 
@@ -182,16 +206,22 @@ Future<void> generatePartial() async {
     final argsAndTypes = generateTypeAndArgs(i);
     final args = generateArgs(i);
 
-    out.writeln('extension Partial$i${generify(types)} '
-        'on Map$i${generify(types)} {');
+    out.writeln(
+      'extension Partial$i${generify(types)} '
+      'on Map$i${generify(types)} {',
+    );
 
     for (var j = 0; j < i; j++) {
       final resultType = types.toList()..removeAt(j);
       final unboundArgs = argsAndTypes.toList()..removeAt(j);
-      out.writeln('/// Returns a new function with the ${ordinal.print(j)} '
-          'argument bound to `arg$j`.');
-      out.writeln('Map${i - 1}${generify(resultType)} '
-          'bind$j(${argsAndTypes[j]}) => ');
+      out.writeln(
+        '/// Returns a new function with the ${ordinal.print(j)} '
+        'argument bound to `arg$j`.',
+      );
+      out.writeln(
+        'Map${i - 1}${generify(resultType)} '
+        'bind$j(${argsAndTypes[j]}) => ',
+      );
       out.writeln('(${listify(unboundArgs)}) => this(${listify(args)});');
       out.writeln();
     }
@@ -209,10 +239,14 @@ Future<void> generateCurry() async {
   final out = file.openWrite();
   generateWarning(out);
 
-  out.writeln('/// Converts a function with positional arguments into a '
-      'sequence of functions ');
-  out.writeln('/// taking a single argument: '
-      'https://en.wikipedia.org/wiki/Currying');
+  out.writeln(
+    '/// Converts a function with positional arguments into a '
+    'sequence of functions ',
+  );
+  out.writeln(
+    '/// taking a single argument: '
+    'https://en.wikipedia.org/wiki/Currying',
+  );
   out.writeln('library;');
   out.writeln();
 
@@ -224,10 +258,14 @@ Future<void> generateCurry() async {
     final argsAndTypes = generateTypeAndArgs(i);
     final args = generateArgs(i);
 
-    out.writeln('extension Curry$i${generify(types)} '
-        'on Map$i${generify(types)} {');
-    out.writeln('/// Converts a function with $i positional arguments into a '
-        'sequence of $i ');
+    out.writeln(
+      'extension Curry$i${generify(types)} '
+      'on Map$i${generify(types)} {',
+    );
+    out.writeln(
+      '/// Converts a function with $i positional arguments into a '
+      'sequence of $i ',
+    );
     out.writeln('/// functions taking a single argument.');
     for (var j = 0; j < i; j++) {
       out.write('Map1<${types[j]}, ');
@@ -280,8 +318,10 @@ Future<void> generateTest() async {
     for (var i = 0; i < max; i++) {
       nest('test', 'emptyFunction$i', () {
         final values = listify(List.generate(i, (i) => '$i'));
-        out.writeln('expect(() => emptyFunction$i($values), '
-            'isNot(throwsException));');
+        out.writeln(
+          'expect(() => emptyFunction$i($values), '
+          'isNot(throwsException));',
+        );
       });
     }
   });
@@ -296,8 +336,10 @@ Future<void> generateTest() async {
         final types = generify([for (var j = 0; j < i; j++) 'int']);
         final values = listify(List.generate(i, (i) => '$i'));
         out.writeln('final function = throwFunction$i$types(throwable);');
-        out.writeln('expect(() => function($values), '
-            'throwsUnimplementedError);');
+        out.writeln(
+          'expect(() => function($values), '
+          'throwsUnimplementedError);',
+        );
       });
     }
   });
@@ -308,13 +350,17 @@ Future<void> generateTest() async {
           nest('test', 'bind ${ordinal.print(j)} argument', () {
             final args = generateArgs(i);
             final typesAndArgs = args.map((each) => 'int $each');
-            out.writeln('List<int> function(${listify(typesAndArgs)}) => '
-                '[${listify(args)}];');
+            out.writeln(
+              'List<int> function(${listify(typesAndArgs)}) => '
+              '[${listify(args)}];',
+            );
             out.writeln('final bound = function.bind$j(-1);');
             final arguments = List.generate(i - 1, (i) => '$i');
             final expected = arguments.toList()..insert(j, '-1');
-            out.writeln('expect(bound(${listify(arguments)}), '
-                '[${listify(expected)}]);');
+            out.writeln(
+              'expect(bound(${listify(arguments)}), '
+              '[${listify(expected)}]);',
+            );
           });
         }
       });
@@ -325,12 +371,16 @@ Future<void> generateTest() async {
       nest('test', '$i-ary function', () {
         final args = generateArgs(i);
         final typesAndArgs = args.map((each) => 'int $each');
-        out.writeln('List<int> function(${listify(typesAndArgs)}) => '
-            '[${listify(args)}];');
+        out.writeln(
+          'List<int> function(${listify(typesAndArgs)}) => '
+          '[${listify(args)}];',
+        );
         final calls = List.generate(i, (i) => '($i)');
         final result = List.generate(i, (i) => '$i');
-        out.writeln('expect(function.curry${calls.join()}, '
-            '[${listify(result)}]);');
+        out.writeln(
+          'expect(function.curry${calls.join()}, '
+          '[${listify(result)}]);',
+        );
       });
     }
   });
@@ -341,14 +391,14 @@ Future<void> generateTest() async {
 }
 
 Future<void> main() => Future.wait([
-      generateCallback(),
-      generateConstant(),
-      generateCurry(),
-      generateEmpty(),
-      generateIdentity(),
-      generateMapping(),
-      generatePartial(),
-      generatePredicate(),
-      generateThrowing(),
-      generateTest(),
-    ]);
+  generateCallback(),
+  generateConstant(),
+  generateCurry(),
+  generateEmpty(),
+  generateIdentity(),
+  generateMapping(),
+  generatePartial(),
+  generatePredicate(),
+  generateThrowing(),
+  generateTest(),
+]);

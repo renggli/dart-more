@@ -3,8 +3,8 @@ import '../char_matcher.dart';
 
 final class RangesCharMatcher extends CharMatcher {
   const RangesCharMatcher(this.length, this.starts, this.stops)
-      : assert(starts.length == length, '`starts` has invalid length'),
-        assert(stops.length == length, '`stops` has invalid length');
+    : assert(starts.length == length, '`starts` has invalid length'),
+      assert(stops.length == length, '`stops` has invalid length');
 
   final int length;
   final List<int> starts;
@@ -29,11 +29,14 @@ final class RangesCharMatcher extends CharMatcher {
   }
 
   @override
-  ObjectPrinter get toStringPrinter => super.toStringPrinter
-    ..addValue(length, name: 'length')
-    ..addValue(starts, name: 'starts', printer: unicodeCodePointsPrinter)
-    ..addValue(stops, name: 'stops', printer: unicodeCodePointsPrinter);
+  ObjectPrinter get toStringPrinter =>
+      super.toStringPrinter
+        ..addValue(length, name: 'length')
+        ..addValue(starts, name: 'starts', printer: unicodeCodePointsPrinter)
+        ..addValue(stops, name: 'stops', printer: unicodeCodePointsPrinter);
 }
 
-final unicodeCodePointsPrinter =
-    unicodeCodePointPrinter.iterable(leadingItems: 3, trailingItems: 3);
+final unicodeCodePointsPrinter = unicodeCodePointPrinter.iterable(
+  leadingItems: 3,
+  trailingItems: 3,
+);

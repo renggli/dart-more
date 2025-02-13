@@ -22,15 +22,19 @@ class GraphBuilder<V, E> {
 
   /// Adds an edge between [source] and [target] vertex. Optionally associates
   /// the provided [value] with the edge.
-  void addEdge(V source, V target, {E? value}) => graph.addEdge(source, target,
-      value: value ?? factory.edgeProvider?.call(source, target));
+  void addEdge(V source, V target, {E? value}) => graph.addEdge(
+    source,
+    target,
+    value: value ?? factory.edgeProvider?.call(source, target),
+  );
 
   /// Adds an edge between [source] and [target] index.  Optionally associates
   /// the provided [value] with the edge.
   void addEdgeIndex(int source, int target, {E? value}) => addEdge(
-      factory.vertexProvider?.call(source) ?? (source as V),
-      factory.vertexProvider?.call(target) ?? (target as V),
-      value: value);
+    factory.vertexProvider?.call(source) ?? (source as V),
+    factory.vertexProvider?.call(target) ?? (target as V),
+    value: value,
+  );
 
   /// Creates the initial configured graph object.
   static Graph<V, E> create<V, E>(GraphFactory<V, E> builder) =>

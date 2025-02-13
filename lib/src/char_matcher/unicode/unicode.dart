@@ -9,8 +9,8 @@ import 'property.dart' as property;
 /// categories and properties.
 final class UnicodeCharMatcher extends CharMatcher {
   const UnicodeCharMatcher(this.data, this.mask)
-      : assert(data.length == _unicodeCharCount),
-        assert(mask <= 0xffffffff);
+    : assert(data.length == _unicodeCharCount),
+      assert(mask <= 0xffffffff);
 
   /// General Category
   factory UnicodeCharMatcher.letterUppercase() =>
@@ -105,35 +105,50 @@ final class UnicodeCharMatcher extends CharMatcher {
 
   /// General Category Groups
   factory UnicodeCharMatcher.casedLetter() => UnicodeCharMatcher(
-      _categoryData, category.lu | category.ll | category.lt);
+    _categoryData,
+    category.lu | category.ll | category.lt,
+  );
 
-  factory UnicodeCharMatcher.letter() => UnicodeCharMatcher(_categoryData,
-      category.lu | category.ll | category.lt | category.lm | category.lo);
+  factory UnicodeCharMatcher.letter() => UnicodeCharMatcher(
+    _categoryData,
+    category.lu | category.ll | category.lt | category.lm | category.lo,
+  );
 
   factory UnicodeCharMatcher.mark() => UnicodeCharMatcher(
-      _categoryData, category.mn | category.mc | category.me);
+    _categoryData,
+    category.mn | category.mc | category.me,
+  );
 
   factory UnicodeCharMatcher.number() => UnicodeCharMatcher(
-      _categoryData, category.nd | category.nl | category.no);
+    _categoryData,
+    category.nd | category.nl | category.no,
+  );
 
   factory UnicodeCharMatcher.punctuation() => UnicodeCharMatcher(
-      _categoryData,
-      category.pc |
-          category.pd |
-          category.ps |
-          category.pe |
-          category.pi |
-          category.pf |
-          category.po);
+    _categoryData,
+    category.pc |
+        category.pd |
+        category.ps |
+        category.pe |
+        category.pi |
+        category.pf |
+        category.po,
+  );
 
   factory UnicodeCharMatcher.symbol() => UnicodeCharMatcher(
-      _categoryData, category.sm | category.sc | category.sk | category.so);
+    _categoryData,
+    category.sm | category.sc | category.sk | category.so,
+  );
 
   factory UnicodeCharMatcher.separator() => UnicodeCharMatcher(
-      _categoryData, category.zs | category.zl | category.zp);
+    _categoryData,
+    category.zs | category.zl | category.zp,
+  );
 
-  factory UnicodeCharMatcher.other() => UnicodeCharMatcher(_categoryData,
-      category.cc | category.cf | category.cs | category.co | category.cn);
+  factory UnicodeCharMatcher.other() => UnicodeCharMatcher(
+    _categoryData,
+    category.cc | category.cf | category.cs | category.co | category.cn,
+  );
 
   /// Properties
   factory UnicodeCharMatcher.whiteSpace() =>
@@ -207,7 +222,9 @@ final class UnicodeCharMatcher extends CharMatcher {
 
   factory UnicodeCharMatcher.otherDefaultIgnorableCodePoint() =>
       UnicodeCharMatcher(
-          _propertyData1, property.otherDefaultIgnorableCodePoint);
+        _propertyData1,
+        property.otherDefaultIgnorableCodePoint,
+      );
 
   factory UnicodeCharMatcher.deprecated() =>
       UnicodeCharMatcher(_propertyData1, property.deprecated);
@@ -320,32 +337,38 @@ final class UnicodeCharMatcher extends CharMatcher {
 
   /// Bidi Class Categories
   factory UnicodeCharMatcher.bidiStrong() => UnicodeCharMatcher(
-      _bidiClassData, bidi_class.l | bidi_class.r | bidi_class.al);
+    _bidiClassData,
+    bidi_class.l | bidi_class.r | bidi_class.al,
+  );
 
   factory UnicodeCharMatcher.bidiWeak() => UnicodeCharMatcher(
-      _bidiClassData,
-      bidi_class.en |
-          bidi_class.es |
-          bidi_class.et |
-          bidi_class.an |
-          bidi_class.cs |
-          bidi_class.nsm |
-          bidi_class.bn);
+    _bidiClassData,
+    bidi_class.en |
+        bidi_class.es |
+        bidi_class.et |
+        bidi_class.an |
+        bidi_class.cs |
+        bidi_class.nsm |
+        bidi_class.bn,
+  );
 
-  factory UnicodeCharMatcher.bidiNeutral() => UnicodeCharMatcher(_bidiClassData,
-      bidi_class.b | bidi_class.s | bidi_class.ws | bidi_class.on);
+  factory UnicodeCharMatcher.bidiNeutral() => UnicodeCharMatcher(
+    _bidiClassData,
+    bidi_class.b | bidi_class.s | bidi_class.ws | bidi_class.on,
+  );
 
   factory UnicodeCharMatcher.bidiExplicitFormatting() => UnicodeCharMatcher(
-      _bidiClassData,
-      bidi_class.lre |
-          bidi_class.lro |
-          bidi_class.rle |
-          bidi_class.rlo |
-          bidi_class.pdf |
-          bidi_class.lri |
-          bidi_class.rli |
-          bidi_class.fsi |
-          bidi_class.pdi);
+    _bidiClassData,
+    bidi_class.lre |
+        bidi_class.lro |
+        bidi_class.rle |
+        bidi_class.rlo |
+        bidi_class.pdf |
+        bidi_class.lri |
+        bidi_class.rli |
+        bidi_class.fsi |
+        bidi_class.pdi,
+  );
 
   final List<int> data;
   final int mask;

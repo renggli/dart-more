@@ -53,10 +53,11 @@ class Operation with ToStringPrinter {
       Object.hash(type, sourceStart, sourceEnd, targetStart, targetEnd);
 
   @override
-  ObjectPrinter get toStringPrinter => super.toStringPrinter
-    ..addValue(type)
-    ..addValue(sourceStart, name: 'sourceStart')
-    ..addValue(sourceEnd, name: 'sourceEnd')
-    ..addValue(targetStart, name: 'targetStart')
-    ..addValue(targetEnd, name: 'targetEnd');
+  ObjectPrinter get toStringPrinter =>
+      super.toStringPrinter
+        ..addValue(type)
+        ..addValue(sourceStart, name: 'sourceStart')
+        ..addValue(sourceEnd, name: 'sourceEnd')
+        ..addValue(targetStart, name: 'targetStart')
+        ..addValue(targetEnd, name: 'targetEnd');
 }

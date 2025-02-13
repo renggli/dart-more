@@ -7,8 +7,11 @@ extension CloseMatchesOnIterable<T> on Iterable<Iterable<T>> {
   ///
   /// [count] specifies the number of matches to return. [cutoff] specifies the
   /// required similarity of candidates.
-  Iterable<Iterable<T>> closeMatches(Iterable<T> target,
-      {int count = 3, double cutoff = 0.6}) {
+  Iterable<Iterable<T>> closeMatches(
+    Iterable<T> target, {
+    int count = 3,
+    double cutoff = 0.6,
+  }) {
     if (count <= 0) throw ArgumentError.value(count, 'count');
     if (cutoff < 0 || cutoff > 1) throw ArgumentError.value(cutoff, 'cutoff');
     final matcher = SequenceMatcher<T>(target: target);
@@ -23,10 +26,13 @@ extension CloseMatchesOnIterable<T> on Iterable<Iterable<T>> {
       }
     }
     return candidates
-        .largest(count,
-            comparator: delegateComparator<
-                ({Iterable<T> candidate, double ratio}),
-                num>((each) => each.ratio))
+        .largest(
+          count,
+          comparator:
+              delegateComparator<({Iterable<T> candidate, double ratio}), num>(
+                (each) => each.ratio,
+              ),
+        )
         .map((each) => each.candidate);
   }
 }
@@ -36,9 +42,11 @@ extension CloseMatchesOnStringIterable on Iterable<String> {
   ///
   /// [count] specifies the number of matches to return. [cutoff] specifies the
   /// required similarity of candidates.
-  Iterable<String> closeMatches(String target,
-          {int count = 3, double cutoff = 0.6}) =>
-      map((each) => each.runes)
-          .closeMatches(target.runes, count: count, cutoff: cutoff)
-          .map(String.fromCharCodes);
+  Iterable<String> closeMatches(
+    String target, {
+    int count = 3,
+    double cutoff = 0.6,
+  }) => map((each) => each.runes)
+      .closeMatches(target.runes, count: count, cutoff: cutoff)
+      .map(String.fromCharCodes);
 }

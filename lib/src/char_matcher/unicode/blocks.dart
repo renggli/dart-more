@@ -54,8 +54,10 @@ const buhid = RangeCharMatcher(0x1740, 0x175f);
 const tagbanwa = RangeCharMatcher(0x1760, 0x177f);
 const khmer = RangeCharMatcher(0x1780, 0x17ff);
 const mongolian = RangeCharMatcher(0x1800, 0x18af);
-const unifiedCanadianAboriginalSyllabicsExtended =
-    RangeCharMatcher(0x18b0, 0x18ff);
+const unifiedCanadianAboriginalSyllabicsExtended = RangeCharMatcher(
+  0x18b0,
+  0x18ff,
+);
 const limbu = RangeCharMatcher(0x1900, 0x194f);
 const taiLe = RangeCharMatcher(0x1950, 0x197f);
 const newTaiLue = RangeCharMatcher(0x1980, 0x19df);
@@ -248,8 +250,10 @@ const divesAkuru = RangeCharMatcher(0x11900, 0x1195f);
 const nandinagari = RangeCharMatcher(0x119a0, 0x119ff);
 const zanabazarSquare = RangeCharMatcher(0x11a00, 0x11a4f);
 const soyombo = RangeCharMatcher(0x11a50, 0x11aaf);
-const unifiedCanadianAboriginalSyllabicsExtendedA =
-    RangeCharMatcher(0x11ab0, 0x11abf);
+const unifiedCanadianAboriginalSyllabicsExtendedA = RangeCharMatcher(
+  0x11ab0,
+  0x11abf,
+);
 const pauCinHau = RangeCharMatcher(0x11ac0, 0x11aff);
 const devanagariExtendedA = RangeCharMatcher(0x11b00, 0x11b5f);
 const sunuwar = RangeCharMatcher(0x11bc0, 0x11bff);

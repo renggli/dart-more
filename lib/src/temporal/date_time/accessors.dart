@@ -6,9 +6,10 @@ extension AccessorsDateTimeExtension on DateTime {
   int get daysInYear => isLeapYear ? 366 : 365;
 
   /// The number of days in this month (`28`, `29`, `30`, or `31`).
-  int get daysInMonth => month == DateTime.february
-      ? (isLeapYear ? 29 : 28)
-      : const [31, 0, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31][month - 1];
+  int get daysInMonth =>
+      month == DateTime.february
+          ? (isLeapYear ? 29 : 28)
+          : const [31, 0, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31][month - 1];
 
   /// The number of weeks in this year (`52` or `53`).
   int get weeksInYear {
@@ -48,9 +49,10 @@ extension AccessorsDateTimeExtension on DateTime {
 
   /// The day in the year `[1...366]`.
   int get dayOfYear {
-    final ladder = isLeapYear
-        ? const [0, 31, 60, 91, 121, 152, 182, 213, 244, 274, 305, 335]
-        : const [0, 31, 59, 90, 120, 151, 181, 212, 243, 273, 304, 334];
+    final ladder =
+        isLeapYear
+            ? const [0, 31, 60, 91, 121, 152, 182, 213, 244, 274, 305, 335]
+            : const [0, 31, 59, 90, 120, 151, 181, 212, 243, 273, 304, 334];
     return day + ladder[month - 1];
   }
 

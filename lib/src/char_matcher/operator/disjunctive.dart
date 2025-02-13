@@ -13,12 +13,12 @@ final class DisjunctiveCharMatcher extends CharMatcher {
 
   @override
   CharMatcher operator |(CharMatcher other) => switch (other) {
-        AnyCharMatcher() => other,
-        NoneCharMatcher() => this,
-        DisjunctiveCharMatcher(matchers: final otherMatchers) =>
-          DisjunctiveCharMatcher([...matchers, ...otherMatchers]),
-        _ => DisjunctiveCharMatcher([...matchers, other])
-      };
+    AnyCharMatcher() => other,
+    NoneCharMatcher() => this,
+    DisjunctiveCharMatcher(matchers: final otherMatchers) =>
+      DisjunctiveCharMatcher([...matchers, ...otherMatchers]),
+    _ => DisjunctiveCharMatcher([...matchers, other]),
+  };
 
   @override
   bool match(int value) => matchers.any((matcher) => matcher.match(value));

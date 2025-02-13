@@ -47,7 +47,7 @@ abstract class NumeralSystem {
     'w',
     'x',
     'y',
-    'z'
+    'z',
   ];
   static const upperCaseLatin = [
     '0',
@@ -85,7 +85,7 @@ abstract class NumeralSystem {
     'W',
     'X',
     'Y',
-    'Z'
+    'Z',
   ];
 
   static const arabicIndic = ['٠', '١', '٢', '٣', '٤', '٥', '٦', '٧', '٨', '٩'];
@@ -99,7 +99,7 @@ abstract class NumeralSystem {
     '۶',
     '۷',
     '۸',
-    '۹'
+    '۹',
   ];
   static const nko = ['߀', '߁', '߂', '߃', '߄', '߅', '߆', '߇', '߈', '߉'];
   static const devanagari = ['०', '१', '२', '३', '४', '५', '६', '७', '८', '९'];
@@ -141,7 +141,7 @@ abstract class NumeralSystem {
     '꧶',
     '꧷',
     '꧸',
-    '꧹'
+    '꧹',
   ];
   static const cham = ['꩐', '꩑', '꩒', '꩓', '꩔', '꩕', '꩖', '꩗', '꩘', '꩙'];
   static const meeteiMayek = ['꯰', '꯱', '꯲', '꯳', '꯴', '꯵', '꯶', '꯷', '꯸', '꯹'];
@@ -156,7 +156,7 @@ abstract class NumeralSystem {
     '𐒦',
     '𐒧',
     '𐒨',
-    '𐒩'
+    '𐒩',
   ];
   static const hanifiRohingya = [
     '𐴰',
@@ -168,7 +168,7 @@ abstract class NumeralSystem {
     '𐴶',
     '𐴷',
     '𐴸',
-    '𐴹'
+    '𐴹',
   ];
   static const garay = [
     '𐵀',
@@ -180,7 +180,7 @@ abstract class NumeralSystem {
     '𐵆',
     '𐵇',
     '𐵈',
-    '𐵉'
+    '𐵉',
   ];
   static const brahmi = [
     '𑁦',
@@ -192,7 +192,7 @@ abstract class NumeralSystem {
     '𑁬',
     '𑁭',
     '𑁮',
-    '𑁯'
+    '𑁯',
   ];
   static const soraSompeng = [
     '𑃰',
@@ -204,7 +204,7 @@ abstract class NumeralSystem {
     '𑃶',
     '𑃷',
     '𑃸',
-    '𑃹'
+    '𑃹',
   ];
   static const chakma = [
     '𑄶',
@@ -216,7 +216,7 @@ abstract class NumeralSystem {
     '𑄼',
     '𑄽',
     '𑄾',
-    '𑄿'
+    '𑄿',
   ];
   static const sharada = [
     '𑇐',
@@ -228,7 +228,7 @@ abstract class NumeralSystem {
     '𑇖',
     '𑇗',
     '𑇘',
-    '𑇙'
+    '𑇙',
   ];
   static const khudawadi = [
     '𑋰',
@@ -240,7 +240,7 @@ abstract class NumeralSystem {
     '𑋶',
     '𑋷',
     '𑋸',
-    '𑋹'
+    '𑋹',
   ];
   static const newa = [
     '𑑐',
@@ -252,7 +252,7 @@ abstract class NumeralSystem {
     '𑑖',
     '𑑗',
     '𑑘',
-    '𑑙'
+    '𑑙',
   ];
   static const tirhuta = [
     '𑓐',
@@ -264,7 +264,7 @@ abstract class NumeralSystem {
     '𑓖',
     '𑓗',
     '𑓘',
-    '𑓙'
+    '𑓙',
   ];
   static const modi = [
     '𑙐',
@@ -276,7 +276,7 @@ abstract class NumeralSystem {
     '𑙖',
     '𑙗',
     '𑙘',
-    '𑙙'
+    '𑙙',
   ];
   static const takri = [
     '𑛀',
@@ -288,7 +288,7 @@ abstract class NumeralSystem {
     '𑛆',
     '𑛇',
     '𑛈',
-    '𑛉'
+    '𑛉',
   ];
   static const myanmarPao = [
     '𑛐',
@@ -300,7 +300,7 @@ abstract class NumeralSystem {
     '𑛖',
     '𑛗',
     '𑛘',
-    '𑛙'
+    '𑛙',
   ];
   static const myanmarEasternPwoKaren = [
     '𑛚',
@@ -312,7 +312,7 @@ abstract class NumeralSystem {
     '𑛠',
     '𑛡',
     '𑛢',
-    '𑛣'
+    '𑛣',
   ];
   static const ahom = [
     '𑜰',
@@ -324,7 +324,7 @@ abstract class NumeralSystem {
     '𑜶',
     '𑜷',
     '𑜸',
-    '𑜹'
+    '𑜹',
   ];
   static const warangCiti = [
     '𑣠',
@@ -336,7 +336,7 @@ abstract class NumeralSystem {
     '𑣦',
     '𑣧',
     '𑣨',
-    '𑣩'
+    '𑣩',
   ];
   static const divesAkuru = [
     '𑥐',
@@ -348,7 +348,7 @@ abstract class NumeralSystem {
     '𑥖',
     '𑥗',
     '𑥘',
-    '𑥙'
+    '𑥙',
   ];
   static const sunuwar = [
     '𑯰',
@@ -360,7 +360,7 @@ abstract class NumeralSystem {
     '𑯶',
     '𑯷',
     '𑯸',
-    '𑯹'
+    '𑯹',
   ];
   static const bhaiksuki = [
     '𑱐',
@@ -372,7 +372,7 @@ abstract class NumeralSystem {
     '𑱖',
     '𑱗',
     '𑱘',
-    '𑱙'
+    '𑱙',
   ];
   static const masaramGondi = [
     '𑵐',
@@ -384,7 +384,7 @@ abstract class NumeralSystem {
     '𑵖',
     '𑵗',
     '𑵘',
-    '𑵙'
+    '𑵙',
   ];
   static const gunjalaGondi = [
     '𑶠',
@@ -396,7 +396,7 @@ abstract class NumeralSystem {
     '𑶦',
     '𑶧',
     '𑶨',
-    '𑶩'
+    '𑶩',
   ];
   static const kawi = [
     '𑽐',
@@ -408,7 +408,7 @@ abstract class NumeralSystem {
     '𑽖',
     '𑽗',
     '𑽘',
-    '𑽙'
+    '𑽙',
   ];
   static const gurungKhema = [
     '𖄰',
@@ -420,7 +420,7 @@ abstract class NumeralSystem {
     '𖄶',
     '𖄷',
     '𖄸',
-    '𖄹'
+    '𖄹',
   ];
   static const mro = [
     '𖩠',
@@ -432,7 +432,7 @@ abstract class NumeralSystem {
     '𖩦',
     '𖩧',
     '𖩨',
-    '𖩩'
+    '𖩩',
   ];
   static const tangsa = [
     '𖫀',
@@ -444,7 +444,7 @@ abstract class NumeralSystem {
     '𖫆',
     '𖫇',
     '𖫈',
-    '𖫉'
+    '𖫉',
   ];
   static const pahawhHmong = [
     '𖭐',
@@ -456,7 +456,7 @@ abstract class NumeralSystem {
     '𖭖',
     '𖭗',
     '𖭘',
-    '𖭙'
+    '𖭙',
   ];
   static const kiratRai = [
     '𖵰',
@@ -468,7 +468,7 @@ abstract class NumeralSystem {
     '𖵶',
     '𖵷',
     '𖵸',
-    '𖵹'
+    '𖵹',
   ];
   static const outlined = [
     '𜳰',
@@ -480,7 +480,7 @@ abstract class NumeralSystem {
     '𜳶',
     '𜳷',
     '𜳸',
-    '𜳹'
+    '𜳹',
   ];
   static const mathematicalBold = [
     '𝟎',
@@ -492,7 +492,7 @@ abstract class NumeralSystem {
     '𝟔',
     '𝟕',
     '𝟖',
-    '𝟗'
+    '𝟗',
   ];
   static const mathematicalDoubleStruck = [
     '𝟘',
@@ -504,7 +504,7 @@ abstract class NumeralSystem {
     '𝟞',
     '𝟟',
     '𝟠',
-    '𝟡'
+    '𝟡',
   ];
   static const mathematicalSansSerif = [
     '𝟢',
@@ -516,7 +516,7 @@ abstract class NumeralSystem {
     '𝟨',
     '𝟩',
     '𝟪',
-    '𝟫'
+    '𝟫',
   ];
   static const mathematicalSansSerifBold = [
     '𝟬',
@@ -528,7 +528,7 @@ abstract class NumeralSystem {
     '𝟲',
     '𝟳',
     '𝟴',
-    '𝟵'
+    '𝟵',
   ];
   static const mathematicalMonospace = [
     '𝟶',
@@ -540,7 +540,7 @@ abstract class NumeralSystem {
     '𝟼',
     '𝟽',
     '𝟾',
-    '𝟿'
+    '𝟿',
   ];
   static const nyiakengPuachueHmong = [
     '𞅀',
@@ -552,7 +552,7 @@ abstract class NumeralSystem {
     '𞅆',
     '𞅇',
     '𞅈',
-    '𞅉'
+    '𞅉',
   ];
   static const wancho = [
     '𞋰',
@@ -564,7 +564,7 @@ abstract class NumeralSystem {
     '𞋶',
     '𞋷',
     '𞋸',
-    '𞋹'
+    '𞋹',
   ];
   static const nagMundari = [
     '𞓰',
@@ -576,7 +576,7 @@ abstract class NumeralSystem {
     '𞓶',
     '𞓷',
     '𞓸',
-    '𞓹'
+    '𞓹',
   ];
   static const olOnal = [
     '𞗱',
@@ -588,7 +588,7 @@ abstract class NumeralSystem {
     '𞗷',
     '𞗸',
     '𞗹',
-    '𞗺'
+    '𞗺',
   ];
   static const adlam = [
     '𞥐',
@@ -600,7 +600,7 @@ abstract class NumeralSystem {
     '𞥖',
     '𞥗',
     '𞥘',
-    '𞥙'
+    '𞥙',
   ];
   static const segmented = [
     '🯰',
@@ -612,6 +612,6 @@ abstract class NumeralSystem {
     '🯶',
     '🯷',
     '🯸',
-    '🯹'
+    '🯹',
   ];
 }

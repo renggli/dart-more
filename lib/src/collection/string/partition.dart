@@ -7,9 +7,10 @@ extension PartitionStringExtension on String {
   List<String> partition(Pattern pattern, [int start = 0]) {
     final i = indexOf(pattern, start);
     if (i == -1) return [this, '', ''];
-    final j = pattern is String
-        ? i + pattern.length
-        : pattern.matchAsPrefix(this, i)!.end;
+    final j =
+        pattern is String
+            ? i + pattern.length
+            : pattern.matchAsPrefix(this, i)!.end;
     return [substring(0, i), substring(i, j), substring(j)];
   }
 
@@ -21,9 +22,10 @@ extension PartitionStringExtension on String {
   List<String> lastPartition(Pattern pattern, [int? start]) {
     final i = lastIndexOf(pattern, start);
     if (i == -1) return ['', '', this];
-    final j = pattern is String
-        ? i + pattern.length
-        : pattern.matchAsPrefix(this, i)!.end;
+    final j =
+        pattern is String
+            ? i + pattern.length
+            : pattern.matchAsPrefix(this, i)!.end;
     return [substring(0, i), substring(i, j), substring(j)];
   }
 }

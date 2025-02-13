@@ -25,11 +25,11 @@ abstract class Cache<K, V> with ToStringPrinter {
   ///
   /// Note that cached items do not magically disappear when they expire.
   /// Manually call [reap()], or setup a timer to regularly free items.
-  factory Cache.expiry(
-          {required Loader<K, V> loader,
-          Duration? updateExpiry,
-          Duration? accessExpiry}) =>
-      ExpiryCache(loader, updateExpiry, accessExpiry);
+  factory Cache.expiry({
+    required Loader<K, V> loader,
+    Duration? updateExpiry,
+    Duration? accessExpiry,
+  }) => ExpiryCache(loader, updateExpiry, accessExpiry);
 
   /// Constructs a First-in/First-out (FIFO) cache.
   ///

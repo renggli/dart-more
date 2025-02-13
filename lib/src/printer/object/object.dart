@@ -74,11 +74,16 @@ class ObjectPrinter<T> extends Printer<T> {
     bool omitNull = defaultOmitNull,
     Predicate2<T, F>? omitPredicate,
     int? index,
-  }) =>
-      addField(
-          FieldCallback<T, F>(name, callback, omitNull, omitPredicate,
-              printer ?? Printer<F>.standard()),
-          index: index);
+  }) => addField(
+    FieldCallback<T, F>(
+      name,
+      callback,
+      omitNull,
+      omitPredicate,
+      printer ?? Printer<F>.standard(),
+    ),
+    index: index,
+  );
 
   /// Adds a value field printer.
   void addValue<F>(
@@ -88,11 +93,16 @@ class ObjectPrinter<T> extends Printer<T> {
     bool omitNull = defaultOmitNull,
     Predicate1<F>? omitPredicate,
     int? index,
-  }) =>
-      addField(
-          FieldValue<T, F>(name, value, omitNull, omitPredicate,
-              printer ?? Printer<F>.standard()),
-          index: index);
+  }) => addField(
+    FieldValue<T, F>(
+      name,
+      value,
+      omitNull,
+      omitPredicate,
+      printer ?? Printer<F>.standard(),
+    ),
+    index: index,
+  );
 
   /// Adds a custom field printer.
   void addField(FieldPrinter<T> field, {int? index}) =>
@@ -145,13 +155,14 @@ class ObjectPrinter<T> extends Printer<T> {
   }
 
   @override
-  ObjectPrinter get toStringPrinter => super.toStringPrinter
-    ..addValue(type, name: 'type')
-    ..addValue(beforeFields, name: 'beforeFields')
-    ..addValue(fieldName, name: 'fieldName')
-    ..addValue(fieldNameSeparator, name: 'fieldNameSeparator')
-    ..addValue(fieldValue, name: 'fieldValue')
-    ..addValue(fieldSeparator, name: 'fieldSeparator')
-    ..addValue(afterFields, name: 'afterFields')
-    ..addValue(fields, name: 'fields');
+  ObjectPrinter get toStringPrinter =>
+      super.toStringPrinter
+        ..addValue(type, name: 'type')
+        ..addValue(beforeFields, name: 'beforeFields')
+        ..addValue(fieldName, name: 'fieldName')
+        ..addValue(fieldNameSeparator, name: 'fieldNameSeparator')
+        ..addValue(fieldValue, name: 'fieldValue')
+        ..addValue(fieldSeparator, name: 'fieldSeparator')
+        ..addValue(afterFields, name: 'afterFields')
+        ..addValue(fields, name: 'fields');
 }

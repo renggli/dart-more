@@ -99,9 +99,10 @@ void main() {
       }
     });
     test('intersects', () {
-      final intersects = [intervals, intervals]
-          .product()
-          .where((pair) => pair.first.intersects(pair.last));
+      final intersects = [
+        intervals,
+        intervals,
+      ].product().where((pair) => pair.first.intersects(pair.last));
       expect(intersects, [
         [interval0to7, interval0to7],
         [interval0to7, interval1to3],
@@ -128,9 +129,10 @@ void main() {
       ]);
     });
     test('encloses', () {
-      final encloses = [intervals, intervals]
-          .product()
-          .where((pair) => pair.first.encloses(pair.last));
+      final encloses = [
+        intervals,
+        intervals,
+      ].product().where((pair) => pair.first.encloses(pair.last));
       expect(encloses, [
         [interval0to7, interval0to7],
         [interval0to7, interval1to3],
@@ -245,8 +247,10 @@ void main() {
     test('hashCode', () {
       for (var i = 0; i < intervals.length; i++) {
         for (var j = 0; j < intervals.length; j++) {
-          expect(intervals[i].hashCode == intervals[j].hashCode,
-              i == j ? isTrue : isFalse);
+          expect(
+            intervals[i].hashCode == intervals[j].hashCode,
+            i == j ? isTrue : isFalse,
+          );
         }
       }
     });
@@ -295,8 +299,10 @@ void main() {
       expect(tree.queryPoint(2030), isEmpty);
       expect(tree.queryInterval(Interval(1900, 1960)), [first]);
       expect(tree.queryInterval(first), [first]);
-      expect(tree.queryInterval(Interval(1903, 2023)),
-          unorderedEquals([first, second]));
+      expect(
+        tree.queryInterval(Interval(1903, 2023)),
+        unorderedEquals([first, second]),
+      );
       expect(tree.queryInterval(second), [second]);
       expect(tree.queryInterval(Interval(2000, 2030)), [second]);
       verifyInvariants(tree);
@@ -343,26 +349,41 @@ void main() {
         required int count,
         required int range,
         required int size,
-      }) =>
-          test(name, () {
-            final random = Random(name.hashCode);
-            final list = List.generate(count, (_) {
-              final base = random.nextInt(range);
-              final length = random.nextInt(size);
-              return Interval<num>(base, base + length);
-            });
-            final tree = IntervalTree.fromIntervals<num>(list);
-            expect(tree, unorderedEquals(list));
-            verifyInvariants(tree);
-          });
-      stress('very small intervals in small range',
-          count: 500, range: 1000, size: 10);
-      stress('very large intervals in small range',
-          count: 500, range: 1000, size: 1000);
-      stress('very small intervals in large range',
-          count: 500, range: 1000000, size: 10);
-      stress('very large intervals in large range',
-          count: 500, range: 1000000, size: 1000000);
+      }) => test(name, () {
+        final random = Random(name.hashCode);
+        final list = List.generate(count, (_) {
+          final base = random.nextInt(range);
+          final length = random.nextInt(size);
+          return Interval<num>(base, base + length);
+        });
+        final tree = IntervalTree.fromIntervals<num>(list);
+        expect(tree, unorderedEquals(list));
+        verifyInvariants(tree);
+      });
+      stress(
+        'very small intervals in small range',
+        count: 500,
+        range: 1000,
+        size: 10,
+      );
+      stress(
+        'very large intervals in small range',
+        count: 500,
+        range: 1000,
+        size: 1000,
+      );
+      stress(
+        'very small intervals in large range',
+        count: 500,
+        range: 1000000,
+        size: 10,
+      );
+      stress(
+        'very large intervals in large range',
+        count: 500,
+        range: 1000000,
+        size: 1000000,
+      );
     });
   });
 }

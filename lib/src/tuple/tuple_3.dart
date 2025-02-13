@@ -6,7 +6,10 @@ extension Tuple3<T1, T2, T3> on (T1, T2, T3) {
   static (T, T, T) fromList<T>(List<T> list) {
     if (list.length != 3) {
       throw ArgumentError.value(
-          list, 'list', 'Expected list of length 3, but got ${list.length}');
+        list,
+        'list',
+        'Expected list of length 3, but got ${list.length}',
+      );
     }
     return (list[0], list[1], list[2]);
   }

@@ -83,7 +83,10 @@ void update() {
       context.textAlign = 'center';
       context.textBaseline = 'middle';
       context.fillText(
-          entry.data.toString(), entry.bounds.min[0], entry.bounds.min[1]);
+        entry.data.toString(),
+        entry.bounds.min[0],
+        entry.bounds.min[1],
+      );
     } else {
       context.fillStyle = 'gray'.toJS;
       context.strokeStyle = 'gray'.toJS;
@@ -95,8 +98,11 @@ void update() {
       );
       context.textAlign = 'start';
       context.textBaseline = 'top';
-      context.fillText(entry.child!.entries.length.toString(),
-          entry.bounds.min[0], entry.bounds.min[1]);
+      context.fillText(
+        entry.child!.entries.length.toString(),
+        entry.bounds.min[0],
+        entry.bounds.min[1],
+      );
     }
   }
 }

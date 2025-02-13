@@ -37,8 +37,11 @@ extension PermutationIterableExtension<E> on Iterable<E> {
 
 Iterable<List<E>> _fullPermutations<E>(List<E> elements) sync* {
   final indices = List.generate(elements.length, (i) => i, growable: false);
-  final current =
-      List.generate(elements.length, (i) => elements[i], growable: false);
+  final current = List.generate(
+    elements.length,
+    (i) => elements[i],
+    growable: false,
+  );
   for (;;) {
     yield current.toList(growable: false);
     var k = indices.length - 2;
@@ -60,7 +63,12 @@ Iterable<List<E>> _fullPermutations<E>(List<E> elements) sync* {
 }
 
 void _fullPermutationSwap<E>(
-    List<E> elements, List<int> indices, List<E> current, int i, int j) {
+  List<E> elements,
+  List<int> indices,
+  List<E> current,
+  int i,
+  int j,
+) {
   final temp = indices[i];
   indices[i] = indices[j];
   indices[j] = temp;
@@ -70,8 +78,11 @@ void _fullPermutationSwap<E>(
 
 Iterable<List<E>> _partialPermutations<E>(List<E> elements, int count) sync* {
   final indices = List.generate(elements.length, (i) => i, growable: false);
-  final cycles =
-      List.generate(count, (i) => elements.length - i, growable: false);
+  final cycles = List.generate(
+    count,
+    (i) => elements.length - i,
+    growable: false,
+  );
   yield indices
       .sublist(0, count)
       .map((i) => elements[i])
@@ -83,7 +94,10 @@ Iterable<List<E>> _partialPermutations<E>(List<E> elements, int count) sync* {
       if (cycles[i] == 0) {
         final temp = indices[i];
         indices.setRange(
-            i, indices.length - 1, indices.getRange(i + 1, indices.length));
+          i,
+          indices.length - 1,
+          indices.getRange(i + 1, indices.length),
+        );
         indices[indices.length - 1] = temp;
         cycles[i] = elements.length - i;
       } else {

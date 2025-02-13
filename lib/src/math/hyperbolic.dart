@@ -9,9 +9,10 @@ extension HyperbolicNumberExtension on num {
   }
 
   /// Returns the hyperbolic arc-sine of this [num].
-  double asinh() => isInfinite && isNegative
-      ? toDouble()
-      : (this + (this * this + 1).sqrt()).log();
+  double asinh() =>
+      isInfinite && isNegative
+          ? toDouble()
+          : (this + (this * this + 1).sqrt()).log();
 
   /// Returns the hyperbolic cosine of this [num].
   double cosh() {
@@ -28,8 +29,8 @@ extension HyperbolicNumberExtension on num {
     return a.isInfinite
         ? 1
         : b.isInfinite
-            ? -1
-            : (a - b) / (a + b);
+        ? -1
+        : (a - b) / (a + b);
   }
 
   /// Returns the hyperbolic arc-tangent of this [num].

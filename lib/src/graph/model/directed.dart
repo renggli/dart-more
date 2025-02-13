@@ -6,10 +6,10 @@ import '../strategy.dart';
 /// Directed graph implementation using adjacency lists.
 class DirectedGraph<V, E> extends Graph<V, E> {
   DirectedGraph({StorageStrategy<V>? vertexStrategy})
-      : this._(vertexStrategy ?? StorageStrategy<V>.defaultStrategy());
+    : this._(vertexStrategy ?? StorageStrategy<V>.defaultStrategy());
 
   DirectedGraph._(this.vertexStrategy)
-      : adjacency = vertexStrategy.createMap<VertexWrapper<V, E>>();
+    : adjacency = vertexStrategy.createMap<VertexWrapper<V, E>>();
 
   final Map<V, VertexWrapper<V, E>> adjacency;
 
@@ -23,9 +23,11 @@ class DirectedGraph<V, E> extends Graph<V, E> {
   Iterable<V> get vertices => adjacency.keys;
 
   @override
-  Iterable<Edge<V, E>> get edges => adjacency.entries.expand((outer) =>
-      outer.value.outgoing.entries.map((inner) =>
-          DirectedEdge<V, E>(outer.key, inner.key, value: inner.value)));
+  Iterable<Edge<V, E>> get edges => adjacency.entries.expand(
+    (outer) => outer.value.outgoing.entries.map(
+      (inner) => DirectedEdge<V, E>(outer.key, inner.key, value: inner.value),
+    ),
+  );
 
   @override
   Iterable<Edge<V, E>> edgesOf(V vertex) =>
@@ -33,14 +35,16 @@ class DirectedGraph<V, E> extends Graph<V, E> {
 
   @override
   Iterable<Edge<V, E>> incomingEdgesOf(V vertex) =>
-      adjacency[vertex]?.incoming.entries.map((entry) =>
-          DirectedEdge<V, E>(entry.key, vertex, value: entry.value)) ??
+      adjacency[vertex]?.incoming.entries.map(
+        (entry) => DirectedEdge<V, E>(entry.key, vertex, value: entry.value),
+      ) ??
       const [];
 
   @override
   Iterable<Edge<V, E>> outgoingEdgesOf(V vertex) =>
-      adjacency[vertex]?.outgoing.entries.map((entry) =>
-          DirectedEdge<V, E>(vertex, entry.key, value: entry.value)) ??
+      adjacency[vertex]?.outgoing.entries.map(
+        (entry) => DirectedEdge<V, E>(vertex, entry.key, value: entry.value),
+      ) ??
       const [];
 
   @override
@@ -97,9 +101,9 @@ class DirectedGraph<V, E> extends Graph<V, E> {
       adjacency.putIfAbsent(vertex, () => _createVertex(vertex));
 
   VertexWrapper<V, E> _createVertex(V vertex) => (
-        incoming: vertexStrategy.createMap<E>(),
-        outgoing: vertexStrategy.createMap<E>(),
-      );
+    incoming: vertexStrategy.createMap<E>(),
+    outgoing: vertexStrategy.createMap<E>(),
+  );
 }
 
 /// Directed edge implementation.
@@ -118,9 +122,10 @@ class DirectedEdge<V, E> extends Edge<V, E> {
   int get hashCode => Object.hash(source, target);
 
   @override
-  ObjectPrinter get toStringPrinter => super.toStringPrinter
-    ..addValue('$source → $target')
-    ..addValue(value, name: 'value', omitNull: true);
+  ObjectPrinter get toStringPrinter =>
+      super.toStringPrinter
+        ..addValue('$source → $target')
+        ..addValue(value, name: 'value', omitNull: true);
 }
 
 /// Record to keep track of incoming and outgoing edges in adjacency [Map].

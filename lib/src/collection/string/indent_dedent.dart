@@ -42,8 +42,10 @@ extension IndentDedentStringExtension<T> on String {
     bool ignoreEmpty = true,
   }) {
     final lines = split('\n');
-    final prefix = findLongestPrefix(whitespace,
-        ignoreEmpty ? lines.where((line) => line.trim().isNotEmpty) : lines);
+    final prefix = findLongestPrefix(
+      whitespace,
+      ignoreEmpty ? lines.where((line) => line.trim().isNotEmpty) : lines,
+    );
     if (prefix.isEmpty) {
       return this;
     }

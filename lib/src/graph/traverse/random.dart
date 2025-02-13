@@ -7,16 +7,19 @@ import '../strategy.dart';
 
 extension RandomWalkGraphExtension<V, E> on Graph<V, E> {
   /// Traverses the vertices in a random order.
-  Iterable<V> randomWalk(V vertex,
-          {num Function(V source, V target)? edgeProbability,
-          bool selfAvoiding = false,
-          Random? random,
-          StorageStrategy<V>? vertexStrategy}) =>
-      RandomWalkIterable(vertex,
-          successorsOf: successorsOf,
-          edgeProbability: edgeProbability,
-          selfAvoiding: selfAvoiding,
-          vertexStrategy: vertexStrategy);
+  Iterable<V> randomWalk(
+    V vertex, {
+    num Function(V source, V target)? edgeProbability,
+    bool selfAvoiding = false,
+    Random? random,
+    StorageStrategy<V>? vertexStrategy,
+  }) => RandomWalkIterable(
+    vertex,
+    successorsOf: successorsOf,
+    edgeProbability: edgeProbability,
+    selfAvoiding: selfAvoiding,
+    vertexStrategy: vertexStrategy,
+  );
 }
 
 /// Iterable producing a random walk over a graph.
@@ -31,14 +34,15 @@ extension RandomWalkGraphExtension<V, E> on Graph<V, E> {
 ///
 /// See https://en.wikipedia.org/wiki/Random_walk.
 class RandomWalkIterable<V> extends IterableBase<V> {
-  RandomWalkIterable(this.vertex,
-      {required this.successorsOf,
-      this.edgeProbability,
-      this.selfAvoiding = false,
-      Random? random,
-      StorageStrategy<V>? vertexStrategy})
-      : vertexStrategy = vertexStrategy ?? StorageStrategy.defaultStrategy(),
-        random = random ?? Random();
+  RandomWalkIterable(
+    this.vertex, {
+    required this.successorsOf,
+    this.edgeProbability,
+    this.selfAvoiding = false,
+    Random? random,
+    StorageStrategy<V>? vertexStrategy,
+  }) : vertexStrategy = vertexStrategy ?? StorageStrategy.defaultStrategy(),
+       random = random ?? Random();
 
   final V vertex;
   final Iterable<V> Function(V vertex) successorsOf;
@@ -53,8 +57,8 @@ class RandomWalkIterable<V> extends IterableBase<V> {
 
 class _RandomWalkIterator<V> implements Iterator<V> {
   _RandomWalkIterator(this.iterable)
-      : seen = iterable.vertexStrategy.createSet(),
-        next = iterable.vertex {
+    : seen = iterable.vertexStrategy.createSet(),
+      next = iterable.vertex {
     if (iterable.selfAvoiding) {
       seen.add(iterable.vertex);
     }

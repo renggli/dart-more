@@ -9,8 +9,11 @@ extension ConnectedGraphExtension<V, E> on Graph<V, E> {
     for (final start in vertices) {
       if (seen.add(start)) {
         final graph = copy(empty: true);
-        final traversal = BreadthFirstIterable([start],
-            successorsOf: neighboursOf, vertexStrategy: vertexStrategy);
+        final traversal = BreadthFirstIterable(
+          [start],
+          successorsOf: neighboursOf,
+          vertexStrategy: vertexStrategy,
+        );
         for (final vertex in traversal) {
           for (final edge in outgoingEdgesOf(vertex)) {
             graph.addEdge(edge.source, edge.target, value: edge.value);

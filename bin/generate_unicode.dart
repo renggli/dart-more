@@ -42,7 +42,7 @@ Future<void> generatePropertyData(String name, Uri url) async {
 void writeList(IOSink out, String name, List<int> values) {
   out.writeln();
   out.writeln('const $name = [');
-  out.writeln('${rle(values).join(', ')} //'.wrap(78).indent('  '));
+  out.writeln(rle(values).join(', ').wrap(78).indent('  '));
   out.writeln('];');
   out.writeln();
 }
@@ -61,9 +61,11 @@ Future<void> generateUnicodeBlocks() async {
 
   for (final MapEntry(:key, value: ranges) in data.asMap().entries) {
     final range = ranges.single;
-    out.writeln('const ${namify(key)} = RangeCharMatcher('
-        '0x${range.$1.toRadixString(16)}, '
-        '0x${range.$2.toRadixString(16)});');
+    out.writeln(
+      'const ${namify(key)} = RangeCharMatcher('
+      '0x${range.$1.toRadixString(16)}, '
+      '0x${range.$2.toRadixString(16)});',
+    );
   }
 
   await out.close();
@@ -79,13 +81,19 @@ Future<void> generateDecimalData() async {
   out.writeln('// $unicodeDataUrl');
   out.writeln();
 
-  out.writeln('/// A class defining different numeral systems for '
-      'number printing.');
+  out.writeln(
+    '/// A class defining different numeral systems for '
+    'number printing.',
+  );
   out.writeln('///');
-  out.writeln('/// To remain customizable the number systems are provided '
-      'through immutable');
-  out.writeln('/// `List<String>` instances. Each list starts with the string '
-      'representations');
+  out.writeln(
+    '/// To remain customizable the number systems are provided '
+    'through immutable',
+  );
+  out.writeln(
+    '/// `List<String>` instances. Each list starts with the string '
+    'representations',
+  );
   out.writeln('/// for 0, 1, 2, ... up to the maximally supported base.');
   out.writeln('///');
   out.writeln('/// The default number system is [latin].');
@@ -106,10 +114,14 @@ Future<void> generateDecimalData() async {
           def.writeCharCode(c);
         }
         out.writeln('static const latin = lowerCaseLatin;');
-        out.writeln('static const lowerCaseLatin = '
-            '${characterList(def.toString().toLowerCase())};');
-        out.writeln('static const upperCaseLatin = '
-            '${characterList(def.toString().toUpperCase())};');
+        out.writeln(
+          'static const lowerCaseLatin = '
+          '${characterList(def.toString().toLowerCase())};',
+        );
+        out.writeln(
+          'static const upperCaseLatin = '
+          '${characterList(def.toString().toUpperCase())};',
+        );
         out.writeln();
       } else {
         out.writeln('static const $name = ${characterList(def.toString())};');
@@ -126,9 +138,9 @@ String characterList(String input) =>
     '[${input.runes.map(String.fromCharCode).map((each) => "'$each'").join(', ')}]';
 
 Future<void> main() => Future.wait([
-      generatePropertyData('category', unicodeCategoryListUrl),
-      generatePropertyData('property', unicodePropertyListUrl),
-      generatePropertyData('bidi_class', unicodeBidiClassListUrl),
-      generateUnicodeBlocks(),
-      generateDecimalData(),
-    ]);
+  generatePropertyData('category', unicodeCategoryListUrl),
+  generatePropertyData('property', unicodePropertyListUrl),
+  generatePropertyData('bidi_class', unicodeBidiClassListUrl),
+  generateUnicodeBlocks(),
+  generateDecimalData(),
+]);

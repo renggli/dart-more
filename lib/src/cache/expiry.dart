@@ -10,12 +10,18 @@ import 'loader.dart';
 /// A cache that expires after a certain amount of time.
 class ExpiryCache<K, V> extends Cache<K, V> {
   ExpiryCache(this.loader, this.updateExpiry, this.accessExpiry)
-      : assert(updateExpiry != null || accessExpiry != null,
-            'Either update or access expiry must be provided.'),
-        assert(updateExpiry == null || updateExpiry > Duration.zero,
-            'Update expiry must be positive.'),
-        assert(accessExpiry == null || accessExpiry > Duration.zero,
-            'Access expiry must be positive.');
+    : assert(
+        updateExpiry != null || accessExpiry != null,
+        'Either update or access expiry must be provided.',
+      ),
+      assert(
+        updateExpiry == null || updateExpiry > Duration.zero,
+        'Update expiry must be positive.',
+      ),
+      assert(
+        accessExpiry == null || accessExpiry > Duration.zero,
+        'Access expiry must be positive.',
+      );
 
   final Loader<K, V> loader;
 
@@ -91,10 +97,11 @@ class ExpiryCache<K, V> extends Cache<K, V> {
   }
 
   @override
-  ObjectPrinter get toStringPrinter => super.toStringPrinter
-    ..addValue(cached.length, name: 'size')
-    ..addValue(updateExpiry, name: 'updateExpiry')
-    ..addValue(accessExpiry, name: 'accessExpiry');
+  ObjectPrinter get toStringPrinter =>
+      super.toStringPrinter
+        ..addValue(cached.length, name: 'size')
+        ..addValue(updateExpiry, name: 'updateExpiry')
+        ..addValue(accessExpiry, name: 'accessExpiry');
 }
 
 class ExpiryCacheItem<V> extends CacheItem<V> {

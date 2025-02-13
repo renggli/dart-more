@@ -75,11 +75,16 @@ void statelessCacheTests(NewCache<int, String> newCache) {
   });
 }
 
-void cacheEvictionTest(NewCache<int, String> newCache, String name,
-    List<int> load, List<int> present) {
-  final absent = <int>{}
-    ..addAll(load)
-    ..removeAll(present);
+void cacheEvictionTest(
+  NewCache<int, String> newCache,
+  String name,
+  List<int> load,
+  List<int> present,
+) {
+  final absent =
+      <int>{}
+        ..addAll(load)
+        ..removeAll(present);
 
   test(name, () async {
     final cache = newCache(immediateLoader);
@@ -293,9 +298,17 @@ void main() {
     statelessCacheTests(newCache);
     persistentCacheTests(newCache);
     cacheEvictionTest(
-        newCache, 'linear expiry', [0, 1, 2, 3, 4, 5, 6], [2, 3, 4, 5, 6]);
+      newCache,
+      'linear expiry',
+      [0, 1, 2, 3, 4, 5, 6],
+      [2, 3, 4, 5, 6],
+    );
     cacheEvictionTest(
-        newCache, 'reused expiry', [0, 1, 2, 3, 4, 0, 1, 5], [0, 1, 3, 4, 5]);
+      newCache,
+      'reused expiry',
+      [0, 1, 2, 3, 4, 0, 1, 5],
+      [0, 1, 3, 4, 5],
+    );
   });
   group('fifo', () {
     Cache<int, String> newCache(Loader<int, String> loader) =>
@@ -303,8 +316,16 @@ void main() {
     statelessCacheTests(newCache);
     persistentCacheTests(newCache);
     cacheEvictionTest(
-        newCache, 'linear expiry', [0, 1, 2, 3, 4, 5, 6], [2, 3, 4, 5, 6]);
+      newCache,
+      'linear expiry',
+      [0, 1, 2, 3, 4, 5, 6],
+      [2, 3, 4, 5, 6],
+    );
     cacheEvictionTest(
-        newCache, 'reused expiry', [0, 1, 2, 3, 4, 0, 1, 5], [1, 2, 3, 4, 5]);
+      newCache,
+      'reused expiry',
+      [0, 1, 2, 3, 4, 0, 1, 5],
+      [1, 2, 3, 4, 5],
+    );
   });
 }

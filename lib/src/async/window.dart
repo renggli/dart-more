@@ -7,8 +7,11 @@ extension WindowStreamExtension<E> on Stream<E> {
   ///
   /// If the stream is of type [E], the returned stream will be of type
   /// `List<E>`.
-  Stream<List<E>> window(int size,
-      {int step = 1, bool includePartial = false}) async* {
+  Stream<List<E>> window(
+    int size, {
+    int step = 1,
+    bool includePartial = false,
+  }) async* {
     checkNonZeroPositive(size, 'size');
     checkNonZeroPositive(step, 'step');
     var index = 0;

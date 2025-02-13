@@ -8,7 +8,9 @@ import 'entry.dart';
 /// nodes (for higher levels, R*-tree uses least overlap enlargement instead of
 /// least area enlargement).
 RTreeEntry<T> entryWithLeastAreaEnlargement<T>(
-    List<RTreeEntry<T>> entries, Bounds bounds) {
+  List<RTreeEntry<T>> entries,
+  Bounds bounds,
+) {
   var minIndex = -1;
   var minArea = double.infinity;
   var minEnlargement = double.infinity;

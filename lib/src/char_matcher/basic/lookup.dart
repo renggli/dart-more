@@ -14,8 +14,9 @@ final class LookupCharMatcher extends CharMatcher {
       start <= value && value <= stop && buffer.getUnchecked(value - start);
 
   @override
-  ObjectPrinter get toStringPrinter => super.toStringPrinter
-    ..addValue(start, name: 'start')
-    ..addValue(stop, name: 'stop')
-    ..addValue(buffer, name: 'buffer');
+  ObjectPrinter get toStringPrinter =>
+      super.toStringPrinter
+        ..addValue(start, name: 'start')
+        ..addValue(stop, name: 'stop')
+        ..addValue(buffer, name: 'buffer');
 }

@@ -15,17 +15,21 @@ import 'tuple_9.dart';
 extension Tuple on Record {
   /// List constructor.
   static Record fromList<T>(List<T> list) => switch (list.length) {
-        0 => Tuple0.fromList(list),
-        1 => Tuple1.fromList(list),
-        2 => Tuple2.fromList(list),
-        3 => Tuple3.fromList(list),
-        4 => Tuple4.fromList(list),
-        5 => Tuple5.fromList(list),
-        6 => Tuple6.fromList(list),
-        7 => Tuple7.fromList(list),
-        8 => Tuple8.fromList(list),
-        9 => Tuple9.fromList(list),
-        _ => throw ArgumentError.value(
-            list, 'list', 'Length ${list.length} not in range 0..9'),
-      };
+    0 => Tuple0.fromList(list),
+    1 => Tuple1.fromList(list),
+    2 => Tuple2.fromList(list),
+    3 => Tuple3.fromList(list),
+    4 => Tuple4.fromList(list),
+    5 => Tuple5.fromList(list),
+    6 => Tuple6.fromList(list),
+    7 => Tuple7.fromList(list),
+    8 => Tuple8.fromList(list),
+    9 => Tuple9.fromList(list),
+    _ =>
+      throw ArgumentError.value(
+        list,
+        'list',
+        'Length ${list.length} not in range 0..9',
+      ),
+  };
 }

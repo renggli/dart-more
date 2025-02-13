@@ -13,16 +13,17 @@ extension IterablePrinterExtension<T> on Printer<T> {
     int? leadingItems,
     int? trailingItems,
     String? ellipses = '\u2026',
-  }) =>
-      IterablePrinter<T>(this,
-          emptyPrinter: emptyPrinter,
-          beforePrinter: beforePrinter,
-          afterPrinter: afterPrinter,
-          separator: separator,
-          lastSeparator: lastSeparator,
-          leadingItems: leadingItems,
-          trailingItems: trailingItems,
-          ellipses: ellipses);
+  }) => IterablePrinter<T>(
+    this,
+    emptyPrinter: emptyPrinter,
+    beforePrinter: beforePrinter,
+    afterPrinter: afterPrinter,
+    separator: separator,
+    lastSeparator: lastSeparator,
+    leadingItems: leadingItems,
+    trailingItems: trailingItems,
+    ellipses: ellipses,
+  );
 }
 
 /// Prints an iterable of values.
@@ -84,10 +85,12 @@ class IterablePrinter<T> extends Printer<Iterable<T>> {
       }
       final isLeading =
           leadingItems != null && trailingItems == null && leadingItems! <= i;
-      final isTrailing = trailingItems != null &&
+      final isTrailing =
+          trailingItems != null &&
           leadingItems == null &&
           i < list.length - trailingItems!;
-      final isBoth = leadingItems != null &&
+      final isBoth =
+          leadingItems != null &&
           trailingItems != null &&
           leadingItems! <= i &&
           i < list.length - trailingItems!;
@@ -104,14 +107,15 @@ class IterablePrinter<T> extends Printer<Iterable<T>> {
   }
 
   @override
-  ObjectPrinter get toStringPrinter => super.toStringPrinter
-    ..addValue(printer, name: 'printer')
-    ..addValue(emptyPrinter, name: 'emptyPrinter')
-    ..addValue(beforePrinter, name: 'beforePrinter')
-    ..addValue(afterPrinter, name: 'afterPrinter')
-    ..addValue(separator, name: 'separator')
-    ..addValue(lastSeparator, name: 'lastSeparator')
-    ..addValue(leadingItems, name: 'leadingItems')
-    ..addValue(trailingItems, name: 'trailingItems')
-    ..addValue(ellipses, name: 'ellipses');
+  ObjectPrinter get toStringPrinter =>
+      super.toStringPrinter
+        ..addValue(printer, name: 'printer')
+        ..addValue(emptyPrinter, name: 'emptyPrinter')
+        ..addValue(beforePrinter, name: 'beforePrinter')
+        ..addValue(afterPrinter, name: 'afterPrinter')
+        ..addValue(separator, name: 'separator')
+        ..addValue(lastSeparator, name: 'lastSeparator')
+        ..addValue(leadingItems, name: 'leadingItems')
+        ..addValue(trailingItems, name: 'trailingItems')
+        ..addValue(ellipses, name: 'ellipses');
 }

@@ -20,7 +20,8 @@ Graph<V, E> primSpanningTree<V, E>(
   final result = graph.copy(empty: true);
   // Queue for the shortest remaining edges.
   final queue = PriorityQueue<({Edge<V, E> edge, num cost})>(
-      weightComparator.onResultOf((state) => state.cost));
+    weightComparator.onResultOf((state) => state.cost),
+  );
   void addOutgoingEdgesToQueue(V vertex) {
     result.addVertex(vertex);
     for (final edge in graph.outgoingEdgesOf(vertex)) {

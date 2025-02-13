@@ -16,45 +16,32 @@ const green = '\u001b[32m';
 const yellow = '\u001b[33m';
 
 const colors = <String, Map<String, String>>{
-  'normal': {
-    '> ': green,
-    '< ': red,
-  },
-  'context': {
-    '+ ': green,
-    '- ': red,
-    '! ': yellow,
-  },
-  'unified': {
-    '+': green,
-    '-': red,
-  },
-  'readable': {
-    '+ ': green,
-    '- ': red,
-    '? ': yellow,
-  },
+  'normal': {'> ': green, '< ': red},
+  'context': {'+ ': green, '- ': red, '! ': yellow},
+  'unified': {'+': green, '-': red},
+  'readable': {'+ ': green, '- ': red, '? ': yellow},
 };
 
-final ArgParser argParser = ArgParser()
-  ..addOption(
-    'format',
-    abbr: 'f',
-    allowed: differs.keys,
-    defaultsTo: differs.keys.first,
-    help: 'output format to print',
-  )
-  ..addOption(
-    'context',
-    abbr: 'c',
-    help: 'lines of context to print',
-    defaultsTo: '3',
-  )
-  ..addFlag(
-    'color',
-    help: 'colors the output',
-    defaultsTo: stdout.supportsAnsiEscapes,
-  );
+final ArgParser argParser =
+    ArgParser()
+      ..addOption(
+        'format',
+        abbr: 'f',
+        allowed: differs.keys,
+        defaultsTo: differs.keys.first,
+        help: 'output format to print',
+      )
+      ..addOption(
+        'context',
+        abbr: 'c',
+        help: 'lines of context to print',
+        defaultsTo: '3',
+      )
+      ..addFlag(
+        'color',
+        help: 'colors the output',
+        defaultsTo: stdout.supportsAnsiEscapes,
+      );
 
 Never printUsage() {
   stdout.writeln('Usage: diff [options] FILE1 FILE2');
@@ -78,15 +65,20 @@ Future<void> main(List<String> arguments) async {
   final result = argParser.parse(arguments);
   final factory = differs[result['format']] ?? printUsage();
   final differ = factory(int.parse(result['context'] as String));
-  final color = result['color'] as bool
-      ? colors[result['format']] ?? {}
-      : <String, Map<String, String>>{};
+  final color =
+      result['color'] as bool
+          ? colors[result['format']] ?? {}
+          : <String, Map<String, String>>{};
   if (result.rest.length != 2) printUsage();
 
   final source = await readFile(result.rest[0]);
   final target = await readFile(result.rest[1]);
-  for (var output in differ.compareLines(source.lines, target.lines,
-      sourceLabel: source.label, targetLabel: target.label)) {
+  for (var output in differ.compareLines(
+    source.lines,
+    target.lines,
+    sourceLabel: source.label,
+    targetLabel: target.label,
+  )) {
     final prefix = color.keys.where(output.startsWith).firstOrNull;
     if (prefix != null) output = '${color[prefix]}$output$reset';
     stdout.writeln(output);

@@ -25,8 +25,10 @@ import '../where.dart';
 /// ```
 class DurationPrinter extends SequencePrinter<Duration> {
   /// Constructor to build a [DurationPrinter].
-  factory DurationPrinter(Callback1<DurationPrinterBuilder> callback,
-      {Map<TimeUnit, num> conversion = casualConversion}) {
+  factory DurationPrinter(
+    Callback1<DurationPrinterBuilder> callback, {
+    Map<TimeUnit, num> conversion = casualConversion,
+  }) {
     final builder = DurationPrinterBuilder(conversion);
     callback(builder);
     return DurationPrinter._(builder._printers);
@@ -36,38 +38,61 @@ class DurationPrinter extends SequencePrinter<Duration> {
   const DurationPrinter._(super.printers);
 
   /// Returns the standard Dart duration format.
-  static DurationPrinter dart() => DurationPrinter((builder) => builder
-    ..sign()
-    ..part(TimeUnit.hour)
-    ..literal(':')
-    ..part(TimeUnit.minute, printer: FixedNumberPrinter(padding: 2))
-    ..literal(':')
-    ..part(TimeUnit.second, printer: FixedNumberPrinter(padding: 2))
-    ..literal('.')
-    ..part(TimeUnit.millisecond, printer: FixedNumberPrinter(padding: 3))
-    ..part(TimeUnit.microsecond, printer: FixedNumberPrinter(padding: 3)));
+  static DurationPrinter dart() => DurationPrinter(
+    (builder) =>
+        builder
+          ..sign()
+          ..part(TimeUnit.hour)
+          ..literal(':')
+          ..part(TimeUnit.minute, printer: FixedNumberPrinter(padding: 2))
+          ..literal(':')
+          ..part(TimeUnit.second, printer: FixedNumberPrinter(padding: 2))
+          ..literal('.')
+          ..part(TimeUnit.millisecond, printer: FixedNumberPrinter(padding: 3))
+          ..part(TimeUnit.microsecond, printer: FixedNumberPrinter(padding: 3)),
+  );
 
   /// Returns an ISO-8601 extended full-precision format representation.
-  static DurationPrinter iso8601() => DurationPrinter((builder) => builder
-    ..literal('P')
-    ..sign()
-    ..part(TimeUnit.year,
-        printer: FixedNumberPrinter<int>().after('Y'), skipIfZero: true)
-    ..part(TimeUnit.month,
-        printer: FixedNumberPrinter<int>().after('M'), skipIfZero: true)
-    ..part(TimeUnit.week,
-        printer: FixedNumberPrinter<int>().after('W'), skipIfZero: true)
-    ..part(TimeUnit.day, printer: FixedNumberPrinter<int>().after('D'))
-    ..literal('T')
-    ..part(TimeUnit.hour,
-        printer: FixedNumberPrinter<int>().after('H'), skipIfZero: true)
-    ..part(TimeUnit.minute,
-        printer: FixedNumberPrinter<int>().after('M'), skipIfZero: true)
-    ..part(TimeUnit.second)
-    ..part(TimeUnit.microsecond,
-        printer: FixedNumberPrinter<int>(padding: 6).before('.'),
-        skipIfZero: true)
-    ..literal('S'));
+  static DurationPrinter iso8601() => DurationPrinter(
+    (builder) =>
+        builder
+          ..literal('P')
+          ..sign()
+          ..part(
+            TimeUnit.year,
+            printer: FixedNumberPrinter<int>().after('Y'),
+            skipIfZero: true,
+          )
+          ..part(
+            TimeUnit.month,
+            printer: FixedNumberPrinter<int>().after('M'),
+            skipIfZero: true,
+          )
+          ..part(
+            TimeUnit.week,
+            printer: FixedNumberPrinter<int>().after('W'),
+            skipIfZero: true,
+          )
+          ..part(TimeUnit.day, printer: FixedNumberPrinter<int>().after('D'))
+          ..literal('T')
+          ..part(
+            TimeUnit.hour,
+            printer: FixedNumberPrinter<int>().after('H'),
+            skipIfZero: true,
+          )
+          ..part(
+            TimeUnit.minute,
+            printer: FixedNumberPrinter<int>().after('M'),
+            skipIfZero: true,
+          )
+          ..part(TimeUnit.second)
+          ..part(
+            TimeUnit.microsecond,
+            printer: FixedNumberPrinter<int>(padding: 6).before('.'),
+            skipIfZero: true,
+          )
+          ..literal('S'),
+  );
 }
 
 /// Builder of [DurationPrinter] objects.
@@ -85,9 +110,11 @@ class DurationPrinterBuilder {
   void literal(String value) => add(LiteralPrinter<Duration>(value));
 
   /// Adds a sign printer.
-  void sign([SignNumberPrinter<int>? printer]) =>
-      add((printer ?? const SignNumberPrinter.omitPositiveSign())
-          .onResultOf((duration) => duration.inMicroseconds));
+  void sign([SignNumberPrinter<int>? printer]) => add(
+    (printer ?? const SignNumberPrinter.omitPositiveSign()).onResultOf(
+      (duration) => duration.inMicroseconds,
+    ),
+  );
 
   /// Adds a printer that prints a part of a duration unit.
   ///
@@ -101,19 +128,28 @@ class DurationPrinterBuilder {
   /// If [skipIfZero] is set to `true` the unit is skipped if it is zero.
   ///
   /// See [ConvertToAllDurationExtension.convertToAll] for details.
-  void part(TimeUnit unit,
-      {Printer<int>? printer,
-      bool absoluteValue = true,
-      bool skipIfZero = false}) {
+  void part(
+    TimeUnit unit, {
+    Printer<int>? printer,
+    bool absoluteValue = true,
+    bool skipIfZero = false,
+  }) {
     _unitParts.add(unit);
-    add((printer ?? FixedNumberPrinter<int>())
-        .mapIf(absoluteValue,
-            (printer) => printer.onResultOf((value) => value.abs()))
-        .mapIf(skipIfZero, (printer) => printer.where((value) => value != 0))
-        .onResultOf((duration) => duration.convertToAll(
-              _unitParts,
-              conversion: _conversion,
-            )[unit]!));
+    add(
+      (printer ?? FixedNumberPrinter<int>())
+          .mapIf(
+            absoluteValue,
+            (printer) => printer.onResultOf((value) => value.abs()),
+          )
+          .mapIf(skipIfZero, (printer) => printer.where((value) => value != 0))
+          .onResultOf(
+            (duration) =>
+                duration.convertToAll(
+                  _unitParts,
+                  conversion: _conversion,
+                )[unit]!,
+          ),
+    );
   }
 
   /// Adds a printer that prints the full duration of the provided unit.
@@ -127,13 +163,22 @@ class DurationPrinterBuilder {
   /// If [skipIfZero] is set to `true` the unit is skipped if it is zero.
   ///
   /// See [ConvertToDurationExtension.convertTo] for details.
-  void full(TimeUnit unit, Printer<double> printer,
-      {bool absoluteValue = false, bool skipIfZero = false}) {
-    add(printer
-        .mapIf(absoluteValue,
-            (printer) => printer.onResultOf((value) => value.abs()))
-        .mapIf(skipIfZero, (printer) => printer.where((value) => value != 0))
-        .onResultOf(
-            (duration) => duration.convertTo(unit, conversion: _conversion)));
+  void full(
+    TimeUnit unit,
+    Printer<double> printer, {
+    bool absoluteValue = false,
+    bool skipIfZero = false,
+  }) {
+    add(
+      printer
+          .mapIf(
+            absoluteValue,
+            (printer) => printer.onResultOf((value) => value.abs()),
+          )
+          .mapIf(skipIfZero, (printer) => printer.where((value) => value != 0))
+          .onResultOf(
+            (duration) => duration.convertTo(unit, conversion: _conversion),
+          ),
+    );
   }
 }

@@ -14,14 +14,20 @@ class Trie<K, P extends Comparable<P>, V> extends MapBase<K, V> {
 
   /// Creates a [Trie] from another instance. Optionally redefines how the
   /// [parts] of the keys are computed and provides a custom [root] node.
-  factory Trie.fromTrie(Trie<K, P, V> other,
-          {GetParts<K, P>? parts, TrieNode<K, P, V>? root}) =>
+  factory Trie.fromTrie(
+    Trie<K, P, V> other, {
+    GetParts<K, P>? parts,
+    TrieNode<K, P, V>? root,
+  }) =>
       Trie<K, P, V>.fromMap(other, parts: parts ?? other._getParts, root: root);
 
   /// Creates a [Trie] from a [Map]. The [parts] define how the keys are
   /// computed and optionally provides a custom [root] node.
-  factory Trie.fromMap(Map<K, V> other,
-      {required GetParts<K, P> parts, TrieNode<K, P, V>? root}) {
+  factory Trie.fromMap(
+    Map<K, V> other, {
+    required GetParts<K, P> parts,
+    TrieNode<K, P, V>? root,
+  }) {
     final result = Trie<K, P, V>(parts: parts, root: root);
     result.addAll(other);
     return result;
@@ -30,23 +36,27 @@ class Trie<K, P extends Comparable<P>, V> extends MapBase<K, V> {
   /// Creates a [Trie] from an iterable (and possible transformation functions).
   /// The [parts] define how the keys are computed and optionally provides a
   /// custom [root] node.
-  factory Trie.fromIterable/*<E>*/(
+  factory Trie.fromIterable /*<E>*/ (
     Iterable<Object?> /*Iterable<E>*/ iterable, {
     required GetParts<K, P> parts,
     TrieNode<K, P, V>? root,
     K Function(Object? /*E*/ element)? key,
     V Function(Object? /*E*/ element)? value,
-  }) =>
-      Trie<K, P, V>.fromIterables(
-          key == null ? iterable.cast<K>() : iterable.map(key),
-          value == null ? iterable.cast<V>() : iterable.map(value),
-          parts: parts,
-          root: root);
+  }) => Trie<K, P, V>.fromIterables(
+    key == null ? iterable.cast<K>() : iterable.map(key),
+    value == null ? iterable.cast<V>() : iterable.map(value),
+    parts: parts,
+    root: root,
+  );
 
   /// Creates a [Trie] from two equal length iterables. The [parts] define how
   /// the keys are computed and optionally provides a custom [root] node.
-  factory Trie.fromIterables(Iterable<K> keys, Iterable<V> values,
-      {required GetParts<K, P> parts, TrieNode<K, P, V>? root}) {
+  factory Trie.fromIterables(
+    Iterable<K> keys,
+    Iterable<V> values, {
+    required GetParts<K, P> parts,
+    TrieNode<K, P, V>? root,
+  }) {
     final result = Trie<K, P, V>(parts: parts, root: root);
     final keyIterator = keys.iterator;
     final valueIterator = values.iterator;
@@ -65,10 +75,14 @@ class Trie<K, P extends Comparable<P>, V> extends MapBase<K, V> {
 
   /// Internal constructor of the [Trie].
   Trie._(this._root, this._getParts)
-      : assert(!_root.hasKeyAndValue,
-            'The initial root should not have a key or value.'),
-        assert(!_root.hasChildren,
-            'The initial root node should not have children.');
+    : assert(
+        !_root.hasKeyAndValue,
+        'The initial root should not have a key or value.',
+      ),
+      assert(
+        !_root.hasChildren,
+        'The initial root node should not have children.',
+      );
 
   /// Internal function to extract the parts from the key.
   final GetParts<K, P> _getParts;
@@ -251,8 +265,9 @@ abstract class TrieNode<K, P extends Comparable<P>, V> {
       if (element.hasKeyAndValue) {
         yield MapEntry(element.key, element.value);
       }
-      final children = element.children
-          .where((element) => element.hasKeyAndValue || element.hasChildren);
+      final children = element.children.where(
+        (element) => element.hasKeyAndValue || element.hasChildren,
+      );
       queue.addAll(children.toList().reversed);
     }
   }

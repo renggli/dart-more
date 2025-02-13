@@ -15,8 +15,8 @@ class Bounds {
   }
 
   Bounds._(this.min, this.max)
-      : assert(min.isNotEmpty),
-        assert(min.length == max.length);
+    : assert(min.isNotEmpty),
+      assert(min.length == max.length);
 
   final Float64List min;
   final Float64List max;

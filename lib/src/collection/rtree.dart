@@ -16,8 +16,8 @@ abstract class RTree<T> {
 
   /// Internal constructor for the R-Tree.
   RTree({int? minEntries, int? maxEntries})
-      : minEntries = minEntries ?? 4,
-        maxEntries = maxEntries ?? 8;
+    : minEntries = minEntries ?? 4,
+      maxEntries = maxEntries ?? 8;
 
   /// Minimum number of entries per node.
   final int minEntries;
@@ -41,10 +41,11 @@ abstract class RTree<T> {
 
   /// Queries leaf entries for a location (either a point or a rectangle),
   /// returning an iterable.
-  Iterable<RTreeEntry<T>> queryEntries(Bounds bounds) =>
-      searchNodes(nodePredicate: (node) => node.bounds.intersects(bounds))
-          .expand((node) =>
-              node.entries.where((entry) => entry.bounds.intersects(bounds)));
+  Iterable<RTreeEntry<T>> queryEntries(Bounds bounds) => searchNodes(
+    nodePredicate: (node) => node.bounds.intersects(bounds),
+  ).expand(
+    (node) => node.entries.where((entry) => entry.bounds.intersects(bounds)),
+  );
 
   /// Queries nodes for a location (either a point or a rectangle), returning an
   /// iterable. By default, this method returns only leaf nodes, though
@@ -52,8 +53,9 @@ abstract class RTree<T> {
   /// parameter to False.
   Iterable<RTreeNode<T>> queryNodes(Bounds bounds, {bool leaves = true}) =>
       searchNodes(
-          nodePredicate: (node) => node.bounds.intersects(bounds),
-          leaves: leaves);
+        nodePredicate: (node) => node.bounds.intersects(bounds),
+        leaves: leaves,
+      );
 
   /// Traverses the tree, returning leaf entries that match a condition. This
   /// method optionally accepts both a node condition and an entry condition.
@@ -84,9 +86,10 @@ abstract class RTree<T> {
     Predicate1<RTreeNode<T>>? nodePredicate,
     bool leaves = true,
   }) {
-    final callback = leaves
-        ? (RTreeNode<T> node) => (node.isLeaf ? [node] : <RTreeNode<T>>[])
-        : (RTreeNode<T> node) => [node];
+    final callback =
+        leaves
+            ? (RTreeNode<T> node) => (node.isLeaf ? [node] : <RTreeNode<T>>[])
+            : (RTreeNode<T> node) => [node];
     return traverse(callback, condition: nodePredicate);
   }
 
@@ -94,9 +97,10 @@ abstract class RTree<T> {
   /// function on each node. A condition function may optionally be passed to
   /// filter which nodes get traversed. If condition returns False, then neither
   /// the node nor any of its descendants will be traversed.
-  Iterable<R> traverse<R>(Map1<RTreeNode<T>, Iterable<R>> callback,
-          {Predicate1<RTreeNode<T>>? condition}) =>
-      root.traverse(callback, condition: condition);
+  Iterable<R> traverse<R>(
+    Map1<RTreeNode<T>, Iterable<R>> callback, {
+    Predicate1<RTreeNode<T>>? condition,
+  }) => root.traverse(callback, condition: condition);
 
   /// Select a leaf node in which to place a new index entry.
   @protected
@@ -116,8 +120,9 @@ abstract class RTree<T> {
   @protected
   RTreeNode<T> growTree(Iterable<RTreeNode<T>> nodes) {
     root = RTreeNode<T>(this, isLeaf: false);
-    root.entries
-        .addAll(nodes.map((node) => RTreeEntry<T>(node.bounds, child: node)));
+    root.entries.addAll(
+      nodes.map((node) => RTreeEntry<T>(node.bounds, child: node)),
+    );
     for (final node in nodes) {
       node.parent = root;
     }
@@ -129,11 +134,18 @@ abstract class RTree<T> {
   /// the entries specified in group2. Both the original and split node will
   /// have their children nodes adjusted so they have the correct parent.
   @protected
-  RTreeNode<T> splitNode(RTreeNode<T> node, List<RTreeEntry<T>> group1,
-      List<RTreeEntry<T>> group2) {
+  RTreeNode<T> splitNode(
+    RTreeNode<T> node,
+    List<RTreeEntry<T>> group1,
+    List<RTreeEntry<T>> group2,
+  ) {
     node.entries = group1;
-    final splitNode = RTreeNode<T>(this,
-        isLeaf: node.isLeaf, parent: node.parent, entries: group2);
+    final splitNode = RTreeNode<T>(
+      this,
+      isLeaf: node.isLeaf,
+      parent: node.parent,
+      entries: group2,
+    );
     node.fixChildren();
     splitNode.fixChildren();
     return splitNode;

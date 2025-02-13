@@ -35,10 +35,7 @@ sealed class Either<L, R> {
   /// a non-null value create a left-sided [Either]. Alternatively, if the
   /// [rightProvider] returns a non-null value, create a right-sided [Either].
   /// Otherwise, if both providers return a null-value, throw a [StateError].
-  factory Either.either(
-    Map0<L?> leftProvider,
-    Map0<R?> rightProvider,
-  ) {
+  factory Either.either(Map0<L?> leftProvider, Map0<R?> rightProvider) {
     final leftValue = leftProvider();
     if (leftValue != null) {
       return Either<L, R>.left(leftValue);
@@ -76,10 +73,7 @@ sealed class Either<L, R> {
   bool get isRight;
 
   /// Returns the appropriate transformation to type [T].
-  T fold<T>(
-    Map1<L, T> leftFunction,
-    Map1<R, T> rightFunction,
-  );
+  T fold<T>(Map1<L, T> leftFunction, Map1<R, T> rightFunction);
 
   /// Transforms the left value with [leftFunction] or the right value with
   /// [rightFunction]. The resulting [Either] contains the transformed value
@@ -91,15 +85,11 @@ sealed class Either<L, R> {
 
   /// Transforms the left value with [leftFunction]. If applicable, the
   /// resulting [Either] contains the transformed left value.
-  Either<L2, R> mapLeft<L2>(
-    Map1<L, L2> leftFunction,
-  );
+  Either<L2, R> mapLeft<L2>(Map1<L, L2> leftFunction);
 
   /// Transforms the right value with [rightFunction]. If applicable, the
   /// resulting [Either] contains the transformed right value.
-  Either<L, R2> mapRight<R2>(
-    Map1<R, R2> rightFunction,
-  );
+  Either<L, R2> mapRight<R2>(Map1<R, R2> rightFunction);
 
   /// Returns a new [Either] created by the either-returning transformation
   /// [leftFunction] or [rightFunction].
@@ -110,15 +100,11 @@ sealed class Either<L, R> {
 
   /// Returns a new [Either] from the either-returning transformation
   /// [leftFunction], otherwise returns the wrapped right value.
-  Either<L2, R> flatMapLeft<L2>(
-    Map1<L, Either<L2, R>> leftFunction,
-  );
+  Either<L2, R> flatMapLeft<L2>(Map1<L, Either<L2, R>> leftFunction);
 
   /// Returns a new [Either] from the either-returning transformation
   /// [rightFunction], otherwise returns the wrapped left value.
-  Either<L, R2> flatMapRight<R2>(
-    Map1<R, Either<L, R2>> rightFunction,
-  );
+  Either<L, R2> flatMapRight<R2>(Map1<R, Either<L, R2>> rightFunction);
 
   /// Returns a new [Either] with the left and right value switched.
   Either<R, L> swap();
@@ -158,8 +144,9 @@ class LeftEither<L, R> extends Either<L, R> {
 
   @override
   Either<L2, R2> map<L2, R2>(
-          Map1<L, L2> leftFunction, Map1<R, R2> rightFunction) =>
-      Either<L2, R2>.left(leftFunction(leftValue));
+    Map1<L, L2> leftFunction,
+    Map1<R, R2> rightFunction,
+  ) => Either<L2, R2>.left(leftFunction(leftValue));
 
   @override
   Either<L2, R> mapLeft<L2>(Map1<L, L2> leftFunction) =>
@@ -170,9 +157,10 @@ class LeftEither<L, R> extends Either<L, R> {
       Either<L, R2>.left(leftValue);
 
   @override
-  Either<L2, R2> flatMap<L2, R2>(Map1<L, Either<L2, R2>> leftFunction,
-          Map1<R, Either<L2, R2>> rightFunction) =>
-      leftFunction(leftValue);
+  Either<L2, R2> flatMap<L2, R2>(
+    Map1<L, Either<L2, R2>> leftFunction,
+    Map1<R, Either<L2, R2>> rightFunction,
+  ) => leftFunction(leftValue);
 
   @override
   Either<L2, R> flatMapLeft<L2>(Map1<L, Either<L2, R>> leftFunction) =>
@@ -230,8 +218,9 @@ class RightEither<L, R> extends Either<L, R> {
 
   @override
   Either<L2, R2> map<L2, R2>(
-          Map1<L, L2> leftFunction, Map1<R, R2> rightFunction) =>
-      Either<L2, R2>.right(rightFunction(rightValue));
+    Map1<L, L2> leftFunction,
+    Map1<R, R2> rightFunction,
+  ) => Either<L2, R2>.right(rightFunction(rightValue));
 
   @override
   Either<L2, R> mapLeft<L2>(Map1<L, L2> leftFunction) =>
@@ -242,9 +231,10 @@ class RightEither<L, R> extends Either<L, R> {
       Either<L, R2>.right(rightFunction(rightValue));
 
   @override
-  Either<L2, R2> flatMap<L2, R2>(Map1<L, Either<L2, R2>> leftFunction,
-          Map1<R, Either<L2, R2>> rightFunction) =>
-      rightFunction(rightValue);
+  Either<L2, R2> flatMap<L2, R2>(
+    Map1<L, Either<L2, R2>> leftFunction,
+    Map1<R, Either<L2, R2>> rightFunction,
+  ) => rightFunction(rightValue);
 
   @override
   Either<L2, R> flatMapLeft<L2>(Map1<L, Either<L2, R>> leftFunction) =>

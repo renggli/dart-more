@@ -7,8 +7,11 @@ import '../multimap.dart';
 /// custom value collections.
 class ListMultimap<K, V> extends Multimap<K, V, List<V>> {
   /// Creates a [ListMultimap] with the same keys and values as [other].
-  factory ListMultimap.of(Multimap<K, V, Iterable<V>> other,
-      {Map<K, List<V>>? map, Factory<List<V>>? factory}) {
+  factory ListMultimap.of(
+    Multimap<K, V, Iterable<V>> other, {
+    Map<K, List<V>>? map,
+    Factory<List<V>>? factory,
+  }) {
     final result = ListMultimap<K, V>(map: map, factory: factory);
     other.forEach(result.add);
     return result;
@@ -19,7 +22,7 @@ class ListMultimap<K, V> extends Multimap<K, V, List<V>> {
       ListMultimap(map: Map.identity(), factory: factory);
 
   /// Creates a [ListMultimap] with the keys and values from [iterable].
-  factory ListMultimap.fromIterable/*<E>*/(
+  factory ListMultimap.fromIterable /*<E>*/ (
     Iterable<Object?> /*<E>*/ iterable, {
     K Function(Object? /*E*/ element)? key,
     V Function(Object? /*E*/ element)? value,
@@ -32,16 +35,23 @@ class ListMultimap<K, V> extends Multimap<K, V, List<V>> {
   }
 
   // Creates a [ListMultimap] associating the given [keys] to [values].
-  factory ListMultimap.fromIterables(Iterable<K> keys, Iterable<V> values,
-      {Map<K, List<V>>? map, Factory<List<V>>? factory}) {
+  factory ListMultimap.fromIterables(
+    Iterable<K> keys,
+    Iterable<V> values, {
+    Map<K, List<V>>? map,
+    Factory<List<V>>? factory,
+  }) {
     final result = ListMultimap<K, V>(map: map, factory: factory);
     fillFromIterables(result, keys, values);
     return result;
   }
 
   /// Creates a [ListMultimap] containing the entries of [entries].
-  factory ListMultimap.fromEntries(Iterable<MapEntry<K, V>> entries,
-      {Map<K, List<V>>? map, Factory<List<V>>? factory}) {
+  factory ListMultimap.fromEntries(
+    Iterable<MapEntry<K, V>> entries, {
+    Map<K, List<V>>? map,
+    Factory<List<V>>? factory,
+  }) {
     final result = ListMultimap<K, V>(map: map, factory: factory);
     fillFromEntries(result, entries);
     return result;
@@ -50,7 +60,7 @@ class ListMultimap<K, V> extends Multimap<K, V, List<V>> {
   /// Creates an empty [ListMultimap] with the keys held in [map] and the values
   /// in a collection built with [factory].
   ListMultimap({Map<K, List<V>>? map, Factory<List<V>>? factory})
-      : super(map ?? <K, List<V>>{}, factory ?? defaultFactory);
+    : super(map ?? <K, List<V>>{}, factory ?? defaultFactory);
 
   @override
   ListMultimapValues<K, V> lookupValues(K key) =>
@@ -75,28 +85,28 @@ class ListMultimapValues<K, V> extends MultimapValues<K, V, List<V>>
 
   @override
   void add(V element) => update((map, length) {
-        if (delegate.isEmpty) {
-          map[key] = delegate;
-        }
-        delegate.add(element);
-        return 1;
-      });
+    if (delegate.isEmpty) {
+      map[key] = delegate;
+    }
+    delegate.add(element);
+    return 1;
+  });
 
   @override
   set length(int newLength) => update((map, length) {
-        final previousLength = delegate.length;
-        if (previousLength != newLength) {
-          if (previousLength == 0) {
-            map[key] = delegate;
-          }
-          delegate.length = newLength;
-          if (newLength == 0) {
-            map.remove(key);
-          }
-          return newLength - previousLength;
-        }
-        return 0;
-      });
+    final previousLength = delegate.length;
+    if (previousLength != newLength) {
+      if (previousLength == 0) {
+        map[key] = delegate;
+      }
+      delegate.length = newLength;
+      if (newLength == 0) {
+        map.remove(key);
+      }
+      return newLength - previousLength;
+    }
+    return 0;
+  });
 
   @override
   void polymorphicAdd(V value) => add(value);
@@ -110,23 +120,28 @@ class ListMultimapValues<K, V> extends MultimapValues<K, V, List<V>>
 
 extension ListMultimapOnMapExtension<K, V> on Map<K, V> {
   /// Converts this [Map] to an equivalent [ListMultimap].
-  ListMultimap<K, V> toListMultimap(
-          {Map<K, List<V>>? map, Factory<List<V>>? factory}) =>
-      ListMultimap<K, V>.fromEntries(entries, map: map, factory: factory);
+  ListMultimap<K, V> toListMultimap({
+    Map<K, List<V>>? map,
+    Factory<List<V>>? factory,
+  }) => ListMultimap<K, V>.fromEntries(entries, map: map, factory: factory);
 }
 
 extension ListMultimapOnIterableExtension<E> on Iterable<E> {
   /// Converts this [Iterable] to a [ListMultimap].
-  ListMultimap<K, V> toListMultimap<K, V>(
-      {K Function(E element)? key,
-      V Function(E element)? value,
-      Map<K, List<V>>? map,
-      Factory<List<V>>? factory}) {
+  ListMultimap<K, V> toListMultimap<K, V>({
+    K Function(E element)? key,
+    V Function(E element)? value,
+    Map<K, List<V>>? map,
+    Factory<List<V>>? factory,
+  }) {
     final keyProvider = key ?? (element) => element as K;
     final valueProvider = value ?? (element) => element as V;
     return ListMultimap<K, V>.fromIterables(
-        this.map(keyProvider), this.map(valueProvider),
-        map: map, factory: factory);
+      this.map(keyProvider),
+      this.map(valueProvider),
+      map: map,
+      factory: factory,
+    );
   }
 }
 

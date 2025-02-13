@@ -18,8 +18,9 @@ class Multiset<E> extends IterableBase<E> {
       return Multiset<E>._(Map.of(other._container), other._length);
     } else if (other is Set<E>) {
       return Multiset<E>._(
-          Map.fromIterables(other, repeat(1, count: other.length)),
-          other.length);
+        Map.fromIterables(other, repeat(1, count: other.length)),
+        other.length,
+      );
     } else {
       return Multiset<E>()..addAll(other);
     }
@@ -37,7 +38,7 @@ class Multiset<E> extends IterableBase<E> {
   ///
   /// The [count] function specifies the number of elements added to the
   /// collection. The default function returns the constant 1.
-  factory Multiset.fromIterable/*<E>*/(
+  factory Multiset.fromIterable /*<E>*/ (
     Iterable<Object?> /*<E>*/ iterable, {
     E Function(Object? /*E*/ element)? key,
     int Function(Object? /*E*/ element)? count,
@@ -66,7 +67,10 @@ class Multiset<E> extends IterableBase<E> {
   void add(E element, [int occurrences = 1]) {
     if (occurrences < 0) {
       throw ArgumentError.value(
-          occurrences, 'occurrences', 'Negative number of occurrences');
+        occurrences,
+        'occurrences',
+        'Negative number of occurrences',
+      );
     } else if (occurrences > 0) {
       _container[element] = this[element] + occurrences;
       _length += occurrences;
@@ -84,7 +88,10 @@ class Multiset<E> extends IterableBase<E> {
   void remove(Object? element, [int occurrences = 1]) {
     if (occurrences < 0) {
       throw ArgumentError.value(
-          occurrences, 'occurrences', 'Negative number of occurrences');
+        occurrences,
+        'occurrences',
+        'Negative number of occurrences',
+      );
     }
     if (element is E && occurrences > 0) {
       final current = this[element];
@@ -118,7 +125,10 @@ class Multiset<E> extends IterableBase<E> {
   void operator []=(E element, int occurrences) {
     if (occurrences < 0) {
       throw ArgumentError.value(
-          occurrences, 'occurrences', 'Negative number of occurrences');
+        occurrences,
+        'occurrences',
+        'Negative number of occurrences',
+      );
     } else {
       final current = this[element];
       if (occurrences > 0) {
@@ -156,7 +166,9 @@ class Multiset<E> extends IterableBase<E> {
   /// Returns a new [Multiset] by evaluating [callback] element-wise for each
   /// distinct element of `this` and [other].
   Multiset<E> combine(
-      Iterable<E> other, int Function(E element, int a, int b) callback) {
+    Iterable<E> other,
+    int Function(E element, int a, int b) callback,
+  ) {
     if (other is Multiset<E>) {
       final result = Multiset<E>();
       for (final element in {...elementSet, ...other.elementSet}) {
@@ -193,9 +205,10 @@ class Multiset<E> extends IterableBase<E> {
 
   /// Iterator over the repeated elements of the receiver.
   @override
-  Iterator<E> get iterator => _container.entries
-      .expand((entry) => repeat(entry.key, count: entry.value))
-      .iterator;
+  Iterator<E> get iterator =>
+      _container.entries
+          .expand((entry) => repeat(entry.key, count: entry.value))
+          .iterator;
 
   /// Returns an unmodifiable view of the underlying data in a [Map] with the
   /// elements as the key and their counts as the value.

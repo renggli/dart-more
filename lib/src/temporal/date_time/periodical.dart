@@ -40,173 +40,186 @@ extension PeriodicalDateTimeExtension on DateTime {
     switch (unit) {
       case TimeUnit.millennium:
         return iterate(
-            this,
-            (prev) => DateTime(
-                  prev.year + 1000 * step,
-                  prev.month,
-                  prev.day,
-                  prev.hour,
-                  prev.minute,
-                  prev.second,
-                  prev.millisecond,
-                  prev.microsecond,
-                ));
+          this,
+          (prev) => DateTime(
+            prev.year + 1000 * step,
+            prev.month,
+            prev.day,
+            prev.hour,
+            prev.minute,
+            prev.second,
+            prev.millisecond,
+            prev.microsecond,
+          ),
+        );
       case TimeUnit.century:
         return iterate(
-            this,
-            (prev) => DateTime(
-                  prev.year + 100 * step,
-                  prev.month,
-                  prev.day,
-                  prev.hour,
-                  prev.minute,
-                  prev.second,
-                  prev.millisecond,
-                  prev.microsecond,
-                ));
+          this,
+          (prev) => DateTime(
+            prev.year + 100 * step,
+            prev.month,
+            prev.day,
+            prev.hour,
+            prev.minute,
+            prev.second,
+            prev.millisecond,
+            prev.microsecond,
+          ),
+        );
       case TimeUnit.decade:
         return iterate(
-            this,
-            (prev) => DateTime(
-                  prev.year + 10 * step,
-                  prev.month,
-                  prev.day,
-                  prev.hour,
-                  prev.minute,
-                  prev.second,
-                  prev.millisecond,
-                  prev.microsecond,
-                ));
+          this,
+          (prev) => DateTime(
+            prev.year + 10 * step,
+            prev.month,
+            prev.day,
+            prev.hour,
+            prev.minute,
+            prev.second,
+            prev.millisecond,
+            prev.microsecond,
+          ),
+        );
       case TimeUnit.year:
         return iterate(
-            this,
-            (prev) => DateTime(
-                  prev.year + step,
-                  prev.month,
-                  prev.day,
-                  prev.hour,
-                  prev.minute,
-                  prev.second,
-                  prev.millisecond,
-                  prev.microsecond,
-                ));
+          this,
+          (prev) => DateTime(
+            prev.year + step,
+            prev.month,
+            prev.day,
+            prev.hour,
+            prev.minute,
+            prev.second,
+            prev.millisecond,
+            prev.microsecond,
+          ),
+        );
       case TimeUnit.quarter:
         return iterate(
-            this,
-            (prev) => DateTime(
-                  prev.year,
-                  prev.month + 3 * step,
-                  prev.day,
-                  prev.hour,
-                  prev.minute,
-                  prev.second,
-                  prev.millisecond,
-                  prev.microsecond,
-                ));
+          this,
+          (prev) => DateTime(
+            prev.year,
+            prev.month + 3 * step,
+            prev.day,
+            prev.hour,
+            prev.minute,
+            prev.second,
+            prev.millisecond,
+            prev.microsecond,
+          ),
+        );
       case TimeUnit.month:
         return iterate(
-            this,
-            (prev) => DateTime(
-                  prev.year,
-                  prev.month + step,
-                  prev.day,
-                  prev.hour,
-                  prev.minute,
-                  prev.second,
-                  prev.millisecond,
-                  prev.microsecond,
-                ));
+          this,
+          (prev) => DateTime(
+            prev.year,
+            prev.month + step,
+            prev.day,
+            prev.hour,
+            prev.minute,
+            prev.second,
+            prev.millisecond,
+            prev.microsecond,
+          ),
+        );
       case TimeUnit.week:
         return iterate(
-            this,
-            (prev) => DateTime(
-                  prev.year,
-                  prev.month,
-                  prev.day + 7 * step,
-                  prev.hour,
-                  prev.minute,
-                  prev.second,
-                  prev.millisecond,
-                  prev.microsecond,
-                ));
+          this,
+          (prev) => DateTime(
+            prev.year,
+            prev.month,
+            prev.day + 7 * step,
+            prev.hour,
+            prev.minute,
+            prev.second,
+            prev.millisecond,
+            prev.microsecond,
+          ),
+        );
       case TimeUnit.day:
         return iterate(
-            this,
-            (prev) => DateTime(
-                  prev.year,
-                  prev.month,
-                  prev.day + step,
-                  prev.hour,
-                  prev.minute,
-                  prev.second,
-                  prev.millisecond,
-                  prev.microsecond,
-                ));
+          this,
+          (prev) => DateTime(
+            prev.year,
+            prev.month,
+            prev.day + step,
+            prev.hour,
+            prev.minute,
+            prev.second,
+            prev.millisecond,
+            prev.microsecond,
+          ),
+        );
       case TimeUnit.hour:
         return iterate(
-            this,
-            (prev) => DateTime(
-                  prev.year,
-                  prev.month,
-                  prev.day,
-                  prev.hour + step,
-                  prev.minute,
-                  prev.second,
-                  prev.millisecond,
-                  prev.microsecond,
-                ));
+          this,
+          (prev) => DateTime(
+            prev.year,
+            prev.month,
+            prev.day,
+            prev.hour + step,
+            prev.minute,
+            prev.second,
+            prev.millisecond,
+            prev.microsecond,
+          ),
+        );
       case TimeUnit.minute:
         return iterate(
-            this,
-            (prev) => DateTime(
-                  prev.year,
-                  prev.month,
-                  prev.day,
-                  prev.hour,
-                  prev.minute + step,
-                  prev.second,
-                  prev.millisecond,
-                  prev.microsecond,
-                ));
+          this,
+          (prev) => DateTime(
+            prev.year,
+            prev.month,
+            prev.day,
+            prev.hour,
+            prev.minute + step,
+            prev.second,
+            prev.millisecond,
+            prev.microsecond,
+          ),
+        );
       case TimeUnit.second:
         return iterate(
-            this,
-            (prev) => DateTime(
-                  prev.year,
-                  prev.month,
-                  prev.day,
-                  prev.hour,
-                  prev.minute,
-                  prev.second + step,
-                  prev.millisecond,
-                  prev.microsecond,
-                ));
+          this,
+          (prev) => DateTime(
+            prev.year,
+            prev.month,
+            prev.day,
+            prev.hour,
+            prev.minute,
+            prev.second + step,
+            prev.millisecond,
+            prev.microsecond,
+          ),
+        );
       case TimeUnit.millisecond:
         return iterate(
-            this,
-            (prev) => DateTime(
-                  prev.year,
-                  prev.month,
-                  prev.day,
-                  prev.hour,
-                  prev.minute,
-                  prev.second,
-                  prev.millisecond + step,
-                  prev.microsecond,
-                ));
+          this,
+          (prev) => DateTime(
+            prev.year,
+            prev.month,
+            prev.day,
+            prev.hour,
+            prev.minute,
+            prev.second,
+            prev.millisecond + step,
+            prev.microsecond,
+          ),
+        );
       case TimeUnit.microsecond:
         return iterate(
-            this,
-            (prev) => DateTime(
-                  prev.year,
-                  prev.month,
-                  prev.day,
-                  prev.hour,
-                  prev.minute,
-                  prev.second,
-                  prev.millisecond,
-                  prev.microsecond + step,
-                ));
+          this,
+          (prev) => DateTime(
+            prev.year,
+            prev.month,
+            prev.day,
+            prev.hour,
+            prev.minute,
+            prev.second,
+            prev.millisecond,
+            prev.microsecond + step,
+          ),
+        );
     }
   }
 }

@@ -10,8 +10,9 @@ void main() {
       final other = Tuple.fromList([]);
       expect(other, tuple);
       expect(
-          () => Tuple.fromList([51, 174, 196, 93, 181, 104, 143, 61, 48, 184]),
-          throwsArgumentError);
+        () => Tuple.fromList([51, 174, 196, 93, 181, 104, 143, 61, 48, 184]),
+        throwsArgumentError,
+      );
     });
     test('fromList', () {
       final other = Tuple0.fromList([]);
@@ -50,8 +51,9 @@ void main() {
       final other = Tuple.fromList([51]);
       expect(other, tuple);
       expect(
-          () => Tuple.fromList([115, 77, 26, 167, 89, 231, 174, 164, 26, 79]),
-          throwsArgumentError);
+        () => Tuple.fromList([115, 77, 26, 167, 89, 231, 174, 164, 26, 79]),
+        throwsArgumentError,
+      );
     });
     test('fromList', () {
       final other = Tuple1.fromList([51]);
@@ -100,10 +102,13 @@ void main() {
       expect(tuple.length, 1);
     });
     test('map', () {
-      expect(tuple.map((first) {
-        expect(first, 51);
-        return 100;
-      }), 100);
+      expect(
+        tuple.map((first) {
+          expect(first, 51);
+          return 100;
+        }),
+        100,
+      );
     });
     test('iterable', () {
       expect(tuple.iterable, <dynamic>[51]);
@@ -121,9 +126,9 @@ void main() {
       final other = Tuple.fromList([110, 80]);
       expect(other, tuple);
       expect(
-          () =>
-              Tuple.fromList([160, 85, 136, 148, 159, 123, 142, 224, 17, 183]),
-          throwsArgumentError);
+        () => Tuple.fromList([160, 85, 136, 148, 159, 123, 142, 224, 17, 183]),
+        throwsArgumentError,
+      );
     });
     test('fromList', () {
       final other = Tuple2.fromList([110, 80]);
@@ -197,11 +202,14 @@ void main() {
       expect(tuple.length, 2);
     });
     test('map', () {
-      expect(tuple.map((first, second) {
-        expect(first, 110);
-        expect(second, 80);
-        return 686;
-      }), 686);
+      expect(
+        tuple.map((first, second) {
+          expect(first, 110);
+          expect(second, 80);
+          return 686;
+        }),
+        686,
+      );
     });
     test('iterable', () {
       expect(tuple.iterable, <dynamic>[110, 80]);
@@ -219,8 +227,9 @@ void main() {
       final other = Tuple.fromList([10, 221, 217]);
       expect(other, tuple);
       expect(
-          () => Tuple.fromList([145, 204, 250, 23, 39, 140, 220, 127, 11, 73]),
-          throwsArgumentError);
+        () => Tuple.fromList([145, 204, 250, 23, 39, 140, 220, 127, 11, 73]),
+        throwsArgumentError,
+      );
     });
     test('fromList', () {
       final other = Tuple3.fromList([10, 221, 217]);
@@ -325,12 +334,15 @@ void main() {
       expect(tuple.length, 3);
     });
     test('map', () {
-      expect(tuple.map((first, second, third) {
-        expect(first, 10);
-        expect(second, 221);
-        expect(third, 217);
-        return 298;
-      }), 298);
+      expect(
+        tuple.map((first, second, third) {
+          expect(first, 10);
+          expect(second, 221);
+          expect(third, 217);
+          return 298;
+        }),
+        298,
+      );
     });
     test('iterable', () {
       expect(tuple.iterable, <dynamic>[10, 221, 217]);
@@ -348,15 +360,17 @@ void main() {
       final other = Tuple.fromList([211, 158, 121, 55]);
       expect(other, tuple);
       expect(
-          () =>
-              Tuple.fromList([119, 54, 178, 209, 198, 186, 130, 155, 175, 159]),
-          throwsArgumentError);
+        () => Tuple.fromList([119, 54, 178, 209, 198, 186, 130, 155, 175, 159]),
+        throwsArgumentError,
+      );
     });
     test('fromList', () {
       final other = Tuple4.fromList([211, 158, 121, 55]);
       expect(other, tuple);
       expect(
-          () => Tuple4.fromList([93, 164, 180, 175, 192]), throwsArgumentError);
+        () => Tuple4.fromList([93, 164, 180, 175, 192]),
+        throwsArgumentError,
+      );
     });
     test('read', () {
       expect(tuple.first, 211);
@@ -493,13 +507,16 @@ void main() {
       expect(tuple.length, 4);
     });
     test('map', () {
-      expect(tuple.map((first, second, third, fourth) {
-        expect(first, 211);
-        expect(second, 158);
-        expect(third, 121);
-        expect(fourth, 55);
-        return 498;
-      }), 498);
+      expect(
+        tuple.map((first, second, third, fourth) {
+          expect(first, 211);
+          expect(second, 158);
+          expect(third, 121);
+          expect(fourth, 55);
+          return 498;
+        }),
+        498,
+      );
     });
     test('iterable', () {
       expect(tuple.iterable, <dynamic>[211, 158, 121, 55]);
@@ -517,14 +534,17 @@ void main() {
       final other = Tuple.fromList([32, 108, 10, 131, 83]);
       expect(other, tuple);
       expect(
-          () => Tuple.fromList([137, 102, 140, 254, 112, 223, 77, 47, 35, 113]),
-          throwsArgumentError);
+        () => Tuple.fromList([137, 102, 140, 254, 112, 223, 77, 47, 35, 113]),
+        throwsArgumentError,
+      );
     });
     test('fromList', () {
       final other = Tuple5.fromList([32, 108, 10, 131, 83]);
       expect(other, tuple);
       expect(
-          () => Tuple5.fromList([0, 0, 237, 45, 241, 0]), throwsArgumentError);
+        () => Tuple5.fromList([0, 0, 237, 45, 241, 0]),
+        throwsArgumentError,
+      );
     });
     test('read', () {
       expect(tuple.first, 32);
@@ -704,14 +724,17 @@ void main() {
       expect(tuple.length, 5);
     });
     test('map', () {
-      expect(tuple.map((first, second, third, fourth, fifth) {
-        expect(first, 32);
-        expect(second, 108);
-        expect(third, 10);
-        expect(fourth, 131);
-        expect(fifth, 83);
-        return 558;
-      }), 558);
+      expect(
+        tuple.map((first, second, third, fourth, fifth) {
+          expect(first, 32);
+          expect(second, 108);
+          expect(third, 10);
+          expect(fourth, 131);
+          expect(fifth, 83);
+          return 558;
+        }),
+        558,
+      );
     });
     test('iterable', () {
       expect(tuple.iterable, <dynamic>[32, 108, 10, 131, 83]);
@@ -728,14 +751,18 @@ void main() {
     test('Tuple.fromList', () {
       final other = Tuple.fromList([5, 70, 64, 157, 108, 217]);
       expect(other, tuple);
-      expect(() => Tuple.fromList([93, 20, 166, 21, 181, 57, 70, 180, 1, 60]),
-          throwsArgumentError);
+      expect(
+        () => Tuple.fromList([93, 20, 166, 21, 181, 57, 70, 180, 1, 60]),
+        throwsArgumentError,
+      );
     });
     test('fromList', () {
       final other = Tuple6.fromList([5, 70, 64, 157, 108, 217]);
       expect(other, tuple);
-      expect(() => Tuple6.fromList([182, 117, 95, 32, 200, 176, 125]),
-          throwsArgumentError);
+      expect(
+        () => Tuple6.fromList([182, 117, 95, 32, 200, 176, 125]),
+        throwsArgumentError,
+      );
     });
     test('read', () {
       expect(tuple.first, 5);
@@ -964,15 +991,18 @@ void main() {
       expect(tuple.length, 6);
     });
     test('map', () {
-      expect(tuple.map((first, second, third, fourth, fifth, sixth) {
-        expect(first, 5);
-        expect(second, 70);
-        expect(third, 64);
-        expect(fourth, 157);
-        expect(fifth, 108);
-        expect(sixth, 217);
-        return 533;
-      }), 533);
+      expect(
+        tuple.map((first, second, third, fourth, fifth, sixth) {
+          expect(first, 5);
+          expect(second, 70);
+          expect(third, 64);
+          expect(fourth, 157);
+          expect(fifth, 108);
+          expect(sixth, 217);
+          return 533;
+        }),
+        533,
+      );
     });
     test('iterable', () {
       expect(tuple.iterable, <dynamic>[5, 70, 64, 157, 108, 217]);
@@ -990,14 +1020,17 @@ void main() {
       final other = Tuple.fromList([81, 171, 110, 138, 191, 17, 53]);
       expect(other, tuple);
       expect(
-          () => Tuple.fromList([115, 80, 129, 100, 144, 152, 96, 72, 32, 127]),
-          throwsArgumentError);
+        () => Tuple.fromList([115, 80, 129, 100, 144, 152, 96, 72, 32, 127]),
+        throwsArgumentError,
+      );
     });
     test('fromList', () {
       final other = Tuple7.fromList([81, 171, 110, 138, 191, 17, 53]);
       expect(other, tuple);
-      expect(() => Tuple7.fromList([39, 236, 171, 122, 66, 13, 78, 228]),
-          throwsArgumentError);
+      expect(
+        () => Tuple7.fromList([39, 236, 171, 122, 66, 13, 78, 228]),
+        throwsArgumentError,
+      );
     });
     test('read', () {
       expect(tuple.first, 81);
@@ -1281,16 +1314,19 @@ void main() {
       expect(tuple.length, 7);
     });
     test('map', () {
-      expect(tuple.map((first, second, third, fourth, fifth, sixth, seventh) {
-        expect(first, 81);
-        expect(second, 171);
-        expect(third, 110);
-        expect(fourth, 138);
-        expect(fifth, 191);
-        expect(sixth, 17);
-        expect(seventh, 53);
-        return 439;
-      }), 439);
+      expect(
+        tuple.map((first, second, third, fourth, fifth, sixth, seventh) {
+          expect(first, 81);
+          expect(second, 171);
+          expect(third, 110);
+          expect(fourth, 138);
+          expect(fifth, 191);
+          expect(sixth, 17);
+          expect(seventh, 53);
+          return 439;
+        }),
+        439,
+      );
     });
     test('iterable', () {
       expect(tuple.iterable, <dynamic>[81, 171, 110, 138, 191, 17, 53]);
@@ -1308,14 +1344,17 @@ void main() {
       final other = Tuple.fromList([153, 63, 4, 238, 254, 200, 37, 244]);
       expect(other, tuple);
       expect(
-          () => Tuple.fromList([31, 234, 132, 24, 19, 211, 220, 206, 56, 54]),
-          throwsArgumentError);
+        () => Tuple.fromList([31, 234, 132, 24, 19, 211, 220, 206, 56, 54]),
+        throwsArgumentError,
+      );
     });
     test('fromList', () {
       final other = Tuple8.fromList([153, 63, 4, 238, 254, 200, 37, 244]);
       expect(other, tuple);
-      expect(() => Tuple8.fromList([10, 16, 9, 219, 36, 6, 81, 93, 76]),
-          throwsArgumentError);
+      expect(
+        () => Tuple8.fromList([10, 16, 9, 219, 36, 6, 81, 93, 76]),
+        throwsArgumentError,
+      );
     });
     test('read', () {
       expect(tuple.first, 153);
@@ -1660,18 +1699,29 @@ void main() {
       expect(tuple.length, 8);
     });
     test('map', () {
-      expect(tuple
-          .map((first, second, third, fourth, fifth, sixth, seventh, eighth) {
-        expect(first, 153);
-        expect(second, 63);
-        expect(third, 4);
-        expect(fourth, 238);
-        expect(fifth, 254);
-        expect(sixth, 200);
-        expect(seventh, 37);
-        expect(eighth, 244);
-        return 777;
-      }), 777);
+      expect(
+        tuple.map((
+          first,
+          second,
+          third,
+          fourth,
+          fifth,
+          sixth,
+          seventh,
+          eighth,
+        ) {
+          expect(first, 153);
+          expect(second, 63);
+          expect(third, 4);
+          expect(fourth, 238);
+          expect(fifth, 254);
+          expect(sixth, 200);
+          expect(seventh, 37);
+          expect(eighth, 244);
+          return 777;
+        }),
+        777,
+      );
     });
     test('iterable', () {
       expect(tuple.iterable, <dynamic>[153, 63, 4, 238, 254, 200, 37, 244]);
@@ -1686,20 +1736,40 @@ void main() {
   group('Tuple9', () {
     const tuple = (209, 229, 246, 244, 122, 206, 164, 55, 173);
     test('Tuple.fromList', () {
-      final other =
-          Tuple.fromList([209, 229, 246, 244, 122, 206, 164, 55, 173]);
+      final other = Tuple.fromList([
+        209,
+        229,
+        246,
+        244,
+        122,
+        206,
+        164,
+        55,
+        173,
+      ]);
       expect(other, tuple);
       expect(
-          () => Tuple.fromList([2, 172, 190, 123, 156, 135, 27, 188, 100, 29]),
-          throwsArgumentError);
+        () => Tuple.fromList([2, 172, 190, 123, 156, 135, 27, 188, 100, 29]),
+        throwsArgumentError,
+      );
     });
     test('fromList', () {
-      final other =
-          Tuple9.fromList([209, 229, 246, 244, 122, 206, 164, 55, 173]);
+      final other = Tuple9.fromList([
+        209,
+        229,
+        246,
+        244,
+        122,
+        206,
+        164,
+        55,
+        173,
+      ]);
       expect(other, tuple);
       expect(
-          () => Tuple9.fromList([17, 134, 68, 251, 48, 174, 226, 226, 42, 197]),
-          throwsArgumentError);
+        () => Tuple9.fromList([17, 134, 68, 251, 48, 174, 226, 226, 42, 197]),
+        throwsArgumentError,
+      );
     });
     test('read', () {
       expect(tuple.first, 209);
@@ -1957,31 +2027,70 @@ void main() {
       expect(tuple.length, 9);
     });
     test('map', () {
-      expect(tuple.map(
-          (first, second, third, fourth, fifth, sixth, seventh, eighth, ninth) {
-        expect(first, 209);
-        expect(second, 229);
-        expect(third, 246);
-        expect(fourth, 244);
-        expect(fifth, 122);
-        expect(sixth, 206);
-        expect(seventh, 164);
-        expect(eighth, 55);
-        expect(ninth, 173);
-        return 757;
-      }), 757);
+      expect(
+        tuple.map((
+          first,
+          second,
+          third,
+          fourth,
+          fifth,
+          sixth,
+          seventh,
+          eighth,
+          ninth,
+        ) {
+          expect(first, 209);
+          expect(second, 229);
+          expect(third, 246);
+          expect(fourth, 244);
+          expect(fifth, 122);
+          expect(sixth, 206);
+          expect(seventh, 164);
+          expect(eighth, 55);
+          expect(ninth, 173);
+          return 757;
+        }),
+        757,
+      );
     });
     test('iterable', () {
-      expect(tuple.iterable,
-          <dynamic>[209, 229, 246, 244, 122, 206, 164, 55, 173]);
+      expect(tuple.iterable, <dynamic>[
+        209,
+        229,
+        246,
+        244,
+        122,
+        206,
+        164,
+        55,
+        173,
+      ]);
     });
     test('toList', () {
-      expect(tuple.toList(),
-          <dynamic>[209, 229, 246, 244, 122, 206, 164, 55, 173]);
+      expect(tuple.toList(), <dynamic>[
+        209,
+        229,
+        246,
+        244,
+        122,
+        206,
+        164,
+        55,
+        173,
+      ]);
     });
     test('toSet', () {
-      expect(
-          tuple.toSet(), <dynamic>{209, 229, 246, 244, 122, 206, 164, 55, 173});
+      expect(tuple.toSet(), <dynamic>{
+        209,
+        229,
+        246,
+        244,
+        122,
+        206,
+        164,
+        55,
+        173,
+      });
     });
   });
 }

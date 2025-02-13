@@ -14,8 +14,10 @@ class GuttmanTree<T> extends RTree<T> {
   RTreeNode<T> chooseLeaf(RTreeEntry<T> entry) {
     var node = root;
     while (!node.isLeaf) {
-      final leastAreaEnlargement =
-          entryWithLeastAreaEnlargement(node.entries, entry.bounds);
+      final leastAreaEnlargement = entryWithLeastAreaEnlargement(
+        node.entries,
+        entry.bounds,
+      );
       node = leastAreaEnlargement.child!;
     }
     return node;
@@ -37,9 +39,11 @@ class GuttmanTree<T> extends RTree<T> {
       // If one group has so few entries that all the rest must be assigned to it in order for it to meet the
       // min_entries requirement, assign them and stop. (If both groups are underfull, then proceed with the
       // algorithm to determine the best group to extend.)
-      final group1Underfull = group1.length < minEntries &&
+      final group1Underfull =
+          group1.length < minEntries &&
           minEntries <= group1.length + entries.length;
-      final group2Underfull = group2.length < minEntries &&
+      final group2Underfull =
+          group2.length < minEntries &&
           minEntries <= group2.length + entries.length;
       if (group1Underfull && !group2Underfull) {
         group1.addAll(entries);
@@ -87,11 +91,13 @@ class GuttmanTree<T> extends RTree<T> {
   void adjustTree(RTreeNode<T> node, RTreeNode<T>? splitNode) {
     while (!node.isRoot) {
       final parent = node.parent!;
-      node.parentEntry!.bounds =
-          Bounds.unionAll(node.entries.map((entry) => entry.bounds));
+      node.parentEntry!.bounds = Bounds.unionAll(
+        node.entries.map((entry) => entry.bounds),
+      );
       if (splitNode != null) {
-        final bounds =
-            Bounds.unionAll(splitNode.entries.map((entry) => entry.bounds));
+        final bounds = Bounds.unionAll(
+          splitNode.entries.map((entry) => entry.bounds),
+        );
         final entry = RTreeEntry<T>(bounds, child: splitNode);
         parent.entries.add(entry);
         if (parent.entries.length > maxEntries) {
@@ -112,7 +118,8 @@ class GuttmanTree<T> extends RTree<T> {
     var maxWastedArea = double.negativeInfinity;
     for (final combination in entries.combinations(2)) {
       final combinedBounds = combination[0].bounds.union(combination[1].bounds);
-      final wastedArea = combinedBounds.area -
+      final wastedArea =
+          combinedBounds.area -
           combination[0].bounds.area -
           combination[1].bounds.area;
       if (wastedArea > maxWastedArea) {
@@ -123,8 +130,13 @@ class GuttmanTree<T> extends RTree<T> {
     return seeds;
   }
 
-  RTreeEntry<T> _pickNext(List<RTreeEntry<T>> entries, Bounds bounds1,
-      double area1, Bounds bounds2, double area2) {
+  RTreeEntry<T> _pickNext(
+    List<RTreeEntry<T>> entries,
+    Bounds bounds1,
+    double area1,
+    Bounds bounds2,
+    double area2,
+  ) {
     late RTreeEntry<T> result;
     var maxDiff = double.negativeInfinity;
     for (final entry in entries) {

@@ -42,7 +42,9 @@ extension CombinationsIterableExtension<E> on Iterable<E> {
 }
 
 Iterable<List<E>> combinationsWithRepetitions<E>(
-    List<E> elements, int count) sync* {
+  List<E> elements,
+  int count,
+) sync* {
   final indices = List.filled(count, 0);
   final current = List.filled(count, elements[0]);
   var hasMore = false;
@@ -64,7 +66,9 @@ Iterable<List<E>> combinationsWithRepetitions<E>(
 }
 
 Iterable<List<E>> combinationsWithoutRepetitions<E>(
-    List<E> elements, int count) sync* {
+  List<E> elements,
+  int count,
+) sync* {
   final indices = List.generate(count, (i) => i);
   final current = List.generate(count, (i) => elements[i]);
   var hasMore = false;

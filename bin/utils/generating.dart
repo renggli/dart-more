@@ -26,10 +26,11 @@ List<String> generateTypes(int i) => List.generate(i, (i) => 'T${i + 1}');
 List<String> generateArgs(int i) => List.generate(i, (i) => 'arg${i + 1}');
 
 /// Generate type and argument names.
-List<String> generateTypeAndArgs(int i) => [generateTypes(i), generateArgs(i)]
-    .zip()
-    .map((elements) => elements.join(' '))
-    .toList();
+List<String> generateTypeAndArgs(int i) =>
+    [
+      generateTypes(i),
+      generateArgs(i),
+    ].zip().map((elements) => elements.join(' ')).toList();
 
 /// Creates an argument list from types or variables.
 String listify(Iterable<String> values) => values.join(', ');
@@ -46,8 +47,9 @@ String recordify(Iterable<String> values) =>
 String capitalize(String value) => value.toUpperCaseFirstCharacter();
 
 /// Converts a label with separators into a camel-case name.
-String namify(String value) => value
-    .split(RegExp(r'[ /_-]'))
-    .map((each) => each.toLowerCase().toUpperCaseFirstCharacter())
-    .join()
-    .toLowerCaseFirstCharacter();
+String namify(String value) =>
+    value
+        .split(RegExp(r'[ /_-]'))
+        .map((each) => each.toLowerCase().toUpperCaseFirstCharacter())
+        .join()
+        .toLowerCaseFirstCharacter();

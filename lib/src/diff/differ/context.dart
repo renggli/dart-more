@@ -20,8 +20,11 @@ class ContextDiffer extends Differ {
 
   @override
   Iterable<String> compareLines(
-      Iterable<String> source, Iterable<String> target,
-      {String? sourceLabel, String? targetLabel}) sync* {
+    Iterable<String> source,
+    Iterable<String> target, {
+    String? sourceLabel,
+    String? targetLabel,
+  }) sync* {
     if (sourceLabel != null) yield '*** $sourceLabel';
     if (targetLabel != null) yield '--- $targetLabel';
     final matcher = SequenceMatcher(source: source, target: target);
@@ -29,9 +32,11 @@ class ContextDiffer extends Differ {
       yield '***************';
       final sourceRange = _range(group.first.sourceStart, group.last.sourceEnd);
       yield '*** $sourceRange ****';
-      if (group.any((operation) =>
-          operation.type == OperationType.replace ||
-          operation.type == OperationType.delete)) {
+      if (group.any(
+        (operation) =>
+            operation.type == OperationType.replace ||
+            operation.type == OperationType.delete,
+      )) {
         for (final operation in group) {
           for (var s = operation.sourceStart; s < operation.sourceEnd; s++) {
             switch (operation.type) {
@@ -49,9 +54,11 @@ class ContextDiffer extends Differ {
       }
       final targetRange = _range(group.first.targetStart, group.last.targetEnd);
       yield '--- $targetRange ----';
-      if (group.any((operation) =>
-          operation.type == OperationType.replace ||
-          operation.type == OperationType.insert)) {
+      if (group.any(
+        (operation) =>
+            operation.type == OperationType.replace ||
+            operation.type == OperationType.insert,
+      )) {
         for (final operation in group) {
           for (var t = operation.targetStart; t < operation.targetEnd; t++) {
             switch (operation.type) {

@@ -6,7 +6,10 @@ extension Tuple5<T1, T2, T3, T4, T5> on (T1, T2, T3, T4, T5) {
   static (T, T, T, T, T) fromList<T>(List<T> list) {
     if (list.length != 5) {
       throw ArgumentError.value(
-          list, 'list', 'Expected list of length 5, but got ${list.length}');
+        list,
+        'list',
+        'Expected list of length 5, but got ${list.length}',
+      );
     }
     return (list[0], list[1], list[2], list[3], list[4]);
   }
@@ -91,9 +94,8 @@ extension Tuple5<T1, T2, T3, T4, T5> on (T1, T2, T3, T4, T5) {
 
   /// Applies the values of this tuple to an 5-ary function.
   R map<R>(
-          R Function(T1 first, T2 second, T3 third, T4 fourth, T5 fifth)
-              callback) =>
-      callback($1, $2, $3, $4, $5);
+    R Function(T1 first, T2 second, T3 third, T4 fourth, T5 fifth) callback,
+  ) => callback($1, $2, $3, $4, $5);
 
   /// An (untyped) [Iterable] over the values of this tuple.
   Iterable<dynamic> get iterable => toList();

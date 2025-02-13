@@ -36,7 +36,8 @@ abstract class Multimap<K, V, VS extends Iterable<V>> {
 
   /// The entries of this multimap.
   Iterable<MapEntry<K, V>> get entries => _map.entries.expand(
-      (entry) => entry.value.map((value) => MapEntry(entry.key, value)));
+    (entry) => entry.value.map((value) => MapEntry(entry.key, value)),
+  );
 
   /// Applies [callback] to each key/value of this multimap.
   void forEach(void Function(K key, V value) callback) {
@@ -77,19 +78,22 @@ abstract class Multimap<K, V, VS extends Iterable<V>> {
   void remove(K key, V value) => lookupValues(key).polymorphicRemove(value);
 
   /// Removes associations from [key] to each of [values].
-  void removeAll(K key, [Iterable<V>? values]) => values == null
-      ? lookupValues(key).polymorphicClear()
-      : lookupValues(key).polymorphicRemoveAll(values);
+  void removeAll(K key, [Iterable<V>? values]) =>
+      values == null
+          ? lookupValues(key).polymorphicClear()
+          : lookupValues(key).polymorphicRemoveAll(values);
 
   /// Replaces the [key] with a single [value].
-  void replace(K key, V value) => lookupValues(key)
-    ..polymorphicClear()
-    ..polymorphicAdd(value);
+  void replace(K key, V value) =>
+      lookupValues(key)
+        ..polymorphicClear()
+        ..polymorphicAdd(value);
 
   /// Replaces the [key] with each of the [values].
-  void replaceAll(K key, Iterable<V> values) => lookupValues(key)
-    ..polymorphicClear()
-    ..polymorphicAddAll(values);
+  void replaceAll(K key, Iterable<V> values) =>
+      lookupValues(key)
+        ..polymorphicClear()
+        ..polymorphicAddAll(values);
 
   /// Removes all values from this multimap.
   void clear() {
@@ -112,14 +116,14 @@ abstract class Multimap<K, V, VS extends Iterable<V>> {
 
 // Internal callback to update the data of a multimap. Receives the current
 // [map] and total [length], returns the change in length.
-typedef UpdateCallback<K, V, VS extends Iterable<V>> = int Function(
-    Map<K, VS> map, int length);
+typedef UpdateCallback<K, V, VS extends Iterable<V>> =
+    int Function(Map<K, VS> map, int length);
 
 // Internal wrapper around the values at a specific key of a [Multimap].
 abstract class MultimapValues<K, V, VS extends Iterable<V>>
     with IterableMixin<V> {
   MultimapValues(this.multimap, this.key)
-      : delegate = multimap._map[key] ?? multimap._factory();
+    : delegate = multimap._map[key] ?? multimap._factory();
 
   @protected
   final Multimap<K, V, VS> multimap;
@@ -225,7 +229,10 @@ void fillFromIterable<K, V, VS extends Iterable<V>, E>(
 
 // Internal helper to populate a [multimap] from [keys] and [values].
 void fillFromIterables<K, V, VS extends Iterable<V>>(
-    Multimap<K, V, VS> multimap, Iterable<K> keys, Iterable<V> values) {
+  Multimap<K, V, VS> multimap,
+  Iterable<K> keys,
+  Iterable<V> values,
+) {
   final keyIterator = keys.iterator;
   final valueIterator = values.iterator;
   var moreKeys = keyIterator.moveNext();
@@ -242,7 +249,9 @@ void fillFromIterables<K, V, VS extends Iterable<V>>(
 
 // Internal helper to populate a [multimap] from an [Iterable] of entries.
 void fillFromEntries<K, V, VS extends Iterable<V>>(
-    Multimap<K, V, VS> multimap, Iterable<MapEntry<K, V>> entries) {
+  Multimap<K, V, VS> multimap,
+  Iterable<MapEntry<K, V>> entries,
+) {
   for (final MapEntry(:key, :value) in entries) {
     multimap.add(key, value);
   }

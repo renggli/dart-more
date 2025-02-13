@@ -39,7 +39,9 @@ void main() {
   });
   test('maxSafeInteger', () {
     expect(maxSafeInteger, greaterThan(0xfffffffffff));
-    expect(maxSafeInteger,
-        (BigInt.two.pow(safeIntegerBits - 1) - BigInt.one).toInt());
+    expect(
+      maxSafeInteger,
+      (BigInt.two.pow(safeIntegerBits - 1) - BigInt.one).toInt(),
+    );
   });
 }

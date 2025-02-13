@@ -51,31 +51,32 @@ final class IntegerRange extends Range<int> {
   /// between [start] (inclusive) and [end] (exclusive); and a step-value
   /// [step].
   const IntegerRange.of({int start = 0, int end = 0, int? step})
-      : this._of1(start, end, step ?? (start <= end ? 1 : -1));
+    : this._of1(start, end, step ?? (start <= end ? 1 : -1));
 
   const IntegerRange._of1(int start, int end, int step)
-      : this._(
-            start,
-            end,
-            step,
-            0 < step && start < end
-                ? 1 + (end - start - 1) ~/ step
-                : 0 > step && start > end
-                    ? 1 + (start - end - 1) ~/ -step
-                    : 0);
+    : this._(
+        start,
+        end,
+        step,
+        0 < step && start < end
+            ? 1 + (end - start - 1) ~/ step
+            : 0 > step && start > end
+            ? 1 + (start - end - 1) ~/ -step
+            : 0,
+      );
 
   /// Const constructor to create an arithmetic progression of [int] values.
   /// The resulting [Range] is of the given [length], starts at [start], and
   /// uses the step-value [step].
   const IntegerRange.length(int length, {int start = 0, int step = 1})
-      : this._(start, start + length * step, step, length);
+    : this._(start, start + length * step, step, length);
 
   // Internal const-constructor that initializes the state.
   const IntegerRange._(this.start, this.end, this.step, this.length)
-      : assert(step != 0, '`step` must not be zero'),
-        assert(step < 0 || start <= end, '`step` must be positive'),
-        assert(step > 0 || start >= end, '`step` must be negative'),
-        assert(0 <= length, '`length` must be positive');
+    : assert(step != 0, '`step` must not be zero'),
+      assert(step < 0 || start <= end, '`step` must be positive'),
+      assert(step > 0 || start >= end, '`step` must be negative'),
+      assert(0 <= length, '`length` must be positive');
 
   @override
   final int start;
@@ -118,8 +119,12 @@ final class IntegerRange extends Range<int> {
   // ignore: avoid_renaming_method_parameters
   IntegerRange getRange(int startIndex, int endIndex) {
     RangeError.checkValidRange(startIndex, endIndex, length);
-    return IntegerRange._(start + startIndex * step, start + endIndex * step,
-        step, endIndex - startIndex);
+    return IntegerRange._(
+      start + startIndex * step,
+      start + endIndex * step,
+      step,
+      endIndex - startIndex,
+    );
   }
 }
 
@@ -144,7 +149,8 @@ extension IndicesIterableExtension on Iterable<Object?> {
   /// final input = ['a', 'b', 'c'];
   /// print(input.indices(step: 2));  // [0, 2]
   /// ```
-  Range<int> indices({int step = 1}) => step > 0
-      ? IntegerRange.of(start: 0, end: length, step: step)
-      : IntegerRange.of(start: length - 1, end: -1, step: step);
+  Range<int> indices({int step = 1}) =>
+      step > 0
+          ? IntegerRange.of(start: 0, end: length, step: step)
+          : IntegerRange.of(start: length - 1, end: -1, step: step);
 }

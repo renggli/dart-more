@@ -21,10 +21,8 @@ class Complex implements CloseTo<Complex> {
   const factory Complex.fromCartesian(num a, num b) = Complex;
 
   /// Creates a complex number from polar coordinates [radius] and [phase].
-  factory Complex.fromPolar(num radius, num phase) => Complex(
-        radius * phase.cos(),
-        radius * phase.sin(),
-      );
+  factory Complex.fromPolar(num radius, num phase) =>
+      Complex(radius * phase.cos(), radius * phase.sin());
 
   /// The neutral additive element, that is `0`.
   static const Complex zero = Complex(0);
@@ -43,10 +41,11 @@ class Complex implements CloseTo<Complex> {
 
   /// Parses [source] as a [Complex]. Returns `null` in case of a problem.
   static Complex? tryParse(String source) {
-    final parts = numberAndUnitExtractor
-        .allMatches(source.replaceAll(' ', ''))
-        .where((match) => match.start < match.end)
-        .toList();
+    final parts =
+        numberAndUnitExtractor
+            .allMatches(source.replaceAll(' ', ''))
+            .where((match) => match.start < match.end)
+            .toList();
     if (parts.isEmpty) {
       return null;
     }
@@ -167,10 +166,7 @@ class Complex implements CloseTo<Complex> {
   /// Computes the exponential function of this complex number.
   Complex exp() {
     final exp = a.exp();
-    return Complex(
-      exp * b.cos(),
-      exp * b.sin(),
-    );
+    return Complex(exp * b.cos(), exp * b.sin());
   }
 
   /// Computes the natural logarithm of this complex number.
@@ -283,5 +279,7 @@ class Complex implements CloseTo<Complex> {
   String toString() => 'Complex($a, $b)';
 }
 
-final RegExp numberAndUnitExtractor =
-    RegExp(r'([+-]?\d*(\.\d+)?(e[+-]?\d+)?)\*?(\w?)', caseSensitive: false);
+final RegExp numberAndUnitExtractor = RegExp(
+  r'([+-]?\d*(\.\d+)?(e[+-]?\d+)?)\*?(\w?)',
+  caseSensitive: false,
+);

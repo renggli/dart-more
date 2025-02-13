@@ -14,8 +14,10 @@ extension MinMaxComparator<T> on Comparator<T> {
       orElse != null && iterable.isEmpty ? orElse() : iterable.reduce(max);
 
   /// Returns a tuple with the minimum and maximum of the provided [iterable].
-  ({T min, T max}) minMaxOf(Iterable<T> iterable,
-      {({T min, T max}) Function()? orElse}) {
+  ({T min, T max}) minMaxOf(
+    Iterable<T> iterable, {
+    ({T min, T max}) Function()? orElse,
+  }) {
     final iterator = iterable.iterator;
     if (iterator.moveNext()) {
       var minValue = iterator.current;

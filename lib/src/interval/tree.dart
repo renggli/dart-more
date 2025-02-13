@@ -11,16 +11,19 @@ import 'interval.dart';
 @immutable
 class IntervalTree<K extends Comparable<K>, V> with Iterable<V> {
   /// Creates an [IntervalTree] from an [Iterable] of [intervals].
-  static IntervalTree<K, Interval<K>> fromIntervals<K extends Comparable<K>>(
-          [Iterable<Interval<K>> intervals = const []]) =>
-      fromValues<K, Interval<K>>(intervals, _identityGetter<K>);
+  static IntervalTree<K, Interval<K>> fromIntervals<K extends Comparable<K>>([
+    Iterable<Interval<K>> intervals = const [],
+  ]) => fromValues<K, Interval<K>>(intervals, _identityGetter<K>);
 
   /// Creates an [IntervalTree] form an [Iterable] of [values] and a [getter]
   /// function that returns the associated [Interval].
   static IntervalTree<K, V> fromValues<K extends Comparable<K>, V>(
-          Iterable<V> values, Interval<K> Function(V value) getter) =>
-      IntervalTree<K, V>._(
-          _IntervalTreeNode.fromValues(values, getter), getter);
+    Iterable<V> values,
+    Interval<K> Function(V value) getter,
+  ) => IntervalTree<K, V>._(
+    _IntervalTreeNode.fromValues(values, getter),
+    getter,
+  );
 
   /// Internal constructor of the [IntervalTree].
   const IntervalTree._(this._root, this.getter);
@@ -123,7 +126,9 @@ final class _IntervalTreeIterator<K extends Comparable<K>, V>
 @immutable
 final class _IntervalTreeNode<K extends Comparable<K>, V> {
   static _IntervalTreeNode<K, V>? fromValues<K extends Comparable<K>, V>(
-      Iterable<V> values, Interval<K> Function(V value) getter) {
+    Iterable<V> values,
+    Interval<K> Function(V value) getter,
+  ) {
     if (values.isEmpty) return null;
     final endpoints = <K>[];
     for (final value in values) {
@@ -148,12 +153,22 @@ final class _IntervalTreeNode<K extends Comparable<K>, V> {
     }
     leftValues.sort((a, b) => getter(a).lower.compareTo(getter(b).lower));
     rightValues.sort((a, b) => getter(b).upper.compareTo(getter(a).upper));
-    return _IntervalTreeNode<K, V>(fromValues(leftNode, getter), leftValues,
-        median, rightValues, fromValues(rightNode, getter));
+    return _IntervalTreeNode<K, V>(
+      fromValues(leftNode, getter),
+      leftValues,
+      median,
+      rightValues,
+      fromValues(rightNode, getter),
+    );
   }
 
-  const _IntervalTreeNode(this._leftNode, this._leftValues, this._median,
-      this._rightValues, this._rightNode);
+  const _IntervalTreeNode(
+    this._leftNode,
+    this._leftValues,
+    this._median,
+    this._rightValues,
+    this._rightNode,
+  );
 
   /// All nodes smaller than the median point, or `null`.
   final _IntervalTreeNode<K, V>? _leftNode;

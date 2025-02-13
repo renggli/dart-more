@@ -27,17 +27,17 @@ typedef Callback5<T1, T2, T3, T4, T5> = Map5<T1, T2, T3, T4, T5, void>;
 typedef Callback6<T1, T2, T3, T4, T5, T6> = Map6<T1, T2, T3, T4, T5, T6, void>;
 
 /// Callback function type with 7 positional arguments.
-typedef Callback7<T1, T2, T3, T4, T5, T6, T7>
-    = Map7<T1, T2, T3, T4, T5, T6, T7, void>;
+typedef Callback7<T1, T2, T3, T4, T5, T6, T7> =
+    Map7<T1, T2, T3, T4, T5, T6, T7, void>;
 
 /// Callback function type with 8 positional arguments.
-typedef Callback8<T1, T2, T3, T4, T5, T6, T7, T8>
-    = Map8<T1, T2, T3, T4, T5, T6, T7, T8, void>;
+typedef Callback8<T1, T2, T3, T4, T5, T6, T7, T8> =
+    Map8<T1, T2, T3, T4, T5, T6, T7, T8, void>;
 
 /// Callback function type with 9 positional arguments.
-typedef Callback9<T1, T2, T3, T4, T5, T6, T7, T8, T9>
-    = Map9<T1, T2, T3, T4, T5, T6, T7, T8, T9, void>;
+typedef Callback9<T1, T2, T3, T4, T5, T6, T7, T8, T9> =
+    Map9<T1, T2, T3, T4, T5, T6, T7, T8, T9, void>;
 
 /// Callback function type with 10 positional arguments.
-typedef Callback10<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10>
-    = Map10<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, void>;
+typedef Callback10<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10> =
+    Map10<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, void>;

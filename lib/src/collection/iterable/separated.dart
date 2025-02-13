@@ -15,8 +15,11 @@ extension SeparatedIterableExtension<E> on Iterable<E> {
   /// print(input.separateBy(() => 0, before: () => -1));  // [-1, 1, 0, 2, 0, 3]
   /// print(input.separateBy(() => 0, after: () => -1));  // [1, 0, 2, 0, 3, -1]
   /// ```
-  Iterable<E> separatedBy(Builder<E> separator,
-      {Builder<E>? before, Builder<E>? after}) sync* {
+  Iterable<E> separatedBy(
+    Builder<E> separator, {
+    Builder<E>? before,
+    Builder<E>? after,
+  }) sync* {
     var index = 0;
     for (final iterator = this.iterator; iterator.moveNext(); index++) {
       if (index == 0 && before != null) yield before();
