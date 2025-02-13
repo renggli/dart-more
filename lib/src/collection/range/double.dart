@@ -106,6 +106,7 @@ final class DoubleRange extends Range<double> {
   double getUnchecked(int index) => start + step * index;
 
   @override
+  // ignore: avoid_renaming_method_parameters
   int indexOf(Object? element, [int startIndex = 0]) {
     if (element is double) {
       if (startIndex < 0) startIndex = 0;
@@ -125,6 +126,7 @@ final class DoubleRange extends Range<double> {
       DoubleRange._(start + (length - 1) * step, start - step, -step, length);
 
   @override
+  // ignore: avoid_renaming_method_parameters
   DoubleRange getRange(int startIndex, int endIndex) {
     RangeError.checkValidRange(startIndex, endIndex, length);
     return DoubleRange._(start + startIndex * step, start + endIndex * step,

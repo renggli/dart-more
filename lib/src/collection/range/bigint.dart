@@ -107,6 +107,7 @@ final class BigIntRange extends Range<BigInt> {
   BigInt getUnchecked(int index) => start + step * BigInt.from(index);
 
   @override
+  // ignore: avoid_renaming_method_parameters
   int indexOf(Object? element, [int startIndex = 0]) {
     if (element is BigInt) {
       if (startIndex < 0) startIndex = 0;
@@ -128,6 +129,7 @@ final class BigIntRange extends Range<BigInt> {
       start + BigInt.from(length - 1) * step, start - step, -step, length);
 
   @override
+  // ignore: avoid_renaming_method_parameters
   BigIntRange getRange(int startIndex, int endIndex) {
     RangeError.checkValidRange(startIndex, endIndex, length);
     return BigIntRange._(start + BigInt.from(startIndex) * step,

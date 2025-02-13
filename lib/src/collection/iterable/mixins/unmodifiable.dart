@@ -30,16 +30,16 @@ mixin UnmodifiableListMixin<E> on List<E> {
   void clear() => _throw();
 
   @override
-  E insert(int index, E value) => _throw();
+  E insert(int index, E element) => _throw();
 
   @override
-  void insertAll(int at, Iterable<E> iterable) => _throw();
+  void insertAll(int index, Iterable<E> iterable) => _throw();
 
   @override
-  void setAll(int at, Iterable<E> iterable) => _throw();
+  void setAll(int index, Iterable<E> iterable) => _throw();
 
   @override
-  bool remove(Object? element) => _throw();
+  bool remove(Object? value) => _throw();
 
   @override
   E removeAt(int index) => _throw();
@@ -65,7 +65,7 @@ mixin UnmodifiableListMixin<E> on List<E> {
   void fillRange(int start, int end, [E? fillValue]) => _throw();
 
   @override
-  void replaceRange(int start, int end, Iterable<E> iterable) => _throw();
+  void replaceRange(int start, int end, Iterable<E> replacements) => _throw();
 }
 
 Never _throw() => throw UnsupportedError('Cannot modify an unmodifiable list');

@@ -93,6 +93,7 @@ final class IntegerRange extends Range<int> {
   int getUnchecked(int index) => start + step * index;
 
   @override
+  // ignore: avoid_renaming_method_parameters
   int indexOf(Object? element, [int startIndex = 0]) {
     if (element is int) {
       if (startIndex < 0) startIndex = 0;
@@ -114,6 +115,7 @@ final class IntegerRange extends Range<int> {
       IntegerRange._(start + (length - 1) * step, start - step, -step, length);
 
   @override
+  // ignore: avoid_renaming_method_parameters
   IntegerRange getRange(int startIndex, int endIndex) {
     RangeError.checkValidRange(startIndex, endIndex, length);
     return IntegerRange._(start + startIndex * step, start + endIndex * step,
