@@ -5,7 +5,7 @@ import 'package:more/printer.dart';
 
 /// Pretty prints and cleans up a Dart file.
 Future<void> format(File file) async =>
-    Process.run('dart', ['format', '--fix', file.absolute.path]);
+    Process.run('dart', ['format', file.absolute.path]);
 
 /// Prints a warning at the top of generated files.
 void generateWarning(StringSink out) {
