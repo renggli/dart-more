@@ -23,9 +23,9 @@ typedef UnicodeData =
       int? digitValue,
       Fraction? numericValue,
       bool? mirrored,
-      int? uppercaseMapping,
-      int? lowercaseMapping,
-      int? tilecaseMapping,
+      int? upperCaseMapping,
+      int? lowerCaseMapping,
+      int? titleCaseMapping,
     });
 
 /// URLs of the unicode data.
@@ -49,14 +49,7 @@ final unicodeBidiClassListUrl = Uri.parse(
 final Future<List<UnicodeData>> unicodeData = _getUnicodeData();
 
 Future<List<UnicodeData>> _getUnicodeData() async {
-  final request = await HttpClient().getUrl(unicodeDataUrl);
-  final response = await request.close();
-  final lines =
-      await response
-          .transform(utf8.decoder)
-          .transform(const LineSplitter())
-          .map((line) => line.split(';'))
-          .toList();
+  final lines = await getLineData(unicodeDataUrl);
   final result = <UnicodeData>[];
   for (var i = 0; i < lines.length;) {
     final start = int.parse(lines[i][0], radix: 16);
@@ -94,9 +87,9 @@ UnicodeData _createParts(int codePoint, List<String> parts) => (
   digitValue: int.tryParse(parts[7]),
   numericValue: Fraction.tryParse(parts[8]),
   mirrored: parts[9] == 'Y',
-  uppercaseMapping: int.tryParse(parts[12], radix: 16),
-  lowercaseMapping: int.tryParse(parts[13], radix: 16),
-  tilecaseMapping: int.tryParse(parts[14], radix: 16),
+  upperCaseMapping: int.tryParse(parts[12], radix: 16),
+  lowerCaseMapping: int.tryParse(parts[13], radix: 16),
+  titleCaseMapping: int.tryParse(parts[14], radix: 16),
 );
 
 UnicodeData _createEmpty(int codePoint) => (
@@ -110,14 +103,32 @@ UnicodeData _createEmpty(int codePoint) => (
   digitValue: null,
   numericValue: null,
   mirrored: null,
-  uppercaseMapping: null,
-  lowercaseMapping: null,
-  tilecaseMapping: null,
+  upperCaseMapping: null,
+  lowerCaseMapping: null,
+  titleCaseMapping: null,
 );
 
 /// Reads a Unicode file of the form `START[..STOP] ; NAME` into a
 /// [ListMultimap] with `NAME` as key to its values.
 Future<ListMultimap<String, (int, int)>> getPropertyData(Uri uri) async {
+  final lines = await getLineData(uri);
+  return lines.fold<ListMultimap<String, (int, int)>>(
+    ListMultimap<String, (int, int)>(),
+    (result, line) {
+      final range =
+          line[0]
+              .split('..')
+              .map((each) => int.parse(each, radix: 16))
+              .toList();
+      result.add(line[1], (range.first, range.last));
+      return result;
+    },
+  );
+}
+
+/// Reads a unicode file into a list of lines with its values. Removes comments
+/// and empty lines.
+Future<List<List<String>>> getLineData(Uri uri) async {
   final request = await HttpClient().getUrl(uri);
   final response = await request.close();
   return response
@@ -125,18 +136,6 @@ Future<ListMultimap<String, (int, int)>> getPropertyData(Uri uri) async {
       .transform(const LineSplitter())
       .map((line) => line.takeTo('#').trim())
       .where((line) => line.isNotEmpty)
-      .fold<ListMultimap<String, (int, int)>>(
-        ListMultimap<String, (int, int)>(),
-        (result, line) {
-          final [values, name] =
-              line.split(';').map((each) => each.trim()).toList();
-          final range =
-              values
-                  .split('..')
-                  .map((each) => int.parse(each, radix: 16))
-                  .toList();
-          result.add(name, (range.first, range.last));
-          return result;
-        },
-      );
+      .map((line) => line.split(';').map((value) => value.trim()).toList())
+      .toList();
 }

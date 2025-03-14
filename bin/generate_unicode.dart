@@ -7,6 +7,12 @@ import 'package:more/src/shared/rle.dart';
 import 'utils/generating.dart';
 import 'utils/unicode.dart';
 
+void writeIntList(IOSink out, String name, List<int> values) {
+  out.writeln('const $name = [');
+  out.writeln(encodeRle(values).join(', ').wrap(78).indent('  '));
+  out.writeln('];');
+}
+
 Future<void> generatePropertyData(String name, Uri url) async {
   final file = File('lib/src/char_matcher/unicode/$name.dart');
   final data = await getPropertyData(url);
@@ -20,7 +26,9 @@ Future<void> generatePropertyData(String name, Uri url) async {
   final values = List.filled(unicodeMaxCodePoint + 1, 0);
   for (final MapEntry(:key, value: ranges) in data.asMap().entries) {
     if (index > 0xffffffff) {
-      writeList(out, 'data${listIndex++}', values);
+      out.writeln();
+      writeIntList(out, 'data${listIndex++}', values);
+      out.writeln();
       values.fillRange(0, values.length, 0);
       index = 1;
     }
@@ -34,18 +42,16 @@ Future<void> generatePropertyData(String name, Uri url) async {
   }
 
   out.writeln();
-  writeList(out, listIndex > 1 ? 'data$listIndex' : 'data', values);
+  writeIntList(out, listIndex > 1 ? 'data$listIndex' : 'data', values);
 
   await out.close();
   await format(file);
 }
 
 void writeList(IOSink out, String name, List<int> values) {
-  out.writeln();
   out.writeln('const $name = [');
   out.writeln(encodeRle(values).join(', ').wrap(78).indent('  '));
   out.writeln('];');
-  out.writeln();
 }
 
 Future<void> generateUnicodeBlocks() async {

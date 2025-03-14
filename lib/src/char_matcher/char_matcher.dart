@@ -166,7 +166,6 @@ abstract class CharMatcher with ToStringPrinter implements Pattern {
   /// (inclusive). Returns `-1` if it could not be found.
   int firstIndexIn(String sequence, [int start = 0]) {
     if (_insideSplitSurrogate(sequence, start)) start++;
-
     final iterator = _runeIteratorAt(sequence, start);
     while (iterator.moveNext()) {
       if (match(iterator.current)) {
@@ -181,7 +180,6 @@ abstract class CharMatcher with ToStringPrinter implements Pattern {
   int lastIndexIn(String sequence, [int? start]) {
     var index = start == null ? sequence.length : start + 1;
     if (_insideSplitSurrogate(sequence, index)) index--;
-
     final iterator = _runeIteratorAt(sequence, index);
     while (iterator.movePrevious()) {
       if (match(iterator.current)) {
@@ -266,7 +264,6 @@ abstract class CharMatcher with ToStringPrinter implements Pattern {
   @override
   Match? matchAsPrefix(String sequence, [int start = 0]) {
     if (_insideSplitSurrogate(sequence, start)) return null;
-
     final iterator = _runeIteratorAt(sequence, start);
     if (iterator.moveNext() && match(iterator.current)) {
       final start = iterator.rawIndex;
