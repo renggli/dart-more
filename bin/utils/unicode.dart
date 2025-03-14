@@ -140,19 +140,3 @@ Future<ListMultimap<String, (int, int)>> getPropertyData(Uri uri) async {
         },
       );
 }
-
-/// Encodes a list of integers using run-length encoding. A negative number
-/// means the next number is repeated that amount of times.
-List<int> rle(List<int> values) {
-  final result = <int>[];
-  for (var i = 0; i < values.length;) {
-    var count = 1;
-    while (i + count < values.length && values[i] == values[i + count]) {
-      count++;
-    }
-    if (count > 1) result.add(-count);
-    result.add(values[i]);
-    i += count;
-  }
-  return result;
-}

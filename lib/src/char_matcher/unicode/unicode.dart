@@ -1,5 +1,4 @@
-import 'dart:typed_data';
-
+import '../../shared/rle.dart';
 import '../char_matcher.dart';
 import 'bidi_class.dart' as bidi_class;
 import 'category.dart' as category;
@@ -9,7 +8,7 @@ import 'property.dart' as property;
 /// categories and properties.
 final class UnicodeCharMatcher extends CharMatcher {
   const UnicodeCharMatcher(this.data, this.mask)
-    : assert(data.length == _unicodeCharCount),
+    : assert(data.length == 0x10ffff + 1),
       assert(mask <= 0xffffffff);
 
   /// General Category
@@ -377,21 +376,7 @@ final class UnicodeCharMatcher extends CharMatcher {
   bool match(int value) => data[value] & mask != 0;
 }
 
-const _unicodeCharCount = 0x10ffff + 1;
-final _categoryData = _decode(category.data);
-final _propertyData1 = _decode(property.data1);
-final _propertyData2 = _decode(property.data2);
-final _bidiClassData = _decode(bidi_class.data);
-
-List<int> _decode(List<int> input) {
-  final output = Int32List(_unicodeCharCount);
-  for (var i = 0, o = 0; o < output.length;) {
-    final i1 = input[i++];
-    if (i1 < 0) {
-      output.fillRange(o, o -= i1, input[i++]);
-    } else {
-      output[o++] = i1;
-    }
-  }
-  return output;
-}
+final _categoryData = decodeRle(category.data);
+final _propertyData1 = decodeRle(property.data1);
+final _propertyData2 = decodeRle(property.data2);
+final _bidiClassData = decodeRle(bidi_class.data);

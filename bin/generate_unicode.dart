@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:more/collection.dart';
 import 'package:more/more.dart';
+import 'package:more/src/shared/rle.dart';
 
 import 'utils/generating.dart';
 import 'utils/unicode.dart';
@@ -42,7 +43,7 @@ Future<void> generatePropertyData(String name, Uri url) async {
 void writeList(IOSink out, String name, List<int> values) {
   out.writeln();
   out.writeln('const $name = [');
-  out.writeln(rle(values).join(', ').wrap(78).indent('  '));
+  out.writeln(encodeRle(values).join(', ').wrap(78).indent('  '));
   out.writeln('];');
   out.writeln();
 }

@@ -36,6 +36,7 @@ const idCompatMathStart = 0x40000000;
 const sentenceTerminal = 0x80000000;
 
 const data1 = [
+  1114112,
   -9,
   0,
   -5,
@@ -2897,6 +2898,7 @@ const regionalIndicator = 0x10;
 const modifierCombiningMark = 0x20;
 
 const data2 = [
+  1114112,
   -9,
   0,
   -5,
