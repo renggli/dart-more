@@ -9,7 +9,7 @@ import 'utils/unicode.dart';
 
 void writeIntList(IOSink out, String name, List<int> values) {
   out.writeln('const $name = [');
-  out.writeln(encodeRle(values).join(', ').wrap(78).indent('  '));
+  out.writeln(encodeRle(values).join(',\n'));
   out.writeln('];');
 }
 
@@ -46,12 +46,6 @@ Future<void> generatePropertyData(String name, Uri url) async {
 
   await out.close();
   await format(file);
-}
-
-void writeList(IOSink out, String name, List<int> values) {
-  out.writeln('const $name = [');
-  out.writeln(encodeRle(values).join(', ').wrap(78).indent('  '));
-  out.writeln('];');
 }
 
 Future<void> generateUnicodeBlocks() async {
