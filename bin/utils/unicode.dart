@@ -38,6 +38,12 @@ final unicodePropertyListUrl = Uri.parse(
 final unicodeBlocksUrl = Uri.parse(
   'https://www.unicode.org/Public/$unicodeVersion/ucd/Blocks.txt',
 );
+final compositionExclusionsUrl = Uri.parse(
+  'https://www.unicode.org/Public/$unicodeVersion/ucd/CompositionExclusions.txt',
+);
+final normalizationTestUrl = Uri.parse(
+  'https://www.unicode.org/Public/$unicodeVersion/ucd/NormalizationTest.txt',
+);
 final unicodeCategoryListUrl = Uri.parse(
   'https://www.unicode.org/Public/$unicodeVersion/ucd/extracted/DerivedGeneralCategory.txt',
 );
@@ -46,7 +52,7 @@ final unicodeBidiClassListUrl = Uri.parse(
 );
 
 /// Reads the unicode database.
-final Future<List<UnicodeData>> unicodeData = _getUnicodeData();
+final Future<List<UnicodeData>> unicodeDataFuture = _getUnicodeData();
 
 Future<List<UnicodeData>> _getUnicodeData() async {
   final lines = await getLineData(unicodeDataUrl);

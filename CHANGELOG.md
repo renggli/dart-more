@@ -2,6 +2,7 @@
 
 ## 4.6.0 (Unpublished)
 - Dart 3.7 requirement.
+- Unicode string normalization.
 
 ## 4.5.0
 - Add `occurences` helper to `Iterable`and `SortedList`.
