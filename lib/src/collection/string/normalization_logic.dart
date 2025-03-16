@@ -1,4 +1,4 @@
-// Based on the MIT Licensed code of Marc Lodewijck:
+// Based on the of Marc Lodewijck licensed under MIT Licensed:
 // https://github.com/mlodewijck/pyunormalize
 
 import 'package:collection/collection.dart';
@@ -118,7 +118,17 @@ List<int> compose(List<int> codePoints) {
       }
     }
   }
-  return codePoints.where((each) => each != -1).toList();
+  var target = 0;
+  for (var source = 0; source < codePoints.length; source++) {
+    if (codePoints[source] != -1) {
+      if (source != target) {
+        codePoints[target] = codePoints[source];
+        codePoints[source] = -1;
+      }
+      target++;
+    }
+  }
+  return codePoints.sublist(0, target);
 }
 
 // Perform Hangul syllable composition algorithm to derive the mapping

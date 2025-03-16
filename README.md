@@ -15,7 +15,7 @@ A collection of extensively tested extensions that make Dart a better place:
 |--------------------------------------------------------------------------------------------------|:-------------------------------------------------------------------|
 | [async](https://pub.dev/documentation/more/latest/async/async-library.html)                      | Extensions to `Stream`.                                            | 
 | [cache](https://pub.dev/documentation/more/latest/cache/cache-library.html)                      | Caching strategies and their expiry policy.                        |
-| [char_matcher](https://pub.dev/documentation/more/latest/char_matcher/char_matcher-library.html) |  Character classes, their composition, and operations on strings.  |
+| [char_matcher](https://pub.dev/documentation/more/latest/char_matcher/char_matcher-library.html) | Character classes, their composition, and operations on strings.   |
 | [collection](https://pub.dev/documentation/more/latest/collection/collection-library.html)       | Extensions to `Iterable` and new collection types.                 |
 | [comparator](https://pub.dev/documentation/more/latest/comparator/comparator-library.html)       | Common comparators, and extensions to perform advanced operations. | 
 | [diff](https://pub.dev/documentation/more/latest/comparator/diff-library.html)                   | Tools for comparing lists.                                         | 
