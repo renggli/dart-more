@@ -5411,129 +5411,243 @@ void main() {
     });
   });
   group('string', () {
-    group('immutable', () {
-      final empty = ''.toList();
-      final plenty = 'More Dart'.toList();
-      test('creating', () {
-        final coerced = '123'.toList();
-        expect(coerced.length, 3);
-        expect(coerced.toString(), '123');
+    group('toList', () {
+      const emptyString = '';
+      const plentyString = 'Banana🍌';
+      group('immutable standard', () {
+        final empty = emptyString.toList();
+        final plenty = plentyString.toList();
+        test('isEmpty', () {
+          expect(empty.isEmpty, isTrue);
+          expect(plenty.isEmpty, isFalse);
+        });
+        test('length', () {
+          expect(empty.length, 0);
+          expect(plenty.length, 8);
+        });
+        test('reading', () {
+          expect(plenty[0], 'B');
+          expect(plenty[1], 'a');
+          expect(plenty[2], 'n');
+          expect(plenty[3], 'a');
+          expect(plenty[4], 'n');
+          expect(plenty[5], 'a');
+          expect(plenty[6], '\ud83c');
+          expect(plenty[7], '\udf4c');
+        });
+        test('reading (range error)', () {
+          expect(() => empty[0], throwsRangeError);
+          expect(() => plenty[-1], throwsRangeError);
+          expect(() => plenty[8], throwsRangeError);
+        });
+        test('converting', () {
+          expect(empty.toList(), isEmpty);
+          expect(plenty.toList(), [
+            'B',
+            'a',
+            'n',
+            'a',
+            'n',
+            'a',
+            '\ud83c',
+            '\udf4c',
+          ]);
+          expect(empty.toSet(), <String>{});
+          expect(plenty.toSet(), {'B', 'a', 'n', '\ud83c', '\udf4c'});
+          expect(empty.toString(), emptyString);
+          expect(plenty.toString(), plentyString);
+        });
+        test('read-only', () {
+          expect(() => plenty[0] = 'a', throwsUnsupportedError);
+          expect(() => plenty.length = 10, throwsUnsupportedError);
+          expect(() => plenty.add('a'), throwsUnsupportedError);
+          expect(() => plenty.remove('a'), throwsUnsupportedError);
+        });
+        test('sublist', () {
+          expect(plenty.sublist(5).toString(), plentyString.substring(5));
+          expect(plenty.sublist(5, 7).toString(), plentyString.substring(5, 7));
+        });
       });
-      test('isEmpty', () {
-        expect(empty.isEmpty, isTrue);
-        expect(plenty.isEmpty, isFalse);
+      group('mutable standard', () {
+        final empty = emptyString.toList(mutable: true);
+        final plenty = plentyString.toList(mutable: true);
+        test('isEmpty', () {
+          expect(empty.isEmpty, isTrue);
+          expect(plenty.isEmpty, isFalse);
+        });
+        test('length', () {
+          expect(empty.length, 0);
+          expect(plenty.length, 8);
+        });
+        test('reading', () {
+          expect(plenty[0], 'B');
+          expect(plenty[1], 'a');
+          expect(plenty[2], 'n');
+          expect(plenty[3], 'a');
+          expect(plenty[4], 'n');
+          expect(plenty[5], 'a');
+          expect(plenty[6], '\ud83c');
+          expect(plenty[7], '\udf4c');
+        });
+        test('reading (range error)', () {
+          expect(() => empty[0], throwsRangeError);
+          expect(() => plenty[-1], throwsRangeError);
+          expect(() => plenty[8], throwsRangeError);
+        });
+        test('writing', () {
+          final mutable = 'abc'.toList(mutable: true);
+          mutable[1] = 'd';
+          expect(mutable.toString(), 'adc');
+        });
+        test('writing (range error)', () {
+          expect(() => empty[0] = 'a', throwsRangeError);
+          expect(() => plenty[-1] = 'a', throwsRangeError);
+          expect(() => plenty[9] = 'a', throwsRangeError);
+        });
+        test('writing (argument error)', () {
+          expect(() => plenty[0] = '🍌', throwsArgumentError);
+        });
+        test('adding', () {
+          final mutable = 'abc'.toList(mutable: true);
+          mutable.add('d');
+          expect(mutable.toString(), 'abcd');
+        });
+        test('removing', () {
+          final mutable = 'abc'.toList(mutable: true);
+          mutable.remove('a');
+          expect(mutable.toString(), 'bc');
+        });
+        test('converting', () {
+          expect(empty.toList(), isEmpty);
+          expect(plenty.toList(), [
+            'B',
+            'a',
+            'n',
+            'a',
+            'n',
+            'a',
+            '\ud83c',
+            '\udf4c',
+          ]);
+          expect(empty.toSet(), <String>{});
+          expect(plenty.toSet(), {'B', 'a', 'n', '\ud83c', '\udf4c'});
+          expect(empty.toString(), emptyString);
+          expect(plenty.toString(), plentyString);
+        });
+        test('sublist', () {
+          expect(plenty.sublist(5).toString(), plentyString.substring(5));
+          expect(plenty.sublist(5, 7).toString(), plentyString.substring(5, 7));
+        });
       });
-      test('length', () {
-        expect(empty.length, 0);
-        expect(plenty.length, 9);
+      group('immutable unicode', () {
+        final empty = emptyString.toList(unicode: true);
+        final plenty = plentyString.toList(unicode: true);
+        test('isEmpty', () {
+          expect(empty.isEmpty, isTrue);
+          expect(plenty.isEmpty, isFalse);
+        });
+        test('length', () {
+          expect(empty.length, 0);
+          expect(plenty.length, 7);
+        });
+        test('reading', () {
+          expect(plenty[0], 'B');
+          expect(plenty[1], 'a');
+          expect(plenty[2], 'n');
+          expect(plenty[3], 'a');
+          expect(plenty[4], 'n');
+          expect(plenty[5], 'a');
+          expect(plenty[6], '🍌');
+        });
+        test('reading (range error)', () {
+          expect(() => empty[0], throwsRangeError);
+          expect(() => plenty[-1], throwsRangeError);
+          expect(() => plenty[9], throwsRangeError);
+        });
+        test('converting', () {
+          expect(empty.toList(), isEmpty);
+          expect(plenty.toList(), ['B', 'a', 'n', 'a', 'n', 'a', '🍌']);
+          expect(empty.toSet(), <String>{});
+          expect(plenty.toSet(), ['B', 'a', 'n', '🍌']);
+          expect(empty.toString(), emptyString);
+          expect(plenty.toString(), plentyString);
+        });
+        test('read-only', () {
+          expect(() => plenty[0] = 'a', throwsUnsupportedError);
+          expect(() => plenty.length = 10, throwsUnsupportedError);
+          expect(() => plenty.add('a'), throwsUnsupportedError);
+          expect(() => plenty.remove('a'), throwsUnsupportedError);
+        });
+        test('sublist', () {
+          expect(plenty.sublist(5).toString(), plentyString.substring(5));
+          expect(plenty.sublist(5, 7).toString(), plentyString.substring(5, 8));
+        });
       });
-      test('reading', () {
-        expect(plenty[0], 'M');
-        expect(plenty[1], 'o');
-        expect(plenty[2], 'r');
-        expect(plenty[3], 'e');
-        expect(plenty[4], ' ');
-        expect(plenty[5], 'D');
-        expect(plenty[6], 'a');
-        expect(plenty[7], 'r');
-        expect(plenty[8], 't');
-      });
-      test('reading (range error)', () {
-        expect(() => empty[0], throwsRangeError);
-        expect(() => plenty[-1], throwsRangeError);
-        expect(() => plenty[9], throwsRangeError);
-      });
-      test('converting', () {
-        expect(empty.toList(), isEmpty);
-        expect(plenty.toList(), ['M', 'o', 'r', 'e', ' ', 'D', 'a', 'r', 't']);
-        expect(empty.toSet(), <String>{});
-        expect(plenty.toSet(), {'M', 'o', 'r', 'e', ' ', 'D', 'a', 't'});
-        expect(empty.toString(), '');
-        expect(plenty.toString(), 'More Dart');
-      });
-      test('read-only', () {
-        expect(() => plenty[0] = 'a', throwsUnsupportedError);
-        expect(() => plenty.length = 10, throwsUnsupportedError);
-        expect(() => plenty.add('a'), throwsUnsupportedError);
-        expect(() => plenty.remove('a'), throwsUnsupportedError);
-      });
-      test('sublist', () {
-        expect(plenty.sublist(5).toString(), plenty.toString().substring(5));
-        expect(
-          plenty.sublist(5, 7).toString(),
-          plenty.toString().substring(5, 7),
-        );
-      });
-    });
-    group('mutable', () {
-      final empty = ''.toList(mutable: true);
-      final plenty = 'More Dart'.toList(mutable: true);
-      test('creating', () {
-        final coerced = '123'.toList(mutable: true);
-        expect(coerced.length, 3);
-        expect(coerced.toString(), '123');
-      });
-      test('isEmpty', () {
-        expect(empty.isEmpty, isTrue);
-        expect(plenty.isEmpty, isFalse);
-      });
-      test('length', () {
-        expect(empty.length, 0);
-        expect(plenty.length, 9);
-      });
-      test('reading', () {
-        expect(plenty[0], 'M');
-        expect(plenty[1], 'o');
-        expect(plenty[2], 'r');
-        expect(plenty[3], 'e');
-        expect(plenty[4], ' ');
-        expect(plenty[5], 'D');
-        expect(plenty[6], 'a');
-        expect(plenty[7], 'r');
-        expect(plenty[8], 't');
-      });
-      test('reading (range error)', () {
-        expect(() => empty[0], throwsRangeError);
-        expect(() => plenty[-1], throwsRangeError);
-        expect(() => plenty[9], throwsRangeError);
-      });
-      test('writing', () {
-        final mutable = 'abc'.toList(mutable: true);
-        mutable[1] = 'd';
-        expect(mutable.toString(), 'adc');
-      });
-      test('writing (range error)', () {
-        expect(() => empty[0] = 'a', throwsRangeError);
-        expect(() => plenty[-1] = 'a', throwsRangeError);
-        expect(() => plenty[9] = 'a', throwsRangeError);
-      });
-      test('writing (argument error)', () {
-        expect(() => plenty[0] = 'ab', throwsArgumentError);
-      });
-      test('adding', () {
-        final mutable = 'abc'.toList(mutable: true);
-        mutable.add('d');
-        expect(mutable.toString(), 'abcd');
-      });
-      test('removing', () {
-        final mutable = 'abc'.toList(mutable: true);
-        mutable.remove('a');
-        expect(mutable.toString(), 'bc');
-      });
-      test('converting', () {
-        expect(empty.toList(), isEmpty);
-        expect(plenty.toList(), ['M', 'o', 'r', 'e', ' ', 'D', 'a', 'r', 't']);
-        expect(empty.toSet(), <String>{});
-        expect(plenty.toSet(), {'M', 'o', 'r', 'e', ' ', 'D', 'a', 't'});
-        expect(empty.toString(), '');
-        expect(plenty.toString(), 'More Dart');
-      });
-      test('sublist', () {
-        expect(plenty.sublist(5).toString(), plenty.toString().substring(5));
-        expect(
-          plenty.sublist(5, 7).toString(),
-          plenty.toString().substring(5, 7),
-        );
+      group('mutable unicode', () {
+        final empty = emptyString.toList(mutable: true, unicode: true);
+        final plenty = plentyString.toList(mutable: true, unicode: true);
+        test('creating', () {
+          final coerced = '123'.toList(mutable: true, unicode: true);
+          expect(coerced.length, 3);
+          expect(coerced.toString(), '123');
+        });
+        test('isEmpty', () {
+          expect(empty.isEmpty, isTrue);
+          expect(plenty.isEmpty, isFalse);
+        });
+        test('length', () {
+          expect(empty.length, 0);
+          expect(plenty.length, 7);
+        });
+        test('reading', () {
+          expect(plenty[0], 'B');
+          expect(plenty[1], 'a');
+          expect(plenty[2], 'n');
+          expect(plenty[3], 'a');
+          expect(plenty[4], 'n');
+          expect(plenty[5], 'a');
+          expect(plenty[6], '🍌');
+        });
+        test('reading (range error)', () {
+          expect(() => empty[0], throwsRangeError);
+          expect(() => plenty[-1], throwsRangeError);
+          expect(() => plenty[9], throwsRangeError);
+        });
+        test('writing', () {
+          final mutable = 'abc'.toList(mutable: true, unicode: true);
+          mutable[1] = '🍌';
+          expect(mutable.toString(), 'a🍌c');
+        });
+        test('writing (range error)', () {
+          expect(() => empty[0] = 'a', throwsRangeError);
+          expect(() => plenty[-1] = 'a', throwsRangeError);
+          expect(() => plenty[9] = 'a', throwsRangeError);
+        });
+        test('writing (argument error)', () {
+          expect(() => plenty[0] = 'ab', throwsArgumentError);
+        });
+        test('adding', () {
+          final mutable = 'abc'.toList(mutable: true, unicode: true);
+          mutable.add('🍌');
+          expect(mutable.toString(), 'abc🍌');
+        });
+        test('removing', () {
+          final mutable = '🍇🍌🍓'.toList(mutable: true, unicode: true);
+          mutable.remove('🍌');
+          expect(mutable.toString(), '🍇🍓');
+        });
+        test('converting', () {
+          expect(empty.toList(), isEmpty);
+          expect(plenty.toList(), ['B', 'a', 'n', 'a', 'n', 'a', '🍌']);
+          expect(empty.toSet(), <String>{});
+          expect(plenty.toSet(), ['B', 'a', 'n', '🍌']);
+          expect(empty.toString(), emptyString);
+          expect(plenty.toString(), plentyString);
+        });
+        test('sublist', () {
+          expect(plenty.sublist(5).toString(), plentyString.substring(5));
+          expect(plenty.sublist(5, 7).toString(), plentyString.substring(5, 8));
+        });
       });
     });
     group('partition', () {
