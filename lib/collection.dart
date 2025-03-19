@@ -64,6 +64,8 @@ export 'src/collection/rtree/entry.dart' show RTreeEntry;
 export 'src/collection/rtree/node.dart' show RTreeNode;
 export 'src/collection/sortedlist.dart'
     show SortedList, SortedListIterableExtension;
+export 'src/collection/string/chunked.dart'
+    show ChunkedCharactersExtension, ChunkedStringExtension;
 export 'src/collection/string/convert_first_last.dart'
     show ConvertFirstLastStringExtension;
 export 'src/collection/string/indent_dedent.dart'

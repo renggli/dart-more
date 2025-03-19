@@ -1,3 +1,5 @@
+import '../../shared/exceptions.dart';
+
 extension ChunkedIterableExtension<E> on Iterable<E> {
   /// Divides this [Iterable] into sub-lists of a given [size]. The final list
   /// might be smaller or equal to the desired size.
@@ -9,6 +11,7 @@ extension ChunkedIterableExtension<E> on Iterable<E> {
   /// print(input.chunked(2));  // [[1, 2], [3, 4], [5]]
   /// ```
   Iterable<List<E>> chunked(int size) sync* {
+    checkNonZeroPositive(size, 'size');
     final iterator = this.iterator;
     while (iterator.moveNext()) {
       final current = <E>[];
@@ -29,6 +32,7 @@ extension ChunkedIterableExtension<E> on Iterable<E> {
   /// print(input.chunkedWithPadding(2, -1));  // [[1, 2], [3, 4], [5, -1]]
   /// ```
   Iterable<Iterable<E>> chunkedWithPadding(int size, E padding) sync* {
+    checkNonZeroPositive(size, 'size');
     final iterator = this.iterator;
     while (iterator.moveNext()) {
       final current = <E>[];

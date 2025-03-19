@@ -3,6 +3,7 @@
 import 'dart:collection';
 import 'dart:math';
 
+import 'package:characters/characters.dart';
 import 'package:more/collection.dart';
 import 'package:more/comparator.dart';
 import 'package:more/graph.dart';
@@ -826,6 +827,9 @@ void main() {
           [5],
         ]);
       });
+      test('error', () {
+        expect(() => <int>[].chunked(0), throwsRangeError);
+      });
       group('with padding', () {
         test('empty', () {
           final iterable = <int>[].chunkedWithPadding(2, 0);
@@ -845,6 +849,9 @@ void main() {
             [3, 4],
             [5, 0],
           ]);
+        });
+        test('error', () {
+          expect(() => <int>[].chunkedWithPadding(0, 2), throwsRangeError);
         });
       });
     });
@@ -6145,6 +6152,33 @@ void main() {
             verifyUnicodeNormalization(form, invariant, invariant);
           }
         });
+      });
+    });
+    group('chunked', () {
+      test('string', () {
+        expect(''.chunked(2), isEmpty);
+        expect('a'.chunked(2), ['a']);
+        expect('ab'.chunked(2), ['ab']);
+        expect('abc'.chunked(2), ['ab', 'c']);
+        expect('abcd'.chunked(2), ['ab', 'cd']);
+        expect('abcde'.chunked(2), ['ab', 'cd', 'e']);
+        expect(() => 'abc'.chunked(0), throwsRangeError);
+      });
+      test('characters', () {
+        expect(''.characters.chunked(2), isEmpty);
+        expect('a'.characters.chunked(2), ['a'.characters]);
+        expect('ab'.characters.chunked(2), ['ab'.characters]);
+        expect('abc'.characters.chunked(2), ['ab'.characters, 'c'.characters]);
+        expect('abcd'.characters.chunked(2), [
+          'ab'.characters,
+          'cd'.characters,
+        ]);
+        expect('abcde'.characters.chunked(2), [
+          'ab'.characters,
+          'cd'.characters,
+          'e'.characters,
+        ]);
+        expect(() => 'abc'.characters.chunked(0), throwsRangeError);
       });
     });
   });
