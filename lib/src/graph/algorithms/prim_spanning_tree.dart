@@ -1,6 +1,6 @@
 import 'package:collection/collection.dart' show PriorityQueue;
 
-import '../../comparator/modifiers/result_of.dart';
+import '../../comparator/modifiers/key_of.dart';
 import '../edge.dart';
 import '../graph.dart';
 import '../operations/copy.dart';
@@ -20,7 +20,7 @@ Graph<V, E> primSpanningTree<V, E>(
   final result = graph.copy(empty: true);
   // Queue for the shortest remaining edges.
   final queue = PriorityQueue<({Edge<V, E> edge, num cost})>(
-    weightComparator.onResultOf((state) => state.cost),
+    weightComparator.keyOf((state) => state.cost),
   );
   void addOutgoingEdgesToQueue(V vertex) {
     result.addVertex(vertex);

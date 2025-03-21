@@ -109,7 +109,14 @@ void main() {
   const Comparator<int> naturalInt = naturalComparable<num>;
   const naturalString = naturalComparable<String>;
   group('constructors', () {
-    test('delegate', () {
+    test('keyOf', () {
+      final comparator = keyOf<String, num>((string) => string.length);
+      verify(comparator, ['abc', 'ab'], ['ab', 'abc']);
+      verify(comparator, ['ab', 'a'], ['a', 'ab']);
+      verify(comparator, ['ab', 'abc', 'a'], ['a', 'ab', 'abc']);
+      verify(comparator, ['ab', 'abc', 'a'], ['a', 'ab', 'abc']);
+    });
+    test('delegateComparator (deprecated)', () {
       final comparator = delegateComparator<String, num>(
         (string) => string.length,
       );
@@ -178,7 +185,7 @@ void main() {
     group('compound', () {
       test('default', () {
         final comparator = naturalInt
-            .onResultOf<String>((s) => s.length)
+            .keyOf<String>((s) => s.length)
             .thenCompare(naturalString);
         verify(
           comparator,
@@ -204,9 +211,9 @@ void main() {
       test('input', () {
         final comparator =
             [
-              naturalInt.onResultOf<List<int>>((value) => value[0]),
-              naturalInt.onResultOf<List<int>>((value) => value[1]),
-              naturalInt.onResultOf<List<int>>((value) => value[2]),
+              naturalInt.keyOf<List<int>>((value) => value[0]),
+              naturalInt.keyOf<List<int>>((value) => value[1]),
+              naturalInt.keyOf<List<int>>((value) => value[2]),
             ].toComparator();
         verify(
           comparator,
@@ -240,6 +247,16 @@ void main() {
             [0, 0, 1],
             [0, 0, 2],
           ],
+        );
+      });
+      test('deprecated', () {
+        final comparator = naturalInt
+            .onResultOf<String>((s) => s.length)
+            .thenCompare(naturalString);
+        verify(
+          comparator,
+          ['333', '1', '4444', '22'],
+          ['1', '22', '333', '4444'],
         );
       });
     });
@@ -296,8 +313,8 @@ void main() {
       verify(comparator, [3, 2, 1, null], [1, 2, 3, null]);
       verify(comparator.nullsFirst, [1, null, 2], [null, 1, 2]);
     });
-    test('onResultOf', () {
-      final comparator = naturalInt.onResultOf<String>((s) => s.length);
+    test('keyOf', () {
+      final comparator = naturalInt.keyOf<String>((s) => s.length);
       verify(comparator, ['*', '**', '***'], ['*', '**', '***']);
       verify(comparator, ['**', '***', '*'], ['*', '**', '***']);
       verify(comparator, ['***', '*', '**'], ['*', '**', '***']);
@@ -572,7 +589,7 @@ void main() {
           10,
         ).reversed.expand((x) => IntegerRange(10).map((y) => (x, y)));
         final actual = naturalInt
-            .onResultOf<(int, int)>((tuple) => tuple.first)
+            .keyOf<(int, int)>((tuple) => tuple.first)
             .sorted(input, stable: true);
         final expected = IntegerRange(
           10,

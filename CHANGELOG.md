@@ -4,6 +4,7 @@
 - Dart 3.7 requirement.
 - Unicode string normalization.
 - Add `unicode: true` option to `String.toList()`.
+- Add `String.chunked` and `Characters.chunked`.
 
 ## 4.5.0
 - Add `occurences` helper to `Iterable`and `SortedList`.
