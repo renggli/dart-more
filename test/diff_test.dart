@@ -248,8 +248,10 @@ void main() {
       ]);
     });
     test('groupedOperations', () {
-      final source =
-          IntegerRange(1, 40).map((each) => each.toString()).toList();
+      final source = IntegerRange(
+        1,
+        40,
+      ).map((each) => each.toString()).toList();
       final target = [...source];
       target.insert(8, 'i'); // make an insertion
       target[20] += 'x'; // make a replacement
@@ -685,14 +687,15 @@ void main() {
       ]);
     });
     test('keywords', () {
-      final keywords = 'abstract as assert async await base break case catch '
-              'class const continue covariant default deferred do dynamic else '
-              'enum export extends extension external factory false final '
-              'finally for function get hide if implements import in interface '
-              'is late library mixin new null on operator part required '
-              'rethrow return sealed set show static super switch sync this '
-              'throw true try typedef var void when while with yield'
-          .split(' ');
+      final keywords =
+          'abstract as assert async await base break case catch '
+                  'class const continue covariant default deferred do dynamic else '
+                  'enum export extends extension external factory false final '
+                  'finally for function get hide if implements import in interface '
+                  'is late library mixin new null on operator part required '
+                  'rethrow return sealed set show static super switch sync this '
+                  'throw true try typedef var void when while with yield'
+              .split(' ');
       expect(keywords.closeMatches('is'), ['is', 'this']);
       expect(keywords.closeMatches('wheel'), ['when', 'while']);
       expect(keywords.closeMatches('valiant'), ['covariant']);

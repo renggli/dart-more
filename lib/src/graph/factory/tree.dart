@@ -35,8 +35,9 @@ extension TreeGraphFactoryExtension<V, E> on GraphFactory<V, E> {
   /// Creates a perfectly balanced tree of [height] and a branching factor of
   /// [arity]. In the resulting tree all leaf nodes are at the same depth.
   Graph<V, E> prefectTree({required int height, int arity = 2}) => completeTree(
-    vertexCount:
-        arity == 1 ? height + 1 : (pow(arity, height + 1) - 1) ~/ (arity - 1),
+    vertexCount: arity == 1
+        ? height + 1
+        : (pow(arity, height + 1) - 1) ~/ (arity - 1),
     arity: arity,
   );
 }

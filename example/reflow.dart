@@ -95,8 +95,9 @@ class WrapCommand extends ReflowCommand {
         'width',
         abbr: 'w',
         help: 'The width in characters to target.',
-        defaultsTo:
-            stdout.hasTerminal ? stdout.terminalColumns.toString() : '80',
+        defaultsTo: stdout.hasTerminal
+            ? stdout.terminalColumns.toString()
+            : '80',
       )
       ..addFlag(
         'break-long-words',
@@ -130,12 +131,11 @@ class UnwrapCommand extends ReflowCommand {
   String transform(String input) => input.unwrap();
 }
 
-final runner =
-    CommandRunner<void>('reflow', 'Reflows text in different ways.')
-      ..addCommand(IndentCommand())
-      ..addCommand(DedentCommand())
-      ..addCommand(WrapCommand())
-      ..addCommand(UnwrapCommand());
+final runner = CommandRunner<void>('reflow', 'Reflows text in different ways.')
+  ..addCommand(IndentCommand())
+  ..addCommand(DedentCommand())
+  ..addCommand(WrapCommand())
+  ..addCommand(UnwrapCommand());
 
 Future<void> main(List<String> arguments) async {
   await runner.run(arguments).catchError((Object error) {

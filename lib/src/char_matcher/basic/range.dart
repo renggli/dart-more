@@ -12,8 +12,7 @@ final class RangeCharMatcher extends CharMatcher {
   bool match(int value) => start <= value && value <= stop;
 
   @override
-  ObjectPrinter get toStringPrinter =>
-      super.toStringPrinter
-        ..addValue(start, name: 'start', printer: unicodeCodePointPrinter)
-        ..addValue(stop, name: 'stop', printer: unicodeCodePointPrinter);
+  ObjectPrinter get toStringPrinter => super.toStringPrinter
+    ..addValue(start, name: 'start', printer: unicodeCodePointPrinter)
+    ..addValue(stop, name: 'stop', printer: unicodeCodePointPrinter);
 }

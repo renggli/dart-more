@@ -112,22 +112,21 @@ Iterable<int> finiteCollatzGraph(int vertex) =>
 // https://en.wikipedia.org/wiki/Collatz_conjecture#In_reverse
 Iterable<int> reverseCollatzGraph(int vertex) =>
     vertex > 1 && (vertex - 1) % 3 == 0
-        ? [(vertex - 1) ~/ 3, 2 * vertex]
-        : [2 * vertex];
+    ? [(vertex - 1) ~/ 3, 2 * vertex]
+    : [2 * vertex];
 
 // Undirected graph for weighted searches:
 // https://en.wikipedia.org/wiki/File:Dijkstra_Animation.gif
-final dijkstraGraph =
-    Graph<int, int>.undirected()
-      ..addEdge(1, 2, value: 7)
-      ..addEdge(1, 3, value: 9)
-      ..addEdge(1, 6, value: 14)
-      ..addEdge(2, 3, value: 10)
-      ..addEdge(2, 4, value: 15)
-      ..addEdge(3, 4, value: 11)
-      ..addEdge(3, 6, value: 2)
-      ..addEdge(4, 5, value: 6)
-      ..addEdge(5, 6, value: 9);
+final dijkstraGraph = Graph<int, int>.undirected()
+  ..addEdge(1, 2, value: 7)
+  ..addEdge(1, 3, value: 9)
+  ..addEdge(1, 6, value: 14)
+  ..addEdge(2, 3, value: 10)
+  ..addEdge(2, 4, value: 15)
+  ..addEdge(3, 4, value: 11)
+  ..addEdge(3, 6, value: 2)
+  ..addEdge(4, 5, value: 6)
+  ..addEdge(5, 6, value: 9);
 
 void expectInvariants<V, E>(Graph<V, E> graph) {
   for (final vertex in graph.vertices) {
@@ -415,10 +414,9 @@ void main() {
         });
       });
       group('querying', () {
-        final graph =
-            Graph<int, String>.directed()
-              ..addEdge(0, 1, value: 'a')
-              ..addEdge(1, 2, value: 'b');
+        final graph = Graph<int, String>.directed()
+          ..addEdge(0, 1, value: 'a')
+          ..addEdge(1, 2, value: 'b');
         test('invariants', () {
           expectInvariants(graph);
         });
@@ -603,10 +601,9 @@ void main() {
         });
       });
       group('querying', () {
-        final directed =
-            Graph<int, String>.directed()
-              ..addEdge(0, 1, value: 'a')
-              ..addEdge(1, 2, value: 'b');
+        final directed = Graph<int, String>.directed()
+          ..addEdge(0, 1, value: 'a')
+          ..addEdge(1, 2, value: 'b');
         final graph = directed.reversed;
         test('invariants', () {
           expectInvariants(graph);
@@ -782,10 +779,9 @@ void main() {
         });
       });
       group('querying', () {
-        final graph =
-            Graph<int, String>.undirected()
-              ..addEdge(0, 1, value: 'a')
-              ..addEdge(1, 2, value: 'b');
+        final graph = Graph<int, String>.undirected()
+          ..addEdge(0, 1, value: 'a')
+          ..addEdge(1, 2, value: 'b');
         test('invariants', () {
           expectInvariants(graph);
         });
@@ -2283,17 +2279,16 @@ void main() {
         }
       });
       test('directed path with alternatives', () {
-        final builder =
-            GraphFactory<int, void>().newBuilder()
-              ..addEdge(0, 1)
-              ..addEdge(0, 2)
-              ..addEdge(1, 3)
-              ..addEdge(2, 3)
-              ..addEdge(3, 4)
-              ..addEdge(3, 5)
-              ..addEdge(4, 6)
-              ..addEdge(5, 6)
-              ..addEdge(6, 7);
+        final builder = GraphFactory<int, void>().newBuilder()
+          ..addEdge(0, 1)
+          ..addEdge(0, 2)
+          ..addEdge(1, 3)
+          ..addEdge(2, 3)
+          ..addEdge(3, 4)
+          ..addEdge(3, 5)
+          ..addEdge(4, 6)
+          ..addEdge(5, 6)
+          ..addEdge(6, 7);
         final graph = builder.build();
         expect(graph.shortestPath(0, 7), isNot(isNull));
         expect(graph.shortestPathAll(0), hasLength(8));
@@ -2335,8 +2330,8 @@ void main() {
             graph.shortestPath(
               0,
               i,
-              edgeCost:
-                  (source, target) => graph.getEdge(source, target)!.value,
+              edgeCost: (source, target) =>
+                  graph.getEdge(source, target)!.value,
             ),
             isPath(source: 0, target: i, cost: i * (i + 1) ~/ 2),
           );
@@ -2345,8 +2340,8 @@ void main() {
               graph.shortestPath(
                 i,
                 0,
-                edgeCost:
-                    (source, target) => graph.getEdge(source, target)!.value,
+                edgeCost: (source, target) =>
+                    graph.getEdge(source, target)!.value,
               ),
               isNull,
             );
@@ -2373,18 +2368,16 @@ void main() {
           dijkstraGraph.shortestPath(
             1,
             5,
-            edgeCost:
-                (source, target) =>
-                    dijkstraGraph.getEdge(source, target)!.value,
+            edgeCost: (source, target) =>
+                dijkstraGraph.getEdge(source, target)!.value,
           ),
           isPath(source: 1, target: 5, vertices: [1, 3, 6, 5], cost: 20),
         );
         expect(
           dijkstraGraph.shortestPathAll(
             1,
-            edgeCost:
-                (source, target) =>
-                    dijkstraGraph.getEdge(source, target)!.value,
+            edgeCost: (source, target) =>
+                dijkstraGraph.getEdge(source, target)!.value,
           ),
           unorderedEquals([
             isPath(vertices: [1], cost: 0),
@@ -2457,35 +2450,35 @@ void main() {
         );
       });
       group('hills', () {
-        final hills =
-            [
-              '00000002345677899876543355557775557777',
-              '00110023456678899876543555677777777777',
-              '00011234566778998776654555667777777877',
-              '00000234566788998776654355666888778777',
-              '11000234567778999876554244666888888777',
-              '11000034566677899876543244666888888777',
-              '21111023456677898776542244466888887777',
-              '22221002335667787765432444666888999777',
-              '22221001123566777654322444668888777777',
-              '22221111112356666543224446668877777777',
-              '33222111111135555332224466688888877788',
-              '44322211111113331112244466688888877788',
-              '54332221111111111112244466666886887777',
-            ].map((line) => line.split('').map(int.parse).toList()).toList();
+        final hills = [
+          '00000002345677899876543355557775557777',
+          '00110023456678899876543555677777777777',
+          '00011234566778998776654555667777777877',
+          '00000234566788998776654355666888778777',
+          '11000234567778999876554244666888888777',
+          '11000034566677899876543244666888888777',
+          '21111023456677898776542244466888887777',
+          '22221002335667787765432444666888999777',
+          '22221001123566777654322444668888777777',
+          '22221111112356666543224446668877777777',
+          '33222111111135555332224466688888877788',
+          '44322211111113331112244466688888877788',
+          '54332221111111111112244466666886887777',
+        ].map((line) => line.split('').map(int.parse).toList()).toList();
         const source = Point(0, 0), target = Point(12, 37);
         bool targetPredicate(Point<int> vertex) => target == vertex;
-        Iterable<Point<int>> successorsOf(Point<int> vertex) => const [
-              Point(-1, -1), Point(-1, 0), Point(-1, 1), Point(0, -1), //
-              Point(0, 1), Point(1, -1), Point(1, 0), Point(1, 1),
-            ]
-            .map((offset) => vertex + offset)
-            .where(
-              (point) =>
-                  point.x.between(source.x, target.x) &&
-                  point.y.between(source.y, target.y) &&
-                  hills[point.x][point.y] < 8,
-            );
+        Iterable<Point<int>> successorsOf(Point<int> vertex) =>
+            const [
+                  Point(-1, -1), Point(-1, 0), Point(-1, 1), Point(0, -1), //
+                  Point(0, 1), Point(1, -1), Point(1, 0), Point(1, 1),
+                ]
+                .map((offset) => vertex + offset)
+                .where(
+                  (point) =>
+                      point.x.between(source.x, target.x) &&
+                      point.y.between(source.y, target.y) &&
+                      hills[point.x][point.y] < 8,
+                );
         num edgeCost(Point<int> source, Point<int> target) =>
             ((source.x - target.x).pow(2) +
                     (source.y - target.y).pow(2) +
@@ -2570,34 +2563,34 @@ void main() {
         });
       });
       group('maze', () {
-        final maze =
-            [
-              '#########################',
-              '        #     #         #',
-              '# ### ### # ### ##### # #',
-              '# #   #   #     #     # #',
-              '# # ### ######### # #####',
-              '# #   # #   # #   #     #',
-              '# ### # # # # # # # #####',
-              '# #   #   #   # # # #   #',
-              '# # # ####### # ### # # #',
-              '# # #   #     #   # # # #',
-              '# # ##### ####### ##### #',
-              '# #             #        ',
-              '#########################',
-            ].map((line) => line.split('').toList()).toList();
+        final maze = [
+          '#########################',
+          '        #     #         #',
+          '# ### ### # ### ##### # #',
+          '# #   #   #     #     # #',
+          '# # ### ######### # #####',
+          '# #   # #   # #   #     #',
+          '# ### # # # # # # # #####',
+          '# #   #   #   # # # #   #',
+          '# # # ####### # ### # # #',
+          '# # #   #     #   # # # #',
+          '# # ##### ####### ##### #',
+          '# #             #        ',
+          '#########################',
+        ].map((line) => line.split('').toList()).toList();
         const source = Point(1, 0), target = Point(11, 24);
         bool targetPredicate(Point<int> vertex) => target == vertex;
-        Iterable<Point<int>> successorsOf(Point<int> vertex) => const [
-              Point(-1, 0), Point(0, -1), Point(0, 1), Point(1, 0), //
-            ]
-            .map((offset) => vertex + offset)
-            .where(
-              (point) =>
-                  point.x.between(source.x, target.x) &&
-                  point.y.between(source.y, target.y) &&
-                  maze[point.x][point.y] != '#',
-            );
+        Iterable<Point<int>> successorsOf(Point<int> vertex) =>
+            const [
+                  Point(-1, 0), Point(0, -1), Point(0, 1), Point(1, 0), //
+                ]
+                .map((offset) => vertex + offset)
+                .where(
+                  (point) =>
+                      point.x.between(source.x, target.x) &&
+                      point.y.between(source.y, target.y) &&
+                      maze[point.x][point.y] != '#',
+                );
         num costEstimate(Point<int> vertex) =>
             ((vertex.x - target.x).pow(2) + (vertex.y - target.y).pow(2))
                 .sqrt();
@@ -2901,10 +2894,9 @@ void main() {
         expect(graph.minCut, throwsArgumentError);
       });
       test('directed graph error', () {
-        final graph =
-            Graph<int, void>.directed()
-              ..addEdge(0, 1)
-              ..addEdge(1, 2);
+        final graph = Graph<int, void>.directed()
+          ..addEdge(0, 1)
+          ..addEdge(1, 2);
         expect(graph.minCut, throwsArgumentError);
       });
     });
@@ -2928,12 +2920,11 @@ void main() {
         expect(spanning.edges, isEmpty);
       });
       test('undirected', () {
-        final graph =
-            Graph<String, int>.undirected()
-              ..addEdge('a', 'b', value: 2)
-              ..addEdge('a', 'd', value: 1)
-              ..addEdge('b', 'd', value: 2)
-              ..addEdge('d', 'c', value: 3);
+        final graph = Graph<String, int>.undirected()
+          ..addEdge('a', 'b', value: 2)
+          ..addEdge('a', 'd', value: 1)
+          ..addEdge('b', 'd', value: 2)
+          ..addEdge('d', 'c', value: 3);
         final spanning = graph.spanningTree();
         expect(spanning.isDirected, isFalse);
         expect(spanning.vertices, unorderedEquals(graph.vertices));
@@ -2947,12 +2938,11 @@ void main() {
         );
       });
       test('undirected (with start vertex)', () {
-        final graph =
-            Graph<String, int>.undirected()
-              ..addEdge('a', 'b', value: 2)
-              ..addEdge('a', 'd', value: 1)
-              ..addEdge('b', 'd', value: 2)
-              ..addEdge('d', 'c', value: 3);
+        final graph = Graph<String, int>.undirected()
+          ..addEdge('a', 'b', value: 2)
+          ..addEdge('a', 'd', value: 1)
+          ..addEdge('b', 'd', value: 2)
+          ..addEdge('d', 'c', value: 3);
         final spanning = graph.spanningTree(startVertex: 'a');
         expect(spanning.isDirected, isFalse);
         expect(spanning.vertices, unorderedEquals(graph.vertices));
@@ -2966,12 +2956,11 @@ void main() {
         );
       });
       test('maximum', () {
-        final graph =
-            Graph<String, int>.undirected()
-              ..addEdge('a', 'b', value: 2)
-              ..addEdge('a', 'd', value: 1)
-              ..addEdge('b', 'd', value: 2)
-              ..addEdge('d', 'c', value: 3);
+        final graph = Graph<String, int>.undirected()
+          ..addEdge('a', 'b', value: 2)
+          ..addEdge('a', 'd', value: 1)
+          ..addEdge('b', 'd', value: 2)
+          ..addEdge('d', 'c', value: 3);
         final spanning = graph.spanningTree(
           weightComparator: reverseComparable<num>,
         );
@@ -2987,12 +2976,11 @@ void main() {
         );
       });
       test('maximum (with start vertex)', () {
-        final graph =
-            Graph<String, int>.undirected()
-              ..addEdge('a', 'b', value: 2)
-              ..addEdge('a', 'd', value: 1)
-              ..addEdge('b', 'd', value: 2)
-              ..addEdge('d', 'c', value: 3);
+        final graph = Graph<String, int>.undirected()
+          ..addEdge('a', 'b', value: 2)
+          ..addEdge('a', 'd', value: 1)
+          ..addEdge('b', 'd', value: 2)
+          ..addEdge('d', 'c', value: 3);
         final spanning = graph.spanningTree(
           weightComparator: reverseComparable<num>,
           startVertex: 'a',
@@ -3009,12 +2997,11 @@ void main() {
         );
       });
       test('directed', () {
-        final graph =
-            Graph<String, int>.directed()
-              ..addEdge('a', 'b', value: 2)
-              ..addEdge('a', 'd', value: 1)
-              ..addEdge('b', 'd', value: 2)
-              ..addEdge('d', 'c', value: 3);
+        final graph = Graph<String, int>.directed()
+          ..addEdge('a', 'b', value: 2)
+          ..addEdge('a', 'd', value: 1)
+          ..addEdge('b', 'd', value: 2)
+          ..addEdge('d', 'c', value: 3);
         final spanning = graph.spanningTree();
         expect(spanning.isDirected, isTrue);
         expect(spanning.vertices, unorderedEquals(graph.vertices));
@@ -3028,17 +3015,16 @@ void main() {
         );
       });
       test('large', () {
-        final graph =
-            Graph<int, int>.undirected()
-              ..addEdge(1, 2, value: 2)
-              ..addEdge(1, 4, value: 1)
-              ..addEdge(1, 5, value: 4)
-              ..addEdge(2, 3, value: 3)
-              ..addEdge(2, 4, value: 3)
-              ..addEdge(2, 6, value: 7)
-              ..addEdge(3, 4, value: 5)
-              ..addEdge(3, 6, value: 8)
-              ..addEdge(4, 5, value: 9);
+        final graph = Graph<int, int>.undirected()
+          ..addEdge(1, 2, value: 2)
+          ..addEdge(1, 4, value: 1)
+          ..addEdge(1, 5, value: 4)
+          ..addEdge(2, 3, value: 3)
+          ..addEdge(2, 4, value: 3)
+          ..addEdge(2, 6, value: 7)
+          ..addEdge(3, 4, value: 5)
+          ..addEdge(3, 6, value: 8)
+          ..addEdge(4, 5, value: 9);
         final spanning = graph.spanningTree();
         expect(spanning.vertices, unorderedEquals(graph.vertices));
         expect(
@@ -3053,17 +3039,16 @@ void main() {
         );
       });
       test('large (with start vertex)', () {
-        final graph =
-            Graph<int, int>.undirected()
-              ..addEdge(1, 2, value: 2)
-              ..addEdge(1, 4, value: 1)
-              ..addEdge(1, 5, value: 4)
-              ..addEdge(2, 3, value: 3)
-              ..addEdge(2, 4, value: 3)
-              ..addEdge(2, 6, value: 7)
-              ..addEdge(3, 4, value: 5)
-              ..addEdge(3, 6, value: 8)
-              ..addEdge(4, 5, value: 9);
+        final graph = Graph<int, int>.undirected()
+          ..addEdge(1, 2, value: 2)
+          ..addEdge(1, 4, value: 1)
+          ..addEdge(1, 5, value: 4)
+          ..addEdge(2, 3, value: 3)
+          ..addEdge(2, 4, value: 3)
+          ..addEdge(2, 6, value: 7)
+          ..addEdge(3, 4, value: 5)
+          ..addEdge(3, 6, value: 8)
+          ..addEdge(4, 5, value: 9);
         final spanning = graph.spanningTree(startVertex: 1);
         expect(spanning.vertices, unorderedEquals(graph.vertices));
         expect(
@@ -3078,12 +3063,11 @@ void main() {
         );
       });
       test('disconnected', () {
-        final graph =
-            Graph<String, int>.undirected()
-              ..addEdge('a', 'b', value: 1)
-              ..addEdge('x', 'y', value: 1)
-              ..addEdge('x', 'z', value: 5)
-              ..addEdge('y', 'z', value: 1);
+        final graph = Graph<String, int>.undirected()
+          ..addEdge('a', 'b', value: 1)
+          ..addEdge('x', 'y', value: 1)
+          ..addEdge('x', 'z', value: 5)
+          ..addEdge('y', 'z', value: 1);
         final spanning = graph.spanningTree();
         expect(spanning.vertices, ['a', 'b', 'x', 'y', 'z']);
         expect(
@@ -3096,12 +3080,11 @@ void main() {
         );
       });
       test('disconnected (with start vertices)', () {
-        final graph =
-            Graph<String, int>.undirected()
-              ..addEdge('a', 'b', value: 1)
-              ..addEdge('x', 'y', value: 1)
-              ..addEdge('x', 'z', value: 5)
-              ..addEdge('y', 'z', value: 1);
+        final graph = Graph<String, int>.undirected()
+          ..addEdge('a', 'b', value: 1)
+          ..addEdge('x', 'y', value: 1)
+          ..addEdge('x', 'z', value: 5)
+          ..addEdge('y', 'z', value: 1);
         final spanning1 = graph.spanningTree(startVertex: 'a');
         expect(spanning1.vertices, ['a', 'b']);
         expect(
@@ -3492,13 +3475,12 @@ void main() {
       test('custom', () {
         final iterable = TopologicalIterable<int>(
           [1],
-          successorsOf:
-              (vertex) => [2 * vertex, 3 * vertex].where((each) => each < 50),
-          predecessorsOf:
-              (vertex) => [
-                if (vertex > 0 && vertex % 2 == 0) vertex ~/ 2,
-                if (vertex > 0 && vertex % 3 == 0) vertex ~/ 3,
-              ],
+          successorsOf: (vertex) =>
+              [2 * vertex, 3 * vertex].where((each) => each < 50),
+          predecessorsOf: (vertex) => [
+            if (vertex > 0 && vertex % 2 == 0) vertex ~/ 2,
+            if (vertex > 0 && vertex % 3 == 0) vertex ~/ 3,
+          ],
         );
         expect(iterable, [1, 3, 9, 27, 2, 6, 18, 4, 12, 36, 8, 24, 16, 48, 32]);
       });
@@ -3521,8 +3503,10 @@ void main() {
         final graph = GraphFactory<int, void>(
           isDirected: false,
         ).star(vertexCount: 4);
-        final observations =
-            graph.randomWalk(0, random: random).take(100).toMultiset();
+        final observations = graph
+            .randomWalk(0, random: random)
+            .take(100)
+            .toMultiset();
         expect(observations.elementSet, {
           0,
           1,
@@ -3535,15 +3519,14 @@ void main() {
         final graph = GraphFactory<int, void>(
           isDirected: false,
         ).star(vertexCount: 4);
-        final observations =
-            graph
-                .randomWalk(
-                  0,
-                  random: random,
-                  edgeProbability: (source, target) => source == 0 ? target : 1,
-                )
-                .take(1000)
-                .toMultiset();
+        final observations = graph
+            .randomWalk(
+              0,
+              random: random,
+              edgeProbability: (source, target) => source == 0 ? target : 1,
+            )
+            .take(1000)
+            .toMultiset();
         expect(
           observations
               .asMap()
@@ -3556,11 +3539,10 @@ void main() {
       });
       test('custom', () {
         const offsets = [Point(-1, 0), Point(0, -1), Point(0, 1), Point(1, 0)];
-        final walk =
-            RandomWalkIterable<Point<int>>(
-              const Point(0, 0),
-              successorsOf: (point) => offsets.map((each) => point + each),
-            ).take(100).toList();
+        final walk = RandomWalkIterable<Point<int>>(
+          const Point(0, 0),
+          successorsOf: (point) => offsets.map((each) => point + each),
+        ).take(100).toList();
         expect(walk, hasLength(100));
       });
     });

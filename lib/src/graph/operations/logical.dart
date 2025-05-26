@@ -28,15 +28,9 @@ extension LogicalGraphExtension<V, E> on Graph<V, E> {
       for (final vertex in graph.vertices) {
         for (final edge in graph.outgoingEdgesOf(vertex)) {
           final existing = result.getEdge(edge.source, edge.target);
-          final value =
-              existing == null || edgeMerge == null
-                  ? edge.value
-                  : edgeMerge(
-                    edge.source,
-                    edge.target,
-                    existing.value,
-                    edge.value,
-                  );
+          final value = existing == null || edgeMerge == null
+              ? edge.value
+              : edgeMerge(edge.source, edge.target, existing.value, edge.value);
           result.addEdge(edge.source, edge.target, value: value);
         }
       }
@@ -70,15 +64,9 @@ extension LogicalGraphExtension<V, E> on Graph<V, E> {
                 edge.value,
                 otherEdge.value,
               ))) {
-        final value =
-            edgeMerge == null
-                ? otherEdge.value
-                : edgeMerge(
-                  edge.source,
-                  edge.target,
-                  edge.value,
-                  otherEdge.value,
-                );
+        final value = edgeMerge == null
+            ? otherEdge.value
+            : edgeMerge(edge.source, edge.target, edge.value, otherEdge.value);
         result.addEdge(edge.source, edge.target, value: value);
       }
     }
@@ -98,10 +86,9 @@ extension LogicalGraphExtension<V, E> on Graph<V, E> {
     }
     // Identify all the edges to be created.
     for (final source in vertices) {
-      final targets =
-          vertexStrategy.createSet()
-            ..addAll(vertices)
-            ..removeAll(successorsOf(source));
+      final targets = vertexStrategy.createSet()
+        ..addAll(vertices)
+        ..removeAll(successorsOf(source));
       if (!allowSelfLoops) {
         targets.remove(source);
       }

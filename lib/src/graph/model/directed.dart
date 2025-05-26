@@ -122,10 +122,9 @@ class DirectedEdge<V, E> extends Edge<V, E> {
   int get hashCode => Object.hash(source, target);
 
   @override
-  ObjectPrinter get toStringPrinter =>
-      super.toStringPrinter
-        ..addValue('$source → $target')
-        ..addValue(value, name: 'value', omitNull: true);
+  ObjectPrinter get toStringPrinter => super.toStringPrinter
+    ..addValue('$source → $target')
+    ..addValue(value, name: 'value', omitNull: true);
 }
 
 /// Record to keep track of incoming and outgoing edges in adjacency [Map].

@@ -6,7 +6,8 @@ library;
 import 'mapping.dart';
 
 /// Throwing function with 0 positional arguments.
-Map0<Never> throwFunction0(Object throwable) => () => throw throwable;
+Map0<Never> throwFunction0(Object throwable) =>
+    () => throw throwable;
 
 /// Throwing function with 1 positional argument.
 Map1<T1, Never> throwFunction1<T1>(Object throwable) =>
@@ -27,12 +28,14 @@ Map4<T1, T2, T3, T4, Never> throwFunction4<T1, T2, T3, T4>(Object throwable) =>
 /// Throwing function with 5 positional arguments.
 Map5<T1, T2, T3, T4, T5, Never> throwFunction5<T1, T2, T3, T4, T5>(
   Object throwable,
-) => (arg1, arg2, arg3, arg4, arg5) => throw throwable;
+) =>
+    (arg1, arg2, arg3, arg4, arg5) => throw throwable;
 
 /// Throwing function with 6 positional arguments.
 Map6<T1, T2, T3, T4, T5, T6, Never> throwFunction6<T1, T2, T3, T4, T5, T6>(
   Object throwable,
-) => (arg1, arg2, arg3, arg4, arg5, arg6) => throw throwable;
+) =>
+    (arg1, arg2, arg3, arg4, arg5, arg6) => throw throwable;
 
 /// Throwing function with 7 positional arguments.
 Map7<T1, T2, T3, T4, T5, T6, T7, Never>

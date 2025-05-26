@@ -68,8 +68,7 @@ class LruCache<K, V> extends Cache<K, V> {
   }
 
   @override
-  ObjectPrinter get toStringPrinter =>
-      super.toStringPrinter
-        ..addValue(cached.length, name: 'size')
-        ..addValue(maximumSize, name: 'maximumSize');
+  ObjectPrinter get toStringPrinter => super.toStringPrinter
+    ..addValue(cached.length, name: 'size')
+    ..addValue(maximumSize, name: 'maximumSize');
 }

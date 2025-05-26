@@ -29,8 +29,7 @@ class SignNumberPrinter<T extends num> extends Printer<T> {
   }
 
   @override
-  ObjectPrinter get toStringPrinter =>
-      super.toStringPrinter
-        ..addValue(negative, name: 'negative')
-        ..addValue(positive, name: 'positive');
+  ObjectPrinter get toStringPrinter => super.toStringPrinter
+    ..addValue(negative, name: 'negative')
+    ..addValue(positive, name: 'positive');
 }

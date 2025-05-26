@@ -39,59 +39,57 @@ class DurationPrinter extends SequencePrinter<Duration> {
 
   /// Returns the standard Dart duration format.
   static DurationPrinter dart() => DurationPrinter(
-    (builder) =>
-        builder
-          ..sign()
-          ..part(TimeUnit.hour)
-          ..literal(':')
-          ..part(TimeUnit.minute, printer: FixedNumberPrinter(padding: 2))
-          ..literal(':')
-          ..part(TimeUnit.second, printer: FixedNumberPrinter(padding: 2))
-          ..literal('.')
-          ..part(TimeUnit.millisecond, printer: FixedNumberPrinter(padding: 3))
-          ..part(TimeUnit.microsecond, printer: FixedNumberPrinter(padding: 3)),
+    (builder) => builder
+      ..sign()
+      ..part(TimeUnit.hour)
+      ..literal(':')
+      ..part(TimeUnit.minute, printer: FixedNumberPrinter(padding: 2))
+      ..literal(':')
+      ..part(TimeUnit.second, printer: FixedNumberPrinter(padding: 2))
+      ..literal('.')
+      ..part(TimeUnit.millisecond, printer: FixedNumberPrinter(padding: 3))
+      ..part(TimeUnit.microsecond, printer: FixedNumberPrinter(padding: 3)),
   );
 
   /// Returns an ISO-8601 extended full-precision format representation.
   static DurationPrinter iso8601() => DurationPrinter(
-    (builder) =>
-        builder
-          ..literal('P')
-          ..sign()
-          ..part(
-            TimeUnit.year,
-            printer: FixedNumberPrinter<int>().after('Y'),
-            skipIfZero: true,
-          )
-          ..part(
-            TimeUnit.month,
-            printer: FixedNumberPrinter<int>().after('M'),
-            skipIfZero: true,
-          )
-          ..part(
-            TimeUnit.week,
-            printer: FixedNumberPrinter<int>().after('W'),
-            skipIfZero: true,
-          )
-          ..part(TimeUnit.day, printer: FixedNumberPrinter<int>().after('D'))
-          ..literal('T')
-          ..part(
-            TimeUnit.hour,
-            printer: FixedNumberPrinter<int>().after('H'),
-            skipIfZero: true,
-          )
-          ..part(
-            TimeUnit.minute,
-            printer: FixedNumberPrinter<int>().after('M'),
-            skipIfZero: true,
-          )
-          ..part(TimeUnit.second)
-          ..part(
-            TimeUnit.microsecond,
-            printer: FixedNumberPrinter<int>(padding: 6).before('.'),
-            skipIfZero: true,
-          )
-          ..literal('S'),
+    (builder) => builder
+      ..literal('P')
+      ..sign()
+      ..part(
+        TimeUnit.year,
+        printer: FixedNumberPrinter<int>().after('Y'),
+        skipIfZero: true,
+      )
+      ..part(
+        TimeUnit.month,
+        printer: FixedNumberPrinter<int>().after('M'),
+        skipIfZero: true,
+      )
+      ..part(
+        TimeUnit.week,
+        printer: FixedNumberPrinter<int>().after('W'),
+        skipIfZero: true,
+      )
+      ..part(TimeUnit.day, printer: FixedNumberPrinter<int>().after('D'))
+      ..literal('T')
+      ..part(
+        TimeUnit.hour,
+        printer: FixedNumberPrinter<int>().after('H'),
+        skipIfZero: true,
+      )
+      ..part(
+        TimeUnit.minute,
+        printer: FixedNumberPrinter<int>().after('M'),
+        skipIfZero: true,
+      )
+      ..part(TimeUnit.second)
+      ..part(
+        TimeUnit.microsecond,
+        printer: FixedNumberPrinter<int>(padding: 6).before('.'),
+        skipIfZero: true,
+      )
+      ..literal('S'),
   );
 }
 
@@ -143,11 +141,10 @@ class DurationPrinterBuilder {
           )
           .mapIf(skipIfZero, (printer) => printer.where((value) => value != 0))
           .onResultOf(
-            (duration) =>
-                duration.convertToAll(
-                  _unitParts,
-                  conversion: _conversion,
-                )[unit]!,
+            (duration) => duration.convertToAll(
+              _unitParts,
+              conversion: _conversion,
+            )[unit]!,
           ),
     );
   }

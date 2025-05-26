@@ -16,8 +16,11 @@ var index = 0;
 
 RTree<int> createTree() {
   if (select.value.startsWith(guttmann)) {
-    final values =
-        select.value.removePrefix(guttmann).split('_').map(int.parse).toList();
+    final values = select.value
+        .removePrefix(guttmann)
+        .split('_')
+        .map(int.parse)
+        .toList();
     return RTree<int>.guttmann(minEntries: values[0], maxEntries: values[1]);
   }
   throw StateError('Invalid tree type: ${select.value}');

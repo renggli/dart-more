@@ -282,21 +282,20 @@ class HumanNumberPrinter<T extends num> extends Printer<T> {
   }
 
   @override
-  ObjectPrinter get toStringPrinter =>
-      super.toStringPrinter
-        ..addValue(base, name: 'base')
-        ..addValue(characters, name: 'characters')
-        ..addValue(delimiter, name: 'delimiter')
-        ..addValue(infinity, name: 'infinity')
-        ..addValue(nan, name: 'nan')
-        ..addValue(padding, name: 'padding')
-        ..addValue(precision, name: 'precision')
-        ..addValue(separator, name: 'separator')
-        ..addValue(sign, name: 'sign')
-        ..addValue(unitBase, name: 'unitBase')
-        ..addValue(unitOffset, name: 'unitOffset')
-        ..addValue(unitPrecision, name: 'unitPrecision')
-        ..addValue(unitPrefix, name: 'unitPrefix')
-        ..addValue(unitSeparator, name: 'unitSeparator')
-        ..addValue(units, name: 'units');
+  ObjectPrinter get toStringPrinter => super.toStringPrinter
+    ..addValue(base, name: 'base')
+    ..addValue(characters, name: 'characters')
+    ..addValue(delimiter, name: 'delimiter')
+    ..addValue(infinity, name: 'infinity')
+    ..addValue(nan, name: 'nan')
+    ..addValue(padding, name: 'padding')
+    ..addValue(precision, name: 'precision')
+    ..addValue(separator, name: 'separator')
+    ..addValue(sign, name: 'sign')
+    ..addValue(unitBase, name: 'unitBase')
+    ..addValue(unitOffset, name: 'unitOffset')
+    ..addValue(unitPrecision, name: 'unitPrecision')
+    ..addValue(unitPrefix, name: 'unitPrefix')
+    ..addValue(unitSeparator, name: 'unitSeparator')
+    ..addValue(units, name: 'units');
 }

@@ -24,8 +24,7 @@ class ResultOfPrinter<T, R> extends Printer<T> {
       printer.printOn(function(object), buffer);
 
   @override
-  ObjectPrinter get toStringPrinter =>
-      super.toStringPrinter
-        ..addValue(printer, name: 'printer')
-        ..addValue(function, name: 'callback');
+  ObjectPrinter get toStringPrinter => super.toStringPrinter
+    ..addValue(printer, name: 'printer')
+    ..addValue(function, name: 'callback');
 }

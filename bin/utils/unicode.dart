@@ -11,22 +11,21 @@ const unicodeVersion = '16.0.0';
 const unicodeMaxCodePoint = 0x10ffff;
 
 /// Unicode data.
-typedef UnicodeData =
-    ({
-      int codePoint,
-      String characterName,
-      String generalCategory,
-      int? canonicalCombiningClasses,
-      String? bidirectionCategory,
-      String? characterDecompositionMapping,
-      int? decimalDigit,
-      int? digitValue,
-      Fraction? numericValue,
-      bool? mirrored,
-      int? upperCaseMapping,
-      int? lowerCaseMapping,
-      int? titleCaseMapping,
-    });
+typedef UnicodeData = ({
+  int codePoint,
+  String characterName,
+  String generalCategory,
+  int? canonicalCombiningClasses,
+  String? bidirectionCategory,
+  String? characterDecompositionMapping,
+  int? decimalDigit,
+  int? digitValue,
+  Fraction? numericValue,
+  bool? mirrored,
+  int? upperCaseMapping,
+  int? lowerCaseMapping,
+  int? titleCaseMapping,
+});
 
 /// URLs of the unicode data.
 final unicodeDataUrl = Uri.parse(
@@ -59,10 +58,9 @@ Future<List<UnicodeData>> _getUnicodeData() async {
   final result = <UnicodeData>[];
   for (var i = 0; i < lines.length;) {
     final start = int.parse(lines[i][0], radix: 16);
-    final end =
-        lines[i][1].endsWith(', First>')
-            ? int.parse(lines[i + 1][0], radix: 16)
-            : start;
+    final end = lines[i][1].endsWith(', First>')
+        ? int.parse(lines[i + 1][0], radix: 16)
+        : start;
     if (result.isNotEmpty) {
       for (var j = result.last.codePoint + 1; j < start; j++) {
         result.add(_createEmpty(j));
@@ -121,11 +119,10 @@ Future<ListMultimap<String, (int, int)>> getPropertyData(Uri uri) async {
   return lines.fold<ListMultimap<String, (int, int)>>(
     ListMultimap<String, (int, int)>(),
     (result, line) {
-      final range =
-          line[0]
-              .split('..')
-              .map((each) => int.parse(each, radix: 16))
-              .toList();
+      final range = line[0]
+          .split('..')
+          .map((each) => int.parse(each, radix: 16))
+          .toList();
       result.add(line[1], (range.first, range.last));
       return result;
     },

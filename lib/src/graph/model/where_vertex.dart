@@ -31,24 +31,21 @@ class WhereVertexGraph<V, E> extends ForwardingGraph<V, E> {
   @override
   Edge<V, E>? getEdge(V source, V target) =>
       _vertexPredicate(source) && _vertexPredicate(target)
-          ? super.getEdge(source, target)
-          : null;
+      ? super.getEdge(source, target)
+      : null;
 
   @override
-  Iterable<V> neighboursOf(V vertex) =>
-      _vertexPredicate(vertex)
-          ? super.neighboursOf(vertex).where(_vertexPredicate)
-          : const [];
+  Iterable<V> neighboursOf(V vertex) => _vertexPredicate(vertex)
+      ? super.neighboursOf(vertex).where(_vertexPredicate)
+      : const [];
 
   @override
-  Iterable<V> predecessorsOf(V vertex) =>
-      _vertexPredicate(vertex)
-          ? super.predecessorsOf(vertex).where(_vertexPredicate)
-          : const [];
+  Iterable<V> predecessorsOf(V vertex) => _vertexPredicate(vertex)
+      ? super.predecessorsOf(vertex).where(_vertexPredicate)
+      : const [];
 
   @override
-  Iterable<V> successorsOf(V vertex) =>
-      _vertexPredicate(vertex)
-          ? super.successorsOf(vertex).where(_vertexPredicate)
-          : const [];
+  Iterable<V> successorsOf(V vertex) => _vertexPredicate(vertex)
+      ? super.successorsOf(vertex).where(_vertexPredicate)
+      : const [];
 }

@@ -25,12 +25,11 @@ abstract class SeparatePrinter<T> extends Printer<T> {
   final String separator;
 
   @override
-  ObjectPrinter get toStringPrinter =>
-      super.toStringPrinter
-        ..addValue(printer, name: 'printer')
-        ..addValue(width, name: 'width')
-        ..addValue(offset, name: 'offset')
-        ..addValue(separator, name: 'separator');
+  ObjectPrinter get toStringPrinter => super.toStringPrinter
+    ..addValue(printer, name: 'printer')
+    ..addValue(width, name: 'width')
+    ..addValue(offset, name: 'offset')
+    ..addValue(separator, name: 'separator');
 }
 
 /// Separates a string from the left with a separator character.

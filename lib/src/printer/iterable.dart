@@ -107,15 +107,14 @@ class IterablePrinter<T> extends Printer<Iterable<T>> {
   }
 
   @override
-  ObjectPrinter get toStringPrinter =>
-      super.toStringPrinter
-        ..addValue(printer, name: 'printer')
-        ..addValue(emptyPrinter, name: 'emptyPrinter')
-        ..addValue(beforePrinter, name: 'beforePrinter')
-        ..addValue(afterPrinter, name: 'afterPrinter')
-        ..addValue(separator, name: 'separator')
-        ..addValue(lastSeparator, name: 'lastSeparator')
-        ..addValue(leadingItems, name: 'leadingItems')
-        ..addValue(trailingItems, name: 'trailingItems')
-        ..addValue(ellipses, name: 'ellipses');
+  ObjectPrinter get toStringPrinter => super.toStringPrinter
+    ..addValue(printer, name: 'printer')
+    ..addValue(emptyPrinter, name: 'emptyPrinter')
+    ..addValue(beforePrinter, name: 'beforePrinter')
+    ..addValue(afterPrinter, name: 'afterPrinter')
+    ..addValue(separator, name: 'separator')
+    ..addValue(lastSeparator, name: 'lastSeparator')
+    ..addValue(leadingItems, name: 'leadingItems')
+    ..addValue(trailingItems, name: 'trailingItems')
+    ..addValue(ellipses, name: 'ellipses');
 }

@@ -209,12 +209,11 @@ void main() {
         );
       });
       test('input', () {
-        final comparator =
-            [
-              naturalInt.keyOf<List<int>>((value) => value[0]),
-              naturalInt.keyOf<List<int>>((value) => value[1]),
-              naturalInt.keyOf<List<int>>((value) => value[2]),
-            ].toComparator();
+        final comparator = [
+          naturalInt.keyOf<List<int>>((value) => value[0]),
+          naturalInt.keyOf<List<int>>((value) => value[1]),
+          naturalInt.keyOf<List<int>>((value) => value[2]),
+        ].toComparator();
         verify(
           comparator,
           [

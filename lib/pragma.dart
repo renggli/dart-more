@@ -13,23 +13,21 @@ import 'feature.dart';
 // region Pragmas for general use.
 
 /// Never inline a function or method.
-const neverInline =
-    isJavaScript
-        ? neverInlineJs
-        : isWasm
-        ? neverInlineWasm
-        : neverInlineVm;
+const neverInline = isJavaScript
+    ? neverInlineJs
+    : isWasm
+    ? neverInlineWasm
+    : neverInlineVm;
 const neverInlineJs = pragma('dart2js:never-inline');
 const neverInlineVm = pragma('vm:never-inline');
 const neverInlineWasm = pragma('wasm:never-inline');
 
 /// Inline a function or method when possible.
-const preferInline =
-    isJavaScript
-        ? preferInlineJs
-        : isWasm
-        ? preferInlineWasm
-        : preferInlineVm;
+const preferInline = isJavaScript
+    ? preferInlineJs
+    : isWasm
+    ? preferInlineWasm
+    : preferInlineVm;
 const preferInlineJs = pragma('dart2js:prefer-inline');
 const preferInlineVm = pragma('vm:prefer-inline');
 const preferInlineWasm = pragma('wasm:prefer-inline');

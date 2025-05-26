@@ -25,11 +25,10 @@ extension Tuple on Record {
     7 => Tuple7.fromList(list),
     8 => Tuple8.fromList(list),
     9 => Tuple9.fromList(list),
-    _ =>
-      throw ArgumentError.value(
-        list,
-        'list',
-        'Length ${list.length} not in range 0..9',
-      ),
+    _ => throw ArgumentError.value(
+      list,
+      'list',
+      'Length ${list.length} not in range 0..9',
+    ),
   };
 }

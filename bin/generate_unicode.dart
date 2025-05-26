@@ -133,16 +133,15 @@ Future<void> generateNormalizationTestData() async {
       out.writeln("'${testData[0]}': [");
       continue;
     }
-    final parts =
-        testData
-            .sublist(0, 5)
-            .map(
-              (part) => part
-                  .split(whitepsaceSplitter)
-                  .map((each) => formatUnicode(int.parse(each, radix: 16)))
-                  .join(', '),
-            )
-            .toList();
+    final parts = testData
+        .sublist(0, 5)
+        .map(
+          (part) => part
+              .split(whitepsaceSplitter)
+              .map((each) => formatUnicode(int.parse(each, radix: 16)))
+              .join(', '),
+        )
+        .toList();
     out.writeln('(');
     out.writeln('source: [${parts[0]}],');
     out.writeln('nfc: [${parts[1]}],');

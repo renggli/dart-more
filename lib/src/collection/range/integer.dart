@@ -149,8 +149,7 @@ extension IndicesIterableExtension on Iterable<Object?> {
   /// final input = ['a', 'b', 'c'];
   /// print(input.indices(step: 2));  // [0, 2]
   /// ```
-  Range<int> indices({int step = 1}) =>
-      step > 0
-          ? IntegerRange.of(start: 0, end: length, step: step)
-          : IntegerRange.of(start: length - 1, end: -1, step: step);
+  Range<int> indices({int step = 1}) => step > 0
+      ? IntegerRange.of(start: 0, end: length, step: step)
+      : IntegerRange.of(start: length - 1, end: -1, step: step);
 }

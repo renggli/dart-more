@@ -29,11 +29,10 @@ final class RangesCharMatcher extends CharMatcher {
   }
 
   @override
-  ObjectPrinter get toStringPrinter =>
-      super.toStringPrinter
-        ..addValue(length, name: 'length')
-        ..addValue(starts, name: 'starts', printer: unicodeCodePointsPrinter)
-        ..addValue(stops, name: 'stops', printer: unicodeCodePointsPrinter);
+  ObjectPrinter get toStringPrinter => super.toStringPrinter
+    ..addValue(length, name: 'length')
+    ..addValue(starts, name: 'starts', printer: unicodeCodePointsPrinter)
+    ..addValue(stops, name: 'stops', printer: unicodeCodePointsPrinter);
 }
 
 final unicodeCodePointsPrinter = unicodeCodePointPrinter.iterable(

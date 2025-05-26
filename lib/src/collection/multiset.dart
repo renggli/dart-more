@@ -205,10 +205,9 @@ class Multiset<E> extends IterableBase<E> {
 
   /// Iterator over the repeated elements of the receiver.
   @override
-  Iterator<E> get iterator =>
-      _container.entries
-          .expand((entry) => repeat(entry.key, count: entry.value))
-          .iterator;
+  Iterator<E> get iterator => _container.entries
+      .expand((entry) => repeat(entry.key, count: entry.value))
+      .iterator;
 
   /// Returns an unmodifiable view of the underlying data in a [Map] with the
   /// elements as the key and their counts as the value.

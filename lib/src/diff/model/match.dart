@@ -38,9 +38,8 @@ class Match with ToStringPrinter implements Comparable<Match> {
   }
 
   @override
-  ObjectPrinter get toStringPrinter =>
-      super.toStringPrinter
-        ..addValue(sourceStart, name: 'sourceStart')
-        ..addValue(targetStart, name: 'targetStart')
-        ..addValue(length, name: 'length');
+  ObjectPrinter get toStringPrinter => super.toStringPrinter
+    ..addValue(sourceStart, name: 'sourceStart')
+    ..addValue(targetStart, name: 'targetStart')
+    ..addValue(length, name: 'length');
 }

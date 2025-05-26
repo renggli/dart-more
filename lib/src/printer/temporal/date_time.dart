@@ -39,13 +39,12 @@ class DateTimePrinter extends SequencePrinter<DateTime> {
 
   /// Returns a configurable date printer.
   static DateTimePrinter date({String separator = '-'}) => DateTimePrinter(
-    (builder) =>
-        builder
-          ..year(width: 4)
-          ..literal(separator)
-          ..month(width: 2)
-          ..literal(separator)
-          ..day(width: 2),
+    (builder) => builder
+      ..year(width: 4)
+      ..literal(separator)
+      ..month(width: 2)
+      ..literal(separator)
+      ..day(width: 2),
   );
 
   /// Returns a configurable time printer.
@@ -78,17 +77,16 @@ class DateTimePrinter extends SequencePrinter<DateTime> {
     bool milliseconds = true,
     bool microseconds = true,
   }) => DateTimePrinter(
-    (builder) =>
-        builder
-          ..add(date(separator: dateSeparator))
-          ..literal(dateTimeSeparator)
-          ..add(
-            time(
-              separator: timeSeparator,
-              milliseconds: milliseconds,
-              microseconds: microseconds,
-            ),
-          ),
+    (builder) => builder
+      ..add(date(separator: dateSeparator))
+      ..literal(dateTimeSeparator)
+      ..add(
+        time(
+          separator: timeSeparator,
+          milliseconds: milliseconds,
+          microseconds: microseconds,
+        ),
+      ),
   );
 
   /// Returns an ISO-8601 full-precision extended format printer.
@@ -142,10 +140,9 @@ class DateTimePrinterBuilder {
   /// of the numeric quarter number from `['Q1', ..., 'Q4']`.
   void quarter({int width = 0, List<String>? names}) {
     assert(names == null || names.length == 4, '4 quarter names expected');
-    final printer =
-        names == null
-            ? FixedNumberPrinter<int>(padding: width)
-            : Printer<int>.pluggable((quarter) => names[quarter - 1]);
+    final printer = names == null
+        ? FixedNumberPrinter<int>(padding: width)
+        : Printer<int>.pluggable((quarter) => names[quarter - 1]);
     add(printer.onResultOf((dateTime) => dateTime.quarter));
   }
 
@@ -157,10 +154,9 @@ class DateTimePrinterBuilder {
   /// of the numeric month number from `['January', ..., 'December']`.
   void month({int width = 0, List<String>? names}) {
     assert(names == null || names.length == 12, '12 month names expected');
-    final printer =
-        names == null
-            ? FixedNumberPrinter<int>(padding: width)
-            : Printer<int>.pluggable((month) => names[month - 1]);
+    final printer = names == null
+        ? FixedNumberPrinter<int>(padding: width)
+        : Printer<int>.pluggable((month) => names[month - 1]);
     add(printer.onResultOf((dateTime) => dateTime.month));
   }
 
@@ -172,10 +168,9 @@ class DateTimePrinterBuilder {
   /// of the numeric weekday number from `['Monday', ..., 'Sunday']`.
   void weekday({int width = 0, List<String>? names}) {
     assert(names == null || names.length == 7, '7 weekday names expected');
-    final printer =
-        names == null
-            ? FixedNumberPrinter<int>(padding: width)
-            : Printer<int>.pluggable((weekday) => names[weekday - 1]);
+    final printer = names == null
+        ? FixedNumberPrinter<int>(padding: width)
+        : Printer<int>.pluggable((weekday) => names[weekday - 1]);
     add(printer.onResultOf((dateTime) => dateTime.weekday));
   }
 

@@ -332,12 +332,11 @@ Future<void> generateTest() async {
             );
             out.writeln('expect(other.length, tuple.length + 1);');
             for (var k = 0; k < i + 1; k++) {
-              final expected =
-                  k == j
-                      ? '\'a\''
-                      : k < j
-                      ? numbers[k]
-                      : numbers[k - 1];
+              final expected = k == j
+                  ? '\'a\''
+                  : k < j
+                  ? numbers[k]
+                  : numbers[k - 1];
               out.writeln('expect(other.${ordinals[k]}, $expected);');
             }
           });

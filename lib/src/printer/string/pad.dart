@@ -26,11 +26,10 @@ abstract class PadPrinter<T> extends Printer<T> {
   final String padding;
 
   @override
-  ObjectPrinter get toStringPrinter =>
-      super.toStringPrinter
-        ..addValue(printer, name: 'printer')
-        ..addValue(width, name: 'width')
-        ..addValue(padding, name: 'padding');
+  ObjectPrinter get toStringPrinter => super.toStringPrinter
+    ..addValue(printer, name: 'printer')
+    ..addValue(width, name: 'width')
+    ..addValue(padding, name: 'padding');
 }
 
 /// Pads the string on the left if it is shorter than width.

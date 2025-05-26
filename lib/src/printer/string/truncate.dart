@@ -44,12 +44,11 @@ abstract class TruncatePrinter<T> extends Printer<T> {
   final TruncateMethod method;
 
   @override
-  ObjectPrinter get toStringPrinter =>
-      super.toStringPrinter
-        ..addValue(printer, name: 'printer')
-        ..addValue(width, name: 'width')
-        ..addValue(ellipsis, name: 'ellipsis')
-        ..addValue(method, name: 'method');
+  ObjectPrinter get toStringPrinter => super.toStringPrinter
+    ..addValue(printer, name: 'printer')
+    ..addValue(width, name: 'width')
+    ..addValue(ellipsis, name: 'ellipsis')
+    ..addValue(method, name: 'method');
 }
 
 /// Truncates the string from the left side if it is longer than width.
@@ -148,20 +147,18 @@ String truncateRight(Characters input, TruncateMethod method, int width) {
     case TruncateMethod.characters:
       return input.take(width).string;
     case TruncateMethod.words:
-      final iterator =
-          input.iterator
-            ..expandNext(width)
-            ..dropBackWhile((each) => !whitespace.contains(each))
-            ..dropLast();
+      final iterator = input.iterator
+        ..expandNext(width)
+        ..dropBackWhile((each) => !whitespace.contains(each))
+        ..dropLast();
       if (iterator.isEmpty) {
         return truncateRight(input, TruncateMethod.characters, width);
       }
       return iterator.current;
     case TruncateMethod.sentences:
-      final iterator =
-          input.iterator
-            ..expandNext(width)
-            ..dropBackWhile((each) => !punctuation.contains(each));
+      final iterator = input.iterator
+        ..expandNext(width)
+        ..dropBackWhile((each) => !punctuation.contains(each));
       if (iterator.isEmpty) {
         return truncateRight(input, TruncateMethod.words, width);
       }
@@ -174,20 +171,18 @@ String truncateLeft(Characters input, TruncateMethod method, int width) {
     case TruncateMethod.characters:
       return input.takeLast(width).string;
     case TruncateMethod.words:
-      final iterator =
-          input.iteratorAtEnd
-            ..expandBack(width)
-            ..dropWhile((each) => !whitespace.contains(each))
-            ..dropFirst();
+      final iterator = input.iteratorAtEnd
+        ..expandBack(width)
+        ..dropWhile((each) => !whitespace.contains(each))
+        ..dropFirst();
       if (iterator.isEmpty) {
         return truncateLeft(input, TruncateMethod.characters, width);
       }
       return iterator.current;
     case TruncateMethod.sentences:
-      final iterator =
-          input.iteratorAtEnd
-            ..expandBack(width)
-            ..dropWhile((each) => !punctuation.contains(each));
+      final iterator = input.iteratorAtEnd
+        ..expandBack(width)
+        ..dropWhile((each) => !punctuation.contains(each));
       if (iterator.isEmpty) {
         return truncateLeft(input, TruncateMethod.words, width);
       }

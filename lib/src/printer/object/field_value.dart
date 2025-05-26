@@ -35,10 +35,9 @@ class FieldValue<T, F> extends FieldPrinter<T> {
   void printOn(T object, StringBuffer buffer) => printer.printOn(value, buffer);
 
   @override
-  ObjectPrinter get toStringPrinter =>
-      super.toStringPrinter
-        ..addValue(value, name: 'value')
-        ..addValue(omitNull, name: 'omitNull')
-        ..addValue(omitPredicate, name: 'omitPredicate')
-        ..addValue(printer, name: 'printer');
+  ObjectPrinter get toStringPrinter => super.toStringPrinter
+    ..addValue(value, name: 'value')
+    ..addValue(omitNull, name: 'omitNull')
+    ..addValue(omitPredicate, name: 'omitPredicate')
+    ..addValue(printer, name: 'printer');
 }

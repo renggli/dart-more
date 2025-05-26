@@ -26,8 +26,7 @@ class SwitcherPrinter<T> extends Printer<T> {
   }
 
   @override
-  ObjectPrinter get toStringPrinter =>
-      super.toStringPrinter
-        ..addValue(cases, name: 'cases')
-        ..addValue(otherwise, name: 'otherwise');
+  ObjectPrinter get toStringPrinter => super.toStringPrinter
+    ..addValue(cases, name: 'cases')
+    ..addValue(otherwise, name: 'otherwise');
 }

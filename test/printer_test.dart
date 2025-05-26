@@ -1053,11 +1053,10 @@ void main() {
     group('part', () {
       test('default', () {
         final printer = DurationPrinter(
-          (builder) =>
-              builder
-                ..part(TimeUnit.day)
-                ..literal('*')
-                ..part(TimeUnit.minute),
+          (builder) => builder
+            ..part(TimeUnit.day)
+            ..literal('*')
+            ..part(TimeUnit.minute),
         );
         expect(durations.map(printer.print), [
           '0*0',
@@ -1071,11 +1070,10 @@ void main() {
       });
       test('skipIfZero', () {
         final printer = DurationPrinter(
-          (builder) =>
-              builder
-                ..part(TimeUnit.day, skipIfZero: true)
-                ..literal('*')
-                ..part(TimeUnit.minute, skipIfZero: true),
+          (builder) => builder
+            ..part(TimeUnit.day, skipIfZero: true)
+            ..literal('*')
+            ..part(TimeUnit.minute, skipIfZero: true),
         );
         expect(durations.map(printer.print), [
           '*',
@@ -1089,11 +1087,10 @@ void main() {
       });
       test('absoluteValue', () {
         final printer = DurationPrinter(
-          (builder) =>
-              builder
-                ..part(TimeUnit.day, absoluteValue: false)
-                ..literal('*')
-                ..part(TimeUnit.minute, absoluteValue: false),
+          (builder) => builder
+            ..part(TimeUnit.day, absoluteValue: false)
+            ..literal('*')
+            ..part(TimeUnit.minute, absoluteValue: false),
         );
         expect(durations.map(printer.print), [
           '0*0',
@@ -1632,14 +1629,13 @@ void main() {
       expect(printer('12'), '12-12');
     });
     test('iterable', () {
-      final printer =
-          <Printer<int>>[
-            const Printer.standard(),
-            const Printer.literal(' <-> '),
-            Printer.pluggable(
-              (value) => value.toString().split('').reversed.join(''),
-            ),
-          ].toPrinter();
+      final printer = <Printer<int>>[
+        const Printer.standard(),
+        const Printer.literal(' <-> '),
+        Printer.pluggable(
+          (value) => value.toString().split('').reversed.join(''),
+        ),
+      ].toPrinter();
       expect(printer(1), '1 <-> 1');
       expect(printer(12), '12 <-> 21');
       expect(printer(123), '123 <-> 321');
@@ -1886,87 +1882,74 @@ void main() {
         expect(printer('hello'), 'String(42)');
       });
       test('name', () {
-        final printer =
-            ObjectPrinter<String>.static()..addValue(42, name: 'size');
+        final printer = ObjectPrinter<String>.static()
+          ..addValue(42, name: 'size');
         expect(printer('hello'), 'String(size: 42)');
       });
       test('printer', () {
-        final printer =
-            ObjectPrinter<String>.static()..addValue(
-              42,
-              printer: const Printer<int>.standard().around('"'),
-            );
+        final printer = ObjectPrinter<String>.static()
+          ..addValue(42, printer: const Printer<int>.standard().around('"'));
         expect(printer('hello'), 'String("42")');
       });
       test('omitNull', () {
-        final printer =
-            ObjectPrinter<String>.static()
-              ..addValue<int?>(null, omitNull: true)
-              ..addValue<int?>(42, omitNull: true);
+        final printer = ObjectPrinter<String>.static()
+          ..addValue<int?>(null, omitNull: true)
+          ..addValue<int?>(42, omitNull: true);
         expect(printer('hello'), 'String(42)');
       });
       test('omitPredicate', () {
-        final printer =
-            ObjectPrinter<String>.static()
-              ..addValue<int>(42, omitPredicate: (value) => value.isEven)
-              ..addValue<int>(43, omitPredicate: (value) => value.isEven);
+        final printer = ObjectPrinter<String>.static()
+          ..addValue<int>(42, omitPredicate: (value) => value.isEven)
+          ..addValue<int>(43, omitPredicate: (value) => value.isEven);
         expect(printer('hello'), 'String(43)');
       });
       test('omitNull and omitPredicate', () {
-        final printer =
-            ObjectPrinter<String>.static()
-              ..addValue<int?>(
-                null,
-                omitNull: true,
-                omitPredicate: (value) => value!.isEven,
-              )
-              ..addValue<int?>(
-                42,
-                omitNull: true,
-                omitPredicate: (value) => value!.isEven,
-              )
-              ..addValue<int?>(
-                43,
-                omitNull: true,
-                omitPredicate: (value) => value!.isEven,
-              );
+        final printer = ObjectPrinter<String>.static()
+          ..addValue<int?>(
+            null,
+            omitNull: true,
+            omitPredicate: (value) => value!.isEven,
+          )
+          ..addValue<int?>(
+            42,
+            omitNull: true,
+            omitPredicate: (value) => value!.isEven,
+          )
+          ..addValue<int?>(
+            43,
+            omitNull: true,
+            omitPredicate: (value) => value!.isEven,
+          );
         expect(printer('hello'), 'String(43)');
       });
     });
     group('addCallback', () {
       test('default', () {
-        final printer =
-            ObjectPrinter<String>.static()
-              ..addCallback((object) => object.length);
+        final printer = ObjectPrinter<String>.static()
+          ..addCallback((object) => object.length);
         expect(printer('hello'), 'String(5)');
       });
       test('name', () {
-        final printer =
-            ObjectPrinter<String>.static()
-              ..addCallback((object) => object.length, name: 'size');
+        final printer = ObjectPrinter<String>.static()
+          ..addCallback((object) => object.length, name: 'size');
         expect(printer('hello'), 'String(size: 5)');
       });
       test('printer', () {
-        final printer =
-            ObjectPrinter<String>.static()..addCallback(
-              (object) => object.length,
-              printer: const Printer<int>.standard().around('"'),
-            );
+        final printer = ObjectPrinter<String>.static()
+          ..addCallback(
+            (object) => object.length,
+            printer: const Printer<int>.standard().around('"'),
+          );
         expect(printer('hello'), 'String("5")');
       });
       test('omitNull', () {
-        final printer =
-            ObjectPrinter<(String?, String?)>.static()
-              ..addCallback(
-                (object) => object.first,
-                omitNull: true,
-                name: 'first',
-              )
-              ..addCallback(
-                (object) => object.second,
-                omitNull: false,
-                name: 'second',
-              );
+        final printer = ObjectPrinter<(String?, String?)>.static()
+          ..addCallback((object) => object.first, omitNull: true, name: 'first')
+          ..addCallback(
+            (object) => object.second,
+            omitNull: false,
+            name: 'second',
+          );
         expect(
           printer(('hello', 'world')),
           '(String?, String?)(first: hello, second: world)',
@@ -1979,24 +1962,23 @@ void main() {
         expect(printer((null, null)), '(String?, String?)(second: null)');
       });
       test('omitPredicate', () {
-        final printer =
-            ObjectPrinter<(int, int)>.static()
-              ..addCallback<int>((object) => object.first, name: 'first')
-              ..addCallback<int>(
-                (object) => object.second,
-                omitPredicate: (object, value) => value.isEven,
-                name: 'second',
-              );
+        final printer = ObjectPrinter<(int, int)>.static()
+          ..addCallback<int>((object) => object.first, name: 'first')
+          ..addCallback<int>(
+            (object) => object.second,
+            omitPredicate: (object, value) => value.isEven,
+            name: 'second',
+          );
         expect(printer((42, 43)), '(int, int)(first: 42, second: 43)');
         expect(printer((42, 44)), '(int, int)(first: 42)');
       });
       test('omitNull and omitPredicate', () {
-        final printer =
-            ObjectPrinter<(int?,)>.static()..addCallback<int?>(
-              (object) => object.first,
-              omitNull: true,
-              omitPredicate: (object, value) => value!.isEven,
-            );
+        final printer = ObjectPrinter<(int?,)>.static()
+          ..addCallback<int?>(
+            (object) => object.first,
+            omitNull: true,
+            omitPredicate: (object, value) => value!.isEven,
+          );
         expect(printer((1,)), '(int?)(1)');
         expect(printer((2,)), '(int?)');
         expect(printer((null,)), '(int?)');
@@ -2027,17 +2009,15 @@ void main() {
       expect(printer('hello'), 'String("h")');
     });
     test('fieldSeparator', () {
-      final printer =
-          ObjectPrinter<(int, int)>.static(fieldSeparator: ';')
-            ..addCallback<int>((object) => object.first, name: 'first')
-            ..addCallback<int>((object) => object.second, name: 'second');
+      final printer = ObjectPrinter<(int, int)>.static(fieldSeparator: ';')
+        ..addCallback<int>((object) => object.first, name: 'first')
+        ..addCallback<int>((object) => object.second, name: 'second');
       expect(printer((1, 2)), '(int, int)(first: 1;second: 2)');
     });
     test('toString', () {
-      final printer =
-          ObjectPrinter<(int, int)>.dynamic()
-            ..addValue(true)
-            ..addCallback((value) => value);
+      final printer = ObjectPrinter<(int, int)>.dynamic()
+        ..addValue(true)
+        ..addCallback((value) => value);
       expect(printer.toString(), startsWith('ObjectPrinter<(int, int)>'));
     });
   });

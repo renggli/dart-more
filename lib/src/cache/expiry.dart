@@ -97,11 +97,10 @@ class ExpiryCache<K, V> extends Cache<K, V> {
   }
 
   @override
-  ObjectPrinter get toStringPrinter =>
-      super.toStringPrinter
-        ..addValue(cached.length, name: 'size')
-        ..addValue(updateExpiry, name: 'updateExpiry')
-        ..addValue(accessExpiry, name: 'accessExpiry');
+  ObjectPrinter get toStringPrinter => super.toStringPrinter
+    ..addValue(cached.length, name: 'size')
+    ..addValue(updateExpiry, name: 'updateExpiry')
+    ..addValue(accessExpiry, name: 'accessExpiry');
 }
 
 class ExpiryCacheItem<V> extends CacheItem<V> {

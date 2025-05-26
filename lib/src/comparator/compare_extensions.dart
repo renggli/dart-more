@@ -3,10 +3,9 @@ extension ComparableExtension<T> on Comparable<T> {
   bool between(T min, T max) => compareTo(min) >= 0 && compareTo(max) <= 0;
 
   /// Clips (limits) this [Comparable] to the range from [min] to [max].
-  T clip(T min, T max) =>
-      compareTo(min) < 0
-          ? min
-          : compareTo(max) > 0
-          ? max
-          : this as T;
+  T clip(T min, T max) => compareTo(min) < 0
+      ? min
+      : compareTo(max) > 0
+      ? max
+      : this as T;
 }

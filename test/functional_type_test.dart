@@ -54,34 +54,36 @@ void main() {
       expect(function(0, 1, 2, 3, 4, 5, 6, 7), 'default');
     });
     test('constantFunction9', () {
-      final function = constantFunction9<
-        int,
-        int,
-        int,
-        int,
-        int,
-        int,
-        int,
-        int,
-        int,
-        String
-      >('default');
+      final function =
+          constantFunction9<
+            int,
+            int,
+            int,
+            int,
+            int,
+            int,
+            int,
+            int,
+            int,
+            String
+          >('default');
       expect(function(0, 1, 2, 3, 4, 5, 6, 7, 8), 'default');
     });
     test('constantFunction10', () {
-      final function = constantFunction10<
-        int,
-        int,
-        int,
-        int,
-        int,
-        int,
-        int,
-        int,
-        int,
-        int,
-        String
-      >('default');
+      final function =
+          constantFunction10<
+            int,
+            int,
+            int,
+            int,
+            int,
+            int,
+            int,
+            int,
+            int,
+            int,
+            String
+          >('default');
       expect(function(0, 1, 2, 3, 4, 5, 6, 7, 8, 9), 'default');
     });
   });

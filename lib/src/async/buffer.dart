@@ -16,10 +16,9 @@ extension BufferExtension<E> on Stream<E> {
     Duration? maxAge,
   }) {
     final buffer = <E>[];
-    final controller =
-        isBroadcast
-            ? StreamController<List<E>>.broadcast()
-            : StreamController<List<E>>();
+    final controller = isBroadcast
+        ? StreamController<List<E>>.broadcast()
+        : StreamController<List<E>>();
     StreamSubscription<E>? sourceSubscription;
     StreamSubscription<void>? triggerSubscription;
     Timer? maxAgeTimer;

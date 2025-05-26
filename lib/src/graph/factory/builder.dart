@@ -39,8 +39,8 @@ class GraphBuilder<V, E> {
   /// Creates the initial configured graph object.
   static Graph<V, E> create<V, E>(GraphFactory<V, E> builder) =>
       builder.isDirected
-          ? Graph<V, E>.directed(vertexStrategy: builder.vertexStrategy)
-          : Graph<V, E>.undirected(vertexStrategy: builder.vertexStrategy);
+      ? Graph<V, E>.directed(vertexStrategy: builder.vertexStrategy)
+      : Graph<V, E>.undirected(vertexStrategy: builder.vertexStrategy);
 
   /// Completes the final configured graph object.
   Graph<V, E> build() => factory.isUnmodifiable ? graph.unmodifiable : graph;

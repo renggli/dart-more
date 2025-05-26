@@ -60,92 +60,36 @@ extension Tuple6<T1, T2, T3, T4, T5, T6> on (T1, T2, T3, T4, T5, T6) {
   (T1, T2, T3, T4, T5, T) withLast<T>(T value) => ($1, $2, $3, $4, $5, value);
 
   /// Returns a new tuple with [value] added at the first position.
-  (T, T1, T2, T3, T4, T5, T6) addFirst<T>(T value) => (
-    value,
-    $1,
-    $2,
-    $3,
-    $4,
-    $5,
-    $6,
-  );
+  (T, T1, T2, T3, T4, T5, T6) addFirst<T>(T value) =>
+      (value, $1, $2, $3, $4, $5, $6);
 
   /// Returns a new tuple with [value] added at the second position.
-  (T1, T, T2, T3, T4, T5, T6) addSecond<T>(T value) => (
-    $1,
-    value,
-    $2,
-    $3,
-    $4,
-    $5,
-    $6,
-  );
+  (T1, T, T2, T3, T4, T5, T6) addSecond<T>(T value) =>
+      ($1, value, $2, $3, $4, $5, $6);
 
   /// Returns a new tuple with [value] added at the third position.
-  (T1, T2, T, T3, T4, T5, T6) addThird<T>(T value) => (
-    $1,
-    $2,
-    value,
-    $3,
-    $4,
-    $5,
-    $6,
-  );
+  (T1, T2, T, T3, T4, T5, T6) addThird<T>(T value) =>
+      ($1, $2, value, $3, $4, $5, $6);
 
   /// Returns a new tuple with [value] added at the fourth position.
-  (T1, T2, T3, T, T4, T5, T6) addFourth<T>(T value) => (
-    $1,
-    $2,
-    $3,
-    value,
-    $4,
-    $5,
-    $6,
-  );
+  (T1, T2, T3, T, T4, T5, T6) addFourth<T>(T value) =>
+      ($1, $2, $3, value, $4, $5, $6);
 
   /// Returns a new tuple with [value] added at the fifth position.
-  (T1, T2, T3, T4, T, T5, T6) addFifth<T>(T value) => (
-    $1,
-    $2,
-    $3,
-    $4,
-    value,
-    $5,
-    $6,
-  );
+  (T1, T2, T3, T4, T, T5, T6) addFifth<T>(T value) =>
+      ($1, $2, $3, $4, value, $5, $6);
 
   /// Returns a new tuple with [value] added at the sixth position.
-  (T1, T2, T3, T4, T5, T, T6) addSixth<T>(T value) => (
-    $1,
-    $2,
-    $3,
-    $4,
-    $5,
-    value,
-    $6,
-  );
+  (T1, T2, T3, T4, T5, T, T6) addSixth<T>(T value) =>
+      ($1, $2, $3, $4, $5, value, $6);
 
   /// Returns a new tuple with [value] added at the seventh position.
-  (T1, T2, T3, T4, T5, T6, T) addSeventh<T>(T value) => (
-    $1,
-    $2,
-    $3,
-    $4,
-    $5,
-    $6,
-    value,
-  );
+  (T1, T2, T3, T4, T5, T6, T) addSeventh<T>(T value) =>
+      ($1, $2, $3, $4, $5, $6, value);
 
   /// Returns a new tuple with [value] added at the last position.
-  (T1, T2, T3, T4, T5, T6, T) addLast<T>(T value) => (
-    $1,
-    $2,
-    $3,
-    $4,
-    $5,
-    $6,
-    value,
-  );
+  (T1, T2, T3, T4, T5, T6, T) addLast<T>(T value) =>
+      ($1, $2, $3, $4, $5, $6, value);
 
   /// Returns a new tuple with the first element removed.
   (T2, T3, T4, T5, T6) removeFirst() => ($2, $3, $4, $5, $6);

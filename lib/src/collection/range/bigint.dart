@@ -63,12 +63,11 @@ final class BigIntRange extends Range<BigInt> {
   }
 
   factory BigIntRange._of1(BigInt start, BigInt end, BigInt step) {
-    final length =
-        BigInt.zero < step && start < end
-            ? BigInt.one + (end - start - BigInt.one) ~/ step
-            : BigInt.zero > step && start > end
-            ? BigInt.one + (start - end - BigInt.one) ~/ -step
-            : BigInt.zero;
+    final length = BigInt.zero < step && start < end
+        ? BigInt.one + (end - start - BigInt.one) ~/ step
+        : BigInt.zero > step && start > end
+        ? BigInt.one + (start - end - BigInt.one) ~/ -step
+        : BigInt.zero;
     if (!length.isValidInt) {
       throw ArgumentError.value(length, 'length', 'Range exceeds valid length');
     }

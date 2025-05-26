@@ -41,11 +41,10 @@ class Complex implements CloseTo<Complex> {
 
   /// Parses [source] as a [Complex]. Returns `null` in case of a problem.
   static Complex? tryParse(String source) {
-    final parts =
-        numberAndUnitExtractor
-            .allMatches(source.replaceAll(' ', ''))
-            .where((match) => match.start < match.end)
-            .toList();
+    final parts = numberAndUnitExtractor
+        .allMatches(source.replaceAll(' ', ''))
+        .where((match) => match.start < match.end)
+        .toList();
     if (parts.isEmpty) {
       return null;
     }

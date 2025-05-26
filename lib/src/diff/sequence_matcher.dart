@@ -256,12 +256,12 @@ class SequenceMatcher<T> {
     for (final block in matches) {
       final type =
           sourceStart < block.sourceStart && targetStart < block.targetStart
-              ? OperationType.replace
-              : sourceStart < block.sourceStart
-              ? OperationType.delete
-              : targetStart < block.targetStart
-              ? OperationType.insert
-              : null;
+          ? OperationType.replace
+          : sourceStart < block.sourceStart
+          ? OperationType.delete
+          : targetStart < block.targetStart
+          ? OperationType.insert
+          : null;
 
       if (type != null) {
         _operations.add(

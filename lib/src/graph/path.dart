@@ -59,33 +59,31 @@ class Path<V, E> with ToStringPrinter {
       ListEquality<V>().hash(vertices) ^ ListEquality<E>().hash(values);
 
   @override
-  ObjectPrinter get toStringPrinter =>
-      super.toStringPrinter
-        ..addValue(
-          vertices,
-          printer: Printer<V>.standard().iterable(
-            separator: ' → ',
-            leadingItems: 3,
-            trailingItems: 3,
-            afterPrinter:
-                vertices.length > 6
-                    ? Printer.literal(' (${vertices.length} total)')
-                    : null,
-          ),
-        )
-        ..addValue(
-          values,
-          name: 'values',
-          printer: Printer<E>.standard()
-              .iterable(leadingItems: 3, trailingItems: 3)
-              .around('[', ']'),
-          omitPredicate: (values) => values.every((each) => each == null),
-        )
-        ..addValue(
-          this is Path<V, num> ? (this as Path<V, num>).cost : null,
-          name: 'cost',
-          omitNull: true,
-        );
+  ObjectPrinter get toStringPrinter => super.toStringPrinter
+    ..addValue(
+      vertices,
+      printer: Printer<V>.standard().iterable(
+        separator: ' → ',
+        leadingItems: 3,
+        trailingItems: 3,
+        afterPrinter: vertices.length > 6
+            ? Printer.literal(' (${vertices.length} total)')
+            : null,
+      ),
+    )
+    ..addValue(
+      values,
+      name: 'values',
+      printer: Printer<E>.standard()
+          .iterable(leadingItems: 3, trailingItems: 3)
+          .around('[', ']'),
+      omitPredicate: (values) => values.every((each) => each == null),
+    )
+    ..addValue(
+      this is Path<V, num> ? (this as Path<V, num>).cost : null,
+      name: 'cost',
+      omitNull: true,
+    );
 }
 
 extension NumericPathExtension<V> on Path<V, num> {

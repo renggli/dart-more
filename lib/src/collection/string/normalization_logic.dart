@@ -12,8 +12,9 @@ import 'normalization_data.dart';
 // form is involved. For NFC or NFD, it performs a full canonical decomposition.
 // For NFKC or NFKD, it performs a full compatibility decomposition.
 List<int> decompose(List<int> codePoints, {bool compatibility = false}) {
-  final decomposition =
-      compatibility ? compatibilityDecomposition : canonicalDecomposition;
+  final decomposition = compatibility
+      ? compatibilityDecomposition
+      : canonicalDecomposition;
   for (var i = 0; i < codePoints.length;) {
     final codePoint = codePoints[i];
     final replacement = decomposition[codePoint];

@@ -8,15 +8,18 @@ import 'mapping.dart';
 
 extension Partial1<T1, R> on Map1<T1, R> {
   /// Returns a new function with the 0th argument bound to `arg0`.
-  Map0<R> bind0(T1 arg1) => () => this(arg1);
+  Map0<R> bind0(T1 arg1) =>
+      () => this(arg1);
 }
 
 extension Partial2<T1, T2, R> on Map2<T1, T2, R> {
   /// Returns a new function with the 0th argument bound to `arg0`.
-  Map1<T2, R> bind0(T1 arg1) => (T2 arg2) => this(arg1, arg2);
+  Map1<T2, R> bind0(T1 arg1) =>
+      (T2 arg2) => this(arg1, arg2);
 
   /// Returns a new function with the 1st argument bound to `arg1`.
-  Map1<T1, R> bind1(T2 arg2) => (T1 arg1) => this(arg1, arg2);
+  Map1<T1, R> bind1(T2 arg2) =>
+      (T1 arg1) => this(arg1, arg2);
 }
 
 extension Partial3<T1, T2, T3, R> on Map3<T1, T2, T3, R> {

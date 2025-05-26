@@ -16,8 +16,9 @@ extension TapExtension<E> on Stream<E> {
     Callback? onCancel,
     Callback? onDone,
   }) {
-    final controller =
-        isBroadcast ? StreamController<E>.broadcast() : StreamController<E>();
+    final controller = isBroadcast
+        ? StreamController<E>.broadcast()
+        : StreamController<E>();
     late StreamSubscription<E> subscription;
 
     void dispatchOnData(E element) {

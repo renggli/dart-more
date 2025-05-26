@@ -29,24 +29,20 @@ Iterable<Set<V>> bronKerboschCliques<V>(
       continue;
     }
     final pivot = some.isNotEmpty ? some.first : none.first;
-    final vertices =
-        vertexStrategy.createSet()
-          ..addAll(some)
-          ..removeAll(neighboursOf(pivot));
+    final vertices = vertexStrategy.createSet()
+      ..addAll(some)
+      ..removeAll(neighboursOf(pivot));
     for (final vertex in vertices) {
       final neighbours = neighboursOf(vertex);
-      final newAll =
-          vertexStrategy.createSet()
-            ..addAll(all)
-            ..add(vertex);
-      final newSome =
-          vertexStrategy.createSet()
-            ..addAll(some)
-            ..retainAll(neighbours);
-      final newNone =
-          vertexStrategy.createSet()
-            ..addAll(none)
-            ..retainAll(neighbours);
+      final newAll = vertexStrategy.createSet()
+        ..addAll(all)
+        ..add(vertex);
+      final newSome = vertexStrategy.createSet()
+        ..addAll(some)
+        ..retainAll(neighbours);
+      final newNone = vertexStrategy.createSet()
+        ..addAll(none)
+        ..retainAll(neighbours);
       stack.add((all: newAll, some: newSome, none: newNone));
       some.remove(vertex);
       none.add(vertex);

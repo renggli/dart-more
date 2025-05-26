@@ -35,12 +35,11 @@ void main() {
     });
     test('max age', () {
       fakeAsync((async) {
-        final stream =
-            Stream.fromIterable([
-              Stream.fromIterable([1, 2]),
-              Stream.fromFuture(Future.delayed(seconds3, () => 3)),
-              Stream.fromIterable([4, 5]),
-            ]).flatten();
+        final stream = Stream.fromIterable([
+          Stream.fromIterable([1, 2]),
+          Stream.fromFuture(Future.delayed(seconds3, () => 3)),
+          Stream.fromIterable([4, 5]),
+        ]).flatten();
         expectLater(
           stream.buffer(maxAge: seconds1),
           emitsInOrder([
@@ -214,11 +213,10 @@ void main() {
     });
     test('error', () async {
       final events = <String>[];
-      final stream =
-          Stream.fromIterable(<Stream<int>>[
-            Stream.value(42),
-            Stream.error('Expected error'),
-          ]).flatten();
+      final stream = Stream.fromIterable(<Stream<int>>[
+        Stream.value(42),
+        Stream.error('Expected error'),
+      ]).flatten();
       await wrap(events, stream)
           .listen((value) => events.add('value: $value'))
           .asFuture<void>()
@@ -235,18 +233,17 @@ void main() {
     test('pause/resume', () async {
       late StreamSubscription<int> subscription;
       final events = <String>[];
-      final stream =
-          Stream.fromIterable([
-            Stream.value(1),
-            Stream.fromFuture(
-              Future(() {
-                subscription.pause();
-                subscription.resume();
-                return 2;
-              }),
-            ),
-            Stream.value(3),
-          ]).flatten();
+      final stream = Stream.fromIterable([
+        Stream.value(1),
+        Stream.fromFuture(
+          Future(() {
+            subscription.pause();
+            subscription.resume();
+            return 2;
+          }),
+        ),
+        Stream.value(3),
+      ]).flatten();
       subscription = wrap(
         events,
         stream,
@@ -270,14 +267,13 @@ void main() {
     test('cancel', () async {
       StreamSubscription<int> subscription;
       final events = <String>[];
-      final stream =
-          Stream.fromIterable([
-            Stream.value(1),
-            Stream.fromFuture(
-              Future.delayed(const Duration(milliseconds: 10), () => 2),
-            ),
-            Stream.value(3),
-          ]).flatten();
+      final stream = Stream.fromIterable([
+        Stream.value(1),
+        Stream.fromFuture(
+          Future.delayed(const Duration(milliseconds: 10), () => 2),
+        ),
+        Stream.value(3),
+      ]).flatten();
       subscription = wrap(
         events,
         stream,

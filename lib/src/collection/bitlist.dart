@@ -94,10 +94,9 @@ abstract class BitList extends ListBase<bool> {
   /// undefined if [index] is outside of bounds.
   @preferInline
   @noBoundsChecks
-  void setUnchecked(int index, bool value) =>
-      value
-          ? buffer[index >>> bitShift] |= bitSetMask[index & bitOffset]
-          : buffer[index >>> bitShift] &= bitClearMask[index & bitOffset];
+  void setUnchecked(int index, bool value) => value
+      ? buffer[index >>> bitShift] |= bitSetMask[index & bitOffset]
+      : buffer[index >>> bitShift] &= bitClearMask[index & bitOffset];
 
   @override
   BitList operator +(List<bool> other) {

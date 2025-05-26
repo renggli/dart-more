@@ -78,22 +78,19 @@ abstract class Multimap<K, V, VS extends Iterable<V>> {
   void remove(K key, V value) => lookupValues(key).polymorphicRemove(value);
 
   /// Removes associations from [key] to each of [values].
-  void removeAll(K key, [Iterable<V>? values]) =>
-      values == null
-          ? lookupValues(key).polymorphicClear()
-          : lookupValues(key).polymorphicRemoveAll(values);
+  void removeAll(K key, [Iterable<V>? values]) => values == null
+      ? lookupValues(key).polymorphicClear()
+      : lookupValues(key).polymorphicRemoveAll(values);
 
   /// Replaces the [key] with a single [value].
-  void replace(K key, V value) =>
-      lookupValues(key)
-        ..polymorphicClear()
-        ..polymorphicAdd(value);
+  void replace(K key, V value) => lookupValues(key)
+    ..polymorphicClear()
+    ..polymorphicAdd(value);
 
   /// Replaces the [key] with each of the [values].
-  void replaceAll(K key, Iterable<V> values) =>
-      lookupValues(key)
-        ..polymorphicClear()
-        ..polymorphicAddAll(values);
+  void replaceAll(K key, Iterable<V> values) => lookupValues(key)
+    ..polymorphicClear()
+    ..polymorphicAddAll(values);
 
   /// Removes all values from this multimap.
   void clear() {

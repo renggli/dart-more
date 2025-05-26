@@ -112,8 +112,7 @@ class UndirectedEdge<V, E> extends Edge<V, E> {
   int get hashCode => source.hashCode ^ target.hashCode;
 
   @override
-  ObjectPrinter get toStringPrinter =>
-      super.toStringPrinter
-        ..addValue('$source — $target')
-        ..addValue(value, name: 'value', omitNull: true);
+  ObjectPrinter get toStringPrinter => super.toStringPrinter
+    ..addValue('$source — $target')
+    ..addValue(value, name: 'value', omitNull: true);
 }

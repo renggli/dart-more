@@ -1503,21 +1503,19 @@ void main() {
     });
     group('product', () {
       test('2', () {
-        final iterable =
-            [
-              [1, 2],
-            ].product();
+        final iterable = [
+          [1, 2],
+        ].product();
         expect(iterable, [
           [1],
           [2],
         ]);
       });
       test('2 x 2', () {
-        final iterable =
-            [
-              [1, 2],
-              [3, 4],
-            ].product();
+        final iterable = [
+          [1, 2],
+          [3, 4],
+        ].product();
         expect(iterable, [
           [1, 3],
           [1, 4],
@@ -1526,12 +1524,11 @@ void main() {
         ]);
       });
       test('1 x 2 x 3', () {
-        final iterable =
-            [
-              [1],
-              [2, 3],
-              [4, 5, 6],
-            ].product();
+        final iterable = [
+          [1],
+          [2, 3],
+          [4, 5, 6],
+        ].product();
         expect(iterable, [
           [1, 2, 4],
           [1, 2, 5],
@@ -1542,12 +1539,11 @@ void main() {
         ]);
       });
       test('3 x 2 x 1', () {
-        final iterable =
-            [
-              [1, 2, 3],
-              [4, 5],
-              [6],
-            ].product();
+        final iterable = [
+          [1, 2, 3],
+          [4, 5],
+          [6],
+        ].product();
         expect(iterable, [
           [1, 4, 6],
           [1, 5, 6],
@@ -3479,10 +3475,9 @@ void main() {
     });
     group('adding', () {
       test('zero', () {
-        final set =
-            Multiset<String>()
-              ..add('a', 0)
-              ..add('b', 0);
+        final set = Multiset<String>()
+          ..add('a', 0)
+          ..add('b', 0);
         expect(set, isEmpty);
         expect(set, hasLength(0));
         expect(set, unorderedEquals([]));
@@ -3493,11 +3488,10 @@ void main() {
         expect(set.counts, unorderedEquals([]));
       });
       test('single', () {
-        final set =
-            Multiset<String>()
-              ..add('a')
-              ..add('b')
-              ..add('b');
+        final set = Multiset<String>()
+          ..add('a')
+          ..add('b')
+          ..add('b');
         expect(set, isNot(isEmpty));
         expect(set, hasLength(3));
         expect(set, unorderedEquals(['a', 'b', 'b']));
@@ -3511,10 +3505,9 @@ void main() {
         expect(set.counts, unorderedEquals([1, 2]));
       });
       test('multiple', () {
-        final set =
-            Multiset<String>()
-              ..add('a', 2)
-              ..add('b', 3);
+        final set = Multiset<String>()
+          ..add('a', 2)
+          ..add('b', 3);
         expect(set, isNot(isEmpty));
         expect(set, hasLength(5));
         expect(set, unorderedEquals(['a', 'a', 'b', 'b', 'b']));
@@ -4074,14 +4067,12 @@ void main() {
           for (var i = 0; i < 250; i++) {
             final start = random.nextInt(0xffff) - 0xffff ~/ 2;
             final end = random.nextInt(0xffff) - 0xffff ~/ 2;
-            final step =
-                start < end
-                    ? 1 + random.nextInt(0xfff)
-                    : -1 - random.nextInt(0xfff);
-            final expected =
-                start < end
-                    ? <int>[for (var j = start; j < end; j += step) j]
-                    : <int>[for (var j = start; j > end; j += step) j];
+            final step = start < end
+                ? 1 + random.nextInt(0xfff)
+                : -1 - random.nextInt(0xfff);
+            final expected = start < end
+                ? <int>[for (var j = start; j < end; j += step) j]
+                : <int>[for (var j = start; j > end; j += step) j];
             verifyRange(
               IntegerRange(start, end, step),
               included: expected,
@@ -5016,10 +5007,9 @@ void main() {
                   ? 1 + random.nextInt(0xfff)
                   : -1 - random.nextInt(0xfff),
             );
-            final expected =
-                start < end
-                    ? <BigInt>[for (var j = start; j < end; j += step) j]
-                    : <BigInt>[for (var j = start; j > end; j += step) j];
+            final expected = start < end
+                ? <BigInt>[for (var j = start; j < end; j += step) j]
+                : <BigInt>[for (var j = start; j > end; j += step) j];
             verifyRange(
               BigIntRange(start, end, step),
               included: expected,

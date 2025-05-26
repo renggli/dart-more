@@ -26,10 +26,9 @@ sealed class Either<L, R> {
     bool condition,
     Map0<L> leftProvider,
     Map0<R> rightProvider,
-  ) =>
-      condition
-          ? Either<L, R>.left(leftProvider())
-          : Either<L, R>.right(rightProvider());
+  ) => condition
+      ? Either<L, R>.left(leftProvider())
+      : Either<L, R>.right(rightProvider());
 
   /// Creates a left-biased [Either]. This means, if the [leftProvider] returns
   /// a non-null value create a left-sided [Either]. Alternatively, if the

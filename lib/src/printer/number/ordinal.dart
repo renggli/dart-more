@@ -66,11 +66,10 @@ class OrdinalNumberPrinter extends Printer<int> {
   }
 
   @override
-  ObjectPrinter get toStringPrinter =>
-      super.toStringPrinter
-        ..addValue(base, name: 'base')
-        ..addValue(characters, name: 'characters')
-        ..addValue(padding, name: 'padding')
-        ..addValue(separator, name: 'separator')
-        ..addValue(sign, name: 'sign');
+  ObjectPrinter get toStringPrinter => super.toStringPrinter
+    ..addValue(base, name: 'base')
+    ..addValue(characters, name: 'characters')
+    ..addValue(padding, name: 'padding')
+    ..addValue(separator, name: 'separator')
+    ..addValue(sign, name: 'sign');
 }

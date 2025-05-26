@@ -102,11 +102,10 @@ class Quaternion implements CloseTo<Quaternion> {
 
   /// Parses [source] as a [Quaternion]. Returns `null` in case of a problem.
   static Quaternion? tryParse(String source) {
-    final parts =
-        numberAndUnitExtractor
-            .allMatches(source.replaceAll(' ', ''))
-            .where((match) => match.start < match.end)
-            .toList();
+    final parts = numberAndUnitExtractor
+        .allMatches(source.replaceAll(' ', ''))
+        .where((match) => match.start < match.end)
+        .toList();
     if (parts.isEmpty) {
       return null;
     }

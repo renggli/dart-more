@@ -34,14 +34,13 @@ extension AlgorithmsGraphExtension<V, E> on Graph<V, E> {
     num Function(V vertex)? costEstimate,
     bool includeAlternativePaths = false,
     StorageStrategy<V>? vertexStrategy,
-  }) =>
-      shortestPathAll(
-        source,
-        targetPredicate: (vertex) => target == vertex,
-        edgeCost: edgeCost ?? _getDefaultEdgeValueOr(1),
-        costEstimate: costEstimate,
-        vertexStrategy: vertexStrategy ?? this.vertexStrategy,
-      ).firstOrNull;
+  }) => shortestPathAll(
+    source,
+    targetPredicate: (vertex) => target == vertex,
+    edgeCost: edgeCost ?? _getDefaultEdgeValueOr(1),
+    costEstimate: costEstimate,
+    vertexStrategy: vertexStrategy ?? this.vertexStrategy,
+  ).firstOrNull;
 
   /// Performs a search for the shortest paths starting at [source].
   ///
@@ -68,25 +67,24 @@ extension AlgorithmsGraphExtension<V, E> on Graph<V, E> {
     num Function(V target)? costEstimate,
     bool includeAlternativePaths = false,
     StorageStrategy<V>? vertexStrategy,
-  }) =>
-      costEstimate == null
-          ? dijkstraSearch<V>(
-            startVertices: [source],
-            targetPredicate: targetPredicate ?? constantFunction1(true),
-            successorsOf: successorsOf,
-            edgeCost: edgeCost ?? _getDefaultEdgeValueOr(1),
-            includeAlternativePaths: includeAlternativePaths,
-            vertexStrategy: vertexStrategy ?? this.vertexStrategy,
-          )
-          : aStarSearch<V>(
-            startVertices: [source],
-            targetPredicate: targetPredicate ?? constantFunction1(true),
-            successorsOf: successorsOf,
-            costEstimate: costEstimate,
-            edgeCost: edgeCost ?? _getDefaultEdgeValueOr(1),
-            includeAlternativePaths: includeAlternativePaths,
-            vertexStrategy: vertexStrategy ?? this.vertexStrategy,
-          );
+  }) => costEstimate == null
+      ? dijkstraSearch<V>(
+          startVertices: [source],
+          targetPredicate: targetPredicate ?? constantFunction1(true),
+          successorsOf: successorsOf,
+          edgeCost: edgeCost ?? _getDefaultEdgeValueOr(1),
+          includeAlternativePaths: includeAlternativePaths,
+          vertexStrategy: vertexStrategy ?? this.vertexStrategy,
+        )
+      : aStarSearch<V>(
+          startVertices: [source],
+          targetPredicate: targetPredicate ?? constantFunction1(true),
+          successorsOf: successorsOf,
+          costEstimate: costEstimate,
+          edgeCost: edgeCost ?? _getDefaultEdgeValueOr(1),
+          includeAlternativePaths: includeAlternativePaths,
+          vertexStrategy: vertexStrategy ?? this.vertexStrategy,
+        );
 
   /// Returns an object that can compute the maximum flow between different
   /// vertices of this graph using the Dinic max flow algorithm.
@@ -141,21 +139,20 @@ extension AlgorithmsGraphExtension<V, E> on Graph<V, E> {
     num Function(V source, V target)? edgeWeight,
     Comparator<num>? weightComparator,
     StorageStrategy<V>? vertexStrategy,
-  }) =>
-      startVertex == null
-          ? kruskalSpanningTree<V, E>(
-            this,
-            edgeWeight: edgeWeight ?? _getDefaultEdgeValueOr(1),
-            weightComparator: weightComparator ?? naturalComparable<num>,
-            vertexStrategy: vertexStrategy ?? this.vertexStrategy,
-          )
-          : primSpanningTree<V, E>(
-            this,
-            startVertex: startVertex,
-            edgeWeight: edgeWeight ?? _getDefaultEdgeValueOr(1),
-            weightComparator: weightComparator ?? naturalComparable<num>,
-            vertexStrategy: vertexStrategy ?? this.vertexStrategy,
-          );
+  }) => startVertex == null
+      ? kruskalSpanningTree<V, E>(
+          this,
+          edgeWeight: edgeWeight ?? _getDefaultEdgeValueOr(1),
+          weightComparator: weightComparator ?? naturalComparable<num>,
+          vertexStrategy: vertexStrategy ?? this.vertexStrategy,
+        )
+      : primSpanningTree<V, E>(
+          this,
+          startVertex: startVertex,
+          edgeWeight: edgeWeight ?? _getDefaultEdgeValueOr(1),
+          weightComparator: weightComparator ?? naturalComparable<num>,
+          vertexStrategy: vertexStrategy ?? this.vertexStrategy,
+        );
 
   /// Returns the strongly connected components in this directed graph. The
   /// implementation uses the Tarjan's algorithm and runs in linear time.
@@ -183,6 +180,6 @@ extension AlgorithmsGraphExtension<V, E> on Graph<V, E> {
   /// of this graph, or otherwise a constant value for each edge.
   num Function(V source, V target) _getDefaultEdgeValueOr(num value) =>
       this is Graph<V, num>
-          ? (source, target) => getEdge(source, target)!.value as num
-          : constantFunction2(value);
+      ? (source, target) => getEdge(source, target)!.value as num
+      : constantFunction2(value);
 }

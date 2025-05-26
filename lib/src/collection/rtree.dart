@@ -33,19 +33,22 @@ abstract class RTree<T> {
     final entry = RTreeEntry<T>(bound, data: data);
     final node = chooseLeaf(entry);
     node.entries.add(entry);
-    final splitNode =
-        node.entries.length > maxEntries ? overflowStrategy(node) : null;
+    final splitNode = node.entries.length > maxEntries
+        ? overflowStrategy(node)
+        : null;
     adjustTree(node, splitNode);
     return entry;
   }
 
   /// Queries leaf entries for a location (either a point or a rectangle),
   /// returning an iterable.
-  Iterable<RTreeEntry<T>> queryEntries(Bounds bounds) => searchNodes(
-    nodePredicate: (node) => node.bounds.intersects(bounds),
-  ).expand(
-    (node) => node.entries.where((entry) => entry.bounds.intersects(bounds)),
-  );
+  Iterable<RTreeEntry<T>> queryEntries(Bounds bounds) =>
+      searchNodes(
+        nodePredicate: (node) => node.bounds.intersects(bounds),
+      ).expand(
+        (node) =>
+            node.entries.where((entry) => entry.bounds.intersects(bounds)),
+      );
 
   /// Queries nodes for a location (either a point or a rectangle), returning an
   /// iterable. By default, this method returns only leaf nodes, though
@@ -86,10 +89,9 @@ abstract class RTree<T> {
     Predicate1<RTreeNode<T>>? nodePredicate,
     bool leaves = true,
   }) {
-    final callback =
-        leaves
-            ? (RTreeNode<T> node) => (node.isLeaf ? [node] : <RTreeNode<T>>[])
-            : (RTreeNode<T> node) => [node];
+    final callback = leaves
+        ? (RTreeNode<T> node) => (node.isLeaf ? [node] : <RTreeNode<T>>[])
+        : (RTreeNode<T> node) => [node];
     return traverse(callback, condition: nodePredicate);
   }
 

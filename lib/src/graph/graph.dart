@@ -92,32 +92,29 @@ abstract class Graph<V, E> with ToStringPrinter {
   void removeEdge(V source, V target);
 
   @override
-  ObjectPrinter get toStringPrinter =>
-      super.toStringPrinter
-        ..addValue(
-          vertices,
-          name: 'vertices',
-          printer: Printer<V>.standard().iterable(
-            leadingItems: 3,
-            trailingItems: 0,
-            emptyPrinter: const Printer.literal('∅'),
-            afterPrinter:
-                vertices.length > 3
-                    ? Printer.literal(' (${vertices.length} total)')
-                    : null,
-          ),
-        )
-        ..addValue(
-          edges,
-          name: 'edges',
-          printer: Printer<Edge<V, E>>.standard().iterable(
-            leadingItems: 3,
-            trailingItems: 0,
-            emptyPrinter: const Printer.literal('∅'),
-            afterPrinter:
-                edges.length > 3
-                    ? Printer.literal(' (${edges.length} total)')
-                    : null,
-          ),
-        );
+  ObjectPrinter get toStringPrinter => super.toStringPrinter
+    ..addValue(
+      vertices,
+      name: 'vertices',
+      printer: Printer<V>.standard().iterable(
+        leadingItems: 3,
+        trailingItems: 0,
+        emptyPrinter: const Printer.literal('∅'),
+        afterPrinter: vertices.length > 3
+            ? Printer.literal(' (${vertices.length} total)')
+            : null,
+      ),
+    )
+    ..addValue(
+      edges,
+      name: 'edges',
+      printer: Printer<Edge<V, E>>.standard().iterable(
+        leadingItems: 3,
+        trailingItems: 0,
+        emptyPrinter: const Printer.literal('∅'),
+        afterPrinter: edges.length > 3
+            ? Printer.literal(' (${edges.length} total)')
+            : null,
+      ),
+    );
 }

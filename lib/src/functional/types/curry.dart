@@ -9,20 +9,25 @@ import 'mapping.dart';
 extension Curry1<T1, R> on Map1<T1, R> {
   /// Converts a function with 1 positional arguments into a sequence of 1
   /// functions taking a single argument.
-  Map1<T1, R> get curry => (T1 arg1) => this(arg1);
+  Map1<T1, R> get curry =>
+      (T1 arg1) => this(arg1);
 }
 
 extension Curry2<T1, T2, R> on Map2<T1, T2, R> {
   /// Converts a function with 2 positional arguments into a sequence of 2
   /// functions taking a single argument.
-  Map1<T1, Map1<T2, R>> get curry => (T1 arg1) => (T2 arg2) => this(arg1, arg2);
+  Map1<T1, Map1<T2, R>> get curry =>
+      (T1 arg1) =>
+          (T2 arg2) => this(arg1, arg2);
 }
 
 extension Curry3<T1, T2, T3, R> on Map3<T1, T2, T3, R> {
   /// Converts a function with 3 positional arguments into a sequence of 3
   /// functions taking a single argument.
   Map1<T1, Map1<T2, Map1<T3, R>>> get curry =>
-      (T1 arg1) => (T2 arg2) => (T3 arg3) => this(arg1, arg2, arg3);
+      (T1 arg1) =>
+          (T2 arg2) =>
+              (T3 arg3) => this(arg1, arg2, arg3);
 }
 
 extension Curry4<T1, T2, T3, T4, R> on Map4<T1, T2, T3, T4, R> {
@@ -30,7 +35,9 @@ extension Curry4<T1, T2, T3, T4, R> on Map4<T1, T2, T3, T4, R> {
   /// functions taking a single argument.
   Map1<T1, Map1<T2, Map1<T3, Map1<T4, R>>>> get curry =>
       (T1 arg1) =>
-          (T2 arg2) => (T3 arg3) => (T4 arg4) => this(arg1, arg2, arg3, arg4);
+          (T2 arg2) =>
+              (T3 arg3) =>
+                  (T4 arg4) => this(arg1, arg2, arg3, arg4);
 }
 
 extension Curry5<T1, T2, T3, T4, T5, R> on Map5<T1, T2, T3, T4, T5, R> {
@@ -40,7 +47,8 @@ extension Curry5<T1, T2, T3, T4, T5, R> on Map5<T1, T2, T3, T4, T5, R> {
       (T1 arg1) =>
           (T2 arg2) =>
               (T3 arg3) =>
-                  (T4 arg4) => (T5 arg5) => this(arg1, arg2, arg3, arg4, arg5);
+                  (T4 arg4) =>
+                      (T5 arg5) => this(arg1, arg2, arg3, arg4, arg5);
 }
 
 extension Curry6<T1, T2, T3, T4, T5, T6, R> on Map6<T1, T2, T3, T4, T5, T6, R> {

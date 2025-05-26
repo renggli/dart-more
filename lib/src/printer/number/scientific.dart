@@ -123,19 +123,18 @@ class ScientificNumberPrinter<T extends num> extends Printer<T> {
   }
 
   @override
-  ObjectPrinter get toStringPrinter =>
-      super.toStringPrinter
-        ..addValue(base, name: 'base')
-        ..addValue(characters, name: 'characters')
-        ..addValue(delimiter, name: 'delimiter')
-        ..addValue(exponentPadding, name: 'exponentPadding')
-        ..addValue(exponentSign, name: 'exponentSign')
-        ..addValue(infinity, name: 'infinity')
-        ..addValue(mantissaPadding, name: 'mantissaPadding')
-        ..addValue(mantissaSign, name: 'mantissaSign')
-        ..addValue(nan, name: 'nan')
-        ..addValue(notation, name: 'notation')
-        ..addValue(precision, name: 'precision')
-        ..addValue(separator, name: 'separator')
-        ..addValue(significant, name: 'significant');
+  ObjectPrinter get toStringPrinter => super.toStringPrinter
+    ..addValue(base, name: 'base')
+    ..addValue(characters, name: 'characters')
+    ..addValue(delimiter, name: 'delimiter')
+    ..addValue(exponentPadding, name: 'exponentPadding')
+    ..addValue(exponentSign, name: 'exponentSign')
+    ..addValue(infinity, name: 'infinity')
+    ..addValue(mantissaPadding, name: 'mantissaPadding')
+    ..addValue(mantissaSign, name: 'mantissaSign')
+    ..addValue(nan, name: 'nan')
+    ..addValue(notation, name: 'notation')
+    ..addValue(precision, name: 'precision')
+    ..addValue(separator, name: 'separator')
+    ..addValue(significant, name: 'significant');
 }

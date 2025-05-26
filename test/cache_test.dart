@@ -81,10 +81,9 @@ void cacheEvictionTest(
   List<int> load,
   List<int> present,
 ) {
-  final absent =
-      <int>{}
-        ..addAll(load)
-        ..removeAll(present);
+  final absent = <int>{}
+    ..addAll(load)
+    ..removeAll(present);
 
   test(name, () async {
     final cache = newCache(immediateLoader);

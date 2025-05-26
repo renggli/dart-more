@@ -51,10 +51,9 @@ extension ExportGraphExtension<V, E> on Graph<V, E> {
     return buffer.toString();
   }
 
-  String _encodeId(String input) =>
-      _validId.matchAsPrefix(input) == null
-          ? '"${input.replaceAll('"', '\\"')}"'
-          : input;
+  String _encodeId(String input) => _validId.matchAsPrefix(input) == null
+      ? '"${input.replaceAll('"', '\\"')}"'
+      : input;
 
   Iterable<String> _encodeAttributes(Map<String, String> attributes) =>
       attributes.entries
