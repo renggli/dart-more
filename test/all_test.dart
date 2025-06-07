@@ -15,6 +15,7 @@ import 'math_test.dart' as math_test;
 import 'number_test.dart' as number_test;
 import 'pragma_test.dart' as pragma_test;
 import 'printer_test.dart' as printer_test;
+import 'shared_test.dart' as shared_test;
 import 'temporal_test.dart' as temporal_test;
 import 'tuple_test.dart' as tuple_test;
 
@@ -34,6 +35,7 @@ void main() {
   group('number', number_test.main);
   group('pragma', pragma_test.main);
   group('printer', printer_test.main);
+  group('shared', shared_test.main);
   group('temporal', temporal_test.main);
   group('tuple', tuple_test.main);
 }
