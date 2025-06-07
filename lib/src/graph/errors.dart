@@ -16,6 +16,23 @@ class GraphError extends ArgumentError {
     }
   }
 
+  /// Assert that the edge [value] between [source] and [target] vertex is
+  /// positive.
+  static void checkPositiveEdgeValue<V, E extends num>(
+    V source,
+    V target,
+    E value,
+  ) {
+    if (value < 0) {
+      throw GraphError(
+        null,
+        null,
+        'Expected a positive edge value between $source and $target, '
+        'but got $value.',
+      );
+    }
+  }
+
   /// Asserts that the [graph] has at least at least [count] vertices.
   static void checkVertexCount<V, E>(
     Graph<V, E> graph,

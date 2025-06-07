@@ -35,7 +35,7 @@ class StoerWagnerMinCut<V, E> {
     }
     for (final edge in graph.edges.unique()) {
       final weight = edgeWeight(edge.source, edge.target);
-      assert(weight >= 0, 'Expected positive edge weight for $edge');
+      GraphError.checkPositiveEdgeValue(edge.source, edge.target, weight);
       _workingGraph.addEdge(
         vertexMap[edge.source]!,
         vertexMap[edge.target]!,

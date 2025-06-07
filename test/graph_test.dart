@@ -2463,6 +2463,17 @@ void main() {
           ]),
         );
       });
+      test('unsupported negative edges', () {
+        expect(() => bellmanFordGraph.shortestPath('s', 'z'), throwsGraphError);
+        expect(
+          () => bellmanFordGraph.shortestPath(
+            's',
+            'z',
+            costEstimate: constantFunction1(1),
+          ),
+          throwsGraphError,
+        );
+      });
       test('bellman-ford graph with negative edges', () {
         expect(
           bellmanFordGraph.shortestPath('s', 'z', hasNegativeEdges: true),
@@ -2493,7 +2504,7 @@ void main() {
           ..addEdge(2, 0, value: -1);
         expect(
           () => graph.shortestPath(0, 2, hasNegativeEdges: true),
-          throwsA(isA<GraphError>()),
+          throwsGraphError,
         );
       });
       test('directed graph with negative edge and positive cycle', () {

@@ -1,6 +1,7 @@
 import 'package:collection/collection.dart';
 
 import '../../../../functional.dart';
+import '../../errors.dart';
 import '../../path.dart';
 import '../../strategy.dart';
 import 'utils.dart';
@@ -32,11 +33,7 @@ Iterable<Path<V, num>> dijkstraSearch<V>({
     if (sourceState.isObsolete) continue;
     for (final target in successorsOf(sourceState.vertex)) {
       final value = edgeCost(sourceState.vertex, target);
-      assert(
-        value >= 0,
-        'Expected positive edge weight between '
-        '${sourceState.vertex} and $target',
-      );
+      GraphError.checkPositiveEdgeValue(sourceState.vertex, target, value);
       final total = sourceState.total + value;
       final targetState = states[target];
       if (targetState == null || total < targetState.total) {
