@@ -128,6 +128,20 @@ final dijkstraGraph = Graph<int, int>.undirected()
   ..addEdge(4, 5, value: 6)
   ..addEdge(5, 6, value: 9);
 
+// Directed graph with negative edges.
+// https://commons.wikimedia.org/wiki/File:Bellman%E2%80%93Ford_algorithm_example.gif
+final bellmanFordGraph = Graph<String, int>.directed()
+  ..addEdge('s', 't', value: 6)
+  ..addEdge('s', 'y', value: 7)
+  ..addEdge('t', 'x', value: 5)
+  ..addEdge('t', 'y', value: 8)
+  ..addEdge('t', 'z', value: -4)
+  ..addEdge('y', 'x', value: -3)
+  ..addEdge('y', 'z', value: 9)
+  ..addEdge('x', 't', value: -2)
+  ..addEdge('z', 'x', value: 7)
+  ..addEdge('z', 's', value: 2);
+
 void expectInvariants<V, E>(Graph<V, E> graph) {
   for (final vertex in graph.vertices) {
     for (final edge in graph.edgesOf(vertex)) {
@@ -2449,6 +2463,47 @@ void main() {
           ]),
         );
       });
+      test('bellman-ford graph with negative edges', () {
+        expect(
+          bellmanFordGraph.shortestPath('s', 'z', hasNegativeEdges: true),
+          isPath(vertices: ['s', 'y', 'x', 't', 'z'], cost: -2),
+        );
+        expect(
+          bellmanFordGraph.shortestPathAll('s', hasNegativeEdges: true),
+          unorderedEquals([
+            isPath(vertices: ['s'], cost: 0),
+            isPath(vertices: ['s', 'y'], cost: 7),
+            isPath(vertices: ['s', 'y', 'x'], cost: 4),
+            isPath(vertices: ['s', 'y', 'x', 't'], cost: 2),
+            isPath(vertices: ['s', 'y', 'x', 't', 'z'], cost: -2),
+          ]),
+        );
+      });
+      test('directed graph with negative edge', () {
+        final graph = Graph<int, int>.directed()
+          ..addEdge(0, 1, value: -2)
+          ..addEdge(1, 2, value: 3);
+        final path = graph.shortestPath(0, 2, hasNegativeEdges: true);
+        expect(path, isPath(source: 0, target: 2, cost: 1));
+      });
+      test('directed graph with negative cycle', () {
+        final graph = Graph<int, int>.directed()
+          ..addEdge(0, 1, value: -2)
+          ..addEdge(1, 2, value: -3)
+          ..addEdge(2, 0, value: -1);
+        expect(
+          () => graph.shortestPath(0, 2, hasNegativeEdges: true),
+          throwsA(isA<GraphError>()),
+        );
+      });
+      test('directed graph with negative edge and positive cycle', () {
+        final graph = Graph<int, int>.directed()
+          ..addEdge(0, 1, value: -2)
+          ..addEdge(1, 2, value: 3)
+          ..addEdge(2, 0, value: 1);
+        final path = graph.shortestPath(0, 2, hasNegativeEdges: true);
+        expect(path, isPath(source: 0, target: 2, cost: 1));
+      });
       group('hills', () {
         final hills = [
           '00000002345677899876543355557775557777',
@@ -2561,6 +2616,39 @@ void main() {
             ),
           );
         });
+        test('bellman-ford', () {
+          final search = bellmanFordSearch<Point<int>>(
+            startVertices: [source],
+            targetPredicate: targetPredicate,
+            successorsOf: successorsOf,
+          );
+          expect(
+            search.single,
+            isPath(
+              source: source,
+              target: target,
+              vertices: hasLength(46),
+              cost: 45,
+            ),
+          );
+        });
+        test('bellman-ford (custom cost)', () {
+          final search = bellmanFordSearch<Point<int>>(
+            startVertices: [source],
+            targetPredicate: targetPredicate,
+            successorsOf: successorsOf,
+            edgeCost: edgeCost,
+          );
+          expect(
+            search.single,
+            isPath(
+              source: source,
+              target: target,
+              vertices: hasLength(47),
+              cost: closeTo(63.79, 0.1),
+            ),
+          );
+        });
       });
       group('maze', () {
         final maze = [
@@ -2655,6 +2743,21 @@ void main() {
               targetPredicate: targetPredicate,
               successorsOf: successorsOf,
               costEstimate: (vertex) => generator.nextDouble(),
+            ).single,
+            isPath(
+              source: source,
+              target: target,
+              vertices: solution,
+              cost: solution.length - 1,
+            ),
+          );
+        });
+        test('bellman-ford', () {
+          expect(
+            bellmanFordSearch<Point<int>>(
+              startVertices: [source],
+              targetPredicate: targetPredicate,
+              successorsOf: successorsOf,
             ).single,
             isPath(
               source: source,

@@ -9,6 +9,7 @@ export 'src/graph/algorithms/kruskal_spanning_tree.dart'
     show kruskalSpanningTree;
 export 'src/graph/algorithms/prim_spanning_tree.dart' show primSpanningTree;
 export 'src/graph/algorithms/search/a_star.dart' show aStarSearch;
+export 'src/graph/algorithms/search/bellman_ford.dart' show bellmanFordSearch;
 export 'src/graph/algorithms/search/dijkstra.dart' show dijkstraSearch;
 export 'src/graph/algorithms/stoer_wagner_min_cut.dart' show StoerWagnerMinCut;
 export 'src/graph/algorithms/tarjan_strongly_connected.dart'

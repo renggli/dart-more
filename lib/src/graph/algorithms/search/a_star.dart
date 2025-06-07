@@ -49,11 +49,11 @@ Iterable<Path<V, num>> aStarSearch<V>({
           total: total,
           estimate: estimate,
         );
-        state.parents.add(sourceState);
+        state.predecessors.add(sourceState);
         states[target] = state;
         queue.add(state);
       } else if (total == targetState.total) {
-        targetState.parents.add(sourceState);
+        targetState.predecessors.add(sourceState);
       }
     }
     if (targetPredicate(sourceState.vertex)) {
@@ -69,10 +69,16 @@ Iterable<Path<V, num>> aStarSearch<V>({
 final class AStarState<V> extends SearchState<V, num> {
   AStarState({
     required super.vertex,
-    super.value = 0,
-    this.total = 0,
     required this.estimate,
+    this.value = 0,
+    this.total = 0,
   });
+
+  @override
+  final num value;
+
+  @override
+  final List<AStarState<V>> predecessors = [];
 
   final num total;
   final num estimate;

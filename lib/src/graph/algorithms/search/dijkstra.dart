@@ -46,11 +46,11 @@ Iterable<Path<V, num>> dijkstraSearch<V>({
           value: value,
           total: total,
         );
-        state.parents.add(sourceState);
+        state.predecessors.add(sourceState);
         states[target] = state;
         queue.add(state);
       } else if (total == targetState.total) {
-        targetState.parents.add(sourceState);
+        targetState.predecessors.add(sourceState);
       }
     }
     if (targetPredicate(sourceState.vertex)) {
@@ -64,8 +64,14 @@ Iterable<Path<V, num>> dijkstraSearch<V>({
 }
 
 final class DijkstraState<V> extends SearchState<V, num> {
-  DijkstraState({required super.vertex, super.value = 0, this.total = 0})
+  DijkstraState({required super.vertex, this.value = 0, this.total = 0})
     : super();
+
+  @override
+  final num value;
+
+  @override
+  final List<DijkstraState<V>> predecessors = [];
 
   final num total;
   bool isObsolete = false;

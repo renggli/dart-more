@@ -8,6 +8,7 @@ import 'algorithms/dinic_max_flow.dart';
 import 'algorithms/kruskal_spanning_tree.dart';
 import 'algorithms/prim_spanning_tree.dart';
 import 'algorithms/search/a_star.dart';
+import 'algorithms/search/bellman_ford.dart';
 import 'algorithms/search/dijkstra.dart';
 import 'algorithms/stoer_wagner_min_cut.dart';
 import 'algorithms/tarjan_strongly_connected.dart';
@@ -33,12 +34,15 @@ extension AlgorithmsGraphExtension<V, E> on Graph<V, E> {
     num Function(V source, V target)? edgeCost,
     num Function(V vertex)? costEstimate,
     bool includeAlternativePaths = false,
+    bool hasNegativeEdges = false,
     StorageStrategy<V>? vertexStrategy,
   }) => shortestPathAll(
     source,
     targetPredicate: (vertex) => target == vertex,
     edgeCost: edgeCost ?? _getDefaultEdgeValueOr(1),
     costEstimate: costEstimate,
+    includeAlternativePaths: includeAlternativePaths,
+    hasNegativeEdges: hasNegativeEdges,
     vertexStrategy: vertexStrategy ?? this.vertexStrategy,
   ).firstOrNull;
 
@@ -56,6 +60,9 @@ extension AlgorithmsGraphExtension<V, E> on Graph<V, E> {
   ///   provided vertex. If an estimate is provided a faster _A*-Search_ is
   ///   performed, otherwise a _Dijkstra Search_.
   ///
+  /// - If [hasNegativeEdges] is set to `true`, the slower Bellman–Ford
+  ///   algorithm is used to compute the shortest path.
+  ///
   /// - If [includeAlternativePaths] is set to `true`, multiple equal cost
   ///   paths to the same target are returned. The default is to not include
   ///   such alternatives.
@@ -66,25 +73,44 @@ extension AlgorithmsGraphExtension<V, E> on Graph<V, E> {
     num Function(V source, V target)? edgeCost,
     num Function(V target)? costEstimate,
     bool includeAlternativePaths = false,
+    bool hasNegativeEdges = false,
     StorageStrategy<V>? vertexStrategy,
-  }) => costEstimate == null
-      ? dijkstraSearch<V>(
-          startVertices: [source],
-          targetPredicate: targetPredicate ?? constantFunction1(true),
-          successorsOf: successorsOf,
-          edgeCost: edgeCost ?? _getDefaultEdgeValueOr(1),
-          includeAlternativePaths: includeAlternativePaths,
-          vertexStrategy: vertexStrategy ?? this.vertexStrategy,
-        )
-      : aStarSearch<V>(
-          startVertices: [source],
-          targetPredicate: targetPredicate ?? constantFunction1(true),
-          successorsOf: successorsOf,
-          costEstimate: costEstimate,
-          edgeCost: edgeCost ?? _getDefaultEdgeValueOr(1),
-          includeAlternativePaths: includeAlternativePaths,
-          vertexStrategy: vertexStrategy ?? this.vertexStrategy,
-        );
+  }) {
+    if (costEstimate != null && hasNegativeEdges) {
+      throw ArgumentError.value(
+        costEstimate,
+        'costEstimate',
+        'A cost estimate cannot be provided together with negative edges',
+      );
+    }
+    return hasNegativeEdges
+        ? bellmanFordSearch<V>(
+            startVertices: [source],
+            targetPredicate: targetPredicate ?? constantFunction1(true),
+            successorsOf: successorsOf,
+            edgeCost: edgeCost ?? _getDefaultEdgeValueOr(1),
+            includeAlternativePaths: includeAlternativePaths,
+            vertexStrategy: vertexStrategy ?? this.vertexStrategy,
+          )
+        : costEstimate == null
+        ? dijkstraSearch<V>(
+            startVertices: [source],
+            targetPredicate: targetPredicate ?? constantFunction1(true),
+            successorsOf: successorsOf,
+            edgeCost: edgeCost ?? _getDefaultEdgeValueOr(1),
+            includeAlternativePaths: includeAlternativePaths,
+            vertexStrategy: vertexStrategy ?? this.vertexStrategy,
+          )
+        : aStarSearch<V>(
+            startVertices: [source],
+            targetPredicate: targetPredicate ?? constantFunction1(true),
+            successorsOf: successorsOf,
+            costEstimate: costEstimate,
+            edgeCost: edgeCost ?? _getDefaultEdgeValueOr(1),
+            includeAlternativePaths: includeAlternativePaths,
+            vertexStrategy: vertexStrategy ?? this.vertexStrategy,
+          );
+  }
 
   /// Returns an object that can compute the maximum flow between different
   /// vertices of this graph using the Dinic max flow algorithm.
