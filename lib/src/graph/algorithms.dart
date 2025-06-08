@@ -10,6 +10,7 @@ import 'algorithms/prim_spanning_tree.dart';
 import 'algorithms/search/a_star.dart';
 import 'algorithms/search/bellman_ford.dart';
 import 'algorithms/search/dijkstra.dart';
+import 'algorithms/search/floyd_warshall.dart';
 import 'algorithms/stoer_wagner_min_cut.dart';
 import 'algorithms/tarjan_strongly_connected.dart';
 import 'errors.dart';
@@ -111,6 +112,22 @@ extension AlgorithmsGraphExtension<V, E> on Graph<V, E> {
             vertexStrategy: vertexStrategy ?? this.vertexStrategy,
           );
   }
+
+  /// Computes all shortest paths between all pairs of vertices in a graph.
+  ///
+  /// - [edgeCost] is a function that returns the cost to traverse an edge
+  ///   between two vertices. If no function is provided, the numeric edge
+  ///   value or a constant weight of _1_ is used.
+  ///
+  FloydWarshall<V> allShortestPaths({
+    num Function(V source, V target)? edgeCost,
+    StorageStrategy<V>? vertexStrategy,
+  }) => floydWarshallSearch(
+    vertices: vertices,
+    successorsOf: successorsOf,
+    edgeCost: edgeCost ?? _getDefaultEdgeValueOr(1),
+    vertexStrategy: vertexStrategy ?? this.vertexStrategy,
+  );
 
   /// Returns an object that can compute the maximum flow between different
   /// vertices of this graph using the Dinic max flow algorithm.

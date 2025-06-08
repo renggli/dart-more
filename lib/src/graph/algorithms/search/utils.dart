@@ -5,12 +5,12 @@ import '../../path.dart';
 
 /// Abstract helper for search algorithms to represent vertex specific state.
 abstract class SearchState<V, E> {
-  SearchState({required this.vertex});
+  SearchState();
 
   /// The vertex of this state.
-  final V vertex;
+  V get vertex;
 
-  /// The edge value from the predecessors to the vertex.
+  /// The value of the edge from the predecessors to the vertex.
   E get value;
 
   /// The predecessors of the vertex (typically just one).

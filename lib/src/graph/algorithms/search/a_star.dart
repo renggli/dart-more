@@ -63,13 +63,16 @@ Iterable<Path<V, num>> aStarSearch<V>({
   }
 }
 
-final class AStarState<V> extends SearchState<V, num> {
+final class AStarState<V> implements SearchState<V, num> {
   AStarState({
-    required super.vertex,
+    required this.vertex,
     required this.estimate,
     this.value = 0,
     this.total = 0,
   });
+
+  @override
+  final V vertex;
 
   @override
   final num value;

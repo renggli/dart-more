@@ -28,7 +28,7 @@ class GraphError extends ArgumentError {
         null,
         null,
         'Expected a positive edge value between $source and $target, '
-        'but got $value.',
+        'but got $value',
       );
     }
   }

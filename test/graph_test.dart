@@ -2282,13 +2282,21 @@ void main() {
     group('search', () {
       test('directed path', () {
         final graph = GraphFactory<int, void>().path(vertexCount: 10);
+        final allShortestPaths = graph.allShortestPaths();
         for (var i = 0; i < 10; i++) {
           expect(
             graph.shortestPath(0, i),
             isPath(source: 0, target: i, cost: i),
           );
+          expect(allShortestPaths.distance(0, i), i);
+          expect(
+            allShortestPaths.path(0, i),
+            isPath(source: 0, target: i, cost: i),
+          );
           if (i != 0) {
             expect(graph.shortestPath(i, 0), isNull);
+            expect(allShortestPaths.distance(i, 0), double.infinity);
+            expect(allShortestPaths.path(i, 0), isNull);
           }
         }
       });
@@ -2322,16 +2330,23 @@ void main() {
       });
       test('directed path with cost', () {
         final graph = GraphFactory<int, void>().path(vertexCount: 10);
+        int edgeCost(int _, int target) => target;
+        final allShortestPaths = graph.allShortestPaths(edgeCost: edgeCost);
         for (var i = 0; i < 10; i++) {
+          final cost = i * (i + 1) ~/ 2;
           expect(
-            graph.shortestPath(0, i, edgeCost: (source, target) => target),
-            isPath(source: 0, target: i, cost: i * (i + 1) ~/ 2),
+            graph.shortestPath(0, i, edgeCost: edgeCost),
+            isPath(source: 0, target: i, cost: cost),
+          );
+          expect(allShortestPaths.distance(0, i), cost);
+          expect(
+            allShortestPaths.path(0, i),
+            isPath(source: 0, target: i, cost: cost),
           );
           if (i != 0) {
-            expect(
-              graph.shortestPath(i, 0, edgeCost: (source, target) => target),
-              isNull,
-            );
+            expect(graph.shortestPath(i, 0, edgeCost: edgeCost), isNull);
+            expect(allShortestPaths.distance(i, 0), double.infinity);
+            expect(allShortestPaths.path(i, 0), isNull);
           }
         }
       });
@@ -2339,26 +2354,22 @@ void main() {
         final graph = GraphFactory<int, int>(
           edgeProvider: (source, target) => target,
         ).path(vertexCount: 10);
+        final allShortestPaths = graph.allShortestPaths();
         for (var i = 0; i < 10; i++) {
+          final cost = i * (i + 1) ~/ 2;
           expect(
-            graph.shortestPath(
-              0,
-              i,
-              edgeCost: (source, target) =>
-                  graph.getEdge(source, target)!.value,
-            ),
-            isPath(source: 0, target: i, cost: i * (i + 1) ~/ 2),
+            graph.shortestPath(0, i),
+            isPath(source: 0, target: i, cost: cost),
+          );
+          expect(allShortestPaths.distance(0, i), cost);
+          expect(
+            allShortestPaths.path(0, i),
+            isPath(source: 0, target: i, cost: cost),
           );
           if (i != 0) {
-            expect(
-              graph.shortestPath(
-                i,
-                0,
-                edgeCost: (source, target) =>
-                    graph.getEdge(source, target)!.value,
-              ),
-              isNull,
-            );
+            expect(graph.shortestPath(i, 0), isNull);
+            expect(allShortestPaths.distance(i, 0), double.infinity);
+            expect(allShortestPaths.path(i, 0), isNull);
           }
         }
       });
@@ -2366,6 +2377,7 @@ void main() {
         final graph = GraphFactory<int, void>(
           isDirected: false,
         ).path(vertexCount: 10);
+        final allShortestPaths = graph.allShortestPaths();
         for (var i = 0; i < 10; i++) {
           expect(
             graph.shortestPath(0, i),
@@ -2375,33 +2387,17 @@ void main() {
             graph.shortestPath(i, 0),
             isPath(source: i, target: 0, cost: i),
           );
+          expect(allShortestPaths.distance(0, i), i);
+          expect(
+            allShortestPaths.path(0, i),
+            isPath(source: 0, target: i, cost: i),
+          );
+          expect(allShortestPaths.distance(i, 0), i);
+          expect(
+            allShortestPaths.path(i, 0),
+            isPath(source: i, target: 0, cost: i),
+          );
         }
-      });
-      test('undirected graph', () {
-        expect(
-          dijkstraGraph.shortestPath(
-            1,
-            5,
-            edgeCost: (source, target) =>
-                dijkstraGraph.getEdge(source, target)!.value,
-          ),
-          isPath(source: 1, target: 5, vertices: [1, 3, 6, 5], cost: 20),
-        );
-        expect(
-          dijkstraGraph.shortestPathAll(
-            1,
-            edgeCost: (source, target) =>
-                dijkstraGraph.getEdge(source, target)!.value,
-          ),
-          unorderedEquals([
-            isPath(vertices: [1], cost: 0),
-            isPath(vertices: [1, 2], cost: 7),
-            isPath(vertices: [1, 3], cost: 9),
-            isPath(vertices: [1, 3, 6], cost: 11),
-            isPath(vertices: [1, 3, 6, 5], cost: 20),
-            isPath(vertices: [1, 3, 4], cost: 20),
-          ]),
-        );
       });
       test('undirected graph with edge cost', () {
         expect(
@@ -2419,6 +2415,47 @@ void main() {
             isPath(vertices: [1, 3, 6, 5], cost: 20),
           ]),
         );
+        expect(
+          dijkstraGraph.allShortestPaths().allPaths(),
+          unorderedEquals([
+            isPath(vertices: [1], cost: 0),
+            isPath(vertices: [1, 2], cost: 7),
+            isPath(vertices: [1, 3], cost: 9),
+            isPath(vertices: [1, 3, 4], cost: 20),
+            isPath(vertices: [1, 3, 6, 5], cost: 20),
+            isPath(vertices: [1, 3, 6], cost: 11),
+            isPath(vertices: [2, 1], cost: 7),
+            isPath(vertices: [2], cost: 0),
+            isPath(vertices: [2, 3], cost: 10),
+            isPath(vertices: [2, 4], cost: 15),
+            isPath(vertices: [2, 3, 6, 5], cost: 21),
+            isPath(vertices: [2, 3, 6], cost: 12),
+            isPath(vertices: [3, 1], cost: 9),
+            isPath(vertices: [3, 2], cost: 10),
+            isPath(vertices: [3], cost: 0),
+            isPath(vertices: [3, 4], cost: 11),
+            isPath(vertices: [3, 6, 5], cost: 11),
+            isPath(vertices: [3, 6], cost: 2),
+            isPath(vertices: [4, 3, 1], cost: 20),
+            isPath(vertices: [4, 2], cost: 15),
+            isPath(vertices: [4, 3], cost: 11),
+            isPath(vertices: [4], cost: 0),
+            isPath(vertices: [4, 5], cost: 6),
+            isPath(vertices: [4, 3, 6], cost: 13),
+            isPath(vertices: [5, 6, 3, 1], cost: 20),
+            isPath(vertices: [5, 6, 3, 2], cost: 21),
+            isPath(vertices: [5, 6, 3], cost: 11),
+            isPath(vertices: [5, 4], cost: 6),
+            isPath(vertices: [5], cost: 0),
+            isPath(vertices: [5, 6], cost: 9),
+            isPath(vertices: [6, 3, 1], cost: 11),
+            isPath(vertices: [6, 3, 2], cost: 12),
+            isPath(vertices: [6, 3], cost: 2),
+            isPath(vertices: [6, 3, 4], cost: 13),
+            isPath(vertices: [6, 5], cost: 9),
+            isPath(vertices: [6], cost: 0),
+          ]),
+        );
       });
       test('undirected graph with constant cost', () {
         expect(
@@ -2434,6 +2471,49 @@ void main() {
             isPath(vertices: [1, 2], cost: 1),
             isPath(vertices: [1, 3, 4], cost: 2),
             isPath(vertices: [1, 6, 5], cost: 2),
+          ]),
+        );
+        expect(
+          dijkstraGraph
+              .allShortestPaths(edgeCost: constantFunction2(1))
+              .allPaths(),
+          unorderedEquals([
+            isPath(vertices: [1], cost: 0),
+            isPath(vertices: [1, 2], cost: 1),
+            isPath(vertices: [1, 3], cost: 1),
+            isPath(vertices: [1, 2, 4], cost: 2),
+            isPath(vertices: [1, 6, 5], cost: 2),
+            isPath(vertices: [1, 6], cost: 1),
+            isPath(vertices: [2, 1], cost: 1),
+            isPath(vertices: [2], cost: 0),
+            isPath(vertices: [2, 3], cost: 1),
+            isPath(vertices: [2, 4], cost: 1),
+            isPath(vertices: [2, 4, 5], cost: 2),
+            isPath(vertices: [2, 1, 6], cost: 2),
+            isPath(vertices: [3, 1], cost: 1),
+            isPath(vertices: [3, 2], cost: 1),
+            isPath(vertices: [3], cost: 0),
+            isPath(vertices: [3, 4], cost: 1),
+            isPath(vertices: [3, 6, 5], cost: 2),
+            isPath(vertices: [3, 6], cost: 1),
+            isPath(vertices: [6, 1], cost: 1),
+            isPath(vertices: [6, 1, 2], cost: 2),
+            isPath(vertices: [6, 3], cost: 1),
+            isPath(vertices: [6, 3, 4], cost: 2),
+            isPath(vertices: [6, 5], cost: 1),
+            isPath(vertices: [6], cost: 0),
+            isPath(vertices: [4, 2, 1], cost: 2),
+            isPath(vertices: [4, 2], cost: 1),
+            isPath(vertices: [4, 3], cost: 1),
+            isPath(vertices: [4], cost: 0),
+            isPath(vertices: [4, 5], cost: 1),
+            isPath(vertices: [4, 3, 6], cost: 2),
+            isPath(vertices: [5, 6, 1], cost: 2),
+            isPath(vertices: [5, 4, 2], cost: 2),
+            isPath(vertices: [5, 6, 3], cost: 2),
+            isPath(vertices: [5, 4], cost: 1),
+            isPath(vertices: [5], cost: 0),
+            isPath(vertices: [5, 6], cost: 1),
           ]),
         );
       });
@@ -2474,13 +2554,25 @@ void main() {
           throwsGraphError,
         );
       });
-      test('bellman-ford graph with negative edges', () {
+      test('directed graph with negative edges', () {
         expect(
           bellmanFordGraph.shortestPath('s', 'z', hasNegativeEdges: true),
           isPath(vertices: ['s', 'y', 'x', 't', 'z'], cost: -2),
         );
         expect(
           bellmanFordGraph.shortestPathAll('s', hasNegativeEdges: true),
+          unorderedEquals([
+            isPath(vertices: ['s'], cost: 0),
+            isPath(vertices: ['s', 'y'], cost: 7),
+            isPath(vertices: ['s', 'y', 'x'], cost: 4),
+            isPath(vertices: ['s', 'y', 'x', 't'], cost: 2),
+            isPath(vertices: ['s', 'y', 'x', 't', 'z'], cost: -2),
+          ]),
+        );
+        expect(
+          bellmanFordGraph.allShortestPaths().allPaths().where(
+            (path) => path.source == 's',
+          ),
           unorderedEquals([
             isPath(vertices: ['s'], cost: 0),
             isPath(vertices: ['s', 'y'], cost: 7),
@@ -2496,6 +2588,10 @@ void main() {
           ..addEdge(1, 2, value: 3);
         final path = graph.shortestPath(0, 2, hasNegativeEdges: true);
         expect(path, isPath(source: 0, target: 2, cost: 1));
+        expect(
+          graph.allShortestPaths().path(0, 2),
+          isPath(source: 0, target: 2, cost: 1),
+        );
       });
       test('directed graph with negative cycle', () {
         final graph = Graph<int, int>.directed()
@@ -2506,6 +2602,7 @@ void main() {
           () => graph.shortestPath(0, 2, hasNegativeEdges: true),
           throwsGraphError,
         );
+        expect(graph.allShortestPaths, throwsGraphError);
       });
       test('directed graph with negative edge and positive cycle', () {
         final graph = Graph<int, int>.directed()
@@ -2514,6 +2611,10 @@ void main() {
           ..addEdge(2, 0, value: 1);
         final path = graph.shortestPath(0, 2, hasNegativeEdges: true);
         expect(path, isPath(source: 0, target: 2, cost: 1));
+        expect(
+          graph.allShortestPaths().path(0, 2),
+          isPath(source: 0, target: 2, cost: 1),
+        );
       });
       group('hills', () {
         final hills = [
@@ -2770,6 +2871,22 @@ void main() {
               targetPredicate: targetPredicate,
               successorsOf: successorsOf,
             ).single,
+            isPath(
+              source: source,
+              target: target,
+              vertices: solution,
+              cost: solution.length - 1,
+            ),
+          );
+        });
+        test('floyd-warshall', () {
+          expect(
+            floydWarshallSearch<Point<int>>(
+              vertices: BreadthFirstIterable([
+                source,
+              ], successorsOf: successorsOf),
+              successorsOf: successorsOf,
+            ).path(source, target),
             isPath(
               source: source,
               target: target,

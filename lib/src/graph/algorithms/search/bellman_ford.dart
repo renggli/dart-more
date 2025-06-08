@@ -83,8 +83,11 @@ Iterable<Path<V, num>> bellmanFordSearch<V>({
   }
 }
 
-final class BellmanFordState<V> extends SearchState<V, num> {
-  BellmanFordState({required super.vertex});
+final class BellmanFordState<V> implements SearchState<V, num> {
+  BellmanFordState({required this.vertex});
+
+  @override
+  final V vertex;
 
   @override
   num value = double.infinity;

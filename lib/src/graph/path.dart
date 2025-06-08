@@ -20,6 +20,9 @@ class Path<V, E> with ToStringPrinter {
         values: edges.map((edge) => edge.value),
       );
 
+  /// Constructs an empty path.
+  const Path.empty() : vertices = const [], values = const [];
+
   /// Internal constructor.
   Path._({required Iterable<V> vertices, required Iterable<E> values})
     : vertices = vertices.toList(growable: false),
