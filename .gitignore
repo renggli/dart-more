@@ -1,6 +1,5 @@
 *.iml
 .DS_Store
-.vscode/
 .dart_tool/
 .pub/
 .idea/
