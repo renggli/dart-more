@@ -78,7 +78,7 @@ extension AlgorithmsGraphExtension<V, E> on Graph<V, E> {
     StorageStrategy<V>? vertexStrategy,
   }) {
     if (costEstimate != null && hasNegativeEdges) {
-      throw ArgumentError.value(
+      throw GraphError(
         costEstimate,
         'costEstimate',
         'A cost estimate cannot be provided together with negative edges',

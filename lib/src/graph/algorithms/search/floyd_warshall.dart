@@ -3,7 +3,7 @@ import '../../errors.dart';
 import '../../path.dart';
 import '../../strategy.dart';
 
-/// Floyd-Warshall all-pairs shortest path algorithm.
+/// Floyd-Warshall all-pairs shortest paths algorithm.
 ///
 /// Computes all shortest paths between all pairs of vertices in a graph.
 ///
@@ -90,7 +90,7 @@ final class FloydWarshall<V> {
   /// [double.infinity] if the two vertices are not connected.
   num distance(V source, V target) => _get(source, target).distance;
 
-  /// Returns the path between [source] and [target]. Retruns `null`, if
+  /// Returns the path between [source] and [target]. Returns `null`, if
   /// there is no such path.
   Path<V, num>? path(V source, V target) {
     final vertices = [source];
@@ -106,10 +106,17 @@ final class FloydWarshall<V> {
   }
 
   /// Returns all paths between all vertices.
-  Iterable<Path<V, num>> allPaths({Iterable<V>? vertices}) sync* {
-    final selected = vertices ?? _pairs.keys;
-    for (final source in selected) {
-      for (final target in selected) {
+  ///
+  /// If [sourceVertices] and/or [targetVertices] are specified, only paths
+  /// between those vertices are returned.
+  Iterable<Path<V, num>> allPaths({
+    Iterable<V>? sourceVertices,
+    Iterable<V>? targetVertices,
+  }) sync* {
+    final sources = sourceVertices ?? _pairs.keys;
+    final targets = targetVertices ?? _pairs.keys;
+    for (final source in sources) {
+      for (final target in targets) {
         final result = path(source, target);
         if (result != null) yield result;
       }

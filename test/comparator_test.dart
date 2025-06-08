@@ -621,6 +621,22 @@ void main() {
       });
     });
   });
+  group('extensions', () {
+    test('between', () {
+      expect(1.between(2, 4), isFalse);
+      expect(2.between(2, 4), isTrue);
+      expect(3.between(2, 4), isTrue);
+      expect(4.between(2, 4), isTrue);
+      expect(5.between(2, 4), isFalse);
+    });
+    test('clip', () {
+      expect(1.clip(2, 4), 2);
+      expect(2.clip(2, 4), 2);
+      expect(3.clip(2, 4), 3);
+      expect(4.clip(2, 4), 4);
+      expect(5.clip(2, 4), 4);
+    });
+  });
   group('regressions', () {
     test('#4', () {
       final input = <String?>['dog', 'ape', null, 'cat'];

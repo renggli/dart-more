@@ -2543,6 +2543,27 @@ void main() {
           ]),
         );
       });
+      test('undirected graph with cost estimate and negative edges', () {
+        expect(
+          () => dijkstraGraph.shortestPath(
+            1,
+            5,
+            edgeCost: constantFunction2(1),
+            costEstimate: (vertex) => 6 - vertex,
+            hasNegativeEdges: true,
+          ),
+          throwsGraphError,
+        );
+        expect(
+          () => dijkstraGraph.shortestPathAll(
+            1,
+            edgeCost: constantFunction2(1),
+            costEstimate: (vertex) => 6 - vertex,
+            hasNegativeEdges: true,
+          ),
+          throwsGraphError,
+        );
+      });
       test('unsupported negative edges', () {
         expect(() => bellmanFordGraph.shortestPath('s', 'z'), throwsGraphError);
         expect(
@@ -2569,15 +2590,24 @@ void main() {
             isPath(vertices: ['s', 'y', 'x', 't', 'z'], cost: -2),
           ]),
         );
+        final allShortestPaths = bellmanFordGraph.allShortestPaths();
         expect(
-          bellmanFordGraph.allShortestPaths().allPaths().where(
-            (path) => path.source == 's',
-          ),
+          allShortestPaths.allPaths(sourceVertices: ['s']),
           unorderedEquals([
             isPath(vertices: ['s'], cost: 0),
             isPath(vertices: ['s', 'y'], cost: 7),
             isPath(vertices: ['s', 'y', 'x'], cost: 4),
             isPath(vertices: ['s', 'y', 'x', 't'], cost: 2),
+            isPath(vertices: ['s', 'y', 'x', 't', 'z'], cost: -2),
+          ]),
+        );
+        expect(
+          allShortestPaths.allPaths(targetVertices: ['z']),
+          unorderedEquals([
+            isPath(vertices: ['z'], cost: 0),
+            isPath(vertices: ['t', 'z'], cost: -4),
+            isPath(vertices: ['x', 't', 'z'], cost: -6),
+            isPath(vertices: ['y', 'x', 't', 'z'], cost: -9),
             isPath(vertices: ['s', 'y', 'x', 't', 'z'], cost: -2),
           ]),
         );

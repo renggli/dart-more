@@ -2565,9 +2565,14 @@ void main() {
         map['2'] = -2;
         expect(map['2'], -2);
       });
-      test('throws', () {
+      test('throws computation error', () {
         final map = <String, int>{}.withComputed(int.parse);
         expect(() => map['a'], throwsFormatException);
+        expect(map.isEmpty, isTrue);
+      });
+      test('throws type error', () {
+        final map = <String, int>{}.withComputed(int.parse);
+        expect(() => map[1], throwsA(isA<TypeError>()));
         expect(map.isEmpty, isTrue);
       });
     });
