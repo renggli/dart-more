@@ -1,5 +1,4 @@
-More Dart — Literally
-=====================
+# More Dart — Literally
 
 [![Pub Package](https://img.shields.io/pub/v/more.svg)](https://pub.dev/packages/more)
 [![Build Status](https://github.com/renggli/dart-more/actions/workflows/dart.yml/badge.svg?branch=main)](https://github.com/renggli/dart-more/actions/workflows/dart.yml)
@@ -12,13 +11,13 @@ More Dart — Literally
 A collection of extensively tested extensions that make Dart a better place:
 
 | Library                                                                                          | Description                                                        |
-|--------------------------------------------------------------------------------------------------|:-------------------------------------------------------------------|
-| [async](https://pub.dev/documentation/more/latest/async/async-library.html)                      | Extensions to `Stream`.                                            | 
+| ------------------------------------------------------------------------------------------------ | :----------------------------------------------------------------- |
+| [async](https://pub.dev/documentation/more/latest/async/async-library.html)                      | Extensions to `Stream`.                                            |
 | [cache](https://pub.dev/documentation/more/latest/cache/cache-library.html)                      | Caching strategies and their expiry policy.                        |
 | [char_matcher](https://pub.dev/documentation/more/latest/char_matcher/char_matcher-library.html) | Character classes, their composition, and operations on strings.   |
 | [collection](https://pub.dev/documentation/more/latest/collection/collection-library.html)       | Extensions to `Iterable` and new collection types.                 |
-| [comparator](https://pub.dev/documentation/more/latest/comparator/comparator-library.html)       | Common comparators, and extensions to perform advanced operations. | 
-| [diff](https://pub.dev/documentation/more/latest/comparator/diff-library.html)                   | Tools for comparing lists.                                         | 
+| [comparator](https://pub.dev/documentation/more/latest/comparator/comparator-library.html)       | Common comparators, and extensions to perform advanced operations. |
+| [diff](https://pub.dev/documentation/more/latest/comparator/diff-library.html)                   | Tools for comparing lists.                                         |
 | [feature](https://pub.dev/documentation/more/latest/feature/feature-library.html)                | Information about the runtime environment.                         |
 | [functional](https://pub.dev/documentation/more/latest/functional/functional-library.html)       | Types and features known from functional programming.              |
 | [graph](https://pub.dev/documentation/more/latest/graph/graph-library.html)                      | Graph-theory objects and algorithms.                               |
@@ -26,7 +25,7 @@ A collection of extensively tested extensions that make Dart a better place:
 | [math](https://pub.dev/documentation/more/latest/math/math-library.html)                         | Common mathematical functions.                                     |
 | [number](https://pub.dev/documentation/more/latest/number/number-library.html)                   | Number types: fraction, complex, quaternion.                       |
 | [printer](https://pub.dev/documentation/more/latest/printer/printer-library.html)                | Fluent interface to configure sophisticated formatter.             |
-| [temporal](https://pub.dev/documentation/more/latest/temporal/temporal-library.html)             | Extensions to `DateTime` and `Duration` types.                     | 
+| [temporal](https://pub.dev/documentation/more/latest/temporal/temporal-library.html)             | Extensions to `DateTime` and `Duration` types.                     |
 | [tuple](https://pub.dev/documentation/more/latest/tuple/tuple-library.html)                      | Tuple extension methods on generic records.                        |
 
 And there are more to come ...
@@ -35,9 +34,7 @@ This library is open source, stable and well tested. Development happens on [Git
 
 The package is hosted on [dart packages](https://pub.dev/packages/more). Up-to-date [class documentation](https://pub.dev/documentation/more/) is created with every release.
 
-
-Misc
-----
+## Misc
 
 ### Installation
 

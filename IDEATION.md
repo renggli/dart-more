@@ -1,4 +1,5 @@
 # Ideation
+
 - Graph algorithms
   - Cycle detection
   - Graph coloring

@@ -1,5 +1,4 @@
-More Dart Examples
-==================
+# More Dart Examples
 
 This package does not currently contain many examples, but detailed documentation, and many examples are contained in the [package description](https://pub.dev/packages/more) and [API documentation](https://pub.dev/documentation/more/latest/).
 
