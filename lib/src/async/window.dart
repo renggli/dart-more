@@ -1,3 +1,4 @@
+import 'dart:async' show StreamIterator;
 import 'dart:collection';
 
 import '../shared/exceptions.dart';
@@ -14,32 +15,31 @@ extension WindowStreamExtension<E> on Stream<E> {
   }) async* {
     checkNonZeroPositive(size, 'size');
     checkNonZeroPositive(step, 'step');
-    var index = 0;
-    final current = ListQueue<E>(size);
-    await for (final element in this) {
-      while (current.length >= size) {
-        current.removeFirst();
+    final buffer = ListQueue<E>();
+    final iterator = StreamIterator(this);
+    while (true) {
+      while (buffer.length < size && await iterator.moveNext()) {
+        buffer.addLast(iterator.current);
       }
-      current.addLast(element);
-      if (current.length == size) {
-        if (index++ % step == 0) {
-          yield current.toList(growable: false);
+      if (buffer.length < size) {
+        if (includePartial && buffer.isNotEmpty) {
+          yield buffer.toList(growable: false);
+        }
+        break;
+      }
+      yield buffer.toList(growable: false);
+      if (step < size) {
+        for (var i = 0; i < step; i++) {
+          buffer.removeFirst();
+        }
+      } else {
+        buffer.clear();
+        for (var i = 0; i < step - size; i++) {
+          if (!await iterator.moveNext()) {
+            return;
+          }
         }
       }
-    }
-    if (!includePartial || current.isEmpty) {
-      return;
-    }
-    if (index == 0) {
-      yield current.toList(growable: false);
-      index++;
-    }
-    var reminder = step - (index - 1) % step;
-    var rest = current.toList(growable: false);
-    while (rest.length > reminder) {
-      rest = rest.sublist(reminder);
-      yield rest.toList(growable: false);
-      reminder = step;
     }
   }
 }

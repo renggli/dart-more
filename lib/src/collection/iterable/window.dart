@@ -17,23 +17,25 @@ extension WindowIterableExtension<E> on Iterable<E> {
   }) sync* {
     checkNonZeroPositive(size, 'size');
     checkNonZeroPositive(step, 'step');
-    final current = ListQueue<E>(size);
+    final buffer = ListQueue<E>();
     final iterator = this.iterator;
-    for (;;) {
-      while (current.length < size && iterator.moveNext()) {
-        current.addLast(iterator.current);
+    while (true) {
+      while (buffer.length < size && iterator.moveNext()) {
+        buffer.addLast(iterator.current);
       }
-      if (current.length == size || (includePartial && current.isNotEmpty)) {
-        yield current.toList(growable: false);
-      } else {
-        return;
+      if (buffer.length < size) {
+        if (includePartial && buffer.isNotEmpty) {
+          yield buffer.toList(growable: false);
+        }
+        break;
       }
+      yield buffer.toList(growable: false);
       if (step < size) {
         for (var i = 0; i < step; i++) {
-          current.removeFirst();
+          buffer.removeFirst();
         }
       } else {
-        current.clear();
+        buffer.clear();
         for (var i = 0; i < step - size; i++) {
           if (!iterator.moveNext()) {
             return;

@@ -35,7 +35,6 @@ extension TapExtension<E> on Stream<E> {
     void dispatchOnDone() {
       onDone?.call();
       controller.close();
-      subscription.cancel();
     }
 
     controller.onListen = () {
