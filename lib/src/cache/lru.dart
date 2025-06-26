@@ -17,7 +17,7 @@ class LruCache<K, V> extends Cache<K, V> {
   final Map<K, CacheItem<V>> cached = {};
 
   @override
-  Future<V?> getIfPresent(K key) async => promote(key)?.value;
+  Future<V?> getIfPresent(K key) async => await promote(key)?.value;
 
   @override
   Future<V> get(K key) async {
@@ -26,7 +26,7 @@ class LruCache<K, V> extends Cache<K, V> {
       item = cached[key] = CacheItem(loader(key));
       cleanUp();
     }
-    return item.value;
+    return await item.value;
   }
 
   @override
@@ -38,7 +38,7 @@ class LruCache<K, V> extends Cache<K, V> {
     } else {
       item.value = value;
     }
-    return value;
+    return await value;
   }
 
   @override

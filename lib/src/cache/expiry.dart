@@ -43,7 +43,7 @@ class ExpiryCache<K, V> extends Cache<K, V> {
       item.refreshExpiry(now, updateExpiry);
     }
     item.refreshExpiry(now, accessExpiry);
-    return item.value;
+    return await item.value;
   }
 
   @override
@@ -57,7 +57,7 @@ class ExpiryCache<K, V> extends Cache<K, V> {
       return null;
     }
     item.refreshExpiry(now, accessExpiry);
-    return item.value;
+    return await item.value;
   }
 
   @override
@@ -71,7 +71,7 @@ class ExpiryCache<K, V> extends Cache<K, V> {
     }
     item.refreshExpiry(now, updateExpiry);
     item.refreshExpiry(now, accessExpiry);
-    return item.value;
+    return await item.value;
   }
 
   @override
