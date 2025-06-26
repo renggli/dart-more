@@ -3569,6 +3569,94 @@ void main() {
         expect(graph.stronglyConnected, throwsGraphError);
       });
     });
+    group('isBipartite', () {
+      test('empty graph is bipartite', () {
+        final graph = Graph<int, void>.directed();
+        expect(graph.isBipartite(), isTrue);
+      });
+      test('single vertex graph is bipartite', () {
+        final graph = Graph<int, void>.directed();
+        graph.addVertex(1);
+        expect(graph.isBipartite(), isTrue);
+      });
+      test('path graph is bipartite', () {
+        final graph = GraphFactory<int, void>().path(vertexCount: 5);
+        expect(graph.isBipartite(), isTrue);
+      });
+      test('cycle graph (even length) is bipartite', () {
+        final graph = GraphFactory<int, void>().ring(vertexCount: 4);
+        expect(graph.isBipartite(), isTrue);
+      });
+      test('cycle graph (odd length) is not bipartite', () {
+        final graph = GraphFactory<int, void>().ring(vertexCount: 3);
+        expect(graph.isBipartite(), isFalse);
+      });
+      test('complete bipartite graph is bipartite', () {
+        final graph = GraphFactory<int, void>().partite(vertexCounts: [2, 3]);
+        expect(graph.isBipartite(), isTrue);
+      });
+      test('complete graph is bipartite only if n <= 2', () {
+        expect(
+          GraphFactory<int, void>().complete(vertexCount: 1).isBipartite(),
+          isTrue,
+        );
+        expect(
+          GraphFactory<int, void>().complete(vertexCount: 2).isBipartite(),
+          isTrue,
+        );
+        expect(
+          GraphFactory<int, void>().complete(vertexCount: 3).isBipartite(),
+          isFalse,
+        );
+        expect(
+          GraphFactory<int, void>().complete(vertexCount: 4).isBipartite(),
+          isFalse,
+        );
+      });
+      test('disconnected bipartite graph is bipartite', () {
+        final graph = Graph<int, void>.undirected()
+          ..addEdge(1, 2)
+          ..addEdge(3, 4)
+          ..addEdge(5, 6);
+        expect(graph.isBipartite(), isTrue);
+      });
+      test('disconnected graph with non-bipartite part is not bipartite', () {
+        final graph = Graph<int, void>.undirected()
+          ..addEdge(1, 2)
+          ..addEdge(2, 3)
+          ..addEdge(3, 1)
+          ..addEdge(4, 5);
+        expect(graph.isBipartite(), isFalse);
+      });
+      test('directed acyclic graph is bipartite', () {
+        final graph = Graph<int, void>.directed()
+          ..addEdge(0, 1)
+          ..addEdge(1, 2)
+          ..addEdge(0, 3);
+        expect(graph.isBipartite(), isTrue);
+      });
+      test('directed graph with odd cycle is not bipartite', () {
+        final graph = Graph<int, void>.directed()
+          ..addEdge(0, 1)
+          ..addEdge(1, 2)
+          ..addEdge(2, 0);
+        expect(graph.isBipartite(), isFalse);
+      });
+      test('directed graph with even cycle is bipartite', () {
+        final graph = Graph<int, void>.directed()
+          ..addEdge(0, 1)
+          ..addEdge(1, 2)
+          ..addEdge(2, 3)
+          ..addEdge(3, 0);
+        expect(graph.isBipartite(), isTrue);
+      });
+      test('graph with self-loop is not bipartite', () {
+        final graph = Graph<int, void>.undirected()
+          ..addVertex(0)
+          ..addEdge(0, 0);
+        expect(graph.isBipartite(), isFalse);
+      });
+    });
   });
   group('traverse', () {
     group('breadth-first', () {

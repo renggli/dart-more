@@ -3,6 +3,7 @@ import 'package:collection/collection.dart';
 import '../comparator/constructors/natural.dart';
 import '../functional/types/constant.dart';
 import '../functional/types/predicate.dart';
+import 'algorithms/bipartite_check.dart' as bipartite_check;
 import 'algorithms/bron_kerbosch_cliques.dart';
 import 'algorithms/dinic_max_flow.dart';
 import 'algorithms/kruskal_spanning_tree.dart';
@@ -218,6 +219,14 @@ extension AlgorithmsGraphExtension<V, E> on Graph<V, E> {
       vertexStrategy: vertexStrategy ?? this.vertexStrategy,
     );
   }
+
+  /// Checks if the graph is bipartite.
+  bool isBipartite({StorageStrategy<V>? vertexStrategy}) =>
+      bipartite_check.isBipartite<V>(
+        vertices: vertices,
+        successorsOf: successorsOf,
+        vertexStrategy: vertexStrategy ?? this.vertexStrategy,
+      );
 
   /// Internal helper that returns a function using the numeric edge value
   /// of this graph, or otherwise a constant value for each edge.

@@ -2,6 +2,7 @@
 library;
 
 export 'src/graph/algorithms.dart' show AlgorithmsGraphExtension;
+export 'src/graph/algorithms/bipartite_check.dart' show isBipartite;
 export 'src/graph/algorithms/bron_kerbosch_cliques.dart'
     show bronKerboschCliques;
 export 'src/graph/algorithms/dinic_max_flow.dart' show DinicMaxFlow;
