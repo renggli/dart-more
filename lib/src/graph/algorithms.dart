@@ -5,6 +5,7 @@ import '../functional/types/constant.dart';
 import '../functional/types/predicate.dart';
 import 'algorithms/bipartite_check.dart' as bipartite_check;
 import 'algorithms/bron_kerbosch_cliques.dart';
+import 'algorithms/cycle_check.dart' as cycle_check;
 import 'algorithms/dinic_max_flow.dart';
 import 'algorithms/kruskal_spanning_tree.dart';
 import 'algorithms/prim_spanning_tree.dart';
@@ -227,6 +228,16 @@ extension AlgorithmsGraphExtension<V, E> on Graph<V, E> {
         successorsOf: successorsOf,
         vertexStrategy: vertexStrategy ?? this.vertexStrategy,
       );
+
+  /// Checks if the directed graph has a cycle.
+  bool hasCycle({StorageStrategy<V>? vertexStrategy}) {
+    GraphError.checkDirected(this);
+    return cycle_check.hasCycle<V>(
+      vertices: vertices,
+      successorsOf: successorsOf,
+      vertexStrategy: vertexStrategy ?? this.vertexStrategy,
+    );
+  }
 
   /// Internal helper that returns a function using the numeric edge value
   /// of this graph, or otherwise a constant value for each edge.

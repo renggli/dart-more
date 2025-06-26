@@ -3657,6 +3657,69 @@ void main() {
         expect(graph.isBipartite(), isFalse);
       });
     });
+    group('hasCycle', () {
+      test('empty graph has no cycle', () {
+        final graph = Graph<int, void>.directed();
+        expect(graph.hasCycle(), isFalse);
+      });
+      test('single vertex graph has no cycle', () {
+        final graph = Graph<int, void>.directed()..addVertex(1);
+        expect(graph.hasCycle(), isFalse);
+      });
+      test('single vertex with self-loop has a cycle', () {
+        final graph = Graph<int, void>.directed()..addEdge(1, 1);
+        expect(graph.hasCycle(), isTrue);
+      });
+      test('path graph has no cycle', () {
+        final graph = GraphFactory<int, void>().path(vertexCount: 5);
+        expect(graph.hasCycle(), isFalse);
+      });
+      test('ring graph has a cycle', () {
+        final graph = GraphFactory<int, void>().ring(vertexCount: 5);
+        expect(graph.hasCycle(), isTrue);
+      });
+      test('dag has no cycle', () {
+        final graph = Graph<int, void>.directed()
+          ..addEdge(0, 1)
+          ..addEdge(0, 2)
+          ..addEdge(1, 3)
+          ..addEdge(2, 3);
+        expect(graph.hasCycle(), isFalse);
+      });
+      test('graph with a cycle', () {
+        final graph = Graph<int, void>.directed()
+          ..addEdge(0, 1)
+          ..addEdge(1, 2)
+          ..addEdge(2, 0);
+        expect(graph.hasCycle(), isTrue);
+      });
+      test('graph with a longer cycle', () {
+        final graph = Graph<int, void>.directed()
+          ..addEdge(0, 1)
+          ..addEdge(1, 2)
+          ..addEdge(2, 3)
+          ..addEdge(3, 0);
+        expect(graph.hasCycle(), isTrue);
+      });
+      test('disconnected graph without cycle', () {
+        final graph = Graph<int, void>.directed()
+          ..addEdge(0, 1)
+          ..addEdge(2, 3);
+        expect(graph.hasCycle(), isFalse);
+      });
+      test('disconnected graph with cycle', () {
+        final graph = Graph<int, void>.directed()
+          ..addEdge(0, 1)
+          ..addEdge(2, 3)
+          ..addEdge(3, 4)
+          ..addEdge(4, 2);
+        expect(graph.hasCycle(), isTrue);
+      });
+      test('undirected graph error', () {
+        final graph = Graph<int, void>.undirected();
+        expect(graph.hasCycle, throwsGraphError);
+      });
+    });
   });
   group('traverse', () {
     group('breadth-first', () {
