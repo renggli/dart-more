@@ -19,8 +19,8 @@ extension BinomialIntegerExtension on int {
     }
     var r = 1;
     for (var i = 1; i <= k; i++) {
-      r *= n--;
-      r = r ~/ i;
+      r = (r * n) ~/ i;
+      n--;
     }
     return r;
   }
@@ -47,9 +47,8 @@ extension BinomialBigIntExtension on BigInt {
     }
     var r = BigInt.one;
     for (var i = BigInt.one; i <= k; i += BigInt.one) {
-      r *= n;
+      r = (r * n) ~/ i;
       n -= BigInt.one;
-      r = r ~/ i;
     }
     return r;
   }
