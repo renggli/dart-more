@@ -19,19 +19,19 @@ class Interval<T extends Comparable<T>> {
   Interval(T lower, [T? upper]) : this._(lower, upper ?? lower);
 
   Interval._(this.lower, this.upper)
-    : assert(
-        lower.compareTo(upper) <= 0,
-        'Invalid endpoints for $lower..$upper',
-      );
-
-  /// Returns the upper bound of this interval.
-  final T lower;
+      : assert(
+          lower.compareTo(upper) <= 0,
+          'Invalid endpoints for $lower..$upper',
+        );
 
   /// Returns the lower bound of this interval.
+  final T lower;
+
+  /// Returns the upper bound of this interval.
   final T upper;
 
   /// Returns `true`, if this is an interval with a single value.
-  bool get isSingle => lower.compareTo(upper) == 0;
+  bool get isSingle => lower == upper;
 
   /// Whether [value] is included in this interval.
   bool contains(T value) =>
@@ -48,26 +48,17 @@ class Interval<T extends Comparable<T>> {
   /// Returns the interval where this and [other] interval overlap. If the
   /// intervals do not intersect, return `null`.
   Interval<T>? intersection(Interval<T> other) {
-    final lowerComparison = lower.compareTo(other.lower);
-    final upperComparison = upper.compareTo(other.upper);
-    if (lowerComparison >= 0 && upperComparison <= 0) {
-      return this; // this contains other
-    } else if (lowerComparison <= 0 && upperComparison >= 0) {
-      return other; // other contains this
-    } else {
-      final newLower = lowerComparison >= 0 ? lower : other.lower;
-      final newUpper = upperComparison <= 0 ? upper : other.upper;
-      return newLower.compareTo(newUpper) <= 0
-          ? Interval<T>(newLower, newUpper)
-          : null;
-    }
+    if (!intersects(other)) return null;
+    final newLower = lower.compareTo(other.lower) >= 0 ? lower : other.lower;
+    final newUpper = upper.compareTo(other.upper) <= 0 ? upper : other.upper;
+    return Interval<T>(newLower, newUpper);
   }
 
   /// Returns the minimal interval enclosing this and [other] interval.
   Interval<T> union(Interval<T> other) => Interval<T>(
-    lower.compareTo(other.lower) < 0 ? lower : other.lower,
-    upper.compareTo(other.upper) > 0 ? upper : other.upper,
-  );
+        lower.compareTo(other.lower) < 0 ? lower : other.lower,
+        upper.compareTo(other.upper) > 0 ? upper : other.upper,
+      );
 
   @override
   bool operator ==(Object other) =>
@@ -80,3 +71,5 @@ class Interval<T extends Comparable<T>> {
   @override
   String toString() => '$lower..$upper';
 }
+
+
