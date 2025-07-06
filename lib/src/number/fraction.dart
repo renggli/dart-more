@@ -19,7 +19,7 @@ class Fraction
           ? Fraction.negativeInfinity
           : Fraction.infinity;
     }
-    var divisor = numerator.gcd(denominator).abs();
+    var divisor = numerator.gcd(denominator);
     if (denominator < 0) {
       divisor *= -1;
     }

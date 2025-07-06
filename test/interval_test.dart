@@ -1,6 +1,7 @@
 import 'dart:math';
 
 import 'package:more/collection.dart';
+import 'package:more/feature.dart';
 import 'package:more/interval.dart';
 import 'package:test/test.dart';
 
@@ -67,7 +68,10 @@ void main() {
     ];
     test('constructor', () {
       expect(Interval(1, 1), Interval(1));
-      expect(() => Interval(2, 1), throwsA(isA<AssertionError>()));
+      expect(Interval(1, 2), Interval(1, 2));
+      if (hasAssertionsEnabled) {
+        expect(() => Interval(2, 1), throwsA(isA<AssertionError>()));
+      }
     });
     test('lower', () {
       expect(interval0to7.lower, 0);
