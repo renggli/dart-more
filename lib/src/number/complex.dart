@@ -4,6 +4,7 @@ import 'package:meta/meta.dart' show immutable;
 
 import '../../math.dart';
 import 'mixins/close_to.dart';
+import 'utils.dart';
 
 /// A complex number of the form `a + b*i`.
 @immutable
@@ -24,6 +25,20 @@ class Complex implements CloseTo<Complex> {
   factory Complex.fromPolar(num radius, num phase) =>
       Complex(radius * phase.cos(), radius * phase.sin());
 
+  /// Parses [source] as a [Complex]. Throws a [FormatException] for invalid input.
+  factory Complex.parse(String source) {
+    final parts = parseWithUnits(source, units: const {'', 'i'});
+    if (parts == null) throw FormatException(source);
+    return Complex(parts[''] ?? 0, parts['i'] ?? 0);
+  }
+
+  /// Parses [source] as a [Complex]. Returns `null` in case of a problem.
+  static Complex? tryParse(String source) {
+    final parts = parseWithUnits(source, units: const {'', 'i'});
+    if (parts == null) return null;
+    return Complex(parts[''] ?? 0, parts['i'] ?? 0);
+  }
+
   /// The neutral additive element, that is `0`.
   static const Complex zero = Complex(0);
 
@@ -38,41 +53,6 @@ class Complex implements CloseTo<Complex> {
 
   /// The complex number with both real and imaginary part to be [double.infinity].
   static const Complex infinity = Complex(double.infinity, double.infinity);
-
-  /// Parses [source] as a [Complex]. Returns `null` in case of a problem.
-  static Complex? tryParse(String source) {
-    final parts = numberAndUnitExtractor
-        .allMatches(source.replaceAll(' ', ''))
-        .where((match) => match.start < match.end)
-        .toList();
-    if (parts.isEmpty) {
-      return null;
-    }
-    num a = 0, b = 0;
-    final seen = <String>{};
-    for (final part in parts) {
-      final numberString = part.group(1) ?? '';
-      final number = num.tryParse(numberString);
-      final unitString = part.group(4) ?? '';
-      final unit = unitString.toLowerCase();
-      if (seen.contains(unit)) {
-        return null; // repeated unit
-      }
-      if (unit == '' && number != null) {
-        a = number;
-      } else if (numberString.isEmpty || number != null) {
-        if (unit == 'i') {
-          b = number ?? 1;
-        } else {
-          return null; // invalid unit
-        }
-      } else {
-        return null; // parse error
-      }
-      seen.add(unit);
-    }
-    return Complex(a, b);
-  }
 
   /// Returns the real part of the number.
   final num a;
@@ -277,8 +257,3 @@ class Complex implements CloseTo<Complex> {
   @override
   String toString() => 'Complex($a, $b)';
 }
-
-final RegExp numberAndUnitExtractor = RegExp(
-  r'([+-]?\d*(\.\d+)?(e[+-]?\d+)?)\*?(\w?)',
-  caseSensitive: false,
-);

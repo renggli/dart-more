@@ -2,6 +2,7 @@ import 'package:meta/meta.dart' show immutable;
 
 import '../../math.dart';
 import 'mixins/close_to.dart';
+import 'utils.dart';
 
 /// A quaternion number of the form `w + x*i + y*j + z*k`.
 @immutable
@@ -69,6 +70,30 @@ class Quaternion implements CloseTo<Quaternion> {
     );
   }
 
+  /// Parses [source] as a [Quaternion]. Throws a [FormatException] for invalid input.
+  factory Quaternion.parse(String source) {
+    final parts = parseWithUnits(source, units: const {'', 'i', 'j', 'k'});
+    if (parts == null) throw FormatException(source);
+    return Quaternion(
+      parts[''] ?? 0,
+      parts['i'] ?? 0,
+      parts['j'] ?? 0,
+      parts['k'] ?? 0,
+    );
+  }
+
+  /// Parses [source] as a [Quaternion]. Returns `null` in case of a problem.
+  static Quaternion? tryParse(String source) {
+    final parts = parseWithUnits(source, units: const {'', 'i', 'j', 'k'});
+    if (parts == null) return null;
+    return Quaternion(
+      parts[''] ?? 0,
+      parts['i'] ?? 0,
+      parts['j'] ?? 0,
+      parts['k'] ?? 0,
+    );
+  }
+
   /// The neutral additive element, that is `0`.
   static const Quaternion zero = Quaternion(0);
 
@@ -99,46 +124,6 @@ class Quaternion implements CloseTo<Quaternion> {
     double.infinity,
     double.infinity,
   );
-
-  /// Parses [source] as a [Quaternion]. Returns `null` in case of a problem.
-  static Quaternion? tryParse(String source) {
-    final parts = numberAndUnitExtractor
-        .allMatches(source.replaceAll(' ', ''))
-        .where((match) => match.start < match.end)
-        .toList();
-    if (parts.isEmpty) {
-      return null;
-    }
-    num w = 0, x = 0, y = 0, z = 0;
-    final seen = <String>{};
-    for (final part in parts) {
-      final numberString = part.group(1) ?? '';
-      final number = num.tryParse(numberString);
-      final unitString = part.group(4) ?? '';
-      final unit = unitString.toLowerCase();
-      if (seen.contains(unit)) {
-        return null; // repeated unit
-      }
-      if (unit == '' && number != null) {
-        w = number;
-      } else if (numberString.isEmpty || number != null) {
-        switch (unit) {
-          case 'i':
-            x = number ?? 1;
-          case 'j':
-            y = number ?? 1;
-          case 'k':
-            z = number ?? 1;
-          default:
-            return null; // invalid unit
-        }
-      } else {
-        return null; // parse error
-      }
-      seen.add(unit);
-    }
-    return Quaternion(w, x, y, z);
-  }
 
   /// The 1st quaternion unit (scalar part).
   final num w;
@@ -290,8 +275,3 @@ class Quaternion implements CloseTo<Quaternion> {
   @override
   String toString() => 'Quaternion($w, $x, $y, $z)';
 }
-
-final RegExp numberAndUnitExtractor = RegExp(
-  r'([+-]?\d*(\.\d+)?(e[+-]?\d+)?)\*?(\w?)',
-  caseSensitive: false,
-);

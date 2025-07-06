@@ -19,10 +19,10 @@ class Interval<T extends Comparable<T>> {
   Interval(T lower, [T? upper]) : this._(lower, upper ?? lower);
 
   Interval._(this.lower, this.upper)
-      : assert(
-          lower.compareTo(upper) <= 0,
-          'Invalid endpoints for $lower..$upper',
-        );
+    : assert(
+        lower.compareTo(upper) <= 0,
+        'Invalid endpoints for $lower..$upper',
+      );
 
   /// Returns the lower bound of this interval.
   final T lower;
@@ -56,9 +56,9 @@ class Interval<T extends Comparable<T>> {
 
   /// Returns the minimal interval enclosing this and [other] interval.
   Interval<T> union(Interval<T> other) => Interval<T>(
-        lower.compareTo(other.lower) < 0 ? lower : other.lower,
-        upper.compareTo(other.upper) > 0 ? upper : other.upper,
-      );
+    lower.compareTo(other.lower) < 0 ? lower : other.lower,
+    upper.compareTo(other.upper) > 0 ? upper : other.upper,
+  );
 
   @override
   bool operator ==(Object other) =>
@@ -71,5 +71,3 @@ class Interval<T extends Comparable<T>> {
   @override
   String toString() => '$lower..$upper';
 }
-
-

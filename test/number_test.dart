@@ -106,6 +106,52 @@ void main() {
         expect(complex.abs(), math.sqrt(2));
         expect(complex.arg(), 3 * math.pi / 4);
       });
+      test('parse', () {
+        expect(Complex.parse('1+2i'), const Complex(1, 2));
+        expect(Complex.parse('1-2i'), const Complex(1, -2));
+        expect(Complex.parse('-1+2i'), const Complex(-1, 2));
+        expect(Complex.parse('-1-2i'), const Complex(-1, -2));
+      });
+      test('parse (whitespace)', () {
+        expect(Complex.parse('1 + 2i'), const Complex(1, 2));
+        expect(Complex.parse('1 - 2i'), const Complex(1, -2));
+        expect(Complex.parse(' - 1 + 2 i '), const Complex(-1, 2));
+        expect(Complex.parse(' - 1 - 2 i '), const Complex(-1, -2));
+      });
+      test('parse (permutation)', () {
+        expect(Complex.parse('2i+1'), const Complex(1, 2));
+      });
+      test('parse (real)', () {
+        expect(Complex.parse('1'), Complex.one);
+        expect(Complex.parse('+1'), Complex.one);
+        expect(Complex.parse('-1'), -Complex.one);
+        expect(Complex.parse('1.2'), const Complex(1.2));
+        expect(Complex.parse('-1.2'), const Complex(-1.2));
+        expect(Complex.parse('1.2e2'), const Complex(120));
+        expect(Complex.parse('1.2e-2'), const Complex(0.012));
+      });
+      test('parse (imaginary)', () {
+        expect(Complex.parse('i'), Complex.i);
+        expect(Complex.parse('+i'), Complex.i);
+        expect(Complex.parse('-i'), -Complex.i);
+        expect(Complex.parse('1I'), Complex.i);
+        expect(Complex.parse('1.2i'), const Complex(0, 1.2));
+        expect(Complex.parse('-1.2I'), const Complex(0, -1.2));
+        expect(Complex.parse('1.2e2i'), const Complex(0, 120));
+        expect(Complex.parse('1.2e-2I'), const Complex(0, 0.012));
+        expect(Complex.parse('1*i'), Complex.i);
+        expect(Complex.parse('1.2*I'), const Complex(0, 1.2));
+        expect(Complex.parse('1.2e2*i'), const Complex(0, 120));
+        expect(Complex.parse('1.2e-2*I'), const Complex(0, 0.012));
+      });
+      test('parse (error)', () {
+        expect(() => Complex.parse(''), throwsFormatException);
+        expect(() => Complex.parse('e1'), throwsFormatException);
+        expect(() => Complex.parse('1ii'), throwsFormatException);
+        expect(() => Complex.parse('1+1'), throwsFormatException);
+        expect(() => Complex.parse('i+i'), throwsFormatException);
+        expect(() => Complex.parse('i+j'), throwsFormatException);
+      });
       test('tryParse', () {
         expect(Complex.tryParse('1+2i'), const Complex(1, 2));
         expect(Complex.tryParse('1-2i'), const Complex(1, -2));
@@ -123,6 +169,8 @@ void main() {
       });
       test('tryParse (real)', () {
         expect(Complex.tryParse('1'), Complex.one);
+        expect(Complex.tryParse('+1'), Complex.one);
+        expect(Complex.tryParse('-1'), -Complex.one);
         expect(Complex.tryParse('1.2'), const Complex(1.2));
         expect(Complex.tryParse('-1.2'), const Complex(-1.2));
         expect(Complex.tryParse('1.2e2'), const Complex(120));
@@ -130,6 +178,8 @@ void main() {
       });
       test('tryParse (imaginary)', () {
         expect(Complex.tryParse('i'), Complex.i);
+        expect(Complex.tryParse('+i'), Complex.i);
+        expect(Complex.tryParse('-i'), -Complex.i);
         expect(Complex.tryParse('1I'), Complex.i);
         expect(Complex.tryParse('1.2i'), const Complex(0, 1.2));
         expect(Complex.tryParse('-1.2I'), const Complex(0, -1.2));
@@ -1125,6 +1175,68 @@ void main() {
         );
         expect(quaternion.abs(), closeTo(1.0, epsilon));
       });
+      test('parse', () {
+        expect(Quaternion.parse('1+2i+3j+4k'), const Quaternion(1, 2, 3, 4));
+        expect(Quaternion.parse('1-2i+3j-4k'), const Quaternion(1, -2, 3, -4));
+        expect(Quaternion.parse('-1+2i-3j+4k'), const Quaternion(-1, 2, -3, 4));
+        expect(
+          Quaternion.parse('-1-2i-3j-4k'),
+          const Quaternion(-1, -2, -3, -4),
+        );
+      });
+      test('parse (permutation)', () {
+        expect(Quaternion.parse('1+2i+3j+4k'), const Quaternion(1, 2, 3, 4));
+        expect(Quaternion.parse('2i+1+3j+4k'), const Quaternion(1, 2, 3, 4));
+        expect(Quaternion.parse('4k+2i+3j+1'), const Quaternion(1, 2, 3, 4));
+        expect(Quaternion.parse('3j+4k+2i+1'), const Quaternion(1, 2, 3, 4));
+      });
+      test('parse (whitespace)', () {
+        expect(
+          Quaternion.parse('1 + 2i + 3j + 4k'),
+          const Quaternion(1, 2, 3, 4),
+        );
+        expect(
+          Quaternion.parse(' 1 - 2i + 3j - 4k '),
+          const Quaternion(1, -2, 3, -4),
+        );
+      });
+      test('parse (real)', () {
+        expect(Quaternion.parse('1'), Quaternion.one);
+        expect(Quaternion.parse('-1'), -Quaternion.one);
+        expect(Quaternion.parse('1.2'), const Quaternion(1.2));
+        expect(Quaternion.parse('-1.2'), const Quaternion(-1.2));
+        expect(Quaternion.parse('1.2e2'), const Quaternion(120));
+        expect(Quaternion.parse('1.2e-2'), const Quaternion(0.012));
+      });
+      test('parse (vector)', () {
+        expect(Quaternion.parse('i'), Quaternion.i);
+        expect(Quaternion.parse('j'), Quaternion.j);
+        expect(Quaternion.parse('k'), Quaternion.k);
+        expect(Quaternion.parse('+i'), Quaternion.i);
+        expect(Quaternion.parse('+j'), Quaternion.j);
+        expect(Quaternion.parse('+k'), Quaternion.k);
+        expect(Quaternion.parse('-i'), -Quaternion.i);
+        expect(Quaternion.parse('-j'), -Quaternion.j);
+        expect(Quaternion.parse('-k'), -Quaternion.k);
+        expect(Quaternion.parse('1.2I'), const Quaternion(0, 1.2));
+        expect(Quaternion.parse('1.2J'), const Quaternion(0, 0, 1.2));
+        expect(Quaternion.parse('1.2K'), const Quaternion(0, 0, 0, 1.2));
+        expect(Quaternion.parse('1.2e2i'), const Quaternion(0, 120));
+        expect(Quaternion.parse('1.2e2j'), const Quaternion(0, 0, 120));
+        expect(Quaternion.parse('1.2e2k'), const Quaternion(0, 0, 0, 120));
+        expect(Quaternion.parse('-1.2e-2i'), const Quaternion(0, -0.012));
+        expect(Quaternion.parse('-1.2e-2j'), const Quaternion(0, 0, -0.012));
+        expect(Quaternion.parse('-1.2e-2k'), const Quaternion(0, 0, 0, -0.012));
+      });
+      test('parse (error)', () {
+        expect(() => Quaternion.parse(''), throwsFormatException);
+        expect(() => Quaternion.parse('e1'), throwsFormatException);
+        expect(() => Quaternion.parse('1ii'), throwsFormatException);
+        expect(() => Quaternion.parse('1+1'), throwsFormatException);
+        expect(() => Quaternion.parse('i+i'), throwsFormatException);
+        expect(() => Quaternion.parse('j+j'), throwsFormatException);
+        expect(() => Quaternion.parse('k+k'), throwsFormatException);
+      });
       test('tryParse', () {
         expect(Quaternion.tryParse('1+2i+3j+4k'), const Quaternion(1, 2, 3, 4));
         expect(
@@ -1158,6 +1270,7 @@ void main() {
       });
       test('tryParse (real)', () {
         expect(Quaternion.tryParse('1'), Quaternion.one);
+        expect(Quaternion.tryParse('-1'), -Quaternion.one);
         expect(Quaternion.tryParse('1.2'), const Quaternion(1.2));
         expect(Quaternion.tryParse('-1.2'), const Quaternion(-1.2));
         expect(Quaternion.tryParse('1.2e2'), const Quaternion(120));
@@ -1167,6 +1280,12 @@ void main() {
         expect(Quaternion.tryParse('i'), Quaternion.i);
         expect(Quaternion.tryParse('j'), Quaternion.j);
         expect(Quaternion.tryParse('k'), Quaternion.k);
+        expect(Quaternion.tryParse('+i'), Quaternion.i);
+        expect(Quaternion.tryParse('+j'), Quaternion.j);
+        expect(Quaternion.tryParse('+k'), Quaternion.k);
+        expect(Quaternion.tryParse('-i'), -Quaternion.i);
+        expect(Quaternion.tryParse('-j'), -Quaternion.j);
+        expect(Quaternion.tryParse('-k'), -Quaternion.k);
         expect(Quaternion.tryParse('1.2I'), const Quaternion(0, 1.2));
         expect(Quaternion.tryParse('1.2J'), const Quaternion(0, 0, 1.2));
         expect(Quaternion.tryParse('1.2K'), const Quaternion(0, 0, 0, 1.2));

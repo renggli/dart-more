@@ -355,18 +355,17 @@ void main() {
         required int count,
         required int range,
         required int size,
-      }) =>
-          test(name, () {
-            final random = Random(name.hashCode);
-            final list = List.generate(count, (_) {
-              final base = random.nextInt(range);
-              final length = random.nextInt(size);
-              return Interval<num>(base, base + length);
-            });
-            final tree = IntervalTree.fromIntervals<num>(list);
-            expect(tree, unorderedEquals(list));
-            verifyInvariants(tree);
-          });
+      }) => test(name, () {
+        final random = Random(name.hashCode);
+        final list = List.generate(count, (_) {
+          final base = random.nextInt(range);
+          final length = random.nextInt(size);
+          return Interval<num>(base, base + length);
+        });
+        final tree = IntervalTree.fromIntervals<num>(list);
+        expect(tree, unorderedEquals(list));
+        verifyInvariants(tree);
+      });
       stress(
         'very small intervals in small range',
         count: 500,
@@ -394,5 +393,3 @@ void main() {
     });
   });
 }
-
-
