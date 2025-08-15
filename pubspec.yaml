@@ -17,7 +17,7 @@ dependencies:
   characters: ^1.4.0
   clock: ^1.1.0
   collection: ^1.19.0
-  meta: ^1.17.0
+  meta: ^1.16.0
 dev_dependencies:
   args: ^2.7.0
   build_runner: ^2.4.0
