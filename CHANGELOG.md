@@ -1,5 +1,11 @@
 # Changelog
 
+## 4.6.1
+
+- Dart and Flutter 3.9 compatibility.
+- Add `Graph.hasCycle` and `Graph.isBipartite` checks.
+- Fix minor issues with `Complex` and `Quaternion` parsing.
+
 ## 4.6.0
 
 - Dart 3.8 requirement and WASM support.
@@ -20,7 +26,7 @@
 
 ## 4.4.0
 
-- Add [Bidirectional Character Types](https://www.unicode.org/reports/tr9/#Table_Bidirectional_Character_Types) to `UnicodeCharMatcher` (thanks to https://github.com/amake).
+- Add [Bidirectional Character Types](https://www.unicode.org/reports/tr9/#Table_Bidirectional_Character_Types) to `UnicodeCharMatcher` (thanks to <https://github.com/amake>).
 - Remove no longer necessary JavaScript specific code.
 - Optimize function types.
 
@@ -157,7 +163,7 @@
 - Remove deprecated `hashAll` and `hash1`, `hash2`, `hash3`, ... methods.
 - Add `ObjectPrinter.addValue` for more dynamic object printing.
 - Add `ToStringPrinter` mixin for simpler use of `ObjectPrinter`.
-- Add `Stream.window` along the existing `Iterable.window` extension (thanks to https://github.com/pihentagy).
+- Add `Stream.window` along the existing `Iterable.window` extension (thanks to <https://github.com/pihentagy>).
 - Various cleanups and better test coverage.
 
 ## 3.3.0
