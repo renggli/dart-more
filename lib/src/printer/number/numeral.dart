@@ -1,6 +1,6 @@
 // AUTO-GENERATED CODE: DO NOT EDIT
 
-// https://www.unicode.org/Public/16.0.0/ucd/UnicodeData.txt
+// https://www.unicode.org/Public/17.0.0/ucd/UnicodeData.txt
 
 /// A class defining different numeral systems for number printing.
 ///
@@ -397,6 +397,18 @@ abstract class NumeralSystem {
     '𑶧',
     '𑶨',
     '𑶩',
+  ];
+  static const tolongSiki = [
+    '𑷠',
+    '𑷡',
+    '𑷢',
+    '𑷣',
+    '𑷤',
+    '𑷥',
+    '𑷦',
+    '𑷧',
+    '𑷨',
+    '𑷩',
   ];
   static const kawi = [
     '𑽐',

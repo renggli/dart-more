@@ -1,7 +1,7 @@
 // AUTO-GENERATED CODE: DO NOT EDIT
 
-// https://www.unicode.org/Public/16.0.0/ucd/UnicodeData.txt
-// https://www.unicode.org/Public/16.0.0/ucd/CompositionExclusions.txt
+// https://www.unicode.org/Public/17.0.0/ucd/UnicodeData.txt
+// https://www.unicode.org/Public/17.0.0/ucd/CompositionExclusions.txt
 
 /// Dictionary mapping characters with non-zero canonical combining class values
 /// to their corresponding values.
@@ -466,6 +466,33 @@ const canonicalCombiningClasses = {
   0x1acc: 230,
   0x1acd: 230,
   0x1ace: 230,
+  0x1acf: 230,
+  0x1ad0: 230,
+  0x1ad1: 230,
+  0x1ad2: 230,
+  0x1ad3: 230,
+  0x1ad4: 230,
+  0x1ad5: 230,
+  0x1ad6: 230,
+  0x1ad7: 230,
+  0x1ad8: 230,
+  0x1ad9: 230,
+  0x1ada: 230,
+  0x1adb: 230,
+  0x1adc: 230,
+  0x1add: 220,
+  0x1ae0: 230,
+  0x1ae1: 230,
+  0x1ae2: 230,
+  0x1ae3: 230,
+  0x1ae4: 230,
+  0x1ae5: 230,
+  0x1ae6: 220,
+  0x1ae7: 230,
+  0x1ae8: 230,
+  0x1ae9: 230,
+  0x1aea: 230,
+  0x1aeb: 234,
   0x1b34: 7,
   0x1b44: 9,
   0x1b6b: 230,
@@ -740,6 +767,8 @@ const canonicalCombiningClasses = {
   0x10d6d: 230,
   0x10eab: 230,
   0x10eac: 230,
+  0x10efa: 220,
+  0x10efb: 220,
   0x10efd: 220,
   0x10efe: 220,
   0x10eff: 220,
@@ -926,6 +955,11 @@ const canonicalCombiningClasses = {
   0x1e4ef: 230,
   0x1e5ee: 230,
   0x1e5ef: 220,
+  0x1e6e3: 230,
+  0x1e6e6: 230,
+  0x1e6ee: 230,
+  0x1e6ef: 230,
+  0x1e6f5: 230,
   0x1e8d0: 220,
   0x1e8d1: 220,
   0x1e8d2: 220,
@@ -3295,6 +3329,7 @@ const characterDecompositionMapping = {
   0xa69c: (type: '<super>', values: [0x044a]),
   0xa69d: (type: '<super>', values: [0x044c]),
   0xa770: (type: '<super>', values: [0xa76f]),
+  0xa7f1: (type: '<super>', values: [0x0053]),
   0xa7f2: (type: '<super>', values: [0x0043]),
   0xa7f3: (type: '<super>', values: [0x0046]),
   0xa7f4: (type: '<super>', values: [0x0051]),

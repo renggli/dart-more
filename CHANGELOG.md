@@ -1,5 +1,9 @@
 # Changelog
 
+## 4.7.0 (Unpublished)
+
+- Upgrade to Unicode 17.0.0: <https://blog.unicode.org/2025/09/unicode-170-release-announcement.html>
+
 ## 4.6.1
 
 - Dart and Flutter 3.9 compatibility.
