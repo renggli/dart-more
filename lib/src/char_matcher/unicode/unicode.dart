@@ -3,6 +3,7 @@ import '../char_matcher.dart';
 import 'bidi_class.dart' as bidi_class;
 import 'category.dart' as category;
 import 'property.dart' as property;
+import 'scripts.dart' as scripts;
 
 /// Character matcher function that classifies characters using official Unicode
 /// categories and properties.
@@ -369,6 +370,361 @@ final class UnicodeCharMatcher extends CharMatcher {
         bidi_class.pdi,
   );
 
+  // Scripts
+  factory UnicodeCharMatcher.scriptCommon() =>
+      UnicodeCharMatcher(_scriptsData1, scripts.common);
+  factory UnicodeCharMatcher.scriptLatin() =>
+      UnicodeCharMatcher(_scriptsData1, scripts.latin);
+  factory UnicodeCharMatcher.scriptGreek() =>
+      UnicodeCharMatcher(_scriptsData1, scripts.greek);
+  factory UnicodeCharMatcher.scriptCyrillic() =>
+      UnicodeCharMatcher(_scriptsData1, scripts.cyrillic);
+  factory UnicodeCharMatcher.scriptArmenian() =>
+      UnicodeCharMatcher(_scriptsData1, scripts.armenian);
+  factory UnicodeCharMatcher.scriptHebrew() =>
+      UnicodeCharMatcher(_scriptsData1, scripts.hebrew);
+  factory UnicodeCharMatcher.scriptArabic() =>
+      UnicodeCharMatcher(_scriptsData1, scripts.arabic);
+  factory UnicodeCharMatcher.scriptSyriac() =>
+      UnicodeCharMatcher(_scriptsData1, scripts.syriac);
+  factory UnicodeCharMatcher.scriptThaana() =>
+      UnicodeCharMatcher(_scriptsData1, scripts.thaana);
+  factory UnicodeCharMatcher.scriptDevanagari() =>
+      UnicodeCharMatcher(_scriptsData1, scripts.devanagari);
+  factory UnicodeCharMatcher.scriptBengali() =>
+      UnicodeCharMatcher(_scriptsData1, scripts.bengali);
+  factory UnicodeCharMatcher.scriptGurmukhi() =>
+      UnicodeCharMatcher(_scriptsData1, scripts.gurmukhi);
+  factory UnicodeCharMatcher.scriptGujarati() =>
+      UnicodeCharMatcher(_scriptsData1, scripts.gujarati);
+  factory UnicodeCharMatcher.scriptOriya() =>
+      UnicodeCharMatcher(_scriptsData1, scripts.oriya);
+  factory UnicodeCharMatcher.scriptTamil() =>
+      UnicodeCharMatcher(_scriptsData1, scripts.tamil);
+  factory UnicodeCharMatcher.scriptTelugu() =>
+      UnicodeCharMatcher(_scriptsData1, scripts.telugu);
+  factory UnicodeCharMatcher.scriptKannada() =>
+      UnicodeCharMatcher(_scriptsData1, scripts.kannada);
+  factory UnicodeCharMatcher.scriptMalayalam() =>
+      UnicodeCharMatcher(_scriptsData1, scripts.malayalam);
+  factory UnicodeCharMatcher.scriptSinhala() =>
+      UnicodeCharMatcher(_scriptsData1, scripts.sinhala);
+  factory UnicodeCharMatcher.scriptThai() =>
+      UnicodeCharMatcher(_scriptsData1, scripts.thai);
+  factory UnicodeCharMatcher.scriptLao() =>
+      UnicodeCharMatcher(_scriptsData1, scripts.lao);
+  factory UnicodeCharMatcher.scriptTibetan() =>
+      UnicodeCharMatcher(_scriptsData1, scripts.tibetan);
+  factory UnicodeCharMatcher.scriptMyanmar() =>
+      UnicodeCharMatcher(_scriptsData1, scripts.myanmar);
+  factory UnicodeCharMatcher.scriptGeorgian() =>
+      UnicodeCharMatcher(_scriptsData1, scripts.georgian);
+  factory UnicodeCharMatcher.scriptHangul() =>
+      UnicodeCharMatcher(_scriptsData1, scripts.hangul);
+  factory UnicodeCharMatcher.scriptEthiopic() =>
+      UnicodeCharMatcher(_scriptsData1, scripts.ethiopic);
+  factory UnicodeCharMatcher.scriptCherokee() =>
+      UnicodeCharMatcher(_scriptsData1, scripts.cherokee);
+  factory UnicodeCharMatcher.scriptCanadianAboriginal() =>
+      UnicodeCharMatcher(_scriptsData1, scripts.canadianAboriginal);
+  factory UnicodeCharMatcher.scriptOgham() =>
+      UnicodeCharMatcher(_scriptsData1, scripts.ogham);
+  factory UnicodeCharMatcher.scriptRunic() =>
+      UnicodeCharMatcher(_scriptsData1, scripts.runic);
+  factory UnicodeCharMatcher.scriptKhmer() =>
+      UnicodeCharMatcher(_scriptsData1, scripts.khmer);
+  factory UnicodeCharMatcher.scriptMongolian() =>
+      UnicodeCharMatcher(_scriptsData1, scripts.mongolian);
+
+  factory UnicodeCharMatcher.scriptHiragana() =>
+      UnicodeCharMatcher(_scriptsData2, scripts.hiragana);
+  factory UnicodeCharMatcher.scriptKatakana() =>
+      UnicodeCharMatcher(_scriptsData2, scripts.katakana);
+  factory UnicodeCharMatcher.scriptBopomofo() =>
+      UnicodeCharMatcher(_scriptsData2, scripts.bopomofo);
+  factory UnicodeCharMatcher.scriptHan() =>
+      UnicodeCharMatcher(_scriptsData2, scripts.han);
+  factory UnicodeCharMatcher.scriptYi() =>
+      UnicodeCharMatcher(_scriptsData2, scripts.yi);
+  factory UnicodeCharMatcher.scriptOldItalic() =>
+      UnicodeCharMatcher(_scriptsData2, scripts.oldItalic);
+  factory UnicodeCharMatcher.scriptGothic() =>
+      UnicodeCharMatcher(_scriptsData2, scripts.gothic);
+  factory UnicodeCharMatcher.scriptDeseret() =>
+      UnicodeCharMatcher(_scriptsData2, scripts.deseret);
+  factory UnicodeCharMatcher.scriptInherited() =>
+      UnicodeCharMatcher(_scriptsData2, scripts.inherited);
+  factory UnicodeCharMatcher.scriptTagalog() =>
+      UnicodeCharMatcher(_scriptsData2, scripts.tagalog);
+  factory UnicodeCharMatcher.scriptHanunoo() =>
+      UnicodeCharMatcher(_scriptsData2, scripts.hanunoo);
+  factory UnicodeCharMatcher.scriptBuhid() =>
+      UnicodeCharMatcher(_scriptsData2, scripts.buhid);
+  factory UnicodeCharMatcher.scriptTagbanwa() =>
+      UnicodeCharMatcher(_scriptsData2, scripts.tagbanwa);
+  factory UnicodeCharMatcher.scriptLimbu() =>
+      UnicodeCharMatcher(_scriptsData2, scripts.limbu);
+  factory UnicodeCharMatcher.scriptTaiLe() =>
+      UnicodeCharMatcher(_scriptsData2, scripts.taiLe);
+  factory UnicodeCharMatcher.scriptLinearB() =>
+      UnicodeCharMatcher(_scriptsData2, scripts.linearB);
+  factory UnicodeCharMatcher.scriptUgaritic() =>
+      UnicodeCharMatcher(_scriptsData2, scripts.ugaritic);
+  factory UnicodeCharMatcher.scriptShavian() =>
+      UnicodeCharMatcher(_scriptsData2, scripts.shavian);
+  factory UnicodeCharMatcher.scriptOsmanya() =>
+      UnicodeCharMatcher(_scriptsData2, scripts.osmanya);
+  factory UnicodeCharMatcher.scriptCypriot() =>
+      UnicodeCharMatcher(_scriptsData2, scripts.cypriot);
+  factory UnicodeCharMatcher.scriptBraille() =>
+      UnicodeCharMatcher(_scriptsData2, scripts.braille);
+  factory UnicodeCharMatcher.scriptBuginese() =>
+      UnicodeCharMatcher(_scriptsData2, scripts.buginese);
+  factory UnicodeCharMatcher.scriptCoptic() =>
+      UnicodeCharMatcher(_scriptsData2, scripts.coptic);
+  factory UnicodeCharMatcher.scriptNewTaiLue() =>
+      UnicodeCharMatcher(_scriptsData2, scripts.newTaiLue);
+  factory UnicodeCharMatcher.scriptGlagolitic() =>
+      UnicodeCharMatcher(_scriptsData2, scripts.glagolitic);
+  factory UnicodeCharMatcher.scriptTifinagh() =>
+      UnicodeCharMatcher(_scriptsData2, scripts.tifinagh);
+  factory UnicodeCharMatcher.scriptSylotiNagri() =>
+      UnicodeCharMatcher(_scriptsData2, scripts.sylotiNagri);
+  factory UnicodeCharMatcher.scriptOldPersian() =>
+      UnicodeCharMatcher(_scriptsData2, scripts.oldPersian);
+  factory UnicodeCharMatcher.scriptKharoshthi() =>
+      UnicodeCharMatcher(_scriptsData2, scripts.kharoshthi);
+  factory UnicodeCharMatcher.scriptBalinese() =>
+      UnicodeCharMatcher(_scriptsData2, scripts.balinese);
+  factory UnicodeCharMatcher.scriptCuneiform() =>
+      UnicodeCharMatcher(_scriptsData2, scripts.cuneiform);
+  factory UnicodeCharMatcher.scriptPhoenician() =>
+      UnicodeCharMatcher(_scriptsData2, scripts.phoenician);
+
+  factory UnicodeCharMatcher.scriptPhagsPa() =>
+      UnicodeCharMatcher(_scriptsData3, scripts.phagsPa);
+  factory UnicodeCharMatcher.scriptNko() =>
+      UnicodeCharMatcher(_scriptsData3, scripts.nko);
+  factory UnicodeCharMatcher.scriptSundanese() =>
+      UnicodeCharMatcher(_scriptsData3, scripts.sundanese);
+  factory UnicodeCharMatcher.scriptLepcha() =>
+      UnicodeCharMatcher(_scriptsData3, scripts.lepcha);
+  factory UnicodeCharMatcher.scriptOlChiki() =>
+      UnicodeCharMatcher(_scriptsData3, scripts.olChiki);
+  factory UnicodeCharMatcher.scriptVai() =>
+      UnicodeCharMatcher(_scriptsData3, scripts.vai);
+  factory UnicodeCharMatcher.scriptSaurashtra() =>
+      UnicodeCharMatcher(_scriptsData3, scripts.saurashtra);
+  factory UnicodeCharMatcher.scriptKayahLi() =>
+      UnicodeCharMatcher(_scriptsData3, scripts.kayahLi);
+  factory UnicodeCharMatcher.scriptRejang() =>
+      UnicodeCharMatcher(_scriptsData3, scripts.rejang);
+  factory UnicodeCharMatcher.scriptLycian() =>
+      UnicodeCharMatcher(_scriptsData3, scripts.lycian);
+  factory UnicodeCharMatcher.scriptCarian() =>
+      UnicodeCharMatcher(_scriptsData3, scripts.carian);
+  factory UnicodeCharMatcher.scriptLydian() =>
+      UnicodeCharMatcher(_scriptsData3, scripts.lydian);
+  factory UnicodeCharMatcher.scriptCham() =>
+      UnicodeCharMatcher(_scriptsData3, scripts.cham);
+  factory UnicodeCharMatcher.scriptTaiTham() =>
+      UnicodeCharMatcher(_scriptsData3, scripts.taiTham);
+  factory UnicodeCharMatcher.scriptTaiViet() =>
+      UnicodeCharMatcher(_scriptsData3, scripts.taiViet);
+  factory UnicodeCharMatcher.scriptAvestan() =>
+      UnicodeCharMatcher(_scriptsData3, scripts.avestan);
+  factory UnicodeCharMatcher.scriptEgyptianHieroglyphs() =>
+      UnicodeCharMatcher(_scriptsData3, scripts.egyptianHieroglyphs);
+  factory UnicodeCharMatcher.scriptSamaritan() =>
+      UnicodeCharMatcher(_scriptsData3, scripts.samaritan);
+  factory UnicodeCharMatcher.scriptLisu() =>
+      UnicodeCharMatcher(_scriptsData3, scripts.lisu);
+  factory UnicodeCharMatcher.scriptBamum() =>
+      UnicodeCharMatcher(_scriptsData3, scripts.bamum);
+  factory UnicodeCharMatcher.scriptJavanese() =>
+      UnicodeCharMatcher(_scriptsData3, scripts.javanese);
+  factory UnicodeCharMatcher.scriptMeeteiMayek() =>
+      UnicodeCharMatcher(_scriptsData3, scripts.meeteiMayek);
+  factory UnicodeCharMatcher.scriptImperialAramaic() =>
+      UnicodeCharMatcher(_scriptsData3, scripts.imperialAramaic);
+  factory UnicodeCharMatcher.scriptOldSouthArabian() =>
+      UnicodeCharMatcher(_scriptsData3, scripts.oldSouthArabian);
+  factory UnicodeCharMatcher.scriptInscriptionalParthian() =>
+      UnicodeCharMatcher(_scriptsData3, scripts.inscriptionalParthian);
+  factory UnicodeCharMatcher.scriptInscriptionalPahlavi() =>
+      UnicodeCharMatcher(_scriptsData3, scripts.inscriptionalPahlavi);
+  factory UnicodeCharMatcher.scriptOldTurkic() =>
+      UnicodeCharMatcher(_scriptsData3, scripts.oldTurkic);
+  factory UnicodeCharMatcher.scriptKaithi() =>
+      UnicodeCharMatcher(_scriptsData3, scripts.kaithi);
+  factory UnicodeCharMatcher.scriptBatak() =>
+      UnicodeCharMatcher(_scriptsData3, scripts.batak);
+  factory UnicodeCharMatcher.scriptBrahmi() =>
+      UnicodeCharMatcher(_scriptsData3, scripts.brahmi);
+  factory UnicodeCharMatcher.scriptMandaic() =>
+      UnicodeCharMatcher(_scriptsData3, scripts.mandaic);
+  factory UnicodeCharMatcher.scriptChakma() =>
+      UnicodeCharMatcher(_scriptsData3, scripts.chakma);
+
+  factory UnicodeCharMatcher.scriptMeroiticCursive() =>
+      UnicodeCharMatcher(_scriptsData4, scripts.meroiticCursive);
+  factory UnicodeCharMatcher.scriptMeroiticHieroglyphs() =>
+      UnicodeCharMatcher(_scriptsData4, scripts.meroiticHieroglyphs);
+  factory UnicodeCharMatcher.scriptMiao() =>
+      UnicodeCharMatcher(_scriptsData4, scripts.miao);
+  factory UnicodeCharMatcher.scriptSharada() =>
+      UnicodeCharMatcher(_scriptsData4, scripts.sharada);
+  factory UnicodeCharMatcher.scriptSoraSompeng() =>
+      UnicodeCharMatcher(_scriptsData4, scripts.soraSompeng);
+  factory UnicodeCharMatcher.scriptTakri() =>
+      UnicodeCharMatcher(_scriptsData4, scripts.takri);
+  factory UnicodeCharMatcher.scriptCaucasianAlbanian() =>
+      UnicodeCharMatcher(_scriptsData4, scripts.caucasianAlbanian);
+  factory UnicodeCharMatcher.scriptBassaVah() =>
+      UnicodeCharMatcher(_scriptsData4, scripts.bassaVah);
+  factory UnicodeCharMatcher.scriptDuployan() =>
+      UnicodeCharMatcher(_scriptsData4, scripts.duployan);
+  factory UnicodeCharMatcher.scriptElbasan() =>
+      UnicodeCharMatcher(_scriptsData4, scripts.elbasan);
+  factory UnicodeCharMatcher.scriptGrantha() =>
+      UnicodeCharMatcher(_scriptsData4, scripts.grantha);
+  factory UnicodeCharMatcher.scriptPahawhHmong() =>
+      UnicodeCharMatcher(_scriptsData4, scripts.pahawhHmong);
+  factory UnicodeCharMatcher.scriptKhojki() =>
+      UnicodeCharMatcher(_scriptsData4, scripts.khojki);
+  factory UnicodeCharMatcher.scriptLinearA() =>
+      UnicodeCharMatcher(_scriptsData4, scripts.linearA);
+  factory UnicodeCharMatcher.scriptMahajani() =>
+      UnicodeCharMatcher(_scriptsData4, scripts.mahajani);
+  factory UnicodeCharMatcher.scriptManichaean() =>
+      UnicodeCharMatcher(_scriptsData4, scripts.manichaean);
+  factory UnicodeCharMatcher.scriptMendeKikakui() =>
+      UnicodeCharMatcher(_scriptsData4, scripts.mendeKikakui);
+  factory UnicodeCharMatcher.scriptModi() =>
+      UnicodeCharMatcher(_scriptsData4, scripts.modi);
+  factory UnicodeCharMatcher.scriptMro() =>
+      UnicodeCharMatcher(_scriptsData4, scripts.mro);
+  factory UnicodeCharMatcher.scriptOldNorthArabian() =>
+      UnicodeCharMatcher(_scriptsData4, scripts.oldNorthArabian);
+  factory UnicodeCharMatcher.scriptNabataean() =>
+      UnicodeCharMatcher(_scriptsData4, scripts.nabataean);
+  factory UnicodeCharMatcher.scriptPalmyrene() =>
+      UnicodeCharMatcher(_scriptsData4, scripts.palmyrene);
+  factory UnicodeCharMatcher.scriptPauCinHau() =>
+      UnicodeCharMatcher(_scriptsData4, scripts.pauCinHau);
+  factory UnicodeCharMatcher.scriptOldPermic() =>
+      UnicodeCharMatcher(_scriptsData4, scripts.oldPermic);
+  factory UnicodeCharMatcher.scriptPsalterPahlavi() =>
+      UnicodeCharMatcher(_scriptsData4, scripts.psalterPahlavi);
+  factory UnicodeCharMatcher.scriptSiddham() =>
+      UnicodeCharMatcher(_scriptsData4, scripts.siddham);
+  factory UnicodeCharMatcher.scriptKhudawadi() =>
+      UnicodeCharMatcher(_scriptsData4, scripts.khudawadi);
+  factory UnicodeCharMatcher.scriptTirhuta() =>
+      UnicodeCharMatcher(_scriptsData4, scripts.tirhuta);
+  factory UnicodeCharMatcher.scriptWarangCiti() =>
+      UnicodeCharMatcher(_scriptsData4, scripts.warangCiti);
+  factory UnicodeCharMatcher.scriptAhom() =>
+      UnicodeCharMatcher(_scriptsData4, scripts.ahom);
+  factory UnicodeCharMatcher.scriptAnatolianHieroglyphs() =>
+      UnicodeCharMatcher(_scriptsData4, scripts.anatolianHieroglyphs);
+  factory UnicodeCharMatcher.scriptHatran() =>
+      UnicodeCharMatcher(_scriptsData4, scripts.hatran);
+
+  factory UnicodeCharMatcher.scriptMultani() =>
+      UnicodeCharMatcher(_scriptsData5, scripts.multani);
+  factory UnicodeCharMatcher.scriptOldHungarian() =>
+      UnicodeCharMatcher(_scriptsData5, scripts.oldHungarian);
+  factory UnicodeCharMatcher.scriptSignwriting() =>
+      UnicodeCharMatcher(_scriptsData5, scripts.signwriting);
+  factory UnicodeCharMatcher.scriptAdlam() =>
+      UnicodeCharMatcher(_scriptsData5, scripts.adlam);
+  factory UnicodeCharMatcher.scriptBhaiksuki() =>
+      UnicodeCharMatcher(_scriptsData5, scripts.bhaiksuki);
+  factory UnicodeCharMatcher.scriptMarchen() =>
+      UnicodeCharMatcher(_scriptsData5, scripts.marchen);
+  factory UnicodeCharMatcher.scriptNewa() =>
+      UnicodeCharMatcher(_scriptsData5, scripts.newa);
+  factory UnicodeCharMatcher.scriptOsage() =>
+      UnicodeCharMatcher(_scriptsData5, scripts.osage);
+  factory UnicodeCharMatcher.scriptTangut() =>
+      UnicodeCharMatcher(_scriptsData5, scripts.tangut);
+  factory UnicodeCharMatcher.scriptMasaramGondi() =>
+      UnicodeCharMatcher(_scriptsData5, scripts.masaramGondi);
+  factory UnicodeCharMatcher.scriptNushu() =>
+      UnicodeCharMatcher(_scriptsData5, scripts.nushu);
+  factory UnicodeCharMatcher.scriptSoyombo() =>
+      UnicodeCharMatcher(_scriptsData5, scripts.soyombo);
+  factory UnicodeCharMatcher.scriptZanabazarSquare() =>
+      UnicodeCharMatcher(_scriptsData5, scripts.zanabazarSquare);
+  factory UnicodeCharMatcher.scriptDogra() =>
+      UnicodeCharMatcher(_scriptsData5, scripts.dogra);
+  factory UnicodeCharMatcher.scriptGunjalaGondi() =>
+      UnicodeCharMatcher(_scriptsData5, scripts.gunjalaGondi);
+  factory UnicodeCharMatcher.scriptMakasar() =>
+      UnicodeCharMatcher(_scriptsData5, scripts.makasar);
+  factory UnicodeCharMatcher.scriptMedefaidrin() =>
+      UnicodeCharMatcher(_scriptsData5, scripts.medefaidrin);
+  factory UnicodeCharMatcher.scriptHanifiRohingya() =>
+      UnicodeCharMatcher(_scriptsData5, scripts.hanifiRohingya);
+  factory UnicodeCharMatcher.scriptSogdian() =>
+      UnicodeCharMatcher(_scriptsData5, scripts.sogdian);
+  factory UnicodeCharMatcher.scriptOldSogdian() =>
+      UnicodeCharMatcher(_scriptsData5, scripts.oldSogdian);
+  factory UnicodeCharMatcher.scriptElymaic() =>
+      UnicodeCharMatcher(_scriptsData5, scripts.elymaic);
+  factory UnicodeCharMatcher.scriptNandinagari() =>
+      UnicodeCharMatcher(_scriptsData5, scripts.nandinagari);
+  factory UnicodeCharMatcher.scriptNyiakengPuachueHmong() =>
+      UnicodeCharMatcher(_scriptsData5, scripts.nyiakengPuachueHmong);
+  factory UnicodeCharMatcher.scriptWancho() =>
+      UnicodeCharMatcher(_scriptsData5, scripts.wancho);
+  factory UnicodeCharMatcher.scriptChorasmian() =>
+      UnicodeCharMatcher(_scriptsData5, scripts.chorasmian);
+  factory UnicodeCharMatcher.scriptDivesAkuru() =>
+      UnicodeCharMatcher(_scriptsData5, scripts.divesAkuru);
+  factory UnicodeCharMatcher.scriptKhitanSmallScript() =>
+      UnicodeCharMatcher(_scriptsData5, scripts.khitanSmallScript);
+  factory UnicodeCharMatcher.scriptYezidi() =>
+      UnicodeCharMatcher(_scriptsData5, scripts.yezidi);
+  factory UnicodeCharMatcher.scriptCyproMinoan() =>
+      UnicodeCharMatcher(_scriptsData5, scripts.cyproMinoan);
+  factory UnicodeCharMatcher.scriptOldUyghur() =>
+      UnicodeCharMatcher(_scriptsData5, scripts.oldUyghur);
+  factory UnicodeCharMatcher.scriptTangsa() =>
+      UnicodeCharMatcher(_scriptsData5, scripts.tangsa);
+  factory UnicodeCharMatcher.scriptToto() =>
+      UnicodeCharMatcher(_scriptsData5, scripts.toto);
+
+  factory UnicodeCharMatcher.scriptVithkuqi() =>
+      UnicodeCharMatcher(_scriptsData6, scripts.vithkuqi);
+  factory UnicodeCharMatcher.scriptKawi() =>
+      UnicodeCharMatcher(_scriptsData6, scripts.kawi);
+  factory UnicodeCharMatcher.scriptNagMundari() =>
+      UnicodeCharMatcher(_scriptsData6, scripts.nagMundari);
+  factory UnicodeCharMatcher.scriptGaray() =>
+      UnicodeCharMatcher(_scriptsData6, scripts.garay);
+  factory UnicodeCharMatcher.scriptGurungKhema() =>
+      UnicodeCharMatcher(_scriptsData6, scripts.gurungKhema);
+  factory UnicodeCharMatcher.scriptKiratRai() =>
+      UnicodeCharMatcher(_scriptsData6, scripts.kiratRai);
+  factory UnicodeCharMatcher.scriptOlOnal() =>
+      UnicodeCharMatcher(_scriptsData6, scripts.olOnal);
+  factory UnicodeCharMatcher.scriptSunuwar() =>
+      UnicodeCharMatcher(_scriptsData6, scripts.sunuwar);
+  factory UnicodeCharMatcher.scriptTodhri() =>
+      UnicodeCharMatcher(_scriptsData6, scripts.todhri);
+  factory UnicodeCharMatcher.scriptTuluTigalari() =>
+      UnicodeCharMatcher(_scriptsData6, scripts.tuluTigalari);
+  factory UnicodeCharMatcher.scriptSidetic() =>
+      UnicodeCharMatcher(_scriptsData6, scripts.sidetic);
+  factory UnicodeCharMatcher.scriptTaiYo() =>
+      UnicodeCharMatcher(_scriptsData6, scripts.taiYo);
+  factory UnicodeCharMatcher.scriptTolongSiki() =>
+      UnicodeCharMatcher(_scriptsData6, scripts.tolongSiki);
+  factory UnicodeCharMatcher.scriptBeriaErfe() =>
+      UnicodeCharMatcher(_scriptsData6, scripts.beriaErfe);
+
   final List<int> data;
   final int mask;
 
@@ -380,3 +736,9 @@ final _categoryData = decodeRle(category.data);
 final _propertyData1 = decodeRle(property.data1);
 final _propertyData2 = decodeRle(property.data2);
 final _bidiClassData = decodeRle(bidi_class.data);
+final _scriptsData1 = decodeRle(scripts.data1);
+final _scriptsData2 = decodeRle(scripts.data2);
+final _scriptsData3 = decodeRle(scripts.data3);
+final _scriptsData4 = decodeRle(scripts.data4);
+final _scriptsData5 = decodeRle(scripts.data5);
+final _scriptsData6 = decodeRle(scripts.data6);
