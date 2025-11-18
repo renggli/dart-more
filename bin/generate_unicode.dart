@@ -250,6 +250,7 @@ Future<void> main() => Future.wait([
   generatePropertyData('category', unicodeCategoryListUrl),
   generatePropertyData('property', unicodePropertyListUrl),
   generatePropertyData('bidi_class', unicodeBidiClassListUrl),
+  generatePropertyData('scripts', unicodeScriptsUrl),
   generateNormalizationData(),
   generateNormalizationTestData(),
   generateUnicodeBlocks(),

@@ -50,6 +50,10 @@ final unicodeBidiClassListUrl = Uri.parse(
   'https://www.unicode.org/Public/$unicodeVersion/ucd/extracted/DerivedBidiClass.txt',
 );
 
+final unicodeScriptsUrl = Uri.parse(
+  'https://www.unicode.org/Public/$unicodeVersion/ucd/Scripts.txt',
+);
+
 /// Reads the unicode database.
 final Future<List<UnicodeData>> unicodeDataFuture = _getUnicodeData();
 
