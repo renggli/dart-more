@@ -988,6 +988,235 @@ void main() {
         );
       });
     });
+    group('script', () {
+      // A font with wide Unicode coverage such as Unifont
+      // (https://www.unifoundry.com/unifont/index.html) is needed to properly
+      // display some of these.
+
+      // Group 1
+      test('common', () {
+        verify(
+          UnicodeCharMatcher.scriptCommon(),
+          '0123456789!@#_ ',
+          'abcABCあ亜ㄅ아אבגابج',
+        );
+      });
+      test('latin', () {
+        verify(
+          UnicodeCharMatcher.scriptLatin(),
+          'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz',
+          '012あ亜ㄅ아אבגابج_!@# ',
+        );
+      });
+      test('greek', () {
+        verify(
+          UnicodeCharMatcher.scriptGreek(),
+          'ΑΒΓΔΕΖΗΘΙΚΛΜΝΞΟΠΡΣΤΥΦΧΨΩαβγδεζηθικλμνξοπρστυφχψω',
+          '012abcABCあ亜ㄅ아אבגابج_!@# ',
+        );
+      });
+      test('cyrillic', () {
+        verify(
+          UnicodeCharMatcher.scriptCyrillic(),
+          'АБВГДЕЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯабвгдежзийклмнопрстуфхцчшщъыьэюя',
+          '012abcABCあ亜ㄅ아אבגابج_!@# ',
+        );
+      });
+      test('hebrew', () {
+        verify(
+          UnicodeCharMatcher.scriptHebrew(),
+          'אבגדהוזחטיכלמנסעפצקרשת',
+          '012abcABCあ亜ㄅ아_!@# ',
+        );
+      });
+      test('arabic', () {
+        verify(
+          UnicodeCharMatcher.scriptArabic(),
+          'ابتثجحخدذرزسشصضطظعغفقكلمنهوي',
+          '012abcABCあ亜ㄅ아_!@# ',
+        );
+      });
+      test('syriac', () {
+        verify(
+          UnicodeCharMatcher.scriptSyriac(),
+          'ܐܒܓܕܗܘܙܚܛܝܟܠܡܢܣܥܦܨ',
+          '012abcABCあ亜ㄅ아אבגابج_!@# ',
+        );
+      });
+      test('thaana', () {
+        verify(
+          UnicodeCharMatcher.scriptThaana(),
+          'ހށނރބޅކއވމފދތލގޏ',
+          '012abcABCあ亜ㄅ아אבגابج_!@# ',
+        );
+      });
+      test('devanagari', () {
+        verify(
+          UnicodeCharMatcher.scriptDevanagari(),
+          'अआइईउऊऋऌएऐओऔकखगघङचछजझञटठडढणतथदधनपफबभमयरलवशषसह',
+          '012abcABCあ亜ㄅ아אבגابج_!@# ',
+        );
+      });
+      test('georgian', () {
+        verify(
+          UnicodeCharMatcher.scriptGeorgian(),
+          'ႠႡႢႣႤႥႦႧႨႩႪႫႬႭႮႯ',
+          '012abcABCあ亜ㄅ아אבגابج_!@# ',
+        );
+      });
+      test('hangul', () {
+        verify(
+          UnicodeCharMatcher.scriptHangul(),
+          '가나다라마바사아자차카타파하',
+          '012abcABCあ亜ㄅאבגابج_!@# ',
+        );
+      });
+      test('ethiopic', () {
+        verify(
+          UnicodeCharMatcher.scriptEthiopic(),
+          'ሀሁሂሃሄህሆለሉሊላሌልሎሏ',
+          '012abcABCあ亜ㄅ아אבגابج_!@# ',
+        );
+      });
+      // Group 2
+      test('hiragana', () {
+        verify(
+          UnicodeCharMatcher.scriptHiragana(),
+          'あいうえおかきくけこさしすせそたちつてとなにぬねのはひふへほまみむめもやゆよらりるれろわをん',
+          '012abcABC亜ㄅ아אבגابج_!@# ',
+        );
+      });
+      test('katakana', () {
+        verify(
+          UnicodeCharMatcher.scriptKatakana(),
+          'アイウエオカキクケコサシスセソタチツテトナニヌネノハヒフヘホマミムメモヤユヨラリルレロワヲン',
+          '012abcABCあ亜ㄅ아אבגابج_!@# ',
+        );
+      });
+      test('han', () {
+        verify(
+          UnicodeCharMatcher.scriptHan(),
+          '漢字中文字語言書寫',
+          '012abcABCあㄅ아אבגابج_!@# ',
+        );
+      });
+      test('inherited', () {
+        verify(
+          UnicodeCharMatcher.scriptInherited(),
+          '\u{0300}\u{0301}\u{0345}\u{20e1}\u{101fd}\u{1133b}\u{e0100}',
+          '012abcABCあ亜ㄅ아אבגابج_!@# ',
+        );
+      });
+      test('tagalog', () {
+        verify(
+          UnicodeCharMatcher.scriptTagalog(),
+          'ᜀᜁᜂᜃᜄᜅᜆᜇᜈᜉᜊᜋᜌᜍᜎᜏ',
+          '012abcABCあ亜ㄅ아אבגابج_!@# ',
+        );
+      });
+      test('hanunoo', () {
+        verify(
+          UnicodeCharMatcher.scriptHanunoo(),
+          'ᜠᜡᜢᜣᜤᜥᜦᜧᜨᜩᜪᜫᜬᜭᜮᜯ',
+          '012abcABCあ亜ㄅ아אבגابج_!@# ',
+        );
+      });
+      test('buhid', () {
+        verify(
+          UnicodeCharMatcher.scriptBuhid(),
+          'ᝀᝁᝂᝃᝄᝅᝆᝇᝈᝉᝊᝋᝌᝍᝎᝏ',
+          '012abcABCあ亜ㄅ아אבגابج_!@# ',
+        );
+      });
+      test('tagbanwa', () {
+        verify(
+          UnicodeCharMatcher.scriptTagbanwa(),
+          'ᝠᝡᝢᝣᝤᝥᝦᝧᝨᝩᝪᝫᝬᝮᝯ',
+          '012abcABCあ亜ㄅ아אבגابج_!@# ',
+        );
+      });
+      test('braille', () {
+        verify(
+          UnicodeCharMatcher.scriptBraille(),
+          '⠁⠃⠉⠙⠑⠋⠛⠓⠊⠚⠅⠇⠍⠝⠕⠏',
+          '012abcABCあ亜ㄅ아אבגابج_!@# ',
+        );
+      });
+      test('coptic', () {
+        verify(
+          UnicodeCharMatcher.scriptCoptic(),
+          'ⲀⲂⲄⲆⲈⲊⲌⲎⲐⲒⲔⲖⲘⲚⲜⲞⲠ',
+          '012abcABCあ亜ㄅ아אבגابج_!@# ',
+        );
+      });
+      // Group 3
+      test('sudanese', () {
+        verify(
+          UnicodeCharMatcher.scriptSundanese(),
+          'ᮃᮄᮅᮆᮇᮈᮉᮊᮋᮌᮍᮎᮏᮐᮑᮒ',
+          '012abcABCあ亜ㄅ아אבגابج_!@# ',
+        );
+      });
+      test('lepcha', () {
+        verify(
+          UnicodeCharMatcher.scriptLepcha(),
+          'ᰀᰁᰂᰃᰄᰅᰆᰇᰈᰉᰊᰋᰌᰍᰎᰏ',
+          '012abcABCあ亜ㄅ아אבגابج_!@# ',
+        );
+      });
+      test('olChiki', () {
+        verify(
+          UnicodeCharMatcher.scriptOlChiki(),
+          'ᱚᱛᱜᱝᱞᱟᱠᱡᱢᱣᱤᱥᱦᱧᱨᱩ',
+          '012abcABCあ亜ㄅ아אבגابج_!@# ',
+        );
+      });
+      test('saurashtra', () {
+        verify(
+          UnicodeCharMatcher.scriptSaurashtra(),
+          'ꢀꢁꢂꢃꢄꢅꢆꢇꢈꢉꢊꢋꢌꢍꢎꢏ',
+          '012abcABCあ亜ㄅ아אבגابج_!@# ',
+        );
+      });
+      test('kayahLi', () {
+        verify(
+          UnicodeCharMatcher.scriptKayahLi(),
+          '꤀꤁꤂꤃꤄꤅꤆꤇꤈꤉ꤊꤋꤌꤍꤎꤏ',
+          '012abcABCあ亜ㄅ아אבגابج_!@# ',
+        );
+      });
+      // Group 4
+      test('oldNorthArabian', () {
+        verify(
+          UnicodeCharMatcher.scriptOldNorthArabian(),
+          '\u{10A80}\u{10A81}\u{10A82}\u{10A83}\u{10A84}\u{10A85}\u{10A86}\u{10A87}\u{10A88}\u{10A89}',
+          '012abcABCあ亜ㄅ아אבגابج_!@# ',
+        );
+      });
+      test('anatolianHieroglyphs', () {
+        verify(
+          UnicodeCharMatcher.scriptAnatolianHieroglyphs(),
+          '\u{14400}\u{14401}\u{14402}\u{14403}\u{14404}\u{14405}\u{14406}\u{14407}\u{14408}\u{14409}',
+          '012abcABCあ亜ㄅ아אבגابج_!@# ',
+        );
+      });
+      // Group 5
+      test('nushu', () {
+        verify(
+          UnicodeCharMatcher.scriptNushu(),
+          '\u{1b170}\u{1b171}\u{1b172}\u{1b180}\u{1b1c0}\u{1b2fb}',
+          '012abcABCあ亜ㄅ아אבגابج_!@# ',
+        );
+      });
+      // Group 6
+      test('unknown', () {
+        verify(
+          UnicodeCharMatcher.scriptUnknown(),
+          '\u{0378}\u{0380}\u{0558}\u{191f}\u{dead}\u{deaf}\u{eeee}\u{ffff}\u{1000c}\u{10fddd}\u{10fffd}',
+          '012abcABCあ亜ㄅ아אבגابج_!@# ',
+        );
+      });
+    });
   });
   group('action', () {
     final star = CharMatcher.isChar('*');
