@@ -18,7 +18,11 @@ void writeIntList(IOSink out, String name, List<int> values) {
 String formatUnicode(int codePoint) =>
     '0x${codePoint.toRadixString(16).padLeft(4, '0')}';
 
-Future<void> generatePropertyData(String name, Uri url) async {
+Future<void> generatePropertyData(
+  String name,
+  Uri url, {
+  String? unlistedAs,
+}) async {
   final file = File('lib/src/char_matcher/unicode/$name.dart');
   final data = await getPropertyData(url);
   final out = file.openWrite();
@@ -27,9 +31,17 @@ Future<void> generatePropertyData(String name, Uri url) async {
   out.writeln('// $url');
   out.writeln();
 
+  var entries = data.asMap().entries;
+  if (unlistedAs != null) {
+    final unlistedRanges = getUnlistedCodePoints(
+      data,
+    ).map((code) => (code, code)).toList(growable: false);
+    entries = entries.followedBy([MapEntry(unlistedAs, unlistedRanges)]);
+  }
+
   var index = 1, listIndex = 1;
   final values = List.filled(unicodeMaxCodePoint + 1, 0);
-  for (final MapEntry(:key, value: ranges) in data.asMap().entries) {
+  for (final MapEntry(:key, value: ranges) in entries) {
     if (index > 0xffffffff) {
       out.writeln();
       writeIntList(out, 'data${listIndex++}', values);
@@ -250,7 +262,7 @@ Future<void> main() => Future.wait([
   generatePropertyData('category', unicodeCategoryListUrl),
   generatePropertyData('property', unicodePropertyListUrl),
   generatePropertyData('bidi_class', unicodeBidiClassListUrl),
-  generatePropertyData('scripts', unicodeScriptsUrl),
+  generatePropertyData('scripts', unicodeScriptsUrl, unlistedAs: 'Unknown'),
   generateNormalizationData(),
   generateNormalizationTestData(),
   generateUnicodeBlocks(),

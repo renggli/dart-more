@@ -724,6 +724,8 @@ final class UnicodeCharMatcher extends CharMatcher {
       UnicodeCharMatcher(_scriptsData6, scripts.tolongSiki);
   factory UnicodeCharMatcher.scriptBeriaErfe() =>
       UnicodeCharMatcher(_scriptsData6, scripts.beriaErfe);
+  factory UnicodeCharMatcher.scriptUnknown() =>
+      UnicodeCharMatcher(_scriptsData6, scripts.unknown);
 
   final List<int> data;
   final int mask;

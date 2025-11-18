@@ -133,6 +133,22 @@ Future<ListMultimap<String, (int, int)>> getPropertyData(Uri uri) async {
   );
 }
 
+/// From property data created by [getPropertyData], returns all code points
+/// that are *not* included in the data.
+Iterable<int> getUnlistedCodePoints(
+  ListMultimap<String, (int, int)> propertyData,
+) {
+  final allCodePoints = List.generate(unicodeMaxCodePoint + 1, (code) => code);
+  for (final (start, end) in propertyData.values) {
+    allCodePoints.replaceRange(
+      start,
+      end + 1,
+      List.filled(end - start + 1, -1),
+    );
+  }
+  return allCodePoints.where((code) => code != -1);
+}
+
 /// Reads a unicode file into a list of lines with its values. Removes comments
 /// and empty lines.
 Future<List<List<String>>> getLineData(Uri uri) async {
