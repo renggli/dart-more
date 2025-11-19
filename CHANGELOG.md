@@ -3,6 +3,7 @@
 ## 4.7.0 (Unpublished)
 
 - Upgrade to Unicode 17.0.0: <https://blog.unicode.org/2025/09/unicode-170-release-announcement.html>
+- Add [Unicode Script](https://www.unicode.org/Public/17.0.0/ucd/Scripts.txt) property matchers (thanks to <https://github.com/amake>).
 
 ## 4.6.1
 
