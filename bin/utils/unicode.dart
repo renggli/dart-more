@@ -49,7 +49,6 @@ final unicodeCategoryListUrl = Uri.parse(
 final unicodeBidiClassListUrl = Uri.parse(
   'https://www.unicode.org/Public/$unicodeVersion/ucd/extracted/DerivedBidiClass.txt',
 );
-
 final unicodeScriptsUrl = Uri.parse(
   'https://www.unicode.org/Public/$unicodeVersion/ucd/Scripts.txt',
 );
@@ -138,15 +137,11 @@ Future<ListMultimap<String, (int, int)>> getPropertyData(Uri uri) async {
 Iterable<int> getUnlistedCodePoints(
   ListMultimap<String, (int, int)> propertyData,
 ) {
-  final allCodePoints = List.generate(unicodeMaxCodePoint + 1, (code) => code);
+  final allCodePoints = BitList(unicodeMaxCodePoint + 1);
   for (final (start, end) in propertyData.values) {
-    allCodePoints.replaceRange(
-      start,
-      end + 1,
-      List.filled(end - start + 1, -1),
-    );
+    allCodePoints.fillRange(start, end + 1, true);
   }
-  return allCodePoints.where((code) => code != -1);
+  return allCodePoints.indices(expected: false);
 }
 
 /// Reads a unicode file into a list of lines with its values. Removes comments
