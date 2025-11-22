@@ -4,7 +4,7 @@ import 'package:characters/characters.dart';
 import 'package:more/collection.dart';
 import 'package:test/test.dart';
 
-import 'data/normalization_data.dart';
+import '../data/normalization_data.dart';
 
 void verifyUnicodeNormalization(
   NormalizationForm form,

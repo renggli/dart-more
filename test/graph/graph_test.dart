@@ -1,7 +1,7 @@
 import 'package:more/graph.dart';
 import 'package:test/test.dart';
 
-import 'utils/graph.dart';
+import '../utils/graph.dart';
 
 void main() {
   group('directed', () {

@@ -6,7 +6,7 @@ import 'package:more/collection.dart';
 import 'package:more/math.dart';
 import 'package:test/test.dart';
 
-import 'utils/collection.dart';
+import '../utils/collection.dart';
 
 void main() {
   for (final growable in [false, true]) {

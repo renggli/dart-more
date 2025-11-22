@@ -7,7 +7,7 @@ import 'package:more/comparator.dart';
 import 'package:more/graph.dart';
 import 'package:test/test.dart';
 
-import 'utils/collection.dart';
+import '../utils/collection.dart';
 
 void main() {
   group('chunked', () {
