@@ -1,9 +1,55 @@
 # Ideation
 
 - Graph algorithms
-  - Cycle detection
-  - Graph coloring
-  - Matching
-- [Magritte](https://rmod-files.lille.inria.fr/Lectures/StephaneDucasse/CoursAnnecy/0607-Magritte/magritte-slides.pdf)
-  - Flutter UIs
-  - Serialization
+  - **Path and Circuit Algorithms**
+    - Eulerian path/circuit detection and finding
+      - Use degree checks + Hierholzer's algorithm
+      - Useful for route planning, DNA sequencing
+    - Hamiltonian path/circuit detection
+      - NP-complete: backtracking or DP with bitmasks
+      - Returns path if exists
+  - **Structural Analysis**
+    - Graph isomorphism detection
+      - VF2 algorithm for general graphs
+      - Include subgraph isomorphism
+    - Articulation points (cut vertices) and bridges
+      - Tarjan's algorithm with low-link values
+      - Critical for network resilience analysis
+    - Planar graph testing
+      - Boyer-Myrvold algorithm or Kuratowski's theorem
+      - Could provide planar embedding
+  - **Distance and Centrality**
+    - Graph diameter and radius
+      - Use Floyd-Warshall results
+      - Find center vertices (min eccentricity)
+    - Degree centrality measures
+      - Betweenness centrality (shortest paths through vertex)
+      - Closeness centrality (sum of distances)
+      - Eigenvector centrality / PageRank
+  - **Graph Properties**
+    - Graph density (simple ratio calculation)
+    - Clustering coefficient
+    - Average path length
+    - Assortativity (degree correlation)
+  - **Matching and Covering**
+    - Maximum matching
+      - Bipartite: Hopcroft-Karp or Hungarian algorithm
+      - General: Blossom algorithm (Edmonds)
+    - Minimum vertex cover / Maximum independent set
+      - Bipartite: König's theorem
+      - General: approximation algorithms
+  - **Community and Decomposition**
+    - Community detection / Graph partitioning
+      - Louvain method, label propagation, or Girvan-Newman
+    - k-Core decomposition
+      - Iteratively remove low-degree vertices
+      - Useful for dense subgraph finding
+  - **Connectivity**
+    - Vertex connectivity and edge connectivity
+      - Use max-flow min-cut theorem
+      - Minimum vertices/edges to disconnect graph
+  - **Graph Transformations**
+    - Transitive closure and reduction
+      - Closure: add all implied edges
+      - Reduction: remove redundant edges
+      - Useful for dependency graphs
