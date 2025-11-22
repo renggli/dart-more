@@ -4,17 +4,18 @@ import '../comparator/constructors/natural.dart';
 import '../functional/types/constant.dart';
 import '../functional/types/predicate.dart';
 import 'algorithms/bipartite_check.dart' as bipartite_check;
-import 'algorithms/bron_kerbosch_cliques.dart';
+import 'algorithms/bron_kerbosch_cliques.dart' as bron_kerbosch_cliques;
 import 'algorithms/cycle_check.dart' as cycle_check;
-import 'algorithms/dinic_max_flow.dart';
-import 'algorithms/kruskal_spanning_tree.dart';
-import 'algorithms/prim_spanning_tree.dart';
-import 'algorithms/search/a_star.dart';
-import 'algorithms/search/bellman_ford.dart';
-import 'algorithms/search/dijkstra.dart';
-import 'algorithms/search/floyd_warshall.dart';
-import 'algorithms/stoer_wagner_min_cut.dart';
-import 'algorithms/tarjan_strongly_connected.dart';
+import 'algorithms/dinic_max_flow.dart' as dinic_max_flow;
+import 'algorithms/kruskal_spanning_tree.dart' as kruskal_spanning_tree;
+import 'algorithms/prim_spanning_tree.dart' as prim_spanning_tree;
+import 'algorithms/search/a_star.dart' as a_star;
+import 'algorithms/search/bellman_ford.dart' as bellman_ford;
+import 'algorithms/search/dijkstra.dart' as dijkstra;
+import 'algorithms/search/floyd_warshall.dart' as floyd_warshall;
+import 'algorithms/stoer_wagner_min_cut.dart' as stoer_wagner_min_cut;
+import 'algorithms/tarjan_strongly_connected.dart' as tarjan_strongly_connected;
+import 'algorithms/vertex_coloring.dart' as vertex_coloring;
 import 'errors.dart';
 import 'graph.dart';
 import 'path.dart';
@@ -87,7 +88,7 @@ extension AlgorithmsGraphExtension<V, E> on Graph<V, E> {
       );
     }
     return hasNegativeEdges
-        ? bellmanFordSearch<V>(
+        ? bellman_ford.bellmanFordSearch<V>(
             startVertices: [source],
             targetPredicate: targetPredicate ?? constantFunction1(true),
             successorsOf: successorsOf,
@@ -96,7 +97,7 @@ extension AlgorithmsGraphExtension<V, E> on Graph<V, E> {
             vertexStrategy: vertexStrategy ?? this.vertexStrategy,
           )
         : costEstimate == null
-        ? dijkstraSearch<V>(
+        ? dijkstra.dijkstraSearch<V>(
             startVertices: [source],
             targetPredicate: targetPredicate ?? constantFunction1(true),
             successorsOf: successorsOf,
@@ -104,7 +105,7 @@ extension AlgorithmsGraphExtension<V, E> on Graph<V, E> {
             includeAlternativePaths: includeAlternativePaths,
             vertexStrategy: vertexStrategy ?? this.vertexStrategy,
           )
-        : aStarSearch<V>(
+        : a_star.aStarSearch<V>(
             startVertices: [source],
             targetPredicate: targetPredicate ?? constantFunction1(true),
             successorsOf: successorsOf,
@@ -121,10 +122,10 @@ extension AlgorithmsGraphExtension<V, E> on Graph<V, E> {
   ///   between two vertices. If no function is provided, the numeric edge
   ///   value or a constant weight of _1_ is used.
   ///
-  FloydWarshall<V> allShortestPaths({
+  floyd_warshall.FloydWarshall<V> allShortestPaths({
     num Function(V source, V target)? edgeCost,
     StorageStrategy<V>? vertexStrategy,
-  }) => floydWarshallSearch(
+  }) => floyd_warshall.floydWarshallSearch(
     vertices: vertices,
     successorsOf: successorsOf,
     edgeCost: edgeCost ?? _getDefaultEdgeValueOr(1),
@@ -138,10 +139,10 @@ extension AlgorithmsGraphExtension<V, E> on Graph<V, E> {
   ///   capacity between two vertices. If no function is provided, the numeric
   ///   edge value or a constant weight of _1_ is used.
   ///
-  DinicMaxFlow<V> maxFlow({
+  dinic_max_flow.DinicMaxFlow<V> maxFlow({
     num Function(V source, V target)? edgeCapacity,
     StorageStrategy<V>? vertexStrategy,
-  }) => DinicMaxFlow<V>(
+  }) => dinic_max_flow.DinicMaxFlow<V>(
     seedVertices: vertices,
     successorsOf: successorsOf,
     edgeCapacity: edgeCapacity ?? _getDefaultEdgeValueOr(1),
@@ -155,10 +156,10 @@ extension AlgorithmsGraphExtension<V, E> on Graph<V, E> {
   ///   between two edges. If no function is provided, the numeric edge value
   ///   or a constant weight of _1_ is used.
   ///
-  StoerWagnerMinCut<V, E> minCut({
+  stoer_wagner_min_cut.StoerWagnerMinCut<V, E> minCut({
     num Function(V source, V target)? edgeWeight,
     StorageStrategy<V>? vertexStrategy,
-  }) => StoerWagnerMinCut<V, E>(
+  }) => stoer_wagner_min_cut.StoerWagnerMinCut<V, E>(
     graph: this,
     edgeWeight: edgeWeight ?? _getDefaultEdgeValueOr(1),
     vertexStrategy: vertexStrategy ?? this.vertexStrategy,
@@ -185,13 +186,13 @@ extension AlgorithmsGraphExtension<V, E> on Graph<V, E> {
     Comparator<num>? weightComparator,
     StorageStrategy<V>? vertexStrategy,
   }) => startVertex == null
-      ? kruskalSpanningTree<V, E>(
+      ? kruskal_spanning_tree.kruskalSpanningTree<V, E>(
           this,
           edgeWeight: edgeWeight ?? _getDefaultEdgeValueOr(1),
           weightComparator: weightComparator ?? naturalComparable<num>,
           vertexStrategy: vertexStrategy ?? this.vertexStrategy,
         )
-      : primSpanningTree<V, E>(
+      : prim_spanning_tree.primSpanningTree<V, E>(
           this,
           startVertex: startVertex,
           edgeWeight: edgeWeight ?? _getDefaultEdgeValueOr(1),
@@ -203,7 +204,7 @@ extension AlgorithmsGraphExtension<V, E> on Graph<V, E> {
   /// implementation uses the Tarjan's algorithm and runs in linear time.
   Iterable<Set<V>> stronglyConnected({StorageStrategy<V>? vertexStrategy}) {
     GraphError.checkDirected(this);
-    return tarjanStronglyConnected<V>(
+    return tarjan_strongly_connected.tarjanStronglyConnected<V>(
       vertices,
       successorsOf: successorsOf,
       vertexStrategy: vertexStrategy ?? this.vertexStrategy,
@@ -214,12 +215,20 @@ extension AlgorithmsGraphExtension<V, E> on Graph<V, E> {
   /// uses the Bron–Kerbosch algorithm and runs in exponential time.
   Iterable<Set<V>> findCliques({StorageStrategy<V>? vertexStrategy}) {
     GraphError.checkNotDirected(this);
-    return bronKerboschCliques<V>(
+    return bron_kerbosch_cliques.bronKerboschCliques<V>(
       vertices,
       neighboursOf: neighboursOf,
       vertexStrategy: vertexStrategy ?? this.vertexStrategy,
     );
   }
+
+  /// Computes the coloring of the graph.
+  Map<V, int> vertexColoring({StorageStrategy<V>? vertexStrategy}) =>
+      vertex_coloring.vertexColoring<V>(
+        vertices: vertices,
+        neighboursOf: neighboursOf,
+        vertexStrategy: vertexStrategy ?? this.vertexStrategy,
+      );
 
   /// Checks if the graph is bipartite.
   bool isBipartite({StorageStrategy<V>? vertexStrategy}) =>

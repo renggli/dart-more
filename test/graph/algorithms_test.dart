@@ -1431,4 +1431,46 @@ void main() {
       expect(graph.hasCycle, throwsGraphError);
     });
   });
+  group('graph coloring', () {
+    test('empty', () {
+      final graph = GraphFactory<int, int>().empty();
+      expect(graph.vertexColoring(), isEmpty);
+    });
+    test('seperate vertices', () {
+      final graph = Graph<int, void>.undirected();
+      for (var i = 1; i <= 10; i++) {
+        graph.addVertex(i);
+        final coloring = graph.vertexColoring();
+        expect(coloring, hasLength(i));
+        expect(coloring.values.toSet(), hasLength(1));
+      }
+    });
+    test('bipartite graphs', () {
+      for (var i = 1; i <= 10; i++) {
+        final graph = GraphFactory<int, void>(
+          isDirected: false,
+        ).partite(vertexCounts: [i, i]);
+        final coloring = graph.vertexColoring();
+        expect(coloring.values.toSet(), hasLength(2));
+      }
+    });
+    test('complete graphs', () {
+      for (var i = 3; i <= 10; i++) {
+        final graph = GraphFactory<int, void>(
+          isDirected: false,
+        ).complete(vertexCount: i);
+        final coloring = graph.vertexColoring();
+        expect(coloring.values.toSet(), hasLength(i));
+      }
+    });
+    test('star graphs', () {
+      for (var i = 2; i <= 10; i++) {
+        final graph = GraphFactory<int, void>(
+          isDirected: false,
+        ).star(vertexCount: i);
+        final coloring = graph.vertexColoring();
+        expect(coloring.values.toSet(), hasLength(2));
+      }
+    });
+  });
 }

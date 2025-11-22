@@ -18,6 +18,7 @@ export 'src/graph/algorithms/search/floyd_warshall.dart'
 export 'src/graph/algorithms/stoer_wagner_min_cut.dart' show StoerWagnerMinCut;
 export 'src/graph/algorithms/tarjan_strongly_connected.dart'
     show tarjanStronglyConnected;
+export 'src/graph/algorithms/vertex_coloring.dart' show vertexColoring;
 export 'src/graph/edge.dart' show Edge;
 export 'src/graph/errors.dart' show GraphError;
 export 'src/graph/factory.dart' show GraphFactory;
