@@ -1473,4 +1473,477 @@ void main() {
       }
     });
   });
+  group('eulerian path and circuit', () {
+    group('undirected', () {
+      test('empty graph', () {
+        final graph = Graph<int, void>.undirected();
+        expect(graph.hasEulerianPath(), isTrue);
+        expect(graph.hasEulerianCircuit(), isTrue);
+      });
+      test('single vertex', () {
+        final graph = Graph<int, void>.undirected()..addVertex(1);
+        expect(graph.hasEulerianPath(), isTrue);
+        expect(graph.hasEulerianCircuit(), isTrue);
+      });
+      test('single edge', () {
+        final graph = Graph<int, void>.undirected()..addEdge(1, 2);
+        expect(graph.hasEulerianPath(), isTrue);
+        expect(graph.hasEulerianCircuit(), isFalse);
+      });
+      test('triangle (k3) - has eulerian circuit', () {
+        final graph = Graph<int, void>.undirected()
+          ..addEdge(1, 2)
+          ..addEdge(2, 3)
+          ..addEdge(3, 1);
+        expect(graph.hasEulerianPath(), isTrue);
+        expect(graph.hasEulerianCircuit(), isTrue);
+      });
+      test('square (c4) - has eulerian circuit', () {
+        final graph = Graph<int, void>.undirected()
+          ..addEdge(1, 2)
+          ..addEdge(2, 3)
+          ..addEdge(3, 4)
+          ..addEdge(4, 1);
+        expect(graph.hasEulerianPath(), isTrue);
+        expect(graph.hasEulerianCircuit(), isTrue);
+      });
+      test('complete graph k4 - no eulerian path or circuit', () {
+        final graph = Graph<int, void>.undirected()
+          ..addEdge(1, 2)
+          ..addEdge(1, 3)
+          ..addEdge(1, 4)
+          ..addEdge(2, 3)
+          ..addEdge(2, 4)
+          ..addEdge(3, 4);
+        expect(graph.hasEulerianPath(), isFalse);
+        expect(graph.hasEulerianCircuit(), isFalse);
+      });
+      test('path graph - has eulerian path but not circuit', () {
+        final graph = Graph<int, void>.undirected()
+          ..addEdge(1, 2)
+          ..addEdge(2, 3)
+          ..addEdge(3, 4)
+          ..addEdge(4, 5);
+        expect(graph.hasEulerianPath(), isTrue);
+        expect(graph.hasEulerianCircuit(), isFalse);
+      });
+      test('graph with exactly 2 odd-degree vertices - has eulerian path', () {
+        final graph = Graph<int, void>.undirected()
+          ..addEdge(1, 2)
+          ..addEdge(2, 3)
+          ..addEdge(3, 4)
+          ..addEdge(4, 1)
+          ..addEdge(1, 3);
+        expect(graph.hasEulerianPath(), isTrue);
+        expect(graph.hasEulerianCircuit(), isFalse);
+      });
+      test('star graph k(1,3) - no eulerian path or circuit', () {
+        final graph = Graph<int, void>.undirected()
+          ..addEdge(1, 2)
+          ..addEdge(1, 3)
+          ..addEdge(1, 4);
+        expect(graph.hasEulerianPath(), isFalse);
+        expect(graph.hasEulerianCircuit(), isFalse);
+      });
+      test('complete graph k5 - has eulerian circuit', () {
+        final graph = Graph<int, void>.undirected()
+          ..addEdge(1, 2)
+          ..addEdge(1, 3)
+          ..addEdge(1, 4)
+          ..addEdge(1, 5)
+          ..addEdge(2, 3)
+          ..addEdge(2, 4)
+          ..addEdge(2, 5)
+          ..addEdge(3, 4)
+          ..addEdge(3, 5)
+          ..addEdge(4, 5);
+        expect(graph.hasEulerianPath(), isTrue);
+        expect(graph.hasEulerianCircuit(), isTrue);
+      });
+      test('disconnected graph - no eulerian path or circuit', () {
+        final graph = Graph<int, void>.undirected()
+          ..addEdge(1, 2)
+          ..addEdge(2, 3)
+          ..addEdge(4, 5)
+          ..addEdge(5, 6);
+        expect(graph.hasEulerianPath(), isFalse);
+        expect(graph.hasEulerianCircuit(), isFalse);
+      });
+      test('disconnected graph with cycles - no eulerian path or circuit', () {
+        final graph = Graph<int, void>.undirected()
+          ..addEdge(1, 2)
+          ..addEdge(2, 3)
+          ..addEdge(3, 1)
+          ..addEdge(4, 5)
+          ..addEdge(5, 6)
+          ..addEdge(6, 4);
+        expect(graph.hasEulerianPath(), isFalse);
+        expect(graph.hasEulerianCircuit(), isFalse);
+      });
+      test('graph with isolated vertices - has eulerian circuit', () {
+        final graph = Graph<int, void>.undirected()
+          ..addVertex(7)
+          ..addVertex(8)
+          ..addEdge(1, 2)
+          ..addEdge(2, 3)
+          ..addEdge(3, 1);
+        expect(graph.hasEulerianPath(), isTrue);
+        expect(graph.hasEulerianCircuit(), isTrue);
+      });
+      test('only isolated vertices', () {
+        final graph = Graph<int, void>.undirected()
+          ..addVertex(1)
+          ..addVertex(2)
+          ..addVertex(3);
+        expect(graph.hasEulerianPath(), isTrue);
+        expect(graph.hasEulerianCircuit(), isTrue);
+      });
+      test('peterson graph - no eulerian path or circuit', () {
+        final graph = Graph<int, void>.undirected()
+          ..addEdge(1, 2)
+          ..addEdge(2, 3)
+          ..addEdge(3, 4)
+          ..addEdge(4, 5)
+          ..addEdge(5, 1)
+          ..addEdge(6, 8)
+          ..addEdge(8, 10)
+          ..addEdge(10, 7)
+          ..addEdge(7, 9)
+          ..addEdge(9, 6)
+          ..addEdge(1, 6)
+          ..addEdge(2, 7)
+          ..addEdge(3, 8)
+          ..addEdge(4, 9)
+          ..addEdge(5, 10);
+        expect(graph.hasEulerianPath(), isFalse);
+        expect(graph.hasEulerianCircuit(), isFalse);
+      });
+    });
+    group('directed', () {
+      test('empty graph', () {
+        final graph = Graph<int, void>.directed();
+        expect(graph.hasEulerianPath(), isTrue);
+        expect(graph.hasEulerianCircuit(), isTrue);
+      });
+      test('single vertex', () {
+        final graph = Graph<int, void>.directed()..addVertex(1);
+        expect(graph.hasEulerianPath(), isTrue);
+        expect(graph.hasEulerianCircuit(), isTrue);
+      });
+      test('single directed edge', () {
+        final graph = Graph<int, void>.directed()..addEdge(1, 2);
+        expect(graph.hasEulerianPath(), isTrue);
+        expect(graph.hasEulerianCircuit(), isFalse);
+      });
+      test('directed cycle - has eulerian circuit', () {
+        final graph = Graph<int, void>.directed()
+          ..addEdge(1, 2)
+          ..addEdge(2, 3)
+          ..addEdge(3, 1);
+        expect(graph.hasEulerianPath(), isTrue);
+        expect(graph.hasEulerianCircuit(), isTrue);
+      });
+      test('directed square - has eulerian circuit', () {
+        final graph = Graph<int, void>.directed()
+          ..addEdge(1, 2)
+          ..addEdge(2, 3)
+          ..addEdge(3, 4)
+          ..addEdge(4, 1);
+        expect(graph.hasEulerianPath(), isTrue);
+        expect(graph.hasEulerianCircuit(), isTrue);
+      });
+      test('directed path - has eulerian path but not circuit', () {
+        final graph = Graph<int, void>.directed()
+          ..addEdge(1, 2)
+          ..addEdge(2, 3)
+          ..addEdge(3, 4);
+        expect(graph.hasEulerianPath(), isTrue);
+        expect(graph.hasEulerianCircuit(), isFalse);
+      });
+      test('directed cycle with one extra edge - has eulerian path', () {
+        final graph = Graph<int, void>.directed()
+          ..addEdge(1, 2)
+          ..addEdge(2, 3)
+          ..addEdge(3, 1)
+          ..addEdge(1, 4);
+        expect(graph.hasEulerianPath(), isTrue);
+        expect(graph.hasEulerianCircuit(), isFalse);
+      });
+      test('complete directed graph (tournament) - varies by structure', () {
+        final graph = Graph<int, void>.directed()
+          ..addEdge(1, 2)
+          ..addEdge(2, 3)
+          ..addEdge(3, 1);
+        expect(graph.hasEulerianCircuit(), isTrue);
+      });
+      test('directed graph with imbalanced degrees - no eulerian path', () {
+        final graph = Graph<int, void>.directed()
+          ..addEdge(1, 2)
+          ..addEdge(1, 3)
+          ..addEdge(2, 3);
+        expect(graph.hasEulerianPath(), isFalse);
+        expect(graph.hasEulerianCircuit(), isFalse);
+      });
+      test('directed acyclic graph (dag) - may have eulerian path', () {
+        final graph = Graph<int, void>.directed()
+          ..addEdge(1, 2)
+          ..addEdge(2, 3);
+        expect(graph.hasEulerianPath(), isTrue);
+        expect(graph.hasEulerianCircuit(), isFalse);
+      });
+      test('disconnected directed graph - no eulerian path', () {
+        final graph = Graph<int, void>.directed()
+          ..addEdge(1, 2)
+          ..addEdge(2, 3)
+          ..addEdge(4, 5)
+          ..addEdge(5, 6);
+        expect(graph.hasEulerianPath(), isFalse);
+        expect(graph.hasEulerianCircuit(), isFalse);
+      });
+      test('directed graph with isolated vertices - has eulerian circuit', () {
+        final graph = Graph<int, void>.directed()
+          ..addVertex(7)
+          ..addVertex(8)
+          ..addEdge(1, 2)
+          ..addEdge(2, 3)
+          ..addEdge(3, 1);
+        expect(graph.hasEulerianPath(), isTrue);
+        expect(graph.hasEulerianCircuit(), isTrue);
+      });
+      test('only isolated vertices', () {
+        final graph = Graph<int, void>.directed()
+          ..addVertex(1)
+          ..addVertex(2)
+          ..addVertex(3);
+        expect(graph.hasEulerianPath(), isTrue);
+        expect(graph.hasEulerianCircuit(), isTrue);
+      });
+      test('bidirectional edges - has eulerian circuit', () {
+        final graph = Graph<int, void>.directed()
+          ..addEdge(1, 2)
+          ..addEdge(2, 1)
+          ..addEdge(2, 3)
+          ..addEdge(3, 2)
+          ..addEdge(3, 1)
+          ..addEdge(1, 3);
+        expect(graph.hasEulerianPath(), isTrue);
+        expect(graph.hasEulerianCircuit(), isTrue);
+      });
+      test('directed graph with self-loop - eulerian circuit', () {
+        final graph = Graph<int, void>.directed()..addEdge(1, 1);
+        expect(graph.hasEulerianPath(), isTrue);
+        expect(graph.hasEulerianCircuit(), isTrue);
+      });
+      test('directed graph with two start vertices - no eulerian path', () {
+        final graph = Graph<int, void>.directed()
+          ..addEdge(1, 3)
+          ..addEdge(2, 3);
+        expect(graph.hasEulerianPath(), isFalse);
+        expect(graph.hasEulerianCircuit(), isFalse);
+      });
+      test('directed graph with two end vertices - no eulerian path', () {
+        final graph = Graph<int, void>.directed()
+          ..addEdge(1, 2)
+          ..addEdge(1, 3);
+        expect(graph.hasEulerianPath(), isFalse);
+        expect(graph.hasEulerianCircuit(), isFalse);
+      });
+      test('directed graph - complex balanced structure', () {
+        final graph = Graph<int, void>.directed()
+          ..addEdge(1, 2)
+          ..addEdge(2, 3)
+          ..addEdge(3, 4)
+          ..addEdge(4, 1)
+          ..addEdge(1, 3)
+          ..addEdge(3, 1);
+        expect(graph.hasEulerianPath(), isTrue);
+        expect(graph.hasEulerianCircuit(), isTrue);
+      });
+      test('weakly connected but not strongly connected - no circuit', () {
+        final graph = Graph<int, void>.directed()
+          ..addEdge(1, 2)
+          ..addEdge(2, 3)
+          ..addEdge(3, 4)
+          ..addEdge(4, 5)
+          ..addEdge(5, 1)
+          ..addEdge(1, 6);
+        expect(graph.hasEulerianPath(), isTrue);
+        expect(graph.hasEulerianCircuit(), isFalse);
+      });
+    });
+    group('edge cases', () {
+      test('undirected graph with self-loop - eulerian circuit', () {
+        final graph = Graph<int, void>.undirected()..addEdge(1, 1);
+        expect(graph.hasEulerianPath(), isTrue);
+        expect(graph.hasEulerianCircuit(), isTrue);
+      });
+      test('directed graph with self-loop - eulerian circuit', () {
+        final graph = Graph<int, void>.directed()..addEdge(1, 1);
+        expect(graph.hasEulerianPath(), isTrue);
+        expect(graph.hasEulerianCircuit(), isTrue);
+      });
+      test('undirected graph with self-loop and path', () {
+        final graph = Graph<int, void>.undirected()
+          ..addEdge(1, 1)
+          ..addEdge(1, 2);
+        expect(graph.hasEulerianPath(), isTrue);
+        expect(graph.hasEulerianCircuit(), isFalse);
+      });
+      test('large cycle - undirected', () {
+        final graph = Graph<int, void>.undirected();
+        for (var i = 0; i < 100; i++) {
+          graph.addEdge(i, (i + 1) % 100);
+        }
+        expect(graph.hasEulerianPath(), isTrue);
+        expect(graph.hasEulerianCircuit(), isTrue);
+      });
+      test('large cycle - directed', () {
+        final graph = Graph<int, void>.directed();
+        for (var i = 0; i < 100; i++) {
+          graph.addEdge(i, (i + 1) % 100);
+        }
+        expect(graph.hasEulerianPath(), isTrue);
+        expect(graph.hasEulerianCircuit(), isTrue);
+      });
+      test('large path - undirected', () {
+        final graph = Graph<int, void>.undirected();
+        for (var i = 0; i < 100; i++) {
+          graph.addEdge(i, i + 1);
+        }
+        expect(graph.hasEulerianPath(), isTrue);
+        expect(graph.hasEulerianCircuit(), isFalse);
+      });
+      test('large path - directed', () {
+        final graph = Graph<int, void>.directed();
+        for (var i = 0; i < 100; i++) {
+          graph.addEdge(i, i + 1);
+        }
+        expect(graph.hasEulerianPath(), isTrue);
+        expect(graph.hasEulerianCircuit(), isFalse);
+      });
+    });
+    group('path finding', () {
+      test('undirected triangle - find circuit', () {
+        final graph = Graph<int, void>.undirected()
+          ..addEdge(1, 2)
+          ..addEdge(2, 3)
+          ..addEdge(3, 1);
+        final path = graph.eulerianCircuit();
+        expect(path, isNotNull);
+        expect(path!.vertices.first, path.vertices.last);
+        expect(path.edges.length, 3);
+      });
+      test('undirected path - find path but not circuit', () {
+        final graph = Graph<int, void>.undirected()
+          ..addEdge(1, 2)
+          ..addEdge(2, 3)
+          ..addEdge(3, 4);
+        final path = graph.eulerianPath();
+        expect(path, isNotNull);
+        expect(path!.edges.length, 3);
+        final circuit = graph.eulerianCircuit();
+        expect(circuit, isNull);
+      });
+      test('directed cycle - find circuit', () {
+        final graph = Graph<int, void>.directed()
+          ..addEdge(1, 2)
+          ..addEdge(2, 3)
+          ..addEdge(3, 1);
+        final path = graph.eulerianCircuit();
+        expect(path, isNotNull);
+        expect(path!.vertices.first, path.vertices.last);
+        expect(path.edges.length, 3);
+      });
+      test('directed path - find path but not circuit', () {
+        final graph = Graph<int, void>.directed()
+          ..addEdge(1, 2)
+          ..addEdge(2, 3)
+          ..addEdge(3, 4);
+        final path = graph.eulerianPath();
+        expect(path, isNotNull);
+        expect(path!.edges.length, 3);
+        expect(path.source, 1);
+        expect(path.target, 4);
+        final circuit = graph.eulerianCircuit();
+        expect(circuit, isNull);
+      });
+      test('no eulerian path - returns null', () {
+        final graph = Graph<int, void>.undirected()
+          ..addEdge(1, 2)
+          ..addEdge(1, 3)
+          ..addEdge(1, 4);
+        expect(graph.eulerianPath(), isNull);
+        expect(graph.eulerianCircuit(), isNull);
+      });
+      test('disconnected graph - returns null', () {
+        final graph = Graph<int, void>.undirected()
+          ..addEdge(1, 2)
+          ..addEdge(3, 4);
+        expect(graph.eulerianPath(), isNull);
+        expect(graph.eulerianCircuit(), isNull);
+      });
+      test('empty graph - returns null', () {
+        final graph = Graph<int, void>.undirected();
+        expect(graph.eulerianPath(), isNull);
+        expect(graph.eulerianCircuit(), isNull);
+      });
+      test('complex undirected graph with circuit', () {
+        final graph = Graph<int, void>.undirected()
+          ..addEdge(1, 2)
+          ..addEdge(1, 3)
+          ..addEdge(1, 4)
+          ..addEdge(1, 5)
+          ..addEdge(2, 3)
+          ..addEdge(2, 4)
+          ..addEdge(2, 5)
+          ..addEdge(3, 4)
+          ..addEdge(3, 5)
+          ..addEdge(4, 5);
+        final path = graph.eulerianCircuit();
+        expect(path, isNotNull);
+        expect(path!.edges.length, 10);
+        expect(path.vertices.first, path.vertices.last);
+      });
+      test('complex directed graph with balanced degrees', () {
+        final graph = Graph<int, void>.directed()
+          ..addEdge(1, 2)
+          ..addEdge(2, 3)
+          ..addEdge(3, 4)
+          ..addEdge(4, 1)
+          ..addEdge(1, 3)
+          ..addEdge(3, 1);
+        final circuit = graph.eulerianCircuit();
+        expect(circuit, isNotNull);
+        expect(circuit!.edges.length, 6);
+      });
+      test('undirected circuit', () {
+        final graph = Graph<int, void>.undirected()
+          ..addEdge(1, 2)
+          ..addEdge(2, 3)
+          ..addEdge(3, 1);
+        final path = graph.eulerianPath();
+        expect(path, isNotNull);
+        expect(path!.edges.length, 3);
+      });
+      test('directed circuit', () {
+        final graph = Graph<int, void>.directed()
+          ..addEdge(1, 2)
+          ..addEdge(2, 3)
+          ..addEdge(3, 1);
+        final path = graph.eulerianPath();
+        expect(path, isNotNull);
+        expect(path!.edges.length, 3);
+      });
+      test('path with edge values', () {
+        final graph = Graph<int, String>.directed()
+          ..addEdge(1, 2, value: 'a')
+          ..addEdge(2, 3, value: 'b')
+          ..addEdge(3, 1, value: 'c');
+        final path = graph.eulerianCircuit();
+        expect(path, isNotNull);
+        expect(path!.values, hasLength(3));
+        expect(path.values, containsAll(['a', 'b', 'c']));
+      });
+    });
+  });
 }
