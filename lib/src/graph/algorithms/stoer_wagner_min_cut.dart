@@ -50,7 +50,8 @@ class StoerWagnerMinCut<V, E> {
   }
 
   // Internal state.
-  final _workingGraph = Graph<Set<V>, num>.undirected(
+  final _workingGraph = Graph<Set<V>, num>.create(
+    isDirected: false,
     vertexStrategy: StorageStrategy.identity(),
   );
   Set<V> _bestPartition = const {};

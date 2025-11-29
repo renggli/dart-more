@@ -8,12 +8,12 @@ import '../utils/graph.dart';
 void main() {
   group('connected', () {
     test('empty', () {
-      final graph = Graph<int, String>.directed();
+      final graph = Graph<int, String>.create(isDirected: true);
       final connected = graph.connected().toList();
       expect(connected, isEmpty);
     });
     test('single graph', () {
-      final graph = Graph<int, String>.directed();
+      final graph = Graph<int, String>.create(isDirected: true);
       graph.addEdge(42, 43, value: 'Hello World');
       final connected = graph.connected().toList();
       expect(connected, hasLength(1));
@@ -24,7 +24,7 @@ void main() {
       );
     });
     test('two graphs', () {
-      final graph = Graph<int, String>.directed();
+      final graph = Graph<int, String>.create(isDirected: true);
       graph.addEdge(1, 2, value: 'Foo');
       graph.addEdge(3, 4, value: 'Bar');
       final connected = graph.connected().toList();
@@ -35,7 +35,7 @@ void main() {
       expect(connected[1].edges, unorderedEquals([isEdge(3, 4, value: 'Bar')]));
     });
     test('incoming/outgoing edges', () {
-      final graph = Graph<int, String>.directed();
+      final graph = Graph<int, String>.create(isDirected: true);
       graph.addVertex(1);
       graph.addVertex(2);
       graph.addVertex(3);
@@ -275,21 +275,21 @@ void main() {
     });
     group('complement', () {
       test('simple undirected', () {
-        final input = Graph<String, void>.undirected();
+        final input = Graph<String, void>.create(isDirected: false);
         input.addEdge('a', 'b');
         final result = input.complement();
         expect(result.vertices, unorderedEquals(['a', 'b']));
         expect(result.edges, isEmpty);
       });
       test('simple directed', () {
-        final input = Graph<String, void>.directed();
+        final input = Graph<String, void>.create(isDirected: true);
         input.addEdge('a', 'b');
         final result = input.complement();
         expect(result.vertices, unorderedEquals(['a', 'b']));
         expect(result.edges, [isEdge('b', 'a')]);
       });
       test('simple directed (with self-loops)', () {
-        final input = Graph<String, void>.directed();
+        final input = Graph<String, void>.create(isDirected: true);
         input.addEdge('a', 'b');
         final result = input.complement(allowSelfLoops: true);
         expect(result.vertices, unorderedEquals(['a', 'b']));
@@ -303,7 +303,7 @@ void main() {
         );
       });
       test('simple directed (with edge data)', () {
-        final input = Graph<int, String>.directed();
+        final input = Graph<int, String>.create(isDirected: true);
         input.addEdge(1, 2, value: 'next');
         final result = input.complement(edge: (source, target) => 'prev');
         expect(result.vertices, unorderedEquals([1, 2]));

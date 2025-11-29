@@ -6,7 +6,7 @@ import '../utils/graph.dart';
 void main() {
   group('directed', () {
     test('empty', () {
-      final graph = Graph<String, int>.directed();
+      final graph = Graph<String, int>.create(isDirected: true);
       expect(graph.isDirected, isTrue);
       expect(graph.vertices, isEmpty);
       expect(graph.edges, isEmpty);
@@ -14,21 +14,21 @@ void main() {
     });
     group('modifying', () {
       test('add vertex', () {
-        final graph = Graph<String, int>.directed();
+        final graph = Graph<String, int>.create(isDirected: true);
         graph.addVertex('Hello');
         expect(graph.vertices, ['Hello']);
         expect(graph.edges, isEmpty);
         expectInvariants(graph);
       });
       test('add vertices', () {
-        final graph = Graph<String, int>.directed();
+        final graph = Graph<String, int>.create(isDirected: true);
         graph.addVertices(['Hello', 'World']);
         expect(graph.vertices, ['Hello', 'World']);
         expect(graph.edges, isEmpty);
         expectInvariants(graph);
       });
       test('remove vertex', () {
-        final graph = Graph<String, int>.directed();
+        final graph = Graph<String, int>.create(isDirected: true);
         graph.addVertex('Hello');
         graph.removeVertex('Hello');
         expect(graph.vertices, isEmpty);
@@ -36,7 +36,7 @@ void main() {
         expectInvariants(graph);
       });
       test('add edge', () {
-        final graph = Graph<String, int>.directed();
+        final graph = Graph<String, int>.create(isDirected: true);
         graph.addEdge('Hello', 'World', value: 42);
         expect(graph.vertices, unorderedEquals(['Hello', 'World']));
         expect(graph.edges, [
@@ -46,7 +46,7 @@ void main() {
         expectInvariants(graph);
       });
       test('add self-edge', () {
-        final graph = Graph<String, int>.directed();
+        final graph = Graph<String, int>.create(isDirected: true);
         graph.addEdge('Myself', 'Myself', value: 42);
         expect(graph.vertices, unorderedEquals(['Myself']));
         expect(
@@ -58,7 +58,7 @@ void main() {
         expectInvariants(graph);
       });
       test('put edge', () {
-        final graph = Graph<String, List<int>>.directed();
+        final graph = Graph<String, List<int>>.create(isDirected: true);
         graph.putEdge('a', 'b', () => []).add(1);
         graph.putEdge('b', 'a', () => []).add(2);
         expect(graph.vertices, unorderedEquals(['a', 'b']));
@@ -72,7 +72,7 @@ void main() {
         expectInvariants(graph);
       });
       test('remove edge', () {
-        final graph = Graph<String, void>.directed();
+        final graph = Graph<String, void>.create(isDirected: true);
         graph.addEdge('Hello', 'World');
         graph.removeEdge('Hello', 'World');
         expect(graph.vertices, unorderedEquals(['Hello', 'World']));
@@ -80,7 +80,7 @@ void main() {
         expectInvariants(graph);
       });
       test('add edge, remove first vertex', () {
-        final graph = Graph<String, void>.directed();
+        final graph = Graph<String, void>.create(isDirected: true);
         graph.addEdge('Hello', 'World');
         graph.removeVertex('Hello');
         expect(graph.vertices, ['World']);
@@ -88,7 +88,7 @@ void main() {
         expectInvariants(graph);
       });
       test('add edge, remove second vertex', () {
-        final graph = Graph<String, void>.directed();
+        final graph = Graph<String, void>.create(isDirected: true);
         graph.addEdge('Hello', 'World');
         graph.removeVertex('World');
         expect(graph.vertices, ['Hello']);
@@ -97,7 +97,7 @@ void main() {
       });
     });
     group('querying', () {
-      final graph = Graph<int, String>.directed()
+      final graph = Graph<int, String>.create(isDirected: true)
         ..addEdge(0, 1, value: 'a')
         ..addEdge(1, 2, value: 'b');
       test('invariants', () {
@@ -171,41 +171,41 @@ void main() {
   });
   group('reversed', () {
     test('empty', () {
-      final graph = Graph<String, int>.directed().reversed;
+      final graph = Graph<String, int>.create(isDirected: true).reversed;
       expect(graph.isDirected, isTrue);
       expect(graph.vertices, isEmpty);
       expect(graph.edges, isEmpty);
       expectInvariants(graph);
     });
     test('reversing directed', () {
-      final graph = Graph<String, void>.directed();
+      final graph = Graph<String, void>.create(isDirected: true);
       graph.addEdge('a', 'b');
       final reversedGraph = graph.reversed;
       expect(reversedGraph.reversed, same(graph));
     });
     test('reversing undirected', () {
-      final graph = Graph<String, void>.undirected();
+      final graph = Graph<String, void>.create(isDirected: false);
       graph.addEdge('a', 'b');
       final reversedGraph = graph.reversed;
       expect(reversedGraph, same(graph));
     });
     group('modifying', () {
       test('add vertex', () {
-        final graph = Graph<String, int>.directed().reversed;
+        final graph = Graph<String, int>.create(isDirected: true).reversed;
         graph.addVertex('Hello');
         expect(graph.vertices, ['Hello']);
         expect(graph.edges, isEmpty);
         expectInvariants(graph);
       });
       test('add vertices', () {
-        final graph = Graph<String, int>.directed().reversed;
+        final graph = Graph<String, int>.create(isDirected: true).reversed;
         graph.addVertices(['Hello', 'World']);
         expect(graph.vertices, ['Hello', 'World']);
         expect(graph.edges, isEmpty);
         expectInvariants(graph);
       });
       test('remove vertex', () {
-        final graph = Graph<String, int>.directed().reversed;
+        final graph = Graph<String, int>.create(isDirected: true).reversed;
         graph.addVertex('Hello');
         graph.removeVertex('Hello');
         expect(graph.vertices, isEmpty);
@@ -213,7 +213,7 @@ void main() {
         expectInvariants(graph);
       });
       test('add edge', () {
-        final graph = Graph<String, int>.directed().reversed;
+        final graph = Graph<String, int>.create(isDirected: true).reversed;
         graph.addEdge('Hello', 'World', value: 42);
         expect(graph.vertices, unorderedEquals(['Hello', 'World']));
         expect(graph.edges, [
@@ -223,7 +223,7 @@ void main() {
         expectInvariants(graph);
       });
       test('add self-edge', () {
-        final graph = Graph<String, int>.directed().reversed;
+        final graph = Graph<String, int>.create(isDirected: true).reversed;
         graph.addEdge('Myself', 'Myself', value: 42);
         expect(graph.vertices, unorderedEquals(['Myself']));
         expect(
@@ -235,7 +235,9 @@ void main() {
         expectInvariants(graph);
       });
       test('put edge', () {
-        final graph = Graph<String, List<int>>.directed().reversed;
+        final graph = Graph<String, List<int>>.create(
+          isDirected: true,
+        ).reversed;
         graph.putEdge('a', 'b', () => []).add(1);
         graph.putEdge('b', 'a', () => []).add(2);
         expect(graph.vertices, unorderedEquals(['a', 'b']));
@@ -249,7 +251,7 @@ void main() {
         expectInvariants(graph);
       });
       test('remove edge', () {
-        final graph = Graph<String, void>.directed().reversed;
+        final graph = Graph<String, void>.create(isDirected: true).reversed;
         graph.addEdge('Hello', 'World');
         graph.removeEdge('Hello', 'World');
         expect(graph.vertices, unorderedEquals(['Hello', 'World']));
@@ -257,7 +259,7 @@ void main() {
         expectInvariants(graph);
       });
       test('add edge, remove first vertex', () {
-        final graph = Graph<String, void>.directed().reversed;
+        final graph = Graph<String, void>.create(isDirected: true).reversed;
         graph.addEdge('Hello', 'World');
         graph.removeVertex('Hello');
         expect(graph.vertices, ['World']);
@@ -265,7 +267,7 @@ void main() {
         expectInvariants(graph);
       });
       test('add edge, remove second vertex', () {
-        final graph = Graph<String, void>.directed().reversed;
+        final graph = Graph<String, void>.create(isDirected: true).reversed;
         graph.addEdge('Hello', 'World');
         graph.removeVertex('World');
         expect(graph.vertices, ['Hello']);
@@ -274,7 +276,7 @@ void main() {
       });
     });
     group('querying', () {
-      final directed = Graph<int, String>.directed()
+      final directed = Graph<int, String>.create(isDirected: true)
         ..addEdge(0, 1, value: 'a')
         ..addEdge(1, 2, value: 'b');
       final graph = directed.reversed;
@@ -349,28 +351,28 @@ void main() {
   });
   group('undirected', () {
     test('empty', () {
-      final graph = Graph<String, int>.undirected();
+      final graph = Graph<String, int>.create(isDirected: false);
       expect(graph.vertices, isEmpty);
       expect(graph.edges, isEmpty);
       expectInvariants(graph);
     });
     group('modifying', () {
       test('add vertex', () {
-        final graph = Graph<String, int>.undirected();
+        final graph = Graph<String, int>.create(isDirected: false);
         graph.addVertex('Hello');
         expect(graph.vertices, ['Hello']);
         expect(graph.edges, isEmpty);
         expectInvariants(graph);
       });
       test('add vertices', () {
-        final graph = Graph<String, int>.undirected();
+        final graph = Graph<String, int>.create(isDirected: false);
         graph.addVertices(['Hello', 'World']);
         expect(graph.vertices, ['Hello', 'World']);
         expect(graph.edges, isEmpty);
         expectInvariants(graph);
       });
       test('remove vertex', () {
-        final graph = Graph<String, int>.undirected();
+        final graph = Graph<String, int>.create(isDirected: false);
         graph.addVertex('Hello');
         graph.removeVertex('Hello');
         expect(graph.vertices, isEmpty);
@@ -378,7 +380,7 @@ void main() {
         expectInvariants(graph);
       });
       test('add edge', () {
-        final graph = Graph<String, int>.undirected();
+        final graph = Graph<String, int>.create(isDirected: false);
         graph.addEdge('Hello', 'World', value: 42);
         expect(graph.vertices, unorderedEquals(['Hello', 'World']));
         expect(
@@ -391,7 +393,7 @@ void main() {
         expectInvariants(graph);
       });
       test('add self-edge', () {
-        final graph = Graph<String, int>.undirected();
+        final graph = Graph<String, int>.create(isDirected: false);
         graph.addEdge('Myself', 'Myself', value: 42);
         expect(graph.vertices, unorderedEquals(['Myself']));
         expect(
@@ -403,7 +405,7 @@ void main() {
         expectInvariants(graph);
       });
       test('put edge', () {
-        final graph = Graph<String, List<int>>.undirected();
+        final graph = Graph<String, List<int>>.create(isDirected: false);
         graph.putEdge('a', 'b', () => []).add(1);
         graph.putEdge('b', 'a', () => []).add(2);
         expect(graph.vertices, unorderedEquals(['a', 'b']));
@@ -417,7 +419,7 @@ void main() {
         expectInvariants(graph);
       });
       test('remove edge', () {
-        final graph = Graph<String, void>.undirected();
+        final graph = Graph<String, void>.create(isDirected: false);
         graph.addEdge('Hello', 'World');
         graph.removeEdge('Hello', 'World');
         expect(graph.vertices, unorderedEquals(['Hello', 'World']));
@@ -425,7 +427,7 @@ void main() {
         expectInvariants(graph);
       });
       test('add edge, remove first vertex', () {
-        final graph = Graph<String, void>.undirected();
+        final graph = Graph<String, void>.create(isDirected: false);
         graph.addEdge('Hello', 'World');
         graph.removeVertex('Hello');
         expect(graph.vertices, ['World']);
@@ -433,7 +435,7 @@ void main() {
         expectInvariants(graph);
       });
       test('add edge, remove second vertex', () {
-        final graph = Graph<String, void>.undirected();
+        final graph = Graph<String, void>.create(isDirected: false);
         graph.addEdge('Hello', 'World');
         graph.removeVertex('World');
         expect(graph.vertices, ['Hello']);
@@ -442,7 +444,7 @@ void main() {
       });
     });
     group('querying', () {
-      final graph = Graph<int, String>.undirected()
+      final graph = Graph<int, String>.create(isDirected: false)
         ..addEdge(0, 1, value: 'a')
         ..addEdge(1, 2, value: 'b');
       test('invariants', () {
@@ -538,13 +540,13 @@ void main() {
       });
     });
     test('reversed', () {
-      final graph = Graph<String, int>.undirected();
+      final graph = Graph<String, int>.create(isDirected: false);
       expect(graph.reversed, same(graph));
     });
   });
   group('forwarding', () {
     test('directed', () {
-      final base = Graph<String, int>.directed();
+      final base = Graph<String, int>.create(isDirected: true);
       final graph = ForwardingGraph<String, int>(base);
       expect(graph.isDirected, isTrue);
       expect(graph.isUnmodifiable, isFalse);
@@ -574,7 +576,7 @@ void main() {
       graph.removeVertex('a');
     });
     test('undirected', () {
-      final base = Graph<String, int>.undirected();
+      final base = Graph<String, int>.create(isDirected: false);
       final graph = ForwardingGraph<String, int>(base);
       expect(graph.isDirected, isFalse);
       expect(graph.isUnmodifiable, isFalse);
@@ -612,7 +614,7 @@ void main() {
   });
   group('unmodifiable', () {
     test('empty', () {
-      final graph = Graph<String, int>.directed();
+      final graph = Graph<String, int>.create(isDirected: true);
       expect(graph.isUnmodifiable, isFalse);
       final unmodifiable = graph.unmodifiable;
       expect(unmodifiable.isUnmodifiable, isTrue);
@@ -620,7 +622,7 @@ void main() {
       expectInvariants(unmodifiable);
     });
     test('delegates', () {
-      final graph = Graph<String, int>.directed();
+      final graph = Graph<String, int>.create(isDirected: true);
       graph.addEdge('a', 'b', value: 42);
       final unmodifiable = graph.unmodifiable;
       expect(unmodifiable.neighboursOf('a'), ['b']);
@@ -632,7 +634,7 @@ void main() {
       expect(unmodifiable.getEdge('a', 'b'), isEdge('a', 'b', value: 42));
     });
     test('errors', () {
-      final graph = Graph<String, void>.directed().unmodifiable;
+      final graph = Graph<String, void>.create(isDirected: true).unmodifiable;
       expect(() => graph.addVertex('a'), throwsUnsupportedError);
       expect(() => graph.addEdge('a', 'b'), throwsUnsupportedError);
       expect(() => graph.removeVertex('a'), throwsUnsupportedError);
@@ -642,7 +644,7 @@ void main() {
   });
   group('where', () {
     test('vertex predicate on directed graph', () {
-      final base = Graph<String, void>.directed();
+      final base = Graph<String, void>.create(isDirected: true);
       base
         ..addEdge('a', 'b')
         ..addEdge('b', 'c')
@@ -676,7 +678,7 @@ void main() {
       expect(graph.successorsOf('c'), ['a']);
     });
     test('vertex predicate on undirected graph', () {
-      final base = Graph<String, void>.undirected();
+      final base = Graph<String, void>.create(isDirected: false);
       base
         ..addEdge('a', 'b')
         ..addEdge('b', 'c')
@@ -716,7 +718,7 @@ void main() {
       expect(graph.successorsOf('c'), ['a']);
     });
     test('vertex predicate filtering nothing', () {
-      final base = Graph<String, void>.directed();
+      final base = Graph<String, void>.create(isDirected: true);
       base
         ..addEdge('a', 'b')
         ..addEdge('b', 'c')
@@ -727,7 +729,7 @@ void main() {
       expect(graph.edges, unorderedEquals(base.edges));
     });
     test('vertex predicate filtering everything', () {
-      final base = Graph<String, void>.directed();
+      final base = Graph<String, void>.create(isDirected: true);
       base
         ..addEdge('a', 'b')
         ..addEdge('b', 'c')
@@ -738,7 +740,7 @@ void main() {
       expect(graph.edges, isEmpty);
     });
     test('edge predicate on directed graph', () {
-      final base = Graph<String, void>.directed();
+      final base = Graph<String, void>.create(isDirected: true);
       base
         ..addEdge('a', 'b')
         ..addEdge('b', 'c')
@@ -774,7 +776,7 @@ void main() {
       expect(graph.successorsOf('c'), ['a']);
     });
     test('edge predicate on undirected graph', () {
-      final base = Graph<String, void>.undirected();
+      final base = Graph<String, void>.create(isDirected: false);
       base
         ..addEdge('a', 'b')
         ..addEdge('b', 'c')
@@ -816,7 +818,7 @@ void main() {
       expect(graph.successorsOf('c'), ['a']);
     });
     test('edge predicate filtering nothing', () {
-      final base = Graph<String, void>.directed();
+      final base = Graph<String, void>.create(isDirected: true);
       base
         ..addEdge('a', 'b')
         ..addEdge('b', 'c')
@@ -827,7 +829,7 @@ void main() {
       expect(graph.edges, unorderedEquals(base.edges));
     });
     test('edge predicate filtering everything', () {
-      final base = Graph<String, void>.directed();
+      final base = Graph<String, void>.create(isDirected: true);
       base
         ..addEdge('a', 'b')
         ..addEdge('b', 'c')
@@ -838,7 +840,7 @@ void main() {
       expect(graph.edges, isEmpty);
     });
     test('no predicates', () {
-      final base = Graph<int, int>.directed();
+      final base = Graph<int, int>.create(isDirected: true);
       final graph = base.where();
       expect(graph, same(base));
     });

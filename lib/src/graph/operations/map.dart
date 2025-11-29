@@ -15,9 +15,10 @@ extension MapGraphExtension<V, E> on Graph<V, E> {
     ER? Function(Edge<V, E> edge)? edge,
     StorageStrategy<VR>? vertexStrategy,
   }) {
-    final graph = isDirected
-        ? Graph<VR, ER>.directed(vertexStrategy: vertexStrategy)
-        : Graph<VR, ER>.undirected(vertexStrategy: vertexStrategy);
+    final graph = Graph<VR, ER>.create(
+      isDirected: isDirected,
+      vertexStrategy: vertexStrategy,
+    );
     final vertexMap = <V, VR>{};
     final vertexMapper = vertex ?? (vertex) => vertex as VR;
     for (final oldVertex in vertices) {

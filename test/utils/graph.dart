@@ -111,7 +111,7 @@ Iterable<int> reverseCollatzGraph(int vertex) =>
 
 // Undirected graph for weighted searches:
 // https://en.wikipedia.org/wiki/File:Dijkstra_Animation.gif
-final dijkstraGraph = Graph<int, int>.undirected()
+final dijkstraGraph = Graph<int, int>.create(isDirected: false)
   ..addEdge(1, 2, value: 7)
   ..addEdge(1, 3, value: 9)
   ..addEdge(1, 6, value: 14)
@@ -124,7 +124,7 @@ final dijkstraGraph = Graph<int, int>.undirected()
 
 // Directed graph with negative edges.
 // https://commons.wikimedia.org/wiki/File:Bellman%E2%80%93Ford_algorithm_example.gif
-final bellmanFordGraph = Graph<String, int>.directed()
+final bellmanFordGraph = Graph<String, int>.create(isDirected: true)
   ..addEdge('s', 't', value: 6)
   ..addEdge('s', 'y', value: 7)
   ..addEdge('t', 'x', value: 5)

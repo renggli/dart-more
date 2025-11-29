@@ -3,12 +3,15 @@ import '../edge.dart';
 import '../graph.dart';
 import '../strategy.dart';
 
-/// Directed graph implementation using adjacency lists.
+/// Directed graph implementation using an adjacency map.
 class DirectedGraph<V, E> extends Graph<V, E> {
-  DirectedGraph({StorageStrategy<V>? vertexStrategy})
-    : this._(vertexStrategy ?? StorageStrategy<V>.defaultStrategy());
+  /// Constructs a directed graph.
+  factory DirectedGraph.create({StorageStrategy<V>? vertexStrategy}) =>
+      DirectedGraph(
+        vertexStrategy: vertexStrategy ?? StorageStrategy<V>.defaultStrategy(),
+      );
 
-  DirectedGraph._(this.vertexStrategy)
+  DirectedGraph({required this.vertexStrategy})
     : adjacency = vertexStrategy.createMap<VertexWrapper<V, E>>();
 
   final Map<V, VertexWrapper<V, E>> adjacency;

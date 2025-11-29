@@ -3,12 +3,15 @@ import '../edge.dart';
 import '../graph.dart';
 import '../strategy.dart';
 
-/// Undirected graph implementation using adjacency lists.
+/// Undirected graph implementation using an adjacency map.
 class UndirectedGraph<V, E> extends Graph<V, E> {
-  UndirectedGraph({StorageStrategy<V>? vertexStrategy})
-    : this._(vertexStrategy ?? StorageStrategy<V>.defaultStrategy());
+  /// Constructs a undirected graph.
+  factory UndirectedGraph.create({StorageStrategy<V>? vertexStrategy}) =>
+      UndirectedGraph(
+        vertexStrategy: vertexStrategy ?? StorageStrategy<V>.defaultStrategy(),
+      );
 
-  UndirectedGraph._(this.vertexStrategy)
+  UndirectedGraph({required this.vertexStrategy})
     : adjacency = vertexStrategy.createMap<Map<V, E>>();
 
   final Map<V, Map<V, E>> adjacency;

@@ -14,12 +14,23 @@ import 'strategy.dart';
 /// [Graph] allows self-loops (edges from a vertex to itself). If you do not
 /// want self-loops, do not create self-loops.
 abstract class Graph<V, E> with ToStringPrinter {
+  /// Constructs a graph.
+  factory Graph.create({
+    bool isDirected = false,
+    StorageStrategy<V>? vertexStrategy,
+  }) => isDirected
+      ? DirectedGraph.create(vertexStrategy: vertexStrategy)
+      : UndirectedGraph.create(vertexStrategy: vertexStrategy);
+
   /// Constructs a directed graph.
-  factory Graph.directed({StorageStrategy<V>? vertexStrategy}) = DirectedGraph;
+  @Deprecated('Use `Graph.create(isDirected: true)` instead.')
+  factory Graph.directed({StorageStrategy<V>? vertexStrategy}) =>
+      Graph.create(isDirected: true, vertexStrategy: vertexStrategy);
 
   /// Constructs an undirected graph.
-  factory Graph.undirected({StorageStrategy<V>? vertexStrategy}) =
-      UndirectedGraph;
+  @Deprecated('Use Graph.create(isDirected: false) instead.')
+  factory Graph.undirected({StorageStrategy<V>? vertexStrategy}) =>
+      Graph.create(isDirected: false, vertexStrategy: vertexStrategy);
 
   /// Generative constructor.
   Graph();
