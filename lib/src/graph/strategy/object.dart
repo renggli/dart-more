@@ -3,6 +3,9 @@ import '../strategy.dart';
 /// Strategy using canonical collection objects.
 class ObjectStorageStrategy<T> implements StorageStrategy<T> {
   @override
+  List<T> createList() => <T>[];
+
+  @override
   Set<T> createSet() => <T>{};
 
   @override

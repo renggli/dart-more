@@ -1,23 +1,23 @@
-import '../../printer/object/object.dart';
-import '../edge.dart';
-import '../graph.dart';
-import '../strategy.dart';
+import '../../edge.dart';
+import '../../strategy.dart';
+import 'base.dart';
 
 /// Directed graph implementation using adjacency lists.
-class DirectedGraph<V, E> extends Graph<V, E> {
-  DirectedGraph({StorageStrategy<V>? vertexStrategy})
-    : this._(vertexStrategy ?? StorageStrategy<V>.defaultStrategy());
+class DirectedSimpleGraph<V, E> extends DirectedGraph<V, E> {
+  factory DirectedSimpleGraph.create({
+    StorageStrategy<V>? vertexStrategy,
+    StorageStrategy<E>? edgeStrategy,
+  }) => DirectedSimpleGraph<V, E>(
+    vertexStrategy: vertexStrategy ?? StorageStrategy.defaultStrategy(),
+    edgeStrategy: edgeStrategy ?? StorageStrategy.defaultStrategy(),
+  );
 
-  DirectedGraph._(this.vertexStrategy)
-    : adjacency = vertexStrategy.createMap<VertexWrapper<V, E>>();
+  DirectedSimpleGraph({
+    required super.vertexStrategy,
+    required super.edgeStrategy,
+  }) : adjacency = vertexStrategy.createMap<VertexWrapper<V, E>>();
 
   final Map<V, VertexWrapper<V, E>> adjacency;
-
-  @override
-  bool get isDirected => true;
-
-  @override
-  final StorageStrategy<V> vertexStrategy;
 
   @override
   Iterable<V> get vertices => adjacency.keys;
@@ -25,7 +25,7 @@ class DirectedGraph<V, E> extends Graph<V, E> {
   @override
   Iterable<Edge<V, E>> get edges => adjacency.entries.expand(
     (outer) => outer.value.outgoing.entries.map(
-      (inner) => DirectedEdge<V, E>(outer.key, inner.key, value: inner.value),
+      (inner) => createEdge(outer.key, inner.key, value: inner.value),
     ),
   );
 
@@ -36,14 +36,14 @@ class DirectedGraph<V, E> extends Graph<V, E> {
   @override
   Iterable<Edge<V, E>> incomingEdgesOf(V vertex) =>
       adjacency[vertex]?.incoming.entries.map(
-        (entry) => DirectedEdge<V, E>(entry.key, vertex, value: entry.value),
+        (entry) => createEdge(entry.key, vertex, value: entry.value),
       ) ??
       const [];
 
   @override
   Iterable<Edge<V, E>> outgoingEdgesOf(V vertex) =>
       adjacency[vertex]?.outgoing.entries.map(
-        (entry) => DirectedEdge<V, E>(vertex, entry.key, value: entry.value),
+        (entry) => createEdge(vertex, entry.key, value: entry.value),
       ) ??
       const [];
 
@@ -51,7 +51,7 @@ class DirectedGraph<V, E> extends Graph<V, E> {
   Edge<V, E>? getEdge(V source, V target) {
     if (adjacency[source]?.outgoing case final targetAdjacency?) {
       if (targetAdjacency[target] case final E value) {
-        return DirectedEdge<V, E>(source, target, value: value);
+        return createEdge(source, target, value: value);
       }
     }
     return null;
@@ -92,7 +92,8 @@ class DirectedGraph<V, E> extends Graph<V, E> {
   }
 
   @override
-  void removeEdge(V source, V target) {
+  void removeEdge(V source, V target, {E? value}) {
+    // TODO: check for value
     adjacency[source]?.outgoing.remove(target);
     adjacency[target]?.incoming.remove(source);
   }
@@ -104,27 +105,6 @@ class DirectedGraph<V, E> extends Graph<V, E> {
     incoming: vertexStrategy.createMap<E>(),
     outgoing: vertexStrategy.createMap<E>(),
   );
-}
-
-/// Directed edge implementation.
-class DirectedEdge<V, E> extends Edge<V, E> {
-  const DirectedEdge(super.source, super.target, {super.value});
-
-  @override
-  bool get isDirected => true;
-
-  @override
-  bool operator ==(Object other) =>
-      identical(this, other) ||
-      (other is Edge && source == other.source && target == other.target);
-
-  @override
-  int get hashCode => Object.hash(source, target);
-
-  @override
-  ObjectPrinter get toStringPrinter => super.toStringPrinter
-    ..addValue('$source → $target')
-    ..addValue(value, name: 'value', omitNull: true);
 }
 
 /// Record to keep track of incoming and outgoing edges in adjacency [Map].

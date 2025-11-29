@@ -14,10 +14,13 @@ extension MapGraphExtension<V, E> on Graph<V, E> {
     VR Function(V vertex)? vertex,
     ER? Function(Edge<V, E> edge)? edge,
     StorageStrategy<VR>? vertexStrategy,
+    StorageStrategy<ER>? edgeStrategy,
   }) {
-    final graph = isDirected
-        ? Graph<VR, ER>.directed(vertexStrategy: vertexStrategy)
-        : Graph<VR, ER>.undirected(vertexStrategy: vertexStrategy);
+    final graph = Graph.create(
+      isDirected: isDirected,
+      vertexStrategy: vertexStrategy,
+      edgeStrategy: edgeStrategy,
+    );
     final vertexMap = <V, VR>{};
     final vertexMapper = vertex ?? (vertex) => vertex as VR;
     for (final oldVertex in vertices) {

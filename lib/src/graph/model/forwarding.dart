@@ -12,10 +12,10 @@ class ForwardingGraph<V, E> extends Graph<V, E> {
   bool get isDirected => delegate.isDirected;
 
   @override
-  bool get isUnmodifiable => delegate.isUnmodifiable;
+  StorageStrategy<V> get vertexStrategy => delegate.vertexStrategy;
 
   @override
-  StorageStrategy<V> get vertexStrategy => delegate.vertexStrategy;
+  StorageStrategy<E> get edgeStrategy => delegate.edgeStrategy;
 
   @override
   Iterable<V> get vertices => delegate.vertices;

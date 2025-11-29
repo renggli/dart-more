@@ -5,6 +5,9 @@ import 'integer_set.dart';
 /// Strategy for [int] objects.
 class IntegerStorageStrategy implements StorageStrategy<int> {
   @override
+  List<int> createList() => <int>[];
+
+  @override
   Set<int> createSet() => IntegerSet(forward, backward);
 
   @override

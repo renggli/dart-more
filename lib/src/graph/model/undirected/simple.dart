@@ -1,23 +1,23 @@
-import '../../printer/object/object.dart';
-import '../edge.dart';
-import '../graph.dart';
-import '../strategy.dart';
+import '../../edge.dart';
+import '../../strategy.dart';
+import 'base.dart';
 
 /// Undirected graph implementation using adjacency lists.
-class UndirectedGraph<V, E> extends Graph<V, E> {
-  UndirectedGraph({StorageStrategy<V>? vertexStrategy})
-    : this._(vertexStrategy ?? StorageStrategy<V>.defaultStrategy());
+class UndirectedSimpleGraph<V, E> extends UndirectedGraph<V, E> {
+  factory UndirectedSimpleGraph.create({
+    StorageStrategy<V>? vertexStrategy,
+    StorageStrategy<E>? edgeStrategy,
+  }) => UndirectedSimpleGraph<V, E>(
+    vertexStrategy: vertexStrategy ?? StorageStrategy.defaultStrategy(),
+    edgeStrategy: edgeStrategy ?? StorageStrategy.defaultStrategy(),
+  );
 
-  UndirectedGraph._(this.vertexStrategy)
-    : adjacency = vertexStrategy.createMap<Map<V, E>>();
+  UndirectedSimpleGraph({
+    required super.vertexStrategy,
+    required super.edgeStrategy,
+  }) : adjacency = vertexStrategy.createMap<Map<V, E>>();
 
   final Map<V, Map<V, E>> adjacency;
-
-  @override
-  bool get isDirected => false;
-
-  @override
-  final StorageStrategy<V> vertexStrategy;
 
   @override
   Iterable<V> get vertices => adjacency.keys;
@@ -25,7 +25,7 @@ class UndirectedGraph<V, E> extends Graph<V, E> {
   @override
   Iterable<Edge<V, E>> get edges => adjacency.entries.expand(
     (outer) => outer.value.entries.map(
-      (inner) => UndirectedEdge<V, E>(outer.key, inner.key, value: inner.value),
+      (inner) => createEdge(outer.key, inner.key, value: inner.value),
     ),
   );
 
@@ -35,14 +35,14 @@ class UndirectedGraph<V, E> extends Graph<V, E> {
   @override
   Iterable<Edge<V, E>> incomingEdgesOf(V vertex) =>
       adjacency[vertex]?.entries.map(
-        (entry) => UndirectedEdge<V, E>(entry.key, vertex, value: entry.value),
+        (entry) => createEdge(entry.key, vertex, value: entry.value),
       ) ??
       const [];
 
   @override
   Iterable<Edge<V, E>> outgoingEdgesOf(V vertex) =>
       adjacency[vertex]?.entries.map(
-        (entry) => UndirectedEdge<V, E>(vertex, entry.key, value: entry.value),
+        (entry) => createEdge(vertex, entry.key, value: entry.value),
       ) ??
       const [];
 
@@ -50,7 +50,7 @@ class UndirectedGraph<V, E> extends Graph<V, E> {
   Edge<V, E>? getEdge(V source, V target) {
     if (adjacency[source] case final targetAdjacency?) {
       if (targetAdjacency[target] case final E value) {
-        return UndirectedEdge<V, E>(source, target, value: value);
+        return createEdge(source, target, value: value);
       }
     }
     return null;
@@ -85,34 +85,12 @@ class UndirectedGraph<V, E> extends Graph<V, E> {
   }
 
   @override
-  void removeEdge(V source, V target) {
+  void removeEdge(V source, V target, {E? value}) {
+    // TODO: check for value
     adjacency[source]?.remove(target);
     adjacency[target]?.remove(source);
   }
 
   Map<V, E> _getVertex(V vertex) =>
       adjacency.putIfAbsent(vertex, () => vertexStrategy.createMap<E>());
-}
-
-/// Undirected edge implementation.
-class UndirectedEdge<V, E> extends Edge<V, E> {
-  const UndirectedEdge(super.source, super.target, {super.value});
-
-  @override
-  bool get isDirected => false;
-
-  @override
-  bool operator ==(Object other) =>
-      identical(this, other) ||
-      (other is UndirectedEdge &&
-          ((source == other.source && target == other.target) ||
-              (source == other.target && target == other.source)));
-
-  @override
-  int get hashCode => source.hashCode ^ target.hashCode;
-
-  @override
-  ObjectPrinter get toStringPrinter => super.toStringPrinter
-    ..addValue('$source — $target')
-    ..addValue(value, name: 'value', omitNull: true);
 }

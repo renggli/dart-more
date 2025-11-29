@@ -1,6 +1,6 @@
 import '../../printer.dart';
-import 'model/directed.dart';
-import 'model/undirected.dart';
+import 'model/directed/edge.dart';
+import 'model/undirected/edge.dart';
 
 /// An [edge](https://en.wikipedia.org/wiki/Glossary_of_graph_theory#edge)
 /// withing a graph connects a [source] and a [target] vertex.

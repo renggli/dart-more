@@ -5,6 +5,9 @@ class IdentityStorageStrategy<T> implements StorageStrategy<T> {
   const IdentityStorageStrategy();
 
   @override
+  List<T> createList() => <T>[];
+
+  @override
   Set<T> createSet() => Set<T>.identity();
 
   @override

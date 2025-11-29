@@ -21,6 +21,9 @@ abstract class StorageStrategy<T> {
   static StorageStrategy<int> positiveInteger() =>
       PositiveIntegerStorageStrategy();
 
+  /// Creates an empty list of type `List<T>`.
+  List<T> createList();
+
   /// Creates an empty set of type `Set<T>`.
   Set<T> createSet();
 
