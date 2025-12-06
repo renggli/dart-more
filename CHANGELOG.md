@@ -4,6 +4,7 @@
 
 - Upgrade to Unicode 17.0.0: <https://blog.unicode.org/2025/09/unicode-170-release-announcement.html>
 - Add [Unicode Script](https://www.unicode.org/Public/17.0.0/ucd/Scripts.txt) property matchers (thanks to <https://github.com/amake>).
+- Add `Collection`, an interface exposing the shared mutator operations of [List] and [Set].
 - Add `Graph.vertexColoring` algorithm for graph coloring.
 - Add `Graph.hasEulerianPath`, `Graph.hasEulerianCircuit`, `Graph.eulerianPath`, and `Graph.eulerianCircuit` for Eulerian path/circuit detection and finding using Hierholzer's algorithm.
 
