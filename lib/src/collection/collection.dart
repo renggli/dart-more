@@ -29,6 +29,9 @@ abstract class Collection<E> extends DelegatingIterable<E> {
   /// Returns `true` if [value] was in the collection, and `false` if not.
   /// The method has no effect if [value] was not in the collection.
   bool remove(Object? value);
+
+  /// Removes all elements from the collection.
+  void clear();
 }
 
 class _ListCollection<E> extends Collection<E> {
@@ -44,6 +47,9 @@ class _ListCollection<E> extends Collection<E> {
 
   @override
   bool remove(Object? value) => _list.remove(value);
+
+  @override
+  void clear() => _list.clear();
 }
 
 class _SetCollection<E> extends Collection<E> {
@@ -59,4 +65,7 @@ class _SetCollection<E> extends Collection<E> {
 
   @override
   bool remove(Object? value) => _set.remove(value);
+
+  @override
+  void clear() => _set.clear();
 }

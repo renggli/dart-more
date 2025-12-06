@@ -38,6 +38,11 @@ void main() {
       expect(collection.remove(4), isFalse);
       expect(collection, [1, 3]);
     });
+    test('clear', () {
+      final collection = Collection.forList([1, 2, 3]);
+      collection.clear();
+      expect(collection, isEmpty);
+    });
   });
   group('forSet', () {
     test('empty', () {
@@ -76,6 +81,11 @@ void main() {
       expect(collection, unorderedEquals([1, 3]));
       expect(collection.remove(4), isFalse);
       expect(collection, unorderedEquals([1, 3]));
+    });
+    test('clear', () {
+      final collection = Collection.forSet({1, 2, 3});
+      collection.clear();
+      expect(collection, isEmpty);
     });
   });
 }
