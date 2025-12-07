@@ -7,7 +7,6 @@ import 'algorithms/bipartite_check.dart' as bipartite_check;
 import 'algorithms/bron_kerbosch_cliques.dart' as bron_kerbosch_cliques;
 import 'algorithms/cycle_check.dart' as cycle_check;
 import 'algorithms/dinic_max_flow.dart' as dinic_max_flow;
-import 'algorithms/eulerian_path.dart' as eulerian_path;
 import 'algorithms/kruskal_spanning_tree.dart' as kruskal_spanning_tree;
 import 'algorithms/prim_spanning_tree.dart' as prim_spanning_tree;
 import 'algorithms/search/a_star.dart' as a_star;
@@ -248,122 +247,6 @@ extension AlgorithmsGraphExtension<V, E> on Graph<V, E> {
       vertexStrategy: vertexStrategy ?? this.vertexStrategy,
     );
   }
-
-  /// Checks if the graph has an Eulerian path.
-  ///
-  /// An Eulerian path is a path that visits every edge exactly once.
-  ///
-  /// For an undirected graph, an Eulerian path exists if and only if the
-  /// graph is connected and has exactly 0 or 2 vertices with odd degree.
-  ///
-  /// For a directed graph, an Eulerian path exists if and only if the graph
-  /// is connected and:
-  /// - At most one vertex has (out-degree - in-degree) = 1 (start vertex)
-  /// - At most one vertex has (in-degree - out-degree) = 1 (end vertex)
-  /// - All other vertices have equal in-degree and out-degree
-  ///
-  /// See https://en.wikipedia.org/wiki/Eulerian_path
-  bool hasEulerianPath({StorageStrategy<V>? vertexStrategy}) => isDirected
-      ? eulerian_path.hasEulerianPathDirected<V>(
-          vertices: vertices,
-          successorsOf: successorsOf,
-          predecessorsOf: predecessorsOf,
-          vertexStrategy: vertexStrategy ?? this.vertexStrategy,
-        )
-      : eulerian_path.hasEulerianPathUndirected<V>(
-          vertices: vertices,
-          neighboursOf: neighboursOf,
-          vertexStrategy: vertexStrategy ?? this.vertexStrategy,
-        );
-
-  /// Checks if the graph has an Eulerian circuit.
-  ///
-  /// An Eulerian circuit is an Eulerian path that starts and ends at the
-  /// same vertex.
-  ///
-  /// For an undirected graph, an Eulerian circuit exists if and only if the
-  /// graph is connected and every vertex has even degree.
-  ///
-  /// For a directed graph, an Eulerian circuit exists if and only if the
-  /// graph is connected and every vertex has equal in-degree and out-degree.
-  ///
-  /// See https://en.wikipedia.org/wiki/Eulerian_path
-  bool hasEulerianCircuit({StorageStrategy<V>? vertexStrategy}) => isDirected
-      ? eulerian_path.hasEulerianCircuitDirected<V>(
-          vertices: vertices,
-          successorsOf: successorsOf,
-          predecessorsOf: predecessorsOf,
-          vertexStrategy: vertexStrategy ?? this.vertexStrategy,
-        )
-      : eulerian_path.hasEulerianCircuitUndirected<V>(
-          vertices: vertices,
-          neighboursOf: neighboursOf,
-          vertexStrategy: vertexStrategy ?? this.vertexStrategy,
-        );
-
-  /// Finds an Eulerian path in the graph.
-  ///
-  /// Returns a [Path] that visits every edge exactly once, or `null` if no
-  /// such path exists.
-  ///
-  /// For an undirected graph, an Eulerian path exists if and only if the
-  /// graph is connected and has exactly 0 or 2 vertices with odd degree.
-  ///
-  /// For a directed graph, an Eulerian path exists if and only if the graph
-  /// is connected and:
-  /// - At most one vertex has (out-degree - in-degree) = 1 (start vertex)
-  /// - At most one vertex has (in-degree - out-degree) = 1 (end vertex)
-  /// - All other vertices have equal in-degree and out-degree
-  ///
-  /// Uses Hierholzer's algorithm which runs in O(E) time where E is the
-  /// number of edges.
-  ///
-  /// See https://en.wikipedia.org/wiki/Eulerian_path#Hierholzer's_algorithm
-  Path<V, E>? eulerianPath({StorageStrategy<V>? vertexStrategy}) => isDirected
-      ? eulerian_path.findEulerianPathDirected<V, E>(
-          vertices: vertices,
-          successorsOf: successorsOf,
-          predecessorsOf: predecessorsOf,
-          getEdge: getEdge,
-          vertexStrategy: vertexStrategy ?? this.vertexStrategy,
-        )
-      : eulerian_path.findEulerianPathUndirected<V, E>(
-          vertices: vertices,
-          neighboursOf: neighboursOf,
-          getEdge: getEdge,
-          vertexStrategy: vertexStrategy ?? this.vertexStrategy,
-        );
-
-  /// Finds an Eulerian circuit in the graph.
-  ///
-  /// Returns a [Path] that visits every edge exactly once and returns to the
-  /// starting vertex, or `null` if no such circuit exists.
-  ///
-  /// For an undirected graph, an Eulerian circuit exists if and only if the
-  /// graph is connected and every vertex has even degree.
-  ///
-  /// For a directed graph, an Eulerian circuit exists if and only if the
-  /// graph is connected and every vertex has equal in-degree and out-degree.
-  ///
-  /// Uses Hierholzer's algorithm which runs in O(E) time where E is the
-  /// number of edges.
-  ///
-  /// See https://en.wikipedia.org/wiki/Eulerian_path#Hierholzer's_algorithm
-  Path<V, E>? eulerianCircuit({StorageStrategy<V>? vertexStrategy}) =>
-      isDirected
-      ? eulerian_path.findEulerianCircuitDirected<V, E>(
-          vertices: vertices,
-          successorsOf: successorsOf,
-          predecessorsOf: predecessorsOf,
-          getEdge: getEdge,
-          vertexStrategy: vertexStrategy ?? this.vertexStrategy,
-        )
-      : eulerian_path.findEulerianCircuitUndirected<V, E>(
-          vertices: vertices,
-          neighboursOf: neighboursOf,
-          getEdge: getEdge,
-          vertexStrategy: vertexStrategy ?? this.vertexStrategy,
-        );
 
   /// Internal helper that returns a function using the numeric edge value
   /// of this graph, or otherwise a constant value for each edge.

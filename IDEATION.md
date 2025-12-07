@@ -2,6 +2,9 @@
 
 - Graph algorithms
   - **Path and Circuit Algorithms**
+    - Eulerian path/circuit detection and finding
+      - Use degree checks + Hierholzer's algorithm
+      - Useful for route planning, DNA sequencing
     - Hamiltonian path/circuit detection
       - NP-complete: backtracking or DP with bitmasks
       - Returns path if exists
