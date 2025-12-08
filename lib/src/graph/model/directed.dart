@@ -5,14 +5,9 @@ import '../strategy.dart';
 
 /// Directed graph implementation using an adjacency map.
 class DirectedGraph<V, E> extends Graph<V, E> {
-  /// Constructs a directed graph.
-  factory DirectedGraph.create({StorageStrategy<V>? vertexStrategy}) =>
-      DirectedGraph(
-        vertexStrategy: vertexStrategy ?? StorageStrategy<V>.defaultStrategy(),
-      );
-
   DirectedGraph({required this.vertexStrategy})
-    : adjacency = vertexStrategy.createMap<VertexWrapper<V, E>>();
+    : adjacency = vertexStrategy.createMap<VertexWrapper<V, E>>(),
+      super.generative();
 
   final Map<V, VertexWrapper<V, E>> adjacency;
 
@@ -119,10 +114,13 @@ class DirectedEdge<V, E> extends Edge<V, E> {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      (other is Edge && source == other.source && target == other.target);
+      (other is DirectedEdge<V, E> &&
+          source == other.source &&
+          target == other.target &&
+          value == other.value);
 
   @override
-  int get hashCode => Object.hash(source, target);
+  int get hashCode => Object.hash(source, target, value);
 
   @override
   ObjectPrinter get toStringPrinter => super.toStringPrinter

@@ -4,7 +4,7 @@ import '../strategy.dart';
 
 /// Graph that forwards to a [delegate] implementation.
 class ForwardingGraph<V, E> extends Graph<V, E> {
-  ForwardingGraph(this.delegate);
+  ForwardingGraph(this.delegate) : super.generative();
 
   final Graph<V, E> delegate;
 

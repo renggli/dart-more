@@ -5,14 +5,9 @@ import '../strategy.dart';
 
 /// Undirected graph implementation using an adjacency map.
 class UndirectedGraph<V, E> extends Graph<V, E> {
-  /// Constructs a undirected graph.
-  factory UndirectedGraph.create({StorageStrategy<V>? vertexStrategy}) =>
-      UndirectedGraph(
-        vertexStrategy: vertexStrategy ?? StorageStrategy<V>.defaultStrategy(),
-      );
-
   UndirectedGraph({required this.vertexStrategy})
-    : adjacency = vertexStrategy.createMap<Map<V, E>>();
+    : adjacency = vertexStrategy.createMap<Map<V, E>>(),
+      super.generative();
 
   final Map<V, Map<V, E>> adjacency;
 
@@ -107,12 +102,14 @@ class UndirectedEdge<V, E> extends Edge<V, E> {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      (other is UndirectedEdge &&
+      (other is UndirectedEdge<V, E> &&
           ((source == other.source && target == other.target) ||
-              (source == other.target && target == other.source)));
+              (source == other.target && target == other.source)) &&
+          value == other.value);
 
   @override
-  int get hashCode => source.hashCode ^ target.hashCode;
+  int get hashCode =>
+      Object.hash(source.hashCode ^ target.hashCode, value.hashCode);
 
   @override
   ObjectPrinter get toStringPrinter => super.toStringPrinter

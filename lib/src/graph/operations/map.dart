@@ -15,7 +15,7 @@ extension MapGraphExtension<V, E> on Graph<V, E> {
     ER? Function(Edge<V, E> edge)? edge,
     StorageStrategy<VR>? vertexStrategy,
   }) {
-    final graph = Graph<VR, ER>.create(
+    final graph = Graph<VR, ER>(
       isDirected: isDirected,
       vertexStrategy: vertexStrategy,
     );

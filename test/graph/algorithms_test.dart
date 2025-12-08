@@ -335,7 +335,7 @@ void main() {
       );
     });
     test('directed graph with negative edge', () {
-      final graph = Graph<int, int>.create(isDirected: true)
+      final graph = Graph<int, int>(isDirected: true)
         ..addEdge(0, 1, value: -2)
         ..addEdge(1, 2, value: 3);
       final path = graph.shortestPath(0, 2, hasNegativeEdges: true);
@@ -346,7 +346,7 @@ void main() {
       );
     });
     test('directed graph with negative cycle', () {
-      final graph = Graph<int, int>.create(isDirected: true)
+      final graph = Graph<int, int>(isDirected: true)
         ..addEdge(0, 1, value: -2)
         ..addEdge(1, 2, value: -3)
         ..addEdge(2, 0, value: -1);
@@ -357,7 +357,7 @@ void main() {
       expect(graph.allShortestPaths, throwsGraphError);
     });
     test('directed graph with negative edge and positive cycle', () {
-      final graph = Graph<int, int>.create(isDirected: true)
+      final graph = Graph<int, int>(isDirected: true)
         ..addEdge(0, 1, value: -2)
         ..addEdge(1, 2, value: 3)
         ..addEdge(2, 0, value: 1);
@@ -680,7 +680,7 @@ void main() {
       expect(() => flow(4, 0), throwsArgumentError);
     });
     test('example 1', () {
-      final graph = Graph<String, int>.create(isDirected: true);
+      final graph = Graph<String, int>(isDirected: true);
       graph.addEdge('S', '1', value: 2);
       graph.addEdge('S', '2', value: 2);
       graph.addEdge('1', 'E', value: 2);
@@ -691,7 +691,7 @@ void main() {
       expect(flow('E', 'S'), 0);
     });
     test('example 2', () {
-      final graph = Graph<int, int>.create(isDirected: true);
+      final graph = Graph<int, int>(isDirected: true);
       graph.addEdge(0, 1, value: 16);
       graph.addEdge(0, 2, value: 13);
       graph.addEdge(1, 2, value: 10);
@@ -707,7 +707,7 @@ void main() {
       expect(flow(5, 0), 0);
     });
     test('example 3', () {
-      final graph = Graph<String, int>.create(isDirected: true);
+      final graph = Graph<String, int>(isDirected: true);
       graph.addEdge('A', 'B', value: 3);
       graph.addEdge('A', 'D', value: 3);
       graph.addEdge('B', 'C', value: 4);
@@ -724,7 +724,7 @@ void main() {
       expect(flow('G', 'A'), 0);
     });
     test('example 4', () {
-      final graph = Graph<String, int>.create(isDirected: true);
+      final graph = Graph<String, int>(isDirected: true);
       graph.addEdge('s', 'a', value: 15);
       graph.addEdge('s', 'c', value: 4);
       graph.addEdge('a', 'b', value: 12);
@@ -740,7 +740,7 @@ void main() {
   });
   group('min cut', () {
     test('example 1', () {
-      final graph = Graph<int, int>.create(isDirected: false);
+      final graph = Graph<int, int>(isDirected: false);
       graph.addEdge(1, 2, value: 2);
       graph.addEdge(1, 5, value: 3);
       graph.addEdge(2, 1, value: 2);
@@ -781,7 +781,7 @@ void main() {
       expect(minCut.weight, 4);
     });
     test('example 2', () {
-      final graph = Graph<int, void>.create(isDirected: false);
+      final graph = Graph<int, void>(isDirected: false);
       graph.addEdge(0, 3);
       graph.addEdge(3, 2);
       graph.addEdge(2, 1);
@@ -805,7 +805,7 @@ void main() {
       expect(minCut.weight, 2);
     });
     test('example 3', () {
-      final graph = Graph<int, int>.create(isDirected: false);
+      final graph = Graph<int, int>(isDirected: false);
       graph.addEdge(0, 1, value: 2);
       graph.addEdge(0, 4, value: 3);
       graph.addEdge(1, 2, value: 3);
@@ -834,7 +834,7 @@ void main() {
       expect(minCut.weight, 4);
     });
     test('example 4', () {
-      final graph = Graph<String, int>.create(isDirected: false);
+      final graph = Graph<String, int>(isDirected: false);
       graph.addEdge('x', 'a', value: 3);
       graph.addEdge('x', 'b', value: 1);
       graph.addEdge('a', 'c', value: 3);
@@ -862,11 +862,11 @@ void main() {
       expect(minCut.weight, 4);
     });
     test('empty graph error', () {
-      final graph = Graph<String, void>.create(isDirected: false);
+      final graph = Graph<String, void>(isDirected: false);
       expect(graph.minCut, throwsArgumentError);
     });
     test('directed graph error', () {
-      final graph = Graph<int, void>.create(isDirected: true)
+      final graph = Graph<int, void>(isDirected: true)
         ..addEdge(0, 1)
         ..addEdge(1, 2);
       expect(graph.minCut, throwsArgumentError);
@@ -874,27 +874,27 @@ void main() {
   });
   group('spanning tree', () {
     test('empty', () {
-      final graph = Graph<String, int>.create(isDirected: false);
+      final graph = Graph<String, int>(isDirected: false);
       final spanning = graph.spanningTree();
       expect(spanning.vertices, isEmpty);
       expect(spanning.edges, isEmpty);
     });
     test('edgeless', () {
-      final graph = Graph<String, int>.create(isDirected: false)
+      final graph = Graph<String, int>(isDirected: false)
         ..addVertices(['a', 'b']);
       final spanning = graph.spanningTree();
       expect(spanning.vertices, ['a', 'b']);
       expect(spanning.edges, isEmpty);
     });
     test('edgeless (with start vertex)', () {
-      final graph = Graph<String, int>.create(isDirected: false)
+      final graph = Graph<String, int>(isDirected: false)
         ..addVertices(['a', 'b']);
       final spanning = graph.spanningTree(startVertex: 'a');
       expect(spanning.vertices, ['a']);
       expect(spanning.edges, isEmpty);
     });
     test('undirected', () {
-      final graph = Graph<String, int>.create(isDirected: false)
+      final graph = Graph<String, int>(isDirected: false)
         ..addEdge('a', 'b', value: 2)
         ..addEdge('a', 'd', value: 1)
         ..addEdge('b', 'd', value: 2)
@@ -912,7 +912,7 @@ void main() {
       );
     });
     test('undirected (with start vertex)', () {
-      final graph = Graph<String, int>.create(isDirected: false)
+      final graph = Graph<String, int>(isDirected: false)
         ..addEdge('a', 'b', value: 2)
         ..addEdge('a', 'd', value: 1)
         ..addEdge('b', 'd', value: 2)
@@ -930,7 +930,7 @@ void main() {
       );
     });
     test('maximum', () {
-      final graph = Graph<String, int>.create(isDirected: false)
+      final graph = Graph<String, int>(isDirected: false)
         ..addEdge('a', 'b', value: 2)
         ..addEdge('a', 'd', value: 1)
         ..addEdge('b', 'd', value: 2)
@@ -950,7 +950,7 @@ void main() {
       );
     });
     test('maximum (with start vertex)', () {
-      final graph = Graph<String, int>.create(isDirected: false)
+      final graph = Graph<String, int>(isDirected: false)
         ..addEdge('a', 'b', value: 2)
         ..addEdge('a', 'd', value: 1)
         ..addEdge('b', 'd', value: 2)
@@ -971,7 +971,7 @@ void main() {
       );
     });
     test('directed', () {
-      final graph = Graph<String, int>.create(isDirected: true)
+      final graph = Graph<String, int>(isDirected: true)
         ..addEdge('a', 'b', value: 2)
         ..addEdge('a', 'd', value: 1)
         ..addEdge('b', 'd', value: 2)
@@ -989,7 +989,7 @@ void main() {
       );
     });
     test('large', () {
-      final graph = Graph<int, int>.create(isDirected: false)
+      final graph = Graph<int, int>(isDirected: false)
         ..addEdge(1, 2, value: 2)
         ..addEdge(1, 4, value: 1)
         ..addEdge(1, 5, value: 4)
@@ -1013,7 +1013,7 @@ void main() {
       );
     });
     test('large (with start vertex)', () {
-      final graph = Graph<int, int>.create(isDirected: false)
+      final graph = Graph<int, int>(isDirected: false)
         ..addEdge(1, 2, value: 2)
         ..addEdge(1, 4, value: 1)
         ..addEdge(1, 5, value: 4)
@@ -1037,7 +1037,7 @@ void main() {
       );
     });
     test('disconnected', () {
-      final graph = Graph<String, int>.create(isDirected: false)
+      final graph = Graph<String, int>(isDirected: false)
         ..addEdge('a', 'b', value: 1)
         ..addEdge('x', 'y', value: 1)
         ..addEdge('x', 'z', value: 5)
@@ -1054,7 +1054,7 @@ void main() {
       );
     });
     test('disconnected (with start vertices)', () {
-      final graph = Graph<String, int>.create(isDirected: false)
+      final graph = Graph<String, int>(isDirected: false)
         ..addEdge('a', 'b', value: 1)
         ..addEdge('x', 'y', value: 1)
         ..addEdge('x', 'z', value: 5)
@@ -1078,18 +1078,18 @@ void main() {
   });
   group('maximal cliques', () {
     test('empty graph', () {
-      final graph = Graph<int, void>.create(isDirected: false);
+      final graph = Graph<int, void>(isDirected: false);
       expect(graph.findCliques(), isEmpty);
     });
     test('single vertex', () {
-      final graph = Graph<int, void>.create(isDirected: false);
+      final graph = Graph<int, void>(isDirected: false);
       graph.addVertex(1);
       expect(graph.findCliques(), {
         {1},
       });
     });
     test('disconnected pair', () {
-      final graph = Graph<int, void>.create(isDirected: false);
+      final graph = Graph<int, void>(isDirected: false);
       graph.addVertex(1);
       graph.addVertex(2);
       expect(graph.findCliques(), {
@@ -1098,14 +1098,14 @@ void main() {
       });
     });
     test('connected pair', () {
-      final graph = Graph<int, void>.create(isDirected: false);
+      final graph = Graph<int, void>(isDirected: false);
       graph.addEdge(2, 1);
       expect(graph.findCliques(), {
         {1, 2},
       });
     });
     test('wikipedia', () {
-      final graph = Graph<int, void>.create(isDirected: false);
+      final graph = Graph<int, void>(isDirected: false);
       graph.addEdge(1, 2);
       graph.addEdge(1, 5);
       graph.addEdge(2, 5);
@@ -1123,7 +1123,7 @@ void main() {
       });
     });
     test('aoc', () {
-      final graph = Graph<String, void>.create(isDirected: false);
+      final graph = Graph<String, void>(isDirected: false);
       for (final (source, target) in [
         ('kh', 'tc'),
         ('qp', 'kh'),
@@ -1206,31 +1206,31 @@ void main() {
       }
     });
     test('directed graph error', () {
-      final graph = Graph<int, void>.create(isDirected: true);
+      final graph = Graph<int, void>(isDirected: true);
       expect(graph.findCliques, throwsGraphError);
     });
   });
   group('strongly connected', () {
     test('empty graph', () {
-      final graph = Graph<int, void>.create(isDirected: true);
+      final graph = Graph<int, void>(isDirected: true);
       expect(graph.stronglyConnected(), isEmpty);
     });
     test('single vertex', () {
-      final graph = Graph<int, void>.create(isDirected: true);
+      final graph = Graph<int, void>(isDirected: true);
       graph.addVertex(1);
       expect(graph.stronglyConnected(), {
         {1},
       });
     });
     test('self-connected vertex', () {
-      final graph = Graph<int, void>.create(isDirected: true);
+      final graph = Graph<int, void>(isDirected: true);
       graph.addEdge(1, 1);
       expect(graph.stronglyConnected(), {
         {1},
       });
     });
     test('disconnected pair', () {
-      final graph = Graph<int, void>.create(isDirected: true);
+      final graph = Graph<int, void>(isDirected: true);
       graph.addVertex(1);
       graph.addVertex(2);
       expect(graph.stronglyConnected(), {
@@ -1239,7 +1239,7 @@ void main() {
       });
     });
     test('weakly connected pair', () {
-      final graph = Graph<int, void>.create(isDirected: true);
+      final graph = Graph<int, void>(isDirected: true);
       graph.addEdge(2, 1);
       expect(graph.stronglyConnected(), {
         {1},
@@ -1247,7 +1247,7 @@ void main() {
       });
     });
     test('strongly connected pair', () {
-      final graph = Graph<int, void>.create(isDirected: true);
+      final graph = Graph<int, void>(isDirected: true);
       graph.addEdge(1, 2);
       graph.addEdge(2, 1);
       expect(graph.stronglyConnected(), {
@@ -1255,7 +1255,7 @@ void main() {
       });
     });
     test('wikipedia', () {
-      final graph = Graph<int, void>.create(isDirected: true);
+      final graph = Graph<int, void>(isDirected: true);
       graph.addEdge(1, 5);
       graph.addEdge(2, 1);
       graph.addEdge(3, 2);
@@ -1278,17 +1278,17 @@ void main() {
       });
     });
     test('undirected graph error', () {
-      final graph = Graph<int, void>.create(isDirected: false);
+      final graph = Graph<int, void>(isDirected: false);
       expect(graph.stronglyConnected, throwsGraphError);
     });
   });
   group('isBipartite', () {
     test('empty graph is bipartite', () {
-      final graph = Graph<int, void>.create(isDirected: true);
+      final graph = Graph<int, void>(isDirected: true);
       expect(graph.isBipartite(), isTrue);
     });
     test('single vertex graph is bipartite', () {
-      final graph = Graph<int, void>.create(isDirected: true);
+      final graph = Graph<int, void>(isDirected: true);
       graph.addVertex(1);
       expect(graph.isBipartite(), isTrue);
     });
@@ -1327,14 +1327,14 @@ void main() {
       );
     });
     test('disconnected bipartite graph is bipartite', () {
-      final graph = Graph<int, void>.create(isDirected: false)
+      final graph = Graph<int, void>(isDirected: false)
         ..addEdge(1, 2)
         ..addEdge(3, 4)
         ..addEdge(5, 6);
       expect(graph.isBipartite(), isTrue);
     });
     test('disconnected graph with non-bipartite part is not bipartite', () {
-      final graph = Graph<int, void>.create(isDirected: false)
+      final graph = Graph<int, void>(isDirected: false)
         ..addEdge(1, 2)
         ..addEdge(2, 3)
         ..addEdge(3, 1)
@@ -1342,21 +1342,21 @@ void main() {
       expect(graph.isBipartite(), isFalse);
     });
     test('directed acyclic graph is bipartite', () {
-      final graph = Graph<int, void>.create(isDirected: true)
+      final graph = Graph<int, void>(isDirected: true)
         ..addEdge(0, 1)
         ..addEdge(1, 2)
         ..addEdge(0, 3);
       expect(graph.isBipartite(), isTrue);
     });
     test('directed graph with odd cycle is not bipartite', () {
-      final graph = Graph<int, void>.create(isDirected: true)
+      final graph = Graph<int, void>(isDirected: true)
         ..addEdge(0, 1)
         ..addEdge(1, 2)
         ..addEdge(2, 0);
       expect(graph.isBipartite(), isFalse);
     });
     test('directed graph with even cycle is bipartite', () {
-      final graph = Graph<int, void>.create(isDirected: true)
+      final graph = Graph<int, void>(isDirected: true)
         ..addEdge(0, 1)
         ..addEdge(1, 2)
         ..addEdge(2, 3)
@@ -1364,7 +1364,7 @@ void main() {
       expect(graph.isBipartite(), isTrue);
     });
     test('graph with self-loop is not bipartite', () {
-      final graph = Graph<int, void>.create(isDirected: false)
+      final graph = Graph<int, void>(isDirected: false)
         ..addVertex(0)
         ..addEdge(0, 0);
       expect(graph.isBipartite(), isFalse);
@@ -1372,15 +1372,15 @@ void main() {
   });
   group('hasCycle', () {
     test('empty graph has no cycle', () {
-      final graph = Graph<int, void>.create(isDirected: true);
+      final graph = Graph<int, void>(isDirected: true);
       expect(graph.hasCycle(), isFalse);
     });
     test('single vertex graph has no cycle', () {
-      final graph = Graph<int, void>.create(isDirected: true)..addVertex(1);
+      final graph = Graph<int, void>(isDirected: true)..addVertex(1);
       expect(graph.hasCycle(), isFalse);
     });
     test('single vertex with self-loop has a cycle', () {
-      final graph = Graph<int, void>.create(isDirected: true)..addEdge(1, 1);
+      final graph = Graph<int, void>(isDirected: true)..addEdge(1, 1);
       expect(graph.hasCycle(), isTrue);
     });
     test('path graph has no cycle', () {
@@ -1392,7 +1392,7 @@ void main() {
       expect(graph.hasCycle(), isTrue);
     });
     test('dag has no cycle', () {
-      final graph = Graph<int, void>.create(isDirected: true)
+      final graph = Graph<int, void>(isDirected: true)
         ..addEdge(0, 1)
         ..addEdge(0, 2)
         ..addEdge(1, 3)
@@ -1400,14 +1400,14 @@ void main() {
       expect(graph.hasCycle(), isFalse);
     });
     test('graph with a cycle', () {
-      final graph = Graph<int, void>.create(isDirected: true)
+      final graph = Graph<int, void>(isDirected: true)
         ..addEdge(0, 1)
         ..addEdge(1, 2)
         ..addEdge(2, 0);
       expect(graph.hasCycle(), isTrue);
     });
     test('graph with a longer cycle', () {
-      final graph = Graph<int, void>.create(isDirected: true)
+      final graph = Graph<int, void>(isDirected: true)
         ..addEdge(0, 1)
         ..addEdge(1, 2)
         ..addEdge(2, 3)
@@ -1415,13 +1415,13 @@ void main() {
       expect(graph.hasCycle(), isTrue);
     });
     test('disconnected graph without cycle', () {
-      final graph = Graph<int, void>.create(isDirected: true)
+      final graph = Graph<int, void>(isDirected: true)
         ..addEdge(0, 1)
         ..addEdge(2, 3);
       expect(graph.hasCycle(), isFalse);
     });
     test('disconnected graph with cycle', () {
-      final graph = Graph<int, void>.create(isDirected: true)
+      final graph = Graph<int, void>(isDirected: true)
         ..addEdge(0, 1)
         ..addEdge(2, 3)
         ..addEdge(3, 4)
@@ -1429,7 +1429,7 @@ void main() {
       expect(graph.hasCycle(), isTrue);
     });
     test('undirected graph error', () {
-      final graph = Graph<int, void>.create(isDirected: false);
+      final graph = Graph<int, void>(isDirected: false);
       expect(graph.hasCycle, throwsGraphError);
     });
   });
@@ -1439,7 +1439,7 @@ void main() {
       expect(graph.vertexColoring(), isEmpty);
     });
     test('seperate vertices', () {
-      final graph = Graph<int, void>.create(isDirected: false);
+      final graph = Graph<int, void>(isDirected: false);
       for (var i = 1; i <= 10; i++) {
         graph.addVertex(i);
         final coloring = graph.vertexColoring();

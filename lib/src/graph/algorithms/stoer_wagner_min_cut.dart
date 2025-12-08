@@ -50,7 +50,7 @@ class StoerWagnerMinCut<V, E> {
   }
 
   // Internal state.
-  final _workingGraph = Graph<Set<V>, num>.create(
+  final _workingGraph = Graph<Set<V>, num>(
     isDirected: false,
     vertexStrategy: StorageStrategy.identity(),
   );

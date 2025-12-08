@@ -5,7 +5,11 @@ import '../model/unmodifiable.dart';
 /// Internal builder of graphs based on the configuration from [GraphFactory].
 class GraphBuilder<V, E> {
   /// Constructs a graph builder.
-  GraphBuilder(this.factory) : graph = create<V, E>(factory);
+  GraphBuilder(this.factory)
+    : graph = Graph<V, E>(
+        isDirected: factory.isDirected,
+        vertexStrategy: factory.vertexStrategy,
+      );
 
   /// The underlying factory with the shared configuration.
   final GraphFactory<V, E> factory;
@@ -35,13 +39,6 @@ class GraphBuilder<V, E> {
     factory.vertexProvider?.call(target) ?? (target as V),
     value: value,
   );
-
-  /// Creates the initial configured graph object.
-  static Graph<V, E> create<V, E>(GraphFactory<V, E> builder) =>
-      Graph<V, E>.create(
-        isDirected: builder.isDirected,
-        vertexStrategy: builder.vertexStrategy,
-      );
 
   /// Completes the final configured graph object.
   Graph<V, E> build() => factory.isUnmodifiable ? graph.unmodifiable : graph;

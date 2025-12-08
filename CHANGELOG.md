@@ -6,6 +6,7 @@
 - Add [Unicode Script](https://www.unicode.org/Public/17.0.0/ucd/Scripts.txt) property matchers (thanks to <https://github.com/amake>).
 - Add `Collection`, an interface exposing the shared mutator operations of [List] and [Set].
 - Add `DisjointSet`, a union-find data structure for tracking disjoint sets.
+- Simplify graph constructors and fix directed edge equality.
 - Add `Graph.vertexColoring` algorithm for graph coloring.
 
 ## 4.6.1

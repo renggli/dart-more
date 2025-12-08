@@ -1,3 +1,5 @@
+import 'package:meta/meta.dart';
+
 import '../../printer.dart';
 import 'edge.dart';
 import 'model/directed.dart';
@@ -15,25 +17,29 @@ import 'strategy.dart';
 /// want self-loops, do not create self-loops.
 abstract class Graph<V, E> with ToStringPrinter {
   /// Constructs a graph.
-  factory Graph.create({
-    bool isDirected = false,
+  factory Graph({
+    required bool isDirected,
     StorageStrategy<V>? vertexStrategy,
-  }) => isDirected
-      ? DirectedGraph.create(vertexStrategy: vertexStrategy)
-      : UndirectedGraph.create(vertexStrategy: vertexStrategy);
+  }) {
+    vertexStrategy ??= StorageStrategy<V>.defaultStrategy();
+    return isDirected
+        ? DirectedGraph(vertexStrategy: vertexStrategy)
+        : UndirectedGraph(vertexStrategy: vertexStrategy);
+  }
 
   /// Constructs a directed graph.
-  @Deprecated('Use `Graph.create(isDirected: true)` instead.')
+  @Deprecated('Use `Graph(isDirected: true)` instead.')
   factory Graph.directed({StorageStrategy<V>? vertexStrategy}) =>
-      Graph.create(isDirected: true, vertexStrategy: vertexStrategy);
+      Graph(isDirected: true, vertexStrategy: vertexStrategy);
 
   /// Constructs an undirected graph.
-  @Deprecated('Use Graph.create(isDirected: false) instead.')
+  @Deprecated('Use Graph(isDirected: false) instead.')
   factory Graph.undirected({StorageStrategy<V>? vertexStrategy}) =>
-      Graph.create(isDirected: false, vertexStrategy: vertexStrategy);
+      Graph(isDirected: false, vertexStrategy: vertexStrategy);
 
-  /// Generative constructor.
-  Graph();
+  /// Internal generative constructor.
+  @protected
+  Graph.generative();
 
   /// Returns `true`, if the graph is directed.
   bool get isDirected;
