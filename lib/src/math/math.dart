@@ -22,7 +22,7 @@ extension MathNumberExtension on num {
   /// Returns the arc-tan of this [num].
   double atan() => math.atan(this);
 
-  /// Returns the arc-tag of this [num] and [other].
+  /// Returns the arc-tan of this [num] and [other].
   double atan2(num other) => math.atan2(this, other);
 
   /// Returns the square root of this [num].

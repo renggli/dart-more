@@ -58,8 +58,8 @@ abstract class CharMatcher with ToStringPrinter implements Pattern {
 
   /// A matcher that accepts a character range from [start] to [stop].
   ///
-  /// The arguments can be either given as a Unicode code-points or a strings
-  /// with single Unicode character.
+  /// The arguments can be either given as Unicode code-points or strings
+  /// with a single Unicode character.
   factory CharMatcher.inRange(Object start, Object stop) =>
       RangeCharMatcher(_toCharCode(start, 'start'), _toCharCode(stop, 'stop'));
 

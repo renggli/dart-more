@@ -32,7 +32,7 @@ class GraphBuilder<V, E> {
     value: value ?? factory.edgeProvider?.call(source, target),
   );
 
-  /// Adds an edge between [source] and [target] index.  Optionally associates
+  /// Adds an edge between [source] and [target] index. Optionally associates
   /// the provided [value] with the edge.
   void addEdgeIndex(int source, int target, {E? value}) => addEdge(
     factory.vertexProvider?.call(source) ?? (source as V),

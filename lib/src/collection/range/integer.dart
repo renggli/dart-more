@@ -1,6 +1,6 @@
 import '../range.dart';
 
-/// A range of integers containing an arithmetic progressions.
+/// A range of integers containing an arithmetic progression.
 ///
 /// The progression is defined by a [IntegerRange.start], [IntegerRange.end]
 /// and [IntegerRange.step] parameters. A range essentially implements a lazy
@@ -15,7 +15,7 @@ final class IntegerRange extends Range<int> {
   /// The empty range.
   static const empty = IntegerRange._(0, 0, 1, 0);
 
-  /// Creates an arithmetic progressions of [int] values.
+  /// Creates an arithmetic progression of [int] values.
   ///
   /// The constructor called without any arguments returns the empty range.
   /// For example, `IntegerRange()` yields `<int>[]`.
@@ -47,7 +47,7 @@ final class IntegerRange extends Range<int> {
     throw ArgumentError('Invalid range: $a, $b, $c');
   }
 
-  /// Const constructor to create an arithmetic progressions of [int] values
+  /// Const constructor to create an arithmetic progression of [int] values
   /// between [start] (inclusive) and [end] (exclusive); and a step-value
   /// [step].
   const IntegerRange.of({int start = 0, int end = 0, int? step})

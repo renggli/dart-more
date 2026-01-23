@@ -18,10 +18,10 @@ abstract class Cache<K, V> with ToStringPrinter {
   ///
   /// The [loader] defines the function to construct items for the cache.
   ///
-  /// [updateExpiry] is the maximal duration after which an updated item
-  /// exists. [accessExpiry] is the maximal duration an item does not
-  /// expire without being accessed. Whatever happens last, causes the
-  /// expiration.
+  /// [updateExpiry] is the duration after which an updated item expires.
+  /// [accessExpiry] is the duration after which an accessed item expires.
+  /// The expiration time is determined by whichever duration extends further
+  /// into the future.
   ///
   /// Note that cached items do not magically disappear when they expire.
   /// Manually call [reap()], or setup a timer to regularly free items.

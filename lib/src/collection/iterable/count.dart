@@ -1,5 +1,5 @@
 extension CountIterableExtension<E> on Iterable<E> {
-  /// Returns the number of time [predicate] evaluates to true.
+  /// Returns the number of times [predicate] evaluates to true.
   ///
   /// The following expression yields 2, because there are 2 odd numbers:
   ///

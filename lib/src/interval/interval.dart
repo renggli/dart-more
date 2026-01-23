@@ -11,7 +11,7 @@ import '../collection/range.dart';
 /// See https://en.wikipedia.org/wiki/Interval_(mathematics).
 @immutable
 class Interval<T extends Comparable<T>> {
-  /// Returns a interval between [lower] and [upper] (inclusive):
+  /// Returns an interval between [lower] and [upper] (inclusive):
   /// `{ x ∈ T | lower <= x <= upper }`.
   ///
   /// If the [upper] argument is omitted, this interval is assumed to contain

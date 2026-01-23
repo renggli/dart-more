@@ -1,5 +1,5 @@
 extension BinomialIntegerExtension on int {
-  /// Returns the binomial coefficient of this [int] and the argument [k],
+  /// Returns the binomial coefficient of this [int] and the argument [k].
   ///
   /// This is the number of ways, disregarding order, that [k] objects can be
   /// chosen from among `n` objects.

@@ -2,7 +2,7 @@ extension PredicateComparator<T> on Comparator<T> {
   /// A predicate that evaluates to `true` if [a] equals [b].
   bool equalTo(T a, T b) => this(a, b) == 0;
 
-  /// A predicate that evaluates to `true` if [a] not equals to [b].
+  /// A predicate that evaluates to `true` if [a] not equal to [b].
   bool notEqualTo(T a, T b) => this(a, b) != 0;
 
   /// A predicate that evaluates to `true` if [a] is smaller than [b].

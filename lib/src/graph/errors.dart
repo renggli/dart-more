@@ -33,7 +33,7 @@ class GraphError extends ArgumentError {
     }
   }
 
-  /// Asserts that the [graph] has at least at least [count] vertices.
+  /// Asserts that the [graph] has at least [count] vertices.
   static void checkVertexCount<V, E>(
     Graph<V, E> graph,
     int count, [

@@ -3,7 +3,7 @@ import 'package:collection/collection.dart';
 extension SortComparator<T> on Comparator<T> {
   /// Sorts the provided [list] in-place.
   ///
-  /// If [start] (inclusive)  and [end] (exclusive) are provided the sorting
+  /// If [start] (inclusive) and [end] (exclusive) are provided the sorting
   /// only happens within the specified range.
   ///
   /// If [stable] is set to `true`, a stable merge-sort implementation is used
@@ -21,7 +21,7 @@ extension SortComparator<T> on Comparator<T> {
 
   /// Returns a sorted copy of the provided [iterable].
   ///
-  /// If [start] (inclusive)  and [end] (exclusive) are provided the sorting
+  /// If [start] (inclusive) and [end] (exclusive) are provided the sorting
   /// only happens within the specified range.
   ///
   /// If [stable] is set to `true`, a stable merge-sort implementation is used

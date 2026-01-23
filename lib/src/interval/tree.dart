@@ -15,7 +15,7 @@ class IntervalTree<K extends Comparable<K>, V> with Iterable<V> {
     Iterable<Interval<K>> intervals = const [],
   ]) => fromValues<K, Interval<K>>(intervals, _identityGetter<K>);
 
-  /// Creates an [IntervalTree] form an [Iterable] of [values] and a [getter]
+  /// Creates an [IntervalTree] from an [Iterable] of [values] and a [getter]
   /// function that returns the associated [Interval].
   static IntervalTree<K, V> fromValues<K extends Comparable<K>, V>(
     Iterable<V> values,

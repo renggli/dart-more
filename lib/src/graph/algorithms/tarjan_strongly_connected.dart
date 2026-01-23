@@ -31,8 +31,8 @@ Iterable<Set<V>> tarjanStronglyConnected<V>(
         state.lowLink = min(state.lowLink, successorState.depth);
       }
     }
-    // If vertex is a root node, pop the stack and generate an strongly
-    // connected component.
+    // If vertex is a root node, pop the stack and generate a strongly connected
+    // component.
     if (state.lowLink == state.depth) {
       final result = vertexStrategy.createSet();
       while (true) {

@@ -10,11 +10,11 @@ class Quaternion implements CloseTo<Quaternion> {
   /// Constructs a quaternion from its components.
   const Quaternion(this.w, [this.x = 0, this.y = 0, this.z = 0]);
 
-  /// Constructors a quaternion from a scalar and a vector.
+  /// Constructs a quaternion from a scalar and a vector.
   factory Quaternion.of(num scalar, List<num> vector) =>
       Quaternion(scalar, vector[0], vector[1], vector[2]);
 
-  /// Constructors a quaternion from a vector.
+  /// Constructs a quaternion from a vector.
   factory Quaternion.fromList(List<num> vector) =>
       Quaternion(vector[0], vector[1], vector[2], vector[3]);
 

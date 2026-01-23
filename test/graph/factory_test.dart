@@ -421,13 +421,13 @@ void main() {
     });
     group('perfect', () {
       test('empty', () {
-        final graph = GraphFactory<int, void>().prefectTree(height: 0);
+        final graph = GraphFactory<int, void>().perfectTree(height: 0);
         expect(graph.vertices, [0]);
         expect(graph.edges, isEmpty);
         expectInvariants(graph);
       });
       test('unary', () {
-        final graph = GraphFactory<int, void>().prefectTree(
+        final graph = GraphFactory<int, void>().perfectTree(
           height: 2,
           arity: 1,
         );
@@ -436,7 +436,7 @@ void main() {
         expectInvariants(graph);
       });
       test('binary', () {
-        final graph = GraphFactory<int, void>().prefectTree(height: 2);
+        final graph = GraphFactory<int, void>().perfectTree(height: 2);
         expect(graph.vertices, unorderedEquals([0, 1, 2, 3, 4, 5, 6]));
         expect(
           graph.edges,
@@ -452,7 +452,7 @@ void main() {
         expectInvariants(graph);
       });
       test('ternary', () {
-        final graph = GraphFactory<int, void>().prefectTree(
+        final graph = GraphFactory<int, void>().perfectTree(
           height: 1,
           arity: 3,
         );

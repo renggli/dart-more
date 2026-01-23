@@ -20,7 +20,7 @@ sealed class Either<L, R> {
   /// Creates an [Either] with the right value populated.
   const factory Either.right(R value) = RightEither<L, R>._;
 
-  /// Creates an left-sided [Either] from the [leftProvider], if [condition] is
+  /// Creates a left-sided [Either] from the [leftProvider], if [condition] is
   /// `true`. Otherwise, create a right-sided [Either] from the [rightProvider].
   factory Either.iff(
     bool condition,

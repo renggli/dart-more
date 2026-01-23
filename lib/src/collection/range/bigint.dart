@@ -1,6 +1,6 @@
 import '../range.dart';
 
-/// A range of [BigInt] containing an arithmetic progressions.
+/// A range of [BigInt] containing an arithmetic progression.
 ///
 /// The progression is defined by a [BigIntRange.start], [BigIntRange.end] and
 /// [BigIntRange.step] parameters. A range essentially implements a lazy list
@@ -15,7 +15,7 @@ final class BigIntRange extends Range<BigInt> {
   /// The empty range.
   static final empty = BigIntRange._(BigInt.zero, BigInt.zero, BigInt.one, 0);
 
-  /// Creates an arithmetic progressions of [BigInt] values.
+  /// Creates an arithmetic progression of [BigInt] values.
   ///
   /// The constructor called without any arguments returns the empty range.
   /// For example, `BigIntRange()` yields `<BigInt>[]`.
@@ -52,7 +52,7 @@ final class BigIntRange extends Range<BigInt> {
     throw ArgumentError('Invalid range: $a, $b, $c');
   }
 
-  /// Const constructor to create an arithmetic progressions of [int] values
+  /// Const constructor to create an arithmetic progression of [int] values
   /// between [start] (inclusive) and [end] (exclusive); and a step-value
   /// [step].
   factory BigIntRange.of({BigInt? start, BigInt? end, BigInt? step}) {

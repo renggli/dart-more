@@ -1,4 +1,4 @@
-// Based on the of Marc Lodewijck licensed under MIT Licensed:
+// Based on the work of Marc Lodewijck licensed under MIT License:
 // https://github.com/mlodewijck/pyunormalize
 
 import 'package:collection/collection.dart';

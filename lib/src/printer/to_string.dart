@@ -15,7 +15,7 @@ import 'object/object.dart';
 /// ```
 ///
 /// Note: Due to the lack of a `Self` type in Dart, this is working with a
-/// dynamically typed printer Object. To avoid loosing the type information
+/// dynamically typed printer Object. To avoid losing the type information
 /// use [ObjectPrinter.addValue] instead of [ObjectPrinter.addCallback] to
 /// configure the field printers
 /// (https://github.com/dart-lang/sdk/issues/28477).

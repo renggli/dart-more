@@ -15,7 +15,7 @@ import '../sequence_matcher.dart';
 class ContextDiffer extends Differ {
   ContextDiffer({this.context = 3});
 
-  /// The number of unchanged lines shown above and blow a change.
+  /// The number of unchanged lines shown above and below a change.
   final int context;
 
   @override

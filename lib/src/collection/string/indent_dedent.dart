@@ -7,7 +7,7 @@ extension IndentDedentStringExtension<T> on String {
   /// Adds a [prefix] to the beginning of each line.
   ///
   /// - If defined, [firstPrefix] replaces [prefix] on the first line.
-  /// - [trimWhitespace] trims the each line from existing whitespace.
+  /// - [trimWhitespace] trims each line from existing whitespace.
   /// - [indentEmpty] indents empty lines as well.
   String indent(
     String prefix, {

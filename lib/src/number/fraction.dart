@@ -74,7 +74,7 @@ class Fraction
 
   /// Internal constructor for fractions.
   const Fraction._(this.a, this.b)
-    : assert(b >= 0, 'b be greater or equal to 0');
+    : assert(b >= 0, 'b must be greater or equal to 0');
 
   /// The neutral additive element, that is `0`.
   static const Fraction zero = Fraction._(0, 1);

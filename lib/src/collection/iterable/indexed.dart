@@ -1,5 +1,5 @@
 extension IndexedIterableExtension<E> on Iterable<E> {
-  /// Returns a iterable that combines the index and value of this [Iterable].
+  /// Returns an iterable that combines the index and value of this [Iterable].
   ///
   /// By default the index is zero based, but an arbitrary [offset] can be
   /// provided.

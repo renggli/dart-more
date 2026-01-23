@@ -8,7 +8,7 @@ extension EmptyPrinterExtension<T> on Printer<Iterable<T>> {
       EmptyPrinter<T>(this, label);
 }
 
-/// Prints an object different if `null`.
+/// Prints an object different if empty.
 class EmptyPrinter<T> extends Printer<Iterable<T>> {
   const EmptyPrinter(this.printer, this.label);
 

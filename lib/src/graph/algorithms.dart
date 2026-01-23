@@ -135,9 +135,9 @@ extension AlgorithmsGraphExtension<V, E> on Graph<V, E> {
   /// Returns an object that can compute the maximum flow between different
   /// vertices of this graph using the Dinic max flow algorithm.
   ///
-  /// - [edgeCapacity] is a function function that returns the positive maximum
-  ///   capacity between two vertices. If no function is provided, the numeric
-  ///   edge value or a constant weight of _1_ is used.
+  /// - [edgeCapacity] is a function that returns the positive maximum capacity
+  ///   between two vertices. If no function is provided, the numeric edge value
+  ///   or a constant weight of _1_ is used.
   ///
   dinic_max_flow.DinicMaxFlow<V> maxFlow({
     num Function(V source, V target)? edgeCapacity,
@@ -152,9 +152,9 @@ extension AlgorithmsGraphExtension<V, E> on Graph<V, E> {
   /// Returns an object that computes the min-cut using the Stoer-Wagner
   /// algorithm.
   ///
-  /// - [edgeWeight] is a function function that returns the positive weight
-  ///   between two edges. If no function is provided, the numeric edge value
-  ///   or a constant weight of _1_ is used.
+  /// - [edgeWeight] is a function that returns the positive weight between two
+  ///   edges. If no function is provided, the numeric edge value or a constant
+  ///   weight of _1_ is used.
   ///
   stoer_wagner_min_cut.StoerWagnerMinCut<V, E> minCut({
     num Function(V source, V target)? edgeWeight,

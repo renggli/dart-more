@@ -1,7 +1,7 @@
 import '../../../comparator.dart';
 import '../range.dart';
 
-/// A range of doubles containing an arithmetic progressions.
+/// A range of doubles containing an arithmetic progression.
 ///
 /// The progression is defined by a [DoubleRange.start], [DoubleRange.end] and
 /// [DoubleRange.step] parameters. A range essentially implements a lazy list
@@ -16,7 +16,7 @@ final class DoubleRange extends Range<double> {
   /// The empty range.
   static const empty = DoubleRange._(0, 0, 1, 0);
 
-  /// Creates an arithmetic progressions of [double] values.
+  /// Creates an arithmetic progression of [double] values.
   ///
   /// The constructor called without any arguments returns the empty range.
   /// For example, `DoubleRange()` yields `<double>[]`.
@@ -49,7 +49,7 @@ final class DoubleRange extends Range<double> {
     throw ArgumentError('Invalid range: $a, $b, $c');
   }
 
-  /// Const constructor to create an arithmetic progressions of [double] values
+  /// Const constructor to create an arithmetic progression of [double] values
   /// between [start] (inclusive), [end] (exclusive), and a step-value [step].
   ///
   /// Warning: Due to rounding errors this constructor can result in ranges

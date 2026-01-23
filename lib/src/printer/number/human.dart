@@ -112,7 +112,7 @@ class HumanNumberPrinter<T extends num> extends Printer<T> {
          sign: sign ?? const SignNumberPrinter<double>.omitPositiveSign(),
        );
 
-  /// Prints numbers using a decimal suffix for units measure to indicate a
+  /// Prints numbers using a decimal suffix for units of measure to indicate a
   /// multiple or sub-multiple of the unit.
   ///
   /// For details, see https://en.wikipedia.org/wiki/Metric_prefix.

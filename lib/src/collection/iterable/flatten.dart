@@ -12,7 +12,7 @@ extension FlattenIterableExtension<E> on Iterable<Iterable<E>> {
 
 extension DeepFlattenIterableExtension on Iterable<dynamic> {
   /// Flattens arbitrarily nested [Iterable]s with elements of type [E]. Throws
-  /// an [ArgumentError] when encountering an value of an unexpected type.
+  /// an [ArgumentError] when encountering a value of an unexpected type.
   ///
   /// For example:
   ///

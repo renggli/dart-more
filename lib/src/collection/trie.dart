@@ -3,8 +3,8 @@ import 'dart:collection';
 /// Function to extract the parts of type [P] from a key of type [K].
 typedef GetParts<K, P> = Iterable<P> Function(K key);
 
-/// A generalized [Trie] (or prefix tree) which keys of type [K] split into
-/// parts of type [P], and values of type [V].
+/// A generalized [Trie] (or prefix tree) where keys of type [K] are split into
+/// parts of type [P], storing values of type [V].
 class Trie<K, P extends Comparable<P>, V> extends MapBase<K, V> {
   /// Creates an empty [Trie] that splits the keys of type [K] into [parts] of
   /// type [P] with the provided function. Optionally a custom [root] node can

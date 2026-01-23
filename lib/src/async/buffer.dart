@@ -2,14 +2,14 @@ import 'dart:async';
 
 extension BufferExtension<E> on Stream<E> {
   /// Gathers the elements of this [Stream] and bundles the items into a [List]
-  /// until either
+  /// until either:
   ///
-  /// - another [Stream] [trigger]s,
-  /// - buffer reaches [maxLength], or
-  /// - buffer reaches [maxAge].
+  /// - The [trigger] stream emits an event.
+  /// - The buffer reaches [maxLength] elements.
+  /// - The buffer reaches [maxAge] duration.
   ///
   /// If none of the arguments are given, the stream will buffer results until
-  /// the source completes.
+  /// the source stream completes.
   Stream<List<E>> buffer({
     Stream<void>? trigger,
     int? maxLength,

@@ -1,5 +1,5 @@
 extension ToMapIterableExtension<E> on Iterable<E> {
-  /// Returns an [Map] from an [Iterable].
+  /// Returns a [Map] from an [Iterable].
   ///
   /// For example, the following expression converts the input [Iterable] to a
   /// [Map]: `{'a': 1, 'b': 2, 'c': 3}`:

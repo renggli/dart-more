@@ -2,7 +2,7 @@ import 'dart:collection';
 
 import 'package:meta/meta.dart';
 
-/// A type-map associates dart runtime types to an instance of that type.
+/// A type map associates Dart runtime types with an instance of that type.
 @optionalTypeArgs
 class TypeMap<T> {
   final Map<Type, T> _map = Map.identity();
