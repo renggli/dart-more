@@ -2,7 +2,7 @@ import 'dart:collection';
 
 import 'package:meta/meta.dart';
 
-/// A type map associates Dart runtime types with an instance of that type.
+/// A type map associates Dart runtime types with instances of that type.
 @optionalTypeArgs
 class TypeMap<T> {
   final Map<Type, T> _map = Map.identity();
@@ -45,7 +45,7 @@ class TypeMap<T> {
   /// Whether there is at least one instance in the map.
   bool get isNotEmpty => _map.isNotEmpty;
 
-  /// Returns a readonly view onto the underlying map.
+  /// Returns a read-only view onto the underlying map.
   Map<Type, T> asMap() => Map.unmodifiable(_map);
 
   @override

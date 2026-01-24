@@ -15,7 +15,7 @@ extension DoubleExtension on double {
     return this < 0.0 ? _increment(this) : _decrement(this);
   }
 
-  /// Returns the url (unit in the last place) of this value, that is the
+  /// Returns the ulp (unit in the last place) of this value, that is the
   /// positive spacing between two consecutive floating-point numbers.
   double get ulp {
     if (this < 0.0) return (-this).ulp;

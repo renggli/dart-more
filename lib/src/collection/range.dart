@@ -6,9 +6,9 @@ import 'package:meta/meta.dart';
 
 import 'iterable/mixins/unmodifiable.dart';
 
-/// Abstract superclass of an arithmetic progressions.
+/// Abstract superclass of an arithmetic progression.
 ///
-/// The progression is defined by a [Range.start], [Range.end] and [Range.step]
+/// The progression is defined by [Range.start], [Range.end] and [Range.step]
 /// parameters. A range essentially implements a sequence of values of type [E]
 /// as a [List]. The advantage is that a range uses very little memory no matter
 /// its size.

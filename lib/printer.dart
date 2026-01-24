@@ -1,4 +1,4 @@
-/// Provides a first-class model to convert object to strings using composition
+/// Provides a first-class model to convert objects to strings using composition
 /// and highly configurable formatting primitives.
 library;
 

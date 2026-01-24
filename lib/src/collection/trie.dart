@@ -185,7 +185,7 @@ class Trie<K, P extends Comparable<P>, V> extends MapBase<K, V> {
           current = nodes.removeLast();
           current.removeChild(parts.removeLast());
         }
-        // Return the value of the remove node.
+        // Return the value of the removed node.
         return value;
       }
     }
@@ -257,7 +257,7 @@ abstract class TrieNode<K, P extends Comparable<P>, V> {
   /// Sets (or replaces) the key and value.
   void setKeyAndValue(K key, V value);
 
-  /// An iterable over this node and all its  children
+  /// An iterable over this node and all its children
   Iterable<MapEntry<K, V>> get entries sync* {
     final queue = [this];
     while (queue.isNotEmpty) {

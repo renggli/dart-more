@@ -107,7 +107,7 @@ abstract class CharMatcher with ToStringPrinter implements Pattern {
   /// [UnicodeCharMatcher.punctuation] for the Unicode variant.
   const factory CharMatcher.punctuation() = PunctuationCharMatcher;
 
-  /// A matcher that accepts ASCII whitespaces, see
+  /// A matcher that accepts ASCII whitespace, see
   /// [UnicodeCharMatcher.whiteSpace] for the Unicode variant.
   const factory CharMatcher.whitespace() = WhitespaceCharMatcher;
 

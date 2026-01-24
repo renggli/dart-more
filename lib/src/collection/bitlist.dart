@@ -6,7 +6,7 @@ import 'package:collection/collection.dart' show NonGrowableListMixin;
 
 import '../../more.dart';
 
-/// An space efficient [List] that stores boolean values.
+/// A space efficient [List] that stores boolean values.
 abstract class BitList extends ListBase<bool> {
   /// Constructs a bit list of the given [length].
   factory BitList(int length, {bool fill = false, bool growable = false}) =>

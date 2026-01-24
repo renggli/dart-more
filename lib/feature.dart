@@ -16,7 +16,7 @@ final bool hasAssertionsEnabled = () {
   return enabled;
 }();
 
-/// The safe bits of an [int] value. In the Dart VM integer are represented
+/// The safe bits of an [int] value. In the Dart VM integers are represented
 /// using 63 bits, in JavaScript we only have 53.
 const int safeIntegerBits = isJavaScript ? 53 : 63;
 

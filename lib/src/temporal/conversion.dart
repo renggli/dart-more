@@ -7,7 +7,7 @@ typedef UnitConversion = Map<TimeUnit, num>;
 ///
 /// This naive conversion assumes that a month has 30 days and a year has
 /// 365 days. While this is the default for all operations, it is not typically
-/// correct or event consistent.
+/// correct or even consistent.
 const UnitConversion casualConversion = {
   TimeUnit.microsecond: 1,
   TimeUnit.millisecond: Duration.microsecondsPerMillisecond,
@@ -26,7 +26,7 @@ const UnitConversion casualConversion = {
 
 /// Accurate conversion scheme from different [TimeUnit]s to microseconds.
 ///
-/// This conversion scheme provides a more accurate conversion factors than
+/// This conversion scheme provides more accurate conversion factors than
 /// [casualConversion] and is based on a 400-year calendar cycle.
 const UnitConversion accurateConversion = {
   TimeUnit.microsecond: 1,

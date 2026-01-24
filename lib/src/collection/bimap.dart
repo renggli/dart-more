@@ -72,7 +72,7 @@ class BiMap<K, V> extends MapBase<K, V> {
   Map<K, V> get forward => this;
 
   /// Returns a backward map onto the same data. This accessor effectively
-  /// returns the same as [BiMap.inverse], but case-down to a [Map].
+  /// returns the same as [BiMap.inverse], but cast-down to a [Map].
   Map<V, K> get backward => inverse;
 
   @override

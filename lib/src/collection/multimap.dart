@@ -25,7 +25,7 @@ abstract class Multimap<K, V, VS extends Iterable<V>> {
   /// Returns true if there are no values in this multimap.
   bool get isEmpty => _length == 0;
 
-  /// Returns true if there is at leas one value in this multimap.
+  /// Returns true if there is at least one value in this multimap.
   bool get isNotEmpty => _length > 0;
 
   /// The unique keys of this multimap.

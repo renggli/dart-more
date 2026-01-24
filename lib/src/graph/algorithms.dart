@@ -201,7 +201,7 @@ extension AlgorithmsGraphExtension<V, E> on Graph<V, E> {
         );
 
   /// Returns the strongly connected components in this directed graph. The
-  /// implementation uses the Tarjan's algorithm and runs in linear time.
+  /// implementation uses Tarjan's algorithm and runs in linear time.
   Iterable<Set<V>> stronglyConnected({StorageStrategy<V>? vertexStrategy}) {
     GraphError.checkDirected(this);
     return tarjan_strongly_connected.tarjanStronglyConnected<V>(

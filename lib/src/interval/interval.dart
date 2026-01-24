@@ -5,7 +5,7 @@ import '../collection/range.dart';
 /// An interval over a continuous ordering of type [T].
 ///
 /// Contrary to the [Range] collection, this object includes both the lower and
-/// upper endpoint; and provides efficient means to compute the [intersection]
+/// upper endpoint and provides efficient means to compute the [intersection]
 /// and [union] between objects.
 ///
 /// See https://en.wikipedia.org/wiki/Interval_(mathematics).

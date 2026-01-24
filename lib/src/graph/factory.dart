@@ -5,7 +5,7 @@ import 'package:meta/meta.dart';
 import 'factory/builder.dart';
 import 'strategy.dart';
 
-/// Factory methods to create common graphs types efficiently.
+/// Factory methods to create common graph types efficiently.
 class GraphFactory<V, E> {
   GraphFactory({
     this.isDirected = true,

@@ -3,7 +3,7 @@ import 'package:collection/collection.dart';
 import '../../more.dart';
 
 /// A [path](https://en.wikipedia.org/wiki/Glossary_of_graph_theory#path)
-/// withing a graph connects a series of [vertices] through their respective
+/// within a graph connects a series of [vertices] through their respective
 /// [edges] and [values].
 class Path<V, E> with ToStringPrinter {
   /// Constructs a path from an iterable of vertices and corresponding values.

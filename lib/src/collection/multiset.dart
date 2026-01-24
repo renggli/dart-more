@@ -3,7 +3,7 @@ import 'dart:math' show min;
 
 import 'iterable/repeat_element.dart';
 
-/// A generalized [Set] (or Bag) in which members are allowed to appear  more
+/// A generalized [Set] (or Bag) in which members are allowed to appear more
 /// than once.
 class Multiset<E> extends IterableBase<E> {
   /// Creates an empty [Multiset].
@@ -58,7 +58,7 @@ class Multiset<E> extends IterableBase<E> {
   /// Internal backing container of the set.
   final Map<E, int> _container;
 
-  /// Internal cache of the size of the size.
+  /// Internal cache of the size of the set.
   int _length;
 
   /// Adds [element] to the receiver [occurrences] number of times.

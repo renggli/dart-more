@@ -53,7 +53,7 @@ abstract class RTree<T> {
   /// Queries nodes for a location (either a point or a rectangle), returning an
   /// iterable. By default, this method returns only leaf nodes, though
   /// intermediate-level nodes can also be returned by setting the leaves
-  /// parameter to False.
+  /// parameter to false.
   Iterable<RTreeNode<T>> queryNodes(Bounds bounds, {bool leaves = true}) =>
       searchNodes(
         nodePredicate: (node) => node.bounds.intersects(bounds),
@@ -82,8 +82,8 @@ abstract class RTree<T> {
 
   /// Traverses the tree, returning nodes that match a condition. By default,
   /// this method returns only leaf nodes, but intermediate-level nodes can also
-  /// be returned by passing leaves=False. The condition is evaluated for each
-  /// node at every level of the tree, and if it returns False, the entire
+  /// be returned by passing leaves=false. The condition is evaluated for each
+  /// node at every level of the tree, and if it returns false, the entire
   /// subtree is eliminated.
   Iterable<RTreeNode<T>> searchNodes({
     Predicate1<RTreeNode<T>>? nodePredicate,
@@ -97,7 +97,7 @@ abstract class RTree<T> {
 
   /// Traverses the nodes of the R-Tree in depth-first order, calling the given
   /// function on each node. A condition function may optionally be passed to
-  /// filter which nodes get traversed. If condition returns False, then neither
+  /// filter which nodes get traversed. If condition returns false, then neither
   /// the node nor any of its descendants will be traversed.
   Iterable<R> traverse<R>(
     Map1<RTreeNode<T>, Iterable<R>> callback, {

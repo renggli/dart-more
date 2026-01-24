@@ -3,7 +3,7 @@ import 'model/directed.dart';
 import 'model/undirected.dart';
 
 /// An [edge](https://en.wikipedia.org/wiki/Glossary_of_graph_theory#edge)
-/// withing a graph connects a [source] and a [target] vertex.
+/// within a graph connects a [source] and a [target] vertex.
 ///
 /// Edges are typically ephemeral objects and are only created on demand.
 ///
