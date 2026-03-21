@@ -1,53 +1,58 @@
-# Agent Guidelines for Dart
+# Development Charter
 
-This file provides guidance to AI agents and developers when working with code in this repository.
+## General Instructions
 
-## Code Standards
+- When generating new Dart code, strictly follow the style conventions defined in [Effective Dart](https://dart.dev/effective-dart).
+- Systematically prefer using `const` constructors and literals whenever possible to optimize runtime performance.
+- Prefer using the Dart MCP tool instead of running commands manually.
 
-- Write clear, concise, and self-explanatory code.
-- Avoid empty lines and excessive comments within methods.
-- Follow the [Dart Style Guide](https://dart.dev/guides/language/effective-dart/style).
-- Run `dart format` to ensure consistent formatting.
+## Comments, Documentation and Examples
+  
+- Use triple-slash (`///`) doc comments for all public members.
+- Use square brackets (`[Name]`) to link to other members within doc comments. Use markdown sparingly.
+- Start with a concise, single-sentence summary. If more detail is required, follow with a blank line and a deeper explanation (e.g., edge cases, parameters, error handling, ...).
+- Include code examples for non-trivial public APIs. Ensure examples are well-formatted, accurate, and relevant. Verify that examples compile and produce the advertised output.
 
-## Documentation & Tests
+## Coding Style and Conventions
 
-- All public APIs (classes, methods, fields) must have documentation comments (`///`).
-- All comments must be complete sentences and end with a full-stop.
-- Aim for 100% test coverage. Tests should mirror the top-level `lib/` structure in `test/`.
-- Code must pass the analyzer with zero warnings.
+### Naming
 
-## Minimal Dependencies
+- File names must use snake-case (e.g., `recipe_card.dart`).
+- Class names, enums, and extensions must use upper camel-case (e.g., `RecipeCard`).
+- Private class members, variables, and functions (visible only within the file) must be prefixed with an underscore `_`.
 
-- Prefer standard library solutions.
-- Add third-party dependencies only with clear benefit. See `pubspec.yaml` for current dependencies.
+### Imports
 
-## Platform Compatibility
+- Adhere to the `directives_ordering` linter rule: `dart:` imports first, then `package:` imports, then relative imports.
+- Within `lib/`, prefer relative imports (e.g., `import 'src/utils.dart';`) over package imports.
 
-- Code must be compatible with Flutter.
-- Code must run on Native (JIT/AOT) and Web (JS/WASM) platforms.
-- Avoid `dart:io`, `dart:html`, `dart:js` in core logic.
+### Code Quality
 
-## Type Safety & Null Safety
+- The code must be auto-formatted (run `dart format .`).
+- The code must be free of linter warnings (run `dart analyze` and `dart fix --apply`).
+- Embrace strict null safety. Avoid using the non-null assertion operator (`!`) or `dynamic` types, if possible.
 
-- Avoid `dynamic`. Use explicit types.
-- Use pattern matching, sealed classes, enums, and record types where appropriate.
+## Logic and Patterns
 
-## Immutability by Default
+### Asynchrony
 
-- Use `final` for fields and variables wherever possible.
-- Use `const` constructors and literals wherever possible.
+- Prefer `async` / `await` syntax over chaining `Future.then`, `Future.catchError`, ...
+- Always return `Future<void>` instead of `void` for asynchronous functions.
 
-## Asynchrony & Error Handling
+### Error Handling
 
-- Prefer `async` and `await` over raw futures.
-- Don't ignore errors; catch specific exceptions.
-- Avoid catching `Error` or its subclasses.
+- Throw specific exceptions (e.g., `ArgumentError`, `StateError`, `FormatException`) rather than generic `Exception`.
+- Catch specific exceptions. Avoid generic `catch (e)` unless you are logging the error or rethrowing it.
 
-## Explicit Over Implicit
+## Architecture
 
-- Prefer explicit configuration and control flow.
-- Use relative imports within the package.
+- Keep the root `lib/` directory clean. It should primarily contain the public API exports.
+- Place implementation details in `lib/src/`. Users of the package should not import files from `lib/src/` directly.
+- Avoid introducing new external dependencies in `pubspec.yaml` unless absolutely necessary and no alternative exists in the SDK. Justify any addition to the user.
 
-## Performance Pragmatism
+## Testing
 
-- Optimize hot paths that show up in profiling; otherwise keep code simple and readable.
+- All new code must be accompanied by unit tests in the `test/` folder.
+- Structure the tests following the same folder structure as the code under test (e.g., `lib/src/foo/bar.dart` -> `test/foo/bar_test.dart`).
+- Use `expect` with literal values or matchers to assert the expected behavior (e.g., `expect(result, 'expected')`, `expect(list, isEmpty)`).
+- Group tests by functionality using `group('description', () { ... })`. Avoid declaring a single top-level group in a file.
