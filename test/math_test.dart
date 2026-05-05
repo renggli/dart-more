@@ -450,6 +450,21 @@ void main() {
       expect(1.atanh(), double.infinity);
       expect(2.atanh(), isNaN);
     });
+    test('coth', () {
+      expect(0.coth(), double.infinity);
+      expect(1.coth(), closeTo(1.3130352854993312, epsilon));
+      expect(double.infinity.coth(), closeTo(1, epsilon));
+    });
+    test('sech', () {
+      expect(0.sech(), closeTo(1, epsilon));
+      expect(1.sech(), closeTo(0.6480542736638855, epsilon));
+      expect(double.infinity.sech(), closeTo(0, epsilon));
+    });
+    test('csch', () {
+      expect(0.csch(), double.infinity);
+      expect(1.csch(), closeTo(0.8509181282393216, epsilon));
+      expect(double.infinity.csch(), closeTo(0, epsilon));
+    });
   });
   group('isProbablyPrime', () {
     const max = 100000;
