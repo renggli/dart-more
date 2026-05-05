@@ -34,4 +34,13 @@ extension HyperbolicNumberExtension on num {
 
   /// Returns the hyperbolic arc-tangent of this [num].
   double atanh() => ((1 + this) / (1 - this)).log() / 2;
+
+  /// Returns the hyperbolic cotangent of this [num].
+  double coth() => 1 / tanh();
+
+  /// Returns the hyperbolic secant of this [num].
+  double sech() => 1 / cosh();
+
+  /// Returns the hyperbolic cosecant of this [num].
+  double csch() => 1 / sinh();
 }
