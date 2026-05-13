@@ -35,6 +35,15 @@ extension HyperbolicNumberExtension on num {
   /// Returns the hyperbolic arc-tangent of this [num].
   double atanh() => ((1 + this) / (1 - this)).log() / 2;
 
+  /// Returns the inverse hyperbolic tangent of this [num].
+  double acoth() => (1 / this).atanh();
+
+  /// Returns the the hyperbolic arcsecant of this [num].
+  double asech() => (1 / this).acosh();
+
+  /// Returns the inverse hyperbolic cosecant of this [num].
+  double acsch() => (1 / this).asinh();
+
   /// Returns the hyperbolic cotangent of this [num].
   double coth() => 1 / tanh();
 
