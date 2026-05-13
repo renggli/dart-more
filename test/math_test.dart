@@ -450,6 +450,24 @@ void main() {
       expect(1.atanh(), double.infinity);
       expect(2.atanh(), isNaN);
     });
+    test('acoth', () {
+      expect(-2.acoth(), closeTo(-0.5493061443340548, epsilon));
+      expect(-1.acoth(), double.negativeInfinity);
+      expect(0.acoth(), isNaN);
+      expect(1.acoth(), double.infinity);
+      expect(2.acoth(), closeTo(0.5493061443340548, epsilon));
+    });
+    test('asech', () {
+      expect(1.asech(), closeTo(0, epsilon));
+      expect(0.5.asech(), closeTo(1.3169578969248166, epsilon));
+      expect(0.2.asech(), closeTo(2.2924316695611777, epsilon));
+      expect(2.asech(), isNaN);
+    });
+    test('acsch', () {
+      expect(1.acsch(), closeTo(0.881373587019543, epsilon));
+      expect((-1).acsch(), closeTo(-0.881373587019543, epsilon));
+      expect(0.acsch(), double.infinity);
+    });
     test('coth', () {
       expect(0.coth(), double.infinity);
       expect(1.coth(), closeTo(1.3130352854993312, epsilon));
