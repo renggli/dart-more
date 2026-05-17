@@ -657,6 +657,18 @@ void main() {
       expect(3.sqrt(), closeTo(1.7320508075688772, epsilon));
       expect(4.sqrt(), closeTo(2.00, epsilon));
     });
+    test('toDegrees', () {
+      expect(0.toDegrees(), closeTo(0, epsilon));
+      expect((math.pi / 2).toDegrees(), closeTo(90, epsilon));
+      expect(math.pi.toDegrees(), closeTo(180, epsilon));
+      expect(1.toDegrees(), closeTo(57.29577951308232, epsilon));
+    });
+    test('toRadians', () {
+      expect(0.toRadians(), closeTo(0, epsilon));
+      expect(90.toRadians(), closeTo(math.pi / 2, epsilon));
+      expect(180.toRadians(), closeTo(math.pi, epsilon));
+      expect(57.29577951308232.toRadians(), closeTo(1, epsilon));
+    });
     test('exp', () {
       expect(0.exp(), closeTo(1, epsilon));
       expect(1.exp(), closeTo(math.e, epsilon));
