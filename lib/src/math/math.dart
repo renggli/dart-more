@@ -28,6 +28,12 @@ extension MathNumberExtension on num {
   /// Returns the square root of this [num].
   double sqrt() => math.sqrt(this);
 
+  /// Returns the degree of this [num] in degrees.
+  double toDegrees() => this * 180 / math.pi;
+
+  /// Returns the radian of this [num] in radians.
+  double toRadians() => this * math.pi / 180;
+
   /// Returns the natural exponent of this [num].
   double exp() => math.exp(this);
 
