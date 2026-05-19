@@ -26,4 +26,28 @@ extension BitUint32Extension on int {
   /// Returns the power of 2 that is greater or equal to this unsigned 32-bit
   /// integer.
   int get bitCeil => this <= 1 ? 1 : 1 << (this - 1).bitLength;
+
+  /// Returns this unsigned 32-bit integer with the bit at [index] set.
+  ///
+  /// The [index] must be between `0` and `31`, inclusive.
+  int setBit(int index) {
+    RangeError.checkValueInInterval(index, 0, 31, 'index');
+    return (this | (1 << index)) & 0xffffffff;
+  }
+
+  /// Returns this unsigned 32-bit integer with the bit at [index] cleared.
+  ///
+  /// The [index] must be between `0` and `31`, inclusive.
+  int clearBit(int index) {
+    RangeError.checkValueInInterval(index, 0, 31, 'index');
+    return this & ~(1 << index) & 0xffffffff;
+  }
+
+  /// Returns this unsigned 32-bit integer with the bit at [index] toggled.
+  ///
+  /// The [index] must be between `0` and `31`, inclusive.
+  int toggleBit(int index) {
+    RangeError.checkValueInInterval(index, 0, 31, 'index');
+    return (this ^ (1 << index)) & 0xffffffff;
+  }
 }

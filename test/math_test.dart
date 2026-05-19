@@ -134,6 +134,55 @@ void main() {
         expect(current.bitCeil, current);
       }
     });
+    group('setBit', () {
+      test('sets the selected bit', () {
+        expect(0.setBit(0), 0x00000001);
+        expect(0.setBit(31), 0x80000000);
+        expect(0xaaaaaaaa.setBit(0), 0xaaaaaaab);
+      });
+      test('keeps an already set bit', () {
+        expect(0xffffffff.setBit(13), 0xffffffff);
+      });
+      test('returns an unsigned 32-bit result', () {
+        expect((-1).setBit(0), 0xffffffff);
+      });
+      test('throws on invalid index', () {
+        expect(() => 0.setBit(-1), throwsRangeError);
+        expect(() => 0.setBit(32), throwsRangeError);
+      });
+    });
+    group('clearBit', () {
+      test('clears the selected bit', () {
+        expect(0x00000001.clearBit(0), 0);
+        expect(0x80000000.clearBit(31), 0);
+        expect(0xaaaaaaaa.clearBit(1), 0xaaaaaaa8);
+      });
+      test('keeps an already cleared bit', () {
+        expect(0.clearBit(13), 0);
+      });
+      test('returns an unsigned 32-bit result', () {
+        expect((-1).clearBit(0), 0xfffffffe);
+      });
+      test('throws on invalid index', () {
+        expect(() => 0.clearBit(-1), throwsRangeError);
+        expect(() => 0.clearBit(32), throwsRangeError);
+      });
+    });
+    group('toggleBit', () {
+      test('toggles the selected bit', () {
+        expect(0.toggleBit(0), 0x00000001);
+        expect(0.toggleBit(31), 0x80000000);
+        expect(0xaaaaaaaa.toggleBit(1), 0xaaaaaaa8);
+        expect(0xaaaaaaaa.toggleBit(0), 0xaaaaaaab);
+      });
+      test('returns an unsigned 32-bit result', () {
+        expect((-1).toggleBit(0), 0xfffffffe);
+      });
+      test('throws on invalid index', () {
+        expect(() => 0.toggleBit(-1), throwsRangeError);
+        expect(() => 0.toggleBit(32), throwsRangeError);
+      });
+    });
   });
   group('double', () {
     group('nextDown', () {
