@@ -19,6 +19,13 @@ extension AccessorsDateTimeExtension on DateTime {
   /// The quarter `[1...4]`.
   int get quarter => 1 + (month - 1) ~/ 3;
 
+  /// Whether this day is Saturday or Sunday.
+  bool get isWeekend =>
+      weekday == DateTime.saturday || weekday == DateTime.sunday;
+
+  /// Whether this day is Monday through Friday.
+  bool get isWeekday => !isWeekend;
+
   /// The ISO week year.
   ///
   /// This is typically the current year, unless the week is part of the

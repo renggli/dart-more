@@ -72,6 +72,22 @@ void main() {
           }
         }
       });
+      test('isWeekend & isWeekday', () {
+        expect(DateTime(2026, DateTime.may, 18).isWeekday, isTrue);
+        expect(DateTime(2026, DateTime.may, 18).isWeekend, isFalse);
+        expect(DateTime(2026, DateTime.may, 19).isWeekday, isTrue);
+        expect(DateTime(2026, DateTime.may, 19).isWeekend, isFalse);
+        expect(DateTime(2026, DateTime.may, 20).isWeekday, isTrue);
+        expect(DateTime(2026, DateTime.may, 20).isWeekend, isFalse);
+        expect(DateTime(2026, DateTime.may, 21).isWeekday, isTrue);
+        expect(DateTime(2026, DateTime.may, 21).isWeekend, isFalse);
+        expect(DateTime(2026, DateTime.may, 22).isWeekday, isTrue);
+        expect(DateTime(2026, DateTime.may, 22).isWeekend, isFalse);
+        expect(DateTime(2026, DateTime.may, 23).isWeekday, isFalse);
+        expect(DateTime(2026, DateTime.may, 23).isWeekend, isTrue);
+        expect(DateTime(2026, DateTime.may, 24).isWeekday, isFalse);
+        expect(DateTime(2026, DateTime.may, 24).isWeekend, isTrue);
+      });
       test('weekYear & weekNumber', () {
         expect(DateTime(2014, 12, 31).weekYear, 2015);
         expect(DateTime(2017, 5, 25).weekNumber, 21);
