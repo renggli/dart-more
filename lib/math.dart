@@ -3,8 +3,7 @@ library;
 
 export 'src/math/binomial.dart'
     show
-        BinomialBigIntExtension,
-        BinomialIntegerExtension;
+        BinomialBigIntExtension, BinomialIntegerExtension;
 export 'src/math/bit.dart' show BitUint32Extension;
 export 'src/math/digits.dart'
     show DigitsBigIntExtension, DigitsIntegerExtension;
