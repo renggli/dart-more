@@ -2,7 +2,9 @@
 library;
 
 export 'src/math/binomial.dart'
-    show BinomialBigIntExtension, BinomialIntegerExtension;
+    show
+        BinomialBigIntExtension,
+        BinomialIntegerExtension;
 export 'src/math/bit.dart' show BitUint32Extension;
 export 'src/math/digits.dart'
     show DigitsBigIntExtension, DigitsIntegerExtension;
@@ -29,3 +31,4 @@ export 'src/math/primes/atkin.dart' show AtkinPrimeSieve;
 export 'src/math/primes/eratosthenes.dart' show EratosthenesPrimeSieve;
 export 'src/math/primes/euler.dart' show EulerPrimeSieve;
 export 'src/math/primes/sieve.dart' show PrimeSieve;
+export 'src/math/statistics.dart' show StatisticsIterableExtension;
