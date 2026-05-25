@@ -52,11 +52,7 @@ void verifyBasic<T>(
     expect(comparator.greaterThanOrEqualTo(next, curr), isTrue);
   }
   if (sorted.isNotEmpty) {
-    expect(
-      comparator.minOf(unsorted),
-      expected.first,
-      reason: '$type.percentile',
-    );
+    expect(comparator.minOf(unsorted), expected.first, reason: '$type.minOf');
     expect(comparator.maxOf(unsorted), expected.last, reason: '$type.maxOf');
   }
 }
