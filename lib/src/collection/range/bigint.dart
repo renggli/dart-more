@@ -38,7 +38,7 @@ final class BigIntRange extends Range<BigInt> {
   /// step value. For example,
   /// `BigIntRange(BigInt.from(1), BigInt.from(7), BigInt.from(2))` yields
   /// `<BigInt>[BigInt.from(1), BigInt.from(3), BigInt.from(5)]`.
-  factory BigIntRange([BigInt? a, BigInt? b, BigInt? c]) {
+  factory([BigInt? a, BigInt? b, BigInt? c]) {
     if (a != null && b != null && c != null) {
       if (c == BigInt.zero) throw ArgumentError.value(c, 'step');
       return BigIntRange.of(start: a, end: b, step: c);
@@ -55,14 +55,14 @@ final class BigIntRange extends Range<BigInt> {
   /// Const constructor to create an arithmetic progression of [int] values
   /// between [start] (inclusive) and [end] (exclusive); and a step-value
   /// [step].
-  factory BigIntRange.of({BigInt? start, BigInt? end, BigInt? step}) {
+  factory of({BigInt? start, BigInt? end, BigInt? step}) {
     start ??= BigInt.zero;
     end ??= BigInt.zero;
     step ??= start <= end ? BigInt.one : -BigInt.one;
     return BigIntRange._of1(start, end, step);
   }
 
-  factory BigIntRange._of1(BigInt start, BigInt end, BigInt step) {
+  factory _of1(BigInt start, BigInt end, BigInt step) {
     final length = BigInt.zero < step && start < end
         ? BigInt.one + (end - start - BigInt.one) ~/ step
         : BigInt.zero > step && start > end
@@ -77,7 +77,7 @@ final class BigIntRange extends Range<BigInt> {
   /// Const constructor to create an arithmetic progression of [BigInt] values.
   /// The resulting [Range] is of the given [length], starts at [start], and
   /// uses the step-value [step].
-  factory BigIntRange.length(int length, {BigInt? start, BigInt? step}) {
+  factory length(int length, {BigInt? start, BigInt? step}) {
     start ??= BigInt.zero;
     step ??= BigInt.one;
     return BigIntRange._(
@@ -89,7 +89,7 @@ final class BigIntRange extends Range<BigInt> {
   }
 
   // Internal const-constructor that initializes all state.
-  BigIntRange._(this.start, this.end, this.step, this.length)
+  new _(this.start, this.end, this.step, this.length)
     : assert(step != BigInt.zero, '`step` must not be zero'),
       assert(step < BigInt.zero || start <= end, '`step` must be positive'),
       assert(step > BigInt.zero || start >= end, '`step` must be negative'),

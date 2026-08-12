@@ -815,9 +815,9 @@ void main() {
         );
       });
       test('twins', () {
-        final twins = create(
-          150,
-        ).primes.window(2).where((pair) => pair[1] - pair[0] == 2);
+        final twins = create(150).primes
+            .window(2)
+            .where((pair) => pair[1] - pair[0] == 2);
         expect(twins, [
           [3, 5],
           [5, 7],

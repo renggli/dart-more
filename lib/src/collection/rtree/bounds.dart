@@ -3,18 +3,17 @@ import 'dart:typed_data';
 
 /// Axis-aligned bounding box.
 class Bounds {
-  factory Bounds(int length) =>
-      Bounds._(Float64List(length), Float64List(length));
+  factory(int length) => Bounds._(Float64List(length), Float64List(length));
 
-  factory Bounds.fromLists(List<double> min, List<double> max) =>
+  factory fromLists(List<double> min, List<double> max) =>
       Bounds._(Float64List.fromList(min), Float64List.fromList(max));
 
-  factory Bounds.fromPoint(List<double> point) {
+  factory fromPoint(List<double> point) {
     final shared = Float64List.fromList(point);
     return Bounds._(shared, shared);
   }
 
-  Bounds._(this.min, this.max)
+  new _(this.min, this.max)
     : assert(min.isNotEmpty),
       assert(min.length == max.length);
 

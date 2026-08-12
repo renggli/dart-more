@@ -9,7 +9,7 @@ import 'sieve.dart';
 /// See https://en.wikipedia.org/wiki/Sieve_of_Eratosthenes.
 class EratosthenesPrimeSieve extends PrimeSieve {
   /// Constructs the prime sieve of Eratosthenes.
-  EratosthenesPrimeSieve(super.max) : _isPrime = BitList.filled(max + 1, true) {
+  new(super.max) : _isPrime = BitList.filled(max + 1, true) {
     _isPrime[0] = false;
     if (max > 0) _isPrime[1] = false;
     for (var i = 4; i <= max; i += 2) {

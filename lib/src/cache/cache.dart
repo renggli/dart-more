@@ -11,8 +11,7 @@ abstract class Cache<K, V> with ToStringPrinter {
   /// Constructs an empty or null cache, useful mostly for testing.
   ///
   /// The [loader] defines the function to construct items for the cache.
-  factory Cache.empty({required Loader<K, V> loader}) =>
-      EmptyCache<K, V>(loader);
+  factory empty({required Loader<K, V> loader}) => EmptyCache<K, V>(loader);
 
   /// Constructs an expiry cache.
   ///
@@ -25,7 +24,7 @@ abstract class Cache<K, V> with ToStringPrinter {
   ///
   /// Note that cached items do not magically disappear when they expire.
   /// Manually call [reap()], or setup a timer to regularly free items.
-  factory Cache.expiry({
+  factory expiry({
     required Loader<K, V> loader,
     Duration? updateExpiry,
     Duration? accessExpiry,
@@ -35,18 +34,18 @@ abstract class Cache<K, V> with ToStringPrinter {
   ///
   /// The [loader] defines the function to construct items for the cache; and
   /// [maximumSize] defines the maximum number of items cached.
-  factory Cache.fifo({required Loader<K, V> loader, int maximumSize = 100}) =>
+  factory fifo({required Loader<K, V> loader, int maximumSize = 100}) =>
       FifoCache<K, V>(loader, maximumSize);
 
   /// Constructs a Least Recently Used (LRU) cache.
   ///
   /// The [loader] defines the function to construct items for the cache; and
   /// [maximumSize] defines the maximum number of items cached.
-  factory Cache.lru({required Loader<K, V> loader, int maximumSize = 100}) =>
+  factory lru({required Loader<K, V> loader, int maximumSize = 100}) =>
       LruCache<K, V>(loader, maximumSize);
 
   /// Unnamed default constructor.
-  const Cache();
+  const new();
 
   /// Returns the value associated with the [key], otherwise `null`.
   Future<V?> getIfPresent(K key);

@@ -9,7 +9,7 @@ import '../../functional/types.dart';
 ///
 /// See https://en.wikipedia.org/wiki/Stoer%E2%80%93Wagner_algorithm.
 class StoerWagnerMinCut<V, E> {
-  StoerWagnerMinCut({
+  new({
     required Graph<V, E> graph,
     num Function(V source, V target)? edgeWeight,
     StorageStrategy<V>? vertexStrategy,
@@ -19,7 +19,7 @@ class StoerWagnerMinCut<V, E> {
          vertexStrategy: vertexStrategy ?? StorageStrategy.defaultStrategy(),
        );
 
-  StoerWagnerMinCut._({
+  new _({
     required this.graph,
     required this.edgeWeight,
     required this.vertexStrategy,
@@ -161,7 +161,7 @@ class StoerWagnerMinCut<V, E> {
 }
 
 final class _State<V> {
-  _State({required this.vertex, required this.weight, required this.active});
+  new({required this.vertex, required this.weight, required this.active});
 
   final Set<V> vertex;
   final num weight;

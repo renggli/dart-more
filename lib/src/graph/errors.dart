@@ -45,5 +45,5 @@ class GraphError extends ArgumentError {
   }
 
   /// Constructs a generic [GraphError].
-  GraphError(super.value, [super.name, super.message]) : super.value();
+  new(super.value, [super.name, super.message]) : super.value();
 }

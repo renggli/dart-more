@@ -61,8 +61,7 @@ Iterable<Path<V, num>> dijkstraSearch<V>({
 }
 
 final class DijkstraState<V> implements SearchState<V, num> {
-  DijkstraState({required this.vertex, this.value = 0, this.total = 0})
-    : super();
+  new({required this.vertex, this.value = 0, this.total = 0}) : super();
 
   @override
   final V vertex;

@@ -34,7 +34,7 @@ extension TruncatePrinterExtension<T> on Printer<T> {
 
 /// Truncates the string if it is longer than width.
 abstract class TruncatePrinter<T> extends Printer<T> {
-  TruncatePrinter(this.printer, this.width, this.ellipsis, this.method)
+  new(this.printer, this.width, this.ellipsis, this.method)
     : ellipsisLength = ellipsis.characters.length;
 
   final Printer<T> printer;
@@ -53,7 +53,7 @@ abstract class TruncatePrinter<T> extends Printer<T> {
 
 /// Truncates the string from the left side if it is longer than width.
 class TruncateLeftPrinter<T> extends TruncatePrinter<T> {
-  TruncateLeftPrinter(super.printer, super.width, super.ellipsis, super.method);
+  new(super.printer, super.width, super.ellipsis, super.method);
 
   @override
   void printOn(T object, StringBuffer buffer) {
@@ -69,12 +69,7 @@ class TruncateLeftPrinter<T> extends TruncatePrinter<T> {
 
 /// Truncates the string from the right side if it is longer than width.
 class TruncateRightPrinter<T> extends TruncatePrinter<T> {
-  TruncateRightPrinter(
-    super.printer,
-    super.width,
-    super.ellipsis,
-    super.method,
-  );
+  new(super.printer, super.width, super.ellipsis, super.method);
 
   @override
   void printOn(T object, StringBuffer buffer) {
@@ -90,12 +85,7 @@ class TruncateRightPrinter<T> extends TruncatePrinter<T> {
 
 /// Truncates the string from the center if it is longer than width.
 class TruncateCenterPrinter<T> extends TruncatePrinter<T> {
-  TruncateCenterPrinter(
-    super.printer,
-    super.width,
-    super.ellipsis,
-    super.method,
-  );
+  new(super.printer, super.width, super.ellipsis, super.method);
 
   @override
   void printOn(T object, StringBuffer buffer) {

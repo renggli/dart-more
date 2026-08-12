@@ -9,12 +9,12 @@ class Trie<K, P extends Comparable<P>, V> extends MapBase<K, V> {
   /// Creates an empty [Trie] that splits the keys of type [K] into [parts] of
   /// type [P] with the provided function. Optionally a custom [root] node can
   /// be provided.
-  factory Trie({required GetParts<K, P> parts, TrieNode<K, P, V>? root}) =>
+  factory({required GetParts<K, P> parts, TrieNode<K, P, V>? root}) =>
       Trie._(root ?? TrieNodeList<K, P, V>(), parts);
 
   /// Creates a [Trie] from another instance. Optionally redefines how the
   /// [parts] of the keys are computed and provides a custom [root] node.
-  factory Trie.fromTrie(
+  factory fromTrie(
     Trie<K, P, V> other, {
     GetParts<K, P>? parts,
     TrieNode<K, P, V>? root,
@@ -23,7 +23,7 @@ class Trie<K, P extends Comparable<P>, V> extends MapBase<K, V> {
 
   /// Creates a [Trie] from a [Map]. The [parts] define how the keys are
   /// computed and optionally provides a custom [root] node.
-  factory Trie.fromMap(
+  factory fromMap(
     Map<K, V> other, {
     required GetParts<K, P> parts,
     TrieNode<K, P, V>? root,
@@ -36,7 +36,7 @@ class Trie<K, P extends Comparable<P>, V> extends MapBase<K, V> {
   /// Creates a [Trie] from an iterable (and possible transformation functions).
   /// The [parts] define how the keys are computed and optionally provides a
   /// custom [root] node.
-  factory Trie.fromIterable /*<E>*/ (
+  factory fromIterable /*<E>*/ (
     Iterable<Object?> /*Iterable<E>*/ iterable, {
     required GetParts<K, P> parts,
     TrieNode<K, P, V>? root,
@@ -51,7 +51,7 @@ class Trie<K, P extends Comparable<P>, V> extends MapBase<K, V> {
 
   /// Creates a [Trie] from two equal length iterables. The [parts] define how
   /// the keys are computed and optionally provides a custom [root] node.
-  factory Trie.fromIterables(
+  factory fromIterables(
     Iterable<K> keys,
     Iterable<V> values, {
     required GetParts<K, P> parts,
@@ -74,7 +74,7 @@ class Trie<K, P extends Comparable<P>, V> extends MapBase<K, V> {
   }
 
   /// Internal constructor of the [Trie].
-  Trie._(this._root, this._getParts)
+  new _(this._root, this._getParts)
     : assert(
         !_root.hasKeyAndValue,
         'The initial root should not have a key or value.',

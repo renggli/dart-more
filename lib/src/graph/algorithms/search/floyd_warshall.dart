@@ -72,7 +72,7 @@ final class FloydWarshall<V> {
   final num Function(V source, V target) _edgeCost;
   final Map<V, Map<V, FloyWarshallState<V>>> _pairs;
 
-  FloydWarshall(this._edgeCost, this._pairs);
+  new(this._edgeCost, this._pairs);
 
   FloyWarshallState<V> _get(V source, V target) {
     final targetMap = _pairs[source];
@@ -125,7 +125,7 @@ final class FloydWarshall<V> {
 }
 
 final class FloyWarshallState<V> {
-  FloyWarshallState({this.distance = 0, this.next});
+  new({this.distance = 0, this.next});
 
   num distance;
 

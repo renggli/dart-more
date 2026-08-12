@@ -5,7 +5,7 @@ import '../strategy.dart';
 
 /// Undirected graph implementation using an adjacency map.
 class UndirectedGraph<V, E> extends Graph<V, E> {
-  UndirectedGraph({required this.vertexStrategy})
+  new({required this.vertexStrategy})
     : adjacency = vertexStrategy.createMap<Map<V, E>>(),
       super.generative();
 
@@ -94,7 +94,7 @@ class UndirectedGraph<V, E> extends Graph<V, E> {
 
 /// Undirected edge implementation.
 class UndirectedEdge<V, E> extends Edge<V, E> {
-  const UndirectedEdge(super.source, super.target, {super.value});
+  const new(super.source, super.target, {super.value});
 
   @override
   bool get isDirected => false;

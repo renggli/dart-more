@@ -5,7 +5,7 @@ import 'object.dart';
 
 /// A field that is computed from a callback.
 class FieldCallback<T, F> extends FieldPrinter<T> {
-  FieldCallback(
+  new(
     this.name,
     this.callback,
     this.omitNull,

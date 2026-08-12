@@ -7,7 +7,7 @@ import 'operation_type.dart';
 @immutable
 class Operation with ToStringPrinter {
   /// Constructs a new operation.
-  const Operation(
+  const new(
     this.type, {
     required this.sourceStart,
     required this.sourceEnd,

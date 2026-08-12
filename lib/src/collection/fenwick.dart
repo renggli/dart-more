@@ -4,10 +4,10 @@
 /// See https://en.wikipedia.org/wiki/Fenwick_tree.
 class FenwickTree with Iterable<int> {
   /// Constructs a Fenwick tree with the given [length].
-  FenwickTree(int length) : this._(List.filled(length, 0, growable: false));
+  new(int length) : this._(List.filled(length, 0, growable: false));
 
   /// Constructs a Fenwick tree from the values of [iterable] in _O(n)_.
-  factory FenwickTree.of(Iterable<int> iterable) {
+  factory of(Iterable<int> iterable) {
     if (iterable is FenwickTree) {
       return FenwickTree._(iterable._tree.toList(growable: false));
     }
@@ -20,7 +20,7 @@ class FenwickTree with Iterable<int> {
   }
 
   /// Internal constructor of a Fenwick tree.
-  FenwickTree._(this._tree);
+  new _(this._tree);
 
   final List<int> _tree;
 
@@ -79,7 +79,7 @@ class FenwickTree with Iterable<int> {
 }
 
 final class _FenwickTreeIterator implements Iterator<int> {
-  _FenwickTreeIterator(this._tree);
+  new(this._tree);
 
   final FenwickTree _tree;
 

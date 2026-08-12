@@ -15,7 +15,7 @@ import 'iterable/mixins/unmodifiable.dart';
 @immutable
 abstract class Range<E> extends ListBase<E> with UnmodifiableListMixin<E> {
   /// Constructor of the abstract [Range].
-  const Range();
+  const new();
 
   /// The start value of the range (inclusive).
   E get start;
@@ -79,10 +79,10 @@ abstract class Range<E> extends ListBase<E> with UnmodifiableListMixin<E> {
 /// An [Iterator] over a [Range].
 class RangeIterator<T> implements Iterator<T> {
   /// Constructs a [RangeIterator] at the beginning of the range.
-  RangeIterator.atStart(this.range) : _index = -1;
+  new atStart(this.range) : _index = -1;
 
   /// Constructs a [RangeIterator] at the end of the range.
-  RangeIterator.atEnd(this.range) : _index = range.length;
+  new atEnd(this.range) : _index = range.length;
 
   /// The underlying range being iterated over.
   final Range<T> range;

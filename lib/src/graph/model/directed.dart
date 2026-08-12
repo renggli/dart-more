@@ -5,7 +5,7 @@ import '../strategy.dart';
 
 /// Directed graph implementation using an adjacency map.
 class DirectedGraph<V, E> extends Graph<V, E> {
-  DirectedGraph({required this.vertexStrategy})
+  new({required this.vertexStrategy})
     : adjacency = vertexStrategy.createMap<VertexWrapper<V, E>>(),
       super.generative();
 
@@ -106,7 +106,7 @@ class DirectedGraph<V, E> extends Graph<V, E> {
 
 /// Directed edge implementation.
 class DirectedEdge<V, E> extends Edge<V, E> {
-  const DirectedEdge(super.source, super.target, {super.value});
+  const new(super.source, super.target, {super.value});
 
   @override
   bool get isDirected => true;

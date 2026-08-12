@@ -57,7 +57,7 @@ Iterable<Set<V>> tarjanStronglyConnected<V>(
 }
 
 class _State<V> {
-  _State(this.vertex, this.depth) : lowLink = depth;
+  new(this.vertex, this.depth) : lowLink = depth;
 
   final V vertex;
   final int depth;

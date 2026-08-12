@@ -3,7 +3,7 @@ import 'printer.dart';
 
 /// Prints a string literal.
 class LiteralPrinter<T> extends Printer<T> {
-  const LiteralPrinter([this.value = '']);
+  const new([this.value = '']);
 
   final String value;
 

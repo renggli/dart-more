@@ -16,9 +16,9 @@ class Interval<T extends Comparable<T>> {
   ///
   /// If the [upper] argument is omitted, this interval is assumed to contain
   /// the single element [lower].
-  Interval(T lower, [T? upper]) : this._(lower, upper ?? lower);
+  new(T lower, [T? upper]) : this._(lower, upper ?? lower);
 
-  Interval._(this.lower, this.upper)
+  new _(this.lower, this.upper)
     : assert(
         lower.compareTo(upper) <= 0,
         'Invalid endpoints for $lower..$upper',

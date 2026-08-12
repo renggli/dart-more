@@ -4,10 +4,10 @@ import 'any.dart';
 import 'none.dart';
 
 final class ConjunctiveCharMatcher extends CharMatcher {
-  factory ConjunctiveCharMatcher(Iterable<CharMatcher> matchers) =>
+  factory(Iterable<CharMatcher> matchers) =>
       ConjunctiveCharMatcher._(List.of(matchers, growable: false));
 
-  const ConjunctiveCharMatcher._(this.matchers);
+  const new _(this.matchers);
 
   final List<CharMatcher> matchers;
 

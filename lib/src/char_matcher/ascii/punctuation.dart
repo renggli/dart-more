@@ -1,7 +1,7 @@
 import '../char_matcher.dart';
 
 final class PunctuationCharMatcher extends CharMatcher {
-  const PunctuationCharMatcher();
+  const new();
 
   @override
   bool match(int value) =>

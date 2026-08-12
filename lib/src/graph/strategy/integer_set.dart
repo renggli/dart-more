@@ -8,7 +8,7 @@ import '../../collection/bitlist.dart';
 /// and [_backward] functions are used to map the values to the list indices
 /// and vice-versa.
 class IntegerSet extends SetBase<int> {
-  IntegerSet(this._forward, this._backward);
+  new(this._forward, this._backward);
 
   final int Function(int x) _forward;
   final int Function(int x) _backward;

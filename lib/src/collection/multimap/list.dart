@@ -7,7 +7,7 @@ import '../multimap.dart';
 /// custom value collections.
 class ListMultimap<K, V> extends Multimap<K, V, List<V>> {
   /// Creates a [ListMultimap] with the same keys and values as [other].
-  factory ListMultimap.of(
+  factory of(
     Multimap<K, V, Iterable<V>> other, {
     Map<K, List<V>>? map,
     Factory<List<V>>? factory,
@@ -18,11 +18,11 @@ class ListMultimap<K, V> extends Multimap<K, V, List<V>> {
   }
 
   /// Creates a [ListMultimap] with identity keys.
-  factory ListMultimap.identity({Factory<List<V>>? factory}) =>
+  factory identity({Factory<List<V>>? factory}) =>
       ListMultimap(map: Map.identity(), factory: factory);
 
   /// Creates a [ListMultimap] with the keys and values from [iterable].
-  factory ListMultimap.fromIterable /*<E>*/ (
+  factory fromIterable /*<E>*/ (
     Iterable<Object?> /*<E>*/ iterable, {
     K Function(Object? /*E*/ element)? key,
     V Function(Object? /*E*/ element)? value,
@@ -35,7 +35,7 @@ class ListMultimap<K, V> extends Multimap<K, V, List<V>> {
   }
 
   // Creates a [ListMultimap] associating the given [keys] to [values].
-  factory ListMultimap.fromIterables(
+  factory fromIterables(
     Iterable<K> keys,
     Iterable<V> values, {
     Map<K, List<V>>? map,
@@ -47,7 +47,7 @@ class ListMultimap<K, V> extends Multimap<K, V, List<V>> {
   }
 
   /// Creates a [ListMultimap] containing the entries of [entries].
-  factory ListMultimap.fromEntries(
+  factory fromEntries(
     Iterable<MapEntry<K, V>> entries, {
     Map<K, List<V>>? map,
     Factory<List<V>>? factory,
@@ -59,7 +59,7 @@ class ListMultimap<K, V> extends Multimap<K, V, List<V>> {
 
   /// Creates an empty [ListMultimap] with the keys held in [map] and the values
   /// in a collection built with [factory].
-  ListMultimap({Map<K, List<V>>? map, Factory<List<V>>? factory})
+  new({Map<K, List<V>>? map, Factory<List<V>>? factory})
     : super(map ?? <K, List<V>>{}, factory ?? defaultFactory);
 
   @override
@@ -69,7 +69,7 @@ class ListMultimap<K, V> extends Multimap<K, V, List<V>> {
 
 class ListMultimapValues<K, V> extends MultimapValues<K, V, List<V>>
     with ListMixin<V> {
-  ListMultimapValues(super.multimap, super.key);
+  new(super.multimap, super.key);
 
   @override
   V operator [](int index) {

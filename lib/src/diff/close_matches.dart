@@ -45,7 +45,8 @@ extension CloseMatchesOnStringIterable on Iterable<String> {
     String target, {
     int count = 3,
     double cutoff = 0.6,
-  }) => map((each) => each.runes)
-      .closeMatches(target.runes, count: count, cutoff: cutoff)
-      .map(String.fromCharCodes);
+  }) =>
+      map((each) => each.runes)
+          .closeMatches(target.runes, count: count, cutoff: cutoff)
+          .map(String.fromCharCodes);
 }

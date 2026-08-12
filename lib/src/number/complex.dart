@@ -10,23 +10,23 @@ import 'utils.dart';
 @immutable
 class Complex implements CloseTo<Complex> {
   /// Creates a complex number from a real part [a] and an imaginary part [b].
-  const Complex(this.a, [this.b = 0]);
+  const new(this.a, [this.b = 0]);
 
   /// Creates a complex number from a real number [a].
-  factory Complex.fromReal(num a) => Complex(a);
+  factory fromReal(num a) => Complex(a);
 
   /// Creates a complex number from an imaginary number [b].
-  factory Complex.fromImaginary(num b) => Complex(0, b);
+  factory fromImaginary(num b) => Complex(0, b);
 
   /// Creates a complex number from cartesian coordinates [a] and [b].
-  const factory Complex.fromCartesian(num a, num b) = Complex;
+  const factory fromCartesian(num a, num b) = Complex;
 
   /// Creates a complex number from polar coordinates [radius] and [phase].
-  factory Complex.fromPolar(num radius, num phase) =>
+  factory fromPolar(num radius, num phase) =>
       Complex(radius * phase.cos(), radius * phase.sin());
 
   /// Parses [source] as a [Complex]. Throws a [FormatException] for invalid input.
-  factory Complex.parse(String source) {
+  factory parse(String source) {
     final parts = parseWithUnits(source, units: const {'', 'i'});
     if (parts == null) throw FormatException(source);
     return Complex(parts[''] ?? 0, parts['i'] ?? 0);

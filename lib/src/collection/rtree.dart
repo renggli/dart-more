@@ -12,10 +12,10 @@ import 'rtree/node.dart';
 abstract class RTree<T> {
   /// Constructs a Guttman R-Tree described in this paper:
   /// http://www-db.deis.unibo.it/courses/SI-LS/papers/Gut84.pdf
-  factory RTree.guttmann({int? minEntries, int? maxEntries}) = GuttmanTree<T>;
+  factory guttmann({int? minEntries, int? maxEntries}) = GuttmanTree<T>;
 
   /// Internal constructor for the R-Tree.
-  RTree({int? minEntries, int? maxEntries})
+  new({int? minEntries, int? maxEntries})
     : minEntries = minEntries ?? 4,
       maxEntries = maxEntries ?? 8;
 
@@ -43,12 +43,11 @@ abstract class RTree<T> {
   /// Queries leaf entries for a location (either a point or a rectangle),
   /// returning an iterable.
   Iterable<RTreeEntry<T>> queryEntries(Bounds bounds) =>
-      searchNodes(
-        nodePredicate: (node) => node.bounds.intersects(bounds),
-      ).expand(
-        (node) =>
-            node.entries.where((entry) => entry.bounds.intersects(bounds)),
-      );
+      searchNodes(nodePredicate: (node) => node.bounds.intersects(bounds))
+          .expand(
+            (node) =>
+                node.entries.where((entry) => entry.bounds.intersects(bounds)),
+          );
 
   /// Queries nodes for a location (either a point or a rectangle), returning an
   /// iterable. By default, this method returns only leaf nodes, though

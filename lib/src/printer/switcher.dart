@@ -4,7 +4,7 @@ import 'printer.dart';
 
 /// Switches between different printers based on a predicate.
 class SwitcherPrinter<T> extends Printer<T> {
-  const SwitcherPrinter(this.cases, {this.otherwise});
+  const new(this.cases, {this.otherwise});
 
   /// Ordered map with predicates and corresponding printers.
   final Map<Predicate1<T>, Printer<T>> cases;

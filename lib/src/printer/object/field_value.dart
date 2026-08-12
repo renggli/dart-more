@@ -5,13 +5,7 @@ import 'object.dart';
 
 /// A field with a constant value.
 class FieldValue<T, F> extends FieldPrinter<T> {
-  FieldValue(
-    this.name,
-    this.value,
-    this.omitNull,
-    this.omitPredicate,
-    this.printer,
-  );
+  new(this.name, this.value, this.omitNull, this.omitPredicate, this.printer);
 
   @override
   final String? name;

@@ -24,7 +24,7 @@ abstract class ReflowCommand extends Command<void> {
 }
 
 class IndentCommand extends ReflowCommand {
-  IndentCommand() {
+  new() {
     argParser
       ..addOption(
         'prefix',
@@ -68,7 +68,7 @@ class IndentCommand extends ReflowCommand {
 }
 
 class DedentCommand extends ReflowCommand {
-  DedentCommand() {
+  new() {
     argParser.addFlag(
       'ignore-empty',
       abbr: 'e',
@@ -89,7 +89,7 @@ class DedentCommand extends ReflowCommand {
 }
 
 class WrapCommand extends ReflowCommand {
-  WrapCommand() {
+  new() {
     argParser
       ..addOption(
         'width',

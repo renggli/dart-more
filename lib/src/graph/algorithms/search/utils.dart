@@ -5,7 +5,7 @@ import '../../path.dart';
 
 /// Abstract helper for search algorithms to represent vertex specific state.
 abstract class SearchState<V, E> {
-  SearchState();
+  new();
 
   /// The vertex of this state.
   V get vertex;

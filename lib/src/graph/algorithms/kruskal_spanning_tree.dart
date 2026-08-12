@@ -47,7 +47,7 @@ Graph<V, E> kruskalSpanningTree<V, E>(
 }
 
 final class _State<V> {
-  _State(this.vertex);
+  new(this.vertex);
 
   final V vertex;
   int rank = 0;

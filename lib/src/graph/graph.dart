@@ -17,10 +17,7 @@ import 'strategy.dart';
 /// want self-loops, do not create self-loops.
 abstract class Graph<V, E> with ToStringPrinter {
   /// Constructs a graph.
-  factory Graph({
-    required bool isDirected,
-    StorageStrategy<V>? vertexStrategy,
-  }) {
+  factory({required bool isDirected, StorageStrategy<V>? vertexStrategy}) {
     vertexStrategy ??= StorageStrategy<V>.defaultStrategy();
     return isDirected
         ? DirectedGraph(vertexStrategy: vertexStrategy)
@@ -29,17 +26,17 @@ abstract class Graph<V, E> with ToStringPrinter {
 
   /// Constructs a directed graph.
   @Deprecated('Use `Graph(isDirected: true)` instead.')
-  factory Graph.directed({StorageStrategy<V>? vertexStrategy}) =>
+  factory directed({StorageStrategy<V>? vertexStrategy}) =>
       Graph(isDirected: true, vertexStrategy: vertexStrategy);
 
   /// Constructs an undirected graph.
   @Deprecated('Use Graph(isDirected: false) instead.')
-  factory Graph.undirected({StorageStrategy<V>? vertexStrategy}) =>
+  factory undirected({StorageStrategy<V>? vertexStrategy}) =>
       Graph(isDirected: false, vertexStrategy: vertexStrategy);
 
   /// Internal generative constructor.
   @protected
-  Graph.generative();
+  new generative();
 
   /// Returns `true`, if the graph is directed.
   bool get isDirected;

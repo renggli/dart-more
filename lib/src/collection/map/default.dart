@@ -18,7 +18,7 @@ extension DefaultMapExtension<K, V> on Map<K, V> {
 }
 
 class MapWithDefault<K, V> extends MapView<K, V> {
-  MapWithDefault(super.map, this.defaultValue);
+  new(super.map, this.defaultValue);
 
   final V defaultValue;
 

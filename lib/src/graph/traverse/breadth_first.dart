@@ -25,7 +25,7 @@ extension BreadthFirstGraphExtension<V, E> on Graph<V, E> {
 ///
 /// See https://en.wikipedia.org/wiki/Breadth-first_search.
 class BreadthFirstIterable<V> extends IterableBase<V> {
-  BreadthFirstIterable(
+  new(
     this.vertices, {
     required this.successorsOf,
     StorageStrategy<V>? vertexStrategy,
@@ -40,7 +40,7 @@ class BreadthFirstIterable<V> extends IterableBase<V> {
 }
 
 class _BreadthFirstIterator<V> implements Iterator<V> {
-  _BreadthFirstIterator(this.iterable)
+  new(this.iterable)
     : todo = QueueList<V>.from(iterable.vertices),
       seen = iterable.vertexStrategy.createSet()..addAll(iterable.vertices);
 

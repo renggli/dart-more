@@ -1,6 +1,6 @@
 import 'dart:async' show FutureOr;
 
 class CacheItem<V> {
-  CacheItem(this.value);
+  new(this.value);
   FutureOr<V> value;
 }

@@ -16,7 +16,7 @@ import 'sieve.dart';
 /// See https://en.wikipedia.org/wiki/Sieve_of_Eratosthenes#Euler's_sieve.
 class EulerPrimeSieve extends PrimeSieve {
   /// Constructs the prime sieve of Euler.
-  EulerPrimeSieve(super.max)
+  new(super.max)
     : _primes = [],
       _factors = isJavaScript ? Uint32List(max + 1) : Uint64List(max + 1) {
     for (var i = 2; i <= max; i++) {

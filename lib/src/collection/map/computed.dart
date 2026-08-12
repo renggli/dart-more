@@ -20,7 +20,7 @@ extension ComputedMapExtension<K, V> on Map<K, V> {
 }
 
 class MapWithComputed<K, V> extends MapView<K, V> {
-  MapWithComputed(super.map, this.computation);
+  new(super.map, this.computation);
 
   final V Function(K key) computation;
 

@@ -35,7 +35,7 @@ final class DoubleRange extends Range<double> {
   /// the first two numbers (including the start, but excluding the end) and the
   /// step value. For example, `DoubleRange(1.0, 7.0, 2.1)` yields
   /// `<double>[1.0, 3.1, 5.2]`.
-  factory DoubleRange([double? a, double? b, double? c]) {
+  factory([double? a, double? b, double? c]) {
     if (a != null && b != null && c != null) {
       if (c == 0) throw ArgumentError.value(c, 'step');
       return DoubleRange.of(start: a, end: b, step: c);
@@ -58,10 +58,10 @@ final class DoubleRange extends Range<double> {
   /// Implementation note: The length is computed using `(start - end) ~/ step +
   /// ((start - end) % step == 0 ? 0 : 1)`. However due to rounding errors we
   /// have to make sure the module is close to `0` or [step].
-  const DoubleRange.of({double start = 0, double end = 0, double? step})
+  const new of({double start = 0, double end = 0, double? step})
     : this._of1(start, end, step ?? (start <= end ? 1 : -1));
 
-  const DoubleRange._of1(double start, double end, double step)
+  const new _of1(double start, double end, double step)
     : this._of2(
         start,
         end,
@@ -70,7 +70,7 @@ final class DoubleRange extends Range<double> {
         0 < step ? step : -step,
       );
 
-  const DoubleRange._of2(
+  const new _of2(
     double start,
     double end,
     double step,
@@ -85,7 +85,7 @@ final class DoubleRange extends Range<double> {
         stepAbs,
       );
 
-  const DoubleRange._of3(
+  const new _of3(
     double start,
     double end,
     double step,
@@ -104,11 +104,11 @@ final class DoubleRange extends Range<double> {
   /// Const constructor to create an arithmetic progression of [double] values.
   /// The resulting [Range] is of the given [length], starts at [start], and
   /// uses the step-value [step].
-  const DoubleRange.length(int length, {double start = 0, double step = 1})
+  const new length(int length, {double start = 0, double step = 1})
     : this._(start, start + length * step, step, length);
 
   // Internal const-constructor that initializes the state.
-  const DoubleRange._(this.start, this.end, this.step, this.length)
+  const new _(this.start, this.end, this.step, this.length)
     : assert(step != 0, '`step` must not be zero'),
       assert(step < 0 || start <= end, '`step` must be positive'),
       assert(step > 0 || start >= end, '`step` must be negative'),

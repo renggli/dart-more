@@ -12,7 +12,7 @@ import 'type.dart';
 @optionalTypeArgs
 class ObjectPrinter<T> extends Printer<T> {
   /// Creates an object printer based on the static type.
-  ObjectPrinter.static({
+  new static({
     this.beforeFields = defaultBeforeFields,
     this.fieldName,
     this.fieldNameSeparator = defaultFieldNameSeparator,
@@ -22,7 +22,7 @@ class ObjectPrinter<T> extends Printer<T> {
   }) : type = Printer<T>.literal(T.toString());
 
   /// Creates an object printer based on the dynamic type.
-  ObjectPrinter.dynamic({
+  new dynamic({
     this.beforeFields = defaultBeforeFields,
     this.fieldName,
     this.fieldNameSeparator = defaultFieldNameSeparator,
@@ -32,7 +32,7 @@ class ObjectPrinter<T> extends Printer<T> {
   }) : type = TypePrinter<T>();
 
   /// Creates a custom object printer.
-  ObjectPrinter(
+  new(
     this.type, {
     this.beforeFields = defaultBeforeFields,
     this.fieldName,

@@ -16,17 +16,17 @@ import 'types/predicate.dart';
 @immutable
 sealed class Optional<T> {
   /// Internal const constructor.
-  const Optional._();
+  const new _();
 
   /// Returns a present [Optional] of the given [value].
-  const factory Optional.of(T value) = PresentOptional<T>._;
+  const factory of(T value) = PresentOptional<T>._;
 
   /// Returns an absent [Optional] instance.
-  const factory Optional.absent() = AbsentOptional<T>._;
+  const factory absent() = AbsentOptional<T>._;
 
   /// Returns a present [Optional] of the given [value] if the value is
   /// non-null, otherwise an absent [Optional] instance.
-  factory Optional.ofNullable(T? value) =>
+  factory ofNullable(T? value) =>
       value != null ? Optional<T>.of(value) : Optional<T>.absent();
 
   /// Returns the present value, otherwise throws a [StateError].
@@ -84,7 +84,7 @@ sealed class Optional<T> {
 
 /// Implementation of an [Optional] with a value.
 class PresentOptional<T> extends Optional<T> {
-  const PresentOptional._(this.value) : super._();
+  const new _(this.value) : super._();
 
   @override
   final T value;
@@ -143,7 +143,7 @@ class PresentOptional<T> extends Optional<T> {
 
 /// Implementation of an [Optional] without a value.
 class AbsentOptional<T> extends Optional<T> {
-  const AbsentOptional._() : super._();
+  const new _() : super._();
 
   @override
   T get value => throw noSuchElementError;

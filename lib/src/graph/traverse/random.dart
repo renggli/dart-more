@@ -34,7 +34,7 @@ extension RandomWalkGraphExtension<V, E> on Graph<V, E> {
 ///
 /// See https://en.wikipedia.org/wiki/Random_walk.
 class RandomWalkIterable<V> extends IterableBase<V> {
-  RandomWalkIterable(
+  new(
     this.vertex, {
     required this.successorsOf,
     this.edgeProbability,
@@ -56,7 +56,7 @@ class RandomWalkIterable<V> extends IterableBase<V> {
 }
 
 class _RandomWalkIterator<V> implements Iterator<V> {
-  _RandomWalkIterator(this.iterable)
+  new(this.iterable)
     : seen = iterable.vertexStrategy.createSet(),
       next = iterable.vertex {
     if (iterable.selfAvoiding) {

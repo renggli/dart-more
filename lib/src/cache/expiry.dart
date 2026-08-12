@@ -9,7 +9,7 @@ import 'loader.dart';
 
 /// A cache that expires after a certain amount of time.
 class ExpiryCache<K, V> extends Cache<K, V> {
-  ExpiryCache(this.loader, this.updateExpiry, this.accessExpiry)
+  new(this.loader, this.updateExpiry, this.accessExpiry)
     : assert(
         updateExpiry != null || accessExpiry != null,
         'Either update or access expiry must be provided.',
@@ -104,7 +104,7 @@ class ExpiryCache<K, V> extends Cache<K, V> {
 }
 
 class ExpiryCacheItem<V> extends CacheItem<V> {
-  ExpiryCacheItem(super.value, this.expiry);
+  new(super.value, this.expiry);
 
   DateTime expiry;
 

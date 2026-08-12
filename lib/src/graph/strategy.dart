@@ -6,13 +6,13 @@ import 'strategy/positive_integer.dart';
 /// Encapsulates data structures used for the various graph algorithms.
 abstract class StorageStrategy<T> {
   /// Returns a suitable default strategy.
-  factory StorageStrategy.defaultStrategy() = ObjectStorageStrategy;
+  factory defaultStrategy() = ObjectStorageStrategy;
 
   /// Returns a strategy using canonical collection objects.
-  factory StorageStrategy.object() = ObjectStorageStrategy;
+  factory object() = ObjectStorageStrategy;
 
   /// Returns a strategy using canonical collection objects and object identity.
-  factory StorageStrategy.identity() = IdentityStorageStrategy;
+  factory identity() = IdentityStorageStrategy;
 
   /// Returns a strategy for [int] objects.
   static StorageStrategy<int> integer() => IntegerStorageStrategy();

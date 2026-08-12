@@ -11,7 +11,7 @@ class Fraction
     with CompareOperators<Fraction>
     implements Comparable<Fraction>, CloseTo<Fraction> {
   /// Creates a fraction from a [numerator] and an optional [denominator].
-  factory Fraction(int numerator, [int denominator = 1]) {
+  factory(int numerator, [int denominator = 1]) {
     if (denominator == 0) {
       return numerator == 0
           ? Fraction.nan
@@ -33,7 +33,7 @@ class Fraction
   /// The algorithm uses an expansion of the continued fraction of the floating
   /// point value. The resulting fraction is returned once the [maxDenominator]
   /// has been reached, or the result is better than [absoluteError].
-  factory Fraction.fromDouble(
+  factory fromDouble(
     num value, {
     int maxDenominator = 1000000000,
     double absoluteError = 0.0,
@@ -73,7 +73,7 @@ class Fraction
   }
 
   /// Internal constructor for fractions.
-  const Fraction._(this.a, this.b)
+  const new _(this.a, this.b)
     : assert(b >= 0, 'b must be greater than or equal to 0');
 
   /// The neutral additive element, that is `0`.

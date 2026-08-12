@@ -9,14 +9,14 @@ import 'package:meta/meta.dart';
 /// modification: [add], [addAll], and [remove].
 abstract class Collection<E> extends DelegatingIterable<E> {
   /// Constructs a [Collection] wrapping a [List].
-  factory Collection.forList([List<E>? list]) => _ListCollection(list ?? <E>[]);
+  factory forList([List<E>? list]) => _ListCollection(list ?? <E>[]);
 
   /// Constructs a [Collection] wrapping a [Set].
-  factory Collection.forSet([Set<E>? set]) => _SetCollection(set ?? <E>{});
+  factory forSet([Set<E>? set]) => _SetCollection(set ?? <E>{});
 
   /// Constructor for use by subclasses.
   @protected
-  Collection(super.base);
+  new(super.base);
 
   /// Adds [value] to the collection.
   void add(E value);
@@ -35,7 +35,7 @@ abstract class Collection<E> extends DelegatingIterable<E> {
 }
 
 class _ListCollection<E> extends Collection<E> {
-  _ListCollection(this._list) : super(_list);
+  new(this._list) : super(_list);
 
   final List<E> _list;
 
@@ -53,7 +53,7 @@ class _ListCollection<E> extends Collection<E> {
 }
 
 class _SetCollection<E> extends Collection<E> {
-  _SetCollection(this._set) : super(_set);
+  new(this._set) : super(_set);
 
   final Set<E> _set;
 

@@ -33,9 +33,9 @@ Future<void> generatePropertyData(
 
   var entries = data.asMap().entries;
   if (unlistedAs != null) {
-    final unlistedRanges = getUnlistedCodePoints(
-      data,
-    ).map((code) => (code, code)).toList(growable: false);
+    final unlistedRanges = getUnlistedCodePoints(data)
+        .map((code) => (code, code))
+        .toList(growable: false);
     entries = entries.followedBy([MapEntry(unlistedAs, unlistedRanges)]);
   }
 

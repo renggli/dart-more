@@ -13,7 +13,7 @@ extension ReversedGraphExtension<V, E> on Graph<V, E> {
 
 /// The view of a graph where all edges point in the opposite direction.
 class ReversedGraph<V, E> extends ForwardingGraph<V, E> {
-  ReversedGraph(super.delegate) : assert(delegate.isDirected);
+  new(super.delegate) : assert(delegate.isDirected);
 
   @override
   Iterable<Edge<V, E>> get edges => delegate.edges.map(_reverse);

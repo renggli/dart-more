@@ -54,9 +54,10 @@ extension WrapUnwrapStringExtension on String {
   }
 
   /// Unwraps a long text.
-  String unwrap() => split(
-    '\n\n',
-  ).map((paragraph) => paragraph.replaceAll('\n', ' ')).join('\n\n');
+  String unwrap() =>
+      split('\n\n')
+          .map((paragraph) => paragraph.replaceAll('\n', ' '))
+          .join('\n\n');
 }
 
 final defaultWhitespace = RegExp(r'\s+');

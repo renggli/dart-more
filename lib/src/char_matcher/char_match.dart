@@ -4,7 +4,7 @@ import 'char_matcher.dart';
 
 @immutable
 class CharMatch implements Match {
-  const CharMatch(this.start, this.end, this.input, this.pattern);
+  const new(this.start, this.end, this.input, this.pattern);
 
   @override
   final int start;

@@ -9,16 +9,16 @@ import '../../more.dart';
 /// A space efficient [List] that stores boolean values.
 abstract class BitList extends ListBase<bool> {
   /// Constructs a bit list of the given [length].
-  factory BitList(int length, {bool fill = false, bool growable = false}) =>
+  factory(int length, {bool fill = false, bool growable = false}) =>
       BitList.filled(length, fill, growable: growable);
 
   /// Constructs an empty bit list.
-  factory BitList.empty({bool growable = false}) =>
+  factory empty({bool growable = false}) =>
       BitList.filled(0, false, growable: growable);
 
   /// Constructs a bit list of the given [length], and initializes the value at
   /// each position with [fill].
-  factory BitList.filled(int length, bool fill, {bool growable = false}) {
+  factory filled(int length, bool fill, {bool growable = false}) {
     final buffer = Uint32List((length + bitOffset) >>> bitShift);
     if (fill) buffer.fillRange(0, buffer.length, bitMask);
     return growable
@@ -28,7 +28,7 @@ abstract class BitList extends ListBase<bool> {
 
   /// Constructs a bit list of the given [length] by calling a [generator]
   /// function for each index.
-  factory BitList.generate(
+  factory generate(
     int length,
     bool Function(int index) generator, {
     bool growable = false,
@@ -38,7 +38,7 @@ abstract class BitList extends ListBase<bool> {
   );
 
   /// Constructs a new list from a given [Iterable] of booleans.
-  factory BitList.of(Iterable<bool> other, {bool growable = false}) {
+  factory of(Iterable<bool> other, {bool growable = false}) {
     final length = other.length;
     final result = BitList(length, growable: growable);
     final buffer = result.buffer;
@@ -60,11 +60,11 @@ abstract class BitList extends ListBase<bool> {
   }
 
   /// Constructs a new list from a given [Iterable] of booleans.
-  factory BitList.from(Iterable<bool> other, {bool growable = false}) =>
+  factory from(Iterable<bool> other, {bool growable = false}) =>
       BitList.of(other, growable: growable);
 
   /// Internal generative constructor.
-  BitList._();
+  new _();
 
   /// The underlying typed buffer of this object.
   Uint32List get buffer;
@@ -306,7 +306,7 @@ abstract class BitList extends ListBase<bool> {
 }
 
 class GrowableBitList extends BitList {
-  GrowableBitList(this.buffer, this._length) : super._();
+  new(this.buffer, this._length) : super._();
 
   @override
   Uint32List buffer;
@@ -338,7 +338,7 @@ class GrowableBitList extends BitList {
 }
 
 class FixedBitList extends BitList with NonGrowableListMixin<bool> {
-  FixedBitList(this.buffer, this.length) : super._();
+  new(this.buffer, this.length) : super._();
 
   @override
   final Uint32List buffer;

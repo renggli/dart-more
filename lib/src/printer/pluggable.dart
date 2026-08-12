@@ -4,7 +4,7 @@ import 'printer.dart';
 
 /// Evaluates the callback with the value to retrieve the string.
 class PluggablePrinter<T> extends Printer<T> {
-  const PluggablePrinter(this.callback);
+  const new(this.callback);
 
   final Map1<T, String> callback;
 

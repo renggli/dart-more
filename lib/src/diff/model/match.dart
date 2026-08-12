@@ -3,7 +3,7 @@ import '../../../more.dart';
 /// Encapsulates a matching block when comparing two inputs.
 class Match with ToStringPrinter implements Comparable<Match> {
   /// Constructs a new match.
-  const Match({
+  const new({
     required this.sourceStart,
     required this.targetStart,
     required this.length,

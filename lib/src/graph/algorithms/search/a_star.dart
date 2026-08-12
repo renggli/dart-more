@@ -64,7 +64,7 @@ Iterable<Path<V, num>> aStarSearch<V>({
 }
 
 final class AStarState<V> implements SearchState<V, num> {
-  AStarState({
+  new({
     required this.vertex,
     required this.estimate,
     this.value = 0,

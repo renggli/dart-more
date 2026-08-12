@@ -7,7 +7,7 @@ import 'entry.dart';
 /// node if its entries contain data; otherwise, if it is a non-leaf node, then
 /// its entries contain pointers to children nodes.
 class RTreeNode<T> {
-  RTreeNode(
+  new(
     this.tree, {
     this.parent,
     this.isLeaf = false,

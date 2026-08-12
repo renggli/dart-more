@@ -102,9 +102,8 @@ void main() {
       }
     });
     test('undirected path', () {
-      final graph = GraphFactory<int, void>(
-        isDirected: false,
-      ).path(vertexCount: 10);
+      final graph = GraphFactory<int, void>(isDirected: false)
+          .path(vertexCount: 10);
       final allShortestPaths = graph.allShortestPaths();
       for (var i = 0; i < 10; i++) {
         expect(graph.shortestPath(0, i), isPath(source: 0, target: i, cost: i));
@@ -660,16 +659,14 @@ void main() {
       expect(flow('A', 'D'), 2);
     });
     test('line with standard edge capacity', () {
-      final graph = GraphFactory<String, num>(
-        edgeProvider: (a, b) => 3,
-      ).fromPath(['A', 'B', 'C', 'D']);
+      final graph = GraphFactory<String, num>(edgeProvider: (a, b) => 3)
+          .fromPath(['A', 'B', 'C', 'D']);
       final flow = graph.maxFlow();
       expect(flow('A', 'D'), 3);
     });
     test('undirected graph', () {
-      final graph = GraphFactory<int, void>(
-        isDirected: false,
-      ).ring(vertexCount: 10);
+      final graph = GraphFactory<int, void>(isDirected: false)
+          .ring(vertexCount: 10);
       final flow = graph.maxFlow();
       expect(flow(0, 4), 2);
     });
@@ -1180,9 +1177,8 @@ void main() {
     });
     test('complete graph', () {
       for (var i = 1; i < 25; i++) {
-        final graph = GraphFactory<int, void>(
-          isDirected: false,
-        ).complete(vertexCount: i);
+        final graph = GraphFactory<int, void>(isDirected: false)
+            .complete(vertexCount: i);
         expect(graph.findCliques().single, 0.to(i).toSet());
       }
     });
@@ -1191,9 +1187,8 @@ void main() {
       for (var x = 0; x < count; x++) {
         for (var y = 0; y < count; y++) {
           if (x == y) continue;
-          final graph = GraphFactory<int, void>(
-            isDirected: false,
-          ).complete(vertexCount: count);
+          final graph = GraphFactory<int, void>(isDirected: false)
+              .complete(vertexCount: count);
           graph.removeEdge(x, y);
           expect(
             graph.findCliques(),
@@ -1449,27 +1444,24 @@ void main() {
     });
     test('bipartite graphs', () {
       for (var i = 1; i <= 10; i++) {
-        final graph = GraphFactory<int, void>(
-          isDirected: false,
-        ).partite(vertexCounts: [i, i]);
+        final graph = GraphFactory<int, void>(isDirected: false)
+            .partite(vertexCounts: [i, i]);
         final coloring = graph.vertexColoring();
         expect(coloring.values.toSet(), hasLength(2));
       }
     });
     test('complete graphs', () {
       for (var i = 3; i <= 10; i++) {
-        final graph = GraphFactory<int, void>(
-          isDirected: false,
-        ).complete(vertexCount: i);
+        final graph = GraphFactory<int, void>(isDirected: false)
+            .complete(vertexCount: i);
         final coloring = graph.vertexColoring();
         expect(coloring.values.toSet(), hasLength(i));
       }
     });
     test('star graphs', () {
       for (var i = 2; i <= 10; i++) {
-        final graph = GraphFactory<int, void>(
-          isDirected: false,
-        ).star(vertexCount: i);
+        final graph = GraphFactory<int, void>(isDirected: false)
+            .star(vertexCount: i);
         final coloring = graph.vertexColoring();
         expect(coloring.values.toSet(), hasLength(2));
       }

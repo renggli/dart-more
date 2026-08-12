@@ -15,7 +15,7 @@ Iterable<E> iterate<E>(E value, E Function(E element) callback) =>
     IterateIterable<E>(value, callback);
 
 class IterateIterable<E> extends IterableBase<E> with InfiniteIterable<E> {
-  IterateIterable(this.value, this.function);
+  new(this.value, this.function);
 
   final E value;
   final E Function(E element) function;
@@ -25,7 +25,7 @@ class IterateIterable<E> extends IterableBase<E> with InfiniteIterable<E> {
 }
 
 class IterateIterator<E> implements Iterator<E> {
-  IterateIterator(this.next, this.function) : current = next;
+  new(this.next, this.function) : current = next;
 
   final E Function(E element) function;
   E next;

@@ -67,7 +67,7 @@ const decimalUnitsLong = [
 /// Prints numbers in a custom human readable string.
 class HumanNumberPrinter<T extends num> extends Printer<T> {
   /// Prints numbers in a custom human readable string.
-  HumanNumberPrinter({
+  new({
     required this.units,
     this.base = 10,
     this.characters = NumeralSystem.latin,
@@ -116,7 +116,7 @@ class HumanNumberPrinter<T extends num> extends Printer<T> {
   /// multiple or sub-multiple of the unit.
   ///
   /// For details, see https://en.wikipedia.org/wiki/Metric_prefix.
-  factory HumanNumberPrinter.decimal({
+  factory decimal({
     int base = 10,
     List<String> characters = NumeralSystem.latin,
     String delimiter = delimiterString,
@@ -156,7 +156,7 @@ class HumanNumberPrinter<T extends num> extends Printer<T> {
   /// transmission, and digital information.
   ///
   /// For details, see https://en.wikipedia.org/wiki/Binary_prefix.
-  factory HumanNumberPrinter.binary({
+  factory binary({
     int base = 10,
     List<String> characters = NumeralSystem.latin,
     String delimiter = delimiterString,

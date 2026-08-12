@@ -7,13 +7,13 @@ import 'iterable/repeat_element.dart';
 /// than once.
 class Multiset<E> extends IterableBase<E> {
   /// Creates an empty [Multiset].
-  factory Multiset() => Multiset<E>._({}, 0);
+  factory() => Multiset<E>._({}, 0);
 
   /// Creates an empty identity [Multiset].
-  factory Multiset.identity() => Multiset<E>._(Map<E, int>.identity(), 0);
+  factory identity() => Multiset<E>._(Map<E, int>.identity(), 0);
 
   /// Creates a [Multiset] that contains all elements of [other].
-  factory Multiset.of(Iterable<E> other) {
+  factory of(Iterable<E> other) {
     if (other is Multiset<E>) {
       return Multiset<E>._(Map.of(other._container), other._length);
     } else if (other is Set<E>) {
@@ -27,7 +27,7 @@ class Multiset<E> extends IterableBase<E> {
   }
 
   /// Creates a [Multiset] that contains all elements of [other].
-  factory Multiset.from(Iterable<E> other) => Multiset.of(other);
+  factory from(Iterable<E> other) => Multiset.of(other);
 
   /// Creates a [Multiset] where the elements and their occurrence count is
   /// computed from an [iterable].
@@ -38,7 +38,7 @@ class Multiset<E> extends IterableBase<E> {
   ///
   /// The [count] function specifies the number of elements added to the
   /// collection. The default function returns the constant 1.
-  factory Multiset.fromIterable /*<E>*/ (
+  factory fromIterable /*<E>*/ (
     Iterable<Object?> /*<E>*/ iterable, {
     E Function(Object? /*E*/ element)? key,
     int Function(Object? /*E*/ element)? count,
@@ -53,7 +53,7 @@ class Multiset<E> extends IterableBase<E> {
   }
 
   /// Internal constructor.
-  Multiset._(this._container, this._length);
+  new _(this._container, this._length);
 
   /// Internal backing container of the set.
   final Map<E, int> _container;

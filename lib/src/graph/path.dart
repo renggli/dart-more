@@ -7,21 +7,21 @@ import '../../more.dart';
 /// [edges] and [values].
 class Path<V, E> with ToStringPrinter {
   /// Constructs a path from an iterable of vertices and corresponding values.
-  Path.fromVertices(Iterable<V> vertices, {Iterable<E>? values})
+  new fromVertices(Iterable<V> vertices, {Iterable<E>? values})
     : this._(
         vertices: vertices,
         values: values ?? repeat<E>(null as E, count: vertices.length - 1),
       );
 
   /// Constructs a path from an iterable of [Edge] instances.
-  Path.fromEdges(Iterable<Edge<V, E>> edges)
+  new fromEdges(Iterable<Edge<V, E>> edges)
     : this._(
         vertices: [edges.first.source, ...edges.map((edge) => edge.target)],
         values: edges.map((edge) => edge.value),
       );
 
   /// Internal constructor.
-  Path._({required Iterable<V> vertices, required Iterable<E> values})
+  new _({required Iterable<V> vertices, required Iterable<E> values})
     : vertices = vertices.toList(growable: false),
       values = values.toList(growable: false),
       assert(vertices.isNotEmpty),

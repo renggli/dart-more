@@ -25,7 +25,7 @@ import '../where.dart';
 /// ```
 class DurationPrinter extends SequencePrinter<Duration> {
   /// Constructor to build a [DurationPrinter].
-  factory DurationPrinter(
+  factory(
     Callback1<DurationPrinterBuilder> callback, {
     Map<TimeUnit, num> conversion = casualConversion,
   }) {
@@ -35,7 +35,7 @@ class DurationPrinter extends SequencePrinter<Duration> {
   }
 
   /// Internal constructor for [DurationPrinter].
-  const DurationPrinter._(super.printers);
+  const new _(super.printers);
 
   /// Returns the standard Dart duration format.
   static DurationPrinter dart() => DurationPrinter(
@@ -95,7 +95,7 @@ class DurationPrinter extends SequencePrinter<Duration> {
 
 /// Builder of [DurationPrinter] objects.
 class DurationPrinterBuilder {
-  DurationPrinterBuilder(this._conversion);
+  new(this._conversion);
 
   final Map<TimeUnit, num> _conversion;
   final List<Printer<Duration>> _printers = [];

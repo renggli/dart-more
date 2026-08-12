@@ -9,7 +9,7 @@ import 'utils.dart';
 /// Prints numbers in a scientific format.
 class ScientificNumberPrinter<T extends num> extends Printer<T> {
   /// Prints numbers in a custom scientific format.
-  ScientificNumberPrinter({
+  new({
     this.base = 10,
     this.characters = NumeralSystem.latin,
     this.delimiter = delimiterString,

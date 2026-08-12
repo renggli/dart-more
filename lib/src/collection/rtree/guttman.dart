@@ -8,7 +8,7 @@ import 'utils.dart';
 /// Guttman R-Tree described in this paper:
 /// http://www-db.deis.unibo.it/courses/SI-LS/papers/Gut84.pdf
 class GuttmanTree<T> extends RTree<T> {
-  GuttmanTree({super.minEntries, super.maxEntries});
+  new({super.minEntries, super.maxEntries});
 
   @override
   RTreeNode<T> chooseLeaf(RTreeEntry<T> entry) {

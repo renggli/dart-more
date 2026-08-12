@@ -13,15 +13,14 @@ import 'model/undirected.dart';
 /// for comparison.
 abstract class Edge<V, E> with ToStringPrinter {
   /// Constructs a directed edge.
-  const factory Edge.directed(V source, V target, {E? value}) =
-      DirectedEdge<V, E>;
+  const factory directed(V source, V target, {E? value}) = DirectedEdge<V, E>;
 
   /// Constructs an undirected edge.
-  const factory Edge.undirected(V source, V target, {E? value}) =
+  const factory undirected(V source, V target, {E? value}) =
       UndirectedEdge<V, E>;
 
   /// Generative constructor.
-  const Edge(this.source, this.target, {E? value}) : value = value as E;
+  const new(this.source, this.target, {E? value}) : value = value as E;
 
   /// Returns `true`, if the edge is directed.
   bool get isDirected;

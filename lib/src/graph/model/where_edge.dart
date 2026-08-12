@@ -3,7 +3,7 @@ import 'forwarding.dart';
 
 /// The view of a graph that is filtered by a edge predicate.
 class WhereEdgeGraph<V, E> extends ForwardingGraph<V, E> {
-  WhereEdgeGraph(super.delegate, this._edgePredicate);
+  new(super.delegate, this._edgePredicate);
 
   final bool Function(Edge<V, E> edge) _edgePredicate;
 

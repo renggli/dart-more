@@ -28,7 +28,7 @@ extension IterablePrinterExtension<T> on Printer<T> {
 
 /// Prints an iterable of values.
 class IterablePrinter<T> extends Printer<Iterable<T>> {
-  const IterablePrinter(
+  const new(
     this.printer, {
     this.emptyPrinter,
     this.beforePrinter,

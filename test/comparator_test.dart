@@ -81,21 +81,18 @@ void binarySearchTests<T>(
 }) {
   group(name, () {
     test('binarySearch', () {
-      final results = IntegerRange(
-        examples.length,
-      ).map((i) => naturalCompare.binarySearch(examples[i], values[i]));
+      final results = IntegerRange(examples.length)
+          .map((i) => naturalCompare.binarySearch(examples[i], values[i]));
       expect(results, binarySearch);
     });
     test('binarySearchLower', () {
-      final results = IntegerRange(
-        examples.length,
-      ).map((i) => naturalCompare.binarySearchLower(examples[i], values[i]));
+      final results = IntegerRange(examples.length)
+          .map((i) => naturalCompare.binarySearchLower(examples[i], values[i]));
       expect(results, binarySearchLower);
     });
     test('binarySearchUpper', () {
-      final results = IntegerRange(
-        examples.length,
-      ).map((i) => naturalCompare.binarySearchUpper(examples[i], values[i]));
+      final results = IntegerRange(examples.length)
+          .map((i) => naturalCompare.binarySearchUpper(examples[i], values[i]));
       expect(results, binarySearchUpper);
     });
   });
@@ -580,15 +577,13 @@ void main() {
         expect(naturalInt.sorted([3, 2, 1]), [1, 2, 3]);
       });
       test('stable', () {
-        final input = IntegerRange(
-          10,
-        ).reversed.expand((x) => IntegerRange(10).map((y) => (x, y)));
+        final input = IntegerRange(10).reversed
+            .expand((x) => IntegerRange(10).map((y) => (x, y)));
         final actual = naturalInt
             .keyOf<(int, int)>((tuple) => tuple.first)
             .sorted(input, stable: true);
-        final expected = IntegerRange(
-          10,
-        ).expand((x) => IntegerRange(10).map((y) => (x, y)));
+        final expected = IntegerRange(10)
+            .expand((x) => IntegerRange(10).map((y) => (x, y)));
         expect(actual, expected);
       });
       test('copy', () {

@@ -9,7 +9,7 @@ import '../sequence_matcher.dart';
 
 /// Generates a highly configurable diff output.
 class ReadableDiffer extends Differ {
-  ReadableDiffer({
+  new({
     this.lineJunk,
     this.charJunk,
     Printer<String>? replaceLine,

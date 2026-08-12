@@ -44,27 +44,27 @@ import 'unicode/unicode.dart';
 @immutable
 abstract class CharMatcher with ToStringPrinter implements Pattern {
   /// A matcher that accepts any character.
-  const factory CharMatcher.any() = AnyCharMatcher;
+  const factory any() = AnyCharMatcher;
 
   /// A matcher that accepts no character.
-  const factory CharMatcher.none() = NoneCharMatcher;
+  const factory none() = NoneCharMatcher;
 
   /// A matcher that accepts a single [character].
   ///
   /// The argument can be either given as a Unicode code-point or a string
   /// with a single Unicode character.
-  factory CharMatcher.isChar(Object character) =>
+  factory isChar(Object character) =>
       SingleCharMatcher(_toCharCode(character, 'character'));
 
   /// A matcher that accepts a character range from [start] to [stop].
   ///
   /// The arguments can be either given as Unicode code-points or strings
   /// with a single Unicode character.
-  factory CharMatcher.inRange(Object start, Object stop) =>
+  factory inRange(Object start, Object stop) =>
       RangeCharMatcher(_toCharCode(start, 'start'), _toCharCode(stop, 'stop'));
 
   /// A matcher that accepts a set of characters.
-  factory CharMatcher.charSet(String chars) => fromCharSet(chars);
+  factory charSet(String chars) => fromCharSet(chars);
 
   /// A matcher that accepts a regular expression character class.
   ///
@@ -79,40 +79,40 @@ abstract class CharMatcher with ToStringPrinter implements Pattern {
   /// accepts any character, but fails for the characters 'a', 'o', or 'u'. The
   /// `pattern('a-z-[aeiou]')` accepts lower-case letters, but fails for
   /// consonants.
-  factory CharMatcher.pattern(String pattern) => fromPattern(pattern);
+  factory pattern(String pattern) => fromPattern(pattern);
 
   /// A matcher that accepts ASCII characters.
-  const factory CharMatcher.ascii() = AsciiCharMatcher;
+  const factory ascii() = AsciiCharMatcher;
 
   /// A matcher that accepts ASCII upper-case letters, see
   /// [UnicodeCharMatcher.letterUppercase] for the Unicode variant.
-  const factory CharMatcher.upperCaseLetter() = UpperCaseLetterCharMatcher;
+  const factory upperCaseLetter() = UpperCaseLetterCharMatcher;
 
   /// A matcher that accepts ASCII lower-case letters, see
   /// [UnicodeCharMatcher.letterLowercase] for the Unicode variant.
-  const factory CharMatcher.lowerCaseLetter() = LowerCaseLetterCharMatcher;
+  const factory lowerCaseLetter() = LowerCaseLetterCharMatcher;
 
   /// A matcher that accepts ASCII letters or digits.
-  const factory CharMatcher.letterOrDigit() = LetterOrDigitCharMatcher;
+  const factory letterOrDigit() = LetterOrDigitCharMatcher;
 
   /// A matcher that accepts ASCII letters, see
   /// [UnicodeCharMatcher.letter] for the Unicode variant.
-  const factory CharMatcher.letter() = LetterCharMatcher;
+  const factory letter() = LetterCharMatcher;
 
   /// A matcher that accepts ASCII digits, see
   /// [UnicodeCharMatcher.numberDecimalDigit] for the Unicode variant.
-  const factory CharMatcher.digit() = DigitCharMatcher;
+  const factory digit() = DigitCharMatcher;
 
   /// A matcher that accepts ASCII punctuation characters, see
   /// [UnicodeCharMatcher.punctuation] for the Unicode variant.
-  const factory CharMatcher.punctuation() = PunctuationCharMatcher;
+  const factory punctuation() = PunctuationCharMatcher;
 
   /// A matcher that accepts ASCII whitespace, see
   /// [UnicodeCharMatcher.whiteSpace] for the Unicode variant.
-  const factory CharMatcher.whitespace() = WhitespaceCharMatcher;
+  const factory whitespace() = WhitespaceCharMatcher;
 
   /// Internal constructor.
-  const CharMatcher();
+  const new();
 
   /// Returns a matcher that matches any character not matched by this matcher.
   CharMatcher operator ~() => NegateCharMatcher(this);

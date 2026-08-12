@@ -14,13 +14,12 @@ import 'model/operation_type.dart';
 /// Low-level algorithm to compute match blocks, transformation operations,
 /// and similarities between a [source] and a [target] collection.
 class SequenceMatcher<T> {
-  SequenceMatcher({
+  new({
     Iterable<T>? source,
     Iterable<T>? target,
-    Predicate1<T>? isJunk,
-    bool autoJunk = true,
-  }) : _isJunk = isJunk,
-       _autoJunk = autoJunk {
+    this._isJunk,
+    this._autoJunk = true,
+  }) {
     this.source = source ?? <T>[];
     this.target = target ?? <T>[];
   }

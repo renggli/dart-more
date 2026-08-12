@@ -2,7 +2,7 @@ import '../../../printer.dart';
 import '../char_matcher.dart';
 
 final class NegateCharMatcher extends CharMatcher {
-  const NegateCharMatcher(this.matcher);
+  const new(this.matcher);
 
   final CharMatcher matcher;
 

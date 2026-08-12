@@ -5,7 +5,7 @@ import 'loader.dart';
 
 /// An empty or null cache, useful mostly for testing.
 class EmptyCache<K, V> extends Cache<K, V> {
-  const EmptyCache(this.loader);
+  const new(this.loader);
 
   final Loader<K, V> loader;
 

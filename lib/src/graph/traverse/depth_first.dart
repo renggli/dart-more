@@ -26,7 +26,7 @@ extension DepthFirstGraphExtension<V, E> on Graph<V, E> {
 ///
 /// See https://en.wikipedia.org/wiki/Depth-first_search.
 class DepthFirstIterable<V> extends IterableBase<V> {
-  DepthFirstIterable(
+  new(
     this.vertices, {
     required this.successorsOf,
     StorageStrategy<V>? vertexStrategy,
@@ -41,7 +41,7 @@ class DepthFirstIterable<V> extends IterableBase<V> {
 }
 
 class _DepthFirstIterator<V> implements Iterator<V> {
-  _DepthFirstIterator(this.iterable)
+  new(this.iterable)
     : todo = addAllReversed(<V>[], iterable.vertices),
       seen = iterable.vertexStrategy.createSet()..addAll(iterable.vertices);
 

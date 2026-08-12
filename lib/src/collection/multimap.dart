@@ -8,7 +8,7 @@ typedef Factory<T> = T Function();
 /// A collection maintaining a mapping between keys and multiple values.
 abstract class Multimap<K, V, VS extends Iterable<V>> {
   /// Internal factory constructor.
-  Multimap(this._map, this._factory);
+  new(this._map, this._factory);
 
   /// Underlying map with associations from `keys` to `values`.
   final Map<K, VS> _map;
@@ -113,13 +113,15 @@ abstract class Multimap<K, V, VS extends Iterable<V>> {
 
 // Internal callback to update the data of a multimap. Receives the current
 // [map] and total [length], returns the change in length.
-typedef UpdateCallback<K, V, VS extends Iterable<V>> =
-    int Function(Map<K, VS> map, int length);
+typedef UpdateCallback<K, V, VS extends Iterable<V>> = int Function(
+  Map<K, VS> map,
+  int length,
+);
 
 // Internal wrapper around the values at a specific key of a [Multimap].
 abstract class MultimapValues<K, V, VS extends Iterable<V>>
     with IterableMixin<V> {
-  MultimapValues(this.multimap, this.key)
+  new(this.multimap, this.key)
     : delegate = multimap._map[key] ?? multimap._factory();
 
   @protected
@@ -179,7 +181,7 @@ abstract class MultimapValues<K, V, VS extends Iterable<V>>
 
 // Internal wrapper around the underlying [Map] of a [Multimap].
 class MultimapAsMap<K, V, VS extends Iterable<V>> extends MapBase<K, VS> {
-  MultimapAsMap(this._multimap);
+  new(this._multimap);
 
   final Multimap<K, V, VS> _multimap;
 

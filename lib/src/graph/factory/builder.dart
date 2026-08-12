@@ -5,7 +5,7 @@ import '../model/unmodifiable.dart';
 /// Internal builder of graphs based on the configuration from [GraphFactory].
 class GraphBuilder<V, E> {
   /// Constructs a graph builder.
-  GraphBuilder(this.factory)
+  new(this.factory)
     : graph = Graph<V, E>(
         isDirected: factory.isDirected,
         vertexStrategy: factory.vertexStrategy,

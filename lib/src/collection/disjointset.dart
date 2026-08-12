@@ -9,7 +9,7 @@
 class DisjointSet<T> {
   /// Constructs a disjoint set with the unique [elements], where each element
   /// is initially its own set.
-  DisjointSet(Iterable<T> elements) {
+  new(Iterable<T> elements) {
     for (final element in elements) {
       _nodes[element] ??= (parent: element, size: 1);
     }

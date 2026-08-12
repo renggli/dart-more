@@ -7,7 +7,7 @@ import 'numeral.dart';
 /// Prints numbers in an ordinal format.
 class OrdinalNumberPrinter extends Printer<int> {
   /// Prints numbers in an ordinal format.
-  OrdinalNumberPrinter({
+  new({
     this.base = 10,
     this.characters = NumeralSystem.latin,
     this.padding = 0,

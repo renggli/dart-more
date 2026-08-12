@@ -10,7 +10,7 @@ import '../traverse/depth_first.dart';
 ///
 /// See https://en.wikipedia.org/wiki/Dinic%27s_algorithm.
 class DinicMaxFlow<V> {
-  DinicMaxFlow({
+  new({
     required Iterable<V> seedVertices,
     required Iterable<V> Function(V vertex) successorsOf,
     num Function(V source, V target)? edgeCapacity,
@@ -22,7 +22,7 @@ class DinicMaxFlow<V> {
          vertexStrategy: vertexStrategy ?? StorageStrategy.defaultStrategy(),
        );
 
-  DinicMaxFlow._({
+  new _({
     required Iterable<V> seedVertices,
     required Iterable<V> Function(V vertex) successorsOf,
     required num Function(V source, V target) edgeCapacity,
@@ -128,7 +128,7 @@ class DinicMaxFlow<V> {
 }
 
 final class _Vertex<V> {
-  _Vertex(this.vertex);
+  new(this.vertex);
 
   final V vertex;
   final List<_Edge<V>> outgoing = [];
@@ -137,7 +137,7 @@ final class _Vertex<V> {
 }
 
 final class _Edge<V> {
-  _Edge(this.source, this.target, {this.capacity = 0});
+  new(this.source, this.target, {this.capacity = 0});
 
   final _Vertex<V> source;
   final _Vertex<V> target;

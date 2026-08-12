@@ -29,7 +29,7 @@ extension RepeatIterableExtension<E> on Iterable<E> {
 
 class RepeatIterableIterable<E> extends IterableBase<E>
     with InfiniteIterable<E> {
-  RepeatIterableIterable(this.iterable);
+  new(this.iterable);
 
   final Iterable<E> iterable;
 
@@ -38,7 +38,7 @@ class RepeatIterableIterable<E> extends IterableBase<E>
 }
 
 class RepeatIterableIterator<E> implements Iterator<E> {
-  RepeatIterableIterator(this.iterable) : iterator = iterable.iterator;
+  new(this.iterable) : iterator = iterable.iterator;
 
   final Iterable<E> iterable;
   Iterator<E> iterator;

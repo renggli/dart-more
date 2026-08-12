@@ -14,7 +14,7 @@ extension TrimPrinterExtension<T> on Printer<T> {
 
 /// Removes any leading and/or trailing whitespace.
 abstract class TrimPrinter<T> extends Printer<T> {
-  const TrimPrinter(this.printer);
+  const new(this.printer);
 
   final Printer<T> printer;
 
@@ -25,7 +25,7 @@ abstract class TrimPrinter<T> extends Printer<T> {
 
 /// Removes any leading and trailing whitespace.
 class TrimBothPrinter<T> extends TrimPrinter<T> {
-  const TrimBothPrinter(super.printer);
+  const new(super.printer);
 
   @override
   void printOn(T object, StringBuffer buffer) =>
@@ -34,7 +34,7 @@ class TrimBothPrinter<T> extends TrimPrinter<T> {
 
 /// Removes any leading whitespace.
 class TrimLeftPrinter<T> extends TrimPrinter<T> {
-  const TrimLeftPrinter(super.printer);
+  const new(super.printer);
 
   @override
   void printOn(T object, StringBuffer buffer) =>
@@ -43,7 +43,7 @@ class TrimLeftPrinter<T> extends TrimPrinter<T> {
 
 /// Removes any trailing whitespace.
 class TrimRightPrinter<T> extends TrimPrinter<T> {
-  const TrimRightPrinter(super.printer);
+  const new(super.printer);
 
   @override
   void printOn(T object, StringBuffer buffer) =>

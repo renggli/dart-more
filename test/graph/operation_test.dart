@@ -55,9 +55,8 @@ void main() {
   });
   group('copy', () {
     test('directed', () {
-      final graph = GraphFactory<int, void>(
-        isDirected: true,
-      ).fromSuccessors(cyclicGraphData);
+      final graph = GraphFactory<int, void>(isDirected: true)
+          .fromSuccessors(cyclicGraphData);
       final copy = graph.copy();
       expect(copy.isDirected, true);
       expect(copy.vertexStrategy, graph.vertexStrategy);
@@ -65,9 +64,8 @@ void main() {
       expect(copy.edges, unorderedEquals(graph.edges));
     });
     test('undirected', () {
-      final graph = GraphFactory<int, void>(
-        isDirected: false,
-      ).fromSuccessors(cyclicGraphData);
+      final graph = GraphFactory<int, void>(isDirected: false)
+          .fromSuccessors(cyclicGraphData);
       final copy = graph.copy();
       expect(copy.isDirected, false);
       expect(copy.vertexStrategy, graph.vertexStrategy);
@@ -75,9 +73,8 @@ void main() {
       expect(copy.edges, unorderedEquals(graph.edges));
     });
     test('directed empty', () {
-      final graph = GraphFactory<int, void>(
-        isDirected: true,
-      ).fromSuccessors(cyclicGraphData);
+      final graph = GraphFactory<int, void>(isDirected: true)
+          .fromSuccessors(cyclicGraphData);
       final copy = graph.copy(empty: true);
       expect(copy.isDirected, true);
       expect(copy.vertexStrategy, graph.vertexStrategy);
@@ -85,9 +82,8 @@ void main() {
       expect(copy.edges, isEmpty);
     });
     test('undirected empty', () {
-      final graph = GraphFactory<int, void>(
-        isDirected: false,
-      ).fromSuccessors(cyclicGraphData);
+      final graph = GraphFactory<int, void>(isDirected: false)
+          .fromSuccessors(cyclicGraphData);
       final copy = graph.copy(empty: true);
       expect(copy.isDirected, false);
       expect(copy.vertexStrategy, graph.vertexStrategy);
@@ -98,9 +94,8 @@ void main() {
   group('export', () {
     group('toDot', () {
       test('directed', () {
-        final graph = GraphFactory<int, void>(
-          isDirected: true,
-        ).fromSuccessors(cyclicGraphData);
+        final graph = GraphFactory<int, void>(isDirected: true)
+            .fromSuccessors(cyclicGraphData);
         expect(graph.toDot().split('\n'), [
           'digraph {',
           '  0 [label="0"];',
@@ -119,9 +114,8 @@ void main() {
         ]);
       });
       test('undirected', () {
-        final graph = GraphFactory<int, void>(
-          isDirected: false,
-        ).fromSuccessors(cyclicGraphData);
+        final graph = GraphFactory<int, void>(isDirected: false)
+            .fromSuccessors(cyclicGraphData);
         expect(graph.toDot().split('\n'), [
           'graph {',
           '  0 [label="0"];',
@@ -312,9 +306,8 @@ void main() {
     });
   });
   group('map', () {
-    final graph = GraphFactory<int, Point<int>>(
-      edgeProvider: Point.new,
-    ).ring(vertexCount: 3);
+    final graph = GraphFactory<int, Point<int>>(edgeProvider: Point.new)
+        .ring(vertexCount: 3);
     test('none', () {
       final result = graph.map<int, Point<int>>();
       expect(result.vertices, unorderedEquals([0, 1, 2]));

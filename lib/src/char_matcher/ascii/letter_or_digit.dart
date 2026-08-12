@@ -1,7 +1,7 @@
 import '../char_matcher.dart';
 
 final class LetterOrDigitCharMatcher extends CharMatcher {
-  const LetterOrDigitCharMatcher();
+  const new();
 
   @override
   bool match(int value) =>

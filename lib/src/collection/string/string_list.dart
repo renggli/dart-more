@@ -54,11 +54,9 @@ extension StringListExtension on String {
 
 /// A string as a mutable list of UTF-16 code units.
 class MutableStringList extends ListBase<String> {
-  MutableStringList.fromString(String string)
-    : this.fromCodeUnits(string.codeUnits);
+  new fromString(String string) : this.fromCodeUnits(string.codeUnits);
 
-  MutableStringList.fromCodeUnits(List<int> codeUnits)
-    : codeUnits = codeUnits.toList();
+  new fromCodeUnits(List<int> codeUnits) : codeUnits = codeUnits.toList();
 
   final List<int> codeUnits;
 
@@ -93,11 +91,9 @@ class MutableStringList extends ListBase<String> {
 
 /// A string as a mutable list of Unicode code-points.
 class MutableUnicodeStringList extends ListBase<String> {
-  MutableUnicodeStringList.fromString(String string)
-    : this.fromRunes(string.runes);
+  new fromString(String string) : this.fromRunes(string.runes);
 
-  MutableUnicodeStringList.fromRunes(Iterable<int> runes)
-    : runes = runes.toList();
+  new fromRunes(Iterable<int> runes) : runes = runes.toList();
 
   final List<int> runes;
 
@@ -133,7 +129,7 @@ class MutableUnicodeStringList extends ListBase<String> {
 /// A string as an immutable list of UTF-16 code units.
 class ImmutableStringList extends ListBase<String>
     with UnmodifiableListMixin<String> {
-  ImmutableStringList.fromString(this.string);
+  new fromString(this.string);
 
   final String string;
 
@@ -155,11 +151,9 @@ class ImmutableStringList extends ListBase<String>
 /// A string as an immutable list of Unicode code-points.
 class ImmutableUnicodeStringList extends ListBase<String>
     with UnmodifiableListMixin<String> {
-  ImmutableUnicodeStringList.fromString(String string)
-    : this.fromRunes(string.runes);
+  new fromString(String string) : this.fromRunes(string.runes);
 
-  ImmutableUnicodeStringList.fromRunes(Iterable<int> runes)
-    : runes = runes.toList(growable: false);
+  new fromRunes(Iterable<int> runes) : runes = runes.toList(growable: false);
 
   final List<int> runes;
 

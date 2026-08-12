@@ -7,7 +7,7 @@ import 'strategy.dart';
 
 /// Factory methods to create common graph types efficiently.
 class GraphFactory<V, E> {
-  GraphFactory({
+  new({
     this.isDirected = true,
     this.isUnmodifiable = false,
     this.vertexProvider,

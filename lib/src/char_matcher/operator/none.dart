@@ -2,7 +2,7 @@ import '../char_matcher.dart';
 import 'any.dart';
 
 final class NoneCharMatcher extends CharMatcher {
-  const NoneCharMatcher();
+  const new();
 
   @override
   bool match(int value) => false;

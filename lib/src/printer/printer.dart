@@ -12,30 +12,28 @@ import 'to_string.dart';
 @immutable
 abstract class Printer<T> with ToStringPrinter {
   /// Generic const constructor.
-  const Printer();
+  const new();
 
   /// Constructs a printer that simply calls `toString()`.
-  const factory Printer.standard() = StandardPrinter<T>;
+  const factory standard() = StandardPrinter<T>;
 
   /// Constructs a printer that emits a literal value.
-  const factory Printer.literal([String value]) = LiteralPrinter<T>;
+  const factory literal([String value]) = LiteralPrinter<T>;
 
   /// Constructs a printer that evaluates the callback.
-  const factory Printer.pluggable(Map1<T, String> callback) =
-      PluggablePrinter<T>;
+  const factory pluggable(Map1<T, String> callback) = PluggablePrinter<T>;
 
   /// Constructs a printer that emits a list of printers.
-  const factory Printer.sequence(Iterable<Printer<T>> printers) =
-      SequencePrinter<T>;
+  const factory sequence(Iterable<Printer<T>> printers) = SequencePrinter<T>;
 
   /// Constructs a printer that switches between other printers.
-  const factory Printer.switcher(
+  const factory switcher(
     Map<Predicate1<T>, Printer<T>> cases, {
     Printer<T> otherwise,
   }) = SwitcherPrinter<T>;
 
   /// Constructs a printer by wrapping [object].
-  factory Printer.wrap(Object? object) {
+  factory wrap(Object? object) {
     if (object is Printer<T>) {
       return object;
     } else if (object is Map1<T, String>) {

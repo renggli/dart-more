@@ -9,7 +9,7 @@ extension NullPrinterExtension<T> on Printer<T> {
 
 /// Prints an object different if `null`.
 class NullPrinter<T> extends Printer<T?> {
-  const NullPrinter(this.printer, this.label);
+  const new(this.printer, this.label);
 
   final Printer<T> printer;
   final String label;

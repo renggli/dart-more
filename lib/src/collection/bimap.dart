@@ -7,13 +7,13 @@ import 'dart:collection';
 /// [containsValue] are much more efficient than with traditional maps.
 class BiMap<K, V> extends MapBase<K, V> {
   /// Creates an empty bi-map.
-  factory BiMap() => BiMap<K, V>._({}, {});
+  factory() => BiMap<K, V>._({}, {});
 
   /// Creates an empty identity bi-map.
-  factory BiMap.identity() => BiMap<K, V>._(Map.identity(), Map.identity());
+  factory identity() => BiMap<K, V>._(Map.identity(), Map.identity());
 
   /// Creates bi-map from another map.
-  factory BiMap.of(Map<K, V> other) {
+  factory of(Map<K, V> other) {
     if (other is BiMap<K, V>) {
       return BiMap<K, V>._(
         Map<K, V>.of(other._forward),
@@ -25,10 +25,10 @@ class BiMap<K, V> extends MapBase<K, V> {
   }
 
   /// Creates bi-map from another map.
-  factory BiMap.from(Map<K, V> other) => BiMap.of(other);
+  factory from(Map<K, V> other) => BiMap.of(other);
 
   /// Creates a bi-map from an iterable (and possible transformation functions).
-  factory BiMap.fromIterable /*<E>*/ (
+  factory fromIterable /*<E>*/ (
     Iterable<Object?> /*<E>*/ iterable, {
     K Function(Object? /*E*/ element)? key,
     V Function(Object? /*E*/ element)? value,
@@ -38,7 +38,7 @@ class BiMap<K, V> extends MapBase<K, V> {
   );
 
   /// Creates a bi-map from two equal length iterables.
-  factory BiMap.fromIterables(Iterable<K> keys, Iterable<V> values) {
+  factory fromIterables(Iterable<K> keys, Iterable<V> values) {
     final result = BiMap<K, V>();
     final keyIterator = keys.iterator;
     final valueIterator = values.iterator;
@@ -56,7 +56,7 @@ class BiMap<K, V> extends MapBase<K, V> {
   }
 
   /// Internal constructor.
-  BiMap._(this._forward, this._backward);
+  new _(this._forward, this._backward);
 
   /// Internal map with associations from `keys` to `values`.
   final Map<K, V> _forward;

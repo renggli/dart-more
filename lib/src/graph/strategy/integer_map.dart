@@ -8,7 +8,7 @@ import '../../collection/bitlist.dart';
 /// and [_backward] functions are used to map the keys to the list indices and
 /// vice-versa.
 class IntegerMap<T> extends MapBase<int, T> {
-  IntegerMap(this._forward, this._backward);
+  new(this._forward, this._backward);
 
   final int Function(int x) _forward;
   final int Function(int x) _backward;

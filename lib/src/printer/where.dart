@@ -9,7 +9,7 @@ extension WherePrinterExtension<T> on Printer<T> {
 }
 
 class WherePrinter<T> extends Printer<T> {
-  const WherePrinter(this.printer, this.callback);
+  const new(this.printer, this.callback);
 
   final Printer<T> printer;
   final Predicate1<T> callback;

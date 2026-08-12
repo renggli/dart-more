@@ -28,14 +28,14 @@ import '../where.dart';
 /// ```
 class DateTimePrinter extends SequencePrinter<DateTime> {
   /// Constructor to build a [DateTimePrinter].
-  factory DateTimePrinter(Callback1<DateTimePrinterBuilder> callback) {
+  factory(Callback1<DateTimePrinterBuilder> callback) {
     final builder = DateTimePrinterBuilder();
     callback(builder);
     return DateTimePrinter._(builder._printers);
   }
 
   /// Internal constructor for [DateTimePrinter].
-  const DateTimePrinter._(super.printers);
+  const new _(super.printers);
 
   /// Returns a configurable date printer.
   static DateTimePrinter date({String separator = '-'}) => DateTimePrinter(
@@ -98,7 +98,7 @@ class DateTimePrinter extends SequencePrinter<DateTime> {
 
 /// Builder of [DateTimePrinter] objects.
 class DateTimePrinterBuilder {
-  DateTimePrinterBuilder();
+  new();
 
   final List<Printer<DateTime>> _printers = [];
 
@@ -115,9 +115,8 @@ class DateTimePrinterBuilder {
   void era({List<String> names = const ['BC', 'AD']}) {
     assert(names.length == 2, '2 era names expected');
     add(
-      Printer<int>.pluggable(
-        (index) => names[index],
-      ).onResultOf((dateTime) => dateTime.year > 0 ? 1 : 0),
+      Printer<int>.pluggable((index) => names[index])
+          .onResultOf((dateTime) => dateTime.year > 0 ? 1 : 0),
     );
   }
 
@@ -178,9 +177,8 @@ class DateTimePrinterBuilder {
   ///
   /// [width] specifies the minimum number of digits to display.
   void weekNumber({int width = 0}) => add(
-    FixedNumberPrinter(
-      padding: width,
-    ).onResultOf((dateTime) => dateTime.weekNumber),
+    FixedNumberPrinter(padding: width)
+        .onResultOf((dateTime) => dateTime.weekNumber),
   );
 
   /// Adds a [DateTime.day] field.
@@ -194,9 +192,8 @@ class DateTimePrinterBuilder {
   ///
   /// [width] specifies the minimum number of digits to display.
   void dayOfYear({int width = 0}) => add(
-    FixedNumberPrinter(
-      padding: width,
-    ).onResultOf((dateTime) => dateTime.dayOfYear),
+    FixedNumberPrinter(padding: width)
+        .onResultOf((dateTime) => dateTime.dayOfYear),
   );
 
   /// Adds an am/pm field.
@@ -206,9 +203,8 @@ class DateTimePrinterBuilder {
   void meridiem({List<String> names = const ['am', 'pm']}) {
     assert(names.length == 2, '2 meridiem names expected');
     add(
-      Printer<int>.pluggable(
-        (index) => names[index],
-      ).onResultOf((dateTime) => dateTime.hour.between(12, 23) ? 1 : 0),
+      Printer<int>.pluggable((index) => names[index])
+          .onResultOf((dateTime) => dateTime.hour.between(12, 23) ? 1 : 0),
     );
   }
 
@@ -223,27 +219,24 @@ class DateTimePrinterBuilder {
   ///
   /// [width] specifies the minimum number of digits to display.
   void hour12({int width = 0}) => add(
-    FixedNumberPrinter(
-      padding: width,
-    ).onResultOf((dateTime) => dateTime.hour12),
+    FixedNumberPrinter(padding: width)
+        .onResultOf((dateTime) => dateTime.hour12),
   );
 
   /// Adds a [DateTime.minute] field.
   ///
   /// [width] specifies the minimum number of digits to display.
   void minute({int width = 0}) => add(
-    FixedNumberPrinter(
-      padding: width,
-    ).onResultOf((dateTime) => dateTime.minute),
+    FixedNumberPrinter(padding: width)
+        .onResultOf((dateTime) => dateTime.minute),
   );
 
   /// Adds a [DateTime.second] field.
   ///
   /// [width] specifies the minimum number of digits to display.
   void second({int width = 0}) => add(
-    FixedNumberPrinter(
-      padding: width,
-    ).onResultOf((dateTime) => dateTime.second),
+    FixedNumberPrinter(padding: width)
+        .onResultOf((dateTime) => dateTime.second),
   );
 
   /// Adds a [DateTime.millisecond] field.

@@ -408,21 +408,18 @@ void main() {
         ],
       );
       expect(
-        await Stream.fromIterable([
-          1,
-          2,
-        ]).window(2, includePartial: true).toList(),
+        await Stream.fromIterable([1, 2])
+            .window(2, includePartial: true)
+            .toList(),
         [
           [1, 2],
           [2],
         ],
       );
       expect(
-        await Stream.fromIterable([
-          1,
-          2,
-          3,
-        ]).window(2, includePartial: true).toList(),
+        await Stream.fromIterable([1, 2, 3])
+            .window(2, includePartial: true)
+            .toList(),
         [
           [1, 2],
           [2, 3],
@@ -430,12 +427,9 @@ void main() {
         ],
       );
       expect(
-        await Stream.fromIterable([
-          1,
-          2,
-          3,
-          4,
-        ]).window(2, includePartial: true).toList(),
+        await Stream.fromIterable([1, 2, 3, 4])
+            .window(2, includePartial: true)
+            .toList(),
         [
           [1, 2],
           [2, 3],
@@ -446,46 +440,40 @@ void main() {
     });
     test('size = 2, step = 2, includePartial', () async {
       expect(
-        await Stream.fromIterable(
-          [],
-        ).window(2, step: 2, includePartial: true).toList(),
+        await Stream.fromIterable([])
+            .window(2, step: 2, includePartial: true)
+            .toList(),
         isEmpty,
       );
       expect(
-        await Stream.fromIterable([
-          1,
-        ]).window(2, step: 2, includePartial: true).toList(),
+        await Stream.fromIterable([1])
+            .window(2, step: 2, includePartial: true)
+            .toList(),
         [
           [1],
         ],
       );
       expect(
-        await Stream.fromIterable([
-          1,
-          2,
-        ]).window(2, step: 2, includePartial: true).toList(),
+        await Stream.fromIterable([1, 2])
+            .window(2, step: 2, includePartial: true)
+            .toList(),
         [
           [1, 2],
         ],
       );
       expect(
-        await Stream.fromIterable([
-          1,
-          2,
-          3,
-        ]).window(2, step: 2, includePartial: true).toList(),
+        await Stream.fromIterable([1, 2, 3])
+            .window(2, step: 2, includePartial: true)
+            .toList(),
         [
           [1, 2],
           [3],
         ],
       );
       expect(
-        await Stream.fromIterable([
-          1,
-          2,
-          3,
-          4,
-        ]).window(2, step: 2, includePartial: true).toList(),
+        await Stream.fromIterable([1, 2, 3, 4])
+            .window(2, step: 2, includePartial: true)
+            .toList(),
         [
           [1, 2],
           [3, 4],
@@ -494,45 +482,39 @@ void main() {
     });
     test('size = 2, step = 3, includePartial', () async {
       expect(
-        await Stream.fromIterable(
-          [],
-        ).window(2, step: 3, includePartial: true).toList(),
+        await Stream.fromIterable([])
+            .window(2, step: 3, includePartial: true)
+            .toList(),
         isEmpty,
       );
       expect(
-        await Stream.fromIterable([
-          1,
-        ]).window(2, step: 3, includePartial: true).toList(),
+        await Stream.fromIterable([1])
+            .window(2, step: 3, includePartial: true)
+            .toList(),
         [
           [1],
         ],
       );
       expect(
-        await Stream.fromIterable([
-          1,
-          2,
-        ]).window(2, step: 3, includePartial: true).toList(),
+        await Stream.fromIterable([1, 2])
+            .window(2, step: 3, includePartial: true)
+            .toList(),
         [
           [1, 2],
         ],
       );
       expect(
-        await Stream.fromIterable([
-          1,
-          2,
-          3,
-        ]).window(2, step: 3, includePartial: true).toList(),
+        await Stream.fromIterable([1, 2, 3])
+            .window(2, step: 3, includePartial: true)
+            .toList(),
         [
           [1, 2],
         ],
       );
       expect(
-        await Stream.fromIterable([
-          1,
-          2,
-          3,
-          4,
-        ]).window(2, step: 3, includePartial: true).toList(),
+        await Stream.fromIterable([1, 2, 3, 4])
+            .window(2, step: 3, includePartial: true)
+            .toList(),
         [
           [1, 2],
           [4],

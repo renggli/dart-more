@@ -197,9 +197,8 @@ void main() {
     });
     test('star (default probabilities)', () {
       final random = Random(3527);
-      final graph = GraphFactory<int, void>(
-        isDirected: false,
-      ).star(vertexCount: 4);
+      final graph = GraphFactory<int, void>(isDirected: false)
+          .star(vertexCount: 4);
       final observations = graph
           .randomWalk(0, random: random)
           .take(100)
@@ -213,9 +212,8 @@ void main() {
     });
     test('star (tweaked probabilities)', () {
       final random = Random(3527);
-      final graph = GraphFactory<int, void>(
-        isDirected: false,
-      ).star(vertexCount: 4);
+      final graph = GraphFactory<int, void>(isDirected: false)
+          .star(vertexCount: 4);
       final observations = graph
           .randomWalk(
             0,

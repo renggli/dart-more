@@ -12,21 +12,18 @@ import 'types/mapping.dart';
 @immutable
 sealed class Either<L, R> {
   /// Internal const constructor.
-  const Either._();
+  const new _();
 
   /// Creates an [Either] with the left value populated.
-  const factory Either.left(L value) = LeftEither<L, R>._;
+  const factory left(L value) = LeftEither<L, R>._;
 
   /// Creates an [Either] with the right value populated.
-  const factory Either.right(R value) = RightEither<L, R>._;
+  const factory right(R value) = RightEither<L, R>._;
 
   /// Creates a left-sided [Either] from the [leftProvider], if [condition] is
   /// `true`. Otherwise, create a right-sided [Either] from the [rightProvider].
-  factory Either.iff(
-    bool condition,
-    Map0<L> leftProvider,
-    Map0<R> rightProvider,
-  ) => condition
+  factory iff(bool condition, Map0<L> leftProvider, Map0<R> rightProvider) =>
+      condition
       ? Either<L, R>.left(leftProvider())
       : Either<L, R>.right(rightProvider());
 
@@ -34,7 +31,7 @@ sealed class Either<L, R> {
   /// a non-null value create a left-sided [Either]. Alternatively, if the
   /// [rightProvider] returns a non-null value, create a right-sided [Either].
   /// Otherwise, if both providers return a null-value, throw a [StateError].
-  factory Either.either(Map0<L?> leftProvider, Map0<R?> rightProvider) {
+  factory either(Map0<L?> leftProvider, Map0<R?> rightProvider) {
     final leftValue = leftProvider();
     if (leftValue != null) {
       return Either<L, R>.left(leftValue);
@@ -111,7 +108,7 @@ sealed class Either<L, R> {
 
 /// Implementation of an [Either] with [leftValue] populated.
 class LeftEither<L, R> extends Either<L, R> {
-  const LeftEither._(this.leftValue) : super._();
+  const new _(this.leftValue) : super._();
 
   @override
   L get value => leftValue;
@@ -185,7 +182,7 @@ class LeftEither<L, R> extends Either<L, R> {
 
 /// Implementation of an [Either] with [rightValue] populated.
 class RightEither<L, R> extends Either<L, R> {
-  const RightEither._(this.rightValue) : super._();
+  const new _(this.rightValue) : super._();
 
   @override
   R get value => rightValue;

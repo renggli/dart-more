@@ -8,18 +8,18 @@ import 'utils.dart';
 @immutable
 class Quaternion implements CloseTo<Quaternion> {
   /// Constructs a quaternion from its components.
-  const Quaternion(this.w, [this.x = 0, this.y = 0, this.z = 0]);
+  const new(this.w, [this.x = 0, this.y = 0, this.z = 0]);
 
   /// Constructs a quaternion from a scalar and a vector.
-  factory Quaternion.of(num scalar, List<num> vector) =>
+  factory of(num scalar, List<num> vector) =>
       Quaternion(scalar, vector[0], vector[1], vector[2]);
 
   /// Constructs a quaternion from a vector.
-  factory Quaternion.fromList(List<num> vector) =>
+  factory fromList(List<num> vector) =>
       Quaternion(vector[0], vector[1], vector[2], vector[3]);
 
   /// Constructs a quaternion from an [axis] and a rotation [angle].
-  factory Quaternion.fromAxis(List<num> axis, num angle) {
+  factory fromAxis(List<num> axis, num angle) {
     final halfAngle = 0.5 * angle;
     final norm =
         halfAngle.sin() /
@@ -34,7 +34,7 @@ class Quaternion implements CloseTo<Quaternion> {
 
   /// Constructs a quaternion from the rotation between two vectors [source]
   /// and [target].
-  factory Quaternion.fromVectors(List<num> source, List<num> target) {
+  factory fromVectors(List<num> source, List<num> target) {
     final w =
         source[0] * target[0] + source[1] * target[1] + source[2] * target[2];
     final x = source[1] * target[2] - source[2] * target[1];
@@ -49,7 +49,7 @@ class Quaternion implements CloseTo<Quaternion> {
   }
 
   /// Constructs a quaternion from an euler rotation.
-  factory Quaternion.fromEuler(num phi, num theta, num psi) {
+  factory fromEuler(num phi, num theta, num psi) {
     final halfPhi = phi * 0.5;
     final halfTheta = theta * 0.5;
     final halfPsi = psi * 0.5;
@@ -71,7 +71,7 @@ class Quaternion implements CloseTo<Quaternion> {
   }
 
   /// Parses [source] as a [Quaternion]. Throws a [FormatException] for invalid input.
-  factory Quaternion.parse(String source) {
+  factory parse(String source) {
     final parts = parseWithUnits(source, units: const {'', 'i', 'j', 'k'});
     if (parts == null) throw FormatException(source);
     return Quaternion(

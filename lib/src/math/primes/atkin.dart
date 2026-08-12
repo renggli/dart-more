@@ -9,7 +9,7 @@ import 'sieve.dart';
 /// See https://en.wikipedia.org/wiki/Sieve_of_Atkin.
 class AtkinPrimeSieve extends PrimeSieve {
   /// Constructs the prime sieve of Atkin.
-  AtkinPrimeSieve(super.max) : _isPrime = BitList.filled(max + 1, false) {
+  new(super.max) : _isPrime = BitList.filled(max + 1, false) {
     if (max >= 2) _isPrime[2] = true;
     if (max >= 3) _isPrime[3] = true;
     for (var i = 1; i * i <= max; i++) {

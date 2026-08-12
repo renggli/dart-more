@@ -14,7 +14,7 @@ extension ResultOfPrinterExtension<R> on Printer<R> {
 }
 
 class ResultOfPrinter<T, R> extends Printer<T> {
-  const ResultOfPrinter(this.printer, this.function);
+  const new(this.printer, this.function);
 
   final Printer<R> printer;
   final Map1<T, R> function;

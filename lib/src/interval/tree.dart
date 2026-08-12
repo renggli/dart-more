@@ -26,7 +26,7 @@ class IntervalTree<K extends Comparable<K>, V> with Iterable<V> {
   );
 
   /// Internal constructor of the [IntervalTree].
-  const IntervalTree._(this._root, this.getter);
+  const new _(this._root, this.getter);
 
   /// The root node of this tree, or `null` if empty.
   final _IntervalTreeNode<K, V>? _root;
@@ -95,7 +95,7 @@ class IntervalTree<K extends Comparable<K>, V> with Iterable<V> {
 
 final class _IntervalTreeIterator<K extends Comparable<K>, V>
     implements Iterator<V> {
-  _IntervalTreeIterator(_IntervalTreeNode<K, V>? node) {
+  new(_IntervalTreeNode<K, V>? node) {
     if (node != null) _nodes.add(node);
   }
 
@@ -162,7 +162,7 @@ final class _IntervalTreeNode<K extends Comparable<K>, V> {
     );
   }
 
-  const _IntervalTreeNode(
+  const new(
     this._leftNode,
     this._leftValues,
     this._median,

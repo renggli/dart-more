@@ -33,7 +33,7 @@ final class IntegerRange extends Range<int> {
   /// The constructor called with three arguments returns the range between
   /// the first two numbers (including the start, but excluding the end) and the
   /// step value. For example, `IntegerRange(1, 7, 2)` yields `<int>[1, 3, 5]`.
-  factory IntegerRange([int? a, int? b, int? c]) {
+  factory([int? a, int? b, int? c]) {
     if (a != null && b != null && c != null) {
       if (c == 0) throw ArgumentError.value(c, 'step');
       return IntegerRange.of(start: a, end: b, step: c);
@@ -50,10 +50,10 @@ final class IntegerRange extends Range<int> {
   /// Const constructor to create an arithmetic progression of [int] values
   /// between [start] (inclusive) and [end] (exclusive); and a step-value
   /// [step].
-  const IntegerRange.of({int start = 0, int end = 0, int? step})
+  const new of({int start = 0, int end = 0, int? step})
     : this._of1(start, end, step ?? (start <= end ? 1 : -1));
 
-  const IntegerRange._of1(int start, int end, int step)
+  const new _of1(int start, int end, int step)
     : this._(
         start,
         end,
@@ -68,11 +68,11 @@ final class IntegerRange extends Range<int> {
   /// Const constructor to create an arithmetic progression of [int] values.
   /// The resulting [Range] is of the given [length], starts at [start], and
   /// uses the step-value [step].
-  const IntegerRange.length(int length, {int start = 0, int step = 1})
+  const new length(int length, {int start = 0, int step = 1})
     : this._(start, start + length * step, step, length);
 
   // Internal const-constructor that initializes the state.
-  const IntegerRange._(this.start, this.end, this.step, this.length)
+  const new _(this.start, this.end, this.step, this.length)
     : assert(step != 0, '`step` must not be zero'),
       assert(step < 0 || start <= end, '`step` must be positive'),
       assert(step > 0 || start >= end, '`step` must be negative'),

@@ -11,7 +11,7 @@ import 'utils.dart';
 /// Prints numbers in a fixed format.
 class FixedNumberPrinter<T extends num> extends Printer<T> {
   /// Prints numbers in a custom fixed format.
-  FixedNumberPrinter({
+  new({
     this.accuracy,
     this.base = 10,
     this.characters = NumeralSystem.latin,

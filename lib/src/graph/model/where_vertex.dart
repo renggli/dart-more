@@ -3,7 +3,7 @@ import 'forwarding.dart';
 
 /// The view of a graph that is filtered by a vertex predicate.
 class WhereVertexGraph<V, E> extends ForwardingGraph<V, E> {
-  WhereVertexGraph(super.delegate, this._vertexPredicate);
+  new(super.delegate, this._vertexPredicate);
 
   final bool Function(V vertex) _vertexPredicate;
 

@@ -3,7 +3,7 @@ import '../../collection/bitlist.dart';
 import '../char_matcher.dart';
 
 final class LookupCharMatcher extends CharMatcher {
-  const LookupCharMatcher(this.start, this.stop, this.buffer);
+  const new(this.start, this.stop, this.buffer);
 
   final int start;
   final int stop;
