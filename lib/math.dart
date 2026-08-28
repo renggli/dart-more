@@ -29,3 +29,4 @@ export 'src/math/primes/atkin.dart' show AtkinPrimeSieve;
 export 'src/math/primes/eratosthenes.dart' show EratosthenesPrimeSieve;
 export 'src/math/primes/euler.dart' show EulerPrimeSieve;
 export 'src/math/primes/sieve.dart' show PrimeSieve;
+export 'src/math/statistics.dart' show StatisticsIterableExtension;

@@ -757,6 +757,52 @@ void main() {
       expect([1, 2, 3, 4].polynomial(), 4321);
     });
   });
+  group('statistics', () {
+    test('sum', () {
+      expect(<num>[].sum(), 0);
+      expect([1, 2, 3].sum(), 6);
+      expect([1.5, 2, 3.25].sum(), 6.75);
+      expect([-1, 2, -3].sum(), -2);
+    });
+    test('product', () {
+      expect(<num>[].product(), 1);
+      expect([1, 2, 3, 4].product(), 24);
+      expect([1.5, 2, 3].product(), 9);
+      expect([-1, 2, -3].product(), 6);
+    });
+    group('mean', () {
+      test('values', () {
+        expect([1, 2, 3].mean(), 2);
+        expect([1, 2, 4].mean(), closeTo(2.3333333333333335, epsilon));
+        expect([-1, 2, -3].mean(), closeTo(-0.6666666666666666, epsilon));
+      });
+      test('empty', () {
+        expect(<num>[].mean, throwsStateError);
+      });
+    });
+    group('median', () {
+      test('values', () {
+        expect([1].median(), 1);
+        expect([3, 1, 2].median(), 2);
+        expect([4, 1, 2, 3].median(), 2.5);
+        expect([-3, 2, -1].median(), -1);
+      });
+      test('empty', () {
+        expect(<num>[].median, throwsStateError);
+      });
+    });
+    group('mode', () {
+      test('values', () {
+        expect([2, 1, 4, 3, 1].mode(), [1]);
+        expect([1, 2.7, 3.2, 4, 2.7].mode(), [2.7]);
+        expect([1, 4, 6, 1, 6].mode(), [1, 6]);
+        expect([3, 2, 1].mode(), [3, 2, 1]);
+      });
+      test('empty', () {
+        expect(<num>[].mode, throwsStateError);
+      });
+    });
+  });
   group('prime sieves', () {
     void primeSieveTests(PrimeSieve Function(int n) create) {
       test('primes', () {
