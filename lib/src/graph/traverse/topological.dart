@@ -43,12 +43,18 @@ class TopologicalIterable<V> extends IterableBase<V> {
 }
 
 class _TopologicalIterator<V> implements Iterator<V> {
-  new(this.iterable) : seen = iterable.vertexStrategy.createSet() {
-    for (final vertex in DepthFirstIterable(
-      iterable.vertices,
-      successorsOf: iterable.successorsOf,
-    )) {
-      if (iterable.predecessorsOf(vertex).isEmpty) {
+  new(this.iterable)
+    : seen = iterable.vertexStrategy.createSet(),
+      reachable = iterable.vertexStrategy.createSet() {
+    reachable.addAll(
+      DepthFirstIterable(
+        iterable.vertices,
+        successorsOf: iterable.successorsOf,
+        vertexStrategy: iterable.vertexStrategy,
+      ),
+    );
+    for (final vertex in reachable) {
+      if (iterable.predecessorsOf(vertex).where(reachable.contains).isEmpty) {
         todo.add(vertex);
       }
     }
@@ -57,6 +63,7 @@ class _TopologicalIterator<V> implements Iterator<V> {
   final TopologicalIterable<V> iterable;
   final List<V> todo = <V>[];
   final Set<V> seen;
+  final Set<V> reachable;
 
   @override
   late V current;
@@ -67,7 +74,10 @@ class _TopologicalIterator<V> implements Iterator<V> {
       current = todo.removeLast();
       if (seen.add(current)) {
         for (final next in iterable.successorsOf(current)) {
-          if (iterable.predecessorsOf(next).every(seen.contains)) {
+          if (iterable
+              .predecessorsOf(next)
+              .where(reachable.contains)
+              .every(seen.contains)) {
             todo.add(next);
           }
         }

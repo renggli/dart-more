@@ -161,6 +161,10 @@ void main() {
         9,
       ]);
     });
+    test('path from intermediate vertex', () {
+      final graph = GraphFactory<int, void>().path(vertexCount: 10);
+      expect(graph.topological(5), [5, 6, 7, 8, 9]);
+    });
     test('ring', () {
       final graph = GraphFactory<int, void>().ring(vertexCount: 10);
       expect(graph.topological(graph.vertices.first), isEmpty);
