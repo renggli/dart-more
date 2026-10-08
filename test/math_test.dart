@@ -590,18 +590,27 @@ void main() {
       expect(2.lcm(5), 10);
       expect(5.lcm(0), 0);
       expect(0.lcm(5), 0);
+      expect(0.lcm(0), 0);
+      expect((-4).lcm(6), 12);
+      expect(4.lcm(-6), 12);
+      expect((-4).lcm(-6), 12);
     });
     test('Iterable<int>', () {
       expect([4].lcm(), 4);
       expect([2, 5].lcm(), 10);
       expect([2, 3, 5].lcm(), 30);
       expect([2, 9, 3, 2].lcm(), 18);
+      expect([-4, 6].lcm(), 12);
     });
     test('BigInt', () {
       expect(BigInt.from(5).lcm(BigInt.from(2)), BigInt.from(10));
       expect(BigInt.from(2).lcm(BigInt.from(5)), BigInt.from(10));
       expect(BigInt.from(5).lcm(BigInt.from(0)), BigInt.from(0));
       expect(BigInt.from(0).lcm(BigInt.from(5)), BigInt.from(0));
+      expect(BigInt.zero.lcm(BigInt.zero), BigInt.zero);
+      expect(BigInt.from(-4).lcm(BigInt.from(6)), BigInt.from(12));
+      expect(BigInt.from(4).lcm(BigInt.from(-6)), BigInt.from(12));
+      expect(BigInt.from(-4).lcm(BigInt.from(-6)), BigInt.from(12));
     });
     test('Iterable<BigInt>', () {
       expect([BigInt.from(4)].lcm(), BigInt.from(4));
