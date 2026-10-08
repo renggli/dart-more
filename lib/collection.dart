@@ -66,7 +66,7 @@ export 'src/collection/rtree.dart' show RTree;
 export 'src/collection/rtree/bounds.dart' show Bounds;
 export 'src/collection/rtree/entry.dart' show RTreeEntry;
 export 'src/collection/rtree/node.dart' show RTreeNode;
-export 'src/collection/sortedlist.dart'
+export 'src/collection/sorted_list.dart'
     show SortedList, SortedListIterableExtension;
 export 'src/collection/string/chunked.dart'
     show ChunkedCharactersExtension, ChunkedStringExtension;
