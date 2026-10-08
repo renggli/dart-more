@@ -45,6 +45,13 @@ Iterable<List<E>> combinationsWithRepetitions<E>(
   List<E> elements,
   int count,
 ) sync* {
+  if (count == 0) {
+    yield const [];
+    return;
+  }
+  if (elements.isEmpty) {
+    return;
+  }
   final indices = List.filled(count, 0);
   final current = List.filled(count, elements[0]);
   var hasMore = false;

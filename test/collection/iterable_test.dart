@@ -209,6 +209,11 @@ void main() {
         throwsRangeError,
       );
     });
+    test('empty input', () {
+      expect(<int>[].combinations(0, repetitions: true), <List<int>>[[]]);
+      expect(<int>[].combinations(0, repetitions: false), <List<int>>[[]]);
+      expect(<int>[].combinations(2, repetitions: true), isEmpty);
+    });
   });
   group('count', () {
     test('true', () {
