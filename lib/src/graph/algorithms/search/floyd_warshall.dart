@@ -21,17 +21,22 @@ FloydWarshall<V> floydWarshallSearch<V>({
   final pairs = vertexStrategy.createMap<Map<V, FloyWarshallState<V>>>();
   for (final source in vertices) {
     final sourceMap = vertexStrategy.createMap<FloyWarshallState<V>>();
-    final successors = successorsOf(source);
     for (final target in vertices) {
-      final state = source == target
-          ? FloyWarshallState<V>(distance: 0)
-          : successors.contains(target)
-          ? FloyWarshallState<V>(
-              distance: edgeCost(source, target),
-              next: target,
-            )
-          : FloyWarshallState<V>(distance: double.infinity);
-      sourceMap[target] = state;
+      sourceMap[target] = FloyWarshallState<V>(
+        distance: source == target ? 0 : double.infinity,
+      );
+    }
+    for (final target in successorsOf(source)) {
+      if (source != target) {
+        final state = sourceMap[target];
+        if (state != null) {
+          final cost = edgeCost(source, target);
+          if (state.next == null || cost < state.distance) {
+            state.distance = cost;
+            state.next = target;
+          }
+        }
+      }
     }
     pairs[source] = sourceMap;
   }
