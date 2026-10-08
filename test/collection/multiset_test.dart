@@ -12,6 +12,8 @@ void main() {
     test('empty', () {
       final set = Multiset<String>();
       expect(set, isEmpty);
+      expect(set.isEmpty, isTrue);
+      expect(set.isNotEmpty, isFalse);
       expect(set, hasLength(0));
       expect(set, unorderedEquals([]));
       expect(set.entrySet, unorderedEquals([]));
@@ -34,6 +36,8 @@ void main() {
     test('of one unique', () {
       final set = Multiset.of(['a']);
       expect(set, isNot(isEmpty));
+      expect(set.isEmpty, isFalse);
+      expect(set.isNotEmpty, isTrue);
       expect(set, hasLength(1));
       expect(set, unorderedEquals(['a']));
       expect(set.entrySet, unorderedEquals([isMapEntry('a', 1)]));

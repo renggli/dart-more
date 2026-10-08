@@ -236,6 +236,12 @@ class Multiset<E> extends IterableBase<E> {
   /// Returns the total number of elements in the receiver.
   @override
   int get length => _length;
+
+  @override
+  bool get isEmpty => _length == 0;
+
+  @override
+  bool get isNotEmpty => _length > 0;
 }
 
 extension MultisetExtension<T> on Iterable<T> {
