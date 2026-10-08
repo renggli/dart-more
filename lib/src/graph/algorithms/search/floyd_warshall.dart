@@ -27,14 +27,17 @@ FloydWarshall<V> floydWarshallSearch<V>({
       );
     }
     for (final target in successorsOf(source)) {
-      if (source != target) {
-        final state = sourceMap[target];
-        if (state != null) {
-          final cost = edgeCost(source, target);
-          if (state.next == null || cost < state.distance) {
+      final state = sourceMap[target];
+      if (state != null) {
+        final cost = edgeCost(source, target);
+        if (source == target) {
+          if (cost < state.distance) {
             state.distance = cost;
             state.next = target;
           }
+        } else if (state.next == null || cost < state.distance) {
+          state.distance = cost;
+          state.next = target;
         }
       }
     }

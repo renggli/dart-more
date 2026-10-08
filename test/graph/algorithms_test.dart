@@ -355,6 +355,10 @@ void main() {
       );
       expect(graph.allShortestPaths, throwsGraphError);
     });
+    test('directed graph with negative self-loop', () {
+      final graph = Graph<int, int>(isDirected: true)..addEdge(0, 0, value: -1);
+      expect(graph.allShortestPaths, throwsGraphError);
+    });
     test(
       'directed graph with negative cycle detected before yielding paths',
       () {
