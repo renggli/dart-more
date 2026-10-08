@@ -223,6 +223,20 @@ void main() {
           ]),
         );
       });
+      test('undirected shared edge (custom merger)', () {
+        final factory = GraphFactory<int, int>(isDirected: false);
+        final a = factory.fromPath([1, 2], value: 10);
+        final b = factory.fromPath([1, 2], value: 20);
+        final result = a.union(b, edgeMerge: (s, t, a, b) => a + b);
+        expect(result.getEdge(1, 2)!.value, 30);
+      });
+      test('undirected union with single graph (custom merger)', () {
+        final factory = GraphFactory<int, int>(isDirected: false);
+        final a = factory.fromPath([1, 2], value: 10);
+        final empty = factory.empty();
+        final result = a.union(empty, edgeMerge: (s, t, a, b) => a + b);
+        expect(result.getEdge(1, 2)!.value, 10);
+      });
     });
     group('intersection', () {
       test('disjoint', () {

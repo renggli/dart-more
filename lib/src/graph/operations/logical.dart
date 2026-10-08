@@ -25,8 +25,17 @@ extension LogicalGraphExtension<V, E> on Graph<V, E> {
       // Create all vertices present in any graph.
       result.addVertices(graph.vertices);
       // Create all edges present in any graph.
+      final seen = !graph.isDirected
+          ? graph.vertexStrategy.createMap<Set<V>>()
+          : null;
       for (final vertex in graph.vertices) {
         for (final edge in graph.outgoingEdgesOf(vertex)) {
+          if (seen != null) {
+            if (seen[edge.source]?.contains(edge.target) ?? false) continue;
+            seen
+                .putIfAbsent(edge.target, graph.vertexStrategy.createSet)
+                .add(edge.source);
+          }
           final existing = result.getEdge(edge.source, edge.target);
           final value = existing == null || edgeMerge == null
               ? edge.value
