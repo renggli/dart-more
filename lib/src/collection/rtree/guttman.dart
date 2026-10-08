@@ -39,12 +39,8 @@ class GuttmanTree<T> extends RTree<T> {
       // If one group has so few entries that all the rest must be assigned to it in order for it to meet the
       // min_entries requirement, assign them and stop. (If both groups are underfull, then proceed with the
       // algorithm to determine the best group to extend.)
-      final group1Underfull =
-          group1.length < minEntries &&
-          minEntries <= group1.length + entries.length;
-      final group2Underfull =
-          group2.length < minEntries &&
-          minEntries <= group2.length + entries.length;
+      final group1Underfull = group1.length + entries.length <= minEntries;
+      final group2Underfull = group2.length + entries.length <= minEntries;
       if (group1Underfull && !group2Underfull) {
         group1.addAll(entries);
         break;

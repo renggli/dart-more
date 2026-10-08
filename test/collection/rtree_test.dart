@@ -270,5 +270,15 @@ void main() {
       <T>({int? minEntries, int? maxEntries}) =>
           RTree<T>.guttmann(minEntries: minEntries, maxEntries: maxEntries),
     );
+    test('split distribution', () {
+      final rtree = RTree<int>.guttmann(minEntries: 2, maxEntries: 4);
+      for (var i = 0; i < 5; i++) {
+        rtree.insert(Bounds.fromPoint([i.toDouble()]), i);
+      }
+      expect(rtree.root.entries, hasLength(2));
+      for (final child in rtree.root.entries) {
+        expect(child.child!.entries.length, greaterThanOrEqualTo(2));
+      }
+    });
   });
 }
