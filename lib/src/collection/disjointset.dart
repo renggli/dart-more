@@ -9,14 +9,15 @@
 class DisjointSet<T> {
   /// Constructs a disjoint set with the unique [elements], where each element
   /// is initially its own set.
-  new(Iterable<T> elements) {
+  new(Iterable<T> elements, {Map<T, DisjointSetNode<T>>? nodes})
+    : _nodes = nodes ?? <T, DisjointSetNode<T>>{} {
     for (final element in elements) {
       _nodes[element] ??= (parent: element, size: 1);
     }
     _count = _nodes.length;
   }
 
-  final _nodes = <T, _Node<T>>{};
+  final Map<T, DisjointSetNode<T>> _nodes;
   var _count = 0;
 
   /// Returns the original elements of the set.
@@ -89,4 +90,4 @@ class DisjointSet<T> {
   );
 }
 
-typedef _Node<T> = ({T parent, int size});
+typedef DisjointSetNode<T> = ({T parent, int size});

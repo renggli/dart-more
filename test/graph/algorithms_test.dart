@@ -1009,6 +1009,23 @@ void main() {
         ]),
       );
     });
+    test('avoids cycles with multi-level disjoint sets', () {
+      final graph = Graph<int, int>(isDirected: false)
+        ..addEdge(1, 2, value: 1)
+        ..addEdge(3, 4, value: 2)
+        ..addEdge(2, 3, value: 3)
+        ..addEdge(1, 4, value: 4);
+      final spanning = graph.spanningTree();
+      expect(spanning.vertices, unorderedEquals([1, 2, 3, 4]));
+      expect(
+        spanning.edges.unique(),
+        unorderedEquals([
+          isEdge(1, 2, value: 1),
+          isEdge(3, 4, value: 2),
+          isEdge(2, 3, value: 3),
+        ]),
+      );
+    });
     test('large (with start vertex)', () {
       final graph = Graph<int, int>(isDirected: false)
         ..addEdge(1, 2, value: 2)

@@ -1,5 +1,6 @@
 import 'package:collection/collection.dart';
 
+import '../../collection/disjointset.dart';
 import '../graph.dart';
 import '../operations/copy.dart';
 import '../strategy.dart';
@@ -23,32 +24,16 @@ Graph<V, E> kruskalSpanningTree<V, E>(
     (value) => edgeWeight(value.source, value.target),
     weightComparator,
   );
-  // State for each vertex.
-  final states = vertexStrategy.createMap<_State<V>>();
-  _State<V> getState(V vertex) =>
-      states.putIfAbsent(vertex, () => _State(vertex));
+  // Disjoint set for cycle detection.
+  final disjointSet = DisjointSet<V>(
+    graph.vertices,
+    nodes: vertexStrategy.createMap<DisjointSetNode<V>>(),
+  );
   // Process all the edges.
   for (final edge in edges) {
-    final source = getState(edge.source);
-    final target = getState(edge.target);
-    if (source.vertex != target.vertex) {
-      if (source.rank < target.rank) {
-        states[source.vertex] = target;
-      } else if (target.rank < source.rank) {
-        states[target.vertex] = source;
-      } else {
-        states[target.vertex] = source;
-        source.rank++;
-      }
+    if (disjointSet.union(edge.source, edge.target)) {
       result.addEdge(edge.source, edge.target, value: edge.value);
     }
   }
   return result;
-}
-
-final class _State<V> {
-  new(this.vertex);
-
-  final V vertex;
-  int rank = 0;
 }
