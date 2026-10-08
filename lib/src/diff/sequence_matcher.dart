@@ -111,8 +111,9 @@ class SequenceMatcher<T> {
     // Find longest junk-free match.
     var bestSource = sourceStart, bestTarget = targetStart, bestLength = 0;
     var targetLengths = <int, int>{};
+    var newTargetLengths = <int, int>{};
     for (var s = sourceStart; s < sourceEnd; s++) {
-      final newTargetLengths = <int, int>{};
+      newTargetLengths.clear();
       for (final t in _targetIndices[_source[s]]) {
         if (t < targetStart) continue;
         if (t >= targetEnd) break;
@@ -124,7 +125,9 @@ class SequenceMatcher<T> {
         }
         newTargetLengths[t] = targetLength;
       }
+      final temp = targetLengths;
       targetLengths = newTargetLengths;
+      newTargetLengths = temp;
     }
     // Extend the best by non-junk elements on each end.
     while (bestSource > sourceStart &&
