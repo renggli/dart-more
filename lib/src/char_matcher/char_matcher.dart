@@ -195,28 +195,33 @@ abstract class CharMatcher with ToStringPrinter implements Pattern {
   /// Replaces each group of consecutive matched characters in [sequence]
   /// with the specified [replacement].
   String collapseFrom(String sequence, String replacement) {
-    final result = <int>[];
+    final buffer = StringBuffer();
     final iterator = _runeIteratorAt(sequence, 0);
     while (iterator.moveNext()) {
       if (match(iterator.current)) {
         while (iterator.moveNext() && match(iterator.current)) {}
-        result.addAll(replacement.runes);
+        buffer.write(replacement);
         iterator.movePrevious();
       } else {
-        result.add(iterator.current);
+        buffer.writeCharCode(iterator.current);
       }
     }
-    return String.fromCharCodes(result);
+    return buffer.toString();
   }
 
   /// Replaces each matched character in [sequence] with the specified
   /// [replacement].
-  String replaceFrom(String sequence, String replacement) =>
-      String.fromCharCodes(
-        sequence.runes.expand(
-          (value) => match(value) ? replacement.runes : [value],
-        ),
-      );
+  String replaceFrom(String sequence, String replacement) {
+    final buffer = StringBuffer();
+    for (final rune in sequence.runes) {
+      if (match(rune)) {
+        buffer.write(replacement);
+      } else {
+        buffer.writeCharCode(rune);
+      }
+    }
+    return buffer.toString();
+  }
 
   /// Removes all matched characters in [sequence].
   String removeFrom(String sequence) => (~this).retainFrom(sequence);
