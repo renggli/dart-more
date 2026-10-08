@@ -15,6 +15,7 @@ extension ConnectedGraphExtension<V, E> on Graph<V, E> {
           vertexStrategy: vertexStrategy,
         );
         for (final vertex in traversal) {
+          graph.addVertex(vertex);
           for (final edge in outgoingEdgesOf(vertex)) {
             graph.addEdge(edge.source, edge.target, value: edge.value);
           }

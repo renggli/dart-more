@@ -52,6 +52,31 @@ void main() {
         ]),
       );
     });
+    test('isolated vertex', () {
+      final graph = Graph<int, String>(isDirected: true);
+      graph.addVertex(1);
+      final connected = graph.connected().toList();
+      expect(connected, hasLength(1));
+      expect(connected[0].vertices, unorderedEquals([1]));
+      expect(connected[0].edges, isEmpty);
+    });
+    test('isolated vertices and component', () {
+      final graph = Graph<int, String>(isDirected: true);
+      graph.addVertex(1);
+      graph.addEdge(2, 3, value: 'Edge');
+      graph.addVertex(4);
+      final connected = graph.connected().toList();
+      expect(connected, hasLength(3));
+      final components = connected.map((g) => g.vertices.toSet()).toList();
+      expect(
+        components,
+        unorderedEquals([
+          {1},
+          {2, 3},
+          {4},
+        ]),
+      );
+    });
   });
   group('copy', () {
     test('directed', () {
