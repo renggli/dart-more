@@ -36,13 +36,15 @@ class ExpiryCache<K, V> extends Cache<K, V> {
     final now = clock.now();
     var item = cached[key];
     if (item == null) {
-      item = cached[key] = ExpiryCacheItem(loader(key), now);
-      item.refreshExpiry(now, updateExpiry);
+      item = cached[key] = ExpiryCacheItem(
+        loader(key),
+        updateDeadline: updateExpiry != null ? now.add(updateExpiry!) : null,
+      );
     } else if (item.isExpired(now)) {
       item.value = loader(key);
-      item.refreshExpiry(now, updateExpiry);
+      item.refreshUpdate(now, updateExpiry);
     }
-    item.refreshExpiry(now, accessExpiry);
+    item.refreshAccess(now, accessExpiry);
     return await item.value;
   }
 
@@ -56,7 +58,7 @@ class ExpiryCache<K, V> extends Cache<K, V> {
       cached.remove(key);
       return null;
     }
-    item.refreshExpiry(now, accessExpiry);
+    item.refreshAccess(now, accessExpiry);
     return await item.value;
   }
 
@@ -65,12 +67,15 @@ class ExpiryCache<K, V> extends Cache<K, V> {
     final now = clock.now();
     var item = cached[key];
     if (item == null) {
-      item = cached[key] = ExpiryCacheItem(value, now);
+      item = cached[key] = ExpiryCacheItem(
+        value,
+        updateDeadline: updateExpiry != null ? now.add(updateExpiry!) : null,
+      );
     } else {
       item.value = value;
+      item.refreshUpdate(now, updateExpiry);
     }
-    item.refreshExpiry(now, updateExpiry);
-    item.refreshExpiry(now, accessExpiry);
+    item.refreshAccess(now, accessExpiry);
     return await item.value;
   }
 
@@ -104,18 +109,33 @@ class ExpiryCache<K, V> extends Cache<K, V> {
 }
 
 class ExpiryCacheItem<V> extends CacheItem<V> {
-  new(super.value, this.expiry);
+  new(super.value, {this.updateDeadline, this.accessDeadline});
 
-  DateTime expiry;
+  DateTime? updateDeadline;
+  DateTime? accessDeadline;
 
-  bool isExpired(DateTime now) => now.isAfter(expiry);
+  DateTime get expiry {
+    if (updateDeadline != null && accessDeadline != null) {
+      return updateDeadline!.isBefore(accessDeadline!)
+          ? updateDeadline!
+          : accessDeadline!;
+    }
+    return updateDeadline ?? accessDeadline!;
+  }
 
-  void refreshExpiry(DateTime now, Duration? duration) {
+  bool isExpired(DateTime now) =>
+      (updateDeadline != null && now.isAfter(updateDeadline!)) ||
+      (accessDeadline != null && now.isAfter(accessDeadline!));
+
+  void refreshUpdate(DateTime now, Duration? duration) {
     if (duration != null) {
-      final updated = now.add(duration);
-      if (updated.isAfter(expiry)) {
-        expiry = updated;
-      }
+      updateDeadline = now.add(duration);
+    }
+  }
+
+  void refreshAccess(DateTime now, Duration? duration) {
+    if (duration != null) {
+      accessDeadline = now.add(duration);
     }
   }
 }

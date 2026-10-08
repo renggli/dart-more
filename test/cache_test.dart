@@ -290,6 +290,43 @@ void main() {
         await expectLater(cache.size(), completion(0));
       });
     });
+    group('both update and access expiry', () {
+      clockTest('re-reads do not postpone update expiry', () async {
+        var counter = 0;
+        final cache = Cache<int, String>.expiry(
+          loader: (k) {
+            counter++;
+            return 'val$counter';
+          },
+          updateExpiry: const Duration(seconds: 10),
+          accessExpiry: const Duration(seconds: 4),
+        );
+        expect(await cache.get(1), 'val1');
+        offset = const Duration(seconds: 3);
+        expect(await cache.get(1), 'val1');
+        offset = const Duration(seconds: 6);
+        expect(await cache.get(1), 'val1');
+        offset = const Duration(seconds: 9);
+        expect(await cache.get(1), 'val1');
+        offset = const Duration(seconds: 11);
+        expect(await cache.get(1), 'val2');
+      });
+      clockTest('idle access expires before update expiry', () async {
+        var counter = 0;
+        final cache = Cache<int, String>.expiry(
+          loader: (k) {
+            counter++;
+            return 'val$counter';
+          },
+          updateExpiry: const Duration(seconds: 20),
+          accessExpiry: const Duration(seconds: 3),
+        );
+        expect(await cache.get(1), 'val1');
+        offset = const Duration(seconds: 5);
+        expect(await cache.getIfPresent(1), isNull);
+        expect(await cache.get(1), 'val2');
+      });
+    });
   });
   group('lru', () {
     Cache<int, String> newCache(Loader<int, String> loader) =>
