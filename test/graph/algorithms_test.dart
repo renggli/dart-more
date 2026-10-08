@@ -355,6 +355,20 @@ void main() {
       );
       expect(graph.allShortestPaths, throwsGraphError);
     });
+    test(
+      'directed graph with negative cycle detected before yielding paths',
+      () {
+        final graph = Graph<int, int>(isDirected: true)
+          ..addEdge(0, 1, value: 1)
+          ..addEdge(0, 2, value: 1)
+          ..addEdge(2, 3, value: -2)
+          ..addEdge(3, 2, value: -2);
+        expect(
+          () => graph.shortestPathAll(0, hasNegativeEdges: true).first,
+          throwsGraphError,
+        );
+      },
+    );
     test('directed graph with negative edge and positive cycle', () {
       final graph = Graph<int, int>(isDirected: true)
         ..addEdge(0, 1, value: -2)

@@ -38,7 +38,9 @@ Iterable<Path<V, num>> bellmanFordSearch<V>({
 
   // Step 2: Relax edges repeatedly.
   for (var i = 0; i < states.length - 1; i++) {
+    var relaxed = false;
     for (final sourceState in states.values) {
+      if (sourceState.total.isInfinite) continue;
       for (final target in successorsOf(sourceState.vertex)) {
         final value = edgeCost(sourceState.vertex, target);
         final total = sourceState.total + value;
@@ -48,16 +50,19 @@ Iterable<Path<V, num>> bellmanFordSearch<V>({
           targetState.total = total;
           targetState.predecessors.clear();
           targetState.predecessors.add(sourceState);
+          relaxed = true;
         } else if (total == targetState.total &&
             !targetState.predecessors.contains(sourceState)) {
           targetState.predecessors.add(sourceState);
         }
       }
     }
+    if (!relaxed) break;
   }
 
   // Step 3: Check for negative cycles.
   for (final sourceState in states.values) {
+    if (sourceState.total.isInfinite) continue;
     for (final target in successorsOf(sourceState.vertex)) {
       final value = edgeCost(sourceState.vertex, target);
       final total = sourceState.total + value;
@@ -70,6 +75,10 @@ Iterable<Path<V, num>> bellmanFordSearch<V>({
         );
       }
     }
+  }
+
+  // Step 4: Emit paths.
+  for (final sourceState in states.values) {
     if (targetPredicate(sourceState.vertex)) {
       if (includeAlternativePaths) {
         yield* createAllShortestPaths(
