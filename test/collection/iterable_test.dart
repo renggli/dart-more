@@ -553,7 +553,7 @@ void main() {
     group('full permutations', () {
       test('empty', () {
         final iterator = ''.toList().permutations();
-        expect(iterator, isEmpty);
+        expect(iterator, <List<String>>[[]]);
       });
       test('single', () {
         final iterator = 'a'.toList().permutations();
@@ -578,7 +578,7 @@ void main() {
     group('partial permutations', () {
       test('0 of 2', () {
         final iterator = 'abc'.toList().permutations(0);
-        expect(iterator.map(joiner), isEmpty);
+        expect(iterator, <List<String>>[[]]);
       });
       test('1 of 3', () {
         final iterator = 'abc'.toList().permutations(1);

@@ -24,8 +24,8 @@ extension PermutationIterableExtension<E> on Iterable<E> {
   Iterable<List<E>> permutations([int? count]) {
     final elements = toList(growable: false);
     count ??= elements.length;
-    if (count == 0 || elements.isEmpty) {
-      return const [];
+    if (count == 0) {
+      return const [[]];
     } else if (count == elements.length) {
       return _fullPermutations(elements);
     } else if (0 < count && count < elements.length) {
