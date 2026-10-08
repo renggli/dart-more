@@ -43,11 +43,12 @@ abstract class RTree<T> {
   /// Queries leaf entries for a location (either a point or a rectangle),
   /// returning an iterable.
   Iterable<RTreeEntry<T>> queryEntries(Bounds bounds) =>
-      searchNodes(nodePredicate: (node) => node.bounds.intersects(bounds))
-          .expand(
-            (node) =>
-                node.entries.where((entry) => entry.bounds.intersects(bounds)),
-          );
+      searchNodes(
+        nodePredicate: (node) => node.bounds?.intersects(bounds) ?? false,
+      ).expand(
+        (node) =>
+            node.entries.where((entry) => entry.bounds.intersects(bounds)),
+      );
 
   /// Queries nodes for a location (either a point or a rectangle), returning an
   /// iterable. By default, this method returns only leaf nodes, though
@@ -55,7 +56,7 @@ abstract class RTree<T> {
   /// parameter to false.
   Iterable<RTreeNode<T>> queryNodes(Bounds bounds, {bool leaves = true}) =>
       searchNodes(
-        nodePredicate: (node) => node.bounds.intersects(bounds),
+        nodePredicate: (node) => node.bounds?.intersects(bounds) ?? false,
         leaves: leaves,
       );
 
@@ -122,7 +123,7 @@ abstract class RTree<T> {
   RTreeNode<T> growTree(Iterable<RTreeNode<T>> nodes) {
     root = RTreeNode<T>(this, isLeaf: false);
     root.entries.addAll(
-      nodes.map((node) => RTreeEntry<T>(node.bounds, child: node)),
+      nodes.map((node) => RTreeEntry<T>(node.bounds!, child: node)),
     );
     for (final node in nodes) {
       node.parent = root;

@@ -33,7 +33,9 @@ class RTreeNode<T> {
     return null;
   }
 
-  Bounds get bounds => Bounds.unionAll(entries.map((entry) => entry.bounds));
+  Bounds? get bounds => entries.isEmpty
+      ? null
+      : Bounds.unionAll(entries.map((entry) => entry.bounds));
 
   /// Traverses the tree starting from a given node in depth-first order,
   /// calling the given function on each node. A condition function may

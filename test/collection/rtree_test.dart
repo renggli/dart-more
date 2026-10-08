@@ -52,6 +52,13 @@ void allRTreeTests(
     }
     validate(rtree);
   });
+  test('empty tree query', () {
+    final rtree = createRTree<int>();
+    final queryBound = Bounds.fromPoint([0, 0]);
+    expect(rtree.root.bounds, isNull);
+    expect(rtree.queryEntries(queryBound), isEmpty);
+    expect(rtree.queryNodes(queryBound), isEmpty);
+  });
 }
 
 void main() {
