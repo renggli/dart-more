@@ -245,7 +245,7 @@ abstract class CharMatcher with ToStringPrinter implements Pattern {
     final iterator = _runeIteratorAt(sequence, sequence.length);
     while (iterator.movePrevious() && match(iterator.current)) {}
     return iterator.currentSize > 0
-        ? sequence.substring(0, iterator.rawIndex + 1)
+        ? sequence.substring(0, iterator.rawIndex + iterator.currentSize)
         : '';
   }
 

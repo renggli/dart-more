@@ -1575,6 +1575,8 @@ void main() {
       expect(star.trimTailingFrom('*a*'), '*a');
       expect(star.trimTailingFrom('**a**'), '**a');
       expect(star.trimTailingFrom('*ab*'), '*ab');
+      expect(star.trimTailingFrom('\u{1f600}*'), '\u{1f600}');
+      expect(star.trimTailingFrom('*\u{1f600}*'), '*\u{1f600}');
     });
   });
   group('pattern', () {
