@@ -9,8 +9,8 @@ import 'model/undirected.dart';
 ///
 /// There are two types of edges, [DirectedEdge] and [UndirectedEdge]. The
 /// only difference is that undirected edges consider [source] and [target]
-/// interchangeable for comparison operations. The [value] is never used
-/// for comparison.
+/// interchangeable for comparison operations. Both types compare [source],
+/// [target], and [value] for equality.
 abstract class Edge<V, E> with ToStringPrinter {
   /// Constructs a directed edge.
   const factory directed(V source, V target, {E? value}) = DirectedEdge<V, E>;

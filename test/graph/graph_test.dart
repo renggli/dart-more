@@ -1039,4 +1039,24 @@ void main() {
       expect(a.hashCode == c.hashCode, isTrue);
     });
   });
+  group('edge', () {
+    test('directed equality', () {
+      const e1 = Edge.directed('a', 'b', value: 1);
+      const e2 = Edge.directed('a', 'b', value: 1);
+      const e3 = Edge.directed('b', 'a', value: 1);
+      const e4 = Edge.directed('a', 'b', value: 2);
+      expect(e1 == e2, isTrue);
+      expect(e1.hashCode, e2.hashCode);
+      expect(e1 == e3, isFalse);
+      expect(e1 == e4, isFalse);
+    });
+    test('undirected equality', () {
+      const e1 = Edge.undirected('a', 'b', value: 1);
+      const e2 = Edge.undirected('b', 'a', value: 1);
+      const e3 = Edge.undirected('a', 'b', value: 2);
+      expect(e1 == e2, isTrue);
+      expect(e1.hashCode, e2.hashCode);
+      expect(e1 == e3, isFalse);
+    });
+  });
 }
