@@ -53,6 +53,8 @@ export 'src/collection/multimap/list.dart'
 export 'src/collection/multimap/set.dart'
     show SetMultimap, SetMultimapOnIterableExtension, SetMultimapOnMapExtension;
 export 'src/collection/multiset.dart' show Multiset, MultisetExtension;
+export 'src/collection/ordered_list.dart'
+    show OrderedList, OrderedListIterableExtension;
 export 'src/collection/range.dart' show Range, RangeIterator;
 export 'src/collection/range/bigint.dart'
     show BigIntRange, BigIntRangeExtension;

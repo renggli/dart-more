@@ -1,61 +1,60 @@
-import 'dart:collection' show ListBase;
 import 'dart:math';
 
-import 'package:collection/collection.dart' show PriorityQueue;
-
 import '../../comparator.dart';
+import 'ordered_list.dart';
 
 /// A sorted list that remains sorted by a [Comparator] as elements get added.
-class SortedList<E> extends ListBase<E> implements PriorityQueue<E> {
+class SortedList<E> extends OrderedList<E> {
   /// Constructs an empty sorted list with an optional [comparator].
-  new({Comparator<E>? comparator, bool growable = true})
-    : _values = List.empty(growable: growable),
-      _comparator = comparator ?? naturalCompare;
+  new({Comparator<E>? comparator, super.growable})
+    : _comparator = comparator ?? naturalCompare;
 
   /// Constructs a sorted list from an iterable with an optional [comparator].
-  new of(
-    Iterable<E> iterable, {
-    Comparator<E>? comparator,
-    bool growable = true,
-  }) : _values = List<E>.of(iterable, growable: growable),
-       _comparator = comparator ?? naturalCompare {
-    _comparator.sort(_values);
-  }
+  new of(Iterable<E> iterable, {Comparator<E>? comparator, super.growable})
+    : _comparator = comparator ?? naturalCompare,
+      super.of(_sort(iterable, comparator ?? naturalCompare));
 
-  // Underlying list of values.
-  final List<E> _values;
+  static List<E> _sort<E>(Iterable<E> iterable, Comparator<E> comparator) {
+    final list = List<E>.of(iterable);
+    comparator.sort(list);
+    return list;
+  }
 
   // Underlying comparator.
   final Comparator<E> _comparator;
 
-  @override
-  int get length => _values.length;
+  /// Returns the comparator of this list.
+  Comparator<E> get comparator => _comparator;
 
   @override
   set length(int length) => _throw();
-
-  @override
-  E operator [](int index) => _values[index];
 
   @override
   void operator []=(int index, E value) => _throw();
 
   @override
   bool contains(Object? element) =>
-      element is E && _comparator.binarySearch(_values, element) >= 0;
+      element is E && _comparator.binarySearch(this, element) >= 0;
 
   /// Returns the number of times [element] appears in the list.
   int occurrences(E element) {
-    final lower = _comparator.binarySearchLower(_values, element);
-    final upper = _comparator.binarySearchUpper(_values, element);
+    final lower = _comparator.binarySearchLower(this, element);
+    final upper = _comparator.binarySearchUpper(this, element);
     return upper - lower;
   }
 
   @override
   void add(E element) {
-    final index = _comparator.binarySearchLower(_values, element).abs();
-    _values.insert(index, element);
+    if (!isGrowable) throwNotGrowable();
+    final index = _comparator.binarySearchLower(this, element).abs();
+    super.insert(index, element);
   }
+
+  @override
+  void addFirst(E element) => _throw();
+
+  @override
+  void addLast(E element) => add(element);
 
   @override
   void addAll(Iterable<E> iterable) => iterable.forEach(add);
@@ -68,43 +67,19 @@ class SortedList<E> extends ListBase<E> implements PriorityQueue<E> {
 
   @override
   bool remove(Object? element) {
+    if (!isGrowable) throwNotGrowable();
     if (element is! E) return false;
-    final index = _comparator.binarySearch(_values, element);
+    final index = _comparator.binarySearch(this, element);
     if (index < 0) return false;
-    _values.removeAt(index);
+    super.removeAt(index);
     return true;
   }
-
-  @override
-  Iterable<E> removeAll() {
-    final result = _values.toList();
-    _values.clear();
-    return result;
-  }
-
-  @override
-  E removeAt(int index) => _values.removeAt(index);
-
-  @override
-  E removeFirst() => _values.removeAt(0);
-
-  @override
-  E removeLast() => _values.removeLast();
-
-  @override
-  void clear() => _values.clear();
 
   @override
   void sort([int Function(E a, E b)? compare]) => _throw();
 
   @override
   void shuffle([Random? random]) => _throw();
-
-  @override
-  Iterable<E> get unorderedElements => _values;
-
-  @override
-  List<E> toUnorderedList() => _values.toList();
 
   static void _throw() =>
       throw UnsupportedError('Cannot modify the order of a sorted list');
