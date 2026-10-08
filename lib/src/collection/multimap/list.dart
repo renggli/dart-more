@@ -65,6 +65,9 @@ class ListMultimap<K, V> extends Multimap<K, V, List<V>> {
   @override
   ListMultimapValues<K, V> lookupValues(K key) =>
       ListMultimapValues<K, V>(this, key);
+
+  @override
+  void clearValues(List<V> values) => values.clear();
 }
 
 class ListMultimapValues<K, V> extends MultimapValues<K, V, List<V>>

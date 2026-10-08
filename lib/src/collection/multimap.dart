@@ -94,8 +94,8 @@ abstract class Multimap<K, V, VS extends Iterable<V>> {
 
   /// Removes all values from this multimap.
   void clear() {
-    for (final key in List.of(keys)) {
-      lookupValues(key).polymorphicClear();
+    for (final values in _map.values) {
+      clearValues(values);
     }
     _map.clear();
     _length = 0;
@@ -109,6 +109,17 @@ abstract class Multimap<K, V, VS extends Iterable<V>> {
 
   @protected
   MultimapValues<K, V, VS> lookupValues(K key);
+
+  @protected
+  void clearValues(VS values) {
+    if (values is List<V>) {
+      values.clear();
+    } else if (values is Set<V>) {
+      values.clear();
+    } else if (values is Queue<V>) {
+      values.clear();
+    }
+  }
 }
 
 // Internal callback to update the data of a multimap. Receives the current
