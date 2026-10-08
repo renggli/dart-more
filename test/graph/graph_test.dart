@@ -1059,4 +1059,20 @@ void main() {
       expect(e1 == e3, isFalse);
     });
   });
+  group('graph toString', () {
+    test('empty', () {
+      final graph = Graph<int, void>(isDirected: true);
+      expect(graph.toString(), contains('vertices: ∅'));
+      expect(graph.toString(), contains('edges: ∅'));
+    });
+    test('more than 3 vertices and edges', () {
+      final graph = Graph<int, void>(isDirected: true);
+      graph.addEdge(1, 2);
+      graph.addEdge(2, 3);
+      graph.addEdge(3, 4);
+      graph.addEdge(4, 5);
+      expect(graph.toString(), contains('5 total'));
+      expect(graph.toString(), contains('4 total'));
+    });
+  });
 }
