@@ -89,7 +89,7 @@ class BiMap<K, V> extends MapBase<K, V> {
   @override
   V putIfAbsent(K key, V Function() ifAbsent) {
     if (containsKey(key)) {
-      return this[key]!;
+      return this[key] as V;
     } else {
       final value = ifAbsent();
       this[key] = value;

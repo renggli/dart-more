@@ -220,5 +220,9 @@ void main() {
       target.putIfAbsent(4, () => 'd');
       expect(target[4], 'd');
     });
+    test('putIfAbsent with null value', () {
+      final target = BiMap<String, int?>()..['a'] = null;
+      expect(target.putIfAbsent('a', () => 42), isNull);
+    });
   });
 }

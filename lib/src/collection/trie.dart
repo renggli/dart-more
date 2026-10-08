@@ -281,10 +281,10 @@ abstract class TrieNodeEntry<K, P extends Comparable<P>, V>
   V? _value;
 
   @override
-  K get key => hasKeyAndValue ? _key! : throw UnimplementedError();
+  K get key => hasKeyAndValue ? _key as K : throw UnimplementedError();
 
   @override
-  V get value => hasKeyAndValue ? _value! : throw UnimplementedError();
+  V get value => hasKeyAndValue ? _value as V : throw UnimplementedError();
 
   @override
   bool hasKeyAndValue = false;

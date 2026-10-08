@@ -27,6 +27,17 @@ void allTrieTests(
       expect(trie['disobeying'], isNull);
       expect(trie.containsKey('disobeying'), isFalse);
     });
+    test('null value', () {
+      final trie = Trie<String, String, int?>(
+        parts: (key) => key.toList(),
+        root: createRoot<String, String, int?>(),
+      );
+      trie['foo'] = null;
+      expect(trie, hasLength(1));
+      expect(trie.containsKey('foo'), isTrue);
+      expect(trie['foo'], isNull);
+      expect(trie.entries.first.value, isNull);
+    });
     test('multiple', () {
       final trie = newTrie();
       trie['disobey'] = 42;
