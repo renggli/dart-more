@@ -521,5 +521,18 @@ void main() {
         ],
       );
     });
+    test('cancellation cancels upstream subscription', () async {
+      var cancelled = false;
+      final controller = StreamController<int>(
+        onCancel: () {
+          cancelled = true;
+        },
+      );
+      controller.add(1);
+      controller.add(2);
+      controller.add(3);
+      await controller.stream.window(2).take(1).toList();
+      expect(cancelled, isTrue);
+    });
   });
 }

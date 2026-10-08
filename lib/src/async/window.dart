@@ -17,29 +17,33 @@ extension WindowStreamExtension<E> on Stream<E> {
     checkNonZeroPositive(step, 'step');
     final buffer = ListQueue<E>();
     final iterator = StreamIterator(this);
-    while (true) {
-      while (buffer.length < size && await iterator.moveNext()) {
-        buffer.addLast(iterator.current);
-      }
-      if (buffer.length < size) {
-        if (includePartial && buffer.isNotEmpty) {
-          yield buffer.toList(growable: false);
+    try {
+      while (true) {
+        while (buffer.length < size && await iterator.moveNext()) {
+          buffer.addLast(iterator.current);
         }
-        break;
-      }
-      yield buffer.toList(growable: false);
-      if (step < size) {
-        for (var i = 0; i < step; i++) {
-          buffer.removeFirst();
+        if (buffer.length < size) {
+          if (includePartial && buffer.isNotEmpty) {
+            yield buffer.toList(growable: false);
+          }
+          break;
         }
-      } else {
-        buffer.clear();
-        for (var i = 0; i < step - size; i++) {
-          if (!await iterator.moveNext()) {
-            return;
+        yield buffer.toList(growable: false);
+        if (step < size) {
+          for (var i = 0; i < step; i++) {
+            buffer.removeFirst();
+          }
+        } else {
+          buffer.clear();
+          for (var i = 0; i < step - size; i++) {
+            if (!await iterator.moveNext()) {
+              return;
+            }
           }
         }
       }
+    } finally {
+      await iterator.cancel();
     }
   }
 }
