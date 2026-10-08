@@ -43,7 +43,7 @@ abstract class BitList extends ListBase<bool> {
     final result = BitList(length, growable: growable);
     final buffer = result.buffer;
     if (other is BitList) {
-      buffer.setAll(0, other.buffer);
+      buffer.setRange(0, buffer.length, other.buffer);
     } else {
       final iterator = other.iterator;
       for (var i = 0; i < buffer.length; i++) {

@@ -78,12 +78,21 @@ void main() {
           }
         });
         test('of BitList', () {
-          for (var len = 0; len < 10; len++) {
-            final source = Set<bool>.of(randomBooleans(287 * len, len));
+          for (var len = 0; len < 100; len++) {
+            final source = BitList.of(randomBooleans(287 * len, len));
             final target = BitList.of(source, growable: growable);
             expect(source, target);
             expect(target, source);
           }
+        });
+        test('of growable BitList with excess capacity', () {
+          final source = BitList.empty(growable: true);
+          for (var i = 0; i < 70; i++) {
+            source.add(i.isEven);
+          }
+          final target = BitList.of(source, growable: growable);
+          expect(target, source);
+          expect(target.length, 70);
         });
         test('converter', () {
           for (var len = 0; len < 10; len++) {
