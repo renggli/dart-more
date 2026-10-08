@@ -65,9 +65,6 @@ class SetMultimap<K, V> extends Multimap<K, V, Set<V>> {
   @override
   SetMultimapValues<K, V> lookupValues(K key) =>
       SetMultimapValues<K, V>(this, key);
-
-  @override
-  void clearValues(Set<V> values) => values.clear();
 }
 
 class SetMultimapValues<K, V> extends MultimapValues<K, V, Set<V>>
