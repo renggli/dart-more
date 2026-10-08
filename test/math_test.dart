@@ -461,6 +461,10 @@ void main() {
       });
       test('BigInt', () {
         expect(BigIntExtension.negativeOne.factorial, throwsArgumentError);
+        expect(
+          () => (BigInt.from(-1) - (BigInt.one << 65)).factorial(),
+          throwsArgumentError,
+        );
       });
     });
   });

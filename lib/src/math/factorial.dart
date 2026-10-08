@@ -49,13 +49,13 @@ extension FactorialBigIntExtension on BigInt {
   /// This is the number of ways to arrange `n` distinct objects into a
   /// sequence.
   BigInt factorial() {
-    final n = toInt();
-    if (n < 0) {
+    if (this < BigInt.zero) {
       throw ArgumentError('$this.factorial() is undefined.');
     }
-    if (n < factorials.length) {
-      return BigInt.from(factorials[n]);
+    if (this < BigInt.from(factorials.length)) {
+      return BigInt.from(factorials[toInt()]);
     }
+    final n = toInt();
     var r = BigInt.from(factorials.last);
     for (var i = factorials.length; i <= n; i++) {
       r *= BigInt.from(i);
