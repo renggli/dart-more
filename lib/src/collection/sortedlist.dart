@@ -54,7 +54,7 @@ class SortedList<E> extends OrderedList<E> {
   void addFirst(E element) => _throw();
 
   @override
-  void addLast(E element) => add(element);
+  void addLast(E element) => _throw();
 
   @override
   void addAll(Iterable<E> iterable) => iterable.forEach(add);

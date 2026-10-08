@@ -105,12 +105,59 @@ void main() {
       list.insert(4, 5);
       expect(list, [1, 2, 3, 4, 5]);
     });
+    test('insertAll', () {
+      final list = OrderedList<int>.of([1, 4]);
+      list.insertAll(1, [2, 3]);
+      expect(list, [1, 2, 3, 4]);
+      list.insertAll(0, [0]);
+      expect(list, [0, 1, 2, 3, 4]);
+      list.insertAll(5, [5]);
+      expect(list, [0, 1, 2, 3, 4, 5]);
+    });
     test('removeAt head, tail, and middle', () {
       final list = OrderedList<int>.of([1, 2, 3, 4, 5]);
       expect(list.removeAt(0), 1);
       expect(list.removeAt(3), 5);
       expect(list.removeAt(1), 3);
       expect(list, [2, 4]);
+    });
+    test('removeRange', () {
+      final list = OrderedList<int>.of([1, 2, 3, 4, 5]);
+      list.removeRange(0, 2);
+      expect(list, [3, 4, 5]);
+      list.removeRange(2, 3);
+      expect(list, [3, 4]);
+      list.addAll([5, 6]);
+      list.removeRange(1, 3);
+      expect(list, [3, 6]);
+    });
+  });
+  group('circular buffer properties', () {
+    test('startIndex and endIndex tracking', () {
+      final list = OrderedList<int>();
+      expect(list.startIndex, 0);
+      expect(list.endIndex, 0);
+      list.addLast(1);
+      expect(list.startIndex, 0);
+      expect(list.endIndex, 1);
+      list.addFirst(0);
+      expect(list.startIndex, 7);
+      expect(list.endIndex, 1);
+      expect(list.length, 2);
+    });
+    test('of from single-pass generator', () {
+      Iterable<int> generator() sync* {
+        yield 10;
+        yield 20;
+        yield 30;
+      }
+
+      final list = OrderedList<int>.of(generator());
+      expect(list, [10, 20, 30]);
+    });
+    test('enlarge non-nullable list throws', () {
+      final list = OrderedList<int>();
+      expect(() => list.length = 5, throwsUnsupportedError);
     });
   });
   group('collection operations', () {

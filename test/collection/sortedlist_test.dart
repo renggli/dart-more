@@ -164,6 +164,8 @@ void allSortedListTests(
     expect(() => list.length = 2, throwsUnsupportedError);
     expect(() => list.insert(1, 4), throwsUnsupportedError);
     expect(() => list.insertAll(1, [2, 4]), throwsUnsupportedError);
+    expect(() => list.addFirst(0), throwsUnsupportedError);
+    expect(() => list.addLast(10), throwsUnsupportedError);
     expect(() => list.sort(), throwsUnsupportedError);
     expect(() => list.shuffle(), throwsUnsupportedError);
   });

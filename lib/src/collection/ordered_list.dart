@@ -25,9 +25,17 @@ class OrderedList<E> extends ListBase<E> implements PriorityQueue<E> {
 
   /// Constructs an ordered list from an [iterable].
   new of(Iterable<E> iterable, {this._growable = true})
-    : _buffer = List<E?>.filled(_computeCapacity(iterable.length), null) {
+    : _buffer = List<E?>.filled(
+        _computeCapacity(
+          iterable is List || iterable is Set
+              ? iterable.length
+              : _initialCapacity,
+        ),
+        null,
+      ) {
     for (final element in iterable) {
-      _buffer[_length++] = element;
+      if (_length == _capacity) _grow();
+      _buffer[(_head + _length++) & _mask] = element;
     }
   }
 
@@ -35,6 +43,7 @@ class OrderedList<E> extends ListBase<E> implements PriorityQueue<E> {
   new filled(int length, E fill, {this._growable = false})
     : _length = length,
       _buffer = List<E?>.filled(_computeCapacity(length), null) {
+    RangeError.checkNotNegative(length, 'length');
     _buffer.fillRange(0, length, fill);
   }
 
@@ -63,6 +72,12 @@ class OrderedList<E> extends ListBase<E> implements PriorityQueue<E> {
   /// Returns `true` if this list can grow.
   bool get isGrowable => _growable;
 
+  /// Returns the start index of this list in the internal buffer.
+  int get startIndex => _head;
+
+  /// Returns the end index of this list in the internal buffer.
+  int get endIndex => (_head + _length) & _mask;
+
   @override
   int get length => _length;
 
@@ -76,11 +91,11 @@ class OrderedList<E> extends ListBase<E> implements PriorityQueue<E> {
       }
       _length = newLength;
     } else if (newLength > _length) {
-      while (_capacity < newLength) {
-        _grow();
-      }
       if (null is! E) {
         throw UnsupportedError('Cannot enlarge a list without a fill value');
+      }
+      while (_capacity < newLength) {
+        _grow();
       }
       _length = newLength;
     }
@@ -153,6 +168,40 @@ class OrderedList<E> extends ListBase<E> implements PriorityQueue<E> {
         _buffer[(_head + index) & _mask] = element;
       }
       _length++;
+    }
+  }
+
+  @override
+  void insertAll(int index, Iterable<E> iterable) {
+    RangeError.checkValueInInterval(index, 0, _length, 'index');
+    if (!_growable) throwNotGrowable();
+    final elements = identical(iterable, this) ? toList() : iterable;
+    for (final element in elements) {
+      insert(index++, element);
+    }
+  }
+
+  @override
+  void removeRange(int start, int end) {
+    RangeError.checkValidRange(start, end, _length);
+    if (!_growable) throwNotGrowable();
+    final count = end - start;
+    if (count == 0) return;
+    if (start == 0) {
+      for (var i = 0; i < count; i++) {
+        _buffer[(_head + i) & _mask] = null;
+      }
+      _head = (_head + count) & _mask;
+      _length -= count;
+    } else if (end == _length) {
+      for (var i = start; i < _length; i++) {
+        _buffer[(_head + i) & _mask] = null;
+      }
+      _length -= count;
+    } else {
+      for (var i = 0; i < count; i++) {
+        removeAt(start);
+      }
     }
   }
 
