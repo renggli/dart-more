@@ -2,6 +2,7 @@ import '../edge.dart';
 import '../graph.dart';
 import 'forwarding.dart';
 
+/// Extension on [Graph] to reverse directed graphs.
 extension ReversedGraphExtension<V, E> on Graph<V, E> {
   /// Returns a graph where all edges point in the opposite direction.
   Graph<V, E> get reversed => switch (this) {

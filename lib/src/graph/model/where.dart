@@ -3,6 +3,7 @@ import '../graph.dart';
 import 'where_edge.dart';
 import 'where_vertex.dart';
 
+/// Extension on [Graph] to filter vertices and edges.
 extension WhereGraphExtension<V, E> on Graph<V, E> {
   /// Returns a new lazy [Graph] with all vertices that satisfy the
   /// [vertexPredicate] and all edges that satisfy the [edgePredicate].

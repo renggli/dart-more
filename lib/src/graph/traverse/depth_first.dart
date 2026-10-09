@@ -5,6 +5,7 @@ import 'package:collection/collection.dart';
 import '../graph.dart';
 import '../strategy.dart';
 
+/// Extension on [Graph] to perform depth-first traversals.
 extension DepthFirstGraphExtension<V, E> on Graph<V, E> {
   /// Traverses the vertices in a depth-first order, starting with [vertex].
   Iterable<V> depthFirst(V vertex, {StorageStrategy<V>? vertexStrategy}) =>

@@ -1,6 +1,7 @@
 import '../graph.dart';
 import 'copy.dart';
 
+/// Extension on [Graph] to perform logical set operations on graphs.
 extension LogicalGraphExtension<V, E> on Graph<V, E> {
   /// Returns the union of this graph and [other]. This is a graph with the
   /// nodes and edges present in either of the two graphs. [edgeMerge] specifies

@@ -21,6 +21,7 @@ import 'graph.dart';
 import 'path.dart';
 import 'strategy.dart';
 
+/// Extension on [Graph] providing access to graph algorithms.
 extension AlgorithmsGraphExtension<V, E> on Graph<V, E> {
   /// Performs a search for the shortest path between [source] and [target].
   ///

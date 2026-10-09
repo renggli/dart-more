@@ -4,6 +4,7 @@ import '../graph.dart';
 import '../strategy.dart';
 import 'depth_first.dart';
 
+/// Extension on [Graph] to perform topological traversals.
 extension TopologicalGraphExtension<V, E> on Graph<V, E> {
   /// Traverses the vertices in a topological order, starting with [vertex].
   Iterable<V> topological(V vertex, {StorageStrategy<V>? vertexStrategy}) =>

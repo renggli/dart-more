@@ -2,6 +2,7 @@ import '../../collection/iterable/unique.dart';
 import '../edge.dart';
 import '../graph.dart';
 
+/// Extension on [Graph] to export graphs in different formats.
 extension ExportGraphExtension<V, E> on Graph<V, E> {
   /// Export this graph to [DOT Language](https://graphviz.org/doc/info/lang.html)
   /// typically used to describe [Graphviz](https://graphviz.org/) graphs.

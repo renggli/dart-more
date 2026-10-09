@@ -1,5 +1,6 @@
 import '../graph.dart';
 
+/// Extension on [Graph] to copy graphs.
 extension CopyGraphExtension<V, E> on Graph<V, E> {
   /// Creates a copy of this graph.
   ///

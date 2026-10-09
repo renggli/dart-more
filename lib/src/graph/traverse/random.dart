@@ -5,6 +5,7 @@ import '../../../tuple.dart';
 import '../graph.dart';
 import '../strategy.dart';
 
+/// Extension on [Graph] to perform random walks.
 extension RandomWalkGraphExtension<V, E> on Graph<V, E> {
   /// Traverses the vertices in a random order.
   Iterable<V> randomWalk(

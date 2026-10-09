@@ -5,6 +5,7 @@ import 'package:collection/collection.dart';
 import '../graph.dart';
 import '../strategy.dart';
 
+/// Extension on [Graph] to perform breadth-first traversals.
 extension BreadthFirstGraphExtension<V, E> on Graph<V, E> {
   /// Traverses the vertices in a breadth-first order, starting with [vertex].
   Iterable<V> breadthFirst(V vertex, {StorageStrategy<V>? vertexStrategy}) =>

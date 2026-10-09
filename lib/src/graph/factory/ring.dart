@@ -1,6 +1,7 @@
 import '../factory.dart';
 import '../graph.dart';
 
+/// Extension on [GraphFactory] to create ring graphs.
 extension RingGraphFactoryExtension<V, E> on GraphFactory<V, E> {
   /// Creates a [Graph] that forms a closed ring.
   Graph<V, E> ring({required int vertexCount}) {

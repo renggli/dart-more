@@ -2,6 +2,7 @@ import '../graph.dart';
 import '../traverse/breadth_first.dart';
 import 'copy.dart';
 
+/// Extension on [Graph] to find connected components.
 extension ConnectedGraphExtension<V, E> on Graph<V, E> {
   /// Returns an iterable of the connected sub-graphs.
   Iterable<Graph<V, E>> connected() sync* {

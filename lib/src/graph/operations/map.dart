@@ -2,6 +2,7 @@ import '../edge.dart';
 import '../graph.dart';
 import '../strategy.dart';
 
+/// Extension on [Graph] to map vertices and edges to new values.
 extension MapGraphExtension<V, E> on Graph<V, E> {
   /// Creates a new graph by mapping vertices and edges to new values.
   ///

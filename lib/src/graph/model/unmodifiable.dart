@@ -1,6 +1,7 @@
 import '../graph.dart';
 import 'forwarding.dart';
 
+/// Extension on [Graph] to create unmodifiable views.
 extension UnmodifiableGraphExtension<V, E> on Graph<V, E> {
   /// Returns a graph that throws an exception when being modified.
   Graph<V, E> get unmodifiable =>

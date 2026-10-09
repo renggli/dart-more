@@ -86,6 +86,7 @@ class Path<V, E> with ToStringPrinter {
     );
 }
 
+/// Extension on [Path] where edge values are numbers.
 extension NumericPathExtension<V> on Path<V, num> {
   /// Computes the sum of all values along the edges of this path.
   num get cost => values.fold(0, (a, b) => a + b);
