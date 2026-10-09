@@ -114,5 +114,30 @@ void main() {
       await sub1.cancel();
       await sub2.cancel();
     });
+    test('pause and resume', () async {
+      var isSourcePaused = false;
+      var isTriggerPaused = false;
+      final sourceController = StreamController<int>(
+        onPause: () => isSourcePaused = true,
+        onResume: () => isSourcePaused = false,
+      );
+      final triggerController = StreamController<void>(
+        onPause: () => isTriggerPaused = true,
+        onResume: () => isTriggerPaused = false,
+      );
+      final bufferedStream = sourceController.stream.buffer(
+        trigger: triggerController.stream,
+      );
+      final sub = bufferedStream.listen(null);
+      sub.pause();
+      check(isSourcePaused).isTrue();
+      check(isTriggerPaused).isTrue();
+      sub.resume();
+      check(isSourcePaused).isFalse();
+      check(isTriggerPaused).isFalse();
+      await sub.cancel();
+      await sourceController.close();
+      await triggerController.close();
+    });
   });
 }

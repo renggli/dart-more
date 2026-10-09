@@ -106,5 +106,20 @@ void main() {
       check(events)
           .deepEquals(['onListen', 'onData: 1', 'value: 1', 'onCancel']);
     });
+    test('broadcast', () async {
+      final controller = StreamController<int>.broadcast();
+      final events = <String>[];
+      final tapped = wrap(events, controller.stream);
+      check(tapped.isBroadcast).isTrue();
+      final sub1 = tapped.listen((value) => events.add('sub1: $value'));
+      final sub2 = tapped.listen((value) => events.add('sub2: $value'));
+      controller.add(1);
+      await Future<void>.delayed(Duration.zero);
+      await sub1.cancel();
+      await sub2.cancel();
+      await controller.close();
+      check(events).contains('sub1: 1');
+      check(events).contains('sub2: 1');
+    });
   });
 }

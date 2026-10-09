@@ -26,5 +26,9 @@ void main() {
       final stream = Stream.fromIterable(input);
       check(await stream.whereType<bool>().toList()).isEmpty();
     });
+    test('<Never>', () async {
+      final stream = Stream.fromIterable(input);
+      check(await stream.whereType<Never>().toList()).isEmpty();
+    });
   });
 }

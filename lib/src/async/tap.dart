@@ -1,7 +1,12 @@
 import 'dart:async';
 
+/// Callback without arguments.
 typedef Callback = void Function();
+
+/// Callback with a single data [element].
 typedef DataCallback<E> = void Function(E element);
+
+/// Callback invoked on [error] with optional [stackTrace].
 typedef ErrorCallback = void Function(Object error, [StackTrace? stackTrace]);
 
 /// Extension on [Stream] providing tapping operations for side-effects.
@@ -46,14 +51,16 @@ extension TapExtension<E> on Stream<E> {
         onDone: dispatchOnDone,
       );
     };
-    controller.onPause = () {
-      onPause?.call();
-      subscription.pause();
-    };
-    controller.onResume = () {
-      onResume?.call();
-      subscription.resume();
-    };
+    if (!isBroadcast) {
+      controller.onPause = () {
+        onPause?.call();
+        subscription.pause();
+      };
+      controller.onResume = () {
+        onResume?.call();
+        subscription.resume();
+      };
+    }
     controller.onCancel = () async {
       onCancel?.call();
       await subscription.cancel();
