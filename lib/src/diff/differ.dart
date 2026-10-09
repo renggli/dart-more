@@ -2,6 +2,9 @@ import 'dart:convert';
 
 /// Abstract class producing deltas from sequences of lines of text.
 abstract class Differ {
+  /// Default constructor for [Differ].
+  const new();
+
   /// Compares two strings from [source] to [target].
   ///
   /// The optional arguments [sourceLabel] and [targetLabel] are used by some

@@ -9,6 +9,8 @@ import '../sequence_matcher.dart';
 
 /// Generates a highly configurable diff output.
 class ReadableDiffer extends Differ {
+  /// Creates a readable differ with optional custom line/character filters and
+  /// printers.
   new({
     this.lineJunk,
     this.charJunk,
@@ -21,11 +23,22 @@ class ReadableDiffer extends Differ {
        insertLine = insertLine ?? _stringPrinter.before('+ '),
        equalLine = equalLine ?? _stringPrinter.before('  ');
 
+  /// Predicate identifying junk lines.
   final Predicate1<String>? lineJunk;
+
+  /// Predicate identifying junk character codes.
   final Predicate1<int>? charJunk;
+
+  /// Printer for replaced lines.
   final Printer<String> replaceLine;
+
+  /// Printer for deleted lines.
   final Printer<String> deleteLine;
+
+  /// Printer for inserted lines.
   final Printer<String> insertLine;
+
+  /// Printer for equal lines.
   final Printer<String> equalLine;
 
   @override

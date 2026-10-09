@@ -4,7 +4,7 @@ import 'package:args/args.dart';
 import 'package:more/diff.dart';
 
 final differs = <String, Differ Function(int context)>{
-  'normal': (context) => NormalDiffer(),
+  'normal': (context) => const NormalDiffer(),
   'context': (context) => ContextDiffer(context: context),
   'unified': (context) => UnifiedDiffer(context: context),
   'readable': (context) => ReadableDiffer(),

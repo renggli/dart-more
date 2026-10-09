@@ -9,7 +9,8 @@ import '../sequence_matcher.dart';
 /// format, but produces a smaller diff with old and new text presented
 /// immediately adjacent.
 class UnifiedDiffer extends Differ {
-  new({this.context = 3});
+  /// Creates a unified differ with [context] lines of unchanged text.
+  const new({this.context = 3});
 
   /// The number of unchanged lines shown above and below a change.
   final int context;

@@ -2,6 +2,7 @@ import '../../collection.dart';
 import '../../comparator.dart';
 import 'sequence_matcher.dart';
 
+/// Extension on nested iterables to find close matches.
 extension CloseMatchesOnIterable<T> on Iterable<Iterable<T>> {
   /// Returns a list of the best "good enough" matches.
   ///
@@ -36,6 +37,7 @@ extension CloseMatchesOnIterable<T> on Iterable<Iterable<T>> {
   }
 }
 
+/// Extension on string iterables to find close matches.
 extension CloseMatchesOnStringIterable on Iterable<String> {
   /// Returns a list of the best "good enough" matches of a list of strings.
   ///

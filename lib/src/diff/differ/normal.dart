@@ -17,7 +17,8 @@ import '../sequence_matcher.dart';
 /// are shown as added at their new location and as deleted from their old
 /// location.
 class NormalDiffer extends Differ {
-  new();
+  /// Creates a normal differ.
+  const new();
 
   @override
   Iterable<String> compareLines(

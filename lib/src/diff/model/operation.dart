@@ -15,7 +15,7 @@ class Operation with ToStringPrinter {
     required this.targetEnd,
   });
 
-  /// Constructs an empty operation.
+  /// An empty operation.
   static const empty = Operation(
     OperationType.equal,
     sourceStart: 0,

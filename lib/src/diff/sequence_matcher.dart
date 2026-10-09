@@ -14,19 +14,26 @@ import 'model/operation_type.dart';
 /// Low-level algorithm to compute match blocks, transformation operations,
 /// and similarities between a [source] and a [target] collection.
 class SequenceMatcher<T> {
+  /// Creates a sequence matcher between [source] and [target].
+  ///
+  /// Optional [isJunk] identifies elements that should be ignored when finding
+  /// matching blocks. When [autoJunk] is `true` (the default), popular elements
+  /// in large sequences are automatically treated as junk.
   new({
     Iterable<T>? source,
     Iterable<T>? target,
-    this._isJunk,
-    this._autoJunk = true,
+    this.isJunk,
+    this.autoJunk = true,
   }) {
     this.source = source ?? <T>[];
     this.target = target ?? <T>[];
   }
 
-  // Internal configuration of the sequence matching.
-  final Predicate1<T>? _isJunk;
-  final bool _autoJunk;
+  /// Predicate identifying junk elements.
+  final Predicate1<T>? isJunk;
+
+  /// Whether to automatically treat popular elements as junk.
+  final bool autoJunk;
 
   // Internal cached source and target data.
   final List<T> _source = <T>[];
@@ -41,10 +48,9 @@ class SequenceMatcher<T> {
   final Set<T> _targetJunk = {};
   final Set<T> _targetPopular = {};
 
-  /// Returns the [source] iterable.
+  /// The [source] iterable.
   Iterable<T> get source => _source;
 
-  /// Sets the [source] iterable to be compared.
   set source(Iterable<T> iterable) {
     _matches.clear();
     _operations.clear();
@@ -52,10 +58,9 @@ class SequenceMatcher<T> {
     _source.addAll(iterable);
   }
 
-  /// Returns the [target] iterable.
+  /// The [target] iterable.
   Iterable<T> get target => _target;
 
-  /// Sets the [target] iterable to be compared.
   set target(Iterable<T> iterable) {
     _matches.clear();
     _operations.clear();
@@ -68,9 +73,9 @@ class SequenceMatcher<T> {
     }
     // Compute junk elements.
     _targetJunk.clear();
-    if (_isJunk != null) {
+    if (isJunk case final isJunk?) {
       for (final element in _targetIndices.keys) {
-        if (_isJunk(element)) {
+        if (isJunk(element)) {
           _targetJunk.add(element);
         }
       }
@@ -80,7 +85,7 @@ class SequenceMatcher<T> {
     }
     // Compute popular elements, that are not junk.
     _targetPopular.clear();
-    if (_autoJunk && _target.length >= 200) {
+    if (autoJunk && _target.length >= 200) {
       final cutoff = _target.length ~/ 100 + 1;
       for (final entry in _targetIndices.asMap().entries) {
         if (entry.values.length > cutoff) {
@@ -166,7 +171,7 @@ class SequenceMatcher<T> {
     );
   }
 
-  /// Return list of blocks describing matching subsequences.
+  /// Returns a list of blocks describing matching subsequences.
   Iterable<Match> get matches {
     if (_matches.isNotEmpty) return _matches;
     // Find the longest matching blocks iteratively.
@@ -331,7 +336,7 @@ class SequenceMatcher<T> {
         targetEnd: min(targetEnd, targetStart + context),
       );
     }
-    final group = <Operation>[];
+    var group = <Operation>[];
     for (final code in codes) {
       var Operation(:type, :sourceStart, :sourceEnd, :targetStart, :targetEnd) =
           code;
@@ -347,7 +352,7 @@ class SequenceMatcher<T> {
           ),
         );
         yield group;
-        group.clear();
+        group = [];
         sourceStart = max(sourceStart, sourceEnd - context);
         targetStart = max(targetStart, targetEnd - context);
       }
@@ -367,7 +372,7 @@ class SequenceMatcher<T> {
     }
   }
 
-  /// Return a measure of the sequences' similarity, that is _1.0_ if the
+  /// Returns a measure of the sequences' similarity, that is _1.0_ if the
   /// sequences are identical, and _0.0_ if the sequences have nothing in
   /// common.
   double get ratio => _calculateRatio(
@@ -375,13 +380,13 @@ class SequenceMatcher<T> {
     _source.length + _target.length,
   );
 
-  /// Return an upper bound on [ratio] relatively quickly.
+  /// Returns an upper bound on [ratio] relatively quickly.
   double get quickRatio => _calculateRatio(
     Multiset.from(_source).intersection(_target).length,
     _source.length + _target.length,
   );
 
-  /// Return an upper bound on [ratio] really quickly.
+  /// Returns an upper bound on [ratio] really quickly.
   double get realQuickRatio => _calculateRatio(
     min(_source.length, _target.length),
     _source.length + _target.length,

@@ -13,7 +13,8 @@ import '../sequence_matcher.dart';
 /// for humans and reliability when applying the patch, and an output which is
 /// accepted as input to the patch program.
 class ContextDiffer extends Differ {
-  new({this.context = 3});
+  /// Creates a context differ with [context] lines of unchanged text.
+  const new({this.context = 3});
 
   /// The number of unchanged lines shown above and below a change.
   final int context;
