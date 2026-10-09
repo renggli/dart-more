@@ -1,3 +1,4 @@
+/// Extension on [Iterable] to convert to a [Map].
 extension ToMapIterableExtension<E> on Iterable<E> {
   /// Returns a [Map] from an [Iterable].
   ///

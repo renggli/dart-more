@@ -1,3 +1,4 @@
+/// Extension on [Iterable] to provide indexed elements.
 extension IndexedIterableExtension<E> on Iterable<E> {
   /// Returns an iterable that combines the index and value of this [Iterable].
   ///

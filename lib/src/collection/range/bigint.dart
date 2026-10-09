@@ -149,6 +149,7 @@ final class BigIntRange extends Range<BigInt> {
   }
 }
 
+/// Extension on [BigInt] providing range creation methods.
 extension BigIntRangeExtension on BigInt {
   /// Shorthand to create a range of [BigInt] numbers, starting with the
   /// receiver (inclusive) up to but not including [end] (exclusive).

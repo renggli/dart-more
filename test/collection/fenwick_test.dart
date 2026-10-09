@@ -1,7 +1,6 @@
-// ignore_for_file: deprecated_member_use_from_same_package, unnecessary_lambdas, collection_methods_unrelated_type
-
 import 'dart:math';
 
+import 'package:checks/checks.dart';
 import 'package:more/collection.dart';
 import 'package:test/test.dart';
 
@@ -14,51 +13,49 @@ void main() {
     group(name, () {
       final tree = FenwickTree.of(list);
       test('length', () {
-        expect(tree.isEmpty, list.isEmpty);
-        expect(tree.isNotEmpty, list.isNotEmpty);
-        expect(tree.length, list.length);
+        check(tree.isEmpty).equals(list.isEmpty);
+        check(tree.isNotEmpty).equals(list.isNotEmpty);
+        check(tree.length).equals(list.length);
       });
       test('iterator', () {
-        expect(List.of(tree), list);
+        check(List.of(tree)).deepEquals(list);
       });
       test('toList', () {
-        expect(tree.toList(), list);
+        check(tree.toList()).deepEquals(list);
       });
       test('read', () {
         for (var i = 0; i < list.length; i++) {
-          expect(tree[i], list[i]);
+          check(tree[i]).equals(list[i]);
         }
-        expect(() => tree[-1], throwsRangeError);
-        expect(() => tree[list.length], throwsRangeError);
+        check(() => tree[-1]).throws<RangeError>();
+        check(() => tree[list.length]).throws<RangeError>();
       });
       test('write', () {
         final copy = FenwickTree.of(tree);
         for (var i = 0; i < list.length; i++) {
           copy[i] = i;
         }
-        expect(tree, list);
-        expect(copy, 0.to(list.length));
-        expect(() => tree[-1] = 0, throwsRangeError);
-        expect(() => tree[list.length] = 0, throwsRangeError);
+        check(tree).deepEquals(list);
+        check(copy).deepEquals(0.to(list.length));
+        check(() => tree[-1] = 0).throws<RangeError>();
+        check(() => tree[list.length] = 0).throws<RangeError>();
       });
       if (list.isNotEmpty) {
         test('prefix', () {
           for (var i = 0; i <= list.length; i++) {
-            expect(
+            check(
               tree.prefix(i),
-              list.getRange(0, i).fold(0, (a, b) => a + b),
-              reason: '$i',
-            );
+              because: '$i',
+            ).equals(list.getRange(0, i).fold(0, (a, b) => a + b));
           }
         });
         test('range', () {
           for (var i = 0; i <= list.length; i++) {
             for (var j = i; j <= list.length; j++) {
-              expect(
+              check(
                 tree.range(i, j),
-                list.getRange(i, j).fold(0, (a, b) => a + b),
-                reason: '$i..$j',
-              );
+                because: '$i..$j',
+              ).equals(list.getRange(i, j).fold(0, (a, b) => a + b));
             }
           }
         });
@@ -67,7 +64,7 @@ void main() {
           for (var i = 0; i < list.length; i++) {
             copy.update(i, 1);
           }
-          expect(copy, list.map((each) => each + 1));
+          check(copy).deepEquals(list.map((each) => each + 1));
         });
       }
     });
@@ -80,10 +77,10 @@ void main() {
         (index) => random.nextInt(1000),
       );
       final tree = FenwickTree.of(list);
-      expect(tree.toList(), list);
-      expect(List.of(tree), list);
+      check(tree.toList()).deepEquals(list);
+      check(List.of(tree)).deepEquals(list);
       for (var i = 0; i < list.length; i++) {
-        expect(tree[i], list[i]);
+        check(tree[i]).equals(list[i]);
       }
     }
   });

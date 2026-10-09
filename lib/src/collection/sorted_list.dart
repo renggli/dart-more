@@ -85,6 +85,7 @@ class SortedList<E> extends OrderedList<E> {
       throw UnsupportedError('Cannot modify the order of a sorted list');
 }
 
+/// Extension on [Iterable] to convert to a [SortedList].
 extension SortedListIterableExtension<E> on Iterable<E> {
   /// Converts this [Iterable] to a [SortedList].
   SortedList<E> toSortedList({

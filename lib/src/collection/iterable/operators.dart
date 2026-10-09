@@ -1,5 +1,6 @@
 import '../../../comparator.dart';
 
+/// Extension on [Iterable] providing statistical and search operators.
 extension OperatorsIterableExtension<E> on Iterable<E> {
   /// Returns the minimum of this [Iterable]. The elements need to be
   /// [Comparable], unless a custom [comparator] is provided.

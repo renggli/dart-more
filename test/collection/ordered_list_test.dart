@@ -1,59 +1,60 @@
 import 'dart:math';
 
+import 'package:checks/checks.dart';
 import 'package:more/collection.dart';
-import 'package:test/test.dart';
+import 'package:test/test.dart' show group, test;
 
 void main() {
   group('construction', () {
     test('default', () {
       final list = OrderedList<int>();
-      expect(list, isEmpty);
-      expect(list.length, 0);
-      expect(list.isGrowable, isTrue);
+      check(list).isEmpty();
+      check(list.length).equals(0);
+      check(list.isGrowable).isTrue();
     });
     test('of', () {
       final list = OrderedList<int>.of([1, 2, 3]);
-      expect(list, [1, 2, 3]);
-      expect(list.length, 3);
+      check(list).deepEquals([1, 2, 3]);
+      check(list.length).equals(3);
     });
     test('filled', () {
       final list = OrderedList<int>.filled(5, 42);
-      expect(list, [42, 42, 42, 42, 42]);
-      expect(list.length, 5);
-      expect(list.isGrowable, isFalse);
+      check(list).deepEquals([42, 42, 42, 42, 42]);
+      check(list.length).equals(5);
+      check(list.isGrowable).isFalse();
     });
     test('converter', () {
       final list = [1, 2, 3].toOrderedList();
-      expect(list, [1, 2, 3]);
+      check(list).deepEquals([1, 2, 3]);
     });
   });
   group('accessors', () {
     test('reading and writing', () {
       final list = OrderedList<int>.of([10, 20, 30]);
-      expect(list[0], 10);
-      expect(list[1], 20);
-      expect(list[2], 30);
+      check(list[0]).equals(10);
+      check(list[1]).equals(20);
+      check(list[2]).equals(30);
       list[1] = 99;
-      expect(list[1], 99);
-      expect(list, [10, 99, 30]);
+      check(list[1]).equals(99);
+      check(list).deepEquals([10, 99, 30]);
     });
     test('out of bounds', () {
       final list = OrderedList<int>.of([1, 2]);
-      expect(() => list[-1], throwsRangeError);
-      expect(() => list[2], throwsRangeError);
-      expect(() => list[-1] = 0, throwsRangeError);
-      expect(() => list[2] = 0, throwsRangeError);
+      check(() => list[-1]).throws<RangeError>();
+      check(() => list[2]).throws<RangeError>();
+      check(() => list[-1] = 0).throws<RangeError>();
+      check(() => list[2] = 0).throws<RangeError>();
     });
     test('first and last', () {
       final list = OrderedList<int>();
-      expect(() => list.first, throwsStateError);
-      expect(() => list.last, throwsStateError);
+      check(() => list.first).throws<StateError>();
+      check(() => list.last).throws<StateError>();
       list.add(1);
-      expect(list.first, 1);
-      expect(list.last, 1);
+      check(list.first).equals(1);
+      check(list.last).equals(1);
       list.add(2);
-      expect(list.first, 1);
-      expect(list.last, 2);
+      check(list.first).equals(1);
+      check(list.last).equals(2);
     });
   });
   group('double-ended operations', () {
@@ -62,24 +63,24 @@ void main() {
       list.addFirst(1);
       list.addFirst(2);
       list.addFirst(3);
-      expect(list, [3, 2, 1]);
-      expect(list.removeFirst(), 3);
-      expect(list.removeFirst(), 2);
-      expect(list.removeFirst(), 1);
-      expect(list, isEmpty);
-      expect(list.removeFirst, throwsStateError);
+      check(list).deepEquals([3, 2, 1]);
+      check(list.removeFirst()).equals(3);
+      check(list.removeFirst()).equals(2);
+      check(list.removeFirst()).equals(1);
+      check(list).isEmpty();
+      check(list.removeFirst).throws<StateError>();
     });
     test('addLast and removeLast', () {
       final list = OrderedList<int>();
       list.addLast(1);
       list.addLast(2);
       list.addLast(3);
-      expect(list, [1, 2, 3]);
-      expect(list.removeLast(), 3);
-      expect(list.removeLast(), 2);
-      expect(list.removeLast(), 1);
-      expect(list, isEmpty);
-      expect(list.removeLast, throwsStateError);
+      check(list).deepEquals([1, 2, 3]);
+      check(list.removeLast()).equals(3);
+      check(list.removeLast()).equals(2);
+      check(list.removeLast()).equals(1);
+      check(list).isEmpty();
+      check(list.removeLast).throws<StateError>();
     });
     test('interleaved operations wrapping around buffer', () {
       final list = OrderedList<int>();
@@ -87,14 +88,14 @@ void main() {
         list.addLast(i);
         list.addFirst(-i);
       }
-      expect(list.length, 100);
+      check(list.length).equals(100);
       for (var i = 49; i >= 0; i--) {
-        expect(list.removeFirst(), -i);
+        check(list.removeFirst()).equals(-i);
       }
       for (var i = 0; i < 50; i++) {
-        expect(list.removeFirst(), i);
+        check(list.removeFirst()).equals(i);
       }
-      expect(list, isEmpty);
+      check(list).isEmpty();
     });
   });
   group('insert and removeAt', () {
@@ -103,47 +104,47 @@ void main() {
       list.insert(0, 1);
       list.insert(2, 3);
       list.insert(4, 5);
-      expect(list, [1, 2, 3, 4, 5]);
+      check(list).deepEquals([1, 2, 3, 4, 5]);
     });
     test('insertAll', () {
       final list = OrderedList<int>.of([1, 4]);
       list.insertAll(1, [2, 3]);
-      expect(list, [1, 2, 3, 4]);
+      check(list).deepEquals([1, 2, 3, 4]);
       list.insertAll(0, [0]);
-      expect(list, [0, 1, 2, 3, 4]);
+      check(list).deepEquals([0, 1, 2, 3, 4]);
       list.insertAll(5, [5]);
-      expect(list, [0, 1, 2, 3, 4, 5]);
+      check(list).deepEquals([0, 1, 2, 3, 4, 5]);
     });
     test('removeAt head, tail, and middle', () {
       final list = OrderedList<int>.of([1, 2, 3, 4, 5]);
-      expect(list.removeAt(0), 1);
-      expect(list.removeAt(3), 5);
-      expect(list.removeAt(1), 3);
-      expect(list, [2, 4]);
+      check(list.removeAt(0)).equals(1);
+      check(list.removeAt(3)).equals(5);
+      check(list.removeAt(1)).equals(3);
+      check(list).deepEquals([2, 4]);
     });
     test('removeRange', () {
       final list = OrderedList<int>.of([1, 2, 3, 4, 5]);
       list.removeRange(0, 2);
-      expect(list, [3, 4, 5]);
+      check(list).deepEquals([3, 4, 5]);
       list.removeRange(2, 3);
-      expect(list, [3, 4]);
+      check(list).deepEquals([3, 4]);
       list.addAll([5, 6]);
       list.removeRange(1, 3);
-      expect(list, [3, 6]);
+      check(list).deepEquals([3, 6]);
     });
   });
   group('circular buffer properties', () {
     test('startIndex and endIndex tracking', () {
       final list = OrderedList<int>();
-      expect(list.startIndex, 0);
-      expect(list.endIndex, 0);
+      check(list.startIndex).equals(0);
+      check(list.endIndex).equals(0);
       list.addLast(1);
-      expect(list.startIndex, 0);
-      expect(list.endIndex, 1);
+      check(list.startIndex).equals(0);
+      check(list.endIndex).equals(1);
       list.addFirst(0);
-      expect(list.startIndex, 7);
-      expect(list.endIndex, 1);
-      expect(list.length, 2);
+      check(list.startIndex).equals(7);
+      check(list.endIndex).equals(1);
+      check(list.length).equals(2);
     });
     test('of from single-pass generator', () {
       Iterable<int> generator() sync* {
@@ -153,49 +154,49 @@ void main() {
       }
 
       final list = OrderedList<int>.of(generator());
-      expect(list, [10, 20, 30]);
+      check(list).deepEquals([10, 20, 30]);
     });
     test('enlarge non-nullable list throws', () {
       final list = OrderedList<int>();
-      expect(() => list.length = 5, throwsUnsupportedError);
+      check(() => list.length = 5).throws<UnsupportedError>();
     });
   });
   group('collection operations', () {
     test('contains and remove', () {
       final list = OrderedList<int>.of([10, 20, 30]);
-      expect(list.contains(20), isTrue);
-      expect(list.contains(40), isFalse);
-      expect(list.remove(20), isTrue);
-      expect(list, [10, 30]);
-      expect(list.remove(20), isFalse);
+      check(list.contains(20)).isTrue();
+      check(list.contains(40)).isFalse();
+      check(list.remove(20)).isTrue();
+      check(list).deepEquals([10, 30]);
+      check(list.remove(20)).isFalse();
     });
     test('clear and removeAll', () {
       final list = OrderedList<int>.of([1, 2, 3]);
-      expect(list.removeAll(), [1, 2, 3]);
-      expect(list, isEmpty);
+      check(list.removeAll()).deepEquals([1, 2, 3]);
+      check(list).isEmpty();
       list.addAll([4, 5]);
-      expect(list, [4, 5]);
+      check(list).deepEquals([4, 5]);
       list.clear();
-      expect(list, isEmpty);
+      check(list).isEmpty();
     });
     test('unorderedElements and toUnorderedList', () {
       final list = OrderedList<int>.of([3, 1, 2]);
-      expect(list.unorderedElements, [3, 1, 2]);
-      expect(list.toUnorderedList(), [3, 1, 2]);
+      check(list.unorderedElements).deepEquals([3, 1, 2]);
+      check(list.toUnorderedList()).deepEquals([3, 1, 2]);
     });
   });
   group('fixed length', () {
     test('unsupported modifications', () {
       final list = OrderedList<int>.of([1, 2], growable: false);
-      expect(() => list.add(3), throwsUnsupportedError);
-      expect(() => list.addFirst(0), throwsUnsupportedError);
-      expect(() => list.addLast(3), throwsUnsupportedError);
-      expect(() => list.insert(1, 99), throwsUnsupportedError);
-      expect(() => list.remove(1), throwsUnsupportedError);
-      expect(() => list.removeAt(0), throwsUnsupportedError);
-      expect(list.removeFirst, throwsUnsupportedError);
-      expect(list.removeLast, throwsUnsupportedError);
-      expect(list.clear, throwsUnsupportedError);
+      check(() => list.add(3)).throws<UnsupportedError>();
+      check(() => list.addFirst(0)).throws<UnsupportedError>();
+      check(() => list.addLast(3)).throws<UnsupportedError>();
+      check(() => list.insert(1, 99)).throws<UnsupportedError>();
+      check(() => list.remove(1)).throws<UnsupportedError>();
+      check(() => list.removeAt(0)).throws<UnsupportedError>();
+      check(list.removeFirst).throws<UnsupportedError>();
+      check(list.removeLast).throws<UnsupportedError>();
+      check(list.clear).throws<UnsupportedError>();
     });
   });
   group('stress', () {
@@ -215,11 +216,11 @@ void main() {
             actual.addLast(value);
           case 2: // removeFirst
             if (model.isNotEmpty) {
-              expect(actual.removeFirst(), model.removeAt(0));
+              check(actual.removeFirst()).equals(model.removeAt(0));
             }
           case 3: // removeLast
             if (model.isNotEmpty) {
-              expect(actual.removeLast(), model.removeLast());
+              check(actual.removeLast()).equals(model.removeLast());
             }
           case 4: // insert
             final index = model.isEmpty ? 0 : random.nextInt(model.length + 1);
@@ -228,16 +229,16 @@ void main() {
           case 5: // removeAt
             if (model.isNotEmpty) {
               final index = random.nextInt(model.length);
-              expect(actual.removeAt(index), model.removeAt(index));
+              check(actual.removeAt(index)).equals(model.removeAt(index));
             }
         }
-        expect(actual.length, model.length);
+        check(actual.length).equals(model.length);
         if (model.isNotEmpty) {
           final probe = random.nextInt(model.length);
-          expect(actual[probe], model[probe]);
+          check(actual[probe]).equals(model[probe]);
         }
       }
-      expect(actual, model);
+      check(actual).deepEquals(model);
     });
   });
 }

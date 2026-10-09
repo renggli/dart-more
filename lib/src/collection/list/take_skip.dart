@@ -1,5 +1,6 @@
 import 'dart:math';
 
+/// Extension on [List] to take or skip elements and sub-ranges.
 extension TakeSkipListExtension<E> on List<E> {
   /// Returns the list prefix up to the first occurrence of [element]. If the
   /// element is not found return the whole list.

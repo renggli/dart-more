@@ -15,6 +15,7 @@ enum NormalizationForm {
   nfkd,
 }
 
+/// Extension on [String] to normalize Unicode strings.
 extension NormalizeStringExtension on String {
   /// Returns the Unicode Normalization Form of this string.
   ///

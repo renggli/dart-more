@@ -162,6 +162,7 @@ final class DoubleRange extends Range<double> {
   }
 }
 
+/// Extension on [double] providing range creation methods.
 extension DoubleRangeExtension on double {
   /// Shorthand to create a range of [double] numbers, starting with the
   /// receiver (inclusive) up to but not including [end] (exclusive).

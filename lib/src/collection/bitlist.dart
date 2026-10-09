@@ -347,6 +347,7 @@ class FixedBitList extends BitList with NonGrowableListMixin<bool> {
   final int length;
 }
 
+/// Extension on [Iterable] of booleans to convert to a [BitList].
 extension BitListExtension on Iterable<bool> {
   /// Converts this [Iterable] to a space-efficient [BitList].
   BitList toBitList({bool growable = false}) =>

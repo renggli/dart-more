@@ -1,3 +1,4 @@
+/// Extension on [Iterable] to count matching elements.
 extension CountIterableExtension<E> on Iterable<E> {
   /// Returns the number of times [predicate] evaluates to true.
   ///

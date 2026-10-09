@@ -1,3 +1,4 @@
+/// Extension on [String] to partition strings around separators.
 extension PartitionStringExtension on String {
   /// Splits the string at the first occurrence of [pattern].
   ///

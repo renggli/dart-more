@@ -2,9 +2,10 @@
 
 import 'dart:math';
 
+import 'package:checks/checks.dart';
 import 'package:more/collection.dart';
 import 'package:more/comparator.dart';
-import 'package:test/test.dart';
+import 'package:test/test.dart' show group, test;
 
 void allSortedListTests(
   SortedList<E> Function<E>(
@@ -16,7 +17,7 @@ void allSortedListTests(
 ) {
   test('default ordering', () {
     final list = createSortedList<int>([5, 1, 2, 4, 3]);
-    expect(list, [1, 2, 3, 4, 5]);
+    check(list).deepEquals([1, 2, 3, 4, 5]);
   });
   test('custom ordering', () {
     final list = createSortedList<num>([
@@ -26,7 +27,7 @@ void allSortedListTests(
       4,
       3,
     ], comparator: reverseComparable<num>);
-    expect(list, [5, 4, 3, 2, 1]);
+    check(list).deepEquals([5, 4, 3, 2, 1]);
   });
   test('custom comparator', () {
     final list = createSortedList<int>([
@@ -36,104 +37,104 @@ void allSortedListTests(
       4,
       3,
     ], comparator: (a, b) => b - a);
-    expect(list, [5, 4, 3, 2, 1]);
+    check(list).deepEquals([5, 4, 3, 2, 1]);
   });
   test('empty list', () {
     final list = createSortedList<int>([]);
-    expect(list, isEmpty);
+    check(list).isEmpty();
   });
   test('accessors', () {
     final list = createSortedList<int>([5, 1, 3]);
-    expect(list.length, 3);
-    expect(list.first, 1);
-    expect(list.last, 5);
-    expect(list[0], 1);
-    expect(list[2], 5);
+    check(list.length).equals(3);
+    check(list.first).equals(1);
+    check(list.last).equals(5);
+    check(list[0]).equals(1);
+    check(list[2]).equals(5);
   });
   test('contains', () {
     final list = createSortedList<int>([5, 1, 3]);
-    expect(list.contains(0), isFalse);
-    expect(list.contains(1), isTrue);
-    expect(list.contains(2), isFalse);
-    expect(list.contains(3), isTrue);
-    expect(list.contains(4), isFalse);
-    expect(list.contains(5), isTrue);
-    expect(list.contains(6), isFalse);
-    expect(list.contains(null), isFalse);
+    check(list.contains(0)).isFalse();
+    check(list.contains(1)).isTrue();
+    check(list.contains(2)).isFalse();
+    check(list.contains(3)).isTrue();
+    check(list.contains(4)).isFalse();
+    check(list.contains(5)).isTrue();
+    check(list.contains(6)).isFalse();
+    check(list.contains(null)).isFalse();
   });
   test('occurrences', () {
     final list = createSortedList<int>([1, 2, 2, 3, 3, 3, 4, 4, 4, 4]);
-    expect(list.occurrences(0), 0);
-    expect(list.occurrences(1), 1);
-    expect(list.occurrences(2), 2);
-    expect(list.occurrences(3), 3);
-    expect(list.occurrences(4), 4);
-    expect(list.occurrences(5), 0);
+    check(list.occurrences(0)).equals(0);
+    check(list.occurrences(1)).equals(1);
+    check(list.occurrences(2)).equals(2);
+    check(list.occurrences(3)).equals(3);
+    check(list.occurrences(4)).equals(4);
+    check(list.occurrences(5)).equals(0);
   });
   test('add', () {
     final list = createSortedList<int>([5, 1, 3]);
-    expect(list, [1, 3, 5]);
+    check(list).deepEquals([1, 3, 5]);
     list.add(4);
-    expect(list, [1, 3, 4, 5]);
+    check(list).deepEquals([1, 3, 4, 5]);
   });
   test('add (not growable)', () {
     final list = createSortedList<int>([5, 1, 3], growable: false);
-    expect(() => list.add(4), throwsUnsupportedError);
+    check(() => list.add(4)).throws<UnsupportedError>();
   });
   test('addAll', () {
     final list = createSortedList<int>([5, 1, 3]);
-    expect(list, [1, 3, 5]);
+    check(list).deepEquals([1, 3, 5]);
     list.addAll([2, 4]);
-    expect(list, [1, 2, 3, 4, 5]);
+    check(list).deepEquals([1, 2, 3, 4, 5]);
   });
   test('addAll (not growable)', () {
     final list = createSortedList<int>([5, 1, 3], growable: false);
-    expect(() => list.addAll([2, 4]), throwsUnsupportedError);
+    check(() => list.addAll([2, 4])).throws<UnsupportedError>();
   });
   test('clear', () {
     final list = createSortedList<int>([5, 1, 3]);
     list.clear();
-    expect(list, isEmpty);
+    check(list).isEmpty();
   });
   test('remove', () {
     final list = createSortedList<int>([5, 1, 3]);
-    expect(list, [1, 3, 5]);
-    expect(list.remove(3), isTrue);
-    expect(list, [1, 5]);
-    expect(list.remove(3), isFalse);
-    expect(list.remove(null), isFalse);
+    check(list).deepEquals([1, 3, 5]);
+    check(list.remove(3)).isTrue();
+    check(list).deepEquals([1, 5]);
+    check(list.remove(3)).isFalse();
+    check(list.remove(null)).isFalse();
   });
   test('remove (not growable)', () {
     final list = createSortedList<int>([5, 1, 3], growable: false);
-    expect(() => list.remove(3), throwsUnsupportedError);
+    check(() => list.remove(3)).throws<UnsupportedError>();
   });
   test('removeAt', () {
     final list = createSortedList<int>([5, 1, 3]);
-    expect(list.removeAt(1), 3);
-    expect(list, [1, 5]);
+    check(list.removeAt(1)).equals(3);
+    check(list).deepEquals([1, 5]);
   });
   test('removeFirst', () {
     final list = createSortedList<int>([5, 1, 3]);
-    expect(list.removeFirst(), 1);
-    expect(list, [3, 5]);
+    check(list.removeFirst()).equals(1);
+    check(list).deepEquals([3, 5]);
   });
   test('removeLast', () {
     final list = createSortedList<int>([5, 1, 3]);
-    expect(list.removeLast(), 5);
-    expect(list, [1, 3]);
+    check(list.removeLast()).equals(5);
+    check(list).deepEquals([1, 3]);
   });
   test('removeAll', () {
     final list = createSortedList<int>([5, 1, 3]);
-    expect(list.removeAll(), [1, 3, 5]);
-    expect(list, isEmpty);
+    check(list.removeAll()).deepEquals([1, 3, 5]);
+    check(list).isEmpty();
   });
   test('toUnorderedList', () {
     final list = createSortedList<int>([5, 1, 3]);
-    expect(list.toUnorderedList(), [1, 3, 5]);
+    check(list.toUnorderedList()).deepEquals([1, 3, 5]);
   });
   test('unorderedElements', () {
     final list = createSortedList<int>([5, 1, 3]);
-    expect(list.unorderedElements, [1, 3, 5]);
+    check(list.unorderedElements).deepEquals([1, 3, 5]);
   });
   test('stress', () {
     final random = Random(6412);
@@ -146,28 +147,28 @@ void allSortedListTests(
     // Create a list from digit of the values.
     final list = createSortedList<int>(values);
     // Verify all values are present.
-    expect(list, hasLength(values.length));
+    check(list).length.equals(values.length);
     for (final value in values) {
-      expect(list.contains(value), isTrue);
+      check(list.contains(value)).isTrue();
     }
     // Remove values in different order.
     values.shuffle(random);
     for (final value in values) {
-      expect(list.remove(value), isTrue);
+      check(list.remove(value)).isTrue();
     }
     // Verify all values are gone.
-    expect(list, isEmpty);
+    check(list).isEmpty();
   });
   test('errors', () {
     final list = createSortedList<int>([5, 1, 3]);
-    expect(() => list[0] = 2, throwsUnsupportedError);
-    expect(() => list.length = 2, throwsUnsupportedError);
-    expect(() => list.insert(1, 4), throwsUnsupportedError);
-    expect(() => list.insertAll(1, [2, 4]), throwsUnsupportedError);
-    expect(() => list.addFirst(0), throwsUnsupportedError);
-    expect(() => list.addLast(10), throwsUnsupportedError);
-    expect(() => list.sort(), throwsUnsupportedError);
-    expect(() => list.shuffle(), throwsUnsupportedError);
+    check(() => list[0] = 2).throws<UnsupportedError>();
+    check(() => list.length = 2).throws<UnsupportedError>();
+    check(() => list.insert(1, 4)).throws<UnsupportedError>();
+    check(() => list.insertAll(1, [2, 4])).throws<UnsupportedError>();
+    check(() => list.addFirst(0)).throws<UnsupportedError>();
+    check(() => list.addLast(10)).throws<UnsupportedError>();
+    check(() => list.sort()).throws<UnsupportedError>();
+    check(() => list.shuffle()).throws<UnsupportedError>();
   });
 }
 

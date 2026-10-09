@@ -128,6 +128,7 @@ final class IntegerRange extends Range<int> {
   }
 }
 
+/// Extension on [int] providing range creation methods.
 extension IntegerRangeExtension on int {
   /// Shorthand to create a range of [int] numbers, starting with the receiver
   /// (inclusive) up to but not including [end] (exclusive).
@@ -135,6 +136,7 @@ extension IntegerRangeExtension on int {
       IntegerRange.of(start: this, end: end, step: step);
 }
 
+/// Extension on [Iterable] providing index range methods.
 extension IndicesIterableExtension on Iterable<Object?> {
   /// Returns a [Range] of the indices of this iterable that can be accessed
   /// with the `[]` operator.

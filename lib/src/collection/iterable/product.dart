@@ -1,5 +1,6 @@
 import '../../shared/exceptions.dart';
 
+/// Extension on [Iterable] of iterables to compute the Cartesian product.
 extension ProductIterableExtension<E> on Iterable<Iterable<E>> {
   /// Returns an iterable over the cross product of this [Iterable].
   ///
@@ -30,6 +31,7 @@ extension ProductIterableExtension<E> on Iterable<Iterable<E>> {
   }
 }
 
+/// Extension on records of iterables to compute their Cartesian product.
 extension Product2IterableExtension<T1, T2> on (Iterable<T1>, Iterable<T2>) {
   /// Combines a tuple of iterables with the cross product to an iterable of
   /// tuples.

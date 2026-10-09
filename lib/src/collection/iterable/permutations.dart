@@ -2,6 +2,7 @@ import 'package:collection/collection.dart';
 
 import '../../../comparator.dart';
 
+/// Extension on [Iterable] to generate permutations.
 extension PermutationIterableExtension<E> on Iterable<E> {
   /// Returns an iterable over the permutations of this [Iterable] of length
   /// [count]. If no [count] is specified all full-length permutations are
@@ -117,6 +118,7 @@ Iterable<List<E>> _partialPermutations<E>(List<E> elements, int count) sync* {
   }
 }
 
+/// Extension on [List] to permute elements in-place.
 extension PermutationComparableListExtension<E> on List<E> {
   /// Permutes this [List] in-place into the next permutation with respect
   /// to the provided [comparator]. Returns `true` if such a permutation

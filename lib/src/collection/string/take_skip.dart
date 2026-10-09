@@ -1,5 +1,6 @@
 import 'dart:math';
 
+/// Extension on [String] to take or skip characters and patterns.
 extension TakeSkipStringExtension on String {
   /// Returns the string prefix with [count] characters. If [count] is larger
   /// than [length] return the whole string.

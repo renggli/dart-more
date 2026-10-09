@@ -1,3 +1,4 @@
+/// Extension on [Iterable] to partition elements based on a predicate.
 extension PartitionIterableExtension<E> on Iterable<E> {
   /// Splits this iterable into two lists: the `truthy` list where the [test] predicate
   /// is `true` and the `falsey` list where the [test] predicate is `false`.

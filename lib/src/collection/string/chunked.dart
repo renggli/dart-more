@@ -4,6 +4,7 @@ import 'package:characters/characters.dart';
 
 import '../../shared/exceptions.dart';
 
+/// Extension on [String] to divide strings into chunks.
 extension ChunkedStringExtension on String {
   /// Divides this [String] into an iterable of strings each not exceeding the
   /// given [size]. The last string might have fewer characters.
@@ -22,6 +23,7 @@ extension ChunkedStringExtension on String {
   }
 }
 
+/// Extension on [Characters] to divide characters into chunks.
 extension ChunkedCharactersExtension on Characters {
   /// Divides these [Characters] into an iterable of characters each not
   /// exceeding the given [size]. The last string might have fewer characters.

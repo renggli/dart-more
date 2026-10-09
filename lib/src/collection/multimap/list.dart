@@ -118,6 +118,7 @@ class ListMultimapValues<K, V> extends MultimapValues<K, V, List<V>>
   void polymorphicClear() => clear();
 }
 
+/// Extension on [Map] to convert to a [ListMultimap].
 extension ListMultimapOnMapExtension<K, V> on Map<K, V> {
   /// Converts this [Map] to an equivalent [ListMultimap].
   ListMultimap<K, V> toListMultimap({
@@ -126,6 +127,7 @@ extension ListMultimapOnMapExtension<K, V> on Map<K, V> {
   }) => ListMultimap<K, V>.fromEntries(entries, map: map, factory: factory);
 }
 
+/// Extension on [Iterable] to convert to a [ListMultimap].
 extension ListMultimapOnIterableExtension<E> on Iterable<E> {
   /// Converts this [Iterable] to a [ListMultimap].
   ListMultimap<K, V> toListMultimap<K, V>({

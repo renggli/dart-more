@@ -1,3 +1,4 @@
+/// Extension on [Iterable] to emit consecutive overlapping pairs.
 extension PairwiseIterableExtension<E> on Iterable<E> {
   /// An iterable over the successive overlapping pairs of this iterable.
   ///

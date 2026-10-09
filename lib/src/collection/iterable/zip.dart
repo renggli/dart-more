@@ -1,3 +1,4 @@
+/// Extension on [Iterable] of iterables to zip elements together.
 extension ZipIterableExtension<E> on Iterable<Iterable<E>> {
   /// Combines the first, second, third, ... elements of each [Iterable] into a
   /// new list. The resulting iterable has the length of the shortest input
@@ -60,6 +61,7 @@ extension ZipIterableExtension<E> on Iterable<Iterable<E>> {
   }
 }
 
+/// Extension on records of iterables to zip elements into record tuples.
 extension Zip2IterableExtension<T1, T2> on (Iterable<T1>, Iterable<T2>) {
   /// Combines the tuple of iterables to an iterable of tuples. The resulting
   /// iterable has the length of the shortest input iterable.

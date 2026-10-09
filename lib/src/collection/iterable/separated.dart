@@ -1,6 +1,7 @@
 /// Function type to build elements.
 typedef Builder<E> = E Function();
 
+/// Extension on [Iterable] to separate elements with injected items.
 extension SeparatedIterableExtension<E> on Iterable<E> {
   /// Returns an [Iterable] where every element is separated by an element
   /// built by a [separator] builder. Optionally specified [before] and [after]

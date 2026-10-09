@@ -2,6 +2,7 @@ import 'dart:collection';
 
 import '../../shared/exceptions.dart';
 
+/// Extension on [Iterable] to provide sliding windows of elements.
 extension WindowIterableExtension<E> on Iterable<E> {
   /// Sliding window of given [size] over this [Iterable].
   ///

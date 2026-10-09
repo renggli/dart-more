@@ -318,6 +318,7 @@ class OrderedList<E> extends ListBase<E> implements PriorityQueue<E> {
   );
 }
 
+/// Extension on [Iterable] to convert to an [OrderedList].
 extension OrderedListIterableExtension<E> on Iterable<E> {
   /// Converts this [Iterable] to an [OrderedList].
   OrderedList<E> toOrderedList({bool growable = true}) =>

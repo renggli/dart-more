@@ -244,6 +244,8 @@ class Multiset<E> extends IterableBase<E> {
   bool get isNotEmpty => _length > 0;
 }
 
+/// Extension on [Iterable] to convert to a [Multiset].
 extension MultisetExtension<T> on Iterable<T> {
+  /// Converts this [Iterable] to a [Multiset].
   Multiset<T> toMultiset() => Multiset.of(this);
 }

@@ -1,3 +1,4 @@
+/// Extension on [Iterable] to generate combinations.
 extension CombinationsIterableExtension<E> on Iterable<E> {
   /// Returns an iterable over the combinations of this [Iterable] of length
   /// [count]. The combinations are emitted in lexicographical order based on

@@ -1,5 +1,6 @@
 import 'combinations.dart';
 
+/// Extension on [Iterable] to compute its power set.
 extension PowerSetIterableExtension<E> on Iterable<E> {
   /// Returns all subsets of this iterable including the empty set and the
   /// complete set itself. The power-set has _2^n_ elements, if the iterable

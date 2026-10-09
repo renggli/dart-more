@@ -2,6 +2,7 @@ import 'dart:math';
 
 import '../../shared/exceptions.dart';
 
+/// Extension on [String] providing text wrapping and unwrapping.
 extension WrapUnwrapStringExtension on String {
   /// Wraps a long text so that every line is at most [width] characters long.
   String wrap(int width, {Pattern? whitespace, bool breakLongWords = true}) {

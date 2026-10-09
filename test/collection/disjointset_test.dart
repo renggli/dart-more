@@ -1,95 +1,83 @@
 import 'dart:math' show Random;
 
+import 'package:checks/checks.dart';
 import 'package:more/collection.dart';
 import 'package:test/test.dart';
+
+import 'test_utils.dart';
 
 void main() {
   test('initial state', () {
     final disjoinset = DisjointSet([...0.to(5), 2, 3]);
-    expect(disjoinset.count, 5);
-    expect(disjoinset.sizes, unorderedEquals([1, 1, 1, 1, 1]));
-    expect(
-      disjoinset.sets,
-      unorderedEquals([
-        {0},
-        {1},
-        {2},
-        {3},
-        {4},
-      ]),
-    );
+    check(disjoinset.count).equals(5);
+    check(disjoinset.sizes).unorderedEquals([1, 1, 1, 1, 1]);
+    check(disjoinset.sets).unorderedSets([
+      {0},
+      {1},
+      {2},
+      {3},
+      {4},
+    ]);
     for (var i = 0; i < 5; i++) {
-      expect(disjoinset.find(i), i);
+      check(disjoinset.find(i)).equals(i);
     }
   });
   test('union two sets', () {
     final disjoinset = DisjointSet(0.to(5));
-    expect(disjoinset.union(0, 1), isTrue);
-    expect(disjoinset.count, 4);
-    expect(disjoinset.sizes, unorderedEquals([2, 1, 1, 1]));
-    expect(
-      disjoinset.sets,
-      unorderedEquals([
-        {0, 1},
-        {2},
-        {3},
-        {4},
-      ]),
-    );
-    expect(disjoinset.find(0), disjoinset.find(1));
-    expect(disjoinset.find(2), 2);
+    check(disjoinset.union(0, 1)).isTrue();
+    check(disjoinset.count).equals(4);
+    check(disjoinset.sizes).unorderedEquals([2, 1, 1, 1]);
+    check(disjoinset.sets).unorderedSets([
+      {0, 1},
+      {2},
+      {3},
+      {4},
+    ]);
+    check(disjoinset.find(0)).equals(disjoinset.find(1));
+    check(disjoinset.find(2)).equals(2);
   });
   test('union already merged sets', () {
     final disjoinset = DisjointSet(0.to(5));
     disjoinset.union(0, 1);
-    expect(disjoinset.union(0, 1), isFalse);
-    expect(disjoinset.count, 4);
-    expect(disjoinset.sizes, unorderedEquals([2, 1, 1, 1]));
-    expect(
-      disjoinset.sets,
-      unorderedEquals([
-        {0, 1},
-        {2},
-        {3},
-        {4},
-      ]),
-    );
-    expect(disjoinset.find(0), disjoinset.find(1));
-    expect(disjoinset.find(2), 2);
+    check(disjoinset.union(0, 1)).isFalse();
+    check(disjoinset.count).equals(4);
+    check(disjoinset.sizes).unorderedEquals([2, 1, 1, 1]);
+    check(disjoinset.sets).unorderedSets([
+      {0, 1},
+      {2},
+      {3},
+      {4},
+    ]);
+    check(disjoinset.find(0)).equals(disjoinset.find(1));
+    check(disjoinset.find(2)).equals(2);
   });
   test('transitive union', () {
     final disjoinset = DisjointSet(0.to(5));
     disjoinset.union(0, 1);
     disjoinset.union(1, 2);
-    expect(disjoinset.count, 3);
-    expect(disjoinset.sizes, unorderedEquals([3, 1, 1]));
-    expect(
-      disjoinset.sets,
-      unorderedEquals([
-        {0, 1, 2},
-        {3},
-        {4},
-      ]),
-    );
-    expect(disjoinset.find(0), disjoinset.find(1));
-    expect(disjoinset.find(0), disjoinset.find(2));
+    check(disjoinset.count).equals(3);
+    check(disjoinset.sizes).unorderedEquals([3, 1, 1]);
+    check(disjoinset.sets).unorderedSets([
+      {0, 1, 2},
+      {3},
+      {4},
+    ]);
+    check(disjoinset.find(0)).equals(disjoinset.find(1));
+    check(disjoinset.find(0)).equals(disjoinset.find(2));
   });
   test('union all', () {
     final disjoinset = DisjointSet(0.to(5));
     for (var i = 0; i < 4; i++) {
       disjoinset.union(i, i + 1);
     }
-    expect(disjoinset.count, 1);
-    expect(disjoinset.sizes, unorderedEquals([5]));
-    expect(
-      disjoinset.sets,
-      unorderedEquals([
-        {0, 1, 2, 3, 4},
-      ]),
-    );
+    check(disjoinset.count).equals(1);
+    check(disjoinset.sizes).unorderedEquals([5]);
+    check(disjoinset.sets).unorderedSets([
+      {0, 1, 2, 3, 4},
+    ]);
     final root = disjoinset.find(0);
     for (var i = 0; i < 5; i++) {
-      expect(disjoinset.find(i), root);
+      check(disjoinset.find(i)).equals(root);
     }
   });
   test('stress test', () {
@@ -101,15 +89,15 @@ void main() {
       for (final pair in pairs) {
         disjointSet.union(pair.first, pair.last);
       }
-      expect(disjointSet.count, 1);
-      expect(disjointSet.sizes, unorderedEquals([size]));
-      expect(disjointSet.sets, unorderedEquals([0.to(size).toSet()]));
+      check(disjointSet.count).equals(1);
+      check(disjointSet.sizes).unorderedEquals([size]);
+      check(disjointSet.sets).unorderedSets([0.to(size).toSet()]);
     }
   });
   test('error when item not in set', () {
     final disjoinset = DisjointSet(0.to(5));
-    expect(() => disjoinset.find(99), throwsArgumentError);
-    expect(() => disjoinset.union(99, 0), throwsArgumentError);
-    expect(() => disjoinset.union(0, 99), throwsArgumentError);
+    check(() => disjoinset.find(99)).throws<ArgumentError>();
+    check(() => disjoinset.union(99, 0)).throws<ArgumentError>();
+    check(() => disjoinset.union(0, 99)).throws<ArgumentError>();
   });
 }

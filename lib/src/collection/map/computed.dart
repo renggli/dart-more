@@ -1,5 +1,6 @@
 import 'dart:collection';
 
+/// Extension on [Map] to provide computed default values.
 extension ComputedMapExtension<K, V> on Map<K, V> {
   /// Returns a mutable view of this map that computes and stores absent
   /// keys with the provided [computation].

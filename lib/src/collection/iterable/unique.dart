@@ -1,5 +1,6 @@
 import 'dart:collection' show HashSet;
 
+/// Extension on [Iterable] to filter out duplicate elements.
 extension UniqueIterableExtension<E> on Iterable<E> {
   /// Returns a lazy iterable that filters out duplicates from this [Iterator].
   ///

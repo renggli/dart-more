@@ -1,3 +1,4 @@
+/// Extension on [Iterable] to group consecutive elements.
 extension GroupIterableExtension<V> on Iterable<V> {
   /// Groups consecutive keys of this [Iterable].
   ///

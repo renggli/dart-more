@@ -1,3 +1,4 @@
+/// Extension on [String] to remove prefixes and suffixes.
 extension PrefixSuffixStringExtension on String {
   /// If the string starts with the prefix pattern returns this [String]
   /// with the prefix removed, otherwise return `this`.

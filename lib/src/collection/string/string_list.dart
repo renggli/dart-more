@@ -2,6 +2,7 @@ import 'dart:collection' show ListBase;
 
 import '../iterable/mixins/unmodifiable.dart';
 
+/// Extension on [String] providing list view over characters.
 extension StringListExtension on String {
   /// Returns an iterable list of UTF-16 characters of this [String].
   ///

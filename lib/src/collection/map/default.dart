@@ -1,5 +1,6 @@
 import 'dart:collection';
 
+/// Extension on [Map] to provide a fallback default value.
 extension DefaultMapExtension<K, V> on Map<K, V> {
   /// Returns a mutable view of this [Map] that responds with the provided
   /// default value, when the caller tries to access a non-existent key.

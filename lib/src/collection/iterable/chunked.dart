@@ -1,5 +1,6 @@
 import '../../shared/exceptions.dart';
 
+/// Extension on [Iterable] to chunk elements into fixed-size lists.
 extension ChunkedIterableExtension<E> on Iterable<E> {
   /// Divides this [Iterable] into sub-lists of a given [size]. The final list
   /// might be smaller or equal to the desired size.

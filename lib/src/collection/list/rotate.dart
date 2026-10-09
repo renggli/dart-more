@@ -1,5 +1,6 @@
 import 'dart:collection';
 
+/// Extension on [List] to rotate elements in-place.
 extension RotateListExtension<E> on List<E> {
   /// In-place rotate the list [steps] steps to the right. If [steps] is
   /// negative, the list is rotated to the left.
@@ -27,6 +28,7 @@ extension RotateListExtension<E> on List<E> {
   }
 }
 
+/// Extension on [Queue] to rotate elements in-place.
 extension RotateQueueExtension<E> on Queue<E> {
   /// In-place rotate the queue [steps] steps to the right. If [steps] is
   /// negative, the list is rotated to the left.

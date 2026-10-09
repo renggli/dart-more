@@ -2,6 +2,7 @@ import 'dart:collection' show IterableBase;
 
 import 'mixins/infinite.dart';
 
+/// Extension on [Iterable] to repeat its elements.
 extension RepeatIterableExtension<E> on Iterable<E> {
   /// Returns an infinite iterable with the elements of this iterable. If
   /// [count] is provided the resulting iterator is limited to [count]

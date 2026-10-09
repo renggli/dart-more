@@ -1,5 +1,6 @@
 import 'package:characters/characters.dart';
 
+/// Extension on [String] to convert first and last characters.
 extension ConvertFirstLastStringExtension on String {
   /// Converts the first [count] characters of this string with [callback]. If
   /// this is shorter than [count], this [String] is returned.

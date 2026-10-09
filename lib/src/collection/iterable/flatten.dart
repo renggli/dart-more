@@ -1,3 +1,4 @@
+/// Extension on [Iterable] of iterables to flatten elements.
 extension FlattenIterableExtension<E> on Iterable<Iterable<E>> {
   /// Flattens an [Iterable] of [Iterable]s to a flattened [Iterable].
   ///
@@ -10,6 +11,7 @@ extension FlattenIterableExtension<E> on Iterable<Iterable<E>> {
   Iterable<E> flatten() => expand((values) => values);
 }
 
+/// Extension on [Iterable] to recursively flatten nested iterables.
 extension DeepFlattenIterableExtension on Iterable<dynamic> {
   /// Flattens arbitrarily nested [Iterable]s with elements of type [E]. Throws
   /// an [ArgumentError] when encountering a value of an unexpected type.

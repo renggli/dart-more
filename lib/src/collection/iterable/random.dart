@@ -1,5 +1,6 @@
 import 'dart:math' show Random;
 
+/// Extension on [Iterable] to select a random element.
 extension RandomIterableExtension<E> on Iterable<E> {
   /// Returns a random element from this [Iterable].
   ///

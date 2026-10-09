@@ -1,12 +1,11 @@
-// ignore_for_file: deprecated_member_use_from_same_package, unnecessary_lambdas, collection_methods_unrelated_type
-
 import 'dart:math';
 
+import 'package:checks/checks.dart';
 import 'package:more/collection.dart';
 import 'package:more/math.dart';
 import 'package:test/test.dart';
 
-import '../utils/collection.dart';
+import 'test_utils.dart';
 
 void main() {
   for (final growable in [false, true]) {
@@ -15,46 +14,46 @@ void main() {
         test('default', () {
           for (var len = 1; len < 100; len++) {
             final target = BitList(len, growable: growable);
-            expect(target, isNot(isEmpty));
-            expect(target, hasLength(len));
-            expect(target, everyElement(isFalse));
+            check(target).isNotEmpty();
+            check(target).length.equals(len);
+            check(target).every((it) => it.isFalse());
           }
         });
         test('empty', () {
           final target = BitList.empty(growable: growable);
-          expect(target, isEmpty);
-          expect(target, hasLength(0));
+          check(target).isEmpty();
+          check(target).length.equals(0);
         });
         test('filled (false)', () {
           for (var len = 1; len < 100; len++) {
             final target = BitList.filled(len, false, growable: growable);
-            expect(target, isNot(isEmpty));
-            expect(target, hasLength(len));
-            expect(target, everyElement(isFalse));
+            check(target).isNotEmpty();
+            check(target).length.equals(len);
+            check(target).every((it) => it.isFalse());
           }
         });
         test('filled (true)', () {
           for (var len = 1; len < 100; len++) {
             final target = BitList.filled(len, true, growable: growable);
-            expect(target, isNot(isEmpty));
-            expect(target, hasLength(len));
-            expect(target, everyElement(isTrue));
+            check(target).isNotEmpty();
+            check(target).length.equals(len);
+            check(target).every((it) => it.isTrue());
           }
         });
         test('from', () {
           for (var len = 0; len < 100; len++) {
             final source = List<bool>.of(randomBooleans(457 * len, len));
             final target = BitList.from(source, growable: growable);
-            expect(source, target);
-            expect(source, target.toList());
+            check(target).deepEquals(source);
+            check(target.toList()).deepEquals(source);
           }
         });
         test('of', () {
           for (var len = 0; len < 100; len++) {
             final source = List<bool>.of(randomBooleans(447 * len, len));
             final target = BitList.of(source, growable: growable);
-            expect(source, target);
-            expect(source, target.toList());
+            check(target).deepEquals(source);
+            check(target.toList()).deepEquals(source);
           }
         });
         test('generate', () {
@@ -65,24 +64,25 @@ void main() {
               (i) => source[i],
               growable: growable,
             );
-            expect(source, target);
-            expect(source, target.toList());
+            check(target).deepEquals(source);
+            check(target.toList()).deepEquals(source);
           }
         });
         test('of Set', () {
           for (var len = 0; len < 100; len++) {
             final source = Set<bool>.of(randomBooleans(827 * len, len));
             final target = BitList.of(source, growable: growable);
-            expect(source, target);
-            expect(source, target.toSet());
+            check(target).unorderedEquals(source);
+            check(target.toSet()).deepEquals(source);
           }
         });
+
         test('of BitList', () {
           for (var len = 0; len < 100; len++) {
             final source = BitList.of(randomBooleans(287 * len, len));
             final target = BitList.of(source, growable: growable);
-            expect(source, target);
-            expect(target, source);
+            check(target).deepEquals(source);
+            check(source).deepEquals(target);
           }
         });
         test('of growable BitList with excess capacity', () {
@@ -91,15 +91,15 @@ void main() {
             source.add(i.isEven);
           }
           final target = BitList.of(source, growable: growable);
-          expect(target, source);
-          expect(target.length, 70);
+          check(target).deepEquals(source);
+          check(target).length.equals(70);
         });
         test('converter', () {
           for (var len = 0; len < 10; len++) {
             final source = randomBooleans(195 * len, len);
             final target = source.toBitList(growable: growable);
-            expect(source, target);
-            expect(target, source);
+            check(target).deepEquals(source);
+            check(source).deepEquals(target);
           }
         });
       });
@@ -108,24 +108,24 @@ void main() {
           for (var len = 0; len < 100; len++) {
             final source = randomBooleans(135 * len, len);
             final target = BitList.of(source, growable: growable);
-            expect(() => target[-1], throwsRangeError);
+            check(() => target[-1]).throws<RangeError>();
             for (var i = 0; i < len; i++) {
-              expect(target[i], source[i]);
+              check(target[i]).equals(source[i]);
             }
-            expect(() => target[len], throwsRangeError);
+            check(() => target[len]).throws<RangeError>();
           }
         });
         test('writing', () {
           for (var len = 0; len < 100; len++) {
             final source = randomBooleans(396 * len, len);
             final target = BitList(len, growable: growable);
-            expect(() => target[-1] = true, throwsRangeError);
+            check(() => target[-1] = true).throws<RangeError>();
             for (var i = 0; i < len; i++) {
               target[i] = source[i];
-              expect(target.sublist(0, i), source.sublist(0, i));
-              expect(target.sublist(i + 1), everyElement(isFalse));
+              check(target.sublist(0, i)).deepEquals(source.sublist(0, i));
+              check(target.sublist(i + 1)).every((it) => it.isFalse());
             }
-            expect(() => target[len] = true, throwsRangeError);
+            check(() => target[len] = true).throws<RangeError>();
           }
         });
         test('fill range (false)', () {
@@ -137,7 +137,7 @@ void main() {
             source.fillRange(startIndex, endIndex, false);
             for (var i = 0; i < len; i++) {
               final expected = !i.between(startIndex, endIndex - 1);
-              expect(source.getUnchecked(i), expected);
+              check(source.getUnchecked(i)).equals(expected);
             }
           }
         });
@@ -150,7 +150,7 @@ void main() {
             source.fillRange(startIndex, endIndex, true);
             for (var i = 0; i < len; i++) {
               final expected = i.between(startIndex, endIndex - 1);
-              expect(source.getUnchecked(i), expected);
+              check(source.getUnchecked(i)).equals(expected);
             }
           }
         });
@@ -161,14 +161,14 @@ void main() {
               growable: growable,
             );
             final target = ~source;
-            expect(() => target.flip(-1), throwsRangeError);
+            check(() => target.flip(-1)).throws<RangeError>();
             for (var i = 0; i < len; i++) {
               final before = source[i];
               source.flip(i);
-              expect(!before, source[i]);
+              check(source[i]).equals(!before);
             }
-            expect(() => target.flip(len), throwsRangeError);
-            expect(target, source);
+            check(() => target.flip(len)).throws<RangeError>();
+            check(target).deepEquals(source);
           }
         });
         test('count', () {
@@ -179,9 +179,9 @@ void main() {
             );
             final trueCount = list.count();
             final falseCount = list.count(expected: false);
-            expect(trueCount + falseCount, list.length);
-            expect(trueCount, list.where((b) => b == true).length);
-            expect(falseCount, list.where((b) => b == false).length);
+            check(trueCount + falseCount).equals(list.length);
+            check(trueCount).equals(list.where((b) => b == true).length);
+            check(falseCount).equals(list.where((b) => b == false).length);
           }
         });
         test('countRange', () {
@@ -196,10 +196,10 @@ void main() {
               endIndex,
               expected: false,
             );
-            expect(trueCount + falseCount, endIndex - startIndex);
+            check(trueCount + falseCount).equals(endIndex - startIndex);
             final range = list.getRange(startIndex, endIndex);
-            expect(trueCount, range.where((b) => b == true).length);
-            expect(falseCount, range.where((b) => b == false).length);
+            check(trueCount).equals(range.where((b) => b == true).length);
+            check(falseCount).equals(range.where((b) => b == false).length);
           }
         });
         test('indices', () {
@@ -212,14 +212,14 @@ void main() {
             final trueSet = trueList.toSet();
             final falseList = list.indices(expected: false).toList();
             final falseSet = falseList.toSet();
-            expect(trueSet.length, trueList.length);
-            expect(falseSet.length, falseList.length);
-            expect(trueSet.union(falseSet).length, list.length);
+            check(trueSet.length).equals(trueList.length);
+            check(falseSet.length).equals(falseList.length);
+            check(trueSet.union(falseSet).length).equals(list.length);
             for (final trueIndex in trueSet) {
-              expect(list[trueIndex], isTrue);
+              check(list[trueIndex]).isTrue();
             }
             for (final falseIndex in falseSet) {
-              expect(list[falseIndex], isFalse);
+              check(list[falseIndex]).isFalse();
             }
           }
         });
@@ -237,9 +237,10 @@ void main() {
                 growable: growable,
               );
               final target = source1 + source2;
-              expect(target.length, len1 + len2);
+              check(target.length).equals(len1 + len2);
               for (var i = 0; i < len1 + len2; i++) {
-                expect(target[i], i < len1 ? source1[i] : source2[i - len1]);
+                check(target[i])
+                    .equals(i < len1 ? source1[i] : source2[i - len1]);
               }
             }
           }
@@ -252,7 +253,7 @@ void main() {
             );
             final target = ~source;
             for (var i = 0; i < target.length; i++) {
-              expect(target[i], !source[i]);
+              check(target[i]).equals(!source[i]);
             }
           });
           test('in-place', () {
@@ -263,7 +264,7 @@ void main() {
             final target = BitList.of(source);
             target.not();
             for (var i = 0; i < target.length; i++) {
-              expect(target[i], !source[i]);
+              check(target[i]).equals(!source[i]);
             }
           });
         });
@@ -279,12 +280,12 @@ void main() {
             );
             final target = source1 & source2;
             for (var i = 0; i < target.length; i++) {
-              expect(target[i], source1[i] && source2[i]);
+              check(target[i]).equals(source1[i] && source2[i]);
             }
-            expect(target, source2 & source1);
+            check(target).deepEquals(source2 & source1);
             final other = BitList(99);
-            expect(() => other & source1, throwsArgumentError);
-            expect(() => source1 & other, throwsArgumentError);
+            check(() => other & source1).throws<ArgumentError>();
+            check(() => source1 & other).throws<ArgumentError>();
           });
           test('in-place', () {
             final source1 = BitList.of(
@@ -298,7 +299,7 @@ void main() {
             final target = BitList.of(source1);
             target.and(source2);
             for (var i = 0; i < target.length; i++) {
-              expect(target[i], source1[i] && source2[i]);
+              check(target[i]).equals(source1[i] && source2[i]);
             }
           });
         });
@@ -314,12 +315,12 @@ void main() {
             );
             final target = source1 | source2;
             for (var i = 0; i < target.length; i++) {
-              expect(target[i], source1[i] || source2[i]);
+              check(target[i]).equals(source1[i] || source2[i]);
             }
-            expect(target, source2 | source1);
+            check(target).deepEquals(source2 | source1);
             final other = BitList(99);
-            expect(() => other | source1, throwsArgumentError);
-            expect(() => source1 | other, throwsArgumentError);
+            check(() => other | source1).throws<ArgumentError>();
+            check(() => source1 | other).throws<ArgumentError>();
           });
           test('in-place', () {
             final source1 = BitList.of(
@@ -333,7 +334,7 @@ void main() {
             final target = BitList.of(source1);
             target.or(source2);
             for (var i = 0; i < target.length; i++) {
-              expect(target[i], source1[i] || source2[i]);
+              check(target[i]).equals(source1[i] || source2[i]);
             }
           });
         });
@@ -348,12 +349,12 @@ void main() {
           );
           final target = source1 - source2;
           for (var i = 0; i < target.length; i++) {
-            expect(target[i], source1[i] && !source2[i]);
+            check(target[i]).equals(source1[i] && !source2[i]);
           }
-          expect(target, source1 & ~source2);
+          check(target).deepEquals(source1 & ~source2);
           final other = BitList(99, growable: growable);
-          expect(() => other - source1, throwsArgumentError);
-          expect(() => source1 - other, throwsArgumentError);
+          check(() => other - source1).throws<ArgumentError>();
+          check(() => source1 - other).throws<ArgumentError>();
         });
         test('shift-left', () {
           for (var len = 0; len < 100; len++) {
@@ -364,16 +365,16 @@ void main() {
             for (var shift = 0; shift <= len + 10; shift++) {
               final target = source << shift;
               if (shift == 0) {
-                expect(target, source);
+                check(target).deepEquals(source);
               } else if (shift >= len) {
-                expect(target, everyElement(isFalse));
+                check(target).every((it) => it.isFalse());
               } else {
                 for (var i = shift; i < source.length; i++) {
-                  expect(target[i], source[i - shift]);
+                  check(target[i]).equals(source[i - shift]);
                 }
               }
             }
-            expect(() => source << -1, throwsArgumentError);
+            check(() => source << -1).throws<ArgumentError>();
           }
         });
         test('shift-right', () {
@@ -385,16 +386,16 @@ void main() {
             for (var shift = 0; shift <= len + 10; shift++) {
               final target = source >> shift;
               if (shift == 0) {
-                expect(target, source);
+                check(target).deepEquals(source);
               } else if (shift >= len) {
-                expect(target, everyElement(isFalse));
+                check(target).every((it) => it.isFalse());
               } else {
                 for (var i = 0; i < source.length - shift; i++) {
-                  expect(target[i], source[i + shift]);
+                  check(target[i]).equals(source[i + shift]);
                 }
               }
             }
-            expect(() => source >> -1, throwsArgumentError);
+            check(() => source >> -1).throws<ArgumentError>();
           }
         });
       });
@@ -404,7 +405,7 @@ void main() {
           final target = BitList.empty(growable: growable);
           for (var i = 0; i < source.length; i++) {
             target.add(source[i]);
-            expect(target, source.getRange(0, i + 1));
+            check(target).deepEquals(source.getRange(0, i + 1));
           }
         });
         test('addAdd', () {
@@ -414,22 +415,22 @@ void main() {
           for (var start = 0; start < source.length;) {
             final end = min(source.length, start + generator.nextInt(25));
             target.addAll(source.getRange(start, end));
-            expect(target, source.getRange(0, end));
+            check(target).deepEquals(source.getRange(0, end));
             start = end;
           }
         });
         test('clear', () {
           final target = BitList.filled(2500, true, growable: growable);
           target.clear();
-          expect(target, isEmpty);
+          check(target).isEmpty();
         });
         test('length', () {
           final target = BitList.filled(100, false, growable: growable);
           final buffer = target.buffer;
           target.length += 1;
-          expect(target.buffer, same(buffer));
+          check(target.buffer).identicalTo(buffer);
           target.length -= 2;
-          expect(target.buffer, same(buffer));
+          check(target.buffer).identicalTo(buffer);
         });
         test('length (cleared)', () {
           final generator = Random(584);
@@ -441,10 +442,10 @@ void main() {
             target.length = smaller;
             target.length = larger;
             for (var i = 0; i < smaller; i++) {
-              expect(target[i], isTrue);
+              check(target[i]).isTrue();
             }
             for (var i = smaller; i < larger; i++) {
-              expect(target[i], isFalse);
+              check(target[i]).isFalse();
             }
           }
         });
@@ -452,38 +453,30 @@ void main() {
           final source = randomBooleans(453, 500);
           final target = BitList.of(source, growable: growable);
           for (var i = source.length - 1; i >= 0; i--) {
-            expect(target.removeLast(), source[i]);
-            expect(target, source.getRange(0, i));
+            check(target.removeLast()).equals(source[i]);
+            check(target).deepEquals(source.getRange(0, i));
           }
         });
       } else {
         test('unsupported operations', () {
           final list = BitList(32, growable: growable);
-          expect(() => list.add(false), throwsUnsupportedError);
-          expect(() => list.addAll([true, false]), throwsUnsupportedError);
-          expect(() => list.clear(), throwsUnsupportedError);
-          expect(() => list.insert(2, true), throwsUnsupportedError);
-          expect(
-            () => list.insertAll(2, [true, false]),
-            throwsUnsupportedError,
-          );
-          expect(() => list.length = 10, throwsUnsupportedError);
-          expect(() => list.remove(true), throwsUnsupportedError);
-          expect(() => list.removeAt(2), throwsUnsupportedError);
-          expect(() => list.removeLast(), throwsUnsupportedError);
-          expect(() => list.removeRange(2, 4), throwsUnsupportedError);
-          expect(
-            () => list.removeWhere((value) => true),
-            throwsUnsupportedError,
-          );
-          expect(
-            () => list.replaceRange(2, 4, [true, false]),
-            throwsUnsupportedError,
-          );
-          expect(
-            () => list.retainWhere((value) => false),
-            throwsUnsupportedError,
-          );
+          check(() => list.add(false)).throws<UnsupportedError>();
+          check(() => list.addAll([true, false])).throws<UnsupportedError>();
+          check(list.clear).throws<UnsupportedError>();
+          check(() => list.insert(2, true)).throws<UnsupportedError>();
+          check(() => list.insertAll(2, [true, false]))
+              .throws<UnsupportedError>();
+          check(() => list.length = 10).throws<UnsupportedError>();
+          check(() => list.remove(true)).throws<UnsupportedError>();
+          check(() => list.removeAt(2)).throws<UnsupportedError>();
+          check(list.removeLast).throws<UnsupportedError>();
+          check(() => list.removeRange(2, 4)).throws<UnsupportedError>();
+          check(() => list.removeWhere((value) => true))
+              .throws<UnsupportedError>();
+          check(() => list.replaceRange(2, 4, [true, false]))
+              .throws<UnsupportedError>();
+          check(() => list.retainWhere((value) => false))
+              .throws<UnsupportedError>();
         });
       }
     });

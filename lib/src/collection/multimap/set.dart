@@ -112,6 +112,7 @@ class SetMultimapValues<K, V> extends MultimapValues<K, V, Set<V>>
   void polymorphicClear() => clear();
 }
 
+/// Extension on [Map] to convert to a [SetMultimap].
 extension SetMultimapOnMapExtension<K, V> on Map<K, V> {
   /// Converts this [Map] to an equivalent [SetMultimap].
   SetMultimap<K, V> toSetMultimap({
@@ -120,6 +121,7 @@ extension SetMultimapOnMapExtension<K, V> on Map<K, V> {
   }) => SetMultimap<K, V>.fromEntries(entries, map: map, factory: factory);
 }
 
+/// Extension on [Iterable] to convert to a [SetMultimap].
 extension SetMultimapOnIterableExtension<E> on Iterable<E> {
   /// Converts this [Iterable] to a [SetMultimap].
   SetMultimap<K, V> toSetMultimap<K, V>({
