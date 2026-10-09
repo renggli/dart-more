@@ -15,14 +15,15 @@ extension PeriodicalDateTimeExtension on DateTime {
   ///
   /// ```dart
   /// // Enumerate 10 days after September 2, 2017.
-  /// DateTime(2017, DateTime.SEPTEMBER, 2).periodical().take(10)
+  /// DateTime(2017, DateTime.september, 2).periodical(TimeUnit.day).take(10);
   /// ```
   ///
   /// ```dart
   /// // Enumerate the remaining days in the current year.
   /// final today = DateTime.now();
   /// final nextYear = DateTime(today.year + 1);
-  /// today.periodical(period: Period.daily)
+  /// today
+  ///     .periodical(TimeUnit.day)
   ///     .takeWhile((timestamp) => timestamp.isBefore(nextYear));
   /// ```
   ///
@@ -32,7 +33,7 @@ extension PeriodicalDateTimeExtension on DateTime {
   ///
   /// ```dart
   /// final offset = Duration(days: 1);
-  /// iterate(DateTime().now(), (prev) => prev.add(offset));
+  /// iterate(DateTime.now(), (prev) => prev.add(offset));
   /// ```
   Iterable<DateTime> periodical(TimeUnit unit, {int step = 1}) {
     if (step == 0) {
