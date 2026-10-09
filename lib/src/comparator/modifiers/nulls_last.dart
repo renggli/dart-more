@@ -1,3 +1,4 @@
+/// Extension on [Comparator] to order null values last.
 extension NullsLastComparator<T> on Comparator<T> {
   /// Returns a [Comparator] that orders `null` values after non-null values.
   Comparator<T?> get nullsLast => (a, b) {

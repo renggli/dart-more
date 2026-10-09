@@ -1,3 +1,4 @@
+/// Extension on [Comparator] to order null values first.
 extension NullsFirstComparator<T> on Comparator<T> {
   /// Returns a [Comparator] that orders `null` values before non-null values.
   Comparator<T?> get nullsFirst => (a, b) {

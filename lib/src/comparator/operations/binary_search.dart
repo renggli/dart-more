@@ -1,3 +1,4 @@
+/// Extension on [Comparator] to perform binary search operations.
 extension SearchComparator<T> on Comparator<T> {
   /// Performs a binary search of [value] on the sorted [list]. Returns the
   /// index of any element that compares equal, or `-1` if the value is not

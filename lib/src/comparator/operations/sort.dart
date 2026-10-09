@@ -1,5 +1,6 @@
 import 'package:collection/collection.dart';
 
+/// Extension on [Comparator] to sort lists and iterables.
 extension SortComparator<T> on Comparator<T> {
   /// Sorts the provided [list] in-place.
   ///

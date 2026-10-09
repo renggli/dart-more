@@ -1,3 +1,4 @@
+/// Extension on [Comparator] to combine multiple comparators.
 extension CompoundComparator<T> on Comparator<T> {
   /// Returns a [Comparator] that breaks a tie of this comparator by delegating
   /// to another [comparator].
@@ -8,6 +9,7 @@ extension CompoundComparator<T> on Comparator<T> {
   };
 }
 
+/// Extension on an iterable of [Comparator]s to combine them into one.
 extension CompoundIterableComparator<T> on Iterable<Comparator<T>> {
   /// Returns a [Comparator] that tries each of the comparators in this
   /// iterable in order and returns the first result that doesn't end up

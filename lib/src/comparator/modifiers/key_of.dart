@@ -1,5 +1,6 @@
 import '../../../functional.dart';
 
+/// Extension on [Comparator] to order elements by a key extraction function.
 extension ResultOfComparator<R> on Comparator<R> {
   /// Returns a [Comparator] of type [T] that extracts a sort key of type [R].
   Comparator<T> keyOf<T>(Map1<T, R> function) =>

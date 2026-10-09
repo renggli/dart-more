@@ -1,3 +1,4 @@
+/// Extension on [Comparator] to order iterables lexicographically.
 extension LexicographicalComparator<T> on Comparator<T> {
   /// Returns a [Comparator] that orders iterables of type [T] lexicographically
   /// by their elements.

@@ -1,8 +1,9 @@
+/// Extension on [Comparator] to find the minimum and maximum elements.
 extension MinMaxComparator<T> on Comparator<T> {
   /// Returns the minimum of the two arguments [a] and [b].
   T min(T a, T b) => this(a, b) < 0 ? a : b;
 
-  /// Returns the maximum of the provided [iterable].
+  /// Returns the minimum of the provided [iterable].
   T minOf(Iterable<T> iterable, {T Function()? orElse}) =>
       orElse != null && iterable.isEmpty ? orElse() : iterable.reduce(min);
 

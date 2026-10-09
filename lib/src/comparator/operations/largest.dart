@@ -2,6 +2,7 @@ import 'dart:math' as math;
 
 import 'package:collection/collection.dart';
 
+/// Extension on [Comparator] to find the largest elements.
 extension LargestComparator<T> on Comparator<T> {
   /// Returns a list of the [k] largest elements of the given iterable
   /// according to this ordering, in order from largest to smallest.
