@@ -1,47 +1,46 @@
+import 'package:checks/checks.dart';
 import 'package:more/feature.dart';
-import 'package:test/test.dart';
+import 'package:test/test.dart' show group, test;
 
 void main() {
   group('isJavaScript', () {
     test('isTrue', () {
-      expect(isJavaScript, isTrue);
+      check(isJavaScript).isTrue();
     }, testOn: 'js');
     test('isFalse', () {
-      expect(isJavaScript, isFalse);
+      check(isJavaScript).isFalse();
     }, testOn: '!js');
   });
   group('isWasm', () {
     test('isTrue', () {
-      expect(isWasm, isTrue);
+      check(isWasm).isTrue();
     }, testOn: 'wasm');
     test('isFalse', () {
-      expect(isWasm, isFalse);
+      check(isWasm).isFalse();
     }, testOn: '!wasm');
   });
   group('hasAssertionsEnabled', () {
     if (hasAssertionsEnabled) {
       test('isTrue', () {
-        expect(() {
+        check(() {
           assert(false);
-        }, throwsA(isA<AssertionError>()));
+        }).throws<AssertionError>();
       });
     } else {
       test('isFalse', () {
-        expect(() {
+        check(() {
           assert(false);
-        }, isNot(throwsA(isA<AssertionError>())));
+        }).returnsNormally();
       });
     }
   });
   test('minSafeInteger', () {
-    expect(minSafeInteger, lessThan(-0xfffffffffff));
-    expect(minSafeInteger, -BigInt.two.pow(safeIntegerBits - 1).toInt());
+    check(minSafeInteger).isLessThan(-0xfffffffffff);
+    check(minSafeInteger).equals(-BigInt.two.pow(safeIntegerBits - 1).toInt());
   });
   test('maxSafeInteger', () {
-    expect(maxSafeInteger, greaterThan(0xfffffffffff));
-    expect(
-      maxSafeInteger,
-      (BigInt.two.pow(safeIntegerBits - 1) - BigInt.one).toInt(),
-    );
+    check(maxSafeInteger).isGreaterThan(0xfffffffffff);
+    check(maxSafeInteger)
+        .equals((BigInt.two.pow(safeIntegerBits - 1) - BigInt.one).toInt());
   });
 }

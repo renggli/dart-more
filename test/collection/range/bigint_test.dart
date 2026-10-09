@@ -19,6 +19,13 @@ void main() {
         excluded: toBigIntList([0]),
       );
     });
+    test('default', () {
+      verifyRange(
+        BigIntRange(),
+        included: <BigInt>[],
+        excluded: toBigIntList([0]),
+      );
+    });
     test('of', () {
       verifyRange(
         BigIntRange.of(),

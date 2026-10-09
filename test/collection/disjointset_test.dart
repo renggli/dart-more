@@ -9,6 +9,7 @@ import 'test_utils.dart';
 void main() {
   test('initial state', () {
     final disjoinset = DisjointSet([...0.to(5), 2, 3]);
+    check(disjoinset.elements).unorderedEquals(0.to(5));
     check(disjoinset.count).equals(5);
     check(disjoinset.sizes).unorderedEquals([1, 1, 1, 1, 1]);
     check(disjoinset.sets).unorderedSets([

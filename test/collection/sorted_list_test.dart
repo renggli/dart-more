@@ -50,6 +50,7 @@ void allSortedListTests(
     check(list.last).equals(5);
     check(list[0]).equals(1);
     check(list[2]).equals(5);
+    check(list.comparator).equals(naturalCompare);
   });
   test('contains', () {
     final list = createSortedList<int>([5, 1, 3]);

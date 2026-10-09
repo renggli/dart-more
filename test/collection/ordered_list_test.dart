@@ -56,6 +56,22 @@ void main() {
       check(list.first).equals(1);
       check(list.last).equals(2);
     });
+    test('length modification', () {
+      final list = OrderedList<int>.of([10, 20, 30, 40]);
+      list.length = 2;
+      check(list).deepEquals([10, 20]);
+      check(list.length).equals(2);
+
+      check(() => list.length = 5).throws<UnsupportedError>();
+      check(() => list.length = -1).throws<RangeError>();
+
+      final nullableList = OrderedList<int?>.of([1, 2]);
+      nullableList.length = 4;
+      check(nullableList).deepEquals([1, 2, null, null]);
+
+      final fixed = OrderedList<int>.filled(3, 0);
+      check(() => fixed.length = 2).throws<UnsupportedError>();
+    });
   });
   group('double-ended operations', () {
     test('addFirst and removeFirst', () {

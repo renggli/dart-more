@@ -14,6 +14,7 @@ void main() {
         check(map.isEmpty).isTrue();
         check(map.isNotEmpty).isFalse();
         check(map.asMap()).isEmpty();
+        check(map.asMap().length).equals(0);
         check(map.keys).isEmpty();
         check(map.values).isEmpty();
         check(map.entries).isEmpty();
@@ -32,6 +33,7 @@ void main() {
           'a': [1],
           'b': [2, 3],
         });
+        check(map.asMap().length).equals(2);
         check(map['a']).deepEquals([1]);
         check(map['b']).deepEquals([2, 3]);
       });

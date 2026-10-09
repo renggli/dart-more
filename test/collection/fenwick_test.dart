@@ -5,6 +5,11 @@ import 'package:more/collection.dart';
 import 'package:test/test.dart';
 
 void main() {
+  test('default constructor', () {
+    final tree = FenwickTree(5);
+    check(tree.length).equals(5);
+    check(tree).deepEquals([0, 0, 0, 0, 0]);
+  });
   for (final (:name, :list) in [
     (name: 'empty', list: <int>[]),
     (name: 'single', list: [42]),

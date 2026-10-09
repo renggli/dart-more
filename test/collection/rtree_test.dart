@@ -76,5 +76,24 @@ void main() {
         check(child.child!.entries.length).isGreaterOrEqual(2);
       }
     });
+    test('searchEntries with entryPredicate', () {
+      final rtree = RTree<int>.guttmann();
+      rtree.insert(Bounds.fromPoint(const [0.0, 0.0]), 10);
+      rtree.insert(Bounds.fromPoint(const [1.0, 1.0]), 20);
+      check(
+        rtree
+            .searchEntries(entryPredicate: (entry) => entry.data == 10)
+            .map((entry) => entry.data),
+      ).deepEquals([10]);
+    });
+    test('guttman split tie breaking', () {
+      final rtree = RTree<int>.guttmann(minEntries: 2, maxEntries: 4);
+      rtree.insert(Bounds.fromLists(const [0.0], const [10.0]), 1);
+      rtree.insert(Bounds.fromLists(const [100.0], const [110.0]), 2);
+      rtree.insert(Bounds.fromLists(const [50.0], const [60.0]), 3);
+      rtree.insert(Bounds.fromLists(const [30.0], const [30.0]), 4);
+      rtree.insert(Bounds.fromLists(const [5.0], const [5.0]), 5);
+      check(rtree.root.entries).length.equals(2);
+    });
   });
 }
