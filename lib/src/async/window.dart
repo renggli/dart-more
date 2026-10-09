@@ -3,8 +3,9 @@ import 'dart:collection';
 
 import '../shared/exceptions.dart';
 
+/// Extension on [Stream] providing sliding window operations.
 extension WindowStreamExtension<E> on Stream<E> {
-  /// Sliding window [Stream] of given [size] over this [Stream].
+  /// Returns a sliding window [Stream] of given [size] over this [Stream].
   ///
   /// If the stream is of type [E], the returned stream will be of type
   /// `List<E>`.

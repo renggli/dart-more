@@ -1,5 +1,6 @@
 import 'dart:async';
 
+/// Extension on [Stream] providing buffering operations.
 extension BufferExtension<E> on Stream<E> {
   /// Gathers the elements of this [Stream] and bundles the items into a [List]
   /// until either:

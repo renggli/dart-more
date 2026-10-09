@@ -4,8 +4,9 @@ typedef Callback = void Function();
 typedef DataCallback<E> = void Function(E element);
 typedef ErrorCallback = void Function(Object error, [StackTrace? stackTrace]);
 
+/// Extension on [Stream] providing tapping operations for side-effects.
 extension TapExtension<E> on Stream<E> {
-  /// Transparently perform side-effects on the events of a [Stream], for
+  /// Transparently performs side-effects on the events of a [Stream], for
   /// things such as logging or debugging.
   Stream<E> tap({
     Callback? onListen,

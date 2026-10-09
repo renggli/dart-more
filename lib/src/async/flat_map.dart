@@ -1,3 +1,4 @@
+/// Extension on [Stream] providing flat mapping operations.
 extension FlatMapStreamExtension<E> on Stream<E> {
   /// Maps each element of this [Stream] using a mapping function to zero or
   /// more elements, then flattens the result into a continuous stream.
