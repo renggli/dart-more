@@ -1,3 +1,4 @@
+/// Extension on [BigInt] providing common constants.
 extension BigIntExtension on BigInt {
   /// A big integer with the numerical value -1.
   static final BigInt negativeOne = -BigInt.one;
