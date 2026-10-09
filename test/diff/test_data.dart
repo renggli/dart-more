@@ -1,17 +1,7 @@
-import 'package:checks/context.dart';
+export '../test_utils.dart';
 
 // Used to compare equality ratios.
 const epsilon = 0.001;
-
-extension CloseToChecks<T extends num> on Subject<T> {
-  void isCloseTo(num expected, num delta) {
-    context.expect(() => ['is within $delta of $expected'], (actual) {
-      final diff = (actual - expected).abs();
-      if (diff <= delta) return null;
-      return Rejection(which: ['differs by $diff']);
-    });
-  }
-}
 
 // https://github.com/python/cpython/blob/main/Lib/test/test_difflib.py
 const pythonSource = [
