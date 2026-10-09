@@ -1,5 +1,6 @@
 import 'dart:typed_data';
 
+/// Floating point extensions on [double].
 extension DoubleExtension on double {
   /// Returns the nearest [double] in direction of positive infinity.
   double get nextUp {

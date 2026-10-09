@@ -1,5 +1,6 @@
 import '../number/complex.dart';
 
+/// Extension on [int] providing [isProbablyPrime].
 extension ProbablyPrimeIntegerExtension on int {
   /// Tests if this [int] is probably a prime.
   ///
@@ -43,6 +44,7 @@ extension ProbablyPrimeIntegerExtension on int {
   static const _bases = [2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37];
 }
 
+/// Extension on [BigInt] providing [isProbablyPrime].
 extension ProbablyPrimeBigIntExtension on BigInt {
   /// Tests if this [BigInt] is probably a prime.
   ///
@@ -99,6 +101,7 @@ extension ProbablyPrimeBigIntExtension on BigInt {
   ];
 }
 
+/// Extension on [Complex] providing [isProbablyGaussianPrime].
 extension ProbablyPrimeComplexExtension on Complex {
   /// Tests if this [Complex] is probably a gaussian prime, using the
   /// probabilistic prime test of [ProbablyPrimeIntegerExtension].

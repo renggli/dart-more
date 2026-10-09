@@ -1,3 +1,4 @@
+/// Extension on [int] providing [digits].
 extension DigitsIntegerExtension on int {
   /// Returns an iterable over the digits of this [int] in the given [base].
   ///
@@ -22,6 +23,7 @@ extension DigitsIntegerExtension on int {
   }
 }
 
+/// Extension on [BigInt] providing [digits].
 extension DigitsBigIntExtension on BigInt {
   /// Returns an iterable over the digits of this [BigInt] in the given [base].
   ///

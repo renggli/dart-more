@@ -1,5 +1,6 @@
-/// Bit twiddling loosely based on
-/// http://graphics.stanford.edu/~seander/bithacks.html.
+/// Bit twiddling extensions on unsigned 32-bit integers.
+///
+/// Loosely based on http://graphics.stanford.edu/~seander/bithacks.html.
 extension BitUint32Extension on int {
   /// Returns the number of set bits of an unsigned 32-bit integer. This value is
   /// also known as "binary weight" or "Hamming weight".

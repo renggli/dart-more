@@ -1,3 +1,4 @@
+/// Extension on [int] providing [binomial].
 extension BinomialIntegerExtension on int {
   /// Returns the binomial coefficient of this [int] and the argument [k].
   ///
@@ -26,6 +27,7 @@ extension BinomialIntegerExtension on int {
   }
 }
 
+/// Extension on [BigInt] providing [binomial].
 extension BinomialBigIntExtension on BigInt {
   /// Returns the binomial coefficient of this [BigInt] and the argument [k].
   ///

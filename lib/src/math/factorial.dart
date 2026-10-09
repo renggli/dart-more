@@ -23,6 +23,7 @@ const List<int> factorials = [
   2432902008176640000,
 ];
 
+/// Extension on [int] providing [factorial].
 extension FactorialIntegerExtension on int {
   /// Returns the factorial of this [int].
   ///
@@ -43,6 +44,7 @@ extension FactorialIntegerExtension on int {
   }
 }
 
+/// Extension on [BigInt] providing [factorial].
 extension FactorialBigIntExtension on BigInt {
   /// Returns the factorial of this [BigInt].
   ///
