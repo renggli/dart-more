@@ -11,7 +11,7 @@ import '../collection/range.dart';
 /// See https://en.wikipedia.org/wiki/Interval_(mathematics).
 @immutable
 class Interval<T extends Comparable<T>> {
-  /// Returns an interval between [lower] and [upper] (inclusive):
+  /// Creates an interval between [lower] and [upper] (inclusive):
   /// `{ x ∈ T | lower <= x <= upper }`.
   ///
   /// If the [upper] argument is omitted, this interval is assumed to contain
@@ -24,13 +24,13 @@ class Interval<T extends Comparable<T>> {
         'Invalid endpoints for $lower..$upper',
       );
 
-  /// Returns the lower bound of this interval.
+  /// The lower bound of this interval.
   final T lower;
 
-  /// Returns the upper bound of this interval.
+  /// The upper bound of this interval.
   final T upper;
 
-  /// Returns `true`, if this is an interval with a single value.
+  /// Whether this interval consists of a single value.
   bool get isSingle => lower == upper;
 
   /// Whether [value] is included in this interval.
