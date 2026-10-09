@@ -1,6 +1,6 @@
 import 'dart:typed_data';
 
-/// Encodes a list of positive integers using run-length encoding.
+/// Encodes a list of positive integers [input] using run-length encoding.
 List<int> encodeRle(List<int> input) {
   final output = <int>[input.length];
   for (var i = 0; i < input.length;) {
@@ -16,7 +16,7 @@ List<int> encodeRle(List<int> input) {
   return output;
 }
 
-/// Decodes a list of run-length encoded integers.
+/// Decodes a list of run-length encoded integers [input].
 List<int> decodeRle(List<int> input) {
   final output = Int32List(input.first);
   var i = 1, o = 0;
