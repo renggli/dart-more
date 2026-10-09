@@ -7,13 +7,14 @@ import 'fifo.dart';
 import 'loader.dart';
 import 'lru.dart';
 
+/// An asynchronous, loading cache interface.
 abstract class Cache<K, V> with ToStringPrinter {
-  /// Constructs an empty or null cache, useful mostly for testing.
+  /// Creates an empty or null cache, useful mostly for testing.
   ///
   /// The [loader] defines the function to construct items for the cache.
   factory empty({required Loader<K, V> loader}) => EmptyCache<K, V>(loader);
 
-  /// Constructs an expiry cache.
+  /// Creates an expiry cache.
   ///
   /// The [loader] defines the function to construct items for the cache.
   ///
@@ -23,21 +24,21 @@ abstract class Cache<K, V> with ToStringPrinter {
   /// into the future.
   ///
   /// Note that cached items do not magically disappear when they expire.
-  /// Manually call [reap()], or setup a timer to regularly free items.
+  /// Manually call [reap], or setup a timer to regularly free items.
   factory expiry({
     required Loader<K, V> loader,
     Duration? updateExpiry,
     Duration? accessExpiry,
   }) => ExpiryCache(loader, updateExpiry, accessExpiry);
 
-  /// Constructs a First-in/First-out (FIFO) cache.
+  /// Creates a First-in/First-out (FIFO) cache.
   ///
   /// The [loader] defines the function to construct items for the cache; and
   /// [maximumSize] defines the maximum number of items cached.
   factory fifo({required Loader<K, V> loader, int maximumSize = 100}) =>
       FifoCache<K, V>(loader, maximumSize);
 
-  /// Constructs a Least Recently Used (LRU) cache.
+  /// Creates a Least Recently Used (LRU) cache.
   ///
   /// The [loader] defines the function to construct items for the cache; and
   /// [maximumSize] defines the maximum number of items cached.
@@ -56,7 +57,7 @@ abstract class Cache<K, V> with ToStringPrinter {
   /// Stores the [value] associated with the [key].
   Future<V> set(K key, FutureOr<V> value);
 
-  /// Number of currently cached values.
+  /// The number of currently cached values.
   Future<int> size();
 
   /// Discards any cached value with the [key].

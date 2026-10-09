@@ -7,13 +7,17 @@ import 'loader.dart';
 
 /// Least Recently Used (LRU) cache.
 class LruCache<K, V> extends Cache<K, V> {
+  /// Creates an LRU cache with the given [loader] and [maximumSize].
   new(this.loader, this.maximumSize)
     : assert(maximumSize > 0, 'Maximum size must be positive.');
 
+  /// The loader function for cache misses.
   final Loader<K, V> loader;
 
+  /// The maximum number of entries allowed in the cache.
   final int maximumSize;
 
+  /// The map of cached items.
   final Map<K, CacheItem<V>> cached = {};
 
   @override

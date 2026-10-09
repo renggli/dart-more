@@ -5,8 +5,10 @@ import 'cache.dart';
 
 /// A cache that delegates to another one.
 class DelegateCache<K, V> extends Cache<K, V> {
+  /// Creates a cache that delegates to [delegate].
   const new(this.delegate);
 
+  /// The underlying cache being delegated to.
   final Cache<K, V> delegate;
 
   @override
