@@ -1,5 +1,6 @@
 import '../time_unit.dart';
 
+/// Extension on [DateTime] providing truncation to a [TimeUnit].
 extension TruncateToDateTimeExtension on DateTime {
   /// Truncates [DateTime] to the beginning of the provided [TimeUnit].
   DateTime truncateTo(TimeUnit unit, {int startWeekday = DateTime.monday}) {

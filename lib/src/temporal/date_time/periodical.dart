@@ -1,6 +1,7 @@
 import '../../../collection.dart';
 import '../time_unit.dart';
 
+/// Extension on [DateTime] providing periodic timestamp generation.
 extension PeriodicalDateTimeExtension on DateTime {
   /// Creates an infinitely long [Iterable] of periodic [DateTime] timestamps
   /// starting at this [DateTime].

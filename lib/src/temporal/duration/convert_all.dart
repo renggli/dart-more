@@ -1,6 +1,7 @@
 import '../conversion.dart';
 import '../time_unit.dart';
 
+/// Extension on [Duration] providing decomposed conversion to multiple [TimeUnit]s.
 extension ConvertToAllDurationExtension on Duration {
   /// Converts this [Duration] into one or more [int] representations over the
   /// provided [TimeUnit] [units].

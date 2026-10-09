@@ -1,6 +1,7 @@
 import '../conversion.dart';
 import '../time_unit.dart';
 
+/// Extension on [Duration] providing conversion to different [TimeUnit]s.
 extension ConvertToDurationExtension on Duration {
   /// Converts the [Duration] into a [double] representation of the provided
   /// [TimeUnit] [unit]. The resulting duration has the same sign as this
