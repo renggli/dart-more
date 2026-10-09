@@ -2,7 +2,7 @@
 
 /// Extension methods on [Record] with 5 positional elements.
 extension Tuple5<T1, T2, T3, T4, T5> on (T1, T2, T3, T4, T5) {
-  /// List constructor.
+  /// Creates a tuple from the elements in [list].
   static (T, T, T, T, T) fromList<T>(List<T> list) {
     if (list.length != 5) {
       throw ArgumentError.value(
@@ -14,25 +14,25 @@ extension Tuple5<T1, T2, T3, T4, T5> on (T1, T2, T3, T4, T5) {
     return (list[0], list[1], list[2], list[3], list[4]);
   }
 
-  /// Returns the number of elements in the tuple.
+  /// The number of elements in the tuple.
   int get length => 5;
 
-  /// Returns the first element of this tuple.
+  /// The first element of this tuple.
   T1 get first => $1;
 
-  /// Returns the second element of this tuple.
+  /// The second element of this tuple.
   T2 get second => $2;
 
-  /// Returns the third element of this tuple.
+  /// The third element of this tuple.
   T3 get third => $3;
 
-  /// Returns the fourth element of this tuple.
+  /// The fourth element of this tuple.
   T4 get fourth => $4;
 
-  /// Returns the fifth element of this tuple.
+  /// The fifth element of this tuple.
   T5 get fifth => $5;
 
-  /// Returns the last element of this tuple.
+  /// The last element of this tuple.
   T5 get last => $5;
 
   /// Returns a new tuple with the first element replaced by [value].
@@ -92,17 +92,17 @@ extension Tuple5<T1, T2, T3, T4, T5> on (T1, T2, T3, T4, T5) {
   /// Returns a new tuple with the last element removed.
   (T1, T2, T3, T4) removeLast() => ($1, $2, $3, $4);
 
-  /// Applies the values of this tuple to an 5-ary function.
+  /// Transforms the elements of this tuple using [callback].
   R map<R>(
     R Function(T1 first, T2 second, T3 third, T4 fourth, T5 fifth) callback,
   ) => callback($1, $2, $3, $4, $5);
 
-  /// An (untyped) [Iterable] over the values of this tuple.
+  /// An untyped [Iterable] over the values of this tuple.
   Iterable<dynamic> get iterable => toList();
 
-  /// An (untyped) [List] with the values of this tuple.
+  /// Converts this tuple to an untyped [List].
   List<dynamic> toList() => [$1, $2, $3, $4, $5];
 
-  /// An (untyped) [Set] with the unique values of this tuple.
+  /// Converts this tuple to an untyped [Set] of unique values.
   Set<dynamic> toSet() => {$1, $2, $3, $4, $5};
 }

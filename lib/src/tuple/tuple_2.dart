@@ -2,7 +2,7 @@
 
 /// Extension methods on [Record] with 2 positional elements.
 extension Tuple2<T1, T2> on (T1, T2) {
-  /// List constructor.
+  /// Creates a tuple from the elements in [list].
   static (T, T) fromList<T>(List<T> list) {
     if (list.length != 2) {
       throw ArgumentError.value(
@@ -14,16 +14,16 @@ extension Tuple2<T1, T2> on (T1, T2) {
     return (list[0], list[1]);
   }
 
-  /// Returns the number of elements in the tuple.
+  /// The number of elements in the tuple.
   int get length => 2;
 
-  /// Returns the first element of this tuple.
+  /// The first element of this tuple.
   T1 get first => $1;
 
-  /// Returns the second element of this tuple.
+  /// The second element of this tuple.
   T2 get second => $2;
 
-  /// Returns the last element of this tuple.
+  /// The last element of this tuple.
   T2 get last => $2;
 
   /// Returns a new tuple with the first element replaced by [value].
@@ -56,15 +56,15 @@ extension Tuple2<T1, T2> on (T1, T2) {
   /// Returns a new tuple with the last element removed.
   (T1,) removeLast() => ($1,);
 
-  /// Applies the values of this tuple to an 2-ary function.
+  /// Transforms the elements of this tuple using [callback].
   R map<R>(R Function(T1 first, T2 second) callback) => callback($1, $2);
 
-  /// An (untyped) [Iterable] over the values of this tuple.
+  /// An untyped [Iterable] over the values of this tuple.
   Iterable<dynamic> get iterable => toList();
 
-  /// An (untyped) [List] with the values of this tuple.
+  /// Converts this tuple to an untyped [List].
   List<dynamic> toList() => [$1, $2];
 
-  /// An (untyped) [Set] with the unique values of this tuple.
+  /// Converts this tuple to an untyped [Set] of unique values.
   Set<dynamic> toSet() => {$1, $2};
 }

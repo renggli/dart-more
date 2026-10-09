@@ -13,7 +13,7 @@ import 'tuple_9.dart';
 
 /// Extension methods on [Record].
 extension Tuple on Record {
-  /// List constructor.
+  /// Creates a [Record] tuple from the elements in [list].
   static Record fromList<T>(List<T> list) => switch (list.length) {
     0 => Tuple0.fromList(list),
     1 => Tuple1.fromList(list),

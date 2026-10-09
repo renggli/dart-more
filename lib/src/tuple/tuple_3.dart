@@ -2,7 +2,7 @@
 
 /// Extension methods on [Record] with 3 positional elements.
 extension Tuple3<T1, T2, T3> on (T1, T2, T3) {
-  /// List constructor.
+  /// Creates a tuple from the elements in [list].
   static (T, T, T) fromList<T>(List<T> list) {
     if (list.length != 3) {
       throw ArgumentError.value(
@@ -14,19 +14,19 @@ extension Tuple3<T1, T2, T3> on (T1, T2, T3) {
     return (list[0], list[1], list[2]);
   }
 
-  /// Returns the number of elements in the tuple.
+  /// The number of elements in the tuple.
   int get length => 3;
 
-  /// Returns the first element of this tuple.
+  /// The first element of this tuple.
   T1 get first => $1;
 
-  /// Returns the second element of this tuple.
+  /// The second element of this tuple.
   T2 get second => $2;
 
-  /// Returns the third element of this tuple.
+  /// The third element of this tuple.
   T3 get third => $3;
 
-  /// Returns the last element of this tuple.
+  /// The last element of this tuple.
   T3 get last => $3;
 
   /// Returns a new tuple with the first element replaced by [value].
@@ -68,16 +68,16 @@ extension Tuple3<T1, T2, T3> on (T1, T2, T3) {
   /// Returns a new tuple with the last element removed.
   (T1, T2) removeLast() => ($1, $2);
 
-  /// Applies the values of this tuple to an 3-ary function.
+  /// Transforms the elements of this tuple using [callback].
   R map<R>(R Function(T1 first, T2 second, T3 third) callback) =>
       callback($1, $2, $3);
 
-  /// An (untyped) [Iterable] over the values of this tuple.
+  /// An untyped [Iterable] over the values of this tuple.
   Iterable<dynamic> get iterable => toList();
 
-  /// An (untyped) [List] with the values of this tuple.
+  /// Converts this tuple to an untyped [List].
   List<dynamic> toList() => [$1, $2, $3];
 
-  /// An (untyped) [Set] with the unique values of this tuple.
+  /// Converts this tuple to an untyped [Set] of unique values.
   Set<dynamic> toSet() => {$1, $2, $3};
 }

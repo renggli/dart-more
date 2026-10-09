@@ -31,8 +31,14 @@ final File abstractFile = File('lib/src/tuple/tuple.dart');
 /// Implementation file.
 File implementationFile(int i) => File('lib/src/tuple/tuple_$i.dart');
 
-/// Test file.
-final File testFile = File('test/tuple_test.dart');
+/// Directory for tests.
+final Directory testDir = Directory('test/tuple');
+
+/// Tuple test file.
+final File tupleTestFile = File('test/tuple/tuple_test.dart');
+
+/// Implementation test file.
+File implementationTestFile(int i) => File('test/tuple/tuple_${i}_test.dart');
 
 /// Random generator for hash values.
 final Random generator = Random(42);
@@ -66,7 +72,7 @@ Future<void> generateAbstract() async {
   out.writeln('/// Extension methods on [Record].');
   out.writeln('extension Tuple on Record {');
 
-  out.writeln('/// List constructor.');
+  out.writeln('/// Creates a [Record] tuple from the elements in [list].');
   out.writeln('static Record fromList<T>(List<T> list) =>');
   out.writeln('switch (list.length) {');
   for (var i = 0; i < max; i++) {
@@ -102,7 +108,7 @@ Future<void> generateImplementation(int i) async {
   // constructors
   final listTypes = List.generate(i, (i) => 'T');
   final listAccessors = List.generate(i, (i) => 'list[$i]');
-  out.writeln('/// List constructor.');
+  out.writeln('/// Creates a tuple from the elements in [list].');
   out.writeln('static ${recordify(listTypes)} fromList<T>(List<T> list) {');
   if (i == 0) {
     out.writeln('if (list.isNotEmpty) {');
@@ -119,18 +125,18 @@ Future<void> generateImplementation(int i) async {
 
   // length
   out.writeln();
-  out.writeln('/// Returns the number of elements in the tuple.');
+  out.writeln('/// The number of elements in the tuple.');
   out.writeln('int get length => $i;');
 
   // access
   for (var j = 0; j < i; j++) {
     out.writeln();
-    out.writeln('/// Returns the ${ordinals[j]} element of this tuple.');
+    out.writeln('/// The ${ordinals[j]} element of this tuple.');
     out.writeln('${types[j]} get ${ordinals[j]} => ${values[j]};');
   }
   if (i > 0) {
     out.writeln();
-    out.writeln('/// Returns the last element of this tuple.');
+    out.writeln('/// The last element of this tuple.');
     out.writeln('${types.last} get last => ${values.last};');
   }
 
@@ -227,20 +233,20 @@ Future<void> generateImplementation(int i) async {
     ordinals,
   ].zip().map((value) => value.join(' '));
   out.writeln();
-  out.writeln('/// Applies the values of this tuple to an $i-ary function.');
+  out.writeln('/// Transforms the elements of this tuple using [callback].');
   out.writeln('R map<R>(R Function(${listify(typeAndOrdinals)}) callback) => ');
   out.writeln('callback(${listify(values)});');
 
   // iterable
   final prefix = i == 0 ? 'const ' : '';
   out.writeln();
-  out.writeln('/// An (untyped) [Iterable] over the values of this tuple.');
+  out.writeln('/// An untyped [Iterable] over the values of this tuple.');
   out.writeln('Iterable<dynamic> get iterable => toList();');
   out.writeln();
-  out.writeln('/// An (untyped) [List] with the values of this tuple.');
+  out.writeln('/// Converts this tuple to an untyped [List].');
   out.writeln('List<dynamic> toList() => $prefix[${listify(values)}];');
   out.writeln();
-  out.writeln('/// An (untyped) [Set] with the unique values of this tuple.');
+  out.writeln('/// Converts this tuple to an untyped [Set] of unique values.');
   out.writeln('Set<dynamic> toSet() => $prefix{${listify(values)}};');
 
   out.writeln('}');
@@ -248,8 +254,38 @@ Future<void> generateImplementation(int i) async {
   await format(file);
 }
 
-Future<void> generateTest() async {
-  final file = testFile;
+Future<void> generateTupleTest() async {
+  final file = tupleTestFile;
+  final out = file.openWrite();
+  generateWarning(out);
+
+  out.writeln('import \'package:checks/checks.dart\';');
+  out.writeln('import \'package:more/tuple.dart\';');
+  out.writeln('import \'package:test/scaffolding.dart\';');
+  out.writeln();
+  out.writeln('void main() {');
+  out.writeln('  group(\'Tuple\', () {');
+  out.writeln('    test(\'fromList\', () {');
+  for (var i = 0; i < max; i++) {
+    final list = List.generate(i, (j) => '${j + 1}');
+    out.writeln(
+      '      check(Tuple.fromList([${listify(list)}])).equals(${recordify(list)});',
+    );
+  }
+  final many = List.generate(max + 1, (j) => '${j + 1}');
+  out.writeln(
+    '      check(() => Tuple.fromList([${listify(many)}])).throws<ArgumentError>();',
+  );
+  out.writeln('    });');
+  out.writeln('  });');
+  out.writeln('}');
+
+  await out.close();
+  await format(file);
+}
+
+Future<void> generateImplementationTest(int i) async {
+  final file = implementationTestFile(i);
   final out = file.openWrite();
   generateWarning(out);
 
@@ -259,158 +295,149 @@ Future<void> generateTest() async {
     out.writeln('});');
   }
 
+  out.writeln('import \'package:checks/checks.dart\';');
   out.writeln('import \'package:more/tuple.dart\';');
-  out.writeln('import \'package:test/test.dart\';');
+  out.writeln('import \'package:test/scaffolding.dart\';');
   out.writeln();
   out.writeln('void main() {');
 
-  for (var i = 0; i < max; i++) {
-    nest('group', 'Tuple$i', () {
-      // Make sure the numbers are unique.
-      var numbers = <String>[];
-      do {
-        numbers = List.generate(i, (i) => '${generator.nextInt(256)}');
-      } while (Set.of(numbers).length != i);
-      out.writeln('const tuple = ${recordify(numbers)};');
-      nest('test', 'Tuple.fromList', () {
-        final many = List.generate(max, (i) => '${generator.nextInt(256)}');
-        out.writeln('final other = Tuple.fromList([${listify(numbers)}]);');
-        out.writeln('expect(other, tuple);');
-        out.writeln(
-          'expect(() => Tuple.fromList([${listify(many)}]), '
-          'throwsArgumentError);',
-        );
+  nest('group', 'Tuple$i', () {
+    // Make sure the numbers are unique.
+    var numbers = <String>[];
+    do {
+      numbers = List.generate(i, (i) => '${generator.nextInt(256)}');
+    } while (Set.of(numbers).length != i);
+    out.writeln('const tuple = ${recordify(numbers)};');
+    nest('test', 'fromList', () {
+      final many = List.generate(i + 1, (i) => '${generator.nextInt(256)}');
+      out.writeln('final other = Tuple$i.fromList([${listify(numbers)}]);');
+      out.writeln('check(other).equals(tuple);');
+      out.writeln(
+        'check(() => Tuple$i.fromList([${listify(many)}])).throws<ArgumentError>();',
+      );
+    });
+    if (i > 0) {
+      nest('test', 'read', () {
+        for (var j = 0; j < i; j++) {
+          out.writeln('check(tuple.${ordinals[j]}).equals(${numbers[j]});');
+        }
+        out.writeln('check(tuple.last).equals(${numbers.last});');
       });
-      nest('test', 'fromList', () {
-        final many = List.generate(i + 1, (i) => '${generator.nextInt(256)}');
-        out.writeln('final other = Tuple$i.fromList([${listify(numbers)}]);');
-        out.writeln('expect(other, tuple);');
+    }
+    for (var j = 0; j < i; j++) {
+      nest('test', 'with${capitalize(ordinals[j])}', () {
         out.writeln(
-          'expect(() => Tuple$i.fromList([${listify(many)}]), '
-          'throwsArgumentError);',
+          'final other = '
+          'tuple.with${capitalize(ordinals[j])}(\'a\');',
         );
-      });
-      if (i > 0) {
-        nest('test', 'read', () {
-          for (var j = 0; j < i; j++) {
-            out.writeln('expect(tuple.${ordinals[j]}, ${numbers[j]});');
-          }
-          out.writeln('expect(tuple.last, ${numbers.last});');
-        });
-      }
-      for (var j = 0; j < i; j++) {
-        nest('test', 'with${capitalize(ordinals[j])}', () {
+        for (var k = 0; k < i; k++) {
           out.writeln(
-            'final other = '
-            'tuple.with${capitalize(ordinals[j])}(\'a\');',
+            'check(other.${ordinals[k]}).equals(${j == k ? '\'a\'' : numbers[k]});',
           );
+        }
+      });
+      if (j == i - 1) {
+        nest('test', 'withLast', () {
+          out.writeln('final other = tuple.withLast(\'a\');');
           for (var k = 0; k < i; k++) {
             out.writeln(
-              'expect(other.${ordinals[k]}, '
-              '${j == k ? '\'a\'' : numbers[k]});',
+              'check(other.${ordinals[k]}).equals(${j == k ? '\'a\'' : numbers[k]});',
             );
           }
         });
-        if (j == i - 1) {
-          nest('test', 'withLast', () {
-            out.writeln('final other = tuple.withLast(\'a\');');
-            for (var k = 0; k < i; k++) {
-              out.writeln(
-                'expect(other.${ordinals[k]}, '
-                '${j == k ? '\'a\'' : numbers[k]});',
-              );
-            }
-          });
-        }
       }
-      if (i < max - 1) {
-        for (var j = 0; j <= i; j++) {
-          nest('test', 'add${capitalize(ordinals[j])}', () {
-            out.writeln(
-              'final other = '
-              'tuple.add${capitalize(ordinals[j])}(\'a\');',
-            );
-            out.writeln('expect(other.length, tuple.length + 1);');
-            for (var k = 0; k < i + 1; k++) {
-              final expected = k == j
-                  ? '\'a\''
-                  : k < j
-                  ? numbers[k]
-                  : numbers[k - 1];
-              out.writeln('expect(other.${ordinals[k]}, $expected);');
-            }
-          });
-        }
-        nest('test', 'addLast', () {
-          out.writeln('final other = tuple.addLast(\'a\');');
-          out.writeln('expect(other.length, tuple.length + 1);');
+    }
+    if (i < max - 1) {
+      for (var j = 0; j <= i; j++) {
+        nest('test', 'add${capitalize(ordinals[j])}', () {
+          out.writeln(
+            'final other = '
+            'tuple.add${capitalize(ordinals[j])}(\'a\');',
+          );
+          out.writeln('check(other.length).equals(tuple.length + 1);');
           for (var k = 0; k < i + 1; k++) {
-            final expected = k == i ? '\'a\'' : numbers[k];
-            out.writeln('expect(other.${ordinals[k]}, $expected);');
+            final expected = k == j
+                ? '\'a\''
+                : k < j
+                ? numbers[k]
+                : numbers[k - 1];
+            out.writeln('check(other.${ordinals[k]}).equals($expected);');
           }
         });
       }
-      if (i > 0) {
-        for (var j = 0; j < i; j++) {
-          nest('test', 'remove${capitalize(ordinals[j])}', () {
-            out.writeln(
-              'final other = '
-              'tuple.remove${capitalize(ordinals[j])}();',
-            );
-            out.writeln('expect(other.length, tuple.length - 1);');
-            for (var k = 0; k < i - 1; k++) {
-              final expected = k < j ? numbers[k] : numbers[k + 1];
-              out.writeln('expect(other.${ordinals[k]}, $expected);');
-            }
-          });
+      nest('test', 'addLast', () {
+        out.writeln('final other = tuple.addLast(\'a\');');
+        out.writeln('check(other.length).equals(tuple.length + 1);');
+        for (var k = 0; k < i + 1; k++) {
+          final expected = k == i ? '\'a\'' : numbers[k];
+          out.writeln('check(other.${ordinals[k]}).equals($expected);');
         }
-        nest('test', 'removeLast', () {
-          out.writeln('final other = tuple.removeLast();');
-          out.writeln('expect(other.length, tuple.length - 1);');
+      });
+    }
+    if (i > 0) {
+      for (var j = 0; j < i; j++) {
+        nest('test', 'remove${capitalize(ordinals[j])}', () {
+          out.writeln(
+            'final other = '
+            'tuple.remove${capitalize(ordinals[j])}();',
+          );
+          out.writeln('check(other.length).equals(tuple.length - 1);');
           for (var k = 0; k < i - 1; k++) {
-            out.writeln('expect(other.${ordinals[k]}, ${numbers[k]});');
+            final expected = k < j ? numbers[k] : numbers[k + 1];
+            out.writeln('check(other.${ordinals[k]}).equals($expected);');
           }
         });
       }
-      nest('test', 'length', () {
-        out.writeln('expect(tuple.length, $i);');
-      });
-      nest('test', 'map', () {
-        final values = ordinals.sublist(0, i);
-        final result = generator.nextInt(1024);
-        out.writeln('expect(tuple.map((${listify(values)}) ');
-        if (values.isEmpty) {
-          out.writeln('=> $result');
-        } else {
-          out.writeln('{');
-          for (var j = 0; j < i; j++) {
-            out.writeln('expect(${values[j]}, ${numbers[j]});');
-          }
-          out.writeln('return $result;');
-          out.writeln('}');
+      nest('test', 'removeLast', () {
+        out.writeln('final other = tuple.removeLast();');
+        out.writeln('check(other.length).equals(tuple.length - 1);');
+        for (var k = 0; k < i - 1; k++) {
+          out.writeln('check(other.${ordinals[k]}).equals(${numbers[k]});');
         }
-        out.writeln('), $result);');
       });
-      nest('test', 'iterable', () {
-        out.writeln('expect(tuple.iterable, <dynamic>[${listify(numbers)}]);');
-      });
-      nest('test', 'toList', () {
-        out.writeln('expect(tuple.toList(), <dynamic>[${listify(numbers)}]);');
-      });
-      nest('test', 'toSet', () {
-        out.writeln('expect(tuple.toSet(), <dynamic>{${listify(numbers)}});');
-      });
+    }
+    nest('test', 'length', () {
+      out.writeln('check(tuple.length).equals($i);');
     });
-  }
-  out.writeln('}');
+    nest('test', 'map', () {
+      final values = ordinals.sublist(0, i);
+      final result = generator.nextInt(1024);
+      out.writeln('check(tuple.map((${listify(values)}) ');
+      if (values.isEmpty) {
+        out.writeln('=> $result');
+      } else {
+        out.writeln('{');
+        for (var j = 0; j < i; j++) {
+          out.writeln('check(${values[j]}).equals(${numbers[j]});');
+        }
+        out.writeln('return $result;');
+        out.writeln('}');
+      }
+      out.writeln(')).equals($result);');
+    });
+    nest('test', 'iterable', () {
+      out.writeln('check(tuple.iterable).deepEquals(<dynamic>[${listify(numbers)}]);');
+    });
+    nest('test', 'toList', () {
+      out.writeln('check(tuple.toList()).deepEquals(<dynamic>[${listify(numbers)}]);');
+    });
+    nest('test', 'toSet', () {
+      out.writeln('check(tuple.toSet()).deepEquals(<dynamic>{${listify(numbers)}});');
+    });
+  });
 
+  out.writeln('}');
   await out.close();
   await format(file);
 }
 
-Future<void> main() => Future.wait([
-  generateExport(),
-  generateAbstract(),
-  for (var i = 0; i < max; i++) generateImplementation(i),
-  generateTest(),
-]);
+Future<void> main() {
+  testDir.createSync(recursive: true);
+  return Future.wait([
+    generateExport(),
+    generateAbstract(),
+    for (var i = 0; i < max; i++) generateImplementation(i),
+    generateTupleTest(),
+    for (var i = 0; i < max; i++) generateImplementationTest(i),
+  ]);
+}

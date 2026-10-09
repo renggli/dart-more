@@ -2,7 +2,7 @@
 
 /// Extension methods on [Record] with 0 positional elements.
 extension Tuple0 on () {
-  /// List constructor.
+  /// Creates a tuple from the elements in [list].
   static () fromList<T>(List<T> list) {
     if (list.isNotEmpty) {
       throw ArgumentError.value(
@@ -14,7 +14,7 @@ extension Tuple0 on () {
     return ();
   }
 
-  /// Returns the number of elements in the tuple.
+  /// The number of elements in the tuple.
   int get length => 0;
 
   /// Returns a new tuple with [value] added at the first position.
@@ -23,15 +23,15 @@ extension Tuple0 on () {
   /// Returns a new tuple with [value] added at the last position.
   (T,) addLast<T>(T value) => (value,);
 
-  /// Applies the values of this tuple to an 0-ary function.
+  /// Transforms the elements of this tuple using [callback].
   R map<R>(R Function() callback) => callback();
 
-  /// An (untyped) [Iterable] over the values of this tuple.
+  /// An untyped [Iterable] over the values of this tuple.
   Iterable<dynamic> get iterable => toList();
 
-  /// An (untyped) [List] with the values of this tuple.
+  /// Converts this tuple to an untyped [List].
   List<dynamic> toList() => const [];
 
-  /// An (untyped) [Set] with the unique values of this tuple.
+  /// Converts this tuple to an untyped [Set] of unique values.
   Set<dynamic> toSet() => const {};
 }
