@@ -129,8 +129,8 @@ abstract class CharMatcher with ToStringPrinter implements Pattern {
     _ => DisjunctiveCharMatcher([this, other]),
   };
 
-  /// Returns a matcher that matches any character matched by either this
-  /// matcher or [other].
+  /// Returns a matcher that matches any character matched by both this
+  /// matcher and [other].
   CharMatcher operator &(CharMatcher other) => switch (other) {
     AnyCharMatcher() => this,
     NoneCharMatcher() => other,

@@ -416,13 +416,19 @@ Future<void> generateImplementationTest(int i) async {
       out.writeln(')).equals($result);');
     });
     nest('test', 'iterable', () {
-      out.writeln('check(tuple.iterable).deepEquals(<dynamic>[${listify(numbers)}]);');
+      out.writeln(
+        'check(tuple.iterable).deepEquals(<dynamic>[${listify(numbers)}]);',
+      );
     });
     nest('test', 'toList', () {
-      out.writeln('check(tuple.toList()).deepEquals(<dynamic>[${listify(numbers)}]);');
+      out.writeln(
+        'check(tuple.toList()).deepEquals(<dynamic>[${listify(numbers)}]);',
+      );
     });
     nest('test', 'toSet', () {
-      out.writeln('check(tuple.toSet()).deepEquals(<dynamic>{${listify(numbers)}});');
+      out.writeln(
+        'check(tuple.toSet()).deepEquals(<dynamic>{${listify(numbers)}});',
+      );
     });
   });
 

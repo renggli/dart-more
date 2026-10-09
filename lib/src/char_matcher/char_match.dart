@@ -2,6 +2,7 @@ import 'package:meta/meta.dart';
 
 import 'char_matcher.dart';
 
+/// Represents a match of a [CharMatcher] on a character sequence.
 @immutable
 class CharMatch implements Match {
   const new(this.start, this.end, this.input, this.pattern);
