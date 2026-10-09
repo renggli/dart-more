@@ -57,7 +57,7 @@ abstract class Cache<K, V> with ToStringPrinter {
   /// Stores the [value] associated with the [key].
   Future<V> set(K key, FutureOr<V> value);
 
-  /// The number of currently cached values.
+  /// Returns the number of currently cached values.
   Future<int> size();
 
   /// Discards any cached value with the [key].

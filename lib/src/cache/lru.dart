@@ -57,6 +57,7 @@ class LruCache<K, V> extends Cache<K, V> {
   @override
   Future<int> reap() async => 0;
 
+  /// Promotes the item associated with [key] according to the caching strategy.
   CacheItem<V>? promote(K key) {
     final item = cached.remove(key);
     if (item != null) {
@@ -65,6 +66,7 @@ class LruCache<K, V> extends Cache<K, V> {
     return item;
   }
 
+  /// Removes entries that exceed [maximumSize].
   void cleanUp() {
     while (cached.length > maximumSize) {
       cached.remove(cached.keys.first);

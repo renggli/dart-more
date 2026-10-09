@@ -113,12 +113,18 @@ class ExpiryCache<K, V> extends Cache<K, V> {
     ..addValue(accessExpiry, name: 'accessExpiry');
 }
 
+/// An item stored in an [ExpiryCache] with expiration deadlines.
 class ExpiryCacheItem<V> extends CacheItem<V> {
+  /// Creates an expiry cache item with the given deadlines.
   new(super.value, {this.updateDeadline, this.accessDeadline});
 
+  /// The deadline after which this item expires due to update time.
   DateTime? updateDeadline;
+
+  /// The deadline after which this item expires due to access time.
   DateTime? accessDeadline;
 
+  /// The earlier expiration deadline of this item.
   DateTime get expiry {
     if (updateDeadline != null && accessDeadline != null) {
       return updateDeadline!.isBefore(accessDeadline!)
@@ -128,16 +134,19 @@ class ExpiryCacheItem<V> extends CacheItem<V> {
     return updateDeadline ?? accessDeadline!;
   }
 
+  /// Whether this item has expired given the current time [now].
   bool isExpired(DateTime now) =>
       (updateDeadline != null && now.isAfter(updateDeadline!)) ||
       (accessDeadline != null && now.isAfter(accessDeadline!));
 
+  /// Refreshes the update deadline from [now] and [duration].
   void refreshUpdate(DateTime now, Duration? duration) {
     if (duration != null) {
       updateDeadline = now.add(duration);
     }
   }
 
+  /// Refreshes the access deadline from [now] and [duration].
   void refreshAccess(DateTime now, Duration? duration) {
     if (duration != null) {
       accessDeadline = now.add(duration);

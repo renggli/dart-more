@@ -2,6 +2,7 @@ import 'package:checks/checks.dart';
 import 'package:clock/clock.dart';
 import 'package:meta/meta.dart';
 import 'package:more/cache.dart';
+import 'package:more/src/cache/expiry.dart';
 import 'package:test/scaffolding.dart';
 
 import 'test_utils.dart';
@@ -145,6 +146,55 @@ void main() {
         offset = const Duration(seconds: 5);
         check(await cache.getIfPresent(1)).isNull();
         check(await cache.get(1)).equals('val2');
+      });
+    });
+    group('ExpiryCacheItem', () {
+      final t1 = DateTime(2020, 1, 1, 10, 0);
+      final t2 = DateTime(2020, 1, 1, 10, 30);
+      test('expiry with both deadlines (update before access)', () {
+        final item = ExpiryCacheItem(
+          'v',
+          updateDeadline: t1,
+          accessDeadline: t2,
+        );
+        check(item.expiry).equals(t1);
+      });
+      test('expiry with both deadlines (access before update)', () {
+        final item = ExpiryCacheItem(
+          'v',
+          updateDeadline: t2,
+          accessDeadline: t1,
+        );
+        check(item.expiry).equals(t1);
+      });
+      test('expiry with only update deadline', () {
+        final item = ExpiryCacheItem('v', updateDeadline: t1);
+        check(item.expiry).equals(t1);
+      });
+      test('expiry with only access deadline', () {
+        final item = ExpiryCacheItem('v', accessDeadline: t2);
+        check(item.expiry).equals(t2);
+      });
+      test('refreshUpdate with null duration', () {
+        final item = ExpiryCacheItem('v', updateDeadline: t1);
+        item.refreshUpdate(t2, null);
+        check(item.updateDeadline).equals(t1);
+      });
+      test('refreshAccess with null duration', () {
+        final item = ExpiryCacheItem('v', accessDeadline: t1);
+        item.refreshAccess(t2, null);
+        check(item.accessDeadline).equals(t1);
+      });
+      test('isExpired', () {
+        final item = ExpiryCacheItem(
+          'v',
+          updateDeadline: t1,
+          accessDeadline: t2,
+        );
+        check(item.isExpired(t1.subtract(const Duration(minutes: 1))))
+            .isFalse();
+        check(item.isExpired(t1.add(const Duration(minutes: 1)))).isTrue();
+        check(item.isExpired(t2.add(const Duration(minutes: 1)))).isTrue();
       });
     });
   });
