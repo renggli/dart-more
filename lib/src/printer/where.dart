@@ -2,12 +2,14 @@ import '../functional/types/predicate.dart';
 import 'object/object.dart';
 import 'printer.dart';
 
+/// Extension on [Printer] providing conditional printing.
 extension WherePrinterExtension<T> on Printer<T> {
   /// Returns a printer that only prints the receiver if the [callback]
   /// evaluates to `true`.
   Printer<T> where(Predicate1<T> callback) => WherePrinter<T>(this, callback);
 }
 
+/// A printer that only prints if the callback evaluates to `true`.
 class WherePrinter<T> extends Printer<T> {
   const new(this.printer, this.callback);
 

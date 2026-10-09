@@ -1,5 +1,6 @@
 import 'printer.dart';
 
+/// Extension on [Printer] providing builder helper methods.
 extension BuilderPrinterExtension<T> on Printer<T> {
   /// Helper to modify a printer with a [callback], if a [condition] is met.
   ///

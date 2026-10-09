@@ -3,6 +3,7 @@ import 'package:characters/characters.dart';
 import '../object/object.dart';
 import '../printer.dart';
 
+/// Extension on [Printer] providing character separation.
 extension SeparatePrinterExtension<T> on Printer<T> {
   /// Separates a string from the left side with a [separator] every [width]
   /// characters.

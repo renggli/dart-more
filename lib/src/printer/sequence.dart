@@ -1,6 +1,7 @@
 import 'object/object.dart';
 import 'printer.dart';
 
+/// Extension on [Printer] to compose printers sequentially.
 extension SequencePrinterPrinterExtension<T> on Printer<T> {
   /// Prints before another printer.
   Printer<T> before(Object other) =>
@@ -18,6 +19,7 @@ extension SequencePrinterPrinterExtension<T> on Printer<T> {
   ]);
 }
 
+/// Extension on [Iterable] of [Printer] to compose into a sequence.
 extension SequencePrinterIterableExtension<T> on Iterable<Printer<T>> {
   /// Constructs a sequence of printers.
   Printer<T> toPrinter() => SequencePrinter<T>(this);

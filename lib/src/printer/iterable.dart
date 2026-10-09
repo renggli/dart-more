@@ -1,6 +1,7 @@
 import 'object/object.dart';
 import 'printer.dart';
 
+/// Extension on [Printer] providing iterable formatting.
 extension IterablePrinterExtension<T> on Printer<T> {
   /// Joins the items in an [Iterable] with a separator, and possibly limits
   /// the total amount of items to be printed.

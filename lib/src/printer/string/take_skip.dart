@@ -3,6 +3,7 @@ import 'package:characters/characters.dart';
 import '../object/object.dart';
 import '../printer.dart';
 
+/// Extension on [Printer] providing substring take and skip operations.
 extension TakeSkipPrinterExtension<T> on Printer<T> {
   /// Takes the first [count] characters.
   Printer<T> take(int count) => TakePrinter<T>(this, count);

@@ -1,6 +1,7 @@
 import 'object/object.dart';
 import 'printer.dart';
 
+/// Extension on [Printer] providing null value fallback.
 extension NullPrinterExtension<T> on Printer<T> {
   /// Prints [label], if the object to be printed is null. Uses the unicode
   /// symbol for null by default: https://unicode-table.com/en/2400/.

@@ -3,6 +3,7 @@ import 'package:characters/characters.dart';
 import '../object/object.dart';
 import '../printer.dart';
 
+/// Extension on [Printer] providing padding operations.
 extension PadPrinterExtension<T> on Printer<T> {
   /// Pads the string on the left if it is shorter than [width].
   Printer<T> padLeft(int width, [String padding = ' ']) =>

@@ -2,6 +2,7 @@ import '../functional/types/mapping.dart';
 import 'object/object.dart';
 import 'printer.dart';
 
+/// Extension on [Printer] transforming inputs before printing.
 extension ResultOfPrinterExtension<R> on Printer<R> {
   /// Returns a printer that accepts values of type [T] and invokes the provided
   /// [function] to transform it to type [R] for printing.
@@ -13,6 +14,7 @@ extension ResultOfPrinterExtension<R> on Printer<R> {
   Printer<T> cast<T>() => onResultOf<T>((value) => value as R);
 }
 
+/// A printer that transforms values using a function before printing.
 class ResultOfPrinter<T, R> extends Printer<T> {
   const new(this.printer, this.function);
 

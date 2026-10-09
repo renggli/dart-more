@@ -9,6 +9,7 @@ const defaultEllipsis = '…';
 /// Method to truncate.
 enum TruncateMethod { characters, words, sentences }
 
+/// Extension on [Printer] providing truncation operations.
 extension TruncatePrinterExtension<T> on Printer<T> {
   /// Truncates the string from the left side if it is longer than width.
   Printer<T> truncateLeft(

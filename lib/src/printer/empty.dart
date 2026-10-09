@@ -1,6 +1,7 @@
 import 'object/object.dart';
 import 'printer.dart';
 
+/// Extension on [Printer] of [Iterable] providing empty value fallback.
 extension EmptyPrinterExtension<T> on Printer<Iterable<T>> {
   /// Prints [label], if the iterable to be printed is empty. Uses the unicode
   /// symbol for empty set by default: https://unicode-table.com/en/2205/.

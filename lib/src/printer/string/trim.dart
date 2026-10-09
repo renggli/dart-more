@@ -1,6 +1,7 @@
 import '../object/object.dart';
 import '../printer.dart';
 
+/// Extension on [Printer] providing whitespace trimming.
 extension TrimPrinterExtension<T> on Printer<T> {
   /// Removes any leading and trailing whitespace.
   Printer<T> trim() => TrimBothPrinter<T>(this);
