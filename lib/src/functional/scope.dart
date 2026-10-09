@@ -1,3 +1,4 @@
+/// Extension on all types to provide scope functions like [also].
 extension ScopeFunctionExtension<T> on T {
   /// Evaluates the [callback] with the receiver as the argument. Returns
   /// the results of [callback] as the return value.

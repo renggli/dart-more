@@ -284,106 +284,184 @@ Future<void> generateCurry() async {
   await format(file);
 }
 
-Future<void> generateTest() async {
-  final file = File('test/functional_type_test.dart');
+File getTestFile(String name) {
+  final file = File('test/functional/types/${name}_test.dart');
+  file.parent.createSync(recursive: true);
+  return file;
+}
+
+Future<void> generateConstantTest() async {
+  final file = getTestFile('constant');
   final out = file.openWrite();
   generateWarning(out);
 
-  void nest(String type, String name, void Function() callback) {
-    out.writeln('$type(\'$name\', () {');
-    callback();
-    out.writeln('});');
+  out.writeln("import 'package:checks/checks.dart';");
+  out.writeln("import 'package:more/functional.dart';");
+  out.writeln("import 'package:test/scaffolding.dart';");
+  out.writeln();
+  out.writeln('void main() {');
+  out.writeln("  group('constant', () {");
+  for (var i = 0; i < max; i++) {
+    out.writeln("    test('constantFunction$i', () {");
+    final types = generify([for (var j = 0; j < i; j++) 'int', 'String']);
+    final values = listify(List.generate(i, (i) => '$i'));
+    out.writeln("      final function = constantFunction$i$types('default');");
+    out.writeln("      check(function($values)).equals('default');");
+    out.writeln('    });');
   }
+  out.writeln('  });');
+  out.writeln('}');
+
+  await out.close();
+  await format(file);
+}
+
+Future<void> generateCurryTest() async {
+  final file = getTestFile('curry');
+  final out = file.openWrite();
+  generateWarning(out);
+
+  out.writeln("import 'package:checks/checks.dart';");
+  out.writeln("import 'package:more/functional.dart';");
+  out.writeln("import 'package:test/scaffolding.dart';");
+  out.writeln();
+  out.writeln('void main() {');
+  out.writeln("  group('curry', () {");
+  for (var i = 1; i < max; i++) {
+    out.writeln("    test('$i-ary function', () {");
+    final args = generateArgs(i);
+    final typesAndArgs = args.map((each) => 'int $each');
+    out.writeln(
+      '      List<int> function(${listify(typesAndArgs)}) => '
+      '[${listify(args)}];',
+    );
+    final calls = List.generate(i, (i) => '($i)');
+    final result = List.generate(i, (i) => '$i');
+    out.writeln(
+      '      check(function.curry${calls.join()}).deepEquals('
+      '[${listify(result)}]);',
+    );
+    out.writeln('    });');
+  }
+  out.writeln('  });');
+  out.writeln('}');
+
+  await out.close();
+  await format(file);
+}
+
+Future<void> generateEmptyTest() async {
+  final file = getTestFile('empty');
+  final out = file.openWrite();
+  generateWarning(out);
 
   out.writeln('// ignore_for_file: unnecessary_lambdas');
   out.writeln();
-
-  out.writeln('import \'package:more/functional.dart\';');
-  out.writeln('import \'package:test/test.dart\';');
+  out.writeln("import 'package:checks/checks.dart';");
+  out.writeln("import 'package:more/functional.dart';");
+  out.writeln("import 'package:test/scaffolding.dart';");
   out.writeln();
-
   out.writeln('void main() {');
+  out.writeln("  group('empty', () {");
+  for (var i = 0; i < max; i++) {
+    out.writeln("    test('emptyFunction$i', () {");
+    final values = listify(List.generate(i, (i) => '$i'));
+    out.writeln(
+      '      check(() => emptyFunction$i($values)).returnsNormally();',
+    );
+    out.writeln('    });');
+  }
+  out.writeln('  });');
+  out.writeln('}');
 
-  nest('group', 'constant', () {
-    for (var i = 0; i < max; i++) {
-      nest('test', 'constantFunction$i', () {
-        final types = generify([for (var j = 0; j < i; j++) 'int', 'String']);
-        final values = listify(List.generate(i, (i) => '$i'));
-        out.writeln('final function = constantFunction$i$types(\'default\');');
-        out.writeln('expect(function($values), \'default\');');
-      });
+  await out.close();
+  await format(file);
+}
+
+Future<void> generateIdentityTest() async {
+  final file = getTestFile('identity');
+  final out = file.openWrite();
+  generateWarning(out);
+
+  out.writeln("import 'package:checks/checks.dart';");
+  out.writeln("import 'package:more/functional.dart';");
+  out.writeln("import 'package:test/scaffolding.dart';");
+  out.writeln();
+  out.writeln('void main() {');
+  out.writeln("  test('identity', () {");
+  out.writeln('    check(identityFunction(42)).equals(42);');
+  out.writeln("    check(identityFunction('foo')).equals('foo');");
+  out.writeln('  });');
+  out.writeln('}');
+
+  await out.close();
+  await format(file);
+}
+
+Future<void> generatePartialTest() async {
+  final file = getTestFile('partial');
+  final out = file.openWrite();
+  generateWarning(out);
+
+  out.writeln("import 'package:checks/checks.dart';");
+  out.writeln("import 'package:more/functional.dart';");
+  out.writeln("import 'package:test/scaffolding.dart';");
+  out.writeln();
+  out.writeln('void main() {');
+  out.writeln("  group('partial', () {");
+  for (var i = 1; i < max; i++) {
+    out.writeln("    group('$i-ary function', () {");
+    for (var j = 0; j < i; j++) {
+      out.writeln("      test('bind ${ordinal.print(j)} argument', () {");
+      final args = generateArgs(i);
+      final typesAndArgs = args.map((each) => 'int $each');
+      out.writeln(
+        '        List<int> function(${listify(typesAndArgs)}) => '
+        '[${listify(args)}];',
+      );
+      out.writeln('        final bound = function.bind$j(-1);');
+      final arguments = List.generate(i - 1, (i) => '$i');
+      final expected = arguments.toList()..insert(j, '-1');
+      out.writeln(
+        '        check(bound(${listify(arguments)})).deepEquals('
+        '[${listify(expected)}]);',
+      );
+      out.writeln('      });');
     }
-  });
-  nest('group', 'empty', () {
-    for (var i = 0; i < max; i++) {
-      nest('test', 'emptyFunction$i', () {
-        final values = listify(List.generate(i, (i) => '$i'));
-        out.writeln(
-          'expect(() => emptyFunction$i($values), '
-          'isNot(throwsException));',
-        );
-      });
-    }
-  });
-  nest('test', 'identity', () {
-    out.writeln('expect(identityFunction(42), 42);');
-    out.writeln('expect(identityFunction(\'foo\'), \'foo\');');
-  });
-  nest('group', 'throwing', () {
-    out.writeln('final throwable = UnimplementedError();');
-    for (var i = 0; i < max; i++) {
-      nest('test', 'throwFunction$i', () {
-        final types = generify([for (var j = 0; j < i; j++) 'int']);
-        final values = listify(List.generate(i, (i) => '$i'));
-        out.writeln('final function = throwFunction$i$types(throwable);');
-        out.writeln(
-          'expect(() => function($values), '
-          'throwsUnimplementedError);',
-        );
-      });
-    }
-  });
-  nest('group', 'partial', () {
-    for (var i = 1; i < max; i++) {
-      nest('group', '$i-ary function', () {
-        for (var j = 0; j < i; j++) {
-          nest('test', 'bind ${ordinal.print(j)} argument', () {
-            final args = generateArgs(i);
-            final typesAndArgs = args.map((each) => 'int $each');
-            out.writeln(
-              'List<int> function(${listify(typesAndArgs)}) => '
-              '[${listify(args)}];',
-            );
-            out.writeln('final bound = function.bind$j(-1);');
-            final arguments = List.generate(i - 1, (i) => '$i');
-            final expected = arguments.toList()..insert(j, '-1');
-            out.writeln(
-              'expect(bound(${listify(arguments)}), '
-              '[${listify(expected)}]);',
-            );
-          });
-        }
-      });
-    }
-  });
-  nest('group', 'curry', () {
-    for (var i = 1; i < max; i++) {
-      nest('test', '$i-ary function', () {
-        final args = generateArgs(i);
-        final typesAndArgs = args.map((each) => 'int $each');
-        out.writeln(
-          'List<int> function(${listify(typesAndArgs)}) => '
-          '[${listify(args)}];',
-        );
-        final calls = List.generate(i, (i) => '($i)');
-        final result = List.generate(i, (i) => '$i');
-        out.writeln(
-          'expect(function.curry${calls.join()}, '
-          '[${listify(result)}]);',
-        );
-      });
-    }
-  });
+    out.writeln('    });');
+  }
+  out.writeln('  });');
+  out.writeln('}');
+
+  await out.close();
+  await format(file);
+}
+
+Future<void> generateThrowingTest() async {
+  final file = getTestFile('throwing');
+  final out = file.openWrite();
+  generateWarning(out);
+
+  out.writeln('// ignore_for_file: unnecessary_lambdas');
+  out.writeln();
+  out.writeln("import 'package:checks/checks.dart';");
+  out.writeln("import 'package:more/functional.dart';");
+  out.writeln("import 'package:test/scaffolding.dart';");
+  out.writeln();
+  out.writeln('void main() {');
+  out.writeln("  group('throwing', () {");
+  out.writeln('    final throwable = UnimplementedError();');
+  for (var i = 0; i < max; i++) {
+    final types = generify([for (var j = 0; j < i; j++) 'int']);
+    final values = listify(List.generate(i, (i) => '$i'));
+    out.writeln("    test('throwFunction$i', () {");
+    out.writeln('      final function = throwFunction$i$types(throwable);');
+    out.writeln(
+      '      check(() => function($values)).throws<UnimplementedError>();',
+    );
+    out.writeln('    });');
+  }
+  out.writeln('  });');
   out.writeln('}');
 
   await out.close();
@@ -400,5 +478,10 @@ Future<void> main() => Future.wait([
   generatePartial(),
   generatePredicate(),
   generateThrowing(),
-  generateTest(),
+  generateConstantTest(),
+  generateCurryTest(),
+  generateEmptyTest(),
+  generateIdentityTest(),
+  generatePartialTest(),
+  generateThrowingTest(),
 ]);
