@@ -2,7 +2,7 @@
 
 import 'package:checks/checks.dart';
 import 'package:more/collection.dart';
-import 'package:test/test.dart' show test;
+import 'package:test/scaffolding.dart';
 
 void main() {
   test('empty', () {

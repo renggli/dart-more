@@ -2,7 +2,7 @@ import 'package:checks/checks.dart';
 import 'package:more/collection.dart';
 import 'package:more/comparator.dart';
 import 'package:more/graph.dart';
-import 'package:test/test.dart';
+import 'package:test/scaffolding.dart';
 
 import '../test_utils.dart';
 

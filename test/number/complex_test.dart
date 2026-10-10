@@ -11,37 +11,41 @@ void main() {
     group('construction', () {
       test('zero', () {
         const complex = Complex.zero;
-        check(complex.a).equals(0);
-        check(complex.b).equals(0);
-        check(complex.real).equals(0);
-        check(complex.imaginary).equals(0);
+        check(complex)
+          ..a.equals(0)
+          ..b.equals(0)
+          ..real.equals(0)
+          ..imaginary.equals(0);
         check(complex.abs()).equals(0.0);
         check(complex.arg()).equals(0.0);
       });
       test('one', () {
         const complex = Complex.one;
-        check(complex.a).equals(1);
-        check(complex.b).equals(0);
-        check(complex.real).equals(1);
-        check(complex.imaginary).equals(0);
+        check(complex)
+          ..a.equals(1)
+          ..b.equals(0)
+          ..real.equals(1)
+          ..imaginary.equals(0);
         check(complex.abs()).equals(1.0);
         check(complex.arg()).equals(0.0);
       });
       test('i', () {
         const complex = Complex.i;
-        check(complex.a).equals(0);
-        check(complex.b).equals(1);
-        check(complex.real).equals(0);
-        check(complex.imaginary).equals(1);
+        check(complex)
+          ..a.equals(0)
+          ..b.equals(1)
+          ..real.equals(0)
+          ..imaginary.equals(1);
         check(complex.abs()).equals(1.0);
         check(complex.arg()).equals(math.pi / 2);
       });
       test('fromReal', () {
         final complex = Complex.fromReal(123);
-        check(complex.a).equals(123);
-        check(complex.b).equals(0);
-        check(complex.real).equals(123);
-        check(complex.imaginary).equals(0);
+        check(complex)
+          ..a.equals(123)
+          ..b.equals(0)
+          ..real.equals(123)
+          ..imaginary.equals(0);
         check(complex.abs()).equals(123.0);
         check(complex.arg()).equals(0.0);
       });

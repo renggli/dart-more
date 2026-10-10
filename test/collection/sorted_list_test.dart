@@ -5,7 +5,7 @@ import 'dart:math';
 import 'package:checks/checks.dart';
 import 'package:more/collection.dart';
 import 'package:more/comparator.dart';
-import 'package:test/test.dart' show group, test;
+import 'package:test/scaffolding.dart';
 
 void allSortedListTests(
   SortedList<E> Function<E>(

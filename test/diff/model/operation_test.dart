@@ -2,6 +2,8 @@ import 'package:checks/checks.dart';
 import 'package:more/diff.dart';
 import 'package:test/scaffolding.dart';
 
+import '../test_utils.dart';
+
 void main() {
   group('operation', () {
     const operation = Operation(
@@ -20,19 +22,21 @@ void main() {
     );
 
     test('properties', () {
-      check(operation.type).equals(OperationType.equal);
-      check(operation.sourceStart).equals(1);
-      check(operation.sourceEnd).equals(2);
-      check(operation.targetStart).equals(2);
-      check(operation.targetEnd).equals(3);
+      check(operation)
+        ..type.equals(OperationType.equal)
+        ..sourceStart.equals(1)
+        ..sourceEnd.equals(2)
+        ..targetStart.equals(2)
+        ..targetEnd.equals(3);
     });
 
     test('empty', () {
-      check(Operation.empty.type).equals(OperationType.equal);
-      check(Operation.empty.sourceStart).equals(0);
-      check(Operation.empty.sourceEnd).equals(1);
-      check(Operation.empty.targetStart).equals(0);
-      check(Operation.empty.targetEnd).equals(1);
+      check(Operation.empty)
+        ..type.equals(OperationType.equal)
+        ..sourceStart.equals(0)
+        ..sourceEnd.equals(1)
+        ..targetStart.equals(0)
+        ..targetEnd.equals(1);
     });
 
     test('toString', () {

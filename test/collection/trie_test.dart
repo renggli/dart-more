@@ -5,7 +5,7 @@ import 'dart:math';
 import 'package:checks/checks.dart';
 import 'package:more/collection.dart';
 import 'package:more/math.dart';
-import 'package:test/test.dart' show group, test;
+import 'package:test/scaffolding.dart';
 
 void allTrieTests(
   TrieNode<K, P, V> Function<K, P extends Comparable<P>, V>() createRoot,

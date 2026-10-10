@@ -2,7 +2,7 @@ import 'dart:math';
 
 import 'package:checks/checks.dart';
 import 'package:more/graph.dart';
-import 'package:test/test.dart';
+import 'package:test/scaffolding.dart';
 
 import '../../test_utils.dart';
 import 'search_test_utils.dart';

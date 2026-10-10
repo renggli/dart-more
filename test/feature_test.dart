@@ -1,6 +1,6 @@
 import 'package:checks/checks.dart';
 import 'package:more/feature.dart';
-import 'package:test/test.dart' show group, test;
+import 'package:test/scaffolding.dart';
 
 void main() {
   group('isJavaScript', () {

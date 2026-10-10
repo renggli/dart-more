@@ -7,23 +7,6 @@ import 'package:test/scaffolding.dart';
 
 import 'test_utils.dart';
 
-extension on Subject<Fraction> {
-  void isFraction(int numerator, [int denominator = 1]) {
-    has((each) => each.numerator, 'numerator').equals(numerator);
-    has((each) => each.denominator, 'denominator').equals(denominator);
-    has((each) => each.isFinite, 'isFinite').equals(denominator != 0);
-    has(
-      (each) => each.isInfinite,
-      'isInfinite',
-    ).equals(numerator != 0 && denominator == 0);
-    has((each) => each.isNegative, 'isNegative').equals(numerator < 0);
-    has(
-      (each) => each.isNaN,
-      'isNaN',
-    ).equals(numerator == 0 && denominator == 0);
-  }
-}
-
 void main() {
   group('Fraction', () {
     group('construction', () {

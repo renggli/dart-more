@@ -2,15 +2,18 @@ import 'package:checks/checks.dart';
 import 'package:more/diff.dart';
 import 'package:test/scaffolding.dart';
 
+import '../test_utils.dart';
+
 void main() {
   group('match', () {
     const match = Match(sourceStart: 1, targetStart: 2, length: 3);
     const other = Match(sourceStart: 4, targetStart: 5, length: 6);
 
     test('properties', () {
-      check(match.sourceStart).equals(1);
-      check(match.targetStart).equals(2);
-      check(match.length).equals(3);
+      check(match)
+        ..sourceStart.equals(1)
+        ..targetStart.equals(2)
+        ..length.equals(3);
     });
 
     test('toString', () {

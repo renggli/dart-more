@@ -2,6 +2,8 @@ import 'package:checks/checks.dart';
 import 'package:more/functional.dart';
 import 'package:test/scaffolding.dart';
 
+import 'test_utils.dart';
+
 void main() {
   group('either', () {
     group('left', () {
@@ -21,6 +23,7 @@ void main() {
       });
       test('leftValue', () {
         check(either.leftValue).equals(value);
+        check(either).leftValue.equals(value);
       });
       test('leftOptional', () {
         check(either.leftOptional.orElseThrow()).equals(value);
@@ -36,6 +39,7 @@ void main() {
       });
       test('isLeft', () {
         check(either.isLeft).isTrue();
+        check(either).isLeft();
       });
       test('isRight', () {
         check(either.isRight).isFalse();

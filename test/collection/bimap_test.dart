@@ -2,7 +2,7 @@
 
 import 'package:checks/checks.dart';
 import 'package:more/collection.dart';
-import 'package:test/test.dart';
+import 'package:test/scaffolding.dart';
 
 void main() {
   final example = BiMap.of({1: 'a', 2: 'b', 3: 'c'});

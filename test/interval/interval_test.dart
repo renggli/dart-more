@@ -4,6 +4,8 @@ import 'package:more/feature.dart';
 import 'package:more/interval.dart';
 import 'package:test/scaffolding.dart';
 
+import 'test_utils.dart';
+
 void main() {
   group('interval', () {
     final interval0to7 = Interval<num>(0, 7);
@@ -44,12 +46,12 @@ void main() {
       check(interval5to5.upper).equals(5);
     });
     test('isSingle', () {
-      check(interval0to7.isSingle).isFalse();
-      check(interval8to9.isSingle).isFalse();
-      check(interval1to3.isSingle).isFalse();
-      check(interval3to6.isSingle).isFalse();
-      check(interval2to4.isSingle).isFalse();
-      check(interval5to5.isSingle).isTrue();
+      check(interval0to7).isNotSingle();
+      check(interval8to9).isNotSingle();
+      check(interval1to3).isNotSingle();
+      check(interval3to6).isNotSingle();
+      check(interval2to4).isNotSingle();
+      check(interval5to5).isSingle();
     });
     test('contains', () {
       for (final interval in intervals) {

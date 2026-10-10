@@ -9,42 +9,47 @@ void main() {
     group('construction', () {
       test('zero', () {
         const quaternion = Quaternion.zero;
-        check(quaternion.w).equals(0);
-        check(quaternion.x).equals(0);
-        check(quaternion.y).equals(0);
-        check(quaternion.z).equals(0);
+        check(quaternion)
+          ..w.equals(0)
+          ..x.equals(0)
+          ..y.equals(0)
+          ..z.equals(0);
         check(quaternion.abs()).equals(0.0);
       });
       test('one', () {
         const quaternion = Quaternion.one;
-        check(quaternion.w).equals(1);
-        check(quaternion.x).equals(0);
-        check(quaternion.y).equals(0);
-        check(quaternion.z).equals(0);
+        check(quaternion)
+          ..w.equals(1)
+          ..x.equals(0)
+          ..y.equals(0)
+          ..z.equals(0);
         check(quaternion.abs()).equals(1.0);
       });
       test('i', () {
         const quaternion = Quaternion.i;
-        check(quaternion.w).equals(0);
-        check(quaternion.x).equals(1);
-        check(quaternion.y).equals(0);
-        check(quaternion.z).equals(0);
+        check(quaternion)
+          ..w.equals(0)
+          ..x.equals(1)
+          ..y.equals(0)
+          ..z.equals(0);
         check(quaternion.abs()).equals(1.0);
       });
       test('j', () {
         const quaternion = Quaternion.j;
-        check(quaternion.w).equals(0);
-        check(quaternion.x).equals(0);
-        check(quaternion.y).equals(1);
-        check(quaternion.z).equals(0);
+        check(quaternion)
+          ..w.equals(0)
+          ..x.equals(0)
+          ..y.equals(1)
+          ..z.equals(0);
         check(quaternion.abs()).equals(1.0);
       });
       test('k', () {
         const quaternion = Quaternion.k;
-        check(quaternion.w).equals(0);
-        check(quaternion.x).equals(0);
-        check(quaternion.y).equals(0);
-        check(quaternion.z).equals(1);
+        check(quaternion)
+          ..w.equals(0)
+          ..x.equals(0)
+          ..y.equals(0)
+          ..z.equals(1);
         check(quaternion.abs()).equals(1.0);
       });
       test('components', () {

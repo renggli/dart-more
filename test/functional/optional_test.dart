@@ -2,6 +2,8 @@ import 'package:checks/checks.dart';
 import 'package:more/functional.dart';
 import 'package:test/scaffolding.dart';
 
+import 'test_utils.dart';
+
 Never fail(String message) => throw StateError(message);
 
 void main() {
@@ -14,6 +16,7 @@ void main() {
       const optional = stringPresent;
       test('value', () {
         check(optional.value).equals('foo');
+        check(optional).value.equals('foo');
       });
       test('iterable', () {
         check(optional.iterable).isA<Iterable<String>>();
@@ -21,6 +24,7 @@ void main() {
       });
       test('isPresent', () {
         check(optional.isPresent).isTrue();
+        check(optional).isPresent();
       });
       test('ifPresent', () {
         var called = 0;
@@ -124,6 +128,7 @@ void main() {
       });
       test('isAbsent', () {
         check(optional.isAbsent).isTrue();
+        check(optional).isAbsent();
       });
       test('ifAbsent', () {
         var called = 0;
