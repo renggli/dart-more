@@ -266,7 +266,9 @@ void main() {
       });
       test('sin', () {
         check(const Complex(2, 3).sin())
-            .isCloseTo(const Complex(9.154499, 4.168906));
+            .isCloseTo(const Complex(9.154499, -4.168906));
+        check(Complex.i.sin())
+            .isCloseTo(const Complex(0, (math.e - 1 / math.e) * 0.5));
       });
       test('asin', () {
         check(const Complex(2, 3).asin())

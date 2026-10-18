@@ -191,7 +191,7 @@ class Complex implements CloseTo<Complex> {
   Complex acosh() => ((square() - 1).sqrt() + this).log();
 
   /// Computes the sine of this complex number.
-  Complex sin() => Complex(a.sin() * b.cosh(), -a.cos() * b.sinh());
+  Complex sin() => Complex(a.sin() * b.cosh(), a.cos() * b.sinh());
 
   /// Computes the arc-sine of this complex number.
   Complex asin() => (this * i + (one - square()).sqrt()).log() * -i;
