@@ -219,6 +219,15 @@ void main() {
       test('pow', () {
         check(const Complex(1, 2).pow(const Complex(3, 4)))
             .isCloseTo(const Complex(0.129009, 0.033924));
+        check(Complex.zero.pow(0)).equals(Complex.one);
+        check(Complex.zero.pow(Complex.zero)).equals(Complex.one);
+        check(Complex.zero.pow(2)).equals(Complex.zero);
+        check(Complex.zero.pow(const Complex(2, 0))).equals(Complex.zero);
+        check(Complex.zero.pow(const Complex(2, 1))).equals(Complex.zero);
+        check(Complex.zero.pow(-2)).equals(Complex.infinity);
+        check(Complex.zero.pow(const Complex(-2, 0))).equals(Complex.infinity);
+        check(Complex.zero.pow(const Complex(-2, 1)).isNaN).isTrue();
+        check(Complex.zero.pow(Complex.i).isNaN).isTrue();
       });
       test('square', () {
         check(const Complex(2, 3).square()).equals(const Complex(-5, 12));

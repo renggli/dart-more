@@ -152,7 +152,20 @@ class Complex implements CloseTo<Complex> {
   Complex log() => Complex(norm().sqrt().log(), b.atan2(a));
 
   /// Computes the power of this complex number raised to [exponent].
-  Complex pow(Object exponent) => (log() * exponent).exp();
+  Complex pow(Object exponent) {
+    if (exponent == 0 || exponent == Complex.zero) return Complex.one;
+    if (a == 0 && b == 0) {
+      final (num expA, num expB) = switch (exponent) {
+        Complex() => (exponent.a, exponent.b),
+        num() => (exponent, 0),
+        _ => throw ArgumentError.value(exponent, 'exponent', 'Invalid type'),
+      };
+      if (expA > 0) return Complex.zero;
+      if (expA < 0 && expB == 0) return Complex.infinity;
+      return Complex.nan;
+    }
+    return (log() * exponent).exp();
+  }
 
   /// Computes the square of this complex number.
   Complex square() => Complex(a * a - b * b, 2 * a * b);
