@@ -216,7 +216,8 @@ class Complex implements CloseTo<Complex> {
   }
 
   /// Computes the arc-tangent of this complex number.
-  Complex atan() => ((this + i) / (i - this)).log() * i * 0.5;
+  Complex atan() =>
+      ((one - this * i).log() - (one + this * i).log()) * (i * 0.5);
 
   /// Computes the hyperbolic tangent of this complex number.
   Complex tanh() {

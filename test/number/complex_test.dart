@@ -312,6 +312,11 @@ void main() {
       test('atan', () {
         check(const Complex(2, 3).atan())
             .isCloseTo(const Complex(1.409921, 0.229072));
+        check(const Complex(0, 2).atan())
+            .isCloseTo(Complex(math.pi / 2, math.log(3) / 2));
+        check(const Complex(0, -2).atan())
+            .isCloseTo(Complex(-math.pi / 2, -math.log(3) / 2));
+        check(Complex.zero.atan()).equals(Complex.zero);
       });
       test('tanh', () {
         check(const Complex(2, 3).tanh())
