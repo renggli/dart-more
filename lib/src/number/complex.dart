@@ -194,7 +194,7 @@ class Complex implements CloseTo<Complex> {
   Complex cosh() => Complex(a.cosh() * b.cos(), a.sinh() * b.sin());
 
   /// Computes the hyperbolic arc-cosine of this complex number.
-  Complex acosh() => ((square() - 1).sqrt() + this).log();
+  Complex acosh() => (this + (this + one).sqrt() * (this - one).sqrt()).log();
 
   /// Computes the sine of this complex number.
   Complex sin() => Complex(a.sin() * b.cosh(), a.cos() * b.sinh());

@@ -301,6 +301,9 @@ void main() {
       test('acosh', () {
         check(const Complex(2, 3).acosh())
             .isCloseTo(const Complex(1.983387, 1.000143));
+        check(const Complex(-2).acosh())
+            .isCloseTo(const Complex(1.316958, math.pi));
+        check(Complex.one.acosh()).equals(Complex.zero);
       });
       test('tan', () {
         check(const Complex(2, 3).tan())
