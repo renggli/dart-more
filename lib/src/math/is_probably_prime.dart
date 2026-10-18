@@ -1,3 +1,4 @@
+import '../../feature.dart';
 import '../number/complex.dart';
 
 /// Extension on [int] providing [isProbablyPrime].
@@ -15,6 +16,12 @@ extension ProbablyPrimeIntegerExtension on int {
       if (this % base == 0) {
         return false;
       }
+    }
+    if (this < 1369) {
+      return true;
+    }
+    if (this > (isJavaScript ? 94906265 : 3037000499)) {
+      return BigInt.from(this).isProbablyPrime;
     }
     var d = this - 1, s = 0;
     while (d.isEven) {

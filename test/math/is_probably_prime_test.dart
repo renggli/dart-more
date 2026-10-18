@@ -16,6 +16,12 @@ void main() {
       const prime = 228204732751;
       check(prime.isProbablyPrime).isTrue();
       check((prime + 2).isProbablyPrime).isFalse();
+      check(3037000507.isProbablyPrime).isTrue();
+      check((3037000507 + 2).isProbablyPrime).isFalse();
+      check(999999999989.isProbablyPrime).isTrue();
+      check((999999999989 + 2).isProbablyPrime).isFalse();
+      check(9007199254740881.isProbablyPrime).isTrue();
+      check((9007199254740881 + 2).isProbablyPrime).isFalse();
     });
     test('BigInt', () {
       for (var i = 0; i < max; i++) {
