@@ -17,14 +17,21 @@ void main() {
       check(0.5.acosh()).isNaN();
       check(1.acosh()).isCloseTo(0);
       check(2.acosh()).isCloseTo(1.3169578969248166);
+      check(1.0000001.acosh()).isCloseTo(0.0004472135919037347);
+      check(1e160.acosh()).isCloseTo(369.10676205960726);
     });
     test('sinh', () {
       check(0.sinh()).isCloseTo(0);
       check(1.sinh()).isCloseTo(1.1752011936438014);
+      check(1e-16.sinh()).equals(1e-16);
     });
     test('asinh', () {
       check(1.asinh()).isCloseTo(0.881373587019543);
       check(0.asinh()).isCloseTo(0);
+      check((-1e9).asinh()).isCloseTo(-21.416413017506354);
+      check((-1e-16).asinh()).equals(-1e-16);
+      check(1e-16.asinh()).equals(1e-16);
+      check(1e160.asinh()).isCloseTo(369.10676205960726);
       check(double.negativeInfinity.asinh()).equals(double.negativeInfinity);
     });
     test('tanh', () {
@@ -39,6 +46,9 @@ void main() {
       check(0.5.atanh()).isCloseTo(0.5493061443340548);
       check(1.atanh()).equals(double.infinity);
       check(2.atanh()).isNaN();
+      check(1e-16.atanh()).equals(1e-16);
+      check((-1e-16).atanh()).equals(-1e-16);
+      check((-0.0).atanh().isNegative).isTrue();
     });
     test('acoth', () {
       check((-2).acoth()).isCloseTo(-0.5493061443340548);

@@ -1,3 +1,5 @@
+import 'dart:math' as math;
+
 import 'math.dart';
 
 /// Hyperbolic functions on [num].
@@ -7,14 +9,25 @@ import 'math.dart';
 extension HyperbolicNumberExtension on num {
   /// Returns the hyperbolic sine of this [num].
   double sinh() {
+    if (abs() < 1e-5) {
+      return toDouble() + (this * this * this) / 6.0;
+    }
     final y = exp();
     return (y - 1 / y) / 2;
   }
 
   /// Returns the hyperbolic arc-sine of this [num].
-  double asinh() => isInfinite && isNegative
-      ? toDouble()
-      : (this + (this * this + 1).sqrt()).log();
+  double asinh() {
+    if (isNaN) return double.nan;
+    if (isNegative) return -(-this).asinh();
+    if (this < 1e-5) {
+      return toDouble() - (this * this * this) / 6.0;
+    }
+    if (this > 1e8) {
+      return log() + math.ln2;
+    }
+    return (this + (this * this + 1).sqrt()).log();
+  }
 
   /// Returns the hyperbolic cosine of this [num].
   double cosh() {
@@ -23,7 +36,13 @@ extension HyperbolicNumberExtension on num {
   }
 
   /// Returns the hyperbolic arc-cosine of this [num].
-  double acosh() => (this + (this * this - 1).sqrt()).log();
+  double acosh() {
+    if (this < 1) return double.nan;
+    if (this > 1e8) {
+      return log() + math.ln2;
+    }
+    return (this + (this - 1).sqrt() * (this + 1).sqrt()).log();
+  }
 
   /// Returns the hyperbolic tangent of this [num].
   double tanh() {
@@ -36,7 +55,12 @@ extension HyperbolicNumberExtension on num {
   }
 
   /// Returns the hyperbolic arc-tangent of this [num].
-  double atanh() => ((1 + this) / (1 - this)).log() / 2;
+  double atanh() {
+    if (abs() < 1e-5) {
+      return toDouble() + (this * this * this) / 3.0;
+    }
+    return ((1 + this) / (1 - this)).log() / 2;
+  }
 
   /// Returns the inverse hyperbolic tangent of this [num].
   double acoth() => (1 / this).atanh();

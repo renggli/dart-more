@@ -41,8 +41,8 @@ void main() {
       check(math.pi.sin()).isCloseTo(0);
     });
     test('asin', () {
-      check(1.asin()).isCloseTo(1.5707963267948966);
-      check((-1).asin()).isCloseTo(-1.5707963267948966);
+      check(1.asin()).isCloseTo(math.pi / 2);
+      check((-1).asin()).isCloseTo(-math.pi / 2);
     });
     test('cos', () {
       check(0.cos()).isCloseTo(1);
@@ -58,15 +58,15 @@ void main() {
       check(1.tan()).isCloseTo(1.55740772465);
     });
     test('atan', () {
-      check(1.atan()).isCloseTo(0.7853981633974483);
-      check((-1).atan()).isCloseTo(-0.7853981633974483);
+      check(1.atan()).isCloseTo(math.pi / 4);
+      check((-1).atan()).isCloseTo(-math.pi / 4);
     });
     test('atan2', () {
       check(1.atan2(2)).isCloseTo(0.4636476090008061);
       check(2.atan2(1)).isCloseTo(1.1071487177940904);
     });
     test('sqrt', () {
-      check(2.sqrt()).isCloseTo(1.4142135623730951);
+      check(2.sqrt()).isCloseTo(math.sqrt2);
       check(3.sqrt()).isCloseTo(1.7320508075688772);
       check(4.sqrt()).isCloseTo(2.00);
     });
