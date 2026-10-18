@@ -1,5 +1,6 @@
-/// Precomputed list of factorials.
-const List<int> factorials = [
+import '../../feature.dart';
+
+const List<int> _factorialsJs = [
   1,
   1,
   2,
@@ -19,9 +20,19 @@ const List<int> factorials = [
   20922789888000,
   355687428096000,
   6402373705728000,
+];
+
+const List<int> _factorialsVm = [
+  ..._factorialsJs,
   121645100408832000,
   2432902008176640000,
 ];
+
+/// Precomputed list of factorials.
+///
+/// On the 64-bit Dart VM this contains factorials up to `20!`, while on
+/// JavaScript it contains factorials up to `18!` (the maximum safe integer).
+const List<int> factorials = isJavaScript ? _factorialsJs : _factorialsVm;
 
 /// Extension on [int] providing [factorial].
 extension FactorialIntegerExtension on int {
@@ -29,18 +40,16 @@ extension FactorialIntegerExtension on int {
   ///
   /// This is the number of ways to arrange `n` distinct objects into a
   /// sequence.
+  ///
+  /// Throws an [ArgumentError] if `this < 0` or if the result exceeds the
+  /// integer range (`n > 20` on the 64-bit Dart VM, `n > 18` on JavaScript).
+  /// For arbitrarily large factorials, use [FactorialBigIntExtension.factorial]
+  /// instead.
   int factorial() {
-    if (this < 0) {
-      throw ArgumentError('$this.factorial() is undefined.');
-    }
-    if (this < factorials.length) {
+    if (0 <= this && this < factorials.length) {
       return factorials[this];
     }
-    var r = factorials.last;
-    for (var i = factorials.length; i <= this; i++) {
-      r *= i;
-    }
-    return r;
+    throw ArgumentError.value(this, 'n', '$this.factorial() is out of range.');
   }
 }
 
