@@ -1,4 +1,5 @@
 import 'package:checks/checks.dart';
+import 'package:more/feature.dart';
 import 'package:more/math.dart';
 import 'package:test/scaffolding.dart';
 
@@ -14,6 +15,10 @@ void main() {
         check(7.binomial(5)).equals(21);
         check(7.binomial(6)).equals(7);
         check(7.binomial(7)).equals(1);
+        check(56.binomial(28)).equals(7648690600760440);
+        if (!isJavaScript) {
+          check(62.binomial(31)).equals(int.parse('465428353255261088'));
+        }
       });
       test('BigInt', () {
         check(BigInt.from(7).binomial(BigInt.from(0))).equals(BigInt.from(1));

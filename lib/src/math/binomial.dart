@@ -20,7 +20,8 @@ extension BinomialIntegerExtension on int {
     }
     var r = 1;
     for (var i = 1; i <= k; i++) {
-      r = (r * n) ~/ i;
+      final g = i.gcd(n);
+      r = (r ~/ (i ~/ g)) * (n ~/ g);
       n--;
     }
     return r;
