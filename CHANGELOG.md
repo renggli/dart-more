@@ -1,5 +1,15 @@
 # Changelog
 
+## 4.8.0 (Unpublished)
+
+- Dart 3.13 requirement.
+- Add reciprocal hyperbolic functions (`coth`, `sech`, `csch`, `acoth`, `asech`, `acsch`), degree/radian conversions (`toDegrees`, `toRadians`), and bit operations (`setBit`, `clearBit`, `toggleBit`).
+- Add `OrderedList` circular buffer and make `SortedList` a subclass.
+- Fix numerical edge cases, branch cuts, and overflow handling in `Complex`, hyperbolic, primality, factorial, and binomial functions.
+- Fixes and optimizations across graph algorithms (`kruskalSpanningTree`, `bellmanFord`, `floydWarshall`, `topological`, `connected`, and `unionAll`).
+- Various edge case fixes and optimizations across collections and iterables (`BiMap`, `BitList`, `RTree`, `ExpiryCache`, `combinations`, `permutations`).
+- Modernize test suite with `package:checks`.
+
 ## 4.7.0
 
 - Upgrade to Unicode 17.0.0: <https://blog.unicode.org/2025/09/unicode-170-release-announcement.html>
