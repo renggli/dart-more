@@ -237,6 +237,10 @@ void main() {
             .isCloseTo(const Complex(0.895977, -1.674149));
         check(const Complex(2, 3).sqrt().square())
             .isCloseTo(const Complex(2, 3));
+        check(Complex.zero.sqrt()).equals(Complex.zero);
+        check(const Complex(4).sqrt()).equals(const Complex(2));
+        check(const Complex(-4).sqrt()).equals(const Complex(0, 2));
+        check(const Complex(-1).sqrt()).equals(Complex.i);
       });
       group('roots', () {
         const source = Complex(2, 3);

@@ -159,8 +159,14 @@ class Complex implements CloseTo<Complex> {
 
   /// Computes the square root of this complex number.
   Complex sqrt() {
-    final r = abs(), s = this + r;
-    return s / s.abs() * r.sqrt();
+    if (a == 0 && b == 0) return Complex.zero;
+    if (b == 0) {
+      return a >= 0 ? Complex(a.sqrt(), 0) : Complex(0, (-a).sqrt());
+    }
+    final r = abs();
+    final re = ((r + a) / 2).sqrt();
+    final im = ((r - a) / 2).sqrt();
+    return Complex(re, b < 0 ? -im : im);
   }
 
   /// Computes the n-th roots of this complex number.
