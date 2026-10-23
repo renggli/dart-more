@@ -262,12 +262,16 @@ void main() {
             .throws<ArgumentError>();
       });
       test('division', () {
+        const q1 = Quaternion(1, -2, 3, -4);
+        const q2 = Quaternion(5, 6, -7, -8);
         check(
-          const Quaternion(1, -2, 3, -4) / const Quaternion(5, 6, -7, -8),
-        ).isCloseTo(const Quaternion(0.133333, 1.200000, 2.066666, -0.266666));
+          q1 / q2,
+        ).isCloseTo(const Quaternion(0.022988, 0.206896, 0.356321, -0.045977));
+        check((q1 / q2) * q2).isCloseTo(q1);
         check(
-          const Quaternion(5, 6, -7, -8) / const Quaternion(1, -2, 3, -4),
-        ).isCloseTo(const Quaternion(0.022988, -0.206896, -0.356321, 0.045977));
+          q2 / q1,
+        ).isCloseTo(const Quaternion(0.133333, -1.200000, -2.066666, 0.266666));
+        check((q2 / q1) * q1).isCloseTo(q2);
         check(const Quaternion(6, 4, -8, -16) / 2)
             .equals(const Quaternion(3, 2, -4, -8));
         check(() => const Quaternion(6, 4, -8, -16) / 'foo')

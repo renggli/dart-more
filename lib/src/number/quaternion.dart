@@ -202,7 +202,7 @@ class Quaternion implements CloseTo<Quaternion> {
   /// Computes the division of this number and another one.
   Quaternion operator /(Object other) {
     if (other is Quaternion) {
-      final f = 1 / norm();
+      final f = 1 / other.norm();
       return Quaternion(
         (w * other.w + x * other.x + y * other.y + z * other.z) * f,
         (x * other.w - w * other.x - y * other.z + z * other.y) * f,
