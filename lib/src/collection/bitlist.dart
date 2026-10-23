@@ -20,7 +20,10 @@ abstract class BitList extends ListBase<bool> {
   /// each position with [fill].
   factory filled(int length, bool fill, {bool growable = false}) {
     final buffer = Uint32List((length + bitOffset) >>> bitShift);
-    if (fill) buffer.fillRange(0, buffer.length, bitMask);
+    if (fill) {
+      buffer.fillRange(0, buffer.length, bitMask);
+      _maskTail(buffer, length);
+    }
     return growable
         ? GrowableBitList(buffer, length)
         : FixedBitList(buffer, length);
@@ -43,7 +46,9 @@ abstract class BitList extends ListBase<bool> {
     final result = BitList(length, growable: growable);
     final buffer = result.buffer;
     if (other is BitList) {
-      buffer.setRange(0, buffer.length, other.buffer);
+      final wordCount = (length + bitOffset) >>> bitShift;
+      buffer.setRange(0, wordCount, other.buffer);
+      _maskTail(buffer, length);
     } else {
       final iterator = other.iterator;
       for (var i = 0; i < buffer.length; i++) {
@@ -101,10 +106,13 @@ abstract class BitList extends ListBase<bool> {
   @override
   BitList operator +(List<bool> other) {
     final result = BitList(length + other.length);
-    result.buffer.setRange(0, buffer.length, buffer);
+    final wordCount = (length + bitOffset) >>> bitShift;
+    result.buffer.setRange(0, wordCount, buffer);
+    _maskTail(result.buffer, length);
     for (var i = 0; i < other.length; i++) {
       result.setUnchecked(length + i, other[i]);
     }
+    _maskTail(result.buffer, result.length);
     return result;
   }
 
@@ -180,6 +188,7 @@ abstract class BitList extends ListBase<bool> {
     for (var i = 0; i < buffer.length; i++) {
       buffer[i] = ~buffer[i];
     }
+    _maskTail(buffer, length);
   }
 
   /// Returns the intersection of the receiver and [other].
@@ -225,6 +234,7 @@ abstract class BitList extends ListBase<bool> {
     for (var i = 0; i < buffer.length; i++) {
       buffer[i] &= ~other.buffer[i];
     }
+    _maskTail(buffer, length);
   }
 
   /// Returns a [BitList] of the same length, but with the bits of the receiver
@@ -257,6 +267,7 @@ abstract class BitList extends ListBase<bool> {
         result.buffer[shift] = (buffer[0] << offset) & bitMask;
       }
     }
+    _maskTail(result.buffer, length);
     return result;
   }
 
@@ -291,6 +302,7 @@ abstract class BitList extends ListBase<bool> {
         result.buffer[last] = (buffer[buffer.length - 1] >> offset) & bitMask;
       }
     }
+    _maskTail(result.buffer, length);
     return result;
   }
 
@@ -332,7 +344,14 @@ class GrowableBitList extends BitList {
     if (_length < length) {
       // When growing, make sure we always have predictable state.
       _fillRange(buffer, _length, length, false);
+    } else if (length < _length) {
+      final startIndex = (length >>> bitShift) + 1;
+      final endIndex = min((_length + bitOffset) >>> bitShift, buffer.length);
+      if (startIndex < endIndex) {
+        buffer.fillRange(startIndex, endIndex, 0);
+      }
     }
+    _maskTail(buffer, length);
     _length = length;
   }
 }
@@ -448,5 +467,13 @@ void _fillRange(Uint32List buffer, int start, int end, bool value) {
       buffer.fillRange(startIndex + 1, endIndex, 0);
       buffer[endIndex] &= bitMask << (endBit + 1);
     }
+  }
+}
+
+void _maskTail(Uint32List buffer, int length) {
+  final rem = length & bitOffset;
+  final wordIndex = length >>> bitShift;
+  if (rem != 0 && wordIndex < buffer.length) {
+    buffer[wordIndex] &= (1 << rem) - 1;
   }
 }

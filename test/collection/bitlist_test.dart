@@ -393,10 +393,25 @@ void main() {
                 for (var i = 0; i < source.length - shift; i++) {
                   check(target[i]).equals(source[i + shift]);
                 }
+                for (var i = source.length - shift; i < source.length; i++) {
+                  check(target[i]).isFalse();
+                }
               }
             }
             check(() => source >> -1).throws<ArgumentError>();
           }
+        });
+        test('tail bit clean on shift and grow', () {
+          final filled = BitList.filled(5, true, growable: growable);
+          check(filled >> 2).deepEquals([true, true, true, false, false]);
+          final inverted = ~BitList.filled(5, false, growable: growable);
+          check(inverted >> 2).deepEquals([true, true, true, false, false]);
+          final concat = filled + [false, true];
+          check(concat).deepEquals([true, true, true, true, true, false, true]);
+          final copy = BitList.of(filled, growable: true);
+          copy.length = 8;
+          check(copy)
+              .deepEquals([true, true, true, true, true, false, false, false]);
         });
       });
       if (growable) {
