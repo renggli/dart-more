@@ -74,7 +74,7 @@
 
 ## Omissions & API Inconsistencies
 
-- [ ] **Bump version in `pubspec.yaml` to `4.8.0`** ([`pubspec.yaml`](pubspec.yaml#L2)):
+- [x] **Bump version in `pubspec.yaml` to `4.8.0`** ([`pubspec.yaml`](pubspec.yaml#L2)):
   - [`CHANGELOG.md`](CHANGELOG.md#L1-L3) lists `## 4.8.0`, while `pubspec.yaml` is still `4.7.0`.
 - [ ] **Export `FloydWarshall` from `lib/graph.dart`** ([`lib/graph.dart`](lib/graph.dart#L16-L17)):
   - `Graph.allShortestPaths` and `floydWarshallSearch` return `FloydWarshall<V>`, which is currently hidden by `show floydWarshallSearch`.
