@@ -32,8 +32,34 @@ void main() {
       const range = IntegerRange.empty;
       final fwd = range.iterator;
       check(fwd.moveNext()).isFalse();
+      check(fwd.movePrevious()).isFalse();
+      check(fwd.moveNext()).isFalse();
       final bwd = range.iteratorAtEnd;
       check(bwd.movePrevious()).isFalse();
+      check(bwd.moveNext()).isFalse();
+      check(bwd.movePrevious()).isFalse();
+    });
+    test('RangeIterator change direction after exhaustion', () {
+      final range = IntegerRange(3);
+      final it = range.iterator;
+      while (it.moveNext()) {}
+      check(it.moveNext()).isFalse();
+      check(it.movePrevious()).isTrue();
+      check(it.current).equals(2);
+      check(it.movePrevious()).isTrue();
+      check(it.current).equals(1);
+      check(it.movePrevious()).isTrue();
+      check(it.current).equals(0);
+      check(it.movePrevious()).isFalse();
+      check(it.movePrevious()).isFalse();
+      check(it.moveNext()).isTrue();
+      check(it.current).equals(0);
+
+      final itEnd = range.iteratorAtEnd;
+      while (itEnd.movePrevious()) {}
+      check(itEnd.movePrevious()).isFalse();
+      check(itEnd.moveNext()).isTrue();
+      check(itEnd.current).equals(0);
     });
     test('Range lastIndexOf', () {
       final range = IntegerRange(5);

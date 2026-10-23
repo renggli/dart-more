@@ -49,7 +49,7 @@
   - `operator >>` shifts those high bits from `buffer.last` into `[length - amount, length)`, and `BitList.of(..., growable: true)` exposes them when grown.
 - [x] **`SortedList.removeWhere` and `retainWhere` throw `UnsupportedError`** ([`lib/src/collection/sorted_list.dart`](lib/src/collection/sorted_list.dart#L29-L34)):
   - `ListBase.removeWhere` / `retainWhere` mutate elements via `this[i] = ...` and `this.length = ...`, both of which throw `UnsupportedError` in `SortedList`. Forward `removeWhere` and `retainWhere` to `_list`.
-- [ ] **`RangeIterator` skips boundary element when reversing direction after exhaustion** ([`lib/src/collection/range.dart`](lib/src/collection/range.dart#L98-L117)):
+- [x] **`RangeIterator` skips boundary element when reversing direction after exhaustion** ([`lib/src/collection/range.dart`](lib/src/collection/range.dart#L98-L117)):
   - When `moveNext()` returns `false` at the end of the range, `_index` remains `range.length - 1` instead of advancing to `range.length`, so a subsequent `movePrevious()` jumps to `range.length - 2` and skips the last element (and symmetrically at the start when `movePrevious()` returns `false` and `moveNext()` is called).
 - [ ] **`FenwickTree.update` lacks bounds checking** ([`lib/src/collection/fenwick.dart`](lib/src/collection/fenwick.dart#L69-L78)):
   - `update(int index, int value)` silently ignores `index >= length` instead of throwing `RangeError`. Add `RangeError.checkValidIndex(index, this)`.

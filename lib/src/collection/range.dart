@@ -101,6 +101,7 @@ class RangeIterator<T> implements Iterator<T> {
       _current = range.getUnchecked(_index = index);
       return true;
     }
+    _index = range.length;
     _current = null;
     return false;
   }
@@ -112,6 +113,7 @@ class RangeIterator<T> implements Iterator<T> {
       _current = range.getUnchecked(_index = index);
       return true;
     }
+    _index = -1;
     _current = null;
     return false;
   }
