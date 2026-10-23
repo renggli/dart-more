@@ -19,7 +19,8 @@ extension RandomWalkGraphExtension<V, E> on Graph<V, E> {
     successorsOf: successorsOf,
     edgeProbability: edgeProbability,
     selfAvoiding: selfAvoiding,
-    vertexStrategy: vertexStrategy,
+    random: random,
+    vertexStrategy: vertexStrategy ?? this.vertexStrategy,
   );
 }
 

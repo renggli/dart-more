@@ -36,7 +36,7 @@
 - [x] **`dijkstraSearch` and `aStarSearch` zero-weight cycle handling & alternative path edge values** ([`lib/src/graph/algorithms/search/dijkstra.dart`](lib/src/graph/algorithms/search/dijkstra.dart#L49-L59), [`lib/src/graph/algorithms/search/a_star.dart`](lib/src/graph/algorithms/search/a_star.dart#L52-L62), [`lib/src/graph/algorithms/search/utils.dart`](lib/src/graph/algorithms/search/utils.dart#L14-L71)):
   - Pass `startVertices: startVertices` to `createShortestPath` / `createAllShortestPaths` (matching `bellmanFordSearch`) so zero-weight cycles reaching a start vertex do not cause infinite predecessor traversal.
   - `SearchState` stores only a single edge `value` per vertex (line 14), so when `includeAlternativePaths: true`, alternative predecessors with different edge weights reuse the first predecessor's edge value.
-- [ ] **`Graph.randomWalk` ignores `random` parameter and default `vertexStrategy`** ([`lib/src/graph/traverse/random.dart`](lib/src/graph/traverse/random.dart#L11-L23)):
+- [x] **`Graph.randomWalk` ignores `random` parameter and default `vertexStrategy`** ([`lib/src/graph/traverse/random.dart`](lib/src/graph/traverse/random.dart#L11-L23)):
   - `randomWalk` accepts `Random? random` (line 15) but does not forward `random: random` to `RandomWalkIterable`, and passes `vertexStrategy: vertexStrategy` instead of `vertexStrategy: vertexStrategy ?? this.vertexStrategy`.
 
 ### Collection & CharMatcher

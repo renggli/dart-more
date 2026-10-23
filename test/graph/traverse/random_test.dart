@@ -20,6 +20,13 @@ void main() {
       final graph = GraphFactory<int, void>().ring(vertexCount: 4);
       check(graph.randomWalk(0, selfAvoiding: true)).deepEquals([0, 1, 2, 3]);
     });
+    test('reproducible with random seed', () {
+      final graph = GraphFactory<int, void>(isDirected: false)
+          .star(vertexCount: 10);
+      final walk1 = graph.randomWalk(0, random: Random(42)).take(20).toList();
+      final walk2 = graph.randomWalk(0, random: Random(42)).take(20).toList();
+      check(walk1).deepEquals(walk2);
+    });
     test('star (default probabilities)', () {
       final random = Random(3527);
       final graph = GraphFactory<int, void>(isDirected: false)
