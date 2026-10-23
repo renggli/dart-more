@@ -148,6 +148,16 @@ void main() {
       list.removeRange(1, 3);
       check(list).deepEquals([3, 6]);
     });
+    test('removeWhere', () {
+      final list = OrderedList<int>.of([1, 2, 3, 4, 5]);
+      list.removeWhere((x) => x.isOdd);
+      check(list).deepEquals([2, 4]);
+    });
+    test('retainWhere', () {
+      final list = OrderedList<int>.of([1, 2, 3, 4, 5]);
+      list.retainWhere((x) => x.isOdd);
+      check(list).deepEquals([1, 3, 5]);
+    });
   });
   group('circular buffer properties', () {
     test('startIndex and endIndex tracking', () {

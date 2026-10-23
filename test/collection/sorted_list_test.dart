@@ -129,6 +129,28 @@ void allSortedListTests(
     check(list.removeAll()).deepEquals([1, 3, 5]);
     check(list).isEmpty();
   });
+  test('removeWhere', () {
+    final list = createSortedList<int>([5, 1, 3, 2, 4]);
+    list.removeWhere((x) => x.isEven);
+    check(list).deepEquals([1, 3, 5]);
+  });
+  test('retainWhere', () {
+    final list = createSortedList<int>([5, 1, 3, 2, 4]);
+    list.retainWhere((x) => x.isEven);
+    check(list).deepEquals([2, 4]);
+  });
+  test('indexOf and lastIndexOf', () {
+    final list = createSortedList<int>([2, 5, 2, 1, 2]);
+    check(list).deepEquals([1, 2, 2, 2, 5]);
+    check(list.indexOf(2)).equals(1);
+    check(list.indexOf(2, 2)).equals(2);
+    check(list.indexOf(2, 4)).equals(-1);
+    check(list.indexOf(99)).equals(-1);
+    check(list.lastIndexOf(2)).equals(3);
+    check(list.lastIndexOf(2, 2)).equals(2);
+    check(list.lastIndexOf(2, 0)).equals(-1);
+    check(list.lastIndexOf(99)).equals(-1);
+  });
   test('toUnorderedList', () {
     final list = createSortedList<int>([5, 1, 3]);
     check(list.toUnorderedList()).deepEquals([1, 3, 5]);

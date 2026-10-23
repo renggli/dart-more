@@ -47,7 +47,7 @@
 - [x] **`BitList` dirty tail bits corrupt `operator >>`, `operator +`, and `BitList.of`** ([`lib/src/collection/bitlist.dart`](lib/src/collection/bitlist.dart#L23), [`lib/src/collection/bitlist.dart`](lib/src/collection/bitlist.dart#L45-L46), [`lib/src/collection/bitlist.dart`](lib/src/collection/bitlist.dart#L156-L160), [`lib/src/collection/bitlist.dart`](lib/src/collection/bitlist.dart#L266-L294)):
   - `BitList.filled(length, true)`, `not()`, and `operator <<` leave unmasked `1` bits above `length` in the final `Uint32List` word.
   - `operator >>` shifts those high bits from `buffer.last` into `[length - amount, length)`, and `BitList.of(..., growable: true)` exposes them when grown.
-- [ ] **`SortedList.removeWhere` and `retainWhere` throw `UnsupportedError`** ([`lib/src/collection/sorted_list.dart`](lib/src/collection/sorted_list.dart#L29-L34)):
+- [x] **`SortedList.removeWhere` and `retainWhere` throw `UnsupportedError`** ([`lib/src/collection/sorted_list.dart`](lib/src/collection/sorted_list.dart#L29-L34)):
   - `ListBase.removeWhere` / `retainWhere` mutate elements via `this[i] = ...` and `this.length = ...`, both of which throw `UnsupportedError` in `SortedList`. Forward `removeWhere` and `retainWhere` to `_list`.
 - [ ] **`RangeIterator` skips boundary element when reversing direction after exhaustion** ([`lib/src/collection/range.dart`](lib/src/collection/range.dart#L98-L117)):
   - When `moveNext()` returns `false` at the end of the range, `_index` remains `range.length - 1` instead of advancing to `range.length`, so a subsequent `movePrevious()` jumps to `range.length - 2` and skips the last element (and symmetrically at the start when `movePrevious()` returns `false` and `moveNext()` is called).
@@ -93,7 +93,7 @@
 
 - [ ] **Avoid repeated `Iterable.elementAt` calls in `Differ` implementations** ([`lib/src/diff/differ/context.dart`](lib/src/diff/differ/context.dart#L45-L73), [`lib/src/diff/differ/normal.dart`](lib/src/diff/differ/normal.dart#L60), [`lib/src/diff/differ/readable.dart`](lib/src/diff/differ/readable.dart#L105-L250), [`lib/src/diff/differ/unified.dart`](lib/src/diff/differ/unified.dart#L56)):
   - Materialize `source` and `target` as `List<String>` once so indexing is $O(1)$ instead of $O(n)$ per line, and compare strings directly in `ReadableDiffer._replace` instead of re-Decoding `.runes` inside the nested loop.
-- [ ] **Use binary search for `SortedList.indexOf` and `lastIndexOf` and batch shift in `OrderedList.removeRange`** ([`lib/src/collection/sorted_list.dart`](lib/src/collection/sorted_list.dart#L46-L76), [`lib/src/collection/ordered_list.dart`](lib/src/collection/ordered_list.dart#L201-L204)):
+- [x] **Use binary search for `SortedList.indexOf` and `lastIndexOf` and batch shift in `OrderedList.removeRange`** ([`lib/src/collection/sorted_list.dart`](lib/src/collection/sorted_list.dart#L46-L76), [`lib/src/collection/ordered_list.dart`](lib/src/collection/ordered_list.dart#L201-L204)):
   - Override `indexOf` and `lastIndexOf` in `SortedList` using `_comparator.binarySearchLower` / `binarySearchUpper` ($O(\log n)$ vs $O(n)$).
   - Replace the per-element `removeAt(start)` loop in `OrderedList.removeRange` with `_elements.removeRange(start, end)`.
 - [ ] **Preserve `vertexStrategy` in `Graph.map` and hoist map lookups in `floydWarshallSearch`** ([`lib/src/graph/operations/map.dart`](lib/src/graph/operations/map.dart#L23), [`lib/src/graph/algorithms/search/floyd_warshall.dart`](lib/src/graph/algorithms/search/floyd_warshall.dart#L48-L62)):

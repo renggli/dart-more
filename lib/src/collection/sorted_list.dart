@@ -36,6 +36,31 @@ class SortedList<E> extends OrderedList<E> {
   bool contains(Object? element) =>
       element is E && _comparator.binarySearch(this, element) >= 0;
 
+  @override
+  int indexOf(Object? element, [int start = 0]) {
+    if (element is! E) return -1;
+    if (start < 0) start = 0;
+    if (start >= length) return -1;
+    final index = _comparator.binarySearchLower(this, element, start: start);
+    for (var i = index; i < length && _comparator(this[i], element) == 0; i++) {
+      if (this[i] == element) return i;
+    }
+    return -1;
+  }
+
+  @override
+  int lastIndexOf(Object? element, [int? start]) {
+    if (element is! E) return -1;
+    if (start != null && start < 0) return -1;
+    final end = start == null ? length : min(start + 1, length);
+    if (end <= 0) return -1;
+    final upper = _comparator.binarySearchUpper(this, element, end: end);
+    for (var i = upper - 1; i >= 0 && _comparator(this[i], element) == 0; i--) {
+      if (this[i] == element) return i;
+    }
+    return -1;
+  }
+
   /// Returns the number of times [element] appears in the list.
   int occurrences(E element) {
     final lower = _comparator.binarySearchLower(this, element);

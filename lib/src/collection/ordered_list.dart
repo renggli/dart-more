@@ -199,11 +199,38 @@ class OrderedList<E> extends ListBase<E> implements PriorityQueue<E> {
       }
       _length -= count;
     } else {
-      for (var i = 0; i < count; i++) {
-        removeAt(start);
+      for (var i = start; i < _length - count; i++) {
+        _buffer[(_head + i) & _mask] = _buffer[(_head + i + count) & _mask];
       }
+      for (var i = _length - count; i < _length; i++) {
+        _buffer[(_head + i) & _mask] = null;
+      }
+      _length -= count;
     }
   }
+
+  @override
+  void removeWhere(bool Function(E element) test) {
+    if (!_growable) throwNotGrowable();
+    var write = 0;
+    for (var read = 0; read < _length; read++) {
+      final element = _buffer[(_head + read) & _mask] as E;
+      if (!test(element)) {
+        if (write != read) {
+          _buffer[(_head + write) & _mask] = element;
+        }
+        write++;
+      }
+    }
+    for (var i = write; i < _length; i++) {
+      _buffer[(_head + i) & _mask] = null;
+    }
+    _length = write;
+  }
+
+  @override
+  void retainWhere(bool Function(E element) test) =>
+      removeWhere((element) => !test(element));
 
   @override
   E removeAt(int index) {
