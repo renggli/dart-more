@@ -45,6 +45,51 @@ void main() {
         sub.cancel();
       });
     });
+    test('max age does not debounce on frequent events', () {
+      fakeAsync((async) {
+        final stream = Stream.periodic(
+          const Duration(milliseconds: 400),
+          (i) => i + 1,
+        ).take(6);
+        final results = <List<int>>[];
+        final sub = stream.buffer(maxAge: seconds1).listen(results.add);
+        async.elapse(const Duration(milliseconds: 2600));
+        check(results).deepEquals([
+          [1, 2, 3],
+          [4, 5, 6],
+        ]);
+        sub.cancel();
+      });
+    });
+    test('source completes cancels trigger', () {
+      fakeAsync((async) {
+        var triggerCancelled = false;
+        final triggerController = StreamController<void>(
+          onCancel: () => triggerCancelled = true,
+        );
+        final stream = Stream.fromIterable([1, 2]);
+        final results = <List<int>>[];
+        stream.buffer(trigger: triggerController.stream).listen(results.add);
+        async.flushMicrotasks();
+        check(results).deepEquals([
+          [1, 2],
+        ]);
+        check(triggerCancelled).isTrue();
+      });
+    });
+    test('trigger completes cancels source', () {
+      fakeAsync((async) {
+        var sourceCancelled = false;
+        final sourceController = StreamController<int>(
+          onCancel: () => sourceCancelled = true,
+        );
+        final trigger = Stream.fromIterable([null]);
+        final results = <List<int>>[];
+        sourceController.stream.buffer(trigger: trigger).listen(results.add);
+        async.flushMicrotasks();
+        check(sourceCancelled).isTrue();
+      });
+    });
     test('errors', () async {
       final stream = Stream<void>.error(StateError('Data Error'));
       await check(stream.buffer().toList()).throws<StateError>(

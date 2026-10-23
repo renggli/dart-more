@@ -26,8 +26,9 @@ extension BufferExtension<E> on Stream<E> {
 
     // Helper functions for state management.
     void flush() {
-      if (buffer.isNotEmpty) {
-        maxAgeTimer?.cancel();
+      maxAgeTimer?.cancel();
+      maxAgeTimer = null;
+      if (buffer.isNotEmpty && !controller.isClosed) {
         controller.add(buffer.toList(growable: false));
         buffer.clear();
       }
@@ -36,41 +37,61 @@ extension BufferExtension<E> on Stream<E> {
     void maybeFlush() {
       if (maxLength != null && buffer.length >= maxLength) {
         flush();
-      } else if (maxAge != null) {
-        maxAgeTimer?.cancel();
-        if (buffer.isNotEmpty) {
-          maxAgeTimer = Timer(maxAge, flush);
-        }
+      } else if (maxAge != null && maxAgeTimer == null && buffer.isNotEmpty) {
+        maxAgeTimer = Timer(maxAge, flush);
+      }
+    }
+
+    void cleanup() {
+      maxAgeTimer?.cancel();
+      maxAgeTimer = null;
+      sourceSubscription?.cancel();
+      sourceSubscription = null;
+      triggerSubscription?.cancel();
+      triggerSubscription = null;
+    }
+
+    void close() {
+      if (!controller.isClosed) {
+        flush();
+        cleanup();
+        controller.close();
       }
     }
 
     // Handling of the trigger stream.
     void onTriggerData(value) {
-      flush();
+      if (!controller.isClosed) {
+        flush();
+      }
     }
 
     void onTriggerError(Object error, StackTrace stackTrace) {
-      controller.addError(error, stackTrace);
+      if (!controller.isClosed) {
+        controller.addError(error, stackTrace);
+      }
     }
 
     void onTriggerDone() {
-      flush();
-      controller.close();
+      close();
     }
 
     // Handling of the source stream.
     void onSourceData(E value) {
-      buffer.add(value);
-      maybeFlush();
+      if (!controller.isClosed) {
+        buffer.add(value);
+        maybeFlush();
+      }
     }
 
     void onSourceError(Object error, StackTrace stackTrace) {
-      controller.addError(error, stackTrace);
+      if (!controller.isClosed) {
+        controller.addError(error, stackTrace);
+      }
     }
 
     void onSourceDone() {
-      flush();
-      controller.close();
+      close();
     }
 
     // Setup the resulting stream controller.

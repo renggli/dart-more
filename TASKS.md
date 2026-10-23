@@ -60,7 +60,7 @@
 
 ### Async & Temporal
 
-- [ ] **`Stream.buffer` subscription leak, closed-controller error, and `maxAge` debounce reset** ([`lib/src/async/buffer.dart`](lib/src/async/buffer.dart#L36-L74)):
+- [x] **`Stream.buffer` subscription leak, closed-controller error, and `maxAge` debounce reset** ([`lib/src/async/buffer.dart`](lib/src/async/buffer.dart#L36-L74)):
   - `onTriggerDone()` and `onSourceDone()` close `controller` without cancelling the other subscription or `maxAgeTimer`, causing subsequent events to add to a closed controller.
   - `maybeFlush()` resets `maxAgeTimer` on every element instead of starting it only when the buffer transitions from empty to non-empty (`maxAgeTimer == null`), preventing `maxAge` flushes on high-frequency streams.
 - [ ] **`Stream.tap` cancels subscription on first error without closing controller** ([`lib/src/async/tap.dart`](lib/src/async/tap.dart#L35-L39)):
