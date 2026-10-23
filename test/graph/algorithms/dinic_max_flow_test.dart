@@ -27,6 +27,11 @@ void main() {
       final flow = graph.maxFlow();
       check(flow(0, 4)).equals(2);
     });
+    test('same source and target', () {
+      final graph = GraphFactory<String, void>().fromPath(['A', 'B', 'C']);
+      final flow = graph.maxFlow();
+      check(flow('A', 'A')).equals(0);
+    });
     test('error', () {
       final graph = GraphFactory<int, void>().path(vertexCount: 3);
       final flow = graph.maxFlow();

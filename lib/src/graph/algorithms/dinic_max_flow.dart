@@ -73,6 +73,7 @@ class DinicMaxFlow<V> {
   }
 
   num _maxFlow(_Vertex<V> source, _Vertex<V> target) {
+    if (source == target) return 0;
     num flow = 0;
     for (final edge in _edges) {
       edge.flow = 0;
