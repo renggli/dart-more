@@ -78,7 +78,7 @@
   - [`CHANGELOG.md`](CHANGELOG.md#L1-L3) lists `## 4.8.0`, while `pubspec.yaml` is still `4.7.0`.
 - [x] **Export `FloydWarshall` from `lib/graph.dart`** ([`lib/graph.dart`](lib/graph.dart#L16-L17)):
   - `Graph.allShortestPaths` and `floydWarshallSearch` return `FloydWarshall<V>`, which is currently hidden by `show floydWarshallSearch`.
-- [ ] **Export `Multimap` base class from `lib/collection.dart`** ([`lib/collection.dart`](lib/collection.dart#L48-L54)):
+- [x] **Export `Multimap` base class from `lib/collection.dart`** ([`lib/collection.dart`](lib/collection.dart#L48-L54)):
   - `ListMultimap` and `SetMultimap` subclass `Multimap` and accept `Multimap` in `.of` constructors, but `Multimap` is not exported.
 - [ ] **Add `Fraction.parse` factory constructor** ([`lib/src/number/fraction.dart`](lib/src/number/fraction.dart#L126)):
   - `Complex.parse` and `Quaternion.parse` exist alongside `tryParse`, whereas `Fraction` only provides `tryParse`.

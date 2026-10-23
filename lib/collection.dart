@@ -45,6 +45,7 @@ export 'src/collection/map/computed.dart'
     show ComputedMapExtension, MapWithComputed;
 export 'src/collection/map/default.dart'
     show DefaultMapExtension, MapWithDefault;
+export 'src/collection/multimap.dart' show Multimap;
 export 'src/collection/multimap/list.dart'
     show
         ListMultimap,
