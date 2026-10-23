@@ -65,6 +65,9 @@ class SetMultimap<K, V> extends Multimap<K, V, Set<V>> {
   @override
   SetMultimapValues<K, V> lookupValues(K key) =>
       SetMultimapValues<K, V>(this, key);
+
+  @override
+  Set<V> copyValues(Iterable<V> values) => factory()..addAll(values);
 }
 
 class SetMultimapValues<K, V> extends MultimapValues<K, V, Set<V>>

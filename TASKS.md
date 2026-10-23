@@ -53,7 +53,7 @@
   - When `moveNext()` returns `false` at the end of the range, `_index` remains `range.length - 1` instead of advancing to `range.length`, so a subsequent `movePrevious()` jumps to `range.length - 2` and skips the last element (and symmetrically at the start when `movePrevious()` returns `false` and `moveNext()` is called).
 - [x] **`FenwickTree.update` lacks bounds checking** ([`lib/src/collection/fenwick.dart`](lib/src/collection/fenwick.dart#L69-L78)):
   - `update(int index, int value)` silently ignores `index >= length` instead of throwing `RangeError`. Add `RangeError.checkValidIndex(index, this)`.
-- [ ] **`MultimapAsMap` aliasing and `Map` contract bugs** ([`lib/src/collection/multimap.dart`](lib/src/collection/multimap.dart#L91-L93), [`lib/src/collection/multimap.dart`](lib/src/collection/multimap.dart#L183-L213)):
+- [x] **`MultimapAsMap` aliasing and `Map` contract bugs** ([`lib/src/collection/multimap.dart`](lib/src/collection/multimap.dart#L91-L93), [`lib/src/collection/multimap.dart`](lib/src/collection/multimap.dart#L183-L213)):
   - `asMap().remove(key)` grabs the live `MultimapValues` view (`this[key]`) and then calls `_multimap.removeAll(key)`, clearing the returned collection in-place so `remove(key)` always returns an empty collection (and never returns `null` for absent keys).
   - `asMap()[key]` returns a non-null empty `MultimapValues` view for absent keys even when `containsKey(key)` is `false`.
   - `replaceAll(key, values)` clears the backing collection before iterating `values`, losing all elements if `values` is `multimap[key]`.

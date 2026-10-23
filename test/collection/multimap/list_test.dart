@@ -292,6 +292,9 @@ void main() {
           final map = ListMultimap.fromIterables(['a', 'b', 'b'], [1, 2, 3]);
           final mapView = map.asMap();
           check(mapView['b']).isNotNull().deepEquals([2, 3]);
+          check(mapView['c']).isNull();
+          check(mapView.containsKey('b')).isTrue();
+          check(mapView.containsKey('c')).isFalse();
           mapView['b'] = [4, 5, 6];
           check(map['b']).deepEquals([4, 5, 6]);
           check(mapView['b']).isNotNull().deepEquals([4, 5, 6]);
@@ -306,9 +309,18 @@ void main() {
         test('remove', () {
           final map = ListMultimap.fromIterables(['a', 'b', 'b'], [1, 2, 3]);
           final mapView = map.asMap();
-          mapView.remove('b');
+          check(mapView.remove('b')).isNotNull().deepEquals([2, 3]);
+          check(mapView.remove('b')).isNull();
+          check(mapView.remove('c')).isNull();
           check(map.keys).deepEquals(['a']);
           check(mapView.keys).deepEquals(['a']);
+        });
+        test('replaceAll aliasing', () {
+          final map = ListMultimap.fromIterables(['a', 'b'], [1, 2]);
+          map.replaceAll('a', map['a']);
+          check(map['a']).deepEquals([1]);
+          map.replaceAll('a', map.asMap()['a']!);
+          check(map['a']).deepEquals([1]);
         });
       });
       test('toString', () {
