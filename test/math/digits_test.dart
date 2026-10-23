@@ -90,5 +90,17 @@ void main() {
         check(BigInt.from(-123).digits()).deepEquals([3, 2, 1]);
       });
     });
+    group('invalid base', () {
+      test('int', () {
+        check(() => 10.digits(1).toList()).throws<RangeError>();
+        check(() => 10.digits(0).toList()).throws<RangeError>();
+        check(() => 10.digits(-1).toList()).throws<RangeError>();
+      });
+      test('BigInt', () {
+        check(() => BigInt.from(10).digits(1).toList()).throws<RangeError>();
+        check(() => BigInt.from(10).digits(0).toList()).throws<RangeError>();
+        check(() => BigInt.from(10).digits(-1).toList()).throws<RangeError>();
+      });
+    });
   });
 }

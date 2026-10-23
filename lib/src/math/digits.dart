@@ -10,7 +10,7 @@ extension DigitsIntegerExtension on int {
   ///
   /// The [base] must be greater than or equal to 2.
   Iterable<int> digits([int base = 10]) sync* {
-    assert(base >= 2, 'base must be greater than or equal to 2');
+    if (base < 2) throw RangeError.range(base, 2, null, 'base');
     if (this == 0) {
       yield 0;
     } else {
@@ -36,7 +36,7 @@ extension DigitsBigIntExtension on BigInt {
   ///
   /// The [base] must be greater than or equal to 2.
   Iterable<int> digits([int base = 10]) sync* {
-    assert(base >= 2, 'base must be greater than or equal to 2');
+    if (base < 2) throw RangeError.range(base, 2, null, 'base');
     if (this == BigInt.zero) {
       yield 0;
     } else {

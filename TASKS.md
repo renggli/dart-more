@@ -112,6 +112,6 @@
 - [x] **Fix `StoerWagnerMinCut` complexity doc comment** ([`lib/src/graph/algorithms/stoer_wagner_min_cut.dart`](lib/src/graph/algorithms/stoer_wagner_min_cut.dart#L8)):
   - Change `_O(V*E + V*log(V))_` to `_O(V*E + V^2*log(V))_`.
 - [x] **Throw `StateError` instead of `UnimplementedError` in `TrieNodeEntry`** ([`lib/src/collection/trie.dart`](lib/src/collection/trie.dart#L284-L287)).
-- [ ] **Enforce `base >= 2` at runtime in `int.digits` and `BigInt.digits`** ([`lib/src/math/digits.dart`](lib/src/math/digits.dart#L13), [`lib/src/math/digits.dart`](lib/src/math/digits.dart#L39)):
+- [x] **Enforce `base >= 2` at runtime in `int.digits` and `BigInt.digits`** ([`lib/src/math/digits.dart`](lib/src/math/digits.dart#L13), [`lib/src/math/digits.dart`](lib/src/math/digits.dart#L39)):
   - Replace `assert(base >= 2)` with `RangeError.checkValueInInterval(base, 2, ...)` or `ArgumentError.value` so release builds do not loop infinitely on `base == 1`.
 - [ ] **Mask receiver to 32 bits in `BitUint32Extension.hasSingleBit`, `bitFloor`, and `bitCeil`** ([`lib/src/math/bit.dart`](lib/src/math/bit.dart#L21-L29)) for consistency with `bitCount`, `setBit`, `clearBit`, and `toggleBit`.
