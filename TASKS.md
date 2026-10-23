@@ -114,4 +114,4 @@
 - [x] **Throw `StateError` instead of `UnimplementedError` in `TrieNodeEntry`** ([`lib/src/collection/trie.dart`](lib/src/collection/trie.dart#L284-L287)).
 - [x] **Enforce `base >= 2` at runtime in `int.digits` and `BigInt.digits`** ([`lib/src/math/digits.dart`](lib/src/math/digits.dart#L13), [`lib/src/math/digits.dart`](lib/src/math/digits.dart#L39)):
   - Replace `assert(base >= 2)` with `RangeError.checkValueInInterval(base, 2, ...)` or `ArgumentError.value` so release builds do not loop infinitely on `base == 1`.
-- [ ] **Mask receiver to 32 bits in `BitUint32Extension.hasSingleBit`, `bitFloor`, and `bitCeil`** ([`lib/src/math/bit.dart`](lib/src/math/bit.dart#L21-L29)) for consistency with `bitCount`, `setBit`, `clearBit`, and `toggleBit`.
+- [x] **Mask receiver to 32 bits in `BitUint32Extension.hasSingleBit`, `bitFloor`, and `bitCeil`** ([`lib/src/math/bit.dart`](lib/src/math/bit.dart#L21-L29)) for consistency with `bitCount`, `setBit`, `clearBit`, and `toggleBit`.

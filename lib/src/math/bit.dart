@@ -18,15 +18,24 @@ extension BitUint32Extension on int {
 
   /// Tests if this unsigned 32-bit integer has a single bit set, which also
   /// means that it is a power of two.
-  bool get hasSingleBit => this != 0 && this & (this - 1) == 0;
+  bool get hasSingleBit {
+    final value = this & 0xffffffff;
+    return value != 0 && value & (value - 1) == 0;
+  }
 
   /// Returns the power of 2 that is smaller or equal to this unsigned 32-bit
   /// integer.
-  int get bitFloor => this <= 0 ? 0 : 1 << (bitLength - 1);
+  int get bitFloor {
+    final value = this & 0xffffffff;
+    return value <= 0 ? 0 : 1 << (value.bitLength - 1);
+  }
 
   /// Returns the power of 2 that is greater or equal to this unsigned 32-bit
   /// integer.
-  int get bitCeil => this <= 1 ? 1 : 1 << (this - 1).bitLength;
+  int get bitCeil {
+    final value = this & 0xffffffff;
+    return value <= 1 ? 1 : 1 << (value - 1).bitLength;
+  }
 
   /// Returns this unsigned 32-bit integer with the bit at [index] set.
   ///

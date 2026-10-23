@@ -87,6 +87,13 @@ void main() {
         check(current.bitCeil).equals(current);
       }
     });
+    test('unsigned 32-bit masking', () {
+      check((-0x80000000).hasSingleBit).isTrue();
+      check(0x100000000.hasSingleBit).isFalse();
+      check((-1).bitFloor).equals(0x80000000);
+      check(0x100000000.bitFloor).equals(0);
+      check(0x100000000.bitCeil).equals(1);
+    });
     group('setBit', () {
       test('sets the selected bit', () {
         check(0.setBit(0)).equals(0x00000001);
