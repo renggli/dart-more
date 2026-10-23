@@ -45,6 +45,10 @@ void main() {
         check(() => tree[-1] = 0).throws<RangeError>();
         check(() => tree[list.length] = 0).throws<RangeError>();
       });
+      test('update bounds', () {
+        check(() => tree.update(-1, 1)).throws<RangeError>();
+        check(() => tree.update(list.length, 1)).throws<RangeError>();
+      });
       if (list.isNotEmpty) {
         test('prefix', () {
           for (var i = 0; i <= list.length; i++) {

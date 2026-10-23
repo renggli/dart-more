@@ -67,6 +67,7 @@ class FenwickTree with Iterable<int> {
 
   /// Increments the element in the tree at [index] by [value] in _O(log n)_.
   void update(int index, int value) {
+    RangeError.checkValidIndex(index, this, 'index');
     if (index == 0) {
       _tree[0] += value;
       return;
