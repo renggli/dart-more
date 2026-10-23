@@ -258,6 +258,8 @@ void allTrieTests(
       trie.addAll({'a': 1, 'aa': 2, 'ab': 3});
       final root = createRoot<String, String, num>();
       check(root.hasKeyAndValue).isFalse();
+      check(() => root.key).throws<StateError>();
+      check(() => root.value).throws<StateError>();
       check(root.hasChildren).isFalse();
       check(root.parts).isEmpty();
     });
