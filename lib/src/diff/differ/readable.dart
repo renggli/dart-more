@@ -1,5 +1,3 @@
-import 'package:collection/collection.dart';
-
 import '../../../collection.dart';
 import '../../../functional.dart';
 import '../../../printer.dart';
@@ -48,40 +46,46 @@ class ReadableDiffer extends Differ {
     String? sourceLabel,
     String? targetLabel,
   }) sync* {
+    final sourceList = source is List<String>
+        ? source
+        : source.toList(growable: false);
+    final targetList = target is List<String>
+        ? target
+        : target.toList(growable: false);
     final lineMatcher = SequenceMatcher(
-      source: source,
-      target: target,
+      source: sourceList,
+      target: targetList,
       isJunk: lineJunk,
     );
     for (final operation in lineMatcher.operations) {
       switch (operation.type) {
         case OperationType.replace:
           yield* _replace(
-            source,
+            sourceList,
             operation.sourceStart,
             operation.sourceEnd,
-            target,
+            targetList,
             operation.targetStart,
             operation.targetEnd,
           );
         case OperationType.delete:
           yield* _dump(
             deleteLine,
-            source,
+            sourceList,
             operation.sourceStart,
             operation.sourceEnd,
           );
         case OperationType.insert:
           yield* _dump(
             insertLine,
-            target,
+            targetList,
             operation.targetStart,
             operation.targetEnd,
           );
         case OperationType.equal:
           yield* _dump(
             equalLine,
-            source,
+            sourceList,
             operation.sourceStart,
             operation.sourceEnd,
           );
@@ -90,10 +94,10 @@ class ReadableDiffer extends Differ {
   }
 
   Iterable<String> _replace(
-    Iterable<String> source,
+    List<String> source,
     int sourceStart,
     int sourceEnd,
-    Iterable<String> target,
+    List<String> target,
     int targetStart,
     int targetEnd,
   ) sync* {
@@ -102,18 +106,18 @@ class ReadableDiffer extends Differ {
     var sourceBest = -1, targetBest = -1, ratioBest = 0.74;
     var sourceEqual = -1, targetEqual = -1;
     for (var t = targetStart; t < targetEnd; t++) {
-      final targetLine = target.elementAt(t).runes;
-      matcher.target = targetLine;
+      final targetStr = target[t];
       for (var s = sourceStart; s < sourceEnd; s++) {
-        final sourceLine = source.elementAt(s).runes;
-        if (_intIterableEquality.equals(sourceLine, targetLine)) {
+        final sourceStr = source[s];
+        if (sourceStr == targetStr) {
           if (sourceEqual == -1) {
             sourceEqual = s;
             targetEqual = t;
           }
           continue;
         }
-        matcher.source = sourceLine;
+        matcher.target = targetStr.runes;
+        matcher.source = sourceStr.runes;
         if (matcher.realQuickRatio > ratioBest &&
             matcher.quickRatio > ratioBest) {
           final ratio = matcher.ratio;
@@ -152,10 +156,10 @@ class ReadableDiffer extends Differ {
       targetBest,
     );
     if (sourceEqual == -1) {
-      final sourceLine = source.elementAt(sourceBest).runes;
+      final sourceLine = source[sourceBest].runes;
       final sourceTags = StringBuffer('');
       matcher.source = sourceLine;
-      final targetLine = target.elementAt(targetBest).runes;
+      final targetLine = target[targetBest].runes;
       final targetTags = StringBuffer('');
       matcher.target = targetLine;
       for (final operation in matcher.operations) {
@@ -176,16 +180,16 @@ class ReadableDiffer extends Differ {
       }
       yield* _dumpWithTags(
         deleteLine,
-        source.elementAt(sourceBest),
+        source[sourceBest],
         sourceTags.toString(),
       );
       yield* _dumpWithTags(
         insertLine,
-        target.elementAt(targetBest),
+        target[targetBest],
         targetTags.toString(),
       );
     } else {
-      yield equalLine(source.elementAt(sourceBest));
+      yield equalLine(source[sourceBest]);
     }
     yield* _replaceRest(
       source,
@@ -198,10 +202,10 @@ class ReadableDiffer extends Differ {
   }
 
   Iterable<String> _replaceBasic(
-    Iterable<String> source,
+    List<String> source,
     int sourceStart,
     int sourceEnd,
-    Iterable<String> target,
+    List<String> target,
     int targetStart,
     int targetEnd,
   ) sync* {
@@ -215,10 +219,10 @@ class ReadableDiffer extends Differ {
   }
 
   Iterable<String> _replaceRest(
-    Iterable<String> source,
+    List<String> source,
     int sourceStart,
     int sourceEnd,
-    Iterable<String> target,
+    List<String> target,
     int targetStart,
     int targetEnd,
   ) sync* {
@@ -242,12 +246,12 @@ class ReadableDiffer extends Differ {
 
   Iterable<String> _dump(
     Printer<String> printer,
-    Iterable<String> list,
+    List<String> list,
     int start,
     int end,
   ) sync* {
     for (var i = start; i < end; i++) {
-      yield printer(list.elementAt(i));
+      yield printer(list[i]);
     }
   }
 
@@ -263,4 +267,3 @@ class ReadableDiffer extends Differ {
 }
 
 const _stringPrinter = Printer<String>.standard();
-const _intIterableEquality = IterableEquality<int>();

@@ -27,22 +27,48 @@ class NormalDiffer extends Differ {
     String? sourceLabel,
     String? targetLabel,
   }) sync* {
-    final matcher = SequenceMatcher(source: source, target: target);
+    final sourceList = source is List<String>
+        ? source
+        : source.toList(growable: false);
+    final targetList = target is List<String>
+        ? target
+        : target.toList(growable: false);
+    final matcher = SequenceMatcher(source: sourceList, target: targetList);
     for (final operation in matcher.operations) {
       final sourceRange = _range(operation.sourceStart, operation.sourceEnd);
       final targetRange = _range(operation.targetStart, operation.targetEnd);
       switch (operation.type) {
         case OperationType.replace:
           yield '${sourceRange}c$targetRange';
-          yield* _dump('<', source, operation.sourceStart, operation.sourceEnd);
+          yield* _dump(
+            '<',
+            sourceList,
+            operation.sourceStart,
+            operation.sourceEnd,
+          );
           yield '---';
-          yield* _dump('>', target, operation.targetStart, operation.targetEnd);
+          yield* _dump(
+            '>',
+            targetList,
+            operation.targetStart,
+            operation.targetEnd,
+          );
         case OperationType.delete:
           yield '${sourceRange}d$targetRange';
-          yield* _dump('<', source, operation.sourceStart, operation.sourceEnd);
+          yield* _dump(
+            '<',
+            sourceList,
+            operation.sourceStart,
+            operation.sourceEnd,
+          );
         case OperationType.insert:
           yield '${sourceRange}a$targetRange';
-          yield* _dump('>', target, operation.targetStart, operation.targetEnd);
+          yield* _dump(
+            '>',
+            targetList,
+            operation.targetStart,
+            operation.targetEnd,
+          );
         case OperationType.equal:
           break;
       }
@@ -52,12 +78,12 @@ class NormalDiffer extends Differ {
 
 Iterable<String> _dump(
   String tag,
-  Iterable<String> iterable,
+  List<String> list,
   int start,
   int end,
 ) sync* {
   for (var i = start; i < end; i++) {
-    yield '$tag ${iterable.elementAt(i)}';
+    yield '$tag ${list[i]}';
   }
 }
 

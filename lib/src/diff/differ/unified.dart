@@ -24,22 +24,43 @@ class UnifiedDiffer extends Differ {
   }) sync* {
     if (sourceLabel != null) yield '--- $sourceLabel';
     if (targetLabel != null) yield '+++ $targetLabel';
-    final matcher = SequenceMatcher(source: source, target: target);
+    final sourceList = source is List<String>
+        ? source
+        : source.toList(growable: false);
+    final targetList = target is List<String>
+        ? target
+        : target.toList(growable: false);
+    final matcher = SequenceMatcher(source: sourceList, target: targetList);
     for (final group in matcher.groupedOperations(context: context)) {
       final sourceRange = _range(group.first.sourceStart, group.last.sourceEnd);
       final targetRange = _range(group.first.targetStart, group.last.targetEnd);
       yield '@@ -$sourceRange +$targetRange @@';
       for (final operation in group) {
         if (operation.type == OperationType.equal) {
-          yield* _dump(' ', source, operation.sourceStart, operation.sourceEnd);
+          yield* _dump(
+            ' ',
+            sourceList,
+            operation.sourceStart,
+            operation.sourceEnd,
+          );
         }
         if (operation.type == OperationType.replace ||
             operation.type == OperationType.delete) {
-          yield* _dump('-', source, operation.sourceStart, operation.sourceEnd);
+          yield* _dump(
+            '-',
+            sourceList,
+            operation.sourceStart,
+            operation.sourceEnd,
+          );
         }
         if (operation.type == OperationType.replace ||
             operation.type == OperationType.insert) {
-          yield* _dump('+', target, operation.targetStart, operation.targetEnd);
+          yield* _dump(
+            '+',
+            targetList,
+            operation.targetStart,
+            operation.targetEnd,
+          );
         }
       }
     }
@@ -48,12 +69,12 @@ class UnifiedDiffer extends Differ {
 
 Iterable<String> _dump(
   String tag,
-  Iterable<String> iterable,
+  List<String> list,
   int start,
   int end,
 ) sync* {
   for (var i = start; i < end; i++) {
-    yield '$tag${iterable.elementAt(i)}';
+    yield '$tag${list[i]}';
   }
 }
 

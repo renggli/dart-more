@@ -28,7 +28,13 @@ class ContextDiffer extends Differ {
   }) sync* {
     if (sourceLabel != null) yield '*** $sourceLabel';
     if (targetLabel != null) yield '--- $targetLabel';
-    final matcher = SequenceMatcher(source: source, target: target);
+    final sourceList = source is List<String>
+        ? source
+        : source.toList(growable: false);
+    final targetList = target is List<String>
+        ? target
+        : target.toList(growable: false);
+    final matcher = SequenceMatcher(source: sourceList, target: targetList);
     for (final group in matcher.groupedOperations(context: context)) {
       yield '***************';
       final sourceRange = _range(group.first.sourceStart, group.last.sourceEnd);
@@ -42,13 +48,13 @@ class ContextDiffer extends Differ {
           for (var s = operation.sourceStart; s < operation.sourceEnd; s++) {
             switch (operation.type) {
               case OperationType.replace:
-                yield '! ${source.elementAt(s)}';
+                yield '! ${sourceList[s]}';
               case OperationType.delete:
-                yield '- ${source.elementAt(s)}';
+                yield '- ${sourceList[s]}';
               case OperationType.insert:
                 break;
               case OperationType.equal:
-                yield '  ${source.elementAt(s)}';
+                yield '  ${sourceList[s]}';
             }
           }
         }
@@ -64,13 +70,13 @@ class ContextDiffer extends Differ {
           for (var t = operation.targetStart; t < operation.targetEnd; t++) {
             switch (operation.type) {
               case OperationType.replace:
-                yield '! ${target.elementAt(t)}';
+                yield '! ${targetList[t]}';
               case OperationType.delete:
                 break;
               case OperationType.insert:
-                yield '+ ${target.elementAt(t)}';
+                yield '+ ${targetList[t]}';
               case OperationType.equal:
-                yield '  ${target.elementAt(t)}';
+                yield '  ${targetList[t]}';
             }
           }
         }

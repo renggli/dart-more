@@ -91,7 +91,7 @@
 
 ## Performance Optimizations
 
-- [ ] **Avoid repeated `Iterable.elementAt` calls in `Differ` implementations** ([`lib/src/diff/differ/context.dart`](lib/src/diff/differ/context.dart#L45-L73), [`lib/src/diff/differ/normal.dart`](lib/src/diff/differ/normal.dart#L60), [`lib/src/diff/differ/readable.dart`](lib/src/diff/differ/readable.dart#L105-L250), [`lib/src/diff/differ/unified.dart`](lib/src/diff/differ/unified.dart#L56)):
+- [x] **Avoid repeated `Iterable.elementAt` calls in `Differ` implementations** ([`lib/src/diff/differ/context.dart`](lib/src/diff/differ/context.dart#L45-L73), [`lib/src/diff/differ/normal.dart`](lib/src/diff/differ/normal.dart#L60), [`lib/src/diff/differ/readable.dart`](lib/src/diff/differ/readable.dart#L105-L250), [`lib/src/diff/differ/unified.dart`](lib/src/diff/differ/unified.dart#L56)):
   - Materialize `source` and `target` as `List<String>` once so indexing is $O(1)$ instead of $O(n)$ per line, and compare strings directly in `ReadableDiffer._replace` instead of re-Decoding `.runes` inside the nested loop.
 - [x] **Use binary search for `SortedList.indexOf` and `lastIndexOf` and batch shift in `OrderedList.removeRange`** ([`lib/src/collection/sorted_list.dart`](lib/src/collection/sorted_list.dart#L46-L76), [`lib/src/collection/ordered_list.dart`](lib/src/collection/ordered_list.dart#L201-L204)):
   - Override `indexOf` and `lastIndexOf` in `SortedList` using `_comparator.binarySearchLower` / `binarySearchUpper` ($O(\log n)$ vs $O(n)$).
