@@ -1,3 +1,5 @@
+import 'dart:math' as math;
+
 import '../../collection/bitlist.dart';
 import '../basic/lookup.dart';
 import '../basic/range.dart';
@@ -23,7 +25,10 @@ CharMatcher optimize(Iterable<RangeCharMatcher> ranges) {
     } else {
       final lastRange = mergedRanges.last;
       if (lastRange.stop + 1 >= thisRange.start) {
-        final charMatcher = RangeCharMatcher(lastRange.start, thisRange.stop);
+        final charMatcher = RangeCharMatcher(
+          lastRange.start,
+          math.max(lastRange.stop, thisRange.stop),
+        );
         mergedRanges[mergedRanges.length - 1] = charMatcher;
       } else {
         mergedRanges.add(thisRange);
@@ -38,7 +43,9 @@ CharMatcher optimize(Iterable<RangeCharMatcher> ranges) {
   );
   if (matchingCount == 0) {
     return const NoneCharMatcher();
-  } else if (matchingCount - 1 == 0xffff) {
+  } else if (mergedRanges.length == 1 &&
+      mergedRanges[0].start <= 0 &&
+      mergedRanges[0].stop >= 0xffff) {
     return const AnyCharMatcher();
   } else if (mergedRanges.length == 1) {
     if (mergedRanges[0].start == mergedRanges[0].stop) {

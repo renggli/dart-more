@@ -41,7 +41,7 @@
 
 ### Collection & CharMatcher
 
-- [ ] **`CharMatcher` optimizer corrupts nested ranges and misidentifies `AnyCharMatcher`** ([`lib/src/char_matcher/custom/optimize.dart`](lib/src/char_matcher/custom/optimize.dart#L25-L27), [`lib/src/char_matcher/custom/optimize.dart`](lib/src/char_matcher/custom/optimize.dart#L41-L42)):
+- [x] **`CharMatcher` optimizer corrupts nested ranges and misidentifies `AnyCharMatcher`** ([`lib/src/char_matcher/custom/optimize.dart`](lib/src/char_matcher/custom/optimize.dart#L25-L27), [`lib/src/char_matcher/custom/optimize.dart`](lib/src/char_matcher/custom/optimize.dart#L41-L42)):
   - Line 26 merges overlapping/adjacent ranges with `RangeCharMatcher(lastRange.start, thisRange.stop)` instead of `math.max(lastRange.stop, thisRange.stop)`, shrinking enclosing ranges (e.g. `a-z` merged with `c-d` becomes `a-d`).
   - Line 41 checks `else if (matchingCount - 1 == 0xffff)` (`65536`), returning `AnyCharMatcher()` for any range of length `0x10000` regardless of start/stop.
 - [ ] **`BitList` dirty tail bits corrupt `operator >>`, `operator +`, and `BitList.of`** ([`lib/src/collection/bitlist.dart`](lib/src/collection/bitlist.dart#L23), [`lib/src/collection/bitlist.dart`](lib/src/collection/bitlist.dart#L45-L46), [`lib/src/collection/bitlist.dart`](lib/src/collection/bitlist.dart#L156-L160), [`lib/src/collection/bitlist.dart`](lib/src/collection/bitlist.dart#L266-L294)):

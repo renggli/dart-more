@@ -20,7 +20,9 @@ CharMatcher _fromPattern(List<int> pattern) {
       final base = _completePattern(ranges, isNegated);
       final subtract = _fromPattern(pattern.sublist(2, pattern.length - 1));
       return base & ~subtract;
-    } else if (pattern.length > 2 && _rangeMatcher.match(pattern[1])) {
+    } else if (pattern.length > 2 &&
+        _rangeMatcher.match(pattern[1]) &&
+        !_openMatcher.match(pattern[2])) {
       // Ranges: start-stop
       ranges.add(RangeCharMatcher(pattern[0], pattern[2]));
       pattern = pattern.sublist(3);

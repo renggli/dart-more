@@ -17,6 +17,14 @@ void main() {
       check(optimize([const RangeCharMatcher(0, 0xffff)]))
           .isA<AnyCharMatcher>();
     });
+    test('full range 0..0x10ffff', () {
+      check(optimize([const RangeCharMatcher(0, 0x10ffff)]))
+          .isA<AnyCharMatcher>();
+    });
+    test('offset range of 65536 chars is not AnyCharMatcher', () {
+      check(optimize([const RangeCharMatcher(100, 100 + 0xffff)]))
+          .not((it) => it.isA<AnyCharMatcher>());
+    });
     test('single character', () {
       check(optimize([const RangeCharMatcher(65, 65)]))
           .isA<SingleCharMatcher>();
@@ -37,6 +45,16 @@ void main() {
         const RangeCharMatcher(15, 20),
       ]);
       check(matcher).isA<RangeCharMatcher>();
+    });
+    test('merge enclosing ranges', () {
+      final matcher = optimize([
+        const RangeCharMatcher(65, 90),
+        const RangeCharMatcher(70, 75),
+      ]);
+      check(matcher).isA<RangeCharMatcher>();
+      final range = matcher as RangeCharMatcher;
+      check(range.start).equals(65);
+      check(range.stop).equals(90);
     });
     test('lookup matcher for compact ranges', () {
       final matcher = optimize([
