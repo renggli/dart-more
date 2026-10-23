@@ -6,16 +6,22 @@
 /// The set of allowed [units] has to be specified. The empty string `''`
 /// denotes a unit-less number.
 ///
-/// Throws a [FormatException] if the [source] is empty, contains an invalid
-/// number or unit, or if a unit is repeated.
+/// Returns `null` if the [source] is empty, contains an invalid number or
+/// unit, has unrecognized characters, or if a unit is repeated.
 Map<String, num>? parseWithUnits(String source, {required Set<String> units}) {
+  if (RegExp(r'(\d|\.)\s+(\d|\.)').hasMatch(source)) return null;
+  final cleaned = source.replaceAll(RegExp(r'\s+'), '');
+  if (cleaned.isEmpty) return null;
   final parts = numberAndUnitExtractor
-      .allMatches(source.replaceAll(' ', ''))
+      .allMatches(cleaned)
       .where((match) => match.start < match.end)
       .toList();
   if (parts.isEmpty) return null; // empty input
   final result = <String, num>{};
+  var lastEnd = 0;
   for (final part in parts) {
+    if (part.start != lastEnd) return null; // unrecognized characters
+    lastEnd = part.end;
     final numberString = part.group(1) ?? '';
     final number = num.tryParse(numberString);
     final unitString = part.group(4) ?? '';
@@ -24,13 +30,17 @@ Map<String, num>? parseWithUnits(String source, {required Set<String> units}) {
     if (result.containsKey(unit)) return null; // repeated unit
     if (number != null) {
       result[unit] = number;
-    } else if (numberString.isEmpty || numberString == '+') {
+    } else if (unit.isNotEmpty &&
+        (numberString.isEmpty || numberString == '+')) {
       result[unit] = 1;
-    } else if (numberString == '-') {
+    } else if (unit.isNotEmpty && numberString == '-') {
       result[unit] = -1;
     } else {
       return null; // invalid number
     }
+  }
+  if (lastEnd != cleaned.length) {
+    return null; // trailing unrecognized characters
   }
   return result;
 }

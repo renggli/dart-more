@@ -34,9 +34,18 @@ void main() {
     test('invalid units and numbers', () {
       check(parseWithUnits('', units: units)).isNull();
       check(parseWithUnits('   ', units: units)).isNull();
+      check(parseWithUnits('+', units: units)).isNull();
+      check(parseWithUnits('-', units: units)).isNull();
+      check(parseWithUnits(' + ', units: units)).isNull();
+      check(parseWithUnits(' - ', units: units)).isNull();
       check(parseWithUnits('10x', units: units)).isNull();
+      check(parseWithUnits('10#', units: units)).isNull();
+      check(parseWithUnits(r'1$ + 2i', units: units)).isNull();
+      check(parseWithUnits('1 2', units: units)).isNull();
+      check(parseWithUnits('1. 2', units: units)).isNull();
       check(parseWithUnits('10i + 5i', units: units)).isNull();
       check(parseWithUnits('foo', units: units)).isNull();
+      check(parseWithUnits('10i trailing', units: units)).isNull();
     });
   });
 }

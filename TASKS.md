@@ -14,7 +14,7 @@
   - `pow(int n)` checks `if (a == 0) return this;` before `n == 0` or `n < 0`, so `Fraction.zero.pow(0)` returns `Fraction.zero` instead of `Fraction.one`, and `Fraction.zero.pow(-1)` returns `Fraction.zero` instead of `Fraction.infinity`.
   - `compareTo(Fraction other)` computes `(a * other.b).compareTo(other.a * b)`, which evaluates `(1 * 0).compareTo(-1 * 0) == 0` when comparing `Fraction.infinity` and `Fraction.negativeInfinity` (or `Fraction.nan`).
   - `round()`, `floor()`, `ceil()`, and `truncate()` ([`lib/src/number/fraction.dart`](lib/src/number/fraction.dart#L231-L240)) delegate to `toDouble()`, losing precision for large 64-bit integer components (`> 2^53`).
-- [ ] **`parseWithUnits` silently ignores invalid characters and parses lone signs as `±1`** ([`lib/src/number/utils.dart`](lib/src/number/utils.dart#L11-L41)):
+- [x] **`parseWithUnits` silently ignores invalid characters and parses lone signs as `±1`** ([`lib/src/number/utils.dart`](lib/src/number/utils.dart#L11-L41)):
   - `numberAndUnitExtractor.allMatches(source.replaceAll(' ', ''))` skips unmatched characters (e.g. `Complex.tryParse('10#')` succeeds) and merges whitespace-separated digits (`'1 2'` parses as `12`).
   - A bare `'+'` or `'-'` with no digits or unit parses as `1` or `-1` because `numberString` is `'+'`/`'-'` and `unit` is `''` (lines 27–30).
   - The doc comment on `parseWithUnits` (lines 9–10) states it throws `FormatException`, whereas it returns `null`.
