@@ -228,6 +228,8 @@ void main() {
         check(Complex.zero.pow(const Complex(-2, 0))).equals(Complex.infinity);
         check(Complex.zero.pow(const Complex(-2, 1)).isNaN).isTrue();
         check(Complex.zero.pow(Complex.i).isNaN).isTrue();
+        check(() => Complex.zero.pow('invalid')).throws<ArgumentError>();
+        check(() => const Complex(1, 2).pow('invalid')).throws<ArgumentError>();
       });
       test('square', () {
         check(const Complex(2, 3).square()).equals(const Complex(-5, 12));

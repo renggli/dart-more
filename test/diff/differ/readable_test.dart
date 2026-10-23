@@ -89,5 +89,25 @@ void main() {
       check(custom.compareLines(['a', 'b', 'c'], ['a', 'x', 'c']))
           .deepEquals(['EQ: a', 'DEL: b', 'INS: x', 'EQ: c']);
     });
+
+    test('non-list iterables', () {
+      check(
+        differ.compareLines(
+          ['a', 'b'].where((_) => true),
+          ['a', 'c'].where((_) => true),
+        ),
+      ).deepEquals(['  a', '- b', '+ c']);
+    });
+
+    test('replace with fewer target lines', () {
+      check(differ.compareLines(['abc', 'def'], ['xyz']))
+          .deepEquals(['+ xyz', '- abc', '- def']);
+    });
+
+    test('replace with junk line match', () {
+      final custom = ReadableDiffer(lineJunk: (line) => line.isEmpty);
+      check(custom.compareLines(['aaa', '', 'bbb'], ['xxx', '', 'yyy']))
+          .deepEquals(['- aaa', '+ xxx', '  ', '- bbb', '+ yyy']);
+    });
   });
 }

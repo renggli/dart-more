@@ -333,6 +333,7 @@ void main() {
         check(const Quaternion(2).pow(3)).isCloseTo(const Quaternion(8));
         check(const Quaternion(2).pow(const Quaternion(3)))
             .isCloseTo(const Quaternion(8));
+        check(() => Quaternion.zero.pow('foo')).throws<ArgumentError>();
         check(() => Quaternion.one.pow('foo')).throws<ArgumentError>();
       });
     });

@@ -94,6 +94,14 @@ void main() {
       rtree.insert(Bounds.fromLists(const [30.0], const [30.0]), 4);
       rtree.insert(Bounds.fromLists(const [5.0], const [5.0]), 5);
       check(rtree.root.entries).length.equals(2);
+
+      final rtree2 = RTree<int>.guttmann(minEntries: 2, maxEntries: 4);
+      rtree2.insert(Bounds.fromLists(const [-10.0, 0.0], const [-8.0, 2.0]), 1);
+      rtree2.insert(Bounds.fromLists(const [8.0, 0.0], const [10.0, 2.0]), 2);
+      rtree2.insert(Bounds.fromLists(const [-1.0, 0.0], const [1.0, 2.0]), 3);
+      rtree2.insert(Bounds.fromLists(const [-0.5, 0.0], const [0.5, 2.0]), 4);
+      rtree2.insert(Bounds.fromLists(const [-0.1, 0.0], const [0.1, 2.0]), 5);
+      check(rtree2.root.entries).length.equals(2);
     });
   });
 }

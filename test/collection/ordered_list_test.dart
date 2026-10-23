@@ -47,9 +47,13 @@ void main() {
     });
     test('first and last', () {
       final list = OrderedList<int>();
+      check(list.isEmpty).isTrue();
+      check(list.isNotEmpty).isFalse();
       check(() => list.first).throws<StateError>();
       check(() => list.last).throws<StateError>();
       list.add(1);
+      check(list.isEmpty).isFalse();
+      check(list.isNotEmpty).isTrue();
       check(list.first).equals(1);
       check(list.last).equals(1);
       list.add(2);
@@ -66,8 +70,9 @@ void main() {
       check(() => list.length = -1).throws<RangeError>();
 
       final nullableList = OrderedList<int?>.of([1, 2]);
-      nullableList.length = 4;
-      check(nullableList).deepEquals([1, 2, null, null]);
+      nullableList.length = 16;
+      check(nullableList.length).equals(16);
+      check(nullableList.sublist(0, 4)).deepEquals([1, 2, null, null]);
 
       final fixed = OrderedList<int>.filled(3, 0);
       check(() => fixed.length = 2).throws<UnsupportedError>();
@@ -130,6 +135,10 @@ void main() {
       check(list).deepEquals([0, 1, 2, 3, 4]);
       list.insertAll(5, [5]);
       check(list).deepEquals([0, 1, 2, 3, 4, 5]);
+
+      final self = OrderedList<int>.of([1, 2]);
+      self.insertAll(1, self);
+      check(self).deepEquals([1, 1, 2, 2]);
     });
     test('removeAt head, tail, and middle', () {
       final list = OrderedList<int>.of([1, 2, 3, 4, 5]);

@@ -45,6 +45,21 @@ void main() {
         sub.cancel();
       });
     });
+    test('max age cancel with pending timer', () {
+      fakeAsync((async) {
+        final controller = StreamController<int>();
+        final results = <List<int>>[];
+        final sub = controller.stream
+            .buffer(maxAge: seconds1)
+            .listen(results.add);
+        controller.add(1);
+        async.elapse(const Duration(milliseconds: 500));
+        sub.cancel();
+        async.elapse(seconds2);
+        check(results).isEmpty();
+        controller.close();
+      });
+    });
     test('max age does not debounce on frequent events', () {
       fakeAsync((async) {
         final stream = Stream.periodic(

@@ -109,6 +109,7 @@ void main() {
               .isFraction(312689, 99532);
           check(Fraction.fromDouble(pi, maxDenominator: 1000))
               .isFraction(355, 113);
+          check(Fraction.fromDouble(1 / 3, maxDenominator: 1)).isFraction(1, 3);
         });
         test('common', () {
           for (var num = -10; num <= 10; num++) {

@@ -291,6 +291,8 @@ void main() {
         test('access', () {
           final map = ListMultimap.fromIterables(['a', 'b', 'b'], [1, 2, 3]);
           final mapView = map.asMap();
+          check(mapView.isNotEmpty).isTrue();
+          check(mapView.isEmpty).isFalse();
           check(mapView['b']).isNotNull().deepEquals([2, 3]);
           check(mapView['c']).isNull();
           check(mapView.containsKey('b')).isTrue();
@@ -305,6 +307,7 @@ void main() {
           mapView.clear();
           check(map).isEmpty();
           check(mapView).isEmpty();
+          check(mapView.isNotEmpty).isFalse();
         });
         test('remove', () {
           final map = ListMultimap.fromIterables(['a', 'b', 'b'], [1, 2, 3]);
