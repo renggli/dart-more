@@ -39,11 +39,12 @@ extension PeriodicalDateTimeExtension on DateTime {
     if (step == 0) {
       throw ArgumentError.value(step, 'step', 'Expected non-zero step size');
     }
+    final create = isUtc ? DateTime.utc : DateTime.new;
     switch (unit) {
       case TimeUnit.millennium:
         return iterate(
           this,
-          (prev) => DateTime(
+          (prev) => create(
             prev.year + 1000 * step,
             prev.month,
             prev.day,
@@ -57,7 +58,7 @@ extension PeriodicalDateTimeExtension on DateTime {
       case TimeUnit.century:
         return iterate(
           this,
-          (prev) => DateTime(
+          (prev) => create(
             prev.year + 100 * step,
             prev.month,
             prev.day,
@@ -71,7 +72,7 @@ extension PeriodicalDateTimeExtension on DateTime {
       case TimeUnit.decade:
         return iterate(
           this,
-          (prev) => DateTime(
+          (prev) => create(
             prev.year + 10 * step,
             prev.month,
             prev.day,
@@ -85,7 +86,7 @@ extension PeriodicalDateTimeExtension on DateTime {
       case TimeUnit.year:
         return iterate(
           this,
-          (prev) => DateTime(
+          (prev) => create(
             prev.year + step,
             prev.month,
             prev.day,
@@ -99,7 +100,7 @@ extension PeriodicalDateTimeExtension on DateTime {
       case TimeUnit.quarter:
         return iterate(
           this,
-          (prev) => DateTime(
+          (prev) => create(
             prev.year,
             prev.month + 3 * step,
             prev.day,
@@ -113,7 +114,7 @@ extension PeriodicalDateTimeExtension on DateTime {
       case TimeUnit.month:
         return iterate(
           this,
-          (prev) => DateTime(
+          (prev) => create(
             prev.year,
             prev.month + step,
             prev.day,
@@ -127,7 +128,7 @@ extension PeriodicalDateTimeExtension on DateTime {
       case TimeUnit.week:
         return iterate(
           this,
-          (prev) => DateTime(
+          (prev) => create(
             prev.year,
             prev.month,
             prev.day + 7 * step,
@@ -141,7 +142,7 @@ extension PeriodicalDateTimeExtension on DateTime {
       case TimeUnit.day:
         return iterate(
           this,
-          (prev) => DateTime(
+          (prev) => create(
             prev.year,
             prev.month,
             prev.day + step,
@@ -155,7 +156,7 @@ extension PeriodicalDateTimeExtension on DateTime {
       case TimeUnit.hour:
         return iterate(
           this,
-          (prev) => DateTime(
+          (prev) => create(
             prev.year,
             prev.month,
             prev.day,
@@ -169,7 +170,7 @@ extension PeriodicalDateTimeExtension on DateTime {
       case TimeUnit.minute:
         return iterate(
           this,
-          (prev) => DateTime(
+          (prev) => create(
             prev.year,
             prev.month,
             prev.day,
@@ -183,7 +184,7 @@ extension PeriodicalDateTimeExtension on DateTime {
       case TimeUnit.second:
         return iterate(
           this,
-          (prev) => DateTime(
+          (prev) => create(
             prev.year,
             prev.month,
             prev.day,
@@ -197,7 +198,7 @@ extension PeriodicalDateTimeExtension on DateTime {
       case TimeUnit.millisecond:
         return iterate(
           this,
-          (prev) => DateTime(
+          (prev) => create(
             prev.year,
             prev.month,
             prev.day,
@@ -211,7 +212,7 @@ extension PeriodicalDateTimeExtension on DateTime {
       case TimeUnit.microsecond:
         return iterate(
           this,
-          (prev) => DateTime(
+          (prev) => create(
             prev.year,
             prev.month,
             prev.day,

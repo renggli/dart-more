@@ -17,5 +17,12 @@ void main() {
       );
       check(interval.toDuration().inHours).equals(24);
     });
+    test('microseconds precision', () {
+      final interval = Interval<DateTime>(
+        DateTime(2022, 1, 1, 0, 0, 0, 0, 100),
+        DateTime(2022, 1, 1, 0, 0, 0, 0, 500),
+      );
+      check(interval.toDuration()).equals(const Duration(microseconds: 400));
+    });
   });
 }

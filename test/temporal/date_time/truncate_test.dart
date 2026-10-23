@@ -78,5 +78,21 @@ void main() {
         () => date.truncateTo(TimeUnit.week, startWeekday: DateTime.sunday + 1),
       ).throws<ArgumentError>();
     });
+    test('isUtc preserved', () {
+      final utcDate = DateTime.utc(1980, 6, 11, 12, 34, 56, 78, 90);
+      for (final unit in TimeUnit.values) {
+        final truncated = utcDate.truncateTo(unit);
+        check(truncated.isUtc).isTrue();
+      }
+    });
+    test('negative years', () {
+      final bcDate = DateTime(-15, 6, 11);
+      check(bcDate.truncateTo(TimeUnit.decade)).equals(DateTime(-20));
+      check(bcDate.truncateTo(TimeUnit.century)).equals(DateTime(-100));
+      check(bcDate.truncateTo(TimeUnit.millennium)).equals(DateTime(-1000));
+
+      final exactDecade = DateTime(-20, 6, 11);
+      check(exactDecade.truncateTo(TimeUnit.decade)).equals(DateTime(-20));
+    });
   });
 }
