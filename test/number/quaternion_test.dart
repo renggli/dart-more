@@ -1,3 +1,5 @@
+import 'dart:math' as math;
+
 import 'package:checks/checks.dart';
 import 'package:more/number.dart';
 import 'package:test/scaffolding.dart';
@@ -294,11 +296,23 @@ void main() {
         check(
           const Quaternion(1, -2, 3, -4).exp(),
         ).isCloseTo(const Quaternion(1.693922, 0.789559, -1.184339, 1.579119));
+        check(Quaternion.zero.exp()).equals(Quaternion.one);
+        check(Quaternion.one.exp()).isCloseTo(const Quaternion(math.e));
+        check(const Quaternion(2).exp()).isCloseTo(Quaternion(math.exp(2)));
+        check((-Quaternion.one).exp()).isCloseTo(Quaternion(math.exp(-1)));
       });
       test('log', () {
         check(
           const Quaternion(1, -2, 3, -4).log(),
         ).isCloseTo(const Quaternion(1.700598, -0.515190, 0.772785, -1.030380));
+        check(Quaternion.one.log()).equals(Quaternion.zero);
+        check(const Quaternion(math.e).log()).isCloseTo(Quaternion.one);
+        check(const Quaternion(2).log()).isCloseTo(Quaternion(math.log(2)));
+        check((-Quaternion.one).log()).isCloseTo(const Quaternion(0, math.pi));
+        check(const Quaternion(-2).log())
+            .isCloseTo(Quaternion(math.log(2), math.pi));
+        check(Quaternion.zero.log())
+            .equals(const Quaternion(double.negativeInfinity));
       });
       test('pow', () {
         check(
@@ -311,6 +325,15 @@ void main() {
             -2885.798013,
           ),
         );
+        check(Quaternion.zero.pow(0)).equals(Quaternion.one);
+        check(Quaternion.zero.pow(Quaternion.zero)).equals(Quaternion.one);
+        check(Quaternion.zero.pow(2)).equals(Quaternion.zero);
+        check(Quaternion.zero.pow(-1)).equals(Quaternion.infinity);
+        check(Quaternion.one.pow(5)).isCloseTo(Quaternion.one);
+        check(const Quaternion(2).pow(3)).isCloseTo(const Quaternion(8));
+        check(const Quaternion(2).pow(const Quaternion(3)))
+            .isCloseTo(const Quaternion(8));
+        check(() => Quaternion.one.pow('foo')).throws<ArgumentError>();
       });
     });
     group('testing', () {

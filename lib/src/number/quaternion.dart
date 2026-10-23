@@ -1,3 +1,5 @@
+import 'dart:math' as math;
+
 import 'package:meta/meta.dart' show immutable;
 
 import '../../math.dart';
@@ -220,6 +222,9 @@ class Quaternion implements CloseTo<Quaternion> {
   Quaternion exp() {
     final exp = w.exp();
     final norm = (x * x + y * y + z * z).sqrt();
+    if (norm == 0) {
+      return Quaternion(exp);
+    }
     final scale = exp / norm * norm.sin();
     return Quaternion(exp * norm.cos(), x * scale, y * scale, z * scale);
   }
@@ -227,12 +232,35 @@ class Quaternion implements CloseTo<Quaternion> {
   /// Computes the natural logarithm of this quaternion number.
   Quaternion log() {
     final vectorNorm = (x * x + y * y + z * z).sqrt();
+    if (vectorNorm == 0) {
+      if (w < 0) {
+        return Quaternion((-w).log(), math.pi);
+      }
+      return Quaternion(w.log());
+    }
     final scale = vectorNorm.atan2(w) / vectorNorm;
     return Quaternion(0.5 * norm().log(), x * scale, y * scale, z * scale);
   }
 
   /// Computes the power of this quaternion number raised to [exponent].
-  Quaternion pow(Object exponent) => (log() * exponent).exp();
+  Quaternion pow(Object exponent) {
+    if (exponent == 0 || exponent == Quaternion.zero) return Quaternion.one;
+    if (w == 0 && x == 0 && y == 0 && z == 0) {
+      final (num expW, num expX, num expY, num expZ) = switch (exponent) {
+        Quaternion() => (exponent.w, exponent.x, exponent.y, exponent.z),
+        num() => (exponent, 0, 0, 0),
+        _ => throw ArgumentError.value(exponent, 'exponent', 'Invalid type'),
+      };
+      if (expW > 0 && expX == 0 && expY == 0 && expZ == 0) {
+        return Quaternion.zero;
+      }
+      if (expW < 0 && expX == 0 && expY == 0 && expZ == 0) {
+        return Quaternion.infinity;
+      }
+      return Quaternion.nan;
+    }
+    return (log() * exponent).exp();
+  }
 
   /// Tests if this quaternion is not defined.
   bool get isNaN => w.isNaN || x.isNaN || y.isNaN || z.isNaN;

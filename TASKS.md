@@ -7,7 +7,7 @@
 - [x] **`Quaternion.operator /` divides by dividend norm instead of divisor norm** ([`lib/src/number/quaternion.dart`](lib/src/number/quaternion.dart#L204-L209)):
   - Line 205 computes `final f = 1 / norm();` (`this.norm()`) instead of `final f = 1 / other.norm();`, so `(a / b) * b != a` whenever `a.norm() != b.norm()`.
   - Update existing division assertions in [`test/number/quaternion_test.dart`](test/number/quaternion_test.dart) accordingly.
-- [ ] **`Quaternion.exp()` and `Quaternion.log()` return `NaN` for real/scalar quaternions** ([`lib/src/number/quaternion.dart`](lib/src/number/quaternion.dart#L221-L232)):
+- [x] **`Quaternion.exp()` and `Quaternion.log()` return `NaN` for real/scalar quaternions** ([`lib/src/number/quaternion.dart`](lib/src/number/quaternion.dart#L221-L232)):
   - In `exp()`, when `x == 0 && y == 0 && z == 0`, `norm` is `0.0` and `exp / norm * norm.sin()` evaluates `Infinity * 0.0 == NaN`.
   - In `log()`, when `vectorNorm == 0`, `vectorNorm.atan2(w) / vectorNorm` evaluates `0.0 / 0.0 == NaN` (for `w >= 0`) or `pi / 0.0 == Infinity` (for `w < 0`), breaking `Quaternion.pow` on real quaternions as well.
 - [ ] **`Fraction.pow` and `Fraction.compareTo` edge cases** ([`lib/src/number/fraction.dart`](lib/src/number/fraction.dart#L199-L209), [`lib/src/number/fraction.dart`](lib/src/number/fraction.dart#L268-L269)):
