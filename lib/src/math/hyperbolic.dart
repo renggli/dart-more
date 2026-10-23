@@ -62,10 +62,10 @@ extension HyperbolicNumberExtension on num {
     return ((1 + this) / (1 - this)).log() / 2;
   }
 
-  /// Returns the inverse hyperbolic tangent of this [num].
+  /// Returns the inverse hyperbolic cotangent of this [num].
   double acoth() => (1 / this).atanh();
 
-  /// Returns the the hyperbolic arcsecant of this [num].
+  /// Returns the hyperbolic arcsecant of this [num].
   double asech() => (1 / this).acosh();
 
   /// Returns the inverse hyperbolic cosecant of this [num].

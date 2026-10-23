@@ -105,7 +105,7 @@
 ## Cleanups & Documentation
 
 - [x] **Rename `FloyWarshallState` -> `FloydWarshallState`** ([`lib/src/graph/algorithms/search/floyd_warshall.dart`](lib/src/graph/algorithms/search/floyd_warshall.dart#L21), [`lib/src/graph/algorithms/search/floyd_warshall.dart`](lib/src/graph/algorithms/search/floyd_warshall.dart#L135)).
-- [ ] **Fix hyperbolic doc comment typos** ([`lib/src/math/hyperbolic.dart`](lib/src/math/hyperbolic.dart#L65), [`lib/src/math/hyperbolic.dart`](lib/src/math/hyperbolic.dart#L68)):
+- [x] **Fix hyperbolic doc comment typos** ([`lib/src/math/hyperbolic.dart`](lib/src/math/hyperbolic.dart#L65), [`lib/src/math/hyperbolic.dart`](lib/src/math/hyperbolic.dart#L68)):
   - `acoth()` says `tangent` instead of `cotangent`; `asech()` has duplicate `the the`.
 - [ ] **Fix `BigIntRange` constructor doc comments** ([`lib/src/collection/range/bigint.dart`](lib/src/collection/range/bigint.dart#L55), [`lib/src/collection/range/bigint.dart`](lib/src/collection/range/bigint.dart#L77)):
   - `BigIntRange.of` and `BigIntRange.length` say `Const constructor to create an arithmetic progression of [int] values`.
