@@ -6,7 +6,7 @@
 - Add `OrderedList` circular buffer and make `SortedList` a subclass with binary search indexing and efficient batch removal.
 - Add `Fraction.parse` factory constructor.
 - Export `Multimap` and `FloydWarshall` in top-level library exports.
-- Add reciprocal hyperbolic functions (`coth`, `sech`, `csch`, `acoth`, `asech`, `acsch`), degree/radian conversions (`toDegrees`, `toRadians`), and bit operations (`setBit`, `clearBit`, `toggleBit`).
+- Add reciprocal hyperbolic functions (`coth`, `sech`, `csch`, `acoth`, `asech`, `acsch`), degree/radian conversions (`toDegrees`, `toRadians`), and bit operations (`setBit`, `clearBit`, `toggleBit`) (thanks to <https://github.com/rrbharath>).
 - Performance optimizations in diff formatting (`Differ`) and graph algorithms (`floydWarshallSearch`, `Graph.map`).
 - Fixes and numerical edge cases across `Complex`, `Fraction`, `Quaternion`, hyperbolic, primality, factorial, and binomial functions.
 - Fixes and optimizations across graph algorithms (`dinicMaxFlow`, `stoerWagnerMinCut`, `bronKerboschCliques`, `isBipartite`, `kruskalSpanningTree`, `bellmanFord`, `floydWarshall`).
