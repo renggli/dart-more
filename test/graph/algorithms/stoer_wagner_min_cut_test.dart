@@ -114,6 +114,15 @@ void main() {
       ]);
       check(minCut.weight).equals(4);
     });
+    test('graph with self-loop', () {
+      final graph = Graph<int, int>(isDirected: false)
+        ..addEdge(0, 1, value: 5)
+        ..addEdge(0, 0, value: 100)
+        ..addEdge(1, 1, value: 100);
+      final minCut = graph.minCut();
+      check(minCut.graphs).length.equals(2);
+      check(minCut.weight).equals(5);
+    });
     test('empty graph error', () {
       final graph = Graph<String, void>(isDirected: false);
       check(graph.minCut).throws<ArgumentError>();

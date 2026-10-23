@@ -5,7 +5,7 @@ import '../../collection/iterable/unique.dart';
 import '../../functional/scope.dart';
 import '../../functional/types.dart';
 
-/// Stoer–Wagner minimum cut algorithm in _O(V*E + V*log(V))_.
+/// Stoer–Wagner minimum cut algorithm in _O(V*E + V^2*log(V))_.
 ///
 /// See https://en.wikipedia.org/wiki/Stoer%E2%80%93Wagner_algorithm.
 class StoerWagnerMinCut<V, E> {
@@ -34,6 +34,7 @@ class StoerWagnerMinCut<V, E> {
       set.add(vertex);
     }
     for (final edge in graph.edges.unique()) {
+      if (edge.source == edge.target) continue;
       final weight = edgeWeight(edge.source, edge.target);
       GraphError.checkPositiveEdgeValue(edge.source, edge.target, weight);
       _workingGraph.addEdge(

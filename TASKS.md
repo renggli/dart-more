@@ -29,7 +29,7 @@
   - `isBipartite` passes `successorsOf: successorsOf` instead of `neighboursOf`. For a directed graph such as `c -> a -> b`, if `a` and `b` are colored in the first BFS pass (`a: true, b: false`), the subsequent pass starting at `c` colors `c: true` and fails on edge `c -> a`. Using `neighboursOf` fixes both directed graphs and self-loop detection.
 - [x] **`bronKerboschCliques` drops cliques for vertices with self-loops** ([`lib/src/graph/algorithms/bron_kerbosch_cliques.dart`](lib/src/graph/algorithms/bron_kerbosch_cliques.dart#L32-L46)):
   - When `pivot` has a self-loop, `neighboursOf(pivot)` includes `pivot`, so `some..removeAll(neighboursOf(pivot))` removes `pivot` from candidate exploration. Filter `v != u` from neighbor sets.
-- [ ] **`StoerWagnerMinCut` includes self-loop weights in cut values** ([`lib/src/graph/algorithms/stoer_wagner_min_cut.dart`](lib/src/graph/algorithms/stoer_wagner_min_cut.dart#L36-L44), [`lib/src/graph/algorithms/stoer_wagner_min_cut.dart`](lib/src/graph/algorithms/stoer_wagner_min_cut.dart#L130-L133)):
+- [x] **`StoerWagnerMinCut` includes self-loop weights in cut values** ([`lib/src/graph/algorithms/stoer_wagner_min_cut.dart`](lib/src/graph/algorithms/stoer_wagner_min_cut.dart#L36-L44), [`lib/src/graph/algorithms/stoer_wagner_min_cut.dart`](lib/src/graph/algorithms/stoer_wagner_min_cut.dart#L130-L133)):
   - Self-loops copied into `_workingGraph` are included in `_workingGraph.incomingEdgesOf(current)`, inflating the cut weight. Skip edges where `edge.source == edge.target`.
 - [ ] **`DinicMaxFlow` infinite loop when `source == target`** ([`lib/src/graph/algorithms/dinic_max_flow.dart`](lib/src/graph/algorithms/dinic_max_flow.dart#L75-L92), [`lib/src/graph/algorithms/dinic_max_flow.dart`](lib/src/graph/algorithms/dinic_max_flow.dart#L112-L114)):
   - When `source == target`, `_bfs` returns `true` (`target.level == 0`) and `_dfs(source, target, double.infinity)` repeatedly returns `double.infinity` without saturating any edge, hanging the `while (true)` loop at line 85.
@@ -109,7 +109,7 @@
   - `acoth()` says `tangent` instead of `cotangent`; `asech()` has duplicate `the the`.
 - [ ] **Fix `BigIntRange` constructor doc comments** ([`lib/src/collection/range/bigint.dart`](lib/src/collection/range/bigint.dart#L55), [`lib/src/collection/range/bigint.dart`](lib/src/collection/range/bigint.dart#L77)):
   - `BigIntRange.of` and `BigIntRange.length` say `Const constructor to create an arithmetic progression of [int] values`.
-- [ ] **Fix `StoerWagnerMinCut` complexity doc comment** ([`lib/src/graph/algorithms/stoer_wagner_min_cut.dart`](lib/src/graph/algorithms/stoer_wagner_min_cut.dart#L8)):
+- [x] **Fix `StoerWagnerMinCut` complexity doc comment** ([`lib/src/graph/algorithms/stoer_wagner_min_cut.dart`](lib/src/graph/algorithms/stoer_wagner_min_cut.dart#L8)):
   - Change `_O(V*E + V*log(V))_` to `_O(V*E + V^2*log(V))_`.
 - [ ] **Throw `StateError` instead of `UnimplementedError` in `TrieNodeEntry`** ([`lib/src/collection/trie.dart`](lib/src/collection/trie.dart#L284-L287)).
 - [ ] **Enforce `base >= 2` at runtime in `int.digits` and `BigInt.digits`** ([`lib/src/math/digits.dart`](lib/src/math/digits.dart#L13), [`lib/src/math/digits.dart`](lib/src/math/digits.dart#L39)):
