@@ -132,11 +132,11 @@ final class DoubleRange extends Range<double> {
   @override
   // ignore: avoid_renaming_method_parameters
   int indexOf(Object? element, [int startIndex = 0]) {
-    if (element is double) {
+    if (element is num) {
       if (startIndex < 0) startIndex = 0;
       if (startIndex < length) {
         final comparator = step > 0 ? _naturalComparator : _reverseComparator;
-        final index = comparator.binarySearch(this, element);
+        final index = comparator.binarySearch(this, element.toDouble());
         if (startIndex <= index && index < length) {
           return index;
         }
