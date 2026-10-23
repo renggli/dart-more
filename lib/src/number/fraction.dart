@@ -197,15 +197,16 @@ class Fraction
 
   /// Returns the power of this fraction.
   Fraction pow(int n) {
+    if (n == 0) {
+      return one;
+    }
     if (a == 0) {
-      return this;
+      return n < 0 ? infinity : this;
     }
     if (n > 0) {
       return Fraction(a.pow(n).toInt(), b.pow(n).toInt());
-    } else if (n < 0) {
-      return Fraction(b.pow(-n).toInt(), a.pow(-n).toInt());
     } else {
-      return one;
+      return Fraction(b.pow(-n).toInt(), a.pow(-n).toInt());
     }
   }
 
@@ -228,16 +229,31 @@ class Fraction
   int get sign => a.sign;
 
   /// Rounds this fraction to an integer.
-  int round() => toDouble().round();
+  int round() {
+    if (!isFinite) return toDouble().round();
+    final absA = a.abs();
+    final q = absA ~/ b;
+    final r = absA % b;
+    final res = 2 * r >= b ? q + 1 : q;
+    return a < 0 ? -res : res;
+  }
 
   /// Floors this fraction to an integer.
-  int floor() => toDouble().floor();
+  int floor() => !isFinite
+      ? toDouble().floor()
+      : (a >= 0 || a % b == 0)
+      ? a ~/ b
+      : (a ~/ b) - 1;
 
   /// Ceils this fraction to an integer.
-  int ceil() => toDouble().ceil();
+  int ceil() => !isFinite
+      ? toDouble().ceil()
+      : (a <= 0 || a % b == 0)
+      ? a ~/ b
+      : (a ~/ b) + 1;
 
   /// Truncates this fraction to an integer.
-  int truncate() => toDouble().truncate();
+  int truncate() => !isFinite ? toDouble().truncate() : a ~/ b;
 
   /// Converts this fraction to an integer.
   int toInt() => a ~/ b;
@@ -266,7 +282,25 @@ class Fraction
   int get hashCode => Object.hash(a, b);
 
   @override
-  int compareTo(Fraction other) => (a * other.b).compareTo(other.a * b);
+  int compareTo(Fraction other) {
+    if (isNaN || other.isNaN) {
+      return isNaN && other.isNaN
+          ? 0
+          : isNaN
+          ? 1
+          : -1;
+    }
+    if (isInfinite && other.isInfinite) {
+      return a.compareTo(other.a);
+    }
+    if (isInfinite) {
+      return isNegative ? -1 : 1;
+    }
+    if (other.isInfinite) {
+      return other.isNegative ? 1 : -1;
+    }
+    return (a * other.b).compareTo(other.a * b);
+  }
 
   @override
   String toString() {

@@ -10,7 +10,7 @@
 - [x] **`Quaternion.exp()` and `Quaternion.log()` return `NaN` for real/scalar quaternions** ([`lib/src/number/quaternion.dart`](lib/src/number/quaternion.dart#L221-L232)):
   - In `exp()`, when `x == 0 && y == 0 && z == 0`, `norm` is `0.0` and `exp / norm * norm.sin()` evaluates `Infinity * 0.0 == NaN`.
   - In `log()`, when `vectorNorm == 0`, `vectorNorm.atan2(w) / vectorNorm` evaluates `0.0 / 0.0 == NaN` (for `w >= 0`) or `pi / 0.0 == Infinity` (for `w < 0`), breaking `Quaternion.pow` on real quaternions as well.
-- [ ] **`Fraction.pow` and `Fraction.compareTo` edge cases** ([`lib/src/number/fraction.dart`](lib/src/number/fraction.dart#L199-L209), [`lib/src/number/fraction.dart`](lib/src/number/fraction.dart#L268-L269)):
+- [x] **`Fraction.pow` and `Fraction.compareTo` edge cases** ([`lib/src/number/fraction.dart`](lib/src/number/fraction.dart#L199-L209), [`lib/src/number/fraction.dart`](lib/src/number/fraction.dart#L268-L269)):
   - `pow(int n)` checks `if (a == 0) return this;` before `n == 0` or `n < 0`, so `Fraction.zero.pow(0)` returns `Fraction.zero` instead of `Fraction.one`, and `Fraction.zero.pow(-1)` returns `Fraction.zero` instead of `Fraction.infinity`.
   - `compareTo(Fraction other)` computes `(a * other.b).compareTo(other.a * b)`, which evaluates `(1 * 0).compareTo(-1 * 0) == 0` when comparing `Fraction.infinity` and `Fraction.negativeInfinity` (or `Fraction.nan`).
   - `round()`, `floor()`, `ceil()`, and `truncate()` ([`lib/src/number/fraction.dart`](lib/src/number/fraction.dart#L231-L240)) delegate to `toDouble()`, losing precision for large 64-bit integer components (`> 2^53`).

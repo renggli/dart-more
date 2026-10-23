@@ -425,7 +425,13 @@ void main() {
         check(-Fraction.negativeInfinity).isFraction(1, 0);
       });
       test('pow', () {
+        check(Fraction.zero.pow(0)).isFraction(1, 1);
         check(Fraction.zero.pow(2)).isFraction(0, 1);
+        check(Fraction.zero.pow(-1)).isFraction(1, 0);
+        check(Fraction.infinity.pow(2)).isFraction(1, 0);
+        check(Fraction.infinity.pow(-1)).isFraction(0, 1);
+        check(Fraction.negativeInfinity.pow(2)).isFraction(1, 0);
+        check(Fraction.negativeInfinity.pow(3)).isFraction(-1, 0);
         check(Fraction(2, 3).pow(0)).isFraction(1, 1);
         check(Fraction(2, 3).pow(2)).isFraction(4, 9);
         check(Fraction(2, 3).pow(-2)).isFraction(9, 4);
@@ -453,18 +459,41 @@ void main() {
       test('round', () {
         check(Fraction(2, 3).round()).equals(1);
         check(Fraction(-2, 3).round()).equals(-1);
+        check(Fraction(1, 2).round()).equals(1);
+        check(Fraction(-1, 2).round()).equals(-1);
+        check(Fraction(7, 2).round()).equals(4);
+        check(Fraction(-7, 2).round()).equals(-4);
+        check(Fraction(4, 2).round()).equals(2);
+        check(() => Fraction.nan.round()).throws<UnsupportedError>();
+        check(() => Fraction.infinity.round()).throws<UnsupportedError>();
       });
       test('floor', () {
         check(Fraction(2, 3).floor()).equals(0);
         check(Fraction(-2, 3).floor()).equals(-1);
+        check(Fraction(7, 2).floor()).equals(3);
+        check(Fraction(-7, 2).floor()).equals(-4);
+        check(Fraction(6, 2).floor()).equals(3);
+        check(Fraction(-6, 2).floor()).equals(-3);
+        check(() => Fraction.nan.floor()).throws<UnsupportedError>();
+        check(() => Fraction.infinity.floor()).throws<UnsupportedError>();
       });
       test('ceil', () {
         check(Fraction(2, 3).ceil()).equals(1);
         check(Fraction(-2, 3).ceil()).equals(0);
+        check(Fraction(7, 2).ceil()).equals(4);
+        check(Fraction(-7, 2).ceil()).equals(-3);
+        check(Fraction(6, 2).ceil()).equals(3);
+        check(Fraction(-6, 2).ceil()).equals(-3);
+        check(() => Fraction.nan.ceil()).throws<UnsupportedError>();
+        check(() => Fraction.infinity.ceil()).throws<UnsupportedError>();
       });
       test('truncate', () {
         check(Fraction(2, 3).truncate()).equals(0);
         check(Fraction(-5, 3).truncate()).equals(-1);
+        check(Fraction(7, 2).truncate()).equals(3);
+        check(Fraction(-7, 2).truncate()).equals(-3);
+        check(() => Fraction.nan.truncate()).throws<UnsupportedError>();
+        check(() => Fraction.infinity.truncate()).throws<UnsupportedError>();
       });
     });
     group('comparing', () {
@@ -497,6 +526,24 @@ void main() {
         check(Fraction(2, 3).hashCode).equals(Fraction(2, 3).hashCode);
         check(Fraction(2, 3).hashCode)
             .not((it) => it.equals(Fraction(3, 2).hashCode));
+      });
+      test('compareTo', () {
+        check(Fraction(2, 3).compareTo(Fraction(2, 3))).equals(0);
+        check(Fraction(2, 3).compareTo(Fraction(4, 5))).equals(-1);
+        check(Fraction(4, 5).compareTo(Fraction(2, 3))).equals(1);
+        check(Fraction.infinity.compareTo(Fraction.infinity)).equals(0);
+        check(Fraction.negativeInfinity.compareTo(Fraction.negativeInfinity))
+            .equals(0);
+        check(Fraction.infinity.compareTo(Fraction.negativeInfinity)).equals(1);
+        check(Fraction.negativeInfinity.compareTo(Fraction.infinity))
+            .equals(-1);
+        check(Fraction.infinity.compareTo(Fraction(100))).equals(1);
+        check(Fraction(100).compareTo(Fraction.infinity)).equals(-1);
+        check(Fraction.negativeInfinity.compareTo(Fraction(-100))).equals(-1);
+        check(Fraction(-100).compareTo(Fraction.negativeInfinity)).equals(1);
+        check(Fraction.nan.compareTo(Fraction.nan)).equals(0);
+        check(Fraction.nan.compareTo(Fraction.infinity)).equals(1);
+        check(Fraction.infinity.compareTo(Fraction.nan)).equals(-1);
       });
       test('<', () {
         check(Fraction(2, 3) < Fraction(2, 3)).isFalse();
