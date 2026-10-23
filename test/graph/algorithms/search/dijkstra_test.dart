@@ -62,5 +62,38 @@ void main() {
         );
       });
     });
+    test('alternative paths with different incoming edge values', () {
+      final graph = Graph<String, num>(isDirected: true)
+        ..addEdge('S', 'A', value: 1)
+        ..addEdge('A', 'T', value: 4)
+        ..addEdge('S', 'B', value: 3)
+        ..addEdge('B', 'T', value: 2);
+      final paths = dijkstraSearch<String>(
+        startVertices: ['S'],
+        targetPredicate: (v) => v == 'T',
+        successorsOf: graph.successorsOf,
+        edgeCost: (source, target) => graph.getEdge(source, target)!.value,
+        includeAlternativePaths: true,
+      ).toList();
+      check(paths).length.equals(2);
+      check(paths.map((p) => p.values).toList()).unorderedMatches([
+        (it) => it.deepEquals([1, 4]),
+        (it) => it.deepEquals([3, 2]),
+      ]);
+    });
+    test('zero-weight loop to start vertex terminates', () {
+      final graph = Graph<String, num>(isDirected: true)
+        ..addEdge('S', 'A', value: 0)
+        ..addEdge('A', 'S', value: 0)
+        ..addEdge('S', 'T', value: 1);
+      final paths = dijkstraSearch<String>(
+        startVertices: ['S'],
+        targetPredicate: (v) => v == 'T',
+        successorsOf: graph.successorsOf,
+        edgeCost: (source, target) => graph.getEdge(source, target)!.value,
+      ).toList();
+      check(paths).length.equals(1);
+      check(paths.single.vertices).deepEquals(['S', 'T']);
+    });
   });
 }

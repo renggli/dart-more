@@ -33,7 +33,7 @@ Iterable<Path<V, num>> bellmanFordSearch<V>({
   }
   for (final vertex in startVertices) {
     final state = states[vertex]!;
-    state.value = state.total = 0;
+    state.total = 0;
   }
 
   // Step 2: Relax edges repeatedly.
@@ -46,14 +46,13 @@ Iterable<Path<V, num>> bellmanFordSearch<V>({
         final total = sourceState.total + value;
         final targetState = states[target]!;
         if (total < targetState.total) {
-          targetState.value = value;
           targetState.total = total;
           targetState.predecessors.clear();
-          targetState.predecessors.add(sourceState);
+          targetState.predecessors.add((sourceState, value));
           relaxed = true;
         } else if (total == targetState.total &&
-            !targetState.predecessors.contains(sourceState)) {
-          targetState.predecessors.add(sourceState);
+            !targetState.predecessors.any((p) => p.$1 == sourceState)) {
+          targetState.predecessors.add((sourceState, value));
         }
       }
     }
@@ -98,11 +97,8 @@ final class BellmanFordState<V> implements SearchState<V, num> {
   @override
   final V vertex;
 
-  @override
-  num value = double.infinity;
-
   num total = double.infinity;
 
   @override
-  final List<BellmanFordState<V>> predecessors = [];
+  final List<(SearchState<V, num>, num)> predecessors = [];
 }

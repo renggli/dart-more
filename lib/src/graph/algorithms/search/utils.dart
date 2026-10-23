@@ -10,11 +10,8 @@ abstract class SearchState<V, E> {
   /// The vertex of this state.
   V get vertex;
 
-  /// The value of the edge from the predecessors to the vertex.
-  E get value;
-
-  /// The predecessors of the vertex (typically just one).
-  List<SearchState<V, E>> get predecessors;
+  /// The predecessors of the vertex (typically just one) with edge values.
+  List<(SearchState<V, E> state, E value)> get predecessors;
 }
 
 Path<V, E> createShortestPath<V, E>(
@@ -23,16 +20,15 @@ Path<V, E> createShortestPath<V, E>(
 }) {
   final vertices = QueueList<V>();
   final values = QueueList<E>();
-  for (
-    SearchState<V, E>? state = last;
-    state != null;
-    state = state.predecessors.firstOrNull
-  ) {
+  SearchState<V, E>? state = last;
+  while (state != null) {
     vertices.addFirst(state.vertex);
-    values.addFirst(state.value);
     if (startVertices.contains(state.vertex)) break;
+    final pred = state.predecessors.firstOrNull;
+    if (pred == null) break;
+    values.addFirst(pred.$2);
+    state = pred.$1;
   }
-  if (values.isNotEmpty) values.removeFirst();
   return Path<V, E>.fromVertices(vertices, values: values);
 }
 
@@ -42,30 +38,29 @@ Iterable<Path<V, E>> createAllShortestPaths<V, E>(
   Iterable<V> startVertices = const [],
 }) sync* {
   final seen = {state};
-  final stack = [(state, 0)];
+  final stack = [(state: state, value: null as E?, index: 0)];
   var top = 0;
   while (top >= 0) {
-    final (state, i) = stack[top];
+    final (:state, :value, :index) = stack[top];
     if (state.predecessors.isEmpty || startVertices.contains(state.vertex)) {
       final list = stack.sublist(0, top + 1).reversed;
       yield Path<V, E>.fromVertices(
-        list.map((state) => state.$1.vertex),
-        values: list.skip(1).map((state) => state.$1.value),
+        list.map((step) => step.state.vertex),
+        values: list.take(top).map((step) => step.value as E),
       );
-    }
-    if (i < state.predecessors.length) {
-      stack[top] = (state, i + 1);
-      final next = state.predecessors[i];
+    } else if (index < state.predecessors.length) {
+      stack[top] = (state: state, value: value, index: index + 1);
+      final (next, edgeValue) = state.predecessors[index];
       if (!seen.add(next)) continue;
       top++;
       if (stack.length == top) {
-        stack.add((next, 0));
+        stack.add((state: next, value: edgeValue, index: 0));
       } else {
-        stack[top] = (next, 0);
+        stack[top] = (state: next, value: edgeValue, index: 0);
       }
-    } else {
-      seen.remove(state);
-      top--;
+      continue;
     }
+    seen.remove(state);
+    top--;
   }
 }

@@ -42,43 +42,37 @@ Iterable<Path<V, num>> aStarSearch<V>({
         final estimate = total + costEstimate(target);
         final state = AStarState<V>(
           vertex: target,
-          value: value,
           total: total,
           estimate: estimate,
         );
-        state.predecessors.add(sourceState);
+        state.predecessors.add((sourceState, value));
         states[target] = state;
         queue.add(state);
       } else if (total == targetState.total) {
-        targetState.predecessors.add(sourceState);
+        targetState.predecessors.add((sourceState, value));
       }
     }
     if (targetPredicate(sourceState.vertex)) {
       if (includeAlternativePaths) {
-        yield* createAllShortestPaths(sourceState);
+        yield* createAllShortestPaths(
+          sourceState,
+          startVertices: startVertices,
+        );
       } else {
-        yield createShortestPath(sourceState);
+        yield createShortestPath(sourceState, startVertices: startVertices);
       }
     }
   }
 }
 
 final class AStarState<V> implements SearchState<V, num> {
-  new({
-    required this.vertex,
-    required this.estimate,
-    this.value = 0,
-    this.total = 0,
-  });
+  new({required this.vertex, required this.estimate, this.total = 0});
 
   @override
   final V vertex;
 
   @override
-  final num value;
-
-  @override
-  final List<AStarState<V>> predecessors = [];
+  final List<(SearchState<V, num>, num)> predecessors = [];
 
   final num total;
   final num estimate;

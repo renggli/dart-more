@@ -38,39 +38,35 @@ Iterable<Path<V, num>> dijkstraSearch<V>({
       final targetState = states[target];
       if (targetState == null || total < targetState.total) {
         targetState?.isObsolete = true;
-        final state = DijkstraState<V>(
-          vertex: target,
-          value: value,
-          total: total,
-        );
-        state.predecessors.add(sourceState);
+        final state = DijkstraState<V>(vertex: target, total: total);
+        state.predecessors.add((sourceState, value));
         states[target] = state;
         queue.add(state);
       } else if (total == targetState.total) {
-        targetState.predecessors.add(sourceState);
+        targetState.predecessors.add((sourceState, value));
       }
     }
     if (targetPredicate(sourceState.vertex)) {
       if (includeAlternativePaths) {
-        yield* createAllShortestPaths(sourceState);
+        yield* createAllShortestPaths(
+          sourceState,
+          startVertices: startVertices,
+        );
       } else {
-        yield createShortestPath(sourceState);
+        yield createShortestPath(sourceState, startVertices: startVertices);
       }
     }
   }
 }
 
 final class DijkstraState<V> implements SearchState<V, num> {
-  new({required this.vertex, this.value = 0, this.total = 0}) : super();
+  new({required this.vertex, this.total = 0}) : super();
 
   @override
   final V vertex;
 
   @override
-  final num value;
-
-  @override
-  final List<DijkstraState<V>> predecessors = [];
+  final List<(SearchState<V, num>, num)> predecessors = [];
 
   final num total;
   bool isObsolete = false;
