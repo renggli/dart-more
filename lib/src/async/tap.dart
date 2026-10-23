@@ -35,7 +35,6 @@ extension TapExtension<E> on Stream<E> {
     void dispatchOnError(Object error, [StackTrace? stackTrace]) {
       onError?.call(error, stackTrace);
       controller.addError(error, stackTrace);
-      subscription.cancel();
     }
 
     void dispatchOnDone() {

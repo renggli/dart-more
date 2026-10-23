@@ -53,6 +53,40 @@ void main() {
         'error: Expected error',
       ]);
     });
+    test('error with cancelOnError: false', () async {
+      final events = <String>[];
+      final controller = StreamController<int>();
+      final completer = Completer<void>();
+      wrap(events, controller.stream).listen(
+        (value) => events.add('value: $value'),
+        onError: (Object error) => events.add('error: $error'),
+        onDone: () {
+          events.add('done');
+          completer.complete();
+        },
+        cancelOnError: false,
+      );
+      controller.add(1);
+      controller.addError('error 1');
+      controller.add(2);
+      controller.addError('error 2');
+      await controller.close();
+      await completer.future;
+      check(events).deepEquals([
+        'onListen',
+        'onData: 1',
+        'value: 1',
+        'onError: error 1',
+        'error: error 1',
+        'onData: 2',
+        'value: 2',
+        'onError: error 2',
+        'error: error 2',
+        'onDone',
+        'onCancel',
+        'done',
+      ]);
+    });
     test('pause/resume', () async {
       late StreamSubscription<int> subscription;
       final events = <String>[];
