@@ -80,7 +80,7 @@
   - `Graph.allShortestPaths` and `floydWarshallSearch` return `FloydWarshall<V>`, which is currently hidden by `show floydWarshallSearch`.
 - [x] **Export `Multimap` base class from `lib/collection.dart`** ([`lib/collection.dart`](lib/collection.dart#L48-L54)):
   - `ListMultimap` and `SetMultimap` subclass `Multimap` and accept `Multimap` in `.of` constructors, but `Multimap` is not exported.
-- [ ] **Add `Fraction.parse` factory constructor** ([`lib/src/number/fraction.dart`](lib/src/number/fraction.dart#L126)):
+- [x] **Add `Fraction.parse` factory constructor** ([`lib/src/number/fraction.dart`](lib/src/number/fraction.dart#L126)):
   - `Complex.parse` and `Quaternion.parse` exist alongside `tryParse`, whereas `Fraction` only provides `tryParse`.
 - [ ] **Support `num` in `DoubleRange.indexOf` / `contains` on Dart VM** ([`lib/src/collection/range/double.dart`](lib/src/collection/range/double.dart#L135)):
   - `if (element is double)` rejects `int` arguments on the VM (`DoubleRange(0, 5).contains(2)` is `false` on VM, `true` on JS).

@@ -122,6 +122,11 @@ class Fraction
     }
   }
 
+  /// Parses [source] as a [Fraction]. Throws a [FormatException] for invalid
+  /// input.
+  factory parse(String source) =>
+      tryParse(source) ?? (throw FormatException(source));
+
   /// Parses [source] as a [Fraction]. Returns `null` in case of a problem.
   static Fraction? tryParse(String source) {
     final values = source.split('/');

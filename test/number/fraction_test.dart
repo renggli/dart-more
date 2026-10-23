@@ -159,6 +159,16 @@ void main() {
           check(fraction.isFinite).isFalse();
         });
       });
+      group('parse', () {
+        test('basic', () {
+          check(Fraction.parse('1/2')).isFraction(1, 2);
+          check(Fraction.parse('3')).isFraction(3);
+        });
+        test('error', () {
+          check(() => Fraction.parse('')).throws<FormatException>();
+          check(() => Fraction.parse('invalid')).throws<FormatException>();
+        });
+      });
       group('tryParse', () {
         test('basic', () {
           check(Fraction.tryParse('1/2')).isNotNull().isFraction(1, 2);
