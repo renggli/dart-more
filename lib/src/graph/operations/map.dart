@@ -18,9 +18,13 @@ extension MapGraphExtension<V, E> on Graph<V, E> {
   }) {
     final graph = Graph<VR, ER>(
       isDirected: isDirected,
-      vertexStrategy: vertexStrategy,
+      vertexStrategy:
+          vertexStrategy ??
+          (this.vertexStrategy is StorageStrategy<VR>
+              ? this.vertexStrategy as StorageStrategy<VR>
+              : null),
     );
-    final vertexMap = <V, VR>{};
+    final vertexMap = this.vertexStrategy.createMap<VR>();
     final vertexMapper = vertex ?? (vertex) => vertex as VR;
     for (final oldVertex in vertices) {
       final newVertex = vertexMapper(oldVertex);

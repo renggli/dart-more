@@ -39,10 +39,10 @@ class WhereEdgeGraph<V, E> extends ForwardingGraph<V, E> {
   @override
   Iterable<V> predecessorsOf(V vertex) => super
       .predecessorsOf(vertex)
-      .where((target) => getEdge(vertex, target) != null);
+      .where((target) => getEdge(target, vertex) != null);
 
   @override
   Iterable<V> successorsOf(V vertex) => super
       .successorsOf(vertex)
-      .where((target) => getEdge(target, vertex) != null);
+      .where((target) => getEdge(vertex, target) != null);
 }

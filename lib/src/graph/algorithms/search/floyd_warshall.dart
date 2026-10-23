@@ -18,11 +18,11 @@ FloydWarshall<V> floydWarshallSearch<V>({
   vertexStrategy = vertexStrategy ?? StorageStrategy.defaultStrategy();
 
   // Step 1: Initialize matrix states.
-  final pairs = vertexStrategy.createMap<Map<V, FloyWarshallState<V>>>();
+  final pairs = vertexStrategy.createMap<Map<V, FloydWarshallState<V>>>();
   for (final source in vertices) {
-    final sourceMap = vertexStrategy.createMap<FloyWarshallState<V>>();
+    final sourceMap = vertexStrategy.createMap<FloydWarshallState<V>>();
     for (final target in vertices) {
-      sourceMap[target] = FloyWarshallState<V>(
+      sourceMap[target] = FloydWarshallState<V>(
         distance: source == target ? 0 : double.infinity,
       );
     }
@@ -46,13 +46,15 @@ FloydWarshall<V> floydWarshallSearch<V>({
 
   // Step 2: Floyd-Warshall loops.
   for (final k in vertices) {
+    final rowK = pairs[k]!;
     for (final i in vertices) {
-      final ik = pairs[i]![k]!;
+      final rowI = pairs[i]!;
+      final ik = rowI[k]!;
       if (ik.distance.isInfinite) continue;
       for (final j in vertices) {
-        final kj = pairs[k]![j]!;
+        final kj = rowK[j]!;
         if (kj.distance.isInfinite) continue;
-        final ij = pairs[i]![j]!;
+        final ij = rowI[j]!;
         final distance = ik.distance + kj.distance;
         if (distance < ij.distance) {
           ij.distance = distance;
@@ -76,13 +78,14 @@ FloydWarshall<V> floydWarshallSearch<V>({
   return FloydWarshall(edgeCost, pairs);
 }
 
+/// The result of the Floyd-Warshall all-pairs shortest paths algorithm.
 final class FloydWarshall<V> {
   final num Function(V source, V target) _edgeCost;
-  final Map<V, Map<V, FloyWarshallState<V>>> _pairs;
+  final Map<V, Map<V, FloydWarshallState<V>>> _pairs;
 
   new(this._edgeCost, this._pairs);
 
-  FloyWarshallState<V> _get(V source, V target) {
+  FloydWarshallState<V> _get(V source, V target) {
     final targetMap = _pairs[source];
     if (targetMap == null) {
       throw GraphError(source, 'source', 'Unknown vertex');
@@ -132,7 +135,7 @@ final class FloydWarshall<V> {
   }
 }
 
-final class FloyWarshallState<V> {
+final class FloydWarshallState<V> {
   new({this.distance = 0, this.next});
 
   num distance;

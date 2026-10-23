@@ -76,7 +76,7 @@
 
 - [x] **Bump version in `pubspec.yaml` to `4.8.0`** ([`pubspec.yaml`](pubspec.yaml#L2)):
   - [`CHANGELOG.md`](CHANGELOG.md#L1-L3) lists `## 4.8.0`, while `pubspec.yaml` is still `4.7.0`.
-- [ ] **Export `FloydWarshall` from `lib/graph.dart`** ([`lib/graph.dart`](lib/graph.dart#L16-L17)):
+- [x] **Export `FloydWarshall` from `lib/graph.dart`** ([`lib/graph.dart`](lib/graph.dart#L16-L17)):
   - `Graph.allShortestPaths` and `floydWarshallSearch` return `FloydWarshall<V>`, which is currently hidden by `show floydWarshallSearch`.
 - [ ] **Export `Multimap` base class from `lib/collection.dart`** ([`lib/collection.dart`](lib/collection.dart#L48-L54)):
   - `ListMultimap` and `SetMultimap` subclass `Multimap` and accept `Multimap` in `.of` constructors, but `Multimap` is not exported.
@@ -96,7 +96,7 @@
 - [x] **Use binary search for `SortedList.indexOf` and `lastIndexOf` and batch shift in `OrderedList.removeRange`** ([`lib/src/collection/sorted_list.dart`](lib/src/collection/sorted_list.dart#L46-L76), [`lib/src/collection/ordered_list.dart`](lib/src/collection/ordered_list.dart#L201-L204)):
   - Override `indexOf` and `lastIndexOf` in `SortedList` using `_comparator.binarySearchLower` / `binarySearchUpper` ($O(\log n)$ vs $O(n)$).
   - Replace the per-element `removeAt(start)` loop in `OrderedList.removeRange` with `_elements.removeRange(start, end)`.
-- [ ] **Preserve `vertexStrategy` in `Graph.map` and hoist map lookups in `floydWarshallSearch`** ([`lib/src/graph/operations/map.dart`](lib/src/graph/operations/map.dart#L23), [`lib/src/graph/algorithms/search/floyd_warshall.dart`](lib/src/graph/algorithms/search/floyd_warshall.dart#L48-L62)):
+- [x] **Preserve `vertexStrategy` in `Graph.map` and hoist map lookups in `floydWarshallSearch`** ([`lib/src/graph/operations/map.dart`](lib/src/graph/operations/map.dart#L23), [`lib/src/graph/algorithms/search/floyd_warshall.dart`](lib/src/graph/algorithms/search/floyd_warshall.dart#L48-L62)):
   - Use `vertexStrategy.createMap<VR>()` instead of `<V, VR>{}` in `Graph.map`.
   - Hoist `pairs[i]!` and `pairs[k]!` out of the innermost loop in `floydWarshallSearch`.
 
@@ -104,7 +104,7 @@
 
 ## Cleanups & Documentation
 
-- [ ] **Rename `FloyWarshallState` -> `FloydWarshallState`** ([`lib/src/graph/algorithms/search/floyd_warshall.dart`](lib/src/graph/algorithms/search/floyd_warshall.dart#L21), [`lib/src/graph/algorithms/search/floyd_warshall.dart`](lib/src/graph/algorithms/search/floyd_warshall.dart#L135)).
+- [x] **Rename `FloyWarshallState` -> `FloydWarshallState`** ([`lib/src/graph/algorithms/search/floyd_warshall.dart`](lib/src/graph/algorithms/search/floyd_warshall.dart#L21), [`lib/src/graph/algorithms/search/floyd_warshall.dart`](lib/src/graph/algorithms/search/floyd_warshall.dart#L135)).
 - [ ] **Fix hyperbolic doc comment typos** ([`lib/src/math/hyperbolic.dart`](lib/src/math/hyperbolic.dart#L65), [`lib/src/math/hyperbolic.dart`](lib/src/math/hyperbolic.dart#L68)):
   - `acoth()` says `tangent` instead of `cotangent`; `asech()` has duplicate `the the`.
 - [ ] **Fix `BigIntRange` constructor doc comments** ([`lib/src/collection/range/bigint.dart`](lib/src/collection/range/bigint.dart#L55), [`lib/src/collection/range/bigint.dart`](lib/src/collection/range/bigint.dart#L77)):
