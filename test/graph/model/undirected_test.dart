@@ -162,6 +162,22 @@ void main() {
         check(graph.getEdge(0, 2)).isNull();
         check(graph.getEdge(2, 0)).isNull();
       });
+      test('getEdge with nullable value', () {
+        final nullableGraph = Graph<int, String?>(isDirected: false)
+          ..addVertex(0)
+          ..addVertex(1)
+          ..addVertex(2)
+          ..addEdge(0, 1, value: null);
+        check(nullableGraph.getEdge(0, 1))
+            .isNotNull()
+            .which(isEdge(0, 1, value: null, isDirected: false));
+        check(nullableGraph.getEdge(1, 0))
+            .isNotNull()
+            .which(isEdge(1, 0, value: null, isDirected: false));
+        check(nullableGraph.getEdge(0, 2)).isNull();
+        check(nullableGraph.getEdge(2, 0)).isNull();
+        check(nullableGraph.getEdge(1, 2)).isNull();
+      });
       test('neighboursOf', () {
         check(graph.neighboursOf(0)).deepEquals([1]);
         check(graph.neighboursOf(1)).unorderedEquals([0, 2]);

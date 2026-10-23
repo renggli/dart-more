@@ -48,8 +48,12 @@ class DirectedGraph<V, E> extends Graph<V, E> {
   @override
   Edge<V, E>? getEdge(V source, V target) {
     if (adjacency[source]?.outgoing case final targetAdjacency?) {
-      if (targetAdjacency[target] case final E value) {
-        return DirectedEdge<V, E>(source, target, value: value);
+      if (targetAdjacency.containsKey(target)) {
+        return DirectedEdge<V, E>(
+          source,
+          target,
+          value: targetAdjacency[target] as E,
+        );
       }
     }
     return null;

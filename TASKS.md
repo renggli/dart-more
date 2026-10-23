@@ -23,7 +23,7 @@
 
 - [x] **`UndirectedGraph.removeVertex` throws `ConcurrentModificationError` on self-loops** ([`lib/src/graph/model/undirected.dart`](lib/src/graph/model/undirected.dart#L76-L83)):
   - Iterating `for (final target in vertexAdjacency.keys)` while calling `adjacency[target]?.remove(vertex)` mutates `vertexAdjacency` when `target == vertex`.
-- [ ] **`DirectedGraph.getEdge` and `UndirectedGraph.getEdge` return phantom edges when `E` is nullable** ([`lib/src/graph/model/directed.dart`](lib/src/graph/model/directed.dart#L50-L55), [`lib/src/graph/model/undirected.dart`](lib/src/graph/model/undirected.dart#L49-L54)):
+- [x] **`DirectedGraph.getEdge` and `UndirectedGraph.getEdge` return phantom edges when `E` is nullable** ([`lib/src/graph/model/directed.dart`](lib/src/graph/model/directed.dart#L50-L55), [`lib/src/graph/model/undirected.dart`](lib/src/graph/model/undirected.dart#L49-L54)):
   - `if (targetAdjacency[target] case final E value)` matches `null` whenever `E` is nullable (e.g. `Graph<int, int?>` or `Graph<int, void>`), returning an `Edge` even when `target` is not in `targetAdjacency`. Guard with `targetAdjacency.containsKey(target)`.
 - [ ] **`Graph.isBipartite` fails on directed graphs and self-loops** ([`lib/src/graph/algorithms.dart`](lib/src/graph/algorithms.dart#L235-L240), [`lib/src/graph/algorithms/bipartite_check.dart`](lib/src/graph/algorithms/bipartite_check.dart#L14-L42)):
   - `isBipartite` passes `successorsOf: successorsOf` instead of `neighboursOf`. For a directed graph such as `c -> a -> b`, if `a` and `b` are colored in the first BFS pass (`a: true, b: false`), the subsequent pass starting at `c` colors `c: true` and fails on edge `c -> a`. Using `neighboursOf` fixes both directed graphs and self-loop detection.
