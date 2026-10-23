@@ -13,9 +13,14 @@ import '../strategy.dart';
 /// See https://en.wikipedia.org/wiki/Bipartite_graph.
 bool isBipartite<V>({
   required Iterable<V> vertices,
-  required Iterable<V> Function(V vertex) successorsOf,
+  Iterable<V> Function(V vertex)? neighboursOf,
+  Iterable<V> Function(V vertex)? successorsOf,
   StorageStrategy<V>? vertexStrategy,
 }) {
+  final getNeighbours = neighboursOf ?? successorsOf;
+  if (getNeighbours == null) {
+    throw ArgumentError('Either neighboursOf or successorsOf must be provided');
+  }
   vertexStrategy ??= StorageStrategy.defaultStrategy();
   final colors = vertexStrategy.createMap<bool>();
   final queue = <V>[];
@@ -26,7 +31,7 @@ bool isBipartite<V>({
     while (queue.isNotEmpty) {
       final source = queue.removeLast();
       final sourceColor = colors[source]!;
-      for (final target in successorsOf(source)) {
+      for (final target in getNeighbours(source)) {
         if (colors.containsKey(target)) {
           final targetColor = colors[target]!;
           if (sourceColor == targetColor) {

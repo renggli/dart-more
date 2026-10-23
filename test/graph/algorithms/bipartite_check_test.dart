@@ -60,6 +60,15 @@ void main() {
         ..addEdge(0, 3);
       check(graph.isBipartite()).isTrue();
     });
+    test('directed DAG with arbitrary vertex order is bipartite', () {
+      final graph = Graph<int, void>(isDirected: true)
+        ..addVertex(1)
+        ..addVertex(2)
+        ..addVertex(0)
+        ..addEdge(0, 1)
+        ..addEdge(1, 2);
+      check(graph.isBipartite()).isTrue();
+    });
     test('directed graph with odd cycle is not bipartite', () {
       final graph = Graph<int, void>(isDirected: true)
         ..addEdge(0, 1)
@@ -77,6 +86,12 @@ void main() {
     });
     test('graph with self-loop is not bipartite', () {
       final graph = Graph<int, void>(isDirected: false)
+        ..addVertex(0)
+        ..addEdge(0, 0);
+      check(graph.isBipartite()).isFalse();
+    });
+    test('directed graph with self-loop is not bipartite', () {
+      final graph = Graph<int, void>(isDirected: true)
         ..addVertex(0)
         ..addEdge(0, 0);
       check(graph.isBipartite()).isFalse();

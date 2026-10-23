@@ -235,7 +235,7 @@ extension AlgorithmsGraphExtension<V, E> on Graph<V, E> {
   bool isBipartite({StorageStrategy<V>? vertexStrategy}) =>
       bipartite_check.isBipartite<V>(
         vertices: vertices,
-        successorsOf: successorsOf,
+        neighboursOf: neighboursOf,
         vertexStrategy: vertexStrategy ?? this.vertexStrategy,
       );
 
