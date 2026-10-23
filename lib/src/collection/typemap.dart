@@ -1,11 +1,11 @@
-import 'dart:collection';
+import 'dart:collection' show MapBase;
 
 import 'package:meta/meta.dart';
 
 /// A type map associates Dart runtime types with instances of that type.
 @optionalTypeArgs
 class TypeMap<T> {
-  final Map<Type, T> _map = Map.identity();
+  final Map<Type, T> _map = <Type, T>{};
 
   /// Tests if the type map has an instance of the generic type [V].
   bool hasInstance<V extends T>() => _map.containsKey(V);

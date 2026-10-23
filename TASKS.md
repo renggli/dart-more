@@ -84,7 +84,7 @@
   - `Complex.parse` and `Quaternion.parse` exist alongside `tryParse`, whereas `Fraction` only provides `tryParse`.
 - [x] **Support `num` in `DoubleRange.indexOf` / `contains` on Dart VM** ([`lib/src/collection/range/double.dart`](lib/src/collection/range/double.dart#L135)):
   - `if (element is double)` rejects `int` arguments on the VM (`DoubleRange(0, 5).contains(2)` is `false` on VM, `true` on JS).
-- [ ] **Avoid `Map.identity()` on `Type` keys in `TypeMap`** ([`lib/src/collection/typemap.dart`](lib/src/collection/typemap.dart#L8)):
+- [x] **Avoid `Map.identity()` on `Type` keys in `TypeMap`** ([`lib/src/collection/typemap.dart`](lib/src/collection/typemap.dart#L8)):
   - Dart guarantees `==` and `hashCode` for `Type` instances, not `identical()`. Use a regular `Map<Type, Object?>`.
 
 ---
