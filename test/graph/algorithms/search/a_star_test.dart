@@ -21,6 +21,25 @@ void main() {
       check(result.single)
           .which(isPath(source: 1, target: 5, vertices: [1, 6, 5], cost: 2));
     });
+    test('alternative paths', () {
+      final builder = GraphFactory<int, void>().newBuilder()
+        ..addEdge(1, 2)
+        ..addEdge(1, 3)
+        ..addEdge(2, 4)
+        ..addEdge(3, 4);
+      final graph = builder.build();
+      final result = aStarSearch<int>(
+        startVertices: [1],
+        targetPredicate: (v) => v == 4,
+        successorsOf: graph.successorsOf,
+        costEstimate: (v) => 0,
+        includeAlternativePaths: true,
+      );
+      check(result).unorderedMatches([
+        isPath(vertices: [1, 2, 4], cost: 2),
+        isPath(vertices: [1, 3, 4], cost: 2),
+      ]);
+    });
     group('hills', () {
       test('default cost', () {
         final search = aStarSearch<Point<int>>(

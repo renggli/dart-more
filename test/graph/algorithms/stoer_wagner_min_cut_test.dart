@@ -133,5 +133,13 @@ void main() {
         ..addEdge(1, 2);
       check(graph.minCut).throws<ArgumentError>();
     });
+    test('default edgeWeight and vertexStrategy', () {
+      final graph = Graph<int, void>(isDirected: false)
+        ..addEdge(0, 1)
+        ..addEdge(1, 2);
+      final minCut = StoerWagnerMinCut(graph: graph);
+      check(minCut.graphs).length.equals(2);
+      check(minCut.weight).equals(1);
+    });
   });
 }

@@ -41,5 +41,12 @@ void main() {
         check(coloring.values.toSet()).length.equals(2);
       }
     });
+    test('default vertexStrategy', () {
+      final coloring = vertexColoring<int>(
+        vertices: [1, 2],
+        neighboursOf: (v) => [],
+      );
+      check(coloring).deepEquals({1: 0, 2: 0});
+    });
   });
 }

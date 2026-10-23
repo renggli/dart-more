@@ -51,5 +51,14 @@ void main() {
         '> to this document.',
       ]);
     });
+
+    test('non-list iterables', () {
+      check(
+        differ.compareLines(
+          ['a', 'b'].where((_) => true),
+          ['a', 'c'].where((_) => true),
+        ),
+      ).deepEquals(['2c2', '< b', '---', '> c']);
+    });
   });
 }

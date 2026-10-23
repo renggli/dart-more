@@ -65,5 +65,8 @@ void main() {
       final graph = Graph<int, void>(isDirected: false);
       check(graph.hasCycle).throws<GraphError>();
     });
+    test('default vertexStrategy', () {
+      check(hasCycle<int>(vertices: [1, 2], successorsOf: (v) => [])).isFalse();
+    });
   });
 }

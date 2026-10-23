@@ -96,5 +96,12 @@ void main() {
         ..addEdge(0, 0);
       check(graph.isBipartite()).isFalse();
     });
+    test('missing neighbours and successors throws ArgumentError', () {
+      check(() => isBipartite<int>(vertices: [1, 2])).throws<ArgumentError>();
+    });
+    test('default vertexStrategy', () {
+      check(isBipartite<int>(vertices: [1, 2], neighboursOf: (v) => []))
+          .isTrue();
+    });
   });
 }

@@ -96,5 +96,12 @@ void main() {
       check(flow('s', 't')).equals(14);
       check(flow('t', 's')).equals(0);
     });
+    test('default edgeCapacity and vertexStrategy', () {
+      final flow = DinicMaxFlow<int>(
+        seedVertices: [1, 2],
+        successorsOf: (v) => v == 1 ? [2] : [],
+      );
+      check(flow(1, 2)).equals(1);
+    });
   });
 }

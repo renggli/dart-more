@@ -52,6 +52,18 @@ void main() {
         isPath(vertices: [0, 2, 3, 5, 6, 7], cost: 5),
       ]);
     });
+    test('directed path with cost estimate and default edge cost', () {
+      final graph = GraphFactory<int, void>().path(vertexCount: 5);
+      final path = graph.shortestPath(0, 4, costEstimate: (v) => 4 - v);
+      check(path).isNotNull().which(isPath(source: 0, target: 4, cost: 4));
+
+      final allPaths = graph.shortestPathAll(
+        0,
+        targetPredicate: (v) => v == 4,
+        costEstimate: (v) => 4 - v,
+      );
+      check(allPaths.single).which(isPath(source: 0, target: 4, cost: 4));
+    });
     test('directed path with cost', () {
       final graph = GraphFactory<int, void>().path(vertexCount: 10);
       int edgeCost(int _, int target) => target;

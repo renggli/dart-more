@@ -3,6 +3,18 @@ import 'package:more/graph.dart';
 import 'package:test/scaffolding.dart';
 
 void main() {
+  group('constructors', () {
+    test('directed', () {
+      // ignore: deprecated_member_use_from_same_package
+      final graph = Graph<int, void>.directed();
+      check(graph.isDirected).isTrue();
+    });
+    test('undirected', () {
+      // ignore: deprecated_member_use_from_same_package
+      final graph = Graph<int, void>.undirected();
+      check(graph.isDirected).isFalse();
+    });
+  });
   group('graph toString', () {
     test('empty', () {
       final graph = Graph<int, void>(isDirected: true);

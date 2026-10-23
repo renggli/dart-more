@@ -55,6 +55,20 @@ void main() {
           .equals(const Match(sourceStart: 0, targetStart: 0, length: 0));
     });
 
+    test('findLongestMatch (with popular elements)', () {
+      final target = [...List.filled(100, 'x'), 'y', ...List.filled(100, 'x')];
+      final source = ['x', 'x', 'y', 'x', 'x'];
+      final matcher = SequenceMatcher(
+        source: source,
+        target: target,
+        autoJunk: true,
+      );
+      check(matcher.targetPopular).deepEquals(['x']);
+      final match = matcher.findLongestMatch();
+      check(match)
+          .equals(const Match(sourceStart: 0, targetStart: 98, length: 5));
+    });
+
     test('matches', () {
       final matcher = SequenceMatcher(
         source: 'abxcd'.split(''),

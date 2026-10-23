@@ -92,5 +92,14 @@ void main() {
         '+to this document.',
       ]);
     });
+
+    test('non-list iterables', () {
+      check(
+        differ.compareLines(
+          ['a', 'b'].where((_) => true),
+          ['a', 'c'].where((_) => true),
+        ),
+      ).deepEquals(['@@ -1,2 +1,2 @@', ' a', '-b', '+c']);
+    });
   });
 }

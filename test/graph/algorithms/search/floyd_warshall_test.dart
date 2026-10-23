@@ -135,6 +135,17 @@ void main() {
         ),
       ).throws<GraphError>();
     });
+    test('unknown vertices throw GraphError', () {
+      final graph = GraphFactory<int, void>().path(vertexCount: 3);
+      final allShortestPaths = floydWarshallSearch<int>(
+        vertices: graph.vertices,
+        successorsOf: graph.successorsOf,
+      );
+      check(() => allShortestPaths.distance(99, 1)).throws<GraphError>();
+      check(() => allShortestPaths.distance(1, 99)).throws<GraphError>();
+      check(() => allShortestPaths.path(99, 1)).throws<GraphError>();
+      check(() => allShortestPaths.path(1, 99)).throws<GraphError>();
+    });
     group('maze', () {
       test('floyd-warshall', () {
         final search = floydWarshallSearch<Point<int>>(

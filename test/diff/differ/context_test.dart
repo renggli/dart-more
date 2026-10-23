@@ -110,10 +110,12 @@ void main() {
     });
 
     test('non-list iterables', () {
-      check(differ.compareLines(
-        ['a', 'b'].where((_) => true),
-        ['a', 'c'].where((_) => true),
-      )).deepEquals([
+      check(
+        differ.compareLines(
+          ['a', 'b'].where((_) => true),
+          ['a', 'c'].where((_) => true),
+        ),
+      ).deepEquals([
         '***************',
         '*** 1,2 ****',
         '  a',
