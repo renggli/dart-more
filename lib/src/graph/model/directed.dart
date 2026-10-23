@@ -78,15 +78,18 @@ class DirectedGraph<V, E> extends Graph<V, E> {
 
   @override
   void removeVertex(V vertex) {
-    final vertexAdjacency = adjacency[vertex];
+    final vertexAdjacency = adjacency.remove(vertex);
     if (vertexAdjacency == null) return;
     for (final target in vertexAdjacency.outgoing.keys) {
-      adjacency[target]?.incoming.remove(vertex);
+      if (target != vertex) {
+        adjacency[target]?.incoming.remove(vertex);
+      }
     }
     for (final source in vertexAdjacency.incoming.keys) {
-      adjacency[source]?.outgoing.remove(vertex);
+      if (source != vertex) {
+        adjacency[source]?.outgoing.remove(vertex);
+      }
     }
-    adjacency.remove(vertex);
   }
 
   @override

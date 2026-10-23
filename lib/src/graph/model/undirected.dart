@@ -74,12 +74,13 @@ class UndirectedGraph<V, E> extends Graph<V, E> {
 
   @override
   void removeVertex(V vertex) {
-    final vertexAdjacency = adjacency[vertex];
+    final vertexAdjacency = adjacency.remove(vertex);
     if (vertexAdjacency == null) return;
     for (final target in vertexAdjacency.keys) {
-      adjacency[target]?.remove(vertex);
+      if (target != vertex) {
+        adjacency[target]?.remove(vertex);
+      }
     }
-    adjacency.remove(vertex);
   }
 
   @override

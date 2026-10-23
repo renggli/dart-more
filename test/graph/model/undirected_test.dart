@@ -89,6 +89,14 @@ void main() {
         check(graph.edges).isEmpty();
         expectInvariants(graph);
       });
+      test('add self-loop, remove vertex', () {
+        final graph = Graph<String, void>(isDirected: false);
+        graph.addEdge('Hello', 'Hello');
+        graph.removeVertex('Hello');
+        check(graph.vertices).isEmpty();
+        check(graph.edges).isEmpty();
+        expectInvariants(graph);
+      });
     });
     group('querying', () {
       final graph = Graph<int, String>(isDirected: false)

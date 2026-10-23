@@ -21,7 +21,7 @@
 
 ### Graph
 
-- [ ] **`UndirectedGraph.removeVertex` throws `ConcurrentModificationError` on self-loops** ([`lib/src/graph/model/undirected.dart`](lib/src/graph/model/undirected.dart#L76-L83)):
+- [x] **`UndirectedGraph.removeVertex` throws `ConcurrentModificationError` on self-loops** ([`lib/src/graph/model/undirected.dart`](lib/src/graph/model/undirected.dart#L76-L83)):
   - Iterating `for (final target in vertexAdjacency.keys)` while calling `adjacency[target]?.remove(vertex)` mutates `vertexAdjacency` when `target == vertex`.
 - [ ] **`DirectedGraph.getEdge` and `UndirectedGraph.getEdge` return phantom edges when `E` is nullable** ([`lib/src/graph/model/directed.dart`](lib/src/graph/model/directed.dart#L50-L55), [`lib/src/graph/model/undirected.dart`](lib/src/graph/model/undirected.dart#L49-L54)):
   - `if (targetAdjacency[target] case final E value)` matches `null` whenever `E` is nullable (e.g. `Graph<int, int?>` or `Graph<int, void>`), returning an `Edge` even when `target` is not in `targetAdjacency`. Guard with `targetAdjacency.containsKey(target)`.
