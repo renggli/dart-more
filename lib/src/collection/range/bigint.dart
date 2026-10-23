@@ -52,9 +52,8 @@ final class BigIntRange extends Range<BigInt> {
     throw ArgumentError('Invalid range: $a, $b, $c');
   }
 
-  /// Const constructor to create an arithmetic progression of [int] values
-  /// between [start] (inclusive) and [end] (exclusive); and a step-value
-  /// [step].
+  /// Creates an arithmetic progression of [BigInt] values between [start]
+  /// (inclusive) and [end] (exclusive); and a step-value [step].
   factory of({BigInt? start, BigInt? end, BigInt? step}) {
     start ??= BigInt.zero;
     end ??= BigInt.zero;
@@ -74,7 +73,7 @@ final class BigIntRange extends Range<BigInt> {
     return BigIntRange._(start, end, step, length.toInt());
   }
 
-  /// Const constructor to create an arithmetic progression of [BigInt] values.
+  /// Creates an arithmetic progression of [BigInt] values.
   /// The resulting [Range] is of the given [length], starts at [start], and
   /// uses the step-value [step].
   factory length(int length, {BigInt? start, BigInt? step}) {

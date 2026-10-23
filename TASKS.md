@@ -107,7 +107,7 @@
 - [x] **Rename `FloyWarshallState` -> `FloydWarshallState`** ([`lib/src/graph/algorithms/search/floyd_warshall.dart`](lib/src/graph/algorithms/search/floyd_warshall.dart#L21), [`lib/src/graph/algorithms/search/floyd_warshall.dart`](lib/src/graph/algorithms/search/floyd_warshall.dart#L135)).
 - [x] **Fix hyperbolic doc comment typos** ([`lib/src/math/hyperbolic.dart`](lib/src/math/hyperbolic.dart#L65), [`lib/src/math/hyperbolic.dart`](lib/src/math/hyperbolic.dart#L68)):
   - `acoth()` says `tangent` instead of `cotangent`; `asech()` has duplicate `the the`.
-- [ ] **Fix `BigIntRange` constructor doc comments** ([`lib/src/collection/range/bigint.dart`](lib/src/collection/range/bigint.dart#L55), [`lib/src/collection/range/bigint.dart`](lib/src/collection/range/bigint.dart#L77)):
+- [x] **Fix `BigIntRange` constructor doc comments** ([`lib/src/collection/range/bigint.dart`](lib/src/collection/range/bigint.dart#L55), [`lib/src/collection/range/bigint.dart`](lib/src/collection/range/bigint.dart#L77)):
   - `BigIntRange.of` and `BigIntRange.length` say `Const constructor to create an arithmetic progression of [int] values`.
 - [x] **Fix `StoerWagnerMinCut` complexity doc comment** ([`lib/src/graph/algorithms/stoer_wagner_min_cut.dart`](lib/src/graph/algorithms/stoer_wagner_min_cut.dart#L8)):
   - Change `_O(V*E + V*log(V))_` to `_O(V*E + V^2*log(V))_`.
