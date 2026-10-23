@@ -14,6 +14,8 @@ Iterable<Set<V>> bronKerboschCliques<V>(
   required Iterable<V> Function(V vertex) neighboursOf,
   required StorageStrategy<V> vertexStrategy,
 }) sync* {
+  Iterable<V> neighbours(V vertex) =>
+      neighboursOf(vertex).where((each) => each != vertex);
   final stack = <({Set<V> all, Set<V> some, Set<V> none})>[];
   stack.add((
     all: vertexStrategy.createSet(), // R
@@ -31,18 +33,18 @@ Iterable<Set<V>> bronKerboschCliques<V>(
     final pivot = some.isNotEmpty ? some.first : none.first;
     final vertices = vertexStrategy.createSet()
       ..addAll(some)
-      ..removeAll(neighboursOf(pivot));
+      ..removeAll(neighbours(pivot));
     for (final vertex in vertices) {
-      final neighbours = neighboursOf(vertex);
+      final vertexNeighbours = neighbours(vertex);
       final newAll = vertexStrategy.createSet()
         ..addAll(all)
         ..add(vertex);
       final newSome = vertexStrategy.createSet()
         ..addAll(some)
-        ..retainAll(neighbours);
+        ..retainAll(vertexNeighbours);
       final newNone = vertexStrategy.createSet()
         ..addAll(none)
-        ..retainAll(neighbours);
+        ..retainAll(vertexNeighbours);
       stack.add((all: newAll, some: newSome, none: newNone));
       some.remove(vertex);
       none.add(vertex);

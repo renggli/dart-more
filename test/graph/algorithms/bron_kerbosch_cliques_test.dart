@@ -15,6 +15,12 @@ void main() {
         {1},
       });
     });
+    test('single vertex with self-loop', () {
+      final graph = Graph<int, void>(isDirected: false)..addEdge(1, 1);
+      check(graph.findCliques().toSet()).deepEquals({
+        {1},
+      });
+    });
     test('disconnected pair', () {
       final graph = Graph<int, void>(isDirected: false)
         ..addVertex(1)
