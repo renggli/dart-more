@@ -1,4 +1,4 @@
-import '../../../math.dart';
+import '../../math/math.dart';
 import '../builder.dart';
 import '../object/object.dart';
 import '../printer.dart';

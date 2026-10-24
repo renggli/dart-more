@@ -1,4 +1,6 @@
-import '../../../comparator.dart';
+import '../../comparator/constructors/natural.dart';
+import '../../comparator/constructors/reverse.dart';
+import '../../comparator/operations/binary_search.dart';
 import '../range.dart';
 
 /// A range of doubles containing an arithmetic progression.

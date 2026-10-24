@@ -1,5 +1,5 @@
-import '../../collection.dart';
-import '../../comparator.dart';
+import '../collection/iterable/operators.dart';
+import '../comparator/constructors/key_of.dart';
 import 'sequence_matcher.dart';
 
 /// Extension on nested iterables to find close matches.

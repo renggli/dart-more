@@ -1,8 +1,8 @@
 import 'package:collection/collection.dart' show QueueList;
 import 'package:meta/meta.dart' show immutable;
 
-import '../../comparator.dart';
-import '../../math.dart';
+import '../comparator/compare_operators.dart';
+import '../math/math.dart';
 import 'mixins/close_to.dart';
 
 /// A rational number.

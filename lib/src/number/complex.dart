@@ -2,7 +2,8 @@ import 'dart:math' as math;
 
 import 'package:meta/meta.dart' show immutable;
 
-import '../../math.dart';
+import '../math/hyperbolic.dart';
+import '../math/math.dart';
 import 'mixins/close_to.dart';
 import 'utils.dart';
 

@@ -1,6 +1,6 @@
 import 'package:meta/meta.dart';
 
-import '../../functional.dart';
+import '../functional/types.dart';
 import 'literal.dart';
 import 'pluggable.dart';
 import 'sequence.dart';

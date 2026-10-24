@@ -1,4 +1,4 @@
-import '../../feature.dart';
+import '../feature/feature.dart';
 
 const List<int> _factorialsJs = [
   1,

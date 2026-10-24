@@ -1,4 +1,4 @@
-import '../../printer.dart';
+import '../printer/to_string.dart';
 import 'model/directed.dart';
 import 'model/undirected.dart';
 

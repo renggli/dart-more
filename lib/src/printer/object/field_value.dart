@@ -1,4 +1,4 @@
-import '../../../functional.dart';
+import '../../functional/types/predicate.dart';
 import '../printer.dart';
 import 'field.dart';
 import 'object.dart';

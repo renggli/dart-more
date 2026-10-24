@@ -1,6 +1,6 @@
 import 'dart:async' show Future, FutureOr;
 
-import '../../printer.dart';
+import '../printer/object/object.dart';
 import 'cache.dart';
 
 /// A cache that delegates to another one.

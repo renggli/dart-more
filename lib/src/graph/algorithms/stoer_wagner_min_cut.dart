@@ -1,9 +1,13 @@
 import 'package:collection/collection.dart';
 
-import '../../../graph.dart';
 import '../../collection/iterable/unique.dart';
 import '../../functional/scope.dart';
 import '../../functional/types.dart';
+import '../edge.dart';
+import '../errors.dart';
+import '../graph.dart';
+import '../model/where.dart';
+import '../strategy.dart';
 
 /// Stoer–Wagner minimum cut algorithm in _O(V*E + V^2*log(V))_.
 ///

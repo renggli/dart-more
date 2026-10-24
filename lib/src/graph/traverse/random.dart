@@ -1,7 +1,7 @@
 import 'dart:collection';
 import 'dart:math';
 
-import '../../../tuple.dart';
+import '../../tuple/tuple_2.dart';
 import '../graph.dart';
 import '../strategy.dart';
 

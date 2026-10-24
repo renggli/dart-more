@@ -1,6 +1,8 @@
 import 'package:collection/collection.dart';
 
-import '../../../comparator.dart';
+import '../../comparator/constructors/natural.dart';
+import '../../comparator/constructors/reverse.dart';
+import '../../comparator/modifiers/reversed.dart';
 
 /// Extension on [Iterable] to generate permutations.
 extension PermutationIterableExtension<E> on Iterable<E> {

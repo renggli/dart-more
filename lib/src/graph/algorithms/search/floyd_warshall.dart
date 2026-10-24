@@ -1,4 +1,4 @@
-import '../../../../functional.dart';
+import '../../../functional/types/constant.dart';
 import '../../errors.dart';
 import '../../path.dart';
 import '../../strategy.dart';

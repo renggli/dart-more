@@ -4,8 +4,8 @@ import 'dart:typed_data' show Uint32List;
 
 import 'package:collection/collection.dart' show NonGrowableListMixin;
 
-import '../../pragma.dart';
 import '../math/bit.dart';
+import '../pragma/pragma.dart';
 import 'range/integer.dart';
 
 /// A space efficient [List] that stores boolean values.

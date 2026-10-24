@@ -1,6 +1,8 @@
 import 'dart:math';
 
-import '../../comparator.dart';
+import '../comparator/constructors/natural.dart';
+import '../comparator/operations/binary_search.dart';
+import '../comparator/operations/sort.dart';
 import 'ordered_list.dart';
 
 /// A sorted list that remains sorted by a [Comparator] as elements get added.

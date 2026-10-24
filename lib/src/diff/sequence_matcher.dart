@@ -5,7 +5,9 @@ import 'dart:math';
 
 import 'package:collection/collection.dart';
 
-import '../../collection.dart';
+import '../collection/iterable/group.dart';
+import '../collection/multimap/list.dart';
+import '../collection/multiset.dart';
 import '../functional/types.dart';
 import 'model/match.dart';
 import 'model/operation.dart';

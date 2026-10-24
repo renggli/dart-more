@@ -1,6 +1,6 @@
 import 'dart:async' show Future, FutureOr;
 
-import '../../printer.dart';
+import '../printer/to_string.dart';
 import 'empty.dart';
 import 'expiry.dart';
 import 'fifo.dart';

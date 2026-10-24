@@ -1,8 +1,8 @@
 import 'dart:math';
 
-import '../../../functional.dart';
-import '../../../math.dart';
-import '../../../temporal.dart';
+import '../../comparator/compare_extensions.dart';
+import '../../functional/types/callback.dart';
+import '../../temporal/date_time/accessors.dart';
 import '../builder.dart';
 import '../literal.dart';
 import '../number/fixed.dart';

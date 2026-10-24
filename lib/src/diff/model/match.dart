@@ -1,4 +1,5 @@
-import '../../../printer.dart';
+import '../../printer/object/object.dart';
+import '../../printer/to_string.dart';
 
 /// Encapsulates a matching block when comparing two inputs.
 class Match with ToStringPrinter implements Comparable<Match> {

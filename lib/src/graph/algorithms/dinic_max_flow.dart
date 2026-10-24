@@ -1,7 +1,7 @@
 import 'dart:collection';
 import 'dart:math' as math;
 
-import '../../../functional.dart';
+import '../../functional/types/constant.dart';
 import '../errors.dart';
 import '../strategy.dart';
 import '../traverse/depth_first.dart';

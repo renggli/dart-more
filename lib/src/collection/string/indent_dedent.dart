@@ -1,6 +1,6 @@
 import 'dart:math';
 
-import '../../../char_matcher.dart';
+import '../../char_matcher/char_matcher.dart';
 import 'prefix_suffix.dart';
 
 /// Extension on [String] to indent and dedent multiline text.

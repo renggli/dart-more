@@ -1,4 +1,4 @@
-import '../../feature.dart';
+import '../feature/feature.dart';
 import '../number/complex.dart';
 
 /// Extension on [int] providing [isProbablyPrime].

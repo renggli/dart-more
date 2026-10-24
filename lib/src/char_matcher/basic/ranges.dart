@@ -1,4 +1,6 @@
-import '../../../printer.dart';
+import '../../printer/iterable.dart';
+import '../../printer/number/unicode.dart';
+import '../../printer/object/object.dart';
 import '../char_matcher.dart';
 
 final class RangesCharMatcher extends CharMatcher {

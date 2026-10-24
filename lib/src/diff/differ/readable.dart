@@ -1,6 +1,7 @@
-import '../../../collection.dart';
-import '../../../functional.dart';
-import '../../../printer.dart';
+import '../../collection/iterable/repeat_element.dart';
+import '../../functional/types/predicate.dart';
+import '../../printer/printer.dart';
+import '../../printer/sequence.dart';
 import '../differ.dart';
 import '../model/operation_type.dart';
 import '../sequence_matcher.dart';

@@ -1,4 +1,4 @@
-import '../../../math.dart';
+import '../../comparator/compare_extensions.dart';
 import '../object/object.dart';
 import '../printer.dart';
 import 'fixed.dart';

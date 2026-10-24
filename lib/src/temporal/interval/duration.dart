@@ -1,4 +1,4 @@
-import '../../../interval.dart';
+import '../../interval/interval.dart';
 
 /// Extension on [Interval] of [DateTime] providing duration conversion.
 extension DurationIntervalDateTimeExtension on Interval<DateTime> {

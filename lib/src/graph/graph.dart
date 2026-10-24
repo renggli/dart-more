@@ -1,6 +1,9 @@
 import 'package:meta/meta.dart';
 
-import '../../printer.dart';
+import '../printer/iterable.dart';
+import '../printer/object/object.dart';
+import '../printer/printer.dart';
+import '../printer/to_string.dart';
 import 'edge.dart';
 import 'model/directed.dart';
 import 'model/undirected.dart';

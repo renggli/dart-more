@@ -1,6 +1,6 @@
 import 'package:meta/meta.dart';
 
-import '../../functional.dart';
+import '../functional/types.dart';
 import 'rtree/bounds.dart';
 import 'rtree/entry.dart';
 import 'rtree/guttman.dart';

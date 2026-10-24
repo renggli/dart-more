@@ -1,7 +1,7 @@
 import 'package:collection/collection.dart';
 import 'package:meta/meta.dart' show immutable, nonVirtual;
 
-import '../../printer.dart';
+import '../printer/to_string.dart';
 import 'ascii/ascii.dart';
 import 'ascii/digit.dart';
 import 'ascii/letter.dart';

@@ -1,4 +1,7 @@
-import '../../../comparator.dart';
+import '../../comparator/constructors/natural.dart';
+import '../../comparator/operations/largest.dart';
+import '../../comparator/operations/min_max.dart';
+import '../../comparator/operations/smallest.dart';
 
 /// Extension on [Iterable] providing statistical and search operators.
 extension OperatorsIterableExtension<E> on Iterable<E> {

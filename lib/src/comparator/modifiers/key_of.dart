@@ -1,4 +1,4 @@
-import '../../../functional.dart';
+import '../../functional/types/mapping.dart';
 
 /// Extension on [Comparator] to order elements by a key extraction function.
 extension ResultOfComparator<R> on Comparator<R> {

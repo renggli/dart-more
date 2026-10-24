@@ -1,4 +1,4 @@
-import '../../../collection.dart';
+import '../../collection/iterable/iterate.dart';
 import '../time_unit.dart';
 
 /// Extension on [DateTime] providing periodic timestamp generation.

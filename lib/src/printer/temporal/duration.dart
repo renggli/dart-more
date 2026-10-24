@@ -1,5 +1,8 @@
-import '../../../functional.dart';
-import '../../../temporal.dart';
+import '../../functional/types/callback.dart';
+import '../../temporal/conversion.dart';
+import '../../temporal/duration/convert.dart';
+import '../../temporal/duration/convert_all.dart';
+import '../../temporal/time_unit.dart';
 import '../builder.dart';
 import '../literal.dart';
 import '../number/fixed.dart';

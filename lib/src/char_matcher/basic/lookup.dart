@@ -1,5 +1,5 @@
-import '../../../printer.dart';
 import '../../collection/bitlist.dart';
+import '../../printer/object/object.dart';
 import '../char_matcher.dart';
 
 final class LookupCharMatcher extends CharMatcher {

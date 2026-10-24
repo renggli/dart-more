@@ -1,4 +1,4 @@
-import '../../../functional.dart';
+import '../../functional/types.dart';
 import '../rtree.dart';
 import 'bounds.dart';
 import 'entry.dart';

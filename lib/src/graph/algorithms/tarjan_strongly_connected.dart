@@ -1,6 +1,6 @@
 import 'dart:math';
 
-import '../../../graph.dart';
+import '../strategy.dart';
 
 /// The Tarjan's algorithm enumerates the strongly connected components (SCCs).
 /// It runs in linear time.

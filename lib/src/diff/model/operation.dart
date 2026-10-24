@@ -1,6 +1,7 @@
 import 'package:meta/meta.dart';
 
-import '../../../printer.dart';
+import '../../printer/object/object.dart';
+import '../../printer/to_string.dart';
 import 'operation_type.dart';
 
 /// Encapsulates an operation when comparing two inputs.

@@ -1,4 +1,4 @@
-import '../../../printer.dart';
+import '../../printer/object/object.dart';
 import '../char_matcher.dart';
 import 'any.dart';
 import 'none.dart';

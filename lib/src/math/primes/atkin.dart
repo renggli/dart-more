@@ -1,4 +1,4 @@
-import '../../../collection.dart' show BitList;
+import '../../collection/bitlist.dart';
 import 'sieve.dart';
 
 /// Prime sieve of Atkin (linear sieve).

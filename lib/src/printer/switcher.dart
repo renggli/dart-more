@@ -1,4 +1,4 @@
-import '../../functional.dart';
+import '../functional/types.dart';
 import 'object/object.dart';
 import 'printer.dart';
 
