@@ -143,25 +143,48 @@ final intB = Interval(3, 7); // [3..7]
 print(intA.intersection(intB)); // [3..5]
 ```
 
-### Caching & CharMatcher
+### Unicode & Character Matching
 
-Self-loading caches with LRU/FIFO/expiry policies, and composable character matchers:
+Full Unicode 18.0.0 compliance featuring standard normalization algorithms and composable character classifiers:
+
+```dart
+import 'package:more/char_matcher.dart';
+import 'package:more/collection.dart';
+
+// Unicode Normalization (NFC, NFD, NFKC, NFKD)
+'e\u0301le\u0300ve'.normalize(); // 'élève'
+'①'.normalize(form: NormalizationForm.nfkc); // '1'
+'ﬃ'.normalize(form: NormalizationForm.nfkc); // 'ffi'
+
+// Match official Unicode categories, scripts, and properties
+final greek = UnicodeCharMatcher.scriptGreek();
+final whitespace = UnicodeCharMatcher.whiteSpace();
+
+// Filter, collapse, and clean strings beyond basic ASCII
+greek.retainFrom('Hello Ελληνικά!'); // 'Ελληνικά'
+whitespace.collapseFrom('lots   of   spaces', ' '); // 'lots of spaces'
+
+// Compose matchers with set operations
+final latinOrDigits = UnicodeCharMatcher.scriptLatin() | CharMatcher.digit();
+latinOrDigits.retainFrom('Hello 123! π'); // 'Hello123'
+
+// Unicode-aware string splitting preserving surrogate pairs
+'Dart 🎯'.toList(unicode: true); // ['D', 'a', 'r', 't', ' ', '🎯']
+```
+
+### Caching Strategies
+
+Self-loading asynchronous caches with LRU, FIFO, and duration-based expiry policies:
 
 ```dart
 import 'package:more/cache.dart';
-import 'package:more/char_matcher.dart';
 
-// Self-loading LRU cache
+// Self-loading LRU cache with maximum size
 final cache = Cache<String, int>.lru(
-  loader: (key) => key.length,
+  loader: (key) => expensiveCalculation(key),
   maximumSize: 100,
 );
-final value = await cache.get('hello'); // 5
-
-// Fast string operations via character sets
-final letters = CharMatcher.letter();
-print(letters.retainFrom('Hello 123!')); // 'Hello'
-print(letters.replaceFrom('Hello 123!', '*')); // '***** 123!'
+final value = await cache.get('hello');
 ```
 
 ## Misc

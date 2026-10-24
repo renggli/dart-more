@@ -110,7 +110,37 @@ void main() {
     });
   });
 
-  group('caching & char matcher', () {
+  group('unicode & char matcher', () {
+    test('normalization', () {
+      check('e\u0301le\u0300ve'.normalize()).equals('élève');
+      check('①'.normalize(form: NormalizationForm.nfkc)).equals('1');
+      check('ﬃ'.normalize(form: NormalizationForm.nfkc)).equals('ffi');
+    });
+
+    test('unicode classification and matching', () {
+      final greek = UnicodeCharMatcher.scriptGreek();
+      check(greek.retainFrom('Hello Ελληνικά!')).equals('Ελληνικά');
+
+      final whitespace = UnicodeCharMatcher.whiteSpace();
+      check(whitespace.collapseFrom('lots   of   spaces', ' '))
+          .equals('lots of spaces');
+
+      final latinOrDigits =
+          UnicodeCharMatcher.scriptLatin() | const CharMatcher.digit();
+      check(latinOrDigits.retainFrom('Hello 123! π')).equals('Hello123');
+
+      const letters = CharMatcher.letter();
+      check(letters.retainFrom('Hello 123!')).equals('Hello');
+      check(letters.replaceFrom('Hello 123!', '*')).equals('***** 123!');
+    });
+
+    test('unicode string splitting', () {
+      check('Dart 🎯'.toList(unicode: true))
+          .deepEquals(['D', 'a', 'r', 't', ' ', '🎯']);
+    });
+  });
+
+  group('caching', () {
     test('lru cache', () async {
       var calculations = 0;
       final cache = Cache<String, int>.lru(
@@ -124,12 +154,6 @@ void main() {
       check(await cache.get('hello')).equals(5);
       check(await cache.get('hello')).equals(5);
       check(calculations).equals(1);
-    });
-
-    test('char matcher', () {
-      const letters = CharMatcher.letter();
-      check(letters.retainFrom('Hello 123!')).equals('Hello');
-      check(letters.replaceFrom('Hello 123!', '*')).equals('***** 123!');
     });
   });
 }

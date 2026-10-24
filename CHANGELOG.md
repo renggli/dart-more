@@ -3,6 +3,7 @@
 ## 4.8.0 (Unpublished)
 
 - Dart 3.13 requirement.
+- Upgrade to Unicode 18.0.0 (thanks to <https://github.com/amake>).
 - Add `OrderedList` circular buffer and make `SortedList` a subclass with binary search indexing and efficient batch removal.
 - Add `Fraction.parse` factory constructor.
 - Export `Multimap` and `FloydWarshall` in top-level library exports.
