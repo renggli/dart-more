@@ -596,6 +596,10 @@ final class UnicodeCharMatcher extends CharMatcher {
       UnicodeCharMatcher(_scriptsData6, scripts.tolongSiki);
   factory scriptBeriaErfe() =>
       UnicodeCharMatcher(_scriptsData6, scripts.beriaErfe);
+  factory scriptJurchen() => UnicodeCharMatcher(_scriptsData6, scripts.jurchen);
+  factory scriptProtoCuneiform() =>
+      UnicodeCharMatcher(_scriptsData6, scripts.protoCuneiform);
+  factory scriptSeal() => UnicodeCharMatcher(_scriptsData6, scripts.seal);
   factory scriptUnknown() => UnicodeCharMatcher(_scriptsData6, scripts.unknown);
 
   final List<int> data;

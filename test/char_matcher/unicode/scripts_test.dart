@@ -230,7 +230,7 @@ void main() {
     test('unknown', () {
       verify(
         UnicodeCharMatcher.scriptUnknown(),
-        '\u{0378}\u{0380}\u{0558}\u{191f}\u{dead}\u{deaf}\u{eeee}\u{ffff}\u{1000c}\u{10fddd}\u{10fffd}',
+        '\u{0378}\u{0380}\u{191f}\u{dead}\u{deaf}\u{eeee}\u{ffff}\u{1000c}\u{10fddd}\u{10fffd}',
         '012abcABCあ亜ㄅ아אבגابج_!@# ',
       );
     });
@@ -411,6 +411,9 @@ void main() {
         UnicodeCharMatcher.scriptTaiYo(),
         UnicodeCharMatcher.scriptTolongSiki(),
         UnicodeCharMatcher.scriptBeriaErfe(),
+        UnicodeCharMatcher.scriptJurchen(),
+        UnicodeCharMatcher.scriptProtoCuneiform(),
+        UnicodeCharMatcher.scriptSeal(),
         UnicodeCharMatcher.scriptUnknown(),
       ];
       for (var charCode = 0; charCode <= 0x10ffff; charCode++) {
