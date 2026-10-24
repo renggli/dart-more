@@ -6,14 +6,24 @@ import 'package:more/collection.dart';
 abstract class ReflowCommand extends Command<void> {
   @override
   void run() async {
-    for (final argument in argResults!.rest) {
-      final file = File(argument);
-      if (file.existsSync()) {
-        final input = await file.readAsString();
-        stdout.writeln(transform(input));
-      } else {
-        stderr.writeln('File not found: $file');
-        exit(2);
+    if (argResults!.rest.isEmpty) {
+      final buffer = StringBuffer();
+      while (true) {
+        final input = stdin.readLineSync(retainNewlines: true);
+        if (input == null) break;
+        buffer.write(input);
+      }
+      stdout.writeln(transform(buffer.toString()));
+    } else {
+      for (final argument in argResults!.rest) {
+        final file = File(argument);
+        if (file.existsSync()) {
+          final input = await file.readAsString();
+          stdout.writeln(transform(input));
+        } else {
+          stderr.writeln('File not found: $file');
+          exit(2);
+        }
       }
     }
   }

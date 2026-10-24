@@ -43,7 +43,8 @@ extension BufferExtension<E> on Stream<E> {
     }
 
     void cleanup() {
-      maxAgeTimer?.cancel();
+      // Defensive cleanup; flush() always precedes cleanup() in close() and nulls maxAgeTimer.
+      maxAgeTimer?.cancel(); // coverage:ignore-line
       maxAgeTimer = null;
       sourceSubscription?.cancel();
       sourceSubscription = null;

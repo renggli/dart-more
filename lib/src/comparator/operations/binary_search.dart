@@ -15,7 +15,8 @@ extension SearchComparator<T> on Comparator<T> {
       if (comp == 0) {
         assert(
           start <= mid && mid <= end,
-          'Index $mid not in inclusive range $start..$end',
+          // Only evaluated on assertion failure.
+          'Index $mid not in inclusive range $start..$end', // coverage:ignore-line
         );
         return mid;
       } else if (comp < 0) {
@@ -47,7 +48,8 @@ extension SearchComparator<T> on Comparator<T> {
     }
     assert(
       start <= min && min <= end,
-      'Index $min not in inclusive range $start..$end',
+      // Only evaluated on assertion failure.
+      'Index $min not in inclusive range $start..$end', // coverage:ignore-line
     );
     return min;
   }
@@ -72,7 +74,8 @@ extension SearchComparator<T> on Comparator<T> {
     }
     assert(
       start <= min && min <= end,
-      'Index $min not in inclusive range $start..$end',
+      // Only evaluated on assertion failure.
+      'Index $min not in inclusive range $start..$end', // coverage:ignore-line
     );
     return min;
   }
