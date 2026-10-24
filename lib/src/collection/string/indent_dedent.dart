@@ -1,6 +1,5 @@
 import 'dart:math';
 
-import '../../char_matcher/char_matcher.dart';
 import 'prefix_suffix.dart';
 
 /// Extension on [String] to indent and dedent multiline text.
@@ -36,15 +35,12 @@ extension IndentDedentStringExtension<T> on String {
 
   /// Removes a common leading prefix from every line.
   ///
-  /// - [whitespace] matches the leading prefix.
+  /// - [whitespace] matches the leading prefix, defaults to whitespace characters.
   /// - [ignoreEmpty] is used to skip over empty lines.
-  String dedent({
-    Pattern whitespace = const CharMatcher.whitespace(),
-    bool ignoreEmpty = true,
-  }) {
+  String dedent({Pattern? whitespace, bool ignoreEmpty = true}) {
     final lines = split('\n');
     final prefix = findLongestPrefix(
-      whitespace,
+      whitespace ?? _defaultWhitespacePattern,
       ignoreEmpty ? lines.where((line) => line.trim().isNotEmpty) : lines,
     );
     if (prefix.isEmpty) {
@@ -88,3 +84,5 @@ String findLongestPrefix(Pattern pattern, Iterable<String> lines) {
   }
   return prefix ?? '';
 }
+
+final _defaultWhitespacePattern = RegExp(r'\s');

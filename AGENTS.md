@@ -25,6 +25,7 @@
 
 - Adhere to the `directives_ordering` linter rule: `dart:` imports first, then `package:` imports, then relative imports.
 - Within `lib/`, prefer relative imports (e.g., `import 'src/utils.dart';`) over package imports.
+- Never import top-level export/barrel files (`lib/*.dart` or `package:more/*.dart`) from within `lib/src/`. Always import specific implementation files in `lib/src/` directly.
 
 ### Code Quality
 
@@ -46,8 +47,13 @@
 
 ## Architecture
 
-- Keep the root `lib/` directory clean. It should primarily contain the public API exports.
-- Place implementation details in `lib/src/`. Users of the package should not import files from `lib/src/` directly.
+- Keep the root `lib/` directory clean. Root files (`lib/*.dart`) are pure public API export facades and the umbrella `lib/more.dart`. Do not put implementation logic in root `lib/*.dart`.
+- Place implementation details in `lib/src/<library>/`. Users of the package should not import files from `lib/src/` directly.
+- Nothing must depend on the umbrella library `lib/more.dart`.
+- The sub-library dependency graph (the dependencies between `lib/src/<library>/` directories) must form a strict Directed Acyclic Graph (DAG) with zero cycles.
+- Place cross-cutting utilities without domain coupling in `lib/src/shared/` to prevent circular dependencies between sub-libraries.
+- Avoid hyper-fragmenting tightly coupled classes into single-class micro-files (e.g., base classes and private or factory subclasses should be co-located in the same file).
+- Verify dependency structure by running `dart test test/deps_test.dart`.
 - Avoid introducing new external dependencies in `pubspec.yaml` unless absolutely necessary and no alternative exists in the SDK. Justify any addition to the user.
 
 ## Testing

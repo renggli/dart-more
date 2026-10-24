@@ -13,10 +13,7 @@ export 'src/math/gcd.dart'
     show GcdBigIntIterableExtension, GcdIntegerIterableExtension;
 export 'src/math/hyperbolic.dart' show HyperbolicNumberExtension;
 export 'src/math/is_probably_prime.dart'
-    show
-        ProbablyPrimeBigIntExtension,
-        ProbablyPrimeComplexExtension,
-        ProbablyPrimeIntegerExtension;
+    show ProbablyPrimeBigIntExtension, ProbablyPrimeIntegerExtension;
 export 'src/math/lcm.dart'
     show
         LcmBigIntExtension,

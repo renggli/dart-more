@@ -4,8 +4,8 @@ import 'dart:typed_data' show Uint32List;
 
 import 'package:collection/collection.dart' show NonGrowableListMixin;
 
-import '../math/bit.dart';
 import '../pragma/pragma.dart';
+import '../shared/bit.dart';
 import 'range/integer.dart';
 
 /// A space efficient [List] that stores boolean values.
@@ -151,16 +151,15 @@ abstract class BitList extends ListBase<bool> {
     final endIndex = (end - 1) >>> bitShift, endBit = (end - 1) & bitOffset;
     var result = 0;
     if (startIndex == endIndex) {
-      result +=
-          (buffer[startIndex] &
-                  (((1 << (endBit - startBit + 1)) - 1) << startBit))
-              .bitCount;
+      result += countBits32(
+        buffer[startIndex] & (((1 << (endBit - startBit + 1)) - 1) << startBit),
+      );
     } else {
-      result += (buffer[startIndex] & (bitMask << startBit)).bitCount;
+      result += countBits32(buffer[startIndex] & (bitMask << startBit));
       for (var i = startIndex + 1; i < endIndex; i++) {
-        result += buffer[i].bitCount;
+        result += countBits32(buffer[i]);
       }
-      result += (buffer[endIndex] & ((1 << (endBit + 1)) - 1)).bitCount;
+      result += countBits32(buffer[endIndex] & ((1 << (endBit + 1)) - 1));
     }
     return expected ? result : (end - start) - result;
   }

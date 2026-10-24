@@ -1,10 +1,9 @@
-import '../../collection/iterable/indexed.dart';
-
 /// Returns an explicit [Comparator] based on an [iterable] of elements.
 Comparator<T> explicitComparator<T>(Iterable<T> iterable) {
   final ranks = <T, int>{};
-  for (final element in iterable.indexed()) {
-    ranks[element.value] = element.index;
+  var index = 0;
+  for (final element in iterable) {
+    ranks[element] = index++;
   }
   return (a, b) => _rank(ranks, a) - _rank(ranks, b);
 }

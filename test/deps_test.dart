@@ -63,11 +63,20 @@ void main() {
       ).isEmpty();
     });
 
-    test('no cycles', () {
+    test('no cycles between sub-libraries', () {
+      final subLibGraph = Graph<String, void>(isDirected: true);
+      for (final edge in graph.edges) {
+        final sourceLib = subLibraryOf(edge.source);
+        final targetLib = subLibraryOf(edge.target);
+        if (sourceLib != null && targetLib != null && sourceLib != targetLib) {
+          subLibGraph.addEdge(sourceLib, targetLib);
+        }
+      }
       check(
-        graph.stronglyConnected().where(
+        subLibGraph.stronglyConnected().where(
           (scc) =>
-              scc.length > 1 || graph.getEdge(scc.first, scc.first) != null,
+              scc.length > 1 ||
+              subLibGraph.getEdge(scc.first, scc.first) != null,
         ),
       ).isEmpty();
     });
