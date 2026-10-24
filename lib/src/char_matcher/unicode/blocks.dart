@@ -1,6 +1,6 @@
 // AUTO-GENERATED CODE: DO NOT EDIT
 
-// https://www.unicode.org/Public/17.0.0/ucd/Blocks.txt
+// https://www.unicode.org/Public/18.0.0/ucd/Blocks.txt
 
 import '../basic/range.dart';
 
@@ -264,6 +264,7 @@ const marchen = RangeCharMatcher(0x11c70, 0x11cbf);
 const masaramGondi = RangeCharMatcher(0x11d00, 0x11d5f);
 const gunjalaGondi = RangeCharMatcher(0x11d60, 0x11daf);
 const tolongSiki = RangeCharMatcher(0x11db0, 0x11def);
+const bengaliSupplement = RangeCharMatcher(0x11df0, 0x11dff);
 const makasar = RangeCharMatcher(0x11ee0, 0x11eff);
 const kawi = RangeCharMatcher(0x11f00, 0x11f5f);
 const lisuSupplement = RangeCharMatcher(0x11fb0, 0x11fbf);
@@ -271,6 +272,7 @@ const tamilSupplement = RangeCharMatcher(0x11fc0, 0x11fff);
 const cuneiform = RangeCharMatcher(0x12000, 0x123ff);
 const cuneiformNumbersAndPunctuation = RangeCharMatcher(0x12400, 0x1247f);
 const earlyDynasticCuneiform = RangeCharMatcher(0x12480, 0x1254f);
+const archaicCuneiformNumerals = RangeCharMatcher(0x12550, 0x1268f);
 const cyproMinoan = RangeCharMatcher(0x12f90, 0x12fff);
 const egyptianHieroglyphs = RangeCharMatcher(0x13000, 0x1342f);
 const egyptianHieroglyphFormatControls = RangeCharMatcher(0x13430, 0x1345f);
@@ -292,6 +294,8 @@ const tangutComponents = RangeCharMatcher(0x18800, 0x18aff);
 const khitanSmallScript = RangeCharMatcher(0x18b00, 0x18cff);
 const tangutSupplement = RangeCharMatcher(0x18d00, 0x18d7f);
 const tangutComponentsSupplement = RangeCharMatcher(0x18d80, 0x18dff);
+const jurchen = RangeCharMatcher(0x18e00, 0x1919f);
+const jurchenRadicals = RangeCharMatcher(0x191a0, 0x191df);
 const kanaExtendedB = RangeCharMatcher(0x1aff0, 0x1afff);
 const kanaSupplement = RangeCharMatcher(0x1b000, 0x1b0ff);
 const kanaExtendedA = RangeCharMatcher(0x1b100, 0x1b12f);
@@ -305,12 +309,17 @@ const znamennyMusicalNotation = RangeCharMatcher(0x1cf00, 0x1cfcf);
 const byzantineMusicalSymbols = RangeCharMatcher(0x1d000, 0x1d0ff);
 const musicalSymbols = RangeCharMatcher(0x1d100, 0x1d1ff);
 const ancientGreekMusicalNotation = RangeCharMatcher(0x1d200, 0x1d24f);
+const musicalSymbolsSupplement = RangeCharMatcher(0x1d250, 0x1d28f);
 const kaktovikNumerals = RangeCharMatcher(0x1d2c0, 0x1d2df);
 const mayanNumerals = RangeCharMatcher(0x1d2e0, 0x1d2ff);
 const taiXuanJingSymbols = RangeCharMatcher(0x1d300, 0x1d35f);
 const countingRodNumerals = RangeCharMatcher(0x1d360, 0x1d37f);
 const mathematicalAlphanumericSymbols = RangeCharMatcher(0x1d400, 0x1d7ff);
 const suttonSignwriting = RangeCharMatcher(0x1d800, 0x1daaf);
+const miscellaneousSymbolsAndArrowsExtended = RangeCharMatcher(
+  0x1db00,
+  0x1dbff,
+);
 const latinExtendedG = RangeCharMatcher(0x1df00, 0x1dfff);
 const glagoliticSupplement = RangeCharMatcher(0x1e000, 0x1e02f);
 const cyrillicExtendedD = RangeCharMatcher(0x1e030, 0x1e08f);
@@ -352,6 +361,7 @@ const cjkCompatibilityIdeographsSupplement = RangeCharMatcher(0x2f800, 0x2fa1f);
 const cjkUnifiedIdeographsExtensionG = RangeCharMatcher(0x30000, 0x3134f);
 const cjkUnifiedIdeographsExtensionH = RangeCharMatcher(0x31350, 0x323af);
 const cjkUnifiedIdeographsExtensionJ = RangeCharMatcher(0x323b0, 0x3347f);
+const seal = RangeCharMatcher(0x3d000, 0x3fc3f);
 const tags = RangeCharMatcher(0xe0000, 0xe007f);
 const variationSelectorsSupplement = RangeCharMatcher(0xe0100, 0xe01ef);
 const supplementaryPrivateUseAreaA = RangeCharMatcher(0xf0000, 0xfffff);
