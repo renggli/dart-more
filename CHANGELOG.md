@@ -1,6 +1,6 @@
 # Changelog
 
-## 4.8.0 (Unpublished)
+## 4.8.1
 
 - Dart 3.13 requirement.
 - Upgrade to Unicode 18.0.0 (thanks to <https://github.com/amake>).
