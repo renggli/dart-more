@@ -1,6 +1,12 @@
 import 'package:collection/collection.dart';
 
-import '../../more.dart';
+import '../collection/iterable/repeat_element.dart';
+import '../printer/iterable.dart';
+import '../printer/object/object.dart';
+import '../printer/printer.dart';
+import '../printer/sequence.dart';
+import '../printer/to_string.dart';
+import 'edge.dart';
 
 /// A [path](https://en.wikipedia.org/wiki/Glossary_of_graph_theory#path)
 /// within a graph connects a series of [vertices] through their respective

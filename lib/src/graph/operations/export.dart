@@ -98,7 +98,9 @@ extension ExportGraphExtension<V, E> on Graph<V, E> {
     return buffer.toString();
   }
 
-  String _encodeId(String input) => _validId.matchAsPrefix(input) == null
+  String _encodeId(String input) =>
+      _validId.matchAsPrefix(input) == null ||
+          _keywords.contains(input.toLowerCase())
       ? '"${input.replaceAll('"', '\\"')}"'
       : input;
 
@@ -114,3 +116,4 @@ extension ExportGraphExtension<V, E> on Graph<V, E> {
 }
 
 final _validId = RegExp(r'^[a-zA-Z_][a-zA-Z0-9_]*$');
+const _keywords = {'node', 'edge', 'graph', 'digraph', 'subgraph', 'strict'};

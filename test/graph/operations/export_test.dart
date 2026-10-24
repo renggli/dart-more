@@ -81,6 +81,22 @@ void main() {
           '}',
         ]);
       });
+      test('reserved keywords are quoted', () {
+        final graph = GraphFactory<String, void>().fromPath([
+          'graph',
+          'node',
+          'edge',
+        ]);
+        check(graph.toDot().split('\n')).deepEquals([
+          'digraph {',
+          '  0 [label="graph"];',
+          '  1 [label="node"];',
+          '  2 [label="edge"];',
+          '  0 -> 1;',
+          '  1 -> 2;',
+          '}',
+        ]);
+      });
       group('subgraphs', () {
         test('default', () {
           final graph = GraphFactory<String, void>().fromPath([

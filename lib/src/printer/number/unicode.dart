@@ -1,4 +1,10 @@
-import '../../../more.dart';
+import '../../char_matcher/unicode/unicode.dart';
+import '../../comparator/compare_extensions.dart';
+import '../printer.dart';
+import '../sequence.dart';
+import 'fixed.dart';
+import 'numeral.dart';
+import 'sign.dart';
 
 /// Prints a unicode code-point.
 final unicodeCodePointPrinter = Printer<int>.sequence([

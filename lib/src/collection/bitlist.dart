@@ -4,7 +4,9 @@ import 'dart:typed_data' show Uint32List;
 
 import 'package:collection/collection.dart' show NonGrowableListMixin;
 
-import '../../more.dart';
+import '../../pragma.dart';
+import '../math/bit.dart';
+import 'range/integer.dart';
 
 /// A space efficient [List] that stores boolean values.
 abstract class BitList extends ListBase<bool> {
