@@ -81,6 +81,102 @@ void main() {
           '}',
         ]);
       });
+      group('subgraphs', () {
+        test('default', () {
+          final graph = GraphFactory<String, void>().fromPath([
+            'a',
+            'b',
+            'c',
+            'd',
+          ]);
+          check(
+            graph
+                .toDot(
+                  subgraph: (vertex) => vertex == 'a' || vertex == 'b'
+                      ? 'first'
+                      : vertex == 'c'
+                      ? 'second'
+                      : null,
+                )
+                .split('\n'),
+          ).deepEquals([
+            'digraph {',
+            '  0 [label=a];',
+            '  1 [label=b];',
+            '  2 [label=c];',
+            '  3 [label=d];',
+            '  0 -> 1;',
+            '  1 -> 2;',
+            '  2 -> 3;',
+            '  subgraph { label=first; 0; 1; }',
+            '  subgraph { label=second; 2; }',
+            '}',
+          ]);
+        });
+        test('custom label and attributes', () {
+          final graph = GraphFactory<String, void>().fromPath(['a', 'b']);
+          check(
+            graph
+                .toDot(
+                  subgraph: (vertex) => 'g',
+                  subgraphLabel: (group) => 'Group $group',
+                  subgraphAttributes: (group) => {'color': 'blue'},
+                )
+                .split('\n'),
+          ).deepEquals([
+            'digraph {',
+            '  0 [label=a];',
+            '  1 [label=b];',
+            '  0 -> 1;',
+            '  subgraph { label="Group g"; color=blue; 0; 1; }',
+            '}',
+          ]);
+        });
+        test('named cluster', () {
+          final graph = GraphFactory<String, void>().fromPath(['a', 'b']);
+          check(
+            graph
+                .toDot(
+                  subgraph: (vertex) => 'cluster_0',
+                  subgraphName: (group) => group.toString(),
+                  subgraphLabel: (group) => 'Cluster A',
+                )
+                .split('\n'),
+          ).deepEquals([
+            'digraph {',
+            '  0 [label=a];',
+            '  1 [label=b];',
+            '  0 -> 1;',
+            '  subgraph cluster_0 { label="Cluster A"; 0; 1; }',
+            '}',
+          ]);
+        });
+        test('named cluster with special characters', () {
+          final graph = GraphFactory<String, void>().fromPath(['a', 'b']);
+          check(
+            graph
+                .toDot(
+                  subgraph: (vertex) => 0,
+                  subgraphName: (group) => 'cluster $group',
+                  subgraphLabel: (group) => '',
+                )
+                .split('\n'),
+          ).deepEquals([
+            'digraph {',
+            '  0 [label=a];',
+            '  1 [label=b];',
+            '  0 -> 1;',
+            '  subgraph "cluster 0" { 0; 1; }',
+            '}',
+          ]);
+        });
+        test('no vertices matched', () {
+          final graph = GraphFactory<String, void>().fromPath(['a', 'b']);
+          check(graph.toDot(subgraph: (vertex) => null).split('\n')).deepEquals(
+            ['digraph {', '  0 [label=a];', '  1 [label=b];', '  0 -> 1;', '}'],
+          );
+        });
+      });
     });
   });
 }
