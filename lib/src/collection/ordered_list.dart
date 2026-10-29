@@ -176,10 +176,28 @@ class OrderedList<E> extends ListBase<E> implements PriorityQueue<E> {
   void insertAll(int index, Iterable<E> iterable) {
     RangeError.checkValueInInterval(index, 0, _length, 'index');
     if (!_growable) throwNotGrowable();
-    final elements = identical(iterable, this) ? toList() : iterable;
-    for (final element in elements) {
-      insert(index++, element);
+    final elements = identical(iterable, this)
+        ? toList()
+        : (iterable is List<E> ? iterable : iterable.toList());
+    final count = elements.length;
+    if (count == 0) return;
+    while (_capacity < _length + count) {
+      _grow();
     }
+    if (index < _length ~/ 2) {
+      _head = (_head - count) & _mask;
+      for (var i = 0; i < index; i++) {
+        _buffer[(_head + i) & _mask] = _buffer[(_head + i + count) & _mask];
+      }
+    } else {
+      for (var i = _length - 1; i >= index; i--) {
+        _buffer[(_head + i + count) & _mask] = _buffer[(_head + i) & _mask];
+      }
+    }
+    for (var i = 0; i < count; i++) {
+      _buffer[(_head + index + i) & _mask] = elements[i];
+    }
+    _length += count;
   }
 
   @override

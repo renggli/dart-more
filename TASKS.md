@@ -238,7 +238,7 @@
   - **Problem**: Calls `other.isEmpty`, then `other.length == 1` (which is $O(n)$ on lazy iterables), and then `other.first` or `Multiset.of(other)`.
   - **Fix**: Check `if (other is Multiset<Object?>)` first; otherwise inspect `other.iterator` in a single pass.
 
-- [ ] **`OrderedList.insertAll` is $O(n \times m)$**
+- [x] **`OrderedList.insertAll` is $O(n \times m)$**
   - **Severity**: Warning
   - **Location**: [`lib/src/collection/ordered_list.dart`](lib/src/collection/ordered_list.dart#L175-L182)
   - **Problem**: Calls `insert(index++, element)` in a loop, shifting existing elements one by one for each inserted element instead of shifting once by the number of inserted elements.

@@ -142,6 +142,15 @@ void main() {
       final self = OrderedList<int>.of([1, 2]);
       self.insertAll(1, self);
       check(self).deepEquals([1, 1, 2, 2]);
+
+      final empty = OrderedList<int>.of([1, 2]);
+      empty.insertAll(1, []);
+      check(empty).deepEquals([1, 2]);
+
+      // Shift toward head test
+      final towardHead = OrderedList<int>.of([10, 20, 30, 40, 50, 60]);
+      towardHead.insertAll(1, [11, 12, 13]);
+      check(towardHead).deepEquals([10, 11, 12, 13, 20, 30, 40, 50, 60]);
     });
     test('removeAt head, tail, and middle', () {
       final list = OrderedList<int>.of([1, 2, 3, 4, 5]);
