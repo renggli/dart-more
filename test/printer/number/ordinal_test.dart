@@ -22,6 +22,19 @@ void main() {
       check(printer(23)).equals('23rd');
       check(printer(24)).equals('24th');
     });
+    test('negative numbers', () {
+      final printer = OrdinalNumberPrinter();
+      check(printer(-1)).equals('-1st');
+      check(printer(-2)).equals('-2nd');
+      check(printer(-3)).equals('-3rd');
+      check(printer(-4)).equals('-4th');
+      check(printer(-11)).equals('-11th');
+      check(printer(-12)).equals('-12th');
+      check(printer(-13)).equals('-13th');
+      check(printer(-21)).equals('-21st');
+      check(printer(-22)).equals('-22nd');
+      check(printer(-23)).equals('-23rd');
+    });
     test('toString', () {
       final printer = OrdinalNumberPrinter();
       check(printer.toString()).startsWith('OrdinalNumberPrinter');

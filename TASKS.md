@@ -62,7 +62,7 @@
   - **Problem**: When `breakLongWords: true` and `word.length > width`, the loop `for (var j = 0; j < word.length; j += width) { result.add(...); }` flushes all chunks—including a short trailing remainder `< width`—directly to `result` as a completed line instead of placing the last partial chunk into `buffer`. Consequently, `'abcdefg x'.wrap(5)` produces 3 lines (`'abcde\nfg\nx'`) instead of 2 (`'abcde\nfg x'`).
   - **Fix**: Push full `width` chunks to `result` and place the trailing remainder (when `< width`) into `buffer` so subsequent words on the same line can be appended.
 
-- [ ] **`OrdinalNumberPrinter` outputs wrong suffixes for negative numbers**
+- [x] **`OrdinalNumberPrinter` outputs wrong suffixes for negative numbers**
   - **Severity**: Warning
   - **Location**: [`lib/src/printer/number/ordinal.dart`](lib/src/printer/number/ordinal.dart#L53-L66)
   - **Problem**: `printOn` computes `if (!(object % 100).between(10, 20))` and `switch (object % 10)` on the signed `object`. Because Dart's `%` operator returns a non-negative remainder in `[0, divisor)`, for `object = -1`, `-1 % 10 == 9`, printing `'-1th'` instead of `'-1st'`; for `object = -89`, `-89 % 100 == 11`, printing `'-89th'` instead of `'-89th'` while `-91 % 10 == 9` prints `'-91th'` instead of `'-91st'`.
