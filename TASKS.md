@@ -104,7 +104,7 @@
   - **Problem**: `indexOf` and `lastIndexOf` use `binarySearchLower`/`Upper` and scan elements with `_comparator(this[i], element) == 0` to find one where `this[i] == element`. In contrast, `contains` and `remove` use `_comparator.binarySearch(this, element)`, which matches any element with `_comparator(x, element) == 0` even if `x != element`. Thus `remove(b)` can delete a distinct object `a` that happens to share the same sort key, and `contains(b)` can return `true` when `indexOf(b) == -1`.
   - **Fix**: Implement `contains(Object? element) => indexOf(element) >= 0;` and in `remove(Object? element)` look up the index via `indexOf(element)`.
 
-- [ ] **`Multimap` ignores initial entries in a user-supplied `map` and throws `ConcurrentModificationError` on self-aliasing `addAll`/`removeAll`**
+- [x] **`Multimap` ignores initial entries in a user-supplied `map` and throws `ConcurrentModificationError` on self-aliasing `addAll`/`removeAll`**
   - **Severity**: Warning
   - **Location**: [`lib/src/collection/multimap.dart`](lib/src/collection/multimap.dart#L11-L18), [`lib/src/collection/multimap.dart`](lib/src/collection/multimap.dart#L75-L85)
   - **Problem**: `ListMultimap(map: ...)` and `SetMultimap(map: ...)` accept an existing `Map<K, C>`, but `Multimap._length` is initialized to `0` instead of summing existing collection lengths in `_map`. Additionally, `multimap.addAll(key, multimap[key])` and `multimap.removeAll(key, multimap[key])` iterate the live `MultimapValues` view while mutating `delegate`, throwing `ConcurrentModificationError`.

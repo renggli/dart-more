@@ -19,6 +19,19 @@ void main() {
         check(map.values).isEmpty();
         check(map.entries).isEmpty();
       });
+      test('custom existing map retains length', () {
+        final map = SetMultimap<String, int>(
+          map: {
+            'a': {1},
+            'b': {2, 3},
+          },
+        );
+        check(map.length).equals(3);
+        check(map.isEmpty).isFalse();
+        check(map.isNotEmpty).isTrue();
+        check(map.keys).deepEquals(['a', 'b']);
+        check(map.values).deepEquals([1, 2, 3]);
+      });
       test('of', () {
         final map = SetMultimap.of(
           SetMultimap.fromIterables(['a', 'b', 'b'], [1, 2, 3]),
@@ -193,6 +206,12 @@ void main() {
         check(map).length.equals(5);
         check(collection).deepEquals({2, 3, 4, 5});
       });
+      test('addAll self-aliased collection', () {
+        final map = SetMultimap.fromIterables(['a', 'b', 'b'], [1, 2, 3]);
+        map.addAll('b', map['b']);
+        check(map).length.equals(3);
+        check(map['b']).deepEquals({2, 3});
+      });
       test('remove', () {
         final map = SetMultimap.fromIterables(['a', 'b', 'b'], [1, 2, 3]);
         final collection = map['b'];
@@ -213,6 +232,12 @@ void main() {
         map.removeAll('b', [3]);
         check(map).length.equals(2);
         check(collection).deepEquals({2});
+      });
+      test('removeAll self-aliased collection', () {
+        final map = SetMultimap.fromIterables(['a', 'b', 'b'], [1, 2, 3]);
+        map.removeAll('b', map['b']);
+        check(map).length.equals(1);
+        check(map['b']).isEmpty();
       });
       test('replace', () {
         final map = SetMultimap.fromIterables(['a', 'b', 'b'], [1, 2, 3]);

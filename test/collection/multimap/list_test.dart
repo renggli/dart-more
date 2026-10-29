@@ -19,6 +19,19 @@ void main() {
         check(map.values).isEmpty();
         check(map.entries).isEmpty();
       });
+      test('custom existing map retains length', () {
+        final map = ListMultimap<String, int>(
+          map: {
+            'a': [1],
+            'b': [2, 3],
+          },
+        );
+        check(map.length).equals(3);
+        check(map.isEmpty).isFalse();
+        check(map.isNotEmpty).isTrue();
+        check(map.keys).deepEquals(['a', 'b']);
+        check(map.values).deepEquals([1, 2, 3]);
+      });
       test('of', () {
         final map = ListMultimap.of(
           ListMultimap.fromIterables(['a', 'b', 'b'], [1, 2, 3]),
@@ -202,6 +215,12 @@ void main() {
         check(map).length.equals(6);
         check(collection).deepEquals([2, 3, 3, 4, 5]);
       });
+      test('addAll self-aliased collection', () {
+        final map = ListMultimap.fromIterables(['a', 'b', 'b'], [1, 2, 3]);
+        map.addAll('b', map['b']);
+        check(map).length.equals(5);
+        check(map['b']).deepEquals([2, 3, 2, 3]);
+      });
       test('length increase', () {
         final map = ListMultimap<String, int?>();
         final collection = map['c'];
@@ -243,6 +262,12 @@ void main() {
         map.removeAll('b', [3]);
         check(map).length.equals(2);
         check(collection).deepEquals([2]);
+      });
+      test('removeAll self-aliased collection', () {
+        final map = ListMultimap.fromIterables(['a', 'b', 'b'], [1, 2, 3]);
+        map.removeAll('b', map['b']);
+        check(map).length.equals(1);
+        check(map['b']).isEmpty();
       });
       test('replace', () {
         final map = ListMultimap.fromIterables(['a', 'b', 'b'], [1, 2, 3]);

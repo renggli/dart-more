@@ -8,13 +8,14 @@ typedef Factory<T> = T Function();
 /// A collection maintaining a mapping between keys and multiple values.
 abstract class Multimap<K, V, VS extends Iterable<V>> {
   /// Internal factory constructor.
-  new(this._map, this.factory);
+  new(this._map, this.factory)
+    : _length = _map.values.fold(0, (sum, values) => sum + values.length);
 
   /// Underlying map with associations from `keys` to `values`.
   final Map<K, VS> _map;
 
   /// Internal counter for total number of values.
-  int _length = 0;
+  int _length;
 
   /// Factory method to build `value` collections.
   @protected
@@ -173,14 +174,33 @@ abstract class MultimapValues<K, V, VS extends Iterable<V>>
   void polymorphicAdd(V value);
 
   @protected
-  void polymorphicAddAll(Iterable<V> values) => values.forEach(polymorphicAdd);
+  void polymorphicAddAll(Iterable<V> values) {
+    refresh();
+    final elements =
+        identical(values, delegate) ||
+            identical(values, this) ||
+            (values is MultimapValues &&
+                identical((values as MultimapValues).delegate, delegate))
+        ? List.of(values)
+        : values;
+    elements.forEach(polymorphicAdd);
+  }
 
   @protected
   void polymorphicRemove(V value);
 
   @protected
-  void polymorphicRemoveAll(Iterable<V> values) =>
-      values.forEach(polymorphicRemove);
+  void polymorphicRemoveAll(Iterable<V> values) {
+    refresh();
+    final elements =
+        identical(values, delegate) ||
+            identical(values, this) ||
+            (values is MultimapValues &&
+                identical((values as MultimapValues).delegate, delegate))
+        ? List.of(values)
+        : values;
+    elements.forEach(polymorphicRemove);
+  }
 
   @protected
   void polymorphicClear();
