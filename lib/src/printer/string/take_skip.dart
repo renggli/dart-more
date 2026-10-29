@@ -20,7 +20,8 @@ extension TakeSkipPrinterExtension<T> on Printer<T> {
 
 /// Cuts the string if it is longer than width.
 abstract class TakeSkipPrinter<T> extends Printer<T> {
-  const new(this.printer, this.count);
+  const new(this.printer, this.count)
+    : assert(count >= 0, 'count must not be negative');
 
   final Printer<T> printer;
   final int count;

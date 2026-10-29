@@ -57,5 +57,9 @@ void main() {
       check(list.skipLastTo('c')).deepEquals(['a', 'b']);
       check(list.skipLastTo('d')).isEmpty();
     });
+    test('negative count errors', () {
+      check(() => list.takeLast(-1)).throws<RangeError>();
+      check(() => list.skipLast(-1)).throws<RangeError>();
+    });
   });
 }

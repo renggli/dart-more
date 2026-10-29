@@ -56,5 +56,11 @@ void main() {
       check('abc'.skipLastTo('c')).equals('ab');
       check('abc'.skipLastTo('d')).equals('');
     });
+    test('negative count errors', () {
+      check(() => 'abc'.take(-1)).throws<RangeError>();
+      check(() => 'abc'.takeLast(-1)).throws<RangeError>();
+      check(() => 'abc'.skip(-1)).throws<RangeError>();
+      check(() => 'abc'.skipLast(-1)).throws<RangeError>();
+    });
   });
 }

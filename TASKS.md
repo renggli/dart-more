@@ -128,7 +128,7 @@
   - **Problem**: `<int>[].repeat(count: -1)` returns `const []` without throwing `RangeError` because `if (count == 0 || isEmpty)` runs before `RangeError.checkNotNegative(count, 'count')`. Furthermore, `RepeatIterableIterable<E>(this).take(count * length)` eagerly evaluates `this.length` (iterating lazy iterables upfront) instead of passing `count` to `RepeatIterableIterable` and counting repetitions lazily.
   - **Fix**: Validate `if (count != null) RangeError.checkNotNegative(count, 'count');` first, and pass `count` into `RepeatIterableIterable` to bound cycle count lazily in `RepeatIterableIterator`.
 
-- [ ] **`TakeSkipStringExtension`, `TakeSkipListExtension`, and `TakeSkipPrinterExtension` do not validate negative `count`**
+- [x] **`TakeSkipStringExtension`, `TakeSkipListExtension`, and `TakeSkipPrinterExtension` do not validate negative `count`**
   - **Severity**: Warning
   - **Location**: [`lib/src/collection/string/take_skip.dart`](lib/src/collection/string/take_skip.dart#L7-L51), [`lib/src/collection/list/take_skip.dart`](lib/src/collection/list/take_skip.dart#L7-L28), [`lib/src/printer/string/take_skip.dart`](lib/src/printer/string/take_skip.dart#L7-L76)
   - **Problem**: `'abc'.takeLast(-1)`, `'abc'.skipLast(-1)`, `[1, 2, 3].takeLast(-1)`, and `[1, 2, 3].skipLast(-1)` compute `length - (-1) == length + 1` and throw an internal `RangeError` from `substring`/`getRange` with a confusing end index, while `TakePrinter(-1)` / `SkipPrinter(-1)` pass negative counts down to `take`/`skip`.

@@ -42,5 +42,11 @@ void main() {
       check(printer('abcd')).equals('ab');
       check(printer.toString()).startsWith('SkipLastPrinter');
     });
+    test('negative count errors', () {
+      check(() => standardString.take(-1)).throws<AssertionError>();
+      check(() => standardString.takeLast(-1)).throws<AssertionError>();
+      check(() => standardString.skip(-1)).throws<AssertionError>();
+      check(() => standardString.skipLast(-1)).throws<AssertionError>();
+    });
   });
 }

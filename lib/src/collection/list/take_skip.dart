@@ -12,7 +12,10 @@ extension TakeSkipListExtension<E> on List<E> {
 
   /// Returns the list suffix with [count] elements. If [count] is larger than
   /// [length] return the whole list.
-  Iterable<E> takeLast(int count) => getRange(max(length - count, 0), length);
+  Iterable<E> takeLast(int count) {
+    RangeError.checkNotNegative(count, 'count');
+    return getRange(max(length - count, 0), length);
+  }
 
   /// Returns the list suffix after the last occurrence of [element]. If the
   /// element is not found return the whole list.
@@ -32,7 +35,10 @@ extension TakeSkipListExtension<E> on List<E> {
 
   /// Returns the list prefix without the last [count] elements. If [count]
   /// is larger than [length] return the empty list.
-  Iterable<E> skipLast(int count) => getRange(0, max(length - count, 0));
+  Iterable<E> skipLast(int count) {
+    RangeError.checkNotNegative(count, 'count');
+    return getRange(0, max(length - count, 0));
+  }
 
   /// Returns the list prefix before the last occurrence of [element]. If the
   /// element is not found return the empty list.
