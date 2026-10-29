@@ -385,7 +385,7 @@
   - **Problem**: Checking whether a vertex or edge exists currently requires `graph.vertices.contains(v)` or `graph.getEdge(u, v) != null`, and computing vertex degrees requires `graph.incomingEdgesOf(v).length` / `graph.outgoingEdgesOf(v).length`, which allocates edge views and is less discoverable.
   - **Fix**: Add `bool containsVertex(V vertex)`, `bool containsEdge(V source, V target)`, `int inDegreeOf(V vertex)`, `int outDegreeOf(V vertex)`, and `int degreeOf(V vertex)` to `Graph<V, E>`.
 
-- [ ] **`BitList` bitwise XOR (`operator ^` and `xor(BitList other)`)**
+- [x] **`BitList` bitwise XOR (`operator ^` and `xor(BitList other)`)**
   - **Severity**: Suggestion
   - **Location**: [`lib/src/collection/bitlist.dart`](lib/src/collection/bitlist.dart#L195-L240)
   - **Problem**: `BitList` supports `~` / `not`, `&` / `and`, `|` / `or`, and `-` / `difference`, but omits bitwise XOR (`^` / `xor`).

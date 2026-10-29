@@ -344,6 +344,41 @@ void main() {
             }
           });
         });
+        group('xor', () {
+          test('operator', () {
+            final source1 = BitList.of(
+              randomBooleans(817, 100),
+              growable: growable,
+            );
+            final source2 = BitList.of(
+              randomBooleans(858, 100),
+              growable: growable,
+            );
+            final target = source1 ^ source2;
+            for (var i = 0; i < target.length; i++) {
+              check(target[i]).equals(source1[i] ^ source2[i]);
+            }
+            check(target).deepEquals(source2 ^ source1);
+            final other = BitList(99);
+            check(() => other ^ source1).throws<ArgumentError>();
+            check(() => source1 ^ other).throws<ArgumentError>();
+          });
+          test('in-place', () {
+            final source1 = BitList.of(
+              randomBooleans(439, 100),
+              growable: growable,
+            );
+            final source2 = BitList.of(
+              randomBooleans(902, 100),
+              growable: growable,
+            );
+            final target = BitList.of(source1);
+            target.xor(source2);
+            for (var i = 0; i < target.length; i++) {
+              check(target[i]).equals(source1[i] ^ source2[i]);
+            }
+          });
+        });
         test('difference', () {
           final source1 = BitList.of(
             randomBooleans(364, 100),
