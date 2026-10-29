@@ -43,9 +43,16 @@ void main() {
       }
     });
     test('weeksInYear', () {
-      for (var year = 1950; year <= 2050; year++) {
+      for (var year = -400; year <= 2050; year++) {
         final date = DateTime(year);
         check([52, 53]).contains(date.weeksInYear);
+        final dec28 = DateTime(year, 12, 28);
+        final expectedWeeks =
+            dec28.weekday == 4 ||
+                (date.isLeapYear && (dec28.weekday == 3 || dec28.weekday == 4))
+            ? 53
+            : 52;
+        check(date.weeksInYear).equals(expectedWeeks);
       }
     });
     test('quarter', () {

@@ -13,8 +13,13 @@ extension AccessorsDateTimeExtension on DateTime {
 
   /// The number of weeks in this year (`52` or `53`).
   int get weeksInYear {
-    int offset(int y) => (y + y ~/ 4 - y ~/ 100 + y ~/ 400) % 7;
-    return offset(year) == 4 || offset(year - 1) == 3 ? 53 : 52;
+    // A year has 53 weeks if December 28 is a Thursday (4), or if it is a leap
+    // year and December 28 is a Wednesday (3).
+    final dec28 = DateTime(year, DateTime.december, 28);
+    return dec28.weekday == DateTime.thursday ||
+            (isLeapYear && dec28.weekday == DateTime.wednesday)
+        ? 53
+        : 52;
   }
 
   /// The quarter `[1...4]`.

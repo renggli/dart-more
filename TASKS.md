@@ -152,7 +152,7 @@
   - **Problem**: In release builds, `Interval(10, 5)` succeeds without throwing `ArgumentError`. Also, `isSingle` checks `lower == upper` while all other methods use `compareTo`, so `Interval(-0.0, 0.0)` has `lower.compareTo(upper) == -1` yet `isSingle == true`.
   - **Fix**: Throw `ArgumentError.value(upper, 'upper', 'Must be >= $lower')` if `lower.compareTo(upper) > 0`, and implement `bool get isSingle => lower.compareTo(upper) == 0;`.
 
-- [ ] **`AccessorsDateTimeExtension.weeksInYear` uses truncating division `~/` on negative years**
+- [x] **`AccessorsDateTimeExtension.weeksInYear` uses truncating division `~/` on negative years**
   - **Severity**: Warning
   - **Location**: [`lib/src/temporal/date_time/accessors.dart`](lib/src/temporal/date_time/accessors.dart#L15-L18)
   - **Problem**: `int offset(int y) => (y + y ~/ 4 - y ~/ 100 + y ~/ 400) % 7;` is called with `year - 1`, which for `year <= 0` uses truncating division toward zero instead of floor division, yielding wrong ISO week counts for BCE years.
