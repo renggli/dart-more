@@ -68,6 +68,7 @@ final class DoubleRange extends Range<double> {
         start,
         end,
         step,
+        (start < end && step > 0) || (start > end && step < 0),
         start < end ? end - start : start - end,
         0 < step ? step : -step,
       );
@@ -76,14 +77,17 @@ final class DoubleRange extends Range<double> {
     double start,
     double end,
     double step,
+    bool isValid,
     double deltaAbs,
     double stepAbs,
   ) : this._of3(
         start,
         end,
         step,
+        isValid,
         deltaAbs ~/ stepAbs,
         deltaAbs % stepAbs,
+        stepAbs * _relativeEpsilon,
         stepAbs,
       );
 
@@ -91,17 +95,21 @@ final class DoubleRange extends Range<double> {
     double start,
     double end,
     double step,
+    bool isValid,
     int div,
     double mod,
+    double eps,
     double stepAbs,
   ) : this._(
         start,
         end,
         step,
-        div + (mod < _epsilon || stepAbs - mod < _epsilon ? 0 : 1),
+        !isValid
+            ? 0
+            : div + ((div > 0 && mod < eps) || stepAbs - mod < eps ? 0 : 1),
       );
 
-  static const _epsilon = 1e-16;
+  static const _relativeEpsilon = 1e-12;
 
   /// Creates an arithmetic progression of [double] values.
   /// The resulting [Range] is of the given [length], starts at [start], and
@@ -114,8 +122,14 @@ final class DoubleRange extends Range<double> {
   // Internal const-constructor that initializes the state.
   const new _(this.start, this.end, this.step, this.length)
     : assert(step != 0, '`step` must not be zero'),
-      assert(step < 0 || start <= end, '`step` must be positive'),
-      assert(step > 0 || start >= end, '`step` must be negative'),
+      assert(
+        length == 0 || step < 0 || start <= end,
+        '`step` must be positive',
+      ),
+      assert(
+        length == 0 || step > 0 || start >= end,
+        '`step` must be negative',
+      ),
       assert(0 <= length, '`length` must be positive');
 
   @override

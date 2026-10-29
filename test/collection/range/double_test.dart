@@ -289,6 +289,25 @@ void main() {
         excluded: [3.5, 4.0, 6.0, 7.5],
       );
     });
+    test('reversed bounds and small ranges', () {
+      verifyRange(
+        const DoubleRange.of(start: 5, end: 2, step: 1),
+        included: [],
+        excluded: [2.0, 5.0],
+      );
+      verifyRange(
+        const DoubleRange.of(start: 2, end: 5, step: -1),
+        included: [],
+        excluded: [2.0, 5.0],
+      );
+      verifyRange(
+        const DoubleRange.of(start: 0.0, end: 1e-17, step: 1.0),
+        included: [0.0],
+        excluded: [1.0],
+      );
+      check(const DoubleRange.of(start: 0.0, end: 1e-17, step: 1.0).length)
+          .equals(1);
+    });
     test('invalid', () {
       check(() => DoubleRange(0, 0, 0)).throws<ArgumentError>();
       check(() => DoubleRange(null, 1)).throws<ArgumentError>();
