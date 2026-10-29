@@ -256,10 +256,21 @@ class HumanNumberPrinter<T extends num> extends Printer<T> {
       _unit.printOn(value, buffer);
     } else {
       final index = _getExponent(value) + unitOffset;
-      final unitIndex = index.clamp(0, units.length - 1);
+      var unitIndex = index.clamp(0, units.length - 1);
+      var unitExponent = unitIndex - unitOffset;
+      var mantissa = value / unitBase.toDouble().pow(unitExponent);
+      final currentPrecision = unitIndex == unitOffset
+          ? unitPrecision
+          : precision;
+      final multiplier = base.toDouble().pow(currentPrecision);
+      final rounding = 1.0 / multiplier;
+      final roundedMantissa = (mantissa / rounding).roundToDouble() * rounding;
+      if (roundedMantissa.abs() >= unitBase && unitIndex < units.length - 1) {
+        unitIndex++;
+        unitExponent = unitIndex - unitOffset;
+        mantissa = value / unitBase.toDouble().pow(unitExponent);
+      }
       final unitString = units[unitIndex];
-      final unitExponent = unitIndex - unitOffset;
-      final mantissa = value / unitBase.toDouble().pow(unitExponent);
       if (unitString.isNotEmpty && unitPrefix) {
         buffer.write(unitString);
         buffer.write(unitSeparator);
@@ -277,7 +288,9 @@ class HumanNumberPrinter<T extends num> extends Printer<T> {
     if (value == 0.0 || value == -0.0) {
       return 0;
     } else {
-      return (value.abs().log() / unitBase.log()).floor();
+      final logBase = value.abs().log() / unitBase.log();
+      final rounded = logBase.round();
+      return (logBase - rounded).abs() < 1e-12 ? rounded : logBase.floor();
     }
   }
 

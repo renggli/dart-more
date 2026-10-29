@@ -106,8 +106,15 @@ class ScientificNumberPrinter<T extends num> extends Printer<T> {
     if (value.isInfinite || value.isNaN) {
       return _mantissa.printOn(value, buffer);
     }
-    final exponent = _getExponent(value);
-    final mantissa = value / base.toDouble().pow(exponent);
+    var exponent = _getExponent(value);
+    var mantissa = value / base.toDouble().pow(exponent);
+    final multiplier = base.toDouble().pow(precision);
+    final rounding = 1.0 / multiplier;
+    final roundedMantissa = (mantissa / rounding).roundToDouble() * rounding;
+    if (roundedMantissa.abs() >= base.toDouble().pow(significant)) {
+      exponent++;
+      mantissa = value / base.toDouble().pow(exponent);
+    }
     _mantissa.printOn(mantissa, buffer);
     buffer.write(notation);
     _exponent.printOn(exponent, buffer);
@@ -118,7 +125,11 @@ class ScientificNumberPrinter<T extends num> extends Printer<T> {
       return 0;
     } else {
       final logBase = value.abs().log() / base.log();
-      return logBase.floor() + 1 - significant;
+      final rounded = logBase.round();
+      final corrected = (logBase - rounded).abs() < 1e-12
+          ? rounded
+          : logBase.floor();
+      return corrected + 1 - significant;
     }
   }
 

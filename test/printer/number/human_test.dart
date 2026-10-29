@@ -40,6 +40,17 @@ void main() {
         check(printer(1728)).equals('1.7 k');
         check(printer(1855425871872)).equals('1.9 T');
       });
+      test('rounding boundary', () {
+        final printer0 = HumanNumberPrinter.decimal(precision: 0);
+        check(printer0(999.0)).equals('999');
+        check(printer0(999.4)).equals('999');
+        check(printer0(999.5)).equals('1 k');
+        check(printer0(999.9)).equals('1 k');
+        check(printer0(1000.0)).equals('1 k');
+        final printer1 = HumanNumberPrinter.decimal(precision: 1);
+        check(printer1(999.9)).equals('1.0 k');
+        check(printer1(999.95)).equals('1.0 k');
+      });
       test('unitPrecision', () {
         final printer = HumanNumberPrinter.decimal(
           precision: 2,
@@ -131,6 +142,16 @@ void main() {
         check(printer(1024)).equals('1.0 Ki');
         check(printer(1728)).equals('1.7 Ki');
         check(printer(1855425871872)).equals('1.7 Ti');
+      });
+      test('rounding boundary', () {
+        final printer0 = HumanNumberPrinter.binary(precision: 0);
+        check(printer0(1023.0)).equals('1023');
+        check(printer0(1023.4)).equals('1023');
+        check(printer0(1023.5)).equals('1 Ki');
+        check(printer0(1023.9)).equals('1 Ki');
+        check(printer0(1024.0)).equals('1 Ki');
+        final printer1 = HumanNumberPrinter.binary(precision: 1);
+        check(printer1(1023.95)).equals('1.0 Ki');
       });
       test('unitPrecision', () {
         final printer = HumanNumberPrinter.binary(

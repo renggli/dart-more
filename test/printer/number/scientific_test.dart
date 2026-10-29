@@ -149,6 +149,18 @@ void main() {
       check(printer(0.2)).equals('2.000000e-1');
       check(printer(0.00000000751)).equals('7.510000e-9');
     });
+    test('rounding boundary', () {
+      final printer0 = ScientificNumberPrinter(precision: 0);
+      check(printer0(9.4)).equals('9e0');
+      check(printer0(9.5)).equals('1e1');
+      check(printer0(9.9)).equals('1e1');
+      check(printer0(99.9)).equals('1e2');
+      final printer1 = ScientificNumberPrinter(precision: 1);
+      check(printer1(9.9)).equals('9.9e0');
+      check(printer1(9.99)).equals('1.0e1');
+      check(printer1(9.999)).equals('1.0e1');
+      check(printer1(99.99)).equals('1.0e2');
+    });
     test('separator', () {
       final printer = ScientificNumberPrinter(
         precision: 4,
