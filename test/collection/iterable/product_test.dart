@@ -58,6 +58,35 @@ void main() {
     test('repeat 0', () {
       check(() => <Iterable<int>>[].product(repeat: 0)).throws<RangeError>();
     });
+    test('single-pass on input iterables', () {
+      var outerCount = 0;
+      var innerCount1 = 0;
+      var innerCount2 = 0;
+      final outer =
+          [
+            [1, 2].map((x) {
+              innerCount1++;
+              return x;
+            }),
+            [3, 4].map((x) {
+              innerCount2++;
+              return x;
+            }),
+          ].map((list) {
+            outerCount++;
+            return list;
+          });
+      final result = outer.product().toList();
+      check(outerCount).equals(2);
+      check(innerCount1).equals(2);
+      check(innerCount2).equals(2);
+      check(result).deepEquals([
+        [1, 3],
+        [1, 4],
+        [2, 3],
+        [2, 4],
+      ]);
+    });
     test('2 x repeat 2', () {
       final iterable = [
         [0, 1],

@@ -30,5 +30,15 @@ void main() {
         seen.add(picks.atRandom(random: random));
       }
     });
+    test('single-pass on non-list iterable', () {
+      var count = 0;
+      final iterable = [1, 2, 3, 4, 5].map((x) {
+        count++;
+        return x;
+      });
+      final element = iterable.atRandom(random: Random(42));
+      check(element).isA<int>();
+      check(count).equals(5);
+    });
   });
 }

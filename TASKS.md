@@ -244,7 +244,7 @@
   - **Problem**: Calls `insert(index++, element)` in a loop, shifting existing elements one by one for each inserted element instead of shifting once by the number of inserted elements.
   - **Fix**: Convert `iterable` to a list (or determine its length), grow capacity once, shift the affected segment once by `count`, and copy the new elements into place.
 
-- [ ] **`ProductIterableExtension.product` and `RandomIterableExtension.atRandom` iterate multiple times**
+- [x] **`ProductIterableExtension.product` and `RandomIterableExtension.atRandom` iterate multiple times**
   - **Severity**: Warning
   - **Location**: [`lib/src/collection/iterable/product.dart`](lib/src/collection/iterable/product.dart#L21-L32), [`lib/src/collection/iterable/random.dart`](lib/src/collection/iterable/random.dart#L10-L19)
   - **Problem**: `product` calls `any((e) => e.isEmpty)` and then `map((e) => e.toList(growable: false)).toList(growable: false)`, iterating the outer and inner iterables twice. `atRandom` calls `isEmpty`, then `length`, then `elementAt`, iterating non-`List` iterables up to 3 times.

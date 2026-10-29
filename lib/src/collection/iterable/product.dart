@@ -19,15 +19,14 @@ extension ProductIterableExtension<E> on Iterable<Iterable<E>> {
   /// ```
   Iterable<List<E>> product({int repeat = 1}) {
     checkNonZeroPositive(repeat, 'repeat');
-    if (isEmpty || any((iterable) => iterable.isEmpty)) {
-      return const [];
-    } else {
-      return productNotEmpty(
-        map((iterable) => iterable.toList(growable: false))
-            .toList(growable: false),
-        repeat,
-      );
+    final list = <List<E>>[];
+    for (final iterable in this) {
+      final subList = iterable.toList(growable: false);
+      if (subList.isEmpty) return const [];
+      list.add(subList);
     }
+    if (list.isEmpty) return const [];
+    return productNotEmpty(list, repeat);
   }
 }
 
