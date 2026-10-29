@@ -205,6 +205,9 @@ class Fraction
 
   /// Returns the power of this fraction.
   Fraction pow(int n) {
+    if (isNaN) {
+      return nan;
+    }
     if (n == 0) {
       return one;
     }

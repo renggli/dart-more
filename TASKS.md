@@ -32,7 +32,7 @@
   - **Problem**: `_of1` does not check that `end - start` and `step` have the same sign (relying only on `assert` in `DoubleRange._`), so in release builds `DoubleRange(5, 2, 1)` produces `length == 3` (`[5.0, 6.0, 7.0]`) instead of an empty range `[]` like `IntegerRange` and `BigIntRange`. Furthermore, `_of3` uses an unscaled absolute `_epsilon = 1e-16` in `mod < _epsilon || stepAbs - mod < _epsilon`: for `DoubleRange(0.0, 1e-17, 1.0)`, `div = 0` and `mod = 1e-17 < 1e-16`, so `length` is computed as `0` (empty) instead of `1` (`[0.0]`).
   - **Fix**: Return `length = 0` when `(start < end && step < 0) || (start > end && step > 0) || start == end`, scale `_epsilon` relative to `stepAbs`, and only round `div` up when `stepAbs - mod < eps` (not when `mod < eps` and `div == 0`).
 
-- [ ] **`Fraction.pow` returns `Fraction.infinity` for `Fraction.nan.pow(-1)`**
+- [x] **`Fraction.pow` returns `Fraction.infinity` for `Fraction.nan.pow(-1)`**
   - **Severity**: Warning
   - **Location**: [`lib/src/number/fraction.dart`](lib/src/number/fraction.dart#L204-L216)
   - **Problem**: For `Fraction.nan` (`a == 0 && b == 0`), `if (a == 0) return n < 0 ? infinity : this;` returns `Fraction.infinity` when `n < 0` instead of `Fraction.nan`.

@@ -439,6 +439,8 @@ void main() {
         check(-Fraction.negativeInfinity).isFraction(1, 0);
       });
       test('pow', () {
+        check(Fraction.nan.pow(-1)).isFraction(0, 0);
+        check(Fraction.nan.pow(1)).isFraction(0, 0);
         check(Fraction.zero.pow(0)).isFraction(1, 1);
         check(Fraction.zero.pow(2)).isFraction(0, 1);
         check(Fraction.zero.pow(-1)).isFraction(1, 0);
