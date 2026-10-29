@@ -1,13 +1,12 @@
 import 'dart:collection' show ListBase;
 import 'dart:math' as math;
 
-import 'package:collection/collection.dart' show PriorityQueue;
-import 'package:meta/meta.dart' show protected;
+import 'package:meta/meta.dart' show internal;
 
 /// A list with constant time addition and removal at both ends, backed by a
 /// circular buffer.
 ///
-/// Implements [List] and [PriorityQueue].
+/// Implements [List].
 ///
 /// Example:
 /// ```dart
@@ -18,7 +17,7 @@ import 'package:meta/meta.dart' show protected;
 /// print(list); // [1, 2, 3]
 /// print(list.removeFirst()); // 1
 /// ```
-class OrderedList<E> extends ListBase<E> implements PriorityQueue<E> {
+class OrderedList<E> extends ListBase<E> {
   /// Constructs an empty ordered list.
   new({this._growable = true})
     : _buffer = List<E?>.filled(_initialCapacity, null);
@@ -74,9 +73,11 @@ class OrderedList<E> extends ListBase<E> implements PriorityQueue<E> {
   bool get isGrowable => _growable;
 
   /// Returns the start index of this list in the internal buffer.
+  @internal
   int get startIndex => _head;
 
   /// Returns the end index of this list in the internal buffer.
+  @internal
   int get endIndex => (_head + _length) & _mask;
 
   @override
@@ -277,7 +278,7 @@ class OrderedList<E> extends ListBase<E> implements PriorityQueue<E> {
     return result;
   }
 
-  @override
+  /// Removes and returns the first element of this list.
   E removeFirst() {
     if (_length == 0) throw StateError('No element');
     if (!_growable) throwNotGrowable();
@@ -311,7 +312,7 @@ class OrderedList<E> extends ListBase<E> implements PriorityQueue<E> {
     return false;
   }
 
-  @override
+  /// Removes all elements and returns them in a new list.
   Iterable<E> removeAll() {
     final result = toList();
     clear();
@@ -338,10 +339,10 @@ class OrderedList<E> extends ListBase<E> implements PriorityQueue<E> {
   @override
   E get last => isEmpty ? throw StateError('No element') : this[_length - 1];
 
-  @override
+  /// Elements in internal buffer order.
   Iterable<E> get unorderedElements => this;
 
-  @override
+  /// Returns elements in internal buffer order as a list.
   List<E> toUnorderedList() => toList();
 
   void _grow() {
@@ -358,7 +359,7 @@ class OrderedList<E> extends ListBase<E> implements PriorityQueue<E> {
     _buffer = newBuffer;
   }
 
-  @protected
+  @internal
   Never throwNotGrowable() => throw UnsupportedError(
     'Cannot add to or remove from a fixed-length list',
   );

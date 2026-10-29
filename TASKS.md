@@ -351,7 +351,7 @@
   - **Problem**: `UnicodeBlockCharMatcher` is a 475-line generated public class providing matchers for all Unicode blocks, but `lib/char_matcher.dart` only exports `CharMatcher` and `UnicodeCharMatcher`, making `UnicodeBlockCharMatcher` inaccessible without importing `lib/src/` directly.
   - **Fix**: Export `src/char_matcher/unicode/blocks.dart show UnicodeBlockCharMatcher;` in `lib/char_matcher.dart`.
 
-- [ ] **`OrderedList` implements `PriorityQueue<E>` and `SortedList` extends `OrderedList` with 8 `UnsupportedError` stubs**
+- [x] **`OrderedList` implements `PriorityQueue<E>` and `SortedList` extends `OrderedList` with 8 `UnsupportedError` stubs**
   - **Severity**: Warning
   - **Location**: [`lib/src/collection/ordered_list.dart`](lib/src/collection/ordered_list.dart#L21-L65), [`lib/src/collection/sorted_list.dart`](lib/src/collection/sorted_list.dart#L9-L113)
   - **Problem**: `OrderedList` is an insertion-order circular-buffer deque (`ListBase<E>`), not a priority queue (`PriorityQueue` contract orders elements by priority), and publicly exposes internal ring-buffer fields `startIndex` and `endIndex`. Meanwhile, `SortedList` extends `OrderedList` and overrides 8 mutating methods (`length=`, `[]=`, `addFirst`, `addLast`, `insert`, `insertAll`, `sort`, `shuffle`) to throw `UnsupportedError`, violating Liskov substitution.
