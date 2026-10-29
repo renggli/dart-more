@@ -3,6 +3,7 @@ import 'package:collection/collection.dart';
 import '../comparator/constructors/natural.dart';
 import '../functional/types/constant.dart';
 import '../functional/types/predicate.dart';
+import 'algorithms/biconnected.dart' as biconnected;
 import 'algorithms/bipartite_check.dart' as bipartite_check;
 import 'algorithms/bron_kerbosch_cliques.dart' as bron_kerbosch_cliques;
 import 'algorithms/cycle_check.dart' as cycle_check;
@@ -17,6 +18,7 @@ import 'algorithms/search/floyd_warshall.dart' as floyd_warshall;
 import 'algorithms/stoer_wagner_min_cut.dart' as stoer_wagner_min_cut;
 import 'algorithms/tarjan_strongly_connected.dart' as tarjan_strongly_connected;
 import 'algorithms/vertex_coloring.dart' as vertex_coloring;
+import 'edge.dart';
 import 'errors.dart';
 import 'graph.dart';
 import 'path.dart';
@@ -273,6 +275,28 @@ extension AlgorithmsGraphExtension<V, E> on Graph<V, E> {
   }) => eulerian.findEulerianPath<V, E>(
     this,
     circuit: circuit,
+    vertexStrategy: vertexStrategy ?? this.vertexStrategy,
+  );
+
+  /// Returns the articulation points (cut vertices) of this undirected graph.
+  Set<V> articulationPoints({StorageStrategy<V>? vertexStrategy}) =>
+      biconnected.articulationPoints<V, E>(
+        this,
+        vertexStrategy: vertexStrategy ?? this.vertexStrategy,
+      );
+
+  /// Returns the bridges (cut edges) of this undirected graph.
+  Set<Edge<V, E>> bridges({StorageStrategy<V>? vertexStrategy}) =>
+      biconnected.bridges<V, E>(
+        this,
+        vertexStrategy: vertexStrategy ?? this.vertexStrategy,
+      );
+
+  /// Returns the biconnected components of this undirected graph.
+  Iterable<Graph<V, E>> biconnectedComponents({
+    StorageStrategy<V>? vertexStrategy,
+  }) => biconnected.biconnectedComponents<V, E>(
+    this,
     vertexStrategy: vertexStrategy ?? this.vertexStrategy,
   );
 

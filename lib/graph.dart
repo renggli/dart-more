@@ -2,6 +2,8 @@
 library;
 
 export 'src/graph/algorithms.dart' show AlgorithmsGraphExtension;
+export 'src/graph/algorithms/biconnected.dart'
+    show articulationPoints, biconnectedComponents, bridges;
 export 'src/graph/algorithms/bipartite_check.dart' show isBipartite;
 export 'src/graph/algorithms/bron_kerbosch_cliques.dart'
     show bronKerboschCliques;

@@ -409,7 +409,7 @@
   - **Problem**: `Graph` provides shortest-path, spanning-tree, max-flow, min-cut, clique, coloring, and SCC algorithms, but lacks Eulerian path and Eulerian cycle detection and construction (`hasEulerianPath`, `hasEulerianCircuit`, `eulerianPath`, `eulerianCircuit`).
   - **Fix**: Implement degree-precondition checks (in-degree vs. out-degree for directed graphs; even degrees for undirected graphs, plus connectivity of non-isolated vertices) and linear-time $O(V + E)$ Hierholzer's algorithm in `lib/src/graph/algorithms/eulerian.dart`, returning `Path<V, E>?` and exposing methods on `AlgorithmsGraphExtension`.
 
-- [ ] **Articulation points (cut vertices), bridges (cut edges), and biconnected components (Tarjan's low-link algorithm)**
+- [x] **Articulation points (cut vertices), bridges (cut edges), and biconnected components (Tarjan's low-link algorithm)**
   - **Severity**: Suggestion
   - **Location**: [`lib/src/graph/algorithms.dart`](lib/src/graph/algorithms.dart), [`lib/src/graph/algorithms/tarjan_strongly_connected.dart`](lib/src/graph/algorithms/tarjan_strongly_connected.dart)
   - **Problem**: Directed graphs have `stronglyConnected()` via Tarjan's algorithm, and undirected graphs have global `minCut()` via Stoer-Wagner, but undirected graphs lack linear-time $O(V + E)$ structural resilience analysis for articulation points (cut vertices), bridges (cut edges), and biconnected components.
