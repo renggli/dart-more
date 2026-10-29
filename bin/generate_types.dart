@@ -206,6 +206,7 @@ Future<void> generatePartial() async {
     final argsAndTypes = generateTypeAndArgs(i);
     final args = generateArgs(i);
 
+    out.writeln('/// Extension on [Map$i] to support partial application.');
     out.writeln(
       'extension Partial$i${generify(types)} '
       'on Map$i${generify(types)} {',
@@ -215,8 +216,8 @@ Future<void> generatePartial() async {
       final resultType = types.toList()..removeAt(j);
       final unboundArgs = argsAndTypes.toList()..removeAt(j);
       out.writeln(
-        '/// Returns a new function with the ${ordinal.print(j)} '
-        'argument bound to `arg$j`.',
+        '/// Returns a new function with the ${ordinal.print(j + 1)} '
+        'argument bound to [arg${j + 1}].',
       );
       out.writeln(
         'Map${i - 1}${generify(resultType)} '
@@ -258,15 +259,23 @@ Future<void> generateCurry() async {
     final argsAndTypes = generateTypeAndArgs(i);
     final args = generateArgs(i);
 
+    out.writeln('/// Extension on [Map$i] to support currying.');
     out.writeln(
       'extension Curry$i${generify(types)} '
       'on Map$i${generify(types)} {',
     );
-    out.writeln(
-      '/// Converts a function with $i positional arguments into a '
-      'sequence of $i ',
-    );
-    out.writeln('/// functions taking a single argument.');
+    if (i == 1) {
+      out.writeln(
+        '/// Converts a function with 1 positional argument into a '
+        'function taking a single argument.',
+      );
+    } else {
+      out.writeln(
+        '/// Converts a function with $i positional arguments into a '
+        'sequence of $i ',
+      );
+      out.writeln('/// functions taking a single argument.');
+    }
     for (var j = 0; j < i; j++) {
       out.write('Map1<${types[j]}, ');
     }

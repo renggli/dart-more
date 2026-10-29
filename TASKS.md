@@ -311,7 +311,7 @@
     - `iterable/chunked.dart#L28`: Doc comment says `expanded with the provided [padding], or null`, but `padding` is a required positional `E` parameter.
   - **Fix**: Fix each doc comment example so it compiles and produces the advertised output.
 
-- [ ] **Off-by-one parameter references and missing extension docs in generated `partial.dart` and `curry.dart`**
+- [x] **Off-by-one parameter references and missing extension docs in generated `partial.dart` and `curry.dart`**
   - **Severity**: Warning
   - **Location**: [`lib/src/functional/types/partial.dart`](lib/src/functional/types/partial.dart#L9-L459), [`lib/src/functional/types/curry.dart`](lib/src/functional/types/curry.dart#L9-L186), [`bin/generate_types.dart`](bin/generate_types.dart#L209-L265)
   - **Problem**: In `Partial1`..`Partial10`, `bind0(T1 arg1)` documents `bound to arg0` (parameter is `arg1`), `bind1(T2 arg2)` documents `bound to arg1` (parameter is `arg2`), etc. Neither `Partial1`..`Partial10` nor `Curry1`..`Curry10` have `///` doc comments on the `extension` declarations themselves, and `Curry1` says `1 positional arguments into a sequence of 1 functions`.

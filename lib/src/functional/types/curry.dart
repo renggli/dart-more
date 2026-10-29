@@ -6,13 +6,14 @@ library;
 
 import 'mapping.dart';
 
+/// Extension on [Map1] to support currying.
 extension Curry1<T1, R> on Map1<T1, R> {
-  /// Converts a function with 1 positional arguments into a sequence of 1
-  /// functions taking a single argument.
+  /// Converts a function with 1 positional argument into a function taking a single argument.
   Map1<T1, R> get curry =>
       (T1 arg1) => this(arg1);
 }
 
+/// Extension on [Map2] to support currying.
 extension Curry2<T1, T2, R> on Map2<T1, T2, R> {
   /// Converts a function with 2 positional arguments into a sequence of 2
   /// functions taking a single argument.
@@ -21,6 +22,7 @@ extension Curry2<T1, T2, R> on Map2<T1, T2, R> {
           (T2 arg2) => this(arg1, arg2);
 }
 
+/// Extension on [Map3] to support currying.
 extension Curry3<T1, T2, T3, R> on Map3<T1, T2, T3, R> {
   /// Converts a function with 3 positional arguments into a sequence of 3
   /// functions taking a single argument.
@@ -30,6 +32,7 @@ extension Curry3<T1, T2, T3, R> on Map3<T1, T2, T3, R> {
               (T3 arg3) => this(arg1, arg2, arg3);
 }
 
+/// Extension on [Map4] to support currying.
 extension Curry4<T1, T2, T3, T4, R> on Map4<T1, T2, T3, T4, R> {
   /// Converts a function with 4 positional arguments into a sequence of 4
   /// functions taking a single argument.
@@ -40,6 +43,7 @@ extension Curry4<T1, T2, T3, T4, R> on Map4<T1, T2, T3, T4, R> {
                   (T4 arg4) => this(arg1, arg2, arg3, arg4);
 }
 
+/// Extension on [Map5] to support currying.
 extension Curry5<T1, T2, T3, T4, T5, R> on Map5<T1, T2, T3, T4, T5, R> {
   /// Converts a function with 5 positional arguments into a sequence of 5
   /// functions taking a single argument.
@@ -51,6 +55,7 @@ extension Curry5<T1, T2, T3, T4, T5, R> on Map5<T1, T2, T3, T4, T5, R> {
                       (T5 arg5) => this(arg1, arg2, arg3, arg4, arg5);
 }
 
+/// Extension on [Map6] to support currying.
 extension Curry6<T1, T2, T3, T4, T5, T6, R> on Map6<T1, T2, T3, T4, T5, T6, R> {
   /// Converts a function with 6 positional arguments into a sequence of 6
   /// functions taking a single argument.
@@ -63,6 +68,7 @@ extension Curry6<T1, T2, T3, T4, T5, T6, R> on Map6<T1, T2, T3, T4, T5, T6, R> {
                           (T6 arg6) => this(arg1, arg2, arg3, arg4, arg5, arg6);
 }
 
+/// Extension on [Map7] to support currying.
 extension Curry7<T1, T2, T3, T4, T5, T6, T7, R>
     on Map7<T1, T2, T3, T4, T5, T6, T7, R> {
   /// Converts a function with 7 positional arguments into a sequence of 7
@@ -86,6 +92,7 @@ extension Curry7<T1, T2, T3, T4, T5, T6, T7, R>
                               );
 }
 
+/// Extension on [Map8] to support currying.
 extension Curry8<T1, T2, T3, T4, T5, T6, T7, T8, R>
     on Map8<T1, T2, T3, T4, T5, T6, T7, T8, R> {
   /// Converts a function with 8 positional arguments into a sequence of 8
@@ -114,6 +121,7 @@ extension Curry8<T1, T2, T3, T4, T5, T6, T7, T8, R>
                                   );
 }
 
+/// Extension on [Map9] to support currying.
 extension Curry9<T1, T2, T3, T4, T5, T6, T7, T8, T9, R>
     on Map9<T1, T2, T3, T4, T5, T6, T7, T8, T9, R> {
   /// Converts a function with 9 positional arguments into a sequence of 9
@@ -147,6 +155,7 @@ extension Curry9<T1, T2, T3, T4, T5, T6, T7, T8, T9, R>
                                       );
 }
 
+/// Extension on [Map10] to support currying.
 extension Curry10<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, R>
     on Map10<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, R> {
   /// Converts a function with 10 positional arguments into a sequence of 10
