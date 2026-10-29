@@ -7,6 +7,7 @@ import 'entry.dart';
 /// node if its entries contain data; otherwise, if it is a non-leaf node, then
 /// its entries contain pointers to children nodes.
 class RTreeNode<T> {
+  /// Creates an R-Tree node associated with [tree].
   new(
     this.tree, {
     this.parent,
@@ -14,16 +15,26 @@ class RTreeNode<T> {
     List<RTreeEntry<T>>? entries,
   }) : entries = entries ?? <RTreeEntry<T>>[];
 
+  /// The R-Tree containing this node.
   final RTree<T> tree;
+
+  /// The parent node, or `null` if this is the root node.
   RTreeNode<T>? parent;
+
+  /// The entries contained within this node.
   List<RTreeEntry<T>> entries;
+
+  /// Whether this node is a leaf node.
   bool isLeaf;
 
+  /// Whether this node is the root node of the tree.
   bool get isRoot => parent == null;
 
+  /// The entries in the parent node (sibling entries of this node).
   Iterable<RTreeEntry<T>> get siblingEntries =>
       parent?.entries ?? <RTreeEntry<T>>[];
 
+  /// The entry in the parent node pointing to this child node.
   RTreeEntry<T>? get parentEntry {
     for (final entry in siblingEntries) {
       if (entry.child == this) {
@@ -33,6 +44,7 @@ class RTreeNode<T> {
     return null;
   }
 
+  /// The bounding box enclosing all entries in this node, or `null` if empty.
   Bounds? get bounds => entries.isEmpty
       ? null
       : Bounds.unionAll(entries.map((entry) => entry.bounds));

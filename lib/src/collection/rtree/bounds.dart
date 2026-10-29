@@ -3,11 +3,14 @@ import 'dart:typed_data';
 
 /// Axis-aligned bounding box.
 class Bounds {
+  /// Creates a bounding box with the given number of dimensions [length].
   factory(int length) => Bounds._(Float64List(length), Float64List(length));
 
+  /// Creates a bounding box from coordinate lists [min] and [max].
   factory fromLists(List<double> min, List<double> max) =>
       Bounds._(Float64List.fromList(min), Float64List.fromList(max));
 
+  /// Creates a zero-volume point bounding box at the given [point].
   factory fromPoint(List<double> point) =>
       Bounds._(Float64List.fromList(point), Float64List.fromList(point));
 
@@ -21,11 +24,16 @@ class Bounds {
         return true;
       }());
 
+  /// Minimum coordinate values for each dimension.
   final Float64List min;
+
+  /// Maximum coordinate values for each dimension.
   final Float64List max;
 
+  /// Number of dimensions.
   int get length => min.length;
 
+  /// Whether this bounding box represents a single point (all dimensions zero).
   bool get isPoint {
     if (min == max) {
       return true;
@@ -38,6 +46,7 @@ class Bounds {
     return true;
   }
 
+  /// Edge lengths of each dimension.
   List<double> get edges {
     final result = Float64List(length);
     for (var i = 0; i < length; i++) {
@@ -46,6 +55,7 @@ class Bounds {
     return result;
   }
 
+  /// Hypervolume (area) of this bounding box.
   double get area {
     var result = max[0] - min[0];
     for (var i = 1; i < length; i++) {
@@ -54,6 +64,7 @@ class Bounds {
     return result;
   }
 
+  /// Center coordinates of this bounding box.
   List<double> get center {
     final result = Float64List(length);
     for (var i = 0; i < length; i++) {

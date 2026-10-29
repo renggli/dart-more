@@ -20,9 +20,12 @@ extension ComputedMapExtension<K, V> on Map<K, V> {
       MapWithComputed(this, computation);
 }
 
+/// A [MapView] that dynamically computes and caches absent keys.
 class MapWithComputed<K, V> extends MapView<K, V> {
+  /// Creates a view of [map] that computes missing values using [computation].
   new(super.map, this.computation);
 
+  /// The computation function used to evaluate missing keys.
   final V Function(K key) computation;
 
   @override

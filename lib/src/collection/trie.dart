@@ -276,6 +276,9 @@ abstract class TrieNode<K, P extends Comparable<P>, V> {
 /// Abstract [TrieNode] with a possible key and value.
 abstract class TrieNodeEntry<K, P extends Comparable<P>, V>
     extends TrieNode<K, P, V> {
+  /// Default generative constructor.
+  new();
+
   K? _key;
 
   V? _value;
@@ -308,6 +311,9 @@ abstract class TrieNodeEntry<K, P extends Comparable<P>, V>
 /// [TrieNode] that holds children in a [Map].
 class TrieNodeMap<K, P extends Comparable<P>, V>
     extends TrieNodeEntry<K, P, V> {
+  /// Default generative constructor.
+  new();
+
   final Map<P, TrieNode<K, P, V>> _children = SplayTreeMap();
 
   @override
@@ -336,6 +342,9 @@ class TrieNodeMap<K, P extends Comparable<P>, V>
 /// [TrieNode] that holds children in a sorted [List].
 class TrieNodeList<K, P extends Comparable<P>, V>
     extends TrieNodeEntry<K, P, V> {
+  /// Default generative constructor.
+  new();
+
   @override
   final List<P> parts = [];
 

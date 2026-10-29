@@ -323,7 +323,7 @@
   - **Problem**: `DurationPrinter` class doc says "For example, to print dates in the format `YYYY-MM-DD`" while formatting a `Duration` with `':'` (`// 0003:04:19`). `TakeSkipPrinterExtension.skip(int count)` says "Skips all but the first [count] characters" (it skips the first `count` characters), and `skipLast(int count)` says "Skips all but the last [count] characters" (it skips the last `count` characters).
   - **Fix**: Correct the doc comments in `duration.dart` and `take_skip.dart`.
 
-- [ ] **Missing `///` doc comments on public classes and members exported by root libraries**
+- [x] **Missing `///` doc comments on public classes and members exported by root libraries**
   - **Severity**: Suggestion
   - **Location**: [`lib/src/collection/rtree/bounds.dart`](lib/src/collection/rtree/bounds.dart#L5-L95), [`lib/src/collection/rtree/entry.dart`](lib/src/collection/rtree/entry.dart#L3-L19), [`lib/src/collection/rtree/node.dart`](lib/src/collection/rtree/node.dart#L7-L63), [`lib/src/collection/map/computed.dart`](lib/src/collection/map/computed.dart#L17), [`lib/src/collection/map/default.dart`](lib/src/collection/map/default.dart#L17), [`lib/src/collection/trie.dart`](lib/src/collection/trie.dart#L315-L401), [`lib/src/char_matcher/unicode/unicode.dart`](lib/src/char_matcher/unicode/unicode.dart#L16-L600)
   - **Problem**: `Bounds`, `RTreeEntry`, `RTreeNode`, `MapWithComputed`, `MapWithDefault`, `TrieNodeEntry`, `TrieNodeMap`, `TrieNodeList`, and the factory constructors of `UnicodeCharMatcher` are publicly exported but lack `///` doc comments required by `AGENTS.md`.

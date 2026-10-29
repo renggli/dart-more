@@ -18,9 +18,12 @@ extension DefaultMapExtension<K, V> on Map<K, V> {
   MapWithDefault<K, V> withDefault(V value) => MapWithDefault(this, value);
 }
 
+/// A [MapView] that returns a default value for non-existent keys.
 class MapWithDefault<K, V> extends MapView<K, V> {
+  /// Creates a view of [map] that returns [defaultValue] for missing keys.
   new(super.map, this.defaultValue);
 
+  /// The default value returned when an absent key is accessed.
   final V defaultValue;
 
   @override
