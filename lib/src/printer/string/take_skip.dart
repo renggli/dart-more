@@ -11,10 +11,10 @@ extension TakeSkipPrinterExtension<T> on Printer<T> {
   /// Takes the last [count] characters.
   Printer<T> takeLast(int count) => TakeLastPrinter<T>(this, count);
 
-  /// Skips all but the first [count] characters.
+  /// Skips the first [count] characters.
   Printer<T> skip(int count) => SkipPrinter<T>(this, count);
 
-  /// Skips all but the last [count] characters.
+  /// Skips the last [count] characters.
   Printer<T> skipLast(int count) => SkipLastPrinter<T>(this, count);
 }
 
@@ -54,7 +54,7 @@ class TakeLastPrinter<T> extends TakeSkipPrinter<T> {
   }
 }
 
-/// Skips all but the first [count] characters.
+/// Skips the first [count] characters.
 class SkipPrinter<T> extends TakeSkipPrinter<T> {
   const new(super.printer, super.count);
 
@@ -65,7 +65,7 @@ class SkipPrinter<T> extends TakeSkipPrinter<T> {
   }
 }
 
-/// Skips all but the last [count] characters.
+/// Skips the last [count] characters.
 class SkipLastPrinter<T> extends TakeSkipPrinter<T> {
   const new(super.printer, super.count);
 

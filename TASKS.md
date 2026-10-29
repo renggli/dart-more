@@ -317,7 +317,7 @@
   - **Problem**: In `Partial1`..`Partial10`, `bind0(T1 arg1)` documents `bound to arg0` (parameter is `arg1`), `bind1(T2 arg2)` documents `bound to arg1` (parameter is `arg2`), etc. Neither `Partial1`..`Partial10` nor `Curry1`..`Curry10` have `///` doc comments on the `extension` declarations themselves, and `Curry1` says `1 positional arguments into a sequence of 1 functions`.
   - **Fix**: Update [`bin/generate_types.dart`](bin/generate_types.dart#L209-L265) to reference `[arg${j + 1}]`, emit `///` doc comments on the extensions, and handle singular/plural grammar for `Curry1`.
 
-- [ ] **Misleading doc comments in `DurationPrinter` and `TakeSkipPrinterExtension`**
+- [x] **Misleading doc comments in `DurationPrinter` and `TakeSkipPrinterExtension`**
   - **Severity**: Suggestion
   - **Location**: [`lib/src/printer/temporal/duration.dart`](lib/src/printer/temporal/duration.dart#L17-L27), [`lib/src/printer/string/take_skip.dart`](lib/src/printer/string/take_skip.dart#L15-L68)
   - **Problem**: `DurationPrinter` class doc says "For example, to print dates in the format `YYYY-MM-DD`" while formatting a `Duration` with `':'` (`// 0003:04:19`). `TakeSkipPrinterExtension.skip(int count)` says "Skips all but the first [count] characters" (it skips the first `count` characters), and `skipLast(int count)` says "Skips all but the last [count] characters" (it skips the last `count` characters).

@@ -14,17 +14,17 @@ import '../where.dart';
 
 /// Prints [Duration] objects in custom ways.
 ///
-/// For example, to print dates in the format `YYYY-MM-DD` call the constructor
-/// and configure the printer as such:
+/// For example, to print durations in the format `YYYY:MM:DD` call the
+/// constructor and configure the printer as such:
 ///
 /// ```dart
-///  final printer = DurationPrinter((builder) => builder
+/// final printer = DurationPrinter((builder) => builder
 ///   ..part(TimeUnit.year, printer: FixedNumberPrinter<int>(padding: 4))
 ///   ..literal(':')
 ///   ..part(TimeUnit.month, printer: FixedNumberPrinter<int>(padding: 2))
 ///   ..literal(':')
 ///   ..part(TimeUnit.day, printer: FixedNumberPrinter<int>(padding: 2)));
-/// print(printer(const Duration(days: 1234, seconds: 56789)));  // 0003-04-19
+/// print(printer(const Duration(days: 1234, seconds: 56789)));  // 0003:04:19
 /// ```
 class DurationPrinter extends SequencePrinter<Duration> {
   /// Constructor to build a [DurationPrinter].
