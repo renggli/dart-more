@@ -176,7 +176,7 @@
   - **Problem**: `IntegerMap` checks `0 <= index && index < _presence.length`, whereas `IntegerSet.contains` and `IntegerSet.remove` only check `index < _presence.length && _presence.getUnchecked(index)`. With `StorageStrategy.positiveInteger()`, calling `set.contains(-1)` in release mode passes `-1` to `_presence.getUnchecked(-1)`, which computes `-1 >>> 5 == 576460752303423487` and throws `RangeError` instead of returning `false`. Furthermore, `IntegerSet.lookup` (line 49) throws `UnimplementedError`.
   - **Fix**: Check `0 <= index && index < _presence.length` in `IntegerSet.contains` and `IntegerSet.remove`, and implement `lookup(Object? element) => contains(element) ? element as int : null;`.
 
-- [ ] **`primSpanningTree` throws `StateError` on empty graphs and ignores `vertexStrategy`**
+- [x] **`primSpanningTree` throws `StateError` on empty graphs and ignores `vertexStrategy`**
   - **Severity**: Warning
   - **Location**: [`lib/src/graph/algorithms/prim_spanning_tree.dart`](lib/src/graph/algorithms/prim_spanning_tree.dart#L17-L43)
   - **Problem**: Line 35 calls `addOutgoingEdgesToQueue(startVertex ?? graph.vertices.first)`, which throws `StateError: No element` when `graph` is empty (whereas `kruskalSpanningTree` returns an empty graph). Furthermore, `vertexStrategy` is accepted as a parameter on line 17 but never used.

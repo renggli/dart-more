@@ -3,7 +3,6 @@ import 'package:collection/collection.dart' show PriorityQueue;
 import '../../comparator/modifiers/key_of.dart';
 import '../edge.dart';
 import '../graph.dart';
-import '../operations/copy.dart';
 import '../strategy.dart';
 
 /// Prim's algorithm to find the spanning tree in _O(E*log(V))_.
@@ -16,8 +15,16 @@ Graph<V, E> primSpanningTree<V, E>(
   required Comparator<num> weightComparator,
   required StorageStrategy<V> vertexStrategy,
 }) {
-  // Create an empty copy of the graph.
-  final result = graph.copy(empty: true);
+  // Create an empty copy of the graph using the specified vertex strategy.
+  final result = Graph<V, E>(
+    isDirected: graph.isDirected,
+    vertexStrategy: vertexStrategy,
+  );
+  final root =
+      startVertex ?? (graph.vertices.isEmpty ? null : graph.vertices.first);
+  if (root == null || !graph.vertices.contains(root)) {
+    return result;
+  }
   // Queue for the shortest remaining edges.
   final queue = PriorityQueue<({Edge<V, E> edge, num cost})>(
     weightComparator.keyOf((state) => state.cost),
@@ -32,7 +39,7 @@ Graph<V, E> primSpanningTree<V, E>(
   }
 
   // Prepare the initial outgoing edges.
-  addOutgoingEdgesToQueue(startVertex ?? graph.vertices.first);
+  addOutgoingEdgesToQueue(root);
   // Pick the shortest edge that connects to a not yet connected vertex.
   while (queue.isNotEmpty) {
     final (:edge, :cost) = queue.removeFirst();

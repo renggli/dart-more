@@ -86,5 +86,29 @@ void main() {
         isEdge('y', 'z', value: 1),
       ]);
     });
+    test('empty graph', () {
+      final graph = Graph<String, int>(isDirected: false);
+      final spanning = graph.spanningTree(startVertex: null);
+      check(spanning.vertices).isEmpty();
+      check(spanning.edges).isEmpty();
+    });
+    test('unknown start vertex', () {
+      final graph = Graph<String, int>(isDirected: false)..addVertex('a');
+      final spanning = graph.spanningTree(startVertex: 'b');
+      check(spanning.vertices).isEmpty();
+      check(spanning.edges).isEmpty();
+    });
+    test('respects custom vertex strategy', () {
+      final graph = Graph<int, int>(
+        isDirected: false,
+        vertexStrategy: StorageStrategy.integer(),
+      )..addEdge(1, 2, value: 3);
+      final spanning = graph.spanningTree(
+        startVertex: 1,
+        vertexStrategy: StorageStrategy.positiveInteger(),
+      );
+      check(spanning.vertexStrategy).isA<PositiveIntegerStorageStrategy>();
+      check(spanning.vertices).unorderedEquals([1, 2]);
+    });
   });
 }
