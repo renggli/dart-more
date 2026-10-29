@@ -86,7 +86,7 @@
   - **Problem**: Neither `separateLeft` nor `separateRight` validates `width > 0` or `0 <= offset < width`. If `width <= 0`, `% width` throws `IntegerDivisionByZeroException` or `RangeError`; if `offset >= width`, `i % width == offset` is never satisfied.
   - **Fix**: Validate `checkNonZeroPositive(width, 'width')` and `RangeError.checkValidIndex(offset, List.filled(width, null), 'offset')` (or `0 <= offset && offset < width`) in `SeparateLeftPrinter` and `SeparateRightPrinter`.
 
-- [ ] **`DateTimePrinterBuilder.year(width: 2)` strips the sign on negative years**
+- [x] **`DateTimePrinterBuilder.year(width: 2)` strips the sign on negative years**
   - **Severity**: Warning
   - **Location**: [`lib/src/printer/temporal/date_time.dart`](lib/src/printer/temporal/date_time.dart#L128-L132)
   - **Problem**: `year({int width = 0})` configures `FixedNumberPrinter<int>(padding: width).mapIf(width == 2, (printer) => printer.takeLast(2))`. For `year = -5` and `width = 2`, `FixedNumberPrinter(padding: 2)` produces `'-05'` and `.takeLast(2)` strips the leading minus sign, outputting `'05'`.

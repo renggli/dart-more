@@ -71,6 +71,15 @@ void main() {
         check(dateTimes.map(printer.print))
             .deepEquals(['000000', '001980', '001969', '002023']);
       });
+      test('width: 2', () {
+        final printer = DateTimePrinter((builder) => builder.year(width: 2));
+        check(dateTimes.map(printer.print))
+            .deepEquals(['00', '80', '69', '23']);
+      });
+      test('negative year', () {
+        final printer = DateTimePrinter((builder) => builder.year(width: 2));
+        check(printer(DateTime.utc(-5))).equals('-05');
+      });
     });
     group('quarter', () {
       test('default', () {

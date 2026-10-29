@@ -126,9 +126,13 @@ class DateTimePrinterBuilder {
   /// [width] is `2`, just the two low-order digits of the year will be
   /// displayed.
   void year({int width = 0}) => add(
-    FixedNumberPrinter(padding: width)
-        .mapIf(width == 2, (printer) => printer.takeLast(2))
-        .onResultOf((dateTime) => dateTime.year),
+    width == 2
+        ? Printer<int>.pluggable((year) {
+            final abs = (year.abs() % 100).toString().padLeft(2, '0');
+            return year < 0 ? '-$abs' : abs;
+          }).onResultOf((dateTime) => dateTime.year)
+        : FixedNumberPrinter<int>(padding: width)
+              .onResultOf((dateTime) => dateTime.year),
   );
 
   /// Adds a [AccessorsDateTimeExtension.quarter] field.
