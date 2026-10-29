@@ -69,5 +69,23 @@ void main() {
       ).take(100).toList();
       check(walk).length.equals(100);
     });
+    test(
+      'self avoiding does not prematurely mark unvisited branches as seen',
+      () {
+        final tree = Graph<int, void>(isDirected: true);
+        tree.addEdge(0, 1);
+        tree.addEdge(0, 2);
+        tree.addEdge(1, 2);
+        final walk = tree
+            .randomWalk(
+              0,
+              selfAvoiding: true,
+              edgeProbability: (source, target) =>
+                  source == 0 && target == 2 ? 0.00001 : 1000,
+            )
+            .toList();
+        check(walk).which((it) => it.deepEquals([0, 1, 2]));
+      },
+    );
   });
 }

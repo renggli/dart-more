@@ -87,6 +87,7 @@ class _RandomWalkIterator<V> implements Iterator<V> {
     } else {
       final value = iterable.random.nextDouble();
       num sum = 0;
+      next = candidates.last.first;
       for (final candidate in candidates) {
         sum += candidate.second;
         if (sum >= value) {
@@ -95,6 +96,9 @@ class _RandomWalkIterator<V> implements Iterator<V> {
         }
       }
     }
+    if (iterable.selfAvoiding && next != null) {
+      seen.add(next as V);
+    }
     return true;
   }
 
@@ -102,7 +106,7 @@ class _RandomWalkIterator<V> implements Iterator<V> {
     num probabilitySum = 0;
     final candidates = <(V, num)>[];
     for (final target in iterable.successorsOf(source)) {
-      if (iterable.selfAvoiding && seen.add(target) == false) {
+      if (iterable.selfAvoiding && seen.contains(target)) {
         continue;
       }
       final probability = iterable.edgeProbability?.call(source, target) ?? 1;
