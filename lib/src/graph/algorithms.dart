@@ -7,6 +7,7 @@ import 'algorithms/bipartite_check.dart' as bipartite_check;
 import 'algorithms/bron_kerbosch_cliques.dart' as bron_kerbosch_cliques;
 import 'algorithms/cycle_check.dart' as cycle_check;
 import 'algorithms/dinic_max_flow.dart' as dinic_max_flow;
+import 'algorithms/eulerian.dart' as eulerian;
 import 'algorithms/kruskal_spanning_tree.dart' as kruskal_spanning_tree;
 import 'algorithms/prim_spanning_tree.dart' as prim_spanning_tree;
 import 'algorithms/search/a_star.dart' as a_star;
@@ -248,6 +249,32 @@ extension AlgorithmsGraphExtension<V, E> on Graph<V, E> {
       vertexStrategy: vertexStrategy ?? this.vertexStrategy,
     );
   }
+
+  /// Checks if this graph has an Eulerian circuit.
+  bool hasEulerianCircuit({StorageStrategy<V>? vertexStrategy}) =>
+      eulerian.hasEulerianCircuit<V, E>(
+        this,
+        vertexStrategy: vertexStrategy ?? this.vertexStrategy,
+      );
+
+  /// Checks if this graph has an Eulerian path.
+  bool hasEulerianPath({StorageStrategy<V>? vertexStrategy}) =>
+      eulerian.hasEulerianPath<V, E>(
+        this,
+        vertexStrategy: vertexStrategy ?? this.vertexStrategy,
+      );
+
+  /// Finds an Eulerian path or circuit in this graph using Hierholzer's algorithm.
+  ///
+  /// If [circuit] is `true`, only an Eulerian circuit is searched for.
+  Path<V, E>? findEulerianPath({
+    bool circuit = false,
+    StorageStrategy<V>? vertexStrategy,
+  }) => eulerian.findEulerianPath<V, E>(
+    this,
+    circuit: circuit,
+    vertexStrategy: vertexStrategy ?? this.vertexStrategy,
+  );
 
   /// Internal helper that returns a function using the numeric edge value
   /// of this graph, or otherwise a constant value for each edge.

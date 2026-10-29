@@ -403,7 +403,7 @@
   - **Problem**: `Cache<K, V>` only supports single-key operations (`get`, `getIfPresent`, `put`, `invalidate`) without batch helpers `getAll(Iterable<K> keys)`, `putAll(Map<K, V> map)`, or `invalidateAll([Iterable<K>? keys])`.
   - **Fix**: Provide default implementations of `getAll`, `putAll`, and `invalidateAll` on `Cache<K, V>`.
 
-- [ ] **Eulerian path and circuit detection and extraction (Hierholzer's algorithm)**
+- [x] **Eulerian path and circuit detection and extraction (Hierholzer's algorithm)**
   - **Severity**: Suggestion
   - **Location**: [`lib/src/graph/algorithms.dart`](lib/src/graph/algorithms.dart), [`lib/graph.dart`](lib/graph.dart)
   - **Problem**: `Graph` provides shortest-path, spanning-tree, max-flow, min-cut, clique, coloring, and SCC algorithms, but lacks Eulerian path and Eulerian cycle detection and construction (`hasEulerianPath`, `hasEulerianCircuit`, `eulerianPath`, `eulerianCircuit`).
