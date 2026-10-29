@@ -373,7 +373,7 @@
 
 ## 6. Missing Features Expected by Users / Agents
 
-- [ ] **`Optional` and `Either` ergonomic helpers (`valueOrNull`, `toOptional()`, `ifLeft`, `ifRight`)**
+- [x] **`Optional` and `Either` ergonomic helpers (`valueOrNull`, `toOptional()`, `ifLeft`, `ifRight`)**
   - **Severity**: Suggestion
   - **Location**: [`lib/src/functional/optional.dart`](lib/src/functional/optional.dart#L10-L115), [`lib/src/functional/either.dart`](lib/src/functional/either.dart#L10-L147)
   - **Problem**: `Optional<T>` lacks a `T? get valueOrNull` getter (standard Dart idiom alongside `orElse`) and an extension `OptionalExtension<T> on T?` providing `Optional<T> toOptional()`. `Either<L, R>` lacks `ifLeft(Callback1<L>)` and `ifRight(Callback1<R>)` side-effect helpers (analogous to `Optional.ifPresent` / `ifAbsent`) and `swap` (`Either<R, L> get swapped`).

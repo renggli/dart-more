@@ -16,6 +16,7 @@ void main() {
       const optional = stringPresent;
       test('value', () {
         check(optional.value).equals('foo');
+        check(optional.valueOrNull).equals('foo');
         check(optional).value.equals('foo');
       });
       test('iterable', () {
@@ -122,6 +123,7 @@ void main() {
       const optional = stringAbsent;
       test('value', () {
         check(() => optional.value).throws<StateError>();
+        check(optional.valueOrNull).isNull();
       });
       test('iterable', () {
         check(optional.iterable).isA<Iterable<String>>();
@@ -235,6 +237,21 @@ void main() {
         final optional = Optional.ofNullable(value);
         check(optional).isA<Optional<String>>();
         check(optional.isPresent).isTrue();
+      });
+    });
+    group('toOptional', () {
+      test('isAbsent', () {
+        const String? value = null;
+        final optional = value.toOptional();
+        check(optional).isA<Optional<String>>();
+        check(optional.isAbsent).isTrue();
+      });
+      test('isPresent', () {
+        const value = 'foo';
+        final optional = value.toOptional();
+        check(optional).isA<Optional<String>>();
+        check(optional.isPresent).isTrue();
+        check(optional.value).equals('foo');
       });
     });
   });

@@ -32,6 +32,9 @@ sealed class Optional<T> {
   /// Returns the present value, otherwise throws a [StateError].
   T get value;
 
+  /// Returns the present value if present, otherwise returns `null`.
+  T? get valueOrNull;
+
   /// Returns an [Iterable] with the single present value, otherwise an empty
   /// iterable.
   Iterable<T> get iterable;
@@ -88,6 +91,9 @@ class PresentOptional<T> extends Optional<T> {
 
   @override
   final T value;
+
+  @override
+  T? get valueOrNull => value;
 
   @override
   Iterable<T> get iterable => <T>[value];
@@ -149,6 +155,9 @@ class AbsentOptional<T> extends Optional<T> {
   T get value => throw noSuchElementError;
 
   @override
+  T? get valueOrNull => null;
+
+  @override
   Iterable<T> get iterable => const [];
 
   @override
@@ -192,6 +201,12 @@ class AbsentOptional<T> extends Optional<T> {
 
   @override
   int get hashCode => 0;
+}
+
+/// Extension on nullable types to convert to [Optional].
+extension OptionalNullableExtension<T extends Object> on T? {
+  /// Returns an [Optional] containing this value if non-null, otherwise absent.
+  Optional<T> toOptional() => Optional<T>.ofNullable(this);
 }
 
 final noSuchElementError = StateError('No such element');

@@ -4,6 +4,7 @@ library;
 import 'package:meta/meta.dart';
 
 import 'optional.dart';
+import 'types/callback.dart';
 import 'types/mapping.dart';
 
 /// A disjoint union with a value of either type [L] or type [R].
@@ -68,6 +69,12 @@ sealed class Either<L, R> {
   /// Returns `true`, if this has a right value.
   bool get isRight;
 
+  /// Evaluates [callback] with the left value if this is a left value.
+  void ifLeft(Callback1<L> callback);
+
+  /// Evaluates [callback] with the right value if this is a right value.
+  void ifRight(Callback1<R> callback);
+
   /// Returns the appropriate transformation to type [T].
   T fold<T>(Map1<L, T> leftFunction, Map1<R, T> rightFunction);
 
@@ -104,6 +111,9 @@ sealed class Either<L, R> {
 
   /// Returns a new [Either] with the left and right value switched.
   Either<R, L> swap();
+
+  /// Returns a new [Either] with the left and right value switched.
+  Either<R, L> get swapped => swap();
 }
 
 /// Implementation of an [Either] with [leftValue] populated.
@@ -133,6 +143,12 @@ class LeftEither<L, R> extends Either<L, R> {
 
   @override
   bool get isRight => false;
+
+  @override
+  void ifLeft(Callback1<L> callback) => callback(leftValue);
+
+  @override
+  void ifRight(Callback1<R> callback) {}
 
   @override
   T fold<T>(Map1<L, T> leftFunction, Map1<R, T> rightFunction) =>
@@ -207,6 +223,12 @@ class RightEither<L, R> extends Either<L, R> {
 
   @override
   bool get isRight => true;
+
+  @override
+  void ifLeft(Callback1<L> callback) {}
+
+  @override
+  void ifRight(Callback1<R> callback) => callback(rightValue);
 
   @override
   T fold<T>(Map1<L, T> leftFunction, Map1<R, T> rightFunction) =>

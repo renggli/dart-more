@@ -44,6 +44,16 @@ void main() {
       test('isRight', () {
         check(either.isRight).isFalse();
       });
+      test('ifLeft', () {
+        var called = 0;
+        either.ifLeft((v) => called += v);
+        check(called).equals(value);
+      });
+      test('ifRight', () {
+        var called = 0;
+        either.ifRight((v) => called++);
+        check(called).equals(0);
+      });
       test('fold', () {
         check(either.fold((left) => 'l:$left', (right) => 'r:$right'))
             .equals('l:$value');
@@ -80,6 +90,7 @@ void main() {
       });
       test('swap', () {
         check(either.swap()).equals(const Either<bool, int>.right(value));
+        check(either.swapped).equals(const Either<bool, int>.right(value));
       });
       test('==', () {
         check(either == either).isTrue();
@@ -137,6 +148,16 @@ void main() {
       test('isRight', () {
         check(either.isRight).isTrue();
       });
+      test('ifLeft', () {
+        var called = 0;
+        either.ifLeft((v) => called++);
+        check(called).equals(0);
+      });
+      test('ifRight', () {
+        var called = false;
+        either.ifRight((v) => called = v);
+        check(called).equals(value);
+      });
       test('fold', () {
         check(either.fold((left) => 'l:$left', (right) => 'r:$right'))
             .equals('r:$value');
@@ -173,6 +194,7 @@ void main() {
       });
       test('swap', () {
         check(either.swap()).equals(const Either<bool, int>.left(value));
+        check(either.swapped).equals(const Either<bool, int>.left(value));
       });
       test('==', () {
         check(either == either).isTrue();
