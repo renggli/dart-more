@@ -64,10 +64,10 @@ void main() {
   group('guttman', () {
     allRTreeTests(
       <T>({int? minEntries, int? maxEntries}) =>
-          RTree<T>.guttmann(minEntries: minEntries, maxEntries: maxEntries),
+          RTree<T>.guttman(minEntries: minEntries, maxEntries: maxEntries),
     );
     test('split distribution', () {
-      final rtree = RTree<int>.guttmann(minEntries: 2, maxEntries: 4);
+      final rtree = RTree<int>.guttman(minEntries: 2, maxEntries: 4);
       for (var i = 0; i < 5; i++) {
         rtree.insert(Bounds.fromPoint([i.toDouble()]), i);
       }
@@ -77,7 +77,7 @@ void main() {
       }
     });
     test('searchEntries with entryPredicate', () {
-      final rtree = RTree<int>.guttmann();
+      final rtree = RTree<int>.guttman();
       rtree.insert(Bounds.fromPoint(const [0.0, 0.0]), 10);
       rtree.insert(Bounds.fromPoint(const [1.0, 1.0]), 20);
       check(
@@ -87,7 +87,7 @@ void main() {
       ).deepEquals([10]);
     });
     test('guttman split tie breaking', () {
-      final rtree = RTree<int>.guttmann(minEntries: 2, maxEntries: 4);
+      final rtree = RTree<int>.guttman(minEntries: 2, maxEntries: 4);
       rtree.insert(Bounds.fromLists(const [0.0], const [10.0]), 1);
       rtree.insert(Bounds.fromLists(const [100.0], const [110.0]), 2);
       rtree.insert(Bounds.fromLists(const [50.0], const [60.0]), 3);
@@ -95,7 +95,7 @@ void main() {
       rtree.insert(Bounds.fromLists(const [5.0], const [5.0]), 5);
       check(rtree.root.entries).length.equals(2);
 
-      final rtree2 = RTree<int>.guttmann(minEntries: 2, maxEntries: 4);
+      final rtree2 = RTree<int>.guttman(minEntries: 2, maxEntries: 4);
       rtree2.insert(Bounds.fromLists(const [-10.0, 0.0], const [-8.0, 2.0]), 1);
       rtree2.insert(Bounds.fromLists(const [8.0, 0.0], const [10.0, 2.0]), 2);
       rtree2.insert(Bounds.fromLists(const [-1.0, 0.0], const [1.0, 2.0]), 3);
@@ -103,7 +103,7 @@ void main() {
       rtree2.insert(Bounds.fromLists(const [-0.1, 0.0], const [0.1, 2.0]), 5);
       check(rtree2.root.entries).length.equals(2);
 
-      final rtree3 = RTree<int>.guttmann(minEntries: 1, maxEntries: 3);
+      final rtree3 = RTree<int>.guttman(minEntries: 1, maxEntries: 3);
       rtree3.insert(Bounds.fromLists(const [-10.0, 0.0], const [-8.0, 2.0]), 1);
       rtree3.insert(Bounds.fromLists(const [8.0, 0.0], const [10.0, 2.0]), 2);
       rtree3.insert(Bounds.fromLists(const [-5.5, 0.0], const [-3.5, 2.0]), 3);

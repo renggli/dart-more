@@ -238,7 +238,7 @@ abstract class CharMatcher with ToStringPrinter implements Pattern {
 
   /// Removes leading and trailing matching characters in [sequence].
   String trimFrom(String sequence) =>
-      trimTailingFrom(trimLeadingFrom(sequence));
+      trimTrailingFrom(trimLeadingFrom(sequence));
 
   /// Removes leading matching characters in [sequence].
   String trimLeadingFrom(String sequence) {
@@ -250,8 +250,8 @@ abstract class CharMatcher with ToStringPrinter implements Pattern {
         : '';
   }
 
-  /// Removes tailing matching characters in [sequence].
-  String trimTailingFrom(String sequence) {
+  /// Removes trailing matching characters in [sequence].
+  String trimTrailingFrom(String sequence) {
     if (sequence.isEmpty) return sequence;
     final iterator = _runeIteratorAt(sequence, sequence.length);
     while (iterator.movePrevious() && match(iterator.current)) {}
@@ -259,6 +259,10 @@ abstract class CharMatcher with ToStringPrinter implements Pattern {
         ? sequence.substring(0, iterator.rawIndex + iterator.currentSize)
         : '';
   }
+
+  /// Removes trailing matching characters in [sequence].
+  @Deprecated('Use trimTrailingFrom instead')
+  String trimTailingFrom(String sequence) => trimTrailingFrom(sequence);
 
   @override
   Iterable<Match> allMatches(String sequence, [int start = 0]) sync* {

@@ -12,6 +12,11 @@ import 'rtree/node.dart';
 abstract class RTree<T> {
   /// Constructs a Guttman R-Tree described in this paper:
   /// http://www-db.deis.unibo.it/courses/SI-LS/papers/Gut84.pdf
+  factory guttman({int? minEntries, int? maxEntries}) = GuttmanTree<T>;
+
+  /// Constructs a Guttman R-Tree described in this paper:
+  /// http://www-db.deis.unibo.it/courses/SI-LS/papers/Gut84.pdf
+  @Deprecated('Use RTree.guttman instead')
   factory guttmann({int? minEntries, int? maxEntries}) = GuttmanTree<T>;
 
   /// Internal constructor for the R-Tree.

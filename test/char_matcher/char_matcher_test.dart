@@ -167,7 +167,23 @@ void main() {
         check(star.trimLeadingFrom('**a**')).equals('a**');
         check(star.trimLeadingFrom('*ab*')).equals('ab*');
       });
-      test('trimTailingFrom', () {
+      test('trimTrailingFrom', () {
+        check(star.trimTrailingFrom('')).equals('');
+        check(star.trimTrailingFrom('*')).equals('');
+        check(star.trimTrailingFrom('**')).equals('');
+        check(star.trimTrailingFrom('*a')).equals('*a');
+        check(star.trimTrailingFrom('**a')).equals('**a');
+        check(star.trimTrailingFrom('*ab')).equals('*ab');
+        check(star.trimTrailingFrom('a*')).equals('a');
+        check(star.trimTrailingFrom('a**')).equals('a');
+        check(star.trimTrailingFrom('ab*')).equals('ab');
+        check(star.trimTrailingFrom('*a*')).equals('*a');
+        check(star.trimTrailingFrom('**a**')).equals('**a');
+        check(star.trimTrailingFrom('*ab*')).equals('*ab');
+        check(star.trimTrailingFrom('\u{1f600}*')).equals('\u{1f600}');
+        check(star.trimTrailingFrom('*\u{1f600}*')).equals('*\u{1f600}');
+      });
+      test('trimTailingFrom (deprecated)', () {
         check(star.trimTailingFrom('')).equals('');
         check(star.trimTailingFrom('*')).equals('');
         check(star.trimTailingFrom('**')).equals('');

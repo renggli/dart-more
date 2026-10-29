@@ -357,7 +357,7 @@
   - **Problem**: `OrderedList` is an insertion-order circular-buffer deque (`ListBase<E>`), not a priority queue (`PriorityQueue` contract orders elements by priority), and publicly exposes internal ring-buffer fields `startIndex` and `endIndex`. Meanwhile, `SortedList` extends `OrderedList` and overrides 8 mutating methods (`length=`, `[]=`, `addFirst`, `addLast`, `insert`, `insertAll`, `sort`, `shuffle`) to throw `UnsupportedError`, violating Liskov substitution.
   - **Fix**: Have `SortedList` wrap `OrderedList` by composition (implementing `PriorityQueue<E>` on `SortedList` and exposing a read-only `List<E>` view or `Queue<E>` interface), and make `startIndex` / `endIndex` private or `@internal` on `OrderedList`.
 
-- [ ] **Typos in `RTree.guttmann` and `CharMatcher.trimTailingFrom`**
+- [x] **Typos in `RTree.guttmann` and `CharMatcher.trimTailingFrom`**
   - **Severity**: Suggestion
   - **Location**: [`lib/src/collection/rtree.dart`](lib/src/collection/rtree.dart#L20), [`lib/src/char_matcher/char_matcher.dart`](lib/src/char_matcher/char_matcher.dart#L248)
   - **Problem**: `RTree.guttmann` is spelled with two `n`s while the class is `GuttmanTree` (named after Antonin Guttman). `CharMatcher.trimTailingFrom` is spelled `Tailing` instead of `Trailing` (unlike `trimLeadingFrom`).
