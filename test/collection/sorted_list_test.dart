@@ -63,6 +63,20 @@ void allSortedListTests(
     check(list.contains(6)).isFalse();
     check(list.contains(null)).isFalse();
   });
+  test('contains and remove with custom comparator on distinct objects', () {
+    const a = (id: 1, name: 'first');
+    const b = (id: 1, name: 'second');
+    final list = createSortedList<({int id, String name})>([
+      a,
+    ], comparator: (x, y) => x.id.compareTo(y.id));
+    check(list.contains(a)).isTrue();
+    check(list.contains(b)).isFalse();
+    check(list.indexOf(b)).equals(-1);
+    check(list.remove(b)).isFalse();
+    check(list).deepEquals([a]);
+    check(list.remove(a)).isTrue();
+    check(list).isEmpty();
+  });
   test('occurrences', () {
     final list = createSortedList<int>([1, 2, 2, 3, 3, 3, 4, 4, 4, 4]);
     check(list.occurrences(0)).equals(0);

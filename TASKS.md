@@ -98,7 +98,7 @@
   - **Problem**: `BitList(-1)` computes `(-1 + 31) >>> 5 == 0` and constructs a corrupted `BitList` with `length == -1`; `BitList(-33)` computes `(-2) >>> 5 == 576460752303423487` and crashes attempting to allocate an exabyte `Uint32List`. `OrderedList.filled(-1, 0)` runs `_computeCapacity(length)` in the initializer list before `RangeError.checkNotNegative(length, 'length')` executes in the constructor body.
   - **Fix**: Call `RangeError.checkNotNegative(length, 'length')` before computing buffer sizes in `BitList.filled` and `OrderedList._computeCapacity`.
 
-- [ ] **`SortedList.contains` and `SortedList.remove` are inconsistent with `indexOf` for custom comparators**
+- [x] **`SortedList.contains` and `SortedList.remove` are inconsistent with `indexOf` for custom comparators**
   - **Severity**: Warning
   - **Location**: [`lib/src/collection/sorted_list.dart`](lib/src/collection/sorted_list.dart#L38-L51), [`lib/src/collection/sorted_list.dart`](lib/src/collection/sorted_list.dart#L96-L103)
   - **Problem**: `indexOf` and `lastIndexOf` use `binarySearchLower`/`Upper` and scan elements with `_comparator(this[i], element) == 0` to find one where `this[i] == element`. In contrast, `contains` and `remove` use `_comparator.binarySearch(this, element)`, which matches any element with `_comparator(x, element) == 0` even if `x != element`. Thus `remove(b)` can delete a distinct object `a` that happens to share the same sort key, and `contains(b)` can return `true` when `indexOf(b) == -1`.

@@ -35,8 +35,7 @@ class SortedList<E> extends OrderedList<E> {
   void operator []=(int index, E value) => _throw();
 
   @override
-  bool contains(Object? element) =>
-      element is E && _comparator.binarySearch(this, element) >= 0;
+  bool contains(Object? element) => indexOf(element) >= 0;
 
   @override
   int indexOf(Object? element, [int start = 0]) {
@@ -95,8 +94,7 @@ class SortedList<E> extends OrderedList<E> {
   @override
   bool remove(Object? element) {
     if (!isGrowable) throwNotGrowable();
-    if (element is! E) return false;
-    final index = _comparator.binarySearch(this, element);
+    final index = indexOf(element);
     if (index < 0) return false;
     super.removeAt(index);
     return true;
