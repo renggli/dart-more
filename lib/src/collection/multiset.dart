@@ -147,20 +147,36 @@ class Multiset<E> extends IterableBase<E> {
 
   /// Returns `true` if all elements of [other] are contained in the receiver.
   bool containsAll(Iterable<Object?> other) {
-    if (other.isEmpty) {
-      return true;
-    } else if (other.length == 1) {
-      return contains(other.first);
-    } else if (other is Multiset) {
+    if (other is Multiset) {
       for (final element in other.elementSet) {
         if (this[element] < other[element]) {
           return false;
         }
       }
       return true;
-    } else {
-      return containsAll(Multiset.of(other));
     }
+    final iterator = other.iterator;
+    if (!iterator.moveNext()) {
+      return true;
+    }
+    final first = iterator.current;
+    if (!iterator.moveNext()) {
+      return contains(first);
+    }
+    final counts = <Object?, int>{
+      first: 1,
+      iterator.current: iterator.current == first ? 2 : 1,
+    };
+    while (iterator.moveNext()) {
+      final current = iterator.current;
+      counts[current] = (counts[current] ?? 0) + 1;
+    }
+    for (final entry in counts.entries) {
+      if (this[entry.key] < entry.value) {
+        return false;
+      }
+    }
+    return true;
   }
 
   /// Returns a new [Multiset] by evaluating [callback] element-wise for each

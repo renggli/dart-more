@@ -455,6 +455,13 @@ void main() {
       check(firstSet.containsAll(['a', 'b', 'd'])).isFalse();
       check(firstSet.containsAll([1, 2])).isFalse();
       check(firstSet.containsAll(['a', null])).isFalse();
+      var count = 0;
+      final iterable = ['a', 'b', 'c'].map((e) {
+        count++;
+        return e;
+      });
+      check(firstSet.containsAll(iterable)).isTrue();
+      check(count).equals(3);
     });
     test('combine', () {
       check(firstSet.combine(secondSet, (_, a, b) => a + b))

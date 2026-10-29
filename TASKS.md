@@ -232,7 +232,7 @@
   - **Problem**: When `k == 0`, `largest` still inserts and removes every element of `iterable` in a `PriorityQueue` before returning `[]`; when `k < 0`, it consumes the entire `iterable` before `List.generate` throws `RangeError`.
   - **Fix**: Call `RangeError.checkNotNegative(k, 'k')` and return `<T>[]` immediately when `k == 0`.
 
-- [ ] **`Multiset.containsAll` iterates `other` up to 3 times**
+- [x] **`Multiset.containsAll` iterates `other` up to 3 times**
   - **Severity**: Warning
   - **Location**: [`lib/src/collection/multiset.dart`](lib/src/collection/multiset.dart#L132-L147)
   - **Problem**: Calls `other.isEmpty`, then `other.length == 1` (which is $O(n)$ on lazy iterables), and then `other.first` or `Multiset.of(other)`.
