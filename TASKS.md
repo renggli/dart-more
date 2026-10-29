@@ -421,7 +421,7 @@
   - **Problem**: `FloydWarshall<V>` already computes the complete all-pairs shortest-path distance matrix `_pairs`, but only exposes `distance(source, target)`, `path(source, target)`, and `allPaths()`. Users must manually iterate over all vertex pairs to compute eccentricity, graph diameter, radius, center/periphery vertices, or average shortest-path length.
   - **Fix**: Add `num eccentricity(V vertex)`, `num get diameter`, `num get radius`, `Set<V> get center`, `Set<V> get periphery`, and `double get averagePathLength` directly on `FloydWarshall<V>`.
 
-- [ ] **Graph structural metrics (`density`, `clusteringCoefficient`, `transitivity`)**
+- [x] **Graph structural metrics (`density`, `clusteringCoefficient`, `transitivity`)**
   - **Severity**: Suggestion
   - **Location**: [`lib/src/graph/algorithms.dart`](lib/src/graph/algorithms.dart), [`lib/src/graph/graph.dart`](lib/src/graph/graph.dart)
   - **Problem**: Common network analysis metrics—graph density ($\frac{|E|}{|V|(|V|-1)}$ for directed, $\frac{2|E|}{|V|(|V|-1)}$ for undirected) and local/average clustering coefficients (fraction of closed triangles around vertices)—are missing.

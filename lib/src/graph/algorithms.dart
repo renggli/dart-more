@@ -300,6 +300,113 @@ extension AlgorithmsGraphExtension<V, E> on Graph<V, E> {
     vertexStrategy: vertexStrategy ?? this.vertexStrategy,
   );
 
+  /// Returns the density of this graph.
+  ///
+  /// For a directed graph with $|V|$ vertices and $|E|$ edges, density is
+  /// $\frac{|E|}{|V|(|V|-1)}$.
+  /// For an undirected graph, density is $\frac{2|E_u|}{|V|(|V|-1)}$ where
+  /// $|E_u|$ is the number of undirected edges (excluding self-loops).
+  ///
+  /// Returns `0.0` if $|V| < 2$.
+  double get density {
+    final n = vertices.length;
+    if (n < 2) return 0.0;
+    final maxEdges = n * (n - 1);
+    if (isDirected) {
+      // Exclude self-loops from density numerator
+      var count = 0;
+      for (final edge in edges) {
+        if (edge.source != edge.target) count++;
+      }
+      return count / maxEdges;
+    } else {
+      // In undirected graph, non-self edges appear twice in edges (or neighbours).
+      // We count distinct undirected edges {u, v} with u != v.
+      var count = 0;
+      for (final v in vertices) {
+        for (final u in neighboursOf(v)) {
+          if (u != v) count++;
+        }
+      }
+      // count is 2 * |E_u|. Density is (2 * |E_u|) / (n * (n - 1)) = count / maxEdges.
+      return count / maxEdges;
+    }
+  }
+
+  /// Returns the local clustering coefficient of [vertex].
+  ///
+  /// For undirected graphs, this is the ratio of edges between neighbours of
+  /// [vertex] to the maximum possible edges between them:
+  /// $\frac{2 e}{k(k - 1)}$ where $k$ is the number of distinct neighbours
+  /// and $e$ is the number of undirected edges between those neighbours.
+  ///
+  /// Returns `0.0` if [vertex] has fewer than 2 neighbours.
+  double localClusteringCoefficient(
+    V vertex, {
+    StorageStrategy<V>? vertexStrategy,
+  }) {
+    final neighbours = neighboursOf(vertex).toSet()..remove(vertex);
+    final k = neighbours.length;
+    if (k < 2) return 0.0;
+    var links = 0;
+    if (isDirected) {
+      for (final u in neighbours) {
+        for (final w in successorsOf(u)) {
+          if (u != w && neighbours.contains(w)) {
+            links++;
+          }
+        }
+      }
+      return links / (k * (k - 1));
+    } else {
+      for (final u in neighbours) {
+        for (final w in neighboursOf(u)) {
+          if (u != w && neighbours.contains(w)) {
+            links++;
+          }
+        }
+      }
+      // links counts each undirected edge between neighbours twice.
+      // Ratio is 2 * e / (k * (k - 1)) = links / (k * (k - 1)).
+      return links / (k * (k - 1));
+    }
+  }
+
+  /// Returns the average clustering coefficient across all vertices in the graph.
+  ///
+  /// Returns `0.0` if the graph has no vertices.
+  double averageClusteringCoefficient({StorageStrategy<V>? vertexStrategy}) {
+    if (vertices.isEmpty) return 0.0;
+    var sum = 0.0;
+    for (final v in vertices) {
+      sum += localClusteringCoefficient(v, vertexStrategy: vertexStrategy);
+    }
+    return sum / vertices.length;
+  }
+
+  /// Returns the transitivity (global clustering coefficient) of the graph.
+  ///
+  /// Transitivity is defined as $3 \times \frac{\text{number of triangles}}{\text{number of connected triplets}}$.
+  /// Returns `0.0` if there are no connected triplets.
+  double transitivity({StorageStrategy<V>? vertexStrategy}) {
+    var triangles = 0;
+    var triplets = 0;
+    for (final v in vertices) {
+      final neighbours = neighboursOf(v).toSet()..remove(v);
+      final k = neighbours.length;
+      if (k < 2) continue;
+      triplets += k * (k - 1);
+      for (final u in neighbours) {
+        for (final w in neighboursOf(u)) {
+          if (u != w && neighbours.contains(w)) {
+            triangles++;
+          }
+        }
+      }
+    }
+    return triplets == 0 ? 0.0 : triangles / triplets;
+  }
+
   /// Internal helper that returns a function using the numeric edge value
   /// of this graph, or otherwise a constant value for each edge.
   num Function(V source, V target) _getDefaultEdgeValueOr(num value) =>
