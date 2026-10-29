@@ -34,7 +34,7 @@ class EulerPrimeSieve extends PrimeSieve {
   }
 
   final List<int> _primes;
-  final List<int> _factors;
+  final Uint32List _factors;
 
   @override
   bool isPrime(int value) => _factors[value] == value && value > 1;

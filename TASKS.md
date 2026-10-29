@@ -256,7 +256,7 @@
   - **Problem**: When `key != nextKey`, `moveNext()` exits the `while` loop without storing `nextKey`, so the subsequent call to `moveNext()` calls `grouper(iterator.current)` a second time on the boundary element.
   - **Fix**: Cache `nextKey` on `_GroupByIterator` for the next group.
 
-- [ ] **`EulerPrimeSieve._factors` is statically typed as `List<int>` instead of `Uint32List`**
+- [x] **`EulerPrimeSieve._factors` is statically typed as `List<int>` instead of `Uint32List`**
   - **Severity**: Suggestion
   - **Location**: [`lib/src/math/primes/euler.dart`](lib/src/math/primes/euler.dart#L37)
   - **Problem**: `_factors` is initialized to `Uint32List(max + 1)` on line 18, but its field type on line 37 is `final List<int> _factors;`, preventing typed-data specialization in the inner sieve loop.
