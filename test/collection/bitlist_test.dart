@@ -24,6 +24,12 @@ void main() {
           check(target).isEmpty();
           check(target).length.equals(0);
         });
+        test('negative length', () {
+          check(() => BitList.filled(-1, false, growable: growable))
+              .throws<RangeError>();
+          check(() => BitList.filled(-33, false, growable: growable))
+              .throws<RangeError>();
+        });
         test('filled (false)', () {
           for (var len = 1; len < 100; len++) {
             final target = BitList.filled(len, false, growable: growable);

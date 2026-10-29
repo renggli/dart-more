@@ -21,6 +21,7 @@ abstract class BitList extends ListBase<bool> {
   /// Constructs a bit list of the given [length], and initializes the value at
   /// each position with [fill].
   factory filled(int length, bool fill, {bool growable = false}) {
+    RangeError.checkNotNegative(length, 'length');
     final buffer = Uint32List((length + bitOffset) >>> bitShift);
     if (fill) {
       buffer.fillRange(0, buffer.length, bitMask);

@@ -92,7 +92,7 @@
   - **Problem**: `year({int width = 0})` configures `FixedNumberPrinter<int>(padding: width).mapIf(width == 2, (printer) => printer.takeLast(2))`. For `year = -5` and `width = 2`, `FixedNumberPrinter(padding: 2)` produces `'-05'` and `.takeLast(2)` strips the leading minus sign, outputting `'05'`.
   - **Fix**: Apply modulo `year.abs() % 100` (preserving sign if desired) or only truncate positive 4-digit years.
 
-- [ ] **`BitList.filled` and `OrderedList.filled` do not validate negative `length` before buffer allocation**
+- [x] **`BitList.filled` and `OrderedList.filled` do not validate negative `length` before buffer allocation**
   - **Severity**: Warning
   - **Location**: [`lib/src/collection/bitlist.dart`](lib/src/collection/bitlist.dart#L23-L32), [`lib/src/collection/ordered_list.dart`](lib/src/collection/ordered_list.dart#L43-L48)
   - **Problem**: `BitList(-1)` computes `(-1 + 31) >>> 5 == 0` and constructs a corrupted `BitList` with `length == -1`; `BitList(-33)` computes `(-2) >>> 5 == 576460752303423487` and crashes attempting to allocate an exabyte `Uint32List`. `OrderedList.filled(-1, 0)` runs `_computeCapacity(length)` in the initializer list before `RangeError.checkNotNegative(length, 'length')` executes in the constructor body.

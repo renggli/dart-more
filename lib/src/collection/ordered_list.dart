@@ -50,6 +50,7 @@ class OrderedList<E> extends ListBase<E> implements PriorityQueue<E> {
   static const int _initialCapacity = 8;
 
   static int _computeCapacity(int length) {
+    RangeError.checkNotNegative(length, 'length');
     if (length <= _initialCapacity) return _initialCapacity;
     var v = length - 1;
     v |= v >> 1;

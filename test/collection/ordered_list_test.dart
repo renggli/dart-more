@@ -23,6 +23,9 @@ void main() {
       check(list.length).equals(5);
       check(list.isGrowable).isFalse();
     });
+    test('filled negative length', () {
+      check(() => OrderedList<int>.filled(-1, 0)).throws<RangeError>();
+    });
     test('converter', () {
       final list = [1, 2, 3].toOrderedList();
       check(list).deepEquals([1, 2, 3]);
