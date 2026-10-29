@@ -363,7 +363,7 @@
   - **Problem**: `RTree.guttmann` is spelled with two `n`s while the class is `GuttmanTree` (named after Antonin Guttman). `CharMatcher.trimTailingFrom` is spelled `Tailing` instead of `Trailing` (unlike `trimLeadingFrom`).
   - **Fix**: Add `RTree.guttman` and `CharMatcher.trimTrailingFrom`, and deprecate `RTree.guttmann` and `CharMatcher.trimTailingFrom`.
 
-- [ ] **Inconsistent return types on `int.to`, `double.to`, and `chunkedWithPadding`**
+- [x] **Inconsistent return types on `int.to`, `double.to`, and `chunkedWithPadding`**
   - **Severity**: Suggestion
   - **Location**: [`lib/src/collection/range/integer.dart`](lib/src/collection/range/integer.dart#L120), [`lib/src/collection/range/double.dart`](lib/src/collection/range/double.dart#L144), [`lib/src/collection/iterable/chunked.dart`](lib/src/collection/iterable/chunked.dart#L36)
   - **Problem**: `BigInt.to` returns `BigIntRange`, whereas `int.to` and `double.to` return `Range<int>` and `Range<double>` instead of `IntegerRange` and `DoubleRange` (hiding subtype members like `IntegerRange.toInt`). `chunked` returns `Iterable<List<E>>`, whereas `chunkedWithPadding` returns `Iterable<Iterable<E>>`.

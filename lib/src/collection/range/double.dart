@@ -170,7 +170,7 @@ final class DoubleRange extends Range<double> {
 extension DoubleRangeExtension on double {
   /// Shorthand to create a range of [double] numbers, starting with the
   /// receiver (inclusive) up to but not including [end] (exclusive).
-  Range<double> to(double end, {double? step}) =>
+  DoubleRange to(double end, {double? step}) =>
       DoubleRange.of(start: this, end: end, step: step);
 }
 

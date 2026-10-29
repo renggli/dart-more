@@ -32,7 +32,7 @@ extension ChunkedIterableExtension<E> on Iterable<E> {
   /// final input = [1, 2, 3, 4, 5];
   /// print(input.chunkedWithPadding(2, -1));  // [[1, 2], [3, 4], [5, -1]]
   /// ```
-  Iterable<Iterable<E>> chunkedWithPadding(int size, E padding) sync* {
+  Iterable<List<E>> chunkedWithPadding(int size, E padding) sync* {
     checkNonZeroPositive(size, 'size');
     final iterator = this.iterator;
     while (iterator.moveNext()) {

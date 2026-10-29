@@ -134,7 +134,7 @@ final class IntegerRange extends Range<int> {
 extension IntegerRangeExtension on int {
   /// Shorthand to create a range of [int] numbers, starting with the receiver
   /// (inclusive) up to but not including [end] (exclusive).
-  Range<int> to(int end, {int? step}) =>
+  IntegerRange to(int end, {int? step}) =>
       IntegerRange.of(start: this, end: end, step: step);
 }
 
