@@ -11,6 +11,8 @@ export 'src/graph/algorithms/bipartite_matching.dart'
     show bipartiteMatching, maximumIndependentSet, minimumVertexCover;
 export 'src/graph/algorithms/bron_kerbosch_cliques.dart'
     show bronKerboschCliques;
+export 'src/graph/algorithms/connectivity.dart'
+    show edgeConnectivity, vertexConnectivity;
 export 'src/graph/algorithms/cycle_check.dart' show hasCycle;
 export 'src/graph/algorithms/dinic_max_flow.dart' show DinicMaxFlow;
 export 'src/graph/algorithms/eulerian.dart'

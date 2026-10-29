@@ -451,7 +451,7 @@
   - **Problem**: Directed dependency and reachability graphs lack `transitiveClosure()` (adding edges `(u, v)` whenever `v` is reachable from `u`) and `transitiveReduction()` (removing redundant edges while preserving reachability in DAGs).
   - **Fix**: Add `Graph<V, void> transitiveClosure()` and `Graph<V, E> transitiveReduction()` in `lib/src/graph/operations/transitive.dart` using reachability bitsets (`BitList`) / topological order.
 
-- [ ] **Vertex and edge connectivity (`edgeConnectivity`, `vertexConnectivity`) via `DinicMaxFlow` / `StoerWagnerMinCut`**
+- [x] **Vertex and edge connectivity (`edgeConnectivity`, `vertexConnectivity`) via `DinicMaxFlow` / `StoerWagnerMinCut`**
   - **Severity**: Suggestion
   - **Location**: [`lib/src/graph/algorithms/dinic_max_flow.dart`](lib/src/graph/algorithms/dinic_max_flow.dart), [`lib/src/graph/algorithms/stoer_wagner_min_cut.dart`](lib/src/graph/algorithms/stoer_wagner_min_cut.dart), [`lib/src/graph/algorithms.dart`](lib/src/graph/algorithms.dart)
   - **Problem**: Computing the minimum number of edges or vertices whose removal disconnects a graph (or separates `source` from `target`) requires manual unit-capacity network construction on top of `DinicMaxFlow` or `StoerWagnerMinCut`.

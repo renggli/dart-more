@@ -8,6 +8,7 @@ import 'algorithms/biconnected.dart' as biconnected;
 import 'algorithms/bipartite_check.dart' as bipartite_check;
 import 'algorithms/bipartite_matching.dart' as bipartite_matching;
 import 'algorithms/bron_kerbosch_cliques.dart' as bron_kerbosch_cliques;
+import 'algorithms/connectivity.dart' as connectivity;
 import 'algorithms/cycle_check.dart' as cycle_check;
 import 'algorithms/dinic_max_flow.dart' as dinic_max_flow;
 import 'algorithms/eulerian.dart' as eulerian;
@@ -488,6 +489,30 @@ extension AlgorithmsGraphExtension<V, E> on Graph<V, E> {
         k,
         vertexStrategy: vertexStrategy ?? this.vertexStrategy,
       );
+
+  /// Computes the edge connectivity of this graph (or between [source] and [target]).
+  int edgeConnectivity({
+    V? source,
+    V? target,
+    StorageStrategy<V>? vertexStrategy,
+  }) => connectivity.edgeConnectivity<V, E>(
+    this,
+    source: source,
+    target: target,
+    vertexStrategy: vertexStrategy ?? this.vertexStrategy,
+  );
+
+  /// Computes the vertex connectivity of this graph (or between [source] and [target]).
+  int vertexConnectivity({
+    V? source,
+    V? target,
+    StorageStrategy<V>? vertexStrategy,
+  }) => connectivity.vertexConnectivity<V, E>(
+    this,
+    source: source,
+    target: target,
+    vertexStrategy: vertexStrategy ?? this.vertexStrategy,
+  );
 
   /// Internal helper that returns a function using the numeric edge value
   /// of this graph, or otherwise a constant value for each edge.
