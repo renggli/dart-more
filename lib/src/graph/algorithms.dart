@@ -11,6 +11,7 @@ import 'algorithms/bron_kerbosch_cliques.dart' as bron_kerbosch_cliques;
 import 'algorithms/cycle_check.dart' as cycle_check;
 import 'algorithms/dinic_max_flow.dart' as dinic_max_flow;
 import 'algorithms/eulerian.dart' as eulerian;
+import 'algorithms/k_core.dart' as k_core;
 import 'algorithms/kruskal_spanning_tree.dart' as kruskal_spanning_tree;
 import 'algorithms/page_rank.dart' as page_rank;
 import 'algorithms/prim_spanning_tree.dart' as prim_spanning_tree;
@@ -470,6 +471,21 @@ extension AlgorithmsGraphExtension<V, E> on Graph<V, E> {
   Set<V> maximumIndependentSet({StorageStrategy<V>? vertexStrategy}) =>
       bipartite_matching.maximumIndependentSet<V, E>(
         this,
+        vertexStrategy: vertexStrategy ?? this.vertexStrategy,
+      );
+
+  /// Computes the core numbers of all vertices in this undirected graph.
+  Map<V, int> coreNumbers({StorageStrategy<V>? vertexStrategy}) =>
+      k_core.coreNumbers<V, E>(
+        this,
+        vertexStrategy: vertexStrategy ?? this.vertexStrategy,
+      );
+
+  /// Returns the $k$-core subgraph of this undirected graph.
+  Graph<V, E> kCore(int k, {StorageStrategy<V>? vertexStrategy}) =>
+      k_core.kCore<V, E>(
+        this,
+        k,
         vertexStrategy: vertexStrategy ?? this.vertexStrategy,
       );
 

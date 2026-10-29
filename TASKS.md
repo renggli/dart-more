@@ -439,7 +439,7 @@
   - **Problem**: While `isBipartite` and `DinicMaxFlow` both exist in `lib/src/graph/algorithms/`, there is no dedicated bipartite matching or minimum vertex cover API (`bipartiteMatching`, `minimumVertexCover`).
   - **Fix**: Implement Hopcroft–Karp $O(E \sqrt{V})$ maximum bipartite matching (or build on `isBipartite` two-coloring + `DinicMaxFlow`) and derive the minimum vertex cover and maximum independent set in bipartite graphs via König's theorem in `lib/src/graph/algorithms/bipartite_matching.dart`.
 
-- [ ] **$k$-Core decomposition (`kCore`, `coreNumbers`)**
+- [x] **$k$-Core decomposition (`kCore`, `coreNumbers`)**
   - **Severity**: Suggestion
   - **Location**: [`lib/src/graph/algorithms.dart`](lib/src/graph/algorithms.dart), [`lib/graph.dart`](lib/graph.dart)
   - **Problem**: There is no algorithm to compute vertex core numbers or extract the maximal subgraph in which every vertex has degree $\ge k$ (whereas `bronKerboschCliques` requires exponential time).
