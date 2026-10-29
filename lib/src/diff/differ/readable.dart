@@ -108,6 +108,7 @@ class ReadableDiffer extends Differ {
     var sourceEqual = -1, targetEqual = -1;
     for (var t = targetStart; t < targetEnd; t++) {
       final targetStr = target[t];
+      matcher.target = targetStr.runes;
       for (var s = sourceStart; s < sourceEnd; s++) {
         final sourceStr = source[s];
         if (sourceStr == targetStr) {
@@ -117,7 +118,6 @@ class ReadableDiffer extends Differ {
           }
           continue;
         }
-        matcher.target = targetStr.runes;
         matcher.source = sourceStr.runes;
         if (matcher.realQuickRatio > ratioBest &&
             matcher.quickRatio > ratioBest) {

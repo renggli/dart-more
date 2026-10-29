@@ -202,7 +202,7 @@
 
 ## 2. Performance Issues
 
-- [ ] **`ReadableDiffer._replace` sets `matcher.target = targetStr.runes` inside the inner loop**
+- [x] **`ReadableDiffer._replace` sets `matcher.target = targetStr.runes` inside the inner loop**
   - **Severity**: Warning
   - **Location**: [`lib/src/diff/differ/readable.dart`](lib/src/diff/differ/readable.dart#L109-L132)
   - **Problem**: `targetStr` depends only on the outer loop index `t`, but `matcher.target = targetStr.runes` is executed on line 120 inside the inner `for (var s = ...)` loop, recomputing `_target`, `_targetIndices`, `_targetJunk`, and `_targetPopular` $O(S \times T)$ times instead of $O(T)$ times.
