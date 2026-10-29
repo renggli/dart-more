@@ -12,6 +12,7 @@ import 'algorithms/connectivity.dart' as connectivity;
 import 'algorithms/cycle_check.dart' as cycle_check;
 import 'algorithms/dinic_max_flow.dart' as dinic_max_flow;
 import 'algorithms/eulerian.dart' as eulerian;
+import 'algorithms/isomorphism.dart' as isomorphism;
 import 'algorithms/k_core.dart' as k_core;
 import 'algorithms/kruskal_spanning_tree.dart' as kruskal_spanning_tree;
 import 'algorithms/page_rank.dart' as page_rank;
@@ -512,6 +513,42 @@ extension AlgorithmsGraphExtension<V, E> on Graph<V, E> {
     source: source,
     target: target,
     vertexStrategy: vertexStrategy ?? this.vertexStrategy,
+  );
+
+  /// Checks if this graph is isomorphic to [other].
+  bool isIsomorphicTo<W, F>(
+    Graph<W, F> other, {
+    bool Function(V targetVertex, W patternVertex)? vertexComparator,
+    bool Function(E targetEdgeValue, F patternEdgeValue)? edgeComparator,
+    StorageStrategy<V>? vertexStrategy,
+    StorageStrategy<W>? otherStrategy,
+  }) => isomorphism
+      .findIsomorphisms<V, E, W, F>(
+        this,
+        other,
+        subgraph: false,
+        vertexComparator: vertexComparator,
+        edgeComparator: edgeComparator,
+        targetStrategy: vertexStrategy ?? this.vertexStrategy,
+        patternStrategy: otherStrategy ?? other.vertexStrategy,
+      )
+      .isNotEmpty;
+
+  /// Finds all induced subgraph isomorphisms of [pattern] in this graph.
+  Iterable<Map<W, V>> findSubgraphIsomorphisms<W, F>(
+    Graph<W, F> pattern, {
+    bool Function(V targetVertex, W patternVertex)? vertexComparator,
+    bool Function(E targetEdgeValue, F patternEdgeValue)? edgeComparator,
+    StorageStrategy<V>? vertexStrategy,
+    StorageStrategy<W>? patternStrategy,
+  }) => isomorphism.findIsomorphisms<V, E, W, F>(
+    this,
+    pattern,
+    subgraph: true,
+    vertexComparator: vertexComparator,
+    edgeComparator: edgeComparator,
+    targetStrategy: vertexStrategy ?? this.vertexStrategy,
+    patternStrategy: patternStrategy ?? pattern.vertexStrategy,
   );
 
   /// Internal helper that returns a function using the numeric edge value

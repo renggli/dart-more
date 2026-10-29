@@ -457,7 +457,7 @@
   - **Problem**: Computing the minimum number of edges or vertices whose removal disconnects a graph (or separates `source` from `target`) requires manual unit-capacity network construction on top of `DinicMaxFlow` or `StoerWagnerMinCut`.
   - **Fix**: Add `int edgeConnectivity([V? source, V? target])` and `int vertexConnectivity([V? source, V? target])` (using unit edge capacities and vertex-splitting $v \to (v_{\text{in}}, v_{\text{out}})$ with `DinicMaxFlow`) on `AlgorithmsGraphExtension`.
 
-- [ ] **Graph and subgraph isomorphism (VF2 algorithm)**
+- [x] **Graph and subgraph isomorphism (VF2 algorithm)**
   - **Severity**: Suggestion
   - **Location**: [`lib/src/graph/algorithms.dart`](lib/src/graph/algorithms.dart), [`lib/graph.dart`](lib/graph.dart)
   - **Problem**: `Graph` has no structural equivalence check (`isIsomorphicTo`) or subgraph pattern matching (`findIsomorphisms`), which is particularly useful alongside `GraphFactory.atlas`.

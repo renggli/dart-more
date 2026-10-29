@@ -17,6 +17,7 @@ export 'src/graph/algorithms/cycle_check.dart' show hasCycle;
 export 'src/graph/algorithms/dinic_max_flow.dart' show DinicMaxFlow;
 export 'src/graph/algorithms/eulerian.dart'
     show findEulerianPath, hasEulerianCircuit, hasEulerianPath;
+export 'src/graph/algorithms/isomorphism.dart' show findIsomorphisms;
 export 'src/graph/algorithms/k_core.dart' show coreNumbers, kCore;
 export 'src/graph/algorithms/kruskal_spanning_tree.dart'
     show kruskalSpanningTree;
