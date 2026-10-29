@@ -133,6 +133,106 @@ final class FloydWarshall<V> {
       }
     }
   }
+
+  /// Returns the eccentricity of [vertex], which is the maximum distance
+  /// from [vertex] to any other reachable vertex.
+  ///
+  /// If there are no other vertices in the graph, returns `0`.
+  /// If [vertex] cannot reach all other vertices, returns [double.infinity].
+  num eccentricity(V vertex) {
+    final targetMap = _pairs[vertex];
+    if (targetMap == null) {
+      throw GraphError(vertex, 'vertex', 'Unknown vertex');
+    }
+    if (_pairs.length <= 1) return 0;
+    var maxDist = 0.0;
+    for (final entry in targetMap.entries) {
+      if (entry.key == vertex) continue;
+      final dist = entry.value.distance;
+      if (dist.isInfinite) return double.infinity;
+      if (dist > maxDist) maxDist = dist.toDouble();
+    }
+    return maxDist;
+  }
+
+  /// Returns the diameter of the graph, which is the maximum eccentricity
+  /// among all vertices in the graph.
+  ///
+  /// Returns `0` if the graph has 0 or 1 vertex.
+  /// Returns [double.infinity] if the graph is not strongly connected.
+  num get diameter {
+    if (_pairs.length <= 1) return 0;
+    var maxEcc = 0.0;
+    for (final vertex in _pairs.keys) {
+      final ecc = eccentricity(vertex);
+      if (ecc.isInfinite) return double.infinity;
+      if (ecc > maxEcc) maxEcc = ecc.toDouble();
+    }
+    return maxEcc;
+  }
+
+  /// Returns the radius of the graph, which is the minimum eccentricity
+  /// among all vertices in the graph.
+  ///
+  /// Returns `0` if the graph has 0 or 1 vertex.
+  /// Returns [double.infinity] if the graph is disconnected.
+  num get radius {
+    if (_pairs.length <= 1) return 0;
+    var minEcc = double.infinity;
+    for (final vertex in _pairs.keys) {
+      final ecc = eccentricity(vertex);
+      if (ecc < minEcc) minEcc = ecc.toDouble();
+    }
+    return minEcc;
+  }
+
+  /// Returns the center of the graph, which is the set of vertices whose
+  /// eccentricity equals the radius.
+  Set<V> get center {
+    final rad = radius;
+    final result = <V>{};
+    if (rad.isInfinite) return result;
+    for (final vertex in _pairs.keys) {
+      if (eccentricity(vertex) == rad) {
+        result.add(vertex);
+      }
+    }
+    return result;
+  }
+
+  /// Returns the periphery of the graph, which is the set of vertices whose
+  /// eccentricity equals the diameter.
+  Set<V> get periphery {
+    final diam = diameter;
+    final result = <V>{};
+    if (diam.isInfinite) return result;
+    for (final vertex in _pairs.keys) {
+      if (eccentricity(vertex) == diam) {
+        result.add(vertex);
+      }
+    }
+    return result;
+  }
+
+  /// Returns the average shortest path length between all distinct pairs
+  /// of connected vertices.
+  ///
+  /// Returns `0.0` if there are fewer than 2 vertices or no connected pairs.
+  double get averagePathLength {
+    var totalDistance = 0.0;
+    var pairCount = 0;
+    for (final source in _pairs.keys) {
+      for (final entry in _pairs[source]!.entries) {
+        if (source == entry.key) continue;
+        final dist = entry.value.distance;
+        if (!dist.isInfinite) {
+          totalDistance += dist;
+          pairCount++;
+        }
+      }
+    }
+    return pairCount == 0 ? 0.0 : totalDistance / pairCount;
+  }
 }
 
 final class FloydWarshallState<V> {

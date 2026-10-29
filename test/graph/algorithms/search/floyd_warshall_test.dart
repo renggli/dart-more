@@ -146,6 +146,68 @@ void main() {
       check(() => allShortestPaths.path(99, 1)).throws<GraphError>();
       check(() => allShortestPaths.path(1, 99)).throws<GraphError>();
     });
+    group('metrics', () {
+      test('undirected path P5 (0-1-2-3-4)', () {
+        final graph = GraphFactory<int, void>(isDirected: false)
+            .path(vertexCount: 5);
+        final fw = graph.allShortestPaths();
+
+        // Eccentricities:
+        // 0: max dist to 4 is 4
+        // 1: max dist to 4 is 3
+        // 2: max dist to 0 or 4 is 2
+        // 3: max dist to 0 is 3
+        // 4: max dist to 0 is 4
+        check(fw.eccentricity(0)).equals(4);
+        check(fw.eccentricity(1)).equals(3);
+        check(fw.eccentricity(2)).equals(2);
+        check(fw.eccentricity(3)).equals(3);
+        check(fw.eccentricity(4)).equals(4);
+
+        check(fw.diameter).equals(4);
+        check(fw.radius).equals(2);
+        check(fw.center).unorderedEquals([2]);
+        check(fw.periphery).unorderedEquals([0, 4]);
+
+        // Total pairs: 5 * 4 = 20 pairs (directed pairs in FW).
+        // For P5, sum of distances:
+        // from 0: 1+2+3+4 = 10
+        // from 1: 1+1+2+3 = 7
+        // from 2: 2+1+1+2 = 6
+        // from 3: 3+2+1+1 = 7
+        // from 4: 4+3+2+1 = 10
+        // Total = 40. 40 / 20 = 2.0.
+        check(fw.averagePathLength).equals(2.0);
+      });
+
+      test('disconnected graph', () {
+        final graph = Graph<int, void>(isDirected: false)
+          ..addEdge(0, 1)
+          ..addEdge(2, 3);
+        final fw = graph.allShortestPaths();
+
+        check(fw.eccentricity(0)).equals(double.infinity);
+        check(fw.diameter).equals(double.infinity);
+        check(fw.radius).equals(double.infinity);
+        check(fw.center).isEmpty();
+        check(fw.periphery).isEmpty();
+        // Connected pairs: 0-1, 1-0, 2-3, 3-2 (each dist 1). Average = 1.0.
+        check(fw.averagePathLength).equals(1.0);
+      });
+
+      test('single vertex graph', () {
+        final graph = Graph<int, void>(isDirected: false)..addVertex(1);
+        final fw = graph.allShortestPaths();
+
+        check(fw.eccentricity(1)).equals(0);
+        check(fw.diameter).equals(0);
+        check(fw.radius).equals(0);
+        check(fw.center).unorderedEquals([1]);
+        check(fw.periphery).unorderedEquals([1]);
+        check(fw.averagePathLength).equals(0.0);
+      });
+    });
+
     group('maze', () {
       test('floyd-warshall', () {
         final search = floydWarshallSearch<Point<int>>(

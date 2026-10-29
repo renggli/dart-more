@@ -415,7 +415,7 @@
   - **Problem**: Directed graphs have `stronglyConnected()` via Tarjan's algorithm, and undirected graphs have global `minCut()` via Stoer-Wagner, but undirected graphs lack linear-time $O(V + E)$ structural resilience analysis for articulation points (cut vertices), bridges (cut edges), and biconnected components.
   - **Fix**: Implement Tarjan's DFS low-link algorithm in `lib/src/graph/algorithms/biconnected.dart` (using `StorageStrategy<V>`) to compute `articulationPoints()`, `bridges()`, and `biconnectedComponents()` on `AlgorithmsGraphExtension`.
 
-- [ ] **Graph eccentricity, diameter, radius, center, periphery, and average path length on `FloydWarshall`**
+- [x] **Graph eccentricity, diameter, radius, center, periphery, and average path length on `FloydWarshall`**
   - **Severity**: Suggestion
   - **Location**: [`lib/src/graph/algorithms/search/floyd_warshall.dart`](lib/src/graph/algorithms/search/floyd_warshall.dart#L82-L136)
   - **Problem**: `FloydWarshall<V>` already computes the complete all-pairs shortest-path distance matrix `_pairs`, but only exposes `distance(source, target)`, `path(source, target)`, and `allPaths()`. Users must manually iterate over all vertex pairs to compute eccentricity, graph diameter, radius, center/periphery vertices, or average shortest-path length.
