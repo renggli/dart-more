@@ -56,7 +56,7 @@
   - **Problem**: `removeSuffix` uses `final end = lastIndexOf(pattern);`, which searches backward from the end of the string and stops at the shortest suffix match. For `'hello123'.removeSuffix(RegExp(r'\d+'))`, `lastIndexOf` matches `'3'` at index 7 instead of `'123'` at index 5, returning `'hello12'` instead of `'hello'`. Additionally, for patterns that can match empty strings (e.g. `RegExp(r'x*')`), `removePrefix` guards `match.end > 0` while `removeSuffix` lacks a guard.
   - **Fix**: Fast-path `pattern is String` with `endsWith(pattern)`, and for general `Pattern` find the first match in `pattern.allMatches(this)` where `match.end == length && match.start < length`.
 
-- [ ] **`WrapUnwrapStringExtension.wrap` prematurely flushes the trailing remainder of broken long words**
+- [x] **`WrapUnwrapStringExtension.wrap` prematurely flushes the trailing remainder of broken long words**
   - **Severity**: Warning
   - **Location**: [`lib/src/collection/string/wrap_unwrap.dart`](lib/src/collection/string/wrap_unwrap.dart#L27-L34)
   - **Problem**: When `breakLongWords: true` and `word.length > width`, the loop `for (var j = 0; j < word.length; j += width) { result.add(...); }` flushes all chunks—including a short trailing remainder `< width`—directly to `result` as a completed line instead of placing the last partial chunk into `buffer`. Consequently, `'abcdefg x'.wrap(5)` produces 3 lines (`'abcde\nfg\nx'`) instead of 2 (`'abcde\nfg x'`).

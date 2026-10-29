@@ -41,6 +41,7 @@ void main() {
       check('12345'.wrap(4, breakLongWords: false)).equals('12345');
       check('12345678'.wrap(4, breakLongWords: false)).equals('12345678');
       check('123456789'.wrap(4, breakLongWords: false)).equals('123456789');
+      check('abcdefg x'.wrap(5)).equals('abcde\nfg x');
     });
     test('invalid', () {
       check(() => 'a'.wrap(-1)).throws<RangeError>();

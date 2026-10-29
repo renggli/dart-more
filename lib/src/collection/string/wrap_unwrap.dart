@@ -1,5 +1,3 @@
-import 'dart:math';
-
 import '../../shared/exceptions.dart';
 
 /// Extension on [String] providing text wrapping and unwrapping.
@@ -30,8 +28,12 @@ extension WrapUnwrapStringExtension on String {
         if (word.length <= width) {
           buffer.write(word);
         } else if (breakLongWords) {
-          for (var j = 0; j < word.length; j += width) {
-            result.add(word.substring(j, min(word.length, j + width)));
+          var j = 0;
+          for (; j + width <= word.length; j += width) {
+            result.add(word.substring(j, j + width));
+          }
+          if (j < word.length) {
+            buffer.write(word.substring(j));
           }
         } else {
           buffer.write(word);
