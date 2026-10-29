@@ -250,7 +250,7 @@
   - **Problem**: `product` calls `any((e) => e.isEmpty)` and then `map((e) => e.toList(growable: false)).toList(growable: false)`, iterating the outer and inner iterables twice. `atRandom` calls `isEmpty`, then `length`, then `elementAt`, iterating non-`List` iterables up to 3 times.
   - **Fix**: Materialize the inner lists first in `product` and check `isEmpty` on the materialized lists; in `atRandom`, fast-path `List<E>` and use single-pass reservoir sampling (or `toList(growable: false)`) for general `Iterable<E>`.
 
-- [ ] **`GroupIterableExtension.groupBy` evaluates `grouper(iterator.current)` twice at every group boundary**
+- [x] **`GroupIterableExtension.groupBy` evaluates `grouper(iterator.current)` twice at every group boundary**
   - **Severity**: Suggestion
   - **Location**: [`lib/src/collection/iterable/group.dart`](lib/src/collection/iterable/group.dart#L31-L36)
   - **Problem**: When `key != nextKey`, `moveNext()` exits the `while` loop without storing `nextKey`, so the subsequent call to `moveNext()` calls `grouper(iterator.current)` a second time on the boundary element.

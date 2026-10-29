@@ -36,5 +36,14 @@ void main() {
         ['a', 'a', 'a', 'a'],
       ]);
     });
+    test('evaluates key exactly once per element', () {
+      var count = 0;
+      final groups = ['a', 'a', 'b', 'c', 'c'].groupBy((element) {
+        count++;
+        return element;
+      }).toList();
+      check(count).equals(5);
+      check(groups.length).equals(3);
+    });
   });
 }

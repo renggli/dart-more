@@ -16,17 +16,19 @@ extension GroupIterableExtension<V> on Iterable<V> {
     final iterator = this.iterator;
     if (iterator.moveNext()) {
       final grouper = key ?? (element) => element as K;
-      var group = Group<K, V>(grouper(iterator.current), <V>[iterator.current]);
+      var currentKey = grouper(iterator.current);
+      var currentValues = <V>[iterator.current];
       while (iterator.moveNext()) {
         final nextKey = grouper(iterator.current);
-        if (group.key == nextKey) {
-          group.value.add(iterator.current);
+        if (currentKey == nextKey) {
+          currentValues.add(iterator.current);
         } else {
-          yield group;
-          group = Group<K, V>(grouper(iterator.current), <V>[iterator.current]);
+          yield Group<K, V>(currentKey, currentValues);
+          currentKey = nextKey;
+          currentValues = <V>[iterator.current];
         }
       }
-      yield group;
+      yield Group<K, V>(currentKey, currentValues);
     }
   }
 }
