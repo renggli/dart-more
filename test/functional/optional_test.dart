@@ -100,6 +100,13 @@ void main() {
         check(optional == stringPresent).isTrue();
         check(optional == stringAbsent).isFalse();
       });
+      test('== symmetry with sub/supertypes', () {
+        const numPresent = Optional<num>.of(1);
+        const intPresent = Optional<int>.of(1);
+        check(numPresent == intPresent).isTrue();
+        check(intPresent == numPresent).isTrue();
+        check(numPresent.hashCode).equals(intPresent.hashCode);
+      });
       test('hashCode', () {
         check(optional.hashCode == intPresent.hashCode).isFalse();
         check(optional.hashCode == intAbsent.hashCode).isFalse();
@@ -192,13 +199,13 @@ void main() {
         // ignore: unrelated_type_equality_checks
         check(optional == intPresent).isFalse();
         // ignore: unrelated_type_equality_checks
-        check(optional == intAbsent).isFalse();
+        check(optional == intAbsent).isTrue();
         check(optional == stringPresent).isFalse();
         check(optional == stringAbsent).isTrue();
       });
       test('hashCode', () {
         check(optional.hashCode == intPresent.hashCode).isFalse();
-        check(optional.hashCode == intAbsent.hashCode).isFalse();
+        check(optional.hashCode == intAbsent.hashCode).isTrue();
         check(optional.hashCode == stringPresent.hashCode).isFalse();
         check(optional.hashCode == stringAbsent.hashCode).isTrue();
       });

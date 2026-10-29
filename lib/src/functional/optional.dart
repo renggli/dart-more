@@ -132,10 +132,10 @@ class PresentOptional<T> extends Optional<T> {
 
   @override
   bool operator ==(Object other) =>
-      other is PresentOptional<T> && value == other.value;
+      other is PresentOptional && value == other.value;
 
   @override
-  int get hashCode => value.hashCode;
+  int get hashCode => Object.hash(PresentOptional, value);
 
   @override
   String toString() => '${super.toString()}[$value]';
@@ -188,10 +188,10 @@ class AbsentOptional<T> extends Optional<T> {
   T orElseThrow([Object? error]) => throw error ?? noSuchElementError;
 
   @override
-  bool operator ==(Object other) => other is AbsentOptional<T>;
+  bool operator ==(Object other) => other is AbsentOptional;
 
   @override
-  int get hashCode => T.hashCode;
+  int get hashCode => 0;
 }
 
 final noSuchElementError = StateError('No such element');
