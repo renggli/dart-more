@@ -164,7 +164,7 @@
   - **Problem**: `periodical(TimeUnit.month)` chains `iterate(this, (prev) => create(prev.year, prev.month + step, prev.day, ...))`. Starting at `DateTime(2024, 1, 31)`, step 1 overflows Feb 31 to `2024-03-02`, and all subsequent months stay on the 2nd (`2024-04-02`, `2024-05-02`, ...) instead of advancing by `i * step` from the initial date.
   - **Fix**: Compute the $n$-th element from the initial `DateTime` (`create(year, month + n * step, day, ...)`) or document/clamp month-end overflow.
 
-- [ ] **`Duration.convertToAll` converts `inMicroseconds` to `double`, losing precision for large durations**
+- [x] **`Duration.convertToAll` converts `inMicroseconds` to `double`, losing precision for large durations**
   - **Severity**: Warning
   - **Location**: [`lib/src/temporal/duration/convert_all.dart`](lib/src/temporal/duration/convert_all.dart#L20-L34)
   - **Problem**: `var remainder = inMicroseconds.toDouble();` loses precision when `inMicroseconds.abs() > 2^53` (~285 years, e.g. `TimeUnit.millennium`), dropping low-order microseconds even when using integer `casualConversion`.

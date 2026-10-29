@@ -88,5 +88,12 @@ void main() {
         TimeUnit.microsecond: 21816000000,
       });
     });
+    test('large duration precision', () {
+      final micros = int.parse('9007199254740993'); // 2^53 + 1
+      final duration = Duration(microseconds: micros);
+      final result = duration.convertToAll({TimeUnit.second});
+      check(result[TimeUnit.second]).equals(micros ~/ 1000000);
+      check(result[TimeUnit.microsecond]).equals(micros % 1000000);
+    }, testOn: '!js');
   });
 }

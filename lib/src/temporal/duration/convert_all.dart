@@ -19,15 +19,25 @@ extension ConvertToAllDurationExtension on Duration {
   }) {
     final result = <TimeUnit, int>{};
     final smallest = TimeUnit.values.first;
-    var remainder = inMicroseconds.toDouble();
+    var remainderInt = inMicroseconds;
+    double? remainderDouble;
     for (final unit in TimeUnit.values.reversed) {
       if (smallest == unit) {
-        result[smallest] = remainder.truncate();
+        result[smallest] = remainderDouble != null
+            ? remainderDouble.truncate()
+            : remainderInt;
       } else if (units.contains(unit)) {
         final micros = conversion[unit]!;
-        final value = (remainder / micros).truncate();
-        remainder -= value * micros;
-        result[unit] = value;
+        if (micros is int && remainderDouble == null) {
+          final value = remainderInt ~/ micros;
+          remainderInt -= value * micros;
+          result[unit] = value;
+        } else {
+          remainderDouble ??= remainderInt.toDouble();
+          final value = (remainderDouble / micros).truncate();
+          remainderDouble -= value * micros;
+          result[unit] = value;
+        }
       }
     }
     return result;
