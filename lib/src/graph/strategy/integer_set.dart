@@ -31,7 +31,9 @@ class IntegerSet extends SetBase<int> {
   bool contains(Object? element) {
     if (element is int) {
       final index = _forward(element);
-      return index < _presence.length && _presence.getUnchecked(index);
+      return 0 <= index &&
+          index < _presence.length &&
+          _presence.getUnchecked(index);
     }
     return false;
   }
@@ -46,13 +48,15 @@ class IntegerSet extends SetBase<int> {
   int get length => _presence.count();
 
   @override
-  int? lookup(Object? element) => throw UnimplementedError();
+  int? lookup(Object? element) => contains(element) ? element as int : null;
 
   @override
   bool remove(Object? value) {
     if (value is int) {
       final index = _forward(value);
-      if (index < _presence.length && _presence.getUnchecked(index)) {
+      if (0 <= index &&
+          index < _presence.length &&
+          _presence.getUnchecked(index)) {
         _presence.setUnchecked(index, false);
         return true;
       }

@@ -15,7 +15,9 @@ void main() {
       check(set.contains('foo' as dynamic)).isFalse();
       check(set).unorderedEquals([42, -43]);
       check(set.length).equals(2);
-      check(() => set.lookup(42)).throws<UnimplementedError>();
+      check(set.lookup(42)).equals(42);
+      check(set.lookup(41)).isNull();
+      check(set.lookup('foo' as dynamic)).isNull();
       check(set.remove(42)).isTrue();
       check(set.remove(42)).isFalse();
       check(set.remove('foo' as dynamic)).isFalse();

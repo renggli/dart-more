@@ -170,7 +170,7 @@
   - **Problem**: `var remainder = inMicroseconds.toDouble();` loses precision when `inMicroseconds.abs() > 2^53` (~285 years, e.g. `TimeUnit.millennium`), dropping low-order microseconds even when using integer `casualConversion`.
   - **Fix**: Keep `remainder` as `int` when `conversion` values are `int` (or use `~/ unit` and `% unit` before falling back to `double`).
 
-- [ ] **`IntegerSet.contains` and `IntegerSet.remove` do not guard against negative indices and `lookup` throws `UnimplementedError`**
+- [x] **`IntegerSet.contains` and `IntegerSet.remove` do not guard against negative indices and `lookup` throws `UnimplementedError`**
   - **Severity**: Warning
   - **Location**: [`lib/src/graph/strategy/integer_set.dart`](lib/src/graph/strategy/integer_set.dart#L31-L60)
   - **Problem**: `IntegerMap` checks `0 <= index && index < _presence.length`, whereas `IntegerSet.contains` and `IntegerSet.remove` only check `index < _presence.length && _presence.getUnchecked(index)`. With `StorageStrategy.positiveInteger()`, calling `set.contains(-1)` in release mode passes `-1` to `_presence.getUnchecked(-1)`, which computes `-1 >>> 5 == 576460752303423487` and throws `RangeError` instead of returning `false`. Furthermore, `IntegerSet.lookup` (line 49) throws `UnimplementedError`.
