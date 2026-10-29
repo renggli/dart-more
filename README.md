@@ -65,7 +65,7 @@ Flexible graph data structures with built-in pathfinding, search, and topologica
 import 'package:more/graph.dart';
 
 // Create a directed weighted graph
-final graph = Graph<String, num>.directed()
+final graph = Graph<String, num>(isDirected: true)
   ..addEdge('A', 'B', value: 4)
   ..addEdge('A', 'C', value: 2)
   ..addEdge('C', 'B', value: 1);

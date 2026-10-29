@@ -288,7 +288,7 @@
 
 ## 4. Missing or Broken Documentation
 
-- [ ] **`README.md` Graph snippet uses deprecated `Graph.directed()` constructor**
+- [x] **`README.md` Graph snippet uses deprecated `Graph.directed()` constructor**
   - **Severity**: Warning
   - **Location**: [`README.md`](README.md#L66)
   - **Problem**: `final graph = Graph<String, num>.directed()` in `README.md` calls `@Deprecated('Use Graph(isDirected: true) instead.')`.
