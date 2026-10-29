@@ -18,11 +18,15 @@ class Interval<T extends Comparable<T>> {
   /// the single element [lower].
   new(T lower, [T? upper]) : this._(lower, upper ?? lower);
 
-  new _(this.lower, this.upper)
-    : assert(
-        lower.compareTo(upper) <= 0,
-        'Invalid endpoints for $lower..$upper',
+  new _(this.lower, this.upper) {
+    if (lower.compareTo(upper) > 0) {
+      throw ArgumentError.value(
+        upper,
+        'upper',
+        'Invalid endpoints: $lower must be <= $upper',
       );
+    }
+  }
 
   /// The lower bound of this interval.
   final T lower;
@@ -31,7 +35,7 @@ class Interval<T extends Comparable<T>> {
   final T upper;
 
   /// Whether this interval consists of a single value.
-  bool get isSingle => lower == upper;
+  bool get isSingle => lower.compareTo(upper) == 0;
 
   /// Whether [value] is included in this interval.
   bool contains(T value) =>

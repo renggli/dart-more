@@ -1,6 +1,5 @@
 import 'package:checks/checks.dart';
 import 'package:more/collection.dart';
-import 'package:more/feature.dart';
 import 'package:more/interval.dart';
 import 'package:test/scaffolding.dart';
 
@@ -25,9 +24,7 @@ void main() {
     test('constructor', () {
       check(Interval(1, 1)).equals(Interval(1));
       check(Interval(1, 2)).equals(Interval(1, 2));
-      if (hasAssertionsEnabled) {
-        check(() => Interval(2, 1)).throws<AssertionError>();
-      }
+      check(() => Interval(2, 1)).throws<ArgumentError>();
     });
     test('lower', () {
       check(interval0to7.lower).equals(0);
@@ -52,6 +49,7 @@ void main() {
       check(interval3to6).isNotSingle();
       check(interval2to4).isNotSingle();
       check(interval5to5).isSingle();
+      check(Interval<num>(-0.0, 0.0)).isNotSingle();
     });
     test('contains', () {
       for (final interval in intervals) {

@@ -146,7 +146,7 @@
   - **Problem**: In release builds, `Cache.lru(loader: ..., maximumSize: 0)` and `Cache.expiry(loader: ...)` (with both durations `null` or negative) do not throw `ArgumentError`. Additionally, when `loader(key)` returns a `Future` that completes with an error, `ExpiryCache.get` and `LruCache.get` retain the failed `CacheItem` in `cached[key]`, causing subsequent `get(key)` calls to rethrow the cached failure instead of evicting the entry on error.
   - **Fix**: Replace constructor `assert`s with runtime `ArgumentError` / `RangeError` checks, and evict the `CacheItem` if its load future fails.
 
-- [ ] **`Interval` only validates `lower.compareTo(upper) <= 0` via `assert` and `isSingle` uses `==` instead of `compareTo`**
+- [x] **`Interval` only validates `lower.compareTo(upper) <= 0` via `assert` and `isSingle` uses `==` instead of `compareTo`**
   - **Severity**: Warning
   - **Location**: [`lib/src/interval/interval.dart`](lib/src/interval/interval.dart#L9-L23)
   - **Problem**: In release builds, `Interval(10, 5)` succeeds without throwing `ArgumentError`. Also, `isSingle` checks `lower == upper` while all other methods use `compareTo`, so `Interval(-0.0, 0.0)` has `lower.compareTo(upper) == -1` yet `isSingle == true`.
