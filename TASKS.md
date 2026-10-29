@@ -433,7 +433,7 @@
   - **Problem**: `Graph` lacks vertex importance and ranking algorithms used in network analysis and dependency ranking: closeness centrality, Brandes's $O(VE)$ unweighted / $O(VE + V^2 \log V)$ weighted betweenness centrality, and iterative PageRank / eigenvector centrality.
   - **Fix**: Add `closenessCentrality()` (on `FloydWarshall<V>` or `AlgorithmsGraphExtension`), `betweennessCentrality()` (Brandes's algorithm in `lib/src/graph/algorithms/betweenness_centrality.dart`), and `pageRank({double damping = 0.85, double tolerance = 1e-6, int maxIterations = 100})` (in `lib/src/graph/algorithms/page_rank.dart`) returning `Map<V, double>`.
 
-- [ ] **Maximum bipartite matching (Hopcroft–Karp) and minimum vertex cover (König's theorem)**
+- [x] **Maximum bipartite matching (Hopcroft–Karp) and minimum vertex cover (König's theorem)**
   - **Severity**: Suggestion
   - **Location**: [`lib/src/graph/algorithms/bipartite_check.dart`](lib/src/graph/algorithms/bipartite_check.dart), [`lib/src/graph/algorithms/dinic_max_flow.dart`](lib/src/graph/algorithms/dinic_max_flow.dart), [`lib/src/graph/algorithms.dart`](lib/src/graph/algorithms.dart)
   - **Problem**: While `isBipartite` and `DinicMaxFlow` both exist in `lib/src/graph/algorithms/`, there is no dedicated bipartite matching or minimum vertex cover API (`bipartiteMatching`, `minimumVertexCover`).

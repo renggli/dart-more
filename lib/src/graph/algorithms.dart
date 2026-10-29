@@ -6,6 +6,7 @@ import '../functional/types/predicate.dart';
 import 'algorithms/betweenness_centrality.dart' as betweenness_centrality;
 import 'algorithms/biconnected.dart' as biconnected;
 import 'algorithms/bipartite_check.dart' as bipartite_check;
+import 'algorithms/bipartite_matching.dart' as bipartite_matching;
 import 'algorithms/bron_kerbosch_cliques.dart' as bron_kerbosch_cliques;
 import 'algorithms/cycle_check.dart' as cycle_check;
 import 'algorithms/dinic_max_flow.dart' as dinic_max_flow;
@@ -450,6 +451,27 @@ extension AlgorithmsGraphExtension<V, E> on Graph<V, E> {
     }
     return result;
   }
+
+  /// Computes the maximum bipartite matching of this undirected bipartite graph.
+  Map<V, V> bipartiteMatching({StorageStrategy<V>? vertexStrategy}) =>
+      bipartite_matching.bipartiteMatching<V, E>(
+        this,
+        vertexStrategy: vertexStrategy ?? this.vertexStrategy,
+      );
+
+  /// Computes the minimum vertex cover of this undirected bipartite graph.
+  Set<V> minimumVertexCover({StorageStrategy<V>? vertexStrategy}) =>
+      bipartite_matching.minimumVertexCover<V, E>(
+        this,
+        vertexStrategy: vertexStrategy ?? this.vertexStrategy,
+      );
+
+  /// Computes the maximum independent set of this undirected bipartite graph.
+  Set<V> maximumIndependentSet({StorageStrategy<V>? vertexStrategy}) =>
+      bipartite_matching.maximumIndependentSet<V, E>(
+        this,
+        vertexStrategy: vertexStrategy ?? this.vertexStrategy,
+      );
 
   /// Internal helper that returns a function using the numeric edge value
   /// of this graph, or otherwise a constant value for each edge.

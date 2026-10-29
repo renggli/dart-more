@@ -7,6 +7,8 @@ export 'src/graph/algorithms/betweenness_centrality.dart'
 export 'src/graph/algorithms/biconnected.dart'
     show articulationPoints, biconnectedComponents, bridges;
 export 'src/graph/algorithms/bipartite_check.dart' show isBipartite;
+export 'src/graph/algorithms/bipartite_matching.dart'
+    show bipartiteMatching, maximumIndependentSet, minimumVertexCover;
 export 'src/graph/algorithms/bron_kerbosch_cliques.dart'
     show bronKerboschCliques;
 export 'src/graph/algorithms/cycle_check.dart' show hasCycle;
