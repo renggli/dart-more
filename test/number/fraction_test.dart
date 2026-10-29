@@ -111,6 +111,9 @@ void main() {
               .isFraction(355, 113);
           check(Fraction.fromDouble(1 / 3, maxDenominator: 1)).isFraction(1, 3);
         });
+        test('subnormal double', () {
+          check(Fraction.fromDouble(double.minPositive)).isNotNull();
+        });
         test('common', () {
           for (var num = -10; num <= 10; num++) {
             for (var den = -10; den <= 10; den++) {

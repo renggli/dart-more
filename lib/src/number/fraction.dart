@@ -55,6 +55,9 @@ class Fraction
     while (fractionPart != 0.0 &&
         (value - numerator1 / denominator1).abs() > absoluteError) {
       final newValue = 1.0 / fractionPart;
+      if (!newValue.isFinite) {
+        break;
+      }
       integerPart = newValue.floor();
       fractionPart = newValue - integerPart.toDouble();
       final temp1 = numerator2;
