@@ -132,16 +132,13 @@ extension SetMultimapOnIterableExtension<E> on Iterable<E> {
     V Function(E element)? value,
     Map<K, Set<V>>? map,
     Factory<Set<V>>? factory,
-  }) {
-    final keyProvider = key ?? (element) => element as K;
-    final valueProvider = value ?? (element) => element as V;
-    return SetMultimap<K, V>.fromIterables(
-      this.map(keyProvider),
-      this.map(valueProvider),
-      map: map,
-      factory: factory,
-    );
-  }
+  }) => SetMultimap<K, V>.fromIterable(
+    this,
+    key: key == null ? null : (e) => key(e as E),
+    value: value == null ? null : (e) => value(e as E),
+    map: map,
+    factory: factory,
+  );
 }
 
 Set<V> defaultFactory<V>() => <V>{};

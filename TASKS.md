@@ -214,7 +214,7 @@
   - **Problem**: `_IntervalTreeNode.fromValues` calls `getter(value)` in the endpoint loop, again in the partition loop, and $O(k \log k)$ times inside `leftValues.sort` and `rightValues.sort` at every recursion level. Additionally, `_IntervalTreeIterator` copies `node._leftValues` via `_values.addAll(node._leftValues)` on every node visit, and `IntervalTree` inherits `IterableBase.length` ($O(n)$ full traversal) instead of tracking the element count.
   - **Fix**: Pair each element with its `Interval<K>` once before constructing the tree, store `int _length` on `IntervalTree`, and iterate `node._leftValues` by index in `_IntervalTreeIterator`.
 
-- [ ] **`BiMap.fromIterable`, `toBiMap`, `toListMultimap`, and `toSetMultimap` iterate the input `Iterable` twice**
+- [x] **`BiMap.fromIterable`, `toBiMap`, `toListMultimap`, and `toSetMultimap` iterate the input `Iterable` twice**
   - **Severity**: Warning
   - **Location**: [`lib/src/collection/bimap.dart`](lib/src/collection/bimap.dart#L31-L39), [`lib/src/collection/bimap.dart`](lib/src/collection/bimap.dart#L160-L165), [`lib/src/collection/multimap/list.dart`](lib/src/collection/multimap/list.dart#L136-L150), [`lib/src/collection/multimap/set.dart`](lib/src/collection/multimap/set.dart#L130-L144)
   - **Problem**: All four methods call `fromIterables(map(keyProvider), map(valueProvider))`, iterating the source `Iterable` twice and failing or duplicating side effects on single-subscription/stateful iterables.

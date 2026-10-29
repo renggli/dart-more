@@ -67,6 +67,21 @@ void main() {
       check(() => BiMap.fromIterables([1], [])).throws<ArgumentError>();
       check(() => BiMap.fromIterables([], [1])).throws<ArgumentError>();
     });
+    test('iterable single pass', () {
+      var count = 0;
+      final iterable = [1, 2, 3].map((x) {
+        count++;
+        return x;
+      });
+      final map = iterable.toBiMap<int, int>(
+        key: (x) => x,
+        value: (x) => x * 10,
+      );
+      check(count).equals(3);
+      check(map[1]).equals(10);
+      check(map[2]).equals(20);
+      check(map[3]).equals(30);
+    });
     test('map converter', () {
       final target = example.toBiMap();
       check(target.keys).deepEquals([1, 2, 3]);

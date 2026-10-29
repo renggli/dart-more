@@ -163,6 +163,20 @@ void main() {
           'b': {'b'},
         });
       });
+      test('iterable converter single pass', () {
+        var count = 0;
+        final iterable = [1, 2, 3].map((x) {
+          count++;
+          return x;
+        });
+        final map = iterable.toSetMultimap<int, int>(
+          key: (x) => x % 2,
+          value: (x) => x,
+        );
+        check(count).equals(3);
+        check(map[1]).deepEquals([1, 3]);
+        check(map[0]).deepEquals([2]);
+      });
     });
     group('accessors', () {
       test('containsKey', () {

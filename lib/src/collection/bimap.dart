@@ -28,14 +28,19 @@ class BiMap<K, V> extends MapBase<K, V> {
   factory from(Map<K, V> other) => BiMap.of(other);
 
   /// Creates a bi-map from an iterable (and possible transformation functions).
-  factory fromIterable /*<E>*/ (
-    Iterable<Object?> /*<E>*/ iterable, {
-    K Function(Object? /*E*/ element)? key,
-    V Function(Object? /*E*/ element)? value,
-  }) => BiMap<K, V>.fromIterables(
-    key == null ? iterable.cast<K>() : iterable.map(key),
-    value == null ? iterable.cast<V>() : iterable.map(value),
-  );
+  factory fromIterable(
+    Iterable<Object?> iterable, {
+    K Function(Object? element)? key,
+    V Function(Object? element)? value,
+  }) {
+    final result = BiMap<K, V>();
+    final keyProvider = key ?? (element) => element as K;
+    final valueProvider = value ?? (element) => element as V;
+    for (final element in iterable) {
+      result[keyProvider(element)] = valueProvider(element);
+    }
+    return result;
+  }
 
   /// Creates a bi-map from two equal length iterables.
   factory fromIterables(Iterable<K> keys, Iterable<V> values) {
@@ -158,9 +163,9 @@ extension BiMapOnIterableExtension<E> on Iterable<E> {
   BiMap<K, V> toBiMap<K, V>({
     K Function(E element)? key,
     V Function(E element)? value,
-  }) {
-    final keyProvider = key ?? (element) => element as K;
-    final valueProvider = value ?? (element) => element as V;
-    return BiMap<K, V>.fromIterables(map(keyProvider), map(valueProvider));
-  }
+  }) => BiMap<K, V>.fromIterable(
+    this,
+    key: key == null ? null : (e) => key(e as E),
+    value: value == null ? null : (e) => value(e as E),
+  );
 }
