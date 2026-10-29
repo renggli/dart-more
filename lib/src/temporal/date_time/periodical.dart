@@ -42,87 +42,81 @@ extension PeriodicalDateTimeExtension on DateTime {
     final create = isUtc ? DateTime.utc : DateTime.new;
     switch (unit) {
       case TimeUnit.millennium:
-        return iterate(
-          this,
-          (prev) => create(
-            prev.year + 1000 * step,
-            prev.month,
-            prev.day,
-            prev.hour,
-            prev.minute,
-            prev.second,
-            prev.millisecond,
-            prev.microsecond,
+        return iterate(0, (i) => i + 1).map(
+          (i) => create(
+            year + 1000 * step * i,
+            month,
+            day,
+            hour,
+            minute,
+            second,
+            millisecond,
+            microsecond,
           ),
         );
       case TimeUnit.century:
-        return iterate(
-          this,
-          (prev) => create(
-            prev.year + 100 * step,
-            prev.month,
-            prev.day,
-            prev.hour,
-            prev.minute,
-            prev.second,
-            prev.millisecond,
-            prev.microsecond,
+        return iterate(0, (i) => i + 1).map(
+          (i) => create(
+            year + 100 * step * i,
+            month,
+            day,
+            hour,
+            minute,
+            second,
+            millisecond,
+            microsecond,
           ),
         );
       case TimeUnit.decade:
-        return iterate(
-          this,
-          (prev) => create(
-            prev.year + 10 * step,
-            prev.month,
-            prev.day,
-            prev.hour,
-            prev.minute,
-            prev.second,
-            prev.millisecond,
-            prev.microsecond,
+        return iterate(0, (i) => i + 1).map(
+          (i) => create(
+            year + 10 * step * i,
+            month,
+            day,
+            hour,
+            minute,
+            second,
+            millisecond,
+            microsecond,
           ),
         );
       case TimeUnit.year:
-        return iterate(
-          this,
-          (prev) => create(
-            prev.year + step,
-            prev.month,
-            prev.day,
-            prev.hour,
-            prev.minute,
-            prev.second,
-            prev.millisecond,
-            prev.microsecond,
+        return iterate(0, (i) => i + 1).map(
+          (i) => create(
+            year + step * i,
+            month,
+            day,
+            hour,
+            minute,
+            second,
+            millisecond,
+            microsecond,
           ),
         );
       case TimeUnit.quarter:
-        return iterate(
-          this,
-          (prev) => create(
-            prev.year,
-            prev.month + 3 * step,
-            prev.day,
-            prev.hour,
-            prev.minute,
-            prev.second,
-            prev.millisecond,
-            prev.microsecond,
+        return iterate(0, (i) => i + 1).map(
+          (i) => create(
+            year,
+            month + 3 * step * i,
+            day,
+            hour,
+            minute,
+            second,
+            millisecond,
+            microsecond,
           ),
         );
       case TimeUnit.month:
-        return iterate(
-          this,
-          (prev) => create(
-            prev.year,
-            prev.month + step,
-            prev.day,
-            prev.hour,
-            prev.minute,
-            prev.second,
-            prev.millisecond,
-            prev.microsecond,
+        return iterate(0, (i) => i + 1).map(
+          (i) => create(
+            year,
+            month + step * i,
+            day,
+            hour,
+            minute,
+            second,
+            millisecond,
+            microsecond,
           ),
         );
       case TimeUnit.week:

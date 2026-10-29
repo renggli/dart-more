@@ -53,6 +53,20 @@ void main() {
         DateTime(1980, DateTime.august, 11, 12, 34, 56, 78, 90),
       ]);
     });
+    test('month end does not permanently drift to early days of month', () {
+      final start = DateTime(2024, DateTime.january, 31);
+      final list = start.periodical(TimeUnit.month).take(5).toList();
+      // Month 0: Jan 31
+      // Month 1: Feb 31 -> March 2
+      // Month 2: March 31
+      // Month 3: April 31 -> May 1
+      // Month 4: May 31
+      check(list[0]).equals(DateTime(2024, DateTime.january, 31));
+      check(list[1]).equals(DateTime(2024, DateTime.march, 2));
+      check(list[2]).equals(DateTime(2024, DateTime.march, 31));
+      check(list[3]).equals(DateTime(2024, DateTime.may, 1));
+      check(list[4]).equals(DateTime(2024, DateTime.may, 31));
+    });
     test('week', () {
       final iterable = date.periodical(TimeUnit.week);
       check(iterable.take(3)).deepEquals([

@@ -158,7 +158,7 @@
   - **Problem**: `int offset(int y) => (y + y ~/ 4 - y ~/ 100 + y ~/ 400) % 7;` is called with `year - 1`, which for `year <= 0` uses truncating division toward zero instead of floor division, yielding wrong ISO week counts for BCE years.
   - **Fix**: Use floor division (`(y / 4).floor()`, `(y / 100).floor()`, `(y / 400).floor()`).
 
-- [ ] **`DateTime.periodical` drifts on month-end and leap-day dates**
+- [x] **`DateTime.periodical` drifts on month-end and leap-day dates**
   - **Severity**: Warning
   - **Location**: [`lib/src/temporal/date_time/periodical.dart`](lib/src/temporal/date_time/periodical.dart#L86-L127)
   - **Problem**: `periodical(TimeUnit.month)` chains `iterate(this, (prev) => create(prev.year, prev.month + step, prev.day, ...))`. Starting at `DateTime(2024, 1, 31)`, step 1 overflows Feb 31 to `2024-03-02`, and all subsequent months stay on the 2nd (`2024-04-02`, `2024-05-02`, ...) instead of advancing by `i * step` from the initial date.
