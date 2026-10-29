@@ -199,5 +199,32 @@ void main() {
       await sourceController.close();
       await triggerController.close();
     });
+    test('broadcast re-listen resets timer', () {
+      fakeAsync((async) {
+        final controller = StreamController<int>.broadcast();
+        final buffered = controller.stream.buffer(maxAge: seconds1);
+        final results1 = <List<int>>[];
+        final sub1 = buffered.listen(results1.add);
+        controller.add(1);
+        sub1.cancel();
+
+        final results2 = <List<int>>[];
+        final sub2 = buffered.listen(results2.add);
+        controller.add(2);
+        async.elapse(seconds2);
+        check(results2).deepEquals([
+          [2],
+        ]);
+        sub2.cancel();
+      });
+    });
+    test('invalid maxLength and maxAge', () {
+      final stream = Stream.fromIterable([1, 2]);
+      check(() => stream.buffer(maxLength: 0)).throws<RangeError>();
+      check(() => stream.buffer(maxLength: -1)).throws<RangeError>();
+      check(() => stream.buffer(maxAge: Duration.zero)).throws<ArgumentError>();
+      check(() => stream.buffer(maxAge: const Duration(seconds: -1)))
+          .throws<ArgumentError>();
+    });
   });
 }

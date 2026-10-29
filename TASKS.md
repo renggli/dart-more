@@ -134,7 +134,7 @@
   - **Problem**: `'abc'.takeLast(-1)`, `'abc'.skipLast(-1)`, `[1, 2, 3].takeLast(-1)`, and `[1, 2, 3].skipLast(-1)` compute `length - (-1) == length + 1` and throw an internal `RangeError` from `substring`/`getRange` with a confusing end index, while `TakePrinter(-1)` / `SkipPrinter(-1)` pass negative counts down to `take`/`skip`.
   - **Fix**: Call `RangeError.checkNotNegative(count, 'count')` in `take`, `takeLast`, `skip`, and `skipLast`.
 
-- [ ] **`Stream.buffer` breaks on broadcast stream re-listen and does not validate `maxLength` / `maxAge`**
+- [x] **`Stream.buffer` breaks on broadcast stream re-listen and does not validate `maxLength` / `maxAge`**
   - **Severity**: Warning
   - **Location**: [`lib/src/async/buffer.dart`](lib/src/async/buffer.dart#L14-L127)
   - **Problem**: `controller.onCancel` cancels `maxAgeTimer` without setting `maxAgeTimer = null`, so if the source is a broadcast stream and is re-listened, `maxAgeTimer == null` is `false` and `maxAge` never triggers again. Additionally, `maxLength` and `maxAge` are not validated to be positive (unlike `Stream.window`, which calls `checkNonZeroPositive`).

@@ -1,5 +1,7 @@
 import 'dart:async';
 
+import '../shared/exceptions.dart';
+
 /// Extension on [Stream] providing buffering operations.
 extension BufferExtension<E> on Stream<E> {
   /// Gathers the elements of this [Stream] and bundles the items into a [List]
@@ -16,6 +18,12 @@ extension BufferExtension<E> on Stream<E> {
     int? maxLength,
     Duration? maxAge,
   }) {
+    if (maxLength != null) {
+      checkNonZeroPositive(maxLength, 'maxLength');
+    }
+    if (maxAge != null && maxAge <= Duration.zero) {
+      throw ArgumentError.value(maxAge, 'maxAge', 'Duration must be positive');
+    }
     final buffer = <E>[];
     final controller = isBroadcast
         ? StreamController<List<E>>.broadcast()
@@ -120,6 +128,7 @@ extension BufferExtension<E> on Stream<E> {
     }
     controller.onCancel = () async {
       maxAgeTimer?.cancel();
+      maxAgeTimer = null;
       await sourceSubscription?.cancel();
       await triggerSubscription?.cancel();
     };
