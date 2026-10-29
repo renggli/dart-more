@@ -65,11 +65,13 @@ final class IntegerRange extends Range<int> {
             : 0,
       );
 
-  /// Const constructor to create an arithmetic progression of [int] values.
+  /// Creates an arithmetic progression of [int] values.
   /// The resulting [Range] is of the given [length], starts at [start], and
   /// uses the step-value [step].
-  const new length(int length, {int start = 0, int step = 1})
-    : this._(start, start + length * step, step, length);
+  factory length(int length, {int start = 0, int step = 1}) {
+    RangeError.checkNotNegative(length, 'length');
+    return IntegerRange._(start, start + length * step, step, length);
+  }
 
   // Internal const-constructor that initializes the state.
   const new _(this.start, this.end, this.step, this.length)
@@ -151,7 +153,12 @@ extension IndicesIterableExtension on Iterable<Object?> {
   /// final input = ['a', 'b', 'c'];
   /// print(input.indices(step: 2));  // [0, 2]
   /// ```
-  Range<int> indices({int step = 1}) => step > 0
-      ? IntegerRange.of(start: 0, end: length, step: step)
-      : IntegerRange.of(start: length - 1, end: -1, step: step);
+  Range<int> indices({int step = 1}) {
+    if (step == 0) {
+      throw ArgumentError.value(step, 'step', 'Step must not be zero');
+    }
+    return step > 0
+        ? IntegerRange.of(start: 0, end: length, step: step)
+        : IntegerRange.of(start: length - 1, end: -1, step: step);
+  }
 }

@@ -102,6 +102,7 @@ void main() {
         included: toBigIntList([0, -2]),
         excluded: toBigIntList([-3, -1, 1]),
       );
+      check(() => BigIntRange.length(-1)).throws<RangeError>();
     });
     test('1 argument', () {
       verifyRange(

@@ -13,18 +13,36 @@ import 'edge.dart';
 /// [edges] and [values].
 class Path<V, E> with ToStringPrinter {
   /// Constructs a path from an iterable of vertices and corresponding values.
-  new fromVertices(Iterable<V> vertices, {Iterable<E>? values})
-    : this._(
-        vertices: vertices,
-        values: values ?? repeat<E>(null as E, count: vertices.length - 1),
+  factory fromVertices(Iterable<V> vertices, {Iterable<E>? values}) {
+    final list = vertices.toList(growable: false);
+    if (list.isEmpty) {
+      throw ArgumentError.value(
+        vertices,
+        'vertices',
+        'Path must contain at least one vertex',
       );
+    }
+    return Path._(
+      vertices: list,
+      values: values ?? repeat<E>(null as E, count: list.length - 1),
+    );
+  }
 
   /// Constructs a path from an iterable of [Edge] instances.
-  new fromEdges(Iterable<Edge<V, E>> edges)
-    : this._(
-        vertices: [edges.first.source, ...edges.map((edge) => edge.target)],
-        values: edges.map((edge) => edge.value),
+  factory fromEdges(Iterable<Edge<V, E>> edges) {
+    final list = edges.toList(growable: false);
+    if (list.isEmpty) {
+      throw ArgumentError.value(
+        edges,
+        'edges',
+        'Path must contain at least one edge',
       );
+    }
+    return Path._(
+      vertices: [list.first.source, ...list.map((edge) => edge.target)],
+      values: list.map((edge) => edge.value),
+    );
+  }
 
   /// Internal constructor.
   new _({required Iterable<V> vertices, required Iterable<E> values})

@@ -188,7 +188,7 @@
   - **Problem**: Unlike `unionAll` (which tracks `seen` for undirected graphs so `edgeMerge` is only called once per undirected edge), `intersection` iterates over `edges` (which yields both `(u, v)` and `(v, u)` in `UndirectedGraph`), invoking `edgeCompare` and `edgeMerge` twice for every undirected edge and overwriting `(u, v)` with the reverse call `(v, u)`.
   - **Fix**: Deduplicate undirected edges in `intersection` using a `seen` set of `Edge<V, void>.undirected`, matching `unionAll` (lines 29–39).
 
-- [ ] **Assert-only parameter validation across public APIs fails silently or loops infinitely in release mode**
+- [x] **Assert-only parameter validation across public APIs fails silently or loops infinitely in release mode**
   - **Severity**: Warning
   - **Location**: [`lib/src/graph/path.dart`](lib/src/graph/path.dart#L25-L34), [`lib/src/graph/factory/tree.dart`](lib/src/graph/factory/tree.dart#L17-L37), [`lib/src/collection/range/integer.dart`](lib/src/collection/range/integer.dart#L55-L139), [`lib/src/collection/range/bigint.dart`](lib/src/collection/range/bigint.dart#L56-L78), [`lib/src/collection/range/double.dart`](lib/src/collection/range/double.dart#L64-L85), [`lib/src/char_matcher/basic/range.dart`](lib/src/char_matcher/basic/range.dart#L7)
   - **Problem**: Several constructors rely exclusively on `assert(...)` for public argument validation:

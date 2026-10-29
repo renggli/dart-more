@@ -50,6 +50,12 @@ void main() {
         ]);
         expectInvariants(graph);
       });
+      test('invalid arity', () {
+        check(
+          () =>
+              GraphFactory<int, void>().completeTree(vertexCount: 5, arity: 0),
+        ).throws<RangeError>();
+      });
     });
     group('perfect', () {
       test('empty', () {
@@ -89,6 +95,12 @@ void main() {
         check(graph.edges)
             .unorderedMatches([isEdge(0, 1), isEdge(0, 2), isEdge(0, 3)]);
         expectInvariants(graph);
+      });
+      test('invalid height or arity', () {
+        check(() => GraphFactory<int, void>().perfectTree(height: -1))
+            .throws<RangeError>();
+        check(() => GraphFactory<int, void>().perfectTree(height: 2, arity: 0))
+            .throws<RangeError>();
       });
     });
   });

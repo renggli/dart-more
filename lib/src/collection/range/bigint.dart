@@ -77,6 +77,7 @@ final class BigIntRange extends Range<BigInt> {
   /// The resulting [Range] is of the given [length], starts at [start], and
   /// uses the step-value [step].
   factory length(int length, {BigInt? start, BigInt? step}) {
+    RangeError.checkNotNegative(length, 'length');
     start ??= BigInt.zero;
     step ??= BigInt.one;
     return BigIntRange._(

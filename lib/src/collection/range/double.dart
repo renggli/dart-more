@@ -103,11 +103,13 @@ final class DoubleRange extends Range<double> {
 
   static const _epsilon = 1e-16;
 
-  /// Const constructor to create an arithmetic progression of [double] values.
+  /// Creates an arithmetic progression of [double] values.
   /// The resulting [Range] is of the given [length], starts at [start], and
   /// uses the step-value [step].
-  const new length(int length, {double start = 0, double step = 1})
-    : this._(start, start + length * step, step, length);
+  factory length(int length, {double start = 0, double step = 1}) {
+    RangeError.checkNotNegative(length, 'length');
+    return DoubleRange._(start, start + length * step, step, length);
+  }
 
   // Internal const-constructor that initializes the state.
   const new _(this.start, this.end, this.step, this.length)

@@ -43,32 +43,33 @@ void main() {
       );
     });
     test('length', () {
-      verifyRange(const DoubleRange.length(0), included: [], excluded: [0.0]);
+      verifyRange(DoubleRange.length(0), included: [], excluded: [0.0]);
       verifyRange(
-        const DoubleRange.length(1),
+        DoubleRange.length(1),
         included: [0.0],
         excluded: [-1.0, 1.0],
       );
       verifyRange(
-        const DoubleRange.length(2),
+        DoubleRange.length(2),
         included: [0.0, 1.0],
         excluded: [-1.0, 2.0],
       );
       verifyRange(
-        const DoubleRange.length(2, start: 10),
+        DoubleRange.length(2, start: 10),
         included: [10.0, 11.0],
         excluded: [-1.0, 2.0],
       );
       verifyRange(
-        const DoubleRange.length(2, step: 2),
+        DoubleRange.length(2, step: 2),
         included: [0.0, 2.0],
         excluded: [-1.0, 1.0, 3.0],
       );
       verifyRange(
-        const DoubleRange.length(2, step: -2),
+        DoubleRange.length(2, step: -2),
         included: [0.0, -2.0],
         excluded: [-3.0, -1.0, 1.0],
       );
+      check(() => DoubleRange.length(-1)).throws<RangeError>();
     });
     test('1 argument', () {
       verifyRange(DoubleRange(0), included: [], excluded: [-1.0, 0.0, 1.0]);

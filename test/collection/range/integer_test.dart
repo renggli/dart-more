@@ -45,32 +45,25 @@ void main() {
       );
     });
     test('length', () {
-      verifyRange(const IntegerRange.length(0), included: [], excluded: [0]);
+      verifyRange(IntegerRange.length(0), included: [], excluded: [0]);
+      verifyRange(IntegerRange.length(1), included: [0], excluded: [-1, 1]);
+      verifyRange(IntegerRange.length(2), included: [0, 1], excluded: [-1, 2]);
       verifyRange(
-        const IntegerRange.length(1),
-        included: [0],
-        excluded: [-1, 1],
-      );
-      verifyRange(
-        const IntegerRange.length(2),
-        included: [0, 1],
-        excluded: [-1, 2],
-      );
-      verifyRange(
-        const IntegerRange.length(2, start: 10),
+        IntegerRange.length(2, start: 10),
         included: [10, 11],
         excluded: [-1, 2],
       );
       verifyRange(
-        const IntegerRange.length(2, step: 2),
+        IntegerRange.length(2, step: 2),
         included: [0, 2],
         excluded: [-1, 1, 3],
       );
       verifyRange(
-        const IntegerRange.length(2, step: -2),
+        IntegerRange.length(2, step: -2),
         included: [0, -2],
         excluded: [-3, -1, 1],
       );
+      check(() => IntegerRange.length(-1)).throws<RangeError>();
     });
     test('1 argument', () {
       verifyRange(IntegerRange(0), included: [], excluded: [-1, 0, 1]);
@@ -355,5 +348,8 @@ void main() {
     check(() => list.setRange(2, 4, [5, 6])).throws<UnsupportedError>();
     check(list.shuffle).throws<UnsupportedError>();
     check(list.sort).throws<UnsupportedError>();
+  });
+  test('indices with invalid step', () {
+    check(() => ['a', 'b'].indices(step: 0)).throws<ArgumentError>();
   });
 }

@@ -13,6 +13,10 @@ void main() {
     test('inRange (code points)', () {
       verify(CharMatcher.inRange(97, 99), 'abc', 'def123_!@# ');
     });
+    test('inRange invalid', () {
+      check(() => CharMatcher.inRange('z', 'a')).throws<ArgumentError>();
+      check(() => CharMatcher.inRange(100, 50)).throws<ArgumentError>();
+    });
     test('assert error', () {
       check(() => RangeCharMatcher(100, 50)).throws<AssertionError>();
     });

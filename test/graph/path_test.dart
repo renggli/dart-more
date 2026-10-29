@@ -53,6 +53,10 @@ void main() {
       check(path.cost).equals(9);
       check(path.toString()).endsWith('(x → y → z, values: [4, 5], cost: 9)');
     });
+    test('empty vertices or edges throws', () {
+      check(() => Path<int, void>.fromVertices([])).throws<ArgumentError>();
+      check(() => Path<int, void>.fromEdges([])).throws<ArgumentError>();
+    });
     test('long path', () {
       final vertices = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h'];
       final values = [1, 2, 3, 4, 5, 6, 7];

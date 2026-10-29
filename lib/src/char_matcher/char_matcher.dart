@@ -60,8 +60,14 @@ abstract class CharMatcher with ToStringPrinter implements Pattern {
   ///
   /// The arguments can be either given as Unicode code-points or strings
   /// with a single Unicode character.
-  factory inRange(Object start, Object stop) =>
-      RangeCharMatcher(_toCharCode(start, 'start'), _toCharCode(stop, 'stop'));
+  factory inRange(Object start, Object stop) {
+    final startCode = _toCharCode(start, 'start');
+    final stopCode = _toCharCode(stop, 'stop');
+    if (startCode > stopCode) {
+      throw ArgumentError('Invalid range: $startCode-$stopCode');
+    }
+    return RangeCharMatcher(startCode, stopCode);
+  }
 
   /// A matcher that accepts a set of characters.
   factory charSet(String chars) => fromCharSet(chars);
