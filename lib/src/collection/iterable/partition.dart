@@ -7,7 +7,7 @@ extension PartitionIterableExtension<E> on Iterable<E> {
   ///
   /// ```dart
   /// final input = [1, 2, 3, 4];
-  /// final output = partition((each) => each.isEven);
+  /// final output = input.partition((each) => each.isEven);
   /// print(output);  // (truthy: [2, 4], falsey: [1, 3])
   /// ```
   ({List<E> truthy, List<E> falsey}) partition(bool Function(E element) test) {

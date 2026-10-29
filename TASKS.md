@@ -300,7 +300,7 @@
   - **Problem**: States "The expiration time is determined by whichever duration extends further into the future", whereas `ExpiryCacheItem.isExpired` ([`lib/src/cache/expiry.dart`](lib/src/cache/expiry.dart#L140-L153)) expires when *either* deadline passes (`||`, i.e., whichever deadline is *earlier*).
   - **Fix**: Update the doc comment in [`lib/src/cache/cache.dart`](lib/src/cache/cache.dart#L54-L55) to state that when both `expireAfterAccess` and `expireAfterWrite` are provided, an entry expires as soon as either duration elapses.
 
-- [ ] **Broken or inaccurate code examples in `collection` doc comments**
+- [x] **Broken or inaccurate code examples in `collection` doc comments**
   - **Severity**: Warning
   - **Location**: [`lib/src/collection/iterable/separated.dart`](lib/src/collection/iterable/separated.dart#L11-L12), [`lib/src/collection/iterable/partition.dart`](lib/src/collection/iterable/partition.dart#L8), [`lib/src/collection/string/chunked.dart`](lib/src/collection/string/chunked.dart#L27-L29), [`lib/src/collection/string/string_list.dart`](lib/src/collection/string/string_list.dart#L80-L94), [`lib/src/collection/iterable/chunked.dart`](lib/src/collection/iterable/chunked.dart#L28)
   - **Problem**:

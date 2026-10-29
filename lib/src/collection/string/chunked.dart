@@ -31,7 +31,7 @@ extension ChunkedCharactersExtension on Characters {
   /// For example:
   ///
   /// ```dart
-  /// final input = 'abcde';
+  /// final input = 'abcde'.characters;
   /// print(input.chunked(2));  // ('ab', 'cd', 'e')
   /// ```
   Iterable<Characters> chunked(int size) sync* {

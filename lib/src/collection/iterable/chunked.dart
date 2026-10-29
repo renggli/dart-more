@@ -24,7 +24,7 @@ extension ChunkedIterableExtension<E> on Iterable<E> {
   }
 
   /// Divides this [Iterable] into sub-lists of a given [size]. The final list
-  /// is expanded with the provided [padding], or `null`.
+  /// is expanded with the provided [padding].
   ///
   /// For example:
   ///

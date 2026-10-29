@@ -21,7 +21,7 @@ extension StringListExtension on String {
   /// ```dart
   /// 'Hello World'.toList()
   ///   .where((char) => char != 'o')
-  ///   .forEach(print);`
+  ///   .forEach(print);
   /// ```
   ///
   /// For a mutable copy of the string set the parameter [mutable] to `true`.
