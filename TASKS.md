@@ -294,7 +294,7 @@
   - **Problem**: `final graph = Graph<String, num>.directed()` in `README.md` calls `@Deprecated('Use Graph(isDirected: true) instead.')`.
   - **Fix**: Update [`README.md`](README.md#L66) to `final graph = Graph<String, num>(isDirected: true);`.
 
-- [ ] **`Cache.expiry` doc comment contradicts implementation**
+- [x] **`Cache.expiry` doc comment contradicts implementation**
   - **Severity**: Warning
   - **Location**: [`lib/src/cache/cache.dart`](lib/src/cache/cache.dart#L54-L55)
   - **Problem**: States "The expiration time is determined by whichever duration extends further into the future", whereas `ExpiryCacheItem.isExpired` ([`lib/src/cache/expiry.dart`](lib/src/cache/expiry.dart#L140-L153)) expires when *either* deadline passes (`||`, i.e., whichever deadline is *earlier*).

@@ -1,6 +1,5 @@
 import 'package:checks/checks.dart';
 import 'package:more/cache.dart';
-import 'package:more/feature.dart';
 import 'package:more/src/cache/empty.dart';
 import 'package:more/src/cache/expiry.dart';
 import 'package:more/src/cache/fifo.dart';
@@ -25,32 +24,29 @@ void main() {
       check(Cache.lru(loader: immediateLoader, maximumSize: 10))
           .isA<LruCache<int, String>>();
     });
-    if (hasAssertionsEnabled) {
-      test('expiry assertions', () {
-        check(() => Cache<int, String>.expiry(loader: immediateLoader))
-            .throws<AssertionError>();
-        check(
-          () => Cache<int, String>.expiry(
-            loader: immediateLoader,
-            updateExpiry: Duration.zero,
-          ),
-        ).throws<AssertionError>();
-        check(
-          () => Cache<int, String>.expiry(
-            loader: immediateLoader,
-            accessExpiry: const Duration(seconds: -1),
-          ),
-        ).throws<AssertionError>();
-      });
-      test('lru / fifo assertions', () {
-        check(
-          () => Cache<int, String>.lru(loader: immediateLoader, maximumSize: 0),
-        ).throws<AssertionError>();
-        check(
-          () =>
-              Cache<int, String>.fifo(loader: immediateLoader, maximumSize: -1),
-        ).throws<AssertionError>();
-      });
-    }
+    test('expiry argument validation', () {
+      check(() => Cache<int, String>.expiry(loader: immediateLoader))
+          .throws<ArgumentError>();
+      check(
+        () => Cache<int, String>.expiry(
+          loader: immediateLoader,
+          updateExpiry: Duration.zero,
+        ),
+      ).throws<ArgumentError>();
+      check(
+        () => Cache<int, String>.expiry(
+          loader: immediateLoader,
+          accessExpiry: const Duration(seconds: -1),
+        ),
+      ).throws<ArgumentError>();
+    });
+    test('lru / fifo argument validation', () {
+      check(
+        () => Cache<int, String>.lru(loader: immediateLoader, maximumSize: 0),
+      ).throws<RangeError>();
+      check(
+        () => Cache<int, String>.fifo(loader: immediateLoader, maximumSize: -1),
+      ).throws<RangeError>();
+    });
   });
 }

@@ -20,8 +20,8 @@ abstract class Cache<K, V> with ToStringPrinter {
   ///
   /// [updateExpiry] is the duration after which an updated item expires.
   /// [accessExpiry] is the duration after which an accessed item expires.
-  /// The expiration time is determined by whichever duration extends further
-  /// into the future.
+  /// When both durations are specified, an entry expires as soon as either
+  /// duration elapses.
   ///
   /// Note that cached items do not magically disappear when they expire.
   /// Manually call [reap], or setup a timer to regularly free items.
