@@ -122,7 +122,7 @@
   - **Problem**: In `entryWithLeastAreaEnlargement` ([`lib/src/collection/rtree/utils.dart`](lib/src/collection/rtree/utils.dart#L28)), the comment states "choose the entry having the smallest area as a tie-breaker", but the condition `enlargement == minEnlargement && minArea < beforeArea` selects the **largest** area instead of the smallest (`beforeArea < minArea`). In `Bounds.fromPoint` ([`lib/src/collection/rtree/bounds.dart`](lib/src/collection/rtree/bounds.dart#L15-L18)), `min` and `max` share the same `Float64List` instance (`shared`), and `Bounds` operations (`contains`, `union`, `intersects`, `intersection`) never check that both `Bounds` have matching dimensions (`length`), nor does `Bounds.fromLists` assert `min[i] <= max[i]`.
   - **Fix**: Change `minArea < beforeArea` to `beforeArea < minArea`, allocate separate buffers (or wrap in `UnmodifiableFloat64ListView`), and assert matching dimensions and `min[i] <= max[i]`.
 
-- [ ] **`RepeatIterableExtension.repeat` skips negative `count` validation when empty and eagerly evaluates `length`**
+- [x] **`RepeatIterableExtension.repeat` skips negative `count` validation when empty and eagerly evaluates `length`**
   - **Severity**: Warning
   - **Location**: [`lib/src/collection/iterable/repeat_iterable.dart`](lib/src/collection/iterable/repeat_iterable.dart#L12-L47)
   - **Problem**: `<int>[].repeat(count: -1)` returns `const []` without throwing `RangeError` because `if (count == 0 || isEmpty)` runs before `RangeError.checkNotNegative(count, 'count')`. Furthermore, `RepeatIterableIterable<E>(this).take(count * length)` eagerly evaluates `this.length` (iterating lazy iterables upfront) instead of passing `count` to `RepeatIterableIterable` and counting repetitions lazily.

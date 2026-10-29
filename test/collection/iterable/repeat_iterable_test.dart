@@ -46,6 +46,19 @@ void main() {
     });
     test('error', () {
       check(() => [1, 2, 3].repeat(count: -1)).throws<RangeError>();
+      check(() => <int>[].repeat(count: -1)).throws<RangeError>();
+    });
+    test('lazy repetition count without eager length evaluation', () {
+      var evaluated = 0;
+      final lazyIterable = [1, 2, 3].map((x) {
+        evaluated++;
+        return x;
+      });
+      final repeated = lazyIterable.repeat(count: 2);
+      check(evaluated).equals(0);
+      final list = repeated.take(2).toList();
+      check(list).deepEquals([1, 2]);
+      check(evaluated).equals(2);
     });
   });
 }
