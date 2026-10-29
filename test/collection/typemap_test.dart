@@ -49,4 +49,20 @@ void main() {
     check(map.asMap()).deepEquals({String: 'hello', int: 42});
     check(map.toString()).equals('{String: hello, int: 42}');
   });
+  test('nullable type with stored null', () {
+    final map = TypeMap<Object?>();
+    map.setInstance<int?>(null);
+    check(map.hasInstance<int?>()).isTrue();
+    var called = false;
+    final result = map.getInstance<int?>(
+      ifAbsentPut: () {
+        called = true;
+        return 99;
+      },
+    );
+    check(result).isNull();
+    check(called).isFalse();
+    check(map.hasInstance<int?>()).isTrue();
+    check(map.length).equals(1);
+  });
 }

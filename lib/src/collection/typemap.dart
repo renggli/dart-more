@@ -15,16 +15,14 @@ class TypeMap<T> {
   /// If the value is absent and an [ifAbsentPut] function is provided,
   /// populates the map with the result of said function.
   V? getInstance<V extends T>({V Function()? ifAbsentPut}) {
-    final value = _map[V];
-    if (value == null) {
+    if (!_map.containsKey(V)) {
       if (ifAbsentPut == null) {
         return null;
       } else {
         return _map[V] = ifAbsentPut();
       }
-    } else {
-      return value as V;
     }
+    return _map[V] as V;
   }
 
   /// Sets the instance of the generic type [V] to [value].

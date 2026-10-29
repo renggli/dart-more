@@ -110,7 +110,7 @@
   - **Problem**: `ListMultimap(map: ...)` and `SetMultimap(map: ...)` accept an existing `Map<K, C>`, but `Multimap._length` is initialized to `0` instead of summing existing collection lengths in `_map`. Additionally, `multimap.addAll(key, multimap[key])` and `multimap.removeAll(key, multimap[key])` iterate the live `MultimapValues` view while mutating `delegate`, throwing `ConcurrentModificationError`.
   - **Fix**: Initialize `_length = _map.values.fold(0, (sum, v) => sum + v.length)` in `Multimap`, and snapshot `values.toList(growable: false)` in `polymorphicAddAll` / `polymorphicRemoveAll` when `values` aliases the same underlying collection.
 
-- [ ] **`TypeMap.getInstance` overwrites stored `null` when `T` is nullable**
+- [x] **`TypeMap.getInstance` overwrites stored `null` when `T` is nullable**
   - **Severity**: Warning
   - **Location**: [`lib/src/collection/typemap.dart`](lib/src/collection/typemap.dart#L20-L31)
   - **Problem**: `getInstance` checks `if (value == null)` instead of `if (!_map.containsKey(V))`, so if `T` is `Object?` and `null` was explicitly registered via `setInstance<int?>(null)`, calling `getInstance<int?>(ifAbsentPut: ...)` treats it as absent and overwrites it.
