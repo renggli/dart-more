@@ -15,7 +15,7 @@ enum Subsystem {
   charMatcher('#f4edd7', dirName: 'char_matcher'),
   collection('#f0f4d7'),
   comparator('#e6f4d7'),
-  diff('#dbf4d7', isExported: false),
+  diff('#dbf4d7'),
   feature('#d7f4de'),
   functional('#d7f4e9'),
   graph('#d7f4f4'),
@@ -27,11 +27,10 @@ enum Subsystem {
   temporal('#f4d7ed'),
   tuple('#f4d7e2');
 
-  new(this.color, {this.dirName, this.isExported = true});
+  new(this.color, {this.dirName});
 
   final String color;
   final String? dirName;
-  final bool isExported;
 
   String get directory => dirName ?? name;
   String get entrypoint => 'lib/$directory.dart';
@@ -94,12 +93,8 @@ void main() {
     });
 
     test('exports all public sub-libraries', () {
-      check(filesGraph.successorsOf('lib/more.dart')).unorderedEquals(
-        Subsystem.values
-            .where((s) => s.isExported)
-            .map((s) => s.entrypoint)
-            .toList(),
-      );
+      check(filesGraph.successorsOf('lib/more.dart'))
+          .unorderedEquals(Subsystem.values.map((s) => s.entrypoint).toList());
     });
   });
 

@@ -1,18 +1,19 @@
 /// More Dart — Literally.
 library;
 
-export 'package:more/async.dart';
-export 'package:more/cache.dart';
-export 'package:more/char_matcher.dart';
-export 'package:more/collection.dart';
-export 'package:more/comparator.dart';
-export 'package:more/feature.dart';
-export 'package:more/functional.dart';
-export 'package:more/graph.dart';
-export 'package:more/interval.dart';
-export 'package:more/math.dart';
-export 'package:more/number.dart';
-export 'package:more/pragma.dart';
-export 'package:more/printer.dart';
-export 'package:more/temporal.dart';
-export 'package:more/tuple.dart';
+export 'async.dart';
+export 'cache.dart';
+export 'char_matcher.dart';
+export 'collection.dart';
+export 'comparator.dart';
+export 'diff.dart';
+export 'feature.dart';
+export 'functional.dart';
+export 'graph.dart';
+export 'interval.dart';
+export 'math.dart';
+export 'number.dart';
+export 'pragma.dart';
+export 'printer.dart';
+export 'temporal.dart';
+export 'tuple.dart';

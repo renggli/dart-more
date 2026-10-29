@@ -333,7 +333,7 @@
 
 ## 5. Simplicity and Cleanness of Public APIs
 
-- [ ] **`lib/more.dart` omits `diff.dart` and uses `package:more/` exports instead of relative exports**
+- [x] **`lib/more.dart` omits `diff.dart` and uses `package:more/` exports instead of relative exports**
   - **Severity**: Warning
   - **Location**: [`lib/more.dart`](lib/more.dart#L1-L18)
   - **Problem**: The umbrella library `lib/more.dart` exports 15 of the 16 sub-libraries but omits `diff.dart`, and uses `export 'package:more/...';` instead of relative exports (`AGENTS.md`: "Within `lib/`, prefer relative imports ... over package imports").
