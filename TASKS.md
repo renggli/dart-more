@@ -44,7 +44,7 @@
   - **Problem**: When `source` and `target` point in opposite directions ($180^\circ$ rotation, e.g. `[1, 0, 0]` and `[-1, 0, 0]`), the dot product `w` is `-||source|| * ||target||` and the cross product `(x, y, z)` is `(0, 0, 0)`. Then `w + sqrt(w * w + x * x + y * y + z * z)` is `0`, producing `Quaternion(0, 0, 0, 0).normalize()` which divides by `0` and returns `Quaternion.nan`.
   - **Fix**: Detect when `w + norm == 0` (anti-parallel vectors) and return a $180^\circ$ rotation (`w = 0`) around a unit vector orthogonal to `source`.
 
-- [ ] **`parseWithUnits` accepts bare `'*i'`, `'+*i'`, `'-*i'` and merges whitespace inside exponents**
+- [x] **`parseWithUnits` accepts bare `'*i'`, `'+*i'`, `'-*i'` and merges whitespace inside exponents**
   - **Severity**: Warning
   - **Location**: [`lib/src/number/utils.dart`](lib/src/number/utils.dart#L11-L51)
   - **Problem**: In `numberAndUnitExtractor = RegExp(r'([+-]?\d*(\.\d+)?(e[+-]?\d+)?)\*?(\w?)', caseSensitive: false)`, `\*?` matches even when `numberString` has no digits (`''`, `'+'`, `'-'`), so `Complex.tryParse('*i')` and `Complex.tryParse('1+*i')` parse as `i` and `1 + i`. Also, `RegExp(r'(\d|\.)\s+(\d|\.)')` does not reject whitespace adjacent to `e`/`E` or its sign (e.g. `'1 e 5'` or `'1e + 5'`), which `source.replaceAll(RegExp(r'\s+'), '')` silently merges into `'1e5'`.

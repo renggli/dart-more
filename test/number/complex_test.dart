@@ -167,6 +167,12 @@ void main() {
         check(Complex.tryParse('1+1')).isNull();
         check(Complex.tryParse('i+i')).isNull();
         check(Complex.tryParse('i+j')).isNull();
+        check(Complex.tryParse('*i')).isNull();
+        check(Complex.tryParse('+*i')).isNull();
+        check(Complex.tryParse('-*i')).isNull();
+        check(Complex.tryParse('1+*i')).isNull();
+        check(Complex.tryParse('1 e 5')).isNull();
+        check(Complex.tryParse('1e + 5')).isNull();
       });
     });
     group('arithmetic', () {

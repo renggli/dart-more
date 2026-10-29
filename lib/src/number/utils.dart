@@ -9,7 +9,10 @@
 /// Returns `null` if the [source] is empty, contains an invalid number or
 /// unit, has unrecognized characters, or if a unit is repeated.
 Map<String, num>? parseWithUnits(String source, {required Set<String> units}) {
-  if (RegExp(r'(\d|\.)\s+(\d|\.)').hasMatch(source)) return null;
+  if (RegExp(r'(\d|\.)\s+(\d|\.)').hasMatch(source) ||
+      RegExp(r'(\d|\.)\s+[eE]|[eE]\s+[+-]?\s*\d').hasMatch(source)) {
+    return null;
+  }
   final cleaned = source.replaceAll(RegExp(r'\s+'), '');
   if (cleaned.isEmpty) return null;
   final parts = numberAndUnitExtractor
@@ -23,8 +26,10 @@ Map<String, num>? parseWithUnits(String source, {required Set<String> units}) {
     if (part.start != lastEnd) return null; // unrecognized characters
     lastEnd = part.end;
     final numberString = part.group(1) ?? '';
+    final hasStar = (part.group(4) ?? '').isNotEmpty;
     final number = num.tryParse(numberString);
-    final unitString = part.group(4) ?? '';
+    if (hasStar && number == null) return null; // bare * before unit
+    final unitString = part.group(5) ?? '';
     final unit = unitString.toLowerCase();
     if (!units.contains(unit)) return null; // invalid unit
     if (result.containsKey(unit)) return null; // repeated unit
@@ -46,6 +51,6 @@ Map<String, num>? parseWithUnits(String source, {required Set<String> units}) {
 }
 
 final RegExp numberAndUnitExtractor = RegExp(
-  r'([+-]?\d*(\.\d+)?(e[+-]?\d+)?)\*?(\w?)',
+  r'([+-]?\d*(\.\d+)?(e[+-]?\d+)?)(\*?)(\w?)',
   caseSensitive: false,
 );
