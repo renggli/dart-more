@@ -95,6 +95,17 @@ void main() {
         ).isCloseTo(const Quaternion(0.993637, -0.045978, 0.091956, -0.045978));
         check(quaternion.abs()).isCloseTo(1.0, epsilon);
       });
+      test('fromVectors (opposite vectors)', () {
+        final q1 = Quaternion.fromVectors(const [1, 0, 0], const [-1, 0, 0]);
+        check(q1.isNaN).isFalse();
+        check(q1.abs()).isCloseTo(1.0, epsilon);
+        final q2 = Quaternion.fromVectors(const [0, 1, 0], const [0, -1, 0]);
+        check(q2.isNaN).isFalse();
+        check(q2.abs()).isCloseTo(1.0, epsilon);
+        final q3 = Quaternion.fromVectors(const [0, 0, 1], const [0, 0, -1]);
+        check(q3.isNaN).isFalse();
+        check(q3.abs()).isCloseTo(1.0, epsilon);
+      });
       test('fromEuler', () {
         final quaternion = Quaternion.fromEuler(1, 2, 3);
         check(

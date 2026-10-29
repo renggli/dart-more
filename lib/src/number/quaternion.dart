@@ -42,12 +42,23 @@ class Quaternion implements CloseTo<Quaternion> {
     final x = source[1] * target[2] - source[2] * target[1];
     final y = source[2] * target[0] - source[0] * target[2];
     final z = source[0] * target[1] - source[1] * target[0];
-    return Quaternion(
-      w + (w * w + x * x + y * y + z * z).sqrt(),
-      x,
-      y,
-      z,
-    ).normalize();
+    final norm = (w * w + x * x + y * y + z * z).sqrt();
+    if (w + norm == 0) {
+      // Vectors are opposite (anti-parallel). Rotate 180 degrees around an
+      // orthogonal axis.
+      final ax = source[0].abs();
+      final ay = source[1].abs();
+      final az = source[2].abs();
+      final ortho = ax < ay
+          ? (ax < az ? [1.0, 0.0, 0.0] : [0.0, 0.0, 1.0])
+          : (ay < az ? [0.0, 1.0, 0.0] : [0.0, 0.0, 1.0]);
+      // Cross product with source to get orthogonal axis:
+      final cx = source[1] * ortho[2] - source[2] * ortho[1];
+      final cy = source[2] * ortho[0] - source[0] * ortho[2];
+      final cz = source[0] * ortho[1] - source[1] * ortho[0];
+      return Quaternion(0, cx, cy, cz).normalize();
+    }
+    return Quaternion(w + norm, x, y, z).normalize();
   }
 
   /// Constructs a quaternion from an euler rotation.

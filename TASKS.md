@@ -38,7 +38,7 @@
   - **Problem**: For `Fraction.nan` (`a == 0 && b == 0`), `if (a == 0) return n < 0 ? infinity : this;` returns `Fraction.infinity` when `n < 0` instead of `Fraction.nan`.
   - **Fix**: Check `if (isNaN) return nan;` before `if (a == 0)`.
 
-- [ ] **`Quaternion.fromVectors` returns `Quaternion.nan` for anti-parallel (opposite) vectors**
+- [x] **`Quaternion.fromVectors` returns `Quaternion.nan` for anti-parallel (opposite) vectors**
   - **Severity**: Warning
   - **Location**: [`lib/src/number/quaternion.dart`](lib/src/number/quaternion.dart#L39-L51)
   - **Problem**: When `source` and `target` point in opposite directions ($180^\circ$ rotation, e.g. `[1, 0, 0]` and `[-1, 0, 0]`), the dot product `w` is `-||source|| * ||target||` and the cross product `(x, y, z)` is `(0, 0, 0)`. Then `w + sqrt(w * w + x * x + y * y + z * z)` is `0`, producing `Quaternion(0, 0, 0, 0).normalize()` which divides by `0` and returns `Quaternion.nan`.
