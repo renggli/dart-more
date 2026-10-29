@@ -120,6 +120,27 @@ void main() {
         check(plenty.sublist(5, 7).toString())
             .equals(plentyString.substring(5, 7));
       });
+      test('insert and insertAll', () {
+        final result = 'Hello World'.toList(mutable: true);
+        result.insertAll(6, 'brave '.toList());
+        check(result.toString()).equals('Hello brave World');
+        result.insert(0, '!');
+        check(result.toString()).equals('!Hello brave World');
+      });
+      test('length growth and shrinkage', () {
+        final mutable = 'abc'.toList(mutable: true);
+        mutable.length = 5;
+        check(mutable.length).equals(5);
+        check(mutable[3]).equals('\x00');
+        check(mutable[4]).equals('\x00');
+        mutable.length = 2;
+        check(mutable.toString()).equals('ab');
+      });
+      test('invalid character add', () {
+        final mutable = 'abc'.toList(mutable: true);
+        check(() => mutable.add('ab')).throws<ArgumentError>();
+        check(() => mutable.add('')).throws<ArgumentError>();
+      });
     });
 
     group('immutable unicode', () {
@@ -235,6 +256,27 @@ void main() {
         check(plenty.sublist(5).toString()).equals(plentyString.substring(5));
         check(plenty.sublist(5, 7).toString())
             .equals(plentyString.substring(5, 8));
+      });
+      test('insert and insertAll', () {
+        final result = 'Hello World'.toList(mutable: true, unicode: true);
+        result.insertAll(6, 'brave '.toList(unicode: true));
+        check(result.toString()).equals('Hello brave World');
+        result.insert(0, '🍌');
+        check(result.toString()).equals('🍌Hello brave World');
+      });
+      test('length growth and shrinkage', () {
+        final mutable = 'abc'.toList(mutable: true, unicode: true);
+        mutable.length = 5;
+        check(mutable.length).equals(5);
+        check(mutable[3]).equals('\x00');
+        check(mutable[4]).equals('\x00');
+        mutable.length = 2;
+        check(mutable.toString()).equals('ab');
+      });
+      test('invalid character add', () {
+        final mutable = 'abc'.toList(mutable: true, unicode: true);
+        check(() => mutable.add('🍌a')).throws<ArgumentError>();
+        check(() => mutable.add('')).throws<ArgumentError>();
       });
     });
   });

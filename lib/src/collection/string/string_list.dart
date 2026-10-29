@@ -65,7 +65,13 @@ class MutableStringList extends ListBase<String> {
   int get length => codeUnits.length;
 
   @override
-  set length(int newLength) => codeUnits.length = newLength;
+  set length(int newLength) {
+    if (newLength > codeUnits.length) {
+      codeUnits.addAll(List.filled(newLength - codeUnits.length, 0));
+    } else {
+      codeUnits.length = newLength;
+    }
+  }
 
   @override
   String operator [](int index) => String.fromCharCode(codeUnits[index]);
@@ -80,7 +86,51 @@ class MutableStringList extends ListBase<String> {
   }
 
   @override
-  void add(String element) => codeUnits.addAll(element.codeUnits);
+  void add(String element) {
+    if (element.length == 1) {
+      codeUnits.add(element.codeUnitAt(0));
+    } else {
+      throw ArgumentError.value(element, 'element', 'Invalid character');
+    }
+  }
+
+  @override
+  void addAll(Iterable<String> iterable) {
+    for (final element in iterable) {
+      add(element);
+    }
+  }
+
+  @override
+  void insert(int index, String element) {
+    if (element.length == 1) {
+      codeUnits.insert(index, element.codeUnitAt(0));
+    } else {
+      throw ArgumentError.value(element, 'element', 'Invalid character');
+    }
+  }
+
+  @override
+  void insertAll(int index, Iterable<String> iterable) {
+    final units = <int>[];
+    for (final element in iterable) {
+      if (element.length == 1) {
+        units.add(element.codeUnitAt(0));
+      } else {
+        throw ArgumentError.value(element, 'element', 'Invalid character');
+      }
+    }
+    codeUnits.insertAll(index, units);
+  }
+
+  @override
+  String removeAt(int index) => String.fromCharCode(codeUnits.removeAt(index));
+
+  @override
+  void removeRange(int start, int end) => codeUnits.removeRange(start, end);
+
+  @override
+  void clear() => codeUnits.clear();
 
   @override
   List<String> sublist(int start, [int? end]) =>
@@ -102,7 +152,13 @@ class MutableUnicodeStringList extends ListBase<String> {
   int get length => runes.length;
 
   @override
-  set length(int newLength) => runes.length = newLength;
+  set length(int newLength) {
+    if (newLength > runes.length) {
+      runes.addAll(List.filled(newLength - runes.length, 0));
+    } else {
+      runes.length = newLength;
+    }
+  }
 
   @override
   String operator [](int index) => String.fromCharCode(runes[index]);
@@ -117,7 +173,51 @@ class MutableUnicodeStringList extends ListBase<String> {
   }
 
   @override
-  void add(String element) => runes.addAll(element.runes);
+  void add(String element) {
+    if (element.runes.length == 1) {
+      runes.add(element.runes.first);
+    } else {
+      throw ArgumentError.value(element, 'element', 'Invalid character');
+    }
+  }
+
+  @override
+  void addAll(Iterable<String> iterable) {
+    for (final element in iterable) {
+      add(element);
+    }
+  }
+
+  @override
+  void insert(int index, String element) {
+    if (element.runes.length == 1) {
+      runes.insert(index, element.runes.first);
+    } else {
+      throw ArgumentError.value(element, 'element', 'Invalid character');
+    }
+  }
+
+  @override
+  void insertAll(int index, Iterable<String> iterable) {
+    final list = <int>[];
+    for (final element in iterable) {
+      if (element.runes.length == 1) {
+        list.add(element.runes.first);
+      } else {
+        throw ArgumentError.value(element, 'element', 'Invalid character');
+      }
+    }
+    runes.insertAll(index, list);
+  }
+
+  @override
+  String removeAt(int index) => String.fromCharCode(runes.removeAt(index));
+
+  @override
+  void removeRange(int start, int end) => runes.removeRange(start, end);
+
+  @override
+  void clear() => runes.clear();
 
   @override
   List<String> sublist(int start, [int? end]) =>
