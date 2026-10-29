@@ -59,10 +59,29 @@ class Interval<T extends Comparable<T>> {
   }
 
   /// Returns the minimal interval enclosing this and [other] interval.
-  Interval<T> union(Interval<T> other) => Interval<T>(
+  Interval<T> union(Interval<T> other) => span(other);
+
+  /// Returns the minimal interval (convex hull) spanning this and [other] interval.
+  Interval<T> span(Interval<T> other) => Interval<T>(
     lower.compareTo(other.lower) < 0 ? lower : other.lower,
     upper.compareTo(other.upper) > 0 ? upper : other.upper,
   );
+
+  /// Returns the difference of this interval minus [other] interval as a list
+  /// of zero, one, or two disjoint intervals.
+  List<Interval<T>> difference(Interval<T> other) {
+    if (!intersects(other)) {
+      return [this];
+    }
+    final result = <Interval<T>>[];
+    if (lower.compareTo(other.lower) < 0) {
+      result.add(Interval<T>(lower, other.lower));
+    }
+    if (other.upper.compareTo(upper) < 0) {
+      result.add(Interval<T>(other.upper, upper));
+    }
+    return result;
+  }
 
   @override
   bool operator ==(Object other) =>

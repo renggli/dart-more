@@ -197,7 +197,38 @@ void main() {
       for (final (:a, :b, :r) in fixtures) {
         check(a.union(b)).equals(r);
         check(b.union(a)).equals(r);
+        check(a.span(b)).equals(r);
+        check(b.span(a)).equals(r);
       }
+    });
+    test('difference', () {
+      // Disjoint: returns [this]
+      check(Interval(1, 3).difference(Interval(5, 7)))
+          .deepEquals([Interval(1, 3)]);
+      check(Interval(5, 7).difference(Interval(1, 3)))
+          .deepEquals([Interval(5, 7)]);
+
+      // Enclosed: returns empty list
+      check(Interval(2, 4).difference(Interval(1, 5))).isEmpty();
+      check(Interval(2, 4).difference(Interval(2, 4))).isEmpty();
+
+      // Right overlap: returns left remaining
+      check(Interval(1, 5).difference(Interval(3, 7)))
+          .deepEquals([Interval(1, 3)]);
+
+      // Left overlap: returns right remaining
+      check(Interval(3, 7).difference(Interval(1, 5)))
+          .deepEquals([Interval(5, 7)]);
+
+      // Split in the middle: returns two intervals
+      check(Interval(1, 10).difference(Interval(4, 6)))
+          .deepEquals([Interval(1, 4), Interval(6, 10)]);
+
+      // Single point overlap at boundary
+      check(Interval(1, 5).difference(Interval(5, 7)))
+          .deepEquals([Interval(1, 5)]);
+      check(Interval(5, 7).difference(Interval(1, 5)))
+          .deepEquals([Interval(5, 7)]);
     });
     test('equals', () {
       for (var i = 0; i < intervals.length; i++) {

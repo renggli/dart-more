@@ -391,7 +391,7 @@
   - **Problem**: `BitList` supports `~` / `not`, `&` / `and`, `|` / `or`, and `-` / `difference`, but omits bitwise XOR (`^` / `xor`).
   - **Fix**: Add `BitList operator ^(BitList other) => BitList.of(this)..xor(other);` and `void xor(BitList other)` to `BitList`.
 
-- [ ] **`Interval.span` and `Interval.difference`**
+- [x] **`Interval.span` and `Interval.difference`**
   - **Severity**: Suggestion
   - **Location**: [`lib/src/interval/interval.dart`](lib/src/interval/interval.dart#L42-L67)
   - **Problem**: `Interval` supports `union` (only when intersecting), `intersection`, `encloses`, and `intersects`, but lacks `span(Interval<T> other)` (convex hull `Interval(min(lower, other.lower), max(upper, other.upper))` even for disjoint intervals) and `difference(Interval<T> other)`.
