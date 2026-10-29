@@ -427,7 +427,7 @@
   - **Problem**: Common network analysis metrics—graph density ($\frac{|E|}{|V|(|V|-1)}$ for directed, $\frac{2|E|}{|V|(|V|-1)}$ for undirected) and local/average clustering coefficients (fraction of closed triangles around vertices)—are missing.
   - **Fix**: Add `double get density`, `double localClusteringCoefficient(V vertex)`, and `double averageClusteringCoefficient()` to `AlgorithmsGraphExtension`.
 
-- [ ] **Centrality measures (`closenessCentrality`, `betweennessCentrality`, `pageRank`)**
+- [x] **Centrality measures (`closenessCentrality`, `betweennessCentrality`, `pageRank`)**
   - **Severity**: Suggestion
   - **Location**: [`lib/src/graph/algorithms.dart`](lib/src/graph/algorithms.dart), [`lib/graph.dart`](lib/graph.dart)
   - **Problem**: `Graph` lacks vertex importance and ranking algorithms used in network analysis and dependency ranking: closeness centrality, Brandes's $O(VE)$ unweighted / $O(VE + V^2 \log V)$ weighted betweenness centrality, and iterative PageRank / eigenvector centrality.

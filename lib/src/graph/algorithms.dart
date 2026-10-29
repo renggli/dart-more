@@ -3,6 +3,7 @@ import 'package:collection/collection.dart';
 import '../comparator/constructors/natural.dart';
 import '../functional/types/constant.dart';
 import '../functional/types/predicate.dart';
+import 'algorithms/betweenness_centrality.dart' as betweenness_centrality;
 import 'algorithms/biconnected.dart' as biconnected;
 import 'algorithms/bipartite_check.dart' as bipartite_check;
 import 'algorithms/bron_kerbosch_cliques.dart' as bron_kerbosch_cliques;
@@ -10,6 +11,7 @@ import 'algorithms/cycle_check.dart' as cycle_check;
 import 'algorithms/dinic_max_flow.dart' as dinic_max_flow;
 import 'algorithms/eulerian.dart' as eulerian;
 import 'algorithms/kruskal_spanning_tree.dart' as kruskal_spanning_tree;
+import 'algorithms/page_rank.dart' as page_rank;
 import 'algorithms/prim_spanning_tree.dart' as prim_spanning_tree;
 import 'algorithms/search/a_star.dart' as a_star;
 import 'algorithms/search/bellman_ford.dart' as bellman_ford;
@@ -405,6 +407,48 @@ extension AlgorithmsGraphExtension<V, E> on Graph<V, E> {
       }
     }
     return triplets == 0 ? 0.0 : triangles / triplets;
+  }
+
+  /// Computes the betweenness centrality of all vertices in this graph.
+  Map<V, double> betweennessCentrality({
+    bool normalized = true,
+    StorageStrategy<V>? vertexStrategy,
+  }) => betweenness_centrality.betweennessCentrality<V, E>(
+    this,
+    normalized: normalized,
+    vertexStrategy: vertexStrategy ?? this.vertexStrategy,
+  );
+
+  /// Computes the PageRank of all vertices in this graph.
+  Map<V, double> pageRank({
+    double damping = 0.85,
+    double tolerance = 1e-6,
+    int maxIterations = 100,
+    StorageStrategy<V>? vertexStrategy,
+  }) => page_rank.pageRank<V, E>(
+    this,
+    damping: damping,
+    tolerance: tolerance,
+    maxIterations: maxIterations,
+    vertexStrategy: vertexStrategy ?? this.vertexStrategy,
+  );
+
+  /// Computes the closeness centrality of all vertices in this graph.
+  Map<V, double> closenessCentrality({
+    bool normalized = true,
+    num Function(V source, V target)? edgeCost,
+    StorageStrategy<V>? vertexStrategy,
+  }) {
+    final fw = allShortestPaths(
+      edgeCost: edgeCost,
+      vertexStrategy: vertexStrategy,
+    );
+    final strategy = vertexStrategy ?? this.vertexStrategy;
+    final result = strategy.createMap<double>();
+    for (final v in vertices) {
+      result[v] = fw.closenessCentrality(v, normalized: normalized);
+    }
+    return result;
   }
 
   /// Internal helper that returns a function using the numeric edge value

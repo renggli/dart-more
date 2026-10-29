@@ -233,6 +233,40 @@ final class FloydWarshall<V> {
     }
     return pairCount == 0 ? 0.0 : totalDistance / pairCount;
   }
+
+  /// Returns the closeness centrality of [vertex], which is the reciprocal
+  /// of the sum of shortest-path distances to all other reachable vertices,
+  /// normalized by $\frac{k - 1}{n - 1} \cdot \frac{k - 1}{\sum d}$ where $k$
+  /// is the number of reachable vertices and $n$ is total vertices (Wasserman-Faust).
+  ///
+  /// If [normalized] is `false`, returns $\frac{1}{\sum d}$.
+  /// Returns `0.0` if [vertex] cannot reach any other vertices.
+  double closenessCentrality(V vertex, {bool normalized = true}) {
+    final targetMap = _pairs[vertex];
+    if (targetMap == null) {
+      throw GraphError(vertex, 'vertex', 'Unknown vertex');
+    }
+    final n = _pairs.length;
+    if (n <= 1) return 0.0;
+    var sumDistance = 0.0;
+    var reachable = 0;
+    for (final entry in targetMap.entries) {
+      if (entry.key == vertex) continue;
+      final dist = entry.value.distance;
+      if (!dist.isInfinite) {
+        sumDistance += dist;
+        reachable++;
+      }
+    }
+    if (reachable == 0 || sumDistance == 0.0) return 0.0;
+    final rawCloseness = reachable / sumDistance;
+    if (normalized) {
+      return (reachable / (n - 1)) * (rawCloseness / reachable) * (n - 1) == 0.0
+          ? 0.0
+          : (reachable / (n - 1)) * (reachable / sumDistance);
+    }
+    return 1.0 / sumDistance;
+  }
 }
 
 final class FloydWarshallState<V> {

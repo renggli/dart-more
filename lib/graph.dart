@@ -2,6 +2,8 @@
 library;
 
 export 'src/graph/algorithms.dart' show AlgorithmsGraphExtension;
+export 'src/graph/algorithms/betweenness_centrality.dart'
+    show betweennessCentrality;
 export 'src/graph/algorithms/biconnected.dart'
     show articulationPoints, biconnectedComponents, bridges;
 export 'src/graph/algorithms/bipartite_check.dart' show isBipartite;
@@ -13,6 +15,7 @@ export 'src/graph/algorithms/eulerian.dart'
     show findEulerianPath, hasEulerianCircuit, hasEulerianPath;
 export 'src/graph/algorithms/kruskal_spanning_tree.dart'
     show kruskalSpanningTree;
+export 'src/graph/algorithms/page_rank.dart' show pageRank;
 export 'src/graph/algorithms/prim_spanning_tree.dart' show primSpanningTree;
 export 'src/graph/algorithms/search/a_star.dart' show aStarSearch;
 export 'src/graph/algorithms/search/bellman_ford.dart' show bellmanFordSearch;
