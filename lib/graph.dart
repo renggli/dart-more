@@ -52,6 +52,7 @@ export 'src/graph/operations/copy.dart' show CopyGraphExtension;
 export 'src/graph/operations/export.dart' show ExportGraphExtension;
 export 'src/graph/operations/logical.dart' show LogicalGraphExtension;
 export 'src/graph/operations/map.dart' show MapGraphExtension;
+export 'src/graph/operations/transitive.dart' show TransitiveGraphExtension;
 export 'src/graph/path.dart' show NumericPathExtension, Path;
 export 'src/graph/strategy.dart';
 export 'src/graph/traverse/breadth_first.dart'

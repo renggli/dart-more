@@ -445,7 +445,7 @@
   - **Problem**: There is no algorithm to compute vertex core numbers or extract the maximal subgraph in which every vertex has degree $\ge k$ (whereas `bronKerboschCliques` requires exponential time).
   - **Fix**: Implement the Matula–Beck $O(V + E)$ bucket-queue peeling algorithm in `lib/src/graph/algorithms/k_core.dart`, exposing `Map<V, int> coreNumbers()` and `Graph<V, E> kCore(int k)` on `AlgorithmsGraphExtension`.
 
-- [ ] **Transitive closure and transitive reduction for directed graphs**
+- [x] **Transitive closure and transitive reduction for directed graphs**
   - **Severity**: Suggestion
   - **Location**: [`lib/src/graph/operations/`](lib/src/graph/operations/), [`lib/src/graph/algorithms.dart`](lib/src/graph/algorithms.dart)
   - **Problem**: Directed dependency and reachability graphs lack `transitiveClosure()` (adding edges `(u, v)` whenever `v` is reachable from `u`) and `transitiveReduction()` (removing redundant edges while preserving reachability in DAGs).
