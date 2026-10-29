@@ -213,6 +213,14 @@ void main() {
         check(optional.toString())
             .equals("Instance of 'AbsentOptional<String>'");
       });
+      test('pattern matching', () {
+        const matched = optional;
+        final result = switch (matched) {
+          PresentOptional(:final value) => 'present:$value',
+          AbsentOptional() => 'absent',
+        };
+        check(result).equals('absent');
+      });
     });
     group('ofNullable', () {
       test('isAbsent', () {

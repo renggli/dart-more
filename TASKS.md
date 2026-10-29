@@ -339,7 +339,7 @@
   - **Problem**: The umbrella library `lib/more.dart` exports 15 of the 16 sub-libraries but omits `diff.dart`, and uses `export 'package:more/...';` instead of relative exports (`AGENTS.md`: "Within `lib/`, prefer relative imports ... over package imports").
   - **Fix**: Add `export 'diff.dart';` to `lib/more.dart` and convert all exports in `lib/more.dart` to relative exports.
 
-- [ ] **`LeftEither`, `RightEither`, `PresentOptional`, and `AbsentOptional` are hidden by `lib/functional.dart`**
+- [x] **`LeftEither`, `RightEither`, `PresentOptional`, and `AbsentOptional` are hidden by `lib/functional.dart`**
   - **Severity**: Warning
   - **Location**: [`lib/functional.dart`](lib/functional.dart#L4-L5)
   - **Problem**: `Either` and `Optional` are `sealed` classes designed for exhaustive pattern matching, but `lib/functional.dart` uses `show Either` and `show Optional`, hiding `LeftEither`, `RightEither`, `PresentOptional`, and `AbsentOptional`. Users importing `package:more/functional.dart` cannot pattern-match on the sealed subtypes (`case PresentOptional(:final value):` or `case LeftEither(:final value):`).

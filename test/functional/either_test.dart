@@ -189,6 +189,14 @@ void main() {
         check(either.toString())
             .equals("Instance of 'RightEither<int, bool>'[$value]");
       });
+      test('pattern matching', () {
+        const matched = either;
+        final result = switch (matched) {
+          LeftEither(:final leftValue) => 'left:$leftValue',
+          RightEither(:final rightValue) => 'right:$rightValue',
+        };
+        check(result).equals('right:$value');
+      });
     });
   });
 }
