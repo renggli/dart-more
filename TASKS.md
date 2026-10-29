@@ -226,7 +226,7 @@
   - **Problem**: `orElse != null && iterable.isEmpty ? orElse() : iterable.reduce(min)` checks `iterable.isEmpty` and then calls `iterable.reduce(min)`, creating two iterators over `iterable`.
   - **Fix**: Use a single `iterator` pass (matching `minMaxOf` on lines 22–34).
 
-- [ ] **`LargestComparator.largest` does not short-circuit when `k <= 0`**
+- [x] **`LargestComparator.largest` does not short-circuit when `k <= 0`**
   - **Severity**: Warning
   - **Location**: [`lib/src/comparator/operations/largest.dart`](lib/src/comparator/operations/largest.dart#L9-L24)
   - **Problem**: When `k == 0`, `largest` still inserts and removes every element of `iterable` in a `PriorityQueue` before returning `[]`; when `k < 0`, it consumes the entire `iterable` before `List.generate` throws `RangeError`.

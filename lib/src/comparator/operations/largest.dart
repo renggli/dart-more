@@ -7,6 +7,8 @@ extension LargestComparator<T> on Comparator<T> {
   /// Returns a list of the [k] largest elements of the given iterable
   /// according to this ordering, in order from largest to smallest.
   List<T> largest(Iterable<T> iterable, int k) {
+    RangeError.checkNotNegative(k, 'k');
+    if (k == 0) return <T>[];
     final heap = PriorityQueue<T>(this);
     for (final each in iterable) {
       heap.add(each);
