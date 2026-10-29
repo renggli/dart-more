@@ -19,10 +19,11 @@ extension PrefixSuffixStringExtension on String {
     if (pattern is String && endsWith(pattern)) {
       return substring(0, length - pattern.length);
     }
-    final end = lastIndexOf(pattern);
-    if (end == -1) return this;
-    final match = pattern.matchAsPrefix(this, end)!;
-    if (match.end < length) return this;
-    return substring(0, end);
+    for (final match in pattern.allMatches(this)) {
+      if (match.end == length && match.start < length) {
+        return substring(0, match.start);
+      }
+    }
+    return this;
   }
 }

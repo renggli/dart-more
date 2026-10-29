@@ -50,7 +50,7 @@
   - **Problem**: In `numberAndUnitExtractor = RegExp(r'([+-]?\d*(\.\d+)?(e[+-]?\d+)?)\*?(\w?)', caseSensitive: false)`, `\*?` matches even when `numberString` has no digits (`''`, `'+'`, `'-'`), so `Complex.tryParse('*i')` and `Complex.tryParse('1+*i')` parse as `i` and `1 + i`. Also, `RegExp(r'(\d|\.)\s+(\d|\.)')` does not reject whitespace adjacent to `e`/`E` or its sign (e.g. `'1 e 5'` or `'1e + 5'`), which `source.replaceAll(RegExp(r'\s+'), '')` silently merges into `'1e5'`.
   - **Fix**: Require digits before `*` and disallow whitespace inside scientific notation exponents (`RegExp(r'(\d|\.|e)\s+[+-]?(\d|\.|e)', caseSensitive: false)`).
 
-- [ ] **`PrefixSuffixStringExtension.removeSuffix` fails on greedy/multi-character `RegExp` patterns**
+- [x] **`PrefixSuffixStringExtension.removeSuffix` fails on greedy/multi-character `RegExp` patterns**
   - **Severity**: Warning
   - **Location**: [`lib/src/collection/string/prefix_suffix.dart`](lib/src/collection/string/prefix_suffix.dart#L17-L27)
   - **Problem**: `removeSuffix` uses `final end = lastIndexOf(pattern);`, which searches backward from the end of the string and stops at the shortest suffix match. For `'hello123'.removeSuffix(RegExp(r'\d+'))`, `lastIndexOf` matches `'3'` at index 7 instead of `'123'` at index 5, returning `'hello12'` instead of `'hello'`. Additionally, for patterns that can match empty strings (e.g. `RegExp(r'x*')`), `removePrefix` guards `match.end > 0` while `removeSuffix` lacks a guard.

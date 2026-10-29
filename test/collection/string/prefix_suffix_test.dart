@@ -42,6 +42,8 @@ void main() {
       check('abcd'.removeSuffix(RegExp('abcd'))).equals('');
       check('abcd'.removeSuffix(RegExp('abc'))).equals('abcd');
       check('abcd'.removeSuffix(RegExp('xyz'))).equals('abcd');
+      check('hello123'.removeSuffix(RegExp(r'\d+'))).equals('hello');
+      check('abcd'.removeSuffix(RegExp(r'x*'))).equals('abcd');
     });
   });
 }
