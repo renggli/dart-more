@@ -1,53 +1,99 @@
 import '../edge.dart';
-import '../graph.dart';
 import '../path.dart';
 import '../strategy.dart';
 
-/// Checks if [graph] has an Eulerian circuit (a closed trail visiting every edge exactly once).
-bool hasEulerianCircuit<V, E>(
-  Graph<V, E> graph, {
+/// Checks if a graph has an Eulerian circuit (a closed trail visiting every edge exactly once).
+bool hasEulerianCircuit<V, E>({
+  required Iterable<V> vertices,
+  required Iterable<Edge<V, E>> Function(V vertex) outgoingEdgesOf,
+  required bool isDirected,
+  int Function(V vertex)? inDegreeOf,
+  int Function(V vertex)? outDegreeOf,
+  int Function(V vertex)? degreeOf,
+  bool Function(V u, V v)? containsEdge,
   StorageStrategy<V>? vertexStrategy,
 }) =>
     findEulerianPath<V, E>(
-      graph,
+      vertices: vertices,
+      outgoingEdgesOf: outgoingEdgesOf,
+      isDirected: isDirected,
+      inDegreeOf: inDegreeOf,
+      outDegreeOf: outDegreeOf,
+      degreeOf: degreeOf,
+      containsEdge: containsEdge,
       circuit: true,
       vertexStrategy: vertexStrategy,
     ) !=
     null;
 
-/// Checks if [graph] has an Eulerian path (a trail visiting every edge exactly once).
-bool hasEulerianPath<V, E>(
-  Graph<V, E> graph, {
+/// Checks if a graph has an Eulerian path (a trail visiting every edge exactly once).
+bool hasEulerianPath<V, E>({
+  required Iterable<V> vertices,
+  required Iterable<Edge<V, E>> Function(V vertex) outgoingEdgesOf,
+  required bool isDirected,
+  int Function(V vertex)? inDegreeOf,
+  int Function(V vertex)? outDegreeOf,
+  int Function(V vertex)? degreeOf,
+  bool Function(V u, V v)? containsEdge,
   StorageStrategy<V>? vertexStrategy,
 }) =>
     findEulerianPath<V, E>(
-      graph,
+      vertices: vertices,
+      outgoingEdgesOf: outgoingEdgesOf,
+      isDirected: isDirected,
+      inDegreeOf: inDegreeOf,
+      outDegreeOf: outDegreeOf,
+      degreeOf: degreeOf,
+      containsEdge: containsEdge,
       circuit: false,
       vertexStrategy: vertexStrategy,
     ) !=
     null;
 
-/// Finds an Eulerian path or circuit in [graph] using Hierholzer's algorithm.
+/// Finds an Eulerian path or circuit in a graph using Hierholzer's algorithm.
 ///
 /// Returns `null` if no Eulerian path or circuit exists.
-Path<V, E>? findEulerianPath<V, E>(
-  Graph<V, E> graph, {
+Path<V, E>? findEulerianPath<V, E>({
+  required Iterable<V> vertices,
+  required Iterable<Edge<V, E>> Function(V vertex) outgoingEdgesOf,
+  required bool isDirected,
+  int Function(V vertex)? inDegreeOf,
+  int Function(V vertex)? outDegreeOf,
+  int Function(V vertex)? degreeOf,
+  bool Function(V u, V v)? containsEdge,
   bool circuit = false,
   StorageStrategy<V>? vertexStrategy,
 }) {
-  if (graph.vertices.isEmpty) return null;
+  final vertexList = vertices.toList(growable: false);
+  if (vertexList.isEmpty) return null;
 
-  vertexStrategy ??= graph.vertexStrategy;
+  vertexStrategy ??= StorageStrategy.defaultStrategy();
 
   // 1. Degree condition check and find starting vertex.
   V? startVertex;
 
-  if (graph.isDirected) {
+  if (isDirected) {
+    outDegreeOf ??= (v) => outgoingEdgesOf(v).length;
+    if (inDegreeOf == null) {
+      final inDegrees = vertexStrategy.createMap<int>();
+      for (final v in vertexList) {
+        inDegrees[v] = 0;
+      }
+      for (final v in vertexList) {
+        for (final edge in outgoingEdgesOf(v)) {
+          if (inDegrees.containsKey(edge.target)) {
+            inDegrees[edge.target] = inDegrees[edge.target]! + 1;
+          }
+        }
+      }
+      inDegreeOf = (v) => inDegrees[v] ?? 0;
+    }
+
     var startCandidates = 0;
     var endCandidates = 0;
-    for (final v in graph.vertices) {
-      final outDeg = graph.outDegreeOf(v);
-      final inDeg = graph.inDegreeOf(v);
+    for (final v in vertexList) {
+      final outDeg = outDegreeOf(v);
+      final inDeg = inDegreeOf(v);
       final diff = outDeg - inDeg;
       if (diff == 1) {
         startVertex = v;
@@ -67,13 +113,13 @@ Path<V, E>? findEulerianPath<V, E>(
       }
     }
   } else {
+    degreeOf ??= (v) => outgoingEdgesOf(v).length;
+    containsEdge ??= (u, v) => outgoingEdgesOf(u).any((e) => e.target == v);
+
     var oddVertices = 0;
-    for (final v in graph.vertices) {
-      // For undirected graphs, self-loops add 2 to degree, but graph.degreeOf(v)
-      // counts neighbours, where a self loop (v, v) is 1 neighbour.
-      // So degree in terms of edge endpoints is: neighbours.length + (has self-loop ? 1 : 0).
-      var deg = graph.degreeOf(v);
-      if (graph.containsEdge(v, v)) {
+    for (final v in vertexList) {
+      var deg = degreeOf(v);
+      if (containsEdge(v, v)) {
         deg += 1;
       }
       if (deg.isOdd) {
@@ -90,8 +136,8 @@ Path<V, E>? findEulerianPath<V, E>(
 
   // If no start vertex was identified by degree imbalance, pick any vertex with edges.
   if (startVertex == null) {
-    for (final v in graph.vertices) {
-      if (graph.degreeOf(v) > 0) {
+    for (final v in vertexList) {
+      if (outgoingEdgesOf(v).isNotEmpty) {
         startVertex = v;
         break;
       }
@@ -100,8 +146,8 @@ Path<V, E>? findEulerianPath<V, E>(
 
   // If all vertices have degree 0:
   if (startVertex == null) {
-    if (graph.vertices.length == 1) {
-      return Path<V, E>.fromVertices([graph.vertices.first]);
+    if (vertexList.length == 1) {
+      return Path<V, E>.fromVertices([vertexList.first]);
     }
     return null;
   }
@@ -110,13 +156,14 @@ Path<V, E>? findEulerianPath<V, E>(
   final pathEdges = <Edge<V, E>>[];
   final stack = <V>[startVertex];
 
-  if (graph.isDirected) {
-    final edgeCount = graph.edges.length;
+  if (isDirected) {
+    var edgeCount = 0;
     final remainingEdges = vertexStrategy.createMap<List<Edge<V, E>>>();
-    for (final v in graph.vertices) {
-      final outgoing = graph.outgoingEdgesOf(v).toList();
+    for (final v in vertexList) {
+      final outgoing = outgoingEdgesOf(v).toList();
       if (outgoing.isNotEmpty) {
         remainingEdges[v] = outgoing;
+        edgeCount += outgoing.length;
       }
     }
 
@@ -145,13 +192,12 @@ Path<V, E>? findEulerianPath<V, E>(
     return Path<V, E>.fromEdges(pathEdges.reversed);
   } else {
     // For undirected graphs, canonicalize edges so each undirected edge has a unique ID.
-    // In graph.edges, each non-self edge appears twice: (u, v) and (v, u). Self loops appear once.
     final remainingEdges = vertexStrategy.createMap<List<(int, Edge<V, E>)>>();
     var undirectedEdgeCount = 0;
     final seenEdges = vertexStrategy.createMap<Set<V>>();
 
-    for (final v in graph.vertices) {
-      for (final edge in graph.outgoingEdgesOf(v)) {
+    for (final v in vertexList) {
+      for (final edge in outgoingEdgesOf(v)) {
         final u = edge.source;
         final w = edge.target;
         if (u == w) {

@@ -1,32 +1,26 @@
-import '../errors.dart';
-import '../graph.dart';
 import '../strategy.dart';
 
-/// Computes the core numbers of all vertices in an undirected [graph] using
-/// the Matula–Beck $O(V + E)$ algorithm.
+/// Computes the core numbers of all [vertices] using the Matula–Beck $O(V + E)$ algorithm.
 ///
 /// The core number (or coreness) of a vertex is the highest order $k$ of a
 /// $k$-core that contains that vertex.
-///
-/// Throws [GraphError] if the graph is directed.
-Map<V, int> coreNumbers<V, E>(
-  Graph<V, E> graph, {
+Map<V, int> coreNumbers<V>({
+  required Iterable<V> vertices,
+  required Iterable<V> Function(V vertex) neighboursOf,
   StorageStrategy<V>? vertexStrategy,
 }) {
-  GraphError.checkNotDirected(graph);
-  vertexStrategy ??= graph.vertexStrategy;
-
-  final vertices = graph.vertices.toList(growable: false);
-  final n = vertices.length;
+  vertexStrategy ??= StorageStrategy.defaultStrategy();
+  final vertexList = vertices.toList(growable: false);
+  final n = vertexList.length;
   final result = vertexStrategy.createMap<int>();
   if (n == 0) return result;
 
   // Degrees of vertices (excluding self-loops)
   final degrees = vertexStrategy.createMap<int>();
   var maxDeg = 0;
-  for (final v in vertices) {
+  for (final v in vertexList) {
     var deg = 0;
-    for (final u in graph.neighboursOf(v)) {
+    for (final u in neighboursOf(v)) {
       if (u != v) deg++;
     }
     degrees[v] = deg;
@@ -38,7 +32,7 @@ Map<V, int> coreNumbers<V, E>(
     maxDeg + 1,
     (_) => vertexStrategy!.createSet(),
   );
-  for (final v in vertices) {
+  for (final v in vertexList) {
     bins[degrees[v]!].add(v);
   }
 
@@ -49,7 +43,7 @@ Map<V, int> coreNumbers<V, E>(
       bins[d].remove(v);
       result[v] = d;
 
-      for (final u in graph.neighboursOf(v)) {
+      for (final u in neighboursOf(v)) {
         if (u != v && !result.containsKey(u)) {
           final degU = degrees[u]!;
           if (degU > d) {
@@ -66,34 +60,24 @@ Map<V, int> coreNumbers<V, E>(
   return result;
 }
 
-/// Returns the $k$-core subgraph of an undirected [graph], which is the maximal
-/// subgraph in which every vertex has degree at least [k].
-///
-/// Throws [GraphError] if the graph is directed.
-Graph<V, E> kCore<V, E>(
-  Graph<V, E> graph,
-  int k, {
+/// Computes the set of vertices belonging to the $k$-core of a graph.
+Set<V> kCoreVertices<V>({
+  required Iterable<V> vertices,
+  required Iterable<V> Function(V vertex) neighboursOf,
+  required int k,
   StorageStrategy<V>? vertexStrategy,
 }) {
-  GraphError.checkNotDirected(graph);
-  vertexStrategy ??= graph.vertexStrategy;
-
-  final cores = coreNumbers(graph, vertexStrategy: vertexStrategy);
-  final sub = Graph<V, E>(isDirected: false, vertexStrategy: vertexStrategy);
-
+  vertexStrategy ??= StorageStrategy.defaultStrategy();
+  final cores = coreNumbers<V>(
+    vertices: vertices,
+    neighboursOf: neighboursOf,
+    vertexStrategy: vertexStrategy,
+  );
+  final result = vertexStrategy.createSet();
   for (final entry in cores.entries) {
     if (entry.value >= k) {
-      sub.addVertex(entry.key);
+      result.add(entry.key);
     }
   }
-
-  for (final v in sub.vertices) {
-    for (final edge in graph.outgoingEdgesOf(v)) {
-      if (sub.containsVertex(edge.target)) {
-        sub.addEdge(edge.source, edge.target, value: edge.value);
-      }
-    }
-  }
-
-  return sub;
+  return result;
 }

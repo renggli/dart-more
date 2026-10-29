@@ -1,20 +1,17 @@
 import 'dart:math';
 
-import '../edge.dart';
-import '../errors.dart';
-import '../graph.dart';
 import '../strategy.dart';
 
-/// Finds articulation points (cut vertices) in an undirected [graph].
+/// Finds articulation points (cut vertices) in an undirected graph.
 ///
 /// An articulation point is a vertex whose removal increases the number
 /// of connected components of the graph.
-Set<V> articulationPoints<V, E>(
-  Graph<V, E> graph, {
+Set<V> articulationPoints<V>({
+  required Iterable<V> vertices,
+  required Iterable<V> Function(V vertex) neighboursOf,
   StorageStrategy<V>? vertexStrategy,
 }) {
-  GraphError.checkNotDirected(graph);
-  vertexStrategy ??= graph.vertexStrategy;
+  vertexStrategy ??= StorageStrategy.defaultStrategy();
 
   final result = vertexStrategy.createSet();
   final disc = vertexStrategy.createMap<int>();
@@ -25,8 +22,7 @@ Set<V> articulationPoints<V, E>(
     disc[u] = low[u] = ++time;
     var children = 0;
 
-    for (final edge in graph.outgoingEdgesOf(u)) {
-      final v = edge.target;
+    for (final v in neighboursOf(u)) {
       if (v == u) continue; // Ignore self-loops
       if (v == parent) continue;
 
@@ -52,7 +48,7 @@ Set<V> articulationPoints<V, E>(
     }
   }
 
-  for (final v in graph.vertices) {
+  for (final v in vertices) {
     if (!disc.containsKey(v)) {
       dfs(v, null);
     }
@@ -61,17 +57,18 @@ Set<V> articulationPoints<V, E>(
   return result;
 }
 
-/// Finds bridges (cut edges) in an undirected [graph].
+/// Finds bridges (cut edges) in an undirected graph.
 ///
 /// A bridge is an edge whose removal increases the number of connected components.
-Set<Edge<V, E>> bridges<V, E>(
-  Graph<V, E> graph, {
+/// Each bridge is returned as a pair `(u, v)`.
+Set<(V, V)> bridges<V>({
+  required Iterable<V> vertices,
+  required Iterable<V> Function(V vertex) neighboursOf,
   StorageStrategy<V>? vertexStrategy,
 }) {
-  GraphError.checkNotDirected(graph);
-  vertexStrategy ??= graph.vertexStrategy;
+  vertexStrategy ??= StorageStrategy.defaultStrategy();
 
-  final result = <Edge<V, E>>{};
+  final result = <(V, V)>{};
   final disc = vertexStrategy.createMap<int>();
   final low = vertexStrategy.createMap<int>();
   var time = 0;
@@ -80,8 +77,7 @@ Set<Edge<V, E>> bridges<V, E>(
     disc[u] = low[u] = ++time;
     var parentEdgeSkipped = false;
 
-    for (final edge in graph.outgoingEdgesOf(u)) {
-      final v = edge.target;
+    for (final v in neighboursOf(u)) {
       if (v == u) continue; // Ignore self-loops
 
       if (v == parent && !parentEdgeSkipped) {
@@ -99,13 +95,13 @@ Set<Edge<V, E>> bridges<V, E>(
 
         // Edge (u, v) is a bridge if low[v] > disc[u]
         if (low[v]! > disc[u]!) {
-          result.add(edge);
+          result.add((u, v));
         }
       }
     }
   }
 
-  for (final v in graph.vertices) {
+  for (final v in vertices) {
     if (!disc.containsKey(v)) {
       dfs(v, null);
     }
@@ -114,36 +110,39 @@ Set<Edge<V, E>> bridges<V, E>(
   return result;
 }
 
-/// Computes the biconnected components of an undirected [graph].
+/// Represents a biconnected component consisting of its vertices and edges.
+typedef BiconnectedComponent<V> = ({Set<V> vertices, Set<(V, V)> edges});
+
+/// Computes the biconnected components of an undirected graph.
 ///
-/// Each biconnected component is returned as an undirected subgraph
-/// (maximal biconnected subgraph).
-Iterable<Graph<V, E>> biconnectedComponents<V, E>(
-  Graph<V, E> graph, {
+/// Each biconnected component is returned as a record containing its vertices and edges.
+Iterable<BiconnectedComponent<V>> biconnectedComponents<V>({
+  required Iterable<V> vertices,
+  required Iterable<V> Function(V vertex) neighboursOf,
   StorageStrategy<V>? vertexStrategy,
 }) {
-  GraphError.checkNotDirected(graph);
-  vertexStrategy ??= graph.vertexStrategy;
+  vertexStrategy ??= StorageStrategy.defaultStrategy();
 
-  final components = <Graph<V, E>>[];
+  final components = <BiconnectedComponent<V>>[];
   final disc = vertexStrategy.createMap<int>();
   final low = vertexStrategy.createMap<int>();
-  final edgeStack = <Edge<V, E>>[];
+  final stack = <(V, V)>[];
   var time = 0;
 
-  void addComponent(Edge<V, E> boundaryEdge) {
-    final sub = Graph<V, E>(isDirected: false, vertexStrategy: vertexStrategy);
-    while (edgeStack.isNotEmpty) {
-      final edge = edgeStack.removeLast();
-      sub.addEdge(edge.source, edge.target, value: edge.value);
-      if ((edge.source == boundaryEdge.source &&
-              edge.target == boundaryEdge.target) ||
-          (edge.source == boundaryEdge.target &&
-              edge.target == boundaryEdge.source)) {
+  void addComponent((V, V) boundaryEdge) {
+    final componentEdges = <(V, V)>{};
+    final componentVertices = vertexStrategy!.createSet();
+    while (stack.isNotEmpty) {
+      final edge = stack.removeLast();
+      componentEdges.add(edge);
+      componentVertices.add(edge.$1);
+      componentVertices.add(edge.$2);
+      if ((edge.$1 == boundaryEdge.$1 && edge.$2 == boundaryEdge.$2) ||
+          (edge.$1 == boundaryEdge.$2 && edge.$2 == boundaryEdge.$1)) {
         break;
       }
     }
-    components.add(sub);
+    components.add((vertices: componentVertices, edges: componentEdges));
   }
 
   void dfs(V u, V? parent) {
@@ -151,8 +150,7 @@ Iterable<Graph<V, E>> biconnectedComponents<V, E>(
     var children = 0;
     var parentEdgeSkipped = false;
 
-    for (final edge in graph.outgoingEdgesOf(u)) {
-      final v = edge.target;
+    for (final v in neighboursOf(u)) {
       if (v == parent && !parentEdgeSkipped) {
         parentEdgeSkipped = true;
         continue;
@@ -161,44 +159,41 @@ Iterable<Graph<V, E>> biconnectedComponents<V, E>(
       if (disc.containsKey(v)) {
         // Back edge or self-loop
         if (disc[v]! < disc[u]!) {
-          edgeStack.add(edge);
+          stack.add((u, v));
           low[u] = min(low[u]!, disc[v]!);
         }
       } else {
         // Tree edge
         children++;
-        edgeStack.add(edge);
+        stack.add((u, v));
         dfs(v, u);
         low[u] = min(low[u]!, low[v]!);
 
         if ((parent == null && children > 1) ||
             (parent != null && low[v]! >= disc[u]!)) {
-          addComponent(edge);
+          addComponent((u, v));
         }
       }
     }
   }
 
-  for (final v in graph.vertices) {
+  for (final v in vertices) {
     if (!disc.containsKey(v)) {
       dfs(v, null);
-      if (edgeStack.isNotEmpty) {
-        final sub = Graph<V, E>(
-          isDirected: false,
-          vertexStrategy: vertexStrategy,
-        );
-        while (edgeStack.isNotEmpty) {
-          final edge = edgeStack.removeLast();
-          sub.addEdge(edge.source, edge.target, value: edge.value);
+      if (stack.isNotEmpty) {
+        final componentEdges = <(V, V)>{};
+        final componentVertices = vertexStrategy.createSet();
+        while (stack.isNotEmpty) {
+          final edge = stack.removeLast();
+          componentEdges.add(edge);
+          componentVertices.add(edge.$1);
+          componentVertices.add(edge.$2);
         }
-        components.add(sub);
-      } else if (graph.degreeOf(v) == 0) {
+        components.add((vertices: componentVertices, edges: componentEdges));
+      } else if (neighboursOf(v).isEmpty) {
         // Isolated vertex forms its own component
-        final sub = Graph<V, E>(
-          isDirected: false,
-          vertexStrategy: vertexStrategy,
-        )..addVertex(v);
-        components.add(sub);
+        final componentVertices = vertexStrategy.createSet()..add(v);
+        components.add((vertices: componentVertices, edges: <(V, V)>{}));
       }
     }
   }

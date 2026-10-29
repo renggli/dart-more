@@ -1,37 +1,27 @@
 import 'dart:collection';
 
-import '../errors.dart';
-import '../graph.dart';
 import '../strategy.dart';
 
-/// Computes the maximum bipartite matching of an undirected bipartite [graph]
-/// using the Hopcroft–Karp algorithm ($O(E \sqrt{V})$).
-///
-/// Throws [GraphError] if the graph is directed or not bipartite.
-///
-/// Returns a map representing matched pairs (each matched edge appears as
-/// `u -> v` and `v -> u`).
-Map<V, V> bipartiteMatching<V, E>(
-  Graph<V, E> graph, {
-  StorageStrategy<V>? vertexStrategy,
+/// Internal helper to 2-color an undirected bipartite graph.
+/// Returns a map of vertex to boolean partition, or throws [ArgumentError] if not bipartite.
+Map<V, bool> _twoColor<V>({
+  required Iterable<V> vertices,
+  required Iterable<V> Function(V vertex) neighboursOf,
+  required StorageStrategy<V> vertexStrategy,
 }) {
-  GraphError.checkNotDirected(graph);
-  vertexStrategy ??= graph.vertexStrategy;
-
-  // 1. Two-color vertices to partition into U and V
   final colors = vertexStrategy.createMap<bool>();
   final queueColor = <V>[];
-  for (final vertex in graph.vertices) {
+  for (final vertex in vertices) {
     if (colors.containsKey(vertex)) continue;
     colors[vertex] = true;
     queueColor.add(vertex);
     while (queueColor.isNotEmpty) {
       final u = queueColor.removeLast();
       final colorU = colors[u]!;
-      for (final v in graph.neighboursOf(u)) {
+      for (final v in neighboursOf(u)) {
         if (colors.containsKey(v)) {
           if (colors[v] == colorU) {
-            throw GraphError(graph, 'graph', 'Graph is not bipartite');
+            throw ArgumentError('Graph is not bipartite');
           }
         } else {
           colors[v] = !colorU;
@@ -40,18 +30,38 @@ Map<V, V> bipartiteMatching<V, E>(
       }
     }
   }
+  return colors;
+}
+
+/// Computes the maximum bipartite matching of an undirected bipartite graph
+/// using the Hopcroft–Karp algorithm ($O(E \sqrt{V})$).
+///
+/// Throws [ArgumentError] if the graph is not bipartite.
+///
+/// Returns a map representing matched pairs (each matched edge appears as
+/// `u -> v` and `v -> u`).
+Map<V, V> bipartiteMatching<V>({
+  required Iterable<V> vertices,
+  required Iterable<V> Function(V vertex) neighboursOf,
+  StorageStrategy<V>? vertexStrategy,
+}) {
+  vertexStrategy ??= StorageStrategy.defaultStrategy();
+  final colors = _twoColor<V>(
+    vertices: vertices,
+    neighboursOf: neighboursOf,
+    vertexStrategy: vertexStrategy,
+  );
 
   final partU = <V>[];
-  for (final v in graph.vertices) {
+  for (final v in vertices) {
     if (colors[v] == true) partU.add(v);
   }
 
-  // 2. Hopcroft-Karp algorithm
   final pairU = vertexStrategy.createMap<V?>();
   final pairV = vertexStrategy.createMap<V?>();
   final dist = vertexStrategy.createMap<int>();
 
-  for (final v in graph.vertices) {
+  for (final v in vertices) {
     if (colors[v] == true) {
       pairU[v] = null;
     } else {
@@ -73,7 +83,7 @@ Map<V, V> bipartiteMatching<V, E>(
     var foundAugmenting = false;
     while (queue.isNotEmpty) {
       final u = queue.removeFirst();
-      for (final v in graph.neighboursOf(u)) {
+      for (final v in neighboursOf(u)) {
         final nextU = pairV[v];
         if (nextU == null) {
           foundAugmenting = true;
@@ -87,7 +97,7 @@ Map<V, V> bipartiteMatching<V, E>(
   }
 
   bool dfs(V u) {
-    for (final v in graph.neighboursOf(u)) {
+    for (final v in neighboursOf(u)) {
       final nextU = pairV[v];
       if (nextU == null || (dist[nextU] == dist[u]! + 1 && dfs(nextU))) {
         pairU[u] = v;
@@ -107,115 +117,102 @@ Map<V, V> bipartiteMatching<V, E>(
     }
   }
 
-  final matching = vertexStrategy.createMap<V>();
-  for (final u in partU) {
-    if (pairU[u] case final v?) {
-      matching[u] = v;
-      matching[v] = u;
+  final result = vertexStrategy.createMap<V>();
+  for (final entry in pairU.entries) {
+    final v = entry.value;
+    if (v != null) {
+      result[entry.key] = v;
+    }
+  }
+  for (final entry in pairV.entries) {
+    final u = entry.value;
+    if (u != null) {
+      result[entry.key] = u;
     }
   }
 
-  return matching;
+  return result;
 }
 
-/// Computes the minimum vertex cover of an undirected bipartite [graph]
-/// using König's theorem.
+/// Computes the minimum vertex cover of an undirected bipartite graph using
+/// Kőnig's theorem.
 ///
-/// Throws [GraphError] if the graph is directed or not bipartite.
-Set<V> minimumVertexCover<V, E>(
-  Graph<V, E> graph, {
+/// Throws [ArgumentError] if the graph is not bipartite.
+Set<V> minimumVertexCover<V>({
+  required Iterable<V> vertices,
+  required Iterable<V> Function(V vertex) neighboursOf,
   StorageStrategy<V>? vertexStrategy,
 }) {
-  GraphError.checkNotDirected(graph);
-  vertexStrategy ??= graph.vertexStrategy;
+  vertexStrategy ??= StorageStrategy.defaultStrategy();
+  final colors = _twoColor<V>(
+    vertices: vertices,
+    neighboursOf: neighboursOf,
+    vertexStrategy: vertexStrategy,
+  );
+  final matching = bipartiteMatching<V>(
+    vertices: vertices,
+    neighboursOf: neighboursOf,
+    vertexStrategy: vertexStrategy,
+  );
 
-  final matching = bipartiteMatching(graph, vertexStrategy: vertexStrategy);
-
-  // Partition into U and V
-  final colors = vertexStrategy.createMap<bool>();
-  final queueColor = <V>[];
-  for (final vertex in graph.vertices) {
-    if (colors.containsKey(vertex)) continue;
-    colors[vertex] = true;
-    queueColor.add(vertex);
-    while (queueColor.isNotEmpty) {
-      final u = queueColor.removeLast();
-      final colorU = colors[u]!;
-      for (final v in graph.neighboursOf(u)) {
-        if (!colors.containsKey(v)) {
-          colors[v] = !colorU;
-          queueColor.add(v);
-        }
-      }
-    }
-  }
-
-  final partU = vertexStrategy.createSet();
-  final partV = vertexStrategy.createSet();
-  for (final v in graph.vertices) {
-    if (colors[v] == true) {
-      partU.add(v);
-    } else {
-      partV.add(v);
-    }
-  }
-
-  // Reachable vertices via alternating paths starting from unmatched vertices in U
   final visited = vertexStrategy.createSet();
   final queue = Queue<V>();
 
-  for (final u in partU) {
-    if (!matching.containsKey(u)) {
-      visited.add(u);
-      queue.add(u);
+  for (final v in vertices) {
+    if (colors[v] == true && !matching.containsKey(v)) {
+      visited.add(v);
+      queue.add(v);
     }
   }
 
   while (queue.isNotEmpty) {
-    final curr = queue.removeFirst();
-    if (partU.contains(curr)) {
-      // From U to V via non-matching edges
-      final matchedV = matching[curr];
-      for (final v in graph.neighboursOf(curr)) {
-        if (v != matchedV && visited.add(v)) {
+    final u = queue.removeFirst();
+    if (colors[u] == true) {
+      for (final v in neighboursOf(u)) {
+        if (!visited.contains(v) && matching[u] != v) {
+          visited.add(v);
           queue.add(v);
         }
       }
     } else {
-      // From V to U via matching edge
-      final matchedU = matching[curr];
-      if (matchedU != null && visited.add(matchedU)) {
+      final matchedU = matching[u];
+      if (matchedU != null && !visited.contains(matchedU)) {
+        visited.add(matchedU);
         queue.add(matchedU);
       }
     }
   }
 
-  // König's theorem: Vertex cover = (U \ visited) U (V intersect visited)
   final cover = vertexStrategy.createSet();
-  for (final u in partU) {
-    if (!visited.contains(u)) cover.add(u);
-  }
-  for (final v in partV) {
-    if (visited.contains(v)) cover.add(v);
+  for (final v in vertices) {
+    if (colors[v] == true && !visited.contains(v)) {
+      cover.add(v);
+    } else if (colors[v] == false && visited.contains(v)) {
+      cover.add(v);
+    }
   }
 
   return cover;
 }
 
-/// Computes the maximum independent set of an undirected bipartite [graph].
+/// Computes the maximum independent set of an undirected bipartite graph.
 ///
-/// An independent set is a set of vertices no two of which are adjacent.
-/// In bipartite graphs, this is the complement of the minimum vertex cover.
-Set<V> maximumIndependentSet<V, E>(
-  Graph<V, E> graph, {
+/// In any graph, the complement of a minimum vertex cover is a maximum independent set.
+///
+/// Throws [ArgumentError] if the graph is not bipartite.
+Set<V> maximumIndependentSet<V>({
+  required Iterable<V> vertices,
+  required Iterable<V> Function(V vertex) neighboursOf,
   StorageStrategy<V>? vertexStrategy,
 }) {
-  GraphError.checkNotDirected(graph);
-  vertexStrategy ??= graph.vertexStrategy;
-
-  final cover = minimumVertexCover(graph, vertexStrategy: vertexStrategy);
+  vertexStrategy ??= StorageStrategy.defaultStrategy();
+  final cover = minimumVertexCover<V>(
+    vertices: vertices,
+    neighboursOf: neighboursOf,
+    vertexStrategy: vertexStrategy,
+  );
   final independentSet = vertexStrategy.createSet();
-  for (final v in graph.vertices) {
+  for (final v in vertices) {
     if (!cover.contains(v)) {
       independentSet.add(v);
     }

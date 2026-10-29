@@ -55,6 +55,8 @@
 - Avoid hyper-fragmenting tightly coupled classes into single-class micro-files (e.g., base classes and private or factory subclasses should be co-located in the same file).
 - Verify dependency structure by running `dart test test/deps_test.dart`.
 - Avoid introducing new external dependencies in `pubspec.yaml` unless absolutely necessary and no alternative exists in the SDK. Justify any addition to the user.
+- Graph algorithms in `lib/src/graph/algorithms/` must operate on arbitrary graph-like structures via minimal functional closures (e.g., `vertices`, `successorsOf`, `predecessorsOf`, `neighboursOf`, `vertexStrategy`), without directly depending on `Graph<V, E>`.
+- `lib/src/graph/algorithms.dart` serves strictly as an adapter facade exposing `Graph` data to those standalone algorithm functions, containing zero domain or algorithmic logic itself.
 
 ## Testing
 

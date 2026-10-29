@@ -18,7 +18,7 @@ export 'src/graph/algorithms/dinic_max_flow.dart' show DinicMaxFlow;
 export 'src/graph/algorithms/eulerian.dart'
     show findEulerianPath, hasEulerianCircuit, hasEulerianPath;
 export 'src/graph/algorithms/isomorphism.dart' show findIsomorphisms;
-export 'src/graph/algorithms/k_core.dart' show coreNumbers, kCore;
+export 'src/graph/algorithms/k_core.dart' show coreNumbers, kCoreVertices;
 export 'src/graph/algorithms/kruskal_spanning_tree.dart'
     show kruskalSpanningTree;
 export 'src/graph/algorithms/page_rank.dart' show pageRank;
@@ -29,6 +29,12 @@ export 'src/graph/algorithms/search/dijkstra.dart' show dijkstraSearch;
 export 'src/graph/algorithms/search/floyd_warshall.dart'
     show FloydWarshall, floydWarshallSearch;
 export 'src/graph/algorithms/stoer_wagner_min_cut.dart' show StoerWagnerMinCut;
+export 'src/graph/algorithms/structural_metrics.dart'
+    show
+        averageClusteringCoefficient,
+        graphDensity,
+        graphTransitivity,
+        localClusteringCoefficient;
 export 'src/graph/algorithms/tarjan_strongly_connected.dart'
     show tarjanStronglyConnected;
 export 'src/graph/algorithms/vertex_coloring.dart' show vertexColoring;

@@ -1,46 +1,37 @@
-import '../graph.dart';
 import '../strategy.dart';
 import 'dinic_max_flow.dart';
-import 'stoer_wagner_min_cut.dart';
 
-/// Computes the edge connectivity of [graph] or between [source] and [target].
+/// Computes the edge connectivity of a graph or between [source] and [target].
 ///
 /// Edge connectivity is the minimum number of edges whose removal disconnects
 /// the graph (or disconnects [source] from [target]).
 ///
-/// For an undirected graph with no specific source/target, uses Stoer–Wagner min-cut.
-/// For directed graphs or pair-specific queries, uses unit max flow via Dinic's algorithm.
-int edgeConnectivity<V, E>(
-  Graph<V, E> graph, {
+/// Uses unit max flow via Dinic's algorithm.
+int edgeConnectivity<V>({
+  required Iterable<V> vertices,
+  required Iterable<V> Function(V vertex) successorsOf,
+  bool Function(V source, V target)? containsEdge,
+  bool isDirected = false,
   V? source,
   V? target,
   StorageStrategy<V>? vertexStrategy,
 }) {
-  vertexStrategy ??= graph.vertexStrategy;
-  final vertices = graph.vertices.toList(growable: false);
-  final n = vertices.length;
+  vertexStrategy ??= StorageStrategy.defaultStrategy();
+  final vertexList = vertices.toList(growable: false);
+  final n = vertexList.length;
   if (n <= 1) return 0;
+
+  containsEdge ??= (u, v) => successorsOf(u).contains(v);
 
   if (source != null && target != null) {
     if (source == target) return 0;
-    if (graph.isDirected) {
-      final dinic = DinicMaxFlow<V>(
-        seedVertices: graph.vertices,
-        successorsOf: graph.successorsOf,
-        edgeCapacity: (u, v) => graph.containsEdge(u, v) ? 1 : 0,
-        vertexStrategy: vertexStrategy,
-      );
-      return dinic(source, target).toInt();
-    } else {
-      // In undirected graph, each undirected edge allows unit flow in both directions
-      final dinic = DinicMaxFlow<V>(
-        seedVertices: graph.vertices,
-        successorsOf: graph.neighboursOf,
-        edgeCapacity: (u, v) => graph.containsEdge(u, v) ? 1 : 0,
-        vertexStrategy: vertexStrategy,
-      );
-      return dinic(source, target).toInt();
-    }
+    final dinic = DinicMaxFlow<V>(
+      seedVertices: vertexList,
+      successorsOf: successorsOf,
+      edgeCapacity: (u, v) => containsEdge!(u, v) ? 1 : 0,
+      vertexStrategy: vertexStrategy,
+    );
+    return dinic(source, target).toInt();
   }
 
   if (source != null || target != null) {
@@ -48,34 +39,35 @@ int edgeConnectivity<V, E>(
   }
 
   // Global edge connectivity
-  if (!graph.isDirected) {
-    if (n < 2) return 0;
-    // Check if graph is already disconnected
-    var minDeg = n;
-    for (final v in vertices) {
-      final d = graph.degreeOf(v);
-      if (d < minDeg) minDeg = d;
-      if (d == 0) return 0;
-    }
-    final stoerWagner = StoerWagnerMinCut<V, E>(
-      graph: graph,
-      edgeWeight: (_, _) => 1,
-      vertexStrategy: vertexStrategy,
-    );
-    return stoerWagner.weight.toInt();
-  } else {
-    // Directed global edge connectivity: min flow over all pairs (s, t)
-    // By picking one vertex s and checking all (s, v) and (v, s), min over all v gives global connectivity
+  if (!isDirected) {
+    // In undirected graph, min cut between a fixed vertex s and all other vertices t
     var minCut = n;
     final dinic = DinicMaxFlow<V>(
-      seedVertices: graph.vertices,
-      successorsOf: graph.successorsOf,
-      edgeCapacity: (u, v) => graph.containsEdge(u, v) ? 1 : 0,
+      seedVertices: vertexList,
+      successorsOf: successorsOf,
+      edgeCapacity: (u, v) => containsEdge!(u, v) ? 1 : 0,
       vertexStrategy: vertexStrategy,
     );
-    final s = vertices.first;
+    final s = vertexList.first;
     for (var i = 1; i < n; i++) {
-      final t = vertices[i];
+      final t = vertexList[i];
+      final st = dinic(s, t).toInt();
+      if (st < minCut) minCut = st;
+      if (minCut == 0) return 0;
+    }
+    return minCut;
+  } else {
+    // Directed global edge connectivity: min flow over all pairs (s, t)
+    var minCut = n;
+    final dinic = DinicMaxFlow<V>(
+      seedVertices: vertexList,
+      successorsOf: successorsOf,
+      edgeCapacity: (u, v) => containsEdge!(u, v) ? 1 : 0,
+      vertexStrategy: vertexStrategy,
+    );
+    final s = vertexList.first;
+    for (var i = 1; i < n; i++) {
+      final t = vertexList[i];
       final st = dinic(s, t).toInt();
       if (st < minCut) minCut = st;
       final ts = dinic(t, s).toInt();
@@ -88,74 +80,82 @@ int edgeConnectivity<V, E>(
 
 typedef _SplitNode<V> = (V, bool);
 
-/// Computes the vertex connectivity of [graph] or between [source] and [target].
+/// Computes the vertex connectivity of a graph or between [source] and [target].
 ///
 /// Vertex connectivity is the minimum number of vertices whose removal disconnects
 /// the graph (or separates non-adjacent [source] and [target]).
 ///
 /// Uses vertex splitting $v \to (v_{\text{in}}, v_{\text{out}})$ with unit capacity
 /// internal edges and Dinic's max flow.
-int vertexConnectivity<V, E>(
-  Graph<V, E> graph, {
+int vertexConnectivity<V>({
+  required Iterable<V> vertices,
+  required Iterable<V> Function(V vertex) successorsOf,
+  bool Function(V source, V target)? containsEdge,
+  bool isDirected = false,
   V? source,
   V? target,
   StorageStrategy<V>? vertexStrategy,
 }) {
-  vertexStrategy ??= graph.vertexStrategy;
-  final vertices = graph.vertices.toList(growable: false);
-  final n = vertices.length;
+  vertexStrategy ??= StorageStrategy.defaultStrategy();
+  final vertexList = vertices.toList(growable: false);
+  final n = vertexList.length;
   if (n <= 1) return 0;
 
-  // Vertex-splitting representation: (V vertex, bool isOut)
-  Iterable<_SplitNode<V>> successorsOfSplit(_SplitNode<V> node) {
-    final (v, isOut) = node;
-    if (!isOut) {
-      // In-node has single outgoing edge to its out-node
-      return [(v, true)];
-    } else {
-      // Out-node connects to in-nodes of successors/neighbours
-      final nextVertices = graph.isDirected
-          ? graph.successorsOf(v)
-          : graph.neighboursOf(v);
-      return nextVertices.where((u) => u != v).map((u) => (u, false));
-    }
-  }
-
-  num capacityOfSplit(_SplitNode<V> u, _SplitNode<V> v) {
-    final (uNode, uIsOut) = u;
-    final (vNode, vIsOut) = v;
-    if (uNode == vNode && !uIsOut && vIsOut) {
-      // Internal edge has capacity 1 (only 1 unit of flow through node)
-      return 1;
-    }
-    if (uIsOut && !vIsOut) {
-      // External edge between vertices has infinite capacity
-      return double.infinity;
-    }
-    return 0;
-  }
-
-  final splitStrategy = StorageStrategy<_SplitNode<V>>.defaultStrategy();
+  containsEdge ??= (u, v) => successorsOf(u).contains(v);
 
   if (source != null && target != null) {
     if (source == target) return 0;
-    if (graph.containsEdge(source, target) ||
-        (!graph.isDirected && graph.containsEdge(target, source))) {
-      // By Menger's theorem, vertex connectivity is defined for non-adjacent pairs.
-      // If adjacent, return n - 1 or throw. For adjacent pairs, removing vertices cannot separate them.
+    // If there is a direct edge between source and target, they cannot be disconnected by vertex removal.
+    if (containsEdge(source, target) ||
+        (!isDirected && containsEdge(target, source))) {
       return n - 1;
     }
-    final seedVertices = <_SplitNode<V>>[];
-    for (final v in vertices) {
-      seedVertices.add((v, false));
-      seedVertices.add((v, true));
+
+    final splitNodes = <_SplitNode<V>>[];
+    for (final v in vertexList) {
+      splitNodes.add((v, false)); // in-node
+      splitNodes.add((v, true)); // out-node
     }
+
+    Iterable<_SplitNode<V>> splitSuccessorsOf(_SplitNode<V> node) sync* {
+      final (v, isOut) = node;
+      if (!isOut) {
+        // Edge v_in -> v_out
+        yield (v, true);
+      } else {
+        // Edges v_out -> w_in for all successors w of v
+        for (final w in successorsOf(v)) {
+          if (w != v) {
+            yield (w, false);
+          }
+        }
+      }
+    }
+
+    num splitEdgeCapacity(_SplitNode<V> u, _SplitNode<V> v) {
+      final (uVertex, uIsOut) = u;
+      final (vVertex, vIsOut) = v;
+      if (!uIsOut && vIsOut && uVertex == vVertex) {
+        // v_in -> v_out has unit capacity (except for source and target which have infinity)
+        if (uVertex == source || uVertex == target) {
+          return double.infinity;
+        }
+        return 1;
+      }
+      if (uIsOut && !vIsOut) {
+        if (containsEdge!(uVertex, vVertex)) {
+          return double.infinity;
+        }
+      }
+      return 0;
+    }
+
     final dinic = DinicMaxFlow<_SplitNode<V>>(
-      seedVertices: seedVertices,
-      successorsOf: successorsOfSplit,
-      edgeCapacity: capacityOfSplit,
-      vertexStrategy: splitStrategy,
+      seedVertices: splitNodes,
+      successorsOf: splitSuccessorsOf,
+      edgeCapacity: splitEdgeCapacity,
     );
+
     return dinic((source, true), (target, false)).toInt();
   }
 
@@ -164,50 +164,42 @@ int vertexConnectivity<V, E>(
   }
 
   // Global vertex connectivity:
-  // For complete graphs Kn, vertex connectivity is n - 1.
-  var isComplete = true;
-  for (final u in vertices) {
-    final expectedDeg = n - 1;
-    final actualDeg = graph.isDirected
-        ? graph.outDegreeOf(u)
-        : graph.degreeOf(u);
-    if (actualDeg < expectedDeg) {
-      isComplete = false;
-      break;
-    }
+  // For undirected:
+  // Check if graph is complete graph K_n
+  // Count edges
+  var edgeCount = 0;
+  for (final v in vertexList) {
+    edgeCount += successorsOf(v).length;
   }
-  if (isComplete) return n - 1;
-
-  final seedVertices = <_SplitNode<V>>[];
-  for (final v in vertices) {
-    seedVertices.add((v, false));
-    seedVertices.add((v, true));
+  final maxEdges = n * (n - 1);
+  if (isDirected ? edgeCount == maxEdges : edgeCount == maxEdges) {
+    return n - 1;
   }
-  final dinic = DinicMaxFlow<_SplitNode<V>>(
-    seedVertices: seedVertices,
-    successorsOf: successorsOfSplit,
-    edgeCapacity: capacityOfSplit,
-    vertexStrategy: splitStrategy,
-  );
 
-  var minCut = n - 1;
+  var minConnectivity = n - 1;
   for (var i = 0; i < n; i++) {
-    final s = vertices[i];
+    final s = vertexList[i];
     for (var j = i + 1; j < n; j++) {
-      final t = vertices[j];
-      if (graph.containsEdge(s, t) ||
-          (!graph.isDirected && graph.containsEdge(t, s))) {
-        continue;
+      final t = vertexList[j];
+      final directEdge =
+          containsEdge(s, t) || (!isDirected && containsEdge(t, s));
+      if (!directEdge) {
+        final k = vertexConnectivity<V>(
+          vertices: vertexList,
+          successorsOf: successorsOf,
+          containsEdge: containsEdge,
+          isDirected: isDirected,
+          source: s,
+          target: t,
+          vertexStrategy: vertexStrategy,
+        );
+        if (k < minConnectivity) {
+          minConnectivity = k;
+        }
+        if (minConnectivity == 0) return 0;
       }
-      final flow = dinic((s, true), (t, false)).toInt();
-      if (flow < minCut) minCut = flow;
-      if (graph.isDirected) {
-        final flowRev = dinic((t, true), (s, false)).toInt();
-        if (flowRev < minCut) minCut = flowRev;
-      }
-      if (minCut == 0) return 0;
     }
   }
 
-  return minCut;
+  return minConnectivity;
 }

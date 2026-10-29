@@ -22,6 +22,7 @@ import 'algorithms/search/bellman_ford.dart' as bellman_ford;
 import 'algorithms/search/dijkstra.dart' as dijkstra;
 import 'algorithms/search/floyd_warshall.dart' as floyd_warshall;
 import 'algorithms/stoer_wagner_min_cut.dart' as stoer_wagner_min_cut;
+import 'algorithms/structural_metrics.dart' as structural_metrics;
 import 'algorithms/tarjan_strongly_connected.dart' as tarjan_strongly_connected;
 import 'algorithms/vertex_coloring.dart' as vertex_coloring;
 import 'edge.dart';
@@ -261,14 +262,26 @@ extension AlgorithmsGraphExtension<V, E> on Graph<V, E> {
   /// Checks if this graph has an Eulerian circuit.
   bool hasEulerianCircuit({StorageStrategy<V>? vertexStrategy}) =>
       eulerian.hasEulerianCircuit<V, E>(
-        this,
+        vertices: vertices,
+        outgoingEdgesOf: outgoingEdgesOf,
+        isDirected: isDirected,
+        inDegreeOf: isDirected ? inDegreeOf : null,
+        outDegreeOf: isDirected ? outDegreeOf : null,
+        degreeOf: !isDirected ? degreeOf : null,
+        containsEdge: containsEdge,
         vertexStrategy: vertexStrategy ?? this.vertexStrategy,
       );
 
   /// Checks if this graph has an Eulerian path.
   bool hasEulerianPath({StorageStrategy<V>? vertexStrategy}) =>
       eulerian.hasEulerianPath<V, E>(
-        this,
+        vertices: vertices,
+        outgoingEdgesOf: outgoingEdgesOf,
+        isDirected: isDirected,
+        inDegreeOf: isDirected ? inDegreeOf : null,
+        outDegreeOf: isDirected ? outDegreeOf : null,
+        degreeOf: !isDirected ? degreeOf : null,
+        containsEdge: containsEdge,
         vertexStrategy: vertexStrategy ?? this.vertexStrategy,
       );
 
@@ -279,32 +292,66 @@ extension AlgorithmsGraphExtension<V, E> on Graph<V, E> {
     bool circuit = false,
     StorageStrategy<V>? vertexStrategy,
   }) => eulerian.findEulerianPath<V, E>(
-    this,
+    vertices: vertices,
+    outgoingEdgesOf: outgoingEdgesOf,
+    isDirected: isDirected,
+    inDegreeOf: isDirected ? inDegreeOf : null,
+    outDegreeOf: isDirected ? outDegreeOf : null,
+    degreeOf: !isDirected ? degreeOf : null,
+    containsEdge: containsEdge,
     circuit: circuit,
     vertexStrategy: vertexStrategy ?? this.vertexStrategy,
   );
 
   /// Returns the articulation points (cut vertices) of this undirected graph.
-  Set<V> articulationPoints({StorageStrategy<V>? vertexStrategy}) =>
-      biconnected.articulationPoints<V, E>(
-        this,
-        vertexStrategy: vertexStrategy ?? this.vertexStrategy,
-      );
+  Set<V> articulationPoints({StorageStrategy<V>? vertexStrategy}) {
+    GraphError.checkNotDirected(this);
+    return biconnected.articulationPoints<V>(
+      vertices: vertices,
+      neighboursOf: neighboursOf,
+      vertexStrategy: vertexStrategy ?? this.vertexStrategy,
+    );
+  }
 
   /// Returns the bridges (cut edges) of this undirected graph.
-  Set<Edge<V, E>> bridges({StorageStrategy<V>? vertexStrategy}) =>
-      biconnected.bridges<V, E>(
-        this,
-        vertexStrategy: vertexStrategy ?? this.vertexStrategy,
-      );
+  Set<Edge<V, E>> bridges({StorageStrategy<V>? vertexStrategy}) {
+    GraphError.checkNotDirected(this);
+    final bridgePairs = biconnected.bridges<V>(
+      vertices: vertices,
+      neighboursOf: neighboursOf,
+      vertexStrategy: vertexStrategy ?? this.vertexStrategy,
+    );
+    final result = <Edge<V, E>>{};
+    for (final (u, v) in bridgePairs) {
+      final edge = getEdge(u, v);
+      if (edge != null) result.add(edge);
+    }
+    return result;
+  }
 
   /// Returns the biconnected components of this undirected graph.
   Iterable<Graph<V, E>> biconnectedComponents({
     StorageStrategy<V>? vertexStrategy,
-  }) => biconnected.biconnectedComponents<V, E>(
-    this,
-    vertexStrategy: vertexStrategy ?? this.vertexStrategy,
-  );
+  }) {
+    GraphError.checkNotDirected(this);
+    final strategy = vertexStrategy ?? this.vertexStrategy;
+    final comps = biconnected.biconnectedComponents<V>(
+      vertices: vertices,
+      neighboursOf: neighboursOf,
+      vertexStrategy: strategy,
+    );
+    return comps.map((comp) {
+      final sub = Graph<V, E>(isDirected: false, vertexStrategy: strategy);
+      for (final v in comp.vertices) {
+        sub.addVertex(v);
+      }
+      for (final (u, v) in comp.edges) {
+        final edge = getEdge(u, v);
+        sub.addEdge(u, v, value: edge?.value);
+      }
+      return sub;
+    });
+  }
 
   /// Returns the density of this graph.
   ///
@@ -314,30 +361,11 @@ extension AlgorithmsGraphExtension<V, E> on Graph<V, E> {
   /// $|E_u|$ is the number of undirected edges (excluding self-loops).
   ///
   /// Returns `0.0` if $|V| < 2$.
-  double get density {
-    final n = vertices.length;
-    if (n < 2) return 0.0;
-    final maxEdges = n * (n - 1);
-    if (isDirected) {
-      // Exclude self-loops from density numerator
-      var count = 0;
-      for (final edge in edges) {
-        if (edge.source != edge.target) count++;
-      }
-      return count / maxEdges;
-    } else {
-      // In undirected graph, non-self edges appear twice in edges (or neighbours).
-      // We count distinct undirected edges {u, v} with u != v.
-      var count = 0;
-      for (final v in vertices) {
-        for (final u in neighboursOf(v)) {
-          if (u != v) count++;
-        }
-      }
-      // count is 2 * |E_u|. Density is (2 * |E_u|) / (n * (n - 1)) = count / maxEdges.
-      return count / maxEdges;
-    }
-  }
+  double get density => structural_metrics.graphDensity<V>(
+    vertices: vertices,
+    successorsOf: successorsOf,
+    isDirected: isDirected,
+  );
 
   /// Returns the local clustering coefficient of [vertex].
   ///
@@ -350,75 +378,45 @@ extension AlgorithmsGraphExtension<V, E> on Graph<V, E> {
   double localClusteringCoefficient(
     V vertex, {
     StorageStrategy<V>? vertexStrategy,
-  }) {
-    final neighbours = neighboursOf(vertex).toSet()..remove(vertex);
-    final k = neighbours.length;
-    if (k < 2) return 0.0;
-    var links = 0;
-    if (isDirected) {
-      for (final u in neighbours) {
-        for (final w in successorsOf(u)) {
-          if (u != w && neighbours.contains(w)) {
-            links++;
-          }
-        }
-      }
-      return links / (k * (k - 1));
-    } else {
-      for (final u in neighbours) {
-        for (final w in neighboursOf(u)) {
-          if (u != w && neighbours.contains(w)) {
-            links++;
-          }
-        }
-      }
-      // links counts each undirected edge between neighbours twice.
-      // Ratio is 2 * e / (k * (k - 1)) = links / (k * (k - 1)).
-      return links / (k * (k - 1));
-    }
-  }
+  }) => structural_metrics.localClusteringCoefficient<V>(
+    vertex,
+    neighboursOf: neighboursOf,
+    successorsOf: successorsOf,
+    isDirected: isDirected,
+    vertexStrategy: vertexStrategy ?? this.vertexStrategy,
+  );
 
   /// Returns the average clustering coefficient across all vertices in the graph.
   ///
   /// Returns `0.0` if the graph has no vertices.
-  double averageClusteringCoefficient({StorageStrategy<V>? vertexStrategy}) {
-    if (vertices.isEmpty) return 0.0;
-    var sum = 0.0;
-    for (final v in vertices) {
-      sum += localClusteringCoefficient(v, vertexStrategy: vertexStrategy);
-    }
-    return sum / vertices.length;
-  }
+  double averageClusteringCoefficient({StorageStrategy<V>? vertexStrategy}) =>
+      structural_metrics.averageClusteringCoefficient<V>(
+        vertices: vertices,
+        neighboursOf: neighboursOf,
+        successorsOf: successorsOf,
+        isDirected: isDirected,
+        vertexStrategy: vertexStrategy ?? this.vertexStrategy,
+      );
 
   /// Returns the transitivity (global clustering coefficient) of the graph.
   ///
   /// Transitivity is defined as $3 \times \frac{\text{number of triangles}}{\text{number of connected triplets}}$.
   /// Returns `0.0` if there are no connected triplets.
-  double transitivity({StorageStrategy<V>? vertexStrategy}) {
-    var triangles = 0;
-    var triplets = 0;
-    for (final v in vertices) {
-      final neighbours = neighboursOf(v).toSet()..remove(v);
-      final k = neighbours.length;
-      if (k < 2) continue;
-      triplets += k * (k - 1);
-      for (final u in neighbours) {
-        for (final w in neighboursOf(u)) {
-          if (u != w && neighbours.contains(w)) {
-            triangles++;
-          }
-        }
-      }
-    }
-    return triplets == 0 ? 0.0 : triangles / triplets;
-  }
+  double transitivity({StorageStrategy<V>? vertexStrategy}) =>
+      structural_metrics.graphTransitivity<V>(
+        vertices: vertices,
+        neighboursOf: neighboursOf,
+        vertexStrategy: vertexStrategy ?? this.vertexStrategy,
+      );
 
   /// Computes the betweenness centrality of all vertices in this graph.
   Map<V, double> betweennessCentrality({
     bool normalized = true,
     StorageStrategy<V>? vertexStrategy,
-  }) => betweenness_centrality.betweennessCentrality<V, E>(
-    this,
+  }) => betweenness_centrality.betweennessCentrality<V>(
+    vertices: vertices,
+    successorsOf: successorsOf,
+    isDirected: isDirected,
     normalized: normalized,
     vertexStrategy: vertexStrategy ?? this.vertexStrategy,
   );
@@ -429,8 +427,10 @@ extension AlgorithmsGraphExtension<V, E> on Graph<V, E> {
     double tolerance = 1e-6,
     int maxIterations = 100,
     StorageStrategy<V>? vertexStrategy,
-  }) => page_rank.pageRank<V, E>(
-    this,
+  }) => page_rank.pageRank<V>(
+    vertices: vertices,
+    successorsOf: successorsOf,
+    predecessorsOf: predecessorsOf,
     damping: damping,
     tolerance: tolerance,
     maxIterations: maxIterations,
@@ -456,48 +456,91 @@ extension AlgorithmsGraphExtension<V, E> on Graph<V, E> {
   }
 
   /// Computes the maximum bipartite matching of this undirected bipartite graph.
-  Map<V, V> bipartiteMatching({StorageStrategy<V>? vertexStrategy}) =>
-      bipartite_matching.bipartiteMatching<V, E>(
-        this,
+  Map<V, V> bipartiteMatching({StorageStrategy<V>? vertexStrategy}) {
+    GraphError.checkNotDirected(this);
+    try {
+      return bipartite_matching.bipartiteMatching<V>(
+        vertices: vertices,
+        neighboursOf: neighboursOf,
         vertexStrategy: vertexStrategy ?? this.vertexStrategy,
       );
+    } on ArgumentError catch (e) {
+      throw GraphError(this, 'graph', e.message);
+    }
+  }
 
   /// Computes the minimum vertex cover of this undirected bipartite graph.
-  Set<V> minimumVertexCover({StorageStrategy<V>? vertexStrategy}) =>
-      bipartite_matching.minimumVertexCover<V, E>(
-        this,
+  Set<V> minimumVertexCover({StorageStrategy<V>? vertexStrategy}) {
+    GraphError.checkNotDirected(this);
+    try {
+      return bipartite_matching.minimumVertexCover<V>(
+        vertices: vertices,
+        neighboursOf: neighboursOf,
         vertexStrategy: vertexStrategy ?? this.vertexStrategy,
       );
+    } on ArgumentError catch (e) {
+      throw GraphError(this, 'graph', e.message);
+    }
+  }
 
   /// Computes the maximum independent set of this undirected bipartite graph.
-  Set<V> maximumIndependentSet({StorageStrategy<V>? vertexStrategy}) =>
-      bipartite_matching.maximumIndependentSet<V, E>(
-        this,
+  Set<V> maximumIndependentSet({StorageStrategy<V>? vertexStrategy}) {
+    GraphError.checkNotDirected(this);
+    try {
+      return bipartite_matching.maximumIndependentSet<V>(
+        vertices: vertices,
+        neighboursOf: neighboursOf,
         vertexStrategy: vertexStrategy ?? this.vertexStrategy,
       );
+    } on ArgumentError catch (e) {
+      throw GraphError(this, 'graph', e.message);
+    }
+  }
 
   /// Computes the core numbers of all vertices in this undirected graph.
-  Map<V, int> coreNumbers({StorageStrategy<V>? vertexStrategy}) =>
-      k_core.coreNumbers<V, E>(
-        this,
-        vertexStrategy: vertexStrategy ?? this.vertexStrategy,
-      );
+  Map<V, int> coreNumbers({StorageStrategy<V>? vertexStrategy}) {
+    GraphError.checkNotDirected(this);
+    return k_core.coreNumbers<V>(
+      vertices: vertices,
+      neighboursOf: neighboursOf,
+      vertexStrategy: vertexStrategy ?? this.vertexStrategy,
+    );
+  }
 
   /// Returns the $k$-core subgraph of this undirected graph.
-  Graph<V, E> kCore(int k, {StorageStrategy<V>? vertexStrategy}) =>
-      k_core.kCore<V, E>(
-        this,
-        k,
-        vertexStrategy: vertexStrategy ?? this.vertexStrategy,
-      );
+  Graph<V, E> kCore(int k, {StorageStrategy<V>? vertexStrategy}) {
+    GraphError.checkNotDirected(this);
+    final strategy = vertexStrategy ?? this.vertexStrategy;
+    final coreVerts = k_core.kCoreVertices<V>(
+      vertices: vertices,
+      neighboursOf: neighboursOf,
+      k: k,
+      vertexStrategy: strategy,
+    );
+    final sub = Graph<V, E>(isDirected: false, vertexStrategy: strategy);
+    for (final v in coreVerts) {
+      sub.addVertex(v);
+    }
+    for (final v in sub.vertices) {
+      for (final edge in outgoingEdgesOf(v)) {
+        if (sub.containsVertex(edge.target)) {
+          sub.addEdge(edge.source, edge.target, value: edge.value);
+        }
+      }
+    }
+    return sub;
+  }
 
   /// Computes the edge connectivity of this graph (or between [source] and [target]).
   int edgeConnectivity({
     V? source,
     V? target,
     StorageStrategy<V>? vertexStrategy,
-  }) => connectivity.edgeConnectivity<V, E>(
-    this,
+  }) => connectivity.edgeConnectivity<V>(
+    vertices: vertices,
+    successorsOf: successorsOf,
+    containsEdge: containsEdge,
+    isDirected: isDirected,
     source: source,
     target: target,
     vertexStrategy: vertexStrategy ?? this.vertexStrategy,
@@ -508,8 +551,11 @@ extension AlgorithmsGraphExtension<V, E> on Graph<V, E> {
     V? source,
     V? target,
     StorageStrategy<V>? vertexStrategy,
-  }) => connectivity.vertexConnectivity<V, E>(
-    this,
+  }) => connectivity.vertexConnectivity<V>(
+    vertices: vertices,
+    successorsOf: successorsOf,
+    containsEdge: containsEdge,
+    isDirected: isDirected,
     source: source,
     target: target,
     vertexStrategy: vertexStrategy ?? this.vertexStrategy,
@@ -522,17 +568,29 @@ extension AlgorithmsGraphExtension<V, E> on Graph<V, E> {
     bool Function(E targetEdgeValue, F patternEdgeValue)? edgeComparator,
     StorageStrategy<V>? vertexStrategy,
     StorageStrategy<W>? otherStrategy,
-  }) => isomorphism
-      .findIsomorphisms<V, E, W, F>(
-        this,
-        other,
-        subgraph: false,
-        vertexComparator: vertexComparator,
-        edgeComparator: edgeComparator,
-        targetStrategy: vertexStrategy ?? this.vertexStrategy,
-        patternStrategy: otherStrategy ?? other.vertexStrategy,
-      )
-      .isNotEmpty;
+  }) {
+    if (isDirected != other.isDirected) return false;
+    return isomorphism
+        .findIsomorphisms<V, E, W, F>(
+          targetVertices: vertices,
+          patternVertices: other.vertices,
+          targetSuccessorsOf: successorsOf,
+          patternSuccessorsOf: other.successorsOf,
+          targetPredecessorsOf: predecessorsOf,
+          patternPredecessorsOf: other.predecessorsOf,
+          targetEdgeCount: edges.length,
+          patternEdgeCount: other.edges.length,
+          isDirected: isDirected,
+          subgraph: false,
+          vertexComparator: vertexComparator,
+          edgeComparator: edgeComparator,
+          targetEdgeValue: (u, v) => getEdge(u, v)?.value,
+          patternEdgeValue: (u, v) => other.getEdge(u, v)?.value,
+          targetStrategy: vertexStrategy ?? this.vertexStrategy,
+          patternStrategy: otherStrategy ?? other.vertexStrategy,
+        )
+        .isNotEmpty;
+  }
 
   /// Finds all induced subgraph isomorphisms of [pattern] in this graph.
   Iterable<Map<W, V>> findSubgraphIsomorphisms<W, F>(
@@ -541,15 +599,27 @@ extension AlgorithmsGraphExtension<V, E> on Graph<V, E> {
     bool Function(E targetEdgeValue, F patternEdgeValue)? edgeComparator,
     StorageStrategy<V>? vertexStrategy,
     StorageStrategy<W>? patternStrategy,
-  }) => isomorphism.findIsomorphisms<V, E, W, F>(
-    this,
-    pattern,
-    subgraph: true,
-    vertexComparator: vertexComparator,
-    edgeComparator: edgeComparator,
-    targetStrategy: vertexStrategy ?? this.vertexStrategy,
-    patternStrategy: patternStrategy ?? pattern.vertexStrategy,
-  );
+  }) {
+    if (isDirected != pattern.isDirected) return const [];
+    return isomorphism.findIsomorphisms<V, E, W, F>(
+      targetVertices: vertices,
+      patternVertices: pattern.vertices,
+      targetSuccessorsOf: successorsOf,
+      patternSuccessorsOf: pattern.successorsOf,
+      targetPredecessorsOf: predecessorsOf,
+      patternPredecessorsOf: pattern.predecessorsOf,
+      targetEdgeCount: edges.length,
+      patternEdgeCount: pattern.edges.length,
+      isDirected: isDirected,
+      subgraph: true,
+      vertexComparator: vertexComparator,
+      edgeComparator: edgeComparator,
+      targetEdgeValue: (u, v) => getEdge(u, v)?.value,
+      patternEdgeValue: (u, v) => pattern.getEdge(u, v)?.value,
+      targetStrategy: vertexStrategy ?? this.vertexStrategy,
+      patternStrategy: patternStrategy ?? pattern.vertexStrategy,
+    );
+  }
 
   /// Internal helper that returns a function using the numeric edge value
   /// of this graph, or otherwise a constant value for each edge.
