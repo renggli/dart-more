@@ -27,7 +27,7 @@ class EmptyCache<K, V> extends Cache<K, V> {
   Future<void> invalidate(K key) async {}
 
   @override
-  Future<void> invalidateAll() async {}
+  Future<void> invalidateAll([Iterable<K>? keys]) async {}
 
   @override
   Future<int> reap() async => 0;

@@ -134,6 +134,23 @@ void persistentCacheTests(NewCache<int, String> newCache) {
     await cache.invalidateAll();
     check(await cache.getIfPresent(1)).isNull();
   });
+  test(
+    'bulk operations (getAll, setAll, putAll, invalidateAll with keys)',
+    () async {
+      final cache = newCache(immediateLoader);
+      check(await cache.getAll([1, 2, 3])).deepEquals({1: '1', 2: '2', 3: '3'});
+      await cache.setAll({1: 'a', 2: 'b'});
+      check(await cache.getIfPresent(1)).equals('a');
+      check(await cache.getIfPresent(2)).equals('b');
+      await cache.putAll({2: 'bb', 3: 'c'});
+      check(await cache.getIfPresent(2)).equals('bb');
+      check(await cache.getIfPresent(3)).equals('c');
+      await cache.invalidateAll([1, 3]);
+      check(await cache.getIfPresent(1)).isNull();
+      check(await cache.getIfPresent(2)).equals('bb');
+      check(await cache.getIfPresent(3)).isNull();
+    },
+  );
   test('get with immediate value is persistent', () async {
     final cache = newCache(immediateLoader);
     check(await cache.get(1)).equals('1');

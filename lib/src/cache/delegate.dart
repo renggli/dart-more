@@ -18,7 +18,16 @@ class DelegateCache<K, V> extends Cache<K, V> {
   Future<V> get(K key) => delegate.get(key);
 
   @override
+  Future<Map<K, V>> getAll(Iterable<K> keys) => delegate.getAll(keys);
+
+  @override
   Future<V> set(K key, FutureOr<V> value) => delegate.set(key, value);
+
+  @override
+  Future<void> setAll(Map<K, FutureOr<V>> values) => delegate.setAll(values);
+
+  @override
+  Future<void> putAll(Map<K, FutureOr<V>> values) => delegate.putAll(values);
 
   @override
   Future<int> size() => delegate.size();
@@ -27,7 +36,8 @@ class DelegateCache<K, V> extends Cache<K, V> {
   Future<void> invalidate(K key) => delegate.invalidate(key);
 
   @override
-  Future<void> invalidateAll() => delegate.invalidateAll();
+  Future<void> invalidateAll([Iterable<K>? keys]) =>
+      delegate.invalidateAll(keys);
 
   @override
   Future<int> reap() => delegate.reap();

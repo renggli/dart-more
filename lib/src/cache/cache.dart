@@ -54,8 +54,27 @@ abstract class Cache<K, V> with ToStringPrinter {
   /// Returns the value associated with the [key].
   Future<V> get(K key);
 
+  /// Returns a map of the values associated with the [keys].
+  Future<Map<K, V>> getAll(Iterable<K> keys) async {
+    final result = <K, V>{};
+    for (final key in keys) {
+      result[key] = await get(key);
+    }
+    return result;
+  }
+
   /// Stores the [value] associated with the [key].
   Future<V> set(K key, FutureOr<V> value);
+
+  /// Stores all the [values] in this cache.
+  Future<void> setAll(Map<K, FutureOr<V>> values) async {
+    for (final MapEntry(:key, :value) in values.entries) {
+      await set(key, value);
+    }
+  }
+
+  /// Alias for [setAll] to store all key-value entries.
+  Future<void> putAll(Map<K, FutureOr<V>> values) => setAll(values);
 
   /// Returns the number of currently cached values.
   Future<int> size();
@@ -63,8 +82,9 @@ abstract class Cache<K, V> with ToStringPrinter {
   /// Discards any cached value with the [key].
   Future<void> invalidate(K key);
 
-  /// Discards all cached values.
-  Future<void> invalidateAll();
+  /// Discards all cached values, or only the values associated with [keys] if
+  /// specified.
+  Future<void> invalidateAll([Iterable<K>? keys]);
 
   /// Returns the number of reaped items.
   Future<int> reap();

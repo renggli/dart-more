@@ -397,7 +397,7 @@
   - **Problem**: `Interval` supports `union` (only when intersecting), `intersection`, `encloses`, and `intersects`, but lacks `span(Interval<T> other)` (convex hull `Interval(min(lower, other.lower), max(upper, other.upper))` even for disjoint intervals) and `difference(Interval<T> other)`.
   - **Fix**: Add `Interval<T> span(Interval<T> other)` and `List<Interval<T>> difference(Interval<T> other)` to `Interval<T>`.
 
-- [ ] **`Cache` bulk operations (`getAll`, `putAll`, `invalidateAll`)**
+- [x] **`Cache` bulk operations (`getAll`, `putAll`, `invalidateAll`)**
   - **Severity**: Suggestion
   - **Location**: [`lib/src/cache/cache.dart`](lib/src/cache/cache.dart#L70-L120)
   - **Problem**: `Cache<K, V>` only supports single-key operations (`get`, `getIfPresent`, `put`, `invalidate`) without batch helpers `getAll(Iterable<K> keys)`, `putAll(Map<K, V> map)`, or `invalidateAll([Iterable<K>? keys])`.

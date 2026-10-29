@@ -60,7 +60,15 @@ class LruCache<K, V> extends Cache<K, V> {
   Future<void> invalidate(K key) async => cached.remove(key);
 
   @override
-  Future<void> invalidateAll() async => cached.clear();
+  Future<void> invalidateAll([Iterable<K>? keys]) async {
+    if (keys != null) {
+      for (final key in keys) {
+        cached.remove(key);
+      }
+    } else {
+      cached.clear();
+    }
+  }
 
   @override
   Future<int> reap() async => 0;
