@@ -17,6 +17,16 @@ class ReversedGraph<V, E> extends ForwardingGraph<V, E> {
   new(super.delegate) : assert(delegate.isDirected);
 
   @override
+  bool containsEdge(V source, V target) =>
+      delegate.containsEdge(target, source);
+
+  @override
+  int inDegreeOf(V vertex) => delegate.outDegreeOf(vertex);
+
+  @override
+  int outDegreeOf(V vertex) => delegate.inDegreeOf(vertex);
+
+  @override
   Iterable<Edge<V, E>> get edges => delegate.edges.map(_reverse);
 
   @override

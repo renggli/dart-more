@@ -108,12 +108,37 @@ void main() {
       });
       test('vertices', () {
         check(graph.vertices).unorderedEquals([0, 1, 2]);
+        check(graph.containsVertex(0)).isTrue();
+        check(graph.containsVertex(1)).isTrue();
+        check(graph.containsVertex(2)).isTrue();
+        check(graph.containsVertex(3)).isFalse();
       });
       test('edges', () {
         check(graph.edges).unorderedMatches([
           isEdge(0, 1, value: 'a', isDirected: true),
           isEdge(1, 2, value: 'b', isDirected: true),
         ]);
+        check(graph.containsEdge(0, 1)).isTrue();
+        check(graph.containsEdge(1, 2)).isTrue();
+        check(graph.containsEdge(1, 0)).isFalse();
+        check(graph.containsEdge(0, 2)).isFalse();
+      });
+      test('degrees', () {
+        check(graph.inDegreeOf(0)).equals(0);
+        check(graph.outDegreeOf(0)).equals(1);
+        check(graph.degreeOf(0)).equals(1);
+
+        check(graph.inDegreeOf(1)).equals(1);
+        check(graph.outDegreeOf(1)).equals(1);
+        check(graph.degreeOf(1)).equals(2);
+
+        check(graph.inDegreeOf(2)).equals(1);
+        check(graph.outDegreeOf(2)).equals(0);
+        check(graph.degreeOf(2)).equals(1);
+
+        check(graph.inDegreeOf(3)).equals(0);
+        check(graph.outDegreeOf(3)).equals(0);
+        check(graph.degreeOf(3)).equals(0);
       });
       test('edgesOf', () {
         check(graph.edgesOf(0))

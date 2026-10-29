@@ -18,6 +18,22 @@ class DirectedGraph<V, E> extends Graph<V, E> {
   final StorageStrategy<V> vertexStrategy;
 
   @override
+  bool containsVertex(V vertex) => adjacency.containsKey(vertex);
+
+  @override
+  bool containsEdge(V source, V target) =>
+      adjacency[source]?.outgoing.containsKey(target) ?? false;
+
+  @override
+  int inDegreeOf(V vertex) => adjacency[vertex]?.incoming.length ?? 0;
+
+  @override
+  int outDegreeOf(V vertex) => adjacency[vertex]?.outgoing.length ?? 0;
+
+  @override
+  int degreeOf(V vertex) => inDegreeOf(vertex) + outDegreeOf(vertex);
+
+  @override
   Iterable<V> get vertices => adjacency.keys;
 
   @override

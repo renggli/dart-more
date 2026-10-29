@@ -379,7 +379,7 @@
   - **Problem**: `Optional<T>` lacks a `T? get valueOrNull` getter (standard Dart idiom alongside `orElse`) and an extension `OptionalExtension<T> on T?` providing `Optional<T> toOptional()`. `Either<L, R>` lacks `ifLeft(Callback1<L>)` and `ifRight(Callback1<R>)` side-effect helpers (analogous to `Optional.ifPresent` / `ifAbsent`) and `swap` (`Either<R, L> get swapped`).
   - **Fix**: Add `T? get valueOrNull` and `extension OptionalExtension<T extends Object> on T? { Optional<T> toOptional() => Optional.ofNullable(this); }`, plus `ifLeft`, `ifRight`, and `swapped` on `Either<L, R>`.
 
-- [ ] **`Graph` convenience queries (`containsVertex`, `containsEdge`, `inDegreeOf`, `outDegreeOf`, `degreeOf`)**
+- [x] **`Graph` convenience queries (`containsVertex`, `containsEdge`, `inDegreeOf`, `outDegreeOf`, `degreeOf`)**
   - **Severity**: Suggestion
   - **Location**: [`lib/src/graph/graph.dart`](lib/src/graph/graph.dart#L53-L79)
   - **Problem**: Checking whether a vertex or edge exists currently requires `graph.vertices.contains(v)` or `graph.getEdge(u, v) != null`, and computing vertex degrees requires `graph.incomingEdgesOf(v).length` / `graph.outgoingEdgesOf(v).length`, which allocates edge views and is less discoverable.

@@ -18,6 +18,22 @@ class ForwardingGraph<V, E> extends Graph<V, E> {
   StorageStrategy<V> get vertexStrategy => delegate.vertexStrategy;
 
   @override
+  bool containsVertex(V vertex) => delegate.containsVertex(vertex);
+
+  @override
+  bool containsEdge(V source, V target) =>
+      delegate.containsEdge(source, target);
+
+  @override
+  int inDegreeOf(V vertex) => delegate.inDegreeOf(vertex);
+
+  @override
+  int outDegreeOf(V vertex) => delegate.outDegreeOf(vertex);
+
+  @override
+  int degreeOf(V vertex) => delegate.degreeOf(vertex);
+
+  @override
   Iterable<V> get vertices => delegate.vertices;
 
   @override

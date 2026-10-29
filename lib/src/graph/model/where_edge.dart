@@ -8,6 +8,20 @@ class WhereEdgeGraph<V, E> extends ForwardingGraph<V, E> {
   final bool Function(Edge<V, E> edge) _edgePredicate;
 
   @override
+  bool containsEdge(V source, V target) => getEdge(source, target) != null;
+
+  @override
+  int inDegreeOf(V vertex) => incomingEdgesOf(vertex).length;
+
+  @override
+  int outDegreeOf(V vertex) => outgoingEdgesOf(vertex).length;
+
+  @override
+  int degreeOf(V vertex) => isDirected
+      ? inDegreeOf(vertex) + outDegreeOf(vertex)
+      : outDegreeOf(vertex);
+
+  @override
   Iterable<Edge<V, E>> get edges => super.edges.where(_edgePredicate);
 
   @override

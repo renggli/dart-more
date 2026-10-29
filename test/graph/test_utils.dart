@@ -168,24 +168,41 @@ Graph<String, int> get bellmanFordGraph => Graph<String, int>(isDirected: true)
 
 void expectInvariants<V, E>(Graph<V, E> graph) {
   for (final vertex in graph.vertices) {
+    check(graph.containsVertex(vertex)).isTrue();
+    check(graph.inDegreeOf(vertex))
+        .equals(graph.incomingEdgesOf(vertex).length);
+    check(graph.outDegreeOf(vertex))
+        .equals(graph.outgoingEdgesOf(vertex).length);
+    check(graph.degreeOf(vertex)).equals(
+      graph.isDirected
+          ? graph.inDegreeOf(vertex) + graph.outDegreeOf(vertex)
+          : graph.outDegreeOf(vertex),
+    );
     for (final edge in graph.edgesOf(vertex)) {
       check(graph.edges).any(isEdge(edge.source, edge.target));
       check([edge.source, edge.target]).contains(vertex);
     }
     for (final outgoingEdge in graph.outgoingEdgesOf(vertex)) {
       check(outgoingEdge.source).equals(vertex);
+      check(graph.containsEdge(outgoingEdge.source, outgoingEdge.target))
+          .isTrue();
       check(graph.predecessorsOf(outgoingEdge.target)).contains(vertex);
       check(graph.successorsOf(vertex)).contains(outgoingEdge.target);
       check(graph.edges).any(isEdge(outgoingEdge.source, outgoingEdge.target));
     }
     for (final incomingEdge in graph.incomingEdgesOf(vertex)) {
       check(incomingEdge.target).equals(vertex);
+      check(graph.containsEdge(incomingEdge.source, incomingEdge.target))
+          .isTrue();
       check(graph.predecessorsOf(vertex)).contains(incomingEdge.source);
       check(graph.successorsOf(incomingEdge.source)).contains(vertex);
       check(graph.edges).any(isEdge(incomingEdge.source, incomingEdge.target));
     }
   }
   for (final edge in graph.edges) {
+    check(graph.containsVertex(edge.source)).isTrue();
+    check(graph.containsVertex(edge.target)).isTrue();
+    check(graph.containsEdge(edge.source, edge.target)).isTrue();
     check(graph.vertices).contains(edge.source);
     check(graph.vertices).contains(edge.target);
   }

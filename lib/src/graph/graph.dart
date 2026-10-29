@@ -50,6 +50,26 @@ abstract class Graph<V, E> with ToStringPrinter {
   /// Returns a strategy to store vertices.
   StorageStrategy<V> get vertexStrategy;
 
+  /// Returns `true` if this graph contains the given [vertex].
+  bool containsVertex(V vertex) => vertices.contains(vertex);
+
+  /// Returns `true` if this graph contains an edge between [source] and [target].
+  bool containsEdge(V source, V target) => getEdge(source, target) != null;
+
+  /// Returns the in-degree of [vertex] (number of incoming edges).
+  int inDegreeOf(V vertex) => incomingEdgesOf(vertex).length;
+
+  /// Returns the out-degree of [vertex] (number of outgoing edges).
+  int outDegreeOf(V vertex) => outgoingEdgesOf(vertex).length;
+
+  /// Returns the total degree of [vertex].
+  ///
+  /// For undirected graphs, this is the number of incident edges.
+  /// For directed graphs, this is the sum of [inDegreeOf] and [outDegreeOf].
+  int degreeOf(V vertex) => isDirected
+      ? inDegreeOf(vertex) + outDegreeOf(vertex)
+      : outDegreeOf(vertex);
+
   /// Returns the vertices of this graph.
   Iterable<V> get vertices;
 

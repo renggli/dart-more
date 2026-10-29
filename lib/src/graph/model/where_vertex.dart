@@ -11,6 +11,29 @@ class WhereVertexGraph<V, E> extends ForwardingGraph<V, E> {
       _vertexPredicate(edge.source) && _vertexPredicate(edge.target);
 
   @override
+  bool containsVertex(V vertex) =>
+      _vertexPredicate(vertex) && super.containsVertex(vertex);
+
+  @override
+  bool containsEdge(V source, V target) =>
+      _vertexPredicate(source) &&
+      _vertexPredicate(target) &&
+      super.containsEdge(source, target);
+
+  @override
+  int inDegreeOf(V vertex) =>
+      _vertexPredicate(vertex) ? incomingEdgesOf(vertex).length : 0;
+
+  @override
+  int outDegreeOf(V vertex) =>
+      _vertexPredicate(vertex) ? outgoingEdgesOf(vertex).length : 0;
+
+  @override
+  int degreeOf(V vertex) => isDirected
+      ? inDegreeOf(vertex) + outDegreeOf(vertex)
+      : outDegreeOf(vertex);
+
+  @override
   Iterable<V> get vertices => super.vertices.where(_vertexPredicate);
 
   @override

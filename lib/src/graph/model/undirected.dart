@@ -18,6 +18,22 @@ class UndirectedGraph<V, E> extends Graph<V, E> {
   final StorageStrategy<V> vertexStrategy;
 
   @override
+  bool containsVertex(V vertex) => adjacency.containsKey(vertex);
+
+  @override
+  bool containsEdge(V source, V target) =>
+      adjacency[source]?.containsKey(target) ?? false;
+
+  @override
+  int inDegreeOf(V vertex) => adjacency[vertex]?.length ?? 0;
+
+  @override
+  int outDegreeOf(V vertex) => adjacency[vertex]?.length ?? 0;
+
+  @override
+  int degreeOf(V vertex) => adjacency[vertex]?.length ?? 0;
+
+  @override
   Iterable<V> get vertices => adjacency.keys;
 
   @override
