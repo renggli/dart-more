@@ -22,10 +22,10 @@ class ListMultimap<K, V> extends Multimap<K, V, List<V>> {
       ListMultimap(map: Map.identity(), factory: factory);
 
   /// Creates a [ListMultimap] with the keys and values from [iterable].
-  factory fromIterable /*<E>*/ (
-    Iterable<Object?> /*<E>*/ iterable, {
-    K Function(Object? /*E*/ element)? key,
-    V Function(Object? /*E*/ element)? value,
+  factory fromIterable(
+    Iterable<Object?> iterable, {
+    K Function(Object? element)? key,
+    V Function(Object? element)? value,
     Map<K, List<V>>? map,
     Factory<List<V>>? factory,
   }) {

@@ -278,7 +278,7 @@
   - **Problem**: `extension IndentDedentStringExtension<T> on String` declares an unused type parameter `<T>`.
   - **Fix**: Remove `<T>` from `IndentDedentStringExtension`.
 
-- [ ] **Legacy Dart 1 `/*<E>*/` comments in `fromIterable` factory constructors**
+- [x] **Legacy Dart 1 `/*<E>*/` comments in `fromIterable` factory constructors**
   - **Severity**: Suggestion
   - **Location**: [`lib/src/collection/bimap.dart`](lib/src/collection/bimap.dart#L31-L34), [`lib/src/collection/multiset.dart`](lib/src/collection/multiset.dart#L25-L28), [`lib/src/collection/trie.dart`](lib/src/collection/trie.dart#L22-L27), [`lib/src/collection/multimap/list.dart`](lib/src/collection/multimap/list.dart#L25-L28), [`lib/src/collection/multimap/set.dart`](lib/src/collection/multimap/set.dart#L25-L28)
   - **Problem**: Leftover pre-generic-method `/*<E>*/` comments clutter constructor signatures.

@@ -38,10 +38,10 @@ class Multiset<E> extends IterableBase<E> {
   ///
   /// The [count] function specifies the number of elements added to the
   /// collection. The default function returns the constant 1.
-  factory fromIterable /*<E>*/ (
-    Iterable<Object?> /*<E>*/ iterable, {
-    E Function(Object? /*E*/ element)? key,
-    int Function(Object? /*E*/ element)? count,
+  factory fromIterable(
+    Iterable<Object?> iterable, {
+    E Function(Object? element)? key,
+    int Function(Object? element)? count,
   }) {
     final result = Multiset<E>();
     key ??= (element) => element as E;
