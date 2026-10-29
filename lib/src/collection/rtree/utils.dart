@@ -22,7 +22,7 @@ RTreeEntry<T> entryWithLeastAreaEnlargement<T>(
     // If there are multiple entries having the same enlargement, choose the
     // entry having the smallest area as a tie-breaker.
     if (enlargement < minEnlargement ||
-        (enlargement == minEnlargement && minArea < beforeArea)) {
+        (enlargement == minEnlargement && beforeArea < minArea)) {
       minIndex = i;
       minArea = beforeArea;
       minEnlargement = enlargement;

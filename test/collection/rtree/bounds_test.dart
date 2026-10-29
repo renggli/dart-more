@@ -17,6 +17,10 @@ void main() {
       check(bound1.length).equals(3);
       check(bound2.length).equals(3);
     });
+    test('distinct buffer for min and max in fromPoint', () {
+      final pt = Bounds.fromPoint([1.0, 2.0]);
+      check(identical(pt.min, pt.max)).isFalse();
+    });
     test('isPoint', () {
       check(point1.isPoint).isTrue();
       check(point2.isPoint).isTrue();

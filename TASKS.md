@@ -116,7 +116,7 @@
   - **Problem**: `getInstance` checks `if (value == null)` instead of `if (!_map.containsKey(V))`, so if `T` is `Object?` and `null` was explicitly registered via `setInstance<int?>(null)`, calling `getInstance<int?>(ifAbsentPut: ...)` treats it as absent and overwrites it.
   - **Fix**: Check `if (!_map.containsKey(V))` before invoking `ifAbsent` / `ifAbsentPut`.
 
-- [ ] **`RTree` `entryWithLeastAreaEnlargement` tie-breaker is inverted and `Bounds.fromPoint` aliases `min` and `max` buffers**
+- [x] **`RTree` `entryWithLeastAreaEnlargement` tie-breaker is inverted and `Bounds.fromPoint` aliases `min` and `max` buffers**
   - **Severity**: Warning
   - **Location**: [`lib/src/collection/rtree/utils.dart`](lib/src/collection/rtree/utils.dart#L26-L31), [`lib/src/collection/rtree/bounds.dart`](lib/src/collection/rtree/bounds.dart#L15-L18)
   - **Problem**: In `entryWithLeastAreaEnlargement` ([`lib/src/collection/rtree/utils.dart`](lib/src/collection/rtree/utils.dart#L28)), the comment states "choose the entry having the smallest area as a tie-breaker", but the condition `enlargement == minEnlargement && minArea < beforeArea` selects the **largest** area instead of the smallest (`beforeArea < minArea`). In `Bounds.fromPoint` ([`lib/src/collection/rtree/bounds.dart`](lib/src/collection/rtree/bounds.dart#L15-L18)), `min` and `max` share the same `Float64List` instance (`shared`), and `Bounds` operations (`contains`, `union`, `intersects`, `intersection`) never check that both `Bounds` have matching dimensions (`length`), nor does `Bounds.fromLists` assert `min[i] <= max[i]`.

@@ -8,14 +8,18 @@ class Bounds {
   factory fromLists(List<double> min, List<double> max) =>
       Bounds._(Float64List.fromList(min), Float64List.fromList(max));
 
-  factory fromPoint(List<double> point) {
-    final shared = Float64List.fromList(point);
-    return Bounds._(shared, shared);
-  }
+  factory fromPoint(List<double> point) =>
+      Bounds._(Float64List.fromList(point), Float64List.fromList(point));
 
   new _(this.min, this.max)
-    : assert(min.isNotEmpty),
-      assert(min.length == max.length);
+    : assert(min.isNotEmpty, 'min must not be empty'),
+      assert(min.length == max.length, 'min and max must have the same length'),
+      assert(() {
+        for (var i = 0; i < min.length; i++) {
+          assert(min[i] <= max[i], 'min must be less than or equal to max');
+        }
+        return true;
+      }());
 
   final Float64List min;
   final Float64List max;
@@ -60,6 +64,7 @@ class Bounds {
 
   /// Computes whether another bounding box is fully contained in this one.
   bool contains(Bounds bounds) {
+    assert(length == bounds.length, 'Bounds must have matching dimensions');
     for (var i = 0; i < length; i++) {
       if (bounds.min[i] < min[i] || max[i] < bounds.max[i]) {
         return false;
@@ -70,6 +75,7 @@ class Bounds {
 
   /// Computes the union of this bounding box and another one.
   Bounds union(Bounds other) {
+    assert(length == other.length, 'Bounds must have matching dimensions');
     final result = Bounds(length);
     for (var i = 0; i < length; i++) {
       result.min[i] = math.min(min[i], other.min[i]);
@@ -80,6 +86,7 @@ class Bounds {
 
   /// Computes if this bounding box and another one intersect.
   bool intersects(Bounds other) {
+    assert(length == other.length, 'Bounds must have matching dimensions');
     for (var i = 0; i < length; i++) {
       final lower = math.max(min[i], other.min[i]);
       final upper = math.min(max[i], other.max[i]);
@@ -90,6 +97,7 @@ class Bounds {
 
   /// Computes the intersection of this bounding box and another one.
   Bounds? intersection(Bounds other) {
+    assert(length == other.length, 'Bounds must have matching dimensions');
     final result = Bounds(length);
     for (var i = 0; i < length; i++) {
       final lower = math.max(min[i], other.min[i]);
