@@ -4,15 +4,35 @@ extension MinMaxComparator<T> on Comparator<T> {
   T min(T a, T b) => this(a, b) < 0 ? a : b;
 
   /// Returns the minimum of the provided [iterable].
-  T minOf(Iterable<T> iterable, {T Function()? orElse}) =>
-      orElse != null && iterable.isEmpty ? orElse() : iterable.reduce(min);
+  T minOf(Iterable<T> iterable, {T Function()? orElse}) {
+    final iterator = iterable.iterator;
+    if (iterator.moveNext()) {
+      var value = iterator.current;
+      while (iterator.moveNext()) {
+        value = min(value, iterator.current);
+      }
+      return value;
+    }
+    if (orElse == null) throw StateError('No element');
+    return orElse();
+  }
 
   /// Returns the maximum of the two arguments [a] and [b].
   T max(T a, T b) => this(a, b) > 0 ? a : b;
 
   /// Returns the maximum of the provided [iterable].
-  T maxOf(Iterable<T> iterable, {T Function()? orElse}) =>
-      orElse != null && iterable.isEmpty ? orElse() : iterable.reduce(max);
+  T maxOf(Iterable<T> iterable, {T Function()? orElse}) {
+    final iterator = iterable.iterator;
+    if (iterator.moveNext()) {
+      var value = iterator.current;
+      while (iterator.moveNext()) {
+        value = max(value, iterator.current);
+      }
+      return value;
+    }
+    if (orElse == null) throw StateError('No element');
+    return orElse();
+  }
 
   /// Returns a tuple with the minimum and maximum of the provided [iterable].
   ({T min, T max}) minMaxOf(

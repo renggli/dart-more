@@ -220,7 +220,7 @@
   - **Problem**: All four methods call `fromIterables(map(keyProvider), map(valueProvider))`, iterating the source `Iterable` twice and failing or duplicating side effects on single-subscription/stateful iterables.
   - **Fix**: Populate the collection in a single loop over `iterable` in `BiMap.fromIterable`, and delegate `toBiMap`, `toListMultimap`, and `toSetMultimap` to `fromIterable`.
 
-- [ ] **`MinMaxComparator.minOf` and `maxOf` iterate twice when `orElse != null`**
+- [x] **`MinMaxComparator.minOf` and `maxOf` iterate twice when `orElse != null`**
   - **Severity**: Warning
   - **Location**: [`lib/src/comparator/operations/min_max.dart`](lib/src/comparator/operations/min_max.dart#L7-L16)
   - **Problem**: `orElse != null && iterable.isEmpty ? orElse() : iterable.reduce(min)` checks `iterable.isEmpty` and then calls `iterable.reduce(min)`, creating two iterators over `iterable`.

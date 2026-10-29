@@ -31,6 +31,13 @@ void main() {
       check(naturalInt.minOf([1], orElse: () => -1)).equals(1);
       check(naturalInt.minOf([1, 2], orElse: () => -1)).equals(1);
       check(naturalInt.minOf([1, 2, 3], orElse: () => -1)).equals(1);
+      var count = 0;
+      final iterable = [1, 2, 3].map((x) {
+        count++;
+        return x;
+      });
+      check(naturalInt.minOf(iterable, orElse: () => -1)).equals(1);
+      check(count).equals(3);
     });
   });
 
@@ -60,6 +67,13 @@ void main() {
       check(naturalInt.maxOf([1], orElse: () => -1)).equals(1);
       check(naturalInt.maxOf([1, 2], orElse: () => -1)).equals(2);
       check(naturalInt.maxOf([1, 2, 3], orElse: () => -1)).equals(3);
+      var count = 0;
+      final iterable = [1, 2, 3].map((x) {
+        count++;
+        return x;
+      });
+      check(naturalInt.maxOf(iterable, orElse: () => -1)).equals(3);
+      check(count).equals(3);
     });
   });
 
