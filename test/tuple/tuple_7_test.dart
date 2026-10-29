@@ -310,15 +310,15 @@ void main() {
     });
     test('iterable', () {
       check(tuple.iterable)
-          .deepEquals(<dynamic>[195, 133, 23, 42, 211, 158, 121]);
+          .deepEquals(<Object?>[195, 133, 23, 42, 211, 158, 121]);
     });
     test('toList', () {
       check(tuple.toList())
-          .deepEquals(<dynamic>[195, 133, 23, 42, 211, 158, 121]);
+          .deepEquals(<Object?>[195, 133, 23, 42, 211, 158, 121]);
     });
     test('toSet', () {
       check(tuple.toSet())
-          .deepEquals(<dynamic>{195, 133, 23, 42, 211, 158, 121});
+          .deepEquals(<Object?>{195, 133, 23, 42, 211, 158, 121});
     });
   });
 }

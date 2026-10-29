@@ -241,13 +241,13 @@ Future<void> generateImplementation(int i) async {
   final prefix = i == 0 ? 'const ' : '';
   out.writeln();
   out.writeln('/// An untyped [Iterable] over the values of this tuple.');
-  out.writeln('Iterable<dynamic> get iterable => toList();');
+  out.writeln('Iterable<Object?> get iterable => toList();');
   out.writeln();
   out.writeln('/// Converts this tuple to an untyped [List].');
-  out.writeln('List<dynamic> toList() => $prefix[${listify(values)}];');
+  out.writeln('List<Object?> toList() => $prefix[${listify(values)}];');
   out.writeln();
   out.writeln('/// Converts this tuple to an untyped [Set] of unique values.');
-  out.writeln('Set<dynamic> toSet() => $prefix{${listify(values)}};');
+  out.writeln('Set<Object?> toSet() => $prefix{${listify(values)}};');
 
   out.writeln('}');
   await out.close();
@@ -417,17 +417,17 @@ Future<void> generateImplementationTest(int i) async {
     });
     nest('test', 'iterable', () {
       out.writeln(
-        'check(tuple.iterable).deepEquals(<dynamic>[${listify(numbers)}]);',
+        'check(tuple.iterable).deepEquals(<Object?>[${listify(numbers)}]);',
       );
     });
     nest('test', 'toList', () {
       out.writeln(
-        'check(tuple.toList()).deepEquals(<dynamic>[${listify(numbers)}]);',
+        'check(tuple.toList()).deepEquals(<Object?>[${listify(numbers)}]);',
       );
     });
     nest('test', 'toSet', () {
       out.writeln(
-        'check(tuple.toSet()).deepEquals(<dynamic>{${listify(numbers)}});',
+        'check(tuple.toSet()).deepEquals(<Object?>{${listify(numbers)}});',
       );
     });
   });

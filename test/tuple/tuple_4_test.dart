@@ -159,13 +159,13 @@ void main() {
       ).equals(341);
     });
     test('iterable', () {
-      check(tuple.iterable).deepEquals(<dynamic>[164, 26, 79, 32]);
+      check(tuple.iterable).deepEquals(<Object?>[164, 26, 79, 32]);
     });
     test('toList', () {
-      check(tuple.toList()).deepEquals(<dynamic>[164, 26, 79, 32]);
+      check(tuple.toList()).deepEquals(<Object?>[164, 26, 79, 32]);
     });
     test('toSet', () {
-      check(tuple.toSet()).deepEquals(<dynamic>{164, 26, 79, 32});
+      check(tuple.toSet()).deepEquals(<Object?>{164, 26, 79, 32});
     });
   });
 }

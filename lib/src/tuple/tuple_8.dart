@@ -173,11 +173,11 @@ extension Tuple8<T1, T2, T3, T4, T5, T6, T7, T8>
   ) => callback($1, $2, $3, $4, $5, $6, $7, $8);
 
   /// An untyped [Iterable] over the values of this tuple.
-  Iterable<dynamic> get iterable => toList();
+  Iterable<Object?> get iterable => toList();
 
   /// Converts this tuple to an untyped [List].
-  List<dynamic> toList() => [$1, $2, $3, $4, $5, $6, $7, $8];
+  List<Object?> toList() => [$1, $2, $3, $4, $5, $6, $7, $8];
 
   /// Converts this tuple to an untyped [Set] of unique values.
-  Set<dynamic> toSet() => {$1, $2, $3, $4, $5, $6, $7, $8};
+  Set<Object?> toSet() => {$1, $2, $3, $4, $5, $6, $7, $8};
 }

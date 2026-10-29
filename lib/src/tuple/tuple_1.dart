@@ -48,11 +48,11 @@ extension Tuple1<T1> on (T1,) {
   R map<R>(R Function(T1 first) callback) => callback($1);
 
   /// An untyped [Iterable] over the values of this tuple.
-  Iterable<dynamic> get iterable => toList();
+  Iterable<Object?> get iterable => toList();
 
   /// Converts this tuple to an untyped [List].
-  List<dynamic> toList() => [$1];
+  List<Object?> toList() => [$1];
 
   /// Converts this tuple to an untyped [Set] of unique values.
-  Set<dynamic> toSet() => {$1};
+  Set<Object?> toSet() => {$1};
 }

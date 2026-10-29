@@ -45,7 +45,7 @@ sealed class Either<L, R> {
 
   /// Returns a dynamically typed value of this object, either the [leftValue]
   /// or the [rightValue].
-  dynamic get value;
+  Object? get value;
 
   /// Returns the left value, if absent throws a [StateError].
   L get leftValue;

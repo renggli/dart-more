@@ -266,7 +266,7 @@
 
 ## 3. Code Style and Readability
 
-- [ ] **`Either.value` and `Tuple0`..`Tuple9` (`iterable`, `toList`, `toSet`) use `dynamic` instead of `Object?`**
+- [x] **`Either.value` and `Tuple0`..`Tuple9` (`iterable`, `toList`, `toSet`) use `dynamic` instead of `Object?`**
   - **Severity**: Warning
   - **Location**: [`lib/src/functional/either.dart`](lib/src/functional/either.dart#L48), [`lib/src/tuple/tuple_0.dart`](lib/src/tuple/tuple_0.dart#L29-L35), [`bin/generate_tuple.dart`](lib/src/tuple/tuple.dart)
   - **Problem**: Violates `AGENTS.md` ("Embrace strict null safety. Avoid using the non-null assertion operator (`!`) or `dynamic` types, if possible"). `Either.value` returns `dynamic`, and `Tuple.iterable`, `Tuple.toList`, and `Tuple.toSet` return `Iterable<dynamic>`, `List<dynamic>`, and `Set<dynamic>`.
@@ -463,30 +463,4 @@
   - **Problem**: `Graph` has no structural equivalence check (`isIsomorphicTo`) or subgraph pattern matching (`findIsomorphisms`), which is particularly useful alongside `GraphFactory.atlas`.
   - **Fix**: Implement the VF2 state-space search algorithm in `lib/src/graph/algorithms/isomorphism.dart` supporting custom vertex/edge compatibility predicates, exposing `bool isIsomorphicTo<W, F>(Graph<W, F> other, ...)` and `Iterable<Map<V, W>> findSubgraphIsomorphisms<W, F>(Graph<W, F> pattern, ...)`.
 
----
 
-## 7. Large Files, Complex Structure, Distributed Responsibility, and Dead Code
-
-- [ ] **Dead code: unused getter `ExpiryCacheItem.expiry`**
-  - **Severity**: Suggestion
-  - **Location**: [`lib/src/cache/expiry.dart`](lib/src/cache/expiry.dart#L131-L138)
-  - **Problem**: `DateTime get expiry` on `ExpiryCacheItem` is never referenced anywhere in `lib/` or `test/` (and its `minDateTime` logic contradicts `Cache.expiry`'s doc comment).
-  - **Fix**: Remove `ExpiryCacheItem.expiry` (and `ExpiryCache.minDateTime` if no longer needed).
-
-- [ ] **`lib/src/graph/factory/atlas.dart` (12,749 lines) embeds an uncompressed multi-line `List<List<int>>` literal**
-  - **Severity**: Suggestion
-  - **Location**: [`lib/src/graph/factory/atlas.dart`](lib/src/graph/factory/atlas.dart#L50-L12749)
-  - **Problem**: `atlas.dart` is 12,749 lines (~20% of the repository's total line count) because `_atlas` formats one integer per line across 1,253 small graphs (each having $\le 7$ vertices and $\le 21$ edges). Additionally, `atlas(int number)` does not validate `number` with `RangeError.checkValidIndex(number, _atlas, 'number')`.
-  - **Fix**: Encode `_atlas` compactly (e.g., bit-packing each graph with $\le 7$ vertices into a single 32-bit integer: 3 bits for vertex count + 21 bits for the upper-triangle adjacency matrix), reducing `_atlas` to a 1,253-element `List<int>` (~150 lines total), and validate `number` with `RangeError.checkValidIndex`.
-
-- [ ] **`lib/src/collection/string/normalization_data.dart` (7,118 lines) uses uncompressed map and set literals**
-  - **Severity**: Suggestion
-  - **Location**: [`lib/src/collection/string/normalization_data.dart`](lib/src/collection/string/normalization_data.dart#L1-L7118), [`bin/generate_unicode.dart`](bin/generate_unicode.dart#L120-L210)
-  - **Problem**: Unlike `lib/src/char_matcher/unicode/*.dart`, which compresses Unicode tables via `encodeRle` / `decodeRle` (`lib/src/shared/rle.dart`), `normalization_data.dart` emits raw multi-thousand-line `Map<int, int>` and `Set<int>` literals.
-  - **Fix**: Encode `canonicalCombiningClasses` and `compositionExclusion` using RLE or packed integer arrays in `bin/generate_unicode.dart`.
-
-- [ ] **Hyper-fragmented micro-files in `lib/src/graph/model/where*.dart` and `lib/src/char_matcher/`**
-  - **Severity**: Suggestion
-  - **Location**: [`lib/src/graph/model/where.dart`](lib/src/graph/model/where.dart), [`lib/src/graph/model/where_edge.dart`](lib/src/graph/model/where_edge.dart), [`lib/src/graph/model/where_vertex.dart`](lib/src/graph/model/where_vertex.dart), [`lib/src/char_matcher/ascii/`](lib/src/char_matcher/ascii/), [`lib/src/char_matcher/basic/`](lib/src/char_matcher/basic/), [`lib/src/char_matcher/operator/`](lib/src/char_matcher/operator/)
-  - **Problem**: Violates `AGENTS.md` ("Avoid hyper-fragmenting tightly coupled classes into single-class micro-files"). `where.dart` (24 lines), `where_edge.dart` (49 lines), and `where_vertex.dart` (52 lines) are split across 3 files; 17 micro-files under `lib/src/char_matcher/{ascii,basic,operator}/` are 8–35 lines each.
-  - **Fix**: Co-locate `WhereVertexGraph` and `WhereEdgeGraph` in `lib/src/graph/model/where.dart`, and consolidate the `char_matcher` subclasses into `lib/src/char_matcher/ascii.dart`, `lib/src/char_matcher/basic.dart`, and `lib/src/char_matcher/operator.dart`.

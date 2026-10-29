@@ -253,13 +253,13 @@ void main() {
       ).equals(283);
     });
     test('iterable', () {
-      check(tuple.iterable).deepEquals(<dynamic>[10, 221, 217, 145, 204, 250]);
+      check(tuple.iterable).deepEquals(<Object?>[10, 221, 217, 145, 204, 250]);
     });
     test('toList', () {
-      check(tuple.toList()).deepEquals(<dynamic>[10, 221, 217, 145, 204, 250]);
+      check(tuple.toList()).deepEquals(<Object?>[10, 221, 217, 145, 204, 250]);
     });
     test('toSet', () {
-      check(tuple.toSet()).deepEquals(<dynamic>{10, 221, 217, 145, 204, 250});
+      check(tuple.toSet()).deepEquals(<Object?>{10, 221, 217, 145, 204, 250});
     });
   });
 }

@@ -120,13 +120,13 @@ void main() {
       ).equals(430);
     });
     test('iterable', () {
-      check(tuple.iterable).deepEquals(<dynamic>[51, 115, 77]);
+      check(tuple.iterable).deepEquals(<Object?>[51, 115, 77]);
     });
     test('toList', () {
-      check(tuple.toList()).deepEquals(<dynamic>[51, 115, 77]);
+      check(tuple.toList()).deepEquals(<Object?>[51, 115, 77]);
     });
     test('toSet', () {
-      check(tuple.toSet()).deepEquals(<dynamic>{51, 115, 77});
+      check(tuple.toSet()).deepEquals(<Object?>{51, 115, 77});
     });
   });
 }

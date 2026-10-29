@@ -98,11 +98,11 @@ extension Tuple5<T1, T2, T3, T4, T5> on (T1, T2, T3, T4, T5) {
   ) => callback($1, $2, $3, $4, $5);
 
   /// An untyped [Iterable] over the values of this tuple.
-  Iterable<dynamic> get iterable => toList();
+  Iterable<Object?> get iterable => toList();
 
   /// Converts this tuple to an untyped [List].
-  List<dynamic> toList() => [$1, $2, $3, $4, $5];
+  List<Object?> toList() => [$1, $2, $3, $4, $5];
 
   /// Converts this tuple to an untyped [Set] of unique values.
-  Set<dynamic> toSet() => {$1, $2, $3, $4, $5};
+  Set<Object?> toSet() => {$1, $2, $3, $4, $5};
 }

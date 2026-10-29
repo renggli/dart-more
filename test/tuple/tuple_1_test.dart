@@ -62,13 +62,13 @@ void main() {
       ).equals(104);
     });
     test('iterable', () {
-      check(tuple.iterable).deepEquals(<dynamic>[196]);
+      check(tuple.iterable).deepEquals(<Object?>[196]);
     });
     test('toList', () {
-      check(tuple.toList()).deepEquals(<dynamic>[196]);
+      check(tuple.toList()).deepEquals(<Object?>[196]);
     });
     test('toSet', () {
-      check(tuple.toSet()).deepEquals(<dynamic>{196});
+      check(tuple.toSet()).deepEquals(<Object?>{196});
     });
   });
 }

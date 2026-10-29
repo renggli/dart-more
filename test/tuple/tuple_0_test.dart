@@ -29,13 +29,13 @@ void main() {
       check(tuple.map(() => 430)).equals(430);
     });
     test('iterable', () {
-      check(tuple.iterable).deepEquals(<dynamic>[]);
+      check(tuple.iterable).deepEquals(<Object?>[]);
     });
     test('toList', () {
-      check(tuple.toList()).deepEquals(<dynamic>[]);
+      check(tuple.toList()).deepEquals(<Object?>[]);
     });
     test('toSet', () {
-      check(tuple.toSet()).deepEquals(<dynamic>{});
+      check(tuple.toSet()).deepEquals(<Object?>{});
     });
   });
 }

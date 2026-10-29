@@ -203,13 +203,13 @@ void main() {
       ).equals(686);
     });
     test('iterable', () {
-      check(tuple.iterable).deepEquals(<dynamic>[136, 148, 159, 123, 142]);
+      check(tuple.iterable).deepEquals(<Object?>[136, 148, 159, 123, 142]);
     });
     test('toList', () {
-      check(tuple.toList()).deepEquals(<dynamic>[136, 148, 159, 123, 142]);
+      check(tuple.toList()).deepEquals(<Object?>[136, 148, 159, 123, 142]);
     });
     test('toSet', () {
-      check(tuple.toSet()).deepEquals(<dynamic>{136, 148, 159, 123, 142});
+      check(tuple.toSet()).deepEquals(<Object?>{136, 148, 159, 123, 142});
     });
   });
 }

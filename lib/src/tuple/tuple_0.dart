@@ -27,11 +27,11 @@ extension Tuple0 on () {
   R map<R>(R Function() callback) => callback();
 
   /// An untyped [Iterable] over the values of this tuple.
-  Iterable<dynamic> get iterable => toList();
+  Iterable<Object?> get iterable => toList();
 
   /// Converts this tuple to an untyped [List].
-  List<dynamic> toList() => const [];
+  List<Object?> toList() => const [];
 
   /// Converts this tuple to an untyped [Set] of unique values.
-  Set<dynamic> toSet() => const {};
+  Set<Object?> toSet() => const {};
 }
