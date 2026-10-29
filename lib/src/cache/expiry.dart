@@ -10,19 +10,25 @@ import 'loader.dart';
 /// A cache that expires after a certain amount of time.
 class ExpiryCache<K, V> extends Cache<K, V> {
   /// Creates an expiry cache with the given [loader], [updateExpiry], and [accessExpiry].
-  new(this.loader, this.updateExpiry, this.accessExpiry)
-    : assert(
-        updateExpiry != null || accessExpiry != null,
-        'Either update or access expiry must be provided.',
-      ),
-      assert(
-        updateExpiry == null || updateExpiry > Duration.zero,
+  new(this.loader, this.updateExpiry, this.accessExpiry) {
+    if (updateExpiry == null && accessExpiry == null) {
+      throw ArgumentError('Either update or access expiry must be provided.');
+    }
+    if (updateExpiry != null && updateExpiry! <= Duration.zero) {
+      throw ArgumentError.value(
+        updateExpiry,
+        'updateExpiry',
         'Update expiry must be positive.',
-      ),
-      assert(
-        accessExpiry == null || accessExpiry > Duration.zero,
+      );
+    }
+    if (accessExpiry != null && accessExpiry! <= Duration.zero) {
+      throw ArgumentError.value(
+        accessExpiry,
+        'accessExpiry',
         'Access expiry must be positive.',
       );
+    }
+  }
 
   /// The loader function for cache misses.
   final Loader<K, V> loader;
@@ -50,7 +56,14 @@ class ExpiryCache<K, V> extends Cache<K, V> {
       item.refreshUpdate(now, updateExpiry);
     }
     item.refreshAccess(now, accessExpiry);
-    return await item.value;
+    try {
+      return await item.value;
+    } catch (_) {
+      if (identical(cached[key], item)) {
+        cached.remove(key);
+      }
+      rethrow;
+    }
   }
 
   @override

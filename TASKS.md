@@ -140,7 +140,7 @@
   - **Problem**: `controller.onCancel` cancels `maxAgeTimer` without setting `maxAgeTimer = null`, so if the source is a broadcast stream and is re-listened, `maxAgeTimer == null` is `false` and `maxAge` never triggers again. Additionally, `maxLength` and `maxAge` are not validated to be positive (unlike `Stream.window`, which calls `checkNonZeroPositive`).
   - **Fix**: Set `maxAgeTimer = null` in `onCancel` and validate `maxLength` and `maxAge` with `checkNonZeroPositive`.
 
-- [ ] **`ExpiryCache` and `LruCache` only validate parameters via `assert` and permanently cache failed `Future`s**
+- [x] **`ExpiryCache` and `LruCache` only validate parameters via `assert` and permanently cache failed `Future`s**
   - **Severity**: Warning
   - **Location**: [`lib/src/cache/expiry.dart`](lib/src/cache/expiry.dart#L16-L57), [`lib/src/cache/lru.dart`](lib/src/cache/lru.dart#L14-L37)
   - **Problem**: In release builds, `Cache.lru(loader: ..., maximumSize: 0)` and `Cache.expiry(loader: ...)` (with both durations `null` or negative) do not throw `ArgumentError`. Additionally, when `loader(key)` returns a `Future` that completes with an error, `ExpiryCache.get` and `LruCache.get` retain the failed `CacheItem` in `cached[key]`, causing subsequent `get(key)` calls to rethrow the cached failure instead of evicting the entry on error.

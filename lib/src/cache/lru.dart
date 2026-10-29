@@ -8,8 +8,9 @@ import 'loader.dart';
 /// Least Recently Used (LRU) cache.
 class LruCache<K, V> extends Cache<K, V> {
   /// Creates an LRU cache with the given [loader] and [maximumSize].
-  new(this.loader, this.maximumSize)
-    : assert(maximumSize > 0, 'Maximum size must be positive.');
+  new(this.loader, this.maximumSize) {
+    RangeError.checkNotNegative(maximumSize - 1, 'maximumSize');
+  }
 
   /// The loader function for cache misses.
   final Loader<K, V> loader;
@@ -30,7 +31,14 @@ class LruCache<K, V> extends Cache<K, V> {
       item = cached[key] = CacheItem(loader(key));
       cleanUp();
     }
-    return await item.value;
+    try {
+      return await item.value;
+    } catch (_) {
+      if (identical(cached[key], item)) {
+        cached.remove(key);
+      }
+      rethrow;
+    }
   }
 
   @override

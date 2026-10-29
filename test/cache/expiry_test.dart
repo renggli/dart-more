@@ -197,5 +197,34 @@ void main() {
         check(item.isExpired(t2.add(const Duration(minutes: 1)))).isTrue();
       });
     });
+    test('invalid arguments', () {
+      check(() => Cache.expiry(loader: immediateLoader))
+          .throws<ArgumentError>();
+      check(
+        () =>
+            Cache.expiry(loader: immediateLoader, updateExpiry: Duration.zero),
+      ).throws<ArgumentError>();
+      check(
+        () => Cache.expiry(
+          loader: immediateLoader,
+          accessExpiry: const Duration(seconds: -1),
+        ),
+      ).throws<ArgumentError>();
+    });
+    test('failed future is evicted on error', () async {
+      var attempts = 0;
+      final cache = Cache.expiry(
+        loader: (int key) async {
+          attempts++;
+          if (attempts == 1) throw StateError('load failure');
+          return 'ok-$key';
+        },
+        updateExpiry: const Duration(minutes: 5),
+      );
+      await check(cache.get(1)).throws<StateError>();
+      check(await cache.size()).equals(0);
+      check(await cache.get(1)).equals('ok-1');
+      check(await cache.size()).equals(1);
+    });
   });
 }
