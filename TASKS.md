@@ -345,7 +345,7 @@
   - **Problem**: `Either` and `Optional` are `sealed` classes designed for exhaustive pattern matching, but `lib/functional.dart` uses `show Either` and `show Optional`, hiding `LeftEither`, `RightEither`, `PresentOptional`, and `AbsentOptional`. Users importing `package:more/functional.dart` cannot pattern-match on the sealed subtypes (`case PresentOptional(:final value):` or `case LeftEither(:final value):`).
   - **Fix**: Export `LeftEither`, `RightEither` from `src/functional/either.dart` and `PresentOptional`, `AbsentOptional` from `src/functional/optional.dart` in `lib/functional.dart`.
 
-- [ ] **`UnicodeBlockCharMatcher` is generated in `lib/src/char_matcher/unicode/blocks.dart` but not exported from `lib/char_matcher.dart`**
+- [x] **`UnicodeBlockCharMatcher` is generated in `lib/src/char_matcher/unicode/blocks.dart` but not exported from `lib/char_matcher.dart`**
   - **Severity**: Warning
   - **Location**: [`lib/char_matcher.dart`](lib/char_matcher.dart#L1-L7), [`lib/src/char_matcher/unicode/blocks.dart`](lib/src/char_matcher/unicode/blocks.dart#L1-L475)
   - **Problem**: `UnicodeBlockCharMatcher` is a 475-line generated public class providing matchers for all Unicode blocks, but `lib/char_matcher.dart` only exports `CharMatcher` and `UnicodeCharMatcher`, making `UnicodeBlockCharMatcher` inaccessible without importing `lib/src/` directly.
