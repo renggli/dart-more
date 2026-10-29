@@ -80,7 +80,7 @@
   - **Problem**: Both printers compute `exponent` from `value.abs().log() / base.log()` before rounding `mantissa` to `precision`. For `999.9` with `precision: 0`, `HumanNumberPrinter.decimal()` selects `exponent = 0` and prints `'1000'` instead of `'1 k'`; `ScientificNumberPrinter(precision: 1)` on `9.99` prints `'10.0e0'` instead of `'1.0e1'`. Furthermore, `1000.0.log() / 10.0.log()` evaluates to `2.9999999999999996` in IEEE 754 float arithmetic, so `.floor()` yields `2` instead of `3`.
   - **Fix**: Increment `exponent` and rescale `mantissa` if rounding causes the mantissa to reach the next power of `base` / `unitBase`.
 
-- [ ] **`SeparateRightPrinter` and `SeparateLeftPrinter` do not validate `width` and `offset`**
+- [x] **`SeparateRightPrinter` and `SeparateLeftPrinter` do not validate `width` and `offset`**
   - **Severity**: Warning
   - **Location**: [`lib/src/printer/string/separate.dart`](lib/src/printer/string/separate.dart#L7-L69)
   - **Problem**: Neither `separateLeft` nor `separateRight` validates `width > 0` or `0 <= offset < width`. If `width <= 0`, `% width` throws `IntegerDivisionByZeroException` or `RangeError`; if `offset >= width`, `i % width == offset` is never satisfied.

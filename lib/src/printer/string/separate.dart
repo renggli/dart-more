@@ -1,5 +1,6 @@
 import 'package:characters/characters.dart';
 
+import '../../shared/exceptions.dart';
 import '../object/object.dart';
 import '../printer.dart';
 
@@ -18,7 +19,10 @@ extension SeparatePrinterExtension<T> on Printer<T> {
 
 /// Separates a string with a separator character.
 abstract class SeparatePrinter<T> extends Printer<T> {
-  const new(this.printer, this.width, this.offset, this.separator);
+  new(this.printer, this.width, this.offset, this.separator) {
+    checkNonZeroPositive(width, 'width');
+    RangeError.checkValueInInterval(offset, 0, width - 1, 'offset');
+  }
 
   final Printer<T> printer;
   final int width;
@@ -35,7 +39,7 @@ abstract class SeparatePrinter<T> extends Printer<T> {
 
 /// Separates a string from the left with a separator character.
 class SeparateLeftPrinter<T> extends SeparatePrinter<T> {
-  const new(super.printer, super.width, super.offset, super.separator);
+  new(super.printer, super.width, super.offset, super.separator);
 
   @override
   void printOn(T object, StringBuffer buffer) {
@@ -52,7 +56,7 @@ class SeparateLeftPrinter<T> extends SeparatePrinter<T> {
 
 /// Separates a string from the right with a repeated separator character.
 class SeparateRightPrinter<T> extends SeparatePrinter<T> {
-  const new(super.printer, super.width, super.offset, super.separator);
+  new(super.printer, super.width, super.offset, super.separator);
 
   @override
   void printOn(T object, StringBuffer buffer) {

@@ -56,5 +56,19 @@ void main() {
       final printer = standardString.separateLeft(3, 0, '_');
       check(printer.toString()).startsWith('SeparateLeftPrinter<String>');
     });
+    test('invalid arguments', () {
+      check(() => standardString.separateLeft(0, 0, '_')).throws<RangeError>();
+      check(() => standardString.separateLeft(-1, 0, '_')).throws<RangeError>();
+      check(() => standardString.separateLeft(3, -1, '_')).throws<RangeError>();
+      check(() => standardString.separateLeft(3, 3, '_')).throws<RangeError>();
+      check(() => standardString.separateLeft(3, 4, '_')).throws<RangeError>();
+      check(() => standardString.separateRight(0, 0, '_')).throws<RangeError>();
+      check(() => standardString.separateRight(-1, 0, '_'))
+          .throws<RangeError>();
+      check(() => standardString.separateRight(3, -1, '_'))
+          .throws<RangeError>();
+      check(() => standardString.separateRight(3, 3, '_')).throws<RangeError>();
+      check(() => standardString.separateRight(3, 4, '_')).throws<RangeError>();
+    });
   });
 }
