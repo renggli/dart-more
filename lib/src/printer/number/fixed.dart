@@ -108,6 +108,10 @@ class FixedNumberPrinter<T extends num> extends Printer<T> {
   }
 
   void _printNumOn(num value, StringBuffer buffer) {
+    if (value is int && precision == 0 && accuracy == null) {
+      _printIntegerDigitsOn(intDigits(value.abs(), base), buffer);
+      return;
+    }
     final multiplier = base.pow(precision);
     final rounding = accuracy ?? 1.0 / multiplier;
     final rounded = (value / rounding).roundToDouble() * rounding;

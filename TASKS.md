@@ -68,7 +68,7 @@
   - **Problem**: `printOn` computes `if (!(object % 100).between(10, 20))` and `switch (object % 10)` on the signed `object`. Because Dart's `%` operator returns a non-negative remainder in `[0, divisor)`, for `object = -1`, `-1 % 10 == 9`, printing `'-1th'` instead of `'-1st'`; for `object = -89`, `-89 % 100 == 11`, printing `'-89th'` instead of `'-89th'` while `-91 % 10 == 9` prints `'-91th'` instead of `'-91st'`.
   - **Fix**: Compute `final absObject = object.abs();` and use `absObject % 100` and `absObject % 10`.
 
-- [ ] **`FixedNumberPrinter` loses precision on 64-bit integers and can overflow fractional digits on rounding**
+- [x] **`FixedNumberPrinter` loses precision on 64-bit integers and can overflow fractional digits on rounding**
   - **Severity**: Warning
   - **Location**: [`lib/src/printer/number/fixed.dart`](lib/src/printer/number/fixed.dart#L110-L132)
   - **Problem**: `_printNumOn` unconditionally converts `value` to `double` via `final rounded = (value / rounding).roundToDouble() * rounding;`, losing precision for 64-bit `int` values `> 2^53` even when `precision == 0 && accuracy == null`. In addition, `_printIntegerOn` prints `rounded.abs().truncate()` while `_printFractionOn` independently rounds `(fractional * multiplier).round()`; if floating-point representation or custom `accuracy` causes `(fractional * multiplier).round() == multiplier`, `_printFractionOn` prints an extra digit (e.g. `100` for `precision: 2`) without carrying into the integer part.

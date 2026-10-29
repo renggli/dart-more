@@ -63,6 +63,11 @@ void main() {
         check(printer(1234)).equals('+1234');
         check(printer(-1234)).equals('-1234');
       });
+      test('large 64-bit int does not lose precision', () {
+        final printer = FixedNumberPrinter<int>();
+        check(printer(int.parse('9007199254740993')))
+            .equals('9007199254740993');
+      }, testOn: '!js');
     });
     group('double', () {
       test('precision: 0', () {
