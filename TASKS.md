@@ -182,7 +182,7 @@
   - **Problem**: Line 35 calls `addOutgoingEdgesToQueue(startVertex ?? graph.vertices.first)`, which throws `StateError: No element` when `graph` is empty (whereas `kruskalSpanningTree` returns an empty graph). Furthermore, `vertexStrategy` is accepted as a parameter on line 17 but never used.
   - **Fix**: Return `result` immediately when `startVertex == null && graph.vertices.isEmpty` (or when `startVertex != null && !graph.vertices.contains(startVertex)`), and pass `vertexStrategy` to `Graph.from` or use `vertexStrategy.createSet()` to track visited vertices.
 
-- [ ] **`LogicalGraphExtension.intersection` processes undirected edges twice**
+- [x] **`LogicalGraphExtension.intersection` processes undirected edges twice**
   - **Severity**: Warning
   - **Location**: [`lib/src/graph/operations/logical.dart`](lib/src/graph/operations/logical.dart#L67-L82)
   - **Problem**: Unlike `unionAll` (which tracks `seen` for undirected graphs so `edgeMerge` is only called once per undirected edge), `intersection` iterates over `edges` (which yields both `(u, v)` and `(v, u)` in `UndirectedGraph`), invoking `edgeCompare` and `edgeMerge` twice for every undirected edge and overwriting `(u, v)` with the reverse call `(v, u)`.

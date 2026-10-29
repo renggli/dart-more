@@ -64,7 +64,14 @@ extension LogicalGraphExtension<V, E> on Graph<V, E> {
     }
     // Create all edges that have vertices present in the result, and edges
     // in both graphs.
+    final seen = !isDirected ? vertexStrategy.createMap<Set<V>>() : null;
     for (final edge in edges) {
+      if (seen != null) {
+        if (seen[edge.source]?.contains(edge.target) ?? false) continue;
+        seen
+            .putIfAbsent(edge.target, vertexStrategy.createSet)
+            .add(edge.source);
+      }
       final otherEdge = other.getEdge(edge.source, edge.target);
       if (otherEdge != null &&
           (edgeCompare == null ||

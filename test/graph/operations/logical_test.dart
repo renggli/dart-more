@@ -111,6 +111,25 @@ void main() {
         check(result.vertices).unorderedEquals([2, 3]);
         check(result.edges).unorderedMatches([isEdge(2, 3, value: 'a, b')]);
       });
+      test('undirected shared edge merge called once', () {
+        final a = Graph<int, String>(isDirected: false)
+          ..addEdge(1, 2, value: 'a');
+        final b = Graph<int, String>(isDirected: false)
+          ..addEdge(1, 2, value: 'b');
+        var mergeCount = 0;
+        final result = a.intersection(
+          b,
+          edgeMerge: (source, target, v1, v2) {
+            mergeCount++;
+            return '$v1-$v2';
+          },
+        );
+        check(mergeCount).equals(1);
+        check(result.getEdge(1, 2))
+            .isNotNull()
+            .has((e) => e.value, 'value')
+            .equals('a-b');
+      });
     });
     group('complement', () {
       test('simple undirected', () {
