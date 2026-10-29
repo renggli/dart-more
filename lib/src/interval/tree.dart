@@ -20,13 +20,20 @@ class IntervalTree<K extends Comparable<K>, V> with Iterable<V> {
   static IntervalTree<K, V> fromValues<K extends Comparable<K>, V>(
     Iterable<V> values,
     Interval<K> Function(V value) getter,
-  ) => IntervalTree<K, V>._(
-    _IntervalTreeNode.fromValues(values, getter),
-    getter,
-  );
+  ) {
+    final entries = <_IntervalEntry<K, V>>[];
+    for (final value in values) {
+      entries.add(_IntervalEntry<K, V>(getter(value), value));
+    }
+    return IntervalTree<K, V>._(
+      _IntervalTreeNode.fromEntries(entries),
+      getter,
+      entries.length,
+    );
+  }
 
   /// Internal constructor of the [IntervalTree].
-  const new _(this._root, this.getter);
+  const new _(this._root, this.getter, this.length);
 
   /// The root node of this tree, or `null` if empty.
   final _IntervalTreeNode<K, V>? _root;
@@ -35,7 +42,10 @@ class IntervalTree<K extends Comparable<K>, V> with Iterable<V> {
   final Interval<K> Function(V value) getter;
 
   @override
-  bool get isEmpty => _root == null;
+  final int length;
+
+  @override
+  bool get isEmpty => length == 0;
 
   @override
   Iterator<V> get iterator => _IntervalTreeIterator(_root);
@@ -100,65 +110,76 @@ final class _IntervalTreeIterator<K extends Comparable<K>, V>
   }
 
   final _nodes = <_IntervalTreeNode<K, V>>[];
-  final _values = <V>[];
+  List<V>? _currentValues;
+  int _currentIndex = 0;
 
   @override
   late V current;
 
   @override
   bool moveNext() {
-    if (_values.isNotEmpty) {
-      current = _values.removeLast();
-      return true;
-    }
-    if (_nodes.isNotEmpty) {
+    while (true) {
+      final values = _currentValues;
+      if (values != null) {
+        if (_currentIndex < values.length) {
+          current = values[_currentIndex++];
+          return true;
+        }
+        _currentValues = null;
+      }
+      if (_nodes.isEmpty) return false;
       final node = _nodes.removeLast();
       if (node._leftNode != null) _nodes.add(node._leftNode);
       if (node._rightNode != null) _nodes.add(node._rightNode);
-      _values.addAll(node._leftValues);
-      current = _values.removeLast();
-      return true;
+      _currentValues = node._leftValues;
+      _currentIndex = 0;
     }
-    return false;
   }
+}
+
+final class _IntervalEntry<K extends Comparable<K>, V> {
+  const new(this.interval, this.value);
+
+  final Interval<K> interval;
+  final V value;
 }
 
 @immutable
 final class _IntervalTreeNode<K extends Comparable<K>, V> {
-  static _IntervalTreeNode<K, V>? fromValues<K extends Comparable<K>, V>(
-    Iterable<V> values,
-    Interval<K> Function(V value) getter,
+  static _IntervalTreeNode<K, V>? fromEntries<K extends Comparable<K>, V>(
+    List<_IntervalEntry<K, V>> entries,
   ) {
-    if (values.isEmpty) return null;
+    if (entries.isEmpty) return null;
     final endpoints = <K>[];
-    for (final value in values) {
-      final interval = getter(value);
-      endpoints.add(interval.lower);
-      endpoints.add(interval.upper);
+    for (final entry in entries) {
+      endpoints.add(entry.interval.lower);
+      endpoints.add(entry.interval.upper);
     }
     endpoints.sort();
     final median = endpoints[endpoints.length ~/ 2];
-    final leftNode = <V>[], leftValues = <V>[];
-    final rightValues = <V>[], rightNode = <V>[];
-    for (final value in values) {
-      final interval = getter(value);
+    final leftNode = <_IntervalEntry<K, V>>[];
+    final leftValues = <_IntervalEntry<K, V>>[];
+    final rightValues = <_IntervalEntry<K, V>>[];
+    final rightNode = <_IntervalEntry<K, V>>[];
+    for (final entry in entries) {
+      final interval = entry.interval;
       if (interval.upper.compareTo(median) < 0) {
-        leftNode.add(value);
+        leftNode.add(entry);
       } else if (median.compareTo(interval.lower) < 0) {
-        rightNode.add(value);
+        rightNode.add(entry);
       } else {
-        leftValues.add(value);
-        rightValues.add(value);
+        leftValues.add(entry);
+        rightValues.add(entry);
       }
     }
-    leftValues.sort((a, b) => getter(a).lower.compareTo(getter(b).lower));
-    rightValues.sort((a, b) => getter(b).upper.compareTo(getter(a).upper));
+    leftValues.sort((a, b) => a.interval.lower.compareTo(b.interval.lower));
+    rightValues.sort((a, b) => b.interval.upper.compareTo(a.interval.upper));
     return _IntervalTreeNode<K, V>(
-      fromValues(leftNode, getter),
-      leftValues,
+      fromEntries(leftNode),
+      leftValues.map((e) => e.value).toList(growable: false),
       median,
-      rightValues,
-      fromValues(rightNode, getter),
+      rightValues.map((e) => e.value).toList(growable: false),
+      fromEntries(rightNode),
     );
   }
 

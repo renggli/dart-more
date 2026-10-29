@@ -208,7 +208,7 @@
   - **Problem**: `targetStr` depends only on the outer loop index `t`, but `matcher.target = targetStr.runes` is executed on line 120 inside the inner `for (var s = ...)` loop, recomputing `_target`, `_targetIndices`, `_targetJunk`, and `_targetPopular` $O(S \times T)$ times instead of $O(T)$ times.
   - **Fix**: Move `matcher.target = targetStr.runes;` out of the inner `s` loop to immediately after `final targetStr = target[t];`.
 
-- [ ] **`IntervalTree` evaluates `getter` $O(n \log^2 n)$ times during construction, copies node lists during iteration, and has $O(n)$ `length`**
+- [x] **`IntervalTree` evaluates `getter` $O(n \log^2 n)$ times during construction, copies node lists during iteration, and has $O(n)$ `length`**
   - **Severity**: Warning
   - **Location**: [`lib/src/interval/tree.dart`](lib/src/interval/tree.dart#L96-L163)
   - **Problem**: `_IntervalTreeNode.fromValues` calls `getter(value)` in the endpoint loop, again in the partition loop, and $O(k \log k)$ times inside `leftValues.sort` and `rightValues.sort` at every recursion level. Additionally, `_IntervalTreeIterator` copies `node._leftValues` via `_values.addAll(node._leftValues)` on every node visit, and `IntervalTree` inherits `IterableBase.length` ($O(n)$ full traversal) instead of tracking the element count.
