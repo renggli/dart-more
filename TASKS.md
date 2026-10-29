@@ -272,7 +272,7 @@
   - **Problem**: Violates `AGENTS.md` ("Embrace strict null safety. Avoid using the non-null assertion operator (`!`) or `dynamic` types, if possible"). `Either.value` returns `dynamic`, and `Tuple.iterable`, `Tuple.toList`, and `Tuple.toSet` return `Iterable<dynamic>`, `List<dynamic>`, and `Set<dynamic>`.
   - **Fix**: Change `dynamic` to `Object?` in [`lib/src/functional/either.dart`](lib/src/functional/either.dart#L48) and [`bin/generate_tuple.dart`](bin/generate_tuple.dart#L373-L379), and regenerate the tuple files.
 
-- [ ] **Unused generic type parameter `<T>` on `IndentDedentStringExtension<T>`**
+- [x] **Unused generic type parameter `<T>` on `IndentDedentStringExtension<T>`**
   - **Severity**: Suggestion
   - **Location**: [`lib/src/collection/string/indent_dedent.dart`](lib/src/collection/string/indent_dedent.dart#L2)
   - **Problem**: `extension IndentDedentStringExtension<T> on String` declares an unused type parameter `<T>`.

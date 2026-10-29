@@ -3,7 +3,7 @@ import 'dart:math';
 import 'prefix_suffix.dart';
 
 /// Extension on [String] to indent and dedent multiline text.
-extension IndentDedentStringExtension<T> on String {
+extension IndentDedentStringExtension on String {
   /// Adds a [prefix] to the beginning of each line.
   ///
   /// - If defined, [firstPrefix] replaces [prefix] on the first line.
