@@ -82,7 +82,7 @@ All graph algorithms below must follow the project's decoupled architecture:
        - Return symmetric `Map<V, V>` mapping each matched vertex to its partner.
     2. Expose `maximumMatching` on `AlgorithmsGraphExtension` in `lib/src/graph/algorithms.dart` (which works for any undirected graph, bipartite or non-bipartite) and export from `lib/graph.dart`.
 
-- [ ] **General Graph Minimum Vertex Cover and Maximum Independent Set (Approximation & Exact)**
+- [x] **General Graph Minimum Vertex Cover and Maximum Independent Set (Approximation & Exact)**
   - **Files**: `lib/src/graph/algorithms/vertex_cover.dart`, `lib/src/graph/algorithms.dart`, `lib/graph.dart`
   - **Tests**: `test/graph/algorithms/vertex_cover_test.dart`
   - **Design & Instructions**:

@@ -19,8 +19,6 @@ void main() {
         ..addEdge(3, 1);
       check(triangle.bipartiteMatching).throws<GraphError>();
       check(triangle.weightedBipartiteMatching).throws<GraphError>();
-      check(triangle.minimumVertexCover).throws<GraphError>();
-      check(triangle.maximumIndependentSet).throws<GraphError>();
     });
 
     test('empty graph', () {

@@ -28,6 +28,7 @@ import 'algorithms/stoer_wagner_min_cut.dart' as stoer_wagner_min_cut;
 import 'algorithms/structural_metrics.dart' as structural_metrics;
 import 'algorithms/tarjan_strongly_connected.dart' as tarjan_strongly_connected;
 import 'algorithms/vertex_coloring.dart' as vertex_coloring;
+import 'algorithms/vertex_cover.dart' as vertex_cover;
 import 'edge.dart';
 import 'errors.dart';
 import 'graph.dart';
@@ -613,32 +614,36 @@ extension AlgorithmsGraphExtension<V, E> on Graph<V, E> {
     );
   }
 
-  /// Computes the minimum vertex cover of this undirected bipartite graph.
-  Set<V> minimumVertexCover({StorageStrategy<V>? vertexStrategy}) {
+  /// Computes the minimum vertex cover of this undirected graph.
+  ///
+  /// If [approximate] is `true`, uses a 2-approximation algorithm.
+  Set<V> minimumVertexCover({
+    bool approximate = false,
+    StorageStrategy<V>? vertexStrategy,
+  }) {
     GraphError.checkNotDirected(this);
-    try {
-      return bipartite_matching.minimumVertexCover<V>(
-        vertices: vertices,
-        neighboursOf: neighboursOf,
-        vertexStrategy: vertexStrategy ?? this.vertexStrategy,
-      );
-    } on ArgumentError catch (e) {
-      throw GraphError(this, 'graph', e.message);
-    }
+    return vertex_cover.minimumVertexCover<V>(
+      vertices: vertices,
+      neighboursOf: neighboursOf,
+      approximate: approximate,
+      vertexStrategy: vertexStrategy ?? this.vertexStrategy,
+    );
   }
 
-  /// Computes the maximum independent set of this undirected bipartite graph.
-  Set<V> maximumIndependentSet({StorageStrategy<V>? vertexStrategy}) {
+  /// Computes the maximum independent set of this undirected graph.
+  ///
+  /// If [approximate] is `true`, uses a greedy minimum-degree heuristic.
+  Set<V> maximumIndependentSet({
+    bool approximate = false,
+    StorageStrategy<V>? vertexStrategy,
+  }) {
     GraphError.checkNotDirected(this);
-    try {
-      return bipartite_matching.maximumIndependentSet<V>(
-        vertices: vertices,
-        neighboursOf: neighboursOf,
-        vertexStrategy: vertexStrategy ?? this.vertexStrategy,
-      );
-    } on ArgumentError catch (e) {
-      throw GraphError(this, 'graph', e.message);
-    }
+    return vertex_cover.maximumIndependentSet<V>(
+      vertices: vertices,
+      neighboursOf: neighboursOf,
+      approximate: approximate,
+      vertexStrategy: vertexStrategy ?? this.vertexStrategy,
+    );
   }
 
   /// Computes the core numbers of all vertices in this undirected graph.
