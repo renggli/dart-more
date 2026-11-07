@@ -7,6 +7,7 @@ void main() {
     test('directed graph error', () {
       final g = Graph<int, void>(isDirected: true);
       check(g.bipartiteMatching).throws<GraphError>();
+      check(g.weightedBipartiteMatching).throws<GraphError>();
       check(g.minimumVertexCover).throws<GraphError>();
       check(g.maximumIndependentSet).throws<GraphError>();
     });
@@ -17,6 +18,7 @@ void main() {
         ..addEdge(2, 3)
         ..addEdge(3, 1);
       check(triangle.bipartiteMatching).throws<GraphError>();
+      check(triangle.weightedBipartiteMatching).throws<GraphError>();
       check(triangle.minimumVertexCover).throws<GraphError>();
       check(triangle.maximumIndependentSet).throws<GraphError>();
     });
@@ -90,6 +92,83 @@ void main() {
       // Maximum independent set has size 2
       final ind = g.maximumIndependentSet();
       check(ind.length).equals(2);
+    });
+
+    group('weightedBipartiteMatching', () {
+      test('empty graph', () {
+        final g = Graph<int, int>(isDirected: false);
+        check(g.weightedBipartiteMatching()).isEmpty();
+      });
+
+      test('2x2 graph: maximum weight matching', () {
+        final g = Graph<int, int>(isDirected: false)
+          ..addEdge(1, 3, value: 10)
+          ..addEdge(1, 4, value: 5)
+          ..addEdge(2, 3, value: 5)
+          ..addEdge(2, 4, value: 10);
+
+        final matching = g.weightedBipartiteMatching();
+        check(matching[1]).equals(3);
+        check(matching[3]).equals(1);
+        check(matching[2]).equals(4);
+        check(matching[4]).equals(2);
+      });
+
+      test('2x2 graph: minimum weight matching', () {
+        final g = Graph<int, int>(isDirected: false)
+          ..addEdge(1, 3, value: 10)
+          ..addEdge(1, 4, value: 5)
+          ..addEdge(2, 3, value: 5)
+          ..addEdge(2, 4, value: 10);
+
+        final matching = g.weightedBipartiteMatching(maximumWeight: false);
+        check(matching[1]).equals(4);
+        check(matching[4]).equals(1);
+        check(matching[2]).equals(3);
+        check(matching[3]).equals(2);
+      });
+
+      test('competing edges: global maximum weight', () {
+        // Greedy choice (1-3 with 10) would leave (2-4 with 1) -> total 11.
+        // Optimal is (2-3 with 10) and (1-4 with 9) -> total 19.
+        final g = Graph<int, int>(isDirected: false)
+          ..addEdge(1, 3, value: 10)
+          ..addEdge(1, 4, value: 9)
+          ..addEdge(2, 3, value: 10)
+          ..addEdge(2, 4, value: 1);
+
+        final matching = g.weightedBipartiteMatching();
+        check(matching[2]).equals(3);
+        check(matching[3]).equals(2);
+        check(matching[1]).equals(4);
+        check(matching[4]).equals(1);
+      });
+
+      test('negative edges with maximumWeight=true are skipped', () {
+        final g = Graph<int, int>(isDirected: false)..addEdge(1, 2, value: -5);
+        final matching = g.weightedBipartiteMatching(maximumWeight: true);
+        check(matching).isEmpty();
+      });
+
+      test('standalone weightedBipartiteMatching function', () {
+        final res = weightedBipartiteMatching<String>(
+          vertices: ['a', 'b', 'x', 'y'],
+          neighboursOf: (v) => switch (v) {
+            'a' => ['x', 'y'],
+            'b' => ['x', 'y'],
+            'x' => ['a', 'b'],
+            'y' => ['a', 'b'],
+            _ => const [],
+          },
+          edgeWeight: (u, v) {
+            if ((u == 'a' && v == 'x') || (u == 'x' && v == 'a')) return 20;
+            if ((u == 'b' && v == 'y') || (u == 'y' && v == 'b')) return 20;
+            return 5;
+          },
+        );
+        check(res['a']).equals('x');
+        check(res['b']).equals('y');
+      });
     });
   });
 }

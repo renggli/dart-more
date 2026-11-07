@@ -8,7 +8,11 @@ export 'src/graph/algorithms/biconnected.dart'
     show articulationPoints, biconnectedComponents, bridges;
 export 'src/graph/algorithms/bipartite_check.dart' show isBipartite;
 export 'src/graph/algorithms/bipartite_matching.dart'
-    show bipartiteMatching, maximumIndependentSet, minimumVertexCover;
+    show
+        bipartiteMatching,
+        maximumIndependentSet,
+        minimumVertexCover,
+        weightedBipartiteMatching;
 export 'src/graph/algorithms/bron_kerbosch_cliques.dart'
     show bronKerboschCliques;
 export 'src/graph/algorithms/connectivity.dart'

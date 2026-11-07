@@ -59,7 +59,7 @@ All graph algorithms below must follow the project's decoupled architecture:
 
 ## 3. Matching and Covering
 
-- [ ] **Maximum Weight Bipartite Matching (Hungarian / Kuhn–Munkres Algorithm)**
+- [x] **Maximum Weight Bipartite Matching (Hungarian / Kuhn–Munkres Algorithm)**
   - **Files**: `lib/src/graph/algorithms/bipartite_matching.dart`, `lib/src/graph/algorithms.dart`, `lib/graph.dart`
   - **Tests**: `test/graph/algorithms/bipartite_matching_test.dart`
   - **Design & Instructions**:

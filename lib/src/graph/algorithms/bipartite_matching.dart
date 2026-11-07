@@ -219,3 +219,201 @@ Set<V> maximumIndependentSet<V>({
   }
   return independentSet;
 }
+
+/// Computes the maximum weight bipartite matching of an undirected bipartite graph.
+///
+/// If [maximumWeight] is `true`, finds a matching that maximizes total weight
+/// (only edges that contribute positive gain are matched).
+/// If [maximumWeight] is `false`, finds a matching that minimizes total weight
+/// among maximum cardinality matchings.
+///
+/// Throws [ArgumentError] if the graph is not bipartite.
+///
+/// Returns a map representing matched pairs (each matched edge appears as
+/// `u -> v` and `v -> u`).
+Map<V, V> weightedBipartiteMatching<V>({
+  required Iterable<V> vertices,
+  required Iterable<V> Function(V vertex) neighboursOf,
+  required num Function(V source, V target) edgeWeight,
+  bool maximumWeight = true,
+  StorageStrategy<V>? vertexStrategy,
+}) {
+  vertexStrategy ??= StorageStrategy.defaultStrategy();
+  final colors = _twoColor<V>(
+    vertices: vertices,
+    neighboursOf: neighboursOf,
+    vertexStrategy: vertexStrategy,
+  );
+
+  var partU = <V>[];
+  var partW = <V>[];
+  for (final v in vertices) {
+    if (colors[v] == true) {
+      partU.add(v);
+    } else {
+      partW.add(v);
+    }
+  }
+
+  if (partU.isEmpty || partW.isEmpty) {
+    return vertexStrategy.createMap<V>();
+  }
+
+  if (partU.length > partW.length) {
+    final temp = partU;
+    partU = partW;
+    partW = temp;
+  }
+
+  final nU = partU.length;
+  final nW = partW.length;
+
+  final indexW = vertexStrategy.createMap<int>();
+  for (var j = 0; j < nW; j++) {
+    indexW[partW[j]] = j;
+  }
+
+  final sign = maximumWeight ? 1.0 : -1.0;
+  final adj = List<List<(int, double)>>.generate(nU, (_) => <(int, double)>[]);
+  for (var i = 0; i < nU; i++) {
+    final u = partU[i];
+    for (final w in neighboursOf(u)) {
+      final j = indexW[w];
+      if (j != null) {
+        adj[i].add((j, sign * edgeWeight(u, w).toDouble()));
+      }
+    }
+  }
+
+  final pU = List<double>.filled(nU, 0.0);
+  final pW = List<double>.filled(nW, 0.0);
+  for (var i = 0; i < nU; i++) {
+    var maxW = double.negativeInfinity;
+    for (final (_, w) in adj[i]) {
+      if (w > maxW) maxW = w;
+    }
+    pU[i] = maxW.isFinite ? maxW : 0.0;
+  }
+
+  final matchU = List<int>.filled(nU, -1);
+  final matchW = List<int>.filled(nW, -1);
+
+  for (var startU = 0; startU < nU; startU++) {
+    final dist = List<double>.filled(nW, double.infinity);
+    final parent = List<int>.filled(nW, -1);
+    final visitedW = List<bool>.filled(nW, false);
+    final visitedU = List<bool>.filled(nU, false);
+    final distU = List<double>.filled(nU, 0.0);
+
+    var currU = startU;
+    visitedU[currU] = true;
+    distU[currU] = 0.0;
+
+    int? finalW;
+    while (true) {
+      final currentDistU = distU[currU];
+      for (final (j, weight) in adj[currU]) {
+        if (!visitedW[j]) {
+          final slack = pU[currU] + pW[j] - weight;
+          final newDist = currentDistU + (slack < 0.0 ? 0.0 : slack);
+          if (newDist < dist[j]) {
+            dist[j] = newDist;
+            parent[j] = currU;
+          }
+        }
+      }
+
+      var bestJ = -1;
+      var bestDist = double.infinity;
+      for (var j = 0; j < nW; j++) {
+        if (!visitedW[j] && dist[j] < bestDist) {
+          bestDist = dist[j];
+          bestJ = j;
+        }
+      }
+
+      if (bestJ == -1 || bestDist.isInfinite) {
+        break;
+      }
+
+      visitedW[bestJ] = true;
+
+      if (maximumWeight) {
+        var gain = 0.0;
+        var traceW = bestJ;
+        while (traceW != -1) {
+          final u = parent[traceW];
+          double? forwardWeight;
+          for (final (neighbor, w) in adj[u]) {
+            if (neighbor == traceW) {
+              forwardWeight = w;
+              break;
+            }
+          }
+          gain += forwardWeight ?? 0.0;
+          final prevW = matchU[u];
+          if (prevW != -1) {
+            double? prevWeight;
+            for (final (neighbor, w) in adj[u]) {
+              if (neighbor == prevW) {
+                prevWeight = w;
+                break;
+              }
+            }
+            gain -= prevWeight ?? 0.0;
+          }
+          traceW = prevW;
+        }
+
+        if (gain <= 0.0) {
+          break;
+        }
+      }
+
+      if (matchW[bestJ] == -1) {
+        finalW = bestJ;
+        break;
+      }
+
+      final nextU = matchW[bestJ];
+      visitedU[nextU] = true;
+      distU[nextU] = bestDist;
+      currU = nextU;
+    }
+
+    if (finalW != null) {
+      final d = dist[finalW];
+      for (var i = 0; i < nU; i++) {
+        if (visitedU[i]) {
+          pU[i] -= d - distU[i];
+        }
+      }
+      for (var j = 0; j < nW; j++) {
+        if (visitedW[j]) {
+          pW[j] += d - dist[j];
+        }
+      }
+
+      var currW = finalW;
+      while (currW != -1) {
+        final u = parent[currW];
+        final nextW = matchU[u];
+        matchU[u] = currW;
+        matchW[currW] = u;
+        currW = nextW;
+      }
+    }
+  }
+
+  final result = vertexStrategy.createMap<V>();
+  for (var i = 0; i < nU; i++) {
+    final j = matchU[i];
+    if (j != -1) {
+      final u = partU[i];
+      final w = partW[j];
+      result[u] = w;
+      result[w] = u;
+    }
+  }
+  return result;
+}

@@ -573,6 +573,32 @@ extension AlgorithmsGraphExtension<V, E> on Graph<V, E> {
     }
   }
 
+  /// Computes the maximum weight bipartite matching of this undirected bipartite graph.
+  ///
+  /// - [edgeWeight] returns the weight of an edge between two vertices. If omitted,
+  ///   the numeric edge value or a weight of `1` is used.
+  /// - If [maximumWeight] is `true`, finds a matching that maximizes total weight.
+  /// - If [maximumWeight] is `false`, finds a matching that minimizes total weight
+  ///   among maximum cardinality matchings.
+  Map<V, V> weightedBipartiteMatching({
+    num Function(V source, V target)? edgeWeight,
+    bool maximumWeight = true,
+    StorageStrategy<V>? vertexStrategy,
+  }) {
+    GraphError.checkNotDirected(this);
+    try {
+      return bipartite_matching.weightedBipartiteMatching<V>(
+        vertices: vertices,
+        neighboursOf: neighboursOf,
+        edgeWeight: edgeWeight ?? _getDefaultEdgeValueOr(1),
+        maximumWeight: maximumWeight,
+        vertexStrategy: vertexStrategy ?? this.vertexStrategy,
+      );
+    } on ArgumentError catch (e) {
+      throw GraphError(this, 'graph', e.message);
+    }
+  }
+
   /// Computes the minimum vertex cover of this undirected bipartite graph.
   Set<V> minimumVertexCover({StorageStrategy<V>? vertexStrategy}) {
     GraphError.checkNotDirected(this);
