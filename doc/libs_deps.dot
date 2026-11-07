@@ -32,6 +32,7 @@ digraph {
   8 -> 15 [arrowsize="0.8"];
   8 -> 3 [arrowsize="0.8"];
   8 -> 4 [arrowsize="0.8"];
+  8 -> 2 [arrowsize="0.8"];
   8 -> 6 [arrowsize="0.8"];
   9 -> 2 [arrowsize="0.8"];
   10 -> 8 [arrowsize="0.8"];

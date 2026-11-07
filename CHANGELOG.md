@@ -1,5 +1,30 @@
 # Changelog
 
+## 4.9.0 (Unpublished)
+
+- Significant expansion and refactoring of the graph library:
+  - Add Eulerian path and circuit algorithms (`eulerianPath`, `eulerianCircuit`, `hasEulerianPath`, `hasEulerianCircuit`).
+  - Add articulation points, bridges, and biconnected components algorithms (`articulationPoints`, `bridges`, `biconnectedComponents`).
+  - Add centrality metrics: closeness centrality (`closenessCentrality`), betweenness centrality (`betweennessCentrality`), and PageRank (`pageRank`).
+  - Add graph metrics: density (`density`), clustering coefficient (`clusteringCoefficient`, `averageClusteringCoefficient`), and transitivity (`transitivity`).
+  - Add distance metrics to `FloydWarshall`: `eccentricity`, `diameter`, `radius`, `center`, `periphery`, and `averagePathLength`.
+  - Add Hopcroft–Karp maximum bipartite matching (`bipartiteMatching`), minimum vertex cover (`minimumVertexCover`), and maximum independent set (`maximumIndependentSet`).
+  - Add $k$-core decomposition (`kCore`, `coreNumbers`).
+  - Add transitive closure (`transitiveClosure`) and transitive reduction (`transitiveReduction`).
+  - Add vertex and edge connectivity algorithms (`vertexConnectivity`, `edgeConnectivity`).
+  - Add VF2 graph and subgraph isomorphism algorithms (`isIsomorphicTo`, `findIsomorphisms`).
+  - Add convenience query methods to `Graph`: `degreeOf`, `inDegreeOf`, `outDegreeOf`, `incidentEdgesOf`, `incomingEdgesOf`, `outgoingEdgesOf`, `hasVertex`, and `hasEdge`.
+- Decouple `SortedList` and `OrderedList` into separate class hierarchies.
+- Add bulk operations to `Cache`: `getAll`, `putAll`, and `invalidateAll`.
+- Add `span` and `difference` operations to `Interval`.
+- Add bitwise XOR operators (`xor`, `^`) to `BitList`.
+- Add ergonomic helpers on `Optional` and `Either` (`filter`, `toNullable`, `fold`, `swap`).
+- Top-level library export of `diff`, as well as `LeftEither`, `RightEither`, `PresentOptional`, and `AbsentOptional`.
+- Deprecate misspelled variants `RTree.guttman` (replacing `guttmann`) and `CharMatcher.trimTrailingFrom` (replacing `trimTraillingFrom`).
+- Align return types of `int.to`, `double.to`, and `chunkedWithPadding`.
+- Performance optimizations: single-pass iteration in collection conversions and comparators, single-pass shifting in `OrderedList.insertAll`, and `Uint32List` specialization in `EulerPrimeSieve`.
+- Numerous bug fixes, edge case handling, and argument validations across collections, math, number, printer, and temporal modules.
+
 ## 4.8.2
 
 - Dart 3.13 requirement.
