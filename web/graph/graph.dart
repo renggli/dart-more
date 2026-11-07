@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:js_interop';
 
 import 'package:more/graph.dart';
@@ -14,18 +15,12 @@ import 'traversal_player.dart';
 void main() async {
   final state = AppState();
 
-  // Restore from URL hash if available
-  if (web.window.location.hash.isNotEmpty) {
-    final restored = GraphIO.importFromUrlHash(web.window.location.hash);
-    if (restored != null) {
-      state.primaryGraph = restored.$1;
-      state.isWeighted = restored.$2;
-    }
-  }
-
   // Elements
   final canvasContainer =
       web.document.querySelector('#graph-canvas') as web.HTMLElement;
+  final transformLayer = web.document.querySelector(
+    '#viewport-transform-layer',
+  ) as web.HTMLElement;
   final btnDirected =
       web.document.querySelector('#btn-directed') as web.HTMLButtonElement;
   final btnWeighted =
@@ -42,10 +37,8 @@ void main() async {
       web.document.querySelector('#btn-redo') as web.HTMLButtonElement;
   final btnClear =
       web.document.querySelector('#btn-clear') as web.HTMLButtonElement;
-  final pillSource =
-      web.document.querySelector('#pill-source') as web.HTMLElement;
-  final pillTarget =
-      web.document.querySelector('#pill-target') as web.HTMLElement;
+  final labelSelectionInfo =
+      web.document.querySelector('#label-selection-info') as web.HTMLElement;
   final btnClearSelection = web.document.querySelector(
     '#btn-clear-selection',
   ) as web.HTMLButtonElement;
@@ -64,22 +57,17 @@ void main() async {
       web.document.querySelector('#bottom-drawer') as web.HTMLElement;
   final drawerToggleIcon =
       web.document.querySelector('#drawer-toggle-icon') as web.HTMLElement;
+  final notificationBanner =
+      web.document.querySelector('#notification-banner') as web.HTMLElement;
 
-  // Preset & Atlas elements
+  // Preset elements
   final selectPreset =
       web.document.querySelector('#select-preset') as web.HTMLSelectElement;
-  final inputVertexCount =
-      web.document.querySelector('#input-vertex-count') as web.HTMLInputElement;
+  final creatorParamsContainer = web.document.querySelector(
+    '#creator-params-container',
+  ) as web.HTMLElement;
   final btnGenerate =
       web.document.querySelector('#btn-generate') as web.HTMLButtonElement;
-  final inputAtlasNum =
-      web.document.querySelector('#input-atlas-num') as web.HTMLInputElement;
-  final btnAtlasPrev =
-      web.document.querySelector('#btn-atlas-prev') as web.HTMLButtonElement;
-  final btnAtlasNext =
-      web.document.querySelector('#btn-atlas-next') as web.HTMLButtonElement;
-  final btnAtlasLoad =
-      web.document.querySelector('#btn-atlas-load') as web.HTMLButtonElement;
 
   // Quick edit elements
   final inputNewVertex =
@@ -132,6 +120,14 @@ void main() async {
     '#select-playback-speed',
   ) as web.HTMLSelectElement;
 
+  // Bottom drawer refresh buttons
+  final btnRefreshMetrics = web.document.querySelector(
+    '#btn-refresh-metrics',
+  ) as web.HTMLButtonElement?;
+  final btnRefreshMatrix = web.document.querySelector(
+    '#btn-refresh-matrix',
+  ) as web.HTMLButtonElement?;
+
   // Algorithm elements
   final selectAlgoCategory = web.document.querySelector(
     '#select-algorithm-category',
@@ -177,23 +173,94 @@ void main() async {
 
   late final GraphRenderer renderer;
   late final TraversalPlayer player;
+  Timer? toastTimer;
+
+  // Interactive edge drawing state
+  String? edgeDrawingSource;
+
+  // Toast notification
+  void showToast(String message, {bool isWarning = false}) {
+    toastTimer?.cancel();
+    notificationBanner.textContent = message;
+    notificationBanner.className =
+        'notification-banner ${isWarning ? "warning" : "success"}';
+    notificationBanner.style.display = 'block';
+    toastTimer = Timer(const Duration(milliseconds: 2800), () {
+      notificationBanner.style.display = 'none';
+    });
+  }
+
+  // Restore from URL hash if available
+  if (web.window.location.hash.isNotEmpty) {
+    final restored = GraphIO.importFromUrlHash(web.window.location.hash);
+    if (restored != null) {
+      state.primaryGraph = restored.$1;
+      state.isWeighted = restored.$2;
+    }
+  }
 
   void updateUI() {
+    // Validate selection against active graph
+    state.selectedVertices.removeWhere(
+      (v) => !state.primaryGraph.containsVertex(v),
+    );
+    if (state.selectedSource != null &&
+        !state.primaryGraph.containsVertex(state.selectedSource!)) {
+      state.selectedSource = null;
+    }
+    if (state.selectedTarget != null &&
+        !state.primaryGraph.containsVertex(state.selectedTarget!)) {
+      state.selectedTarget = null;
+    }
+    if (state.selectedEdge != null) {
+      final (u, v) = state.selectedEdge!;
+      if (!state.primaryGraph.containsEdge(u, v) &&
+          !(!state.primaryGraph.isDirected &&
+              state.primaryGraph.containsEdge(v, u))) {
+        state.selectedEdge = null;
+      }
+    }
+
     btnDirected.classList.toggle('active', state.primaryGraph.isDirected);
     btnDirected.textContent = state.primaryGraph.isDirected
         ? 'Directed'
         : 'Undirected';
 
     btnWeighted.classList.toggle('active', state.isWeighted);
-    btnWeighted.textContent = state.isWeighted ? 'Weighted' : 'Unweighted';
+    btnWeighted.textContent = state.isWeighted
+        ? 'Show Weights'
+        : 'Hide Weights';
 
     groupRankDir.style.display = state.layoutEngine == 'dot' ? 'flex' : 'none';
 
     btnUndo.disabled = !state.canUndo();
     btnRedo.disabled = !state.canRedo();
 
-    pillSource.textContent = state.selectedSource ?? 'None';
-    pillTarget.textContent = state.selectedTarget ?? 'None';
+    // Selection text info
+    if (edgeDrawingSource != null) {
+      labelSelectionInfo.textContent =
+          'Drawing edge from "$edgeDrawingSource" → Click target node';
+    } else if (state.selectedEdge != null) {
+      final (u, v) = state.selectedEdge!;
+      final edge =
+          state.primaryGraph.getEdge(u, v) ?? state.primaryGraph.getEdge(v, u);
+      final arrow = state.primaryGraph.isDirected ? '→' : '—';
+      labelSelectionInfo.textContent =
+          'Edge: $u $arrow $v (Weight: ${edge?.value ?? 1})';
+    } else if (state.selectedVertices.isNotEmpty) {
+      final list = state.selectedVertices.toList();
+      if (list.length == 1) {
+        labelSelectionInfo.textContent = 'Selected: ${list.first}';
+      } else if (list.length == 2) {
+        labelSelectionInfo.textContent =
+            'Source: ${list[0]} | Target: ${list[1]}';
+      } else {
+        labelSelectionInfo.textContent =
+            'Selected (${list.length}): ${list.take(3).join(", ")}${list.length > 3 ? "..." : ""}';
+      }
+    } else {
+      labelSelectionInfo.textContent = 'No selection';
+    }
 
     codeDot.textContent = renderer.generateDot(state);
     codeDart.textContent = GraphIO.exportToDartCode(state);
@@ -202,12 +269,14 @@ void main() async {
     GraphInspector.updateInspector(
       state,
       onSelectVertex: (v) {
+        state.selectedVertices = {v};
         state.selectedSource = v;
         updateUI();
       },
       onUpdateWeight: (u, v, newWeight) {
         state.saveSnapshot();
         state.primaryGraph.addEdge(u, v, value: newWeight);
+        showToast('Updated weight of ($u, $v) to $newWeight');
         updateUI();
       },
     );
@@ -215,6 +284,155 @@ void main() async {
     renderer.render(state);
   }
 
+  // Active tool mode
+  String getCanvasMode() {
+    final radios = web.document.querySelectorAll('input[name="canvas-mode"]');
+    for (var i = 0; i < radios.length; i++) {
+      final radio = radios.item(i) as web.HTMLInputElement?;
+      if (radio?.checked ?? false) {
+        return radio!.value;
+      }
+    }
+    return 'select';
+  }
+
+  // Interactive Node Click handler
+  void handleVertexClick(String vertex, web.MouseEvent event) {
+    final mode = getCanvasMode();
+
+    if (mode == 'delete') {
+      state.saveSnapshot();
+      state.primaryGraph.removeVertex(vertex);
+      state.selectedVertices.remove(vertex);
+      if (state.selectedSource == vertex) state.selectedSource = null;
+      if (state.selectedTarget == vertex) state.selectedTarget = null;
+      showToast('Deleted node "$vertex"');
+      updateUI();
+      return;
+    }
+
+    if (mode == 'add-edge') {
+      if (edgeDrawingSource == null) {
+        edgeDrawingSource = vertex;
+        showToast('Selected "$vertex" as origin. Now click target node.');
+        updateUI();
+      } else if (edgeDrawingSource == vertex) {
+        // Self-loop
+        state.saveSnapshot();
+        state.primaryGraph.addEdge(vertex, vertex, value: 1);
+        showToast('Added self-loop on "$vertex"');
+        edgeDrawingSource = null;
+        updateUI();
+      } else {
+        final src = edgeDrawingSource!;
+        state.saveSnapshot();
+        state.primaryGraph.addEdge(src, vertex, value: 1);
+        showToast('Connected edge $src → $vertex');
+        edgeDrawingSource = null;
+        updateUI();
+      }
+      return;
+    }
+
+    // Select mode (Illustrator style)
+    edgeDrawingSource = null;
+    state.selectedEdge = null;
+
+    if (event.shiftKey) {
+      // Toggle in multi-selection
+      if (state.selectedVertices.contains(vertex)) {
+        state.selectedVertices.remove(vertex);
+      } else {
+        state.selectedVertices.add(vertex);
+      }
+    } else {
+      // Single selection
+      state.selectedVertices = {vertex};
+    }
+
+    // Keep source and target in sync for algorithms
+    final list = state.selectedVertices.toList();
+    state.selectedSource = list.isNotEmpty ? list.first : null;
+    state.selectedTarget = list.length > 1 ? list[1] : null;
+
+    updateUI();
+  }
+
+  // Interactive Edge Click handler
+  void handleEdgeClick(String source, String target, web.MouseEvent event) {
+    final mode = getCanvasMode();
+    edgeDrawingSource = null;
+
+    if (mode == 'delete') {
+      state.saveSnapshot();
+      state.primaryGraph.removeEdge(source, target);
+      if (state.selectedEdge == (source, target) ||
+          state.selectedEdge == (target, source)) {
+        state.selectedEdge = null;
+      }
+      showToast('Deleted edge ($source, $target)');
+      updateUI();
+      return;
+    }
+
+    // Select mode
+    state.selectedVertices.clear();
+    state.selectedSource = null;
+    state.selectedTarget = null;
+    state.selectedEdge = (source, target);
+    updateUI();
+  }
+
+  // Interactive Canvas Surface Click handler
+  void handleBackgroundClick(web.MouseEvent event) {
+    final mode = getCanvasMode();
+
+    if (mode == 'add-node') {
+      state.saveSnapshot();
+      var idx = state.primaryGraph.vertices.length;
+      var name = String.fromCharCode(65 + idx % 26);
+      while (state.primaryGraph.containsVertex(name)) {
+        idx++;
+        name = idx < 26 ? String.fromCharCode(65 + idx) : 'V$idx';
+      }
+      state.primaryGraph.addVertex(name);
+      state.selectedVertices = {name};
+      state.selectedSource = name;
+      showToast('Created node "$name"');
+      updateUI();
+      return;
+    }
+
+    if (mode == 'add-edge') {
+      if (edgeDrawingSource != null) {
+        edgeDrawingSource = null;
+        showToast('Cancelled edge drawing.');
+        updateUI();
+      }
+      return;
+    }
+
+    // Select mode: clear selection when clicking background
+    state.selectedVertices.clear();
+    state.selectedSource = null;
+    state.selectedTarget = null;
+    state.selectedEdge = null;
+    edgeDrawingSource = null;
+    updateUI();
+  }
+
+  // Initialize renderer
+  renderer = GraphRenderer(
+    container: canvasContainer,
+    transformLayer: transformLayer,
+    onVertexClick: handleVertexClick,
+    onEdgeClick: handleEdgeClick,
+    onBackgroundClick: handleBackgroundClick,
+  );
+
+  await renderer.initialize();
+
+  // Playback engine
   player = TraversalPlayer(
     onStepChanged: (step, total) {
       labelPlaybackStep.textContent = total > 0
@@ -235,108 +453,369 @@ void main() async {
     },
   );
 
-  String getCanvasMode() {
-    final radios = web.document.querySelectorAll('input[name="canvas-mode"]');
-    for (var i = 0; i < radios.length; i++) {
-      final radio = radios.item(i) as web.HTMLInputElement?;
-      if (radio?.checked ?? false) {
-        return radio!.value;
-      }
+  // Dynamic Creator Parameters Builder
+  void updateCreatorParams() {
+    creatorParamsContainer.textContent = '';
+    final preset = selectPreset.value;
+
+    switch (preset) {
+      case 'preset_default':
+      case 'preset_petersen':
+      case 'preset_karate':
+      case 'preset_road':
+      case 'preset_negative':
+      case 'preset_dag':
+      case 'preset_bridges':
+        final desc = switch (preset) {
+          'preset_default' => '6 nodes, 9 edges. Standard weighted network.',
+          'preset_petersen' =>
+            '10 nodes, 15 edges. 3-regular, non-planar graph.',
+          'preset_karate' => '34 nodes, 78 edges. Benchmark community graph.',
+          'preset_road' => '8 cities with road travel distances in km.',
+          'preset_negative' => 'Directed graph with negative edge weights.',
+          'preset_dag' => '9 compiler task nodes. Directed acyclic graph.',
+          'preset_bridges' =>
+            'Graph demonstrating cut vertices and bridge edges.',
+          _ => '',
+        };
+        creatorParamsContainer.appendChild(
+          web.HTMLParagraphElement()
+            ..style.fontSize = '1.1rem'
+            ..style.color = 'var(--text-muted)'
+            ..style.margin = '4px 0'
+            ..textContent = desc,
+        );
+
+      case 'factory_complete':
+      case 'factory_path':
+      case 'factory_ring':
+      case 'factory_star':
+        final row = web.HTMLDivElement()..className = 'form-row';
+        row.appendChild(web.HTMLLabelElement()..textContent = 'Node count:');
+        row.appendChild(
+          web.HTMLInputElement()
+            ..id = 'param-vertex-count'
+            ..type = 'number'
+            ..value = preset == 'factory_complete' ? '5' : '6'
+            ..min = '1'
+            ..max = '40'
+            ..style.maxWidth = '70px',
+        );
+        creatorParamsContainer.appendChild(row);
+
+      case 'factory_tree':
+        final row = web.HTMLDivElement()..className = 'form-row';
+        row.appendChild(web.HTMLLabelElement()..textContent = 'Nodes:');
+        row.appendChild(
+          web.HTMLInputElement()
+            ..id = 'param-tree-nodes'
+            ..type = 'number'
+            ..value = '10'
+            ..min = '1'
+            ..max = '50'
+            ..style.maxWidth = '60px',
+        );
+        row.appendChild(web.HTMLLabelElement()..textContent = 'Branching:');
+        row.appendChild(
+          web.HTMLInputElement()
+            ..id = 'param-tree-arity'
+            ..type = 'number'
+            ..value = '2'
+            ..min = '1'
+            ..max = '5'
+            ..style.maxWidth = '55px',
+        );
+        creatorParamsContainer.appendChild(row);
+
+      case 'factory_partite':
+        final row = web.HTMLDivElement()..className = 'form-row';
+        row.appendChild(web.HTMLLabelElement()..textContent = 'Layers:');
+        row.appendChild(
+          web.HTMLInputElement()
+            ..id = 'param-partite-layers'
+            ..type = 'text'
+            ..value = '3, 3'
+            ..placeholder = 'e.g. 3, 3 or 2, 3, 2'
+            ..style.maxWidth = '120px',
+        );
+        creatorParamsContainer.appendChild(row);
+
+      case 'factory_random':
+        final row = web.HTMLDivElement()..className = 'form-row';
+        row.appendChild(web.HTMLLabelElement()..textContent = 'Nodes:');
+        row.appendChild(
+          web.HTMLInputElement()
+            ..id = 'param-random-nodes'
+            ..type = 'number'
+            ..value = '8'
+            ..min = '1'
+            ..max = '40'
+            ..style.maxWidth = '60px',
+        );
+        row.appendChild(web.HTMLLabelElement()..textContent = 'Prob:');
+        row.appendChild(
+          web.HTMLInputElement()
+            ..id = 'param-random-prob'
+            ..type = 'number'
+            ..value = '0.35'
+            ..step = '0.05'
+            ..min = '0.0'
+            ..max = '1.0'
+            ..style.maxWidth = '60px',
+        );
+        creatorParamsContainer.appendChild(row);
+
+      case 'atlas_graph':
+        final row = web.HTMLDivElement()..className = 'form-row';
+        final btnPrev = web.HTMLButtonElement()
+          ..className = 'button-outline button-small'
+          ..textContent = '←';
+        final inputNum = web.HTMLInputElement()
+          ..id = 'param-atlas-num'
+          ..type = 'number'
+          ..value = '18'
+          ..min = '0'
+          ..max = '1252'
+          ..style.textAlign = 'center'
+          ..style.maxWidth = '70px';
+        final btnNext = web.HTMLButtonElement()
+          ..className = 'button-outline button-small'
+          ..textContent = '→';
+
+        btnPrev.onClick.listen((_) {
+          final curr = int.tryParse(inputNum.value) ?? 0;
+          inputNum.value = (curr - 1).clamp(0, 1252).toString();
+          btnGenerate.click();
+        });
+        btnNext.onClick.listen((_) {
+          final curr = int.tryParse(inputNum.value) ?? 0;
+          inputNum.value = (curr + 1).clamp(0, 1252).toString();
+          btnGenerate.click();
+        });
+
+        row.appendChild(btnPrev);
+        row.appendChild(inputNum);
+        row.appendChild(btnNext);
+        creatorParamsContainer.appendChild(row);
     }
-    return 'select';
   }
 
-  void handleVertexClick(String vertex, web.MouseEvent event) {
-    final mode = getCanvasMode();
-    if (mode == 'delete') {
-      state.saveSnapshot();
-      state.primaryGraph.removeVertex(vertex);
-      if (state.selectedSource == vertex) state.selectedSource = null;
-      if (state.selectedTarget == vertex) state.selectedTarget = null;
-      state.selectedVertices.remove(vertex);
-      updateUI();
-    } else if (mode == 'add-edge') {
-      if (state.selectedSource == null) {
-        state.selectedSource = vertex;
-        updateUI();
-      } else {
-        final source = state.selectedSource!;
-        state.saveSnapshot();
-        state.primaryGraph.addEdge(source, vertex, value: 1);
-        state.selectedSource = null;
-        updateUI();
-      }
-    } else {
-      // Select mode
-      if (event.shiftKey || event.altKey) {
-        state.selectedTarget = state.selectedTarget == vertex ? null : vertex;
-      } else {
-        if (state.selectedSource == vertex) {
-          state.selectedSource = null;
-        } else if (state.selectedTarget == vertex) {
-          state.selectedTarget = null;
-        } else if (state.selectedSource == null) {
-          state.selectedSource = vertex;
-        } else if (state.selectedTarget == null) {
-          state.selectedTarget = vertex;
-        } else {
-          state.selectedSource = vertex;
-        }
-      }
-      state.selectedEdge = null;
-      updateUI();
+  selectPreset.onChange.listen((_) => updateCreatorParams());
+  updateCreatorParams();
+
+  // Unified Generate Button
+  btnGenerate.onClick.listen((_) {
+    state.saveSnapshot();
+    state.clearSelection();
+    state.activeOverlay = null;
+    player.stop();
+    playbackBar.style.display = 'none';
+    cardResults.style.display = 'none';
+
+    final preset = selectPreset.value;
+    final isDir = state.primaryGraph.isDirected;
+
+    switch (preset) {
+      case 'preset_default':
+        state.primaryGraph = GraphPresets.negativeEdges();
+        state.isWeighted = true;
+        showToast('Loaded Default Network (6 nodes)');
+      case 'preset_petersen':
+        state.primaryGraph = GraphPresets.petersen();
+        state.isWeighted = false;
+        showToast('Loaded Petersen Graph (10 nodes)');
+      case 'preset_karate':
+        state.primaryGraph = GraphPresets.karateClub();
+        state.isWeighted = false;
+        state.layoutEngine = 'neato';
+        selectLayout.value = 'neato';
+        showToast('Loaded Zachary\'s Karate Club (34 nodes)');
+      case 'preset_road':
+        state.primaryGraph = GraphPresets.roadNetwork();
+        state.isWeighted = true;
+        showToast('Loaded Swiss Road Network (8 cities)');
+      case 'preset_negative':
+        state.primaryGraph = GraphPresets.negativeEdges();
+        state.isWeighted = true;
+        showToast('Loaded Negative Edges Graph');
+      case 'preset_dag':
+        state.primaryGraph = GraphPresets.compilerDag();
+        state.isWeighted = false;
+        showToast('Loaded Compiler Task DAG (9 nodes)');
+      case 'preset_bridges':
+        state.primaryGraph = GraphPresets.bridgesAndCutVertices();
+        state.isWeighted = false;
+        showToast('Loaded Bridges & Cut Vertices Graph');
+      case 'factory_complete':
+        final n =
+            int.tryParse(
+              (web.document.querySelector(
+                    '#param-vertex-count',
+                  ) as web.HTMLInputElement?)?.value ??
+                  '',
+            ) ??
+            5;
+        state.primaryGraph = GraphPresets.complete(
+          vertexCount: n,
+          isDirected: isDir,
+        );
+        showToast('Generated Complete Graph K$n');
+      case 'factory_path':
+        final n =
+            int.tryParse(
+              (web.document.querySelector(
+                    '#param-vertex-count',
+                  ) as web.HTMLInputElement?)?.value ??
+                  '',
+            ) ??
+            6;
+        state.primaryGraph = GraphPresets.path(
+          vertexCount: n,
+          isDirected: isDir,
+        );
+        showToast('Generated Path Graph P$n');
+      case 'factory_ring':
+        final n =
+            int.tryParse(
+              (web.document.querySelector(
+                    '#param-vertex-count',
+                  ) as web.HTMLInputElement?)?.value ??
+                  '',
+            ) ??
+            6;
+        state.primaryGraph = GraphPresets.ring(
+          vertexCount: n,
+          isDirected: isDir,
+        );
+        showToast('Generated Ring Graph C$n');
+      case 'factory_star':
+        final n =
+            int.tryParse(
+              (web.document.querySelector(
+                    '#param-vertex-count',
+                  ) as web.HTMLInputElement?)?.value ??
+                  '',
+            ) ??
+            6;
+        state.primaryGraph = GraphPresets.star(
+          vertexCount: n,
+          isDirected: isDir,
+        );
+        showToast('Generated Star Graph S$n');
+      case 'factory_tree':
+        final nodes =
+            int.tryParse(
+              (web.document.querySelector(
+                    '#param-tree-nodes',
+                  ) as web.HTMLInputElement?)?.value ??
+                  '',
+            ) ??
+            10;
+        final arity =
+            int.tryParse(
+              (web.document.querySelector(
+                    '#param-tree-arity',
+                  ) as web.HTMLInputElement?)?.value ??
+                  '',
+            ) ??
+            2;
+        state.primaryGraph = GraphPresets.tree(
+          vertexCount: nodes,
+          isDirected: isDir,
+          arity: arity,
+        );
+        showToast('Generated $arity-ary Tree ($nodes nodes)');
+      case 'factory_partite':
+        final raw =
+            (web.document.querySelector(
+              '#param-partite-layers',
+            ) as web.HTMLInputElement?)?.value ??
+            '3, 3';
+        final layers = raw
+            .split(',')
+            .map((s) => int.tryParse(s.trim()) ?? 2)
+            .toList();
+        state.primaryGraph = GraphPresets.partite(
+          vertexCounts: layers,
+          isDirected: isDir,
+        );
+        showToast('Generated Partite Graph [${layers.join(", ")}]');
+      case 'factory_random':
+        final n =
+            int.tryParse(
+              (web.document.querySelector(
+                    '#param-random-nodes',
+                  ) as web.HTMLInputElement?)?.value ??
+                  '',
+            ) ??
+            8;
+        final p =
+            double.tryParse(
+              (web.document.querySelector(
+                    '#param-random-prob',
+                  ) as web.HTMLInputElement?)?.value ??
+                  '',
+            ) ??
+            0.35;
+        state.primaryGraph = GraphPresets.randomErdosRenyi(
+          vertexCount: n,
+          probability: p,
+          isDirected: isDir,
+        );
+        showToast('Generated Erdős–Rényi Graph G($n, $p)');
+      case 'atlas_graph':
+        final num =
+            int.tryParse(
+              (web.document.querySelector(
+                    '#param-atlas-num',
+                  ) as web.HTMLInputElement?)?.value ??
+                  '',
+            ) ??
+            18;
+        state.primaryGraph = GraphPresets.atlas(num);
+        state.isWeighted = false;
+        showToast('Loaded Read-Wilson Atlas Graph #$num');
     }
-  }
 
-  void handleEdgeClick(String source, String target, web.MouseEvent event) {
-    final mode = getCanvasMode();
-    if (mode == 'delete') {
-      state.saveSnapshot();
-      state.primaryGraph.removeEdge(source, target);
-      if (state.selectedEdge == (source, target)) {
-        state.selectedEdge = null;
-      }
-      updateUI();
-    } else {
-      state.selectedEdge = state.selectedEdge == (source, target)
-          ? null
-          : (source, target);
-      updateUI();
-    }
-  }
-
-  void handleBackgroundClick(web.MouseEvent event) {
-    final mode = getCanvasMode();
-    if (mode == 'add-node') {
-      state.saveSnapshot();
-      var idx = state.primaryGraph.vertices.length;
-      var name = String.fromCharCode(65 + idx % 26);
-      while (state.primaryGraph.containsVertex(name)) {
-        idx++;
-        name = idx < 26 ? String.fromCharCode(65 + idx) : 'V$idx';
-      }
-      state.primaryGraph.addVertex(name);
-      updateUI();
-    }
-  }
-
-  renderer = GraphRenderer(
-    container: canvasContainer,
-    onVertexClick: handleVertexClick,
-    onEdgeClick: handleEdgeClick,
-    onBackgroundClick: handleBackgroundClick,
-  );
-
-  await renderer.initialize();
-
-  // Header listeners
-  btnDirected.onClick.listen((_) {
-    state.setDirected(!state.primaryGraph.isDirected);
     updateUI();
   });
 
+  // Non-destructive directedness toggle
+  btnDirected.onClick.listen((_) {
+    final willBeDirected = !state.primaryGraph.isDirected;
+    state.saveSnapshot();
+
+    final newGraph = Graph<String, num>(isDirected: willBeDirected);
+    for (final v in state.primaryGraph.vertices) {
+      newGraph.addVertex(v);
+    }
+
+    if (willBeDirected) {
+      // Convert undirected to directed: make bidirectional edges
+      for (final e in state.primaryGraph.edges) {
+        newGraph.addEdge(e.source, e.target, value: e.value);
+        newGraph.addEdge(e.target, e.source, value: e.value);
+      }
+      showToast('Converted to Directed mode (bidirectional edges preserved)');
+    } else {
+      // Convert directed to undirected: merge opposing edges
+      for (final e in state.primaryGraph.edges) {
+        newGraph.addEdge(e.source, e.target, value: e.value);
+      }
+      showToast('Converted to Undirected mode (merged edges)');
+    }
+
+    state.primaryGraph = newGraph;
+    state.clearSelection();
+    updateUI();
+  });
+
+  // Weighted display toggle (non-destructive)
   btnWeighted.onClick.listen((_) {
     state.isWeighted = !state.isWeighted;
+    showToast(
+      state.isWeighted ? 'Edge weights displayed' : 'Edge weights hidden',
+    );
     updateUI();
   });
 
@@ -352,30 +831,33 @@ void main() async {
 
   btnUndo.onClick.listen((_) {
     state.undo();
+    showToast('Undo action');
     updateUI();
   });
 
   btnRedo.onClick.listen((_) {
     state.redo();
+    showToast('Redo action');
     updateUI();
   });
 
   btnClear.onClick.listen((_) {
     state.saveSnapshot();
-    final newGraph = Graph<String, num>(
+    state.primaryGraph = Graph<String, num>(
       isDirected: state.primaryGraph.isDirected,
     );
-    state.primaryGraph = newGraph;
     state.clearSelection();
     state.activeOverlay = null;
     player.stop();
     playbackBar.style.display = 'none';
     cardResults.style.display = 'none';
+    showToast('Cleared canvas');
     updateUI();
   });
 
   btnClearSelection.onClick.listen((_) {
     state.clearSelection();
+    edgeDrawingSource = null;
     updateUI();
   });
 
@@ -384,17 +866,23 @@ void main() async {
   btnZoomOut.onClick.listen((_) => renderer.zoomOut());
   btnZoomFit.onClick.listen((_) => renderer.resetView());
 
-  // Quick edit listeners
+  // Quick edit: Add vertex
   btnAddVertex.onClick.listen((_) {
     final name = inputNewVertex.value.trim();
     if (name.isNotEmpty) {
+      if (state.primaryGraph.containsVertex(name)) {
+        showToast('Vertex "$name" already exists', isWarning: true);
+        return;
+      }
       state.saveSnapshot();
       state.primaryGraph.addVertex(name);
       inputNewVertex.value = '';
+      showToast('Added node "$name"');
       updateUI();
     }
   });
 
+  // Quick edit: Add edge
   btnAddEdge.onClick.listen((_) {
     final u = inputEdgeU.value.trim();
     final v = inputEdgeV.value.trim();
@@ -402,10 +890,12 @@ void main() async {
     if (u.isNotEmpty && v.isNotEmpty) {
       state.saveSnapshot();
       state.primaryGraph.addEdge(u, v, value: w);
+      showToast('Connected edge $u → $v (weight $w)');
       updateUI();
     }
   });
 
+  // Delete selected nodes or edges
   btnRemoveSelected.onClick.listen((_) {
     state.saveSnapshot();
     var changed = false;
@@ -414,17 +904,21 @@ void main() async {
         state.selectedEdge!.$1,
         state.selectedEdge!.$2,
       );
+      showToast(
+        'Deleted edge (${state.selectedEdge!.$1}, ${state.selectedEdge!.$2})',
+      );
       state.selectedEdge = null;
       changed = true;
     }
-    if (state.selectedSource != null) {
-      state.primaryGraph.removeVertex(state.selectedSource!);
+    if (state.selectedVertices.isNotEmpty) {
+      final count = state.selectedVertices.length;
+      for (final v in state.selectedVertices.toList()) {
+        state.primaryGraph.removeVertex(v);
+      }
+      state.selectedVertices.clear();
       state.selectedSource = null;
-      changed = true;
-    }
-    if (state.selectedTarget != null) {
-      state.primaryGraph.removeVertex(state.selectedTarget!);
       state.selectedTarget = null;
+      showToast('Deleted $count node(s)');
       changed = true;
     }
     if (changed) {
@@ -432,153 +926,97 @@ void main() async {
     }
   });
 
-  // Preset loader
-  void loadPreset(String key) {
-    state.saveSnapshot();
-    state.clearSelection();
-    state.activeOverlay = null;
-    player.stop();
-    playbackBar.style.display = 'none';
-    cardResults.style.display = 'none';
-
-    final n = int.tryParse(inputVertexCount.value.trim()) ?? 6;
-    final isDir = state.primaryGraph.isDirected;
-
-    switch (key) {
-      case 'preset_default':
-        state.primaryGraph = GraphPresets.negativeEdges();
-        state.isWeighted = true;
-      case 'preset_petersen':
-        state.primaryGraph = GraphPresets.petersen();
-        state.isWeighted = false;
-      case 'preset_karate':
-        state.primaryGraph = GraphPresets.karateClub();
-        state.isWeighted = false;
-        state.layoutEngine = 'neato';
-        selectLayout.value = 'neato';
-      case 'preset_road':
-        state.primaryGraph = GraphPresets.roadNetwork();
-        state.isWeighted = true;
-      case 'preset_negative':
-        state.primaryGraph = GraphPresets.negativeEdges();
-        state.isWeighted = true;
-      case 'preset_dag':
-        state.primaryGraph = GraphPresets.compilerDag();
-        state.isWeighted = false;
-      case 'preset_bridges':
-        state.primaryGraph = GraphPresets.bridgesAndCutVertices();
-        state.isWeighted = false;
-      case 'factory_complete':
-        state.primaryGraph = GraphPresets.complete(
-          vertexCount: n,
-          isDirected: isDir,
-        );
-      case 'factory_path':
-        state.primaryGraph = GraphPresets.path(
-          vertexCount: n,
-          isDirected: isDir,
-        );
-      case 'factory_ring':
-        state.primaryGraph = GraphPresets.ring(
-          vertexCount: n,
-          isDirected: isDir,
-        );
-      case 'factory_star':
-        state.primaryGraph = GraphPresets.star(
-          vertexCount: n,
-          isDirected: isDir,
-        );
-      case 'factory_tree':
-        state.primaryGraph = GraphPresets.tree(
-          vertexCount: n,
-          isDirected: isDir,
-        );
-      case 'factory_partite':
-        state.primaryGraph = GraphPresets.partite(
-          vertexCounts: [3, 3],
-          isDirected: isDir,
-        );
-      case 'factory_random':
-        state.primaryGraph = GraphPresets.randomErdosRenyi(
-          vertexCount: n,
-          probability: 0.35,
-          isDirected: isDir,
-        );
+  // Keyboard shortcut for deleting (Backspace / Delete)
+  web.window.onkeydown = ((web.KeyboardEvent event) {
+    final target = event.target;
+    if (target != null &&
+        (target.isA<web.HTMLInputElement>() ||
+            target.isA<web.HTMLTextAreaElement>())) {
+      return;
     }
-    updateUI();
-  }
+    if (event.key == 'Backspace' || event.key == 'Delete') {
+      btnRemoveSelected.click();
+    } else if ((event.ctrlKey || event.metaKey) && event.key == 'z') {
+      if (event.shiftKey) {
+        btnRedo.click();
+      } else {
+        btnUndo.click();
+      }
+    }
+  }).toJS;
 
-  selectPreset.onChange.listen((_) => loadPreset(selectPreset.value));
-  btnGenerate.onClick.listen((_) => loadPreset(selectPreset.value));
-
-  // Atlas loader
-  void loadAtlasNumber(int num) {
-    state.saveSnapshot();
-    state.clearSelection();
-    state.activeOverlay = null;
-    player.stop();
-    playbackBar.style.display = 'none';
-    cardResults.style.display = 'none';
-    state.primaryGraph = GraphPresets.atlas(num);
-    state.isWeighted = false;
-    inputAtlasNum.value = num.toString();
-    updateUI();
-  }
-
-  btnAtlasLoad.onClick.listen((_) {
-    final num = int.tryParse(inputAtlasNum.value.trim()) ?? 0;
-    loadAtlasNumber(num);
-  });
-
-  btnAtlasPrev.onClick.listen((_) {
-    final curr = int.tryParse(inputAtlasNum.value.trim()) ?? 0;
-    loadAtlasNumber((curr - 1).clamp(0, 1252));
-  });
-
-  btnAtlasNext.onClick.listen((_) {
-    final curr = int.tryParse(inputAtlasNum.value.trim()) ?? 0;
-    loadAtlasNumber((curr + 1).clamp(0, 1252));
-  });
-
-  // Transformations
+  // Transformations with explicit feedback
   btnReverse.onClick.listen((_) {
-    if (!state.primaryGraph.isDirected) return;
+    if (!state.primaryGraph.isDirected) {
+      showToast('Cannot reverse: Graph is undirected', isWarning: true);
+      return;
+    }
     state.saveSnapshot();
     state.primaryGraph = state.primaryGraph.reversed.copy();
+    showToast('Reversed all directed edges');
     updateUI();
   });
 
   btnComplement.onClick.listen((_) {
     state.saveSnapshot();
-    state.primaryGraph = state.primaryGraph.complement();
+    state.primaryGraph = state.primaryGraph.complement(edge: (u, v) => 1);
+    showToast('Inverted graph connectivity (complement)');
     updateUI();
   });
 
   btnTransClosure.onClick.listen((_) {
-    if (!state.primaryGraph.isDirected) return;
+    if (!state.primaryGraph.isDirected) {
+      showToast(
+        'Transitive closure requires a directed graph',
+        isWarning: true,
+      );
+      return;
+    }
     state.saveSnapshot();
     state.primaryGraph = state.primaryGraph.transitiveClosure().map(
       edge: (_) => 1,
     );
+    showToast('Computed transitive closure (added direct edges)');
     updateUI();
   });
 
   btnTransReduction.onClick.listen((_) {
-    if (!state.primaryGraph.isDirected) return;
+    if (!state.primaryGraph.isDirected) {
+      showToast(
+        'Transitive reduction requires a directed DAG',
+        isWarning: true,
+      );
+      return;
+    }
     try {
       state.saveSnapshot();
       state.primaryGraph = state.primaryGraph.transitiveReduction();
+      showToast('Computed transitive reduction (removed redundant edges)');
       updateUI();
     } catch (_) {
-      // e.g. Graph contains cycle
+      showToast(
+        'Cannot reduce: Graph contains a cycle (must be a DAG)',
+        isWarning: true,
+      );
     }
   });
 
   btnKCore.onClick.listen((_) {
-    if (state.primaryGraph.isDirected) return;
+    if (state.primaryGraph.isDirected) {
+      showToast(
+        'k-Core is defined for undirected graphs. Switch to Undirected first.',
+        isWarning: true,
+      );
+      return;
+    }
     final k = int.tryParse(inputKCoreK.value.trim()) ?? 2;
     state.saveSnapshot();
+    final before = state.primaryGraph.vertices.length;
     state.primaryGraph = state.primaryGraph.kCore(k);
+    final after = state.primaryGraph.vertices.length;
+    showToast(
+      'Extracted $k-Core ($after nodes remaining, removed ${before - after})',
+    );
     updateUI();
   });
 
@@ -716,6 +1154,23 @@ void main() async {
     metricsContainer.appendChild(table);
   }
 
+  void computeAndRenderMetrics() {
+    final result = AlgorithmsRunner.run('all_centralities', state);
+    if (result.metricsTable != null) {
+      renderMetricsTable(result.metricsTable!);
+    }
+  }
+
+  void computeAndRenderMatrix() {
+    final result = AlgorithmsRunner.run('floyd_warshall', state);
+    if (result.distanceMatrix != null) {
+      renderDistanceMatrix(result.distanceMatrix!);
+    }
+  }
+
+  btnRefreshMetrics?.onClick.listen((_) => computeAndRenderMetrics());
+  btnRefreshMatrix?.onClick.listen((_) => computeAndRenderMatrix());
+
   // Algorithms & Traversals setup
   void updateAlgorithmOptions() {
     selectAlgorithm.textContent = '';
@@ -841,15 +1296,18 @@ void main() async {
         state.primaryGraph = g;
       }
       ioStatus.textContent = 'Import successful!';
+      showToast('Imported graph successfully');
       updateUI();
     } catch (e) {
       ioStatus.textContent = 'Import error: $e';
+      showToast('Import error: $e', isWarning: true);
     }
   });
 
   btnExportCopy.onClick.listen((_) {
     web.window.navigator.clipboard.writeText(textareaIo.value);
     ioStatus.textContent = 'Copied to clipboard!';
+    showToast('Copied text to clipboard');
   });
 
   btnExportShare.onClick.listen((_) {
@@ -858,6 +1316,7 @@ void main() async {
         '${web.window.location.origin}${web.window.location.pathname}#$hash';
     web.window.navigator.clipboard.writeText(fullUrl);
     ioStatus.textContent = 'Shareable URL copied to clipboard!';
+    showToast('Copied shareable link');
   });
 
   btnDownloadJson.onClick.listen((_) {
@@ -912,6 +1371,13 @@ void main() async {
         final pane = panes.item(k) as web.HTMLElement?;
         if (pane == null) continue;
         pane.style.display = pane.id == targetId ? 'block' : 'none';
+      }
+
+      // Auto-compute when opening metrics or matrix tabs
+      if (targetId == 'tab-metrics') {
+        computeAndRenderMetrics();
+      } else if (targetId == 'tab-matrix') {
+        computeAndRenderMatrix();
       }
     });
   }

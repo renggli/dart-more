@@ -19,30 +19,32 @@ typedef EdgeCallback = void Function(
 final class GraphRenderer {
   new({
     required this.container,
+    required this.transformLayer,
     required this.onVertexClick,
     required this.onEdgeClick,
     required this.onBackgroundClick,
-  });
+  }) {
+    _initViewportControls();
+  }
 
   final web.HTMLElement container;
+  final web.HTMLElement transformLayer;
   final VertexCallback onVertexClick;
   final EdgeCallback onEdgeClick;
   final void Function(web.MouseEvent event) onBackgroundClick;
 
   VizInstance? _viz;
   web.SVGSVGElement? _currentSvg;
-  web.SVGGElement? _zoomGroup;
 
-  /// The active SVG element rendered in the viewport.
-  web.SVGSVGElement? get currentSvg => _currentSvg;
-
-  // Viewport transform state
+  // Viewport CSS transform state
   double _scale = 1.0;
   double _panX = 0.0;
   double _panY = 0.0;
   bool _isPanning = false;
   double _startX = 0.0;
   double _startY = 0.0;
+
+  web.SVGSVGElement? get currentSvg => _currentSvg;
 
   static const List<String> _palette = [
     '#93c5fd', // Light Blue
@@ -94,10 +96,13 @@ final class GraphRenderer {
       graphAttributes: {
         'layout': state.layoutEngine,
         if (state.layoutEngine == 'dot') 'rankdir': state.rankDir,
+        'overlap': 'false',
+        'splines': 'true',
+        'sep': '+25',
+        'nodesep': '0.6',
+        'ranksep': '0.7',
         'bgcolor': 'transparent',
         'pad': '0.3',
-        'nodesep': '0.4',
-        'ranksep': '0.5',
       },
       vertexLabel: (v) {
         var label = v;
@@ -115,19 +120,25 @@ final class GraphRenderer {
         return label;
       },
       vertexAttributes: (v) {
+        final isSelected =
+            state.selectedVertices.contains(v) ||
+            state.selectedSource == v ||
+            state.selectedTarget == v;
+
         final attrs = <String, String>{
           'id': 'node_$v',
           'shape': 'circle',
           'style': 'filled',
           'fontname': 'Inter, system-ui, sans-serif',
           'fontsize': '12',
+          'margin': '0.12',
           'color': '#64748b',
           'fillcolor': '#f8fafc',
           'fontcolor': '#0f172a',
-          'penwidth': '1.5',
+          'penwidth': isSelected ? '3.5' : '1.5',
         };
 
-        // Base selection border styling
+        // Selection border styling
         if (state.selectedSource == v) {
           attrs['color'] = '#16a34a'; // Green ring
           attrs['penwidth'] = '3.5';
@@ -136,7 +147,7 @@ final class GraphRenderer {
           attrs['penwidth'] = '3.5';
         } else if (state.selectedVertices.contains(v)) {
           attrs['color'] = '#2563eb'; // Blue ring
-          attrs['penwidth'] = '2.5';
+          attrs['penwidth'] = '3.5';
         }
 
         // Overlay specific styling
@@ -149,7 +160,7 @@ final class GraphRenderer {
           if (isActiveStep) {
             attrs['fillcolor'] = '#2563eb';
             attrs['fontcolor'] = '#ffffff';
-            attrs['penwidth'] = '3';
+            attrs['penwidth'] = '3.5';
           } else if (activePathSet.contains(v)) {
             attrs['fillcolor'] = '#dbeafe';
             attrs['color'] = '#3b82f6';
@@ -283,27 +294,11 @@ final class GraphRenderer {
         VizRenderOptions(engine: state.layoutEngine),
       );
 
-      // Setup container and SVG attributes
-      svg.setAttribute('width', '100%');
-      svg.setAttribute('height', '100%');
-      svg.style.cursor = 'grab';
+      svg.style.width = '100%';
+      svg.style.height = '100%';
+      svg.style.overflow = 'visible';
 
-      // Setup zoom group wrapper
-      final zoomGroup = web.document.createElementNS(
-        'http://www.w3.org/2000/svg',
-        'g',
-      ) as web.SVGGElement;
-      zoomGroup.id = 'viewport-zoom-group';
-
-      // Move all child nodes of SVG into the zoom group
-      while (svg.firstChild != null) {
-        zoomGroup.appendChild(svg.firstChild!);
-      }
-      svg.appendChild(zoomGroup);
-      _zoomGroup = zoomGroup;
-
-      _updateTransform();
-      _attachEventListeners(svg, state);
+      _attachSvgListeners(svg);
 
       container.replaceChildren(svg);
       _currentSvg = svg;
@@ -316,11 +311,41 @@ final class GraphRenderer {
     }
   }
 
-  void _attachEventListeners(web.SVGSVGElement svg, AppState state) {
-    // Zoom via wheel
-    svg.onwheel = (web.WheelEvent event) {
+  void _initViewportControls() {
+    final viewport = (container.parentElement ?? container) as web.HTMLElement;
+
+    // Smooth CSS-pixel panning
+    viewport.onmousedown = ((web.MouseEvent event) {
+      final target = event.target as web.Element?;
+      if (target != null &&
+          (target.closest('.node') != null ||
+              target.closest('.edge') != null)) {
+        return;
+      }
+      _isPanning = true;
+      _startX = event.clientX - _panX;
+      _startY = event.clientY - _panY;
+      viewport.style.cursor = 'grabbing';
+    }).toJS;
+
+    web.window.onmousemove = ((web.MouseEvent event) {
+      if (!_isPanning) return;
+      _panX = event.clientX - _startX;
+      _panY = event.clientY - _startY;
+      _updateTransform();
+    }).toJS;
+
+    web.window.onmouseup = ((web.MouseEvent event) {
+      if (_isPanning) {
+        _isPanning = false;
+        viewport.style.cursor = 'default';
+      }
+    }).toJS;
+
+    // Smooth CSS-pixel zooming centered on cursor
+    viewport.onwheel = ((web.WheelEvent event) {
       event.preventDefault();
-      final rect = svg.getBoundingClientRect();
+      final rect = viewport.getBoundingClientRect();
       final mouseX = event.clientX - rect.left;
       final mouseY = event.clientY - rect.top;
 
@@ -332,47 +357,19 @@ final class GraphRenderer {
       _scale = newScale;
 
       _updateTransform();
-    }.toJS;
+    }).toJS;
 
-    // Pan via drag
-    svg.onmousedown = (web.MouseEvent event) {
-      // Don't drag if clicking directly on a node or edge
+    viewport.onclick = ((web.MouseEvent event) {
       final target = event.target as web.Element?;
       if (target != null &&
-          (target.closest('.node') != null ||
-              target.closest('.edge') != null)) {
-        return;
-      }
-      _isPanning = true;
-      _startX = event.clientX - _panX;
-      _startY = event.clientY - _panY;
-      svg.style.cursor = 'grabbing';
-    }.toJS;
-
-    web.window.onmousemove = (web.MouseEvent event) {
-      if (!_isPanning) return;
-      _panX = event.clientX - _startX;
-      _panY = event.clientY - _startY;
-      _updateTransform();
-    }.toJS;
-
-    web.window.onmouseup = (web.MouseEvent event) {
-      if (_isPanning) {
-        _isPanning = false;
-        svg.style.cursor = 'grab';
-      }
-    }.toJS;
-
-    // Background click
-    svg.onclick = (web.MouseEvent event) {
-      final target = event.target as web.Element?;
-      if (target != null &&
-          (target.closest('.node') == null &&
-              target.closest('.edge') == null)) {
+          target.closest('.node') == null &&
+          target.closest('.edge') == null) {
         onBackgroundClick(event);
       }
-    }.toJS;
+    }).toJS;
+  }
 
+  void _attachSvgListeners(web.SVGSVGElement svg) {
     // Attach click events on nodes
     final nodes = svg.querySelectorAll('.node');
     for (var i = 0; i < nodes.length; i++) {
@@ -380,10 +377,10 @@ final class GraphRenderer {
       if (node == null) continue;
       final title = node.querySelector('title')?.textContent?.trim() ?? '';
       node.style.cursor = 'pointer';
-      node.onclick = (web.MouseEvent event) {
+      node.onclick = ((web.MouseEvent event) {
         event.stopPropagation();
         onVertexClick(title, event);
-      }.toJS;
+      }).toJS;
     }
 
     // Attach click events on edges
@@ -392,7 +389,6 @@ final class GraphRenderer {
       final edge = edges.item(i) as web.SVGGElement?;
       if (edge == null) continue;
       final title = edge.querySelector('title')?.textContent?.trim() ?? '';
-      // Graphviz title format: "A->B" or "A--B"
       final parts = title.contains('->')
           ? title.split('->')
           : title.split('--');
@@ -400,21 +396,17 @@ final class GraphRenderer {
         final source = parts[0].trim();
         final target = parts[1].trim();
         edge.style.cursor = 'pointer';
-        edge.onclick = (web.MouseEvent event) {
+        edge.onclick = ((web.MouseEvent event) {
           event.stopPropagation();
           onEdgeClick(source, target, event);
-        }.toJS;
+        }).toJS;
       }
     }
   }
 
   void _updateTransform() {
-    if (_zoomGroup != null) {
-      _zoomGroup!.setAttribute(
-        'transform',
-        'translate($_panX, $_panY) scale($_scale)',
-      );
-    }
+    transformLayer.style.transform =
+        'translate(${_panX}px, ${_panY}px) scale($_scale)';
   }
 
   /// Centers and fits the graph view to the viewport.

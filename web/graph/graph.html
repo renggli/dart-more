@@ -15,11 +15,18 @@
     </div>
 
     <div class="header-controls">
+      <!-- Graph Type & Weights Controls -->
       <div class="header-group">
-        <button id="btn-directed" class="toggle-btn active button-small" title="Toggle Directed / Undirected">Directed</button>
-        <button id="btn-weighted" class="toggle-btn active button-small" title="Toggle Edge Weights">Weighted</button>
+        <label>Type:</label>
+        <button id="btn-directed" class="toggle-btn active button-small" title="Toggle Directed vs Undirected graph mode">Directed</button>
       </div>
 
+      <div class="header-group">
+        <label>Weights:</label>
+        <button id="btn-weighted" class="toggle-btn active button-small" title="Toggle visibility of edge weights">Show Weights</button>
+      </div>
+
+      <!-- Layout Engine & Direction -->
       <div class="header-group">
         <label for="select-layout">Layout:</label>
         <select id="select-layout">
@@ -43,10 +50,11 @@
         </select>
       </div>
 
+      <!-- History & Reset -->
       <div class="header-group">
         <button id="btn-undo" class="button-outline button-small" title="Undo (Ctrl+Z)" disabled>Undo</button>
         <button id="btn-redo" class="button-outline button-small" title="Redo (Ctrl+Shift+Z)" disabled>Redo</button>
-        <button id="btn-clear" class="button-outline button-small" title="Clear Canvas">Clear</button>
+        <button id="btn-clear" class="button-outline button-small" title="Clear All Vertices and Edges">Clear</button>
       </div>
 
       <div class="header-group">
@@ -55,69 +63,68 @@
     </div>
   </header>
 
+  <!-- Notification Banner -->
+  <div id="notification-banner" class="notification-banner" style="display: none;"></div>
+
   <!-- Main Container -->
   <div class="app-container">
     <!-- Left Sidebar: Creation, Editing, Transformations -->
     <aside class="sidebar left-sidebar">
-      <!-- Graph Generator -->
+      <!-- Unified Creator & Presets -->
       <div class="card">
         <h3>Create & Presets</h3>
-        <label for="select-preset">Preset / Generator:</label>
+        <label for="select-preset">Graph Preset / Generator:</label>
         <select id="select-preset">
-          <optgroup label="Curated Presets">
-            <option value="preset_default" selected>Flow / Path Demo</option>
-            <option value="preset_petersen">Petersen Graph</option>
-            <option value="preset_karate">Karate Club</option>
-            <option value="preset_road">Weighted Road Network</option>
-            <option value="preset_negative">Negative Edges Graph</option>
-            <option value="preset_dag">Compiler Task DAG</option>
-            <option value="preset_bridges">Bridges & Articulation</option>
+          <optgroup label="Curated Networks">
+            <option value="preset_default" selected>Flow / Path Demo (6 nodes)</option>
+            <option value="preset_petersen">Petersen Graph (10 nodes)</option>
+            <option value="preset_karate">Karate Club (34 nodes)</option>
+            <option value="preset_road">Road Network (8 cities)</option>
+            <option value="preset_negative">Negative Edges (5 nodes)</option>
+            <option value="preset_dag">Compiler Task DAG (9 nodes)</option>
+            <option value="preset_bridges">Bridges & Articulation (8 nodes)</option>
           </optgroup>
           <optgroup label="Standard Topologies">
             <option value="factory_complete">Complete Graph (Kn)</option>
             <option value="factory_path">Path Graph (Pn)</option>
-            <option value="factory_ring">Ring Graph (Cn)</option>
+            <option value="factory_ring">Ring / Cycle (Cn)</option>
             <option value="factory_star">Star Graph (Sn)</option>
-            <option value="factory_tree">Complete Tree</option>
-            <option value="factory_partite">Partite Graph</option>
+            <option value="factory_tree">m-ary Tree</option>
+            <option value="factory_partite">Partite Graph (Layers)</option>
             <option value="factory_random">Random (Erdős–Rényi)</option>
+          </optgroup>
+          <optgroup label="Atlas of Graphs">
+            <option value="atlas_graph">Read-Wilson Atlas (0..1252)</option>
           </optgroup>
         </select>
 
-        <div id="factory-params">
-          <div class="form-row">
-            <input type="number" id="input-vertex-count" placeholder="Nodes" value="6" min="1" max="50">
-            <button id="btn-generate" class="button-small">Generate</button>
-          </div>
+        <!-- Dynamic Parameters for Selected Generator -->
+        <div id="creator-params-container" style="margin-top: 4px;">
+          <!-- Injected dynamically based on selected preset/generator -->
         </div>
-      </div>
 
-      <!-- Atlas of Graphs Browser -->
-      <div class="card">
-        <h3>Atlas of Graphs (0..1252)</h3>
-        <div class="form-row">
-          <button id="btn-atlas-prev" class="button-outline button-small">&larr;</button>
-          <input type="number" id="input-atlas-num" value="18" min="0" max="1252" style="text-align: center;">
-          <button id="btn-atlas-next" class="button-outline button-small">&rarr;</button>
-          <button id="btn-atlas-load" class="button-small">Load</button>
-        </div>
+        <button id="btn-generate" class="button-small" style="margin-top: 6px;">Generate Graph</button>
       </div>
 
       <!-- Quick Edit -->
       <div class="card">
         <h3>Edit Graph</h3>
+        <label>Add Node:</label>
         <div class="form-row">
-          <input type="text" id="input-new-vertex" placeholder="Node name (e.g. G)">
-          <button id="btn-add-vertex" class="button-small">+ Node</button>
+          <input type="text" id="input-new-vertex" placeholder="Label (e.g. X)">
+          <button id="btn-add-vertex" class="button-small">+ Add</button>
         </div>
+
+        <label style="margin-top: 6px;">Add / Update Edge:</label>
         <div class="form-row">
-          <input type="text" id="input-edge-u" placeholder="From" style="max-width: 50px;">
+          <input type="text" id="input-edge-u" placeholder="From" style="max-width: 55px;">
           <span>&rarr;</span>
-          <input type="text" id="input-edge-v" placeholder="To" style="max-width: 50px;">
-          <input type="number" id="input-edge-weight" placeholder="W" value="1" style="max-width: 45px;">
+          <input type="text" id="input-edge-v" placeholder="To" style="max-width: 55px;">
+          <input type="number" id="input-edge-weight" placeholder="W" value="1" style="max-width: 50px;">
           <button id="btn-add-edge" class="button-small">+ Edge</button>
         </div>
-        <div class="form-row">
+
+        <div class="form-row" style="margin-top: 8px;">
           <button id="btn-remove-selected" class="button-outline button-small" style="width: 100%;">Delete Selected</button>
         </div>
       </div>
@@ -126,15 +133,15 @@
       <div class="card">
         <h3>Transformations</h3>
         <div class="form-row">
-          <button id="btn-reverse" class="button-outline button-small" title="Reverse Edge Directions">Reverse</button>
-          <button id="btn-complement" class="button-outline button-small" title="Complement Graph">Complement</button>
+          <button id="btn-reverse" class="button-outline button-small" title="Reverse Edge Directions (Directed only)">Reverse</button>
+          <button id="btn-complement" class="button-outline button-small" title="Invert edge connectivity">Complement</button>
         </div>
         <div class="form-row">
-          <button id="btn-trans-closure" class="button-outline button-small" title="Transitive Closure">Closure</button>
-          <button id="btn-trans-reduction" class="button-outline button-small" title="Transitive Reduction">Reduction</button>
+          <button id="btn-trans-closure" class="button-outline button-small" title="Add direct edges for all reachable pairs">Closure</button>
+          <button id="btn-trans-reduction" class="button-outline button-small" title="Remove transitive redundant edges in DAG">Reduction</button>
         </div>
         <div class="form-row">
-          <button id="btn-kcore" class="button-outline button-small" title="k-Core Subgraph">k-Core</button>
+          <button id="btn-kcore" class="button-outline button-small" title="Extract maximal subgraph with vertex degree &ge; k">k-Core:</button>
           <input type="number" id="input-kcore-k" value="2" min="1" max="10" style="max-width: 50px;">
         </div>
       </div>
@@ -145,28 +152,30 @@
       <!-- Toolbar -->
       <div class="canvas-toolbar">
         <div class="mode-radios">
-          <label><input type="radio" name="canvas-mode" value="select" checked> Select</label>
-          <label><input type="radio" name="canvas-mode" value="add-node"> + Node</label>
-          <label><input type="radio" name="canvas-mode" value="add-edge"> + Edge</label>
-          <label><input type="radio" name="canvas-mode" value="delete"> Delete</label>
+          <span style="font-weight: 600; font-size: 1.1rem; color: var(--text-muted); margin-right: 4px;">Tool:</span>
+          <label title="Select nodes or edges, drag to pan canvas"><input type="radio" name="canvas-mode" value="select" checked> Select</label>
+          <label title="Click surface to drop a new node"><input type="radio" name="canvas-mode" value="add-node"> + Node</label>
+          <label title="Click node A then node B to connect an edge"><input type="radio" name="canvas-mode" value="add-edge"> + Edge</label>
+          <label title="Click any node or edge to delete it"><input type="radio" name="canvas-mode" value="delete"> Delete</label>
         </div>
 
         <div class="selection-pills">
-          <span>Source: <span id="pill-source" class="pill pill-source">None</span></span>
-          <span>Target: <span id="pill-target" class="pill pill-target">None</span></span>
-          <button id="btn-clear-selection" class="button-outline button-small">Clear</button>
+          <span id="label-selection-info" style="color: var(--text-muted); font-size: 1.1rem;">No selection</span>
+          <button id="btn-clear-selection" class="button-outline button-small">Deselect</button>
         </div>
       </div>
 
-      <!-- SVG Viewport -->
+      <!-- SVG Viewport with smooth CSS transform layer -->
       <div class="viewport-container" id="viewport">
-        <div id="graph-canvas"></div>
+        <div id="viewport-transform-layer">
+          <div id="graph-canvas"></div>
+        </div>
 
         <!-- Floating Zoom Controls -->
         <div class="floating-controls">
           <button id="btn-zoom-in" title="Zoom In">+</button>
           <button id="btn-zoom-out" title="Zoom Out">&minus;</button>
-          <button id="btn-zoom-fit" title="Fit View">&#x2922;</button>
+          <button id="btn-zoom-fit" title="Reset View (Fit)">&#x2922;</button>
         </div>
       </div>
 
@@ -178,7 +187,7 @@
           <button id="btn-play-pause" class="button-small">Play</button>
           <button id="btn-play-next" class="button-outline button-small">&rang;</button>
           <button id="btn-play-last" class="button-outline button-small">&rang;&verbar;</button>
-          <span id="label-playback-step" style="font-weight: 600; margin-left: 8px;">Step 0/0</span>
+          <span id="label-playback-step" style="font-weight: 600; margin-left: 8px;">Step 0 / 0</span>
         </div>
         <div>
           <label for="select-playback-speed" style="display: inline; font-size: 1.1rem; margin-right: 4px;">Speed:</label>
@@ -190,29 +199,37 @@
         </div>
       </div>
 
-      <!-- Bottom Drawer: Metrics Table, Distance Matrix, Live DOT, Dart Code -->
+      <!-- Bottom Drawer: Live Metrics Table, Distance Matrix, Live DOT, Runnable Dart Code -->
       <div class="bottom-drawer collapsed" id="bottom-drawer">
         <div class="drawer-header" id="drawer-header">
           <div class="drawer-tabs">
-            <span class="drawer-tab active" data-tab="tab-metrics">Metrics Table</span>
-            <span class="drawer-tab" data-tab="tab-matrix">Distance Matrix</span>
+            <span class="drawer-tab active" data-tab="tab-dart">Dart Code</span>
             <span class="drawer-tab" data-tab="tab-dot">Graphviz DOT</span>
-            <span class="drawer-tab" data-tab="tab-dart">Dart Code</span>
+            <span class="drawer-tab" data-tab="tab-metrics">Metrics Table</span>
+            <span class="drawer-tab" data-tab="tab-matrix">Distance Matrix</span>
           </div>
           <span id="drawer-toggle-icon">&blacktriangle; Expand</span>
         </div>
         <div class="drawer-content">
-          <div id="tab-metrics" class="tab-pane">
-            <div id="metrics-table-container">Run a centrality or structural algorithm to view metrics.</div>
-          </div>
-          <div id="tab-matrix" class="tab-pane" style="display: none;">
-            <div id="matrix-container">Run All Shortest Paths (Floyd-Warshall) to view all-pairs distance matrix.</div>
+          <div id="tab-dart" class="tab-pane">
+            <pre id="code-dart" class="code-block"></pre>
           </div>
           <div id="tab-dot" class="tab-pane" style="display: none;">
             <pre id="code-dot" class="code-block"></pre>
           </div>
-          <div id="tab-dart" class="tab-pane" style="display: none;">
-            <pre id="code-dart" class="code-block"></pre>
+          <div id="tab-metrics" class="tab-pane" style="display: none;">
+            <div style="margin-bottom: 6px;">
+              <button id="btn-refresh-metrics" class="button-small">🔄 Refresh Metrics</button>
+              <span style="color: var(--text-muted); font-size: 1.1rem; margin-left: 8px;">Click any metric column header to color the graph heatmap by that measure.</span>
+            </div>
+            <div id="metrics-table-container">Click "Refresh Metrics" to compute centrality and structural scores for all vertices.</div>
+          </div>
+          <div id="tab-matrix" class="tab-pane" style="display: none;">
+            <div style="margin-bottom: 6px;">
+              <button id="btn-refresh-matrix" class="button-small">🔄 Compute All-Pairs Paths</button>
+              <span style="color: var(--text-muted); font-size: 1.1rem; margin-left: 8px;">Click any cell (u, v) to highlight the shortest path on the canvas.</span>
+            </div>
+            <div id="matrix-container">Click "Compute All-Pairs Paths" to calculate the Floyd-Warshall distance matrix.</div>
           </div>
         </div>
       </div>
@@ -237,12 +254,12 @@
           <option value="traversal">10. Traversals & Random Walk</option>
         </select>
 
-        <label for="select-algorithm">Algorithm:</label>
+        <label for="select-algorithm" style="margin-top: 4px;">Algorithm:</label>
         <select id="select-algorithm">
           <!-- Dynamic options loaded based on category -->
         </select>
 
-        <div id="algorithm-params">
+        <div id="algorithm-params" style="margin-top: 4px;">
           <!-- Dynamic parameter inputs for selected algorithm -->
         </div>
 
