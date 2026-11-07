@@ -7,6 +7,7 @@ import 'algorithms/betweenness_centrality.dart' as betweenness_centrality;
 import 'algorithms/biconnected.dart' as biconnected;
 import 'algorithms/bipartite_check.dart' as bipartite_check;
 import 'algorithms/bipartite_matching.dart' as bipartite_matching;
+import 'algorithms/blossom_matching.dart' as blossom_matching;
 import 'algorithms/bron_kerbosch_cliques.dart' as bron_kerbosch_cliques;
 import 'algorithms/connectivity.dart' as connectivity;
 import 'algorithms/cycle_check.dart' as cycle_check;
@@ -597,6 +598,19 @@ extension AlgorithmsGraphExtension<V, E> on Graph<V, E> {
     } on ArgumentError catch (e) {
       throw GraphError(this, 'graph', e.message);
     }
+  }
+
+  /// Computes a maximum cardinality matching of this undirected graph using
+  /// Edmonds' Blossom algorithm.
+  ///
+  /// Works on general undirected graphs, including non-bipartite graphs.
+  Map<V, V> maximumMatching({StorageStrategy<V>? vertexStrategy}) {
+    GraphError.checkNotDirected(this);
+    return blossom_matching.maximumMatching<V>(
+      vertices: vertices,
+      neighboursOf: neighboursOf,
+      vertexStrategy: vertexStrategy ?? this.vertexStrategy,
+    );
   }
 
   /// Computes the minimum vertex cover of this undirected bipartite graph.

@@ -69,7 +69,7 @@ All graph algorithms below must follow the project's decoupled architecture:
        - Return symmetric `Map<V, V>` containing matched pairs $(u \mapsto w, w \mapsto u)$, matching the return format of `bipartiteMatching`.
     2. Expose `weightedBipartiteMatching` on `AlgorithmsGraphExtension`.
 
-- [ ] **General Graph Maximum Matching (Edmonds' Blossom Algorithm)**
+- [x] **General Graph Maximum Matching (Edmonds' Blossom Algorithm)**
   - **Files**: `lib/src/graph/algorithms/blossom_matching.dart`, `lib/src/graph/algorithms.dart`, `lib/graph.dart`
   - **Tests**: `test/graph/algorithms/blossom_matching_test.dart`
   - **Design & Instructions**:

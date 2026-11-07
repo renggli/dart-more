@@ -13,6 +13,7 @@ export 'src/graph/algorithms/bipartite_matching.dart'
         maximumIndependentSet,
         minimumVertexCover,
         weightedBipartiteMatching;
+export 'src/graph/algorithms/blossom_matching.dart' show maximumMatching;
 export 'src/graph/algorithms/bron_kerbosch_cliques.dart'
     show bronKerboschCliques;
 export 'src/graph/algorithms/connectivity.dart'
