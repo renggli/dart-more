@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Dart More — Graph Laboratory</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/milligram/1.4.1/milligram.min.css">
+  <link rel="stylesheet" href="graph.css">
+  <script src="https://cdn.jsdelivr.net/npm/@viz-js/viz@3/lib/viz-standalone.min.js"></script>
+</head>
+<body>
+  <!-- Header Toolbar -->
+  <header>
+    <div class="brand">
+      <h1>Dart More Graph</h1>
+    </div>
+
+    <div class="header-controls">
+      <div class="header-group">
+        <button id="btn-directed" class="toggle-btn active button-small" title="Toggle Directed / Undirected">Directed</button>
+        <button id="btn-weighted" class="toggle-btn active button-small" title="Toggle Edge Weights">Weighted</button>
+      </div>
+
+      <div class="header-group">
+        <label for="select-layout">Layout:</label>
+        <select id="select-layout">
+          <option value="dot" selected>dot (Hierarchical)</option>
+          <option value="neato">neato (Spring / Energy)</option>
+          <option value="fdp">fdp (Force-Directed)</option>
+          <option value="sfdp">sfdp (Multiscale Force)</option>
+          <option value="twopi">twopi (Radial)</option>
+          <option value="circo">circo (Circular)</option>
+          <option value="osage">osage (Array / Clustered)</option>
+        </select>
+      </div>
+
+      <div class="header-group" id="group-rankdir">
+        <label for="select-rankdir">Dir:</label>
+        <select id="select-rankdir">
+          <option value="LR" selected>Left &rarr; Right</option>
+          <option value="TB">Top &rarr; Bottom</option>
+          <option value="RL">Right &rarr; Left</option>
+          <option value="BT">Bottom &rarr; Top</option>
+        </select>
+      </div>
+
+      <div class="header-group">
+        <button id="btn-undo" class="button-outline button-small" title="Undo (Ctrl+Z)" disabled>Undo</button>
+        <button id="btn-redo" class="button-outline button-small" title="Redo (Ctrl+Shift+Z)" disabled>Redo</button>
+        <button id="btn-clear" class="button-outline button-small" title="Clear Canvas">Clear</button>
+      </div>
+
+      <div class="header-group">
+        <button id="btn-io-modal" class="button-small">Import / Export</button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Container -->
+  <div class="app-container">
+    <!-- Left Sidebar: Creation, Editing, Transformations -->
+    <aside class="sidebar left-sidebar">
+      <!-- Graph Generator -->
+      <div class="card">
+        <h3>Create & Presets</h3>
+        <label for="select-preset">Preset / Generator:</label>
+        <select id="select-preset">
+          <optgroup label="Curated Presets">
+            <option value="preset_default" selected>Flow / Path Demo</option>
+            <option value="preset_petersen">Petersen Graph</option>
+            <option value="preset_karate">Karate Club</option>
+            <option value="preset_road">Weighted Road Network</option>
+            <option value="preset_negative">Negative Edges Graph</option>
+            <option value="preset_dag">Compiler Task DAG</option>
+            <option value="preset_bridges">Bridges & Articulation</option>
+          </optgroup>
+          <optgroup label="Standard Topologies">
+            <option value="factory_complete">Complete Graph (Kn)</option>
+            <option value="factory_path">Path Graph (Pn)</option>
+            <option value="factory_ring">Ring Graph (Cn)</option>
+            <option value="factory_star">Star Graph (Sn)</option>
+            <option value="factory_tree">Complete Tree</option>
+            <option value="factory_partite">Partite Graph</option>
+            <option value="factory_random">Random (Erdős–Rényi)</option>
+          </optgroup>
+        </select>
+
+        <div id="factory-params">
+          <div class="form-row">
+            <input type="number" id="input-vertex-count" placeholder="Nodes" value="6" min="1" max="50">
+            <button id="btn-generate" class="button-small">Generate</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Atlas of Graphs Browser -->
+      <div class="card">
+        <h3>Atlas of Graphs (0..1252)</h3>
+        <div class="form-row">
+          <button id="btn-atlas-prev" class="button-outline button-small">&larr;</button>
+          <input type="number" id="input-atlas-num" value="18" min="0" max="1252" style="text-align: center;">
+          <button id="btn-atlas-next" class="button-outline button-small">&rarr;</button>
+          <button id="btn-atlas-load" class="button-small">Load</button>
+        </div>
+      </div>
+
+      <!-- Quick Edit -->
+      <div class="card">
+        <h3>Edit Graph</h3>
+        <div class="form-row">
+          <input type="text" id="input-new-vertex" placeholder="Node name (e.g. G)">
+          <button id="btn-add-vertex" class="button-small">+ Node</button>
+        </div>
+        <div class="form-row">
+          <input type="text" id="input-edge-u" placeholder="From" style="max-width: 50px;">
+          <span>&rarr;</span>
+          <input type="text" id="input-edge-v" placeholder="To" style="max-width: 50px;">
+          <input type="number" id="input-edge-weight" placeholder="W" value="1" style="max-width: 45px;">
+          <button id="btn-add-edge" class="button-small">+ Edge</button>
+        </div>
+        <div class="form-row">
+          <button id="btn-remove-selected" class="button-outline button-small" style="width: 100%;">Delete Selected</button>
+        </div>
+      </div>
+
+      <!-- Structural Transformations -->
+      <div class="card">
+        <h3>Transformations</h3>
+        <div class="form-row">
+          <button id="btn-reverse" class="button-outline button-small" title="Reverse Edge Directions">Reverse</button>
+          <button id="btn-complement" class="button-outline button-small" title="Complement Graph">Complement</button>
+        </div>
+        <div class="form-row">
+          <button id="btn-trans-closure" class="button-outline button-small" title="Transitive Closure">Closure</button>
+          <button id="btn-trans-reduction" class="button-outline button-small" title="Transitive Reduction">Reduction</button>
+        </div>
+        <div class="form-row">
+          <button id="btn-kcore" class="button-outline button-small" title="k-Core Subgraph">k-Core</button>
+          <input type="number" id="input-kcore-k" value="2" min="1" max="10" style="max-width: 50px;">
+        </div>
+      </div>
+    </aside>
+
+    <!-- Center Workspace -->
+    <main class="center-workspace">
+      <!-- Toolbar -->
+      <div class="canvas-toolbar">
+        <div class="mode-radios">
+          <label><input type="radio" name="canvas-mode" value="select" checked> Select</label>
+          <label><input type="radio" name="canvas-mode" value="add-node"> + Node</label>
+          <label><input type="radio" name="canvas-mode" value="add-edge"> + Edge</label>
+          <label><input type="radio" name="canvas-mode" value="delete"> Delete</label>
+        </div>
+
+        <div class="selection-pills">
+          <span>Source: <span id="pill-source" class="pill pill-source">None</span></span>
+          <span>Target: <span id="pill-target" class="pill pill-target">None</span></span>
+          <button id="btn-clear-selection" class="button-outline button-small">Clear</button>
+        </div>
+      </div>
+
+      <!-- SVG Viewport -->
+      <div class="viewport-container" id="viewport">
+        <div id="graph-canvas"></div>
+
+        <!-- Floating Zoom Controls -->
+        <div class="floating-controls">
+          <button id="btn-zoom-in" title="Zoom In">+</button>
+          <button id="btn-zoom-out" title="Zoom Out">&minus;</button>
+          <button id="btn-zoom-fit" title="Fit View">&#x2922;</button>
+        </div>
+      </div>
+
+      <!-- Playback Bar -->
+      <div class="playback-bar" id="playback-bar" style="display: none;">
+        <div class="playback-controls">
+          <button id="btn-play-first" class="button-outline button-small">&verbar;&lang;</button>
+          <button id="btn-play-prev" class="button-outline button-small">&lang;</button>
+          <button id="btn-play-pause" class="button-small">Play</button>
+          <button id="btn-play-next" class="button-outline button-small">&rang;</button>
+          <button id="btn-play-last" class="button-outline button-small">&rang;&verbar;</button>
+          <span id="label-playback-step" style="font-weight: 600; margin-left: 8px;">Step 0/0</span>
+        </div>
+        <div>
+          <label for="select-playback-speed" style="display: inline; font-size: 1.1rem; margin-right: 4px;">Speed:</label>
+          <select id="select-playback-speed" style="height: 2.6rem !important; line-height: 2.6rem !important; font-size: 1.1rem !important; padding: 0 4px !important;">
+            <option value="1000">0.5x</option>
+            <option value="500" selected>1.0x</option>
+            <option value="250">2.0x</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Bottom Drawer: Metrics Table, Distance Matrix, Live DOT, Dart Code -->
+      <div class="bottom-drawer collapsed" id="bottom-drawer">
+        <div class="drawer-header" id="drawer-header">
+          <div class="drawer-tabs">
+            <span class="drawer-tab active" data-tab="tab-metrics">Metrics Table</span>
+            <span class="drawer-tab" data-tab="tab-matrix">Distance Matrix</span>
+            <span class="drawer-tab" data-tab="tab-dot">Graphviz DOT</span>
+            <span class="drawer-tab" data-tab="tab-dart">Dart Code</span>
+          </div>
+          <span id="drawer-toggle-icon">&blacktriangle; Expand</span>
+        </div>
+        <div class="drawer-content">
+          <div id="tab-metrics" class="tab-pane">
+            <div id="metrics-table-container">Run a centrality or structural algorithm to view metrics.</div>
+          </div>
+          <div id="tab-matrix" class="tab-pane" style="display: none;">
+            <div id="matrix-container">Run All Shortest Paths (Floyd-Warshall) to view all-pairs distance matrix.</div>
+          </div>
+          <div id="tab-dot" class="tab-pane" style="display: none;">
+            <pre id="code-dot" class="code-block"></pre>
+          </div>
+          <div id="tab-dart" class="tab-pane" style="display: none;">
+            <pre id="code-dart" class="code-block"></pre>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <!-- Right Sidebar: Algorithms & Queries -->
+    <aside class="sidebar right-sidebar">
+      <!-- Algorithms Panel -->
+      <div class="card">
+        <h3>Algorithms & Traversals</h3>
+        <label for="select-algorithm-category">Category:</label>
+        <select id="select-algorithm-category">
+          <option value="shortest_path" selected>1. Shortest Paths & Search</option>
+          <option value="flow_cuts">2. Flow, Cuts & Connectivity</option>
+          <option value="spanning_tree">3. Spanning Trees</option>
+          <option value="centrality">4. Centrality & Scoring</option>
+          <option value="coloring_cliques">5. Coloring & Cliques</option>
+          <option value="matching">6. Matching</option>
+          <option value="community">7. Community Detection</option>
+          <option value="tours">8. Eulerian & Hamiltonian Tours</option>
+          <option value="planarity_iso">9. Planarity & Isomorphism</option>
+          <option value="traversal">10. Traversals & Random Walk</option>
+        </select>
+
+        <label for="select-algorithm">Algorithm:</label>
+        <select id="select-algorithm">
+          <!-- Dynamic options loaded based on category -->
+        </select>
+
+        <div id="algorithm-params">
+          <!-- Dynamic parameter inputs for selected algorithm -->
+        </div>
+
+        <div class="form-row" style="margin-top: 8px;">
+          <button id="btn-run-algo" style="flex: 2;">Run</button>
+          <button id="btn-clear-overlay" class="button-outline" style="flex: 1;">Clear</button>
+        </div>
+      </div>
+
+      <!-- Algorithm Results Card -->
+      <div class="card" id="card-results" style="display: none;">
+        <h3>Result</h3>
+        <div id="algorithm-results"></div>
+      </div>
+
+      <!-- Graph Properties & Invariants -->
+      <div class="card">
+        <h3>Graph Invariants</h3>
+        <div class="stats-grid" id="stats-grid">
+          <div class="stats-item"><span>Nodes:</span> <b id="stat-nodes">0</b></div>
+          <div class="stats-item"><span>Edges:</span> <b id="stat-edges">0</b></div>
+          <div class="stats-item"><span>Density:</span> <b id="stat-density">0.00</b></div>
+          <div class="stats-item"><span>Components:</span> <b id="stat-components">0</b></div>
+          <div class="stats-item"><span>Planar:</span> <b id="stat-planar">-</b></div>
+          <div class="stats-item"><span>Bipartite:</span> <b id="stat-bipartite">-</b></div>
+          <div class="stats-item"><span>Cycle:</span> <b id="stat-cycle">-</b></div>
+          <div class="stats-item"><span>Eulerian:</span> <b id="stat-eulerian">-</b></div>
+        </div>
+      </div>
+
+      <!-- Selected Node / Edge Details -->
+      <div class="card">
+        <h3>Inspector</h3>
+        <div id="inspector-content">
+          <span style="color: var(--text-muted);">Click a node or edge on the canvas to inspect its properties.</span>
+        </div>
+      </div>
+    </aside>
+  </div>
+
+  <script src="graph.dart.js"></script>
+</body>
+</html>
