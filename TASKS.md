@@ -97,7 +97,7 @@ All graph algorithms below must follow the project's decoupled architecture:
 
 ## 4. Community Detection and Graph Partitioning
 
-- [ ] **Community Detection (Label Propagation & Louvain Modularity)**
+- [x] **Community Detection (Label Propagation & Louvain Modularity)**
   - **Files**: `lib/src/graph/algorithms/community.dart`, `lib/src/graph/algorithms.dart`, `lib/graph.dart`
   - **Tests**: `test/graph/algorithms/community_test.dart`
   - **Design & Instructions**:

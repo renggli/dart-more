@@ -16,6 +16,8 @@ export 'src/graph/algorithms/bipartite_matching.dart'
 export 'src/graph/algorithms/blossom_matching.dart' show maximumMatching;
 export 'src/graph/algorithms/bron_kerbosch_cliques.dart'
     show bronKerboschCliques;
+export 'src/graph/algorithms/community.dart'
+    show labelPropagationCommunities, louvainCommunities, modularity;
 export 'src/graph/algorithms/connectivity.dart'
     show edgeConnectivity, vertexConnectivity;
 export 'src/graph/algorithms/cycle_check.dart' show hasCycle;

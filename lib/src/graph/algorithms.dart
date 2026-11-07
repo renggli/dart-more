@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:collection/collection.dart';
 
 import '../comparator/constructors/natural.dart';
@@ -9,6 +11,7 @@ import 'algorithms/bipartite_check.dart' as bipartite_check;
 import 'algorithms/bipartite_matching.dart' as bipartite_matching;
 import 'algorithms/blossom_matching.dart' as blossom_matching;
 import 'algorithms/bron_kerbosch_cliques.dart' as bron_kerbosch_cliques;
+import 'algorithms/community.dart' as community;
 import 'algorithms/connectivity.dart' as connectivity;
 import 'algorithms/cycle_check.dart' as cycle_check;
 import 'algorithms/dinic_max_flow.dart' as dinic_max_flow;
@@ -709,6 +712,54 @@ extension AlgorithmsGraphExtension<V, E> on Graph<V, E> {
     target: target,
     vertexStrategy: vertexStrategy ?? this.vertexStrategy,
   );
+
+  /// Computes the Newman–Girvan modularity of a given partition of [communities] in this graph.
+  double modularity(
+    Iterable<Set<V>> communities, {
+    num Function(V source, V target)? edgeWeight,
+    StorageStrategy<V>? vertexStrategy,
+  }) => community.modularity<V>(
+    vertices: vertices,
+    successorsOf: successorsOf,
+    communities: communities,
+    edgeWeight: edgeWeight ?? _getDefaultEdgeValueOr(1),
+    isDirected: isDirected,
+    vertexStrategy: vertexStrategy ?? this.vertexStrategy,
+  );
+
+  /// Detects communities in this undirected graph using the asynchronous label propagation algorithm (LPA).
+  Iterable<Set<V>> labelPropagationCommunities({
+    num Function(V source, V target)? edgeWeight,
+    int maxIterations = 100,
+    Random? random,
+    StorageStrategy<V>? vertexStrategy,
+  }) {
+    GraphError.checkNotDirected(this);
+    return community.labelPropagationCommunities<V>(
+      vertices: vertices,
+      neighboursOf: neighboursOf,
+      edgeWeight: edgeWeight ?? _getDefaultEdgeValueOr(1),
+      maxIterations: maxIterations,
+      random: random,
+      vertexStrategy: vertexStrategy ?? this.vertexStrategy,
+    );
+  }
+
+  /// Detects communities in this undirected graph by maximizing modularity using the Louvain algorithm.
+  Iterable<Set<V>> louvainCommunities({
+    num Function(V source, V target)? edgeWeight,
+    double resolution = 1.0,
+    StorageStrategy<V>? vertexStrategy,
+  }) {
+    GraphError.checkNotDirected(this);
+    return community.louvainCommunities<V>(
+      vertices: vertices,
+      neighboursOf: neighboursOf,
+      edgeWeight: edgeWeight ?? _getDefaultEdgeValueOr(1),
+      resolution: resolution,
+      vertexStrategy: vertexStrategy ?? this.vertexStrategy,
+    );
+  }
 
   /// Checks if this graph is isomorphic to [other].
   bool isIsomorphicTo<W, F>(
