@@ -33,6 +33,7 @@ export 'src/graph/algorithms/k_core.dart' show coreNumbers, kCoreVertices;
 export 'src/graph/algorithms/kruskal_spanning_tree.dart'
     show kruskalSpanningTree;
 export 'src/graph/algorithms/page_rank.dart' show pageRank;
+export 'src/graph/algorithms/planarity.dart' show isPlanar;
 export 'src/graph/algorithms/prim_spanning_tree.dart' show primSpanningTree;
 export 'src/graph/algorithms/search/a_star.dart' show aStarSearch;
 export 'src/graph/algorithms/search/bellman_ford.dart' show bellmanFordSearch;

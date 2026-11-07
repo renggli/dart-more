@@ -22,6 +22,7 @@ import 'algorithms/isomorphism.dart' as isomorphism;
 import 'algorithms/k_core.dart' as k_core;
 import 'algorithms/kruskal_spanning_tree.dart' as kruskal_spanning_tree;
 import 'algorithms/page_rank.dart' as page_rank;
+import 'algorithms/planarity.dart' as planarity;
 import 'algorithms/prim_spanning_tree.dart' as prim_spanning_tree;
 import 'algorithms/search/a_star.dart' as a_star;
 import 'algorithms/search/bellman_ford.dart' as bellman_ford;
@@ -757,6 +758,16 @@ extension AlgorithmsGraphExtension<V, E> on Graph<V, E> {
       neighboursOf: neighboursOf,
       edgeWeight: edgeWeight ?? _getDefaultEdgeValueOr(1),
       resolution: resolution,
+      vertexStrategy: vertexStrategy ?? this.vertexStrategy,
+    );
+  }
+
+  /// Checks if this undirected graph is planar using the Left–Right planarity test.
+  bool isPlanar({StorageStrategy<V>? vertexStrategy}) {
+    GraphError.checkNotDirected(this);
+    return planarity.isPlanar<V>(
+      vertices: vertices,
+      neighboursOf: neighboursOf,
       vertexStrategy: vertexStrategy ?? this.vertexStrategy,
     );
   }

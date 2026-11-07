@@ -117,7 +117,7 @@ All graph algorithms below must follow the project's decoupled architecture:
 
 ## 5. Structural Analysis
 
-- [ ] **Planar Graph Testing (Left–Right Planarity Test)**
+- [x] **Planar Graph Testing (Left–Right Planarity Test)**
   - **Files**: `lib/src/graph/algorithms/planarity.dart`, `lib/src/graph/algorithms.dart`, `lib/graph.dart`
   - **Tests**: `test/graph/algorithms/planarity_test.dart`
   - **Design & Instructions**:
