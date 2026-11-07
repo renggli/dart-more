@@ -8,11 +8,7 @@ export 'src/graph/algorithms/biconnected.dart'
     show articulationPoints, biconnectedComponents, bridges;
 export 'src/graph/algorithms/bipartite_check.dart' show isBipartite;
 export 'src/graph/algorithms/bipartite_matching.dart'
-    show
-        bipartiteMatching,
-        maximumIndependentSet,
-        minimumVertexCover,
-        weightedBipartiteMatching;
+    show bipartiteMatching, weightedBipartiteMatching;
 export 'src/graph/algorithms/blossom_matching.dart' show maximumMatching;
 export 'src/graph/algorithms/bron_kerbosch_cliques.dart'
     show bronKerboschCliques;
@@ -53,7 +49,11 @@ export 'src/graph/algorithms/tarjan_strongly_connected.dart'
     show tarjanStronglyConnected;
 export 'src/graph/algorithms/vertex_coloring.dart' show vertexColoring;
 export 'src/graph/algorithms/vertex_cover.dart'
-    show approximateMaximumIndependentSet, approximateMinimumVertexCover;
+    show
+        approximateMaximumIndependentSet,
+        approximateMinimumVertexCover,
+        maximumIndependentSet,
+        minimumVertexCover;
 export 'src/graph/edge.dart' show Edge;
 export 'src/graph/errors.dart' show GraphError;
 export 'src/graph/factory.dart' show GraphFactory;

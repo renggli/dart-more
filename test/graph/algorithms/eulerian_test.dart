@@ -179,6 +179,29 @@ void main() {
         check(graph.hasEulerianPath()).isFalse();
         check(graph.findEulerianPath()).isNull();
       });
+
+      test('standalone findEulerianPath with minimal parameters', () {
+        // Directed
+        final pathDir = findEulerianPath<int, void>(
+          vertices: [1, 2],
+          outgoingEdgesOf: (v) =>
+              v == 1 ? [const Edge<int, void>.directed(1, 2)] : const [],
+          isDirected: true,
+        );
+        check(pathDir).isNotNull();
+        check(pathDir!.vertices).deepEquals([1, 2]);
+
+        // Undirected
+        final pathUndir = findEulerianPath<int, void>(
+          vertices: [1, 2],
+          outgoingEdgesOf: (v) => [
+            Edge<int, void>.undirected(v, v == 1 ? 2 : 1),
+          ],
+          isDirected: false,
+        );
+        check(pathUndir).isNotNull();
+        check(pathUndir!.vertices).deepEquals([1, 2]);
+      });
     });
   });
 }

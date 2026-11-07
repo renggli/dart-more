@@ -141,6 +141,22 @@ void main() {
         check(() => mutable.add('ab')).throws<ArgumentError>();
         check(() => mutable.add('')).throws<ArgumentError>();
       });
+      test('addAll, removeAt, removeRange, clear', () {
+        final mutable = 'abc'.toList(mutable: true);
+        mutable.addAll(['d', 'e']);
+        check(mutable.toString()).equals('abcde');
+        check(mutable.removeAt(1)).equals('b');
+        check(mutable.toString()).equals('acde');
+        mutable.removeRange(1, 3);
+        check(mutable.toString()).equals('ae');
+        mutable.clear();
+        check(mutable.isEmpty).isTrue();
+      });
+      test('invalid insert and insertAll', () {
+        final mutable = 'abc'.toList(mutable: true);
+        check(() => mutable.insert(1, 'xy')).throws<ArgumentError>();
+        check(() => mutable.insertAll(1, ['x', 'yz'])).throws<ArgumentError>();
+      });
     });
 
     group('immutable unicode', () {
@@ -277,6 +293,22 @@ void main() {
         final mutable = 'abc'.toList(mutable: true, unicode: true);
         check(() => mutable.add('🍌a')).throws<ArgumentError>();
         check(() => mutable.add('')).throws<ArgumentError>();
+      });
+      test('addAll, removeAt, removeRange, clear', () {
+        final mutable = 'abc'.toList(mutable: true, unicode: true);
+        mutable.addAll(['🍌', '🍓']);
+        check(mutable.toString()).equals('abc🍌🍓');
+        check(mutable.removeAt(1)).equals('b');
+        check(mutable.toString()).equals('ac🍌🍓');
+        mutable.removeRange(1, 3);
+        check(mutable.toString()).equals('a🍓');
+        mutable.clear();
+        check(mutable.isEmpty).isTrue();
+      });
+      test('invalid insert and insertAll', () {
+        final mutable = 'abc'.toList(mutable: true, unicode: true);
+        check(() => mutable.insert(1, '🍌a')).throws<ArgumentError>();
+        check(() => mutable.insertAll(1, ['x', '🍌a'])).throws<ArgumentError>();
       });
     });
   });

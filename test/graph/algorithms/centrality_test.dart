@@ -64,6 +64,16 @@ void main() {
         check(bc[1]).equals(1.0);
         check(bc[2]).equals(0.0);
       });
+
+      test('standalone betweennessCentrality with default strategy', () {
+        final bc = betweennessCentrality<int>(
+          vertices: [0, 1, 2],
+          successorsOf: (v) => v == 0 ? [1] : (v == 1 ? [2] : []),
+          isDirected: true,
+          normalized: false,
+        );
+        check(bc[1]).equals(1.0);
+      });
     });
 
     group('closenessCentrality', () {
@@ -129,6 +139,16 @@ void main() {
         // Sum of all PageRanks should be approximately 1.0
         final total = pr.values.reduce((a, b) => a + b);
         check(total).isCloseTo(1.0, 1e-4);
+      });
+
+      test('standalone pageRank without predecessorsOf or strategy', () {
+        final pr = pageRank<int>(
+          vertices: [0, 1, 2],
+          successorsOf: (v) => v == 0 ? [1] : (v == 1 ? [2] : [0]),
+        );
+        check(pr[0]!).isCloseTo(1 / 3, 1e-4);
+        check(pr[1]!).isCloseTo(1 / 3, 1e-4);
+        check(pr[2]!).isCloseTo(1 / 3, 1e-4);
       });
     });
 

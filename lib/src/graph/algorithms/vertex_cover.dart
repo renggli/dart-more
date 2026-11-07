@@ -30,7 +30,7 @@ Set<V> minimumVertexCover<V>({
     vertexStrategy: vertexStrategy,
   );
   if (isBip) {
-    return bipartite_matching.minimumVertexCover<V>(
+    return bipartite_matching.bipartiteMinimumVertexCover<V>(
       vertices: vertices,
       neighboursOf: neighboursOf,
       vertexStrategy: vertexStrategy,

@@ -164,6 +164,23 @@ void allSortedListTests(
     check(list.lastIndexOf(2, 2)).equals(2);
     check(list.lastIndexOf(2, 0)).equals(-1);
     check(list.lastIndexOf(99)).equals(-1);
+
+    // Custom comparator where comparator == 0 but elements differ
+    final records = createSortedList<(int, String)>([
+      (1, 'a'),
+      (1, 'b'),
+    ], comparator: (x, y) => x.$1.compareTo(y.$1));
+    final indexA = records.lastIndexOf((1, 'a'));
+    final indexB = records.lastIndexOf((1, 'b'));
+    check(indexA).isGreaterThan(-1);
+    check(indexB).isGreaterThan(-1);
+    check(indexA != indexB).isTrue();
+    check(records.lastIndexOf((1, 'c'))).equals(-1);
+  });
+  test('removeRange', () {
+    final list = createSortedList<int>([1, 2, 3, 4, 5]);
+    list.removeRange(1, 4);
+    check(list).deepEquals([1, 5]);
   });
   test('toUnorderedList', () {
     final list = createSortedList<int>([5, 1, 3]);

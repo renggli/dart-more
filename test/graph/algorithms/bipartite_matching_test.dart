@@ -167,6 +167,49 @@ void main() {
         check(res['a']).equals('x');
         check(res['b']).equals('y');
       });
+
+      test('standalone bipartiteMatching and alternating paths', () {
+        // Path graph 1 - 5 - 2 - 6 - 3 - 7
+        final match = bipartiteMatching<int>(
+          vertices: [1, 2, 3, 5, 6, 7],
+          neighboursOf: (v) => switch (v) {
+            1 => [5],
+            2 => [5, 6],
+            3 => [6, 7],
+            5 => [1, 2],
+            6 => [2, 3],
+            7 => [3],
+            _ => const [],
+          },
+        );
+        check(match.length).equals(6);
+
+        // Disjoint branches forcing DFS dead ends and layered BFS
+        final match2 = bipartiteMatching<int>(
+          vertices: [1, 2, 3, 4, 5, 6, 7, 8],
+          neighboursOf: (v) => switch (v) {
+            1 => [5, 6],
+            2 => [5, 6, 7],
+            3 => [6, 7],
+            4 => [7],
+            5 => [1, 2],
+            6 => [1, 2, 3],
+            7 => [2, 3, 4],
+            8 => const [],
+            _ => const [],
+          },
+        );
+        check(match2.length).isGreaterThan(0);
+      });
+
+      test('Kőnig alternating path with unmatched vertex', () {
+        // U = {1, 2}, V = {3}. Both connect to 3.
+        final g = Graph<int, void>(isDirected: false)
+          ..addEdge(1, 3)
+          ..addEdge(2, 3);
+        final cover = g.minimumVertexCover();
+        check(cover).unorderedEquals([3]);
+      });
     });
   });
 }

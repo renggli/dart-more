@@ -136,5 +136,39 @@ void main() {
       // 1-2 is a bridge
       check(graph.bridges().length).equals(1);
     });
+
+    test('root vertex with multiple DFS children is articulation point', () {
+      // Adding vertex 2 first ensures DFS starts at 2.
+      final graph = Graph<int, void>(isDirected: false)
+        ..addVertex(2)
+        ..addEdge(2, 1)
+        ..addEdge(2, 3);
+      check(graph.articulationPoints()).unorderedEquals([2]);
+    });
+
+    test('standalone articulationPoints, bridges, biconnectedComponents', () {
+      final pts = articulationPoints<int>(
+        vertices: [1, 2, 3],
+        neighboursOf: (v) => switch (v) {
+          1 => [2],
+          2 => [1, 3],
+          3 => [2],
+          _ => const [],
+        },
+      );
+      check(pts).unorderedEquals([2]);
+
+      final brs = bridges<int>(
+        vertices: [1, 2],
+        neighboursOf: (v) => [if (v == 1) 2 else 1],
+      );
+      check(brs.length).equals(1);
+
+      final comps = biconnectedComponents<int>(
+        vertices: [1, 2],
+        neighboursOf: (v) => [if (v == 1) 2 else 1],
+      );
+      check(comps.length).equals(1);
+    });
   });
 }

@@ -81,6 +81,44 @@ void main() {
         check(g1.isIsomorphicTo(g2)).isTrue();
         check(g1.isIsomorphicTo(g3)).isFalse();
       });
+
+      test('directed graph candidate selection via in-edges', () {
+        // Directed star: 2 -> 1, 3 -> 1
+        final g1 = Graph<int, void>(isDirected: true)
+          ..addEdge(2, 1)
+          ..addEdge(3, 1);
+        final g2 = Graph<int, void>(isDirected: true)
+          ..addEdge(20, 10)
+          ..addEdge(30, 10);
+        check(g1.isIsomorphicTo(g2)).isTrue();
+      });
+
+      test('edgeComparator matching and mismatching', () {
+        final g1 = Graph<int, int>(isDirected: true)
+          ..addEdge(1, 2, value: 10)
+          ..addEdge(2, 3, value: 20);
+        final g2 = Graph<int, int>(isDirected: true)
+          ..addEdge(1, 2, value: 10)
+          ..addEdge(2, 3, value: 20);
+        final g3 = Graph<int, int>(isDirected: true)
+          ..addEdge(1, 2, value: 10)
+          ..addEdge(2, 3, value: 99);
+
+        check(g1.isIsomorphicTo(g2, edgeComparator: (e1, e2) => e1 == e2))
+            .isTrue();
+        check(g1.isIsomorphicTo(g3, edgeComparator: (e1, e2) => e1 == e2))
+            .isFalse();
+      });
+
+      test('standalone findIsomorphisms without optional params', () {
+        final isos = findIsomorphisms<int, void, int, void>(
+          targetVertices: [1, 2],
+          patternVertices: [10, 20],
+          targetSuccessorsOf: (v) => v == 1 ? [2] : const [],
+          patternSuccessorsOf: (v) => v == 10 ? [20] : const [],
+        ).toList();
+        check(isos.length).equals(1);
+      });
     });
 
     group('subgraph isomorphism', () {
@@ -106,6 +144,22 @@ void main() {
         final target = GraphFactory<int, void>().path(vertexCount: 3);
         final pattern = GraphFactory<int, void>().path(vertexCount: 4);
         check(target.findSubgraphIsomorphisms(pattern)).isEmpty();
+      });
+
+      test('subgraph isomorphism with edgeComparator', () {
+        final target = Graph<int, int>(isDirected: false)
+          ..addEdge(1, 2, value: 5)
+          ..addEdge(2, 3, value: 10);
+        final pattern = Graph<int, int>(isDirected: false)
+          ..addEdge(10, 20, value: 5);
+
+        final matches = target
+            .findSubgraphIsomorphisms(
+              pattern,
+              edgeComparator: (e1, e2) => e1 == e2,
+            )
+            .toList();
+        check(matches.length).equals(2); // (10->1, 20->2) and (10->2, 20->1)
       });
     });
   });

@@ -49,6 +49,19 @@ void main() {
           ..addEdge(1, 2); // 2 cannot reach 0
         check(g.edgeConnectivity()).equals(0);
       });
+
+      test('single source or target throws ArgumentError', () {
+        final g = Graph<int, void>(isDirected: false)..addEdge(0, 1);
+        check(() => g.edgeConnectivity(source: 0)).throws<ArgumentError>();
+      });
+
+      test('standalone edgeConnectivity without optional params', () {
+        final conn = edgeConnectivity<int>(
+          vertices: [0, 1],
+          successorsOf: (v) => v == 0 ? [1] : [0],
+        );
+        check(conn).equals(1);
+      });
     });
 
     group('vertexConnectivity', () {
@@ -89,6 +102,19 @@ void main() {
         final p2 = Graph<int, void>(isDirected: false)..addEdge(0, 1);
         // By convention, non-adjacent vertices can be separated; adjacent vertices have n - 1 = 1
         check(p2.vertexConnectivity(source: 0, target: 1)).equals(1);
+      });
+
+      test('single source or target throws ArgumentError', () {
+        final g = Graph<int, void>(isDirected: false)..addEdge(0, 1);
+        check(() => g.vertexConnectivity(source: 0)).throws<ArgumentError>();
+      });
+
+      test('standalone vertexConnectivity without optional params', () {
+        final conn = vertexConnectivity<int>(
+          vertices: [0, 1, 2],
+          successorsOf: (v) => v == 1 ? [0, 2] : [1],
+        );
+        check(conn).equals(1);
       });
     });
   });

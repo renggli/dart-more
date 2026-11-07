@@ -115,6 +115,51 @@ void main() {
         // Transitivity = 12 / 20 = 3/5 = 0.6.
         check(bowtie.transitivity()).isCloseTo(0.6, 1e-6);
       });
+
+      test('directed clustering coefficient', () {
+        // Directed triangle 0 -> 1 -> 2 -> 0
+        final g = Graph<int, void>(isDirected: true)
+          ..addEdge(0, 1)
+          ..addEdge(1, 2)
+          ..addEdge(2, 0);
+
+        // Neighbours of 0 are 1 and 2 (total 2).
+        // Directed links between neighbours: 1 -> 2 (1 link).
+        // Total possible directed links = 2 * 1 = 2.
+        // Clustering = 1 / 2 = 0.5.
+        check(g.localClusteringCoefficient(0)).equals(0.5);
+      });
+
+      test('standalone localClusteringCoefficient and graphTransitivity', () {
+        final cc = localClusteringCoefficient<int>(
+          0,
+          neighboursOf: (v) => switch (v) {
+            0 => [1, 2],
+            1 => [0, 2],
+            2 => [0, 1],
+            _ => const [],
+          },
+          successorsOf: (v) => switch (v) {
+            0 => [1, 2],
+            1 => [0, 2],
+            2 => [0, 1],
+            _ => const [],
+          },
+          isDirected: false,
+        );
+        check(cc).equals(1.0);
+
+        final trans = graphTransitivity<int>(
+          vertices: [0, 1, 2],
+          neighboursOf: (v) => switch (v) {
+            0 => [1, 2],
+            1 => [0, 2],
+            2 => [0, 1],
+            _ => const [],
+          },
+        );
+        check(trans).equals(1.0);
+      });
     });
 
     group('degreeAssortativity', () {

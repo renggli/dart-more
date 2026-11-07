@@ -15,6 +15,34 @@ void main() {
       check(spanning.vertices).deepEquals(['a']);
       check(spanning.edges).isEmpty();
     });
+    test('empty graph', () {
+      final graph = Graph<String, int>(isDirected: false);
+      final spanning = graph.spanningTree();
+      check(spanning.vertices).isEmpty();
+      check(spanning.edges).isEmpty();
+    });
+    test('default start vertex (null)', () {
+      final graph = Graph<String, int>(isDirected: false)
+        ..addEdge('a', 'b', value: 1);
+      final spanning = primSpanningTree<String, int>(
+        graph,
+        startVertex: null,
+        edgeWeight: (u, v) => 1,
+        weightComparator: naturalComparable<num>,
+        vertexStrategy: StorageStrategy.defaultStrategy(),
+      );
+      check(spanning.vertices.toList()).deepEquals(['a', 'b']);
+
+      final empty = Graph<String, int>(isDirected: false);
+      final emptySpanning = primSpanningTree<String, int>(
+        empty,
+        startVertex: null,
+        edgeWeight: (u, v) => 1,
+        weightComparator: naturalComparable<num>,
+        vertexStrategy: StorageStrategy.defaultStrategy(),
+      );
+      check(emptySpanning.vertices.toList()).isEmpty();
+    });
     test('undirected (with start vertex)', () {
       final graph = Graph<String, int>(isDirected: false)
         ..addEdge('a', 'b', value: 2)

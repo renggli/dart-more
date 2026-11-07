@@ -74,5 +74,21 @@ void main() {
       check(k4.kCore(3).vertices.length).equals(4);
       check(k4.kCore(4).vertices).isEmpty();
     });
+
+    test('standalone coreNumbers and kCoreVertices functions', () {
+      final cores = coreNumbers<int>(
+        vertices: [1, 2],
+        neighboursOf: (v) => [if (v == 1) 2 else 1],
+      );
+      check(cores[1]).equals(1);
+      check(cores[2]).equals(1);
+
+      final k1 = kCoreVertices<int>(
+        vertices: [1, 2],
+        neighboursOf: (v) => [if (v == 1) 2 else 1],
+        k: 1,
+      );
+      check(k1).unorderedEquals([1, 2]);
+    });
   });
 }

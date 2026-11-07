@@ -206,6 +206,19 @@ void main() {
         check(fw.periphery).unorderedEquals([1]);
         check(fw.averagePathLength).equals(0.0);
       });
+
+      test('unknown vertex and unnormalized closeness', () {
+        final graph = Graph<int, void>(isDirected: false)
+          ..addEdge(0, 1)
+          ..addEdge(1, 2);
+        final fw = graph.allShortestPaths();
+
+        check(() => fw.eccentricity(99)).throws<GraphError>();
+        check(() => fw.closenessCentrality(99)).throws<GraphError>();
+
+        // Distance from 1 to 0 and 2 is 1 + 1 = 2. Unnormalized = 1 / 2 = 0.5.
+        check(fw.closenessCentrality(1, normalized: false)).equals(0.5);
+      });
     });
 
     group('maze', () {

@@ -139,12 +139,11 @@ Map<V, V> bipartiteMatching<V>({
 /// Kőnig's theorem.
 ///
 /// Throws [ArgumentError] if the graph is not bipartite.
-Set<V> minimumVertexCover<V>({
+Set<V> bipartiteMinimumVertexCover<V>({
   required Iterable<V> vertices,
   required Iterable<V> Function(V vertex) neighboursOf,
-  StorageStrategy<V>? vertexStrategy,
+  required StorageStrategy<V> vertexStrategy,
 }) {
-  vertexStrategy ??= StorageStrategy.defaultStrategy();
   final colors = _twoColor<V>(
     vertices: vertices,
     neighboursOf: neighboursOf,
@@ -194,32 +193,6 @@ Set<V> minimumVertexCover<V>({
   }
 
   return cover;
-}
-
-/// Computes the maximum independent set of an undirected bipartite graph.
-///
-/// In any graph, the complement of a minimum vertex cover is a maximum
-/// independent set.
-///
-/// Throws [ArgumentError] if the graph is not bipartite.
-Set<V> maximumIndependentSet<V>({
-  required Iterable<V> vertices,
-  required Iterable<V> Function(V vertex) neighboursOf,
-  StorageStrategy<V>? vertexStrategy,
-}) {
-  vertexStrategy ??= StorageStrategy.defaultStrategy();
-  final cover = minimumVertexCover<V>(
-    vertices: vertices,
-    neighboursOf: neighboursOf,
-    vertexStrategy: vertexStrategy,
-  );
-  final independentSet = vertexStrategy.createSet();
-  for (final v in vertices) {
-    if (!cover.contains(v)) {
-      independentSet.add(v);
-    }
-  }
-  return independentSet;
 }
 
 /// Computes the maximum weight bipartite matching of an undirected bipartite
