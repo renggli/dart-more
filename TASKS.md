@@ -10,7 +10,7 @@ All graph algorithms below must follow the project's decoupled architecture:
 
 ## 1. Distance, Centrality & Graph Properties
 
-- [ ] **Degree Centrality and Eigenvector Centrality**
+- [x] **Degree Centrality and Eigenvector Centrality**
   - **Files**: `lib/src/graph/algorithms/eigenvector_centrality.dart`, `lib/src/graph/algorithms/structural_metrics.dart`, `lib/src/graph/algorithms.dart`, `lib/graph.dart`
   - **Tests**: `test/graph/algorithms/eigenvector_centrality_test.dart`, `test/graph/algorithms/structural_metrics_test.dart`
   - **Design & Instructions**:

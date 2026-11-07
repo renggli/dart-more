@@ -15,6 +15,8 @@ export 'src/graph/algorithms/connectivity.dart'
     show edgeConnectivity, vertexConnectivity;
 export 'src/graph/algorithms/cycle_check.dart' show hasCycle;
 export 'src/graph/algorithms/dinic_max_flow.dart' show DinicMaxFlow;
+export 'src/graph/algorithms/eigenvector_centrality.dart'
+    show eigenvectorCentrality;
 export 'src/graph/algorithms/eulerian.dart'
     show findEulerianPath, hasEulerianCircuit, hasEulerianPath;
 export 'src/graph/algorithms/isomorphism.dart' show findIsomorphisms;
@@ -32,6 +34,7 @@ export 'src/graph/algorithms/stoer_wagner_min_cut.dart' show StoerWagnerMinCut;
 export 'src/graph/algorithms/structural_metrics.dart'
     show
         averageClusteringCoefficient,
+        degreeCentrality,
         graphDensity,
         graphTransitivity,
         localClusteringCoefficient;

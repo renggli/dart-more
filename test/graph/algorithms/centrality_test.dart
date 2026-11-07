@@ -131,5 +131,132 @@ void main() {
         check(total).isCloseTo(1.0, 1e-4);
       });
     });
+
+    group('degreeCentrality', () {
+      test('empty and single vertex graph', () {
+        final g0 = Graph<int, void>(isDirected: false);
+        check(g0.degreeCentrality()).isEmpty();
+
+        final g1 = Graph<int, void>(isDirected: false)..addVertex(1);
+        check(g1.degreeCentrality()[1]).equals(0.0);
+      });
+
+      test('undirected line P3: 0 - 1 - 2', () {
+        final p3 = Graph<int, void>(isDirected: false)
+          ..addEdge(0, 1)
+          ..addEdge(1, 2);
+
+        final dc = p3.degreeCentrality();
+        check(dc[0]).equals(0.5);
+        check(dc[1]).equals(1.0);
+        check(dc[2]).equals(0.5);
+      });
+
+      test('complete graph K4', () {
+        final k4 = GraphFactory<int, void>(isDirected: false)
+            .complete(vertexCount: 4);
+        final dc = k4.degreeCentrality();
+        for (var i = 0; i < 4; i++) {
+          check(dc[i]).equals(1.0);
+        }
+      });
+
+      test('directed line: in-, out-, and total degree centrality', () {
+        final g = Graph<int, void>(isDirected: true)
+          ..addEdge(0, 1)
+          ..addEdge(1, 2);
+
+        final inDc = g.inDegreeCentrality();
+        check(inDc[0]).equals(0.0);
+        check(inDc[1]).equals(0.5);
+        check(inDc[2]).equals(0.5);
+
+        final outDc = g.outDegreeCentrality();
+        check(outDc[0]).equals(0.5);
+        check(outDc[1]).equals(0.5);
+        check(outDc[2]).equals(0.0);
+
+        final dc = g.degreeCentrality();
+        check(dc[0]).equals(0.5);
+        check(dc[1]).equals(1.0);
+        check(dc[2]).equals(0.5);
+      });
+
+      test('standalone degreeCentrality function', () {
+        final res = degreeCentrality<String>(
+          vertices: ['a', 'b', 'c'],
+          degreeOf: (v) => v == 'b' ? 2 : 1,
+        );
+        check(res['a']).equals(0.5);
+        check(res['b']).equals(1.0);
+        check(res['c']).equals(0.5);
+      });
+    });
+
+    group('eigenvectorCentrality', () {
+      test('empty and single vertex graph', () {
+        final g0 = Graph<int, void>(isDirected: false);
+        check(g0.eigenvectorCentrality()).isEmpty();
+
+        final g1 = Graph<int, void>(isDirected: false)..addVertex(1);
+        check(g1.eigenvectorCentrality()[1]).equals(0.0);
+
+        final g1Loop = Graph<int, void>(isDirected: false)..addEdge(1, 1);
+        check(g1Loop.eigenvectorCentrality()[1]).equals(1.0);
+      });
+
+      test('disconnected vertices (zero norm)', () {
+        final g = Graph<int, void>(isDirected: false)
+          ..addVertex(1)
+          ..addVertex(2);
+        final ec = g.eigenvectorCentrality();
+        check(ec[1]).equals(0.0);
+        check(ec[2]).equals(0.0);
+      });
+
+      test('undirected ring R3', () {
+        final ring = GraphFactory<int, void>(isDirected: false)
+            .ring(vertexCount: 3);
+        final ec = ring.eigenvectorCentrality();
+        const expected = 1 / 1.7320508; // 1 / sqrt(3)
+        check(ec[0]!).isCloseTo(expected, 1e-4);
+        check(ec[1]!).isCloseTo(expected, 1e-4);
+        check(ec[2]!).isCloseTo(expected, 1e-4);
+      });
+
+      test('star graph S3 (center has higher score)', () {
+        final star = GraphFactory<int, void>(isDirected: false)
+            .star(vertexCount: 3);
+        // Center is 0, leaves are 1 and 2.
+        final ec = star.eigenvectorCentrality();
+        // x_0 = sqrt(0.5) ~ 0.7071, x_1 = x_2 = 0.5.
+        check(ec[0]!).isCloseTo(0.707106, 1e-4);
+        check(ec[1]!).isCloseTo(0.5, 1e-4);
+        check(ec[2]!).isCloseTo(0.5, 1e-4);
+      });
+
+      test('weighted edges', () {
+        final g = Graph<int, int>(isDirected: false)
+          ..addEdge(0, 1, value: 2)
+          ..addEdge(0, 2, value: 1);
+        final ec = g.eigenvectorCentrality(
+          edgeWeight: (u, v) => g.getEdge(u, v)!.value,
+        );
+        check(ec[1]! > ec[2]!).isTrue();
+      });
+
+      test(
+        'standalone eigenvectorCentrality function without predecessorsOf',
+        () {
+          final ec = eigenvectorCentrality<int>(
+            vertices: [1, 2, 3],
+            successorsOf: (v) => v == 1 ? [2, 3] : [1],
+          );
+          check(ec[1]!).isCloseTo(0.707106, 1e-4);
+          check(ec[2]!).isCloseTo(0.5, 1e-4);
+          check(ec[3]!).isCloseTo(0.5, 1e-4);
+        },
+      );
+    });
   });
 }

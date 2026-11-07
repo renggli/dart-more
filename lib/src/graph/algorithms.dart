@@ -11,6 +11,7 @@ import 'algorithms/bron_kerbosch_cliques.dart' as bron_kerbosch_cliques;
 import 'algorithms/connectivity.dart' as connectivity;
 import 'algorithms/cycle_check.dart' as cycle_check;
 import 'algorithms/dinic_max_flow.dart' as dinic_max_flow;
+import 'algorithms/eigenvector_centrality.dart' as eigenvector_centrality;
 import 'algorithms/eulerian.dart' as eulerian;
 import 'algorithms/isomorphism.dart' as isomorphism;
 import 'algorithms/k_core.dart' as k_core;
@@ -409,6 +410,30 @@ extension AlgorithmsGraphExtension<V, E> on Graph<V, E> {
         vertexStrategy: vertexStrategy ?? this.vertexStrategy,
       );
 
+  /// Computes the degree centrality of all vertices in this graph.
+  Map<V, double> degreeCentrality({StorageStrategy<V>? vertexStrategy}) =>
+      structural_metrics.degreeCentrality<V>(
+        vertices: vertices,
+        degreeOf: degreeOf,
+        vertexStrategy: vertexStrategy ?? this.vertexStrategy,
+      );
+
+  /// Computes the in-degree centrality of all vertices in this graph.
+  Map<V, double> inDegreeCentrality({StorageStrategy<V>? vertexStrategy}) =>
+      structural_metrics.degreeCentrality<V>(
+        vertices: vertices,
+        degreeOf: inDegreeOf,
+        vertexStrategy: vertexStrategy ?? this.vertexStrategy,
+      );
+
+  /// Computes the out-degree centrality of all vertices in this graph.
+  Map<V, double> outDegreeCentrality({StorageStrategy<V>? vertexStrategy}) =>
+      structural_metrics.degreeCentrality<V>(
+        vertices: vertices,
+        degreeOf: outDegreeOf,
+        vertexStrategy: vertexStrategy ?? this.vertexStrategy,
+      );
+
   /// Computes the betweenness centrality of all vertices in this graph.
   Map<V, double> betweennessCentrality({
     bool normalized = true,
@@ -454,6 +479,22 @@ extension AlgorithmsGraphExtension<V, E> on Graph<V, E> {
     }
     return result;
   }
+
+  /// Computes the eigenvector centrality of all vertices in this graph using power iteration.
+  Map<V, double> eigenvectorCentrality({
+    num Function(V source, V target)? edgeWeight,
+    int maxIterations = 100,
+    double tolerance = 1e-6,
+    StorageStrategy<V>? vertexStrategy,
+  }) => eigenvector_centrality.eigenvectorCentrality<V>(
+    vertices: vertices,
+    successorsOf: successorsOf,
+    predecessorsOf: predecessorsOf,
+    edgeWeight: edgeWeight ?? _getDefaultEdgeValueOr(1),
+    maxIterations: maxIterations,
+    tolerance: tolerance,
+    vertexStrategy: vertexStrategy ?? this.vertexStrategy,
+  );
 
   /// Computes the maximum bipartite matching of this undirected bipartite graph.
   Map<V, V> bipartiteMatching({StorageStrategy<V>? vertexStrategy}) {

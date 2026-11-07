@@ -1,5 +1,24 @@
 import '../strategy.dart';
 
+/// Computes the degree centrality of all [vertices].
+///
+/// Degree centrality of a vertex $v$ is $\frac{\deg(v)}{|V| - 1}$.
+/// Returns `0.0` for all vertices if $|V| \le 1$.
+Map<V, double> degreeCentrality<V>({
+  required Iterable<V> vertices,
+  required int Function(V vertex) degreeOf,
+  StorageStrategy<V>? vertexStrategy,
+}) {
+  vertexStrategy ??= StorageStrategy.defaultStrategy();
+  final result = vertexStrategy.createMap<double>();
+  final n = vertices.length;
+  final denom = n > 1 ? n - 1.0 : 0.0;
+  for (final v in vertices) {
+    result[v] = denom > 0.0 ? degreeOf(v) / denom : 0.0;
+  }
+  return result;
+}
+
 /// Computes the density of a graph.
 ///
 /// For a directed graph with $|V|$ vertices and $|E|$ non-self edges, density is
