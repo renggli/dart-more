@@ -23,7 +23,7 @@ extension RandomGraphFactoryExtension<V, E> on GraphFactory<V, E> {
     for (var i = 0; i < vertexCount; i++) {
       builder.addVertexIndex(i);
     }
-    if (probability > 0) {
+    if (vertexCount >= 2 && probability > 0) {
       final edges = isDirected
           ? IntegerRange.length(vertexCount).permutations(2)
           : IntegerRange.length(vertexCount).combinations(2);

@@ -10,8 +10,11 @@ void main() {
   group('atlas', () {
     final random = Random(1252);
     final factory = GraphFactory<int, void>(isDirected: false);
+    test('length', () {
+      check(factory.atlasLength).equals(1253);
+    });
     test('numbered', () {
-      for (var i = 0; i <= 1252; i += random.nextInt(100)) {
+      for (var i = 0; i < factory.atlasLength; i += random.nextInt(100)) {
         final graph = factory.atlas(i);
         expectInvariants(graph);
       }

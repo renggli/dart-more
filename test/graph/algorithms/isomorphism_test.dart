@@ -119,6 +119,33 @@ void main() {
         ).toList();
         check(isos.length).equals(1);
       });
+
+      test('self-loops are distinguished', () {
+        final g1 = Graph<int, int>(isDirected: true)
+          ..addEdge(1, 2, value: 1)
+          ..addEdge(2, 1, value: 1)
+          ..addEdge(1, 1, value: 5)
+          ..addEdge(2, 2, value: 9);
+        final g2 = Graph<int, int>(isDirected: true)
+          ..addEdge(1, 2, value: 1)
+          ..addEdge(2, 1, value: 1)
+          ..addEdge(1, 1, value: 5);
+        final g3 = Graph<int, int>(isDirected: true)
+          ..addEdge(1, 2, value: 1)
+          ..addEdge(2, 1, value: 1)
+          ..addEdge(1, 1, value: 9)
+          ..addEdge(2, 2, value: 5);
+
+        check(g1.isIsomorphicTo(g2)).isFalse();
+        check(g1.isIsomorphicTo(g3, edgeComparator: (a, b) => a == b)).isTrue();
+        check(
+          g1.isIsomorphicTo(
+            g3,
+            vertexComparator: (a, b) => a == b,
+            edgeComparator: (a, b) => a == b,
+          ),
+        ).isFalse();
+      });
     });
 
     group('subgraph isomorphism', () {

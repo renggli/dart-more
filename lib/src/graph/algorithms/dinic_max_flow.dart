@@ -84,7 +84,7 @@ class DinicMaxFlow<V> {
         vertex.index = 0;
       }
       while (true) {
-        final pushed = _dfs(source, target, double.infinity);
+        final pushed = _dfs(source, target);
         if (pushed == 0) break;
         flow += pushed;
       }
@@ -110,21 +110,34 @@ class DinicMaxFlow<V> {
     return target.level != -1;
   }
 
-  num _dfs(_Vertex<V> source, _Vertex<V> target, num pushed) {
-    if (pushed <= 0) return 0;
-    if (source == target) return pushed;
-    for (; source.index < source.outgoing.length; source.index++) {
-      final edge = source.outgoing[source.index];
-      final u = edge.target;
-      if (source.level + 1 != u.level) continue;
-      if (edge.residual <= 0) continue;
-      final tr = _dfs(u, target, math.min(pushed, edge.residual));
-      if (tr == 0) continue;
-      edge.flow += tr;
-      edge.reverse.flow -= tr;
-      return tr;
+  /// Finds an augmenting path in the level graph and pushes flow along it.
+  ///
+  /// Implemented iteratively to avoid stack overflows on deep graphs.
+  num _dfs(_Vertex<V> source, _Vertex<V> target) {
+    final path = <_Edge<V>>[];
+    var current = source;
+    while (current != target) {
+      if (current.index < current.outgoing.length) {
+        final edge = current.outgoing[current.index];
+        if (current.level + 1 == edge.target.level && edge.residual > 0) {
+          path.add(edge);
+          current = edge.target;
+        } else {
+          current.index++;
+        }
+      } else {
+        // Dead end: retreat and skip the edge leading here.
+        if (path.isEmpty) return 0;
+        current = path.removeLast().source;
+        current.index++;
+      }
     }
-    return 0;
+    final pushed = path.map((edge) => edge.residual).reduce(math.min);
+    for (final edge in path) {
+      edge.flow += pushed;
+      edge.reverse.flow -= pushed;
+    }
+    return pushed;
   }
 }
 

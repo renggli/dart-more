@@ -166,20 +166,23 @@ int vertexConnectivity<V>({
   // Global vertex connectivity:
   // For undirected:
   // Check if graph is complete graph K_n
-  // Count edges
+  // Count non-self-loop edges
   var edgeCount = 0;
   for (final v in vertexList) {
-    edgeCount += successorsOf(v).length;
+    for (final w in successorsOf(v)) {
+      if (w != v) edgeCount++;
+    }
   }
   final maxEdges = n * (n - 1);
-  if (isDirected ? edgeCount == maxEdges : edgeCount == maxEdges) {
+  if (edgeCount == maxEdges) {
     return n - 1;
   }
 
   var minConnectivity = n - 1;
   for (var i = 0; i < n; i++) {
     final s = vertexList[i];
-    for (var j = i + 1; j < n; j++) {
+    for (var j = isDirected ? 0 : i + 1; j < n; j++) {
+      if (i == j) continue;
       final t = vertexList[j];
       final directEdge =
           containsEdge(s, t) || (!isDirected && containsEdge(t, s));

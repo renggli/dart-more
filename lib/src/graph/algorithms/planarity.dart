@@ -135,7 +135,7 @@ bool _isComponentPlanar(List<int> component, List<Set<int>> adj) {
 }
 
 void _dfsOrientation(
-  int v,
+  int root,
   Map<int, _Edge?> parentEdge,
   List<Set<int>> adj,
   Map<int, List<int>> orientedAdj,
@@ -145,44 +145,16 @@ void _dfsOrientation(
   Map<_Edge, int> lowpt2,
   Map<_Edge, int> nestingDepth,
 ) {
-  final e = parentEdge[v];
-  for (final w in adj[v]) {
-    final vw = _Edge(v, w);
-    final wv = _Edge(w, v);
-    if (orientedEdges.contains(vw) || orientedEdges.contains(wv)) {
-      continue;
-    }
-    orientedEdges.add(vw);
-    orientedAdj.putIfAbsent(v, () => <int>[]).add(w);
+  final stack = <({int v, Iterator<int> iter, _Edge? activeEdge})>[
+    (v: root, iter: adj[root].iterator, activeEdge: null),
+  ];
 
-    lowpt[vw] = height[v]!;
-    lowpt2[vw] = height[v]!;
-
-    if (height[w] == null) {
-      // Tree edge
-      parentEdge[w] = vw;
-      height[w] = height[v]! + 1;
-      _dfsOrientation(
-        w,
-        parentEdge,
-        adj,
-        orientedAdj,
-        orientedEdges,
-        height,
-        lowpt,
-        lowpt2,
-        nestingDepth,
-      );
-    } else {
-      // Back edge
-      lowpt[vw] = height[w]!;
-    }
-
+  void finishEdge(int v, _Edge vw) {
+    final e = parentEdge[v];
     nestingDepth[vw] = 2 * lowpt[vw]!;
     if (lowpt2[vw]! < height[v]!) {
       nestingDepth[vw] = nestingDepth[vw]! + 1;
     }
-
     if (e != null) {
       if (lowpt[vw]! < lowpt[e]!) {
         lowpt2[e] = min(lowpt[e]!, lowpt2[vw]!);
@@ -194,10 +166,46 @@ void _dfsOrientation(
       }
     }
   }
+
+  while (stack.isNotEmpty) {
+    final frame = stack.last;
+    final v = frame.v;
+    if (frame.activeEdge case final vw?) {
+      finishEdge(v, vw);
+      stack[stack.length - 1] = (v: v, iter: frame.iter, activeEdge: null);
+    }
+    if (frame.iter.moveNext()) {
+      final w = frame.iter.current;
+      final vw = _Edge(v, w);
+      final wv = _Edge(w, v);
+      if (orientedEdges.contains(vw) || orientedEdges.contains(wv)) {
+        continue;
+      }
+      orientedEdges.add(vw);
+      orientedAdj.putIfAbsent(v, () => <int>[]).add(w);
+
+      lowpt[vw] = height[v]!;
+      lowpt2[vw] = height[v]!;
+
+      if (height[w] == null) {
+        // Tree edge
+        parentEdge[w] = vw;
+        height[w] = height[v]! + 1;
+        stack[stack.length - 1] = (v: v, iter: frame.iter, activeEdge: vw);
+        stack.add((v: w, iter: adj[w].iterator, activeEdge: null));
+      } else {
+        // Back edge
+        lowpt[vw] = height[w]!;
+        finishEdge(v, vw);
+      }
+    } else {
+      stack.removeLast();
+    }
+  }
 }
 
 bool _dfsTesting(
-  int v,
+  int root,
   Map<int, _Edge?> parentEdge,
   Map<int, List<int>> orderedAdj,
   List<_ConflictPair> s,
@@ -207,33 +215,29 @@ bool _dfsTesting(
   Map<_Edge, _Edge?> lowptEdge,
   Map<_Edge, _Edge?> ref,
 ) {
-  final e = parentEdge[v];
-  final adjs = orderedAdj[v] ?? const [];
-  for (final w in adjs) {
-    final ei = _Edge(v, w);
-    stackBottom[ei] = s.isEmpty ? null : s.last;
-    if (ei == parentEdge[w]) {
-      // Tree edge
-      if (!_dfsTesting(
-        w,
-        parentEdge,
-        orderedAdj,
-        s,
-        stackBottom,
-        lowpt,
-        height,
-        lowptEdge,
-        ref,
-      )) {
-        return false;
-      }
-    } else {
-      // Back edge
-      lowptEdge[ei] = ei;
-      s.add(_ConflictPair(right: _Interval(ei, ei)));
-    }
+  final stack =
+      <
+        ({
+          int v,
+          List<int> adjs,
+          Iterator<int> iter,
+          int? activeW,
+          _Edge? activeEdge,
+        })
+      >[];
 
-    // Integrate new return edges
+  void push(int v) {
+    final adjs = orderedAdj[v] ?? const [];
+    stack.add((
+      v: v,
+      adjs: adjs,
+      iter: adjs.iterator,
+      activeW: null,
+      activeEdge: null,
+    ));
+  }
+
+  bool integrateReturnEdges(int v, List<int> adjs, int w, _Edge ei, _Edge? e) {
     if (lowpt[ei]! < height[v]!) {
       if (w == adjs.first) {
         if (e != null) {
@@ -245,11 +249,55 @@ bool _dfsTesting(
         }
       }
     }
+    return true;
   }
 
-  // Remove back edges returning to parent
-  if (e != null) {
-    _removeBackEdges(e, s, height, lowpt, ref);
+  push(root);
+  while (stack.isNotEmpty) {
+    final frame = stack.last;
+    final v = frame.v;
+    final e = parentEdge[v];
+    if (frame.activeEdge case final ei?) {
+      if (!integrateReturnEdges(v, frame.adjs, frame.activeW!, ei, e)) {
+        return false;
+      }
+      stack[stack.length - 1] = (
+        v: v,
+        adjs: frame.adjs,
+        iter: frame.iter,
+        activeW: null,
+        activeEdge: null,
+      );
+    }
+    if (frame.iter.moveNext()) {
+      final w = frame.iter.current;
+      final ei = _Edge(v, w);
+      stackBottom[ei] = s.isEmpty ? null : s.last;
+      if (ei == parentEdge[w]) {
+        // Tree edge
+        stack[stack.length - 1] = (
+          v: v,
+          adjs: frame.adjs,
+          iter: frame.iter,
+          activeW: w,
+          activeEdge: ei,
+        );
+        push(w);
+      } else {
+        // Back edge
+        lowptEdge[ei] = ei;
+        s.add(_ConflictPair(right: _Interval(ei, ei)));
+        if (!integrateReturnEdges(v, frame.adjs, w, ei, e)) {
+          return false;
+        }
+      }
+    } else {
+      stack.removeLast();
+      // Remove back edges returning to parent
+      if (e != null) {
+        _removeBackEdges(e, s, height, lowpt, ref);
+      }
+    }
   }
   return true;
 }

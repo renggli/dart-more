@@ -97,6 +97,19 @@ Iterable<Map<VP, VT>> findIsomorphisms<VT, ET, VP, EP>({
     }
 
     // Syntactic feasibility:
+    // Check self-loop consistency
+    final pSelfLoop = pSuccessors[u].contains(u);
+    final tSelfLoop = tSuccessors[v].contains(v);
+    if (pSelfLoop != tSelfLoop) return false;
+    if (pSelfLoop &&
+        edgeComparator != null &&
+        patternEdgeValue != null &&
+        targetEdgeValue != null) {
+      final ep = patternEdgeValue(vp, vp);
+      final et = targetEdgeValue(vt, vt);
+      if (ep != null && et != null && !edgeComparator(et, ep)) return false;
+    }
+
     // Check edge consistency with already mapped vertices
     for (final nextU in pSuccessors[u]) {
       if (core1[nextU] != -1) {
@@ -191,16 +204,12 @@ Iterable<Map<VP, VT>> findIsomorphisms<VT, ET, VP, EP>({
     return true;
   }
 
-  Iterable<Map<VP, VT>> search(int depth) sync* {
-    if (depth == n1) {
-      final match = patternStrategy!.createMap<VT>();
-      for (var u = 0; u < n1; u++) {
-        match[pVerts[u]] = tVerts[core1[u]];
-      }
-      yield match;
-      return;
-    }
+  if (n1 == 0) {
+    yield patternStrategy.createMap<VT>();
+    return;
+  }
 
+  (int, List<int>) nextCandidates() {
     var nextU = -1;
     for (var u = 0; u < n1; u++) {
       if (core1[u] == -1 && (out1[u] > 0 || in1[u] > 0)) {
@@ -237,9 +246,81 @@ Iterable<Map<VP, VT>> findIsomorphisms<VT, ET, VP, EP>({
         }
       }
     }
+    return (nextU, candidateV);
+  }
 
-    for (final v in candidateV) {
+  // Iterative backtracking to avoid stack overflows and O(depth^2) yield* overhead.
+  final first = nextCandidates();
+  final stack =
+      <
+        ({
+          int nextU,
+          Iterator<int> candidates,
+          int? activeV,
+          List<int>? modifiedIn1,
+          List<int>? modifiedOut1,
+          List<int>? modifiedIn2,
+          List<int>? modifiedOut2,
+        })
+      >[
+        (
+          nextU: first.$1,
+          candidates: first.$2.iterator,
+          activeV: null,
+          modifiedIn1: null,
+          modifiedOut1: null,
+          modifiedIn2: null,
+          modifiedOut2: null,
+        ),
+      ];
+
+  while (stack.isNotEmpty) {
+    final frame = stack.last;
+    final depth = stack.length - 1;
+    final nextU = frame.nextU;
+
+    // Undo previous branch at this depth, if any.
+    if (frame.activeV case final prevV?) {
+      for (final node in frame.modifiedOut1!) {
+        out1[node] = 0;
+      }
+      for (final node in frame.modifiedIn1!) {
+        in1[node] = 0;
+      }
+      for (final node in frame.modifiedOut2!) {
+        out2[node] = 0;
+      }
+      for (final node in frame.modifiedIn2!) {
+        in2[node] = 0;
+      }
+      core1[nextU] = -1;
+      core2[prevV] = -1;
+      stack[depth] = (
+        nextU: nextU,
+        candidates: frame.candidates,
+        activeV: null,
+        modifiedIn1: null,
+        modifiedOut1: null,
+        modifiedIn2: null,
+        modifiedOut2: null,
+      );
+    }
+
+    var advanced = false;
+    while (frame.candidates.moveNext()) {
+      final v = frame.candidates.current;
       if (isFeasible(nextU, v)) {
+        if (depth + 1 == n1) {
+          core1[nextU] = v;
+          final match = patternStrategy.createMap<VT>();
+          for (var u = 0; u < n1; u++) {
+            match[pVerts[u]] = tVerts[core1[u]];
+          }
+          core1[nextU] = -1;
+          yield match;
+          continue;
+        }
+
         core1[nextU] = v;
         core2[v] = nextU;
 
@@ -274,26 +355,32 @@ Iterable<Map<VP, VT>> findIsomorphisms<VT, ET, VP, EP>({
           }
         }
 
-        yield* search(depth + 1);
+        stack[depth] = (
+          nextU: nextU,
+          candidates: frame.candidates,
+          activeV: v,
+          modifiedIn1: modifiedIn1,
+          modifiedOut1: modifiedOut1,
+          modifiedIn2: modifiedIn2,
+          modifiedOut2: modifiedOut2,
+        );
 
-        for (final node in modifiedOut1) {
-          out1[node] = 0;
-        }
-        for (final node in modifiedIn1) {
-          in1[node] = 0;
-        }
-        for (final node in modifiedOut2) {
-          out2[node] = 0;
-        }
-        for (final node in modifiedIn2) {
-          in2[node] = 0;
-        }
-
-        core1[nextU] = -1;
-        core2[v] = -1;
+        final next = nextCandidates();
+        stack.add((
+          nextU: next.$1,
+          candidates: next.$2.iterator,
+          activeV: null,
+          modifiedIn1: null,
+          modifiedOut1: null,
+          modifiedIn2: null,
+          modifiedOut2: null,
+        ));
+        advanced = true;
+        break;
       }
     }
+    if (!advanced) {
+      stack.removeLast();
+    }
   }
-
-  yield* search(0);
 }

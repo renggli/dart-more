@@ -3,13 +3,16 @@ import '../graph.dart';
 
 /// Extension on [GraphFactory] to create graphs from the Atlas of Graphs.
 extension AtlasGraphFactoryExtension<V, E> on GraphFactory<V, E> {
+  /// Returns the number of graphs in the Atlas of Graphs (`1253`).
+  int get atlasLength => _atlas.length;
+
   /// Returns a graph from "An Atlas of Graphs" by Ronald C. Read and Robin J.
-  /// Wilson, Oxford University Press, 1998. [number] is a number between `0`
-  /// and `1252`.
+  /// Wilson, Oxford University Press, 1998.
   ///
-  /// The graphs are sorted by the number of nodes, the number of vertices,
-  /// in increasing order of degree sequence, and in increasing number of
-  /// automorphisms.
+  /// [number] is the index of the graph between `0` (inclusive) and
+  /// [atlasLength] (exclusive). The graphs are ordered by increasing number of
+  /// vertices (from `0` to `7`), increasing number of edges (from `0` to `21`),
+  /// increasing degree sequence, and increasing number of automorphisms.
   Graph<V, E> atlas(int number) {
     final encoded = _atlas[number];
     final builder = newBuilder();

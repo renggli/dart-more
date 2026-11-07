@@ -40,6 +40,15 @@ void main() {
       check(graph.successorsOf('b')).isEmpty();
       check(graph.successorsOf('c')).deepEquals(['a']);
     });
+    test('edge predicate on directed graph with antiparallel edges', () {
+      final base = Graph<String, int>(isDirected: true)
+        ..addEdge('a', 'b', value: 1)
+        ..addEdge('b', 'a', value: 2);
+      final graph = base.where(edgePredicate: (edge) => edge.value == 1);
+      expectInvariants(graph);
+      check(graph.neighboursOf('a')).deepEquals(['b']);
+      check(graph.neighboursOf('b')).deepEquals(['a']);
+    });
     test('vertex predicate on undirected graph', () {
       final base = Graph<String, void>(isDirected: false);
       base
@@ -134,6 +143,15 @@ void main() {
       check(graph.successorsOf('a')).isEmpty();
       check(graph.successorsOf('b')).isEmpty();
       check(graph.successorsOf('c')).deepEquals(['a']);
+    });
+    test('edge predicate on directed graph with antiparallel edges', () {
+      final base = Graph<String, int>(isDirected: true)
+        ..addEdge('a', 'b', value: 1)
+        ..addEdge('b', 'a', value: 2);
+      final graph = base.where(edgePredicate: (edge) => edge.value == 1);
+      expectInvariants(graph);
+      check(graph.neighboursOf('a')).deepEquals(['b']);
+      check(graph.neighboursOf('b')).deepEquals(['a']);
     });
     test('edge predicate on undirected graph', () {
       final base = Graph<String, void>(isDirected: false);

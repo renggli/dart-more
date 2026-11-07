@@ -97,16 +97,39 @@ Map<V, V> bipartiteMatching<V>({
     return foundAugmenting;
   }
 
-  bool dfs(V u) {
-    for (final v in neighboursOf(u)) {
-      final nextU = pairV[v];
-      if (nextU == null || (dist[nextU] == dist[u]! + 1 && dfs(nextU))) {
-        pairU[u] = v;
-        pairV[v] = u;
-        return true;
+  // Iterative depth-first search to avoid stack overflows on deep graphs.
+  bool dfs(V root) {
+    final stack = <({V u, Iterator<V> iter, V? activeV})>[
+      (u: root, iter: neighboursOf(root).iterator, activeV: null),
+    ];
+    while (stack.isNotEmpty) {
+      final (u: u, iter: iter, activeV: _) = stack.last;
+      if (iter.moveNext()) {
+        final v = iter.current;
+        final nextU = pairV[v];
+        if (nextU == null) {
+          pairU[u] = v;
+          pairV[v] = u;
+          stack.removeLast();
+          while (stack.isNotEmpty) {
+            final (u: prevU, iter: _, activeV: prevV) = stack.removeLast();
+            pairU[prevU] = prevV;
+            pairV[prevV as V] = prevU;
+          }
+          return true;
+        } else if (dist[nextU] == dist[u]! + 1) {
+          stack[stack.length - 1] = (u: u, iter: iter, activeV: v);
+          stack.add((
+            u: nextU,
+            iter: neighboursOf(nextU).iterator,
+            activeV: null,
+          ));
+        }
+      } else {
+        dist[u] = -1;
+        stack.removeLast();
       }
     }
-    dist[u] = -1;
     return false;
   }
 

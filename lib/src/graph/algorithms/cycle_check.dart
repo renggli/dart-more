@@ -15,24 +15,27 @@ bool hasCycle<V>({
   final visiting = vertexStrategy.createSet();
   final visited = vertexStrategy.createSet();
 
-  bool hasCycleFrom(V vertex) {
+  // Iterative depth-first search to avoid stack overflows on deep graphs.
+  final stack = <(V, Iterator<V>)>[];
+  for (final vertex in vertices) {
+    if (visited.contains(vertex)) continue;
     visiting.add(vertex);
-    for (final successor in successorsOf(vertex)) {
-      if (visiting.contains(successor)) {
-        return true;
-      }
-      if (!visited.contains(successor)) {
-        if (hasCycleFrom(successor)) return true;
+    stack.add((vertex, successorsOf(vertex).iterator));
+    while (stack.isNotEmpty) {
+      final (current, iterator) = stack.last;
+      if (iterator.moveNext()) {
+        final successor = iterator.current;
+        if (visiting.contains(successor)) return true;
+        if (!visited.contains(successor)) {
+          visiting.add(successor);
+          stack.add((successor, successorsOf(successor).iterator));
+        }
+      } else {
+        stack.removeLast();
+        visiting.remove(current);
+        visited.add(current);
       }
     }
-    visiting.remove(vertex);
-    visited.add(vertex);
-    return false;
   }
-
-  for (final vertex in vertices) {
-    if (!visited.contains(vertex) && hasCycleFrom(vertex)) return true;
-  }
-
   return false;
 }

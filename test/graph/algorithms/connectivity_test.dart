@@ -116,6 +116,20 @@ void main() {
         );
         check(conn).equals(1);
       });
+
+      test('directed graph vertex connectivity and self-loops', () {
+        // 0 -> 1 gives edge (0, 1) so i < j is direct, but (1, 0) has no path -> 0
+        final g1 = Graph<int, void>(isDirected: true)..addEdge(0, 1);
+        check(g1.vertexConnectivity()).equals(0);
+
+        // Self-loops do not inflate edge count to falsely report K_n
+        final g2 = Graph<int, void>(isDirected: false)
+          ..addEdge(0, 1)
+          ..addEdge(0, 0)
+          ..addEdge(1, 1)
+          ..addVertex(2);
+        check(g2.vertexConnectivity()).equals(0);
+      });
     });
   });
 }
