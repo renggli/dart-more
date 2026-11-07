@@ -26,7 +26,8 @@ class Complex implements CloseTo<Complex> {
   factory fromPolar(num radius, num phase) =>
       Complex(radius * phase.cos(), radius * phase.sin());
 
-  /// Parses [source] as a [Complex]. Throws a [FormatException] for invalid input.
+  /// Parses [source] as a [Complex]. Throws a [FormatException] for invalid
+  /// input.
   factory parse(String source) {
     final parts = parseWithUnits(source, units: const {'', 'i'});
     if (parts == null) throw FormatException(source);
@@ -52,7 +53,8 @@ class Complex implements CloseTo<Complex> {
   /// The complex number with both real and imaginary part to be [double.nan].
   static const Complex nan = Complex(double.nan, double.nan);
 
-  /// The complex number with both real and imaginary part to be [double.infinity].
+  /// The complex number with both real and imaginary parts equal to
+  /// [double.infinity].
   static const Complex infinity = Complex(double.infinity, double.infinity);
 
   /// Returns the real part of the number.

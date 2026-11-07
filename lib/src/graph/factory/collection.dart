@@ -3,7 +3,8 @@ import 'package:collection/collection.dart';
 import '../factory.dart';
 import '../graph.dart';
 
-/// Extension on [GraphFactory] to create graphs from collections of vertices and edges.
+/// Extension on [GraphFactory] to create graphs from collections of vertices
+/// and edges.
 extension CollectionGraphFactoryExtension<V, E> on GraphFactory<V, E> {
   /// Creates a [Graph] from a [Iterable] of chains.
   Graph<V, E> fromPath(Iterable<V> chain, {E? value}) =>

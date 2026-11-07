@@ -9,7 +9,8 @@ import 'loader.dart';
 
 /// A cache that expires after a certain amount of time.
 class ExpiryCache<K, V> extends Cache<K, V> {
-  /// Creates an expiry cache with the given [loader], [updateExpiry], and [accessExpiry].
+  /// Creates an expiry cache with the given [loader], [updateExpiry], and
+  /// [accessExpiry].
   new(this.loader, this.updateExpiry, this.accessExpiry) {
     if (updateExpiry == null && accessExpiry == null) {
       throw ArgumentError('Either update or access expiry must be provided.');

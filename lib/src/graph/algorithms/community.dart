@@ -3,21 +3,22 @@ import 'dart:typed_data';
 
 import '../strategy.dart';
 
-/// Computes the Newman–Girvan modularity of a given partition of [communities] in a graph.
+/// Computes the Newman–Girvan modularity of [communities] in a graph.
 ///
-/// Modularity measures the density of edges inside communities compared to links between communities.
-/// For directed graphs, it uses Leicht and Newman's directed modularity formula:
+/// Modularity measures the density of edges inside communities compared to
+/// links between communities.
 ///
-/// $$Q = \sum_{c} \left[ \frac{W_c}{m} - \left(\frac{K_c^{\text{out}}}{m}\right)\left(\frac{K_c^{\text{in}}}{m}\right) \right]$$
+/// For directed graphs, it uses Leicht and Newman's directed modularity:
+/// `Q = sum_c (W_c / m - (K_c_out / m) * (K_c_in / m))`
 ///
 /// For undirected graphs:
+/// `Q = sum_c (W_c / (2 * m) - (K_c / (2 * m))^2)`
 ///
-/// $$Q = \sum_{c} \left[ \frac{W_c}{2m} - \left(\frac{K_c}{2m}\right)^2 \right]$$
+/// where `m` is the total edge weight, `W_c` is the total weight of edges
+/// internal to community `c`, and `K_c_out` / `K_c_in` are the sum of out-
+/// and in-degrees of vertices in community `c`.
 ///
-/// where $m$ is the total edge weight, $W_c$ is the total weight of edges internal to community $c$,
-/// and $K_c^{\text{out}}$ / $K_c^{\text{in}}$ are the sum of out- and in-degrees of vertices in community $c$.
-///
-/// Returns `0.0` if the graph has no edges ($m = 0$).
+/// Returns `0.0` if the graph has no edges (`m = 0`).
 double modularity<V>({
   required Iterable<V> vertices,
   required Iterable<V> Function(V vertex) successorsOf,
@@ -74,13 +75,16 @@ double modularity<V>({
   return q;
 }
 
-/// Detects communities in an undirected graph using the asynchronous label propagation algorithm (LPA).
+/// Detects communities in an undirected graph using the asynchronous label
+/// propagation algorithm (LPA).
 ///
-/// Each vertex starts with a unique label. In each iteration, vertices update their label to the
-/// most frequent label among their neighbours (weighted by edge weight).
+/// Each vertex starts with a unique label. In each iteration, vertices update
+/// their label to the most frequent label among their neighbours (weighted by
+/// edge weight).
 ///
-/// If [random] is provided, vertex update order is randomized in each iteration, and ties
-/// are broken randomly; otherwise, deterministic vertex ordering and smallest-label tie breaking are used.
+/// If [random] is provided, vertex update order is randomized in each
+/// iteration, and ties are broken randomly; otherwise, deterministic vertex
+/// ordering and smallest-label tie breaking are used.
 Iterable<Set<V>> labelPropagationCommunities<V>({
   required Iterable<V> vertices,
   required Iterable<V> Function(V vertex) neighboursOf,
@@ -170,10 +174,12 @@ Iterable<Set<V>> labelPropagationCommunities<V>({
   return communityMap.values.toList(growable: false);
 }
 
-/// Detects communities in an undirected graph by maximizing modularity using the Louvain algorithm.
+/// Detects communities in an undirected graph by maximizing modularity using
+/// the Louvain algorithm.
 ///
-/// [resolution] is the modularity resolution parameter $\gamma$ (defaults to `1.0`).
-/// Values $> 1.0$ yield smaller communities, while values $< 1.0$ yield larger communities.
+/// [resolution] is the modularity resolution parameter `gamma` (defaults to
+/// `1.0`). Values `> 1.0` yield smaller communities, while values `< 1.0`
+/// yield larger communities.
 Iterable<Set<V>> louvainCommunities<V>({
   required Iterable<V> vertices,
   required Iterable<V> Function(V vertex) neighboursOf,

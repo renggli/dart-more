@@ -4,8 +4,8 @@ import '../strategy.dart';
 
 /// Computes the degree centrality of all [vertices].
 ///
-/// Degree centrality of a vertex $v$ is $\frac{\deg(v)}{|V| - 1}$.
-/// Returns `0.0` for all vertices if $|V| \le 1$.
+/// Degree centrality of a vertex `v` is `deg(v) / (|V| - 1)`.
+/// Returns `0.0` for all vertices if `|V| <= 1`.
 Map<V, double> degreeCentrality<V>({
   required Iterable<V> vertices,
   required int Function(V vertex) degreeOf,
@@ -23,12 +23,12 @@ Map<V, double> degreeCentrality<V>({
 
 /// Computes the density of a graph.
 ///
-/// For a directed graph with $|V|$ vertices and $|E|$ non-self edges, density is
-/// $\frac{|E|}{|V|(|V|-1)}$.
-/// For an undirected graph with $|E_u|$ non-self edges, density is
-/// $\frac{2|E_u|}{|V|(|V|-1)}$.
+/// For a directed graph with `|V|` vertices and `|E|` non-self edges, density
+/// is `|E| / (|V| * (|V| - 1))`.
+/// For an undirected graph with `|E_u|` non-self edges, density is
+/// `2 * |E_u| / (|V| * (|V| - 1))`.
 ///
-/// Returns `0.0` if $|V| < 2$.
+/// Returns `0.0` if `|V| < 2`.
 double graphDensity<V>({
   required Iterable<V> vertices,
   required Iterable<V> Function(V vertex) successorsOf,
@@ -48,10 +48,10 @@ double graphDensity<V>({
 
 /// Returns the local clustering coefficient of [vertex].
 ///
-/// For undirected graphs, this is $\frac{2 e}{k(k - 1)}$ where $k$ is the number of
-/// distinct neighbours and $e$ is the number of undirected edges between them.
-/// For directed graphs, this is $\frac{e}{k(k - 1)}$ where $e$ is the number of
-/// directed edges between distinct neighbours.
+/// For undirected graphs, this is `2 * e / (k * (k - 1))` where `k` is the
+/// number of distinct neighbours and `e` is the number of undirected edges
+/// between them. For directed graphs, this is `e / (k * (k - 1))` where `e` is
+/// the number of directed edges between distinct neighbours.
 ///
 /// Returns `0.0` if [vertex] has fewer than 2 neighbours.
 double localClusteringCoefficient<V>(
@@ -88,7 +88,8 @@ double localClusteringCoefficient<V>(
   return links / (k * (k - 1));
 }
 
-/// Returns the average clustering coefficient across all [vertices] in the graph.
+/// Returns the average clustering coefficient across all [vertices] in the
+/// graph.
 ///
 /// Returns `0.0` if [vertices] is empty.
 double averageClusteringCoefficient<V>({
@@ -114,9 +115,10 @@ double averageClusteringCoefficient<V>({
   return count == 0 ? 0.0 : sum / count;
 }
 
-/// Returns the transitivity (global clustering coefficient) of an undirected graph.
+/// Returns the transitivity (global clustering coefficient) of an undirected
+/// graph.
 ///
-/// Transitivity is defined as $3 \times \frac{\text{number of triangles}}{\text{number of connected triplets}}$.
+/// Transitivity is defined as `3 * triangles / connected_triplets`.
 /// Returns `0.0` if there are no connected triplets.
 double graphTransitivity<V>({
   required Iterable<V> vertices,
@@ -146,13 +148,17 @@ double graphTransitivity<V>({
 /// Computes the degree assortativity coefficient of a graph.
 ///
 /// Assortativity measures the tendency of vertices to connect to other vertices
-/// with similar degrees (Pearson correlation coefficient of degrees across edges).
+/// with similar degrees (Pearson correlation coefficient of degrees across
+/// edges).
 ///
-/// - Returns a value in $[-1.0, 1.0]$.
-/// - Positive values indicate assortative mixing (high degree connects to high degree).
-/// - Negative values indicate disassortative mixing (high degree connects to low degree).
-/// - Returns [double.nan] if the graph has no edges or if degree variance is zero
-///   (e.g., in regular graphs where all vertices have the exact same degree).
+/// - Returns a value in `[-1.0, 1.0]`.
+/// - Positive values indicate assortative mixing (high degree connects to high
+///   degree).
+/// - Negative values indicate disassortative mixing (high degree connects to
+///   low degree).
+/// - Returns [double.nan] if the graph has no edges or if degree variance is
+///   zero (e.g., in regular graphs where all vertices have the exact same
+///   degree).
 double degreeAssortativity<V>({
   required Iterable<V> vertices,
   required Iterable<V> Function(V vertex) successorsOf,

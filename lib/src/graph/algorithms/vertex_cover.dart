@@ -4,9 +4,11 @@ import 'bipartite_matching.dart' as bipartite_matching;
 
 /// Computes a minimum vertex cover of an undirected graph.
 ///
-/// If [approximate] is `true`, uses a 2-approximation algorithm running in $O(V + E)$ time.
-/// Otherwise, uses an exact algorithm: König's theorem ($O(E \sqrt{V})$) if the graph
-/// is bipartite, or branch-and-bound search if non-bipartite.
+/// If [approximate] is `true`, uses a 2-approximation algorithm running in
+/// `O(|V| + |E|)` time.
+/// Otherwise, uses an exact algorithm: König's theorem
+/// (`O(|E| * sqrt(|V|))`) if the graph is bipartite, or branch-and-bound search
+/// if non-bipartite.
 Set<V> minimumVertexCover<V>({
   required Iterable<V> vertices,
   required Iterable<V> Function(V vertex) neighboursOf,
@@ -109,7 +111,8 @@ Set<V> minimumVertexCover<V>({
 /// Computes a maximum independent set of an undirected graph.
 ///
 /// If [approximate] is `true`, uses a greedy minimum-degree heuristic.
-/// Otherwise, uses an exact algorithm: the complement of the exact minimum vertex cover.
+/// Otherwise, uses an exact algorithm: the complement of the exact minimum
+/// vertex cover.
 Set<V> maximumIndependentSet<V>({
   required Iterable<V> vertices,
   required Iterable<V> Function(V vertex) neighboursOf,
@@ -140,7 +143,8 @@ Set<V> maximumIndependentSet<V>({
   return independentSet;
 }
 
-/// Computes a 2-approximate minimum vertex cover of an undirected graph in $O(V + E)$ time.
+/// Computes a 2-approximate minimum vertex cover of an undirected graph in
+/// `O(|V| + |E|)` time.
 Set<V> approximateMinimumVertexCover<V>({
   required Iterable<V> vertices,
   required Iterable<V> Function(V vertex) neighboursOf,
@@ -161,7 +165,8 @@ Set<V> approximateMinimumVertexCover<V>({
   return cover;
 }
 
-/// Computes an approximate maximum independent set using a greedy minimum-degree heuristic.
+/// Computes an approximate maximum independent set using a greedy
+/// minimum-degree heuristic.
 Set<V> approximateMaximumIndependentSet<V>({
   required Iterable<V> vertices,
   required Iterable<V> Function(V vertex) neighboursOf,

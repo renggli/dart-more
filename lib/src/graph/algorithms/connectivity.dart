@@ -80,13 +80,13 @@ int edgeConnectivity<V>({
 
 typedef _SplitNode<V> = (V, bool);
 
-/// Computes the vertex connectivity of a graph or between [source] and [target].
+/// Computes vertex connectivity of a graph or between [source] and [target].
 ///
-/// Vertex connectivity is the minimum number of vertices whose removal disconnects
-/// the graph (or separates non-adjacent [source] and [target]).
+/// Vertex connectivity is the minimum number of vertices whose removal
+/// disconnects the graph (or separates non-adjacent [source] and [target]).
 ///
-/// Uses vertex splitting $v \to (v_{\text{in}}, v_{\text{out}})$ with unit capacity
-/// internal edges and Dinic's max flow.
+/// Uses vertex splitting `v -> (v_in, v_out)` with unit capacity internal edges
+/// and Dinic's max-flow algorithm.
 int vertexConnectivity<V>({
   required Iterable<V> vertices,
   required Iterable<V> Function(V vertex) successorsOf,

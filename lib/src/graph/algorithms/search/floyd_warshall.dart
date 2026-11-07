@@ -235,11 +235,14 @@ final class FloydWarshall<V> {
   }
 
   /// Returns the closeness centrality of [vertex], which is the reciprocal
-  /// of the sum of shortest-path distances to all other reachable vertices,
-  /// normalized by $\frac{k - 1}{n - 1} \cdot \frac{k - 1}{\sum d}$ where $k$
-  /// is the number of reachable vertices and $n$ is total vertices (Wasserman-Faust).
+  /// of the sum of shortest-path distances to all other reachable vertices.
   ///
-  /// If [normalized] is `false`, returns $\frac{1}{\sum d}$.
+  /// When [normalized] is `true` (the default), applies Wasserman-Faust
+  /// normalization: `(k - 1) / (n - 1) * (k - 1) / sum(d)`, where `k` is the
+  /// number of reachable vertices, `n` is the total number of vertices, and
+  /// `sum(d)` is the sum of shortest-path distances.
+  ///
+  /// If [normalized] is `false`, returns `1.0 / sum(d)`.
   /// Returns `0.0` if [vertex] cannot reach any other vertices.
   double closenessCentrality(V vertex, {bool normalized = true}) {
     final targetMap = _pairs[vertex];

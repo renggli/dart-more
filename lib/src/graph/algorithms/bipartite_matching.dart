@@ -3,7 +3,8 @@ import 'dart:collection';
 import '../strategy.dart';
 
 /// Internal helper to 2-color an undirected bipartite graph.
-/// Returns a map of vertex to boolean partition, or throws [ArgumentError] if not bipartite.
+/// Returns a map of vertex to boolean partition, or throws [ArgumentError] if
+/// not bipartite.
 Map<V, bool> _twoColor<V>({
   required Iterable<V> vertices,
   required Iterable<V> Function(V vertex) neighboursOf,
@@ -34,7 +35,7 @@ Map<V, bool> _twoColor<V>({
 }
 
 /// Computes the maximum bipartite matching of an undirected bipartite graph
-/// using the Hopcroft–Karp algorithm ($O(E \sqrt{V})$).
+/// using the Hopcroft–Karp algorithm (O(E * sqrt(V))).
 ///
 /// Throws [ArgumentError] if the graph is not bipartite.
 ///
@@ -197,7 +198,8 @@ Set<V> minimumVertexCover<V>({
 
 /// Computes the maximum independent set of an undirected bipartite graph.
 ///
-/// In any graph, the complement of a minimum vertex cover is a maximum independent set.
+/// In any graph, the complement of a minimum vertex cover is a maximum
+/// independent set.
 ///
 /// Throws [ArgumentError] if the graph is not bipartite.
 Set<V> maximumIndependentSet<V>({
@@ -220,7 +222,8 @@ Set<V> maximumIndependentSet<V>({
   return independentSet;
 }
 
-/// Computes the maximum weight bipartite matching of an undirected bipartite graph.
+/// Computes the maximum weight bipartite matching of an undirected bipartite
+/// graph.
 ///
 /// If [maximumWeight] is `true`, finds a matching that maximizes total weight
 /// (only edges that contribute positive gain are matched).

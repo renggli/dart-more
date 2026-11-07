@@ -4,8 +4,8 @@ import '../shared/bit.dart';
 ///
 /// Loosely based on http://graphics.stanford.edu/~seander/bithacks.html.
 extension BitUint32Extension on int {
-  /// Returns the number of set bits of an unsigned 32-bit integer. This value is
-  /// also known as "binary weight" or "Hamming weight".
+  /// Returns the number of set bits of an unsigned 32-bit integer. This value
+  /// is also known as "binary weight" or "Hamming weight".
   ///
   /// See https://oeis.org/A000120.
   int get bitCount => countBits32(this);

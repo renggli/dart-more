@@ -3,7 +3,7 @@ import 'dart:collection';
 import '../strategy.dart';
 
 /// Computes a maximum cardinality matching in an undirected graph using
-/// Edmonds' Blossom algorithm ($O(V^3)$).
+/// Edmonds' Blossom algorithm (O(|V|^3)).
 ///
 /// Unlike bipartite matching, this algorithm works on arbitrary general
 /// undirected graphs containing odd cycles.

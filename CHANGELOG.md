@@ -3,13 +3,17 @@
 ## 4.9.0 (Unpublished)
 
 - Significant expansion and refactoring of the graph library:
+  - Add degree centrality (`degreeCentrality`, `inDegreeCentrality`, `outDegreeCentrality`), eigenvector centrality (`eigenvectorCentrality`), closeness centrality (`closenessCentrality`), betweenness centrality (`betweennessCentrality`), and PageRank (`pageRank`).
+  - Add graph metrics: density (`density()`), clustering coefficient (`clusteringCoefficient`, `averageClusteringCoefficient`), transitivity (`transitivity`), and degree assortativity coefficient (`degreeAssortativity()`).
+  - Add Hamiltonian path and circuit detection (`hasHamiltonianPath`, `hasHamiltonianCircuit`, `findHamiltonianPath`).
   - Add Eulerian path and circuit algorithms (`eulerianPath`, `eulerianCircuit`, `hasEulerianPath`, `hasEulerianCircuit`).
+  - Add matching algorithms: Hopcroft–Karp unweighted bipartite matching (`bipartiteMatching`), Hungarian maximum-weight bipartite matching (`weightedBipartiteMatching`), and Edmonds' blossom maximum matching for general graphs (`maximumMatching`).
+  - Add vertex cover and independent set algorithms: minimum vertex cover (`minimumVertexCover`, `approximateMinimumVertexCover`) and maximum independent set (`maximumIndependentSet`, `approximateMaximumIndependentSet`).
+  - Add community detection and modularity: Newman–Girvan modularity (`modularity`), label propagation (`labelPropagationCommunities`), and Louvain modularity optimization (`louvainCommunities`).
+  - Add Left–Right planarity testing (`isPlanar`).
   - Add articulation points, bridges, and biconnected components algorithms (`articulationPoints`, `bridges`, `biconnectedComponents`).
-  - Add centrality metrics: closeness centrality (`closenessCentrality`), betweenness centrality (`betweennessCentrality`), and PageRank (`pageRank`).
-  - Add graph metrics: density (`density`), clustering coefficient (`clusteringCoefficient`, `averageClusteringCoefficient`), and transitivity (`transitivity`).
   - Add distance metrics to `FloydWarshall`: `eccentricity`, `diameter`, `radius`, `center`, `periphery`, and `averagePathLength`.
-  - Add Hopcroft–Karp maximum bipartite matching (`bipartiteMatching`), minimum vertex cover (`minimumVertexCover`), and maximum independent set (`maximumIndependentSet`).
-  - Add $k$-core decomposition (`kCore`, `coreNumbers`).
+  - Add k-core decomposition (`kCore`, `coreNumbers`).
   - Add transitive closure (`transitiveClosure`) and transitive reduction (`transitiveReduction`).
   - Add vertex and edge connectivity algorithms (`vertexConnectivity`, `edgeConnectivity`).
   - Add VF2 graph and subgraph isomorphism algorithms (`isIsomorphicTo`, `findIsomorphisms`).

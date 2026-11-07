@@ -3,10 +3,10 @@ import '../strategy.dart';
 /// Finds isomorphisms or subgraph isomorphisms between target and pattern
 /// using the VF2 algorithm.
 ///
-/// If [subgraph] is `false`, finds full graph isomorphisms (requiring $|V_1| = |V_2|$
-/// and identical edge structure).
-/// If [subgraph] is `true`, finds induced subgraph isomorphisms of pattern in target
-/// (mappings from pattern vertices to target vertices).
+/// If [subgraph] is `false`, finds full graph isomorphisms (requiring identical
+/// vertex counts and edge structure).
+/// If [subgraph] is `true`, finds induced subgraph isomorphisms of pattern in
+/// target (mappings from pattern vertices to target vertices).
 Iterable<Map<VP, VT>> findIsomorphisms<VT, ET, VP, EP>({
   required Iterable<VT> targetVertices,
   required Iterable<VP> patternVertices,

@@ -2,8 +2,9 @@ import '../differ.dart';
 import '../model/operation_type.dart';
 import '../sequence_matcher.dart';
 
-/// Generates the [context format](https://en.wikipedia.org/wiki/Diff#Context_format)
-/// of `diff -c`.
+/// Generates the context format (`diff -c`).
+///
+/// See https://en.wikipedia.org/wiki/Diff#Context_format.
 ///
 /// The context format introduced at Berkeley helped with distributing patches
 /// for source code that have been changed minimally.

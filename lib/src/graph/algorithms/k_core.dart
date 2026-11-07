@@ -1,9 +1,10 @@
 import '../strategy.dart';
 
-/// Computes the core numbers of all [vertices] using the Matula–Beck $O(V + E)$ algorithm.
+/// Computes the core numbers of all [vertices] using the Matula–Beck
+/// `O(|V| + |E|)` algorithm.
 ///
-/// The core number (or coreness) of a vertex is the highest order $k$ of a
-/// $k$-core that contains that vertex.
+/// The core number (or coreness) of a vertex is the highest order `k` of a
+/// k-core that contains that vertex.
 Map<V, int> coreNumbers<V>({
   required Iterable<V> vertices,
   required Iterable<V> Function(V vertex) neighboursOf,
@@ -60,7 +61,7 @@ Map<V, int> coreNumbers<V>({
   return result;
 }
 
-/// Computes the set of vertices belonging to the $k$-core of a graph.
+/// Computes the set of vertices belonging to the k-core of a graph.
 Set<V> kCoreVertices<V>({
   required Iterable<V> vertices,
   required Iterable<V> Function(V vertex) neighboursOf,

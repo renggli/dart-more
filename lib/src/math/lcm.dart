@@ -8,8 +8,8 @@ extension LcmIntegerExtension on int {
 
 /// Extension on [Iterable] of [int] providing [lcm].
 extension LcmIntegerIterableExtension on Iterable<int> {
-  /// Returns the least common multiple (LCM) of the values in this [Iterable]. This
-  /// is the smallest positive integer that is divisible by all numbers.
+  /// Returns the least common multiple (LCM) of the values in this [Iterable].
+  /// This is the smallest positive integer that is divisible by all numbers.
   int lcm() => reduce((a, b) => a.lcm(b));
 }
 
@@ -24,7 +24,7 @@ extension LcmBigIntExtension on BigInt {
 
 /// Extension on [Iterable] of [BigInt] providing [lcm].
 extension LcmBigIntIterableExtension on Iterable<BigInt> {
-  /// Returns the least common multiple (LCM) of the values in this [Iterable]. This
-  /// is the smallest positive integer that is divisible by all numbers.
+  /// Returns the least common multiple (LCM) of the values in this [Iterable].
+  /// This is the smallest positive integer that is divisible by all numbers.
   BigInt lcm() => reduce((a, b) => a.lcm(b));
 }

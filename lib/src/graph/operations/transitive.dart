@@ -8,7 +8,7 @@ extension TransitiveGraphExtension<V, E> on Graph<V, E> {
   ///
   /// The transitive closure is a directed graph with the same vertices,
   /// having an edge `(u, v)` whenever there is a directed path of length
-  /// $\ge 1$ from `u` to `v`.
+  /// `>= 1` from `u` to `v`.
   ///
   /// Throws [GraphError] if the graph is undirected.
   Graph<V, void> transitiveClosure({StorageStrategy<V>? vertexStrategy}) {

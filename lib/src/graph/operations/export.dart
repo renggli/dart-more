@@ -7,8 +7,9 @@ import '../graph.dart';
 
 /// Extension on [Graph] to export graphs in different formats.
 extension ExportGraphExtension<V, E> on Graph<V, E> {
-  /// Exports this graph to the [DOT Language](https://graphviz.org/doc/info/lang.html)
-  /// typically used to describe [Graphviz](https://graphviz.org/) graphs.
+  /// Exports this graph to the [DOT Language]
+  /// (https://graphviz.org/doc/info/lang.html) typically used to describe
+  /// [Graphviz](https://graphviz.org/) graphs.
   ///
   /// Vertices can be partitioned into subgraphs by providing a [subgraph]
   /// callback that maps each vertex to its subgraph identifier, or `null` if
@@ -23,10 +24,10 @@ extension ExportGraphExtension<V, E> on Graph<V, E> {
   /// Similarly edges can be customized by providing [edgeAttributes] as
   /// described in [Edge Attributes](https://graphviz.org/docs/edges/).
   ///
-  /// Subgraphs can be named using [subgraphName]. In Graphviz, naming a subgraph
-  /// with a `cluster` prefix (e.g. `cluster_0`) renders it as a visual cluster
-  /// with a bounding box. Subgraph labels and styling can be customized with
-  /// [subgraphLabel] and [subgraphAttributes].
+  /// Subgraphs can be named using [subgraphName]. In Graphviz, naming a
+  /// subgraph with a `cluster` prefix (e.g. `cluster_0`) renders it as a visual
+  /// cluster with a bounding box. Subgraph labels and styling can be customized
+  /// with [subgraphLabel] and [subgraphAttributes].
   @optionalTypeArgs
   String toDot<S extends Object>({
     Map<String, String>? graphAttributes,

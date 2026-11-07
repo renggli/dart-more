@@ -6,7 +6,8 @@ import '../edge.dart';
 import '../path.dart';
 import '../strategy.dart';
 
-/// Checks if a graph has a Hamiltonian circuit (a closed cycle visiting every vertex exactly once).
+/// Checks if a graph has a Hamiltonian circuit (a closed cycle visiting every
+/// vertex exactly once).
 bool hasHamiltonianCircuit<V, E>({
   required Iterable<V> vertices,
   Iterable<Edge<V, E>> Function(V vertex)? outgoingEdgesOf,
@@ -24,7 +25,8 @@ bool hasHamiltonianCircuit<V, E>({
     ) !=
     null;
 
-/// Checks if a graph has a Hamiltonian path (a path visiting every vertex exactly once).
+/// Checks if a graph has a Hamiltonian path (a path visiting every vertex
+/// exactly once).
 bool hasHamiltonianPath<V, E>({
   required Iterable<V> vertices,
   Iterable<Edge<V, E>> Function(V vertex)? outgoingEdgesOf,
@@ -44,8 +46,8 @@ bool hasHamiltonianPath<V, E>({
 
 /// Finds a Hamiltonian path or circuit in a graph.
 ///
-/// Returns a [Path<V, E>] in traversal order (for a circuit, the start vertex is repeated
-/// at the end), or `null` if no such path or circuit exists.
+/// Returns a [Path] in traversal order (for a circuit, the start vertex is
+/// repeated at the end), or `null` if no such path or circuit exists.
 Path<V, E>? findHamiltonianPath<V, E>({
   required Iterable<V> vertices,
   Iterable<Edge<V, E>> Function(V vertex)? outgoingEdgesOf,

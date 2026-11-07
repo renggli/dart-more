@@ -8,7 +8,8 @@ import 'mapping.dart';
 
 /// Extension on [Map1] to support currying.
 extension Curry1<T1, R> on Map1<T1, R> {
-  /// Converts a function with 1 positional argument into a function taking a single argument.
+  /// Converts a function with 1 positional argument into a function taking a
+  /// single argument.
   Map1<T1, R> get curry =>
       (T1 arg1) => this(arg1);
 }

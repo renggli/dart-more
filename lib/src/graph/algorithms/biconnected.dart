@@ -59,8 +59,8 @@ Set<V> articulationPoints<V>({
 
 /// Finds bridges (cut edges) in an undirected graph.
 ///
-/// A bridge is an edge whose removal increases the number of connected components.
-/// Each bridge is returned as a pair `(u, v)`.
+/// A bridge is an edge whose removal increases the number of connected
+/// components. Each bridge is returned as a pair `(u, v)`.
 Set<(V, V)> bridges<V>({
   required Iterable<V> vertices,
   required Iterable<V> Function(V vertex) neighboursOf,
@@ -115,7 +115,8 @@ typedef BiconnectedComponent<V> = ({Set<V> vertices, Set<(V, V)> edges});
 
 /// Computes the biconnected components of an undirected graph.
 ///
-/// Each biconnected component is returned as a record containing its vertices and edges.
+/// Each biconnected component is returned as a record containing its vertices
+/// and edges.
 Iterable<BiconnectedComponent<V>> biconnectedComponents<V>({
   required Iterable<V> vertices,
   required Iterable<V> Function(V vertex) neighboursOf,

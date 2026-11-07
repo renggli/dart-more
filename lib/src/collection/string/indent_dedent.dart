@@ -35,7 +35,8 @@ extension IndentDedentStringExtension on String {
 
   /// Removes a common leading prefix from every line.
   ///
-  /// - [whitespace] matches the leading prefix, defaults to whitespace characters.
+  /// - [whitespace] matches the leading prefix, defaults to whitespace
+  ///   characters.
   /// - [ignoreEmpty] is used to skip over empty lines.
   String dedent({Pattern? whitespace, bool ignoreEmpty = true}) {
     final lines = split('\n');

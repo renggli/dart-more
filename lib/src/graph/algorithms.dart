@@ -293,7 +293,8 @@ extension AlgorithmsGraphExtension<V, E> on Graph<V, E> {
         vertexStrategy: vertexStrategy ?? this.vertexStrategy,
       );
 
-  /// Finds an Eulerian path or circuit in this graph using Hierholzer's algorithm.
+  /// Finds an Eulerian path or circuit in this graph using Hierholzer's
+  /// algorithm.
   ///
   /// If [circuit] is `true`, only an Eulerian circuit is searched for.
   Path<V, E>? findEulerianPath({
@@ -311,7 +312,8 @@ extension AlgorithmsGraphExtension<V, E> on Graph<V, E> {
     vertexStrategy: vertexStrategy ?? this.vertexStrategy,
   );
 
-  /// Checks if this graph has a Hamiltonian circuit (a cycle visiting every vertex exactly once).
+  /// Checks if this graph has a Hamiltonian circuit (a cycle visiting every
+  /// vertex exactly once).
   bool hasHamiltonianCircuit({StorageStrategy<V>? vertexStrategy}) =>
       hamiltonian.hasHamiltonianCircuit<V, E>(
         vertices: vertices,
@@ -320,7 +322,8 @@ extension AlgorithmsGraphExtension<V, E> on Graph<V, E> {
         vertexStrategy: vertexStrategy ?? this.vertexStrategy,
       );
 
-  /// Checks if this graph has a Hamiltonian path (a path visiting every vertex exactly once).
+  /// Checks if this graph has a Hamiltonian path (a path visiting every vertex
+  /// exactly once).
   bool hasHamiltonianPath({StorageStrategy<V>? vertexStrategy}) =>
       hamiltonian.hasHamiltonianPath<V, E>(
         vertices: vertices,
@@ -395,12 +398,12 @@ extension AlgorithmsGraphExtension<V, E> on Graph<V, E> {
 
   /// Returns the density of this graph.
   ///
-  /// For a directed graph with $|V|$ vertices and $|E|$ edges, density is
-  /// $\frac{|E|}{|V|(|V|-1)}$.
-  /// For an undirected graph, density is $\frac{2|E_u|}{|V|(|V|-1)}$ where
-  /// $|E_u|$ is the number of undirected edges (excluding self-loops).
+  /// For a directed graph with `|V|` vertices and `|E|` edges, density is
+  /// `|E| / (|V| * (|V| - 1))`.
+  /// For an undirected graph, density is `2 * |E_u| / (|V| * (|V| - 1))` where
+  /// `|E_u|` is the number of undirected edges (excluding self-loops).
   ///
-  /// Returns `0.0` if $|V| < 2$.
+  /// Returns `0.0` if `|V| < 2`.
   double density() => structural_metrics.graphDensity<V>(
     vertices: vertices,
     successorsOf: successorsOf,
@@ -411,8 +414,8 @@ extension AlgorithmsGraphExtension<V, E> on Graph<V, E> {
   ///
   /// For undirected graphs, this is the ratio of edges between neighbours of
   /// [vertex] to the maximum possible edges between them:
-  /// $\frac{2 e}{k(k - 1)}$ where $k$ is the number of distinct neighbours
-  /// and $e$ is the number of undirected edges between those neighbours.
+  /// `2 * e / (k * (k - 1))` where `k` is the number of distinct neighbours
+  /// and `e` is the number of undirected edges between those neighbours.
   ///
   /// Returns `0.0` if [vertex] has fewer than 2 neighbours.
   double localClusteringCoefficient(
@@ -426,7 +429,8 @@ extension AlgorithmsGraphExtension<V, E> on Graph<V, E> {
     vertexStrategy: vertexStrategy ?? this.vertexStrategy,
   );
 
-  /// Returns the average clustering coefficient across all vertices in the graph.
+  /// Returns the average clustering coefficient across all vertices in the
+  /// graph.
   ///
   /// Returns `0.0` if the graph has no vertices.
   double averageClusteringCoefficient({StorageStrategy<V>? vertexStrategy}) =>
@@ -440,7 +444,7 @@ extension AlgorithmsGraphExtension<V, E> on Graph<V, E> {
 
   /// Returns the transitivity (global clustering coefficient) of the graph.
   ///
-  /// Transitivity is defined as $3 \times \frac{\text{number of triangles}}{\text{number of connected triplets}}$.
+  /// Transitivity is defined as `3 * triangles / connected_triplets`.
   /// Returns `0.0` if there are no connected triplets.
   double transitivity({StorageStrategy<V>? vertexStrategy}) =>
       structural_metrics.graphTransitivity<V>(
@@ -451,7 +455,8 @@ extension AlgorithmsGraphExtension<V, E> on Graph<V, E> {
 
   /// Returns the degree assortativity coefficient of this graph.
   ///
-  /// Returns [double.nan] if the graph has no edges or if degree variance is zero.
+  /// Returns [double.nan] if the graph has no edges or if degree variance is
+  /// zero.
   double degreeAssortativity({StorageStrategy<V>? vertexStrategy}) =>
       structural_metrics.degreeAssortativity<V>(
         vertices: vertices,
@@ -531,7 +536,8 @@ extension AlgorithmsGraphExtension<V, E> on Graph<V, E> {
     return result;
   }
 
-  /// Computes the eigenvector centrality of all vertices in this graph using power iteration.
+  /// Computes the eigenvector centrality of all vertices in this graph using
+  /// power iteration.
   Map<V, double> eigenvectorCentrality({
     num Function(V source, V target)? edgeWeight,
     int maxIterations = 100,
@@ -547,7 +553,8 @@ extension AlgorithmsGraphExtension<V, E> on Graph<V, E> {
     vertexStrategy: vertexStrategy ?? this.vertexStrategy,
   );
 
-  /// Computes the maximum bipartite matching of this undirected bipartite graph.
+  /// Computes the maximum bipartite matching of this undirected bipartite
+  /// graph.
   Map<V, V> bipartiteMatching({StorageStrategy<V>? vertexStrategy}) {
     GraphError.checkNotDirected(this);
     try {
@@ -561,13 +568,15 @@ extension AlgorithmsGraphExtension<V, E> on Graph<V, E> {
     }
   }
 
-  /// Computes the maximum weight bipartite matching of this undirected bipartite graph.
+  /// Computes the maximum weight bipartite matching of this undirected
+  /// bipartite graph.
   ///
-  /// - [edgeWeight] returns the weight of an edge between two vertices. If omitted,
-  ///   the numeric edge value or a weight of `1` is used.
-  /// - If [maximumWeight] is `true`, finds a matching that maximizes total weight.
-  /// - If [maximumWeight] is `false`, finds a matching that minimizes total weight
-  ///   among maximum cardinality matchings.
+  /// - [edgeWeight] returns the weight of an edge between two vertices. If
+  ///   omitted, the numeric edge value or a weight of `1` is used.
+  /// - If [maximumWeight] is `true`, finds a matching that maximizes total
+  ///   weight.
+  /// - If [maximumWeight] is `false`, finds a matching that minimizes total
+  ///   weight among maximum cardinality matchings.
   Map<V, V> weightedBipartiteMatching({
     num Function(V source, V target)? edgeWeight,
     bool maximumWeight = true,
@@ -642,7 +651,7 @@ extension AlgorithmsGraphExtension<V, E> on Graph<V, E> {
     );
   }
 
-  /// Returns the $k$-core subgraph of this undirected graph.
+  /// Returns the k-core subgraph of this undirected graph.
   Graph<V, E> kCore(int k, {StorageStrategy<V>? vertexStrategy}) {
     GraphError.checkNotDirected(this);
     final strategy = vertexStrategy ?? this.vertexStrategy;
@@ -666,7 +675,8 @@ extension AlgorithmsGraphExtension<V, E> on Graph<V, E> {
     return sub;
   }
 
-  /// Computes the edge connectivity of this graph (or between [source] and [target]).
+  /// Computes the edge connectivity of this graph (or between [source] and
+  /// [target]).
   int edgeConnectivity({
     V? source,
     V? target,
@@ -681,7 +691,8 @@ extension AlgorithmsGraphExtension<V, E> on Graph<V, E> {
     vertexStrategy: vertexStrategy ?? this.vertexStrategy,
   );
 
-  /// Computes the vertex connectivity of this graph (or between [source] and [target]).
+  /// Computes the vertex connectivity of this graph (or between [source] and
+  /// [target]).
   int vertexConnectivity({
     V? source,
     V? target,
@@ -696,7 +707,8 @@ extension AlgorithmsGraphExtension<V, E> on Graph<V, E> {
     vertexStrategy: vertexStrategy ?? this.vertexStrategy,
   );
 
-  /// Computes the Newman–Girvan modularity of a given partition of [communities] in this graph.
+  /// Computes the Newman–Girvan modularity of a given partition of
+  /// [communities] in this graph.
   double modularity(
     Iterable<Set<V>> communities, {
     num Function(V source, V target)? edgeWeight,
@@ -710,7 +722,8 @@ extension AlgorithmsGraphExtension<V, E> on Graph<V, E> {
     vertexStrategy: vertexStrategy ?? this.vertexStrategy,
   );
 
-  /// Detects communities in this undirected graph using the asynchronous label propagation algorithm (LPA).
+  /// Detects communities in this undirected graph using the asynchronous label
+  /// propagation algorithm (LPA).
   Iterable<Set<V>> labelPropagationCommunities({
     num Function(V source, V target)? edgeWeight,
     int maxIterations = 100,
@@ -728,7 +741,8 @@ extension AlgorithmsGraphExtension<V, E> on Graph<V, E> {
     );
   }
 
-  /// Detects communities in this undirected graph by maximizing modularity using the Louvain algorithm.
+  /// Detects communities in this undirected graph by maximizing modularity
+  /// using the Louvain algorithm.
   Iterable<Set<V>> louvainCommunities({
     num Function(V source, V target)? edgeWeight,
     double resolution = 1.0,
@@ -744,7 +758,8 @@ extension AlgorithmsGraphExtension<V, E> on Graph<V, E> {
     );
   }
 
-  /// Checks if this undirected graph is planar using the Left–Right planarity test.
+  /// Checks if this undirected graph is planar using the Left–Right planarity
+  /// test.
   bool isPlanar({StorageStrategy<V>? vertexStrategy}) {
     GraphError.checkNotDirected(this);
     return planarity.isPlanar<V>(

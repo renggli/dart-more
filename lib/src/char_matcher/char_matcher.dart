@@ -74,10 +74,10 @@ abstract class CharMatcher with ToStringPrinter implements Pattern {
 
   /// A matcher that accepts a regular expression character class.
   ///
-  /// Characters match themselves. A dash `-` between two characters matches the
-  /// range of those characters. A caret `^` at the beginning negates the pattern.
-  /// `-[pattern]` at the end of the pattern, subtracts the pattern within the
-  /// square brackets.
+  /// Characters match themselves. A dash `-` between two characters matches
+  /// the range of those characters. A caret `^` at the beginning negates the
+  /// pattern. `-[pattern]` at the end of the pattern, subtracts the pattern
+  /// within the square brackets.
   ///
   /// For example, the pattern `pattern('aou')` accepts the character 'a', 'o',
   /// or 'u', and fails for any other input. The `pattern('1-3')` accepts either

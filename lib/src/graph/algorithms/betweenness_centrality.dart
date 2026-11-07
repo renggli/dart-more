@@ -3,11 +3,11 @@ import 'dart:collection';
 import '../strategy.dart';
 
 /// Computes betweenness centrality for all [vertices] using Brandes's algorithm
-/// ($O(V \cdot E)$ for unweighted graphs).
+/// (`O(|V| * |E|)` for unweighted graphs).
 ///
 /// If [normalized] is `true`, betweenness values are scaled by
-/// $\frac{2}{(n - 1)(n - 2)}$ for undirected graphs and
-/// $\frac{1}{(n - 1)(n - 2)}$ for directed graphs (where $n = |V|$).
+/// `2 / ((n - 1) * (n - 2))` for undirected graphs and
+/// `1 / ((n - 1) * (n - 2))` for directed graphs (where `n = |V|`).
 Map<V, double> betweennessCentrality<V>({
   required Iterable<V> vertices,
   required Iterable<V> Function(V vertex) successorsOf,

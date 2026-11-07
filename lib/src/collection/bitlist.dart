@@ -223,11 +223,12 @@ abstract class BitList extends ListBase<bool> {
     }
   }
 
-  /// Returns the exclusive-or (symmetric difference) of the receiver and [other].
+  /// Returns the exclusive-or (symmetric difference) of the receiver and
+  /// [other].
   ///
   /// The new [BitList] has all the bits set that are set in either the receiver
-  /// or [other], but not in both. The receiver and [other] need to have the same
-  /// length, otherwise an exception is thrown.
+  /// or [other], but not in both. The receiver and [other] need to have the
+  /// same length, otherwise an exception is thrown.
   BitList operator ^(BitList other) => BitList.of(this)..xor(other);
 
   /// Computes the exclusive-or of the receiver and [other] in-place.

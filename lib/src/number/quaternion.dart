@@ -83,7 +83,8 @@ class Quaternion implements CloseTo<Quaternion> {
     );
   }
 
-  /// Parses [source] as a [Quaternion]. Throws a [FormatException] for invalid input.
+  /// Parses [source] as a [Quaternion]. Throws a [FormatException] for
+  /// invalid input.
   factory parse(String source) {
     final parts = parseWithUnits(source, units: const {'', 'i', 'j', 'k'});
     if (parts == null) throw FormatException(source);

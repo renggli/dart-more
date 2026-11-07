@@ -110,10 +110,10 @@ class SortedList<E> extends ListBase<E> implements PriorityQueue<E> {
     _elements.insert(index, element);
   }
 
-  /// Throws [UnsupportedError] because the order is determined by the comparator.
+  /// Throws [UnsupportedError] because order is determined by the comparator.
   void addFirst(E element) => _throw();
 
-  /// Throws [UnsupportedError] because the order is determined by the comparator.
+  /// Throws [UnsupportedError] because order is determined by the comparator.
   void addLast(E element) => _throw();
 
   @override

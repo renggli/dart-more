@@ -61,7 +61,8 @@ class Interval<T extends Comparable<T>> {
   /// Returns the minimal interval enclosing this and [other] interval.
   Interval<T> union(Interval<T> other) => span(other);
 
-  /// Returns the minimal interval (convex hull) spanning this and [other] interval.
+  /// Returns the minimal interval (convex hull) spanning this and [other]
+  /// interval.
   Interval<T> span(Interval<T> other) => Interval<T>(
     lower.compareTo(other.lower) < 0 ? lower : other.lower,
     upper.compareTo(other.upper) > 0 ? upper : other.upper,

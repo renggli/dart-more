@@ -2,9 +2,10 @@ import '../strategy.dart';
 
 /// Computes the PageRank of [vertices] using power iteration.
 ///
-/// - [damping] is the probability of following an edge rather than teleporting (default: 0.85).
-/// - [tolerance] is the convergence threshold for $L_1$ norm (default: 1e-6).
-/// - [maxIterations] is the maximum number of iterations (default: 100).
+/// - [damping] is probability of following an edge rather than teleporting
+///   (default: 0.85).
+/// - [tolerance] is convergence threshold for L1 norm (default: 1e-6).
+/// - [maxIterations] is maximum number of iterations (default: 100).
 Map<V, double> pageRank<V>({
   required Iterable<V> vertices,
   required Iterable<V> Function(V vertex) successorsOf,

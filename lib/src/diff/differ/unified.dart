@@ -2,8 +2,9 @@ import '../differ.dart';
 import '../model/operation_type.dart';
 import '../sequence_matcher.dart';
 
-/// Generates the [unified format](https://en.wikipedia.org/wiki/Diff#Unified_format)
-/// of `diff -u`.
+/// Generates the unified format (`diff -u`).
+///
+/// See https://en.wikipedia.org/wiki/Diff#Unified_format.
 ///
 /// The unified format inherits the technical improvements made by the context
 /// format, but produces a smaller diff with old and new text presented

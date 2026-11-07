@@ -2,7 +2,8 @@ import '../edge.dart';
 import '../path.dart';
 import '../strategy.dart';
 
-/// Checks if a graph has an Eulerian circuit (a closed trail visiting every edge exactly once).
+/// Checks if a graph has an Eulerian circuit (a closed trail visiting every
+/// edge exactly once).
 bool hasEulerianCircuit<V, E>({
   required Iterable<V> vertices,
   required Iterable<Edge<V, E>> Function(V vertex) outgoingEdgesOf,
@@ -26,7 +27,8 @@ bool hasEulerianCircuit<V, E>({
     ) !=
     null;
 
-/// Checks if a graph has an Eulerian path (a trail visiting every edge exactly once).
+/// Checks if a graph has an Eulerian path (a trail visiting every edge
+/// exactly once).
 bool hasEulerianPath<V, E>({
   required Iterable<V> vertices,
   required Iterable<Edge<V, E>> Function(V vertex) outgoingEdgesOf,

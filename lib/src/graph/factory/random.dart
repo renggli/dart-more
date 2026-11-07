@@ -7,9 +7,9 @@ import 'complete.dart';
 
 /// Creates random graphs using different models.
 extension RandomGraphFactoryExtension<V, E> on GraphFactory<V, E> {
-  /// Generates a graph using the Erdős–Rényi model with [vertexCount] vertices
-  /// and a constant [probability] of creating an edge between any pair of
-  /// vertices.
+  /// Generates a graph using the Erdős–Rényi model with [vertexCount]
+  /// vertices and a constant [probability] of creating an edge between any
+  /// pair of vertices.
   ///
   /// See https://en.wikipedia.org/wiki/Erd%C5%91s%E2%80%93R%C3%A9nyi_model.
   Graph<V, E> randomErdosRenyi({

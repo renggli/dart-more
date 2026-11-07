@@ -53,7 +53,8 @@ abstract class Graph<V, E> with ToStringPrinter {
   /// Returns `true` if this graph contains the given [vertex].
   bool containsVertex(V vertex) => vertices.contains(vertex);
 
-  /// Returns `true` if this graph contains an edge between [source] and [target].
+  /// Returns `true` if this graph contains an edge between [source] and
+  /// [target].
   bool containsEdge(V source, V target) => getEdge(source, target) != null;
 
   /// Returns the in-degree of [vertex] (number of incoming edges).

@@ -4,10 +4,10 @@ import '../strategy.dart';
 
 /// Computes the eigenvector centrality of all [vertices] using power iteration.
 ///
-/// In each iteration, vertex scores are updated via the incoming edges:
-/// $$x_v^{(t+1)} = \sum_{u \in N_{\text{in}}(v)} w(u, v) \, x_u^{(t)}$$
-/// and normalized by the Euclidean norm $\|x^{(t+1)}\|_2$. Consecutive
-/// iterations are blended to prevent periodic oscillation on bipartite graphs.
+/// In each iteration, vertex scores are updated via incoming edges:
+/// `x_v = sum(w(u, v) * x_u)`
+/// and normalized by the Euclidean norm. Consecutive iterations are blended
+/// to prevent periodic oscillation on bipartite graphs.
 ///
 /// - [successorsOf] returns the outgoing neighbours of a vertex.
 /// - [predecessorsOf] returns the incoming neighbours of a vertex. If omitted,
@@ -15,7 +15,7 @@ import '../strategy.dart';
 /// - [edgeWeight] returns the weight of an edge from `source` to `target`.
 ///   If omitted, a default weight of `1.0` is used.
 /// - [maxIterations] is the maximum number of power iterations (default: 100).
-/// - [tolerance] is the convergence threshold for $L_1$ delta (default: 1e-6).
+/// - [tolerance] is the convergence threshold for L1 delta (default: 1e-6).
 Map<V, double> eigenvectorCentrality<V>({
   required Iterable<V> vertices,
   required Iterable<V> Function(V vertex) successorsOf,

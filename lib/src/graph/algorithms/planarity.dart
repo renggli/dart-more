@@ -2,10 +2,12 @@ import 'dart:math';
 
 import '../strategy.dart';
 
-/// Tests whether an undirected graph is planar using the Left–Right planarity test.
+/// Tests whether an undirected graph is planar using the Left–Right planarity
+/// test.
 ///
-/// A graph is planar if and only if it can be drawn in the plane without any edge crossings.
-/// Operates on undirected graphs; self-loops and parallel edges are ignored.
+/// A graph is planar if and only if it can be drawn in the plane without any
+/// edge crossings. Operates on undirected graphs; self-loops and parallel edges
+/// are ignored.
 bool isPlanar<V>({
   required Iterable<V> vertices,
   required Iterable<V> Function(V vertex) neighboursOf,
