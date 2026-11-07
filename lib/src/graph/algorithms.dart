@@ -410,6 +410,17 @@ extension AlgorithmsGraphExtension<V, E> on Graph<V, E> {
         vertexStrategy: vertexStrategy ?? this.vertexStrategy,
       );
 
+  /// Returns the degree assortativity coefficient of this graph.
+  ///
+  /// Returns [double.nan] if the graph has no edges or if degree variance is zero.
+  double get degreeAssortativity => structural_metrics.degreeAssortativity<V>(
+    vertices: vertices,
+    successorsOf: successorsOf,
+    predecessorsOf: predecessorsOf,
+    isDirected: isDirected,
+    vertexStrategy: vertexStrategy,
+  );
+
   /// Computes the degree centrality of all vertices in this graph.
   Map<V, double> degreeCentrality({StorageStrategy<V>? vertexStrategy}) =>
       structural_metrics.degreeCentrality<V>(

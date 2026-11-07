@@ -22,7 +22,7 @@ All graph algorithms below must follow the project's decoupled architecture:
        - Stop when $\sum_v |x_v^{(t+1)} - x_v^{(t)}| < \text{tolerance}$ or after `maxIterations`.
     3. Expose `degreeCentrality`, `inDegreeCentrality`, `outDegreeCentrality`, and `eigenvectorCentrality` on `AlgorithmsGraphExtension` in `lib/src/graph/algorithms.dart` and export from `lib/graph.dart`.
 
-- [ ] **Degree Assortativity Coefficient**
+- [x] **Degree Assortativity Coefficient**
   - **Files**: `lib/src/graph/algorithms/structural_metrics.dart`, `lib/src/graph/algorithms.dart`, `lib/graph.dart`
   - **Tests**: `test/graph/algorithms/structural_metrics_test.dart`
   - **Design & Instructions**:

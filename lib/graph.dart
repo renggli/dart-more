@@ -34,6 +34,7 @@ export 'src/graph/algorithms/stoer_wagner_min_cut.dart' show StoerWagnerMinCut;
 export 'src/graph/algorithms/structural_metrics.dart'
     show
         averageClusteringCoefficient,
+        degreeAssortativity,
         degreeCentrality,
         graphDensity,
         graphTransitivity,

@@ -1,3 +1,5 @@
+import 'dart:math' as math;
+
 import '../strategy.dart';
 
 /// Computes the degree centrality of all [vertices].
@@ -139,4 +141,79 @@ double graphTransitivity<V>({
     }
   }
   return triplets == 0 ? 0.0 : triangles / triplets;
+}
+
+/// Computes the degree assortativity coefficient of a graph.
+///
+/// Assortativity measures the tendency of vertices to connect to other vertices
+/// with similar degrees (Pearson correlation coefficient of degrees across edges).
+///
+/// - Returns a value in $[-1.0, 1.0]$.
+/// - Positive values indicate assortative mixing (high degree connects to high degree).
+/// - Negative values indicate disassortative mixing (high degree connects to low degree).
+/// - Returns [double.nan] if the graph has no edges or if degree variance is zero
+///   (e.g., in regular graphs where all vertices have the exact same degree).
+double degreeAssortativity<V>({
+  required Iterable<V> vertices,
+  required Iterable<V> Function(V vertex) successorsOf,
+  Iterable<V> Function(V vertex)? predecessorsOf,
+  required bool isDirected,
+  StorageStrategy<V>? vertexStrategy,
+}) {
+  vertexStrategy ??= StorageStrategy.defaultStrategy();
+  final outDegrees = vertexStrategy.createMap<int>();
+  final inDegrees = vertexStrategy.createMap<int>();
+  for (final v in vertices) {
+    outDegrees[v] = 0;
+    inDegrees[v] = 0;
+  }
+
+  if (isDirected) {
+    for (final u in vertices) {
+      for (final v in successorsOf(u)) {
+        outDegrees[u] = (outDegrees[u] ?? 0) + 1;
+        inDegrees[v] = (inDegrees[v] ?? 0) + 1;
+      }
+    }
+  } else {
+    for (final v in vertices) {
+      final deg = successorsOf(v);
+      final count = deg is List ? deg.length : deg.toList().length;
+      outDegrees[v] = count;
+      inDegrees[v] = count;
+    }
+  }
+
+  var edgeCount = 0;
+  var sumJ = 0.0;
+  var sumK = 0.0;
+  var sumJ2 = 0.0;
+  var sumK2 = 0.0;
+  var sumJK = 0.0;
+
+  for (final u in vertices) {
+    final j = outDegrees[u]!.toDouble();
+    for (final v in successorsOf(u)) {
+      final k = inDegrees[v]!.toDouble();
+      edgeCount++;
+      sumJ += j;
+      sumK += k;
+      sumJ2 += j * j;
+      sumK2 += k * k;
+      sumJK += j * k;
+    }
+  }
+
+  if (edgeCount == 0) return double.nan;
+
+  final meanJ = sumJ / edgeCount;
+  final meanK = sumK / edgeCount;
+  final varJ = (sumJ2 / edgeCount) - (meanJ * meanJ);
+  final varK = (sumK2 / edgeCount) - (meanK * meanK);
+
+  if (varJ <= 0.0 || varK <= 0.0) return double.nan;
+
+  final cov = (sumJK / edgeCount) - (meanJ * meanK);
+  final r = cov / math.sqrt(varJ * varK);
+  return r.clamp(-1.0, 1.0);
 }
