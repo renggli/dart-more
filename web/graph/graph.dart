@@ -1,10 +1,12 @@
 import 'package:more/graph.dart';
 import 'package:web/web.dart' as web;
 
+import 'inspector.dart';
 import 'io.dart';
 import 'presets.dart';
 import 'renderer.dart';
 import 'state.dart';
+import 'traversal_player.dart';
 
 void main() async {
   final state = AppState();
@@ -108,6 +110,42 @@ void main() async {
   final inputKCoreK =
       web.document.querySelector('#input-kcore-k') as web.HTMLInputElement;
 
+  // Playback elements
+  final playbackBar =
+      web.document.querySelector('#playback-bar') as web.HTMLElement;
+  final btnPlayFirst =
+      web.document.querySelector('#btn-play-first') as web.HTMLButtonElement;
+  final btnPlayPrev =
+      web.document.querySelector('#btn-play-prev') as web.HTMLButtonElement;
+  final btnPlayPause =
+      web.document.querySelector('#btn-play-pause') as web.HTMLButtonElement;
+  final btnPlayNext =
+      web.document.querySelector('#btn-play-next') as web.HTMLButtonElement;
+  final btnPlayLast =
+      web.document.querySelector('#btn-play-last') as web.HTMLButtonElement;
+  final labelPlaybackStep =
+      web.document.querySelector('#label-playback-step') as web.HTMLElement;
+  final selectPlaybackSpeed = web.document.querySelector(
+    '#select-playback-speed',
+  ) as web.HTMLSelectElement;
+
+  // Algorithm elements
+  final selectAlgoCategory = web.document.querySelector(
+    '#select-algorithm-category',
+  ) as web.HTMLSelectElement;
+  final selectAlgorithm =
+      web.document.querySelector('#select-algorithm') as web.HTMLSelectElement;
+  final algoParamsContainer =
+      web.document.querySelector('#algorithm-params') as web.HTMLElement;
+  final btnRunAlgo =
+      web.document.querySelector('#btn-run-algo') as web.HTMLButtonElement;
+  final btnClearOverlay =
+      web.document.querySelector('#btn-clear-overlay') as web.HTMLButtonElement;
+  final cardResults =
+      web.document.querySelector('#card-results') as web.HTMLElement;
+  final algorithmResults =
+      web.document.querySelector('#algorithm-results') as web.HTMLElement;
+
   // Import / Export modal elements
   final btnIoModal =
       web.document.querySelector('#btn-io-modal') as web.HTMLButtonElement;
@@ -135,6 +173,7 @@ void main() async {
   final ioStatus = web.document.querySelector('#io-status') as web.HTMLElement;
 
   late final GraphRenderer renderer;
+  late final TraversalPlayer player;
 
   void updateUI() {
     btnDirected.classList.toggle('active', state.primaryGraph.isDirected);
@@ -156,8 +195,42 @@ void main() async {
     codeDot.textContent = renderer.generateDot(state);
     codeDart.textContent = GraphIO.exportToDartCode(state);
 
+    GraphInspector.updateInvariants(state);
+    GraphInspector.updateInspector(
+      state,
+      onSelectVertex: (v) {
+        state.selectedSource = v;
+        updateUI();
+      },
+      onUpdateWeight: (u, v, newWeight) {
+        state.saveSnapshot();
+        state.primaryGraph.addEdge(u, v, value: newWeight);
+        updateUI();
+      },
+    );
+
     renderer.render(state);
   }
+
+  player = TraversalPlayer(
+    onStepChanged: (step, total) {
+      labelPlaybackStep.textContent = total > 0
+          ? 'Step ${step + 1} / $total'
+          : 'Step 0 / 0';
+      final overlay = state.activeOverlay;
+      if (overlay is PathOverlay) {
+        state.activeOverlay = PathOverlay(
+          title: overlay.title,
+          vertices: overlay.vertices,
+          edges: overlay.edges,
+          stepNumbers: overlay.stepNumbers,
+          activeStep: step,
+          summary: overlay.summary,
+        );
+        renderer.render(state);
+      }
+    },
+  );
 
   String getCanvasMode() {
     final radios = web.document.querySelectorAll('input[name="canvas-mode"]');
@@ -292,6 +365,9 @@ void main() async {
     state.primaryGraph = newGraph;
     state.clearSelection();
     state.activeOverlay = null;
+    player.stop();
+    playbackBar.style.display = 'none';
+    cardResults.style.display = 'none';
     updateUI();
   });
 
@@ -358,6 +434,9 @@ void main() async {
     state.saveSnapshot();
     state.clearSelection();
     state.activeOverlay = null;
+    player.stop();
+    playbackBar.style.display = 'none';
+    cardResults.style.display = 'none';
 
     final n = int.tryParse(inputVertexCount.value.trim()) ?? 6;
     final isDir = state.primaryGraph.isDirected;
@@ -434,6 +513,9 @@ void main() async {
     state.saveSnapshot();
     state.clearSelection();
     state.activeOverlay = null;
+    player.stop();
+    playbackBar.style.display = 'none';
+    cardResults.style.display = 'none';
     state.primaryGraph = GraphPresets.atlas(num);
     state.isWeighted = false;
     inputAtlasNum.value = num.toString();
@@ -497,6 +579,145 @@ void main() async {
     updateUI();
   });
 
+  // Playback listeners
+  btnPlayFirst.onClick.listen((_) => player.first());
+  btnPlayPrev.onClick.listen((_) => player.prev());
+  btnPlayPause.onClick.listen((_) {
+    if (player.isPlaying) {
+      player.pause();
+      btnPlayPause.textContent = 'Play';
+    } else {
+      player.play();
+      btnPlayPause.textContent = 'Pause';
+    }
+  });
+  btnPlayNext.onClick.listen((_) => player.next());
+  btnPlayLast.onClick.listen((_) => player.last());
+  selectPlaybackSpeed.onChange.listen((_) {
+    player.speedMs = int.tryParse(selectPlaybackSpeed.value) ?? 500;
+  });
+
+  // Algorithms & Traversals setup
+  void updateAlgorithmOptions() {
+    selectAlgorithm.textContent = '';
+    algoParamsContainer.textContent = '';
+
+    final cat = selectAlgoCategory.value;
+    if (cat == 'traversal') {
+      selectAlgorithm.appendChild(
+        web.HTMLOptionElement()
+          ..value = 'bfs'
+          ..text = 'Breadth-First Search (BFS)',
+      );
+      selectAlgorithm.appendChild(
+        web.HTMLOptionElement()
+          ..value = 'dfs_pre'
+          ..text = 'Depth-First (Pre-Order)',
+      );
+      selectAlgorithm.appendChild(
+        web.HTMLOptionElement()
+          ..value = 'dfs_post'
+          ..text = 'Depth-First (Post-Order)',
+      );
+      selectAlgorithm.appendChild(
+        web.HTMLOptionElement()
+          ..value = 'topological'
+          ..text = 'Topological Sort',
+      );
+      selectAlgorithm.appendChild(
+        web.HTMLOptionElement()
+          ..value = 'random_walk'
+          ..text = 'Random Walk',
+      );
+    } else {
+      selectAlgorithm.appendChild(
+        web.HTMLOptionElement()
+          ..value = 'select_cat'
+          ..text = 'Select an algorithm...',
+      );
+    }
+  }
+
+  selectAlgoCategory.onChange.listen((_) => updateAlgorithmOptions());
+  updateAlgorithmOptions();
+
+  // Run Traversal / Algorithm
+  btnRunAlgo.onClick.listen((_) {
+    final cat = selectAlgoCategory.value;
+    final algo = selectAlgorithm.value;
+    final graph = state.primaryGraph;
+    final start =
+        state.selectedSource ??
+        (graph.vertices.isNotEmpty ? graph.vertices.first : null);
+
+    if (start == null) return;
+
+    if (cat == 'traversal') {
+      var visited = <String>[];
+      var title = '';
+
+      switch (algo) {
+        case 'bfs':
+          title = 'Breadth-First Traversal';
+          visited = graph.breadthFirst(start).toList();
+        case 'dfs_pre':
+          title = 'Depth-First Pre-Order Traversal';
+          visited = graph.depthFirst(start).toList();
+        case 'dfs_post':
+          title = 'Depth-First Post-Order Traversal';
+          visited = graph.depthFirstPostOrder(start).toList();
+        case 'topological':
+          title = 'Topological Sort';
+          visited = graph.topological(start).toList();
+        case 'random_walk':
+          title = 'Random Walk';
+          visited = graph
+              .randomWalk(start, selfAvoiding: true)
+              .take(20)
+              .toList();
+      }
+
+      final edges = <(String, String)>[];
+      for (var i = 0; i < visited.length - 1; i++) {
+        final u = visited[i];
+        final v = visited[i + 1];
+        if (graph.containsEdge(u, v) ||
+            (!graph.isDirected && graph.containsEdge(v, u))) {
+          edges.add((u, v));
+        }
+      }
+
+      state.activeOverlay = PathOverlay(
+        title: title,
+        vertices: visited,
+        edges: edges,
+        stepNumbers: true,
+        activeStep: 0,
+      );
+
+      playbackBar.style.display = 'flex';
+      player.load(vertices: visited, edges: edges);
+      player.play();
+      btnPlayPause.textContent = 'Pause';
+
+      cardResults.style.display = 'block';
+      final resP = web.HTMLParagraphElement()
+        ..textContent =
+            '$title (Start: $start)\nVisited ${visited.length} nodes: ${visited.join(" → ")}';
+      algorithmResults.replaceChildren(resP);
+
+      updateUI();
+    }
+  });
+
+  btnClearOverlay.onClick.listen((_) {
+    player.stop();
+    playbackBar.style.display = 'none';
+    cardResults.style.display = 'none';
+    state.activeOverlay = null;
+    updateUI();
+  });
+
   // Import / Export modal logic
   void syncModalContent() {
     ioStatus.textContent = '';
@@ -543,7 +764,6 @@ void main() async {
         state.primaryGraph = g;
         state.isWeighted = weighted;
       } else {
-        // DSL or other
         final g = GraphIO.importFromDsl(
           text,
           isDirected: state.primaryGraph.isDirected,
