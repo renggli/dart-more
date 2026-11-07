@@ -37,7 +37,7 @@ All graph algorithms below must follow the project's decoupled architecture:
 
 ## 2. Path and Circuit Algorithms
 
-- [ ] **Hamiltonian Path and Circuit Detection**
+- [x] **Hamiltonian Path and Circuit Detection**
   - **Files**: `lib/src/graph/algorithms/hamiltonian.dart`, `lib/src/graph/algorithms.dart`, `lib/graph.dart`
   - **Tests**: `test/graph/algorithms/hamiltonian_test.dart`
   - **Design & Instructions**:

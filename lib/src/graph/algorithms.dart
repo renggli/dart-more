@@ -13,6 +13,7 @@ import 'algorithms/cycle_check.dart' as cycle_check;
 import 'algorithms/dinic_max_flow.dart' as dinic_max_flow;
 import 'algorithms/eigenvector_centrality.dart' as eigenvector_centrality;
 import 'algorithms/eulerian.dart' as eulerian;
+import 'algorithms/hamiltonian.dart' as hamiltonian;
 import 'algorithms/isomorphism.dart' as isomorphism;
 import 'algorithms/k_core.dart' as k_core;
 import 'algorithms/kruskal_spanning_tree.dart' as kruskal_spanning_tree;
@@ -303,6 +304,57 @@ extension AlgorithmsGraphExtension<V, E> on Graph<V, E> {
     circuit: circuit,
     vertexStrategy: vertexStrategy ?? this.vertexStrategy,
   );
+
+  /// Checks if this graph has a Hamiltonian circuit (a cycle visiting every vertex exactly once).
+  bool hasHamiltonianCircuit({StorageStrategy<V>? vertexStrategy}) =>
+      hamiltonian.hasHamiltonianCircuit<V>(
+        vertices: vertices,
+        successorsOf: successorsOf,
+        isDirected: isDirected,
+        vertexStrategy: vertexStrategy ?? this.vertexStrategy,
+      );
+
+  /// Checks if this graph has a Hamiltonian path (a path visiting every vertex exactly once).
+  bool hasHamiltonianPath({StorageStrategy<V>? vertexStrategy}) =>
+      hamiltonian.hasHamiltonianPath<V>(
+        vertices: vertices,
+        successorsOf: successorsOf,
+        isDirected: isDirected,
+        vertexStrategy: vertexStrategy ?? this.vertexStrategy,
+      );
+
+  /// Finds a Hamiltonian path or circuit in this graph.
+  ///
+  /// If [circuit] is `true`, only a Hamiltonian circuit is searched for.
+  Path<V, E>? findHamiltonianPath({
+    bool circuit = false,
+    StorageStrategy<V>? vertexStrategy,
+  }) {
+    final verts = hamiltonian.findHamiltonianPath<V>(
+      vertices: vertices,
+      successorsOf: successorsOf,
+      isDirected: isDirected,
+      circuit: circuit,
+      vertexStrategy: vertexStrategy ?? this.vertexStrategy,
+    );
+    if (verts == null) return null;
+    final edges = <Edge<V, E>>[];
+    for (var i = 0; i < verts.length - 1; i++) {
+      final edge = getEdge(verts[i], verts[i + 1]);
+      if (edge != null) {
+        edges.add(edge);
+      } else {
+        edges.add(
+          isDirected
+              ? Edge<V, E>.directed(verts[i], verts[i + 1])
+              : Edge<V, E>.undirected(verts[i], verts[i + 1]),
+        );
+      }
+    }
+    return edges.isEmpty
+        ? Path<V, E>.fromVertices(verts)
+        : Path<V, E>.fromEdges(edges);
+  }
 
   /// Returns the articulation points (cut vertices) of this undirected graph.
   Set<V> articulationPoints({StorageStrategy<V>? vertexStrategy}) {

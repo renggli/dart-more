@@ -19,6 +19,8 @@ export 'src/graph/algorithms/eigenvector_centrality.dart'
     show eigenvectorCentrality;
 export 'src/graph/algorithms/eulerian.dart'
     show findEulerianPath, hasEulerianCircuit, hasEulerianPath;
+export 'src/graph/algorithms/hamiltonian.dart'
+    show findHamiltonianPath, hasHamiltonianCircuit, hasHamiltonianPath;
 export 'src/graph/algorithms/isomorphism.dart' show findIsomorphisms;
 export 'src/graph/algorithms/k_core.dart' show coreNumbers, kCoreVertices;
 export 'src/graph/algorithms/kruskal_spanning_tree.dart'
