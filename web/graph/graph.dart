@@ -1,6 +1,9 @@
+import 'dart:js_interop';
+
 import 'package:more/graph.dart';
 import 'package:web/web.dart' as web;
 
+import 'algorithms_runner.dart';
 import 'inspector.dart';
 import 'io.dart';
 import 'presets.dart';
@@ -597,117 +600,184 @@ void main() async {
     player.speedMs = int.tryParse(selectPlaybackSpeed.value) ?? 500;
   });
 
+  // Drawer helpers
+  void switchDrawerTab(String tabId) {
+    bottomDrawer.classList.remove('collapsed');
+    drawerToggleIcon.textContent = '▼ Collapse';
+    final tabs = web.document.querySelectorAll('.drawer-tab');
+    for (var j = 0; j < tabs.length; j++) {
+      final t = tabs.item(j) as web.HTMLElement?;
+      t?.classList.toggle('active', t.getAttribute('data-tab') == tabId);
+    }
+    final panes = web.document.querySelectorAll('.tab-pane');
+    for (var k = 0; k < panes.length; k++) {
+      final pane = panes.item(k) as web.HTMLElement?;
+      if (pane != null) {
+        pane.style.display = pane.id == tabId ? 'block' : 'none';
+      }
+    }
+  }
+
+  void renderDistanceMatrix(FloydWarshall<String> fw) {
+    final matrixContainer =
+        web.document.querySelector('#matrix-container') as web.HTMLElement?;
+    if (matrixContainer == null) return;
+    matrixContainer.textContent = '';
+
+    final table = web.HTMLTableElement()..className = 'data-table';
+    final thead = table.createTHead();
+    final headerRow = thead.insertRow();
+    headerRow.insertCell().textContent = 'From \\ To';
+
+    final vertices = state.primaryGraph.vertices.toList();
+    for (final v in vertices) {
+      headerRow.insertCell().textContent = v;
+    }
+
+    final tbody = table.createTBody();
+    for (final u in vertices) {
+      final row = tbody.insertRow();
+      final rowHead = row.insertCell()..textContent = u;
+      rowHead.style.fontWeight = 'bold';
+      for (final v in vertices) {
+        final cell = row.insertCell();
+        final dist = fw.distance(u, v);
+        cell.textContent = dist.isInfinite ? '∞' : dist.toString();
+        if (!dist.isInfinite) {
+          cell.style.cursor = 'pointer';
+          cell.title = 'Click to show shortest path from $u to $v';
+          cell.onClick.listen((_) {
+            final path = fw.path(u, v);
+            if (path != null) {
+              final pathEdges = <(String, String)>[];
+              for (var i = 0; i < path.vertices.length - 1; i++) {
+                pathEdges.add((path.vertices[i], path.vertices[i + 1]));
+              }
+              state.activeOverlay = PathOverlay(
+                title: 'Path: $u to $v (Cost ${path.cost})',
+                vertices: path.vertices,
+                edges: pathEdges,
+              );
+              updateUI();
+            }
+          });
+        }
+      }
+    }
+
+    matrixContainer.appendChild(table);
+  }
+
+  void renderMetricsTable(Map<String, Map<String, num>> metrics) {
+    final metricsContainer = web.document.querySelector(
+      '#metrics-table-container',
+    ) as web.HTMLElement?;
+    if (metricsContainer == null) return;
+    metricsContainer.textContent = '';
+
+    final table = web.HTMLTableElement()..className = 'data-table';
+    final thead = table.createTHead();
+    final headerRow = thead.insertRow();
+    headerRow.insertCell().textContent = 'Vertex';
+
+    final firstEntry = metrics.values.firstOrNull;
+    if (firstEntry == null) return;
+    final metricNames = firstEntry.keys.toList();
+
+    for (final m in metricNames) {
+      final cell = headerRow.insertCell();
+      cell.textContent = m;
+      cell.style.cursor = 'pointer';
+      cell.title = 'Click to color graph heatmap by $m';
+      cell.onClick.listen((_) {
+        final scores = <String, num>{};
+        for (final MapEntry(:key, :value) in metrics.entries) {
+          scores[key] = value[m] ?? 0;
+        }
+        state.activeOverlay = HeatmapOverlay(title: m, scores: scores);
+        updateUI();
+      });
+    }
+
+    final tbody = table.createTBody();
+    for (final MapEntry(:key, :value) in metrics.entries) {
+      final row = tbody.insertRow();
+      final headCell = row.insertCell()..textContent = key;
+      headCell.style.fontWeight = 'bold';
+      for (final m in metricNames) {
+        final val = value[m] ?? 0;
+        final cell = row.insertCell();
+        cell.textContent = (val is int || val == val.roundToDouble())
+            ? val.toInt().toString()
+            : val.toStringAsFixed(3);
+      }
+    }
+
+    metricsContainer.appendChild(table);
+  }
+
   // Algorithms & Traversals setup
   void updateAlgorithmOptions() {
     selectAlgorithm.textContent = '';
     algoParamsContainer.textContent = '';
 
     final cat = selectAlgoCategory.value;
-    if (cat == 'traversal') {
+    final algos = AlgorithmsRunner.getAlgorithmsForCategory(cat);
+    for (final (id, label) in algos) {
       selectAlgorithm.appendChild(
         web.HTMLOptionElement()
-          ..value = 'bfs'
-          ..text = 'Breadth-First Search (BFS)',
+          ..value = id
+          ..text = label,
       );
-      selectAlgorithm.appendChild(
-        web.HTMLOptionElement()
-          ..value = 'dfs_pre'
-          ..text = 'Depth-First (Pre-Order)',
-      );
-      selectAlgorithm.appendChild(
-        web.HTMLOptionElement()
-          ..value = 'dfs_post'
-          ..text = 'Depth-First (Post-Order)',
-      );
-      selectAlgorithm.appendChild(
-        web.HTMLOptionElement()
-          ..value = 'topological'
-          ..text = 'Topological Sort',
-      );
-      selectAlgorithm.appendChild(
-        web.HTMLOptionElement()
-          ..value = 'random_walk'
-          ..text = 'Random Walk',
-      );
-    } else {
-      selectAlgorithm.appendChild(
-        web.HTMLOptionElement()
-          ..value = 'select_cat'
-          ..text = 'Select an algorithm...',
-      );
+    }
+    if (algos.isNotEmpty) {
+      AlgorithmsRunner.renderParams(algos.first.$1, state, algoParamsContainer);
     }
   }
 
   selectAlgoCategory.onChange.listen((_) => updateAlgorithmOptions());
+  selectAlgorithm.onChange.listen((_) {
+    AlgorithmsRunner.renderParams(
+      selectAlgorithm.value,
+      state,
+      algoParamsContainer,
+    );
+  });
   updateAlgorithmOptions();
 
   // Run Traversal / Algorithm
   btnRunAlgo.onClick.listen((_) {
-    final cat = selectAlgoCategory.value;
     final algo = selectAlgorithm.value;
-    final graph = state.primaryGraph;
-    final start =
-        state.selectedSource ??
-        (graph.vertices.isNotEmpty ? graph.vertices.first : null);
+    final result = AlgorithmsRunner.run(algo, state);
 
-    if (start == null) return;
+    state.activeOverlay = result.overlay;
 
-    if (cat == 'traversal') {
-      var visited = <String>[];
-      var title = '';
-
-      switch (algo) {
-        case 'bfs':
-          title = 'Breadth-First Traversal';
-          visited = graph.breadthFirst(start).toList();
-        case 'dfs_pre':
-          title = 'Depth-First Pre-Order Traversal';
-          visited = graph.depthFirst(start).toList();
-        case 'dfs_post':
-          title = 'Depth-First Post-Order Traversal';
-          visited = graph.depthFirstPostOrder(start).toList();
-        case 'topological':
-          title = 'Topological Sort';
-          visited = graph.topological(start).toList();
-        case 'random_walk':
-          title = 'Random Walk';
-          visited = graph
-              .randomWalk(start, selfAvoiding: true)
-              .take(20)
-              .toList();
-      }
-
-      final edges = <(String, String)>[];
-      for (var i = 0; i < visited.length - 1; i++) {
-        final u = visited[i];
-        final v = visited[i + 1];
-        if (graph.containsEdge(u, v) ||
-            (!graph.isDirected && graph.containsEdge(v, u))) {
-          edges.add((u, v));
-        }
-      }
-
-      state.activeOverlay = PathOverlay(
-        title: title,
-        vertices: visited,
-        edges: edges,
-        stepNumbers: true,
-        activeStep: 0,
-      );
-
+    if (result.isPathSequence) {
       playbackBar.style.display = 'flex';
-      player.load(vertices: visited, edges: edges);
+      player.load(vertices: result.pathVertices, edges: result.pathEdges);
       player.play();
       btnPlayPause.textContent = 'Pause';
-
-      cardResults.style.display = 'block';
-      final resP = web.HTMLParagraphElement()
-        ..textContent =
-            '$title (Start: $start)\nVisited ${visited.length} nodes: ${visited.join(" → ")}';
-      algorithmResults.replaceChildren(resP);
-
-      updateUI();
+    } else {
+      player.stop();
+      playbackBar.style.display = 'none';
     }
+
+    cardResults.style.display = 'block';
+    final resP = web.HTMLParagraphElement()
+      ..innerHTML = result.summaryHtml.toJS;
+    algorithmResults.replaceChildren(resP);
+
+    if (result.distanceMatrix != null) {
+      renderDistanceMatrix(result.distanceMatrix!);
+      switchDrawerTab('tab-matrix');
+    }
+
+    if (result.metricsTable != null) {
+      renderMetricsTable(result.metricsTable!);
+      switchDrawerTab('tab-metrics');
+    }
+
+    updateUI();
   });
 
   btnClearOverlay.onClick.listen((_) {
