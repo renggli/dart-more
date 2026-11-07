@@ -4,17 +4,20 @@ import 'dart:js_interop';
 import 'package:more/graph.dart';
 import 'package:web/web.dart' as web;
 
+import 'node.dart';
 import 'state.dart';
 
 /// Utilities for importing and exporting graphs across JSON, DSL, DOT, SVG, and Dart code.
 final class GraphIO {
   /// Serializes graph state to a JSON string.
   static String exportToJson(AppState state) {
+    state.syncNodes();
     final graph = state.primaryGraph;
     final map = <String, dynamic>{
       'isDirected': graph.isDirected,
       'isWeighted': state.isWeighted,
       'vertices': graph.vertices.toList(),
+      'nodes': [for (final node in state.nodes.values) node.toJson()],
       'edges': [
         for (final edge in graph.edges)
           {'source': edge.source, 'target': edge.target, 'value': edge.value},
@@ -24,7 +27,8 @@ final class GraphIO {
   }
 
   /// Parses a graph from JSON.
-  static (Graph<String, num>, bool isWeighted) importFromJson(String jsonStr) {
+  static (Graph<String, num>, bool isWeighted, Map<String, GraphNode> nodes)
+  importFromJson(String jsonStr) {
     final dynamic decoded = jsonDecode(jsonStr);
     if (decoded is! Map) {
       throw const FormatException('Expected JSON object at root');
@@ -32,11 +36,27 @@ final class GraphIO {
     final isDirected = decoded['isDirected'] as bool? ?? true;
     final isWeighted = decoded['isWeighted'] as bool? ?? true;
     final graph = Graph<String, num>(isDirected: isDirected);
+    final nodes = <String, GraphNode>{};
+
+    final rawNodes = decoded['nodes'] as List?;
+    if (rawNodes != null) {
+      for (final item in rawNodes) {
+        if (item is Map) {
+          final node = GraphNode.fromJson(item.cast<String, dynamic>());
+          if (node.id.isNotEmpty) {
+            nodes[node.id] = node;
+            graph.addVertex(node.id);
+          }
+        }
+      }
+    }
 
     final vertices = decoded['vertices'] as List?;
     if (vertices != null) {
       for (final v in vertices) {
-        graph.addVertex(v.toString());
+        final id = v.toString();
+        graph.addVertex(id);
+        nodes.putIfAbsent(id, () => GraphNode(id: id, label: id));
       }
     }
 
@@ -54,7 +74,7 @@ final class GraphIO {
       }
     }
 
-    return (graph, isWeighted);
+    return (graph, isWeighted, nodes);
   }
 
   /// Parses graph from flexible textual DSL (edge list, path chains, or adjacency).
@@ -132,7 +152,8 @@ final class GraphIO {
   }
 
   /// Decodes URL hash string to restore graph state.
-  static (Graph<String, num>, bool isWeighted)? importFromUrlHash(String hash) {
+  static (Graph<String, num>, bool isWeighted, Map<String, GraphNode> nodes)?
+  importFromUrlHash(String hash) {
     var raw = hash;
     if (raw.startsWith('#')) raw = raw.substring(1);
     if (!raw.startsWith('g=')) return null;

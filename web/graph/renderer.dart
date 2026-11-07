@@ -14,6 +14,11 @@ typedef EdgeCallback = void Function(
   String target,
   web.MouseEvent event,
 );
+typedef NodePositionCallback = void Function(
+  String vertex,
+  double canvasX,
+  double canvasY,
+);
 
 /// Renders graph states into interactive SVG via Viz.js and Graphviz.
 final class GraphRenderer {
@@ -23,6 +28,7 @@ final class GraphRenderer {
     required this.onVertexClick,
     required this.onEdgeClick,
     required this.onBackgroundClick,
+    this.onNodeMoved,
   }) {
     _initViewportControls();
   }
@@ -32,6 +38,7 @@ final class GraphRenderer {
   final VertexCallback onVertexClick;
   final EdgeCallback onEdgeClick;
   final void Function(web.MouseEvent event) onBackgroundClick;
+  final NodePositionCallback? onNodeMoved;
 
   VizInstance? _viz;
   web.SVGSVGElement? _currentSvg;
@@ -43,6 +50,16 @@ final class GraphRenderer {
   bool _isPanning = false;
   double _startX = 0.0;
   double _startY = 0.0;
+
+  // Node dragging state
+  String? _draggedVertex;
+  bool _didDragVertex = false;
+  double _dragLastX = 0;
+  double _dragLastY = 0;
+
+  double get scale => _scale;
+  double get panX => _panX;
+  double get panY => _panY;
 
   web.SVGSVGElement? get currentSvg => _currentSvg;
 
@@ -69,6 +86,7 @@ final class GraphRenderer {
 
   /// Generates the DOT script for the given state and overlay.
   String generateDot(AppState state) {
+    state.syncNodes();
     final graph = state.primaryGraph;
     final overlay = state.activeOverlay;
 
@@ -105,28 +123,30 @@ final class GraphRenderer {
         'pad': '0.3',
       },
       vertexLabel: (v) {
-        var label = v;
+        final nodeObj = state.nodes[v];
+        var label = nodeObj?.label ?? v;
         if (overlay is PathOverlay && overlay.stepNumbers) {
           final idx = overlay.vertices.indexOf(v);
           if (idx >= 0) {
-            label = '#${idx + 1} $v';
+            label = '#${idx + 1} $label';
           }
         } else if (overlay is HeatmapOverlay) {
           final score = overlay.scores[v];
           if (score != null) {
-            label = '$v\n${_formatScore(score)}';
+            label = '$label\n${_formatScore(score)}';
           }
         }
         return label;
       },
       vertexAttributes: (v) {
+        final node = state.nodes[v];
         final isSelected =
             state.selectedVertices.contains(v) ||
             state.selectedSource == v ||
             state.selectedTarget == v;
 
         final attrs = <String, String>{
-          'id': 'node_$v',
+          'id': 'node_${Uri.encodeComponent(v)}',
           'shape': 'circle',
           'style': 'filled',
           'fontname': 'Inter, system-ui, sans-serif',
@@ -136,6 +156,9 @@ final class GraphRenderer {
           'fillcolor': '#f8fafc',
           'fontcolor': '#0f172a',
           'penwidth': isSelected ? '3.5' : '1.5',
+          if (node != null && node.x != null && node.y != null)
+            'pos':
+                '${node.x!.toStringAsFixed(1)},${(-node.y!).toStringAsFixed(1)}!',
         };
 
         // Selection border styling
@@ -222,7 +245,8 @@ final class GraphRenderer {
             (!graph.isDirected && state.selectedEdge == (e.target, e.source));
 
         final attrs = <String, String>{
-          'id': 'edge_${e.source}__${e.target}',
+          'id':
+              'edge_${Uri.encodeComponent(e.source)}__${Uri.encodeComponent(e.target)}',
           'fontname': 'Inter, system-ui, sans-serif',
           'fontsize': '11',
           'color': isSelected ? '#dc2626' : '#94a3b8',
@@ -314,7 +338,7 @@ final class GraphRenderer {
   void _initViewportControls() {
     final viewport = (container.parentElement ?? container) as web.HTMLElement;
 
-    // Smooth CSS-pixel panning
+    // Smooth CSS-pixel panning and node dragging
     viewport.onmousedown = ((web.MouseEvent event) {
       final target = event.target as web.Element?;
       if (target != null &&
@@ -329,6 +353,13 @@ final class GraphRenderer {
     }).toJS;
 
     web.window.onmousemove = ((web.MouseEvent event) {
+      if (_draggedVertex != null) {
+        final rect = viewport.getBoundingClientRect();
+        _dragLastX = (event.clientX - rect.left - _panX) / _scale;
+        _dragLastY = (event.clientY - rect.top - _panY) / _scale;
+        _didDragVertex = true;
+        return;
+      }
       if (!_isPanning) return;
       _panX = event.clientX - _startX;
       _panY = event.clientY - _startY;
@@ -336,6 +367,15 @@ final class GraphRenderer {
     }).toJS;
 
     web.window.onmouseup = ((web.MouseEvent event) {
+      if (_draggedVertex != null) {
+        if (_didDragVertex && onNodeMoved != null) {
+          onNodeMoved!(_draggedVertex!, _dragLastX, _dragLastY);
+        }
+        _draggedVertex = null;
+        _didDragVertex = false;
+        viewport.style.cursor = 'default';
+        return;
+      }
       if (_isPanning) {
         _isPanning = false;
         viewport.style.cursor = 'default';
@@ -375,11 +415,35 @@ final class GraphRenderer {
     for (var i = 0; i < nodes.length; i++) {
       final node = nodes.item(i) as web.SVGGElement?;
       if (node == null) continue;
-      final title = node.querySelector('title')?.textContent?.trim() ?? '';
+
+      // Extract vertex ID deterministically from node element id
+      final fullId = node.id;
+      var vertexId = '';
+      if (fullId.startsWith('node_')) {
+        vertexId = Uri.decodeComponent(fullId.substring(5));
+      } else {
+        vertexId = node.querySelector('title')?.textContent?.trim() ?? '';
+      }
+
+      if (vertexId.isEmpty) continue;
+
       node.style.cursor = 'pointer';
+
+      node.onmousedown = ((web.MouseEvent event) {
+        _draggedVertex = vertexId;
+        _didDragVertex = false;
+        final viewport =
+            (container.parentElement ?? container) as web.HTMLElement;
+        final rect = viewport.getBoundingClientRect();
+        _dragLastX = (event.clientX - rect.left - _panX) / _scale;
+        _dragLastY = (event.clientY - rect.top - _panY) / _scale;
+      }).toJS;
+
       node.onclick = ((web.MouseEvent event) {
         event.stopPropagation();
-        onVertexClick(title, event);
+        if (!_didDragVertex) {
+          onVertexClick(vertexId, event);
+        }
       }).toJS;
     }
 
@@ -388,17 +452,38 @@ final class GraphRenderer {
     for (var i = 0; i < edges.length; i++) {
       final edge = edges.item(i) as web.SVGGElement?;
       if (edge == null) continue;
-      final title = edge.querySelector('title')?.textContent?.trim() ?? '';
-      final parts = title.contains('->')
-          ? title.split('->')
-          : title.split('--');
-      if (parts.length == 2) {
-        final source = parts[0].trim();
-        final target = parts[1].trim();
+
+      final fullId = edge.id;
+      String? source;
+      String? target;
+
+      if (fullId.startsWith('edge_')) {
+        final rest = fullId.substring(5);
+        final parts = rest.split('__');
+        if (parts.length == 2) {
+          source = Uri.decodeComponent(parts[0]);
+          target = Uri.decodeComponent(parts[1]);
+        }
+      }
+
+      if (source == null || target == null) {
+        final title = edge.querySelector('title')?.textContent?.trim() ?? '';
+        final parts = title.contains('->')
+            ? title.split('->')
+            : title.split('--');
+        if (parts.length == 2) {
+          source = parts[0].trim();
+          target = parts[1].trim();
+        }
+      }
+
+      if (source != null && target != null) {
+        final s = source;
+        final t = target;
         edge.style.cursor = 'pointer';
         edge.onclick = ((web.MouseEvent event) {
           event.stopPropagation();
-          onEdgeClick(source, target, event);
+          onEdgeClick(s, t, event);
         }).toJS;
       }
     }

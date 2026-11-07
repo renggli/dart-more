@@ -51,12 +51,8 @@ void main() async {
   final codeDot = web.document.querySelector('#code-dot') as web.HTMLPreElement;
   final codeDart =
       web.document.querySelector('#code-dart') as web.HTMLPreElement;
-  final drawerHeader =
-      web.document.querySelector('#drawer-header') as web.HTMLElement;
   final bottomDrawer =
       web.document.querySelector('#bottom-drawer') as web.HTMLElement;
-  final drawerToggleIcon =
-      web.document.querySelector('#drawer-toggle-icon') as web.HTMLElement;
   final notificationBanner =
       web.document.querySelector('#notification-banner') as web.HTMLElement;
 
@@ -196,11 +192,15 @@ void main() async {
     if (restored != null) {
       state.primaryGraph = restored.$1;
       state.isWeighted = restored.$2;
+      state.nodes
+        ..clear()
+        ..addAll(restored.$3);
     }
   }
 
   void updateUI() {
     // Validate selection against active graph
+    state.syncNodes();
     state.selectedVertices.removeWhere(
       (v) => !state.primaryGraph.containsVertex(v),
     );
@@ -277,6 +277,13 @@ void main() async {
         state.saveSnapshot();
         state.primaryGraph.addEdge(u, v, value: newWeight);
         showToast('Updated weight of ($u, $v) to $newWeight');
+        updateUI();
+      },
+      onRenameNode: (v, newLabel) {
+        state.saveSnapshot();
+        final node = state.getOrCreateNode(v);
+        node.label = newLabel;
+        showToast('Renamed node "$v" to "$newLabel"');
         updateUI();
       },
     );
@@ -389,13 +396,16 @@ void main() async {
 
     if (mode == 'add-node') {
       state.saveSnapshot();
-      var idx = state.primaryGraph.vertices.length;
-      var name = String.fromCharCode(65 + idx % 26);
-      while (state.primaryGraph.containsVertex(name)) {
-        idx++;
-        name = idx < 26 ? String.fromCharCode(65 + idx) : 'V$idx';
-      }
+      final name = state.nextAvailableNodeId();
       state.primaryGraph.addVertex(name);
+      final viewport =
+          (canvasContainer.parentElement ?? canvasContainer) as web.HTMLElement;
+      final rect = viewport.getBoundingClientRect();
+      final canvasX =
+          (event.clientX - rect.left - renderer.panX) / renderer.scale;
+      final canvasY =
+          (event.clientY - rect.top - renderer.panY) / renderer.scale;
+      state.getOrCreateNode(name, label: name, x: canvasX, y: canvasY);
       state.selectedVertices = {name};
       state.selectedSource = name;
       showToast('Created node "$name"');
@@ -428,6 +438,12 @@ void main() async {
     onVertexClick: handleVertexClick,
     onEdgeClick: handleEdgeClick,
     onBackgroundClick: handleBackgroundClick,
+    onNodeMoved: (v, x, y) {
+      final node = state.getOrCreateNode(v);
+      node.x = x;
+      node.y = y;
+      renderer.render(state);
+    },
   );
 
   await renderer.initialize();
@@ -490,7 +506,7 @@ void main() async {
       case 'factory_path':
       case 'factory_ring':
       case 'factory_star':
-        final row = web.HTMLDivElement()..className = 'form-row';
+        final row = web.HTMLDivElement()..className = 'param-row';
         row.appendChild(web.HTMLLabelElement()..textContent = 'Node count:');
         row.appendChild(
           web.HTMLInputElement()
@@ -498,75 +514,86 @@ void main() async {
             ..type = 'number'
             ..value = preset == 'factory_complete' ? '5' : '6'
             ..min = '1'
-            ..max = '40'
-            ..style.maxWidth = '70px',
+            ..max = '40',
         );
         creatorParamsContainer.appendChild(row);
 
       case 'factory_tree':
-        final row = web.HTMLDivElement()..className = 'form-row';
-        row.appendChild(web.HTMLLabelElement()..textContent = 'Nodes:');
-        row.appendChild(
+        final rowNodes = web.HTMLDivElement()..className = 'param-row';
+        rowNodes.appendChild(
+          web.HTMLLabelElement()..textContent = 'Node count:',
+        );
+        rowNodes.appendChild(
           web.HTMLInputElement()
             ..id = 'param-tree-nodes'
             ..type = 'number'
             ..value = '10'
             ..min = '1'
-            ..max = '50'
-            ..style.maxWidth = '60px',
+            ..max = '50',
         );
-        row.appendChild(web.HTMLLabelElement()..textContent = 'Branching:');
-        row.appendChild(
+        creatorParamsContainer.appendChild(rowNodes);
+
+        final rowArity = web.HTMLDivElement()..className = 'param-row';
+        rowArity.appendChild(
+          web.HTMLLabelElement()..textContent = 'Branching (m):',
+        );
+        rowArity.appendChild(
           web.HTMLInputElement()
             ..id = 'param-tree-arity'
             ..type = 'number'
             ..value = '2'
             ..min = '1'
-            ..max = '5'
-            ..style.maxWidth = '55px',
+            ..max = '5',
         );
-        creatorParamsContainer.appendChild(row);
+        creatorParamsContainer.appendChild(rowArity);
 
       case 'factory_partite':
-        final row = web.HTMLDivElement()..className = 'form-row';
-        row.appendChild(web.HTMLLabelElement()..textContent = 'Layers:');
+        final row = web.HTMLDivElement()..className = 'param-row';
+        row.appendChild(web.HTMLLabelElement()..textContent = 'Partitions:');
         row.appendChild(
           web.HTMLInputElement()
             ..id = 'param-partite-layers'
             ..type = 'text'
             ..value = '3, 3'
-            ..placeholder = 'e.g. 3, 3 or 2, 3, 2'
-            ..style.maxWidth = '120px',
+            ..placeholder = 'e.g. 3, 3 or 2, 3, 2',
         );
         creatorParamsContainer.appendChild(row);
 
       case 'factory_random':
-        final row = web.HTMLDivElement()..className = 'form-row';
-        row.appendChild(web.HTMLLabelElement()..textContent = 'Nodes:');
-        row.appendChild(
+        final rowNodes = web.HTMLDivElement()..className = 'param-row';
+        rowNodes.appendChild(
+          web.HTMLLabelElement()..textContent = 'Node count:',
+        );
+        rowNodes.appendChild(
           web.HTMLInputElement()
             ..id = 'param-random-nodes'
             ..type = 'number'
             ..value = '8'
             ..min = '1'
-            ..max = '40'
-            ..style.maxWidth = '60px',
+            ..max = '40',
         );
-        row.appendChild(web.HTMLLabelElement()..textContent = 'Prob:');
-        row.appendChild(
+        creatorParamsContainer.appendChild(rowNodes);
+
+        final rowProb = web.HTMLDivElement()..className = 'param-row';
+        rowProb.appendChild(web.HTMLLabelElement()..textContent = 'Edge prob:');
+        rowProb.appendChild(
           web.HTMLInputElement()
             ..id = 'param-random-prob'
             ..type = 'number'
             ..value = '0.35'
             ..step = '0.05'
             ..min = '0.0'
-            ..max = '1.0'
-            ..style.maxWidth = '60px',
+            ..max = '1.0',
         );
-        creatorParamsContainer.appendChild(row);
+        creatorParamsContainer.appendChild(rowProb);
 
       case 'atlas_graph':
-        final row = web.HTMLDivElement()..className = 'form-row';
+        final row = web.HTMLDivElement()..className = 'param-row';
+        row.appendChild(web.HTMLLabelElement()..textContent = 'Atlas index:');
+        final navDiv = web.HTMLDivElement()
+          ..style.display = 'flex'
+          ..style.gap = '4px'
+          ..style.flex = '1';
         final btnPrev = web.HTMLButtonElement()
           ..className = 'button-outline button-small'
           ..textContent = '←';
@@ -577,7 +604,7 @@ void main() async {
           ..min = '0'
           ..max = '1252'
           ..style.textAlign = 'center'
-          ..style.maxWidth = '70px';
+          ..style.flex = '1';
         final btnNext = web.HTMLButtonElement()
           ..className = 'button-outline button-small'
           ..textContent = '→';
@@ -593,9 +620,10 @@ void main() async {
           btnGenerate.click();
         });
 
-        row.appendChild(btnPrev);
-        row.appendChild(inputNum);
-        row.appendChild(btnNext);
+        navDiv.appendChild(btnPrev);
+        navDiv.appendChild(inputNum);
+        navDiv.appendChild(btnNext);
+        row.appendChild(navDiv);
         creatorParamsContainer.appendChild(row);
     }
   }
@@ -868,18 +896,22 @@ void main() async {
 
   // Quick edit: Add vertex
   btnAddVertex.onClick.listen((_) {
-    final name = inputNewVertex.value.trim();
-    if (name.isNotEmpty) {
-      if (state.primaryGraph.containsVertex(name)) {
-        showToast('Vertex "$name" already exists', isWarning: true);
-        return;
-      }
-      state.saveSnapshot();
-      state.primaryGraph.addVertex(name);
-      inputNewVertex.value = '';
-      showToast('Added node "$name"');
-      updateUI();
+    var name = inputNewVertex.value.trim();
+    if (name.isEmpty) {
+      name = state.nextAvailableNodeId();
     }
+    if (state.primaryGraph.containsVertex(name)) {
+      showToast('Vertex "$name" already exists', isWarning: true);
+      return;
+    }
+    state.saveSnapshot();
+    state.primaryGraph.addVertex(name);
+    state.getOrCreateNode(name, label: name);
+    state.selectedVertices = {name};
+    state.selectedSource = name;
+    inputNewVertex.value = '';
+    showToast('Added node "$name"');
+    updateUI();
   });
 
   // Quick edit: Add edge
@@ -1041,7 +1073,6 @@ void main() async {
   // Drawer helpers
   void switchDrawerTab(String tabId) {
     bottomDrawer.classList.remove('collapsed');
-    drawerToggleIcon.textContent = '▼ Collapse';
     final tabs = web.document.querySelectorAll('.drawer-tab');
     for (var j = 0; j < tabs.length; j++) {
       final t = tabs.item(j) as web.HTMLElement?;
@@ -1285,9 +1316,12 @@ void main() async {
       if (text.isEmpty) return;
       state.saveSnapshot();
       if (selectIoFormat.value == 'json') {
-        final (g, weighted) = GraphIO.importFromJson(text);
+        final (g, weighted, nodes) = GraphIO.importFromJson(text);
         state.primaryGraph = g;
         state.isWeighted = weighted;
+        state.nodes
+          ..clear()
+          ..addAll(nodes);
       } else {
         final g = GraphIO.importFromDsl(
           text,
@@ -1349,35 +1383,37 @@ void main() async {
     }
   });
 
-  // Drawer toggle
-  drawerHeader.onClick.listen((_) {
-    final isCollapsed = bottomDrawer.classList.toggle('collapsed');
-    drawerToggleIcon.textContent = isCollapsed ? '▲ Expand' : '▼ Collapse';
-  });
-
-  // Drawer tabs
+  // Drawer tabs: clicking active tab toggles collapsed; clicking inactive tab opens and switches to it
   final tabs = web.document.querySelectorAll('.drawer-tab');
   for (var i = 0; i < tabs.length; i++) {
     final tab = tabs.item(i) as web.HTMLElement?;
     if (tab == null) continue;
     tab.onClick.listen((_) {
-      for (var j = 0; j < tabs.length; j++) {
-        (tabs.item(j) as web.HTMLElement?)?.classList.remove('active');
-      }
-      tab.classList.add('active');
-      final targetId = tab.getAttribute('data-tab');
-      final panes = web.document.querySelectorAll('.tab-pane');
-      for (var k = 0; k < panes.length; k++) {
-        final pane = panes.item(k) as web.HTMLElement?;
-        if (pane == null) continue;
-        pane.style.display = pane.id == targetId ? 'block' : 'none';
-      }
+      final wasActive = tab.classList.contains('active');
 
-      // Auto-compute when opening metrics or matrix tabs
-      if (targetId == 'tab-metrics') {
-        computeAndRenderMetrics();
-      } else if (targetId == 'tab-matrix') {
-        computeAndRenderMatrix();
+      if (wasActive) {
+        bottomDrawer.classList.toggle('collapsed');
+      } else {
+        bottomDrawer.classList.remove('collapsed');
+        for (var j = 0; j < tabs.length; j++) {
+          (tabs.item(j) as web.HTMLElement?)?.classList.remove('active');
+        }
+        tab.classList.add('active');
+        final targetId = tab.getAttribute('data-tab');
+        final panes = web.document.querySelectorAll('.tab-pane');
+        for (var k = 0; k < panes.length; k++) {
+          final pane = panes.item(k) as web.HTMLElement?;
+          if (pane != null) {
+            pane.style.display = pane.id == targetId ? 'block' : 'none';
+          }
+        }
+
+        // Auto-compute when opening metrics or matrix tabs
+        if (targetId == 'tab-metrics') {
+          computeAndRenderMetrics();
+        } else if (targetId == 'tab-matrix') {
+          computeAndRenderMatrix();
+        }
       }
     });
   }

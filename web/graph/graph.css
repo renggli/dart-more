@@ -277,9 +277,8 @@ button.button-small {
   border-bottom: 1px solid var(--border-color);
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  justify-content: flex-start;
   padding: 0 12px;
-  cursor: pointer;
 }
 
 .drawer-tabs {
@@ -288,16 +287,25 @@ button.button-small {
 }
 
 .drawer-tab {
-  padding: 2px 8px;
+  padding: 3px 10px;
   font-size: 1.1rem;
   font-weight: 600;
   cursor: pointer;
   border-radius: 4px;
+  color: var(--text-muted);
+  user-select: none;
+  transition: all 0.15s ease;
+}
+
+.drawer-tab:hover {
+  background: #e2e8f0;
+  color: var(--text-color);
 }
 
 .drawer-tab.active {
   background: #ffffff;
   color: var(--primary-color);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
 }
 
 .drawer-content {
@@ -315,6 +323,26 @@ button.button-small {
 }
 
 .form-row input, .form-row select {
+  flex: 1;
+}
+
+.param-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-bottom: 6px;
+  width: 100%;
+}
+
+.param-row label {
+  font-size: 1.1rem;
+  color: var(--text-muted);
+  margin-bottom: 0;
+  white-space: nowrap;
+}
+
+.param-row input {
   flex: 1;
 }
 

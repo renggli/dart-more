@@ -69,6 +69,7 @@ final class GraphInspector {
     AppState state, {
     required void Function(String vertex) onSelectVertex,
     required void Function(String u, String v, num newWeight) onUpdateWeight,
+    required void Function(String vertex, String newLabel) onRenameNode,
   }) {
     final container =
         web.document.querySelector('#inspector-content') as web.HTMLElement?;
@@ -113,22 +114,61 @@ final class GraphInspector {
     }
 
     // 2. Vertex inspector
-    final selectedVertex = state.selectedSource ?? state.selectedTarget;
+    final selectedVertex =
+        state.selectedSource ??
+        (state.selectedVertices.isNotEmpty
+            ? state.selectedVertices.first
+            : state.selectedTarget);
     if (selectedVertex != null && graph.containsVertex(selectedVertex)) {
       final v = selectedVertex;
+      final nodeObj = state.nodes[v];
+      final currentLabel = nodeObj?.label ?? v;
       final deg = graph.degreeOf(v);
       final inDeg = graph.isDirected ? graph.inDegreeOf(v) : deg;
       final outDeg = graph.isDirected ? graph.outDegreeOf(v) : deg;
       final clustering = graph.localClusteringCoefficient(v);
 
       final titleP = web.HTMLParagraphElement();
-      titleP.appendChild(web.HTMLSpanElement()..textContent = 'Vertex: ');
+      titleP.appendChild(web.HTMLSpanElement()..textContent = 'Node ID: ');
       titleP.appendChild(
         web.HTMLSpanElement()
           ..className = 'pill pill-source'
           ..textContent = v,
       );
       container.appendChild(titleP);
+
+      // Node Label Editor
+      final labelRow = web.HTMLDivElement()
+        ..className = 'form-row'
+        ..style.marginTop = '4px';
+      final labelInput = web.HTMLInputElement()
+        ..id = 'input-node-label'
+        ..type = 'text'
+        ..value = currentLabel
+        ..placeholder = 'Node label'
+        ..style.maxWidth = '110px';
+      final labelBtn = web.HTMLButtonElement()
+        ..className = 'button-small'
+        ..textContent = 'Rename';
+      labelBtn.onClick.listen((_) {
+        final newLabel = labelInput.value.trim();
+        if (newLabel.isNotEmpty) {
+          onRenameNode(v, newLabel);
+        }
+      });
+      labelRow.appendChild(labelInput);
+      labelRow.appendChild(labelBtn);
+      container.appendChild(labelRow);
+
+      if (nodeObj != null && nodeObj.x != null && nodeObj.y != null) {
+        final posP = web.HTMLParagraphElement()
+          ..style.fontSize = '1.0rem'
+          ..style.color = 'var(--text-muted)'
+          ..style.margin = '2px 0 6px 0'
+          ..textContent =
+              'Position: X: ${nodeObj.x!.round()}px, Y: ${nodeObj.y!.round()}px';
+        container.appendChild(posP);
+      }
 
       final metricsP = web.HTMLParagraphElement()
         ..style.fontSize = '1.1rem'
@@ -158,7 +198,7 @@ final class GraphInspector {
             ..style.cursor = 'pointer'
             ..style.background = '#f1f5f9'
             ..style.margin = '2px'
-            ..textContent = n;
+            ..textContent = state.nodes[n]?.label ?? n;
           pill.onClick.listen((_) => onSelectVertex(n));
           row.appendChild(pill);
         }
@@ -171,8 +211,7 @@ final class GraphInspector {
     container.appendChild(
       web.HTMLSpanElement()
         ..style.color = 'var(--text-muted)'
-        ..textContent =
-            'Click a node or edge on the canvas to inspect its properties.',
+        ..textContent = 'Click a node or edge on the canvas to inspect and edit its properties.',
     );
   }
 
