@@ -267,8 +267,9 @@ Future<void> generateCurry() async {
     if (i == 1) {
       out.writeln(
         '/// Converts a function with 1 positional argument into a '
-        'function taking a single argument.',
+        'function taking a',
       );
+      out.writeln('/// single argument.');
     } else {
       out.writeln(
         '/// Converts a function with $i positional arguments into a '

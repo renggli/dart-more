@@ -7,9 +7,8 @@ import '../graph.dart';
 
 /// Extension on [Graph] to export graphs in different formats.
 extension ExportGraphExtension<V, E> on Graph<V, E> {
-  /// Exports this graph to the [DOT Language]
-  /// (https://graphviz.org/doc/info/lang.html) typically used to describe
-  /// [Graphviz](https://graphviz.org/) graphs.
+  /// Exports this graph to the [DOT Language](https://graphviz.org/doc/info/lang.html)
+  /// typically used to describe [Graphviz](https://graphviz.org/) graphs.
   ///
   /// Vertices can be partitioned into subgraphs by providing a [subgraph]
   /// callback that maps each vertex to its subgraph identifier, or `null` if

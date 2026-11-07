@@ -49,7 +49,7 @@ void main() {
 
   group('graph theory & algorithms', () {
     test('shortest path and topology', () {
-      final graph = Graph<String, num>.directed()
+      final graph = Graph<String, num>(isDirected: true)
         ..addEdge('A', 'B', value: 4)
         ..addEdge('A', 'C', value: 2)
         ..addEdge('C', 'B', value: 1);
@@ -107,6 +107,7 @@ void main() {
       final intA = Interval(1, 5);
       final intB = Interval(3, 7);
       check(intA.intersection(intB)).equals(Interval(3, 5));
+      check(intA.intersection(intB).toString()).equals('3..5');
     });
   });
 

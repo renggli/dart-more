@@ -24,6 +24,7 @@ A collection of extensively tested extensions that make Dart a better place:
 | [interval](https://pub.dev/documentation/more/latest/interval/interval-library.html)             | Continuous interval data type over a practical range.              |
 | [math](https://pub.dev/documentation/more/latest/math/math-library.html)                         | Common mathematical functions.                                     |
 | [number](https://pub.dev/documentation/more/latest/number/number-library.html)                   | Number types: fraction, complex, quaternion.                       |
+| [pragma](https://pub.dev/documentation/more/latest/pragma/pragma-library.html)                   | Compiler pragmas for the Dart VM, Dart2JS, and Dart2WASM.          |
 | [printer](https://pub.dev/documentation/more/latest/printer/printer-library.html)                | Fluent interface to configure sophisticated formatters.            |
 | [temporal](https://pub.dev/documentation/more/latest/temporal/temporal-library.html)             | Extensions to `DateTime` and `Duration` types.                     |
 | [tuple](https://pub.dev/documentation/more/latest/tuple/tuple-library.html)                      | Tuple extension methods on generic records.                        |
@@ -138,9 +139,9 @@ final now = DateTime(2025, 5, 12, 14, 23, 45);
 print(now.truncateTo(TimeUnit.hour)); // 2025-05-12 14:00:00.000
 
 // Continuous interval operations
-final intA = Interval(1, 5); // [1..5]
-final intB = Interval(3, 7); // [3..7]
-print(intA.intersection(intB)); // [3..5]
+final intA = Interval(1, 5); // 1..5
+final intB = Interval(3, 7); // 3..7
+print(intA.intersection(intB)); // 3..5
 ```
 
 ### Unicode & Character Matching

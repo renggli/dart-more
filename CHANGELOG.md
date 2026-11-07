@@ -1,8 +1,8 @@
 # Changelog
 
-## 4.9.0 (Unpublished)
+## 4.9.0
 
-- Significant expansion and refactoring of the graph library:
+- Significant expansion of the graph library:
   - Add degree centrality (`degreeCentrality`, `inDegreeCentrality`, `outDegreeCentrality`), eigenvector centrality (`eigenvectorCentrality`), closeness centrality (`closenessCentrality`), betweenness centrality (`betweennessCentrality`), and PageRank (`pageRank`).
   - Add graph metrics: density (`density()`), clustering coefficient (`clusteringCoefficient`, `averageClusteringCoefficient`), transitivity (`transitivity`), and degree assortativity coefficient (`degreeAssortativity()`).
   - Add Hamiltonian path and circuit detection (`hasHamiltonianPath`, `hasHamiltonianCircuit`, `findHamiltonianPath`).

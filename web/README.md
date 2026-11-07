@@ -1,6 +1,7 @@
-To run the web examples execute the following commands from the command line and navigate to http://localhost:8080/:
+# Web Examples
+
+To run the web examples execute the following commands from the command line:
 
 ```bash
-dart pub global activate webdev
-webdev serve --release
+dart run build_runner serve web
 ```
