@@ -1,16 +1,22 @@
 import 'dart:typed_data';
 
+import 'package:collection/collection.dart';
+
+import '../edge.dart';
+import '../path.dart';
 import '../strategy.dart';
 
 /// Checks if a graph has a Hamiltonian circuit (a closed cycle visiting every vertex exactly once).
-bool hasHamiltonianCircuit<V>({
+bool hasHamiltonianCircuit<V, E>({
   required Iterable<V> vertices,
-  required Iterable<V> Function(V vertex) successorsOf,
+  Iterable<Edge<V, E>> Function(V vertex)? outgoingEdgesOf,
+  Iterable<V> Function(V vertex)? successorsOf,
   required bool isDirected,
   StorageStrategy<V>? vertexStrategy,
 }) =>
-    findHamiltonianPath<V>(
+    findHamiltonianPath<V, E>(
       vertices: vertices,
+      outgoingEdgesOf: outgoingEdgesOf,
       successorsOf: successorsOf,
       isDirected: isDirected,
       circuit: true,
@@ -19,14 +25,16 @@ bool hasHamiltonianCircuit<V>({
     null;
 
 /// Checks if a graph has a Hamiltonian path (a path visiting every vertex exactly once).
-bool hasHamiltonianPath<V>({
+bool hasHamiltonianPath<V, E>({
   required Iterable<V> vertices,
-  required Iterable<V> Function(V vertex) successorsOf,
+  Iterable<Edge<V, E>> Function(V vertex)? outgoingEdgesOf,
+  Iterable<V> Function(V vertex)? successorsOf,
   required bool isDirected,
   StorageStrategy<V>? vertexStrategy,
 }) =>
-    findHamiltonianPath<V>(
+    findHamiltonianPath<V, E>(
       vertices: vertices,
+      outgoingEdgesOf: outgoingEdgesOf,
       successorsOf: successorsOf,
       isDirected: isDirected,
       circuit: false,
@@ -36,38 +44,55 @@ bool hasHamiltonianPath<V>({
 
 /// Finds a Hamiltonian path or circuit in a graph.
 ///
-/// Returns a [List<V>] in traversal order (for a circuit, the start vertex is repeated
+/// Returns a [Path<V, E>] in traversal order (for a circuit, the start vertex is repeated
 /// at the end), or `null` if no such path or circuit exists.
-List<V>? findHamiltonianPath<V>({
+Path<V, E>? findHamiltonianPath<V, E>({
   required Iterable<V> vertices,
-  required Iterable<V> Function(V vertex) successorsOf,
+  Iterable<Edge<V, E>> Function(V vertex)? outgoingEdgesOf,
+  Iterable<V> Function(V vertex)? successorsOf,
   required bool isDirected,
   bool circuit = false,
   StorageStrategy<V>? vertexStrategy,
 }) {
+  if (outgoingEdgesOf == null && successorsOf == null) {
+    throw ArgumentError(
+      'Either outgoingEdgesOf or successorsOf must be provided.',
+    );
+  }
+  final getEdges =
+      outgoingEdgesOf ??
+      (u) => successorsOf!(u).map(
+        (v) => isDirected
+            ? Edge<V, E>.directed(u, v)
+            : Edge<V, E>.undirected(u, v),
+      );
+  final getSuccessors = successorsOf ?? (u) => getEdges(u).map((e) => e.target);
+
   final vertexList = vertices.toList(growable: false);
   final n = vertexList.length;
   if (n == 0) return null;
 
   if (n == 1) {
     final v = vertexList.first;
-    if (!circuit) return [v];
-    final hasSelfLoop = successorsOf(v).contains(v);
-    return hasSelfLoop ? [v, v] : null;
+    if (!circuit) return Path<V, E>.fromVertices([v]);
+    final loop = getEdges(v).firstWhereOrNull((e) => e.target == v);
+    return loop != null ? Path<V, E>.fromEdges([loop]) : null;
   }
 
   if (n == 2) {
     final u = vertexList[0];
     final w = vertexList[1];
-    final uToW = successorsOf(u).contains(w);
-    final wToU = successorsOf(w).contains(u);
+    final uToW = getEdges(u).firstWhereOrNull((e) => e.target == w);
+    final wToU = getEdges(w).firstWhereOrNull((e) => e.target == u);
     if (!circuit) {
-      if (uToW) return [u, w];
-      if (wToU) return [w, u];
+      if (uToW != null) return Path<V, E>.fromEdges([uToW]);
+      if (wToU != null) return Path<V, E>.fromEdges([wToU]);
       return null;
     }
     if (isDirected) {
-      if (uToW && wToU) return [u, w, u];
+      if (uToW != null && wToU != null) {
+        return Path<V, E>.fromEdges([uToW, wToU]);
+      }
       return null;
     }
     // In an undirected simple graph, a cycle requires at least 3 vertices.
@@ -83,7 +108,7 @@ List<V>? findHamiltonianPath<V>({
   final adj = List<List<int>>.generate(n, (_) => <int>[]);
   final inDegree = List<int>.filled(n, 0);
   for (var i = 0; i < n; i++) {
-    for (final target in successorsOf(vertexList[i])) {
+    for (final target in getSuccessors(vertexList[i])) {
       final j = vertexIndex[target];
       if (j != null && j != i) {
         adj[i].add(j);
@@ -117,12 +142,20 @@ List<V>? findHamiltonianPath<V>({
   }
 
   // Use bitmask DP for n <= 20
-  if (n <= 20) {
-    return _heldKarpBitmask(vertexList, adj, isDirected, circuit);
-  }
+  final resultVerts = n <= 20
+      ? _heldKarpBitmask(vertexList, adj, isDirected, circuit)
+      : _backtrackingDfs(vertexList, adj, inDegree, isDirected, circuit);
 
-  // Use backtracking DFS with Warnsdorff's heuristic for n > 20
-  return _backtrackingDfs(vertexList, adj, inDegree, isDirected, circuit);
+  if (resultVerts == null) return null;
+
+  final pathEdges = <Edge<V, E>>[];
+  for (var i = 0; i < resultVerts.length - 1; i++) {
+    final from = resultVerts[i];
+    final to = resultVerts[i + 1];
+    final edge = getEdges(from).firstWhere((e) => e.target == to);
+    pathEdges.add(edge);
+  }
+  return Path<V, E>.fromEdges(pathEdges);
 }
 
 List<V>? _heldKarpBitmask<V>(

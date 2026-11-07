@@ -213,7 +213,7 @@ void main() {
 
     group('standalone functions', () {
       test('standalone findHamiltonianPath and predicates', () {
-        final res = findHamiltonianPath<String>(
+        final res = findHamiltonianPath<String, void>(
           vertices: ['a', 'b', 'c'],
           successorsOf: (v) => switch (v) {
             'a' => ['b'],
@@ -224,10 +224,24 @@ void main() {
           circuit: true,
         );
         check(res).isNotNull();
-        check(res!).deepEquals(['a', 'b', 'c', 'a']);
+        check(res!.vertices).deepEquals(['a', 'b', 'c', 'a']);
+
+        final resEdges = findHamiltonianPath<String, int>(
+          vertices: ['a', 'b', 'c'],
+          outgoingEdgesOf: (v) => switch (v) {
+            'a' => [const Edge.directed('a', 'b', value: 10)],
+            'b' => [const Edge.directed('b', 'c', value: 20)],
+            _ => [const Edge.directed('c', 'a', value: 30)],
+          },
+          isDirected: true,
+          circuit: true,
+        );
+        check(resEdges).isNotNull();
+        check(resEdges!.vertices).deepEquals(['a', 'b', 'c', 'a']);
+        check(resEdges.values).deepEquals([10, 20, 30]);
 
         check(
-          hasHamiltonianCircuit<String>(
+          hasHamiltonianCircuit<String, void>(
             vertices: ['a', 'b', 'c'],
             successorsOf: (v) => switch (v) {
               'a' => ['b'],
@@ -239,7 +253,7 @@ void main() {
         ).isTrue();
 
         check(
-          hasHamiltonianPath<String>(
+          hasHamiltonianPath<String, void>(
             vertices: ['a', 'b', 'c'],
             successorsOf: (v) => switch (v) {
               'a' => ['b'],

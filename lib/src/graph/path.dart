@@ -24,7 +24,11 @@ class Path<V, E> with ToStringPrinter {
     }
     return Path._(
       vertices: list,
-      values: values ?? repeat<E>(null as E, count: list.length - 1),
+      values:
+          values ??
+          (list.length <= 1
+              ? const []
+              : repeat<E>(null as E, count: list.length - 1)),
     );
   }
 

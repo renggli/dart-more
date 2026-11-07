@@ -313,18 +313,18 @@ extension AlgorithmsGraphExtension<V, E> on Graph<V, E> {
 
   /// Checks if this graph has a Hamiltonian circuit (a cycle visiting every vertex exactly once).
   bool hasHamiltonianCircuit({StorageStrategy<V>? vertexStrategy}) =>
-      hamiltonian.hasHamiltonianCircuit<V>(
+      hamiltonian.hasHamiltonianCircuit<V, E>(
         vertices: vertices,
-        successorsOf: successorsOf,
+        outgoingEdgesOf: outgoingEdgesOf,
         isDirected: isDirected,
         vertexStrategy: vertexStrategy ?? this.vertexStrategy,
       );
 
   /// Checks if this graph has a Hamiltonian path (a path visiting every vertex exactly once).
   bool hasHamiltonianPath({StorageStrategy<V>? vertexStrategy}) =>
-      hamiltonian.hasHamiltonianPath<V>(
+      hamiltonian.hasHamiltonianPath<V, E>(
         vertices: vertices,
-        successorsOf: successorsOf,
+        outgoingEdgesOf: outgoingEdgesOf,
         isDirected: isDirected,
         vertexStrategy: vertexStrategy ?? this.vertexStrategy,
       );
@@ -335,32 +335,13 @@ extension AlgorithmsGraphExtension<V, E> on Graph<V, E> {
   Path<V, E>? findHamiltonianPath({
     bool circuit = false,
     StorageStrategy<V>? vertexStrategy,
-  }) {
-    final verts = hamiltonian.findHamiltonianPath<V>(
-      vertices: vertices,
-      successorsOf: successorsOf,
-      isDirected: isDirected,
-      circuit: circuit,
-      vertexStrategy: vertexStrategy ?? this.vertexStrategy,
-    );
-    if (verts == null) return null;
-    final edges = <Edge<V, E>>[];
-    for (var i = 0; i < verts.length - 1; i++) {
-      final edge = getEdge(verts[i], verts[i + 1]);
-      if (edge != null) {
-        edges.add(edge);
-      } else {
-        edges.add(
-          isDirected
-              ? Edge<V, E>.directed(verts[i], verts[i + 1])
-              : Edge<V, E>.undirected(verts[i], verts[i + 1]),
-        );
-      }
-    }
-    return edges.isEmpty
-        ? Path<V, E>.fromVertices(verts)
-        : Path<V, E>.fromEdges(edges);
-  }
+  }) => hamiltonian.findHamiltonianPath<V, E>(
+    vertices: vertices,
+    outgoingEdgesOf: outgoingEdgesOf,
+    isDirected: isDirected,
+    circuit: circuit,
+    vertexStrategy: vertexStrategy ?? this.vertexStrategy,
+  );
 
   /// Returns the articulation points (cut vertices) of this undirected graph.
   Set<V> articulationPoints({StorageStrategy<V>? vertexStrategy}) {
@@ -420,7 +401,7 @@ extension AlgorithmsGraphExtension<V, E> on Graph<V, E> {
   /// $|E_u|$ is the number of undirected edges (excluding self-loops).
   ///
   /// Returns `0.0` if $|V| < 2$.
-  double get density => structural_metrics.graphDensity<V>(
+  double density() => structural_metrics.graphDensity<V>(
     vertices: vertices,
     successorsOf: successorsOf,
     isDirected: isDirected,
@@ -471,13 +452,14 @@ extension AlgorithmsGraphExtension<V, E> on Graph<V, E> {
   /// Returns the degree assortativity coefficient of this graph.
   ///
   /// Returns [double.nan] if the graph has no edges or if degree variance is zero.
-  double get degreeAssortativity => structural_metrics.degreeAssortativity<V>(
-    vertices: vertices,
-    successorsOf: successorsOf,
-    predecessorsOf: predecessorsOf,
-    isDirected: isDirected,
-    vertexStrategy: vertexStrategy,
-  );
+  double degreeAssortativity({StorageStrategy<V>? vertexStrategy}) =>
+      structural_metrics.degreeAssortativity<V>(
+        vertices: vertices,
+        successorsOf: successorsOf,
+        predecessorsOf: predecessorsOf,
+        isDirected: isDirected,
+        vertexStrategy: vertexStrategy ?? this.vertexStrategy,
+      );
 
   /// Computes the degree centrality of all vertices in this graph.
   Map<V, double> degreeCentrality({StorageStrategy<V>? vertexStrategy}) =>

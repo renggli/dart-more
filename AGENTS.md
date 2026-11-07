@@ -55,8 +55,8 @@
 - Avoid hyper-fragmenting tightly coupled classes into single-class micro-files (e.g., base classes and private or factory subclasses should be co-located in the same file).
 - Verify dependency structure by running `dart test test/deps_test.dart`.
 - Avoid introducing new external dependencies in `pubspec.yaml` unless absolutely necessary and no alternative exists in the SDK. Justify any addition to the user.
-- Graph algorithms in `lib/src/graph/algorithms/` must operate on arbitrary graph-like structures via minimal functional closures (e.g., `vertices`, `successorsOf`, `predecessorsOf`, `neighboursOf`, `vertexStrategy`), without directly depending on `Graph<V, E>`.
-- `lib/src/graph/algorithms.dart` serves strictly as an adapter facade exposing `Graph` data to those standalone algorithm functions, containing zero domain or algorithmic logic itself.
+- Graph algorithms in `lib/src/graph/algorithms/` must operate on arbitrary graph-like structures via minimal functional closures (e.g., `vertices`, `successorsOf`, `predecessorsOf`, `neighboursOf`, `vertexStrategy`), without directly depending on `Graph<V, E>`. It is fine to use `Edge`, `Path`, and other helpers in graph algorithms, just not `Graph` itself (to keep them independent).
+- `lib/src/graph/algorithms.dart` serves strictly as an adapter facade exposing `Graph` data to those standalone algorithm functions, containing zero domain or algorithmic logic itself. In `lib/src/graph/algorithms.dart`, do not use getters; even methods without parameters must be methods (e.g., `density()`, `degreeAssortativity()`), as getters make evolving the interface difficult if parameters are needed later.
 
 ## Testing
 

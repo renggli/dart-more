@@ -7,23 +7,23 @@ void main() {
     group('density', () {
       test('empty and single vertex graph', () {
         final g0 = Graph<int, void>(isDirected: false);
-        check(g0.density).equals(0.0);
+        check(g0.density()).equals(0.0);
 
         final g1 = Graph<int, void>(isDirected: false)..addVertex(1);
-        check(g1.density).equals(0.0);
+        check(g1.density()).equals(0.0);
 
         final g1Dir = Graph<int, void>(isDirected: true)..addVertex(1);
-        check(g1Dir.density).equals(0.0);
+        check(g1Dir.density()).equals(0.0);
       });
 
       test('complete graphs have density 1.0', () {
         final k4Undirected = GraphFactory<int, void>(isDirected: false)
             .complete(vertexCount: 4);
-        check(k4Undirected.density).equals(1.0);
+        check(k4Undirected.density()).equals(1.0);
 
         final k4Directed = GraphFactory<int, void>(isDirected: true)
             .complete(vertexCount: 4);
-        check(k4Directed.density).equals(1.0);
+        check(k4Directed.density()).equals(1.0);
       });
 
       test('undirected path P4', () {
@@ -31,7 +31,7 @@ void main() {
         // Density = 3 / 6 = 0.5.
         final p4 = GraphFactory<int, void>(isDirected: false)
             .path(vertexCount: 4);
-        check(p4.density).equals(0.5);
+        check(p4.density()).equals(0.5);
       });
 
       test('directed path P4', () {
@@ -39,7 +39,7 @@ void main() {
         // Density = 3 / 12 = 0.25.
         final p4Dir = GraphFactory<int, void>(isDirected: true)
             .path(vertexCount: 4);
-        check(p4Dir.density).equals(0.25);
+        check(p4Dir.density()).equals(0.25);
       });
     });
 
@@ -120,34 +120,34 @@ void main() {
     group('degreeAssortativity', () {
       test('empty and single vertex graph', () {
         final g0 = Graph<int, void>(isDirected: false);
-        check(g0.degreeAssortativity.isNaN).isTrue();
+        check(g0.degreeAssortativity().isNaN).isTrue();
 
         final g1 = Graph<int, void>(isDirected: false)..addVertex(1);
-        check(g1.degreeAssortativity.isNaN).isTrue();
+        check(g1.degreeAssortativity().isNaN).isTrue();
       });
 
       test('regular graphs (zero degree variance)', () {
         // Complete graph K4: all vertices have degree 3
         final k4 = GraphFactory<int, void>(isDirected: false)
             .complete(vertexCount: 4);
-        check(k4.degreeAssortativity.isNaN).isTrue();
+        check(k4.degreeAssortativity().isNaN).isTrue();
 
         // Ring graph R4: all vertices have degree 2
         final r4 = GraphFactory<int, void>(isDirected: false)
             .ring(vertexCount: 4);
-        check(r4.degreeAssortativity.isNaN).isTrue();
+        check(r4.degreeAssortativity().isNaN).isTrue();
       });
 
       test('star graph S3 is disassortative (-1.0)', () {
         final star = GraphFactory<int, void>(isDirected: false)
             .star(vertexCount: 3);
-        check(star.degreeAssortativity).isCloseTo(-1.0, 1e-6);
+        check(star.degreeAssortativity()).isCloseTo(-1.0, 1e-6);
       });
 
       test('path P4 is disassortative (-0.5)', () {
         final p4 = GraphFactory<int, void>(isDirected: false)
             .path(vertexCount: 4);
-        check(p4.degreeAssortativity).isCloseTo(-0.5, 1e-6);
+        check(p4.degreeAssortativity()).isCloseTo(-0.5, 1e-6);
       });
 
       test('disjoint edge and triangle is assortative (1.0)', () {
@@ -157,7 +157,7 @@ void main() {
           ..addEdge(2, 3)
           ..addEdge(3, 4)
           ..addEdge(4, 2);
-        check(g.degreeAssortativity).isCloseTo(1.0, 1e-6);
+        check(g.degreeAssortativity()).isCloseTo(1.0, 1e-6);
       });
 
       test('directed graph assortativity', () {
@@ -170,7 +170,7 @@ void main() {
           ..addEdge(1, 0)
           ..addEdge(2, 0)
           ..addEdge(3, 0);
-        check(starIn.degreeAssortativity.isNaN).isTrue();
+        check(starIn.degreeAssortativity().isNaN).isTrue();
 
         // Directed path 0 -> 1 -> 2 -> 3
         // Out-degrees: 0: 1, 1: 1, 2: 1, 3: 0.
@@ -182,7 +182,7 @@ void main() {
         // Again zero variance across edges -> NaN.
         final p4Dir = GraphFactory<int, void>(isDirected: true)
             .path(vertexCount: 4);
-        check(p4Dir.degreeAssortativity.isNaN).isTrue();
+        check(p4Dir.degreeAssortativity().isNaN).isTrue();
 
         // Directed graph with non-zero variance on both ends:
         final gDir = Graph<int, void>(isDirected: true)
@@ -194,7 +194,7 @@ void main() {
         // 2: out=0, in=2
         // Edges: (0, 1) -> (2, 1); (0, 2) -> (2, 2); (1, 2) -> (1, 2).
         // j: 2, 2, 1 (not constant). k: 1, 2, 2 (not constant).
-        check(gDir.degreeAssortativity.isNaN).isFalse();
+        check(gDir.degreeAssortativity().isNaN).isFalse();
       });
 
       test('standalone degreeAssortativity function', () {
