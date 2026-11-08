@@ -150,6 +150,8 @@ final class LayoutResult<V> {
     ),
     double margin = 40.0,
     bool keepAspectRatio = true,
+    bool scaleDown = true,
+    bool scaleUp = true,
   }) {
     if (positions.isEmpty) return this;
 
@@ -178,6 +180,15 @@ final class LayoutResult<V> {
       final uniformScale = math.min(scaleX, scaleY);
       scaleX = uniformScale;
       scaleY = uniformScale;
+    }
+
+    if (!scaleDown) {
+      scaleX = math.max(1.0, scaleX);
+      scaleY = math.max(1.0, scaleY);
+    }
+    if (!scaleUp) {
+      scaleX = math.min(1.0, scaleX);
+      scaleY = math.min(1.0, scaleY);
     }
 
     final scaledCenterX = bounds.center.x * scaleX;

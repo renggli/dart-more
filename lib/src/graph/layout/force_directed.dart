@@ -22,6 +22,7 @@ extension ForceDirectedLayoutExtension<V> on LayoutGraph<V> {
     math.Random? random,
     int? seed,
     double spacing = 20.0,
+    double gravity = 0.05,
   }) {
     final list = vertices.toList();
     if (list.isEmpty) {
@@ -40,7 +41,8 @@ extension ForceDirectedLayoutExtension<V> on LayoutGraph<V> {
     final width = bounds.width > 0 ? bounds.width : 800.0;
     final height = bounds.height > 0 ? bounds.height : 600.0;
     final area = width * height;
-    final k = optimalDistance ?? 0.75 * math.sqrt(area / n);
+    final k =
+        optimalDistance ?? math.max(spacing * 2.0, 0.75 * math.sqrt(area / n));
     final k2 = k * k;
 
     final rng = random ?? (seed != null ? math.Random(seed) : math.Random(42));
@@ -100,11 +102,13 @@ extension ForceDirectedLayoutExtension<V> on LayoutGraph<V> {
 
     var temp = math.min(width, height) / 10.0;
     final initialTemp = temp;
+    final cx = bounds.center.x;
+    final cy = bounds.center.y;
 
     for (var iter = 0; iter < iterations; iter++) {
       for (var i = 0; i < n; i++) {
-        dispX[i] = 0.0;
-        dispY[i] = 0.0;
+        dispX[i] = (cx - posX[i]) * gravity;
+        dispY[i] = (cy - posY[i]) * gravity;
       }
 
       // 1. Repulsive forces + collision overlap avoidance
@@ -112,6 +116,7 @@ extension ForceDirectedLayoutExtension<V> on LayoutGraph<V> {
         final pxI = posX[i];
         final pyI = posY[i];
         final rI = radius[i];
+        final degI = adj[i].length;
         for (var j = i + 1; j < n; j++) {
           var dx = pxI - posX[j];
           var dy = pyI - posY[j];
@@ -123,7 +128,10 @@ extension ForceDirectedLayoutExtension<V> on LayoutGraph<V> {
           }
 
           final minDist = rI + radius[j];
-          var force = k2 / dist;
+          final degFactor =
+              (1.0 + 0.15 * math.sqrt(degI)) *
+              (1.0 + 0.15 * math.sqrt(adj[j].length));
+          var force = (k2 / dist) * degFactor;
           if (dist < minDist) {
             final overlap = minDist - dist;
             force += (k2 / dist) * (1.0 + 3.0 * (overlap / minDist));
@@ -177,7 +185,7 @@ extension ForceDirectedLayoutExtension<V> on LayoutGraph<V> {
         posY[i] = posY[i].clamp(bounds.minY + margin, bounds.maxY - margin);
       }
 
-      temp = initialTemp * (1.0 - (iter + 1) / iterations);
+      temp = initialTemp * math.pow(1.0 - (iter + 1) / iterations, 1.5);
     }
 
     // 4. Overlap resolution pass

@@ -9,7 +9,7 @@ extension LayeredLayoutExtension<V> on LayoutGraph<V> {
   /// calculating layer and node spacing from vertex dimensions to prevent overlaps.
   LayoutResult<V> layered({
     double? layerDistance,
-    double nodeDistance = 20.0,
+    double nodeDistance = 35.0,
     LayoutOrientation orientation = LayoutOrientation.topToBottom,
   }) {
     final allVertices = vertices.toSet();
@@ -38,44 +38,56 @@ extension LayeredLayoutExtension<V> on LayoutGraph<V> {
     final layers = _assignLayers(allVertices, forwardAdj, reverseAdj);
     _barycenterOrdering(layers, forwardAdj, reverseAdj);
 
+    final isHorizontal =
+        orientation == LayoutOrientation.leftToRight ||
+        orientation == LayoutOrientation.rightToLeft;
+
     final rawPositions = <V, (double, double)>{};
-    var currentY = 0.0;
-    var prevMaxHeight = 0.0;
+    var currentLayerCoord = 0.0;
+    var prevMaxLayerDim = 0.0;
 
     for (var layerIdx = 0; layerIdx < layers.length; layerIdx++) {
       final layerNodes = layers[layerIdx];
       final count = layerNodes.length;
 
-      var currMaxHeight = 0.0;
+      var currMaxLayerDim = 0.0;
       for (final v in layerNodes) {
-        final h = heightOf(v);
-        if (h > currMaxHeight) currMaxHeight = h;
+        final dim = isHorizontal ? widthOf(v) : heightOf(v);
+        if (dim > currMaxLayerDim) currMaxLayerDim = dim;
       }
 
       if (layerIdx > 0) {
-        final vSeparation =
-            layerDistance ?? ((prevMaxHeight + currMaxHeight) / 2.0 + 30.0);
-        currentY += vSeparation;
+        final layerSeparation =
+            layerDistance ?? ((prevMaxLayerDim + currMaxLayerDim) / 2.0 + 50.0);
+        currentLayerCoord += layerSeparation;
       }
-      prevMaxHeight = currMaxHeight;
+      prevMaxLayerDim = currMaxLayerDim;
 
-      final xOffsets = <double>[];
-      var totalW = 0.0;
+      final nodeOffsets = <double>[];
+      var totalNodeSpan = 0.0;
       for (var i = 0; i < count; i++) {
         final v = layerNodes[i];
         if (i == 0) {
-          xOffsets.add(0.0);
+          nodeOffsets.add(0.0);
         } else {
           final prevV = layerNodes[i - 1];
-          final gap = (widthOf(prevV) + widthOf(v)) / 2.0 + nodeDistance;
-          totalW += gap;
-          xOffsets.add(totalW);
+          final prevDim = isHorizontal ? heightOf(prevV) : widthOf(prevV);
+          final currDim = isHorizontal ? heightOf(v) : widthOf(v);
+          final gap = (prevDim + currDim) / 2.0 + nodeDistance;
+          totalNodeSpan += gap;
+          nodeOffsets.add(totalNodeSpan);
         }
       }
 
-      final shiftX = -totalW / 2.0;
+      final shift = -totalNodeSpan / 2.0;
       for (var i = 0; i < count; i++) {
-        rawPositions[layerNodes[i]] = (xOffsets[i] + shiftX, currentY);
+        final v = layerNodes[i];
+        final nodeCoord = nodeOffsets[i] + shift;
+        if (isHorizontal) {
+          rawPositions[v] = (currentLayerCoord, nodeCoord);
+        } else {
+          rawPositions[v] = (nodeCoord, currentLayerCoord);
+        }
       }
     }
 
@@ -86,8 +98,8 @@ extension LayeredLayoutExtension<V> on LayoutGraph<V> {
       final (ox, oy) = switch (orientation) {
         LayoutOrientation.topToBottom => (x, y),
         LayoutOrientation.bottomToTop => (x, -y),
-        LayoutOrientation.leftToRight => (y, x),
-        LayoutOrientation.rightToLeft => (-y, x),
+        LayoutOrientation.leftToRight => (x, y),
+        LayoutOrientation.rightToLeft => (-x, y),
       };
       orientedPositions[entry.key] = LayoutPoint(ox, oy);
     }
