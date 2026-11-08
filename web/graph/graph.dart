@@ -68,8 +68,9 @@ void main() async {
       web.document.querySelector('#btn-export-copy') as web.HTMLButtonElement;
   final btnExportShare =
       web.document.querySelector('#btn-export-share') as web.HTMLButtonElement;
-  final btnDownloadJson =
-      web.document.querySelector('#btn-download-json') as web.HTMLButtonElement;
+  final btnDownloadMermaid = web.document.querySelector(
+    '#btn-download-mermaid',
+  ) as web.HTMLButtonElement;
   final btnDownloadDot =
       web.document.querySelector('#btn-download-dot') as web.HTMLButtonElement;
   final btnDownloadSvg =
@@ -100,20 +101,8 @@ void main() async {
   void syncModalContent() {
     ioStatus.textContent = '';
     switch (selectIoFormat.value) {
-      case 'json':
-        textareaIo.value = GraphIO.exportToJson(state);
-      case 'dsl':
-        final buffer = StringBuffer();
-        final arrow = state.primaryGraph.isDirected ? '->' : '--';
-        for (final e in state.primaryGraph.edges) {
-          buffer.writeln('${e.source} $arrow ${e.target} : ${e.value}');
-        }
-        for (final v in state.primaryGraph.vertices) {
-          if (state.primaryGraph.degreeOf(v) == 0) {
-            buffer.writeln(v);
-          }
-        }
-        textareaIo.value = buffer.toString();
+      case 'mermaid':
+        textareaIo.value = GraphIO.exportToMermaid(state);
       case 'dot':
         textareaIo.value = renderer.generateDot(state);
       case 'dart':
@@ -835,22 +824,17 @@ void main() async {
       final text = textareaIo.value.trim();
       if (text.isEmpty) return;
       state.saveSnapshot();
-      if (selectIoFormat.value == 'json') {
-        final (g, weighted, nodes) = GraphIO.importFromJson(text);
-        state.primaryGraph = g;
-        state.isWeighted = weighted;
-        state.nodes
-          ..clear()
-          ..addAll(nodes);
-      } else {
-        final g = GraphIO.importFromDsl(
-          text,
-          isDirected: state.primaryGraph.isDirected,
-        );
-        state.primaryGraph = g;
-      }
+      final (g, weighted, nodes) = GraphIO.importFromMermaid(
+        text,
+        isDirected: state.primaryGraph.isDirected,
+      );
+      state.primaryGraph = g;
+      state.isWeighted = weighted;
+      state.nodes
+        ..clear()
+        ..addAll(nodes);
       ioStatus.textContent = 'Import successful!';
-      showToast('Imported graph successfully');
+      showToast('Imported Mermaid graph successfully');
       updateUI();
     } catch (e) {
       ioStatus.textContent = 'Import error: $e';
@@ -873,11 +857,11 @@ void main() async {
     showToast('Copied shareable link');
   });
 
-  btnDownloadJson.onClick.listen((_) {
+  btnDownloadMermaid.onClick.listen((_) {
     GraphIO.downloadTextFile(
-      'graph.json',
-      GraphIO.exportToJson(state),
-      'application/json',
+      'graph.mmd',
+      GraphIO.exportToMermaid(state),
+      'text/plain',
     );
   });
 

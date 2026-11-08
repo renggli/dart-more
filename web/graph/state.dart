@@ -151,7 +151,7 @@ final class AppState {
   bool isWeighted = true;
   bool showLabels = true;
   String? pendingPlacementVertex;
-  String layoutEngine = 'dot';
+  String layoutEngine = 'force';
   String rankDir = 'LR';
 
   // Selection mode flags (like Blender, both can be active simultaneously)

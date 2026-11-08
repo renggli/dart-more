@@ -180,7 +180,7 @@ final class GraphRenderer {
       }
     }
     if (needsLayout) {
-      GraphLayout.applyCircularLayout(state);
+      GraphLayout.applyLayout(state);
     }
 
     final svg = _buildNativeSvg(state);
@@ -190,7 +190,7 @@ final class GraphRenderer {
 
   /// Re-runs layout on the state and updates the view.
   void autoLayout(AppState state, [String? engine]) {
-    GraphLayout.applyLayout(state, viz: _viz, engine: engine);
+    GraphLayout.applyLayout(state, engine: engine);
     render(state);
   }
 

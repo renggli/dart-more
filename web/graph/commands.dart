@@ -362,9 +362,7 @@ class AutoLayoutCommand extends GraphCommand {
 
   @override
   void execute(AppState state, {CommandContext? context}) {
-    context?.showToast?.call(
-      'Computing Graphviz layout (${state.layoutEngine})...',
-    );
+    context?.showToast?.call('Computing layout (${state.layoutEngine})...');
     context?.runLayout?.call();
   }
 }

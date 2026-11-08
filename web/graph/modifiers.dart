@@ -578,28 +578,15 @@ class LayoutModifier extends GraphModifier {
     final container = div('form-column');
 
     final selectAlgo = selectElement();
-    // Graphviz engines
-    final gvGroup =
-        web.document.createElement('optgroup') as web.HTMLOptGroupElement;
-    gvGroup.label = 'Graphviz Engines';
-    gvGroup.appendChild(optionElement('dot', 'Dot (Hierarchical DAG)'));
-    gvGroup.appendChild(optionElement('neato', 'Neato (Spring Model)'));
-    gvGroup.appendChild(optionElement('fdp', 'FDP (Force-Directed)'));
-    gvGroup.appendChild(optionElement('sfdp', 'SFDP (Multiscale Force)'));
-    gvGroup.appendChild(optionElement('circo', 'Circo (Circular Ring)'));
-    gvGroup.appendChild(optionElement('twopi', 'Twopi (Radial Tree)'));
-    gvGroup.appendChild(optionElement('osage', 'Osage (Array / Cluster)'));
-    selectAlgo.appendChild(gvGroup);
-
-    // Native engines
-    final natGroup =
-        web.document.createElement('optgroup') as web.HTMLOptGroupElement;
-    natGroup.label = 'Native Layouts';
-    natGroup.appendChild(optionElement('force', 'Spring-Electrical (Force)'));
-    natGroup.appendChild(optionElement('circular', 'Circular Ring'));
-    natGroup.appendChild(optionElement('grid', 'Grid Alignment'));
-    natGroup.appendChild(optionElement('random', 'Random Spread'));
-    selectAlgo.appendChild(natGroup);
+    selectAlgo.appendChild(optionElement('force', 'Spring-Electrical (Force)'));
+    selectAlgo.appendChild(
+      optionElement('layered', 'Hierarchical DAG (Layered)'),
+    );
+    selectAlgo.appendChild(optionElement('tree', 'Hierarchical Tree / Forest'));
+    selectAlgo.appendChild(optionElement('radial', 'Concentric Radial Rings'));
+    selectAlgo.appendChild(optionElement('circular', 'Circular Ring'));
+    selectAlgo.appendChild(optionElement('grid', 'Grid Alignment'));
+    selectAlgo.appendChild(optionElement('random', 'Random Spread'));
 
     selectAlgo.value = algorithm;
     selectAlgo.onChange.listen((_) {
@@ -608,7 +595,7 @@ class LayoutModifier extends GraphModifier {
     });
     container.appendChild(_field('Layout Algorithm:', selectAlgo));
 
-    if (algorithm == 'dot') {
+    if (algorithm == 'layered' || algorithm == 'tree') {
       final selectRank = selectElement();
       selectRank.appendChild(optionElement('TB', 'Top to Bottom (TB)'));
       selectRank.appendChild(optionElement('LR', 'Left to Right (LR)'));
@@ -619,7 +606,7 @@ class LayoutModifier extends GraphModifier {
         rankDir = selectRank.value;
         onModified();
       });
-      container.appendChild(_field('Rank Direction:', selectRank));
+      container.appendChild(_field('Flow Direction:', selectRank));
     }
 
     return container;
@@ -632,12 +619,7 @@ class LayoutModifier extends GraphModifier {
       return const ModifierOutput(statusSummary: 'Graph is empty');
     }
 
-    GraphLayout.applyLayout(
-      state,
-      viz: state.viz,
-      engine: algorithm,
-      rankdir: rankDir,
-    );
+    GraphLayout.applyLayout(state, engine: algorithm, rankdir: rankDir);
 
     return ModifierOutput(statusSummary: 'Layout applied: $algorithm');
   }

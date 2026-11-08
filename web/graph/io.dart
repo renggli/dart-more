@@ -77,70 +77,36 @@ final class GraphIO {
     return (graph, isWeighted, nodes);
   }
 
-  /// Parses graph from flexible textual DSL (edge list, path chains, or adjacency).
-  static Graph<String, num> importFromDsl(
-    String text, {
-    required bool isDirected,
-  }) {
-    final graph = Graph<String, num>(isDirected: isDirected);
-    final lines = text
-        .split('\n')
-        .map((l) => l.trim())
-        .where(
-          (l) => l.isNotEmpty && !l.startsWith('#') && !l.startsWith('//'),
-        );
+  /// Exports the graph to Mermaid syntax.
+  static String exportToMermaid(AppState state) {
+    state.syncNodes();
+    final graph = state.primaryGraph;
+    return graph.toMermaid(
+      direction: state.rankDir,
+      vertexLabel: (v) {
+        final node = state.nodes[v];
+        final label = node?.label;
+        return (label != null && label.isNotEmpty) ? label : v;
+      },
+      edgeLabel: state.isWeighted ? (e) => e.value.toString() : null,
+    );
+  }
 
-    for (final line in lines) {
-      // 1. Adjacency format: "A: B, C:2, D"
-      if (line.contains(':') && !line.contains('->') && !line.contains('--')) {
-        final colonIdx = line.indexOf(':');
-        final source = line.substring(0, colonIdx).trim();
-        graph.addVertex(source);
-        final targetsStr = line.substring(colonIdx + 1).trim();
-        if (targetsStr.isNotEmpty) {
-          final targetTokens = targetsStr.split(RegExp(r'[,;]'));
-          for (final token in targetTokens) {
-            final trimmed = token.trim();
-            if (trimmed.isEmpty) continue;
-            if (trimmed.contains(':')) {
-              final subparts = trimmed.split(':');
-              final target = subparts[0].trim();
-              final weight = num.tryParse(subparts[1].trim()) ?? 1;
-              graph.addEdge(source, target, value: weight);
-            } else {
-              graph.addEdge(source, trimmed, value: 1);
-            }
-          }
-        }
-        continue;
-      }
-
-      // 2. Path chain format: "A -> B -> C : 5" or "A -- B"
-      var cleanLine = line;
-      num weight = 1;
-      if (cleanLine.contains(':')) {
-        final lastColon = cleanLine.lastIndexOf(':');
-        final weightStr = cleanLine.substring(lastColon + 1).trim();
-        final parsedWeight = num.tryParse(weightStr);
-        if (parsedWeight != null) {
-          weight = parsedWeight;
-          cleanLine = cleanLine.substring(0, lastColon).trim();
-        }
-      }
-
-      final arrowRegex = RegExp(r'\s*(?:->|--|,)\s*');
-      final parts = cleanLine.split(arrowRegex).map((p) => p.trim()).toList();
-
-      if (parts.length == 1) {
-        graph.addVertex(parts[0]);
-      } else {
-        for (var i = 0; i < parts.length - 1; i++) {
-          graph.addEdge(parts[i], parts[i + 1], value: weight);
-        }
-      }
+  /// Parses a graph from Mermaid diagram text.
+  static (Graph<String, num>, bool isWeighted, Map<String, GraphNode> nodes)
+  importFromMermaid(String text, {required bool isDirected}) {
+    final factory = GraphFactory<String, num>(isDirected: isDirected);
+    final graph = factory.fromMermaid(
+      text,
+      vertexParser: (id, label) => id,
+      edgeParser: (label) => label != null ? (num.tryParse(label) ?? 1) : 1,
+    );
+    final nodes = <String, GraphNode>{};
+    for (final v in graph.vertices) {
+      nodes[v] = GraphNode(id: v, label: v);
     }
-
-    return graph;
+    final isWeighted = graph.edges.any((e) => e.value != 1);
+    return (graph, isWeighted, nodes);
   }
 
   /// Encodes graph state into a compact URL hash string (#g=...).
