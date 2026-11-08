@@ -1,5 +1,7 @@
 import 'dart:js_interop';
+import 'dart:math' as math;
 
+import 'package:more/graph.dart';
 import 'package:web/web.dart' as web;
 
 import 'commands.dart';
@@ -19,10 +21,6 @@ void main() {
   final transformLayer = web.document.querySelector(
     '#viewport-transform-layer',
   ) as web.HTMLElement;
-  final btnUndo =
-      web.document.querySelector('#btn-undo') as web.HTMLButtonElement;
-  final btnRedo =
-      web.document.querySelector('#btn-redo') as web.HTMLButtonElement;
   final btnZoomIn =
       web.document.querySelector('#btn-zoom-in') as web.HTMLButtonElement;
   final btnZoomOut =
@@ -30,17 +28,32 @@ void main() {
   final btnZoomFit =
       web.document.querySelector('#btn-zoom-fit') as web.HTMLButtonElement;
 
-  // Blender-style selection mode buttons and display toggles
+  // Selection mode buttons and display toggles
   final btnModeVertex =
       web.document.querySelector('#btn-mode-vertex') as web.HTMLButtonElement;
   final btnModeEdge =
       web.document.querySelector('#btn-mode-edge') as web.HTMLButtonElement;
+  final btnToggleStats =
+      web.document.querySelector('#btn-toggle-stats') as web.HTMLButtonElement?;
   final btnToggleLabels = web.document.querySelector(
     '#btn-toggle-labels',
   ) as web.HTMLButtonElement?;
   final btnToggleWeights = web.document.querySelector(
     '#btn-toggle-weights',
   ) as web.HTMLButtonElement?;
+  final canvasStatsOverlay =
+      web.document.querySelector('#canvas-stats-overlay') as web.HTMLElement?;
+  final introOverlay =
+      web.document.querySelector('#intro-overlay') as web.HTMLElement?;
+  final btnIntroEmpty =
+      web.document.querySelector('#btn-intro-empty') as web.HTMLButtonElement?;
+  final inputOpenFile =
+      web.document.querySelector('#input-open-file') as web.HTMLInputElement?;
+
+  // Graph section elements
+  final selectDirectedness = web.document.querySelector(
+    '#select-directedness',
+  ) as web.HTMLSelectElement;
 
   // Modifier Stack elements
   final selectAddModifier = web.document.querySelector(
@@ -50,30 +63,28 @@ void main() {
       web.document.querySelector('#modifiers-stack-list') as web.HTMLElement;
 
   // Import / Export modal elements
-  final btnIoModal =
-      web.document.querySelector('#btn-io-modal') as web.HTMLButtonElement;
   final modalIo = web.document.querySelector('#modal-io') as web.HTMLElement;
+  final modalIoTitle =
+      web.document.querySelector('#modal-io-title') as web.HTMLElement;
   final btnCloseModal =
       web.document.querySelector('#btn-close-modal') as web.HTMLButtonElement;
   final selectIoFormat =
       web.document.querySelector('#select-io-format') as web.HTMLSelectElement;
   final textareaIo =
       web.document.querySelector('#textarea-io') as web.HTMLTextAreaElement;
+  final importActions =
+      web.document.querySelector('#import-actions') as web.HTMLElement;
+  final exportActions =
+      web.document.querySelector('#export-actions') as web.HTMLElement;
   final btnIoImport =
       web.document.querySelector('#btn-io-import') as web.HTMLButtonElement;
   final btnExportCopy =
       web.document.querySelector('#btn-export-copy') as web.HTMLButtonElement;
+  final btnExportDownload = web.document.querySelector(
+    '#btn-export-download',
+  ) as web.HTMLButtonElement;
   final btnExportShare =
       web.document.querySelector('#btn-export-share') as web.HTMLButtonElement;
-  final btnDownloadMermaid = web.document.querySelector(
-    '#btn-download-mermaid',
-  ) as web.HTMLButtonElement;
-  final btnDownloadDot =
-      web.document.querySelector('#btn-download-dot') as web.HTMLButtonElement;
-  final btnDownloadSvg =
-      web.document.querySelector('#btn-download-svg') as web.HTMLButtonElement;
-  final btnDownloadPng =
-      web.document.querySelector('#btn-download-png') as web.HTMLButtonElement;
   final ioStatus = web.document.querySelector('#io-status') as web.HTMLElement;
 
   late final GraphRenderer renderer;
@@ -95,16 +106,69 @@ void main() {
 
   late void Function() updateUI;
 
+  var ioMode = 'import';
+
   void syncModalContent() {
     ioStatus.textContent = '';
-    switch (selectIoFormat.value) {
-      case 'mermaid':
-        textareaIo.value = GraphIO.exportToMermaid(state);
-      case 'dot':
-        textareaIo.value = GraphIO.exportToDot(state);
-      case 'dart':
-        textareaIo.value = GraphIO.exportToDartCode(state);
+    if (ioMode == 'export') {
+      switch (selectIoFormat.value) {
+        case 'mermaid':
+          textareaIo.value = GraphIO.exportToMermaid(state);
+        case 'dot':
+          textareaIo.value = GraphIO.exportToDot(state);
+        case 'json':
+          textareaIo.value = GraphIO.exportToJson(state);
+      }
     }
+  }
+
+  void openImportModal() {
+    ioMode = 'import';
+    modalIoTitle.textContent = 'Import Graph';
+    selectIoFormat.textContent = '';
+    selectIoFormat.appendChild(
+      web.HTMLOptionElement()
+        ..value = 'mermaid'
+        ..text = 'Mermaid'
+        ..selected = true,
+    );
+    selectIoFormat.appendChild(
+      web.HTMLOptionElement()
+        ..value = 'json'
+        ..text = 'JSON',
+    );
+    textareaIo.value = '';
+    textareaIo.placeholder = 'Paste Mermaid diagram or JSON graph here...';
+    importActions.style.display = 'flex';
+    exportActions.style.display = 'none';
+    ioStatus.textContent = '';
+    modalIo.style.display = 'flex';
+  }
+
+  void openExportModal() {
+    ioMode = 'export';
+    modalIoTitle.textContent = 'Export Graph';
+    selectIoFormat.textContent = '';
+    selectIoFormat.appendChild(
+      web.HTMLOptionElement()
+        ..value = 'mermaid'
+        ..text = 'Mermaid'
+        ..selected = true,
+    );
+    selectIoFormat.appendChild(
+      web.HTMLOptionElement()
+        ..value = 'dot'
+        ..text = 'Graphviz DOT',
+    );
+    selectIoFormat.appendChild(
+      web.HTMLOptionElement()
+        ..value = 'json'
+        ..text = 'JSON',
+    );
+    importActions.style.display = 'none';
+    exportActions.style.display = 'flex';
+    syncModalContent();
+    modalIo.style.display = 'flex';
   }
 
   void handleVertexDblClick(String vertex) {
@@ -120,7 +184,16 @@ void main() {
     );
   }
 
+  final modifierCardUpdaters = <void Function()>[];
+
+  void updateModifierCards() {
+    for (final updater in modifierCardUpdaters) {
+      updater();
+    }
+  }
+
   void renderModifierStack() {
+    modifierCardUpdaters.clear();
     modifiersStackList.textContent = '';
     if (state.modifiers.isEmpty) {
       final emptyMsg = div()..style.color = 'var(--text-muted)';
@@ -174,8 +247,9 @@ void main() {
       header.appendChild(headerLeft);
 
       final actions = div('modifier-header-actions');
-      if (mod.canApply && !hasError) {
-        final btnApply = button('Apply', 'modifier-btn-apply')
+      web.HTMLButtonElement? btnApply;
+      if (mod.canApply) {
+        btnApply = button('Apply', 'modifier-btn-apply')
           ..title = 'Apply modifier permanently into base graph'
           ..onClick.listen((_) {
             mod.applyPermanent(state);
@@ -184,10 +258,13 @@ void main() {
             renderModifierStack();
             showToast('Applied ${mod.name} permanently');
           });
+        if (hasError) {
+          btnApply.style.display = 'none';
+        }
         actions.appendChild(btnApply);
       }
       if (!mod.isPinned) {
-        if (idx > 1) {
+        if (idx > 0) {
           final btnUp = button('', 'modifier-btn-icon')
             ..title = 'Move Up'
             ..innerHTML = '<svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 8 L6 4 L10 8"/></svg>'
@@ -233,61 +310,569 @@ void main() {
       card.appendChild(header);
 
       // Body (if not collapsed)
+      void Function()? updateCardBody;
       if (!mod.collapsed) {
         final body = div('modifier-body');
+        final statusContainer = div('modifier-status-container');
+        final tableContainer = div('modifier-table-container');
+
+        void updateStatusAndTable() {
+          statusContainer.textContent = '';
+          tableContainer.textContent = '';
+
+          final currentOut = state.lastModifierOutputs[mod.id];
+          final currentErr = currentOut?.hasError ?? false;
+          final currentSummary = currentOut?.statusSummary;
+          final currentTable = currentOut?.tableData;
+
+          if (currentErr) {
+            final errBox = div('modifier-error-alert')
+              ..textContent =
+                  currentOut?.errorMessage ??
+                  'An error occurred in this modifier.';
+            statusContainer.appendChild(errBox);
+          } else if (currentTable != null && currentTable.rows.isNotEmpty) {
+            final tableWrapper = div('modifier-table-wrapper');
+            final tbl = tableElement('table');
+            final thead = web.document.createElement('thead');
+            final headerRow = web.document.createElement('tr');
+            for (final h in currentTable.headers) {
+              final th =
+                  web.document.createElement('th') as web.HTMLTableCellElement;
+              th.textContent = h;
+              headerRow.appendChild(th);
+            }
+            thead.appendChild(headerRow);
+            tbl.appendChild(thead);
+
+            final tbody = web.document.createElement('tbody');
+            for (final r in currentTable.rows) {
+              final row = web.document.createElement('tr');
+              for (final cell in r) {
+                final td = web.document.createElement(
+                  'td',
+                ) as web.HTMLTableCellElement;
+                td.textContent = cell;
+                row.appendChild(td);
+              }
+              tbody.appendChild(row);
+            }
+            tbl.appendChild(tbody);
+            tableWrapper.appendChild(tbl);
+            tableContainer.appendChild(tableWrapper);
+          } else if (currentSummary != null && currentSummary.isNotEmpty) {
+            statusContainer.appendChild(
+              div('modifier-status')..textContent = currentSummary,
+            );
+          }
+        }
+
         final configUI = mod.buildConfigUI(state, () {
           state.evaluateModifiers();
           updateUI();
-          renderModifierStack();
         });
         body.appendChild(configUI);
+        body.appendChild(statusContainer);
+        body.appendChild(tableContainer);
+        updateStatusAndTable();
 
-        final summary = output?.statusSummary;
-        if (hasError) {
-          final errBox = div('modifier-error-alert')
-            ..textContent =
-                output?.errorMessage ?? 'An error occurred in this modifier.';
-          body.appendChild(errBox);
-        } else if (summary != null && summary.isNotEmpty) {
-          body.appendChild(div('modifier-status')..textContent = summary);
-        }
-
-        final tableData = output?.tableData;
-        if (tableData != null && tableData.rows.isNotEmpty) {
-          final tableWrapper = div('modifier-table-wrapper');
-          final tbl = tableElement('table');
-          final thead = web.document.createElement('thead');
-          final headerRow = web.document.createElement('tr');
-          for (final h in tableData.headers) {
-            final th =
-                web.document.createElement('th') as web.HTMLTableCellElement;
-            th.textContent = h;
-            headerRow.appendChild(th);
-          }
-          thead.appendChild(headerRow);
-          tbl.appendChild(thead);
-
-          final tbody = web.document.createElement('tbody');
-          for (final r in tableData.rows) {
-            final row = web.document.createElement('tr');
-            for (final cell in r) {
-              final td =
-                  web.document.createElement('td') as web.HTMLTableCellElement;
-              td.textContent = cell;
-              row.appendChild(td);
-            }
-            tbody.appendChild(row);
-          }
-          tbl.appendChild(tbody);
-          tableWrapper.appendChild(tbl);
-          body.appendChild(tableWrapper);
-        }
-
+        updateCardBody = updateStatusAndTable;
         card.appendChild(body);
       }
 
+      void updateCard() {
+        final currentOut = state.lastModifierOutputs[mod.id];
+        final currentErr = currentOut?.hasError ?? false;
+        card.classList.toggle('error', currentErr);
+        card.classList.toggle('disabled', !mod.enabled);
+        titleSpan.className = currentErr
+            ? 'modifier-title error'
+            : 'modifier-title';
+        if (btnApply != null) {
+          btnApply.style.display = (mod.canApply && !currentErr) ? '' : 'none';
+        }
+        mod.updateConfig(state);
+        updateCardBody?.call();
+      }
+
+      modifierCardUpdaters.add(updateCard);
       modifiersStackList.appendChild(card);
     }
+  }
+
+  var dismissedEmpty = false;
+
+  void updateCanvasStats() {
+    if (canvasStatsOverlay == null) return;
+    if (!state.showStats) {
+      canvasStatsOverlay.style.display = 'none';
+      return;
+    }
+    final graph = state.renderGraph;
+    final vCount = graph.vertices.length;
+    final eCount = graph.edges.length;
+    var pCount = 0;
+    if (state.activeOverlay is PathOverlay) {
+      final po = state.activeOverlay as PathOverlay;
+      pCount = po.edges.isNotEmpty
+          ? po.edges.length
+          : (po.vertices.length > 1 ? po.vertices.length - 1 : 0);
+    }
+
+    final parts = <String>[];
+    if (vCount > 0) parts.add('Vertices: <strong>$vCount</strong>');
+    if (eCount > 0) parts.add('Edges: <strong>$eCount</strong>');
+    if (pCount > 0) parts.add('Path Segments: <strong>$pCount</strong>');
+
+    if (parts.isEmpty) {
+      canvasStatsOverlay.style.display = 'none';
+    } else {
+      canvasStatsOverlay.innerHTML = parts
+          .map((p) => '<span>$p</span>')
+          .join('')
+          .toJS;
+      canvasStatsOverlay.style.display = 'block';
+    }
+  }
+
+  void updateIntroOverlay() {
+    if (introOverlay == null) return;
+    final isEmpty = state.primaryGraph.vertices.isEmpty;
+    if (isEmpty && !dismissedEmpty) {
+      introOverlay.style.display = 'flex';
+    } else {
+      introOverlay.style.display = 'none';
+    }
+  }
+
+  Graph<String, num> buildKoenigsberg() {
+    final g = Graph<String, num>(isDirected: false);
+    const edges = [
+      ('Altstadt (North)', 'Krämerbrücke'),
+      ('Krämerbrücke', 'Kneiphof (Island)'),
+      ('Altstadt (North)', 'Schmiedebrücke'),
+      ('Schmiedebrücke', 'Kneiphof (Island)'),
+      ('Altstadt (North)', 'Holzbrücke'),
+      ('Holzbrücke', 'Lomse (East)'),
+      ('Kneiphof (Island)', 'Honigbrücke'),
+      ('Honigbrücke', 'Lomse (East)'),
+      ('Kneiphof (Island)', 'Grüne Brücke'),
+      ('Grüne Brücke', 'Vorstadt (South)'),
+      ('Kneiphof (Island)', 'Köttelbrücke'),
+      ('Köttelbrücke', 'Vorstadt (South)'),
+      ('Vorstadt (South)', 'Hohe Brücke'),
+      ('Hohe Brücke', 'Lomse (East)'),
+    ];
+    for (final (u, v) in edges) {
+      g.addEdge(u, v, value: 1);
+    }
+    return g;
+  }
+
+  void layoutKoenigsberg() {
+    final coords = <String, (double, double)>{
+      'Altstadt (North)': (320, 80),
+      'Kneiphof (Island)': (320, 240),
+      'Vorstadt (South)': (320, 400),
+      'Lomse (East)': (540, 240),
+      'Krämerbrücke': (240, 160),
+      'Schmiedebrücke': (400, 160),
+      'Grüne Brücke': (240, 320),
+      'Köttelbrücke': (400, 320),
+      'Holzbrücke': (470, 140),
+      'Honigbrücke': (430, 240),
+      'Hohe Brücke': (470, 340),
+    };
+    for (final entry in coords.entries) {
+      final node = state.nodes[entry.key];
+      if (node != null) {
+        node.x = entry.value.$1;
+        node.y = entry.value.$2;
+      }
+    }
+  }
+
+  Graph<String, num> buildSwissRailways() {
+    final g = Graph<String, num>(isDirected: false);
+    const connections = [
+      ('Zurich', 'Winterthur', 25),
+      ('Zurich', 'Basel', 85),
+      ('Zurich', 'Lucerne', 52),
+      ('Zurich', 'Bern', 125),
+      ('Zurich', 'St. Gallen', 85),
+      ('Zurich', 'Chur', 120),
+      ('Winterthur', 'St. Gallen', 60),
+      ('Basel', 'Bern', 95),
+      ('Basel', 'Biel', 75),
+      ('Bern', 'Biel', 35),
+      ('Bern', 'Lucerne', 90),
+      ('Bern', 'Lausanne', 105),
+      ('Bern', 'Sion', 155),
+      ('Lausanne', 'Geneva', 65),
+      ('Lausanne', 'Sion', 95),
+      ('Lucerne', 'Bellinzona', 125),
+      ('Bellinzona', 'Lugano', 30),
+      ('Bellinzona', 'Chur', 110),
+      ('St. Gallen', 'Chur', 95),
+    ];
+    for (final (u, v, dist) in connections) {
+      g.addEdge(u, v, value: dist);
+    }
+    return g;
+  }
+
+  void layoutSwissRailways() {
+    final coords = <String, (double, double)>{
+      'Geneva': (130, 460),
+      'Lausanne': (230, 390),
+      'Sion': (350, 470),
+      'Biel': (330, 230),
+      'Bern': (370, 300),
+      'Basel': (390, 120),
+      'Lucerne': (500, 260),
+      'Zurich': (560, 180),
+      'Winterthur': (650, 140),
+      'St. Gallen': (750, 150),
+      'Chur': (740, 290),
+      'Bellinzona': (620, 430),
+      'Lugano': (630, 520),
+    };
+    for (final entry in coords.entries) {
+      final node = state.nodes[entry.key];
+      if (node != null) {
+        node.x = entry.value.$1;
+        node.y = entry.value.$2;
+      }
+    }
+  }
+
+  Graph<String, num> buildCoursePrerequisites() {
+    final g = Graph<String, num>(isDirected: true);
+    const edges = [
+      ('CS 101', 'CS 102'),
+      ('Math 101', 'CS 102'),
+      ('Math 101', 'Math 201'),
+      ('CS 102', 'CS 201'),
+      ('CS 102', 'CS 202'),
+      ('Math 201', 'CS 301'),
+      ('CS 201', 'CS 301'),
+      ('CS 201', 'CS 302'),
+      ('CS 202', 'CS 302'),
+      ('CS 301', 'CS 401'),
+      ('CS 302', 'CS 401'),
+    ];
+    for (final (u, v) in edges) {
+      g.addEdge(u, v, value: 1);
+    }
+    return g;
+  }
+
+  void layoutCoursePrerequisites() {
+    const coords = <String, (double, double)>{
+      'CS 101': (150, 200),
+      'Math 101': (150, 360),
+      'CS 102': (310, 200),
+      'Math 201': (310, 360),
+      'CS 202': (470, 140),
+      'CS 201': (470, 280),
+      'CS 302': (630, 180),
+      'CS 301': (630, 360),
+      'CS 401': (770, 270),
+    };
+    for (final entry in coords.entries) {
+      final node = state.nodes[entry.key];
+      if (node != null) {
+        node.x = entry.value.$1;
+        node.y = entry.value.$2;
+      }
+    }
+  }
+
+  Graph<String, num> buildNetworkFlow() {
+    final g = Graph<String, num>(isDirected: true);
+    const edges = [
+      ('Source', 'A', 16),
+      ('Source', 'B', 13),
+      ('A', 'B', 10),
+      ('B', 'A', 4),
+      ('A', 'C', 12),
+      ('B', 'D', 14),
+      ('C', 'B', 9),
+      ('D', 'C', 7),
+      ('C', 'Sink', 20),
+      ('D', 'Sink', 4),
+    ];
+    for (final (u, v, cap) in edges) {
+      g.addEdge(u, v, value: cap);
+    }
+    return g;
+  }
+
+  void layoutNetworkFlow() {
+    const coords = <String, (double, double)>{
+      'Source': (150, 280),
+      'A': (330, 170),
+      'B': (330, 390),
+      'C': (530, 170),
+      'D': (530, 390),
+      'Sink': (710, 280),
+    };
+    for (final entry in coords.entries) {
+      final node = state.nodes[entry.key];
+      if (node != null) {
+        node.x = entry.value.$1;
+        node.y = entry.value.$2;
+      }
+    }
+  }
+
+  Graph<String, num> buildWebHyperlinks() {
+    final g = Graph<String, num>(isDirected: true);
+    const edges = [
+      ('Home', 'About'),
+      ('Home', 'Products'),
+      ('Home', 'Blog'),
+      ('About', 'Home'),
+      ('Products', 'Details'),
+      ('Products', 'Cart'),
+      ('Details', 'Products'),
+      ('Details', 'Reviews'),
+      ('Reviews', 'Details'),
+      ('Reviews', 'Home'),
+      ('Cart', 'Checkout'),
+      ('Checkout', 'Home'),
+      ('Blog', 'Home'),
+      ('Blog', 'Reviews'),
+    ];
+    for (final (u, v) in edges) {
+      g.addEdge(u, v, value: 1);
+    }
+    return g;
+  }
+
+  void layoutWebHyperlinks() {
+    const coords = <String, (double, double)>{
+      'Home': (440, 280),
+      'About': (260, 200),
+      'Blog': (300, 120),
+      'Reviews': (580, 120),
+      'Details': (620, 220),
+      'Products': (600, 340),
+      'Cart': (440, 440),
+      'Checkout': (260, 380),
+    };
+    for (final entry in coords.entries) {
+      final node = state.nodes[entry.key];
+      if (node != null) {
+        node.x = entry.value.$1;
+        node.y = entry.value.$2;
+      }
+    }
+  }
+
+  Graph<String, num> buildPetersen() {
+    final g = Graph<String, num>(isDirected: false);
+    for (var i = 0; i < 5; i++) {
+      g.addEdge('v$i', 'v${(i + 1) % 5}', value: 1);
+      g.addEdge('v$i', 'v${i + 5}', value: 1);
+      g.addEdge('v${i + 5}', 'v${(i + 2) % 5 + 5}', value: 1);
+    }
+    return g;
+  }
+
+  void layoutPetersen() {
+    const cx = 320.0, cy = 260.0;
+    const rOuter = 160.0, rInner = 80.0;
+    for (var i = 0; i < 5; i++) {
+      final angle = -math.pi / 2 + i * 2 * math.pi / 5;
+      final nodeOuter = state.nodes['v$i'];
+      if (nodeOuter != null) {
+        nodeOuter.x = cx + rOuter * math.cos(angle);
+        nodeOuter.y = cy + rOuter * math.sin(angle);
+      }
+      final nodeInner = state.nodes['v${i + 5}'];
+      if (nodeInner != null) {
+        nodeInner.x = cx + rInner * math.cos(angle);
+        nodeInner.y = cy + rInner * math.sin(angle);
+      }
+    }
+  }
+
+  Graph<String, num> buildFlorentine() {
+    final g = Graph<String, num>(isDirected: false);
+    const marriages = [
+      ('Medici', 'Acciaiuoli'),
+      ('Medici', 'Albizzi'),
+      ('Medici', 'Barbadori'),
+      ('Medici', 'Ridolfi'),
+      ('Medici', 'Tornabuoni'),
+      ('Medici', 'Salviati'),
+      ('Castellani', 'Barbadori'),
+      ('Castellani', 'Peruzzi'),
+      ('Castellani', 'Strozzi'),
+      ('Peruzzi', 'Strozzi'),
+      ('Peruzzi', 'Bischeri'),
+      ('Strozzi', 'Bischeri'),
+      ('Strozzi', 'Ridolfi'),
+      ('Albizzi', 'Ginori'),
+      ('Albizzi', 'Guadagni'),
+      ('Salviati', 'Pazzi'),
+      ('Bischeri', 'Guadagni'),
+      ('Guadagni', 'Lamberteschi'),
+      ('Guadagni', 'Tornabuoni'),
+      ('Ridolfi', 'Tornabuoni'),
+    ];
+    for (final (u, v) in marriages) {
+      g.addEdge(u, v, value: 1);
+    }
+    return g;
+  }
+
+  Graph<String, num> buildArpanet() {
+    final g = Graph<String, num>(isDirected: false);
+    const links = [
+      ('SRI', 'UCLA'),
+      ('SRI', 'UCSB'),
+      ('SRI', 'UTAH'),
+      ('UCLA', 'UCSB'),
+      ('UCLA', 'RAND'),
+      ('UCSB', 'SDC'),
+      ('RAND', 'SDC'),
+      ('RAND', 'BBN'),
+      ('UTAH', 'MIT'),
+      ('SDC', 'UTAH'),
+      ('BBN', 'MIT'),
+      ('BBN', 'HARVARD'),
+      ('BBN', 'BURROUGHS'),
+      ('MIT', 'LINCOLN'),
+      ('HARVARD', 'CARNEGIE'),
+      ('CARNEGIE', 'CASE'),
+      ('CASE', 'LINCOLN'),
+      ('BURROUGHS', 'RAND'),
+    ];
+    for (final (u, v) in links) {
+      g.addEdge(u, v, value: 1);
+    }
+    return g;
+  }
+
+  Graph<String, num> buildDodecahedron() {
+    final g = Graph<String, num>(isDirected: false);
+    const edges = [
+      ('1', '2'),
+      ('2', '3'),
+      ('3', '4'),
+      ('4', '5'),
+      ('5', '1'),
+      ('1', '6'),
+      ('2', '7'),
+      ('3', '8'),
+      ('4', '9'),
+      ('5', '10'),
+      ('6', '11'),
+      ('7', '12'),
+      ('8', '13'),
+      ('9', '14'),
+      ('10', '15'),
+      ('11', '12'),
+      ('12', '13'),
+      ('13', '14'),
+      ('14', '15'),
+      ('15', '11'),
+      ('11', '16'),
+      ('12', '17'),
+      ('13', '18'),
+      ('14', '19'),
+      ('15', '20'),
+      ('16', '17'),
+      ('17', '18'),
+      ('18', '19'),
+      ('19', '20'),
+      ('20', '16'),
+    ];
+    for (final (u, v) in edges) {
+      g.addEdge('v$u', 'v$v', value: 1);
+    }
+    return g;
+  }
+
+  void loadPreset(String preset) {
+    state.saveSnapshot();
+    Graph<String, num> g;
+    var customLayout = false;
+    switch (preset) {
+      case 'koenigsberg':
+        state.isWeighted = false;
+        g = buildKoenigsberg();
+        state.primaryGraph = g;
+        state.syncNodes();
+        layoutKoenigsberg();
+        customLayout = true;
+      case 'swiss':
+        state.isWeighted = true;
+        g = buildSwissRailways();
+        state.primaryGraph = g;
+        state.syncNodes();
+        layoutSwissRailways();
+        customLayout = true;
+      case 'petersen':
+        state.isWeighted = false;
+        g = buildPetersen();
+        state.primaryGraph = g;
+        state.syncNodes();
+        layoutPetersen();
+        customLayout = true;
+      case 'florentine':
+        state.isWeighted = false;
+        g = buildFlorentine();
+        state.primaryGraph = g;
+        state.syncNodes();
+      case 'arpanet':
+        state.isWeighted = false;
+        g = buildArpanet();
+        state.primaryGraph = g;
+        state.syncNodes();
+      case 'dodecahedron':
+        state.isWeighted = false;
+        g = buildDodecahedron();
+        state.primaryGraph = g;
+        state.syncNodes();
+      case 'dag':
+        state.isWeighted = false;
+        g = buildCoursePrerequisites();
+        state.primaryGraph = g;
+        state.syncNodes();
+        layoutCoursePrerequisites();
+        customLayout = true;
+      case 'flow':
+        state.isWeighted = true;
+        g = buildNetworkFlow();
+        state.primaryGraph = g;
+        state.syncNodes();
+        layoutNetworkFlow();
+        customLayout = true;
+      case 'web':
+        state.isWeighted = false;
+        g = buildWebHyperlinks();
+        state.primaryGraph = g;
+        state.syncNodes();
+        layoutWebHyperlinks();
+        customLayout = true;
+      default:
+        state.isWeighted = false;
+        g = buildPetersen();
+        state.primaryGraph = g;
+        state.syncNodes();
+        layoutPetersen();
+        customLayout = true;
+    }
+    state.clearSelection();
+    if (!customLayout) {
+      renderer.autoLayout(state);
+    }
+    state.evaluateModifiers();
+    renderer.resetView();
+    updateUI();
   }
 
   void executeCommand(String cmdId) {
@@ -314,13 +899,20 @@ void main() {
             },
           );
         },
-        openIoModal: () {
-          syncModalContent();
-          modalIo.style.display = 'flex';
+        openImportModal: openImportModal,
+        openExportModal: openExportModal,
+        openFile: () => inputOpenFile?.click(),
+        saveFile: () {
+          final jsonStr = GraphIO.exportToJson(state);
+          GraphIO.downloadTextFile('graph.json', jsonStr, 'application/json');
         },
         runLayout: () {
           renderer.autoLayout(state);
           updateUI();
+        },
+        showIntro: () {
+          dismissedEmpty = false;
+          updateIntroOverlay();
         },
       ),
     );
@@ -356,6 +948,17 @@ void main() {
     }
   }
 
+  void syncMenuChecks() {
+    web.document
+        .querySelector('[data-cmd="select.mode_vertex"]')
+        ?.classList
+        .toggle('checked', state.selectVerticesMode);
+    web.document
+        .querySelector('[data-cmd="select.mode_edge"]')
+        ?.classList
+        .toggle('checked', state.selectEdgesMode);
+  }
+
   updateUI = () {
     // Evaluate modifier stack pipeline
     state.evaluateModifiers();
@@ -388,18 +991,23 @@ void main() {
               state.renderGraph.containsEdge(e.$2, e.$1)),
     );
 
+    btnToggleStats?.classList.toggle('active', state.showStats);
     btnToggleLabels?.classList.toggle('active', state.showLabels);
     btnToggleWeights?.classList.toggle('active', state.isWeighted);
-
-    btnUndo.disabled = !state.canUndo();
-    btnRedo.disabled = !state.canRedo();
 
     btnModeVertex.classList.toggle('active', state.selectVerticesMode);
     btnModeEdge.classList.toggle('active', state.selectEdgesMode);
 
-    updateModifierVertexDropdowns(state);
+    selectDirectedness.value = state.primaryGraph.isDirected
+        ? 'directed'
+        : 'undirected';
 
-    GraphInspector.updateInvariants(state);
+    updateModifierVertexDropdowns(state);
+    updateModifierCards();
+    updateCanvasStats();
+    updateIntroOverlay();
+    syncMenuChecks();
+
     GraphInspector.updateInspector(
       state,
       onSelectVertex: (v, {isShift = false}) {
@@ -428,21 +1036,16 @@ void main() {
     renderer.render(state);
   };
 
-  // Blender-style selection mode ('vertex' or 'edge')
-  // Selection mode toggles: Vertex (1) and Edge (2) (both active by default)
   btnModeVertex.onClick.listen((_) {
-    if (state.selectVerticesMode && !state.selectEdgesMode) {
-      return; // Keep at least one mode active
-    }
-    state.selectVerticesMode = !state.selectVerticesMode;
-    updateUI();
+    executeCommand('select.mode_vertex');
   });
 
   btnModeEdge.onClick.listen((_) {
-    if (state.selectEdgesMode && !state.selectVerticesMode) {
-      return; // Keep at least one mode active
-    }
-    state.selectEdgesMode = !state.selectEdgesMode;
+    executeCommand('select.mode_edge');
+  });
+
+  btnToggleStats?.onClick.listen((_) {
+    state.showStats = !state.showStats;
     updateUI();
   });
 
@@ -455,6 +1058,57 @@ void main() {
     state.isWeighted = !state.isWeighted;
     updateUI();
   });
+
+  btnIntroEmpty?.onClick.listen((_) {
+    dismissedEmpty = true;
+    updateIntroOverlay();
+  });
+
+  final presetButtons = web.document.querySelectorAll('.intro-example-btn');
+  for (var i = 0; i < presetButtons.length; i++) {
+    final btn = presetButtons.item(i) as web.HTMLButtonElement?;
+    final preset = btn?.getAttribute('data-preset');
+    if (btn != null && preset != null) {
+      btn.onClick.listen((_) {
+        dismissedEmpty = true;
+        loadPreset(preset);
+      });
+    }
+  }
+
+  if (inputOpenFile != null) {
+    inputOpenFile.onChange.listen((_) {
+      final files = inputOpenFile.files;
+      if (files != null && files.length > 0) {
+        final file = files.item(0);
+        if (file != null) {
+          final reader = web.FileReader();
+          reader.onload = ((web.Event _) {
+            final result = reader.result;
+            if (result != null && result.isA<JSString>()) {
+              final jsonStr = (result as JSString).toDart;
+              try {
+                final (g, weighted, nodes) = GraphIO.importFromJson(jsonStr);
+                state.saveSnapshot();
+                state.primaryGraph = g;
+                state.isWeighted = weighted;
+                state.nodes
+                  ..clear()
+                  ..addAll(nodes);
+                dismissedEmpty = true;
+                state.evaluateModifiers();
+                renderer.autoLayout(state);
+                renderer.resetView();
+                updateUI();
+              } catch (_) {}
+            }
+          }).toJS;
+          reader.readAsText(file);
+        }
+        inputOpenFile.value = '';
+      }
+    });
+  }
 
   // Interactive Vertex Click handler (clicking an already selected vertex enters in-place edit mode)
   void handleVertexClick(String vertex, web.MouseEvent event) {
@@ -576,147 +1230,10 @@ void main() {
 
   renderer.autoLayout(state);
 
-  // Undo / Redo top bar button listeners
-  btnUndo.onClick.listen((_) {
-    state.undo();
-    updateUI();
-  });
-
-  btnRedo.onClick.listen((_) {
-    state.redo();
-    updateUI();
-  });
-
   // Zoom listeners
   btnZoomIn.onClick.listen((_) => renderer.zoomIn());
   btnZoomOut.onClick.listen((_) => renderer.zoomOut());
   btnZoomFit.onClick.listen((_) => renderer.resetView());
-
-  // Blender-style keyboard shortcuts
-  web.window.onkeydown = ((web.KeyboardEvent event) {
-    final target = event.target;
-    if (target != null &&
-        (target.isA<web.HTMLInputElement>() ||
-            target.isA<web.HTMLTextAreaElement>())) {
-      return;
-    }
-
-    final key = event.key;
-    final isModifier = event.ctrlKey || event.metaKey;
-
-    if (key == 'Escape') {
-      if (state.pendingPlacementVertex != null) {
-        state.pendingPlacementVertex = null;
-        updateUI();
-        event.preventDefault();
-        return;
-      }
-    }
-
-    if (isModifier && (key == 'z' || key == 'Z')) {
-      if (event.shiftKey) {
-        btnRedo.click();
-      } else {
-        btnUndo.click();
-      }
-      event.preventDefault();
-      return;
-    }
-
-    if (isModifier && (key == 'i' || key == 'I')) {
-      executeCommand('select.invert');
-      event.preventDefault();
-      return;
-    }
-
-    if (event.shiftKey && (key == 'd' || key == 'D')) {
-      executeCommand('graph.duplicate');
-      event.preventDefault();
-      return;
-    }
-
-    if (key == 'Backspace' || key == 'Delete' || key == 'x' || key == 'X') {
-      if (state.selectedVertices.isNotEmpty) {
-        executeCommand('vertex.delete');
-      } else {
-        executeCommand('edge.delete');
-      }
-      event.preventDefault();
-      return;
-    }
-
-    if (key == '1') {
-      btnModeVertex.click();
-      event.preventDefault();
-      return;
-    }
-
-    if (key == '2') {
-      btnModeEdge.click();
-      event.preventDefault();
-      return;
-    }
-
-    if (key == 'c' || key == 'C') {
-      executeCommand('vertex.add');
-      event.preventDefault();
-      return;
-    }
-
-    if (key == 'e' || key == 'E') {
-      executeCommand('vertex.expand');
-      event.preventDefault();
-      return;
-    }
-
-    if (key == 'a' || key == 'A') {
-      if (state.selectedVertices.isNotEmpty ||
-          state.selectedEdges.isNotEmpty ||
-          state.selectedEdge != null) {
-        executeCommand('select.none');
-      } else {
-        executeCommand('select.all');
-      }
-      event.preventDefault();
-      return;
-    }
-
-    if (key == 'f' || key == 'F') {
-      executeCommand('edge.connect');
-      event.preventDefault();
-      return;
-    }
-
-    if (key == 'w' || key == 'W') {
-      executeCommand('edge.subdivide');
-      event.preventDefault();
-      return;
-    }
-
-    if (key == 'm' || key == 'M') {
-      executeCommand('vertex.merge');
-      event.preventDefault();
-      return;
-    }
-
-    if (key == '+' || key == '=') {
-      executeCommand('select.expand');
-      event.preventDefault();
-      return;
-    }
-
-    if (key == '-' || key == '_') {
-      executeCommand('select.collapse');
-      event.preventDefault();
-      return;
-    }
-
-    if (key == 'l' || key == 'L') {
-      executeCommand('graph.layout');
-      event.preventDefault();
-      return;
-    }
-  }).toJS;
 
   var isAnyMenuOpen = false;
 
@@ -729,6 +1246,7 @@ void main() {
   }
 
   void openMenu(web.HTMLElement parent) {
+    syncMenuChecks();
     final openMenus = web.document.querySelectorAll('.menu-item.open');
     for (var i = 0; i < openMenus.length; i++) {
       (openMenus.item(i) as web.HTMLElement?)?.classList.remove('open');
@@ -736,6 +1254,70 @@ void main() {
     parent.classList.add('open');
     isAnyMenuOpen = true;
   }
+
+  // Keyboard shortcuts handler iterating over CommandRegistry.all
+  web.window.onkeydown = ((web.KeyboardEvent event) {
+    final target = event.target;
+    if (target != null &&
+        (target.isA<web.HTMLInputElement>() ||
+            target.isA<web.HTMLTextAreaElement>())) {
+      return;
+    }
+
+    final key = event.key;
+    final isModifier = event.ctrlKey || event.metaKey;
+
+    if (key == 'Escape') {
+      var handled = false;
+      if (modalIo.style.display != 'none') {
+        modalIo.style.display = 'none';
+        handled = true;
+      }
+      final openMenus = web.document.querySelectorAll('.menu-item.open');
+      if (openMenus.length > 0) {
+        closeAllMenus();
+        handled = true;
+      }
+      if (introOverlay?.style.display != 'none') {
+        dismissedEmpty = true;
+        updateIntroOverlay();
+        handled = true;
+      }
+      renderer.cancelInlineEditor();
+      if (state.pendingPlacementVertex != null) {
+        final pv = state.pendingPlacementVertex!;
+        state.primaryGraph.removeVertex(pv);
+        state.nodes.remove(pv);
+        state.pendingPlacementVertex = null;
+        handled = true;
+        updateUI();
+      }
+      if (!handled &&
+          (state.selectedVertices.isNotEmpty ||
+              state.selectedEdges.isNotEmpty ||
+              state.selectedEdge != null)) {
+        state.clearSelection();
+        updateUI();
+      }
+      event.preventDefault();
+      return;
+    }
+
+    for (final cmd in CommandRegistry.all) {
+      if (cmd.matchesKey(
+        key,
+        ctrl: isModifier,
+        shift: event.shiftKey,
+        alt: event.altKey,
+      )) {
+        if (cmd.canExecute(state)) {
+          executeCommand(cmd.id);
+          event.preventDefault();
+          return;
+        }
+      }
+    }
+  }).toJS;
 
   // Setup Menu triggers
   final menuTriggers = web.document.querySelectorAll('.menu-label');
@@ -801,16 +1383,16 @@ void main() {
     }
   });
 
-  // Pinned Base Graph Modifier at index 0 (non-movable, non-removable)
-  state.modifiers.add(BaseGraphModifier());
-  // Default active modifier: Shortest Path
-  state.modifiers.add(ShortestPathModifier());
-  renderModifierStack();
-
-  btnIoModal.onClick.listen((_) {
-    syncModalContent();
-    modalIo.style.display = 'flex';
+  selectDirectedness.onChange.listen((_) {
+    final wantDirected = selectDirectedness.value == 'directed';
+    if (wantDirected != state.primaryGraph.isDirected) {
+      state.setDirected(wantDirected);
+      updateUI();
+    }
   });
+
+  // Initialize modifier stack UI
+  renderModifierStack();
 
   btnCloseModal.onClick.listen((_) {
     modalIo.style.display = 'none';
@@ -823,28 +1405,48 @@ void main() {
       final text = textareaIo.value.trim();
       if (text.isEmpty) return;
       state.saveSnapshot();
-      final (g, weighted, nodes) = GraphIO.importFromMermaid(
-        text,
-        isDirected: state.primaryGraph.isDirected,
-      );
+      final (g, weighted, nodes) = switch (selectIoFormat.value) {
+        'json' => GraphIO.importFromJson(text),
+        _ => GraphIO.importFromMermaid(
+          text,
+          isDirected: state.primaryGraph.isDirected,
+        ),
+      };
       state.primaryGraph = g;
       state.isWeighted = weighted;
       state.nodes
         ..clear()
         ..addAll(nodes);
       ioStatus.textContent = 'Import successful!';
-      showToast('Imported Mermaid graph successfully');
       updateUI();
+      modalIo.style.display = 'none';
     } catch (e) {
       ioStatus.textContent = 'Import error: $e';
-      showToast('Import error: $e', isWarning: true);
     }
   });
 
   btnExportCopy.onClick.listen((_) {
     web.window.navigator.clipboard.writeText(textareaIo.value);
     ioStatus.textContent = 'Copied to clipboard!';
-    showToast('Copied text to clipboard');
+  });
+
+  btnExportDownload.onClick.listen((_) {
+    switch (selectIoFormat.value) {
+      case 'mermaid':
+        GraphIO.downloadTextFile('graph.mmd', textareaIo.value, 'text/plain');
+      case 'dot':
+        GraphIO.downloadTextFile(
+          'graph.dot',
+          textareaIo.value,
+          'text/vnd.graphviz',
+        );
+      case 'json':
+        GraphIO.downloadTextFile(
+          'graph.json',
+          textareaIo.value,
+          'application/json',
+        );
+    }
   });
 
   btnExportShare.onClick.listen((_) {
@@ -853,37 +1455,6 @@ void main() {
         '${web.window.location.origin}${web.window.location.pathname}#$hash';
     web.window.navigator.clipboard.writeText(fullUrl);
     ioStatus.textContent = 'Shareable URL copied to clipboard!';
-    showToast('Copied shareable link');
-  });
-
-  btnDownloadMermaid.onClick.listen((_) {
-    GraphIO.downloadTextFile(
-      'graph.mmd',
-      GraphIO.exportToMermaid(state),
-      'text/plain',
-    );
-  });
-
-  btnDownloadDot.onClick.listen((_) {
-    GraphIO.downloadTextFile(
-      'graph.dot',
-      GraphIO.exportToDot(state),
-      'text/vnd.graphviz',
-    );
-  });
-
-  btnDownloadSvg.onClick.listen((_) {
-    final svg = renderer.currentSvg;
-    if (svg != null) {
-      GraphIO.downloadSvgFile('graph.svg', svg);
-    }
-  });
-
-  btnDownloadPng.onClick.listen((_) {
-    final svg = renderer.currentSvg;
-    if (svg != null) {
-      GraphIO.downloadPngFile('graph.png', svg);
-    }
   });
 
   // Resizable sidebar
@@ -927,45 +1498,6 @@ void main() {
       }).toJS,
     );
   }
-
-  // Global Escape key handler
-  web.window.addEventListener(
-    'keydown',
-    ((web.KeyboardEvent e) {
-      if (e.key == 'Escape') {
-        var handled = false;
-        // 1. Close open menus
-        final openMenus = web.document.querySelectorAll('.menu-item.open');
-        if (openMenus.length > 0) {
-          closeAllMenus();
-          handled = true;
-        }
-        // 2. Close modal
-        if (modalIo.style.display != 'none') {
-          modalIo.style.display = 'none';
-          handled = true;
-        }
-        // 3. Cancel inline editor
-        renderer.cancelInlineEditor();
-        // 4. Cancel pending placement
-        if (state.pendingPlacementVertex != null) {
-          final pv = state.pendingPlacementVertex!;
-          state.primaryGraph.removeVertex(pv);
-          state.nodes.remove(pv);
-          state.pendingPlacementVertex = null;
-          handled = true;
-          updateUI();
-        }
-        // 5. Clear selection if anything selected and nothing else was open
-        if (!handled &&
-            (state.selectedVertices.isNotEmpty ||
-                state.selectedEdges.isNotEmpty)) {
-          state.clearSelection();
-          updateUI();
-        }
-      }
-    }).toJS,
-  );
 
   updateUI();
 }

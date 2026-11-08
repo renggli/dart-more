@@ -8,8 +8,6 @@ final class GraphNode {
     this.fillColor,
     this.borderColor,
     this.textColor,
-    this.borderStyle = 'solid',
-    this.dashPattern = 'none',
     this.borderWidth = 1.5,
     this.opacity = 1.0,
     this.visible = true,
@@ -38,8 +36,6 @@ final class GraphNode {
   String? fillColor;
   String? borderColor;
   String? textColor;
-  String borderStyle; // 'solid', 'dashed', 'dotted'
-  String dashPattern; // 'none', '4,4', '2,2', '6,3'
   double borderWidth;
   double opacity;
   bool visible;
@@ -49,8 +45,6 @@ final class GraphNode {
     fillColor = null;
     borderColor = null;
     textColor = null;
-    borderStyle = 'solid';
-    dashPattern = 'none';
     borderWidth = 1.5;
     opacity = 1.0;
     visible = true;
@@ -65,8 +59,6 @@ final class GraphNode {
     fillColor: fillColor,
     borderColor: borderColor,
     textColor: textColor,
-    borderStyle: borderStyle,
-    dashPattern: dashPattern,
     borderWidth: borderWidth,
     opacity: opacity,
     visible: visible,
@@ -95,8 +87,6 @@ final class GraphEdgeStyle {
   new({
     this.color,
     this.strokeWidth = 1.8,
-    this.style = 'solid',
-    this.dashPattern = 'none',
     this.opacity = 1.0,
     this.label,
     this.visible = true,
@@ -104,8 +94,6 @@ final class GraphEdgeStyle {
 
   String? color;
   double strokeWidth;
-  String style; // 'solid', 'dashed', 'dotted'
-  String dashPattern; // 'none', '6,4', '2,2', '8,4'
   double opacity;
   String? label;
   bool visible;
@@ -114,8 +102,6 @@ final class GraphEdgeStyle {
   void reset() {
     color = null;
     strokeWidth = 1.8;
-    style = 'solid';
-    dashPattern = 'none';
     opacity = 1.0;
     label = null;
     visible = true;

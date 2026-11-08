@@ -1,7 +1,6 @@
 import 'dart:js_interop';
 import 'dart:math' as math;
 
-import 'package:more/collection.dart';
 import 'package:more/graph.dart';
 import 'package:web/web.dart' as web;
 
@@ -11,67 +10,8 @@ import 'state.dart';
 typedef SelectVertexCallback = void Function(String vertex, {bool isShift});
 typedef SelectEdgeCallback = void Function(String u, String v, {bool isShift});
 
-/// Manages graph invariant computations and the vertex/edge inspector panel.
+/// Manages the vertex/edge inspector panel.
 final class GraphInspector {
-  static void updateInvariants(AppState state) {
-    final graph = state.renderGraph;
-    final vCount = graph.vertices.length;
-    final eCount = graph.edges.unique().length;
-
-    _setText('#stat-nodes', vCount.toString());
-    _setText('#stat-edges', eCount.toString());
-
-    if (vCount < 2) {
-      _setText('#stat-density', '0.00');
-    } else {
-      _setText('#stat-density', graph.density().toStringAsFixed(3));
-    }
-
-    try {
-      _setText('#stat-components', graph.connected().length.toString());
-    } catch (_) {
-      _setText('#stat-components', '-');
-    }
-
-    if (!graph.isDirected) {
-      try {
-        _setText('#stat-planar', graph.isPlanar() ? 'Yes' : 'No');
-      } catch (_) {
-        _setText('#stat-planar', '-');
-      }
-    } else {
-      _setText('#stat-planar', 'N/A');
-    }
-
-    try {
-      _setText('#stat-bipartite', graph.isBipartite() ? 'Yes' : 'No');
-    } catch (_) {
-      _setText('#stat-bipartite', '-');
-    }
-
-    if (graph.isDirected) {
-      try {
-        _setText('#stat-cycle', graph.hasCycle() ? 'Yes' : 'No');
-      } catch (_) {
-        _setText('#stat-cycle', '-');
-      }
-    } else {
-      _setText('#stat-cycle', 'N/A');
-    }
-
-    try {
-      if (graph.hasEulerianCircuit()) {
-        _setText('#stat-eulerian', 'Circuit');
-      } else if (graph.hasEulerianPath()) {
-        _setText('#stat-eulerian', 'Path');
-      } else {
-        _setText('#stat-eulerian', 'No');
-      }
-    } catch (_) {
-      _setText('#stat-eulerian', '-');
-    }
-  }
-
   static void updateInspector(
     AppState state, {
     required SelectVertexCallback onSelectVertex,
@@ -278,9 +218,9 @@ final class GraphInspector {
   ) {
     final arrow = graph.isDirected ? '→' : '—';
     final titleP = p()..style.margin = '0 0 6px 0';
-    titleP.appendChild(span('Edge Details: ')..style.fontWeight = '600');
+    titleP.appendChild(span('Edge: ')..style.fontWeight = '600');
 
-    final pillU = span(u, 'pill pill-source')
+    final pillU = span(u, 'pill')
       ..style.cursor = 'pointer'
       ..title = 'Click to inspect vertex $u (Shift-click to add)';
     pillU.onClick.listen((e) => onSelectVertex(u, isShift: e.shiftKey));
@@ -288,26 +228,13 @@ final class GraphInspector {
 
     titleP.appendChild(span(arrow)..style.margin = '0 4px');
 
-    final pillV = span(v, 'pill pill-target')
+    final pillV = span(v, 'pill')
       ..style.cursor = 'pointer'
       ..title = 'Click to inspect vertex $v (Shift-click to add)';
     pillV.onClick.listen((e) => onSelectVertex(v, isShift: e.shiftKey));
     titleP.appendChild(pillV);
 
     container.appendChild(titleP);
-
-    // Euclidean length
-    final nodeU = state.nodes[u];
-    final nodeV = state.nodes[v];
-    var distStr = '-';
-    if (nodeU?.x != null &&
-        nodeU?.y != null &&
-        nodeV?.x != null &&
-        nodeV?.y != null) {
-      final dx = nodeV!.x! - nodeU!.x!;
-      final dy = nodeV.y! - nodeU.y!;
-      distStr = '${math.sqrt(dx * dx + dy * dy).round()} px';
-    }
 
     final isBidi = graph.isDirected && graph.containsEdge(v, u);
 
@@ -318,10 +245,9 @@ final class GraphInspector {
       ..style.margin = '0 0 8px 0';
     metricsP.innerHTML =
         '''
-      <b>Weight:</b> $weight (double-click badge on canvas to edit)<br>
+      <b>Weight:</b> $weight<br>
       <b>Direction:</b> ${graph.isDirected ? 'Directed ($arrow)' : 'Undirected'}<br>
       <b>Bidirectional:</b> ${isBidi ? 'Yes' : 'No'}<br>
-      <b>Pixel Length:</b> $distStr<br>
       <b>Source Degree:</b> ${graph.degreeOf(u)} | <b>Target Degree:</b> ${graph.degreeOf(v)}
     '''
             .toJS;
@@ -355,7 +281,7 @@ final class GraphInspector {
 
     final titleP = p()..style.margin = '0 0 6px 0';
     titleP.appendChild(span('Vertex: ')..style.fontWeight = '600');
-    titleP.appendChild(span(currentLabel, 'pill pill-source'));
+    titleP.appendChild(span(currentLabel, 'pill'));
     if (currentLabel != v) {
       titleP.appendChild(
         span(' (id: $v)')
@@ -364,18 +290,6 @@ final class GraphInspector {
       );
     }
     container.appendChild(titleP);
-
-    // Coordinates & hint
-    if (nodeObj != null && nodeObj.x != null && nodeObj.y != null) {
-      final posP =
-          p(
-              'Position: (${nodeObj.x!.round()}px, ${nodeObj.y!.round()}px) • Double-click node to rename',
-            )
-            ..style.fontSize = '10.5px'
-            ..style.color = 'var(--text-muted)'
-            ..style.margin = '0 0 6px 0';
-      container.appendChild(posP);
-    }
 
     // Detailed Vertex Metrics
     final metricsP = p()
@@ -422,12 +336,13 @@ final class GraphInspector {
         );
         for (final p in preds) {
           final item = _buildNeighborItem(
-            edgeText: '–>',
+            edgeText: '→',
             edgeTooltip: 'Select edge $p → $v (Shift-click to add)',
             onEdgeClick: (isShift) => onSelectEdge(p, v, isShift: isShift),
             vertexText: state.nodes[p]?.label ?? p,
             vertexTooltip: 'Select vertex $p (Shift-click to add)',
             onVertexClick: (isShift) => onSelectVertex(p, isShift: isShift),
+            edgeFirst: true,
           );
           predRow.appendChild(item);
         }
@@ -451,7 +366,7 @@ final class GraphInspector {
       for (final s in succs) {
         final edgeU = graph.isDirected ? v : (v.compareTo(s) <= 0 ? v : s);
         final edgeV = graph.isDirected ? s : (v.compareTo(s) <= 0 ? s : v);
-        final arrow = graph.isDirected ? '–>' : '—';
+        final arrow = graph.isDirected ? '→' : '—';
         final item = _buildNeighborItem(
           edgeText: arrow,
           edgeTooltip: 'Select edge $v $arrow $s (Shift-click to add)',
@@ -460,6 +375,7 @@ final class GraphInspector {
           vertexText: state.nodes[s]?.label ?? s,
           vertexTooltip: 'Select vertex $s (Shift-click to add)',
           onVertexClick: (isShift) => onSelectVertex(s, isShift: isShift),
+          edgeFirst: false,
         );
         succRow.appendChild(item);
       }
@@ -481,8 +397,8 @@ final class GraphInspector {
         final isIncoming =
             graph.isDirected && edge.target == v && edge.source != v;
         final otherV = isIncoming ? edge.source : edge.target;
-        final arrow = graph.isDirected ? '–>' : '—';
-        final edgeText = state.isWeighted ? '$arrow (${edge.value})' : arrow;
+        final arrow = graph.isDirected ? '→' : '—';
+        final edgeText = arrow;
         final item = _buildNeighborItem(
           edgeText: edgeText,
           edgeTooltip:
@@ -492,6 +408,7 @@ final class GraphInspector {
           vertexText: state.nodes[otherV]?.label ?? otherV,
           vertexTooltip: 'Select vertex $otherV (Shift-click to add)',
           onVertexClick: (isShift) => onSelectVertex(otherV, isShift: isShift),
+          edgeFirst: isIncoming,
         );
         eRow.appendChild(item);
       }
@@ -506,6 +423,7 @@ final class GraphInspector {
     required String vertexText,
     required String vertexTooltip,
     required void Function(bool isShift) onVertexClick,
+    bool edgeFirst = true,
   }) {
     final wrapper = span('', 'neighbor-item');
 
@@ -522,13 +440,13 @@ final class GraphInspector {
       onVertexClick(event.shiftKey);
     });
 
-    wrapper.appendChild(edgeBtn);
-    wrapper.appendChild(vertBtn);
+    if (edgeFirst) {
+      wrapper.appendChild(edgeBtn);
+      wrapper.appendChild(vertBtn);
+    } else {
+      wrapper.appendChild(vertBtn);
+      wrapper.appendChild(edgeBtn);
+    }
     return wrapper;
-  }
-
-  static void _setText(String selector, String text) {
-    final el = web.document.querySelector(selector);
-    if (el != null) el.textContent = text;
   }
 }

@@ -167,14 +167,23 @@ final class GraphRenderer {
     markup.writeln('    <path d="M 0 1.5 L 9 5 L 0 8.5 z" fill="#64748b" />');
     markup.writeln('  </marker>');
     markup.writeln(
-      '  <marker id="arrow-highlight" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">',
+      '  <marker id="arrow-highlight" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">',
     );
-    markup.writeln('    <path d="M 0 1 L 9 5 L 0 9 z" fill="#38bdf8" />');
+    markup.writeln('    <path d="M 0 1.5 L 9 5 L 0 8.5 z" fill="#38bdf8" />');
     markup.writeln('  </marker>');
     markup.writeln(
-      '  <marker id="arrow-selected" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">',
+      '  <marker id="arrow-selected" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">',
     );
-    markup.writeln('    <path d="M 0 1 L 9 5 L 0 9 z" fill="#8b5cf6" />');
+    markup.writeln(
+      '    <path d="M 0 1.5 L 9 5 L 0 8.5 z" fill="#64748b" stroke="#8b5cf6" stroke-width="2.0" stroke-linejoin="round" />',
+    );
+    markup.writeln('  </marker>');
+    markup.writeln(
+      '  <marker id="arrow-active" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">',
+    );
+    markup.writeln(
+      '    <path d="M 0 1.5 L 9 5 L 0 8.5 z" fill="#64748b" stroke="#c084fc" stroke-width="2.0" stroke-linejoin="round" />',
+    );
     markup.writeln('  </marker>');
     markup.writeln(
       '  <filter id="node-shadow" x="-20%" y="-20%" width="140%" height="140%">',
@@ -204,7 +213,8 @@ final class GraphRenderer {
     }
 
     final activePathEdges = <(String, String)>{};
-    if (overlay is PathOverlay) {
+    final pathOverlayColor = (overlay is PathOverlay) ? overlay.color : null;
+    if (overlay is PathOverlay && pathOverlayColor != null) {
       activePathEdges.addAll(overlay.edges);
     }
 
@@ -252,21 +262,19 @@ final class GraphRenderer {
               : null);
 
       final strokeColor =
-          edgeStyle?.color ?? (isPathEdge ? '#38bdf8' : '#475569');
+          edgeStyle?.color ?? (isPathEdge ? pathOverlayColor! : '#475569');
       final strokeWidth = edgeStyle != null
           ? '${edgeStyle.strokeWidth}'
           : (isPathEdge ? '3.0' : '1.8');
       final opacity = edgeStyle?.opacity ?? 1.0;
-      final dashArray =
-          (edgeStyle?.dashPattern != null && edgeStyle!.dashPattern != 'none')
-          ? 'stroke-dasharray="${edgeStyle.dashPattern}"'
-          : '';
       final marker = graph.isDirected
-          ? (isEdgeSelected
-                ? 'url(#arrow-selected)'
-                : (isPathEdge
-                      ? 'url(#arrow-highlight)'
-                      : 'url(#arrow-default)'))
+          ? (isLastSelectedEdge
+                ? 'url(#arrow-active)'
+                : (isEdgeSelected
+                      ? 'url(#arrow-selected)'
+                      : (isPathEdge
+                            ? 'url(#arrow-highlight)'
+                            : 'url(#arrow-default)')))
           : '';
 
       final safeSource = Uri.encodeComponent(edge.source);
@@ -287,14 +295,14 @@ final class GraphRenderer {
         );
         if (isEdgeSelected) {
           final underlayColor = isLastSelectedEdge ? '#c084fc' : '#8b5cf6';
-          final underlayWidth = isLastSelectedEdge ? 6.5 : 5.0;
-          final underlayOpacity = isLastSelectedEdge ? 0.65 : 0.35;
+          const underlayWidth = 5.5;
+          final underlayOpacity = isLastSelectedEdge ? 0.90 : 0.75;
           markup.writeln(
             '  <path d="$loopPath" fill="none" stroke="$underlayColor" stroke-width="$underlayWidth" opacity="$underlayOpacity" stroke-linecap="round" />',
           );
         }
         markup.writeln(
-          '  <path d="$loopPath" fill="none" stroke="$strokeColor" stroke-width="$strokeWidth" opacity="$opacity" $dashArray ${marker.isNotEmpty ? 'marker-end="$marker"' : ''} />',
+          '  <path d="$loopPath" fill="none" stroke="$strokeColor" stroke-width="$strokeWidth" opacity="$opacity" ${marker.isNotEmpty ? 'marker-end="$marker"' : ''} />',
         );
         if (state.isWeighted) {
           final labelY = y1 - nodeRadius - 38;
@@ -359,14 +367,14 @@ final class GraphRenderer {
       );
       if (isEdgeSelected) {
         final underlayColor = isLastSelectedEdge ? '#c084fc' : '#8b5cf6';
-        final underlayWidth = isLastSelectedEdge ? 6.5 : 5.0;
-        final underlayOpacity = isLastSelectedEdge ? 0.65 : 0.35;
+        const underlayWidth = 5.5;
+        final underlayOpacity = isLastSelectedEdge ? 0.90 : 0.75;
         markup.writeln(
           '  <path d="$pathData" fill="none" stroke="$underlayColor" stroke-width="$underlayWidth" opacity="$underlayOpacity" stroke-linecap="round" />',
         );
       }
       markup.writeln(
-        '  <path d="$pathData" fill="none" stroke="$strokeColor" stroke-width="$strokeWidth" opacity="$opacity" $dashArray ${marker.isNotEmpty ? 'marker-end="$marker"' : ''} />',
+        '  <path d="$pathData" fill="none" stroke="$strokeColor" stroke-width="$strokeWidth" opacity="$opacity" ${marker.isNotEmpty ? 'marker-end="$marker"' : ''} />',
       );
       if (state.isWeighted) {
         markup.writeln(
@@ -395,8 +403,6 @@ final class GraphRenderer {
 
       final isActive = state.activeVertex == v;
       final isSelected = state.selectedVertices.contains(v);
-      final isSource = state.selectedSource == v;
-      final isTarget = state.selectedTarget == v;
 
       // Color & Visual Attributes computation
       var fillColor = node.fillColor ?? '#1e293b';
@@ -404,9 +410,6 @@ final class GraphRenderer {
       var borderColor = node.borderColor ?? '#64748b';
       final borderWidth = node.borderWidth;
       final opacity = node.opacity;
-      final dashArray = (node.dashPattern != 'none')
-          ? 'stroke-dasharray="${node.dashPattern}"'
-          : '';
 
       if (overlay is HeatmapOverlay && node.fillColor == null) {
         final score = overlay.scores[v];
@@ -426,9 +429,9 @@ final class GraphRenderer {
         }
       } else if (overlay is PathOverlay && node.fillColor == null) {
         final inPath = overlay.vertices.contains(v);
-        if (inPath) {
+        if (inPath && overlay.color != null) {
           fillColor = '#1e3a8a';
-          borderColor = '#38bdf8';
+          borderColor = overlay.color!;
           textColor = '#f8fafc';
         }
       }
@@ -441,25 +444,17 @@ final class GraphRenderer {
       // Subtle Selection Underlay (purple of the application, fading to background)
       if (isActive) {
         markup.writeln(
-          '  <circle cx="$x" cy="$y" r="26.0" fill="#8b5cf6" fill-opacity="0.25" stroke="#c084fc" stroke-width="2.0" stroke-opacity="0.85" />',
+          '  <circle cx="$x" cy="$y" r="26.0" fill="#8b5cf6" fill-opacity="0.30" stroke="#c084fc" stroke-width="2.0" stroke-opacity="0.95" />',
         );
       } else if (isSelected) {
         markup.writeln(
-          '  <circle cx="$x" cy="$y" r="25.0" fill="#8b5cf6" fill-opacity="0.15" stroke="#8b5cf6" stroke-width="1.5" stroke-opacity="0.5" />',
-        );
-      } else if (isSource) {
-        markup.writeln(
-          '  <circle cx="$x" cy="$y" r="25.0" fill="none" stroke="#22c55e" stroke-width="2.0" stroke-opacity="0.8" />',
-        );
-      } else if (isTarget) {
-        markup.writeln(
-          '  <circle cx="$x" cy="$y" r="25.0" fill="none" stroke="#ef4444" stroke-width="2.0" stroke-opacity="0.8" />',
+          '  <circle cx="$x" cy="$y" r="26.0" fill="#8b5cf6" fill-opacity="0.25" stroke="#8b5cf6" stroke-width="2.0" stroke-opacity="0.80" />',
         );
       }
 
       // Node Body Circle
       markup.writeln(
-        '  <circle cx="$x" cy="$y" r="$nodeRadius" fill="$fillColor" stroke="$borderColor" stroke-width="$borderWidth" opacity="$opacity" $dashArray filter="url(#node-shadow)" cursor="pointer" />',
+        '  <circle cx="$x" cy="$y" r="$nodeRadius" fill="$fillColor" stroke="$borderColor" stroke-width="$borderWidth" opacity="$opacity" filter="url(#node-shadow)" cursor="pointer" />',
       );
 
       // Node Label Text
@@ -1057,8 +1052,8 @@ final class GraphRenderer {
     }
 
     final input = web.document.createElement('input') as web.HTMLInputElement;
-    input.type = 'number';
-    input.step = 'any';
+    input.type = 'text';
+    input.setAttribute('inputmode', 'decimal');
     input.value = currentWeight.toString();
     input.className = 'inline-edge-editor';
     final screenX = posX * _scale + _panX;

@@ -19,6 +19,7 @@ final class PathOverlay extends VisualOverlay {
     super.title = '',
     required this.vertices,
     this.edges = const [],
+    this.color,
     this.stepNumbers = true,
     this.activeStep,
     super.summary,
@@ -26,6 +27,7 @@ final class PathOverlay extends VisualOverlay {
 
   final List<String> vertices;
   final List<(String, String)> edges;
+  final String? color;
   final bool stepNumbers;
   final int? activeStep;
 }
@@ -119,6 +121,16 @@ final class GraphSnapshot {
   }
 }
 
+/// In-memory clipboard snapshot for cut/copy/paste operations.
+final class GraphClipboard {
+  const new({required this.nodes, required this.edges});
+
+  final List<GraphNode> nodes;
+  final List<(String, String, num)> edges;
+
+  bool get isEmpty => nodes.isEmpty && edges.isEmpty;
+}
+
 /// Workspace state for the graph web application.
 final class AppState {
   new({Graph<String, num>? initialGraph})
@@ -130,6 +142,9 @@ final class AppState {
 
   /// Dedicated node objects storing user labels, spatial positions, and styling.
   final Map<String, GraphNode> nodes = {};
+
+  /// Clipboard buffer for cut/copy/paste operations.
+  GraphClipboard? clipboard;
 
   /// Visual edge styling attributes dynamically styled by modifiers.
   final Map<(String, String), GraphEdgeStyle> edgeStyles = {};
@@ -148,6 +163,7 @@ final class AppState {
 
   bool isWeighted = true;
   bool showLabels = true;
+  bool showStats = true;
   String? pendingPlacementVertex;
   String layoutEngine = 'force';
   String rankDir = 'LR';
@@ -224,19 +240,8 @@ final class AppState {
     }
   }
 
-  static Graph<String, num> _createDefaultGraph() {
-    final g = Graph<String, num>(isDirected: true);
-    g.addEdge('A', 'B', value: 4);
-    g.addEdge('A', 'C', value: 2);
-    g.addEdge('B', 'C', value: 1);
-    g.addEdge('B', 'D', value: 5);
-    g.addEdge('C', 'D', value: 8);
-    g.addEdge('C', 'E', value: 10);
-    g.addEdge('D', 'E', value: 2);
-    g.addEdge('D', 'Z', value: 6);
-    g.addEdge('E', 'Z', value: 3);
-    return g;
-  }
+  static Graph<String, num> _createDefaultGraph() =>
+      Graph<String, num>(isDirected: true);
 
   /// Synchronizes node records with current graph vertices.
   void syncNodes() {
@@ -629,48 +634,127 @@ final class AppState {
     return true;
   }
 
-  /// Duplicates selected vertices and the edges connecting them.
-  int duplicateSelected({double offsetX = 40.0, double offsetY = 40.0}) {
-    if (selectedVertices.isEmpty) return 0;
+  /// Copies the currently selected vertices and edges into the internal clipboard.
+  bool copySelected() {
+    final vertSet = Set<String>.from(selectedVertices);
+    for (final (u, v) in selectedEdges) {
+      vertSet.add(u);
+      vertSet.add(v);
+    }
+    if (selectedEdge != null) {
+      vertSet.add(selectedEdge!.$1);
+      vertSet.add(selectedEdge!.$2);
+    }
+    if (vertSet.isEmpty) return false;
+
+    final copiedNodes = <GraphNode>[
+      for (final v in vertSet)
+        if (nodes[v] != null)
+          GraphNode(
+            id: v,
+            label: nodes[v]!.label,
+            x: nodes[v]!.x,
+            y: nodes[v]!.y,
+          )
+        else
+          GraphNode(id: v, label: v),
+    ];
+
+    final copiedEdges = <(String, String, num)>[];
+    for (final edge in primaryGraph.edges) {
+      final inVertices =
+          vertSet.contains(edge.source) && vertSet.contains(edge.target);
+      final isExplicitEdge =
+          selectedEdges.contains((edge.source, edge.target)) ||
+          selectedEdge == (edge.source, edge.target);
+      if (inVertices || isExplicitEdge) {
+        copiedEdges.add((edge.source, edge.target, edge.value));
+      }
+    }
+
+    clipboard = GraphClipboard(nodes: copiedNodes, edges: copiedEdges);
+    return true;
+  }
+
+  /// Cuts the currently selected vertices and edges into the clipboard and removes them.
+  bool cutSelected() {
+    if (!copySelected()) return false;
+    deleteSelection();
+    return true;
+  }
+
+  /// Pastes the clipboard contents into the primary graph with an offset.
+  bool pasteClipboard({double offsetX = 40.0, double offsetY = 40.0}) {
+    if (clipboard == null || clipboard!.isEmpty) return false;
     saveSnapshot();
 
     final oldToNew = <String, String>{};
-    for (final oldV in selectedVertices) {
-      final newV = nextAvailableNodeId();
-      oldToNew[oldV] = newV;
-      primaryGraph.addVertex(newV);
-      final oldNode = nodes[oldV];
-      final newX = oldNode?.x != null ? oldNode!.x! + offsetX : null;
-      final newY = oldNode?.y != null ? oldNode!.y! + offsetY : null;
-      getOrCreateNode(
-        newV,
-        label: '${oldNode?.label ?? oldV}\'',
-        x: newX,
-        y: newY,
-      );
+    for (final node in clipboard!.nodes) {
+      final newId = nextAvailableNodeId();
+      oldToNew[node.id] = newId;
+      primaryGraph.addVertex(newId);
+      final newX = node.x != null ? node.x! + offsetX : null;
+      final newY = node.y != null ? node.y! + offsetY : null;
+      getOrCreateNode(newId, label: node.label, x: newX, y: newY);
     }
 
-    // Duplicate internal edges between selected vertices
-    for (final edge in primaryGraph.edges.toList()) {
-      final newU = oldToNew[edge.source];
-      final newV = oldToNew[edge.target];
-      if (newU != null && newV != null) {
-        primaryGraph.addEdge(newU, newV, value: edge.value);
+    for (final (source, target, value) in clipboard!.edges) {
+      final newSource = oldToNew[source];
+      final newTarget = oldToNew[target];
+      if (newSource != null && newTarget != null) {
+        primaryGraph.addEdge(newSource, newTarget, value: value);
       }
     }
 
     selectedVertices = oldToNew.values.toSet();
-    activeVertex = selectedVertices.last;
+    activeVertex = selectedVertices.isNotEmpty ? selectedVertices.last : null;
+    selectedEdges.clear();
+    for (final (source, target, _) in clipboard!.edges) {
+      final newSource = oldToNew[source];
+      final newTarget = oldToNew[target];
+      if (newSource != null && newTarget != null) {
+        selectedEdges.add((newSource, newTarget));
+      }
+    }
+    selectedEdge = selectedEdges.isNotEmpty ? selectedEdges.last : null;
     syncSelectionSourceTarget();
-    return oldToNew.length;
+    return true;
   }
 
-  /// Deletes selected vertices or selected edges.
+  /// Duplicates selected vertices and edges.
+  int duplicateSelected({double offsetX = 40.0, double offsetY = 40.0}) {
+    if (copySelected()) {
+      pasteClipboard(offsetX: offsetX, offsetY: offsetY);
+      return selectedVertices.length + selectedEdges.length;
+    }
+    return 0;
+  }
+
+  /// Deletes whatever is currently selected (vertices and/or edges).
   int deleteSelection() {
+    if (selectedVertices.isEmpty &&
+        selectedEdges.isEmpty &&
+        selectedEdge == null) {
+      return 0;
+    }
+    saveSnapshot();
     var count = 0;
+
+    if (selectedEdges.isNotEmpty) {
+      count += selectedEdges.length;
+      for (final (u, v) in selectedEdges.toList()) {
+        primaryGraph.removeEdge(u, v);
+      }
+      selectedEdges.clear();
+      selectedEdge = null;
+    } else if (selectedEdge != null) {
+      count += 1;
+      primaryGraph.removeEdge(selectedEdge!.$1, selectedEdge!.$2);
+      selectedEdge = null;
+    }
+
     if (selectedVertices.isNotEmpty) {
-      saveSnapshot();
-      count = selectedVertices.length;
+      count += selectedVertices.length;
       for (final v in selectedVertices.toList()) {
         primaryGraph.removeVertex(v);
         nodes.remove(v);
@@ -678,20 +762,8 @@ final class AppState {
       selectedVertices.clear();
       activeVertex = null;
       syncSelectionSourceTarget();
-    } else if (selectedEdges.isNotEmpty) {
-      saveSnapshot();
-      count = selectedEdges.length;
-      for (final (u, v) in selectedEdges.toList()) {
-        primaryGraph.removeEdge(u, v);
-      }
-      selectedEdges.clear();
-      selectedEdge = null;
-    } else if (selectedEdge != null) {
-      saveSnapshot();
-      count = 1;
-      primaryGraph.removeEdge(selectedEdge!.$1, selectedEdge!.$2);
-      selectedEdge = null;
     }
+
     return count;
   }
 

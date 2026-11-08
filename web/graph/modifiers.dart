@@ -65,6 +65,9 @@ abstract class GraphModifier {
   /// Bakes changes permanently into the base graph and removes itself from the stack.
   void applyPermanent(AppState state) {}
 
+  /// Hook called whenever the active graph or pipeline state updates.
+  void updateConfig(AppState state) {}
+
   /// Builds configuration UI controls inside the modifier card (accessible, stacked vertically).
   web.HTMLElement buildConfigUI(AppState state, void Function() onModified);
 
@@ -826,7 +829,6 @@ class ShortestPathModifier extends GraphModifier {
       pathEdges.add(edgeKey);
       final edgeStyle = state.getEdgeStyle(edgeKey.$1, edgeKey.$2);
       edgeStyle.color = pathColor;
-      edgeStyle.dashPattern = pathPattern;
       edgeStyle.strokeWidth = 3.0;
     }
 
@@ -1118,6 +1120,14 @@ class SpanningTreeModifier extends GraphModifier {
       return const ModifierOutput(statusSummary: 'Graph is empty');
     }
 
+    if (graph.isDirected) {
+      return const ModifierOutput(
+        hasError: true,
+        errorMessage: 'Spanning tree algorithms require an undirected graph.',
+        statusSummary: 'Requires undirected graph',
+      );
+    }
+
     Graph<String, num> tree;
     try {
       tree = algorithm == 'prim'
@@ -1143,7 +1153,6 @@ class SpanningTreeModifier extends GraphModifier {
 
       final edgeStyle = state.getEdgeStyle(e.source, e.target);
       edgeStyle.color = treeColor;
-      edgeStyle.dashPattern = treePattern;
       edgeStyle.strokeWidth = 2.5;
     }
 
@@ -1280,7 +1289,6 @@ class CycleDetectionModifier extends GraphModifier {
         cycleEdges.add(key);
         final edgeStyle = state.getEdgeStyle(key.$1, key.$2);
         edgeStyle.color = cycleColor;
-        edgeStyle.dashPattern = cyclePattern;
         edgeStyle.strokeWidth = 3.0;
       }
       for (final v in cycle) {
@@ -1288,7 +1296,6 @@ class CycleDetectionModifier extends GraphModifier {
         if (node != null) {
           node.borderColor = cycleColor;
           node.borderWidth = 2.5;
-          node.dashPattern = cyclePattern;
         }
       }
     }
@@ -1626,15 +1633,11 @@ class KCoreModifier extends GraphModifier {
         if (!coreVerts.contains(v)) {
           final node = state.nodes[v];
           if (node != null) {
-            node.borderStyle = 'dashed';
-            node.dashPattern = dashPattern;
             node.borderColor = dashColor;
             node.opacity = 0.45;
           }
           for (final e in graph.edgesOf(v)) {
             final es = state.getEdgeStyle(e.source, e.target);
-            es.style = 'dashed';
-            es.dashPattern = dashPattern;
             es.color = dashColor;
             es.opacity = 0.35;
           }
@@ -1751,6 +1754,14 @@ class TransitiveClosureModifier extends GraphModifier {
       return const ModifierOutput(statusSummary: 'Graph is empty');
     }
 
+    if (!graph.isDirected) {
+      return const ModifierOutput(
+        hasError: true,
+        errorMessage: 'Transitive closure requires a directed graph.',
+        statusSummary: 'Requires directed graph',
+      );
+    }
+
     Graph<String, void> closure;
     try {
       closure = graph.transitiveClosure();
@@ -1776,20 +1787,16 @@ class TransitiveClosureModifier extends GraphModifier {
       if (isNew) {
         addedEdgesCount++;
         final es = state.getEdgeStyle(edge.source, edge.target);
-        es.style = 'dashed';
-        es.dashPattern = addedPattern;
         es.color = addedColor;
         es.strokeWidth = 2.2;
 
         final srcNode = state.nodes[edge.source];
         if (srcNode != null && srcNode.borderColor == null) {
           srcNode.borderColor = addedColor;
-          srcNode.dashPattern = addedPattern;
         }
         final tgtNode = state.nodes[edge.target];
         if (tgtNode != null && tgtNode.borderColor == null) {
           tgtNode.borderColor = addedColor;
-          tgtNode.dashPattern = addedPattern;
         }
       }
     }
@@ -1891,6 +1898,15 @@ class TransitiveReductionModifier extends GraphModifier {
       return const ModifierOutput(statusSummary: 'Graph is empty');
     }
 
+    if (!graph.isDirected) {
+      return const ModifierOutput(
+        hasError: true,
+        errorMessage:
+            'Transitive reduction requires a directed acyclic graph (DAG).',
+        statusSummary: 'Requires directed graph',
+      );
+    }
+
     Graph<String, void> reduced;
     try {
       reduced = graph.transitiveReduction();
@@ -1925,8 +1941,6 @@ class TransitiveReductionModifier extends GraphModifier {
           // Keep edge in graph view but style as dashed and colored
           reducedGraph.addEdge(edge.source, edge.target, value: edge.value);
           final es = state.getEdgeStyle(edge.source, edge.target);
-          es.style = 'dashed';
-          es.dashPattern = removedPattern;
           es.color = removedColor;
           es.opacity = 0.45;
         }
@@ -1938,8 +1952,6 @@ class TransitiveReductionModifier extends GraphModifier {
       if (reducedGraph.degreeOf(v) == 0 && graph.degreeOf(v) > 0) {
         final node = state.nodes[v];
         if (node != null) {
-          node.borderStyle = 'dashed';
-          node.dashPattern = removedPattern;
           node.borderColor = removedColor;
           node.opacity = 0.5;
         }
@@ -2083,6 +2095,15 @@ class BiconnectedComponentsModifier extends GraphModifier {
       return const ModifierOutput(statusSummary: 'Graph is empty');
     }
 
+    if (graph.isDirected) {
+      return const ModifierOutput(
+        hasError: true,
+        errorMessage:
+            'Biconnected components and bridges require an undirected graph.',
+        statusSummary: 'Requires undirected graph',
+      );
+    }
+
     try {
       final cutVertices = graph.articulationPoints();
       final bridgeEdges = graph.bridges();
@@ -2099,12 +2120,10 @@ class BiconnectedComponentsModifier extends GraphModifier {
         final es = state.getEdgeStyle(b.source, b.target);
         es.color = bridgeColor;
         es.strokeWidth = 3.5;
-        es.dashPattern = '4,3';
         if (!graph.isDirected) {
           final esRev = state.getEdgeStyle(b.target, b.source);
           esRev.color = bridgeColor;
           esRev.strokeWidth = 3.5;
-          esRev.dashPattern = '4,3';
         }
       }
 
@@ -2242,7 +2261,6 @@ class MaxFlowModifier extends GraphModifier {
             !reachable.contains(edge.target)) {
           final es = state.getEdgeStyle(edge.source, edge.target);
           es.color = cutColor;
-          es.dashPattern = '4,4';
           es.strokeWidth = 3.5;
         }
       }
@@ -2341,7 +2359,6 @@ class MinCutModifier extends GraphModifier {
       for (final edge in minCutObj.edges) {
         final es = state.getEdgeStyle(edge.source, edge.target);
         es.color = cutColor;
-        es.dashPattern = '4,4';
         es.strokeWidth = 3.5;
       }
 
@@ -2409,6 +2426,15 @@ class MatchingModifier extends GraphModifier {
       return const ModifierOutput(statusSummary: 'Graph is empty');
     }
 
+    if (graph.isDirected) {
+      return const ModifierOutput(
+        hasError: true,
+        errorMessage:
+            'Maximum matching (Blossom) requires an undirected graph.',
+        statusSummary: 'Requires undirected graph',
+      );
+    }
+
     try {
       final matching = graph.maximumMatching();
       final matchedEdges = <(String, String)>{};
@@ -2424,12 +2450,10 @@ class MatchingModifier extends GraphModifier {
         final es = state.getEdgeStyle(edge.$1, edge.$2);
         es.color = matchingColor;
         es.strokeWidth = 4.0;
-        es.dashPattern = 'none';
         if (!graph.isDirected) {
           final esRev = state.getEdgeStyle(edge.$2, edge.$1);
           esRev.color = matchingColor;
           esRev.strokeWidth = 4.0;
-          esRev.dashPattern = 'none';
         }
         state.nodes[edge.$1]?.borderColor = matchingColor;
         state.nodes[edge.$2]?.borderColor = matchingColor;
@@ -2510,6 +2534,15 @@ class CliquesModifier extends GraphModifier {
   ModifierOutput apply(Graph<String, num> graph, AppState state) {
     if (graph.vertices.isEmpty) {
       return const ModifierOutput(statusSummary: 'Graph is empty');
+    }
+
+    if (graph.isDirected) {
+      return const ModifierOutput(
+        hasError: true,
+        errorMessage:
+            'Cliques and independent sets require an undirected graph.',
+        statusSummary: 'Requires undirected graph',
+      );
     }
 
     try {
@@ -2637,6 +2670,14 @@ class VertexCoverModifier extends GraphModifier {
       return const ModifierOutput(statusSummary: 'Graph is empty');
     }
 
+    if (graph.isDirected) {
+      return const ModifierOutput(
+        hasError: true,
+        errorMessage: 'Vertex cover requires an undirected graph.',
+        statusSummary: 'Requires undirected graph',
+      );
+    }
+
     try {
       final cover = graph.minimumVertexCover(approximate: approximate);
       for (final v in cover) {
@@ -2695,6 +2736,14 @@ class PlanarityModifier extends GraphModifier {
   ModifierOutput apply(Graph<String, num> graph, AppState state) {
     if (graph.vertices.isEmpty) {
       return const ModifierOutput(statusSummary: 'Graph is empty');
+    }
+
+    if (graph.isDirected) {
+      return const ModifierOutput(
+        hasError: true,
+        errorMessage: 'Planarity testing requires an undirected graph.',
+        statusSummary: 'Requires undirected graph',
+      );
     }
 
     try {

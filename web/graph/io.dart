@@ -78,34 +78,11 @@ final class GraphIO {
   }
 
   /// Exports the graph to Mermaid syntax.
-  static String exportToMermaid(AppState state) {
-    state.syncNodes();
-    final graph = state.primaryGraph;
-    return graph.toMermaid(
-      direction: state.rankDir,
-      vertexLabel: (v) {
-        final node = state.nodes[v];
-        final label = node?.label;
-        return (label != null && label.isNotEmpty) ? label : v;
-      },
-      edgeLabel: state.isWeighted ? (e) => e.value.toString() : null,
-    );
-  }
+  static String exportToMermaid(AppState state) =>
+      state.primaryGraph.toMermaid();
 
   /// Exports the graph to Graphviz DOT syntax.
-  static String exportToDot(AppState state) {
-    state.syncNodes();
-    final graph = state.primaryGraph;
-    return graph.toDot(
-      graphAttributes: const {'overlap': 'false', 'splines': 'true'},
-      vertexLabel: (v) {
-        final node = state.nodes[v];
-        final label = node?.label;
-        return (label != null && label.isNotEmpty) ? label : v;
-      },
-      edgeLabel: state.isWeighted ? (e) => e.value.toString() : null,
-    );
-  }
+  static String exportToDot(AppState state) => state.primaryGraph.toDot();
 
   /// Parses a graph from Mermaid diagram text.
   static (Graph<String, num>, bool isWeighted, Map<String, GraphNode> nodes)
@@ -149,48 +126,6 @@ final class GraphIO {
     }
   }
 
-  /// Generates self-contained, runnable Dart code reproducing the graph.
-  static String exportToDartCode(AppState state) {
-    final graph = state.primaryGraph;
-    final buffer = StringBuffer();
-    buffer.writeln("import 'package:more/graph.dart';");
-    buffer.writeln();
-    buffer.writeln('void main() {');
-    buffer.writeln(
-      '  final graph = Graph<String, num>(isDirected: ${graph.isDirected});',
-    );
-    buffer.writeln();
-
-    // Isolated vertices
-    final connectedVertices = <String>{};
-    for (final edge in graph.edges) {
-      connectedVertices.add(edge.source);
-      connectedVertices.add(edge.target);
-    }
-    for (final v in graph.vertices) {
-      if (!connectedVertices.contains(v)) {
-        buffer.writeln("  graph.addVertex('$v');");
-      }
-    }
-
-    // Edges
-    for (final edge in graph.edges) {
-      if (state.isWeighted) {
-        buffer.writeln(
-          "  graph.addEdge('${edge.source}', '${edge.target}', value: ${edge.value});",
-        );
-      } else {
-        buffer.writeln("  graph.addEdge('${edge.source}', '${edge.target}');");
-      }
-    }
-
-    buffer.writeln();
-    buffer.writeln("  print('Vertices: \${graph.vertices.length}');");
-    buffer.writeln("  print('Edges: \${graph.edges.length}');");
-    buffer.writeln('}');
-    return buffer.toString();
-  }
-
   /// Triggers a browser file download of text content.
   static void downloadTextFile(
     String filename,
@@ -207,50 +142,5 @@ final class GraphIO {
     anchor.download = filename;
     anchor.click();
     web.URL.revokeObjectURL(url);
-  }
-
-  /// Triggers a browser download of an SVG element.
-  static void downloadSvgFile(String filename, web.SVGSVGElement svg) {
-    final serializer = web.XMLSerializer();
-    final svgString = serializer.serializeToString(svg);
-    downloadTextFile(filename, svgString, 'image/svg+xml');
-  }
-
-  /// Triggers a browser download of the SVG converted to a PNG image.
-  static void downloadPngFile(String filename, web.SVGSVGElement svg) {
-    final serializer = web.XMLSerializer();
-    final svgString = serializer.serializeToString(svg);
-    final svgBlob = web.Blob(
-      [svgString.toJS].toJS,
-      web.BlobPropertyBag(type: 'image/svg+xml;charset=utf-8'),
-    );
-    final url = web.URL.createObjectURL(svgBlob);
-
-    final image = web.document.createElement('img') as web.HTMLImageElement;
-    image.onload = ((web.Event _) {
-      final rect = svg.getBoundingClientRect();
-      final width = (rect.width > 0 ? rect.width : 800) * 2;
-      final height = (rect.height > 0 ? rect.height : 600) * 2;
-
-      final canvas =
-          web.document.createElement('canvas') as web.HTMLCanvasElement;
-      canvas.width = width.round();
-      canvas.height = height.round();
-
-      final ctx = canvas.getContext('2d') as web.CanvasRenderingContext2D;
-      ctx.fillStyle = '#ffffff'.toJS;
-      ctx.fillRect(0, 0, width, height);
-      ctx.drawImage(image, 0, 0, width, height);
-
-      final pngUrl = canvas.toDataURL('image/png');
-      final anchor = web.document.createElement('a') as web.HTMLAnchorElement;
-      anchor.href = pngUrl;
-      anchor.download = filename;
-      anchor.click();
-
-      web.URL.revokeObjectURL(url);
-    }).toJS;
-
-    image.src = url;
   }
 }

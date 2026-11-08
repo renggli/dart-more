@@ -2,6 +2,8 @@ import 'state.dart';
 
 /// Categories for organizing graph operations in menus and hotkeys.
 enum CommandCategory {
+  file('File'),
+  edit('Edit'),
   select('Select'),
   vertex('Vertex'),
   edge('Edge'),
@@ -22,6 +24,54 @@ abstract class GraphCommand {
 
   bool canExecute(AppState state);
   void execute(AppState state, {CommandContext? context});
+
+  bool matchesKey(
+    String key, {
+    bool ctrl = false,
+    bool shift = false,
+    bool alt = false,
+  }) {
+    if (shortcut == null) return false;
+    if (id == 'edit.delete') {
+      if (!ctrl &&
+          !alt &&
+          (key == 'x' || key == 'X' || key == 'Delete' || key == 'Backspace')) {
+        return true;
+      }
+    }
+    if (id == 'select.all' || id == 'select.none') {
+      if (!ctrl && !shift && !alt && (key == 'a' || key == 'A')) {
+        return true;
+      }
+    }
+    final parts = shortcut!.split('+');
+    var reqCtrl = false;
+    var reqShift = false;
+    var reqAlt = false;
+    var targetKey = '';
+    for (final part in parts) {
+      if (part == 'Ctrl' || part == 'Cmd') {
+        reqCtrl = true;
+      } else if (part == 'Shift') {
+        reqShift = true;
+      } else if (part == 'Alt') {
+        reqAlt = true;
+      } else {
+        targetKey = part;
+      }
+    }
+    if (ctrl != reqCtrl || alt != reqAlt) return false;
+    if (id == 'edit.redo' &&
+        ctrl &&
+        !alt &&
+        (key == 'y' || key == 'Y' || (shift && (key == 'z' || key == 'Z')))) {
+      return true;
+    }
+    if (shift != reqShift) return false;
+    if (targetKey == '+' && (key == '+' || key == '=')) return true;
+    if (targetKey == '-' && (key == '-' || key == '_')) return true;
+    return key.toLowerCase() == targetKey.toLowerCase();
+  }
 }
 
 /// Context passed to commands for cursor-aware or UI-aware execution.
@@ -33,7 +83,12 @@ class CommandContext {
     this.showToast,
     this.showInlineEditor,
     this.openIoModal,
+    this.openImportModal,
+    this.openExportModal,
+    this.openFile,
+    this.saveFile,
     this.runLayout,
+    this.showIntro,
   });
 
   final double? cursorX;
@@ -42,7 +97,341 @@ class CommandContext {
   final void Function(String message)? showToast;
   final void Function(String vertexId)? showInlineEditor;
   final void Function()? openIoModal;
+  final void Function()? openImportModal;
+  final void Function()? openExportModal;
+  final void Function()? openFile;
+  final void Function()? saveFile;
   final void Function()? runLayout;
+  final void Function()? showIntro;
+}
+
+// ---------------------------------------------------------------------------
+// File Operations
+// ---------------------------------------------------------------------------
+
+class NewGraphCommand extends GraphCommand {
+  const new();
+
+  @override
+  String get id => 'file.new';
+
+  @override
+  String get title => 'New';
+
+  @override
+  String? get shortcut => 'Ctrl+N';
+
+  @override
+  CommandCategory get category => CommandCategory.file;
+
+  @override
+  bool canExecute(AppState state) => true;
+
+  @override
+  void execute(AppState state, {CommandContext? context}) {
+    state.clearGraph();
+    context?.showIntro?.call();
+    context?.showToast?.call('New graph');
+  }
+}
+
+class OpenGraphCommand extends GraphCommand {
+  const new();
+
+  @override
+  String get id => 'file.open';
+
+  @override
+  String get title => 'Open...';
+
+  @override
+  String? get shortcut => 'Ctrl+O';
+
+  @override
+  CommandCategory get category => CommandCategory.file;
+
+  @override
+  bool canExecute(AppState state) => true;
+
+  @override
+  void execute(AppState state, {CommandContext? context}) {
+    context?.openFile?.call();
+  }
+}
+
+class SaveGraphCommand extends GraphCommand {
+  const new();
+
+  @override
+  String get id => 'file.save';
+
+  @override
+  String get title => 'Save...';
+
+  @override
+  String? get shortcut => 'Ctrl+S';
+
+  @override
+  CommandCategory get category => CommandCategory.file;
+
+  @override
+  bool canExecute(AppState state) => true;
+
+  @override
+  void execute(AppState state, {CommandContext? context}) {
+    context?.saveFile?.call();
+  }
+}
+
+class ImportGraphCommand extends GraphCommand {
+  const new();
+
+  @override
+  String get id => 'file.import';
+
+  @override
+  String get title => 'Import...';
+
+  @override
+  String? get shortcut => null;
+
+  @override
+  CommandCategory get category => CommandCategory.file;
+
+  @override
+  bool canExecute(AppState state) => true;
+
+  @override
+  void execute(AppState state, {CommandContext? context}) {
+    context?.openImportModal?.call();
+  }
+}
+
+class ExportGraphCommand extends GraphCommand {
+  const new();
+
+  @override
+  String get id => 'file.export';
+
+  @override
+  String get title => 'Export...';
+
+  @override
+  String? get shortcut => null;
+
+  @override
+  CommandCategory get category => CommandCategory.file;
+
+  @override
+  bool canExecute(AppState state) => true;
+
+  @override
+  void execute(AppState state, {CommandContext? context}) {
+    context?.openExportModal?.call();
+  }
+}
+
+// ---------------------------------------------------------------------------
+// Edit Operations
+// ---------------------------------------------------------------------------
+
+class UndoCommand extends GraphCommand {
+  const new();
+
+  @override
+  String get id => 'edit.undo';
+
+  @override
+  String get title => 'Undo';
+
+  @override
+  String? get shortcut => 'Ctrl+Z';
+
+  @override
+  CommandCategory get category => CommandCategory.edit;
+
+  @override
+  bool canExecute(AppState state) => state.undoStack.isNotEmpty;
+
+  @override
+  void execute(AppState state, {CommandContext? context}) {
+    if (canExecute(state)) {
+      state.undo();
+      context?.showToast?.call('Undo');
+    }
+  }
+}
+
+class RedoCommand extends GraphCommand {
+  const new();
+
+  @override
+  String get id => 'edit.redo';
+
+  @override
+  String get title => 'Redo';
+
+  @override
+  String? get shortcut => 'Ctrl+Y';
+
+  @override
+  CommandCategory get category => CommandCategory.edit;
+
+  @override
+  bool canExecute(AppState state) => state.redoStack.isNotEmpty;
+
+  @override
+  void execute(AppState state, {CommandContext? context}) {
+    if (canExecute(state)) {
+      state.redo();
+      context?.showToast?.call('Redo');
+    }
+  }
+}
+
+class CutCommand extends GraphCommand {
+  const new();
+
+  @override
+  String get id => 'edit.cut';
+
+  @override
+  String get title => 'Cut';
+
+  @override
+  String? get shortcut => 'Ctrl+X';
+
+  @override
+  CommandCategory get category => CommandCategory.edit;
+
+  @override
+  bool canExecute(AppState state) =>
+      state.selectedVertices.isNotEmpty ||
+      state.selectedEdges.isNotEmpty ||
+      state.selectedEdge != null;
+
+  @override
+  void execute(AppState state, {CommandContext? context}) {
+    if (state.cutSelected()) {
+      context?.showToast?.call('Cut selection');
+    }
+  }
+}
+
+class CopyCommand extends GraphCommand {
+  const new();
+
+  @override
+  String get id => 'edit.copy';
+
+  @override
+  String get title => 'Copy';
+
+  @override
+  String? get shortcut => 'Ctrl+C';
+
+  @override
+  CommandCategory get category => CommandCategory.edit;
+
+  @override
+  bool canExecute(AppState state) =>
+      state.selectedVertices.isNotEmpty ||
+      state.selectedEdges.isNotEmpty ||
+      state.selectedEdge != null;
+
+  @override
+  void execute(AppState state, {CommandContext? context}) {
+    if (state.copySelected()) {
+      context?.showToast?.call('Copied selection');
+    }
+  }
+}
+
+class PasteCommand extends GraphCommand {
+  const new();
+
+  @override
+  String get id => 'edit.paste';
+
+  @override
+  String get title => 'Paste';
+
+  @override
+  String? get shortcut => 'Ctrl+V';
+
+  @override
+  CommandCategory get category => CommandCategory.edit;
+
+  @override
+  bool canExecute(AppState state) =>
+      state.clipboard != null && !state.clipboard!.isEmpty;
+
+  @override
+  void execute(AppState state, {CommandContext? context}) {
+    if (state.pasteClipboard()) {
+      context?.showToast?.call('Pasted');
+    }
+  }
+}
+
+class DuplicateCommand extends GraphCommand {
+  const new();
+
+  @override
+  String get id => 'edit.duplicate';
+
+  @override
+  String get title => 'Duplicate';
+
+  @override
+  String? get shortcut => 'Shift+D';
+
+  @override
+  CommandCategory get category => CommandCategory.edit;
+
+  @override
+  bool canExecute(AppState state) =>
+      state.selectedVertices.isNotEmpty ||
+      state.selectedEdges.isNotEmpty ||
+      state.selectedEdge != null;
+
+  @override
+  void execute(AppState state, {CommandContext? context}) {
+    final count = state.duplicateSelected();
+    if (count > 0) {
+      context?.showToast?.call('Duplicated');
+    }
+  }
+}
+
+class DeleteCommand extends GraphCommand {
+  const new();
+
+  @override
+  String get id => 'edit.delete';
+
+  @override
+  String get title => 'Delete';
+
+  @override
+  String? get shortcut => 'Delete';
+
+  @override
+  CommandCategory get category => CommandCategory.edit;
+
+  @override
+  bool canExecute(AppState state) =>
+      state.selectedVertices.isNotEmpty ||
+      state.selectedEdges.isNotEmpty ||
+      state.selectedEdge != null;
+
+  @override
+  void execute(AppState state, {CommandContext? context}) {
+    final count = state.deleteSelection();
+    if (count > 0) {
+      context?.showToast?.call('Deleted selection');
+    }
+  }
 }
 
 // ---------------------------------------------------------------------------
@@ -202,32 +591,6 @@ class GrowVertexSelectionCommand extends GraphCommand {
   }
 }
 
-class DeleteVerticesCommand extends GraphCommand {
-  const new();
-
-  @override
-  String get id => 'vertex.delete';
-
-  @override
-  String get title => 'Delete Vertices';
-
-  @override
-  String? get shortcut => 'X';
-
-  @override
-  CommandCategory get category => CommandCategory.vertex;
-
-  @override
-  bool canExecute(AppState state) => state.selectedVertices.isNotEmpty;
-
-  @override
-  void execute(AppState state, {CommandContext? context}) {
-    final count = state.selectedVertices.length;
-    state.deleteSelection();
-    context?.showToast?.call('Deleted $count vertic${count > 1 ? "es" : "ex"}');
-  }
-}
-
 // ---------------------------------------------------------------------------
 // Edge Operations
 // ---------------------------------------------------------------------------
@@ -296,7 +659,7 @@ class ReverseEdgesCommand extends GraphCommand {
   String get title => 'Reverse Edge Directions';
 
   @override
-  String? get shortcut => 'Alt+R';
+  String? get shortcut => 'R';
 
   @override
   CommandCategory get category => CommandCategory.edge;
@@ -308,33 +671,6 @@ class ReverseEdgesCommand extends GraphCommand {
   void execute(AppState state, {CommandContext? context}) {
     state.reverseDirections();
     context?.showToast?.call('Reversed edge directions');
-  }
-}
-
-class DeleteEdgesCommand extends GraphCommand {
-  const new();
-
-  @override
-  String get id => 'edge.delete';
-
-  @override
-  String get title => 'Delete Edges';
-
-  @override
-  String? get shortcut => 'Alt+X';
-
-  @override
-  CommandCategory get category => CommandCategory.edge;
-
-  @override
-  bool canExecute(AppState state) =>
-      state.selectedEdges.isNotEmpty || state.selectedEdge != null;
-
-  @override
-  void execute(AppState state, {CommandContext? context}) {
-    state.selectedVertices.clear();
-    final count = state.deleteSelection();
-    context?.showToast?.call('Deleted $count edge${count > 1 ? "s" : ""}');
   }
 }
 
@@ -364,35 +700,6 @@ class AutoLayoutCommand extends GraphCommand {
   void execute(AppState state, {CommandContext? context}) {
     context?.showToast?.call('Computing layout (${state.layoutEngine})...');
     context?.runLayout?.call();
-  }
-}
-
-class DuplicateCommand extends GraphCommand {
-  const new();
-
-  @override
-  String get id => 'graph.duplicate';
-
-  @override
-  String get title => 'Duplicate Subgraph';
-
-  @override
-  String? get shortcut => 'Shift+D';
-
-  @override
-  CommandCategory get category => CommandCategory.graph;
-
-  @override
-  bool canExecute(AppState state) => state.selectedVertices.isNotEmpty;
-
-  @override
-  void execute(AppState state, {CommandContext? context}) {
-    final count = state.duplicateSelected();
-    if (count > 0) {
-      context?.showToast?.call(
-        'Duplicated $count vertic${count > 1 ? "es" : "ex"}',
-      );
-    }
   }
 }
 
@@ -471,55 +778,6 @@ class TransitiveReductionCommand extends GraphCommand {
   }
 }
 
-class ClearGraphCommand extends GraphCommand {
-  const new();
-
-  @override
-  String get id => 'graph.clear';
-
-  @override
-  String get title => 'Clear All';
-
-  @override
-  String? get shortcut => null;
-
-  @override
-  CommandCategory get category => CommandCategory.graph;
-
-  @override
-  bool canExecute(AppState state) => true;
-
-  @override
-  void execute(AppState state, {CommandContext? context}) {
-    state.clearGraph();
-    context?.showToast?.call('Cleared all vertices and edges');
-  }
-}
-
-class ImportExportCommand extends GraphCommand {
-  const new();
-
-  @override
-  String get id => 'graph.import_export';
-
-  @override
-  String get title => 'Import / Export...';
-
-  @override
-  String? get shortcut => null;
-
-  @override
-  CommandCategory get category => CommandCategory.graph;
-
-  @override
-  bool canExecute(AppState state) => true;
-
-  @override
-  void execute(AppState state, {CommandContext? context}) {
-    context?.openIoModal?.call();
-  }
-}
-
 // ---------------------------------------------------------------------------
 // Select Operations
 // ---------------------------------------------------------------------------
@@ -540,12 +798,96 @@ class SelectAllCommand extends GraphCommand {
   CommandCategory get category => CommandCategory.select;
 
   @override
-  bool canExecute(AppState state) => true;
+  bool canExecute(AppState state) =>
+      state.selectedVertices.isEmpty &&
+      state.selectedEdges.isEmpty &&
+      state.selectedEdge == null;
 
   @override
   void execute(AppState state, {CommandContext? context}) {
     state.selectAll();
     context?.showToast?.call('Selected all vertices and edges');
+  }
+}
+
+class DeselectAllCommand extends GraphCommand {
+  const new();
+
+  @override
+  String get id => 'select.none';
+
+  @override
+  String get title => 'Deselect All';
+
+  @override
+  String? get shortcut => 'A';
+
+  @override
+  CommandCategory get category => CommandCategory.select;
+
+  @override
+  bool canExecute(AppState state) =>
+      state.selectedVertices.isNotEmpty ||
+      state.selectedEdges.isNotEmpty ||
+      state.selectedEdge != null;
+
+  @override
+  void execute(AppState state, {CommandContext? context}) {
+    state.clearSelection();
+  }
+}
+
+class ToggleVertexSelectionModeCommand extends GraphCommand {
+  const new();
+
+  @override
+  String get id => 'select.mode_vertex';
+
+  @override
+  String get title => 'Vertex Selection Mode';
+
+  @override
+  String? get shortcut => '1';
+
+  @override
+  CommandCategory get category => CommandCategory.select;
+
+  @override
+  bool canExecute(AppState state) => true;
+
+  @override
+  void execute(AppState state, {CommandContext? context}) {
+    state.selectVerticesMode = !state.selectVerticesMode;
+    if (!state.selectVerticesMode && !state.selectEdgesMode) {
+      state.selectEdgesMode = true;
+    }
+  }
+}
+
+class ToggleEdgeSelectionModeCommand extends GraphCommand {
+  const new();
+
+  @override
+  String get id => 'select.mode_edge';
+
+  @override
+  String get title => 'Edge Selection Mode';
+
+  @override
+  String? get shortcut => '2';
+
+  @override
+  CommandCategory get category => CommandCategory.select;
+
+  @override
+  bool canExecute(AppState state) => true;
+
+  @override
+  void execute(AppState state, {CommandContext? context}) {
+    state.selectEdgesMode = !state.selectEdgesMode;
+    if (!state.selectVerticesMode && !state.selectEdgesMode) {
+      state.selectVerticesMode = true;
+    }
   }
 }
 
@@ -559,7 +901,7 @@ class SelectAllVerticesCommand extends GraphCommand {
   String get title => 'Select All Vertices';
 
   @override
-  String? get shortcut => 'Alt+1';
+  String? get shortcut => null;
 
   @override
   CommandCategory get category => CommandCategory.select;
@@ -584,7 +926,7 @@ class SelectAllEdgesCommand extends GraphCommand {
   String get title => 'Select All Edges';
 
   @override
-  String? get shortcut => 'Alt+2';
+  String? get shortcut => null;
 
   @override
   CommandCategory get category => CommandCategory.select;
@@ -671,39 +1013,33 @@ class InvertSelectionCommand extends GraphCommand {
   }
 }
 
-class DeselectAllCommand extends GraphCommand {
-  const new();
-
-  @override
-  String get id => 'select.none';
-
-  @override
-  String get title => 'Deselect All';
-
-  @override
-  String? get shortcut => 'Alt+A';
-
-  @override
-  CommandCategory get category => CommandCategory.select;
-
-  @override
-  bool canExecute(AppState state) => true;
-
-  @override
-  void execute(AppState state, {CommandContext? context}) {
-    state.clearSelection();
-  }
-}
-
 /// Registry providing all available commands grouped by category.
 class CommandRegistry {
   static const List<GraphCommand> all = [
+    // File
+    NewGraphCommand(),
+    OpenGraphCommand(),
+    SaveGraphCommand(),
+    ImportGraphCommand(),
+    ExportGraphCommand(),
+
+    // Edit
+    UndoCommand(),
+    RedoCommand(),
+    CutCommand(),
+    CopyCommand(),
+    PasteCommand(),
+    DuplicateCommand(),
+    DeleteCommand(),
+
     // Select
     SelectAllCommand(),
+    DeselectAllCommand(),
     ExpandSelectionCommand(),
     CollapseSelectionCommand(),
     InvertSelectionCommand(),
-    DeselectAllCommand(),
+    ToggleVertexSelectionModeCommand(),
+    ToggleEdgeSelectionModeCommand(),
     SelectAllVerticesCommand(),
     SelectAllEdgesCommand(),
 
@@ -713,22 +1049,17 @@ class CommandRegistry {
     ExtrudeVertexCommand(),
     RenameVertexCommand(),
     MergeVerticesCommand(),
-    DeleteVerticesCommand(),
 
     // Edge
     ConnectVerticesCommand(),
     SubdivideEdgeCommand(),
     ReverseEdgesCommand(),
-    DeleteEdgesCommand(),
 
     // Graph
     AutoLayoutCommand(),
-    DuplicateCommand(),
     ComplementCommand(),
     TransitiveClosureCommand(),
     TransitiveReductionCommand(),
-    ClearGraphCommand(),
-    ImportExportCommand(),
   ];
 
   static List<GraphCommand> byCategory(CommandCategory category) =>

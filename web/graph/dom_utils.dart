@@ -39,6 +39,15 @@ web.HTMLInputElement numberInput([num? value, num? min, num? max]) {
   return el;
 }
 
+web.HTMLInputElement rangeInput([num? value, num? min, num? max]) {
+  final el = web.document.createElement('input') as web.HTMLInputElement;
+  el.type = 'range';
+  if (value != null) el.value = value.toString();
+  if (min != null) el.min = min.toString();
+  if (max != null) el.max = max.toString();
+  return el;
+}
+
 web.HTMLButtonElement button([String? text, String? className]) {
   final el = web.document.createElement('button') as web.HTMLButtonElement;
   if (text != null) el.textContent = text;
