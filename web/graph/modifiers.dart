@@ -436,13 +436,15 @@ class GeneratorModifier extends GraphModifier {
         final c = i % cols;
         if (c + 1 < cols && i + 1 < count) {
           generated.addEdge(vList[i], vList[i + 1], value: 1);
-          if (graph.isDirected)
+          if (graph.isDirected) {
             generated.addEdge(vList[i + 1], vList[i], value: 1);
+          }
         }
         if (i + cols < count) {
           generated.addEdge(vList[i], vList[i + cols], value: 1);
-          if (graph.isDirected)
+          if (graph.isDirected) {
             generated.addEdge(vList[i + cols], vList[i], value: 1);
+          }
         }
       }
     } else if (type == 'random') {
