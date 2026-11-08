@@ -1,32 +1,103 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
   <meta charset="utf-8">
-  <title>RTree</title>
-  <link rel="stylesheet"
-        href="//cdn.rawgit.com/milligram/milligram/master/dist/milligram.min.css">
+  <title>MoreDart — R-Tree Visualizer</title>
+  <link rel="stylesheet" href="../style.css">
   <style>
-    #select { width: 20em; }
-    #canvas { width: 100%; height: 380px; border: 1px solid #9b4dca; }
+    body {
+      display: flex;
+      flex-direction: column;
+      height: 100vh;
+      overflow: hidden;
+      background: var(--bg-base);
+    }
 
-    body { display: flex; flex-flow: column; height: 100vh; margin: 0; padding: 8px; }
-    #canvas { flex-grow: 1; padding: 0; }
+    header {
+      background: var(--bg-surface);
+      border-bottom: 1px solid var(--border-color);
+      padding: 10px 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .brand h1 {
+      font-size: 1.4rem;
+      color: var(--primary);
+    }
+
+    .brand a {
+      color: var(--text-secondary);
+      font-size: 0.85rem;
+    }
+
+    .controls {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    #select {
+      min-width: 220px;
+    }
+
+    main {
+      flex: 1;
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      background: var(--bg-base);
+      overflow: hidden;
+    }
+
+    #canvas {
+      flex: 1;
+      width: 100%;
+      height: 100%;
+      background: var(--bg-surface);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-md);
+      cursor: crosshair;
+    }
+
+    .hint {
+      margin-top: 8px;
+      font-size: 0.85rem;
+      color: var(--text-muted);
+    }
   </style>
 </head>
 <body>
-  <h1>RTree</h1>
+  <header>
+    <div class="brand">
+      <h1>R-Tree Visualizer</h1>
+      <a href="../index.html">&larr; MoreDart Demos</a>
+    </div>
 
-  <p>
-    <select id="select">
-      <option value="guttmann_4_8">Guttman (min: 4, max: 8)</option>
-      <option value="guttmann_4_12">Guttman (min: 4, max: 12)</option>
-      <option value="guttmann_8_24">Guttman (min: 8, max: 24)</option>
-    </select>
-    <button id="random">Random</button>
-    <button id="clear">Clear</button>
-  </p>
+    <div class="controls">
+      <select id="select">
+        <option value="guttmann_4_8">Guttman (min: 4, max: 8)</option>
+        <option value="guttmann_4_12">Guttman (min: 4, max: 12)</option>
+        <option value="guttmann_8_24">Guttman (min: 8, max: 24)</option>
+      </select>
+      <button id="random" class="button button-small">+100 Random</button>
+      <button id="clear" class="button button-outline button-small">Clear</button>
+    </div>
+  </header>
 
-  <canvas id="canvas" class="button-outline"></canvas>
+  <main>
+    <canvas id="canvas"></canvas>
+    <div class="hint">Click on canvas to insert a point, or use "+100 Random".</div>
+  </main>
 
   <script src="rtree.dart.js"></script>
 </body>

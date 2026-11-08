@@ -1,16 +1,14 @@
-import 'dart:async';
 import 'dart:js_interop';
 
-import 'package:more/graph.dart';
 import 'package:web/web.dart' as web;
 
-import 'algorithms_runner.dart';
+import 'commands.dart';
+import 'dom_utils.dart';
 import 'inspector.dart';
 import 'io.dart';
-import 'presets.dart';
+import 'modifiers.dart';
 import 'renderer.dart';
 import 'state.dart';
-import 'traversal_player.dart';
 
 void main() async {
   final state = AppState();
@@ -21,27 +19,10 @@ void main() async {
   final transformLayer = web.document.querySelector(
     '#viewport-transform-layer',
   ) as web.HTMLElement;
-  final btnDirected =
-      web.document.querySelector('#btn-directed') as web.HTMLButtonElement;
-  final btnWeighted =
-      web.document.querySelector('#btn-weighted') as web.HTMLButtonElement;
-  final selectLayout =
-      web.document.querySelector('#select-layout') as web.HTMLSelectElement;
-  final selectRankDir =
-      web.document.querySelector('#select-rankdir') as web.HTMLSelectElement;
-  final groupRankDir =
-      web.document.querySelector('#group-rankdir') as web.HTMLElement;
   final btnUndo =
       web.document.querySelector('#btn-undo') as web.HTMLButtonElement;
   final btnRedo =
       web.document.querySelector('#btn-redo') as web.HTMLButtonElement;
-  final btnClear =
-      web.document.querySelector('#btn-clear') as web.HTMLButtonElement;
-  final labelSelectionInfo =
-      web.document.querySelector('#label-selection-info') as web.HTMLElement;
-  final btnClearSelection = web.document.querySelector(
-    '#btn-clear-selection',
-  ) as web.HTMLButtonElement;
   final btnZoomIn =
       web.document.querySelector('#btn-zoom-in') as web.HTMLButtonElement;
   final btnZoomOut =
@@ -51,95 +32,25 @@ void main() async {
   final codeDot = web.document.querySelector('#code-dot') as web.HTMLPreElement;
   final codeDart =
       web.document.querySelector('#code-dart') as web.HTMLPreElement;
-  final bottomDrawer =
-      web.document.querySelector('#bottom-drawer') as web.HTMLElement;
-  final notificationBanner =
-      web.document.querySelector('#notification-banner') as web.HTMLElement;
 
-  // Preset elements
-  final selectPreset =
-      web.document.querySelector('#select-preset') as web.HTMLSelectElement;
-  final creatorParamsContainer = web.document.querySelector(
-    '#creator-params-container',
-  ) as web.HTMLElement;
-  final btnGenerate =
-      web.document.querySelector('#btn-generate') as web.HTMLButtonElement;
-
-  // Quick edit elements
-  final inputNewVertex =
-      web.document.querySelector('#input-new-vertex') as web.HTMLInputElement;
-  final btnAddVertex =
-      web.document.querySelector('#btn-add-vertex') as web.HTMLButtonElement;
-  final inputEdgeU =
-      web.document.querySelector('#input-edge-u') as web.HTMLInputElement;
-  final inputEdgeV =
-      web.document.querySelector('#input-edge-v') as web.HTMLInputElement;
-  final inputEdgeWeight =
-      web.document.querySelector('#input-edge-weight') as web.HTMLInputElement;
-  final btnAddEdge =
-      web.document.querySelector('#btn-add-edge') as web.HTMLButtonElement;
-  final btnRemoveSelected = web.document.querySelector(
-    '#btn-remove-selected',
-  ) as web.HTMLButtonElement;
-
-  // Transformations
-  final btnReverse =
-      web.document.querySelector('#btn-reverse') as web.HTMLButtonElement;
-  final btnComplement =
-      web.document.querySelector('#btn-complement') as web.HTMLButtonElement;
-  final btnTransClosure =
-      web.document.querySelector('#btn-trans-closure') as web.HTMLButtonElement;
-  final btnTransReduction = web.document.querySelector(
-    '#btn-trans-reduction',
-  ) as web.HTMLButtonElement;
-  final btnKCore =
-      web.document.querySelector('#btn-kcore') as web.HTMLButtonElement;
-  final inputKCoreK =
-      web.document.querySelector('#input-kcore-k') as web.HTMLInputElement;
-
-  // Playback elements
-  final playbackBar =
-      web.document.querySelector('#playback-bar') as web.HTMLElement;
-  final btnPlayFirst =
-      web.document.querySelector('#btn-play-first') as web.HTMLButtonElement;
-  final btnPlayPrev =
-      web.document.querySelector('#btn-play-prev') as web.HTMLButtonElement;
-  final btnPlayPause =
-      web.document.querySelector('#btn-play-pause') as web.HTMLButtonElement;
-  final btnPlayNext =
-      web.document.querySelector('#btn-play-next') as web.HTMLButtonElement;
-  final btnPlayLast =
-      web.document.querySelector('#btn-play-last') as web.HTMLButtonElement;
-  final labelPlaybackStep =
-      web.document.querySelector('#label-playback-step') as web.HTMLElement;
-  final selectPlaybackSpeed = web.document.querySelector(
-    '#select-playback-speed',
-  ) as web.HTMLSelectElement;
-
-  // Bottom drawer refresh buttons
-  final btnRefreshMetrics = web.document.querySelector(
-    '#btn-refresh-metrics',
+  // Blender-style selection mode buttons and display toggles
+  final btnModeVertex =
+      web.document.querySelector('#btn-mode-vertex') as web.HTMLButtonElement;
+  final btnModeEdge =
+      web.document.querySelector('#btn-mode-edge') as web.HTMLButtonElement;
+  final btnToggleLabels = web.document.querySelector(
+    '#btn-toggle-labels',
   ) as web.HTMLButtonElement?;
-  final btnRefreshMatrix = web.document.querySelector(
-    '#btn-refresh-matrix',
+  final btnToggleWeights = web.document.querySelector(
+    '#btn-toggle-weights',
   ) as web.HTMLButtonElement?;
 
-  // Algorithm elements
-  final selectAlgoCategory = web.document.querySelector(
-    '#select-algorithm-category',
+  // Modifier Stack elements
+  final selectAddModifier = web.document.querySelector(
+    '#select-add-modifier',
   ) as web.HTMLSelectElement;
-  final selectAlgorithm =
-      web.document.querySelector('#select-algorithm') as web.HTMLSelectElement;
-  final algoParamsContainer =
-      web.document.querySelector('#algorithm-params') as web.HTMLElement;
-  final btnRunAlgo =
-      web.document.querySelector('#btn-run-algo') as web.HTMLButtonElement;
-  final btnClearOverlay =
-      web.document.querySelector('#btn-clear-overlay') as web.HTMLButtonElement;
-  final cardResults =
-      web.document.querySelector('#card-results') as web.HTMLElement;
-  final algorithmResults =
-      web.document.querySelector('#algorithm-results') as web.HTMLElement;
+  final modifiersStackList =
+      web.document.querySelector('#modifiers-stack-list') as web.HTMLElement;
 
   // Import / Export modal elements
   final btnIoModal =
@@ -168,23 +79,9 @@ void main() async {
   final ioStatus = web.document.querySelector('#io-status') as web.HTMLElement;
 
   late final GraphRenderer renderer;
-  late final TraversalPlayer player;
-  Timer? toastTimer;
 
-  // Interactive edge drawing state
-  String? edgeDrawingSource;
-
-  // Toast notification
-  void showToast(String message, {bool isWarning = false}) {
-    toastTimer?.cancel();
-    notificationBanner.textContent = message;
-    notificationBanner.className =
-        'notification-banner ${isWarning ? "warning" : "success"}';
-    notificationBanner.style.display = 'block';
-    toastTimer = Timer(const Duration(milliseconds: 2800), () {
-      notificationBanner.style.display = 'none';
-    });
-  }
+  // Toast notification (banner removed per design request)
+  void showToast(String message, {bool isWarning = false}) {}
 
   // Restore from URL hash if available
   if (web.window.location.hash.isNotEmpty) {
@@ -198,1083 +95,8 @@ void main() async {
     }
   }
 
-  void updateUI() {
-    // Validate selection against active graph
-    state.syncNodes();
-    state.selectedVertices.removeWhere(
-      (v) => !state.primaryGraph.containsVertex(v),
-    );
-    if (state.selectedSource != null &&
-        !state.primaryGraph.containsVertex(state.selectedSource!)) {
-      state.selectedSource = null;
-    }
-    if (state.selectedTarget != null &&
-        !state.primaryGraph.containsVertex(state.selectedTarget!)) {
-      state.selectedTarget = null;
-    }
-    if (state.selectedEdge != null) {
-      final (u, v) = state.selectedEdge!;
-      if (!state.primaryGraph.containsEdge(u, v) &&
-          !(!state.primaryGraph.isDirected &&
-              state.primaryGraph.containsEdge(v, u))) {
-        state.selectedEdge = null;
-      }
-    }
+  late void Function() updateUI;
 
-    btnDirected.classList.toggle('active', state.primaryGraph.isDirected);
-    btnDirected.textContent = state.primaryGraph.isDirected
-        ? 'Directed'
-        : 'Undirected';
-
-    btnWeighted.classList.toggle('active', state.isWeighted);
-    btnWeighted.textContent = state.isWeighted
-        ? 'Show Weights'
-        : 'Hide Weights';
-
-    groupRankDir.style.display = state.layoutEngine == 'dot' ? 'flex' : 'none';
-
-    btnUndo.disabled = !state.canUndo();
-    btnRedo.disabled = !state.canRedo();
-
-    // Selection text info
-    if (edgeDrawingSource != null) {
-      labelSelectionInfo.textContent =
-          'Drawing edge from "$edgeDrawingSource" → Click target node';
-    } else if (state.selectedEdge != null) {
-      final (u, v) = state.selectedEdge!;
-      final edge =
-          state.primaryGraph.getEdge(u, v) ?? state.primaryGraph.getEdge(v, u);
-      final arrow = state.primaryGraph.isDirected ? '→' : '—';
-      labelSelectionInfo.textContent =
-          'Edge: $u $arrow $v (Weight: ${edge?.value ?? 1})';
-    } else if (state.selectedVertices.isNotEmpty) {
-      final list = state.selectedVertices.toList();
-      if (list.length == 1) {
-        labelSelectionInfo.textContent = 'Selected: ${list.first}';
-      } else if (list.length == 2) {
-        labelSelectionInfo.textContent =
-            'Source: ${list[0]} | Target: ${list[1]}';
-      } else {
-        labelSelectionInfo.textContent =
-            'Selected (${list.length}): ${list.take(3).join(", ")}${list.length > 3 ? "..." : ""}';
-      }
-    } else {
-      labelSelectionInfo.textContent = 'No selection';
-    }
-
-    codeDot.textContent = renderer.generateDot(state);
-    codeDart.textContent = GraphIO.exportToDartCode(state);
-
-    GraphInspector.updateInvariants(state);
-    GraphInspector.updateInspector(
-      state,
-      onSelectVertex: (v) {
-        state.selectedVertices = {v};
-        state.selectedSource = v;
-        updateUI();
-      },
-      onUpdateWeight: (u, v, newWeight) {
-        state.saveSnapshot();
-        state.primaryGraph.addEdge(u, v, value: newWeight);
-        showToast('Updated weight of ($u, $v) to $newWeight');
-        updateUI();
-      },
-      onRenameNode: (v, newLabel) {
-        state.saveSnapshot();
-        final node = state.getOrCreateNode(v);
-        node.label = newLabel;
-        showToast('Renamed node "$v" to "$newLabel"');
-        updateUI();
-      },
-    );
-
-    renderer.render(state);
-  }
-
-  // Active tool mode
-  String getCanvasMode() {
-    final radios = web.document.querySelectorAll('input[name="canvas-mode"]');
-    for (var i = 0; i < radios.length; i++) {
-      final radio = radios.item(i) as web.HTMLInputElement?;
-      if (radio?.checked ?? false) {
-        return radio!.value;
-      }
-    }
-    return 'select';
-  }
-
-  // Interactive Node Click handler
-  void handleVertexClick(String vertex, web.MouseEvent event) {
-    final mode = getCanvasMode();
-
-    if (mode == 'delete') {
-      state.saveSnapshot();
-      state.primaryGraph.removeVertex(vertex);
-      state.selectedVertices.remove(vertex);
-      if (state.selectedSource == vertex) state.selectedSource = null;
-      if (state.selectedTarget == vertex) state.selectedTarget = null;
-      showToast('Deleted node "$vertex"');
-      updateUI();
-      return;
-    }
-
-    if (mode == 'add-edge') {
-      if (edgeDrawingSource == null) {
-        edgeDrawingSource = vertex;
-        showToast('Selected "$vertex" as origin. Now click target node.');
-        updateUI();
-      } else if (edgeDrawingSource == vertex) {
-        // Self-loop
-        state.saveSnapshot();
-        state.primaryGraph.addEdge(vertex, vertex, value: 1);
-        showToast('Added self-loop on "$vertex"');
-        edgeDrawingSource = null;
-        updateUI();
-      } else {
-        final src = edgeDrawingSource!;
-        state.saveSnapshot();
-        state.primaryGraph.addEdge(src, vertex, value: 1);
-        showToast('Connected edge $src → $vertex');
-        edgeDrawingSource = null;
-        updateUI();
-      }
-      return;
-    }
-
-    // Select mode (Illustrator style)
-    edgeDrawingSource = null;
-    state.selectedEdge = null;
-
-    if (event.shiftKey) {
-      // Toggle in multi-selection
-      if (state.selectedVertices.contains(vertex)) {
-        state.selectedVertices.remove(vertex);
-      } else {
-        state.selectedVertices.add(vertex);
-      }
-    } else {
-      // Single selection
-      state.selectedVertices = {vertex};
-    }
-
-    // Keep source and target in sync for algorithms
-    final list = state.selectedVertices.toList();
-    state.selectedSource = list.isNotEmpty ? list.first : null;
-    state.selectedTarget = list.length > 1 ? list[1] : null;
-
-    updateUI();
-  }
-
-  // Interactive Edge Click handler
-  void handleEdgeClick(String source, String target, web.MouseEvent event) {
-    final mode = getCanvasMode();
-    edgeDrawingSource = null;
-
-    if (mode == 'delete') {
-      state.saveSnapshot();
-      state.primaryGraph.removeEdge(source, target);
-      if (state.selectedEdge == (source, target) ||
-          state.selectedEdge == (target, source)) {
-        state.selectedEdge = null;
-      }
-      showToast('Deleted edge ($source, $target)');
-      updateUI();
-      return;
-    }
-
-    // Select mode
-    state.selectedVertices.clear();
-    state.selectedSource = null;
-    state.selectedTarget = null;
-    state.selectedEdge = (source, target);
-    updateUI();
-  }
-
-  // Interactive Canvas Surface Click handler
-  void handleBackgroundClick(web.MouseEvent event) {
-    final mode = getCanvasMode();
-
-    if (mode == 'add-node') {
-      state.saveSnapshot();
-      final name = state.nextAvailableNodeId();
-      state.primaryGraph.addVertex(name);
-      final viewport =
-          (canvasContainer.parentElement ?? canvasContainer) as web.HTMLElement;
-      final rect = viewport.getBoundingClientRect();
-      final canvasX =
-          (event.clientX - rect.left - renderer.panX) / renderer.scale;
-      final canvasY =
-          (event.clientY - rect.top - renderer.panY) / renderer.scale;
-      state.getOrCreateNode(name, label: name, x: canvasX, y: canvasY);
-      state.selectedVertices = {name};
-      state.selectedSource = name;
-      showToast('Created node "$name"');
-      updateUI();
-      return;
-    }
-
-    if (mode == 'add-edge') {
-      if (edgeDrawingSource != null) {
-        edgeDrawingSource = null;
-        showToast('Cancelled edge drawing.');
-        updateUI();
-      }
-      return;
-    }
-
-    // Select mode: clear selection when clicking background
-    state.selectedVertices.clear();
-    state.selectedSource = null;
-    state.selectedTarget = null;
-    state.selectedEdge = null;
-    edgeDrawingSource = null;
-    updateUI();
-  }
-
-  // Initialize renderer
-  renderer = GraphRenderer(
-    container: canvasContainer,
-    transformLayer: transformLayer,
-    onVertexClick: handleVertexClick,
-    onEdgeClick: handleEdgeClick,
-    onBackgroundClick: handleBackgroundClick,
-    onNodeMoved: (v, x, y) {
-      final node = state.getOrCreateNode(v);
-      node.x = x;
-      node.y = y;
-      renderer.render(state);
-    },
-  );
-
-  await renderer.initialize();
-
-  // Playback engine
-  player = TraversalPlayer(
-    onStepChanged: (step, total) {
-      labelPlaybackStep.textContent = total > 0
-          ? 'Step ${step + 1} / $total'
-          : 'Step 0 / 0';
-      final overlay = state.activeOverlay;
-      if (overlay is PathOverlay) {
-        state.activeOverlay = PathOverlay(
-          title: overlay.title,
-          vertices: overlay.vertices,
-          edges: overlay.edges,
-          stepNumbers: overlay.stepNumbers,
-          activeStep: step,
-          summary: overlay.summary,
-        );
-        renderer.render(state);
-      }
-    },
-  );
-
-  // Dynamic Creator Parameters Builder
-  void updateCreatorParams() {
-    creatorParamsContainer.textContent = '';
-    final preset = selectPreset.value;
-
-    switch (preset) {
-      case 'preset_default':
-      case 'preset_petersen':
-      case 'preset_karate':
-      case 'preset_road':
-      case 'preset_negative':
-      case 'preset_dag':
-      case 'preset_bridges':
-        final desc = switch (preset) {
-          'preset_default' => '6 nodes, 9 edges. Standard weighted network.',
-          'preset_petersen' =>
-            '10 nodes, 15 edges. 3-regular, non-planar graph.',
-          'preset_karate' => '34 nodes, 78 edges. Benchmark community graph.',
-          'preset_road' => '8 cities with road travel distances in km.',
-          'preset_negative' => 'Directed graph with negative edge weights.',
-          'preset_dag' => '9 compiler task nodes. Directed acyclic graph.',
-          'preset_bridges' =>
-            'Graph demonstrating cut vertices and bridge edges.',
-          _ => '',
-        };
-        creatorParamsContainer.appendChild(
-          web.HTMLParagraphElement()
-            ..style.fontSize = '1.1rem'
-            ..style.color = 'var(--text-muted)'
-            ..style.margin = '4px 0'
-            ..textContent = desc,
-        );
-
-      case 'factory_complete':
-      case 'factory_path':
-      case 'factory_ring':
-      case 'factory_star':
-        final row = web.HTMLDivElement()..className = 'param-row';
-        row.appendChild(web.HTMLLabelElement()..textContent = 'Node count:');
-        row.appendChild(
-          web.HTMLInputElement()
-            ..id = 'param-vertex-count'
-            ..type = 'number'
-            ..value = preset == 'factory_complete' ? '5' : '6'
-            ..min = '1'
-            ..max = '40',
-        );
-        creatorParamsContainer.appendChild(row);
-
-      case 'factory_tree':
-        final rowNodes = web.HTMLDivElement()..className = 'param-row';
-        rowNodes.appendChild(
-          web.HTMLLabelElement()..textContent = 'Node count:',
-        );
-        rowNodes.appendChild(
-          web.HTMLInputElement()
-            ..id = 'param-tree-nodes'
-            ..type = 'number'
-            ..value = '10'
-            ..min = '1'
-            ..max = '50',
-        );
-        creatorParamsContainer.appendChild(rowNodes);
-
-        final rowArity = web.HTMLDivElement()..className = 'param-row';
-        rowArity.appendChild(
-          web.HTMLLabelElement()..textContent = 'Branching (m):',
-        );
-        rowArity.appendChild(
-          web.HTMLInputElement()
-            ..id = 'param-tree-arity'
-            ..type = 'number'
-            ..value = '2'
-            ..min = '1'
-            ..max = '5',
-        );
-        creatorParamsContainer.appendChild(rowArity);
-
-      case 'factory_partite':
-        final row = web.HTMLDivElement()..className = 'param-row';
-        row.appendChild(web.HTMLLabelElement()..textContent = 'Partitions:');
-        row.appendChild(
-          web.HTMLInputElement()
-            ..id = 'param-partite-layers'
-            ..type = 'text'
-            ..value = '3, 3'
-            ..placeholder = 'e.g. 3, 3 or 2, 3, 2',
-        );
-        creatorParamsContainer.appendChild(row);
-
-      case 'factory_random':
-        final rowNodes = web.HTMLDivElement()..className = 'param-row';
-        rowNodes.appendChild(
-          web.HTMLLabelElement()..textContent = 'Node count:',
-        );
-        rowNodes.appendChild(
-          web.HTMLInputElement()
-            ..id = 'param-random-nodes'
-            ..type = 'number'
-            ..value = '8'
-            ..min = '1'
-            ..max = '40',
-        );
-        creatorParamsContainer.appendChild(rowNodes);
-
-        final rowProb = web.HTMLDivElement()..className = 'param-row';
-        rowProb.appendChild(web.HTMLLabelElement()..textContent = 'Edge prob:');
-        rowProb.appendChild(
-          web.HTMLInputElement()
-            ..id = 'param-random-prob'
-            ..type = 'number'
-            ..value = '0.35'
-            ..step = '0.05'
-            ..min = '0.0'
-            ..max = '1.0',
-        );
-        creatorParamsContainer.appendChild(rowProb);
-
-      case 'atlas_graph':
-        final row = web.HTMLDivElement()..className = 'param-row';
-        row.appendChild(web.HTMLLabelElement()..textContent = 'Atlas index:');
-        final navDiv = web.HTMLDivElement()
-          ..style.display = 'flex'
-          ..style.gap = '4px'
-          ..style.flex = '1';
-        final btnPrev = web.HTMLButtonElement()
-          ..className = 'button-outline button-small'
-          ..textContent = '←';
-        final inputNum = web.HTMLInputElement()
-          ..id = 'param-atlas-num'
-          ..type = 'number'
-          ..value = '18'
-          ..min = '0'
-          ..max = '1252'
-          ..style.textAlign = 'center'
-          ..style.flex = '1';
-        final btnNext = web.HTMLButtonElement()
-          ..className = 'button-outline button-small'
-          ..textContent = '→';
-
-        btnPrev.onClick.listen((_) {
-          final curr = int.tryParse(inputNum.value) ?? 0;
-          inputNum.value = (curr - 1).clamp(0, 1252).toString();
-          btnGenerate.click();
-        });
-        btnNext.onClick.listen((_) {
-          final curr = int.tryParse(inputNum.value) ?? 0;
-          inputNum.value = (curr + 1).clamp(0, 1252).toString();
-          btnGenerate.click();
-        });
-
-        navDiv.appendChild(btnPrev);
-        navDiv.appendChild(inputNum);
-        navDiv.appendChild(btnNext);
-        row.appendChild(navDiv);
-        creatorParamsContainer.appendChild(row);
-    }
-  }
-
-  selectPreset.onChange.listen((_) => updateCreatorParams());
-  updateCreatorParams();
-
-  // Unified Generate Button
-  btnGenerate.onClick.listen((_) {
-    state.saveSnapshot();
-    state.clearSelection();
-    state.activeOverlay = null;
-    player.stop();
-    playbackBar.style.display = 'none';
-    cardResults.style.display = 'none';
-
-    final preset = selectPreset.value;
-    final isDir = state.primaryGraph.isDirected;
-
-    switch (preset) {
-      case 'preset_default':
-        state.primaryGraph = GraphPresets.negativeEdges();
-        state.isWeighted = true;
-        showToast('Loaded Default Network (6 nodes)');
-      case 'preset_petersen':
-        state.primaryGraph = GraphPresets.petersen();
-        state.isWeighted = false;
-        showToast('Loaded Petersen Graph (10 nodes)');
-      case 'preset_karate':
-        state.primaryGraph = GraphPresets.karateClub();
-        state.isWeighted = false;
-        state.layoutEngine = 'neato';
-        selectLayout.value = 'neato';
-        showToast('Loaded Zachary\'s Karate Club (34 nodes)');
-      case 'preset_road':
-        state.primaryGraph = GraphPresets.roadNetwork();
-        state.isWeighted = true;
-        showToast('Loaded Swiss Road Network (8 cities)');
-      case 'preset_negative':
-        state.primaryGraph = GraphPresets.negativeEdges();
-        state.isWeighted = true;
-        showToast('Loaded Negative Edges Graph');
-      case 'preset_dag':
-        state.primaryGraph = GraphPresets.compilerDag();
-        state.isWeighted = false;
-        showToast('Loaded Compiler Task DAG (9 nodes)');
-      case 'preset_bridges':
-        state.primaryGraph = GraphPresets.bridgesAndCutVertices();
-        state.isWeighted = false;
-        showToast('Loaded Bridges & Cut Vertices Graph');
-      case 'factory_complete':
-        final n =
-            int.tryParse(
-              (web.document.querySelector(
-                    '#param-vertex-count',
-                  ) as web.HTMLInputElement?)?.value ??
-                  '',
-            ) ??
-            5;
-        state.primaryGraph = GraphPresets.complete(
-          vertexCount: n,
-          isDirected: isDir,
-        );
-        showToast('Generated Complete Graph K$n');
-      case 'factory_path':
-        final n =
-            int.tryParse(
-              (web.document.querySelector(
-                    '#param-vertex-count',
-                  ) as web.HTMLInputElement?)?.value ??
-                  '',
-            ) ??
-            6;
-        state.primaryGraph = GraphPresets.path(
-          vertexCount: n,
-          isDirected: isDir,
-        );
-        showToast('Generated Path Graph P$n');
-      case 'factory_ring':
-        final n =
-            int.tryParse(
-              (web.document.querySelector(
-                    '#param-vertex-count',
-                  ) as web.HTMLInputElement?)?.value ??
-                  '',
-            ) ??
-            6;
-        state.primaryGraph = GraphPresets.ring(
-          vertexCount: n,
-          isDirected: isDir,
-        );
-        showToast('Generated Ring Graph C$n');
-      case 'factory_star':
-        final n =
-            int.tryParse(
-              (web.document.querySelector(
-                    '#param-vertex-count',
-                  ) as web.HTMLInputElement?)?.value ??
-                  '',
-            ) ??
-            6;
-        state.primaryGraph = GraphPresets.star(
-          vertexCount: n,
-          isDirected: isDir,
-        );
-        showToast('Generated Star Graph S$n');
-      case 'factory_tree':
-        final nodes =
-            int.tryParse(
-              (web.document.querySelector(
-                    '#param-tree-nodes',
-                  ) as web.HTMLInputElement?)?.value ??
-                  '',
-            ) ??
-            10;
-        final arity =
-            int.tryParse(
-              (web.document.querySelector(
-                    '#param-tree-arity',
-                  ) as web.HTMLInputElement?)?.value ??
-                  '',
-            ) ??
-            2;
-        state.primaryGraph = GraphPresets.tree(
-          vertexCount: nodes,
-          isDirected: isDir,
-          arity: arity,
-        );
-        showToast('Generated $arity-ary Tree ($nodes nodes)');
-      case 'factory_partite':
-        final raw =
-            (web.document.querySelector(
-              '#param-partite-layers',
-            ) as web.HTMLInputElement?)?.value ??
-            '3, 3';
-        final layers = raw
-            .split(',')
-            .map((s) => int.tryParse(s.trim()) ?? 2)
-            .toList();
-        state.primaryGraph = GraphPresets.partite(
-          vertexCounts: layers,
-          isDirected: isDir,
-        );
-        showToast('Generated Partite Graph [${layers.join(", ")}]');
-      case 'factory_random':
-        final n =
-            int.tryParse(
-              (web.document.querySelector(
-                    '#param-random-nodes',
-                  ) as web.HTMLInputElement?)?.value ??
-                  '',
-            ) ??
-            8;
-        final p =
-            double.tryParse(
-              (web.document.querySelector(
-                    '#param-random-prob',
-                  ) as web.HTMLInputElement?)?.value ??
-                  '',
-            ) ??
-            0.35;
-        state.primaryGraph = GraphPresets.randomErdosRenyi(
-          vertexCount: n,
-          probability: p,
-          isDirected: isDir,
-        );
-        showToast('Generated Erdős–Rényi Graph G($n, $p)');
-      case 'atlas_graph':
-        final num =
-            int.tryParse(
-              (web.document.querySelector(
-                    '#param-atlas-num',
-                  ) as web.HTMLInputElement?)?.value ??
-                  '',
-            ) ??
-            18;
-        state.primaryGraph = GraphPresets.atlas(num);
-        state.isWeighted = false;
-        showToast('Loaded Read-Wilson Atlas Graph #$num');
-    }
-
-    updateUI();
-  });
-
-  // Non-destructive directedness toggle
-  btnDirected.onClick.listen((_) {
-    final willBeDirected = !state.primaryGraph.isDirected;
-    state.saveSnapshot();
-
-    final newGraph = Graph<String, num>(isDirected: willBeDirected);
-    for (final v in state.primaryGraph.vertices) {
-      newGraph.addVertex(v);
-    }
-
-    if (willBeDirected) {
-      // Convert undirected to directed: make bidirectional edges
-      for (final e in state.primaryGraph.edges) {
-        newGraph.addEdge(e.source, e.target, value: e.value);
-        newGraph.addEdge(e.target, e.source, value: e.value);
-      }
-      showToast('Converted to Directed mode (bidirectional edges preserved)');
-    } else {
-      // Convert directed to undirected: merge opposing edges
-      for (final e in state.primaryGraph.edges) {
-        newGraph.addEdge(e.source, e.target, value: e.value);
-      }
-      showToast('Converted to Undirected mode (merged edges)');
-    }
-
-    state.primaryGraph = newGraph;
-    state.clearSelection();
-    updateUI();
-  });
-
-  // Weighted display toggle (non-destructive)
-  btnWeighted.onClick.listen((_) {
-    state.isWeighted = !state.isWeighted;
-    showToast(
-      state.isWeighted ? 'Edge weights displayed' : 'Edge weights hidden',
-    );
-    updateUI();
-  });
-
-  selectLayout.onChange.listen((_) {
-    state.layoutEngine = selectLayout.value;
-    updateUI();
-  });
-
-  selectRankDir.onChange.listen((_) {
-    state.rankDir = selectRankDir.value;
-    updateUI();
-  });
-
-  btnUndo.onClick.listen((_) {
-    state.undo();
-    showToast('Undo action');
-    updateUI();
-  });
-
-  btnRedo.onClick.listen((_) {
-    state.redo();
-    showToast('Redo action');
-    updateUI();
-  });
-
-  btnClear.onClick.listen((_) {
-    state.saveSnapshot();
-    state.primaryGraph = Graph<String, num>(
-      isDirected: state.primaryGraph.isDirected,
-    );
-    state.clearSelection();
-    state.activeOverlay = null;
-    player.stop();
-    playbackBar.style.display = 'none';
-    cardResults.style.display = 'none';
-    showToast('Cleared canvas');
-    updateUI();
-  });
-
-  btnClearSelection.onClick.listen((_) {
-    state.clearSelection();
-    edgeDrawingSource = null;
-    updateUI();
-  });
-
-  // Zoom listeners
-  btnZoomIn.onClick.listen((_) => renderer.zoomIn());
-  btnZoomOut.onClick.listen((_) => renderer.zoomOut());
-  btnZoomFit.onClick.listen((_) => renderer.resetView());
-
-  // Quick edit: Add vertex
-  btnAddVertex.onClick.listen((_) {
-    var name = inputNewVertex.value.trim();
-    if (name.isEmpty) {
-      name = state.nextAvailableNodeId();
-    }
-    if (state.primaryGraph.containsVertex(name)) {
-      showToast('Vertex "$name" already exists', isWarning: true);
-      return;
-    }
-    state.saveSnapshot();
-    state.primaryGraph.addVertex(name);
-    state.getOrCreateNode(name, label: name);
-    state.selectedVertices = {name};
-    state.selectedSource = name;
-    inputNewVertex.value = '';
-    showToast('Added node "$name"');
-    updateUI();
-  });
-
-  // Quick edit: Add edge
-  btnAddEdge.onClick.listen((_) {
-    final u = inputEdgeU.value.trim();
-    final v = inputEdgeV.value.trim();
-    final w = num.tryParse(inputEdgeWeight.value.trim()) ?? 1;
-    if (u.isNotEmpty && v.isNotEmpty) {
-      state.saveSnapshot();
-      state.primaryGraph.addEdge(u, v, value: w);
-      showToast('Connected edge $u → $v (weight $w)');
-      updateUI();
-    }
-  });
-
-  // Delete selected nodes or edges
-  btnRemoveSelected.onClick.listen((_) {
-    state.saveSnapshot();
-    var changed = false;
-    if (state.selectedEdge != null) {
-      state.primaryGraph.removeEdge(
-        state.selectedEdge!.$1,
-        state.selectedEdge!.$2,
-      );
-      showToast(
-        'Deleted edge (${state.selectedEdge!.$1}, ${state.selectedEdge!.$2})',
-      );
-      state.selectedEdge = null;
-      changed = true;
-    }
-    if (state.selectedVertices.isNotEmpty) {
-      final count = state.selectedVertices.length;
-      for (final v in state.selectedVertices.toList()) {
-        state.primaryGraph.removeVertex(v);
-      }
-      state.selectedVertices.clear();
-      state.selectedSource = null;
-      state.selectedTarget = null;
-      showToast('Deleted $count node(s)');
-      changed = true;
-    }
-    if (changed) {
-      updateUI();
-    }
-  });
-
-  // Keyboard shortcut for deleting (Backspace / Delete)
-  web.window.onkeydown = ((web.KeyboardEvent event) {
-    final target = event.target;
-    if (target != null &&
-        (target.isA<web.HTMLInputElement>() ||
-            target.isA<web.HTMLTextAreaElement>())) {
-      return;
-    }
-    if (event.key == 'Backspace' || event.key == 'Delete') {
-      btnRemoveSelected.click();
-    } else if ((event.ctrlKey || event.metaKey) && event.key == 'z') {
-      if (event.shiftKey) {
-        btnRedo.click();
-      } else {
-        btnUndo.click();
-      }
-    }
-  }).toJS;
-
-  // Transformations with explicit feedback
-  btnReverse.onClick.listen((_) {
-    if (!state.primaryGraph.isDirected) {
-      showToast('Cannot reverse: Graph is undirected', isWarning: true);
-      return;
-    }
-    state.saveSnapshot();
-    state.primaryGraph = state.primaryGraph.reversed.copy();
-    showToast('Reversed all directed edges');
-    updateUI();
-  });
-
-  btnComplement.onClick.listen((_) {
-    state.saveSnapshot();
-    state.primaryGraph = state.primaryGraph.complement(edge: (u, v) => 1);
-    showToast('Inverted graph connectivity (complement)');
-    updateUI();
-  });
-
-  btnTransClosure.onClick.listen((_) {
-    if (!state.primaryGraph.isDirected) {
-      showToast(
-        'Transitive closure requires a directed graph',
-        isWarning: true,
-      );
-      return;
-    }
-    state.saveSnapshot();
-    state.primaryGraph = state.primaryGraph.transitiveClosure().map(
-      edge: (_) => 1,
-    );
-    showToast('Computed transitive closure (added direct edges)');
-    updateUI();
-  });
-
-  btnTransReduction.onClick.listen((_) {
-    if (!state.primaryGraph.isDirected) {
-      showToast(
-        'Transitive reduction requires a directed DAG',
-        isWarning: true,
-      );
-      return;
-    }
-    try {
-      state.saveSnapshot();
-      state.primaryGraph = state.primaryGraph.transitiveReduction();
-      showToast('Computed transitive reduction (removed redundant edges)');
-      updateUI();
-    } catch (_) {
-      showToast(
-        'Cannot reduce: Graph contains a cycle (must be a DAG)',
-        isWarning: true,
-      );
-    }
-  });
-
-  btnKCore.onClick.listen((_) {
-    if (state.primaryGraph.isDirected) {
-      showToast(
-        'k-Core is defined for undirected graphs. Switch to Undirected first.',
-        isWarning: true,
-      );
-      return;
-    }
-    final k = int.tryParse(inputKCoreK.value.trim()) ?? 2;
-    state.saveSnapshot();
-    final before = state.primaryGraph.vertices.length;
-    state.primaryGraph = state.primaryGraph.kCore(k);
-    final after = state.primaryGraph.vertices.length;
-    showToast(
-      'Extracted $k-Core ($after nodes remaining, removed ${before - after})',
-    );
-    updateUI();
-  });
-
-  // Playback listeners
-  btnPlayFirst.onClick.listen((_) => player.first());
-  btnPlayPrev.onClick.listen((_) => player.prev());
-  btnPlayPause.onClick.listen((_) {
-    if (player.isPlaying) {
-      player.pause();
-      btnPlayPause.textContent = 'Play';
-    } else {
-      player.play();
-      btnPlayPause.textContent = 'Pause';
-    }
-  });
-  btnPlayNext.onClick.listen((_) => player.next());
-  btnPlayLast.onClick.listen((_) => player.last());
-  selectPlaybackSpeed.onChange.listen((_) {
-    player.speedMs = int.tryParse(selectPlaybackSpeed.value) ?? 500;
-  });
-
-  // Drawer helpers
-  void switchDrawerTab(String tabId) {
-    bottomDrawer.classList.remove('collapsed');
-    final tabs = web.document.querySelectorAll('.drawer-tab');
-    for (var j = 0; j < tabs.length; j++) {
-      final t = tabs.item(j) as web.HTMLElement?;
-      t?.classList.toggle('active', t.getAttribute('data-tab') == tabId);
-    }
-    final panes = web.document.querySelectorAll('.tab-pane');
-    for (var k = 0; k < panes.length; k++) {
-      final pane = panes.item(k) as web.HTMLElement?;
-      if (pane != null) {
-        pane.style.display = pane.id == tabId ? 'block' : 'none';
-      }
-    }
-  }
-
-  void renderDistanceMatrix(FloydWarshall<String> fw) {
-    final matrixContainer =
-        web.document.querySelector('#matrix-container') as web.HTMLElement?;
-    if (matrixContainer == null) return;
-    matrixContainer.textContent = '';
-
-    final table = web.HTMLTableElement()..className = 'data-table';
-    final thead = table.createTHead();
-    final headerRow = thead.insertRow();
-    headerRow.insertCell().textContent = 'From \\ To';
-
-    final vertices = state.primaryGraph.vertices.toList();
-    for (final v in vertices) {
-      headerRow.insertCell().textContent = v;
-    }
-
-    final tbody = table.createTBody();
-    for (final u in vertices) {
-      final row = tbody.insertRow();
-      final rowHead = row.insertCell()..textContent = u;
-      rowHead.style.fontWeight = 'bold';
-      for (final v in vertices) {
-        final cell = row.insertCell();
-        final dist = fw.distance(u, v);
-        cell.textContent = dist.isInfinite ? '∞' : dist.toString();
-        if (!dist.isInfinite) {
-          cell.style.cursor = 'pointer';
-          cell.title = 'Click to show shortest path from $u to $v';
-          cell.onClick.listen((_) {
-            final path = fw.path(u, v);
-            if (path != null) {
-              final pathEdges = <(String, String)>[];
-              for (var i = 0; i < path.vertices.length - 1; i++) {
-                pathEdges.add((path.vertices[i], path.vertices[i + 1]));
-              }
-              state.activeOverlay = PathOverlay(
-                title: 'Path: $u to $v (Cost ${path.cost})',
-                vertices: path.vertices,
-                edges: pathEdges,
-              );
-              updateUI();
-            }
-          });
-        }
-      }
-    }
-
-    matrixContainer.appendChild(table);
-  }
-
-  void renderMetricsTable(Map<String, Map<String, num>> metrics) {
-    final metricsContainer = web.document.querySelector(
-      '#metrics-table-container',
-    ) as web.HTMLElement?;
-    if (metricsContainer == null) return;
-    metricsContainer.textContent = '';
-
-    final table = web.HTMLTableElement()..className = 'data-table';
-    final thead = table.createTHead();
-    final headerRow = thead.insertRow();
-    headerRow.insertCell().textContent = 'Vertex';
-
-    final firstEntry = metrics.values.firstOrNull;
-    if (firstEntry == null) return;
-    final metricNames = firstEntry.keys.toList();
-
-    for (final m in metricNames) {
-      final cell = headerRow.insertCell();
-      cell.textContent = m;
-      cell.style.cursor = 'pointer';
-      cell.title = 'Click to color graph heatmap by $m';
-      cell.onClick.listen((_) {
-        final scores = <String, num>{};
-        for (final MapEntry(:key, :value) in metrics.entries) {
-          scores[key] = value[m] ?? 0;
-        }
-        state.activeOverlay = HeatmapOverlay(title: m, scores: scores);
-        updateUI();
-      });
-    }
-
-    final tbody = table.createTBody();
-    for (final MapEntry(:key, :value) in metrics.entries) {
-      final row = tbody.insertRow();
-      final headCell = row.insertCell()..textContent = key;
-      headCell.style.fontWeight = 'bold';
-      for (final m in metricNames) {
-        final val = value[m] ?? 0;
-        final cell = row.insertCell();
-        cell.textContent = (val is int || val == val.roundToDouble())
-            ? val.toInt().toString()
-            : val.toStringAsFixed(3);
-      }
-    }
-
-    metricsContainer.appendChild(table);
-  }
-
-  void computeAndRenderMetrics() {
-    final result = AlgorithmsRunner.run('all_centralities', state);
-    if (result.metricsTable != null) {
-      renderMetricsTable(result.metricsTable!);
-    }
-  }
-
-  void computeAndRenderMatrix() {
-    final result = AlgorithmsRunner.run('floyd_warshall', state);
-    if (result.distanceMatrix != null) {
-      renderDistanceMatrix(result.distanceMatrix!);
-    }
-  }
-
-  btnRefreshMetrics?.onClick.listen((_) => computeAndRenderMetrics());
-  btnRefreshMatrix?.onClick.listen((_) => computeAndRenderMatrix());
-
-  // Algorithms & Traversals setup
-  void updateAlgorithmOptions() {
-    selectAlgorithm.textContent = '';
-    algoParamsContainer.textContent = '';
-
-    final cat = selectAlgoCategory.value;
-    final algos = AlgorithmsRunner.getAlgorithmsForCategory(cat);
-    for (final (id, label) in algos) {
-      selectAlgorithm.appendChild(
-        web.HTMLOptionElement()
-          ..value = id
-          ..text = label,
-      );
-    }
-    if (algos.isNotEmpty) {
-      AlgorithmsRunner.renderParams(algos.first.$1, state, algoParamsContainer);
-    }
-  }
-
-  selectAlgoCategory.onChange.listen((_) => updateAlgorithmOptions());
-  selectAlgorithm.onChange.listen((_) {
-    AlgorithmsRunner.renderParams(
-      selectAlgorithm.value,
-      state,
-      algoParamsContainer,
-    );
-  });
-  updateAlgorithmOptions();
-
-  // Run Traversal / Algorithm
-  btnRunAlgo.onClick.listen((_) {
-    final algo = selectAlgorithm.value;
-    final result = AlgorithmsRunner.run(algo, state);
-
-    state.activeOverlay = result.overlay;
-
-    if (result.isPathSequence) {
-      playbackBar.style.display = 'flex';
-      player.load(vertices: result.pathVertices, edges: result.pathEdges);
-      player.play();
-      btnPlayPause.textContent = 'Pause';
-    } else {
-      player.stop();
-      playbackBar.style.display = 'none';
-    }
-
-    cardResults.style.display = 'block';
-    final resP = web.HTMLParagraphElement()
-      ..innerHTML = result.summaryHtml.toJS;
-    algorithmResults.replaceChildren(resP);
-
-    if (result.distanceMatrix != null) {
-      renderDistanceMatrix(result.distanceMatrix!);
-      switchDrawerTab('tab-matrix');
-    }
-
-    if (result.metricsTable != null) {
-      renderMetricsTable(result.metricsTable!);
-      switchDrawerTab('tab-metrics');
-    }
-
-    updateUI();
-  });
-
-  btnClearOverlay.onClick.listen((_) {
-    player.stop();
-    playbackBar.style.display = 'none';
-    cardResults.style.display = 'none';
-    state.activeOverlay = null;
-    updateUI();
-  });
-
-  // Import / Export modal logic
   void syncModalContent() {
     ioStatus.textContent = '';
     switch (selectIoFormat.value) {
@@ -1298,6 +120,704 @@ void main() async {
         textareaIo.value = GraphIO.exportToDartCode(state);
     }
   }
+
+  void handleVertexDblClick(String vertex) {
+    renderer.showInlineNodeEditor(
+      state,
+      vertex,
+      onCommit: (newLabel) {
+        state.saveSnapshot();
+        state.getOrCreateNode(vertex).label = newLabel;
+        showToast('Renamed vertex "$vertex" to "$newLabel"');
+        updateUI();
+      },
+    );
+  }
+
+  void renderModifierStack() {
+    modifiersStackList.textContent = '';
+    if (state.modifiers.isEmpty) {
+      final emptyMsg = div()..style.color = 'var(--text-muted)';
+      emptyMsg.textContent = 'No modifiers active. Add a modifier above to run live analysis or transformations.';
+      modifiersStackList.appendChild(emptyMsg);
+      return;
+    }
+
+    for (var i = 0; i < state.modifiers.length; i++) {
+      final idx = i;
+      final mod = state.modifiers[idx];
+      final card = div('modifier-card');
+      if (!mod.enabled) card.classList.add('disabled');
+
+      final output = state.lastModifierOutputs[mod.id];
+      final hasError = output?.hasError ?? false;
+      if (hasError) {
+        card.classList.add('error');
+      }
+
+      // Header
+      final header = div('modifier-header');
+      final headerLeft = div('modifier-header-left');
+
+      if (!mod.isPinned) {
+        final toggleCheckbox =
+            web.document.createElement('input') as web.HTMLInputElement;
+        toggleCheckbox.type = 'checkbox';
+        toggleCheckbox.checked = mod.enabled;
+        toggleCheckbox.title = 'Enable / Disable modifier';
+        toggleCheckbox.style.cursor = 'pointer';
+        toggleCheckbox.style.margin = '0';
+        toggleCheckbox.onChange.listen((_) {
+          mod.enabled = toggleCheckbox.checked;
+          state.evaluateModifiers();
+          updateUI();
+          renderModifierStack();
+        });
+        headerLeft.appendChild(toggleCheckbox);
+      }
+
+      final titleSpan = span(
+        mod.name,
+        hasError ? 'modifier-title error' : 'modifier-title',
+      )..style.cursor = 'pointer';
+      titleSpan.onClick.listen((_) {
+        mod.collapsed = !mod.collapsed;
+        renderModifierStack();
+      });
+      headerLeft.appendChild(titleSpan);
+      header.appendChild(headerLeft);
+
+      final actions = div('modifier-header-actions');
+      if (mod.canApply && !hasError) {
+        final btnApply = button('Apply', 'modifier-btn-apply')
+          ..title = 'Apply modifier permanently into base graph'
+          ..onClick.listen((_) {
+            mod.applyPermanent(state);
+            state.evaluateModifiers();
+            updateUI();
+            renderModifierStack();
+            showToast('Applied ${mod.name} permanently');
+          });
+        actions.appendChild(btnApply);
+      }
+      if (!mod.isPinned) {
+        if (idx > 1) {
+          final btnUp = button('', 'modifier-btn-icon')
+            ..title = 'Move Up'
+            ..innerHTML = '<svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 8 L6 4 L10 8"/></svg>'
+                .toJS
+            ..onClick.listen((_) {
+              final temp = state.modifiers[idx];
+              state.modifiers[idx] = state.modifiers[idx - 1];
+              state.modifiers[idx - 1] = temp;
+              state.evaluateModifiers();
+              updateUI();
+              renderModifierStack();
+            });
+          actions.appendChild(btnUp);
+        }
+        if (idx < state.modifiers.length - 1) {
+          final btnDown = button('', 'modifier-btn-icon')
+            ..title = 'Move Down'
+            ..innerHTML = '<svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 4 L6 8 L10 4"/></svg>'
+                .toJS
+            ..onClick.listen((_) {
+              final temp = state.modifiers[idx];
+              state.modifiers[idx] = state.modifiers[idx + 1];
+              state.modifiers[idx + 1] = temp;
+              state.evaluateModifiers();
+              updateUI();
+              renderModifierStack();
+            });
+          actions.appendChild(btnDown);
+        }
+        final btnRemove = button('', 'modifier-btn-icon')
+          ..title = 'Remove'
+          ..innerHTML = '<svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2"><path d="M2.5 2.5 L9.5 9.5 M9.5 2.5 L2.5 9.5"/></svg>'
+              .toJS
+          ..onClick.listen((_) {
+            state.modifiers.removeAt(idx);
+            state.evaluateModifiers();
+            updateUI();
+            renderModifierStack();
+          });
+        actions.appendChild(btnRemove);
+      }
+      header.appendChild(actions);
+      card.appendChild(header);
+
+      // Body (if not collapsed)
+      if (!mod.collapsed) {
+        final body = div('modifier-body');
+        final configUI = mod.buildConfigUI(state, () {
+          state.evaluateModifiers();
+          updateUI();
+          renderModifierStack();
+        });
+        body.appendChild(configUI);
+
+        final summary = output?.statusSummary;
+        if (hasError) {
+          final errBox = div('modifier-error-alert')
+            ..textContent =
+                output?.errorMessage ?? 'An error occurred in this modifier.';
+          body.appendChild(errBox);
+        } else if (summary != null && summary.isNotEmpty) {
+          body.appendChild(div('modifier-status')..textContent = summary);
+        }
+
+        final tableData = output?.tableData;
+        if (tableData != null && tableData.rows.isNotEmpty) {
+          final tableWrapper = div('modifier-table-wrapper');
+          final tbl = tableElement('table');
+          final thead = web.document.createElement('thead');
+          final headerRow = web.document.createElement('tr');
+          for (final h in tableData.headers) {
+            final th =
+                web.document.createElement('th') as web.HTMLTableCellElement;
+            th.textContent = h;
+            headerRow.appendChild(th);
+          }
+          thead.appendChild(headerRow);
+          tbl.appendChild(thead);
+
+          final tbody = web.document.createElement('tbody');
+          for (final r in tableData.rows) {
+            final row = web.document.createElement('tr');
+            for (final cell in r) {
+              final td =
+                  web.document.createElement('td') as web.HTMLTableCellElement;
+              td.textContent = cell;
+              row.appendChild(td);
+            }
+            tbody.appendChild(row);
+          }
+          tbl.appendChild(tbody);
+          tableWrapper.appendChild(tbl);
+          body.appendChild(tableWrapper);
+        }
+
+        card.appendChild(body);
+      }
+
+      modifiersStackList.appendChild(card);
+    }
+  }
+
+  void executeCommand(String cmdId) {
+    final cmd = CommandRegistry.findById(cmdId);
+    if (cmd == null) return;
+    if (!cmd.canExecute(state)) return;
+    cmd.execute(
+      state,
+      context: CommandContext(
+        cursorX: renderer.canvasMouseX,
+        cursorY: renderer.canvasMouseY,
+        startVertexPlacement: (vertexId) {
+          state.pendingPlacementVertex = vertexId;
+          updateUI();
+        },
+        showInlineEditor: (v) {
+          renderer.showInlineNodeEditor(
+            state,
+            v,
+            onCommit: (newLabel) {
+              state.saveSnapshot();
+              state.getOrCreateNode(v).label = newLabel;
+              updateUI();
+            },
+          );
+        },
+        openIoModal: () {
+          syncModalContent();
+          modalIo.style.display = 'flex';
+        },
+        runLayout: () {
+          renderer.autoLayout(state);
+          updateUI();
+        },
+      ),
+    );
+    updateUI();
+  }
+
+  void updateModifierVertexDropdowns(AppState state) {
+    final dropdowns = web.document.querySelectorAll('.vertex-select');
+    final vertices = state.renderGraph.vertices.toList();
+
+    for (var i = 0; i < dropdowns.length; i++) {
+      final select = dropdowns.item(i) as web.HTMLSelectElement?;
+      if (select == null) continue;
+
+      final currentVal = select.value;
+      final allowPlaceholder = select.dataset['allowPlaceholder'] == 'true';
+      final placeholderText = select.dataset['placeholderText'];
+
+      select.textContent = '';
+      if (allowPlaceholder) {
+        select.appendChild(optionElement('', placeholderText));
+      }
+      for (final v in vertices) {
+        select.appendChild(optionElement(v, v));
+      }
+
+      if (vertices.contains(currentVal)) {
+        select.value = currentVal;
+      } else if (allowPlaceholder) {
+        select.value = '';
+      } else if (vertices.isNotEmpty) {
+        select.value = vertices.first;
+      }
+    }
+  }
+
+  updateUI = () {
+    // Evaluate modifier stack pipeline
+    state.evaluateModifiers();
+
+    // Validate selection against active graph
+    state.syncNodes();
+    state.selectedVertices.removeWhere(
+      (v) => !state.renderGraph.containsVertex(v),
+    );
+    if (state.selectedSource != null &&
+        !state.renderGraph.containsVertex(state.selectedSource!)) {
+      state.selectedSource = null;
+    }
+    if (state.selectedTarget != null &&
+        !state.renderGraph.containsVertex(state.selectedTarget!)) {
+      state.selectedTarget = null;
+    }
+    if (state.selectedEdge != null) {
+      final (u, v) = state.selectedEdge!;
+      if (!state.renderGraph.containsEdge(u, v) &&
+          !(!state.renderGraph.isDirected &&
+              state.renderGraph.containsEdge(v, u))) {
+        state.selectedEdge = null;
+      }
+    }
+    state.selectedEdges.removeWhere(
+      (e) =>
+          !state.renderGraph.containsEdge(e.$1, e.$2) &&
+          !(!state.renderGraph.isDirected &&
+              state.renderGraph.containsEdge(e.$2, e.$1)),
+    );
+
+    btnToggleLabels?.classList.toggle('active', state.showLabels);
+    btnToggleWeights?.classList.toggle('active', state.isWeighted);
+
+    btnUndo.disabled = !state.canUndo();
+    btnRedo.disabled = !state.canRedo();
+
+    btnModeVertex.classList.toggle('active', state.selectVerticesMode);
+    btnModeEdge.classList.toggle('active', state.selectEdgesMode);
+
+    codeDot.textContent = renderer.generateDot(state);
+    codeDart.textContent = GraphIO.exportToDartCode(state);
+
+    updateModifierVertexDropdowns(state);
+
+    GraphInspector.updateInvariants(state);
+    GraphInspector.updateInspector(
+      state,
+      onSelectVertex: (v) {
+        state.selectedVertices = {v};
+        state.selectedSource = v;
+        updateUI();
+      },
+      onUpdateWeight: (u, v, newWeight) {
+        state.saveSnapshot();
+        state.primaryGraph.addEdge(u, v, value: newWeight);
+        showToast('Updated weight of ($u, $v) to $newWeight');
+        updateUI();
+      },
+      onRenameNode: (v, newLabel) {
+        state.saveSnapshot();
+        final node = state.getOrCreateNode(v);
+        node.label = newLabel;
+        showToast('Renamed vertex "$v" to "$newLabel"');
+        updateUI();
+      },
+    );
+
+    renderer.render(state);
+  };
+
+  // Blender-style selection mode ('vertex' or 'edge')
+  // Selection mode toggles: Vertex (1) and Edge (2) (both active by default)
+  btnModeVertex.onClick.listen((_) {
+    if (state.selectVerticesMode && !state.selectEdgesMode) {
+      return; // Keep at least one mode active
+    }
+    state.selectVerticesMode = !state.selectVerticesMode;
+    updateUI();
+  });
+
+  btnModeEdge.onClick.listen((_) {
+    if (state.selectEdgesMode && !state.selectVerticesMode) {
+      return; // Keep at least one mode active
+    }
+    state.selectEdgesMode = !state.selectEdgesMode;
+    updateUI();
+  });
+
+  btnToggleLabels?.onClick.listen((_) {
+    state.showLabels = !state.showLabels;
+    updateUI();
+  });
+
+  btnToggleWeights?.onClick.listen((_) {
+    state.isWeighted = !state.isWeighted;
+    updateUI();
+  });
+
+  // Interactive Vertex Click handler (clicking an already selected vertex enters in-place edit mode)
+  void handleVertexClick(String vertex, web.MouseEvent event) {
+    if (!state.selectVerticesMode) return;
+    if (state.showLabels &&
+        !event.shiftKey &&
+        state.selectedVertices.length == 1 &&
+        state.selectedVertices.contains(vertex)) {
+      // In-place editing on clicking an already selected vertex
+      handleVertexDblClick(vertex);
+      return;
+    }
+    state.selectVertex(
+      vertex,
+      toggle: event.shiftKey,
+      clearOthers: !event.shiftKey,
+    );
+    updateUI();
+  }
+
+  // Interactive Edge Click handler
+  void handleEdgeClick(String source, String target, web.MouseEvent event) {
+    if (!state.selectEdgesMode) return;
+    if (event.shiftKey) {
+      if (state.selectedEdges.contains((source, target)) ||
+          (!state.primaryGraph.isDirected &&
+              state.selectedEdges.contains((target, source)))) {
+        state.selectedEdges.remove((source, target));
+        state.selectedEdges.remove((target, source));
+      } else {
+        state.selectedEdges.add((source, target));
+      }
+      state.selectedEdge = state.selectedEdges.isNotEmpty
+          ? state.selectedEdges.first
+          : null;
+    } else {
+      state.selectedVertices.clear();
+      state.activeVertex = null;
+      state.selectedSource = null;
+      state.selectedTarget = null;
+      state.selectedEdge = (source, target);
+      state.selectedEdges = {(source, target)};
+    }
+    updateUI();
+  }
+
+  // Unified Lasso / Marquee selection handler
+  void handleLassoSelection(
+    List<String> matchedVertices,
+    List<(String, String)> matchedEdges,
+    bool isShift,
+  ) {
+    if (!isShift) {
+      state.clearSelection();
+    }
+    if (state.selectVerticesMode && matchedVertices.isNotEmpty) {
+      state.selectedVertices.addAll(matchedVertices);
+      state.activeVertex = matchedVertices.last;
+      state.syncSelectionSourceTarget();
+    }
+    if (state.selectEdgesMode && matchedEdges.isNotEmpty) {
+      state.selectedEdges.addAll(matchedEdges);
+      state.selectedEdge = matchedEdges.last;
+    }
+    updateUI();
+  }
+
+  // Interactive Canvas Surface Click handler (click on empty background clears selection)
+  void handleBackgroundClick(web.MouseEvent event) {
+    state.clearSelection();
+    updateUI();
+  }
+
+  // Initialize renderer
+  renderer = GraphRenderer(
+    container: canvasContainer,
+    transformLayer: transformLayer,
+    onVertexClick: handleVertexClick,
+    onVertexDblClick: handleVertexDblClick,
+    onEdgeClick: handleEdgeClick,
+    onBackgroundClick: handleBackgroundClick,
+    onLassoSelection: handleLassoSelection,
+    onPlacementConfirmed: (placedVertex) {
+      state.selectVertex(placedVertex, clearOthers: true);
+      updateUI();
+      if (state.showLabels) {
+        renderer.showInlineNodeEditor(
+          state,
+          placedVertex,
+          onCommit: (newLabel) {
+            state.saveSnapshot();
+            state.getOrCreateNode(placedVertex).label = newLabel;
+            updateUI();
+          },
+        );
+      }
+    },
+    onEdgeWeightEdit: (u, v, newWeight) {
+      state.saveSnapshot();
+      state.primaryGraph.addEdge(u, v, value: newWeight);
+      updateUI();
+    },
+    onNodesMoved: (moves) {
+      state.saveSnapshot();
+      for (final MapEntry(:key, :value) in moves.entries) {
+        final node = state.nodes[key];
+        if (node != null) {
+          node.x = value.$1;
+          node.y = value.$2;
+        }
+      }
+      updateUI();
+    },
+  );
+
+  await renderer.initialize();
+  state.viz = renderer.viz;
+  renderer.autoLayout(state);
+
+  // Undo / Redo top bar button listeners
+  btnUndo.onClick.listen((_) {
+    state.undo();
+    updateUI();
+  });
+
+  btnRedo.onClick.listen((_) {
+    state.redo();
+    updateUI();
+  });
+
+  // Zoom listeners
+  btnZoomIn.onClick.listen((_) => renderer.zoomIn());
+  btnZoomOut.onClick.listen((_) => renderer.zoomOut());
+  btnZoomFit.onClick.listen((_) => renderer.resetView());
+
+  // Blender-style keyboard shortcuts
+  web.window.onkeydown = ((web.KeyboardEvent event) {
+    final target = event.target;
+    if (target != null &&
+        (target.isA<web.HTMLInputElement>() ||
+            target.isA<web.HTMLTextAreaElement>())) {
+      return;
+    }
+
+    final key = event.key;
+    final isModifier = event.ctrlKey || event.metaKey;
+
+    if (key == 'Escape') {
+      if (state.pendingPlacementVertex != null) {
+        state.pendingPlacementVertex = null;
+        updateUI();
+        event.preventDefault();
+        return;
+      }
+    }
+
+    if (isModifier && (key == 'z' || key == 'Z')) {
+      if (event.shiftKey) {
+        btnRedo.click();
+      } else {
+        btnUndo.click();
+      }
+      event.preventDefault();
+      return;
+    }
+
+    if (isModifier && (key == 'i' || key == 'I')) {
+      executeCommand('select.invert');
+      event.preventDefault();
+      return;
+    }
+
+    if (event.shiftKey && (key == 'd' || key == 'D')) {
+      executeCommand('graph.duplicate');
+      event.preventDefault();
+      return;
+    }
+
+    if (key == 'Backspace' || key == 'Delete' || key == 'x' || key == 'X') {
+      if (state.selectedVertices.isNotEmpty) {
+        executeCommand('vertex.delete');
+      } else {
+        executeCommand('edge.delete');
+      }
+      event.preventDefault();
+      return;
+    }
+
+    if (key == '1') {
+      btnModeVertex.click();
+      event.preventDefault();
+      return;
+    }
+
+    if (key == '2') {
+      btnModeEdge.click();
+      event.preventDefault();
+      return;
+    }
+
+    if (key == 'c' || key == 'C') {
+      executeCommand('vertex.add');
+      event.preventDefault();
+      return;
+    }
+
+    if (key == 'e' || key == 'E') {
+      executeCommand('vertex.expand');
+      event.preventDefault();
+      return;
+    }
+
+    if (key == 'a' || key == 'A') {
+      if (state.selectedVertices.isNotEmpty ||
+          state.selectedEdges.isNotEmpty ||
+          state.selectedEdge != null) {
+        executeCommand('select.none');
+      } else {
+        executeCommand('select.all');
+      }
+      event.preventDefault();
+      return;
+    }
+
+    if (key == 'f' || key == 'F') {
+      executeCommand('edge.connect');
+      event.preventDefault();
+      return;
+    }
+
+    if (key == 'w' || key == 'W') {
+      executeCommand('edge.subdivide');
+      event.preventDefault();
+      return;
+    }
+
+    if (key == 'm' || key == 'M') {
+      executeCommand('vertex.merge');
+      event.preventDefault();
+      return;
+    }
+
+    if (key == '+' || key == '=') {
+      executeCommand('select.expand');
+      event.preventDefault();
+      return;
+    }
+
+    if (key == '-' || key == '_') {
+      executeCommand('select.collapse');
+      event.preventDefault();
+      return;
+    }
+
+    if (key == 'l' || key == 'L') {
+      executeCommand('graph.layout');
+      event.preventDefault();
+      return;
+    }
+  }).toJS;
+
+  var isAnyMenuOpen = false;
+
+  void closeAllMenus() {
+    final openMenus = web.document.querySelectorAll('.menu-item.open');
+    for (var i = 0; i < openMenus.length; i++) {
+      (openMenus.item(i) as web.HTMLElement?)?.classList.remove('open');
+    }
+    isAnyMenuOpen = false;
+  }
+
+  void openMenu(web.HTMLElement parent) {
+    final openMenus = web.document.querySelectorAll('.menu-item.open');
+    for (var i = 0; i < openMenus.length; i++) {
+      (openMenus.item(i) as web.HTMLElement?)?.classList.remove('open');
+    }
+    parent.classList.add('open');
+    isAnyMenuOpen = true;
+  }
+
+  // Setup Menu triggers
+  final menuTriggers = web.document.querySelectorAll('.menu-label');
+  for (var i = 0; i < menuTriggers.length; i++) {
+    final trigger = menuTriggers.item(i) as web.HTMLButtonElement?;
+    if (trigger == null) continue;
+    trigger.onClick.listen((event) {
+      event.stopPropagation();
+      final parent = trigger.parentElement as web.HTMLElement?;
+      if (parent == null) return;
+      if (parent.classList.contains('open')) {
+        closeAllMenus();
+      } else {
+        openMenu(parent);
+      }
+    });
+
+    trigger.onMouseEnter.listen((event) {
+      if (isAnyMenuOpen) {
+        final parent = trigger.parentElement as web.HTMLElement?;
+        if (parent != null && !parent.classList.contains('open')) {
+          openMenu(parent);
+        }
+      }
+    });
+  }
+
+  // Close menus on outside click
+  web.document.addEventListener(
+    'click',
+    ((web.MouseEvent event) {
+      closeAllMenus();
+    }).toJS,
+  );
+
+  // Setup Menu dropdown items
+  final menuItems = web.document.querySelectorAll('.dropdown-item');
+  for (var i = 0; i < menuItems.length; i++) {
+    final item = menuItems.item(i) as web.HTMLElement?;
+    if (item == null) continue;
+    final cmdId = item.getAttribute('data-cmd');
+    if (cmdId != null) {
+      item.onClick.listen((event) {
+        event.stopPropagation();
+        closeAllMenus();
+        executeCommand(cmdId);
+      });
+    }
+  }
+
+  // Modifier Stack setup
+  selectAddModifier.onChange.listen((_) {
+    final type = selectAddModifier.value;
+    if (type.isNotEmpty) {
+      final mod = ModifierRegistry.create(type);
+      state.modifiers.add(mod);
+      selectAddModifier.value = '';
+      state.evaluateModifiers();
+      updateUI();
+      renderModifierStack();
+      showToast('Added modifier: ${mod.name}');
+    }
+  });
+
+  // Pinned Base Graph Modifier at index 0 (non-movable, non-removable)
+  state.modifiers.add(BaseGraphModifier());
+  // Default active modifier: Shortest Path
+  state.modifiers.add(ShortestPathModifier());
+  renderModifierStack();
 
   btnIoModal.onClick.listen((_) {
     syncModalContent();
@@ -1382,41 +902,6 @@ void main() async {
       GraphIO.downloadPngFile('graph.png', svg);
     }
   });
-
-  // Drawer tabs: clicking active tab toggles collapsed; clicking inactive tab opens and switches to it
-  final tabs = web.document.querySelectorAll('.drawer-tab');
-  for (var i = 0; i < tabs.length; i++) {
-    final tab = tabs.item(i) as web.HTMLElement?;
-    if (tab == null) continue;
-    tab.onClick.listen((_) {
-      final wasActive = tab.classList.contains('active');
-
-      if (wasActive) {
-        bottomDrawer.classList.toggle('collapsed');
-      } else {
-        bottomDrawer.classList.remove('collapsed');
-        for (var j = 0; j < tabs.length; j++) {
-          (tabs.item(j) as web.HTMLElement?)?.classList.remove('active');
-        }
-        tab.classList.add('active');
-        final targetId = tab.getAttribute('data-tab');
-        final panes = web.document.querySelectorAll('.tab-pane');
-        for (var k = 0; k < panes.length; k++) {
-          final pane = panes.item(k) as web.HTMLElement?;
-          if (pane != null) {
-            pane.style.display = pane.id == targetId ? 'block' : 'none';
-          }
-        }
-
-        // Auto-compute when opening metrics or matrix tabs
-        if (targetId == 'tab-metrics') {
-          computeAndRenderMetrics();
-        } else if (targetId == 'tab-matrix') {
-          computeAndRenderMatrix();
-        }
-      }
-    });
-  }
 
   updateUI();
 }

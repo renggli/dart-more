@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <title>Dart More — Graph Laboratory</title>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/milligram/1.4.1/milligram.min.css">
+  <link rel="stylesheet" href="../style.css">
   <link rel="stylesheet" href="graph.css">
   <script src="https://cdn.jsdelivr.net/npm/@viz-js/viz@3/lib/viz-standalone.min.js"></script>
 </head>
@@ -15,153 +15,105 @@
     </div>
 
     <div class="header-controls">
-      <!-- Graph Type & Weights Controls -->
-      <div class="header-group">
-        <label>Type:</label>
-        <button id="btn-directed" class="toggle-btn active button-small" title="Toggle Directed vs Undirected graph mode">Directed</button>
-      </div>
-
-      <div class="header-group">
-        <label>Weights:</label>
-        <button id="btn-weighted" class="toggle-btn active button-small" title="Toggle visibility of edge weights">Show Weights</button>
-      </div>
-
-      <!-- Layout Engine & Direction -->
-      <div class="header-group">
-        <label for="select-layout">Layout:</label>
-        <select id="select-layout">
-          <option value="dot" selected>dot (Hierarchical)</option>
-          <option value="neato">neato (Spring / Energy)</option>
-          <option value="fdp">fdp (Force-Directed)</option>
-          <option value="sfdp">sfdp (Multiscale Force)</option>
-          <option value="twopi">twopi (Radial)</option>
-          <option value="circo">circo (Circular)</option>
-          <option value="osage">osage (Array / Clustered)</option>
-        </select>
-      </div>
-
-      <div class="header-group" id="group-rankdir">
-        <label for="select-rankdir">Dir:</label>
-        <select id="select-rankdir">
-          <option value="LR" selected>Left &rarr; Right</option>
-          <option value="TB">Top &rarr; Bottom</option>
-          <option value="RL">Right &rarr; Left</option>
-          <option value="BT">Bottom &rarr; Top</option>
-        </select>
-      </div>
-
-      <!-- History & Reset -->
-      <div class="header-group">
-        <button id="btn-undo" class="button-outline button-small" title="Undo (Ctrl+Z)" disabled>Undo</button>
-        <button id="btn-redo" class="button-outline button-small" title="Redo (Ctrl+Shift+Z)" disabled>Redo</button>
-        <button id="btn-clear" class="button-outline button-small" title="Clear All Vertices and Edges">Clear</button>
-      </div>
-
-      <div class="header-group">
-        <button id="btn-io-modal" class="button-small">Import / Export</button>
-      </div>
+      <button id="btn-undo" class="button-outline button-small" title="Undo (Ctrl+Z)" disabled>Undo</button>
+      <button id="btn-redo" class="button-outline button-small" title="Redo (Ctrl+Y)" disabled>Redo</button>
+      <button id="btn-io-modal" class="button-small">Export</button>
     </div>
   </header>
 
-  <!-- Notification Banner -->
-  <div id="notification-banner" class="notification-banner" style="display: none;"></div>
-
   <!-- Main Container -->
   <div class="app-container">
-    <!-- Left Sidebar: Creation, Editing, Transformations -->
-    <aside class="sidebar left-sidebar">
-      <!-- Unified Creator & Presets -->
-      <div class="card">
-        <h3>Create & Presets</h3>
-        <label for="select-preset">Graph Preset / Generator:</label>
-        <select id="select-preset">
-          <optgroup label="Curated Networks">
-            <option value="preset_default" selected>Flow / Path Demo (6 nodes)</option>
-            <option value="preset_petersen">Petersen Graph (10 nodes)</option>
-            <option value="preset_karate">Karate Club (34 nodes)</option>
-            <option value="preset_road">Road Network (8 cities)</option>
-            <option value="preset_negative">Negative Edges (5 nodes)</option>
-            <option value="preset_dag">Compiler Task DAG (9 nodes)</option>
-            <option value="preset_bridges">Bridges & Articulation (8 nodes)</option>
-          </optgroup>
-          <optgroup label="Standard Topologies">
-            <option value="factory_complete">Complete Graph (Kn)</option>
-            <option value="factory_path">Path Graph (Pn)</option>
-            <option value="factory_ring">Ring / Cycle (Cn)</option>
-            <option value="factory_star">Star Graph (Sn)</option>
-            <option value="factory_tree">m-ary Tree</option>
-            <option value="factory_partite">Partite Graph (Layers)</option>
-            <option value="factory_random">Random (Erdős–Rényi)</option>
-          </optgroup>
-          <optgroup label="Atlas of Graphs">
-            <option value="atlas_graph">Read-Wilson Atlas (0..1252)</option>
-          </optgroup>
-        </select>
-
-        <!-- Dynamic Parameters for Selected Generator -->
-        <div id="creator-params-container" style="margin-top: 4px;">
-          <!-- Injected dynamically based on selected preset/generator -->
-        </div>
-
-        <button id="btn-generate" class="button-small" style="margin-top: 6px;">Generate Graph</button>
-      </div>
-
-      <!-- Quick Edit -->
-      <div class="card">
-        <h3>Edit Graph</h3>
-        <label>Add Node:</label>
-        <div class="form-row">
-          <input type="text" id="input-new-vertex" placeholder="Label (e.g. X)">
-          <button id="btn-add-vertex" class="button-small">+ Add</button>
-        </div>
-
-        <label style="margin-top: 6px;">Add / Update Edge:</label>
-        <div class="form-row">
-          <input type="text" id="input-edge-u" placeholder="From" style="max-width: 55px;">
-          <span>&rarr;</span>
-          <input type="text" id="input-edge-v" placeholder="To" style="max-width: 55px;">
-          <input type="number" id="input-edge-weight" placeholder="W" value="1" style="max-width: 50px;">
-          <button id="btn-add-edge" class="button-small">+ Edge</button>
-        </div>
-
-        <div class="form-row" style="margin-top: 8px;">
-          <button id="btn-remove-selected" class="button-outline button-small" style="width: 100%;">Delete Selected</button>
-        </div>
-      </div>
-
-      <!-- Structural Transformations -->
-      <div class="card">
-        <h3>Transformations</h3>
-        <div class="form-row">
-          <button id="btn-reverse" class="button-outline button-small" title="Reverse Edge Directions (Directed only)">Reverse</button>
-          <button id="btn-complement" class="button-outline button-small" title="Invert edge connectivity">Complement</button>
-        </div>
-        <div class="form-row">
-          <button id="btn-trans-closure" class="button-outline button-small" title="Add direct edges for all reachable pairs">Closure</button>
-          <button id="btn-trans-reduction" class="button-outline button-small" title="Remove transitive redundant edges in DAG">Reduction</button>
-        </div>
-        <div class="form-row">
-          <button id="btn-kcore" class="button-outline button-small" title="Extract maximal subgraph with vertex degree &ge; k">k-Core:</button>
-          <input type="number" id="input-kcore-k" value="2" min="1" max="10" style="max-width: 50px;">
-        </div>
-      </div>
-    </aside>
-
     <!-- Center Workspace -->
     <main class="center-workspace">
-      <!-- Toolbar -->
+      <!-- Toolbar (Blender-style Menus, Selection Modes & Display Toggles) -->
       <div class="canvas-toolbar">
-        <div class="mode-radios">
-          <span style="font-weight: 600; font-size: 1.1rem; color: var(--text-muted); margin-right: 4px;">Tool:</span>
-          <label title="Select nodes or edges, drag to pan canvas"><input type="radio" name="canvas-mode" value="select" checked> Select</label>
-          <label title="Click surface to drop a new node"><input type="radio" name="canvas-mode" value="add-node"> + Node</label>
-          <label title="Click node A then node B to connect an edge"><input type="radio" name="canvas-mode" value="add-edge"> + Edge</label>
-          <label title="Click any node or edge to delete it"><input type="radio" name="canvas-mode" value="delete"> Delete</label>
-        </div>
+        <div class="toolbar-left">
+          <!-- Desktop Menu Bar: Select, Vertex, Edge, Graph -->
+          <div class="menu-bar">
+            <div class="menu-item" id="menu-select">
+              <button class="menu-label">Select</button>
+              <div class="menu-dropdown" id="dropdown-select">
+                <div class="dropdown-item" data-cmd="select.all"><span>Select All</span><span class="shortcut">A</span></div>
+                <div class="dropdown-item" data-cmd="select.expand"><span>Expand Selection</span><span class="shortcut">+</span></div>
+                <div class="dropdown-item" data-cmd="select.collapse"><span>Collapse Selection</span><span class="shortcut">-</span></div>
+                <div class="dropdown-item" data-cmd="select.invert"><span>Invert Selection</span><span class="shortcut">Ctrl+I</span></div>
+                <div class="dropdown-item" data-cmd="select.none"><span>Deselect All</span><span class="shortcut">Alt+A</span></div>
+                <div class="dropdown-divider"></div>
+                <div class="dropdown-item" data-cmd="select.vertices"><span>Select All Vertices</span><span class="shortcut">Alt+1</span></div>
+                <div class="dropdown-item" data-cmd="select.edges"><span>Select All Edges</span><span class="shortcut">Alt+2</span></div>
+              </div>
+            </div>
 
-        <div class="selection-pills">
-          <span id="label-selection-info" style="color: var(--text-muted); font-size: 1.1rem;">No selection</span>
-          <button id="btn-clear-selection" class="button-outline button-small">Deselect</button>
+            <div class="menu-item" id="menu-vertex">
+              <button class="menu-label">Vertex</button>
+              <div class="menu-dropdown" id="dropdown-vertex">
+                <div class="dropdown-item" data-cmd="vertex.add"><span>Add Vertex</span><span class="shortcut">C</span></div>
+                <div class="dropdown-item" data-cmd="vertex.expand"><span>Expand</span><span class="shortcut">E</span></div>
+                <div class="dropdown-item" data-cmd="vertex.rename"><span>Rename Active</span><span class="shortcut">F2</span></div>
+                <div class="dropdown-item" data-cmd="vertex.merge"><span>Merge Vertices</span><span class="shortcut">M</span></div>
+                <div class="dropdown-divider"></div>
+                <div class="dropdown-item dropdown-danger" data-cmd="vertex.delete"><span>Delete Vertices</span><span class="shortcut">X</span></div>
+              </div>
+            </div>
+
+            <div class="menu-item" id="menu-edge">
+              <button class="menu-label">Edge</button>
+              <div class="menu-dropdown" id="dropdown-edge">
+                <div class="dropdown-item" data-cmd="edge.connect"><span>Connect Vertices</span><span class="shortcut">F</span></div>
+                <div class="dropdown-item" data-cmd="edge.subdivide"><span>Subdivide Edges</span><span class="shortcut">W</span></div>
+                <div class="dropdown-item" data-cmd="edge.reverse"><span>Reverse Directions</span><span class="shortcut">Alt+R</span></div>
+                <div class="dropdown-divider"></div>
+                <div class="dropdown-item dropdown-danger" data-cmd="edge.delete"><span>Delete Edges</span><span class="shortcut">Alt+X</span></div>
+              </div>
+            </div>
+
+            <div class="menu-item" id="menu-graph">
+              <button class="menu-label">Graph</button>
+              <div class="menu-dropdown" id="dropdown-graph">
+                <div class="dropdown-item" data-cmd="graph.layout"><span>Auto Layout</span><span class="shortcut">L</span></div>
+                <div class="dropdown-item" data-cmd="graph.duplicate"><span>Duplicate Subgraph</span><span class="shortcut">Shift+D</span></div>
+                <div class="dropdown-divider"></div>
+                <div class="dropdown-item" data-cmd="graph.complement"><span>Complement Graph</span></div>
+                <div class="dropdown-item" data-cmd="graph.transitive_closure"><span>Transitive Closure</span></div>
+                <div class="dropdown-item" data-cmd="graph.transitive_reduction"><span>Transitive Reduction</span></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="tool-separator"></div>
+
+          <!-- Selection Modes & Display Toggles merged into a single button group -->
+          <div class="segmented-group" title="Modes: 1 for Vertex, 2 for Edge, Labels, Weights">
+            <button id="btn-mode-vertex" class="segmented-btn active" title="Vertex Selection (1)">
+              <svg width="15" height="15" viewBox="0 0 16 16" fill="currentColor">
+                <circle cx="8" cy="8" r="4.5" />
+                <circle cx="8" cy="8" r="6.5" fill="none" stroke="currentColor" stroke-width="1.2" opacity="0.6" />
+              </svg>
+            </button>
+            <button id="btn-mode-edge" class="segmented-btn active" title="Edge Selection (2)">
+              <svg width="15" height="15" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8">
+                <line x1="3" y1="13" x2="13" y2="3" />
+                <circle cx="3" cy="13" r="2" fill="currentColor" />
+                <circle cx="13" cy="3" r="2" fill="currentColor" />
+              </svg>
+            </button>
+            <button id="btn-toggle-labels" class="segmented-btn active" title="Toggle Vertex Labels">
+              <svg width="15" height="15" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M2.5 13 L6 4 L9.5 13" />
+                <path d="M3.7 10 L8.3 10" />
+                <path d="M11 7.5 A2 2 0 0 1 14.5 9 L14.5 13" />
+                <path d="M14.5 10.5 A2 2 0 0 0 11 12" />
+              </svg>
+            </button>
+            <button id="btn-toggle-weights" class="segmented-btn active" title="Toggle Edge Weights">
+              <svg width="15" height="15" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round">
+                <line x1="3" y1="5.5" x2="13" y2="5.5" />
+                <line x1="3" y1="10.5" x2="13" y2="10.5" />
+                <line x1="6" y1="2.5" x2="4.5" y2="13.5" />
+                <line x1="11.5" y1="2.5" x2="10" y2="13.5" />
+              </svg>
+            </button>
+          </div>
         </div>
       </div>
 
@@ -171,6 +123,19 @@
           <div id="graph-canvas"></div>
         </div>
 
+        <!-- Lasso Selection Marquee -->
+        <div id="selection-marquee" class="selection-marquee" style="display: none;"></div>
+
+        <!-- Gesture Overlay for edge swipe connection preview -->
+        <svg id="gesture-overlay" class="gesture-overlay" style="display: none;">
+          <defs>
+            <marker id="swipe-arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+              <path d="M 0 1 L 10 5 L 0 9 z" fill="#2563eb" />
+            </marker>
+          </defs>
+          <line id="swipe-line" x1="0" y1="0" x2="0" y2="0" stroke="#2563eb" stroke-width="2.5" stroke-dasharray="5 4" marker-end="url(#swipe-arrow)" />
+        </svg>
+
         <!-- Floating Zoom Controls -->
         <div class="floating-controls">
           <button id="btn-zoom-in" title="Zoom In">+</button>
@@ -178,107 +143,70 @@
           <button id="btn-zoom-fit" title="Reset View (Fit)">&#x2922;</button>
         </div>
       </div>
-
-      <!-- Playback Bar -->
-      <div class="playback-bar" id="playback-bar" style="display: none;">
-        <div class="playback-controls">
-          <button id="btn-play-first" class="button-outline button-small">&verbar;&lang;</button>
-          <button id="btn-play-prev" class="button-outline button-small">&lang;</button>
-          <button id="btn-play-pause" class="button-small">Play</button>
-          <button id="btn-play-next" class="button-outline button-small">&rang;</button>
-          <button id="btn-play-last" class="button-outline button-small">&rang;&verbar;</button>
-          <span id="label-playback-step" style="font-weight: 600; margin-left: 8px;">Step 0 / 0</span>
-        </div>
-        <div>
-          <label for="select-playback-speed" style="display: inline; font-size: 1.1rem; margin-right: 4px;">Speed:</label>
-          <select id="select-playback-speed" style="height: 2.6rem !important; line-height: 2.6rem !important; font-size: 1.1rem !important; padding: 0 4px !important;">
-            <option value="1000">0.5x</option>
-            <option value="500" selected>1.0x</option>
-            <option value="250">2.0x</option>
-          </select>
-        </div>
-      </div>
-
-      <!-- Bottom Drawer: Live Metrics Table, Distance Matrix, Live DOT, Runnable Dart Code -->
-      <div class="bottom-drawer collapsed" id="bottom-drawer">
-        <div class="drawer-header" id="drawer-header">
-          <div class="drawer-tabs">
-            <span class="drawer-tab active" data-tab="tab-dart">Dart Code</span>
-            <span class="drawer-tab" data-tab="tab-dot">Graphviz DOT</span>
-            <span class="drawer-tab" data-tab="tab-metrics">Metrics Table</span>
-            <span class="drawer-tab" data-tab="tab-matrix">Distance Matrix</span>
-          </div>
-        </div>
-        <div class="drawer-content">
-          <div id="tab-dart" class="tab-pane">
-            <pre id="code-dart" class="code-block"></pre>
-          </div>
-          <div id="tab-dot" class="tab-pane" style="display: none;">
-            <pre id="code-dot" class="code-block"></pre>
-          </div>
-          <div id="tab-metrics" class="tab-pane" style="display: none;">
-            <div style="margin-bottom: 6px;">
-              <button id="btn-refresh-metrics" class="button-small">🔄 Refresh Metrics</button>
-              <span style="color: var(--text-muted); font-size: 1.1rem; margin-left: 8px;">Click any metric column header to color the graph heatmap by that measure.</span>
-            </div>
-            <div id="metrics-table-container">Click "Refresh Metrics" to compute centrality and structural scores for all vertices.</div>
-          </div>
-          <div id="tab-matrix" class="tab-pane" style="display: none;">
-            <div style="margin-bottom: 6px;">
-              <button id="btn-refresh-matrix" class="button-small">🔄 Compute All-Pairs Paths</button>
-              <span style="color: var(--text-muted); font-size: 1.1rem; margin-left: 8px;">Click any cell (u, v) to highlight the shortest path on the canvas.</span>
-            </div>
-            <div id="matrix-container">Click "Compute All-Pairs Paths" to calculate the Floyd-Warshall distance matrix.</div>
-          </div>
-        </div>
-      </div>
     </main>
 
-    <!-- Right Sidebar: Algorithms & Queries -->
+    <!-- Right Sidebar: Modifiers Stack & Inspector -->
     <aside class="sidebar right-sidebar">
-      <!-- Algorithms Panel -->
-      <div class="card">
-        <h3>Algorithms & Traversals</h3>
-        <label for="select-algorithm-category">Category:</label>
-        <select id="select-algorithm-category">
-          <option value="shortest_path" selected>1. Shortest Paths & Search</option>
-          <option value="flow_cuts">2. Flow, Cuts & Connectivity</option>
-          <option value="spanning_tree">3. Spanning Trees</option>
-          <option value="centrality">4. Centrality & Scoring</option>
-          <option value="coloring_cliques">5. Coloring & Cliques</option>
-          <option value="matching">6. Matching</option>
-          <option value="community">7. Community Detection</option>
-          <option value="tours">8. Eulerian & Hamiltonian Tours</option>
-          <option value="planarity_iso">9. Planarity & Isomorphism</option>
-          <option value="traversal">10. Traversals & Random Walk</option>
-        </select>
-
-        <label for="select-algorithm" style="margin-top: 4px;">Algorithm:</label>
-        <select id="select-algorithm">
-          <!-- Dynamic options loaded based on category -->
-        </select>
-
-        <div id="algorithm-params" style="margin-top: 4px;">
-          <!-- Dynamic parameter inputs for selected algorithm -->
+      <!-- Modifiers Stack Section -->
+      <section class="sidebar-section" id="section-modifiers">
+        <div class="section-header">
+          <h3>Modifiers Stack</h3>
+          <select id="select-add-modifier" style="max-width: 165px;">
+            <option value="" selected disabled>+ Add Modifier...</option>
+            <optgroup label="Generators & Layout">
+              <option value="generator">Graph Generator</option>
+              <option value="layout">Layout Algorithm</option>
+            </optgroup>
+            <optgroup label="Paths & Traversals">
+              <option value="shortest_path">Shortest Path</option>
+              <option value="all_pairs_path">All-Pairs Paths (Floyd-Warshall)</option>
+            </optgroup>
+            <optgroup label="Centrality & Metrics">
+              <option value="centrality">Centrality Heatmap</option>
+            </optgroup>
+            <optgroup label="Connectivity & Clusters">
+              <option value="components">Components & Communities</option>
+              <option value="biconnected">Biconnected & Bridges</option>
+            </optgroup>
+            <optgroup label="Trees & Cycles">
+              <option value="spanning_tree">Spanning Tree (MST)</option>
+              <option value="cycle_detection">Cycle Detection</option>
+            </optgroup>
+            <optgroup label="Cuts & Flows">
+              <option value="max_flow">Max Flow & Min s-t Cut</option>
+              <option value="min_cut">Global Min Cut (Stoer-Wagner)</option>
+            </optgroup>
+            <optgroup label="Matching & Cliques">
+              <option value="matching">Maximum Matching (Blossom)</option>
+              <option value="cliques">Maximal Cliques & Ind. Set</option>
+              <option value="vertex_cover">Minimum Vertex Cover</option>
+            </optgroup>
+            <optgroup label="Graph Theory & Tours">
+              <option value="planarity">Planarity & Kuratowski</option>
+              <option value="eulerian">Eulerian Circuit / Trail</option>
+              <option value="hamiltonian">Hamiltonian Cycle / Path</option>
+              <option value="vertex_coloring">Vertex Coloring</option>
+              <option value="k_core">k-Core Subgraph</option>
+            </optgroup>
+            <optgroup label="Transformations">
+              <option value="transitive_closure">Transitive Closure</option>
+              <option value="transitive_reduction">Transitive Reduction</option>
+              <option value="complement">Graph Complement</option>
+            </optgroup>
+          </select>
         </div>
-
-        <div class="form-row" style="margin-top: 8px;">
-          <button id="btn-run-algo" style="flex: 2;">Run</button>
-          <button id="btn-clear-overlay" class="button-outline" style="flex: 1;">Clear</button>
+        <div id="modifiers-stack-list" class="modifiers-stack-list">
+          <!-- Dynamically populated modifier cards -->
         </div>
-      </div>
+      </section>
 
-      <!-- Algorithm Results Card -->
-      <div class="card" id="card-results" style="display: none;">
-        <h3>Result</h3>
-        <div id="algorithm-results"></div>
-      </div>
-
-      <!-- Graph Properties & Invariants -->
-      <div class="card">
-        <h3>Graph Invariants</h3>
+      <!-- Graph Properties & Invariants Section -->
+      <section class="sidebar-section">
+        <div class="section-header">
+          <h3>Graph Invariants</h3>
+        </div>
         <div class="stats-grid" id="stats-grid">
-          <div class="stats-item"><span>Nodes:</span> <b id="stat-nodes">0</b></div>
+          <div class="stats-item"><span>Vertices:</span> <b id="stat-nodes">0</b></div>
           <div class="stats-item"><span>Edges:</span> <b id="stat-edges">0</b></div>
           <div class="stats-item"><span>Density:</span> <b id="stat-density">0.00</b></div>
           <div class="stats-item"><span>Components:</span> <b id="stat-components">0</b></div>
@@ -287,15 +215,17 @@
           <div class="stats-item"><span>Cycle:</span> <b id="stat-cycle">-</b></div>
           <div class="stats-item"><span>Eulerian:</span> <b id="stat-eulerian">-</b></div>
         </div>
-      </div>
+      </section>
 
-      <!-- Selected Node / Edge Details -->
-      <div class="card">
-        <h3>Inspector</h3>
-        <div id="inspector-content">
-          <span style="color: var(--text-muted);">Click a node or edge on the canvas to inspect its properties.</span>
+      <!-- Selected Vertex / Edge Details Section -->
+      <section class="sidebar-section">
+        <div class="section-header">
+          <h3>Inspector</h3>
         </div>
-      </div>
+        <div id="inspector-content">
+          <span style="color: var(--text-muted); font-size: 11.5px;">Click a vertex or edge on the canvas to inspect its properties.</span>
+        </div>
+      </section>
     </aside>
   </div>
 

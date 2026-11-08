@@ -1,13 +1,17 @@
+import 'dart:js_interop';
+import 'dart:math' as math;
+
 import 'package:more/collection.dart';
 import 'package:more/graph.dart';
 import 'package:web/web.dart' as web;
 
+import 'dom_utils.dart';
 import 'state.dart';
 
 /// Manages graph invariant computations and the vertex/edge inspector panel.
 final class GraphInspector {
   static void updateInvariants(AppState state) {
-    final graph = state.primaryGraph;
+    final graph = state.renderGraph;
     final vCount = graph.vertices.length;
     final eCount = graph.edges.unique().length;
 
@@ -75,7 +79,7 @@ final class GraphInspector {
         web.document.querySelector('#inspector-content') as web.HTMLElement?;
     if (container == null) return;
 
-    final graph = state.primaryGraph;
+    final graph = state.renderGraph;
     container.textContent = '';
 
     // 1. Edge inspector
@@ -83,38 +87,74 @@ final class GraphInspector {
       final (u, v) = state.selectedEdge!;
       final edge = graph.getEdge(u, v) ?? graph.getEdge(v, u);
       final currentWeight = edge?.value ?? 1;
-
-      final p = web.HTMLParagraphElement();
       final arrow = graph.isDirected ? '→' : '—';
-      p.textContent = 'Edge: $u $arrow $v';
-      container.appendChild(p);
 
-      final row = web.HTMLDivElement()..className = 'form-row';
-      final lbl = web.HTMLLabelElement()..textContent = 'Weight:';
-      final input = web.HTMLInputElement()
+      final titleP = p()..style.margin = '0 0 6px 0';
+      titleP.appendChild(span('Edge: ')..style.fontWeight = '600');
+      titleP.appendChild(
+        span(u, 'pill pill-source')..style.marginRight = '4px',
+      );
+      titleP.appendChild(span(arrow)..style.margin = '0 4px');
+      titleP.appendChild(span(v, 'pill pill-target'));
+      container.appendChild(titleP);
+
+      final formRow = div('form-row')..style.margin = '4px 0 8px 0';
+      final lbl = label('Weight:')..style.fontSize = '11.5px';
+      final input = numberInput(currentWeight)
         ..id = 'input-inspector-weight'
-        ..type = 'number'
-        ..value = currentWeight.toString()
-        ..style.maxWidth = '70px';
-      final btn = web.HTMLButtonElement()
-        ..className = 'button-small'
-        ..textContent = 'Update';
+        ..style.maxWidth = '80px';
+      final btn = button('Set', 'button-small');
       btn.onClick.listen((_) {
         final val = num.tryParse(input.value);
         if (val != null) {
           onUpdateWeight(u, v, val);
         }
       });
+      input.onKeyDown.listen((e) {
+        if (e.key == 'Enter') {
+          final val = num.tryParse(input.value);
+          if (val != null) onUpdateWeight(u, v, val);
+        }
+      });
 
-      row.appendChild(lbl);
-      row.appendChild(input);
-      row.appendChild(btn);
-      container.appendChild(row);
+      formRow.appendChild(lbl);
+      formRow.appendChild(input);
+      formRow.appendChild(btn);
+      container.appendChild(formRow);
+
+      // Edge Metrics
+      final nodeU = state.nodes[u];
+      final nodeV = state.nodes[v];
+      var distStr = '-';
+      if (nodeU?.x != null &&
+          nodeU?.y != null &&
+          nodeV?.x != null &&
+          nodeV?.y != null) {
+        final dx = nodeV!.x! - nodeU!.x!;
+        final dy = nodeV.y! - nodeU.y!;
+        distStr = '${math.sqrt(dx * dx + dy * dy).round()} px';
+      }
+
+      final metricsP = p()
+        ..style.fontSize = '11px'
+        ..style.color = 'var(--text-secondary)'
+        ..style.lineHeight = '1.5';
+      final isBidi = graph.isDirected && graph.containsEdge(v, u);
+      metricsP.innerHTML =
+          '''
+        <b>Direction:</b> ${graph.isDirected ? 'Directed' : 'Undirected'}<br>
+        <b>Bidirectional:</b> ${isBidi ? 'Yes (opposing edge exists)' : 'No'}<br>
+        <b>Length:</b> $distStr<br>
+        <b>Source deg:</b> ${graph.degreeOf(u)} | <b>Target deg:</b> ${graph.degreeOf(v)}
+      '''
+              .toJS;
+      container.appendChild(metricsP);
       return;
     }
 
     // 2. Vertex inspector
     final selectedVertex =
+        state.activeVertex ??
         state.selectedSource ??
         (state.selectedVertices.isNotEmpty
             ? state.selectedVertices.first
@@ -128,91 +168,140 @@ final class GraphInspector {
       final outDeg = graph.isDirected ? graph.outDegreeOf(v) : deg;
       final clustering = graph.localClusteringCoefficient(v);
 
-      final titleP = web.HTMLParagraphElement();
-      titleP.appendChild(web.HTMLSpanElement()..textContent = 'Node ID: ');
-      titleP.appendChild(
-        web.HTMLSpanElement()
-          ..className = 'pill pill-source'
-          ..textContent = v,
-      );
+      final titleP = p()..style.margin = '0 0 6px 0';
+      titleP.appendChild(span('Active Vertex: ')..style.fontWeight = '600');
+      titleP.appendChild(span(v, 'pill pill-source'));
       container.appendChild(titleP);
 
-      // Node Label Editor
-      final labelRow = web.HTMLDivElement()
-        ..className = 'form-row'
-        ..style.marginTop = '4px';
-      final labelInput = web.HTMLInputElement()
-        ..id = 'input-node-label'
-        ..type = 'text'
-        ..value = currentLabel
-        ..placeholder = 'Node label'
+      // Vertex Label Editor
+      final labelRow = div('form-row')..style.margin = '4px 0 8px 0';
+      final labelInput = textInput(currentLabel, 'Vertex label')
+        ..id = 'input-vertex-label'
         ..style.maxWidth = '110px';
-      final labelBtn = web.HTMLButtonElement()
-        ..className = 'button-small'
-        ..textContent = 'Rename';
-      labelBtn.onClick.listen((_) {
+      final labelBtn = button('Rename', 'button-small');
+      void commitRename() {
         final newLabel = labelInput.value.trim();
-        if (newLabel.isNotEmpty) {
-          onRenameNode(v, newLabel);
-        }
+        if (newLabel.isNotEmpty) onRenameNode(v, newLabel);
+      }
+
+      labelBtn.onClick.listen((_) => commitRename());
+      labelInput.onKeyDown.listen((e) {
+        if (e.key == 'Enter') commitRename();
       });
       labelRow.appendChild(labelInput);
       labelRow.appendChild(labelBtn);
       container.appendChild(labelRow);
 
+      // Coordinates
       if (nodeObj != null && nodeObj.x != null && nodeObj.y != null) {
-        final posP = web.HTMLParagraphElement()
-          ..style.fontSize = '1.0rem'
-          ..style.color = 'var(--text-muted)'
-          ..style.margin = '2px 0 6px 0'
-          ..textContent =
-              'Position: X: ${nodeObj.x!.round()}px, Y: ${nodeObj.y!.round()}px';
+        final posP =
+            p('Position: X: ${nodeObj.x!.round()}px, Y: ${nodeObj.y!.round()}px')
+              ..style.fontSize = '10.5px'
+              ..style.color = 'var(--text-muted)'
+              ..style.margin = '0 0 6px 0';
         container.appendChild(posP);
       }
 
-      final metricsP = web.HTMLParagraphElement()
-        ..style.fontSize = '1.1rem'
-        ..style.margin = '4px 0';
+      // Detailed Vertex Metrics
+      final metricsP = p()
+        ..style.fontSize = '11px'
+        ..style.color = 'var(--text-secondary)'
+        ..style.lineHeight = '1.5'
+        ..style.margin = '0 0 6px 0';
+
+      final overlay = state.activeOverlay;
+      var extraMetric = '';
+      if (overlay is HeatmapOverlay && overlay.scores.containsKey(v)) {
+        extraMetric =
+            '<br><b>${overlay.title}:</b> ${overlay.scores[v]!.toStringAsFixed(4)}';
+      }
+
       if (graph.isDirected) {
-        metricsP.textContent =
-            'Degree: $deg (In: $inDeg, Out: $outDeg) | Clustering: ${clustering.toStringAsFixed(3)}';
+        metricsP.innerHTML =
+            '''
+          <b>Degree:</b> $deg (In: $inDeg, Out: $outDeg)<br>
+          <b>Clustering Coeff:</b> ${clustering.toStringAsFixed(3)}$extraMetric
+        '''
+                .toJS;
       } else {
-        metricsP.textContent =
-            'Degree: $deg | Clustering: ${clustering.toStringAsFixed(3)}';
+        metricsP.innerHTML =
+            '''
+          <b>Degree:</b> $deg<br>
+          <b>Clustering Coeff:</b> ${clustering.toStringAsFixed(3)}$extraMetric
+        '''
+                .toJS;
       }
       container.appendChild(metricsP);
 
-      // Neighbours pills
-      final neighbours = graph.neighboursOf(v).toList();
-      if (neighbours.isNotEmpty) {
-        final row = web.HTMLDivElement()..style.margin = '6px 0';
-        row.appendChild(
-          web.HTMLSpanElement()
-            ..style.fontSize = '1.1rem'
-            ..style.fontWeight = '600'
-            ..textContent = 'Neighbours: ',
-        );
-        for (final n in neighbours) {
-          final pill = web.HTMLSpanElement()
-            ..className = 'pill'
-            ..style.cursor = 'pointer'
-            ..style.background = '#f1f5f9'
-            ..style.margin = '2px'
-            ..textContent = state.nodes[n]?.label ?? n;
-          pill.onClick.listen((_) => onSelectVertex(n));
-          row.appendChild(pill);
+      // Predecessors (if directed)
+      if (graph.isDirected) {
+        final preds = graph.predecessorsOf(v).toList();
+        if (preds.isNotEmpty) {
+          final predRow = div()..style.margin = '4px 0';
+          predRow.appendChild(
+            span('In-Neighbors: ')
+              ..style.fontSize = '10.5px'
+              ..style.fontWeight = '600',
+          );
+          for (final p in preds) {
+            final pill = span(state.nodes[p]?.label ?? p, 'pill')
+              ..style.cursor = 'pointer'
+              ..style.margin = '2px';
+            pill.onClick.listen((_) => onSelectVertex(p));
+            predRow.appendChild(pill);
+          }
+          container.appendChild(predRow);
         }
-        container.appendChild(row);
+      }
+
+      // Successors / Neighbors
+      final succs =
+          (graph.isDirected ? graph.successorsOf(v) : graph.neighboursOf(v))
+              .toList();
+      if (succs.isNotEmpty) {
+        final succRow = div()..style.margin = '4px 0';
+        succRow.appendChild(
+          span(graph.isDirected ? 'Out-Neighbors: ' : 'Neighbors: ')
+            ..style.fontSize = '10.5px'
+            ..style.fontWeight = '600',
+        );
+        for (final s in succs) {
+          final pill = span(state.nodes[s]?.label ?? s, 'pill')
+            ..style.cursor = 'pointer'
+            ..style.margin = '2px';
+          pill.onClick.listen((_) => onSelectVertex(s));
+          succRow.appendChild(pill);
+        }
+        container.appendChild(succRow);
       }
       return;
     }
 
-    // 3. Empty state
-    container.appendChild(
-      web.HTMLSpanElement()
-        ..style.color = 'var(--text-muted)'
-        ..textContent = 'Click a node or edge on the canvas to inspect and edit its properties.',
-    );
+    // 3. Multi-selection summary
+    if (state.selectedVertices.length > 1 || state.selectedEdges.length > 1) {
+      final summaryP = p()
+        ..style.fontSize = '11.5px'
+        ..style.lineHeight = '1.5'
+        ..style.color = 'var(--text-secondary)';
+      summaryP.innerHTML =
+          '''
+        <b>Selection Summary:</b><br>
+        • Vertices: <b>${state.selectedVertices.length}</b><br>
+        • Edges: <b>${state.selectedEdges.length}</b>
+      '''
+              .toJS;
+      container.appendChild(summaryP);
+      return;
+    }
+
+    // 4. Empty state
+    final emptySpan =
+        span(
+            'Click a vertex or edge on the canvas to inspect and edit its properties.',
+          )
+          ..style.color = 'var(--text-muted)'
+          ..style.fontSize = '11.5px';
+    container.appendChild(emptySpan);
   }
 
   static void _setText(String selector, String text) {

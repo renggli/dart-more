@@ -82,7 +82,7 @@ void update() {
   // Draw all the entries.
   for (final entry in tree.traverse((node) => node.entries)) {
     if (entry.isLeaf) {
-      context.fillStyle = 'black'.toJS;
+      context.fillStyle = '#f8fafc'.toJS;
       context.textAlign = 'center';
       context.textBaseline = 'middle';
       context.fillText(
@@ -91,8 +91,9 @@ void update() {
         entry.bounds.min[1],
       );
     } else {
-      context.fillStyle = 'gray'.toJS;
-      context.strokeStyle = 'gray'.toJS;
+      context.fillStyle = '#a5b4fc'.toJS;
+      context.strokeStyle = '#6366f1'.toJS;
+      context.lineWidth = 1.5;
       context.strokeRect(
         entry.bounds.min[0] - 5,
         entry.bounds.min[1] - 5,

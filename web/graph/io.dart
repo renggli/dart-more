@@ -245,7 +245,7 @@ final class GraphIO {
     );
     final url = web.URL.createObjectURL(svgBlob);
 
-    final image = web.HTMLImageElement();
+    final image = web.document.createElement('img') as web.HTMLImageElement;
     image.onload = ((web.Event _) {
       final rect = svg.getBoundingClientRect();
       final width = (rect.width > 0 ? rect.width : 800) * 2;

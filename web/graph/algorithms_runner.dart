@@ -4,6 +4,7 @@ import 'package:more/collection.dart';
 import 'package:more/graph.dart';
 import 'package:web/web.dart' as web;
 
+import 'dom_utils.dart';
 import 'presets.dart';
 import 'state.dart';
 
@@ -133,16 +134,10 @@ final class AlgorithmsRunner {
       String? defaultVal, [
       String placeholder = 'Select node',
     ]) {
-      final select = web.HTMLSelectElement()..id = id;
-      select.appendChild(
-        web.HTMLOptionElement()
-          ..value = ''
-          ..text = placeholder,
-      );
+      final select = selectElement(id);
+      select.appendChild(optionElement('', placeholder));
       for (final v in vertices) {
-        final opt = web.HTMLOptionElement()
-          ..value = v
-          ..text = v;
+        final opt = optionElement(v, v);
         if (v == defaultVal) opt.selected = true;
         select.appendChild(opt);
       }
@@ -153,8 +148,8 @@ final class AlgorithmsRunner {
       case 'dijkstra':
       case 'bellman_ford':
       case 'max_flow':
-        final row = web.HTMLDivElement()..className = 'form-row';
-        row.appendChild(web.HTMLLabelElement()..textContent = 'From:');
+        final row = div('form-row');
+        row.appendChild(label('From:'));
         row.appendChild(
           createVertexSelect(
             'algo-param-source',
@@ -162,7 +157,7 @@ final class AlgorithmsRunner {
                 (vertices.isNotEmpty ? vertices.first : null),
           ),
         );
-        row.appendChild(web.HTMLLabelElement()..textContent = 'To:');
+        row.appendChild(label('To:'));
         row.appendChild(
           createVertexSelect(
             'algo-param-target',
@@ -179,8 +174,8 @@ final class AlgorithmsRunner {
       case 'dfs_post':
       case 'topological':
       case 'random_walk':
-        final row = web.HTMLDivElement()..className = 'form-row';
-        row.appendChild(web.HTMLLabelElement()..textContent = 'Start Node:');
+        final row = div('form-row');
+        row.appendChild(label('Start Node:'));
         row.appendChild(
           createVertexSelect(
             'algo-param-source',
@@ -191,42 +186,23 @@ final class AlgorithmsRunner {
         container.appendChild(row);
 
       case 'louvain':
-        final row = web.HTMLDivElement()..className = 'form-row';
-        row.appendChild(web.HTMLLabelElement()..textContent = 'Resolution:');
-        row.appendChild(
-          web.HTMLInputElement()
-            ..id = 'algo-param-resolution'
-            ..type = 'number'
-            ..value = '1.0'
-            ..step = '0.1'
-            ..style.maxWidth = '70px',
-        );
+        final row = div('form-row');
+        row.appendChild(label('Resolution:'));
+        final resInput = numberInput(1.0)
+          ..id = 'algo-param-resolution'
+          ..step = '0.1'
+          ..style.maxWidth = '70px';
+        row.appendChild(resInput);
         container.appendChild(row);
 
       case 'subgraph_isomorphism':
-        final row = web.HTMLDivElement()..className = 'form-row';
-        row.appendChild(web.HTMLLabelElement()..textContent = 'Pattern:');
-        final select = web.HTMLSelectElement()..id = 'algo-param-pattern';
-        select.appendChild(
-          web.HTMLOptionElement()
-            ..value = 'triangle'
-            ..text = 'Triangle (K3)',
-        );
-        select.appendChild(
-          web.HTMLOptionElement()
-            ..value = 'square'
-            ..text = '4-Cycle (C4)',
-        );
-        select.appendChild(
-          web.HTMLOptionElement()
-            ..value = 'k4'
-            ..text = 'Complete K4',
-        );
-        select.appendChild(
-          web.HTMLOptionElement()
-            ..value = 'star3'
-            ..text = 'Star (1 center, 3 leaves)',
-        );
+        final row = div('form-row');
+        row.appendChild(label('Pattern:'));
+        final select = selectElement('algo-param-pattern');
+        select.appendChild(optionElement('triangle', 'Triangle (K3)'));
+        select.appendChild(optionElement('square', '4-Cycle (C4)'));
+        select.appendChild(optionElement('k4', 'Complete K4'));
+        select.appendChild(optionElement('star3', 'Star (1 center, 3 leaves)'));
         row.appendChild(select);
         container.appendChild(row);
     }
@@ -572,10 +548,25 @@ final class AlgorithmsRunner {
       case 'degree_centrality':
       case 'core_numbers':
       case 'local_clustering':
-        final pr = graph.pageRank();
-        final bet = graph.betweennessCentrality();
-        final degCent = graph.degreeCentrality();
-        final closeCent = graph.closenessCentrality();
+        var pr = <String, double>{};
+        try {
+          pr = graph.pageRank();
+        } catch (_) {}
+
+        var bet = <String, double>{};
+        try {
+          bet = graph.betweennessCentrality();
+        } catch (_) {}
+
+        var degCent = <String, double>{};
+        try {
+          degCent = graph.degreeCentrality();
+        } catch (_) {}
+
+        var closeCent = <String, double>{};
+        try {
+          closeCent = graph.closenessCentrality();
+        } catch (_) {}
 
         Map<String, double>? eigen;
         try {
@@ -591,7 +582,11 @@ final class AlgorithmsRunner {
 
         final clusterings = <String, double>{};
         for (final v in vertices) {
-          clusterings[v] = graph.localClusteringCoefficient(v);
+          try {
+            clusterings[v] = graph.localClusteringCoefficient(v);
+          } catch (_) {
+            clusterings[v] = 0.0;
+          }
         }
 
         final metricsTable = <String, Map<String, num>>{};
@@ -629,11 +624,17 @@ final class AlgorithmsRunner {
           activeTitle = 'Local Clustering Coefficient';
         }
 
+        final topEntry = activeScores.entries.isNotEmpty
+            ? activeScores.entries.reduce((a, b) => a.value > b.value ? a : b)
+            : null;
+        final topSummary = topEntry != null
+            ? '<br>Top node: <b>${topEntry.key}</b> (${topEntry.value is double ? (topEntry.value as double).toStringAsFixed(3) : topEntry.value})'
+            : '';
+
         return AlgorithmResult(
           title: activeTitle,
           summaryHtml:
-              'Computed full centrality matrix for <b>${vertices.length}</b> nodes.<br>'
-              'Top node: <b>${activeScores.entries.reduce((a, b) => a.value > b.value ? a : b).key}</b>',
+              'Computed full centrality matrix for <b>${vertices.length}</b> nodes.$topSummary',
           metricsTable: metricsTable,
           overlay: HeatmapOverlay(title: activeTitle, scores: activeScores),
         );

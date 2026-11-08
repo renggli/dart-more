@@ -1,15 +1,88 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
   <meta charset="utf-8">
-  <title>Dart More</title>
-  <link rel="stylesheet" href="//cdn.rawgit.com/milligram/milligram/master/dist/milligram.min.css">
+  <title>MoreDart — Web Applications</title>
+  <link rel="stylesheet" href="style.css">
+  <style>
+    body {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      background: var(--bg-base);
+    }
+    .landing-card {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-lg);
+      padding: 32px 40px;
+      max-width: 480px;
+      width: 100%;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.4);
+    }
+    .landing-card h1 {
+      font-size: 1.8rem;
+      margin-bottom: 8px;
+      color: var(--primary);
+    }
+    .landing-card p {
+      color: var(--text-secondary);
+      margin-bottom: 24px;
+    }
+    .app-links {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    .app-link {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 14px 18px;
+      background: var(--bg-elevated);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-md);
+      color: var(--text-primary);
+      text-decoration: none;
+      font-weight: 500;
+      transition: all 0.15s ease;
+    }
+    .app-link:hover {
+      background: var(--bg-hover);
+      border-color: var(--primary);
+      transform: translateY(-1px);
+      text-decoration: none;
+    }
+    .app-link span.desc {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      font-weight: normal;
+    }
+  </style>
 </head>
 <body>
-  <h1>Dart More</h1>
-  <ul>
-    <li><a href="rtree/rtree.html">RTree</a></li>
-    <li><a href="graph/graph.html">Graph</a></li>
-  </ul>
+  <div class="landing-card">
+    <h1>MoreDart</h1>
+    <p>Interactive web demonstrations for algorithms and spatial data structures.</p>
+
+    <div class="app-links">
+      <a class="app-link" href="graph/graph.html">
+        <div>
+          <div>Graph Laboratory</div>
+          <span class="desc">Interactive visualization, manipulation, and analysis</span>
+        </div>
+        <div>&rarr;</div>
+      </a>
+
+      <a class="app-link" href="rtree/rtree.html">
+        <div>
+          <div>R-Tree Visualizer</div>
+          <span class="desc">Spatial index partitioning and point indexing</span>
+        </div>
+        <div>&rarr;</div>
+      </a>
+    </div>
+  </div>
 </body>
 </html>
