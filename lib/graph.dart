@@ -69,6 +69,16 @@ export 'src/graph/factory/ring.dart' show RingGraphFactoryExtension;
 export 'src/graph/factory/star.dart' show StarGraphFactoryExtension;
 export 'src/graph/factory/tree.dart' show TreeGraphFactoryExtension;
 export 'src/graph/graph.dart' show Graph;
+export 'src/graph/layout.dart' show LayoutGraph, LayoutGraphExtension;
+export 'src/graph/layout/circular.dart' show CircularLayoutExtension;
+export 'src/graph/layout/force_directed.dart' show ForceDirectedLayoutExtension;
+export 'src/graph/layout/grid.dart' show GridLayoutExtension;
+export 'src/graph/layout/layered.dart' show LayeredLayoutExtension;
+export 'src/graph/layout/radial.dart' show RadialLayoutExtension;
+export 'src/graph/layout/random.dart' show RandomLayoutExtension;
+export 'src/graph/layout/result.dart'
+    show LayoutOrientation, LayoutPoint, LayoutRect, LayoutResult;
+export 'src/graph/layout/tree.dart' show TreeLayoutExtension;
 export 'src/graph/model/forwarding.dart' show ForwardingGraph;
 export 'src/graph/model/reversed.dart' show ReversedGraphExtension;
 export 'src/graph/model/unmodifiable.dart' show UnmodifiableGraphExtension;
