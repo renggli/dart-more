@@ -756,10 +756,52 @@ class ShortestPathModifier extends GraphModifier {
             edgeCost: (String u, String v) => 1,
           );
         case 'dfs':
-          final dfsVerts = graph.depthFirst(src).toList();
-          final tgtIdx = dfsVerts.indexOf(tgt);
-          if (tgtIdx != -1) {
-            path = Path.fromVertices(dfsVerts.sublist(0, tgtIdx + 1));
+          final visited = <String>{src};
+          final parent = <String, String>{};
+          final stack = <String>[src];
+          var found = false;
+          while (stack.isNotEmpty && !found) {
+            final curr = stack.removeLast();
+            if (curr == tgt) {
+              found = true;
+              break;
+            }
+            for (final next in graph.successorsOf(curr)) {
+              if (visited.add(next)) {
+                parent[next] = curr;
+                stack.add(next);
+                if (next == tgt) {
+                  found = true;
+                  break;
+                }
+              }
+            }
+          }
+          if (found) {
+            final rev = <String>[tgt];
+            var c = tgt;
+            while (c != src && parent.containsKey(c)) {
+              c = parent[c]!;
+              rev.add(c);
+            }
+            final verts = rev.reversed.toList();
+            final edges = <Edge<String, num>>[];
+            for (var i = 0; i < verts.length - 1; i++) {
+              final u = verts[i];
+              final v = verts[i + 1];
+              final e =
+                  graph.getEdge(u, v) ??
+                  (!graph.isDirected ? graph.getEdge(v, u) : null);
+              edges.add(
+                e ??
+                    (graph.isDirected
+                        ? Edge.directed(u, v, value: 1)
+                        : Edge.undirected(u, v, value: 1)),
+              );
+            }
+            if (edges.isNotEmpty) {
+              path = Path.fromEdges(edges);
+            }
           }
         case 'dijkstra':
         default:

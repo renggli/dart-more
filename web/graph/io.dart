@@ -92,6 +92,21 @@ final class GraphIO {
     );
   }
 
+  /// Exports the graph to Graphviz DOT syntax.
+  static String exportToDot(AppState state) {
+    state.syncNodes();
+    final graph = state.primaryGraph;
+    return graph.toDot(
+      graphAttributes: const {'overlap': 'false', 'splines': 'true'},
+      vertexLabel: (v) {
+        final node = state.nodes[v];
+        final label = node?.label;
+        return (label != null && label.isNotEmpty) ? label : v;
+      },
+      edgeLabel: state.isWeighted ? (e) => e.value.toString() : null,
+    );
+  }
+
   /// Parses a graph from Mermaid diagram text.
   static (Graph<String, num>, bool isWeighted, Map<String, GraphNode> nodes)
   importFromMermaid(String text, {required bool isDirected}) {

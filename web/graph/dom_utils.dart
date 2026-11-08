@@ -70,6 +70,3 @@ web.HTMLTableElement tableElement([String? className]) {
   if (className != null) el.className = className;
   return el;
 }
-
-web.HTMLImageElement imageElement() =>
-    web.document.createElement('img') as web.HTMLImageElement;

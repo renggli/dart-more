@@ -2,7 +2,6 @@ import 'package:more/graph.dart';
 
 import 'modifiers.dart';
 import 'node.dart';
-import 'viz_interop.dart';
 
 typedef GraphOverlay = VisualOverlay;
 
@@ -128,7 +127,6 @@ final class AppState {
   }
 
   Graph<String, num> primaryGraph;
-  Graph<String, num>? secondaryGraph;
 
   /// Dedicated node objects storing user labels, spatial positions, and styling.
   final Map<String, GraphNode> nodes = {};
@@ -175,7 +173,6 @@ final class AppState {
   final Map<String, ModifierOutput> lastModifierOutputs = {};
   Graph<String, num>? effectiveGraph;
   ModifierTableData? activeModifierTable;
-  VizInstance? viz;
 
   /// Returns the current rendered graph (either transformed by modifiers or the base graph).
   Graph<String, num> get renderGraph => effectiveGraph ?? primaryGraph;

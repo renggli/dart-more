@@ -10,7 +10,7 @@ import 'modifiers.dart';
 import 'renderer.dart';
 import 'state.dart';
 
-void main() async {
+void main() {
   final state = AppState();
 
   // Elements
@@ -29,9 +29,6 @@ void main() async {
       web.document.querySelector('#btn-zoom-out') as web.HTMLButtonElement;
   final btnZoomFit =
       web.document.querySelector('#btn-zoom-fit') as web.HTMLButtonElement;
-  final codeDot = web.document.querySelector('#code-dot') as web.HTMLPreElement;
-  final codeDart =
-      web.document.querySelector('#code-dart') as web.HTMLPreElement;
 
   // Blender-style selection mode buttons and display toggles
   final btnModeVertex =
@@ -104,7 +101,7 @@ void main() async {
       case 'mermaid':
         textareaIo.value = GraphIO.exportToMermaid(state);
       case 'dot':
-        textareaIo.value = renderer.generateDot(state);
+        textareaIo.value = GraphIO.exportToDot(state);
       case 'dart':
         textareaIo.value = GraphIO.exportToDartCode(state);
     }
@@ -339,12 +336,11 @@ void main() async {
       if (select == null) continue;
 
       final currentVal = select.value;
-      final allowPlaceholder = select.dataset['allowPlaceholder'] == 'true';
-      final placeholderText = select.dataset['placeholderText'];
+      final defaultLabel = select.getAttribute('data-default');
 
       select.textContent = '';
-      if (allowPlaceholder) {
-        select.appendChild(optionElement('', placeholderText));
+      if (defaultLabel != null) {
+        select.appendChild(optionElement('', defaultLabel));
       }
       for (final v in vertices) {
         select.appendChild(optionElement(v, v));
@@ -352,7 +348,7 @@ void main() async {
 
       if (vertices.contains(currentVal)) {
         select.value = currentVal;
-      } else if (allowPlaceholder) {
+      } else if (defaultLabel != null) {
         select.value = '';
       } else if (vertices.isNotEmpty) {
         select.value = vertices.first;
@@ -401,32 +397,32 @@ void main() async {
     btnModeVertex.classList.toggle('active', state.selectVerticesMode);
     btnModeEdge.classList.toggle('active', state.selectEdgesMode);
 
-    codeDot.textContent = renderer.generateDot(state);
-    codeDart.textContent = GraphIO.exportToDartCode(state);
-
     updateModifierVertexDropdowns(state);
 
     GraphInspector.updateInvariants(state);
     GraphInspector.updateInspector(
       state,
-      onSelectVertex: (v) {
-        state.selectedVertices = {v};
-        state.selectedSource = v;
+      onSelectVertex: (v, {isShift = false}) {
+        if (!isShift) {
+          state.clearSelection();
+          state.selectVertex(v, clearOthers: true);
+        } else {
+          state.selectVertex(v, toggle: false, clearOthers: false);
+        }
         updateUI();
       },
-      onUpdateWeight: (u, v, newWeight) {
-        state.saveSnapshot();
-        state.primaryGraph.addEdge(u, v, value: newWeight);
-        showToast('Updated weight of ($u, $v) to $newWeight');
+      onSelectEdge: (u, v, {isShift = false}) {
+        if (!isShift) {
+          state.clearSelection();
+          state.selectedEdge = (u, v);
+          state.selectedEdges = {(u, v)};
+        } else {
+          state.selectedEdges.add((u, v));
+          state.selectedEdge = (u, v);
+        }
         updateUI();
       },
-      onRenameNode: (v, newLabel) {
-        state.saveSnapshot();
-        final node = state.getOrCreateNode(v);
-        node.label = newLabel;
-        showToast('Renamed vertex "$v" to "$newLabel"');
-        updateUI();
-      },
+      onStateChanged: updateUI,
     );
 
     renderer.render(state);
@@ -558,7 +554,11 @@ void main() async {
     },
     onEdgeWeightEdit: (u, v, newWeight) {
       state.saveSnapshot();
+      state.isWeighted = true;
       state.primaryGraph.addEdge(u, v, value: newWeight);
+      if (!state.primaryGraph.isDirected) {
+        state.primaryGraph.addEdge(v, u, value: newWeight);
+      }
       updateUI();
     },
     onNodesMoved: (moves) {
@@ -574,8 +574,6 @@ void main() async {
     },
   );
 
-  await renderer.initialize();
-  state.viz = renderer.viz;
   renderer.autoLayout(state);
 
   // Undo / Redo top bar button listeners
@@ -795,6 +793,7 @@ void main() async {
       final mod = ModifierRegistry.create(type);
       state.modifiers.add(mod);
       selectAddModifier.value = '';
+      selectAddModifier.selectedIndex = 0;
       state.evaluateModifiers();
       updateUI();
       renderModifierStack();
@@ -868,7 +867,7 @@ void main() async {
   btnDownloadDot.onClick.listen((_) {
     GraphIO.downloadTextFile(
       'graph.dot',
-      renderer.generateDot(state),
+      GraphIO.exportToDot(state),
       'text/vnd.graphviz',
     );
   });
@@ -886,6 +885,87 @@ void main() async {
       GraphIO.downloadPngFile('graph.png', svg);
     }
   });
+
+  // Resizable sidebar
+  final sidebarResizer =
+      web.document.querySelector('#sidebar-resizer') as web.HTMLElement?;
+  final rightSidebar =
+      web.document.querySelector('#right-sidebar') as web.HTMLElement?;
+  if (sidebarResizer != null && rightSidebar != null) {
+    var isResizing = false;
+    var startX = 0.0;
+    var startWidth = 320.0;
+
+    sidebarResizer.onmousedown = ((web.MouseEvent e) {
+      isResizing = true;
+      startX = e.clientX.toDouble();
+      startWidth = rightSidebar.getBoundingClientRect().width;
+      sidebarResizer.classList.add('resizing');
+      web.document.body?.style.cursor = 'col-resize';
+      web.document.body?.style.userSelect = 'none';
+      e.preventDefault();
+    }).toJS;
+
+    web.window.addEventListener(
+      'mousemove',
+      ((web.MouseEvent e) {
+        if (!isResizing) return;
+        final dx = startX - e.clientX.toDouble();
+        final newWidth = (startWidth + dx).clamp(200.0, 700.0);
+        rightSidebar.style.width = '${newWidth}px';
+      }).toJS,
+    );
+
+    web.window.addEventListener(
+      'mouseup',
+      ((web.MouseEvent _) {
+        if (!isResizing) return;
+        isResizing = false;
+        sidebarResizer.classList.remove('resizing');
+        web.document.body?.style.cursor = '';
+        web.document.body?.style.userSelect = '';
+      }).toJS,
+    );
+  }
+
+  // Global Escape key handler
+  web.window.addEventListener(
+    'keydown',
+    ((web.KeyboardEvent e) {
+      if (e.key == 'Escape') {
+        var handled = false;
+        // 1. Close open menus
+        final openMenus = web.document.querySelectorAll('.menu-item.open');
+        if (openMenus.length > 0) {
+          closeAllMenus();
+          handled = true;
+        }
+        // 2. Close modal
+        if (modalIo.style.display != 'none') {
+          modalIo.style.display = 'none';
+          handled = true;
+        }
+        // 3. Cancel inline editor
+        renderer.cancelInlineEditor();
+        // 4. Cancel pending placement
+        if (state.pendingPlacementVertex != null) {
+          final pv = state.pendingPlacementVertex!;
+          state.primaryGraph.removeVertex(pv);
+          state.nodes.remove(pv);
+          state.pendingPlacementVertex = null;
+          handled = true;
+          updateUI();
+        }
+        // 5. Clear selection if anything selected and nothing else was open
+        if (!handled &&
+            (state.selectedVertices.isNotEmpty ||
+                state.selectedEdges.isNotEmpty)) {
+          state.clearSelection();
+          updateUI();
+        }
+      }
+    }).toJS,
+  );
 
   updateUI();
 }

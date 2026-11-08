@@ -5,7 +5,6 @@ import 'package:web/web.dart' as web;
 
 import 'layout.dart';
 import 'state.dart';
-import 'viz_interop.dart';
 
 /// Callback signatures for interactive graph events.
 typedef VertexCallback = void Function(String vertex, web.MouseEvent event);
@@ -26,8 +25,7 @@ typedef LassoSelectionCallback = void Function(
   bool isShift,
 );
 
-/// Renders graph states natively into high-performance interactive SVG,
-/// using Graphviz exclusively as an automated layout engine.
+/// Renders graph states natively into high-performance interactive SVG.
 final class GraphRenderer {
   new({
     required this.container,
@@ -58,7 +56,10 @@ final class GraphRenderer {
   final void Function(Map<String, (double, double)> moves)? onNodesMoved;
   final void Function(String vertexId)? onPlacementConfirmed;
 
-  VizInstance? _viz;
+  web.HTMLElement get viewport =>
+      (container.closest('#viewport') ?? container.parentElement ?? container)
+          as web.HTMLElement;
+
   web.SVGSVGElement? _currentSvg;
   AppState? _lastState;
   web.HTMLInputElement? _activeInlineInput;
@@ -100,7 +101,6 @@ final class GraphRenderer {
   double get panY => _panY;
   double get canvasMouseX => _canvasMouseX;
   double get canvasMouseY => _canvasMouseY;
-  VizInstance? get viz => _viz;
 
   web.SVGSVGElement? get currentSvg => _currentSvg;
 
@@ -118,52 +118,6 @@ final class GraphRenderer {
     '#fbbf24', // Amber
     '#34d399', // Mint
   ];
-
-  /// Initializes the WebAssembly Viz instance.
-  Future<void> initialize() async {
-    final promise = vizInstance();
-    _viz = await promise.toDart;
-  }
-
-  /// Generates minimal DOT syntax for Graphviz layout computation.
-  static String generateMinimalDot(
-    AppState state, {
-    String? engine,
-    String? rankdir,
-  }) {
-    state.syncNodes();
-    final graph = state.renderGraph;
-    final buffer = StringBuffer();
-    final isDirected = graph.isDirected;
-    final activeEngine = engine ?? state.layoutEngine;
-    final activeRankDir = rankdir ?? state.rankDir;
-    buffer.writeln(isDirected ? 'digraph G {' : 'graph G {');
-    buffer.writeln('  layout="$activeEngine";');
-    if (activeEngine == 'dot') {
-      buffer.writeln('  rankdir="$activeRankDir";');
-    }
-    buffer.writeln('  overlap=false;');
-    buffer.writeln('  splines=true;');
-    buffer.writeln('  sep="+25";');
-
-    for (final v in graph.vertices) {
-      final safeV = Uri.encodeComponent(v);
-      buffer.writeln(
-        '  "$v" [id="node_$safeV", shape=circle, width=0.6, height=0.6];',
-      );
-    }
-
-    final arrow = isDirected ? '->' : '--';
-    for (final e in graph.edges) {
-      buffer.writeln('  "${e.source}" $arrow "${e.target}";');
-    }
-
-    buffer.writeln('}');
-    return buffer.toString();
-  }
-
-  /// Generates complete DOT script for user code export.
-  String generateDot(AppState state) => generateMinimalDot(state);
 
   /// Renders the current graph state natively into SVG.
   void render(AppState state) {
@@ -226,27 +180,15 @@ final class GraphRenderer {
       '  <filter id="node-shadow" x="-20%" y="-20%" width="140%" height="140%">',
     );
     markup.writeln(
-      '    <feDropShadow dx="0" dy="2" stdDeviation="2" flood-color="#000000" flood-opacity="0.4" />',
-    );
-    markup.writeln('  </filter>');
-    markup.writeln(
-      '  <filter id="active-glow" x="-60%" y="-60%" width="220%" height="220%">',
-    );
-    markup.writeln(
-      '    <feDropShadow dx="0" dy="0" stdDeviation="6" flood-color="#c084fc" flood-opacity="1.0" />',
-    );
-    markup.writeln(
-      '    <feDropShadow dx="0" dy="0" stdDeviation="2" flood-color="#ffffff" flood-opacity="0.9" />',
-    );
-    markup.writeln('  </filter>');
-    markup.writeln(
-      '  <filter id="select-glow" x="-40%" y="-40%" width="180%" height="180%">',
-    );
-    markup.writeln(
-      '    <feDropShadow dx="0" dy="0" stdDeviation="4" flood-color="#a855f7" flood-opacity="0.8" />',
+      '    <feDropShadow dx="0" dy="2" stdDeviation="2" flood-color="#000000" flood-opacity="0.35" />',
     );
     markup.writeln('  </filter>');
     markup.writeln('</defs>');
+
+    // Viewport Zoom & Pan root SVG group
+    markup.writeln(
+      '<g id="viewport-transform" transform="translate($_panX, $_panY) scale($_scale)">',
+    );
 
     final graph = state.renderGraph;
     final overlay = state.activeOverlay;
@@ -344,12 +286,11 @@ final class GraphRenderer {
           '  <path d="$loopPath" fill="none" stroke="transparent" stroke-width="16" cursor="pointer" />',
         );
         if (isEdgeSelected) {
-          final glowFilter = isLastSelectedEdge
-              ? 'url(#active-glow)'
-              : 'url(#select-glow)';
-          final glowColor = isLastSelectedEdge ? '#c084fc' : '#a855f7';
+          final underlayColor = isLastSelectedEdge ? '#c084fc' : '#8b5cf6';
+          final underlayWidth = isLastSelectedEdge ? 6.5 : 5.0;
+          final underlayOpacity = isLastSelectedEdge ? 0.65 : 0.35;
           markup.writeln(
-            '  <path d="$loopPath" fill="none" stroke="$glowColor" stroke-width="8" opacity="0.85" stroke-linecap="round" filter="$glowFilter" />',
+            '  <path d="$loopPath" fill="none" stroke="$underlayColor" stroke-width="$underlayWidth" opacity="$underlayOpacity" stroke-linecap="round" />',
           );
         }
         markup.writeln(
@@ -417,12 +358,11 @@ final class GraphRenderer {
         '  <path d="$pathData" fill="none" stroke="transparent" stroke-width="16" cursor="pointer" />',
       );
       if (isEdgeSelected) {
-        final glowFilter = isLastSelectedEdge
-            ? 'url(#active-glow)'
-            : 'url(#select-glow)';
-        final glowColor = isLastSelectedEdge ? '#c084fc' : '#a855f7';
+        final underlayColor = isLastSelectedEdge ? '#c084fc' : '#8b5cf6';
+        final underlayWidth = isLastSelectedEdge ? 6.5 : 5.0;
+        final underlayOpacity = isLastSelectedEdge ? 0.65 : 0.35;
         markup.writeln(
-          '  <path d="$pathData" fill="none" stroke="$glowColor" stroke-width="8" opacity="0.85" stroke-linecap="round" filter="$glowFilter" />',
+          '  <path d="$pathData" fill="none" stroke="$underlayColor" stroke-width="$underlayWidth" opacity="$underlayOpacity" stroke-linecap="round" />',
         );
       }
       markup.writeln(
@@ -498,36 +438,28 @@ final class GraphRenderer {
 
       markup.writeln('<g class="graph-node" id="$nodeId" data-id="$v">');
 
-      // Selection Halos (Blender Style Glow - Independent of modifier colors)
+      // Subtle Selection Underlay (purple of the application, fading to background)
       if (isActive) {
-        // Bright radiant incandescent halo
         markup.writeln(
-          '  <circle cx="$x" cy="$y" r="29" fill="none" stroke="#d8b4fe" stroke-width="4.0" opacity="1.0" filter="url(#active-glow)" />',
+          '  <circle cx="$x" cy="$y" r="26.0" fill="#8b5cf6" fill-opacity="0.25" stroke="#c084fc" stroke-width="2.0" stroke-opacity="0.85" />',
         );
       } else if (isSelected) {
-        // Luminous Purple Multi-Selected Halo
         markup.writeln(
-          '  <circle cx="$x" cy="$y" r="27" fill="none" stroke="#a855f7" stroke-width="3.0" opacity="0.9" filter="url(#select-glow)" />',
+          '  <circle cx="$x" cy="$y" r="25.0" fill="#8b5cf6" fill-opacity="0.15" stroke="#8b5cf6" stroke-width="1.5" stroke-opacity="0.5" />',
         );
       } else if (isSource) {
         markup.writeln(
-          '  <circle cx="$x" cy="$y" r="26" fill="none" stroke="#22c55e" stroke-width="2.5" />',
+          '  <circle cx="$x" cy="$y" r="25.0" fill="none" stroke="#22c55e" stroke-width="2.0" stroke-opacity="0.8" />',
         );
       } else if (isTarget) {
         markup.writeln(
-          '  <circle cx="$x" cy="$y" r="26" fill="none" stroke="#ef4444" stroke-width="2.5" />',
+          '  <circle cx="$x" cy="$y" r="25.0" fill="none" stroke="#ef4444" stroke-width="2.0" stroke-opacity="0.8" />',
         );
       }
 
-      // Node Body Circle - Active node glows intensely with white border
-      final nodeShadow = isActive
-          ? 'filter="url(#active-glow)"'
-          : 'filter="url(#node-shadow)"';
-      final finalBorderColor = isActive ? '#ffffff' : borderColor;
-      final finalBorderWidth = isActive ? 2.8 : borderWidth;
-
+      // Node Body Circle
       markup.writeln(
-        '  <circle cx="$x" cy="$y" r="$nodeRadius" fill="$fillColor" stroke="$finalBorderColor" stroke-width="$finalBorderWidth" opacity="$opacity" $dashArray $nodeShadow cursor="pointer" />',
+        '  <circle cx="$x" cy="$y" r="$nodeRadius" fill="$fillColor" stroke="$borderColor" stroke-width="$borderWidth" opacity="$opacity" $dashArray filter="url(#node-shadow)" cursor="pointer" />',
       );
 
       // Node Label Text
@@ -539,7 +471,8 @@ final class GraphRenderer {
 
       markup.writeln('</g>');
     }
-    markup.writeln('</g>');
+    markup.writeln('</g>'); // Close layer-nodes
+    markup.writeln('</g>'); // Close viewport-transform
 
     svg.innerHTML = markup.toString().toJS;
     _attachSvgListeners(svg);
@@ -547,7 +480,7 @@ final class GraphRenderer {
   }
 
   void _initViewportControls() {
-    final viewport = (container.parentElement ?? container) as web.HTMLElement;
+    final viewport = this.viewport;
 
     // Track Space key for canvas panning
     web.window.onkeydown = ((web.KeyboardEvent event) {
@@ -599,6 +532,9 @@ final class GraphRenderer {
       }
 
       final target = event.target as web.Element?;
+      if (target?.closest('.edge-weight-badge') != null) {
+        return;
+      }
       final nodeElem = target?.closest('.graph-node') as web.SVGGElement?;
       final edgeElem = target?.closest('.graph-edge') as web.SVGGElement?;
 
@@ -788,38 +724,45 @@ final class GraphRenderer {
           final matchedVertices = <String>[];
           final matchedEdges = <(String, String)>[];
 
-          if (state?.selectVerticesMode ?? true) {
-            final nodes = _currentSvg?.querySelectorAll('.graph-node');
-            if (nodes != null) {
-              for (var i = 0; i < nodes.length; i++) {
-                final node = nodes.item(i) as web.SVGGElement?;
-                if (node == null) continue;
-                final r = node.getBoundingClientRect();
-                if (r.right >= mLeft &&
-                    r.left <= mRight &&
-                    r.bottom >= mTop &&
-                    r.top <= mBottom) {
-                  final v = node.getAttribute('data-id');
-                  if (v != null && v.isNotEmpty) matchedVertices.add(v);
+          final vRect = viewport.getBoundingClientRect();
+          final minX = (mLeft - vRect.left - _panX) / _scale;
+          final maxX = (mRight - vRect.left - _panX) / _scale;
+          final minY = (mTop - vRect.top - _panY) / _scale;
+          final maxY = (mBottom - vRect.top - _panY) / _scale;
+
+          if (state != null) {
+            if (state.selectVerticesMode) {
+              for (final v in state.renderGraph.vertices) {
+                final node = state.nodes[v];
+                if (node?.x != null && node?.y != null) {
+                  final nx = node!.x!;
+                  final ny = node.y!;
+                  if (nx >= minX && nx <= maxX && ny >= minY && ny <= maxY) {
+                    matchedVertices.add(v);
+                  }
                 }
               }
             }
-          }
 
-          if (state?.selectEdgesMode ?? true) {
-            final edges = _currentSvg?.querySelectorAll('.graph-edge');
-            if (edges != null) {
-              for (var i = 0; i < edges.length; i++) {
-                final edge = edges.item(i) as web.SVGGElement?;
-                if (edge == null) continue;
-                final r = edge.getBoundingClientRect();
-                if (r.right >= mLeft &&
-                    r.left <= mRight &&
-                    r.bottom >= mTop &&
-                    r.top <= mBottom) {
-                  final s = edge.getAttribute('data-source');
-                  final t = edge.getAttribute('data-target');
-                  if (s != null && t != null) matchedEdges.add((s, t));
+            if (state.selectEdgesMode) {
+              for (final edge in state.renderGraph.edges) {
+                final nodeU = state.nodes[edge.source];
+                final nodeV = state.nodes[edge.target];
+                if (nodeU?.x != null &&
+                    nodeU?.y != null &&
+                    nodeV?.x != null &&
+                    nodeV?.y != null) {
+                  final x1 = nodeU!.x!;
+                  final y1 = nodeU.y!;
+                  final x2 = nodeV!.x!;
+                  final y2 = nodeV.y!;
+                  final uIn =
+                      x1 >= minX && x1 <= maxX && y1 >= minY && y1 <= maxY;
+                  final vIn =
+                      x2 >= minX && x2 <= maxX && y2 >= minY && y2 <= maxY;
+                  if (uIn || vIn) {
+                    matchedEdges.add((edge.source, edge.target));
+                  }
                 }
               }
             }
@@ -850,6 +793,49 @@ final class GraphRenderer {
       _scale = newScale;
 
       _updateTransform();
+    }).toJS;
+
+    viewport.ondblclick = ((web.MouseEvent event) {
+      final target = event.target as web.Element?;
+      final badge = target?.closest('.edge-weight-badge');
+      if (badge != null) {
+        event.stopPropagation();
+        final s = badge.getAttribute('data-source');
+        final t = badge.getAttribute('data-target');
+        if (s != null && t != null && _lastState != null) {
+          showInlineEdgeEditor(
+            _lastState!,
+            s,
+            t,
+            onCommit: (w) => onEdgeWeightEdit?.call(s, t, w),
+          );
+        }
+        return;
+      }
+      final nodeElem = target?.closest('.graph-node');
+      if (nodeElem != null) {
+        event.stopPropagation();
+        final v = nodeElem.getAttribute('data-id');
+        if (v != null && v.isNotEmpty) {
+          onVertexDblClick?.call(v);
+        }
+        return;
+      }
+      final edgeElem = target?.closest('.graph-edge');
+      if (edgeElem != null) {
+        event.stopPropagation();
+        final s = edgeElem.getAttribute('data-source');
+        final t = edgeElem.getAttribute('data-target');
+        if (s != null && t != null && _lastState != null) {
+          showInlineEdgeEditor(
+            _lastState!,
+            s,
+            t,
+            onCommit: (w) => onEdgeWeightEdit?.call(s, t, w),
+          );
+        }
+        return;
+      }
     }).toJS;
   }
 
@@ -900,6 +886,12 @@ final class GraphRenderer {
       final source = badge.getAttribute('data-source');
       final target = badge.getAttribute('data-target');
       if (source != null && target != null) {
+        badge.onmousedown = ((web.MouseEvent event) {
+          event.stopPropagation();
+        }).toJS;
+        badge.onmouseup = ((web.MouseEvent event) {
+          event.stopPropagation();
+        }).toJS;
         badge.onclick = ((web.MouseEvent event) {
           event.stopPropagation();
           final state = _lastState;
@@ -948,16 +940,32 @@ final class GraphRenderer {
     input.type = 'text';
     input.value = node.label;
     input.className = 'inline-node-editor';
-    input.style.left = '${node.x}px';
-    input.style.top = '${node.y}px';
+    final screenX = node.x! * _scale + _panX;
+    final screenY = node.y! * _scale + _panY;
+    input.style.left = '${screenX}px';
+    input.style.top = '${screenY}px';
+
+    final nodeElem = _currentSvg?.querySelector('#node-$vertex');
+    final textElem = nodeElem?.querySelector('text') as web.SVGTextElement?;
+    final prevDisplay = textElem?.style.display ?? '';
+    if (textElem != null) {
+      textElem.style.display = 'none';
+    }
+
+    void cleanup() {
+      if (textElem != null) {
+        textElem.style.display = prevDisplay;
+      }
+      input.remove();
+      _activeInlineInput = null;
+    }
 
     var committed = false;
     void commit() {
       if (committed) return;
       committed = true;
       final val = input.value.trim();
-      input.remove();
-      _activeInlineInput = null;
+      cleanup();
       if (val.isNotEmpty && val != node.label) {
         onCommit?.call(val);
       }
@@ -970,8 +978,7 @@ final class GraphRenderer {
         e.stopPropagation();
       } else if (e.key == 'Escape') {
         committed = true;
-        input.remove();
-        _activeInlineInput = null;
+        cleanup();
         e.preventDefault();
         e.stopPropagation();
       }
@@ -981,10 +988,16 @@ final class GraphRenderer {
       commit();
     }).toJS;
 
-    transformLayer.appendChild(input);
+    viewport.appendChild(input);
     _activeInlineInput = input;
     input.focus();
     input.select();
+  }
+
+  /// Cancels any active inline node/edge editing.
+  void cancelInlineEditor() {
+    _activeInlineInput?.remove();
+    _activeInlineInput = null;
   }
 
   /// Activates an inline numeric input directly over the given edge to edit its weight.
@@ -1011,25 +1024,71 @@ final class GraphRenderer {
         state.renderGraph.getEdge(target, source);
     final currentWeight = edge?.value ?? 1;
 
-    final posX = (nodeU!.x! + nodeV!.x!) / 2;
-    final posY = (nodeU.y! + nodeV.y!) / 2;
+    double posX;
+    double posY;
+    if (source == target) {
+      posX = nodeU!.x!;
+      posY = nodeU.y! - 46;
+    } else {
+      final x1 = nodeU!.x!;
+      final y1 = nodeU.y!;
+      final x2 = nodeV!.x!;
+      final y2 = nodeV.y!;
+      final hasOpposing =
+          state.renderGraph.isDirected &&
+          state.renderGraph.containsEdge(target, source);
+      if (hasOpposing) {
+        final dx = x2 - x1;
+        final dy = y2 - y1;
+        final dist = math.sqrt(dx * dx + dy * dy);
+        final ux = dist > 1e-4 ? dx / dist : 0.0;
+        final uy = dist > 1e-4 ? dy / dist : 0.0;
+        final normalX = -uy;
+        final normalY = ux;
+        const curveDist = 20.0;
+        final ctrlX = (x1 + x2) / 2 + normalX * curveDist;
+        final ctrlY = (y1 + y2) / 2 + normalY * curveDist;
+        posX = (x1 + 2 * ctrlX + x2) / 4;
+        posY = (y1 + 2 * ctrlY + y2) / 4;
+      } else {
+        posX = (x1 + x2) / 2;
+        posY = (y1 + y2) / 2;
+      }
+    }
 
     final input = web.document.createElement('input') as web.HTMLInputElement;
     input.type = 'number';
     input.step = 'any';
     input.value = currentWeight.toString();
-    input.className = 'inline-node-editor';
-    input.style.left = '${posX}px';
-    input.style.top = '${posY}px';
-    input.style.minWidth = '54px';
+    input.className = 'inline-edge-editor';
+    final screenX = posX * _scale + _panX;
+    final screenY = posY * _scale + _panY;
+    input.style.left = '${screenX}px';
+    input.style.top = '${screenY}px';
+
+    final badgeElem = _currentSvg?.querySelector(
+      '.edge-weight-badge[data-source="$source"][data-target="$target"]',
+    );
+    final badgeText = badgeElem?.querySelector('text') as web.SVGTextElement?;
+    final prevDisplay = badgeText?.style.display ?? '';
+    if (badgeText != null) {
+      badgeText.style.display = 'none';
+    }
+
+    void cleanup() {
+      if (badgeText != null) {
+        badgeText.style.display = prevDisplay;
+      }
+      input.remove();
+      _activeInlineInput = null;
+    }
 
     var committed = false;
     void commit() {
       if (committed) return;
       committed = true;
       final val = num.tryParse(input.value.trim());
-      input.remove();
-      _activeInlineInput = null;
+      cleanup();
       if (val != null && val != currentWeight) {
         onCommit?.call(val);
       }
@@ -1042,8 +1101,7 @@ final class GraphRenderer {
         e.stopPropagation();
       } else if (e.key == 'Escape') {
         committed = true;
-        input.remove();
-        _activeInlineInput = null;
+        cleanup();
         e.preventDefault();
         e.stopPropagation();
       }
@@ -1053,7 +1111,7 @@ final class GraphRenderer {
       commit();
     }).toJS;
 
-    transformLayer.appendChild(input);
+    viewport.appendChild(input);
     _activeInlineInput = input;
     input.focus();
     input.select();
@@ -1082,8 +1140,11 @@ final class GraphRenderer {
   }
 
   void _updateTransform() {
-    transformLayer.style.transform =
-        'translate(${_panX}px, ${_panY}px) scale($_scale)';
+    final g =
+        _currentSvg?.querySelector('#viewport-transform') as web.SVGGElement?;
+    if (g != null) {
+      g.setAttribute('transform', 'translate($_panX, $_panY) scale($_scale)');
+    }
   }
 
   /// Centers and fits the graph view to the viewport.
@@ -1092,6 +1153,9 @@ final class GraphRenderer {
     _panX = 0.0;
     _panY = 0.0;
     _updateTransform();
+    if (_lastState != null) {
+      render(_lastState!);
+    }
   }
 
   void zoomIn() {

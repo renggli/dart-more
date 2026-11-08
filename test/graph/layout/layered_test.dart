@@ -92,6 +92,16 @@ void main() {
       check(result['B']).isNotNull();
     });
 
+    test('undirected tree lays out siblings across same rank', () {
+      final graph = Graph<String, void>(isDirected: false);
+      graph.addEdge('Root', 'Child1');
+      graph.addEdge('Root', 'Child2');
+      final result = graph.layout().layered();
+      check(result['Child1']!.y).equals(result['Child2']!.y);
+      check((result['Child1']!.x - result['Child2']!.x).abs())
+          .isGreaterThan(0.0);
+    });
+
     test('graph extension', () {
       final graph = Graph<String, void>(isDirected: true);
       graph.addEdge('A', 'B');

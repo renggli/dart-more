@@ -5,13 +5,12 @@
   <title>Dart More — Graph Laboratory</title>
   <link rel="stylesheet" href="../style.css">
   <link rel="stylesheet" href="graph.css">
-  <script src="https://cdn.jsdelivr.net/npm/@viz-js/viz@3/lib/viz-standalone.min.js"></script>
 </head>
 <body>
   <!-- Header Toolbar -->
   <header>
     <div class="brand">
-      <h1>Dart More Graph</h1>
+      <h1>Graph Laboratory</h1>
     </div>
 
     <div class="header-controls">
@@ -82,22 +81,28 @@
 
           <div class="tool-separator"></div>
 
-          <!-- Selection Modes & Display Toggles merged into a single button group -->
-          <div class="segmented-group" title="Modes: 1 for Vertex, 2 for Edge, Labels, Weights">
-            <button id="btn-mode-vertex" class="segmented-btn active" title="Vertex Selection (1)">
+          <!-- Selection Modes Pill -->
+          <div class="selection-pill" title="Selection Modes (1: Vertex, 2: Edge)">
+            <button id="btn-mode-vertex" class="pill-btn active" title="Vertex Selection (1)">
               <svg width="15" height="15" viewBox="0 0 16 16" fill="currentColor">
                 <circle cx="8" cy="8" r="4.5" />
                 <circle cx="8" cy="8" r="6.5" fill="none" stroke="currentColor" stroke-width="1.2" opacity="0.6" />
               </svg>
             </button>
-            <button id="btn-mode-edge" class="segmented-btn active" title="Edge Selection (2)">
+            <button id="btn-mode-edge" class="pill-btn active" title="Edge Selection (2)">
               <svg width="15" height="15" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8">
                 <line x1="3" y1="13" x2="13" y2="3" />
                 <circle cx="3" cy="13" r="2" fill="currentColor" />
                 <circle cx="13" cy="3" r="2" fill="currentColor" />
               </svg>
             </button>
-            <button id="btn-toggle-labels" class="segmented-btn active" title="Toggle Vertex Labels">
+          </div>
+
+          <div class="tool-separator"></div>
+
+          <!-- Display Toggles -->
+          <div class="display-toggle-group">
+            <button id="btn-toggle-labels" class="icon-toggle-btn active" title="Toggle Vertex Labels">
               <svg width="15" height="15" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
                 <path d="M2.5 13 L6 4 L9.5 13" />
                 <path d="M3.7 10 L8.3 10" />
@@ -105,7 +110,7 @@
                 <path d="M14.5 10.5 A2 2 0 0 0 11 12" />
               </svg>
             </button>
-            <button id="btn-toggle-weights" class="segmented-btn active" title="Toggle Edge Weights">
+            <button id="btn-toggle-weights" class="icon-toggle-btn active" title="Toggle Edge Weights">
               <svg width="15" height="15" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round">
                 <line x1="3" y1="5.5" x2="13" y2="5.5" />
                 <line x1="3" y1="10.5" x2="13" y2="10.5" />
@@ -117,7 +122,7 @@
         </div>
       </div>
 
-      <!-- SVG Viewport with smooth CSS transform layer -->
+      <!-- SVG Viewport -->
       <div class="viewport-container" id="viewport">
         <div id="viewport-transform-layer">
           <div id="graph-canvas"></div>
@@ -145,14 +150,17 @@
       </div>
     </main>
 
+    <!-- Resizer bar between workspace and sidebar -->
+    <div class="sidebar-resizer" id="sidebar-resizer" title="Drag to resize sidebar"></div>
+
     <!-- Right Sidebar: Modifiers Stack & Inspector -->
-    <aside class="sidebar right-sidebar">
+    <aside class="sidebar right-sidebar" id="right-sidebar">
       <!-- Modifiers Stack Section -->
       <section class="sidebar-section" id="section-modifiers">
         <div class="section-header">
           <h3>Modifiers Stack</h3>
           <select id="select-add-modifier" style="max-width: 165px;">
-            <option value="" selected disabled>+ Add Modifier...</option>
+            <option value="" selected disabled hidden>+ Add Modifier...</option>
             <optgroup label="Generators & Layout">
               <option value="generator">Graph Generator</option>
               <option value="layout">Layout Algorithm</option>

@@ -113,9 +113,41 @@ List<List<V>> _assignLayers<V>(
   Map<V, List<V>> forwardAdj,
   Map<V, List<V>> reverseAdj,
 ) {
+  // 1. Temporarily reverse back-edges using DFS to guarantee a strict DAG.
+  final dagForward = <V, List<V>>{for (final v in allVertices) v: []};
+  final dagReverse = <V, List<V>>{for (final v in allVertices) v: []};
+  final visited = <V>{};
+  final onStack = <V>{};
+
+  void dfs(V u) {
+    visited.add(u);
+    onStack.add(u);
+    for (final v in forwardAdj[u]!) {
+      if (!allVertices.contains(v) || u == v) continue;
+      if (onStack.contains(v)) {
+        dagForward[v]!.add(u);
+        dagReverse[u]!.add(v);
+      } else {
+        dagForward[u]!.add(v);
+        dagReverse[v]!.add(u);
+        if (!visited.contains(v)) {
+          dfs(v);
+        }
+      }
+    }
+    onStack.remove(u);
+  }
+
+  for (final v in allVertices) {
+    if (!visited.contains(v)) {
+      dfs(v);
+    }
+  }
+
+  // 2. Longest-path layer assignment on the DAG.
   final rank = <V, int>{};
   final inDegree = <V, int>{
-    for (final v in allVertices) v: reverseAdj[v]!.length,
+    for (final v in allVertices) v: dagReverse[v]!.length,
   };
 
   final queue = <V>[
@@ -126,14 +158,11 @@ List<List<V>> _assignLayers<V>(
     rank[v] = 0;
   }
 
-  final remaining = allVertices.toSet();
-
   while (queue.isNotEmpty) {
     final u = queue.removeAt(0);
-    remaining.remove(u);
     final currentRank = rank[u]!;
 
-    for (final v in forwardAdj[u]!) {
+    for (final v in dagForward[u]!) {
       final newRank = currentRank + 1;
       if (newRank > (rank[v] ?? 0)) {
         rank[v] = newRank;
@@ -145,23 +174,8 @@ List<List<V>> _assignLayers<V>(
     }
   }
 
-  while (remaining.isNotEmpty) {
-    final cycleNode = remaining.first;
-    remaining.remove(cycleNode);
-    var maxPredRank = -1;
-    for (final p in reverseAdj[cycleNode]!) {
-      if (rank.containsKey(p) && rank[p]! > maxPredRank) {
-        maxPredRank = rank[p]!;
-      }
-    }
-    final r = maxPredRank + 1;
-    rank[cycleNode] = r;
-
-    for (final next in forwardAdj[cycleNode]!) {
-      if (remaining.contains(next)) {
-        rank[next] = r + 1;
-      }
-    }
+  for (final v in allVertices) {
+    rank.putIfAbsent(v, () => 0);
   }
 
   final maxRank = rank.values.isEmpty ? 0 : rank.values.reduce(math.max);

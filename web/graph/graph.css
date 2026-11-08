@@ -70,11 +70,36 @@ header {
 
 /* Main Layout */
 .app-container {
-  display: grid;
-  grid-template-columns: 1fr 320px;
+  display: flex;
+  flex-direction: row;
   flex: 1;
   height: calc(100vh - 49px);
   overflow: hidden;
+  position: relative;
+}
+
+.center-workspace {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Sidebar Resizer */
+.sidebar-resizer {
+  width: 5px;
+  cursor: col-resize;
+  background: transparent;
+  transition: background 0.15s ease;
+  flex-shrink: 0;
+  z-index: 20;
+  margin-left: -2px;
+  margin-right: -2px;
+}
+
+.sidebar-resizer:hover,
+.sidebar-resizer.resizing {
+  background: var(--primary);
 }
 
 /* Sidebar Panels */
@@ -88,6 +113,10 @@ header {
 }
 
 .sidebar.right-sidebar {
+  width: 320px;
+  min-width: 200px;
+  max-width: 650px;
+  flex-shrink: 0;
   border-left: 1px solid var(--border-color);
 }
 
@@ -185,73 +214,49 @@ header {
   flex-wrap: wrap;
 }
 
-/* Segmented Button Groups (Blender Style) */
-.segmented-group {
+/* Selection Modes Pill (Vertex / Edge selection) */
+.selection-pill {
   display: inline-flex;
   align-items: center;
+  height: 28px;
   border: 1px solid var(--border-color);
   border-radius: var(--radius-sm);
   background: var(--bg-surface);
   overflow: hidden;
 }
 
-.segmented-group .segmented-btn {
+.selection-pill .pill-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  padding: 0;
   background: transparent;
   border: none;
   border-right: 1px solid var(--border-color);
   color: var(--text-muted);
-  padding: 4px 9px;
-  height: 26px;
   cursor: pointer;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  transition: all 0.15s ease;
+  transition: all 0.12s ease;
 }
 
-.segmented-group .segmented-btn:last-child {
+.selection-pill .pill-btn:last-child {
   border-right: none;
 }
 
-.segmented-group .segmented-btn:hover {
-  color: var(--text-primary);
-  background: var(--bg-hover);
-}
-
-.segmented-group .segmented-btn.active {
-  background: var(--primary);
-  color: #ffffff;
-  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.35);
-}
-
-.segmented-group .segmented-btn.active:hover {
-  background: var(--primary-hover);
-  color: #ffffff;
-}
-
-.segmented-group .segmented-btn.active svg {
-  color: #ffffff;
-  stroke: #ffffff;
-}
-
-
-.inline-node-editor {
-  position: absolute;
-  z-index: 100;
-  transform: translate(-50%, -50%);
+.selection-pill .pill-btn:hover {
   background: var(--bg-elevated);
-  border: 2px solid var(--primary);
-  border-radius: var(--radius-sm);
-  box-shadow: 0 4px 16px rgba(139, 92, 246, 0.4);
-  font-family: inherit;
-  font-size: 12px;
-  font-weight: 600;
   color: var(--text-primary);
-  text-align: center;
-  padding: 4px 8px;
-  outline: none;
-  min-width: 60px;
-  max-width: 160px;
+}
+
+.selection-pill .pill-btn.active {
+  background: rgba(139, 92, 246, 0.2);
+  color: #a78bfa;
+}
+
+.selection-pill .pill-btn.active svg {
+  color: #a78bfa;
+  stroke: #a78bfa;
 }
 
 .tool-separator {
@@ -848,27 +853,135 @@ pre.code-block {
 #viewport-transform-layer {
   width: 100%;
   height: 100%;
-  transform-origin: 0 0;
-  will-change: transform;
 }
 
+.display-toggle-group {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.icon-toggle-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  padding: 0;
+  background: var(--bg-surface);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-sm);
+  color: var(--text-muted);
+  cursor: pointer;
+  transition: all 0.12s ease;
+}
+
+.icon-toggle-btn:hover {
+  background: var(--bg-elevated);
+  color: var(--text-primary);
+}
+
+.icon-toggle-btn.active {
+  background: rgba(139, 92, 246, 0.2);
+  color: #a78bfa;
+  border-color: var(--primary);
+}
+
+.icon-toggle-btn.active svg {
+  color: #a78bfa;
+  stroke: #a78bfa;
+}
+
+/* Seamless inline node/vertex label editor */
 .inline-node-editor {
   position: absolute;
   transform: translate(-50%, -50%);
-  width: 68px;
-  height: 28px;
-  padding: 2px 6px;
-  background: var(--bg-elevated);
-  color: var(--text-primary);
-  border: 1.5px solid var(--primary);
-  border-radius: var(--radius-sm);
+  width: 48px;
+  height: 22px;
+  padding: 0 2px;
+  background: transparent !important;
+  color: #ffffff !important;
+  border: none !important;
+  border-bottom: 1.5px solid #a78bfa !important;
+  border-radius: 0 !important;
   font-family: inherit;
-  font-size: 12px;
+  font-size: 11px;
   font-weight: 600;
   text-align: center;
-  outline: none;
-  z-index: 50;
-  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.5);
+  outline: none !important;
+  box-shadow: none !important;
+  caret-color: #a78bfa;
+  -webkit-appearance: none;
+  appearance: none;
+  z-index: 100;
+}
+
+/* Inline edge weight editor */
+.inline-edge-editor {
+  position: absolute;
+  transform: translate(-50%, -50%);
+  width: 36px;
+  height: 20px;
+  padding: 0 2px;
+  background: #1e293b !important;
+  color: #cbd5e1 !important;
+  border: 1px solid var(--primary) !important;
+  border-radius: 4px !important;
+  font-family: inherit;
+  font-size: 10px;
+  font-weight: 600;
+  text-align: center;
+  outline: none !important;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
+  box-sizing: border-box;
+  caret-color: #a78bfa;
+  -webkit-appearance: none;
+  appearance: none;
+  z-index: 100;
+}
+
+/* Inspector Neighbor & Incident Edge Compounds */
+.neighbor-item {
+  display: inline-flex;
+  align-items: center;
+  margin: 2px 4px 2px 0;
+  border-radius: var(--radius-sm);
+  background: var(--bg-surface);
+  border: 1px solid var(--border-color);
+  overflow: hidden;
+  font-size: 11px;
+  line-height: 1.2;
+  vertical-align: middle;
+}
+
+.neighbor-edge-btn {
+  cursor: pointer;
+  padding: 2px 6px;
+  color: #a78bfa;
+  font-weight: 600;
+  background: rgba(139, 92, 246, 0.1);
+  border-right: 1px solid var(--border-color);
+  transition: all 0.12s ease;
+  user-select: none;
+}
+
+.neighbor-edge-btn:hover {
+  background: rgba(139, 92, 246, 0.3);
+  color: #c4b5fd;
+}
+
+.neighbor-vert-btn {
+  cursor: pointer;
+  padding: 2px 7px;
+  color: var(--text-primary);
+  font-weight: 500;
+  transition: all 0.12s ease;
+  user-select: none;
+}
+
+.neighbor-vert-btn:hover {
+  background: var(--bg-hover);
+  color: #ffffff;
 }
 
 @keyframes fadeIn {
