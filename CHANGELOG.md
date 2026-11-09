@@ -1,5 +1,9 @@
 # Changelog
 
+## 4.10.0 (Unpublished)
+
+- Add a graph layout engine
+
 ## 4.9.0
 
 - Significant expansion of the graph library:

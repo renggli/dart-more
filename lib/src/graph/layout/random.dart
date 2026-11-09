@@ -1,32 +1,50 @@
 import 'dart:math' as math;
 
-import '../layout.dart';
-import 'result.dart';
+import 'geometry.dart';
+import 'graph_layout.dart';
 
-/// Extension on [LayoutGraph] for random layouts.
-extension RandomLayoutExtension<V> on LayoutGraph<V> {
-  /// Randomly positions vertices uniformly within [bounds].
-  LayoutResult<V> random({
-    LayoutRect bounds = const LayoutRect(
-      minX: 0,
-      minY: 0,
-      maxX: 800,
-      maxY: 600,
-    ),
-    math.Random? random,
-    int? seed,
-  }) {
-    final list = vertices.toList();
+/// Randomly positions vertices uniformly within [bounds].
+///
+/// Useful for testing, benchmarking, or randomized initial state generation.
+///
+/// ```dart
+/// final graph = Graph<String, void>.undirected()
+///   ..addVertices(['A', 'B', 'C']);
+/// final result = graph.layout(const RandomLayout(seed: 42));
+/// print(result.positions['A']);
+/// ```
+final class RandomLayout<V> implements GraphLayout<V> {
+  /// Constructs a random layout strategy.
+  const new({
+    this.bounds = const LayoutRectangle(0, 0, 800, 600),
+    this.seed,
+    this.random,
+  });
+
+  /// Bounding rectangle in which vertices are positioned.
+  final LayoutRectangle bounds;
+
+  /// Optional pseudo-random seed for deterministic positioning.
+  final int? seed;
+
+  /// Optional explicit [math.Random] instance.
+  final math.Random? random;
+
+  @override
+  LayoutResult<V> layout(LayoutInput<V> input) {
+    final list = input.vertices;
     if (list.isEmpty) {
       return LayoutResult<V>(positions: const {}, bounds: bounds);
     }
 
-    final rng = random ?? (seed != null ? math.Random(seed) : math.Random(42));
+    final rng = random ?? (seed != null ? math.Random(seed) : math.Random());
     final positions = <V, LayoutPoint>{};
+    final sizes = <V, LayoutSize>{};
 
     for (final v in list) {
-      final w = widthOf(v);
-      final h = heightOf(v);
+      final size = input.sizeOf(v);
+      sizes[v] = size;
+      final (w, h) = (size.width, size.height);
       final availW = math.max(1.0, bounds.width - w);
       final availH = math.max(1.0, bounds.height - h);
       final x = bounds.minX + (w / 2.0) + rng.nextDouble() * availW;
@@ -34,9 +52,6 @@ extension RandomLayoutExtension<V> on LayoutGraph<V> {
       positions[v] = LayoutPoint(x, y);
     }
 
-    return LayoutResult<V>(
-      positions: positions,
-      bounds: LayoutRect.fromPoints(positions.values),
-    );
+    return LayoutResult<V>(positions: positions, vertexSizes: sizes);
   }
 }

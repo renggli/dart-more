@@ -69,16 +69,34 @@ export 'src/graph/factory/ring.dart' show RingGraphFactoryExtension;
 export 'src/graph/factory/star.dart' show StarGraphFactoryExtension;
 export 'src/graph/factory/tree.dart' show TreeGraphFactoryExtension;
 export 'src/graph/graph.dart' show Graph;
-export 'src/graph/layout.dart' show LayoutGraph, LayoutGraphExtension;
-export 'src/graph/layout/circular.dart' show CircularLayoutExtension;
-export 'src/graph/layout/force_directed.dart' show ForceDirectedLayoutExtension;
-export 'src/graph/layout/grid.dart' show GridLayoutExtension;
-export 'src/graph/layout/layered.dart' show LayeredLayoutExtension;
-export 'src/graph/layout/radial.dart' show RadialLayoutExtension;
-export 'src/graph/layout/random.dart' show RandomLayoutExtension;
-export 'src/graph/layout/result.dart'
-    show LayoutOrientation, LayoutPoint, LayoutRect, LayoutResult;
-export 'src/graph/layout/tree.dart' show TreeLayoutExtension;
+export 'src/graph/layout.dart' show GraphLayoutExtension;
+export 'src/graph/layout/circular.dart' show CircularLayout;
+export 'src/graph/layout/force/force.dart' show ForceLayout;
+export 'src/graph/layout/force/force_config.dart'
+    show ForceConfig, RepulsionMode;
+export 'src/graph/layout/geometry.dart'
+    show
+        LayoutPoint,
+        LayoutRectangle,
+        LayoutSize,
+        PointLayoutExtension,
+        RectangleLayoutExtension,
+        boundingBox;
+export 'src/graph/layout/graph_layout.dart'
+    show GraphLayout, LayoutInput, LayoutResult;
+export 'src/graph/layout/grid.dart' show GridLayout;
+export 'src/graph/layout/layered/layered.dart' show LayeredLayout;
+export 'src/graph/layout/layered/ranking.dart' show RankingAlgorithm;
+export 'src/graph/layout/orientation.dart' show LayoutOrientation;
+export 'src/graph/layout/partite.dart' show PartiteLayout;
+export 'src/graph/layout/postprocess.dart'
+    show FitMode, LayoutResultExtension, packComponents;
+export 'src/graph/layout/radial.dart' show RadialLayout;
+export 'src/graph/layout/random.dart' show RandomLayout;
+export 'src/graph/layout/shell.dart' show ShellLayout;
+export 'src/graph/layout/spectral.dart' show SpectralLayout;
+export 'src/graph/layout/stress.dart' show StressLayout;
+export 'src/graph/layout/tree.dart' show TreeLayout;
 export 'src/graph/model/forwarding.dart' show ForwardingGraph;
 export 'src/graph/model/reversed.dart' show ReversedGraphExtension;
 export 'src/graph/model/unmodifiable.dart' show UnmodifiableGraphExtension;

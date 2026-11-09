@@ -1,6 +1,6 @@
 import 'dart:math' as math;
 
-import 'package:more/graph.dart';
+import 'package:more/graph.dart' hide GraphLayout;
 import 'package:web/web.dart' as web;
 
 import 'dom_utils.dart';
@@ -551,7 +551,7 @@ class GeneratorModifier extends GraphModifier {
 
 class LayoutModifier extends GraphModifier {
   new({super.enabled, String? algorithm, String? rankDir})
-    : algorithm = algorithm ?? 'force',
+    : algorithm = algorithm ?? 'stress',
       rankDir = rankDir ?? 'TB';
 
   String algorithm;
@@ -581,12 +581,18 @@ class LayoutModifier extends GraphModifier {
     final container = div('form-column');
 
     final selectAlgo = selectElement();
+    selectAlgo.appendChild(
+      optionElement('stress', 'Stress Majorization (SMACOF)'),
+    );
     selectAlgo.appendChild(optionElement('force', 'Spring-Electrical (Force)'));
     selectAlgo.appendChild(
       optionElement('layered', 'Hierarchical DAG (Layered)'),
     );
     selectAlgo.appendChild(optionElement('tree', 'Hierarchical Tree / Forest'));
     selectAlgo.appendChild(optionElement('radial', 'Concentric Radial Rings'));
+    selectAlgo.appendChild(optionElement('shell', 'Concentric Shells'));
+    selectAlgo.appendChild(optionElement('bipartite', 'Multipartite Columns'));
+    selectAlgo.appendChild(optionElement('spectral', 'Spectral Laplacian'));
     selectAlgo.appendChild(optionElement('circular', 'Circular Ring'));
     selectAlgo.appendChild(optionElement('grid', 'Grid Alignment'));
     selectAlgo.appendChild(optionElement('random', 'Random Spread'));
@@ -598,7 +604,9 @@ class LayoutModifier extends GraphModifier {
     });
     container.appendChild(_field('Layout Algorithm:', selectAlgo));
 
-    if (algorithm == 'layered' || algorithm == 'tree') {
+    if (algorithm == 'layered' ||
+        algorithm == 'tree' ||
+        algorithm == 'bipartite') {
       final selectRank = selectElement();
       selectRank.appendChild(optionElement('TB', 'Top to Bottom (TB)'));
       selectRank.appendChild(optionElement('LR', 'Left to Right (LR)'));

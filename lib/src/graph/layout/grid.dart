@@ -1,31 +1,54 @@
 import 'dart:math' as math;
 
-import '../layout.dart';
-import 'result.dart';
+import 'geometry.dart';
+import 'graph_layout.dart';
 
-/// Extension on [LayoutGraph] for 2D grid layouts.
-extension GridLayoutExtension<V> on LayoutGraph<V> {
-  /// Positions vertices in a 2D rectangular grid.
-  ///
-  /// Prevents overlap by calculating cell dimensions from maximum vertex dimensions
-  /// plus [spacing].
-  LayoutResult<V> grid({
-    int? columns,
-    double? cellWidth,
-    double? cellHeight,
-    double spacing = 20.0,
-    LayoutPoint origin = const LayoutPoint(0, 0),
-  }) {
-    final list = vertices.toList();
+/// Positions vertices in a 2D rectangular grid.
+///
+/// Distributes vertices sequentially across rows and columns.
+///
+/// ```dart
+/// final graph = Graph<int, void>.undirected()
+///   ..addVertices([1, 2, 3, 4]);
+/// final result = graph.layout(const GridLayout(columns: 2));
+/// print(result.positions[1]);
+/// ```
+final class GridLayout<V> implements GraphLayout<V> {
+  /// Constructs a grid layout strategy.
+  const new({
+    this.columns,
+    this.cellWidth,
+    this.cellHeight,
+    this.vertexDistance = 20.0,
+    this.origin = const LayoutPoint(0, 0),
+    this.order,
+  });
+
+  /// The number of columns in the grid. If null, defaults to `ceil(sqrt(n))`.
+  final int? columns;
+
+  /// Fixed cell width. If null, computed from the maximum vertex width plus [vertexDistance].
+  final double? cellWidth;
+
+  /// Fixed cell height. If null, computed from the maximum vertex height plus [vertexDistance].
+  final double? cellHeight;
+
+  /// Spacing between adjacent grid cells when cell dimensions are auto-computed.
+  final double vertexDistance;
+
+  /// Origin coordinate for the top-left cell.
+  final LayoutPoint origin;
+
+  /// Optional custom ordering of vertices.
+  final Iterable<V>? order;
+
+  @override
+  LayoutResult<V> layout(LayoutInput<V> input) {
+    final list = order?.toList() ?? input.vertices;
     if (list.isEmpty) {
       return LayoutResult<V>(
         positions: const {},
-        bounds: LayoutRect(
-          minX: origin.x,
-          minY: origin.y,
-          maxX: origin.x,
-          maxY: origin.y,
-        ),
+        bounds: LayoutRectangle(origin.x, origin.y, 0, 0),
       );
     }
 
@@ -34,28 +57,26 @@ extension GridLayoutExtension<V> on LayoutGraph<V> {
 
     var maxW = 0.0;
     var maxH = 0.0;
+    final sizes = <V, LayoutSize>{};
     for (final v in list) {
-      final w = widthOf(v);
-      final h = heightOf(v);
-      if (w > maxW) maxW = w;
-      if (h > maxH) maxH = h;
+      final size = input.sizeOf(v);
+      sizes[v] = size;
+      if (size.width > maxW) maxW = size.width;
+      if (size.height > maxH) maxH = size.height;
     }
 
-    final effectiveCellWidth = cellWidth ?? (maxW + spacing);
-    final effectiveCellHeight = cellHeight ?? (maxH + spacing);
+    final effCellWidth = cellWidth ?? (maxW + vertexDistance);
+    final effCellHeight = cellHeight ?? (maxH + vertexDistance);
     final positions = <V, LayoutPoint>{};
 
     for (var i = 0; i < n; i++) {
       final row = i ~/ cols;
       final col = i % cols;
-      final x = origin.x + col * effectiveCellWidth;
-      final y = origin.y + row * effectiveCellHeight;
+      final x = origin.x + col * effCellWidth;
+      final y = origin.y + row * effCellHeight;
       positions[list[i]] = LayoutPoint(x, y);
     }
 
-    return LayoutResult<V>(
-      positions: positions,
-      bounds: LayoutRect.fromPoints(positions.values),
-    );
+    return LayoutResult<V>(positions: positions, vertexSizes: sizes);
   }
 }

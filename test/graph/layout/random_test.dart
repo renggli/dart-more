@@ -3,25 +3,26 @@ import 'package:more/graph.dart';
 import 'package:test/scaffolding.dart';
 
 void main() {
-  group('randomLayout', () {
+  group('RandomLayout', () {
     test('empty vertices', () {
-      final layout = LayoutGraph<String>(
+      final input = LayoutInput<String>(
         vertices: const [],
         successorsOf: (_) => const [],
       );
-      final result = layout.random();
+      const strategy = RandomLayout<String>();
+      final result = strategy.layout(input);
       check(result.positions).isEmpty();
     });
 
     test('vertices stay within specified bounds', () {
-      const bounds = LayoutRect(minX: 50, minY: 50, maxX: 200, maxY: 150);
-      final layout = LayoutGraph<int>(
+      const bounds = LayoutRectangle(50, 50, 150, 100);
+      final input = LayoutInput<int>(
         vertices: [1, 2, 3, 4, 5],
         successorsOf: (_) => const [],
-        vertexWidth: (_) => 20,
-        vertexHeight: (_) => 20,
+        vertexSize: (_) => const (width: 20.0, height: 20.0),
       );
-      final result = layout.random(bounds: bounds, seed: 12345);
+      const strategy = RandomLayout<int>(bounds: bounds, seed: 12345);
+      final result = strategy.layout(input);
       check(result.positions.length).equals(5);
       for (final p in result.positions.values) {
         check(p.x).isGreaterThan(bounds.minX - 0.001);
@@ -32,12 +33,13 @@ void main() {
     });
 
     test('deterministic with seed', () {
-      final layout = LayoutGraph<int>(
+      final input = LayoutInput<int>(
         vertices: [1, 2, 3],
         successorsOf: (_) => const [],
       );
-      final r1 = layout.random(seed: 42);
-      final r2 = layout.random(seed: 42);
+      const strategy = RandomLayout<int>(seed: 42);
+      final r1 = strategy.layout(input);
+      final r2 = strategy.layout(input);
       check(r1[1]).equals(r2[1]);
       check(r1[2]).equals(r2[2]);
       check(r1[3]).equals(r2[3]);
@@ -46,7 +48,7 @@ void main() {
     test('graph extension', () {
       final graph = Graph<String, void>(isDirected: true);
       graph.addVertex('A');
-      final result = graph.layout().random(seed: 99);
+      final result = graph.layout(const RandomLayout(seed: 99));
       check(result.positions.containsKey('A')).isTrue();
     });
   });

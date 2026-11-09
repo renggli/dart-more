@@ -341,7 +341,23 @@ final class GraphRenderer {
       double labelX;
       double labelY;
 
-      if (hasOpposing) {
+      final route =
+          state.edgeRoutes[(edge.source, edge.target)] ??
+          (!graph.isDirected
+              ? state.edgeRoutes[(edge.target, edge.source)]
+              : null);
+
+      if (route != null && route.isNotEmpty) {
+        final buffer = StringBuffer('M $startX $startY');
+        for (final pt in route) {
+          buffer.write(' L ${pt.x} ${pt.y}');
+        }
+        buffer.write(' L $endX $endY');
+        pathData = buffer.toString();
+        final mid = route[route.length ~/ 2];
+        labelX = mid.x;
+        labelY = mid.y;
+      } else if (hasOpposing) {
         // Curve to the right of the direction
         final normalX = -uy;
         final normalY = ux;

@@ -1,0 +1,216 @@
+import 'dart:math' as math;
+import 'dart:typed_data';
+
+import 'geometry.dart';
+import 'graph_layout.dart';
+import 'postprocess.dart';
+import 'support/components.dart';
+
+/// Positions vertices using the Laplacian eigenvectors (Fiedler vectors) via power iteration.
+///
+/// Deterministically computes vertex coordinates from the algebraic connectivity
+/// of the graph without external linear algebra dependencies.
+///
+/// ```dart
+/// final graph = Graph<String, void>.undirected()
+///   ..addEdge('A', 'B')
+///   ..addEdge('B', 'C')
+///   ..addEdge('C', 'A');
+/// final result = graph.layout(const SpectralLayout());
+/// print(result.positions['A']);
+/// ```
+final class SpectralLayout<V> implements GraphLayout<V> {
+  /// Constructs a spectral layout strategy.
+  const new({
+    this.scale = 200.0,
+    this.center = const LayoutPoint(0, 0),
+    this.iterations = 100,
+    this.seed = 42,
+    this.vertexDistance = 20.0,
+  });
+
+  /// Scale multiplier applied to the normalized eigenvectors.
+  final double scale;
+
+  /// Center point of the layout.
+  final LayoutPoint center;
+
+  /// Power iteration iterations per eigenvector.
+  final int iterations;
+
+  /// Pseudo-random seed for eigenvector initialization.
+  final int seed;
+
+  /// Spacing between packed components.
+  final double vertexDistance;
+
+  @override
+  LayoutResult<V> layout(LayoutInput<V> input) {
+    final list = input.vertices;
+    if (list.isEmpty) {
+      return LayoutResult<V>(
+        positions: const {},
+        bounds: LayoutRectangle(center.x, center.y, 0, 0),
+      );
+    }
+    if (list.length == 1) {
+      return LayoutResult<V>(
+        positions: {list.first: center},
+        vertexSizes: {list.first: input.sizeOf(list.first)},
+      );
+    }
+    if (list.length == 2) {
+      final s = scale / 2.0;
+      return LayoutResult<V>(
+        positions: {
+          list[0]: LayoutPoint(center.x - s, center.y),
+          list[1]: LayoutPoint(center.x + s, center.y),
+        },
+        vertexSizes: {
+          list[0]: input.sizeOf(list[0]),
+          list[1]: input.sizeOf(list[1]),
+        },
+      );
+    }
+
+    final comps = components(input);
+    if (comps.length > 1) {
+      final compResults = <LayoutResult<V>>[];
+      for (final comp in comps) {
+        final compSet = comp.toSet();
+        final compInput = LayoutInput<V>(
+          vertices: comp,
+          successorsOf: (v) => input.successorsOf(v).where(compSet.contains),
+          predecessorsOf: input.isDirected
+              ? (v) => input.predecessorsOf!(v).where(compSet.contains)
+              : null,
+          vertexSize: input.vertexSize,
+          edgeWeight: input.edgeWeight,
+          vertexStrategy: input.vertexStrategy,
+        );
+        compResults.add(_layoutComponent(compInput));
+      }
+      return packComponents(compResults, vertexDistance: vertexDistance);
+    }
+
+    return _layoutComponent(input);
+  }
+
+  LayoutResult<V> _layoutComponent(LayoutInput<V> input) {
+    final list = input.vertices;
+    final n = list.length;
+    final sizes = <V, LayoutSize>{for (final v in list) v: input.sizeOf(v)};
+    final vertexIndex = <V, int>{for (var i = 0; i < n; i++) list[i]: i};
+
+    final adj = List<List<int>>.generate(n, (_) => <int>[]);
+    var maxDegree = 0;
+    for (var i = 0; i < n; i++) {
+      final seen = <int>{};
+      for (final neighbor in input.neighboursOf(list[i])) {
+        final j = vertexIndex[neighbor];
+        if (j != null && j != i && seen.add(j)) {
+          adj[i].add(j);
+        }
+      }
+      if (adj[i].length > maxDegree) maxDegree = adj[i].length;
+    }
+
+    // Shift matrix M = alpha * I - L where alpha = maxDegree + 1
+    final alpha = maxDegree + 1.0;
+    final rng = math.Random(seed);
+
+    void orthogonalizeToOne(Float64List v) {
+      var sum = 0.0;
+      for (var i = 0; i < n; i++) {
+        sum += v[i];
+      }
+      final mean = sum / n;
+      for (var i = 0; i < n; i++) {
+        v[i] -= mean;
+      }
+    }
+
+    double normalize(Float64List v) {
+      var sumSq = 0.0;
+      for (var i = 0; i < n; i++) {
+        sumSq += v[i] * v[i];
+      }
+      final norm = math.sqrt(sumSq);
+      if (norm > 1e-9) {
+        for (var i = 0; i < n; i++) {
+          v[i] /= norm;
+        }
+      }
+      return norm;
+    }
+
+    // 1. Power iteration for 2nd eigenvector (Fiedler vector v2)
+    var v2 = Float64List(n);
+    for (var i = 0; i < n; i++) {
+      v2[i] = rng.nextDouble() - 0.5;
+    }
+    orthogonalizeToOne(v2);
+    normalize(v2);
+
+    for (var iter = 0; iter < iterations; iter++) {
+      final y = Float64List(n);
+      for (var i = 0; i < n; i++) {
+        final deg = adj[i].length;
+        var sumNeighbors = 0.0;
+        for (final j in adj[i]) {
+          sumNeighbors += v2[j];
+        }
+        y[i] = (alpha - deg) * v2[i] + sumNeighbors;
+      }
+      orthogonalizeToOne(y);
+      final norm = normalize(y);
+      if (norm < 1e-9) break;
+      v2 = y;
+    }
+
+    // 2. Power iteration for 3rd eigenvector v3 (deflated from v1 and v2)
+    var v3 = Float64List(n);
+    for (var i = 0; i < n; i++) {
+      v3[i] = rng.nextDouble() - 0.5;
+    }
+
+    void projectV3(Float64List v) {
+      orthogonalizeToOne(v);
+      var dot = 0.0;
+      for (var i = 0; i < n; i++) {
+        dot += v[i] * v2[i];
+      }
+      for (var i = 0; i < n; i++) {
+        v[i] -= dot * v2[i];
+      }
+    }
+
+    projectV3(v3);
+    normalize(v3);
+
+    for (var iter = 0; iter < iterations; iter++) {
+      final y = Float64List(n);
+      for (var i = 0; i < n; i++) {
+        final deg = adj[i].length;
+        var sumNeighbors = 0.0;
+        for (final j in adj[i]) {
+          sumNeighbors += v3[j];
+        }
+        y[i] = (alpha - deg) * v3[i] + sumNeighbors;
+      }
+      projectV3(y);
+      final norm = normalize(y);
+      if (norm < 1e-9) break;
+      v3 = y;
+    }
+
+    final positions = <V, LayoutPoint>{};
+    for (var i = 0; i < n; i++) {
+      final x = center.x + v2[i] * scale;
+      final y = center.y + v3[i] * scale;
+      positions[list[i]] = LayoutPoint(x, y);
+    }
+
+    return LayoutResult<V>(positions: positions, vertexSizes: sizes);
+  }
+}

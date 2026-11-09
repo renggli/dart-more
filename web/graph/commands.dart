@@ -1,4 +1,4 @@
-import 'package:more/graph.dart';
+import 'package:more/graph.dart' hide GraphLayout;
 
 import 'io.dart';
 import 'layout.dart';

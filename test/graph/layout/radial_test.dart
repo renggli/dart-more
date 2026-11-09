@@ -3,24 +3,36 @@ import 'package:more/graph.dart';
 import 'package:test/scaffolding.dart';
 
 void main() {
-  group('radialLayout', () {
+  group('RadialLayout', () {
     test('empty vertices', () {
-      final layout = LayoutGraph<String>(
+      final input = LayoutInput<String>(
         vertices: const [],
         successorsOf: (_) => const [],
       );
-      final result = layout.radial();
+      const strategy = RadialLayout<String>();
+      final result = strategy.layout(input);
       check(result.positions).isEmpty();
     });
 
     test('single vertex at center', () {
-      final layout = LayoutGraph<String>(
+      final input = LayoutInput<String>(
         vertices: ['Center'],
         successorsOf: (_) => const [],
       );
-      final result = layout.radial(center: const LayoutPoint(50, 60));
+      const strategy = RadialLayout<String>(center: LayoutPoint(50, 60));
+      final result = strategy.layout(input);
       check(result.positions.length).equals(1);
       check(result['Center']).equals(const LayoutPoint(50, 60));
+    });
+
+    test('rootSelector picks custom root', () {
+      final input = LayoutInput<String>(
+        vertices: ['A', 'B'],
+        successorsOf: (v) => v == 'B' ? ['A'] : const [],
+      );
+      final strategy = RadialLayout<String>(rootSelector: (inp) => 'B');
+      final result = strategy.layout(input);
+      check(result['B']).equals(const LayoutPoint(0, 0));
     });
 
     test('star graph concentric rings', () {
@@ -31,26 +43,40 @@ void main() {
         'Spoke3': [],
       };
       const center = LayoutPoint(0, 0);
-      const radiusStep = 100.0;
-      final layout = LayoutGraph<String>(
+      const layerDistance = 100.0;
+      final input = LayoutInput<String>(
         vertices: ['Hub', 'Spoke1', 'Spoke2', 'Spoke3'],
         successorsOf: (v) => star[v] ?? const [],
-        vertexWidth: (_) => 20,
-        vertexHeight: (_) => 20,
+        vertexSize: (_) => const (width: 20.0, height: 20.0),
       );
-      final result = layout.radial(
-        centerVertex: 'Hub',
+      const strategy = RadialLayout<String>(
+        root: 'Hub',
         center: center,
-        radiusStep: radiusStep,
+        layerDistance: layerDistance,
       );
+      final result = strategy.layout(input);
 
       check(result.positions.length).equals(4);
       check(result['Hub']).equals(center);
 
       for (final spoke in ['Spoke1', 'Spoke2', 'Spoke3']) {
         final dist = result[spoke]!.distanceTo(center);
-        check(dist).isCloseTo(radiusStep, 1e-4);
+        check(dist).isCloseTo(layerDistance, 1e-4);
       }
+    });
+
+    test('disconnected components are packed separately', () {
+      final input = LayoutInput<String>(
+        vertices: ['A1', 'A2', 'B1', 'B2'],
+        successorsOf: (v) => switch (v) {
+          'A1' => ['A2'],
+          'B1' => ['B2'],
+          _ => const [],
+        },
+      );
+      const strategy = RadialLayout<String>(layerDistance: 50);
+      final result = strategy.layout(input);
+      check(result.positions.keys).unorderedEquals(['A1', 'A2', 'B1', 'B2']);
     });
 
     test('graph extension', () {
@@ -58,9 +84,11 @@ void main() {
       graph.addEdge('Root', 'A');
       graph.addEdge('A', 'B');
 
-      final result = graph
-          .layout(vertexWidth: (_) => 30, vertexHeight: (_) => 30)
-          .radial(centerVertex: 'Root', radiusStep: 80);
+      final result = graph.layout(
+        const RadialLayout(root: 'Root', layerDistance: 80),
+        vertexSize: (_) => const (width: 30.0, height: 30.0),
+        normalize: false,
+      );
       check(result['Root']!.distanceTo(const LayoutPoint(0, 0)))
           .isCloseTo(0.0, 1e-4);
       check(result['A']!.distanceTo(const LayoutPoint(0, 0)))

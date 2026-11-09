@@ -23,9 +23,9 @@ void main() {
     });
   });
 
-  group('LayoutRect', () {
-    test('fromPoints', () {
-      final rect = LayoutRect.fromPoints([
+  group('LayoutRectangle', () {
+    test('boundingBox', () {
+      final rect = boundingBox([
         const LayoutPoint(10, 50),
         const LayoutPoint(100, 20),
         const LayoutPoint(30, 80),
@@ -40,33 +40,25 @@ void main() {
     });
 
     test('from empty points returns zero rect', () {
-      final rect = LayoutRect.fromPoints(const []);
+      final rect = boundingBox(const []);
       check(rect.width).equals(0.0);
       check(rect.height).equals(0.0);
     });
-  });
 
-  group('LayoutResult.fit', () {
-    test('fits points within target bounding box with margin', () {
-      const initial = LayoutResult<String>(
-        positions: {
-          'A': LayoutPoint(0, 0),
-          'B': LayoutPoint(100, 0),
-          'C': LayoutPoint(100, 100),
-          'D': LayoutPoint(0, 100),
-        },
-        bounds: LayoutRect(minX: 0, minY: 0, maxX: 100, maxY: 100),
-      );
+    test('expandToInclude and expandToIncludePoint', () {
+      const r1 = LayoutRectangle(0, 0, 10, 10);
+      const r2 = LayoutRectangle(5, 5, 20, 20);
+      final expanded = r1.expandToInclude(r2);
+      check(expanded.minX).equals(0.0);
+      check(expanded.minY).equals(0.0);
+      check(expanded.maxX).equals(25.0);
+      check(expanded.maxY).equals(25.0);
 
-      final fitted = initial.fit(
-        targetBounds: const LayoutRect(minX: 0, minY: 0, maxX: 500, maxY: 500),
-        margin: 50,
-      );
-
-      check(fitted.bounds.minX).isGreaterThan(49.99);
-      check(fitted.bounds.maxX).isLessThan(450.01);
-      check(fitted.bounds.minY).isGreaterThan(49.99);
-      check(fitted.bounds.maxY).isLessThan(450.01);
+      final withPoint = r1.expandToIncludePoint(const LayoutPoint(-5, 15));
+      check(withPoint.minX).equals(-5.0);
+      check(withPoint.maxX).equals(10.0);
+      check(withPoint.minY).equals(0.0);
+      check(withPoint.maxY).equals(15.0);
     });
   });
 }

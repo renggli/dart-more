@@ -155,8 +155,9 @@ final class AppState {
   void Function()? onOpenExport;
   void Function(String vertex)? onShowInlineEditor;
 
-  String layoutEngine = 'force';
+  String layoutEngine = 'stress';
   String rankDir = 'LR';
+  Map<(String, String), List<LayoutPoint>> edgeRoutes = {};
 
   // Selection mode flags (like Blender, both can be active simultaneously)
   bool selectVerticesMode = true;

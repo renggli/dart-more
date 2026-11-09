@@ -1,79 +1,56 @@
-import 'dart:math' as math;
-
 import 'graph.dart';
+import 'layout/geometry.dart';
+import 'layout/graph_layout.dart';
+import 'layout/postprocess.dart';
 
-/// Extension on [Graph] providing access to graph layouts.
-extension LayoutGraphExtension<V, E> on Graph<V, E> {
-  /// Creates a [LayoutGraph] configured with this graph's vertices, topology,
-  /// and optional vertex dimensions.
-  LayoutGraph<V> layout({
-    double Function(V vertex)? vertexWidth,
-    double Function(V vertex)? vertexHeight,
-    double defaultVertexWidth = 40.0,
-    double defaultVertexHeight = 40.0,
-  }) => LayoutGraph<V>(
-    vertices: vertices,
-    successorsOf: successorsOf,
-    predecessorsOf: isDirected ? predecessorsOf : successorsOf,
-    vertexWidth: vertexWidth,
-    vertexHeight: vertexHeight,
-    defaultVertexWidth: defaultVertexWidth,
-    defaultVertexHeight: defaultVertexHeight,
-  );
-}
+/// Extension on [Graph] providing access to graph layout strategies.
+///
+/// Computes 2D node coordinates and edge routes using configurable layout
+/// strategies such as `StressLayout`, `ForceLayout`, `LayeredLayout`, `TreeLayout`,
+/// `RadialLayout`, and more.
+///
+/// ```dart
+/// final graph = Graph<String, void>.directed()
+///   ..addEdge('A', 'B')
+///   ..addEdge('B', 'C');
+/// final result = graph.layout(const StressLayout());
+/// print(result.positions['A']);
+/// ```
+extension GraphLayoutExtension<V, E> on Graph<V, E> {
+  /// Computes a 2D layout for this graph using [strategy].
+  LayoutResult<V> layout(
+    GraphLayout<V> strategy, {
+    LayoutSize Function(V vertex)? vertexSize,
+    num Function(V source, V target)? edgeWeight,
+    bool normalize = true,
+    bool packComponents = true,
+    bool removeOverlaps = false,
+  }) {
+    final input = LayoutInput<V>(
+      vertices: vertices,
+      successorsOf: successorsOf,
+      predecessorsOf: isDirected ? predecessorsOf : null,
+      vertexSize: vertexSize,
+      edgeWeight:
+          edgeWeight ??
+          (source, target) {
+            final edge = getEdge(source, target);
+            if (edge != null && edge.value is num) {
+              return edge.value as num;
+            }
+            return 1.0;
+          },
+      vertexStrategy: vertexStrategy,
+    );
 
-/// A graph layout orchestrator that holds vertices, topology closures, and
-/// optional vertex dimension accessors for computing 2D coordinates.
-final class LayoutGraph<V> {
-  /// Constructs a [LayoutGraph] instance.
-  const new({
-    required this.vertices,
-    required this.successorsOf,
-    Iterable<V> Function(V vertex)? predecessorsOf,
-    this.vertexWidth,
-    this.vertexHeight,
-    this.defaultVertexWidth = 40.0,
-    this.defaultVertexHeight = 40.0,
-  }) : predecessorsOf = predecessorsOf ?? successorsOf;
+    var result = strategy.layout(input);
 
-  /// The vertices to be laid out.
-  final Iterable<V> vertices;
-
-  /// Function returning the outgoing successors of a vertex.
-  final Iterable<V> Function(V vertex) successorsOf;
-
-  /// Function returning the incoming predecessors of a vertex.
-  final Iterable<V> Function(V vertex) predecessorsOf;
-
-  /// Optional function returning the width of a vertex.
-  final double Function(V vertex)? vertexWidth;
-
-  /// Optional function returning the height of a vertex.
-  final double Function(V vertex)? vertexHeight;
-
-  /// Default vertex width when [vertexWidth] is not provided or returns null.
-  final double defaultVertexWidth;
-
-  /// Default vertex height when [vertexHeight] is not provided or returns null.
-  final double defaultVertexHeight;
-
-  /// Computes the width of [vertex].
-  double widthOf(V vertex) => vertexWidth?.call(vertex) ?? defaultVertexWidth;
-
-  /// Computes the height of [vertex].
-  double heightOf(V vertex) =>
-      vertexHeight?.call(vertex) ?? defaultVertexHeight;
-
-  /// Returns the bounding diagonal diameter of [vertex].
-  double diameterOf(V vertex) {
-    final w = widthOf(vertex);
-    final h = heightOf(vertex);
-    return math.sqrt(w * w + h * h);
+    if (removeOverlaps) {
+      result = result.removeOverlaps(input);
+    }
+    if (normalize) {
+      result = result.normalized();
+    }
+    return result;
   }
-
-  /// Returns all adjacent neighbours (successors and predecessors) of [vertex].
-  Iterable<V> neighboursOf(V vertex) => {
-    ...successorsOf(vertex),
-    ...predecessorsOf(vertex),
-  };
 }
