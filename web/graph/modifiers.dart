@@ -65,9 +65,6 @@ abstract class GraphModifier {
   /// Bakes changes permanently into the base graph and removes itself from the stack.
   void applyPermanent(AppState state) {}
 
-  /// Hook called whenever the active graph or pipeline state updates.
-  void updateConfig(AppState state) {}
-
   /// Builds configuration UI controls inside the modifier card (accessible, stacked vertically).
   web.HTMLElement buildConfigUI(AppState state, void Function() onModified);
 
@@ -254,16 +251,30 @@ class BaseGraphModifier extends GraphModifier {
 // ---------------------------------------------------------------------------
 
 class GeneratorModifier extends GraphModifier {
-  new({super.enabled, String? type})
-    : type = type ?? 'complete',
-      count = 5,
-      combineMode = 'union';
+  new({
+    super.enabled,
+    String? type,
+    this.count = 5,
+    this.atlasIndex = 7,
+    this.atlasVertices,
+    this.atlasEdges,
+    this.arity = 2,
+    this.prob = 0.35,
+    this.seed = 42,
+    String? combineMode,
+  }) : type = type ?? 'atlas',
+       combineMode = combineMode ?? 'replace';
 
-  String type; // complete, cycle, star, tree, bipartite, random
+  String
+  type; // atlas, complete, cycle, star, tree, bipartite, path, grid, random
   int count;
-  int arity = 2;
-  double prob = 0.35;
-  String combineMode; // 'union' or 'replace'
+  int atlasIndex;
+  int? atlasVertices;
+  int? atlasEdges;
+  int arity;
+  double prob;
+  int seed;
+  String combineMode; // 'replace' or 'union'
 
   @override
   String get id => 'generator';
@@ -293,16 +304,19 @@ class GeneratorModifier extends GraphModifier {
     final container = div('form-column');
 
     final typeSelect = selectElement();
-    typeSelect.appendChild(optionElement('complete', 'Complete Graph (Kn)'));
-    typeSelect.appendChild(optionElement('cycle', 'Cycle Graph (Cn)'));
-    typeSelect.appendChild(optionElement('star', 'Star Graph (Sn)'));
-    typeSelect.appendChild(optionElement('path', 'Path Graph (Pn)'));
-    typeSelect.appendChild(optionElement('tree', 'm-ary Tree'));
     typeSelect.appendChild(
-      optionElement('bipartite', 'Bipartite Graph (Km,n)'),
+      optionElement('atlas', 'Atlas Graph (Read & Wilson)'),
     );
-    typeSelect.appendChild(optionElement('grid', '2D Grid Graph'));
-    typeSelect.appendChild(optionElement('random', 'Erdős–Rényi Random'));
+    typeSelect.appendChild(optionElement('complete', 'Complete Graph'));
+    typeSelect.appendChild(optionElement('cycle', 'Cycle Graph'));
+    typeSelect.appendChild(optionElement('star', 'Star Graph'));
+    typeSelect.appendChild(optionElement('path', 'Path Graph'));
+    typeSelect.appendChild(optionElement('tree', 'Complete m-ary Tree'));
+    typeSelect.appendChild(optionElement('bipartite', 'Bipartite Graph'));
+    typeSelect.appendChild(optionElement('grid', 'Grid Graph'));
+    typeSelect.appendChild(
+      optionElement('random', 'Random (Erdős–Rényi G(n,p))'),
+    );
     typeSelect.value = type;
     typeSelect.onChange.listen((_) {
       type = typeSelect.value;
@@ -310,18 +324,67 @@ class GeneratorModifier extends GraphModifier {
     });
     container.appendChild(_field('Preset Shape:', typeSelect));
 
-    final countInput = numberInput(count, 3, 50);
-    countInput.onInput.listen((_) {
-      final val = int.tryParse(countInput.value);
-      if (val != null && val >= 3) {
-        count = val;
+    if (type == 'atlas') {
+      final atlasRow = div('form-row');
+      final slider = rangeInput(atlasIndex, 0, 1252);
+      final numBox = numberInput(atlasIndex, 0, 1252)..style.width = '70px';
+
+      slider.onInput.listen((_) {
+        final val = int.tryParse(slider.value);
+        if (val != null) {
+          atlasIndex = val;
+          numBox.value = slider.value;
+          onModified();
+        }
+      });
+      numBox.onInput.listen((_) {
+        final val = int.tryParse(numBox.value);
+        if (val != null) {
+          atlasIndex = val;
+          slider.value = numBox.value;
+          onModified();
+        }
+      });
+
+      atlasRow.appendChild(slider);
+      atlasRow.appendChild(numBox);
+      container.appendChild(_field('Atlas Graph #:', atlasRow));
+
+      final filterRow = div('form-row');
+      final vFilter = numberInput(atlasVertices, 0, 7)
+        ..placeholder = 'Any'
+        ..style.width = '70px';
+      vFilter.onInput.listen((_) {
+        atlasVertices = int.tryParse(vFilter.value);
         onModified();
-      }
-    });
-    container.appendChild(_field('Vertex Count (n):', countInput));
+      });
+      filterRow.appendChild(span('V: '));
+      filterRow.appendChild(vFilter);
+
+      final eFilter = numberInput(atlasEdges, 0, 21)
+        ..placeholder = 'Any'
+        ..style.width = '70px';
+      eFilter.onInput.listen((_) {
+        atlasEdges = int.tryParse(eFilter.value);
+        onModified();
+      });
+      filterRow.appendChild(span('E: '));
+      filterRow.appendChild(eFilter);
+      container.appendChild(_field('Filter (V / E):', filterRow));
+    } else {
+      final countInput = numberInput(count, 1, 100);
+      countInput.onInput.listen((_) {
+        final val = int.tryParse(countInput.value);
+        if (val != null && val >= 1) {
+          count = val;
+          onModified();
+        }
+      });
+      container.appendChild(_field('Vertex Count (n):', countInput));
+    }
 
     if (type == 'tree') {
-      final arityInput = numberInput(arity, 2, 5);
+      final arityInput = numberInput(arity, 2, 10);
       arityInput.onInput.listen((_) {
         final val = int.tryParse(arityInput.value);
         if (val != null && val >= 2) {
@@ -342,11 +405,18 @@ class GeneratorModifier extends GraphModifier {
         }
       });
       container.appendChild(_field('Edge Probability (p):', probInput));
+
+      final seedInput = numberInput(seed, 0, 999999);
+      seedInput.onInput.listen((_) {
+        seed = int.tryParse(seedInput.value) ?? 42;
+        onModified();
+      });
+      container.appendChild(_field('Random Seed:', seedInput));
     }
 
     final modeSelect = selectElement();
-    modeSelect.appendChild(optionElement('union', 'Union (Add to existing)'));
     modeSelect.appendChild(optionElement('replace', 'Replace existing graph'));
+    modeSelect.appendChild(optionElement('union', 'Merge into existing graph'));
     modeSelect.value = combineMode;
     modeSelect.onChange.listen((_) {
       combineMode = modeSelect.value;
@@ -359,171 +429,110 @@ class GeneratorModifier extends GraphModifier {
 
   @override
   ModifierOutput apply(Graph<String, num> graph, AppState state) {
-    final generated = Graph<String, num>(isDirected: graph.isDirected);
     final prefix = combineMode == 'union' ? 'G${count}_' : '';
+    final factory = GraphFactory<String, num>(
+      isDirected: graph.isDirected,
+      vertexProvider: (i) =>
+          '$prefix${i < 26 ? String.fromCharCode(65 + i) : (i + 1)}',
+      edgeProvider: (u, v) => 1,
+    );
 
-    if (type == 'complete') {
-      final vList = [for (var i = 0; i < count; i++) '$prefix${i + 1}'];
-      for (final v in vList) {
-        generated.addVertex(v);
-      }
-      for (var i = 0; i < vList.length; i++) {
-        for (var j = i + 1; j < vList.length; j++) {
-          generated.addEdge(vList[i], vList[j], value: 1);
-          if (graph.isDirected) {
-            generated.addEdge(vList[j], vList[i], value: 1);
+    Graph<String, num> generated;
+    String statusInfo;
+
+    switch (type) {
+      case 'atlas':
+        final int actualIndex;
+        if (atlasVertices != null || atlasEdges != null) {
+          final matches = factory
+              .atlasMatching(vertexCount: atlasVertices, edgeCount: atlasEdges)
+              .toList();
+          if (matches.isEmpty) {
+            return const ModifierOutput(
+              hasError: true,
+              errorMessage: 'No atlas graph matches the vertex/edge filter.',
+              statusSummary: 'Atlas: no matching graphs',
+            );
           }
+          actualIndex = atlasIndex.clamp(0, matches.length - 1);
+          generated = matches[actualIndex];
+        } else {
+          actualIndex = atlasIndex.clamp(0, factory.atlasLength - 1);
+          generated = factory.atlas(actualIndex);
         }
-      }
-    } else if (type == 'cycle') {
-      final vList = [for (var i = 0; i < count; i++) '$prefix${i + 1}'];
-      for (final v in vList) {
-        generated.addVertex(v);
-      }
-      for (var i = 0; i < vList.length; i++) {
-        final next = (i + 1) % vList.length;
-        generated.addEdge(vList[i], vList[next], value: 1);
-      }
-    } else if (type == 'star') {
-      final center = '${prefix}Center';
-      generated.addVertex(center);
-      for (var i = 1; i < count; i++) {
-        final leaf = '$prefix$i';
-        generated.addVertex(leaf);
-        generated.addEdge(center, leaf, value: 1);
-      }
-    } else if (type == 'tree') {
-      final vList = [for (var i = 0; i < count; i++) '$prefix${i + 1}'];
-      for (final v in vList) {
-        generated.addVertex(v);
-      }
-      for (var i = 1; i < vList.length; i++) {
-        final parentIdx = (i - 1) ~/ arity;
-        generated.addEdge(vList[parentIdx], vList[i], value: 1);
-      }
-    } else if (type == 'bipartite') {
-      final half = count ~/ 2;
-      final partA = [for (var i = 0; i < half; i++) '${prefix}A${i + 1}'];
-      final partB = [
-        for (var j = 0; j < count - half; j++) '${prefix}B${j + 1}',
-      ];
-      for (final a in partA) {
-        generated.addVertex(a);
-      }
-      for (final b in partB) {
-        generated.addVertex(b);
-      }
-      for (final a in partA) {
-        for (final b in partB) {
-          generated.addEdge(a, b, value: 1);
-        }
-      }
-    } else if (type == 'path') {
-      final vList = [for (var i = 0; i < count; i++) '$prefix${i + 1}'];
-      for (final v in vList) {
-        generated.addVertex(v);
-      }
-      for (var i = 0; i < vList.length - 1; i++) {
-        generated.addEdge(vList[i], vList[i + 1], value: 1);
         if (graph.isDirected) {
-          generated.addEdge(vList[i + 1], vList[i], value: 1);
-        }
-      }
-    } else if (type == 'grid') {
-      final cols = math.max(1, math.sqrt(count).ceil());
-      final vList = [for (var i = 0; i < count; i++) '$prefix${i + 1}'];
-      for (final v in vList) {
-        generated.addVertex(v);
-      }
-      for (var i = 0; i < count; i++) {
-        final c = i % cols;
-        if (c + 1 < cols && i + 1 < count) {
-          generated.addEdge(vList[i], vList[i + 1], value: 1);
-          if (graph.isDirected) {
-            generated.addEdge(vList[i + 1], vList[i], value: 1);
+          final bidi = Graph<String, num>(isDirected: true);
+          for (final v in generated.vertices) {
+            bidi.addVertex(v);
           }
-        }
-        if (i + cols < count) {
-          generated.addEdge(vList[i], vList[i + cols], value: 1);
-          if (graph.isDirected) {
-            generated.addEdge(vList[i + cols], vList[i], value: 1);
+          for (final e in generated.edges) {
+            bidi.addEdge(e.source, e.target, value: e.value);
+            bidi.addEdge(e.target, e.source, value: e.value);
           }
+          generated = bidi;
         }
-      }
-    } else if (type == 'random') {
-      final rnd = math.Random(count + 42);
-      final vList = [for (var i = 0; i < count; i++) '$prefix${i + 1}'];
-      for (final v in vList) {
-        generated.addVertex(v);
-      }
-      for (var i = 0; i < vList.length; i++) {
-        for (var j = i + 1; j < vList.length; j++) {
-          if (rnd.nextDouble() <= prob) {
-            generated.addEdge(vList[i], vList[j], value: 1);
-            if (graph.isDirected && rnd.nextBool()) {
-              generated.addEdge(vList[j], vList[i], value: 1);
-            }
-          }
-        }
-      }
+        statusInfo =
+            'Atlas G$actualIndex (${generated.vertices.length} vertices, ${generated.edges.length} edges)';
+      case 'complete':
+        generated = factory.complete(vertexCount: count);
+        statusInfo = 'Complete Graph ($count vertices)';
+      case 'cycle':
+        generated = factory.ring(vertexCount: count);
+        statusInfo = 'Cycle Graph ($count vertices)';
+      case 'star':
+        generated = factory.star(vertexCount: count);
+        statusInfo = 'Star Graph ($count vertices)';
+      case 'path':
+        generated = factory.path(vertexCount: count);
+        statusInfo = 'Path Graph ($count vertices)';
+      case 'tree':
+        generated = factory.completeTree(vertexCount: count, arity: arity);
+        statusInfo = 'Complete $arity-ary Tree ($count vertices)';
+      case 'bipartite':
+        final half = count ~/ 2;
+        generated = factory.partite(vertexCounts: [half, count - half]);
+        statusInfo = 'Bipartite Graph ($half + ${count - half} vertices)';
+      case 'grid':
+        final cols = math.max(1, math.sqrt(count).ceil());
+        final rows = (count / cols).ceil();
+        generated = factory.grid(rows: rows, columns: cols);
+        statusInfo = 'Grid Graph ($rows×$cols)';
+      case 'random':
+        generated = factory.randomErdosRenyi(
+          vertexCount: count,
+          probability: prob,
+        );
+        statusInfo = 'Random G(n,p) ($count vertices, p=$prob)';
+      default:
+        generated = factory.complete(vertexCount: count);
+        statusInfo = 'Generated Graph ($count vertices)';
     }
 
-    // Calculate layout coordinates for all generated vertices for live preview
+    // Assign layout coordinates for generated vertices
     const cx = 420.0;
     const cy = 280.0;
-    final radius = math.max(120.0, count * 22.0);
+    final radius = math.max(120.0, generated.vertices.length * 20.0);
     final generatedVertices = generated.vertices.toList();
 
     for (var i = 0; i < generatedVertices.length; i++) {
       final v = generatedVertices[i];
       final node = state.getOrCreateNode(v);
       if (node.x == null || node.y == null || combineMode == 'replace') {
-        if (type == 'star') {
-          if (i == 0) {
-            node.x = cx;
-            node.y = cy;
-          } else {
-            final angle = (2 * math.pi * (i - 1) / (count - 1)) - (math.pi / 2);
-            node.x = cx + radius * math.cos(angle);
-            node.y = cy + radius * math.sin(angle);
-          }
-        } else if (type == 'bipartite') {
-          final half = count ~/ 2;
-          if (i < half) {
-            node.x = cx - 140.0;
-            node.y = cy - (half * 25.0) + (i * 50.0);
-          } else {
-            final j = i - half;
-            node.x = cx + 140.0;
-            node.y = cy - ((count - half) * 25.0) + (j * 50.0);
-          }
-        } else if (type == 'grid') {
-          final cols = math.max(1, math.sqrt(count).ceil());
-          final r = i ~/ cols;
-          final c = i % cols;
-          node.x = cx - (cols * 40.0) + (c * 80.0);
-          node.y = cy - 100.0 + (r * 70.0);
-        } else if (type == 'path') {
-          node.x = cx - (count * 35.0) + (i * 70.0);
-          node.y = cy;
-        } else {
-          final angle =
-              (2 * math.pi * i / math.max(1, generatedVertices.length)) -
-              (math.pi / 2);
-          node.x = cx + radius * math.cos(angle);
-          node.y = cy + radius * math.sin(angle);
-        }
+        final angle =
+            (2 * math.pi * i / math.max(1, generatedVertices.length)) -
+            (math.pi / 2);
+        node.x = cx + radius * math.cos(angle);
+        node.y = cy + radius * math.sin(angle);
       }
     }
 
     if (combineMode == 'replace') {
       return ModifierOutput(
         transformedGraph: generated,
-        statusSummary: 'Generated $type ($count vertices) [Replace]',
+        statusSummary: statusInfo,
       );
     }
 
-    // Union with current pipeline graph
     final combined = Graph<String, num>(isDirected: graph.isDirected);
     for (final v in graph.vertices) {
       combined.addVertex(v);
@@ -540,7 +549,7 @@ class GeneratorModifier extends GraphModifier {
 
     return ModifierOutput(
       transformedGraph: combined,
-      statusSummary: 'Union +$type ($count vertices)',
+      statusSummary: 'Merge +$statusInfo',
     );
   }
 }

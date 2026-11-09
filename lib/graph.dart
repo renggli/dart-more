@@ -61,6 +61,7 @@ export 'src/graph/factory/atlas.dart' show AtlasGraphFactoryExtension;
 export 'src/graph/factory/collection.dart' show CollectionGraphFactoryExtension;
 export 'src/graph/factory/complete.dart' show CompleteGraphFactoryExtension;
 export 'src/graph/factory/empty.dart' show EmptyGraphFactoryExtension;
+export 'src/graph/factory/grid.dart' show GridGraphFactoryExtension;
 export 'src/graph/factory/mermaid.dart' show MermaidGraphFactoryExtension;
 export 'src/graph/factory/partite.dart' show PartiteGraphFactoryExtension;
 export 'src/graph/factory/path.dart' show PathGraphFactoryExtension;

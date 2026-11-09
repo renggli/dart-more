@@ -6,6 +6,7 @@ import 'package:web/web.dart' as web;
 
 import 'commands.dart';
 import 'dom_utils.dart';
+import 'icons.dart';
 import 'inspector.dart';
 import 'io.dart';
 import 'modifiers.dart';
@@ -266,8 +267,7 @@ void main() {
         if (idx > 0) {
           final btnUp = button('', 'modifier-btn-icon')
             ..title = 'Move Up'
-            ..innerHTML = '<svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 8 L6 4 L10 8"/></svg>'
-                .toJS
+            ..innerHTML = GraphIcons.chevronUp.toJS
             ..onClick.listen((_) {
               final temp = state.modifiers[idx];
               state.modifiers[idx] = state.modifiers[idx - 1];
@@ -281,8 +281,7 @@ void main() {
         if (idx < state.modifiers.length - 1) {
           final btnDown = button('', 'modifier-btn-icon')
             ..title = 'Move Down'
-            ..innerHTML = '<svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 4 L6 8 L10 4"/></svg>'
-                .toJS
+            ..innerHTML = GraphIcons.chevronDown.toJS
             ..onClick.listen((_) {
               final temp = state.modifiers[idx];
               state.modifiers[idx] = state.modifiers[idx + 1];
@@ -295,8 +294,7 @@ void main() {
         }
         final btnRemove = button('', 'modifier-btn-icon')
           ..title = 'Remove'
-          ..innerHTML = '<svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2"><path d="M2.5 2.5 L9.5 9.5 M9.5 2.5 L2.5 9.5"/></svg>'
-              .toJS
+          ..innerHTML = GraphIcons.close.toJS
           ..onClick.listen((_) {
             state.modifiers.removeAt(idx);
             state.evaluateModifiers();
@@ -390,7 +388,6 @@ void main() {
         if (btnApply != null) {
           btnApply.style.display = (mod.canApply && !currentErr) ? '' : 'none';
         }
-        mod.updateConfig(state);
         updateCardBody?.call();
       }
 

@@ -18,31 +18,19 @@ final class PathOverlay extends VisualOverlay {
     required this.vertices,
     this.edges = const [],
     this.color,
-    this.stepNumbers = true,
-    this.activeStep,
     super.summary,
   });
 
   final List<String> vertices;
   final List<(String, String)> edges;
   final String? color;
-  final bool stepNumbers;
-  final int? activeStep;
 }
 
 /// Overlay that colors vertices into discrete categories or components.
 final class PartitionOverlay extends VisualOverlay {
-  const new({
-    super.title = '',
-    required this.vertexGroup,
-    this.renderClusters = false,
-    this.highlightedEdges = const {},
-    super.summary,
-  });
+  const new({super.title = '', required this.vertexGroup, super.summary});
 
   final Map<String, int> vertexGroup;
-  final bool renderClusters;
-  final Set<(String, String)> highlightedEdges;
 }
 
 /// Overlay that colors vertices along a continuous numeric heatmap.
@@ -120,7 +108,7 @@ final class GraphClipboard {
 /// Workspace state for the graph web application.
 final class AppState {
   new({Graph<String, num>? initialGraph})
-    : primaryGraph = initialGraph ?? _createDefaultGraph() {
+    : primaryGraph = initialGraph ?? Graph<String, num>(isDirected: true) {
     syncNodes();
   }
 
@@ -247,14 +235,13 @@ final class AppState {
         if (out.tableData != null) {
           finalTable = out.tableData;
         }
-      } catch (error) {
+      } on Exception catch (error, stackTrace) {
         final errOut = ModifierOutput(
           hasError: true,
-          errorMessage: error.toString(),
+          errorMessage: '$error\n$stackTrace',
           statusSummary: 'Error: $error',
         );
         lastModifierOutputs[mod.id] = errOut;
-        // Skip applying graph or overlay changes on error
       }
     }
 
@@ -267,9 +254,6 @@ final class AppState {
       nodes.putIfAbsent(v, () => GraphNode(id: v, label: v));
     }
   }
-
-  static Graph<String, num> _createDefaultGraph() =>
-      Graph<String, num>(isDirected: true);
 
   /// Synchronizes node records with current graph vertices.
   void syncNodes() {
@@ -286,18 +270,20 @@ final class AppState {
         () => GraphNode(id: id, label: label ?? id, x: x, y: y),
       );
 
+  /// Checks whether [vertex] already exists in either the primary graph or node map.
+  bool containsVertexOrNode(String vertex) =>
+      primaryGraph.containsVertex(vertex) || nodes.containsKey(vertex);
+
   /// Generates the next clean available node identifier (A..Z, then N1, N2..).
   String nextAvailableNodeId() {
     for (var i = 0; i < 26; i++) {
       final candidate = String.fromCharCode(65 + i);
-      if (!primaryGraph.containsVertex(candidate) &&
-          !nodes.containsKey(candidate)) {
+      if (!containsVertexOrNode(candidate)) {
         return candidate;
       }
     }
     var count = primaryGraph.vertices.length + 1;
-    while (primaryGraph.containsVertex('N$count') ||
-        nodes.containsKey('N$count')) {
+    while (containsVertexOrNode('N$count')) {
       count++;
     }
     return 'N$count';
@@ -312,11 +298,11 @@ final class AppState {
     redoStack.clear();
   }
 
-  bool canUndo() => undoStack.isNotEmpty;
-  bool canRedo() => redoStack.isNotEmpty;
+  bool get canUndo => undoStack.isNotEmpty;
+  bool get canRedo => redoStack.isNotEmpty;
 
   void undo() {
-    if (!canUndo()) return;
+    if (!canUndo) return;
     syncNodes();
     redoStack.add(GraphSnapshot.fromGraph(primaryGraph, isWeighted, nodes));
     final snapshot = undoStack.removeLast();
@@ -343,7 +329,7 @@ final class AppState {
   }
 
   void redo() {
-    if (!canRedo()) return;
+    if (!canRedo) return;
     syncNodes();
     undoStack.add(GraphSnapshot.fromGraph(primaryGraph, isWeighted, nodes));
     final snapshot = redoStack.removeLast();
