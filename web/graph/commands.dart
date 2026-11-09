@@ -24,7 +24,8 @@ abstract class GraphCommand {
 
   String get id;
   String get title;
-  String? get shortcut;
+  List<String> get shortcuts => shortcut != null ? [shortcut!] : const [];
+  String? get shortcut => null;
   CommandCategory get category;
 
   bool canExecute(AppState state);
@@ -36,20 +37,22 @@ abstract class GraphCommand {
     bool shift = false,
     bool alt = false,
   }) {
-    if (shortcut == null) return false;
-    if (id == 'edit.delete') {
-      if (!ctrl &&
-          !alt &&
-          (key == 'x' || key == 'X' || key == 'Delete' || key == 'Backspace')) {
+    for (final sc in shortcuts) {
+      if (_matchesShortcut(sc, key, ctrl: ctrl, shift: shift, alt: alt)) {
         return true;
       }
     }
-    if (id == 'select.all' || id == 'select.none') {
-      if (!ctrl && !shift && !alt && (key == 'a' || key == 'A')) {
-        return true;
-      }
-    }
-    final parts = shortcut!.split('+');
+    return false;
+  }
+
+  static bool _matchesShortcut(
+    String shortcutStr,
+    String key, {
+    required bool ctrl,
+    required bool shift,
+    required bool alt,
+  }) {
+    final parts = shortcutStr.split('+');
     var reqCtrl = false;
     var reqShift = false;
     var reqAlt = false;
@@ -65,14 +68,7 @@ abstract class GraphCommand {
         targetKey = part;
       }
     }
-    if (ctrl != reqCtrl || alt != reqAlt) return false;
-    if (id == 'edit.redo' &&
-        ctrl &&
-        !alt &&
-        (key == 'y' || key == 'Y' || (shift && (key == 'z' || key == 'Z')))) {
-      return true;
-    }
-    if (shift != reqShift) return false;
+    if (ctrl != reqCtrl || alt != reqAlt || shift != reqShift) return false;
     if (targetKey == '+' && (key == '+' || key == '=')) return true;
     if (targetKey == '-' && (key == '-' || key == '_')) return true;
     return key.toLowerCase() == targetKey.toLowerCase();
@@ -104,11 +100,7 @@ class NewGraphCommand extends GraphCommand {
   @override
   void execute(AppState state) {
     state.saveSnapshot();
-    state.primaryGraph = Graph<String, num>(
-      isDirected: state.primaryGraph.isDirected,
-    );
-    state.nodes.clear();
-    state.clearSelection();
+    state.reset();
   }
 }
 
@@ -249,7 +241,10 @@ class RedoCommand extends GraphCommand {
   String get title => 'Redo';
 
   @override
-  String? get shortcut => 'Ctrl+Y';
+  List<String> get shortcuts => const ['Ctrl+Shift+Z', 'Ctrl+Y'];
+
+  @override
+  String? get shortcut => 'Ctrl+Shift+Z';
 
   @override
   CommandCategory get category => CommandCategory.edit;
@@ -456,6 +451,9 @@ class DeleteCommand extends GraphCommand {
 
   @override
   String get title => 'Delete';
+
+  @override
+  List<String> get shortcuts => const ['Delete', 'Backspace', 'X'];
 
   @override
   String? get shortcut => 'Delete';

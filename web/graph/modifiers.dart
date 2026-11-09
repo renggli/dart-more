@@ -550,12 +550,25 @@ class GeneratorModifier extends GraphModifier {
 // ---------------------------------------------------------------------------
 
 class LayoutModifier extends GraphModifier {
-  new({super.enabled, String? algorithm, String? rankDir})
-    : algorithm = algorithm ?? 'stress',
-      rankDir = rankDir ?? 'TB';
+  new({
+    super.enabled,
+    String? algorithm,
+    String? rankDir,
+    this.vertexDistance = 40.0,
+    this.layerDistance = 80.0,
+    this.iterations = 100,
+    this.columns = 0,
+    this.seed = 42,
+  }) : algorithm = algorithm ?? 'stress',
+       rankDir = rankDir ?? 'TB';
 
   String algorithm;
   String rankDir;
+  double vertexDistance;
+  double layerDistance;
+  int iterations;
+  int columns;
+  int seed;
 
   @override
   String get id => 'layout';
@@ -581,21 +594,9 @@ class LayoutModifier extends GraphModifier {
     final container = div('form-column');
 
     final selectAlgo = selectElement();
-    selectAlgo.appendChild(
-      optionElement('stress', 'Stress Majorization (SMACOF)'),
-    );
-    selectAlgo.appendChild(optionElement('force', 'Spring-Electrical (Force)'));
-    selectAlgo.appendChild(
-      optionElement('layered', 'Hierarchical DAG (Layered)'),
-    );
-    selectAlgo.appendChild(optionElement('tree', 'Hierarchical Tree / Forest'));
-    selectAlgo.appendChild(optionElement('radial', 'Concentric Radial Rings'));
-    selectAlgo.appendChild(optionElement('shell', 'Concentric Shells'));
-    selectAlgo.appendChild(optionElement('bipartite', 'Multipartite Columns'));
-    selectAlgo.appendChild(optionElement('spectral', 'Spectral Laplacian'));
-    selectAlgo.appendChild(optionElement('circular', 'Circular Ring'));
-    selectAlgo.appendChild(optionElement('grid', 'Grid Alignment'));
-    selectAlgo.appendChild(optionElement('random', 'Random Spread'));
+    for (final engine in LayoutEngine.values) {
+      selectAlgo.appendChild(optionElement(engine.id, engine.label));
+    }
 
     selectAlgo.value = algorithm;
     selectAlgo.onChange.listen((_) {
@@ -604,20 +605,71 @@ class LayoutModifier extends GraphModifier {
     });
     container.appendChild(_field('Layout Algorithm:', selectAlgo));
 
+    // Spacing / Vertex Distance control (applicable to all layouts)
+    final spacingInput = numberInput(vertexDistance, 10, 200);
+    spacingInput.onChange.listen((_) {
+      vertexDistance = double.tryParse(spacingInput.value) ?? 40.0;
+      onModified();
+    });
+    container.appendChild(_field('Node Spacing (px):', spacingInput));
+
+    // Directional layout controls
     if (algorithm == 'layered' ||
         algorithm == 'tree' ||
         algorithm == 'bipartite') {
       final selectRank = selectElement();
-      selectRank.appendChild(optionElement('TB', 'Top to Bottom (TB)'));
-      selectRank.appendChild(optionElement('LR', 'Left to Right (LR)'));
-      selectRank.appendChild(optionElement('BT', 'Bottom to Top (BT)'));
-      selectRank.appendChild(optionElement('RL', 'Right to Left (RL)'));
+      for (final dir in RankDir.values) {
+        selectRank.appendChild(
+          optionElement(dir.id, '${dir.label} (${dir.id})'),
+        );
+      }
       selectRank.value = rankDir;
       selectRank.onChange.listen((_) {
         rankDir = selectRank.value;
         onModified();
       });
       container.appendChild(_field('Flow Direction:', selectRank));
+
+      final layerInput = numberInput(layerDistance, 20, 300);
+      layerInput.onChange.listen((_) {
+        layerDistance = double.tryParse(layerInput.value) ?? 80.0;
+        onModified();
+      });
+      container.appendChild(_field('Layer Distance (px):', layerInput));
+    }
+
+    // Iterative simulation controls
+    if (algorithm == 'stress' ||
+        algorithm == 'force' ||
+        algorithm == 'spectral') {
+      final iterInput = numberInput(iterations, 10, 500);
+      iterInput.onChange.listen((_) {
+        iterations = int.tryParse(iterInput.value) ?? 100;
+        onModified();
+      });
+      container.appendChild(_field('Iterations:', iterInput));
+    }
+
+    // Grid columns control
+    if (algorithm == 'grid') {
+      final colInput = numberInput(columns, 0, 20);
+      colInput.onChange.listen((_) {
+        columns = int.tryParse(colInput.value) ?? 0;
+        onModified();
+      });
+      container.appendChild(_field('Columns (0 for auto):', colInput));
+    }
+
+    // Seed control
+    if (algorithm == 'random' ||
+        algorithm == 'stress' ||
+        algorithm == 'force') {
+      final seedInput = numberInput(seed, 0, 999999);
+      seedInput.onChange.listen((_) {
+        seed = int.tryParse(seedInput.value) ?? 42;
+        onModified();
+      });
+      container.appendChild(_field('Random Seed:', seedInput));
     }
 
     return container;
@@ -630,7 +682,16 @@ class LayoutModifier extends GraphModifier {
       return const ModifierOutput(statusSummary: 'Graph is empty');
     }
 
-    GraphLayout.applyLayout(state, engine: algorithm, rankdir: rankDir);
+    GraphLayout.applyLayout(
+      state,
+      engine: algorithm,
+      rankdir: rankDir,
+      vertexDistance: vertexDistance,
+      layerDistance: layerDistance,
+      iterations: iterations,
+      columns: columns > 0 ? columns : null,
+      seed: seed,
+    );
 
     return ModifierOutput(statusSummary: 'Layout applied: $algorithm');
   }
@@ -843,8 +904,8 @@ class ShortestPathModifier extends GraphModifier {
     for (final v in pathVertices) {
       final node = state.nodes[v];
       if (node != null) {
-        node.borderColor = pathColor;
-        node.borderWidth = 2.5;
+        node.style.borderColor = pathColor;
+        node.style.borderWidth = 2.5;
       }
     }
 
@@ -1293,8 +1354,8 @@ class CycleDetectionModifier extends GraphModifier {
       for (final v in cycle) {
         final node = state.nodes[v];
         if (node != null) {
-          node.borderColor = cycleColor;
-          node.borderWidth = 2.5;
+          node.style.borderColor = cycleColor;
+          node.style.borderWidth = 2.5;
         }
       }
     }
@@ -1632,8 +1693,8 @@ class KCoreModifier extends GraphModifier {
         if (!coreVerts.contains(v)) {
           final node = state.nodes[v];
           if (node != null) {
-            node.borderColor = dashColor;
-            node.opacity = 0.45;
+            node.style.borderColor = dashColor;
+            node.style.opacity = 0.45;
           }
           for (final e in graph.edgesOf(v)) {
             final es = state.getEdgeStyle(e.source, e.target);
@@ -1790,12 +1851,12 @@ class TransitiveClosureModifier extends GraphModifier {
         es.strokeWidth = 2.2;
 
         final srcNode = state.nodes[edge.source];
-        if (srcNode != null && srcNode.borderColor == null) {
-          srcNode.borderColor = addedColor;
+        if (srcNode != null && srcNode.style.borderColor == null) {
+          srcNode.style.borderColor = addedColor;
         }
         final tgtNode = state.nodes[edge.target];
-        if (tgtNode != null && tgtNode.borderColor == null) {
-          tgtNode.borderColor = addedColor;
+        if (tgtNode != null && tgtNode.style.borderColor == null) {
+          tgtNode.style.borderColor = addedColor;
         }
       }
     }
@@ -1951,8 +2012,8 @@ class TransitiveReductionModifier extends GraphModifier {
       if (reducedGraph.degreeOf(v) == 0 && graph.degreeOf(v) > 0) {
         final node = state.nodes[v];
         if (node != null) {
-          node.borderColor = removedColor;
-          node.opacity = 0.5;
+          node.style.borderColor = removedColor;
+          node.style.opacity = 0.5;
         }
       }
     }
@@ -2110,8 +2171,8 @@ class BiconnectedComponentsModifier extends GraphModifier {
       for (final v in cutVertices) {
         final node = state.nodes[v];
         if (node != null) {
-          node.borderColor = pointColor;
-          node.borderWidth = 3.5;
+          node.style.borderColor = pointColor;
+          node.style.borderWidth = 3.5;
         }
       }
 
@@ -2249,8 +2310,10 @@ class MaxFlowModifier extends GraphModifier {
       for (final v in vertices) {
         final node = state.nodes[v];
         if (node != null) {
-          node.borderColor = reachable.contains(v) ? '#06b6d4' : '#f59e0b';
-          node.borderWidth = (v == s || v == t) ? 3.5 : 2.0;
+          node.style.borderColor = reachable.contains(v)
+              ? '#06b6d4'
+              : '#f59e0b';
+          node.style.borderWidth = (v == s || v == t) ? 3.5 : 2.0;
         }
       }
 
@@ -2350,8 +2413,10 @@ class MinCutModifier extends GraphModifier {
       for (final v in vertices) {
         final node = state.nodes[v];
         if (node != null) {
-          node.borderColor = partition.contains(v) ? '#06b6d4' : '#f59e0b';
-          node.borderWidth = 2.5;
+          node.style.borderColor = partition.contains(v)
+              ? '#06b6d4'
+              : '#f59e0b';
+          node.style.borderWidth = 2.5;
         }
       }
 
@@ -2454,8 +2519,8 @@ class MatchingModifier extends GraphModifier {
           esRev.color = matchingColor;
           esRev.strokeWidth = 4.0;
         }
-        state.nodes[edge.$1]?.borderColor = matchingColor;
-        state.nodes[edge.$2]?.borderColor = matchingColor;
+        state.nodes[edge.$1]?.style.borderColor = matchingColor;
+        state.nodes[edge.$2]?.style.borderColor = matchingColor;
       }
 
       var idx = 1;
@@ -2550,8 +2615,8 @@ class CliquesModifier extends GraphModifier {
         for (final v in indSet) {
           final node = state.nodes[v];
           if (node != null) {
-            node.borderColor = highlightColor;
-            node.borderWidth = 3.5;
+            node.style.borderColor = highlightColor;
+            node.style.borderWidth = 3.5;
           }
         }
         return ModifierOutput(
@@ -2576,8 +2641,8 @@ class CliquesModifier extends GraphModifier {
         for (final v in activeClique) {
           final node = state.nodes[v];
           if (node != null) {
-            node.borderColor = highlightColor;
-            node.borderWidth = 3.5;
+            node.style.borderColor = highlightColor;
+            node.style.borderWidth = 3.5;
           }
         }
         for (final u in activeClique) {
@@ -2682,8 +2747,8 @@ class VertexCoverModifier extends GraphModifier {
       for (final v in cover) {
         final node = state.nodes[v];
         if (node != null) {
-          node.borderColor = coverColor;
-          node.borderWidth = 3.5;
+          node.style.borderColor = coverColor;
+          node.style.borderWidth = 3.5;
         }
       }
 
@@ -2880,7 +2945,7 @@ class EulerianModifier extends GraphModifier {
       for (final v in tourVertices) {
         final node = state.nodes[v];
         if (node != null) {
-          node.borderColor = tourColor;
+          node.style.borderColor = tourColor;
         }
       }
 
@@ -2996,7 +3061,7 @@ class HamiltonianModifier extends GraphModifier {
       for (final v in tourVertices) {
         final node = state.nodes[v];
         if (node != null) {
-          node.borderColor = tourColor;
+          node.style.borderColor = tourColor;
         }
       }
 

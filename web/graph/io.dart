@@ -1,130 +1,51 @@
-import 'dart:convert';
 import 'dart:js_interop';
 
 import 'package:more/graph.dart';
 import 'package:web/web.dart' as web;
 
+import 'io_codec.dart';
 import 'node.dart';
 import 'state.dart';
 
-/// Utilities for importing and exporting graphs across JSON, DSL, DOT, SVG, and Dart code.
+/// Utilities for importing and exporting graphs across JSON, Mermaid, DOT, and URL hash.
 final class GraphIO {
   /// Serializes graph state to a JSON string.
   static String exportToJson(AppState state) {
     state.syncNodes();
-    final graph = state.primaryGraph;
-    final map = <String, dynamic>{
-      'isDirected': graph.isDirected,
-      'isWeighted': state.isWeighted,
-      'vertices': graph.vertices.toList(),
-      'nodes': [for (final node in state.nodes.values) node.toJson()],
-      'edges': [
-        for (final edge in graph.edges)
-          {'source': edge.source, 'target': edge.target, 'value': edge.value},
-      ],
-    };
-    return const JsonEncoder.withIndent('  ').convert(map);
+    return GraphCodec.exportToJson(
+      graph: state.primaryGraph,
+      isWeighted: state.isWeighted,
+      nodes: state.nodes,
+    );
   }
 
   /// Parses a graph from JSON.
   static (Graph<String, num>, bool isWeighted, Map<String, GraphNode> nodes)
-  importFromJson(String jsonStr) {
-    final dynamic decoded = jsonDecode(jsonStr);
-    if (decoded is! Map) {
-      throw const FormatException('Expected JSON object at root');
-    }
-    final isDirected = decoded['isDirected'] as bool? ?? true;
-    final isWeighted = decoded['isWeighted'] as bool? ?? true;
-    final graph = Graph<String, num>(isDirected: isDirected);
-    final nodes = <String, GraphNode>{};
-
-    final rawNodes = decoded['nodes'] as List?;
-    if (rawNodes != null) {
-      for (final item in rawNodes) {
-        if (item is Map) {
-          final node = GraphNode.fromJson(item.cast<String, dynamic>());
-          if (node.id.isNotEmpty) {
-            nodes[node.id] = node;
-            graph.addVertex(node.id);
-          }
-        }
-      }
-    }
-
-    final vertices = decoded['vertices'] as List?;
-    if (vertices != null) {
-      for (final v in vertices) {
-        final id = v.toString();
-        graph.addVertex(id);
-        nodes.putIfAbsent(id, () => GraphNode(id: id, label: id));
-      }
-    }
-
-    final edges = decoded['edges'] as List?;
-    if (edges != null) {
-      for (final e in edges) {
-        if (e is Map) {
-          final source = e['source']?.toString();
-          final target = e['target']?.toString();
-          final value = (e['value'] as num?) ?? 1;
-          if (source != null && target != null) {
-            graph.addEdge(source, target, value: value);
-          }
-        }
-      }
-    }
-
-    return (graph, isWeighted, nodes);
-  }
+  importFromJson(String jsonStr) => GraphCodec.importFromJson(jsonStr);
 
   /// Exports the graph to Mermaid syntax.
   static String exportToMermaid(AppState state) =>
-      state.primaryGraph.toMermaid();
+      GraphCodec.exportToMermaid(state.primaryGraph);
 
   /// Exports the graph to Graphviz DOT syntax.
-  static String exportToDot(AppState state) => state.primaryGraph.toDot();
+  static String exportToDot(AppState state) =>
+      GraphCodec.exportToDot(state.primaryGraph);
 
   /// Parses a graph from Mermaid diagram text.
   static (Graph<String, num>, bool isWeighted, Map<String, GraphNode> nodes)
-  importFromMermaid(String text, {required bool isDirected}) {
-    final factory = GraphFactory<String, num>(isDirected: isDirected);
-    final graph = factory.fromMermaid(
-      text,
-      vertexParser: (id, label) => id,
-      edgeParser: (label) => label != null ? (num.tryParse(label) ?? 1) : 1,
-    );
-    final nodes = <String, GraphNode>{};
-    for (final v in graph.vertices) {
-      nodes[v] = GraphNode(id: v, label: v);
-    }
-    final isWeighted = graph.edges.any((e) => e.value != 1);
-    return (graph, isWeighted, nodes);
-  }
+  importFromMermaid(String text, {required bool isDirected}) =>
+      GraphCodec.importFromMermaid(text, isDirected: isDirected);
 
   /// Encodes graph state into a compact URL hash string (#g=...).
-  static String exportToUrlHash(AppState state) {
-    final jsonStr = exportToJson(state);
-    final bytes = utf8.encode(jsonStr);
-    final base64 = base64Url.encode(bytes).replaceAll('=', '');
-    return 'g=$base64';
-  }
+  static String exportToUrlHash(AppState state) => GraphCodec.exportToUrlHash(
+    graph: state.primaryGraph,
+    isWeighted: state.isWeighted,
+    nodes: state.nodes,
+  );
 
   /// Decodes URL hash string to restore graph state.
   static (Graph<String, num>, bool isWeighted, Map<String, GraphNode> nodes)?
-  importFromUrlHash(String hash) {
-    var raw = hash;
-    if (raw.startsWith('#')) raw = raw.substring(1);
-    if (!raw.startsWith('g=')) return null;
-    try {
-      final base64Str = raw.substring(2);
-      final normalized = base64.normalize(base64Str);
-      final bytes = base64Url.decode(normalized);
-      final jsonStr = utf8.decode(bytes);
-      return importFromJson(jsonStr);
-    } catch (_) {
-      return null;
-    }
-  }
+  importFromUrlHash(String hash) => GraphCodec.importFromUrlHash(hash);
 
   /// Triggers a browser file download of text content.
   static void downloadTextFile(

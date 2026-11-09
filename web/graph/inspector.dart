@@ -5,6 +5,7 @@ import 'package:more/graph.dart';
 import 'package:web/web.dart' as web;
 
 import 'dom_utils.dart';
+import 'html_utils.dart';
 import 'state.dart';
 
 typedef SelectVertexCallback = void Function(String vertex, {bool isShift});
@@ -295,7 +296,7 @@ final class GraphInspector {
     var extraMetric = '';
     if (overlay is HeatmapOverlay && overlay.scores.containsKey(v)) {
       extraMetric =
-          '<br><b>${overlay.title}:</b> ${overlay.scores[v]!.toStringAsFixed(4)}';
+          '<br><b>${escapeHtml(overlay.title)}:</b> ${overlay.scores[v]!.toStringAsFixed(4)}';
     }
 
     if (graph.isDirected) {

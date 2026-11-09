@@ -91,13 +91,17 @@ void main() {
 
   // Restore from URL hash if available
   if (web.window.location.hash.isNotEmpty) {
-    final restored = GraphIO.importFromUrlHash(web.window.location.hash);
-    if (restored != null) {
-      state.primaryGraph = restored.$1;
-      state.isWeighted = restored.$2;
-      state.nodes
-        ..clear()
-        ..addAll(restored.$3);
+    try {
+      final restored = GraphIO.importFromUrlHash(web.window.location.hash);
+      if (restored != null) {
+        state.primaryGraph = restored.$1;
+        state.isWeighted = restored.$2;
+        state.nodes
+          ..clear()
+          ..addAll(restored.$3);
+      }
+    } catch (e) {
+      web.window.alert('Failed to load graph from URL hash: $e');
     }
   }
 
@@ -1199,6 +1203,12 @@ void main() {
         updateUI();
       },
     );
+  };
+  state.onReset = () {
+    dismissedEmpty = false;
+    renderer.resetView();
+    renderModifierStack();
+    updateUI();
   };
 
   renderer.autoLayout(state);

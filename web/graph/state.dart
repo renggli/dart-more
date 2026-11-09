@@ -80,6 +80,11 @@ final class GraphSnapshot {
           label: value.label,
           x: value.x,
           y: value.y,
+          userFillColor: value.userFillColor,
+          userBorderColor: value.userBorderColor,
+          userTextColor: value.userTextColor,
+          userBorderWidth: value.userBorderWidth,
+          userOpacity: value.userOpacity,
         ),
     },
   );
@@ -130,16 +135,48 @@ final class AppState {
   /// Visual edge styling attributes dynamically styled by modifiers.
   final Map<(String, String), GraphEdgeStyle> edgeStyles = {};
 
+  /// Normalizes edge endpoints for undirected graphs so that (u, v) and (v, u) share the same key.
+  static (String, String) edgeKey(
+    String u,
+    String v, {
+    required bool isDirected,
+  }) => isDirected ? (u, v) : (u.compareTo(v) <= 0 ? (u, v) : (v, u));
+
+  /// Normalizes edge endpoints according to the primary graph's directedness.
+  (String, String) normalizeEdge(String u, String v, {bool? isDirected}) =>
+      edgeKey(u, v, isDirected: isDirected ?? primaryGraph.isDirected);
+
   /// Retrieves or initializes the edge styling object for an edge.
-  GraphEdgeStyle getEdgeStyle(String u, String v) =>
-      edgeStyles.putIfAbsent((u, v), GraphEdgeStyle.new);
+  GraphEdgeStyle getEdgeStyle(String u, String v, {bool? isDirected}) =>
+      edgeStyles.putIfAbsent(
+        edgeKey(u, v, isDirected: isDirected ?? renderGraph.isDirected),
+        GraphEdgeStyle.new,
+      );
 
   /// Resets modifier-applied visual styles on vertices and edges.
   void resetVisualStyles() {
     for (final node in nodes.values) {
-      node.resetVisuals();
+      node.style.reset();
     }
     edgeStyles.clear();
+  }
+
+  /// Callback triggered when state is completely reset (e.g. File > New).
+  void Function()? onReset;
+
+  /// Resets workspace state completely back to an empty graph and clears all modifiers.
+  void reset() {
+    primaryGraph = Graph<String, num>(isDirected: primaryGraph.isDirected);
+    nodes.clear();
+    modifiers.clear();
+    lastModifierOutputs.clear();
+    effectiveGraph = null;
+    activeOverlay = null;
+    activeModifierTable = null;
+    edgeStyles.clear();
+    edgeRoutes.clear();
+    clearSelection();
+    onReset?.call();
   }
 
   bool isWeighted = true;
@@ -294,6 +331,11 @@ final class AppState {
             label: value.label,
             x: value.x,
             y: value.y,
+            userFillColor: value.userFillColor,
+            userBorderColor: value.userBorderColor,
+            userTextColor: value.userTextColor,
+            userBorderWidth: value.userBorderWidth,
+            userOpacity: value.userOpacity,
           ),
       });
     clearSelection();
@@ -316,6 +358,11 @@ final class AppState {
             label: value.label,
             x: value.x,
             y: value.y,
+            userFillColor: value.userFillColor,
+            userBorderColor: value.userBorderColor,
+            userTextColor: value.userTextColor,
+            userBorderWidth: value.userBorderWidth,
+            userOpacity: value.userOpacity,
           ),
       });
     clearSelection();
@@ -371,6 +418,39 @@ final class AppState {
     }
     syncSelectionSourceTarget();
   }
+
+  /// Edge selection normalizing endpoint order for undirected graphs.
+  void selectEdge(
+    String u,
+    String v, {
+    bool toggle = false,
+    bool clearOthers = true,
+  }) {
+    final key = normalizeEdge(u, v);
+    if (clearOthers) {
+      selectedVertices.clear();
+      selectedEdges.clear();
+      selectedEdge = null;
+    }
+    if (toggle) {
+      if (selectedEdges.contains(key)) {
+        selectedEdges.remove(key);
+        if (selectedEdge == key) {
+          selectedEdge = selectedEdges.isNotEmpty ? selectedEdges.last : null;
+        }
+      } else {
+        selectedEdges.add(key);
+        selectedEdge = key;
+      }
+    } else {
+      selectedEdges.add(key);
+      selectedEdge = key;
+    }
+  }
+
+  /// Whether the edge between [u] and [v] is currently selected.
+  bool isEdgeSelected(String u, String v) =>
+      selectedEdges.contains(normalizeEdge(u, v));
 
   /// Synchronizes source and target algorithm endpoints with active selection.
   void syncSelectionSourceTarget() {

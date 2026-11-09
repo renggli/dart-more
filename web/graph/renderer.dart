@@ -3,7 +3,9 @@ import 'dart:math' as math;
 
 import 'package:web/web.dart' as web;
 
+import 'html_utils.dart';
 import 'layout.dart';
+import 'node.dart';
 import 'state.dart';
 
 /// Callback signatures for interactive graph events.
@@ -237,34 +239,24 @@ final class GraphRenderer {
       final x2 = nodeV.x!;
       final y2 = nodeV.y!;
 
-      final isLastSelectedEdge =
-          state.selectedEdge == (edge.source, edge.target) ||
-          (!graph.isDirected &&
-              state.selectedEdge == (edge.target, edge.source));
-
+      final normalized = state.normalizeEdge(edge.source, edge.target);
+      final isLastSelectedEdge = state.selectedEdge == normalized;
       final isEdgeSelected =
-          isLastSelectedEdge ||
-          state.selectedEdges.contains((edge.source, edge.target)) ||
-          (!graph.isDirected &&
-              state.selectedEdges.contains((edge.target, edge.source)));
+          isLastSelectedEdge || state.selectedEdges.contains(normalized);
 
       final isPathEdge =
           activePathEdges.contains((edge.source, edge.target)) ||
           (!graph.isDirected &&
               activePathEdges.contains((edge.target, edge.source)));
 
-      final edgeStyle =
-          state.edgeStyles[(edge.source, edge.target)] ??
-          (!graph.isDirected
-              ? state.edgeStyles[(edge.target, edge.source)]
-              : null);
+      final edgeStyle = state.getEdgeStyle(edge.source, edge.target);
 
       final strokeColor =
-          edgeStyle?.color ?? (isPathEdge ? pathOverlayColor! : '#475569');
-      final strokeWidth = edgeStyle != null
-          ? '${edgeStyle.strokeWidth}'
-          : (isPathEdge ? '3.0' : '1.8');
-      final opacity = edgeStyle?.opacity ?? 1.0;
+          edgeStyle.color ?? (isPathEdge ? pathOverlayColor! : '#475569');
+      final strokeWidth = isPathEdge && edgeStyle.color == null
+          ? '3.0'
+          : '${edgeStyle.strokeWidth}';
+      final opacity = edgeStyle.opacity;
       final marker = graph.isDirected
           ? (isLastSelectedEdge
                 ? 'url(#arrow-active)'
@@ -286,7 +278,7 @@ final class GraphRenderer {
             'C ${x1 - 35} ${y1 - nodeRadius - 45}, ${x1 + 35} ${y1 - nodeRadius - 45}, ${x1 + 10} ${y1 - nodeRadius}';
 
         markup.writeln(
-          '<g class="graph-edge" id="$edgeId" data-source="${edge.source}" data-target="${edge.target}">',
+          '<g class="graph-edge" id="$edgeId" data-source="${escapeHtml(edge.source)}" data-target="${escapeHtml(edge.target)}">',
         );
         markup.writeln(
           '  <path d="$loopPath" fill="none" stroke="transparent" stroke-width="16" cursor="pointer" />',
@@ -305,13 +297,13 @@ final class GraphRenderer {
         if (state.isWeighted) {
           final labelY = y1 - nodeRadius - 38;
           markup.writeln(
-            '  <g class="edge-weight-badge" data-source="${edge.source}" data-target="${edge.target}" style="cursor: pointer;">',
+            '  <g class="edge-weight-badge" data-source="${escapeHtml(edge.source)}" data-target="${escapeHtml(edge.target)}" style="cursor: pointer;">',
           );
           markup.writeln(
             '    <rect x="${x1 - 16}" y="${labelY - 10}" width="32" height="20" rx="4" fill="#1e293b" stroke="#334155" stroke-width="1" />',
           );
           markup.writeln(
-            '    <text x="$x1" y="$labelY" text-anchor="middle" dominant-baseline="central" font-size="10" font-family="Inter, system-ui, sans-serif" font-weight="600" fill="#cbd5e1">${edge.value}</text>',
+            '    <text x="$x1" y="$labelY" text-anchor="middle" dominant-baseline="central" font-size="10" font-family="Inter, system-ui, sans-serif" font-weight="600" fill="#cbd5e1">${escapeHtml('${edgeStyle.label ?? edge.value}')}</text>',
           );
           markup.writeln('  </g>');
         }
@@ -374,7 +366,7 @@ final class GraphRenderer {
       }
 
       markup.writeln(
-        '<g class="graph-edge" id="$edgeId" data-source="${edge.source}" data-target="${edge.target}">',
+        '<g class="graph-edge" id="$edgeId" data-source="${escapeHtml(edge.source)}" data-target="${escapeHtml(edge.target)}">',
       );
       markup.writeln(
         '  <path d="$pathData" fill="none" stroke="transparent" stroke-width="16" cursor="pointer" />',
@@ -392,13 +384,13 @@ final class GraphRenderer {
       );
       if (state.isWeighted) {
         markup.writeln(
-          '  <g class="edge-weight-badge" data-source="${edge.source}" data-target="${edge.target}" style="cursor: pointer;">',
+          '  <g class="edge-weight-badge" data-source="${escapeHtml(edge.source)}" data-target="${escapeHtml(edge.target)}" style="cursor: pointer;">',
         );
         markup.writeln(
           '    <rect x="${labelX - 16}" y="${labelY - 10}" width="32" height="20" rx="4" fill="#1e293b" stroke="#334155" stroke-width="1" />',
         );
         markup.writeln(
-          '    <text x="$labelX" y="$labelY" text-anchor="middle" dominant-baseline="central" font-size="10" font-family="Inter, system-ui, sans-serif" font-weight="600" fill="#cbd5e1">${edge.value}</text>',
+          '    <text x="$labelX" y="$labelY" text-anchor="middle" dominant-baseline="central" font-size="10" font-family="Inter, system-ui, sans-serif" font-weight="600" fill="#cbd5e1">${escapeHtml('${edgeStyle.label ?? edge.value}')}</text>',
         );
         markup.writeln('  </g>');
       }
@@ -419,13 +411,20 @@ final class GraphRenderer {
       final isSelected = state.selectedVertices.contains(v);
 
       // Color & Visual Attributes computation
-      var fillColor = node.fillColor ?? '#1e293b';
-      var textColor = node.textColor ?? '#f8fafc';
-      var borderColor = node.borderColor ?? '#64748b';
-      final borderWidth = node.borderWidth;
-      final opacity = node.opacity;
+      var fillColor = node.style.fillColor ?? node.userFillColor ?? '#1e293b';
+      var textColor = node.style.textColor ?? node.userTextColor ?? '#f8fafc';
+      var borderColor =
+          node.style.borderColor ?? node.userBorderColor ?? '#64748b';
+      final borderWidth = node.style.borderWidth != defaultBorderWidth
+          ? node.style.borderWidth
+          : (node.userBorderWidth ?? defaultBorderWidth);
+      final opacity = node.style.opacity != defaultOpacity
+          ? node.style.opacity
+          : (node.userOpacity ?? defaultOpacity);
 
-      if (overlay is HeatmapOverlay && node.fillColor == null) {
+      if (overlay is HeatmapOverlay &&
+          node.style.fillColor == null &&
+          node.userFillColor == null) {
         final score = overlay.scores[v];
         if (score != null) {
           final t = ((score - minScore) / (maxScore - minScore)).clamp(
@@ -435,13 +434,17 @@ final class GraphRenderer {
           fillColor = _interpolateHeatmap(t);
           textColor = '#ffffff';
         }
-      } else if (overlay is PartitionOverlay && node.fillColor == null) {
+      } else if (overlay is PartitionOverlay &&
+          node.style.fillColor == null &&
+          node.userFillColor == null) {
         final group = overlay.vertexGroup[v];
         if (group != null) {
           fillColor = _palette[group.abs() % _palette.length];
           textColor = '#0f172a';
         }
-      } else if (overlay is PathOverlay && node.fillColor == null) {
+      } else if (overlay is PathOverlay &&
+          node.style.fillColor == null &&
+          node.userFillColor == null) {
         final inPath = overlay.vertices.contains(v);
         if (inPath && overlay.color != null) {
           fillColor = '#1e3a8a';
@@ -453,7 +456,9 @@ final class GraphRenderer {
       final safeV = Uri.encodeComponent(v);
       final nodeId = 'node_$safeV';
 
-      markup.writeln('<g class="graph-node" id="$nodeId" data-id="$v">');
+      markup.writeln(
+        '<g class="graph-node" id="$nodeId" data-id="${escapeHtml(v)}">',
+      );
 
       // Subtle Selection Underlay (purple of the application, fading to background)
       if (isActive) {
@@ -474,7 +479,7 @@ final class GraphRenderer {
       // Node Label Text
       if (state.showLabels) {
         markup.writeln(
-          '  <text x="$x" y="$y" text-anchor="middle" dominant-baseline="central" font-family="Inter, system-ui, sans-serif" font-weight="600" font-size="12" fill="$textColor" pointer-events="none">${node.label}</text>',
+          '  <text x="$x" y="$y" text-anchor="middle" dominant-baseline="central" font-family="Inter, system-ui, sans-serif" font-weight="600" font-size="12" fill="$textColor" pointer-events="none">${escapeHtml(node.label)}</text>',
         );
       }
 

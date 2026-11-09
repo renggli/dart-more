@@ -13,15 +13,20 @@ The `web/` directory hosts client-side demonstrations and interactive visualizer
 ### Building & Running
 
 - **Development Server**:
+
   ```bash
   dart run build_runner serve web
   ```
+
 - **Production Compilation**:
+
   ```bash
   dart compile js web/graph/graph.dart -o web/graph/graph.dart.js
   dart compile js web/rtree/rtree.dart -o web/rtree/rtree.dart.js
   ```
+
 - **Static Analysis**:
+
   ```bash
   dart analyze web/
   ```
@@ -84,6 +89,7 @@ The Graph Laboratory is a full-featured browser-based workspace for creating, ed
 ## 3. Important Design Decisions Taken
 
 ### 3.1 Native SVG & Native Layouts (No External WASM / Graphviz)
+
 - **Decision**: Avoid external WebAssembly binaries (such as `@viz-js/viz`) or CDN-loaded Graphviz engines.
 - **Rationale**:
   - Zero external JavaScript/WASM dependencies; pure Dart compilation.
@@ -91,6 +97,7 @@ The Graph Laboratory is a full-featured browser-based workspace for creating, ed
   - Directly exercises and validates MoreDart's own layout package (`lib/src/graph/layout/`).
 
 ### 3.2 Non-Destructive Modifier Pipeline
+
 - **Decision**: Algorithmic transformations and analyses do not destructively mutate `primaryGraph`.
 - **Rationale**:
   - Users can compose multiple analysis modifiers (e.g. Layout $\rightarrow$ Components $\rightarrow$ Shortest Path) while retaining the original editable base graph.
@@ -98,12 +105,14 @@ The Graph Laboratory is a full-featured browser-based workspace for creating, ed
   - Modifiers only write permanently to `primaryGraph` if the user clicks "Apply".
 
 ### 3.3 Separation of Graph Structure from Visual State
+
 - **Decision**: `primaryGraph` is typed strictly as `Graph<String, num>`, while spatial positions, user display labels, and modifier colors reside in `AppState.nodes` (`GraphNode`) and `AppState.edgeStyles` (`GraphEdgeStyle`).
 - **Rationale**:
   - Decouples core graph theoretical operations from visual rendering concerns.
   - Facilitates serialization: core topology exports cleanly to DOT or Mermaid, while layout coordinates are preserved in JSON and URL hash states.
 
 ### 3.4 Command Pattern with Snapshot-Based Undo/Redo
+
 - **Decision**: All state mutations route through `GraphCommand` with a simple signature `void execute(AppState state)` and `AppState.saveSnapshot()`.
 - **Rationale**:
   - Consistent keyboard shortcut handling and validation (`canExecute`).
@@ -111,6 +120,7 @@ The Graph Laboratory is a full-featured browser-based workspace for creating, ed
   - Reliable history management without complex inverse delta tracking.
 
 ### 3.5 Consistent Dark Theme Tokens
+
 - **Decision**: Unified CSS variables in `web/style.css` shared by all demos.
 - **Rationale**:
   - Visual consistency across `index.html`, `graph.html`, and `rtree.html`.
