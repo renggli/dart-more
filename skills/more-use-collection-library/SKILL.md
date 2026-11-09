@@ -127,17 +127,34 @@ final grouped = [1, 1, 2, 2, 1].groupBy<int>(); // groups consecutive equal keys
 - **`List` / `Queue` Slicing**: `rotate(steps)`, `takeLast(n)`, `skipLast(n)`, `takeTo(e)`, `skipTo(e)`
 - **`Map` Defaults**: `map.withDefault(fallback)`, `map.withComputed((key) => value)`
 
-### `String` Manipulation
+### `String` Extensions
+
+- **Slicing (`take*` / `skip*`)**: `take(count)`, `takeLast(count)`, `takeTo(pattern)`, `takeLastTo(pattern)`, `skip(count)`, `skipLast(count)`, `skipTo(pattern)`, `skipLastTo(pattern)`
+- **Affixes & Partitioning**: `removePrefix(pattern)`, `removeSuffix(pattern)`, `partition(pattern)`, `lastPartition(pattern)`
+- **Wrapping & Indentation**: `wrap(width, whitespace: ..., breakLongWords: true)`, `unwrap()`, `indent(prefix, firstPrefix: ..., trimWhitespace: true, indentEmpty: false)`, `dedent(whitespace: ..., ignoreEmpty: true)`
+- **Case, Chunking, Normalization & List Views**: `toUpperCaseFirstCharacter()`, `toLowerCaseFirstCharacter()`, `convertFirstCharacters(fn, count: 1)`, `convertLastCharacters(fn, count: 1)`, `chunked(size)`, `normalize(form: NormalizationForm.nfc/nfd/nfkc/nfkd)`, `toList(mutable: false, unicode: false)`
 
 ```dart
-// Mutable or immutable code-unit / rune list views
-final chars = 'hello'.toList(mutable: true);
-chars.rotate(2);
-final rotatedStr = chars.join(); // 'lohel'
+// Taking and skipping by count or pattern
+const path = '/usr/local/bin/dart';
+final dir = path.skipLastTo('/'); // '/usr/local/bin'
+final bin = path.takeLastTo('/'); // 'dart'
+final first4 = path.take(4); // '/usr'
+final withoutRoot = path.skip(1).takeTo('/'); // 'usr'
 
-// Partitioning, affixes, wrapping, indentation, and Unicode normalization
+// Prefix/suffix removal & partitioning
+final bare = 'https://dart.dev/'.removePrefix('https://').removeSuffix('/'); // 'dart.dev'
 final [head, sep, tail] = 'key=value=1'.partition('='); // ['key', '=', 'value=1']
-final trimmed = 'foobar'.removePrefix('foo').removeSuffix('bar'); // ''
-final wrapped = 'long text here'.wrap(8);
+
+// Wrapping, unwrapping, indenting, and dedenting multiline text
+final wrapped = 'The quick brown fox jumps'.wrap(10); // 'The quick\nbrown fox\njumps'
+final unwrapped = wrapped.unwrap(); // 'The quick brown fox jumps'
+final indented = 'a\nb'.indent('  ', firstPrefix: '- '); // '- a\n  b'
+final dedented = '  line 1\n    line 2'.dedent(); // 'line 1\n  line 2'
+
+// Character conversion, chunking, normalization, and mutable list views
+final title = 'hello'.toUpperCaseFirstCharacter(); // 'Hello'
+final chunks = 'abcde'.chunked(2).toList(); // ['ab', 'cd', 'e']
 final normalized = 'e\u0301'.normalize(form: NormalizationForm.nfc); // 'é'
+final chars = 'hello'.toList(mutable: true)..rotate(2); // ['l', 'o', 'h', 'e', 'l']
 ```
