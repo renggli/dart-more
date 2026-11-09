@@ -132,7 +132,6 @@ final class LayoutResult<V> {
       var minY = double.infinity;
       var maxX = -double.infinity;
       var maxY = -double.infinity;
-
       for (final entry in positions.entries) {
         final p = entry.value;
         final size = vertexSizes?[entry.key];
@@ -147,7 +146,6 @@ final class LayoutResult<V> {
         if (right > maxX) maxX = right;
         if (bottom > maxY) maxY = bottom;
       }
-
       for (final route in edgeRoutes.values) {
         for (final p in route) {
           if (p.x < minX) minX = p.x;
@@ -156,7 +154,6 @@ final class LayoutResult<V> {
           if (p.y > maxY) maxY = p.y;
         }
       }
-
       _bounds = cached = LayoutRectangle(minX, minY, maxX - minX, maxY - minY);
     }
     return cached;

@@ -53,8 +53,6 @@ extension RectangleLayoutExtension on LayoutRectangle {
     final y2 = math.max(bottom, point.y);
     return LayoutRectangle(x1, y1, x2 - x1, y2 - y1);
   }
-
-  /// Computes the bounding box enclosing all [points].
 }
 
 /// Returns the smallest rectangle containing all [points].

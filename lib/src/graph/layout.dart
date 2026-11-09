@@ -2,12 +2,13 @@ import 'graph.dart';
 import 'layout/geometry.dart';
 import 'layout/graph_layout.dart';
 import 'layout/postprocess.dart';
+import 'model/internal.dart';
 
 /// Extension on [Graph] providing access to graph layout strategies.
 ///
 /// Computes 2D node coordinates and edge routes using configurable layout
-/// strategies such as `StressLayout`, `ForceLayout`, `LayeredLayout`, `TreeLayout`,
-/// `RadialLayout`, and more.
+/// strategies such as `StressLayout`, `ForceLayout`, `LayeredLayout`,
+/// `TreeLayout`, `RadialLayout`, and more.
 ///
 /// ```dart
 /// final graph = Graph<String, void>.directed()
@@ -31,20 +32,10 @@ extension GraphLayoutExtension<V, E> on Graph<V, E> {
       successorsOf: successorsOf,
       predecessorsOf: isDirected ? predecessorsOf : null,
       vertexSize: vertexSize,
-      edgeWeight:
-          edgeWeight ??
-          (source, target) {
-            final edge = getEdge(source, target);
-            if (edge != null && edge.value is num) {
-              return edge.value as num;
-            }
-            return 1.0;
-          },
+      edgeWeight: edgeWeight ?? getDefaultEdgeValueOr(1),
       vertexStrategy: vertexStrategy,
     );
-
     var result = strategy.layout(input);
-
     if (removeOverlaps) {
       result = result.removeOverlaps(input);
     }

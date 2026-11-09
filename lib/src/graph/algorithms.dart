@@ -36,6 +36,7 @@ import 'algorithms/vertex_cover.dart' as vertex_cover;
 import 'edge.dart';
 import 'errors.dart';
 import 'graph.dart';
+import 'model/internal.dart';
 import 'path.dart';
 import 'strategy.dart';
 
@@ -62,7 +63,7 @@ extension AlgorithmsGraphExtension<V, E> on Graph<V, E> {
   }) => shortestPathAll(
     source,
     targetPredicate: (vertex) => target == vertex,
-    edgeCost: edgeCost ?? _getDefaultEdgeValueOr(1),
+    edgeCost: edgeCost ?? getDefaultEdgeValueOr(1),
     costEstimate: costEstimate,
     includeAlternativePaths: includeAlternativePaths,
     hasNegativeEdges: hasNegativeEdges,
@@ -111,7 +112,7 @@ extension AlgorithmsGraphExtension<V, E> on Graph<V, E> {
             startVertices: [source],
             targetPredicate: targetPredicate ?? constantFunction1(true),
             successorsOf: successorsOf,
-            edgeCost: edgeCost ?? _getDefaultEdgeValueOr(1),
+            edgeCost: edgeCost ?? getDefaultEdgeValueOr(1),
             includeAlternativePaths: includeAlternativePaths,
             vertexStrategy: vertexStrategy ?? this.vertexStrategy,
           )
@@ -120,7 +121,7 @@ extension AlgorithmsGraphExtension<V, E> on Graph<V, E> {
             startVertices: [source],
             targetPredicate: targetPredicate ?? constantFunction1(true),
             successorsOf: successorsOf,
-            edgeCost: edgeCost ?? _getDefaultEdgeValueOr(1),
+            edgeCost: edgeCost ?? getDefaultEdgeValueOr(1),
             includeAlternativePaths: includeAlternativePaths,
             vertexStrategy: vertexStrategy ?? this.vertexStrategy,
           )
@@ -129,7 +130,7 @@ extension AlgorithmsGraphExtension<V, E> on Graph<V, E> {
             targetPredicate: targetPredicate ?? constantFunction1(true),
             successorsOf: successorsOf,
             costEstimate: costEstimate,
-            edgeCost: edgeCost ?? _getDefaultEdgeValueOr(1),
+            edgeCost: edgeCost ?? getDefaultEdgeValueOr(1),
             includeAlternativePaths: includeAlternativePaths,
             vertexStrategy: vertexStrategy ?? this.vertexStrategy,
           );
@@ -147,7 +148,7 @@ extension AlgorithmsGraphExtension<V, E> on Graph<V, E> {
   }) => floyd_warshall.floydWarshallSearch(
     vertices: vertices,
     successorsOf: successorsOf,
-    edgeCost: edgeCost ?? _getDefaultEdgeValueOr(1),
+    edgeCost: edgeCost ?? getDefaultEdgeValueOr(1),
     vertexStrategy: vertexStrategy ?? this.vertexStrategy,
   );
 
@@ -164,7 +165,7 @@ extension AlgorithmsGraphExtension<V, E> on Graph<V, E> {
   }) => dinic_max_flow.DinicMaxFlow<V>(
     seedVertices: vertices,
     successorsOf: successorsOf,
-    edgeCapacity: edgeCapacity ?? _getDefaultEdgeValueOr(1),
+    edgeCapacity: edgeCapacity ?? getDefaultEdgeValueOr(1),
     vertexStrategy: vertexStrategy ?? this.vertexStrategy,
   );
 
@@ -180,7 +181,7 @@ extension AlgorithmsGraphExtension<V, E> on Graph<V, E> {
     StorageStrategy<V>? vertexStrategy,
   }) => stoer_wagner_min_cut.StoerWagnerMinCut<V, E>(
     graph: this,
-    edgeWeight: edgeWeight ?? _getDefaultEdgeValueOr(1),
+    edgeWeight: edgeWeight ?? getDefaultEdgeValueOr(1),
     vertexStrategy: vertexStrategy ?? this.vertexStrategy,
   );
 
@@ -207,14 +208,14 @@ extension AlgorithmsGraphExtension<V, E> on Graph<V, E> {
   }) => startVertex == null
       ? kruskal_spanning_tree.kruskalSpanningTree<V, E>(
           this,
-          edgeWeight: edgeWeight ?? _getDefaultEdgeValueOr(1),
+          edgeWeight: edgeWeight ?? getDefaultEdgeValueOr(1),
           weightComparator: weightComparator ?? naturalComparable<num>,
           vertexStrategy: vertexStrategy ?? this.vertexStrategy,
         )
       : prim_spanning_tree.primSpanningTree<V, E>(
           this,
           startVertex: startVertex,
-          edgeWeight: edgeWeight ?? _getDefaultEdgeValueOr(1),
+          edgeWeight: edgeWeight ?? getDefaultEdgeValueOr(1),
           weightComparator: weightComparator ?? naturalComparable<num>,
           vertexStrategy: vertexStrategy ?? this.vertexStrategy,
         );
@@ -547,7 +548,7 @@ extension AlgorithmsGraphExtension<V, E> on Graph<V, E> {
     vertices: vertices,
     successorsOf: successorsOf,
     predecessorsOf: predecessorsOf,
-    edgeWeight: edgeWeight ?? _getDefaultEdgeValueOr(1),
+    edgeWeight: edgeWeight ?? getDefaultEdgeValueOr(1),
     maxIterations: maxIterations,
     tolerance: tolerance,
     vertexStrategy: vertexStrategy ?? this.vertexStrategy,
@@ -587,7 +588,7 @@ extension AlgorithmsGraphExtension<V, E> on Graph<V, E> {
       return bipartite_matching.weightedBipartiteMatching<V>(
         vertices: vertices,
         neighboursOf: neighboursOf,
-        edgeWeight: edgeWeight ?? _getDefaultEdgeValueOr(1),
+        edgeWeight: edgeWeight ?? getDefaultEdgeValueOr(1),
         maximumWeight: maximumWeight,
         vertexStrategy: vertexStrategy ?? this.vertexStrategy,
       );
@@ -717,7 +718,7 @@ extension AlgorithmsGraphExtension<V, E> on Graph<V, E> {
     vertices: vertices,
     successorsOf: successorsOf,
     communities: communities,
-    edgeWeight: edgeWeight ?? _getDefaultEdgeValueOr(1),
+    edgeWeight: edgeWeight ?? getDefaultEdgeValueOr(1),
     isDirected: isDirected,
     vertexStrategy: vertexStrategy ?? this.vertexStrategy,
   );
@@ -734,7 +735,7 @@ extension AlgorithmsGraphExtension<V, E> on Graph<V, E> {
     return community.labelPropagationCommunities<V>(
       vertices: vertices,
       neighboursOf: neighboursOf,
-      edgeWeight: edgeWeight ?? _getDefaultEdgeValueOr(1),
+      edgeWeight: edgeWeight ?? getDefaultEdgeValueOr(1),
       maxIterations: maxIterations,
       random: random,
       vertexStrategy: vertexStrategy ?? this.vertexStrategy,
@@ -752,7 +753,7 @@ extension AlgorithmsGraphExtension<V, E> on Graph<V, E> {
     return community.louvainCommunities<V>(
       vertices: vertices,
       neighboursOf: neighboursOf,
-      edgeWeight: edgeWeight ?? _getDefaultEdgeValueOr(1),
+      edgeWeight: edgeWeight ?? getDefaultEdgeValueOr(1),
       resolution: resolution,
       vertexStrategy: vertexStrategy ?? this.vertexStrategy,
     );
@@ -828,11 +829,4 @@ extension AlgorithmsGraphExtension<V, E> on Graph<V, E> {
       patternStrategy: patternStrategy ?? pattern.vertexStrategy,
     );
   }
-
-  /// Internal helper that returns a function using the numeric edge value
-  /// of this graph, or otherwise a constant value for each edge.
-  num Function(V source, V target) _getDefaultEdgeValueOr(num value) =>
-      this is Graph<V, num>
-      ? (source, target) => getEdge(source, target)!.value as num
-      : constantFunction2(value);
 }
