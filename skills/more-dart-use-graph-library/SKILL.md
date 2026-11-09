@@ -11,22 +11,22 @@ The library is designed around a key architectural principle: **algorithms and 2
 
 ## Operating on Arbitrary Objects (Closure-Based API)
 
-You can run traversals, search, algorithms, and layouts directly over domain models, file systems, ASTs, or tree nodes without wrapping them in a `Graph`:
+Run traversals, search, algorithms, and layouts directly over domain models, file systems, ASTs, or tree nodes without wrapping them in a `Graph`:
 
 ```dart
 import 'package:more/graph.dart';
 
 class Node {
-  Node(this.id, this.children);
+  new(this.id, [this.children = const []]);
   final String id;
   final List<Node> children;
 }
 
-final root = Node('1', [Node('2', []), Node('3', [Node('4', [])])]);
+final root = Node('1', [Node('2'), Node('3', [Node('4')])]);
 
 // 1. Traversals on arbitrary objects
 final bfs = BreadthFirstIterable<Node>([root], successorsOf: (n) => n.children);
-final topological = TopologicalIterable<Node>([root], successorsOf: (n) => n.children);
+final dfs = DepthFirstIterable<Node>([root], successorsOf: (n) => n.children);
 
 // 2. Standalone algorithms (no Graph instance required)
 final path = dijkstraSearch<Node>(
@@ -45,10 +45,10 @@ final layoutResult = const TreeLayout<Node>().layout(
   LayoutInput<Node>(
     vertices: bfs.toList(),
     successorsOf: (n) => n.children,
-    vertexSize: (n) => (width: 40.0, height: 40.0),
+    vertexSize: (n) => const (width: 40.0, height: 40.0),
   ),
 );
-print(layoutResult.positions[root]);
+final rootPosition = layoutResult.positions[root];
 ```
 
 ---
@@ -58,14 +58,14 @@ print(layoutResult.positions[root]);
 When an explicit, mutable graph representation is needed:
 
 ```dart
-final directed = Graph<String, void>.directed();
-final undirected = Graph<String, void>.undirected();
-final weighted = Graph<String, num>(isDirected: true);
+final directed = Graph<String, void>(isDirected: true);
+final undirected = Graph<String, void>(isDirected: false);
+final graph = Graph<String, num>(isDirected: true);
 
 // Fast integer vertex storage strategy
 final intGraph = Graph<int, void>(
   isDirected: false,
-  vertexStrategy: StorageStrategy.integer(min: 0, max: 1000),
+  vertexStrategy: StorageStrategy.positiveInteger(),
 );
 
 // Topology mutation
@@ -86,16 +86,19 @@ graph.degreeOf('A');
 `GraphFactory<V, E>` builds standard topologies and parses Mermaid syntax:
 
 ```dart
-final factory = GraphFactory<String, void>.directed();
+import 'dart:math';
+import 'package:more/graph.dart';
+
+final factory = GraphFactory<int, void>(isDirected: true, random: Random(42));
 
 final kn = factory.complete(vertexCount: 5);
 final ring = factory.ring(vertexCount: 6);
 final star = factory.star(vertexCount: 7);
-final tree = factory.tree(vertexCount: 15, arity: 2);
-final random = factory.random(vertexCount: 10, probability: 0.35, seed: 42);
-final atlasGraph = factory.atlas(7); // 1,253 graphs up to 7 vertices
+final tree = factory.completeTree(vertexCount: 15, arity: 2);
+final random = factory.randomErdosRenyi(vertexCount: 10, probability: 0.35);
+final atlasGraph = GraphFactory<int, void>(isDirected: false).atlas(7);
 
-final fromMermaid = factory.fromMermaid('''
+final fromMermaid = GraphFactory<String, String?>().fromMermaid('''
 graph TD
   A --> B
   A --> C
@@ -106,10 +109,10 @@ graph TD
 
 ## Graph Operations
 
-- **Filtering / Mapping**: `graph.where(...)`, `graph.map(...)`, `graph.copy()`, `graph.reversed`
+- **Filtering / Mapping**: `graph.where(...)`, `graph.map(...)`, `graph.copy()`, `graph.reversed`, `graph.unmodifiable`
 - **Set Operations**: `graph.union(other)`, `graph.intersection(other)`, `graph.complement()`
 - **Transitive**: `graph.transitiveClosure()`, `graph.transitiveReduction()` (requires DAG)
-- **Components**: `graph.connected()` (iterable of subgraphs)
+- **Components**: `graph.connected()` (iterable of connected subgraphs)
 - **Serialization**: `graph.toDot()`, `graph.toMermaid()`
 
 ---
@@ -120,26 +123,27 @@ Lazy iterables exposed on both `Graph` and standalone classes:
 
 | Traversal | `Graph` Method | Standalone Class |
 | :--- | :--- | :--- |
-| Breadth-First | `graph.breadthFirst(root)` | `BreadthFirstIterable<V>(roots, successorsOf: ...)` |
-| Depth-First Pre-Order | `graph.depthFirst(root)` | `DepthFirstIterable<V>(roots, successorsOf: ...)` |
-| Depth-First Post-Order | `graph.depthFirstPostOrder(root)` | `DepthFirstPostOrderIterable<V>(roots, successorsOf: ...)` |
-| Topological Sort | `graph.topological(root)` | `TopologicalIterable<V>(roots, successorsOf: ...)` |
-| Random Walk | `graph.randomWalk(root, maxLength: ...)` | `RandomWalkIterable<V>(root, successorsOf: ...)` |
+| Breadth-First | `graph.breadthFirst(root)` / `breadthFirstAll(roots)` | `BreadthFirstIterable<V>(roots, successorsOf: ...)` |
+| Depth-First Pre-Order | `graph.depthFirst(root)` / `depthFirstAll(roots)` | `DepthFirstIterable<V>(roots, successorsOf: ...)` |
+| Depth-First Post-Order | `graph.depthFirstPostOrder(root)` / `depthFirstPostOrderAll(roots)` | `DepthFirstPostOrderIterable<V>(roots, successorsOf: ...)` |
+| Topological Sort | `graph.topological(root)` / `topologicalAll(roots)` | `TopologicalIterable<V>(roots, predecessorsOf: ..., successorsOf: ...)` |
+| Random Walk | `graph.randomWalk(root, selfAvoiding: ...)` | `RandomWalkIterable<V>(root, successorsOf: ...)` |
 
 ---
 
 ## Algorithms
 
-Most algorithms exist both as standalone functions taking closures, and as extension methods on `Graph`:
+Algorithms exist both as extension methods on `Graph` and as standalone functions taking closures:
 
-- **Shortest Paths**: `shortestPath()` (Dijkstra / A*), `shortestPathAll()`, `floydWarshall()`, `bellmanFord()`
-- **Connectivity & Cycles**: `hasCycle()`, `stronglyConnected()` (Tarjan), `biconnectedComponents()`, `articulationPoints()`, `bridges()`, `isBipartite()`, `isPlanar()`, `edgeConnectivity()`, `vertexConnectivity()`
-- **Spanning Trees**: `kruskalSpanningTree()`, `primSpanningTree()`
-- **Flows & Cuts**: `maxFlow(source, target)` (Dinic), `minCut()` (Stoer-Wagner global min-cut)
-- **Matching & Cliques**: `bipartiteMatching()`, `weightedBipartiteMatching()`, `maximumMatching()` (Blossom), `findCliques()` (Bron-Kerbosch), `maximumIndependentSet()`, `minimumVertexCover()`
-- **Metrics & Centrality**: `degreeCentrality()`, `betweennessCentrality()`, `pageRank()`, `eigenvectorCentrality()`, `density()`, `averageClusteringCoefficient()`, `transitivity()`, `degreeAssortativity()`
-- **Communities**: `louvainCommunities()`, `labelPropagationCommunities()`, `modularity(partition)`
-- **Tours**: `hasEulerianCircuit()`, `findEulerianPath()`, `hasHamiltonianCircuit()`, `findHamiltonianPath()`
+- **Shortest Paths**: `shortestPath(source, target)` (Dijkstra / A* with `costEstimate` / Bellman-Ford with `hasNegativeEdges: true`), `shortestPathAll(source)`, `allShortestPaths()` (`floydWarshallSearch`)
+- **Connectivity & Cycles**: `hasCycle()`, `stronglyConnected()` (`tarjanStronglyConnected`), `biconnectedComponents()`, `articulationPoints()`, `bridges()`, `isBipartite()`, `isPlanar()`, `edgeConnectivity()`, `vertexConnectivity()`, `coreNumbers()`, `kCore(k)`
+- **Spanning Trees**: `spanningTree()` (`kruskalSpanningTree`, or `primSpanningTree` when `startVertex` is given)
+- **Flows & Cuts**: `maxFlow().flow(source, target)` (`DinicMaxFlow`), `minCut()` (`StoerWagnerMinCut`)
+- **Matching, Coloring & Cliques**: `bipartiteMatching()`, `weightedBipartiteMatching()`, `maximumMatching()` (Blossom), `vertexColoring()`, `findCliques()` (`bronKerboschCliques`), `maximumIndependentSet()`, `minimumVertexCover()`
+- **Isomorphism**: `isIsomorphicTo(other)`, `containsSubgraph(pattern)` (`findIsomorphisms`)
+- **Metrics & Centrality**: `degreeCentrality()`, `inDegreeCentrality()`, `outDegreeCentrality()`, `betweennessCentrality()`, `closenessCentrality()`, `pageRank()`, `eigenvectorCentrality()`, `density()`, `localClusteringCoefficient(v)`, `averageClusteringCoefficient()`, `transitivity()`, `degreeAssortativity()`
+- **Communities**: `louvainCommunities()`, `labelPropagationCommunities()`, `modularity(communities)`
+- **Tours**: `hasEulerianCircuit()`, `hasEulerianPath()`, `findEulerianPath()`, `hasHamiltonianCircuit()`, `hasHamiltonianPath()`, `findHamiltonianPath()`
 
 ---
 
@@ -151,50 +155,41 @@ Layouts produce 2D vertex coordinates (`positions`), bounds (`bounds`), and poly
 
 | Strategy | Complexity | Directed / Undirected | Disconnected Components | Description |
 | :--- | :--- | :--- | :--- | :--- |
-| `StressLayout` | $O(V^2 + V E \log V)$ | Both | Packed | Stress Majorization (SMACOF) on shortest path distances (default). |
-| `ForceLayout` | $O(V \log V)$ or $O(V^2)$ | Both | Packed | Force-directed simulation with Barnes-Hut or exact repulsion. |
-| `LayeredLayout` | $O(V + E)$ | Directed (DAG) | Packed | Sugiyama hierarchical layout with crossing reduction & edge routes. |
-| `TreeLayout` | $O(V)$ | Directed / Tree | Forest | Buchheim-Walker aesthetic tidy tree layout (4 orientations). |
-| `RadialLayout` | $O(V + E)$ | Both | Packed | Concentric BFS topological levels expanding outwards from a root. |
-| `ShellLayout` | $O(V)$ | Both | Packed | Concentric rings assigned by explicit shell lists or mapping function. |
-| `CircularLayout` | $O(V)$ | Both | Single ring | Vertices placed uniformly along a circular circumference. |
-| `SpectralLayout` | $O(k \cdot (V + E))$ | Both | Packed | Laplacian eigenvectors (Fiedler vectors) via power iteration. |
-| `PartiteLayout` | $O(V + E)$ | Both | Columns | Parallel columns for bipartite/multipartite layouts with crossing sweeps. |
-| `GridLayout` | $O(V)$ | Both | Grid | Row and column grid alignment. |
-| `RandomLayout` | $O(V)$ | Both | Bounds | Uniform random coordinates within a bounding rectangle. |
+| `StressLayout` | `O(V^2 + V E log V)` | Both | Packed | Stress Majorization (SMACOF) on shortest path distances (default). |
+| `ForceLayout` | `O(V log V)` or `O(V^2)` | Both | Packed | Force-directed simulation with Barnes-Hut or exact repulsion. |
+| `LayeredLayout` | `O(V + E)` | Directed (DAG) | Packed | Sugiyama hierarchical layout with crossing reduction & edge routes. |
+| `TreeLayout` | `O(V)` | Directed / Tree | Forest | Buchheim-Walker aesthetic tidy tree layout (4 orientations). |
+| `RadialLayout` | `O(V + E)` | Both | Packed | Concentric BFS topological levels expanding outwards from a root. |
+| `ShellLayout` | `O(V)` | Both | Packed | Concentric rings assigned by explicit shell lists or mapping function. |
+| `CircularLayout` | `O(V)` | Both | Single ring | Vertices placed uniformly along a circular circumference. |
+| `SpectralLayout` | `O(k * (V + E))` | Both | Packed | Laplacian eigenvectors (Fiedler vectors) via power iteration. |
+| `PartiteLayout` | `O(V + E)` | Both | Columns | Parallel columns for bipartite/multipartite layouts with crossing sweeps. |
+| `GridLayout` | `O(V)` | Both | Grid | Row and column grid alignment. |
+| `RandomLayout` | `O(V)` | Both | Bounds | Uniform random coordinates within a bounding rectangle. |
 
-### Running on a `Graph`
+### Running on a `Graph` or `LayoutInput<V>`
 
 ```dart
+// On a Graph instance:
 final result = graph.layout(
   const StressLayout(),
-  vertexSize: (v) => (width: 40.0, height: 40.0),
+  vertexSize: (v) => const (width: 40.0, height: 40.0),
   normalize: true,       // Translates min bounds to (0, 0)
   removeOverlaps: true,  // Resolves vertex overlaps
 );
 
-for (final MapEntry(key: v, value: pt) in result.positions.entries) {
-  print('$v: (${pt.x}, ${pt.y})');
-}
-```
-
-### Running Standalone on `LayoutInput<V>`
-
-```dart
+// Standalone on LayoutInput<V>:
 final input = LayoutInput<String>(
   vertices: ['A', 'B', 'C'],
   successorsOf: (v) => v == 'A' ? ['B', 'C'] : const [],
   vertexSize: (v) => const (width: 40.0, height: 40.0),
 );
-
-final result = const TreeLayout<String>().layout(input);
-print(result.positions);
-print(result.bounds);
+final treeResult = const TreeLayout<String>().layout(input);
 ```
 
 ### Geometry Types
 
-- `LayoutPoint`: `math.Point<double>` with `.translate(dx, dy)` and `.scale(sx, [sy])`.
-- `LayoutRectangle`: `math.Rectangle<double>` with `.center`, `.minX`, `.maxX`, `.expandToInclude()`.
+- `LayoutPoint`: `Point<double>` with `.translate(dx, dy)` and `.scale(sx, [sy])`.
+- `LayoutRectangle`: `Rectangle<double>` with `.center`, `.minX`, `.maxX`, `.expandToInclude()`.
 - `LayoutSize`: `({double width, double height})`.
 - `boundingBox(points)`: Smallest enclosing `LayoutRectangle`.
