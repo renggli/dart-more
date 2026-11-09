@@ -16,7 +16,6 @@ final class GraphInspector {
     AppState state, {
     required SelectVertexCallback onSelectVertex,
     required SelectEdgeCallback onSelectEdge,
-    void Function()? onStateChanged,
   }) {
     final container =
         web.document.querySelector('#inspector-content') as web.HTMLElement?;
@@ -33,7 +32,6 @@ final class GraphInspector {
         graph,
         onSelectVertex,
         onSelectEdge,
-        onStateChanged,
       );
       return;
     }
@@ -52,7 +50,6 @@ final class GraphInspector {
           edge?.value ?? 1,
           onSelectVertex,
           onSelectEdge,
-          onStateChanged,
         );
         return;
       }
@@ -74,7 +71,6 @@ final class GraphInspector {
         selectedVertex,
         onSelectVertex,
         onSelectEdge,
-        onStateChanged,
       );
       return;
     }
@@ -93,7 +89,6 @@ final class GraphInspector {
     Graph<String, num> graph,
     SelectVertexCallback onSelectVertex,
     SelectEdgeCallback onSelectEdge,
-    void Function()? onStateChanged,
   ) {
     final titleP = p()..style.margin = '0 0 6px 0';
     titleP.appendChild(span('Aggregate Selection')..style.fontWeight = '600');
@@ -214,7 +209,6 @@ final class GraphInspector {
     num weight,
     SelectVertexCallback onSelectVertex,
     SelectEdgeCallback onSelectEdge,
-    void Function()? onStateChanged,
   ) {
     final arrow = graph.isDirected ? '→' : '—';
     final titleP = p()..style.margin = '0 0 6px 0';
@@ -270,7 +264,6 @@ final class GraphInspector {
     String v,
     SelectVertexCallback onSelectVertex,
     SelectEdgeCallback onSelectEdge,
-    void Function()? onStateChanged,
   ) {
     final nodeObj = state.nodes[v];
     final currentLabel = nodeObj?.label ?? v;

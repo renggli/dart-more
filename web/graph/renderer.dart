@@ -36,7 +36,6 @@ final class GraphRenderer {
     required this.onLassoSelection,
     this.onVertexDblClick,
     this.onEdgeWeightEdit,
-    this.onNodeMoved,
     this.onNodesMoved,
     this.onPlacementConfirmed,
   }) {
@@ -52,7 +51,6 @@ final class GraphRenderer {
   onEdgeWeightEdit;
   final void Function(web.MouseEvent event) onBackgroundClick;
   final LassoSelectionCallback onLassoSelection;
-  final NodePositionCallback? onNodeMoved;
   final void Function(Map<String, (double, double)> moves)? onNodesMoved;
   final void Function(String vertexId)? onPlacementConfirmed;
 
@@ -143,8 +141,8 @@ final class GraphRenderer {
   }
 
   /// Re-runs layout on the state and updates the view.
-  void autoLayout(AppState state, [String? engine]) {
-    GraphLayout.applyLayout(state, engine: engine);
+  void autoLayout(AppState state) {
+    GraphLayout.applyLayout(state);
     render(state);
   }
 
@@ -582,6 +580,10 @@ final class GraphRenderer {
       final vRect = viewport.getBoundingClientRect();
       _canvasMouseX = (event.clientX.toDouble() - vRect.left - _panX) / _scale;
       _canvasMouseY = (event.clientY.toDouble() - vRect.top - _panY) / _scale;
+      if (_lastState != null) {
+        _lastState!.cursorX = _canvasMouseX;
+        _lastState!.cursorY = _canvasMouseY;
+      }
 
       // Pending placement vertex moves dynamically with cursor
       if (_lastState != null && _lastState!.pendingPlacementVertex != null) {
@@ -676,22 +678,15 @@ final class GraphRenderer {
         if (_didDragNodes) {
           _didDragNodes = false;
           final state = _lastState;
-          if (state != null) {
-            if (onNodesMoved != null) {
-              final moves = <String, (double, double)>{};
-              for (final id in _initialDragPositions.keys) {
-                final node = state.nodes[id];
-                if (node?.x != null && node?.y != null) {
-                  moves[id] = (node!.x!, node.y!);
-                }
-              }
-              onNodesMoved!(moves);
-            } else if (onNodeMoved != null) {
-              final node = state.nodes[v];
+          if (state != null && onNodesMoved != null) {
+            final moves = <String, (double, double)>{};
+            for (final id in _initialDragPositions.keys) {
+              final node = state.nodes[id];
               if (node?.x != null && node?.y != null) {
-                onNodeMoved!(v, node!.x!, node.y!);
+                moves[id] = (node!.x!, node.y!);
               }
             }
+            onNodesMoved!(moves);
           }
         } else {
           onVertexClick(v, event);

@@ -89,9 +89,6 @@ void main() {
 
   late final GraphRenderer renderer;
 
-  // Toast notification (banner removed per design request)
-  void showToast(String message, {bool isWarning = false}) {}
-
   // Restore from URL hash if available
   if (web.window.location.hash.isNotEmpty) {
     final restored = GraphIO.importFromUrlHash(web.window.location.hash);
@@ -178,7 +175,6 @@ void main() {
       onCommit: (newLabel) {
         state.saveSnapshot();
         state.getOrCreateNode(vertex).label = newLabel;
-        showToast('Renamed vertex "$vertex" to "$newLabel"');
         updateUI();
       },
     );
@@ -256,7 +252,6 @@ void main() {
             state.evaluateModifiers();
             updateUI();
             renderModifierStack();
-            showToast('Applied ${mod.name} permanently');
           });
         if (hasError) {
           btnApply.style.display = 'none';
@@ -879,43 +874,7 @@ void main() {
     final cmd = CommandRegistry.findById(cmdId);
     if (cmd == null) return;
     if (!cmd.canExecute(state)) return;
-    cmd.execute(
-      state,
-      context: CommandContext(
-        cursorX: renderer.canvasMouseX,
-        cursorY: renderer.canvasMouseY,
-        startVertexPlacement: (vertexId) {
-          state.pendingPlacementVertex = vertexId;
-          updateUI();
-        },
-        showInlineEditor: (v) {
-          renderer.showInlineNodeEditor(
-            state,
-            v,
-            onCommit: (newLabel) {
-              state.saveSnapshot();
-              state.getOrCreateNode(v).label = newLabel;
-              updateUI();
-            },
-          );
-        },
-        openImportModal: openImportModal,
-        openExportModal: openExportModal,
-        openFile: () => inputOpenFile?.click(),
-        saveFile: () {
-          final jsonStr = GraphIO.exportToJson(state);
-          GraphIO.downloadTextFile('graph.json', jsonStr, 'application/json');
-        },
-        runLayout: () {
-          renderer.autoLayout(state);
-          updateUI();
-        },
-        showIntro: () {
-          dismissedEmpty = false;
-          updateIntroOverlay();
-        },
-      ),
-    );
+    cmd.execute(state);
     updateUI();
   }
 
@@ -1030,7 +989,6 @@ void main() {
         }
         updateUI();
       },
-      onStateChanged: updateUI,
     );
 
     renderer.render(state);
@@ -1228,6 +1186,21 @@ void main() {
     },
   );
 
+  state.onOpenFile = () => inputOpenFile?.click();
+  state.onOpenImport = openImportModal;
+  state.onOpenExport = openExportModal;
+  state.onShowInlineEditor = (v) {
+    renderer.showInlineNodeEditor(
+      state,
+      v,
+      onCommit: (newLabel) {
+        state.saveSnapshot();
+        state.getOrCreateNode(v).label = newLabel;
+        updateUI();
+      },
+    );
+  };
+
   renderer.autoLayout(state);
 
   // Zoom listeners
@@ -1379,7 +1352,6 @@ void main() {
       state.evaluateModifiers();
       updateUI();
       renderModifierStack();
-      showToast('Added modifier: ${mod.name}');
     }
   });
 

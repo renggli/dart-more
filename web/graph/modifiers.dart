@@ -31,7 +31,7 @@ class ModifierOutput {
   final Graph<String, num>? transformedGraph;
 
   /// Extra visualization overlay (path, heatmap, or partition coloring) on the canvas.
-  final GraphOverlay? overlay;
+  final VisualOverlay? overlay;
 
   /// Live tabular data to expose in the bottom drawer.
   final ModifierTableData? tableData;
@@ -1141,13 +1141,10 @@ class SpanningTreeModifier extends GraphModifier {
       return ModifierOutput(hasError: true, errorMessage: e.toString());
     }
 
-    final treeEdges = <(String, String)>[];
     num totalWeight = 0;
     final rows = <List<String>>[];
 
     for (final e in tree.edges) {
-      final key = (e.source, e.target);
-      treeEdges.add(key);
       totalWeight += e.value;
       rows.add(['${e.source} → ${e.target}', '${e.value}', '$totalWeight']);
 
@@ -1165,13 +1162,7 @@ class SpanningTreeModifier extends GraphModifier {
       }
     }
 
-    final overlay = HighlightOverlay(
-      title: 'Spanning Tree',
-      highlightedEdges: treeEdges.toSet(),
-    );
-
     return ModifierOutput(
-      overlay: overlay,
       statusSummary: 'MST Weight: $totalWeight (${tree.edges.length} edges)',
       tableData: ModifierTableData(
         title: 'Spanning Tree Edges ($algorithm)',

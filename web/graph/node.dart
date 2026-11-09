@@ -50,20 +50,6 @@ final class GraphNode {
     visible = true;
   }
 
-  /// Copies styling from another [GraphNode].
-  GraphNode copyWithPosition() => GraphNode(
-    id: id,
-    label: label,
-    x: x,
-    y: y,
-    fillColor: fillColor,
-    borderColor: borderColor,
-    textColor: textColor,
-    borderWidth: borderWidth,
-    opacity: opacity,
-    visible: visible,
-  );
-
   Map<String, dynamic> toJson() => {
     'id': id,
     'label': label,

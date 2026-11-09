@@ -1,3 +1,8 @@
+import 'package:more/graph.dart';
+
+import 'io.dart';
+import 'layout.dart';
+import 'node.dart';
 import 'state.dart';
 
 /// Categories for organizing graph operations in menus and hotkeys.
@@ -23,7 +28,7 @@ abstract class GraphCommand {
   CommandCategory get category;
 
   bool canExecute(AppState state);
-  void execute(AppState state, {CommandContext? context});
+  void execute(AppState state);
 
   bool matchesKey(
     String key, {
@@ -74,37 +79,6 @@ abstract class GraphCommand {
   }
 }
 
-/// Context passed to commands for cursor-aware or UI-aware execution.
-class CommandContext {
-  const new({
-    this.cursorX,
-    this.cursorY,
-    this.startVertexPlacement,
-    this.showToast,
-    this.showInlineEditor,
-    this.openIoModal,
-    this.openImportModal,
-    this.openExportModal,
-    this.openFile,
-    this.saveFile,
-    this.runLayout,
-    this.showIntro,
-  });
-
-  final double? cursorX;
-  final double? cursorY;
-  final void Function(String vertexId)? startVertexPlacement;
-  final void Function(String message)? showToast;
-  final void Function(String vertexId)? showInlineEditor;
-  final void Function()? openIoModal;
-  final void Function()? openImportModal;
-  final void Function()? openExportModal;
-  final void Function()? openFile;
-  final void Function()? saveFile;
-  final void Function()? runLayout;
-  final void Function()? showIntro;
-}
-
 // ---------------------------------------------------------------------------
 // File Operations
 // ---------------------------------------------------------------------------
@@ -128,10 +102,13 @@ class NewGraphCommand extends GraphCommand {
   bool canExecute(AppState state) => true;
 
   @override
-  void execute(AppState state, {CommandContext? context}) {
-    state.clearGraph();
-    context?.showIntro?.call();
-    context?.showToast?.call('New graph');
+  void execute(AppState state) {
+    state.saveSnapshot();
+    state.primaryGraph = Graph<String, num>(
+      isDirected: state.primaryGraph.isDirected,
+    );
+    state.nodes.clear();
+    state.clearSelection();
   }
 }
 
@@ -154,8 +131,8 @@ class OpenGraphCommand extends GraphCommand {
   bool canExecute(AppState state) => true;
 
   @override
-  void execute(AppState state, {CommandContext? context}) {
-    context?.openFile?.call();
+  void execute(AppState state) {
+    state.onOpenFile?.call();
   }
 }
 
@@ -178,8 +155,9 @@ class SaveGraphCommand extends GraphCommand {
   bool canExecute(AppState state) => true;
 
   @override
-  void execute(AppState state, {CommandContext? context}) {
-    context?.saveFile?.call();
+  void execute(AppState state) {
+    final jsonStr = GraphIO.exportToJson(state);
+    GraphIO.downloadTextFile('graph.json', jsonStr, 'application/json');
   }
 }
 
@@ -202,8 +180,8 @@ class ImportGraphCommand extends GraphCommand {
   bool canExecute(AppState state) => true;
 
   @override
-  void execute(AppState state, {CommandContext? context}) {
-    context?.openImportModal?.call();
+  void execute(AppState state) {
+    state.onOpenImport?.call();
   }
 }
 
@@ -226,8 +204,8 @@ class ExportGraphCommand extends GraphCommand {
   bool canExecute(AppState state) => true;
 
   @override
-  void execute(AppState state, {CommandContext? context}) {
-    context?.openExportModal?.call();
+  void execute(AppState state) {
+    state.onOpenExport?.call();
   }
 }
 
@@ -254,10 +232,9 @@ class UndoCommand extends GraphCommand {
   bool canExecute(AppState state) => state.undoStack.isNotEmpty;
 
   @override
-  void execute(AppState state, {CommandContext? context}) {
+  void execute(AppState state) {
     if (canExecute(state)) {
       state.undo();
-      context?.showToast?.call('Undo');
     }
   }
 }
@@ -281,10 +258,9 @@ class RedoCommand extends GraphCommand {
   bool canExecute(AppState state) => state.redoStack.isNotEmpty;
 
   @override
-  void execute(AppState state, {CommandContext? context}) {
+  void execute(AppState state) {
     if (canExecute(state)) {
       state.redo();
-      context?.showToast?.call('Redo');
     }
   }
 }
@@ -311,10 +287,9 @@ class CutCommand extends GraphCommand {
       state.selectedEdge != null;
 
   @override
-  void execute(AppState state, {CommandContext? context}) {
-    if (state.cutSelected()) {
-      context?.showToast?.call('Cut selection');
-    }
+  void execute(AppState state) {
+    const CopyCommand().execute(state);
+    const DeleteCommand().execute(state);
   }
 }
 
@@ -340,10 +315,44 @@ class CopyCommand extends GraphCommand {
       state.selectedEdge != null;
 
   @override
-  void execute(AppState state, {CommandContext? context}) {
-    if (state.copySelected()) {
-      context?.showToast?.call('Copied selection');
+  void execute(AppState state) {
+    final vertSet = Set<String>.from(state.selectedVertices);
+    for (final (u, v) in state.selectedEdges) {
+      vertSet.add(u);
+      vertSet.add(v);
     }
+    if (state.selectedEdge != null) {
+      vertSet.add(state.selectedEdge!.$1);
+      vertSet.add(state.selectedEdge!.$2);
+    }
+    if (vertSet.isEmpty) return;
+
+    final copiedNodes = <GraphNode>[
+      for (final v in vertSet)
+        if (state.nodes[v] != null)
+          GraphNode(
+            id: v,
+            label: state.nodes[v]!.label,
+            x: state.nodes[v]!.x,
+            y: state.nodes[v]!.y,
+          )
+        else
+          GraphNode(id: v, label: v),
+    ];
+
+    final copiedEdges = <(String, String, num)>[];
+    for (final edge in state.primaryGraph.edges) {
+      final inVertices =
+          vertSet.contains(edge.source) && vertSet.contains(edge.target);
+      final isExplicitEdge =
+          state.selectedEdges.contains((edge.source, edge.target)) ||
+          state.selectedEdge == (edge.source, edge.target);
+      if (inVertices || isExplicitEdge) {
+        copiedEdges.add((edge.source, edge.target, edge.value));
+      }
+    }
+
+    state.clipboard = GraphClipboard(nodes: copiedNodes, edges: copiedEdges);
   }
 }
 
@@ -367,10 +376,47 @@ class PasteCommand extends GraphCommand {
       state.clipboard != null && !state.clipboard!.isEmpty;
 
   @override
-  void execute(AppState state, {CommandContext? context}) {
-    if (state.pasteClipboard()) {
-      context?.showToast?.call('Pasted');
+  void execute(AppState state) {
+    final clipboard = state.clipboard;
+    if (clipboard == null || clipboard.isEmpty) return;
+    state.saveSnapshot();
+
+    const offsetX = 40.0;
+    const offsetY = 40.0;
+    final oldToNew = <String, String>{};
+    for (final node in clipboard.nodes) {
+      final newId = state.nextAvailableNodeId();
+      oldToNew[node.id] = newId;
+      state.primaryGraph.addVertex(newId);
+      final newX = node.x != null ? node.x! + offsetX : null;
+      final newY = node.y != null ? node.y! + offsetY : null;
+      state.getOrCreateNode(newId, label: node.label, x: newX, y: newY);
     }
+
+    for (final (source, target, value) in clipboard.edges) {
+      final newSource = oldToNew[source];
+      final newTarget = oldToNew[target];
+      if (newSource != null && newTarget != null) {
+        state.primaryGraph.addEdge(newSource, newTarget, value: value);
+      }
+    }
+
+    state.selectedVertices = oldToNew.values.toSet();
+    state.activeVertex = state.selectedVertices.isNotEmpty
+        ? state.selectedVertices.last
+        : null;
+    state.selectedEdges.clear();
+    for (final (source, target, _) in clipboard.edges) {
+      final newSource = oldToNew[source];
+      final newTarget = oldToNew[target];
+      if (newSource != null && newTarget != null) {
+        state.selectedEdges.add((newSource, newTarget));
+      }
+    }
+    state.selectedEdge = state.selectedEdges.isNotEmpty
+        ? state.selectedEdges.last
+        : null;
+    state.syncSelectionSourceTarget();
   }
 }
 
@@ -396,11 +442,9 @@ class DuplicateCommand extends GraphCommand {
       state.selectedEdge != null;
 
   @override
-  void execute(AppState state, {CommandContext? context}) {
-    final count = state.duplicateSelected();
-    if (count > 0) {
-      context?.showToast?.call('Duplicated');
-    }
+  void execute(AppState state) {
+    const CopyCommand().execute(state);
+    const PasteCommand().execute(state);
   }
 }
 
@@ -426,10 +470,36 @@ class DeleteCommand extends GraphCommand {
       state.selectedEdge != null;
 
   @override
-  void execute(AppState state, {CommandContext? context}) {
-    final count = state.deleteSelection();
-    if (count > 0) {
-      context?.showToast?.call('Deleted selection');
+  void execute(AppState state) {
+    if (state.selectedVertices.isEmpty &&
+        state.selectedEdges.isEmpty &&
+        state.selectedEdge == null) {
+      return;
+    }
+    state.saveSnapshot();
+
+    if (state.selectedEdges.isNotEmpty) {
+      for (final (u, v) in state.selectedEdges.toList()) {
+        state.primaryGraph.removeEdge(u, v);
+      }
+      state.selectedEdges.clear();
+      state.selectedEdge = null;
+    } else if (state.selectedEdge != null) {
+      state.primaryGraph.removeEdge(
+        state.selectedEdge!.$1,
+        state.selectedEdge!.$2,
+      );
+      state.selectedEdge = null;
+    }
+
+    if (state.selectedVertices.isNotEmpty) {
+      for (final v in state.selectedVertices.toList()) {
+        state.primaryGraph.removeVertex(v);
+        state.nodes.remove(v);
+      }
+      state.selectedVertices.clear();
+      state.activeVertex = null;
+      state.syncSelectionSourceTarget();
     }
   }
 }
@@ -457,16 +527,13 @@ class AddVertexCommand extends GraphCommand {
   bool canExecute(AppState state) => true;
 
   @override
-  void execute(AppState state, {CommandContext? context}) {
-    final newId = state.createVertexAt(
-      x: context?.cursorX,
-      y: context?.cursorY,
-    );
-    if (context?.startVertexPlacement != null) {
-      context!.startVertexPlacement!(newId);
-    } else if (state.showLabels) {
-      context?.showInlineEditor?.call(newId);
-    }
+  void execute(AppState state) {
+    state.saveSnapshot();
+    final id = state.nextAvailableNodeId();
+    state.primaryGraph.addVertex(id);
+    state.getOrCreateNode(id, label: id, x: state.cursorX, y: state.cursorY);
+    state.selectVertex(id, clearOthers: true);
+    state.pendingPlacementVertex = id;
   }
 }
 
@@ -490,16 +557,32 @@ class ExpandVertexCommand extends GraphCommand {
       state.selectedVertices.isNotEmpty || state.activeVertex != null;
 
   @override
-  void execute(AppState state, {CommandContext? context}) {
-    final newId = state.expandSelectedVertices(
-      atX: context?.cursorX,
-      atY: context?.cursorY,
+  void execute(AppState state) {
+    state.saveSnapshot();
+    final newId = state.nextAvailableNodeId();
+    state.primaryGraph.addVertex(newId);
+    state.getOrCreateNode(
+      newId,
+      label: newId,
+      x: state.cursorX,
+      y: state.cursorY,
     );
-    if (context?.startVertexPlacement != null) {
-      context!.startVertexPlacement!(newId);
-    } else if (state.showLabels) {
-      context?.showInlineEditor?.call(newId);
+
+    final targets = state.selectedVertices.isNotEmpty
+        ? state.selectedVertices.toList()
+        : (state.activeVertex != null ? [state.activeVertex!] : <String>[]);
+
+    for (final v in targets) {
+      state.primaryGraph.addEdge(v, newId, value: 1);
     }
+
+    state.selectedEdges.clear();
+    state.selectedEdge = null;
+    state.selectedVertices = {newId};
+    state.activeVertex = newId;
+    state.selectedSource = null;
+    state.selectedTarget = null;
+    state.pendingPlacementVertex = newId;
   }
 }
 
@@ -530,10 +613,10 @@ class RenameVertexCommand extends GraphCommand {
   bool canExecute(AppState state) => state.activeVertex != null;
 
   @override
-  void execute(AppState state, {CommandContext? context}) {
+  void execute(AppState state) {
     final v = state.activeVertex;
     if (v != null) {
-      context?.showInlineEditor?.call(v);
+      state.onShowInlineEditor?.call(v);
     }
   }
 }
@@ -557,37 +640,29 @@ class MergeVerticesCommand extends GraphCommand {
   bool canExecute(AppState state) => state.selectedVertices.length >= 2;
 
   @override
-  void execute(AppState state, {CommandContext? context}) {
-    if (state.mergeSelectedVertices()) {
-      context?.showToast?.call('Merged vertices into "${state.activeVertex}"');
+  void execute(AppState state) {
+    if (state.selectedVertices.length < 2) return;
+    final target = state.activeVertex ?? state.selectedVertices.first;
+    state.saveSnapshot();
+    final toMerge = state.selectedVertices.where((v) => v != target).toList();
+
+    for (final v in toMerge) {
+      for (final edge in state.primaryGraph.edgesOf(v).toList()) {
+        final other = edge.source == v ? edge.target : edge.source;
+        if (other != v && other != target) {
+          if (edge.source == v) {
+            state.primaryGraph.addEdge(target, other, value: edge.value);
+          } else {
+            state.primaryGraph.addEdge(other, target, value: edge.value);
+          }
+        }
+      }
+      state.primaryGraph.removeVertex(v);
+      state.nodes.remove(v);
     }
-  }
-}
-
-class GrowVertexSelectionCommand extends GraphCommand {
-  const new();
-
-  @override
-  String get id => 'vertex.grow';
-
-  @override
-  String get title => 'Grow Selection';
-
-  @override
-  String? get shortcut => '+';
-
-  @override
-  CommandCategory get category => CommandCategory.vertex;
-
-  @override
-  bool canExecute(AppState state) => state.selectedVertices.isNotEmpty;
-
-  @override
-  void execute(AppState state, {CommandContext? context}) {
-    state.growSelection();
-    context?.showToast?.call(
-      'Selected ${state.selectedVertices.length} vertices',
-    );
+    state.selectedVertices = {target};
+    state.activeVertex = target;
+    state.syncSelectionSourceTarget();
   }
 }
 
@@ -614,10 +689,30 @@ class ConnectVerticesCommand extends GraphCommand {
   bool canExecute(AppState state) => state.selectedVertices.length >= 2;
 
   @override
-  void execute(AppState state, {CommandContext? context}) {
-    if (state.connectSelectedVertices()) {
-      context?.showToast?.call('Connected vertices with edge');
+  void execute(AppState state) {
+    if (state.selectedVertices.length < 2) return;
+    state.saveSnapshot();
+    final list = state.selectedVertices.toList();
+    state.selectedEdges.clear();
+
+    if (list.length == 2) {
+      state.primaryGraph.addEdge(list[0], list[1], value: 1);
+      state.selectedEdge = (list[0], list[1]);
+      state.selectedEdges.add((list[0], list[1]));
+    } else {
+      for (var i = 0; i < list.length - 1; i++) {
+        state.primaryGraph.addEdge(list[i], list[i + 1], value: 1);
+        state.selectedEdges.add((list[i], list[i + 1]));
+      }
+      state.selectedEdge = state.selectedEdges.isNotEmpty
+          ? state.selectedEdges.last
+          : null;
     }
+
+    state.selectedVertices.clear();
+    state.activeVertex = null;
+    state.selectedSource = null;
+    state.selectedTarget = null;
   }
 }
 
@@ -641,11 +736,52 @@ class SubdivideEdgeCommand extends GraphCommand {
       state.selectedEdges.isNotEmpty || state.selectedEdge != null;
 
   @override
-  void execute(AppState state, {CommandContext? context}) {
-    final count = state.subdivideSelectedEdges();
-    if (count > 0) {
-      context?.showToast?.call('Subdivided $count edge${count > 1 ? "s" : ""}');
+  void execute(AppState state) {
+    final edgesToSplit = <(String, String, num)>[];
+    for (final e in state.selectedEdges) {
+      final edge =
+          state.primaryGraph.getEdge(e.$1, e.$2) ??
+          (!state.primaryGraph.isDirected
+              ? state.primaryGraph.getEdge(e.$2, e.$1)
+              : null);
+      if (edge != null) {
+        edgesToSplit.add((edge.source, edge.target, edge.value));
+      }
     }
+    if (edgesToSplit.isEmpty && state.selectedEdge != null) {
+      final edge = state.primaryGraph.getEdge(
+        state.selectedEdge!.$1,
+        state.selectedEdge!.$2,
+      );
+      if (edge != null) {
+        edgesToSplit.add((edge.source, edge.target, edge.value));
+      }
+    }
+    if (edgesToSplit.isEmpty) return;
+
+    state.saveSnapshot();
+    for (final (u, v, w) in edgesToSplit) {
+      final mid = state.nextAvailableNodeId();
+      final nodeU = state.nodes[u];
+      final nodeV = state.nodes[v];
+      double? midX;
+      double? midY;
+      if (nodeU?.x != null &&
+          nodeV?.x != null &&
+          nodeU?.y != null &&
+          nodeV?.y != null) {
+        midX = (nodeU!.x! + nodeV!.x!) / 2;
+        midY = (nodeU.y! + nodeV.y!) / 2;
+      }
+      state.primaryGraph.removeEdge(u, v);
+      state.primaryGraph.addVertex(mid);
+      state.getOrCreateNode(mid, label: mid, x: midX, y: midY);
+      state.primaryGraph.addEdge(u, mid, value: w);
+      state.primaryGraph.addEdge(mid, v, value: w);
+      state.selectedVertices.add(mid);
+    }
+    state.selectedEdges.clear();
+    state.selectedEdge = null;
   }
 }
 
@@ -668,9 +804,10 @@ class ReverseEdgesCommand extends GraphCommand {
   bool canExecute(AppState state) => state.primaryGraph.isDirected;
 
   @override
-  void execute(AppState state, {CommandContext? context}) {
-    state.reverseDirections();
-    context?.showToast?.call('Reversed edge directions');
+  void execute(AppState state) {
+    if (!state.primaryGraph.isDirected) return;
+    state.saveSnapshot();
+    state.primaryGraph = state.primaryGraph.reversed.copy();
   }
 }
 
@@ -697,9 +834,8 @@ class AutoLayoutCommand extends GraphCommand {
   bool canExecute(AppState state) => true;
 
   @override
-  void execute(AppState state, {CommandContext? context}) {
-    context?.showToast?.call('Computing layout (${state.layoutEngine})...');
-    context?.runLayout?.call();
+  void execute(AppState state) {
+    GraphLayout.applyLayout(state);
   }
 }
 
@@ -722,9 +858,9 @@ class ComplementCommand extends GraphCommand {
   bool canExecute(AppState state) => true;
 
   @override
-  void execute(AppState state, {CommandContext? context}) {
-    state.complementGraph();
-    context?.showToast?.call('Computed graph complement');
+  void execute(AppState state) {
+    state.saveSnapshot();
+    state.primaryGraph = state.primaryGraph.complement(edge: (u, v) => 1);
   }
 }
 
@@ -747,9 +883,12 @@ class TransitiveClosureCommand extends GraphCommand {
   bool canExecute(AppState state) => true;
 
   @override
-  void execute(AppState state, {CommandContext? context}) {
-    state.transitiveClosure();
-    context?.showToast?.call('Computed transitive closure');
+  void execute(AppState state) {
+    if (!state.primaryGraph.isDirected) return;
+    state.saveSnapshot();
+    state.primaryGraph = state.primaryGraph.transitiveClosure().map(
+      edge: (_) => 1,
+    );
   }
 }
 
@@ -772,9 +911,10 @@ class TransitiveReductionCommand extends GraphCommand {
   bool canExecute(AppState state) => true;
 
   @override
-  void execute(AppState state, {CommandContext? context}) {
-    state.transitiveReduction();
-    context?.showToast?.call('Computed transitive reduction');
+  void execute(AppState state) {
+    if (!state.primaryGraph.isDirected) return;
+    state.saveSnapshot();
+    state.primaryGraph = state.primaryGraph.transitiveReduction();
   }
 }
 
@@ -804,9 +944,18 @@ class SelectAllCommand extends GraphCommand {
       state.selectedEdge == null;
 
   @override
-  void execute(AppState state, {CommandContext? context}) {
-    state.selectAll();
-    context?.showToast?.call('Selected all vertices and edges');
+  void execute(AppState state) {
+    state.selectedVertices = state.primaryGraph.vertices.toSet();
+    state.activeVertex = state.selectedVertices.isNotEmpty
+        ? state.selectedVertices.first
+        : null;
+    state.syncSelectionSourceTarget();
+    state.selectedEdges = {
+      for (final e in state.primaryGraph.edges) (e.source, e.target),
+    };
+    state.selectedEdge = state.selectedEdges.isNotEmpty
+        ? state.selectedEdges.first
+        : null;
   }
 }
 
@@ -832,7 +981,7 @@ class DeselectAllCommand extends GraphCommand {
       state.selectedEdge != null;
 
   @override
-  void execute(AppState state, {CommandContext? context}) {
+  void execute(AppState state) {
     state.clearSelection();
   }
 }
@@ -856,7 +1005,7 @@ class ToggleVertexSelectionModeCommand extends GraphCommand {
   bool canExecute(AppState state) => true;
 
   @override
-  void execute(AppState state, {CommandContext? context}) {
+  void execute(AppState state) {
     state.selectVerticesMode = !state.selectVerticesMode;
     if (!state.selectVerticesMode && !state.selectEdgesMode) {
       state.selectEdgesMode = true;
@@ -883,7 +1032,7 @@ class ToggleEdgeSelectionModeCommand extends GraphCommand {
   bool canExecute(AppState state) => true;
 
   @override
-  void execute(AppState state, {CommandContext? context}) {
+  void execute(AppState state) {
     state.selectEdgesMode = !state.selectEdgesMode;
     if (!state.selectVerticesMode && !state.selectEdgesMode) {
       state.selectVerticesMode = true;
@@ -910,9 +1059,12 @@ class SelectAllVerticesCommand extends GraphCommand {
   bool canExecute(AppState state) => true;
 
   @override
-  void execute(AppState state, {CommandContext? context}) {
-    state.selectAllVertices();
-    context?.showToast?.call('Selected all vertices');
+  void execute(AppState state) {
+    state.selectedVertices = state.primaryGraph.vertices.toSet();
+    state.activeVertex = state.selectedVertices.isNotEmpty
+        ? state.selectedVertices.first
+        : null;
+    state.syncSelectionSourceTarget();
   }
 }
 
@@ -935,9 +1087,13 @@ class SelectAllEdgesCommand extends GraphCommand {
   bool canExecute(AppState state) => true;
 
   @override
-  void execute(AppState state, {CommandContext? context}) {
-    state.selectAllEdges();
-    context?.showToast?.call('Selected all edges');
+  void execute(AppState state) {
+    state.selectedEdges = {
+      for (final e in state.primaryGraph.edges) (e.source, e.target),
+    };
+    state.selectedEdge = state.selectedEdges.isNotEmpty
+        ? state.selectedEdges.first
+        : null;
   }
 }
 
@@ -960,8 +1116,13 @@ class ExpandSelectionCommand extends GraphCommand {
   bool canExecute(AppState state) => state.selectedVertices.isNotEmpty;
 
   @override
-  void execute(AppState state, {CommandContext? context}) {
-    state.expandSelection();
+  void execute(AppState state) {
+    final toAdd = <String>{};
+    for (final v in state.selectedVertices) {
+      toAdd.addAll(state.primaryGraph.neighboursOf(v));
+    }
+    state.selectedVertices.addAll(toAdd);
+    state.syncSelectionSourceTarget();
   }
 }
 
@@ -984,8 +1145,22 @@ class CollapseSelectionCommand extends GraphCommand {
   bool canExecute(AppState state) => state.selectedVertices.isNotEmpty;
 
   @override
-  void execute(AppState state, {CommandContext? context}) {
-    state.collapseSelection();
+  void execute(AppState state) {
+    if (state.selectedVertices.isEmpty) return;
+    final toRemove = <String>{};
+    for (final v in state.selectedVertices) {
+      final neighbours = state.primaryGraph.neighboursOf(v);
+      if (neighbours.isNotEmpty &&
+          neighbours.any((nb) => !state.selectedVertices.contains(nb))) {
+        toRemove.add(v);
+      }
+    }
+    if (toRemove.length == state.selectedVertices.length) {
+      state.selectedVertices.clear();
+    } else {
+      state.selectedVertices.removeAll(toRemove);
+    }
+    state.syncSelectionSourceTarget();
   }
 }
 
@@ -1008,8 +1183,13 @@ class InvertSelectionCommand extends GraphCommand {
   bool canExecute(AppState state) => true;
 
   @override
-  void execute(AppState state, {CommandContext? context}) {
-    state.invertSelection();
+  void execute(AppState state) {
+    final all = state.primaryGraph.vertices.toSet();
+    state.selectedVertices = all.difference(state.selectedVertices);
+    state.activeVertex = state.selectedVertices.isNotEmpty
+        ? state.selectedVertices.last
+        : null;
+    state.syncSelectionSourceTarget();
   }
 }
 
@@ -1062,13 +1242,9 @@ class CommandRegistry {
     TransitiveReductionCommand(),
   ];
 
-  static List<GraphCommand> byCategory(CommandCategory category) =>
-      all.where((cmd) => cmd.category == category).toList();
+  static final Map<String, GraphCommand> _byId = {
+    for (final cmd in all) cmd.id: cmd,
+  };
 
-  static GraphCommand? findById(String id) {
-    for (final cmd in all) {
-      if (cmd.id == id) return cmd;
-    }
-    return null;
-  }
+  static GraphCommand? findById(String id) => _byId[id];
 }
