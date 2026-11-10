@@ -1,9 +1,7 @@
 import 'geometry.dart';
 import 'graph_layout.dart';
-import 'postprocess.dart';
 import 'support/arc_placement.dart';
 import 'support/bfs_levels.dart';
-import 'support/components.dart';
 
 /// Positions vertices on concentric rings expanding radially outwards from a root vertex.
 ///
@@ -18,7 +16,7 @@ import 'support/components.dart';
 /// final result = graph.layout(const RadialLayout(root: 'Root'));
 /// print(result.positions['Root']);
 /// ```
-final class RadialLayout<V> implements GraphLayout<V> {
+final class RadialLayout<V> extends GraphLayout<V> {
   /// Constructs a radial layout strategy.
   const new({
     this.root,
@@ -51,48 +49,7 @@ final class RadialLayout<V> implements GraphLayout<V> {
   final double startAngle;
 
   @override
-  LayoutResult<V> layout(LayoutInput<V> input) {
-    if (input.vertices.isEmpty) {
-      return LayoutResult<V>(
-        positions: const {},
-        bounds: LayoutRectangle(center.x, center.y, 0, 0),
-      );
-    }
-    if (input.vertices.length == 1) {
-      final v = input.vertices.first;
-      return LayoutResult<V>(
-        positions: {v: center},
-        vertexSizes: {v: input.sizeOf(v)},
-      );
-    }
-
-    if (input.packComponents) {
-      final comps = components(input);
-      if (comps.length > 1) {
-        final compResults = <LayoutResult<V>>[];
-        for (final comp in comps) {
-          final compSet = comp.toSet();
-          final compInput = LayoutInput<V>(
-            vertices: comp,
-            successorsOf: (v) => input.successorsOf(v).where(compSet.contains),
-            predecessorsOf: input.isDirected
-                ? (v) => input.predecessorsOf!(v).where(compSet.contains)
-                : null,
-            vertexSize: input.vertexSize,
-            edgeWeight: input.edgeWeight,
-            vertexStrategy: input.vertexStrategy,
-            packComponents: false,
-          );
-          compResults.add(_layoutSingleComponent(compInput));
-        }
-        return packComponents(compResults, vertexDistance: vertexDistance);
-      }
-    }
-
-    return _layoutSingleComponent(input);
-  }
-
-  LayoutResult<V> _layoutSingleComponent(LayoutInput<V> input) {
+  LayoutResult<V> layoutComponent(LayoutInput<V> input) {
     final V effectiveRoot;
     if (root != null && input.vertices.contains(root)) {
       effectiveRoot = root as V;
@@ -114,6 +71,19 @@ final class RadialLayout<V> implements GraphLayout<V> {
     final levels = bfsLevels<V>(input, [
       effectiveRoot,
     ], successors: input.neighboursOf);
+
+    final visited = <V>{for (final level in levels) ...level};
+    final unreached = input.vertices
+        .where((v) => !visited.contains(v))
+        .toList();
+    if (unreached.isNotEmpty) {
+      final extraLevels = bfsLevels<V>(
+        input,
+        unreached,
+        successors: input.neighboursOf,
+      );
+      levels.addAll(extraLevels);
+    }
 
     final positions = <V, LayoutPoint>{};
     final sizes = <V, LayoutSize>{

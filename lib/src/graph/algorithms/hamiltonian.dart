@@ -14,6 +14,7 @@ bool hasHamiltonianCircuit<V, E>({
   Iterable<V> Function(V vertex)? successorsOf,
   required bool isDirected,
   StorageStrategy<V>? vertexStrategy,
+  int maxSteps = 50000,
 }) =>
     findHamiltonianPath<V, E>(
       vertices: vertices,
@@ -22,6 +23,7 @@ bool hasHamiltonianCircuit<V, E>({
       isDirected: isDirected,
       circuit: true,
       vertexStrategy: vertexStrategy,
+      maxSteps: maxSteps,
     ) !=
     null;
 
@@ -33,6 +35,7 @@ bool hasHamiltonianPath<V, E>({
   Iterable<V> Function(V vertex)? successorsOf,
   required bool isDirected,
   StorageStrategy<V>? vertexStrategy,
+  int maxSteps = 50000,
 }) =>
     findHamiltonianPath<V, E>(
       vertices: vertices,
@@ -41,6 +44,7 @@ bool hasHamiltonianPath<V, E>({
       isDirected: isDirected,
       circuit: false,
       vertexStrategy: vertexStrategy,
+      maxSteps: maxSteps,
     ) !=
     null;
 
@@ -55,6 +59,7 @@ Path<V, E>? findHamiltonianPath<V, E>({
   required bool isDirected,
   bool circuit = false,
   StorageStrategy<V>? vertexStrategy,
+  int maxSteps = 50000,
 }) {
   if (outgoingEdgesOf == null && successorsOf == null) {
     throw ArgumentError(
@@ -146,7 +151,14 @@ Path<V, E>? findHamiltonianPath<V, E>({
   // Use bitmask DP for n <= 20
   final resultVerts = n <= 20
       ? _heldKarpBitmask(vertexList, adj, isDirected, circuit)
-      : _backtrackingDfs(vertexList, adj, inDegree, isDirected, circuit);
+      : _backtrackingDfs(
+          vertexList,
+          adj,
+          inDegree,
+          isDirected,
+          circuit,
+          maxSteps,
+        );
 
   if (resultVerts == null) return null;
 
@@ -250,10 +262,12 @@ List<V>? _backtrackingDfs<V>(
   List<int> inDegree,
   bool isDirected,
   bool circuit,
+  int maxSteps,
 ) {
   final n = vertexList.length;
   final visited = List<bool>.filled(n, false);
   final path = List<int>.filled(n, 0);
+  var steps = 0;
 
   // Warnsdorff's heuristic: order neighbours by unvisited degree
   int unvisitedSuccessorsCount(int u) {
@@ -265,6 +279,7 @@ List<V>? _backtrackingDfs<V>(
   }
 
   bool dfs(int u, int step, int startVertex) {
+    if (++steps >= maxSteps) return false;
     path[step] = u;
     if (step == n - 1) {
       if (!circuit) return true;
@@ -290,6 +305,7 @@ List<V>? _backtrackingDfs<V>(
 
   final startCandidates = circuit ? [0] : List<int>.generate(n, (i) => i);
   for (final start in startCandidates) {
+    if (steps >= maxSteps) break;
     visited[start] = true;
     if (dfs(start, 0, start)) {
       final result = path.map((i) => vertexList[i]).toList();

@@ -13,7 +13,7 @@ import 'graph_layout.dart';
 /// final result = graph.layout(const RandomLayout(seed: 42));
 /// print(result.positions['A']);
 /// ```
-final class RandomLayout<V> implements GraphLayout<V> {
+final class RandomLayout<V> extends GraphLayout<V> {
   /// Constructs a random layout strategy.
   const new({
     this.bounds = const LayoutRectangle(0, 0, 800, 600),
@@ -31,12 +31,11 @@ final class RandomLayout<V> implements GraphLayout<V> {
   final math.Random? random;
 
   @override
-  LayoutResult<V> layout(LayoutInput<V> input) {
-    final list = input.vertices;
-    if (list.isEmpty) {
-      return LayoutResult<V>(positions: const {}, bounds: bounds);
-    }
+  bool get packDisconnectedComponents => false;
 
+  @override
+  LayoutResult<V> layoutComponent(LayoutInput<V> input) {
+    final list = input.vertices;
     final rng = random ?? (seed != null ? math.Random(seed) : math.Random());
     final positions = <V, LayoutPoint>{};
     final sizes = <V, LayoutSize>{};

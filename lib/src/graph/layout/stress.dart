@@ -4,10 +4,8 @@ import 'dart:typed_data';
 
 import 'geometry.dart';
 import 'graph_layout.dart';
-import 'postprocess.dart';
 import 'spectral.dart';
 import 'support/arc_placement.dart';
-import 'support/components.dart';
 
 /// Positions vertices using Stress Majorization (SMACOF) on graph-theoretic shortest path distances.
 ///
@@ -23,7 +21,7 @@ import 'support/components.dart';
 /// final result = graph.layout(const StressLayout());
 /// print(result.positions['A']);
 /// ```
-final class StressLayout<V> implements GraphLayout<V> {
+final class StressLayout<V> extends GraphLayout<V> {
   /// Constructs a stress majorization layout strategy.
   const new({
     this.iterations = 100,
@@ -49,48 +47,7 @@ final class StressLayout<V> implements GraphLayout<V> {
   final int seed;
 
   @override
-  LayoutResult<V> layout(LayoutInput<V> input) {
-    final list = input.vertices;
-    if (list.isEmpty) {
-      return LayoutResult<V>(
-        positions: const {},
-        bounds: LayoutRectangle(center.x, center.y, 0, 0),
-      );
-    }
-    if (list.length == 1) {
-      return LayoutResult<V>(
-        positions: {list.first: center},
-        vertexSizes: {list.first: input.sizeOf(list.first)},
-      );
-    }
-
-    if (input.packComponents) {
-      final comps = components(input);
-      if (comps.length > 1) {
-        final compResults = <LayoutResult<V>>[];
-        for (final comp in comps) {
-          final compSet = comp.toSet();
-          final compInput = LayoutInput<V>(
-            vertices: comp,
-            successorsOf: (v) => input.successorsOf(v).where(compSet.contains),
-            predecessorsOf: input.isDirected
-                ? (v) => input.predecessorsOf!(v).where(compSet.contains)
-                : null,
-            vertexSize: input.vertexSize,
-            edgeWeight: input.edgeWeight,
-            vertexStrategy: input.vertexStrategy,
-            packComponents: false,
-          );
-          compResults.add(_layoutComponent(compInput));
-        }
-        return packComponents(compResults, vertexDistance: vertexDistance);
-      }
-    }
-
-    return _layoutComponent(input);
-  }
-
-  LayoutResult<V> _layoutComponent(LayoutInput<V> input) {
+  LayoutResult<V> layoutComponent(LayoutInput<V> input) {
     final list = input.vertices;
     final n = list.length;
     final sizes = <V, LayoutSize>{for (final v in list) v: input.sizeOf(v)};

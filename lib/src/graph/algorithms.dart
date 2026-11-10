@@ -315,23 +315,29 @@ extension AlgorithmsGraphExtension<V, E> on Graph<V, E> {
 
   /// Checks if this graph has a Hamiltonian circuit (a cycle visiting every
   /// vertex exactly once).
-  bool hasHamiltonianCircuit({StorageStrategy<V>? vertexStrategy}) =>
-      hamiltonian.hasHamiltonianCircuit<V, E>(
-        vertices: vertices,
-        outgoingEdgesOf: outgoingEdgesOf,
-        isDirected: isDirected,
-        vertexStrategy: vertexStrategy ?? this.vertexStrategy,
-      );
+  bool hasHamiltonianCircuit({
+    StorageStrategy<V>? vertexStrategy,
+    int maxSteps = 50000,
+  }) => hamiltonian.hasHamiltonianCircuit<V, E>(
+    vertices: vertices,
+    outgoingEdgesOf: outgoingEdgesOf,
+    isDirected: isDirected,
+    vertexStrategy: vertexStrategy ?? this.vertexStrategy,
+    maxSteps: maxSteps,
+  );
 
   /// Checks if this graph has a Hamiltonian path (a path visiting every vertex
   /// exactly once).
-  bool hasHamiltonianPath({StorageStrategy<V>? vertexStrategy}) =>
-      hamiltonian.hasHamiltonianPath<V, E>(
-        vertices: vertices,
-        outgoingEdgesOf: outgoingEdgesOf,
-        isDirected: isDirected,
-        vertexStrategy: vertexStrategy ?? this.vertexStrategy,
-      );
+  bool hasHamiltonianPath({
+    StorageStrategy<V>? vertexStrategy,
+    int maxSteps = 50000,
+  }) => hamiltonian.hasHamiltonianPath<V, E>(
+    vertices: vertices,
+    outgoingEdgesOf: outgoingEdgesOf,
+    isDirected: isDirected,
+    vertexStrategy: vertexStrategy ?? this.vertexStrategy,
+    maxSteps: maxSteps,
+  );
 
   /// Finds a Hamiltonian path or circuit in this graph.
   ///
@@ -339,12 +345,14 @@ extension AlgorithmsGraphExtension<V, E> on Graph<V, E> {
   Path<V, E>? findHamiltonianPath({
     bool circuit = false,
     StorageStrategy<V>? vertexStrategy,
+    int maxSteps = 50000,
   }) => hamiltonian.findHamiltonianPath<V, E>(
     vertices: vertices,
     outgoingEdgesOf: outgoingEdgesOf,
     isDirected: isDirected,
     circuit: circuit,
     vertexStrategy: vertexStrategy ?? this.vertexStrategy,
+    maxSteps: maxSteps,
   );
 
   /// Returns the articulation points (cut vertices) of this undirected graph.

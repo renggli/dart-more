@@ -15,7 +15,6 @@ enum LayoutEngine {
   tree('tree', 'Tree'),
   radial('radial', 'Radial'),
   shell('shell', 'Shell'),
-  bipartite('bipartite', 'Multipartite'),
   spectral('spectral', 'Spectral'),
   circular('circular', 'Circular'),
   grid('grid', 'Grid'),

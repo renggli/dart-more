@@ -1,8 +1,6 @@
 import '../geometry.dart';
 import '../graph_layout.dart';
 import '../orientation.dart';
-import '../postprocess.dart';
-import '../support/components.dart';
 import 'coordinates.dart';
 import 'cycle_removal.dart';
 import 'dummy_vertices.dart';
@@ -24,15 +22,23 @@ import 'ranking.dart';
 /// print(result.positions['A']);
 /// print(result.edgeRoutes[('A', 'C')]);
 /// ```
-final class LayeredLayout<V> implements GraphLayout<V> {
+final class LayeredLayout<V> extends GraphLayout<V> {
   /// Constructs a layered layout strategy.
   const new({
+    this.layers,
+    this.layerOf,
     this.layerDistance,
     this.vertexDistance = 35.0,
     this.orientation = LayoutOrientation.topToBottom,
     this.ranking = RankingAlgorithm.longestPath,
     this.sweeps = 24,
   });
+
+  /// Explicit predefined vertex lists for each layer.
+  final List<List<V>>? layers;
+
+  /// Function assigning each vertex to its fixed layer index (0 = first layer).
+  final int Function(V vertex)? layerOf;
 
   /// Spacing between consecutive layers. If null, calculated from vertex extents and [vertexDistance].
   final double? layerDistance;
@@ -50,56 +56,82 @@ final class LayeredLayout<V> implements GraphLayout<V> {
   final int sweeps;
 
   @override
-  LayoutResult<V> layout(LayoutInput<V> input) {
-    final allVertices = input.vertices;
-    if (allVertices.isEmpty) {
-      return LayoutResult.empty<V>();
-    }
+  bool get packDisconnectedComponents => layers == null && layerOf == null;
 
-    if (input.packComponents) {
-      final comps = components(input);
-      if (comps.length > 1) {
-        final compResults = <LayoutResult<V>>[];
-        for (final comp in comps) {
-          final compSet = comp.toSet();
-          final compInput = LayoutInput<V>(
-            vertices: comp,
-            successorsOf: (v) => input.successorsOf(v).where(compSet.contains),
-            predecessorsOf: input.isDirected
-                ? (v) => input.predecessorsOf!(v).where(compSet.contains)
-                : null,
-            vertexSize: input.vertexSize,
-            edgeWeight: input.edgeWeight,
-            vertexStrategy: input.vertexStrategy,
-            packComponents: false,
-          );
-          compResults.add(_layoutComponent(compInput));
-        }
-        return packComponents(compResults, vertexDistance: vertexDistance);
-      }
-    }
-
-    return _layoutComponent(input);
-  }
-
-  LayoutResult<V> _layoutComponent(LayoutInput<V> input) {
+  @override
+  LayoutResult<V> layoutComponent(LayoutInput<V> input) {
     final allVertices = input.vertices;
     final sizes = <V, LayoutSize>{
       for (final v in allVertices) v: input.sizeOf(v),
     };
 
-    // 1. Cycle removal
-    final (dagSuccessors, reversedEdges) = removeCycles<V>(
-      allVertices,
-      input.successorsOf,
-    );
+    final Map<V, int> ranks;
+    final Map<V, List<V>> dagSuccessors;
+    final Set<(V, V)> reversedEdges;
 
-    // 2. Ranking
-    final ranks = assignRanks<V>(
-      allVertices,
-      dagSuccessors,
-      algorithm: ranking,
-    );
+    if (layers != null || layerOf != null) {
+      ranks = <V, int>{};
+      if (layers != null) {
+        for (var l = 0; l < layers!.length; l++) {
+          for (final v in layers![l]) {
+            ranks[v] = l;
+          }
+        }
+      } else {
+        for (final v in allVertices) {
+          ranks[v] = layerOf!(v);
+        }
+      }
+
+      dagSuccessors = <V, List<V>>{for (final v in allVertices) v: []};
+      reversedEdges = <(V, V)>{};
+
+      if (input.isDirected) {
+        for (final u in allVertices) {
+          final uRank = ranks[u] ?? 0;
+          for (final v in input.successorsOf(u)) {
+            if (!allVertices.contains(v) || u == v) continue;
+            final vRank = ranks[v] ?? 0;
+            if (uRank < vRank) {
+              dagSuccessors[u]!.add(v);
+            } else if (uRank > vRank) {
+              dagSuccessors[v]!.add(u);
+              reversedEdges.add((u, v));
+            }
+          }
+        }
+      } else {
+        final processed = <(V, V)>{};
+        for (final u in allVertices) {
+          final uRank = ranks[u] ?? 0;
+          for (final v in input.successorsOf(u)) {
+            if (!allVertices.contains(v) || u == v) continue;
+            if (processed.contains((u, v)) || processed.contains((v, u))) {
+              continue;
+            }
+            processed.add((u, v));
+            final vRank = ranks[v] ?? 0;
+            if (uRank < vRank) {
+              dagSuccessors[u]!.add(v);
+            } else if (vRank < uRank) {
+              dagSuccessors[v]!.add(u);
+            }
+          }
+        }
+      }
+    } else {
+      // 1. Cycle removal
+      final (cycleFree, cycleReversed) = removeCycles<V>(
+        allVertices,
+        input.successorsOf,
+        isDirected: input.isDirected,
+      );
+      dagSuccessors = cycleFree;
+      reversedEdges = cycleReversed;
+
+      // 2. Ranking
+      ranks = assignRanks<V>(allVertices, dagSuccessors, algorithm: ranking);
+    }
 
     // 3. Dummy vertex insertion
     final graph = LayeredGraph<V>.build(

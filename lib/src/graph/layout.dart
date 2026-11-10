@@ -1,6 +1,7 @@
 import 'graph.dart';
 import 'layout/geometry.dart';
 import 'layout/graph_layout.dart';
+import 'layout/orientation.dart';
 import 'layout/postprocess.dart';
 import 'model/internal.dart';
 
@@ -25,6 +26,7 @@ extension GraphLayoutExtension<V, E> on Graph<V, E> {
     num Function(V source, V target)? edgeWeight,
     bool normalize = true,
     bool packComponents = true,
+    LayoutOrientation componentDirection = LayoutOrientation.topToBottom,
     bool removeOverlaps = false,
   }) {
     final input = LayoutInput<V>(
@@ -35,6 +37,7 @@ extension GraphLayoutExtension<V, E> on Graph<V, E> {
       edgeWeight: edgeWeight ?? getDefaultEdgeValueOr(1),
       vertexStrategy: vertexStrategy,
       packComponents: packComponents,
+      componentDirection: componentDirection,
     );
     var result = strategy.layout(input);
     if (removeOverlaps) {

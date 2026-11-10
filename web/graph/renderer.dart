@@ -352,11 +352,11 @@ final class GraphRenderer {
       double labelX;
       double labelY;
 
-      final route =
-          state.edgeRoutes[(edge.source, edge.target)] ??
-          (!graph.isDirected
-              ? state.edgeRoutes[(edge.target, edge.source)]
-              : null);
+      final directRoute = state.edgeRoutes[(edge.source, edge.target)];
+      final reverseRoute = !graph.isDirected
+          ? state.edgeRoutes[(edge.target, edge.source)]
+          : null;
+      final route = directRoute ?? reverseRoute?.reversed.toList();
 
       if (route != null && route.isNotEmpty) {
         final buffer = StringBuffer('M $startX $startY');

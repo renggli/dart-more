@@ -3,9 +3,7 @@ import 'dart:typed_data';
 
 import '../geometry.dart';
 import '../graph_layout.dart';
-import '../postprocess.dart';
 import '../support/arc_placement.dart';
-import '../support/components.dart';
 import 'barnes_hut.dart';
 import 'force_config.dart';
 
@@ -21,7 +19,7 @@ import 'force_config.dart';
 /// final result = graph.layout(const ForceLayout(seed: 42));
 /// print(result.positions['A']);
 /// ```
-final class ForceLayout<V> implements GraphLayout<V> {
+final class ForceLayout<V> extends GraphLayout<V> {
   /// Constructs a force-directed layout strategy.
   const new({
     this.config = const ForceConfig(),
@@ -55,11 +53,8 @@ final class ForceLayout<V> implements GraphLayout<V> {
   final double vertexDistance;
 
   @override
-  LayoutResult<V> layout(LayoutInput<V> input) {
+  LayoutResult<V> layoutComponent(LayoutInput<V> input) {
     final list = input.vertices;
-    if (list.isEmpty) {
-      return LayoutResult<V>(positions: const {}, bounds: bounds);
-    }
     if (list.length == 1) {
       final v = list.first;
       final pos = initialPositions?[v] ?? bounds.center;
@@ -68,35 +63,6 @@ final class ForceLayout<V> implements GraphLayout<V> {
         vertexSizes: {v: input.sizeOf(v)},
       );
     }
-
-    if (input.packComponents) {
-      final comps = components(input);
-      if (comps.length > 1) {
-        final compResults = <LayoutResult<V>>[];
-        for (final comp in comps) {
-          final compSet = comp.toSet();
-          final compInput = LayoutInput<V>(
-            vertices: comp,
-            successorsOf: (v) => input.successorsOf(v).where(compSet.contains),
-            predecessorsOf: input.isDirected
-                ? (v) => input.predecessorsOf!(v).where(compSet.contains)
-                : null,
-            vertexSize: input.vertexSize,
-            edgeWeight: input.edgeWeight,
-            vertexStrategy: input.vertexStrategy,
-            packComponents: false,
-          );
-          compResults.add(_layoutComponent(compInput));
-        }
-        return packComponents(compResults, vertexDistance: vertexDistance);
-      }
-    }
-
-    return _layoutComponent(input);
-  }
-
-  LayoutResult<V> _layoutComponent(LayoutInput<V> input) {
-    final list = input.vertices;
     final n = list.length;
     final rng = random ?? (seed != null ? math.Random(seed) : math.Random(42));
 

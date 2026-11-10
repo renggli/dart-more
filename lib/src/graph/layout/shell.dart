@@ -16,7 +16,7 @@ import 'support/arc_placement.dart';
 /// final result = graph.layout(ShellLayout(shellOf: (v) => v % 2));
 /// print(result.positions[0]);
 /// ```
-class ShellLayout<V> implements GraphLayout<V> {
+class ShellLayout<V> extends GraphLayout<V> {
   /// Constructs a multi-shell layout strategy.
   const new({
     this.shells,
@@ -64,14 +64,10 @@ class ShellLayout<V> implements GraphLayout<V> {
   final double? _singleRadius;
 
   @override
-  LayoutResult<V> layout(LayoutInput<V> input) {
-    if (input.vertices.isEmpty) {
-      return LayoutResult<V>(
-        positions: const {},
-        bounds: LayoutRectangle(center.x, center.y, 0, 0),
-      );
-    }
+  bool get packDisconnectedComponents => false;
 
+  @override
+  LayoutResult<V> layoutComponent(LayoutInput<V> input) {
     final sizes = <V, LayoutSize>{
       for (final v in input.vertices) v: input.sizeOf(v),
     };

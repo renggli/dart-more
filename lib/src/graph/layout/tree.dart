@@ -3,7 +3,6 @@ import 'dart:math' as math;
 import 'geometry.dart';
 import 'graph_layout.dart';
 import 'orientation.dart';
-import 'support/components.dart';
 
 /// Positions vertices in a hierarchical tree or forest using the Buchheim-Walker algorithm.
 ///
@@ -17,7 +16,7 @@ import 'support/components.dart';
 /// final result = graph.layout(const TreeLayout());
 /// print(result.positions['root']);
 /// ```
-final class TreeLayout<V> implements GraphLayout<V> {
+final class TreeLayout<V> extends GraphLayout<V> {
   /// Constructs a tree layout strategy.
   const new({
     this.roots,
@@ -42,11 +41,11 @@ final class TreeLayout<V> implements GraphLayout<V> {
   final LayoutOrientation orientation;
 
   @override
-  LayoutResult<V> layout(LayoutInput<V> input) {
+  bool get packDisconnectedComponents => false;
+
+  @override
+  LayoutResult<V> layoutComponent(LayoutInput<V> input) {
     final allVertices = input.vertices;
-    if (allVertices.isEmpty) {
-      return LayoutResult.empty<V>();
-    }
 
     final sizes = <V, LayoutSize>{
       for (final v in allVertices) v: input.sizeOf(v),
@@ -77,15 +76,13 @@ final class TreeLayout<V> implements GraphLayout<V> {
       if (zeroInDegree.isNotEmpty) {
         effectiveRoots = zeroInDegree;
       } else {
-        final comps = components(input);
         effectiveRoots = [
-          for (final comp in comps)
-            comp.reduce(
-              (a, b) =>
-                  input.neighboursOf(a).length >= input.neighboursOf(b).length
-                  ? a
-                  : b,
-            ),
+          allVertices.reduce(
+            (a, b) =>
+                input.neighboursOf(a).length >= input.neighboursOf(b).length
+                ? a
+                : b,
+          ),
         ];
       }
     }

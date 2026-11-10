@@ -614,25 +614,26 @@ class LayoutModifier extends GraphModifier {
     super.enabled,
     String? algorithm,
     String? rankDir,
+    String? componentDirection,
     this.vertexDistance = 60.0,
     this.layerDistance = 80.0,
     this.iterations = 100,
     this.columns = 0,
     this.seed = 42,
     this.removeOverlaps = true,
-    this.packComponents = true,
   }) : algorithm = algorithm ?? 'stress',
-       rankDir = rankDir ?? 'TB';
+       rankDir = rankDir ?? 'TB',
+       componentDirection = componentDirection ?? 'TB';
 
   String algorithm;
   String rankDir;
+  String componentDirection;
   double vertexDistance;
   double layerDistance;
   int iterations;
   int columns;
   int seed;
   bool removeOverlaps;
-  bool packComponents;
 
   @override
   String get id => 'layout';
@@ -679,9 +680,7 @@ class LayoutModifier extends GraphModifier {
       }
 
       // Directional layout controls
-      if (algorithm == 'layered' ||
-          algorithm == 'tree' ||
-          algorithm == 'bipartite') {
+      if (algorithm == 'layered' || algorithm == 'tree') {
         dynamicSection.appendChild(
           dropdownSetting(
             'Flow Direction:',
@@ -700,7 +699,6 @@ class LayoutModifier extends GraphModifier {
 
       if (algorithm == 'layered' ||
           algorithm == 'tree' ||
-          algorithm == 'bipartite' ||
           algorithm == 'radial' ||
           algorithm == 'shell') {
         dynamicSection.appendChild(
@@ -770,22 +768,33 @@ class LayoutModifier extends GraphModifier {
         );
       }
 
+      if (algorithm == 'stress' ||
+          algorithm == 'force' ||
+          algorithm == 'layered' ||
+          algorithm == 'spectral' ||
+          algorithm == 'radial') {
+        dynamicSection.appendChild(
+          dropdownSetting(
+            'Component Direction:',
+            componentDirection,
+            [
+              for (final dir in RankDir.values)
+                (dir.id, '${dir.label} (${dir.id})'),
+            ],
+            onChanged: (val) {
+              componentDirection = val;
+              onModified();
+            },
+          ),
+        );
+      }
+
       dynamicSection.appendChild(
         checkboxSetting(
           'Remove overlaps',
           removeOverlaps,
           onChanged: (v) {
             removeOverlaps = v;
-            onModified();
-          },
-        ),
-      );
-      dynamicSection.appendChild(
-        checkboxSetting(
-          'Pack components',
-          packComponents,
-          onChanged: (v) {
-            packComponents = v;
             onModified();
           },
         ),
@@ -823,13 +832,13 @@ class LayoutModifier extends GraphModifier {
       graph: graph,
       engine: algorithm,
       rankdir: rankDir,
+      componentDirection: componentDirection,
       vertexDistance: vertexDistance,
       layerDistance: layerDistance,
       iterations: iterations,
       columns: columns > 0 ? columns : null,
       seed: seed,
       removeOverlaps: removeOverlaps,
-      packComponents: packComponents,
     );
 
     return ModifierOutput(statusSummary: 'Layout applied: $algorithm');
@@ -3517,6 +3526,12 @@ class HamiltonianModifier extends GraphModifier {
   ModifierOutput apply(Graph<String, num> graph, AppState state) {
     if (graph.vertices.isEmpty) {
       return const ModifierOutput(statusSummary: 'Graph is empty');
+    }
+    if (graph.vertices.length > 32) {
+      return ModifierOutput(
+        statusSummary:
+            'Graph is too large for Hamiltonian search (${graph.vertices.length} vertices > 32)',
+      );
     }
 
     try {

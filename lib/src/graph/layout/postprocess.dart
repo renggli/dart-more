@@ -2,6 +2,7 @@ import 'dart:math' as math;
 
 import 'geometry.dart';
 import 'graph_layout.dart';
+import 'orientation.dart';
 
 /// Scaling behavior for [LayoutResultExtension.fit].
 enum FitMode {
@@ -174,44 +175,40 @@ extension LayoutResultExtension<V> on LayoutResult<V> {
 LayoutResult<V> packComponents<V>(
   List<LayoutResult<V>> componentResults, {
   double vertexDistance = 20.0,
+  LayoutOrientation direction = LayoutOrientation.topToBottom,
 }) {
   if (componentResults.isEmpty) return LayoutResult.empty<V>();
   if (componentResults.length == 1) return componentResults.first;
-
-  // Sort components by bounding height descending for shelf packing
-  final sorted = componentResults.toList()
-    ..sort((a, b) => b.bounds.height.compareTo(a.bounds.height));
-
-  var totalArea = 0.0;
-  var maxCompWidth = 0.0;
-  for (final comp in sorted) {
-    totalArea += comp.bounds.width * comp.bounds.height;
-    if (comp.bounds.width > maxCompWidth) maxCompWidth = comp.bounds.width;
-  }
-
-  final maxShelfWidth = math.max(maxCompWidth, math.sqrt(totalArea) * 1.3);
-
-  var currentX = 0.0;
-  var currentY = 0.0;
-  var shelfHeight = 0.0;
 
   final allPositions = <V, LayoutPoint>{};
   final allRoutes = <(V, V), List<LayoutPoint>>{};
   final allSizes = <V, LayoutSize>{};
 
-  for (final comp in sorted) {
+  var currentOffset = 0.0;
+
+  for (final comp in componentResults) {
     final compBounds = comp.bounds;
-    final w = compBounds.width;
-    final h = compBounds.height;
+    final double offsetX;
+    final double offsetY;
 
-    if (currentX + w > maxShelfWidth && currentX > 0) {
-      currentY += shelfHeight + vertexDistance;
-      currentX = 0.0;
-      shelfHeight = 0.0;
+    switch (direction) {
+      case LayoutOrientation.topToBottom:
+        offsetX = -compBounds.minX;
+        offsetY = currentOffset - compBounds.minY;
+        currentOffset += compBounds.height + vertexDistance;
+      case LayoutOrientation.bottomToTop:
+        offsetX = -compBounds.minX;
+        offsetY = -currentOffset - compBounds.maxY;
+        currentOffset += compBounds.height + vertexDistance;
+      case LayoutOrientation.leftToRight:
+        offsetX = currentOffset - compBounds.minX;
+        offsetY = -compBounds.minY;
+        currentOffset += compBounds.width + vertexDistance;
+      case LayoutOrientation.rightToLeft:
+        offsetX = -currentOffset - compBounds.maxX;
+        offsetY = -compBounds.minY;
+        currentOffset += compBounds.width + vertexDistance;
     }
-
-    final offsetX = currentX - compBounds.minX;
-    final offsetY = currentY - compBounds.minY;
 
     for (final entry in comp.positions.entries) {
       allPositions[entry.key] = entry.value.translate(offsetX, offsetY);
@@ -224,9 +221,6 @@ LayoutResult<V> packComponents<V>(
     if (comp.vertexSizes != null) {
       allSizes.addAll(comp.vertexSizes!);
     }
-
-    currentX += w + vertexDistance;
-    if (h > shelfHeight) shelfHeight = h;
   }
 
   return LayoutResult<V>(

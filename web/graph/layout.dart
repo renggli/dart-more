@@ -27,6 +27,7 @@ abstract final class GraphLayout {
     Graph<String, num>? graph,
     String? engine,
     String? rankdir,
+    String? componentDirection,
     double? vertexDistance,
     double? layerDistance,
     int? iterations,
@@ -41,7 +42,9 @@ abstract final class GraphLayout {
 
     final layoutEngine = engine ?? state.layoutEngine;
     final layoutRankdir = rankdir ?? state.rankDir;
+    final layoutCompDir = componentDirection ?? state.componentDirection;
     final orientation = RankDir.fromId(layoutRankdir).toOrientation();
+    final compOrientation = RankDir.fromId(layoutCompDir).toOrientation();
 
     final spacing = vertexDistance ?? 40.0;
     final lDist = layerDistance ?? 80.0;
@@ -67,11 +70,6 @@ abstract final class GraphLayout {
         layerDistance: lDist,
       ),
       'layered' => LayeredLayout<String>(
-        orientation: orientation,
-        vertexDistance: spacing,
-        layerDistance: lDist,
-      ),
-      'bipartite' => PartiteLayout<String>(
         orientation: orientation,
         vertexDistance: spacing,
         layerDistance: lDist,
@@ -108,6 +106,7 @@ abstract final class GraphLayout {
       strategy,
       vertexSize: (v) => computeNodeSize(state, v),
       packComponents: packComponents,
+      componentDirection: compOrientation,
       removeOverlaps: removeOverlaps,
     );
 

@@ -79,6 +79,21 @@ void main() {
       check(result.positions.keys).unorderedEquals(['A1', 'A2', 'B1', 'B2']);
     });
 
+    test('disconnected components with packComponents false assigns positions to all vertices', () {
+      final input = LayoutInput<String>(
+        vertices: ['A1', 'A2', 'B1', 'B2'],
+        successorsOf: (v) => switch (v) {
+          'A1' => ['A2'],
+          'B1' => ['B2'],
+          _ => const [],
+        },
+        packComponents: false,
+      );
+      const strategy = RadialLayout<String>(layerDistance: 50);
+      final result = strategy.layout(input);
+      check(result.positions.keys).unorderedEquals(['A1', 'A2', 'B1', 'B2']);
+    });
+
     test('graph extension', () {
       final graph = Graph<String, void>(isDirected: true);
       graph.addEdge('Root', 'A');

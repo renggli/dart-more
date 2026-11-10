@@ -3,8 +3,6 @@ import 'dart:typed_data';
 
 import 'geometry.dart';
 import 'graph_layout.dart';
-import 'postprocess.dart';
-import 'support/components.dart';
 
 /// Positions vertices using the Laplacian eigenvectors (Fiedler vectors) via power iteration.
 ///
@@ -19,7 +17,7 @@ import 'support/components.dart';
 /// final result = graph.layout(const SpectralLayout());
 /// print(result.positions['A']);
 /// ```
-final class SpectralLayout<V> implements GraphLayout<V> {
+final class SpectralLayout<V> extends GraphLayout<V> {
   /// Constructs a spectral layout strategy.
   const new({
     this.scale = 200.0,
@@ -45,14 +43,8 @@ final class SpectralLayout<V> implements GraphLayout<V> {
   final double vertexDistance;
 
   @override
-  LayoutResult<V> layout(LayoutInput<V> input) {
+  LayoutResult<V> layoutComponent(LayoutInput<V> input) {
     final list = input.vertices;
-    if (list.isEmpty) {
-      return LayoutResult<V>(
-        positions: const {},
-        bounds: LayoutRectangle(center.x, center.y, 0, 0),
-      );
-    }
     if (list.length == 1) {
       return LayoutResult<V>(
         positions: {list.first: center},
@@ -72,35 +64,6 @@ final class SpectralLayout<V> implements GraphLayout<V> {
         },
       );
     }
-
-    if (input.packComponents) {
-      final comps = components(input);
-      if (comps.length > 1) {
-        final compResults = <LayoutResult<V>>[];
-        for (final comp in comps) {
-          final compSet = comp.toSet();
-          final compInput = LayoutInput<V>(
-            vertices: comp,
-            successorsOf: (v) => input.successorsOf(v).where(compSet.contains),
-            predecessorsOf: input.isDirected
-                ? (v) => input.predecessorsOf!(v).where(compSet.contains)
-                : null,
-            vertexSize: input.vertexSize,
-            edgeWeight: input.edgeWeight,
-            vertexStrategy: input.vertexStrategy,
-            packComponents: false,
-          );
-          compResults.add(_layoutComponent(compInput));
-        }
-        return packComponents(compResults, vertexDistance: vertexDistance);
-      }
-    }
-
-    return _layoutComponent(input);
-  }
-
-  LayoutResult<V> _layoutComponent(LayoutInput<V> input) {
-    final list = input.vertices;
     final n = list.length;
     final sizes = <V, LayoutSize>{for (final v in list) v: input.sizeOf(v)};
     var totalExtent = 0.0;

@@ -182,5 +182,68 @@ void main() {
       check(result['A']!.y).isLessThan(result['B']!.y);
       check(result['B']!.y).isLessThan(result['C']!.y);
     });
+
+    test('explicit layerOf assigns vertices to parallel layers', () {
+      final input = LayoutInput<String>(
+        vertices: ['U1', 'U2', 'V1', 'V2'],
+        successorsOf: (v) => switch (v) {
+          'U1' => ['V1', 'V2'],
+          'U2' => ['V1'],
+          _ => const [],
+        },
+      );
+      final strategy = LayeredLayout<String>(
+        layerOf: (v) => v.startsWith('U') ? 0 : 1,
+        layerDistance: 100,
+        orientation: LayoutOrientation.leftToRight,
+      );
+      final result = strategy.layout(input);
+
+      check(result.positions.length).equals(4);
+      check(result['U1']!.x).equals(0.0);
+      check(result['U2']!.x).equals(0.0);
+      check(result['V1']!.x).equals(100.0);
+      check(result['V2']!.x).equals(100.0);
+    });
+
+    test('explicit layers assigns vertices to layers', () {
+      final input = LayoutInput<String>(
+        vertices: ['A', 'B', 'C', 'D'],
+        successorsOf: (_) => const [],
+      );
+      const strategy = LayeredLayout<String>(
+        layers: [
+          ['A', 'B'],
+          ['C'],
+          ['D'],
+        ],
+        layerDistance: 50,
+        orientation: LayoutOrientation.topToBottom,
+      );
+      final result = strategy.layout(input);
+      check(result['A']!.y).equals(result['B']!.y);
+      check(result['C']!.y - result['A']!.y).equals(50.0);
+      check(result['D']!.y - result['C']!.y).equals(50.0);
+    });
+
+    test('explicit layers spanning multiple layers produces edge routes', () {
+      final input = LayoutInput<String>(
+        vertices: ['A', 'B', 'C'],
+        successorsOf: (v) => switch (v) {
+          'A' => ['C'],
+          _ => const [],
+        },
+      );
+      const strategy = LayeredLayout<String>(
+        layers: [
+          ['A'],
+          ['B'],
+          ['C'],
+        ],
+        layerDistance: 50,
+      );
+      final result = strategy.layout(input);
+      check(result.edgeRoutes).isNotEmpty();
+    });
   });
 }

@@ -185,6 +185,7 @@ final class AppState {
 
   String layoutEngine = 'stress';
   String rankDir = 'LR';
+  String componentDirection = 'TB';
   Map<(String, String), List<LayoutPoint>> edgeRoutes = {};
 
   // Selection mode flags (like Blender, both can be active simultaneously)

@@ -1,7 +1,12 @@
 import 'dart:math' as math;
 
+import 'package:meta/meta.dart';
+
 import '../strategy.dart';
 import 'geometry.dart';
+import 'orientation.dart';
+import 'postprocess.dart';
+import 'support/components.dart';
 
 /// Immutable graph topology and sizing input provided to layout algorithms.
 final class LayoutInput<V> {
@@ -14,6 +19,7 @@ final class LayoutInput<V> {
     this.edgeWeight,
     this.vertexStrategy,
     this.packComponents = true,
+    this.componentDirection = LayoutOrientation.leftToRight,
   }) : vertices = List<V>.unmodifiable(vertices);
 
   /// Materialized list of vertices to lay out.
@@ -36,6 +42,9 @@ final class LayoutInput<V> {
 
   /// Whether disconnected components should be laid out separately and shelf-packed.
   final bool packComponents;
+
+  /// Flow direction when packing multiple disconnected components.
+  final LayoutOrientation componentDirection;
 
   /// Default vertex size `(40, 40)`.
   static const LayoutSize defaultSize = (width: 40.0, height: 40.0);
@@ -91,10 +100,51 @@ final class LayoutInput<V> {
   }
 }
 
-/// Abstract strategy interface for graph layout algorithms.
-abstract interface class GraphLayout<V> {
+/// Abstract strategy base class for graph layout algorithms.
+abstract class GraphLayout<V> {
+  /// Constructs a graph layout strategy.
+  const new();
+
+  /// Whether this layout strategy decomposes disconnected components and packs them.
+  bool get packDisconnectedComponents => true;
+
   /// Computes vertex positions and optional edge routes for [input].
-  LayoutResult<V> layout(LayoutInput<V> input);
+  LayoutResult<V> layout(LayoutInput<V> input) {
+    final list = input.vertices;
+    if (list.isEmpty) {
+      return LayoutResult.empty<V>();
+    }
+
+    if (packDisconnectedComponents && input.packComponents) {
+      final comps = components(input);
+      if (comps.length > 1) {
+        final compResults = <LayoutResult<V>>[];
+        for (final comp in comps) {
+          final compSet = comp.toSet();
+          final compInput = LayoutInput<V>(
+            vertices: comp,
+            successorsOf: (v) => input.successorsOf(v).where(compSet.contains),
+            predecessorsOf: input.isDirected
+                ? (v) => input.predecessorsOf!(v).where(compSet.contains)
+                : null,
+            vertexSize: input.vertexSize,
+            edgeWeight: input.edgeWeight,
+            vertexStrategy: input.vertexStrategy,
+            packComponents: false,
+            componentDirection: input.componentDirection,
+          );
+          compResults.add(layoutComponent(compInput));
+        }
+        return packComponents(compResults, direction: input.componentDirection);
+      }
+    }
+
+    return layoutComponent(input);
+  }
+
+  /// Internal layout implementation for a single connected component.
+  @internal
+  LayoutResult<V> layoutComponent(LayoutInput<V> input);
 }
 
 /// The result of calculating a 2D graph layout.

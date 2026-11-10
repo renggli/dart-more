@@ -13,7 +13,7 @@ import 'graph_layout.dart';
 /// final result = graph.layout(const GridLayout(columns: 2));
 /// print(result.positions[1]);
 /// ```
-final class GridLayout<V> implements GraphLayout<V> {
+final class GridLayout<V> extends GraphLayout<V> {
   /// Constructs a grid layout strategy.
   const new({
     this.columns,
@@ -43,15 +43,11 @@ final class GridLayout<V> implements GraphLayout<V> {
   final Iterable<V>? order;
 
   @override
-  LayoutResult<V> layout(LayoutInput<V> input) {
-    final list = order?.toList() ?? input.vertices;
-    if (list.isEmpty) {
-      return LayoutResult<V>(
-        positions: const {},
-        bounds: LayoutRectangle(origin.x, origin.y, 0, 0),
-      );
-    }
+  bool get packDisconnectedComponents => false;
 
+  @override
+  LayoutResult<V> layoutComponent(LayoutInput<V> input) {
+    final list = order?.toList() ?? input.vertices;
     final n = list.length;
     final cols = math.max(1, columns ?? math.sqrt(n).ceil());
 

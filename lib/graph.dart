@@ -89,7 +89,6 @@ export 'src/graph/layout/grid.dart' show GridLayout;
 export 'src/graph/layout/layered/layered.dart' show LayeredLayout;
 export 'src/graph/layout/layered/ranking.dart' show RankingAlgorithm;
 export 'src/graph/layout/orientation.dart' show LayoutOrientation;
-export 'src/graph/layout/partite.dart' show PartiteLayout;
 export 'src/graph/layout/postprocess.dart'
     show FitMode, LayoutResultExtension, packComponents;
 export 'src/graph/layout/radial.dart' show RadialLayout;
