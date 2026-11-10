@@ -73,24 +73,27 @@ final class SpectralLayout<V> implements GraphLayout<V> {
       );
     }
 
-    final comps = components(input);
-    if (comps.length > 1) {
-      final compResults = <LayoutResult<V>>[];
-      for (final comp in comps) {
-        final compSet = comp.toSet();
-        final compInput = LayoutInput<V>(
-          vertices: comp,
-          successorsOf: (v) => input.successorsOf(v).where(compSet.contains),
-          predecessorsOf: input.isDirected
-              ? (v) => input.predecessorsOf!(v).where(compSet.contains)
-              : null,
-          vertexSize: input.vertexSize,
-          edgeWeight: input.edgeWeight,
-          vertexStrategy: input.vertexStrategy,
-        );
-        compResults.add(_layoutComponent(compInput));
+    if (input.packComponents) {
+      final comps = components(input);
+      if (comps.length > 1) {
+        final compResults = <LayoutResult<V>>[];
+        for (final comp in comps) {
+          final compSet = comp.toSet();
+          final compInput = LayoutInput<V>(
+            vertices: comp,
+            successorsOf: (v) => input.successorsOf(v).where(compSet.contains),
+            predecessorsOf: input.isDirected
+                ? (v) => input.predecessorsOf!(v).where(compSet.contains)
+                : null,
+            vertexSize: input.vertexSize,
+            edgeWeight: input.edgeWeight,
+            vertexStrategy: input.vertexStrategy,
+            packComponents: false,
+          );
+          compResults.add(_layoutComponent(compInput));
+        }
+        return packComponents(compResults, vertexDistance: vertexDistance);
       }
-      return packComponents(compResults, vertexDistance: vertexDistance);
     }
 
     return _layoutComponent(input);
@@ -100,6 +103,15 @@ final class SpectralLayout<V> implements GraphLayout<V> {
     final list = input.vertices;
     final n = list.length;
     final sizes = <V, LayoutSize>{for (final v in list) v: input.sizeOf(v)};
+    var totalExtent = 0.0;
+    for (final sz in sizes.values) {
+      totalExtent += math.max(sz.width, sz.height);
+    }
+    final avgExtent = n > 0 ? totalExtent / n : 40.0;
+    final effectiveScale = math.max(
+      scale,
+      (avgExtent + vertexDistance) * n * 0.45,
+    );
     final vertexIndex = <V, int>{for (var i = 0; i < n; i++) list[i]: i};
 
     final adj = List<List<int>>.generate(n, (_) => <int>[]);
@@ -206,8 +218,8 @@ final class SpectralLayout<V> implements GraphLayout<V> {
 
     final positions = <V, LayoutPoint>{};
     for (var i = 0; i < n; i++) {
-      final x = center.x + v2[i] * scale;
-      final y = center.y + v3[i] * scale;
+      final x = center.x + v2[i] * effectiveScale;
+      final y = center.y + v3[i] * effectiveScale;
       positions[list[i]] = LayoutPoint(x, y);
     }
 

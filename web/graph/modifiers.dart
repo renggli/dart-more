@@ -76,58 +76,8 @@ abstract class GraphModifier {
 // Helpers for Accessible Vertically-Stacked Form Rows
 // ---------------------------------------------------------------------------
 
-web.HTMLElement _field(String labelText, web.HTMLElement control) {
-  final group = div('form-field-stacked');
-  group.appendChild(label(labelText)..style.fontWeight = '500');
-  group.appendChild(control);
-  return group;
-}
-
-web.HTMLSelectElement _colorSelect(
-  String initial,
-  void Function(String) onChange,
-) {
-  final s = selectElement();
-  final colors = [
-    ('#ef4444', 'Red (#ef4444)'),
-    ('#f97316', 'Orange (#f97316)'),
-    ('#f59e0b', 'Amber (#f59e0b)'),
-    ('#10b981', 'Emerald (#10b981)'),
-    ('#06b6d4', 'Cyan (#06b6d4)'),
-    ('#38bdf8', 'Sky Blue (#38bdf8)'),
-    ('#3b82f6', 'Blue (#3b82f6)'),
-    ('#ec4899', 'Pink (#ec4899)'),
-    ('#94a3b8', 'Slate Gray (#94a3b8)'),
-  ];
-  for (final (val, name) in colors) {
-    s.appendChild(optionElement(val, name));
-  }
-  s.value = initial;
-  s.onChange.listen((_) => onChange(s.value));
-  return s;
-}
-
-web.HTMLSelectElement _patternSelect(
-  String initial,
-  void Function(String) onChange,
-) {
-  final s = selectElement();
-  final patterns = [
-    ('6,4', 'Dashed (6, 4)'),
-    ('2,3', 'Dotted (2, 3)'),
-    ('10,4', 'Long Dash (10, 4)'),
-    ('8,3,2,3', 'Dash-Dot (8, 3, 2, 3)'),
-    ('none', 'Solid Line'),
-  ];
-  for (final (val, name) in patterns) {
-    s.appendChild(optionElement(val, name));
-  }
-  s.value = initial;
-  s.onChange.listen((_) => onChange(s.value));
-  return s;
-}
-
-web.HTMLSelectElement _vertexSelect(
+web.HTMLElement _vertexField(
+  String labelText,
   AppState state,
   String? currentVal,
   String defaultLabel,
@@ -144,7 +94,7 @@ web.HTMLSelectElement _vertexSelect(
   s.onChange.listen((_) {
     onChange(s.value.isEmpty ? null : s.value);
   });
-  return s;
+  return stackedField(labelText, s);
 }
 
 // ---------------------------------------------------------------------------
@@ -170,26 +120,31 @@ class BaseGraphModifier extends GraphModifier {
   web.HTMLElement buildConfigUI(AppState state, void Function() onModified) {
     final container = div('form-column');
 
-    final dirSelect = selectElement();
-    dirSelect.appendChild(optionElement('directed', 'Directed Graph'));
-    dirSelect.appendChild(optionElement('undirected', 'Undirected Graph'));
-    dirSelect.value = state.primaryGraph.isDirected ? 'directed' : 'undirected';
-    dirSelect.onChange.listen((_) {
-      final wantDirected = dirSelect.value == 'directed';
-      if (wantDirected != state.primaryGraph.isDirected) {
-        state.saveSnapshot();
-        final newG = Graph<String, num>(isDirected: wantDirected);
-        for (final v in state.primaryGraph.vertices) {
-          newG.addVertex(v);
-        }
-        for (final e in state.primaryGraph.edges) {
-          newG.addEdge(e.source, e.target, value: e.value);
-        }
-        state.primaryGraph = newG;
-        onModified();
-      }
-    });
-    container.appendChild(_field('Graph Directness:', dirSelect));
+    container.appendChild(
+      dropdownSetting(
+        'Graph Directness:',
+        state.primaryGraph.isDirected ? 'directed' : 'undirected',
+        const [
+          ('directed', 'Directed Graph'),
+          ('undirected', 'Undirected Graph'),
+        ],
+        onChanged: (val) {
+          final wantDirected = val == 'directed';
+          if (wantDirected != state.primaryGraph.isDirected) {
+            state.saveSnapshot();
+            final newG = Graph<String, num>(isDirected: wantDirected);
+            for (final v in state.primaryGraph.vertices) {
+              newG.addVertex(v);
+            }
+            for (final e in state.primaryGraph.edges) {
+              newG.addEdge(e.source, e.target, value: e.value);
+            }
+            state.primaryGraph = newG;
+            onModified();
+          }
+        },
+      ),
+    );
 
     final statsInfo = div()
       ..style.fontSize = '11px'
@@ -254,11 +209,15 @@ class GeneratorModifier extends GraphModifier {
   new({
     super.enabled,
     String? type,
-    this.count = 5,
+    this.count = 6,
     this.atlasIndex = 7,
     this.atlasVertices,
     this.atlasEdges,
     this.arity = 2,
+    this.partACount = 3,
+    this.partBCount = 3,
+    this.gridRows = 3,
+    this.gridColumns = 3,
     this.prob = 0.35,
     this.seed = 42,
     String? combineMode,
@@ -272,6 +231,10 @@ class GeneratorModifier extends GraphModifier {
   int? atlasVertices;
   int? atlasEdges;
   int arity;
+  int partACount;
+  int partBCount;
+  int gridRows;
+  int gridColumns;
   double prob;
   int seed;
   String combineMode; // 'replace' or 'union'
@@ -302,127 +265,216 @@ class GeneratorModifier extends GraphModifier {
   @override
   web.HTMLElement buildConfigUI(AppState state, void Function() onModified) {
     final container = div('form-column');
+    final dynamicSection = div('form-column');
 
-    final typeSelect = selectElement();
-    typeSelect.appendChild(
-      optionElement('atlas', 'Atlas Graph (Read & Wilson)'),
-    );
-    typeSelect.appendChild(optionElement('complete', 'Complete Graph'));
-    typeSelect.appendChild(optionElement('cycle', 'Cycle Graph'));
-    typeSelect.appendChild(optionElement('star', 'Star Graph'));
-    typeSelect.appendChild(optionElement('path', 'Path Graph'));
-    typeSelect.appendChild(optionElement('tree', 'Complete m-ary Tree'));
-    typeSelect.appendChild(optionElement('bipartite', 'Bipartite Graph'));
-    typeSelect.appendChild(optionElement('grid', 'Grid Graph'));
-    typeSelect.appendChild(
-      optionElement('random', 'Random (Erdős–Rényi G(n,p))'),
-    );
-    typeSelect.value = type;
-    typeSelect.onChange.listen((_) {
-      type = typeSelect.value;
-      onModified();
-    });
-    container.appendChild(_field('Preset Shape:', typeSelect));
+    void rebuildDynamicFields() {
+      dynamicSection.textContent = '';
 
-    if (type == 'atlas') {
-      final atlasRow = div('form-row');
-      final slider = rangeInput(atlasIndex, 0, 1252);
-      final numBox = numberInput(atlasIndex, 0, 1252)..style.width = '70px';
-
-      slider.onInput.listen((_) {
-        final val = int.tryParse(slider.value);
-        if (val != null) {
-          atlasIndex = val;
-          numBox.value = slider.value;
-          onModified();
-        }
-      });
-      numBox.onInput.listen((_) {
-        final val = int.tryParse(numBox.value);
-        if (val != null) {
-          atlasIndex = val;
-          slider.value = numBox.value;
-          onModified();
-        }
-      });
-
-      atlasRow.appendChild(slider);
-      atlasRow.appendChild(numBox);
-      container.appendChild(_field('Atlas Graph #:', atlasRow));
-
-      final filterRow = div('form-row');
-      final vFilter = numberInput(atlasVertices, 0, 7)
-        ..placeholder = 'Any'
-        ..style.width = '70px';
-      vFilter.onInput.listen((_) {
-        atlasVertices = int.tryParse(vFilter.value);
-        onModified();
-      });
-      filterRow.appendChild(span('V: '));
-      filterRow.appendChild(vFilter);
-
-      final eFilter = numberInput(atlasEdges, 0, 21)
-        ..placeholder = 'Any'
-        ..style.width = '70px';
-      eFilter.onInput.listen((_) {
-        atlasEdges = int.tryParse(eFilter.value);
-        onModified();
-      });
-      filterRow.appendChild(span('E: '));
-      filterRow.appendChild(eFilter);
-      container.appendChild(_field('Filter (V / E):', filterRow));
-    } else {
-      final countInput = numberInput(count, 1, 100);
-      countInput.onInput.listen((_) {
-        final val = int.tryParse(countInput.value);
-        if (val != null && val >= 1) {
-          count = val;
-          onModified();
-        }
-      });
-      container.appendChild(_field('Vertex Count (n):', countInput));
+      switch (type) {
+        case 'atlas':
+          dynamicSection.appendChild(
+            rangeSetting(
+              'Atlas Graph #:',
+              atlasIndex,
+              min: 0,
+              max: 1252,
+              onChanged: (v) {
+                atlasIndex = v.toInt();
+                onModified();
+              },
+            ),
+          );
+          dynamicSection.appendChild(
+            optionalIntSetting(
+              'Filter Vertex Count (V):',
+              atlasVertices,
+              min: 0,
+              max: 7,
+              onChanged: (v) {
+                atlasVertices = v;
+                onModified();
+              },
+            ),
+          );
+          dynamicSection.appendChild(
+            optionalIntSetting(
+              'Filter Edge Count (E):',
+              atlasEdges,
+              min: 0,
+              max: 21,
+              onChanged: (v) {
+                atlasEdges = v;
+                onModified();
+              },
+            ),
+          );
+        case 'tree':
+          dynamicSection.appendChild(
+            rangeSetting(
+              'Vertex Count (n):',
+              count,
+              min: 1,
+              max: 100,
+              onChanged: (v) {
+                count = v.toInt();
+                onModified();
+              },
+            ),
+          );
+          dynamicSection.appendChild(
+            intSetting(
+              'Branching Factor (m):',
+              arity,
+              min: 2,
+              max: 10,
+              onChanged: (v) {
+                arity = v;
+                onModified();
+              },
+            ),
+          );
+        case 'bipartite':
+          dynamicSection.appendChild(
+            intSetting(
+              'Part A Vertices (m):',
+              partACount,
+              min: 1,
+              max: 50,
+              onChanged: (v) {
+                partACount = v;
+                onModified();
+              },
+            ),
+          );
+          dynamicSection.appendChild(
+            intSetting(
+              'Part B Vertices (n):',
+              partBCount,
+              min: 1,
+              max: 50,
+              onChanged: (v) {
+                partBCount = v;
+                onModified();
+              },
+            ),
+          );
+        case 'grid':
+          dynamicSection.appendChild(
+            intSetting(
+              'Rows:',
+              gridRows,
+              min: 1,
+              max: 20,
+              onChanged: (v) {
+                gridRows = v;
+                onModified();
+              },
+            ),
+          );
+          dynamicSection.appendChild(
+            intSetting(
+              'Columns:',
+              gridColumns,
+              min: 1,
+              max: 20,
+              onChanged: (v) {
+                gridColumns = v;
+                onModified();
+              },
+            ),
+          );
+        case 'random':
+          dynamicSection.appendChild(
+            rangeSetting(
+              'Vertex Count (n):',
+              count,
+              min: 1,
+              max: 100,
+              onChanged: (v) {
+                count = v.toInt();
+                onModified();
+              },
+            ),
+          );
+          dynamicSection.appendChild(
+            rangeSetting(
+              'Edge Probability (p):',
+              prob,
+              min: 0.0,
+              max: 1.0,
+              step: 0.05,
+              onChanged: (v) {
+                prob = v.toDouble();
+                onModified();
+              },
+            ),
+          );
+          dynamicSection.appendChild(
+            seedSetting(
+              'Random Seed:',
+              seed,
+              onChanged: (v) {
+                seed = v;
+                onModified();
+              },
+            ),
+          );
+        default:
+          dynamicSection.appendChild(
+            rangeSetting(
+              'Vertex Count (n):',
+              count,
+              min: 1,
+              max: 100,
+              onChanged: (v) {
+                count = v.toInt();
+                onModified();
+              },
+            ),
+          );
+      }
     }
 
-    if (type == 'tree') {
-      final arityInput = numberInput(arity, 2, 10);
-      arityInput.onInput.listen((_) {
-        final val = int.tryParse(arityInput.value);
-        if (val != null && val >= 2) {
-          arity = val;
+    container.appendChild(
+      dropdownSetting(
+        'Preset Shape:',
+        type,
+        const [
+          ('atlas', 'Atlas Graph (Read & Wilson)'),
+          ('complete', 'Complete Graph'),
+          ('cycle', 'Cycle Graph'),
+          ('star', 'Star Graph'),
+          ('path', 'Path Graph'),
+          ('tree', 'Complete m-ary Tree'),
+          ('bipartite', 'Bipartite Graph'),
+          ('grid', 'Grid Graph'),
+          ('random', 'Random (Erdős–Rényi G(n,p))'),
+        ],
+        onChanged: (val) {
+          type = val;
+          rebuildDynamicFields();
           onModified();
-        }
-      });
-      container.appendChild(_field('Branching (m):', arityInput));
-    } else if (type == 'random') {
-      final probInput = numberInput(prob, 0.05, 1.0)
-        ..step = '0.05'
-        ..value = prob.toString();
-      probInput.onInput.listen((_) {
-        final val = double.tryParse(probInput.value);
-        if (val != null && val > 0 && val <= 1.0) {
-          prob = val;
+        },
+      ),
+    );
+
+    rebuildDynamicFields();
+    container.appendChild(dynamicSection);
+
+    container.appendChild(
+      dropdownSetting(
+        'Combine Mode:',
+        combineMode,
+        const [
+          ('replace', 'Replace existing graph'),
+          ('union', 'Merge into existing graph'),
+        ],
+        onChanged: (val) {
+          combineMode = val;
           onModified();
-        }
-      });
-      container.appendChild(_field('Edge Probability (p):', probInput));
-
-      final seedInput = numberInput(seed, 0, 999999);
-      seedInput.onInput.listen((_) {
-        seed = int.tryParse(seedInput.value) ?? 42;
-        onModified();
-      });
-      container.appendChild(_field('Random Seed:', seedInput));
-    }
-
-    final modeSelect = selectElement();
-    modeSelect.appendChild(optionElement('replace', 'Replace existing graph'));
-    modeSelect.appendChild(optionElement('union', 'Merge into existing graph'));
-    modeSelect.value = combineMode;
-    modeSelect.onChange.listen((_) {
-      combineMode = modeSelect.value;
-      onModified();
-    });
-    container.appendChild(_field('Combine Mode:', modeSelect));
+        },
+      ),
+    );
 
     return container;
   }
@@ -435,6 +487,7 @@ class GeneratorModifier extends GraphModifier {
       vertexProvider: (i) =>
           '$prefix${i < 26 ? String.fromCharCode(65 + i) : (i + 1)}',
       edgeProvider: (u, v) => 1,
+      random: math.Random(seed),
     );
 
     Graph<String, num> generated;
@@ -489,30 +542,28 @@ class GeneratorModifier extends GraphModifier {
         generated = factory.completeTree(vertexCount: count, arity: arity);
         statusInfo = 'Complete $arity-ary Tree ($count vertices)';
       case 'bipartite':
-        final half = count ~/ 2;
-        generated = factory.partite(vertexCounts: [half, count - half]);
-        statusInfo = 'Bipartite Graph ($half + ${count - half} vertices)';
+        generated = factory.partite(vertexCounts: [partACount, partBCount]);
+        statusInfo = 'Bipartite Graph ($partACount + $partBCount vertices)';
       case 'grid':
-        final cols = math.max(1, math.sqrt(count).ceil());
-        final rows = (count / cols).ceil();
-        generated = factory.grid(rows: rows, columns: cols);
-        statusInfo = 'Grid Graph ($rows×$cols)';
+        generated = factory.grid(rows: gridRows, columns: gridColumns);
+        statusInfo = 'Grid Graph ($gridRows×$gridColumns)';
       case 'random':
         generated = factory.randomErdosRenyi(
           vertexCount: count,
           probability: prob,
         );
-        statusInfo = 'Random G(n,p) ($count vertices, p=$prob)';
+        statusInfo =
+            'Random G(n,p) ($count vertices, p=${prob.toStringAsFixed(2)})';
       default:
         generated = factory.complete(vertexCount: count);
         statusInfo = 'Generated Graph ($count vertices)';
     }
 
     // Assign layout coordinates for generated vertices
-    const cx = 420.0;
-    const cy = 280.0;
-    final radius = math.max(120.0, generated.vertices.length * 20.0);
+    const cx = 450.0;
+    const cy = 300.0;
     final generatedVertices = generated.vertices.toList();
+    final radius = math.max(120.0, generatedVertices.length * 22.0);
 
     for (var i = 0; i < generatedVertices.length; i++) {
       final v = generatedVertices[i];
@@ -563,11 +614,13 @@ class LayoutModifier extends GraphModifier {
     super.enabled,
     String? algorithm,
     String? rankDir,
-    this.vertexDistance = 40.0,
+    this.vertexDistance = 60.0,
     this.layerDistance = 80.0,
     this.iterations = 100,
     this.columns = 0,
     this.seed = 42,
+    this.removeOverlaps = true,
+    this.packComponents = true,
   }) : algorithm = algorithm ?? 'stress',
        rankDir = rankDir ?? 'TB';
 
@@ -578,6 +631,8 @@ class LayoutModifier extends GraphModifier {
   int iterations;
   int columns;
   int seed;
+  bool removeOverlaps;
+  bool packComponents;
 
   @override
   String get id => 'layout';
@@ -601,85 +656,157 @@ class LayoutModifier extends GraphModifier {
   @override
   web.HTMLElement buildConfigUI(AppState state, void Function() onModified) {
     final container = div('form-column');
+    final dynamicSection = div('form-column');
 
-    final selectAlgo = selectElement();
-    for (final engine in LayoutEngine.values) {
-      selectAlgo.appendChild(optionElement(engine.id, engine.label));
-    }
+    void rebuildDynamicFields() {
+      dynamicSection.textContent = '';
 
-    selectAlgo.value = algorithm;
-    selectAlgo.onChange.listen((_) {
-      algorithm = selectAlgo.value;
-      onModified();
-    });
-    container.appendChild(_field('Layout Algorithm:', selectAlgo));
-
-    // Spacing / Vertex Distance control (applicable to all layouts)
-    final spacingInput = numberInput(vertexDistance, 10, 200);
-    spacingInput.onChange.listen((_) {
-      vertexDistance = double.tryParse(spacingInput.value) ?? 40.0;
-      onModified();
-    });
-    container.appendChild(_field('Node Spacing (px):', spacingInput));
-
-    // Directional layout controls
-    if (algorithm == 'layered' ||
-        algorithm == 'tree' ||
-        algorithm == 'bipartite') {
-      final selectRank = selectElement();
-      for (final dir in RankDir.values) {
-        selectRank.appendChild(
-          optionElement(dir.id, '${dir.label} (${dir.id})'),
+      // Spacing / Vertex Distance control (applicable to all layouts except random)
+      if (algorithm != 'random') {
+        dynamicSection.appendChild(
+          rangeSetting(
+            'Node Spacing (px):',
+            vertexDistance,
+            min: 10,
+            max: 250,
+            step: 5,
+            onChanged: (v) {
+              vertexDistance = v.toDouble();
+              onModified();
+            },
+          ),
         );
       }
-      selectRank.value = rankDir;
-      selectRank.onChange.listen((_) {
-        rankDir = selectRank.value;
-        onModified();
-      });
-      container.appendChild(_field('Flow Direction:', selectRank));
 
-      final layerInput = numberInput(layerDistance, 20, 300);
-      layerInput.onChange.listen((_) {
-        layerDistance = double.tryParse(layerInput.value) ?? 80.0;
-        onModified();
-      });
-      container.appendChild(_field('Layer Distance (px):', layerInput));
+      // Directional layout controls
+      if (algorithm == 'layered' ||
+          algorithm == 'tree' ||
+          algorithm == 'bipartite') {
+        dynamicSection.appendChild(
+          dropdownSetting(
+            'Flow Direction:',
+            rankDir,
+            [
+              for (final dir in RankDir.values)
+                (dir.id, '${dir.label} (${dir.id})'),
+            ],
+            onChanged: (val) {
+              rankDir = val;
+              onModified();
+            },
+          ),
+        );
+      }
+
+      if (algorithm == 'layered' ||
+          algorithm == 'tree' ||
+          algorithm == 'bipartite' ||
+          algorithm == 'radial' ||
+          algorithm == 'shell') {
+        dynamicSection.appendChild(
+          rangeSetting(
+            'Layer Distance (px):',
+            layerDistance,
+            min: 20,
+            max: 300,
+            step: 5,
+            onChanged: (v) {
+              layerDistance = v.toDouble();
+              onModified();
+            },
+          ),
+        );
+      }
+
+      // Iterative simulation controls
+      if (algorithm == 'stress' ||
+          algorithm == 'force' ||
+          algorithm == 'spectral') {
+        dynamicSection.appendChild(
+          rangeSetting(
+            'Iterations:',
+            iterations,
+            min: 10,
+            max: 500,
+            step: 10,
+            onChanged: (v) {
+              iterations = v.toInt();
+              onModified();
+            },
+          ),
+        );
+      }
+
+      // Grid columns control
+      if (algorithm == 'grid') {
+        dynamicSection.appendChild(
+          intSetting(
+            'Columns (0 for auto):',
+            columns,
+            min: 0,
+            max: 50,
+            onChanged: (v) {
+              columns = v;
+              onModified();
+            },
+          ),
+        );
+      }
+
+      // Seed control
+      if (algorithm == 'random' ||
+          algorithm == 'stress' ||
+          algorithm == 'force' ||
+          algorithm == 'spectral') {
+        dynamicSection.appendChild(
+          seedSetting(
+            'Random Seed:',
+            seed,
+            onChanged: (v) {
+              seed = v;
+              onModified();
+            },
+          ),
+        );
+      }
+
+      dynamicSection.appendChild(
+        checkboxSetting(
+          'Remove overlaps',
+          removeOverlaps,
+          onChanged: (v) {
+            removeOverlaps = v;
+            onModified();
+          },
+        ),
+      );
+      dynamicSection.appendChild(
+        checkboxSetting(
+          'Pack components',
+          packComponents,
+          onChanged: (v) {
+            packComponents = v;
+            onModified();
+          },
+        ),
+      );
     }
 
-    // Iterative simulation controls
-    if (algorithm == 'stress' ||
-        algorithm == 'force' ||
-        algorithm == 'spectral') {
-      final iterInput = numberInput(iterations, 10, 500);
-      iterInput.onChange.listen((_) {
-        iterations = int.tryParse(iterInput.value) ?? 100;
-        onModified();
-      });
-      container.appendChild(_field('Iterations:', iterInput));
-    }
+    container.appendChild(
+      dropdownSetting(
+        'Layout Algorithm:',
+        algorithm,
+        [for (final engine in LayoutEngine.values) (engine.id, engine.label)],
+        onChanged: (val) {
+          algorithm = val;
+          rebuildDynamicFields();
+          onModified();
+        },
+      ),
+    );
 
-    // Grid columns control
-    if (algorithm == 'grid') {
-      final colInput = numberInput(columns, 0, 20);
-      colInput.onChange.listen((_) {
-        columns = int.tryParse(colInput.value) ?? 0;
-        onModified();
-      });
-      container.appendChild(_field('Columns (0 for auto):', colInput));
-    }
-
-    // Seed control
-    if (algorithm == 'random' ||
-        algorithm == 'stress' ||
-        algorithm == 'force') {
-      final seedInput = numberInput(seed, 0, 999999);
-      seedInput.onChange.listen((_) {
-        seed = int.tryParse(seedInput.value) ?? 42;
-        onModified();
-      });
-      container.appendChild(_field('Random Seed:', seedInput));
-    }
+    rebuildDynamicFields();
+    container.appendChild(dynamicSection);
 
     return container;
   }
@@ -693,6 +820,7 @@ class LayoutModifier extends GraphModifier {
 
     GraphLayout.applyLayout(
       state,
+      graph: graph,
       engine: algorithm,
       rankdir: rankDir,
       vertexDistance: vertexDistance,
@@ -700,6 +828,8 @@ class LayoutModifier extends GraphModifier {
       iterations: iterations,
       columns: columns > 0 ? columns : null,
       seed: seed,
+      removeOverlaps: removeOverlaps,
+      packComponents: packComponents,
     );
 
     return ModifierOutput(statusSummary: 'Layout applied: $algorithm');
@@ -732,55 +862,69 @@ class ShortestPathModifier extends GraphModifier {
   web.HTMLElement buildConfigUI(AppState state, void Function() onModified) {
     final root = div('form-column');
 
-    final algoSelect = selectElement();
-    algoSelect.appendChild(optionElement('dijkstra', 'Dijkstra'));
-    algoSelect.appendChild(optionElement('a_star', 'A* Search'));
-    algoSelect.appendChild(optionElement('bellman_ford', 'Bellman-Ford'));
-    algoSelect.appendChild(optionElement('bfs', 'Breadth-First'));
-    algoSelect.appendChild(optionElement('dfs', 'Depth-First'));
-    algoSelect.value = algorithm;
-    algoSelect.onChange.listen((_) {
-      algorithm = algoSelect.value;
-      onModified();
-    });
-    root.appendChild(_field('Algorithm:', algoSelect));
-
-    final srcSelect = _vertexSelect(state, sourceVertex, '(Selected / First)', (
-      v,
-    ) {
-      sourceVertex = v;
-      onModified();
-    });
-    root.appendChild(_field('Source Vertex:', srcSelect));
-
-    final tgtSelect = _vertexSelect(
-      state,
-      targetVertex,
-      '(Selected Target / Last)',
-      (v) {
-        targetVertex = v;
-        onModified();
-      },
-    );
-    root.appendChild(_field('Target Vertex:', tgtSelect));
-
     root.appendChild(
-      _field(
-        'Path Color:',
-        _colorSelect(pathColor, (c) {
-          pathColor = c;
+      dropdownSetting(
+        'Algorithm:',
+        algorithm,
+        const [
+          ('dijkstra', 'Dijkstra'),
+          ('a_star', 'A* Search'),
+          ('bellman_ford', 'Bellman-Ford'),
+          ('bfs', 'Breadth-First'),
+          ('dfs', 'Depth-First'),
+        ],
+        onChanged: (val) {
+          algorithm = val;
           onModified();
-        }),
+        },
       ),
     );
 
     root.appendChild(
-      _field(
-        'Line Pattern:',
-        _patternSelect(pathPattern, (p) {
+      _vertexField(
+        'Source Vertex:',
+        state,
+        sourceVertex,
+        '(Selected / First)',
+        (v) {
+          sourceVertex = v;
+          onModified();
+        },
+      ),
+    );
+
+    root.appendChild(
+      _vertexField(
+        'Target Vertex:',
+        state,
+        targetVertex,
+        '(Selected Target / Last)',
+        (v) {
+          targetVertex = v;
+          onModified();
+        },
+      ),
+    );
+
+    root.appendChild(
+      colorSetting(
+        'Path Color:',
+        pathColor,
+        onChanged: (c) {
+          pathColor = c;
+          onModified();
+        },
+      ),
+    );
+
+    root.appendChild(
+      lineStyleSetting(
+        'Line Style:',
+        pathPattern,
+        onChanged: (p) {
           pathPattern = p;
           onModified();
-        }),
+        },
       ),
     );
 
@@ -900,22 +1044,46 @@ class ShortestPathModifier extends GraphModifier {
       return ModifierOutput(statusSummary: 'No path found ($src → $tgt)');
     }
 
+    final dash = pathPattern != 'none' ? pathPattern : null;
+    final color = pathColor != 'none' ? pathColor : null;
     final pathVertices = path.vertices.toList();
     final pathEdges = <(String, String)>[];
     for (var i = 0; i < pathVertices.length - 1; i++) {
       final edgeKey = (pathVertices[i], pathVertices[i + 1]);
       pathEdges.add(edgeKey);
-      final edgeStyle = state.getEdgeStyle(edgeKey.$1, edgeKey.$2);
-      edgeStyle.color = pathColor;
-      edgeStyle.strokeWidth = 3.0;
+      if (color != null || dash != null) {
+        final edgeStyle = state.getEdgeStyle(edgeKey.$1, edgeKey.$2);
+        if (color != null) {
+          edgeStyle.color = color;
+          edgeStyle.strokeWidth = 3.0;
+        }
+        edgeStyle.dashPattern = dash;
+      }
     }
 
     for (final v in pathVertices) {
       final node = state.nodes[v];
-      if (node != null) {
-        node.style.borderColor = pathColor;
-        node.style.borderWidth = 2.5;
+      if (node != null && (color != null || dash != null)) {
+        if (color != null) {
+          node.style.borderColor = color;
+          node.style.borderWidth = 2.5;
+        }
+        node.style.dashPattern = dash;
       }
+    }
+
+    final rows = <List<String>>[];
+    num cumulativeWeight = 0;
+    for (var i = 0; i < pathVertices.length; i++) {
+      if (i > 0) {
+        final u = pathVertices[i - 1];
+        final v = pathVertices[i];
+        final e =
+            graph.getEdge(u, v) ??
+            (!graph.isDirected ? graph.getEdge(v, u) : null);
+        cumulativeWeight += algorithm == 'bfs' ? 1 : (e?.value ?? 1);
+      }
+      rows.add(['#$i', pathVertices[i], '$cumulativeWeight']);
     }
 
     final overlay = PathOverlay(
@@ -930,10 +1098,7 @@ class ShortestPathModifier extends GraphModifier {
       tableData: ModifierTableData(
         title: 'Shortest Path ($src → $tgt)',
         headers: ['Step', 'Vertex', 'Cumulative Weight'],
-        rows: [
-          for (var i = 0; i < pathVertices.length; i++)
-            ['#$i', pathVertices[i], '${path.cost}'],
-        ],
+        rows: rows,
       ),
     );
   }
@@ -961,17 +1126,22 @@ class CentralityModifier extends GraphModifier {
   web.HTMLElement buildConfigUI(AppState state, void Function() onModified) {
     final root = div('form-column');
 
-    final select = selectElement();
-    select.appendChild(optionElement('betweenness', 'Betweenness Centrality'));
-    select.appendChild(optionElement('pagerank', 'PageRank'));
-    select.appendChild(optionElement('degree', 'Degree Centrality'));
-    select.appendChild(optionElement('eigenvector', 'Eigenvector Centrality'));
-    select.value = metric;
-    select.onChange.listen((_) {
-      metric = select.value;
-      onModified();
-    });
-    root.appendChild(_field('Centrality Metric:', select));
+    root.appendChild(
+      dropdownSetting(
+        'Centrality Metric:',
+        metric,
+        const [
+          ('betweenness', 'Betweenness Centrality'),
+          ('pagerank', 'PageRank'),
+          ('degree', 'Degree Centrality'),
+          ('eigenvector', 'Eigenvector Centrality'),
+        ],
+        onChanged: (val) {
+          metric = val;
+          onModified();
+        },
+      ),
+    );
 
     return root;
   }
@@ -1068,18 +1238,21 @@ class ComponentsModifier extends GraphModifier {
   web.HTMLElement buildConfigUI(AppState state, void Function() onModified) {
     final root = div('form-column');
 
-    final select = selectElement();
-    select.appendChild(optionElement('weakly', 'Connected Components'));
-    select.appendChild(
-      optionElement('strongly', 'Strongly Connected (Tarjan)'),
+    root.appendChild(
+      dropdownSetting(
+        'Component Mode:',
+        mode,
+        const [
+          ('weakly', 'Connected Components'),
+          ('strongly', 'Strongly Connected (Tarjan)'),
+          ('biconnected', 'Biconnected Components'),
+        ],
+        onChanged: (val) {
+          mode = val;
+          onModified();
+        },
+      ),
     );
-    select.appendChild(optionElement('biconnected', 'Biconnected Components'));
-    select.value = mode;
-    select.onChange.listen((_) {
-      mode = select.value;
-      onModified();
-    });
-    root.appendChild(_field('Component Mode:', select));
 
     return root;
   }
@@ -1159,33 +1332,40 @@ class SpanningTreeModifier extends GraphModifier {
   web.HTMLElement buildConfigUI(AppState state, void Function() onModified) {
     final root = div('form-column');
 
-    final select = selectElement();
-    select.appendChild(optionElement('kruskal', "Kruskal's Algorithm"));
-    select.appendChild(optionElement('prim', "Prim's Algorithm"));
-    select.value = algorithm;
-    select.onChange.listen((_) {
-      algorithm = select.value;
-      onModified();
-    });
-    root.appendChild(_field('Algorithm:', select));
-
     root.appendChild(
-      _field(
-        'Tree Color:',
-        _colorSelect(treeColor, (c) {
-          treeColor = c;
+      dropdownSetting(
+        'Algorithm:',
+        algorithm,
+        const [
+          ('kruskal', "Kruskal's Algorithm"),
+          ('prim', "Prim's Algorithm"),
+        ],
+        onChanged: (val) {
+          algorithm = val;
           onModified();
-        }),
+        },
       ),
     );
 
     root.appendChild(
-      _field(
-        'Tree Pattern:',
-        _patternSelect(treePattern, (p) {
+      colorSetting(
+        'Tree Color:',
+        treeColor,
+        onChanged: (c) {
+          treeColor = c;
+          onModified();
+        },
+      ),
+    );
+
+    root.appendChild(
+      lineStyleSetting(
+        'Tree Line Style:',
+        treePattern,
+        onChanged: (p) {
           treePattern = p;
           onModified();
-        }),
+        },
       ),
     );
 
@@ -1219,20 +1399,28 @@ class SpanningTreeModifier extends GraphModifier {
       return ModifierOutput(hasError: true, errorMessage: e.toString());
     }
 
+    final dash = treePattern != 'none' ? treePattern : null;
+    final color = treeColor != 'none' ? treeColor : null;
+    final treeEdges = tree.edges.toSet();
     num totalWeight = 0;
     final rows = <List<String>>[];
 
-    for (final e in tree.edges) {
+    for (final e in treeEdges) {
       totalWeight += e.value;
-      rows.add(['${e.source} → ${e.target}', '${e.value}', '$totalWeight']);
+      rows.add(['${e.source} — ${e.target}', '${e.value}', '$totalWeight']);
 
-      final edgeStyle = state.getEdgeStyle(e.source, e.target);
-      edgeStyle.color = treeColor;
-      edgeStyle.strokeWidth = 2.5;
+      if (color != null || dash != null) {
+        final edgeStyle = state.getEdgeStyle(e.source, e.target);
+        if (color != null) {
+          edgeStyle.color = color;
+          edgeStyle.strokeWidth = 2.5;
+        }
+        edgeStyle.dashPattern = dash;
+      }
     }
 
     // Dim non-tree edges
-    for (final e in graph.edges) {
+    for (final e in graph.edges.toSet()) {
       if (!tree.containsEdge(e.source, e.target) &&
           !tree.containsEdge(e.target, e.source)) {
         final edgeStyle = state.getEdgeStyle(e.source, e.target);
@@ -1241,7 +1429,7 @@ class SpanningTreeModifier extends GraphModifier {
     }
 
     return ModifierOutput(
-      statusSummary: 'MST Weight: $totalWeight (${tree.edges.length} edges)',
+      statusSummary: 'MST Weight: $totalWeight (${treeEdges.length} edges)',
       tableData: ModifierTableData(
         title: 'Spanning Tree Edges ($algorithm)',
         headers: ['Edge', 'Weight', 'Cumulative Weight'],
@@ -1261,6 +1449,7 @@ class CycleDetectionModifier extends GraphModifier {
   String cycleColor = '#ef4444';
   String cyclePattern = '6,4';
   int selectedCycleIndex = -1; // -1 means All Discovered Cycles
+  void Function(List<List<String>> cycles)? _onCyclesChanged;
 
   @override
   String get id => 'cycle_detection';
@@ -1274,47 +1463,60 @@ class CycleDetectionModifier extends GraphModifier {
   @override
   web.HTMLElement buildConfigUI(AppState state, void Function() onModified) {
     final root = div('form-column');
+    final dropdownContainer = div();
 
-    final cycles = _findCycles(state.renderGraph);
-    if (cycles.isNotEmpty) {
-      final selectCycle = selectElement();
-      selectCycle.appendChild(
-        optionElement('-1', 'All Discovered Cycles (${cycles.length})'),
-      );
-      for (var i = 0; i < cycles.length; i++) {
-        final c = cycles[i];
-        selectCycle.appendChild(
-          optionElement(
-            '$i',
-            'Cycle #${i + 1} (${c.length - 1} edges: ${c.first} … ${c.last})',
+    void updateDropdown(List<List<String>> currentCycles) {
+      dropdownContainer.textContent = '';
+      if (currentCycles.isNotEmpty) {
+        if (selectedCycleIndex >= currentCycles.length) {
+          selectedCycleIndex = -1;
+        }
+        final options = <(String, String)>[
+          ('-1', 'All Discovered Cycles (${currentCycles.length})'),
+          for (var i = 0; i < currentCycles.length; i++)
+            (
+              '$i',
+              'Cycle #${i + 1} (${currentCycles[i].length - 1} edges: ${currentCycles[i].take(4).join(' → ')}${currentCycles[i].length > 5 ? ' …' : ''})',
+            ),
+        ];
+        dropdownContainer.appendChild(
+          dropdownSetting(
+            'Display Cycle:',
+            '$selectedCycleIndex',
+            options,
+            onChanged: (val) {
+              selectedCycleIndex = int.tryParse(val) ?? -1;
+              onModified();
+            },
           ),
         );
       }
-      selectCycle.value = '$selectedCycleIndex';
-      selectCycle.onChange.listen((_) {
-        selectedCycleIndex = int.tryParse(selectCycle.value) ?? -1;
-        onModified();
-      });
-      root.appendChild(_field('Display Cycle:', selectCycle));
     }
 
+    final cycles = _findCycles(state.renderGraph);
+    updateDropdown(cycles);
+    _onCyclesChanged = updateDropdown;
+    root.appendChild(dropdownContainer);
+
     root.appendChild(
-      _field(
+      colorSetting(
         'Cycle Color:',
-        _colorSelect(cycleColor, (c) {
+        cycleColor,
+        onChanged: (c) {
           cycleColor = c;
           onModified();
-        }),
+        },
       ),
     );
 
     root.appendChild(
-      _field(
-        'Cycle Pattern:',
-        _patternSelect(cyclePattern, (p) {
+      lineStyleSetting(
+        'Cycle Line Style:',
+        cyclePattern,
+        onChanged: (p) {
           cyclePattern = p;
           onModified();
-        }),
+        },
       ),
     );
 
@@ -1324,10 +1526,12 @@ class CycleDetectionModifier extends GraphModifier {
   @override
   ModifierOutput apply(Graph<String, num> graph, AppState state) {
     if (graph.vertices.isEmpty) {
+      _onCyclesChanged?.call(const []);
       return const ModifierOutput(statusSummary: 'Graph is empty');
     }
 
     final cycles = _findCycles(graph);
+    _onCyclesChanged?.call(cycles);
     if (cycles.isEmpty) {
       return const ModifierOutput(
         statusSummary: 'Graph is Acyclic (DAG)',
@@ -1351,29 +1555,49 @@ class CycleDetectionModifier extends GraphModifier {
       cyclesToHighlight.addAll(cycles);
     }
 
+    final dash = cyclePattern != 'none' ? cyclePattern : null;
+    final color = cycleColor != 'none' ? cycleColor : null;
     final cycleEdges = <(String, String)>[];
     for (final cycle in cyclesToHighlight) {
       for (var i = 0; i < cycle.length - 1; i++) {
-        final key = (cycle[i], cycle[i + 1]);
-        cycleEdges.add(key);
-        final edgeStyle = state.getEdgeStyle(key.$1, key.$2);
-        edgeStyle.color = cycleColor;
-        edgeStyle.strokeWidth = 3.0;
+        final u = cycle[i];
+        final v = cycle[i + 1];
+        cycleEdges.add((u, v));
+        if (!graph.isDirected) {
+          cycleEdges.add((v, u));
+        }
+        if (color != null || dash != null) {
+          final edgeStyle = state.getEdgeStyle(
+            u,
+            v,
+            isDirected: graph.isDirected,
+          );
+          if (color != null) {
+            edgeStyle.color = color;
+            edgeStyle.strokeWidth = 3.0;
+          }
+          edgeStyle.dashPattern = dash;
+        }
       }
       for (final v in cycle) {
         final node = state.nodes[v];
-        if (node != null) {
-          node.style.borderColor = cycleColor;
-          node.style.borderWidth = 2.5;
+        if (node != null && (color != null || dash != null)) {
+          if (color != null) {
+            node.style.borderColor = color;
+            node.style.borderWidth = 2.5;
+          }
+          node.style.dashPattern = dash;
         }
       }
     }
 
-    final primaryCycle = cyclesToHighlight.first;
+    final primaryVertices = {for (final cycle in cyclesToHighlight) ...cycle}
+        .toList();
     final overlay = PathOverlay(
-      vertices: primaryCycle,
+      vertices: primaryVertices,
       edges: cycleEdges,
       title: 'Discovered ${cycles.length} Cycles',
+      color: color,
     );
 
     return ModifierOutput(
@@ -1599,50 +1823,65 @@ class KCoreModifier extends GraphModifier {
   @override
   web.HTMLElement buildConfigUI(AppState state, void Function() onModified) {
     final container = div('form-column');
+    final dashControls = div('form-column');
 
-    final input = numberInput(k, 1, 20);
-    input.onInput.listen((_) {
-      final val = int.tryParse(input.value);
-      if (val != null && val >= 1) {
-        k = val;
-        onModified();
+    void rebuildDashControls() {
+      dashControls.textContent = '';
+      if (removedStyle == 'dash') {
+        dashControls.appendChild(
+          colorSetting(
+            'Removed Border Color:',
+            dashColor,
+            onChanged: (c) {
+              dashColor = c;
+              onModified();
+            },
+          ),
+        );
+        dashControls.appendChild(
+          lineStyleSetting(
+            'Removed Line Style:',
+            dashPattern,
+            onChanged: (p) {
+              dashPattern = p;
+              onModified();
+            },
+          ),
+        );
       }
-    });
-    container.appendChild(_field('Degree Threshold (k):', input));
-
-    final styleSelect = selectElement();
-    styleSelect.appendChild(
-      optionElement('dash', 'Dash & Dim Removed Vertices'),
-    );
-    styleSelect.appendChild(
-      optionElement('filter', 'Filter / Remove From View'),
-    );
-    styleSelect.value = removedStyle;
-    styleSelect.onChange.listen((_) {
-      removedStyle = styleSelect.value;
-      onModified();
-    });
-    container.appendChild(_field('Removed Vertices Style:', styleSelect));
+    }
 
     container.appendChild(
-      _field(
-        'Removed Border Color:',
-        _colorSelect(dashColor, (c) {
-          dashColor = c;
+      rangeSetting(
+        'Degree Threshold (k):',
+        k,
+        min: 1,
+        max: 20,
+        onChanged: (v) {
+          k = v.toInt();
           onModified();
-        }),
+        },
       ),
     );
 
     container.appendChild(
-      _field(
-        'Removed Dash Pattern:',
-        _patternSelect(dashPattern, (p) {
-          dashPattern = p;
+      dropdownSetting(
+        'Removed Vertices Style:',
+        removedStyle,
+        const [
+          ('dash', 'Dash & Dim Removed Vertices'),
+          ('filter', 'Filter / Remove From View'),
+        ],
+        onChanged: (val) {
+          removedStyle = val;
+          rebuildDashControls();
           onModified();
-        }),
+        },
       ),
     );
+
+    rebuildDashControls();
+    container.appendChild(dashControls);
 
     return container;
   }
@@ -1698,16 +1937,25 @@ class KCoreModifier extends GraphModifier {
 
     // Apply dashed styling or filter
     if (removedStyle == 'dash') {
+      final dash = dashPattern != 'none' ? dashPattern : null;
+      final color = dashColor != 'none' ? dashColor : null;
       for (final v in graph.vertices) {
         if (!coreVerts.contains(v)) {
           final node = state.nodes[v];
           if (node != null) {
-            node.style.borderColor = dashColor;
+            if (color != null) {
+              node.style.borderColor = color;
+              node.style.borderWidth = 2.0;
+            }
+            node.style.dashPattern = dash;
             node.style.opacity = 0.45;
           }
           for (final e in graph.edgesOf(v)) {
             final es = state.getEdgeStyle(e.source, e.target);
-            es.color = dashColor;
+            if (color != null) {
+              es.color = color;
+            }
+            es.dashPattern = dash;
             es.opacity = 0.35;
           }
         }
@@ -1795,22 +2043,24 @@ class TransitiveClosureModifier extends GraphModifier {
     final container = div('form-column');
 
     container.appendChild(
-      _field(
+      colorSetting(
         'Added Edge / Vertex Color:',
-        _colorSelect(addedColor, (c) {
+        addedColor,
+        onChanged: (c) {
           addedColor = c;
           onModified();
-        }),
+        },
       ),
     );
 
     container.appendChild(
-      _field(
-        'Added Line Pattern:',
-        _patternSelect(addedPattern, (p) {
+      lineStyleSetting(
+        'Added Line Style:',
+        addedPattern,
+        onChanged: (p) {
           addedPattern = p;
           onModified();
-        }),
+        },
       ),
     );
 
@@ -1843,6 +2093,8 @@ class TransitiveClosureModifier extends GraphModifier {
       vertexStrategy: graph.vertexStrategy,
     )..addVertices(closure.vertices);
 
+    final dash = addedPattern != 'none' ? addedPattern : null;
+    final color = addedColor != 'none' ? addedColor : null;
     var addedEdgesCount = 0;
     for (final edge in closure.edges) {
       final origEdge = graph.getEdge(edge.source, edge.target);
@@ -1856,16 +2108,21 @@ class TransitiveClosureModifier extends GraphModifier {
       if (isNew) {
         addedEdgesCount++;
         final es = state.getEdgeStyle(edge.source, edge.target);
-        es.color = addedColor;
-        es.strokeWidth = 2.2;
+        if (color != null) {
+          es.color = color;
+          es.strokeWidth = 2.2;
+        }
+        es.dashPattern = dash;
 
         final srcNode = state.nodes[edge.source];
         if (srcNode != null && srcNode.style.borderColor == null) {
-          srcNode.style.borderColor = addedColor;
+          if (color != null) srcNode.style.borderColor = color;
+          srcNode.style.dashPattern = dash;
         }
         final tgtNode = state.nodes[edge.target];
         if (tgtNode != null && tgtNode.style.borderColor == null) {
-          tgtNode.style.borderColor = addedColor;
+          if (color != null) tgtNode.style.borderColor = color;
+          tgtNode.style.dashPattern = dash;
         }
       }
     }
@@ -1923,40 +2180,48 @@ class TransitiveReductionModifier extends GraphModifier {
   @override
   web.HTMLElement buildConfigUI(AppState state, void Function() onModified) {
     final container = div('form-column');
+    final dashControls = div('form-column');
 
-    final modeSelect = selectElement();
-    modeSelect.appendChild(
-      optionElement('dashed', 'Keep Removed Edges/Vertices Dashed in View'),
-    );
-    modeSelect.appendChild(
-      optionElement('remove', 'Strip Removed Edges/Vertices Completely'),
-    );
-    modeSelect.value = keepRemovedDashedInView ? 'dashed' : 'remove';
-    modeSelect.onChange.listen((_) {
-      keepRemovedDashedInView = modeSelect.value == 'dashed';
-      onModified();
-    });
-    container.appendChild(_field('Display Mode:', modeSelect));
+    void rebuildDashControls() {
+      dashControls.textContent = '';
+      if (keepRemovedDashedInView) {
+        dashControls.appendChild(
+          colorSetting(
+            'Removed Border & Stroke Color:',
+            removedColor,
+            onChanged: (c) {
+              removedColor = c;
+              onModified();
+            },
+          ),
+        );
+        dashControls.appendChild(
+          lineStyleSetting(
+            'Removed Line Style:',
+            removedPattern,
+            onChanged: (p) {
+              removedPattern = p;
+              onModified();
+            },
+          ),
+        );
+      }
+    }
 
     container.appendChild(
-      _field(
-        'Removed Border & Stroke Color:',
-        _colorSelect(removedColor, (c) {
-          removedColor = c;
+      checkboxSetting(
+        'Keep removed edges dashed in view',
+        keepRemovedDashedInView,
+        onChanged: (val) {
+          keepRemovedDashedInView = val;
+          rebuildDashControls();
           onModified();
-        }),
+        },
       ),
     );
 
-    container.appendChild(
-      _field(
-        'Removed Dash Pattern:',
-        _patternSelect(removedPattern, (p) {
-          removedPattern = p;
-          onModified();
-        }),
-      ),
-    );
+    rebuildDashControls();
+    container.appendChild(dashControls);
 
     return container;
   }
@@ -2001,6 +2266,8 @@ class TransitiveReductionModifier extends GraphModifier {
       );
     }
 
+    final dash = removedPattern != 'none' ? removedPattern : null;
+    final color = removedColor != 'none' ? removedColor : null;
     var removedEdgesCount = 0;
     // Identify removed edges
     for (final edge in graph.edges) {
@@ -2010,7 +2277,8 @@ class TransitiveReductionModifier extends GraphModifier {
           // Keep edge in graph view but style as dashed and colored
           reducedGraph.addEdge(edge.source, edge.target, value: edge.value);
           final es = state.getEdgeStyle(edge.source, edge.target);
-          es.color = removedColor;
+          if (color != null) es.color = color;
+          es.dashPattern = dash;
           es.opacity = 0.45;
         }
       }
@@ -2021,7 +2289,8 @@ class TransitiveReductionModifier extends GraphModifier {
       if (reducedGraph.degreeOf(v) == 0 && graph.degreeOf(v) > 0) {
         final node = state.nodes[v];
         if (node != null) {
-          node.style.borderColor = removedColor;
+          if (color != null) node.style.borderColor = color;
+          node.style.dashPattern = dash;
           node.style.opacity = 0.5;
         }
       }
@@ -2124,6 +2393,7 @@ class BiconnectedComponentsModifier extends GraphModifier {
 
   String pointColor = '#f59e0b';
   String bridgeColor = '#ef4444';
+  String bridgePattern = '6,4';
 
   @override
   String get id => 'biconnected';
@@ -2138,21 +2408,33 @@ class BiconnectedComponentsModifier extends GraphModifier {
   web.HTMLElement buildConfigUI(AppState state, void Function() onModified) {
     final root = div('form-column');
     root.appendChild(
-      _field(
+      colorSetting(
         'Articulation Point Color:',
-        _colorSelect(pointColor, (c) {
+        pointColor,
+        onChanged: (c) {
           pointColor = c;
           onModified();
-        }),
+        },
       ),
     );
     root.appendChild(
-      _field(
+      colorSetting(
         'Bridge Edge Color:',
-        _colorSelect(bridgeColor, (c) {
+        bridgeColor,
+        onChanged: (c) {
           bridgeColor = c;
           onModified();
-        }),
+        },
+      ),
+    );
+    root.appendChild(
+      lineStyleSetting(
+        'Bridge Line Style:',
+        bridgePattern,
+        onChanged: (p) {
+          bridgePattern = p;
+          onModified();
+        },
       ),
     );
     return root;
@@ -2176,23 +2458,28 @@ class BiconnectedComponentsModifier extends GraphModifier {
     try {
       final cutVertices = graph.articulationPoints();
       final bridgeEdges = graph.bridges();
+      final dash = bridgePattern != 'none' ? bridgePattern : null;
+      final ptColor = pointColor != 'none' ? pointColor : null;
+      final brColor = bridgeColor != 'none' ? bridgeColor : null;
 
-      for (final v in cutVertices) {
-        final node = state.nodes[v];
-        if (node != null) {
-          node.style.borderColor = pointColor;
-          node.style.borderWidth = 3.5;
+      if (ptColor != null) {
+        for (final v in cutVertices) {
+          final node = state.nodes[v];
+          if (node != null) {
+            node.style.borderColor = ptColor;
+            node.style.borderWidth = 3.5;
+          }
         }
       }
 
-      for (final b in bridgeEdges) {
-        final es = state.getEdgeStyle(b.source, b.target);
-        es.color = bridgeColor;
-        es.strokeWidth = 3.5;
-        if (!graph.isDirected) {
-          final esRev = state.getEdgeStyle(b.target, b.source);
-          esRev.color = bridgeColor;
-          esRev.strokeWidth = 3.5;
+      if (brColor != null || dash != null) {
+        for (final b in bridgeEdges) {
+          final es = state.getEdgeStyle(b.source, b.target);
+          if (brColor != null) {
+            es.color = brColor;
+            es.strokeWidth = 3.5;
+          }
+          es.dashPattern = dash;
         }
       }
 
@@ -2230,6 +2517,9 @@ class MaxFlowModifier extends GraphModifier {
   String? targetVertex;
   String flowColor = '#10b981';
   String cutColor = '#ef4444';
+  String cutPattern = '6,4';
+  String sourcePartitionColor = '#06b6d4';
+  String sinkPartitionColor = '#f59e0b';
 
   @override
   String get id => 'max_flow';
@@ -2244,29 +2534,84 @@ class MaxFlowModifier extends GraphModifier {
   web.HTMLElement buildConfigUI(AppState state, void Function() onModified) {
     final root = div('form-column');
 
-    final srcSelect = _vertexSelect(state, sourceVertex, '(Selected / First)', (
-      v,
-    ) {
-      sourceVertex = v;
-      onModified();
-    });
-    root.appendChild(_field('Source Vertex (s):', srcSelect));
-
-    final tgtSelect = _vertexSelect(state, targetVertex, '(Selected / Last)', (
-      v,
-    ) {
-      targetVertex = v;
-      onModified();
-    });
-    root.appendChild(_field('Sink Vertex (t):', tgtSelect));
+    root.appendChild(
+      _vertexField(
+        'Source Vertex (s):',
+        state,
+        sourceVertex,
+        '(Selected / First)',
+        (v) {
+          sourceVertex = v;
+          onModified();
+        },
+      ),
+    );
 
     root.appendChild(
-      _field(
-        'Cut Color:',
-        _colorSelect(cutColor, (c) {
+      _vertexField(
+        'Sink Vertex (t):',
+        state,
+        targetVertex,
+        '(Selected / Last)',
+        (v) {
+          targetVertex = v;
+          onModified();
+        },
+      ),
+    );
+
+    root.appendChild(
+      colorSetting(
+        'Flow Edge Color:',
+        flowColor,
+        onChanged: (c) {
+          flowColor = c;
+          onModified();
+        },
+      ),
+    );
+
+    root.appendChild(
+      colorSetting(
+        'Cut Edge Color:',
+        cutColor,
+        onChanged: (c) {
           cutColor = c;
           onModified();
-        }),
+        },
+      ),
+    );
+
+    root.appendChild(
+      lineStyleSetting(
+        'Cut Line Style:',
+        cutPattern,
+        onChanged: (p) {
+          cutPattern = p;
+          onModified();
+        },
+      ),
+    );
+
+    root.appendChild(
+      colorSetting(
+        'Source Partition Color:',
+        sourcePartitionColor,
+        onChanged: (c) {
+          sourcePartitionColor = c;
+          onModified();
+        },
+      ),
+    );
+
+    root.appendChild(
+      colorSetting(
+        'Sink Partition Color:',
+        sinkPartitionColor,
+        onChanged: (c) {
+          sinkPartitionColor = c;
+          onModified();
+        },
       ),
     );
 
@@ -2292,14 +2637,13 @@ class MaxFlowModifier extends GraphModifier {
     }
 
     try {
-      final dinic = graph.maxFlow(
-        edgeCapacity: (u, v) {
-          final edge = graph.getEdge(u, v);
-          final cap = edge?.value ?? 1;
-          return cap > 0 ? cap : 1;
-        },
-      );
+      num capacityOf(String u, String v) {
+        final edge = graph.getEdge(u, v);
+        final cap = edge?.value ?? 1;
+        return cap > 0 ? cap : 1;
+      }
 
+      final dinic = graph.maxFlow(edgeCapacity: capacityOf);
       final maxFlowValue = dinic(s, t);
 
       // Identify source partition S via BFS reachability in residual graph
@@ -2308,9 +2652,16 @@ class MaxFlowModifier extends GraphModifier {
       while (queue.isNotEmpty) {
         final curr = queue.removeAt(0);
         for (final next in graph.successorsOf(curr)) {
-          if (!reachable.contains(next)) {
+          if (!reachable.contains(next) &&
+              dinic.flow(curr, next) < capacityOf(curr, next)) {
             reachable.add(next);
             queue.add(next);
+          }
+        }
+        for (final prev in graph.predecessorsOf(curr)) {
+          if (!reachable.contains(prev) && dinic.flow(prev, curr) > 0) {
+            reachable.add(prev);
+            queue.add(prev);
           }
         }
       }
@@ -2318,21 +2669,35 @@ class MaxFlowModifier extends GraphModifier {
       // Style source and target sets
       for (final v in vertices) {
         final node = state.nodes[v];
-        if (node != null) {
-          node.style.borderColor = reachable.contains(v)
-              ? '#06b6d4'
-              : '#f59e0b';
+        final partColor = reachable.contains(v)
+            ? sourcePartitionColor
+            : sinkPartitionColor;
+        if (node != null && partColor != 'none') {
+          node.style.borderColor = partColor;
           node.style.borderWidth = (v == s || v == t) ? 3.5 : 2.0;
         }
       }
 
-      // Highlight cut edges
-      for (final edge in graph.edges) {
-        if (reachable.contains(edge.source) &&
-            !reachable.contains(edge.target)) {
+      final dash = cutPattern != 'none' ? cutPattern : null;
+      final cColor = cutColor != 'none' ? cutColor : null;
+      final fColor = flowColor != 'none' ? flowColor : null;
+
+      // Highlight flow edges and cut edges
+      for (final edge in graph.edges.toSet()) {
+        final isCut =
+            reachable.contains(edge.source) && !reachable.contains(edge.target);
+        final f = dinic.flow(edge.source, edge.target);
+        if (isCut && (cColor != null || dash != null)) {
           final es = state.getEdgeStyle(edge.source, edge.target);
-          es.color = cutColor;
-          es.strokeWidth = 3.5;
+          if (cColor != null) {
+            es.color = cColor;
+            es.strokeWidth = 3.5;
+          }
+          es.dashPattern = dash;
+        } else if (f > 0 && fColor != null) {
+          final es = state.getEdgeStyle(edge.source, edge.target);
+          es.color = fColor;
+          es.strokeWidth = 2.8;
         }
       }
 
@@ -2369,6 +2734,9 @@ class MinCutModifier extends GraphModifier {
   new({super.enabled});
 
   String cutColor = '#ef4444';
+  String cutPattern = '6,4';
+  String partitionAColor = '#06b6d4';
+  String partitionBColor = '#f59e0b';
 
   @override
   String get id => 'min_cut';
@@ -2383,12 +2751,43 @@ class MinCutModifier extends GraphModifier {
   web.HTMLElement buildConfigUI(AppState state, void Function() onModified) {
     final root = div('form-column');
     root.appendChild(
-      _field(
+      colorSetting(
         'Cut Edges Color:',
-        _colorSelect(cutColor, (c) {
+        cutColor,
+        onChanged: (c) {
           cutColor = c;
           onModified();
-        }),
+        },
+      ),
+    );
+    root.appendChild(
+      lineStyleSetting(
+        'Cut Line Style:',
+        cutPattern,
+        onChanged: (p) {
+          cutPattern = p;
+          onModified();
+        },
+      ),
+    );
+    root.appendChild(
+      colorSetting(
+        'Partition A Color:',
+        partitionAColor,
+        onChanged: (c) {
+          partitionAColor = c;
+          onModified();
+        },
+      ),
+    );
+    root.appendChild(
+      colorSetting(
+        'Partition B Color:',
+        partitionBColor,
+        onChanged: (c) {
+          partitionBColor = c;
+          onModified();
+        },
       ),
     );
     return root;
@@ -2418,21 +2817,42 @@ class MinCutModifier extends GraphModifier {
       );
       final weight = minCutObj.weight;
       final partition = minCutObj.graphs[0].vertices.toSet();
+      final dash = cutPattern != 'none' ? cutPattern : null;
+      final cColor = cutColor != 'none' ? cutColor : null;
 
       for (final v in vertices) {
         final node = state.nodes[v];
-        if (node != null) {
-          node.style.borderColor = partition.contains(v)
-              ? '#06b6d4'
-              : '#f59e0b';
+        final partColor = partition.contains(v)
+            ? partitionAColor
+            : partitionBColor;
+        if (node != null && partColor != 'none') {
+          node.style.borderColor = partColor;
           node.style.borderWidth = 2.5;
         }
       }
 
-      for (final edge in minCutObj.edges) {
-        final es = state.getEdgeStyle(edge.source, edge.target);
-        es.color = cutColor;
-        es.strokeWidth = 3.5;
+      // Color internal partition edges subtly and cut edges prominently
+      for (final edge in graph.edges.toSet()) {
+        final inA1 = partition.contains(edge.source);
+        final inA2 = partition.contains(edge.target);
+        if (inA1 == inA2) {
+          final partColor = inA1 ? partitionAColor : partitionBColor;
+          if (partColor != 'none') {
+            final es = state.getEdgeStyle(edge.source, edge.target);
+            es.color = partColor;
+          }
+        }
+      }
+
+      if (cColor != null || dash != null) {
+        for (final edge in minCutObj.edges) {
+          final es = state.getEdgeStyle(edge.source, edge.target);
+          if (cColor != null) {
+            es.color = cColor;
+            es.strokeWidth = 3.5;
+          }
+          es.dashPattern = dash;
+        }
       }
 
       return ModifierOutput(
@@ -2468,6 +2888,7 @@ class MatchingModifier extends GraphModifier {
   new({super.enabled});
 
   String matchingColor = '#10b981';
+  String matchingPattern = 'none';
 
   @override
   String get id => 'matching';
@@ -2482,12 +2903,23 @@ class MatchingModifier extends GraphModifier {
   web.HTMLElement buildConfigUI(AppState state, void Function() onModified) {
     final root = div('form-column');
     root.appendChild(
-      _field(
+      colorSetting(
         'Matching Color:',
-        _colorSelect(matchingColor, (c) {
+        matchingColor,
+        onChanged: (c) {
           matchingColor = c;
           onModified();
-        }),
+        },
+      ),
+    );
+    root.appendChild(
+      lineStyleSetting(
+        'Matching Line Style:',
+        matchingPattern,
+        onChanged: (p) {
+          matchingPattern = p;
+          onModified();
+        },
       ),
     );
     return root;
@@ -2519,17 +2951,21 @@ class MatchingModifier extends GraphModifier {
         }
       }
 
+      final dash = matchingPattern != 'none' ? matchingPattern : null;
+      final color = matchingColor != 'none' ? matchingColor : null;
       for (final edge in matchedEdges) {
-        final es = state.getEdgeStyle(edge.$1, edge.$2);
-        es.color = matchingColor;
-        es.strokeWidth = 4.0;
-        if (!graph.isDirected) {
-          final esRev = state.getEdgeStyle(edge.$2, edge.$1);
-          esRev.color = matchingColor;
-          esRev.strokeWidth = 4.0;
+        if (color != null || dash != null) {
+          final es = state.getEdgeStyle(edge.$1, edge.$2);
+          if (color != null) {
+            es.color = color;
+            es.strokeWidth = 4.0;
+          }
+          es.dashPattern = dash;
         }
-        state.nodes[edge.$1]?.style.borderColor = matchingColor;
-        state.nodes[edge.$2]?.style.borderColor = matchingColor;
+        if (color != null) {
+          state.nodes[edge.$1]?.style.borderColor = color;
+          state.nodes[edge.$2]?.style.borderColor = color;
+        }
       }
 
       var idx = 1;
@@ -2576,27 +3012,29 @@ class CliquesModifier extends GraphModifier {
   web.HTMLElement buildConfigUI(AppState state, void Function() onModified) {
     final root = div('form-column');
 
-    final modeSelect = selectElement();
-    modeSelect.appendChild(
-      optionElement('cliques', 'Maximal Cliques (Bron-Kerbosch)'),
+    root.appendChild(
+      dropdownSetting(
+        'Mode:',
+        mode,
+        const [
+          ('cliques', 'Maximal Cliques (Bron-Kerbosch)'),
+          ('independent_set', 'Maximum Independent Set'),
+        ],
+        onChanged: (val) {
+          mode = val;
+          onModified();
+        },
+      ),
     );
-    modeSelect.appendChild(
-      optionElement('independent_set', 'Maximum Independent Set'),
-    );
-    modeSelect.value = mode;
-    modeSelect.onChange.listen((_) {
-      mode = modeSelect.value;
-      onModified();
-    });
-    root.appendChild(_field('Mode:', modeSelect));
 
     root.appendChild(
-      _field(
+      colorSetting(
         'Highlight Color:',
-        _colorSelect(highlightColor, (c) {
+        highlightColor,
+        onChanged: (c) {
           highlightColor = c;
           onModified();
-        }),
+        },
       ),
     );
 
@@ -2619,13 +3057,16 @@ class CliquesModifier extends GraphModifier {
     }
 
     try {
+      final color = highlightColor != 'none' ? highlightColor : null;
       if (mode == 'independent_set') {
         final indSet = graph.maximumIndependentSet();
-        for (final v in indSet) {
-          final node = state.nodes[v];
-          if (node != null) {
-            node.style.borderColor = highlightColor;
-            node.style.borderWidth = 3.5;
+        if (color != null) {
+          for (final v in indSet) {
+            final node = state.nodes[v];
+            if (node != null) {
+              node.style.borderColor = color;
+              node.style.borderWidth = 3.5;
+            }
           }
         }
         return ModifierOutput(
@@ -2647,19 +3088,21 @@ class CliquesModifier extends GraphModifier {
         }
 
         final activeClique = cliques.first;
-        for (final v in activeClique) {
-          final node = state.nodes[v];
-          if (node != null) {
-            node.style.borderColor = highlightColor;
-            node.style.borderWidth = 3.5;
-          }
-        }
-        for (final u in activeClique) {
+        if (color != null) {
           for (final v in activeClique) {
-            if (u != v && graph.containsEdge(u, v)) {
-              final es = state.getEdgeStyle(u, v);
-              es.color = highlightColor;
-              es.strokeWidth = 3.0;
+            final node = state.nodes[v];
+            if (node != null) {
+              node.style.borderColor = color;
+              node.style.borderWidth = 3.5;
+            }
+          }
+          for (final u in activeClique) {
+            for (final v in activeClique) {
+              if (u != v && graph.containsEdge(u, v)) {
+                final es = state.getEdgeStyle(u, v);
+                es.color = color;
+                es.strokeWidth = 3.0;
+              }
             }
           }
         }
@@ -2714,23 +3157,25 @@ class VertexCoverModifier extends GraphModifier {
   web.HTMLElement buildConfigUI(AppState state, void Function() onModified) {
     final root = div('form-column');
 
-    final approxSelect = selectElement();
-    approxSelect.appendChild(optionElement('false', 'Exact Minimum Cover'));
-    approxSelect.appendChild(optionElement('true', '2-Approximation (Fast)'));
-    approxSelect.value = '$approximate';
-    approxSelect.onChange.listen((_) {
-      approximate = approxSelect.value == 'true';
-      onModified();
-    });
-    root.appendChild(_field('Method:', approxSelect));
+    root.appendChild(
+      checkboxSetting(
+        '2-Approximation (fast)',
+        approximate,
+        onChanged: (val) {
+          approximate = val;
+          onModified();
+        },
+      ),
+    );
 
     root.appendChild(
-      _field(
+      colorSetting(
         'Cover Color:',
-        _colorSelect(coverColor, (c) {
+        coverColor,
+        onChanged: (c) {
           coverColor = c;
           onModified();
-        }),
+        },
       ),
     );
 
@@ -2753,11 +3198,13 @@ class VertexCoverModifier extends GraphModifier {
 
     try {
       final cover = graph.minimumVertexCover(approximate: approximate);
-      for (final v in cover) {
-        final node = state.nodes[v];
-        if (node != null) {
-          node.style.borderColor = coverColor;
-          node.style.borderWidth = 3.5;
+      if (coverColor != 'none') {
+        for (final v in cover) {
+          final node = state.nodes[v];
+          if (node != null) {
+            node.style.borderColor = coverColor;
+            node.style.borderWidth = 3.5;
+          }
         }
       }
 
@@ -2822,7 +3269,7 @@ class PlanarityModifier extends GraphModifier {
     try {
       final planar = graph.isPlanar();
       final vCount = graph.vertices.length;
-      final eCount = graph.edges.length;
+      final eCount = graph.edges.toSet().length;
       final faces = (2 - vCount + eCount).clamp(1, 999999);
 
       return ModifierOutput(
@@ -2859,6 +3306,7 @@ class EulerianModifier extends GraphModifier {
   new({super.enabled});
 
   String tourColor = '#10b981';
+  String tourPattern = 'none';
   bool requireCircuit = false;
 
   @override
@@ -2874,25 +3322,36 @@ class EulerianModifier extends GraphModifier {
   web.HTMLElement buildConfigUI(AppState state, void Function() onModified) {
     final root = div('form-column');
 
-    final typeSelect = selectElement();
-    typeSelect.appendChild(optionElement('false', 'Eulerian Trail or Circuit'));
-    typeSelect.appendChild(
-      optionElement('true', 'Eulerian Circuit Only (Closed)'),
+    root.appendChild(
+      checkboxSetting(
+        'Only circuit (closed)',
+        requireCircuit,
+        onChanged: (val) {
+          requireCircuit = val;
+          onModified();
+        },
+      ),
     );
-    typeSelect.value = '$requireCircuit';
-    typeSelect.onChange.listen((_) {
-      requireCircuit = typeSelect.value == 'true';
-      onModified();
-    });
-    root.appendChild(_field('Tour Type:', typeSelect));
 
     root.appendChild(
-      _field(
+      colorSetting(
         'Trail Color:',
-        _colorSelect(tourColor, (c) {
+        tourColor,
+        onChanged: (c) {
           tourColor = c;
           onModified();
-        }),
+        },
+      ),
+    );
+
+    root.appendChild(
+      lineStyleSetting(
+        'Trail Line Style:',
+        tourPattern,
+        onChanged: (p) {
+          tourPattern = p;
+          onModified();
+        },
       ),
     );
 
@@ -2941,20 +3400,28 @@ class EulerianModifier extends GraphModifier {
         return const ModifierOutput(statusSummary: 'No Eulerian tour found');
       }
 
+      final dash = tourPattern != 'none' ? tourPattern : null;
+      final color = tourColor != 'none' ? tourColor : null;
       final tourVertices = tour.vertices.toList();
       final tourEdges = <(String, String)>[];
       for (var i = 0; i < tourVertices.length - 1; i++) {
         final key = (tourVertices[i], tourVertices[i + 1]);
         tourEdges.add(key);
-        final es = state.getEdgeStyle(key.$1, key.$2);
-        es.color = tourColor;
-        es.strokeWidth = 3.5;
+        if (color != null || dash != null) {
+          final es = state.getEdgeStyle(key.$1, key.$2);
+          if (color != null) {
+            es.color = color;
+            es.strokeWidth = 3.5;
+          }
+          es.dashPattern = dash;
+        }
       }
 
       for (final v in tourVertices) {
         final node = state.nodes[v];
-        if (node != null) {
-          node.style.borderColor = tourColor;
+        if (node != null && (color != null || dash != null)) {
+          if (color != null) node.style.borderColor = color;
+          node.style.dashPattern = dash;
         }
       }
 
@@ -2994,6 +3461,7 @@ class HamiltonianModifier extends GraphModifier {
   new({super.enabled});
 
   String tourColor = '#a855f7';
+  String tourPattern = 'none';
   bool requireCircuit = false;
 
   @override
@@ -3009,25 +3477,36 @@ class HamiltonianModifier extends GraphModifier {
   web.HTMLElement buildConfigUI(AppState state, void Function() onModified) {
     final root = div('form-column');
 
-    final typeSelect = selectElement();
-    typeSelect.appendChild(optionElement('false', 'Hamiltonian Path or Cycle'));
-    typeSelect.appendChild(
-      optionElement('true', 'Hamiltonian Cycle Only (Closed)'),
+    root.appendChild(
+      checkboxSetting(
+        'Only circuit (closed)',
+        requireCircuit,
+        onChanged: (val) {
+          requireCircuit = val;
+          onModified();
+        },
+      ),
     );
-    typeSelect.value = '$requireCircuit';
-    typeSelect.onChange.listen((_) {
-      requireCircuit = typeSelect.value == 'true';
-      onModified();
-    });
-    root.appendChild(_field('Type:', typeSelect));
 
     root.appendChild(
-      _field(
+      colorSetting(
         'Path Color:',
-        _colorSelect(tourColor, (c) {
+        tourColor,
+        onChanged: (c) {
           tourColor = c;
           onModified();
-        }),
+        },
+      ),
+    );
+
+    root.appendChild(
+      lineStyleSetting(
+        'Path Line Style:',
+        tourPattern,
+        onChanged: (p) {
+          tourPattern = p;
+          onModified();
+        },
       ),
     );
 
@@ -3057,20 +3536,28 @@ class HamiltonianModifier extends GraphModifier {
         );
       }
 
+      final dash = tourPattern != 'none' ? tourPattern : null;
+      final color = tourColor != 'none' ? tourColor : null;
       final tourVertices = tour.vertices.toList();
       final tourEdges = <(String, String)>[];
       for (var i = 0; i < tourVertices.length - 1; i++) {
         final key = (tourVertices[i], tourVertices[i + 1]);
         tourEdges.add(key);
-        final es = state.getEdgeStyle(key.$1, key.$2);
-        es.color = tourColor;
-        es.strokeWidth = 3.5;
+        if (color != null || dash != null) {
+          final es = state.getEdgeStyle(key.$1, key.$2);
+          if (color != null) {
+            es.color = color;
+            es.strokeWidth = 3.5;
+          }
+          es.dashPattern = dash;
+        }
       }
 
       for (final v in tourVertices) {
         final node = state.nodes[v];
-        if (node != null) {
-          node.style.borderColor = tourColor;
+        if (node != null && (color != null || dash != null)) {
+          if (color != null) node.style.borderColor = color;
+          node.style.dashPattern = dash;
         }
       }
 

@@ -9,17 +9,17 @@ const double nodeHorizontalPadding = 24.0;
 
 /// Available layout engine algorithms.
 enum LayoutEngine {
-  stress('stress', 'Stress Majorization (SMACOF)'),
-  force('force', 'Spring-Electrical (Force)'),
-  layered('layered', 'Hierarchical DAG (Layered)'),
-  tree('tree', 'Hierarchical Tree / Forest'),
-  radial('radial', 'Concentric Radial Rings'),
-  shell('shell', 'Concentric Shells'),
-  bipartite('bipartite', 'Multipartite Columns'),
-  spectral('spectral', 'Spectral Laplacian'),
-  circular('circular', 'Circular Ring'),
-  grid('grid', 'Grid Alignment'),
-  random('random', 'Random Spread');
+  stress('stress', 'Stress Majorization'),
+  force('force', 'Force-Directed'),
+  layered('layered', 'Layered'),
+  tree('tree', 'Tree'),
+  radial('radial', 'Radial'),
+  shell('shell', 'Shell'),
+  bipartite('bipartite', 'Multipartite'),
+  spectral('spectral', 'Spectral'),
+  circular('circular', 'Circular'),
+  grid('grid', 'Grid'),
+  random('random', 'Random');
 
   new(this.id, this.label);
 
@@ -36,10 +36,10 @@ enum LayoutEngine {
 
 /// Flow direction for hierarchical and layered graph layouts.
 enum RankDir {
-  tb('TB', 'Top to Bottom'),
-  lr('LR', 'Left to Right'),
-  bt('BT', 'Bottom to Top'),
-  rl('RL', 'Right to Left');
+  tb('TB', 'Top → Bottom'),
+  lr('LR', 'Left → Right'),
+  bt('BT', 'Bottom → Top'),
+  rl('RL', 'Right → Left');
 
   new(this.id, this.label);
 

@@ -96,5 +96,24 @@ void main() {
       final result = strategy.layout(input);
       check(result.positions.keys).unorderedEquals(['A1', 'A2', 'B1', 'B2']);
     });
+
+    test('respects vertexSize and prevents overlap on Petersen graph', () {
+      final g = Graph<String, num>.undirected();
+      for (var i = 0; i < 5; i++) {
+        g.addEdge('v$i', 'v${(i + 1) % 5}', value: 1);
+        g.addEdge('v$i', 'v${i + 5}', value: 1);
+        g.addEdge('v${i + 5}', 'v${(i + 2) % 5 + 5}', value: 1);
+      }
+      final result = g.layout(
+        const StressLayout<String>(vertexDistance: 50.0),
+        vertexSize: (_) => (width: 48.0, height: 48.0),
+      );
+      final pts = result.positions.values.toList();
+      for (var i = 0; i < pts.length; i++) {
+        for (var j = i + 1; j < pts.length; j++) {
+          check(pts[i].distanceTo(pts[j])).isGreaterThan(48.0);
+        }
+      }
+    });
   });
 }

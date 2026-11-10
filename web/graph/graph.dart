@@ -1,5 +1,4 @@
 import 'dart:js_interop';
-import 'dart:math' as math;
 
 import 'package:more/graph.dart';
 import 'package:web/web.dart' as web;
@@ -406,7 +405,7 @@ void main() {
     }
     final graph = state.renderGraph;
     final vCount = graph.vertices.length;
-    final eCount = graph.edges.length;
+    final eCount = graph.edges.toSet().length;
     var pCount = 0;
     if (state.activeOverlay is PathOverlay) {
       final po = state.activeOverlay as PathOverlay;
@@ -441,431 +440,341 @@ void main() {
     }
   }
 
-  Graph<String, num> buildKoenigsberg() {
-    final g = Graph<String, num>(isDirected: false);
-    const edges = [
-      ('Altstadt (North)', 'Krämerbrücke'),
-      ('Krämerbrücke', 'Kneiphof (Island)'),
-      ('Altstadt (North)', 'Schmiedebrücke'),
-      ('Schmiedebrücke', 'Kneiphof (Island)'),
-      ('Altstadt (North)', 'Holzbrücke'),
-      ('Holzbrücke', 'Lomse (East)'),
-      ('Kneiphof (Island)', 'Honigbrücke'),
-      ('Honigbrücke', 'Lomse (East)'),
-      ('Kneiphof (Island)', 'Grüne Brücke'),
-      ('Grüne Brücke', 'Vorstadt (South)'),
-      ('Kneiphof (Island)', 'Köttelbrücke'),
-      ('Köttelbrücke', 'Vorstadt (South)'),
-      ('Vorstadt (South)', 'Hohe Brücke'),
-      ('Hohe Brücke', 'Lomse (East)'),
-    ];
-    for (final (u, v) in edges) {
-      g.addEdge(u, v, value: 1);
+  Graph<String, num> unweightedPreset(
+    Map<String, Iterable<String>> successors, {
+    bool isDirected = false,
+  }) => GraphFactory<String, num>(
+    isDirected: isDirected,
+    edgeProvider: (_, _) => 1,
+  ).fromSuccessors(successors);
+
+  Graph<String, num> weightedPreset(
+    List<(String, String, num)> edges, {
+    bool isDirected = false,
+  }) {
+    final g = Graph<String, num>(isDirected: isDirected);
+    for (final (u, v, w) in edges) {
+      g.addEdge(u, v, value: w);
     }
     return g;
   }
 
-  void layoutKoenigsberg() {
-    final coords = <String, (double, double)>{
-      'Altstadt (North)': (320, 80),
-      'Kneiphof (Island)': (320, 240),
-      'Vorstadt (South)': (320, 400),
-      'Lomse (East)': (540, 240),
-      'Krämerbrücke': (240, 160),
-      'Schmiedebrücke': (400, 160),
-      'Grüne Brücke': (240, 320),
-      'Köttelbrücke': (400, 320),
-      'Holzbrücke': (470, 140),
-      'Honigbrücke': (430, 240),
-      'Hohe Brücke': (470, 340),
-    };
-    for (final entry in coords.entries) {
-      final node = state.nodes[entry.key];
-      if (node != null) {
-        node.x = entry.value.$1;
-        node.y = entry.value.$2;
-      }
-    }
-  }
-
-  Graph<String, num> buildSwissRailways() {
-    final g = Graph<String, num>(isDirected: false);
-    const connections = [
-      ('Zurich', 'Winterthur', 25),
-      ('Zurich', 'Basel', 85),
-      ('Zurich', 'Lucerne', 52),
-      ('Zurich', 'Bern', 125),
-      ('Zurich', 'St. Gallen', 85),
-      ('Zurich', 'Chur', 120),
-      ('Winterthur', 'St. Gallen', 60),
-      ('Basel', 'Bern', 95),
-      ('Basel', 'Biel', 75),
-      ('Bern', 'Biel', 35),
-      ('Bern', 'Lucerne', 90),
-      ('Bern', 'Lausanne', 105),
-      ('Bern', 'Sion', 155),
-      ('Lausanne', 'Geneva', 65),
-      ('Lausanne', 'Sion', 95),
-      ('Lucerne', 'Bellinzona', 125),
-      ('Bellinzona', 'Lugano', 30),
-      ('Bellinzona', 'Chur', 110),
-      ('St. Gallen', 'Chur', 95),
-    ];
-    for (final (u, v, dist) in connections) {
-      g.addEdge(u, v, value: dist);
-    }
-    return g;
-  }
-
-  void layoutSwissRailways() {
-    final coords = <String, (double, double)>{
-      'Geneva': (130, 460),
-      'Lausanne': (230, 390),
-      'Sion': (350, 470),
-      'Biel': (330, 230),
-      'Bern': (370, 300),
-      'Basel': (390, 120),
-      'Lucerne': (500, 260),
-      'Zurich': (560, 180),
-      'Winterthur': (650, 140),
-      'St. Gallen': (750, 150),
-      'Chur': (740, 290),
-      'Bellinzona': (620, 430),
-      'Lugano': (630, 520),
-    };
-    for (final entry in coords.entries) {
-      final node = state.nodes[entry.key];
-      if (node != null) {
-        node.x = entry.value.$1;
-        node.y = entry.value.$2;
-      }
-    }
-  }
-
-  Graph<String, num> buildCoursePrerequisites() {
-    final g = Graph<String, num>(isDirected: true);
-    const edges = [
-      ('CS 101', 'CS 102'),
-      ('Math 101', 'CS 102'),
-      ('Math 101', 'Math 201'),
-      ('CS 102', 'CS 201'),
-      ('CS 102', 'CS 202'),
-      ('Math 201', 'CS 301'),
-      ('CS 201', 'CS 301'),
-      ('CS 201', 'CS 302'),
-      ('CS 202', 'CS 302'),
-      ('CS 301', 'CS 401'),
-      ('CS 302', 'CS 401'),
-    ];
-    for (final (u, v) in edges) {
-      g.addEdge(u, v, value: 1);
-    }
-    return g;
-  }
-
-  void layoutCoursePrerequisites() {
-    const coords = <String, (double, double)>{
-      'CS 101': (150, 200),
-      'Math 101': (150, 360),
-      'CS 102': (310, 200),
-      'Math 201': (310, 360),
-      'CS 202': (470, 140),
-      'CS 201': (470, 280),
-      'CS 302': (630, 180),
-      'CS 301': (630, 360),
-      'CS 401': (770, 270),
-    };
-    for (final entry in coords.entries) {
-      final node = state.nodes[entry.key];
-      if (node != null) {
-        node.x = entry.value.$1;
-        node.y = entry.value.$2;
-      }
-    }
-  }
-
-  Graph<String, num> buildNetworkFlow() {
-    final g = Graph<String, num>(isDirected: true);
-    const edges = [
-      ('Source', 'A', 16),
-      ('Source', 'B', 13),
-      ('A', 'B', 10),
-      ('B', 'A', 4),
-      ('A', 'C', 12),
-      ('B', 'D', 14),
-      ('C', 'B', 9),
-      ('D', 'C', 7),
-      ('C', 'Sink', 20),
-      ('D', 'Sink', 4),
-    ];
-    for (final (u, v, cap) in edges) {
-      g.addEdge(u, v, value: cap);
-    }
-    return g;
-  }
-
-  void layoutNetworkFlow() {
-    const coords = <String, (double, double)>{
-      'Source': (150, 280),
-      'A': (330, 170),
-      'B': (330, 390),
-      'C': (530, 170),
-      'D': (530, 390),
-      'Sink': (710, 280),
-    };
-    for (final entry in coords.entries) {
-      final node = state.nodes[entry.key];
-      if (node != null) {
-        node.x = entry.value.$1;
-        node.y = entry.value.$2;
-      }
-    }
-  }
-
-  Graph<String, num> buildWebHyperlinks() {
-    final g = Graph<String, num>(isDirected: true);
-    const edges = [
-      ('Home', 'About'),
-      ('Home', 'Products'),
-      ('Home', 'Blog'),
-      ('About', 'Home'),
-      ('Products', 'Details'),
-      ('Products', 'Cart'),
-      ('Details', 'Products'),
-      ('Details', 'Reviews'),
-      ('Reviews', 'Details'),
-      ('Reviews', 'Home'),
-      ('Cart', 'Checkout'),
-      ('Checkout', 'Home'),
-      ('Blog', 'Home'),
-      ('Blog', 'Reviews'),
-    ];
-    for (final (u, v) in edges) {
-      g.addEdge(u, v, value: 1);
-    }
-    return g;
-  }
-
-  void layoutWebHyperlinks() {
-    const coords = <String, (double, double)>{
-      'Home': (440, 280),
-      'About': (260, 200),
-      'Blog': (300, 120),
-      'Reviews': (580, 120),
-      'Details': (620, 220),
-      'Products': (600, 340),
-      'Cart': (440, 440),
-      'Checkout': (260, 380),
-    };
-    for (final entry in coords.entries) {
-      final node = state.nodes[entry.key];
-      if (node != null) {
-        node.x = entry.value.$1;
-        node.y = entry.value.$2;
-      }
-    }
-  }
-
-  Graph<String, num> buildPetersen() {
-    final g = Graph<String, num>(isDirected: false);
-    for (var i = 0; i < 5; i++) {
-      g.addEdge('v$i', 'v${(i + 1) % 5}', value: 1);
-      g.addEdge('v$i', 'v${i + 5}', value: 1);
-      g.addEdge('v${i + 5}', 'v${(i + 2) % 5 + 5}', value: 1);
-    }
-    return g;
-  }
-
-  void layoutPetersen() {
-    const cx = 320.0, cy = 260.0;
-    const rOuter = 160.0, rInner = 80.0;
-    for (var i = 0; i < 5; i++) {
-      final angle = -math.pi / 2 + i * 2 * math.pi / 5;
-      final nodeOuter = state.nodes['v$i'];
-      if (nodeOuter != null) {
-        nodeOuter.x = cx + rOuter * math.cos(angle);
-        nodeOuter.y = cy + rOuter * math.sin(angle);
-      }
-      final nodeInner = state.nodes['v${i + 5}'];
-      if (nodeInner != null) {
-        nodeInner.x = cx + rInner * math.cos(angle);
-        nodeInner.y = cy + rInner * math.sin(angle);
-      }
-    }
-  }
-
-  Graph<String, num> buildFlorentine() {
-    final g = Graph<String, num>(isDirected: false);
-    const marriages = [
-      ('Medici', 'Acciaiuoli'),
-      ('Medici', 'Albizzi'),
-      ('Medici', 'Barbadori'),
-      ('Medici', 'Ridolfi'),
-      ('Medici', 'Tornabuoni'),
-      ('Medici', 'Salviati'),
-      ('Castellani', 'Barbadori'),
-      ('Castellani', 'Peruzzi'),
-      ('Castellani', 'Strozzi'),
-      ('Peruzzi', 'Strozzi'),
-      ('Peruzzi', 'Bischeri'),
-      ('Strozzi', 'Bischeri'),
-      ('Strozzi', 'Ridolfi'),
-      ('Albizzi', 'Ginori'),
-      ('Albizzi', 'Guadagni'),
-      ('Salviati', 'Pazzi'),
-      ('Bischeri', 'Guadagni'),
-      ('Guadagni', 'Lamberteschi'),
-      ('Guadagni', 'Tornabuoni'),
-      ('Ridolfi', 'Tornabuoni'),
-    ];
-    for (final (u, v) in marriages) {
-      g.addEdge(u, v, value: 1);
-    }
-    return g;
-  }
-
-  Graph<String, num> buildArpanet() {
-    final g = Graph<String, num>(isDirected: false);
-    const links = [
-      ('SRI', 'UCLA'),
-      ('SRI', 'UCSB'),
-      ('SRI', 'UTAH'),
-      ('UCLA', 'UCSB'),
-      ('UCLA', 'RAND'),
-      ('UCSB', 'SDC'),
-      ('RAND', 'SDC'),
-      ('RAND', 'BBN'),
-      ('UTAH', 'MIT'),
-      ('SDC', 'UTAH'),
-      ('BBN', 'MIT'),
-      ('BBN', 'HARVARD'),
-      ('BBN', 'BURROUGHS'),
-      ('MIT', 'LINCOLN'),
-      ('HARVARD', 'CARNEGIE'),
-      ('CARNEGIE', 'CASE'),
-      ('CASE', 'LINCOLN'),
-      ('BURROUGHS', 'RAND'),
-    ];
-    for (final (u, v) in links) {
-      g.addEdge(u, v, value: 1);
-    }
-    return g;
-  }
-
-  Graph<String, num> buildDodecahedron() {
-    final g = Graph<String, num>(isDirected: false);
-    const edges = [
-      ('1', '2'),
-      ('2', '3'),
-      ('3', '4'),
-      ('4', '5'),
-      ('5', '1'),
-      ('1', '6'),
-      ('2', '7'),
-      ('3', '8'),
-      ('4', '9'),
-      ('5', '10'),
-      ('6', '11'),
-      ('7', '12'),
-      ('8', '13'),
-      ('9', '14'),
-      ('10', '15'),
-      ('11', '12'),
-      ('12', '13'),
-      ('13', '14'),
-      ('14', '15'),
-      ('15', '11'),
-      ('11', '16'),
-      ('12', '17'),
-      ('13', '18'),
-      ('14', '19'),
-      ('15', '20'),
-      ('16', '17'),
-      ('17', '18'),
-      ('18', '19'),
-      ('19', '20'),
-      ('20', '16'),
-    ];
-    for (final (u, v) in edges) {
-      g.addEdge('v$u', 'v$v', value: 1);
-    }
-    return g;
-  }
+  final presets = <String, (bool, Graph<String, num> Function())>{
+    'koenigsberg': (
+      false,
+      () => unweightedPreset({
+        'Altstadt (North)': ['Krämerbrücke', 'Schmiedebrücke', 'Holzbrücke'],
+        'Kneiphof (Island)': [
+          'Krämerbrücke',
+          'Schmiedebrücke',
+          'Honigbrücke',
+          'Grüne Brücke',
+          'Köttelbrücke',
+        ],
+        'Vorstadt (South)': ['Grüne Brücke', 'Köttelbrücke', 'Hohe Brücke'],
+        'Lomse (East)': ['Holzbrücke', 'Honigbrücke', 'Hohe Brücke'],
+      }),
+    ),
+    'swiss': (
+      true,
+      () => weightedPreset([
+        ('Zurich', 'Winterthur', 25),
+        ('Zurich', 'Basel', 85),
+        ('Zurich', 'Lucerne', 52),
+        ('Zurich', 'Bern', 125),
+        ('Zurich', 'St. Gallen', 85),
+        ('Zurich', 'Chur', 120),
+        ('Winterthur', 'St. Gallen', 60),
+        ('Basel', 'Bern', 95),
+        ('Basel', 'Biel', 75),
+        ('Bern', 'Biel', 35),
+        ('Bern', 'Lucerne', 90),
+        ('Bern', 'Lausanne', 105),
+        ('Bern', 'Sion', 155),
+        ('Lausanne', 'Geneva', 65),
+        ('Lausanne', 'Sion', 95),
+        ('Lucerne', 'Bellinzona', 125),
+        ('Bellinzona', 'Lugano', 30),
+        ('Bellinzona', 'Chur', 110),
+        ('St. Gallen', 'Chur', 95),
+      ]),
+    ),
+    'petersen': (
+      false,
+      () => unweightedPreset({
+        for (var i = 0; i < 5; i++) 'v$i': ['v${(i + 1) % 5}', 'v${i + 5}'],
+        for (var i = 0; i < 5; i++) 'v${i + 5}': ['v${(i + 2) % 5 + 5}'],
+      }),
+    ),
+    'florentine': (
+      false,
+      () => unweightedPreset({
+        'Medici': [
+          'Acciaiuoli',
+          'Albizzi',
+          'Barbadori',
+          'Ridolfi',
+          'Tornabuoni',
+          'Salviati',
+        ],
+        'Castellani': ['Barbadori', 'Peruzzi', 'Strozzi'],
+        'Peruzzi': ['Strozzi', 'Bischeri'],
+        'Strozzi': ['Bischeri', 'Ridolfi'],
+        'Albizzi': ['Ginori', 'Guadagni'],
+        'Salviati': ['Pazzi'],
+        'Bischeri': ['Guadagni'],
+        'Guadagni': ['Lamberteschi', 'Tornabuoni'],
+        'Ridolfi': ['Tornabuoni'],
+      }),
+    ),
+    'arpanet': (
+      false,
+      () => unweightedPreset({
+        'SRI': ['UCLA', 'UCSB', 'UTAH'],
+        'UCLA': ['UCSB', 'RAND'],
+        'UCSB': ['SDC'],
+        'RAND': ['SDC', 'BBN', 'BURROUGHS'],
+        'UTAH': ['MIT', 'SDC'],
+        'BBN': ['MIT', 'HARVARD', 'BURROUGHS'],
+        'MIT': ['LINCOLN'],
+        'HARVARD': ['CARNEGIE'],
+        'CARNEGIE': ['CASE'],
+        'CASE': ['LINCOLN'],
+      }),
+    ),
+    'dodecahedron': (
+      false,
+      () => unweightedPreset({
+        'v1': ['v2', 'v5', 'v6'],
+        'v2': ['v3', 'v7'],
+        'v3': ['v4', 'v8'],
+        'v4': ['v5', 'v9'],
+        'v5': ['v10'],
+        'v6': ['v11'],
+        'v7': ['v12'],
+        'v8': ['v13'],
+        'v9': ['v14'],
+        'v10': ['v15'],
+        'v11': ['v12', 'v15', 'v16'],
+        'v12': ['v13', 'v17'],
+        'v13': ['v14', 'v18'],
+        'v14': ['v15', 'v19'],
+        'v15': ['v20'],
+        'v16': ['v17', 'v20'],
+        'v17': ['v18'],
+        'v18': ['v19'],
+        'v19': ['v20'],
+      }),
+    ),
+    'dag': (
+      false,
+      () => unweightedPreset({
+        'CS 101': ['CS 102'],
+        'Math 101': ['CS 102', 'Math 201'],
+        'CS 102': ['CS 201', 'CS 202'],
+        'Math 201': ['CS 301'],
+        'CS 201': ['CS 301', 'CS 302'],
+        'CS 202': ['CS 302'],
+        'CS 301': ['CS 401'],
+        'CS 302': ['CS 401'],
+      }, isDirected: true),
+    ),
+    'flow': (
+      true,
+      () => weightedPreset([
+        ('Source', 'A', 16),
+        ('Source', 'B', 13),
+        ('A', 'B', 10),
+        ('B', 'A', 4),
+        ('A', 'C', 12),
+        ('B', 'D', 14),
+        ('C', 'B', 9),
+        ('D', 'C', 7),
+        ('C', 'Sink', 20),
+        ('D', 'Sink', 4),
+      ], isDirected: true),
+    ),
+    'web': (
+      false,
+      () => unweightedPreset({
+        'Home': ['About', 'Products', 'Blog'],
+        'About': ['Home'],
+        'Products': ['Details', 'Cart'],
+        'Details': ['Products', 'Reviews'],
+        'Reviews': ['Details', 'Home'],
+        'Cart': ['Checkout'],
+        'Checkout': ['Home'],
+        'Blog': ['Home', 'Reviews'],
+      }, isDirected: true),
+    ),
+    'karate': (
+      false,
+      () => unweightedPreset({
+        'Mr. Hi (1)': [
+          '2',
+          '3',
+          '4',
+          '5',
+          '6',
+          '7',
+          '8',
+          '9',
+          '11',
+          '12',
+          '13',
+          '14',
+          '18',
+          '20',
+          '22',
+          '32',
+        ],
+        '2': ['3', '4', '8', '14', '18', '20', '22', '31'],
+        '3': ['4', '8', '9', '10', '14', '28', '29', '33'],
+        '4': ['8', '13', '14'],
+        '5': ['7', '11'],
+        '6': ['7', '11', '17'],
+        '7': ['17'],
+        '9': ['31', '33', '34 (John A)'],
+        '10': ['34 (John A)'],
+        '14': ['34 (John A)'],
+        '15': ['33', '34 (John A)'],
+        '16': ['33', '34 (John A)'],
+        '19': ['33', '34 (John A)'],
+        '20': ['34 (John A)'],
+        '21': ['33', '34 (John A)'],
+        '23': ['33', '34 (John A)'],
+        '24': ['26', '28', '30', '33', '34 (John A)'],
+        '25': ['26', '28', '32'],
+        '26': ['32'],
+        '27': ['30', '34 (John A)'],
+        '28': ['34 (John A)'],
+        '29': ['32', '34 (John A)'],
+        '30': ['33', '34 (John A)'],
+        '31': ['33', '34 (John A)'],
+        '32': ['33', '34 (John A)'],
+        '33': ['34 (John A)'],
+      }),
+    ),
+    'les_miserables': (
+      true,
+      () => weightedPreset([
+        ('Valjean', 'Myriel', 5),
+        ('Valjean', 'Fantine', 9),
+        ('Valjean', 'Cosette', 31),
+        ('Valjean', 'Javert', 17),
+        ('Valjean', 'Thenardier', 12),
+        ('Valjean', 'Mme Thenardier', 7),
+        ('Valjean', 'Marius', 19),
+        ('Valjean', 'Enjolras', 4),
+        ('Valjean', 'Fauchelevent', 8),
+        ('Valjean', 'Bamatabois', 2),
+        ('Valjean', 'Gillenormand', 2),
+        ('Valjean', 'Gavroche', 1),
+        ('Myriel', 'Mlle Baptistine', 8),
+        ('Myriel', 'Mme Magloire', 10),
+        ('Mlle Baptistine', 'Mme Magloire', 6),
+        ('Fantine', 'Tholomyes', 4),
+        ('Fantine', 'Blacheville', 3),
+        ('Fantine', 'Favourite', 4),
+        ('Fantine', 'Dahlia', 4),
+        ('Fantine', 'Zephine', 4),
+        ('Fantine', 'Thenardier', 2),
+        ('Fantine', 'Mme Thenardier', 2),
+        ('Fantine', 'Javert', 5),
+        ('Fantine', 'Bamatabois', 1),
+        ('Tholomyes', 'Blacheville', 4),
+        ('Tholomyes', 'Favourite', 4),
+        ('Tholomyes', 'Dahlia', 4),
+        ('Tholomyes', 'Zephine', 4),
+        ('Blacheville', 'Favourite', 4),
+        ('Blacheville', 'Dahlia', 4),
+        ('Blacheville', 'Zephine', 4),
+        ('Favourite', 'Dahlia', 5),
+        ('Favourite', 'Zephine', 4),
+        ('Dahlia', 'Zephine', 4),
+        ('Cosette', 'Marius', 21),
+        ('Cosette', 'Thenardier', 4),
+        ('Cosette', 'Mme Thenardier', 4),
+        ('Cosette', 'Javert', 1),
+        ('Cosette', 'Gillenormand', 3),
+        ('Cosette', 'Mlle Gillenormand', 2),
+        ('Thenardier', 'Mme Thenardier', 13),
+        ('Thenardier', 'Eponine', 5),
+        ('Thenardier', 'Gavroche', 1),
+        ('Thenardier', 'Javert', 5),
+        ('Thenardier', 'Marius', 2),
+        ('Thenardier', 'Babet', 6),
+        ('Thenardier', 'Gueulemer', 6),
+        ('Thenardier', 'Claquesous', 4),
+        ('Thenardier', 'Montparnasse', 2),
+        ('Mme Thenardier', 'Eponine', 2),
+        ('Babet', 'Gueulemer', 6),
+        ('Babet', 'Claquesous', 4),
+        ('Babet', 'Montparnasse', 2),
+        ('Gueulemer', 'Claquesous', 4),
+        ('Gueulemer', 'Montparnasse', 2),
+        ('Claquesous', 'Montparnasse', 2),
+        ('Javert', 'Enjolras', 1),
+        ('Javert', 'Gavroche', 1),
+        ('Marius', 'Eponine', 5),
+        ('Marius', 'Enjolras', 7),
+        ('Marius', 'Courfeyrac', 9),
+        ('Marius', 'Combeferre', 5),
+        ('Marius', 'Bossuet', 5),
+        ('Marius', 'Gavroche', 4),
+        ('Marius', 'Gillenormand', 6),
+        ('Marius', 'Mlle Gillenormand', 6),
+        ('Gillenormand', 'Mlle Gillenormand', 9),
+        ('Enjolras', 'Courfeyrac', 17),
+        ('Enjolras', 'Combeferre', 15),
+        ('Enjolras', 'Bossuet', 12),
+        ('Enjolras', 'Gavroche', 7),
+        ('Enjolras', 'Grantaire', 3),
+        ('Courfeyrac', 'Combeferre', 13),
+        ('Courfeyrac', 'Bossuet', 11),
+        ('Courfeyrac', 'Gavroche', 7),
+        ('Courfeyrac', 'Eponine', 2),
+        ('Combeferre', 'Bossuet', 9),
+        ('Combeferre', 'Gavroche', 6),
+        ('Bossuet', 'Gavroche', 5),
+        ('Bossuet', 'Grantaire', 3),
+        ('Gavroche', 'Grantaire', 1),
+      ]),
+    ),
+    'southern_women': (
+      false,
+      () => unweightedPreset({
+        'Evelyn': ['E1', 'E2', 'E3', 'E4', 'E5', 'E6', 'E8', 'E9'],
+        'Laura': ['E1', 'E2', 'E3', 'E5', 'E6', 'E7', 'E8'],
+        'Theresa': ['E2', 'E3', 'E4', 'E5', 'E6', 'E7', 'E8', 'E9'],
+        'Brenda': ['E1', 'E3', 'E4', 'E5', 'E6', 'E7', 'E8'],
+        'Charlotte': ['E3', 'E4', 'E5', 'E7'],
+        'Frances': ['E3', 'E5', 'E6', 'E8'],
+        'Eleanor': ['E5', 'E6', 'E7', 'E8'],
+        'Pearl': ['E6', 'E8', 'E9'],
+        'Ruth': ['E5', 'E7', 'E8', 'E9'],
+        'Verne': ['E7', 'E8', 'E9', 'E12'],
+        'Myra': ['E8', 'E9', 'E10', 'E12'],
+        'Katherine': ['E8', 'E9', 'E10', 'E12', 'E13', 'E14'],
+        'Sylvia': ['E7', 'E8', 'E9', 'E10', 'E12', 'E13', 'E14'],
+        'Nora': ['E6', 'E7', 'E9', 'E10', 'E11', 'E12', 'E13', 'E14'],
+        'Helen': ['E7', 'E8', 'E10', 'E11', 'E12'],
+        'Dorothy': ['E8', 'E9'],
+        'Olivia': ['E9', 'E11'],
+        'Flora': ['E9', 'E11'],
+      }),
+    ),
+  };
 
   void loadPreset(String preset) {
     state.saveSnapshot();
-    Graph<String, num> g;
-    var customLayout = false;
-    switch (preset) {
-      case 'koenigsberg':
-        state.isWeighted = false;
-        g = buildKoenigsberg();
-        state.primaryGraph = g;
-        state.syncNodes();
-        layoutKoenigsberg();
-        customLayout = true;
-      case 'swiss':
-        state.isWeighted = true;
-        g = buildSwissRailways();
-        state.primaryGraph = g;
-        state.syncNodes();
-        layoutSwissRailways();
-        customLayout = true;
-      case 'petersen':
-        state.isWeighted = false;
-        g = buildPetersen();
-        state.primaryGraph = g;
-        state.syncNodes();
-        layoutPetersen();
-        customLayout = true;
-      case 'florentine':
-        state.isWeighted = false;
-        g = buildFlorentine();
-        state.primaryGraph = g;
-        state.syncNodes();
-      case 'arpanet':
-        state.isWeighted = false;
-        g = buildArpanet();
-        state.primaryGraph = g;
-        state.syncNodes();
-      case 'dodecahedron':
-        state.isWeighted = false;
-        g = buildDodecahedron();
-        state.primaryGraph = g;
-        state.syncNodes();
-      case 'dag':
-        state.isWeighted = false;
-        g = buildCoursePrerequisites();
-        state.primaryGraph = g;
-        state.syncNodes();
-        layoutCoursePrerequisites();
-        customLayout = true;
-      case 'flow':
-        state.isWeighted = true;
-        g = buildNetworkFlow();
-        state.primaryGraph = g;
-        state.syncNodes();
-        layoutNetworkFlow();
-        customLayout = true;
-      case 'web':
-        state.isWeighted = false;
-        g = buildWebHyperlinks();
-        state.primaryGraph = g;
-        state.syncNodes();
-        layoutWebHyperlinks();
-        customLayout = true;
-      default:
-        state.isWeighted = false;
-        g = buildPetersen();
-        state.primaryGraph = g;
-        state.syncNodes();
-        layoutPetersen();
-        customLayout = true;
-    }
+    final (weighted, builder) = presets[preset] ?? presets['petersen']!;
+    state.isWeighted = weighted;
+    state.primaryGraph = builder();
+    state.nodes.clear();
+    state.syncNodes();
     state.clearSelection();
-    if (!customLayout) {
-      renderer.autoLayout(state);
-    }
+    renderer.autoLayout(state);
     state.evaluateModifiers();
     renderer.resetView();
     updateUI();
@@ -917,6 +826,39 @@ void main() {
         .querySelector('[data-cmd="select.mode_edge"]')
         ?.classList
         .toggle('checked', state.selectEdgesMode);
+
+    final items = web.document.querySelectorAll('.dropdown-item[data-cmd]');
+    for (var i = 0; i < items.length; i++) {
+      final item = items.item(i) as web.HTMLElement?;
+      final cmdId = item?.getAttribute('data-cmd');
+      if (item != null && cmdId != null) {
+        final cmd = CommandRegistry.findById(cmdId);
+        final enabled = cmd?.canExecute(state) ?? false;
+        item.classList.toggle('disabled', !enabled);
+      }
+    }
+
+    final menus = web.document.querySelectorAll('.menu-item');
+    for (var i = 0; i < menus.length; i++) {
+      final menu = menus.item(i) as web.HTMLElement?;
+      if (menu == null) continue;
+      final trigger =
+          menu.querySelector('.menu-label') as web.HTMLButtonElement?;
+      if (trigger == null) continue;
+      final dropdownItems = menu.querySelectorAll('.dropdown-item[data-cmd]');
+      var anyEnabled = false;
+      for (var j = 0; j < dropdownItems.length; j++) {
+        final item = dropdownItems.item(j) as web.HTMLElement?;
+        if (item != null && !item.classList.contains('disabled')) {
+          anyEnabled = true;
+          break;
+        }
+      }
+      trigger.disabled = !anyEnabled;
+      if (!anyEnabled) {
+        menu.classList.remove('open');
+      }
+    }
   }
 
   updateUI = () {
@@ -980,14 +922,7 @@ void main() {
         updateUI();
       },
       onSelectEdge: (u, v, {isShift = false}) {
-        if (!isShift) {
-          state.clearSelection();
-          state.selectedEdge = (u, v);
-          state.selectedEdges = {(u, v)};
-        } else {
-          state.selectedEdges.add((u, v));
-          state.selectedEdge = (u, v);
-        }
+        state.selectEdge(u, v, toggle: false, clearOthers: !isShift);
         updateUI();
       },
     );
@@ -1091,26 +1026,12 @@ void main() {
   // Interactive Edge Click handler
   void handleEdgeClick(String source, String target, web.MouseEvent event) {
     if (!state.selectEdgesMode) return;
-    if (event.shiftKey) {
-      if (state.selectedEdges.contains((source, target)) ||
-          (!state.primaryGraph.isDirected &&
-              state.selectedEdges.contains((target, source)))) {
-        state.selectedEdges.remove((source, target));
-        state.selectedEdges.remove((target, source));
-      } else {
-        state.selectedEdges.add((source, target));
-      }
-      state.selectedEdge = state.selectedEdges.isNotEmpty
-          ? state.selectedEdges.first
-          : null;
-    } else {
-      state.selectedVertices.clear();
-      state.activeVertex = null;
-      state.selectedSource = null;
-      state.selectedTarget = null;
-      state.selectedEdge = (source, target);
-      state.selectedEdges = {(source, target)};
-    }
+    state.selectEdge(
+      source,
+      target,
+      toggle: event.shiftKey,
+      clearOthers: !event.shiftKey,
+    );
     updateUI();
   }
 
@@ -1129,8 +1050,11 @@ void main() {
       state.syncSelectionSourceTarget();
     }
     if (state.selectEdgesMode && matchedEdges.isNotEmpty) {
-      state.selectedEdges.addAll(matchedEdges);
-      state.selectedEdge = matchedEdges.last;
+      final normalized = matchedEdges.map(
+        (e) => state.normalizeEdge(e.$1, e.$2),
+      );
+      state.selectedEdges.addAll(normalized);
+      state.selectedEdge = normalized.last;
     }
     updateUI();
   }
@@ -1305,6 +1229,7 @@ void main() {
     final trigger = menuTriggers.item(i) as web.HTMLButtonElement?;
     if (trigger == null) continue;
     trigger.onClick.listen((event) {
+      if (trigger.disabled) return;
       event.stopPropagation();
       final parent = trigger.parentElement as web.HTMLElement?;
       if (parent == null) return;
@@ -1316,6 +1241,7 @@ void main() {
     });
 
     trigger.onMouseEnter.listen((event) {
+      if (trigger.disabled) return;
       if (isAnyMenuOpen) {
         final parent = trigger.parentElement as web.HTMLElement?;
         if (parent != null && !parent.classList.contains('open')) {
@@ -1341,6 +1267,7 @@ void main() {
     final cmdId = item.getAttribute('data-cmd');
     if (cmdId != null) {
       item.onClick.listen((event) {
+        if (item.classList.contains('disabled')) return;
         event.stopPropagation();
         closeAllMenus();
         executeCommand(cmdId);

@@ -38,7 +38,7 @@ void main() {
       check(result['V2']!.x).equals(100.0);
     });
 
-    test('default single column layout', () {
+    test('default single column layout when disconnected without edges', () {
       final input = LayoutInput<String>(
         vertices: ['A', 'B'],
         successorsOf: (_) => const [],
@@ -46,6 +46,29 @@ void main() {
       const strategy = PartiteLayout<String>();
       final result = strategy.layout(input);
       check(result.positions.length).equals(2);
+      check(result['A']!.x).equals(result['B']!.x);
+    });
+
+    test('automatic bipartite layering when connected with edges', () {
+      final input = LayoutInput<String>(
+        vertices: ['U1', 'U2', 'V1', 'V2'],
+        successorsOf: (v) => switch (v) {
+          'U1' => ['V1', 'V2'],
+          'U2' => ['V1'],
+          _ => const [],
+        },
+      );
+      const strategy = PartiteLayout<String>(
+        layerDistance: 100,
+        orientation: LayoutOrientation.leftToRight,
+      );
+      final result = strategy.layout(input);
+
+      check(result.positions.length).equals(4);
+      // U vertices and V vertices should be in distinct columns
+      check(result['U1']!.x).not((it) => it.equals(result['V1']!.x));
+      check(result['U1']!.x).equals(result['U2']!.x);
+      check(result['V1']!.x).equals(result['V2']!.x);
     });
 
     test('multipartite with explicit layers', () {

@@ -72,6 +72,19 @@ class DinicMaxFlow<V> {
     return _maxFlow(mappedSource, mappedTarget);
   }
 
+  /// Returns the computed flow from [source] to [target] after [call].
+  num flow(V source, V target) {
+    final mappedSource = _mapping[source], mappedTarget = _mapping[target];
+    if (mappedSource == null || mappedTarget == null) return 0;
+    num result = 0;
+    for (final edge in mappedSource.outgoing) {
+      if (edge.target == mappedTarget && edge.capacity > 0 && edge.flow > 0) {
+        result += edge.flow;
+      }
+    }
+    return result;
+  }
+
   num _maxFlow(_Vertex<V> source, _Vertex<V> target) {
     if (source == target) return 0;
     num flow = 0;

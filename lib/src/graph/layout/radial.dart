@@ -66,24 +66,27 @@ final class RadialLayout<V> implements GraphLayout<V> {
       );
     }
 
-    final comps = components(input);
-    if (comps.length > 1) {
-      final compResults = <LayoutResult<V>>[];
-      for (final comp in comps) {
-        final compSet = comp.toSet();
-        final compInput = LayoutInput<V>(
-          vertices: comp,
-          successorsOf: (v) => input.successorsOf(v).where(compSet.contains),
-          predecessorsOf: input.isDirected
-              ? (v) => input.predecessorsOf!(v).where(compSet.contains)
-              : null,
-          vertexSize: input.vertexSize,
-          edgeWeight: input.edgeWeight,
-          vertexStrategy: input.vertexStrategy,
-        );
-        compResults.add(_layoutSingleComponent(compInput));
+    if (input.packComponents) {
+      final comps = components(input);
+      if (comps.length > 1) {
+        final compResults = <LayoutResult<V>>[];
+        for (final comp in comps) {
+          final compSet = comp.toSet();
+          final compInput = LayoutInput<V>(
+            vertices: comp,
+            successorsOf: (v) => input.successorsOf(v).where(compSet.contains),
+            predecessorsOf: input.isDirected
+                ? (v) => input.predecessorsOf!(v).where(compSet.contains)
+                : null,
+            vertexSize: input.vertexSize,
+            edgeWeight: input.edgeWeight,
+            vertexStrategy: input.vertexStrategy,
+            packComponents: false,
+          );
+          compResults.add(_layoutSingleComponent(compInput));
+        }
+        return packComponents(compResults, vertexDistance: vertexDistance);
       }
-      return packComponents(compResults, vertexDistance: vertexDistance);
     }
 
     return _layoutSingleComponent(input);

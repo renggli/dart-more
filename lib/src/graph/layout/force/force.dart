@@ -69,24 +69,27 @@ final class ForceLayout<V> implements GraphLayout<V> {
       );
     }
 
-    final comps = components(input);
-    if (comps.length > 1) {
-      final compResults = <LayoutResult<V>>[];
-      for (final comp in comps) {
-        final compSet = comp.toSet();
-        final compInput = LayoutInput<V>(
-          vertices: comp,
-          successorsOf: (v) => input.successorsOf(v).where(compSet.contains),
-          predecessorsOf: input.isDirected
-              ? (v) => input.predecessorsOf!(v).where(compSet.contains)
-              : null,
-          vertexSize: input.vertexSize,
-          edgeWeight: input.edgeWeight,
-          vertexStrategy: input.vertexStrategy,
-        );
-        compResults.add(_layoutComponent(compInput));
+    if (input.packComponents) {
+      final comps = components(input);
+      if (comps.length > 1) {
+        final compResults = <LayoutResult<V>>[];
+        for (final comp in comps) {
+          final compSet = comp.toSet();
+          final compInput = LayoutInput<V>(
+            vertices: comp,
+            successorsOf: (v) => input.successorsOf(v).where(compSet.contains),
+            predecessorsOf: input.isDirected
+                ? (v) => input.predecessorsOf!(v).where(compSet.contains)
+                : null,
+            vertexSize: input.vertexSize,
+            edgeWeight: input.edgeWeight,
+            vertexStrategy: input.vertexStrategy,
+            packComponents: false,
+          );
+          compResults.add(_layoutComponent(compInput));
+        }
+        return packComponents(compResults, vertexDistance: vertexDistance);
       }
-      return packComponents(compResults, vertexDistance: vertexDistance);
     }
 
     return _layoutComponent(input);
@@ -97,16 +100,23 @@ final class ForceLayout<V> implements GraphLayout<V> {
     final n = list.length;
     final rng = random ?? (seed != null ? math.Random(seed) : math.Random(42));
 
+    final sizes = <V, LayoutSize>{for (final v in list) v: input.sizeOf(v)};
+    var totalExtent = 0.0;
+    for (final sz in sizes.values) {
+      totalExtent += math.max(sz.width, sz.height);
+    }
+    final avgExtent = n > 0 ? totalExtent / n : 40.0;
+    final minStep = avgExtent + vertexDistance;
+
     final width = bounds.width > 0 ? bounds.width : 800.0;
     final height = bounds.height > 0 ? bounds.height : 600.0;
     final area = width * height;
     final k =
         config.optimalDistance ??
-        math.max(vertexDistance * 2.0, 0.75 * math.sqrt(area / n));
+        math.max(minStep * 1.4, 0.75 * math.sqrt(area / n));
     final k2 = k * k;
 
     final posMap = <V, (double, double)>{};
-    final sizes = <V, LayoutSize>{for (final v in list) v: input.sizeOf(v)};
 
     if (initialPositions != null) {
       for (final v in list) {

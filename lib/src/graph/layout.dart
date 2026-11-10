@@ -34,6 +34,7 @@ extension GraphLayoutExtension<V, E> on Graph<V, E> {
       vertexSize: vertexSize,
       edgeWeight: edgeWeight ?? getDefaultEdgeValueOr(1),
       vertexStrategy: vertexStrategy,
+      packComponents: packComponents,
     );
     var result = strategy.layout(input);
     if (removeOverlaps) {

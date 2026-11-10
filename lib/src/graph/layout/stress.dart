@@ -64,24 +64,27 @@ final class StressLayout<V> implements GraphLayout<V> {
       );
     }
 
-    final comps = components(input);
-    if (comps.length > 1) {
-      final compResults = <LayoutResult<V>>[];
-      for (final comp in comps) {
-        final compSet = comp.toSet();
-        final compInput = LayoutInput<V>(
-          vertices: comp,
-          successorsOf: (v) => input.successorsOf(v).where(compSet.contains),
-          predecessorsOf: input.isDirected
-              ? (v) => input.predecessorsOf!(v).where(compSet.contains)
-              : null,
-          vertexSize: input.vertexSize,
-          edgeWeight: input.edgeWeight,
-          vertexStrategy: input.vertexStrategy,
-        );
-        compResults.add(_layoutComponent(compInput));
+    if (input.packComponents) {
+      final comps = components(input);
+      if (comps.length > 1) {
+        final compResults = <LayoutResult<V>>[];
+        for (final comp in comps) {
+          final compSet = comp.toSet();
+          final compInput = LayoutInput<V>(
+            vertices: comp,
+            successorsOf: (v) => input.successorsOf(v).where(compSet.contains),
+            predecessorsOf: input.isDirected
+                ? (v) => input.predecessorsOf!(v).where(compSet.contains)
+                : null,
+            vertexSize: input.vertexSize,
+            edgeWeight: input.edgeWeight,
+            vertexStrategy: input.vertexStrategy,
+            packComponents: false,
+          );
+          compResults.add(_layoutComponent(compInput));
+        }
+        return packComponents(compResults, vertexDistance: vertexDistance);
       }
-      return packComponents(compResults, vertexDistance: vertexDistance);
     }
 
     return _layoutComponent(input);
@@ -91,10 +94,21 @@ final class StressLayout<V> implements GraphLayout<V> {
     final list = input.vertices;
     final n = list.length;
     final sizes = <V, LayoutSize>{for (final v in list) v: input.sizeOf(v)};
+    final extents = Float64List(n);
+    var totalExtent = 0.0;
+    for (var i = 0; i < n; i++) {
+      final sz = sizes[list[i]]!;
+      final ext = math.max(sz.width, sz.height);
+      extents[i] = ext;
+      totalExtent += ext;
+    }
+    final avgExtent = n > 0 ? totalExtent / n : 40.0;
+    final baseStep = avgExtent + vertexDistance;
     final vertexIndex = <V, int>{for (var i = 0; i < n; i++) list[i]: i};
 
     // 1. All-pairs shortest path distances D[i * n + j]
     final distMatrix = Float64List(n * n);
+    var maxGraphDist = 1.0;
     for (var i = 0; i < n; i++) {
       final queue = Queue<int>()..add(i);
       final visited = List<bool>.filled(n, false)..[i] = true;
@@ -114,9 +128,16 @@ final class StressLayout<V> implements GraphLayout<V> {
       }
 
       for (var j = 0; j < n; j++) {
-        distMatrix[i * n + j] = dists[j];
+        final d = dists[j];
+        distMatrix[i * n + j] = d;
+        if (d < double.infinity && d > maxGraphDist) {
+          maxGraphDist = d;
+        }
       }
     }
+
+    final stepLength =
+        baseStep * math.max(1.0, math.sqrt(2.0 * n) / maxGraphDist);
 
     // 2. Weights W[i * n + j] = 1 / (d_ij * d_ij)
     final weightMatrix = Float64List(n * n);
@@ -142,7 +163,7 @@ final class StressLayout<V> implements GraphLayout<V> {
 
     if (n > 2) {
       final spectral = SpectralLayout<V>(
-        scale: vertexDistance * math.sqrt(n),
+        scale: stepLength * math.sqrt(n),
         seed: seed,
       );
       final specResult = spectral.layout(input);
@@ -155,8 +176,9 @@ final class StressLayout<V> implements GraphLayout<V> {
       final (initPos, _) = arcPlacement<V>(
         vertices: list,
         sizeOf: input.sizeOf,
-        radius: vertexDistance,
+        radius: stepLength / 2.0,
         center: center,
+        vertexDistance: vertexDistance,
       );
       for (var i = 0; i < n; i++) {
         final p = initPos[list[i]] ?? center;
@@ -175,12 +197,17 @@ final class StressLayout<V> implements GraphLayout<V> {
         var newY = 0.0;
         final pxI = posX[i];
         final pyI = posY[i];
+        final extI = extents[i];
 
         for (var j = 0; j < n; j++) {
           if (i != j) {
             final w = weightMatrix[i * n + j];
             if (w > 0.0) {
-              final dIdeal = distMatrix[i * n + j] * vertexDistance;
+              final minPairDist = (extI + extents[j]) / 2.0 + vertexDistance;
+              final dIdeal = math.max(
+                minPairDist,
+                distMatrix[i * n + j] * stepLength,
+              );
               var dx = pxI - posX[j];
               var dy = pyI - posY[j];
               var dist = math.sqrt(dx * dx + dy * dy);

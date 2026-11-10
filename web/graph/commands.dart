@@ -20,17 +20,35 @@ enum CommandCategory {
 
 /// Abstract command encapsulating an action performed on the graph state.
 abstract class GraphCommand {
-  const new();
+  const new({
+    required this.id,
+    required this.title,
+    required this.category,
+    this.shortcuts = const [],
+  });
 
-  String get id;
-  String get title;
-  List<String> get shortcuts => shortcut != null ? [shortcut!] : const [];
-  String? get shortcut => null;
-  CommandCategory get category;
+  /// Unique identifier of the command.
+  final String id;
 
+  /// User-facing display title.
+  final String title;
+
+  /// Category under which this command is organized.
+  final CommandCategory category;
+
+  /// Keyboard shortcuts that trigger this command.
+  final List<String> shortcuts;
+
+  /// Primary keyboard shortcut for display.
+  String? get shortcut => shortcuts.isNotEmpty ? shortcuts.first : null;
+
+  /// Whether this command can currently execute given the application state.
   bool canExecute(AppState state);
+
+  /// Executes this command against the application state.
   void execute(AppState state);
 
+  /// Checks whether a keyboard event matches any shortcut of this command.
   bool matchesKey(
     String key, {
     bool ctrl = false,
@@ -75,211 +93,47 @@ abstract class GraphCommand {
   }
 }
 
-// ---------------------------------------------------------------------------
-// File Operations
-// ---------------------------------------------------------------------------
+/// Lightweight command wrapping closures for execution and validation.
+final class SimpleCommand extends GraphCommand {
+  const new({
+    required super.id,
+    required super.title,
+    required super.category,
+    super.shortcuts = const [],
+    this.canExecuteCallback,
+    required this.executeCallback,
+  });
 
-class NewGraphCommand extends GraphCommand {
-  const new();
+  /// Optional predicate for [canExecute].
+  final bool Function(AppState state)? canExecuteCallback;
 
-  @override
-  String get id => 'file.new';
-
-  @override
-  String get title => 'New';
-
-  @override
-  String? get shortcut => 'Ctrl+N';
-
-  @override
-  CommandCategory get category => CommandCategory.file;
+  /// Function to run during [execute].
+  final void Function(AppState state) executeCallback;
 
   @override
-  bool canExecute(AppState state) => true;
+  bool canExecute(AppState state) => canExecuteCallback?.call(state) ?? true;
 
   @override
-  void execute(AppState state) {
-    state.saveSnapshot();
-    state.reset();
-  }
-}
-
-class OpenGraphCommand extends GraphCommand {
-  const new();
-
-  @override
-  String get id => 'file.open';
-
-  @override
-  String get title => 'Open...';
-
-  @override
-  String? get shortcut => 'Ctrl+O';
-
-  @override
-  CommandCategory get category => CommandCategory.file;
-
-  @override
-  bool canExecute(AppState state) => true;
-
-  @override
-  void execute(AppState state) {
-    state.onOpenFile?.call();
-  }
-}
-
-class SaveGraphCommand extends GraphCommand {
-  const new();
-
-  @override
-  String get id => 'file.save';
-
-  @override
-  String get title => 'Save...';
-
-  @override
-  String? get shortcut => 'Ctrl+S';
-
-  @override
-  CommandCategory get category => CommandCategory.file;
-
-  @override
-  bool canExecute(AppState state) => true;
-
-  @override
-  void execute(AppState state) {
-    final jsonStr = GraphIO.exportToJson(state);
-    GraphIO.downloadTextFile('graph.json', jsonStr, 'application/json');
-  }
-}
-
-class ImportGraphCommand extends GraphCommand {
-  const new();
-
-  @override
-  String get id => 'file.import';
-
-  @override
-  String get title => 'Import...';
-
-  @override
-  String? get shortcut => null;
-
-  @override
-  CommandCategory get category => CommandCategory.file;
-
-  @override
-  bool canExecute(AppState state) => true;
-
-  @override
-  void execute(AppState state) {
-    state.onOpenImport?.call();
-  }
-}
-
-class ExportGraphCommand extends GraphCommand {
-  const new();
-
-  @override
-  String get id => 'file.export';
-
-  @override
-  String get title => 'Export...';
-
-  @override
-  String? get shortcut => null;
-
-  @override
-  CommandCategory get category => CommandCategory.file;
-
-  @override
-  bool canExecute(AppState state) => true;
-
-  @override
-  void execute(AppState state) {
-    state.onOpenExport?.call();
-  }
+  void execute(AppState state) => executeCallback(state);
 }
 
 // ---------------------------------------------------------------------------
-// Edit Operations
+// Complex Edit Operations
 // ---------------------------------------------------------------------------
 
-class UndoCommand extends GraphCommand {
-  const new();
-
-  @override
-  String get id => 'edit.undo';
-
-  @override
-  String get title => 'Undo';
-
-  @override
-  String? get shortcut => 'Ctrl+Z';
-
-  @override
-  CommandCategory get category => CommandCategory.edit;
-
-  @override
-  bool canExecute(AppState state) => state.undoStack.isNotEmpty;
-
-  @override
-  void execute(AppState state) {
-    if (canExecute(state)) {
-      state.undo();
-    }
-  }
-}
-
-class RedoCommand extends GraphCommand {
-  const new();
-
-  @override
-  String get id => 'edit.redo';
-
-  @override
-  String get title => 'Redo';
-
-  @override
-  List<String> get shortcuts => const ['Ctrl+Shift+Z', 'Ctrl+Y'];
-
-  @override
-  String? get shortcut => 'Ctrl+Shift+Z';
-
-  @override
-  CommandCategory get category => CommandCategory.edit;
-
-  @override
-  bool canExecute(AppState state) => state.redoStack.isNotEmpty;
-
-  @override
-  void execute(AppState state) {
-    if (canExecute(state)) {
-      state.redo();
-    }
-  }
-}
-
+/// Cuts selected vertices and edges into the clipboard.
 class CutCommand extends GraphCommand {
-  const new();
-
-  @override
-  String get id => 'edit.cut';
-
-  @override
-  String get title => 'Cut';
-
-  @override
-  String? get shortcut => 'Ctrl+X';
-
-  @override
-  CommandCategory get category => CommandCategory.edit;
+  const new()
+    : super(
+        id: 'edit.cut',
+        title: 'Cut',
+        category: CommandCategory.edit,
+        shortcuts: const ['Ctrl+X'],
+      );
 
   @override
   bool canExecute(AppState state) =>
-      state.selectedVertices.isNotEmpty ||
-      state.selectedEdges.isNotEmpty ||
-      state.selectedEdge != null;
+      state.selection.vertices.isNotEmpty || state.selection.edges.isNotEmpty;
 
   @override
   void execute(AppState state) {
@@ -288,62 +142,62 @@ class CutCommand extends GraphCommand {
   }
 }
 
+/// Copies selected vertices and edges into the clipboard.
 class CopyCommand extends GraphCommand {
-  const new();
-
-  @override
-  String get id => 'edit.copy';
-
-  @override
-  String get title => 'Copy';
-
-  @override
-  String? get shortcut => 'Ctrl+C';
-
-  @override
-  CommandCategory get category => CommandCategory.edit;
+  const new()
+    : super(
+        id: 'edit.copy',
+        title: 'Copy',
+        category: CommandCategory.edit,
+        shortcuts: const ['Ctrl+C'],
+      );
 
   @override
   bool canExecute(AppState state) =>
-      state.selectedVertices.isNotEmpty ||
-      state.selectedEdges.isNotEmpty ||
-      state.selectedEdge != null;
+      state.selection.vertices.isNotEmpty || state.selection.edges.isNotEmpty;
 
   @override
   void execute(AppState state) {
-    final vertSet = Set<String>.from(state.selectedVertices);
-    for (final (u, v) in state.selectedEdges) {
+    if (state.selection.isEmpty) return;
+
+    final vertSet = Set<String>.from(state.selection.vertices);
+    for (final (u, v) in state.selection.edges) {
       vertSet.add(u);
       vertSet.add(v);
     }
-    if (state.selectedEdge != null) {
-      vertSet.add(state.selectedEdge!.$1);
-      vertSet.add(state.selectedEdge!.$2);
-    }
-    if (vertSet.isEmpty) return;
-
-    final copiedNodes = <GraphNode>[
-      for (final v in vertSet)
-        if (state.nodes[v] != null)
-          GraphNode(
-            id: v,
-            label: state.nodes[v]!.label,
-            x: state.nodes[v]!.x,
-            y: state.nodes[v]!.y,
-          )
-        else
-          GraphNode(id: v, label: v),
-    ];
 
     final copiedEdges = <(String, String, num)>[];
     for (final edge in state.primaryGraph.edges) {
-      final inVertices =
-          vertSet.contains(edge.source) && vertSet.contains(edge.target);
-      final isExplicitEdge =
-          state.selectedEdges.contains((edge.source, edge.target)) ||
-          state.selectedEdge == (edge.source, edge.target);
-      if (inVertices || isExplicitEdge) {
+      final matchesSelected =
+          state.selection.edges.contains((edge.source, edge.target)) ||
+          state.selection.edges.contains(
+            state.normalizeEdge(edge.source, edge.target),
+          );
+      if (matchesSelected ||
+          (vertSet.contains(edge.source) && vertSet.contains(edge.target))) {
         copiedEdges.add((edge.source, edge.target, edge.value));
+      }
+    }
+
+    final copiedNodes = <GraphNode>[];
+    for (final v in vertSet) {
+      final node = state.nodes[v];
+      if (node != null) {
+        copiedNodes.add(
+          GraphNode(
+            id: node.id,
+            label: node.label,
+            x: node.x,
+            y: node.y,
+            style: NodeStyle()
+              ..fillColor = node.style.fillColor
+              ..borderColor = node.style.borderColor
+              ..textColor = node.style.textColor
+              ..borderWidth = node.style.borderWidth
+              ..opacity = node.style.opacity
+              ..visible = node.style.visible,
+          ),
+        );
       }
     }
 
@@ -351,20 +205,15 @@ class CopyCommand extends GraphCommand {
   }
 }
 
+/// Pastes graph data from the clipboard.
 class PasteCommand extends GraphCommand {
-  const new();
-
-  @override
-  String get id => 'edit.paste';
-
-  @override
-  String get title => 'Paste';
-
-  @override
-  String? get shortcut => 'Ctrl+V';
-
-  @override
-  CommandCategory get category => CommandCategory.edit;
+  const new()
+    : super(
+        id: 'edit.paste',
+        title: 'Paste',
+        category: CommandCategory.edit,
+        shortcuts: const ['Ctrl+V'],
+      );
 
   @override
   bool canExecute(AppState state) =>
@@ -372,69 +221,50 @@ class PasteCommand extends GraphCommand {
 
   @override
   void execute(AppState state) {
-    final clipboard = state.clipboard;
-    if (clipboard == null || clipboard.isEmpty) return;
+    final cb = state.clipboard;
+    if (cb == null || cb.isEmpty) return;
     state.saveSnapshot();
 
-    const offsetX = 40.0;
-    const offsetY = 40.0;
     final oldToNew = <String, String>{};
-    for (final node in clipboard.nodes) {
+    for (final oldNode in cb.nodes) {
+      final oldId = oldNode.id;
       final newId = state.nextAvailableNodeId();
-      oldToNew[node.id] = newId;
+      oldToNew[oldId] = newId;
       state.primaryGraph.addVertex(newId);
-      final newX = node.x != null ? node.x! + offsetX : null;
-      final newY = node.y != null ? node.y! + offsetY : null;
-      state.getOrCreateNode(newId, label: node.label, x: newX, y: newY);
+      state.getOrCreateNode(
+        newId,
+        label: oldNode.label,
+        x: (oldNode.x ?? 0.0) + 40.0,
+        y: (oldNode.y ?? 0.0) + 40.0,
+      );
     }
 
-    for (final (source, target, value) in clipboard.edges) {
-      final newSource = oldToNew[source];
-      final newTarget = oldToNew[target];
-      if (newSource != null && newTarget != null) {
-        state.primaryGraph.addEdge(newSource, newTarget, value: value);
-      }
+    final pastedEdges = <(String, String)>[];
+    for (final (source, target, value) in cb.edges) {
+      final newSource = oldToNew[source] ?? source;
+      final newTarget = oldToNew[target] ?? target;
+      state.primaryGraph.addEdge(newSource, newTarget, value: value);
+      pastedEdges.add(state.normalizeEdge(newSource, newTarget));
     }
 
-    state.selectedVertices = oldToNew.values.toSet();
-    state.activeVertex = state.selectedVertices.isNotEmpty
-        ? state.selectedVertices.last
-        : null;
-    state.selectedEdges.clear();
-    for (final (source, target, _) in clipboard.edges) {
-      final newSource = oldToNew[source];
-      final newTarget = oldToNew[target];
-      if (newSource != null && newTarget != null) {
-        state.selectedEdges.add((newSource, newTarget));
-      }
-    }
-    state.selectedEdge = state.selectedEdges.isNotEmpty
-        ? state.selectedEdges.last
-        : null;
-    state.syncSelectionSourceTarget();
+    state.selection.setVertices(oldToNew.values);
+    state.selection.setEdges(pastedEdges);
   }
 }
 
+/// Duplicates the current selection.
 class DuplicateCommand extends GraphCommand {
-  const new();
-
-  @override
-  String get id => 'edit.duplicate';
-
-  @override
-  String get title => 'Duplicate';
-
-  @override
-  String? get shortcut => 'Shift+D';
-
-  @override
-  CommandCategory get category => CommandCategory.edit;
+  const new()
+    : super(
+        id: 'edit.duplicate',
+        title: 'Duplicate',
+        category: CommandCategory.edit,
+        shortcuts: const ['Shift+D'],
+      );
 
   @override
   bool canExecute(AppState state) =>
-      state.selectedVertices.isNotEmpty ||
-      state.selectedEdges.isNotEmpty ||
-      state.selectedEdge != null;
+      state.selection.vertices.isNotEmpty || state.selection.edges.isNotEmpty;
 
   @override
   void execute(AppState state) {
@@ -443,83 +273,58 @@ class DuplicateCommand extends GraphCommand {
   }
 }
 
+/// Deletes selected vertices and edges.
 class DeleteCommand extends GraphCommand {
-  const new();
-
-  @override
-  String get id => 'edit.delete';
-
-  @override
-  String get title => 'Delete';
-
-  @override
-  List<String> get shortcuts => const ['Delete', 'Backspace', 'X'];
-
-  @override
-  String? get shortcut => 'Delete';
-
-  @override
-  CommandCategory get category => CommandCategory.edit;
+  const new()
+    : super(
+        id: 'edit.delete',
+        title: 'Delete Selected',
+        category: CommandCategory.edit,
+        shortcuts: const ['X', 'Delete', 'Backspace'],
+      );
 
   @override
   bool canExecute(AppState state) =>
-      state.selectedVertices.isNotEmpty ||
-      state.selectedEdges.isNotEmpty ||
-      state.selectedEdge != null;
+      state.selection.vertices.isNotEmpty || state.selection.edges.isNotEmpty;
 
   @override
   void execute(AppState state) {
-    if (state.selectedVertices.isEmpty &&
-        state.selectedEdges.isEmpty &&
-        state.selectedEdge == null) {
-      return;
-    }
+    if (state.selection.isEmpty) return;
     state.saveSnapshot();
 
-    if (state.selectedEdges.isNotEmpty) {
-      for (final (u, v) in state.selectedEdges.toList()) {
+    if (state.selection.edges.isNotEmpty) {
+      for (final (u, v) in state.selection.edges.toList()) {
         state.primaryGraph.removeEdge(u, v);
+        if (!state.primaryGraph.isDirected) {
+          state.primaryGraph.removeEdge(v, u);
+        }
       }
-      state.selectedEdges.clear();
-      state.selectedEdge = null;
-    } else if (state.selectedEdge != null) {
-      state.primaryGraph.removeEdge(
-        state.selectedEdge!.$1,
-        state.selectedEdge!.$2,
-      );
-      state.selectedEdge = null;
     }
 
-    if (state.selectedVertices.isNotEmpty) {
-      for (final v in state.selectedVertices.toList()) {
+    if (state.selection.vertices.isNotEmpty) {
+      for (final v in state.selection.vertices.toList()) {
         state.primaryGraph.removeVertex(v);
         state.nodes.remove(v);
       }
-      state.selectedVertices.clear();
-      state.activeVertex = null;
-      state.syncSelectionSourceTarget();
     }
+
+    state.selection.clear();
   }
 }
 
 // ---------------------------------------------------------------------------
-// Vertex Operations
+// Complex Vertex Operations
 // ---------------------------------------------------------------------------
 
+/// Adds a new vertex at the cursor position.
 class AddVertexCommand extends GraphCommand {
-  const new();
-
-  @override
-  String get id => 'vertex.add';
-
-  @override
-  String get title => 'Add Vertex';
-
-  @override
-  String? get shortcut => 'C';
-
-  @override
-  CommandCategory get category => CommandCategory.vertex;
+  const new()
+    : super(
+        id: 'vertex.add',
+        title: 'Add Vertex',
+        category: CommandCategory.vertex,
+        shortcuts: const ['V'],
+      );
 
   @override
   bool canExecute(AppState state) => true;
@@ -527,32 +332,32 @@ class AddVertexCommand extends GraphCommand {
   @override
   void execute(AppState state) {
     state.saveSnapshot();
-    final id = state.nextAvailableNodeId();
-    state.primaryGraph.addVertex(id);
-    state.getOrCreateNode(id, label: id, x: state.cursorX, y: state.cursorY);
-    state.selectVertex(id, clearOthers: true);
-    state.pendingPlacementVertex = id;
+    final newId = state.nextAvailableNodeId();
+    state.primaryGraph.addVertex(newId);
+    state.getOrCreateNode(
+      newId,
+      label: newId,
+      x: state.cursorX,
+      y: state.cursorY,
+    );
+    state.selection.clear();
+    state.selection.selectVertex(newId);
+    state.pendingPlacementVertex = newId;
   }
 }
 
+/// Expands a vertex by creating a new adjacent vertex.
 class ExpandVertexCommand extends GraphCommand {
-  const new();
-
-  @override
-  String get id => 'vertex.expand';
-
-  @override
-  String get title => 'Expand';
-
-  @override
-  String? get shortcut => 'E';
-
-  @override
-  CommandCategory get category => CommandCategory.vertex;
+  const new({
+    super.id = 'vertex.expand',
+    super.title = 'Expand',
+    super.category = CommandCategory.vertex,
+    super.shortcuts = const ['E'],
+  });
 
   @override
   bool canExecute(AppState state) =>
-      state.selectedVertices.isNotEmpty || state.activeVertex != null;
+      state.selection.vertices.isNotEmpty || state.activeVertex != null;
 
   @override
   void execute(AppState state) {
@@ -566,683 +371,454 @@ class ExpandVertexCommand extends GraphCommand {
       y: state.cursorY,
     );
 
-    final targets = state.selectedVertices.isNotEmpty
-        ? state.selectedVertices.toList()
+    final targets = state.selection.vertices.isNotEmpty
+        ? state.selection.vertices.toList()
         : (state.activeVertex != null ? [state.activeVertex!] : <String>[]);
 
     for (final v in targets) {
       state.primaryGraph.addEdge(v, newId, value: 1);
     }
 
-    state.selectedEdges.clear();
-    state.selectedEdge = null;
-    state.selectedVertices = {newId};
-    state.activeVertex = newId;
-    state.selectedSource = null;
-    state.selectedTarget = null;
+    state.selection.clear();
+    state.selection.selectVertex(newId);
     state.pendingPlacementVertex = newId;
   }
 }
 
 /// Backwards compatibility alias for [ExpandVertexCommand].
 class ExtrudeVertexCommand extends ExpandVertexCommand {
-  const new();
-
-  @override
-  String get id => 'vertex.extrude';
+  const new()
+    : super(id: 'vertex.extrude', title: 'Extrude', shortcuts: const []);
 }
 
-class RenameVertexCommand extends GraphCommand {
-  const new();
-
-  @override
-  String get id => 'vertex.rename';
-
-  @override
-  String get title => 'Rename Active Vertex';
-
-  @override
-  String? get shortcut => 'F2';
-
-  @override
-  CommandCategory get category => CommandCategory.vertex;
-
-  @override
-  bool canExecute(AppState state) => state.activeVertex != null;
-
-  @override
-  void execute(AppState state) {
-    final v = state.activeVertex;
-    if (v != null) {
-      state.onShowInlineEditor?.call(v);
-    }
-  }
-}
-
+/// Merges multiple selected vertices into one.
 class MergeVerticesCommand extends GraphCommand {
-  const new();
+  const new()
+    : super(
+        id: 'vertex.merge',
+        title: 'Merge Vertices',
+        category: CommandCategory.vertex,
+        shortcuts: const ['M'],
+      );
 
   @override
-  String get id => 'vertex.merge';
-
-  @override
-  String get title => 'Merge Vertices';
-
-  @override
-  String? get shortcut => 'M';
-
-  @override
-  CommandCategory get category => CommandCategory.vertex;
-
-  @override
-  bool canExecute(AppState state) => state.selectedVertices.length >= 2;
+  bool canExecute(AppState state) => state.selection.vertices.length >= 2;
 
   @override
   void execute(AppState state) {
-    if (state.selectedVertices.length < 2) return;
-    final target = state.activeVertex ?? state.selectedVertices.first;
+    if (state.selection.vertices.length < 2) return;
+    final target = state.activeVertex ?? state.selection.vertices.first;
     state.saveSnapshot();
-    final toMerge = state.selectedVertices.where((v) => v != target).toList();
+    final toMerge = state.selection.vertices.where((v) => v != target).toList();
 
     for (final v in toMerge) {
       for (final edge in state.primaryGraph.edgesOf(v).toList()) {
         final other = edge.source == v ? edge.target : edge.source;
         if (other != v && other != target) {
-          if (edge.source == v) {
-            state.primaryGraph.addEdge(target, other, value: edge.value);
+          if (state.primaryGraph.isDirected) {
+            if (edge.source == v) {
+              state.primaryGraph.addEdge(target, other, value: edge.value);
+            } else {
+              state.primaryGraph.addEdge(other, target, value: edge.value);
+            }
           } else {
-            state.primaryGraph.addEdge(other, target, value: edge.value);
+            state.primaryGraph.addEdge(target, other, value: edge.value);
           }
         }
       }
       state.primaryGraph.removeVertex(v);
       state.nodes.remove(v);
     }
-    state.selectedVertices = {target};
-    state.activeVertex = target;
-    state.syncSelectionSourceTarget();
+
+    state.selection.clear();
+    state.selection.selectVertex(target);
   }
 }
 
 // ---------------------------------------------------------------------------
-// Edge Operations
+// Complex Edge Operations
 // ---------------------------------------------------------------------------
 
+/// Connects all selected vertices with edges.
 class ConnectVerticesCommand extends GraphCommand {
-  const new();
+  const new()
+    : super(
+        id: 'edge.connect',
+        title: 'Connect Selected Vertices',
+        category: CommandCategory.edge,
+        shortcuts: const ['F'],
+      );
 
   @override
-  String get id => 'edge.connect';
-
-  @override
-  String get title => 'Connect Vertices';
-
-  @override
-  String? get shortcut => 'F';
-
-  @override
-  CommandCategory get category => CommandCategory.edge;
-
-  @override
-  bool canExecute(AppState state) => state.selectedVertices.length >= 2;
+  bool canExecute(AppState state) => state.selection.vertices.length >= 2;
 
   @override
   void execute(AppState state) {
-    if (state.selectedVertices.length < 2) return;
+    if (state.selection.vertices.length < 2) return;
     state.saveSnapshot();
-    final list = state.selectedVertices.toList();
-    state.selectedEdges.clear();
+    final list = state.selection.vertices.toList();
 
-    if (list.length == 2) {
-      state.primaryGraph.addEdge(list[0], list[1], value: 1);
-      state.selectedEdge = (list[0], list[1]);
-      state.selectedEdges.add((list[0], list[1]));
-    } else {
-      for (var i = 0; i < list.length - 1; i++) {
-        state.primaryGraph.addEdge(list[i], list[i + 1], value: 1);
-        state.selectedEdges.add((list[i], list[i + 1]));
+    for (var i = 0; i < list.length; i++) {
+      for (var j = i + 1; j < list.length; j++) {
+        final u = list[i];
+        final v = list[j];
+        final exists = state.primaryGraph.edges.any(
+          (e) =>
+              (e.source == u && e.target == v) ||
+              (!state.primaryGraph.isDirected &&
+                  e.source == v &&
+                  e.target == u),
+        );
+        if (!exists) {
+          state.primaryGraph.addEdge(u, v, value: 1);
+        }
       }
-      state.selectedEdge = state.selectedEdges.isNotEmpty
-          ? state.selectedEdges.last
-          : null;
     }
-
-    state.selectedVertices.clear();
-    state.activeVertex = null;
-    state.selectedSource = null;
-    state.selectedTarget = null;
   }
 }
 
+/// Subdivides selected edges by inserting a vertex in the middle.
 class SubdivideEdgeCommand extends GraphCommand {
-  const new();
-
-  @override
-  String get id => 'edge.subdivide';
-
-  @override
-  String get title => 'Subdivide Edges';
-
-  @override
-  String? get shortcut => 'W';
-
-  @override
-  CommandCategory get category => CommandCategory.edge;
+  const new()
+    : super(
+        id: 'edge.subdivide',
+        title: 'Subdivide Edge',
+        category: CommandCategory.edge,
+        shortcuts: const ['S'],
+      );
 
   @override
   bool canExecute(AppState state) =>
-      state.selectedEdges.isNotEmpty || state.selectedEdge != null;
+      state.selection.edges.isNotEmpty || state.selection.selectedEdge != null;
 
   @override
   void execute(AppState state) {
-    final edgesToSplit = <(String, String, num)>[];
-    for (final e in state.selectedEdges) {
-      final edge =
-          state.primaryGraph.getEdge(e.$1, e.$2) ??
-          (!state.primaryGraph.isDirected
-              ? state.primaryGraph.getEdge(e.$2, e.$1)
-              : null);
-      if (edge != null) {
-        edgesToSplit.add((edge.source, edge.target, edge.value));
-      }
-    }
-    if (edgesToSplit.isEmpty && state.selectedEdge != null) {
-      final edge = state.primaryGraph.getEdge(
-        state.selectedEdge!.$1,
-        state.selectedEdge!.$2,
-      );
-      if (edge != null) {
-        edgesToSplit.add((edge.source, edge.target, edge.value));
-      }
-    }
-    if (edgesToSplit.isEmpty) return;
+    final edges = state.selection.edges.isNotEmpty
+        ? state.selection.edges.toList()
+        : (state.selection.selectedEdge != null
+              ? [state.selection.selectedEdge!]
+              : <(String, String)>[]);
+    if (edges.isEmpty) return;
 
     state.saveSnapshot();
-    for (final (u, v, w) in edgesToSplit) {
-      final mid = state.nextAvailableNodeId();
+    final createdVertices = <String>{};
+
+    for (final (u, v) in edges) {
+      final edge =
+          state.primaryGraph.getEdge(u, v) ??
+          (!state.primaryGraph.isDirected
+              ? state.primaryGraph.getEdge(v, u)
+              : null);
+      if (edge == null) continue;
+
+      final val = edge.value;
+      state.primaryGraph.removeEdge(u, v);
+      if (!state.primaryGraph.isDirected) {
+        state.primaryGraph.removeEdge(v, u);
+      }
+
+      final midId = state.nextAvailableNodeId();
+      state.primaryGraph.addVertex(midId);
+      createdVertices.add(midId);
+
       final nodeU = state.nodes[u];
       final nodeV = state.nodes[v];
-      double? midX;
-      double? midY;
-      if (nodeU?.x != null &&
-          nodeV?.x != null &&
-          nodeU?.y != null &&
-          nodeV?.y != null) {
-        midX = (nodeU!.x! + nodeV!.x!) / 2;
-        midY = (nodeU.y! + nodeV.y!) / 2;
-      }
-      state.primaryGraph.removeEdge(u, v);
-      state.primaryGraph.addVertex(mid);
-      state.getOrCreateNode(mid, label: mid, x: midX, y: midY);
-      state.primaryGraph.addEdge(u, mid, value: w);
-      state.primaryGraph.addEdge(mid, v, value: w);
-      state.selectedVertices.add(mid);
+      final midX = (nodeU != null && nodeV != null)
+          ? ((nodeU.x ?? 0) + (nodeV.x ?? 0)) / 2
+          : state.cursorX;
+      final midY = (nodeU != null && nodeV != null)
+          ? ((nodeU.y ?? 0) + (nodeV.y ?? 0)) / 2
+          : state.cursorY;
+
+      state.getOrCreateNode(midId, label: midId, x: midX, y: midY);
+      state.primaryGraph.addEdge(u, midId, value: val);
+      state.primaryGraph.addEdge(midId, v, value: val);
     }
-    state.selectedEdges.clear();
-    state.selectedEdge = null;
-  }
-}
 
-class ReverseEdgesCommand extends GraphCommand {
-  const new();
-
-  @override
-  String get id => 'edge.reverse';
-
-  @override
-  String get title => 'Reverse Edge Directions';
-
-  @override
-  String? get shortcut => 'R';
-
-  @override
-  CommandCategory get category => CommandCategory.edge;
-
-  @override
-  bool canExecute(AppState state) => state.primaryGraph.isDirected;
-
-  @override
-  void execute(AppState state) {
-    if (!state.primaryGraph.isDirected) return;
-    state.saveSnapshot();
-    state.primaryGraph = state.primaryGraph.reversed.copy();
+    state.selection.clear();
+    state.selection.setVertices(createdVertices);
   }
 }
 
 // ---------------------------------------------------------------------------
-// Graph Operations
+// Command Registry
 // ---------------------------------------------------------------------------
-
-class AutoLayoutCommand extends GraphCommand {
-  const new();
-
-  @override
-  String get id => 'graph.layout';
-
-  @override
-  String get title => 'Auto Layout';
-
-  @override
-  String? get shortcut => 'L';
-
-  @override
-  CommandCategory get category => CommandCategory.graph;
-
-  @override
-  bool canExecute(AppState state) => true;
-
-  @override
-  void execute(AppState state) {
-    GraphLayout.applyLayout(state);
-  }
-}
-
-class ComplementCommand extends GraphCommand {
-  const new();
-
-  @override
-  String get id => 'graph.complement';
-
-  @override
-  String get title => 'Complement Graph';
-
-  @override
-  String? get shortcut => null;
-
-  @override
-  CommandCategory get category => CommandCategory.graph;
-
-  @override
-  bool canExecute(AppState state) => true;
-
-  @override
-  void execute(AppState state) {
-    state.saveSnapshot();
-    state.primaryGraph = state.primaryGraph.complement(edge: (u, v) => 1);
-  }
-}
-
-class TransitiveClosureCommand extends GraphCommand {
-  const new();
-
-  @override
-  String get id => 'graph.transitive_closure';
-
-  @override
-  String get title => 'Transitive Closure';
-
-  @override
-  String? get shortcut => null;
-
-  @override
-  CommandCategory get category => CommandCategory.graph;
-
-  @override
-  bool canExecute(AppState state) => true;
-
-  @override
-  void execute(AppState state) {
-    if (!state.primaryGraph.isDirected) return;
-    state.saveSnapshot();
-    state.primaryGraph = state.primaryGraph.transitiveClosure().map(
-      edge: (_) => 1,
-    );
-  }
-}
-
-class TransitiveReductionCommand extends GraphCommand {
-  const new();
-
-  @override
-  String get id => 'graph.transitive_reduction';
-
-  @override
-  String get title => 'Transitive Reduction';
-
-  @override
-  String? get shortcut => null;
-
-  @override
-  CommandCategory get category => CommandCategory.graph;
-
-  @override
-  bool canExecute(AppState state) => true;
-
-  @override
-  void execute(AppState state) {
-    if (!state.primaryGraph.isDirected) return;
-    state.saveSnapshot();
-    state.primaryGraph = state.primaryGraph.transitiveReduction();
-  }
-}
-
-// ---------------------------------------------------------------------------
-// Select Operations
-// ---------------------------------------------------------------------------
-
-class SelectAllCommand extends GraphCommand {
-  const new();
-
-  @override
-  String get id => 'select.all';
-
-  @override
-  String get title => 'Select All';
-
-  @override
-  String? get shortcut => 'A';
-
-  @override
-  CommandCategory get category => CommandCategory.select;
-
-  @override
-  bool canExecute(AppState state) =>
-      state.selectedVertices.isEmpty &&
-      state.selectedEdges.isEmpty &&
-      state.selectedEdge == null;
-
-  @override
-  void execute(AppState state) {
-    state.selectedVertices = state.primaryGraph.vertices.toSet();
-    state.activeVertex = state.selectedVertices.isNotEmpty
-        ? state.selectedVertices.first
-        : null;
-    state.syncSelectionSourceTarget();
-    state.selectedEdges = {
-      for (final e in state.primaryGraph.edges) (e.source, e.target),
-    };
-    state.selectedEdge = state.selectedEdges.isNotEmpty
-        ? state.selectedEdges.first
-        : null;
-  }
-}
-
-class DeselectAllCommand extends GraphCommand {
-  const new();
-
-  @override
-  String get id => 'select.none';
-
-  @override
-  String get title => 'Deselect All';
-
-  @override
-  String? get shortcut => 'A';
-
-  @override
-  CommandCategory get category => CommandCategory.select;
-
-  @override
-  bool canExecute(AppState state) =>
-      state.selectedVertices.isNotEmpty ||
-      state.selectedEdges.isNotEmpty ||
-      state.selectedEdge != null;
-
-  @override
-  void execute(AppState state) {
-    state.clearSelection();
-  }
-}
-
-class ToggleVertexSelectionModeCommand extends GraphCommand {
-  const new();
-
-  @override
-  String get id => 'select.mode_vertex';
-
-  @override
-  String get title => 'Vertex Selection Mode';
-
-  @override
-  String? get shortcut => '1';
-
-  @override
-  CommandCategory get category => CommandCategory.select;
-
-  @override
-  bool canExecute(AppState state) => true;
-
-  @override
-  void execute(AppState state) {
-    state.selectVerticesMode = !state.selectVerticesMode;
-    if (!state.selectVerticesMode && !state.selectEdgesMode) {
-      state.selectEdgesMode = true;
-    }
-  }
-}
-
-class ToggleEdgeSelectionModeCommand extends GraphCommand {
-  const new();
-
-  @override
-  String get id => 'select.mode_edge';
-
-  @override
-  String get title => 'Edge Selection Mode';
-
-  @override
-  String? get shortcut => '2';
-
-  @override
-  CommandCategory get category => CommandCategory.select;
-
-  @override
-  bool canExecute(AppState state) => true;
-
-  @override
-  void execute(AppState state) {
-    state.selectEdgesMode = !state.selectEdgesMode;
-    if (!state.selectVerticesMode && !state.selectEdgesMode) {
-      state.selectVerticesMode = true;
-    }
-  }
-}
-
-class SelectAllVerticesCommand extends GraphCommand {
-  const new();
-
-  @override
-  String get id => 'select.vertices';
-
-  @override
-  String get title => 'Select All Vertices';
-
-  @override
-  String? get shortcut => null;
-
-  @override
-  CommandCategory get category => CommandCategory.select;
-
-  @override
-  bool canExecute(AppState state) => true;
-
-  @override
-  void execute(AppState state) {
-    state.selectedVertices = state.primaryGraph.vertices.toSet();
-    state.activeVertex = state.selectedVertices.isNotEmpty
-        ? state.selectedVertices.first
-        : null;
-    state.syncSelectionSourceTarget();
-  }
-}
-
-class SelectAllEdgesCommand extends GraphCommand {
-  const new();
-
-  @override
-  String get id => 'select.edges';
-
-  @override
-  String get title => 'Select All Edges';
-
-  @override
-  String? get shortcut => null;
-
-  @override
-  CommandCategory get category => CommandCategory.select;
-
-  @override
-  bool canExecute(AppState state) => true;
-
-  @override
-  void execute(AppState state) {
-    state.selectedEdges = {
-      for (final e in state.primaryGraph.edges) (e.source, e.target),
-    };
-    state.selectedEdge = state.selectedEdges.isNotEmpty
-        ? state.selectedEdges.first
-        : null;
-  }
-}
-
-class ExpandSelectionCommand extends GraphCommand {
-  const new();
-
-  @override
-  String get id => 'select.expand';
-
-  @override
-  String get title => 'Expand Selection';
-
-  @override
-  String? get shortcut => '+';
-
-  @override
-  CommandCategory get category => CommandCategory.select;
-
-  @override
-  bool canExecute(AppState state) => state.selectedVertices.isNotEmpty;
-
-  @override
-  void execute(AppState state) {
-    final toAdd = <String>{};
-    for (final v in state.selectedVertices) {
-      toAdd.addAll(state.primaryGraph.neighboursOf(v));
-    }
-    state.selectedVertices.addAll(toAdd);
-    state.syncSelectionSourceTarget();
-  }
-}
-
-class CollapseSelectionCommand extends GraphCommand {
-  const new();
-
-  @override
-  String get id => 'select.collapse';
-
-  @override
-  String get title => 'Collapse Selection';
-
-  @override
-  String? get shortcut => '-';
-
-  @override
-  CommandCategory get category => CommandCategory.select;
-
-  @override
-  bool canExecute(AppState state) => state.selectedVertices.isNotEmpty;
-
-  @override
-  void execute(AppState state) {
-    if (state.selectedVertices.isEmpty) return;
-    final toRemove = <String>{};
-    for (final v in state.selectedVertices) {
-      final neighbours = state.primaryGraph.neighboursOf(v);
-      if (neighbours.isNotEmpty &&
-          neighbours.any((nb) => !state.selectedVertices.contains(nb))) {
-        toRemove.add(v);
-      }
-    }
-    if (toRemove.length == state.selectedVertices.length) {
-      state.selectedVertices.clear();
-    } else {
-      state.selectedVertices.removeAll(toRemove);
-    }
-    state.syncSelectionSourceTarget();
-  }
-}
-
-class InvertSelectionCommand extends GraphCommand {
-  const new();
-
-  @override
-  String get id => 'select.invert';
-
-  @override
-  String get title => 'Invert Selection';
-
-  @override
-  String? get shortcut => 'Ctrl+I';
-
-  @override
-  CommandCategory get category => CommandCategory.select;
-
-  @override
-  bool canExecute(AppState state) => true;
-
-  @override
-  void execute(AppState state) {
-    final all = state.primaryGraph.vertices.toSet();
-    state.selectedVertices = all.difference(state.selectedVertices);
-    state.activeVertex = state.selectedVertices.isNotEmpty
-        ? state.selectedVertices.last
-        : null;
-    state.syncSelectionSourceTarget();
-  }
-}
 
 /// Registry providing all available commands grouped by category.
 class CommandRegistry {
-  static const List<GraphCommand> all = [
+  /// All available commands in the application.
+  static final List<GraphCommand> all = [
     // File
-    NewGraphCommand(),
-    OpenGraphCommand(),
-    SaveGraphCommand(),
-    ImportGraphCommand(),
-    ExportGraphCommand(),
+    SimpleCommand(
+      id: 'file.new',
+      title: 'New',
+      category: CommandCategory.file,
+      shortcuts: const ['Ctrl+N'],
+      executeCallback: (state) => state.reset(),
+    ),
+    SimpleCommand(
+      id: 'file.open',
+      title: 'Open...',
+      category: CommandCategory.file,
+      shortcuts: const ['Ctrl+O'],
+      executeCallback: (state) => state.onOpenFile?.call(),
+    ),
+    SimpleCommand(
+      id: 'file.save',
+      title: 'Save',
+      category: CommandCategory.file,
+      shortcuts: const ['Ctrl+S'],
+      canExecuteCallback: (state) => state.primaryGraph.vertices.isNotEmpty,
+      executeCallback: (state) {
+        final jsonStr = GraphIO.exportToJson(state);
+        GraphIO.downloadTextFile('graph.json', jsonStr, 'application/json');
+      },
+    ),
+    SimpleCommand(
+      id: 'file.import',
+      title: 'Import...',
+      category: CommandCategory.file,
+      shortcuts: const ['Ctrl+Shift+I'],
+      executeCallback: (state) => state.onOpenImport?.call(),
+    ),
+    SimpleCommand(
+      id: 'file.export',
+      title: 'Export...',
+      category: CommandCategory.file,
+      shortcuts: const ['Ctrl+Shift+E'],
+      canExecuteCallback: (state) => state.primaryGraph.vertices.isNotEmpty,
+      executeCallback: (state) => state.onOpenExport?.call(),
+    ),
 
     // Edit
-    UndoCommand(),
-    RedoCommand(),
-    CutCommand(),
-    CopyCommand(),
-    PasteCommand(),
-    DuplicateCommand(),
-    DeleteCommand(),
+    SimpleCommand(
+      id: 'edit.undo',
+      title: 'Undo',
+      category: CommandCategory.edit,
+      shortcuts: const ['Ctrl+Z'],
+      canExecuteCallback: (state) => state.undoStack.isNotEmpty,
+      executeCallback: (state) => state.undo(),
+    ),
+    SimpleCommand(
+      id: 'edit.redo',
+      title: 'Redo',
+      category: CommandCategory.edit,
+      shortcuts: const ['Ctrl+Shift+Z', 'Ctrl+Y'],
+      canExecuteCallback: (state) => state.redoStack.isNotEmpty,
+      executeCallback: (state) => state.redo(),
+    ),
+    const CutCommand(),
+    const CopyCommand(),
+    const PasteCommand(),
+    const DuplicateCommand(),
+    const DeleteCommand(),
 
     // Select
-    SelectAllCommand(),
-    DeselectAllCommand(),
-    ExpandSelectionCommand(),
-    CollapseSelectionCommand(),
-    InvertSelectionCommand(),
-    ToggleVertexSelectionModeCommand(),
-    ToggleEdgeSelectionModeCommand(),
-    SelectAllVerticesCommand(),
-    SelectAllEdgesCommand(),
+    SimpleCommand(
+      id: 'select.all',
+      title: 'Select All',
+      category: CommandCategory.select,
+      shortcuts: const ['A'],
+      canExecuteCallback: (state) =>
+          state.primaryGraph.vertices.isNotEmpty && state.selection.isEmpty,
+      executeCallback: (state) {
+        state.selection.setVertices(state.primaryGraph.vertices);
+        state.selection.setEdges({
+          for (final e in state.primaryGraph.edges.toSet())
+            state.normalizeEdge(e.source, e.target),
+        });
+      },
+    ),
+    SimpleCommand(
+      id: 'select.none',
+      title: 'Deselect All',
+      category: CommandCategory.select,
+      shortcuts: const ['A'],
+      canExecuteCallback: (state) => state.selection.isNotEmpty,
+      executeCallback: (state) => state.clearSelection(),
+    ),
+    SimpleCommand(
+      id: 'select.expand',
+      title: 'Expand Selection',
+      category: CommandCategory.select,
+      shortcuts: const ['+'],
+      canExecuteCallback: (state) => state.selection.vertices.isNotEmpty,
+      executeCallback: (state) {
+        final toAdd = <String>{};
+        for (final v in state.selection.vertices) {
+          toAdd.addAll(state.primaryGraph.neighboursOf(v));
+        }
+        state.selection.setVertices({...state.selection.vertices, ...toAdd});
+      },
+    ),
+    SimpleCommand(
+      id: 'select.collapse',
+      title: 'Collapse Selection',
+      category: CommandCategory.select,
+      shortcuts: const ['-'],
+      canExecuteCallback: (state) => state.selection.vertices.isNotEmpty,
+      executeCallback: (state) {
+        if (state.selection.vertices.isEmpty) return;
+        final toRemove = <String>{};
+        for (final v in state.selection.vertices) {
+          final neighbours = state.primaryGraph.neighboursOf(v);
+          if (neighbours.isNotEmpty &&
+              neighbours.any((nb) => !state.selection.vertices.contains(nb))) {
+            toRemove.add(v);
+          }
+        }
+        if (toRemove.length == state.selection.vertices.length) {
+          state.selection.clear();
+        } else {
+          state.selection.setVertices(
+            state.selection.vertices.difference(toRemove),
+          );
+        }
+      },
+    ),
+    SimpleCommand(
+      id: 'select.invert',
+      title: 'Invert Selection',
+      category: CommandCategory.select,
+      shortcuts: const ['Ctrl+I'],
+      canExecuteCallback: (state) => state.primaryGraph.vertices.isNotEmpty,
+      executeCallback: (state) {
+        final all = state.primaryGraph.vertices.toSet();
+        state.selection.setVertices(all.difference(state.selection.vertices));
+      },
+    ),
+    SimpleCommand(
+      id: 'select.mode_vertex',
+      title: 'Vertex Selection Mode',
+      category: CommandCategory.select,
+      shortcuts: const ['1'],
+      executeCallback: (state) {
+        state.selectVerticesMode = !state.selectVerticesMode;
+        if (!state.selectVerticesMode && !state.selectEdgesMode) {
+          state.selectEdgesMode = true;
+        }
+      },
+    ),
+    SimpleCommand(
+      id: 'select.mode_edge',
+      title: 'Edge Selection Mode',
+      category: CommandCategory.select,
+      shortcuts: const ['2'],
+      executeCallback: (state) {
+        state.selectEdgesMode = !state.selectEdgesMode;
+        if (!state.selectVerticesMode && !state.selectEdgesMode) {
+          state.selectVerticesMode = true;
+        }
+      },
+    ),
+    SimpleCommand(
+      id: 'select.vertices',
+      title: 'Select All Vertices',
+      category: CommandCategory.select,
+      canExecuteCallback: (state) => state.primaryGraph.vertices.isNotEmpty,
+      executeCallback: (state) =>
+          state.selection.setVertices(state.primaryGraph.vertices),
+    ),
+    SimpleCommand(
+      id: 'select.edges',
+      title: 'Select All Edges',
+      category: CommandCategory.select,
+      canExecuteCallback: (state) => state.primaryGraph.edges.isNotEmpty,
+      executeCallback: (state) => state.selection.setEdges({
+        for (final e in state.primaryGraph.edges.toSet())
+          state.normalizeEdge(e.source, e.target),
+      }),
+    ),
 
     // Vertex
-    AddVertexCommand(),
-    ExpandVertexCommand(),
-    ExtrudeVertexCommand(),
-    RenameVertexCommand(),
-    MergeVerticesCommand(),
+    const AddVertexCommand(),
+    const ExpandVertexCommand(),
+    const ExtrudeVertexCommand(),
+    SimpleCommand(
+      id: 'vertex.rename',
+      title: 'Rename Active Vertex',
+      category: CommandCategory.vertex,
+      shortcuts: const ['F2'],
+      canExecuteCallback: (state) => state.activeVertex != null,
+      executeCallback: (state) {
+        final v = state.activeVertex;
+        if (v != null) {
+          state.onShowInlineEditor?.call(v);
+        }
+      },
+    ),
+    const MergeVerticesCommand(),
 
     // Edge
-    ConnectVerticesCommand(),
-    SubdivideEdgeCommand(),
-    ReverseEdgesCommand(),
+    const ConnectVerticesCommand(),
+    const SubdivideEdgeCommand(),
+    SimpleCommand(
+      id: 'edge.reverse',
+      title: 'Reverse Edge Directions',
+      category: CommandCategory.edge,
+      shortcuts: const ['R'],
+      canExecuteCallback: (state) =>
+          state.primaryGraph.isDirected && state.primaryGraph.edges.isNotEmpty,
+      executeCallback: (state) {
+        if (!state.primaryGraph.isDirected) return;
+        state.saveSnapshot();
+        state.primaryGraph = state.primaryGraph.reversed.copy();
+      },
+    ),
 
     // Graph
-    AutoLayoutCommand(),
-    ComplementCommand(),
-    TransitiveClosureCommand(),
-    TransitiveReductionCommand(),
+    SimpleCommand(
+      id: 'graph.layout',
+      title: 'Auto Layout',
+      category: CommandCategory.graph,
+      shortcuts: const ['L'],
+      canExecuteCallback: (state) => state.primaryGraph.vertices.isNotEmpty,
+      executeCallback: GraphLayout.applyLayout,
+    ),
+    SimpleCommand(
+      id: 'graph.complement',
+      title: 'Complement Graph',
+      category: CommandCategory.graph,
+      canExecuteCallback: (state) => state.primaryGraph.vertices.length >= 2,
+      executeCallback: (state) {
+        state.saveSnapshot();
+        state.primaryGraph = state.primaryGraph.complement(edge: (u, v) => 1);
+      },
+    ),
+    SimpleCommand(
+      id: 'graph.transitive_closure',
+      title: 'Transitive Closure',
+      category: CommandCategory.graph,
+      canExecuteCallback: (state) =>
+          state.primaryGraph.isDirected &&
+          state.primaryGraph.vertices.isNotEmpty,
+      executeCallback: (state) {
+        if (!state.primaryGraph.isDirected) return;
+        state.saveSnapshot();
+        state.primaryGraph = state.primaryGraph.transitiveClosure().map(
+          edge: (_) => 1,
+        );
+      },
+    ),
+    SimpleCommand(
+      id: 'graph.transitive_reduction',
+      title: 'Transitive Reduction',
+      category: CommandCategory.graph,
+      canExecuteCallback: (state) =>
+          state.primaryGraph.isDirected &&
+          state.primaryGraph.vertices.isNotEmpty,
+      executeCallback: (state) {
+        if (!state.primaryGraph.isDirected) return;
+        state.saveSnapshot();
+        state.primaryGraph = state.primaryGraph.transitiveReduction();
+      },
+    ),
   ];
 
   static final Map<String, GraphCommand> _byId = {
     for (final cmd in all) cmd.id: cmd,
   };
 
+  /// Finds a command by its unique identifier.
   static GraphCommand? findById(String id) => _byId[id];
 }

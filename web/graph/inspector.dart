@@ -1,5 +1,4 @@
 import 'dart:js_interop';
-import 'dart:math' as math;
 
 import 'package:more/graph.dart';
 import 'package:web/web.dart' as web;
@@ -8,11 +7,12 @@ import 'dom_utils.dart';
 import 'html_utils.dart';
 import 'state.dart';
 
-typedef SelectVertexCallback = void Function(String vertex, {bool isShift});
+typedef SelectVertexCallback = void Function(String v, {bool isShift});
 typedef SelectEdgeCallback = void Function(String u, String v, {bool isShift});
 
-/// Manages the vertex/edge inspector panel.
+/// Component rendering inspection details for selected graph vertices and edges.
 final class GraphInspector {
+  /// Updates the inspector panel contents based on active selection state.
   static void updateInspector(
     AppState state, {
     required SelectVertexCallback onSelectVertex,
@@ -21,12 +21,12 @@ final class GraphInspector {
     final container =
         web.document.querySelector('#inspector-content') as web.HTMLElement?;
     if (container == null) return;
+    container.innerHTML = ''.toJS;
 
     final graph = state.renderGraph;
-    container.textContent = '';
 
-    // 1. Multi-selection aggregate metrics (when >1 vertex or >1 edge selected)
-    if (state.selectedVertices.length > 1 || state.selectedEdges.length > 1) {
+    // 1. Multiple Elements Selected
+    if (state.selectedVertices.length + state.selectedEdges.length > 1) {
       _renderMultiSelection(
         container,
         state,
@@ -37,18 +37,18 @@ final class GraphInspector {
       return;
     }
 
-    // 2. Single Edge inspector
+    // 2. Single Edge Selected
     if (state.selectedEdge != null) {
       final (u, v) = state.selectedEdge!;
       final edge = graph.getEdge(u, v) ?? graph.getEdge(v, u);
-      if (edge != null || graph.containsEdge(u, v)) {
+      if (edge != null) {
         _renderSingleEdge(
           container,
           state,
           graph,
-          u,
-          v,
-          edge?.value ?? 1,
+          edge.source,
+          edge.target,
+          edge.value,
           onSelectVertex,
           onSelectEdge,
         );
@@ -56,7 +56,7 @@ final class GraphInspector {
       }
     }
 
-    // 3. Single Vertex inspector
+    // 3. Single Vertex Selected
     final selectedVertex =
         state.activeVertex ??
         state.selectedSource ??
@@ -77,10 +77,10 @@ final class GraphInspector {
     }
 
     // 4. Empty state
-    final emptySpan =
-        span('Click or marquee-select vertices and edges to inspect.')
-          ..style.color = 'var(--text-muted)'
-          ..style.fontSize = '11.5px';
+    final emptySpan = span(
+      'Click or marquee-select vertices and edges to inspect.',
+      'inspector-muted-hint',
+    );
     container.appendChild(emptySpan);
   }
 
@@ -91,9 +91,7 @@ final class GraphInspector {
     SelectVertexCallback onSelectVertex,
     SelectEdgeCallback onSelectEdge,
   ) {
-    final titleP = p()..style.margin = '0 0 6px 0';
-    titleP.appendChild(span('Aggregate Selection')..style.fontWeight = '600');
-    container.appendChild(titleP);
+    container.appendChild(p('Aggregate Selection', 'inspector-title'));
 
     final selV = state.selectedVertices;
     final selE = state.selectedEdges;
@@ -127,17 +125,9 @@ final class GraphInspector {
 
     if (selE.isNotEmpty) {
       final weights = <num>[];
-      var totalLength = 0.0;
       for (final (u, v) in selE) {
         final e = graph.getEdge(u, v) ?? graph.getEdge(v, u);
         if (e != null) weights.add(e.value);
-        final nU = state.nodes[u];
-        final nV = state.nodes[v];
-        if (nU?.x != null && nU?.y != null && nV?.x != null && nV?.y != null) {
-          final dx = nV!.x! - nU!.x!;
-          final dy = nV.y! - nU.y!;
-          totalLength += math.sqrt(dx * dx + dy * dy);
-        }
       }
       if (weights.isNotEmpty) {
         final totalWeight = weights.reduce((a, b) => a + b);
@@ -146,56 +136,41 @@ final class GraphInspector {
           '<b>Total Weight:</b> $totalWeight | <b>Avg:</b> ${avgWeight.toStringAsFixed(2)}<br>',
         );
       }
-      if (totalLength > 0) {
-        metricsBuffer.writeln(
-          '<b>Total Length:</b> ${totalLength.round()} px<br>',
-        );
-      }
     }
 
-    final metricsP = p()
-      ..style.fontSize = '11px'
-      ..style.color = 'var(--text-secondary)'
-      ..style.lineHeight = '1.5'
-      ..style.margin = '0 0 8px 0';
-    metricsP.innerHTML = metricsBuffer.toString().toJS;
-    container.appendChild(metricsP);
+    container.appendChild(_metricsParagraph(metricsBuffer.toString()));
 
     // Selected Vertices Pills
     if (selV.isNotEmpty) {
-      final vRow = div()..style.margin = '4px 0';
-      vRow.appendChild(
-        span('Vertices: ')
-          ..style.fontSize = '10.5px'
-          ..style.fontWeight = '600',
-      );
+      final vRow = _sectionRow('Vertices: ');
       for (final v in selV) {
-        final pill = span(state.nodes[v]?.label ?? v, 'pill')
-          ..style.cursor = 'pointer'
-          ..style.margin = '2px'
-          ..title = 'Click to select $v (Shift-click to add)';
+        final pill = span(
+          state.nodes[v]?.label ?? v,
+          'pill inspector-clickable',
+        )..title = 'Click to select $v (Shift-click to add)';
         pill.onClick.listen((e) => onSelectVertex(v, isShift: e.shiftKey));
         vRow.appendChild(pill);
       }
       container.appendChild(vRow);
     }
 
-    // Selected Edges Pills
+    // Selected Edges
     if (selE.isNotEmpty) {
-      final eRow = div()..style.margin = '4px 0';
-      eRow.appendChild(
-        span('Edges: ')
-          ..style.fontSize = '10.5px'
-          ..style.fontWeight = '600',
-      );
+      final eRow = _sectionRow('Edges: ');
       final arrow = graph.isDirected ? '→' : '—';
       for (final (u, v) in selE) {
-        final pill = span('$u$arrow$v', 'pill')
-          ..style.cursor = 'pointer'
-          ..style.margin = '2px'
-          ..title = 'Click to select edge $u$arrow$v (Shift-click to add)';
-        pill.onClick.listen((e) => onSelectEdge(u, v, isShift: e.shiftKey));
-        eRow.appendChild(pill);
+        final item = _buildEdgeItem(
+          sourceText: state.nodes[u]?.label ?? u,
+          sourceTooltip: 'Select vertex $u (Shift-click to add)',
+          onSourceClick: (isShift) => onSelectVertex(u, isShift: isShift),
+          edgeText: arrow,
+          edgeTooltip: 'Select edge $u $arrow $v (Shift-click to add)',
+          onEdgeClick: (isShift) => onSelectEdge(u, v, isShift: isShift),
+          targetText: state.nodes[v]?.label ?? v,
+          targetTooltip: 'Select vertex $v (Shift-click to add)',
+          onTargetClick: (isShift) => onSelectVertex(v, isShift: isShift),
+        );
+        eRow.appendChild(item);
       }
       container.appendChild(eRow);
     }
@@ -212,45 +187,37 @@ final class GraphInspector {
     SelectEdgeCallback onSelectEdge,
   ) {
     final arrow = graph.isDirected ? '→' : '—';
-    final titleP = p()..style.margin = '0 0 6px 0';
-    titleP.appendChild(span('Edge: ')..style.fontWeight = '600');
-
-    final pillU = span(u, 'pill')
-      ..style.cursor = 'pointer'
-      ..title = 'Click to inspect vertex $u (Shift-click to add)';
-    pillU.onClick.listen((e) => onSelectVertex(u, isShift: e.shiftKey));
-    titleP.appendChild(pillU);
-
-    titleP.appendChild(span(arrow)..style.margin = '0 4px');
-
-    final pillV = span(v, 'pill')
-      ..style.cursor = 'pointer'
-      ..title = 'Click to inspect vertex $v (Shift-click to add)';
-    pillV.onClick.listen((e) => onSelectVertex(v, isShift: e.shiftKey));
-    titleP.appendChild(pillV);
-
+    final titleP = p(null, 'inspector-title');
+    titleP.appendChild(span('Edge: '));
+    titleP.appendChild(
+      _buildEdgeItem(
+        sourceText: state.nodes[u]?.label ?? u,
+        sourceTooltip: 'Select vertex $u (Shift-click to add)',
+        onSourceClick: (isShift) => onSelectVertex(u, isShift: isShift),
+        edgeText: arrow,
+        edgeTooltip: 'Select edge $u $arrow $v (Shift-click to add)',
+        onEdgeClick: (isShift) => onSelectEdge(u, v, isShift: isShift),
+        targetText: state.nodes[v]?.label ?? v,
+        targetTooltip: 'Select vertex $v (Shift-click to add)',
+        onTargetClick: (isShift) => onSelectVertex(v, isShift: isShift),
+      ),
+    );
     container.appendChild(titleP);
 
     final isBidi = graph.isDirected && graph.containsEdge(v, u);
 
-    final metricsP = p()
-      ..style.fontSize = '11px'
-      ..style.color = 'var(--text-secondary)'
-      ..style.lineHeight = '1.5'
-      ..style.margin = '0 0 8px 0';
-    metricsP.innerHTML =
-        '''
+    container.appendChild(
+      _metricsParagraph('''
       <b>Weight:</b> $weight<br>
       <b>Direction:</b> ${graph.isDirected ? 'Directed ($arrow)' : 'Undirected'}<br>
       <b>Bidirectional:</b> ${isBidi ? 'Yes' : 'No'}<br>
       <b>Source Degree:</b> ${graph.degreeOf(u)} | <b>Target Degree:</b> ${graph.degreeOf(v)}
-    '''
-            .toJS;
-    container.appendChild(metricsP);
+    '''),
+    );
 
     // Opposing edge button
     if (isBidi) {
-      final bidiRow = div()..style.margin = '4px 0';
+      final bidiRow = div('inspector-row');
       final bidiBtn = button('Select Opposing ($v→$u)', 'button-small');
       bidiBtn.onClick.listen((_) => onSelectEdge(v, u));
       bidiRow.appendChild(bidiBtn);
@@ -273,25 +240,15 @@ final class GraphInspector {
     final outDeg = graph.isDirected ? graph.outDegreeOf(v) : deg;
     final clustering = graph.localClusteringCoefficient(v);
 
-    final titleP = p()..style.margin = '0 0 6px 0';
-    titleP.appendChild(span('Vertex: ')..style.fontWeight = '600');
+    final titleP = p(null, 'inspector-title');
+    titleP.appendChild(span('Vertex: '));
     titleP.appendChild(span(currentLabel, 'pill'));
     if (currentLabel != v) {
-      titleP.appendChild(
-        span(' (id: $v)')
-          ..style.color = 'var(--text-muted)'
-          ..style.fontSize = '10.5px',
-      );
+      titleP.appendChild(span(' (id: $v)', 'inspector-muted-hint'));
     }
     container.appendChild(titleP);
 
     // Detailed Vertex Metrics
-    final metricsP = p()
-      ..style.fontSize = '11px'
-      ..style.color = 'var(--text-secondary)'
-      ..style.lineHeight = '1.5'
-      ..style.margin = '0 0 6px 0';
-
     final overlay = state.activeOverlay;
     var extraMetric = '';
     if (overlay is HeatmapOverlay && overlay.scores.containsKey(v)) {
@@ -299,35 +256,27 @@ final class GraphInspector {
           '<br><b>${escapeHtml(overlay.title)}:</b> ${overlay.scores[v]!.toStringAsFixed(4)}';
     }
 
+    final String metricsHtml;
     if (graph.isDirected) {
-      metricsP.innerHTML =
+      metricsHtml =
           '''
         <b>Degree:</b> $deg (In: $inDeg, Out: $outDeg)<br>
         <b>Clustering Coeff:</b> ${clustering.toStringAsFixed(3)}$extraMetric
-      '''
-              .toJS;
+      ''';
     } else {
-      metricsP.innerHTML =
+      metricsHtml =
           '''
         <b>Degree:</b> $deg<br>
         <b>Clustering Coeff:</b> ${clustering.toStringAsFixed(3)}$extraMetric
-      '''
-              .toJS;
+      ''';
     }
-    container.appendChild(metricsP);
+    container.appendChild(_metricsParagraph(metricsHtml));
 
     // Predecessors / In-Neighbors (if directed)
     if (graph.isDirected) {
       final preds = graph.predecessorsOf(v).toList();
       if (preds.isNotEmpty) {
-        final predRow = div()..style.margin = '6px 0';
-        predRow.appendChild(
-          span('In-Neighbors: ')
-            ..style.fontSize = '10.5px'
-            ..style.fontWeight = '600'
-            ..style.display = 'block'
-            ..style.marginBottom = '2px',
-        );
+        final predRow = _sectionRow('In-Neighbors: ');
         for (final p in preds) {
           final item = _buildNeighborItem(
             edgeText: '→',
@@ -349,13 +298,8 @@ final class GraphInspector {
         (graph.isDirected ? graph.successorsOf(v) : graph.neighboursOf(v))
             .toList();
     if (succs.isNotEmpty) {
-      final succRow = div()..style.margin = '6px 0';
-      succRow.appendChild(
-        span(graph.isDirected ? 'Out-Neighbors: ' : 'Neighbors: ')
-          ..style.fontSize = '10.5px'
-          ..style.fontWeight = '600'
-          ..style.display = 'block'
-          ..style.marginBottom = '2px',
+      final succRow = _sectionRow(
+        graph.isDirected ? 'Out-Neighbors: ' : 'Neighbors: ',
       );
       for (final s in succs) {
         final edgeU = graph.isDirected ? v : (v.compareTo(s) <= 0 ? v : s);
@@ -375,39 +319,54 @@ final class GraphInspector {
       }
       container.appendChild(succRow);
     }
+  }
 
-    // Connected Incident Edges
-    final incidentEdges = graph.edgesOf(v).toList();
-    if (incidentEdges.isNotEmpty) {
-      final eRow = div()..style.margin = '6px 0';
-      eRow.appendChild(
-        span('Incident Edges: ')
-          ..style.fontSize = '10.5px'
-          ..style.fontWeight = '600'
-          ..style.display = 'block'
-          ..style.marginBottom = '2px',
-      );
-      for (final edge in incidentEdges) {
-        final isIncoming =
-            graph.isDirected && edge.target == v && edge.source != v;
-        final otherV = isIncoming ? edge.source : edge.target;
-        final arrow = graph.isDirected ? '→' : '—';
-        final edgeText = arrow;
-        final item = _buildNeighborItem(
-          edgeText: edgeText,
-          edgeTooltip:
-              'Select edge ${edge.source} $arrow ${edge.target} (Shift-click to add)',
-          onEdgeClick: (isShift) =>
-              onSelectEdge(edge.source, edge.target, isShift: isShift),
-          vertexText: state.nodes[otherV]?.label ?? otherV,
-          vertexTooltip: 'Select vertex $otherV (Shift-click to add)',
-          onVertexClick: (isShift) => onSelectVertex(otherV, isShift: isShift),
-          edgeFirst: isIncoming,
-        );
-        eRow.appendChild(item);
-      }
-      container.appendChild(eRow);
-    }
+  static web.HTMLParagraphElement _metricsParagraph(String html) =>
+      p(null, 'inspector-metrics')..innerHTML = html.toJS;
+
+  static web.HTMLDivElement _sectionRow(String labelText) {
+    final row = div('inspector-row');
+    row.appendChild(span(labelText, 'inspector-row-label'));
+    return row;
+  }
+
+  static web.HTMLElement _buildEdgeItem({
+    required String sourceText,
+    required String sourceTooltip,
+    required void Function(bool isShift) onSourceClick,
+    required String edgeText,
+    required String edgeTooltip,
+    required void Function(bool isShift) onEdgeClick,
+    required String targetText,
+    required String targetTooltip,
+    required void Function(bool isShift) onTargetClick,
+  }) {
+    final wrapper = span('', 'neighbor-item');
+
+    final sourceBtn = span(sourceText, 'neighbor-vert-btn')
+      ..title = sourceTooltip;
+    sourceBtn.onClick.listen((event) {
+      event.stopPropagation();
+      onSourceClick(event.shiftKey);
+    });
+
+    final edgeBtn = span(edgeText, 'neighbor-edge-btn')..title = edgeTooltip;
+    edgeBtn.onClick.listen((event) {
+      event.stopPropagation();
+      onEdgeClick(event.shiftKey);
+    });
+
+    final targetBtn = span(targetText, 'neighbor-vert-btn')
+      ..title = targetTooltip;
+    targetBtn.onClick.listen((event) {
+      event.stopPropagation();
+      onTargetClick(event.shiftKey);
+    });
+
+    wrapper.appendChild(sourceBtn);
+    wrapper.appendChild(edgeBtn);
+    wrapper.appendChild(targetBtn);
+    return wrapper;
   }
 
   static web.HTMLElement _buildNeighborItem({

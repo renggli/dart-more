@@ -24,6 +24,7 @@ abstract final class GraphLayout {
   /// Computes and applies layout coordinates to all vertices in [state].
   static void applyLayout(
     AppState state, {
+    Graph<String, num>? graph,
     String? engine,
     String? rankdir,
     double? vertexDistance,
@@ -31,9 +32,11 @@ abstract final class GraphLayout {
     int? iterations,
     int? columns,
     int? seed,
+    bool removeOverlaps = true,
+    bool packComponents = true,
   }) {
-    final graph = state.renderGraph;
-    final vertices = graph.vertices.toList();
+    final targetGraph = graph ?? state.renderGraph;
+    final vertices = targetGraph.vertices.toList();
     if (vertices.isEmpty) return;
 
     final layoutEngine = engine ?? state.layoutEngine;
@@ -55,8 +58,14 @@ abstract final class GraphLayout {
         vertexDistance: spacing,
         layerDistance: lDist,
       ),
-      'radial' => RadialLayout<String>(vertexDistance: spacing),
-      'shell' => ShellLayout<String>(vertexDistance: spacing),
+      'radial' => RadialLayout<String>(
+        vertexDistance: spacing,
+        layerDistance: lDist,
+      ),
+      'shell' => ShellLayout<String>(
+        vertexDistance: spacing,
+        layerDistance: lDist,
+      ),
       'layered' => LayeredLayout<String>(
         orientation: orientation,
         vertexDistance: spacing,
@@ -70,51 +79,47 @@ abstract final class GraphLayout {
       'spectral' => SpectralLayout<String>(
         vertexDistance: spacing,
         iterations: iter,
+        seed: seed ?? 42,
       ),
       'random' => RandomLayout<String>(
         bounds: const LayoutRectangle(100, 100, 650, 450),
         seed: seed,
       ),
       'force' => () {
-        final initialPositions = <String, LayoutPoint>{
-          for (final v in vertices)
-            if (state.nodes[v]?.x != null && state.nodes[v]?.y != null)
-              v: LayoutPoint(state.nodes[v]!.x!, state.nodes[v]!.y!),
-        };
+        final span = math.max(
+          720.0,
+          math.sqrt(vertices.length) * (spacing + 60.0) * 2.0,
+        );
         return ForceLayout<String>(
           config: ForceConfig(iterations: iterations ?? 120),
-          bounds: const LayoutRectangle(80, 80, 720, 520),
+          bounds: LayoutRectangle(80, 80, span, span * 0.75),
           vertexDistance: spacing,
-          initialPositions: initialPositions.isNotEmpty
-              ? initialPositions
-              : null,
           seed: seed,
         );
       }(),
       _ => StressLayout<String>(
-        vertexDistance: vertexDistance ?? 50.0,
+        vertexDistance: spacing,
         iterations: iter,
         seed: seed ?? 42,
       ),
     };
 
-    final result = graph.layout(
+    var result = targetGraph.layout(
       strategy,
       vertexSize: (v) => computeNodeSize(state, v),
-      normalize: false,
+      packComponents: packComponents,
+      removeOverlaps: removeOverlaps,
     );
 
-    // Center layout smoothly in the primary viewing area without squashing
-    final fitted = result.fit(
-      const LayoutRectangle(120, 100, 660, 460),
-      margin: 40,
-      mode: FitMode.shrinkOnly,
-    );
+    final center = result.bounds.center;
+    final dx = 450.0 - center.x;
+    final dy = 300.0 - center.y;
+    result = result.transform((_, pt) => pt.translate(dx, dy));
 
-    state.edgeRoutes = fitted.edgeRoutes;
+    state.edgeRoutes = Map.of(result.edgeRoutes);
 
     for (final v in vertices) {
-      final pt = fitted[v];
+      final pt = result[v];
       final node = state.getOrCreateNode(v);
       if (pt != null) {
         node.x = pt.x;

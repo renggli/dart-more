@@ -47,6 +47,11 @@ void main() {
         ..addEdge('1', '2', value: 1);
       final flow = graph.maxFlow();
       check(flow('S', 'E')).equals(4);
+      check(flow.flow('S', '1')).equals(2);
+      check(flow.flow('S', '2')).equals(2);
+      check(flow.flow('1', 'E')).equals(2);
+      check(flow.flow('2', 'E')).equals(2);
+      check(flow.flow('X', 'Y')).equals(0);
       check(flow('E', 'S')).equals(0);
     });
     test('example 2', () {

@@ -13,6 +13,7 @@ final class LayoutInput<V> {
     this.vertexSize,
     this.edgeWeight,
     this.vertexStrategy,
+    this.packComponents = true,
   }) : vertices = List<V>.unmodifiable(vertices);
 
   /// Materialized list of vertices to lay out.
@@ -32,6 +33,9 @@ final class LayoutInput<V> {
 
   /// Optional storage strategy for vertex collections.
   final StorageStrategy<V>? vertexStrategy;
+
+  /// Whether disconnected components should be laid out separately and shelf-packed.
+  final bool packComponents;
 
   /// Default vertex size `(40, 40)`.
   static const LayoutSize defaultSize = (width: 40.0, height: 40.0);

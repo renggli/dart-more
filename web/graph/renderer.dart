@@ -220,9 +220,12 @@ final class GraphRenderer {
 
     const nodeRadius = 22.0;
 
+    String? resolveColor(String? c) =>
+        (c != null && c != 'none' && c.isNotEmpty) ? c : null;
+
     // Layer 1: Edges
     markup.writeln('<g class="layer-edges">');
-    for (final edge in graph.edges) {
+    for (final edge in graph.edges.toSet()) {
       final nodeU = state.nodes[edge.source];
       final nodeV = state.nodes[edge.target];
       if (nodeU == null ||
@@ -239,7 +242,11 @@ final class GraphRenderer {
       final x2 = nodeV.x!;
       final y2 = nodeV.y!;
 
-      final normalized = state.normalizeEdge(edge.source, edge.target);
+      final normalized = state.normalizeEdge(
+        edge.source,
+        edge.target,
+        isDirected: graph.isDirected,
+      );
       final isLastSelectedEdge = state.selectedEdge == normalized;
       final isEdgeSelected =
           isLastSelectedEdge || state.selectedEdges.contains(normalized);
@@ -249,14 +256,26 @@ final class GraphRenderer {
           (!graph.isDirected &&
               activePathEdges.contains((edge.target, edge.source)));
 
-      final edgeStyle = state.getEdgeStyle(edge.source, edge.target);
+      final edgeStyle = state.getEdgeStyle(
+        edge.source,
+        edge.target,
+        isDirected: graph.isDirected,
+      );
+      if (!edgeStyle.visible) continue;
 
+      final customEdgeColor = resolveColor(edgeStyle.color);
       final strokeColor =
-          edgeStyle.color ?? (isPathEdge ? pathOverlayColor! : '#475569');
-      final strokeWidth = isPathEdge && edgeStyle.color == null
+          customEdgeColor ?? (isPathEdge ? pathOverlayColor! : '#475569');
+      final strokeWidth = isPathEdge && customEdgeColor == null
           ? '3.0'
           : '${edgeStyle.strokeWidth}';
       final opacity = edgeStyle.opacity;
+      final dashAttr =
+          (edgeStyle.dashPattern != null &&
+              edgeStyle.dashPattern != 'none' &&
+              edgeStyle.dashPattern!.isNotEmpty)
+          ? 'stroke-dasharray="${escapeHtml(edgeStyle.dashPattern!)}"'
+          : '';
       final marker = graph.isDirected
           ? (isLastSelectedEdge
                 ? 'url(#arrow-active)'
@@ -292,7 +311,7 @@ final class GraphRenderer {
           );
         }
         markup.writeln(
-          '  <path d="$loopPath" fill="none" stroke="$strokeColor" stroke-width="$strokeWidth" opacity="$opacity" ${marker.isNotEmpty ? 'marker-end="$marker"' : ''} />',
+          '  <path d="$loopPath" fill="none" stroke="$strokeColor" stroke-width="$strokeWidth" opacity="$opacity" $dashAttr ${marker.isNotEmpty ? 'marker-end="$marker"' : ''} />',
         );
         if (state.isWeighted) {
           final labelY = y1 - nodeRadius - 38;
@@ -380,7 +399,7 @@ final class GraphRenderer {
         );
       }
       markup.writeln(
-        '  <path d="$pathData" fill="none" stroke="$strokeColor" stroke-width="$strokeWidth" opacity="$opacity" ${marker.isNotEmpty ? 'marker-end="$marker"' : ''} />',
+        '  <path d="$pathData" fill="none" stroke="$strokeColor" stroke-width="$strokeWidth" opacity="$opacity" $dashAttr ${marker.isNotEmpty ? 'marker-end="$marker"' : ''} />',
       );
       if (state.isWeighted) {
         markup.writeln(
@@ -403,6 +422,7 @@ final class GraphRenderer {
     for (final v in graph.vertices) {
       final node = state.nodes[v];
       if (node == null || node.x == null || node.y == null) continue;
+      if (!node.style.visible) continue;
 
       final x = node.x!;
       final y = node.y!;
@@ -411,16 +431,30 @@ final class GraphRenderer {
       final isSelected = state.selectedVertices.contains(v);
 
       // Color & Visual Attributes computation
-      var fillColor = node.style.fillColor ?? node.userFillColor ?? '#1e293b';
-      var textColor = node.style.textColor ?? node.userTextColor ?? '#f8fafc';
+      var fillColor =
+          resolveColor(node.style.fillColor) ??
+          resolveColor(node.userFillColor) ??
+          '#1e293b';
+      var textColor =
+          resolveColor(node.style.textColor) ??
+          resolveColor(node.userTextColor) ??
+          '#f8fafc';
       var borderColor =
-          node.style.borderColor ?? node.userBorderColor ?? '#64748b';
+          resolveColor(node.style.borderColor) ??
+          resolveColor(node.userBorderColor) ??
+          '#64748b';
       final borderWidth = node.style.borderWidth != defaultBorderWidth
           ? node.style.borderWidth
           : (node.userBorderWidth ?? defaultBorderWidth);
       final opacity = node.style.opacity != defaultOpacity
           ? node.style.opacity
           : (node.userOpacity ?? defaultOpacity);
+      final nodeDashAttr =
+          (node.style.dashPattern != null &&
+              node.style.dashPattern != 'none' &&
+              node.style.dashPattern!.isNotEmpty)
+          ? 'stroke-dasharray="${escapeHtml(node.style.dashPattern!)}"'
+          : '';
 
       if (overlay is HeatmapOverlay &&
           node.style.fillColor == null &&
@@ -473,7 +507,7 @@ final class GraphRenderer {
 
       // Node Body Circle
       markup.writeln(
-        '  <circle cx="$x" cy="$y" r="$nodeRadius" fill="$fillColor" stroke="$borderColor" stroke-width="$borderWidth" opacity="$opacity" filter="url(#node-shadow)" cursor="pointer" />',
+        '  <circle cx="$x" cy="$y" r="$nodeRadius" fill="$fillColor" stroke="$borderColor" stroke-width="$borderWidth" opacity="$opacity" $nodeDashAttr filter="url(#node-shadow)" cursor="pointer" />',
       );
 
       // Node Label Text
@@ -641,6 +675,7 @@ final class GraphRenderer {
           _didDragNodes = true;
           final state = _lastState;
           if (state != null) {
+            state.edgeRoutes.clear();
             for (final MapEntry(:key, :value)
                 in _initialDragPositions.entries) {
               final node = state.nodes[key];
@@ -756,7 +791,7 @@ final class GraphRenderer {
             }
 
             if (state.selectEdgesMode) {
-              for (final edge in state.renderGraph.edges) {
+              for (final edge in state.renderGraph.edges.toSet()) {
                 final nodeU = state.nodes[edge.source];
                 final nodeV = state.nodes[edge.target];
                 if (nodeU?.x != null &&
@@ -772,7 +807,9 @@ final class GraphRenderer {
                   final vIn =
                       x2 >= minX && x2 <= maxX && y2 >= minY && y2 <= maxY;
                   if (uIn || vIn) {
-                    matchedEdges.add((edge.source, edge.target));
+                    matchedEdges.add(
+                      state.normalizeEdge(edge.source, edge.target),
+                    );
                   }
                 }
               }
@@ -1160,6 +1197,70 @@ final class GraphRenderer {
 
   /// Centers and fits the graph view to the viewport.
   void resetView() {
+    final state = _lastState;
+    if (state != null && state.renderGraph.vertices.isNotEmpty) {
+      var minX = double.infinity;
+      var minY = double.infinity;
+      var maxX = -double.infinity;
+      var maxY = -double.infinity;
+      var hasNodes = false;
+
+      const nodeMargin = 35.0;
+      for (final v in state.renderGraph.vertices) {
+        final node = state.nodes[v];
+        if (node != null && node.x != null && node.y != null) {
+          hasNodes = true;
+          final x = node.x!;
+          final y = node.y!;
+          if (x - nodeMargin < minX) minX = x - nodeMargin;
+          if (y - nodeMargin < minY) minY = y - nodeMargin;
+          if (x + nodeMargin > maxX) maxX = x + nodeMargin;
+          if (y + nodeMargin > maxY) maxY = y + nodeMargin;
+        }
+      }
+
+      for (final route in state.edgeRoutes.values) {
+        for (final pt in route) {
+          if (pt.x < minX) minX = pt.x;
+          if (pt.y < minY) minY = pt.y;
+          if (pt.x > maxX) maxX = pt.x;
+          if (pt.y > maxY) maxY = pt.y;
+        }
+      }
+
+      if (hasNodes &&
+          minX.isFinite &&
+          minY.isFinite &&
+          maxX.isFinite &&
+          maxY.isFinite) {
+        final rect = viewport.getBoundingClientRect();
+        final vw = rect.width > 0 ? rect.width.toDouble() : 900.0;
+        final vh = rect.height > 0 ? rect.height.toDouble() : 600.0;
+
+        final graphW = maxX - minX;
+        final graphH = maxY - minY;
+        const padding = 50.0;
+        final availW = vw - padding * 2;
+        final availH = vh - padding * 2;
+
+        if (availW > 0 && availH > 0 && graphW > 0 && graphH > 0) {
+          final scaleFit = math.min(availW / graphW, availH / graphH);
+          _scale = math.min(1.0, scaleFit).clamp(0.1, 4.0);
+        } else {
+          _scale = 1.0;
+        }
+
+        final centerX = (minX + maxX) / 2.0;
+        final centerY = (minY + maxY) / 2.0;
+        _panX = vw / 2.0 - centerX * _scale;
+        _panY = vh / 2.0 - centerY * _scale;
+
+        _updateTransform();
+        render(state);
+        return;
+      }
+    }
+
     _scale = 1.0;
     _panX = 0.0;
     _panY = 0.0;

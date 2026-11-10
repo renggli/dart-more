@@ -2,6 +2,7 @@ import 'package:more/graph.dart';
 
 import 'modifiers.dart';
 import 'node.dart';
+import 'selection.dart';
 
 /// Sealed class representing visual overlays that decorate graph visualization.
 sealed class VisualOverlay {
@@ -130,9 +131,9 @@ final class AppState {
     required bool isDirected,
   }) => isDirected ? (u, v) : (u.compareTo(v) <= 0 ? (u, v) : (v, u));
 
-  /// Normalizes edge endpoints according to the primary graph's directedness.
+  /// Normalizes edge endpoints according to the rendered graph's directedness.
   (String, String) normalizeEdge(String u, String v, {bool? isDirected}) =>
-      edgeKey(u, v, isDirected: isDirected ?? primaryGraph.isDirected);
+      edgeKey(u, v, isDirected: isDirected ?? renderGraph.isDirected);
 
   /// Retrieves or initializes the edge styling object for an edge.
   GraphEdgeStyle getEdgeStyle(String u, String v, {bool? isDirected}) =>
@@ -162,8 +163,10 @@ final class AppState {
     activeOverlay = null;
     activeModifierTable = null;
     edgeStyles.clear();
-    edgeRoutes.clear();
+    edgeRoutes = {};
     clearSelection();
+    undoStack.clear();
+    redoStack.clear();
     onReset?.call();
   }
 
@@ -188,12 +191,28 @@ final class AppState {
   bool selectVerticesMode = true;
   bool selectEdgesMode = true;
 
-  String? selectedSource;
-  String? selectedTarget;
-  String? activeVertex;
-  Set<String> selectedVertices = {};
-  (String, String)? selectedEdge;
-  Set<(String, String)> selectedEdges = {};
+  /// Encapsulated selection state.
+  final selection = Selection();
+
+  String? get selectedSource => selection.source;
+  set selectedSource(String? _) {}
+
+  String? get selectedTarget => selection.target;
+  set selectedTarget(String? _) {}
+
+  String? get activeVertex => selection.activeVertex;
+  set activeVertex(String? v) => selection.activeVertex = v;
+
+  Set<String> get selectedVertices => selection.vertices;
+  set selectedVertices(Set<String> v) => selection.setVertices(v);
+
+  (String, String)? get selectedEdge => selection.selectedEdge;
+  set selectedEdge((String, String)? e) =>
+      selection.selectedEdge = e != null ? normalizeEdge(e.$1, e.$2) : null;
+
+  Set<(String, String)> get selectedEdges => selection.edges;
+  set selectedEdges(Set<(String, String)> e) =>
+      selection.setEdges(e.map((edge) => normalizeEdge(edge.$1, edge.$2)));
 
   VisualOverlay? activeOverlay;
 
@@ -213,6 +232,7 @@ final class AppState {
   void evaluateModifiers() {
     resetVisualStyles();
     var g = primaryGraph;
+    effectiveGraph = g;
     VisualOverlay? finalOverlay;
     ModifierTableData? finalTable;
     lastModifierOutputs.clear();
@@ -228,6 +248,7 @@ final class AppState {
         }
         if (out.transformedGraph != null) {
           g = out.transformedGraph!;
+          effectiveGraph = g;
         }
         if (out.overlay != null) {
           finalOverlay = out.overlay;
@@ -257,8 +278,11 @@ final class AppState {
 
   /// Synchronizes node records with current graph vertices.
   void syncNodes() {
-    nodes.removeWhere((id, _) => !primaryGraph.containsVertex(id));
-    for (final v in primaryGraph.vertices) {
+    nodes.removeWhere(
+      (id, _) =>
+          !primaryGraph.containsVertex(id) && !renderGraph.containsVertex(id),
+    );
+    for (final v in renderGraph.vertices) {
       nodes.putIfAbsent(v, () => GraphNode(id: v, label: v));
     }
   }
@@ -370,40 +394,11 @@ final class AppState {
     activeOverlay = null;
   }
 
-  void clearSelection() {
-    selectedSource = null;
-    selectedTarget = null;
-    activeVertex = null;
-    selectedVertices.clear();
-    selectedEdge = null;
-    selectedEdges.clear();
-  }
+  void clearSelection() => selection.clear();
 
   /// Blender-style vertex selection with active element tracking.
-  void selectVertex(String v, {bool toggle = false, bool clearOthers = true}) {
-    if (clearOthers) {
-      selectedVertices.clear();
-      selectedEdge = null;
-      selectedEdges.clear();
-    }
-    if (toggle) {
-      if (selectedVertices.contains(v)) {
-        selectedVertices.remove(v);
-        if (activeVertex == v) {
-          activeVertex = selectedVertices.isNotEmpty
-              ? selectedVertices.last
-              : null;
-        }
-      } else {
-        selectedVertices.add(v);
-        activeVertex = v;
-      }
-    } else {
-      selectedVertices.add(v);
-      activeVertex = v;
-    }
-    syncSelectionSourceTarget();
-  }
+  void selectVertex(String v, {bool toggle = false, bool clearOthers = true}) =>
+      selection.selectVertex(v, toggle: toggle, clearOthers: clearOthers);
 
   /// Edge selection normalizing endpoint order for undirected graphs.
   void selectEdge(
@@ -411,46 +406,18 @@ final class AppState {
     String v, {
     bool toggle = false,
     bool clearOthers = true,
-  }) {
-    final key = normalizeEdge(u, v);
-    if (clearOthers) {
-      selectedVertices.clear();
-      selectedEdges.clear();
-      selectedEdge = null;
-    }
-    if (toggle) {
-      if (selectedEdges.contains(key)) {
-        selectedEdges.remove(key);
-        if (selectedEdge == key) {
-          selectedEdge = selectedEdges.isNotEmpty ? selectedEdges.last : null;
-        }
-      } else {
-        selectedEdges.add(key);
-        selectedEdge = key;
-      }
-    } else {
-      selectedEdges.add(key);
-      selectedEdge = key;
-    }
-  }
+  }) => selection.selectEdge(
+    normalizeEdge(u, v),
+    toggle: toggle,
+    clearOthers: clearOthers,
+  );
 
   /// Whether the edge between [u] and [v] is currently selected.
   bool isEdgeSelected(String u, String v) =>
-      selectedEdges.contains(normalizeEdge(u, v));
+      selection.edges.contains(normalizeEdge(u, v));
 
   /// Synchronizes source and target algorithm endpoints with active selection.
   void syncSelectionSourceTarget() {
-    selectedVertices.removeWhere((v) => !renderGraph.containsVertex(v));
-    if (activeVertex != null && !renderGraph.containsVertex(activeVertex!)) {
-      activeVertex = null;
-    }
-    selectedSource =
-        activeVertex ??
-        (selectedVertices.isNotEmpty ? selectedVertices.first : null);
-    selectedTarget = selectedVertices.firstWhere(
-      (v) => v != selectedSource,
-      orElse: () => '',
-    );
-    if (selectedTarget!.isEmpty) selectedTarget = null;
+    selection.filterVertices(renderGraph.containsVertex);
   }
 }

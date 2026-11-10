@@ -78,18 +78,48 @@ final class PartiteLayout<V> implements GraphLayout<V> {
       final sortedRanks = groups.keys.toList()..sort();
       effectiveLayers = [for (final r in sortedRanks) groups[r]!];
     } else {
-      // Default: single layer
-      effectiveLayers = [allVertices];
-      for (final v in allVertices) {
-        ranks[v] = 0;
+      // Automatically partition vertices using greedy BFS graph coloring
+      final visited = <V>{};
+      final groups = <int, List<V>>{};
+      for (final start in allVertices) {
+        if (visited.contains(start)) continue;
+        final queue = <V>[start];
+        visited.add(start);
+        ranks[start] = 0;
+        groups.putIfAbsent(0, () => []).add(start);
+
+        var head = 0;
+        while (head < queue.length) {
+          final curr = queue[head++];
+          for (final next in input.neighboursOf(curr)) {
+            if (!visited.contains(next)) {
+              visited.add(next);
+              final usedRanks = <int>{};
+              for (final nbr in input.neighboursOf(next)) {
+                if (ranks.containsKey(nbr)) {
+                  usedRanks.add(ranks[nbr]!);
+                }
+              }
+              var r = 0;
+              while (usedRanks.contains(r)) {
+                r++;
+              }
+              ranks[next] = r;
+              groups.putIfAbsent(r, () => []).add(next);
+              queue.add(next);
+            }
+          }
+        }
       }
+      final sortedRanks = groups.keys.toList()..sort();
+      effectiveLayers = [for (final r in sortedRanks) groups[r]!];
     }
 
     // Build DAG successors respecting forward direction across layers
     final dagSuccessors = <V, List<V>>{for (final v in allVertices) v: []};
     for (final u in allVertices) {
       final uRank = ranks[u] ?? 0;
-      for (final v in input.successorsOf(u)) {
+      for (final v in input.neighboursOf(u)) {
         final vRank = ranks[v] ?? 0;
         if (vRank > uRank) {
           dagSuccessors[u]!.add(v);

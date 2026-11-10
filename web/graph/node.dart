@@ -10,6 +10,7 @@ final class NodeStyle {
     this.textColor,
     this.borderWidth = defaultBorderWidth,
     this.opacity = defaultOpacity,
+    this.dashPattern,
     this.visible = true,
   });
 
@@ -28,6 +29,9 @@ final class NodeStyle {
   /// Opacity factor between 0.0 and 1.0.
   double opacity;
 
+  /// Optional SVG stroke-dasharray pattern for the vertex border.
+  String? dashPattern;
+
   /// Whether the vertex is currently rendered.
   bool visible;
 
@@ -38,6 +42,7 @@ final class NodeStyle {
     textColor = null;
     borderWidth = defaultBorderWidth;
     opacity = defaultOpacity;
+    dashPattern = null;
     visible = true;
   }
 }
@@ -129,6 +134,7 @@ final class GraphEdgeStyle {
     this.color,
     this.strokeWidth = 1.8,
     this.opacity = 1.0,
+    this.dashPattern,
     this.label,
     this.visible = true,
   });
@@ -142,6 +148,9 @@ final class GraphEdgeStyle {
   /// Opacity factor between 0.0 and 1.0.
   double opacity;
 
+  /// Optional SVG stroke-dasharray pattern for this edge.
+  String? dashPattern;
+
   /// Optional custom label override for this edge.
   String? label;
 
@@ -153,6 +162,7 @@ final class GraphEdgeStyle {
     color = null;
     strokeWidth = 1.8;
     opacity = 1.0;
+    dashPattern = null;
     label = null;
     visible = true;
   }
