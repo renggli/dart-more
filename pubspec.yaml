@@ -12,7 +12,7 @@ topics:
   - unicode
 
 environment:
-  sdk: ^3.13.0
+  sdk: ^3.14.0
 dependencies:
   characters: ^1.4.1
   clock: ^1.1.3
