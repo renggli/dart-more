@@ -221,8 +221,7 @@ void main() {
 
     if (state.modifiers.isEmpty) {
       final emptyMsg = div()..style.color = 'var(--text-muted)';
-      emptyMsg.textContent =
-          'No modifiers active. Add a modifier above to run live analysis or transformations.';
+      emptyMsg.textContent = 'No modifiers active. Add a modifier above to run live analysis or transformations.';
       modifiersStackList.appendChild(emptyMsg);
       return;
     }
@@ -289,7 +288,8 @@ void main() {
           card.classList.remove('drag-over-top');
           card.classList.remove('drag-over-bottom');
 
-          final fromIdx = draggedModifierIndex ??
+          final fromIdx =
+              draggedModifierIndex ??
               int.tryParse(e.dataTransfer?.getData('text/plain') ?? '');
           draggedModifierIndex = null;
           if (fromIdx == null || fromIdx == idx) return;
@@ -336,8 +336,9 @@ void main() {
 
         header.ondragend = ((web.DragEvent e) {
           draggedModifierIndex = null;
-          final allCards =
-              modifiersStackList.querySelectorAll('.modifier-card');
+          final allCards = modifiersStackList.querySelectorAll(
+            '.modifier-card',
+          );
           for (var k = 0; k < allCards.length; k++) {
             final el = allCards.item(k) as web.HTMLElement;
             el.classList.remove('dragging');
@@ -370,12 +371,10 @@ void main() {
         headerLeft.appendChild(toggleCheckbox);
       }
 
-      final collapseIcon = span(
-        '',
-        'modifier-collapse-icon',
-      )..innerHTML =
-          (mod.collapsed ? GraphIcons.chevronRight : GraphIcons.chevronDown)
-              .toJS;
+      final collapseIcon = span('', 'modifier-collapse-icon')
+        ..innerHTML =
+            (mod.collapsed ? GraphIcons.chevronRight : GraphIcons.chevronDown)
+                .toJS;
       headerLeft.appendChild(collapseIcon);
 
       final titleSpan = span(

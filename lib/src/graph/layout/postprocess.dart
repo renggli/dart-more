@@ -99,7 +99,7 @@ extension LayoutResultExtension<V> on LayoutResult<V> {
     );
   }
 
-  /// Removes vertex overlaps iteratively by pushing colliding vertices apart.
+  /// Removes vertex-vertex and vertex-edge overlaps iteratively by pushing colliding elements apart.
   LayoutResult<V> removeOverlaps(
     LayoutInput<V> input, {
     double padding = 4.0,
@@ -111,22 +111,40 @@ extension LayoutResultExtension<V> on LayoutResult<V> {
     final n = vertices.length;
     final currentPositions = Map<V, LayoutPoint>.of(positions);
 
+    // Collect unique edges from input topology
+    final edges = <(V, V)>[];
+    final seen = <(V, V)>{};
+    for (final u in input.vertices) {
+      if (!currentPositions.containsKey(u)) continue;
+      for (final v in input.successorsOf(u)) {
+        if (u == v || !currentPositions.containsKey(v)) continue;
+        if (!input.isDirected) {
+          final pair = u.hashCode <= v.hashCode ? (u, v) : (v, u);
+          if (seen.add(pair)) {
+            edges.add((u, v));
+          }
+        } else {
+          edges.add((u, v));
+        }
+      }
+    }
+
     for (var pass = 0; pass < maxPasses; pass++) {
       var hadOverlap = false;
 
-      // Sort by X coordinate for sweep-line overlap detection
+      // 1. Resolve vertex-vertex overlaps (Sweep-line on X)
       vertices.sort(
         (a, b) => currentPositions[a]!.x.compareTo(currentPositions[b]!.x),
       );
 
       for (var i = 0; i < n; i++) {
         final u = vertices[i];
-        final posU = currentPositions[u]!;
         final sizeU = input.sizeOf(u);
         final (wu, hu) = (sizeU.width, sizeU.height);
 
         for (var j = i + 1; j < n; j++) {
           final v = vertices[j];
+          final posU = currentPositions[u]!;
           final posV = currentPositions[v]!;
           final sizeV = input.sizeOf(v);
           final (wv, hv) = (sizeV.width, sizeV.height);
@@ -155,6 +173,78 @@ extension LayoutResultExtension<V> on LayoutResult<V> {
               final sign = dy >= 0 ? 1.0 : -1.0;
               currentPositions[u] = posU.translate(0, -sign * shift);
               currentPositions[v] = posV.translate(0, sign * shift);
+            }
+          }
+        }
+      }
+
+      // 2. Resolve vertex-edge overlaps (push non-incident vertices off edge segments)
+      for (final (u, v) in edges) {
+        final posU = currentPositions[u]!;
+        final posV = currentPositions[v]!;
+
+        final route =
+            edgeRoutes[(u, v)] ??
+            (!input.isDirected ? edgeRoutes[(v, u)] : null);
+        final points = route != null && route.isNotEmpty
+            ? [posU, ...route, posV]
+            : [posU, posV];
+
+        for (var s = 0; s < points.length - 1; s++) {
+          final a = points[s];
+          final b = points[s + 1];
+          final dx = b.x - a.x;
+          final dy = b.y - a.y;
+          final segLenSq = dx * dx + dy * dy;
+          if (segLenSq < 1e-6) continue;
+          final segLen = math.sqrt(segLenSq);
+
+          for (final w in vertices) {
+            if (w == u || w == v) continue;
+            final posW = currentPositions[w]!;
+            final sizeW = input.sizeOf(w);
+            final hw = sizeW.width / 2.0;
+            final hh = sizeW.height / 2.0;
+            final maxRadius = math.max(hw, hh);
+            final clearance = maxRadius + padding;
+
+            if (posW.x < math.min(a.x, b.x) - clearance ||
+                posW.x > math.max(a.x, b.x) + clearance ||
+                posW.y < math.min(a.y, b.y) - clearance ||
+                posW.y > math.max(a.y, b.y) + clearance) {
+              continue;
+            }
+
+            final t = ((posW.x - a.x) * dx + (posW.y - a.y) * dy) / segLenSq;
+            if (t <= 0.0 || t >= 1.0) continue;
+
+            final projX = a.x + t * dx;
+            final projY = a.y + t * dy;
+            final dispX = posW.x - projX;
+            final dispY = posW.y - projY;
+            final distSq = dispX * dispX + dispY * dispY;
+
+            final double nx;
+            final double ny;
+            final double dist;
+            if (distSq > 1e-8) {
+              dist = math.sqrt(distSq);
+              nx = dispX / dist;
+              ny = dispY / dist;
+            } else {
+              dist = 0.0;
+              nx = -dy / segLen;
+              ny = dx / segLen;
+            }
+
+            final reqClearance =
+                math.sqrt((nx * hw) * (nx * hw) + (ny * hh) * (ny * hh)) +
+                padding;
+
+            if (dist < reqClearance) {
+              hadOverlap = true;
+              final overlap = reqClearance - dist;
+              currentPositions[w] = posW.translate(nx * overlap, ny * overlap);
             }
           }
         }

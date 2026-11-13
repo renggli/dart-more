@@ -185,5 +185,56 @@ void main() {
       final dist = posA.distanceTo(posB);
       check(dist).isGreaterThan(44.0);
     });
+
+    test('pushes collinear vertex off horizontal edge', () {
+      final input = LayoutInput<String>(
+        vertices: const ['A', 'B', 'C'],
+        successorsOf: (v) => v == 'A' ? const ['B'] : const [],
+        vertexSize: (_) => const (width: 30.0, height: 30.0),
+      );
+      final initial = LayoutResult<String>(
+        positions: const {
+          'A': LayoutPoint(0, 0),
+          'B': LayoutPoint(100, 0),
+          'C': LayoutPoint(50, 0), // Centered on edge A-B
+        },
+      );
+      final resolved = initial.removeOverlaps(input, padding: 5);
+      final posC = resolved['C']!;
+      // C should be pushed vertically away from the A-B edge
+      check(posC.y.abs()).isGreaterThan(18.0);
+    });
+
+    test('pushes collinear vertex off diagonal edge', () {
+      final input = LayoutInput<String>(
+        vertices: const ['A', 'B', 'C'],
+        successorsOf: (v) => v == 'A' ? const ['B'] : const [],
+        vertexSize: (_) => const (width: 30.0, height: 30.0),
+      );
+      final initial = LayoutResult<String>(
+        positions: const {
+          'A': LayoutPoint(0, 0),
+          'B': LayoutPoint(100, 100),
+          'C': LayoutPoint(50, 50), // Directly on diagonal edge A-B
+        },
+      );
+      final resolved = initial.removeOverlaps(input, padding: 5);
+      final posA = resolved['A']!;
+      final posB = resolved['B']!;
+      final posC = resolved['C']!;
+      // Distance from C to line segment AB
+      final dx = posB.x - posA.x;
+      final dy = posB.y - posA.y;
+      final t =
+          ((posC.x - posA.x) * dx + (posC.y - posA.y) * dy) /
+          (dx * dx + dy * dy);
+      final projX = posA.x + t * dx;
+      final projY = posA.y + t * dy;
+      final dist = LayoutPoint(
+        posC.x,
+        posC.y,
+      ).distanceTo(LayoutPoint(projX, projY));
+      check(dist).isGreaterThan(18.0);
+    });
   });
 }
