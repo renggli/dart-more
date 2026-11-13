@@ -1,7 +1,10 @@
+@TestOn('browser')
+library;
+
 import 'package:checks/checks.dart';
 import 'package:test/scaffolding.dart';
 
-import '../../web/graph/html_utils.dart';
+import '../../web/graph/dom_utils.dart';
 
 void main() {
   group('html_utils', () {

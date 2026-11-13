@@ -3,6 +3,14 @@ import 'dart:math' as math;
 
 import 'package:web/web.dart' as web;
 
+/// Escapes [text] for safe use in HTML/SVG markup.
+String escapeHtml(String text) => text
+    .replaceAll('&', '&amp;')
+    .replaceAll('<', '&lt;')
+    .replaceAll('>', '&gt;')
+    .replaceAll('"', '&quot;')
+    .replaceAll("'", '&#39;');
+
 final math.Random _seedRandom = math.Random();
 
 T _create<T extends web.HTMLElement>(String tag) =>

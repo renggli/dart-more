@@ -2,10 +2,10 @@ import 'dart:math' as math;
 
 import 'package:more/graph.dart';
 
-import 'layout_options.dart';
+import 'enums.dart';
 import 'state.dart';
 
-export 'layout_options.dart';
+export 'enums.dart';
 
 /// Computes vertex positions using native MoreDart layout algorithms.
 abstract final class GraphLayout {

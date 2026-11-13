@@ -4,7 +4,6 @@ import 'package:more/graph.dart';
 import 'package:web/web.dart' as web;
 
 import 'dom_utils.dart';
-import 'html_utils.dart';
 import 'state.dart';
 
 typedef SelectVertexCallback = void Function(String v, {bool isShift});

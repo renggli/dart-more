@@ -2,7 +2,7 @@ import 'package:checks/checks.dart';
 import 'package:more/graph.dart';
 import 'package:test/scaffolding.dart';
 
-import '../../web/graph/layout_options.dart';
+import '../../web/graph/enums.dart';
 
 void main() {
   group('Layout enums', () {

@@ -1,6 +1,6 @@
 import 'package:more/graph.dart';
 
-import 'layout_options.dart';
+import 'enums.dart';
 import 'modifiers.dart';
 import 'node.dart';
 import 'selection.dart';
@@ -149,6 +149,30 @@ final class AppState {
       node.style.reset();
     }
     edgeStyles.clear();
+  }
+
+  /// Clears all modifiers from the stack and re-evaluates the pipeline.
+  void clearModifiers() {
+    saveSnapshot();
+    modifiers.clear();
+    lastModifierOutputs.clear();
+    activeOverlay = null;
+    activeModifierTable = null;
+    evaluateModifiers();
+  }
+
+  /// Populates all available modifiers in a disabled, collapsed state for quick experimentation.
+  void addAllModifiersDisabled() {
+    saveSnapshot();
+    modifiers.clear();
+    for (final spec in ModifierRegistry.specs) {
+      if (spec.category == ModifierCategory.generate) continue;
+      final mod = spec.factory()
+        ..enabled = false
+        ..collapsed = true;
+      modifiers.add(mod);
+    }
+    evaluateModifiers();
   }
 
   /// Callback triggered when state is completely reset (e.g. File > New).

@@ -321,6 +321,16 @@ body {
   opacity: 0.55;
 }
 
+.modifier-card.dragging {
+  opacity: 0.4;
+  border-style: dashed;
+}
+
+.modifier-card.drag-over {
+  border-color: var(--primary) !important;
+  box-shadow: 0 -2px 0 0 var(--primary);
+}
+
 .modifier-card.error {
   border-color: #ef4444 !important;
   background: rgba(239, 68, 68, 0.04) !important;
@@ -351,6 +361,31 @@ body {
   gap: 8px;
   font-weight: 600;
   font-size: 11.5px;
+}
+
+.modifier-drag-handle {
+  color: var(--text-muted);
+  cursor: grab;
+  display: inline-flex;
+  align-items: center;
+  padding: 0 2px;
+  user-select: none;
+}
+
+.modifier-drag-handle:hover {
+  color: var(--text-primary);
+}
+
+.modifier-drag-handle:active {
+  cursor: grabbing;
+}
+
+.modifier-collapse-icon {
+  display: inline-flex;
+  align-items: center;
+  color: var(--text-muted);
+  user-select: none;
+  font-size: 10px;
 }
 
 .modifier-header-actions {

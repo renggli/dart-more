@@ -612,6 +612,19 @@ class CommandRegistry {
     const PasteCommand(),
     const DuplicateCommand(),
     const DeleteCommand(),
+    SimpleCommand(
+      id: 'edit.clear_modifiers',
+      title: 'Clear All Modifiers',
+      category: CommandCategory.edit,
+      canExecuteCallback: (state) => state.modifiers.isNotEmpty,
+      executeCallback: (state) => state.clearModifiers(),
+    ),
+    SimpleCommand(
+      id: 'edit.add_all_modifiers',
+      title: 'Add All Modifiers (Disabled)',
+      category: CommandCategory.edit,
+      executeCallback: (state) => state.addAllModifiersDisabled(),
+    ),
 
     // Select
     SimpleCommand(

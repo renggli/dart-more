@@ -185,6 +185,7 @@ void main() {
   }
 
   final modifierCardUpdaters = <void Function()>[];
+  int? draggedModifierIndex;
 
   void updateModifierCards() {
     for (final updater in modifierCardUpdaters) {
@@ -195,9 +196,33 @@ void main() {
   void renderModifierStack() {
     modifierCardUpdaters.clear();
     modifiersStackList.textContent = '';
+    modifiersStackList.ondragover = ((web.DragEvent e) {
+      if (draggedModifierIndex != null) {
+        e.preventDefault();
+        e.dataTransfer?.dropEffect = 'move';
+      }
+    }).toJS;
+    modifiersStackList.ondrop = ((web.DragEvent e) {
+      final target = e.target as web.HTMLElement?;
+      if (target != null && target.closest('.modifier-card') != null) {
+        return;
+      }
+      e.preventDefault();
+      final fromIdx = draggedModifierIndex;
+      draggedModifierIndex = null;
+      if (fromIdx != null && fromIdx < state.modifiers.length - 1) {
+        final moved = state.modifiers.removeAt(fromIdx);
+        state.modifiers.add(moved);
+        state.evaluateModifiers();
+        updateUI();
+        renderModifierStack();
+      }
+    }).toJS;
+
     if (state.modifiers.isEmpty) {
       final emptyMsg = div()..style.color = 'var(--text-muted)';
-      emptyMsg.textContent = 'No modifiers active. Add a modifier above to run live analysis or transformations.';
+      emptyMsg.textContent =
+          'No modifiers active. Add a modifier above to run live analysis or transformations.';
       modifiersStackList.appendChild(emptyMsg);
       return;
     }
@@ -214,11 +239,70 @@ void main() {
         card.classList.add('error');
       }
 
+      if (!mod.isPinned) {
+        card.draggable = true;
+        card.ondragstart = ((web.DragEvent e) {
+          draggedModifierIndex = idx;
+          e.dataTransfer?.setData('text/plain', '$idx');
+          e.dataTransfer?.effectAllowed = 'move';
+          card.classList.add('dragging');
+        }).toJS;
+
+        card.ondragover = ((web.DragEvent e) {
+          if (draggedModifierIndex == null || draggedModifierIndex == idx) {
+            return;
+          }
+          if (idx == 0 && state.modifiers[0].isPinned) return;
+          e.preventDefault();
+          e.dataTransfer?.dropEffect = 'move';
+          card.classList.add('drag-over');
+        }).toJS;
+
+        card.ondragleave = ((web.DragEvent e) {
+          card.classList.remove('drag-over');
+        }).toJS;
+
+        card.ondrop = ((web.DragEvent e) {
+          e.preventDefault();
+          card.classList.remove('drag-over');
+          final fromIdx = draggedModifierIndex ??
+              int.tryParse(e.dataTransfer?.getData('text/plain') ?? '');
+          draggedModifierIndex = null;
+          if (fromIdx == null || fromIdx == idx) return;
+          if (fromIdx < 0 || fromIdx >= state.modifiers.length) return;
+          var targetIdx = idx;
+          if (state.modifiers[0].isPinned && targetIdx == 0) {
+            targetIdx = 1;
+          }
+          final moved = state.modifiers.removeAt(fromIdx);
+          state.modifiers.insert(targetIdx, moved);
+          state.evaluateModifiers();
+          updateUI();
+          renderModifierStack();
+        }).toJS;
+
+        card.ondragend = ((web.DragEvent e) {
+          draggedModifierIndex = null;
+          final allCards =
+              modifiersStackList.querySelectorAll('.modifier-card');
+          for (var k = 0; k < allCards.length; k++) {
+            final el = allCards.item(k) as web.HTMLElement;
+            el.classList.remove('dragging');
+            el.classList.remove('drag-over');
+          }
+        }).toJS;
+      }
+
       // Header
       final header = div('modifier-header');
       final headerLeft = div('modifier-header-left');
 
       if (!mod.isPinned) {
+        final dragHandle = span('', 'modifier-drag-handle')
+          ..title = 'Drag to reorder'
+          ..innerHTML = GraphIcons.grip.toJS;
+        headerLeft.appendChild(dragHandle);
+
         final toggleCheckbox =
             web.document.createElement('input') as web.HTMLInputElement;
         toggleCheckbox.type = 'checkbox';
@@ -226,8 +310,11 @@ void main() {
         toggleCheckbox.title = 'Enable / Disable modifier';
         toggleCheckbox.style.cursor = 'pointer';
         toggleCheckbox.style.margin = '0';
-        toggleCheckbox.onChange.listen((_) {
+        toggleCheckbox.onClick.listen((e) => e.stopPropagation());
+        toggleCheckbox.onChange.listen((e) {
+          e.stopPropagation();
           mod.enabled = toggleCheckbox.checked;
+          mod.collapsed = !mod.enabled;
           state.evaluateModifiers();
           updateUI();
           renderModifierStack();
@@ -235,23 +322,43 @@ void main() {
         headerLeft.appendChild(toggleCheckbox);
       }
 
+      final collapseIcon = span(
+        '',
+        'modifier-collapse-icon',
+      )..innerHTML =
+          (mod.collapsed ? GraphIcons.chevronRight : GraphIcons.chevronDown)
+              .toJS;
+      headerLeft.appendChild(collapseIcon);
+
       final titleSpan = span(
         mod.name,
         hasError ? 'modifier-title error' : 'modifier-title',
-      )..style.cursor = 'pointer';
-      titleSpan.onClick.listen((_) {
+      );
+      headerLeft.appendChild(titleSpan);
+      header.appendChild(headerLeft);
+
+      header.style.cursor = 'pointer';
+      header.onClick.listen((web.MouseEvent e) {
+        final target = e.target as web.HTMLElement?;
+        if (target != null) {
+          if (target.closest('.modifier-header-actions') != null ||
+              target.closest('.modifier-drag-handle') != null ||
+              target.tagName.toLowerCase() == 'input' ||
+              target.tagName.toLowerCase() == 'button') {
+            return;
+          }
+        }
         mod.collapsed = !mod.collapsed;
         renderModifierStack();
       });
-      headerLeft.appendChild(titleSpan);
-      header.appendChild(headerLeft);
 
       final actions = div('modifier-header-actions');
       web.HTMLButtonElement? btnApply;
       if (mod.canApply) {
         btnApply = button('Apply', 'modifier-btn-apply')
           ..title = 'Apply modifier permanently into base graph'
-          ..onClick.listen((_) {
+          ..onClick.listen((e) {
+            e.stopPropagation();
             mod.applyPermanent(state);
             state.evaluateModifiers();
             updateUI();
@@ -263,38 +370,11 @@ void main() {
         actions.appendChild(btnApply);
       }
       if (!mod.isPinned) {
-        if (idx > 0) {
-          final btnUp = button('', 'modifier-btn-icon')
-            ..title = 'Move Up'
-            ..innerHTML = GraphIcons.chevronUp.toJS
-            ..onClick.listen((_) {
-              final temp = state.modifiers[idx];
-              state.modifiers[idx] = state.modifiers[idx - 1];
-              state.modifiers[idx - 1] = temp;
-              state.evaluateModifiers();
-              updateUI();
-              renderModifierStack();
-            });
-          actions.appendChild(btnUp);
-        }
-        if (idx < state.modifiers.length - 1) {
-          final btnDown = button('', 'modifier-btn-icon')
-            ..title = 'Move Down'
-            ..innerHTML = GraphIcons.chevronDown.toJS
-            ..onClick.listen((_) {
-              final temp = state.modifiers[idx];
-              state.modifiers[idx] = state.modifiers[idx + 1];
-              state.modifiers[idx + 1] = temp;
-              state.evaluateModifiers();
-              updateUI();
-              renderModifierStack();
-            });
-          actions.appendChild(btnDown);
-        }
         final btnRemove = button('', 'modifier-btn-icon')
           ..title = 'Remove'
           ..innerHTML = GraphIcons.close.toJS
-          ..onClick.listen((_) {
+          ..onClick.listen((e) {
+            e.stopPropagation();
             state.modifiers.removeAt(idx);
             state.evaluateModifiers();
             updateUI();
@@ -775,9 +855,11 @@ void main() {
     state.syncNodes();
     state.clearSelection();
     renderer.autoLayout(state);
+    state.addAllModifiersDisabled();
     state.evaluateModifiers();
-    renderer.resetView();
     updateUI();
+    renderModifierStack();
+    btnZoomFit.click();
   }
 
   void executeCommand(String cmdId) {
@@ -786,6 +868,7 @@ void main() {
     if (!cmd.canExecute(state)) return;
     cmd.execute(state);
     updateUI();
+    renderModifierStack();
   }
 
   void updateModifierVertexDropdowns(AppState state) {
@@ -994,6 +1077,7 @@ void main() {
                 renderer.autoLayout(state);
                 renderer.resetView();
                 updateUI();
+                renderModifierStack();
               } catch (_) {}
             }
           }).toJS;

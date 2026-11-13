@@ -3,7 +3,7 @@ import 'dart:math' as math;
 
 import 'package:web/web.dart' as web;
 
-import 'html_utils.dart';
+import 'dom_utils.dart';
 import 'layout.dart';
 import 'node.dart';
 import 'state.dart';
