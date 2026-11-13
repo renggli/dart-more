@@ -326,9 +326,12 @@ body {
   border-style: dashed;
 }
 
-.modifier-card.drag-over {
-  border-color: var(--primary) !important;
-  box-shadow: 0 -2px 0 0 var(--primary);
+.modifier-card.drag-over-top {
+  box-shadow: 0 -3px 0 0 var(--primary) !important;
+}
+
+.modifier-card.drag-over-bottom {
+  box-shadow: 0 3px 0 0 var(--primary) !important;
 }
 
 .modifier-card.error {
@@ -349,7 +352,9 @@ body {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 6px 10px;
+  padding: 4px 10px;
+  min-height: 28px;
+  box-sizing: border-box;
   background: var(--bg-elevated);
   border-bottom: 1px solid var(--border-color);
   gap: 6px;
@@ -704,12 +709,18 @@ body {
   background: rgba(139, 92, 246, 0.2);
   border: 1px solid var(--primary);
   color: #c084fc;
+  font-family: inherit;
   font-size: 10px;
   font-weight: 600;
-  padding: 1px 7px;
+  padding: 0 6px;
+  height: 20px;
+  line-height: 18px;
+  box-sizing: border-box;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   border-radius: 3px;
   cursor: pointer;
-  line-height: 1.4;
   transition: all 0.15s ease;
 }
 

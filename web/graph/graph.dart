@@ -242,30 +242,69 @@ void main() {
       if (!mod.isPinned) {
         card.ondragover = ((web.DragEvent e) {
           if (draggedModifierIndex == null || draggedModifierIndex == idx) {
+            card.classList.remove('drag-over-top');
+            card.classList.remove('drag-over-bottom');
             return;
           }
-          if (idx == 0 && state.modifiers[0].isPinned) return;
+          final rect = card.getBoundingClientRect();
+          final midY = rect.top + rect.height / 2.0;
+          final isTop = e.clientY < midY;
+
+          if (isTop && idx == 0 && state.modifiers[0].isPinned) {
+            card.classList.remove('drag-over-top');
+            card.classList.remove('drag-over-bottom');
+            return;
+          }
+
+          if (isTop && idx == draggedModifierIndex! + 1) {
+            card.classList.remove('drag-over-top');
+            card.classList.remove('drag-over-bottom');
+            return;
+          }
+          if (!isTop && idx == draggedModifierIndex! - 1) {
+            card.classList.remove('drag-over-top');
+            card.classList.remove('drag-over-bottom');
+            return;
+          }
+
           e.preventDefault();
           e.dataTransfer?.dropEffect = 'move';
-          card.classList.add('drag-over');
+          if (isTop) {
+            card.classList.add('drag-over-top');
+            card.classList.remove('drag-over-bottom');
+          } else {
+            card.classList.add('drag-over-bottom');
+            card.classList.remove('drag-over-top');
+          }
         }).toJS;
 
         card.ondragleave = ((web.DragEvent e) {
-          card.classList.remove('drag-over');
+          card.classList.remove('drag-over-top');
+          card.classList.remove('drag-over-bottom');
         }).toJS;
 
         card.ondrop = ((web.DragEvent e) {
           e.preventDefault();
-          card.classList.remove('drag-over');
+          final isTop = card.classList.contains('drag-over-top');
+          card.classList.remove('drag-over-top');
+          card.classList.remove('drag-over-bottom');
+
           final fromIdx = draggedModifierIndex ??
               int.tryParse(e.dataTransfer?.getData('text/plain') ?? '');
           draggedModifierIndex = null;
           if (fromIdx == null || fromIdx == idx) return;
           if (fromIdx < 0 || fromIdx >= state.modifiers.length) return;
-          var targetIdx = idx;
+          if (idx < 0 || idx >= state.modifiers.length) return;
+
+          var targetIdx = isTop ? idx : idx + 1;
+          if (fromIdx < targetIdx) {
+            targetIdx--;
+          }
           if (state.modifiers[0].isPinned && targetIdx == 0) {
             targetIdx = 1;
           }
+          if (fromIdx == targetIdx) return;
+
           final moved = state.modifiers.removeAt(fromIdx);
           state.modifiers.insert(targetIdx, moved);
           state.evaluateModifiers();
@@ -302,7 +341,8 @@ void main() {
           for (var k = 0; k < allCards.length; k++) {
             final el = allCards.item(k) as web.HTMLElement;
             el.classList.remove('dragging');
-            el.classList.remove('drag-over');
+            el.classList.remove('drag-over-top');
+            el.classList.remove('drag-over-bottom');
           }
         }).toJS;
 
