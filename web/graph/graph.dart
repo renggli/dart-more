@@ -1276,6 +1276,25 @@ void main() {
   }
 
   // Modifier Stack setup
+  selectAddModifier.textContent = '';
+  final defaultOption = optionElement('', '+ Add Modifier...')
+    ..selected = true
+    ..disabled = true
+    ..setAttribute('hidden', '');
+  selectAddModifier.appendChild(defaultOption);
+
+  for (final category in ModifierCategory.values) {
+    final specs = ModifierRegistry.byCategory(category);
+    if (specs.isEmpty) continue;
+    final optGroup =
+        web.document.createElement('optgroup') as web.HTMLOptGroupElement
+          ..label = category.label;
+    for (final spec in specs) {
+      optGroup.appendChild(optionElement(spec.type, spec.name));
+    }
+    selectAddModifier.appendChild(optGroup);
+  }
+
   selectAddModifier.onChange.listen((_) {
     final type = selectAddModifier.value;
     if (type.isNotEmpty) {

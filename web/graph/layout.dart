@@ -25,9 +25,9 @@ abstract final class GraphLayout {
   static void applyLayout(
     AppState state, {
     Graph<String, num>? graph,
-    String? engine,
-    String? rankdir,
-    String? componentDirection,
+    LayoutEngine? engine,
+    RankDir? rankdir,
+    RankDir? componentDirection,
     double? vertexDistance,
     double? layerDistance,
     int? iterations,
@@ -43,47 +43,47 @@ abstract final class GraphLayout {
     final layoutEngine = engine ?? state.layoutEngine;
     final layoutRankdir = rankdir ?? state.rankDir;
     final layoutCompDir = componentDirection ?? state.componentDirection;
-    final orientation = RankDir.fromId(layoutRankdir).toOrientation();
-    final compOrientation = RankDir.fromId(layoutCompDir).toOrientation();
+    final orientation = layoutRankdir.toOrientation();
+    final compOrientation = layoutCompDir.toOrientation();
 
     final spacing = vertexDistance ?? 40.0;
     final lDist = layerDistance ?? 80.0;
     final iter = iterations ?? 100;
 
     final strategy = switch (layoutEngine) {
-      'circular' => CircularLayout<String>(vertexDistance: spacing),
-      'grid' => GridLayout<String>(
+      LayoutEngine.circular => CircularLayout<String>(vertexDistance: spacing),
+      LayoutEngine.grid => GridLayout<String>(
         columns: (columns != null && columns > 0) ? columns : null,
         vertexDistance: spacing,
       ),
-      'tree' => TreeLayout<String>(
+      LayoutEngine.tree => TreeLayout<String>(
         orientation: orientation,
         vertexDistance: spacing,
         layerDistance: lDist,
       ),
-      'radial' => RadialLayout<String>(
+      LayoutEngine.radial => RadialLayout<String>(
         vertexDistance: spacing,
         layerDistance: lDist,
       ),
-      'shell' => ShellLayout<String>(
+      LayoutEngine.shell => ShellLayout<String>(
         vertexDistance: spacing,
         layerDistance: lDist,
       ),
-      'layered' => LayeredLayout<String>(
+      LayoutEngine.layered => LayeredLayout<String>(
         orientation: orientation,
         vertexDistance: spacing,
         layerDistance: lDist,
       ),
-      'spectral' => SpectralLayout<String>(
+      LayoutEngine.spectral => SpectralLayout<String>(
         vertexDistance: spacing,
         iterations: iter,
         seed: seed ?? 42,
       ),
-      'random' => RandomLayout<String>(
+      LayoutEngine.random => RandomLayout<String>(
         bounds: const LayoutRectangle(100, 100, 650, 450),
         seed: seed,
       ),
-      'force' => () {
+      LayoutEngine.force => () {
         final span = math.max(
           720.0,
           math.sqrt(vertices.length) * (spacing + 60.0) * 2.0,
@@ -95,7 +95,7 @@ abstract final class GraphLayout {
           seed: seed,
         );
       }(),
-      _ => StressLayout<String>(
+      LayoutEngine.stress => StressLayout<String>(
         vertexDistance: spacing,
         iterations: iter,
         seed: seed ?? 42,

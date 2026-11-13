@@ -1,0 +1,303 @@
+import 'package:more/graph.dart' hide GraphLayout;
+import 'package:web/web.dart' as web;
+
+import '../dom_utils.dart';
+import '../state.dart';
+import 'base.dart';
+
+// ---------------------------------------------------------------------------
+// Eulerian Circuit & Trail
+// ---------------------------------------------------------------------------
+
+class EulerianModifier extends GraphModifier {
+  new({super.enabled});
+
+  String tourColor = '#10b981';
+  String tourPattern = 'none';
+  bool requireCircuit = false;
+
+  @override
+  String get id => 'eulerian';
+
+  @override
+  String get name => 'Eulerian Trail & Circuit';
+
+  @override
+  ModifierCategory get category => ModifierCategory.tours;
+
+  @override
+  web.HTMLElement buildConfigUI(AppState state, void Function() onModified) {
+    final root = div('form-column');
+
+    root.appendChild(
+      checkboxSetting(
+        'Only circuit (closed)',
+        requireCircuit,
+        onChanged: (val) {
+          requireCircuit = val;
+          onModified();
+        },
+      ),
+    );
+
+    root.appendChild(
+      colorSetting(
+        'Trail Color:',
+        tourColor,
+        onChanged: (c) {
+          tourColor = c;
+          onModified();
+        },
+      ),
+    );
+
+    root.appendChild(
+      lineStyleSetting(
+        'Trail Line Style:',
+        tourPattern,
+        onChanged: (p) {
+          tourPattern = p;
+          onModified();
+        },
+      ),
+    );
+
+    return root;
+  }
+
+  @override
+  ModifierOutput apply(Graph<String, num> graph, AppState state) {
+    if (graph.vertices.isEmpty) {
+      return const ModifierOutput(statusSummary: 'Graph is empty');
+    }
+
+    try {
+      final hasCircuit = graph.hasEulerianCircuit();
+      final hasPath = graph.hasEulerianPath();
+
+      if (requireCircuit && !hasCircuit) {
+        return const ModifierOutput(
+          statusSummary: 'No Eulerian Circuit exists',
+          tableData: ModifierTableData(
+            title: 'Eulerian Properties',
+            headers: ['Property', 'Value'],
+            rows: [
+              ['Eulerian Circuit', 'No (all vertices must have even degree)'],
+            ],
+          ),
+        );
+      }
+
+      if (!hasPath) {
+        return const ModifierOutput(
+          statusSummary: 'Graph is not Eulerian',
+          tableData: ModifierTableData(
+            title: 'Eulerian Properties',
+            headers: ['Property', 'Value'],
+            rows: [
+              ['Eulerian Circuit', 'No'],
+              ['Eulerian Trail', 'No'],
+            ],
+          ),
+        );
+      }
+
+      final tour = graph.findEulerianPath(circuit: requireCircuit);
+      if (tour == null) {
+        return const ModifierOutput(statusSummary: 'No Eulerian tour found');
+      }
+
+      final dash = tourPattern != 'none' ? tourPattern : null;
+      final color = tourColor != 'none' ? tourColor : null;
+      final tourVertices = tour.vertices.toList();
+      final tourEdges = <(String, String)>[];
+      for (var i = 0; i < tourVertices.length - 1; i++) {
+        final key = (tourVertices[i], tourVertices[i + 1]);
+        tourEdges.add(key);
+        if (color != null || dash != null) {
+          final es = state.getEdgeStyle(key.$1, key.$2);
+          if (color != null) {
+            es.color = color;
+            es.strokeWidth = 3.5;
+          }
+          es.dashPattern = dash;
+        }
+      }
+
+      for (final v in tourVertices) {
+        final node = state.nodes[v];
+        if (node != null && (color != null || dash != null)) {
+          if (color != null) node.style.borderColor = color;
+          node.style.dashPattern = dash;
+        }
+      }
+
+      return ModifierOutput(
+        overlay: PathOverlay(
+          vertices: tourVertices,
+          edges: tourEdges,
+          title: hasCircuit ? 'Eulerian Circuit' : 'Eulerian Trail',
+        ),
+        statusSummary: hasCircuit
+            ? 'Eulerian Circuit found'
+            : 'Eulerian Trail found',
+        tableData: ModifierTableData(
+          title: 'Eulerian Steps',
+          headers: ['Step', 'Vertex'],
+          rows: [
+            for (var i = 0; i < tourVertices.length; i++)
+              ['#${i + 1}', tourVertices[i]],
+          ],
+        ),
+      );
+    } catch (e) {
+      return ModifierOutput(
+        hasError: true,
+        errorMessage: 'Eulerian error: $e',
+        statusSummary: 'Error computing Eulerian path',
+      );
+    }
+  }
+}
+
+// ---------------------------------------------------------------------------
+// Hamiltonian Cycle & Path
+// ---------------------------------------------------------------------------
+
+class HamiltonianModifier extends GraphModifier {
+  new({super.enabled});
+
+  String tourColor = '#a855f7';
+  String tourPattern = 'none';
+  bool requireCircuit = false;
+
+  @override
+  String get id => 'hamiltonian';
+
+  @override
+  String get name => 'Hamiltonian Path & Cycle';
+
+  @override
+  ModifierCategory get category => ModifierCategory.tours;
+
+  @override
+  web.HTMLElement buildConfigUI(AppState state, void Function() onModified) {
+    final root = div('form-column');
+
+    root.appendChild(
+      checkboxSetting(
+        'Only circuit (closed)',
+        requireCircuit,
+        onChanged: (val) {
+          requireCircuit = val;
+          onModified();
+        },
+      ),
+    );
+
+    root.appendChild(
+      colorSetting(
+        'Path Color:',
+        tourColor,
+        onChanged: (c) {
+          tourColor = c;
+          onModified();
+        },
+      ),
+    );
+
+    root.appendChild(
+      lineStyleSetting(
+        'Path Line Style:',
+        tourPattern,
+        onChanged: (p) {
+          tourPattern = p;
+          onModified();
+        },
+      ),
+    );
+
+    return root;
+  }
+
+  @override
+  ModifierOutput apply(Graph<String, num> graph, AppState state) {
+    if (graph.vertices.isEmpty) {
+      return const ModifierOutput(statusSummary: 'Graph is empty');
+    }
+    if (graph.vertices.length > 32) {
+      return ModifierOutput(
+        statusSummary:
+            'Graph is too large for Hamiltonian search (${graph.vertices.length} vertices > 32)',
+      );
+    }
+
+    try {
+      final tour = graph.findHamiltonianPath(circuit: requireCircuit);
+      if (tour == null) {
+        return ModifierOutput(
+          statusSummary: requireCircuit
+              ? 'No Hamiltonian Cycle exists'
+              : 'No Hamiltonian Path exists',
+          tableData: ModifierTableData(
+            title: 'Hamiltonian Properties',
+            headers: ['Property', 'Result'],
+            rows: [
+              ['Hamiltonian ${requireCircuit ? "Cycle" : "Path"}', 'Not Found'],
+            ],
+          ),
+        );
+      }
+
+      final dash = tourPattern != 'none' ? tourPattern : null;
+      final color = tourColor != 'none' ? tourColor : null;
+      final tourVertices = tour.vertices.toList();
+      final tourEdges = <(String, String)>[];
+      for (var i = 0; i < tourVertices.length - 1; i++) {
+        final key = (tourVertices[i], tourVertices[i + 1]);
+        tourEdges.add(key);
+        if (color != null || dash != null) {
+          final es = state.getEdgeStyle(key.$1, key.$2);
+          if (color != null) {
+            es.color = color;
+            es.strokeWidth = 3.5;
+          }
+          es.dashPattern = dash;
+        }
+      }
+
+      for (final v in tourVertices) {
+        final node = state.nodes[v];
+        if (node != null && (color != null || dash != null)) {
+          if (color != null) node.style.borderColor = color;
+          node.style.dashPattern = dash;
+        }
+      }
+
+      return ModifierOutput(
+        overlay: PathOverlay(
+          vertices: tourVertices,
+          edges: tourEdges,
+          title: requireCircuit ? 'Hamiltonian Cycle' : 'Hamiltonian Path',
+        ),
+        statusSummary: requireCircuit
+            ? 'Hamiltonian Cycle found'
+            : 'Hamiltonian Path found',
+        tableData: ModifierTableData(
+          title: 'Hamiltonian Sequence',
+          headers: ['Index', 'Vertex'],
+          rows: [
+            for (var i = 0; i < tourVertices.length; i++)
+              ['#${i + 1}', tourVertices[i]],
+          ],
+        ),
+      );
+    } catch (e) {
+      return ModifierOutput(
+        hasError: true,
+        errorMessage: 'Hamiltonian error: $e',
+        statusSummary: 'Error computing Hamiltonian tour',
+      );
+    }
+  }
+}

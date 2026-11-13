@@ -1,5 +1,6 @@
 import 'package:more/graph.dart';
 
+import 'layout_options.dart';
 import 'modifiers.dart';
 import 'node.dart';
 import 'selection.dart';
@@ -183,9 +184,9 @@ final class AppState {
   void Function()? onOpenExport;
   void Function(String vertex)? onShowInlineEditor;
 
-  String layoutEngine = 'stress';
-  String rankDir = 'LR';
-  String componentDirection = 'TB';
+  LayoutEngine layoutEngine = LayoutEngine.stress;
+  RankDir rankDir = RankDir.lr;
+  RankDir componentDirection = RankDir.tb;
   Map<(String, String), List<LayoutPoint>> edgeRoutes = {};
 
   // Selection mode flags (like Blender, both can be active simultaneously)
