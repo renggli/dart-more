@@ -53,9 +53,9 @@ body {
 }
 
 .sidebar.right-sidebar {
-  width: 320px;
-  min-width: 200px;
-  max-width: 650px;
+  width: 360px;
+  min-width: 220px;
+  max-width: 700px;
   flex-shrink: 0;
   border-left: 1px solid var(--border-color);
 }

@@ -240,14 +240,6 @@ void main() {
       }
 
       if (!mod.isPinned) {
-        card.draggable = true;
-        card.ondragstart = ((web.DragEvent e) {
-          draggedModifierIndex = idx;
-          e.dataTransfer?.setData('text/plain', '$idx');
-          e.dataTransfer?.effectAllowed = 'move';
-          card.classList.add('dragging');
-        }).toJS;
-
         card.ondragover = ((web.DragEvent e) {
           if (draggedModifierIndex == null || draggedModifierIndex == idx) {
             return;
@@ -280,8 +272,30 @@ void main() {
           updateUI();
           renderModifierStack();
         }).toJS;
+      }
 
-        card.ondragend = ((web.DragEvent e) {
+      // Header
+      final header = div('modifier-header');
+      final headerLeft = div('modifier-header-left');
+
+      if (!mod.isPinned) {
+        header.draggable = true;
+        header.ondragstart = ((web.DragEvent e) {
+          final target = e.target as web.HTMLElement?;
+          if (target != null &&
+              (target.closest('.modifier-header-actions') != null ||
+                  target.tagName.toLowerCase() == 'input' ||
+                  target.tagName.toLowerCase() == 'button')) {
+            e.preventDefault();
+            return;
+          }
+          draggedModifierIndex = idx;
+          e.dataTransfer?.setData('text/plain', '$idx');
+          e.dataTransfer?.effectAllowed = 'move';
+          card.classList.add('dragging');
+        }).toJS;
+
+        header.ondragend = ((web.DragEvent e) {
           draggedModifierIndex = null;
           final allCards =
               modifiersStackList.querySelectorAll('.modifier-card');
@@ -291,13 +305,7 @@ void main() {
             el.classList.remove('drag-over');
           }
         }).toJS;
-      }
 
-      // Header
-      final header = div('modifier-header');
-      final headerLeft = div('modifier-header-left');
-
-      if (!mod.isPinned) {
         final dragHandle = span('', 'modifier-drag-handle')
           ..title = 'Drag to reorder'
           ..innerHTML = GraphIcons.grip.toJS;
@@ -1335,10 +1343,43 @@ void main() {
     });
   }
 
-  // Close menus on outside click
+  // Close menus when interacting with or focusing anything outside the menu
+  web.document.addEventListener(
+    'pointerdown',
+    ((web.PointerEvent event) {
+      if (!isAnyMenuOpen) return;
+      final target = event.target as web.Element?;
+      if (target?.closest('.menu-item') != null) return;
+      closeAllMenus();
+    }).toJS,
+    true.toJS,
+  );
+
+  web.document.addEventListener(
+    'focusin',
+    ((web.FocusEvent event) {
+      if (!isAnyMenuOpen) return;
+      final target = event.target as web.Element?;
+      if (target?.closest('.menu-item') != null) return;
+      closeAllMenus();
+    }).toJS,
+    true.toJS,
+  );
+
   web.document.addEventListener(
     'click',
     ((web.MouseEvent event) {
+      if (!isAnyMenuOpen) return;
+      final target = event.target as web.Element?;
+      if (target?.closest('.menu-item') != null) return;
+      closeAllMenus();
+    }).toJS,
+    true.toJS,
+  );
+
+  web.window.addEventListener(
+    'blur',
+    ((web.Event _) {
       closeAllMenus();
     }).toJS,
   );
@@ -1474,7 +1515,7 @@ void main() {
   if (sidebarResizer != null && rightSidebar != null) {
     var isResizing = false;
     var startX = 0.0;
-    var startWidth = 320.0;
+    var startWidth = 360.0;
 
     sidebarResizer.onmousedown = ((web.MouseEvent e) {
       isResizing = true;
