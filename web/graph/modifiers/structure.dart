@@ -401,6 +401,7 @@ class CycleDetectionModifier extends GraphModifier {
     Graph<String, num> graph, {
     int maxCycles = 30,
   }) {
+    if (!graph.hasCycle()) return const [];
     final results = <List<String>>[];
     final seenCanonical = <String>{};
 
@@ -674,45 +675,17 @@ class KCoreModifier extends GraphModifier {
       return const ModifierOutput(statusSummary: 'Graph is empty');
     }
 
+    if (graph.isDirected) {
+      return const ModifierOutput(
+        hasError: true,
+        errorMessage: 'k-Core requires an undirected graph.',
+        statusSummary: 'Requires undirected graph',
+      );
+    }
+
     Set<String> coreVerts;
     try {
-      if (!graph.isDirected) {
-        coreVerts = graph.kCore(k).vertices.toSet();
-      } else {
-        // Directed graphs: compute k-core over composite total degree
-        coreVerts = <String>{};
-        final degrees = <String, int>{};
-        for (final v in graph.vertices) {
-          degrees[v] = graph.degreeOf(v);
-        }
-        var changed = true;
-        while (changed) {
-          changed = false;
-          final toRemove = <String>[];
-          for (final MapEntry(:key, :value) in degrees.entries) {
-            if (value < k) {
-              toRemove.add(key);
-            }
-          }
-          if (toRemove.isNotEmpty) {
-            changed = true;
-            for (final v in toRemove) {
-              degrees.remove(v);
-              for (final succ in graph.successorsOf(v)) {
-                if (degrees.containsKey(succ)) {
-                  degrees[succ] = degrees[succ]! - 1;
-                }
-              }
-              for (final pred in graph.predecessorsOf(v)) {
-                if (degrees.containsKey(pred)) {
-                  degrees[pred] = degrees[pred]! - 1;
-                }
-              }
-            }
-          }
-        }
-        coreVerts = degrees.keys.toSet();
-      }
+      coreVerts = graph.kCore(k).vertices.toSet();
     } catch (e) {
       return ModifierOutput(hasError: true, errorMessage: e.toString());
     }

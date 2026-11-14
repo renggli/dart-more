@@ -50,23 +50,11 @@ class GraphComplementModifier extends GraphModifier {
     }
 
     try {
-      final complement = Graph<String, num>(
-        isDirected: graph.isDirected,
-        vertexStrategy: graph.vertexStrategy,
-      )..addVertices(vertices);
-
-      var addedEdges = 0;
-      for (var i = 0; i < vertices.length; i++) {
-        final u = vertices[i];
-        final startJ = graph.isDirected ? 0 : i + 1;
-        for (var j = startJ; j < vertices.length; j++) {
-          final v = vertices[j];
-          if (u != v && !graph.containsEdge(u, v)) {
-            complement.addEdge(u, v, value: 1);
-            addedEdges++;
-          }
-        }
-      }
+      final complement = graph.complement(
+        allowSelfLoops: false,
+        edge: (u, v) => 1,
+      );
+      final addedEdges = complement.edges.length;
 
       return ModifierOutput(
         transformedGraph: complement,
