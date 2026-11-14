@@ -16,11 +16,17 @@ final class GraphIO {
       graph: state.primaryGraph,
       isWeighted: state.isWeighted,
       nodes: state.nodes,
+      modifiers: [for (final m in state.modifiers) m.toJson()],
     );
   }
 
   /// Parses a graph from JSON.
-  static (Graph<String, num>, bool isWeighted, Map<String, GraphNode> nodes)
+  static (
+    Graph<String, num>,
+    bool isWeighted,
+    Map<String, GraphNode> nodes,
+    List<Map<String, dynamic>> modifiers,
+  )
   importFromJson(String jsonStr) => GraphCodec.importFromJson(jsonStr);
 
   /// Exports the graph to Mermaid syntax.
@@ -41,10 +47,16 @@ final class GraphIO {
     graph: state.primaryGraph,
     isWeighted: state.isWeighted,
     nodes: state.nodes,
+    modifiers: [for (final m in state.modifiers) m.toJson()],
   );
 
   /// Decodes URL hash string to restore graph state.
-  static (Graph<String, num>, bool isWeighted, Map<String, GraphNode> nodes)?
+  static (
+    Graph<String, num>,
+    bool isWeighted,
+    Map<String, GraphNode> nodes,
+    List<Map<String, dynamic>> modifiers,
+  )?
   importFromUrlHash(String hash) => GraphCodec.importFromUrlHash(hash);
 
   /// Triggers a browser file download of text content.

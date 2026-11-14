@@ -174,6 +174,63 @@ class GeneratorModifier extends GraphModifier {
   bool get canApply => true;
 
   @override
+  Map<String, dynamic> exportConfig() => {
+    'type': type.id,
+    'count': count,
+    'atlasIndex': atlasIndex,
+    if (atlasVertices != null) 'atlasVertices': atlasVertices,
+    if (atlasEdges != null) 'atlasEdges': atlasEdges,
+    'arity': arity,
+    'partACount': partACount,
+    'partBCount': partBCount,
+    'gridRows': gridRows,
+    'gridColumns': gridColumns,
+    'prob': prob,
+    'seed': seed,
+    'combineMode': combineMode.id,
+  };
+
+  @override
+  void applyConfig(Map<String, dynamic> config) {
+    if (config['type'] case final String t) type = GeneratorShape.fromId(t);
+    if (config['count'] case final int c) count = c;
+    if (config['atlasIndex'] case final int ai) atlasIndex = ai;
+    if (config.containsKey('atlasVertices')) {
+      atlasVertices = config['atlasVertices'] as int?;
+    }
+    if (config.containsKey('atlasEdges')) {
+      atlasEdges = config['atlasEdges'] as int?;
+    }
+    if (config['arity'] case final int a) arity = a;
+    if (config['partACount'] case final int pa) partACount = pa;
+    if (config['partBCount'] case final int pb) partBCount = pb;
+    if (config['gridRows'] case final int gr) gridRows = gr;
+    if (config['gridColumns'] case final int gc) gridColumns = gc;
+    if (config['prob'] case final num p) prob = p.toDouble();
+    if (config['seed'] case final int s) seed = s;
+    if (config['combineMode'] case final String cm) {
+      combineMode = GeneratorCombineMode.fromId(cm);
+    }
+  }
+
+  @override
+  void resetDefaults() {
+    type = GeneratorShape.atlas;
+    count = 6;
+    atlasIndex = 7;
+    atlasVertices = null;
+    atlasEdges = null;
+    arity = 2;
+    partACount = 3;
+    partBCount = 3;
+    gridRows = 3;
+    gridColumns = 3;
+    prob = 0.35;
+    seed = 42;
+    combineMode = GeneratorCombineMode.replace;
+  }
+
+  @override
   void applyPermanent(AppState state) {
     final out = apply(state.primaryGraph, state);
     if (out.transformedGraph != null) {

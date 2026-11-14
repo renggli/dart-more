@@ -24,16 +24,48 @@ enum RemovedMode {
 /// Shared styling and output configuration for modifiers.
 class OutputStyleOptions {
   new({
-    this.color = '#10b981',
-    this.pattern = 'none',
-    this.removedMode = RemovedMode.dim,
+    String color = '#10b981',
+    String pattern = 'none',
+    RemovedMode removedMode = RemovedMode.dim,
     this.hasRemovedMode = false,
-  });
+  }) : color = color,
+       pattern = pattern,
+       removedMode = removedMode,
+       _defaultColor = color,
+       _defaultPattern = pattern,
+       _defaultRemovedMode = removedMode;
 
   String color;
   String pattern;
   RemovedMode removedMode;
   final bool hasRemovedMode;
+
+  final String _defaultColor;
+  final String _defaultPattern;
+  final RemovedMode _defaultRemovedMode;
+
+  /// Resets visual styling options back to their initial defaults.
+  void resetDefaults() {
+    color = _defaultColor;
+    pattern = _defaultPattern;
+    removedMode = _defaultRemovedMode;
+  }
+
+  /// Serializes output styling settings to a JSON map.
+  Map<String, dynamic> toJson() => {
+    'color': color,
+    'pattern': pattern,
+    if (hasRemovedMode) 'removedMode': removedMode.id,
+  };
+
+  /// Restores output styling settings from [json].
+  void applyJson(Map<String, dynamic> json) {
+    if (json['color'] case final String c) color = c;
+    if (json['pattern'] case final String p) pattern = p;
+    if (json['removedMode'] case final String rm) {
+      removedMode = RemovedMode.fromId(rm);
+    }
+  }
 
   /// Converted dash pattern string (or null if none).
   String? get dashPattern => pattern != 'none' ? pattern : null;

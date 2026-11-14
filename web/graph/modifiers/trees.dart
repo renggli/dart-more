@@ -30,6 +30,26 @@ class SpanningTreeModifier extends GraphModifier {
   ModifierCategory get category => ModifierCategory.trees;
 
   @override
+  Map<String, dynamic> exportConfig() => {
+    'algorithm': algorithm,
+    'outputStyle': outputStyle.toJson(),
+  };
+
+  @override
+  void applyConfig(Map<String, dynamic> config) {
+    if (config['algorithm'] case final String a) algorithm = a;
+    if (config['outputStyle'] case final Map<dynamic, dynamic> os) {
+      outputStyle.applyJson(os.cast<String, dynamic>());
+    }
+  }
+
+  @override
+  void resetDefaults() {
+    algorithm = 'kruskal';
+    outputStyle.resetDefaults();
+  }
+
+  @override
   web.HTMLElement buildConfigUI(AppState state, void Function() onModified) {
     final root = div('form-column');
 

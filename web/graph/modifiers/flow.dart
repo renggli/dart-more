@@ -31,6 +31,47 @@ class MaxFlowModifier extends GraphModifier {
   ModifierCategory get category => ModifierCategory.flows;
 
   @override
+  Map<String, dynamic> exportConfig() => {
+    if (sourceVertex != null) 'sourceVertex': sourceVertex,
+    if (targetVertex != null) 'targetVertex': targetVertex,
+    'flowColor': flowColor,
+    'cutColor': cutColor,
+    'cutPattern': cutPattern,
+    'sourcePartitionColor': sourcePartitionColor,
+    'sinkPartitionColor': sinkPartitionColor,
+  };
+
+  @override
+  void applyConfig(Map<String, dynamic> config) {
+    if (config.containsKey('sourceVertex')) {
+      sourceVertex = config['sourceVertex']?.toString();
+    }
+    if (config.containsKey('targetVertex')) {
+      targetVertex = config['targetVertex']?.toString();
+    }
+    if (config['flowColor'] case final String fc) flowColor = fc;
+    if (config['cutColor'] case final String cc) cutColor = cc;
+    if (config['cutPattern'] case final String cp) cutPattern = cp;
+    if (config['sourcePartitionColor'] case final String spc) {
+      sourcePartitionColor = spc;
+    }
+    if (config['sinkPartitionColor'] case final String skc) {
+      sinkPartitionColor = skc;
+    }
+  }
+
+  @override
+  void resetDefaults() {
+    sourceVertex = null;
+    targetVertex = null;
+    flowColor = '#10b981';
+    cutColor = '#ef4444';
+    cutPattern = '6,4';
+    sourcePartitionColor = '#06b6d4';
+    sinkPartitionColor = '#f59e0b';
+  }
+
+  @override
   web.HTMLElement buildConfigUI(AppState state, void Function() onModified) {
     final root = div('form-column');
 
@@ -266,6 +307,30 @@ class MinCutModifier extends GraphModifier {
 
   @override
   ModifierCategory get category => ModifierCategory.flows;
+
+  @override
+  Map<String, dynamic> exportConfig() => {
+    'cutColor': cutColor,
+    'cutPattern': cutPattern,
+    'partitionAColor': partitionAColor,
+    'partitionBColor': partitionBColor,
+  };
+
+  @override
+  void applyConfig(Map<String, dynamic> config) {
+    if (config['cutColor'] case final String cc) cutColor = cc;
+    if (config['cutPattern'] case final String cp) cutPattern = cp;
+    if (config['partitionAColor'] case final String pac) partitionAColor = pac;
+    if (config['partitionBColor'] case final String pbc) partitionBColor = pbc;
+  }
+
+  @override
+  void resetDefaults() {
+    cutColor = '#ef4444';
+    cutPattern = '6,4';
+    partitionAColor = '#06b6d4';
+    partitionBColor = '#f59e0b';
+  }
 
   @override
   web.HTMLElement buildConfigUI(AppState state, void Function() onModified) {

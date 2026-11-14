@@ -384,6 +384,34 @@ class CombineModifier extends GraphModifier {
   ModifierCategory get category => ModifierCategory.transform;
 
   @override
+  Map<String, dynamic> exportConfig() => {
+    'operation': operation.id,
+    'shape': shape.id,
+    'count': count,
+    'atlasIndex': atlasIndex,
+  };
+
+  @override
+  void applyConfig(Map<String, dynamic> config) {
+    if (config['operation'] case final String op) {
+      operation = CombineOperation.fromId(op);
+    }
+    if (config['shape'] case final String sh) {
+      shape = GeneratorShape.fromId(sh);
+    }
+    if (config['count'] case final int c) count = c;
+    if (config['atlasIndex'] case final int ai) atlasIndex = ai;
+  }
+
+  @override
+  void resetDefaults() {
+    operation = CombineOperation.union;
+    shape = GeneratorShape.cycle;
+    count = 5;
+    atlasIndex = 7;
+  }
+
+  @override
   bool get canApply => true;
 
   @override

@@ -2,6 +2,7 @@ import 'package:more/graph.dart' hide GraphLayout;
 import 'package:web/web.dart' as web;
 
 import '../state.dart';
+import 'registry.dart';
 
 /// Categories for grouping graph modifiers.
 enum ModifierCategory {
@@ -80,6 +81,16 @@ abstract class GraphModifier {
   /// UI state: whether this modifier card is collapsed in the sidebar.
   bool collapsed = false;
 
+  /// One-line description of what this modifier does.
+  String get description => ModifierRegistry.isRegistered(id)
+      ? ModifierRegistry.getSpec(id).description
+      : '';
+
+  /// Big-O time complexity notation of this modifier algorithm (e.g. "O(V + E)").
+  String? get complexity => ModifierRegistry.isRegistered(id)
+      ? ModifierRegistry.getSpec(id).complexity
+      : null;
+
   /// Whether this modifier is permanently pinned at index 0 (e.g. BaseGraphModifier).
   bool get isPinned => false;
 
@@ -94,4 +105,36 @@ abstract class GraphModifier {
 
   /// Executes this modifier in the pipeline over [graph].
   ModifierOutput apply(Graph<String, num> graph, AppState state);
+
+  /// Serializes modifier state, including enabled status, collapsed UI state, and modifier-specific configuration.
+  Map<String, dynamic> toJson() => {
+    'id': id,
+    'enabled': enabled,
+    'collapsed': collapsed,
+    'config': exportConfig(),
+  };
+
+  /// Restores modifier state from serialized [json].
+  void applyJson(Map<String, dynamic> json) {
+    if (json['enabled'] case final bool val) {
+      enabled = val;
+    }
+    if (json['collapsed'] case final bool val) {
+      collapsed = val;
+    }
+    if (json['config'] case final Map<String, dynamic> config) {
+      applyConfig(config);
+    } else if (json['config'] case final Map<dynamic, dynamic> config) {
+      applyConfig(config.cast<String, dynamic>());
+    }
+  }
+
+  /// Exports modifier-specific configuration attributes to a map.
+  Map<String, dynamic> exportConfig() => {};
+
+  /// Restores modifier-specific configuration attributes from [config].
+  void applyConfig(Map<String, dynamic> config) {}
+
+  /// Resets configuration options back to defaults.
+  void resetDefaults() {}
 }

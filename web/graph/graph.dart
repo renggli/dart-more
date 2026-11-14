@@ -64,6 +64,7 @@ void main() {
         state.nodes
           ..clear()
           ..addAll(restored.$3);
+        state.restoreModifiers(restored.$4);
       }
     } catch (e) {
       web.window.alert('Failed to load graph from URL hash: $e');

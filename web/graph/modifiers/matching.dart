@@ -31,6 +31,28 @@ class MatchingModifier extends GraphModifier {
   ModifierCategory get category => ModifierCategory.matching;
 
   @override
+  Map<String, dynamic> exportConfig() => {
+    'algorithm': algorithm.id,
+    'outputStyle': outputStyle.toJson(),
+  };
+
+  @override
+  void applyConfig(Map<String, dynamic> config) {
+    if (config['algorithm'] case final String a) {
+      algorithm = MatchingAlgorithm.fromId(a);
+    }
+    if (config['outputStyle'] case final Map<dynamic, dynamic> os) {
+      outputStyle.applyJson(os.cast<String, dynamic>());
+    }
+  }
+
+  @override
+  void resetDefaults() {
+    algorithm = MatchingAlgorithm.blossom;
+    outputStyle.resetDefaults();
+  }
+
+  @override
   web.HTMLElement buildConfigUI(AppState state, void Function() onModified) {
     final root = div('form-column');
 
@@ -158,6 +180,24 @@ class CliquesModifier extends GraphModifier {
 
   @override
   ModifierCategory get category => ModifierCategory.matching;
+
+  @override
+  Map<String, dynamic> exportConfig() => {
+    'mode': mode.id,
+    'highlightColor': highlightColor,
+  };
+
+  @override
+  void applyConfig(Map<String, dynamic> config) {
+    if (config['mode'] case final String m) mode = CliquesMode.fromId(m);
+    if (config['highlightColor'] case final String hc) highlightColor = hc;
+  }
+
+  @override
+  void resetDefaults() {
+    mode = CliquesMode.cliques;
+    highlightColor = '#f59e0b';
+  }
 
   @override
   web.HTMLElement buildConfigUI(AppState state, void Function() onModified) {
@@ -322,6 +362,24 @@ class VertexCoverModifier extends GraphModifier {
 
   @override
   ModifierCategory get category => ModifierCategory.matching;
+
+  @override
+  Map<String, dynamic> exportConfig() => {
+    'coverColor': coverColor,
+    'approximate': approximate,
+  };
+
+  @override
+  void applyConfig(Map<String, dynamic> config) {
+    if (config['coverColor'] case final String cc) coverColor = cc;
+    if (config['approximate'] case final bool a) approximate = a;
+  }
+
+  @override
+  void resetDefaults() {
+    coverColor = '#ec4899';
+    approximate = false;
+  }
 
   @override
   web.HTMLElement buildConfigUI(AppState state, void Function() onModified) {

@@ -25,6 +25,21 @@ class CentralityModifier extends GraphModifier {
   ModifierCategory get category => ModifierCategory.centrality;
 
   @override
+  Map<String, dynamic> exportConfig() => {'metric': metric.id};
+
+  @override
+  void applyConfig(Map<String, dynamic> config) {
+    if (config['metric'] case final String m) {
+      metric = CentralityMetric.fromId(m);
+    }
+  }
+
+  @override
+  void resetDefaults() {
+    metric = CentralityMetric.degree;
+  }
+
+  @override
   web.HTMLElement buildConfigUI(AppState state, void Function() onModified) {
     final root = div('form-column');
 

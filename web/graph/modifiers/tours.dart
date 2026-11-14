@@ -30,6 +30,26 @@ class EulerianModifier extends GraphModifier {
   ModifierCategory get category => ModifierCategory.tours;
 
   @override
+  Map<String, dynamic> exportConfig() => {
+    'requireCircuit': requireCircuit,
+    'outputStyle': outputStyle.toJson(),
+  };
+
+  @override
+  void applyConfig(Map<String, dynamic> config) {
+    if (config['requireCircuit'] case final bool rc) requireCircuit = rc;
+    if (config['outputStyle'] case final Map<dynamic, dynamic> os) {
+      outputStyle.applyJson(os.cast<String, dynamic>());
+    }
+  }
+
+  @override
+  void resetDefaults() {
+    requireCircuit = false;
+    outputStyle.resetDefaults();
+  }
+
+  @override
   web.HTMLElement buildConfigUI(AppState state, void Function() onModified) {
     final root = div('form-column');
 
@@ -218,6 +238,26 @@ class HamiltonianModifier extends GraphModifier {
 
   @override
   ModifierCategory get category => ModifierCategory.tours;
+
+  @override
+  Map<String, dynamic> exportConfig() => {
+    'requireCircuit': requireCircuit,
+    'outputStyle': outputStyle.toJson(),
+  };
+
+  @override
+  void applyConfig(Map<String, dynamic> config) {
+    if (config['requireCircuit'] case final bool rc) requireCircuit = rc;
+    if (config['outputStyle'] case final Map<dynamic, dynamic> os) {
+      outputStyle.applyJson(os.cast<String, dynamic>());
+    }
+  }
+
+  @override
+  void resetDefaults() {
+    requireCircuit = false;
+    outputStyle.resetDefaults();
+  }
 
   @override
   web.HTMLElement buildConfigUI(AppState state, void Function() onModified) {

@@ -601,13 +601,15 @@ class ToolbarController {
               if (result != null && result.isA<JSString>()) {
                 final jsonStr = (result as JSString).toDart;
                 try {
-                  final (g, weighted, nodes) = GraphIO.importFromJson(jsonStr);
+                  final (g, weighted, nodes, rawModifiers) =
+                      GraphIO.importFromJson(jsonStr);
                   state.saveSnapshot();
                   state.primaryGraph = g;
                   state.isWeighted = weighted;
                   state.nodes
                     ..clear()
                     ..addAll(nodes);
+                  state.restoreModifiers(rawModifiers);
                   dismissedEmpty = true;
                   state.evaluateModifiers();
                   renderer.autoLayout(state);
@@ -640,18 +642,28 @@ class ToolbarController {
         final text = textareaIo.value.trim();
         if (text.isEmpty) return;
         state.saveSnapshot();
-        final (g, weighted, nodes) = switch (selectIoFormat.value) {
+        final (
+          g,
+          weighted,
+          nodes,
+          rawModifiers,
+        ) = switch (selectIoFormat.value) {
           'json' => GraphIO.importFromJson(text),
-          _ => GraphIO.importFromMermaid(
-            text,
-            isDirected: state.primaryGraph.isDirected,
-          ),
+          _ => (() {
+            final (g, w, n) = GraphIO.importFromMermaid(
+              text,
+              isDirected: state.primaryGraph.isDirected,
+            );
+            return (g, w, n, <Map<String, dynamic>>[]);
+          })(),
         };
         state.primaryGraph = g;
         state.isWeighted = weighted;
         state.nodes
           ..clear()
           ..addAll(nodes);
+        state.restoreModifiers(rawModifiers);
+        onRenderModifierStack();
         ioStatus.textContent = 'Import successful!';
         onUpdateUI();
         closeModal();

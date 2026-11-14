@@ -161,6 +161,18 @@ final class AppState {
     evaluateModifiers();
   }
 
+  /// Restores modifier stack from serialized modifier JSON objects.
+  void restoreModifiers(List<Map<String, dynamic>> serializedModifiers) {
+    modifiers.clear();
+    for (final json in serializedModifiers) {
+      final mod = ModifierRegistry.fromJson(json);
+      if (mod != null) {
+        modifiers.add(mod);
+      }
+    }
+    evaluateModifiers();
+  }
+
   /// Populates all available modifiers in a disabled, collapsed state for quick experimentation.
   void addAllModifiersDisabled() {
     saveSnapshot();

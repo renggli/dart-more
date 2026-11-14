@@ -418,6 +418,40 @@ body {
   border-radius: 2px;
 }
 
+.modifier-btn-enabled {
+  color: var(--accent-blue);
+  cursor: pointer;
+  margin-right: 2px;
+}
+
+.modifier-card.disabled .modifier-btn-enabled {
+  color: var(--text-muted);
+}
+
+.modifier-help-text {
+  font-size: 11px;
+  color: var(--text-muted);
+  line-height: 1.4;
+  padding-bottom: 4px;
+  border-bottom: 1px dashed var(--border-color);
+  margin-bottom: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 6px;
+}
+
+.modifier-complexity-badge {
+  font-family: monospace;
+  font-size: 10px;
+  color: var(--text-secondary);
+  background: var(--bg-surface);
+  border: 1px solid var(--border-color);
+  padding: 1px 4px;
+  border-radius: 3px;
+  white-space: nowrap;
+}
+
 .modifier-body {
   padding: 8px 10px;
   display: flex;

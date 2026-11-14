@@ -33,6 +33,24 @@ class ComponentsModifier extends GraphModifier {
   ModifierCategory get category => ModifierCategory.structure;
 
   @override
+  Map<String, dynamic> exportConfig() => {
+    'mode': mode.id,
+    'largestOnly': largestOnly,
+  };
+
+  @override
+  void applyConfig(Map<String, dynamic> config) {
+    if (config['mode'] case final String m) mode = ComponentMode.fromId(m);
+    if (config['largestOnly'] case final bool l) largestOnly = l;
+  }
+
+  @override
+  void resetDefaults() {
+    mode = ComponentMode.weakly;
+    largestOnly = false;
+  }
+
+  @override
   web.HTMLElement buildConfigUI(AppState state, void Function() onModified) {
     final root = div('form-column');
 
@@ -166,6 +184,27 @@ class BiconnectedComponentsModifier extends GraphModifier {
   ModifierCategory get category => ModifierCategory.structure;
 
   @override
+  Map<String, dynamic> exportConfig() => {
+    'pointColor': pointColor,
+    'bridgeColor': bridgeColor,
+    'bridgePattern': bridgePattern,
+  };
+
+  @override
+  void applyConfig(Map<String, dynamic> config) {
+    if (config['pointColor'] case final String pc) pointColor = pc;
+    if (config['bridgeColor'] case final String bc) bridgeColor = bc;
+    if (config['bridgePattern'] case final String bp) bridgePattern = bp;
+  }
+
+  @override
+  void resetDefaults() {
+    pointColor = '#f59e0b';
+    bridgeColor = '#ef4444';
+    bridgePattern = '6,4';
+  }
+
+  @override
   web.HTMLElement buildConfigUI(AppState state, void Function() onModified) {
     final root = div('form-column');
     root.appendChild(
@@ -290,6 +329,28 @@ class CycleDetectionModifier extends GraphModifier {
 
   @override
   ModifierCategory get category => ModifierCategory.structure;
+
+  @override
+  Map<String, dynamic> exportConfig() => {
+    'selectedCycleIndex': selectedCycleIndex,
+    'outputStyle': outputStyle.toJson(),
+  };
+
+  @override
+  void applyConfig(Map<String, dynamic> config) {
+    if (config['selectedCycleIndex'] case final int idx) {
+      selectedCycleIndex = idx;
+    }
+    if (config['outputStyle'] case final Map<dynamic, dynamic> os) {
+      outputStyle.applyJson(os.cast<String, dynamic>());
+    }
+  }
+
+  @override
+  void resetDefaults() {
+    selectedCycleIndex = -1;
+    outputStyle.resetDefaults();
+  }
 
   @override
   web.HTMLElement buildConfigUI(AppState state, void Function() onModified) {
@@ -650,6 +711,26 @@ class KCoreModifier extends GraphModifier {
   ModifierCategory get category => ModifierCategory.structure;
 
   @override
+  Map<String, dynamic> exportConfig() => {
+    'k': k,
+    'outputStyle': outputStyle.toJson(),
+  };
+
+  @override
+  void applyConfig(Map<String, dynamic> config) {
+    if (config['k'] case final int val) k = val;
+    if (config['outputStyle'] case final Map<dynamic, dynamic> os) {
+      outputStyle.applyJson(os.cast<String, dynamic>());
+    }
+  }
+
+  @override
+  void resetDefaults() {
+    k = 2;
+    outputStyle.resetDefaults();
+  }
+
+  @override
   bool get canApply => true;
 
   @override
@@ -816,6 +897,32 @@ class IsomorphismModifier extends GraphModifier {
 
   @override
   ModifierCategory get category => ModifierCategory.structure;
+
+  @override
+  Map<String, dynamic> exportConfig() => {
+    'shape': shape.id,
+    'atlasIndex': atlasIndex,
+    'count': count,
+    'outputStyle': outputStyle.toJson(),
+  };
+
+  @override
+  void applyConfig(Map<String, dynamic> config) {
+    if (config['shape'] case final String s) shape = GeneratorShape.fromId(s);
+    if (config['atlasIndex'] case final int ai) atlasIndex = ai;
+    if (config['count'] case final int c) count = c;
+    if (config['outputStyle'] case final Map<dynamic, dynamic> os) {
+      outputStyle.applyJson(os.cast<String, dynamic>());
+    }
+  }
+
+  @override
+  void resetDefaults() {
+    shape = GeneratorShape.atlas;
+    atlasIndex = 7;
+    count = 5;
+    outputStyle.resetDefaults();
+  }
 
   Graph<String, num> _buildPatternGraph(bool isDirected) {
     final factory = GraphFactory<String, num>(

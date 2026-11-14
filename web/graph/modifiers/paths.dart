@@ -40,6 +40,41 @@ class ShortestPathModifier extends GraphModifier {
   ModifierCategory get category => ModifierCategory.paths;
 
   @override
+  Map<String, dynamic> exportConfig() => {
+    'algorithm': algorithm.id,
+    if (sourceVertex != null) 'sourceVertex': sourceVertex,
+    if (targetVertex != null) 'targetVertex': targetVertex,
+    'findAll': findAll,
+    'outputStyle': outputStyle.toJson(),
+  };
+
+  @override
+  void applyConfig(Map<String, dynamic> config) {
+    if (config['algorithm'] case final String a) {
+      algorithm = ShortestPathAlgorithm.fromId(a);
+    }
+    if (config.containsKey('sourceVertex')) {
+      sourceVertex = config['sourceVertex']?.toString();
+    }
+    if (config.containsKey('targetVertex')) {
+      targetVertex = config['targetVertex']?.toString();
+    }
+    if (config['findAll'] case final bool f) findAll = f;
+    if (config['outputStyle'] case final Map<dynamic, dynamic> os) {
+      outputStyle.applyJson(os.cast<String, dynamic>());
+    }
+  }
+
+  @override
+  void resetDefaults() {
+    algorithm = ShortestPathAlgorithm.dijkstra;
+    sourceVertex = null;
+    targetVertex = null;
+    findAll = false;
+    outputStyle.resetDefaults();
+  }
+
+  @override
   web.HTMLElement buildConfigUI(AppState state, void Function() onModified) {
     final root = div('form-column');
 
@@ -371,6 +406,39 @@ class TraversalModifier extends GraphModifier {
 
   @override
   ModifierCategory get category => ModifierCategory.paths;
+
+  @override
+  Map<String, dynamic> exportConfig() => {
+    'type': type.id,
+    if (startVertex != null) 'startVertex': startVertex,
+    'randomWalkSteps': randomWalkSteps,
+    'seed': seed,
+    'outputStyle': outputStyle.toJson(),
+  };
+
+  @override
+  void applyConfig(Map<String, dynamic> config) {
+    if (config['type'] case final String t) {
+      type = TraversalType.fromId(t);
+    }
+    if (config.containsKey('startVertex')) {
+      startVertex = config['startVertex']?.toString();
+    }
+    if (config['randomWalkSteps'] case final int st) randomWalkSteps = st;
+    if (config['seed'] case final int s) seed = s;
+    if (config['outputStyle'] case final Map<dynamic, dynamic> os) {
+      outputStyle.applyJson(os.cast<String, dynamic>());
+    }
+  }
+
+  @override
+  void resetDefaults() {
+    type = TraversalType.bfs;
+    startVertex = null;
+    randomWalkSteps = 10;
+    seed = 42;
+    outputStyle.resetDefaults();
+  }
 
   @override
   web.HTMLElement buildConfigUI(AppState state, void Function() onModified) {

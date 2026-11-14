@@ -26,7 +26,7 @@ void main() {
         isWeighted: true,
         nodes: nodes,
       );
-      final (restoredGraph, isWeighted, restoredNodes) =
+      final (restoredGraph, isWeighted, restoredNodes, restoredModifiers) =
           GraphCodec.importFromJson(jsonStr);
 
       check(restoredGraph.isDirected).isFalse();
@@ -34,12 +34,94 @@ void main() {
       check(restoredGraph.vertices).contains('A');
       check(restoredGraph.vertices).contains('B');
       check(restoredGraph.getEdge('A', 'B')?.value).equals(42);
+      check(restoredModifiers).isEmpty();
 
       final restoredA = restoredNodes['A']!;
       check(restoredA.label).equals('Vertex Alpha');
       check(restoredA.x).equals(120.0);
       check(restoredA.y).equals(240.0);
       check(restoredA.userFillColor).equals('#3b82f6');
+    });
+
+    test('JSON round-trip preserves modifiers stack and configuration', () {
+      final graph = Graph<String, num>(isDirected: true);
+      graph.addEdge('U', 'V', value: 1);
+      final nodes = <String, GraphNode>{
+        'U': GraphNode(id: 'U', x: 10.0, y: 20.0),
+        'V': GraphNode(id: 'V', x: 30.0, y: 40.0),
+      };
+      final modifiers = <Map<String, dynamic>>[
+        {
+          'id': 'shortest_path',
+          'enabled': true,
+          'collapsed': false,
+          'config': {
+            'algorithm': 'dijkstra',
+            'sourceVertex': 'U',
+            'targetVertex': 'V',
+            'findAll': true,
+            'outputStyle': {'color': '#ef4444', 'pattern': '6,4'},
+          },
+        },
+        {
+          'id': 'layout',
+          'enabled': false,
+          'collapsed': true,
+          'config': {'algorithm': 'force', 'vertexDistance': 75.0},
+        },
+      ];
+
+      final jsonStr = GraphCodec.exportToJson(
+        graph: graph,
+        isWeighted: true,
+        nodes: nodes,
+        modifiers: modifiers,
+      );
+      final (restoredGraph, _, _, restoredModifiers) =
+          GraphCodec.importFromJson(jsonStr);
+
+      check(restoredGraph.containsEdge('U', 'V')).isTrue();
+      check(restoredModifiers.length).equals(2);
+
+      check(restoredModifiers[0]['id']).equals('shortest_path');
+      check(restoredModifiers[0]['enabled']).equals(true);
+      check(restoredModifiers[0]['collapsed']).equals(false);
+      final config0 = restoredModifiers[0]['config'] as Map;
+      check(config0['algorithm']).equals('dijkstra');
+      check(config0['sourceVertex']).equals('U');
+      check(config0['findAll']).equals(true);
+
+      check(restoredModifiers[1]['id']).equals('layout');
+      check(restoredModifiers[1]['enabled']).equals(false);
+      check(restoredModifiers[1]['collapsed']).equals(true);
+      final config1 = restoredModifiers[1]['config'] as Map;
+      check(config1['algorithm']).equals('force');
+      check(config1['vertexDistance']).equals(75.0);
+    });
+
+    test('URL hash export and import preserves modifiers', () {
+      final graph = Graph<String, num>(isDirected: false);
+      graph.addVertex('Z');
+      final nodes = {'Z': GraphNode(id: 'Z', x: 0, y: 0)};
+      final modifiers = [
+        {
+          'id': 'components',
+          'enabled': true,
+          'collapsed': false,
+          'config': {'mode': 'strongly'},
+        },
+      ];
+
+      final hash = GraphCodec.exportToUrlHash(
+        graph: graph,
+        isWeighted: false,
+        nodes: nodes,
+        modifiers: modifiers,
+      );
+      final restored = GraphCodec.importFromUrlHash(hash);
+      check(restored).isNotNull();
+      check(restored!.$4.length).equals(1);
+      check(restored.$4[0]['id']).equals('components');
     });
 
     test('Mermaid import preserves labels and detects weights', () {
@@ -86,6 +168,16 @@ graph TD
       check(() => GraphCodec.importFromJson('[]')).throws<FormatException>();
       check(() => GraphCodec.importFromJson('{"isDirected": "invalid"}'))
           .throws<FormatException>();
+      check(
+        () => GraphCodec.importFromJson(
+          '{"nodes": [], "edges": [], "modifiers": "invalid"}',
+        ),
+      ).throws<FormatException>();
+      check(
+        () => GraphCodec.importFromJson(
+          '{"nodes": [], "edges": [], "modifiers": ["not an object"]}',
+        ),
+      ).throws<FormatException>();
     });
 
     test('exportToCsv escapes quotes, commas, and newlines', () {

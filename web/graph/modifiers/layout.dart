@@ -47,6 +47,55 @@ class LayoutModifier extends GraphModifier {
   bool get canApply => true;
 
   @override
+  Map<String, dynamic> exportConfig() => {
+    'algorithm': algorithm.id,
+    'rankDir': rankDir.id,
+    'componentDirection': componentDirection.id,
+    'vertexDistance': vertexDistance,
+    'layerDistance': layerDistance,
+    'iterations': iterations,
+    'columns': columns,
+    'seed': seed,
+    'removeOverlaps': removeOverlaps,
+  };
+
+  @override
+  void applyConfig(Map<String, dynamic> config) {
+    if (config['algorithm'] case final String a) {
+      algorithm = LayoutEngine.fromId(a);
+    }
+    if (config['rankDir'] case final String r) {
+      rankDir = RankDir.fromId(r);
+    }
+    if (config['componentDirection'] case final String cd) {
+      componentDirection = RankDir.fromId(cd);
+    }
+    if (config['vertexDistance'] case final num vd) {
+      vertexDistance = vd.toDouble();
+    }
+    if (config['layerDistance'] case final num ld) {
+      layerDistance = ld.toDouble();
+    }
+    if (config['iterations'] case final int it) iterations = it;
+    if (config['columns'] case final int col) columns = col;
+    if (config['seed'] case final int s) seed = s;
+    if (config['removeOverlaps'] case final bool ro) removeOverlaps = ro;
+  }
+
+  @override
+  void resetDefaults() {
+    algorithm = LayoutEngine.stress;
+    rankDir = RankDir.tb;
+    componentDirection = RankDir.tb;
+    vertexDistance = 60.0;
+    layerDistance = 80.0;
+    iterations = 100;
+    columns = 0;
+    seed = 42;
+    removeOverlaps = true;
+  }
+
+  @override
   void applyPermanent(AppState state) {
     apply(state.renderGraph, state);
     state.saveSnapshot();

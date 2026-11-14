@@ -6,11 +6,12 @@ import 'node.dart';
 
 /// Pure Dart graph codecs without browser DOM or JavaScript dependencies.
 abstract final class GraphCodec {
-  /// Serializes graph structure and node coordinates to JSON.
+  /// Serializes graph structure, node coordinates, and optional modifier states to JSON.
   static String exportToJson({
     required Graph<String, num> graph,
     required bool isWeighted,
     required Map<String, GraphNode> nodes,
+    List<Map<String, dynamic>>? modifiers,
   }) {
     final map = <String, dynamic>{
       'isDirected': graph.isDirected,
@@ -20,12 +21,18 @@ abstract final class GraphCodec {
         for (final edge in graph.edges)
           {'source': edge.source, 'target': edge.target, 'value': edge.value},
       ],
+      if (modifiers != null && modifiers.isNotEmpty) 'modifiers': modifiers,
     };
     return const JsonEncoder.withIndent('  ').convert(map);
   }
 
-  /// Parses graph structure, weight flag, and node coordinate map from JSON.
-  static (Graph<String, num>, bool isWeighted, Map<String, GraphNode> nodes)
+  /// Parses graph structure, weight flag, node coordinate map, and modifier configurations from JSON.
+  static (
+    Graph<String, num>,
+    bool isWeighted,
+    Map<String, GraphNode> nodes,
+    List<Map<String, dynamic>> modifiers,
+  )
   importFromJson(String jsonStr) {
     final decoded = jsonDecode(jsonStr);
     if (decoded is! Map) {
@@ -113,7 +120,22 @@ abstract final class GraphCodec {
       throw const FormatException('Invalid "edges" field, expected array');
     }
 
-    return (graph, isWeighted, nodes);
+    final modifiers = <Map<String, dynamic>>[];
+    if (map['modifiers'] case final List<dynamic> rawModifiers) {
+      for (final item in rawModifiers) {
+        if (item is Map) {
+          modifiers.add(item.cast<String, dynamic>());
+        } else {
+          throw const FormatException(
+            'Expected modifier entry to be a JSON object',
+          );
+        }
+      }
+    } else if (map.containsKey('modifiers')) {
+      throw const FormatException('Invalid "modifiers" field, expected array');
+    }
+
+    return (graph, isWeighted, nodes, modifiers);
   }
 
   /// Exports the graph to Mermaid flowchart syntax.
@@ -153,11 +175,13 @@ abstract final class GraphCodec {
     required Graph<String, num> graph,
     required bool isWeighted,
     required Map<String, GraphNode> nodes,
+    List<Map<String, dynamic>>? modifiers,
   }) {
     final jsonStr = exportToJson(
       graph: graph,
       isWeighted: isWeighted,
       nodes: nodes,
+      modifiers: modifiers,
     );
     final bytes = utf8.encode(jsonStr);
     final base64 = base64Url.encode(bytes).replaceAll('=', '');
@@ -165,7 +189,12 @@ abstract final class GraphCodec {
   }
 
   /// Decodes URL hash string to restore graph state.
-  static (Graph<String, num>, bool isWeighted, Map<String, GraphNode> nodes)?
+  static (
+    Graph<String, num>,
+    bool isWeighted,
+    Map<String, GraphNode> nodes,
+    List<Map<String, dynamic>> modifiers,
+  )?
   importFromUrlHash(String hash) {
     var raw = hash;
     if (raw.startsWith('#')) raw = raw.substring(1);

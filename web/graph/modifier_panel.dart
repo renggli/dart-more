@@ -220,23 +220,18 @@ class ModifierPanel {
           ..innerHTML = GraphIcons.grip.toJS;
         headerLeft.appendChild(dragHandle);
 
-        final toggleCheckbox =
-            web.document.createElement('input') as web.HTMLInputElement;
-        toggleCheckbox.type = 'checkbox';
-        toggleCheckbox.checked = mod.enabled;
-        toggleCheckbox.title = 'Enable / Disable modifier';
-        toggleCheckbox.style.cursor = 'pointer';
-        toggleCheckbox.style.margin = '0';
-        toggleCheckbox.onClick.listen((e) => e.stopPropagation());
-        toggleCheckbox.onChange.listen((e) {
-          e.stopPropagation();
-          mod.enabled = toggleCheckbox.checked;
-          mod.collapsed = !mod.enabled;
-          state.evaluateModifiers();
-          updateUI();
-          renderModifierStack(state, ui, updateUI);
-        });
-        headerLeft.appendChild(toggleCheckbox);
+        final toggleBtn = button('', 'modifier-btn-icon modifier-btn-enabled')
+          ..title = mod.enabled ? 'Enabled' : 'Disabled'
+          ..setAttribute('aria-label', 'Enabled')
+          ..innerHTML = (mod.enabled ? GraphIcons.eye : GraphIcons.eyeOff).toJS
+          ..onClick.listen((e) {
+            e.stopPropagation();
+            mod.enabled = !mod.enabled;
+            state.evaluateModifiers();
+            updateUI();
+            renderModifierStack(state, ui, updateUI);
+          });
+        headerLeft.appendChild(toggleBtn);
       }
 
       final collapseIcon = span('', 'modifier-collapse-icon')
@@ -245,10 +240,10 @@ class ModifierPanel {
                 .toJS;
       headerLeft.appendChild(collapseIcon);
 
-      final titleSpan = span(
-        mod.name,
-        hasError ? 'modifier-title error' : 'modifier-title',
-      );
+      final titleSpan =
+          span(mod.name, hasError ? 'modifier-title error' : 'modifier-title')
+            ..title =
+                '${mod.description}${mod.complexity != null ? " (${mod.complexity})" : ""}';
       headerLeft.appendChild(titleSpan);
       header.appendChild(headerLeft);
 
@@ -268,6 +263,19 @@ class ModifierPanel {
       });
 
       final actions = div('modifier-header-actions');
+      final btnReset = button('', 'modifier-btn-icon')
+        ..title = 'Reset to defaults'
+        ..setAttribute('aria-label', 'Reset to defaults')
+        ..innerHTML = GraphIcons.reset.toJS
+        ..onClick.listen((e) {
+          e.stopPropagation();
+          mod.resetDefaults();
+          state.evaluateModifiers();
+          updateUI();
+          renderModifierStack(state, ui, updateUI);
+        });
+      actions.appendChild(btnReset);
+
       web.HTMLButtonElement? btnApply;
       if (mod.canApply) {
         btnApply = button('Apply', 'modifier-btn-apply')
@@ -304,6 +312,21 @@ class ModifierPanel {
       void Function()? updateCardBody;
       if (!mod.collapsed) {
         final body = div('modifier-body');
+        if (mod.description.isNotEmpty ||
+            (mod.complexity != null && mod.complexity!.isNotEmpty)) {
+          final helpBox = div('modifier-help-text');
+          if (mod.description.isNotEmpty) {
+            helpBox.appendChild(span(mod.description));
+          }
+          if (mod.complexity case final String complexity
+              when complexity.isNotEmpty) {
+            helpBox.appendChild(
+              span(complexity, 'modifier-complexity-badge')
+                ..title = 'Time complexity',
+            );
+          }
+          body.appendChild(helpBox);
+        }
         final statusContainer = div('modifier-status-container');
         final tableContainer = div('modifier-table-container');
 
@@ -427,11 +450,15 @@ class ModifierPanel {
 
     for (final category in ModifierCategory.values) {
       final specs = ModifierRegistry.byCategory(category);
-      if (specs.isEmpty) continue;
+      final addableSpecs = [
+        for (final s in specs)
+          if (s.canAdd) s,
+      ];
+      if (addableSpecs.isEmpty) continue;
       final optGroup =
           web.document.createElement('optgroup') as web.HTMLOptGroupElement
             ..label = category.label;
-      for (final spec in specs) {
+      for (final spec in addableSpecs) {
         optGroup.appendChild(optionElement(spec.type, spec.name));
       }
       selectAddModifier.appendChild(optGroup);
