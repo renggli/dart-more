@@ -175,9 +175,6 @@ final class AppState {
     evaluateModifiers();
   }
 
-  /// Callback triggered when state is completely reset (e.g. File > New).
-  void Function()? onReset;
-
   /// Resets workspace state completely back to an empty graph and clears all modifiers.
   void reset() {
     primaryGraph = Graph<String, num>(isDirected: primaryGraph.isDirected);
@@ -192,21 +189,11 @@ final class AppState {
     clearSelection();
     undoStack.clear();
     redoStack.clear();
-    onReset?.call();
   }
 
   bool isWeighted = true;
   bool showLabels = true;
   bool showStats = true;
-  String? pendingPlacementVertex;
-  double cursorX = 400.0;
-  double cursorY = 300.0;
-
-  /// UI delegate callbacks for view-layer triggers.
-  void Function()? onOpenFile;
-  void Function()? onOpenImport;
-  void Function()? onOpenExport;
-  void Function(String vertex)? onShowInlineEditor;
 
   LayoutEngine layoutEngine = LayoutEngine.stress;
   RankDir rankDir = RankDir.lr;

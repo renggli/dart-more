@@ -3,6 +3,7 @@ import 'dart:math' as math;
 
 import 'package:web/web.dart' as web;
 
+import 'app_ui.dart';
 import 'dom_utils.dart';
 import 'layout.dart';
 import 'node.dart';
@@ -40,12 +41,14 @@ final class GraphRenderer {
     this.onEdgeWeightEdit,
     this.onNodesMoved,
     this.onPlacementConfirmed,
+    this.ui,
   }) {
     _initViewportControls();
   }
 
   final web.HTMLElement container;
   final web.HTMLElement transformLayer;
+  AppUi? ui;
   final VertexCallback onVertexClick;
   final VertexDblClickCallback? onVertexDblClick;
   final EdgeCallback onEdgeClick;
@@ -566,15 +569,15 @@ final class GraphRenderer {
       final state = _lastState;
 
       // Click confirms cursor-attached vertex placement
-      if (state != null && state.pendingPlacementVertex != null) {
-        final placedVertex = state.pendingPlacementVertex!;
-        state.pendingPlacementVertex = null;
-        state.selectVertex(placedVertex, clearOthers: true);
-        render(state);
+      if (ui?.pendingPlacementVertex != null) {
+        final placedVertex = ui!.pendingPlacementVertex!;
+        ui!.pendingPlacementVertex = null;
+        state?.selectVertex(placedVertex, clearOthers: true);
+        if (state != null) render(state);
         if (onPlacementConfirmed != null) {
           onPlacementConfirmed!(placedVertex);
-        } else if (state.showLabels) {
-          showInlineNodeEditor(state, placedVertex);
+        } else if (state?.showLabels ?? false) {
+          showInlineNodeEditor(state!, placedVertex);
         }
         return;
       }
@@ -635,14 +638,12 @@ final class GraphRenderer {
       final vRect = viewport.getBoundingClientRect();
       _canvasMouseX = (event.clientX.toDouble() - vRect.left - _panX) / _scale;
       _canvasMouseY = (event.clientY.toDouble() - vRect.top - _panY) / _scale;
-      if (_lastState != null) {
-        _lastState!.cursorX = _canvasMouseX;
-        _lastState!.cursorY = _canvasMouseY;
-      }
+      ui?.cursorX = _canvasMouseX;
+      ui?.cursorY = _canvasMouseY;
 
       // Pending placement vertex moves dynamically with cursor
-      if (_lastState != null && _lastState!.pendingPlacementVertex != null) {
-        final pNode = _lastState!.nodes[_lastState!.pendingPlacementVertex!];
+      if (ui?.pendingPlacementVertex != null && _lastState != null) {
+        final pNode = _lastState!.nodes[ui!.pendingPlacementVertex!];
         if (pNode != null) {
           pNode.x = _canvasMouseX;
           pNode.y = _canvasMouseY;

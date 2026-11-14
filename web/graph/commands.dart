@@ -1,5 +1,6 @@
 import 'package:more/graph.dart' hide GraphLayout;
 
+import 'app_ui.dart';
 import 'io.dart';
 import 'layout.dart';
 import 'node.dart';
@@ -43,10 +44,10 @@ abstract class GraphCommand {
   String? get shortcut => shortcuts.isNotEmpty ? shortcuts.first : null;
 
   /// Whether this command can currently execute given the application state.
-  bool canExecute(AppState state);
+  bool canExecute(AppState state, [AppUi? ui]);
 
   /// Executes this command against the application state.
-  void execute(AppState state);
+  void execute(AppState state, [AppUi? ui]);
 
   /// Checks whether a keyboard event matches any shortcut of this command.
   bool matchesKey(
@@ -101,20 +102,31 @@ final class SimpleCommand extends GraphCommand {
     required super.category,
     super.shortcuts = const [],
     this.canExecuteCallback,
-    required this.executeCallback,
+    this.executeCallback,
+    this.executeWithUiCallback,
   });
 
   /// Optional predicate for [canExecute].
   final bool Function(AppState state)? canExecuteCallback;
 
   /// Function to run during [execute].
-  final void Function(AppState state) executeCallback;
+  final void Function(AppState state)? executeCallback;
+
+  /// Function to run during [execute] with access to [AppUi].
+  final void Function(AppState state, AppUi? ui)? executeWithUiCallback;
 
   @override
-  bool canExecute(AppState state) => canExecuteCallback?.call(state) ?? true;
+  bool canExecute(AppState state, [AppUi? ui]) =>
+      canExecuteCallback?.call(state) ?? true;
 
   @override
-  void execute(AppState state) => executeCallback(state);
+  void execute(AppState state, [AppUi? ui]) {
+    if (executeWithUiCallback != null) {
+      executeWithUiCallback!(state, ui);
+    } else {
+      executeCallback?.call(state);
+    }
+  }
 }
 
 // ---------------------------------------------------------------------------
@@ -132,13 +144,13 @@ class CutCommand extends GraphCommand {
       );
 
   @override
-  bool canExecute(AppState state) =>
+  bool canExecute(AppState state, [AppUi? ui]) =>
       state.selection.vertices.isNotEmpty || state.selection.edges.isNotEmpty;
 
   @override
-  void execute(AppState state) {
-    const CopyCommand().execute(state);
-    const DeleteCommand().execute(state);
+  void execute(AppState state, [AppUi? ui]) {
+    const CopyCommand().execute(state, ui);
+    const DeleteCommand().execute(state, ui);
   }
 }
 
@@ -153,11 +165,11 @@ class CopyCommand extends GraphCommand {
       );
 
   @override
-  bool canExecute(AppState state) =>
+  bool canExecute(AppState state, [AppUi? ui]) =>
       state.selection.vertices.isNotEmpty || state.selection.edges.isNotEmpty;
 
   @override
-  void execute(AppState state) {
+  void execute(AppState state, [AppUi? ui]) {
     if (state.selection.isEmpty) return;
 
     final vertSet = Set<String>.from(state.selection.vertices);
@@ -216,11 +228,11 @@ class PasteCommand extends GraphCommand {
       );
 
   @override
-  bool canExecute(AppState state) =>
+  bool canExecute(AppState state, [AppUi? ui]) =>
       state.clipboard != null && !state.clipboard!.isEmpty;
 
   @override
-  void execute(AppState state) {
+  void execute(AppState state, [AppUi? ui]) {
     final cb = state.clipboard;
     if (cb == null || cb.isEmpty) return;
     state.saveSnapshot();
@@ -263,13 +275,13 @@ class DuplicateCommand extends GraphCommand {
       );
 
   @override
-  bool canExecute(AppState state) =>
+  bool canExecute(AppState state, [AppUi? ui]) =>
       state.selection.vertices.isNotEmpty || state.selection.edges.isNotEmpty;
 
   @override
-  void execute(AppState state) {
-    const CopyCommand().execute(state);
-    const PasteCommand().execute(state);
+  void execute(AppState state, [AppUi? ui]) {
+    const CopyCommand().execute(state, ui);
+    const PasteCommand().execute(state, ui);
   }
 }
 
@@ -284,11 +296,11 @@ class DeleteCommand extends GraphCommand {
       );
 
   @override
-  bool canExecute(AppState state) =>
+  bool canExecute(AppState state, [AppUi? ui]) =>
       state.selection.vertices.isNotEmpty || state.selection.edges.isNotEmpty;
 
   @override
-  void execute(AppState state) {
+  void execute(AppState state, [AppUi? ui]) {
     if (state.selection.isEmpty) return;
     state.saveSnapshot();
 
@@ -327,22 +339,22 @@ class AddVertexCommand extends GraphCommand {
       );
 
   @override
-  bool canExecute(AppState state) => true;
+  bool canExecute(AppState state, [AppUi? ui]) => true;
 
   @override
-  void execute(AppState state) {
+  void execute(AppState state, [AppUi? ui]) {
     state.saveSnapshot();
     final newId = state.nextAvailableNodeId();
     state.primaryGraph.addVertex(newId);
     state.getOrCreateNode(
       newId,
       label: newId,
-      x: state.cursorX,
-      y: state.cursorY,
+      x: ui?.cursorX ?? 400.0,
+      y: ui?.cursorY ?? 300.0,
     );
     state.selection.clear();
     state.selection.selectVertex(newId);
-    state.pendingPlacementVertex = newId;
+    if (ui != null) ui.pendingPlacementVertex = newId;
   }
 }
 
@@ -356,19 +368,19 @@ class ExpandVertexCommand extends GraphCommand {
   });
 
   @override
-  bool canExecute(AppState state) =>
+  bool canExecute(AppState state, [AppUi? ui]) =>
       state.selection.vertices.isNotEmpty || state.activeVertex != null;
 
   @override
-  void execute(AppState state) {
+  void execute(AppState state, [AppUi? ui]) {
     state.saveSnapshot();
     final newId = state.nextAvailableNodeId();
     state.primaryGraph.addVertex(newId);
     state.getOrCreateNode(
       newId,
       label: newId,
-      x: state.cursorX,
-      y: state.cursorY,
+      x: ui?.cursorX ?? 400.0,
+      y: ui?.cursorY ?? 300.0,
     );
 
     final targets = state.selection.vertices.isNotEmpty
@@ -381,7 +393,7 @@ class ExpandVertexCommand extends GraphCommand {
 
     state.selection.clear();
     state.selection.selectVertex(newId);
-    state.pendingPlacementVertex = newId;
+    if (ui != null) ui.pendingPlacementVertex = newId;
   }
 }
 
@@ -402,10 +414,11 @@ class MergeVerticesCommand extends GraphCommand {
       );
 
   @override
-  bool canExecute(AppState state) => state.selection.vertices.length >= 2;
+  bool canExecute(AppState state, [AppUi? ui]) =>
+      state.selection.vertices.length >= 2;
 
   @override
-  void execute(AppState state) {
+  void execute(AppState state, [AppUi? ui]) {
     if (state.selection.vertices.length < 2) return;
     final target = state.activeVertex ?? state.selection.vertices.first;
     state.saveSnapshot();
@@ -450,10 +463,11 @@ class ConnectVerticesCommand extends GraphCommand {
       );
 
   @override
-  bool canExecute(AppState state) => state.selection.vertices.length >= 2;
+  bool canExecute(AppState state, [AppUi? ui]) =>
+      state.selection.vertices.length >= 2;
 
   @override
-  void execute(AppState state) {
+  void execute(AppState state, [AppUi? ui]) {
     if (state.selection.vertices.length < 2) return;
     state.saveSnapshot();
     final list = state.selection.vertices.toList();
@@ -488,11 +502,11 @@ class SubdivideEdgeCommand extends GraphCommand {
       );
 
   @override
-  bool canExecute(AppState state) =>
+  bool canExecute(AppState state, [AppUi? ui]) =>
       state.selection.edges.isNotEmpty || state.selection.selectedEdge != null;
 
   @override
-  void execute(AppState state) {
+  void execute(AppState state, [AppUi? ui]) {
     final edges = state.selection.edges.isNotEmpty
         ? state.selection.edges.toList()
         : (state.selection.selectedEdge != null
@@ -525,10 +539,10 @@ class SubdivideEdgeCommand extends GraphCommand {
       final nodeV = state.nodes[v];
       final midX = (nodeU != null && nodeV != null)
           ? ((nodeU.x ?? 0) + (nodeV.x ?? 0)) / 2
-          : state.cursorX;
+          : (ui?.cursorX ?? 400.0);
       final midY = (nodeU != null && nodeV != null)
           ? ((nodeU.y ?? 0) + (nodeV.y ?? 0)) / 2
-          : state.cursorY;
+          : (ui?.cursorY ?? 300.0);
 
       state.getOrCreateNode(midId, label: midId, x: midX, y: midY);
       state.primaryGraph.addEdge(u, midId, value: val);
@@ -554,14 +568,17 @@ class CommandRegistry {
       title: 'New',
       category: CommandCategory.file,
       shortcuts: const ['Ctrl+N'],
-      executeCallback: (state) => state.reset(),
+      executeWithUiCallback: (state, ui) {
+        state.reset();
+        ui?.resetView();
+      },
     ),
     SimpleCommand(
       id: 'file.open',
       title: 'Open...',
       category: CommandCategory.file,
       shortcuts: const ['Ctrl+O'],
-      executeCallback: (state) => state.onOpenFile?.call(),
+      executeWithUiCallback: (state, ui) => ui?.openFile(),
     ),
     SimpleCommand(
       id: 'file.save',
@@ -579,7 +596,7 @@ class CommandRegistry {
       title: 'Import...',
       category: CommandCategory.file,
       shortcuts: const ['Ctrl+Shift+I'],
-      executeCallback: (state) => state.onOpenImport?.call(),
+      executeWithUiCallback: (state, ui) => ui?.openImport(),
     ),
     SimpleCommand(
       id: 'file.export',
@@ -587,7 +604,7 @@ class CommandRegistry {
       category: CommandCategory.file,
       shortcuts: const ['Ctrl+Shift+E'],
       canExecuteCallback: (state) => state.primaryGraph.vertices.isNotEmpty,
-      executeCallback: (state) => state.onOpenExport?.call(),
+      executeWithUiCallback: (state, ui) => ui?.openExport(),
     ),
 
     // Edit
@@ -753,10 +770,10 @@ class CommandRegistry {
       category: CommandCategory.vertex,
       shortcuts: const ['F2'],
       canExecuteCallback: (state) => state.activeVertex != null,
-      executeCallback: (state) {
+      executeWithUiCallback: (state, ui) {
         final v = state.activeVertex;
         if (v != null) {
-          state.onShowInlineEditor?.call(v);
+          ui?.showInlineEditor(v);
         }
       },
     ),
