@@ -38,7 +38,6 @@ import 'rtree/rstar.dart';
 ///   and reduces pointer indirection.
 /// - **Write-heavy / streaming data**: Use smaller capacities such as `M = 8` to `16`
 ///   with [RTree.linear] or [RTree.guttman] to minimize split evaluation time.
-@experimental
 abstract class RTree<T> with Iterable<T> {
   /// Constructs a Guttman R-Tree using the quadratic split algorithm.
   ///

@@ -2,7 +2,19 @@
 
 ## 4.10.0 (Unpublished)
 
-- Add a graph layout engine
+- Dart 3.14 requirement.
+- Add a graph layout engine (`Graph.layout` and `GraphLayout` strategies):
+  - Force-directed (`ForceLayout` with Barnes–Hut support), stress-based (`StressLayout`), spectral (`SpectralLayout`), layered Sugiyama (`LayeredLayout`), tree (`TreeLayout`), radial (`RadialLayout`), circular (`CircularLayout`), shell (`ShellLayout`), grid (`GridLayout`), and random (`RandomLayout`) layouts.
+  - Layout geometry types (`LayoutPoint`, `LayoutRectangle`, `LayoutSize`), orientations (`LayoutOrientation`), component packing (`packComponents`), overlap removal, and normalization.
+- Expand the graph library:
+  - Add `katzCentrality`, `hits` (HITS authorities and hubs), `dominatingSet`, `tspHeuristic`, and `bipartiteColoring` algorithms.
+  - Expose shortest-path distance metrics (`eccentricity`, `diameter`, `radius`, `center`, `periphery`) directly on `Graph`.
+  - Add `GraphFactory.grid` for 2D grid graphs.
+  - Add Mermaid flowchart import and export (`GraphFactory.fromMermaid`, `Graph.toMermaid`).
+  - Use the graph's default edge value as fallback weight/cost/capacity in weighted algorithms when no callback is provided.
+- Add order-statistic B+Tree collections (`BTreeMap` and `BTreeSet`).
+- Refactor `RTree` with linear (`RTree.linear`) and R*-tree (`RTree.rStar`) split algorithms alongside `RTree.guttman`, and introduce a typed `double`-based `Bounds` hierarchy.
+- Add interactive web demos for the graph library and R-Tree spatial index.
 
 ## 4.9.0
 
