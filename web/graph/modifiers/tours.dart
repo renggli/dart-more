@@ -64,28 +64,62 @@ class EulerianModifier extends GraphModifier {
       final hasCircuit = graph.hasEulerianCircuit();
       final hasPath = graph.hasEulerianPath();
 
+      final oddVertices = graph.isDirected
+          ? [
+              for (final v in graph.vertices)
+                if (graph.inDegreeOf(v) != graph.outDegreeOf(v)) v,
+            ]
+          : [
+              for (final v in graph.vertices)
+                if (graph.degreeOf(v).isOdd) v,
+            ];
+
       if (requireCircuit && !hasCircuit) {
-        return const ModifierOutput(
-          statusSummary: 'No Eulerian Circuit exists',
+        for (final v in oddVertices) {
+          final node = state.nodes[v];
+          if (node != null) {
+            node.style.borderColor = '#ef4444';
+            node.style.borderWidth = 3.0;
+          }
+        }
+        return ModifierOutput(
+          statusSummary:
+              'No Eulerian Circuit (${oddVertices.length} odd-degree vertices)',
           tableData: ModifierTableData(
-            title: 'Eulerian Properties',
+            title: 'Eulerian Analysis',
             headers: ['Property', 'Value'],
             rows: [
               ['Eulerian Circuit', 'No (all vertices must have even degree)'],
+              [
+                'Violating Vertices (${oddVertices.length})',
+                oddVertices.join(', '),
+              ],
             ],
           ),
         );
       }
 
       if (!hasPath) {
-        return const ModifierOutput(
-          statusSummary: 'Graph is not Eulerian',
+        for (final v in oddVertices) {
+          final node = state.nodes[v];
+          if (node != null) {
+            node.style.borderColor = '#ef4444';
+            node.style.borderWidth = 3.0;
+          }
+        }
+        return ModifierOutput(
+          statusSummary:
+              'Graph is not Eulerian (${oddVertices.length} odd-degree vertices)',
           tableData: ModifierTableData(
-            title: 'Eulerian Properties',
+            title: 'Eulerian Analysis',
             headers: ['Property', 'Value'],
             rows: [
               ['Eulerian Circuit', 'No'],
-              ['Eulerian Trail', 'No'],
+              ['Eulerian Trail', 'No (requires ≤ 2 odd-degree vertices)'],
+              [
+                'Violating Vertices (${oddVertices.length})',
+                oddVertices.join(', '),
+              ],
             ],
           ),
         );

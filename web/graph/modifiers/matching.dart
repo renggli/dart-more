@@ -12,8 +12,9 @@ import 'ui_helpers.dart';
 // ---------------------------------------------------------------------------
 
 class MatchingModifier extends GraphModifier {
-  new({super.enabled});
+  new({super.enabled, this.algorithm = MatchingAlgorithm.blossom});
 
+  MatchingAlgorithm algorithm;
   final outputStyle = OutputStyleOptions(
     color: '#10b981',
     pattern: 'none',
@@ -32,6 +33,19 @@ class MatchingModifier extends GraphModifier {
   @override
   web.HTMLElement buildConfigUI(AppState state, void Function() onModified) {
     final root = div('form-column');
+
+    root.appendChild(
+      dropdownSetting(
+        'Algorithm:',
+        algorithm.id,
+        [for (final a in MatchingAlgorithm.values) (a.id, a.label)],
+        onChanged: (val) {
+          algorithm = MatchingAlgorithm.fromId(val);
+          onModified();
+        },
+      ),
+    );
+
     outputStyle.buildUI(
       root,
       onModified,
@@ -50,14 +64,24 @@ class MatchingModifier extends GraphModifier {
     if (graph.isDirected) {
       return const ModifierOutput(
         hasError: true,
-        errorMessage:
-            'Maximum matching (Blossom) requires an undirected graph.',
+        errorMessage: 'Maximum matching requires an undirected graph.',
         statusSummary: 'Requires undirected graph',
       );
     }
 
+    if (algorithm == MatchingAlgorithm.bipartite && !graph.isBipartite()) {
+      return const ModifierOutput(
+        hasError: true,
+        errorMessage:
+            'Bipartite matching requires a bipartite graph (2-colorable).',
+        statusSummary: 'Graph is not bipartite',
+      );
+    }
+
     try {
-      final matching = graph.maximumMatching();
+      final matching = algorithm == MatchingAlgorithm.bipartite
+          ? graph.bipartiteMatching()
+          : graph.maximumMatching();
       final matchedEdges = <(String, String)>{};
       for (final entry in matching.entries) {
         final u = entry.key;

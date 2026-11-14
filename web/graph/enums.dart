@@ -132,10 +132,14 @@ enum ShortestPathAlgorithm {
 /// Centrality metrics for node importance evaluation.
 enum CentralityMetric {
   degree('degree', 'Degree Centrality'),
+  inDegree('inDegree', 'In-Degree Centrality'),
+  outDegree('outDegree', 'Out-Degree Centrality'),
   betweenness('betweenness', 'Betweenness Centrality'),
   closeness('closeness', 'Closeness Centrality'),
   pagerank('pagerank', 'PageRank'),
-  eigenvector('eigenvector', 'Eigenvector Centrality');
+  eigenvector('eigenvector', 'Eigenvector Centrality'),
+  coreNumbers('coreNumbers', 'Core Number (k-Core)'),
+  clustering('clustering', 'Local Clustering Coefficient');
 
   new(this.id, this.label);
 
@@ -152,11 +156,13 @@ enum CentralityMetric {
   );
 }
 
-/// Decomposition mode for connected components.
+/// Decomposition and community detection mode for components.
 enum ComponentMode {
   weakly('weakly', 'Connected / Weakly Connected'),
   strongly('strongly', 'Strongly Connected Components'),
-  biconnected('biconnected', 'Biconnected Components');
+  biconnected('biconnected', 'Biconnected Components'),
+  louvain('louvain', 'Louvain Communities (Modularity)'),
+  labelPropagation('labelPropagation', 'Label Propagation Communities');
 
   new(this.id, this.label);
 
@@ -169,6 +175,66 @@ enum ComponentMode {
   /// Looks up [ComponentMode] by [id], defaulting to [ComponentMode.weakly].
   static ComponentMode fromId(String id) =>
       values.firstWhere((e) => e.id == id, orElse: () => ComponentMode.weakly);
+}
+
+/// Matching algorithm selection.
+enum MatchingAlgorithm {
+  blossom('blossom', 'Edmonds Blossom (General Graphs)'),
+  bipartite('bipartite', 'Hopcroft–Karp (Bipartite Graphs)');
+
+  new(this.id, this.label);
+
+  /// Matching algorithm identifier.
+  final String id;
+
+  /// User-visible display label.
+  final String label;
+
+  /// Looks up [MatchingAlgorithm] by [id], defaulting to [MatchingAlgorithm.blossom].
+  static MatchingAlgorithm fromId(String id) => values.firstWhere(
+    (e) => e.id == id,
+    orElse: () => MatchingAlgorithm.blossom,
+  );
+}
+
+/// Graph traversal strategy.
+enum TraversalType {
+  bfs('bfs', 'Breadth-First Search (BFS)'),
+  dfs('dfs', 'Depth-First Search (DFS)'),
+  topological('topological', 'Topological Sort (DAG)'),
+  randomWalk('randomWalk', 'Random Walk');
+
+  new(this.id, this.label);
+
+  /// Traversal type identifier.
+  final String id;
+
+  /// User-visible display label.
+  final String label;
+
+  /// Looks up [TraversalType] by [id], defaulting to [TraversalType.bfs].
+  static TraversalType fromId(String id) =>
+      values.firstWhere((e) => e.id == id, orElse: () => TraversalType.bfs);
+}
+
+/// Binary graph combination operation.
+enum CombineOperation {
+  union('union', 'Union (G ∪ H)'),
+  intersection('intersection', 'Intersection (G ∩ H)');
+
+  new(this.id, this.label);
+
+  /// Combine operation identifier.
+  final String id;
+
+  /// User-visible display label.
+  final String label;
+
+  /// Looks up [CombineOperation] by [id], defaulting to [CombineOperation.union].
+  static CombineOperation fromId(String id) => values.firstWhere(
+    (e) => e.id == id,
+    orElse: () => CombineOperation.union,
+  );
 }
 
 /// Visual styling applied to vertices outside the k-core.

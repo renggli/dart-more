@@ -2,6 +2,7 @@ import 'package:more/graph.dart' hide GraphLayout;
 import 'package:web/web.dart' as web;
 
 import '../dom_utils.dart';
+import '../enums.dart';
 import '../state.dart';
 import 'base.dart';
 import 'ui_helpers.dart';
@@ -349,6 +350,200 @@ class TransitiveReductionModifier extends GraphModifier {
           ['Original Edges', '${graph.edges.length}'],
           ['Reduced Core Edges', '${reduced.edges.length}'],
           ['Redundant Edges Removed', '-$removedEdgesCount'],
+        ],
+      ),
+    );
+  }
+}
+
+// ---------------------------------------------------------------------------
+// Combine Modifier (Union & Intersection)
+// ---------------------------------------------------------------------------
+
+class CombineModifier extends GraphModifier {
+  new({
+    super.enabled,
+    this.operation = CombineOperation.union,
+    this.shape = GeneratorShape.cycle,
+    this.count = 5,
+    this.atlasIndex = 7,
+  });
+
+  CombineOperation operation;
+  GeneratorShape shape;
+  int count;
+  int atlasIndex;
+
+  @override
+  String get id => 'combine';
+
+  @override
+  String get name => 'Combine';
+
+  @override
+  ModifierCategory get category => ModifierCategory.transform;
+
+  @override
+  bool get canApply => true;
+
+  @override
+  void applyPermanent(AppState state) {
+    state.saveSnapshot();
+    final out = apply(state.renderGraph, state);
+    if (out.transformedGraph != null) {
+      state.primaryGraph = out.transformedGraph!;
+      state.syncNodes();
+    }
+  }
+
+  Graph<String, num> _buildSecondGraph(bool isDirected) {
+    final factory = GraphFactory<String, num>(
+      isDirected: isDirected,
+      vertexProvider: (int i) => 'H$i',
+      edgeProvider: (source, target) => 1,
+    );
+    final countClamped = count.clamp(1, 100);
+    switch (shape) {
+      case GeneratorShape.atlas:
+        final atlasIdx = atlasIndex.clamp(0, factory.atlasLength - 1);
+        final atlas = factory.atlas(atlasIdx);
+        if (isDirected) {
+          final bidi = Graph<String, num>(isDirected: true);
+          for (final v in atlas.vertices) {
+            bidi.addVertex(v);
+          }
+          for (final e in atlas.edges) {
+            bidi.addEdge(e.source, e.target, value: e.value);
+            bidi.addEdge(e.target, e.source, value: e.value);
+          }
+          return bidi;
+        }
+        return atlas;
+      case GeneratorShape.complete:
+        return factory.complete(vertexCount: countClamped);
+      case GeneratorShape.cycle:
+        return factory.ring(vertexCount: countClamped);
+      case GeneratorShape.star:
+        return factory.star(vertexCount: countClamped);
+      case GeneratorShape.path:
+        return factory.path(vertexCount: countClamped);
+      case GeneratorShape.tree:
+        return factory.completeTree(vertexCount: countClamped, arity: 2);
+      case GeneratorShape.bipartite:
+        return factory.partite(
+          vertexCounts: [countClamped ~/ 2 + 1, countClamped ~/ 2 + 1],
+        );
+      case GeneratorShape.grid:
+        final rows = countClamped > 4 ? 3 : 2;
+        final cols = countClamped ~/ rows + 1;
+        return factory.grid(rows: rows, columns: cols);
+      case GeneratorShape.random:
+        return factory.randomErdosRenyi(
+          vertexCount: countClamped,
+          probability: 0.3,
+        );
+    }
+  }
+
+  @override
+  web.HTMLElement buildConfigUI(AppState state, void Function() onModified) {
+    final root = div('form-column');
+
+    root.appendChild(
+      dropdownSetting(
+        'Operation:',
+        operation.id,
+        [for (final op in CombineOperation.values) (op.id, op.label)],
+        onChanged: (val) {
+          operation = CombineOperation.fromId(val);
+          onModified();
+        },
+      ),
+    );
+
+    root.appendChild(
+      dropdownSetting(
+        'Second Graph (H):',
+        shape.id,
+        [for (final s in GeneratorShape.values) (s.id, s.label)],
+        onChanged: (val) {
+          shape = GeneratorShape.fromId(val);
+          onModified();
+        },
+      ),
+    );
+
+    if (shape == GeneratorShape.atlas) {
+      root.appendChild(
+        rangeSetting(
+          'Atlas Index (0..1252):',
+          atlasIndex,
+          min: 0,
+          max: 1252,
+          onChanged: (v) {
+            atlasIndex = v.toInt();
+            onModified();
+          },
+        ),
+      );
+    } else {
+      root.appendChild(
+        rangeSetting(
+          'Vertices in H:',
+          count,
+          min: 2,
+          max: 30,
+          onChanged: (v) {
+            count = v.toInt();
+            onModified();
+          },
+        ),
+      );
+    }
+
+    return root;
+  }
+
+  @override
+  ModifierOutput apply(Graph<String, num> graph, AppState state) {
+    if (graph.vertices.isEmpty) {
+      return const ModifierOutput(statusSummary: 'Graph is empty');
+    }
+
+    final second = _buildSecondGraph(graph.isDirected);
+    Graph<String, num> result;
+    try {
+      result = operation == CombineOperation.union
+          ? graph.union(second)
+          : graph.intersection(second);
+    } catch (e) {
+      return ModifierOutput(
+        hasError: true,
+        errorMessage: 'Combine error: $e',
+        statusSummary: 'Error combining graphs',
+      );
+    }
+
+    return ModifierOutput(
+      transformedGraph: result,
+      statusSummary:
+          '${operation.label} (${result.vertices.length} vertices, ${result.edges.length} edges)',
+      tableData: ModifierTableData(
+        title: 'Combine (${operation.label})',
+        headers: ['Metric', 'G', 'H', 'Result'],
+        rows: [
+          [
+            'Vertices',
+            '${graph.vertices.length}',
+            '${second.vertices.length}',
+            '${result.vertices.length}',
+          ],
+          [
+            'Edges',
+            '${graph.edges.length}',
+            '${second.edges.length}',
+            '${result.edges.length}',
+          ],
         ],
       ),
     );

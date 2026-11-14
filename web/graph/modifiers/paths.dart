@@ -1,3 +1,5 @@
+import 'dart:math' as math;
+
 import 'package:more/graph.dart' hide GraphLayout;
 import 'package:web/web.dart' as web;
 
@@ -12,11 +14,16 @@ import 'ui_helpers.dart';
 // ---------------------------------------------------------------------------
 
 class ShortestPathModifier extends GraphModifier {
-  new({super.enabled, this.algorithm = ShortestPathAlgorithm.dijkstra});
+  new({
+    super.enabled,
+    this.algorithm = ShortestPathAlgorithm.dijkstra,
+    this.findAll = false,
+  });
 
   ShortestPathAlgorithm algorithm;
   String? sourceVertex;
   String? targetVertex;
+  bool findAll;
   final outputStyle = OutputStyleOptions(
     color: '#38bdf8',
     pattern: 'none',
@@ -43,6 +50,17 @@ class ShortestPathModifier extends GraphModifier {
         [for (final a in ShortestPathAlgorithm.values) (a.id, a.label)],
         onChanged: (val) {
           algorithm = ShortestPathAlgorithm.fromId(val);
+          onModified();
+        },
+      ),
+    );
+
+    root.appendChild(
+      checkboxSetting(
+        'Find all equal-cost paths',
+        findAll,
+        onChanged: (val) {
+          findAll = val;
           onModified();
         },
       ),
@@ -120,7 +138,19 @@ class ShortestPathModifier extends GraphModifier {
           path = graph.shortestPath(
             src,
             tgt,
-            costEstimate: (String v) => 0,
+            costEstimate: (String v) {
+              final vn = state.nodes[v];
+              final tn = state.nodes[tgt];
+              if (vn?.x != null &&
+                  vn?.y != null &&
+                  tn?.x != null &&
+                  tn?.y != null) {
+                final dx = vn!.x! - tn!.x!;
+                final dy = vn.y! - tn.y!;
+                return math.sqrt(dx * dx + dy * dy) * 0.01;
+              }
+              return 0;
+            },
             edgeCost: (String u, String v) => graph.getEdge(u, v)?.value ?? 1,
           );
         case ShortestPathAlgorithm.bfs:
@@ -185,15 +215,38 @@ class ShortestPathModifier extends GraphModifier {
           );
       }
     } catch (e) {
+      final msg = e.toString();
+      final isNegCycle = msg.toLowerCase().contains('negative');
       return ModifierOutput(
         hasError: true,
-        errorMessage: e.toString(),
-        statusSummary: 'Error computing shortest path',
+        errorMessage: isNegCycle
+            ? 'Bellman–Ford detected a negative weight cycle reachable from $src.'
+            : msg,
+        statusSummary: isNegCycle
+            ? 'Negative cycle detected'
+            : 'Error computing shortest path',
       );
     }
 
     if (path == null) {
       return ModifierOutput(statusSummary: 'No path found ($src → $tgt)');
+    }
+
+    var allPaths = <Path<String, num>>[];
+    if (findAll) {
+      try {
+        allPaths = graph
+            .shortestPathAll(
+              src,
+              targetPredicate: (v) => v == tgt,
+              includeAlternativePaths: true,
+              edgeCost: (String u, String v) =>
+                  algorithm == ShortestPathAlgorithm.bfs
+                  ? 1
+                  : (graph.getEdge(u, v)?.value ?? 1),
+            )
+            .toList();
+      } catch (_) {}
     }
 
     final dash = outputStyle.dashPattern;
@@ -261,12 +314,261 @@ class ShortestPathModifier extends GraphModifier {
       title: 'Path: $src → $tgt',
     );
 
+    final summary = allPaths.length > 1
+        ? 'Found ${allPaths.length} shortest paths (${pathVertices.join(" → ")})'
+        : 'Path found: ${pathVertices.join(" → ")}';
+
+    if (allPaths.length > 1) {
+      for (var pIdx = 0; pIdx < allPaths.length; pIdx++) {
+        rows.add([
+          'Path #${pIdx + 1}',
+          allPaths[pIdx].vertices.join(' → '),
+          '${allPaths[pIdx].edges.length} edges',
+        ]);
+      }
+    }
+
     return ModifierOutput(
       overlay: overlay,
-      statusSummary: 'Path found: ${pathVertices.join(" → ")}',
+      statusSummary: summary,
       tableData: ModifierTableData(
         title: 'Shortest Path ($src → $tgt)',
-        headers: ['Step', 'Vertex', 'Cumulative Weight'],
+        headers: ['Step', 'Vertex', 'Cumulative Weight / Detail'],
+        rows: rows,
+      ),
+    );
+  }
+}
+
+// ---------------------------------------------------------------------------
+// Traversal Modifier (Topological, BFS, DFS, Random Walk)
+// ---------------------------------------------------------------------------
+
+class TraversalModifier extends GraphModifier {
+  new({
+    super.enabled,
+    this.type = TraversalType.bfs,
+    this.startVertex,
+    this.randomWalkSteps = 10,
+    this.seed = 42,
+  });
+
+  TraversalType type;
+  String? startVertex;
+  int randomWalkSteps;
+  int seed;
+  final outputStyle = OutputStyleOptions(
+    color: '#06b6d4',
+    pattern: 'none',
+    hasRemovedMode: true,
+  );
+
+  @override
+  String get id => 'traversal';
+
+  @override
+  String get name => 'Traversal';
+
+  @override
+  ModifierCategory get category => ModifierCategory.paths;
+
+  @override
+  web.HTMLElement buildConfigUI(AppState state, void Function() onModified) {
+    final root = div('form-column');
+
+    root.appendChild(
+      dropdownSetting(
+        'Traversal Type:',
+        type.id,
+        [for (final t in TraversalType.values) (t.id, t.label)],
+        onChanged: (val) {
+          type = TraversalType.fromId(val);
+          onModified();
+        },
+      ),
+    );
+
+    root.appendChild(
+      vertexField('Start Vertex:', state, startVertex, '(Selected / First)', (
+        v,
+      ) {
+        startVertex = v;
+        onModified();
+      }),
+    );
+
+    if (type == TraversalType.randomWalk) {
+      root.appendChild(
+        rangeSetting(
+          'Walk Steps:',
+          randomWalkSteps,
+          min: 2,
+          max: 50,
+          onChanged: (val) {
+            randomWalkSteps = val.toInt();
+            onModified();
+          },
+        ),
+      );
+      root.appendChild(
+        seedSetting(
+          'Random Seed:',
+          seed,
+          onChanged: (val) {
+            seed = val;
+            onModified();
+          },
+        ),
+      );
+    }
+
+    outputStyle.buildUI(
+      root,
+      onModified,
+      colorLabel: 'Traversal Color:',
+      patternLabel: 'Traversal Line Style:',
+    );
+    return root;
+  }
+
+  @override
+  ModifierOutput apply(Graph<String, num> graph, AppState state) {
+    final vertices = graph.vertices.toList();
+    if (vertices.isEmpty) {
+      return const ModifierOutput(statusSummary: 'Graph is empty');
+    }
+
+    final start =
+        startVertex ??
+        state.selectedSource ??
+        (state.selectedVertices.isNotEmpty
+            ? state.selectedVertices.first
+            : vertices.first);
+
+    if (type == TraversalType.topological) {
+      if (!graph.isDirected) {
+        return const ModifierOutput(
+          hasError: true,
+          errorMessage:
+              'Topological sort requires a directed acyclic graph (DAG).',
+          statusSummary: 'Requires directed graph',
+        );
+      }
+      if (graph.hasCycle()) {
+        return const ModifierOutput(
+          hasError: true,
+          errorMessage: 'Graph contains a cycle. Topological sort requires an acyclic graph (DAG).',
+          statusSummary: 'Requires acyclic graph (DAG)',
+        );
+      }
+    }
+
+    final visitedSequence = <String>[];
+    try {
+      switch (type) {
+        case TraversalType.topological:
+          visitedSequence.addAll(graph.topologicalAll(vertices));
+        case TraversalType.bfs:
+          final visited = <String>{start};
+          final queue = <String>[start];
+          while (queue.isNotEmpty) {
+            final curr = queue.removeAt(0);
+            visitedSequence.add(curr);
+            for (final next in graph.successorsOf(curr)) {
+              if (visited.add(next)) {
+                queue.add(next);
+              }
+            }
+          }
+        case TraversalType.dfs:
+          final visited = <String>{start};
+          final stack = <String>[start];
+          while (stack.isNotEmpty) {
+            final curr = stack.removeLast();
+            visitedSequence.add(curr);
+            for (final next in graph.successorsOf(curr)) {
+              if (visited.add(next)) {
+                stack.add(next);
+              }
+            }
+          }
+        case TraversalType.randomWalk:
+          visitedSequence.addAll(
+            graph
+                .randomWalk(start, random: math.Random(seed))
+                .take(randomWalkSteps),
+          );
+      }
+    } catch (e) {
+      return ModifierOutput(
+        hasError: true,
+        errorMessage: 'Traversal error: $e',
+        statusSummary: 'Error computing traversal',
+      );
+    }
+
+    final dash = outputStyle.dashPattern;
+    final color = outputStyle.highlightColor;
+    final pathEdges = <(String, String)>[];
+    final pathEdgeSet = <(String, String)>{};
+
+    for (var i = 0; i < visitedSequence.length - 1; i++) {
+      final u = visitedSequence[i];
+      final v = visitedSequence[i + 1];
+      if (graph.containsEdge(u, v) ||
+          (!graph.isDirected && graph.containsEdge(v, u))) {
+        final key = (u, v);
+        pathEdges.add(key);
+        pathEdgeSet.add(key);
+        if (!graph.isDirected) pathEdgeSet.add((v, u));
+        if (color != null || dash != null) {
+          final es = state.getEdgeStyle(u, v, isDirected: graph.isDirected);
+          if (color != null) {
+            es.color = color;
+            es.strokeWidth = 3.0;
+          }
+          es.dashPattern = dash;
+        }
+      }
+    }
+
+    for (final v in visitedSequence) {
+      final node = state.nodes[v];
+      if (node != null && (color != null || dash != null)) {
+        if (color != null) {
+          node.style.borderColor = color;
+          node.style.borderWidth = 2.5;
+        }
+        node.style.dashPattern = dash;
+      }
+    }
+
+    for (final e in graph.edges.toSet()) {
+      if (!pathEdgeSet.contains((e.source, e.target))) {
+        final es = state.getEdgeStyle(e.source, e.target);
+        es.opacity = outputStyle.removedMode == RemovedMode.hide ? 0.0 : 0.25;
+      }
+    }
+
+    final rows = <List<String>>[];
+    for (var i = 0; i < visitedSequence.length; i++) {
+      rows.add(['#${i + 1}', visitedSequence[i]]);
+    }
+
+    final overlay = PathOverlay(
+      vertices: visitedSequence,
+      edges: pathEdges,
+      title: 'Traversal (${type.label})',
+      color: color,
+    );
+
+    return ModifierOutput(
+      overlay: overlay,
+      statusSummary:
+          'Visited ${visitedSequence.length} vertices (${type.label})',
+      tableData: ModifierTableData(
+        title: 'Traversal Order (${type.label})',
+        headers: ['Step', 'Vertex'],
         rows: rows,
       ),
     );

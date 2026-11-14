@@ -14,9 +14,14 @@ import 'ui_helpers.dart';
 // ---------------------------------------------------------------------------
 
 class ComponentsModifier extends GraphModifier {
-  new({super.enabled, this.mode = ComponentMode.weakly});
+  new({
+    super.enabled,
+    this.mode = ComponentMode.weakly,
+    this.largestOnly = false,
+  });
 
   ComponentMode mode;
+  bool largestOnly;
 
   @override
   String get id => 'components';
@@ -38,6 +43,17 @@ class ComponentsModifier extends GraphModifier {
         [for (final m in ComponentMode.values) (m.id, m.label)],
         onChanged: (val) {
           mode = ComponentMode.fromId(val);
+          onModified();
+        },
+      ),
+    );
+
+    root.appendChild(
+      checkboxSetting(
+        'Largest component only',
+        largestOnly,
+        onChanged: (val) {
+          largestOnly = val;
           onModified();
         },
       ),
@@ -65,6 +81,18 @@ class ComponentsModifier extends GraphModifier {
               : graph.connected().map((g) => g.vertices).toList();
         case ComponentMode.weakly:
           components = graph.connected().map((g) => g.vertices).toList();
+        case ComponentMode.louvain:
+          if (graph.isDirected) {
+            return const ModifierOutput(
+              hasError: true,
+              errorMessage:
+                  'Louvain community detection requires an undirected graph.',
+              statusSummary: 'Requires undirected graph',
+            );
+          }
+          components = graph.louvainCommunities().toList();
+        case ComponentMode.labelPropagation:
+          components = graph.labelPropagationCommunities().toList();
       }
     } catch (e) {
       return ModifierOutput(
@@ -74,6 +102,15 @@ class ComponentsModifier extends GraphModifier {
       );
     }
 
+    final modScore = components.isNotEmpty
+        ? graph.modularity(components.map((c) => c.toSet()))
+        : null;
+
+    components.sort((a, b) => b.length.compareTo(a.length));
+    if (largestOnly && components.isNotEmpty) {
+      components = [components.first];
+    }
+
     final vertexGroup = <String, int>{};
     final rows = <List<String>>[];
     for (var i = 0; i < components.length; i++) {
@@ -81,18 +118,26 @@ class ComponentsModifier extends GraphModifier {
       for (final v in comp) {
         vertexGroup[v] = i;
       }
-      rows.add(['Component #${i + 1}', '${comp.length}', comp.join(', ')]);
+      rows.add([
+        if (largestOnly) 'Largest Component' else 'Component #${i + 1}',
+        '${comp.length}',
+        comp.join(', '),
+      ]);
     }
 
     final overlay = PartitionOverlay(
       vertexGroup: vertexGroup,
-      title: 'Components ($mode)',
+      title: 'Components (${mode.label})',
     );
+    final summary = modScore != null
+        ? '${components.length} components (Modularity: ${modScore.toStringAsFixed(3)})'
+        : '${components.length} components found';
+
     return ModifierOutput(
       overlay: overlay,
-      statusSummary: '${components.length} components found',
+      statusSummary: summary,
       tableData: ModifierTableData(
-        title: 'Connected Components ($mode)',
+        title: 'Connected Components & Communities (${mode.label})',
         headers: ['Component', 'Size', 'Vertices'],
         rows: rows,
       ),
@@ -735,6 +780,212 @@ class KCoreModifier extends GraphModifier {
           ['Threshold k', '$k'],
           ['Surviving Vertices', '${sub.vertices.length}'],
           ['Surviving Edges', '${sub.edges.length}'],
+        ],
+      ),
+    );
+  }
+}
+
+// ---------------------------------------------------------------------------
+// Isomorphism Modifier
+// ---------------------------------------------------------------------------
+
+class IsomorphismModifier extends GraphModifier {
+  new({
+    super.enabled,
+    this.shape = GeneratorShape.atlas,
+    this.atlasIndex = 7,
+    this.count = 5,
+  });
+
+  GeneratorShape shape;
+  int atlasIndex;
+  int count;
+
+  final outputStyle = OutputStyleOptions(
+    color: '#a855f7',
+    pattern: 'none',
+    hasRemovedMode: true,
+  );
+
+  @override
+  String get id => 'isomorphism';
+
+  @override
+  String get name => 'Isomorphism';
+
+  @override
+  ModifierCategory get category => ModifierCategory.structure;
+
+  Graph<String, num> _buildPatternGraph(bool isDirected) {
+    final factory = GraphFactory<String, num>(
+      isDirected: isDirected,
+      vertexProvider: (int i) => 'P$i',
+      edgeProvider: (source, target) => 1,
+    );
+    final countClamped = count.clamp(1, 100);
+    switch (shape) {
+      case GeneratorShape.atlas:
+        final atlasIdx = atlasIndex.clamp(0, factory.atlasLength - 1);
+        final atlas = factory.atlas(atlasIdx);
+        if (isDirected) {
+          final bidi = Graph<String, num>(isDirected: true);
+          for (final v in atlas.vertices) {
+            bidi.addVertex(v);
+          }
+          for (final e in atlas.edges) {
+            bidi.addEdge(e.source, e.target, value: e.value);
+            bidi.addEdge(e.target, e.source, value: e.value);
+          }
+          return bidi;
+        }
+        return atlas;
+      case GeneratorShape.complete:
+        return factory.complete(vertexCount: countClamped);
+      case GeneratorShape.cycle:
+        return factory.ring(vertexCount: countClamped);
+      case GeneratorShape.star:
+        return factory.star(vertexCount: countClamped);
+      case GeneratorShape.path:
+        return factory.path(vertexCount: countClamped);
+      case GeneratorShape.tree:
+        return factory.completeTree(vertexCount: countClamped, arity: 2);
+      case GeneratorShape.bipartite:
+        return factory.partite(
+          vertexCounts: [countClamped ~/ 2 + 1, countClamped ~/ 2 + 1],
+        );
+      case GeneratorShape.grid:
+        final rows = countClamped > 4 ? 3 : 2;
+        final cols = countClamped ~/ rows + 1;
+        return factory.grid(rows: rows, columns: cols);
+      case GeneratorShape.random:
+        return factory.randomErdosRenyi(
+          vertexCount: countClamped,
+          probability: 0.3,
+        );
+    }
+  }
+
+  @override
+  web.HTMLElement buildConfigUI(AppState state, void Function() onModified) {
+    final root = div('form-column');
+
+    root.appendChild(
+      dropdownSetting(
+        'Pattern Graph (P):',
+        shape.id,
+        [for (final s in GeneratorShape.values) (s.id, s.label)],
+        onChanged: (val) {
+          shape = GeneratorShape.fromId(val);
+          onModified();
+        },
+      ),
+    );
+
+    if (shape == GeneratorShape.atlas) {
+      root.appendChild(
+        rangeSetting(
+          'Atlas Index (0..1252):',
+          atlasIndex,
+          min: 0,
+          max: 1252,
+          onChanged: (v) {
+            atlasIndex = v.toInt();
+            onModified();
+          },
+        ),
+      );
+    } else {
+      root.appendChild(
+        rangeSetting(
+          'Vertices in P:',
+          count,
+          min: 2,
+          max: 20,
+          onChanged: (v) {
+            count = v.toInt();
+            onModified();
+          },
+        ),
+      );
+    }
+
+    outputStyle.buildUI(
+      root,
+      onModified,
+      colorLabel: 'Match Color:',
+      patternLabel: 'Match Line Style:',
+    );
+
+    return root;
+  }
+
+  @override
+  ModifierOutput apply(Graph<String, num> graph, AppState state) {
+    if (graph.vertices.isEmpty) {
+      return const ModifierOutput(statusSummary: 'Graph is empty');
+    }
+
+    final pattern = _buildPatternGraph(graph.isDirected);
+    final isIso = graph.isIsomorphicTo(pattern);
+
+    if (isIso) {
+      final color = outputStyle.highlightColor;
+      final dash = outputStyle.dashPattern;
+      if (color != null || dash != null) {
+        for (final v in graph.vertices) {
+          final node = state.nodes[v];
+          if (node != null) {
+            if (color != null) node.style.borderColor = color;
+            node.style.dashPattern = dash;
+          }
+        }
+        for (final e in graph.edges) {
+          final es = state.getEdgeStyle(
+            e.source,
+            e.target,
+            isDirected: graph.isDirected,
+          );
+          if (color != null) es.color = color;
+          es.dashPattern = dash;
+        }
+      }
+    }
+
+    final desc = shape == GeneratorShape.atlas
+        ? 'Atlas #$atlasIndex'
+        : shape.label;
+    return ModifierOutput(
+      statusSummary: isIso ? 'Isomorphic to $desc' : 'Not isomorphic to $desc',
+      tableData: ModifierTableData(
+        title: 'Isomorphism Check ($desc)',
+        headers: ['Property', 'Current Graph (G)', 'Pattern (P)', 'Match'],
+        rows: [
+          ['Isomorphic', '-', '-', if (isIso) 'Yes' else 'No'],
+          [
+            'Vertices',
+            '${graph.vertices.length}',
+            '${pattern.vertices.length}',
+            if (graph.vertices.length == pattern.vertices.length)
+              'Match'
+            else
+              'Mismatch',
+          ],
+          [
+            'Edges',
+            '${graph.edges.length}',
+            '${pattern.edges.length}',
+            if (graph.edges.length == pattern.edges.length)
+              'Match'
+            else
+              'Mismatch',
+          ],
+          [
+            'Directed',
+            if (graph.isDirected) 'Yes' else 'No',
+            if (pattern.isDirected) 'Yes' else 'No',
+            'Match',
+          ],
         ],
       ),
     );

@@ -63,6 +63,19 @@ class CentralityModifier extends GraphModifier {
           scores = graph.eigenvectorCentrality();
         case CentralityMetric.degree:
           scores = graph.degreeCentrality();
+        case CentralityMetric.inDegree:
+          scores = graph.inDegreeCentrality();
+        case CentralityMetric.outDegree:
+          scores = graph.outDegreeCentrality();
+        case CentralityMetric.coreNumbers:
+          scores = {
+            for (final entry in graph.coreNumbers().entries)
+              entry.key: entry.value,
+          };
+        case CentralityMetric.clustering:
+          scores = {
+            for (final v in vertices) v: graph.localClusteringCoefficient(v),
+          };
       }
     } catch (_) {
       // Graceful fallback to degree centrality if power iteration or brandes fails
@@ -110,6 +123,96 @@ class CentralityModifier extends GraphModifier {
         rows: rows,
       ),
       statusSummary: topStr,
+    );
+  }
+}
+
+// ---------------------------------------------------------------------------
+// Graph Metrics Modifier (Comprehensive Global & Local Properties)
+// ---------------------------------------------------------------------------
+
+class GraphMetricsModifier extends GraphModifier {
+  new({super.enabled});
+
+  @override
+  String get id => 'graph_metrics';
+
+  @override
+  String get name => 'Graph Metrics';
+
+  @override
+  ModifierCategory get category => ModifierCategory.centrality;
+
+  @override
+  web.HTMLElement buildConfigUI(AppState state, void Function() onModified) =>
+      div('form-column')..appendChild(
+        p(
+            'Computes structural properties, density, clustering, connectivity, and degree metrics.',
+          )
+          ..style.fontSize = '11px'
+          ..style.color = 'var(--text-muted)',
+      );
+
+  @override
+  ModifierOutput apply(Graph<String, num> graph, AppState state) {
+    final vCount = graph.vertices.length;
+    final eCount = graph.edges.length;
+    if (vCount == 0) {
+      return const ModifierOutput(statusSummary: 'Graph is empty');
+    }
+
+    final density = graph.density();
+    final transitivity = graph.transitivity();
+    final avgClustering = graph.averageClusteringCoefficient();
+    final assortativity = graph.degreeAssortativity();
+    final isBip = graph.isBipartite();
+    final isAcyclic = !graph.hasCycle();
+    final isPlanar = !graph.isDirected ? graph.isPlanar() : null;
+    final edgeConn = graph.edgeConnectivity();
+    final vertConn = graph.vertexConnectivity();
+
+    var minDeg = double.infinity.toInt();
+    var maxDeg = 0;
+    var totalDeg = 0;
+    for (final v in graph.vertices) {
+      final deg = graph.degreeOf(v);
+      if (deg < minDeg) minDeg = deg;
+      if (deg > maxDeg) maxDeg = deg;
+      totalDeg += deg;
+    }
+    final avgDeg = totalDeg / vCount;
+
+    return ModifierOutput(
+      statusSummary:
+          'Density: ${density.toStringAsFixed(3)}, Clustering: ${avgClustering.toStringAsFixed(3)}',
+      tableData: ModifierTableData(
+        title: 'Graph Structural Metrics',
+        headers: ['Metric', 'Value'],
+        rows: [
+          ['Vertices (V)', '$vCount'],
+          ['Edges (E)', '$eCount'],
+          ['Type', if (graph.isDirected) 'Directed' else 'Undirected'],
+          ['Density', density.toStringAsFixed(4)],
+          ['Transitivity', transitivity.toStringAsFixed(4)],
+          ['Average Clustering', avgClustering.toStringAsFixed(4)],
+          [
+            'Degree Assortativity',
+            if (assortativity.isNaN)
+              'N/A'
+            else
+              assortativity.toStringAsFixed(4),
+          ],
+          ['Bipartite', if (isBip) 'Yes' else 'No'],
+          ['Acyclic (DAG)', if (isAcyclic) 'Yes' else 'No'],
+          if (isPlanar != null) ['Planar', if (isPlanar) 'Yes' else 'No'],
+          ['Edge Connectivity', '$edgeConn'],
+          ['Vertex Connectivity', '$vertConn'],
+          [
+            'Degree Sequence',
+            'Min: $minDeg, Max: $maxDeg, Avg: ${avgDeg.toStringAsFixed(2)}',
+          ],
+        ],
+      ),
     );
   }
 }

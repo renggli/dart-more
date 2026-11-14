@@ -62,6 +62,12 @@ abstract final class ModifierRegistry {
       category: ModifierCategory.paths,
       factory: AllPairsShortestPathModifier.new,
     ),
+    ModifierSpec(
+      type: 'traversal',
+      name: 'Traversal',
+      category: ModifierCategory.paths,
+      factory: TraversalModifier.new,
+    ),
     // Structure & Connectivity
     ModifierSpec(
       type: 'components',
@@ -93,12 +99,24 @@ abstract final class ModifierRegistry {
       category: ModifierCategory.structure,
       factory: KCoreModifier.new,
     ),
+    ModifierSpec(
+      type: 'isomorphism',
+      name: 'Isomorphism',
+      category: ModifierCategory.structure,
+      factory: IsomorphismModifier.new,
+    ),
     // Centrality & Metrics
     ModifierSpec(
       type: 'centrality',
       name: 'Centrality',
       category: ModifierCategory.centrality,
       factory: CentralityModifier.new,
+    ),
+    ModifierSpec(
+      type: 'graph_metrics',
+      name: 'Graph Metrics',
+      category: ModifierCategory.centrality,
+      factory: GraphMetricsModifier.new,
     ),
     // Trees
     ModifierSpec(
@@ -176,6 +194,12 @@ abstract final class ModifierRegistry {
       name: 'Transitive Reduction',
       category: ModifierCategory.transform,
       factory: TransitiveReductionModifier.new,
+    ),
+    ModifierSpec(
+      type: 'combine',
+      name: 'Combine',
+      category: ModifierCategory.transform,
+      factory: CombineModifier.new,
     ),
   ];
 

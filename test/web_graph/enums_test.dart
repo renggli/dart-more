@@ -49,6 +49,10 @@ void main() {
   group('Metric and analysis enums', () {
     test('CentralityMetric fromId', () {
       check(CentralityMetric.fromId('degree')).equals(CentralityMetric.degree);
+      check(CentralityMetric.fromId('inDegree'))
+          .equals(CentralityMetric.inDegree);
+      check(CentralityMetric.fromId('outDegree'))
+          .equals(CentralityMetric.outDegree);
       check(CentralityMetric.fromId('betweenness'))
           .equals(CentralityMetric.betweenness);
       check(CentralityMetric.fromId('closeness'))
@@ -57,6 +61,10 @@ void main() {
           .equals(CentralityMetric.pagerank);
       check(CentralityMetric.fromId('eigenvector'))
           .equals(CentralityMetric.eigenvector);
+      check(CentralityMetric.fromId('coreNumbers'))
+          .equals(CentralityMetric.coreNumbers);
+      check(CentralityMetric.fromId('clustering'))
+          .equals(CentralityMetric.clustering);
       check(CentralityMetric.fromId('unknown')).equals(CentralityMetric.degree);
     });
 
@@ -65,7 +73,36 @@ void main() {
       check(ComponentMode.fromId('strongly')).equals(ComponentMode.strongly);
       check(ComponentMode.fromId('biconnected'))
           .equals(ComponentMode.biconnected);
+      check(ComponentMode.fromId('louvain')).equals(ComponentMode.louvain);
+      check(ComponentMode.fromId('labelPropagation'))
+          .equals(ComponentMode.labelPropagation);
       check(ComponentMode.fromId('unknown')).equals(ComponentMode.weakly);
+    });
+
+    test('MatchingAlgorithm fromId', () {
+      check(MatchingAlgorithm.fromId('blossom'))
+          .equals(MatchingAlgorithm.blossom);
+      check(MatchingAlgorithm.fromId('bipartite'))
+          .equals(MatchingAlgorithm.bipartite);
+      check(MatchingAlgorithm.fromId('unknown'))
+          .equals(MatchingAlgorithm.blossom);
+    });
+
+    test('TraversalType fromId', () {
+      check(TraversalType.fromId('bfs')).equals(TraversalType.bfs);
+      check(TraversalType.fromId('dfs')).equals(TraversalType.dfs);
+      check(TraversalType.fromId('topological'))
+          .equals(TraversalType.topological);
+      check(TraversalType.fromId('randomWalk'))
+          .equals(TraversalType.randomWalk);
+      check(TraversalType.fromId('unknown')).equals(TraversalType.bfs);
+    });
+
+    test('CombineOperation fromId', () {
+      check(CombineOperation.fromId('union')).equals(CombineOperation.union);
+      check(CombineOperation.fromId('intersection'))
+          .equals(CombineOperation.intersection);
+      check(CombineOperation.fromId('unknown')).equals(CombineOperation.union);
     });
 
     test('KCoreRemovedStyle fromId', () {
