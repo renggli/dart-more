@@ -5,6 +5,8 @@ library;
 export 'src/collection/bimap.dart'
     show BiMap, BiMapOnIterableExtension, BiMapOnMapExtension;
 export 'src/collection/bitlist.dart' show BitList, BitListExtension;
+export 'src/collection/btree.dart'
+    show BTreeMap, BTreeMapExtension, BTreeSet, BTreeSetExtension;
 export 'src/collection/collection.dart' show Collection;
 export 'src/collection/disjointset.dart' show DisjointSet;
 export 'src/collection/fenwick.dart' show FenwickTree;
