@@ -219,8 +219,8 @@ graph TD
       check(matches).deepEquals(['app', 'apple']);
 
       final rtree = RTree<String>.guttman()
-        ..insert(Bounds.fromPoint([10, 20]), 'Target');
-      final hits = rtree.queryEntries(Bounds.fromLists([0, 0], [15, 25]));
+        ..insert([10.0, 20.0].toBounds(), 'Target');
+      final hits = rtree.queryEntries(Bounds.from2D(0.0, 0.0, 15.0, 25.0));
       check(hits.length).equals(1);
     });
 

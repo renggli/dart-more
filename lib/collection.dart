@@ -64,7 +64,12 @@ export 'src/collection/range/double.dart'
 export 'src/collection/range/integer.dart'
     show IndicesIterableExtension, IntegerRange, IntegerRangeExtension;
 export 'src/collection/rtree.dart' show RTree;
-export 'src/collection/rtree/bounds.dart' show Bounds;
+export 'src/collection/rtree/bounds.dart'
+    show
+        Bounds,
+        ListBoundsExtension,
+        PointBoundsExtension,
+        RectangleBoundsExtension;
 export 'src/collection/rtree/entry.dart' show RTreeEntry;
 export 'src/collection/rtree/node.dart' show RTreeNode;
 export 'src/collection/sorted_list.dart'

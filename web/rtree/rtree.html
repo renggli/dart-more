@@ -2,102 +2,243 @@
 <html lang="en">
 <head>
   <meta charset="utf-8">
-  <title>MoreDart — R-Tree Visualizer</title>
+  <title>MoreDart — R-Tree Visualizer & Spatial Laboratory</title>
   <link rel="stylesheet" href="../style.css">
-  <style>
-    body {
-      display: flex;
-      flex-direction: column;
-      height: 100vh;
-      overflow: hidden;
-      background: var(--bg-base);
-    }
-
-    header {
-      background: var(--bg-surface);
-      border-bottom: 1px solid var(--border-color);
-      padding: 10px 16px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 12px;
-      flex-wrap: wrap;
-    }
-
-    .brand {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-    }
-
-    .brand h1 {
-      font-size: 1.4rem;
-      color: var(--primary);
-    }
-
-    .brand a {
-      color: var(--text-secondary);
-      font-size: 0.85rem;
-    }
-
-    .controls {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-
-    #select {
-      min-width: 220px;
-    }
-
-    main {
-      flex: 1;
-      padding: 16px;
-      display: flex;
-      flex-direction: column;
-      background: var(--bg-base);
-      overflow: hidden;
-    }
-
-    #canvas {
-      flex: 1;
-      width: 100%;
-      height: 100%;
-      background: var(--bg-surface);
-      border: 1px solid var(--border-color);
-      border-radius: var(--radius-md);
-      cursor: crosshair;
-    }
-
-    .hint {
-      margin-top: 8px;
-      font-size: 0.85rem;
-      color: var(--text-muted);
-    }
-  </style>
+  <link rel="stylesheet" href="rtree.css">
 </head>
 <body>
-  <header>
+  <!-- Top App Header & Toolbar -->
+  <header class="app-header">
     <div class="brand">
-      <h1>R-Tree Visualizer</h1>
+      <h1>R-Tree Laboratory</h1>
       <a href="../index.html">&larr; MoreDart Demos</a>
     </div>
 
-    <div class="controls">
-      <select id="select">
-        <option value="guttmann_4_8">Guttman (min: 4, max: 8)</option>
-        <option value="guttmann_4_12">Guttman (min: 4, max: 12)</option>
-        <option value="guttmann_8_24">Guttman (min: 8, max: 24)</option>
-      </select>
-      <button id="random" class="button button-small">+100 Random</button>
-      <button id="clear" class="button button-outline button-small">Clear</button>
+    <!-- Toolbar controls -->
+    <div class="toolbar" role="toolbar" focusgroup="toolbar wrap" aria-label="Spatial tools">
+      <div class="tool-group" role="group" aria-label="Interaction Tools">
+        <button id="tool-point" class="tool-btn active" aria-pressed="true" title="Click or drag to add points (Key: 1)">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="4" fill="currentColor"></circle>
+          </svg>
+          Add Points <span class="kbd-badge">1</span>
+        </button>
+
+        <button id="tool-box" class="tool-btn" aria-pressed="false" title="Drag on canvas to draw bounding boxes (Key: 2)">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <rect x="4" y="4" width="16" height="16" rx="2"></rect>
+          </svg>
+          Add Boxes <span class="kbd-badge">2</span>
+        </button>
+
+        <button id="tool-query" class="tool-btn" aria-pressed="false" title="Drag a window query range (Key: 3)">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <rect x="3" y="3" width="18" height="18" rx="2" stroke-dasharray="4 2"></rect>
+          </svg>
+          Window Query <span class="kbd-badge">3</span>
+        </button>
+
+        <button id="tool-knn" class="tool-btn" aria-pressed="false" title="Nearest neighbor radar search (Key: 4)">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="10"></circle>
+            <circle cx="12" cy="12" r="3"></circle>
+          </svg>
+          k-NN Radar <span class="kbd-badge">4</span>
+        </button>
+
+        <button id="tool-delete" class="tool-btn" aria-pressed="false" title="Click or drag to delete items (Key: 5)">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polyline points="3 6 5 6 21 6"></polyline>
+            <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+          </svg>
+          Eraser <span class="kbd-badge">5</span>
+        </button>
+      </div>
+
+      <div class="toolbar-separator" role="separator" aria-orientation="vertical"></div>
+
+      <div class="tool-group" role="group" aria-label="Display Options">
+        <button id="toggle-labels" class="tool-btn active" aria-pressed="true" title="Toggle Leaf Entry Labels">
+          Labels
+        </button>
+        <button id="toggle-badges" class="tool-btn active" aria-pressed="true" title="Toggle Node Capacity Badges">
+          Capacities
+        </button>
+      </div>
+
+      <div class="toolbar-separator" role="separator" aria-orientation="vertical"></div>
+
+      <div class="tool-group" role="group" aria-label="History">
+        <button id="btn-undo" class="tool-btn" title="Undo (Ctrl+Z)">Undo</button>
+        <button id="btn-redo" class="tool-btn" title="Redo (Ctrl+Y)">Redo</button>
+        <button id="btn-clear" class="tool-btn button-outline" title="Clear all spatial elements">Clear</button>
+      </div>
     </div>
   </header>
 
-  <main>
-    <canvas id="canvas"></canvas>
-    <div class="hint">Click on canvas to insert a point, or use "+100 Random".</div>
-  </main>
+  <!-- Main Center Workspace + Right Sidebar -->
+  <div class="main-layout">
+    <!-- Center Canvas Workspace -->
+    <main class="center-workspace">
+      <div class="canvas-viewport">
+        <!-- Floating HUD Statistics Overlay -->
+        <div id="viewport-hud" class="viewport-hud">
+          <div class="hud-item"><span>Algorithm:</span> <strong id="hud-algo">R*-Tree</strong></div>
+          <div class="hud-item"><span>Items:</span> <strong id="hud-items">0</strong></div>
+          <div class="hud-item"><span>Nodes / Height:</span> <strong id="hud-tree">1 / 1</strong></div>
+          <div class="hud-item"><span>Query Hits:</span> <strong id="hud-hits">0</strong></div>
+        </div>
+
+        <canvas id="canvas"></canvas>
+
+        <!-- Floating Zoom Controls -->
+        <div class="floating-controls">
+          <button id="btn-zoom-in" title="Zoom In">+</button>
+          <button id="btn-zoom-out" title="Zoom Out">&minus;</button>
+          <button id="btn-zoom-fit" title="Reset View & Recenter (Fit)">&#x2922;</button>
+        </div>
+
+        <div id="canvas-hint" class="canvas-hint">
+          Click to add points, or drag to draw boxes in Box Mode.
+        </div>
+      </div>
+    </main>
+
+    <!-- Right Sidebar Controls -->
+    <aside class="sidebar">
+      <!-- Section 1: Tree Configuration -->
+      <section class="sidebar-section">
+        <h3>Tree Configuration</h3>
+
+        <div class="form-group">
+          <label for="select-algo">Tree Split Algorithm:</label>
+          <select id="select-algo">
+            <option value="rStar" selected>R*-Tree (Beckmann et al.)</option>
+            <option value="guttman">Guttman Quadratic</option>
+            <option value="linear">Guttman Linear</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label for="input-min-entries">Min Entries (m): <span id="val-min-entries" class="val-badge">4</span></label>
+          <div class="range-with-val">
+            <input type="range" id="input-min-entries" min="2" max="16" step="1" value="4">
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="input-max-entries">Max Entries (M): <span id="val-max-entries" class="val-badge">8</span></label>
+          <div class="range-with-val">
+            <input type="range" id="input-max-entries" min="4" max="32" step="2" value="8">
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="input-knn-k">k-NN Radar (k): <span id="val-knn-k" class="val-badge">5</span></label>
+          <div class="range-with-val">
+            <input type="range" id="input-knn-k" min="1" max="25" step="1" value="5">
+          </div>
+        </div>
+      </section>
+
+      <!-- Section 2: Datasets & Generation -->
+      <section class="sidebar-section">
+        <h3>Datasets & Patterns</h3>
+        <p class="section-desc">Generate patterns to add elements, or load real-world city benchmarks.</p>
+
+        <div class="preset-container">
+          <div class="preset-subhead">Add Patterns</div>
+          <div class="preset-list">
+            <button class="preset-btn" data-preset="random_points" title="Inject 100 random points with uniform spatial distribution">
+              <span class="preset-icon">&there4;</span>
+              <span class="preset-label">Random Points</span>
+              <span class="preset-badge">+100</span>
+            </button>
+            <button class="preset-btn" data-preset="random_boxes" title="Inject 50 random bounding boxes with volumetric extents">
+              <span class="preset-icon">&#9645;</span>
+              <span class="preset-label">Random Boxes</span>
+              <span class="preset-badge">+50</span>
+            </button>
+            <button class="preset-btn" data-preset="gaussian_clusters" title="Inject 120 points clustered in multi-center density hotspots">
+              <span class="preset-icon">&#10037;</span>
+              <span class="preset-label">Gaussian Clusters</span>
+              <span class="preset-badge">+120</span>
+            </button>
+            <button class="preset-btn" data-preset="spiral" title="Inject 100 points along a non-convex parametric spiral trail">
+              <span class="preset-icon">&#9678;</span>
+              <span class="preset-label">Spiral Curve</span>
+              <span class="preset-badge">+100</span>
+            </button>
+          </div>
+
+          <div class="preset-subhead">Real-World Benchmarks</div>
+          <div class="preset-list">
+            <button class="preset-btn" data-preset="swiss_villages" title="All 4,053 Swiss municipalities &amp; villages with official coordinates">
+              <span class="preset-icon">&#127464;&#127469;</span>
+              <span class="preset-label">Swiss Villages</span>
+              <span class="preset-badge">4,053</span>
+            </button>
+            <button class="preset-btn" data-preset="world_cities" title="7,342 major world cities worldwide from Natural Earth">
+              <span class="preset-icon">&#127760;</span>
+              <span class="preset-label">World Cities</span>
+              <span class="preset-badge">7,342</span>
+            </button>
+          </div>
+
+          <div class="data-attribution">
+            Sources: <a href="https://opendata.swiss" target="_blank" rel="noopener">Swiss Post &amp; Swisstopo</a> (OGD-CH / CC0) &bull; <a href="https://www.naturalearthdata.com" target="_blank" rel="noopener">Natural Earth</a> (Public Domain)
+          </div>
+        </div>
+      </section>
+
+      <!-- Section 3: Live Tree Telemetry & Quality -->
+      <section class="sidebar-section">
+        <h3>Tree Quality & Metrics</h3>
+        <div class="inspector-metrics">
+          <div class="metric-row">
+            <span class="metric-label">Total Elements:</span>
+            <span id="metric-items" class="metric-val">0</span>
+          </div>
+          <div class="metric-row">
+            <span class="metric-label">Total Nodes:</span>
+            <span id="metric-nodes" class="metric-val">1</span>
+          </div>
+          <div class="metric-row">
+            <span class="metric-label">Tree Height:</span>
+            <span id="metric-height" class="metric-val">1</span>
+          </div>
+          <div class="metric-row">
+            <span class="metric-label">Avg Fill Factor:</span>
+            <span id="metric-fill" class="metric-val">0%</span>
+          </div>
+          <div class="metric-row">
+            <span class="metric-label">Sibling Overlap Area:</span>
+            <span id="metric-overlap" class="metric-val">0</span>
+          </div>
+        </div>
+
+        <h3 style="margin-top: 16px;">Level Color Legend</h3>
+        <div class="legend-grid">
+          <div class="legend-item">
+            <div class="legend-swatch" style="border-color: #f59e0b; background: rgba(245, 158, 11, 0.2);"></div>
+            <span>Level 0 (Root MBR)</span>
+          </div>
+          <div class="legend-item">
+            <div class="legend-swatch" style="border-color: #8b5cf6; background: rgba(139, 92, 246, 0.2);"></div>
+            <span>Level 1 (Internal Subtrees)</span>
+          </div>
+          <div class="legend-item">
+            <div class="legend-swatch" style="border-color: #3b82f6; background: rgba(59, 130, 246, 0.2);"></div>
+            <span>Level 2 (Deep Subtrees)</span>
+          </div>
+          <div class="legend-item">
+            <div class="legend-swatch" style="border-color: #f8fafc; background: #ffffff;"></div>
+            <span>Leaf Items & Points</span>
+          </div>
+        </div>
+      </section>
+    </aside>
+  </div>
 
   <script src="rtree.dart.js"></script>
 </body>

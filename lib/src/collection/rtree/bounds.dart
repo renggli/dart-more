@@ -1,83 +1,173 @@
 import 'dart:math' as math;
 import 'dart:typed_data';
 
-/// Axis-aligned bounding box.
-class Bounds {
-  /// Creates a bounding box with the given number of dimensions [length].
-  factory(int length) => Bounds._(Float64List(length), Float64List(length));
+import 'bounds/list.dart';
+import 'bounds/point.dart';
+import 'bounds/rectangle.dart';
 
-  /// Creates a bounding box from coordinate lists [min] and [max].
-  factory fromLists(List<double> min, List<double> max) =>
-      Bounds._(Float64List.fromList(min), Float64List.fromList(max));
+export 'bounds/list.dart' show ListBoundsExtension;
+export 'bounds/point.dart' show PointBoundsExtension;
+export 'bounds/rectangle.dart' show RectangleBoundsExtension;
 
-  /// Creates a zero-volume point bounding box at the given [point].
-  factory fromPoint(List<double> point) =>
-      Bounds._(Float64List.fromList(point), Float64List.fromList(point));
+/// Axis-aligned bounding box for N-dimensional spatial indexing.
+abstract class Bounds {
+  /// Const constructor for subclasses.
+  const new();
 
-  new _(this.min, this.max)
-    : assert(min.isNotEmpty, 'min must not be empty'),
-      assert(min.length == max.length, 'min and max must have the same length'),
-      assert(() {
-        for (var i = 0; i < min.length; i++) {
-          assert(min[i] <= max[i], 'min must be less than or equal to max');
-        }
-        return true;
-      }());
+  /// Creates a bounding box from a [math.Point].
+  factory fromPoint(math.Point<double> point) => point.toBounds();
 
-  /// Minimum coordinate values for each dimension.
-  final Float64List min;
+  /// Creates a bounding box from a [math.Rectangle].
+  factory fromRectangle(math.Rectangle<double> rectangle) =>
+      rectangle.toBounds();
 
-  /// Maximum coordinate values for each dimension.
-  final Float64List max;
+  /// Creates a 2D bounding box from coordinates.
+  ///
+  /// If [maxX] and [maxY] are omitted, creates a point bounding box at ([minX], [minY]).
+  factory from2D(double minX, double minY, [double? maxX, double? maxY]) {
+    assert(
+      (maxX == null) == (maxY == null),
+      'maxX and maxY must both be provided or omitted',
+    );
+    return maxX != null && maxY != null
+        ? RectangleBounds(minX, minY, maxX, maxY)
+        : PointBounds(minX, minY);
+  }
+
+  /// Creates a bounding box from coordinate list [min] and optional [max].
+  ///
+  /// If [max] is omitted, creates a point bounding box at [min].
+  factory fromList(List<double> min, [List<double>? max]) {
+    assert(min.isNotEmpty, 'min must not be empty');
+    if (max == null) {
+      if (min.length == 2) {
+        return PointBounds(min[0], min[1]);
+      }
+      final values = Float64List.fromList(min);
+      return ListBounds(values, values);
+    }
+    assert(min.length == max.length, 'min and max must have matching lengths');
+    if (min.length == 2) {
+      return RectangleBounds(min[0], min[1], max[0], max[1]);
+    }
+    return ListBounds(Float64List.fromList(min), Float64List.fromList(max));
+  }
 
   /// Number of dimensions.
-  int get length => min.length;
+  int get length;
+
+  /// Returns the minimum coordinate value for the given [dimension].
+  double getMin(int dimension);
+
+  /// Returns the maximum coordinate value for the given [dimension].
+  double getMax(int dimension);
+
+  /// Minimum X coordinate for 2D bounds.
+  double get minX => getMin(0);
+
+  /// Minimum Y coordinate for 2D bounds.
+  double get minY => getMin(1);
+
+  /// Maximum X coordinate for 2D bounds.
+  double get maxX => getMax(0);
+
+  /// Maximum Y coordinate for 2D bounds.
+  double get maxY => getMax(1);
+
+  /// Width (extent along dimension 0).
+  double get width => getMax(0) - getMin(0);
+
+  /// Height (extent along dimension 1).
+  double get height => getMax(1) - getMin(1);
+
+  /// Minimum coordinate values for each dimension.
+  List<double> get min => [for (var i = 0; i < length; i++) getMin(i)];
+
+  /// Maximum coordinate values for each dimension.
+  List<double> get max => [for (var i = 0; i < length; i++) getMax(i)];
 
   /// Whether this bounding box represents a single point (all dimensions zero).
   bool get isPoint {
-    if (min == max) {
-      return true;
-    }
     for (var i = 0; i < length; i++) {
-      if (min[i] != max[i]) {
-        return false;
-      }
+      if (getMin(i) != getMax(i)) return false;
     }
     return true;
   }
 
   /// Edge lengths of each dimension.
-  List<double> get edges {
-    final result = Float64List(length);
+  List<double> get edges => [
+    for (var i = 0; i < length; i++) getMax(i) - getMin(i),
+  ];
+
+  /// Sum of edge lengths (margin or half-perimeter in 2D) of this bounding box.
+  double get margin {
+    var result = 0.0;
     for (var i = 0; i < length; i++) {
-      result[i] = max[i] - min[i];
+      result += getMax(i) - getMin(i);
     }
     return result;
   }
 
   /// Hypervolume (area) of this bounding box.
   double get area {
-    var result = max[0] - min[0];
+    var result = getMax(0) - getMin(0);
     for (var i = 1; i < length; i++) {
-      result *= max[i] - min[i];
+      result *= getMax(i) - getMin(i);
     }
     return result;
   }
 
   /// Center coordinates of this bounding box.
-  List<double> get center {
-    final result = Float64List(length);
+  List<double> get center => [
+    for (var i = 0; i < length; i++) 0.5 * (getMin(i) + getMax(i)),
+  ];
+
+  /// Computes the Euclidean distance squared from a given [point] to the closest point in this bounding box.
+  double minDistanceToPointSquared(List<double> point) {
+    assert(point.length == length, 'Point must have matching dimensions');
+    var sum = 0.0;
     for (var i = 0; i < length; i++) {
-      result[i] = 0.5 * (min[i] + max[i]);
+      final p = point[i];
+      final minVal = getMin(i);
+      final maxVal = getMax(i);
+      if (p < minVal) {
+        final d = minVal - p;
+        sum += d * d;
+      } else if (p > maxVal) {
+        final d = p - maxVal;
+        sum += d * d;
+      }
     }
-    return result;
+    return sum;
+  }
+
+  /// Computes the Euclidean distance squared between this bounding box and [other].
+  double minDistanceToBoundsSquared(Bounds other) {
+    assert(other.length == length, 'Bounds must have matching dimensions');
+    var sum = 0.0;
+    for (var i = 0; i < length; i++) {
+      final thisMin = getMin(i);
+      final otherMax = other.getMax(i);
+      if (otherMax < thisMin) {
+        final d = thisMin - otherMax;
+        sum += d * d;
+      } else {
+        final thisMax = getMax(i);
+        final otherMin = other.getMin(i);
+        if (thisMax < otherMin) {
+          final d = otherMin - thisMax;
+          sum += d * d;
+        }
+      }
+    }
+    return sum;
   }
 
   /// Computes whether another bounding box is fully contained in this one.
-  bool contains(Bounds bounds) {
-    assert(length == bounds.length, 'Bounds must have matching dimensions');
+  bool contains(Bounds other) {
+    assert(length == other.length, 'Bounds must have matching dimensions');
     for (var i = 0; i < length; i++) {
-      if (bounds.min[i] < min[i] || max[i] < bounds.max[i]) {
+      if (other.getMin(i) < getMin(i) || getMax(i) < other.getMax(i)) {
         return false;
       }
     }
@@ -87,21 +177,30 @@ class Bounds {
   /// Computes the union of this bounding box and another one.
   Bounds union(Bounds other) {
     assert(length == other.length, 'Bounds must have matching dimensions');
-    final result = Bounds(length);
-    for (var i = 0; i < length; i++) {
-      result.min[i] = math.min(min[i], other.min[i]);
-      result.max[i] = math.max(max[i], other.max[i]);
+    if (length == 2) {
+      return RectangleBounds(
+        math.min(getMin(0), other.getMin(0)),
+        math.min(getMin(1), other.getMin(1)),
+        math.max(getMax(0), other.getMax(0)),
+        math.max(getMax(1), other.getMax(1)),
+      );
     }
-    return result;
+    final minList = Float64List(length);
+    final maxList = Float64List(length);
+    for (var i = 0; i < length; i++) {
+      minList[i] = math.min(getMin(i), other.getMin(i));
+      maxList[i] = math.max(getMax(i), other.getMax(i));
+    }
+    return ListBounds(minList, maxList);
   }
 
   /// Computes if this bounding box and another one intersect.
   bool intersects(Bounds other) {
     assert(length == other.length, 'Bounds must have matching dimensions');
     for (var i = 0; i < length; i++) {
-      final lower = math.max(min[i], other.min[i]);
-      final upper = math.min(max[i], other.max[i]);
-      if (lower > upper) return false;
+      if (getMin(i) > other.getMax(i) || other.getMin(i) > getMax(i)) {
+        return false;
+      }
     }
     return true;
   }
@@ -109,24 +208,33 @@ class Bounds {
   /// Computes the intersection of this bounding box and another one.
   Bounds? intersection(Bounds other) {
     assert(length == other.length, 'Bounds must have matching dimensions');
-    final result = Bounds(length);
-    for (var i = 0; i < length; i++) {
-      final lower = math.max(min[i], other.min[i]);
-      final upper = math.min(max[i], other.max[i]);
-      if (lower > upper) return null;
-      result.min[i] = lower;
-      result.max[i] = upper;
+    if (length == 2) {
+      final minX = math.max(getMin(0), other.getMin(0));
+      final maxX = math.min(getMax(0), other.getMax(0));
+      if (minX > maxX) return null;
+      final minY = math.max(getMin(1), other.getMin(1));
+      final maxY = math.min(getMax(1), other.getMax(1));
+      if (minY > maxY) return null;
+      return RectangleBounds(minX, minY, maxX, maxY);
     }
-    return result;
+    final minList = Float64List(length);
+    final maxList = Float64List(length);
+    for (var i = 0; i < length; i++) {
+      final lower = math.max(getMin(i), other.getMin(i));
+      final upper = math.min(getMax(i), other.getMax(i));
+      if (lower > upper) return null;
+      minList[i] = lower;
+      maxList[i] = upper;
+    }
+    return ListBounds(minList, maxList);
   }
 
   @override
   bool operator ==(Object other) {
     if (identical(this, other)) return true;
-    if (other is! Bounds) return false;
-    if (other.length != length) return false;
+    if (other is! Bounds || other.length != length) return false;
     for (var i = 0; i < length; i++) {
-      if (other.min[i] != min[i] || other.max[i] != max[i]) {
+      if (other.getMin(i) != getMin(i) || other.getMax(i) != getMax(i)) {
         return false;
       }
     }
@@ -134,15 +242,29 @@ class Bounds {
   }
 
   @override
-  int get hashCode => Object.hash(Object.hashAll(min), Object.hashAll(max));
+  int get hashCode {
+    var minHash = 0;
+    var maxHash = 0;
+    for (var i = 0; i < length; i++) {
+      minHash = Object.hash(minHash, getMin(i));
+      maxHash = Object.hash(maxHash, getMax(i));
+    }
+    return Object.hash(length, minHash, maxHash);
+  }
 
   @override
   String toString() {
     final result = StringBuffer('Bounds(');
-    result.writeAll(min, ', ');
+    for (var i = 0; i < length; i++) {
+      if (i > 0) result.write(', ');
+      result.write(getMin(i));
+    }
     if (!isPoint) {
       result.write('; ');
-      result.writeAll(max, ', ');
+      for (var i = 0; i < length; i++) {
+        if (i > 0) result.write(', ');
+        result.write(getMax(i));
+      }
     }
     result.write(')');
     return result.toString();
@@ -152,32 +274,73 @@ class Bounds {
   static Bounds unionAll(Iterable<Bounds> bounds) {
     final iterator = bounds.iterator;
     if (!iterator.moveNext()) throw StateError('Empty bounds: $bounds');
-    final result = Bounds.fromLists(iterator.current.min, iterator.current.max);
+    final first = iterator.current;
+    if (first.length == 2) {
+      var minX = first.getMin(0);
+      var minY = first.getMin(1);
+      var maxX = first.getMax(0);
+      var maxY = first.getMax(1);
+      while (iterator.moveNext()) {
+        final current = iterator.current;
+        minX = math.min(minX, current.getMin(0));
+        minY = math.min(minY, current.getMin(1));
+        maxX = math.max(maxX, current.getMax(0));
+        maxY = math.max(maxY, current.getMax(1));
+      }
+      return RectangleBounds(minX, minY, maxX, maxY);
+    }
+    final minList = Float64List(first.length);
+    final maxList = Float64List(first.length);
+    for (var i = 0; i < first.length; i++) {
+      minList[i] = first.getMin(i);
+      maxList[i] = first.getMax(i);
+    }
     while (iterator.moveNext()) {
       final current = iterator.current;
-      for (var i = 0; i < result.length; i++) {
-        result.min[i] = math.min(result.min[i], current.min[i]);
-        result.max[i] = math.max(result.max[i], current.max[i]);
+      for (var i = 0; i < first.length; i++) {
+        minList[i] = math.min(minList[i], current.getMin(i));
+        maxList[i] = math.max(maxList[i], current.getMax(i));
       }
     }
-    return result;
+    return ListBounds(minList, maxList);
   }
 
   /// Computes the intersection of all bounding boxes.
   static Bounds? intersectionAll(Iterable<Bounds> bounds) {
     final iterator = bounds.iterator;
     if (!iterator.moveNext()) throw StateError('Empty bounds: $bounds');
-    final result = Bounds.fromLists(iterator.current.min, iterator.current.max);
+    final first = iterator.current;
+    if (first.length == 2) {
+      var minX = first.getMin(0);
+      var minY = first.getMin(1);
+      var maxX = first.getMax(0);
+      var maxY = first.getMax(1);
+      while (iterator.moveNext()) {
+        final current = iterator.current;
+        minX = math.max(minX, current.getMin(0));
+        minY = math.max(minY, current.getMin(1));
+        maxX = math.min(maxX, current.getMax(0));
+        maxY = math.min(maxY, current.getMax(1));
+        if (minX > maxX || minY > maxY) return null;
+      }
+      return RectangleBounds(minX, minY, maxX, maxY);
+    }
+    final minList = Float64List(first.length);
+    final maxList = Float64List(first.length);
+    for (var i = 0; i < first.length; i++) {
+      minList[i] = first.getMin(i);
+      maxList[i] = first.getMax(i);
+    }
     while (iterator.moveNext()) {
       final current = iterator.current;
-      for (var i = 0; i < result.length; i++) {
-        final lower = math.max(result.min[i], current.min[i]);
-        final upper = math.min(result.max[i], current.max[i]);
+      for (var i = 0; i < first.length; i++) {
+        final lower = math.max(minList[i], current.getMin(i));
+        final upper = math.min(maxList[i], current.getMax(i));
         if (lower > upper) return null;
-        result.min[i] = lower;
-        result.max[i] = upper;
+        minList[i] = lower;
+        maxList[i] = upper;
       }
     }
-    return result;
+    return ListBounds(minList, maxList);
   }
 }
