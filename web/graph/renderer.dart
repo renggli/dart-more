@@ -534,24 +534,30 @@ final class GraphRenderer {
     final viewport = this.viewport;
 
     // Track Space key for canvas panning
-    web.window.onkeydown = ((web.KeyboardEvent event) {
-      if (event.code == 'Space') {
-        final activeTag = web.document.activeElement?.tagName.toLowerCase();
-        if (activeTag != 'input' &&
-            activeTag != 'textarea' &&
-            activeTag != 'select') {
-          _isSpaceDown = true;
-          viewport.style.cursor = 'grab';
+    web.window.addEventListener(
+      'keydown',
+      ((web.KeyboardEvent event) {
+        if (event.code == 'Space') {
+          final activeTag = web.document.activeElement?.tagName.toLowerCase();
+          if (activeTag != 'input' &&
+              activeTag != 'textarea' &&
+              activeTag != 'select') {
+            _isSpaceDown = true;
+            viewport.style.cursor = 'grab';
+          }
         }
-      }
-    }).toJS;
+      }).toJS,
+    );
 
-    web.window.onkeyup = ((web.KeyboardEvent event) {
-      if (event.code == 'Space') {
-        _isSpaceDown = false;
-        viewport.style.cursor = 'default';
-      }
-    }).toJS;
+    web.window.addEventListener(
+      'keyup',
+      ((web.KeyboardEvent event) {
+        if (event.code == 'Space') {
+          _isSpaceDown = false;
+          viewport.style.cursor = 'default';
+        }
+      }).toJS,
+    );
 
     // Smooth CSS-pixel panning, lasso selection, node group dragging, and edge swiping
     viewport.onmousedown = ((web.MouseEvent event) {
@@ -634,198 +640,211 @@ final class GraphRenderer {
       _didLasso = false;
     }).toJS;
 
-    web.window.onmousemove = ((web.MouseEvent event) {
-      final vRect = viewport.getBoundingClientRect();
-      _canvasMouseX = (event.clientX.toDouble() - vRect.left - _panX) / _scale;
-      _canvasMouseY = (event.clientY.toDouble() - vRect.top - _panY) / _scale;
-      ui?.cursorX = _canvasMouseX;
-      ui?.cursorY = _canvasMouseY;
+    web.window.addEventListener(
+      'mousemove',
+      ((web.MouseEvent event) {
+        final vRect = viewport.getBoundingClientRect();
+        _canvasMouseX =
+            (event.clientX.toDouble() - vRect.left - _panX) / _scale;
+        _canvasMouseY = (event.clientY.toDouble() - vRect.top - _panY) / _scale;
+        ui?.cursorX = _canvasMouseX;
+        ui?.cursorY = _canvasMouseY;
 
-      // Pending placement vertex moves dynamically with cursor
-      if (ui?.pendingPlacementVertex != null && _lastState != null) {
-        final pNode = _lastState!.nodes[ui!.pendingPlacementVertex!];
-        if (pNode != null) {
-          pNode.x = _canvasMouseX;
-          pNode.y = _canvasMouseY;
-          render(_lastState!);
+        // Pending placement vertex moves dynamically with cursor
+        if (ui?.pendingPlacementVertex != null && _lastState != null) {
+          final pNode = _lastState!.nodes[ui!.pendingPlacementVertex!];
+          if (pNode != null) {
+            pNode.x = _canvasMouseX;
+            pNode.y = _canvasMouseY;
+            render(_lastState!);
+          }
+          return;
         }
-        return;
-      }
 
-      if (_edgeClickAnchor != null) {
-        final dx = event.clientX.toDouble() - _edgeClickStartX;
-        final dy = event.clientY.toDouble() - _edgeClickStartY;
-        if (math.sqrt(dx * dx + dy * dy) > 6.0) {
-          _edgeClickAnchor = null;
-        }
-      }
-
-      if (_isPanning) {
-        _panX = event.clientX - _startX;
-        _panY = event.clientY - _startY;
-        _updateTransform();
-        return;
-      }
-
-      if (_dragAnchorVertex != null && _initialDragPositions.isNotEmpty) {
-        final dx = (event.clientX.toDouble() - _dragStartClientX) / _scale;
-        final dy = (event.clientY.toDouble() - _dragStartClientY) / _scale;
-        final dist = math.sqrt(dx * dx + dy * dy);
-
-        if (dist > 6.0) {
-          _didDragNodes = true;
-          final state = _lastState;
-          if (state != null) {
-            state.edgeRoutes.clear();
-            for (final MapEntry(:key, :value)
-                in _initialDragPositions.entries) {
-              final node = state.nodes[key];
-              if (node != null) {
-                node.x = value.$1 + dx;
-                node.y = value.$2 + dy;
-              }
-            }
-            render(state);
+        if (_edgeClickAnchor != null) {
+          final dx = event.clientX.toDouble() - _edgeClickStartX;
+          final dy = event.clientY.toDouble() - _edgeClickStartY;
+          if (math.sqrt(dx * dx + dy * dy) > 6.0) {
+            _edgeClickAnchor = null;
           }
         }
-        return;
-      }
 
-      if (_isLassoing) {
-        final dist = math.sqrt(
-          math.pow(event.clientX.toDouble() - _lassoStartClientX, 2) +
-              math.pow(event.clientY.toDouble() - _lassoStartClientY, 2),
-        );
-        if (dist > 4.0) {
-          _didLasso = true;
-          final startX = _lassoStartClientX - vRect.left;
-          final startY = _lassoStartClientY - vRect.top;
-          final curX = event.clientX.toDouble() - vRect.left;
-          final curY = event.clientY.toDouble() - vRect.top;
-
-          final left = math.min(startX, curX);
-          final top = math.min(startY, curY);
-          final width = (curX - startX).abs();
-          final height = (curY - startY).abs();
-
-          _updateLassoMarquee(left, top, width, height);
+        if (_isPanning) {
+          _panX = event.clientX - _startX;
+          _panY = event.clientY - _startY;
+          _updateTransform();
+          return;
         }
-        return;
-      }
-    }).toJS;
 
-    web.window.onmouseup = ((web.MouseEvent event) {
-      if (_isPanning) {
-        _isPanning = false;
-        viewport.style.cursor = _isSpaceDown ? 'grab' : 'default';
-        return;
-      }
+        if (_dragAnchorVertex != null && _initialDragPositions.isNotEmpty) {
+          final dx = (event.clientX.toDouble() - _dragStartClientX) / _scale;
+          final dy = (event.clientY.toDouble() - _dragStartClientY) / _scale;
+          final dist = math.sqrt(dx * dx + dy * dy);
 
-      if (_edgeClickAnchor != null) {
-        final (s, t) = _edgeClickAnchor!;
-        _edgeClickAnchor = null;
-        _edgeClickHandled = true;
-        onEdgeClick(s, t, event);
-        return;
-      }
-
-      if (_dragAnchorVertex != null) {
-        final v = _dragAnchorVertex!;
-        _dragAnchorVertex = null;
-        if (_didDragNodes) {
-          _didDragNodes = false;
-          final state = _lastState;
-          if (state != null && onNodesMoved != null) {
-            final moves = <String, (double, double)>{};
-            for (final id in _initialDragPositions.keys) {
-              final node = state.nodes[id];
-              if (node?.x != null && node?.y != null) {
-                moves[id] = (node!.x!, node.y!);
+          if (dist > 6.0) {
+            _didDragNodes = true;
+            final state = _lastState;
+            if (state != null) {
+              state.edgeRoutes.clear();
+              for (final MapEntry(:key, :value)
+                  in _initialDragPositions.entries) {
+                final node = state.nodes[key];
+                if (node != null) {
+                  node.x = value.$1 + dx;
+                  node.y = value.$2 + dy;
+                }
               }
+              render(state);
             }
-            onNodesMoved!(moves);
           }
-        } else {
-          onVertexClick(v, event);
+          return;
         }
-        _initialDragPositions.clear();
-        viewport.style.cursor = 'default';
-        return;
-      }
 
-      if (_isLassoing) {
-        _isLassoing = false;
-        _hideLassoMarquee();
-
-        if (_didLasso) {
-          _didLasso = false;
-          final mLeft = math.min(_lassoStartClientX, event.clientX.toDouble());
-          final mRight = math.max(_lassoStartClientX, event.clientX.toDouble());
-          final mTop = math.min(_lassoStartClientY, event.clientY.toDouble());
-          final mBottom = math.max(
-            _lassoStartClientY,
-            event.clientY.toDouble(),
+        if (_isLassoing) {
+          final dist = math.sqrt(
+            math.pow(event.clientX.toDouble() - _lassoStartClientX, 2) +
+                math.pow(event.clientY.toDouble() - _lassoStartClientY, 2),
           );
+          if (dist > 4.0) {
+            _didLasso = true;
+            final startX = _lassoStartClientX - vRect.left;
+            final startY = _lassoStartClientY - vRect.top;
+            final curX = event.clientX.toDouble() - vRect.left;
+            final curY = event.clientY.toDouble() - vRect.top;
 
-          final state = _lastState;
-          final matchedVertices = <String>[];
-          final matchedEdges = <(String, String)>[];
+            final left = math.min(startX, curX);
+            final top = math.min(startY, curY);
+            final width = (curX - startX).abs();
+            final height = (curY - startY).abs();
 
-          final vRect = viewport.getBoundingClientRect();
-          final minX = (mLeft - vRect.left - _panX) / _scale;
-          final maxX = (mRight - vRect.left - _panX) / _scale;
-          final minY = (mTop - vRect.top - _panY) / _scale;
-          final maxY = (mBottom - vRect.top - _panY) / _scale;
-
-          if (state != null) {
-            if (state.selectVerticesMode) {
-              for (final v in state.renderGraph.vertices) {
-                final node = state.nodes[v];
-                if (node?.x != null && node?.y != null) {
-                  final nx = node!.x!;
-                  final ny = node.y!;
-                  if (nx >= minX && nx <= maxX && ny >= minY && ny <= maxY) {
-                    matchedVertices.add(v);
-                  }
-                }
-              }
-            }
-
-            if (state.selectEdgesMode) {
-              for (final edge in state.renderGraph.edges.toSet()) {
-                final nodeU = state.nodes[edge.source];
-                final nodeV = state.nodes[edge.target];
-                if (nodeU?.x != null &&
-                    nodeU?.y != null &&
-                    nodeV?.x != null &&
-                    nodeV?.y != null) {
-                  final x1 = nodeU!.x!;
-                  final y1 = nodeU.y!;
-                  final x2 = nodeV!.x!;
-                  final y2 = nodeV.y!;
-                  final uIn =
-                      x1 >= minX && x1 <= maxX && y1 >= minY && y1 <= maxY;
-                  final vIn =
-                      x2 >= minX && x2 <= maxX && y2 >= minY && y2 <= maxY;
-                  if (uIn || vIn) {
-                    matchedEdges.add(
-                      state.normalizeEdge(edge.source, edge.target),
-                    );
-                  }
-                }
-              }
-            }
+            _updateLassoMarquee(left, top, width, height);
           }
-
-          onLassoSelection(matchedVertices, matchedEdges, event.shiftKey);
-          return;
-        } else {
-          // Plain click on background: invokes onBackgroundClick
-          onBackgroundClick(event);
           return;
         }
-      }
-    }).toJS;
+      }).toJS,
+    );
+
+    web.window.addEventListener(
+      'mouseup',
+      ((web.MouseEvent event) {
+        if (_isPanning) {
+          _isPanning = false;
+          viewport.style.cursor = _isSpaceDown ? 'grab' : 'default';
+          return;
+        }
+
+        if (_edgeClickAnchor != null) {
+          final (s, t) = _edgeClickAnchor!;
+          _edgeClickAnchor = null;
+          _edgeClickHandled = true;
+          onEdgeClick(s, t, event);
+          return;
+        }
+
+        if (_dragAnchorVertex != null) {
+          final v = _dragAnchorVertex!;
+          _dragAnchorVertex = null;
+          if (_didDragNodes) {
+            _didDragNodes = false;
+            final state = _lastState;
+            if (state != null && onNodesMoved != null) {
+              final moves = <String, (double, double)>{};
+              for (final id in _initialDragPositions.keys) {
+                final node = state.nodes[id];
+                if (node?.x != null && node?.y != null) {
+                  moves[id] = (node!.x!, node.y!);
+                }
+              }
+              onNodesMoved!(moves);
+            }
+          } else {
+            onVertexClick(v, event);
+          }
+          _initialDragPositions.clear();
+          viewport.style.cursor = 'default';
+          return;
+        }
+
+        if (_isLassoing) {
+          _isLassoing = false;
+          _hideLassoMarquee();
+
+          if (_didLasso) {
+            _didLasso = false;
+            final mLeft = math.min(
+              _lassoStartClientX,
+              event.clientX.toDouble(),
+            );
+            final mRight = math.max(
+              _lassoStartClientX,
+              event.clientX.toDouble(),
+            );
+            final mTop = math.min(_lassoStartClientY, event.clientY.toDouble());
+            final mBottom = math.max(
+              _lassoStartClientY,
+              event.clientY.toDouble(),
+            );
+
+            final state = _lastState;
+            final matchedVertices = <String>[];
+            final matchedEdges = <(String, String)>[];
+
+            final vRect = viewport.getBoundingClientRect();
+            final minX = (mLeft - vRect.left - _panX) / _scale;
+            final maxX = (mRight - vRect.left - _panX) / _scale;
+            final minY = (mTop - vRect.top - _panY) / _scale;
+            final maxY = (mBottom - vRect.top - _panY) / _scale;
+
+            if (state != null) {
+              if (state.selectVerticesMode) {
+                for (final v in state.renderGraph.vertices) {
+                  final node = state.nodes[v];
+                  if (node?.x != null && node?.y != null) {
+                    final nx = node!.x!;
+                    final ny = node.y!;
+                    if (nx >= minX && nx <= maxX && ny >= minY && ny <= maxY) {
+                      matchedVertices.add(v);
+                    }
+                  }
+                }
+              }
+
+              if (state.selectEdgesMode) {
+                for (final edge in state.renderGraph.edges.toSet()) {
+                  final nodeU = state.nodes[edge.source];
+                  final nodeV = state.nodes[edge.target];
+                  if (nodeU?.x != null &&
+                      nodeU?.y != null &&
+                      nodeV?.x != null &&
+                      nodeV?.y != null) {
+                    final x1 = nodeU!.x!;
+                    final y1 = nodeU.y!;
+                    final x2 = nodeV!.x!;
+                    final y2 = nodeV.y!;
+                    final uIn =
+                        x1 >= minX && x1 <= maxX && y1 >= minY && y1 <= maxY;
+                    final vIn =
+                        x2 >= minX && x2 <= maxX && y2 >= minY && y2 <= maxY;
+                    if (uIn || vIn) {
+                      matchedEdges.add(
+                        state.normalizeEdge(edge.source, edge.target),
+                      );
+                    }
+                  }
+                }
+              }
+            }
+
+            onLassoSelection(matchedVertices, matchedEdges, event.shiftKey);
+            return;
+          } else {
+            // Plain click on background: invokes onBackgroundClick
+            onBackgroundClick(event);
+            return;
+          }
+        }
+      }).toJS,
+    );
 
     // Smooth CSS-pixel zooming centered on cursor
     viewport.onwheel = ((web.WheelEvent event) {

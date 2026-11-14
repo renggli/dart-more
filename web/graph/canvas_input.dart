@@ -136,67 +136,70 @@ class CanvasInput {
   }
 
   void init() {
-    web.window.onkeydown = ((web.KeyboardEvent event) {
-      final target = event.target;
-      if (target != null &&
-          (target.isA<web.HTMLInputElement>() ||
-              target.isA<web.HTMLTextAreaElement>())) {
-        return;
-      }
+    web.window.addEventListener(
+      'keydown',
+      ((web.KeyboardEvent event) {
+        final target = event.target;
+        if (target != null &&
+            (target.isA<web.HTMLInputElement>() ||
+                target.isA<web.HTMLTextAreaElement>())) {
+          return;
+        }
 
-      final key = event.key;
-      final isModifier = event.ctrlKey || event.metaKey;
+        final key = event.key;
+        final isModifier = event.ctrlKey || event.metaKey;
 
-      if (key == 'Escape') {
-        var handled = false;
-        if (toolbarController.modalIo.style.display != 'none') {
-          toolbarController.closeModal();
-          handled = true;
+        if (key == 'Escape') {
+          var handled = false;
+          if (toolbarController.modalIo.style.display != 'none') {
+            toolbarController.closeModal();
+            handled = true;
+          }
+          final openMenus = web.document.querySelectorAll('.menu-item.open');
+          if (openMenus.length > 0) {
+            menuController.closeAllMenus();
+            handled = true;
+          }
+          if (toolbarController.introOverlay?.style.display != 'none') {
+            toolbarController.dismissedEmpty = true;
+            toolbarController.updateIntroOverlay();
+            handled = true;
+          }
+          renderer.cancelInlineEditor();
+          if (ui.pendingPlacementVertex != null) {
+            final pv = ui.pendingPlacementVertex!;
+            state.primaryGraph.removeVertex(pv);
+            state.nodes.remove(pv);
+            ui.pendingPlacementVertex = null;
+            handled = true;
+            onUpdateUI();
+          }
+          if (!handled &&
+              (state.selectedVertices.isNotEmpty ||
+                  state.selectedEdges.isNotEmpty ||
+                  state.selectedEdge != null)) {
+            state.clearSelection();
+            onUpdateUI();
+          }
+          event.preventDefault();
+          return;
         }
-        final openMenus = web.document.querySelectorAll('.menu-item.open');
-        if (openMenus.length > 0) {
-          menuController.closeAllMenus();
-          handled = true;
-        }
-        if (toolbarController.introOverlay?.style.display != 'none') {
-          toolbarController.dismissedEmpty = true;
-          toolbarController.updateIntroOverlay();
-          handled = true;
-        }
-        renderer.cancelInlineEditor();
-        if (ui.pendingPlacementVertex != null) {
-          final pv = ui.pendingPlacementVertex!;
-          state.primaryGraph.removeVertex(pv);
-          state.nodes.remove(pv);
-          ui.pendingPlacementVertex = null;
-          handled = true;
-          onUpdateUI();
-        }
-        if (!handled &&
-            (state.selectedVertices.isNotEmpty ||
-                state.selectedEdges.isNotEmpty ||
-                state.selectedEdge != null)) {
-          state.clearSelection();
-          onUpdateUI();
-        }
-        event.preventDefault();
-        return;
-      }
 
-      for (final cmd in CommandRegistry.all) {
-        if (cmd.matchesKey(
-          key,
-          ctrl: isModifier,
-          shift: event.shiftKey,
-          alt: event.altKey,
-        )) {
-          if (cmd.canExecute(state, ui)) {
-            onExecuteCommand(cmd.id);
-            event.preventDefault();
-            return;
+        for (final cmd in CommandRegistry.all) {
+          if (cmd.matchesKey(
+            key,
+            ctrl: isModifier,
+            shift: event.shiftKey,
+            alt: event.altKey,
+          )) {
+            if (cmd.canExecute(state, ui)) {
+              onExecuteCommand(cmd.id);
+              event.preventDefault();
+              return;
+            }
           }
         }
-      }
-    }).toJS;
+      }).toJS,
+    );
   }
 }

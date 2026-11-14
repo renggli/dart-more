@@ -244,6 +244,10 @@ class CycleDetectionModifier extends GraphModifier {
     final dropdownContainer = div();
 
     void updateDropdown(List<List<String>> currentCycles) {
+      if (!dropdownContainer.isConnected) {
+        _onCyclesChanged = null;
+        return;
+      }
       dropdownContainer.textContent = '';
       if (currentCycles.isNotEmpty) {
         if (selectedCycleIndex >= currentCycles.length) {
