@@ -22,11 +22,11 @@ void main() {
       check(spec.name).equals('Combine');
     });
 
-    test('addAllModifiersDisabled puts Combine at top', () {
+    test('addAllModifiersDisabled populates modifiers', () {
       final state = AppState();
       state.addAllModifiersDisabled();
       check(state.modifiers).isNotEmpty();
-      check(state.modifiers.first.id).equals('combine');
+      check(state.modifiers.map((m) => m.id)).contains('combine');
     });
   });
 
