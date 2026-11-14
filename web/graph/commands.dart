@@ -2,7 +2,7 @@ import 'package:more/graph.dart' hide GraphLayout;
 
 import 'app_ui.dart';
 import 'io.dart';
-import 'layout.dart';
+import 'modifiers.dart';
 import 'node.dart';
 import 'state.dart';
 
@@ -799,20 +799,23 @@ class CommandRegistry {
     // Graph
     SimpleCommand(
       id: 'graph.layout',
-      title: 'Auto Layout',
+      title: 'Layout',
       category: CommandCategory.graph,
       shortcuts: const ['L'],
       canExecuteCallback: (state) => state.primaryGraph.vertices.isNotEmpty,
-      executeCallback: GraphLayout.applyLayout,
+      executeCallback: (state) {
+        final mod = ModifierRegistry.getSpec('layout').factory();
+        mod.applyPermanent(state);
+      },
     ),
     SimpleCommand(
       id: 'graph.complement',
-      title: 'Complement Graph',
+      title: 'Complement',
       category: CommandCategory.graph,
       canExecuteCallback: (state) => state.primaryGraph.vertices.length >= 2,
       executeCallback: (state) {
-        state.saveSnapshot();
-        state.primaryGraph = state.primaryGraph.complement(edge: (u, v) => 1);
+        final mod = ModifierRegistry.getSpec('complement').factory();
+        mod.applyPermanent(state);
       },
     ),
     SimpleCommand(
@@ -824,10 +827,8 @@ class CommandRegistry {
           state.primaryGraph.vertices.isNotEmpty,
       executeCallback: (state) {
         if (!state.primaryGraph.isDirected) return;
-        state.saveSnapshot();
-        state.primaryGraph = state.primaryGraph.transitiveClosure().map(
-          edge: (_) => 1,
-        );
+        final mod = ModifierRegistry.getSpec('transitive_closure').factory();
+        mod.applyPermanent(state);
       },
     ),
     SimpleCommand(
@@ -839,8 +840,8 @@ class CommandRegistry {
           state.primaryGraph.vertices.isNotEmpty,
       executeCallback: (state) {
         if (!state.primaryGraph.isDirected) return;
-        state.saveSnapshot();
-        state.primaryGraph = state.primaryGraph.transitiveReduction();
+        final mod = ModifierRegistry.getSpec('transitive_reduction').factory();
+        mod.applyPermanent(state);
       },
     ),
   ];
