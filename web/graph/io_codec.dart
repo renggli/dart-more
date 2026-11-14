@@ -182,4 +182,26 @@ abstract final class GraphCodec {
       return null;
     }
   }
+
+  /// Serializes tabular data (headers and rows) into RFC-4180 compliant CSV.
+  static String exportToCsv(List<String> headers, List<List<String>> rows) {
+    String escapeCell(String value) {
+      if (value.contains(',') ||
+          value.contains('"') ||
+          value.contains('\n') ||
+          value.contains('\r')) {
+        return '"${value.replaceAll('"', '""')}"';
+      }
+      return value;
+    }
+
+    final buffer = StringBuffer();
+    if (headers.isNotEmpty) {
+      buffer.writeln(headers.map(escapeCell).join(','));
+    }
+    for (final row in rows) {
+      buffer.writeln(row.map(escapeCell).join(','));
+    }
+    return buffer.toString();
+  }
 }

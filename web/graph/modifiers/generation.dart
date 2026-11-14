@@ -109,6 +109,19 @@ class BaseGraphModifier extends GraphModifier {
     transformedGraph: state.primaryGraph,
     statusSummary:
         '${state.primaryGraph.vertices.length} vertices, ${state.primaryGraph.edges.length} edges',
+    tableData: ModifierTableData(
+      title: 'Base Graph Overview',
+      headers: ['Property', 'Value'],
+      rows: [
+        ['Vertices', '${state.primaryGraph.vertices.length}'],
+        ['Edges', '${state.primaryGraph.edges.length}'],
+        [
+          'Type',
+          if (state.primaryGraph.isDirected) 'Directed' else 'Undirected',
+        ],
+        ['Weighted', if (state.isWeighted) 'Yes' else 'No'],
+      ],
+    ),
   );
 }
 
@@ -481,6 +494,16 @@ class GeneratorModifier extends GraphModifier {
       return ModifierOutput(
         transformedGraph: generated,
         statusSummary: statusInfo,
+        tableData: ModifierTableData(
+          title: 'Generated Graph',
+          headers: ['Property', 'Value'],
+          rows: [
+            ['Shape', type.label],
+            ['Mode', combineMode.label],
+            ['Generated Vertices', '${generated.vertices.length}'],
+            ['Generated Edges', '${generated.edges.length}'],
+          ],
+        ),
       );
     }
 
@@ -501,6 +524,18 @@ class GeneratorModifier extends GraphModifier {
     return ModifierOutput(
       transformedGraph: combined,
       statusSummary: 'Merge +$statusInfo',
+      tableData: ModifierTableData(
+        title: 'Generated Graph',
+        headers: ['Property', 'Value'],
+        rows: [
+          ['Shape', type.label],
+          ['Mode', combineMode.label],
+          ['Generated Vertices', '${generated.vertices.length}'],
+          ['Generated Edges', '${generated.edges.length}'],
+          ['Total Vertices', '${combined.vertices.length}'],
+          ['Total Edges', '${combined.edges.length}'],
+        ],
+      ),
     );
   }
 }

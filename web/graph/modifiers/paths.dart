@@ -185,7 +185,11 @@ class ShortestPathModifier extends GraphModifier {
           );
       }
     } catch (e) {
-      return ModifierOutput(hasError: true, errorMessage: e.toString());
+      return ModifierOutput(
+        hasError: true,
+        errorMessage: e.toString(),
+        statusSummary: 'Error computing shortest path',
+      );
     }
 
     if (path == null) {

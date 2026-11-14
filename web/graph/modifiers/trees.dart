@@ -82,7 +82,11 @@ class SpanningTreeModifier extends GraphModifier {
             )
           : graph.spanningTree();
     } catch (e) {
-      return ModifierOutput(hasError: true, errorMessage: e.toString());
+      return ModifierOutput(
+        hasError: true,
+        errorMessage: e.toString(),
+        statusSummary: 'Error computing spanning tree',
+      );
     }
 
     final dash = outputStyle.dashPattern;

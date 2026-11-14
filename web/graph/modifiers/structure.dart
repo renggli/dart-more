@@ -67,7 +67,11 @@ class ComponentsModifier extends GraphModifier {
           components = graph.connected().map((g) => g.vertices).toList();
       }
     } catch (e) {
-      return ModifierOutput(hasError: true, errorMessage: e.toString());
+      return ModifierOutput(
+        hasError: true,
+        errorMessage: e.toString(),
+        statusSummary: 'Error computing components',
+      );
     }
 
     final vertexGroup = <String, int>{};
@@ -660,7 +664,11 @@ class KCoreModifier extends GraphModifier {
     try {
       coreVerts = graph.kCore(k).vertices.toSet();
     } catch (e) {
-      return ModifierOutput(hasError: true, errorMessage: e.toString());
+      return ModifierOutput(
+        hasError: true,
+        errorMessage: e.toString(),
+        statusSummary: 'Error computing k-core',
+      );
     }
 
     // Apply dashed styling or filter

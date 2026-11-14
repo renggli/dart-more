@@ -201,19 +201,39 @@ class MaxFlowModifier extends GraphModifier {
         }
       }
 
+      final rows = <List<String>>[
+        ['Max Flow Value', '$maxFlowValue', 'Total capacity $s → $t'],
+        [
+          'Source Partition S',
+          '${reachable.length} vertices',
+          reachable.join(', '),
+        ],
+        [
+          'Sink Partition T',
+          '${vertices.length - reachable.length} vertices',
+          vertices.where((v) => !reachable.contains(v)).join(', '),
+        ],
+      ];
+      for (final edge in graph.edges) {
+        final f = dinic.flow(edge.source, edge.target);
+        final cap = capacityOf(edge.source, edge.target);
+        final isCut =
+            reachable.contains(edge.source) && !reachable.contains(edge.target);
+        if (f > 0 || isCut) {
+          rows.add([
+            '${edge.source} → ${edge.target}',
+            'Flow: $f / Cap: $cap',
+            if (isCut) 'Min-Cut Edge' else 'Flow Edge',
+          ]);
+        }
+      }
+
       return ModifierOutput(
         statusSummary: 'Max Flow ($s → $t) = $maxFlowValue',
         tableData: ModifierTableData(
           title: 'Max Flow / Min Cut ($s → $t)',
-          headers: ['Property', 'Value'],
-          rows: [
-            ['Maximum Flow', '$maxFlowValue'],
-            ['Source Partition S', reachable.join(', ')],
-            [
-              'Sink Partition T',
-              vertices.where((v) => !reachable.contains(v)).join(', '),
-            ],
-          ],
+          headers: ['Element', 'Flow / Capacity', 'Detail'],
+          rows: rows,
         ),
       );
     } catch (e) {

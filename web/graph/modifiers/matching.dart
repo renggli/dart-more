@@ -386,7 +386,11 @@ class VertexColoringModifier extends GraphModifier {
     try {
       coloring = graph.vertexColoring();
     } catch (e) {
-      return ModifierOutput(hasError: true, errorMessage: e.toString());
+      return ModifierOutput(
+        hasError: true,
+        errorMessage: e.toString(),
+        statusSummary: 'Error computing vertex coloring',
+      );
     }
 
     final groups = <int, List<String>>{};

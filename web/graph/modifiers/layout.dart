@@ -240,6 +240,18 @@ class LayoutModifier extends GraphModifier {
       removeOverlaps: removeOverlaps,
     );
 
-    return ModifierOutput(statusSummary: 'Layout applied: ${algorithm.label}');
+    return ModifierOutput(
+      statusSummary: 'Layout applied: ${algorithm.label}',
+      tableData: ModifierTableData(
+        title: 'Layout Configuration',
+        headers: ['Property', 'Value'],
+        rows: [
+          ['Algorithm', algorithm.label],
+          ['Orientation', rankDir.label],
+          ['Positioned Vertices', '${vertices.length}'],
+          ['Overlap Removal', if (removeOverlaps) 'Enabled' else 'Disabled'],
+        ],
+      ),
+    );
   }
 }

@@ -291,6 +291,7 @@ class TransitiveReductionModifier extends GraphModifier {
         hasError: true,
         errorMessage:
             'Transitive reduction requires a directed acyclic graph (DAG). $e',
+        statusSummary: 'Requires acyclic graph (DAG)',
       );
     }
 

@@ -738,6 +738,38 @@ body {
   background: var(--bg-base);
 }
 
+.modifier-table-header-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 4px 6px;
+  background: var(--bg-surface);
+  border-bottom: 1px solid var(--border-color);
+  font-size: 11px;
+}
+
+.modifier-table-title {
+  font-weight: 600;
+  color: var(--text-secondary);
+}
+
+.modifier-btn-export-csv {
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-sm);
+  color: var(--text-muted);
+  font-size: 10px;
+  padding: 2px 6px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.modifier-btn-export-csv:hover {
+  background: var(--bg-hover);
+  color: var(--text-primary);
+  border-color: var(--primary);
+}
+
 .modifier-table-wrapper table {
   width: 100%;
   border-collapse: collapse;

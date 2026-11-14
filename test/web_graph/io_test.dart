@@ -87,5 +87,19 @@ graph TD
       check(() => GraphCodec.importFromJson('{"isDirected": "invalid"}'))
           .throws<FormatException>();
     });
+
+    test('exportToCsv escapes quotes, commas, and newlines', () {
+      final headers = ['Header 1', 'Header, "Two"'];
+      final rows = [
+        ['Simple', 'Value with, comma'],
+        ['Quotes "here"', 'Multi\nline'],
+      ];
+      final csv = GraphCodec.exportToCsv(headers, rows);
+      check(csv).equals(
+        'Header 1,"Header, ""Two"""\n'
+        'Simple,"Value with, comma"\n'
+        '"Quotes ""here""","Multi\nline"\n',
+      );
+    });
   });
 }

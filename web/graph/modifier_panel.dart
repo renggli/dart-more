@@ -5,6 +5,8 @@ import 'package:web/web.dart' as web;
 import 'app_ui.dart';
 import 'dom_utils.dart';
 import 'icons.dart';
+import 'io.dart';
+import 'io_codec.dart';
 import 'modifiers.dart';
 import 'state.dart';
 
@@ -320,8 +322,38 @@ class ModifierPanel {
                   currentOut?.errorMessage ??
                   'An error occurred in this modifier.';
             statusContainer.appendChild(errBox);
-          } else if (currentTable != null && currentTable.rows.isNotEmpty) {
+          } else if (currentSummary != null && currentSummary.isNotEmpty) {
+            statusContainer.appendChild(
+              div('modifier-status')..textContent = currentSummary,
+            );
+          }
+
+          if (currentTable != null && currentTable.rows.isNotEmpty) {
             final tableWrapper = div('modifier-table-wrapper');
+            final headerBar = div('modifier-table-header-bar');
+            final tableTitle = span(currentTable.title, 'modifier-table-title');
+            headerBar.appendChild(tableTitle);
+
+            final exportBtn = button('Export CSV', 'modifier-btn-export-csv')
+              ..title = 'Export table data as CSV'
+              ..onClick.listen((e) {
+                e.stopPropagation();
+                final csv = GraphCodec.exportToCsv(
+                  currentTable.headers,
+                  currentTable.rows,
+                );
+                final sanitized = currentTable.title
+                    .toLowerCase()
+                    .replaceAll(RegExp(r'[^a-z0-9]+'), '_')
+                    .replaceAll(RegExp(r'^_+|_+$'), '');
+                final filename = sanitized.isEmpty
+                    ? '${mod.id}_data.csv'
+                    : '$sanitized.csv';
+                GraphIO.downloadTextFile(filename, csv, 'text/csv');
+              });
+            headerBar.appendChild(exportBtn);
+            tableWrapper.appendChild(headerBar);
+
             final tbl = tableElement('table');
             final thead = web.document.createElement('thead');
             final headerRow = web.document.createElement('tr');
@@ -349,10 +381,6 @@ class ModifierPanel {
             tbl.appendChild(tbody);
             tableWrapper.appendChild(tbl);
             tableContainer.appendChild(tableWrapper);
-          } else if (currentSummary != null && currentSummary.isNotEmpty) {
-            statusContainer.appendChild(
-              div('modifier-status')..textContent = currentSummary,
-            );
           }
         }
 
