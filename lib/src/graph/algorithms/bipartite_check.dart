@@ -16,6 +16,24 @@ bool isBipartite<V>({
   Iterable<V> Function(V vertex)? neighboursOf,
   Iterable<V> Function(V vertex)? successorsOf,
   StorageStrategy<V>? vertexStrategy,
+}) =>
+    bipartiteColoring<V>(
+      vertices: vertices,
+      neighboursOf: neighboursOf,
+      successorsOf: successorsOf,
+      vertexStrategy: vertexStrategy,
+    ) !=
+    null;
+
+/// Computes a 2-coloring of a bipartite graph, or returns `null` if the graph
+/// is not bipartite.
+///
+/// The returned map assigns each vertex to a boolean partition (`true` or `false`).
+Map<V, bool>? bipartiteColoring<V>({
+  required Iterable<V> vertices,
+  Iterable<V> Function(V vertex)? neighboursOf,
+  Iterable<V> Function(V vertex)? successorsOf,
+  StorageStrategy<V>? vertexStrategy,
 }) {
   final getNeighbours = neighboursOf ?? successorsOf;
   if (getNeighbours == null) {
@@ -35,7 +53,7 @@ bool isBipartite<V>({
         if (colors.containsKey(target)) {
           final targetColor = colors[target]!;
           if (sourceColor == targetColor) {
-            return false;
+            return null;
           }
         } else {
           colors[target] = !sourceColor;
@@ -44,5 +62,5 @@ bool isBipartite<V>({
       }
     }
   }
-  return true;
+  return colors;
 }

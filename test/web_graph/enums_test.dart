@@ -65,6 +65,11 @@ void main() {
           .equals(CentralityMetric.coreNumbers);
       check(CentralityMetric.fromId('clustering'))
           .equals(CentralityMetric.clustering);
+      check(CentralityMetric.fromId('katz')).equals(CentralityMetric.katz);
+      check(CentralityMetric.fromId('hitsHubs'))
+          .equals(CentralityMetric.hitsHubs);
+      check(CentralityMetric.fromId('hitsAuthorities'))
+          .equals(CentralityMetric.hitsAuthorities);
       check(CentralityMetric.fromId('unknown')).equals(CentralityMetric.degree);
     });
 
@@ -116,6 +121,8 @@ void main() {
       check(CliquesMode.fromId('cliques')).equals(CliquesMode.cliques);
       check(CliquesMode.fromId('independentSet'))
           .equals(CliquesMode.independentSet);
+      check(CliquesMode.fromId('dominatingSet'))
+          .equals(CliquesMode.dominatingSet);
       check(CliquesMode.fromId('unknown')).equals(CliquesMode.cliques);
     });
   });

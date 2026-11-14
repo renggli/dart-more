@@ -103,5 +103,19 @@ void main() {
       check(isBipartite<int>(vertices: [1, 2], neighboursOf: (v) => []))
           .isTrue();
     });
+
+    test('bipartiteColoring returns valid coloring or null', () {
+      final bip = Graph<int, void>(isDirected: false)
+        ..addEdge(1, 2)
+        ..addEdge(2, 3)
+        ..addEdge(3, 4);
+      final coloring = bip.bipartiteColoring();
+      check(coloring).isNotNull();
+      check(coloring![1] != coloring[2]).isTrue();
+      check(coloring[2] != coloring[3]).isTrue();
+
+      final nonBip = GraphFactory<int, void>().ring(vertexCount: 3);
+      check(nonBip.bipartiteColoring()).isNull();
+    });
   });
 }

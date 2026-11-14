@@ -15,11 +15,14 @@ import 'algorithms/community.dart' as community;
 import 'algorithms/connectivity.dart' as connectivity;
 import 'algorithms/cycle_check.dart' as cycle_check;
 import 'algorithms/dinic_max_flow.dart' as dinic_max_flow;
+import 'algorithms/dominating_set.dart' as dominating_set;
 import 'algorithms/eigenvector_centrality.dart' as eigenvector_centrality;
 import 'algorithms/eulerian.dart' as eulerian;
 import 'algorithms/hamiltonian.dart' as hamiltonian;
+import 'algorithms/hits.dart' as hits_algorithm;
 import 'algorithms/isomorphism.dart' as isomorphism;
 import 'algorithms/k_core.dart' as k_core;
+import 'algorithms/katz_centrality.dart' as katz_centrality;
 import 'algorithms/kruskal_spanning_tree.dart' as kruskal_spanning_tree;
 import 'algorithms/page_rank.dart' as page_rank;
 import 'algorithms/planarity.dart' as planarity;
@@ -31,6 +34,7 @@ import 'algorithms/search/floyd_warshall.dart' as floyd_warshall;
 import 'algorithms/stoer_wagner_min_cut.dart' as stoer_wagner_min_cut;
 import 'algorithms/structural_metrics.dart' as structural_metrics;
 import 'algorithms/tarjan_strongly_connected.dart' as tarjan_strongly_connected;
+import 'algorithms/tsp.dart' as tsp;
 import 'algorithms/vertex_coloring.dart' as vertex_coloring;
 import 'algorithms/vertex_cover.dart' as vertex_cover;
 import 'edge.dart';
@@ -253,6 +257,14 @@ extension AlgorithmsGraphExtension<V, E> on Graph<V, E> {
   /// Checks if the graph is bipartite.
   bool isBipartite({StorageStrategy<V>? vertexStrategy}) =>
       bipartite_check.isBipartite<V>(
+        vertices: vertices,
+        neighboursOf: neighboursOf,
+        vertexStrategy: vertexStrategy ?? this.vertexStrategy,
+      );
+
+  /// Returns a 2-coloring of this graph if bipartite, or `null` otherwise.
+  Map<V, bool>? bipartiteColoring({StorageStrategy<V>? vertexStrategy}) =>
+      bipartite_check.bipartiteColoring<V>(
         vertices: vertices,
         neighboursOf: neighboursOf,
         vertexStrategy: vertexStrategy ?? this.vertexStrategy,
@@ -835,6 +847,113 @@ extension AlgorithmsGraphExtension<V, E> on Graph<V, E> {
       patternEdgeValue: (u, v) => pattern.getEdge(u, v)?.value,
       targetStrategy: vertexStrategy ?? this.vertexStrategy,
       patternStrategy: patternStrategy ?? pattern.vertexStrategy,
+    );
+  }
+
+  /// Returns the eccentricity of [vertex], which is the maximum shortest-path
+  /// distance from [vertex] to any other reachable vertex.
+  num eccentricity(
+    V vertex, {
+    num Function(V source, V target)? edgeCost,
+    StorageStrategy<V>? vertexStrategy,
+  }) => allShortestPaths(
+    edgeCost: edgeCost,
+    vertexStrategy: vertexStrategy,
+  ).eccentricity(vertex);
+
+  /// Returns the diameter of this graph (maximum eccentricity).
+  num diameter({
+    num Function(V source, V target)? edgeCost,
+    StorageStrategy<V>? vertexStrategy,
+  }) => allShortestPaths(
+    edgeCost: edgeCost,
+    vertexStrategy: vertexStrategy,
+  ).diameter;
+
+  /// Returns the radius of this graph (minimum eccentricity).
+  num radius({
+    num Function(V source, V target)? edgeCost,
+    StorageStrategy<V>? vertexStrategy,
+  }) => allShortestPaths(
+    edgeCost: edgeCost,
+    vertexStrategy: vertexStrategy,
+  ).radius;
+
+  /// Returns the set of center vertices whose eccentricity equals the radius.
+  Set<V> center({
+    num Function(V source, V target)? edgeCost,
+    StorageStrategy<V>? vertexStrategy,
+  }) => allShortestPaths(
+    edgeCost: edgeCost,
+    vertexStrategy: vertexStrategy,
+  ).center;
+
+  /// Returns the set of periphery vertices whose eccentricity equals the diameter.
+  Set<V> periphery({
+    num Function(V source, V target)? edgeCost,
+    StorageStrategy<V>? vertexStrategy,
+  }) => allShortestPaths(
+    edgeCost: edgeCost,
+    vertexStrategy: vertexStrategy,
+  ).periphery;
+
+  /// Computes a dominating set for this graph using a greedy approximation.
+  Set<V> dominatingSet({StorageStrategy<V>? vertexStrategy}) =>
+      dominating_set.dominatingSet<V>(
+        vertices: vertices,
+        neighboursOf: neighboursOf,
+        vertexStrategy: vertexStrategy ?? this.vertexStrategy,
+      );
+
+  /// Computes Katz centrality scores for all vertices.
+  Map<V, double> katzCentrality({
+    double alpha = 0.1,
+    double beta = 1.0,
+    int maxIterations = 1000,
+    double tolerance = 1e-6,
+    StorageStrategy<V>? vertexStrategy,
+  }) => katz_centrality.katzCentrality<V>(
+    vertices: vertices,
+    predecessorsOf: predecessorsOf,
+    alpha: alpha,
+    beta: beta,
+    maxIterations: maxIterations,
+    tolerance: tolerance,
+    vertexStrategy: vertexStrategy ?? this.vertexStrategy,
+  );
+
+  /// Computes Kleinberg's HITS authority and hub centrality scores.
+  (Map<V, double> authorities, Map<V, double> hubs) hits({
+    int maxIterations = 100,
+    double tolerance = 1e-6,
+    StorageStrategy<V>? vertexStrategy,
+  }) => hits_algorithm.hits<V>(
+    vertices: vertices,
+    successorsOf: successorsOf,
+    predecessorsOf: predecessorsOf,
+    maxIterations: maxIterations,
+    tolerance: tolerance,
+    vertexStrategy: vertexStrategy ?? this.vertexStrategy,
+  );
+
+  /// Computes an approximate Traveling Salesperson Tour using Nearest Neighbor
+  /// and 2-opt local search.
+  Path<V, num>? tspHeuristic({
+    num Function(V source, V target)? edgeCost,
+    V? startVertex,
+    StorageStrategy<V>? vertexStrategy,
+  }) {
+    final cost =
+        edgeCost ??
+        (source, target) {
+          final val = getEdge(source, target)?.value;
+          return val is num ? val : 1;
+        };
+    return tsp.tspHeuristic<V>(
+      vertices: vertices,
+      edgeCost: cost,
+      startVertex: startVertex,
+      vertexStrategy: vertexStrategy ?? this.vertexStrategy,
     );
   }
 }

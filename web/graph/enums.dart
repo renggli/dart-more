@@ -139,7 +139,10 @@ enum CentralityMetric {
   pagerank('pagerank', 'PageRank'),
   eigenvector('eigenvector', 'Eigenvector Centrality'),
   coreNumbers('coreNumbers', 'Core Number (k-Core)'),
-  clustering('clustering', 'Local Clustering Coefficient');
+  clustering('clustering', 'Local Clustering Coefficient'),
+  katz('katz', 'Katz Centrality'),
+  hitsHubs('hitsHubs', 'HITS Hubs'),
+  hitsAuthorities('hitsAuthorities', 'HITS Authorities');
 
   new(this.id, this.label);
 
@@ -261,7 +264,8 @@ enum KCoreRemovedStyle {
 /// Mode of clique computation.
 enum CliquesMode {
   cliques('cliques', 'Maximal Cliques (Bron–Kerbosch)'),
-  independentSet('independentSet', 'Maximum Independent Set');
+  independentSet('independentSet', 'Maximum Independent Set'),
+  dominatingSet('dominatingSet', 'Dominating Set');
 
   new(this.id, this.label);
 

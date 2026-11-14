@@ -249,15 +249,19 @@ class HamiltonianModifier extends GraphModifier {
     if (graph.vertices.isEmpty) {
       return const ModifierOutput(statusSummary: 'Graph is empty');
     }
-    if (graph.vertices.length > 32) {
-      return ModifierOutput(
-        statusSummary:
-            'Graph is too large for Hamiltonian search (${graph.vertices.length} vertices > 32)',
-      );
-    }
-
+    Path<String, num>? tour;
+    var isTsp = false;
     try {
-      final tour = graph.findHamiltonianPath(circuit: requireCircuit);
+      if (graph.vertices.length > 32) {
+        tour = graph.tspHeuristic();
+        isTsp = true;
+      } else {
+        tour = graph.findHamiltonianPath(circuit: requireCircuit);
+        if (tour == null && !requireCircuit) {
+          tour = graph.tspHeuristic();
+          isTsp = true;
+        }
+      }
       if (tour == null) {
         return ModifierOutput(
           statusSummary: requireCircuit
@@ -315,13 +319,17 @@ class HamiltonianModifier extends GraphModifier {
         overlay: PathOverlay(
           vertices: tourVertices,
           edges: tourEdges,
-          title: requireCircuit ? 'Hamiltonian Cycle' : 'Hamiltonian Path',
+          title: isTsp
+              ? 'TSP Tour (2-Opt Heuristic)'
+              : (requireCircuit ? 'Hamiltonian Cycle' : 'Hamiltonian Path'),
         ),
-        statusSummary: requireCircuit
-            ? 'Hamiltonian Cycle found'
-            : 'Hamiltonian Path found',
+        statusSummary: isTsp
+            ? 'TSP Tour (2-opt heuristic)'
+            : (requireCircuit
+                  ? 'Hamiltonian Cycle found'
+                  : 'Hamiltonian Path found'),
         tableData: ModifierTableData(
-          title: 'Hamiltonian Sequence',
+          title: isTsp ? 'TSP Tour Sequence' : 'Hamiltonian Sequence',
           headers: ['Index', 'Vertex'],
           rows: [
             for (var i = 0; i < tourVertices.length; i++)

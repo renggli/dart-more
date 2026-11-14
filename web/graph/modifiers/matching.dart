@@ -206,7 +206,29 @@ class CliquesModifier extends GraphModifier {
 
     try {
       final color = highlightColor != 'none' ? highlightColor : null;
-      if (mode == CliquesMode.independentSet) {
+      if (mode == CliquesMode.dominatingSet) {
+        final domSet = graph.dominatingSet();
+        if (color != null) {
+          for (final v in domSet) {
+            final node = state.nodes[v];
+            if (node != null) {
+              node.style.borderColor = color;
+              node.style.borderWidth = 3.5;
+            }
+          }
+        }
+        return ModifierOutput(
+          statusSummary: 'Dominating Set: ${domSet.length} vertices',
+          tableData: ModifierTableData(
+            title: 'Dominating Set',
+            headers: ['Index', 'Vertex'],
+            rows: [
+              for (var i = 0; i < domSet.length; i++)
+                ['#$i', domSet.elementAt(i)],
+            ],
+          ),
+        );
+      } else if (mode == CliquesMode.independentSet) {
         final indSet = graph.maximumIndependentSet();
         if (color != null) {
           for (final v in indSet) {

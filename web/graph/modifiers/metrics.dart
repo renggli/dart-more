@@ -76,6 +76,14 @@ class CentralityModifier extends GraphModifier {
           scores = {
             for (final v in vertices) v: graph.localClusteringCoefficient(v),
           };
+        case CentralityMetric.katz:
+          scores = graph.katzCentrality();
+        case CentralityMetric.hitsHubs:
+          final (_, hubs) = graph.hits();
+          scores = hubs;
+        case CentralityMetric.hitsAuthorities:
+          final (auth, _) = graph.hits();
+          scores = auth;
       }
     } catch (_) {
       // Graceful fallback to degree centrality if power iteration or brandes fails
@@ -171,6 +179,15 @@ class GraphMetricsModifier extends GraphModifier {
     final edgeConn = graph.edgeConnectivity();
     final vertConn = graph.vertexConnectivity();
 
+    num? diameter;
+    num? radius;
+    Set<String>? center;
+    try {
+      diameter = graph.diameter();
+      radius = graph.radius();
+      center = graph.center();
+    } catch (_) {}
+
     var minDeg = double.infinity.toInt();
     var maxDeg = 0;
     var totalDeg = 0;
@@ -207,6 +224,11 @@ class GraphMetricsModifier extends GraphModifier {
           if (isPlanar != null) ['Planar', if (isPlanar) 'Yes' else 'No'],
           ['Edge Connectivity', '$edgeConn'],
           ['Vertex Connectivity', '$vertConn'],
+          if (diameter != null && !diameter.isInfinite) ...[
+            ['Diameter', '$diameter'],
+            ['Radius', '$radius'],
+            ['Center Vertices', center?.join(', ') ?? '-'],
+          ],
           [
             'Degree Sequence',
             'Min: $minDeg, Max: $maxDeg, Avg: ${avgDeg.toStringAsFixed(2)}',
