@@ -14,16 +14,17 @@ import 'node.dart';
 ///
 /// ### Advantages over [SplayTreeMap], `SortedList`, and [List]
 ///
-/// - **vs. [SplayTreeMap]**: Stores multiple entries in contiguous node arrays
-///   (`O(log_B n)` height), reducing pointer indirection, per-entry heap
-///   allocations, and GC overhead. Read queries do not mutate tree structure
-///   (no splaying), avoiding cache thrashing on uniform or random access
-///   patterns. Supports `O(log n)` positional rank/select ([keyAt],
-///   [indexOfKey], [removeAt]) and `O(1)` step doubly-linked leaf iteration
-///   instead of `O(n)` index scans or stack-based tree traversal.
-/// - **vs. `SortedList`**: Supports `O(log n)` insertions and removals
-///   (`SortedList` requires `O(n)` contiguous list shifts on mutation) while
-///   retaining `O(log n)` positional access and binary search.
+/// - **vs. [SplayTreeMap]**: Delivers `O(log n)` positional rank/select
+///   ([keyAt], [indexOfKey], [removeAt]) instead of `O(n)` scans, and `O(1)`
+///   step doubly-linked leaf iteration for faster full iteration and [range]
+///   scans. Read queries do not mutate tree structure (no splaying), while
+///   single-key lookups remain comparable and mutations trade slightly higher
+///   constant-factor array shifts for shallower `O(log_B n)` tree height and
+///   fewer heap allocations.
+/// - **vs. `SortedList`**: Supports `O(log n)` insertions and removals instead
+///   of `O(n)` contiguous list shifts, making bulk construction and mutations
+///   much faster while retaining `O(log n)` positional access and binary search
+///   (`SortedList` remains faster for static `O(1)` indexing and iteration).
 /// - **vs. [List]**: Maintains keys in sorted order automatically on insertion
 ///   with `O(log n)` lookup, range queries, and neighbor searches ([floorKey],
 ///   [ceilingKey]), whereas an unsorted [List] requires `O(n)` linear scan or
