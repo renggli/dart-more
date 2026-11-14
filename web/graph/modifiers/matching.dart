@@ -5,6 +5,7 @@ import '../dom_utils.dart';
 import '../enums.dart';
 import '../state.dart';
 import 'base.dart';
+import 'ui_helpers.dart';
 
 // ---------------------------------------------------------------------------
 // Maximum Matching (Blossom)
@@ -13,8 +14,11 @@ import 'base.dart';
 class MatchingModifier extends GraphModifier {
   new({super.enabled});
 
-  String matchingColor = '#10b981';
-  String matchingPattern = 'none';
+  final outputStyle = OutputStyleOptions(
+    color: '#10b981',
+    pattern: 'none',
+    hasRemovedMode: true,
+  );
 
   @override
   String get id => 'matching';
@@ -28,25 +32,11 @@ class MatchingModifier extends GraphModifier {
   @override
   web.HTMLElement buildConfigUI(AppState state, void Function() onModified) {
     final root = div('form-column');
-    root.appendChild(
-      colorSetting(
-        'Matching Color:',
-        matchingColor,
-        onChanged: (c) {
-          matchingColor = c;
-          onModified();
-        },
-      ),
-    );
-    root.appendChild(
-      lineStyleSetting(
-        'Matching Line Style:',
-        matchingPattern,
-        onChanged: (p) {
-          matchingPattern = p;
-          onModified();
-        },
-      ),
+    outputStyle.buildUI(
+      root,
+      onModified,
+      colorLabel: 'Matching Color:',
+      patternLabel: 'Matching Line Style:',
     );
     return root;
   }
@@ -77,8 +67,8 @@ class MatchingModifier extends GraphModifier {
         }
       }
 
-      final dash = matchingPattern != 'none' ? matchingPattern : null;
-      final color = matchingColor != 'none' ? matchingColor : null;
+      final dash = outputStyle.dashPattern;
+      final color = outputStyle.highlightColor;
       for (final edge in matchedEdges) {
         if (color != null || dash != null) {
           final es = state.getEdgeStyle(edge.$1, edge.$2);
@@ -91,6 +81,17 @@ class MatchingModifier extends GraphModifier {
         if (color != null) {
           state.nodes[edge.$1]?.style.borderColor = color;
           state.nodes[edge.$2]?.style.borderColor = color;
+        }
+      }
+
+      // Handle non-matched edges
+      for (final edge in graph.edges.toSet()) {
+        final pair = edge.source.compareTo(edge.target) < 0
+            ? (edge.source, edge.target)
+            : (edge.target, edge.source);
+        if (!matchedEdges.contains(pair)) {
+          final es = state.getEdgeStyle(edge.source, edge.target);
+          es.opacity = outputStyle.removedMode == RemovedMode.hide ? 0.0 : 0.25;
         }
       }
 

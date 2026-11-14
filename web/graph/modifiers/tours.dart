@@ -4,6 +4,7 @@ import 'package:web/web.dart' as web;
 import '../dom_utils.dart';
 import '../state.dart';
 import 'base.dart';
+import 'ui_helpers.dart';
 
 // ---------------------------------------------------------------------------
 // Eulerian Circuit & Trail
@@ -12,8 +13,11 @@ import 'base.dart';
 class EulerianModifier extends GraphModifier {
   new({super.enabled});
 
-  String tourColor = '#10b981';
-  String tourPattern = 'none';
+  final outputStyle = OutputStyleOptions(
+    color: '#10b981',
+    pattern: 'none',
+    hasRemovedMode: true,
+  );
   bool requireCircuit = false;
 
   @override
@@ -40,26 +44,11 @@ class EulerianModifier extends GraphModifier {
       ),
     );
 
-    root.appendChild(
-      colorSetting(
-        'Trail Color:',
-        tourColor,
-        onChanged: (c) {
-          tourColor = c;
-          onModified();
-        },
-      ),
-    );
-
-    root.appendChild(
-      lineStyleSetting(
-        'Trail Line Style:',
-        tourPattern,
-        onChanged: (p) {
-          tourPattern = p;
-          onModified();
-        },
-      ),
+    outputStyle.buildUI(
+      root,
+      onModified,
+      colorLabel: 'Trail Color:',
+      patternLabel: 'Trail Line Style:',
     );
 
     return root;
@@ -107,13 +96,18 @@ class EulerianModifier extends GraphModifier {
         return const ModifierOutput(statusSummary: 'No Eulerian tour found');
       }
 
-      final dash = tourPattern != 'none' ? tourPattern : null;
-      final color = tourColor != 'none' ? tourColor : null;
+      final dash = outputStyle.dashPattern;
+      final color = outputStyle.highlightColor;
       final tourVertices = tour.vertices.toList();
       final tourEdges = <(String, String)>[];
+      final tourEdgeSet = <(String, String)>{};
       for (var i = 0; i < tourVertices.length - 1; i++) {
         final key = (tourVertices[i], tourVertices[i + 1]);
         tourEdges.add(key);
+        tourEdgeSet.add(key);
+        if (!graph.isDirected) {
+          tourEdgeSet.add((key.$2, key.$1));
+        }
         if (color != null || dash != null) {
           final es = state.getEdgeStyle(key.$1, key.$2);
           if (color != null) {
@@ -121,6 +115,14 @@ class EulerianModifier extends GraphModifier {
             es.strokeWidth = 3.5;
           }
           es.dashPattern = dash;
+        }
+      }
+
+      // Handle non-tour edges
+      for (final e in graph.edges.toSet()) {
+        if (!tourEdgeSet.contains((e.source, e.target))) {
+          final es = state.getEdgeStyle(e.source, e.target);
+          es.opacity = outputStyle.removedMode == RemovedMode.hide ? 0.0 : 0.25;
         }
       }
 
@@ -167,8 +169,11 @@ class EulerianModifier extends GraphModifier {
 class HamiltonianModifier extends GraphModifier {
   new({super.enabled});
 
-  String tourColor = '#a855f7';
-  String tourPattern = 'none';
+  final outputStyle = OutputStyleOptions(
+    color: '#a855f7',
+    pattern: 'none',
+    hasRemovedMode: true,
+  );
   bool requireCircuit = false;
 
   @override
@@ -195,26 +200,11 @@ class HamiltonianModifier extends GraphModifier {
       ),
     );
 
-    root.appendChild(
-      colorSetting(
-        'Path Color:',
-        tourColor,
-        onChanged: (c) {
-          tourColor = c;
-          onModified();
-        },
-      ),
-    );
-
-    root.appendChild(
-      lineStyleSetting(
-        'Path Line Style:',
-        tourPattern,
-        onChanged: (p) {
-          tourPattern = p;
-          onModified();
-        },
-      ),
+    outputStyle.buildUI(
+      root,
+      onModified,
+      colorLabel: 'Path Color:',
+      patternLabel: 'Path Line Style:',
     );
 
     return root;
@@ -249,13 +239,18 @@ class HamiltonianModifier extends GraphModifier {
         );
       }
 
-      final dash = tourPattern != 'none' ? tourPattern : null;
-      final color = tourColor != 'none' ? tourColor : null;
+      final dash = outputStyle.dashPattern;
+      final color = outputStyle.highlightColor;
       final tourVertices = tour.vertices.toList();
       final tourEdges = <(String, String)>[];
+      final tourEdgeSet = <(String, String)>{};
       for (var i = 0; i < tourVertices.length - 1; i++) {
         final key = (tourVertices[i], tourVertices[i + 1]);
         tourEdges.add(key);
+        tourEdgeSet.add(key);
+        if (!graph.isDirected) {
+          tourEdgeSet.add((key.$2, key.$1));
+        }
         if (color != null || dash != null) {
           final es = state.getEdgeStyle(key.$1, key.$2);
           if (color != null) {
@@ -263,6 +258,14 @@ class HamiltonianModifier extends GraphModifier {
             es.strokeWidth = 3.5;
           }
           es.dashPattern = dash;
+        }
+      }
+
+      // Handle non-tour edges
+      for (final e in graph.edges.toSet()) {
+        if (!tourEdgeSet.contains((e.source, e.target))) {
+          final es = state.getEdgeStyle(e.source, e.target);
+          es.opacity = outputStyle.removedMode == RemovedMode.hide ? 0.0 : 0.25;
         }
       }
 

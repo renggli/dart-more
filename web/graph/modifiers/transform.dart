@@ -4,6 +4,7 @@ import 'package:web/web.dart' as web;
 import '../dom_utils.dart';
 import '../state.dart';
 import 'base.dart';
+import 'ui_helpers.dart';
 
 // ---------------------------------------------------------------------------
 // Graph Complement Modifier
@@ -223,9 +224,11 @@ class TransitiveClosureModifier extends GraphModifier {
 class TransitiveReductionModifier extends GraphModifier {
   new({super.enabled});
 
-  String removedColor = '#ef4444';
-  String removedPattern = '6,4';
-  bool keepRemovedDashedInView = true;
+  final outputStyle = OutputStyleOptions(
+    color: '#ef4444',
+    pattern: '6,4',
+    hasRemovedMode: true,
+  );
 
   @override
   String get id => 'transitive_reduction';
@@ -253,48 +256,14 @@ class TransitiveReductionModifier extends GraphModifier {
   @override
   web.HTMLElement buildConfigUI(AppState state, void Function() onModified) {
     final container = div('form-column');
-    final dashControls = div('form-column');
 
-    void rebuildDashControls() {
-      dashControls.textContent = '';
-      if (keepRemovedDashedInView) {
-        dashControls.appendChild(
-          colorSetting(
-            'Removed Border & Stroke Color:',
-            removedColor,
-            onChanged: (c) {
-              removedColor = c;
-              onModified();
-            },
-          ),
-        );
-        dashControls.appendChild(
-          lineStyleSetting(
-            'Removed Line Style:',
-            removedPattern,
-            onChanged: (p) {
-              removedPattern = p;
-              onModified();
-            },
-          ),
-        );
-      }
-    }
-
-    container.appendChild(
-      checkboxSetting(
-        'Keep removed edges dashed in view',
-        keepRemovedDashedInView,
-        onChanged: (val) {
-          keepRemovedDashedInView = val;
-          rebuildDashControls();
-          onModified();
-        },
-      ),
+    outputStyle.buildUI(
+      container,
+      onModified,
+      colorLabel: 'Removed Edge Color:',
+      patternLabel: 'Removed Line Style:',
+      removedLabel: 'Show Removed as:',
     );
-
-    rebuildDashControls();
-    container.appendChild(dashControls);
 
     return container;
   }
@@ -339,14 +308,14 @@ class TransitiveReductionModifier extends GraphModifier {
       );
     }
 
-    final dash = removedPattern != 'none' ? removedPattern : null;
-    final color = removedColor != 'none' ? removedColor : null;
+    final dash = outputStyle.dashPattern;
+    final color = outputStyle.highlightColor;
     var removedEdgesCount = 0;
     // Identify removed edges
     for (final edge in graph.edges) {
       if (!reduced.containsEdge(edge.source, edge.target)) {
         removedEdgesCount++;
-        if (keepRemovedDashedInView) {
+        if (outputStyle.removedMode == RemovedMode.dim) {
           // Keep edge in graph view but style as dashed and colored
           reducedGraph.addEdge(edge.source, edge.target, value: edge.value);
           final es = state.getEdgeStyle(edge.source, edge.target);

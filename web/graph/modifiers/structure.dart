@@ -7,6 +7,7 @@ import '../dom_utils.dart';
 import '../enums.dart';
 import '../state.dart';
 import 'base.dart';
+import 'ui_helpers.dart';
 
 // ---------------------------------------------------------------------------
 // Connected Components Modifier
@@ -224,8 +225,11 @@ class BiconnectedComponentsModifier extends GraphModifier {
 class CycleDetectionModifier extends GraphModifier {
   new({super.enabled});
 
-  String cycleColor = '#ef4444';
-  String cyclePattern = '6,4';
+  final outputStyle = OutputStyleOptions(
+    color: '#ef4444',
+    pattern: '6,4',
+    hasRemovedMode: true,
+  );
   int selectedCycleIndex = -1; // -1 means All Discovered Cycles
   void Function(List<List<String>> cycles)? _onCyclesChanged;
 
@@ -280,26 +284,11 @@ class CycleDetectionModifier extends GraphModifier {
     _onCyclesChanged = updateDropdown;
     root.appendChild(dropdownContainer);
 
-    root.appendChild(
-      colorSetting(
-        'Cycle Color:',
-        cycleColor,
-        onChanged: (c) {
-          cycleColor = c;
-          onModified();
-        },
-      ),
-    );
-
-    root.appendChild(
-      lineStyleSetting(
-        'Cycle Line Style:',
-        cyclePattern,
-        onChanged: (p) {
-          cyclePattern = p;
-          onModified();
-        },
-      ),
+    outputStyle.buildUI(
+      root,
+      onModified,
+      colorLabel: 'Cycle Color:',
+      patternLabel: 'Cycle Line Style:',
     );
 
     return root;
@@ -337,16 +326,19 @@ class CycleDetectionModifier extends GraphModifier {
       cyclesToHighlight.addAll(cycles);
     }
 
-    final dash = cyclePattern != 'none' ? cyclePattern : null;
-    final color = cycleColor != 'none' ? cycleColor : null;
+    final dash = outputStyle.dashPattern;
+    final color = outputStyle.highlightColor;
     final cycleEdges = <(String, String)>[];
+    final cycleEdgeSet = <(String, String)>{};
     for (final cycle in cyclesToHighlight) {
       for (var i = 0; i < cycle.length - 1; i++) {
         final u = cycle[i];
         final v = cycle[i + 1];
         cycleEdges.add((u, v));
+        cycleEdgeSet.add((u, v));
         if (!graph.isDirected) {
           cycleEdges.add((v, u));
+          cycleEdgeSet.add((v, u));
         }
         if (color != null || dash != null) {
           final edgeStyle = state.getEdgeStyle(
@@ -370,6 +362,16 @@ class CycleDetectionModifier extends GraphModifier {
           }
           node.style.dashPattern = dash;
         }
+      }
+    }
+
+    // Handle non-cycle edges
+    for (final e in graph.edges.toSet()) {
+      if (!cycleEdgeSet.contains((e.source, e.target))) {
+        final edgeStyle = state.getEdgeStyle(e.source, e.target);
+        edgeStyle.opacity = outputStyle.removedMode == RemovedMode.hide
+            ? 0.0
+            : 0.25;
       }
     }
 
@@ -580,12 +582,14 @@ class PlanarityModifier extends GraphModifier {
 // ---------------------------------------------------------------------------
 
 class KCoreModifier extends GraphModifier {
-  new({super.enabled, this.k = 2, this.removedStyle = KCoreRemovedStyle.dash});
+  new({super.enabled, this.k = 2});
 
   int k;
-  KCoreRemovedStyle removedStyle;
-  String dashColor = '#ef4444';
-  String dashPattern = '6,4';
+  final outputStyle = OutputStyleOptions(
+    color: '#ef4444',
+    pattern: '6,4',
+    hasRemovedMode: true,
+  );
 
   @override
   String get id => 'k_core';
@@ -613,33 +617,6 @@ class KCoreModifier extends GraphModifier {
   @override
   web.HTMLElement buildConfigUI(AppState state, void Function() onModified) {
     final container = div('form-column');
-    final dashControls = div('form-column');
-
-    void rebuildDashControls() {
-      dashControls.textContent = '';
-      if (removedStyle == KCoreRemovedStyle.dash) {
-        dashControls.appendChild(
-          colorSetting(
-            'Removed Border Color:',
-            dashColor,
-            onChanged: (c) {
-              dashColor = c;
-              onModified();
-            },
-          ),
-        );
-        dashControls.appendChild(
-          lineStyleSetting(
-            'Removed Line Style:',
-            dashPattern,
-            onChanged: (p) {
-              dashPattern = p;
-              onModified();
-            },
-          ),
-        );
-      }
-    }
 
     container.appendChild(
       rangeSetting(
@@ -654,21 +631,13 @@ class KCoreModifier extends GraphModifier {
       ),
     );
 
-    container.appendChild(
-      dropdownSetting(
-        'Removed Vertices Style:',
-        removedStyle.id,
-        [for (final s in KCoreRemovedStyle.values) (s.id, s.label)],
-        onChanged: (val) {
-          removedStyle = KCoreRemovedStyle.fromId(val);
-          rebuildDashControls();
-          onModified();
-        },
-      ),
+    outputStyle.buildUI(
+      container,
+      onModified,
+      colorLabel: 'Removed Element Color:',
+      patternLabel: 'Removed Line Style:',
+      removedLabel: 'Show Removed as:',
     );
-
-    rebuildDashControls();
-    container.appendChild(dashControls);
 
     return container;
   }
@@ -695,9 +664,9 @@ class KCoreModifier extends GraphModifier {
     }
 
     // Apply dashed styling or filter
-    if (removedStyle == KCoreRemovedStyle.dash) {
-      final dash = dashPattern != 'none' ? dashPattern : null;
-      final color = dashColor != 'none' ? dashColor : null;
+    if (outputStyle.removedMode == RemovedMode.dim) {
+      final dash = outputStyle.dashPattern;
+      final color = outputStyle.highlightColor;
       for (final v in graph.vertices) {
         if (!coreVerts.contains(v)) {
           final node = state.nodes[v];
@@ -728,7 +697,7 @@ class KCoreModifier extends GraphModifier {
           rows: [
             ['Threshold k', '$k'],
             ['Surviving Vertices', '${coreVerts.length}'],
-            ['Dashed / Dimmed', '${graph.vertices.length - coreVerts.length}'],
+            ['Dimmed Vertices', '${graph.vertices.length - coreVerts.length}'],
           ],
         ),
       );

@@ -17,8 +17,11 @@ class ShortestPathModifier extends GraphModifier {
   ShortestPathAlgorithm algorithm;
   String? sourceVertex;
   String? targetVertex;
-  String pathColor = '#38bdf8';
-  String pathPattern = 'none';
+  final outputStyle = OutputStyleOptions(
+    color: '#38bdf8',
+    pattern: 'none',
+    hasRemovedMode: true,
+  );
 
   @override
   String get id => 'shortest_path';
@@ -67,26 +70,11 @@ class ShortestPathModifier extends GraphModifier {
       ),
     );
 
-    root.appendChild(
-      colorSetting(
-        'Path Color:',
-        pathColor,
-        onChanged: (c) {
-          pathColor = c;
-          onModified();
-        },
-      ),
-    );
-
-    root.appendChild(
-      lineStyleSetting(
-        'Line Style:',
-        pathPattern,
-        onChanged: (p) {
-          pathPattern = p;
-          onModified();
-        },
-      ),
+    outputStyle.buildUI(
+      root,
+      onModified,
+      colorLabel: 'Path Color:',
+      patternLabel: 'Line Style:',
     );
 
     return root;
@@ -204,13 +192,18 @@ class ShortestPathModifier extends GraphModifier {
       return ModifierOutput(statusSummary: 'No path found ($src → $tgt)');
     }
 
-    final dash = pathPattern != 'none' ? pathPattern : null;
-    final color = pathColor != 'none' ? pathColor : null;
+    final dash = outputStyle.dashPattern;
+    final color = outputStyle.highlightColor;
     final pathVertices = path.vertices.toList();
     final pathEdges = <(String, String)>[];
+    final pathEdgeSet = <(String, String)>{};
     for (var i = 0; i < pathVertices.length - 1; i++) {
       final edgeKey = (pathVertices[i], pathVertices[i + 1]);
       pathEdges.add(edgeKey);
+      pathEdgeSet.add(edgeKey);
+      if (!graph.isDirected) {
+        pathEdgeSet.add((edgeKey.$2, edgeKey.$1));
+      }
       if (color != null || dash != null) {
         final edgeStyle = state.getEdgeStyle(edgeKey.$1, edgeKey.$2);
         if (color != null) {
@@ -218,6 +211,16 @@ class ShortestPathModifier extends GraphModifier {
           edgeStyle.strokeWidth = 3.0;
         }
         edgeStyle.dashPattern = dash;
+      }
+    }
+
+    // Handle removed/non-path elements
+    for (final e in graph.edges.toSet()) {
+      if (!pathEdgeSet.contains((e.source, e.target))) {
+        final edgeStyle = state.getEdgeStyle(e.source, e.target);
+        edgeStyle.opacity = outputStyle.removedMode == RemovedMode.hide
+            ? 0.0
+            : 0.25;
       }
     }
 

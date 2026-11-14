@@ -4,6 +4,7 @@ import 'package:web/web.dart' as web;
 import '../dom_utils.dart';
 import '../state.dart';
 import 'base.dart';
+import 'ui_helpers.dart';
 
 // ---------------------------------------------------------------------------
 // Spanning Tree Modifier
@@ -13,8 +14,11 @@ class SpanningTreeModifier extends GraphModifier {
   new({super.enabled});
 
   String algorithm = 'kruskal';
-  String treeColor = '#10b981';
-  String treePattern = 'none';
+  final outputStyle = OutputStyleOptions(
+    color: '#10b981',
+    pattern: 'none',
+    hasRemovedMode: true,
+  );
 
   @override
   String get id => 'spanning_tree';
@@ -44,26 +48,11 @@ class SpanningTreeModifier extends GraphModifier {
       ),
     );
 
-    root.appendChild(
-      colorSetting(
-        'Tree Color:',
-        treeColor,
-        onChanged: (c) {
-          treeColor = c;
-          onModified();
-        },
-      ),
-    );
-
-    root.appendChild(
-      lineStyleSetting(
-        'Tree Line Style:',
-        treePattern,
-        onChanged: (p) {
-          treePattern = p;
-          onModified();
-        },
-      ),
+    outputStyle.buildUI(
+      root,
+      onModified,
+      colorLabel: 'Tree Color:',
+      patternLabel: 'Tree Line Style:',
     );
 
     return root;
@@ -96,8 +85,8 @@ class SpanningTreeModifier extends GraphModifier {
       return ModifierOutput(hasError: true, errorMessage: e.toString());
     }
 
-    final dash = treePattern != 'none' ? treePattern : null;
-    final color = treeColor != 'none' ? treeColor : null;
+    final dash = outputStyle.dashPattern;
+    final color = outputStyle.highlightColor;
     final treeEdges = tree.edges.toSet();
     num totalWeight = 0;
     final rows = <List<String>>[];
@@ -114,6 +103,18 @@ class SpanningTreeModifier extends GraphModifier {
         }
         edgeStyle.dashPattern = dash;
       }
+    }
+
+    if (outputStyle.removedMode == RemovedMode.hide) {
+      return ModifierOutput(
+        transformedGraph: tree,
+        statusSummary: 'MST Weight: $totalWeight (${treeEdges.length} edges)',
+        tableData: ModifierTableData(
+          title: 'Spanning Tree Edges ($algorithm)',
+          headers: ['Edge', 'Weight', 'Cumulative Weight'],
+          rows: rows,
+        ),
+      );
     }
 
     // Dim non-tree edges
