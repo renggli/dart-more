@@ -28,7 +28,7 @@ void orderLayers<V>(LayeredGraph<V> graph, {int sweeps = 24}) {
     if (isDownward) {
       // Downward sweep: layer 1 to k-1
       for (var l = 1; l < layers.length; l++) {
-        _sweepLayer(layers[l], graph.predecessors, isDownward: true);
+        _sweepLayer(layers[l], graph.predecessors);
         _adjacentTranspositions(
           layers[l - 1],
           layers[l],
@@ -39,7 +39,7 @@ void orderLayers<V>(LayeredGraph<V> graph, {int sweeps = 24}) {
     } else {
       // Upward sweep: layer k-2 down to 0
       for (var l = layers.length - 2; l >= 0; l--) {
-        _sweepLayer(layers[l], graph.successors, isDownward: false);
+        _sweepLayer(layers[l], graph.successors);
         _adjacentTranspositions(
           l > 0 ? layers[l - 1] : null,
           layers[l],
@@ -69,9 +69,8 @@ void orderLayers<V>(LayeredGraph<V> graph, {int sweeps = 24}) {
 
 void _sweepLayer<V>(
   List<LayerNode<V>> layer,
-  Map<LayerNode<V>, List<LayerNode<V>>> adjacent, {
-  required bool isDownward,
-}) {
+  Map<LayerNode<V>, List<LayerNode<V>>> adjacent,
+) {
   final barycenters = <LayerNode<V>, double>{};
 
   for (var i = 0; i < layer.length; i++) {

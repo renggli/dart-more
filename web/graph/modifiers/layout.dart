@@ -270,10 +270,7 @@ class LayoutModifier extends GraphModifier {
 
   @override
   ModifierOutput apply(Graph<String, num> graph, AppState state) {
-    final vertices = graph.vertices.toList();
-    if (vertices.isEmpty) {
-      return const ModifierOutput(statusSummary: 'Graph is empty');
-    }
+    if (validateGraph(graph) case final err?) return err;
 
     GraphLayout.applyLayout(
       state,
@@ -297,7 +294,7 @@ class LayoutModifier extends GraphModifier {
         rows: [
           ['Algorithm', algorithm.label],
           ['Orientation', rankDir.label],
-          ['Positioned Vertices', '${vertices.length}'],
+          ['Positioned Vertices', '${graph.vertices.length}'],
           ['Overlap Removal', if (removeOverlaps) 'Enabled' else 'Disabled'],
         ],
       ),

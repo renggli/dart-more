@@ -71,6 +71,20 @@ final class LayoutInput<V> {
   /// Returns the weight of the edge between [source] and [target].
   num weightOf(V source, V target) => edgeWeight?.call(source, target) ?? 1.0;
 
+  /// Returns a map of vertex sizes and the average maximum dimension.
+  (Map<V, LayoutSize> sizes, double averageExtent) computeExtents([
+    Iterable<V>? vs,
+  ]) {
+    final list = vs ?? vertices;
+    final sizes = <V, LayoutSize>{for (final v in list) v: sizeOf(v)};
+    var total = 0.0;
+    for (final sz in sizes.values) {
+      total += math.max(sz.width, sz.height);
+    }
+    final avg = sizes.isNotEmpty ? total / sizes.length : 40.0;
+    return (sizes, avg);
+  }
+
   Map<V, Set<V>>? _cachedNeighbours;
 
   /// Returns the undirected neighbours (adjacent vertices) of [vertex].
@@ -154,15 +168,11 @@ final class LayoutResult<V> {
     required Map<V, LayoutPoint> positions,
     Map<(V, V), List<LayoutPoint>> edgeRoutes = const {},
     this.vertexSizes,
-    this._bounds,
   }) : positions = Map<V, LayoutPoint>.unmodifiable(positions),
        edgeRoutes = Map<(V, V), List<LayoutPoint>>.unmodifiable(edgeRoutes);
 
   /// Empty layout result.
-  static LayoutResult<V> empty<V>() => LayoutResult<V>(
-    positions: const {},
-    bounds: const LayoutRectangle(0, 0, 0, 0),
-  );
+  static LayoutResult<V> empty<V>() => LayoutResult<V>(positions: const {});
 
   /// Map associating each vertex with its computed center [LayoutPoint].
   final Map<V, LayoutPoint> positions;

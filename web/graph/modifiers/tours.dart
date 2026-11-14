@@ -6,25 +6,22 @@ import '../state.dart';
 import 'base.dart';
 import 'ui_helpers.dart';
 
-// ---------------------------------------------------------------------------
-// Eulerian Circuit & Trail
-// ---------------------------------------------------------------------------
+abstract class _TourModifier extends GraphModifier {
+  new({
+    super.enabled,
+    required String defaultColor,
+    required this.pathColorLabel,
+    required this.pathLineStyleLabel,
+  }) : outputStyle = OutputStyleOptions(
+         color: defaultColor,
+         pattern: 'none',
+         hasRemovedMode: true,
+       );
 
-class EulerianModifier extends GraphModifier {
-  new({super.enabled});
-
-  final outputStyle = OutputStyleOptions(
-    color: '#10b981',
-    pattern: 'none',
-    hasRemovedMode: true,
-  );
+  final OutputStyleOptions outputStyle;
+  final String pathColorLabel;
+  final String pathLineStyleLabel;
   bool requireCircuit = false;
-
-  @override
-  String get id => 'eulerian';
-
-  @override
-  String get name => 'Eulerian Trail & Circuit';
 
   @override
   ModifierCategory get category => ModifierCategory.tours;
@@ -52,7 +49,6 @@ class EulerianModifier extends GraphModifier {
   @override
   web.HTMLElement buildConfigUI(AppState state, void Function() onModified) {
     final root = div('form-column');
-
     root.appendChild(
       checkboxSetting(
         'Only circuit (closed)',
@@ -63,16 +59,98 @@ class EulerianModifier extends GraphModifier {
         },
       ),
     );
-
     outputStyle.buildUI(
       root,
       onModified,
-      colorLabel: 'Trail Color:',
-      patternLabel: 'Trail Line Style:',
+      colorLabel: pathColorLabel,
+      patternLabel: pathLineStyleLabel,
     );
-
     return root;
   }
+
+  ModifierOutput renderTour({
+    required Graph<String, num> graph,
+    required AppState state,
+    required Path<String, num> tour,
+    required String overlayTitle,
+    required String statusSummary,
+    required String tableTitle,
+    String stepHeader = 'Step',
+  }) {
+    final dash = outputStyle.dashPattern;
+    final color = outputStyle.highlightColor;
+    final tourVertices = tour.vertices.toList();
+    final tourEdges = <(String, String)>[];
+    final tourEdgeSet = <(String, String)>{};
+
+    for (var i = 0; i < tourVertices.length - 1; i++) {
+      final key = (tourVertices[i], tourVertices[i + 1]);
+      tourEdges.add(key);
+      tourEdgeSet.add(key);
+      if (!graph.isDirected) {
+        tourEdgeSet.add((key.$2, key.$1));
+      }
+      if (color != null || dash != null) {
+        final es = state.getEdgeStyle(key.$1, key.$2);
+        if (color != null) {
+          es.color = color;
+          es.strokeWidth = 3.5;
+        }
+        es.dashPattern = dash;
+      }
+    }
+
+    for (final e in graph.edges.toSet()) {
+      if (!tourEdgeSet.contains((e.source, e.target))) {
+        final es = state.getEdgeStyle(e.source, e.target);
+        es.opacity = outputStyle.removedMode == RemovedMode.hide ? 0.0 : 0.25;
+      }
+    }
+
+    for (final v in tourVertices) {
+      final node = state.nodes[v];
+      if (node != null && (color != null || dash != null)) {
+        if (color != null) node.style.borderColor = color;
+        node.style.dashPattern = dash;
+      }
+    }
+
+    return ModifierOutput(
+      overlay: PathOverlay(
+        vertices: tourVertices,
+        edges: tourEdges,
+        title: overlayTitle,
+      ),
+      statusSummary: statusSummary,
+      tableData: ModifierTableData(
+        title: tableTitle,
+        headers: [stepHeader, 'Vertex'],
+        rows: [
+          for (var i = 0; i < tourVertices.length; i++)
+            ['#${i + 1}', tourVertices[i]],
+        ],
+      ),
+    );
+  }
+}
+
+// ---------------------------------------------------------------------------
+// Eulerian Circuit & Trail
+// ---------------------------------------------------------------------------
+
+class EulerianModifier extends _TourModifier {
+  new({super.enabled})
+    : super(
+        defaultColor: '#10b981',
+        pathColorLabel: 'Trail Color:',
+        pathLineStyleLabel: 'Trail Line Style:',
+      );
+
+  @override
+  String get id => 'eulerian';
+
+  @override
+  String get name => 'Eulerian Trail & Circuit';
 
   @override
   ModifierOutput apply(Graph<String, num> graph, AppState state) {
@@ -94,7 +172,7 @@ class EulerianModifier extends GraphModifier {
                 if (graph.degreeOf(v).isOdd) v,
             ];
 
-      if (requireCircuit && !hasCircuit) {
+      void markViolations() {
         for (final v in oddVertices) {
           final node = state.nodes[v];
           if (node != null) {
@@ -102,6 +180,10 @@ class EulerianModifier extends GraphModifier {
             node.style.borderWidth = 3.0;
           }
         }
+      }
+
+      if (requireCircuit && !hasCircuit) {
+        markViolations();
         return ModifierOutput(
           statusSummary:
               'No Eulerian Circuit (${oddVertices.length} odd-degree vertices)',
@@ -120,13 +202,7 @@ class EulerianModifier extends GraphModifier {
       }
 
       if (!hasPath) {
-        for (final v in oddVertices) {
-          final node = state.nodes[v];
-          if (node != null) {
-            node.style.borderColor = '#ef4444';
-            node.style.borderWidth = 3.0;
-          }
-        }
+        markViolations();
         return ModifierOutput(
           statusSummary:
               'Graph is not Eulerian (${oddVertices.length} odd-degree vertices)',
@@ -150,61 +226,15 @@ class EulerianModifier extends GraphModifier {
         return const ModifierOutput(statusSummary: 'No Eulerian tour found');
       }
 
-      final dash = outputStyle.dashPattern;
-      final color = outputStyle.highlightColor;
-      final tourVertices = tour.vertices.toList();
-      final tourEdges = <(String, String)>[];
-      final tourEdgeSet = <(String, String)>{};
-      for (var i = 0; i < tourVertices.length - 1; i++) {
-        final key = (tourVertices[i], tourVertices[i + 1]);
-        tourEdges.add(key);
-        tourEdgeSet.add(key);
-        if (!graph.isDirected) {
-          tourEdgeSet.add((key.$2, key.$1));
-        }
-        if (color != null || dash != null) {
-          final es = state.getEdgeStyle(key.$1, key.$2);
-          if (color != null) {
-            es.color = color;
-            es.strokeWidth = 3.5;
-          }
-          es.dashPattern = dash;
-        }
-      }
-
-      // Handle non-tour edges
-      for (final e in graph.edges.toSet()) {
-        if (!tourEdgeSet.contains((e.source, e.target))) {
-          final es = state.getEdgeStyle(e.source, e.target);
-          es.opacity = outputStyle.removedMode == RemovedMode.hide ? 0.0 : 0.25;
-        }
-      }
-
-      for (final v in tourVertices) {
-        final node = state.nodes[v];
-        if (node != null && (color != null || dash != null)) {
-          if (color != null) node.style.borderColor = color;
-          node.style.dashPattern = dash;
-        }
-      }
-
-      return ModifierOutput(
-        overlay: PathOverlay(
-          vertices: tourVertices,
-          edges: tourEdges,
-          title: hasCircuit ? 'Eulerian Circuit' : 'Eulerian Trail',
-        ),
+      return renderTour(
+        graph: graph,
+        state: state,
+        tour: tour,
+        overlayTitle: hasCircuit ? 'Eulerian Circuit' : 'Eulerian Trail',
         statusSummary: hasCircuit
             ? 'Eulerian Circuit found'
             : 'Eulerian Trail found',
-        tableData: ModifierTableData(
-          title: 'Eulerian Steps',
-          headers: ['Step', 'Vertex'],
-          rows: [
-            for (var i = 0; i < tourVertices.length; i++)
-              ['#${i + 1}', tourVertices[i]],
-          ],
-        ),
+        tableTitle: 'Eulerian Steps',
       );
     } catch (e) {
       return ModifierOutput(
@@ -220,69 +250,19 @@ class EulerianModifier extends GraphModifier {
 // Hamiltonian Cycle & Path
 // ---------------------------------------------------------------------------
 
-class HamiltonianModifier extends GraphModifier {
-  new({super.enabled});
-
-  final outputStyle = OutputStyleOptions(
-    color: '#a855f7',
-    pattern: 'none',
-    hasRemovedMode: true,
-  );
-  bool requireCircuit = false;
+class HamiltonianModifier extends _TourModifier {
+  new({super.enabled})
+    : super(
+        defaultColor: '#a855f7',
+        pathColorLabel: 'Path Color:',
+        pathLineStyleLabel: 'Path Line Style:',
+      );
 
   @override
   String get id => 'hamiltonian';
 
   @override
   String get name => 'Hamiltonian Path & Cycle';
-
-  @override
-  ModifierCategory get category => ModifierCategory.tours;
-
-  @override
-  Map<String, dynamic> exportConfig() => {
-    'requireCircuit': requireCircuit,
-    'outputStyle': outputStyle.toJson(),
-  };
-
-  @override
-  void applyConfig(Map<String, dynamic> config) {
-    if (config['requireCircuit'] case final bool rc) requireCircuit = rc;
-    if (config['outputStyle'] case final Map<dynamic, dynamic> os) {
-      outputStyle.applyJson(os.cast<String, dynamic>());
-    }
-  }
-
-  @override
-  void resetDefaults() {
-    requireCircuit = false;
-    outputStyle.resetDefaults();
-  }
-
-  @override
-  web.HTMLElement buildConfigUI(AppState state, void Function() onModified) {
-    final root = div('form-column');
-
-    root.appendChild(
-      checkboxSetting(
-        'Only circuit (closed)',
-        requireCircuit,
-        onChanged: (val) {
-          requireCircuit = val;
-          onModified();
-        },
-      ),
-    );
-
-    outputStyle.buildUI(
-      root,
-      onModified,
-      colorLabel: 'Path Color:',
-      patternLabel: 'Path Line Style:',
-    );
-
-    return root;
-  }
 
   @override
   ModifierOutput apply(Graph<String, num> graph, AppState state) {
@@ -317,65 +297,20 @@ class HamiltonianModifier extends GraphModifier {
         );
       }
 
-      final dash = outputStyle.dashPattern;
-      final color = outputStyle.highlightColor;
-      final tourVertices = tour.vertices.toList();
-      final tourEdges = <(String, String)>[];
-      final tourEdgeSet = <(String, String)>{};
-      for (var i = 0; i < tourVertices.length - 1; i++) {
-        final key = (tourVertices[i], tourVertices[i + 1]);
-        tourEdges.add(key);
-        tourEdgeSet.add(key);
-        if (!graph.isDirected) {
-          tourEdgeSet.add((key.$2, key.$1));
-        }
-        if (color != null || dash != null) {
-          final es = state.getEdgeStyle(key.$1, key.$2);
-          if (color != null) {
-            es.color = color;
-            es.strokeWidth = 3.5;
-          }
-          es.dashPattern = dash;
-        }
-      }
-
-      // Handle non-tour edges
-      for (final e in graph.edges.toSet()) {
-        if (!tourEdgeSet.contains((e.source, e.target))) {
-          final es = state.getEdgeStyle(e.source, e.target);
-          es.opacity = outputStyle.removedMode == RemovedMode.hide ? 0.0 : 0.25;
-        }
-      }
-
-      for (final v in tourVertices) {
-        final node = state.nodes[v];
-        if (node != null && (color != null || dash != null)) {
-          if (color != null) node.style.borderColor = color;
-          node.style.dashPattern = dash;
-        }
-      }
-
-      return ModifierOutput(
-        overlay: PathOverlay(
-          vertices: tourVertices,
-          edges: tourEdges,
-          title: isTsp
-              ? 'TSP Tour (2-Opt Heuristic)'
-              : (requireCircuit ? 'Hamiltonian Cycle' : 'Hamiltonian Path'),
-        ),
+      return renderTour(
+        graph: graph,
+        state: state,
+        tour: tour,
+        overlayTitle: isTsp
+            ? 'TSP Tour (2-Opt Heuristic)'
+            : (requireCircuit ? 'Hamiltonian Cycle' : 'Hamiltonian Path'),
         statusSummary: isTsp
             ? 'TSP Tour (2-opt heuristic)'
             : (requireCircuit
                   ? 'Hamiltonian Cycle found'
                   : 'Hamiltonian Path found'),
-        tableData: ModifierTableData(
-          title: isTsp ? 'TSP Tour Sequence' : 'Hamiltonian Sequence',
-          headers: ['Index', 'Vertex'],
-          rows: [
-            for (var i = 0; i < tourVertices.length; i++)
-              ['#${i + 1}', tourVertices[i]],
-          ],
-        ),
+        tableTitle: isTsp ? 'TSP Tour Sequence' : 'Hamiltonian Sequence',
+        stepHeader: 'Index',
       );
     } catch (e) {
       return ModifierOutput(

@@ -42,6 +42,10 @@ void assignCoordinates<V>(
   }
 }
 
+Iterable<int> _indices(int length, bool forward) => forward
+    ? Iterable.generate(length)
+    : Iterable.generate(length, (i) => length - 1 - i);
+
 Map<LayerNode<V>, double> _brandesKoepf<V>(
   LayeredGraph<V> graph,
   double vertexDistance,
@@ -128,18 +132,13 @@ Map<LayerNode<V>, double> _alignAndPlace<V>(
   }
 
   // Root & block alignment
-  final layerIndices = isDownward
-      ? List.generate(layers.length, (i) => i)
-      : List.generate(layers.length, (i) => layers.length - 1 - i);
+  final layerIndices = _indices(layers.length, isDownward);
 
   for (final l in layerIndices) {
     final layer = layers[l];
     var r = isLeftToRight ? -1 : 0x7fffffff;
-    final nodeIndices = isLeftToRight
-        ? List.generate(layer.length, (i) => i)
-        : List.generate(layer.length, (i) => layer.length - 1 - i);
 
-    for (final k in nodeIndices) {
+    for (final k in _indices(layer.length, isLeftToRight)) {
       final v = layer[k];
       final adjacent = isDownward
           ? (graph.predecessors[v] ?? const [])
@@ -182,11 +181,8 @@ Map<LayerNode<V>, double> _alignAndPlace<V>(
 
   for (final l in layerIndices) {
     final layer = layers[l];
-    final nodeIndices = isLeftToRight
-        ? List.generate(layer.length, (i) => i)
-        : List.generate(layer.length, (i) => layer.length - 1 - i);
 
-    for (final k in nodeIndices) {
+    for (final k in _indices(layer.length, isLeftToRight)) {
       final v = layer[k];
       if (root[v] == v) {
         _placeBlock(

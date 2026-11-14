@@ -156,23 +156,42 @@ final class GraphInspector {
     // Selected Edges
     if (selE.isNotEmpty) {
       final eRow = _sectionRow('Edges: ');
-      final arrow = graph.isDirected ? '→' : '—';
       for (final (u, v) in selE) {
-        final item = _buildEdgeItem(
-          sourceText: state.nodes[u]?.label ?? u,
-          sourceTooltip: 'Select vertex $u (Shift-click to add)',
-          onSourceClick: (isShift) => onSelectVertex(u, isShift: isShift),
-          edgeText: arrow,
-          edgeTooltip: 'Select edge $u $arrow $v (Shift-click to add)',
-          onEdgeClick: (isShift) => onSelectEdge(u, v, isShift: isShift),
-          targetText: state.nodes[v]?.label ?? v,
-          targetTooltip: 'Select vertex $v (Shift-click to add)',
-          onTargetClick: (isShift) => onSelectVertex(v, isShift: isShift),
+        eRow.appendChild(
+          _buildConnectedEdgeItem(
+            state,
+            graph,
+            u,
+            v,
+            onSelectVertex,
+            onSelectEdge,
+          ),
         );
-        eRow.appendChild(item);
       }
       container.appendChild(eRow);
     }
+  }
+
+  static web.HTMLElement _buildConnectedEdgeItem(
+    AppState state,
+    Graph<String, num> graph,
+    String u,
+    String v,
+    SelectVertexCallback onSelectVertex,
+    SelectEdgeCallback onSelectEdge,
+  ) {
+    final arrow = graph.isDirected ? '→' : '—';
+    return _buildEdgeItem(
+      sourceText: state.nodes[u]?.label ?? u,
+      sourceTooltip: 'Select vertex $u (Shift-click to add)',
+      onSourceClick: (isShift) => onSelectVertex(u, isShift: isShift),
+      edgeText: arrow,
+      edgeTooltip: 'Select edge $u $arrow $v (Shift-click to add)',
+      onEdgeClick: (isShift) => onSelectEdge(u, v, isShift: isShift),
+      targetText: state.nodes[v]?.label ?? v,
+      targetTooltip: 'Select vertex $v (Shift-click to add)',
+      onTargetClick: (isShift) => onSelectVertex(v, isShift: isShift),
+    );
   }
 
   static void _renderSingleEdge(
@@ -189,17 +208,7 @@ final class GraphInspector {
     final titleP = p(null, 'inspector-title');
     titleP.appendChild(span('Edge: '));
     titleP.appendChild(
-      _buildEdgeItem(
-        sourceText: state.nodes[u]?.label ?? u,
-        sourceTooltip: 'Select vertex $u (Shift-click to add)',
-        onSourceClick: (isShift) => onSelectVertex(u, isShift: isShift),
-        edgeText: arrow,
-        edgeTooltip: 'Select edge $u $arrow $v (Shift-click to add)',
-        onEdgeClick: (isShift) => onSelectEdge(u, v, isShift: isShift),
-        targetText: state.nodes[v]?.label ?? v,
-        targetTooltip: 'Select vertex $v (Shift-click to add)',
-        onTargetClick: (isShift) => onSelectVertex(v, isShift: isShift),
-      ),
+      _buildConnectedEdgeItem(state, graph, u, v, onSelectVertex, onSelectEdge),
     );
     container.appendChild(titleP);
 

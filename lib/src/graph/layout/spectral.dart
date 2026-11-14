@@ -65,12 +65,7 @@ final class SpectralLayout<V> extends GraphLayout<V> {
       );
     }
     final n = list.length;
-    final sizes = <V, LayoutSize>{for (final v in list) v: input.sizeOf(v)};
-    var totalExtent = 0.0;
-    for (final sz in sizes.values) {
-      totalExtent += math.max(sz.width, sz.height);
-    }
-    final avgExtent = n > 0 ? totalExtent / n : 40.0;
+    final (sizes, avgExtent) = input.computeExtents(list);
     final effectiveScale = math.max(
       scale,
       (avgExtent + vertexDistance) * n * 0.45,
@@ -119,37 +114,32 @@ final class SpectralLayout<V> extends GraphLayout<V> {
       return norm;
     }
 
-    // 1. Power iteration for 2nd eigenvector (Fiedler vector v2)
-    var v2 = Float64List(n);
-    for (var i = 0; i < n; i++) {
-      v2[i] = rng.nextDouble() - 0.5;
-    }
-    orthogonalizeToOne(v2);
-    normalize(v2);
-
-    for (var iter = 0; iter < iterations; iter++) {
-      final y = Float64List(n);
+    Float64List powerIteration(void Function(Float64List v) project) {
+      var v = Float64List(n);
       for (var i = 0; i < n; i++) {
-        final deg = adj[i].length;
-        var sumNeighbors = 0.0;
-        for (final j in adj[i]) {
-          sumNeighbors += v2[j];
-        }
-        y[i] = (alpha - deg) * v2[i] + sumNeighbors;
+        v[i] = rng.nextDouble() - 0.5;
       }
-      orthogonalizeToOne(y);
-      final norm = normalize(y);
-      if (norm < 1e-9) break;
-      v2 = y;
+      project(v);
+      normalize(v);
+
+      for (var iter = 0; iter < iterations; iter++) {
+        final y = Float64List(n);
+        for (var i = 0; i < n; i++) {
+          var sumNeighbors = 0.0;
+          for (final j in adj[i]) {
+            sumNeighbors += v[j];
+          }
+          y[i] = (alpha - adj[i].length) * v[i] + sumNeighbors;
+        }
+        project(y);
+        if (normalize(y) < 1e-9) break;
+        v = y;
+      }
+      return v;
     }
 
-    // 2. Power iteration for 3rd eigenvector v3 (deflated from v1 and v2)
-    var v3 = Float64List(n);
-    for (var i = 0; i < n; i++) {
-      v3[i] = rng.nextDouble() - 0.5;
-    }
-
-    void projectV3(Float64List v) {
+    final v2 = powerIteration(orthogonalizeToOne);
+    final v3 = powerIteration((v) {
       orthogonalizeToOne(v);
       var dot = 0.0;
       for (var i = 0; i < n; i++) {
@@ -158,26 +148,7 @@ final class SpectralLayout<V> extends GraphLayout<V> {
       for (var i = 0; i < n; i++) {
         v[i] -= dot * v2[i];
       }
-    }
-
-    projectV3(v3);
-    normalize(v3);
-
-    for (var iter = 0; iter < iterations; iter++) {
-      final y = Float64List(n);
-      for (var i = 0; i < n; i++) {
-        final deg = adj[i].length;
-        var sumNeighbors = 0.0;
-        for (final j in adj[i]) {
-          sumNeighbors += v3[j];
-        }
-        y[i] = (alpha - deg) * v3[i] + sumNeighbors;
-      }
-      projectV3(y);
-      final norm = normalize(y);
-      if (norm < 1e-9) break;
-      v3 = y;
-    }
+    });
 
     final positions = <V, LayoutPoint>{};
     for (var i = 0; i < n; i++) {

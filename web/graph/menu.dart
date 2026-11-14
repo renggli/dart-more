@@ -112,38 +112,16 @@ class MenuController {
     }
 
     // Dismiss open menus on interactions outside
-    web.document.addEventListener(
-      'pointerdown',
-      ((web.PointerEvent event) {
-        if (!isAnyMenuOpen) return;
-        final target = event.target as web.Element?;
-        if (target?.closest('.menu-item') != null) return;
-        closeAllMenus();
-      }).toJS,
-      true.toJS,
-    );
+    void dismissOutside(web.Event event) {
+      if (!isAnyMenuOpen) return;
+      final target = event.target as web.Element?;
+      if (target?.closest('.menu-item') != null) return;
+      closeAllMenus();
+    }
 
-    web.document.addEventListener(
-      'focusin',
-      ((web.FocusEvent event) {
-        if (!isAnyMenuOpen) return;
-        final target = event.target as web.Element?;
-        if (target?.closest('.menu-item') != null) return;
-        closeAllMenus();
-      }).toJS,
-      true.toJS,
-    );
-
-    web.document.addEventListener(
-      'click',
-      ((web.MouseEvent event) {
-        if (!isAnyMenuOpen) return;
-        final target = event.target as web.Element?;
-        if (target?.closest('.menu-item') != null) return;
-        closeAllMenus();
-      }).toJS,
-      true.toJS,
-    );
+    for (final eventName in ['pointerdown', 'focusin', 'click']) {
+      web.document.addEventListener(eventName, dismissOutside.toJS, true.toJS);
+    }
 
     web.window.addEventListener(
       'blur',

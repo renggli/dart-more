@@ -80,16 +80,14 @@ class SpanningTreeModifier extends GraphModifier {
 
   @override
   ModifierOutput apply(Graph<String, num> graph, AppState state) {
-    if (graph.vertices.isEmpty) {
-      return const ModifierOutput(statusSummary: 'Graph is empty');
-    }
-
-    if (graph.isDirected) {
-      return const ModifierOutput(
-        hasError: true,
-        errorMessage: 'Spanning tree algorithms require an undirected graph.',
-        statusSummary: 'Requires undirected graph',
-      );
+    if (validateGraph(
+          graph,
+          undirected: true,
+          requirementMessage:
+              'Spanning tree algorithms require an undirected graph.',
+        )
+        case final err?) {
+      return err;
     }
 
     Graph<String, num> tree;

@@ -79,12 +79,14 @@ class ShortestPathModifier extends GraphModifier {
     final root = div('form-column');
 
     root.appendChild(
-      dropdownSetting(
-        'Algorithm:',
-        algorithm.id,
-        [for (final a in ShortestPathAlgorithm.values) (a.id, a.label)],
+      enumDropdownSetting(
+        label: 'Algorithm:',
+        current: algorithm,
+        values: ShortestPathAlgorithm.values,
+        id: (a) => a.id,
+        display: (a) => a.label,
         onChanged: (val) {
-          algorithm = ShortestPathAlgorithm.fromId(val);
+          algorithm = val;
           onModified();
         },
       ),
@@ -135,23 +137,19 @@ class ShortestPathModifier extends GraphModifier {
 
   @override
   ModifierOutput apply(Graph<String, num> graph, AppState state) {
-    final vertices = graph.vertices.toList();
-    if (vertices.isEmpty) {
-      return const ModifierOutput(statusSummary: 'Graph is empty');
-    }
+    if (validateGraph(graph) case final err?) return err;
 
     final src =
         sourceVertex ??
         state.selectedSource ??
-        (state.selectedVertices.isNotEmpty
-            ? state.selectedVertices.first
-            : vertices.first);
+        state.selectedVertices.firstOrNull ??
+        graph.vertices.first;
     final tgt =
         targetVertex ??
         state.selectedTarget ??
         (state.selectedVertices.length > 1
             ? state.selectedVertices.last
-            : vertices.last);
+            : graph.vertices.last);
 
     if (!graph.containsVertex(src) || !graph.containsVertex(tgt)) {
       return ModifierOutput(
@@ -307,25 +305,8 @@ class ShortestPathModifier extends GraphModifier {
     }
 
     // Handle removed/non-path elements
-    for (final e in graph.edges.toSet()) {
-      if (!pathEdgeSet.contains((e.source, e.target))) {
-        final edgeStyle = state.getEdgeStyle(e.source, e.target);
-        edgeStyle.opacity = outputStyle.removedMode == RemovedMode.hide
-            ? 0.0
-            : 0.25;
-      }
-    }
-
-    for (final v in pathVertices) {
-      final node = state.nodes[v];
-      if (node != null && (color != null || dash != null)) {
-        if (color != null) {
-          node.style.borderColor = color;
-          node.style.borderWidth = 2.5;
-        }
-        node.style.dashPattern = dash;
-      }
-    }
+    outputStyle.dimUnselectedEdges(state, graph.edges, pathEdgeSet);
+    outputStyle.applyToVertices(state, pathVertices);
 
     final rows = <List<String>>[];
     num cumulativeWeight = 0;
@@ -501,34 +482,28 @@ class TraversalModifier extends GraphModifier {
 
   @override
   ModifierOutput apply(Graph<String, num> graph, AppState state) {
-    final vertices = graph.vertices.toList();
-    if (vertices.isEmpty) {
-      return const ModifierOutput(statusSummary: 'Graph is empty');
+    if (validateGraph(
+          graph,
+          directed: type == TraversalType.topological,
+          requirementMessage:
+              'Topological sort requires a directed acyclic graph (DAG).',
+        )
+        case final err?) {
+      return err;
     }
 
     final start =
         startVertex ??
         state.selectedSource ??
-        (state.selectedVertices.isNotEmpty
-            ? state.selectedVertices.first
-            : vertices.first);
+        state.selectedVertices.firstOrNull ??
+        graph.vertices.first;
 
-    if (type == TraversalType.topological) {
-      if (!graph.isDirected) {
-        return const ModifierOutput(
-          hasError: true,
-          errorMessage:
-              'Topological sort requires a directed acyclic graph (DAG).',
-          statusSummary: 'Requires directed graph',
-        );
-      }
-      if (graph.hasCycle()) {
-        return const ModifierOutput(
-          hasError: true,
-          errorMessage: 'Graph contains a cycle. Topological sort requires an acyclic graph (DAG).',
-          statusSummary: 'Requires acyclic graph (DAG)',
-        );
-      }
+    if (type == TraversalType.topological && graph.hasCycle()) {
+      return const ModifierOutput(
+        hasError: true,
+        errorMessage: 'Graph contains a cycle. Topological sort requires an acyclic graph (DAG).',
+        statusSummary: 'Requires acyclic graph (DAG)',
+      );
     }
 
     final visitedSequence = <String>[];
@@ -536,7 +511,7 @@ class TraversalModifier extends GraphModifier {
     try {
       switch (type) {
         case TraversalType.topological:
-          visitedSequence.addAll(graph.topologicalAll(vertices));
+          visitedSequence.addAll(graph.topologicalAll(graph.vertices));
         case TraversalType.bfs:
           final visited = <String>{start};
           final queue = <String>[start];
@@ -602,16 +577,7 @@ class TraversalModifier extends GraphModifier {
       }
     }
 
-    for (final v in visitedSequence) {
-      final node = state.nodes[v];
-      if (node != null && (color != null || dash != null)) {
-        if (color != null) {
-          node.style.borderColor = color;
-          node.style.borderWidth = 2.5;
-        }
-        node.style.dashPattern = dash;
-      }
-    }
+    outputStyle.applyToVertices(state, visitedSequence);
 
     final rows = <List<String>>[];
     for (var i = 0; i < visitedSequence.length; i++) {

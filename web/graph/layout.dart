@@ -34,7 +34,6 @@ abstract final class GraphLayout {
     int? columns,
     int? seed,
     bool removeOverlaps = true,
-    bool packComponents = true,
   }) {
     final targetGraph = graph ?? state.renderGraph;
     final vertices = targetGraph.vertices.toList();
@@ -105,7 +104,6 @@ abstract final class GraphLayout {
     var result = targetGraph.layout(
       strategy,
       vertexSize: (v) => computeNodeSize(state, v),
-      packComponents: packComponents,
       componentDirection: compOrientation,
       removeOverlaps: removeOverlaps,
     );

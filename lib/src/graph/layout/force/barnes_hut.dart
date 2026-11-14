@@ -1,6 +1,25 @@
 import 'dart:math' as math;
 import 'dart:typed_data';
 
+/// Computes relative displacement and distance between two points, jittering coincident positions.
+(double dx, double dy, double dist) distanceAndDelta(
+  double x1,
+  double y1,
+  double x2,
+  double y2,
+  math.Random rng,
+) {
+  var dx = x1 - x2;
+  var dy = y1 - y2;
+  var dist = math.sqrt(dx * dx + dy * dy);
+  if (dist < 0.01) {
+    dx = (rng.nextDouble() - 0.5) * 2.0;
+    dy = (rng.nextDouble() - 0.5) * 2.0;
+    dist = 0.01;
+  }
+  return (dx, dy, dist);
+}
+
 /// 2D Quadtree for Barnes-Hut $O(n \log n)$ repulsive force approximation.
 final class Quadtree {
   new({
@@ -31,33 +50,21 @@ final class Quadtree {
   bool get isLeaf => nw == null && ne == null && sw == null && se == null;
 
   /// Builds a quadtree containing all vertices.
-  static Quadtree build(
-    Float64List posX,
-    Float64List posY,
-    int n, {
-    double? minX,
-    double? minY,
-    double? size,
-  }) {
-    if (minX == null || minY == null || size == null) {
-      var x1 = double.infinity;
-      var y1 = double.infinity;
-      var x2 = -double.infinity;
-      var y2 = -double.infinity;
-      for (var i = 0; i < n; i++) {
-        final x = posX[i];
-        final y = posY[i];
-        if (x < x1) x1 = x;
-        if (x > x2) x2 = x;
-        if (y < y1) y1 = y;
-        if (y > y2) y2 = y;
-      }
-      minX = x1;
-      minY = y1;
-      size = math.max(10.0, math.max(x2 - x1, y2 - y1) + 1.0);
+  static Quadtree build(Float64List posX, Float64List posY, int n) {
+    var x1 = double.infinity;
+    var y1 = double.infinity;
+    var x2 = -double.infinity;
+    var y2 = -double.infinity;
+    for (var i = 0; i < n; i++) {
+      final x = posX[i];
+      final y = posY[i];
+      if (x < x1) x1 = x;
+      if (x > x2) x2 = x;
+      if (y < y1) y1 = y;
+      if (y > y2) y2 = y;
     }
-
-    final tree = Quadtree(minX: minX, minY: minY, size: size);
+    final size = math.max(10.0, math.max(x2 - x1, y2 - y1) + 1.0);
+    final tree = Quadtree(minX: x1, minY: y1, size: size);
     for (var i = 0; i < n; i++) {
       tree.insert(i, posX[i], posY[i]);
     }
@@ -147,14 +154,13 @@ final class Quadtree {
 
     if (isLeaf) {
       if (vertexIndex != null && vertexIndex != targetIndex) {
-        var dx = targetX - pointX!;
-        var dy = targetY - pointY!;
-        var dist = math.sqrt(dx * dx + dy * dy);
-        if (dist < 0.01) {
-          dx = (rng.nextDouble() - 0.5) * 2.0;
-          dy = (rng.nextDouble() - 0.5) * 2.0;
-          dist = 0.01;
-        }
+        final (dx, dy, dist) = distanceAndDelta(
+          targetX,
+          targetY,
+          pointX!,
+          pointY!,
+          rng,
+        );
         final force = k2 / dist;
         dispX[targetIndex] += (dx / dist) * force;
         dispY[targetIndex] += (dy / dist) * force;
@@ -162,14 +168,7 @@ final class Quadtree {
       return;
     }
 
-    var dx = targetX - cx;
-    var dy = targetY - cy;
-    var dist = math.sqrt(dx * dx + dy * dy);
-    if (dist < 0.01) {
-      dx = (rng.nextDouble() - 0.5) * 2.0;
-      dy = (rng.nextDouble() - 0.5) * 2.0;
-      dist = 0.01;
-    }
+    final (dx, dy, dist) = distanceAndDelta(targetX, targetY, cx, cy, rng);
 
     if (size / dist < theta) {
       final force = (k2 / dist) * mass;

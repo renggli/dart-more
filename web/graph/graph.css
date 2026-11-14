@@ -636,18 +636,22 @@ body {
   width: 100%;
 }
 
-.line-style-btn {
-  display: flex;
+.line-style-btn,
+.icon-toggle-btn {
+  display: inline-flex;
   align-items: center;
   justify-content: center;
-  height: 24px;
-  padding: 0 4px;
-  background: var(--bg-elevated);
   border: 1px solid var(--border-color);
   border-radius: var(--radius-sm);
   color: var(--text-muted);
   cursor: pointer;
   transition: all 0.12s ease;
+}
+
+.line-style-btn {
+  height: 24px;
+  padding: 0 4px;
+  background: var(--bg-elevated);
 }
 
 .line-style-btn:hover {
@@ -1098,18 +1102,10 @@ body {
 }
 
 .icon-toggle-btn {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
   width: 28px;
   height: 28px;
   padding: 0;
   background: var(--bg-surface);
-  border: 1px solid var(--border-color);
-  border-radius: var(--radius-sm);
-  color: var(--text-muted);
-  cursor: pointer;
-  transition: all 0.12s ease;
 }
 
 .icon-toggle-btn:hover {
@@ -1139,20 +1135,16 @@ input[type=number] {
   appearance: textfield;
 }
 
-/* Seamless inline node/vertex label editor */
-.inline-node-editor {
+/* Seamless inline editor common styles */
+.inline-node-editor,
+.inline-edge-editor {
   position: absolute;
   transform: translate(-50%, -50%);
-  padding: 0 4px;
-  background: transparent !important;
-  color: #ffffff !important;
-  border: 1.5px dashed rgba(167, 139, 250, 0.75) !important;
   border-radius: 4px !important;
   font-family: Inter, system-ui, sans-serif;
   font-weight: 600;
   text-align: center;
   outline: none !important;
-  box-shadow: 0 0 0 2px rgba(139, 92, 246, 0.2) !important;
   caret-color: #a78bfa;
   box-sizing: border-box;
   -webkit-appearance: none;
@@ -1160,25 +1152,22 @@ input[type=number] {
   z-index: 100;
 }
 
+/* Seamless inline node/vertex label editor */
+.inline-node-editor {
+  padding: 0 4px;
+  background: transparent !important;
+  color: #ffffff !important;
+  border: 1.5px dashed rgba(167, 139, 250, 0.75) !important;
+  box-shadow: 0 0 0 2px rgba(139, 92, 246, 0.2) !important;
+}
+
 /* Seamless inline edge weight editor */
 .inline-edge-editor {
-  position: absolute;
-  transform: translate(-50%, -50%);
   padding: 0 3px;
   background: #1e293b !important;
   color: #cbd5e1 !important;
   border: 1px solid #8b5cf6 !important;
-  border-radius: 4px !important;
-  font-family: Inter, system-ui, sans-serif;
-  font-weight: 600;
-  text-align: center;
-  outline: none !important;
   box-shadow: 0 0 0 2px rgba(139, 92, 246, 0.25) !important;
-  caret-color: #a78bfa;
-  box-sizing: border-box;
-  -webkit-appearance: none;
-  appearance: none;
-  z-index: 100;
 }
 
 /* Inspector Neighbor & Incident Edge Compounds */

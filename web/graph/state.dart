@@ -63,20 +63,7 @@ final class GraphSnapshot {
     edges: [
       for (final edge in graph.edges) (edge.source, edge.target, edge.value),
     ],
-    nodes: {
-      for (final MapEntry(:key, :value) in nodes.entries)
-        key: GraphNode(
-          id: value.id,
-          label: value.label,
-          x: value.x,
-          y: value.y,
-          userFillColor: value.userFillColor,
-          userBorderColor: value.userBorderColor,
-          userTextColor: value.userTextColor,
-          userBorderWidth: value.userBorderWidth,
-          userOpacity: value.userOpacity,
-        ),
-    },
+    nodes: {for (final e in nodes.entries) e.key: e.value.copy()},
   );
 
   final bool isDirected;
@@ -177,14 +164,7 @@ final class AppState {
   void addAllModifiersDisabled() {
     saveSnapshot();
     modifiers.clear();
-    final combineSpec = ModifierRegistry.getSpec('combine');
-    modifiers.add(
-      combineSpec.factory()
-        ..enabled = false
-        ..collapsed = true,
-    );
     for (final spec in ModifierRegistry.specs) {
-      if (spec.type == 'combine') continue;
       final mod = spec.factory()
         ..enabled = false
         ..collapsed = true;
@@ -356,58 +336,28 @@ final class AppState {
   bool get canUndo => undoStack.isNotEmpty;
   bool get canRedo => redoStack.isNotEmpty;
 
-  void undo() {
-    if (!canUndo) return;
-    syncNodes();
-    redoStack.add(GraphSnapshot.fromGraph(primaryGraph, isWeighted, nodes));
-    final snapshot = undoStack.removeLast();
+  void _applySnapshot(GraphSnapshot snapshot) {
     primaryGraph = snapshot.restore();
     isWeighted = snapshot.isWeighted;
     nodes
       ..clear()
-      ..addAll({
-        for (final MapEntry(:key, :value) in snapshot.nodes.entries)
-          key: GraphNode(
-            id: value.id,
-            label: value.label,
-            x: value.x,
-            y: value.y,
-            userFillColor: value.userFillColor,
-            userBorderColor: value.userBorderColor,
-            userTextColor: value.userTextColor,
-            userBorderWidth: value.userBorderWidth,
-            userOpacity: value.userOpacity,
-          ),
-      });
+      ..addAll({for (final e in snapshot.nodes.entries) e.key: e.value.copy()});
     clearSelection();
     activeOverlay = null;
+  }
+
+  void undo() {
+    if (!canUndo) return;
+    syncNodes();
+    redoStack.add(GraphSnapshot.fromGraph(primaryGraph, isWeighted, nodes));
+    _applySnapshot(undoStack.removeLast());
   }
 
   void redo() {
     if (!canRedo) return;
     syncNodes();
     undoStack.add(GraphSnapshot.fromGraph(primaryGraph, isWeighted, nodes));
-    final snapshot = redoStack.removeLast();
-    primaryGraph = snapshot.restore();
-    isWeighted = snapshot.isWeighted;
-    nodes
-      ..clear()
-      ..addAll({
-        for (final MapEntry(:key, :value) in snapshot.nodes.entries)
-          key: GraphNode(
-            id: value.id,
-            label: value.label,
-            x: value.x,
-            y: value.y,
-            userFillColor: value.userFillColor,
-            userBorderColor: value.userBorderColor,
-            userTextColor: value.userTextColor,
-            userBorderWidth: value.userBorderWidth,
-            userOpacity: value.userOpacity,
-          ),
-      });
-    clearSelection();
-    activeOverlay = null;
+    _applySnapshot(redoStack.removeLast());
   }
 
   void setDirected(bool directed) {

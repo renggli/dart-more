@@ -61,9 +61,7 @@ final class LayeredLayout<V> extends GraphLayout<V> {
   @override
   LayoutResult<V> layoutComponent(LayoutInput<V> input) {
     final allVertices = input.vertices;
-    final sizes = <V, LayoutSize>{
-      for (final v in allVertices) v: input.sizeOf(v),
-    };
+    final (sizes, _) = input.computeExtents(allVertices);
 
     final Map<V, int> ranks;
     final Map<V, List<V>> dagSuccessors;

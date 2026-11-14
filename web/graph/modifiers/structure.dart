@@ -82,9 +82,7 @@ class ComponentsModifier extends GraphModifier {
 
   @override
   ModifierOutput apply(Graph<String, num> graph, AppState state) {
-    if (graph.vertices.isEmpty) {
-      return const ModifierOutput(statusSummary: 'Graph is empty');
-    }
+    if (validateGraph(graph) case final err?) return err;
 
     List<Iterable<String>> components;
     try {
@@ -242,17 +240,14 @@ class BiconnectedComponentsModifier extends GraphModifier {
 
   @override
   ModifierOutput apply(Graph<String, num> graph, AppState state) {
-    if (graph.vertices.isEmpty) {
-      return const ModifierOutput(statusSummary: 'Graph is empty');
-    }
-
-    if (graph.isDirected) {
-      return const ModifierOutput(
-        hasError: true,
-        errorMessage:
-            'Biconnected components and bridges require an undirected graph.',
-        statusSummary: 'Requires undirected graph',
-      );
+    if (validateGraph(
+          graph,
+          undirected: true,
+          requirementMessage:
+              'Biconnected components and bridges require an undirected graph.',
+        )
+        case final err?) {
+      return err;
     }
 
     try {
@@ -466,27 +461,11 @@ class CycleDetectionModifier extends GraphModifier {
           edgeStyle.dashPattern = dash;
         }
       }
-      for (final v in cycle) {
-        final node = state.nodes[v];
-        if (node != null && (color != null || dash != null)) {
-          if (color != null) {
-            node.style.borderColor = color;
-            node.style.borderWidth = 2.5;
-          }
-          node.style.dashPattern = dash;
-        }
-      }
+      outputStyle.applyToVertices(state, cycle);
     }
 
     // Handle non-cycle edges
-    for (final e in graph.edges.toSet()) {
-      if (!cycleEdgeSet.contains((e.source, e.target))) {
-        final edgeStyle = state.getEdgeStyle(e.source, e.target);
-        edgeStyle.opacity = outputStyle.removedMode == RemovedMode.hide
-            ? 0.0
-            : 0.25;
-      }
-    }
+    outputStyle.dimUnselectedEdges(state, graph.edges, cycleEdgeSet);
 
     final primaryVertices = {for (final cycle in cyclesToHighlight) ...cycle}
         .toList();
@@ -646,16 +625,13 @@ class PlanarityModifier extends GraphModifier {
 
   @override
   ModifierOutput apply(Graph<String, num> graph, AppState state) {
-    if (graph.vertices.isEmpty) {
-      return const ModifierOutput(statusSummary: 'Graph is empty');
-    }
-
-    if (graph.isDirected) {
-      return const ModifierOutput(
-        hasError: true,
-        errorMessage: 'Planarity testing requires an undirected graph.',
-        statusSummary: 'Requires undirected graph',
-      );
+    if (validateGraph(
+          graph,
+          undirected: true,
+          requirementMessage: 'Planarity testing requires an undirected graph.',
+        )
+        case final err?) {
+      return err;
     }
 
     try {
@@ -737,17 +713,6 @@ class KCoreModifier extends GraphModifier {
   bool get canApply => true;
 
   @override
-  void applyPermanent(AppState state) {
-    final out = apply(state.primaryGraph, state);
-    if (out.transformedGraph != null) {
-      state.saveSnapshot();
-      state.primaryGraph = out.transformedGraph!;
-      state.syncNodes();
-      state.modifiers.remove(this);
-    }
-  }
-
-  @override
   web.HTMLElement buildConfigUI(AppState state, void Function() onModified) {
     final container = div('form-column');
 
@@ -777,16 +742,13 @@ class KCoreModifier extends GraphModifier {
 
   @override
   ModifierOutput apply(Graph<String, num> graph, AppState state) {
-    if (graph.vertices.isEmpty) {
-      return const ModifierOutput(statusSummary: 'Graph is empty');
-    }
-
-    if (graph.isDirected) {
-      return const ModifierOutput(
-        hasError: true,
-        errorMessage: 'k-Core requires an undirected graph.',
-        statusSummary: 'Requires undirected graph',
-      );
+    if (validateGraph(
+          graph,
+          undirected: true,
+          requirementMessage: 'k-Core requires an undirected graph.',
+        )
+        case final err?) {
+      return err;
     }
 
     Set<String> coreVerts;
@@ -932,54 +894,13 @@ class IsomorphismModifier extends GraphModifier {
     outputStyle.resetDefaults();
   }
 
-  Graph<String, num> _buildPatternGraph(bool isDirected) {
-    final factory = GraphFactory<String, num>(
-      isDirected: isDirected,
-      vertexProvider: (int i) => 'P$i',
-      edgeProvider: (source, target) => 1,
-    );
-    final countClamped = count.clamp(1, 100);
-    switch (shape) {
-      case GeneratorShape.atlas:
-        final atlasIdx = atlasIndex.clamp(0, factory.atlasLength - 1);
-        final atlas = factory.atlas(atlasIdx);
-        if (isDirected) {
-          final bidi = Graph<String, num>(isDirected: true);
-          for (final v in atlas.vertices) {
-            bidi.addVertex(v);
-          }
-          for (final e in atlas.edges) {
-            bidi.addEdge(e.source, e.target, value: e.value);
-            bidi.addEdge(e.target, e.source, value: e.value);
-          }
-          return bidi;
-        }
-        return atlas;
-      case GeneratorShape.complete:
-        return factory.complete(vertexCount: countClamped);
-      case GeneratorShape.cycle:
-        return factory.ring(vertexCount: countClamped);
-      case GeneratorShape.star:
-        return factory.star(vertexCount: countClamped);
-      case GeneratorShape.path:
-        return factory.path(vertexCount: countClamped);
-      case GeneratorShape.tree:
-        return factory.completeTree(vertexCount: countClamped, arity: 2);
-      case GeneratorShape.bipartite:
-        return factory.partite(
-          vertexCounts: [countClamped ~/ 2 + 1, countClamped ~/ 2 + 1],
-        );
-      case GeneratorShape.grid:
-        final rows = countClamped > 4 ? 3 : 2;
-        final cols = countClamped ~/ rows + 1;
-        return factory.grid(rows: rows, columns: cols);
-      case GeneratorShape.random:
-        return factory.randomErdosRenyi(
-          vertexCount: countClamped,
-          probability: 0.3,
-        );
-    }
-  }
+  Graph<String, num> _buildPatternGraph(bool isDirected) => buildShapedGraph(
+    isDirected: isDirected,
+    shape: shape,
+    count: count,
+    atlasIndex: atlasIndex,
+    vertexProvider: (i) => 'P$i',
+  );
 
   @override
   web.HTMLElement buildConfigUI(AppState state, void Function() onModified) {
@@ -997,54 +918,21 @@ class IsomorphismModifier extends GraphModifier {
       ),
     );
 
-    final dynamicSection = div('form-column');
-
-    void rebuildDynamic() {
-      dynamicSection.textContent = '';
-      if (shape == GeneratorShape.atlas) {
-        dynamicSection.appendChild(
-          rangeSetting(
-            'Atlas Index (0..1252):',
-            atlasIndex,
-            min: 0,
-            max: 1252,
-            onChanged: (v) {
-              atlasIndex = v.toInt();
-              onModified();
-            },
-          ),
-        );
-      } else {
-        dynamicSection.appendChild(
-          rangeSetting(
-            'Vertices in P:',
-            count,
-            min: 2,
-            max: 20,
-            onChanged: (v) {
-              count = v.toInt();
-              onModified();
-            },
-          ),
-        );
-      }
-    }
-
-    root.appendChild(
-      dropdownSetting(
-        'Pattern Graph (P):',
-        shape.id,
-        [for (final s in GeneratorShape.values) (s.id, s.label)],
-        onChanged: (val) {
-          shape = GeneratorShape.fromId(val);
-          rebuildDynamic();
-          onModified();
-        },
-      ),
+    appendShapeControls(
+      root,
+      shapeLabel: 'Pattern Graph (P):',
+      shape: shape,
+      count: count,
+      atlasIndex: atlasIndex,
+      countLabel: 'Vertices in P:',
+      maxCount: 20,
+      onChanged: (s, c, a) {
+        shape = s;
+        count = c;
+        atlasIndex = a;
+        onModified();
+      },
     );
-
-    rebuildDynamic();
-    root.appendChild(dynamicSection);
 
     outputStyle.buildUI(
       root,

@@ -40,7 +40,6 @@ void main() {
         'C': LayoutPoint(100, 100),
         'D': LayoutPoint(0, 100),
       },
-      bounds: const LayoutRectangle(0, 0, 100, 100),
     );
 
     test('contain mode', () {
@@ -95,7 +94,6 @@ void main() {
             LayoutPoint(100, 100),
           ],
         },
-        bounds: const LayoutRectangle(0, 0, 100, 100),
       );
       final fitted = withRoutes.fit(
         const LayoutRectangle(0, 0, 200, 200),
@@ -126,14 +124,12 @@ void main() {
     test('multiple components are packed without overlap', () {
       final c1 = LayoutResult<String>(
         positions: const {'A': LayoutPoint(0, 0), 'B': LayoutPoint(50, 50)},
-        bounds: const LayoutRectangle(0, 0, 50, 50),
         edgeRoutes: const {
           ('A', 'B'): [LayoutPoint(0, 0), LayoutPoint(50, 50)],
         },
       );
       final c2 = LayoutResult<String>(
         positions: const {'C': LayoutPoint(0, 0), 'D': LayoutPoint(60, 60)},
-        bounds: const LayoutRectangle(0, 0, 60, 60),
       );
       final packed = packComponents([c1, c2], vertexDistance: 20);
       check(packed.positions.keys).unorderedEquals(['A', 'B', 'C', 'D']);

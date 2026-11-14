@@ -105,17 +105,6 @@ class TransitiveClosureModifier extends GraphModifier {
   bool get canApply => true;
 
   @override
-  void applyPermanent(AppState state) {
-    final out = apply(state.primaryGraph, state);
-    if (out.transformedGraph != null) {
-      state.saveSnapshot();
-      state.primaryGraph = out.transformedGraph!;
-      state.syncNodes();
-      state.modifiers.remove(this);
-    }
-  }
-
-  @override
   web.HTMLElement buildConfigUI(AppState state, void Function() onModified) {
     final container = div('form-column');
 
@@ -146,16 +135,13 @@ class TransitiveClosureModifier extends GraphModifier {
 
   @override
   ModifierOutput apply(Graph<String, num> graph, AppState state) {
-    if (graph.vertices.isEmpty) {
-      return const ModifierOutput(statusSummary: 'Graph is empty');
-    }
-
-    if (!graph.isDirected) {
-      return const ModifierOutput(
-        hasError: true,
-        errorMessage: 'Transitive closure requires a directed graph.',
-        statusSummary: 'Requires directed graph',
-      );
+    if (validateGraph(
+          graph,
+          directed: true,
+          requirementMessage: 'Transitive closure requires a directed graph.',
+        )
+        case final err?) {
+      return err;
     }
 
     Graph<String, void> closure;
@@ -246,17 +232,6 @@ class TransitiveReductionModifier extends GraphModifier {
   bool get canApply => true;
 
   @override
-  void applyPermanent(AppState state) {
-    final out = apply(state.primaryGraph, state);
-    if (out.transformedGraph != null) {
-      state.saveSnapshot();
-      state.primaryGraph = out.transformedGraph!;
-      state.syncNodes();
-      state.modifiers.remove(this);
-    }
-  }
-
-  @override
   web.HTMLElement buildConfigUI(AppState state, void Function() onModified) {
     final container = div('form-column');
 
@@ -273,17 +248,14 @@ class TransitiveReductionModifier extends GraphModifier {
 
   @override
   ModifierOutput apply(Graph<String, num> graph, AppState state) {
-    if (graph.vertices.isEmpty) {
-      return const ModifierOutput(statusSummary: 'Graph is empty');
-    }
-
-    if (!graph.isDirected) {
-      return const ModifierOutput(
-        hasError: true,
-        errorMessage:
-            'Transitive reduction requires a directed acyclic graph (DAG).',
-        statusSummary: 'Requires directed graph',
-      );
+    if (validateGraph(
+          graph,
+          directed: true,
+          requirementMessage:
+              'Transitive reduction requires a directed acyclic graph (DAG).',
+        )
+        case final err?) {
+      return err;
     }
 
     Graph<String, void> reduced;
@@ -416,67 +388,15 @@ class CombineModifier extends GraphModifier {
   @override
   bool get canApply => true;
 
-  @override
-  void applyPermanent(AppState state) {
-    state.saveSnapshot();
-    final out = apply(state.renderGraph, state);
-    if (out.transformedGraph != null) {
-      state.primaryGraph = out.transformedGraph!;
-      state.syncNodes();
-      state.modifiers.remove(this);
-    }
-  }
-
-  Graph<String, num> _buildSecondGraph(bool isDirected) {
-    final factory = GraphFactory<String, num>(
-      isDirected: isDirected,
-      vertexProvider: (int i) => operation == CombineOperation.replace
-          ? (i < 26 ? String.fromCharCode(65 + i) : 'V$i')
-          : 'H$i',
-      edgeProvider: (source, target) => 1,
-    );
-    final countClamped = count.clamp(1, 100);
-    switch (shape) {
-      case GeneratorShape.atlas:
-        final atlasIdx = atlasIndex.clamp(0, factory.atlasLength - 1);
-        final atlas = factory.atlas(atlasIdx);
-        if (isDirected) {
-          final bidi = Graph<String, num>(isDirected: true);
-          for (final v in atlas.vertices) {
-            bidi.addVertex(v);
-          }
-          for (final e in atlas.edges) {
-            bidi.addEdge(e.source, e.target, value: e.value);
-            bidi.addEdge(e.target, e.source, value: e.value);
-          }
-          return bidi;
-        }
-        return atlas;
-      case GeneratorShape.complete:
-        return factory.complete(vertexCount: countClamped);
-      case GeneratorShape.cycle:
-        return factory.ring(vertexCount: countClamped);
-      case GeneratorShape.star:
-        return factory.star(vertexCount: countClamped);
-      case GeneratorShape.path:
-        return factory.path(vertexCount: countClamped);
-      case GeneratorShape.tree:
-        return factory.completeTree(vertexCount: countClamped, arity: 2);
-      case GeneratorShape.bipartite:
-        return factory.partite(
-          vertexCounts: [countClamped ~/ 2 + 1, countClamped ~/ 2 + 1],
-        );
-      case GeneratorShape.grid:
-        final rows = countClamped > 4 ? 3 : 2;
-        final cols = countClamped ~/ rows + 1;
-        return factory.grid(rows: rows, columns: cols);
-      case GeneratorShape.random:
-        return factory.randomErdosRenyi(
-          vertexCount: countClamped,
-          probability: 0.3,
-        );
-    }
-  }
+  Graph<String, num> _buildSecondGraph(bool isDirected) => buildShapedGraph(
+    isDirected: isDirected,
+    shape: shape,
+    count: count,
+    atlasIndex: atlasIndex,
+    vertexProvider: (i) => operation == CombineOperation.replace
+        ? (i < 26 ? String.fromCharCode(65 + i) : 'V$i')
+        : 'H$i',
+  );
 
   @override
   web.HTMLElement buildConfigUI(AppState state, void Function() onModified) {
@@ -494,54 +414,21 @@ class CombineModifier extends GraphModifier {
       ),
     );
 
-    final dynamicSection = div('form-column');
-
-    void rebuildDynamic() {
-      dynamicSection.textContent = '';
-      if (shape == GeneratorShape.atlas) {
-        dynamicSection.appendChild(
-          rangeSetting(
-            'Atlas Index (0..1252):',
-            atlasIndex,
-            min: 0,
-            max: 1252,
-            onChanged: (v) {
-              atlasIndex = v.toInt();
-              onModified();
-            },
-          ),
-        );
-      } else {
-        dynamicSection.appendChild(
-          rangeSetting(
-            'Vertices in H:',
-            count,
-            min: 2,
-            max: 30,
-            onChanged: (v) {
-              count = v.toInt();
-              onModified();
-            },
-          ),
-        );
-      }
-    }
-
-    root.appendChild(
-      dropdownSetting(
-        'Graph Shape (H):',
-        shape.id,
-        [for (final s in GeneratorShape.values) (s.id, s.label)],
-        onChanged: (val) {
-          shape = GeneratorShape.fromId(val);
-          rebuildDynamic();
-          onModified();
-        },
-      ),
+    appendShapeControls(
+      root,
+      shapeLabel: 'Graph Shape (H):',
+      shape: shape,
+      count: count,
+      atlasIndex: atlasIndex,
+      countLabel: 'Vertices in H:',
+      maxCount: 30,
+      onChanged: (s, c, a) {
+        shape = s;
+        count = c;
+        atlasIndex = a;
+        onModified();
+      },
     );
-
-    rebuildDynamic();
-    root.appendChild(dynamicSection);
 
     return root;
   }

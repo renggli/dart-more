@@ -133,19 +133,35 @@ final class SimpleCommand extends GraphCommand {
 // Complex Edit Operations
 // ---------------------------------------------------------------------------
 
-/// Cuts selected vertices and edges into the clipboard.
-class CutCommand extends GraphCommand {
-  const new()
-    : super(
-        id: 'edit.cut',
-        title: 'Cut',
-        category: CommandCategory.edit,
-        shortcuts: const ['Ctrl+X'],
-      );
+abstract class _SelectionCommand extends GraphCommand {
+  const new({
+    required super.id,
+    required super.title,
+    super.category = CommandCategory.edit,
+    super.shortcuts = const [],
+  });
+
+  @override
+  bool canExecute(AppState state, [AppUi? ui]) => state.selection.isNotEmpty;
+}
+
+abstract class _MultiVertexCommand extends GraphCommand {
+  const new({
+    required super.id,
+    required super.title,
+    required super.category,
+    super.shortcuts = const [],
+  });
 
   @override
   bool canExecute(AppState state, [AppUi? ui]) =>
-      state.selection.vertices.isNotEmpty || state.selection.edges.isNotEmpty;
+      state.selection.vertices.length >= 2;
+}
+
+/// Cuts selected vertices and edges into the clipboard.
+class CutCommand extends _SelectionCommand {
+  const new()
+    : super(id: 'edit.cut', title: 'Cut', shortcuts: const ['Ctrl+X']);
 
   @override
   void execute(AppState state, [AppUi? ui]) {
@@ -155,18 +171,9 @@ class CutCommand extends GraphCommand {
 }
 
 /// Copies selected vertices and edges into the clipboard.
-class CopyCommand extends GraphCommand {
+class CopyCommand extends _SelectionCommand {
   const new()
-    : super(
-        id: 'edit.copy',
-        title: 'Copy',
-        category: CommandCategory.edit,
-        shortcuts: const ['Ctrl+C'],
-      );
-
-  @override
-  bool canExecute(AppState state, [AppUi? ui]) =>
-      state.selection.vertices.isNotEmpty || state.selection.edges.isNotEmpty;
+    : super(id: 'edit.copy', title: 'Copy', shortcuts: const ['Ctrl+C']);
 
   @override
   void execute(AppState state, [AppUi? ui]) {
@@ -265,18 +272,13 @@ class PasteCommand extends GraphCommand {
 }
 
 /// Duplicates the current selection.
-class DuplicateCommand extends GraphCommand {
+class DuplicateCommand extends _SelectionCommand {
   const new()
     : super(
         id: 'edit.duplicate',
         title: 'Duplicate',
-        category: CommandCategory.edit,
         shortcuts: const ['Shift+D'],
       );
-
-  @override
-  bool canExecute(AppState state, [AppUi? ui]) =>
-      state.selection.vertices.isNotEmpty || state.selection.edges.isNotEmpty;
 
   @override
   void execute(AppState state, [AppUi? ui]) {
@@ -286,18 +288,13 @@ class DuplicateCommand extends GraphCommand {
 }
 
 /// Deletes selected vertices and edges.
-class DeleteCommand extends GraphCommand {
+class DeleteCommand extends _SelectionCommand {
   const new()
     : super(
         id: 'edit.delete',
         title: 'Delete Selected',
-        category: CommandCategory.edit,
         shortcuts: const ['X', 'Delete', 'Backspace'],
       );
-
-  @override
-  bool canExecute(AppState state, [AppUi? ui]) =>
-      state.selection.vertices.isNotEmpty || state.selection.edges.isNotEmpty;
 
   @override
   void execute(AppState state, [AppUi? ui]) {
@@ -343,19 +340,24 @@ class AddVertexCommand extends GraphCommand {
 
   @override
   void execute(AppState state, [AppUi? ui]) {
-    state.saveSnapshot();
-    final newId = state.nextAvailableNodeId();
-    state.primaryGraph.addVertex(newId);
-    state.getOrCreateNode(
-      newId,
-      label: newId,
-      x: ui?.cursorX ?? 400.0,
-      y: ui?.cursorY ?? 300.0,
-    );
-    state.selection.clear();
-    state.selection.selectVertex(newId);
-    if (ui != null) ui.pendingPlacementVertex = newId;
+    _createAndPlaceVertex(state, ui);
   }
+}
+
+String _createAndPlaceVertex(AppState state, AppUi? ui) {
+  state.saveSnapshot();
+  final newId = state.nextAvailableNodeId();
+  state.primaryGraph.addVertex(newId);
+  state.getOrCreateNode(
+    newId,
+    label: newId,
+    x: ui?.cursorX ?? 400.0,
+    y: ui?.cursorY ?? 300.0,
+  );
+  state.selection.clear();
+  state.selection.selectVertex(newId);
+  if (ui != null) ui.pendingPlacementVertex = newId;
+  return newId;
 }
 
 /// Expands a vertex by creating a new adjacent vertex.
@@ -373,27 +375,14 @@ class ExpandVertexCommand extends GraphCommand {
 
   @override
   void execute(AppState state, [AppUi? ui]) {
-    state.saveSnapshot();
-    final newId = state.nextAvailableNodeId();
-    state.primaryGraph.addVertex(newId);
-    state.getOrCreateNode(
-      newId,
-      label: newId,
-      x: ui?.cursorX ?? 400.0,
-      y: ui?.cursorY ?? 300.0,
-    );
-
     final targets = state.selection.vertices.isNotEmpty
         ? state.selection.vertices.toList()
         : (state.activeVertex != null ? [state.activeVertex!] : <String>[]);
 
+    final newId = _createAndPlaceVertex(state, ui);
     for (final v in targets) {
       state.primaryGraph.addEdge(v, newId, value: 1);
     }
-
-    state.selection.clear();
-    state.selection.selectVertex(newId);
-    if (ui != null) ui.pendingPlacementVertex = newId;
   }
 }
 
@@ -404,7 +393,7 @@ class ExtrudeVertexCommand extends ExpandVertexCommand {
 }
 
 /// Merges multiple selected vertices into one.
-class MergeVerticesCommand extends GraphCommand {
+class MergeVerticesCommand extends _MultiVertexCommand {
   const new()
     : super(
         id: 'vertex.merge',
@@ -414,12 +403,8 @@ class MergeVerticesCommand extends GraphCommand {
       );
 
   @override
-  bool canExecute(AppState state, [AppUi? ui]) =>
-      state.selection.vertices.length >= 2;
-
-  @override
   void execute(AppState state, [AppUi? ui]) {
-    if (state.selection.vertices.length < 2) return;
+    if (!canExecute(state, ui)) return;
     final target = state.activeVertex ?? state.selection.vertices.first;
     state.saveSnapshot();
     final toMerge = state.selection.vertices.where((v) => v != target).toList();
@@ -453,7 +438,7 @@ class MergeVerticesCommand extends GraphCommand {
 // ---------------------------------------------------------------------------
 
 /// Connects all selected vertices with edges.
-class ConnectVerticesCommand extends GraphCommand {
+class ConnectVerticesCommand extends _MultiVertexCommand {
   const new()
     : super(
         id: 'edge.connect',
@@ -463,12 +448,8 @@ class ConnectVerticesCommand extends GraphCommand {
       );
 
   @override
-  bool canExecute(AppState state, [AppUi? ui]) =>
-      state.selection.vertices.length >= 2;
-
-  @override
   void execute(AppState state, [AppUi? ui]) {
-    if (state.selection.vertices.length < 2) return;
+    if (!canExecute(state, ui)) return;
     state.saveSnapshot();
     final list = state.selection.vertices.toList();
 
@@ -561,6 +542,21 @@ class SubdivideEdgeCommand extends GraphCommand {
 /// Registry providing all available commands grouped by category.
 class CommandRegistry {
   /// All available commands in the application.
+  static SimpleCommand _transitiveCommand(String id, String title) =>
+      SimpleCommand(
+        id: 'graph.$id',
+        title: title,
+        category: CommandCategory.graph,
+        canExecuteCallback: (state) =>
+            state.primaryGraph.isDirected &&
+            state.primaryGraph.vertices.isNotEmpty,
+        executeCallback: (state) {
+          if (!state.primaryGraph.isDirected) return;
+          final mod = ModifierRegistry.getSpec(id).factory();
+          mod.applyPermanent(state);
+        },
+      );
+
   static final List<GraphCommand> all = [
     // File
     SimpleCommand(
@@ -818,32 +814,8 @@ class CommandRegistry {
         mod.applyPermanent(state);
       },
     ),
-    SimpleCommand(
-      id: 'graph.transitive_closure',
-      title: 'Transitive Closure',
-      category: CommandCategory.graph,
-      canExecuteCallback: (state) =>
-          state.primaryGraph.isDirected &&
-          state.primaryGraph.vertices.isNotEmpty,
-      executeCallback: (state) {
-        if (!state.primaryGraph.isDirected) return;
-        final mod = ModifierRegistry.getSpec('transitive_closure').factory();
-        mod.applyPermanent(state);
-      },
-    ),
-    SimpleCommand(
-      id: 'graph.transitive_reduction',
-      title: 'Transitive Reduction',
-      category: CommandCategory.graph,
-      canExecuteCallback: (state) =>
-          state.primaryGraph.isDirected &&
-          state.primaryGraph.vertices.isNotEmpty,
-      executeCallback: (state) {
-        if (!state.primaryGraph.isDirected) return;
-        final mod = ModifierRegistry.getSpec('transitive_reduction').factory();
-        mod.applyPermanent(state);
-      },
-    ),
+    _transitiveCommand('transitive_closure', 'Transitive Closure'),
+    _transitiveCommand('transitive_reduction', 'Transitive Reduction'),
   ];
 
   static final Map<String, GraphCommand> _byId = {

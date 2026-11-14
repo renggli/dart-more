@@ -43,12 +43,8 @@ class MaxFlowModifier extends GraphModifier {
 
   @override
   void applyConfig(Map<String, dynamic> config) {
-    if (config.containsKey('sourceVertex')) {
-      sourceVertex = config['sourceVertex']?.toString();
-    }
-    if (config.containsKey('targetVertex')) {
-      targetVertex = config['targetVertex']?.toString();
-    }
+    sourceVertex = config['sourceVertex'] as String? ?? sourceVertex;
+    targetVertex = config['targetVertex'] as String? ?? targetVertex;
     if (config['flowColor'] case final String fc) flowColor = fc;
     if (config['cutColor'] case final String cc) cutColor = cc;
     if (config['cutPattern'] case final String cp) cutPattern = cp;
@@ -112,48 +108,30 @@ class MaxFlowModifier extends GraphModifier {
       ),
     );
 
-    root.appendChild(
-      colorSetting(
-        'Cut Edge Color:',
-        cutColor,
-        onChanged: (c) {
-          cutColor = c;
-          onModified();
-        },
-      ),
-    );
-
-    root.appendChild(
-      lineStyleSetting(
-        'Cut Line Style:',
-        cutPattern,
-        onChanged: (p) {
-          cutPattern = p;
-          onModified();
-        },
-      ),
-    );
-
-    root.appendChild(
-      colorSetting(
-        'Source Partition Color:',
-        sourcePartitionColor,
-        onChanged: (c) {
-          sourcePartitionColor = c;
-          onModified();
-        },
-      ),
-    );
-
-    root.appendChild(
-      colorSetting(
-        'Sink Partition Color:',
-        sinkPartitionColor,
-        onChanged: (c) {
-          sinkPartitionColor = c;
-          onModified();
-        },
-      ),
+    _appendCutSettings(
+      root,
+      cutColor: cutColor,
+      cutPattern: cutPattern,
+      partAColor: sourcePartitionColor,
+      partBColor: sinkPartitionColor,
+      partALabel: 'Source Partition Color:',
+      partBLabel: 'Sink Partition Color:',
+      onCutColorChanged: (c) {
+        cutColor = c;
+        onModified();
+      },
+      onCutPatternChanged: (p) {
+        cutPattern = p;
+        onModified();
+      },
+      onPartAColorChanged: (c) {
+        sourcePartitionColor = c;
+        onModified();
+      },
+      onPartBColorChanged: (c) {
+        sinkPartitionColor = c;
+        onModified();
+      },
     );
 
     return root;
@@ -335,45 +313,30 @@ class MinCutModifier extends GraphModifier {
   @override
   web.HTMLElement buildConfigUI(AppState state, void Function() onModified) {
     final root = div('form-column');
-    root.appendChild(
-      colorSetting(
-        'Cut Edges Color:',
-        cutColor,
-        onChanged: (c) {
-          cutColor = c;
-          onModified();
-        },
-      ),
-    );
-    root.appendChild(
-      lineStyleSetting(
-        'Cut Line Style:',
-        cutPattern,
-        onChanged: (p) {
-          cutPattern = p;
-          onModified();
-        },
-      ),
-    );
-    root.appendChild(
-      colorSetting(
-        'Partition A Color:',
-        partitionAColor,
-        onChanged: (c) {
-          partitionAColor = c;
-          onModified();
-        },
-      ),
-    );
-    root.appendChild(
-      colorSetting(
-        'Partition B Color:',
-        partitionBColor,
-        onChanged: (c) {
-          partitionBColor = c;
-          onModified();
-        },
-      ),
+    _appendCutSettings(
+      root,
+      cutColor: cutColor,
+      cutPattern: cutPattern,
+      partAColor: partitionAColor,
+      partBColor: partitionBColor,
+      partALabel: 'Partition A Color:',
+      partBLabel: 'Partition B Color:',
+      onCutColorChanged: (c) {
+        cutColor = c;
+        onModified();
+      },
+      onCutPatternChanged: (p) {
+        cutPattern = p;
+        onModified();
+      },
+      onPartAColorChanged: (c) {
+        partitionAColor = c;
+        onModified();
+      },
+      onPartBColorChanged: (c) {
+        partitionBColor = c;
+        onModified();
+      },
     );
     return root;
   }
@@ -463,4 +426,35 @@ class MinCutModifier extends GraphModifier {
       );
     }
   }
+}
+
+void _appendCutSettings(
+  web.HTMLElement root, {
+  required String cutColor,
+  required String cutPattern,
+  required String partAColor,
+  required String partBColor,
+  required String partALabel,
+  required String partBLabel,
+  required void Function(String) onCutColorChanged,
+  required void Function(String) onCutPatternChanged,
+  required void Function(String) onPartAColorChanged,
+  required void Function(String) onPartBColorChanged,
+}) {
+  root.appendChild(
+    colorSetting('Cut Edge Color:', cutColor, onChanged: onCutColorChanged),
+  );
+  root.appendChild(
+    lineStyleSetting(
+      'Cut Line Style:',
+      cutPattern,
+      onChanged: onCutPatternChanged,
+    ),
+  );
+  root.appendChild(
+    colorSetting(partALabel, partAColor, onChanged: onPartAColorChanged),
+  );
+  root.appendChild(
+    colorSetting(partBLabel, partBColor, onChanged: onPartBColorChanged),
+  );
 }

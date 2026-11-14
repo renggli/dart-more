@@ -65,13 +65,7 @@ final class ForceLayout<V> extends GraphLayout<V> {
     }
     final n = list.length;
     final rng = random ?? (seed != null ? math.Random(seed) : math.Random(42));
-
-    final sizes = <V, LayoutSize>{for (final v in list) v: input.sizeOf(v)};
-    var totalExtent = 0.0;
-    for (final sz in sizes.values) {
-      totalExtent += math.max(sz.width, sz.height);
-    }
-    final avgExtent = n > 0 ? totalExtent / n : 40.0;
+    final (sizes, avgExtent) = input.computeExtents(list);
     final minStep = avgExtent + vertexDistance;
 
     final width = bounds.width > 0 ? bounds.width : 800.0;
@@ -173,14 +167,13 @@ final class ForceLayout<V> extends GraphLayout<V> {
           final pxI = posX[i];
           final pyI = posY[i];
           for (var j = i + 1; j < n; j++) {
-            var dx = pxI - posX[j];
-            var dy = pyI - posY[j];
-            var dist = math.sqrt(dx * dx + dy * dy);
-            if (dist < 0.01) {
-              dx = (rng.nextDouble() - 0.5) * 2.0;
-              dy = (rng.nextDouble() - 0.5) * 2.0;
-              dist = 0.01;
-            }
+            final (dx, dy, dist) = distanceAndDelta(
+              pxI,
+              pyI,
+              posX[j],
+              posY[j],
+              rng,
+            );
             final force = repK / dist;
             final fx = (dx / dist) * force;
             final fy = (dy / dist) * force;

@@ -97,7 +97,43 @@ abstract class GraphModifier {
   bool get canApply => false;
 
   /// Bakes changes permanently into the base graph and removes itself from the stack.
-  void applyPermanent(AppState state) {}
+  void applyPermanent(AppState state) {
+    final out = apply(state.primaryGraph, state);
+    if (out.transformedGraph != null) {
+      state.saveSnapshot();
+      state.primaryGraph = out.transformedGraph!;
+      state.syncNodes();
+      state.modifiers.remove(this);
+    }
+  }
+
+  /// Validates graph constraints (non-empty, directedness). Returns error output or null.
+  ModifierOutput? validateGraph(
+    Graph<String, num> graph, {
+    bool undirected = false,
+    bool directed = false,
+    String? requirementMessage,
+  }) {
+    if (graph.vertices.isEmpty) {
+      return const ModifierOutput(statusSummary: 'Graph is empty');
+    }
+    if (undirected && graph.isDirected) {
+      return ModifierOutput(
+        hasError: true,
+        errorMessage:
+            requirementMessage ?? '$name requires an undirected graph.',
+        statusSummary: 'Requires undirected graph',
+      );
+    }
+    if (directed && !graph.isDirected) {
+      return ModifierOutput(
+        hasError: true,
+        errorMessage: requirementMessage ?? '$name requires a directed graph.',
+        statusSummary: 'Requires directed graph',
+      );
+    }
+    return null;
+  }
 
   /// Builds configuration UI controls inside the modifier card (accessible, stacked vertically).
   web.HTMLElement buildConfigUI(AppState state, void Function() onModified);

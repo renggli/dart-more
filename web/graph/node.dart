@@ -75,6 +75,19 @@ final class GraphNode {
     userOpacity: (json['opacity'] as num?)?.toDouble(),
   );
 
+  /// Creates a copy of this node's persistent attributes.
+  GraphNode copy() => GraphNode(
+    id: id,
+    label: label,
+    x: x,
+    y: y,
+    userFillColor: userFillColor,
+    userBorderColor: userBorderColor,
+    userTextColor: userTextColor,
+    userBorderWidth: userBorderWidth,
+    userOpacity: userOpacity,
+  );
+
   /// Immutable unique identifier matching the vertex key in `Graph<String, num>`.
   final String id;
 

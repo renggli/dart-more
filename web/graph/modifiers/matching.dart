@@ -57,12 +57,14 @@ class MatchingModifier extends GraphModifier {
     final root = div('form-column');
 
     root.appendChild(
-      dropdownSetting(
-        'Algorithm:',
-        algorithm.id,
-        [for (final a in MatchingAlgorithm.values) (a.id, a.label)],
+      enumDropdownSetting(
+        label: 'Algorithm:',
+        current: algorithm,
+        values: MatchingAlgorithm.values,
+        id: (a) => a.id,
+        display: (a) => a.label,
         onChanged: (val) {
-          algorithm = MatchingAlgorithm.fromId(val);
+          algorithm = val;
           onModified();
         },
       ),
@@ -79,16 +81,13 @@ class MatchingModifier extends GraphModifier {
 
   @override
   ModifierOutput apply(Graph<String, num> graph, AppState state) {
-    if (graph.vertices.isEmpty) {
-      return const ModifierOutput(statusSummary: 'Graph is empty');
-    }
-
-    if (graph.isDirected) {
-      return const ModifierOutput(
-        hasError: true,
-        errorMessage: 'Maximum matching requires an undirected graph.',
-        statusSummary: 'Requires undirected graph',
-      );
+    if (validateGraph(
+          graph,
+          undirected: true,
+          requirementMessage: 'Maximum matching requires an undirected graph.',
+        )
+        case final err?) {
+      return err;
     }
 
     if (algorithm == MatchingAlgorithm.bipartite && !graph.isBipartite()) {
@@ -231,17 +230,14 @@ class CliquesModifier extends GraphModifier {
 
   @override
   ModifierOutput apply(Graph<String, num> graph, AppState state) {
-    if (graph.vertices.isEmpty) {
-      return const ModifierOutput(statusSummary: 'Graph is empty');
-    }
-
-    if (graph.isDirected) {
-      return const ModifierOutput(
-        hasError: true,
-        errorMessage:
-            'Cliques and independent sets require an undirected graph.',
-        statusSummary: 'Requires undirected graph',
-      );
+    if (validateGraph(
+          graph,
+          undirected: true,
+          requirementMessage:
+              'Cliques and independent sets require an undirected graph.',
+        )
+        case final err?) {
+      return err;
     }
 
     try {
@@ -412,16 +408,13 @@ class VertexCoverModifier extends GraphModifier {
 
   @override
   ModifierOutput apply(Graph<String, num> graph, AppState state) {
-    if (graph.vertices.isEmpty) {
-      return const ModifierOutput(statusSummary: 'Graph is empty');
-    }
-
-    if (graph.isDirected) {
-      return const ModifierOutput(
-        hasError: true,
-        errorMessage: 'Vertex cover requires an undirected graph.',
-        statusSummary: 'Requires undirected graph',
-      );
+    if (validateGraph(
+          graph,
+          undirected: true,
+          requirementMessage: 'Vertex cover requires an undirected graph.',
+        )
+        case final err?) {
+      return err;
     }
 
     try {

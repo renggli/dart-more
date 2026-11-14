@@ -873,11 +873,11 @@ final class GraphRenderer {
 
     viewport.ondblclick = ((web.MouseEvent event) {
       final target = event.target as web.Element?;
-      final badge = target?.closest('.edge-weight-badge');
-      if (badge != null) {
+      final edgeOrBadge = target?.closest('.edge-weight-badge, .graph-edge');
+      if (edgeOrBadge != null) {
         event.stopPropagation();
-        final s = badge.getAttribute('data-source');
-        final t = badge.getAttribute('data-target');
+        final s = edgeOrBadge.getAttribute('data-source');
+        final t = edgeOrBadge.getAttribute('data-target');
         if (s != null && t != null && _lastState != null) {
           showInlineEdgeEditor(
             _lastState!,
@@ -894,21 +894,6 @@ final class GraphRenderer {
         final v = nodeElem.getAttribute('data-id');
         if (v != null && v.isNotEmpty) {
           onVertexDblClick?.call(v);
-        }
-        return;
-      }
-      final edgeElem = target?.closest('.graph-edge');
-      if (edgeElem != null) {
-        event.stopPropagation();
-        final s = edgeElem.getAttribute('data-source');
-        final t = edgeElem.getAttribute('data-target');
-        if (s != null && t != null && _lastState != null) {
-          showInlineEdgeEditor(
-            _lastState!,
-            s,
-            t,
-            onCommit: (w) => onEdgeWeightEdit?.call(s, t, w),
-          );
         }
         return;
       }
@@ -1030,21 +1015,17 @@ final class GraphRenderer {
     final fontSize = (12.0 * _scale).clamp(8.0, 72.0);
     final height = (24.0 * _scale).clamp(16.0, 144.0);
 
-    void updateLayout() {
-      final screenX = node.x! * _scale + _panX;
-      final screenY = node.y! * _scale + _panY;
-      final charCount = math.max(2, input.value.length);
-      final width = (math.max(36.0, (charCount + 1.0) * 8.0) * _scale).clamp(
-        24.0,
-        400.0,
-      );
-      input.style.left = '${screenX}px';
-      input.style.top = '${screenY}px';
-      input.style.width = '${width}px';
-      input.style.height = '${height}px';
-      input.style.fontSize = '${fontSize}px';
-      input.style.lineHeight = '${height}px';
-    }
+    void updateLayout() => _positionInlineInput(
+      input,
+      posX: node.x!,
+      posY: node.y!,
+      baseWidth: 36.0,
+      charScale: 8.0,
+      minWidth: 24.0,
+      maxWidth: 400.0,
+      height: height,
+      fontSize: fontSize,
+    );
 
     updateLayout();
     input.oninput = ((web.Event _) => updateLayout()).toJS;
@@ -1060,14 +1041,55 @@ final class GraphRenderer {
           '.graph-node[data-id="${escapeHtml(vertex)}"]',
         );
     final textElem = nodeElem?.querySelector('text') as web.SVGTextElement?;
-    final prevDisplay = textElem?.style.display ?? '';
-    if (textElem != null) {
-      textElem.style.display = 'none';
+    _mountInlineEditor(
+      input: input,
+      hiddenText: textElem,
+      onCommit: () {
+        final val = input.value.trim();
+        if (val.isNotEmpty && val != node.label) {
+          onCommit?.call(val);
+        }
+      },
+    );
+  }
+
+  void _positionInlineInput(
+    web.HTMLInputElement input, {
+    required double posX,
+    required double posY,
+    required double baseWidth,
+    required double charScale,
+    required double minWidth,
+    required double maxWidth,
+    required double height,
+    required double fontSize,
+  }) {
+    final screenX = posX * _scale + _panX;
+    final screenY = posY * _scale + _panY;
+    final charCount = math.max(2, input.value.length);
+    final width = (math.max(baseWidth, (charCount + 1.0) * charScale) * _scale)
+        .clamp(minWidth, maxWidth);
+    input.style.left = '${screenX}px';
+    input.style.top = '${screenY}px';
+    input.style.width = '${width}px';
+    input.style.height = '${height}px';
+    input.style.fontSize = '${fontSize}px';
+    input.style.lineHeight = '${height}px';
+  }
+
+  void _mountInlineEditor({
+    required web.HTMLInputElement input,
+    required web.SVGTextElement? hiddenText,
+    required void Function() onCommit,
+  }) {
+    final prevDisplay = hiddenText?.style.display ?? '';
+    if (hiddenText != null) {
+      hiddenText.style.display = 'none';
     }
 
     void cleanup() {
-      if (textElem != null) {
-        textElem.style.display = prevDisplay;
+      if (hiddenText != null) {
+        hiddenText.style.display = prevDisplay;
       }
       input.remove();
       _activeInlineInput = null;
@@ -1077,11 +1099,8 @@ final class GraphRenderer {
     void commit() {
       if (committed) return;
       committed = true;
-      final val = input.value.trim();
       cleanup();
-      if (val.isNotEmpty && val != node.label) {
-        onCommit?.call(val);
-      }
+      onCommit();
     }
 
     input.onkeydown = ((web.KeyboardEvent e) {
@@ -1097,9 +1116,7 @@ final class GraphRenderer {
       }
     }).toJS;
 
-    input.onblur = ((web.Event _) {
-      commit();
-    }).toJS;
+    input.onblur = ((web.Event _) => commit()).toJS;
 
     viewport.appendChild(input);
     _activeInlineInput = input;
@@ -1178,21 +1195,17 @@ final class GraphRenderer {
     final fontSize = (10.0 * _scale).clamp(7.0, 60.0);
     final height = (20.0 * _scale).clamp(14.0, 120.0);
 
-    void updateLayout() {
-      final screenX = posX * _scale + _panX;
-      final screenY = posY * _scale + _panY;
-      final charCount = math.max(2, input.value.length);
-      final width = (math.max(28.0, (charCount + 1.0) * 7.0) * _scale).clamp(
-        20.0,
-        300.0,
-      );
-      input.style.left = '${screenX}px';
-      input.style.top = '${screenY}px';
-      input.style.width = '${width}px';
-      input.style.height = '${height}px';
-      input.style.fontSize = '${fontSize}px';
-      input.style.lineHeight = '${height}px';
-    }
+    void updateLayout() => _positionInlineInput(
+      input,
+      posX: posX,
+      posY: posY,
+      baseWidth: 28.0,
+      charScale: 7.0,
+      minWidth: 20.0,
+      maxWidth: 300.0,
+      height: height,
+      fontSize: fontSize,
+    );
 
     updateLayout();
     input.oninput = ((web.Event _) => updateLayout()).toJS;
@@ -1205,51 +1218,16 @@ final class GraphRenderer {
           '.edge-weight-badge[data-source="$target"][data-target="$source"]',
         );
     final badgeText = badgeElem?.querySelector('text') as web.SVGTextElement?;
-    final prevDisplay = badgeText?.style.display ?? '';
-    if (badgeText != null) {
-      badgeText.style.display = 'none';
-    }
-
-    void cleanup() {
-      if (badgeText != null) {
-        badgeText.style.display = prevDisplay;
-      }
-      input.remove();
-      _activeInlineInput = null;
-    }
-
-    var committed = false;
-    void commit() {
-      if (committed) return;
-      committed = true;
-      final val = num.tryParse(input.value.trim());
-      cleanup();
-      if (val != null && val != currentWeight) {
-        onCommit?.call(val);
-      }
-    }
-
-    input.onkeydown = ((web.KeyboardEvent e) {
-      if (e.key == 'Enter') {
-        commit();
-        e.preventDefault();
-        e.stopPropagation();
-      } else if (e.key == 'Escape') {
-        committed = true;
-        cleanup();
-        e.preventDefault();
-        e.stopPropagation();
-      }
-    }).toJS;
-
-    input.onblur = ((web.Event _) {
-      commit();
-    }).toJS;
-
-    viewport.appendChild(input);
-    _activeInlineInput = input;
-    input.focus();
-    input.select();
+    _mountInlineEditor(
+      input: input,
+      hiddenText: badgeText,
+      onCommit: () {
+        final val = num.tryParse(input.value.trim());
+        if (val != null && val != currentWeight) {
+          onCommit?.call(val);
+        }
+      },
+    );
   }
 
   void _updateLassoMarquee(

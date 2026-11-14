@@ -50,16 +50,10 @@ final class StressLayout<V> extends GraphLayout<V> {
   LayoutResult<V> layoutComponent(LayoutInput<V> input) {
     final list = input.vertices;
     final n = list.length;
-    final sizes = <V, LayoutSize>{for (final v in list) v: input.sizeOf(v)};
-    final extents = Float64List(n);
-    var totalExtent = 0.0;
-    for (var i = 0; i < n; i++) {
-      final sz = sizes[list[i]]!;
-      final ext = math.max(sz.width, sz.height);
-      extents[i] = ext;
-      totalExtent += ext;
-    }
-    final avgExtent = n > 0 ? totalExtent / n : 40.0;
+    final (sizes, avgExtent) = input.computeExtents(list);
+    final extents = Float64List.fromList([
+      for (final v in list) math.max(sizes[v]!.width, sizes[v]!.height),
+    ]);
     final baseStep = avgExtent + vertexDistance;
     final vertexIndex = <V, int>{for (var i = 0; i < n; i++) list[i]: i};
 

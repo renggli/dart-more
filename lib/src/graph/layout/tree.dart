@@ -46,10 +46,7 @@ final class TreeLayout<V> extends GraphLayout<V> {
   @override
   LayoutResult<V> layoutComponent(LayoutInput<V> input) {
     final allVertices = input.vertices;
-
-    final sizes = <V, LayoutSize>{
-      for (final v in allVertices) v: input.sizeOf(v),
-    };
+    final (sizes, _) = input.computeExtents(allVertices);
 
     var maxDepthDim = 0.0;
     for (final v in allVertices) {
@@ -151,7 +148,6 @@ void _buildTreeDfs<V>(
       final childNode = _TreeNode<V>(
         value: child,
         parent: current,
-        depth: current.depth + 1,
         number: current.children.length,
       );
       current.children.add(childNode);
@@ -353,11 +349,10 @@ double _secondWalk<V>(
 }
 
 final class _TreeNode<V> {
-  new({required this.value, this.parent, this.depth = 0, this.number = 0});
+  new({required this.value, this.parent, this.number = 0});
 
   final V value;
   final _TreeNode<V>? parent;
-  final int depth;
   int number;
   final List<_TreeNode<V>> children = [];
 
