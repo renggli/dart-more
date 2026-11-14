@@ -177,8 +177,14 @@ final class AppState {
   void addAllModifiersDisabled() {
     saveSnapshot();
     modifiers.clear();
+    final combineSpec = ModifierRegistry.getSpec('combine');
+    modifiers.add(
+      combineSpec.factory()
+        ..enabled = false
+        ..collapsed = true,
+    );
     for (final spec in ModifierRegistry.specs) {
-      if (spec.category == ModifierCategory.generate) continue;
+      if (spec.type == 'combine') continue;
       final mod = spec.factory()
         ..enabled = false
         ..collapsed = true;
@@ -281,7 +287,7 @@ final class AppState {
         if (out.tableData != null) {
           finalTable = out.tableData;
         }
-      } on Exception catch (error, stackTrace) {
+      } catch (error, stackTrace) {
         final errOut = ModifierOutput(
           hasError: true,
           errorMessage: '$error\n$stackTrace',

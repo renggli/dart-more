@@ -6,7 +6,6 @@ import 'registry.dart';
 
 /// Categories for grouping graph modifiers.
 enum ModifierCategory {
-  generate('Generate'),
   layout('Layout'),
   paths('Paths & Traversal'),
   structure('Structure & Connectivity'),

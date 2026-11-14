@@ -86,26 +86,6 @@ enum GeneratorShape {
       values.firstWhere((e) => e.id == id, orElse: () => GeneratorShape.atlas);
 }
 
-/// Combine mode for graph generation.
-enum GeneratorCombineMode {
-  replace('replace', 'Replace existing graph'),
-  union('union', 'Merge into existing graph');
-
-  new(this.id, this.label);
-
-  /// Combine mode identifier.
-  final String id;
-
-  /// User-visible display label.
-  final String label;
-
-  /// Looks up [GeneratorCombineMode] by [id], defaulting to [GeneratorCombineMode.replace].
-  static GeneratorCombineMode fromId(String id) => values.firstWhere(
-    (e) => e.id == id,
-    orElse: () => GeneratorCombineMode.replace,
-  );
-}
-
 /// Algorithms for shortest path and traversal.
 enum ShortestPathAlgorithm {
   dijkstra('dijkstra', 'Dijkstra (uniform / positive weights)'),
@@ -222,6 +202,7 @@ enum TraversalType {
 
 /// Binary graph combination operation.
 enum CombineOperation {
+  replace('replace', 'Replace (H)'),
   union('union', 'Union (G ∪ H)'),
   intersection('intersection', 'Intersection (G ∩ H)');
 
@@ -236,7 +217,27 @@ enum CombineOperation {
   /// Looks up [CombineOperation] by [id], defaulting to [CombineOperation.union].
   static CombineOperation fromId(String id) => values.firstWhere(
     (e) => e.id == id,
-    orElse: () => CombineOperation.union,
+    orElse: () => CombineOperation.replace,
+  );
+}
+
+/// Matching mode for graph isomorphism analysis.
+enum IsomorphismMode {
+  subgraph('subgraph', 'Induced Subgraph (P ⊆ G)'),
+  full('full', 'Full Graph Isomorphism (G ≅ P)');
+
+  new(this.id, this.label);
+
+  /// Serialized identifier.
+  final String id;
+
+  /// User-visible label.
+  final String label;
+
+  /// Looks up [IsomorphismMode] by [id], defaulting to [IsomorphismMode.subgraph].
+  static IsomorphismMode fromId(String id) => values.firstWhere(
+    (e) => e.id == id,
+    orElse: () => IsomorphismMode.subgraph,
   );
 }
 

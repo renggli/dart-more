@@ -19,13 +19,21 @@ void main() {
       check(GeneratorShape.fromId('unknown')).equals(GeneratorShape.atlas);
     });
 
-    test('GeneratorCombineMode fromId', () {
-      check(GeneratorCombineMode.fromId('replace'))
-          .equals(GeneratorCombineMode.replace);
-      check(GeneratorCombineMode.fromId('union'))
-          .equals(GeneratorCombineMode.union);
-      check(GeneratorCombineMode.fromId('unknown'))
-          .equals(GeneratorCombineMode.replace);
+    test('CombineOperation fromId', () {
+      check(CombineOperation.fromId('replace'))
+          .equals(CombineOperation.replace);
+      check(CombineOperation.fromId('union')).equals(CombineOperation.union);
+      check(CombineOperation.fromId('intersection'))
+          .equals(CombineOperation.intersection);
+      check(CombineOperation.fromId('unknown'))
+          .equals(CombineOperation.replace);
+    });
+
+    test('IsomorphismMode fromId', () {
+      check(IsomorphismMode.fromId('subgraph'))
+          .equals(IsomorphismMode.subgraph);
+      check(IsomorphismMode.fromId('full')).equals(IsomorphismMode.full);
+      check(IsomorphismMode.fromId('unknown')).equals(IsomorphismMode.subgraph);
     });
   });
 
@@ -101,13 +109,6 @@ void main() {
       check(TraversalType.fromId('randomWalk'))
           .equals(TraversalType.randomWalk);
       check(TraversalType.fromId('unknown')).equals(TraversalType.bfs);
-    });
-
-    test('CombineOperation fromId', () {
-      check(CombineOperation.fromId('union')).equals(CombineOperation.union);
-      check(CombineOperation.fromId('intersection'))
-          .equals(CombineOperation.intersection);
-      check(CombineOperation.fromId('unknown')).equals(CombineOperation.union);
     });
 
     test('KCoreRemovedStyle fromId', () {

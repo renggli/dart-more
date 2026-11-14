@@ -1,3 +1,5 @@
+import 'dart:math' as math;
+
 import 'package:more/graph.dart' hide GraphLayout;
 import 'package:web/web.dart' as web;
 
@@ -363,9 +365,9 @@ class TransitiveReductionModifier extends GraphModifier {
 class CombineModifier extends GraphModifier {
   new({
     super.enabled,
-    this.operation = CombineOperation.union,
-    this.shape = GeneratorShape.cycle,
-    this.count = 5,
+    this.operation = CombineOperation.replace,
+    this.shape = GeneratorShape.atlas,
+    this.count = 6,
     this.atlasIndex = 7,
   });
 
@@ -405,9 +407,9 @@ class CombineModifier extends GraphModifier {
 
   @override
   void resetDefaults() {
-    operation = CombineOperation.union;
-    shape = GeneratorShape.cycle;
-    count = 5;
+    operation = CombineOperation.replace;
+    shape = GeneratorShape.atlas;
+    count = 6;
     atlasIndex = 7;
   }
 
@@ -421,13 +423,16 @@ class CombineModifier extends GraphModifier {
     if (out.transformedGraph != null) {
       state.primaryGraph = out.transformedGraph!;
       state.syncNodes();
+      state.modifiers.remove(this);
     }
   }
 
   Graph<String, num> _buildSecondGraph(bool isDirected) {
     final factory = GraphFactory<String, num>(
       isDirected: isDirected,
-      vertexProvider: (int i) => 'H$i',
+      vertexProvider: (int i) => operation == CombineOperation.replace
+          ? (i < 26 ? String.fromCharCode(65 + i) : 'V$i')
+          : 'H$i',
       edgeProvider: (source, target) => 1,
     );
     final countClamped = count.clamp(1, 100);
@@ -489,61 +494,112 @@ class CombineModifier extends GraphModifier {
       ),
     );
 
+    final dynamicSection = div('form-column');
+
+    void rebuildDynamic() {
+      dynamicSection.textContent = '';
+      if (shape == GeneratorShape.atlas) {
+        dynamicSection.appendChild(
+          rangeSetting(
+            'Atlas Index (0..1252):',
+            atlasIndex,
+            min: 0,
+            max: 1252,
+            onChanged: (v) {
+              atlasIndex = v.toInt();
+              onModified();
+            },
+          ),
+        );
+      } else {
+        dynamicSection.appendChild(
+          rangeSetting(
+            'Vertices in H:',
+            count,
+            min: 2,
+            max: 30,
+            onChanged: (v) {
+              count = v.toInt();
+              onModified();
+            },
+          ),
+        );
+      }
+    }
+
     root.appendChild(
       dropdownSetting(
-        'Second Graph (H):',
+        'Graph Shape (H):',
         shape.id,
         [for (final s in GeneratorShape.values) (s.id, s.label)],
         onChanged: (val) {
           shape = GeneratorShape.fromId(val);
+          rebuildDynamic();
           onModified();
         },
       ),
     );
 
-    if (shape == GeneratorShape.atlas) {
-      root.appendChild(
-        rangeSetting(
-          'Atlas Index (0..1252):',
-          atlasIndex,
-          min: 0,
-          max: 1252,
-          onChanged: (v) {
-            atlasIndex = v.toInt();
-            onModified();
-          },
-        ),
-      );
-    } else {
-      root.appendChild(
-        rangeSetting(
-          'Vertices in H:',
-          count,
-          min: 2,
-          max: 30,
-          onChanged: (v) {
-            count = v.toInt();
-            onModified();
-          },
-        ),
-      );
-    }
+    rebuildDynamic();
+    root.appendChild(dynamicSection);
 
     return root;
   }
 
   @override
   ModifierOutput apply(Graph<String, num> graph, AppState state) {
-    if (graph.vertices.isEmpty) {
-      return const ModifierOutput(statusSummary: 'Graph is empty');
+    final second = _buildSecondGraph(graph.isDirected);
+
+    // Ensure layout coordinates for vertices in second graph
+    const cx = 450.0;
+    const cy = 300.0;
+    final secondVertices = second.vertices.toList();
+    final radius = math.max(120.0, secondVertices.length * 22.0);
+    for (var i = 0; i < secondVertices.length; i++) {
+      final v = secondVertices[i];
+      final node = state.getOrCreateNode(v);
+      if (node.x == null ||
+          node.y == null ||
+          operation == CombineOperation.replace) {
+        final angle =
+            (2 * math.pi * i / math.max(1, secondVertices.length)) -
+            (math.pi / 2);
+        node.x = cx + radius * math.cos(angle);
+        node.y = cy + radius * math.sin(angle);
+      }
     }
 
-    final second = _buildSecondGraph(graph.isDirected);
+    if (graph.vertices.isEmpty) {
+      if (operation == CombineOperation.intersection) {
+        return const ModifierOutput(statusSummary: 'Graph is empty');
+      }
+      return ModifierOutput(
+        transformedGraph: second,
+        statusSummary:
+            '${operation.label} (${second.vertices.length} vertices, ${second.edges.length} edges)',
+        tableData: ModifierTableData(
+          title: 'Combine (${operation.label})',
+          headers: ['Metric', 'G', 'H', 'Result'],
+          rows: [
+            [
+              'Vertices',
+              '0',
+              '${second.vertices.length}',
+              '${second.vertices.length}',
+            ],
+            ['Edges', '0', '${second.edges.length}', '${second.edges.length}'],
+          ],
+        ),
+      );
+    }
+
     Graph<String, num> result;
     try {
-      result = operation == CombineOperation.union
-          ? graph.union(second)
-          : graph.intersection(second);
+      result = switch (operation) {
+        CombineOperation.replace => second,
+        CombineOperation.union => graph.union(second),
+        CombineOperation.intersection => graph.intersection(second),
+      };
     } catch (e) {
       return ModifierOutput(
         hasError: true,

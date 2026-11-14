@@ -189,7 +189,7 @@ class GraphMetricsModifier extends GraphModifier {
     final avgClustering = graph.averageClusteringCoefficient();
     final assortativity = graph.degreeAssortativity();
     final isBip = graph.isBipartite();
-    final isAcyclic = !graph.hasCycle();
+    final isAcyclic = graph.isDirected ? !graph.hasCycle() : null;
     final isPlanar = !graph.isDirected ? graph.isPlanar() : null;
     final edgeConn = graph.edgeConnectivity();
     final vertConn = graph.vertexConnectivity();
@@ -203,12 +203,12 @@ class GraphMetricsModifier extends GraphModifier {
       center = graph.center();
     } catch (_) {}
 
-    var minDeg = double.infinity.toInt();
+    int? minDeg;
     var maxDeg = 0;
     var totalDeg = 0;
     for (final v in graph.vertices) {
       final deg = graph.degreeOf(v);
-      if (deg < minDeg) minDeg = deg;
+      if (minDeg == null || deg < minDeg) minDeg = deg;
       if (deg > maxDeg) maxDeg = deg;
       totalDeg += deg;
     }
@@ -235,7 +235,8 @@ class GraphMetricsModifier extends GraphModifier {
               assortativity.toStringAsFixed(4),
           ],
           ['Bipartite', if (isBip) 'Yes' else 'No'],
-          ['Acyclic (DAG)', if (isAcyclic) 'Yes' else 'No'],
+          if (isAcyclic != null)
+            ['Acyclic (DAG)', if (isAcyclic) 'Yes' else 'No'],
           if (isPlanar != null) ['Planar', if (isPlanar) 'Yes' else 'No'],
           ['Edge Connectivity', '$edgeConn'],
           ['Vertex Connectivity', '$vertConn'],
@@ -246,7 +247,7 @@ class GraphMetricsModifier extends GraphModifier {
           ],
           [
             'Degree Sequence',
-            'Min: $minDeg, Max: $maxDeg, Avg: ${avgDeg.toStringAsFixed(2)}',
+            'Min: ${minDeg ?? 0}, Max: $maxDeg, Avg: ${avgDeg.toStringAsFixed(2)}',
           ],
         ],
       ),

@@ -389,7 +389,10 @@ class CycleDetectionModifier extends GraphModifier {
       }
     }
 
-    final cycles = _findCycles(state.renderGraph);
+    var cycles = const <List<String>>[];
+    try {
+      cycles = _findCycles(state.renderGraph);
+    } catch (_) {}
     updateDropdown(cycles);
     _onCyclesChanged = updateDropdown;
     root.appendChild(dropdownContainer);
@@ -517,7 +520,7 @@ class CycleDetectionModifier extends GraphModifier {
     Graph<String, num> graph, {
     int maxCycles = 30,
   }) {
-    if (!graph.hasCycle()) return const [];
+    if (graph.isDirected && !graph.hasCycle()) return const [];
     final results = <List<String>>[];
     final seenCanonical = <String>{};
 
@@ -874,11 +877,13 @@ class KCoreModifier extends GraphModifier {
 class IsomorphismModifier extends GraphModifier {
   new({
     super.enabled,
+    this.mode = IsomorphismMode.subgraph,
     this.shape = GeneratorShape.atlas,
     this.atlasIndex = 7,
     this.count = 5,
   });
 
+  IsomorphismMode mode;
   GeneratorShape shape;
   int atlasIndex;
   int count;
@@ -900,6 +905,7 @@ class IsomorphismModifier extends GraphModifier {
 
   @override
   Map<String, dynamic> exportConfig() => {
+    'mode': mode.id,
     'shape': shape.id,
     'atlasIndex': atlasIndex,
     'count': count,
@@ -908,6 +914,7 @@ class IsomorphismModifier extends GraphModifier {
 
   @override
   void applyConfig(Map<String, dynamic> config) {
+    if (config['mode'] case final String m) mode = IsomorphismMode.fromId(m);
     if (config['shape'] case final String s) shape = GeneratorShape.fromId(s);
     if (config['atlasIndex'] case final int ai) atlasIndex = ai;
     if (config['count'] case final int c) count = c;
@@ -918,6 +925,7 @@ class IsomorphismModifier extends GraphModifier {
 
   @override
   void resetDefaults() {
+    mode = IsomorphismMode.subgraph;
     shape = GeneratorShape.atlas;
     atlasIndex = 7;
     count = 5;
@@ -979,43 +987,64 @@ class IsomorphismModifier extends GraphModifier {
 
     root.appendChild(
       dropdownSetting(
-        'Pattern Graph (P):',
-        shape.id,
-        [for (final s in GeneratorShape.values) (s.id, s.label)],
+        'Matching Mode:',
+        mode.id,
+        [for (final m in IsomorphismMode.values) (m.id, m.label)],
         onChanged: (val) {
-          shape = GeneratorShape.fromId(val);
+          mode = IsomorphismMode.fromId(val);
           onModified();
         },
       ),
     );
 
-    if (shape == GeneratorShape.atlas) {
-      root.appendChild(
-        rangeSetting(
-          'Atlas Index (0..1252):',
-          atlasIndex,
-          min: 0,
-          max: 1252,
-          onChanged: (v) {
-            atlasIndex = v.toInt();
-            onModified();
-          },
-        ),
-      );
-    } else {
-      root.appendChild(
-        rangeSetting(
-          'Vertices in P:',
-          count,
-          min: 2,
-          max: 20,
-          onChanged: (v) {
-            count = v.toInt();
-            onModified();
-          },
-        ),
-      );
+    final dynamicSection = div('form-column');
+
+    void rebuildDynamic() {
+      dynamicSection.textContent = '';
+      if (shape == GeneratorShape.atlas) {
+        dynamicSection.appendChild(
+          rangeSetting(
+            'Atlas Index (0..1252):',
+            atlasIndex,
+            min: 0,
+            max: 1252,
+            onChanged: (v) {
+              atlasIndex = v.toInt();
+              onModified();
+            },
+          ),
+        );
+      } else {
+        dynamicSection.appendChild(
+          rangeSetting(
+            'Vertices in P:',
+            count,
+            min: 2,
+            max: 20,
+            onChanged: (v) {
+              count = v.toInt();
+              onModified();
+            },
+          ),
+        );
+      }
     }
+
+    root.appendChild(
+      dropdownSetting(
+        'Pattern Graph (P):',
+        shape.id,
+        [for (final s in GeneratorShape.values) (s.id, s.label)],
+        onChanged: (val) {
+          shape = GeneratorShape.fromId(val);
+          rebuildDynamic();
+          onModified();
+        },
+      ),
+    );
+
+    rebuildDynamic();
+    root.appendChild(dynamicSection);
 
     outputStyle.buildUI(
       root,
@@ -1034,65 +1063,156 @@ class IsomorphismModifier extends GraphModifier {
     }
 
     final pattern = _buildPatternGraph(graph.isDirected);
-    final isIso = graph.isIsomorphicTo(pattern);
+    final desc = shape == GeneratorShape.atlas
+        ? 'Atlas #$atlasIndex'
+        : shape.label;
 
-    if (isIso) {
-      final color = outputStyle.highlightColor;
-      final dash = outputStyle.dashPattern;
-      if (color != null || dash != null) {
-        for (final v in graph.vertices) {
-          final node = state.nodes[v];
-          if (node != null) {
-            if (color != null) node.style.borderColor = color;
-            node.style.dashPattern = dash;
+    if (mode == IsomorphismMode.full) {
+      final isIso = graph.isIsomorphicTo(pattern);
+
+      if (isIso) {
+        final color = outputStyle.highlightColor;
+        final dash = outputStyle.dashPattern;
+        if (color != null || dash != null) {
+          for (final v in graph.vertices) {
+            final node = state.nodes[v];
+            if (node != null) {
+              if (color != null) node.style.borderColor = color;
+              node.style.dashPattern = dash;
+            }
+          }
+          for (final e in graph.edges) {
+            final es = state.getEdgeStyle(
+              e.source,
+              e.target,
+              isDirected: graph.isDirected,
+            );
+            if (color != null) es.color = color;
+            es.dashPattern = dash;
           }
         }
-        for (final e in graph.edges) {
-          final es = state.getEdgeStyle(
-            e.source,
-            e.target,
-            isDirected: graph.isDirected,
-          );
-          if (color != null) es.color = color;
-          es.dashPattern = dash;
+      }
+
+      return ModifierOutput(
+        statusSummary: isIso
+            ? 'Isomorphic to $desc'
+            : 'Not isomorphic to $desc',
+        tableData: ModifierTableData(
+          title: 'Full Isomorphism Check ($desc)',
+          headers: ['Property', 'Current Graph (G)', 'Pattern (P)', 'Match'],
+          rows: [
+            ['Isomorphic', '-', '-', if (isIso) 'Yes' else 'No'],
+            [
+              'Vertices',
+              '${graph.vertices.length}',
+              '${pattern.vertices.length}',
+              if (graph.vertices.length == pattern.vertices.length)
+                'Match'
+              else
+                'Mismatch',
+            ],
+            [
+              'Edges',
+              '${graph.edges.length}',
+              '${pattern.edges.length}',
+              if (graph.edges.length == pattern.edges.length)
+                'Match'
+              else
+                'Mismatch',
+            ],
+            [
+              'Directed',
+              if (graph.isDirected) 'Yes' else 'No',
+              if (pattern.isDirected) 'Yes' else 'No',
+              'Match',
+            ],
+          ],
+        ),
+      );
+    }
+
+    // Subgraph isomorphism mode
+    final matches = graph.findSubgraphIsomorphisms(pattern).take(50).toList();
+    final matchedVertices = <String>{};
+    final matchedEdges = <(String, String)>{};
+
+    for (final match in matches) {
+      matchedVertices.addAll(match.values);
+      for (final pEdge in pattern.edges) {
+        final u = match[pEdge.source];
+        final v = match[pEdge.target];
+        if (u != null && v != null) {
+          matchedEdges.add((u, v));
+          if (!graph.isDirected) matchedEdges.add((v, u));
         }
       }
     }
 
-    final desc = shape == GeneratorShape.atlas
-        ? 'Atlas #$atlasIndex'
-        : shape.label;
+    final hasMatches = matches.isNotEmpty;
+    final color = outputStyle.highlightColor;
+    final dash = outputStyle.dashPattern;
+
+    if (hasMatches && (color != null || dash != null)) {
+      for (final v in matchedVertices) {
+        final node = state.nodes[v];
+        if (node != null) {
+          if (color != null) {
+            node.style.borderColor = color;
+            node.style.borderWidth = 2.5;
+          }
+          node.style.dashPattern = dash;
+        }
+      }
+      for (final (u, v) in matchedEdges) {
+        if (graph.containsEdge(u, v) ||
+            (!graph.isDirected && graph.containsEdge(v, u))) {
+          final es = state.getEdgeStyle(u, v, isDirected: graph.isDirected);
+          if (color != null) {
+            es.color = color;
+            es.strokeWidth = 3.0;
+          }
+          es.dashPattern = dash;
+        }
+      }
+      if (outputStyle.hasRemovedMode) {
+        for (final v in graph.vertices) {
+          if (!matchedVertices.contains(v)) {
+            final node = state.nodes[v];
+            if (node != null) {
+              node.style.opacity = outputStyle.removedMode == RemovedMode.hide
+                  ? 0.0
+                  : 0.25;
+            }
+          }
+        }
+        for (final e in graph.edges) {
+          if (!matchedEdges.contains((e.source, e.target))) {
+            final es = state.getEdgeStyle(
+              e.source,
+              e.target,
+              isDirected: graph.isDirected,
+            );
+            es.opacity = outputStyle.removedMode == RemovedMode.hide
+                ? 0.0
+                : 0.25;
+          }
+        }
+      }
+    }
+
     return ModifierOutput(
-      statusSummary: isIso ? 'Isomorphic to $desc' : 'Not isomorphic to $desc',
+      statusSummary: hasMatches
+          ? 'Found ${matches.length} induced subgraphs isomorphic to $desc'
+          : 'No induced subgraphs isomorphic to $desc found',
       tableData: ModifierTableData(
-        title: 'Isomorphism Check ($desc)',
-        headers: ['Property', 'Current Graph (G)', 'Pattern (P)', 'Match'],
+        title: 'Subgraph Isomorphisms ($desc)',
+        headers: ['Match #', for (final pv in pattern.vertices) 'P: $pv'],
         rows: [
-          ['Isomorphic', '-', '-', if (isIso) 'Yes' else 'No'],
-          [
-            'Vertices',
-            '${graph.vertices.length}',
-            '${pattern.vertices.length}',
-            if (graph.vertices.length == pattern.vertices.length)
-              'Match'
-            else
-              'Mismatch',
-          ],
-          [
-            'Edges',
-            '${graph.edges.length}',
-            '${pattern.edges.length}',
-            if (graph.edges.length == pattern.edges.length)
-              'Match'
-            else
-              'Mismatch',
-          ],
-          [
-            'Directed',
-            if (graph.isDirected) 'Yes' else 'No',
-            if (pattern.isDirected) 'Yes' else 'No',
-            'Match',
-          ],
+          for (var i = 0; i < matches.length; i++)
+            [
+              'Match #${i + 1}',
+              for (final pv in pattern.vertices) matches[i][pv] ?? '-',
+            ],
         ],
       ),
     );

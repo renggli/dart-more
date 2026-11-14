@@ -227,6 +227,7 @@ class ModifierPanel {
           ..onClick.listen((e) {
             e.stopPropagation();
             mod.enabled = !mod.enabled;
+            mod.collapsed = !mod.enabled;
             state.evaluateModifiers();
             updateUI();
             renderModifierStack(state, ui, updateUI);
@@ -263,6 +264,25 @@ class ModifierPanel {
       });
 
       final actions = div('modifier-header-actions');
+      web.HTMLButtonElement? btnApply;
+      if (mod.canApply) {
+        btnApply = button('', 'modifier-btn-icon modifier-btn-apply-icon')
+          ..title = 'Apply modifier permanently into base graph'
+          ..setAttribute('aria-label', 'Apply modifier permanently')
+          ..innerHTML = GraphIcons.check.toJS
+          ..onClick.listen((e) {
+            e.stopPropagation();
+            mod.applyPermanent(state);
+            state.evaluateModifiers();
+            updateUI();
+            renderModifierStack(state, ui, updateUI);
+          });
+        if (hasError) {
+          btnApply.style.display = 'none';
+        }
+        actions.appendChild(btnApply);
+      }
+
       final btnReset = button('', 'modifier-btn-icon')
         ..title = 'Reset to defaults'
         ..setAttribute('aria-label', 'Reset to defaults')
@@ -276,25 +296,10 @@ class ModifierPanel {
         });
       actions.appendChild(btnReset);
 
-      web.HTMLButtonElement? btnApply;
-      if (mod.canApply) {
-        btnApply = button('Apply', 'modifier-btn-apply')
-          ..title = 'Apply modifier permanently into base graph'
-          ..onClick.listen((e) {
-            e.stopPropagation();
-            mod.applyPermanent(state);
-            state.evaluateModifiers();
-            updateUI();
-            renderModifierStack(state, ui, updateUI);
-          });
-        if (hasError) {
-          btnApply.style.display = 'none';
-        }
-        actions.appendChild(btnApply);
-      }
       if (!mod.isPinned) {
         final btnRemove = button('', 'modifier-btn-icon')
-          ..title = 'Remove'
+          ..title = 'Delete'
+          ..setAttribute('aria-label', 'Delete')
           ..innerHTML = GraphIcons.close.toJS
           ..onClick.listen((e) {
             e.stopPropagation();
@@ -407,11 +412,17 @@ class ModifierPanel {
           }
         }
 
-        final configUI = mod.buildConfigUI(state, () {
-          state.evaluateModifiers();
-          updateUI();
-        });
-        body.appendChild(configUI);
+        try {
+          final configUI = mod.buildConfigUI(state, () {
+            state.evaluateModifiers();
+            updateUI();
+          });
+          body.appendChild(configUI);
+        } catch (e) {
+          final errBox = div('modifier-error-alert')
+            ..textContent = 'Failed to load settings: $e';
+          body.appendChild(errBox);
+        }
         body.appendChild(statusContainer);
         body.appendChild(tableContainer);
         updateStatusAndTable();

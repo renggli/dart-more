@@ -561,7 +561,14 @@ final class GraphRenderer {
 
     // Smooth CSS-pixel panning, lasso selection, node group dragging, and edge swiping
     viewport.onmousedown = ((web.MouseEvent event) {
+      final target = event.target as web.Element?;
+      if (target?.closest('#intro-overlay') != null ||
+          target?.closest('.modal') != null) {
+        return;
+      }
+
       if (event.button == 1 || _isSpaceDown || event.altKey) {
+        event.preventDefault();
         _isPanning = true;
         _startX = event.clientX - _panX;
         _startY = event.clientY - _panY;
@@ -588,7 +595,6 @@ final class GraphRenderer {
         return;
       }
 
-      final target = event.target as web.Element?;
       if (target?.closest('.edge-weight-badge') != null) {
         return;
       }
@@ -596,6 +602,7 @@ final class GraphRenderer {
       final edgeElem = target?.closest('.graph-edge') as web.SVGGElement?;
 
       if (nodeElem != null && (state?.selectVerticesMode ?? true)) {
+        event.preventDefault();
         final vertexId = nodeElem.getAttribute('data-id') ?? '';
         if (vertexId.isNotEmpty) {
           _dragAnchorVertex = vertexId;
@@ -634,6 +641,7 @@ final class GraphRenderer {
       }
 
       // Background mousedown: start lasso marquee selection
+      event.preventDefault();
       _isLassoing = true;
       _lassoStartClientX = event.clientX.toDouble();
       _lassoStartClientY = event.clientY.toDouble();
@@ -954,14 +962,9 @@ final class GraphRenderer {
       final source = badge.getAttribute('data-source');
       final target = badge.getAttribute('data-target');
       if (source != null && target != null) {
-        badge.onmousedown = ((web.MouseEvent event) {
+        void openEditor(web.MouseEvent event) {
           event.stopPropagation();
-        }).toJS;
-        badge.onmouseup = ((web.MouseEvent event) {
-          event.stopPropagation();
-        }).toJS;
-        badge.onclick = ((web.MouseEvent event) {
-          event.stopPropagation();
+          event.preventDefault();
           final state = _lastState;
           if (state != null) {
             showInlineEdgeEditor(
@@ -973,7 +976,22 @@ final class GraphRenderer {
               },
             );
           }
-        }).toJS;
+        }
+
+        badge.addEventListener(
+          'mousedown',
+          ((web.MouseEvent event) {
+            event.stopPropagation();
+          }).toJS,
+        );
+        badge.addEventListener(
+          'mouseup',
+          ((web.MouseEvent event) {
+            event.stopPropagation();
+          }).toJS,
+        );
+        badge.addEventListener('click', openEditor.toJS);
+        badge.addEventListener('dblclick', openEditor.toJS);
       }
     }
 
@@ -1008,12 +1026,39 @@ final class GraphRenderer {
     input.type = 'text';
     input.value = node.label;
     input.className = 'inline-node-editor';
-    final screenX = node.x! * _scale + _panX;
-    final screenY = node.y! * _scale + _panY;
-    input.style.left = '${screenX}px';
-    input.style.top = '${screenY}px';
 
-    final nodeElem = _currentSvg?.querySelector('#node-$vertex');
+    final fontSize = (12.0 * _scale).clamp(8.0, 72.0);
+    final height = (24.0 * _scale).clamp(16.0, 144.0);
+
+    void updateLayout() {
+      final screenX = node.x! * _scale + _panX;
+      final screenY = node.y! * _scale + _panY;
+      final charCount = math.max(2, input.value.length);
+      final width = (math.max(36.0, (charCount + 1.0) * 8.0) * _scale).clamp(
+        24.0,
+        400.0,
+      );
+      input.style.left = '${screenX}px';
+      input.style.top = '${screenY}px';
+      input.style.width = '${width}px';
+      input.style.height = '${height}px';
+      input.style.fontSize = '${fontSize}px';
+      input.style.lineHeight = '${height}px';
+    }
+
+    updateLayout();
+    input.oninput = ((web.Event _) => updateLayout()).toJS;
+
+    final nodeTextColor =
+        node.userTextColor ?? node.style.textColor ?? '#f8fafc';
+    input.style.color = nodeTextColor;
+
+    final safeV = Uri.encodeComponent(vertex);
+    final nodeElem =
+        _currentSvg?.querySelector('#node_$safeV') ??
+        _currentSvg?.querySelector(
+          '.graph-node[data-id="${escapeHtml(vertex)}"]',
+        );
     final textElem = nodeElem?.querySelector('text') as web.SVGTextElement?;
     final prevDisplay = textElem?.style.display ?? '';
     if (textElem != null) {
@@ -1129,14 +1174,36 @@ final class GraphRenderer {
     input.setAttribute('inputmode', 'decimal');
     input.value = currentWeight.toString();
     input.className = 'inline-edge-editor';
-    final screenX = posX * _scale + _panX;
-    final screenY = posY * _scale + _panY;
-    input.style.left = '${screenX}px';
-    input.style.top = '${screenY}px';
 
-    final badgeElem = _currentSvg?.querySelector(
-      '.edge-weight-badge[data-source="$source"][data-target="$target"]',
-    );
+    final fontSize = (10.0 * _scale).clamp(7.0, 60.0);
+    final height = (20.0 * _scale).clamp(14.0, 120.0);
+
+    void updateLayout() {
+      final screenX = posX * _scale + _panX;
+      final screenY = posY * _scale + _panY;
+      final charCount = math.max(2, input.value.length);
+      final width = (math.max(28.0, (charCount + 1.0) * 7.0) * _scale).clamp(
+        20.0,
+        300.0,
+      );
+      input.style.left = '${screenX}px';
+      input.style.top = '${screenY}px';
+      input.style.width = '${width}px';
+      input.style.height = '${height}px';
+      input.style.fontSize = '${fontSize}px';
+      input.style.lineHeight = '${height}px';
+    }
+
+    updateLayout();
+    input.oninput = ((web.Event _) => updateLayout()).toJS;
+
+    final badgeElem =
+        _currentSvg?.querySelector(
+          '.edge-weight-badge[data-source="$source"][data-target="$target"]',
+        ) ??
+        _currentSvg?.querySelector(
+          '.edge-weight-badge[data-source="$target"][data-target="$source"]',
+        );
     final badgeText = badgeElem?.querySelector('text') as web.SVGTextElement?;
     final prevDisplay = badgeText?.style.display ?? '';
     if (badgeText != null) {

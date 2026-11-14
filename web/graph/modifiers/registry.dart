@@ -1,6 +1,5 @@
 import 'base.dart';
 import 'flow.dart';
-import 'generation.dart';
 import 'layout.dart';
 import 'matching.dart';
 import 'metrics.dart';
@@ -47,24 +46,6 @@ class ModifierSpec {
 /// Registry providing factory instantiation and metadata for all available modifiers.
 abstract final class ModifierRegistry {
   static const List<ModifierSpec> specs = [
-    // Generate
-    ModifierSpec(
-      type: 'base_graph',
-      name: 'Base Graph',
-      category: ModifierCategory.generate,
-      factory: BaseGraphModifier.new,
-      canAdd: false,
-      description: 'Base input graph configuration and directedness.',
-      complexity: 'O(1)',
-    ),
-    ModifierSpec(
-      type: 'generator',
-      name: 'Graph Generator',
-      category: ModifierCategory.generate,
-      factory: GeneratorModifier.new,
-      description: 'Generates standard synthetic or Atlas graphs.',
-      complexity: 'O(V + E)',
-    ),
     // Layout
     ModifierSpec(
       type: 'layout',

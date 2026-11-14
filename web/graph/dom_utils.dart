@@ -3,6 +3,8 @@ import 'dart:math' as math;
 
 import 'package:web/web.dart' as web;
 
+import 'icons.dart';
+
 /// Escapes [text] for safe use in HTML/SVG markup.
 String escapeHtml(String text) => text
     .replaceAll('&', '&amp;')
@@ -217,16 +219,7 @@ web.HTMLElement seedSetting(
 
   final randomBtn = button(null, 'setting-seed-btn')
     ..title = 'Randomize Seed'
-    ..innerHTML =
-        '<svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round">'
-                '<rect x="2" y="2" width="12" height="12" rx="2.5"/>'
-                '<circle cx="5.5" cy="5.5" r="1" fill="currentColor" stroke="none"/>'
-                '<circle cx="10.5" cy="5.5" r="1" fill="currentColor" stroke="none"/>'
-                '<circle cx="8" cy="8" r="1" fill="currentColor" stroke="none"/>'
-                '<circle cx="5.5" cy="10.5" r="1" fill="currentColor" stroke="none"/>'
-                '<circle cx="10.5" cy="10.5" r="1" fill="currentColor" stroke="none"/>'
-                '</svg>'
-            .toJS;
+    ..innerHTML = GraphIcons.dice.toJS;
 
   randomBtn.onClick.listen((_) {
     final nextSeed = _seedRandom.nextInt(1000000);
@@ -295,21 +288,12 @@ web.HTMLElement colorSetting(
 
   final noneSwatch = button(null, 'color-swatch color-swatch-none')
     ..title = 'None'
-    ..innerHTML =
-        '<svg width="11" height="11" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round">'
-                '<line x1="2.5" y1="9.5" x2="9.5" y2="2.5"/>'
-                '</svg>'
-            .toJS;
+    ..innerHTML = GraphIcons.slash.toJS;
 
   final customSwatch = _create<web.HTMLLabelElement>('label')
     ..className = 'color-swatch color-custom-swatch'
     ..title = 'Custom Color'
-    ..innerHTML =
-        '<svg width="11" height="11" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">'
-                '<path d="M11 2l3 3-7.5 7.5H3.5v-3L11 2z"/>'
-                '<path d="M9.5 3.5l3 3"/>'
-                '</svg>'
-            .toJS;
+    ..innerHTML = GraphIcons.pencil.toJS;
 
   final customInput = _input('color')
     ..className = 'color-custom-input'
@@ -392,14 +376,9 @@ web.HTMLElement lineStyleSetting(
   }
 
   for (final (pattern, name) in presetLineStyles) {
-    final dashAttr = pattern == 'none' ? '' : 'stroke-dasharray="$pattern"';
     final btn = button(null, 'line-style-btn')
       ..title = name
-      ..innerHTML =
-          '<svg width="32" height="10" viewBox="0 0 32 10">'
-                  '<line x1="2" y1="5" x2="30" y2="5" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" $dashAttr />'
-                  '</svg>'
-              .toJS;
+      ..innerHTML = GraphIcons.linePattern(pattern).toJS;
     buttons[pattern] = btn;
     btn.onClick.listen((_) {
       updateActive(pattern);

@@ -395,7 +395,7 @@ class TraversalModifier extends GraphModifier {
   final outputStyle = OutputStyleOptions(
     color: '#06b6d4',
     pattern: 'none',
-    hasRemovedMode: true,
+    hasRemovedMode: false,
   );
 
   @override
@@ -532,6 +532,7 @@ class TraversalModifier extends GraphModifier {
     }
 
     final visitedSequence = <String>[];
+    final treeEdges = <(String, String)>[];
     try {
       switch (type) {
         case TraversalType.topological:
@@ -545,27 +546,34 @@ class TraversalModifier extends GraphModifier {
             for (final next in graph.successorsOf(curr)) {
               if (visited.add(next)) {
                 queue.add(next);
+                treeEdges.add((curr, next));
               }
             }
           }
         case TraversalType.dfs:
           final visited = <String>{start};
-          final stack = <String>[start];
+          final stack = <(String, String?)>[(start, null)];
           while (stack.isNotEmpty) {
-            final curr = stack.removeLast();
+            final (curr, parent) = stack.removeLast();
             visitedSequence.add(curr);
+            if (parent != null) {
+              treeEdges.add((parent, curr));
+            }
             for (final next in graph.successorsOf(curr)) {
               if (visited.add(next)) {
-                stack.add(next);
+                stack.add((next, curr));
               }
             }
           }
         case TraversalType.randomWalk:
-          visitedSequence.addAll(
-            graph
-                .randomWalk(start, random: math.Random(seed))
-                .take(randomWalkSteps),
-          );
+          final walk = graph
+              .randomWalk(start, random: math.Random(seed))
+              .take(randomWalkSteps)
+              .toList();
+          visitedSequence.addAll(walk);
+          for (var i = 0; i < walk.length - 1; i++) {
+            treeEdges.add((walk[i], walk[i + 1]));
+          }
       }
     } catch (e) {
       return ModifierOutput(
@@ -578,17 +586,11 @@ class TraversalModifier extends GraphModifier {
     final dash = outputStyle.dashPattern;
     final color = outputStyle.highlightColor;
     final pathEdges = <(String, String)>[];
-    final pathEdgeSet = <(String, String)>{};
 
-    for (var i = 0; i < visitedSequence.length - 1; i++) {
-      final u = visitedSequence[i];
-      final v = visitedSequence[i + 1];
+    for (final (u, v) in treeEdges) {
       if (graph.containsEdge(u, v) ||
           (!graph.isDirected && graph.containsEdge(v, u))) {
-        final key = (u, v);
-        pathEdges.add(key);
-        pathEdgeSet.add(key);
-        if (!graph.isDirected) pathEdgeSet.add((v, u));
+        pathEdges.add((u, v));
         if (color != null || dash != null) {
           final es = state.getEdgeStyle(u, v, isDirected: graph.isDirected);
           if (color != null) {
@@ -608,13 +610,6 @@ class TraversalModifier extends GraphModifier {
           node.style.borderWidth = 2.5;
         }
         node.style.dashPattern = dash;
-      }
-    }
-
-    for (final e in graph.edges.toSet()) {
-      if (!pathEdgeSet.contains((e.source, e.target))) {
-        final es = state.getEdgeStyle(e.source, e.target);
-        es.opacity = outputStyle.removedMode == RemovedMode.hide ? 0.0 : 0.25;
       }
     }
 
