@@ -1,0 +1,52 @@
+name: Deploy Web Examples
+
+on:
+  workflow_run:
+    workflows: [ "Dart CI" ]
+    types: [ completed ]
+    branches: [ main ]
+  workflow_dispatch:
+
+defaults:
+  run:
+    shell: bash
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: "pages"
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    name: "Build & Deploy Pages"
+    if: ${{ github.event_name == 'workflow_dispatch' || github.event.workflow_run.conclusion == 'success' }}
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - uses: actions/cache@v6
+        with:
+          path: "~/.pub-cache/hosted"
+          key: "os:ubuntu-latest;pub-cache-hosted;dart:stable"
+      - uses: actions/checkout@v7
+      - uses: dart-lang/setup-dart@v1
+      - name: "Dependencies"
+        run: dart pub upgrade --no-precompile
+      - name: "Build Web Applications"
+        run: dart run build_runner build --release --output web:build/web
+      - name: "Configure GitHub Pages"
+        uses: actions/configure-pages@v6
+        with:
+          enablement: true
+      - name: "Upload Pages Artifact"
+        uses: actions/upload-pages-artifact@v5
+        with:
+          path: "build/web"
+      - name: "Deploy to GitHub Pages"
+        id: deployment
+        uses: actions/deploy-pages@v5
