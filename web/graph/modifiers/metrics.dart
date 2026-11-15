@@ -11,9 +11,16 @@ import 'base.dart';
 // ---------------------------------------------------------------------------
 
 class CentralityModifier extends GraphModifier {
-  new({super.enabled, this.metric = CentralityMetric.betweenness});
+  new({
+    super.enabled,
+    this.metric = CentralityMetric.betweenness,
+    this.katzAlpha = 0.1,
+    this.katzBeta = 1.0,
+  });
 
   CentralityMetric metric;
+  double katzAlpha;
+  double katzBeta;
 
   @override
   String get id => 'centrality';
@@ -25,23 +32,64 @@ class CentralityModifier extends GraphModifier {
   ModifierCategory get category => ModifierCategory.centrality;
 
   @override
-  Map<String, dynamic> exportConfig() => {'metric': metric.id};
+  Map<String, dynamic> exportConfig() => {
+    'metric': metric.id,
+    'katzAlpha': katzAlpha,
+    'katzBeta': katzBeta,
+  };
 
   @override
   void applyConfig(Map<String, dynamic> config) {
     if (config['metric'] case final String m) {
       metric = CentralityMetric.fromId(m);
     }
+    if (config['katzAlpha'] case final num a) katzAlpha = a.toDouble();
+    if (config['katzBeta'] case final num b) katzBeta = b.toDouble();
   }
 
   @override
   void resetDefaults() {
     metric = CentralityMetric.degree;
+    katzAlpha = 0.1;
+    katzBeta = 1.0;
   }
 
   @override
   web.HTMLElement buildConfigUI(AppState state, void Function() onModified) {
     final root = div('form-column');
+    final dynamicSection = div('form-column');
+
+    void rebuildDynamic() {
+      dynamicSection.textContent = '';
+      if (metric == CentralityMetric.katz) {
+        dynamicSection.appendChild(
+          rangeSetting(
+            'Attenuation (α):',
+            katzAlpha,
+            min: 0.01,
+            max: 0.50,
+            step: 0.01,
+            onChanged: (val) {
+              katzAlpha = val.toDouble();
+              onModified();
+            },
+          ),
+        );
+        dynamicSection.appendChild(
+          rangeSetting(
+            'Weight (β):',
+            katzBeta,
+            min: 0.1,
+            max: 2.0,
+            step: 0.1,
+            onChanged: (val) {
+              katzBeta = val.toDouble();
+              onModified();
+            },
+          ),
+        );
+      }
+    }
 
     root.appendChild(
       dropdownSetting(
@@ -50,10 +98,14 @@ class CentralityModifier extends GraphModifier {
         [for (final m in CentralityMetric.values) (m.id, m.label)],
         onChanged: (val) {
           metric = CentralityMetric.fromId(val);
+          rebuildDynamic();
           onModified();
         },
       ),
     );
+
+    rebuildDynamic();
+    root.appendChild(dynamicSection);
 
     return root;
   }
@@ -62,18 +114,21 @@ class CentralityModifier extends GraphModifier {
   ModifierOutput apply(Graph<String, num> graph, AppState state) {
     if (validateGraph(graph) case final err?) return err;
     final vertices = graph.vertices;
+    final num Function(String, String)? edgeWeight = state.isWeighted
+        ? null
+        : (_, _) => 1;
 
     Map<String, num> scores;
     try {
       switch (metric) {
         case CentralityMetric.closeness:
-          scores = graph.closenessCentrality();
+          scores = graph.closenessCentrality(edgeCost: edgeWeight);
         case CentralityMetric.betweenness:
           scores = graph.betweennessCentrality();
         case CentralityMetric.pagerank:
           scores = graph.pageRank();
         case CentralityMetric.eigenvector:
-          scores = graph.eigenvectorCentrality();
+          scores = graph.eigenvectorCentrality(edgeWeight: edgeWeight);
         case CentralityMetric.degree:
           scores = graph.degreeCentrality();
         case CentralityMetric.inDegree:
@@ -90,13 +145,22 @@ class CentralityModifier extends GraphModifier {
             for (final v in vertices) v: graph.localClusteringCoefficient(v),
           };
         case CentralityMetric.katz:
-          scores = graph.katzCentrality();
+          scores = graph.katzCentrality(alpha: katzAlpha, beta: katzBeta);
         case CentralityMetric.hitsHubs:
           final (_, hubs) = graph.hits();
           scores = hubs;
         case CentralityMetric.hitsAuthorities:
           final (auth, _) = graph.hits();
           scores = auth;
+        case CentralityMetric.eccentricity:
+          final fw = graph.allShortestPaths(edgeCost: edgeWeight);
+          scores = {
+            for (final v in vertices)
+              v: () {
+                final e = fw.eccentricity(v);
+                return e.isFinite ? e : 0.0;
+              }(),
+          };
       }
     } catch (_) {
       // Graceful fallback to degree centrality if power iteration or brandes fails
@@ -153,7 +217,10 @@ class CentralityModifier extends GraphModifier {
 // ---------------------------------------------------------------------------
 
 class GraphMetricsModifier extends GraphModifier {
-  new({super.enabled});
+  new({super.enabled, this.centerColor = 'none', this.peripheryColor = 'none'});
+
+  String centerColor;
+  String peripheryColor;
 
   @override
   String get id => 'graph_metrics';
@@ -165,14 +232,55 @@ class GraphMetricsModifier extends GraphModifier {
   ModifierCategory get category => ModifierCategory.centrality;
 
   @override
-  web.HTMLElement buildConfigUI(AppState state, void Function() onModified) =>
-      div('form-column')..appendChild(
+  Map<String, dynamic> exportConfig() => {
+    'centerColor': centerColor,
+    'peripheryColor': peripheryColor,
+  };
+
+  @override
+  void applyConfig(Map<String, dynamic> config) {
+    if (config['centerColor'] case final String cc) centerColor = cc;
+    if (config['peripheryColor'] case final String pc) peripheryColor = pc;
+  }
+
+  @override
+  void resetDefaults() {
+    centerColor = 'none';
+    peripheryColor = 'none';
+  }
+
+  @override
+  web.HTMLElement buildConfigUI(AppState state, void Function() onModified) {
+    final root = div('form-column')
+      ..appendChild(
         p(
-            'Computes structural properties, density, clustering, connectivity, and degree metrics.',
+            'Computes structural properties, density, clustering, connectivity, diameter, and periphery.',
           )
           ..style.fontSize = '11px'
           ..style.color = 'var(--text-muted)',
       );
+    root.appendChild(
+      colorSetting(
+        'Center Color:',
+        centerColor,
+        onChanged: (c) {
+          centerColor = c;
+          onModified();
+        },
+      ),
+    );
+    root.appendChild(
+      colorSetting(
+        'Periphery Color:',
+        peripheryColor,
+        onChanged: (c) {
+          peripheryColor = c;
+          onModified();
+        },
+      ),
+    );
+    return root;
+  }
 
   @override
   ModifierOutput apply(Graph<String, num> graph, AppState state) {
@@ -195,11 +303,35 @@ class GraphMetricsModifier extends GraphModifier {
     num? diameter;
     num? radius;
     Set<String>? center;
+    Set<String>? periphery;
     try {
-      diameter = graph.diameter();
-      radius = graph.radius();
-      center = graph.center();
+      final fw = graph.allShortestPaths(
+        edgeCost: state.isWeighted ? null : (_, _) => 1,
+      );
+      diameter = fw.diameter;
+      radius = fw.radius;
+      center = fw.center;
+      periphery = fw.periphery;
     } catch (_) {}
+
+    if (centerColor != 'none' && center != null) {
+      for (final v in center) {
+        final node = state.nodes[v];
+        if (node != null) {
+          node.style.borderColor = centerColor;
+          node.style.borderWidth = 3.5;
+        }
+      }
+    }
+    if (peripheryColor != 'none' && periphery != null) {
+      for (final v in periphery) {
+        final node = state.nodes[v];
+        if (node != null) {
+          node.style.borderColor = peripheryColor;
+          node.style.borderWidth = 3.5;
+        }
+      }
+    }
 
     int? minDeg;
     var maxDeg = 0;
@@ -242,6 +374,7 @@ class GraphMetricsModifier extends GraphModifier {
             ['Diameter', '$diameter'],
             ['Radius', '$radius'],
             ['Center Vertices', center?.join(', ') ?? '-'],
+            ['Periphery Vertices', periphery?.join(', ') ?? '-'],
           ],
           [
             'Degree Sequence',

@@ -136,7 +136,7 @@ abstract final class ModifierRegistry {
       name: 'Centrality',
       category: ModifierCategory.centrality,
       factory: CentralityModifier.new,
-      description: 'Ranks vertex importance via degree, closeness, betweenness, Katz, or HITS.',
+      description: 'Ranks vertices via degree, closeness, betweenness, Katz, HITS, or eccentricity.',
       complexity: 'O(V · E)',
     ),
     ModifierSpec(
@@ -144,8 +144,7 @@ abstract final class ModifierRegistry {
       name: 'Graph Metrics',
       category: ModifierCategory.centrality,
       factory: GraphMetricsModifier.new,
-      description:
-          'Computes structural metrics, density, connectivity, and diameters.',
+      description: 'Computes structural metrics, density, connectivity, diameter, and periphery.',
       complexity: 'O(V · E)',
     ),
     // Trees
@@ -185,11 +184,11 @@ abstract final class ModifierRegistry {
     ),
     ModifierSpec(
       type: 'cliques',
-      name: 'Cliques & Independent Set',
+      name: 'Cliques & Sets',
       category: ModifierCategory.matching,
       factory: CliquesModifier.new,
       description:
-          'Finds maximal cliques and maximum independent set (Bron-Kerbosch).',
+          'Finds maximal cliques, independent set, and dominating set.',
       complexity: 'O(3^(V/3))',
     ),
     ModifierSpec(
@@ -206,13 +205,14 @@ abstract final class ModifierRegistry {
       name: 'Vertex Coloring',
       category: ModifierCategory.matching,
       factory: VertexColoringModifier.new,
-      description: 'Colors vertices such that adjacent vertices have distinct colors (Welsh-Powell).',
+      description:
+          'Colors vertices (Welsh-Powell) or tests bipartite 2-coloring.',
       complexity: 'O(V²)',
     ),
     // Tours
     ModifierSpec(
       type: 'eulerian',
-      name: 'Eulerian Trail & Circuit',
+      name: 'Eulerian Tour',
       category: ModifierCategory.tours,
       factory: EulerianModifier.new,
       description:
@@ -221,11 +221,10 @@ abstract final class ModifierRegistry {
     ),
     ModifierSpec(
       type: 'hamiltonian',
-      name: 'Hamiltonian Path & Cycle',
+      name: 'Hamiltonian & TSP',
       category: ModifierCategory.tours,
       factory: HamiltonianModifier.new,
-      description:
-          'Searches for Hamiltonian path or cycle visiting every vertex once.',
+      description: 'Finds Hamiltonian path/cycle or approximate TSP tour.',
       complexity: 'O(V!)',
     ),
     // Transform

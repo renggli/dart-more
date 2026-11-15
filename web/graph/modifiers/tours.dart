@@ -2,6 +2,7 @@ import 'package:more/graph.dart' hide GraphLayout;
 import 'package:web/web.dart' as web;
 
 import '../dom_utils.dart';
+import '../enums.dart';
 import '../state.dart';
 import 'base.dart';
 import 'ui_helpers.dart';
@@ -76,12 +77,15 @@ abstract class _TourModifier extends GraphModifier {
     required String statusSummary,
     required String tableTitle,
     String stepHeader = 'Step',
+    bool showCost = false,
   }) {
     final dash = outputStyle.dashPattern;
     final color = outputStyle.highlightColor;
     final tourVertices = tour.vertices.toList();
     final tourEdges = <(String, String)>[];
     final tourEdgeSet = <(String, String)>{};
+    final cumulativeCosts = <num>[0];
+    num totalCost = 0;
 
     for (var i = 0; i < tourVertices.length - 1; i++) {
       final key = (tourVertices[i], tourVertices[i + 1]);
@@ -89,6 +93,13 @@ abstract class _TourModifier extends GraphModifier {
       tourEdgeSet.add(key);
       if (!graph.isDirected) {
         tourEdgeSet.add((key.$2, key.$1));
+      }
+      if (showCost) {
+        final e =
+            graph.getEdge(key.$1, key.$2) ??
+            (!graph.isDirected ? graph.getEdge(key.$2, key.$1) : null);
+        totalCost += state.isWeighted ? (e?.value ?? 1) : 1;
+        cumulativeCosts.add(totalCost);
       }
       if (color != null || dash != null) {
         final es = state.getEdgeStyle(key.$1, key.$2);
@@ -124,10 +135,14 @@ abstract class _TourModifier extends GraphModifier {
       statusSummary: statusSummary,
       tableData: ModifierTableData(
         title: tableTitle,
-        headers: [stepHeader, 'Vertex'],
+        headers: [stepHeader, 'Vertex', if (showCost) 'Cumulative Cost'],
         rows: [
           for (var i = 0; i < tourVertices.length; i++)
-            ['#${i + 1}', tourVertices[i]],
+            [
+              '#${i + 1}',
+              tourVertices[i],
+              if (showCost) '${cumulativeCosts[i]}',
+            ],
         ],
       ),
     );
@@ -150,7 +165,7 @@ class EulerianModifier extends _TourModifier {
   String get id => 'eulerian';
 
   @override
-  String get name => 'Eulerian Trail & Circuit';
+  String get name => 'Eulerian Tour';
 
   @override
   ModifierOutput apply(Graph<String, num> graph, AppState state) {
@@ -251,18 +266,81 @@ class EulerianModifier extends _TourModifier {
 // ---------------------------------------------------------------------------
 
 class HamiltonianModifier extends _TourModifier {
-  new({super.enabled})
+  new({super.enabled, this.algorithm = TourAlgorithm.auto})
     : super(
         defaultColor: '#a855f7',
         pathColorLabel: 'Path Color:',
         pathLineStyleLabel: 'Path Line Style:',
       );
 
+  TourAlgorithm algorithm;
+  String? startVertex;
+
   @override
   String get id => 'hamiltonian';
 
   @override
-  String get name => 'Hamiltonian Path & Cycle';
+  String get name => 'Hamiltonian & TSP';
+
+  @override
+  Map<String, dynamic> exportConfig() => {
+    ...super.exportConfig(),
+    'algorithm': algorithm.id,
+    if (startVertex != null) 'startVertex': startVertex,
+  };
+
+  @override
+  void applyConfig(Map<String, dynamic> config) {
+    super.applyConfig(config);
+    if (config['algorithm'] case final String a) {
+      algorithm = TourAlgorithm.fromId(a);
+    }
+    if (config.containsKey('startVertex')) {
+      startVertex = config['startVertex']?.toString();
+    }
+  }
+
+  @override
+  void resetDefaults() {
+    super.resetDefaults();
+    algorithm = TourAlgorithm.auto;
+    startVertex = null;
+  }
+
+  @override
+  web.HTMLElement buildConfigUI(AppState state, void Function() onModified) {
+    final root = div('form-column');
+
+    root.appendChild(
+      enumDropdownSetting(
+        label: 'Algorithm:',
+        current: algorithm,
+        values: TourAlgorithm.values,
+        id: (a) => a.id,
+        display: (a) => a.label,
+        onChanged: (val) {
+          algorithm = val;
+          onModified();
+        },
+      ),
+    );
+
+    root.appendChild(
+      vertexField(
+        'Start Vertex (TSP):',
+        state,
+        startVertex,
+        '(Selected / First)',
+        (v) {
+          startVertex = v;
+          onModified();
+        },
+      ),
+    );
+
+    root.appendChild(super.buildConfigUI(state, onModified));
+    return root;
+  }
 
   @override
   ModifierOutput apply(Graph<String, num> graph, AppState state) {
@@ -271,30 +349,64 @@ class HamiltonianModifier extends _TourModifier {
     }
     Path<String, num>? tour;
     var isTsp = false;
+    final start =
+        startVertex ??
+        state.selectedSource ??
+        state.selectedVertices.firstOrNull;
+    final num Function(String, String)? edgeCost = state.isWeighted
+        ? null
+        : (_, _) => 1;
+
     try {
-      if (graph.vertices.length > 32) {
-        tour = graph.tspHeuristic();
-        isTsp = true;
-      } else {
-        tour = graph.findHamiltonianPath(circuit: requireCircuit);
-        if (tour == null && !requireCircuit) {
-          tour = graph.tspHeuristic();
+      switch (algorithm) {
+        case TourAlgorithm.exact:
+          tour = graph.findHamiltonianPath(circuit: requireCircuit);
+        case TourAlgorithm.tsp:
+          tour = graph.tspHeuristic(edgeCost: edgeCost, startVertex: start);
           isTsp = true;
-        }
+        case TourAlgorithm.auto:
+          if (graph.vertices.length > 32) {
+            tour = graph.tspHeuristic(edgeCost: edgeCost, startVertex: start);
+            isTsp = true;
+          } else {
+            tour = graph.findHamiltonianPath(circuit: requireCircuit);
+            if (tour == null && !requireCircuit) {
+              tour = graph.tspHeuristic(edgeCost: edgeCost, startVertex: start);
+              isTsp = true;
+            }
+          }
       }
       if (tour == null) {
         return ModifierOutput(
-          statusSummary: requireCircuit
-              ? 'No Hamiltonian Cycle exists'
-              : 'No Hamiltonian Path exists',
+          statusSummary: isTsp
+              ? 'No TSP tour found'
+              : (requireCircuit
+                    ? 'No Hamiltonian Cycle exists'
+                    : 'No Hamiltonian Path exists'),
           tableData: ModifierTableData(
             title: 'Hamiltonian Properties',
             headers: ['Property', 'Result'],
             rows: [
-              ['Hamiltonian ${requireCircuit ? "Cycle" : "Path"}', 'Not Found'],
+              [
+                if (isTsp)
+                  'TSP Tour'
+                else
+                  'Hamiltonian ${requireCircuit ? "Cycle" : "Path"}',
+                'Not Found',
+              ],
             ],
           ),
         );
+      }
+
+      num totalCost = 0;
+      if (isTsp) {
+        for (final e in tour.edges) {
+          final ge =
+              graph.getEdge(e.source, e.target) ??
+              (!graph.isDirected ? graph.getEdge(e.target, e.source) : null);
+          totalCost += state.isWeighted ? (ge?.value ?? 1) : 1;
+        }
       }
 
       return renderTour(
@@ -305,12 +417,13 @@ class HamiltonianModifier extends _TourModifier {
             ? 'TSP Tour (2-Opt Heuristic)'
             : (requireCircuit ? 'Hamiltonian Cycle' : 'Hamiltonian Path'),
         statusSummary: isTsp
-            ? 'TSP Tour (2-opt heuristic)'
+            ? 'TSP Tour (cost: $totalCost)'
             : (requireCircuit
                   ? 'Hamiltonian Cycle found'
                   : 'Hamiltonian Path found'),
         tableTitle: isTsp ? 'TSP Tour Sequence' : 'Hamiltonian Sequence',
         stepHeader: 'Index',
+        showCost: isTsp,
       );
     } catch (e) {
       return ModifierOutput(

@@ -158,6 +158,9 @@ class ShortestPathModifier extends GraphModifier {
     }
 
     Path<String, num>? path;
+    final num Function(String, String)? weightedCost = state.isWeighted
+        ? null
+        : (String u, String v) => 1;
     try {
       switch (algorithm) {
         case ShortestPathAlgorithm.bellmanFord:
@@ -165,7 +168,7 @@ class ShortestPathModifier extends GraphModifier {
             src,
             tgt,
             hasNegativeEdges: true,
-            edgeCost: (String u, String v) => graph.getEdge(u, v)?.value ?? 1,
+            edgeCost: weightedCost,
           );
         case ShortestPathAlgorithm.aStar:
           path = graph.shortestPath(
@@ -184,7 +187,7 @@ class ShortestPathModifier extends GraphModifier {
               }
               return 0;
             },
-            edgeCost: (String u, String v) => graph.getEdge(u, v)?.value ?? 1,
+            edgeCost: weightedCost,
           );
         case ShortestPathAlgorithm.bfs:
           path = graph.shortestPath(
@@ -241,11 +244,7 @@ class ShortestPathModifier extends GraphModifier {
             }
           }
         case ShortestPathAlgorithm.dijkstra:
-          path = graph.shortestPath(
-            src,
-            tgt,
-            edgeCost: (String u, String v) => graph.getEdge(u, v)?.value ?? 1,
-          );
+          path = graph.shortestPath(src, tgt, edgeCost: weightedCost);
       }
     } catch (e) {
       final msg = e.toString();
@@ -273,10 +272,10 @@ class ShortestPathModifier extends GraphModifier {
               src,
               targetPredicate: (v) => v == tgt,
               includeAlternativePaths: true,
-              edgeCost: (String u, String v) =>
-                  algorithm == ShortestPathAlgorithm.bfs
-                  ? 1
-                  : (graph.getEdge(u, v)?.value ?? 1),
+              edgeCost:
+                  (algorithm == ShortestPathAlgorithm.bfs || !state.isWeighted)
+                  ? (String u, String v) => 1
+                  : null,
             )
             .toList();
       } catch (_) {}
@@ -317,7 +316,8 @@ class ShortestPathModifier extends GraphModifier {
         final e =
             graph.getEdge(u, v) ??
             (!graph.isDirected ? graph.getEdge(v, u) : null);
-        cumulativeWeight += algorithm == ShortestPathAlgorithm.bfs
+        cumulativeWeight +=
+            (algorithm == ShortestPathAlgorithm.bfs || !state.isWeighted)
             ? 1
             : (e?.value ?? 1);
       }
@@ -637,10 +637,7 @@ class AllPairsShortestPathModifier extends GraphModifier {
 
     try {
       final fw = graph.allShortestPaths(
-        edgeCost: (u, v) {
-          final edge = graph.getEdge(u, v);
-          return edge?.value ?? 1;
-        },
+        edgeCost: state.isWeighted ? null : (u, v) => 1,
       );
 
       final rows = <List<String>>[];

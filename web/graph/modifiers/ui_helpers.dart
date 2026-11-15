@@ -197,6 +197,8 @@ Graph<String, num> buildShapedGraph({
   required int count,
   required int atlasIndex,
   required String Function(int index) vertexProvider,
+  int gridRows = 3,
+  int gridColumns = 3,
 }) {
   final factory = GraphFactory<String, num>(
     isDirected: isDirected,
@@ -235,9 +237,10 @@ Graph<String, num> buildShapedGraph({
         vertexCounts: [countClamped ~/ 2 + 1, countClamped ~/ 2 + 1],
       );
     case GeneratorShape.grid:
-      final rows = countClamped > 4 ? 3 : 2;
-      final cols = countClamped ~/ rows + 1;
-      return factory.grid(rows: rows, columns: cols);
+      return factory.grid(
+        rows: gridRows.clamp(1, 20),
+        columns: gridColumns.clamp(1, 20),
+      );
     case GeneratorShape.random:
       return factory.randomErdosRenyi(
         vertexCount: countClamped,
@@ -255,22 +258,66 @@ void appendShapeControls(
   required int atlasIndex,
   required String countLabel,
   required int maxCount,
-  required void Function(GeneratorShape shape, int count, int atlasIndex)
+  int gridRows = 3,
+  int gridColumns = 3,
+  required void Function(
+    GeneratorShape shape,
+    int count,
+    int atlasIndex,
+    int gridRows,
+    int gridColumns,
+  )
   onChanged,
 }) {
   final dynamicSection = div('form-column');
+  var currentShape = shape;
+  var currentCount = count;
+  var currentAtlas = atlasIndex;
+  var currentRows = gridRows;
+  var currentCols = gridColumns;
 
-  void rebuildDynamic(GeneratorShape currentShape) {
+  void rebuildDynamic(GeneratorShape s) {
     dynamicSection.textContent = '';
     dynamicSection.appendChild(
       buildShapeDynamicSetting(
-        shape: currentShape,
-        count: count,
-        atlasIndex: atlasIndex,
+        shape: s,
+        count: currentCount,
+        atlasIndex: currentAtlas,
+        gridRows: currentRows,
+        gridColumns: currentCols,
         countLabel: countLabel,
         maxCount: maxCount,
-        onCountChanged: (v) => onChanged(currentShape, v, atlasIndex),
-        onAtlasIndexChanged: (v) => onChanged(currentShape, count, v),
+        onCountChanged: (v) {
+          currentCount = v;
+          onChanged(
+            currentShape,
+            currentCount,
+            currentAtlas,
+            currentRows,
+            currentCols,
+          );
+        },
+        onAtlasIndexChanged: (v) {
+          currentAtlas = v;
+          onChanged(
+            currentShape,
+            currentCount,
+            currentAtlas,
+            currentRows,
+            currentCols,
+          );
+        },
+        onGridChanged: (r, c) {
+          currentRows = r;
+          currentCols = c;
+          onChanged(
+            currentShape,
+            currentCount,
+            currentAtlas,
+            currentRows,
+            currentCols,
+          );
+        },
       ),
     );
   }
@@ -281,9 +328,15 @@ void appendShapeControls(
       shape.id,
       [for (final s in GeneratorShape.values) (s.id, s.label)],
       onChanged: (val) {
-        final newShape = GeneratorShape.fromId(val);
-        onChanged(newShape, count, atlasIndex);
-        rebuildDynamic(newShape);
+        currentShape = GeneratorShape.fromId(val);
+        onChanged(
+          currentShape,
+          currentCount,
+          currentAtlas,
+          currentRows,
+          currentCols,
+        );
+        rebuildDynamic(currentShape);
       },
     ),
   );
@@ -296,10 +349,13 @@ web.HTMLElement buildShapeDynamicSetting({
   required GeneratorShape shape,
   required int count,
   required int atlasIndex,
+  required int gridRows,
+  required int gridColumns,
   required String countLabel,
   required int maxCount,
   required void Function(int) onCountChanged,
   required void Function(int) onAtlasIndexChanged,
+  required void Function(int rows, int cols) onGridChanged,
 }) {
   if (shape == GeneratorShape.atlas) {
     return rangeSetting(
@@ -309,6 +365,35 @@ web.HTMLElement buildShapeDynamicSetting({
       max: 1252,
       onChanged: (v) => onAtlasIndexChanged(v.toInt()),
     );
+  }
+  if (shape == GeneratorShape.grid) {
+    var r = gridRows;
+    var c = gridColumns;
+    return div('form-column')
+      ..appendChild(
+        rangeSetting(
+          'Grid Rows:',
+          r,
+          min: 1,
+          max: 10,
+          onChanged: (v) {
+            r = v.toInt();
+            onGridChanged(r, c);
+          },
+        ),
+      )
+      ..appendChild(
+        rangeSetting(
+          'Grid Columns:',
+          c,
+          min: 1,
+          max: 10,
+          onChanged: (v) {
+            c = v.toInt();
+            onGridChanged(r, c);
+          },
+        ),
+      );
   }
   return rangeSetting(
     countLabel,

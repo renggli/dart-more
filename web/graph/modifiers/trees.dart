@@ -91,14 +91,18 @@ class SpanningTreeModifier extends GraphModifier {
     }
 
     Graph<String, num> tree;
+    final num Function(String, String)? edgeWeight = state.isWeighted
+        ? null
+        : (u, v) => 1;
     try {
       tree = algorithm == 'prim'
           ? graph.spanningTree(
+              edgeWeight: edgeWeight,
               startVertex:
                   state.selectedSource ??
                   (graph.vertices.isNotEmpty ? graph.vertices.first : null),
             )
-          : graph.spanningTree();
+          : graph.spanningTree(edgeWeight: edgeWeight);
     } catch (e) {
       return ModifierOutput(
         hasError: true,
@@ -114,8 +118,9 @@ class SpanningTreeModifier extends GraphModifier {
     final rows = <List<String>>[];
 
     for (final e in treeEdges) {
-      totalWeight += e.value;
-      rows.add(['${e.source} — ${e.target}', '${e.value}', '$totalWeight']);
+      final w = state.isWeighted ? e.value : 1;
+      totalWeight += w;
+      rows.add(['${e.source} — ${e.target}', '$w', '$totalWeight']);
 
       if (color != null || dash != null) {
         final edgeStyle = state.getEdgeStyle(e.source, e.target);

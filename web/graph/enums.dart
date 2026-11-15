@@ -122,7 +122,8 @@ enum CentralityMetric {
   clustering('clustering', 'Local Clustering Coefficient'),
   katz('katz', 'Katz Centrality'),
   hitsHubs('hitsHubs', 'HITS Hubs'),
-  hitsAuthorities('hitsAuthorities', 'HITS Authorities');
+  hitsAuthorities('hitsAuthorities', 'HITS Authorities'),
+  eccentricity('eccentricity', 'Eccentricity');
 
   new(this.id, this.label);
 
@@ -279,4 +280,41 @@ enum CliquesMode {
   /// Looks up [CliquesMode] by [id], defaulting to [CliquesMode.cliques].
   static CliquesMode fromId(String id) =>
       values.firstWhere((e) => e.id == id, orElse: () => CliquesMode.cliques);
+}
+
+/// Algorithm mode for vertex coloring.
+enum ColoringMode {
+  greedy('greedy', 'Greedy (Welsh–Powell)'),
+  bipartite('bipartite', 'Bipartite (2-Coloring)');
+
+  new(this.id, this.label);
+
+  /// Mode identifier.
+  final String id;
+
+  /// User-visible display label.
+  final String label;
+
+  /// Looks up [ColoringMode] by [id], defaulting to [ColoringMode.greedy].
+  static ColoringMode fromId(String id) =>
+      values.firstWhere((e) => e.id == id, orElse: () => ColoringMode.greedy);
+}
+
+/// Algorithm mode for Hamiltonian and TSP tours.
+enum TourAlgorithm {
+  auto('auto', 'Exact (TSP Fallback)'),
+  exact('exact', 'Exact Backtracking'),
+  tsp('tsp', 'TSP Heuristic (2-Opt)');
+
+  new(this.id, this.label);
+
+  /// Algorithm identifier.
+  final String id;
+
+  /// User-visible display label.
+  final String label;
+
+  /// Looks up [TourAlgorithm] by [id], defaulting to [TourAlgorithm.auto].
+  static TourAlgorithm fromId(String id) =>
+      values.firstWhere((e) => e.id == id, orElse: () => TourAlgorithm.auto);
 }

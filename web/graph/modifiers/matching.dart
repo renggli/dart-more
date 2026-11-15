@@ -175,7 +175,7 @@ class CliquesModifier extends GraphModifier {
   String get id => 'cliques';
 
   @override
-  String get name => 'Cliques & Independent Set';
+  String get name => 'Cliques & Sets';
 
   @override
   ModifierCategory get category => ModifierCategory.matching;
@@ -454,7 +454,9 @@ class VertexCoverModifier extends GraphModifier {
 // ---------------------------------------------------------------------------
 
 class VertexColoringModifier extends GraphModifier {
-  new({super.enabled});
+  new({super.enabled, this.mode = ColoringMode.greedy});
+
+  ColoringMode mode;
 
   @override
   String get id => 'vertex_coloring';
@@ -466,17 +468,104 @@ class VertexColoringModifier extends GraphModifier {
   ModifierCategory get category => ModifierCategory.matching;
 
   @override
-  web.HTMLElement buildConfigUI(AppState state, void Function() onModified) =>
-      div('form-column')..appendChild(
-        p('Partitions vertices so no adjacent vertices share a color.')
-          ..style.fontSize = '11px'
-          ..style.color = 'var(--text-muted)',
-      );
+  Map<String, dynamic> exportConfig() => {'mode': mode.id};
+
+  @override
+  void applyConfig(Map<String, dynamic> config) {
+    if (config['mode'] case final String m) mode = ColoringMode.fromId(m);
+  }
+
+  @override
+  void resetDefaults() {
+    mode = ColoringMode.greedy;
+  }
+
+  @override
+  web.HTMLElement buildConfigUI(AppState state, void Function() onModified) {
+    final root = div('form-column');
+    root.appendChild(
+      enumDropdownSetting(
+        label: 'Mode:',
+        current: mode,
+        values: ColoringMode.values,
+        id: (m) => m.id,
+        display: (m) => m.label,
+        onChanged: (val) {
+          mode = val;
+          onModified();
+        },
+      ),
+    );
+    return root;
+  }
 
   @override
   ModifierOutput apply(Graph<String, num> graph, AppState state) {
     if (graph.vertices.isEmpty) {
       return const ModifierOutput(statusSummary: 'Graph is empty');
+    }
+
+    if (mode == ColoringMode.bipartite) {
+      if (validateGraph(
+            graph,
+            undirected: true,
+            requirementMessage:
+                'Bipartite 2-coloring requires an undirected graph.',
+          )
+          case final err?) {
+        return err;
+      }
+
+      try {
+        final twoColor = graph.bipartiteColoring();
+        if (twoColor == null) {
+          return const ModifierOutput(
+            statusSummary: 'Not bipartite (not 2-colorable)',
+            tableData: ModifierTableData(
+              title: 'Bipartite 2-Coloring',
+              headers: ['Property', 'Result'],
+              rows: [
+                ['Is Bipartite', 'No (contains odd cycle)'],
+              ],
+            ),
+          );
+        }
+
+        final groupMap = <String, int>{
+          for (final MapEntry(:key, :value) in twoColor.entries)
+            key: value ? 1 : 0,
+        };
+        final partA = <String>[
+          for (final MapEntry(:key, :value) in twoColor.entries)
+            if (!value) key,
+        ];
+        final partB = <String>[
+          for (final MapEntry(:key, :value) in twoColor.entries)
+            if (value) key,
+        ];
+
+        return ModifierOutput(
+          overlay: PartitionOverlay(
+            vertexGroup: groupMap,
+            title: 'Bipartite 2-Coloring',
+          ),
+          tableData: ModifierTableData(
+            title: 'Bipartite 2-Coloring (2 Partitions)',
+            headers: ['Partition', 'Vertex Count', 'Assigned Vertices'],
+            rows: [
+              ['Set A (Color #0)', '${partA.length}', partA.join(', ')],
+              ['Set B (Color #1)', '${partB.length}', partB.join(', ')],
+            ],
+          ),
+          statusSummary: 'Bipartite (${partA.length} / ${partB.length})',
+        );
+      } catch (e) {
+        return ModifierOutput(
+          hasError: true,
+          errorMessage: e.toString(),
+          statusSummary: 'Error checking bipartite coloring',
+        );
+      }
     }
 
     final Map<String, int> coloring;

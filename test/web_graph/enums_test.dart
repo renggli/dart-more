@@ -78,6 +78,8 @@ void main() {
           .equals(CentralityMetric.hitsHubs);
       check(CentralityMetric.fromId('hitsAuthorities'))
           .equals(CentralityMetric.hitsAuthorities);
+      check(CentralityMetric.fromId('eccentricity'))
+          .equals(CentralityMetric.eccentricity);
       check(CentralityMetric.fromId('unknown')).equals(CentralityMetric.degree);
     });
 
@@ -125,6 +127,19 @@ void main() {
       check(CliquesMode.fromId('dominatingSet'))
           .equals(CliquesMode.dominatingSet);
       check(CliquesMode.fromId('unknown')).equals(CliquesMode.cliques);
+    });
+
+    test('ColoringMode fromId', () {
+      check(ColoringMode.fromId('greedy')).equals(ColoringMode.greedy);
+      check(ColoringMode.fromId('bipartite')).equals(ColoringMode.bipartite);
+      check(ColoringMode.fromId('unknown')).equals(ColoringMode.greedy);
+    });
+
+    test('TourAlgorithm fromId', () {
+      check(TourAlgorithm.fromId('auto')).equals(TourAlgorithm.auto);
+      check(TourAlgorithm.fromId('exact')).equals(TourAlgorithm.exact);
+      check(TourAlgorithm.fromId('tsp')).equals(TourAlgorithm.tsp);
+      check(TourAlgorithm.fromId('unknown')).equals(TourAlgorithm.auto);
     });
   });
 }

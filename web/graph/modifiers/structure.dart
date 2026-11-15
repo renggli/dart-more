@@ -843,12 +843,16 @@ class IsomorphismModifier extends GraphModifier {
     this.shape = GeneratorShape.atlas,
     this.atlasIndex = 7,
     this.count = 5,
+    this.gridRows = 2,
+    this.gridColumns = 3,
   });
 
   IsomorphismMode mode;
   GeneratorShape shape;
   int atlasIndex;
   int count;
+  int gridRows;
+  int gridColumns;
 
   final outputStyle = OutputStyleOptions(
     color: '#a855f7',
@@ -871,6 +875,8 @@ class IsomorphismModifier extends GraphModifier {
     'shape': shape.id,
     'atlasIndex': atlasIndex,
     'count': count,
+    'gridRows': gridRows,
+    'gridColumns': gridColumns,
     'outputStyle': outputStyle.toJson(),
   };
 
@@ -880,6 +886,8 @@ class IsomorphismModifier extends GraphModifier {
     if (config['shape'] case final String s) shape = GeneratorShape.fromId(s);
     if (config['atlasIndex'] case final int ai) atlasIndex = ai;
     if (config['count'] case final int c) count = c;
+    if (config['gridRows'] case final int gr) gridRows = gr;
+    if (config['gridColumns'] case final int gc) gridColumns = gc;
     if (config['outputStyle'] case final Map<dynamic, dynamic> os) {
       outputStyle.applyJson(os.cast<String, dynamic>());
     }
@@ -891,6 +899,8 @@ class IsomorphismModifier extends GraphModifier {
     shape = GeneratorShape.atlas;
     atlasIndex = 7;
     count = 5;
+    gridRows = 2;
+    gridColumns = 3;
     outputStyle.resetDefaults();
   }
 
@@ -899,6 +909,8 @@ class IsomorphismModifier extends GraphModifier {
     shape: shape,
     count: count,
     atlasIndex: atlasIndex,
+    gridRows: gridRows,
+    gridColumns: gridColumns,
     vertexProvider: (i) => 'P$i',
   );
 
@@ -924,12 +936,16 @@ class IsomorphismModifier extends GraphModifier {
       shape: shape,
       count: count,
       atlasIndex: atlasIndex,
+      gridRows: gridRows,
+      gridColumns: gridColumns,
       countLabel: 'Vertices in P:',
       maxCount: 20,
-      onChanged: (s, c, a) {
+      onChanged: (s, c, a, gr, gc) {
         shape = s;
         count = c;
         atlasIndex = a;
+        gridRows = gr;
+        gridColumns = gc;
         onModified();
       },
     );

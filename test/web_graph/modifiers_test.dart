@@ -179,5 +179,130 @@ void main() {
       check(out.hasError).isFalse();
       check(out.tableData).isNotNull();
     });
+
+    test('computes diameter, radius, center, and periphery', () {
+      final g = Graph<String, num>(isDirected: false)
+        ..addEdge('A', 'B', value: 1)
+        ..addEdge('B', 'C', value: 1);
+      final state = AppState()
+        ..primaryGraph = g
+        ..syncNodes();
+      final mod = GraphMetricsModifier(
+        centerColor: '#10b981',
+        peripheryColor: '#ef4444',
+      );
+      final out = mod.apply(g, state);
+      check(out.hasError).isFalse();
+      final rows = out.tableData!.rows;
+      check(rows.any((r) => r[0] == 'Periphery Vertices' && r[1].contains('A')))
+          .isTrue();
+      check(state.nodes['B']?.style.borderColor).equals('#10b981');
+      check(state.nodes['A']?.style.borderColor).equals('#ef4444');
+    });
+  });
+
+  group('CentralityModifier', () {
+    test('eccentricity metric computes per-vertex eccentricity', () {
+      final state = AppState();
+      final g = Graph<String, num>(isDirected: false)
+        ..addEdge('A', 'B', value: 1)
+        ..addEdge('B', 'C', value: 1);
+      final mod = CentralityModifier(metric: CentralityMetric.eccentricity);
+      final out = mod.apply(g, state);
+      check(out.hasError).isFalse();
+      final overlay = out.overlay! as HeatmapOverlay;
+      check(overlay.scores['B']).equals(1);
+      check(overlay.scores['A']).equals(2);
+    });
+
+    test('katz centrality respects alpha and beta parameters', () {
+      final state = AppState();
+      final g = Graph<String, num>(isDirected: false)
+        ..addEdge('A', 'B', value: 1)
+        ..addEdge('B', 'C', value: 1);
+      final mod = CentralityModifier(
+        metric: CentralityMetric.katz,
+        katzAlpha: 0.2,
+        katzBeta: 1.5,
+      );
+      final out = mod.apply(g, state);
+      check(out.hasError).isFalse();
+      check(out.overlay).isA<HeatmapOverlay>();
+    });
+  });
+
+  group('VertexColoringModifier', () {
+    test('bipartite mode colors 2-colorable graph', () {
+      final state = AppState();
+      final g = Graph<String, num>(isDirected: false)
+        ..addEdge('A', 'B', value: 1)
+        ..addEdge('B', 'C', value: 1)
+        ..addEdge('C', 'D', value: 1)
+        ..addEdge('D', 'A', value: 1);
+      final mod = VertexColoringModifier(mode: ColoringMode.bipartite);
+      final out = mod.apply(g, state);
+      check(out.hasError).isFalse();
+      check(out.overlay).isA<PartitionOverlay>();
+      check(out.statusSummary).isNotNull().contains('Bipartite');
+    });
+
+    test('bipartite mode detects odd cycle', () {
+      final state = AppState();
+      final g = Graph<String, num>(isDirected: false)
+        ..addEdge('A', 'B', value: 1)
+        ..addEdge('B', 'C', value: 1)
+        ..addEdge('C', 'A', value: 1);
+      final mod = VertexColoringModifier(mode: ColoringMode.bipartite);
+      final out = mod.apply(g, state);
+      check(out.hasError).isFalse();
+      check(out.statusSummary).isNotNull().contains('Not bipartite');
+    });
+  });
+
+  group('HamiltonianModifier', () {
+    test('explicit TSP mode computes tour and cost', () {
+      final state = AppState()..isWeighted = true;
+      final g = Graph<String, num>(isDirected: false)
+        ..addEdge('A', 'B', value: 3)
+        ..addEdge('B', 'C', value: 4)
+        ..addEdge('C', 'A', value: 5);
+      final mod = HamiltonianModifier(algorithm: TourAlgorithm.tsp);
+      final out = mod.apply(g, state);
+      check(out.hasError).isFalse();
+      check(out.statusSummary).isNotNull().contains('TSP Tour');
+      check(out.tableData!.headers).contains('Cumulative Cost');
+    });
+  });
+
+  group('Grid and Weighted Fallback', () {
+    test('CombineModifier grid uses explicit rows and columns', () {
+      final state = AppState();
+      final mod = CombineModifier(
+        operation: CombineOperation.replace,
+        shape: GeneratorShape.grid,
+        gridRows: 2,
+        gridColumns: 4,
+      );
+      final g = Graph<String, num>(isDirected: false);
+      final out = mod.apply(g, state);
+      check(out.hasError).isFalse();
+      check(out.transformedGraph!.vertices.length).equals(8);
+    });
+
+    test('ShortestPathModifier respects isWeighted toggle', () {
+      final state = AppState()..isWeighted = false;
+      final g = Graph<String, num>(isDirected: false)
+        ..addEdge('A', 'B', value: 10)
+        ..addEdge('B', 'C', value: 10);
+      final mod = ShortestPathModifier()
+        ..sourceVertex = 'A'
+        ..targetVertex = 'C';
+      final outUnweighted = mod.apply(g, state);
+      check(outUnweighted.tableData!.rows.last[2]).equals('2');
+
+      state.isWeighted = true;
+      final outWeighted = mod.apply(g, state);
+      check(outWeighted.tableData!.rows.last[2]).equals('20');
+    });
   });
 }

@@ -157,6 +157,7 @@ class MaxFlowModifier extends GraphModifier {
 
     try {
       num capacityOf(String u, String v) {
+        if (!state.isWeighted) return 1;
         final edge = graph.getEdge(u, v);
         final cap = edge?.value ?? 1;
         return cap > 0 ? cap : 1;
@@ -358,10 +359,7 @@ class MinCutModifier extends GraphModifier {
 
     try {
       final minCutObj = graph.minCut(
-        edgeWeight: (u, v) {
-          final edge = graph.getEdge(u, v);
-          return edge?.value ?? 1;
-        },
+        edgeWeight: state.isWeighted ? null : (u, v) => 1,
       );
       final weight = minCutObj.weight;
       final partition = minCutObj.graphs[0].vertices.toSet();

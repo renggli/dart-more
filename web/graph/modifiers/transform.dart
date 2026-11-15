@@ -341,12 +341,16 @@ class CombineModifier extends GraphModifier {
     this.shape = GeneratorShape.atlas,
     this.count = 6,
     this.atlasIndex = 7,
+    this.gridRows = 3,
+    this.gridColumns = 3,
   });
 
   CombineOperation operation;
   GeneratorShape shape;
   int count;
   int atlasIndex;
+  int gridRows;
+  int gridColumns;
 
   @override
   String get id => 'combine';
@@ -363,6 +367,8 @@ class CombineModifier extends GraphModifier {
     'shape': shape.id,
     'count': count,
     'atlasIndex': atlasIndex,
+    'gridRows': gridRows,
+    'gridColumns': gridColumns,
   };
 
   @override
@@ -375,6 +381,8 @@ class CombineModifier extends GraphModifier {
     }
     if (config['count'] case final int c) count = c;
     if (config['atlasIndex'] case final int ai) atlasIndex = ai;
+    if (config['gridRows'] case final int gr) gridRows = gr;
+    if (config['gridColumns'] case final int gc) gridColumns = gc;
   }
 
   @override
@@ -383,6 +391,8 @@ class CombineModifier extends GraphModifier {
     shape = GeneratorShape.atlas;
     count = 6;
     atlasIndex = 7;
+    gridRows = 3;
+    gridColumns = 3;
   }
 
   @override
@@ -393,6 +403,8 @@ class CombineModifier extends GraphModifier {
     shape: shape,
     count: count,
     atlasIndex: atlasIndex,
+    gridRows: gridRows,
+    gridColumns: gridColumns,
     vertexProvider: (i) => operation == CombineOperation.replace
         ? (i < 26 ? String.fromCharCode(65 + i) : 'V$i')
         : 'H$i',
@@ -420,12 +432,16 @@ class CombineModifier extends GraphModifier {
       shape: shape,
       count: count,
       atlasIndex: atlasIndex,
+      gridRows: gridRows,
+      gridColumns: gridColumns,
       countLabel: 'Vertices in H:',
       maxCount: 30,
-      onChanged: (s, c, a) {
+      onChanged: (s, c, a, gr, gc) {
         shape = s;
         count = c;
         atlasIndex = a;
+        gridRows = gr;
+        gridColumns = gc;
         onModified();
       },
     );
