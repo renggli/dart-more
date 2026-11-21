@@ -1,5 +1,5 @@
 import 'dart:collection' show ListBase;
-import 'dart:math';
+import 'dart:math' show Random;
 
 import 'package:collection/collection.dart' show PriorityQueue;
 
@@ -51,10 +51,33 @@ class SortedList<E> extends ListBase<E> implements PriorityQueue<E> {
   set length(int length) => _throw();
 
   @override
+  set first(E value) => _throw();
+
+  @override
+  set last(E value) => _throw();
+
+  @override
   E operator [](int index) => _elements[index];
 
   @override
   void operator []=(int index, E value) => _throw();
+
+  @override
+  void setAll(int index, Iterable<E> iterable) => _throw();
+
+  @override
+  void setRange(
+    int start,
+    int end,
+    Iterable<E> iterable, [
+    int skipCount = 0,
+  ]) => _throw();
+
+  @override
+  void fillRange(int start, int end, [E? fill]) => _throw();
+
+  @override
+  void replaceRange(int start, int end, Iterable<E> newContents) => _throw();
 
   @override
   bool contains(Object? element) => indexOf(element) >= 0;
@@ -83,7 +106,7 @@ class SortedList<E> extends ListBase<E> implements PriorityQueue<E> {
   int lastIndexOf(Object? element, [int? start]) {
     if (element is! E) return -1;
     if (start != null && start < 0) return -1;
-    final end = start == null ? length : min(start + 1, length);
+    final end = start == null || start >= length ? length : start + 1;
     if (end <= 0) return -1;
     final upper = _comparator.binarySearchUpper(_elements, element, end: end);
     for (
@@ -97,16 +120,21 @@ class SortedList<E> extends ListBase<E> implements PriorityQueue<E> {
   }
 
   /// Returns the number of times [element] appears in the list.
-  int occurrences(E element) {
+  int occurrences(Object? element) {
+    if (element is! E) return 0;
     final lower = _comparator.binarySearchLower(_elements, element);
     final upper = _comparator.binarySearchUpper(_elements, element);
-    return upper - lower;
+    var count = 0;
+    for (var i = lower; i < upper; i++) {
+      if (_elements[i] == element) count++;
+    }
+    return count;
   }
 
   @override
   void add(E element) {
     if (!isGrowable) _elements.throwNotGrowable();
-    final index = _comparator.binarySearchLower(_elements, element).abs();
+    final index = _comparator.binarySearchLower(_elements, element);
     _elements.insert(index, element);
   }
 
@@ -117,7 +145,19 @@ class SortedList<E> extends ListBase<E> implements PriorityQueue<E> {
   void addLast(E element) => _throw();
 
   @override
-  void addAll(Iterable<E> iterable) => iterable.forEach(add);
+  void addAll(Iterable<E> iterable) {
+    if (!isGrowable) _elements.throwNotGrowable();
+    final items = identical(iterable, this)
+        ? toList()
+        : (iterable is List<E> ? iterable : iterable.toList());
+    if (items.isEmpty) return;
+    if (items.length == 1) {
+      add(items.first);
+      return;
+    }
+    _elements.addAll(items);
+    _comparator.sort(_elements);
+  }
 
   @override
   void insert(int index, E element) => _throw();
@@ -155,11 +195,7 @@ class SortedList<E> extends ListBase<E> implements PriorityQueue<E> {
   E removeLast() => _elements.removeLast();
 
   @override
-  Iterable<E> removeAll() {
-    final result = toList();
-    clear();
-    return result;
-  }
+  Iterable<E> removeAll() => _elements.removeAll();
 
   @override
   void clear() => _elements.clear();
@@ -171,12 +207,12 @@ class SortedList<E> extends ListBase<E> implements PriorityQueue<E> {
   void shuffle([Random? random]) => _throw();
 
   @override
-  Iterable<E> get unorderedElements => _elements;
+  Iterable<E> get unorderedElements => this;
 
   @override
   List<E> toUnorderedList() => _elements.toList();
 
-  static void _throw() =>
+  static Never _throw() =>
       throw UnsupportedError('Cannot modify the order of a sorted list');
 }
 

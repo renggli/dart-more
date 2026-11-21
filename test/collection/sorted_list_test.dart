@@ -176,6 +176,9 @@ void allSortedListTests(
     check(indexB).isGreaterThan(-1);
     check(indexA != indexB).isTrue();
     check(records.lastIndexOf((1, 'c'))).equals(-1);
+    check(records.occurrences((1, 'a'))).equals(1);
+    check(records.occurrences((1, 'c'))).equals(0);
+    check(records.occurrences('unrelated')).equals(0);
   });
   test('removeRange', () {
     final list = createSortedList<int>([1, 2, 3, 4, 5]);
@@ -223,6 +226,23 @@ void allSortedListTests(
     check(() => list.addLast(10)).throws<UnsupportedError>();
     check(() => list.sort()).throws<UnsupportedError>();
     check(() => list.shuffle()).throws<UnsupportedError>();
+    check(() => list.setAll(0, [])).throws<UnsupportedError>();
+    check(() => list.setRange(0, 0, [])).throws<UnsupportedError>();
+    check(() => list.fillRange(0, 0)).throws<UnsupportedError>();
+    check(() => list.replaceRange(0, 0, [])).throws<UnsupportedError>();
+
+    final empty = createSortedList<int>([]);
+    check(() => empty.first = 1).throws<UnsupportedError>();
+    check(() => empty.last = 1).throws<UnsupportedError>();
+
+    final fixed = createSortedList<int>([1, 2], growable: false);
+    check(() => fixed.addAll([])).throws<UnsupportedError>();
+    check(fixed.removeAll).throws<UnsupportedError>();
+
+    final growable = createSortedList<int>([3, 1, 2]);
+    growable.addAll(growable);
+    check(growable).deepEquals([1, 1, 2, 2, 3, 3]);
+    check(growable.unorderedElements).identicalTo(growable);
   });
 }
 
