@@ -1,6 +1,6 @@
 ---
-name: more-dart-use-printer-library
-description: "Composable value formatting and string printing in package:more/printer.dart: Printer<T>, number/scientific/human/ordinal printers, DateTime/Duration printers, ObjectPrinter, and padding/truncation modifiers."
+name: more-use-printer-library
+description: "Composable value formatting and string printing in package:more/printer.dart: Printer<T>, fixed/scientific/human/ordinal number printers, DateTime/Duration printers, ObjectPrinter/ToStringPrinter, and padding/truncation/iterable modifiers. Use when formatting numbers, dates, durations, lists, or custom toString() representations declaratively with reusable, composable printers. Don't use for simple one-off string interpolation or Unicode/whitespace text wrapping (use more-use-collection-library)."
 ---
 
 # MoreDart Printer Library (`package:more/printer.dart`)
@@ -125,3 +125,11 @@ final listPrinter = const Printer<int>.standard().iterable(
 );
 final summary = listPrinter([1, 2, 3, 4, 5]); // '1, 2, … and 5'
 ```
+
+---
+
+## Common Pitfalls
+
+- **Callable objects**: `Printer<T>` implements `call(T)`, so pass `printer` directly to `items.map(printer)` without wrapping in `(x) => printer(x)`.
+- **Modifier chaining order**: Modifiers apply inside-out (e.g. `hex.around('[', ']').padLeft(8)` wraps first, then pads the wrapped result).
+- **Avoid intermediate strings**: Use `printer.printOn(value, buffer)` when writing into a `StringBuffer`.

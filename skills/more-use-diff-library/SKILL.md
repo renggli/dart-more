@@ -1,6 +1,6 @@
 ---
-name: more-dart-use-diff-library
-description: "Sequence diffing and fuzzy matching in package:more/diff.dart: SequenceMatcher, UnifiedDiffer, ReadableDiffer, ContextDiffer, NormalDiffer, and closeMatches."
+name: more-use-diff-library
+description: "Sequence diffing, line-based text patch formatting, and fuzzy matching in package:more/diff.dart: SequenceMatcher, UnifiedDiffer, ReadableDiffer, ContextDiffer, NormalDiffer, and closeMatches. Use when computing edit scripts or similarity ratios between sequences, generating unified/context/readable text diffs, or ranking fuzzy string/token matches. Don't use for character-class filtering (use more-use-char-matcher-library)."
 ---
 
 # MoreDart Diff Library (`package:more/diff.dart`)
@@ -72,3 +72,10 @@ Find the best matching candidates above a similarity `cutoff`:
 const candidates = ['apple', 'ape', 'peach', 'puppy'];
 final best = candidates.closeMatches('appel', count: 2, cutoff: 0.6); // ['apple', 'ape']
 ```
+
+---
+
+## Common Pitfalls
+
+- **Large input filtering**: Check `matcher.realQuickRatio` (`O(1)`) or `matcher.quickRatio` (`O(n)`) as upper bounds before computing `matcher.ratio` when scanning many candidates.
+- **Line vs sequence diffing**: Use `*Differ` (`UnifiedDiffer`, `ReadableDiffer`, etc.) for formatted multiline text patches; use `SequenceMatcher<T>` directly for programmatic edit scripts on lists of tokens or objects.

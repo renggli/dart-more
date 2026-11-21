@@ -1,6 +1,6 @@
 ---
-name: more-dart-use-interval-library
-description: "Closed intervals and 1D range queries in package:more/interval.dart: Interval<T> set algebra (intersection, union, difference) and IntervalTree<K, V> point/overlap queries."
+name: more-use-interval-library
+description: "Closed intervals and 1D range queries in package:more/interval.dart: Interval<T> set algebra (intersection, union, difference, span) and IntervalTree<K, V> point-stabbing and overlap queries. Use when representing closed 1D ranges (numbers, DateTimes, Comparable values) or indexing many intervals for fast point/overlap lookups. Don't use for 2D/nD bounding boxes (use RTree in more-use-collection-library) or discrete stepped numeric sequences (use Range in more-use-collection-library)."
 ---
 
 # MoreDart Interval Library (`package:more/interval.dart`)
@@ -58,3 +58,11 @@ final tasks = IntervalTree.fromValues<num, Task>(
 );
 final activeAt9 = tasks.queryPoint(9).map((t) => t.name).toSet(); // {'Build', 'Test'}
 ```
+
+---
+
+## Common Pitfalls
+
+- **Closed endpoints**: `Interval(1, 5)` includes both `1` and `5`, and throws `ArgumentError` if `lower > upper`.
+- **Immutable `IntervalTree`**: `IntervalTree` is static after construction; rebuild it when intervals change, or use `RTree` (`package:more/collection.dart`) for dynamic spatial updates.
+- **`num` vs `int` type parameter**: Use `Interval<num>` (not `<int>`) because `int` implements `Comparable<num>`.

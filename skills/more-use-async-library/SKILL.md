@@ -1,6 +1,6 @@
 ---
-name: more-dart-use-async-library
-description: "Stream transformations in package:more/async.dart: buffer, sliding window, flatMap/asyncFlatMap, flatten, tap, and whereType."
+name: more-use-async-library
+description: "Stream transformation extensions in package:more/async.dart: buffer, sliding window, flatMap, asyncFlatMap, flatten, tap, and whereType. Use when batching Dart Streams by count/age/trigger, computing sliding windows, flattening nested streams/iterables, filtering streams by subtype, or observing stream lifecycle events without mutating emissions. Don't use for synchronous Iterable chunking/windowing (use more-use-collection-library)."
 ---
 
 # MoreDart Async Library (`package:more/async.dart`)
@@ -60,3 +60,11 @@ Future<void> streamOperatorsExample() async {
       .drain<void>();
 }
 ```
+
+---
+
+## Common Pitfalls
+
+- **`buffer` vs `window`**: `buffer` emits non-overlapping batches (optionally triggered by `maxLength`, `maxAge`, or a `trigger` stream); `window` emits overlapping sliding windows of fixed `size` and `step`.
+- **`flatMap` vs `asyncFlatMap`**: Use `flatMap` when the mapper returns a synchronous `Iterable<R>`, and `asyncFlatMap` when it returns a `Stream<R>`.
+- **Single-subscription streams**: All operators preserve single-subscription vs broadcast semantics; do not listen twice to a single-subscription stream.

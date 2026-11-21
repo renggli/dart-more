@@ -49,7 +49,7 @@ class Version with CompareOperators<Version> implements Comparable<Version> {
 typedef Task = ({String name, Interval<num> slot});
 
 void main() {
-  group('more-dart-use-graph-library', () {
+  group('more-use-graph-library', () {
     test('closure-based API', () {
       final root = Node('1', [
         Node('2'),
@@ -115,6 +115,7 @@ void main() {
       final kn = factory.complete(vertexCount: 5);
       final ring = factory.ring(vertexCount: 6);
       final star = factory.star(vertexCount: 7);
+      final grid = factory.grid(rows: 3, columns: 4);
       final tree = factory.completeTree(vertexCount: 15, arity: 2);
       final random = factory.randomErdosRenyi(
         vertexCount: 10,
@@ -129,10 +130,27 @@ graph TD
       check(kn.vertices.length).equals(5);
       check(ring.vertices.length).equals(6);
       check(star.vertices.length).equals(7);
+      check(grid.vertices.length).equals(12);
       check(tree.vertices.length).equals(15);
       check(random.vertices.length).equals(10);
       check(atlasGraph.vertices).isNotEmpty;
       check(fromMermaid.vertices.length).equals(3);
+
+      // 4.10.0 graph algorithms & distance metrics
+      final undirectedRing = GraphFactory<int, void>(isDirected: false)
+          .ring(vertexCount: 6);
+      check(undirectedRing.diameter()).equals(3);
+      check(undirectedRing.radius()).equals(3);
+      check(undirectedRing.eccentricity(0)).equals(3);
+      check(undirectedRing.center()).isNotEmpty;
+      check(undirectedRing.periphery()).isNotEmpty;
+      check(undirectedRing.bipartiteColoring()).isNotNull();
+      check(undirectedRing.dominatingSet()).isNotEmpty;
+      check(undirectedRing.katzCentrality()).length.equals(6);
+      final (authorities, hubs) = undirectedRing.hits();
+      check(authorities).length.equals(6);
+      check(hubs).length.equals(6);
+      check(undirectedRing.tspHeuristic()).isNotNull();
 
       final result = graph.layout(
         const StressLayout(),
@@ -152,8 +170,13 @@ graph TD
     });
   });
 
-  group('more-dart-use-collection-library', () {
+  group('more-use-collection-library', () {
     test('specialized data structures', () {
+      final btree = BTreeMap<String, int>.of({'b': 2, 'a': 1, 'c': 3});
+      check(btree.keyAt(1)).equals('b');
+      check(btree.indexOfKey('c')).equals(2);
+      check(btree.keysInRange(min: 'a', max: 'b')).deepEquals(['a', 'b']);
+
       final bimap = BiMap.of({1: 'a', 2: 'b'});
       final key = bimap.inverse['a'];
       check(key).equals(1);
@@ -168,12 +191,18 @@ graph TD
       bag.add('a', 2);
       final countA = bag['a'];
       final unique = bag.distinct;
+      final countsView = bag.asMap();
       check(countA).equals(4);
       check(unique).deepEquals(['a', 'b']);
+      check(countsView['a']).equals(4);
 
       final typeMap = TypeMap<Object>()..setInstance<String>('hello');
       final str = typeMap.getInstance<String>();
+      final removed = typeMap.removeInstance<String>();
+      typeMap.clear();
       check(str).equals('hello');
+      check(removed).equals('hello');
+      check(typeMap.asMap()).isEmpty;
 
       final bits = BitList(8)
         ..[1] = true
@@ -212,16 +241,18 @@ graph TD
       final rangeSum = fenwick.range(1, 4);
       check(rangeSum).equals(19);
 
-      final trie = Trie<String, num, int>(parts: (s) => s.codeUnits);
+      final trie = Trie<String, int, int>(parts: (s) => s.codeUnits);
       trie['app'] = 1;
       trie['apple'] = 2;
       final matches = trie.keysWithPrefix('app');
       check(matches).deepEquals(['app', 'apple']);
 
-      final rtree = RTree<String>.guttman()
-        ..insert([10.0, 20.0].toBounds(), 'Target');
-      final hits = rtree.queryEntries(Bounds.from2D(0.0, 0.0, 15.0, 25.0));
-      check(hits.length).equals(1);
+      final rtree = RTree<String>.rStar()
+        ..insert(Bounds.from2D(10.0, 20.0), 'Target');
+      final hits = rtree.query(Bounds.from2D(0.0, 0.0, 15.0, 25.0)).toList();
+      final closest = rtree.nearest(Bounds.from2D(11.0, 19.0)).first;
+      check(hits).deepEquals(['Target']);
+      check(closest).equals('Target');
     });
 
     test('iterable and list extensions', () {
@@ -294,7 +325,7 @@ graph TD
     });
   });
 
-  group('more-dart-use-printer-library', () {
+  group('more-use-printer-library', () {
     test('printers and modifiers', () {
       const std = Printer<int>.standard();
       final hex = Printer<int>.pluggable((v) => '0x${v.toRadixString(16)}');
@@ -369,7 +400,7 @@ graph TD
     });
   });
 
-  group('more-dart-use-char-matcher-library', () {
+  group('more-use-char-matcher-library', () {
     test('matchers, composition, and string operations', () {
       final isA = CharMatcher.isChar('a');
       final lowerHex = CharMatcher.inRange('a', 'f');
@@ -447,7 +478,7 @@ graph TD
     });
   });
 
-  group('more-dart-use-comparator-library', () {
+  group('more-use-comparator-library', () {
     test('comparators, sorting, binary search, and operators', () {
       const nat = naturalComparable<num>;
       const rev = reverseComparable<num>;
@@ -506,7 +537,7 @@ graph TD
     });
   });
 
-  group('more-dart-use-math-library', () {
+  group('more-use-math-library', () {
     test('number theory, polynomials, hyperbolic, and bits', () {
       final lcmVal = 12.lcm(18);
       final gcdAll = [24, 36, 60].gcd();
@@ -559,11 +590,13 @@ graph TD
     });
   });
 
-  group('more-dart-use-number-library', () {
+  group('more-use-number-library', () {
     test('Fraction, Complex, and Quaternion', () {
       final a = Fraction(1, 3);
       final b = Fraction.fromDouble(0.75);
       final c = Fraction.parse('2/6');
+      final maybe = Fraction.tryParse('invalid');
+      check(maybe).isNull;
       final sum = a + b;
       final product = a * b;
       final inv = a.reciprocal();
@@ -613,7 +646,7 @@ graph TD
     });
   });
 
-  group('more-dart-use-temporal-library', () {
+  group('more-use-temporal-library', () {
     test('DateTime properties, truncation, periodical, and Duration', () {
       final dt = DateTime.utc(2024, 2, 29, 14, 35, 20);
       final leap = dt.isLeapYear;
@@ -671,7 +704,7 @@ graph TD
     });
   });
 
-  group('more-dart-use-interval-library', () {
+  group('more-use-interval-library', () {
     test('Interval and IntervalTree', () {
       final a = Interval<num>(1, 5);
       final b = Interval<num>(4, 8);
@@ -711,7 +744,7 @@ graph TD
     });
   });
 
-  group('more-dart-use-cache-library', () {
+  group('more-use-cache-library', () {
     test('Cache strategies and operations', () async {
       final lruCache = Cache<String, int>.lru(
         loader: (key) => key.length,
@@ -754,7 +787,7 @@ graph TD
     });
   });
 
-  group('more-dart-use-functional-library', () {
+  group('more-use-functional-library', () {
     test('Optional, Either, also, and function combinators', () {
       const present = Optional.of('hello');
       const absent = Optional<String>.absent();
@@ -772,6 +805,11 @@ graph TD
       check(val).equals(5);
       check(lazyVal).equals('fallback');
       check(nullableVal).isNull;
+      final label = switch (lengthOpt) {
+        PresentOptional(:final value) => 'len=$value',
+        AbsentOptional() => 'missing',
+      };
+      check(label).equals('len=5');
 
       const right = Either<String, int>.right(42);
       const left = Either<String, int>.left('Invalid input');
@@ -782,12 +820,17 @@ graph TD
       );
       final mapped = right.mapRight((n) => n + 1);
       final swapped = right.swap();
+      final summary = switch (right) {
+        LeftEither(:final value) => 'err: $value',
+        RightEither(:final value) => 'ok: $value',
+      };
 
       check(left.isLeft).isTrue;
       check(condEither.isLeft).isTrue;
       check(message).equals('Success: 84');
       check(mapped.rightValue).equals(43);
       check(swapped.leftValue).equals(42);
+      check(summary).equals('ok: 42');
 
       final result = '  42  '.also((s) => s.trim()).also(int.parse);
       int add3(int a, int b, int c) => a + b + c;
@@ -805,7 +848,7 @@ graph TD
     });
   });
 
-  group('more-dart-use-diff-library', () {
+  group('more-use-diff-library', () {
     test('SequenceMatcher, differs, and closeMatches', () {
       final matcher = SequenceMatcher<String>(
         source: ['a', 'b', 'c', 'd'],
@@ -849,7 +892,7 @@ graph TD
     });
   });
 
-  group('more-dart-use-async-library', () {
+  group('more-use-async-library', () {
     test('Stream transformations', () async {
       final source = Stream.fromIterable([1, 2, 3, 4, 5]);
       final batches = await source.buffer(maxLength: 2).toList();
@@ -890,7 +933,7 @@ graph TD
     });
   });
 
-  group('more-dart-use-tuple-library', () {
+  group('more-use-tuple-library', () {
     test('Tuple extensions', () {
       const record = ('Alice', 30, true);
       final len = record.length;

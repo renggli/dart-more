@@ -1,6 +1,6 @@
 ---
-name: more-dart-use-number-library
-description: "Extended numeric types in package:more/number.dart: exact rational Fraction, Complex numbers, 3D rotational Quaternion, and CloseTo approximate equality."
+name: more-use-number-library
+description: "Extended numeric types in package:more/number.dart: exact rational Fraction, Complex numbers, 3D rotational Quaternion, and CloseTo approximate equality. Use when needing exact rational arithmetic without floating-point drift, complex arithmetic/roots/transcendentals, 3D quaternion rotations, or epsilon-based equality checks. Don't use for number theory, primes, or bit manipulation (use more-use-math-library)."
 ---
 
 # MoreDart Number Library (`package:more/number.dart`)
@@ -20,6 +20,7 @@ import 'package:more/number.dart';
 final a = Fraction(1, 3);
 final b = Fraction.fromDouble(0.75); // Fraction(3, 4)
 final c = Fraction.parse('2/6'); // Fraction(1, 3)
+final maybe = Fraction.tryParse('invalid'); // null
 
 // Arithmetic & comparisons
 final sum = a + b; // Fraction(13, 12)
@@ -35,7 +36,7 @@ final firstFivePositive = Fraction.positive.take(5).toList();
 
 ## `Complex` (Complex Numbers)
 
-Represents $a + b i$ with Cartesian and polar constructors and transcendental functions:
+Represents `a + bi` with Cartesian and polar constructors and transcendental functions:
 
 ```dart
 final z1 = const Complex(3, 4);
@@ -58,7 +59,7 @@ final isNearMinusOne = euler.closeTo(const Complex(-1, 0), 1e-12); // true
 
 ## `Quaternion` (Hypercomplex Numbers & 3D Rotations)
 
-Represents $w + x i + y j + z k$:
+Represents `w + xi + yj + zk`:
 
 ```dart
 // Construction from components, axis-angle, Euler angles, or vector rotation
@@ -72,3 +73,11 @@ final unit = q1.normalize();
 final inverse = q1.reciprocal();
 final identityCheck = (q1 * inverse).closeTo(Quaternion.one, 1e-9); // true
 ```
+
+---
+
+## Common Pitfalls
+
+- **Floating-point equality**: Never use `==` on computed `Complex` or `Quaternion` results; use `.closeTo(other, epsilon)` (from `CloseTo`).
+- **Parsing untrusted input**: Use `tryParse` (`Fraction.tryParse`, `Complex.tryParse`, `Quaternion.tryParse`) instead of `parse` to avoid `FormatException`.
+- **`Fraction.positive` is infinite**: Always bound with `.take(n)`.

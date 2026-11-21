@@ -1,6 +1,6 @@
 ---
-name: more-dart-use-functional-library
-description: "Functional programming types and combinators in package:more/functional.dart: Optional<T>, Either<L, R>, also scope extension, currying, partial application, and function helpers."
+name: more-use-functional-library
+description: "Algebraic data types and function combinators in package:more/functional.dart: Optional<T>, Either<L, R>, also scope extension, currying, partial application, and standard function helpers. Use when modeling explicit optionality (distinct from null), typed success/error disjoint unions with exhaustive pattern matching, inline transformation pipelines (.also), or currying/binding function arguments. Don't use when plain Dart nullable types (T?) suffice."
 ---
 
 # MoreDart Functional Library (`package:more/functional.dart`)
@@ -31,6 +31,12 @@ final lengthOpt = present
 final val = lengthOpt.orElse(0); // 5
 final lazyVal = absent.orElseGet(() => 'fallback'); // 'fallback'
 final nullableVal = absent.valueOrNull; // null
+
+// Exhaustive Dart 3 pattern matching
+final label = switch (lengthOpt) {
+  PresentOptional(:final value) => 'len=$value',
+  AbsentOptional() => 'missing',
+};
 ```
 
 ---
@@ -43,7 +49,7 @@ A sealed disjoint union (`LeftEither<L, R>` | `RightEither<L, R>`) representing 
 // Creation
 const right = Either<String, int>.right(42);
 const left = Either<String, int>.left('Invalid input');
-final condEither = Either.iff(true, () => 'err', () => 100);
+final condEither = Either.iff(true, () => 'err', () => 100); // LeftEither('err')
 
 // Folding, mapping, and swapping
 final message = right.fold(
@@ -53,6 +59,12 @@ final message = right.fold(
 
 final mapped = right.mapRight((n) => n + 1); // Either.right(43)
 final swapped = right.swap(); // Either<int, String>.left(42)
+
+// Exhaustive Dart 3 pattern matching
+final summary = switch (right) {
+  LeftEither(:final value) => 'err: $value',
+  RightEither(:final value) => 'ok: $value',
+};
 ```
 
 ---
@@ -73,3 +85,11 @@ final boundSum = add10AndBAndC(20, 30); // 60
 final id = identityFunction<int>(7); // 7
 final alwaysTrue = constantFunction1<String, bool>(true)('any'); // true
 ```
+
+---
+
+## Common Pitfalls
+
+- **`Either.iff(condition, leftProvider, rightProvider)`**: Returns `Left` when `condition` is `true` and `Right` when `false`.
+- **Calling `.value` on absent `Optional` or wrong side of `Either`**: Throws `StateError`; prefer `switch` pattern matching, `fold`, `orElse`, or `valueOrNull`.
+- **Nullable `Optional<T?>`**: `Optional<int?>.of(null)` is *present* (`isPresent == true`), whereas `Optional.ofNullable(null)` is *absent*.

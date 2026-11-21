@@ -1,6 +1,6 @@
 ---
-name: more-dart-use-graph-library
-description: "Patterns and API reference for MoreDart's graph library (package:more/graph.dart): graph data structures, standalone closure-based algorithms, factories, operations, traversals, and 2D layout strategies."
+name: more-use-graph-library
+description: "Graph data structures, standalone closure-based algorithms, factories, operations, traversals, Mermaid/DOT export, and 2D layout strategies in package:more/graph.dart. Use when modeling directed/undirected graphs, running traversals, shortest paths, centrality, flows, matching, community detection, isomorphism, or computing 2D graph layouts (including directly on arbitrary domain objects without wrapping in a Graph). Don't use for spatial 2D bounding-box indexing (use RTree in more-use-collection-library)."
 ---
 
 # MoreDart Graph Library (`package:more/graph.dart`)
@@ -62,7 +62,7 @@ final directed = Graph<String, void>(isDirected: true);
 final undirected = Graph<String, void>(isDirected: false);
 final graph = Graph<String, num>(isDirected: true);
 
-// Fast integer vertex storage strategy
+// Fast integer vertex storage strategy (also .defaultObject(), .identity(), .custom(...))
 final intGraph = Graph<int, void>(
   isDirected: false,
   vertexStrategy: StorageStrategy.positiveInteger(),
@@ -94,6 +94,7 @@ final factory = GraphFactory<int, void>(isDirected: true, random: Random(42));
 final kn = factory.complete(vertexCount: 5);
 final ring = factory.ring(vertexCount: 6);
 final star = factory.star(vertexCount: 7);
+final grid = factory.grid(rows: 3, columns: 4);
 final tree = factory.completeTree(vertexCount: 15, arity: 2);
 final random = factory.randomErdosRenyi(vertexCount: 10, probability: 0.35);
 final atlasGraph = GraphFactory<int, void>(isDirected: false).atlas(7);
@@ -133,17 +134,20 @@ Lazy iterables exposed on both `Graph` and standalone classes:
 
 ## Algorithms
 
-Algorithms exist both as extension methods on `Graph` and as standalone functions taking closures:
+Algorithms are available as extension methods on `Graph` (and most also as standalone closure-based functions):
 
 - **Shortest Paths**: `shortestPath(source, target)` (Dijkstra / A* with `costEstimate` / Bellman-Ford with `hasNegativeEdges: true`), `shortestPathAll(source)`, `allShortestPaths()` (`floydWarshallSearch`)
-- **Connectivity & Cycles**: `hasCycle()`, `stronglyConnected()` (`tarjanStronglyConnected`), `biconnectedComponents()`, `articulationPoints()`, `bridges()`, `isBipartite()`, `isPlanar()`, `edgeConnectivity()`, `vertexConnectivity()`, `coreNumbers()`, `kCore(k)`
+- **Distance Metrics**: `eccentricity(v)`, `diameter()`, `radius()`, `center()`, `periphery()`
+- **Connectivity & Cycles**: `hasCycle()`, `stronglyConnected()` (`tarjanStronglyConnected`), `biconnectedComponents()`, `articulationPoints()`, `bridges()`, `isBipartite()`, `bipartiteColoring()`, `isPlanar()`, `edgeConnectivity()`, `vertexConnectivity()`, `coreNumbers()`, `kCore(k)`
 - **Spanning Trees**: `spanningTree()` (`kruskalSpanningTree`, or `primSpanningTree` when `startVertex` is given)
 - **Flows & Cuts**: `maxFlow().flow(source, target)` (`DinicMaxFlow`), `minCut()` (`StoerWagnerMinCut`)
-- **Matching, Coloring & Cliques**: `bipartiteMatching()`, `weightedBipartiteMatching()`, `maximumMatching()` (Blossom), `vertexColoring()`, `findCliques()` (`bronKerboschCliques`), `maximumIndependentSet()`, `minimumVertexCover()`
+- **Matching, Coloring, Covers & Cliques**: `bipartiteMatching()`, `weightedBipartiteMatching()`, `maximumMatching()` (Blossom), `vertexColoring()`, `findCliques()` (`bronKerboschCliques`), `maximumIndependentSet()`, `minimumVertexCover()`, `dominatingSet()`
 - **Isomorphism**: `isIsomorphicTo(other)`, `containsSubgraph(pattern)` (`findIsomorphisms`)
-- **Metrics & Centrality**: `degreeCentrality()`, `inDegreeCentrality()`, `outDegreeCentrality()`, `betweennessCentrality()`, `closenessCentrality()`, `pageRank()`, `eigenvectorCentrality()`, `density()`, `localClusteringCoefficient(v)`, `averageClusteringCoefficient()`, `transitivity()`, `degreeAssortativity()`
+- **Metrics & Centrality**: `degreeCentrality()`, `inDegreeCentrality()`, `outDegreeCentrality()`, `betweennessCentrality()`, `closenessCentrality()`, `pageRank()`, `eigenvectorCentrality()`, `katzCentrality()`, `hits()`, `density()`, `localClusteringCoefficient(v)`, `averageClusteringCoefficient()`, `transitivity()`, `degreeAssortativity()`
 - **Communities**: `louvainCommunities()`, `labelPropagationCommunities()`, `modularity(communities)`
-- **Tours**: `hasEulerianCircuit()`, `hasEulerianPath()`, `findEulerianPath()`, `hasHamiltonianCircuit()`, `hasHamiltonianPath()`, `findHamiltonianPath()`
+- **Tours**: `hasEulerianCircuit()`, `hasEulerianPath()`, `findEulerianPath()`, `hasHamiltonianCircuit()`, `hasHamiltonianPath()`, `findHamiltonianPath()`, `tspHeuristic()`
+
+Weighted `Graph` methods automatically fall back to the graph's edge values (or `1` if non-numeric) when no explicit `edgeCost`/`edgeWeight`/`edgeCapacity` callback is provided.
 
 ---
 
@@ -163,7 +167,6 @@ Layouts produce 2D vertex coordinates (`positions`), bounds (`bounds`), and poly
 | `ShellLayout` | `O(V)` | Both | Packed | Concentric rings assigned by explicit shell lists or mapping function. |
 | `CircularLayout` | `O(V)` | Both | Single ring | Vertices placed uniformly along a circular circumference. |
 | `SpectralLayout` | `O(k * (V + E))` | Both | Packed | Laplacian eigenvectors (Fiedler vectors) via power iteration. |
-| `PartiteLayout` | `O(V + E)` | Both | Columns | Parallel columns for bipartite/multipartite layouts with crossing sweeps. |
 | `GridLayout` | `O(V)` | Both | Grid | Row and column grid alignment. |
 | `RandomLayout` | `O(V)` | Both | Bounds | Uniform random coordinates within a bounding rectangle. |
 
@@ -193,3 +196,12 @@ final treeResult = const TreeLayout<String>().layout(input);
 - `LayoutRectangle`: `Rectangle<double>` with `.center`, `.minX`, `.maxX`, `.expandToInclude()`.
 - `LayoutSize`: `({double width, double height})`.
 - `boundingBox(points)`: Smallest enclosing `LayoutRectangle`.
+
+---
+
+## Common Pitfalls
+
+- **Avoid unnecessary `Graph` wrapping**: If data already lives in domain objects, call `BreadthFirstIterable`, `dijkstraSearch`, `TreeLayout`, etc. directly with `successorsOf`.
+- **Mutable or custom-equality vertices**: Pass `vertexStrategy: StorageStrategy.identity()` or `StorageStrategy.custom(...)` instead of relying on default `==`/`hashCode`.
+- **Negative edge weights**: Set `hasNegativeEdges: true` in `shortestPath` (or call `bellmanFordSearch` directly); Dijkstra assumes non-negative weights.
+- **No-argument metrics are methods**: Call `graph.density()`, `graph.diameter()`, `graph.degreeAssortativity()`, not getters.

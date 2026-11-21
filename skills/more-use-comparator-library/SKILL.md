@@ -1,6 +1,6 @@
 ---
-name: more-dart-use-comparator-library
-description: "Composable comparators and ordering operations in package:more/comparator.dart: natural/reverse/key/explicit comparators, chaining, null handling, top-K selection, binary search, and CompareOperators."
+name: more-use-comparator-library
+description: "Composable comparators and ordering algorithms in package:more/comparator.dart: natural/reverse/key/explicit comparators, thenCompare chaining, null handling, lexicographical ordering, top-K selection, binary search/bounds, and CompareOperators. Use when sorting by multiple keys, handling nullable sort fields, running binary search or lower/upper bound queries, selecting top-K elements, or adding <, <=, >, >= operators to Comparable classes. Don't use for maintaining an always-sorted mutable collection (use BTreeMap/BTreeSet/SortedList in more-use-collection-library)."
 ---
 
 # MoreDart Comparator Library (`package:more/comparator.dart`)
@@ -96,3 +96,11 @@ final isOlder = v1 < v2; // true
 final inRange = v1.between(const Version(1, 0), const Version(1, 5)); // true
 final clamped = v2.clip(const Version(1, 0), const Version(1, 5)); // Version(1, 5)
 ```
+
+---
+
+## Common Pitfalls
+
+- **`int`/`double` type parameter**: Use `naturalComparable<num>` (not `<int>`) because `int` and `double` implement `Comparable<num>`, not `Comparable<int>`.
+- **`binarySearch` miss value**: Returns a negative value when absent (`-(insertIndex + 1)`); use `binarySearchLower` / `binarySearchUpper` when you always want a non-negative insertion index.
+- **Stable sorting**: Pass `stable: true` to `.sort()` / `.sorted()` when equal keys must preserve original relative order.

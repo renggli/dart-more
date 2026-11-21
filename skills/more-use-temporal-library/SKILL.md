@@ -1,6 +1,6 @@
 ---
-name: more-dart-use-temporal-library
-description: "Calendar properties, truncation, periodic date sequences, and multi-unit duration conversions in package:more/temporal.dart."
+name: more-use-temporal-library
+description: "Calendar properties, TimeUnit truncation, periodic date sequences, and multi-unit duration conversions in package:more/temporal.dart. Use when computing leap years, ISO 8601 week numbers, quarters, truncating DateTimes to a TimeUnit, generating recurring date schedules, or decomposing Durations across units. Don't use for formatting DateTimes/Durations to strings (use DateTimePrinter/DurationPrinter in more-use-printer-library)."
 ---
 
 # MoreDart Temporal Library (`package:more/temporal.dart`)
@@ -68,3 +68,11 @@ final hours = parts[TimeUnit.hour]; // 5
 // Convert an Interval<DateTime> to a Duration
 final span = Interval(DateTime.utc(2025, 1, 1), DateTime.utc(2025, 1, 3)).toDuration();
 ```
+
+---
+
+## Common Pitfalls
+
+- **`periodical` is infinite**: Always bound `start.periodical(...)` with `.take(n)` or `.takeWhile(...)`.
+- **`casualConversion` vs `accurateConversion`**: `convertTo` and `convertToAll` default to `casualConversion` (30-day months, 365-day years); pass `conversion: accurateConversion` for Gregorian averages.
+- **UTC vs local**: `truncateTo` and `periodical` preserve `isUtc`; prefer UTC `DateTime`s to avoid DST edge cases.

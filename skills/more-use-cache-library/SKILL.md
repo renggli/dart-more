@@ -1,6 +1,6 @@
 ---
-name: more-dart-use-cache-library
-description: "Self-loading caches in package:more/cache.dart: Cache<K, V> with LRU, FIFO, time-based expiry, and no-op policies."
+name: more-use-cache-library
+description: "Asynchronous self-loading caches in package:more/cache.dart: Cache<K, V> with LRU, FIFO, time-based expiry, delegate, and empty/no-op policies. Use when caching async computations or remote lookups behind a Loader<K, V> with bounded size or TTL eviction. Don't use for synchronous in-memory default/computed maps (use Map.withComputed in more-use-collection-library)."
 ---
 
 # MoreDart Cache Library (`package:more/cache.dart`)
@@ -68,3 +68,11 @@ Future<void> runCacheExample() async {
   final currentSize = await cache.size(); // 0
 }
 ```
+
+---
+
+## Common Pitfalls
+
+- **`get` vs `getIfPresent`**: `get(key)` invokes `loader` on cache miss; `getIfPresent(key)` returns `null` without calling `loader`.
+- **Lazy expiration**: `Cache.expiry` evicts expired entries on access; call `await cache.reap()` periodically if memory must be reclaimed proactively.
+- **Custom decorators**: Subclass `DelegateCache<K, V>` to add logging, metrics, or key normalization around any `Cache<K, V>`.

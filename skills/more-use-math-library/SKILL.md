@@ -1,6 +1,6 @@
 ---
-name: more-dart-use-math-library
-description: "Mathematical, number-theoretic, and bit-manipulation utilities in package:more/math.dart: primes and sieves, gcd/lcm, factorial/binomial, polynomials, hyperbolic functions, bit operations, and IEEE-754 floats."
+name: more-use-math-library
+description: "Mathematical, number-theoretic, and bit-manipulation extensions in package:more/math.dart: primes and sieves, gcd/lcm, factorial/binomial, base-N digits, polynomials, hyperbolic functions, bit operations, and IEEE-754 floats. Use when doing primality testing, prime sieving, integer/BigInt combinatorics, Horner polynomial evaluation, hyperbolic trig, 32-bit bit twiddling, or ULP/nextUp/nextDown float inspection. Don't use for rational Fraction, Complex, or Quaternion types (use more-use-number-library)."
 ---
 
 # MoreDart Math Library (`package:more/math.dart`)
@@ -66,3 +66,11 @@ final next = 1.0.nextUp;
 final prev = 1.0.nextDown;
 final ulp = 1.0.ulp; // 2.220446049250313e-16
 ```
+
+---
+
+## Common Pitfalls
+
+- **Digit & polynomial ordering**: Both `digits(base)` and `polynomial(x)` are **least-significant / lowest-degree first** (`1234.digits(10)` -> `[4, 3, 2, 1]`; `[1, 2, 3].polynomial(x)` -> `1 + 2x + 3x^2`).
+- **Overflow in `factorial` / `binomial`**: Use `BigInt` receivers for large inputs to avoid 64-bit `int` (or JS 53-bit) overflow.
+- **32-bit bit ops**: `bitCount`, `bitFloor`, `bitCeil`, `setBit`, `clearBit`, `toggleBit` operate on unsigned 32-bit integers for JS/VM portability.

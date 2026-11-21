@@ -1,6 +1,6 @@
 ---
-name: more-dart-use-tuple-library
-description: "Positional Record (tuple) extensions in package:more/tuple.dart: uniform accessors, immutable updates, growing/shrinking, mapping, and collection conversions for arities 0 to 9."
+name: more-use-tuple-library
+description: "Positional Record (tuple) extensions in package:more/tuple.dart: uniform accessors (first..ninth, last), immutable updates (withFirst..withLast), growing/shrinking arity, splatted mapping, and list/set conversions for arities 0 to 9. Use when manipulating Dart positional Records functionally (copy-with updates, appending/removing elements, splatting into callbacks, or converting to/from Lists). Don't use for records with named fields (use native Dart destructuring)."
 ---
 
 # MoreDart Tuple Library (`package:more/tuple.dart`)
@@ -62,3 +62,10 @@ final asSet = point.toSet(); // {3, 4}
 // Construct a fixed-arity tuple from a List
 final fromList = Tuple3.fromList(['a', 'b', 'c']); // ('a', 'b', 'c')
 ```
+
+---
+
+## Common Pitfalls
+
+- **Positional records only**: Extensions apply to positional records of arity 0–9 (`()` through `(T1, ..., T9)`), not records with named fields.
+- **`TupleN.fromList` length check**: Throws `ArgumentError` if the input list does not have exact length `N`.

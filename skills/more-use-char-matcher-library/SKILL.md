@@ -1,6 +1,6 @@
 ---
-name: more-dart-use-char-matcher-library
-description: "Character class predicates, composition, and bulk string processing in package:more/char_matcher.dart: ASCII/Unicode matchers, set algebra (~, |, &), filtering, trimming, splitting, and replacing."
+name: more-use-char-matcher-library
+description: "Character class predicates, boolean composition, and bulk string processing in package:more/char_matcher.dart: ASCII/Unicode categories/scripts/blocks, set algebra (~, |, &), filtering, trimming, collapsing, splitting, and replacing. Use when filtering, trimming, collapsing, counting, or splitting strings by character classes or Unicode properties instead of writing ad-hoc RegExp patterns. Don't use for multi-character grammar parsing or complex regex backreferences."
 ---
 
 # MoreDart CharMatcher Library (`package:more/char_matcher.dart`)
@@ -85,3 +85,11 @@ final firstDigitIdx = const CharMatcher.digit().firstIndexIn(input); // 18
 // Usable anywhere Dart expects a Pattern (e.g., String.split)
 final words = 'one, two; three'.split(CharMatcher.charSet(',; '));
 ```
+
+---
+
+## Common Pitfalls
+
+- **ASCII vs Unicode**: `CharMatcher.letter()`, `digit()`, `whitespace()` match ASCII only; use `UnicodeCharMatcher.*` or `UnicodeBlockCharMatcher.*` for full Unicode support.
+- **Correct spelling**: Use `trimTrailingFrom` (not the deprecated `trimTraillingFrom`).
+- **Prefer `const`**: Built-in ASCII and block matchers support `const` constructors/fields.
