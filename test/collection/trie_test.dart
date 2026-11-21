@@ -297,6 +297,46 @@ void allTrieTests(
         check(trie[value]).isNull();
       }
     });
+    test('int parts, single-pass fromIterable, and direct map ops', () {
+      var iterations = 0;
+      Iterable<String> singlePass() sync* {
+        iterations++;
+        if (iterations > 1) throw StateError('Iterated more than once');
+        yield 'app';
+        yield 'apple';
+        yield 'banana';
+      }
+
+      final trie = Trie<String, int, int>.fromIterable(
+        singlePass(),
+        parts: (s) => s.codeUnits,
+        key: (e) => e! as String,
+        value: (e) => (e! as String).length,
+      );
+      check(iterations).equals(1);
+      check(trie.length).equals(3);
+      check(trie.isEmpty).isFalse();
+      check(trie.isNotEmpty).isTrue();
+      check(trie.containsValue(5)).isTrue();
+      check(trie.containsValue(99)).isFalse();
+      check(trie.keysWithPrefix('app').toList()).deepEquals(['app', 'apple']);
+
+      check(trie.putIfAbsent('app', () => 99)).equals(3);
+      check(trie.putIfAbsent('apricot', () => 7)).equals(7);
+      check(trie.update('app', (v) => v * 10)).equals(30);
+      check(trie.update('cherry', (v) => v, ifAbsent: () => 6)).equals(6);
+      check(() => trie.update('missing', (v) => v)).throws<ArgumentError>();
+
+      final visited = <String, int>{};
+      trie.forEach((k, v) => visited[k] = v);
+      check(visited['app']).equals(30);
+      check(visited['cherry']).equals(6);
+
+      trie.updateAll((k, v) => v + 1);
+      check(trie['app']).equals(31);
+      final mapped = trie.map((k, v) => MapEntry(k.toUpperCase(), v));
+      check(mapped['APP']).equals(31);
+    });
   });
 }
 

@@ -1,22 +1,32 @@
 import 'dart:collection';
 
 /// Function to extract the parts of type [P] from a key of type [K].
-typedef GetParts<K, P> = Iterable<P> Function(K key);
+typedef TrieGetParts<K, P> = Iterable<P> Function(K key);
 
 /// A generalized [Trie] (or prefix tree) where keys of type [K] are split into
-/// parts of type [P], storing values of type [V].
-class Trie<K, P extends Comparable<P>, V> extends MapBase<K, V> {
+/// ordered parts of type [P], storing values of type [V].
+///
+/// Key equivalence and iteration order are determined by the sequence of parts
+/// returned by the `parts` function, rather than `K.==`.
+///
+/// ```dart
+/// final trie = Trie<String, int, int>(parts: (s) => s.codeUnits);
+/// trie['apple'] = 1;
+/// trie['app'] = 2;
+/// print(trie.keysWithPrefix('app').toList()); // ['app', 'apple']
+/// ```
+class Trie<K, P extends Comparable<Object?>, V> extends MapBase<K, V> {
   /// Creates an empty [Trie] that splits the keys of type [K] into [parts] of
   /// type [P] with the provided function. Optionally a custom [root] node can
   /// be provided.
-  factory({required GetParts<K, P> parts, TrieNode<K, P, V>? root}) =>
+  factory({required TrieGetParts<K, P> parts, TrieNode<K, P, V>? root}) =>
       Trie._(root ?? TrieNodeList<K, P, V>(), parts);
 
   /// Creates a [Trie] from another instance. Optionally redefines how the
   /// [parts] of the keys are computed and provides a custom [root] node.
   factory fromTrie(
     Trie<K, P, V> other, {
-    GetParts<K, P>? parts,
+    TrieGetParts<K, P>? parts,
     TrieNode<K, P, V>? root,
   }) =>
       Trie<K, P, V>.fromMap(other, parts: parts ?? other._getParts, root: root);
@@ -25,7 +35,7 @@ class Trie<K, P extends Comparable<P>, V> extends MapBase<K, V> {
   /// computed and optionally provides a custom [root] node.
   factory fromMap(
     Map<K, V> other, {
-    required GetParts<K, P> parts,
+    required TrieGetParts<K, P> parts,
     TrieNode<K, P, V>? root,
   }) {
     final result = Trie<K, P, V>(parts: parts, root: root);
@@ -33,28 +43,35 @@ class Trie<K, P extends Comparable<P>, V> extends MapBase<K, V> {
     return result;
   }
 
-  /// Creates a [Trie] from an iterable (and possible transformation functions).
+  /// Creates a [Trie] from an [iterable] in a single pass (with optional [key]
+  /// and [value] transformation functions).
+  ///
   /// The [parts] define how the keys are computed and optionally provides a
   /// custom [root] node.
   factory fromIterable(
     Iterable<Object?> iterable, {
-    required GetParts<K, P> parts,
+    required TrieGetParts<K, P> parts,
     TrieNode<K, P, V>? root,
     K Function(Object? element)? key,
     V Function(Object? element)? value,
-  }) => Trie<K, P, V>.fromIterables(
-    key == null ? iterable.cast<K>() : iterable.map(key),
-    value == null ? iterable.cast<V>() : iterable.map(value),
-    parts: parts,
-    root: root,
-  );
+  }) {
+    final result = Trie<K, P, V>(parts: parts, root: root);
+    final keyProvider = key ?? (element) => element as K;
+    final valueProvider = value ?? (element) => element as V;
+    for (final element in iterable) {
+      result[keyProvider(element)] = valueProvider(element);
+    }
+    return result;
+  }
 
-  /// Creates a [Trie] from two equal length iterables. The [parts] define how
+  /// Creates a [Trie] from two equal-length iterables. The [parts] define how
   /// the keys are computed and optionally provides a custom [root] node.
+  ///
+  /// Throws an [ArgumentError] if [keys] and [values] have different lengths.
   factory fromIterables(
     Iterable<K> keys,
     Iterable<V> values, {
-    required GetParts<K, P> parts,
+    required TrieGetParts<K, P> parts,
     TrieNode<K, P, V>? root,
   }) {
     final result = Trie<K, P, V>(parts: parts, root: root);
@@ -85,7 +102,7 @@ class Trie<K, P extends Comparable<P>, V> extends MapBase<K, V> {
       );
 
   /// Internal function to extract the parts from the key.
-  final GetParts<K, P> _getParts;
+  final TrieGetParts<K, P> _getParts;
 
   /// Internal root node of the tree.
   final TrieNode<K, P, V> _root;
@@ -97,39 +114,40 @@ class Trie<K, P extends Comparable<P>, V> extends MapBase<K, V> {
   int get length => _length;
 
   @override
-  V? operator [](Object? key) {
-    if (key is K) {
-      var current = _root;
-      // Navigate to the right node.
-      for (final part in _getParts(key)) {
-        final node = current.getChild(part);
-        if (node == null) {
-          return null;
-        }
-        current = node;
-      }
-      // Verify we found a value node.
-      if (current.hasKeyAndValue) {
-        return current.value;
-      }
+  bool get isEmpty => _length == 0;
+
+  @override
+  bool get isNotEmpty => _length > 0;
+
+  TrieNode<K, P, V>? _findNode(K key) {
+    var current = _root;
+    for (final part in _getParts(key)) {
+      final node = current.getChild(part);
+      if (node == null) return null;
+      current = node;
     }
-    return null;
+    return current;
+  }
+
+  @override
+  V? operator [](Object? key) {
+    if (key is! K || _length == 0) return null;
+    final node = _findNode(key);
+    return node != null && node.hasKeyAndValue ? node.value : null;
   }
 
   @override
   bool containsKey(Object? key) {
-    if (key is K) {
-      var current = _root;
-      // Navigate to the right node.
-      for (final part in _getParts(key)) {
-        final node = current.getChild(part);
-        if (node == null) {
-          return false;
-        }
-        current = node;
-      }
-      // Verify we found a value node.
-      return current.hasKeyAndValue;
+    if (key is! K || _length == 0) return false;
+    final node = _findNode(key);
+    return node != null && node.hasKeyAndValue;
+  }
+
+  @override
+  bool containsValue(Object? value) {
+    if (_length == 0) return false;
+    for (final node in _root._nodes) {
+      if (node.value == value) return true;
     }
     return false;
   }
@@ -137,16 +155,85 @@ class Trie<K, P extends Comparable<P>, V> extends MapBase<K, V> {
   @override
   void operator []=(K key, V value) {
     var current = _root;
-    // Navigate to the right node, create intermediaries as necessary.
     for (final part in _getParts(key)) {
       current = current.addChild(part);
     }
-    // Increment the length only if no value existed before.
     if (!current.hasKeyAndValue) {
       _length++;
     }
-    // Update key and value of the node.
     current.setKeyAndValue(key, value);
+  }
+
+  @override
+  V putIfAbsent(K key, V Function() ifAbsent) {
+    var current = _root;
+    for (final part in _getParts(key)) {
+      current = current.addChild(part);
+    }
+    if (current.hasKeyAndValue) {
+      return current.value;
+    }
+    final value = ifAbsent();
+    if (!current.hasKeyAndValue) {
+      _length++;
+    }
+    current.setKeyAndValue(key, value);
+    return value;
+  }
+
+  @override
+  V update(K key, V Function(V value) update, {V Function()? ifAbsent}) {
+    if (ifAbsent == null) {
+      final node = _findNode(key);
+      if (node != null && node.hasKeyAndValue) {
+        final value = update(node.value);
+        node.setKeyAndValue(node.key, value);
+        return value;
+      }
+      throw ArgumentError.value(key, 'key', 'Key not in map.');
+    }
+    var current = _root;
+    for (final part in _getParts(key)) {
+      current = current.addChild(part);
+    }
+    if (current.hasKeyAndValue) {
+      final value = update(current.value);
+      current.setKeyAndValue(current.key, value);
+      return value;
+    }
+    final value = ifAbsent();
+    if (!current.hasKeyAndValue) {
+      _length++;
+    }
+    current.setKeyAndValue(key, value);
+    return value;
+  }
+
+  @override
+  void updateAll(V Function(K key, V value) update) {
+    if (_length == 0) return;
+    for (final node in _root._nodes) {
+      node.setKeyAndValue(node.key, update(node.key, node.value));
+    }
+  }
+
+  @override
+  void forEach(void Function(K key, V value) action) {
+    if (_length == 0) return;
+    for (final node in _root._nodes) {
+      action(node.key, node.value);
+    }
+  }
+
+  @override
+  Map<K2, V2> map<K2, V2>(MapEntry<K2, V2> Function(K key, V value) transform) {
+    final result = <K2, V2>{};
+    if (_length == 0) return result;
+    for (final node in _root._nodes) {
+      final entry = transform(node.key, node.value);
+      result[entry.key] = entry.value;
+    }
+    return result;
   }
 
   @override
@@ -158,69 +245,69 @@ class Trie<K, P extends Comparable<P>, V> extends MapBase<K, V> {
 
   @override
   V? remove(Object? key) {
-    if (key is K) {
-      final parts = <P>[];
-      final nodes = <TrieNode<K, P, V>>[_root];
-      // Navigate to the right node.
-      for (final part in _getParts(key)) {
-        final node = nodes.last.getChild(part);
-        if (node == null) {
-          return null;
-        }
-        parts.add(part);
-        nodes.add(node);
-      }
-      // Verify we found a value node.
-      var current = nodes.removeLast();
-      if (current.hasKeyAndValue) {
-        // Remove the value from the tree.
-        final value = current.value;
-        current.clearKeyAndValue();
-        _length--;
-        // Cleanup no longer needed subtrees.
-        while (nodes.isNotEmpty &&
-            parts.isNotEmpty &&
-            !current.hasKeyAndValue &&
-            !current.hasChildren) {
-          current = nodes.removeLast();
-          current.removeChild(parts.removeLast());
-        }
-        // Return the value of the removed node.
-        return value;
-      }
+    if (key is! K || _length == 0) return null;
+    final iterator = _getParts(key).iterator;
+    if (!iterator.moveNext()) {
+      if (!_root.hasKeyAndValue) return null;
+      final value = _root.value;
+      _root.clearKeyAndValue();
+      _length--;
+      return value;
     }
-    return null;
+    final firstPart = iterator.current;
+    final firstChild = _root.getChild(firstPart);
+    if (firstChild == null) return null;
+
+    final parts = <P>[firstPart];
+    final nodes = <TrieNode<K, P, V>>[_root, firstChild];
+    while (iterator.moveNext()) {
+      final part = iterator.current;
+      final node = nodes.last.getChild(part);
+      if (node == null) return null;
+      parts.add(part);
+      nodes.add(node);
+    }
+    var current = nodes.removeLast();
+    if (!current.hasKeyAndValue) return null;
+    final value = current.value;
+    current.clearKeyAndValue();
+    _length--;
+    while (nodes.isNotEmpty &&
+        parts.isNotEmpty &&
+        !current.hasKeyAndValue &&
+        !current.hasChildren) {
+      current = nodes.removeLast();
+      current.removeChild(parts.removeLast());
+    }
+    return value;
   }
 
   @override
   Iterable<MapEntry<K, V>> get entries => _root.entries;
 
   @override
-  Iterable<K> get keys => entries.map((entry) => entry.key);
+  Iterable<K> get keys => _root._nodes.map((node) => node.key);
 
   @override
-  Iterable<V> get values => entries.map((entry) => entry.value);
+  Iterable<V> get values => _root._nodes.map((node) => node.value);
 
   /// An [Iterable] over the [MapEntry] objects with [prefix].
   Iterable<MapEntry<K, V>> entriesWithPrefix(K prefix) {
-    var current = _root;
-    for (final part in _getParts(prefix)) {
-      final node = current.getChild(part);
-      if (node == null) {
-        return const [];
-      }
-      current = node;
-    }
-    return current.entries;
+    if (_length == 0) return const [];
+    final node = _findNode(prefix);
+    return node == null ? const [] : node.entries;
   }
 
   /// An [Iterable] over all keys starting with [prefix].
-  Iterable<K> keysWithPrefix(K prefix) =>
-      entriesWithPrefix(prefix).map((entry) => entry.key);
+  Iterable<K> keysWithPrefix(K prefix) {
+    if (_length == 0) return const [];
+    final node = _findNode(prefix);
+    return node == null ? const [] : node._nodes.map((each) => each.key);
+  }
 }
 
 /// Abstract implementation of the nodes in a [Trie].
-abstract class TrieNode<K, P extends Comparable<P>, V> {
+abstract class TrieNode<K, P extends Comparable<Object?>, V> {
   /// Parts of the child nodes.
   Iterable<P> get parts;
 
@@ -242,10 +329,14 @@ abstract class TrieNode<K, P extends Comparable<P>, V> {
   /// Clears all the child nodes.
   void clearChildren();
 
-  /// Returns the key of the node, if this node has a key and value.
+  /// Returns the key of the node.
+  ///
+  /// Throws a [StateError] if [hasKeyAndValue] is `false`.
   K get key;
 
-  /// Returns the value of the node, if this node has a key and value.
+  /// Returns the value of the node.
+  ///
+  /// Throws a [StateError] if [hasKeyAndValue] is `false`.
   V get value;
 
   /// Returns `true`, if the node has a key and value.
@@ -257,106 +348,136 @@ abstract class TrieNode<K, P extends Comparable<P>, V> {
   /// Sets (or replaces) the key and value.
   void setKeyAndValue(K key, V value);
 
-  /// An iterable over this node and all its children
-  Iterable<MapEntry<K, V>> get entries sync* {
-    final queue = [this];
-    while (queue.isNotEmpty) {
-      final element = queue.removeLast();
+  Iterable<TrieNode<K, P, V>> get _nodes sync* {
+    final stack = <TrieNode<K, P, V>>[this];
+    while (stack.isNotEmpty) {
+      final element = stack.removeLast();
       if (element.hasKeyAndValue) {
-        yield MapEntry(element.key, element.value);
+        yield element;
       }
-      final children = element.children.where(
-        (element) => element.hasKeyAndValue || element.hasChildren,
-      );
-      queue.addAll(children.toList().reversed);
+      if (!element.hasChildren) continue;
+      final childIterable = element.children;
+      if (childIterable is List<TrieNode<K, P, V>>) {
+        for (var i = childIterable.length - 1; i >= 0; i--) {
+          final child = childIterable[i];
+          if (child.hasKeyAndValue || child.hasChildren) {
+            stack.add(child);
+          }
+        }
+      } else {
+        final list = childIterable.toList(growable: false);
+        for (var i = list.length - 1; i >= 0; i--) {
+          final child = list[i];
+          if (child.hasKeyAndValue || child.hasChildren) {
+            stack.add(child);
+          }
+        }
+      }
     }
   }
+
+  /// An iterable over this node and all its children.
+  Iterable<MapEntry<K, V>> get entries =>
+      _nodes.map((node) => MapEntry(node.key, node.value));
 }
 
 /// Abstract [TrieNode] with a possible key and value.
-abstract class TrieNodeEntry<K, P extends Comparable<P>, V>
+abstract class TrieNodeEntry<K, P extends Comparable<Object?>, V>
     extends TrieNode<K, P, V> {
   /// Default generative constructor.
   new();
 
   K? _key;
-
   V? _value;
+  bool _hasKeyAndValue = false;
 
   @override
-  K get key => hasKeyAndValue ? _key as K : throw StateError('No key present');
+  K get key => _hasKeyAndValue ? _key as K : throw StateError('No key present');
 
   @override
   V get value =>
-      hasKeyAndValue ? _value as V : throw StateError('No value present');
+      _hasKeyAndValue ? _value as V : throw StateError('No value present');
 
   @override
-  bool hasKeyAndValue = false;
+  bool get hasKeyAndValue => _hasKeyAndValue;
 
   @override
   void clearKeyAndValue() {
     _key = null;
     _value = null;
-    hasKeyAndValue = false;
+    _hasKeyAndValue = false;
   }
 
   @override
   void setKeyAndValue(K key, V value) {
     _key = key;
     _value = value;
-    hasKeyAndValue = true;
+    _hasKeyAndValue = true;
   }
 }
 
 /// [TrieNode] that holds children in a [Map].
-class TrieNodeMap<K, P extends Comparable<P>, V>
+class TrieNodeMap<K, P extends Comparable<Object?>, V>
     extends TrieNodeEntry<K, P, V> {
   /// Default generative constructor.
   new();
 
-  final Map<P, TrieNode<K, P, V>> _children = SplayTreeMap();
+  Map<P, TrieNode<K, P, V>>? _children;
 
   @override
-  Iterable<P> get parts => _children.keys;
+  Iterable<P> get parts => _children?.keys ?? const [];
 
   @override
-  Iterable<TrieNode<K, P, V>> get children => _children.values;
+  Iterable<TrieNode<K, P, V>> get children => _children?.values ?? const [];
 
   @override
-  bool get hasChildren => _children.isNotEmpty;
-
-  @override
-  TrieNode<K, P, V> addChild(P part) =>
-      _children.putIfAbsent(part, TrieNodeMap<K, P, V>.new);
-
-  @override
-  TrieNode<K, P, V>? getChild(P part) => _children[part];
-
-  @override
-  TrieNode<K, P, V>? removeChild(P part) => _children.remove(part);
-
-  @override
-  void clearChildren() => _children.clear();
-}
-
-/// [TrieNode] that holds children in a sorted [List].
-class TrieNodeList<K, P extends Comparable<P>, V>
-    extends TrieNodeEntry<K, P, V> {
-  /// Default generative constructor.
-  new();
-
-  @override
-  final List<P> parts = [];
-
-  @override
-  final List<TrieNode<K, P, V>> children = [];
-
-  @override
-  bool get hasChildren => children.isNotEmpty;
+  bool get hasChildren {
+    final children = _children;
+    return children != null && children.isNotEmpty;
+  }
 
   @override
   TrieNode<K, P, V> addChild(P part) {
-    final index = _binarySearch(part);
+    final children = _children ??= SplayTreeMap<P, TrieNode<K, P, V>>();
+    return children.putIfAbsent(part, TrieNodeMap<K, P, V>.new);
+  }
+
+  @override
+  TrieNode<K, P, V>? getChild(P part) => _children?[part];
+
+  @override
+  TrieNode<K, P, V>? removeChild(P part) => _children?.remove(part);
+
+  @override
+  void clearChildren() => _children?.clear();
+}
+
+/// [TrieNode] that holds children in a sorted [List].
+class TrieNodeList<K, P extends Comparable<Object?>, V>
+    extends TrieNodeEntry<K, P, V> {
+  /// Default generative constructor.
+  new();
+
+  List<P>? _parts;
+  List<TrieNode<K, P, V>>? _children;
+
+  @override
+  List<P> get parts => _parts ?? const [];
+
+  @override
+  List<TrieNode<K, P, V>> get children => _children ?? const [];
+
+  @override
+  bool get hasChildren {
+    final children = _children;
+    return children != null && children.isNotEmpty;
+  }
+
+  @override
+  TrieNode<K, P, V> addChild(P part) {
+    final parts = _parts ??= <P>[];
+    final children = _children ??= <TrieNode<K, P, V>>[];
+    final index = _binarySearch(parts, part);
     if (index < 0) {
       final node = TrieNodeList<K, P, V>();
       parts.insert(-index - 1, part);
@@ -369,16 +490,20 @@ class TrieNodeList<K, P extends Comparable<P>, V>
 
   @override
   TrieNode<K, P, V>? getChild(P part) {
-    final index = _binarySearch(part);
+    final parts = _parts;
+    final children = _children;
+    if (parts == null || children == null) return null;
+    final index = _binarySearch(parts, part);
     return index < 0 ? null : children[index];
   }
 
   @override
   TrieNode<K, P, V>? removeChild(P part) {
-    final index = _binarySearch(part);
-    if (index < 0) {
-      return null;
-    }
+    final parts = _parts;
+    final children = _children;
+    if (parts == null || children == null) return null;
+    final index = _binarySearch(parts, part);
+    if (index < 0) return null;
     final node = children[index];
     parts.removeAt(index);
     children.removeAt(index);
@@ -387,11 +512,14 @@ class TrieNodeList<K, P extends Comparable<P>, V>
 
   @override
   void clearChildren() {
-    parts.clear();
-    children.clear();
+    _parts?.clear();
+    _children?.clear();
   }
 
-  int _binarySearch(P key) {
+  static int _binarySearch<P extends Comparable<Object?>>(
+    List<P> parts,
+    P key,
+  ) {
     var min = 0;
     var max = parts.length;
     while (min < max) {
