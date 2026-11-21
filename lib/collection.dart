@@ -2,6 +2,8 @@
 /// types: bi-map, bit-list, B+tree map/set, disjoint-set, Fenwick tree,
 /// multi-map, multi-set, ordered/sorted list, range, R-tree, trie, and
 /// type-map.
+///
+/// {@category Data Structures}
 library;
 
 export 'src/collection/bimap.dart'

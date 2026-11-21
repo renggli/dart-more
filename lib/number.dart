@@ -1,4 +1,6 @@
 /// Support for fractional and complex arithmetic.
+///
+/// {@category Math & Numbers}
 library;
 
 export 'src/number/bigint.dart' show BigIntExtension;

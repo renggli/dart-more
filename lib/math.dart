@@ -1,4 +1,6 @@
 /// A collection of common mathematical functions.
+///
+/// {@category Math & Numbers}
 library;
 
 export 'src/math/binomial.dart'

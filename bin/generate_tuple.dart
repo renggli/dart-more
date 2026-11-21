@@ -49,6 +49,8 @@ Future<void> generateExport() async {
   generateWarning(out);
 
   out.writeln('/// Tuple extension methods on generic records.');
+  out.writeln('///');
+  out.writeln('/// {@category Data Structures}');
   out.writeln('library;');
   out.writeln();
   out.writeln('export \'src/tuple/tuple.dart\';');

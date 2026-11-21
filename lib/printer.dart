@@ -1,5 +1,7 @@
 /// Provides a first-class model to convert objects to strings using composition
 /// and highly configurable formatting primitives.
+///
+/// {@category Text & Formatting}
 library;
 
 export 'src/printer/builder.dart' show BuilderPrinterExtension;

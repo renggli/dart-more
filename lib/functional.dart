@@ -1,4 +1,6 @@
 /// A collection of functional programming structures.
+///
+/// {@category Functional & Async}
 library;
 
 export 'src/functional/either.dart' show Either, LeftEither, RightEither;

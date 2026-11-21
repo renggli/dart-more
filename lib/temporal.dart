@@ -1,4 +1,6 @@
 /// Various extensions to the built-in date, time and duration objects.
+///
+/// {@category Math & Numbers}
 library;
 
 export 'src/temporal/conversion.dart';

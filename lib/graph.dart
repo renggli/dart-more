@@ -1,4 +1,6 @@
 /// Graph-theory objects and algorithms.
+///
+/// {@category Graphs}
 library;
 
 export 'src/graph/algorithms.dart' show AlgorithmsGraphExtension;

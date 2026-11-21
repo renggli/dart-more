@@ -1,4 +1,6 @@
 /// Helpers to make async code better.
+///
+/// {@category Functional & Async}
 library;
 
 export 'src/async/buffer.dart' show BufferExtension;

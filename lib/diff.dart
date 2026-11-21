@@ -1,5 +1,7 @@
 /// Port of Python's difflib library to Dart providing tools for comparing
 /// lists.
+///
+/// {@category Text & Formatting}
 library;
 
 export 'src/diff/close_matches.dart';

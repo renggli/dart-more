@@ -1,5 +1,7 @@
 /// Provides default [Comparator] constructors, and various static extension
 /// methods to modify and perform common operations on [Comparator] functions.
+///
+/// {@category Data Structures}
 library;
 
 export 'src/comparator/compare_extensions.dart';

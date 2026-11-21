@@ -1,0 +1,22 @@
+dartdoc:
+  categoryOrder:
+    - Data Structures
+    - Graphs
+    - Math & Numbers
+    - Text & Formatting
+    - Functional & Async
+    - Utilities
+  categories:
+    Data Structures:
+      name: Data Structures
+    Graphs:
+      name: Graphs
+    Math & Numbers:
+      name: Math & Numbers
+    Text & Formatting:
+      name: Text & Formatting
+    Functional & Async:
+      name: Functional & Async
+    Utilities:
+      name: Utilities
+  showUndocumentedCategories: true

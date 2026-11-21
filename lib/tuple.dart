@@ -1,6 +1,8 @@
 // AUTO-GENERATED CODE: DO NOT EDIT
 
 /// Tuple extension methods on generic records.
+///
+/// {@category Data Structures}
 library;
 
 export 'src/tuple/tuple.dart';

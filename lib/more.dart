@@ -1,4 +1,6 @@
 /// More Dart — Literally.
+///
+/// {@category Utilities}
 library;
 
 export 'async.dart';
