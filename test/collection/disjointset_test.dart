@@ -97,8 +97,49 @@ void main() {
   });
   test('error when item not in set', () {
     final disjoinset = DisjointSet(0.to(5));
-    check(() => disjoinset.find(99)).throws<ArgumentError>();
-    check(() => disjoinset.union(99, 0)).throws<ArgumentError>();
-    check(() => disjoinset.union(0, 99)).throws<ArgumentError>();
+    check(() => disjoinset.find(99))
+        .throws<ArgumentError>()
+        .has((e) => e.name, 'name')
+        .equals('element');
+    check(() => disjoinset.union(99, 0))
+        .throws<ArgumentError>()
+        .has((e) => e.name, 'name')
+        .equals('a');
+    check(() => disjoinset.union(0, 99))
+        .throws<ArgumentError>()
+        .has((e) => e.name, 'name')
+        .equals('b');
   });
+  test('identity nodes map distinguishes equal objects', () {
+    final a = _Box(1);
+    final b = _Box(1);
+    final c = _Box(2);
+    final ds = DisjointSet<_Box>([
+      a,
+      b,
+      c,
+    ], nodes: Map<_Box, DisjointSetNode<_Box>>.identity());
+    check(ds.count).equals(3);
+    check(ds.sizes).unorderedEquals([1, 1, 1]);
+    check(ds.sets.length).equals(3);
+    check(ds.find(a)).identicalTo(a);
+    check(ds.find(b)).identicalTo(b);
+    check(ds.union(a, b)).isTrue();
+    check(ds.count).equals(2);
+    check(ds.sizes).unorderedEquals([2, 1]);
+    check(ds.sets.length).equals(2);
+    check(ds.find(a)).identicalTo(ds.find(b));
+    check(ds.union(a, b)).isFalse();
+  });
+}
+
+class _Box {
+  new(this.value);
+  final int value;
+
+  @override
+  bool operator ==(Object other) => other is _Box && other.value == value;
+
+  @override
+  int get hashCode => value.hashCode;
 }

@@ -10,7 +10,7 @@ export 'src/collection/bitlist.dart' show BitList, BitListExtension;
 export 'src/collection/btree.dart'
     show BTreeMap, BTreeMapExtension, BTreeSet, BTreeSetExtension;
 export 'src/collection/collection.dart' show Collection;
-export 'src/collection/disjointset.dart' show DisjointSet;
+export 'src/collection/disjointset.dart' show DisjointSet, DisjointSetNode;
 export 'src/collection/fenwick.dart' show FenwickTree;
 export 'src/collection/iterable/chunked.dart' show ChunkedIterableExtension;
 export 'src/collection/iterable/combinations.dart'
