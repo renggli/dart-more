@@ -31,9 +31,29 @@ void main() {
       test('read', () {
         for (var i = 0; i < list.length; i++) {
           check(tree[i]).equals(list[i]);
+          check(tree.elementAt(i)).equals(list[i]);
         }
-        check(() => tree[-1]).throws<RangeError>();
-        check(() => tree[list.length]).throws<RangeError>();
+        check(() => tree[-1])
+            .throws<RangeError>()
+            .has((e) => e.invalidValue, 'invalidValue')
+            .equals(-1);
+        check(() => tree[list.length])
+            .throws<RangeError>()
+            .has((e) => e.invalidValue, 'invalidValue')
+            .equals(list.length);
+        if (list.isEmpty) {
+          check(() => tree.first).throws<StateError>();
+          check(() => tree.last).throws<StateError>();
+          check(() => tree.single).throws<StateError>();
+        } else {
+          check(tree.first).equals(list.first);
+          check(tree.last).equals(list.last);
+          if (list.length == 1) {
+            check(tree.single).equals(list.single);
+          } else {
+            check(() => tree.single).throws<StateError>();
+          }
+        }
       });
       test('write', () {
         final copy = FenwickTree.of(tree);
@@ -67,6 +87,23 @@ void main() {
               ).equals(list.getRange(i, j).fold(0, (a, b) => a + b));
             }
           }
+          if (list.isNotEmpty) {
+            check(() => tree.range(1, 0)).throws<RangeError>();
+          }
+          check(() => tree.range(-1, 0)).throws<RangeError>();
+          check(() => tree.range(0, list.length + 1)).throws<RangeError>();
+        });
+        test('iterator reads live values on earlier mutation', () {
+          final copy = FenwickTree.of(list);
+          final iter = copy.iterator;
+          check(iter.moveNext()).isTrue();
+          check(iter.current).equals(list[0]);
+          copy.update(0, 100);
+          for (var i = 1; i < list.length; i++) {
+            check(iter.moveNext()).isTrue();
+            check(iter.current).equals(list[i]);
+          }
+          check(iter.moveNext()).isFalse();
         });
         test('update', () {
           final copy = FenwickTree.of(tree);
