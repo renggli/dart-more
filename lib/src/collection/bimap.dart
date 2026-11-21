@@ -7,27 +7,38 @@ import 'dart:collection';
 /// [containsValue] are much more efficient than with traditional maps.
 class BiMap<K, V> extends MapBase<K, V> {
   /// Creates an empty bi-map.
-  factory() => BiMap<K, V>._({}, {});
+  factory() => BiMap<K, V>._({}, {}, isIdentity: false);
 
   /// Creates an empty identity bi-map.
-  factory identity() => BiMap<K, V>._(Map.identity(), Map.identity());
+  factory identity() =>
+      BiMap<K, V>._(Map.identity(), Map.identity(), isIdentity: true);
 
-  /// Creates bi-map from another map.
+  /// Creates a bi-map from another map.
   factory of(Map<K, V> other) {
-    if (other is BiMap<K, V>) {
+    if (other is BiMap<K, V> && !other._isIdentity) {
       return BiMap<K, V>._(
         Map<K, V>.of(other._forward),
         Map<V, K>.of(other._backward),
+        isIdentity: false,
       );
     } else {
       return BiMap<K, V>()..addAll(other);
     }
   }
 
-  /// Creates bi-map from another map.
-  factory from(Map<K, V> other) => BiMap.of(other);
+  /// Creates a bi-map from another map, casting keys to [K] and values to [V].
+  factory from(Map<Object?, Object?> other) {
+    final result = BiMap<K, V>();
+    other.forEach((key, value) {
+      result[key as K] = value as V;
+    });
+    return result;
+  }
 
-  /// Creates a bi-map from an iterable (and possible transformation functions).
+  /// Creates a bi-map from an iterable (and optional transformation functions).
+  ///
+  /// When [key] or [value] is omitted, each element is cast directly to [K] or
+  /// [V].
   factory fromIterable(
     Iterable<Object?> iterable, {
     K Function(Object? element)? key,
@@ -42,7 +53,9 @@ class BiMap<K, V> extends MapBase<K, V> {
     return result;
   }
 
-  /// Creates a bi-map from two equal length iterables.
+  /// Creates a bi-map from two equal-length iterables.
+  ///
+  /// Throws an [ArgumentError] if [keys] and [values] have different lengths.
   factory fromIterables(Iterable<K> keys, Iterable<V> values) {
     final result = BiMap<K, V>();
     final keyIterator = keys.iterator;
@@ -61,7 +74,7 @@ class BiMap<K, V> extends MapBase<K, V> {
   }
 
   /// Internal constructor.
-  new _(this._forward, this._backward);
+  new _(this._forward, this._backward, {required this._isIdentity});
 
   /// Internal map with associations from `keys` to `values`.
   final Map<K, V> _forward;
@@ -69,8 +82,11 @@ class BiMap<K, V> extends MapBase<K, V> {
   /// Internal map with associations from `values` to `keys`.
   final Map<V, K> _backward;
 
+  final bool _isIdentity;
+
   /// Returns the inverse bi-map onto the same data.
-  BiMap<V, K> get inverse => BiMap._(_backward, _forward);
+  BiMap<V, K> get inverse =>
+      BiMap<V, K>._(_backward, _forward, isIdentity: _isIdentity);
 
   /// Returns a forward map onto the same data. This accessor effectively
   /// returns this object, but cast-down to a [Map].
@@ -85,38 +101,45 @@ class BiMap<K, V> extends MapBase<K, V> {
 
   @override
   void operator []=(K key, V value) {
-    _remove(key, _forward, _backward);
-    _remove(value, _backward, _forward);
+    if (_forward.containsKey(key)) {
+      final existing = _forward[key];
+      if (_isIdentity ? identical(existing, value) : existing == value) {
+        return;
+      }
+      _backward.remove(_forward.remove(key));
+    }
+    if (_backward.containsKey(value)) {
+      _forward.remove(_backward.remove(value));
+    }
     _forward[key] = value;
     _backward[value] = key;
   }
 
   @override
   V putIfAbsent(K key, V Function() ifAbsent) {
-    if (containsKey(key)) {
-      return this[key] as V;
-    } else {
-      final value = ifAbsent();
-      this[key] = value;
-      return value;
+    final existing = _forward[key];
+    if (existing != null || _forward.containsKey(key)) {
+      return existing as V;
+    }
+    final value = ifAbsent();
+    this[key] = value;
+    return value;
+  }
+
+  @override
+  void updateAll(V Function(K key, V value) update) {
+    final snapshot = _forward.entries.toList(growable: false);
+    for (final entry in snapshot) {
+      this[entry.key] = update(entry.key, entry.value);
     }
   }
 
   @override
   V? remove(Object? key) {
-    final value = _forward[key];
-    _remove(key, _forward, _backward);
+    if (!_forward.containsKey(key)) return null;
+    final value = _forward.remove(key);
+    _backward.remove(value);
     return value;
-  }
-
-  void _remove(
-    Object? key,
-    Map<Object?, Object?> forward,
-    Map<Object?, Object?> backward,
-  ) {
-    if (forward.containsKey(key)) {
-      _remove(forward.remove(key), backward, forward);
-    }
   }
 
   @override
@@ -149,6 +172,9 @@ class BiMap<K, V> extends MapBase<K, V> {
 
   @override
   Iterable<V> get values => _backward.keys;
+
+  @override
+  Iterable<MapEntry<K, V>> get entries => _forward.entries;
 }
 
 /// Extension on [Map] to convert to a [BiMap].
@@ -163,9 +189,13 @@ extension BiMapOnIterableExtension<E> on Iterable<E> {
   BiMap<K, V> toBiMap<K, V>({
     K Function(E element)? key,
     V Function(E element)? value,
-  }) => BiMap<K, V>.fromIterable(
-    this,
-    key: key == null ? null : (e) => key(e as E),
-    value: value == null ? null : (e) => value(e as E),
-  );
+  }) {
+    final result = BiMap<K, V>();
+    final keyProvider = key ?? (element) => element as K;
+    final valueProvider = value ?? (element) => element as V;
+    for (final element in this) {
+      result[keyProvider(element)] = valueProvider(element);
+    }
+    return result;
+  }
 }

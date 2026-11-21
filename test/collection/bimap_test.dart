@@ -243,5 +243,57 @@ void main() {
       final target = BiMap<String, int?>()..['a'] = null;
       check(target.putIfAbsent('a', () => 42)).isNull();
     });
+    test('self-reassignment preserves order', () {
+      final target = BiMap.of(example);
+      target[1] = 'a';
+      check(target.keys).deepEquals([1, 2, 3]);
+      check(target.values).deepEquals(['a', 'b', 'c']);
+    });
+    test(
+      'updateAll preserves bijection without ConcurrentModificationError',
+      () {
+        final target = BiMap.of(example);
+        target.updateAll((k, v) => v.toUpperCase());
+        check(target.keys).deepEquals([1, 2, 3]);
+        check(target.values).deepEquals(['A', 'B', 'C']);
+        check(target.inverse['B']).equals(2);
+
+        // Colliding updates maintain bijection.
+        target.updateAll((k, v) => 'X');
+        check(target.length).equals(1);
+        check(target.inverse.length).equals(1);
+        check(target[3]).equals('X');
+      },
+    );
+    test('of preserves bijection when copying identity BiMap', () {
+      final a = _Key(1);
+      final b = _Key(1);
+      final id = BiMap<_Key, String>.identity();
+      id[a] = 'first';
+      id[b] = 'second';
+      check(id.length).equals(2);
+      final copy = BiMap<_Key, String>.of(id);
+      check(copy.length).equals(1);
+      check(copy.inverse.length).equals(1);
+      check(copy[a]).equals('second');
+      check(copy.containsValue('first')).isFalse();
+    });
+    test('from accepts untyped map', () {
+      final source = <Object?, Object?>{1: 'a', 2: 'b'};
+      final target = BiMap<int, String>.from(source);
+      check(target.entries.map((e) => '${e.key}:${e.value}'))
+          .deepEquals(['1:a', '2:b']);
+    });
   });
+}
+
+class _Key {
+  new(this.id);
+  final int id;
+
+  @override
+  bool operator ==(Object other) => other is _Key && other.id == id;
+
+  @override
+  int get hashCode => id.hashCode;
 }
