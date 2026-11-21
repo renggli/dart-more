@@ -64,5 +64,23 @@ void main() {
     check(called).isFalse();
     check(map.hasInstance<int?>()).isTrue();
     check(map.length).equals(1);
+    check(map.removeInstance<int?>()).isNull();
+    check(map.hasInstance<int?>()).isFalse();
+    check(map.length).equals(0);
+  });
+  test('removeInstance, clear, and live asMap view', () {
+    final map = TypeMap<Object>();
+    final view = map.asMap();
+    check(view).isEmpty();
+    map.setInstance<String>('hello');
+    map.setInstance<int>(42);
+    check(view).deepEquals({String: 'hello', int: 42});
+    check(() => view[double] = 3.14).throws<UnsupportedError>();
+    check(map.removeInstance<String>()).equals('hello');
+    check(map.removeInstance<String>()).isNull();
+    check(view).deepEquals({int: 42});
+    map.clear();
+    check(map.isEmpty).isTrue();
+    check(view).isEmpty();
   });
 }

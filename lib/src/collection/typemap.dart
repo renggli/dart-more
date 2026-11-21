@@ -1,8 +1,13 @@
-import 'dart:collection' show MapBase;
+import 'dart:collection' show MapBase, UnmodifiableMapView;
 
 import 'package:meta/meta.dart';
 
-/// A type map associates Dart runtime types with instances of that type.
+/// A type map associates reified Dart [Type] arguments with instances of that
+/// type.
+///
+/// Entries are keyed by the static generic type parameter `V` passed to
+/// [hasInstance], [getInstance], [setInstance], and [removeInstance] (not by
+/// `value.runtimeType`).
 @optionalTypeArgs
 class TypeMap<T> {
   final Map<Type, T> _map = <Type, T>{};
@@ -15,18 +20,25 @@ class TypeMap<T> {
   /// If the value is absent and an [ifAbsentPut] function is provided,
   /// populates the map with the result of said function.
   V? getInstance<V extends T>({V Function()? ifAbsentPut}) {
-    if (!_map.containsKey(V)) {
-      if (ifAbsentPut == null) {
-        return null;
-      } else {
-        return _map[V] = ifAbsentPut();
-      }
+    final value = _map[V];
+    if (value != null || _map.containsKey(V)) {
+      return value as V;
     }
-    return _map[V] as V;
+    if (ifAbsentPut == null) {
+      return null;
+    }
+    return _map[V] = ifAbsentPut();
   }
 
   /// Sets the instance of the generic type [V] to [value].
   void setInstance<V extends T>(V value) => _map[V] = value;
+
+  /// Removes and returns the instance of the generic type [V], or `null` if
+  /// absent.
+  V? removeInstance<V extends T>() => _map.remove(V) as V?;
+
+  /// Removes all instances from this map.
+  void clear() => _map.clear();
 
   /// Returns the types of this map.
   Iterable<Type> get types => _map.keys;
@@ -43,8 +55,8 @@ class TypeMap<T> {
   /// Whether there is at least one instance in the map.
   bool get isNotEmpty => _map.isNotEmpty;
 
-  /// Returns a read-only view onto the underlying map.
-  Map<Type, T> asMap() => Map.unmodifiable(_map);
+  /// Returns a live read-only view onto the underlying map.
+  Map<Type, T> asMap() => UnmodifiableMapView<Type, T>(_map);
 
   @override
   String toString() => MapBase.mapToString(_map);
