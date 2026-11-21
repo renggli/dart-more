@@ -77,8 +77,8 @@ void main() {
       ).toList();
       check(paths).length.equals(2);
       check(paths.map((p) => p.values).toList()).unorderedMatches([
-        (it) => it.deepEquals([1, 4]),
-        (it) => it.deepEquals([3, 2]),
+        .it()..deepEquals([1, 4]),
+        .it()..deepEquals([3, 2]),
       ]);
     });
     test('zero-weight loop to start vertex terminates', () {

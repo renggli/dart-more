@@ -12,8 +12,8 @@ void main() {
       final plenty = plentyString.toList();
 
       test('isEmpty', () {
-        check(empty.isEmpty).isTrue();
-        check(plenty.isEmpty).isFalse();
+        check(empty.isEmpty).isTrue;
+        check(plenty.isEmpty).isFalse;
       });
       test('length', () {
         check(empty.length).equals(0);
@@ -35,10 +35,10 @@ void main() {
         check(() => plenty[8]).throws<RangeError>();
       });
       test('converting', () {
-        check(empty.toList()).isEmpty();
+        check(empty.toList()).isEmpty;
         check(plenty.toList())
             .deepEquals(['B', 'a', 'n', 'a', 'n', 'a', '\ud83c', '\udf4c']);
-        check(empty.toSet()).isEmpty();
+        check(empty.toSet()).isEmpty;
         check(plenty.toSet()).deepEquals({'B', 'a', 'n', '\ud83c', '\udf4c'});
         check(empty.toString()).equals(emptyString);
         check(plenty.toString()).equals(plentyString);
@@ -61,8 +61,8 @@ void main() {
       final plenty = plentyString.toList(mutable: true);
 
       test('isEmpty', () {
-        check(empty.isEmpty).isTrue();
-        check(plenty.isEmpty).isFalse();
+        check(empty.isEmpty).isTrue;
+        check(plenty.isEmpty).isFalse;
       });
       test('length', () {
         check(empty.length).equals(0);
@@ -107,10 +107,10 @@ void main() {
         check(mutable.toString()).equals('bc');
       });
       test('converting', () {
-        check(empty.toList()).isEmpty();
+        check(empty.toList()).isEmpty;
         check(plenty.toList())
             .deepEquals(['B', 'a', 'n', 'a', 'n', 'a', '\ud83c', '\udf4c']);
-        check(empty.toSet()).isEmpty();
+        check(empty.toSet()).isEmpty;
         check(plenty.toSet()).deepEquals({'B', 'a', 'n', '\ud83c', '\udf4c'});
         check(empty.toString()).equals(emptyString);
         check(plenty.toString()).equals(plentyString);
@@ -150,7 +150,7 @@ void main() {
         mutable.removeRange(1, 3);
         check(mutable.toString()).equals('ae');
         mutable.clear();
-        check(mutable.isEmpty).isTrue();
+        check(mutable.isEmpty).isTrue;
       });
       test('invalid insert and insertAll', () {
         final mutable = 'abc'.toList(mutable: true);
@@ -164,8 +164,8 @@ void main() {
       final plenty = plentyString.toList(unicode: true);
 
       test('isEmpty', () {
-        check(empty.isEmpty).isTrue();
-        check(plenty.isEmpty).isFalse();
+        check(empty.isEmpty).isTrue;
+        check(plenty.isEmpty).isFalse;
       });
       test('length', () {
         check(empty.length).equals(0);
@@ -186,9 +186,9 @@ void main() {
         check(() => plenty[9]).throws<RangeError>();
       });
       test('converting', () {
-        check(empty.toList()).isEmpty();
+        check(empty.toList()).isEmpty;
         check(plenty.toList()).deepEquals(['B', 'a', 'n', 'a', 'n', 'a', '🍌']);
-        check(empty.toSet()).isEmpty();
+        check(empty.toSet()).isEmpty;
         check(plenty.toSet()).deepEquals({'B', 'a', 'n', '🍌'});
         check(empty.toString()).equals(emptyString);
         check(plenty.toString()).equals(plentyString);
@@ -216,8 +216,8 @@ void main() {
         check(coerced.toString()).equals('123');
       });
       test('isEmpty', () {
-        check(empty.isEmpty).isTrue();
-        check(plenty.isEmpty).isFalse();
+        check(empty.isEmpty).isTrue;
+        check(plenty.isEmpty).isFalse;
       });
       test('length', () {
         check(empty.length).equals(0);
@@ -261,9 +261,9 @@ void main() {
         check(mutable.toString()).equals('🍇🍓');
       });
       test('converting', () {
-        check(empty.toList()).isEmpty();
+        check(empty.toList()).isEmpty;
         check(plenty.toList()).deepEquals(['B', 'a', 'n', 'a', 'n', 'a', '🍌']);
-        check(empty.toSet()).isEmpty();
+        check(empty.toSet()).isEmpty;
         check(plenty.toSet()).deepEquals({'B', 'a', 'n', '🍌'});
         check(empty.toString()).equals(emptyString);
         check(plenty.toString()).equals(plentyString);
@@ -303,7 +303,7 @@ void main() {
         mutable.removeRange(1, 3);
         check(mutable.toString()).equals('a🍓');
         mutable.clear();
-        check(mutable.isEmpty).isTrue();
+        check(mutable.isEmpty).isTrue;
       });
       test('invalid insert and insertAll', () {
         final mutable = 'abc'.toList(mutable: true, unicode: true);

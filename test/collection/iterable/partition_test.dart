@@ -6,17 +6,17 @@ void main() {
   group('partition', () {
     test('empty', () {
       final result = <int>[].partition((each) => each.isEven);
-      check(result.truthy).isEmpty();
-      check(result.falsey).isEmpty();
+      check(result.truthy).isEmpty;
+      check(result.falsey).isEmpty;
     });
     test('single true', () {
       final result = ['hello'].partition((each) => true);
       check(result.truthy).deepEquals(['hello']);
-      check(result.falsey).isEmpty();
+      check(result.falsey).isEmpty;
     });
     test('single false', () {
       final result = ['world'].partition((each) => false);
-      check(result.truthy).isEmpty();
+      check(result.truthy).isEmpty;
       check(result.falsey).deepEquals(['world']);
     });
     test('example', () {

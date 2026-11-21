@@ -22,7 +22,7 @@ void main() {
             .which(isPath(source: 0, target: i, cost: i));
         if (i != 0) {
           check(allShortestPaths.distance(i, 0)).equals(double.infinity);
-          check(allShortestPaths.path(i, 0)).isNull();
+          check(allShortestPaths.path(i, 0)).isNull;
         }
       }
     });
@@ -189,8 +189,8 @@ void main() {
         check(fw.eccentricity(0)).equals(double.infinity);
         check(fw.diameter).equals(double.infinity);
         check(fw.radius).equals(double.infinity);
-        check(fw.center).isEmpty();
-        check(fw.periphery).isEmpty();
+        check(fw.center).isEmpty;
+        check(fw.periphery).isEmpty;
         // Connected pairs: 0-1, 1-0, 2-3, 3-2 (each dist 1). Average = 1.0.
         check(fw.averagePathLength).equals(1.0);
       });

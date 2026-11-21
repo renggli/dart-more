@@ -9,14 +9,14 @@ void main() {
     group('path', () {
       test('empty', () {
         final graph = GraphFactory<String, void>().fromPath([]);
-        check(graph.vertices).isEmpty();
-        check(graph.edges).isEmpty();
+        check(graph.vertices).isEmpty;
+        check(graph.edges).isEmpty;
         expectInvariants(graph);
       });
       test('single', () {
         final graph = GraphFactory<String, void>().fromPath(['a']);
         check(graph.vertices).deepEquals(['a']);
-        check(graph.edges).isEmpty();
+        check(graph.edges).isEmpty;
         expectInvariants(graph);
       });
       test('multiple', () {
@@ -30,8 +30,8 @@ void main() {
     group('paths', () {
       test('empty', () {
         final graph = GraphFactory<String, void>().fromPaths([]);
-        check(graph.vertices).isEmpty();
-        check(graph.edges).isEmpty();
+        check(graph.vertices).isEmpty;
+        check(graph.edges).isEmpty;
         expectInvariants(graph);
       });
       test('simple', () {
@@ -61,8 +61,8 @@ void main() {
     group('predecessors', () {
       test('empty', () {
         final graph = GraphFactory<String, void>().fromPredecessors({});
-        check(graph.vertices).isEmpty();
-        check(graph.edges).isEmpty();
+        check(graph.vertices).isEmpty;
+        check(graph.edges).isEmpty;
         expectInvariants(graph);
       });
       test('single', () {
@@ -71,7 +71,7 @@ void main() {
           'b': [],
         });
         check(graph.vertices).unorderedEquals(['a', 'b']);
-        check(graph.edges).isEmpty();
+        check(graph.edges).isEmpty;
         expectInvariants(graph);
       });
       test('basic', () {
@@ -90,8 +90,8 @@ void main() {
           [],
           finiteCollatzGraph,
         );
-        check(graph.vertices).isEmpty();
-        check(graph.edges).isEmpty();
+        check(graph.vertices).isEmpty;
+        check(graph.edges).isEmpty;
         expectInvariants(graph);
       });
       test('basic', () {
@@ -112,8 +112,8 @@ void main() {
     group('successors', () {
       test('empty', () {
         final graph = GraphFactory<String, void>().fromSuccessors({});
-        check(graph.vertices).isEmpty();
-        check(graph.edges).isEmpty();
+        check(graph.vertices).isEmpty;
+        check(graph.edges).isEmpty;
         expectInvariants(graph);
       });
       test('single', () {
@@ -122,7 +122,7 @@ void main() {
           'b': [],
         });
         check(graph.vertices).unorderedEquals(['a', 'b']);
-        check(graph.edges).isEmpty();
+        check(graph.edges).isEmpty;
         expectInvariants(graph);
       });
       test('basic', () {
@@ -141,8 +141,8 @@ void main() {
           [],
           finiteCollatzGraph,
         );
-        check(graph.vertices).isEmpty();
-        check(graph.edges).isEmpty();
+        check(graph.vertices).isEmpty;
+        check(graph.edges).isEmpty;
         expectInvariants(graph);
       });
       test('basic', () {

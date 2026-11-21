@@ -31,7 +31,7 @@ void main() {
             result.isEmpty ||
                 result.startsWith('…') ||
                 result.length == lorem.length,
-          ).isTrue();
+          ).isTrue;
           check(because: result, result.length).isLessOrEqual(i);
         }
       });
@@ -47,7 +47,7 @@ void main() {
             result.isEmpty ||
                 result.startsWith('…') ||
                 result.length == lorem.length,
-          ).isTrue();
+          ).isTrue;
           check(because: result, result.length).isLessOrEqual(i);
         }
       });
@@ -63,7 +63,7 @@ void main() {
             result.isEmpty ||
                 result.startsWith('…') ||
                 result.length == lorem.length,
-          ).isTrue();
+          ).isTrue;
           check(because: result, result.length).isLessOrEqual(i);
         }
       });
@@ -107,7 +107,7 @@ void main() {
             result.isEmpty ||
                 result.endsWith('…') ||
                 result.length == lorem.length,
-          ).isTrue();
+          ).isTrue;
           check(because: result, result.length).isLessOrEqual(i);
         }
       });
@@ -124,7 +124,7 @@ void main() {
             result.isEmpty ||
                 result.endsWith('…') ||
                 result.length == lorem.length,
-          ).isTrue();
+          ).isTrue;
           check(because: result, result.length).isLessOrEqual(i);
         }
       });
@@ -141,7 +141,7 @@ void main() {
             result.isEmpty ||
                 result.endsWith('…') ||
                 result.length == lorem.length,
-          ).isTrue();
+          ).isTrue;
           check(because: result, result.length).isLessOrEqual(i);
         }
       });
@@ -186,7 +186,7 @@ void main() {
             result.isEmpty ||
                 result.contains('…') ||
                 result.length == lorem.length,
-          ).isTrue();
+          ).isTrue;
           check(because: result, result.length).isLessOrEqual(i);
         }
       });
@@ -204,7 +204,7 @@ void main() {
             result.isEmpty ||
                 result.contains('…') ||
                 result.length == lorem.length,
-          ).isTrue();
+          ).isTrue;
           check(because: result, result.length).isLessOrEqual(i);
         }
       });
@@ -222,7 +222,7 @@ void main() {
             result.isEmpty ||
                 result.contains('…') ||
                 result.length == lorem.length,
-          ).isTrue();
+          ).isTrue;
           check(because: result, result.length).isLessOrEqual(i);
         }
       });

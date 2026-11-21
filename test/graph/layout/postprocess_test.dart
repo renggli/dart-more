@@ -110,7 +110,7 @@ void main() {
   group('packComponents', () {
     test('empty components return empty', () {
       final packed = packComponents<String>([]);
-      check(packed.positions).isEmpty();
+      check(packed.positions).isEmpty;
     });
 
     test('single component is returned as is', () {
@@ -133,7 +133,7 @@ void main() {
       );
       final packed = packComponents([c1, c2], vertexDistance: 20);
       check(packed.positions.keys).unorderedEquals(['A', 'B', 'C', 'D']);
-      check(packed.edgeRoutes).isNotEmpty();
+      check(packed.edgeRoutes).isNotEmpty;
 
       // Check distance between vertices across components
       final posB = packed['B']!;

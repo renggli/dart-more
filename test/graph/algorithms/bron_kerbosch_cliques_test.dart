@@ -7,7 +7,7 @@ void main() {
   group('bronKerboschCliques', () {
     test('empty graph', () {
       final graph = Graph<int, void>(isDirected: false);
-      check(graph.findCliques()).isEmpty();
+      check(graph.findCliques()).isEmpty;
     });
     test('single vertex', () {
       final graph = Graph<int, void>(isDirected: false)..addVertex(1);
@@ -126,8 +126,8 @@ void main() {
               .complete(vertexCount: count);
           graph.removeEdge(x, y);
           check(graph.findCliques()).unorderedMatches([
-            (it) => it.deepEquals(0.to(count).toSet()..remove(x)),
-            (it) => it.deepEquals(0.to(count).toSet()..remove(y)),
+            .it()..deepEquals(0.to(count).toSet()..remove(x)),
+            .it()..deepEquals(0.to(count).toSet()..remove(y)),
           ]);
         }
       }

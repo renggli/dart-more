@@ -8,15 +8,15 @@ void main() {
   group('grid', () {
     test('empty', () {
       final graph = GraphFactory<int, void>().grid(rows: 0, columns: 0);
-      check(graph.vertices).isEmpty();
-      check(graph.edges).isEmpty();
+      check(graph.vertices).isEmpty;
+      check(graph.edges).isEmpty;
       expectInvariants(graph);
     });
 
     test('single', () {
       final graph = GraphFactory<int, void>().grid(rows: 1, columns: 1);
       check(graph.vertices).deepEquals([0]);
-      check(graph.edges).isEmpty();
+      check(graph.edges).isEmpty;
       expectInvariants(graph);
     });
 

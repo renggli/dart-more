@@ -31,7 +31,7 @@ void main() {
         offset = const Duration(seconds: 40);
         check(await cache.getIfPresent(1)).equals('3');
         offset = const Duration(seconds: 41);
-        check(await cache.getIfPresent(1)).isNull();
+        check(await cache.getIfPresent(1)).isNull;
       });
       clockTest('loaded value expires', () async {
         final cache = newUpdateExpireCache(immediateLoader);
@@ -39,7 +39,7 @@ void main() {
         offset = const Duration(seconds: 20);
         check(await cache.getIfPresent(1)).equals('1');
         offset = const Duration(seconds: 40);
-        check(await cache.getIfPresent(1)).isNull();
+        check(await cache.getIfPresent(1)).isNull;
         check(await cache.size()).equals(0);
       });
       clockTest('re-loaded value expires', () async {
@@ -76,7 +76,7 @@ void main() {
         offset = const Duration(seconds: 40);
         check(await cache.getIfPresent(1)).equals('bar');
         offset = const Duration(seconds: 61);
-        check(await cache.getIfPresent(1)).isNull();
+        check(await cache.getIfPresent(1)).isNull;
       });
       clockTest('loaded value expires', () async {
         final cache = newAccessExpireCache(immediateLoader);
@@ -84,7 +84,7 @@ void main() {
         offset = const Duration(seconds: 20);
         check(await cache.getIfPresent(1)).equals('1');
         offset = const Duration(seconds: 41);
-        check(await cache.getIfPresent(1)).isNull();
+        check(await cache.getIfPresent(1)).isNull;
         check(await cache.size()).equals(0);
       });
       clockTest('re-loaded value expires', () async {
@@ -144,7 +144,7 @@ void main() {
         );
         check(await cache.get(1)).equals('val1');
         offset = const Duration(seconds: 5);
-        check(await cache.getIfPresent(1)).isNull();
+        check(await cache.getIfPresent(1)).isNull;
         check(await cache.get(1)).equals('val2');
       });
     });
@@ -191,10 +191,9 @@ void main() {
           updateDeadline: t1,
           accessDeadline: t2,
         );
-        check(item.isExpired(t1.subtract(const Duration(minutes: 1))))
-            .isFalse();
-        check(item.isExpired(t1.add(const Duration(minutes: 1)))).isTrue();
-        check(item.isExpired(t2.add(const Duration(minutes: 1)))).isTrue();
+        check(item.isExpired(t1.subtract(const Duration(minutes: 1)))).isFalse;
+        check(item.isExpired(t1.add(const Duration(minutes: 1)))).isTrue;
+        check(item.isExpired(t2.add(const Duration(minutes: 1)))).isTrue;
       });
     });
     test('invalid arguments', () {

@@ -13,13 +13,13 @@ void main() {
         ..addVertices(['a', 'b']);
       final spanning = graph.spanningTree(startVertex: 'a');
       check(spanning.vertices).deepEquals(['a']);
-      check(spanning.edges).isEmpty();
+      check(spanning.edges).isEmpty;
     });
     test('empty graph', () {
       final graph = Graph<String, int>(isDirected: false);
       final spanning = graph.spanningTree();
-      check(spanning.vertices).isEmpty();
-      check(spanning.edges).isEmpty();
+      check(spanning.vertices).isEmpty;
+      check(spanning.edges).isEmpty;
     });
     test('default start vertex (null)', () {
       final graph = Graph<String, int>(isDirected: false)
@@ -41,7 +41,7 @@ void main() {
         weightComparator: naturalComparable<num>,
         vertexStrategy: StorageStrategy.defaultStrategy(),
       );
-      check(emptySpanning.vertices.toList()).isEmpty();
+      check(emptySpanning.vertices.toList()).isEmpty;
     });
     test('undirected (with start vertex)', () {
       final graph = Graph<String, int>(isDirected: false)
@@ -50,7 +50,7 @@ void main() {
         ..addEdge('b', 'd', value: 2)
         ..addEdge('d', 'c', value: 3);
       final spanning = graph.spanningTree(startVertex: 'a');
-      check(spanning.isDirected).isFalse();
+      check(spanning.isDirected).isFalse;
       check(spanning.vertices).unorderedEquals(graph.vertices);
       check(spanning.edges.unique()).unorderedMatches([
         isEdge('a', 'd', value: 1),
@@ -68,7 +68,7 @@ void main() {
         weightComparator: reverseComparable<num>,
         startVertex: 'a',
       );
-      check(spanning.isDirected).isFalse();
+      check(spanning.isDirected).isFalse;
       check(spanning.vertices).unorderedEquals(graph.vertices);
       check(spanning.edges.unique()).unorderedMatches([
         isEdge('a', 'b', value: 2),
@@ -117,14 +117,14 @@ void main() {
     test('empty graph', () {
       final graph = Graph<String, int>(isDirected: false);
       final spanning = graph.spanningTree(startVertex: null);
-      check(spanning.vertices).isEmpty();
-      check(spanning.edges).isEmpty();
+      check(spanning.vertices).isEmpty;
+      check(spanning.edges).isEmpty;
     });
     test('unknown start vertex', () {
       final graph = Graph<String, int>(isDirected: false)..addVertex('a');
       final spanning = graph.spanningTree(startVertex: 'b');
-      check(spanning.vertices).isEmpty();
-      check(spanning.edges).isEmpty();
+      check(spanning.vertices).isEmpty;
+      check(spanning.edges).isEmpty;
     });
     test('respects custom vertex strategy', () {
       final graph = Graph<int, int>(

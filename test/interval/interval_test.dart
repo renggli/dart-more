@@ -53,11 +53,11 @@ void main() {
     });
     test('contains', () {
       for (final interval in intervals) {
-        check(interval.contains(interval.lower - 1)).isFalse();
+        check(interval.contains(interval.lower - 1)).isFalse;
         for (var i = interval.lower; i <= interval.upper; i++) {
-          check(interval.contains(i)).isTrue();
+          check(interval.contains(i)).isTrue;
         }
-        check(interval.contains(interval.upper + 1)).isFalse();
+        check(interval.contains(interval.upper + 1)).isFalse;
       }
     });
     test('intersects', () {
@@ -209,8 +209,8 @@ void main() {
           .deepEquals([Interval(5, 7)]);
 
       // Enclosed: returns empty list
-      check(Interval(2, 4).difference(Interval(1, 5))).isEmpty();
-      check(Interval(2, 4).difference(Interval(2, 4))).isEmpty();
+      check(Interval(2, 4).difference(Interval(1, 5))).isEmpty;
+      check(Interval(2, 4).difference(Interval(2, 4))).isEmpty;
 
       // Right overlap: returns left remaining
       check(Interval(1, 5).difference(Interval(3, 7)))

@@ -10,7 +10,7 @@ void main() {
       final graph = GraphFactory<int, void>(isDirected: true)
           .fromSuccessors(cyclicGraphData);
       final copy = graph.copy();
-      check(copy.isDirected).isTrue();
+      check(copy.isDirected).isTrue;
       check(copy.vertexStrategy).equals(graph.vertexStrategy);
       check(copy.vertices).unorderedEquals(graph.vertices);
       check(copy.edges).unorderedEquals(graph.edges);
@@ -19,7 +19,7 @@ void main() {
       final graph = GraphFactory<int, void>(isDirected: false)
           .fromSuccessors(cyclicGraphData);
       final copy = graph.copy();
-      check(copy.isDirected).isFalse();
+      check(copy.isDirected).isFalse;
       check(copy.vertexStrategy).equals(graph.vertexStrategy);
       check(copy.vertices).unorderedEquals(graph.vertices);
       check(copy.edges).unorderedEquals(graph.edges);
@@ -28,19 +28,19 @@ void main() {
       final graph = GraphFactory<int, void>(isDirected: true)
           .fromSuccessors(cyclicGraphData);
       final copy = graph.copy(empty: true);
-      check(copy.isDirected).isTrue();
+      check(copy.isDirected).isTrue;
       check(copy.vertexStrategy).equals(graph.vertexStrategy);
-      check(copy.vertices).isEmpty();
-      check(copy.edges).isEmpty();
+      check(copy.vertices).isEmpty;
+      check(copy.edges).isEmpty;
     });
     test('undirected empty', () {
       final graph = GraphFactory<int, void>(isDirected: false)
           .fromSuccessors(cyclicGraphData);
       final copy = graph.copy(empty: true);
-      check(copy.isDirected).isFalse();
+      check(copy.isDirected).isFalse;
       check(copy.vertexStrategy).equals(graph.vertexStrategy);
-      check(copy.vertices).isEmpty();
-      check(copy.edges).isEmpty();
+      check(copy.vertices).isEmpty;
+      check(copy.edges).isEmpty;
     });
   });
 }

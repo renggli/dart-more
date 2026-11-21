@@ -8,7 +8,7 @@ void main() {
 
   group('sort', () {
     test('default', () {
-      check(naturalInt.sorted([])).isEmpty();
+      check(naturalInt.sorted([])).isEmpty;
       check(naturalInt.sorted([1])).deepEquals([1]);
       check(naturalInt.sorted([1, 2])).deepEquals([1, 2]);
       check(naturalInt.sorted([2, 1])).deepEquals([1, 2]);
@@ -34,7 +34,7 @@ void main() {
     test('copy', () {
       final input = [5, 4, 3, 2, 1];
       final output = naturalInt.sorted(input);
-      check(input).not((it) => it.identicalTo(output));
+      check(input).not(.it()..identicalTo(output));
       check(input).deepEquals([5, 4, 3, 2, 1]);
       check(output).deepEquals([1, 2, 3, 4, 5]);
     });
@@ -42,7 +42,7 @@ void main() {
     test('copy range', () {
       final input = [5, 4, 3, 2, 1];
       final output = naturalInt.sorted(input, start: 1, end: 4);
-      check(input).not((it) => it.identicalTo(output));
+      check(input).not(.it()..identicalTo(output));
       check(input).deepEquals([5, 4, 3, 2, 1]);
       check(output).deepEquals([5, 2, 3, 4, 1]);
     });

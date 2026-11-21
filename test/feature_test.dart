@@ -5,18 +5,18 @@ import 'package:test/scaffolding.dart';
 void main() {
   group('isJavaScript', () {
     test('isTrue', () {
-      check(isJavaScript).isTrue();
+      check(isJavaScript).isTrue;
     }, testOn: 'js');
     test('isFalse', () {
-      check(isJavaScript).isFalse();
+      check(isJavaScript).isFalse;
     }, testOn: '!js');
   });
   group('isWasm', () {
     test('isTrue', () {
-      check(isWasm).isTrue();
+      check(isWasm).isTrue;
     }, testOn: 'wasm');
     test('isFalse', () {
-      check(isWasm).isFalse();
+      check(isWasm).isFalse;
     }, testOn: '!wasm');
   });
   group('hasAssertionsEnabled', () {

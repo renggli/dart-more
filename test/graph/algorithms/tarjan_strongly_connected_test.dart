@@ -6,7 +6,7 @@ void main() {
   group('tarjanStronglyConnected', () {
     test('empty graph', () {
       final graph = Graph<int, void>(isDirected: true);
-      check(graph.stronglyConnected()).isEmpty();
+      check(graph.stronglyConnected()).isEmpty;
     });
     test('single vertex', () {
       final graph = Graph<int, void>(isDirected: true)..addVertex(1);

@@ -7,27 +7,27 @@ void main() {
     group('directed', () {
       test('empty graph', () {
         final graph = Graph<int, void>(isDirected: true);
-        check(graph.hasHamiltonianCircuit()).isFalse();
-        check(graph.hasHamiltonianPath()).isFalse();
-        check(graph.findHamiltonianPath()).isNull();
+        check(graph.hasHamiltonianCircuit()).isFalse;
+        check(graph.hasHamiltonianPath()).isFalse;
+        check(graph.findHamiltonianPath()).isNull;
       });
 
       test('single isolated vertex', () {
         final graph = Graph<int, void>(isDirected: true)..addVertex(1);
-        check(graph.hasHamiltonianCircuit()).isFalse();
-        check(graph.hasHamiltonianPath()).isTrue();
+        check(graph.hasHamiltonianCircuit()).isFalse;
+        check(graph.hasHamiltonianPath()).isTrue;
         final path = graph.findHamiltonianPath();
         check(path).isNotNull();
         check(path!.vertices).deepEquals([1]);
-        check(path.values).isEmpty();
-        check(graph.findHamiltonianPath(circuit: true)).isNull();
+        check(path.values).isEmpty;
+        check(graph.findHamiltonianPath(circuit: true)).isNull;
       });
 
       test('single vertex with self-loop', () {
         final graph = Graph<int, String>(isDirected: true)
           ..addEdge(1, 1, value: 'loop');
-        check(graph.hasHamiltonianCircuit()).isTrue();
-        check(graph.hasHamiltonianPath()).isTrue();
+        check(graph.hasHamiltonianCircuit()).isTrue;
+        check(graph.hasHamiltonianPath()).isTrue;
         final circuit = graph.findHamiltonianPath(circuit: true);
         check(circuit).isNotNull();
         check(circuit!.vertices).deepEquals([1, 1]);
@@ -36,8 +36,8 @@ void main() {
 
       test('two vertices: single edge', () {
         final graph = Graph<int, void>(isDirected: true)..addEdge(1, 2);
-        check(graph.hasHamiltonianPath()).isTrue();
-        check(graph.hasHamiltonianCircuit()).isFalse();
+        check(graph.hasHamiltonianPath()).isTrue;
+        check(graph.hasHamiltonianCircuit()).isFalse;
         final path = graph.findHamiltonianPath();
         check(path).isNotNull();
         check(path!.vertices).deepEquals([1, 2]);
@@ -47,8 +47,8 @@ void main() {
         final graph = Graph<int, String>(isDirected: true)
           ..addEdge(1, 2, value: 'a')
           ..addEdge(2, 1, value: 'b');
-        check(graph.hasHamiltonianPath()).isTrue();
-        check(graph.hasHamiltonianCircuit()).isTrue();
+        check(graph.hasHamiltonianPath()).isTrue;
+        check(graph.hasHamiltonianCircuit()).isTrue;
         final circuit = graph.findHamiltonianPath(circuit: true);
         check(circuit).isNotNull();
         check(circuit!.vertices).deepEquals([1, 2, 1]);
@@ -60,8 +60,8 @@ void main() {
           ..addEdge(1, 2)
           ..addEdge(2, 3)
           ..addEdge(3, 1);
-        check(graph.hasHamiltonianPath()).isTrue();
-        check(graph.hasHamiltonianCircuit()).isTrue();
+        check(graph.hasHamiltonianPath()).isTrue;
+        check(graph.hasHamiltonianCircuit()).isTrue;
         final circuit = graph.findHamiltonianPath(circuit: true);
         check(circuit).isNotNull();
         check(circuit!.vertices.first).equals(circuit.vertices.last);
@@ -72,8 +72,8 @@ void main() {
         final graph = Graph<int, void>(isDirected: true)
           ..addEdge(1, 2)
           ..addEdge(2, 3);
-        check(graph.hasHamiltonianPath()).isTrue();
-        check(graph.hasHamiltonianCircuit()).isFalse();
+        check(graph.hasHamiltonianPath()).isTrue;
+        check(graph.hasHamiltonianCircuit()).isFalse;
         final path = graph.findHamiltonianPath();
         check(path).isNotNull();
         check(path!.vertices).deepEquals([1, 2, 3]);
@@ -83,23 +83,23 @@ void main() {
         final graph = Graph<int, void>(isDirected: true)
           ..addEdge(1, 2)
           ..addEdge(1, 3);
-        check(graph.hasHamiltonianPath()).isFalse();
-        check(graph.hasHamiltonianCircuit()).isFalse();
+        check(graph.hasHamiltonianPath()).isFalse;
+        check(graph.hasHamiltonianCircuit()).isFalse;
       });
     });
 
     group('undirected', () {
       test('empty graph', () {
         final graph = Graph<int, void>(isDirected: false);
-        check(graph.hasHamiltonianCircuit()).isFalse();
-        check(graph.hasHamiltonianPath()).isFalse();
-        check(graph.findHamiltonianPath()).isNull();
+        check(graph.hasHamiltonianCircuit()).isFalse;
+        check(graph.hasHamiltonianPath()).isFalse;
+        check(graph.findHamiltonianPath()).isNull;
       });
 
       test('single isolated vertex', () {
         final graph = Graph<int, void>(isDirected: false)..addVertex(1);
-        check(graph.hasHamiltonianCircuit()).isFalse();
-        check(graph.hasHamiltonianPath()).isTrue();
+        check(graph.hasHamiltonianCircuit()).isFalse;
+        check(graph.hasHamiltonianPath()).isTrue;
         final path = graph.findHamiltonianPath();
         check(path).isNotNull();
         check(path!.vertices).deepEquals([1]);
@@ -107,8 +107,8 @@ void main() {
 
       test('two vertices: edge', () {
         final graph = Graph<int, void>(isDirected: false)..addEdge(1, 2);
-        check(graph.hasHamiltonianPath()).isTrue();
-        check(graph.hasHamiltonianCircuit()).isFalse();
+        check(graph.hasHamiltonianPath()).isTrue;
+        check(graph.hasHamiltonianCircuit()).isFalse;
         final path = graph.findHamiltonianPath();
         check(path).isNotNull();
         check(path!.vertices.length).equals(2);
@@ -117,8 +117,8 @@ void main() {
       test('cycle C4', () {
         final graph = GraphFactory<int, void>(isDirected: false)
             .ring(vertexCount: 4);
-        check(graph.hasHamiltonianPath()).isTrue();
-        check(graph.hasHamiltonianCircuit()).isTrue();
+        check(graph.hasHamiltonianPath()).isTrue;
+        check(graph.hasHamiltonianCircuit()).isTrue;
         final circuit = graph.findHamiltonianPath(circuit: true);
         check(circuit).isNotNull();
         check(circuit!.vertices.first).equals(circuit.vertices.last);
@@ -128,8 +128,8 @@ void main() {
       test('path P4', () {
         final graph = GraphFactory<int, void>(isDirected: false)
             .path(vertexCount: 4);
-        check(graph.hasHamiltonianPath()).isTrue();
-        check(graph.hasHamiltonianCircuit()).isFalse();
+        check(graph.hasHamiltonianPath()).isTrue;
+        check(graph.hasHamiltonianCircuit()).isFalse;
         final path = graph.findHamiltonianPath();
         check(path).isNotNull();
         check(path!.vertices.length).equals(4);
@@ -138,15 +138,15 @@ void main() {
       test('star S4 (no hamiltonian path)', () {
         final graph = GraphFactory<int, void>(isDirected: false)
             .star(vertexCount: 4);
-        check(graph.hasHamiltonianPath()).isFalse();
-        check(graph.hasHamiltonianCircuit()).isFalse();
+        check(graph.hasHamiltonianPath()).isFalse;
+        check(graph.hasHamiltonianCircuit()).isFalse;
       });
 
       test('complete graph K5', () {
         final graph = GraphFactory<int, void>(isDirected: false)
             .complete(vertexCount: 5);
-        check(graph.hasHamiltonianPath()).isTrue();
-        check(graph.hasHamiltonianCircuit()).isTrue();
+        check(graph.hasHamiltonianPath()).isTrue;
+        check(graph.hasHamiltonianCircuit()).isTrue;
         final circuit = graph.findHamiltonianPath(circuit: true);
         check(circuit).isNotNull();
         check(circuit!.vertices.length).equals(6);
@@ -174,8 +174,8 @@ void main() {
           ..addEdge(3, 8)
           ..addEdge(4, 9);
 
-        check(petersen.hasHamiltonianCircuit()).isFalse();
-        check(petersen.hasHamiltonianPath()).isTrue();
+        check(petersen.hasHamiltonianCircuit()).isFalse;
+        check(petersen.hasHamiltonianPath()).isTrue;
         final path = petersen.findHamiltonianPath();
         check(path).isNotNull();
         check(path!.vertices.length).equals(10);
@@ -187,8 +187,8 @@ void main() {
         final graph = Graph<int, void>(isDirected: false)
           ..addEdge(1, 2)
           ..addEdge(3, 4);
-        check(graph.hasHamiltonianPath()).isFalse();
-        check(graph.hasHamiltonianCircuit()).isFalse();
+        check(graph.hasHamiltonianPath()).isFalse;
+        check(graph.hasHamiltonianCircuit()).isFalse;
       });
     });
 
@@ -196,8 +196,8 @@ void main() {
       test('cycle C25', () {
         final c25 = GraphFactory<int, void>(isDirected: false)
             .ring(vertexCount: 25);
-        check(c25.hasHamiltonianCircuit()).isTrue();
-        check(c25.hasHamiltonianPath()).isTrue();
+        check(c25.hasHamiltonianCircuit()).isTrue;
+        check(c25.hasHamiltonianPath()).isTrue;
         final circuit = c25.findHamiltonianPath(circuit: true);
         check(circuit).isNotNull();
         check(circuit!.vertices.length).equals(26);
@@ -206,8 +206,8 @@ void main() {
       test('star S25', () {
         final s25 = GraphFactory<int, void>(isDirected: false)
             .star(vertexCount: 25);
-        check(s25.hasHamiltonianPath()).isFalse();
-        check(s25.hasHamiltonianCircuit()).isFalse();
+        check(s25.hasHamiltonianPath()).isFalse;
+        check(s25.hasHamiltonianCircuit()).isFalse;
       });
     });
 
@@ -250,7 +250,7 @@ void main() {
             },
             isDirected: true,
           ),
-        ).isTrue();
+        ).isTrue;
 
         check(
           hasHamiltonianPath<String, void>(
@@ -262,7 +262,7 @@ void main() {
             },
             isDirected: true,
           ),
-        ).isTrue();
+        ).isTrue;
       });
     });
   });

@@ -410,9 +410,9 @@ void main() {
   });
   test('num indexing and containment', () {
     final range = DoubleRange(0.0, 5.0);
-    check(range.contains(2)).isTrue();
+    check(range.contains(2)).isTrue;
     check(range.indexOf(2)).equals(2);
-    check(range.contains(7)).isFalse();
+    check(range.contains(7)).isFalse;
     check(range.indexOf(7)).equals(-1);
   });
 }

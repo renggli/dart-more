@@ -9,8 +9,8 @@ void main() {
     group('complete', () {
       test('empty', () {
         final graph = GraphFactory<int, void>().completeTree(vertexCount: 0);
-        check(graph.vertices).isEmpty();
-        check(graph.edges).isEmpty();
+        check(graph.vertices).isEmpty;
+        check(graph.edges).isEmpty;
         expectInvariants(graph);
       });
       test('unary', () {
@@ -61,7 +61,7 @@ void main() {
       test('empty', () {
         final graph = GraphFactory<int, void>().perfectTree(height: 0);
         check(graph.vertices).deepEquals([0]);
-        check(graph.edges).isEmpty();
+        check(graph.edges).isEmpty;
         expectInvariants(graph);
       });
       test('unary', () {

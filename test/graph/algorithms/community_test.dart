@@ -87,7 +87,7 @@ void main() {
     group('label propagation', () {
       test('empty graph', () {
         final graph = Graph<int, void>.undirected();
-        check(graph.labelPropagationCommunities()).isEmpty();
+        check(graph.labelPropagationCommunities()).isEmpty;
       });
 
       test('single vertex', () {
@@ -156,7 +156,7 @@ void main() {
     group('louvain', () {
       test('empty graph', () {
         final graph = Graph<int, void>.undirected();
-        check(graph.louvainCommunities()).isEmpty();
+        check(graph.louvainCommunities()).isEmpty;
       });
 
       test('single vertex', () {

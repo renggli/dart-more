@@ -11,7 +11,7 @@ void main() {
       check(node.label).equals('A');
       check(node.style.borderWidth).equals(defaultBorderWidth);
       check(node.style.opacity).equals(defaultOpacity);
-      check(node.style.visible).isTrue();
+      check(node.style.visible).isTrue;
 
       // Transient modification
       node.style.borderColor = '#ff0000';
@@ -19,7 +19,7 @@ void main() {
       node.style.opacity = 0.5;
       node.style.reset();
 
-      check(node.style.borderColor).isNull();
+      check(node.style.borderColor).isNull;
       check(node.style.borderWidth).equals(defaultBorderWidth);
       check(node.style.opacity).equals(defaultOpacity);
     });
@@ -57,7 +57,7 @@ void main() {
         check(restored.label).equals('Node B');
         check(restored.userFillColor).equals('#123456');
         check(restored.userBorderColor).equals('#654321');
-        check(restored.style.borderColor).isNull();
+        check(restored.style.borderColor).isNull;
       },
     );
   });

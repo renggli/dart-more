@@ -13,7 +13,7 @@ void main() {
           .throws<RangeError>();
     });
     test('size = 1', () async {
-      check(await const Stream<int>.empty().window(1).toList()).isEmpty();
+      check(await const Stream<int>.empty().window(1).toList()).isEmpty;
       check(await Stream.fromIterable([1]).window(1).toList()).deepEquals([
         [1],
       ]);
@@ -36,8 +36,8 @@ void main() {
           ]);
     });
     test('size = 2', () async {
-      check(await Stream.fromIterable([]).window(2).toList()).isEmpty();
-      check(await Stream.fromIterable([1]).window(2).toList()).isEmpty();
+      check(await Stream.fromIterable([]).window(2).toList()).isEmpty;
+      check(await Stream.fromIterable([1]).window(2).toList()).isEmpty;
       check(await Stream.fromIterable([1, 2]).window(2).toList()).deepEquals([
         [1, 2],
       ]);
@@ -54,10 +54,8 @@ void main() {
           ]);
     });
     test('size = 2, step = 2', () async {
-      check(await Stream.fromIterable([]).window(2, step: 2).toList())
-          .isEmpty();
-      check(await Stream.fromIterable([1]).window(2, step: 2).toList())
-          .isEmpty();
+      check(await Stream.fromIterable([]).window(2, step: 2).toList()).isEmpty;
+      check(await Stream.fromIterable([1]).window(2, step: 2).toList()).isEmpty;
       check(await Stream.fromIterable([1, 2]).window(2, step: 2).toList())
           .deepEquals([
             [1, 2],
@@ -73,10 +71,8 @@ void main() {
           ]);
     });
     test('size = 2, step = 3', () async {
-      check(await Stream.fromIterable([]).window(2, step: 3).toList())
-          .isEmpty();
-      check(await Stream.fromIterable([1]).window(2, step: 3).toList())
-          .isEmpty();
+      check(await Stream.fromIterable([]).window(2, step: 3).toList()).isEmpty;
+      check(await Stream.fromIterable([1]).window(2, step: 3).toList()).isEmpty;
       check(await Stream.fromIterable([1, 2]).window(2, step: 3).toList())
           .deepEquals([
             [1, 2],
@@ -93,7 +89,7 @@ void main() {
     test('size = 2, includePartial', () async {
       check(
         await Stream.fromIterable([]).window(2, includePartial: true).toList(),
-      ).isEmpty();
+      ).isEmpty;
       check(
         await Stream.fromIterable([1]).window(2, includePartial: true).toList(),
       ).deepEquals([
@@ -132,7 +128,7 @@ void main() {
         await Stream.fromIterable([])
             .window(2, step: 2, includePartial: true)
             .toList(),
-      ).isEmpty();
+      ).isEmpty;
       check(
         await Stream.fromIterable([1])
             .window(2, step: 2, includePartial: true)
@@ -169,7 +165,7 @@ void main() {
         await Stream.fromIterable([])
             .window(2, step: 3, includePartial: true)
             .toList(),
-      ).isEmpty();
+      ).isEmpty;
       check(
         await Stream.fromIterable([1])
             .window(2, step: 3, includePartial: true)
@@ -211,7 +207,7 @@ void main() {
       controller.add(2);
       controller.add(3);
       await controller.stream.window(2).take(1).toList();
-      check(cancelled).isTrue();
+      check(cancelled).isTrue;
     });
   });
 }

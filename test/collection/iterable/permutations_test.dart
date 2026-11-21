@@ -67,22 +67,22 @@ void main() {
 
     group('nextPermutation', () {
       test('none', () {
-        check(<int>[].nextPermutation()).isFalse();
-        check([1].nextPermutation()).isFalse();
+        check(<int>[].nextPermutation()).isFalse;
+        check([1].nextPermutation()).isFalse;
       });
       test('default', () {
         final list = [1, 2, 3];
-        check(list.nextPermutation()).isTrue();
+        check(list.nextPermutation()).isTrue;
         check(list).deepEquals([1, 3, 2]);
-        check(list.nextPermutation()).isTrue();
+        check(list.nextPermutation()).isTrue;
         check(list).deepEquals([2, 1, 3]);
-        check(list.nextPermutation()).isTrue();
+        check(list.nextPermutation()).isTrue;
         check(list).deepEquals([2, 3, 1]);
-        check(list.nextPermutation()).isTrue();
+        check(list.nextPermutation()).isTrue;
         check(list).deepEquals([3, 1, 2]);
-        check(list.nextPermutation()).isTrue();
+        check(list.nextPermutation()).isTrue;
         check(list).deepEquals([3, 2, 1]);
-        check(list.nextPermutation()).isFalse();
+        check(list.nextPermutation()).isFalse;
         check(list).deepEquals([3, 2, 1]);
       });
       test('custom', () {
@@ -92,7 +92,7 @@ void main() {
           const Point<int>(1, 1),
         ];
         check(list.nextPermutation(comparator: (a, b) => a.x.compareTo(b.x)))
-            .isTrue();
+            .isTrue;
         check(list).deepEquals([
           const Point<int>(3, 3),
           const Point<int>(1, 1),
@@ -103,22 +103,22 @@ void main() {
 
     group('previousPermutation', () {
       test('none', () {
-        check(<int>[].previousPermutation()).isFalse();
-        check([1].previousPermutation()).isFalse();
+        check(<int>[].previousPermutation()).isFalse;
+        check([1].previousPermutation()).isFalse;
       });
       test('default', () {
         final list = [3, 2, 1];
-        check(list.previousPermutation()).isTrue();
+        check(list.previousPermutation()).isTrue;
         check(list).deepEquals([3, 1, 2]);
-        check(list.previousPermutation()).isTrue();
+        check(list.previousPermutation()).isTrue;
         check(list).deepEquals([2, 3, 1]);
-        check(list.previousPermutation()).isTrue();
+        check(list.previousPermutation()).isTrue;
         check(list).deepEquals([2, 1, 3]);
-        check(list.previousPermutation()).isTrue();
+        check(list.previousPermutation()).isTrue;
         check(list).deepEquals([1, 3, 2]);
-        check(list.previousPermutation()).isTrue();
+        check(list.previousPermutation()).isTrue;
         check(list).deepEquals([1, 2, 3]);
-        check(list.previousPermutation()).isFalse();
+        check(list.previousPermutation()).isFalse;
         check(list).deepEquals([1, 2, 3]);
       });
       test('custom', () {
@@ -129,7 +129,7 @@ void main() {
         ];
         check(
           list.previousPermutation(comparator: (a, b) => a.x.compareTo(b.x)),
-        ).isTrue();
+        ).isTrue;
         check(list).deepEquals([
           const Point<int>(2, 2),
           const Point<int>(1, 1),

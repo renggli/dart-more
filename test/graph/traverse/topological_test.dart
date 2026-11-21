@@ -17,7 +17,7 @@ void main() {
     });
     test('ring', () {
       final graph = GraphFactory<int, void>().ring(vertexCount: 10);
-      check(graph.topological(graph.vertices.first)).isEmpty();
+      check(graph.topological(graph.vertices.first)).isEmpty;
     });
     test('basic', () {
       final graph = GraphFactory<int, void>().fromSuccessors(basicGraphData);

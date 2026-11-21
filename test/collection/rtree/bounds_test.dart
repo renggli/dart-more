@@ -21,15 +21,15 @@ void main() {
     });
     test('distinct buffer for min and max in toBounds', () {
       final pt = [1.0, 2.0].toBounds();
-      check(identical(pt.min, pt.max)).isFalse();
+      check(identical(pt.min, pt.max)).isFalse;
     });
     test('isPoint', () {
-      check(point1.isPoint).isTrue();
-      check(point2.isPoint).isTrue();
-      check(bound1.isPoint).isFalse();
-      check(bound2.isPoint).isFalse();
+      check(point1.isPoint).isTrue;
+      check(point2.isPoint).isTrue;
+      check(bound1.isPoint).isFalse;
+      check(bound2.isPoint).isFalse;
       final partialBox = Bounds.fromList([1.0, 2.0], [1.0, 5.0]);
-      check(partialBox.isPoint).isFalse();
+      check(partialBox.isPoint).isFalse;
     });
     test('edges', () {
       check(point1.edges).deepEquals([0.0, 0.0, 0.0]);
@@ -55,25 +55,25 @@ void main() {
       check(bound2.center).deepEquals([0.0, 2.0, 3.5]);
     });
     test('contains', () {
-      check(point1.contains(point1)).isTrue();
-      check(point1.contains(point2)).isFalse();
-      check(point1.contains(bound1)).isFalse();
-      check(point1.contains(bound2)).isFalse();
+      check(point1.contains(point1)).isTrue;
+      check(point1.contains(point2)).isFalse;
+      check(point1.contains(bound1)).isFalse;
+      check(point1.contains(bound2)).isFalse;
 
-      check(point2.contains(point1)).isFalse();
-      check(point2.contains(point2)).isTrue();
-      check(point2.contains(bound1)).isFalse();
-      check(point2.contains(bound2)).isFalse();
+      check(point2.contains(point1)).isFalse;
+      check(point2.contains(point2)).isTrue;
+      check(point2.contains(bound1)).isFalse;
+      check(point2.contains(bound2)).isFalse;
 
-      check(bound1.contains(point1)).isFalse();
-      check(bound1.contains(point2)).isFalse();
-      check(bound1.contains(bound1)).isTrue();
-      check(bound1.contains(bound2)).isFalse();
+      check(bound1.contains(point1)).isFalse;
+      check(bound1.contains(point2)).isFalse;
+      check(bound1.contains(bound1)).isTrue;
+      check(bound1.contains(bound2)).isFalse;
 
-      check(bound2.contains(point1)).isTrue();
-      check(bound2.contains(point2)).isFalse();
-      check(bound2.contains(bound1)).isFalse();
-      check(bound2.contains(bound2)).isTrue();
+      check(bound2.contains(point1)).isTrue;
+      check(bound2.contains(point2)).isFalse;
+      check(bound2.contains(bound1)).isFalse;
+      check(bound2.contains(bound2)).isTrue;
     });
     test('union', () {
       final pointUnion = point1.union(point2);
@@ -87,48 +87,48 @@ void main() {
       check(pointBoundUnion.max).deepEquals([1.0, 2.0, 3.0]);
     });
     test('intersects', () {
-      check(point1.intersects(point1)).isTrue();
-      check(point1.intersects(point2)).isFalse();
-      check(point1.intersects(bound1)).isFalse();
-      check(point1.intersects(bound2)).isTrue();
+      check(point1.intersects(point1)).isTrue;
+      check(point1.intersects(point2)).isFalse;
+      check(point1.intersects(bound1)).isFalse;
+      check(point1.intersects(bound2)).isTrue;
 
-      check(point2.intersects(point1)).isFalse();
-      check(point2.intersects(point2)).isTrue();
-      check(point2.intersects(bound1)).isFalse();
-      check(point2.intersects(bound2)).isFalse();
+      check(point2.intersects(point1)).isFalse;
+      check(point2.intersects(point2)).isTrue;
+      check(point2.intersects(bound1)).isFalse;
+      check(point2.intersects(bound2)).isFalse;
 
-      check(bound1.intersects(point1)).isFalse();
-      check(bound1.intersects(point2)).isFalse();
-      check(bound1.intersects(bound1)).isTrue();
-      check(bound1.intersects(bound2)).isFalse();
+      check(bound1.intersects(point1)).isFalse;
+      check(bound1.intersects(point2)).isFalse;
+      check(bound1.intersects(bound1)).isTrue;
+      check(bound1.intersects(bound2)).isFalse;
 
-      check(bound2.intersects(point1)).isTrue();
-      check(bound2.intersects(point2)).isFalse();
-      check(bound2.intersects(bound1)).isFalse();
-      check(bound2.intersects(bound2)).isTrue();
+      check(bound2.intersects(point1)).isTrue;
+      check(bound2.intersects(point2)).isFalse;
+      check(bound2.intersects(bound1)).isFalse;
+      check(bound2.intersects(bound2)).isTrue;
 
-      check(bound2.intersects(bound3)).isTrue();
-      check(bound3.intersects(bound2)).isTrue();
+      check(bound2.intersects(bound3)).isTrue;
+      check(bound3.intersects(bound2)).isTrue;
     });
     test('intersection', () {
       check(point1.intersection(point1)).equals(point1);
-      check(point1.intersection(point2)).isNull();
-      check(point1.intersection(bound1)).isNull();
+      check(point1.intersection(point2)).isNull;
+      check(point1.intersection(bound1)).isNull;
       check(point1.intersection(bound2)).equals(point1);
 
-      check(point2.intersection(point1)).isNull();
+      check(point2.intersection(point1)).isNull;
       check(point2.intersection(point2)).equals(point2);
-      check(point2.intersection(bound1)).isNull();
-      check(point2.intersection(bound2)).isNull();
+      check(point2.intersection(bound1)).isNull;
+      check(point2.intersection(bound2)).isNull;
 
-      check(bound1.intersection(point1)).isNull();
-      check(bound1.intersection(point2)).isNull();
+      check(bound1.intersection(point1)).isNull;
+      check(bound1.intersection(point2)).isNull;
       check(bound1.intersection(bound1)).equals(bound1);
-      check(bound1.intersection(bound2)).isNull();
+      check(bound1.intersection(bound2)).isNull;
 
       check(bound2.intersection(point1)).equals(point1);
-      check(bound2.intersection(point2)).isNull();
-      check(bound2.intersection(bound1)).isNull();
+      check(bound2.intersection(point2)).isNull;
+      check(bound2.intersection(bound1)).isNull;
       check(bound2.intersection(bound2)).equals(bound2);
 
       check(bound2.intersection(bound3)).equals(bound4);
@@ -136,62 +136,62 @@ void main() {
     });
     test('==', () {
       check(point1).equals(point1);
-      check(point1).not((it) => it.equals(point2));
-      check(point1).not((it) => it.equals(bound1));
-      check(point1).not((it) => it.equals(bound2));
+      check(point1).not(.it()..equals(point2));
+      check(point1).not(.it()..equals(bound1));
+      check(point1).not(.it()..equals(bound2));
 
-      check(point2).not((it) => it.equals(point1));
+      check(point2).not(.it()..equals(point1));
       check(point2).equals(point2);
-      check(point2).not((it) => it.equals(bound1));
-      check(point2).not((it) => it.equals(bound2));
+      check(point2).not(.it()..equals(bound1));
+      check(point2).not(.it()..equals(bound2));
 
-      check(bound1).not((it) => it.equals(point1));
-      check(bound1).not((it) => it.equals(point2));
+      check(bound1).not(.it()..equals(point1));
+      check(bound1).not(.it()..equals(point2));
       check(bound1).equals(bound1);
-      check(bound1).not((it) => it.equals(bound2));
+      check(bound1).not(.it()..equals(bound2));
 
-      check(bound2).not((it) => it.equals(point1));
-      check(bound2).not((it) => it.equals(point2));
-      check(bound2).not((it) => it.equals(bound1));
+      check(bound2).not(.it()..equals(point1));
+      check(bound2).not(.it()..equals(point2));
+      check(bound2).not(.it()..equals(bound1));
       check(bound2).equals(bound2);
     });
     test('hashCode', () {
       check(point1.hashCode).equals(point1.hashCode);
-      check(point1.hashCode).not((it) => it.equals(point2.hashCode));
-      check(point1.hashCode).not((it) => it.equals(bound1.hashCode));
-      check(point1.hashCode).not((it) => it.equals(bound2.hashCode));
+      check(point1.hashCode).not(.it()..equals(point2.hashCode));
+      check(point1.hashCode).not(.it()..equals(bound1.hashCode));
+      check(point1.hashCode).not(.it()..equals(bound2.hashCode));
 
-      check(point2.hashCode).not((it) => it.equals(point1.hashCode));
+      check(point2.hashCode).not(.it()..equals(point1.hashCode));
       check(point2.hashCode).equals(point2.hashCode);
-      check(point2.hashCode).not((it) => it.equals(bound1.hashCode));
-      check(point2.hashCode).not((it) => it.equals(bound2.hashCode));
+      check(point2.hashCode).not(.it()..equals(bound1.hashCode));
+      check(point2.hashCode).not(.it()..equals(bound2.hashCode));
 
-      check(bound1.hashCode).not((it) => it.equals(point1.hashCode));
-      check(bound1.hashCode).not((it) => it.equals(point2.hashCode));
+      check(bound1.hashCode).not(.it()..equals(point1.hashCode));
+      check(bound1.hashCode).not(.it()..equals(point2.hashCode));
       check(bound1.hashCode).equals(bound1.hashCode);
-      check(bound1.hashCode).not((it) => it.equals(bound2.hashCode));
+      check(bound1.hashCode).not(.it()..equals(bound2.hashCode));
 
-      check(bound2.hashCode).not((it) => it.equals(point1.hashCode));
-      check(bound2.hashCode).not((it) => it.equals(point2.hashCode));
-      check(bound2.hashCode).not((it) => it.equals(bound1.hashCode));
+      check(bound2.hashCode).not(.it()..equals(point1.hashCode));
+      check(bound2.hashCode).not(.it()..equals(point2.hashCode));
+      check(bound2.hashCode).not(.it()..equals(bound1.hashCode));
       check(bound2.hashCode).equals(bound2.hashCode);
     });
     test('toString', () {
       check(point1.toString()).anyOf([
-        (s) => s.equals('Bounds(1, 2, 3)'),
-        (s) => s.equals('Bounds(1.0, 2.0, 3.0)'),
+        .it()..equals('Bounds(1, 2, 3)'),
+        .it()..equals('Bounds(1.0, 2.0, 3.0)'),
       ]);
       check(point2.toString()).anyOf([
-        (s) => s.equals('Bounds(3, 2, 1)'),
-        (s) => s.equals('Bounds(3.0, 2.0, 1.0)'),
+        .it()..equals('Bounds(3, 2, 1)'),
+        .it()..equals('Bounds(3.0, 2.0, 1.0)'),
       ]);
       check(bound1.toString()).anyOf([
-        (s) => s.equals('Bounds(-1, -1, -1; 1, 1, 1)'),
-        (s) => s.equals('Bounds(-1.0, -1.0, -1.0; 1.0, 1.0, 1.0)'),
+        .it()..equals('Bounds(-1, -1, -1; 1, 1, 1)'),
+        .it()..equals('Bounds(-1.0, -1.0, -1.0; 1.0, 1.0, 1.0)'),
       ]);
       check(bound2.toString()).anyOf([
-        (s) => s.equals('Bounds(-2, 1, 2; 2, 3, 5)'),
-        (s) => s.equals('Bounds(-2.0, 1.0, 2.0; 2.0, 3.0, 5.0)'),
+        .it()..equals('Bounds(-2, 1, 2; 2, 3, 5)'),
+        .it()..equals('Bounds(-2.0, 1.0, 2.0; 2.0, 3.0, 5.0)'),
       ]);
     });
     test('minDistanceToPointSquared and minDistanceToBoundsSquared', () {
@@ -216,7 +216,7 @@ void main() {
     test('Point extension properties', () {
       const pt = Point(10.0, 20.0);
       final bPt = pt.toBounds();
-      check(bPt.isPoint).isTrue();
+      check(bPt.isPoint).isTrue;
       check(bPt.length).equals(2);
       check(bPt.minX).equals(10.0);
       check(bPt.minY).equals(20.0);
@@ -236,7 +236,7 @@ void main() {
     test('Rectangle extension properties', () {
       const rect = Rectangle(5.0, 10.0, 20.0, 30.0);
       final bRect = rect.toBounds();
-      check(bRect.isPoint).isFalse();
+      check(bRect.isPoint).isFalse;
       check(bRect.length).equals(2);
       check(bRect.minX).equals(5.0);
       check(bRect.minY).equals(10.0);
@@ -279,7 +279,7 @@ void main() {
       check(inter.maxY).equals(10.0);
 
       final disjoint = Bounds.from2D(20.0, 20.0, 30.0, 30.0);
-      check(b2d1.intersection(disjoint)).isNull();
+      check(b2d1.intersection(disjoint)).isNull;
     });
     test('unionAll', () {
       check(() => Bounds.unionAll([])).throws<StateError>();
@@ -306,7 +306,7 @@ void main() {
       check(singleUnion!.min).deepEquals(bound1.min);
       check(singleUnion.max).deepEquals(bound1.max);
       final emptyUnion = Bounds.intersectionAll([bound1, bound2]);
-      check(emptyUnion).isNull();
+      check(emptyUnion).isNull;
       final fullUnion1 = Bounds.intersectionAll([bound2, bound3]);
       check(fullUnion1!.min).deepEquals(bound4.min);
       check(fullUnion1.max).deepEquals(bound4.max);
@@ -321,12 +321,12 @@ void main() {
       check(inter2D.maxX).equals(6.0);
 
       final disjoint2D = Bounds.from2D(20.0, 20.0, 30.0, 30.0);
-      check(Bounds.intersectionAll([b2d1, disjoint2D])).isNull();
+      check(Bounds.intersectionAll([b2d1, disjoint2D])).isNull;
 
       // 3D intersectionAll disjoint
       final b3D1 = Bounds.fromList([0.0, 0.0, 0.0], [10.0, 10.0, 10.0]);
       final b3D2 = Bounds.fromList([20.0, 20.0, 20.0], [30.0, 30.0, 30.0]);
-      check(Bounds.intersectionAll([b3D1, b3D2])).isNull();
+      check(Bounds.intersectionAll([b3D1, b3D2])).isNull;
     });
     test('factory constructors', () {
       final p1 = Bounds.fromPoint(const Point(4.0, 5.0));
@@ -338,24 +338,24 @@ void main() {
       check(r1.max).deepEquals([4.0, 6.0]);
 
       final b2dPoint = Bounds.from2D(10.0, 20.0);
-      check(b2dPoint.isPoint).isTrue();
+      check(b2dPoint.isPoint).isTrue;
       check(b2dPoint.min).deepEquals([10.0, 20.0]);
       check(b2dPoint.max).deepEquals([10.0, 20.0]);
 
       final b2dBox = Bounds.from2D(10.0, 20.0, 30.0, 40.0);
-      check(b2dBox.isPoint).isFalse();
+      check(b2dBox.isPoint).isFalse;
       check(b2dBox.min).deepEquals([10.0, 20.0]);
       check(b2dBox.max).deepEquals([30.0, 40.0]);
 
       check(() => Bounds.from2D(10.0, 20.0, 30.0)).throws<AssertionError>();
 
       final bListPoint = Bounds.fromList([1.0, 2.0, 3.0]);
-      check(bListPoint.isPoint).isTrue();
+      check(bListPoint.isPoint).isTrue;
       check(bListPoint.min).deepEquals([1.0, 2.0, 3.0]);
       check(bListPoint.max).deepEquals([1.0, 2.0, 3.0]);
 
       final bListBox = Bounds.fromList([1.0, 2.0], [3.0, 4.0]);
-      check(bListBox.isPoint).isFalse();
+      check(bListBox.isPoint).isFalse;
       check(bListBox.min).deepEquals([1.0, 2.0]);
       check(bListBox.max).deepEquals([3.0, 4.0]);
     });
@@ -373,8 +373,8 @@ void main() {
         double.maxFinite,
         double.maxFinite,
       );
-      check(huge.center[0].isFinite).isTrue();
-      check(huge.center[1].isFinite).isTrue();
+      check(huge.center[0].isFinite).isTrue;
+      check(huge.center[1].isFinite).isTrue;
 
       final nd = Bounds.fromList([1.0, 2.0, 3.0], [4.0, 5.0, 6.0]);
       check(() => nd.min[0] = 99.0).throws<UnsupportedError>();

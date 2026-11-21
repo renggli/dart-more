@@ -11,7 +11,7 @@ void main() {
       );
       const strategy = LayeredLayout<String>();
       final result = strategy.layout(input);
-      check(result.positions).isEmpty();
+      check(result.positions).isEmpty;
     });
 
     test('linear DAG ranks sequentially in Y', () {
@@ -70,7 +70,7 @@ void main() {
       const strategy = LayeredLayout<String>(layerDistance: 80);
       final result = strategy.layout(input);
 
-      check(result.edgeRoutes.containsKey(('A', 'C'))).isTrue();
+      check(result.edgeRoutes.containsKey(('A', 'C'))).isTrue;
       final route = result.edgeRoutes[('A', 'C')]!;
       check(route.length).equals(1); // One dummy vertex at layer 1 (rank 1)
       check(route.first.y).equals(80.0);
@@ -243,7 +243,7 @@ void main() {
         layerDistance: 50,
       );
       final result = strategy.layout(input);
-      check(result.edgeRoutes).isNotEmpty();
+      check(result.edgeRoutes).isNotEmpty;
     });
   });
 }

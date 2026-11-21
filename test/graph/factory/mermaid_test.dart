@@ -13,7 +13,7 @@ flowchart TD
 ''';
         final graph = GraphFactory<String, void>(isDirected: true)
             .fromMermaid(source);
-        check(graph.isDirected).isTrue();
+        check(graph.isDirected).isTrue;
         check(graph.vertices).unorderedEquals(['A', 'B', 'C']);
         check(graph.edges.map((e) => (e.source, e.target)))
             .unorderedEquals([('A', 'B'), ('B', 'C')]);
@@ -27,7 +27,7 @@ flowchart LR
 ''';
         final graph = GraphFactory<String, void>(isDirected: false)
             .fromMermaid(source);
-        check(graph.isDirected).isFalse();
+        check(graph.isDirected).isFalse;
         check(graph.vertices).unorderedEquals(['A', 'B', 'C']);
         check(graph.neighboursOf('B')).unorderedEquals(['A', 'C']);
       });
@@ -39,7 +39,7 @@ flowchart TD
 ''';
         final graph = GraphFactory<String, void>(isDirected: true)
             .fromMermaid(source);
-        check(graph.isDirected).isTrue();
+        check(graph.isDirected).isTrue;
         check(graph.edges.map((e) => (e.source, e.target)))
             .unorderedEquals([('A', 'B'), ('B', 'A')]);
       });

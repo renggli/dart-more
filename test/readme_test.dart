@@ -61,7 +61,7 @@ void main() {
 
       final sorted = graph.topological('A');
       check(sorted).deepEquals(['A', 'C', 'B']);
-      check(graph.hasCycle()).isFalse();
+      check(graph.hasCycle()).isFalse;
     });
   });
 
@@ -79,7 +79,7 @@ void main() {
     test('number extensions', () {
       check(12.gcd(8)).equals(4);
       check(5.factorial()).equals(120);
-      check(17.isProbablyPrime).isTrue();
+      check(17.isProbablyPrime).isTrue;
       check(123.digits()).deepEquals([3, 2, 1]);
     });
   });

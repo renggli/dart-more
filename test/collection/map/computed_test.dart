@@ -8,9 +8,9 @@ void main() {
   group('computed', () {
     test('basic', () {
       final map = <String, int>{}.withComputed(int.parse);
-      check(map.containsKey('42')).isFalse();
+      check(map.containsKey('42')).isFalse;
       check(map['42']).equals(42);
-      check(map.containsKey('42')).isTrue();
+      check(map.containsKey('42')).isTrue;
     });
     test('typing', () {
       final map = <String, int>{}.withComputed(int.parse);
@@ -25,12 +25,12 @@ void main() {
     test('throws computation error', () {
       final map = <String, int>{}.withComputed(int.parse);
       check(() => map['a']).throws<FormatException>();
-      check(map.isEmpty).isTrue();
+      check(map.isEmpty).isTrue;
     });
     test('throws type error', () {
       final map = <String, int>{}.withComputed(int.parse);
       check(() => map[1]).throws<TypeError>();
-      check(map.isEmpty).isTrue();
+      check(map.isEmpty).isTrue;
     });
   });
 }

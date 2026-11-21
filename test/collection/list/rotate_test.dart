@@ -8,9 +8,9 @@ void main() {
   group('rotate', () {
     group('list', () {
       test('size = 0', () {
-        check(<int>[]..rotate(-1)).isEmpty();
-        check(<int>[]..rotate(0)).isEmpty();
-        check(<int>[]..rotate(1)).isEmpty();
+        check(<int>[]..rotate(-1)).isEmpty;
+        check(<int>[]..rotate(0)).isEmpty;
+        check(<int>[]..rotate(1)).isEmpty;
       });
       group('size = 1', () {
         test('offset = 0', () {
@@ -75,9 +75,9 @@ void main() {
     });
     group('queue', () {
       test('size = 0', () {
-        check(Queue.of([])..rotate(-1)).isEmpty();
-        check(Queue.of([])..rotate(0)).isEmpty();
-        check(Queue.of([])..rotate(1)).isEmpty();
+        check(Queue.of([])..rotate(-1)).isEmpty;
+        check(Queue.of([])..rotate(0)).isEmpty;
+        check(Queue.of([])..rotate(1)).isEmpty;
       });
       group('size = 1', () {
         test('offset = 0', () {

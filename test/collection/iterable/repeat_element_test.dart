@@ -9,8 +9,8 @@ void main() {
       check(repeat('a').take(3)).deepEquals(['a', 'a', 'a']);
     });
     test('zero', () {
-      check(repeat(2, count: 0)).isEmpty();
-      check(repeat('b', count: 0)).isEmpty();
+      check(repeat(2, count: 0)).isEmpty;
+      check(repeat('b', count: 0)).isEmpty;
     });
     test('one', () {
       check(repeat(3, count: 1)).deepEquals([3]);
@@ -29,8 +29,8 @@ void main() {
     });
     test('infinite', () {
       final iterable = repeat(42);
-      check(iterable.isEmpty).isFalse();
-      check(iterable.isNotEmpty).isTrue();
+      check(iterable.isEmpty).isFalse;
+      check(iterable.isNotEmpty).isTrue;
       check(() => iterable.length).throws<UnsupportedError>();
       check(() => iterable.last).throws<UnsupportedError>();
       check(() => iterable.lastWhere((e) => true)).throws<UnsupportedError>();

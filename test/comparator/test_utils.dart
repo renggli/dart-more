@@ -10,7 +10,7 @@ void verifyBasic<T>(
 ) {
   final sorted = comparator.sorted(unsorted);
   check(sorted, because: '$type.sorted').deepEquals(expected);
-  check(comparator.isOrdered(sorted), because: '$type.isOrdered').isTrue();
+  check(comparator.isOrdered(sorted), because: '$type.isOrdered').isTrue;
   for (final element in unsorted) {
     check(
       comparator.binarySearch(sorted, element),
@@ -23,29 +23,29 @@ void verifyBasic<T>(
     final curr = uniques[i];
     final next = uniques[i + 1];
     // equalTo
-    check(comparator.equalTo(curr, curr)).isTrue();
-    check(comparator.equalTo(curr, next)).isFalse();
-    check(comparator.equalTo(next, curr)).isFalse();
+    check(comparator.equalTo(curr, curr)).isTrue;
+    check(comparator.equalTo(curr, next)).isFalse;
+    check(comparator.equalTo(next, curr)).isFalse;
     // notEqualTo
-    check(comparator.notEqualTo(curr, curr)).isFalse();
-    check(comparator.notEqualTo(curr, next)).isTrue();
-    check(comparator.notEqualTo(next, curr)).isTrue();
+    check(comparator.notEqualTo(curr, curr)).isFalse;
+    check(comparator.notEqualTo(curr, next)).isTrue;
+    check(comparator.notEqualTo(next, curr)).isTrue;
     // lessThan
-    check(comparator.lessThan(curr, curr)).isFalse();
-    check(comparator.lessThan(curr, next)).isTrue();
-    check(comparator.lessThan(next, curr)).isFalse();
+    check(comparator.lessThan(curr, curr)).isFalse;
+    check(comparator.lessThan(curr, next)).isTrue;
+    check(comparator.lessThan(next, curr)).isFalse;
     // lessThanOrEqualTo
-    check(comparator.lessThanOrEqualTo(curr, curr)).isTrue();
-    check(comparator.lessThanOrEqualTo(curr, next)).isTrue();
-    check(comparator.lessThanOrEqualTo(next, curr)).isFalse();
+    check(comparator.lessThanOrEqualTo(curr, curr)).isTrue;
+    check(comparator.lessThanOrEqualTo(curr, next)).isTrue;
+    check(comparator.lessThanOrEqualTo(next, curr)).isFalse;
     // greaterThan
-    check(comparator.greaterThan(curr, curr)).isFalse();
-    check(comparator.greaterThan(curr, next)).isFalse();
-    check(comparator.greaterThan(next, curr)).isTrue();
+    check(comparator.greaterThan(curr, curr)).isFalse;
+    check(comparator.greaterThan(curr, next)).isFalse;
+    check(comparator.greaterThan(next, curr)).isTrue;
     // greaterThanOrEqualTo
-    check(comparator.greaterThanOrEqualTo(curr, curr)).isTrue();
-    check(comparator.greaterThanOrEqualTo(curr, next)).isFalse();
-    check(comparator.greaterThanOrEqualTo(next, curr)).isTrue();
+    check(comparator.greaterThanOrEqualTo(curr, curr)).isTrue;
+    check(comparator.greaterThanOrEqualTo(curr, next)).isFalse;
+    check(comparator.greaterThanOrEqualTo(next, curr)).isTrue;
   }
   if (sorted.isNotEmpty) {
     final minVal = comparator.minOf(unsorted);

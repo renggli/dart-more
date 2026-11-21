@@ -12,9 +12,9 @@ void main() {
       check((-1).cosh()).isCloseTo(1.5430806348152437);
     });
     test('acosh', () {
-      check((-1).acosh()).isNaN();
-      check(0.acosh()).isNaN();
-      check(0.5.acosh()).isNaN();
+      check((-1).acosh()).isNaN;
+      check(0.acosh()).isNaN;
+      check(0.5.acosh()).isNaN;
       check(1.acosh()).isCloseTo(0);
       check(2.acosh()).isCloseTo(1.3169578969248166);
       check(1.0000001.acosh()).isCloseTo(0.0004472135919037347);
@@ -40,20 +40,20 @@ void main() {
       check(1.tanh()).isCloseTo(0.7615941559557649);
     });
     test('atanh', () {
-      check((-2).atanh()).isNaN();
+      check((-2).atanh()).isNaN;
       check((-1).atanh()).equals(double.negativeInfinity);
       check(0.atanh()).isCloseTo(0);
       check(0.5.atanh()).isCloseTo(0.5493061443340548);
       check(1.atanh()).equals(double.infinity);
-      check(2.atanh()).isNaN();
+      check(2.atanh()).isNaN;
       check(1e-16.atanh()).equals(1e-16);
       check((-1e-16).atanh()).equals(-1e-16);
-      check((-0.0).atanh().isNegative).isTrue();
+      check((-0.0).atanh().isNegative).isTrue;
     });
     test('acoth', () {
       check((-2).acoth()).isCloseTo(-0.5493061443340548);
       check((-1).acoth()).equals(double.negativeInfinity);
-      check(0.acoth()).isNaN();
+      check(0.acoth()).isNaN;
       check(1.acoth()).equals(double.infinity);
       check(2.acoth()).isCloseTo(0.5493061443340548);
     });
@@ -61,7 +61,7 @@ void main() {
       check(1.asech()).isCloseTo(0);
       check(0.5.asech()).isCloseTo(1.3169578969248166);
       check(0.2.asech()).isCloseTo(2.2924316695611777);
-      check(2.asech()).isNaN();
+      check(2.asech()).isNaN;
     });
     test('acsch', () {
       check(1.acsch()).isCloseTo(0.881373587019543);

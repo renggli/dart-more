@@ -16,14 +16,14 @@ void main() {
         test('default', () {
           for (var len = 1; len < 100; len++) {
             final target = BitList(len, growable: growable);
-            check(target).isNotEmpty();
+            check(target).isNotEmpty;
             check(target).length.equals(len);
-            check(target).every((it) => it.isFalse());
+            check(target).every(.it()..isFalse);
           }
         });
         test('empty', () {
           final target = BitList.empty(growable: growable);
-          check(target).isEmpty();
+          check(target).isEmpty;
           check(target).length.equals(0);
         });
         test('negative length', () {
@@ -35,17 +35,17 @@ void main() {
         test('filled (false)', () {
           for (var len = 1; len < 100; len++) {
             final target = BitList.filled(len, false, growable: growable);
-            check(target).isNotEmpty();
+            check(target).isNotEmpty;
             check(target).length.equals(len);
-            check(target).every((it) => it.isFalse());
+            check(target).every(.it()..isFalse);
           }
         });
         test('filled (true)', () {
           for (var len = 1; len < 100; len++) {
             final target = BitList.filled(len, true, growable: growable);
-            check(target).isNotEmpty();
+            check(target).isNotEmpty;
             check(target).length.equals(len);
-            check(target).every((it) => it.isTrue());
+            check(target).every(.it()..isTrue);
           }
         });
         test('from', () {
@@ -140,7 +140,7 @@ void main() {
           final target = BitList.of(source, growable: growable);
           check(target.contains(true)).equals(source.contains(true));
           check(target.contains(false)).equals(source.contains(false));
-          check(target.contains('not-a-bool')).isFalse();
+          check(target.contains('not-a-bool')).isFalse;
           check(target.indexOf('not-a-bool')).equals(-1);
           check(target.lastIndexOf('not-a-bool')).equals(-1);
           for (var start = -2; start <= 102; start += 7) {
@@ -154,7 +154,7 @@ void main() {
                 .equals(source.lastIndexOf(false, start));
           }
           final allFalse = BitList.filled(70, false, growable: growable);
-          check(allFalse.contains(true)).isFalse();
+          check(allFalse.contains(true)).isFalse;
           check(allFalse.indexOf(true)).equals(-1);
           check(allFalse.lastIndexOf(true)).equals(-1);
           check(allFalse.indexOf(false, 69)).equals(69);
@@ -181,7 +181,7 @@ void main() {
             for (var i = 0; i < len; i++) {
               target[i] = source[i];
               check(target.sublist(0, i)).deepEquals(source.sublist(0, i));
-              check(target.sublist(i + 1)).every((it) => it.isFalse());
+              check(target.sublist(i + 1)).every(.it()..isFalse);
             }
             check(() => target[len] = true).throws<RangeError>();
           }
@@ -274,10 +274,10 @@ void main() {
             check(falseSet.length).equals(falseList.length);
             check(trueSet.union(falseSet).length).equals(list.length);
             for (final trueIndex in trueSet) {
-              check(list[trueIndex]).isTrue();
+              check(list[trueIndex]).isTrue;
             }
             for (final falseIndex in falseSet) {
-              check(list[falseIndex]).isFalse();
+              check(list[falseIndex]).isFalse;
             }
           }
         });
@@ -460,7 +460,7 @@ void main() {
               if (shift == 0) {
                 check(target).deepEquals(source);
               } else if (shift >= len) {
-                check(target).every((it) => it.isFalse());
+                check(target).every(.it()..isFalse);
               } else {
                 for (var i = shift; i < source.length; i++) {
                   check(target[i]).equals(source[i - shift]);
@@ -481,13 +481,13 @@ void main() {
               if (shift == 0) {
                 check(target).deepEquals(source);
               } else if (shift >= len) {
-                check(target).every((it) => it.isFalse());
+                check(target).every(.it()..isFalse);
               } else {
                 for (var i = 0; i < source.length - shift; i++) {
                   check(target[i]).equals(source[i + shift]);
                 }
                 for (var i = source.length - shift; i < source.length; i++) {
-                  check(target[i]).isFalse();
+                  check(target[i]).isFalse;
                 }
               }
             }
@@ -530,7 +530,7 @@ void main() {
         test('clear', () {
           final target = BitList.filled(2500, true, growable: growable);
           target.clear();
-          check(target).isEmpty();
+          check(target).isEmpty;
         });
         test('length', () {
           final target = BitList.filled(100, false, growable: growable);
@@ -550,10 +550,10 @@ void main() {
             target.length = smaller;
             target.length = larger;
             for (var i = 0; i < smaller; i++) {
-              check(target[i]).isTrue();
+              check(target[i]).isTrue;
             }
             for (var i = smaller; i < larger; i++) {
-              check(target[i]).isFalse();
+              check(target[i]).isFalse;
             }
           }
         });

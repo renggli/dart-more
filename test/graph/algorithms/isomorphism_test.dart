@@ -8,13 +8,13 @@ void main() {
       test('empty graphs are isomorphic', () {
         final g1 = Graph<int, void>(isDirected: false);
         final g2 = Graph<String, void>(isDirected: false);
-        check(g1.isIsomorphicTo(g2)).isTrue();
+        check(g1.isIsomorphicTo(g2)).isTrue;
       });
 
       test('differing directedness are not isomorphic', () {
         final g1 = Graph<int, void>(isDirected: false);
         final g2 = Graph<int, void>(isDirected: true);
-        check(g1.isIsomorphicTo(g2)).isFalse();
+        check(g1.isIsomorphicTo(g2)).isFalse;
       });
 
       test('differing vertex counts are not isomorphic', () {
@@ -22,7 +22,7 @@ void main() {
         final g2 = Graph<int, void>(isDirected: false)
           ..addVertex(1)
           ..addVertex(2);
-        check(g1.isIsomorphicTo(g2)).isFalse();
+        check(g1.isIsomorphicTo(g2)).isFalse;
       });
 
       test('isomorphic paths with different vertex types', () {
@@ -34,7 +34,7 @@ void main() {
           ..addEdge('a', 'b')
           ..addEdge('b', 'c');
 
-        check(g1.isIsomorphicTo(g2)).isTrue();
+        check(g1.isIsomorphicTo(g2)).isTrue;
 
         // With vertex comparator
         check(
@@ -42,13 +42,13 @@ void main() {
             g2,
             vertexComparator: (v1, v2) => v1 == 1 ? v2 == 'b' : true,
           ),
-        ).isTrue();
+        ).isTrue;
         check(
           g1.isIsomorphicTo(
             g2,
             vertexComparator: (v1, v2) => v1 == 1 ? v2 == 'a' : true,
           ),
-        ).isFalse();
+        ).isFalse;
       });
 
       test('non-isomorphic graphs with same degree sequences', () {
@@ -64,7 +64,7 @@ void main() {
           ..addEdge(4, 5)
           ..addEdge(5, 3);
 
-        check(c6.isIsomorphicTo(twoC3)).isFalse();
+        check(c6.isIsomorphicTo(twoC3)).isFalse;
       });
 
       test('directed graphs isomorphism', () {
@@ -78,8 +78,8 @@ void main() {
           ..addEdge(10, 20)
           ..addEdge(30, 20);
 
-        check(g1.isIsomorphicTo(g2)).isTrue();
-        check(g1.isIsomorphicTo(g3)).isFalse();
+        check(g1.isIsomorphicTo(g2)).isTrue;
+        check(g1.isIsomorphicTo(g3)).isFalse;
       });
 
       test('directed graph candidate selection via in-edges', () {
@@ -90,7 +90,7 @@ void main() {
         final g2 = Graph<int, void>(isDirected: true)
           ..addEdge(20, 10)
           ..addEdge(30, 10);
-        check(g1.isIsomorphicTo(g2)).isTrue();
+        check(g1.isIsomorphicTo(g2)).isTrue;
       });
 
       test('edgeComparator matching and mismatching', () {
@@ -105,9 +105,9 @@ void main() {
           ..addEdge(2, 3, value: 99);
 
         check(g1.isIsomorphicTo(g2, edgeComparator: (e1, e2) => e1 == e2))
-            .isTrue();
+            .isTrue;
         check(g1.isIsomorphicTo(g3, edgeComparator: (e1, e2) => e1 == e2))
-            .isFalse();
+            .isFalse;
       });
 
       test('standalone findIsomorphisms without optional params', () {
@@ -136,15 +136,15 @@ void main() {
           ..addEdge(1, 1, value: 9)
           ..addEdge(2, 2, value: 5);
 
-        check(g1.isIsomorphicTo(g2)).isFalse();
-        check(g1.isIsomorphicTo(g3, edgeComparator: (a, b) => a == b)).isTrue();
+        check(g1.isIsomorphicTo(g2)).isFalse;
+        check(g1.isIsomorphicTo(g3, edgeComparator: (a, b) => a == b)).isTrue;
         check(
           g1.isIsomorphicTo(
             g3,
             vertexComparator: (a, b) => a == b,
             edgeComparator: (a, b) => a == b,
           ),
-        ).isFalse();
+        ).isFalse;
       });
     });
 
@@ -170,7 +170,7 @@ void main() {
       test('pattern larger than target yields no matches', () {
         final target = GraphFactory<int, void>().path(vertexCount: 3);
         final pattern = GraphFactory<int, void>().path(vertexCount: 4);
-        check(target.findSubgraphIsomorphisms(pattern)).isEmpty();
+        check(target.findSubgraphIsomorphisms(pattern)).isEmpty;
       });
 
       test('subgraph isomorphism with edgeComparator', () {

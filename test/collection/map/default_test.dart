@@ -6,9 +6,9 @@ void main() {
   group('default', () {
     test('basic', () {
       final map = {'a': 1}.withDefault(42);
-      check(map.containsKey('a')).isTrue();
+      check(map.containsKey('a')).isTrue;
       check(map['a']).equals(1);
-      check(map.containsKey('z')).isFalse();
+      check(map.containsKey('z')).isFalse;
       check(map['z']).equals(42);
     });
     test('typing', () {

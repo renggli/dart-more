@@ -8,9 +8,9 @@ void main() {
   group('unmodifiable', () {
     test('empty', () {
       final graph = Graph<String, int>(isDirected: true);
-      check(graph.isUnmodifiable).isFalse();
+      check(graph.isUnmodifiable).isFalse;
       final unmodifiable = graph.unmodifiable;
-      check(unmodifiable.isUnmodifiable).isTrue();
+      check(unmodifiable.isUnmodifiable).isTrue;
       check(unmodifiable.unmodifiable).identicalTo(unmodifiable);
       expectInvariants(unmodifiable);
     });

@@ -14,22 +14,22 @@ void main() {
         check(i.isProbablyPrime).equals(primes.isPrime(i));
       }
       const prime = 228204732751;
-      check(prime.isProbablyPrime).isTrue();
-      check((prime + 2).isProbablyPrime).isFalse();
-      check(3037000507.isProbablyPrime).isTrue();
-      check((3037000507 + 2).isProbablyPrime).isFalse();
-      check(999999999989.isProbablyPrime).isTrue();
-      check((999999999989 + 2).isProbablyPrime).isFalse();
-      check(9007199254740881.isProbablyPrime).isTrue();
-      check((9007199254740881 + 2).isProbablyPrime).isFalse();
+      check(prime.isProbablyPrime).isTrue;
+      check((prime + 2).isProbablyPrime).isFalse;
+      check(3037000507.isProbablyPrime).isTrue;
+      check((3037000507 + 2).isProbablyPrime).isFalse;
+      check(999999999989.isProbablyPrime).isTrue;
+      check((999999999989 + 2).isProbablyPrime).isFalse;
+      check(9007199254740881.isProbablyPrime).isTrue;
+      check((9007199254740881 + 2).isProbablyPrime).isFalse;
     });
     test('BigInt', () {
       for (var i = 0; i < max; i++) {
         check(BigInt.from(i).isProbablyPrime).equals(primes.isPrime(i));
       }
       final prime = BigInt.parse('170141183460469231731687303715884105727');
-      check(prime.isProbablyPrime).isTrue();
-      check((prime + BigInt.two).isProbablyPrime).isFalse();
+      check(prime.isProbablyPrime).isTrue;
+      check((prime + BigInt.two).isProbablyPrime).isFalse;
     });
     test('Complex', () {
       const a002145 = [3, 7, 11, 19, 23, 31, 43, 47, 59, 67, 71, 79, 83, 103];
@@ -41,7 +41,7 @@ void main() {
           Complex(0, i),
         ].map((value) => value.isProbablyGaussianPrime);
         final expected = a002145.contains(i);
-        check(values).every((v) => v.equals(expected));
+        check(values).every(.it()..equals(expected));
       }
       const norm5 = [
         Complex(1, 2),
@@ -61,7 +61,7 @@ void main() {
           }
         }
       }
-      check(const Complex(math.pi, math.e).isProbablyGaussianPrime).isFalse();
+      check(const Complex(math.pi, math.e).isProbablyGaussianPrime).isFalse;
     });
   });
 }

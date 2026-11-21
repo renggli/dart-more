@@ -18,9 +18,9 @@ void main() {
       validData[65] = 1;
       validData[66] = 2;
       final matcher = UnicodeCharMatcher(validData, 1);
-      check(matcher.match(65)).isTrue();
-      check(matcher.match(66)).isFalse();
-      check(matcher.match(67)).isFalse();
+      check(matcher.match(65)).isTrue;
+      check(matcher.match(66)).isFalse;
+      check(matcher.match(67)).isFalse;
     });
   });
 }

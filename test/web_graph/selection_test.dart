@@ -7,14 +7,14 @@ void main() {
   group('Selection', () {
     test('starts empty', () {
       final s = Selection();
-      check(s.isEmpty).isTrue();
-      check(s.isNotEmpty).isFalse();
-      check(s.vertices).isEmpty();
-      check(s.edges).isEmpty();
-      check(s.activeVertex).isNull();
-      check(s.selectedEdge).isNull();
-      check(s.source).isNull();
-      check(s.target).isNull();
+      check(s.isEmpty).isTrue;
+      check(s.isNotEmpty).isFalse;
+      check(s.vertices).isEmpty;
+      check(s.edges).isEmpty;
+      check(s.activeVertex).isNull;
+      check(s.selectedEdge).isNull;
+      check(s.source).isNull;
+      check(s.target).isNull;
     });
 
     test('selectVertex single and toggle', () {
@@ -23,7 +23,7 @@ void main() {
       check(s.vertices).unorderedEquals(['A']);
       check(s.activeVertex).equals('A');
       check(s.source).equals('A');
-      check(s.target).isNull();
+      check(s.target).isNull;
 
       s.selectVertex('B', toggle: true, clearOthers: false);
       check(s.vertices).unorderedEquals(['A', 'B']);
@@ -35,7 +35,7 @@ void main() {
       check(s.vertices).unorderedEquals(['A']);
       check(s.activeVertex).equals('A');
       check(s.source).equals('A');
-      check(s.target).isNull();
+      check(s.target).isNull;
     });
 
     test('selectEdge and toggle', () {
@@ -71,7 +71,7 @@ void main() {
       s.selectVertex('A');
       s.selectEdge(('A', 'B'), clearOthers: false);
       s.clear();
-      check(s.isEmpty).isTrue();
+      check(s.isEmpty).isTrue;
     });
 
     test('filterVertices', () {
@@ -80,7 +80,7 @@ void main() {
       s.setEdges([('A', 'B'), ('B', 'C')]);
       s.filterVertices((v) => v != 'B');
       check(s.vertices).unorderedEquals(['A', 'C']);
-      check(s.edges).isEmpty();
+      check(s.edges).isEmpty;
     });
   });
 }

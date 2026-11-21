@@ -84,7 +84,7 @@ void main() {
                   source == 0 && target == 2 ? 0.00001 : 1000,
             )
             .toList();
-        check(walk).which((it) => it.deepEquals([0, 1, 2]));
+        check(walk).which(.it()..deepEquals([0, 1, 2]));
       },
     );
   });

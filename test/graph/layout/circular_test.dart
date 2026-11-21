@@ -11,7 +11,7 @@ void main() {
       );
       const strategy = CircularLayout<String>();
       final result = strategy.layout(input);
-      check(result.positions).isEmpty();
+      check(result.positions).isEmpty;
       check(result.bounds.width).equals(0.0);
       check(result.bounds.height).equals(0.0);
     });

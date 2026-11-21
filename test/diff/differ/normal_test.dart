@@ -9,7 +9,7 @@ void main() {
     const differ = NormalDiffer();
 
     test('empty', () {
-      check(differ.compareStrings('', '')).isEmpty();
+      check(differ.compareStrings('', '')).isEmpty;
     });
 
     test('python', () {

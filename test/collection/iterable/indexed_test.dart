@@ -6,7 +6,7 @@ void main() {
   group('indexed', () {
     test('empty', () {
       final iterable = <int>[].indexed();
-      check(iterable).isEmpty();
+      check(iterable).isEmpty;
     });
     test('simple', () {
       final iterable = ['a', 'b', 'c'].indexed();

@@ -57,13 +57,13 @@ void main() {
       final scores = star.katzCentrality(alpha: 0.1);
       final centerScore = scores[0]!;
       for (var i = 1; i < 5; i++) {
-        check(centerScore > scores[i]!).isTrue();
+        check(centerScore > scores[i]!).isTrue;
       }
     });
 
     test('empty graph returns empty map', () {
       final empty = Graph<int, void>(isDirected: true);
-      check(empty.katzCentrality()).isEmpty();
+      check(empty.katzCentrality()).isEmpty;
     });
   });
 
@@ -75,17 +75,17 @@ void main() {
         ..addEdge('H2', 'A1')
         ..addEdge('H2', 'A2');
       final (auth, hubs) = graph.hits();
-      check(auth['A1']! > 0).isTrue();
-      check(auth['A2']! > 0).isTrue();
-      check(hubs['H1']! > 0).isTrue();
-      check(hubs['H2']! > 0).isTrue();
+      check(auth['A1']! > 0).isTrue;
+      check(auth['A2']! > 0).isTrue;
+      check(hubs['H1']! > 0).isTrue;
+      check(hubs['H2']! > 0).isTrue;
     });
 
     test('empty graph returns empty records', () {
       final empty = Graph<String, void>(isDirected: true);
       final (auth, hubs) = empty.hits();
-      check(auth).isEmpty();
-      check(hubs).isEmpty();
+      check(auth).isEmpty;
+      check(hubs).isEmpty;
     });
   });
 
@@ -106,7 +106,7 @@ void main() {
 
     test('single vertex graph returns null', () {
       final single = Graph<String, num>(isDirected: false)..addVertex('X');
-      check(single.tspHeuristic()).isNull();
+      check(single.tspHeuristic()).isNull;
     });
   });
 }

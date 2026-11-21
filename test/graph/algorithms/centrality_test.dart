@@ -7,7 +7,7 @@ void main() {
     group('betweennessCentrality', () {
       test('empty and small graphs', () {
         final g0 = Graph<int, void>(isDirected: false);
-        check(g0.betweennessCentrality()).isEmpty();
+        check(g0.betweennessCentrality()).isEmpty;
 
         final g1 = Graph<int, void>(isDirected: false)..addVertex(1);
         check(g1.betweennessCentrality()[1]).equals(0.0);
@@ -109,7 +109,7 @@ void main() {
     group('pageRank', () {
       test('empty and single vertex graph', () {
         final g0 = Graph<int, void>(isDirected: true);
-        check(g0.pageRank()).isEmpty();
+        check(g0.pageRank()).isEmpty;
 
         final g1 = Graph<int, void>(isDirected: true)..addVertex(1);
         check(g1.pageRank()[1]).equals(1.0);
@@ -132,7 +132,7 @@ void main() {
           ..addEdge(3, 0);
 
         final pr = star.pageRank();
-        check(pr[0]! > pr[1]!).isTrue();
+        check(pr[0]! > pr[1]!).isTrue;
         check(pr[1]!).isCloseTo(pr[2]!, 1e-6);
         check(pr[2]!).isCloseTo(pr[3]!, 1e-6);
 
@@ -155,7 +155,7 @@ void main() {
     group('degreeCentrality', () {
       test('empty and single vertex graph', () {
         final g0 = Graph<int, void>(isDirected: false);
-        check(g0.degreeCentrality()).isEmpty();
+        check(g0.degreeCentrality()).isEmpty;
 
         final g1 = Graph<int, void>(isDirected: false)..addVertex(1);
         check(g1.degreeCentrality()[1]).equals(0.0);
@@ -216,7 +216,7 @@ void main() {
     group('eigenvectorCentrality', () {
       test('empty and single vertex graph', () {
         final g0 = Graph<int, void>(isDirected: false);
-        check(g0.eigenvectorCentrality()).isEmpty();
+        check(g0.eigenvectorCentrality()).isEmpty;
 
         final g1 = Graph<int, void>(isDirected: false)..addVertex(1);
         check(g1.eigenvectorCentrality()[1]).equals(0.0);
@@ -262,7 +262,7 @@ void main() {
         final ec = g.eigenvectorCentrality(
           edgeWeight: (u, v) => g.getEdge(u, v)!.value,
         );
-        check(ec[1]! > ec[2]!).isTrue();
+        check(ec[1]! > ec[2]!).isTrue;
       });
 
       test(

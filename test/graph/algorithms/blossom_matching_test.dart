@@ -11,10 +11,10 @@ void main() {
 
     test('empty and trivial graphs', () {
       final g0 = Graph<int, void>(isDirected: false);
-      check(g0.maximumMatching()).isEmpty();
+      check(g0.maximumMatching()).isEmpty;
 
       final g1 = Graph<int, void>(isDirected: false)..addVertex(1);
-      check(g1.maximumMatching()).isEmpty();
+      check(g1.maximumMatching()).isEmpty;
 
       final g2 = Graph<int, void>(isDirected: false)..addEdge(1, 2);
       final m2 = g2.maximumMatching();

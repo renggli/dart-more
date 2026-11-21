@@ -55,11 +55,11 @@ void main() {
         check(
           because: 'Expected $value to have a single bit.',
           value.hasSingleBit,
-        ).isTrue();
+        ).isTrue;
         if (value > 2) {
           final smaller = value - 1, bigger = value + 1;
-          check(smaller.hasSingleBit).isFalse();
-          check(bigger.hasSingleBit).isFalse();
+          check(smaller.hasSingleBit).isFalse;
+          check(bigger.hasSingleBit).isFalse;
         }
       }
     });
@@ -88,8 +88,8 @@ void main() {
       }
     });
     test('unsigned 32-bit masking', () {
-      check((-0x80000000).hasSingleBit).isTrue();
-      check(0x100000000.hasSingleBit).isFalse();
+      check((-0x80000000).hasSingleBit).isTrue;
+      check(0x100000000.hasSingleBit).isFalse;
       check((-1).bitFloor).equals(0x80000000);
       check(0x100000000.bitFloor).equals(0);
       check(0x100000000.bitCeil).equals(1);

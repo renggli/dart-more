@@ -236,10 +236,10 @@ void main() {
       check(matcher.realQuickRatio).isCloseTo(1, epsilon);
       check(matcher.matches)
           .deepEquals([const Match(sourceStart: 0, targetStart: 0, length: 0)]);
-      check(matcher.operations).isEmpty();
-      check(matcher.groupedOperations()).isEmpty();
-      check(matcher.targetJunk).isEmpty();
-      check(matcher.targetPopular).isEmpty();
+      check(matcher.operations).isEmpty;
+      check(matcher.groupedOperations()).isEmpty;
+      check(matcher.targetJunk).isEmpty;
+      check(matcher.targetPopular).isEmpty;
     });
   });
 
@@ -284,8 +284,8 @@ void main() {
           targetEnd: 101,
         ),
       ]);
-      check(matcher.targetJunk).isEmpty();
-      check(matcher.targetPopular).isEmpty();
+      check(matcher.targetJunk).isEmpty;
+      check(matcher.targetPopular).isEmpty;
     });
 
     test('middle', () {
@@ -318,8 +318,8 @@ void main() {
           targetEnd: 101,
         ),
       ]);
-      check(matcher.targetJunk).isEmpty();
-      check(matcher.targetPopular).isEmpty();
+      check(matcher.targetJunk).isEmpty;
+      check(matcher.targetPopular).isEmpty;
     });
 
     test('end', () {
@@ -345,8 +345,8 @@ void main() {
           targetEnd: 101,
         ),
       ]);
-      check(matcher.targetJunk).isEmpty();
-      check(matcher.targetPopular).isEmpty();
+      check(matcher.targetJunk).isEmpty;
+      check(matcher.targetPopular).isEmpty;
     });
   });
 
@@ -374,8 +374,8 @@ void main() {
           targetEnd: 101,
         ),
       ]);
-      check(matcher.targetJunk).isEmpty();
-      check(matcher.targetPopular).isEmpty();
+      check(matcher.targetJunk).isEmpty;
+      check(matcher.targetPopular).isEmpty;
     });
 
     test('middle', () {
@@ -408,8 +408,8 @@ void main() {
           targetEnd: 101,
         ),
       ]);
-      check(matcher.targetJunk).isEmpty();
-      check(matcher.targetPopular).isEmpty();
+      check(matcher.targetJunk).isEmpty;
+      check(matcher.targetPopular).isEmpty;
     });
 
     test('end', () {
@@ -435,8 +435,8 @@ void main() {
           targetEnd: 101,
         ),
       ]);
-      check(matcher.targetJunk).isEmpty();
-      check(matcher.targetPopular).isEmpty();
+      check(matcher.targetJunk).isEmpty;
+      check(matcher.targetPopular).isEmpty;
     });
   });
 
@@ -464,8 +464,8 @@ void main() {
           targetEnd: 100,
         ),
       ]);
-      check(matcher.targetJunk).isEmpty();
-      check(matcher.targetPopular).isEmpty();
+      check(matcher.targetJunk).isEmpty;
+      check(matcher.targetPopular).isEmpty;
     });
 
     test('middle', () {
@@ -498,8 +498,8 @@ void main() {
           targetEnd: 100,
         ),
       ]);
-      check(matcher.targetJunk).isEmpty();
-      check(matcher.targetPopular).isEmpty();
+      check(matcher.targetJunk).isEmpty;
+      check(matcher.targetPopular).isEmpty;
     });
 
     test('end', () {
@@ -525,8 +525,8 @@ void main() {
           targetEnd: 101,
         ),
       ]);
-      check(matcher.targetJunk).isEmpty();
-      check(matcher.targetPopular).isEmpty();
+      check(matcher.targetJunk).isEmpty;
+      check(matcher.targetPopular).isEmpty;
     });
   });
 
@@ -539,7 +539,7 @@ void main() {
         target: b,
         isJunk: (char) => false,
       );
-      check(matcher.targetJunk).isEmpty();
+      check(matcher.targetJunk).isEmpty;
     });
 
     test('some junk', () {
@@ -578,7 +578,7 @@ void main() {
     test('suppressed', () {
       final matcher = SequenceMatcher(source: a, target: b, autoJunk: false);
       check(matcher.ratio).isCloseTo(0.9975, epsilon);
-      check(matcher.targetPopular).isEmpty();
+      check(matcher.targetPopular).isEmpty;
     });
   });
 }

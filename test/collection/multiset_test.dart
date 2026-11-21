@@ -12,9 +12,9 @@ void main() {
   group('constructor', () {
     test('empty', () {
       final set = Multiset<String>();
-      check(set).isEmpty();
-      check(set.isEmpty).isTrue();
-      check(set.isNotEmpty).isFalse();
+      check(set).isEmpty;
+      check(set.isEmpty).isTrue;
+      check(set.isNotEmpty).isFalse;
       check(set).length.equals(0);
       check(set).unorderedEquals([]);
       check(set.entrySet).unorderedEquals([]);
@@ -25,7 +25,7 @@ void main() {
     });
     test('empty identity', () {
       final set = Multiset<String>.identity();
-      check(set).isEmpty();
+      check(set).isEmpty;
       check(set).length.equals(0);
       check(set).unorderedEquals([]);
       check(set.entrySet).unorderedEquals([]);
@@ -36,9 +36,9 @@ void main() {
     });
     test('of one unique', () {
       final set = Multiset.of(['a']);
-      check(set).isNotEmpty();
-      check(set.isEmpty).isFalse();
-      check(set.isNotEmpty).isTrue();
+      check(set).isNotEmpty;
+      check(set.isEmpty).isFalse;
+      check(set.isNotEmpty).isTrue;
       check(set).length.equals(1);
       check(set).unorderedEquals(['a']);
       check(set.entrySet).unorderedMatches([isMapEntry('a', 1)]);
@@ -49,7 +49,7 @@ void main() {
     });
     test('of many unique', () {
       final set = Multiset.of(['a', 'b', 'c']);
-      check(set).isNotEmpty();
+      check(set).isNotEmpty;
       check(set).length.equals(3);
       check(set).unorderedEquals(['a', 'b', 'c']);
       check(set.entrySet).unorderedMatches([
@@ -64,7 +64,7 @@ void main() {
     });
     test('of one repeated', () {
       final set = Multiset.of(['a', 'a', 'a']);
-      check(set).isNotEmpty();
+      check(set).isNotEmpty;
       check(set).length.equals(3);
       check(set).unorderedEquals(['a', 'a', 'a']);
       check(set.entrySet).unorderedMatches([isMapEntry('a', 3)]);
@@ -75,7 +75,7 @@ void main() {
     });
     test('of many repeated', () {
       final set = Multiset.of(['a', 'a', 'a', 'b', 'b', 'c']);
-      check(set).isNotEmpty();
+      check(set).isNotEmpty;
       check(set).length.equals(6);
       check(set).unorderedEquals(['a', 'a', 'a', 'b', 'b', 'c']);
       check(set.entrySet).unorderedMatches([
@@ -90,7 +90,7 @@ void main() {
     });
     test('of set', () {
       final set = Multiset.of({'a', 'b', 'c'});
-      check(set).isNotEmpty();
+      check(set).isNotEmpty;
       check(set).length.equals(3);
       check(set).unorderedEquals(['a', 'b', 'c']);
       check(set.entrySet).unorderedMatches([
@@ -105,7 +105,7 @@ void main() {
     });
     test('from many repeated', () {
       final set = Multiset.from(['a', 'a', 'a', 'b', 'b', 'c']);
-      check(set).isNotEmpty();
+      check(set).isNotEmpty;
       check(set).length.equals(6);
       check(set).unorderedEquals(['a', 'a', 'a', 'b', 'b', 'c']);
       check(set.entrySet).unorderedMatches([
@@ -120,7 +120,7 @@ void main() {
     });
     test('copy', () {
       final set = Multiset.of(Multiset.of(['a', 'a', 'a', 'b', 'b', 'c']));
-      check(set).isNotEmpty();
+      check(set).isNotEmpty;
       check(set).length.equals(6);
       check(set).unorderedEquals(['a', 'a', 'a', 'b', 'b', 'c']);
       check(set.entrySet).unorderedMatches([
@@ -135,7 +135,7 @@ void main() {
     });
     test('generate', () {
       final set = Multiset<String>.fromIterable(['a', 'a', 'a', 'b', 'b', 'c']);
-      check(set).isNotEmpty();
+      check(set).isNotEmpty;
       check(set).length.equals(6);
       check(set).unorderedEquals(['a', 'a', 'a', 'b', 'b', 'c']);
       check(set.entrySet).unorderedMatches([
@@ -157,7 +157,7 @@ void main() {
         'b',
         'c',
       ], key: (e) => (e as String).codeUnitAt(0));
-      check(set).isNotEmpty();
+      check(set).isNotEmpty;
       check(set).length.equals(6);
       check(set).unorderedEquals([97, 97, 97, 98, 98, 99]);
       check(set.entrySet).unorderedMatches([
@@ -176,7 +176,7 @@ void main() {
         key: (e) => (e as String).substring(0, 1),
         count: (e) => (e as String).length,
       );
-      check(set).isNotEmpty();
+      check(set).isNotEmpty;
       check(set).length.equals(6);
       check(set).unorderedEquals(['a', 'a', 'a', 'b', 'b', 'c']);
       check(set.entrySet).unorderedMatches([
@@ -191,7 +191,7 @@ void main() {
     });
     test('convert', () {
       final set = ['a', 'a', 'a', 'b', 'b', 'c'].toMultiset();
-      check(set).isNotEmpty();
+      check(set).isNotEmpty;
       check(set).length.equals(6);
       check(set).unorderedEquals(['a', 'a', 'a', 'b', 'b', 'c']);
       check(set.entrySet).unorderedMatches([
@@ -210,7 +210,7 @@ void main() {
       final set = Multiset<String>()
         ..add('a', 0)
         ..add('b', 0);
-      check(set).isEmpty();
+      check(set).isEmpty;
       check(set).length.equals(0);
       check(set).unorderedEquals([]);
       check(set.entrySet).unorderedEquals([]);
@@ -224,7 +224,7 @@ void main() {
         ..add('a')
         ..add('b')
         ..add('b');
-      check(set).isNotEmpty();
+      check(set).isNotEmpty;
       check(set).length.equals(3);
       check(set).unorderedEquals(['a', 'b', 'b']);
       check(set.entrySet)
@@ -238,7 +238,7 @@ void main() {
       final set = Multiset<String>()
         ..add('a', 2)
         ..add('b', 3);
-      check(set).isNotEmpty();
+      check(set).isNotEmpty;
       check(set).length.equals(5);
       check(set).unorderedEquals(['a', 'a', 'b', 'b', 'b']);
       check(set.entrySet)
@@ -250,7 +250,7 @@ void main() {
     });
     test('all', () {
       final set = Multiset<String>()..addAll(['a', 'a', 'b', 'b', 'b']);
-      check(set).isNotEmpty();
+      check(set).isNotEmpty;
       check(set).length.equals(5);
       check(set).unorderedEquals(['a', 'a', 'b', 'b', 'b']);
       check(set.entrySet)
@@ -263,7 +263,7 @@ void main() {
     test('error', () {
       final set = Multiset<String>();
       check(() => set.add('a', -1)).throws<ArgumentError>();
-      check(set).isEmpty();
+      check(set).isEmpty;
       check(set).length.equals(0);
       check(set).unorderedEquals([]);
       check(set.entrySet).unorderedEquals([]);
@@ -279,7 +279,7 @@ void main() {
       set
         ..remove('a', 0)
         ..remove('b', 0);
-      check(set).isNotEmpty();
+      check(set).isNotEmpty;
       check(set).length.equals(5);
       check(set).unorderedEquals(['a', 'a', 'b', 'b', 'b']);
       check(set.entrySet)
@@ -294,7 +294,7 @@ void main() {
       set
         ..remove('a')
         ..remove('b');
-      check(set).isNotEmpty();
+      check(set).isNotEmpty;
       check(set).length.equals(3);
       check(set).unorderedEquals(['a', 'b', 'b']);
       check(set.entrySet)
@@ -309,7 +309,7 @@ void main() {
       set
         ..remove('a', 3)
         ..remove('b', 2);
-      check(set).isNotEmpty();
+      check(set).isNotEmpty;
       check(set).length.equals(1);
       check(set).unorderedEquals(['b']);
       check(set.entrySet).unorderedMatches([isMapEntry('b', 1)]);
@@ -321,7 +321,7 @@ void main() {
     test('all', () {
       final set = Multiset.of(['a', 'a', 'b', 'b', 'b']);
       set.removeAll(['a', 'b', 'b', 123, null]);
-      check(set).isNotEmpty();
+      check(set).isNotEmpty;
       check(set).length.equals(2);
       check(set).unorderedEquals(['a', 'b']);
       check(set.entrySet)
@@ -334,7 +334,7 @@ void main() {
     test('clear', () {
       final set = Multiset.of(['a', 'a', 'b', 'b', 'b']);
       set.clear();
-      check(set).isEmpty();
+      check(set).isEmpty;
       check(set).length.equals(0);
       check(set).unorderedEquals([]);
       check(set.entrySet).unorderedEquals([]);
@@ -347,7 +347,7 @@ void main() {
       final set = Multiset.of(['a', 'a', 'b', 'b', 'b']);
       check(() => set.remove('c')).returnsNormally();
       check(() => set.remove('z')).returnsNormally();
-      check(set).isNotEmpty();
+      check(set).isNotEmpty;
       check(set).length.equals(5);
       check(set).unorderedEquals(['a', 'a', 'b', 'b', 'b']);
       check(set.entrySet)
@@ -360,7 +360,7 @@ void main() {
     test('error', () {
       final set = Multiset.of(['a', 'a', 'b', 'b', 'b']);
       check(() => set.remove('a', -1)).throws<ArgumentError>();
-      check(set).isNotEmpty();
+      check(set).isNotEmpty;
       check(set).length.equals(5);
       check(set).unorderedEquals(['a', 'a', 'b', 'b', 'b']);
       check(set.entrySet)
@@ -376,7 +376,7 @@ void main() {
       final set = Multiset<String>();
       set['a'] = 2;
       check(set['a']).equals(2);
-      check(set).isNotEmpty();
+      check(set).isNotEmpty;
       check(set).length.equals(2);
       check(set).unorderedEquals(['a', 'a']);
       check(set.entrySet).unorderedMatches([isMapEntry('a', 2)]);
@@ -391,7 +391,7 @@ void main() {
       set['b'] = 3;
       check(set['a']).equals(2);
       check(set['b']).equals(3);
-      check(set).isNotEmpty();
+      check(set).isNotEmpty;
       check(set).length.equals(5);
       check(set).unorderedEquals(['a', 'a', 'b', 'b', 'b']);
       check(set.entrySet)
@@ -404,7 +404,7 @@ void main() {
     test('remove', () {
       final set = Multiset.of(['a', 'a', 'b', 'b', 'b']);
       set['b'] = 0;
-      check(set).isNotEmpty();
+      check(set).isNotEmpty;
       check(set).length.equals(2);
       check(set).unorderedEquals(['a', 'a']);
       check(set.entrySet).unorderedMatches([isMapEntry('a', 2)]);
@@ -416,7 +416,7 @@ void main() {
     test('error', () {
       final set = Multiset.of(['a', 'a', 'b', 'b', 'b']);
       check(() => set['a'] = -1).throws<ArgumentError>();
-      check(set).isNotEmpty();
+      check(set).isNotEmpty;
       check(set).length.equals(5);
       check(set).unorderedEquals(['a', 'a', 'b', 'b', 'b']);
       check(set.entrySet)
@@ -433,34 +433,34 @@ void main() {
     final secondList = ['a', 'c', 'd', 'd'];
     final secondSet = Multiset.of(secondList);
     test('contains', () {
-      check(firstSet.contains('a')).isTrue();
-      check(firstSet.contains('b')).isTrue();
-      check(firstSet.contains('c')).isTrue();
-      check(firstSet.contains('d')).isFalse();
+      check(firstSet.contains('a')).isTrue;
+      check(firstSet.contains('b')).isTrue;
+      check(firstSet.contains('c')).isTrue;
+      check(firstSet.contains('d')).isFalse;
     });
     test('containsAll', () {
-      check(firstSet.containsAll(firstSet)).isTrue();
-      check(firstSet.containsAll(secondSet)).isFalse();
-      check(firstSet.containsAll(Multiset())).isTrue();
-      check(firstSet.containsAll(Multiset.of(['a', 'b', 'b']))).isFalse();
-      check(firstSet.containsAll(Multiset.of(['a', 'b', 'd']))).isFalse();
+      check(firstSet.containsAll(firstSet)).isTrue;
+      check(firstSet.containsAll(secondSet)).isFalse;
+      check(firstSet.containsAll(Multiset())).isTrue;
+      check(firstSet.containsAll(Multiset.of(['a', 'b', 'b']))).isFalse;
+      check(firstSet.containsAll(Multiset.of(['a', 'b', 'd']))).isFalse;
     });
     test('containsAll (iterable)', () {
-      check(firstSet.containsAll(firstList)).isTrue();
-      check(firstSet.containsAll(secondList)).isFalse();
-      check(firstSet.containsAll([])).isTrue();
-      check(firstSet.containsAll(['a'])).isTrue();
-      check(firstSet.containsAll(['x'])).isFalse();
-      check(firstSet.containsAll(['a', 'b', 'b'])).isFalse();
-      check(firstSet.containsAll(['a', 'b', 'd'])).isFalse();
-      check(firstSet.containsAll([1, 2])).isFalse();
-      check(firstSet.containsAll(['a', null])).isFalse();
+      check(firstSet.containsAll(firstList)).isTrue;
+      check(firstSet.containsAll(secondList)).isFalse;
+      check(firstSet.containsAll([])).isTrue;
+      check(firstSet.containsAll(['a'])).isTrue;
+      check(firstSet.containsAll(['x'])).isFalse;
+      check(firstSet.containsAll(['a', 'b', 'b'])).isFalse;
+      check(firstSet.containsAll(['a', 'b', 'd'])).isFalse;
+      check(firstSet.containsAll([1, 2])).isFalse;
+      check(firstSet.containsAll(['a', null])).isFalse;
       var count = 0;
       final iterable = ['a', 'b', 'c'].map((e) {
         count++;
         return e;
       });
-      check(firstSet.containsAll(iterable)).isTrue();
+      check(firstSet.containsAll(iterable)).isTrue;
       check(count).equals(3);
     });
     test('combine', () {
@@ -553,8 +553,8 @@ void main() {
       check(id.length).equals(5);
       check(id[a]).equals(2);
       check(id[b]).equals(3);
-      check(id.containsAll([a, a, b, b, b])).isTrue();
-      check(id.containsAll([a, a, a])).isFalse();
+      check(id.containsAll([a, a, b, b, b])).isTrue;
+      check(id.containsAll([a, a, a])).isFalse;
 
       // Copying identity multiset via of() sums equal elements cleanly.
       final copy = Multiset<_IdBox>.of(id);
@@ -564,7 +564,7 @@ void main() {
 
       // Default multiset containsAll against identity multiset.
       final single = Multiset<_IdBox>.of([a]);
-      check(single.containsAll(id)).isFalse();
+      check(single.containsAll(id)).isFalse;
 
       // Identity union/difference/intersection/combine preserve identity.
       final other = Multiset<_IdBox>.identity()..add(a, 1);
@@ -603,7 +603,7 @@ void main() {
       check(ms.length).equals(12);
       check(ms['a']).equals(4);
       ms.removeAll(ms);
-      check(ms.isEmpty).isTrue();
+      check(ms.isEmpty).isTrue;
       check(() => ms.first).throws<StateError>();
       check(() => ms.last).throws<StateError>();
       check(() => ms.single).throws<StateError>();

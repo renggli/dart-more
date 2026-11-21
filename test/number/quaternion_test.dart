@@ -97,13 +97,13 @@ void main() {
       });
       test('fromVectors (opposite vectors)', () {
         final q1 = Quaternion.fromVectors(const [1, 0, 0], const [-1, 0, 0]);
-        check(q1.isNaN).isFalse();
+        check(q1.isNaN).isFalse;
         check(q1.abs()).isCloseTo(1.0, epsilon);
         final q2 = Quaternion.fromVectors(const [0, 1, 0], const [0, -1, 0]);
-        check(q2.isNaN).isFalse();
+        check(q2.isNaN).isFalse;
         check(q2.abs()).isCloseTo(1.0, epsilon);
         final q3 = Quaternion.fromVectors(const [0, 0, 1], const [0, 0, -1]);
-        check(q3.isNaN).isFalse();
+        check(q3.isNaN).isFalse;
         check(q3.abs()).isCloseTo(1.0, epsilon);
       });
       test('fromEuler', () {
@@ -240,13 +240,13 @@ void main() {
             .equals(const Quaternion(0, 0, 0, -0.012));
       });
       test('tryParse (error)', () {
-        check(Quaternion.tryParse('')).isNull();
-        check(Quaternion.tryParse('e1')).isNull();
-        check(Quaternion.tryParse('1ii')).isNull();
-        check(Quaternion.tryParse('1+1')).isNull();
-        check(Quaternion.tryParse('i+i')).isNull();
-        check(Quaternion.tryParse('j+j')).isNull();
-        check(Quaternion.tryParse('k+k')).isNull();
+        check(Quaternion.tryParse('')).isNull;
+        check(Quaternion.tryParse('e1')).isNull;
+        check(Quaternion.tryParse('1ii')).isNull;
+        check(Quaternion.tryParse('1+1')).isNull;
+        check(Quaternion.tryParse('i+i')).isNull;
+        check(Quaternion.tryParse('j+j')).isNull;
+        check(Quaternion.tryParse('k+k')).isNull;
       });
     });
     group('arithmetic', () {
@@ -350,39 +350,39 @@ void main() {
     });
     group('testing', () {
       test('isNan', () {
-        check(const Quaternion(1, 2, 3, 4).isNaN).isFalse();
-        check(const Quaternion(double.nan, 2, 3, 4).isNaN).isTrue();
-        check(const Quaternion(1, double.nan, 3, 4).isNaN).isTrue();
-        check(const Quaternion(1, 2, double.nan, 4).isNaN).isTrue();
-        check(const Quaternion(1, 2, 3, double.nan).isNaN).isTrue();
-        check(Quaternion.nan.isNaN).isTrue();
-        check(Quaternion.infinity.isNaN).isFalse();
+        check(const Quaternion(1, 2, 3, 4).isNaN).isFalse;
+        check(const Quaternion(double.nan, 2, 3, 4).isNaN).isTrue;
+        check(const Quaternion(1, double.nan, 3, 4).isNaN).isTrue;
+        check(const Quaternion(1, 2, double.nan, 4).isNaN).isTrue;
+        check(const Quaternion(1, 2, 3, double.nan).isNaN).isTrue;
+        check(Quaternion.nan.isNaN).isTrue;
+        check(Quaternion.infinity.isNaN).isFalse;
       });
       test('isInfinite', () {
-        check(const Quaternion(1, 2, 3, 4).isInfinite).isFalse();
-        check(const Quaternion(double.infinity, 2, 3, 4).isInfinite).isTrue();
+        check(const Quaternion(1, 2, 3, 4).isInfinite).isFalse;
+        check(const Quaternion(double.infinity, 2, 3, 4).isInfinite).isTrue;
         check(const Quaternion(1, double.negativeInfinity, 3, 4).isInfinite)
-            .isTrue();
-        check(const Quaternion(1, 2, double.infinity, 4).isInfinite).isTrue();
+            .isTrue;
+        check(const Quaternion(1, 2, double.infinity, 4).isInfinite).isTrue;
         check(const Quaternion(1, 2, 3, double.negativeInfinity).isInfinite)
-            .isTrue();
-        check(Quaternion.nan.isInfinite).isFalse();
-        check(Quaternion.infinity.isInfinite).isTrue();
+            .isTrue;
+        check(Quaternion.nan.isInfinite).isFalse;
+        check(Quaternion.infinity.isInfinite).isTrue;
       });
       test('isFinite', () {
-        check(const Quaternion(1, 2, 3, 4).isFinite).isTrue();
-        check(const Quaternion(double.nan, 2, 3, 4).isFinite).isFalse();
-        check(const Quaternion(1, double.nan, 3, 4).isFinite).isFalse();
-        check(const Quaternion(1, 2, double.nan, 4).isFinite).isFalse();
-        check(const Quaternion(1, 2, 3, double.nan).isFinite).isFalse();
-        check(const Quaternion(double.infinity, 2, 3, 4).isFinite).isFalse();
+        check(const Quaternion(1, 2, 3, 4).isFinite).isTrue;
+        check(const Quaternion(double.nan, 2, 3, 4).isFinite).isFalse;
+        check(const Quaternion(1, double.nan, 3, 4).isFinite).isFalse;
+        check(const Quaternion(1, 2, double.nan, 4).isFinite).isFalse;
+        check(const Quaternion(1, 2, 3, double.nan).isFinite).isFalse;
+        check(const Quaternion(double.infinity, 2, 3, 4).isFinite).isFalse;
         check(const Quaternion(1, double.negativeInfinity, 3, 4).isFinite)
-            .isFalse();
-        check(const Quaternion(1, 2, double.infinity, 4).isFinite).isFalse();
+            .isFalse;
+        check(const Quaternion(1, 2, double.infinity, 4).isFinite).isFalse;
         check(const Quaternion(1, 2, 3, double.negativeInfinity).isFinite)
-            .isFalse();
-        check(Quaternion.nan.isFinite).isFalse();
-        check(Quaternion.infinity.isFinite).isFalse();
+            .isFalse;
+        check(Quaternion.nan.isFinite).isFalse;
+        check(Quaternion.infinity.isFinite).isFalse;
       });
     });
     group('converting', () {
@@ -417,27 +417,27 @@ void main() {
     group('comparing', () {
       test('equal', () {
         check(const Quaternion(2, 3, 4, 5) == const Quaternion(2, 3, 4, 5))
-            .isTrue();
+            .isTrue;
         check(const Quaternion(2, 3, 4, 5) == const Quaternion(1, 3, 4, 5))
-            .isFalse();
+            .isFalse;
         check(const Quaternion(2, 3, 4, 5) == const Quaternion(2, 4, 4, 5))
-            .isFalse();
+            .isFalse;
         check(const Quaternion(2, 3, 4, 5) == const Quaternion(2, 3, 3, 5))
-            .isFalse();
+            .isFalse;
         check(const Quaternion(2, 3, 4, 5) == const Quaternion(2, 3, 4, 6))
-            .isFalse();
-        check(Quaternion.nan == Quaternion.nan).isFalse();
-        check(Quaternion.infinity == Quaternion.infinity).isTrue();
+            .isFalse;
+        check(Quaternion.nan == Quaternion.nan).isFalse;
+        check(Quaternion.infinity == Quaternion.infinity).isTrue;
       });
       test('hash', () {
         check(const Quaternion(2, 3, 4, 5).hashCode)
             .equals(const Quaternion(2, 3, 4, 5).hashCode);
         check(const Quaternion(2, 3, 4, 5).hashCode)
-            .not((it) => it.equals(const Quaternion(3, 2, 4, 5).hashCode));
+            .not(.it()..equals(const Quaternion(3, 2, 4, 5).hashCode));
         check(const Quaternion(2, 3, 4, 5).hashCode)
-            .not((it) => it.equals(const Quaternion(2, 4, 3, 5).hashCode));
+            .not(.it()..equals(const Quaternion(2, 4, 3, 5).hashCode));
         check(const Quaternion(2, 3, 4, 5).hashCode)
-            .not((it) => it.equals(const Quaternion(2, 3, 5, 4).hashCode));
+            .not(.it()..equals(const Quaternion(2, 3, 5, 4).hashCode));
       });
     });
   });

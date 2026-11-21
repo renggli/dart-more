@@ -119,7 +119,7 @@ void main() {
         // Every matched pair must correspond to an existing edge and be
         // symmetric in the returned map (match[u] == v <=> match[v] == u).
         for (final entry in matching.entries) {
-          check(g.containsEdge(entry.key, entry.value)).isTrue();
+          check(g.containsEdge(entry.key, entry.value)).isTrue;
           check(matching[entry.value]).equals(entry.key);
         }
         // Edmonds' Blossom cardinality must match brute-force maximum matching,
@@ -140,7 +140,7 @@ void main() {
         // No two vertices in the maximum independent set may share an edge, and
         // its cardinality must equal the brute-force optimum alpha(G).
         final mis = g.maximumIndependentSet();
-        check(_isIndependent(g, mis)).isTrue();
+        check(_isIndependent(g, mis)).isTrue;
         check(mis.length).equals(bestInd);
 
         // Gallai's identity: |minimumVertexCover| + |maximumIndependentSet| = |V|,
@@ -148,7 +148,7 @@ void main() {
         final vc = g.minimumVertexCover();
         check(vc.length).equals(g.vertices.length - bestInd);
         for (final e in g.edges) {
-          check(vc.contains(e.source) || vc.contains(e.target)).isTrue();
+          check(vc.contains(e.source) || vc.contains(e.target)).isTrue;
         }
       }
     });
@@ -265,7 +265,7 @@ void main() {
         // Proper vertex coloring: adjacent vertices never receive the same color.
         final colors = g.vertexColoring();
         for (final e in g.edges) {
-          check(colors[e.source]).not((it) => it.equals(colors[e.target]));
+          check(colors[e.source]).not(.it()..equals(colors[e.target]));
         }
         // A graph is bipartite iff there exists a 2-partition of V with no
         // monochromatic edges.
@@ -339,7 +339,7 @@ void main() {
           check(sccs.expand((c) => c).length).equals(vs.length);
           for (final c in sccs) {
             for (final a in c) {
-              check(reach[a]!.containsAll(c)).isTrue();
+              check(reach[a]!.containsAll(c)).isTrue;
             }
           }
           // A directed graph has a cycle iff some vertex v has a successor w
@@ -373,7 +373,7 @@ void main() {
           for (final e in g.edges) {
             h.addEdge(perm[e.source], perm[e.target], value: e.value);
           }
-          check(g.isIsomorphicTo(h, edgeComparator: (a, b) => a == b)).isTrue();
+          check(g.isIsomorphicTo(h, edgeComparator: (a, b) => a == b)).isTrue;
         }
       },
     );
@@ -415,7 +415,7 @@ void main() {
         final ep = g.findEulerianPath();
         if (ep != null && g.edges.isNotEmpty) {
           for (final e in ep.edges) {
-            check(g.containsEdge(e.source, e.target)).isTrue();
+            check(g.containsEdge(e.source, e.target)).isTrue;
           }
         }
       }
@@ -433,7 +433,7 @@ void main() {
         edgeProvider: (_, _) => 1,
       ).path(vertexCount: depth);
 
-      check(g.hasCycle()).isFalse();
+      check(g.hasCycle()).isFalse;
       check(g.stronglyConnected().length).equals(depth);
       check(g.maxFlow()(0, depth - 1)).equals(1);
       check(g.shortestPath(0, depth - 1)?.cost).equals(depth - 1);
@@ -441,7 +441,7 @@ void main() {
       check(g.depthFirstPostOrder(0).length).equals(depth);
       check(g.breadthFirst(0).length).equals(depth);
       check(g.topological(0).length).equals(depth);
-      check(g.isIsomorphicTo(g)).isTrue();
+      check(g.isIsomorphicTo(g)).isTrue;
     });
 
     test('undirected chain does not overflow stack', () {
@@ -453,12 +453,12 @@ void main() {
       check(g.articulationPoints().length).equals(depth - 2);
       check(g.bridges().length).equals(depth - 1);
       check(g.biconnectedComponents().length).equals(depth - 1);
-      check(g.isPlanar()).isTrue();
-      check(g.isBipartite()).isTrue();
+      check(g.isPlanar()).isTrue;
+      check(g.isBipartite()).isTrue;
       check(g.bipartiteMatching().length ~/ 2).equals(depth ~/ 2);
       check(g.maximumMatching().length ~/ 2).equals(depth ~/ 2);
-      check(g.coreNumbers().values.every((c) => c == 1)).isTrue();
-      check(g.isIsomorphicTo(g)).isTrue();
+      check(g.coreNumbers().values.every((c) => c == 1)).isTrue;
+      check(g.isIsomorphicTo(g)).isTrue;
     });
   });
 }

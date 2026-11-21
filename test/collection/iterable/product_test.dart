@@ -141,27 +141,27 @@ void main() {
       ]);
     });
     test('empty', () {
-      check(<Iterable<int>>[].product()).isEmpty();
-      check(<Iterable<int>>[[]].product()).isEmpty();
+      check(<Iterable<int>>[].product()).isEmpty;
+      check(<Iterable<int>>[[]].product()).isEmpty;
       check(
         <Iterable<int>>[
           [1],
           [],
         ].product(),
-      ).isEmpty();
+      ).isEmpty;
       check(
         <Iterable<int>>[
           [],
           [1],
         ].product(),
-      ).isEmpty();
+      ).isEmpty;
       check(
         <Iterable<int>>[
           [1],
           [],
           [1],
         ].product(),
-      ).isEmpty();
+      ).isEmpty;
     });
     group('tuple', () {
       test('basic', () {
@@ -175,9 +175,9 @@ void main() {
         ]);
       });
       test('empty', () {
-        check((<String>[], <int>[]).product()).isEmpty();
-        check((['x'], <int>[]).product()).isEmpty();
-        check((<String>[], [42]).product()).isEmpty();
+        check((<String>[], <int>[]).product()).isEmpty;
+        check((['x'], <int>[]).product()).isEmpty;
+        check((<String>[], [42]).product()).isEmpty;
       });
     });
   });

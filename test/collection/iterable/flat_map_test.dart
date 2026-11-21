@@ -9,13 +9,13 @@ void main() {
         <int>[].flatMap<String>(
           (each) => throw StateError('Never to be called'),
         ),
-      ).isEmpty();
+      ).isEmpty;
     });
     test('expand', () {
       check(['a'].flatMap((each) => [1, 2])).deepEquals([1, 2]);
     });
     test('collapse', () {
-      check(['a', 'b'].flatMap((each) => [])).isEmpty();
+      check(['a', 'b'].flatMap((each) => [])).isEmpty;
     });
   });
 }

@@ -6,36 +6,36 @@ void main() {
   group('char_matcher', () {
     final star = CharMatcher.isChar('*');
     test('call()', () {
-      check(star('*'.codeUnitAt(0))).isTrue();
-      check(star('a'.codeUnitAt(0))).isFalse();
+      check(star('*'.codeUnitAt(0))).isTrue;
+      check(star('a'.codeUnitAt(0))).isFalse;
     });
     group('action', () {
       test('anyOf', () {
-        check(star.anyOf('')).isFalse();
-        check(star.anyOf('a')).isFalse();
-        check(star.anyOf('*')).isTrue();
-        check(star.anyOf('ab')).isFalse();
-        check(star.anyOf('a*')).isTrue();
-        check(star.anyOf('*b')).isTrue();
-        check(star.anyOf('**')).isTrue();
+        check(star.anyOf('')).isFalse;
+        check(star.anyOf('a')).isFalse;
+        check(star.anyOf('*')).isTrue;
+        check(star.anyOf('ab')).isFalse;
+        check(star.anyOf('a*')).isTrue;
+        check(star.anyOf('*b')).isTrue;
+        check(star.anyOf('**')).isTrue;
       });
       test('everyOf', () {
-        check(star.everyOf('')).isTrue();
-        check(star.everyOf('a')).isFalse();
-        check(star.everyOf('*')).isTrue();
-        check(star.everyOf('ab')).isFalse();
-        check(star.everyOf('a*')).isFalse();
-        check(star.everyOf('*b')).isFalse();
-        check(star.everyOf('**')).isTrue();
+        check(star.everyOf('')).isTrue;
+        check(star.everyOf('a')).isFalse;
+        check(star.everyOf('*')).isTrue;
+        check(star.everyOf('ab')).isFalse;
+        check(star.everyOf('a*')).isFalse;
+        check(star.everyOf('*b')).isFalse;
+        check(star.everyOf('**')).isTrue;
       });
       test('noneOf', () {
-        check(star.noneOf('')).isTrue();
-        check(star.noneOf('a')).isTrue();
-        check(star.noneOf('*')).isFalse();
-        check(star.noneOf('ab')).isTrue();
-        check(star.noneOf('a*')).isFalse();
-        check(star.noneOf('*b')).isFalse();
-        check(star.noneOf('**')).isFalse();
+        check(star.noneOf('')).isTrue;
+        check(star.noneOf('a')).isTrue;
+        check(star.noneOf('*')).isFalse;
+        check(star.noneOf('ab')).isTrue;
+        check(star.noneOf('a*')).isFalse;
+        check(star.noneOf('*b')).isFalse;
+        check(star.noneOf('**')).isFalse;
       });
       test('firstIndexIn', () {
         check(star.firstIndexIn('')).equals(-1);
@@ -204,11 +204,11 @@ void main() {
       const input = 'a1b2c';
       const pattern = CharMatcher.digit();
       test('startsWith()', () {
-        check(input.startsWith(pattern)).isFalse();
-        check(input.startsWith(pattern, 1)).isTrue();
-        check(input.startsWith(pattern, 2)).isFalse();
-        check(input.startsWith(pattern, 3)).isTrue();
-        check(input.startsWith(pattern, 4)).isFalse();
+        check(input.startsWith(pattern)).isFalse;
+        check(input.startsWith(pattern, 1)).isTrue;
+        check(input.startsWith(pattern, 2)).isFalse;
+        check(input.startsWith(pattern, 3)).isTrue;
+        check(input.startsWith(pattern, 4)).isFalse;
       });
       test('indexOf()', () {
         check(input.indexOf(pattern)).equals(1);
@@ -226,7 +226,7 @@ void main() {
         check(input.lastIndexOf(pattern, 4)).equals(3);
       });
       test('contains()', () {
-        check(input.contains(pattern)).isTrue();
+        check(input.contains(pattern)).isTrue;
       });
       test('replaceFirst()', () {
         check(input.replaceFirst(pattern, '!')).equals('a!b2c');
@@ -259,10 +259,10 @@ void main() {
         ).equals('?a?!1!?b?!2!?c?');
       });
       test('astral plane', () {
-        check('\u{10000}'.startsWith(pattern)).isFalse();
+        check('\u{10000}'.startsWith(pattern)).isFalse;
         check('\u{10000}'.indexOf(pattern)).equals(-1);
         check('\u{10000}'.lastIndexOf(pattern)).equals(-1);
-        check('\u{10000}'.contains(pattern)).isFalse();
+        check('\u{10000}'.contains(pattern)).isFalse;
         check('\u{10000}'.replaceFirst(pattern, '!')).equals('\u{10000}');
         check(
           '\u{10000}'.replaceFirstMapped(pattern, (match) => '!${match[0]}!'),

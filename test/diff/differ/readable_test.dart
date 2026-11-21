@@ -10,7 +10,7 @@ void main() {
     final differ = ReadableDiffer();
 
     test('empty', () {
-      check(differ.compareStrings('', '')).isEmpty();
+      check(differ.compareStrings('', '')).isEmpty;
     });
 
     test('python', () {

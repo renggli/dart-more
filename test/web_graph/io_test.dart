@@ -29,12 +29,12 @@ void main() {
       final (restoredGraph, isWeighted, restoredNodes, restoredModifiers) =
           GraphCodec.importFromJson(jsonStr);
 
-      check(restoredGraph.isDirected).isFalse();
-      check(isWeighted).isTrue();
+      check(restoredGraph.isDirected).isFalse;
+      check(isWeighted).isTrue;
       check(restoredGraph.vertices).contains('A');
       check(restoredGraph.vertices).contains('B');
       check(restoredGraph.getEdge('A', 'B')?.value).equals(42);
-      check(restoredModifiers).isEmpty();
+      check(restoredModifiers).isEmpty;
 
       final restoredA = restoredNodes['A']!;
       check(restoredA.label).equals('Vertex Alpha');
@@ -80,7 +80,7 @@ void main() {
       final (restoredGraph, _, _, restoredModifiers) =
           GraphCodec.importFromJson(jsonStr);
 
-      check(restoredGraph.containsEdge('U', 'V')).isTrue();
+      check(restoredGraph.containsEdge('U', 'V')).isTrue;
       check(restoredModifiers.length).equals(2);
 
       check(restoredModifiers[0]['id']).equals('shortest_path');
@@ -135,8 +135,8 @@ graph TD
         isDirected: true,
       );
 
-      check(graph.isDirected).isTrue();
-      check(isWeighted).isTrue();
+      check(graph.isDirected).isTrue;
+      check(isWeighted).isTrue;
       check(nodes['A']?.label).equals('Node Alpha');
       check(nodes['B']?.label).equals('Node Beta');
       check(nodes['C']?.label).equals('C');
@@ -158,7 +158,7 @@ graph TD
       );
       final restored = GraphCodec.importFromUrlHash(hash);
       check(restored).isNotNull();
-      check(restored!.$1.containsEdge('X', 'Y')).isTrue();
+      check(restored!.$1.containsEdge('X', 'Y')).isTrue;
       check(restored.$3['X']?.x).equals(50.0);
     });
 

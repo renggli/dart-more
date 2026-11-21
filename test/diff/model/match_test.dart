@@ -22,17 +22,17 @@ void main() {
     });
 
     test('equality and hashCode', () {
-      check(match == other).isFalse();
-      check(match == match).isTrue();
+      check(match == other).isFalse;
+      check(match == match).isTrue;
       check(match == const Match(sourceStart: 1, targetStart: 2, length: 3))
-          .isTrue();
+          .isTrue;
       check(match == const Match(sourceStart: 9, targetStart: 2, length: 3))
-          .isFalse();
+          .isFalse;
       check(match == const Match(sourceStart: 1, targetStart: 9, length: 3))
-          .isFalse();
+          .isFalse;
       check(match == const Match(sourceStart: 1, targetStart: 2, length: 9))
-          .isFalse();
-      check(match.hashCode).not((it) => it.equals(other.hashCode));
+          .isFalse;
+      check(match.hashCode).not(.it()..equals(other.hashCode));
       check(
         match.hashCode,
       ).equals(const Match(sourceStart: 1, targetStart: 2, length: 3).hashCode);

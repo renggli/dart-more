@@ -46,8 +46,8 @@ void main() {
     });
 
     test('equality and hashCode', () {
-      check(operation == other).isFalse();
-      check(operation == operation).isTrue();
+      check(operation == other).isFalse;
+      check(operation == operation).isTrue;
       check(
         operation ==
             const Operation(
@@ -57,7 +57,7 @@ void main() {
               targetStart: 2,
               targetEnd: 3,
             ),
-      ).isTrue();
+      ).isTrue;
       check(
         operation ==
             const Operation(
@@ -67,7 +67,7 @@ void main() {
               targetStart: 2,
               targetEnd: 3,
             ),
-      ).isFalse();
+      ).isFalse;
       check(
         operation ==
             const Operation(
@@ -77,7 +77,7 @@ void main() {
               targetStart: 2,
               targetEnd: 3,
             ),
-      ).isFalse();
+      ).isFalse;
       check(
         operation ==
             const Operation(
@@ -87,7 +87,7 @@ void main() {
               targetStart: 2,
               targetEnd: 3,
             ),
-      ).isFalse();
+      ).isFalse;
       check(
         operation ==
             const Operation(
@@ -97,7 +97,7 @@ void main() {
               targetStart: 9,
               targetEnd: 3,
             ),
-      ).isFalse();
+      ).isFalse;
       check(
         operation ==
             const Operation(
@@ -107,8 +107,8 @@ void main() {
               targetStart: 2,
               targetEnd: 9,
             ),
-      ).isFalse();
-      check(operation.hashCode).not((it) => it.equals(other.hashCode));
+      ).isFalse;
+      check(operation.hashCode).not(.it()..equals(other.hashCode));
       check(operation.hashCode).equals(
         const Operation(
           OperationType.equal,

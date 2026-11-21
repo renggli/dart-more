@@ -22,15 +22,15 @@ void allRTreeTests(
         final parentEntry = node.parentEntry!;
         check(node).identicalTo(parentEntry.child!);
         for (final entry in node.entries) {
-          check(parentEntry.bounds.contains(entry.bounds)).isTrue();
+          check(parentEntry.bounds.contains(entry.bounds)).isTrue;
         }
       }
       for (final entry in node.entries) {
         if (entry.isLeaf) {
           check(entry.data).isNotNull();
-          check(entry.child).isNull();
+          check(entry.child).isNull;
         } else {
-          check(entry.data).isNull();
+          check(entry.data).isNull;
           check(entry.child).isNotNull();
           validate(tree, node, entry.child);
         }
@@ -49,17 +49,17 @@ void allRTreeTests(
         bounds.add(bound);
       }
       check(rtree.length).equals(1000);
-      check(rtree.isEmpty).isFalse();
-      check(rtree.isNotEmpty).isTrue();
+      check(rtree.isEmpty).isFalse;
+      check(rtree.isNotEmpty).isTrue;
       check(rtree.toList().length).equals(1000);
 
       for (var i = 0; i < bounds.length; i += 20) {
-        check(rtree.searchNodes()).isNotEmpty();
-        check(rtree.searchEntries()).isNotEmpty();
-        check(rtree.queryEntries(bounds[i])).isNotEmpty();
-        check(rtree.query(bounds[i])).isNotEmpty();
-        check(rtree.queryNodes(bounds[i], leaves: true)).isNotEmpty();
-        check(rtree.queryNodes(bounds[i], leaves: false)).isNotEmpty();
+        check(rtree.searchNodes()).isNotEmpty;
+        check(rtree.searchEntries()).isNotEmpty;
+        check(rtree.queryEntries(bounds[i])).isNotEmpty;
+        check(rtree.query(bounds[i])).isNotEmpty;
+        check(rtree.queryNodes(bounds[i], leaves: true)).isNotEmpty;
+        check(rtree.queryNodes(bounds[i], leaves: false)).isNotEmpty;
       }
       validate(rtree);
     });
@@ -67,15 +67,15 @@ void allRTreeTests(
     test('empty tree query', () {
       final rtree = createRTree<int>();
       final queryBound = Bounds.fromList([0.0, 0.0]);
-      check(rtree.root.bounds).isNull();
-      check(rtree.bounds).isNull();
+      check(rtree.root.bounds).isNull;
+      check(rtree.bounds).isNull;
       check(rtree.length).equals(0);
-      check(rtree.isEmpty).isTrue();
-      check(rtree.queryEntries(queryBound)).isEmpty();
-      check(rtree.query(queryBound)).isEmpty();
-      check(rtree.queryNodes(queryBound)).isEmpty();
-      check(rtree.nearest(Bounds.fromList([0.0, 0.0]))).isEmpty();
-      check(rtree.nearest(Bounds.fromList([0.0, 0.0]), k: -1)).isEmpty();
+      check(rtree.isEmpty).isTrue;
+      check(rtree.queryEntries(queryBound)).isEmpty;
+      check(rtree.query(queryBound)).isEmpty;
+      check(rtree.queryNodes(queryBound)).isEmpty;
+      check(rtree.nearest(Bounds.fromList([0.0, 0.0]))).isEmpty;
+      check(rtree.nearest(Bounds.fromList([0.0, 0.0]), k: -1)).isEmpty;
     });
 
     test('nearest search multi-level', () {
@@ -109,7 +109,7 @@ void allRTreeTests(
           .toList();
       check(withMaxDist).contains('origin');
       check(withMaxDist).contains('p10');
-      check(withMaxDist).not((it) => it.contains('far'));
+      check(withMaxDist).not(.it()..contains('far'));
     });
 
     test('remove with dataPredicate and condensation to empty', () {
@@ -121,31 +121,31 @@ void allRTreeTests(
 
       // Remove with dataPredicate failing
       final pt5 = Bounds.fromList([5.0, 0.0]);
-      check(rtree.remove(pt5, dataPredicate: (d) => d == 999)).isFalse();
+      check(rtree.remove(pt5, dataPredicate: (d) => d == 999)).isFalse;
       check(rtree.length).equals(20);
 
       // Remove with dataPredicate matching
-      check(rtree.remove(pt5, dataPredicate: (d) => d == 5)).isTrue();
+      check(rtree.remove(pt5, dataPredicate: (d) => d == 5)).isTrue;
       check(rtree.length).equals(19);
 
       // Remove non-existent bound
-      check(rtree.remove(Bounds.fromList([999.0, 999.0]))).isFalse();
+      check(rtree.remove(Bounds.fromList([999.0, 999.0]))).isFalse;
       check(rtree.length).equals(19);
 
       // Remove all elements one by one until completely empty
       for (var i = 0; i < 20; i++) {
         if (i == 5) continue;
-        check(rtree.remove(Bounds.fromList([i.toDouble(), 0.0]))).isTrue();
+        check(rtree.remove(Bounds.fromList([i.toDouble(), 0.0]))).isTrue;
       }
       check(rtree.length).equals(0);
-      check(rtree.isEmpty).isTrue();
-      check(rtree.root.isLeaf).isTrue();
-      check(rtree.root.entries).isEmpty();
+      check(rtree.isEmpty).isTrue;
+      check(rtree.root.isLeaf).isTrue;
+      check(rtree.root.entries).isEmpty;
 
       // Clear empty
       rtree.clear();
       check(rtree.length).equals(0);
-      check(rtree.isEmpty).isTrue();
+      check(rtree.isEmpty).isTrue;
     });
 
     test('2D bounds insertion and query', () {
@@ -264,7 +264,7 @@ void main() {
 
       // ignore: invalid_use_of_protected_member
       final leaf = rtree.chooseLeaf(e1);
-      check(leaf.isLeaf).isTrue();
+      check(leaf.isLeaf).isTrue;
 
       leaf.entries.addAll([e1, e2, e3, e4, e5]);
       // ignore: invalid_use_of_protected_member
@@ -322,15 +322,15 @@ void main() {
       check(nearest).deepEquals(['rectA', 'ptA']);
 
       // remove with Point toBounds
-      check(tree.remove(const Point(5.0, 5.0).toBounds())).isTrue();
+      check(tree.remove(const Point(5.0, 5.0).toBounds())).isTrue;
       check(tree.length).equals(2);
 
       // remove with Rectangle toBounds
       check(tree.remove(const Rectangle(0.0, 0.0, 10.0, 10.0).toBounds()))
-          .isTrue();
+          .isTrue;
       check(tree.length).equals(1);
       check(tree.remove(const Rectangle(99.0, 99.0, 1.0, 1.0).toBounds()))
-          .isFalse();
+          .isFalse;
     });
   });
 
@@ -369,10 +369,10 @@ void main() {
       tree.insert(Bounds.from2D(0.0, 0.0), 1);
       tree.insert(Bounds.from2D(1.0, 1.0), 2);
       final q = Bounds.from2D(0.0, 0.0);
-      check(tree.nearest(q, maxDistance: -5.0)).isEmpty();
-      check(tree.nearest(q, maxDistance: double.negativeInfinity)).isEmpty();
-      check(tree.nearest(q, maxDistance: double.nan)).isEmpty();
-      check(tree.nearest(q, k: 0)).isEmpty();
+      check(tree.nearest(q, maxDistance: -5.0)).isEmpty;
+      check(tree.nearest(q, maxDistance: double.negativeInfinity)).isEmpty;
+      check(tree.nearest(q, maxDistance: double.nan)).isEmpty;
+      check(tree.nearest(q, k: 0)).isEmpty;
     });
   });
 }

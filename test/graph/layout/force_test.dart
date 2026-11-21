@@ -11,7 +11,7 @@ void main() {
       );
       const strategy = ForceLayout<String>();
       final result = strategy.layout(input);
-      check(result.positions).isEmpty();
+      check(result.positions).isEmpty;
     });
 
     test('single vertex centered', () {

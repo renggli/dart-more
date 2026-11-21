@@ -21,13 +21,11 @@ void main() {
     });
     test('vertex match', () {
       final graphs = factory.atlasMatching(vertexCount: 3);
-      check(graphs.map((each) => each.vertices.length))
-          .every((it) => it.equals(3));
+      check(graphs.map((each) => each.vertices.length)).every(.it()..equals(3));
     });
     test('edge match', () {
       final graphs = factory.atlasMatching(edgeCount: 3);
-      check(graphs.map((each) => each.edges.length))
-          .every((it) => it.equals(6));
+      check(graphs.map((each) => each.edges.length)).every(.it()..equals(6));
     });
   });
 }

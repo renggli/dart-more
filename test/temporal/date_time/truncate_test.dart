@@ -40,7 +40,7 @@ void main() {
         weekday++
       ) {
         final truncated = date.truncateTo(TimeUnit.week, startWeekday: weekday);
-        check(truncated.isBefore(date)).isTrue();
+        check(truncated.isBefore(date)).isTrue;
         check(truncated.weekday).equals(weekday);
       }
     });
@@ -82,7 +82,7 @@ void main() {
       final utcDate = DateTime.utc(1980, 6, 11, 12, 34, 56, 78, 90);
       for (final unit in TimeUnit.values) {
         final truncated = utcDate.truncateTo(unit);
-        check(truncated.isUtc).isTrue();
+        check(truncated.isUtc).isTrue;
       }
     });
     test('negative years', () {

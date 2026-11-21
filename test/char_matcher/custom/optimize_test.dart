@@ -23,7 +23,7 @@ void main() {
     });
     test('offset range of 65536 chars is not AnyCharMatcher', () {
       check(optimize([const RangeCharMatcher(100, 100 + 0xffff)]))
-          .not((it) => it.isA<AnyCharMatcher>());
+          .not(.it()..isA<AnyCharMatcher>());
     });
     test('single character', () {
       check(optimize([const RangeCharMatcher(65, 65)]))

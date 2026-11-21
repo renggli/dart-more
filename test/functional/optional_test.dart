@@ -24,7 +24,7 @@ void main() {
         check(optional.iterable).deepEquals(['foo']);
       });
       test('isPresent', () {
-        check(optional.isPresent).isTrue();
+        check(optional.isPresent).isTrue;
         check(optional).isPresent();
       });
       test('ifPresent', () {
@@ -36,7 +36,7 @@ void main() {
         check(called).equals(1);
       });
       test('isAbsent', () {
-        check(optional.isAbsent).isFalse();
+        check(optional.isAbsent).isFalse;
       });
       test('ifAbsent', () {
         optional.ifAbsent(() => fail('Not expected to be called'));
@@ -47,7 +47,7 @@ void main() {
       });
       test('where (negative)', () {
         final other = optional.where((value) => value.isEmpty);
-        check(other.isPresent).isFalse();
+        check(other.isPresent).isFalse;
       });
       test('whereType (positive)', () {
         final other = optional.whereType<Object?>();
@@ -57,7 +57,7 @@ void main() {
       test('whereType (negative)', () {
         final filtered = optional.whereType<int>();
         check(filtered).isA<Optional<int>>();
-        check(filtered.isPresent).isFalse();
+        check(filtered.isPresent).isFalse;
       });
       test('map (same type)', () {
         final other = optional.map((value) => value.toUpperCase());
@@ -77,7 +77,7 @@ void main() {
       test('flatMap (absent)', () {
         final other = optional.flatMap((value) => intAbsent);
         check(other).isA<Optional<int>>();
-        check(other.isPresent).isFalse();
+        check(other.isPresent).isFalse;
       });
       test('or', () {
         final other = optional.or(() => stringAbsent);
@@ -95,24 +95,24 @@ void main() {
       });
       test('==', () {
         // ignore: unrelated_type_equality_checks
-        check(optional == intPresent).isFalse();
+        check(optional == intPresent).isFalse;
         // ignore: unrelated_type_equality_checks
-        check(optional == intAbsent).isFalse();
-        check(optional == stringPresent).isTrue();
-        check(optional == stringAbsent).isFalse();
+        check(optional == intAbsent).isFalse;
+        check(optional == stringPresent).isTrue;
+        check(optional == stringAbsent).isFalse;
       });
       test('== symmetry with sub/supertypes', () {
         const numPresent = Optional<num>.of(1);
         const intPresent = Optional<int>.of(1);
-        check(numPresent == intPresent).isTrue();
-        check(intPresent == numPresent).isTrue();
+        check(numPresent == intPresent).isTrue;
+        check(intPresent == numPresent).isTrue;
         check(numPresent.hashCode).equals(intPresent.hashCode);
       });
       test('hashCode', () {
-        check(optional.hashCode == intPresent.hashCode).isFalse();
-        check(optional.hashCode == intAbsent.hashCode).isFalse();
-        check(optional.hashCode == stringPresent.hashCode).isTrue();
-        check(optional.hashCode == stringAbsent.hashCode).isFalse();
+        check(optional.hashCode == intPresent.hashCode).isFalse;
+        check(optional.hashCode == intAbsent.hashCode).isFalse;
+        check(optional.hashCode == stringPresent.hashCode).isTrue;
+        check(optional.hashCode == stringAbsent.hashCode).isFalse;
       });
       test('toString', () {
         check(optional.toString())
@@ -123,20 +123,20 @@ void main() {
       const optional = stringAbsent;
       test('value', () {
         check(() => optional.value).throws<StateError>();
-        check(optional.valueOrNull).isNull();
+        check(optional.valueOrNull).isNull;
       });
       test('iterable', () {
         check(optional.iterable).isA<Iterable<String>>();
-        check(optional.iterable).isEmpty();
+        check(optional.iterable).isEmpty;
       });
       test('isPresent', () {
-        check(optional.isPresent).isFalse();
+        check(optional.isPresent).isFalse;
       });
       test('ifPresent', () {
         optional.ifPresent((value) => fail('Not expected to be called'));
       });
       test('isAbsent', () {
-        check(optional.isAbsent).isTrue();
+        check(optional.isAbsent).isTrue;
         check(optional).isAbsent();
       });
       test('ifAbsent', () {
@@ -159,26 +159,26 @@ void main() {
       test('whereType (positive)', () {
         final other = optional.whereType<Object?>();
         check(other).isA<Optional<Object?>>();
-        check(other.isAbsent).isTrue();
+        check(other.isAbsent).isTrue;
       });
       test('whereType (negative)', () {
         final other = optional.whereType<int>();
         check(other).isA<Optional<int>>();
-        check(other.isAbsent).isTrue();
+        check(other.isAbsent).isTrue;
       });
       test('map', () {
         final other = optional.map<int>(
           (value) => fail('Not expected to be called'),
         );
         check(other).isA<Optional<int>>();
-        check(other.isAbsent).isTrue();
+        check(other.isAbsent).isTrue;
       });
       test('flatMap', () {
         final other = optional.flatMap<int>(
           (value) => fail('Not expected to be called'),
         );
         check(other).isA<Optional<int>>();
-        check(other.isAbsent).isTrue();
+        check(other.isAbsent).isTrue;
       });
       test('or', () {
         final other = optional.or(() => stringPresent);
@@ -199,17 +199,17 @@ void main() {
       });
       test('==', () {
         // ignore: unrelated_type_equality_checks
-        check(optional == intPresent).isFalse();
+        check(optional == intPresent).isFalse;
         // ignore: unrelated_type_equality_checks
-        check(optional == intAbsent).isTrue();
-        check(optional == stringPresent).isFalse();
-        check(optional == stringAbsent).isTrue();
+        check(optional == intAbsent).isTrue;
+        check(optional == stringPresent).isFalse;
+        check(optional == stringAbsent).isTrue;
       });
       test('hashCode', () {
-        check(optional.hashCode == intPresent.hashCode).isFalse();
-        check(optional.hashCode == intAbsent.hashCode).isTrue();
-        check(optional.hashCode == stringPresent.hashCode).isFalse();
-        check(optional.hashCode == stringAbsent.hashCode).isTrue();
+        check(optional.hashCode == intPresent.hashCode).isFalse;
+        check(optional.hashCode == intAbsent.hashCode).isTrue;
+        check(optional.hashCode == stringPresent.hashCode).isFalse;
+        check(optional.hashCode == stringAbsent.hashCode).isTrue;
       });
       test('toString', () {
         check(optional.toString())
@@ -229,14 +229,14 @@ void main() {
         String? value;
         final optional = Optional.ofNullable(value);
         check(optional).isA<Optional<String>>();
-        check(optional.isAbsent).isTrue();
+        check(optional.isAbsent).isTrue;
       });
       test('isPresent', () {
         String? value;
         value = 'foo';
         final optional = Optional.ofNullable(value);
         check(optional).isA<Optional<String>>();
-        check(optional.isPresent).isTrue();
+        check(optional.isPresent).isTrue;
       });
     });
     group('toOptional', () {
@@ -244,13 +244,13 @@ void main() {
         const String? value = null;
         final optional = value.toOptional();
         check(optional).isA<Optional<String>>();
-        check(optional.isAbsent).isTrue();
+        check(optional.isAbsent).isTrue;
       });
       test('isPresent', () {
         const value = 'foo';
         final optional = value.toOptional();
         check(optional).isA<Optional<String>>();
-        check(optional.isPresent).isTrue();
+        check(optional.isPresent).isTrue;
         check(optional.value).equals('foo');
       });
     });

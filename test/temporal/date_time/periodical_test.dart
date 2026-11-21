@@ -131,7 +131,7 @@ void main() {
       final utcDate = DateTime.utc(1980, 6, 11, 12, 34, 56, 78, 90);
       for (final unit in TimeUnit.values) {
         final item = utcDate.periodical(unit).elementAt(1);
-        check(item.isUtc).isTrue();
+        check(item.isUtc).isTrue;
       }
     });
   });

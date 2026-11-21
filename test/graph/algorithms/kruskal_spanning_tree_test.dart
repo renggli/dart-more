@@ -11,15 +11,15 @@ void main() {
     test('empty', () {
       final graph = Graph<String, int>(isDirected: false);
       final spanning = graph.spanningTree();
-      check(spanning.vertices).isEmpty();
-      check(spanning.edges).isEmpty();
+      check(spanning.vertices).isEmpty;
+      check(spanning.edges).isEmpty;
     });
     test('edgeless', () {
       final graph = Graph<String, int>(isDirected: false)
         ..addVertices(['a', 'b']);
       final spanning = graph.spanningTree();
       check(spanning.vertices).deepEquals(['a', 'b']);
-      check(spanning.edges).isEmpty();
+      check(spanning.edges).isEmpty;
     });
     test('undirected', () {
       final graph = Graph<String, int>(isDirected: false)
@@ -28,7 +28,7 @@ void main() {
         ..addEdge('b', 'd', value: 2)
         ..addEdge('d', 'c', value: 3);
       final spanning = graph.spanningTree();
-      check(spanning.isDirected).isFalse();
+      check(spanning.isDirected).isFalse;
       check(spanning.vertices).unorderedEquals(graph.vertices);
       check(spanning.edges.unique()).unorderedMatches([
         isEdge('a', 'd', value: 1),
@@ -45,7 +45,7 @@ void main() {
       final spanning = graph.spanningTree(
         weightComparator: reverseComparable<num>,
       );
-      check(spanning.isDirected).isFalse();
+      check(spanning.isDirected).isFalse;
       check(spanning.vertices).unorderedEquals(graph.vertices);
       check(spanning.edges.unique()).unorderedMatches([
         isEdge('a', 'b', value: 2),
@@ -60,7 +60,7 @@ void main() {
         ..addEdge('b', 'd', value: 2)
         ..addEdge('d', 'c', value: 3);
       final spanning = graph.spanningTree();
-      check(spanning.isDirected).isTrue();
+      check(spanning.isDirected).isTrue;
       check(spanning.vertices).unorderedEquals(graph.vertices);
       check(spanning.edges).unorderedMatches([
         isEdge('a', 'd', value: 1),

@@ -14,9 +14,9 @@ void main() {
       check(match.pattern).equals(matcher);
       check(match.groupCount).equals(0);
       check(match.group(0)).equals('el');
-      check(match.group(1)).isNull();
+      check(match.group(1)).isNull;
       check(match[0]).equals('el');
-      check(match[1]).isNull();
+      check(match[1]).isNull;
       check(match.groups([0, 1])).deepEquals(['el', null]);
     });
     test('allMatches()', () {
@@ -40,19 +40,19 @@ void main() {
       const input = 'a1b2c';
       const pattern = CharMatcher.digit();
       final match1 = pattern.matchAsPrefix(input);
-      check(match1).isNull();
+      check(match1).isNull;
       final match2 = pattern.matchAsPrefix(input, 1);
       check(match2).isNotNull()
-        ..has((m) => m.pattern, 'pattern').equals(pattern)
-        ..has((m) => m.input, 'input').equals(input)
-        ..has((m) => m.start, 'start').equals(1)
-        ..has((m) => m.end, 'end').equals(2)
-        ..has((m) => m.groupCount, 'groupCount').equals(0)
-        ..has((m) => m[0], 'operator[]').equals('1')
-        ..has((m) => m.group(0), 'group(0)').equals('1')
+        ..has('pattern', (m) => m.pattern).equals(pattern)
+        ..has('input', (m) => m.input).equals(input)
+        ..has('start', (m) => m.start).equals(1)
+        ..has('end', (m) => m.end).equals(2)
+        ..has('groupCount', (m) => m.groupCount).equals(0)
+        ..has('operator[]', (m) => m[0]).equals('1')
+        ..has('group(0)', (m) => m.group(0)).equals('1')
         ..has(
-          (m) => m.groups([0, 1]),
           'groups([0, 1])',
+          (m) => m.groups([0, 1]),
         ).deepEquals(['1', null]);
     });
   });

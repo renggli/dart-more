@@ -160,7 +160,7 @@ void main() {
           .deepEquals(<List<int>>[[]]);
       check(<int>[].combinations(0, repetitions: false))
           .deepEquals(<List<int>>[[]]);
-      check(<int>[].combinations(2, repetitions: true)).isEmpty();
+      check(<int>[].combinations(2, repetitions: true)).isEmpty;
     });
   });
 }

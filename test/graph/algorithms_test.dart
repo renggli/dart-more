@@ -19,9 +19,9 @@ void main() {
             .isNotNull()
             .which(isPath(source: 0, target: i, cost: i));
         if (i != 0) {
-          check(graph.shortestPath(i, 0)).isNull();
+          check(graph.shortestPath(i, 0)).isNull;
           check(allShortestPaths.distance(i, 0)).equals(double.infinity);
-          check(allShortestPaths.path(i, 0)).isNull();
+          check(allShortestPaths.path(i, 0)).isNull;
         }
       }
     });
@@ -78,9 +78,9 @@ void main() {
             .isNotNull()
             .which(isPath(source: 0, target: i, cost: cost));
         if (i != 0) {
-          check(graph.shortestPath(i, 0, edgeCost: edgeCost)).isNull();
+          check(graph.shortestPath(i, 0, edgeCost: edgeCost)).isNull;
           check(allShortestPaths.distance(i, 0)).equals(double.infinity);
-          check(allShortestPaths.path(i, 0)).isNull();
+          check(allShortestPaths.path(i, 0)).isNull;
         }
       }
     });
@@ -99,9 +99,9 @@ void main() {
             .isNotNull()
             .which(isPath(source: 0, target: i, cost: cost));
         if (i != 0) {
-          check(graph.shortestPath(i, 0)).isNull();
+          check(graph.shortestPath(i, 0)).isNull;
           check(allShortestPaths.distance(i, 0)).equals(double.infinity);
-          check(allShortestPaths.path(i, 0)).isNull();
+          check(allShortestPaths.path(i, 0)).isNull;
         }
       }
     });

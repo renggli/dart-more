@@ -17,7 +17,7 @@ void main() {
     test('subclass constructor and properties', () {
       final state = _CustomSearchState<String, int>('a');
       check(state.vertex).equals('a');
-      check(state.predecessors).isEmpty();
+      check(state.predecessors).isEmpty;
     });
     test('createShortestPath with custom state', () {
       final s1 = _CustomSearchState<String, int>('start');

@@ -56,26 +56,26 @@ void main() {
       test('nan', () {
         const fraction = Fraction.nan;
         check(fraction).isFraction(0, 0);
-        check(fraction.isNaN).isTrue();
-        check(fraction.isInfinite).isFalse();
-        check(fraction.isNegative).isFalse();
-        check(fraction.isFinite).isFalse();
+        check(fraction.isNaN).isTrue;
+        check(fraction.isInfinite).isFalse;
+        check(fraction.isNegative).isFalse;
+        check(fraction.isFinite).isFalse;
       });
       test('infinity', () {
         const fraction = Fraction.infinity;
         check(fraction).isFraction(1, 0);
-        check(fraction.isNaN).isFalse();
-        check(fraction.isInfinite).isTrue();
-        check(fraction.isNegative).isFalse();
-        check(fraction.isFinite).isFalse();
+        check(fraction.isNaN).isFalse;
+        check(fraction.isInfinite).isTrue;
+        check(fraction.isNegative).isFalse;
+        check(fraction.isFinite).isFalse;
       });
       test('negativeInfinity', () {
         const fraction = Fraction.negativeInfinity;
         check(fraction).isFraction(-1, 0);
-        check(fraction.isNaN).isFalse();
-        check(fraction.isInfinite).isTrue();
-        check(fraction.isNegative).isTrue();
-        check(fraction.isFinite).isFalse();
+        check(fraction.isNaN).isFalse;
+        check(fraction.isInfinite).isTrue;
+        check(fraction.isNegative).isTrue;
+        check(fraction.isFinite).isFalse;
       });
       group('fromDouble', () {
         test('basic', () {
@@ -141,26 +141,26 @@ void main() {
         test('nan', () {
           final fraction = Fraction.fromDouble(double.nan);
           check(fraction).isFraction(0, 0);
-          check(fraction.isNaN).isTrue();
-          check(fraction.isInfinite).isFalse();
-          check(fraction.isNegative).isFalse();
-          check(fraction.isFinite).isFalse();
+          check(fraction.isNaN).isTrue;
+          check(fraction.isInfinite).isFalse;
+          check(fraction.isNegative).isFalse;
+          check(fraction.isFinite).isFalse;
         });
         test('infinity', () {
           final fraction = Fraction.fromDouble(double.infinity);
           check(fraction).isFraction(1, 0);
-          check(fraction.isNaN).isFalse();
-          check(fraction.isInfinite).isTrue();
-          check(fraction.isNegative).isFalse();
-          check(fraction.isFinite).isFalse();
+          check(fraction.isNaN).isFalse;
+          check(fraction.isInfinite).isTrue;
+          check(fraction.isNegative).isFalse;
+          check(fraction.isFinite).isFalse;
         });
         test('negativeInfinity', () {
           final fraction = Fraction.fromDouble(double.negativeInfinity);
           check(fraction).isFraction(-1, 0);
-          check(fraction.isNaN).isFalse();
-          check(fraction.isInfinite).isTrue();
-          check(fraction.isNegative).isTrue();
-          check(fraction.isFinite).isFalse();
+          check(fraction.isNaN).isFalse;
+          check(fraction.isInfinite).isTrue;
+          check(fraction.isNegative).isTrue;
+          check(fraction.isFinite).isFalse;
         });
       });
       group('parse', () {
@@ -192,9 +192,9 @@ void main() {
           check(Fraction.tryParse('3 ')).isNotNull().isFraction(3);
         });
         test('error', () {
-          check(Fraction.tryParse('')).isNull();
-          check(Fraction.tryParse('1.23')).isNull();
-          check(Fraction.tryParse('1/2/3')).isNull();
+          check(Fraction.tryParse('')).isNull;
+          check(Fraction.tryParse('1.23')).isNull;
+          check(Fraction.tryParse('1/2/3')).isNull;
         });
       });
       group('positive', () {
@@ -228,7 +228,7 @@ void main() {
           final seen = <Fraction>{};
           final fractions = Fraction.positive.take(100000);
           for (final fraction in fractions) {
-            check(seen.add(fraction)).isTrue();
+            check(seen.add(fraction)).isTrue;
           }
         });
       });
@@ -243,21 +243,21 @@ void main() {
           // denominator is less than n
           check(
             Fraction.farey(n, ascending: true).map((each) => each.denominator),
-          ).every((it) => it.isLessOrEqual(n));
+          ).every(.it()..isLessOrEqual(n));
           check(
             Fraction.farey(n, ascending: false).map((each) => each.denominator),
-          ).every((it) => it.isLessOrEqual(n));
+          ).every(.it()..isLessOrEqual(n));
           // sequence is strictly ordered
           check(
             naturalComparable<Fraction>.isStrictlyOrdered(
               Fraction.farey(n, ascending: true),
             ),
-          ).isTrue();
+          ).isTrue;
           check(
             naturalComparable<Fraction>.reversed.isStrictlyOrdered(
               Fraction.farey(n, ascending: false),
             ),
-          ).isTrue();
+          ).isTrue;
         }
 
         test(
@@ -328,32 +328,32 @@ void main() {
     });
     group('testing', () {
       test('isFinite', () {
-        check(Fraction.zero.isFinite).isTrue();
-        check(Fraction.nan.isFinite).isFalse();
-        check(Fraction.infinity.isFinite).isFalse();
-        check(Fraction.negativeInfinity.isFinite).isFalse();
+        check(Fraction.zero.isFinite).isTrue;
+        check(Fraction.nan.isFinite).isFalse;
+        check(Fraction.infinity.isFinite).isFalse;
+        check(Fraction.negativeInfinity.isFinite).isFalse;
       });
       test('isNan', () {
-        check(Fraction.zero.isNaN).isFalse();
-        check(Fraction.nan.isNaN).isTrue();
-        check(Fraction.infinity.isNaN).isFalse();
-        check(Fraction.negativeInfinity.isNaN).isFalse();
+        check(Fraction.zero.isNaN).isFalse;
+        check(Fraction.nan.isNaN).isTrue;
+        check(Fraction.infinity.isNaN).isFalse;
+        check(Fraction.negativeInfinity.isNaN).isFalse;
       });
       test('isInfinite', () {
-        check(Fraction.zero.isInfinite).isFalse();
-        check(Fraction.nan.isInfinite).isFalse();
-        check(Fraction.infinity.isInfinite).isTrue();
-        check(Fraction.negativeInfinity.isInfinite).isTrue();
+        check(Fraction.zero.isInfinite).isFalse;
+        check(Fraction.nan.isInfinite).isFalse;
+        check(Fraction.infinity.isInfinite).isTrue;
+        check(Fraction.negativeInfinity.isInfinite).isTrue;
       });
       test('isNegative', () {
-        check(Fraction(1).isNegative).isFalse();
-        check(Fraction(-1).isNegative).isTrue();
-        check(Fraction(1, -1).isNegative).isTrue();
-        check(Fraction(-1, -1).isNegative).isFalse();
-        check(Fraction.zero.isNegative).isFalse();
-        check(Fraction.nan.isNegative).isFalse();
-        check(Fraction.infinity.isNegative).isFalse();
-        check(Fraction.negativeInfinity.isNegative).isTrue();
+        check(Fraction(1).isNegative).isFalse;
+        check(Fraction(-1).isNegative).isTrue;
+        check(Fraction(1, -1).isNegative).isTrue;
+        check(Fraction(-1, -1).isNegative).isFalse;
+        check(Fraction.zero.isNegative).isFalse;
+        check(Fraction.nan.isNegative).isFalse;
+        check(Fraction.infinity.isNegative).isFalse;
+        check(Fraction.negativeInfinity.isNegative).isTrue;
       });
     });
     group('arithmetic', () {
@@ -514,34 +514,34 @@ void main() {
     });
     group('comparing', () {
       test('close', () {
-        check(Fraction(1, 2).closeTo(Fraction(1, 3), 0.1)).isFalse();
-        check(Fraction(1, 2).closeTo(Fraction(2, 4), 0.1)).isTrue();
-        check(Fraction(1, 2).closeTo(Fraction(3, 5), 0.2)).isTrue();
-        check(Fraction.nan.closeTo(Fraction(1, 2), 0.1)).isFalse();
-        check(Fraction(1, 2).closeTo(Fraction.nan, 0.1)).isFalse();
-        check(Fraction.nan.closeTo(Fraction.nan, 0.1)).isFalse();
-        check(Fraction.infinity.closeTo(Fraction(1, 2), 0.1)).isFalse();
-        check(Fraction(1, 2).closeTo(Fraction.infinity, 0.1)).isFalse();
-        check(Fraction.infinity.closeTo(Fraction.infinity, 0.1)).isFalse();
-        check(Fraction.negativeInfinity.closeTo(Fraction(1, 2), 0.1)).isFalse();
-        check(Fraction(1, 2).closeTo(Fraction.negativeInfinity, 0.1)).isFalse();
+        check(Fraction(1, 2).closeTo(Fraction(1, 3), 0.1)).isFalse;
+        check(Fraction(1, 2).closeTo(Fraction(2, 4), 0.1)).isTrue;
+        check(Fraction(1, 2).closeTo(Fraction(3, 5), 0.2)).isTrue;
+        check(Fraction.nan.closeTo(Fraction(1, 2), 0.1)).isFalse;
+        check(Fraction(1, 2).closeTo(Fraction.nan, 0.1)).isFalse;
+        check(Fraction.nan.closeTo(Fraction.nan, 0.1)).isFalse;
+        check(Fraction.infinity.closeTo(Fraction(1, 2), 0.1)).isFalse;
+        check(Fraction(1, 2).closeTo(Fraction.infinity, 0.1)).isFalse;
+        check(Fraction.infinity.closeTo(Fraction.infinity, 0.1)).isFalse;
+        check(Fraction.negativeInfinity.closeTo(Fraction(1, 2), 0.1)).isFalse;
+        check(Fraction(1, 2).closeTo(Fraction.negativeInfinity, 0.1)).isFalse;
         check(Fraction.negativeInfinity.closeTo(Fraction.negativeInfinity, 0.1))
-            .isFalse();
+            .isFalse;
       });
       test('equals', () {
-        check(Fraction(2, 3) == Fraction(2, 3)).isTrue();
-        check(Fraction(2, 3) == Fraction(4, 5)).isFalse();
-        check(Fraction(4, 5) == Fraction(2, 3)).isFalse();
-        check(Fraction.nan == Fraction(2, 3)).isFalse();
-        check(Fraction(2, 3) == Fraction.nan).isFalse();
-        check(Fraction.nan == Fraction.nan).isFalse();
-        check(Fraction.infinity == Fraction.infinity).isTrue();
-        check(Fraction.negativeInfinity == Fraction.negativeInfinity).isTrue();
+        check(Fraction(2, 3) == Fraction(2, 3)).isTrue;
+        check(Fraction(2, 3) == Fraction(4, 5)).isFalse;
+        check(Fraction(4, 5) == Fraction(2, 3)).isFalse;
+        check(Fraction.nan == Fraction(2, 3)).isFalse;
+        check(Fraction(2, 3) == Fraction.nan).isFalse;
+        check(Fraction.nan == Fraction.nan).isFalse;
+        check(Fraction.infinity == Fraction.infinity).isTrue;
+        check(Fraction.negativeInfinity == Fraction.negativeInfinity).isTrue;
       });
       test('hash', () {
         check(Fraction(2, 3).hashCode).equals(Fraction(2, 3).hashCode);
         check(Fraction(2, 3).hashCode)
-            .not((it) => it.equals(Fraction(3, 2).hashCode));
+            .not(.it()..equals(Fraction(3, 2).hashCode));
       });
       test('compareTo', () {
         check(Fraction(2, 3).compareTo(Fraction(2, 3))).equals(0);
@@ -562,29 +562,29 @@ void main() {
         check(Fraction.infinity.compareTo(Fraction.nan)).equals(-1);
       });
       test('<', () {
-        check(Fraction(2, 3) < Fraction(2, 3)).isFalse();
-        check(Fraction(2, 3) < Fraction(4, 5)).isTrue();
-        check(Fraction(4, 5) < Fraction(2, 3)).isFalse();
+        check(Fraction(2, 3) < Fraction(2, 3)).isFalse;
+        check(Fraction(2, 3) < Fraction(4, 5)).isTrue;
+        check(Fraction(4, 5) < Fraction(2, 3)).isFalse;
       });
       test('<=', () {
-        check(Fraction(2, 3) <= Fraction(2, 3)).isTrue();
-        check(Fraction(2, 3) <= Fraction(4, 5)).isTrue();
-        check(Fraction(4, 5) <= Fraction(2, 3)).isFalse();
+        check(Fraction(2, 3) <= Fraction(2, 3)).isTrue;
+        check(Fraction(2, 3) <= Fraction(4, 5)).isTrue;
+        check(Fraction(4, 5) <= Fraction(2, 3)).isFalse;
       });
       test('>=', () {
-        check(Fraction(2, 3) >= Fraction(2, 3)).isTrue();
-        check(Fraction(2, 3) >= Fraction(4, 5)).isFalse();
-        check(Fraction(4, 5) >= Fraction(2, 3)).isTrue();
+        check(Fraction(2, 3) >= Fraction(2, 3)).isTrue;
+        check(Fraction(2, 3) >= Fraction(4, 5)).isFalse;
+        check(Fraction(4, 5) >= Fraction(2, 3)).isTrue;
       });
       test('>', () {
-        check(Fraction(2, 3) > Fraction(2, 3)).isFalse();
-        check(Fraction(2, 3) > Fraction(4, 5)).isFalse();
-        check(Fraction(4, 5) > Fraction(2, 3)).isTrue();
+        check(Fraction(2, 3) > Fraction(2, 3)).isFalse;
+        check(Fraction(2, 3) > Fraction(4, 5)).isFalse;
+        check(Fraction(4, 5) > Fraction(2, 3)).isTrue;
       });
       test('==', () {
-        check(Fraction(2, 3) == Fraction(2, 3)).isTrue();
-        check(Fraction(2, 3) == Fraction(4, 5)).isFalse();
-        check(Fraction(4, 5) == Fraction(2, 3)).isFalse();
+        check(Fraction(2, 3) == Fraction(2, 3)).isTrue;
+        check(Fraction(2, 3) == Fraction(4, 5)).isFalse;
+        check(Fraction(4, 5) == Fraction(2, 3)).isFalse;
       });
     });
     group('converting', () {
@@ -599,7 +599,7 @@ void main() {
       test('toDouble', () {
         check(Fraction(1, 2).toDouble()).equals(0.5);
         check(Fraction(5, 4).toDouble()).equals(1.25);
-        check(Fraction.nan.toDouble().isNaN).isTrue();
+        check(Fraction.nan.toDouble().isNaN).isTrue;
         check(Fraction.infinity.toDouble()).equals(double.infinity);
         check(Fraction.negativeInfinity.toDouble())
             .equals(double.negativeInfinity);

@@ -17,7 +17,7 @@ void main() {
           );
           check(graph.vertices).length.equals(vertexCount);
           if (vertexCount < 2) {
-            check(graph.edges).isEmpty();
+            check(graph.edges).isEmpty;
           }
           expectInvariants(graph);
         }
@@ -26,7 +26,7 @@ void main() {
           probability: 0,
         );
         check(graph.vertices).length.equals(3);
-        check(graph.edges).isEmpty();
+        check(graph.edges).isEmpty;
         expectInvariants(graph);
       });
       test('complete', () {
@@ -43,7 +43,7 @@ void main() {
           isDirected: true,
           random: Random(235711),
         ).randomErdosRenyi(vertexCount: 10, probability: 0.5);
-        check(graph.isDirected).isTrue();
+        check(graph.isDirected).isTrue;
         check(graph.vertices).length.equals(10);
         check(graph.edges.length)
           ..isGreaterThan(40)
@@ -55,7 +55,7 @@ void main() {
           isDirected: false,
           random: Random(131719),
         ).randomErdosRenyi(vertexCount: 10, probability: 0.5);
-        check(graph.isDirected).isFalse();
+        check(graph.isDirected).isFalse;
         check(graph.vertices).length.equals(10);
         check(graph.edges.length)
           ..isGreaterThan(40)

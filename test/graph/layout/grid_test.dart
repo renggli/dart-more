@@ -11,7 +11,7 @@ void main() {
       );
       const strategy = GridLayout<String>();
       final result = strategy.layout(input);
-      check(result.positions).isEmpty();
+      check(result.positions).isEmpty;
       check(result.bounds.width).equals(0.0);
     });
 

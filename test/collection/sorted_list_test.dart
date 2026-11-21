@@ -41,7 +41,7 @@ void allSortedListTests(
   });
   test('empty list', () {
     final list = createSortedList<int>([]);
-    check(list).isEmpty();
+    check(list).isEmpty;
   });
   test('accessors', () {
     final list = createSortedList<int>([5, 1, 3]);
@@ -54,14 +54,14 @@ void allSortedListTests(
   });
   test('contains', () {
     final list = createSortedList<int>([5, 1, 3]);
-    check(list.contains(0)).isFalse();
-    check(list.contains(1)).isTrue();
-    check(list.contains(2)).isFalse();
-    check(list.contains(3)).isTrue();
-    check(list.contains(4)).isFalse();
-    check(list.contains(5)).isTrue();
-    check(list.contains(6)).isFalse();
-    check(list.contains(null)).isFalse();
+    check(list.contains(0)).isFalse;
+    check(list.contains(1)).isTrue;
+    check(list.contains(2)).isFalse;
+    check(list.contains(3)).isTrue;
+    check(list.contains(4)).isFalse;
+    check(list.contains(5)).isTrue;
+    check(list.contains(6)).isFalse;
+    check(list.contains(null)).isFalse;
   });
   test('contains and remove with custom comparator on distinct objects', () {
     const a = (id: 1, name: 'first');
@@ -69,13 +69,13 @@ void allSortedListTests(
     final list = createSortedList<({int id, String name})>([
       a,
     ], comparator: (x, y) => x.id.compareTo(y.id));
-    check(list.contains(a)).isTrue();
-    check(list.contains(b)).isFalse();
+    check(list.contains(a)).isTrue;
+    check(list.contains(b)).isFalse;
     check(list.indexOf(b)).equals(-1);
-    check(list.remove(b)).isFalse();
+    check(list.remove(b)).isFalse;
     check(list).deepEquals([a]);
-    check(list.remove(a)).isTrue();
-    check(list).isEmpty();
+    check(list.remove(a)).isTrue;
+    check(list).isEmpty;
   });
   test('occurrences', () {
     final list = createSortedList<int>([1, 2, 2, 3, 3, 3, 4, 4, 4, 4]);
@@ -109,15 +109,15 @@ void allSortedListTests(
   test('clear', () {
     final list = createSortedList<int>([5, 1, 3]);
     list.clear();
-    check(list).isEmpty();
+    check(list).isEmpty;
   });
   test('remove', () {
     final list = createSortedList<int>([5, 1, 3]);
     check(list).deepEquals([1, 3, 5]);
-    check(list.remove(3)).isTrue();
+    check(list.remove(3)).isTrue;
     check(list).deepEquals([1, 5]);
-    check(list.remove(3)).isFalse();
-    check(list.remove(null)).isFalse();
+    check(list.remove(3)).isFalse;
+    check(list.remove(null)).isFalse;
   });
   test('remove (not growable)', () {
     final list = createSortedList<int>([5, 1, 3], growable: false);
@@ -141,7 +141,7 @@ void allSortedListTests(
   test('removeAll', () {
     final list = createSortedList<int>([5, 1, 3]);
     check(list.removeAll()).deepEquals([1, 3, 5]);
-    check(list).isEmpty();
+    check(list).isEmpty;
   });
   test('removeWhere', () {
     final list = createSortedList<int>([5, 1, 3, 2, 4]);
@@ -174,7 +174,7 @@ void allSortedListTests(
     final indexB = records.lastIndexOf((1, 'b'));
     check(indexA).isGreaterThan(-1);
     check(indexB).isGreaterThan(-1);
-    check(indexA != indexB).isTrue();
+    check(indexA != indexB).isTrue;
     check(records.lastIndexOf((1, 'c'))).equals(-1);
     check(records.occurrences((1, 'a'))).equals(1);
     check(records.occurrences((1, 'c'))).equals(0);
@@ -206,15 +206,15 @@ void allSortedListTests(
     // Verify all values are present.
     check(list).length.equals(values.length);
     for (final value in values) {
-      check(list.contains(value)).isTrue();
+      check(list.contains(value)).isTrue;
     }
     // Remove values in different order.
     values.shuffle(random);
     for (final value in values) {
-      check(list.remove(value)).isTrue();
+      check(list.remove(value)).isTrue;
     }
     // Verify all values are gone.
-    check(list).isEmpty();
+    check(list).isEmpty;
   });
   test('errors', () {
     final list = createSortedList<int>([5, 1, 3]);

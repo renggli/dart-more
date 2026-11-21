@@ -35,11 +35,11 @@ void main() {
         }
         check(() => tree[-1])
             .throws<RangeError>()
-            .has((e) => e.invalidValue, 'invalidValue')
+            .has('invalidValue', (e) => e.invalidValue)
             .equals(-1);
         check(() => tree[list.length])
             .throws<RangeError>()
-            .has((e) => e.invalidValue, 'invalidValue')
+            .has('invalidValue', (e) => e.invalidValue)
             .equals(list.length);
         if (list.isEmpty) {
           check(() => tree.first).throws<StateError>();
@@ -96,14 +96,14 @@ void main() {
         test('iterator reads live values on earlier mutation', () {
           final copy = FenwickTree.of(list);
           final iter = copy.iterator;
-          check(iter.moveNext()).isTrue();
+          check(iter.moveNext()).isTrue;
           check(iter.current).equals(list[0]);
           copy.update(0, 100);
           for (var i = 1; i < list.length; i++) {
-            check(iter.moveNext()).isTrue();
+            check(iter.moveNext()).isTrue;
             check(iter.current).equals(list[i]);
           }
-          check(iter.moveNext()).isFalse();
+          check(iter.moveNext()).isFalse;
         });
         test('update', () {
           final copy = FenwickTree.of(tree);

@@ -6,7 +6,7 @@ void main() {
   group('vertexColoring', () {
     test('empty', () {
       final graph = GraphFactory<int, int>().empty();
-      check(graph.vertexColoring()).isEmpty();
+      check(graph.vertexColoring()).isEmpty;
     });
     test('separate vertices', () {
       final graph = Graph<int, void>(isDirected: false);

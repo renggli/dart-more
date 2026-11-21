@@ -19,8 +19,8 @@ void main() {
     test('custom name and message', () {
       check(() => checkNonZeroPositive(0, 'customName', 'customMessage'))
           .throws<RangeError>()
-        ..has((e) => e.name, 'name').equals('customName')
-        ..has((e) => e.message, 'message').equals('customMessage');
+        ..has('name', (e) => e.name).equals('customName')
+        ..has('message', (e) => e.message).equals('customMessage');
     });
   });
 }

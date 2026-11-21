@@ -6,7 +6,7 @@ void main() {
   group('chunked', () {
     test('empty', () {
       final iterable = <int>[].chunked(2);
-      check(iterable).isEmpty();
+      check(iterable).isEmpty;
     });
     test('even', () {
       final iterable = [1, 2, 3, 4].chunked(2);
@@ -29,7 +29,7 @@ void main() {
     group('with padding', () {
       test('empty', () {
         final iterable = <int>[].chunkedWithPadding(2, 0);
-        check(iterable).isEmpty();
+        check(iterable).isEmpty;
       });
       test('even', () {
         final iterable = [1, 2, 3, 4].chunkedWithPadding(2, 0);

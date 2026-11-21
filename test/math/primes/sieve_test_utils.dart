@@ -13,8 +13,8 @@ void primeSieveTests(PrimeSieve Function(int n) create) {
   });
   test('primes (edge cases)', () {
     check(() => create(-1).primes).throws<RangeError>();
-    check(create(0).primes).isEmpty();
-    check(create(1).primes).isEmpty();
+    check(create(0).primes).isEmpty;
+    check(create(1).primes).isEmpty;
     check(create(2).primes).deepEquals([2]);
   });
   test('isPrime', () {

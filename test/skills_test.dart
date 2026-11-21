@@ -75,7 +75,7 @@ void main() {
         vertices: [root],
         successorsOf: (n) => n.children,
       );
-      check(cyclic).isFalse();
+      check(cyclic).isFalse;
 
       final layoutResult = const TreeLayout<Node>().layout(
         LayoutInput<Node>(
@@ -96,9 +96,9 @@ void main() {
         isDirected: false,
         vertexStrategy: StorageStrategy.positiveInteger(),
       );
-      check(directed.isDirected).isTrue();
-      check(undirected.isDirected).isFalse();
-      check(intGraph.vertices).isEmpty();
+      check(directed.isDirected).isTrue;
+      check(undirected.isDirected).isFalse;
+      check(intGraph.vertices).isEmpty;
 
       graph.addVertex('A');
       graph.addEdge('A', 'B', value: 3.5);
@@ -131,7 +131,7 @@ graph TD
       check(star.vertices.length).equals(7);
       check(tree.vertices.length).equals(15);
       check(random.vertices.length).equals(10);
-      check(atlasGraph.vertices).isNotEmpty();
+      check(atlasGraph.vertices).isNotEmpty;
       check(fromMermaid.vertices.length).equals(3);
 
       final result = graph.layout(
@@ -205,7 +205,7 @@ graph TD
       final ds = DisjointSet(['a', 'b', 'c', 'd']);
       ds.union('a', 'b');
       final sameComponent = ds.find('a') == ds.find('b');
-      check(sameComponent).isTrue();
+      check(sameComponent).isTrue;
 
       final fenwick = FenwickTree.of([1, 2, 3, 4, 5]);
       fenwick.update(2, 10);
@@ -236,7 +236,7 @@ graph TD
       check(cart.length).equals(4);
 
       final perm = [1, 2, 3];
-      check(perm.nextPermutation()).isTrue();
+      check(perm.nextPermutation()).isTrue;
       check(perm).deepEquals([1, 3, 2]);
 
       final nums = [1, 2, 3, 4, 5];
@@ -388,30 +388,30 @@ graph TD
       const emoticons = UnicodeBlockCharMatcher.emoticons;
       const basicLatin = UnicodeBlockCharMatcher.basicLatin;
 
-      check(isA.anyOf('abc')).isTrue();
-      check(lowerHex.anyOf('abc')).isTrue();
-      check(vowels.anyOf('abc')).isTrue();
-      check(consonants.anyOf('abc')).isTrue();
-      check(ascii.anyOf('abc')).isTrue();
-      check(digit.anyOf('123')).isTrue();
-      check(letter.anyOf('abc')).isTrue();
-      check(alnum.anyOf('a1')).isTrue();
-      check(upper.anyOf('A')).isTrue();
-      check(lower.anyOf('a')).isTrue();
-      check(punct.anyOf('!')).isTrue();
-      check(space.anyOf(' ')).isTrue();
-      check(unicodeLetter.anyOf('ä')).isTrue();
-      check(greekScript.anyOf('α')).isTrue();
-      check(emoticons.anyOf('😀')).isTrue();
-      check(basicLatin.anyOf('a')).isTrue();
+      check(isA.anyOf('abc')).isTrue;
+      check(lowerHex.anyOf('abc')).isTrue;
+      check(vowels.anyOf('abc')).isTrue;
+      check(consonants.anyOf('abc')).isTrue;
+      check(ascii.anyOf('abc')).isTrue;
+      check(digit.anyOf('123')).isTrue;
+      check(letter.anyOf('abc')).isTrue;
+      check(alnum.anyOf('a1')).isTrue;
+      check(upper.anyOf('A')).isTrue;
+      check(lower.anyOf('a')).isTrue;
+      check(punct.anyOf('!')).isTrue;
+      check(space.anyOf(' ')).isTrue;
+      check(unicodeLetter.anyOf('ä')).isTrue;
+      check(greekScript.anyOf('α')).isTrue;
+      check(emoticons.anyOf('😀')).isTrue;
+      check(basicLatin.anyOf('a')).isTrue;
 
       final identifierStart =
           const CharMatcher.letter() | CharMatcher.isChar('_');
       final identifierPart = identifierStart | const CharMatcher.digit();
       final nonAsciiWhitespace =
           UnicodeCharMatcher.whiteSpace() & ~const CharMatcher.ascii();
-      check(identifierPart.everyOf('foo_1')).isTrue();
-      check(nonAsciiWhitespace.anyOf(' ')).isFalse();
+      check(identifierPart.everyOf('foo_1')).isTrue;
+      check(nonAsciiWhitespace.anyOf(' ')).isFalse;
 
       const input = '  Hello,   World! 123  ';
       final digitsOnly = const CharMatcher.digit().retainFrom(input);
@@ -436,14 +436,14 @@ graph TD
       check(redacted).equals('  Hello,   World! ###  ');
       check(collapsed).equals('Hello, World! 123');
       check(trimmed).equals('Hello,   World! 123');
-      check(trimLead).isNotEmpty();
-      check(trimTrail).isNotEmpty();
-      check(allAscii).isTrue();
-      check(hasDigit).isTrue();
-      check(noControl).isTrue();
+      check(trimLead).isNotEmpty;
+      check(trimTrail).isNotEmpty;
+      check(allAscii).isTrue;
+      check(hasDigit).isTrue;
+      check(noControl).isTrue;
       check(digitCount).equals(3);
       check(firstDigitIdx).equals(18);
-      check(words).isNotEmpty();
+      check(words).isNotEmpty;
     });
   });
 
@@ -476,15 +476,15 @@ graph TD
       final twoLongest = lengthThenAlpha.largest(words, 2);
       final isShorter = byLength.lessThan('fig', 'apple');
 
-      check(ordered).isTrue();
-      check(strictlyOrdered).isFalse();
+      check(ordered).isTrue;
+      check(strictlyOrdered).isFalse;
       check(shortest).equals('fig');
       check(longest).equals('banana');
       check(min).equals('fig');
       check(max).equals('banana');
       check(twoShortest).deepEquals(['fig', 'kiwi']);
       check(twoLongest).deepEquals(['banana', 'apple']);
-      check(isShorter).isTrue();
+      check(isShorter).isTrue;
 
       final list = [10, 20, 20, 20, 30];
       const comp = naturalComparable<num>;
@@ -500,8 +500,8 @@ graph TD
       final isOlder = v1 < v2;
       final inRange = v1.between(const Version(1, 0), const Version(1, 5));
       final clamped = v2.clip(const Version(1, 0), const Version(1, 5));
-      check(isOlder).isTrue();
-      check(inRange).isTrue();
+      check(isOlder).isTrue;
+      check(inRange).isTrue;
       check(clamped.compareTo(const Version(1, 5))).equals(0);
     });
   });
@@ -524,7 +524,7 @@ graph TD
       check(fact).equals(120);
       check(bigComb).equals(BigInt.from(15890700));
       check(base10Digits).deepEquals([4, 3, 2, 1]);
-      check(primeCheck).isTrue();
+      check(primeCheck).isTrue;
       check(primesUpTo30).deepEquals([2, 3, 5, 7, 11, 13, 17, 19, 23, 29]);
 
       final polyVal = [1, 2, 3].polynomial(5);
@@ -537,7 +537,7 @@ graph TD
       check(invHyp).isCloseTo(0.5, 1e-9);
       check(deg).isCloseTo(180.0, 1e-9);
       check(clamped).equals(10);
-      check(inBounds).isTrue();
+      check(inBounds).isTrue;
 
       final popCount = 0x2d.bitCount;
       final isPow2 = 64.hasSingleBit;
@@ -549,7 +549,7 @@ graph TD
       final ulp = 1.0.ulp;
 
       check(popCount).equals(4);
-      check(isPow2).isTrue();
+      check(isPow2).isTrue;
       check(floorPow2).equals(32);
       check(ceilPow2).equals(64);
       check(toggled).equals(3);
@@ -595,7 +595,7 @@ graph TD
       check(conj).equals(const Complex(3, -4));
       check(quot.real).isCloseTo(3.5, 1e-9);
       check(rootsOfUnity.length).equals(4);
-      check(isNearMinusOne).isTrue();
+      check(isNearMinusOne).isTrue;
 
       const q1 = Quaternion(1, 2, 3, 4);
       final rotZ = Quaternion.fromAxis(const [0, 0, 1], 1.5707963267948966);
@@ -609,7 +609,7 @@ graph TD
       check(fromVecs.abs()).isCloseTo(1.0, 1e-9);
       check(qParsed).equals(const Quaternion(1, 2, -3, 4));
       check(unit.abs()).isCloseTo(1.0, 1e-9);
-      check(identityCheck).isTrue();
+      check(identityCheck).isTrue;
     });
   });
 
@@ -630,7 +630,7 @@ graph TD
       );
       final startOfMonth = dt.truncateTo(TimeUnit.month);
 
-      check(leap).isTrue();
+      check(leap).isTrue;
       check(daysInMonth).equals(29);
       check(daysInYear).equals(366);
       check(quarter).equals(1);
@@ -676,7 +676,7 @@ graph TD
       final a = Interval<num>(1, 5);
       final b = Interval<num>(4, 8);
       final point = Interval<num>(3);
-      check(point.isSingle).isTrue();
+      check(point.isSingle).isTrue;
 
       final has3 = a.contains(3);
       final enclosesSub = a.encloses(Interval<num>(2, 4));
@@ -685,9 +685,9 @@ graph TD
       final spanned = a.union(b);
       final remaining = a.difference(b);
 
-      check(has3).isTrue();
-      check(enclosesSub).isTrue();
-      check(overlaps).isTrue();
+      check(has3).isTrue;
+      check(enclosesSub).isTrue;
+      check(overlaps).isTrue;
       check(common).equals(Interval<num>(4, 5));
       check(spanned).equals(Interval<num>(1, 8));
       check(remaining).deepEquals([Interval<num>(1, 4)]);
@@ -748,7 +748,7 @@ graph TD
       final currentSize = await cache.size();
 
       check(len).equals(5);
-      check(present).isNull();
+      check(present).isNull;
       check(many).deepEquals({'a': 1, 'bb': 2});
       check(currentSize).equals(0);
     });
@@ -767,11 +767,11 @@ graph TD
       final lazyVal = absent.orElseGet(() => 'fallback');
       final nullableVal = absent.valueOrNull;
 
-      check(fromNullable.isAbsent).isTrue();
+      check(fromNullable.isAbsent).isTrue;
       check(viaExt.value).equals('world');
       check(val).equals(5);
       check(lazyVal).equals('fallback');
-      check(nullableVal).isNull();
+      check(nullableVal).isNull;
 
       const right = Either<String, int>.right(42);
       const left = Either<String, int>.left('Invalid input');
@@ -783,8 +783,8 @@ graph TD
       final mapped = right.mapRight((n) => n + 1);
       final swapped = right.swap();
 
-      check(left.isLeft).isTrue();
-      check(condEither.isLeft).isTrue();
+      check(left.isLeft).isTrue;
+      check(condEither.isLeft).isTrue;
       check(message).equals('Success: 84');
       check(mapped.rightValue).equals(43);
       check(swapped.leftValue).equals(42);
@@ -801,7 +801,7 @@ graph TD
       check(curriedSum).equals(6);
       check(boundSum).equals(60);
       check(id).equals(7);
-      check(alwaysTrue).isTrue();
+      check(alwaysTrue).isTrue;
     });
   });
 
@@ -819,8 +819,8 @@ graph TD
       }
       final hunks = matcher.groupedOperations(context: 2);
       check(similarity).isGreaterThan(0.5);
-      check(blocks).isNotEmpty();
-      check(hunks).isNotEmpty();
+      check(blocks).isNotEmpty;
+      check(hunks).isNotEmpty;
 
       const sourceText = 'apple\nbanana\ncherry';
       const targetText = 'apple\nblueberry\ncherry';
@@ -838,10 +838,10 @@ graph TD
         targetText,
       );
 
-      check(unified).isNotEmpty();
-      check(readable).isNotEmpty();
-      check(contextDiff).isNotEmpty();
-      check(normalDiff).isNotEmpty();
+      check(unified).isNotEmpty;
+      check(readable).isNotEmpty;
+      check(contextDiff).isNotEmpty;
+      check(normalDiff).isNotEmpty;
 
       const candidates = ['apple', 'ape', 'peach', 'puppy'];
       final best = candidates.closeMatches('appel', count: 2, cutoff: 0.6);
@@ -902,7 +902,7 @@ graph TD
       check(len).equals(3);
       check(name).equals('Alice');
       check(age).equals(30);
-      check(active).isTrue();
+      check(active).isTrue;
       check(updated).equals(('Alice', 31, false));
 
       const pair = (10, 20);

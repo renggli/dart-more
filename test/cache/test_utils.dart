@@ -28,7 +28,7 @@ void statelessCacheTests(NewCache<int, String> newCache) {
   });
   test('no present value', () async {
     final cache = newCache(immediateFailingLoader);
-    check(await cache.getIfPresent(1)).isNull();
+    check(await cache.getIfPresent(1)).isNull;
   });
   test('set present value', () async {
     final cache = newCache(immediateLoader);
@@ -93,7 +93,7 @@ void cacheEvictionTest(
       check(await cache.getIfPresent(key)).equals('$key');
     }
     for (final key in absent) {
-      check(await cache.getIfPresent(key)).isNull();
+      check(await cache.getIfPresent(key)).isNull;
     }
   });
 }
@@ -110,7 +110,7 @@ void persistentCacheTests(NewCache<int, String> newCache) {
   test('load throwing value has no side-effect', () async {
     final cache = newCache(immediateFailingLoader);
     await check(cache.get(1)).throws<StateError>();
-    check(await cache.getIfPresent(1)).isNull();
+    check(await cache.getIfPresent(1)).isNull;
   });
   test('set and get', () async {
     final cache = newCache(immediateFailingLoader);
@@ -126,13 +126,13 @@ void persistentCacheTests(NewCache<int, String> newCache) {
     final cache = newCache(immediateFailingLoader);
     await cache.set(1, 'foo');
     await cache.invalidate(1);
-    check(await cache.getIfPresent(1)).isNull();
+    check(await cache.getIfPresent(1)).isNull;
   });
   test('set, invalidate all, get', () async {
     final cache = newCache(immediateFailingLoader);
     await cache.set(1, 'foo');
     await cache.invalidateAll();
-    check(await cache.getIfPresent(1)).isNull();
+    check(await cache.getIfPresent(1)).isNull;
   });
   test(
     'bulk operations (getAll, setAll, putAll, invalidateAll with keys)',
@@ -146,9 +146,9 @@ void persistentCacheTests(NewCache<int, String> newCache) {
       check(await cache.getIfPresent(2)).equals('bb');
       check(await cache.getIfPresent(3)).equals('c');
       await cache.invalidateAll([1, 3]);
-      check(await cache.getIfPresent(1)).isNull();
+      check(await cache.getIfPresent(1)).isNull;
       check(await cache.getIfPresent(2)).equals('bb');
-      check(await cache.getIfPresent(3)).isNull();
+      check(await cache.getIfPresent(3)).isNull;
     },
   );
   test('get with immediate value is persistent', () async {
@@ -174,14 +174,14 @@ void persistentCacheTests(NewCache<int, String> newCache) {
     await loaded1;
     await loaded2;
     check(await cache.getIfPresent(1)).equals('1');
-    check(await cache.getIfPresent(2)).isNull();
+    check(await cache.getIfPresent(2)).isNull;
   });
   test('get with invalidated cache is not persistent', () async {
     final cache = newCache(futureDelayedLoader);
     final loaded = cache.get(1);
     await cache.invalidateAll();
     await loaded;
-    check(await cache.getIfPresent(1)).isNull();
+    check(await cache.getIfPresent(1)).isNull;
   });
   test('reap is invariant', () async {
     final cache = newCache(immediateFailingLoader);

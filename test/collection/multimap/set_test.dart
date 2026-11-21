@@ -9,15 +9,15 @@ void main() {
     group('constructor', () {
       test('empty', () {
         final map = SetMultimap<String, int>();
-        check(map).isEmpty();
+        check(map).isEmpty;
         check(map).length.equals(0);
-        check(map.isEmpty).isTrue();
-        check(map.isNotEmpty).isFalse();
-        check(map.asMap()).isEmpty();
+        check(map.isEmpty).isTrue;
+        check(map.isNotEmpty).isFalse;
+        check(map.asMap()).isEmpty;
         check(map.asMap().length).equals(0);
-        check(map.keys).isEmpty();
-        check(map.values).isEmpty();
-        check(map.entries).isEmpty();
+        check(map.keys).isEmpty;
+        check(map.values).isEmpty;
+        check(map.entries).isEmpty;
       });
       test('custom existing map retains length', () {
         final map = SetMultimap<String, int>(
@@ -27,8 +27,8 @@ void main() {
           },
         );
         check(map.length).equals(3);
-        check(map.isEmpty).isFalse();
-        check(map.isNotEmpty).isTrue();
+        check(map.isEmpty).isFalse;
+        check(map.isNotEmpty).isTrue;
         check(map.keys).deepEquals(['a', 'b']);
         check(map.values).deepEquals([1, 2, 3]);
       });
@@ -37,8 +37,8 @@ void main() {
           SetMultimap.fromIterables(['a', 'b', 'b'], [1, 2, 3]),
         );
         check(map).length.equals(3);
-        check(map.isEmpty).isFalse();
-        check(map.isNotEmpty).isTrue();
+        check(map.isEmpty).isFalse;
+        check(map.isNotEmpty).isTrue;
         check(map.keys).deepEquals(['a', 'b']);
         check(map.values).deepEquals([1, 2, 3]);
         check(map.entries).matchesEntries([('a', 1), ('b', 2), ('b', 3)]);
@@ -52,12 +52,12 @@ void main() {
       });
       test('identity', () {
         final map = SetMultimap<String, int>.identity();
-        check(map).isEmpty();
+        check(map).isEmpty;
         check(map).length.equals(0);
-        check(map.asMap()).isEmpty();
-        check(map.keys).isEmpty();
-        check(map.values).isEmpty();
-        check(map.entries).isEmpty();
+        check(map.asMap()).isEmpty;
+        check(map.keys).isEmpty;
+        check(map.values).isEmpty;
+        check(map.entries).isEmpty;
       });
       test('fromIterable', () {
         final map = SetMultimap<String, int>.fromIterable(
@@ -181,28 +181,28 @@ void main() {
     group('accessors', () {
       test('containsKey', () {
         final map = SetMultimap.fromIterables(['a', 'b', 'b'], [1, 2, 3]);
-        check(map.containsKey('a')).isTrue();
-        check(map.containsKey('b')).isTrue();
-        check(map.containsKey('c')).isFalse();
+        check(map.containsKey('a')).isTrue;
+        check(map.containsKey('b')).isTrue;
+        check(map.containsKey('c')).isFalse;
       });
       test('containsValue', () {
         final map = SetMultimap.fromIterables(['a', 'b', 'b'], [1, 2, 3]);
-        check(map.containsValue(1)).isTrue();
-        check(map.containsValue(2)).isTrue();
-        check(map.containsValue(3)).isTrue();
-        check(map.containsValue(4)).isFalse();
+        check(map.containsValue(1)).isTrue;
+        check(map.containsValue(2)).isTrue;
+        check(map.containsValue(3)).isTrue;
+        check(map.containsValue(4)).isFalse;
       });
       test('containsEntry', () {
         final map = SetMultimap.fromIterables(['a', 'b', 'b'], [1, 2, 3]);
-        check(map.containsEntry('a', 1)).isTrue();
-        check(map.containsEntry('a', 2)).isFalse();
-        check(map.containsEntry('c', 3)).isFalse();
+        check(map.containsEntry('a', 1)).isTrue;
+        check(map.containsEntry('a', 2)).isFalse;
+        check(map.containsEntry('c', 3)).isFalse;
       });
       test('lookup', () {
         final map = SetMultimap.fromIterables(['a', 'b', 'b'], [1, 2, 3]);
         check(map['b'].lookup(2)).equals(2);
         check(map['b'].lookup(3)).equals(3);
-        check(map['b'].lookup(4)).isNull();
+        check(map['b'].lookup(4)).isNull;
       });
     });
     group('modifiers', () {
@@ -238,7 +238,7 @@ void main() {
         final collection = map['b'];
         map.removeAll('b');
         check(map).length.equals(1);
-        check(collection).isEmpty();
+        check(collection).isEmpty;
       });
       test('removeAll with list', () {
         final map = SetMultimap.fromIterables(['a', 'b', 'b'], [1, 2, 3]);
@@ -251,7 +251,7 @@ void main() {
         final map = SetMultimap.fromIterables(['a', 'b', 'b'], [1, 2, 3]);
         map.removeAll('b', map['b']);
         check(map).length.equals(1);
-        check(map['b']).isEmpty();
+        check(map['b']).isEmpty;
       });
       test('replace', () {
         final map = SetMultimap.fromIterables(['a', 'b', 'b'], [1, 2, 3]);
@@ -271,8 +271,8 @@ void main() {
         final map = SetMultimap.fromIterables(['a', 'b', 'b'], [1, 2, 3]);
         final collection = map['b'];
         map.clear();
-        check(map).isEmpty();
-        check(collection).isEmpty();
+        check(map).isEmpty;
+        check(collection).isEmpty;
       });
     });
     group('views', () {
@@ -281,7 +281,7 @@ void main() {
           final map = SetMultimap<String, int>();
           final keyView1 = map['a'];
           final keyView2 = map['a'];
-          check(keyView1).not((it) => it.identicalTo(keyView2));
+          check(keyView1).not(.it()..identicalTo(keyView2));
           keyView1.add(1);
           check(keyView1).deepEquals({1});
           check(keyView2).deepEquals({1});
@@ -290,7 +290,7 @@ void main() {
           final map = SetMultimap.fromIterables(['a'], [1]);
           final keyView1 = map['a'];
           final keyView2 = map['a'];
-          check(keyView1).not((it) => it.identicalTo(keyView2));
+          check(keyView1).not(.it()..identicalTo(keyView2));
           keyView1.add(2);
           check(keyView1).deepEquals({1, 2});
           check(keyView2).deepEquals({1, 2});
@@ -301,9 +301,9 @@ void main() {
           final map = SetMultimap.fromIterables(['a', 'b', 'b'], [1, 2, 3]);
           final mapView = map.asMap();
           check(mapView['b']).isNotNull().deepEquals({2, 3});
-          check(mapView['c']).isNull();
-          check(mapView.containsKey('b')).isTrue();
-          check(mapView.containsKey('c')).isFalse();
+          check(mapView['c']).isNull;
+          check(mapView.containsKey('b')).isTrue;
+          check(mapView.containsKey('c')).isFalse;
           mapView['b'] = {4, 5, 6};
           check(map['b']).deepEquals({4, 5, 6});
           check(mapView['b']).isNotNull().deepEquals({4, 5, 6});
@@ -312,15 +312,15 @@ void main() {
           final map = SetMultimap.fromIterables(['a', 'b', 'b'], [1, 2, 3]);
           final mapView = map.asMap();
           mapView.clear();
-          check(map).isEmpty();
-          check(mapView).isEmpty();
+          check(map).isEmpty;
+          check(mapView).isEmpty;
         });
         test('remove', () {
           final map = SetMultimap.fromIterables(['a', 'b', 'b'], [1, 2, 3]);
           final mapView = map.asMap();
           check(mapView.remove('b')).isNotNull().deepEquals({2, 3});
-          check(mapView.remove('b')).isNull();
-          check(mapView.remove('c')).isNull();
+          check(mapView.remove('b')).isNull;
+          check(mapView.remove('c')).isNull;
           check(map.keys).deepEquals(['a']);
           check(mapView.keys).deepEquals(['a']);
         });
@@ -344,26 +344,26 @@ void main() {
         );
         map.add('k', a);
         final view = map['k'];
-        check(view.contains(a)).isTrue();
-        check(view.contains(b)).isFalse();
+        check(view.contains(a)).isTrue;
+        check(view.contains(b)).isFalse;
         final copied = view.toSet();
-        check(copied.contains(a)).isTrue();
-        check(copied.contains(b)).isFalse();
+        check(copied.contains(a)).isTrue;
+        check(copied.contains(b)).isFalse;
         view.addAll(view);
         check(view.length).equals(1);
         view.removeAll(view);
-        check(view.isEmpty).isTrue();
-        check(map.isEmpty).isTrue();
+        check(view.isEmpty).isTrue;
+        check(map.isEmpty).isTrue;
       });
       test('asMap containsValue and stale view aliasing', () {
         final map = SetMultimap<String, int>();
         final stale = map['x'];
         map.add('x', 1);
-        check(map.asMap().containsValue(map.asMap()['x'])).isTrue();
+        check(map.asMap().containsValue(map.asMap()['x'])).isTrue;
         map.addAll('x', stale);
         check(map['x']).deepEquals({1});
         map.removeAll('x', stale);
-        check(map.containsKey('x')).isFalse();
+        check(map.containsKey('x')).isFalse;
       });
     });
   });

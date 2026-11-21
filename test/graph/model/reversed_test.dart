@@ -8,9 +8,9 @@ void main() {
   group('reversed', () {
     test('empty', () {
       final graph = Graph<String, int>(isDirected: true).reversed;
-      check(graph.isDirected).isTrue();
-      check(graph.vertices).isEmpty();
-      check(graph.edges).isEmpty();
+      check(graph.isDirected).isTrue;
+      check(graph.vertices).isEmpty;
+      check(graph.edges).isEmpty;
       expectInvariants(graph);
     });
     test('reversing directed', () {
@@ -30,22 +30,22 @@ void main() {
         final graph = Graph<String, int>(isDirected: true).reversed;
         graph.addVertex('Hello');
         check(graph.vertices).deepEquals(['Hello']);
-        check(graph.edges).isEmpty();
+        check(graph.edges).isEmpty;
         expectInvariants(graph);
       });
       test('add vertices', () {
         final graph = Graph<String, int>(isDirected: true).reversed;
         graph.addVertices(['Hello', 'World']);
         check(graph.vertices).deepEquals(['Hello', 'World']);
-        check(graph.edges).isEmpty();
+        check(graph.edges).isEmpty;
         expectInvariants(graph);
       });
       test('remove vertex', () {
         final graph = Graph<String, int>(isDirected: true).reversed;
         graph.addVertex('Hello');
         graph.removeVertex('Hello');
-        check(graph.vertices).isEmpty();
-        check(graph.edges).isEmpty();
+        check(graph.vertices).isEmpty;
+        check(graph.edges).isEmpty;
         expectInvariants(graph);
       });
       test('add edge', () {
@@ -83,7 +83,7 @@ void main() {
         graph.addEdge('Hello', 'World');
         graph.removeEdge('Hello', 'World');
         check(graph.vertices).unorderedEquals(['Hello', 'World']);
-        check(graph.edges).isEmpty();
+        check(graph.edges).isEmpty;
         expectInvariants(graph);
       });
       test('add edge, remove first vertex', () {
@@ -91,7 +91,7 @@ void main() {
         graph.addEdge('Hello', 'World');
         graph.removeVertex('Hello');
         check(graph.vertices).deepEquals(['World']);
-        check(graph.edges).isEmpty();
+        check(graph.edges).isEmpty;
         expectInvariants(graph);
       });
       test('add edge, remove second vertex', () {
@@ -99,7 +99,7 @@ void main() {
         graph.addEdge('Hello', 'World');
         graph.removeVertex('World');
         check(graph.vertices).deepEquals(['Hello']);
-        check(graph.edges).isEmpty();
+        check(graph.edges).isEmpty;
         expectInvariants(graph);
       });
     });
@@ -135,26 +135,26 @@ void main() {
             .unorderedMatches([isEdge(1, 0, value: 'a', isDirected: true)]);
         check(graph.incomingEdgesOf(1))
             .unorderedMatches([isEdge(2, 1, value: 'b', isDirected: true)]);
-        check(graph.incomingEdgesOf(2)).isEmpty();
+        check(graph.incomingEdgesOf(2)).isEmpty;
       });
       test('outgoingEdgesOf', () {
-        check(graph.outgoingEdgesOf(0)).isEmpty();
+        check(graph.outgoingEdgesOf(0)).isEmpty;
         check(graph.outgoingEdgesOf(1))
             .unorderedMatches([isEdge(1, 0, value: 'a', isDirected: true)]);
         check(graph.outgoingEdgesOf(2))
             .unorderedMatches([isEdge(2, 1, value: 'b', isDirected: true)]);
       });
       test('getEdge', () {
-        check(graph.getEdge(0, 1)).isNull();
+        check(graph.getEdge(0, 1)).isNull;
         check(graph.getEdge(1, 0))
             .isNotNull()
             .which(isEdge(1, 0, value: 'a', isDirected: true));
-        check(graph.getEdge(1, 2)).isNull();
+        check(graph.getEdge(1, 2)).isNull;
         check(graph.getEdge(2, 1))
             .isNotNull()
             .which(isEdge(2, 1, value: 'b', isDirected: true));
-        check(graph.getEdge(0, 2)).isNull();
-        check(graph.getEdge(2, 0)).isNull();
+        check(graph.getEdge(0, 2)).isNull;
+        check(graph.getEdge(2, 0)).isNull;
       });
       test('neighboursOf', () {
         check(graph.neighboursOf(0)).deepEquals([1]);
@@ -164,10 +164,10 @@ void main() {
       test('predecessorsOf', () {
         check(graph.predecessorsOf(0)).deepEquals([1]);
         check(graph.predecessorsOf(1)).deepEquals([2]);
-        check(graph.predecessorsOf(2)).isEmpty();
+        check(graph.predecessorsOf(2)).isEmpty;
       });
       test('successorsOf', () {
-        check(graph.successorsOf(0)).isEmpty();
+        check(graph.successorsOf(0)).isEmpty;
         check(graph.successorsOf(1)).deepEquals([0]);
         check(graph.successorsOf(2)).deepEquals([1]);
       });

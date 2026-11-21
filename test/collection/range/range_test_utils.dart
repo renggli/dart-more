@@ -18,11 +18,11 @@ void verifyRange<T>(
     );
   }
   if (included.isEmpty) {
-    check(range.isEmpty).isTrue();
+    check(range.isEmpty).isTrue;
   } else {
-    check(range.isNotEmpty).isTrue();
+    check(range.isNotEmpty).isTrue;
     check(range.start).equals(included.first);
-    check(range.start).not((it) => it.equals(range.end));
+    check(range.start).not(.it()..equals(range.end));
     check(range.first).equals(included.first);
     check(range.last).equals(included.last);
   }
@@ -30,7 +30,7 @@ void verifyRange<T>(
   for (var index = 0; index < included.length; index++) {
     final value = included[index];
     check(range[index]).equals(value);
-    check(range.contains(value)).isTrue();
+    check(range.contains(value)).isTrue;
     check(range.indexOf(value)).equals(index);
     check(range.indexOf(value, index)).equals(index);
     check(range.indexOf(value, -1)).equals(index);
@@ -40,7 +40,7 @@ void verifyRange<T>(
   }
   // Test excluded indexes.
   for (final value in excluded) {
-    check(range.contains(value)).isFalse();
+    check(range.contains(value)).isFalse;
     check(range.indexOf(value)).equals(-1);
     check(range.indexOf(value, 0)).equals(-1);
     check(range.indexOf(value, range.length)).equals(-1);

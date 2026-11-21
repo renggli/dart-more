@@ -6,7 +6,7 @@ import 'package:test/scaffolding.dart';
 void main() {
   group('chunked', () {
     test('string', () {
-      check(''.chunked(2)).isEmpty();
+      check(''.chunked(2)).isEmpty;
       check('a'.chunked(2)).deepEquals(['a']);
       check('ab'.chunked(2)).deepEquals(['ab']);
       check('abc'.chunked(2)).deepEquals(['ab', 'c']);
@@ -15,7 +15,7 @@ void main() {
       check(() => 'abc'.chunked(0)).throws<RangeError>();
     });
     test('characters', () {
-      check(''.characters.chunked(2)).isEmpty();
+      check(''.characters.chunked(2)).isEmpty;
       check('a'.characters.chunked(2)).deepEquals(['a'.characters]);
       check('ab'.characters.chunked(2)).deepEquals(['ab'.characters]);
       check('abc'.characters.chunked(2))

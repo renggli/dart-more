@@ -12,12 +12,12 @@ void main() {
     group('planar graphs', () {
       test('empty graph', () {
         final graph = Graph<int, void>.undirected();
-        check(graph.isPlanar()).isTrue();
+        check(graph.isPlanar()).isTrue;
       });
 
       test('single isolated vertex', () {
         final graph = Graph<int, void>.undirected()..addVertex(1);
-        check(graph.isPlanar()).isTrue();
+        check(graph.isPlanar()).isTrue;
       });
 
       test('complete graphs K1 to K4', () {
@@ -28,7 +28,7 @@ void main() {
               kn.addEdge(i, j);
             }
           }
-          check(kn.isPlanar()).isTrue();
+          check(kn.isPlanar()).isTrue;
         }
       });
 
@@ -40,7 +40,7 @@ void main() {
           ..addEdge(2, 5)
           ..addEdge(3, 6)
           ..addEdge(3, 7);
-        check(tree.isPlanar()).isTrue();
+        check(tree.isPlanar()).isTrue;
       });
 
       test('cycle graphs Cn', () {
@@ -49,7 +49,7 @@ void main() {
           for (var i = 0; i < n; i++) {
             cycle.addEdge(i, (i + 1) % n);
           }
-          check(cycle.isPlanar()).isTrue();
+          check(cycle.isPlanar()).isTrue;
         }
       });
 
@@ -60,7 +60,7 @@ void main() {
           wheel.addEdge(0, i);
           wheel.addEdge(i, i == 5 ? 1 : i + 1);
         }
-        check(wheel.isPlanar()).isTrue();
+        check(wheel.isPlanar()).isTrue;
       });
 
       test('cube graph Q3 (8 vertices, 12 edges)', () {
@@ -74,7 +74,7 @@ void main() {
             }
           }
         }
-        check(cube.isPlanar()).isTrue();
+        check(cube.isPlanar()).isTrue;
       });
 
       test('octahedral graph (6 vertices, 12 edges)', () {
@@ -87,7 +87,7 @@ void main() {
             }
           }
         }
-        check(octahedron.isPlanar()).isTrue();
+        check(octahedron.isPlanar()).isTrue;
       });
 
       test('planar graph with self loops and multiple edges', () {
@@ -97,7 +97,7 @@ void main() {
           ..addEdge(1, 2)
           ..addEdge(2, 3)
           ..addEdge(3, 1);
-        check(graph.isPlanar()).isTrue();
+        check(graph.isPlanar()).isTrue;
       });
 
       test('disjoint union of planar components', () {
@@ -111,7 +111,7 @@ void main() {
           ..addEdge(5, 6)
           // Component 3: isolated
           ..addVertex(7);
-        check(graph.isPlanar()).isTrue();
+        check(graph.isPlanar()).isTrue;
       });
     });
 
@@ -123,7 +123,7 @@ void main() {
             k5.addEdge(i, j);
           }
         }
-        check(k5.isPlanar()).isFalse();
+        check(k5.isPlanar()).isFalse;
       });
 
       test('complete bipartite graph K(3, 3)', () {
@@ -133,7 +133,7 @@ void main() {
             k33.addEdge(i, j);
           }
         }
-        check(k33.isPlanar()).isFalse();
+        check(k33.isPlanar()).isFalse;
       });
 
       test('Petersen graph', () {
@@ -144,7 +144,7 @@ void main() {
           petersen.addEdge(i + 5, ((i + 2) % 5) + 5);
           petersen.addEdge(i, i + 5);
         }
-        check(petersen.isPlanar()).isFalse();
+        check(petersen.isPlanar()).isFalse;
       });
 
       test('subdivision of K5', () {
@@ -161,7 +161,7 @@ void main() {
             }
           }
         }
-        check(k5Sub.isPlanar()).isFalse();
+        check(k5Sub.isPlanar()).isFalse;
       });
 
       test('subdivision of K(3, 3)', () {
@@ -177,7 +177,7 @@ void main() {
             }
           }
         }
-        check(k33Sub.isPlanar()).isFalse();
+        check(k33Sub.isPlanar()).isFalse;
       });
 
       test('disjoint union containing a non-planar component', () {
@@ -192,7 +192,7 @@ void main() {
             graph.addEdge(i, j);
           }
         }
-        check(graph.isPlanar()).isFalse();
+        check(graph.isPlanar()).isFalse;
       });
     });
 
@@ -208,7 +208,7 @@ void main() {
             vertices: [1, 2, 3],
             neighboursOf: (v) => triangleNeighbours[v]!,
           ),
-        ).isTrue();
+        ).isTrue;
 
         final k5Neighbours = {
           1: [2, 3, 4, 5],
@@ -222,7 +222,7 @@ void main() {
             vertices: [1, 2, 3, 4, 5],
             neighboursOf: (v) => k5Neighbours[v]!,
           ),
-        ).isFalse();
+        ).isFalse;
       });
     });
   });

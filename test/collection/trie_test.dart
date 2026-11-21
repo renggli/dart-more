@@ -22,11 +22,11 @@ void allTrieTests(
       check(trie.keys).deepEquals(['disobey']);
       check(trie.values).deepEquals([42]);
       check(trie['disobey']).equals(42);
-      check(trie.containsKey('disobey')).isTrue();
-      check(trie['dis']).isNull();
-      check(trie.containsKey('dis')).isFalse();
-      check(trie['disobeying']).isNull();
-      check(trie.containsKey('disobeying')).isFalse();
+      check(trie.containsKey('disobey')).isTrue;
+      check(trie['dis']).isNull;
+      check(trie.containsKey('dis')).isFalse;
+      check(trie['disobeying']).isNull;
+      check(trie.containsKey('disobeying')).isFalse;
     });
     test('null value', () {
       final trie = Trie<String, String, int?>(
@@ -35,9 +35,9 @@ void allTrieTests(
       );
       trie['foo'] = null;
       check(trie).length.equals(1);
-      check(trie.containsKey('foo')).isTrue();
-      check(trie['foo']).isNull();
-      check(trie.entries.first.value).isNull();
+      check(trie.containsKey('foo')).isTrue;
+      check(trie['foo']).isNull;
+      check(trie.entries.first.value).isNull;
     });
     test('multiple', () {
       final trie = newTrie();
@@ -53,19 +53,19 @@ void allTrieTests(
           .deepEquals(['disobey', 'disorder', 'disown', 'distrust']);
       check(trie.keysWithPrefix('diso'))
           .deepEquals(['disobey', 'disorder', 'disown']);
-      check(trie.keysWithPrefix('disobeying')).isEmpty();
+      check(trie.keysWithPrefix('disobeying')).isEmpty;
       check(trie['disobey']).equals(42);
-      check(trie.containsKey('disobey')).isTrue();
+      check(trie.containsKey('disobey')).isTrue;
       check(trie['disorder']).equals(43);
-      check(trie.containsKey('disorder')).isTrue();
+      check(trie.containsKey('disorder')).isTrue;
       check(trie['disown']).equals(44);
-      check(trie.containsKey('disown')).isTrue();
+      check(trie.containsKey('disown')).isTrue;
       check(trie['distrust']).equals(45);
-      check(trie.containsKey('distrust')).isTrue();
-      check(trie['dis']).isNull();
-      check(trie.containsKey('dis')).isFalse();
-      check(trie['disobeying']).isNull();
-      check(trie.containsKey('disobeying')).isFalse();
+      check(trie.containsKey('distrust')).isTrue;
+      check(trie['dis']).isNull;
+      check(trie.containsKey('dis')).isFalse;
+      check(trie['disobeying']).isNull;
+      check(trie.containsKey('disobeying')).isFalse;
     });
     test('root', () {
       final trie = newTrie();
@@ -74,9 +74,9 @@ void allTrieTests(
       check(trie.keys).deepEquals(['']);
       check(trie.values).deepEquals([42]);
       check(trie['']).equals(42);
-      check(trie.containsKey('')).isTrue();
-      check(trie['dis']).isNull();
-      check(trie.containsKey('dis')).isFalse();
+      check(trie.containsKey('')).isTrue;
+      check(trie['dis']).isNull;
+      check(trie.containsKey('dis')).isFalse;
     });
     test('replace', () {
       final trie = newTrie();
@@ -86,11 +86,11 @@ void allTrieTests(
       check(trie.keys).deepEquals(['disobey']);
       check(trie.values).deepEquals([43]);
       check(trie['disobey']).equals(43);
-      check(trie.containsKey('disobey')).isTrue();
-      check(trie['dis']).isNull();
-      check(trie.containsKey('dis')).isFalse();
-      check(trie['disobeying']).isNull();
-      check(trie.containsKey('disobeying')).isFalse();
+      check(trie.containsKey('disobey')).isTrue;
+      check(trie['dis']).isNull;
+      check(trie.containsKey('dis')).isFalse;
+      check(trie['disobeying']).isNull;
+      check(trie.containsKey('disobeying')).isFalse;
     });
     test('enhancing', () {
       final trie = newTrie();
@@ -100,47 +100,47 @@ void allTrieTests(
       check(trie.keys).deepEquals(['disobey', 'disobeying']);
       check(trie.values).deepEquals([43, 42]);
       check(trie['disobeying']).equals(42);
-      check(trie.containsKey('disobeying')).isTrue();
+      check(trie.containsKey('disobeying')).isTrue;
       check(trie['disobey']).equals(43);
-      check(trie.containsKey('disobey')).isTrue();
-      check(trie['dis']).isNull();
-      check(trie.containsKey('dis')).isFalse();
+      check(trie.containsKey('disobey')).isTrue;
+      check(trie['dis']).isNull;
+      check(trie.containsKey('dis')).isFalse;
     });
   });
   group('remove', () {
     test('missing', () {
       final trie = newTrie();
-      check(trie.remove('disobey')).isNull();
-      check(trie.containsKey('disobey')).isFalse();
+      check(trie.remove('disobey')).isNull;
+      check(trie.containsKey('disobey')).isFalse;
       check(trie).length.equals(0);
-      check(trie.keys).isEmpty();
-      check(trie.values).isEmpty();
+      check(trie.keys).isEmpty;
+      check(trie.values).isEmpty;
     });
     test('root', () {
       final trie = newTrie();
       trie[''] = 42;
       check(trie.remove('')).equals(42);
-      check(trie.containsKey('')).isFalse();
+      check(trie.containsKey('')).isFalse;
       check(trie).length.equals(0);
-      check(trie.keys).isEmpty();
-      check(trie.values).isEmpty();
+      check(trie.keys).isEmpty;
+      check(trie.values).isEmpty;
     });
     test('single', () {
       final trie = newTrie();
       trie['disobey'] = 42;
       check(trie.remove('disobey')).equals(42);
-      check(trie.containsKey('disobey')).isFalse();
+      check(trie.containsKey('disobey')).isFalse;
       check(trie).length.equals(0);
-      check(trie.keys).isEmpty();
-      check(trie.values).isEmpty();
+      check(trie.keys).isEmpty;
+      check(trie.values).isEmpty;
     });
     test('prefix', () {
       final trie = newTrie();
       trie['dis'] = 42;
       trie['disorder'] = 43;
       check(trie.remove('dis')).equals(42);
-      check(trie.containsKey('dis')).isFalse();
-      check(trie.containsKey('disorder')).isTrue();
+      check(trie.containsKey('dis')).isFalse;
+      check(trie.containsKey('disorder')).isTrue;
       check(trie).length.equals(1);
       check(trie.keys).deepEquals(['disorder']);
       check(trie.values).deepEquals([43]);
@@ -150,8 +150,8 @@ void allTrieTests(
       trie[''] = 42;
       trie['disorder'] = 43;
       check(trie.remove('')).equals(42);
-      check(trie.containsKey('')).isFalse();
-      check(trie.containsKey('disorder')).isTrue();
+      check(trie.containsKey('')).isFalse;
+      check(trie.containsKey('disorder')).isTrue;
       check(trie).length.equals(1);
       check(trie.keys).deepEquals(['disorder']);
       check(trie.values).deepEquals([43]);
@@ -162,30 +162,30 @@ void allTrieTests(
       final trie = newTrie();
       trie[''] = 42;
       trie.clear();
-      check(trie.containsKey('')).isFalse();
+      check(trie.containsKey('')).isFalse;
       check(trie).length.equals(0);
-      check(trie.keys).isEmpty();
-      check(trie.values).isEmpty();
+      check(trie.keys).isEmpty;
+      check(trie.values).isEmpty;
     });
     test('single', () {
       final trie = newTrie();
       trie['disobey'] = 42;
       trie.clear();
-      check(trie.containsKey('disobey')).isFalse();
+      check(trie.containsKey('disobey')).isFalse;
       check(trie).length.equals(0);
-      check(trie.keys).isEmpty();
-      check(trie.values).isEmpty();
+      check(trie.keys).isEmpty;
+      check(trie.values).isEmpty;
     });
     test('multiple', () {
       final trie = newTrie();
       trie['disobey'] = 42;
       trie['disobeying'] = 43;
       trie.clear();
-      check(trie.containsKey('disobey')).isFalse();
-      check(trie.containsKey('disobeying')).isFalse();
+      check(trie.containsKey('disobey')).isFalse;
+      check(trie.containsKey('disobeying')).isFalse;
       check(trie).length.equals(0);
-      check(trie.keys).isEmpty();
-      check(trie.values).isEmpty();
+      check(trie.keys).isEmpty;
+      check(trie.values).isEmpty;
     });
   });
   group('constructor', () {
@@ -250,18 +250,18 @@ void allTrieTests(
   group('other', () {
     test('typed', () {
       final trie = newTrie();
-      check(trie.containsKey(42)).isFalse();
-      check(trie[42]).isNull();
+      check(trie.containsKey(42)).isFalse;
+      check(trie[42]).isNull;
     });
     test('nodes', () {
       final trie = newTrie();
       trie.addAll({'a': 1, 'aa': 2, 'ab': 3});
       final root = createRoot<String, String, num>();
-      check(root.hasKeyAndValue).isFalse();
+      check(root.hasKeyAndValue).isFalse;
       check(() => root.key).throws<StateError>();
       check(() => root.value).throws<StateError>();
-      check(root.hasChildren).isFalse();
-      check(root.parts).isEmpty();
+      check(root.hasChildren).isFalse;
+      check(root.parts).isEmpty;
     });
     test('stress', () {
       final random = Random(42);
@@ -282,19 +282,19 @@ void allTrieTests(
       // Verify all values are present.
       check(trie).length.equals(values.length);
       for (final value in values) {
-        check(trie.containsKey(value)).isTrue();
-        check(trie[value]).isNotNull().isTrue();
+        check(trie.containsKey(value)).isTrue;
+        check(trie[value]).isNotNull().isTrue;
       }
       // Remove values in different order.
       values.shuffle(random);
       for (final value in values) {
-        check(trie.remove(value)).isNotNull().isTrue();
+        check(trie.remove(value)).isNotNull().isTrue;
       }
       // Verify all values are gone.
-      check(trie).isEmpty();
+      check(trie).isEmpty;
       for (final value in values) {
-        check(trie.containsKey(value)).isFalse();
-        check(trie[value]).isNull();
+        check(trie.containsKey(value)).isFalse;
+        check(trie[value]).isNull;
       }
     });
     test('int parts, single-pass fromIterable, and direct map ops', () {
@@ -315,10 +315,10 @@ void allTrieTests(
       );
       check(iterations).equals(1);
       check(trie.length).equals(3);
-      check(trie.isEmpty).isFalse();
-      check(trie.isNotEmpty).isTrue();
-      check(trie.containsValue(5)).isTrue();
-      check(trie.containsValue(99)).isFalse();
+      check(trie.isEmpty).isFalse;
+      check(trie.isNotEmpty).isTrue;
+      check(trie.containsValue(5)).isTrue;
+      check(trie.containsValue(99)).isFalse;
       check(trie.keysWithPrefix('app').toList()).deepEquals(['app', 'apple']);
 
       check(trie.putIfAbsent('app', () => 99)).equals(3);

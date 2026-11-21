@@ -11,7 +11,7 @@ void main() {
       );
       const strategy = RandomLayout<String>();
       final result = strategy.layout(input);
-      check(result.positions).isEmpty();
+      check(result.positions).isEmpty;
     });
 
     test('vertices stay within specified bounds', () {
@@ -49,7 +49,7 @@ void main() {
       final graph = Graph<String, void>(isDirected: true);
       graph.addVertex('A');
       final result = graph.layout(const RandomLayout(seed: 99));
-      check(result.positions.containsKey('A')).isTrue();
+      check(result.positions.containsKey('A')).isTrue;
     });
   });
 }

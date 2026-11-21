@@ -34,7 +34,7 @@ void main() {
       test('otherSurrogate', () {
         final matcher = UnicodeCharMatcher.otherSurrogate();
         for (final code in [0xd851, 0xd97c, 0xdcc4, 0xd96c, 0xded6, 0xd948]) {
-          check(matcher.match(code)).isTrue();
+          check(matcher.match(code)).isTrue;
         }
       });
       test('letterLowercase', () {

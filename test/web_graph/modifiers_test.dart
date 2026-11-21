@@ -13,7 +13,7 @@ void main() {
   group('ModifierRegistry and Categories', () {
     test('ModifierCategory does not contain generate', () {
       final names = ModifierCategory.values.map((c) => c.name).toList();
-      check(names).not((n) => n.contains('generate'));
+      check(names).not(.it()..contains('generate'));
     });
 
     test('CombineModifier is registered in transform category', () {
@@ -25,7 +25,7 @@ void main() {
     test('addAllModifiersDisabled populates modifiers', () {
       final state = AppState();
       state.addAllModifiersDisabled();
-      check(state.modifiers).isNotEmpty();
+      check(state.modifiers).isNotEmpty;
       check(state.modifiers.map((m) => m.id)).contains('combine');
     });
   });
@@ -40,10 +40,10 @@ void main() {
       );
       final g = Graph<String, num>(isDirected: false);
       final out = mod.apply(g, state);
-      check(out.hasError).isFalse();
+      check(out.hasError).isFalse;
       check(out.transformedGraph).isNotNull();
       check(out.transformedGraph!.vertices.length).equals(4);
-      check(out.transformedGraph!.edges).isNotEmpty();
+      check(out.transformedGraph!.edges).isNotEmpty;
     });
 
     test('union mode', () {
@@ -56,7 +56,7 @@ void main() {
       final g = Graph<String, num>(isDirected: false)
         ..addEdge('A', 'B', value: 1);
       final out = mod.apply(g, state);
-      check(out.hasError).isFalse();
+      check(out.hasError).isFalse;
       check(out.transformedGraph).isNotNull();
       check(out.transformedGraph!.vertices.length).equals(5);
     });
@@ -71,7 +71,7 @@ void main() {
         ..addEdge('B', 'C', value: 1);
       final mod = TraversalModifier(type: TraversalType.bfs, startVertex: 'A');
       final out = mod.apply(g, state);
-      check(out.hasError).isFalse();
+      check(out.hasError).isFalse;
       check(out.overlay).isNotNull();
       final po = out.overlay! as PathOverlay;
       check(po.vertices.length).equals(3);
@@ -85,7 +85,7 @@ void main() {
         ..addEdge('B', 'C', value: 1);
       final mod = TraversalModifier(type: TraversalType.dfs, startVertex: 'A');
       final out = mod.apply(g, state);
-      check(out.hasError).isFalse();
+      check(out.hasError).isFalse;
       check(out.overlay).isNotNull();
       final po = out.overlay! as PathOverlay;
       check(po.vertices.length).equals(3);
@@ -102,7 +102,7 @@ void main() {
         ..addEdge('C', 'A', value: 1);
       final mod = CycleDetectionModifier();
       final out = mod.apply(g, state);
-      check(out.hasError).isFalse();
+      check(out.hasError).isFalse;
       check(out.statusSummary).isNotNull().contains('Cycle');
     });
 
@@ -113,7 +113,7 @@ void main() {
         ..addEdge('B', 'C', value: 1);
       final mod = CycleDetectionModifier();
       final out = mod.apply(g, state);
-      check(out.hasError).isFalse();
+      check(out.hasError).isFalse;
       check(out.statusSummary).isNotNull().contains('Acyclic');
     });
   });
@@ -135,7 +135,7 @@ void main() {
         count: 5,
       );
       final out = mod.apply(g, state);
-      check(out.hasError).isFalse();
+      check(out.hasError).isFalse;
       check(out.statusSummary).isNotNull().contains('Found');
     });
 
@@ -151,7 +151,7 @@ void main() {
         count: 3,
       );
       final out = mod.apply(g, state);
-      check(out.hasError).isFalse();
+      check(out.hasError).isFalse;
       check(out.statusSummary).isNotNull().contains('Isomorphic');
     });
   });
@@ -165,7 +165,7 @@ void main() {
         ..addEdge('C', 'A', value: 1);
       final mod = GraphMetricsModifier();
       final out = mod.apply(g, state);
-      check(out.hasError).isFalse();
+      check(out.hasError).isFalse;
       check(out.tableData).isNotNull();
     });
 
@@ -176,7 +176,7 @@ void main() {
         ..addEdge('B', 'C', value: 1);
       final mod = GraphMetricsModifier();
       final out = mod.apply(g, state);
-      check(out.hasError).isFalse();
+      check(out.hasError).isFalse;
       check(out.tableData).isNotNull();
     });
 
@@ -192,10 +192,10 @@ void main() {
         peripheryColor: '#ef4444',
       );
       final out = mod.apply(g, state);
-      check(out.hasError).isFalse();
+      check(out.hasError).isFalse;
       final rows = out.tableData!.rows;
       check(rows.any((r) => r[0] == 'Periphery Vertices' && r[1].contains('A')))
-          .isTrue();
+          .isTrue;
       check(state.nodes['B']?.style.borderColor).equals('#10b981');
       check(state.nodes['A']?.style.borderColor).equals('#ef4444');
     });
@@ -209,7 +209,7 @@ void main() {
         ..addEdge('B', 'C', value: 1);
       final mod = CentralityModifier(metric: CentralityMetric.eccentricity);
       final out = mod.apply(g, state);
-      check(out.hasError).isFalse();
+      check(out.hasError).isFalse;
       final overlay = out.overlay! as HeatmapOverlay;
       check(overlay.scores['B']).equals(1);
       check(overlay.scores['A']).equals(2);
@@ -226,7 +226,7 @@ void main() {
         katzBeta: 1.5,
       );
       final out = mod.apply(g, state);
-      check(out.hasError).isFalse();
+      check(out.hasError).isFalse;
       check(out.overlay).isA<HeatmapOverlay>();
     });
   });
@@ -241,7 +241,7 @@ void main() {
         ..addEdge('D', 'A', value: 1);
       final mod = VertexColoringModifier(mode: ColoringMode.bipartite);
       final out = mod.apply(g, state);
-      check(out.hasError).isFalse();
+      check(out.hasError).isFalse;
       check(out.overlay).isA<PartitionOverlay>();
       check(out.statusSummary).isNotNull().contains('Bipartite');
     });
@@ -254,7 +254,7 @@ void main() {
         ..addEdge('C', 'A', value: 1);
       final mod = VertexColoringModifier(mode: ColoringMode.bipartite);
       final out = mod.apply(g, state);
-      check(out.hasError).isFalse();
+      check(out.hasError).isFalse;
       check(out.statusSummary).isNotNull().contains('Not bipartite');
     });
   });
@@ -268,7 +268,7 @@ void main() {
         ..addEdge('C', 'A', value: 5);
       final mod = HamiltonianModifier(algorithm: TourAlgorithm.tsp);
       final out = mod.apply(g, state);
-      check(out.hasError).isFalse();
+      check(out.hasError).isFalse;
       check(out.statusSummary).isNotNull().contains('TSP Tour');
       check(out.tableData!.headers).contains('Cumulative Cost');
     });
@@ -285,7 +285,7 @@ void main() {
       );
       final g = Graph<String, num>(isDirected: false);
       final out = mod.apply(g, state);
-      check(out.hasError).isFalse();
+      check(out.hasError).isFalse;
       check(out.transformedGraph!.vertices.length).equals(8);
     });
 

@@ -32,17 +32,17 @@ void main() {
         check(() => either.rightValue).throws<StateError>();
       });
       test('rightOptional', () {
-        check(either.rightOptional.isAbsent).isTrue();
+        check(either.rightOptional.isAbsent).isTrue;
       });
       test('tuple', () {
         check(either.tuple).equals((value, null));
       });
       test('isLeft', () {
-        check(either.isLeft).isTrue();
+        check(either.isLeft).isTrue;
         check(either).isLeft();
       });
       test('isRight', () {
-        check(either.isRight).isFalse();
+        check(either.isRight).isFalse;
       });
       test('ifLeft', () {
         var called = 0;
@@ -93,15 +93,15 @@ void main() {
         check(either.swapped).equals(const Either<bool, int>.right(value));
       });
       test('==', () {
-        check(either == either).isTrue();
-        check(either == otherEither).isFalse();
+        check(either == either).isTrue;
+        check(either == otherEither).isFalse;
         // ignore: unrelated_type_equality_checks
-        check(either == either.swap()).isFalse();
+        check(either == either.swap()).isFalse;
       });
       test('hashCode', () {
-        check(either.hashCode == either.hashCode).isTrue();
-        check(either.hashCode == otherEither.hashCode).isFalse();
-        check(either.hashCode == either.swap().hashCode).isFalse();
+        check(either.hashCode == either.hashCode).isTrue;
+        check(either.hashCode == otherEither.hashCode).isFalse;
+        check(either.hashCode == either.swap().hashCode).isFalse;
       });
       test('toString', () {
         check(either.toString())
@@ -131,7 +131,7 @@ void main() {
         check(() => either.leftValue).throws<StateError>();
       });
       test('leftOptional', () {
-        check(either.leftOptional.isAbsent).isTrue();
+        check(either.leftOptional.isAbsent).isTrue;
       });
       test('rightValue', () {
         check(either.rightValue).equals(value);
@@ -143,10 +143,10 @@ void main() {
         check(either.tuple).equals((null, value));
       });
       test('isLeft', () {
-        check(either.isLeft).isFalse();
+        check(either.isLeft).isFalse;
       });
       test('isRight', () {
-        check(either.isRight).isTrue();
+        check(either.isRight).isTrue;
       });
       test('ifLeft', () {
         var called = 0;
@@ -197,15 +197,15 @@ void main() {
         check(either.swapped).equals(const Either<bool, int>.left(value));
       });
       test('==', () {
-        check(either == either).isTrue();
-        check(either == otherEither).isFalse();
+        check(either == either).isTrue;
+        check(either == otherEither).isFalse;
         // ignore: unrelated_type_equality_checks
-        check(either == either.swap()).isFalse();
+        check(either == either.swap()).isFalse;
       });
       test('hashCode', () {
-        check(either.hashCode == either.hashCode).isTrue();
-        check(either.hashCode == otherEither.hashCode).isFalse();
-        check(either.hashCode == either.swap().hashCode).isFalse();
+        check(either.hashCode == either.hashCode).isTrue;
+        check(either.hashCode == otherEither.hashCode).isFalse;
+        check(either.hashCode == either.swap().hashCode).isFalse;
       });
       test('toString', () {
         check(either.toString())

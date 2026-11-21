@@ -9,15 +9,15 @@ void main() {
     group('constructor', () {
       test('empty', () {
         final map = ListMultimap<String, int>();
-        check(map).isEmpty();
+        check(map).isEmpty;
         check(map).length.equals(0);
-        check(map.isEmpty).isTrue();
-        check(map.isNotEmpty).isFalse();
-        check(map.asMap()).isEmpty();
+        check(map.isEmpty).isTrue;
+        check(map.isNotEmpty).isFalse;
+        check(map.asMap()).isEmpty;
         check(map.asMap().length).equals(0);
-        check(map.keys).isEmpty();
-        check(map.values).isEmpty();
-        check(map.entries).isEmpty();
+        check(map.keys).isEmpty;
+        check(map.values).isEmpty;
+        check(map.entries).isEmpty;
       });
       test('custom existing map retains length', () {
         final map = ListMultimap<String, int>(
@@ -27,8 +27,8 @@ void main() {
           },
         );
         check(map.length).equals(3);
-        check(map.isEmpty).isFalse();
-        check(map.isNotEmpty).isTrue();
+        check(map.isEmpty).isFalse;
+        check(map.isNotEmpty).isTrue;
         check(map.keys).deepEquals(['a', 'b']);
         check(map.values).deepEquals([1, 2, 3]);
       });
@@ -37,8 +37,8 @@ void main() {
           ListMultimap.fromIterables(['a', 'b', 'b'], [1, 2, 3]),
         );
         check(map).length.equals(3);
-        check(map.isEmpty).isFalse();
-        check(map.isNotEmpty).isTrue();
+        check(map.isEmpty).isFalse;
+        check(map.isNotEmpty).isTrue;
         check(map.keys).deepEquals(['a', 'b']);
         check(map.values).deepEquals([1, 2, 3]);
         check(map.entries).matchesEntries([('a', 1), ('b', 2), ('b', 3)]);
@@ -52,12 +52,12 @@ void main() {
       });
       test('identity', () {
         final map = ListMultimap<String, int>.identity();
-        check(map).isEmpty();
+        check(map).isEmpty;
         check(map).length.equals(0);
-        check(map.asMap()).isEmpty();
-        check(map.keys).isEmpty();
-        check(map.values).isEmpty();
-        check(map.entries).isEmpty();
+        check(map.asMap()).isEmpty;
+        check(map.keys).isEmpty;
+        check(map.values).isEmpty;
+        check(map.entries).isEmpty;
       });
       test('fromIterable', () {
         final map = ListMultimap<String, int>.fromIterable(
@@ -183,22 +183,22 @@ void main() {
     group('accessor', () {
       test('containsKey', () {
         final map = ListMultimap.fromIterables(['a', 'b', 'b'], [1, 2, 3]);
-        check(map.containsKey('a')).isTrue();
-        check(map.containsKey('b')).isTrue();
-        check(map.containsKey('c')).isFalse();
+        check(map.containsKey('a')).isTrue;
+        check(map.containsKey('b')).isTrue;
+        check(map.containsKey('c')).isFalse;
       });
       test('containsValue', () {
         final map = ListMultimap.fromIterables(['a', 'b', 'b'], [1, 2, 3]);
-        check(map.containsValue(1)).isTrue();
-        check(map.containsValue(2)).isTrue();
-        check(map.containsValue(3)).isTrue();
-        check(map.containsValue(4)).isFalse();
+        check(map.containsValue(1)).isTrue;
+        check(map.containsValue(2)).isTrue;
+        check(map.containsValue(3)).isTrue;
+        check(map.containsValue(4)).isFalse;
       });
       test('containsEntry', () {
         final map = ListMultimap.fromIterables(['a', 'b', 'b'], [1, 2, 3]);
-        check(map.containsEntry('a', 1)).isTrue();
-        check(map.containsEntry('a', 2)).isFalse();
-        check(map.containsEntry('c', 3)).isFalse();
+        check(map.containsEntry('a', 1)).isTrue;
+        check(map.containsEntry('a', 2)).isFalse;
+        check(map.containsEntry('c', 3)).isFalse;
       });
       test('read', () {
         final map = ListMultimap.fromIterables(['a', 'b', 'b'], [1, 2, 3]);
@@ -254,7 +254,7 @@ void main() {
         final collection = map['b'];
         collection.length = 0;
         check(map).length.equals(1);
-        check(collection).isEmpty();
+        check(collection).isEmpty;
       });
       test('remove', () {
         final map = ListMultimap.fromIterables(['a', 'b', 'b'], [1, 2, 3]);
@@ -268,7 +268,7 @@ void main() {
         final collection = map['b'];
         map.removeAll('b');
         check(map).length.equals(1);
-        check(collection).isEmpty();
+        check(collection).isEmpty;
       });
       test('removeAll with list', () {
         final map = ListMultimap.fromIterables(['a', 'b', 'b'], [1, 2, 3]);
@@ -281,7 +281,7 @@ void main() {
         final map = ListMultimap.fromIterables(['a', 'b', 'b'], [1, 2, 3]);
         map.removeAll('b', map['b']);
         check(map).length.equals(1);
-        check(map['b']).isEmpty();
+        check(map['b']).isEmpty;
       });
       test('replace', () {
         final map = ListMultimap.fromIterables(['a', 'b', 'b'], [1, 2, 3]);
@@ -301,8 +301,8 @@ void main() {
         final map = ListMultimap.fromIterables(['a', 'b', 'b'], [1, 2, 3]);
         final collection = map['b'];
         map.clear();
-        check(map).isEmpty();
-        check(collection).isEmpty();
+        check(map).isEmpty;
+        check(collection).isEmpty;
       });
     });
     group('views', () {
@@ -311,7 +311,7 @@ void main() {
           final map = ListMultimap<String, int>();
           final keyView1 = map['a'];
           final keyView2 = map['a'];
-          check(keyView1).not((it) => it.identicalTo(keyView2));
+          check(keyView1).not(.it()..identicalTo(keyView2));
           keyView1.add(1);
           check(keyView1).deepEquals([1]);
           check(keyView2).deepEquals([1]);
@@ -320,7 +320,7 @@ void main() {
           final map = ListMultimap.fromIterables(['a'], [1]);
           final keyView1 = map['a'];
           final keyView2 = map['a'];
-          check(keyView1).not((it) => it.identicalTo(keyView2));
+          check(keyView1).not(.it()..identicalTo(keyView2));
           keyView1.add(2);
           check(keyView1).deepEquals([1, 2]);
           check(keyView2).deepEquals([1, 2]);
@@ -330,12 +330,12 @@ void main() {
         test('access', () {
           final map = ListMultimap.fromIterables(['a', 'b', 'b'], [1, 2, 3]);
           final mapView = map.asMap();
-          check(mapView.isNotEmpty).isTrue();
-          check(mapView.isEmpty).isFalse();
+          check(mapView.isNotEmpty).isTrue;
+          check(mapView.isEmpty).isFalse;
           check(mapView['b']).isNotNull().deepEquals([2, 3]);
-          check(mapView['c']).isNull();
-          check(mapView.containsKey('b')).isTrue();
-          check(mapView.containsKey('c')).isFalse();
+          check(mapView['c']).isNull;
+          check(mapView.containsKey('b')).isTrue;
+          check(mapView.containsKey('c')).isFalse;
           mapView['b'] = [4, 5, 6];
           check(map['b']).deepEquals([4, 5, 6]);
           check(mapView['b']).isNotNull().deepEquals([4, 5, 6]);
@@ -344,16 +344,16 @@ void main() {
           final map = ListMultimap.fromIterables(['a', 'b', 'b'], [1, 2, 3]);
           final mapView = map.asMap();
           mapView.clear();
-          check(map).isEmpty();
-          check(mapView).isEmpty();
-          check(mapView.isNotEmpty).isFalse();
+          check(map).isEmpty;
+          check(mapView).isEmpty;
+          check(mapView.isNotEmpty).isFalse;
         });
         test('remove', () {
           final map = ListMultimap.fromIterables(['a', 'b', 'b'], [1, 2, 3]);
           final mapView = map.asMap();
           check(mapView.remove('b')).isNotNull().deepEquals([2, 3]);
-          check(mapView.remove('b')).isNull();
-          check(mapView.remove('c')).isNull();
+          check(mapView.remove('b')).isNull;
+          check(mapView.remove('c')).isNull;
           check(map.keys).deepEquals(['a']);
           check(mapView.keys).deepEquals(['a']);
         });
@@ -377,34 +377,34 @@ void main() {
           },
         );
         check(map.length).equals(1);
-        check(map.containsKey('a')).isFalse();
-        check(map.containsKey('b')).isTrue();
+        check(map.containsKey('a')).isFalse;
+        check(map.containsKey('b')).isTrue;
       });
       test('asMap containsValue and stale view aliasing', () {
         final map = ListMultimap<String, int>();
         final stale = map['x'];
         map.add('x', 1);
-        check(map.asMap().containsValue(map.asMap()['x'])).isTrue();
-        check(map.asMap().containsValue(stale)).isTrue();
+        check(map.asMap().containsValue(map.asMap()['x'])).isTrue;
+        check(map.asMap().containsValue(stale)).isTrue;
         map.addAll('x', stale);
         check(map['x']).deepEquals([1, 1]);
         map.removeAll('x', stale);
-        check(map.containsKey('x')).isFalse();
+        check(map.containsKey('x')).isFalse;
       });
       test('length= error does not corrupt map', () {
         final map = ListMultimap<String, int>();
         final view = map['k'];
         check(() => view.length = -1).throws<RangeError>();
-        check(map.containsKey('k')).isFalse();
-        check(map.isEmpty).isTrue();
+        check(map.containsKey('k')).isFalse;
+        check(map.isEmpty).isTrue;
       });
       test(
         'list view helpers: contains, indexOf, lastIndexOf, sort, addAll(self)',
         () {
           final map = ListMultimap<String, int>()..addAll('k', [3, 1, 2, 1]);
           final view = map['k'];
-          check(view.contains(2)).isTrue();
-          check(view.contains(99)).isFalse();
+          check(view.contains(2)).isTrue;
+          check(view.contains(99)).isFalse;
           check(view.indexOf(1)).equals(1);
           check(view.lastIndexOf(1)).equals(3);
           view.sort();

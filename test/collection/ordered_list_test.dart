@@ -8,9 +8,9 @@ void main() {
   group('construction', () {
     test('default', () {
       final list = OrderedList<int>();
-      check(list).isEmpty();
+      check(list).isEmpty;
       check(list.length).equals(0);
-      check(list.isGrowable).isTrue();
+      check(list.isGrowable).isTrue;
     });
     test('of', () {
       final list = OrderedList<int>.of([1, 2, 3]);
@@ -21,7 +21,7 @@ void main() {
       final list = OrderedList<int>.filled(5, 42);
       check(list).deepEquals([42, 42, 42, 42, 42]);
       check(list.length).equals(5);
-      check(list.isGrowable).isFalse();
+      check(list.isGrowable).isFalse;
     });
     test('filled negative length', () {
       check(() => OrderedList<int>.filled(-1, 0)).throws<RangeError>();
@@ -50,13 +50,13 @@ void main() {
     });
     test('first and last', () {
       final list = OrderedList<int>();
-      check(list.isEmpty).isTrue();
-      check(list.isNotEmpty).isFalse();
+      check(list.isEmpty).isTrue;
+      check(list.isNotEmpty).isFalse;
       check(() => list.first).throws<StateError>();
       check(() => list.last).throws<StateError>();
       list.add(1);
-      check(list.isEmpty).isFalse();
-      check(list.isNotEmpty).isTrue();
+      check(list.isEmpty).isFalse;
+      check(list.isNotEmpty).isTrue;
       check(list.first).equals(1);
       check(list.last).equals(1);
       list.add(2);
@@ -91,7 +91,7 @@ void main() {
       check(list.removeFirst()).equals(3);
       check(list.removeFirst()).equals(2);
       check(list.removeFirst()).equals(1);
-      check(list).isEmpty();
+      check(list).isEmpty;
       check(list.removeFirst).throws<StateError>();
     });
     test('addLast and removeLast', () {
@@ -103,7 +103,7 @@ void main() {
       check(list.removeLast()).equals(3);
       check(list.removeLast()).equals(2);
       check(list.removeLast()).equals(1);
-      check(list).isEmpty();
+      check(list).isEmpty;
       check(list.removeLast).throws<StateError>();
     });
     test('interleaved operations wrapping around buffer', () {
@@ -119,7 +119,7 @@ void main() {
       for (var i = 0; i < 50; i++) {
         check(list.removeFirst()).equals(i);
       }
-      check(list).isEmpty();
+      check(list).isEmpty;
     });
   });
   group('insert and removeAt', () {
@@ -211,20 +211,20 @@ void main() {
   group('collection operations', () {
     test('contains and remove', () {
       final list = OrderedList<int>.of([10, 20, 30]);
-      check(list.contains(20)).isTrue();
-      check(list.contains(40)).isFalse();
-      check(list.remove(20)).isTrue();
+      check(list.contains(20)).isTrue;
+      check(list.contains(40)).isFalse;
+      check(list.remove(20)).isTrue;
       check(list).deepEquals([10, 30]);
-      check(list.remove(20)).isFalse();
+      check(list.remove(20)).isFalse;
     });
     test('clear and removeAll', () {
       final list = OrderedList<int>.of([1, 2, 3]);
       check(list.removeAll()).deepEquals([1, 2, 3]);
-      check(list).isEmpty();
+      check(list).isEmpty;
       list.addAll([4, 5]);
       check(list).deepEquals([4, 5]);
       list.clear();
-      check(list).isEmpty();
+      check(list).isEmpty;
     });
     test('unorderedElements and toUnorderedList', () {
       final list = OrderedList<int>.of([3, 1, 2]);

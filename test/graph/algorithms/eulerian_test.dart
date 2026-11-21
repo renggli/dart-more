@@ -7,28 +7,28 @@ void main() {
     group('directed', () {
       test('empty graph', () {
         final graph = Graph<int, void>(isDirected: true);
-        check(graph.hasEulerianCircuit()).isFalse();
-        check(graph.hasEulerianPath()).isFalse();
-        check(graph.findEulerianPath()).isNull();
+        check(graph.hasEulerianCircuit()).isFalse;
+        check(graph.hasEulerianPath()).isFalse;
+        check(graph.findEulerianPath()).isNull;
       });
 
       test('single isolated vertex', () {
         final graph = Graph<int, void>(isDirected: true)..addVertex(1);
-        check(graph.hasEulerianCircuit()).isTrue();
-        check(graph.hasEulerianPath()).isTrue();
+        check(graph.hasEulerianCircuit()).isTrue;
+        check(graph.hasEulerianPath()).isTrue;
         final path = graph.findEulerianPath();
         check(path).isNotNull();
         check(path!.vertices).deepEquals([1]);
-        check(path.values).isEmpty();
+        check(path.values).isEmpty;
       });
 
       test('multiple isolated vertices', () {
         final graph = Graph<int, void>(isDirected: true)
           ..addVertex(1)
           ..addVertex(2);
-        check(graph.hasEulerianCircuit()).isFalse();
-        check(graph.hasEulerianPath()).isFalse();
-        check(graph.findEulerianPath()).isNull();
+        check(graph.hasEulerianCircuit()).isFalse;
+        check(graph.hasEulerianPath()).isFalse;
+        check(graph.findEulerianPath()).isNull;
       });
 
       test('single directed cycle (circuit)', () {
@@ -36,8 +36,8 @@ void main() {
           ..addEdge(1, 2)
           ..addEdge(2, 3)
           ..addEdge(3, 1);
-        check(graph.hasEulerianCircuit()).isTrue();
-        check(graph.hasEulerianPath()).isTrue();
+        check(graph.hasEulerianCircuit()).isTrue;
+        check(graph.hasEulerianPath()).isTrue;
         final circuit = graph.findEulerianPath(circuit: true);
         check(circuit).isNotNull();
         check(circuit!.vertices.first).equals(circuit.vertices.last);
@@ -48,8 +48,8 @@ void main() {
         final graph = Graph<int, void>(isDirected: true)
           ..addEdge(1, 2)
           ..addEdge(2, 3);
-        check(graph.hasEulerianCircuit()).isFalse();
-        check(graph.hasEulerianPath()).isTrue();
+        check(graph.hasEulerianCircuit()).isFalse;
+        check(graph.hasEulerianPath()).isTrue;
         final path = graph.findEulerianPath();
         check(path).isNotNull();
         check(path!.vertices).deepEquals([1, 2, 3]);
@@ -59,9 +59,9 @@ void main() {
         final graph = Graph<int, void>(isDirected: true)
           ..addEdge(1, 2)
           ..addEdge(1, 3);
-        check(graph.hasEulerianCircuit()).isFalse();
-        check(graph.hasEulerianPath()).isFalse();
-        check(graph.findEulerianPath()).isNull();
+        check(graph.hasEulerianCircuit()).isFalse;
+        check(graph.hasEulerianPath()).isFalse;
+        check(graph.findEulerianPath()).isNull;
       });
 
       test('directed disconnected components with edges', () {
@@ -71,9 +71,9 @@ void main() {
           ..addEdge(3, 4)
           ..addEdge(4, 3);
         // Degrees are balanced, but disconnected
-        check(graph.hasEulerianCircuit()).isFalse();
-        check(graph.hasEulerianPath()).isFalse();
-        check(graph.findEulerianPath()).isNull();
+        check(graph.hasEulerianCircuit()).isFalse;
+        check(graph.hasEulerianPath()).isFalse;
+        check(graph.findEulerianPath()).isNull;
       });
 
       test('directed with self-loop', () {
@@ -81,7 +81,7 @@ void main() {
           ..addEdge(1, 1)
           ..addEdge(1, 2)
           ..addEdge(2, 1);
-        check(graph.hasEulerianCircuit()).isTrue();
+        check(graph.hasEulerianCircuit()).isTrue;
         final circuit = graph.findEulerianPath(circuit: true);
         check(circuit).isNotNull();
         check(circuit!.edges.length).equals(3);
@@ -91,25 +91,25 @@ void main() {
     group('undirected', () {
       test('empty graph', () {
         final graph = Graph<int, void>(isDirected: false);
-        check(graph.hasEulerianCircuit()).isFalse();
-        check(graph.hasEulerianPath()).isFalse();
-        check(graph.findEulerianPath()).isNull();
+        check(graph.hasEulerianCircuit()).isFalse;
+        check(graph.hasEulerianPath()).isFalse;
+        check(graph.findEulerianPath()).isNull;
       });
 
       test('single isolated vertex', () {
         final graph = Graph<int, void>(isDirected: false)..addVertex(1);
-        check(graph.hasEulerianCircuit()).isTrue();
-        check(graph.hasEulerianPath()).isTrue();
+        check(graph.hasEulerianCircuit()).isTrue;
+        check(graph.hasEulerianPath()).isTrue;
         final path = graph.findEulerianPath();
         check(path).isNotNull();
         check(path!.vertices).deepEquals([1]);
-        check(path.values).isEmpty();
+        check(path.values).isEmpty;
       });
 
       test('single edge path', () {
         final graph = Graph<int, void>(isDirected: false)..addEdge(1, 2);
-        check(graph.hasEulerianCircuit()).isFalse();
-        check(graph.hasEulerianPath()).isTrue();
+        check(graph.hasEulerianCircuit()).isFalse;
+        check(graph.hasEulerianPath()).isTrue;
         final path = graph.findEulerianPath();
         check(path).isNotNull();
         check(path!.vertices.length).equals(2);
@@ -120,8 +120,8 @@ void main() {
           ..addEdge(1, 2)
           ..addEdge(2, 3)
           ..addEdge(3, 1);
-        check(graph.hasEulerianCircuit()).isTrue();
-        check(graph.hasEulerianPath()).isTrue();
+        check(graph.hasEulerianCircuit()).isTrue;
+        check(graph.hasEulerianPath()).isTrue;
         final circuit = graph.findEulerianPath(circuit: true);
         check(circuit).isNotNull();
         check(circuit!.vertices.first).equals(circuit.vertices.last);
@@ -132,9 +132,9 @@ void main() {
         // For a simple complete graph K4: all 4 vertices have degree 3.
         final k4 = GraphFactory<int, void>(isDirected: false)
             .complete(vertexCount: 4);
-        check(k4.hasEulerianCircuit()).isFalse();
-        check(k4.hasEulerianPath()).isFalse();
-        check(k4.findEulerianPath()).isNull();
+        check(k4.hasEulerianCircuit()).isFalse;
+        check(k4.hasEulerianPath()).isFalse;
+        check(k4.findEulerianPath()).isNull;
       });
 
       test('undirected bowtie / figure 8 (circuit)', () {
@@ -148,7 +148,7 @@ void main() {
           ..addEdge(0, 3)
           ..addEdge(3, 4)
           ..addEdge(4, 0);
-        check(graph.hasEulerianCircuit()).isTrue();
+        check(graph.hasEulerianCircuit()).isTrue;
         final circuit = graph.findEulerianPath(circuit: true);
         check(circuit).isNotNull();
         check(circuit!.edges.length).equals(6);
@@ -161,7 +161,7 @@ void main() {
           ..addEdge(1, 2)
           ..addEdge(2, 3)
           ..addEdge(3, 1);
-        check(graph.hasEulerianCircuit()).isTrue();
+        check(graph.hasEulerianCircuit()).isTrue;
         final circuit = graph.findEulerianPath(circuit: true);
         check(circuit).isNotNull();
         check(circuit!.edges.length).equals(4);
@@ -175,9 +175,9 @@ void main() {
           ..addEdge(4, 5)
           ..addEdge(5, 6)
           ..addEdge(6, 4);
-        check(graph.hasEulerianCircuit()).isFalse();
-        check(graph.hasEulerianPath()).isFalse();
-        check(graph.findEulerianPath()).isNull();
+        check(graph.hasEulerianCircuit()).isFalse;
+        check(graph.hasEulerianPath()).isFalse;
+        check(graph.findEulerianPath()).isNull;
       });
 
       test('standalone findEulerianPath with minimal parameters', () {

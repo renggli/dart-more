@@ -5,7 +5,7 @@ import 'package:test/scaffolding.dart';
 void main() {
   group('flatten', () {
     test('empty', () {
-      check(<Iterable<int>>[[], [], []].flatten()).isEmpty();
+      check(<Iterable<int>>[[], [], []].flatten()).isEmpty;
     });
     test('single', () {
       check(
@@ -29,7 +29,7 @@ void main() {
 
   group('deepFlatten', () {
     test('empty', () {
-      check(<int>[].deepFlatten<int>()).isEmpty();
+      check(<int>[].deepFlatten<int>()).isEmpty;
     });
     test('flat', () {
       check([1, 2, 3, 4, 5, 6].deepFlatten<int>())

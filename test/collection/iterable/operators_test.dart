@@ -56,21 +56,21 @@ void main() {
 
     group('smallest', () {
       test('empty', () {
-        check(empty.smallest(0)).isEmpty();
-        check(empty.smallest(1)).isEmpty();
-        check(empty.smallest(2)).isEmpty();
-        check(empty.smallest(3)).isEmpty();
-        check(empty.smallest(4)).isEmpty();
+        check(empty.smallest(0)).isEmpty;
+        check(empty.smallest(1)).isEmpty;
+        check(empty.smallest(2)).isEmpty;
+        check(empty.smallest(3)).isEmpty;
+        check(empty.smallest(4)).isEmpty;
       });
       test('comparable', () {
-        check([3, 1, 2].smallest(0)).isEmpty();
+        check([3, 1, 2].smallest(0)).isEmpty;
         check([3, 1, 2].smallest(1)).deepEquals([1]);
         check([3, 1, 2].smallest(2)).deepEquals([1, 2]);
         check([3, 1, 2].smallest(3)).deepEquals([1, 2, 3]);
         check([3, 1, 2].smallest(4)).deepEquals([1, 2, 3]);
       });
       test('custom comparator', () {
-        check([3, 1, 2].smallest(0, comparator: reverse)).isEmpty();
+        check([3, 1, 2].smallest(0, comparator: reverse)).isEmpty;
         check([3, 1, 2].smallest(1, comparator: reverse)).deepEquals([3]);
         check([3, 1, 2].smallest(2, comparator: reverse)).deepEquals([3, 2]);
         check([3, 1, 2].smallest(3, comparator: reverse)).deepEquals([3, 2, 1]);
@@ -80,21 +80,21 @@ void main() {
 
     group('largest', () {
       test('empty', () {
-        check(empty.largest(0)).isEmpty();
-        check(empty.largest(1)).isEmpty();
-        check(empty.largest(2)).isEmpty();
-        check(empty.largest(3)).isEmpty();
-        check(empty.largest(4)).isEmpty();
+        check(empty.largest(0)).isEmpty;
+        check(empty.largest(1)).isEmpty;
+        check(empty.largest(2)).isEmpty;
+        check(empty.largest(3)).isEmpty;
+        check(empty.largest(4)).isEmpty;
       });
       test('comparable', () {
-        check([3, 1, 2].largest(0)).isEmpty();
+        check([3, 1, 2].largest(0)).isEmpty;
         check([3, 1, 2].largest(1)).deepEquals([3]);
         check([3, 1, 2].largest(2)).deepEquals([3, 2]);
         check([3, 1, 2].largest(3)).deepEquals([3, 2, 1]);
         check([3, 1, 2].largest(4)).deepEquals([3, 2, 1]);
       });
       test('custom comparator', () {
-        check([3, 1, 2].largest(0, comparator: reverse)).isEmpty();
+        check([3, 1, 2].largest(0, comparator: reverse)).isEmpty;
         check([3, 1, 2].largest(1, comparator: reverse)).deepEquals([1]);
         check([3, 1, 2].largest(2, comparator: reverse)).deepEquals([1, 2]);
         check([3, 1, 2].largest(3, comparator: reverse)).deepEquals([1, 2, 3]);

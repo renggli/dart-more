@@ -28,7 +28,7 @@ void main() {
     });
     group('decodeRle', () {
       test('empty list', () {
-        check(decodeRle([0])).isEmpty();
+        check(decodeRle([0])).isEmpty;
       });
       test('single element', () {
         check(decodeRle([1, 5])).deepEquals([5]);

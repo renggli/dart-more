@@ -8,8 +8,8 @@ void main() {
   group('partite', () {
     test('empty', () {
       final graph = GraphFactory<int, void>().partite(vertexCounts: []);
-      check(graph.vertices).isEmpty();
-      check(graph.edges).isEmpty();
+      check(graph.vertices).isEmpty;
+      check(graph.edges).isEmpty;
       expectInvariants(graph);
     });
     test('path graph (p: 1, q: 1)', () {

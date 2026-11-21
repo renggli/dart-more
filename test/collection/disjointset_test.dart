@@ -25,7 +25,7 @@ void main() {
   });
   test('union two sets', () {
     final disjoinset = DisjointSet(0.to(5));
-    check(disjoinset.union(0, 1)).isTrue();
+    check(disjoinset.union(0, 1)).isTrue;
     check(disjoinset.count).equals(4);
     check(disjoinset.sizes).unorderedEquals([2, 1, 1, 1]);
     check(disjoinset.sets).unorderedSets([
@@ -40,7 +40,7 @@ void main() {
   test('union already merged sets', () {
     final disjoinset = DisjointSet(0.to(5));
     disjoinset.union(0, 1);
-    check(disjoinset.union(0, 1)).isFalse();
+    check(disjoinset.union(0, 1)).isFalse;
     check(disjoinset.count).equals(4);
     check(disjoinset.sizes).unorderedEquals([2, 1, 1, 1]);
     check(disjoinset.sets).unorderedSets([
@@ -99,15 +99,15 @@ void main() {
     final disjoinset = DisjointSet(0.to(5));
     check(() => disjoinset.find(99))
         .throws<ArgumentError>()
-        .has((e) => e.name, 'name')
+        .has('name', (e) => e.name)
         .equals('element');
     check(() => disjoinset.union(99, 0))
         .throws<ArgumentError>()
-        .has((e) => e.name, 'name')
+        .has('name', (e) => e.name)
         .equals('a');
     check(() => disjoinset.union(0, 99))
         .throws<ArgumentError>()
-        .has((e) => e.name, 'name')
+        .has('name', (e) => e.name)
         .equals('b');
   });
   test('identity nodes map distinguishes equal objects', () {
@@ -124,12 +124,12 @@ void main() {
     check(ds.sets.length).equals(3);
     check(ds.find(a)).identicalTo(a);
     check(ds.find(b)).identicalTo(b);
-    check(ds.union(a, b)).isTrue();
+    check(ds.union(a, b)).isTrue;
     check(ds.count).equals(2);
     check(ds.sizes).unorderedEquals([2, 1]);
     check(ds.sets.length).equals(2);
     check(ds.find(a)).identicalTo(ds.find(b));
-    check(ds.union(a, b)).isFalse();
+    check(ds.union(a, b)).isFalse;
   });
 }
 

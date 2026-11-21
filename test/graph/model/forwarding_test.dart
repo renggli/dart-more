@@ -9,8 +9,8 @@ void main() {
     test('directed', () {
       final base = Graph<String, int>(isDirected: true);
       final graph = ForwardingGraph<String, int>(base);
-      check(graph.isDirected).isTrue();
-      check(graph.isUnmodifiable).isFalse();
+      check(graph.isDirected).isTrue;
+      check(graph.isUnmodifiable).isFalse;
       check(graph.vertexStrategy).isNotNull();
       graph.addVertex('a');
       graph.addEdge('b', 'c', value: 42);
@@ -36,8 +36,8 @@ void main() {
     test('undirected', () {
       final base = Graph<String, int>(isDirected: false);
       final graph = ForwardingGraph<String, int>(base);
-      check(graph.isDirected).isFalse();
-      check(graph.isUnmodifiable).isFalse();
+      check(graph.isDirected).isFalse;
+      check(graph.isUnmodifiable).isFalse;
       check(graph.vertexStrategy).isNotNull();
       graph.addVertex('a');
       graph.addEdge('b', 'c', value: 42);

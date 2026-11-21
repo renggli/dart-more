@@ -93,11 +93,11 @@ void main() {
       check((1 / math.e).log()).isCloseTo(-1);
     });
     test('between', () {
-      check(2.between(1, 3)).isTrue();
-      check(2.between(2, 3)).isTrue();
-      check(2.between(1, 2)).isTrue();
-      check(2.between(0, 1)).isFalse();
-      check(2.between(3, 4)).isFalse();
+      check(2.between(1, 3)).isTrue;
+      check(2.between(2, 3)).isTrue;
+      check(2.between(1, 2)).isTrue;
+      check(2.between(0, 1)).isFalse;
+      check(2.between(3, 4)).isFalse;
     });
     test('clip', () {
       check((-2).clip(-1, 1)).equals(-1);

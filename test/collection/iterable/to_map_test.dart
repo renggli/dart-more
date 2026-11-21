@@ -5,7 +5,7 @@ import 'package:test/scaffolding.dart';
 void main() {
   group('toMap', () {
     test('empty', () {
-      check(<int>[].toMap<int, int>()).isEmpty();
+      check(<int>[].toMap<int, int>()).isEmpty;
     });
     test('default', () {
       const iterable = ['a', 'bb', 'ccc'];

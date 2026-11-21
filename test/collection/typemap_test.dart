@@ -7,52 +7,52 @@ import 'package:test/scaffolding.dart';
 void main() {
   test('empty', () {
     final map = TypeMap<Object>();
-    check(map.hasInstance<String>()).isFalse();
-    check(map.getInstance<String>()).isNull();
-    check(map.types).isEmpty();
-    check(map.instances).isEmpty();
+    check(map.hasInstance<String>()).isFalse;
+    check(map.getInstance<String>()).isNull;
+    check(map.types).isEmpty;
+    check(map.instances).isEmpty;
     check(map.length).equals(0);
-    check(map.isEmpty).isTrue();
-    check(map.isNotEmpty).isFalse();
-    check(map.asMap()).isEmpty();
+    check(map.isEmpty).isTrue;
+    check(map.isNotEmpty).isFalse;
+    check(map.asMap()).isEmpty;
     check(map.toString()).equals('{}');
   });
   test('single', () {
     final map = TypeMap<Object>();
     map.setInstance('hello');
-    check(map.hasInstance<String>()).isTrue();
+    check(map.hasInstance<String>()).isTrue;
     check(map.getInstance<String>()).equals('hello');
-    check(map.hasInstance<int>()).isFalse();
-    check(map.getInstance<int>()).isNull();
+    check(map.hasInstance<int>()).isFalse;
+    check(map.getInstance<int>()).isNull;
     check(map.types).deepEquals([String]);
     check(map.instances).deepEquals(['hello']);
     check(map.length).equals(1);
-    check(map.isEmpty).isFalse();
-    check(map.isNotEmpty).isTrue();
+    check(map.isEmpty).isFalse;
+    check(map.isNotEmpty).isTrue;
     check(map.asMap()).deepEquals({String: 'hello'});
     check(map.toString()).equals('{String: hello}');
   });
   test('double', () {
     final map = TypeMap<Object>();
     map.setInstance('hello');
-    check(map.hasInstance<String>()).isTrue();
+    check(map.hasInstance<String>()).isTrue;
     check(map.getInstance<String>()).equals('hello');
-    check(map.hasInstance<int>()).isFalse();
+    check(map.hasInstance<int>()).isFalse;
     check(map.getInstance<int>(ifAbsentPut: () => 42)).equals(42);
-    check(map.hasInstance<int>()).isTrue();
+    check(map.hasInstance<int>()).isTrue;
     check(map.getInstance<int>(ifAbsentPut: () => 52)).equals(42);
     check(map.types).deepEquals([String, int]);
     check(map.instances).deepEquals(['hello', 42]);
     check(map.length).equals(2);
-    check(map.isEmpty).isFalse();
-    check(map.isNotEmpty).isTrue();
+    check(map.isEmpty).isFalse;
+    check(map.isNotEmpty).isTrue;
     check(map.asMap()).deepEquals({String: 'hello', int: 42});
     check(map.toString()).equals('{String: hello, int: 42}');
   });
   test('nullable type with stored null', () {
     final map = TypeMap<Object?>();
     map.setInstance<int?>(null);
-    check(map.hasInstance<int?>()).isTrue();
+    check(map.hasInstance<int?>()).isTrue;
     var called = false;
     final result = map.getInstance<int?>(
       ifAbsentPut: () {
@@ -60,27 +60,27 @@ void main() {
         return 99;
       },
     );
-    check(result).isNull();
-    check(called).isFalse();
-    check(map.hasInstance<int?>()).isTrue();
+    check(result).isNull;
+    check(called).isFalse;
+    check(map.hasInstance<int?>()).isTrue;
     check(map.length).equals(1);
-    check(map.removeInstance<int?>()).isNull();
-    check(map.hasInstance<int?>()).isFalse();
+    check(map.removeInstance<int?>()).isNull;
+    check(map.hasInstance<int?>()).isFalse;
     check(map.length).equals(0);
   });
   test('removeInstance, clear, and live asMap view', () {
     final map = TypeMap<Object>();
     final view = map.asMap();
-    check(view).isEmpty();
+    check(view).isEmpty;
     map.setInstance<String>('hello');
     map.setInstance<int>(42);
     check(view).deepEquals({String: 'hello', int: 42});
     check(() => view[double] = 3.14).throws<UnsupportedError>();
     check(map.removeInstance<String>()).equals('hello');
-    check(map.removeInstance<String>()).isNull();
+    check(map.removeInstance<String>()).isNull;
     check(view).deepEquals({int: 42});
     map.clear();
-    check(map.isEmpty).isTrue();
-    check(view).isEmpty();
+    check(map.isEmpty).isTrue;
+    check(view).isEmpty;
   });
 }

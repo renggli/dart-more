@@ -225,7 +225,7 @@ void main() {
           check(
             because: 'Expect each digit to not be empty.',
             characters,
-          ).every((c) => c.length.isGreaterOrEqual(1));
+          ).every(.it()..length.isGreaterOrEqual(1));
           final printer = FixedNumberPrinter<num>(
             characters: characters,
             base: characters.length,

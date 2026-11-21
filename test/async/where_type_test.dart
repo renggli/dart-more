@@ -24,11 +24,11 @@ void main() {
     });
     test('<bool>', () async {
       final stream = Stream.fromIterable(input);
-      check(await stream.whereType<bool>().toList()).isEmpty();
+      check(await stream.whereType<bool>().toList()).isEmpty;
     });
     test('<Never>', () async {
       final stream = Stream.fromIterable(input);
-      check(await stream.whereType<Never>().toList()).isEmpty();
+      check(await stream.whereType<Never>().toList()).isEmpty;
     });
   });
 }

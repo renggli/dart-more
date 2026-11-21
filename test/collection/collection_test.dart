@@ -6,7 +6,7 @@ void main() {
   group('forList', () {
     test('empty', () {
       final collection = Collection<int>.forList();
-      check(collection).isEmpty();
+      check(collection).isEmpty;
       check(collection).isA<Collection<int>>();
     });
     test('delegate', () {
@@ -34,22 +34,22 @@ void main() {
     });
     test('remove', () {
       final collection = Collection.forList([1, 2, 3]);
-      check(collection.remove(2)).isTrue();
+      check(collection.remove(2)).isTrue;
       check(collection).deepEquals([1, 3]);
-      check(collection.remove(4)).isFalse();
+      check(collection.remove(4)).isFalse;
       check(collection).deepEquals([1, 3]);
     });
     test('clear', () {
       final collection = Collection.forList([1, 2, 3]);
       collection.clear();
-      check(collection).isEmpty();
+      check(collection).isEmpty;
     });
   });
 
   group('forSet', () {
     test('empty', () {
       final collection = Collection<int>.forSet();
-      check(collection).isEmpty();
+      check(collection).isEmpty;
       check(collection).isA<Collection<int>>();
     });
     test('delegate', () {
@@ -79,15 +79,15 @@ void main() {
     });
     test('remove', () {
       final collection = Collection.forSet({1, 2, 3});
-      check(collection.remove(2)).isTrue();
+      check(collection.remove(2)).isTrue;
       check(collection).unorderedEquals([1, 3]);
-      check(collection.remove(4)).isFalse();
+      check(collection.remove(4)).isFalse;
       check(collection).unorderedEquals([1, 3]);
     });
     test('clear', () {
       final collection = Collection.forSet({1, 2, 3});
       collection.clear();
-      check(collection).isEmpty();
+      check(collection).isEmpty;
     });
   });
 }

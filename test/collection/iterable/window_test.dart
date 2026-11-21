@@ -9,7 +9,7 @@ void main() {
       check(() => [1, 2, 3].window(1, step: 0)).throws<RangeError>();
     });
     test('size = 1', () {
-      check(<int>[].window(1)).isEmpty();
+      check(<int>[].window(1)).isEmpty;
       check([1].window(1)).deepEquals([
         [1],
       ]);
@@ -37,8 +37,8 @@ void main() {
       ]);
     });
     test('size = 2', () {
-      check(<int>[].window(2)).isEmpty();
-      check([1].window(2)).isEmpty();
+      check(<int>[].window(2)).isEmpty;
+      check([1].window(2)).isEmpty;
       check([1, 2].window(2)).deepEquals([
         [1, 2],
       ]);
@@ -59,8 +59,8 @@ void main() {
       ]);
     });
     test('size = 2, step = 2', () {
-      check(<int>[].window(2, step: 2)).isEmpty();
-      check([1].window(2, step: 2)).isEmpty();
+      check(<int>[].window(2, step: 2)).isEmpty;
+      check([1].window(2, step: 2)).isEmpty;
       check([1, 2].window(2, step: 2)).deepEquals([
         [1, 2],
       ]);
@@ -77,8 +77,8 @@ void main() {
       ]);
     });
     test('size = 2, step = 3', () {
-      check(<int>[].window(2, step: 3)).isEmpty();
-      check([1].window(2, step: 3)).isEmpty();
+      check(<int>[].window(2, step: 3)).isEmpty;
+      check([1].window(2, step: 3)).isEmpty;
       check([1, 2].window(2, step: 3)).deepEquals([
         [1, 2],
       ]);
@@ -94,7 +94,7 @@ void main() {
       ]);
     });
     test('size = 2, includePartial', () {
-      check(<int>[].window(2, includePartial: true)).isEmpty();
+      check(<int>[].window(2, includePartial: true)).isEmpty;
       check([1].window(2, includePartial: true)).deepEquals([
         [1],
       ]);
@@ -122,7 +122,7 @@ void main() {
       ]);
     });
     test('size = 2, step = 2, includePartial', () {
-      check(<int>[].window(2, step: 2, includePartial: true)).isEmpty();
+      check(<int>[].window(2, step: 2, includePartial: true)).isEmpty;
       check([1].window(2, step: 2, includePartial: true)).deepEquals([
         [1],
       ]);
@@ -145,7 +145,7 @@ void main() {
           ]);
     });
     test('size = 2, step = 3, includePartial', () {
-      check(<int>[].window(2, step: 3, includePartial: true)).isEmpty();
+      check(<int>[].window(2, step: 3, includePartial: true)).isEmpty;
       check([1].window(2, step: 3, includePartial: true)).deepEquals([
         [1],
       ]);

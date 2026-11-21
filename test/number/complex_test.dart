@@ -161,18 +161,18 @@ void main() {
         check(Complex.tryParse('1.2e-2*I')).equals(const Complex(0, 0.012));
       });
       test('tryParse (error)', () {
-        check(Complex.tryParse('')).isNull();
-        check(Complex.tryParse('e1')).isNull();
-        check(Complex.tryParse('1ii')).isNull();
-        check(Complex.tryParse('1+1')).isNull();
-        check(Complex.tryParse('i+i')).isNull();
-        check(Complex.tryParse('i+j')).isNull();
-        check(Complex.tryParse('*i')).isNull();
-        check(Complex.tryParse('+*i')).isNull();
-        check(Complex.tryParse('-*i')).isNull();
-        check(Complex.tryParse('1+*i')).isNull();
-        check(Complex.tryParse('1 e 5')).isNull();
-        check(Complex.tryParse('1e + 5')).isNull();
+        check(Complex.tryParse('')).isNull;
+        check(Complex.tryParse('e1')).isNull;
+        check(Complex.tryParse('1ii')).isNull;
+        check(Complex.tryParse('1+1')).isNull;
+        check(Complex.tryParse('i+i')).isNull;
+        check(Complex.tryParse('i+j')).isNull;
+        check(Complex.tryParse('*i')).isNull;
+        check(Complex.tryParse('+*i')).isNull;
+        check(Complex.tryParse('-*i')).isNull;
+        check(Complex.tryParse('1+*i')).isNull;
+        check(Complex.tryParse('1 e 5')).isNull;
+        check(Complex.tryParse('1e + 5')).isNull;
       });
     });
     group('arithmetic', () {
@@ -232,8 +232,8 @@ void main() {
         check(Complex.zero.pow(const Complex(2, 1))).equals(Complex.zero);
         check(Complex.zero.pow(-2)).equals(Complex.infinity);
         check(Complex.zero.pow(const Complex(-2, 0))).equals(Complex.infinity);
-        check(Complex.zero.pow(const Complex(-2, 1)).isNaN).isTrue();
-        check(Complex.zero.pow(Complex.i).isNaN).isTrue();
+        check(Complex.zero.pow(const Complex(-2, 1)).isNaN).isTrue;
+        check(Complex.zero.pow(Complex.i).isNaN).isTrue;
         check(() => Complex.zero.pow('invalid')).throws<ArgumentError>();
         check(() => const Complex(1, 2).pow('invalid')).throws<ArgumentError>();
       });
@@ -346,33 +346,32 @@ void main() {
     });
     group('testing', () {
       test('isNan', () {
-        check(Complex.zero.isNaN).isFalse();
-        check(Complex.nan.isNaN).isTrue();
-        check(Complex.infinity.isNaN).isFalse();
-        check(const Complex(0, double.nan).isNaN).isTrue();
-        check(const Complex(double.nan).isNaN).isTrue();
-        check(const Complex(double.nan, double.nan).isNaN).isTrue();
+        check(Complex.zero.isNaN).isFalse;
+        check(Complex.nan.isNaN).isTrue;
+        check(Complex.infinity.isNaN).isFalse;
+        check(const Complex(0, double.nan).isNaN).isTrue;
+        check(const Complex(double.nan).isNaN).isTrue;
+        check(const Complex(double.nan, double.nan).isNaN).isTrue;
       });
       test('isInfinite', () {
-        check(Complex.zero.isInfinite).isFalse();
-        check(Complex.nan.isInfinite).isFalse();
-        check(Complex.infinity.isInfinite).isTrue();
-        check(const Complex(0, double.infinity).isInfinite).isTrue();
-        check(const Complex(double.infinity).isInfinite).isTrue();
+        check(Complex.zero.isInfinite).isFalse;
+        check(Complex.nan.isInfinite).isFalse;
+        check(Complex.infinity.isInfinite).isTrue;
+        check(const Complex(0, double.infinity).isInfinite).isTrue;
+        check(const Complex(double.infinity).isInfinite).isTrue;
         check(const Complex(double.infinity, double.infinity).isInfinite)
-            .isTrue();
+            .isTrue;
       });
       test('isFinite', () {
-        check(Complex.zero.isFinite).isTrue();
-        check(Complex.nan.isFinite).isFalse();
-        check(Complex.infinity.isFinite).isFalse();
-        check(const Complex(0, double.nan).isFinite).isFalse();
-        check(const Complex(double.nan).isFinite).isFalse();
-        check(const Complex(double.nan, double.nan).isFinite).isFalse();
-        check(const Complex(0, double.infinity).isFinite).isFalse();
-        check(const Complex(double.infinity).isFinite).isFalse();
-        check(const Complex(double.infinity, double.infinity).isFinite)
-            .isFalse();
+        check(Complex.zero.isFinite).isTrue;
+        check(Complex.nan.isFinite).isFalse;
+        check(Complex.infinity.isFinite).isFalse;
+        check(const Complex(0, double.nan).isFinite).isFalse;
+        check(const Complex(double.nan).isFinite).isFalse;
+        check(const Complex(double.nan, double.nan).isFinite).isFalse;
+        check(const Complex(0, double.infinity).isFinite).isFalse;
+        check(const Complex(double.infinity).isFinite).isFalse;
+        check(const Complex(double.infinity, double.infinity).isFinite).isFalse;
       });
     });
     group('converting', () {
@@ -414,26 +413,26 @@ void main() {
     group('comparing', () {
       test('close', () {
         check(Complex.fromPolar(math.e, math.pi / 2).closeTo(Complex.zero, 0.1))
-            .isFalse();
+            .isFalse;
         check(
           Complex.fromPolar(
             math.e,
             math.pi / 2,
           ).closeTo(const Complex(0, 2.71), 0.1),
-        ).isTrue();
+        ).isTrue;
       });
       test('equal', () {
-        check(const Complex(2, 3) == const Complex(2, 3)).isTrue();
-        check(const Complex(2, 3) == const Complex(3, 2)).isFalse();
-        check(const Complex(2, 3) == const Complex(2, 4)).isFalse();
-        check(Complex.nan == Complex.nan).isFalse();
-        check(Complex.infinity == Complex.infinity).isTrue();
+        check(const Complex(2, 3) == const Complex(2, 3)).isTrue;
+        check(const Complex(2, 3) == const Complex(3, 2)).isFalse;
+        check(const Complex(2, 3) == const Complex(2, 4)).isFalse;
+        check(Complex.nan == Complex.nan).isFalse;
+        check(Complex.infinity == Complex.infinity).isTrue;
       });
       test('hash', () {
         check(const Complex(2, 3).hashCode)
             .equals(const Complex(2, 3).hashCode);
         check(const Complex(2, 3).hashCode)
-            .not((it) => it.equals(const Complex(3, 2).hashCode));
+            .not(.it()..equals(const Complex(3, 2).hashCode));
       });
     });
   });

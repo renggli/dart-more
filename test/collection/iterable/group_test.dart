@@ -8,7 +8,7 @@ void main() {
 
     test('groupBy empty', () {
       final iterable = <int>[].groupBy<int>();
-      check(iterable).isEmpty();
+      check(iterable).isEmpty;
     });
     test('groupBy basic', () {
       final iterable = example.groupBy<String>();

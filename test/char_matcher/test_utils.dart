@@ -13,23 +13,23 @@ void verify(
     check(
       matcher(iterator.current),
       because: '${unicodeCodePointPrinter(iterator.current)} should match',
-    ).isTrue();
+    ).isTrue;
   }
   for (final iterator = excluded.runes.iterator; iterator.moveNext();) {
     check(
       matcher(iterator.current),
       because: '${unicodeCodePointPrinter(iterator.current)} should not match',
-    ).isFalse();
+    ).isFalse;
   }
   // Test basic operators.
   check(
     matcher.everyOf(included),
     because: 'all of "$included" should match',
-  ).isTrue();
+  ).isTrue;
   check(
     matcher.noneOf(excluded),
     because: 'none of "$excluded" should match',
-  ).isTrue();
+  ).isTrue;
   check(matcher.countIn(included)).equals(included.runes.length);
   check(matcher.replaceFrom(included, '')).equals('');
   check(matcher.removeFrom(included)).equals('');

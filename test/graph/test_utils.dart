@@ -8,30 +8,31 @@ Condition<Edge<V, E>> isEdge<V, E>(
   Object? target, {
   Object? value = _unspecified,
   bool? isDirected,
-}) => (edge) {
-  edge
-    ..has((e) => e.source, 'source').equals(source as V)
-    ..has((e) => e.target, 'target').equals(target as V)
-    ..has((e) => e.toString(), 'toString').contains('Edge');
+}) {
+  final edge = Condition.it<Edge<V, E>>()
+    ..has('source', (e) => e.source).equals(source as V)
+    ..has('target', (e) => e.target).equals(target as V)
+    ..has('toString', (e) => e.toString()).contains('Edge');
   if (value != _unspecified) {
     if (value is Iterable<Object?>) {
       edge
-          .has((e) => e.value, 'value')
+          .has('value', (e) => e.value)
           .isA<Iterable<Object?>>()
           .deepEquals(value);
     } else if (value is Map) {
       edge
-          .has((e) => e.value, 'value')
+          .has('value', (e) => e.value)
           .isA<Map<Object?, Object?>>()
           .deepEquals(value);
     } else {
-      edge.has((e) => e.value, 'value').equals(value as E);
+      edge.has('value', (e) => e.value).equals(value as E);
     }
   }
   if (isDirected != null) {
-    edge.has((e) => e.isDirected, 'isDirected').equals(isDirected);
+    edge.has('isDirected', (e) => e.isDirected).equals(isDirected);
   }
-};
+  return edge;
+}
 
 Condition<Path<V, E>> isPath<V, E>({
   Object? source = _unspecified,
@@ -40,55 +41,54 @@ Condition<Path<V, E>> isPath<V, E>({
   Object? values = _unspecified,
   Object? edges = _unspecified,
   Object? cost = _unspecified,
-}) => (path) {
-  path.has((p) => p.toString(), 'toString').contains('Path');
+}) {
+  final path = Condition.it<Path<V, E>>()
+    ..has('toString', (p) => p.toString()).contains('Path');
   if (source != _unspecified) {
-    path.has((p) => p.source, 'source').equals(source as V);
+    path.has('source', (p) => p.source).equals(source as V);
   }
   if (target != _unspecified) {
-    path.has((p) => p.target, 'target').equals(target as V);
+    path.has('target', (p) => p.target).equals(target as V);
   }
   if (vertices != _unspecified) {
     final v = vertices as Iterable<Object?>;
-    path.has((p) => p.vertices, 'vertices').which((it) {
-      it.deepEquals(v);
-      it.length.equals(v.toSet().length);
-    });
+    path.has('vertices', (p) => p.vertices)
+      ..deepEquals(v)
+      ..length.equals(v.toSet().length);
   }
   if (values != _unspecified) {
     final val = values as Iterable<Object?>;
-    path.has((p) => p.values, 'values').which((it) {
-      it.deepEquals(val);
-      if (vertices case final Iterable<Object?> v) {
-        it.length.equals(v.length - 1);
-      }
-    });
+    final subject = path.has('values', (p) => p.values)..deepEquals(val);
+    if (vertices case final Iterable<Object?> v) {
+      subject.length.equals(v.length - 1);
+    }
   }
   if (edges != _unspecified) {
-    path.has((p) => p.edges, 'edges').deepEquals(edges as Iterable<Object?>);
+    path.has('edges', (p) => p.edges).deepEquals(edges as Iterable<Object?>);
   }
   if (cost != _unspecified) {
-    path.isA<Path<V, num>>().has((p) => p.cost, 'cost').equals(cost as num);
+    path.isA<Path<V, num>>().has('cost', (p) => p.cost).equals(cost as num);
   }
-};
+  return path;
+}
 
 extension EdgeChecks<V, E> on Subject<Edge<V, E>> {
-  Subject<V> get source => has((e) => e.source, 'source');
-  Subject<V> get target => has((e) => e.target, 'target');
-  Subject<E> get value => has((e) => e.value, 'value');
-  Subject<bool> get isDirected => has((e) => e.isDirected, 'isDirected');
+  Subject<V> get source => has('source', (e) => e.source);
+  Subject<V> get target => has('target', (e) => e.target);
+  Subject<E> get value => has('value', (e) => e.value);
+  Subject<bool> get isDirected => has('isDirected', (e) => e.isDirected);
 }
 
 extension PathChecks<V, E> on Subject<Path<V, E>> {
-  Subject<V> get source => has((p) => p.source, 'source');
-  Subject<V> get target => has((p) => p.target, 'target');
-  Subject<List<V>> get vertices => has((p) => p.vertices, 'vertices');
-  Subject<List<E>> get values => has((p) => p.values, 'values');
-  Subject<Iterable<Edge<V, E>>> get edges => has((p) => p.edges, 'edges');
+  Subject<V> get source => has('source', (p) => p.source);
+  Subject<V> get target => has('target', (p) => p.target);
+  Subject<List<V>> get vertices => has('vertices', (p) => p.vertices);
+  Subject<List<E>> get values => has('values', (p) => p.values);
+  Subject<Iterable<Edge<V, E>>> get edges => has('edges', (p) => p.edges);
 }
 
 extension NumericPathChecks<V> on Subject<Path<V, num>> {
-  Subject<num> get cost => has((p) => p.cost, 'cost');
+  Subject<num> get cost => has('cost', (p) => p.cost);
 }
 
 // A basic graph:
@@ -168,7 +168,7 @@ Graph<String, int> get bellmanFordGraph => Graph<String, int>(isDirected: true)
 
 void expectInvariants<V, E>(Graph<V, E> graph) {
   for (final vertex in graph.vertices) {
-    check(graph.containsVertex(vertex)).isTrue();
+    check(graph.containsVertex(vertex)).isTrue;
     check(graph.inDegreeOf(vertex))
         .equals(graph.incomingEdgesOf(vertex).length);
     check(graph.outDegreeOf(vertex))
@@ -185,7 +185,7 @@ void expectInvariants<V, E>(Graph<V, E> graph) {
     for (final outgoingEdge in graph.outgoingEdgesOf(vertex)) {
       check(outgoingEdge.source).equals(vertex);
       check(graph.containsEdge(outgoingEdge.source, outgoingEdge.target))
-          .isTrue();
+          .isTrue;
       check(graph.predecessorsOf(outgoingEdge.target)).contains(vertex);
       check(graph.successorsOf(vertex)).contains(outgoingEdge.target);
       check(graph.edges).any(isEdge(outgoingEdge.source, outgoingEdge.target));
@@ -193,16 +193,16 @@ void expectInvariants<V, E>(Graph<V, E> graph) {
     for (final incomingEdge in graph.incomingEdgesOf(vertex)) {
       check(incomingEdge.target).equals(vertex);
       check(graph.containsEdge(incomingEdge.source, incomingEdge.target))
-          .isTrue();
+          .isTrue;
       check(graph.predecessorsOf(vertex)).contains(incomingEdge.source);
       check(graph.successorsOf(incomingEdge.source)).contains(vertex);
       check(graph.edges).any(isEdge(incomingEdge.source, incomingEdge.target));
     }
   }
   for (final edge in graph.edges) {
-    check(graph.containsVertex(edge.source)).isTrue();
-    check(graph.containsVertex(edge.target)).isTrue();
-    check(graph.containsEdge(edge.source, edge.target)).isTrue();
+    check(graph.containsVertex(edge.source)).isTrue;
+    check(graph.containsVertex(edge.target)).isTrue;
+    check(graph.containsEdge(edge.source, edge.target)).isTrue;
     check(graph.vertices).contains(edge.source);
     check(graph.vertices).contains(edge.target);
   }

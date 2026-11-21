@@ -14,7 +14,7 @@ void main() {
       check(input.heightOf('A')).equals(40.0);
       check(input.diameterOf('A')).isCloseTo(56.5685, 1e-3);
       check(input.neighboursOf('A')).unorderedEquals(['B']);
-      check(input.isDirected).isFalse();
+      check(input.isDirected).isFalse;
     });
 
     test('custom vertex dimensions', () {
@@ -40,13 +40,13 @@ void main() {
         successorsOf: (v) => v == 'A' ? ['B'] : const [],
         predecessorsOf: (v) => v == 'B' ? ['A'] : const [],
       );
-      check(inputDirected.isDirected).isTrue();
+      check(inputDirected.isDirected).isTrue;
       check(inputDirected.neighboursOf('B')).unorderedEquals(['A']);
     });
 
     test('empty and transform on LayoutResult', () {
       final empty = LayoutResult.empty<String>();
-      check(empty.positions).isEmpty();
+      check(empty.positions).isEmpty;
       check(empty.bounds.width).equals(0.0);
 
       final result = LayoutResult<String>(

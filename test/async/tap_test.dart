@@ -144,7 +144,7 @@ void main() {
       final controller = StreamController<int>.broadcast();
       final events = <String>[];
       final tapped = wrap(events, controller.stream);
-      check(tapped.isBroadcast).isTrue();
+      check(tapped.isBroadcast).isTrue;
       final sub1 = tapped.listen((value) => events.add('sub1: $value'));
       final sub2 = tapped.listen((value) => events.add('sub2: $value'));
       controller.add(1);

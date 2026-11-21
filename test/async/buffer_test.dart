@@ -56,7 +56,7 @@ void main() {
         async.elapse(const Duration(milliseconds: 500));
         sub.cancel();
         async.elapse(seconds2);
-        check(results).isEmpty();
+        check(results).isEmpty;
         controller.close();
       });
     });
@@ -89,7 +89,7 @@ void main() {
         check(results).deepEquals([
           [1, 2],
         ]);
-        check(triggerCancelled).isTrue();
+        check(triggerCancelled).isTrue;
       });
     });
     test('trigger completes cancels source', () {
@@ -102,13 +102,13 @@ void main() {
         final results = <List<int>>[];
         sourceController.stream.buffer(trigger: trigger).listen(results.add);
         async.flushMicrotasks();
-        check(sourceCancelled).isTrue();
+        check(sourceCancelled).isTrue;
       });
     });
     test('errors', () async {
       final stream = Stream<void>.error(StateError('Data Error'));
       await check(stream.buffer().toList()).throws<StateError>(
-        (it) => it.has((e) => e.message, 'message').equals('Data Error'),
+        .it()..has('message', (e) => e.message).equals('Data Error'),
       );
     });
     test('trigger', () {
@@ -136,7 +136,7 @@ void main() {
         async.elapse(seconds5);
         check(actualError)
             .isA<StateError>()
-            .has((e) => e.message, 'message')
+            .has('message', (e) => e.message)
             .equals('Trigger Error');
         sub.cancel();
       });
@@ -190,11 +190,11 @@ void main() {
       );
       final sub = bufferedStream.listen(null);
       sub.pause();
-      check(isSourcePaused).isTrue();
-      check(isTriggerPaused).isTrue();
+      check(isSourcePaused).isTrue;
+      check(isTriggerPaused).isTrue;
       sub.resume();
-      check(isSourcePaused).isFalse();
-      check(isTriggerPaused).isFalse();
+      check(isSourcePaused).isFalse;
+      check(isTriggerPaused).isFalse;
       await sub.cancel();
       await sourceController.close();
       await triggerController.close();

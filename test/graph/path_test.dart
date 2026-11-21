@@ -87,19 +87,19 @@ void main() {
       Edge.undirected('b', 'c', value: 2),
     ]);
     test('equals', () {
-      check(a == a).isTrue();
-      check(a == b).isFalse();
-      check(a == c).isTrue();
-      check(b == a).isFalse();
-      check(b == b).isTrue();
-      check(b == c).isFalse();
-      check(c == a).isTrue();
-      check(c == b).isFalse();
-      check(c == c).isTrue();
+      check(a == a).isTrue;
+      check(a == b).isFalse;
+      check(a == c).isTrue;
+      check(b == a).isFalse;
+      check(b == b).isTrue;
+      check(b == c).isFalse;
+      check(c == a).isTrue;
+      check(c == b).isFalse;
+      check(c == c).isTrue;
     });
     test('hashCode', () {
-      check(a.hashCode == b.hashCode).isFalse();
-      check(a.hashCode == c.hashCode).isTrue();
+      check(a.hashCode == b.hashCode).isFalse;
+      check(a.hashCode == c.hashCode).isTrue;
     });
   });
 }

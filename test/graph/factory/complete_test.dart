@@ -8,14 +8,14 @@ void main() {
   group('complete', () {
     test('empty', () {
       final graph = GraphFactory<int, void>().complete(vertexCount: 0);
-      check(graph.vertices).isEmpty();
-      check(graph.edges).isEmpty();
+      check(graph.vertices).isEmpty;
+      check(graph.edges).isEmpty;
       expectInvariants(graph);
     });
     test('single', () {
       final graph = GraphFactory<int, void>().complete(vertexCount: 1);
       check(graph.vertices).deepEquals([0]);
-      check(graph.edges).isEmpty();
+      check(graph.edges).isEmpty;
       expectInvariants(graph);
     });
     test('full', () {

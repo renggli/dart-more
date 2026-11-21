@@ -35,14 +35,14 @@ void validate<K, V>(BTreeMap<K, V> tree, {bool expectValues = true}) {
     check(root.size).equals(0);
     final leaf = root as BTreeLeafNode<K, V>;
     if (expectValues) {
-      check(leaf.values).isNotNull().isEmpty();
+      check(leaf.values).isNotNull().isEmpty;
     } else {
-      check(leaf.values).isNull();
+      check(leaf.values).isNull;
     }
     check(firstLeaf).identicalTo(leaf);
     check(lastLeaf).identicalTo(leaf);
-    check(firstLeaf.previous).isNull();
-    check(lastLeaf.next).isNull();
+    check(firstLeaf.previous).isNull;
+    check(lastLeaf.next).isNull;
     return;
   }
 
@@ -54,7 +54,7 @@ void validate<K, V>(BTreeMap<K, V> tree, {bool expectValues = true}) {
       if (expectValues) {
         check(node.values).isNotNull().length.equals(node.keys.length);
       } else {
-        check(node.values).isNull();
+        check(node.values).isNull;
       }
       if (isRoot) {
         check(node.keys.length).isLessOrEqual(tree.maxEntries);
@@ -132,7 +132,7 @@ void main() {
       final map = BTreeMap<int, String>();
       check(map.minEntries).equals(16);
       check(map.maxEntries).equals(32);
-      check(map.isEmpty).isTrue();
+      check(map.isEmpty).isTrue;
       validate(map);
     });
 
@@ -201,7 +201,7 @@ void main() {
       clone[100] = 'added';
       clone.remove(10);
       check(original[0]).equals('v0');
-      check(original.containsKey(100)).isFalse();
+      check(original.containsKey(100)).isFalse;
       check(original[10]).equals('v10');
       validate(original);
       validate(clone);
@@ -298,36 +298,36 @@ void main() {
   group('BTreeMap basic operations', () {
     test('empty map', () {
       final map = BTreeMap<String, int>();
-      check(map.isEmpty).isTrue();
-      check(map.isNotEmpty).isFalse();
+      check(map.isEmpty).isTrue;
+      check(map.isNotEmpty).isFalse;
       check(map.length).equals(0);
-      check(map['missing']).isNull();
-      check(map[123]).isNull();
-      check(map.containsKey('missing')).isFalse();
-      check(map.containsKey(123)).isFalse();
-      check(map.containsValue(1)).isFalse();
+      check(map['missing']).isNull;
+      check(map[123]).isNull;
+      check(map.containsKey('missing')).isFalse;
+      check(map.containsKey(123)).isFalse;
+      check(map.containsValue(1)).isFalse;
       check(map.indexOfKey('missing')).equals(-1);
       check(map.indexOfKey(123)).equals(-1);
-      check(map.remove('missing')).isNull();
-      check(map.remove(123)).isNull();
+      check(map.remove('missing')).isNull;
+      check(map.remove(123)).isNull;
       check(() => map.firstKey).throws<StateError>();
       check(() => map.lastKey).throws<StateError>();
       check(() => map.firstEntry).throws<StateError>();
       check(() => map.lastEntry).throws<StateError>();
       check(map.removeFirst).throws<StateError>();
       check(map.removeLast).throws<StateError>();
-      check(map.keys).isEmpty();
-      check(map.values).isEmpty();
-      check(map.entries).isEmpty();
-      check(map.reversedKeys).isEmpty();
-      check(map.reversedValues).isEmpty();
-      check(map.reversedEntries).isEmpty();
+      check(map.keys).isEmpty;
+      check(map.values).isEmpty;
+      check(map.entries).isEmpty;
+      check(map.reversedKeys).isEmpty;
+      check(map.reversedValues).isEmpty;
+      check(map.reversedEntries).isEmpty;
       check(() => map.keys.first).throws<StateError>();
       check(() => map.keys.last).throws<StateError>();
-      check(map.keys.contains('a')).isFalse();
-      check(map.keys.contains(123)).isFalse();
+      check(map.keys.contains('a')).isFalse;
+      check(map.keys.contains(123)).isFalse;
       map.clear();
-      check(map.isEmpty).isTrue();
+      check(map.isEmpty).isTrue;
     });
 
     test('nullable values', () {
@@ -335,17 +335,17 @@ void main() {
       map['a'] = null;
       map['b'] = 2;
       check(map.length).equals(2);
-      check(map.containsKey('a')).isTrue();
-      check(map.containsValue(null)).isTrue();
-      check(map.containsValue(2)).isTrue();
-      check(map.containsValue(3)).isFalse();
-      check(map['a']).isNull();
-      check(map.containsKey('c')).isFalse();
-      check(map.putIfAbsent('a', () => 99)).isNull();
-      check(map['a']).isNull();
-      check(map.remove('a')).isNull();
-      check(map.containsKey('a')).isFalse();
-      check(map.containsValue(null)).isFalse();
+      check(map.containsKey('a')).isTrue;
+      check(map.containsValue(null)).isTrue;
+      check(map.containsValue(2)).isTrue;
+      check(map.containsValue(3)).isFalse;
+      check(map['a']).isNull;
+      check(map.containsKey('c')).isFalse;
+      check(map.putIfAbsent('a', () => 99)).isNull;
+      check(map['a']).isNull;
+      check(map.remove('a')).isNull;
+      check(map.containsKey('a')).isFalse;
+      check(map.containsValue(null)).isFalse;
       check(map.length).equals(1);
       validate(map);
     });
@@ -393,9 +393,9 @@ void main() {
       for (var i = 0; i < 20; i++) {
         map[i] = 'v$i';
       }
-      check(map.containsValue('v0')).isTrue();
-      check(map.containsValue('v19')).isTrue();
-      check(map.containsValue('missing')).isFalse();
+      check(map.containsValue('v0')).isTrue;
+      check(map.containsValue('v19')).isTrue;
+      check(map.containsValue('missing')).isFalse;
 
       final visited = <int>[];
       map.forEach((k, v) {
@@ -442,7 +442,7 @@ void main() {
       }
       check(map.length).equals(50);
       map.clear();
-      check(map.isEmpty).isTrue();
+      check(map.isEmpty).isTrue;
       check(map.length).equals(0);
       validate(map);
       map[10] = 100;
@@ -476,7 +476,7 @@ void main() {
           check(map.remove(i)).equals(i * 2);
           validate(map);
         }
-        check(map.isEmpty).isTrue();
+        check(map.isEmpty).isTrue;
 
         // Descending insert
         for (var i = 199; i >= 0; i--) {
@@ -488,7 +488,7 @@ void main() {
           check(map.remove(i)).equals(i);
           validate(map);
         }
-        check(map.isEmpty).isTrue();
+        check(map.isEmpty).isTrue;
 
         // Random insert and remove
         final random = Random(42);
@@ -502,7 +502,7 @@ void main() {
           check(map.remove(k)).equals(k + 1);
           validate(map);
         }
-        check(map.isEmpty).isTrue();
+        check(map.isEmpty).isTrue;
       });
     }
   });
@@ -554,21 +554,21 @@ void main() {
   group('BTreeMap navigable & range queries', () {
     test('lower, floor, ceiling, higher', () {
       final empty = BTreeMap<int, int>();
-      check(empty.lowerKey(5)).isNull();
-      check(empty.floorKey(5)).isNull();
-      check(empty.ceilingKey(5)).isNull();
-      check(empty.higherKey(5)).isNull();
-      check(empty.lowerEntry(5)).isNull();
-      check(empty.floorEntry(5)).isNull();
-      check(empty.ceilingEntry(5)).isNull();
-      check(empty.higherEntry(5)).isNull();
+      check(empty.lowerKey(5)).isNull;
+      check(empty.floorKey(5)).isNull;
+      check(empty.ceilingKey(5)).isNull;
+      check(empty.higherKey(5)).isNull;
+      check(empty.lowerEntry(5)).isNull;
+      check(empty.floorEntry(5)).isNull;
+      check(empty.ceilingEntry(5)).isNull;
+      check(empty.higherEntry(5)).isNull;
 
       final map = BTreeMap<int, int>(minEntries: 2, maxEntries: 4);
       for (var i = 10; i <= 100; i += 10) {
         map[i] = i * 2;
       }
       // Below min
-      check(map.lowerKey(10)).isNull();
+      check(map.lowerKey(10)).isNull;
       check(map.floorKey(10)).equals(10);
       check(map.ceilingKey(5)).equals(10);
       check(map.higherKey(5)).equals(10);
@@ -592,8 +592,8 @@ void main() {
       // Above max
       check(map.lowerKey(105)).equals(100);
       check(map.floorKey(100)).equals(100);
-      check(map.ceilingKey(105)).isNull();
-      check(map.higherKey(100)).isNull();
+      check(map.ceilingKey(105)).isNull;
+      check(map.higherKey(100)).isNull;
     });
 
     test('range, keysInRange, valuesInRange, reversed', () {
@@ -625,9 +625,9 @@ void main() {
             )
             .toList(),
       ).deepEquals([8, 6]);
-      check(map.keysInRange(min: 10, max: 4)).isEmpty();
-      check(map.keysInRange(min: 4, max: 4, includeMin: false)).isEmpty();
-      check(map.keysInRange(min: 4, max: 4, includeMax: false)).isEmpty();
+      check(map.keysInRange(min: 10, max: 4)).isEmpty;
+      check(map.keysInRange(min: 4, max: 4, includeMin: false)).isEmpty;
+      check(map.keysInRange(min: 4, max: 4, includeMax: false)).isEmpty;
       check(map.keysInRange(min: 4, max: 4).toList()).deepEquals([4]);
       check(map.valuesInRange(min: 4, max: 8).toList())
           .deepEquals(['v4', 'v6', 'v8']);
@@ -640,10 +640,10 @@ void main() {
           .deepEquals([28, 26]);
 
       // Out-of-span bounds (both forward and reversed).
-      check(map.keysInRange(min: 100)).isEmpty();
-      check(map.keysInRange(max: -10)).isEmpty();
-      check(map.keysInRange(min: 100, reversed: true)).isEmpty();
-      check(map.keysInRange(max: -10, reversed: true)).isEmpty();
+      check(map.keysInRange(min: 100)).isEmpty;
+      check(map.keysInRange(max: -10)).isEmpty;
+      check(map.keysInRange(min: 100, reversed: true)).isEmpty;
+      check(map.keysInRange(max: -10, reversed: true)).isEmpty;
       check(map.keysInRange(min: -10, max: 100).length).equals(15);
     });
 
@@ -657,16 +657,16 @@ void main() {
 
         // Unbounded forward & reversed.
         check(map.keys.length).equals(15);
-        check(map.keys.isEmpty).isFalse();
-        check(map.keys.isNotEmpty).isTrue();
+        check(map.keys.isEmpty).isFalse;
+        check(map.keys.isNotEmpty).isTrue;
         check(map.keys.first).equals(0);
         check(map.keys.last).equals(28);
         check(map.keys.elementAt(0)).equals(0);
         check(map.keys.elementAt(7)).equals(14);
         check(map.keys.elementAt(14)).equals(28);
-        check(map.keys.contains(14)).isTrue();
-        check(map.keys.contains(15)).isFalse();
-        check(map.keys.contains('x')).isFalse();
+        check(map.keys.contains(14)).isTrue;
+        check(map.keys.contains(15)).isFalse;
+        check(map.keys.contains('x')).isFalse;
         check(() => map.keys.elementAt(-1)).throws<RangeError>();
         check(() => map.keys.elementAt(15)).throws<RangeError>();
 
@@ -686,20 +686,20 @@ void main() {
         // Bounded forward.
         final sub = map.keysInRange(min: 4, max: 12);
         check(sub.length).equals(5);
-        check(sub.isEmpty).isFalse();
-        check(sub.isNotEmpty).isTrue();
+        check(sub.isEmpty).isFalse;
+        check(sub.isNotEmpty).isTrue;
         check(sub.first).equals(4);
         check(sub.last).equals(12);
         check(sub.elementAt(0)).equals(4);
         check(sub.elementAt(2)).equals(8);
         check(sub.elementAt(4)).equals(12);
         check(() => sub.elementAt(5)).throws<RangeError>();
-        check(sub.contains(4)).isTrue();
-        check(sub.contains(8)).isTrue();
-        check(sub.contains(12)).isTrue();
-        check(sub.contains(2)).isFalse();
-        check(sub.contains(14)).isFalse();
-        check(sub.contains(5)).isFalse();
+        check(sub.contains(4)).isTrue;
+        check(sub.contains(8)).isTrue;
+        check(sub.contains(12)).isTrue;
+        check(sub.contains(2)).isFalse;
+        check(sub.contains(14)).isFalse;
+        check(sub.contains(5)).isFalse;
 
         // Exclusive bounds.
         final exclusive = map.keysInRange(
@@ -711,9 +711,9 @@ void main() {
         check(exclusive.length).equals(3);
         check(exclusive.first).equals(6);
         check(exclusive.last).equals(10);
-        check(exclusive.contains(4)).isFalse();
-        check(exclusive.contains(6)).isTrue();
-        check(exclusive.contains(12)).isFalse();
+        check(exclusive.contains(4)).isFalse;
+        check(exclusive.contains(6)).isTrue;
+        check(exclusive.contains(12)).isFalse;
 
         // Bounded reversed.
         final revSub = map.keysInRange(min: 4, max: 12, reversed: true);
@@ -727,9 +727,9 @@ void main() {
         // Empty bounded range.
         final emptyRange = map.keysInRange(min: 10, max: 4);
         check(emptyRange.length).equals(0);
-        check(emptyRange.isEmpty).isTrue();
-        check(emptyRange.isNotEmpty).isFalse();
-        check(emptyRange.contains(6)).isFalse();
+        check(emptyRange.isEmpty).isTrue;
+        check(emptyRange.isNotEmpty).isFalse;
+        check(emptyRange.contains(6)).isFalse;
         check(() => emptyRange.first).throws<StateError>();
         check(() => emptyRange.last).throws<StateError>();
         check(() => emptyRange.elementAt(0)).throws<RangeError>();
@@ -739,22 +739,22 @@ void main() {
     test('concurrent modification detection', () {
       final map = BTreeMap<int, int>.of({1: 1, 2: 2, 3: 3});
       final iter = map.keys.iterator;
-      check(iter.moveNext()).isTrue();
+      check(iter.moveNext()).isTrue;
       map[4] = 4;
       check(iter.moveNext).throws<ConcurrentModificationError>();
 
       final rangeIter = map.range(min: 1, max: 4).iterator;
-      check(rangeIter.moveNext()).isTrue();
+      check(rangeIter.moveNext()).isTrue;
       map.remove(2);
       check(rangeIter.moveNext).throws<ConcurrentModificationError>();
 
       final removeAtIter = map.keys.iterator;
-      check(removeAtIter.moveNext()).isTrue();
+      check(removeAtIter.moveNext()).isTrue;
       map.removeAt(0);
       check(removeAtIter.moveNext).throws<ConcurrentModificationError>();
 
       final clearIter = map.keys.iterator;
-      check(clearIter.moveNext()).isTrue();
+      check(clearIter.moveNext()).isTrue;
       map.clear();
       check(clearIter.moveNext).throws<ConcurrentModificationError>();
 
@@ -770,19 +770,19 @@ void main() {
       final set = BTreeSet<int>(minEntries: 2, maxEntries: 4);
       check(set.minEntries).equals(2);
       check(set.maxEntries).equals(4);
-      check(set.isEmpty).isTrue();
-      check(set.isNotEmpty).isFalse();
+      check(set.isEmpty).isTrue;
+      check(set.isNotEmpty).isFalse;
       check(set.length).equals(0);
-      check(set.contains(1)).isFalse();
-      check(set.contains('x')).isFalse();
-      check(set.lookup(1)).isNull();
+      check(set.contains(1)).isFalse;
+      check(set.contains('x')).isFalse;
+      check(set.lookup(1)).isNull;
       check(set.indexOf(1)).equals(-1);
       check(set.indexOf('x')).equals(-1);
-      check(set.remove(1)).isFalse();
-      check(set.lower(1)).isNull();
-      check(set.floor(1)).isNull();
-      check(set.ceiling(1)).isNull();
-      check(set.higher(1)).isNull();
+      check(set.remove(1)).isFalse;
+      check(set.lower(1)).isNull;
+      check(set.floor(1)).isNull;
+      check(set.ceiling(1)).isNull;
+      check(set.higher(1)).isNull;
       check(() => set.first).throws<StateError>();
       check(() => set.last).throws<StateError>();
       check(set.removeFirst).throws<StateError>();
@@ -794,18 +794,18 @@ void main() {
 
     test('standard set and order-statistic operations', () {
       final set = BTreeSet<int>(minEntries: 2, maxEntries: 4);
-      check(set.add(3)).isTrue();
-      check(set.add(1)).isTrue();
-      check(set.add(2)).isTrue();
-      check(set.add(2)).isFalse();
+      check(set.add(3)).isTrue;
+      check(set.add(1)).isTrue;
+      check(set.add(2)).isTrue;
+      check(set.add(2)).isFalse;
       validate(set.debugMap, expectValues: false);
       check(set.length).equals(3);
       check(set.first).equals(1);
       check(set.last).equals(3);
-      check(set.contains(2)).isTrue();
-      check(set.contains(99)).isFalse();
+      check(set.contains(2)).isTrue;
+      check(set.contains(99)).isFalse;
       check(set.lookup(2)).equals(2);
-      check(set.lookup(99)).isNull();
+      check(set.lookup(99)).isNull;
       check(set.elementAt(1)).equals(2);
       check(set.indexOf(3)).equals(2);
       check(set.indexOf(99)).equals(-1);
@@ -817,13 +817,13 @@ void main() {
       check(copy.toList()).deepEquals([1, 2, 3]);
       validate((copy as BTreeSet<int>).debugMap, expectValues: false);
       copy.add(99);
-      check(set.contains(99)).isFalse();
+      check(set.contains(99)).isFalse;
 
-      check(set.remove(2)).isTrue();
-      check(set.remove(2)).isFalse();
+      check(set.remove(2)).isTrue;
+      check(set.remove(2)).isFalse;
       check(set.removeAt(0)).equals(1);
       check(set.removeLast()).equals(3);
-      check(set.isEmpty).isTrue();
+      check(set.isEmpty).isTrue;
       validate(set.debugMap, expectValues: false);
     });
 
@@ -838,7 +838,7 @@ void main() {
       );
       check(set.comparator).equals(ciCompare);
       check(set.lookup('a')).equals('A');
-      check(set.add('a')).isFalse();
+      check(set.add('a')).isFalse;
       check(set.lookup('a')).equals('A');
       validate(set.debugMap, expectValues: false);
 
@@ -864,17 +864,17 @@ void main() {
       // Multi-level splits, borrows, and merges without value lists.
       final large = BTreeSet<int>(minEntries: 2, maxEntries: 4);
       for (var i = 0; i < 100; i++) {
-        check(large.add(i)).isTrue();
+        check(large.add(i)).isTrue;
       }
       validate(large.debugMap, expectValues: false);
       for (var i = 0; i < 100; i += 2) {
-        check(large.remove(i)).isTrue();
+        check(large.remove(i)).isTrue;
       }
       validate(large.debugMap, expectValues: false);
       for (var i = 99; i >= 1; i -= 2) {
-        check(large.remove(i)).isTrue();
+        check(large.remove(i)).isTrue;
       }
-      check(large.isEmpty).isTrue();
+      check(large.isEmpty).isTrue;
       validate(large.debugMap, expectValues: false);
     });
 
@@ -886,11 +886,11 @@ void main() {
       check(set.higher(30)).equals(40);
       check(set.range(min: 15, max: 45).toList()).deepEquals([20, 30, 40]);
       check(set.range(min: 15, max: 45).length).equals(3);
-      check(set.range(min: 15, max: 45).contains(30)).isTrue();
-      check(set.range(min: 15, max: 45).contains(10)).isFalse();
+      check(set.range(min: 15, max: 45).contains(30)).isTrue;
+      check(set.range(min: 15, max: 45).contains(10)).isFalse;
       check(set.removeFirst()).equals(10);
       set.clear();
-      check(set.isEmpty).isTrue();
+      check(set.isEmpty).isTrue;
       validate(set.debugMap, expectValues: false);
     });
   });

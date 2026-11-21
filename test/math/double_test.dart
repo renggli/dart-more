@@ -10,7 +10,7 @@ void main() {
       double nextDown(double value) {
         final result = value.nextDown;
         if (value.isNaN) {
-          check(result).isNaN();
+          check(result).isNaN;
         } else if (value == double.negativeInfinity) {
           check(result).equals(double.negativeInfinity);
         } else {
@@ -25,7 +25,7 @@ void main() {
         check(nextDown(1.0)).equals(0.9999999999999999);
       });
       test('special', () {
-        check(nextDown(double.nan)).isNaN();
+        check(nextDown(double.nan)).isNaN;
         check(nextDown(double.infinity)).equals(double.maxFinite);
         check(nextDown(double.negativeInfinity))
             .equals(double.negativeInfinity);
@@ -46,7 +46,7 @@ void main() {
       double nextUp(double value) {
         final result = value.nextUp;
         if (value.isNaN) {
-          check(result).isNaN();
+          check(result).isNaN;
         } else if (value == double.infinity) {
           check(result).equals(double.infinity);
         } else {
@@ -61,7 +61,7 @@ void main() {
         check(nextUp(1.0)).equals(1.0000000000000002);
       });
       test('special', () {
-        check(nextUp(double.nan)).isNaN();
+        check(nextUp(double.nan)).isNaN;
         check(nextUp(double.infinity)).equals(double.infinity);
         check(nextUp(double.negativeInfinity)).equals(-double.maxFinite);
         check(nextUp(double.maxFinite)).equals(double.infinity);
@@ -81,7 +81,7 @@ void main() {
       double ulp(double value) {
         final result = value.ulp;
         if (value.isNaN) {
-          check(result).isNaN();
+          check(result).isNaN;
         } else {
           check(result).isGreaterThan(0);
           check((-value).ulp).equals(result);
@@ -103,7 +103,7 @@ void main() {
       });
       test('special', () {
         check(ulp(0.0)).equals(double.minPositive);
-        check(ulp(double.nan)).isNaN();
+        check(ulp(double.nan)).isNaN;
         check(ulp(double.infinity)).equals(double.infinity);
         check(ulp(double.negativeInfinity)).equals(double.infinity);
       });
@@ -114,7 +114,7 @@ void main() {
         check(1.0.nextTowards(0.0)).equals(0.9999999999999999);
       });
       test('special', () {
-        check(double.nan.nextTowards(0.0)).isNaN();
+        check(double.nan.nextTowards(0.0)).isNaN;
         check(double.infinity.nextTowards(0.0)).equals(double.maxFinite);
         check(double.negativeInfinity.nextTowards(0.0))
             .equals(-double.maxFinite);

@@ -10,16 +10,16 @@ void main() {
   group('construction', () {
     test('empty', () {
       final target = BiMap<int, String>();
-      check(target).isEmpty();
-      check(target.isEmpty).isTrue();
-      check(target.isNotEmpty).isFalse();
+      check(target).isEmpty;
+      check(target.isEmpty).isTrue;
+      check(target.isNotEmpty).isFalse;
       check(target).length.equals(0);
     });
     test('identity', () {
       final target = BiMap<int, String>.identity();
-      check(target).isEmpty();
-      check(target.isEmpty).isTrue();
-      check(target.isNotEmpty).isFalse();
+      check(target).isEmpty;
+      check(target.isEmpty).isTrue;
+      check(target.isNotEmpty).isFalse;
       check(target).length.equals(0);
     });
     test('of', () {
@@ -106,31 +106,31 @@ void main() {
   group('accessing', () {
     test('indexed', () {
       check(example[2]).equals('b');
-      check(example['b']).isNull();
+      check(example['b']).isNull;
     });
     test('indexed of inverse', () {
       check(example.inverse['b']).equals(2);
-      check(example.inverse[2]).isNull();
+      check(example.inverse[2]).isNull;
     });
     test('keys', () {
       check(example.keys).deepEquals([1, 2, 3]);
-      check(example.containsKey(2)).isTrue();
-      check(example.containsKey('b')).isFalse();
+      check(example.containsKey(2)).isTrue;
+      check(example.containsKey('b')).isFalse;
     });
     test('keys of inverse', () {
       check(example.inverse.keys).deepEquals(['a', 'b', 'c']);
-      check(example.inverse.containsKey(2)).isFalse();
-      check(example.inverse.containsKey('b')).isTrue();
+      check(example.inverse.containsKey(2)).isFalse;
+      check(example.inverse.containsKey('b')).isTrue;
     });
     test('values', () {
       check(example.values).deepEquals(['a', 'b', 'c']);
-      check(example.containsValue(2)).isFalse();
-      check(example.containsValue('b')).isTrue();
+      check(example.containsValue(2)).isFalse;
+      check(example.containsValue('b')).isTrue;
     });
     test('values of inverse', () {
       check(example.inverse.values).deepEquals([1, 2, 3]);
-      check(example.inverse.containsValue(2)).isTrue();
-      check(example.inverse.containsValue('b')).isFalse();
+      check(example.inverse.containsValue(2)).isTrue;
+      check(example.inverse.containsValue('b')).isFalse;
     });
     test('inverse updates', () {
       final target = BiMap.of(example);
@@ -138,11 +138,11 @@ void main() {
       target[4] = 'd';
       check(inverse['d'], because: 'inverse sees addition').equals(4);
       target.remove(3);
-      check(inverse[3], because: 'inverse sees removal').isNull();
+      check(inverse[3], because: 'inverse sees removal').isNull;
       inverse['e'] = 5;
       check(target[5], because: 'inverse updates target').equals('e');
       inverse.remove('d');
-      check(target[4], because: 'inverse updates target').isNull();
+      check(target[4], because: 'inverse updates target').isNull;
     });
     test('forward updates', () {
       final target = BiMap.of(example);
@@ -150,11 +150,11 @@ void main() {
       target[4] = 'd';
       check(forward[4], because: 'inverse sees addition').equals('d');
       target.remove(3);
-      check(forward[3], because: 'inverse sees removal').isNull();
+      check(forward[3], because: 'inverse sees removal').isNull;
       forward[5] = 'e';
       check(target[5], because: 'inverse updates target').equals('e');
       forward.remove(4);
-      check(target[4], because: 'inverse updates target').isNull();
+      check(target[4], because: 'inverse updates target').isNull;
     });
     test('backward updates', () {
       final target = BiMap.of(example);
@@ -162,11 +162,11 @@ void main() {
       target[4] = 'd';
       check(backward['d'], because: 'inverse sees addition').equals(4);
       target.remove(3);
-      check(backward[3], because: 'inverse sees removal').isNull();
+      check(backward[3], because: 'inverse sees removal').isNull;
       backward['e'] = 5;
       check(target[5], because: 'inverse updates target').equals('e');
       backward.remove('d');
-      check(target[4], because: 'inverse updates target').isNull();
+      check(target[4], because: 'inverse updates target').isNull;
     });
     test('iteration', () {
       final keys = <int>[];
@@ -230,8 +230,8 @@ void main() {
     test('clear', () {
       final target = BiMap.of(example);
       target.clear();
-      check(target).isEmpty();
-      check(target.inverse).isEmpty();
+      check(target).isEmpty;
+      check(target.inverse).isEmpty;
     });
     test('define if absent', () {
       final target = BiMap.of(example);
@@ -241,7 +241,7 @@ void main() {
     });
     test('putIfAbsent with null value', () {
       final target = BiMap<String, int?>()..['a'] = null;
-      check(target.putIfAbsent('a', () => 42)).isNull();
+      check(target.putIfAbsent('a', () => 42)).isNull;
     });
     test('self-reassignment preserves order', () {
       final target = BiMap.of(example);
@@ -276,7 +276,7 @@ void main() {
       check(copy.length).equals(1);
       check(copy.inverse.length).equals(1);
       check(copy[a]).equals('second');
-      check(copy.containsValue('first')).isFalse();
+      check(copy.containsValue('first')).isFalse;
     });
     test('from accepts untyped map', () {
       final source = <Object?, Object?>{1: 'a', 2: 'b'};

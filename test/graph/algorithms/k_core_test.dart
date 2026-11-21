@@ -12,8 +12,8 @@ void main() {
 
     test('empty graph', () {
       final g = Graph<int, void>(isDirected: false);
-      check(g.coreNumbers()).isEmpty();
-      check(g.kCore(1).vertices).isEmpty();
+      check(g.coreNumbers()).isEmpty;
+      check(g.kCore(1).vertices).isEmpty;
     });
 
     test('single isolated vertex has core 0', () {
@@ -21,7 +21,7 @@ void main() {
       final cores = g.coreNumbers();
       check(cores[1]).equals(0);
       check(g.kCore(0).vertices).unorderedEquals([1]);
-      check(g.kCore(1).vertices).isEmpty();
+      check(g.kCore(1).vertices).isEmpty;
     });
 
     test('line graph P3 has core 1', () {
@@ -33,7 +33,7 @@ void main() {
       check(cores[2]).equals(1);
       check(cores[3]).equals(1);
       check(g.kCore(1).vertices).unorderedEquals([1, 2, 3]);
-      check(g.kCore(2).vertices).isEmpty();
+      check(g.kCore(2).vertices).isEmpty;
     });
 
     test('triangle with a pendant edge (antenna)', () {
@@ -55,13 +55,13 @@ void main() {
 
       final k2 = g.kCore(2);
       check(k2.vertices).unorderedEquals([1, 2, 3]);
-      check(k2.containsEdge(1, 2)).isTrue();
-      check(k2.containsEdge(2, 3)).isTrue();
-      check(k2.containsEdge(3, 1)).isTrue();
-      check(k2.containsVertex(4)).isFalse();
+      check(k2.containsEdge(1, 2)).isTrue;
+      check(k2.containsEdge(2, 3)).isTrue;
+      check(k2.containsEdge(3, 1)).isTrue;
+      check(k2.containsVertex(4)).isFalse;
 
       final k3 = g.kCore(3);
-      check(k3.vertices).isEmpty();
+      check(k3.vertices).isEmpty;
     });
 
     test('complete graph K4 has core 3', () {
@@ -72,7 +72,7 @@ void main() {
         check(cores[i]).equals(3);
       }
       check(k4.kCore(3).vertices.length).equals(4);
-      check(k4.kCore(4).vertices).isEmpty();
+      check(k4.kCore(4).vertices).isEmpty;
     });
 
     test('standalone coreNumbers and kCoreVertices functions', () {

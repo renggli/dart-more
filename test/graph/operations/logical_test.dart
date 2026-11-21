@@ -55,7 +55,7 @@ void main() {
         final result = a.union(b, edgeMerge: (s, t, a, b) => a + b);
         check(result.getEdge(1, 2))
             .isNotNull()
-            .has((e) => e.value, 'value')
+            .has('value', (e) => e.value)
             .equals(30);
       });
       test('undirected union with single graph (custom merger)', () {
@@ -65,7 +65,7 @@ void main() {
         final result = a.union(empty, edgeMerge: (s, t, a, b) => a + b);
         check(result.getEdge(1, 2))
             .isNotNull()
-            .has((e) => e.value, 'value')
+            .has('value', (e) => e.value)
             .equals(10);
       });
     });
@@ -74,15 +74,15 @@ void main() {
         final a = GraphFactory<String, void>().fromPath(['a', 'b']);
         final b = GraphFactory<String, void>().fromPath(['c', 'd']);
         final result = a.intersection(b);
-        check(result.vertices).isEmpty();
-        check(result.edges).isEmpty();
+        check(result.vertices).isEmpty;
+        check(result.edges).isEmpty;
       });
       test('shared vertex', () {
         final a = GraphFactory<String, void>().fromPath(['a', 'b']);
         final b = GraphFactory<String, void>().fromPath(['b', 'c']);
         final result = a.intersection(b);
         check(result.vertices).unorderedEquals(['b']);
-        check(result.edges).isEmpty();
+        check(result.edges).isEmpty;
       });
       test('shared edge', () {
         final a = GraphFactory<int, String>().fromPath([1, 2, 3], value: 'a');
@@ -99,7 +99,7 @@ void main() {
           edgeCompare: (source, target, a, b) => a == b,
         );
         check(result.vertices).unorderedEquals([2, 3]);
-        check(result.edges).isEmpty();
+        check(result.edges).isEmpty;
       });
       test('shared edge (custom merge)', () {
         final a = GraphFactory<int, String>().fromPath([1, 2, 3], value: 'a');
@@ -127,7 +127,7 @@ void main() {
         check(mergeCount).equals(1);
         check(result.getEdge(1, 2))
             .isNotNull()
-            .has((e) => e.value, 'value')
+            .has('value', (e) => e.value)
             .equals('a-b');
       });
     });
@@ -137,7 +137,7 @@ void main() {
         input.addEdge('a', 'b');
         final result = input.complement();
         check(result.vertices).unorderedEquals(['a', 'b']);
-        check(result.edges).isEmpty();
+        check(result.edges).isEmpty;
       });
       test('simple directed', () {
         final input = Graph<String, void>(isDirected: true);

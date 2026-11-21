@@ -7,12 +7,12 @@ void main() {
     test('directed', () {
       // ignore: deprecated_member_use_from_same_package
       final graph = Graph<int, void>.directed();
-      check(graph.isDirected).isTrue();
+      check(graph.isDirected).isTrue;
     });
     test('undirected', () {
       // ignore: deprecated_member_use_from_same_package
       final graph = Graph<int, void>.undirected();
-      check(graph.isDirected).isFalse();
+      check(graph.isDirected).isFalse;
     });
   });
   group('graph toString', () {
@@ -38,10 +38,10 @@ void main() {
         ..addEdge(2, 3);
       final custom = _MinimalGraph<int, void>(base);
 
-      check(custom.containsVertex(1)).isTrue();
-      check(custom.containsVertex(4)).isFalse();
-      check(custom.containsEdge(1, 2)).isTrue();
-      check(custom.containsEdge(2, 1)).isFalse();
+      check(custom.containsVertex(1)).isTrue;
+      check(custom.containsVertex(4)).isFalse;
+      check(custom.containsEdge(1, 2)).isTrue;
+      check(custom.containsEdge(2, 1)).isFalse;
       check(custom.inDegreeOf(2)).equals(1);
       check(custom.outDegreeOf(2)).equals(1);
       check(custom.degreeOf(2)).equals(2);

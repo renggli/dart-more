@@ -8,8 +8,8 @@ void main() {
   group('undirected', () {
     test('empty', () {
       final graph = Graph<String, int>(isDirected: false);
-      check(graph.vertices).isEmpty();
-      check(graph.edges).isEmpty();
+      check(graph.vertices).isEmpty;
+      check(graph.edges).isEmpty;
       expectInvariants(graph);
     });
     group('modifying', () {
@@ -17,22 +17,22 @@ void main() {
         final graph = Graph<String, int>(isDirected: false);
         graph.addVertex('Hello');
         check(graph.vertices).deepEquals(['Hello']);
-        check(graph.edges).isEmpty();
+        check(graph.edges).isEmpty;
         expectInvariants(graph);
       });
       test('add vertices', () {
         final graph = Graph<String, int>(isDirected: false);
         graph.addVertices(['Hello', 'World']);
         check(graph.vertices).deepEquals(['Hello', 'World']);
-        check(graph.edges).isEmpty();
+        check(graph.edges).isEmpty;
         expectInvariants(graph);
       });
       test('remove vertex', () {
         final graph = Graph<String, int>(isDirected: false);
         graph.addVertex('Hello');
         graph.removeVertex('Hello');
-        check(graph.vertices).isEmpty();
-        check(graph.edges).isEmpty();
+        check(graph.vertices).isEmpty;
+        check(graph.edges).isEmpty;
         expectInvariants(graph);
       });
       test('add edge', () {
@@ -70,7 +70,7 @@ void main() {
         graph.addEdge('Hello', 'World');
         graph.removeEdge('Hello', 'World');
         check(graph.vertices).unorderedEquals(['Hello', 'World']);
-        check(graph.edges).isEmpty();
+        check(graph.edges).isEmpty;
         expectInvariants(graph);
       });
       test('add edge, remove first vertex', () {
@@ -78,7 +78,7 @@ void main() {
         graph.addEdge('Hello', 'World');
         graph.removeVertex('Hello');
         check(graph.vertices).deepEquals(['World']);
-        check(graph.edges).isEmpty();
+        check(graph.edges).isEmpty;
         expectInvariants(graph);
       });
       test('add edge, remove second vertex', () {
@@ -86,15 +86,15 @@ void main() {
         graph.addEdge('Hello', 'World');
         graph.removeVertex('World');
         check(graph.vertices).deepEquals(['Hello']);
-        check(graph.edges).isEmpty();
+        check(graph.edges).isEmpty;
         expectInvariants(graph);
       });
       test('add self-loop, remove vertex', () {
         final graph = Graph<String, void>(isDirected: false);
         graph.addEdge('Hello', 'Hello');
         graph.removeVertex('Hello');
-        check(graph.vertices).isEmpty();
-        check(graph.edges).isEmpty();
+        check(graph.vertices).isEmpty;
+        check(graph.edges).isEmpty;
         expectInvariants(graph);
       });
     });
@@ -107,10 +107,10 @@ void main() {
       });
       test('vertices', () {
         check(graph.vertices).unorderedEquals([0, 1, 2]);
-        check(graph.containsVertex(0)).isTrue();
-        check(graph.containsVertex(1)).isTrue();
-        check(graph.containsVertex(2)).isTrue();
-        check(graph.containsVertex(3)).isFalse();
+        check(graph.containsVertex(0)).isTrue;
+        check(graph.containsVertex(1)).isTrue;
+        check(graph.containsVertex(2)).isTrue;
+        check(graph.containsVertex(3)).isFalse;
       });
       test('edges', () {
         check(graph.edges).unorderedMatches([
@@ -119,11 +119,11 @@ void main() {
           isEdge(1, 2, value: 'b', isDirected: false),
           isEdge(2, 1, value: 'b', isDirected: false),
         ]);
-        check(graph.containsEdge(0, 1)).isTrue();
-        check(graph.containsEdge(1, 0)).isTrue();
-        check(graph.containsEdge(1, 2)).isTrue();
-        check(graph.containsEdge(2, 1)).isTrue();
-        check(graph.containsEdge(0, 2)).isFalse();
+        check(graph.containsEdge(0, 1)).isTrue;
+        check(graph.containsEdge(1, 0)).isTrue;
+        check(graph.containsEdge(1, 2)).isTrue;
+        check(graph.containsEdge(2, 1)).isTrue;
+        check(graph.containsEdge(0, 2)).isFalse;
       });
       test('degrees', () {
         check(graph.inDegreeOf(0)).equals(1);
@@ -185,8 +185,8 @@ void main() {
         check(graph.getEdge(2, 1))
             .isNotNull()
             .which(isEdge(2, 1, value: 'b', isDirected: false));
-        check(graph.getEdge(0, 2)).isNull();
-        check(graph.getEdge(2, 0)).isNull();
+        check(graph.getEdge(0, 2)).isNull;
+        check(graph.getEdge(2, 0)).isNull;
       });
       test('getEdge with nullable value', () {
         final nullableGraph = Graph<int, String?>(isDirected: false)
@@ -200,9 +200,9 @@ void main() {
         check(nullableGraph.getEdge(1, 0))
             .isNotNull()
             .which(isEdge(1, 0, value: null, isDirected: false));
-        check(nullableGraph.getEdge(0, 2)).isNull();
-        check(nullableGraph.getEdge(2, 0)).isNull();
-        check(nullableGraph.getEdge(1, 2)).isNull();
+        check(nullableGraph.getEdge(0, 2)).isNull;
+        check(nullableGraph.getEdge(2, 0)).isNull;
+        check(nullableGraph.getEdge(1, 2)).isNull;
       });
       test('neighboursOf', () {
         check(graph.neighboursOf(0)).deepEquals([1]);

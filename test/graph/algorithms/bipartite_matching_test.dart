@@ -23,9 +23,9 @@ void main() {
 
     test('empty graph', () {
       final g = Graph<int, void>(isDirected: false);
-      check(g.bipartiteMatching()).isEmpty();
-      check(g.minimumVertexCover()).isEmpty();
-      check(g.maximumIndependentSet()).isEmpty();
+      check(g.bipartiteMatching()).isEmpty;
+      check(g.minimumVertexCover()).isEmpty;
+      check(g.maximumIndependentSet()).isEmpty;
     });
 
     test('single edge: 1 - 2', () {
@@ -37,12 +37,12 @@ void main() {
       // Vertex cover has size 1 (either 1 or 2)
       final cover = g.minimumVertexCover();
       check(cover.length).equals(1);
-      check(cover.contains(1) || cover.contains(2)).isTrue();
+      check(cover.contains(1) || cover.contains(2)).isTrue;
 
       // Independent set has size 1 (the remaining vertex)
       final ind = g.maximumIndependentSet();
       check(ind.length).equals(1);
-      check(cover.intersection(ind)).isEmpty();
+      check(cover.intersection(ind)).isEmpty;
     });
 
     test('complete bipartite graph K(2, 3)', () {
@@ -58,8 +58,8 @@ void main() {
       final matching = g.bipartiteMatching();
       // Maximum matching size is 2 edges (4 entries in symmetric map)
       check(matching.length).equals(4);
-      check(matching.containsKey(1)).isTrue();
-      check(matching.containsKey(2)).isTrue();
+      check(matching.containsKey(1)).isTrue;
+      check(matching.containsKey(2)).isTrue;
 
       // Minimum vertex cover is {1, 2} of size 2
       final cover = g.minimumVertexCover();
@@ -95,7 +95,7 @@ void main() {
     group('weightedBipartiteMatching', () {
       test('empty graph', () {
         final g = Graph<int, int>(isDirected: false);
-        check(g.weightedBipartiteMatching()).isEmpty();
+        check(g.weightedBipartiteMatching()).isEmpty;
       });
 
       test('2x2 graph: maximum weight matching', () {
@@ -145,7 +145,7 @@ void main() {
       test('negative edges with maximumWeight=true are skipped', () {
         final g = Graph<int, int>(isDirected: false)..addEdge(1, 2, value: -5);
         final matching = g.weightedBipartiteMatching(maximumWeight: true);
-        check(matching).isEmpty();
+        check(matching).isEmpty;
       });
 
       test('standalone weightedBipartiteMatching function', () {

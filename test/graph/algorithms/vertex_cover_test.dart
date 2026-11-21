@@ -12,26 +12,26 @@ void main() {
 
     test('empty graph', () {
       final g = Graph<int, void>(isDirected: false);
-      check(g.minimumVertexCover()).isEmpty();
-      check(g.maximumIndependentSet()).isEmpty();
-      check(g.minimumVertexCover(approximate: true)).isEmpty();
-      check(g.maximumIndependentSet(approximate: true)).isEmpty();
+      check(g.minimumVertexCover()).isEmpty;
+      check(g.maximumIndependentSet()).isEmpty;
+      check(g.minimumVertexCover(approximate: true)).isEmpty;
+      check(g.maximumIndependentSet(approximate: true)).isEmpty;
     });
 
     test('single isolated vertex', () {
       final g = Graph<int, void>(isDirected: false)..addVertex(1);
-      check(g.minimumVertexCover()).isEmpty();
+      check(g.minimumVertexCover()).isEmpty;
       check(g.maximumIndependentSet()).unorderedEquals([1]);
-      check(g.minimumVertexCover(approximate: true)).isEmpty();
+      check(g.minimumVertexCover(approximate: true)).isEmpty;
       check(g.maximumIndependentSet(approximate: true)).unorderedEquals([1]);
     });
 
     test('single vertex with self-loop', () {
       final g = Graph<int, void>(isDirected: false)..addEdge(1, 1);
       check(g.minimumVertexCover()).unorderedEquals([1]);
-      check(g.maximumIndependentSet()).isEmpty();
+      check(g.maximumIndependentSet()).isEmpty;
       check(g.minimumVertexCover(approximate: true)).unorderedEquals([1]);
-      check(g.maximumIndependentSet(approximate: true)).isEmpty();
+      check(g.maximumIndependentSet(approximate: true)).isEmpty;
     });
 
     group('bipartite graphs (exact via König)', () {
@@ -41,7 +41,7 @@ void main() {
         final ind = g.maximumIndependentSet();
         check(cover.length).equals(1);
         check(ind.length).equals(1);
-        check(cover.intersection(ind)).isEmpty();
+        check(cover.intersection(ind)).isEmpty;
       });
 
       test('complete bipartite K(2, 3)', () {
@@ -73,7 +73,7 @@ void main() {
 
         final ind = g.maximumIndependentSet();
         check(ind.length).equals(1);
-        check(cover.intersection(ind)).isEmpty();
+        check(cover.intersection(ind)).isEmpty;
       });
 
       test('5-cycle C5', () {
@@ -84,7 +84,7 @@ void main() {
 
         final ind = g.maximumIndependentSet();
         check(ind.length).equals(2);
-        check(cover.intersection(ind)).isEmpty();
+        check(cover.intersection(ind)).isEmpty;
       });
 
       test('complete graph K5', () {
@@ -95,7 +95,7 @@ void main() {
 
         final ind = g.maximumIndependentSet();
         check(ind.length).equals(1);
-        check(cover.intersection(ind)).isEmpty();
+        check(cover.intersection(ind)).isEmpty;
       });
 
       test('Petersen graph', () {
@@ -122,7 +122,7 @@ void main() {
 
         final cover = petersen.minimumVertexCover();
         check(cover.length).equals(6);
-        check(cover.intersection(ind)).isEmpty();
+        check(cover.intersection(ind)).isEmpty;
       });
     });
 
@@ -136,10 +136,10 @@ void main() {
           check(
             approxCover.contains(edge.source) ||
                 approxCover.contains(edge.target),
-          ).isTrue();
+          ).isTrue;
         }
         // Size of 2-approximation is at most 2 * optimal (optimal is 5)
-        check(approxCover.length <= 10).isTrue();
+        check(approxCover.length <= 10).isTrue;
       });
 
       test('approximate independent set on Petersen graph', () {
@@ -165,7 +165,7 @@ void main() {
         for (final u in ind) {
           for (final v in ind) {
             if (u != v) {
-              check(petersen.containsEdge(u, v)).isFalse();
+              check(petersen.containsEdge(u, v)).isFalse;
             }
           }
         }
@@ -185,7 +185,7 @@ void main() {
         );
         check(
           cover.contains('a') || (cover.contains('b') && cover.contains('c')),
-        ).isTrue();
+        ).isTrue;
 
         final ind = approximateMaximumIndependentSet<String>(
           vertices: ['a', 'b', 'c'],
@@ -196,7 +196,7 @@ void main() {
             _ => const [],
           },
         );
-        check(ind.isNotEmpty).isTrue();
+        check(ind.isNotEmpty).isTrue;
       });
     });
   });

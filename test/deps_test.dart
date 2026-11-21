@@ -89,7 +89,7 @@ void main() {
 
   group('umbrella', () {
     test('no incoming dependencies', () {
-      check(filesGraph.predecessorsOf('lib/more.dart')).isEmpty();
+      check(filesGraph.predecessorsOf('lib/more.dart')).isEmpty;
     });
 
     test('exports all public sub-libraries', () {
@@ -108,7 +108,7 @@ void main() {
           )
           .map((edge) => '${edge.source} -> ${edge.target}')
           .toList();
-      check(badEdges).isEmpty();
+      check(badEdges).isEmpty;
     });
 
     test('no cycles between sub-libraries', () {
@@ -117,7 +117,7 @@ void main() {
           (scc) =>
               scc.length > 1 || libsGraph.getEdge(scc.first, scc.first) != null,
         ),
-      ).isEmpty();
+      ).isEmpty;
     });
   });
 
@@ -127,7 +127,7 @@ void main() {
         filesGraph.vertices
             .where((file) => file.startsWith('lib/src/'))
             .where((file) => filesGraph.predecessorsOf(file).isEmpty),
-      ).isEmpty();
+      ).isEmpty;
     });
 
     test('all files reachable from root', () {
@@ -136,7 +136,7 @@ void main() {
       );
       final reachable = <String>{...roots.expand(filesGraph.depthFirst)};
       check(filesGraph.vertices.where((file) => !reachable.contains(file)))
-          .isEmpty();
+          .isEmpty;
     });
   });
 
@@ -155,19 +155,19 @@ void main() {
     }
 
     test('async is completely self-contained', () {
-      check(reachedSubsystems(Subsystem.async)).isEmpty();
+      check(reachedSubsystems(Subsystem.async)).isEmpty;
     });
 
     test('feature is completely self-contained', () {
-      check(reachedSubsystems(Subsystem.feature)).isEmpty();
+      check(reachedSubsystems(Subsystem.feature)).isEmpty;
     });
 
     test('functional is completely self-contained', () {
-      check(reachedSubsystems(Subsystem.functional)).isEmpty();
+      check(reachedSubsystems(Subsystem.functional)).isEmpty;
     });
 
     test('tuple is completely self-contained', () {
-      check(reachedSubsystems(Subsystem.tuple)).isEmpty();
+      check(reachedSubsystems(Subsystem.tuple)).isEmpty;
     });
 
     test('pragma depends only on feature', () {
@@ -194,8 +194,7 @@ void main() {
       final nonGraph = Subsystem.values.where((s) => s != Subsystem.graph);
       for (final s in nonGraph) {
         test('${s.directory} never transitively depends on graph', () {
-          check(reachedSubsystems(s))
-              .not((sub) => sub.contains(Subsystem.graph));
+          check(reachedSubsystems(s)).not(.it()..contains(Subsystem.graph));
         });
       }
     });
@@ -204,8 +203,7 @@ void main() {
       final nonCache = Subsystem.values.where((s) => s != Subsystem.cache);
       for (final s in nonCache) {
         test('${s.directory} never transitively depends on cache', () {
-          check(reachedSubsystems(s))
-              .not((sub) => sub.contains(Subsystem.cache));
+          check(reachedSubsystems(s)).not(.it()..contains(Subsystem.cache));
         });
       }
     });
@@ -214,8 +212,7 @@ void main() {
       final nonDiff = Subsystem.values.where((s) => s != Subsystem.diff);
       for (final s in nonDiff) {
         test('${s.directory} never transitively depends on diff', () {
-          check(reachedSubsystems(s))
-              .not((sub) => sub.contains(Subsystem.diff));
+          check(reachedSubsystems(s)).not(.it()..contains(Subsystem.diff));
         });
       }
     });

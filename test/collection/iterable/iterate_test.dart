@@ -15,8 +15,8 @@ void main() {
     });
     test('infinite', () {
       final iterable = iterate<int>(1, (a) => 2 * a);
-      check(iterable.isEmpty).isFalse();
-      check(iterable.isNotEmpty).isTrue();
+      check(iterable.isEmpty).isFalse;
+      check(iterable.isNotEmpty).isTrue;
       check(() => iterable.length).throws<UnsupportedError>();
       check(() => iterable.last).throws<UnsupportedError>();
       check(() => iterable.lastWhere((e) => true)).throws<UnsupportedError>();

@@ -11,7 +11,7 @@ void main() {
       );
       const strategy = TreeLayout<String>();
       final result = strategy.layout(input);
-      check(result.positions).isEmpty();
+      check(result.positions).isEmpty;
     });
 
     test('single node at origin', () {
