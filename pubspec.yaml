@@ -2,14 +2,22 @@ name: more
 version: 4.9.0
 
 homepage: https://github.com/renggli/dart-more
-description: More Dart — Literally. Collecting, iterating, caching, mathematics,
-  matching, ordering, and formatting easily.
+repository: https://github.com/renggli/dart-more
+issue_tracker: https://github.com/renggli/dart-more/issues
+description: More Dart — Collections (B+Tree, R-Tree, Trie, Multimap, BiMap,
+  BitList), graphs & layouts, LRU cache, combinatorics, math, fractions,
+  Unicode, diff, intervals, and printers.
 topics:
   - collections
   - data-structures
   - functional
   - graph
   - unicode
+screenshots:
+  - description: Interactive Graph Laboratory showing Zachary's Karate Club with Louvain community detection.
+    path: doc/screenshots/graph_demo.png
+  - description: Interactive R-Tree Visualizer indexing 4,053 Swiss villages with R*-Tree bounding-box partitioning.
+    path: doc/screenshots/rtree_demo.png
 
 environment:
   sdk: ^3.14.0

@@ -8,26 +8,28 @@
 [![GitHub Stars](https://img.shields.io/github/stars/renggli/dart-more.svg)](https://github.com/renggli/dart-more/stargazers)
 [![GitHub License](https://img.shields.io/badge/license-MIT-blue.svg)](https://raw.githubusercontent.com/renggli/dart-more/main/LICENSE)
 
-A collection of extensively tested extensions that make Dart a better place:
+A modular, extensively tested suite of pure-Dart data structures, algorithms, and extensions with minimal official dependencies (`characters`, `clock`, `collection`, `meta`) and full tree-shaking via per-library imports. Works on Dart VM, JS, and Wasm.
 
-| Library                                                                                          | Description                                                        |
-| ------------------------------------------------------------------------------------------------ | :----------------------------------------------------------------- |
-| [async](https://pub.dev/documentation/more/latest/async/async-library.html)                      | Extensions to `Stream`.                                            |
-| [cache](https://pub.dev/documentation/more/latest/cache/cache-library.html)                      | Caching strategies and their expiry policy.                        |
-| [char_matcher](https://pub.dev/documentation/more/latest/char_matcher/char_matcher-library.html) | Character classes, their composition, and operations on strings.   |
-| [collection](https://pub.dev/documentation/more/latest/collection/collection-library.html)       | Extensions to `Iterable` and new collection types.                 |
-| [comparator](https://pub.dev/documentation/more/latest/comparator/comparator-library.html)       | Common comparators, and extensions to perform advanced operations. |
-| [diff](https://pub.dev/documentation/more/latest/diff/diff-library.html)                         | Tools for comparing lists.                                         |
-| [feature](https://pub.dev/documentation/more/latest/feature/feature-library.html)                | Information about the runtime environment.                         |
-| [functional](https://pub.dev/documentation/more/latest/functional/functional-library.html)       | Types and features known from functional programming.              |
-| [graph](https://pub.dev/documentation/more/latest/graph/graph-library.html)                      | Graph-theory objects and algorithms.                               |
-| [interval](https://pub.dev/documentation/more/latest/interval/interval-library.html)             | Continuous interval data type over a practical range.              |
-| [math](https://pub.dev/documentation/more/latest/math/math-library.html)                         | Common mathematical functions.                                     |
-| [number](https://pub.dev/documentation/more/latest/number/number-library.html)                   | Number types: fraction, complex, quaternion.                       |
-| [pragma](https://pub.dev/documentation/more/latest/pragma/pragma-library.html)                   | Compiler pragmas for the Dart VM, Dart2JS, and Dart2WASM.          |
-| [printer](https://pub.dev/documentation/more/latest/printer/printer-library.html)                | Fluent interface to configure sophisticated formatters.            |
-| [temporal](https://pub.dev/documentation/more/latest/temporal/temporal-library.html)             | Extensions to `DateTime` and `Duration` types.                     |
-| [tuple](https://pub.dev/documentation/more/latest/tuple/tuple-library.html)                      | Tuple extension methods on generic records.                        |
+Try the interactive web demos: [Graph Laboratory](https://renggli.github.io/dart-more/graph/graph.html) · [R-Tree Visualizer](https://renggli.github.io/dart-more/rtree/rtree.html)
+
+| Library                                                                                          | Description                                                                                                                                      |
+| ------------------------------------------------------------------------------------------------ | :----------------------------------------------------------------------------------------------------------------------------------------------- |
+| [async](https://pub.dev/documentation/more/latest/async/async-library.html)                      | `Stream` extensions: `buffer`, `window`, `tap`, `whereType`.                                                                                     |
+| [cache](https://pub.dev/documentation/more/latest/cache/cache-library.html)                      | Async self-loading caches with LRU, FIFO, and duration-based expiry policies.                                                                    |
+| [char_matcher](https://pub.dev/documentation/more/latest/char_matcher/char_matcher-library.html) | Composable character matchers and Unicode 18.0 categories, scripts, and blocks.                                                                  |
+| [collection](https://pub.dev/documentation/more/latest/collection/collection-library.html)       | `BTreeMap`/`BTreeSet`, `RTree` (R\*/Guttman/Linear), `Trie`, `BiMap`, `BitList`, `Multimap`, `Multiset`, `DisjointSet`, `FenwickTree`, `SortedList`, `OrderedList`, `TypeMap`, combinatorics, and `Iterable`/`String` extensions. |
+| [comparator](https://pub.dev/documentation/more/latest/comparator/comparator-library.html)       | Composable comparators, binary search, sorting, and top-k selection.                                                                             |
+| [diff](https://pub.dev/documentation/more/latest/diff/diff-library.html)                         | Sequence diffing (`Myers` / `SequenceMatcher`) and unified/normal diff formatting.                                                               |
+| [feature](https://pub.dev/documentation/more/latest/feature/feature-library.html)                | Runtime environment detection (VM, JS, Wasm, assertions, safe integer bounds).                                                                   |
+| [functional](https://pub.dev/documentation/more/latest/functional/functional-library.html)       | `Optional`, `Either`, function composition, currying, and scope helpers.                                                                         |
+| [graph](https://pub.dev/documentation/more/latest/graph/graph-library.html)                      | Directed/undirected graphs, Dijkstra/A\*/Floyd–Warshall, PageRank, centrality, Louvain/modularity, planarity, matching, flow, Mermaid I/O, and layout engines (Force, Sugiyama, Stress, Spectral, Tree, Radial). |
+| [interval](https://pub.dev/documentation/more/latest/interval/interval-library.html)             | Continuous `Interval` and `IntervalTree` for range queries.                                                                                      |
+| [math](https://pub.dev/documentation/more/latest/math/math-library.html)                         | Primes/sieves, GCD/LCM, factorials, binomials, hyperbolic functions, bit ops, and polynomials.                                                   |
+| [number](https://pub.dev/documentation/more/latest/number/number-library.html)                   | Exact `Fraction` (rational), `Complex`, and `Quaternion` number types.                                                                           |
+| [pragma](https://pub.dev/documentation/more/latest/pragma/pragma-library.html)                   | Compiler pragmas for Dart VM, Dart2JS, and Dart2Wasm.                                                                                            |
+| [printer](https://pub.dev/documentation/more/latest/printer/printer-library.html)                | Composable formatters for numbers, dates, durations, padding, and alignment.                                                                     |
+| [temporal](https://pub.dev/documentation/more/latest/temporal/temporal-library.html)             | `DateTime` truncation, periodical iterables, calendar math, and `Duration` conversions.                                                          |
+| [tuple](https://pub.dev/documentation/more/latest/tuple/tuple-library.html)                      | Record/tuple extension methods up to arity 9.                                                                                                    |
 
 And there are more to come ...
 

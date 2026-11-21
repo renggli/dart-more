@@ -1,21 +1,23 @@
 # More Dart Examples
 
-This package does not currently contain many examples, but detailed documentation, and many examples are contained in the [package description](https://pub.dev/packages/more) and [API documentation](https://pub.dev/documentation/more/latest/).
-
-## diff
-
-This example implements some of the functionality of the [diff](https://en.wikipedia.org/wiki/Diff) data comparison tool that computes and displays the differences between the contents of files:
+- [`example.dart`](example.dart): Quick tour of `BTreeMap`, `RTree`, `Graph`, `Fraction`, `Complex`, `CharMatcher`, `Printer`, and `Cache`:
 
 ```bash
-dart example/diff.dart help
-dart example/diff.dart lib/src/diff/differ/normal.dart lib/src/diff/differ/unified.dart
+dart run example/example.dart
 ```
 
-## reflow
-
-This example performs various reflow operations on files and prints the result to the terminal:
+- [`diff.dart`](diff.dart): Command-line diff tool computing and displaying differences between files:
 
 ```bash
-dart example/reflow.dart help
-dart example/reflow.dart wrap --width=80 README.md
+dart run example/diff.dart help
+dart run example/diff.dart lib/src/diff/differ/normal.dart lib/src/diff/differ/unified.dart
 ```
+
+- [`reflow.dart`](reflow.dart): Text reflow utility demonstrating line wrapping and formatting:
+
+```bash
+dart run example/reflow.dart help
+dart run example/reflow.dart wrap --width=80 README.md
+```
+
+Additional examples are in the [package README](https://pub.dev/packages/more), [API documentation](https://pub.dev/documentation/more/latest/), and [interactive web demos](https://renggli.github.io/dart-more/).
