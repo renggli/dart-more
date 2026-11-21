@@ -1,3 +1,5 @@
+// ignore_for_file: collection_methods_unrelated_type
+
 import 'dart:math';
 
 import 'package:checks/checks.dart';
@@ -107,6 +109,56 @@ void main() {
             check(target).deepEquals(source);
             check(source).deepEquals(target);
           }
+        });
+        test('of single-pass iterable', () {
+          var iterations = 0;
+          Iterable<bool> singlePass() sync* {
+            iterations++;
+            if (iterations > 1) throw StateError('Iterated more than once');
+            for (var i = 0; i < 40; i++) {
+              yield i % 3 == 0;
+            }
+          }
+
+          final target = BitList.of(singlePass(), growable: growable);
+          check(iterations).equals(1);
+          check(target.length).equals(40);
+          for (var i = 0; i < 40; i++) {
+            check(target[i]).equals(i % 3 == 0);
+          }
+        });
+        test('from untyped iterable', () {
+          final target = BitList.from(<Object?>[
+            true,
+            false,
+            true,
+          ], growable: growable);
+          check(target).deepEquals([true, false, true]);
+        });
+        test('contains, indexOf, lastIndexOf', () {
+          final source = randomBooleans(777, 100);
+          final target = BitList.of(source, growable: growable);
+          check(target.contains(true)).equals(source.contains(true));
+          check(target.contains(false)).equals(source.contains(false));
+          check(target.contains('not-a-bool')).isFalse();
+          check(target.indexOf('not-a-bool')).equals(-1);
+          check(target.lastIndexOf('not-a-bool')).equals(-1);
+          for (var start = -2; start <= 102; start += 7) {
+            check(target.indexOf(true, start))
+                .equals(source.indexOf(true, start));
+            check(target.indexOf(false, start))
+                .equals(source.indexOf(false, start));
+            check(target.lastIndexOf(true, start))
+                .equals(source.lastIndexOf(true, start));
+            check(target.lastIndexOf(false, start))
+                .equals(source.lastIndexOf(false, start));
+          }
+          final allFalse = BitList.filled(70, false, growable: growable);
+          check(allFalse.contains(true)).isFalse();
+          check(allFalse.indexOf(true)).equals(-1);
+          check(allFalse.lastIndexOf(true)).equals(-1);
+          check(allFalse.indexOf(false, 69)).equals(69);
+          check(allFalse.lastIndexOf(false)).equals(69);
         });
       });
       group('accessors', () {
@@ -512,6 +564,66 @@ void main() {
             check(target.removeLast()).equals(source[i]);
             check(target).deepEquals(source.getRange(0, i));
           }
+        });
+        test('bitwise and shift ops with excess capacity', () {
+          // Force excess capacity: grow past 64 bits -> buffer.length == 4, length == 65.
+          final a = BitList.empty(growable: true);
+          for (var i = 0; i < 65; i++) {
+            a.add(i.isEven);
+          }
+          check(a.buffer.length).isGreaterThan(3);
+          final b = BitList.generate(65, (i) => i % 3 == 0, growable: false);
+          check(b.buffer.length).equals(3);
+
+          // Test in-place ops with FixedBitList of smaller buffer length.
+          final copyAnd = BitList.of(a, growable: true)
+            ..length = 128
+            ..length = 65;
+          copyAnd.and(b);
+          for (var i = 0; i < 65; i++) {
+            check(copyAnd[i]).equals(a[i] && b[i]);
+          }
+          final copyOr = BitList.of(a, growable: true)
+            ..length = 128
+            ..length = 65;
+          copyOr.or(b);
+          for (var i = 0; i < 65; i++) {
+            check(copyOr[i]).equals(a[i] || b[i]);
+          }
+          final copyXor = BitList.of(a, growable: true)
+            ..length = 128
+            ..length = 65;
+          copyXor.xor(b);
+          for (var i = 0; i < 65; i++) {
+            check(copyXor[i]).equals(a[i] != b[i]);
+          }
+          final copyDiff = BitList.of(a, growable: true)
+            ..length = 128
+            ..length = 65;
+          copyDiff.difference(b);
+          for (var i = 0; i < 65; i++) {
+            check(copyDiff[i]).equals(a[i] && !b[i]);
+          }
+
+          // not() must not dirty slack words, and shifts must not throw RangeError.
+          final copyNot = BitList.of(a, growable: true)
+            ..length = 128
+            ..length = 65;
+          copyNot.not();
+          for (var i = 3; i < copyNot.buffer.length; i++) {
+            check(copyNot.buffer[i]).equals(0);
+          }
+          check((a << 1).length).equals(65);
+          check((a << 32).length).equals(65);
+          check((a >> 1).length).equals(65);
+          check((a >> 32).length).equals(65);
+          check((copyNot >> 1).sublist(64)).deepEquals([false]);
+        });
+        test('shrink to multiple of 32 zeroes slack word', () {
+          final target = BitList.filled(64, true, growable: true);
+          target.length = 32;
+          check(target.buffer.length).equals(2);
+          check(target.buffer[1]).equals(0);
         });
       } else {
         test('unsupported operations', () {

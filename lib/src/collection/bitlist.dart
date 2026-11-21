@@ -6,11 +6,12 @@ import 'package:collection/collection.dart' show NonGrowableListMixin;
 
 import '../pragma/pragma.dart';
 import '../shared/bit.dart';
-import 'range/integer.dart';
 
 /// A space efficient [List] that stores boolean values.
 abstract class BitList extends ListBase<bool> {
   /// Constructs a bit list of the given [length].
+  ///
+  /// Throws a [RangeError] if [length] is negative.
   factory(int length, {bool fill = false, bool growable = false}) =>
       BitList.filled(length, fill, growable: growable);
 
@@ -20,6 +21,8 @@ abstract class BitList extends ListBase<bool> {
 
   /// Constructs a bit list of the given [length], and initializes the value at
   /// each position with [fill].
+  ///
+  /// Throws a [RangeError] if [length] is negative.
   factory filled(int length, bool fill, {bool growable = false}) {
     RangeError.checkNotNegative(length, 'length');
     final buffer = Uint32List((length + bitOffset) >>> bitShift);
@@ -34,42 +37,90 @@ abstract class BitList extends ListBase<bool> {
 
   /// Constructs a bit list of the given [length] by calling a [generator]
   /// function for each index.
+  ///
+  /// Throws a [RangeError] if [length] is negative.
   factory generate(
     int length,
     bool Function(int index) generator, {
     bool growable = false,
-  }) => BitList.of(
-    IntegerRange.length(length).map(generator),
-    growable: growable,
-  );
+  }) {
+    RangeError.checkNotNegative(length, 'length');
+    final wordCount = (length + bitOffset) >>> bitShift;
+    final buffer = Uint32List(wordCount);
+    var index = 0;
+    for (var i = 0; i < wordCount; i++) {
+      var value = 0;
+      for (var j = 0; j <= bitOffset && index < length; j++, index++) {
+        if (generator(index)) {
+          value |= bitSetMask[j];
+        }
+      }
+      buffer[i] = value;
+    }
+    return growable
+        ? GrowableBitList(buffer, length)
+        : FixedBitList(buffer, length);
+  }
 
   /// Constructs a new list from a given [Iterable] of booleans.
   factory of(Iterable<bool> other, {bool growable = false}) {
-    final length = other.length;
-    final result = BitList(length, growable: growable);
-    final buffer = result.buffer;
     if (other is BitList) {
+      final length = other.length;
       final wordCount = (length + bitOffset) >>> bitShift;
+      final buffer = Uint32List(wordCount);
       buffer.setRange(0, wordCount, other.buffer);
       _maskTail(buffer, length);
-    } else {
-      final iterator = other.iterator;
-      for (var i = 0; i < buffer.length; i++) {
+      return growable
+          ? GrowableBitList(buffer, length)
+          : FixedBitList(buffer, length);
+    }
+    if (other is List<bool>) {
+      final length = other.length;
+      final wordCount = (length + bitOffset) >>> bitShift;
+      final buffer = Uint32List(wordCount);
+      var index = 0;
+      for (var i = 0; i < wordCount; i++) {
         var value = 0;
-        for (var j = 0; j <= bitOffset && iterator.moveNext(); j++) {
-          if (iterator.current) {
+        for (var j = 0; j <= bitOffset && index < length; j++, index++) {
+          if (other[index]) {
             value |= bitSetMask[j];
           }
         }
         buffer[i] = value;
       }
+      return growable
+          ? GrowableBitList(buffer, length)
+          : FixedBitList(buffer, length);
     }
-    return result;
+    final result = GrowableBitList(Uint32List(0), 0);
+    for (final value in other) {
+      result.add(value);
+    }
+    if (growable) return result;
+    final wordCount = (result._length + bitOffset) >>> bitShift;
+    final buffer = result.buffer.length == wordCount
+        ? result.buffer
+        : result.buffer.sublist(0, wordCount);
+    return FixedBitList(buffer, result._length);
   }
 
-  /// Constructs a new list from a given [Iterable] of booleans.
-  factory from(Iterable<bool> other, {bool growable = false}) =>
-      BitList.of(other, growable: growable);
+  /// Constructs a new list from a given [Iterable], casting each element to
+  /// [bool].
+  factory from(Iterable<Object?> other, {bool growable = false}) {
+    if (other is Iterable<bool>) {
+      return BitList.of(other, growable: growable);
+    }
+    final result = GrowableBitList(Uint32List(0), 0);
+    for (final value in other) {
+      result.add(value as bool);
+    }
+    if (growable) return result;
+    final wordCount = (result._length + bitOffset) >>> bitShift;
+    final buffer = result.buffer.length == wordCount
+        ? result.buffer
+        : result.buffer.sublist(0, wordCount);
+    return FixedBitList(buffer, result._length);
+  }
 
   /// Internal generative constructor.
   new _();
@@ -78,6 +129,8 @@ abstract class BitList extends ListBase<bool> {
   Uint32List get buffer;
 
   /// Returns the value of the bit with the given [index].
+  ///
+  /// Throws a [RangeError] if [index] is negative or not less than [length].
   @override
   bool operator [](int index) {
     RangeError.checkValidIndex(index, this);
@@ -92,6 +145,8 @@ abstract class BitList extends ListBase<bool> {
       (buffer[index >>> bitShift] & bitSetMask[index & bitOffset]) != 0;
 
   /// Sets the [value] of the bit with the given [index].
+  ///
+  /// Throws a [RangeError] if [index] is negative or not less than [length].
   @override
   void operator []=(int index, bool value) {
     RangeError.checkValidIndex(index, this);
@@ -107,6 +162,54 @@ abstract class BitList extends ListBase<bool> {
       : buffer[index >>> bitShift] &= bitClearMask[index & bitOffset];
 
   @override
+  bool contains(Object? element) => indexOf(element) >= 0;
+
+  @override
+  int indexOf(Object? element, [int start = 0]) {
+    if (element is! bool) return -1;
+    if (start < 0) start = 0;
+    if (start >= length) return -1;
+    final wordCount = (length + bitOffset) >>> bitShift;
+    final startWord = start >>> bitShift;
+    final startBit = start & bitOffset;
+    final tailRem = length & bitOffset;
+    for (var w = startWord; w < wordCount; w++) {
+      var bits = element ? buffer[w] : (~buffer[w] & bitMask);
+      if (w == startWord && startBit != 0) {
+        bits &= (bitMask << startBit) & bitMask;
+      }
+      if (w == wordCount - 1 && tailRem != 0) {
+        bits &= (1 << tailRem) - 1;
+      }
+      if (bits != 0) {
+        final bit = ((bits & -bits) >>> 0).bitLength - 1;
+        return (w << bitShift) + bit;
+      }
+    }
+    return -1;
+  }
+
+  @override
+  int lastIndexOf(Object? element, [int? start]) {
+    if (element is! bool) return -1;
+    var end = start ?? length - 1;
+    if (end >= length) end = length - 1;
+    if (end < 0) return -1;
+    final endWord = end >>> bitShift;
+    final endBit = end & bitOffset;
+    for (var w = endWord; w >= 0; w--) {
+      var bits = element ? buffer[w] : (~buffer[w] & bitMask);
+      if (w == endWord && endBit != bitOffset) {
+        bits &= (1 << (endBit + 1)) - 1;
+      }
+      if (bits != 0) {
+        return (w << bitShift) + bits.bitLength - 1;
+      }
+    }
+    return -1;
+  }
+
+  @override
   BitList operator +(List<bool> other) {
     final result = BitList(length + other.length);
     final wordCount = (length + bitOffset) >>> bitShift;
@@ -115,7 +218,6 @@ abstract class BitList extends ListBase<bool> {
     for (var i = 0; i < other.length; i++) {
       result.setUnchecked(length + i, other[i]);
     }
-    _maskTail(result.buffer, result.length);
     return result;
   }
 
@@ -127,6 +229,8 @@ abstract class BitList extends ListBase<bool> {
 
   /// Sets the bit at the specified [index] to the complement of its current
   /// value.
+  ///
+  /// Throws a [RangeError] if [index] is negative or not less than [length].
   void flip(int index) {
     RangeError.checkValidIndex(index, this);
     flipUnchecked(index);
@@ -145,6 +249,8 @@ abstract class BitList extends ListBase<bool> {
 
   /// Counts the number of bits set to [expected] in the range of [start]
   /// (inclusive) to [end] (exclusive).
+  ///
+  /// Throws a [RangeError] if `0 <= start <= end <= length` does not hold.
   int countRange(int start, int end, {bool expected = true}) {
     RangeError.checkValidRange(start, end, length);
     if (start == end) return 0;
@@ -167,16 +273,19 @@ abstract class BitList extends ListBase<bool> {
 
   /// Returns an iterable over the indices with the bit set to [expected].
   Iterable<int> indices({bool expected = true}) sync* {
-    var mask = 0, index = 0, value = 0;
-    for (var i = 0; i < length; i++) {
-      if (mask == 0) {
-        value = buffer[index++];
-        mask = 1;
+    final wordCount = (length + bitOffset) >>> bitShift;
+    final tailRem = length & bitOffset;
+    for (var w = 0; w < wordCount; w++) {
+      var bits = expected ? buffer[w] : (~buffer[w] & bitMask);
+      if (w == wordCount - 1 && tailRem != 0) {
+        bits &= (1 << tailRem) - 1;
       }
-      if ((value & mask != 0) == expected) {
-        yield i;
+      final base = w << bitShift;
+      while (bits != 0) {
+        final bit = ((bits & -bits) >>> 0).bitLength - 1;
+        yield base + bit;
+        bits &= bits - 1;
       }
-      mask = (mask << 1) & bitMask;
     }
   }
 
@@ -187,7 +296,8 @@ abstract class BitList extends ListBase<bool> {
 
   /// Computes the complement of the receiver in-place.
   void not() {
-    for (var i = 0; i < buffer.length; i++) {
+    final wordCount = (length + bitOffset) >>> bitShift;
+    for (var i = 0; i < wordCount; i++) {
       buffer[i] = ~buffer[i];
     }
     _maskTail(buffer, length);
@@ -196,14 +306,17 @@ abstract class BitList extends ListBase<bool> {
   /// Returns the intersection of the receiver and [other].
   ///
   /// The new [BitList] has all the bits set that are set in the receiver and in
-  /// [other]. The receiver and [other] need to have the same length, otherwise
-  /// an exception is thrown.
+  /// [other]. Throws an [ArgumentError] if [other] does not have the same
+  /// length.
   BitList operator &(BitList other) => BitList.of(this)..and(other);
 
   /// Computes the intersection of the receiver and [other] in-place.
+  ///
+  /// Throws an [ArgumentError] if [other] does not have the same length.
   void and(BitList other) {
     _checkLength(other);
-    for (var i = 0; i < buffer.length; i++) {
+    final wordCount = (length + bitOffset) >>> bitShift;
+    for (var i = 0; i < wordCount; i++) {
       buffer[i] &= other.buffer[i];
     }
   }
@@ -211,14 +324,17 @@ abstract class BitList extends ListBase<bool> {
   /// Returns the union of the receiver and [other].
   ///
   /// The new [BitList] has all the bits set that are either set in the receiver
-  /// or in [other]. The receiver and [other] need to have the same length,
-  /// otherwise an exception is thrown.
+  /// or in [other]. Throws an [ArgumentError] if [other] does not have the same
+  /// length.
   BitList operator |(BitList other) => BitList.of(this)..or(other);
 
   /// Computes the union of the receiver and [other] in-place.
+  ///
+  /// Throws an [ArgumentError] if [other] does not have the same length.
   void or(BitList other) {
     _checkLength(other);
-    for (var i = 0; i < buffer.length; i++) {
+    final wordCount = (length + bitOffset) >>> bitShift;
+    for (var i = 0; i < wordCount; i++) {
       buffer[i] |= other.buffer[i];
     }
   }
@@ -227,14 +343,17 @@ abstract class BitList extends ListBase<bool> {
   /// [other].
   ///
   /// The new [BitList] has all the bits set that are set in either the receiver
-  /// or [other], but not in both. The receiver and [other] need to have the
-  /// same length, otherwise an exception is thrown.
+  /// or [other], but not in both. Throws an [ArgumentError] if [other] does not
+  /// have the same length.
   BitList operator ^(BitList other) => BitList.of(this)..xor(other);
 
   /// Computes the exclusive-or of the receiver and [other] in-place.
+  ///
+  /// Throws an [ArgumentError] if [other] does not have the same length.
   void xor(BitList other) {
     _checkLength(other);
-    for (var i = 0; i < buffer.length; i++) {
+    final wordCount = (length + bitOffset) >>> bitShift;
+    for (var i = 0; i < wordCount; i++) {
       buffer[i] ^= other.buffer[i];
     }
   }
@@ -242,22 +361,26 @@ abstract class BitList extends ListBase<bool> {
   /// Returns the difference of the receiver and [other].
   ///
   /// The new [BitList] has all the bits set that are set in the receiver, but
-  /// not in [other]. The receiver and [other] need to have the same length,
-  /// otherwise an exception is thrown.
+  /// not in [other]. Throws an [ArgumentError] if [other] does not have the
+  /// same length.
   BitList operator -(BitList other) => BitList.of(this)..difference(other);
 
   /// Computes the difference of the receiver and [other] in-place.
+  ///
+  /// Throws an [ArgumentError] if [other] does not have the same length.
   void difference(BitList other) {
     _checkLength(other);
-    for (var i = 0; i < buffer.length; i++) {
+    final wordCount = (length + bitOffset) >>> bitShift;
+    for (var i = 0; i < wordCount; i++) {
       buffer[i] &= ~other.buffer[i];
     }
     _maskTail(buffer, length);
   }
 
-  /// Returns a [BitList] of the same length, but with the bits of the receiver
-  /// shifted to the left by [amount]. Throws an [ArgumentError] if [amount] is
-  /// negative.
+  /// Returns a [BitList] of the same length, with the bits of the receiver
+  /// shifted to the left by [amount].
+  ///
+  /// Throws a [RangeError] if [amount] is negative.
   BitList operator <<(int amount) {
     RangeError.checkNotNegative(
       amount,
@@ -270,18 +393,19 @@ abstract class BitList extends ListBase<bool> {
     final shift = amount >>> bitShift;
     final offset = amount & bitOffset;
     final result = BitList(length);
+    final wordCount = result.buffer.length;
     if (offset == 0) {
-      for (var i = shift; i < buffer.length; i++) {
+      for (var i = shift; i < wordCount; i++) {
         result.buffer[i] = buffer[i - shift];
       }
     } else {
       final otherOffset = 1 + bitOffset - offset;
-      for (var i = shift + 1; i < buffer.length; i++) {
+      for (var i = shift + 1; i < wordCount; i++) {
         result.buffer[i] =
             ((buffer[i - shift] << offset) & bitMask) |
-            ((buffer[i - shift - 1] >> otherOffset) & bitMask);
+            (buffer[i - shift - 1] >> otherOffset);
       }
-      if (shift < buffer.length) {
+      if (shift < wordCount) {
         result.buffer[shift] = (buffer[0] << offset) & bitMask;
       }
     }
@@ -289,9 +413,10 @@ abstract class BitList extends ListBase<bool> {
     return result;
   }
 
-  /// Returns a [BitList] of the same length, but with the bits of the receiver
-  /// shifted to the right by [amount]. Throws an [ArgumentError] if [amount] is
-  /// negative.
+  /// Returns a [BitList] of the same length, with the bits of the receiver
+  /// shifted to the right by [amount].
+  ///
+  /// Throws a [RangeError] if [amount] is negative.
   BitList operator >>(int amount) {
     RangeError.checkNotNegative(
       amount,
@@ -304,20 +429,21 @@ abstract class BitList extends ListBase<bool> {
     final shift = amount >>> bitShift;
     final offset = amount & bitOffset;
     final result = BitList(length);
+    final wordCount = result.buffer.length;
     if (offset == 0) {
-      for (var i = 0; i < buffer.length - shift; i++) {
+      for (var i = 0; i < wordCount - shift; i++) {
         result.buffer[i] = buffer[i + shift];
       }
     } else {
-      final last = buffer.length - shift - 1;
+      final last = wordCount - shift - 1;
       final otherOffset = 1 + bitOffset - offset;
       for (var i = 0; i < last; i++) {
         result.buffer[i] =
-            ((buffer[i + shift] >> offset) & bitMask) |
+            (buffer[i + shift] >> offset) |
             ((buffer[i + shift + 1] << otherOffset) & bitMask);
       }
       if (0 <= last) {
-        result.buffer[last] = (buffer[buffer.length - 1] >> offset) & bitMask;
+        result.buffer[last] = buffer[wordCount - 1] >> offset;
       }
     }
     _maskTail(result.buffer, length);
@@ -347,6 +473,23 @@ class GrowableBitList extends BitList {
   int get length => _length;
 
   @override
+  void add(bool element) {
+    final index = _length;
+    final wordIndex = index >>> bitShift;
+    if (wordIndex >= buffer.length) {
+      final newBuffer = Uint32List(max(2 * buffer.length, wordIndex + 1));
+      newBuffer.setRange(0, buffer.length, buffer);
+      buffer = newBuffer;
+    }
+    if (element) {
+      buffer[wordIndex] |= bitSetMask[index & bitOffset];
+    } else {
+      buffer[wordIndex] &= bitClearMask[index & bitOffset];
+    }
+    _length = index + 1;
+  }
+
+  @override
   set length(int length) {
     RangeError.checkNotNegative(length, 'length');
     final requested = (length + bitOffset) >>> bitShift;
@@ -363,10 +506,9 @@ class GrowableBitList extends BitList {
       // When growing, make sure we always have predictable state.
       _fillRange(buffer, _length, length, false);
     } else if (length < _length) {
-      final startIndex = (length >>> bitShift) + 1;
       final endIndex = min((_length + bitOffset) >>> bitShift, buffer.length);
-      if (startIndex < endIndex) {
-        buffer.fillRange(startIndex, endIndex, 0);
+      if (requested < endIndex) {
+        buffer.fillRange(requested, endIndex, 0);
       }
     }
     _maskTail(buffer, length);
@@ -391,78 +533,77 @@ extension BitListExtension on Iterable<bool> {
       BitList.of(this, growable: growable);
 }
 
-// Constants specific to mapping bits into a [UInt32List].
+// Constants specific to mapping bits into a [Uint32List].
 const int bitShift = 5;
 const int bitOffset = 31;
-const int bitCount = bitOffset + 1;
 const int bitMask = 0xffffffff;
 const List<int> bitSetMask = [
-  1,
-  2,
-  4,
-  8,
-  16,
-  32,
-  64,
-  128,
-  256,
-  512,
-  1024,
-  2048,
-  4096,
-  8192,
-  16384,
-  32768,
-  65536,
-  131072,
-  262144,
-  524288,
-  1048576,
-  2097152,
-  4194304,
-  8388608,
-  16777216,
-  33554432,
-  67108864,
-  134217728,
-  268435456,
-  536870912,
-  1073741824,
-  2147483648,
+  0x00000001,
+  0x00000002,
+  0x00000004,
+  0x00000008,
+  0x00000010,
+  0x00000020,
+  0x00000040,
+  0x00000080,
+  0x00000100,
+  0x00000200,
+  0x00000400,
+  0x00000800,
+  0x00001000,
+  0x00002000,
+  0x00004000,
+  0x00008000,
+  0x00010000,
+  0x00020000,
+  0x00040000,
+  0x00080000,
+  0x00100000,
+  0x00200000,
+  0x00400000,
+  0x00800000,
+  0x01000000,
+  0x02000000,
+  0x04000000,
+  0x08000000,
+  0x10000000,
+  0x20000000,
+  0x40000000,
+  0x80000000,
 ];
 const List<int> bitClearMask = [
-  -2,
-  -3,
-  -5,
-  -9,
-  -17,
-  -33,
-  -65,
-  -129,
-  -257,
-  -513,
-  -1025,
-  -2049,
-  -4097,
-  -8193,
-  -16385,
-  -32769,
-  -65537,
-  -131073,
-  -262145,
-  -524289,
-  -1048577,
-  -2097153,
-  -4194305,
-  -8388609,
-  -16777217,
-  -33554433,
-  -67108865,
-  -134217729,
-  -268435457,
-  -536870913,
-  -1073741825,
-  -2147483649,
+  0xfffffffe,
+  0xfffffffd,
+  0xfffffffb,
+  0xfffffff7,
+  0xffffffef,
+  0xffffffdf,
+  0xffffffbf,
+  0xffffff7f,
+  0xfffffeff,
+  0xfffffdff,
+  0xfffffbff,
+  0xfffff7ff,
+  0xffffefff,
+  0xffffdfff,
+  0xffffbfff,
+  0xffff7fff,
+  0xfffeffff,
+  0xfffdffff,
+  0xfffbffff,
+  0xfff7ffff,
+  0xffefffff,
+  0xffdfffff,
+  0xffbfffff,
+  0xff7fffff,
+  0xfeffffff,
+  0xfdffffff,
+  0xfbffffff,
+  0xf7ffffff,
+  0xefffffff,
+  0xdfffffff,
+  0xbfffffff,
+  0x7fffffff,
 ];
 
 void _fillRange(Uint32List buffer, int start, int end, bool value) {
