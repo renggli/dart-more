@@ -229,7 +229,7 @@ class BTreeMap<K, V> extends MapBase<K, V> {
   @override
   V? operator [](Object? key) {
     final found = _findLeaf(key);
-    return found == null ? null : found.$1.values[found.$2];
+    return found?.leaf.values[found.index];
   }
 
   @override
@@ -237,7 +237,7 @@ class BTreeMap<K, V> extends MapBase<K, V> {
 
   @override
   void operator []=(K key, V value) {
-    final (_, splitKey, rightChild) = _insert(_root, key, value);
+    final (:splitKey, :rightChild, added: _) = _insert(_root, key, value);
     if (rightChild != null) {
       final newRoot = BTreeInternalNode<K, V>();
       newRoot.keys.add(splitKey as K);
@@ -252,7 +252,7 @@ class BTreeMap<K, V> extends MapBase<K, V> {
   V putIfAbsent(K key, V Function() ifAbsent) {
     final found = _findLeaf(key);
     if (found != null) {
-      return found.$1.values[found.$2];
+      return found.leaf.values[found.index];
     }
     final value = ifAbsent();
     this[key] = value;
@@ -263,7 +263,7 @@ class BTreeMap<K, V> extends MapBase<K, V> {
   V update(K key, V Function(V value) update, {V Function()? ifAbsent}) {
     final found = _findLeaf(key);
     if (found != null) {
-      final newValue = update(found.$1.values[found.$2]);
+      final newValue = update(found.leaf.values[found.index]);
       this[key] = newValue;
       return newValue;
     }
@@ -278,7 +278,7 @@ class BTreeMap<K, V> extends MapBase<K, V> {
   @override
   V? remove(Object? key) {
     if (key is! K || isEmpty) return null;
-    final (removed, value) = _removeKey(_root, key);
+    final (:removed, :value) = _removeKey(_root, key);
     if (!removed) return null;
     _collapseRootIfNeeded();
     return value;
@@ -296,19 +296,19 @@ class BTreeMap<K, V> extends MapBase<K, V> {
 
   /// Returns the key at the sorted [index] in `O(log n)` time.
   K keyAt(int index) {
-    final (leaf, offset) = _leafAndOffsetAt(index);
+    final (:leaf, :offset) = _leafAndOffsetAt(index);
     return leaf.keys[offset];
   }
 
   /// Returns the value at the sorted [index] in `O(log n)` time.
   V valueAt(int index) {
-    final (leaf, offset) = _leafAndOffsetAt(index);
+    final (:leaf, :offset) = _leafAndOffsetAt(index);
     return leaf.values[offset];
   }
 
   /// Returns the entry at the sorted [index] in `O(log n)` time.
   MapEntry<K, V> entryAt(int index) {
-    final (leaf, offset) = _leafAndOffsetAt(index);
+    final (:leaf, :offset) = _leafAndOffsetAt(index);
     return MapEntry(leaf.keys[offset], leaf.values[offset]);
   }
 
@@ -449,17 +449,17 @@ class BTreeMap<K, V> extends MapBase<K, V> {
     return node as BTreeLeafNode<K, V>;
   }
 
-  (BTreeLeafNode<K, V>, int)? _findLeaf(Object? key) {
+  ({BTreeLeafNode<K, V> leaf, int index})? _findLeaf(Object? key) {
     if (key is! K) return null;
     final leaf = _descendToLeaf(key);
     final index = comparator.binarySearchLower(leaf.keys, key);
     if (index < leaf.keys.length && comparator(leaf.keys[index], key) == 0) {
-      return (leaf, index);
+      return (leaf: leaf, index: index);
     }
     return null;
   }
 
-  (BTreeLeafNode<K, V>, int) _leafAndOffsetAt(int index) {
+  ({BTreeLeafNode<K, V> leaf, int offset}) _leafAndOffsetAt(int index) {
     RangeError.checkValidIndex(index, this, 'index', length);
     var remaining = index;
     var node = _root;
@@ -472,7 +472,7 @@ class BTreeMap<K, V> extends MapBase<K, V> {
         remaining -= child.size;
       }
     }
-    return (node as BTreeLeafNode<K, V>, remaining);
+    return (leaf: node as BTreeLeafNode<K, V>, offset: remaining);
   }
 
   MapEntry<K, V>? _predecessorEntry(K key, {required bool inclusive}) {
@@ -507,13 +507,17 @@ class BTreeMap<K, V> extends MapBase<K, V> {
     return null;
   }
 
-  (bool, K?, BTreeNode<K, V>?) _insert(BTreeNode<K, V> node, K key, V value) {
+  ({bool added, K? splitKey, BTreeNode<K, V>? rightChild}) _insert(
+    BTreeNode<K, V> node,
+    K key,
+    V value,
+  ) {
     if (node is BTreeLeafNode<K, V>) {
       final index = comparator.binarySearchLower(node.keys, key);
       if (index < node.keys.length && comparator(node.keys[index], key) == 0) {
         node.keys[index] = key;
         node.values[index] = value;
-        return (false, null, null);
+        return (added: false, splitKey: null, rightChild: null);
       }
       node.keys.insert(index, key);
       node.values.insert(index, value);
@@ -530,20 +534,22 @@ class BTreeMap<K, V> extends MapBase<K, V> {
         node.next?.previous = right;
         node.next = right;
         if (identical(node, _lastLeaf)) _lastLeaf = right;
-        return (true, right.keys.first, right);
+        return (added: true, splitKey: right.keys.first, rightChild: right);
       }
-      return (true, null, null);
+      return (added: true, splitKey: null, rightChild: null);
     }
 
     final internal = node as BTreeInternalNode<K, V>;
     final childIndex = comparator.binarySearchUpper(internal.keys, key);
-    final (added, splitKey, rightChild) = _insert(
+    final (:added, :splitKey, :rightChild) = _insert(
       internal.children[childIndex],
       key,
       value,
     );
     if (added) internal.size++;
-    if (rightChild == null) return (added, null, null);
+    if (rightChild == null) {
+      return (added: added, splitKey: null, rightChild: null);
+    }
 
     internal.keys.insert(childIndex, splitKey as K);
     internal.children.insert(childIndex + 1, rightChild);
@@ -557,9 +563,9 @@ class BTreeMap<K, V> extends MapBase<K, V> {
       internal.children.length = mid + 1;
       internal.size = _sumSizes(internal.children);
       right.size = _sumSizes(right.children);
-      return (added, promotedKey, right);
+      return (added: added, splitKey: promotedKey, rightChild: right);
     }
-    return (added, null, null);
+    return (added: added, splitKey: null, rightChild: null);
   }
 
   static int _sumSizes<K, V>(List<BTreeNode<K, V>> children) {
@@ -570,25 +576,25 @@ class BTreeMap<K, V> extends MapBase<K, V> {
     return total;
   }
 
-  (bool, V?) _removeKey(BTreeNode<K, V> node, K key) {
+  ({bool removed, V? value}) _removeKey(BTreeNode<K, V> node, K key) {
     if (node is BTreeLeafNode<K, V>) {
       final index = comparator.binarySearchLower(node.keys, key);
       if (index < node.keys.length && comparator(node.keys[index], key) == 0) {
         node.keys.removeAt(index);
         final value = node.values.removeAt(index);
         _modificationCount++;
-        return (true, value);
+        return (removed: true, value: value);
       }
-      return (false, null);
+      return (removed: false, value: null);
     }
 
     final internal = node as BTreeInternalNode<K, V>;
     final childIndex = comparator.binarySearchUpper(internal.keys, key);
-    final (removed, value) = _removeKey(internal.children[childIndex], key);
-    if (!removed) return (false, null);
+    final (:removed, :value) = _removeKey(internal.children[childIndex], key);
+    if (!removed) return (removed: false, value: null);
     internal.size--;
     _rebalanceChild(internal, childIndex);
-    return (true, value);
+    return (removed: true, value: value);
   }
 
   MapEntry<K, V> _removeAt(BTreeNode<K, V> node, int index) {

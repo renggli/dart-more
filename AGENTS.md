@@ -33,6 +33,7 @@
 - The code must be auto-formatted (run `dart format .`).
 - The code must be free of linter warnings (run `dart analyze` and `dart fix --apply`).
 - Embrace strict null safety. Avoid using the non-null assertion operator (`!`) or `dynamic` types, if possible.
+- Prefer named record fields over positional records (e.g., `({int min, int max})` instead of `(int, int)`).
 
 ## Logic and Patterns
 

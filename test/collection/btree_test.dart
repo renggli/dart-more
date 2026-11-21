@@ -264,9 +264,16 @@ void main() {
   });
 
   group('BTreeMap splits and merges', () {
-    for (final (minE, maxE) in [(2, 4), (3, 6), (16, 32)]) {
-      test('ascending, descending, and random ($minE, $maxE)', () {
-        final map = BTreeMap<int, int>(minEntries: minE, maxEntries: maxE);
+    for (final (:minEntries, :maxEntries) in [
+      (minEntries: 2, maxEntries: 4),
+      (minEntries: 3, maxEntries: 6),
+      (minEntries: 16, maxEntries: 32),
+    ]) {
+      test('ascending, descending, and random ($minEntries, $maxEntries)', () {
+        final map = BTreeMap<int, int>(
+          minEntries: minEntries,
+          maxEntries: maxEntries,
+        );
         // Ascending
         for (var i = 0; i < 200; i++) {
           map[i] = i * 2;
