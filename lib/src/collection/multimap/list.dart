@@ -3,7 +3,7 @@ import 'dart:collection' show ListMixin;
 import '../multimap.dart';
 
 /// A multimap that stores values in a [List], and that maintains the insertion
-/// order of values of a given key. A `factory` can be provided to create
+/// order of values of a given key. A [factory] can be provided to create
 /// custom value collections.
 class ListMultimap<K, V> extends Multimap<K, V, List<V>> {
   /// Creates a [ListMultimap] with the same keys and values as [other].
@@ -34,7 +34,9 @@ class ListMultimap<K, V> extends Multimap<K, V, List<V>> {
     return result;
   }
 
-  // Creates a [ListMultimap] associating the given [keys] to [values].
+  /// Creates a [ListMultimap] associating the given [keys] to [values].
+  ///
+  /// Throws an [ArgumentError] if [keys] and [values] have different lengths.
   factory fromIterables(
     Iterable<K> keys,
     Iterable<V> values, {
@@ -57,10 +59,10 @@ class ListMultimap<K, V> extends Multimap<K, V, List<V>> {
     return result;
   }
 
-  /// Creates an empty [ListMultimap] with the keys held in [map] and the values
-  /// in a collection built with [factory].
+  /// Creates a [ListMultimap] with the keys held in [map] and the values in
+  /// collections built with [factory].
   new({Map<K, List<V>>? map, Factory<List<V>>? factory})
-    : super(map ?? <K, List<V>>{}, factory ?? defaultFactory);
+    : super(map ?? <K, List<V>>{}, factory ?? _defaultFactory);
 
   @override
   ListMultimapValues<K, V> lookupValues(K key) =>
@@ -87,23 +89,77 @@ class ListMultimapValues<K, V> extends MultimapValues<K, V, List<V>>
   }
 
   @override
+  bool contains(Object? element) {
+    refresh();
+    return delegate.contains(element);
+  }
+
+  @override
+  int indexOf(Object? element, [int start = 0]) {
+    refresh();
+    return element is V ? delegate.indexOf(element, start) : -1;
+  }
+
+  @override
+  int lastIndexOf(Object? element, [int? start]) {
+    refresh();
+    return element is V ? delegate.lastIndexOf(element, start) : -1;
+  }
+
+  @override
   void add(V element) => update((map, length) {
-    if (delegate.isEmpty) {
+    final wasEmpty = delegate.isEmpty;
+    delegate.add(element);
+    if (wasEmpty) {
       map[key] = delegate;
     }
-    delegate.add(element);
     return 1;
   });
+
+  @override
+  void addAll(Iterable<V> iterable) => update((map, length) {
+    final elements = snapshotIfAliased(iterable);
+    final previousLength = delegate.length;
+    delegate.addAll(elements);
+    final added = delegate.length - previousLength;
+    if (previousLength == 0 && added > 0) {
+      map[key] = delegate;
+    }
+    return added;
+  });
+
+  @override
+  bool remove(Object? element) => update((map, length) {
+    if (!delegate.remove(element)) return 0;
+    if (delegate.isEmpty) {
+      map.remove(key);
+    }
+    return -1;
+  });
+
+  @override
+  void clear() => update((map, length) {
+    final previousLength = delegate.length;
+    if (previousLength == 0) return 0;
+    delegate.clear();
+    map.remove(key);
+    return -previousLength;
+  });
+
+  @override
+  void sort([int Function(V a, V b)? compare]) {
+    refresh();
+    delegate.sort(compare);
+  }
 
   @override
   set length(int newLength) => update((map, length) {
     final previousLength = delegate.length;
     if (previousLength != newLength) {
-      if (previousLength == 0) {
-        map[key] = delegate;
-      }
       delegate.length = newLength;
-      if (newLength == 0) {
+      if (previousLength == 0 && newLength > 0) {
+        map[key] = delegate;
+      } else if (newLength == 0) {
         map.remove(key);
       }
       return newLength - previousLength;
@@ -113,6 +169,9 @@ class ListMultimapValues<K, V> extends MultimapValues<K, V, List<V>>
 
   @override
   void polymorphicAdd(V value) => add(value);
+
+  @override
+  void polymorphicAddAll(Iterable<V> values) => addAll(values);
 
   @override
   void polymorphicRemove(V value) => remove(value);
@@ -138,13 +197,11 @@ extension ListMultimapOnIterableExtension<E> on Iterable<E> {
     V Function(E element)? value,
     Map<K, List<V>>? map,
     Factory<List<V>>? factory,
-  }) => ListMultimap<K, V>.fromIterable(
-    this,
-    key: key == null ? null : (e) => key(e as E),
-    value: value == null ? null : (e) => value(e as E),
-    map: map,
-    factory: factory,
-  );
+  }) {
+    final result = ListMultimap<K, V>(map: map, factory: factory);
+    fillFromIterable(result, this, key, value);
+    return result;
+  }
 }
 
-List<V> defaultFactory<V>() => <V>[];
+List<V> _defaultFactory<V>() => <V>[];

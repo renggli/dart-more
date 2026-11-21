@@ -7,9 +7,13 @@ typedef Factory<T> = T Function();
 
 /// A collection maintaining a mapping between keys and multiple values.
 abstract class Multimap<K, V, VS extends Iterable<V>> {
-  /// Internal factory constructor.
-  new(this._map, this.factory)
-    : _length = _map.values.fold(0, (sum, values) => sum + values.length);
+  /// Internal generative constructor.
+  new(this._map, this.factory) : _length = 0 {
+    _map.removeWhere((_, values) => values.isEmpty);
+    for (final values in _map.values) {
+      _length += values.length;
+    }
+  }
 
   /// Underlying map with associations from `keys` to `values`.
   final Map<K, VS> _map;
@@ -17,17 +21,17 @@ abstract class Multimap<K, V, VS extends Iterable<V>> {
   /// Internal counter for total number of values.
   int _length;
 
-  /// Factory method to build `value` collections.
+  /// Factory method to build value collections.
   @protected
   final Factory<VS> factory;
 
   /// Returns the total number of values in this multimap.
   int get length => _length;
 
-  /// Returns true if there are no values in this multimap.
+  /// Returns `true` if there are no values in this multimap.
   bool get isEmpty => _length == 0;
 
-  /// Returns true if there is at least one value in this multimap.
+  /// Returns `true` if there is at least one value in this multimap.
   bool get isNotEmpty => _length > 0;
 
   /// The unique keys of this multimap.
@@ -50,11 +54,11 @@ abstract class Multimap<K, V, VS extends Iterable<V>> {
     }
   }
 
-  /// Returns true, if this map contains the given [key].
-  bool containsKey(K? key) => _map.containsKey(key);
+  /// Returns `true` if this multimap contains the given [key].
+  bool containsKey(Object? key) => _map.containsKey(key);
 
-  /// Returns true, if this map contains the given [value].
-  bool containsValue(V? value) {
+  /// Returns `true` if this multimap contains the given [value].
+  bool containsValue(Object? value) {
     for (final values in _map.values) {
       if (values.contains(value)) {
         return true;
@@ -63,8 +67,9 @@ abstract class Multimap<K, V, VS extends Iterable<V>> {
     return false;
   }
 
-  /// Returns true, if this map contains a [key] and [value] entry.
-  bool containsEntry(K? key, V? value) => _map[key]?.contains(value) ?? false;
+  /// Returns `true` if this multimap contains a [key] and [value] entry.
+  bool containsEntry(Object? key, Object? value) =>
+      _map[key]?.contains(value) ?? false;
 
   /// Returns the values for the given [key].
   VS operator [](K key) => lookupValues(key) as VS;
@@ -77,12 +82,20 @@ abstract class Multimap<K, V, VS extends Iterable<V>> {
       lookupValues(key).polymorphicAddAll(values);
 
   /// Removes one association from [key] to [value].
-  void remove(K key, V value) => lookupValues(key).polymorphicRemove(value);
+  void remove(K key, V value) {
+    if (!_map.containsKey(key)) return;
+    lookupValues(key).polymorphicRemove(value);
+  }
 
   /// Removes associations from [key] to each of [values].
-  void removeAll(K key, [Iterable<V>? values]) => values == null
-      ? lookupValues(key).polymorphicClear()
-      : lookupValues(key).polymorphicRemoveAll(values);
+  void removeAll(K key, [Iterable<V>? values]) {
+    if (!_map.containsKey(key)) return;
+    if (values == null) {
+      lookupValues(key).polymorphicClear();
+    } else {
+      lookupValues(key).polymorphicRemoveAll(values);
+    }
+  }
 
   /// Replaces the [key] with a single [value].
   void replace(K key, V value) => lookupValues(key)
@@ -99,14 +112,22 @@ abstract class Multimap<K, V, VS extends Iterable<V>> {
 
   /// Removes all values from this multimap.
   void clear() {
-    for (final key in List.of(keys)) {
-      lookupValues(key).polymorphicClear();
+    if (_map.isEmpty) return;
+    for (final values in _map.values) {
+      if (values is List<V>) {
+        values.clear();
+      } else if (values is Set<V>) {
+        values.clear();
+      }
     }
     _map.clear();
     _length = 0;
   }
 
   /// Returns a mutable view onto the underlying map.
+  ///
+  /// Assigning an empty collection (`asMap()[key] = []`) removes `key` from
+  /// the multimap rather than storing an empty entry.
   Map<K, VS> asMap() => MultimapAsMap(this);
 
   @override
@@ -171,19 +192,27 @@ abstract class MultimapValues<K, V, VS extends Iterable<V>>
   }
 
   @protected
+  Iterable<T> snapshotIfAliased<T>(Iterable<T> values) {
+    if (values
+        case final MultimapValues<Object?, Object?, Iterable<Object?>> view) {
+      view.refresh();
+      if (identical(view.delegate, delegate)) {
+        return List<T>.of(values);
+      }
+    }
+    if (identical(values, delegate) || identical(values, this)) {
+      return List<T>.of(values);
+    }
+    return values;
+  }
+
+  @protected
   void polymorphicAdd(V value);
 
   @protected
   void polymorphicAddAll(Iterable<V> values) {
     refresh();
-    final elements =
-        identical(values, delegate) ||
-            identical(values, this) ||
-            (values is MultimapValues &&
-                identical((values as MultimapValues).delegate, delegate))
-        ? List.of(values)
-        : values;
-    elements.forEach(polymorphicAdd);
+    snapshotIfAliased(values).forEach(polymorphicAdd);
   }
 
   @protected
@@ -192,14 +221,7 @@ abstract class MultimapValues<K, V, VS extends Iterable<V>>
   @protected
   void polymorphicRemoveAll(Iterable<V> values) {
     refresh();
-    final elements =
-        identical(values, delegate) ||
-            identical(values, this) ||
-            (values is MultimapValues &&
-                identical((values as MultimapValues).delegate, delegate))
-        ? List.of(values)
-        : values;
-    elements.forEach(polymorphicRemove);
+    snapshotIfAliased(values).forEach(polymorphicRemove);
   }
 
   @protected
@@ -222,11 +244,21 @@ class MultimapAsMap<K, V, VS extends Iterable<V>> extends MapBase<K, VS> {
   bool get isNotEmpty => _multimap.isNotEmpty;
 
   @override
-  bool containsKey(Object? key) => key is K && _multimap.containsKey(key);
+  bool containsKey(Object? key) => _multimap.containsKey(key);
+
+  @override
+  bool containsValue(Object? value) {
+    if (value is MultimapValues) {
+      value.refresh();
+      final target = value.delegate;
+      return _multimap._map.values.any((v) => identical(v, target));
+    }
+    return _multimap._map.containsValue(value);
+  }
 
   @override
   VS? operator [](Object? key) =>
-      key is K && _multimap.containsKey(key) ? _multimap[key] : null;
+      key is K && _multimap._map.containsKey(key) ? _multimap[key] : null;
 
   @override
   void operator []=(K key, VS value) => _multimap.replaceAll(key, value);
@@ -239,12 +271,12 @@ class MultimapAsMap<K, V, VS extends Iterable<V>> extends MapBase<K, VS> {
 
   @override
   VS? remove(Object? key) {
-    if (key is K && _multimap.containsKey(key)) {
-      final result = _multimap.copyValues(_multimap._map[key]!);
-      _multimap.removeAll(key);
-      return result;
-    }
-    return null;
+    if (key is! K) return null;
+    final existing = _multimap._map[key];
+    if (existing == null) return null;
+    final result = _multimap.copyValues(existing);
+    _multimap.removeAll(key);
+    return result;
   }
 }
 

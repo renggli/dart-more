@@ -3,7 +3,7 @@ import 'dart:collection' show SetMixin;
 import '../multimap.dart';
 
 /// A multimap that stores values in a [Set], and that keeps the unique values
-/// of a given key. A `factory` can be provided to create custom value
+/// of a given key. A [factory] can be provided to create custom value
 /// collections.
 class SetMultimap<K, V> extends Multimap<K, V, Set<V>> {
   /// Creates a [SetMultimap] with the same keys and values as [other].
@@ -34,7 +34,9 @@ class SetMultimap<K, V> extends Multimap<K, V, Set<V>> {
     return result;
   }
 
-  // Creates a [SetMultimap] associating the given [keys] to [values].
+  /// Creates a [SetMultimap] associating the given [keys] to [values].
+  ///
+  /// Throws an [ArgumentError] if [keys] and [values] have different lengths.
   factory fromIterables(
     Iterable<K> keys,
     Iterable<V> values, {
@@ -57,10 +59,10 @@ class SetMultimap<K, V> extends Multimap<K, V, Set<V>> {
     return result;
   }
 
-  /// Creates an empty [SetMultimap] with the keys held in [map] and the values
-  /// in a collection built with [factory].
+  /// Creates a [SetMultimap] with the keys held in [map] and the values in
+  /// collections built with [factory].
   new({Map<K, Set<V>>? map, Factory<Set<V>>? factory})
-    : super(map ?? <K, Set<V>>{}, factory ?? defaultFactory);
+    : super(map ?? <K, Set<V>>{}, factory ?? _defaultFactory);
 
   @override
   SetMultimapValues<K, V> lookupValues(K key) =>
@@ -75,6 +77,12 @@ class SetMultimapValues<K, V> extends MultimapValues<K, V, Set<V>>
   new(super.multimap, super.key);
 
   @override
+  bool contains(Object? element) {
+    refresh();
+    return delegate.contains(element);
+  }
+
+  @override
   bool add(V value) => update((map, length) {
     final wasEmpty = delegate.isEmpty;
     final result = delegate.add(value);
@@ -85,6 +93,18 @@ class SetMultimapValues<K, V> extends MultimapValues<K, V, Set<V>>
       return 1;
     }
     return 0;
+  });
+
+  @override
+  void addAll(Iterable<V> elements) => update((map, length) {
+    final items = snapshotIfAliased(elements);
+    final previousLength = delegate.length;
+    delegate.addAll(items);
+    final added = delegate.length - previousLength;
+    if (previousLength == 0 && added > 0) {
+      map[key] = delegate;
+    }
+    return added;
   });
 
   @override
@@ -106,10 +126,43 @@ class SetMultimapValues<K, V> extends MultimapValues<K, V, Set<V>>
   });
 
   @override
+  void removeAll(Iterable<Object?> elements) => update((map, length) {
+    final items = snapshotIfAliased(elements);
+    final previousLength = delegate.length;
+    delegate.removeAll(items);
+    final removed = previousLength - delegate.length;
+    if (removed > 0 && delegate.isEmpty) {
+      map.remove(key);
+    }
+    return -removed;
+  });
+
+  @override
+  void clear() => update((map, length) {
+    final previousLength = delegate.length;
+    if (previousLength == 0) return 0;
+    delegate.clear();
+    map.remove(key);
+    return -previousLength;
+  });
+
+  @override
+  Set<V> toSet() {
+    refresh();
+    return delegate.toSet();
+  }
+
+  @override
   void polymorphicAdd(V value) => add(value);
 
   @override
+  void polymorphicAddAll(Iterable<V> values) => addAll(values);
+
+  @override
   void polymorphicRemove(V value) => remove(value);
+
+  @override
+  void polymorphicRemoveAll(Iterable<V> values) => removeAll(values);
 
   @override
   void polymorphicClear() => clear();
@@ -132,13 +185,11 @@ extension SetMultimapOnIterableExtension<E> on Iterable<E> {
     V Function(E element)? value,
     Map<K, Set<V>>? map,
     Factory<Set<V>>? factory,
-  }) => SetMultimap<K, V>.fromIterable(
-    this,
-    key: key == null ? null : (e) => key(e as E),
-    value: value == null ? null : (e) => value(e as E),
-    map: map,
-    factory: factory,
-  );
+  }) {
+    final result = SetMultimap<K, V>(map: map, factory: factory);
+    fillFromIterable(result, this, key, value);
+    return result;
+  }
 }
 
-Set<V> defaultFactory<V>() => <V>{};
+Set<V> _defaultFactory<V>() => <V>{};

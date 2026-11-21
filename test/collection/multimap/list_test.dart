@@ -369,6 +369,51 @@ void main() {
         final map = ListMultimap.fromIterables(['a', 'b', 'b'], [1, 2, 3]);
         check(map.toString()).equals('{a: [1], b: [2, 3]}');
       });
+      test('prunes empty collections in pre-populated map', () {
+        final map = ListMultimap<String, int>(
+          map: {
+            'a': [],
+            'b': [1],
+          },
+        );
+        check(map.length).equals(1);
+        check(map.containsKey('a')).isFalse();
+        check(map.containsKey('b')).isTrue();
+      });
+      test('asMap containsValue and stale view aliasing', () {
+        final map = ListMultimap<String, int>();
+        final stale = map['x'];
+        map.add('x', 1);
+        check(map.asMap().containsValue(map.asMap()['x'])).isTrue();
+        check(map.asMap().containsValue(stale)).isTrue();
+        map.addAll('x', stale);
+        check(map['x']).deepEquals([1, 1]);
+        map.removeAll('x', stale);
+        check(map.containsKey('x')).isFalse();
+      });
+      test('length= error does not corrupt map', () {
+        final map = ListMultimap<String, int>();
+        final view = map['k'];
+        check(() => view.length = -1).throws<RangeError>();
+        check(map.containsKey('k')).isFalse();
+        check(map.isEmpty).isTrue();
+      });
+      test(
+        'list view helpers: contains, indexOf, lastIndexOf, sort, addAll(self)',
+        () {
+          final map = ListMultimap<String, int>()..addAll('k', [3, 1, 2, 1]);
+          final view = map['k'];
+          check(view.contains(2)).isTrue();
+          check(view.contains(99)).isFalse();
+          check(view.indexOf(1)).equals(1);
+          check(view.lastIndexOf(1)).equals(3);
+          view.sort();
+          check(view).deepEquals([1, 1, 2, 3]);
+          view.addAll(view);
+          check(view).deepEquals([1, 1, 2, 3, 1, 1, 2, 3]);
+          check(map.length).equals(8);
+        },
+      );
     });
   });
 }

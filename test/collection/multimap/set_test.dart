@@ -336,6 +336,46 @@ void main() {
         final map = SetMultimap.fromIterables(['a', 'b', 'b'], [1, 2, 3]);
         check(map.toString()).equals('{a: {1}, b: {2, 3}}');
       });
+      test('custom identity set factory respects delegate equality', () {
+        final a = _SetBox(1);
+        final b = _SetBox(1);
+        final map = SetMultimap<String, _SetBox>(
+          factory: Set<_SetBox>.identity,
+        );
+        map.add('k', a);
+        final view = map['k'];
+        check(view.contains(a)).isTrue();
+        check(view.contains(b)).isFalse();
+        final copied = view.toSet();
+        check(copied.contains(a)).isTrue();
+        check(copied.contains(b)).isFalse();
+        view.addAll(view);
+        check(view.length).equals(1);
+        view.removeAll(view);
+        check(view.isEmpty).isTrue();
+        check(map.isEmpty).isTrue();
+      });
+      test('asMap containsValue and stale view aliasing', () {
+        final map = SetMultimap<String, int>();
+        final stale = map['x'];
+        map.add('x', 1);
+        check(map.asMap().containsValue(map.asMap()['x'])).isTrue();
+        map.addAll('x', stale);
+        check(map['x']).deepEquals({1});
+        map.removeAll('x', stale);
+        check(map.containsKey('x')).isFalse();
+      });
     });
   });
+}
+
+class _SetBox {
+  new(this.id);
+  final int id;
+
+  @override
+  bool operator ==(Object other) => other is _SetBox && other.id == id;
+
+  @override
+  int get hashCode => id.hashCode;
 }
