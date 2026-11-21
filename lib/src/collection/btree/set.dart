@@ -1,6 +1,4 @@
-import 'dart:collection' show SetBase, SplayTreeSet;
-
-import 'map.dart';
+part of '../btree.dart';
 
 /// An ordered, in-memory set backed by an order-statistic B+Tree.
 ///
@@ -44,26 +42,68 @@ import 'map.dart';
 class BTreeSet<E> extends SetBase<E> {
   /// Constructs an empty [BTreeSet] with an optional [comparator],
   /// [minEntries], and [maxEntries].
+  ///
+  /// Throws an [ArgumentError] if [maxEntries] is less than `4` or [minEntries]
+  /// is not between `2` and `maxEntries ~/ 2`.
   new({Comparator<E>? comparator, int? minEntries, int? maxEntries})
-    : _map = BTreeMap<E, E>(
+    : _map = BTreeMap<E, Null>._set(
         comparator: comparator,
         minEntries: minEntries,
         maxEntries: maxEntries,
       );
 
+  new _wrap(this._map);
+
   /// Constructs a [BTreeSet] containing all elements of [elements].
+  ///
+  /// When [elements] is a [BTreeSet] with the same [comparator], [minEntries],
+  /// and [maxEntries], the underlying tree is cloned directly in `O(n)` time.
+  ///
+  /// Throws an [ArgumentError] if [maxEntries] or [minEntries] is invalid.
   factory of(
     Iterable<E> elements, {
     Comparator<E>? comparator,
     int? minEntries,
     int? maxEntries,
-  }) => BTreeSet<E>(
-    comparator: comparator,
-    minEntries: minEntries,
-    maxEntries: maxEntries,
-  )..addAll(elements);
+  }) {
+    final resolvedComparator = comparator ?? naturalCompare;
+    final resolvedMax = maxEntries ?? 32;
+    final resolvedMin = minEntries ?? resolvedMax ~/ 2;
+    if (elements is BTreeSet<E> &&
+        elements.comparator == resolvedComparator &&
+        elements.minEntries == resolvedMin &&
+        elements.maxEntries == resolvedMax) {
+      return BTreeSet<E>._wrap(elements._map._clone());
+    }
+    return BTreeSet<E>(
+      comparator: comparator,
+      minEntries: minEntries,
+      maxEntries: maxEntries,
+    )..addAll(elements);
+  }
 
-  final BTreeMap<E, E> _map;
+  /// Constructs a [BTreeSet] containing all elements of [elements], casting
+  /// each element to [E].
+  ///
+  /// Throws an [ArgumentError] if [maxEntries] or [minEntries] is invalid.
+  factory from(
+    Iterable<Object?> elements, {
+    Comparator<E>? comparator,
+    int? minEntries,
+    int? maxEntries,
+  }) {
+    final result = BTreeSet<E>(
+      comparator: comparator,
+      minEntries: minEntries,
+      maxEntries: maxEntries,
+    );
+    for (final element in elements) {
+      result.add(element as E);
+    }
+    return result;
+  }
+
+  final BTreeMap<E, Null> _map;
 
   /// Comparator used to order elements in this set.
   Comparator<E> get comparator => _map.comparator;
@@ -96,59 +136,49 @@ class BTreeSet<E> extends SetBase<E> {
   Iterable<E> get reversed => _map.reversedKeys;
 
   @override
-  bool add(E value) {
-    var added = false;
-    _map.putIfAbsent(value, () {
-      added = true;
-      return value;
-    });
-    return added;
-  }
+  bool add(E value) => _map._addKeyIfAbsent(value);
 
   @override
   bool contains(Object? element) => _map.containsKey(element);
 
   @override
-  E? lookup(Object? element) => _map[element];
+  E? lookup(Object? element) => _map._lookupKey(element);
 
   @override
-  bool remove(Object? value) {
-    if (!_map.containsKey(value)) return false;
-    _map.remove(value);
-    return true;
-  }
+  bool remove(Object? value) => _map._removeKeyBool(value);
 
   @override
   void clear() => _map.clear();
 
   @override
-  Set<E> toSet() => BTreeSet<E>.of(
-    this,
-    comparator: comparator,
-    minEntries: minEntries,
-    maxEntries: maxEntries,
-  );
+  Set<E> toSet() => BTreeSet<E>._wrap(_map._clone());
 
   /// Returns the element at the sorted [index] in `O(log n)` time.
+  ///
+  /// Throws a [RangeError] if [index] is negative or not less than [length].
   @override
   E elementAt(int index) => _map.keyAt(index);
 
   /// Returns the sorted 0-based rank of [element] in `O(log n)` time, or `-1`
   /// if not present.
-  int indexOf(E element) => _map.indexOfKey(element);
+  int indexOf(Object? element) => _map.indexOfKey(element);
 
   /// Removes and returns the element at the sorted [index] in `O(log n)` time.
-  E removeAt(int index) => _map.removeAt(index).key;
+  ///
+  /// Throws a [RangeError] if [index] is negative or not less than [length].
+  E removeAt(int index) => _map._removeKeyAt(index);
 
   /// Removes and returns the smallest element in `O(log n)` time.
   ///
   /// Throws a [StateError] if the set is empty.
-  E removeFirst() => _map.removeFirst().key;
+  E removeFirst() =>
+      isEmpty ? throw StateError('No element') : _map._removeKeyAt(0);
 
   /// Removes and returns the largest element in `O(log n)` time.
   ///
   /// Throws a [StateError] if the set is empty.
-  E removeLast() => _map.removeLast().key;
+  E removeLast() =>
+      isEmpty ? throw StateError('No element') : _map._removeKeyAt(length - 1);
 
   /// Returns the greatest element strictly less than [element] in `O(log n)`
   /// time, or `null` if no such element exists.
@@ -166,8 +196,15 @@ class BTreeSet<E> extends SetBase<E> {
   /// time, or `null` if no such element exists.
   E? higher(E element) => _map.higherKey(element);
 
-  /// Returns a lazy iterable of elements within the bounds [[min], [max]] in
+  /// Returns a lazy iterable of elements between [min] and [max] in
   /// `O(log n + k)` time.
+  ///
+  /// When [min] or [max] is `null`, that side of the range is unbounded (note
+  /// that `null` cannot be used as an explicit bound for nullable element
+  /// types). [includeMin] and [includeMax] control whether elements equal to
+  /// [min] or [max] are included. When [reversed] is `true`, elements are
+  /// yielded in descending order. Returns an empty iterable if [min] is greater
+  /// than [max].
   Iterable<E> range({
     E? min,
     E? max,
@@ -196,4 +233,11 @@ extension BTreeSetExtension<E> on Iterable<E> {
     minEntries: minEntries,
     maxEntries: maxEntries,
   );
+}
+
+/// Exposes internal tree state for structural invariant verification in tests.
+@visibleForTesting
+extension BTreeSetTestingExtension<E> on BTreeSet<E> {
+  /// Backing [BTreeMap] storing the elements of this set.
+  BTreeMap<E, Null> get debugMap => _map;
 }

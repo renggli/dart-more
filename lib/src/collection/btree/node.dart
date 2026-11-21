@@ -1,25 +1,23 @@
-/// Base class for nodes in a `BTreeMap`.
+part of '../btree.dart';
+
+/// Base class for nodes in a [BTreeMap] or [BTreeSet].
+@visibleForTesting
 sealed class BTreeNode<K, V> {
   /// Total number of leaf elements in this subtree.
   int get size;
-
-  /// Whether this node is a leaf node.
-  bool get isLeaf;
-
-  /// The smallest key in this non-empty subtree.
-  K get firstKey;
-
-  /// The largest key in this non-empty subtree.
-  K get lastKey;
 }
 
-/// Leaf node storing sorted keys, corresponding values, and sibling links.
+/// Leaf node storing sorted keys, optional values, and sibling links.
+@visibleForTesting
 final class BTreeLeafNode<K, V> extends BTreeNode<K, V> {
-  /// Sorted keys stored in this leaf.
-  final List<K> keys = <K>[];
+  /// Creates a leaf node with optional initial [keys] and [values].
+  new({List<K>? keys, this.values}) : keys = keys ?? <K>[];
 
-  /// Values corresponding to [keys].
-  final List<V> values = <V>[];
+  /// Sorted keys stored in this leaf.
+  final List<K> keys;
+
+  /// Values corresponding to [keys], or `null` for key-only trees ([BTreeSet]).
+  final List<V>? values;
 
   /// Link to the preceding leaf node in key order, if any.
   BTreeLeafNode<K, V>? previous;
@@ -29,34 +27,23 @@ final class BTreeLeafNode<K, V> extends BTreeNode<K, V> {
 
   @override
   int get size => keys.length;
-
-  @override
-  bool get isLeaf => true;
-
-  @override
-  K get firstKey => keys.first;
-
-  @override
-  K get lastKey => keys.last;
 }
 
 /// Internal routing node storing separator keys, child nodes, and subtree size.
+@visibleForTesting
 final class BTreeInternalNode<K, V> extends BTreeNode<K, V> {
+  /// Creates an internal node with optional initial [keys], [children], and
+  /// subtree [size].
+  new({List<K>? keys, List<BTreeNode<K, V>>? children, this.size = 0})
+    : keys = keys ?? <K>[],
+      children = children ?? <BTreeNode<K, V>>[];
+
   /// Separator keys partitioning [children] (`keys.length == children.length - 1`).
-  final List<K> keys = <K>[];
+  final List<K> keys;
 
   /// Child nodes of this internal node.
-  final List<BTreeNode<K, V>> children = <BTreeNode<K, V>>[];
+  final List<BTreeNode<K, V>> children;
 
   @override
-  int size = 0;
-
-  @override
-  bool get isLeaf => false;
-
-  @override
-  K get firstKey => children.first.firstKey;
-
-  @override
-  K get lastKey => children.last.lastKey;
+  int size;
 }

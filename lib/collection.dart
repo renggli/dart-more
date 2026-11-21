@@ -1,5 +1,7 @@
-/// A collection of iterable extensions and new collection types: bi-map,
-/// bit-list, multi-set, set and list multi-map, range, and string.
+/// Extensions on iterables, lists, maps, and strings, along with new collection
+/// types: bi-map, bit-list, B+tree map/set, disjoint-set, Fenwick tree,
+/// multi-map, multi-set, ordered/sorted list, range, R-tree, trie, and
+/// type-map.
 library;
 
 export 'src/collection/bimap.dart'

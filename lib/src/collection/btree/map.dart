@@ -1,10 +1,4 @@
-import 'dart:collection' show IterableBase, MapBase, SplayTreeMap;
-
-import 'package:meta/meta.dart';
-
-import '../../comparator/constructors/natural.dart';
-import '../../comparator/operations/binary_search.dart';
-import 'node.dart';
+part of '../btree.dart';
 
 /// An ordered, in-memory map backed by an order-statistic B+Tree.
 ///
@@ -52,12 +46,25 @@ import 'node.dart';
 class BTreeMap<K, V> extends MapBase<K, V> {
   /// Constructs an empty [BTreeMap] with an optional [comparator],
   /// [minEntries], and [maxEntries].
+  ///
+  /// Throws an [ArgumentError] if [maxEntries] is less than `4` or [minEntries]
+  /// is not between `2` and `maxEntries ~/ 2`.
   new({Comparator<K>? comparator, int? minEntries, int? maxEntries})
+    : this._(
+        BTreeLeafNode<K, V>(values: <V>[]),
+        comparator: comparator ?? naturalCompare,
+        maxEntries: maxEntries ?? 32,
+        minEntries: minEntries ?? (maxEntries ?? 32) ~/ 2,
+        hasValues: true,
+      );
+
+  new _set({Comparator<K>? comparator, int? minEntries, int? maxEntries})
     : this._(
         BTreeLeafNode<K, V>(),
         comparator: comparator ?? naturalCompare,
         maxEntries: maxEntries ?? 32,
         minEntries: minEntries ?? (maxEntries ?? 32) ~/ 2,
+        hasValues: false,
       );
 
   new _(
@@ -65,6 +72,7 @@ class BTreeMap<K, V> extends MapBase<K, V> {
     required this.comparator,
     required this.minEntries,
     required this.maxEntries,
+    required this._hasValues,
   }) : _root = initialLeaf,
        _firstLeaf = initialLeaf,
        _lastLeaf = initialLeaf {
@@ -80,19 +88,68 @@ class BTreeMap<K, V> extends MapBase<K, V> {
     }
   }
 
+  new _fromParts({
+    required this._root,
+    required this._firstLeaf,
+    required this._lastLeaf,
+    required this.comparator,
+    required this.minEntries,
+    required this.maxEntries,
+    required this._hasValues,
+  });
+
   /// Constructs a [BTreeMap] containing all entries of [other].
+  ///
+  /// When [other] is a [BTreeMap] with the same [comparator], [minEntries], and
+  /// [maxEntries], the underlying tree is cloned directly in `O(n)` time.
+  ///
+  /// Throws an [ArgumentError] if [maxEntries] or [minEntries] is invalid.
   factory of(
     Map<K, V> other, {
     Comparator<K>? comparator,
     int? minEntries,
     int? maxEntries,
-  }) => BTreeMap<K, V>(
-    comparator: comparator,
-    minEntries: minEntries,
-    maxEntries: maxEntries,
-  )..addAll(other);
+  }) {
+    final resolvedComparator = comparator ?? naturalCompare;
+    final resolvedMax = maxEntries ?? 32;
+    final resolvedMin = minEntries ?? resolvedMax ~/ 2;
+    if (other is BTreeMap<K, V> &&
+        other.comparator == resolvedComparator &&
+        other.minEntries == resolvedMin &&
+        other.maxEntries == resolvedMax) {
+      return other._clone();
+    }
+    return BTreeMap<K, V>(
+      comparator: comparator,
+      minEntries: minEntries,
+      maxEntries: maxEntries,
+    )..addAll(other);
+  }
+
+  /// Constructs a [BTreeMap] containing all entries of [other], casting keys
+  /// to [K] and values to [V].
+  ///
+  /// Throws an [ArgumentError] if [maxEntries] or [minEntries] is invalid.
+  factory from(
+    Map<Object?, Object?> other, {
+    Comparator<K>? comparator,
+    int? minEntries,
+    int? maxEntries,
+  }) {
+    final result = BTreeMap<K, V>(
+      comparator: comparator,
+      minEntries: minEntries,
+      maxEntries: maxEntries,
+    );
+    other.forEach((key, value) {
+      result[key as K] = value as V;
+    });
+    return result;
+  }
 
   /// Constructs a [BTreeMap] from [entries].
+  ///
+  /// Throws an [ArgumentError] if [maxEntries] or [minEntries] is invalid.
   factory fromEntries(
     Iterable<MapEntry<K, V>> entries, {
     Comparator<K>? comparator,
@@ -105,7 +162,9 @@ class BTreeMap<K, V> extends MapBase<K, V> {
   )..addEntries(entries);
 
   /// Constructs a [BTreeMap] from [iterable], computing keys and values with
-  /// optional [key] and [value] functions.
+  /// optional [key] and [value] functions in a single pass.
+  ///
+  /// Throws an [ArgumentError] if [maxEntries] or [minEntries] is invalid.
   factory fromIterable(
     Iterable<Object?> iterable, {
     Comparator<K>? comparator,
@@ -113,15 +172,24 @@ class BTreeMap<K, V> extends MapBase<K, V> {
     V Function(Object? element)? value,
     int? minEntries,
     int? maxEntries,
-  }) => BTreeMap<K, V>.fromIterables(
-    key == null ? iterable.cast<K>() : iterable.map(key),
-    value == null ? iterable.cast<V>() : iterable.map(value),
-    comparator: comparator,
-    minEntries: minEntries,
-    maxEntries: maxEntries,
-  );
+  }) {
+    final result = BTreeMap<K, V>(
+      comparator: comparator,
+      minEntries: minEntries,
+      maxEntries: maxEntries,
+    );
+    final keyProvider = key ?? (element) => element as K;
+    final valueProvider = value ?? (element) => element as V;
+    for (final element in iterable) {
+      result[keyProvider(element)] = valueProvider(element);
+    }
+    return result;
+  }
 
   /// Constructs a [BTreeMap] associating [keys] with [values] of equal length.
+  ///
+  /// Throws an [ArgumentError] if [keys] and [values] have different lengths,
+  /// or if [maxEntries] or [minEntries] is invalid.
   factory fromIterables(
     Iterable<K> keys,
     Iterable<V> values, {
@@ -158,6 +226,7 @@ class BTreeMap<K, V> extends MapBase<K, V> {
   /// Maximum number of entries per leaf or children per internal node.
   final int maxEntries;
 
+  final bool _hasValues;
   BTreeNode<K, V> _root;
   BTreeLeafNode<K, V> _firstLeaf;
   BTreeLeafNode<K, V> _lastLeaf;
@@ -189,62 +258,73 @@ class BTreeMap<K, V> extends MapBase<K, V> {
   /// Throws a [StateError] if the map is empty.
   MapEntry<K, V> get firstEntry => isEmpty
       ? throw StateError('No element')
-      : MapEntry(_firstLeaf.keys.first, _firstLeaf.values.first);
+      : MapEntry(_firstLeaf.keys.first, (_firstLeaf.values as List<V>).first);
 
   /// The entry with the largest key in this map, in `O(1)` time.
   ///
   /// Throws a [StateError] if the map is empty.
   MapEntry<K, V> get lastEntry => isEmpty
       ? throw StateError('No element')
-      : MapEntry(_lastLeaf.keys.last, _lastLeaf.values.last);
+      : MapEntry(_lastLeaf.keys.last, (_lastLeaf.values as List<V>).last);
 
   @override
-  Iterable<K> get keys =>
-      _BTreeRangeIterable<K, V, K>(this, extract: (k, v) => k);
+  Iterable<K> get keys => _BTreeKeyRangeIterable<K, V>(this);
 
   @override
-  Iterable<V> get values =>
-      _BTreeRangeIterable<K, V, V>(this, extract: (k, v) => v);
+  Iterable<V> get values => _BTreeValueRangeIterable<K, V>(this);
 
   @override
-  Iterable<MapEntry<K, V>> get entries =>
-      _BTreeRangeIterable<K, V, MapEntry<K, V>>(this, extract: MapEntry.new);
+  Iterable<MapEntry<K, V>> get entries => _BTreeEntryRangeIterable<K, V>(this);
 
   /// An iterable of all keys in descending order.
   Iterable<K> get reversedKeys =>
-      _BTreeRangeIterable<K, V, K>(this, reversed: true, extract: (k, v) => k);
+      _BTreeKeyRangeIterable<K, V>(this, reversed: true);
 
   /// An iterable of all values in descending key order.
   Iterable<V> get reversedValues =>
-      _BTreeRangeIterable<K, V, V>(this, reversed: true, extract: (k, v) => v);
+      _BTreeValueRangeIterable<K, V>(this, reversed: true);
 
   /// An iterable of all entries in descending key order.
   Iterable<MapEntry<K, V>> get reversedEntries =>
-      _BTreeRangeIterable<K, V, MapEntry<K, V>>(
-        this,
-        reversed: true,
-        extract: MapEntry.new,
-      );
+      _BTreeEntryRangeIterable<K, V>(this, reversed: true);
 
   @override
   V? operator [](Object? key) {
     final found = _findLeaf(key);
-    return found?.leaf.values[found.index];
+    if (found == null) return null;
+    return (found.leaf.values as List<V>)[found.index];
   }
 
   @override
   bool containsKey(Object? key) => _findLeaf(key) != null;
 
   @override
+  bool containsValue(Object? value) {
+    BTreeLeafNode<K, V>? leaf = _firstLeaf;
+    while (leaf != null) {
+      final values = leaf.values as List<V>;
+      for (var i = 0; i < values.length; i++) {
+        if (values[i] == value) return true;
+      }
+      leaf = leaf.next;
+    }
+    return false;
+  }
+
+  @override
   void operator []=(K key, V value) {
-    final (:splitKey, :rightChild, added: _) = _insert(_root, key, value);
+    final (:splitKey, :rightChild, added: _) = _insert(
+      _root,
+      key,
+      value,
+      overwrite: true,
+    );
     if (rightChild != null) {
-      final newRoot = BTreeInternalNode<K, V>();
-      newRoot.keys.add(splitKey as K);
-      newRoot.children.add(_root);
-      newRoot.children.add(rightChild);
-      newRoot.size = _root.size + rightChild.size;
-      _root = newRoot;
+      _root = BTreeInternalNode<K, V>(
+        keys: <K>[splitKey as K],
+        children: <BTreeNode<K, V>>[_root, rightChild],
+        size: _root.size + rightChild.size,
+      );
     }
   }
 
@@ -252,9 +332,13 @@ class BTreeMap<K, V> extends MapBase<K, V> {
   V putIfAbsent(K key, V Function() ifAbsent) {
     final found = _findLeaf(key);
     if (found != null) {
-      return found.leaf.values[found.index];
+      return (found.leaf.values as List<V>)[found.index];
     }
+    final modCount = _modificationCount;
     final value = ifAbsent();
+    if (modCount != _modificationCount) {
+      throw ConcurrentModificationError(this);
+    }
     this[key] = value;
     return value;
   }
@@ -263,16 +347,80 @@ class BTreeMap<K, V> extends MapBase<K, V> {
   V update(K key, V Function(V value) update, {V Function()? ifAbsent}) {
     final found = _findLeaf(key);
     if (found != null) {
-      final newValue = update(found.leaf.values[found.index]);
-      this[key] = newValue;
+      final values = found.leaf.values as List<V>;
+      final modCount = _modificationCount;
+      final newValue = update(values[found.index]);
+      if (modCount != _modificationCount) {
+        throw ConcurrentModificationError(this);
+      }
+      values[found.index] = newValue;
       return newValue;
     }
     if (ifAbsent != null) {
+      final modCount = _modificationCount;
       final newValue = ifAbsent();
+      if (modCount != _modificationCount) {
+        throw ConcurrentModificationError(this);
+      }
       this[key] = newValue;
       return newValue;
     }
     throw ArgumentError.value(key, 'key', 'Key not in map.');
+  }
+
+  @override
+  void updateAll(V Function(K key, V value) update) {
+    final modCount = _modificationCount;
+    BTreeLeafNode<K, V>? leaf = _firstLeaf;
+    while (leaf != null) {
+      final keys = leaf.keys;
+      final values = leaf.values as List<V>;
+      for (var i = 0; i < keys.length; i++) {
+        final newValue = update(keys[i], values[i]);
+        if (modCount != _modificationCount) {
+          throw ConcurrentModificationError(this);
+        }
+        values[i] = newValue;
+      }
+      leaf = leaf.next;
+    }
+  }
+
+  @override
+  void forEach(void Function(K key, V value) action) {
+    final modCount = _modificationCount;
+    BTreeLeafNode<K, V>? leaf = _firstLeaf;
+    while (leaf != null) {
+      final keys = leaf.keys;
+      final values = leaf.values as List<V>;
+      for (var i = 0; i < keys.length; i++) {
+        action(keys[i], values[i]);
+        if (modCount != _modificationCount) {
+          throw ConcurrentModificationError(this);
+        }
+      }
+      leaf = leaf.next;
+    }
+  }
+
+  @override
+  Map<K2, V2> map<K2, V2>(MapEntry<K2, V2> Function(K key, V value) transform) {
+    final result = <K2, V2>{};
+    final modCount = _modificationCount;
+    BTreeLeafNode<K, V>? leaf = _firstLeaf;
+    while (leaf != null) {
+      final keys = leaf.keys;
+      final values = leaf.values as List<V>;
+      for (var i = 0; i < keys.length; i++) {
+        final entry = transform(keys[i], values[i]);
+        if (modCount != _modificationCount) {
+          throw ConcurrentModificationError(this);
+        }
+        result[entry.key] = entry.value;
+      }
+      leaf = leaf.next;
+    }
+    return result;
   }
 
   @override
@@ -287,7 +435,7 @@ class BTreeMap<K, V> extends MapBase<K, V> {
   @override
   void clear() {
     if (isEmpty) return;
-    final root = BTreeLeafNode<K, V>();
+    final root = BTreeLeafNode<K, V>(values: _hasValues ? <V>[] : null);
     _root = root;
     _firstLeaf = root;
     _lastLeaf = root;
@@ -295,26 +443,33 @@ class BTreeMap<K, V> extends MapBase<K, V> {
   }
 
   /// Returns the key at the sorted [index] in `O(log n)` time.
+  ///
+  /// Throws a [RangeError] if [index] is negative or not less than [length].
   K keyAt(int index) {
     final (:leaf, :offset) = _leafAndOffsetAt(index);
     return leaf.keys[offset];
   }
 
   /// Returns the value at the sorted [index] in `O(log n)` time.
+  ///
+  /// Throws a [RangeError] if [index] is negative or not less than [length].
   V valueAt(int index) {
     final (:leaf, :offset) = _leafAndOffsetAt(index);
-    return leaf.values[offset];
+    return (leaf.values as List<V>)[offset];
   }
 
   /// Returns the entry at the sorted [index] in `O(log n)` time.
+  ///
+  /// Throws a [RangeError] if [index] is negative or not less than [length].
   MapEntry<K, V> entryAt(int index) {
     final (:leaf, :offset) = _leafAndOffsetAt(index);
-    return MapEntry(leaf.keys[offset], leaf.values[offset]);
+    return MapEntry(leaf.keys[offset], (leaf.values as List<V>)[offset]);
   }
 
   /// Returns the sorted 0-based rank of [key] in `O(log n)` time, or `-1` if
   /// not present.
-  int indexOfKey(K key) {
+  int indexOfKey(Object? key) {
+    if (key is! K) return -1;
     var rank = 0;
     var node = _root;
     while (node is BTreeInternalNode<K, V>) {
@@ -333,11 +488,13 @@ class BTreeMap<K, V> extends MapBase<K, V> {
   }
 
   /// Removes and returns the entry at the sorted [index] in `O(log n)` time.
+  ///
+  /// Throws a [RangeError] if [index] is negative or not less than [length].
   MapEntry<K, V> removeAt(int index) {
     RangeError.checkValidIndex(index, this, 'index', length);
-    final entry = _removeAt(_root, index);
+    final (:key, :value) = _removeAt(_root, index);
     _collapseRootIfNeeded();
-    return entry;
+    return MapEntry(key, value as V);
   }
 
   /// Removes and returns the entry with the smallest key in `O(log n)` time.
@@ -354,91 +511,208 @@ class BTreeMap<K, V> extends MapBase<K, V> {
 
   /// Returns the greatest key strictly less than [key] in `O(log n)` time, or
   /// `null` if no such key exists.
-  K? lowerKey(K key) => lowerEntry(key)?.key;
+  K? lowerKey(K key) {
+    final found = _predecessor(key, inclusive: false);
+    return found?.leaf.keys[found.index];
+  }
 
   /// Returns the entry with the greatest key strictly less than [key] in
   /// `O(log n)` time, or `null` if no such entry exists.
-  MapEntry<K, V>? lowerEntry(K key) => _predecessorEntry(key, inclusive: false);
+  MapEntry<K, V>? lowerEntry(K key) =>
+      _entryFrom(_predecessor(key, inclusive: false));
 
   /// Returns the greatest key less than or equal to [key] in `O(log n)` time,
   /// or `null` if no such key exists.
-  K? floorKey(K key) => floorEntry(key)?.key;
+  K? floorKey(K key) {
+    final found = _predecessor(key, inclusive: true);
+    return found?.leaf.keys[found.index];
+  }
 
   /// Returns the entry with the greatest key less than or equal to [key] in
   /// `O(log n)` time, or `null` if no such entry exists.
-  MapEntry<K, V>? floorEntry(K key) => _predecessorEntry(key, inclusive: true);
+  MapEntry<K, V>? floorEntry(K key) =>
+      _entryFrom(_predecessor(key, inclusive: true));
 
   /// Returns the least key greater than or equal to [key] in `O(log n)` time,
   /// or `null` if no such key exists.
-  K? ceilingKey(K key) => ceilingEntry(key)?.key;
+  K? ceilingKey(K key) {
+    final found = _successor(key, inclusive: true);
+    return found?.leaf.keys[found.index];
+  }
 
   /// Returns the entry with the least key greater than or equal to [key] in
   /// `O(log n)` time, or `null` if no such entry exists.
-  MapEntry<K, V>? ceilingEntry(K key) => _successorEntry(key, inclusive: true);
+  MapEntry<K, V>? ceilingEntry(K key) =>
+      _entryFrom(_successor(key, inclusive: true));
 
   /// Returns the least key strictly greater than [key] in `O(log n)` time, or
   /// `null` if no such key exists.
-  K? higherKey(K key) => higherEntry(key)?.key;
+  K? higherKey(K key) {
+    final found = _successor(key, inclusive: false);
+    return found?.leaf.keys[found.index];
+  }
 
   /// Returns the entry with the least key strictly greater than [key] in
   /// `O(log n)` time, or `null` if no such entry exists.
-  MapEntry<K, V>? higherEntry(K key) => _successorEntry(key, inclusive: false);
+  MapEntry<K, V>? higherEntry(K key) =>
+      _entryFrom(_successor(key, inclusive: false));
 
-  /// Returns a lazy iterable of entries within the bounds [[min], [max]] in
+  /// Returns a lazy iterable of entries with keys between [min] and [max] in
   /// `O(log n + k)` time.
+  ///
+  /// When [min] or [max] is `null`, that side of the range is unbounded (note
+  /// that `null` cannot be used as an explicit bound for nullable key types).
+  /// [includeMin] and [includeMax] control whether keys equal to [min] or [max]
+  /// are included. When [reversed] is `true`, entries are yielded in descending
+  /// key order. Returns an empty iterable if [min] is greater than [max].
   Iterable<MapEntry<K, V>> range({
     K? min,
     K? max,
     bool includeMin = true,
     bool includeMax = true,
     bool reversed = false,
-  }) => _BTreeRangeIterable<K, V, MapEntry<K, V>>(
+  }) => _BTreeEntryRangeIterable<K, V>(
     this,
     min: min,
     max: max,
     includeMin: includeMin,
     includeMax: includeMax,
     reversed: reversed,
-    extract: MapEntry.new,
   );
 
-  /// Returns a lazy iterable of keys within the bounds [[min], [max]] in
-  /// `O(log n + k)` time.
+  /// Returns a lazy iterable of keys between [min] and [max] in `O(log n + k)`
+  /// time.
+  ///
+  /// When [min] or [max] is `null`, that side of the range is unbounded (note
+  /// that `null` cannot be used as an explicit bound for nullable key types).
+  /// [includeMin] and [includeMax] control whether keys equal to [min] or [max]
+  /// are included. When [reversed] is `true`, keys are yielded in descending
+  /// order. Returns an empty iterable if [min] is greater than [max].
   Iterable<K> keysInRange({
     K? min,
     K? max,
     bool includeMin = true,
     bool includeMax = true,
     bool reversed = false,
-  }) => _BTreeRangeIterable<K, V, K>(
+  }) => _BTreeKeyRangeIterable<K, V>(
     this,
     min: min,
     max: max,
     includeMin: includeMin,
     includeMax: includeMax,
     reversed: reversed,
-    extract: (k, v) => k,
   );
 
-  /// Returns a lazy iterable of values whose keys are within the bounds
-  /// [[min], [max]] in `O(log n + k)` time.
+  /// Returns a lazy iterable of values whose keys are between [min] and [max]
+  /// in `O(log n + k)` time.
+  ///
+  /// When [min] or [max] is `null`, that side of the range is unbounded (note
+  /// that `null` cannot be used as an explicit bound for nullable key types).
+  /// [includeMin] and [includeMax] control whether keys equal to [min] or [max]
+  /// are included. When [reversed] is `true`, values are yielded in descending
+  /// key order. Returns an empty iterable if [min] is greater than [max].
   Iterable<V> valuesInRange({
     K? min,
     K? max,
     bool includeMin = true,
     bool includeMax = true,
     bool reversed = false,
-  }) => _BTreeRangeIterable<K, V, V>(
+  }) => _BTreeValueRangeIterable<K, V>(
     this,
     min: min,
     max: max,
     includeMin: includeMin,
     includeMax: includeMax,
     reversed: reversed,
-    extract: (k, v) => v,
   );
 
-  // --- Internal Helpers ---
+  // --- Internal Helpers (also used by BTreeSet) ---
+
+  K? _lookupKey(Object? key) {
+    final found = _findLeaf(key);
+    return found?.leaf.keys[found.index];
+  }
+
+  bool _addKeyIfAbsent(K key) {
+    final (:splitKey, :rightChild, :added) = _insert(
+      _root,
+      key,
+      null as V,
+      overwrite: false,
+    );
+    if (rightChild != null) {
+      _root = BTreeInternalNode<K, V>(
+        keys: <K>[splitKey as K],
+        children: <BTreeNode<K, V>>[_root, rightChild],
+        size: _root.size + rightChild.size,
+      );
+    }
+    return added;
+  }
+
+  bool _removeKeyBool(Object? key) {
+    if (key is! K || isEmpty) return false;
+    final (:removed, value: _) = _removeKey(_root, key);
+    if (!removed) return false;
+    _collapseRootIfNeeded();
+    return true;
+  }
+
+  K _removeKeyAt(int index) {
+    RangeError.checkValidIndex(index, this, 'index', length);
+    final (:key, value: _) = _removeAt(_root, index);
+    _collapseRootIfNeeded();
+    return key;
+  }
+
+  BTreeMap<K, V> _clone() {
+    BTreeLeafNode<K, V>? firstLeaf;
+    BTreeLeafNode<K, V>? prevLeaf;
+    BTreeNode<K, V> cloneNode(BTreeNode<K, V> node) {
+      switch (node) {
+        case BTreeLeafNode<K, V>():
+          final nodeValues = node.values;
+          final copy = BTreeLeafNode<K, V>(
+            keys: List<K>.of(node.keys),
+            values: nodeValues == null ? null : List<V>.of(nodeValues),
+          );
+          final prev = prevLeaf;
+          copy.previous = prev;
+          if (prev != null) {
+            prev.next = copy;
+          } else {
+            firstLeaf = copy;
+          }
+          prevLeaf = copy;
+          return copy;
+        case BTreeInternalNode<K, V>():
+          return BTreeInternalNode<K, V>(
+            keys: List<K>.of(node.keys),
+            children: [for (final child in node.children) cloneNode(child)],
+            size: node.size,
+          );
+      }
+    }
+
+    final root = cloneNode(_root);
+    return BTreeMap<K, V>._fromParts(
+      root: root,
+      firstLeaf: firstLeaf as BTreeLeafNode<K, V>,
+      lastLeaf: prevLeaf as BTreeLeafNode<K, V>,
+      comparator: comparator,
+      minEntries: minEntries,
+      maxEntries: maxEntries,
+      hasValues: _hasValues,
+    );
+  }
+
+  MapEntry<K, V>? _entryFrom(({BTreeLeafNode<K, V> leaf, int index})? found) {
+    if (found == null) return null;
+    return MapEntry(
+      found.leaf.keys[found.index],
+      (found.leaf.values as List<V>)[found.index],
+    );
+  }
 
   BTreeLeafNode<K, V> _descendToLeaf(K key) {
     var node = _root;
@@ -459,6 +733,34 @@ class BTreeMap<K, V> extends MapBase<K, V> {
     return null;
   }
 
+  int _lowerBoundIndex(K key) {
+    var rank = 0;
+    var node = _root;
+    while (node is BTreeInternalNode<K, V>) {
+      final childIndex = comparator.binarySearchUpper(node.keys, key);
+      for (var i = 0; i < childIndex; i++) {
+        rank += node.children[i].size;
+      }
+      node = node.children[childIndex];
+    }
+    final leaf = node as BTreeLeafNode<K, V>;
+    return rank + comparator.binarySearchLower(leaf.keys, key);
+  }
+
+  int _upperBoundIndex(K key) {
+    var rank = 0;
+    var node = _root;
+    while (node is BTreeInternalNode<K, V>) {
+      final childIndex = comparator.binarySearchUpper(node.keys, key);
+      for (var i = 0; i < childIndex; i++) {
+        rank += node.children[i].size;
+      }
+      node = node.children[childIndex];
+    }
+    final leaf = node as BTreeLeafNode<K, V>;
+    return rank + comparator.binarySearchUpper(leaf.keys, key);
+  }
+
   ({BTreeLeafNode<K, V> leaf, int offset}) _leafAndOffsetAt(int index) {
     RangeError.checkValidIndex(index, this, 'index', length);
     var remaining = index;
@@ -475,34 +777,40 @@ class BTreeMap<K, V> extends MapBase<K, V> {
     return (leaf: node as BTreeLeafNode<K, V>, offset: remaining);
   }
 
-  MapEntry<K, V>? _predecessorEntry(K key, {required bool inclusive}) {
+  ({BTreeLeafNode<K, V> leaf, int index})? _predecessor(
+    K key, {
+    required bool inclusive,
+  }) {
     if (isEmpty) return null;
     final leaf = _descendToLeaf(key);
     final index = inclusive
         ? comparator.binarySearchUpper(leaf.keys, key)
         : comparator.binarySearchLower(leaf.keys, key);
     if (index > 0) {
-      return MapEntry(leaf.keys[index - 1], leaf.values[index - 1]);
+      return (leaf: leaf, index: index - 1);
     }
     final previous = leaf.previous;
     if (previous != null) {
-      return MapEntry(previous.keys.last, previous.values.last);
+      return (leaf: previous, index: previous.keys.length - 1);
     }
     return null;
   }
 
-  MapEntry<K, V>? _successorEntry(K key, {required bool inclusive}) {
+  ({BTreeLeafNode<K, V> leaf, int index})? _successor(
+    K key, {
+    required bool inclusive,
+  }) {
     if (isEmpty) return null;
     final leaf = _descendToLeaf(key);
     final index = inclusive
         ? comparator.binarySearchLower(leaf.keys, key)
         : comparator.binarySearchUpper(leaf.keys, key);
     if (index < leaf.keys.length) {
-      return MapEntry(leaf.keys[index], leaf.values[index]);
+      return (leaf: leaf, index: index);
     }
     final next = leaf.next;
     if (next != null) {
-      return MapEntry(next.keys.first, next.values.first);
+      return (leaf: next, index: 0);
     }
     return null;
   }
@@ -510,25 +818,33 @@ class BTreeMap<K, V> extends MapBase<K, V> {
   ({bool added, K? splitKey, BTreeNode<K, V>? rightChild}) _insert(
     BTreeNode<K, V> node,
     K key,
-    V value,
-  ) {
+    V value, {
+    required bool overwrite,
+  }) {
     if (node is BTreeLeafNode<K, V>) {
       final index = comparator.binarySearchLower(node.keys, key);
       if (index < node.keys.length && comparator(node.keys[index], key) == 0) {
-        node.keys[index] = key;
-        node.values[index] = value;
+        if (overwrite) {
+          node.values?[index] = value;
+        }
         return (added: false, splitKey: null, rightChild: null);
       }
       node.keys.insert(index, key);
-      node.values.insert(index, value);
+      final values = node.values;
+      if (values != null) {
+        values.insert(index, value);
+      }
       _modificationCount++;
       if (node.keys.length > maxEntries) {
         final mid = node.keys.length ~/ 2;
-        final right = BTreeLeafNode<K, V>();
-        right.keys.addAll(node.keys.sublist(mid));
-        right.values.addAll(node.values.sublist(mid));
+        final rightKeys = node.keys.sublist(mid);
         node.keys.length = mid;
-        node.values.length = mid;
+        List<V>? rightValues;
+        if (values != null) {
+          rightValues = values.sublist(mid);
+          values.length = mid;
+        }
+        final right = BTreeLeafNode<K, V>(keys: rightKeys, values: rightValues);
         right.next = node.next;
         right.previous = node;
         node.next?.previous = right;
@@ -545,6 +861,7 @@ class BTreeMap<K, V> extends MapBase<K, V> {
       internal.children[childIndex],
       key,
       value,
+      overwrite: overwrite,
     );
     if (added) internal.size++;
     if (rightChild == null) {
@@ -556,13 +873,16 @@ class BTreeMap<K, V> extends MapBase<K, V> {
     if (internal.children.length > maxEntries) {
       final mid = internal.keys.length ~/ 2;
       final promotedKey = internal.keys[mid];
-      final right = BTreeInternalNode<K, V>();
-      right.keys.addAll(internal.keys.sublist(mid + 1));
-      right.children.addAll(internal.children.sublist(mid + 1));
+      final rightKeys = internal.keys.sublist(mid + 1);
+      final rightChildren = internal.children.sublist(mid + 1);
       internal.keys.length = mid;
       internal.children.length = mid + 1;
       internal.size = _sumSizes(internal.children);
-      right.size = _sumSizes(right.children);
+      final right = BTreeInternalNode<K, V>(
+        keys: rightKeys,
+        children: rightChildren,
+        size: _sumSizes(rightChildren),
+      );
       return (added: added, splitKey: promotedKey, rightChild: right);
     }
     return (added: added, splitKey: null, rightChild: null);
@@ -581,7 +901,7 @@ class BTreeMap<K, V> extends MapBase<K, V> {
       final index = comparator.binarySearchLower(node.keys, key);
       if (index < node.keys.length && comparator(node.keys[index], key) == 0) {
         node.keys.removeAt(index);
-        final value = node.values.removeAt(index);
+        final value = node.values?.removeAt(index);
         _modificationCount++;
         return (removed: true, value: value);
       }
@@ -597,12 +917,12 @@ class BTreeMap<K, V> extends MapBase<K, V> {
     return (removed: true, value: value);
   }
 
-  MapEntry<K, V> _removeAt(BTreeNode<K, V> node, int index) {
+  ({K key, V? value}) _removeAt(BTreeNode<K, V> node, int index) {
     if (node is BTreeLeafNode<K, V>) {
       final key = node.keys.removeAt(index);
-      final value = node.values.removeAt(index);
+      final value = node.values?.removeAt(index);
       _modificationCount++;
-      return MapEntry(key, value);
+      return (key: key, value: value);
     }
 
     final internal = node as BTreeInternalNode<K, V>;
@@ -614,10 +934,10 @@ class BTreeMap<K, V> extends MapBase<K, V> {
       remaining -= childSize;
       childIndex++;
     }
-    final entry = _removeAt(internal.children[childIndex], remaining);
+    final result = _removeAt(internal.children[childIndex], remaining);
     internal.size--;
     _rebalanceChild(internal, childIndex);
-    return entry;
+    return result;
   }
 
   void _rebalanceChild(BTreeInternalNode<K, V> parent, int childIndex) {
@@ -628,7 +948,11 @@ class BTreeMap<K, V> extends MapBase<K, V> {
         final left = parent.children[childIndex - 1] as BTreeLeafNode<K, V>;
         if (left.keys.length > minEntries) {
           child.keys.insert(0, left.keys.removeLast());
-          child.values.insert(0, left.values.removeLast());
+          final leftValues = left.values;
+          final childValues = child.values;
+          if (leftValues != null && childValues != null) {
+            childValues.insert(0, leftValues.removeLast());
+          }
           parent.keys[childIndex - 1] = child.keys.first;
           return;
         }
@@ -637,7 +961,11 @@ class BTreeMap<K, V> extends MapBase<K, V> {
         final right = parent.children[childIndex + 1] as BTreeLeafNode<K, V>;
         if (right.keys.length > minEntries) {
           child.keys.add(right.keys.removeAt(0));
-          child.values.add(right.values.removeAt(0));
+          final rightValues = right.values;
+          final childValues = child.values;
+          if (rightValues != null && childValues != null) {
+            childValues.add(rightValues.removeAt(0));
+          }
           parent.keys[childIndex] = right.keys.first;
           return;
         }
@@ -696,7 +1024,11 @@ class BTreeMap<K, V> extends MapBase<K, V> {
     BTreeLeafNode<K, V> right,
   ) {
     left.keys.addAll(right.keys);
-    left.values.addAll(right.values);
+    final leftValues = left.values;
+    final rightValues = right.values;
+    if (leftValues != null && rightValues != null) {
+      leftValues.addAll(rightValues);
+    }
     left.next = right.next;
     right.next?.previous = left;
     if (identical(right, _lastLeaf)) _lastLeaf = left;
@@ -753,7 +1085,7 @@ extension BTreeMapExtension<K, V> on Map<K, V> {
   );
 }
 
-final class _BTreeRangeIterable<K, V, T> extends IterableBase<T> {
+sealed class _BTreeRangeIterable<K, V, T> extends IterableBase<T> {
   new(
     this._map, {
     this.min,
@@ -761,7 +1093,6 @@ final class _BTreeRangeIterable<K, V, T> extends IterableBase<T> {
     this.includeMin = true,
     this.includeMax = true,
     this.reversed = false,
-    required this.extract,
   });
 
   final BTreeMap<K, V> _map;
@@ -770,7 +1101,89 @@ final class _BTreeRangeIterable<K, V, T> extends IterableBase<T> {
   final bool includeMin;
   final bool includeMax;
   final bool reversed;
-  final T Function(K key, V value) extract;
+
+  T _extract(BTreeLeafNode<K, V> leaf, int index);
+
+  ({int start, int end}) _bounds() {
+    final total = _map.length;
+    if (total == 0) return (start: 0, end: 0);
+    final minKey = min;
+    final maxKey = max;
+    if (minKey == null && maxKey == null) {
+      return (start: 0, end: total);
+    }
+    final start = minKey == null
+        ? 0
+        : includeMin
+        ? _map._lowerBoundIndex(minKey)
+        : _map._upperBoundIndex(minKey);
+    final end = maxKey == null
+        ? total
+        : includeMax
+        ? _map._upperBoundIndex(maxKey)
+        : _map._lowerBoundIndex(maxKey);
+    if (start >= end) return (start: 0, end: 0);
+    return (start: start, end: end);
+  }
+
+  @override
+  int get length {
+    final (:start, :end) = _bounds();
+    return end - start;
+  }
+
+  @override
+  bool get isEmpty {
+    final (:start, :end) = _bounds();
+    return start == end;
+  }
+
+  @override
+  bool get isNotEmpty {
+    final (:start, :end) = _bounds();
+    return start < end;
+  }
+
+  @override
+  T get first {
+    final (:start, :end) = _bounds();
+    if (start == end) throw StateError('No element');
+    final target = reversed ? end - 1 : start;
+    if (target == 0) return _extract(_map._firstLeaf, 0);
+    if (target == _map.length - 1) {
+      final lastLeaf = _map._lastLeaf;
+      return _extract(lastLeaf, lastLeaf.keys.length - 1);
+    }
+    final (:leaf, :offset) = _map._leafAndOffsetAt(target);
+    return _extract(leaf, offset);
+  }
+
+  @override
+  T get last {
+    final (:start, :end) = _bounds();
+    if (start == end) throw StateError('No element');
+    final target = reversed ? start : end - 1;
+    if (target == 0) return _extract(_map._firstLeaf, 0);
+    if (target == _map.length - 1) {
+      final lastLeaf = _map._lastLeaf;
+      return _extract(lastLeaf, lastLeaf.keys.length - 1);
+    }
+    final (:leaf, :offset) = _map._leafAndOffsetAt(target);
+    return _extract(leaf, offset);
+  }
+
+  @override
+  T elementAt(int index) {
+    RangeError.checkNotNegative(index, 'index');
+    final (:start, :end) = _bounds();
+    final count = end - start;
+    if (index >= count) {
+      throw RangeError.index(index, this, 'index', null, count);
+    }
+    final target = reversed ? end - 1 - index : start + index;
+    final (:leaf, :offset) = _map._leafAndOffsetAt(target);
+    return _extract(leaf, offset);
+  }
 
   @override
   Iterator<T> get iterator => _BTreeRangeIterator<K, V, T>(
@@ -780,8 +1193,70 @@ final class _BTreeRangeIterable<K, V, T> extends IterableBase<T> {
     includeMin: includeMin,
     includeMax: includeMax,
     reversed: reversed,
-    extract: extract,
+    extract: _extract,
   );
+}
+
+final class _BTreeKeyRangeIterable<K, V> extends _BTreeRangeIterable<K, V, K> {
+  new(
+    super._map, {
+    super.min,
+    super.max,
+    super.includeMin,
+    super.includeMax,
+    super.reversed,
+  });
+
+  @override
+  K _extract(BTreeLeafNode<K, V> leaf, int index) => leaf.keys[index];
+
+  @override
+  bool contains(Object? element) {
+    if (element is! K) return false;
+    final minKey = min;
+    if (minKey != null) {
+      final cmp = _map.comparator(element, minKey);
+      if (cmp < 0 || (cmp == 0 && !includeMin)) return false;
+    }
+    final maxKey = max;
+    if (maxKey != null) {
+      final cmp = _map.comparator(element, maxKey);
+      if (cmp > 0 || (cmp == 0 && !includeMax)) return false;
+    }
+    return _map.containsKey(element);
+  }
+}
+
+final class _BTreeValueRangeIterable<K, V>
+    extends _BTreeRangeIterable<K, V, V> {
+  new(
+    super._map, {
+    super.min,
+    super.max,
+    super.includeMin,
+    super.includeMax,
+    super.reversed,
+  });
+
+  @override
+  V _extract(BTreeLeafNode<K, V> leaf, int index) =>
+      (leaf.values as List<V>)[index];
+}
+
+final class _BTreeEntryRangeIterable<K, V>
+    extends _BTreeRangeIterable<K, V, MapEntry<K, V>> {
+  new(
+    super._map, {
+    super.min,
+    super.max,
+    super.includeMin,
+    super.includeMax,
+    super.reversed,
+  });
+
+  @override
+  MapEntry<K, V> _extract(BTreeLeafNode<K, V> leaf, int index) =>
+      MapEntry(leaf.keys[index], (leaf.values as List<V>)[index]);
 }
 
 final class _BTreeRangeIterator<K, V, T> implements Iterator<T> {
@@ -799,8 +1274,10 @@ final class _BTreeRangeIterator<K, V, T> implements Iterator<T> {
       _index = 0;
       return;
     }
-    if (min != null && max != null) {
-      final cmp = _map.comparator(min as K, max as K);
+    final minKey = min;
+    final maxKey = max;
+    if (minKey != null && maxKey != null) {
+      final cmp = _map.comparator(minKey, maxKey);
       if (cmp > 0 || (cmp == 0 && (!includeMin || !includeMax))) {
         _leaf = null;
         _index = 0;
@@ -808,14 +1285,14 @@ final class _BTreeRangeIterator<K, V, T> implements Iterator<T> {
       }
     }
     if (!reversed) {
-      if (min == null) {
+      if (minKey == null) {
         _leaf = _map._firstLeaf;
         _index = 0;
       } else {
-        final leaf = _map._descendToLeaf(min as K);
+        final leaf = _map._descendToLeaf(minKey);
         final idx = includeMin
-            ? _map.comparator.binarySearchLower(leaf.keys, min as K)
-            : _map.comparator.binarySearchUpper(leaf.keys, min as K);
+            ? _map.comparator.binarySearchLower(leaf.keys, minKey)
+            : _map.comparator.binarySearchUpper(leaf.keys, minKey);
         if (idx < leaf.keys.length) {
           _leaf = leaf;
           _index = idx;
@@ -825,20 +1302,22 @@ final class _BTreeRangeIterator<K, V, T> implements Iterator<T> {
         }
       }
     } else {
-      if (max == null) {
-        _leaf = _map._lastLeaf;
-        _index = _leaf!.keys.length - 1;
+      if (maxKey == null) {
+        final lastLeaf = _map._lastLeaf;
+        _leaf = lastLeaf;
+        _index = lastLeaf.keys.length - 1;
       } else {
-        final leaf = _map._descendToLeaf(max as K);
+        final leaf = _map._descendToLeaf(maxKey);
         final pos = includeMax
-            ? _map.comparator.binarySearchUpper(leaf.keys, max as K)
-            : _map.comparator.binarySearchLower(leaf.keys, max as K);
+            ? _map.comparator.binarySearchUpper(leaf.keys, maxKey)
+            : _map.comparator.binarySearchLower(leaf.keys, maxKey);
         if (pos > 0) {
           _leaf = leaf;
           _index = pos - 1;
         } else {
-          _leaf = leaf.previous;
-          _index = _leaf == null ? -1 : _leaf!.keys.length - 1;
+          final previous = leaf.previous;
+          _leaf = previous;
+          _index = previous == null ? -1 : previous.keys.length - 1;
         }
       }
     }
@@ -850,7 +1329,7 @@ final class _BTreeRangeIterator<K, V, T> implements Iterator<T> {
   final bool includeMin;
   final bool includeMax;
   final bool reversed;
-  final T Function(K key, V value) extract;
+  final T Function(BTreeLeafNode<K, V> leaf, int index) extract;
   final int _expectedModCount;
 
   BTreeLeafNode<K, V>? _leaf;
@@ -867,19 +1346,16 @@ final class _BTreeRangeIterator<K, V, T> implements Iterator<T> {
     final leaf = _leaf;
     if (leaf == null) return false;
     if (!reversed) {
-      if (_index >= leaf.keys.length) {
-        _leaf = null;
-        return false;
-      }
       final key = leaf.keys[_index];
-      if (max != null) {
-        final cmp = _map.comparator(key, max as K);
+      final maxKey = max;
+      if (maxKey != null) {
+        final cmp = _map.comparator(key, maxKey);
         if (cmp > 0 || (cmp == 0 && !includeMax)) {
           _leaf = null;
           return false;
         }
       }
-      current = extract(key, leaf.values[_index]);
+      current = extract(leaf, _index);
       _index++;
       if (_index >= leaf.keys.length) {
         _leaf = leaf.next;
@@ -887,23 +1363,21 @@ final class _BTreeRangeIterator<K, V, T> implements Iterator<T> {
       }
       return true;
     } else {
-      if (_index < 0) {
-        _leaf = null;
-        return false;
-      }
       final key = leaf.keys[_index];
-      if (min != null) {
-        final cmp = _map.comparator(key, min as K);
+      final minKey = min;
+      if (minKey != null) {
+        final cmp = _map.comparator(key, minKey);
         if (cmp < 0 || (cmp == 0 && !includeMin)) {
           _leaf = null;
           return false;
         }
       }
-      current = extract(key, leaf.values[_index]);
+      current = extract(leaf, _index);
       _index--;
       if (_index < 0) {
-        _leaf = leaf.previous;
-        _index = _leaf == null ? -1 : _leaf!.keys.length - 1;
+        final previous = leaf.previous;
+        _leaf = previous;
+        _index = previous == null ? -1 : previous.keys.length - 1;
       }
       return true;
     }

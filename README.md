@@ -50,7 +50,7 @@ import 'package:more/collection.dart';
 // Combinatorics: combinations, permutations, and power sets
 ['a', 'b', 'c'].combinations(2); // [['a', 'b'], ['a', 'c'], ['b', 'c']]
 
-// Rich collections: Multimaps, BiMaps, BitLists, and Sorted/Ordered lists
+// Rich collections: B+Trees, R-Trees, Tries, Multimaps, BiMaps, BitLists, and Sorted/Ordered lists
 final multimap = ListMultimap<String, int>()
   ..add('even', 2)
   ..add('even', 4)
