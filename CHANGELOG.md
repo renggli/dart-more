@@ -1,6 +1,6 @@
 # Changelog
 
-## 4.10.0 (Unpublished)
+## 4.10.0
 
 - Dart 3.14 requirement.
 - Add a graph layout engine (`Graph.layout` and `GraphLayout` strategies):
@@ -14,7 +14,13 @@
   - Use the graph's default edge value as fallback weight/cost/capacity in weighted algorithms when no callback is provided.
 - Add order-statistic B+Tree collections (`BTreeMap` and `BTreeSet`).
 - Refactor `RTree` with linear (`RTree.linear`) and R*-tree (`RTree.rStar`) split algorithms alongside `RTree.guttman`, and introduce a typed `double`-based `Bounds` hierarchy.
+- Collection API additions, bug fixes, and performance optimizations across `BTreeMap`, `BTreeSet`, `BiMap`, `BitList`, `DisjointSet`, `FenwickTree`, `Multimap`, `Multiset`, `OrderedList`, `RTree`, `SortedList`, `Trie`, and `TypeMap`:
+  - Return live map views from `TypeMap.asMap()` and `Multiset.asMap()`, and add `TypeMap.removeInstance` and `TypeMap.clear`.
+  - Export `DisjointSetNode` and `TrieGetParts`, and widen `Trie` part type bound to `Comparable<Object?>`.
+  - Add `Bounds.unionArea` and `Bounds.intersectionArea`, enforce unmodifiable `ListBounds`, validate `RTree` parameters, and fix split/reinsert edge cases.
+  - Fix custom-equality, identity copy, slack-bit, range validation, and view mutation bugs across `BiMap`, `BitList`, `DisjointSet`, `FenwickTree`, `Multimap`, `Multiset`, `OrderedList`, `SortedList`, and `Trie`, alongside word-level and bulk-operation optimizations.
 - Add interactive web demos for the graph library and R-Tree spatial index.
+- Add agent skills (`skills/more-use-*-library`) for all 14 public sub-libraries.
 
 ## 4.9.0
 
