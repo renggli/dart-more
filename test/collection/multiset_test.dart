@@ -535,5 +535,92 @@ void main() {
       check(() => map.remove('a')).throws<UnsupportedError>();
       check(() => map.clear()).throws<UnsupportedError>();
     });
+    test('asMap is live view', () {
+      final set = Multiset<String>.of(['a']);
+      final view = set.asMap();
+      check(view).deepEquals({'a': 1});
+      set.add('b', 2);
+      check(view).deepEquals({'a': 1, 'b': 2});
+      set.remove('a');
+      check(view).deepEquals({'b': 2});
+    });
+    test('identity multiset operations and of()', () {
+      final a = _IdBox(1);
+      final b = _IdBox(1);
+      final id = Multiset<_IdBox>.identity()
+        ..add(a, 2)
+        ..add(b, 3);
+      check(id.length).equals(5);
+      check(id[a]).equals(2);
+      check(id[b]).equals(3);
+      check(id.containsAll([a, a, b, b, b])).isTrue();
+      check(id.containsAll([a, a, a])).isFalse();
+
+      // Copying identity multiset via of() sums equal elements cleanly.
+      final copy = Multiset<_IdBox>.of(id);
+      check(copy.length).equals(5);
+      check(copy[a]).equals(5);
+      check(copy.toList().length).equals(5);
+
+      // Default multiset containsAll against identity multiset.
+      final single = Multiset<_IdBox>.of([a]);
+      check(single.containsAll(id)).isFalse();
+
+      // Identity union/difference/intersection/combine preserve identity.
+      final other = Multiset<_IdBox>.identity()..add(a, 1);
+      check(id.union(other)[a]).equals(3);
+      check(id.union(other)[b]).equals(3);
+      check(id.difference(other)[a]).equals(1);
+      check(id.difference(other)[b]).equals(3);
+      check(id.intersection(other)[a]).equals(1);
+      check(id.intersection(other)[b]).equals(0);
+    });
+    test('of custom identity Set sums equal elements cleanly', () {
+      final a = _IdBox(1);
+      final b = _IdBox(1);
+      final set = Set<_IdBox>.identity()
+        ..add(a)
+        ..add(b);
+      final ms = Multiset<_IdBox>.of(set);
+      check(ms.length).equals(2);
+      check(ms[a]).equals(2);
+      check(ms.toList().length).equals(2);
+    });
+    test('first, last, single, elementAt, toSet, self addAll/removeAll', () {
+      final ms = Multiset<String>.of(['a', 'a', 'b', 'c', 'c', 'c']);
+      check(ms.first).equals('a');
+      check(ms.last).equals('c');
+      check(() => ms.single).throws<StateError>();
+      check(ms.elementAt(0)).equals('a');
+      check(ms.elementAt(1)).equals('a');
+      check(ms.elementAt(2)).equals('b');
+      check(ms.elementAt(5)).equals('c');
+      check(() => ms.elementAt(-1)).throws<RangeError>();
+      check(() => ms.elementAt(6)).throws<RangeError>();
+      check(ms.toSet()).deepEquals({'a', 'b', 'c'});
+
+      ms.addAll(ms);
+      check(ms.length).equals(12);
+      check(ms['a']).equals(4);
+      ms.removeAll(ms);
+      check(ms.isEmpty).isTrue();
+      check(() => ms.first).throws<StateError>();
+      check(() => ms.last).throws<StateError>();
+      check(() => ms.single).throws<StateError>();
+
+      ms.add('only');
+      check(ms.single).equals('only');
+    });
   });
+}
+
+class _IdBox {
+  new(this.id);
+  final int id;
+
+  @override
+  bool operator ==(Object other) => other is _IdBox && other.id == id;
+
+  @override
+  int get hashCode => id.hashCode;
 }
