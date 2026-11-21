@@ -333,4 +333,46 @@ void main() {
           .isFalse();
     });
   });
+
+  group('validation and edge cases', () {
+    test('constructor parameter validation', () {
+      check(() => RTree<int>.guttman(maxEntries: 1)).throws<ArgumentError>();
+      check(() => RTree<int>.guttman(minEntries: 0, maxEntries: 4))
+          .throws<ArgumentError>();
+      check(() => RTree<int>.guttman(minEntries: 3, maxEntries: 4))
+          .throws<ArgumentError>();
+      check(() => RTree<int>.rStar(reinsertFactor: -0.1))
+          .throws<ArgumentError>();
+      check(() => RTree<int>.rStar(reinsertFactor: 1.1))
+          .throws<ArgumentError>();
+      check(() => RTree<int>.rStar(reinsertFactor: double.nan))
+          .throws<ArgumentError>();
+
+      // maxEntries: 4 defaults minEntries to 2 cleanly.
+      final small = RTree<int>.rStar(maxEntries: 4);
+      check(small.minEntries).equals(2);
+      check(small.maxEntries).equals(4);
+      for (var i = 0; i < 20; i++) {
+        small.insert(Bounds.from2D(i.toDouble(), i.toDouble()), i);
+      }
+      check(small.length).equals(20);
+
+      // reinsertFactor: 0.0 disables reinsertion.
+      final noReinsert = RTree<int>.rStar(reinsertFactor: 0.0);
+      for (var i = 0; i < 20; i++) {
+        noReinsert.insert(Bounds.from2D(i.toDouble(), i.toDouble()), i);
+      }
+      check(noReinsert.length).equals(20);
+    });
+    test('nearest rejects negative or NaN maxDistance', () {
+      final tree = RTree<int>.rStar();
+      tree.insert(Bounds.from2D(0.0, 0.0), 1);
+      tree.insert(Bounds.from2D(1.0, 1.0), 2);
+      final q = Bounds.from2D(0.0, 0.0);
+      check(tree.nearest(q, maxDistance: -5.0)).isEmpty();
+      check(tree.nearest(q, maxDistance: double.negativeInfinity)).isEmpty();
+      check(tree.nearest(q, maxDistance: double.nan)).isEmpty();
+      check(tree.nearest(q, k: 0)).isEmpty();
+    });
+  });
 }

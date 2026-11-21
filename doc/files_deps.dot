@@ -283,8 +283,8 @@ digraph {
   279 [label="iterable/mixins/unmodifiable.dart", shape=box, style="rounded,filled", fillcolor="#ffffff"];
   280 [label="bit.dart", shape=box, style="rounded,filled", fillcolor="#ffffff"];
   281 [label="rtree/linear.dart", shape=box, style="rounded,filled", fillcolor="#ffffff"];
-  282 [label="rtree/guttman.dart", shape=box, style="rounded,filled", fillcolor="#ffffff"];
-  283 [label="rtree/utils.dart", shape=box, style="rounded,filled", fillcolor="#ffffff"];
+  282 [label="rtree/utils.dart", shape=box, style="rounded,filled", fillcolor="#ffffff"];
+  283 [label="rtree/guttman.dart", shape=box, style="rounded,filled", fillcolor="#ffffff"];
   284 [label="rtree/bounds/list.dart", shape=box, style="rounded,filled", fillcolor="#ffffff"];
   285 [label="rtree/bounds/point.dart", shape=box, style="rounded,filled", fillcolor="#ffffff"];
   286 [label="rtree/bounds/rectangle.dart", shape=box, style="rounded,filled", fillcolor="#ffffff"];
@@ -437,7 +437,6 @@ digraph {
   12 -> 69 [arrowsize="0.8"];
   14 -> 185 [arrowsize="0.8"];
   14 -> 280 [arrowsize="0.8"];
-  14 -> 53 [arrowsize="0.8"];
   15 -> 243 [arrowsize="0.8"];
   15 -> 251 [arrowsize="0.8"];
   15 -> 274 [arrowsize="0.8"];
@@ -470,7 +469,7 @@ digraph {
   54 -> 98 [arrowsize="0.8"];
   54 -> 55 [arrowsize="0.8"];
   54 -> 56 [arrowsize="0.8"];
-  54 -> 282 [arrowsize="0.8"];
+  54 -> 283 [arrowsize="0.8"];
   54 -> 281 [arrowsize="0.8"];
   54 -> 57 [arrowsize="0.8"];
   54 -> 287 [arrowsize="0.8"];
@@ -1182,17 +1181,16 @@ digraph {
   271 -> 270 [arrowsize="0.8"];
   271 -> 272 [arrowsize="0.8"];
   281 -> 54 [arrowsize="0.8"];
-  281 -> 55 [arrowsize="0.8"];
   281 -> 56 [arrowsize="0.8"];
   281 -> 57 [arrowsize="0.8"];
-  282 -> 20 [arrowsize="0.8"];
-  282 -> 54 [arrowsize="0.8"];
+  281 -> 282 [arrowsize="0.8"];
   282 -> 55 [arrowsize="0.8"];
   282 -> 56 [arrowsize="0.8"];
-  282 -> 57 [arrowsize="0.8"];
-  282 -> 283 [arrowsize="0.8"];
+  283 -> 54 [arrowsize="0.8"];
   283 -> 55 [arrowsize="0.8"];
   283 -> 56 [arrowsize="0.8"];
+  283 -> 57 [arrowsize="0.8"];
+  283 -> 282 [arrowsize="0.8"];
   284 -> 55 [arrowsize="0.8"];
   285 -> 55 [arrowsize="0.8"];
   286 -> 55 [arrowsize="0.8"];
@@ -1200,7 +1198,7 @@ digraph {
   287 -> 55 [arrowsize="0.8"];
   287 -> 56 [arrowsize="0.8"];
   287 -> 57 [arrowsize="0.8"];
-  287 -> 283 [arrowsize="0.8"];
+  287 -> 282 [arrowsize="0.8"];
   289 -> 288 [arrowsize="0.8"];
   290 -> 291 [arrowsize="0.8"];
   290 -> 292 [arrowsize="0.8"];

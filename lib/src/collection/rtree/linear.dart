@@ -1,9 +1,9 @@
 import '../rtree.dart';
-import 'bounds.dart';
 import 'entry.dart';
 import 'node.dart';
+import 'utils.dart';
 
-/// Linear R-Tree described by Guttman (1984) with an _O(n)_ split algorithm.
+/// Linear R-Tree described by Guttman (1984) with an `O(M)` split algorithm.
 class LinearRTree<T> extends RTree<T> {
   new({super.minEntries, super.maxEntries});
 
@@ -11,7 +11,12 @@ class LinearRTree<T> extends RTree<T> {
   RTreeNode<T> chooseLeaf(RTreeEntry<T> entry) {
     var node = root;
     while (!node.isLeaf) {
-      node = _chooseEntry(node.entries, entry.bounds).child!;
+      final child = entryWithLeastAreaEnlargement(
+        node.entries,
+        entry.bounds,
+      ).child;
+      if (child == null) break;
+      node = child;
     }
     return node;
   }
@@ -19,11 +24,16 @@ class LinearRTree<T> extends RTree<T> {
   @override
   RTreeNode<T>? overflowStrategy(RTreeNode<T> node) {
     final entries = node.entries.toList();
-    final seeds = _linearPickSeeds(entries);
-    final seed1 = seeds[0], seed2 = seeds[1];
-    entries
-      ..remove(seed1)
-      ..remove(seed2);
+    final (:first, :second) = _linearPickSeeds(entries);
+    final seed1 = entries[first];
+    final seed2 = entries[second];
+    if (first > second) {
+      entries.removeAt(first);
+      entries.removeAt(second);
+    } else {
+      entries.removeAt(second);
+      entries.removeAt(first);
+    }
     final group1 = [seed1];
     var bounds1 = seed1.bounds;
     final group2 = [seed2];
@@ -42,97 +52,50 @@ class LinearRTree<T> extends RTree<T> {
       }
 
       final entry = entries.removeLast();
-      final uBounds1 = bounds1.union(entry.bounds);
-      final uBounds2 = bounds2.union(entry.bounds);
-      final enlargement1 = uBounds1.area - bounds1.area;
-      final enlargement2 = uBounds2.area - bounds2.area;
+      final area1 = bounds1.area;
+      final area2 = bounds2.area;
+      final enlargement1 = bounds1.unionArea(entry.bounds) - area1;
+      final enlargement2 = bounds2.unionArea(entry.bounds) - area2;
 
-      late List<RTreeEntry<T>> group;
+      final bool addToGroup1;
       if (enlargement1 == enlargement2) {
-        final area1 = bounds1.area;
-        final area2 = bounds2.area;
         if (area1 == area2) {
-          group = group1.length < group2.length ? group1 : group2;
+          addToGroup1 = group1.length < group2.length;
         } else {
-          group = area1 < area2 ? group1 : group2;
+          addToGroup1 = area1 < area2;
         }
       } else {
-        group = enlargement1 < enlargement2 ? group1 : group2;
+        addToGroup1 = enlargement1 < enlargement2;
       }
 
-      group.add(entry);
-      if (group == group1) {
-        bounds1 = uBounds1;
+      if (addToGroup1) {
+        group1.add(entry);
+        bounds1 = bounds1.union(entry.bounds);
       } else {
-        bounds2 = uBounds2;
+        group2.add(entry);
+        bounds2 = bounds2.union(entry.bounds);
       }
     }
     return splitNode(node, group1, group2);
   }
 
-  @override
-  void adjustTree(RTreeNode<T> node, RTreeNode<T>? splitNode) {
-    while (!node.isRoot) {
-      final parent = node.parent!;
-      node.parentEntry!.bounds = Bounds.unionAll(
-        node.entries.map((entry) => entry.bounds),
-      );
-      if (splitNode != null) {
-        final bounds = Bounds.unionAll(
-          splitNode.entries.map((entry) => entry.bounds),
-        );
-        final entry = RTreeEntry<T>(bounds, child: splitNode);
-        parent.entries.add(entry);
-        if (parent.entries.length > maxEntries) {
-          splitNode = overflowStrategy(parent);
-        } else {
-          splitNode = null;
-        }
-      }
-      node = parent;
-    }
-    if (splitNode != null) {
-      growTree([node, splitNode]);
-    }
-  }
-
-  RTreeEntry<T> _chooseEntry(List<RTreeEntry<T>> entries, Bounds bounds) {
-    var minIndex = 0;
-    var minArea = double.infinity;
-    var minEnlargement = double.infinity;
-    for (var i = 0; i < entries.length; i++) {
-      final entry = entries[i];
-      final beforeArea = entry.bounds.area;
-      final afterArea = entry.bounds.union(bounds).area;
-      final enlargement = afterArea - beforeArea;
-      if (enlargement < minEnlargement ||
-          (enlargement == minEnlargement && beforeArea < minArea)) {
-        minIndex = i;
-        minArea = beforeArea;
-        minEnlargement = enlargement;
-      }
-    }
-    return entries[minIndex];
-  }
-
-  List<RTreeEntry<T>> _linearPickSeeds(List<RTreeEntry<T>> entries) {
+  ({int first, int second}) _linearPickSeeds(List<RTreeEntry<T>> entries) {
     final dimensions = entries.first.bounds.length;
-    var maxNormalizedSeparation = -1.0;
-    var bestSeed1 = entries[0];
-    var bestSeed2 = entries[1];
+    var maxNormalizedSeparation = double.negativeInfinity;
+    var bestSeed1 = 0;
+    var bestSeed2 = 1;
 
     for (var d = 0; d < dimensions; d++) {
       var lowestUpperBound = entries[0].bounds.getMax(d);
       var highestLowerBound = entries[0].bounds.getMin(d);
-      var seed1 = entries[0];
-      var seed2 = entries[0];
+      var seed1 = 0;
+      var seed2 = 0;
 
       var minCoord = entries[0].bounds.getMin(d);
       var maxCoord = entries[0].bounds.getMax(d);
 
       for (var i = 1; i < entries.length; i++) {
-        final entry = entries[i];
-        final b = entry.bounds;
+        final b = entries[i].bounds;
         final bMin = b.getMin(d);
         final bMax = b.getMax(d);
         if (bMin < minCoord) minCoord = bMin;
@@ -140,30 +103,26 @@ class LinearRTree<T> extends RTree<T> {
 
         if (bMax < lowestUpperBound) {
           lowestUpperBound = bMax;
-          seed1 = entry;
+          seed1 = i;
         }
         if (bMin > highestLowerBound) {
           highestLowerBound = bMin;
-          seed2 = entry;
+          seed2 = i;
         }
       }
 
       final width = maxCoord - minCoord;
       final separation = width > 0
-          ? (highestLowerBound - lowestUpperBound).abs() / width
+          ? (highestLowerBound - lowestUpperBound) / width
           : 0.0;
 
-      if (separation > maxNormalizedSeparation) {
+      if (seed1 != seed2 && separation > maxNormalizedSeparation) {
         maxNormalizedSeparation = separation;
         bestSeed1 = seed1;
         bestSeed2 = seed2;
       }
     }
 
-    if (bestSeed1 == bestSeed2) {
-      bestSeed1 = entries[0];
-      bestSeed2 = entries[1];
-    }
-    return [bestSeed1, bestSeed2];
+    return (first: bestSeed1, second: bestSeed2);
   }
 }

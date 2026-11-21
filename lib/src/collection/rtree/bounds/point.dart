@@ -37,6 +37,24 @@ class PointBounds extends Bounds {
 
   @override
   double get maxY => y;
+
+  @override
+  double get width => 0.0;
+
+  @override
+  double get height => 0.0;
+
+  @override
+  double get area => 0.0;
+
+  @override
+  double get margin => 0.0;
+
+  @override
+  List<double> get edges => const [0.0, 0.0];
+
+  @override
+  List<double> get center => [x, y];
 }
 
 /// Extension on [math.Point<double>] to convert to [Bounds].

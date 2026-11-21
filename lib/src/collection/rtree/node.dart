@@ -31,8 +31,7 @@ class RTreeNode<T> {
   bool get isRoot => parent == null;
 
   /// The entries in the parent node (sibling entries of this node).
-  Iterable<RTreeEntry<T>> get siblingEntries =>
-      parent?.entries ?? <RTreeEntry<T>>[];
+  Iterable<RTreeEntry<T>> get siblingEntries => parent?.entries ?? const [];
 
   /// The entry in the parent node pointing to this child node.
   RTreeEntry<T>? get parentEntry {
@@ -50,9 +49,9 @@ class RTreeNode<T> {
       : Bounds.unionAll(entries.map((entry) => entry.bounds));
 
   /// Traverses the tree starting from a given node in depth-first order,
-  /// calling the given function on each node. A condition function may
-  /// optionally be passed to filter which nodes get traversed. If condition
-  /// returns False, then neither the node nor any of its descendants will be
+  /// calling the given function on each node. A [condition] function may
+  /// optionally be passed to filter which nodes get traversed. If [condition]
+  /// returns `false`, then neither the node nor any of its descendants will be
   /// traversed.
   Iterable<R> traverse<R>(
     Map1<RTreeNode<T>, Iterable<R>> callback, {
@@ -62,16 +61,21 @@ class RTreeNode<T> {
       yield* callback(this);
       if (!isLeaf) {
         for (final entry in entries) {
-          yield* entry.child!.traverse(callback, condition: condition);
+          final child = entry.child;
+          if (child != null) {
+            yield* child.traverse(callback, condition: condition);
+          }
         }
       }
     }
   }
 
+  /// Updates the [parent] pointer of all direct child nodes to point to this
+  /// node.
   void fixChildren() {
     if (!isLeaf) {
       for (final entry in entries) {
-        entry.child!.parent = this;
+        entry.child?.parent = this;
       }
     }
   }

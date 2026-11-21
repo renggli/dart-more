@@ -359,5 +359,26 @@ void main() {
       check(bListBox.min).deepEquals([1.0, 2.0]);
       check(bListBox.max).deepEquals([3.0, 4.0]);
     });
+    test('unionArea, intersectionArea, overflow-safe center, and unmodifiable ListBounds', () {
+      final a = Bounds.from2D(0.0, 0.0, 10.0, 10.0);
+      final b = Bounds.from2D(5.0, 5.0, 15.0, 15.0);
+      final c = Bounds.from2D(20.0, 20.0, 30.0, 30.0);
+      check(a.unionArea(b)).equals(225.0);
+      check(a.intersectionArea(b)).equals(25.0);
+      check(a.intersectionArea(c)).equals(0.0);
+
+      final huge = Bounds.from2D(
+        double.maxFinite * 0.75,
+        double.maxFinite * 0.75,
+        double.maxFinite,
+        double.maxFinite,
+      );
+      check(huge.center[0].isFinite).isTrue();
+      check(huge.center[1].isFinite).isTrue();
+
+      final nd = Bounds.fromList([1.0, 2.0, 3.0], [4.0, 5.0, 6.0]);
+      check(() => nd.min[0] = 99.0).throws<UnsupportedError>();
+      check(() => nd.max[0] = 99.0).throws<UnsupportedError>();
+    });
   });
 }

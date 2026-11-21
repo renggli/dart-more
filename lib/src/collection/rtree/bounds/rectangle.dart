@@ -37,6 +37,24 @@ class RectangleBounds extends Bounds {
     1 => maxY,
     _ => throw RangeError.range(dimension, 0, 1, 'dimension'),
   };
+
+  @override
+  double get width => maxX - minX;
+
+  @override
+  double get height => maxY - minY;
+
+  @override
+  double get area => (maxX - minX) * (maxY - minY);
+
+  @override
+  double get margin => (maxX - minX) + (maxY - minY);
+
+  @override
+  List<double> get center => [
+    minX + 0.5 * (maxX - minX),
+    minY + 0.5 * (maxY - minY),
+  ];
 }
 
 /// Extension on [math.Rectangle<double>] to convert to [Bounds].

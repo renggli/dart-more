@@ -1,3 +1,5 @@
+import 'dart:math' as math;
+
 import 'package:collection/collection.dart' show PriorityQueue;
 import 'package:meta/meta.dart';
 
@@ -29,8 +31,8 @@ import 'rtree/rstar.dart';
 /// ### Sizing [minEntries] and [maxEntries]
 ///
 /// - The node capacity [maxEntries] (`M`) defines how many child entries a node
-///   can store before splitting. [minEntries] (`m`) defines the underflow
-///   threshold, requiring `1 <= m <= M ~/ 2`.
+///   can store before splitting (`M >= 2`). [minEntries] (`m`) defines the
+///   underflow threshold (`1 <= m <= M ~/ 2`).
 /// - Default values (`m = 4`, `M = 8`) offer a balanced starting point for
 ///   in-memory trees with interactive updates.
 /// - **Read-heavy / static indexes**: Use larger capacities such as `M = 16` to `64`
@@ -48,6 +50,9 @@ abstract class RTree<T> with Iterable<T> {
   /// Use this variant when insertions are frequent and the reinsertion overhead of
   /// [RTree.rStar] is undesirable, with small-to-moderate [maxEntries] (`M <= 32`).
   /// Set [minEntries] to approximately `0.4 * M` to `0.5 * M`.
+  ///
+  /// Throws an [ArgumentError] if [maxEntries] is less than `2` or [minEntries]
+  /// is not in `1..(maxEntries ~/ 2)`.
   factory guttman({int? minEntries, int? maxEntries}) = GuttmanTree<T>;
 
   /// Constructs a Guttman R-Tree using the linear split algorithm.
@@ -59,9 +64,13 @@ abstract class RTree<T> with Iterable<T> {
   /// or when using large [maxEntries] (`M >= 32`) where quadratic or topological
   /// split costs would be prohibitive. Set [minEntries] to approximately
   /// `0.3 * M` to `0.4 * M`.
+  ///
+  /// Throws an [ArgumentError] if [maxEntries] is less than `2` or [minEntries]
+  /// is not in `1..(maxEntries ~/ 2)`.
   factory linear({int? minEntries, int? maxEntries}) = LinearRTree<T>;
 
-  /// Constructs an R*-Tree using topological split, overlap minimization, and forced reinsertion.
+  /// Constructs an R*-Tree using topological split, overlap minimization, and
+  /// forced reinsertion.
   ///
   /// R*-Tree evaluates split axes by margin (perimeter), picks the distribution
   /// that minimizes bounding box overlap, and dynamically re-inserts a fraction of
@@ -72,18 +81,38 @@ abstract class RTree<T> with Iterable<T> {
   /// queries and k-NN lookups than [RTree.guttman] or [RTree.linear].
   /// Recommended configuration is [minEntries] set to `0.3 * M` to `0.4 * M`
   /// (e.g. `m = 4, M = 10` or `m = 8, M = 20`).
+  ///
+  /// Throws an [ArgumentError] if [maxEntries], [minEntries], or
+  /// [reinsertFactor] is invalid.
   factory rStar({int? minEntries, int? maxEntries, double? reinsertFactor}) =
       RStarTree<T>;
 
-  /// Constructs a Guttman R-Tree described in this paper:
-  /// http://www-db.deis.unibo.it/courses/SI-LS/papers/Gut84.pdf
+  /// Constructs a Guttman R-Tree described in Guttman (1984).
   @Deprecated('Use RTree.guttman instead')
   factory guttmann({int? minEntries, int? maxEntries}) = GuttmanTree<T>;
 
   /// Internal constructor for the R-Tree.
+  ///
+  /// Throws an [ArgumentError] if [maxEntries] is less than `2` or [minEntries]
+  /// is not between `1` and `maxEntries ~/ 2`.
   new({int? minEntries, int? maxEntries})
-    : minEntries = minEntries ?? 4,
-      maxEntries = maxEntries ?? 8;
+    : maxEntries = maxEntries ?? 8,
+      minEntries = minEntries ?? math.min(4, (maxEntries ?? 8) ~/ 2) {
+    if (this.maxEntries < 2) {
+      throw ArgumentError.value(
+        this.maxEntries,
+        'maxEntries',
+        'Must be at least 2',
+      );
+    }
+    if (this.minEntries < 1 || this.minEntries > this.maxEntries ~/ 2) {
+      throw ArgumentError.value(
+        this.minEntries,
+        'minEntries',
+        'Must be between 1 and ${this.maxEntries ~/ 2}',
+      );
+    }
+  }
 
   /// Minimum number of entries per node (`1 <= m <= M ~/ 2`).
   final int minEntries;
@@ -126,22 +155,13 @@ abstract class RTree<T> with Iterable<T> {
     return entry;
   }
 
-  /// Removes an entry matching [bound] and optionally [dataPredicate].
+  /// Removes the first entry matching [bound] and optionally [dataPredicate].
   ///
   /// Returns `true` if an entry was removed, `false` otherwise.
   bool remove(Bounds bound, {Predicate1<T>? dataPredicate}) {
-    final leaf = _findLeaf(root, bound, dataPredicate);
-    if (leaf == null) return false;
-
-    final index = leaf.entries.indexWhere(
-      (e) =>
-          e.isLeaf &&
-          e.bounds == bound &&
-          (dataPredicate == null ||
-              (e.data is T && dataPredicate(e.data as T))),
-    );
-    if (index == -1) return false;
-
+    final found = _findLeafEntry(root, bound, dataPredicate);
+    if (found == null) return false;
+    final (:leaf, :index) = found;
     leaf.entries.removeAt(index);
     decrementLength();
     _condenseTree(leaf);
@@ -154,27 +174,50 @@ abstract class RTree<T> with Iterable<T> {
     _length = 0;
   }
 
-  /// Queries leaf entries for a location (either a point or a rectangle),
-  /// returning an iterable.
-  Iterable<RTreeEntry<T>> queryEntries(Bounds bounds) =>
-      searchNodes(
-        nodePredicate: (node) => node.bounds?.intersects(bounds) ?? false,
-      ).expand(
-        (node) =>
-            node.entries.where((entry) => entry.bounds.intersects(bounds)),
-      );
+  /// Queries leaf entries intersecting [bounds], returning a lazy iterable.
+  Iterable<RTreeEntry<T>> queryEntries(Bounds bounds) sync* {
+    if (root.entries.isEmpty) return;
+    final stack = <RTreeNode<T>>[root];
+    while (stack.isNotEmpty) {
+      final node = stack.removeLast();
+      if (node.isLeaf) {
+        for (final entry in node.entries) {
+          if (entry.bounds.intersects(bounds)) {
+            yield entry;
+          }
+        }
+      } else {
+        for (var i = node.entries.length - 1; i >= 0; i--) {
+          final entry = node.entries[i];
+          if (entry.bounds.intersects(bounds)) {
+            final child = entry.child;
+            if (child != null) stack.add(child);
+          }
+        }
+      }
+    }
+  }
 
   /// Queries leaf elements whose bounds intersect [bounds].
   Iterable<T> query(Bounds bounds) =>
       queryEntries(bounds).map((entry) => entry.data as T);
 
-  /// Finds the [k] nearest leaf entries to [bounds] in increasing order of distance.
+  /// Finds up to [k] nearest leaf entries to [bounds] within [maxDistance],
+  /// ordered by increasing distance.
+  ///
+  /// Returns an empty iterable if [k] is non-positive, [maxDistance] is
+  /// negative or `NaN`, or the tree is empty.
   Iterable<RTreeEntry<T>> nearestEntries(
     Bounds bounds, {
     int k = 1,
     double maxDistance = double.infinity,
   }) {
-    if (k <= 0 || root.entries.isEmpty) return const [];
+    if (k <= 0 ||
+        root.entries.isEmpty ||
+        maxDistance.isNaN ||
+        maxDistance < 0.0) {
+      return const [];
+    }
     final maxDistSq = maxDistance.isFinite
         ? maxDistance * maxDistance
         : double.infinity;
@@ -194,10 +237,11 @@ abstract class RTree<T> with Iterable<T> {
     while (queue.isNotEmpty && results.length < k) {
       final item = queue.removeFirst();
       final entry = item.entry;
-      if (entry.isLeaf) {
+      final child = entry.child;
+      if (child == null) {
         results.add(entry);
       } else {
-        for (final childEntry in entry.child!.entries) {
+        for (final childEntry in child.entries) {
           final d = childEntry.bounds.minDistanceToBoundsSquared(bounds);
           if (d <= maxDistSq) {
             queue.add(_NearestItem(childEntry, d));
@@ -208,7 +252,11 @@ abstract class RTree<T> with Iterable<T> {
     return results;
   }
 
-  /// Finds the [k] nearest leaf values to [bounds] in increasing order of distance.
+  /// Finds up to [k] nearest leaf values to [bounds] within [maxDistance],
+  /// ordered by increasing distance.
+  ///
+  /// Returns an empty iterable if [k] is non-positive, [maxDistance] is
+  /// negative or `NaN`, or the tree is empty.
   Iterable<T> nearest(
     Bounds bounds, {
     int k = 1,
@@ -219,18 +267,33 @@ abstract class RTree<T> with Iterable<T> {
     maxDistance: maxDistance,
   ).map((e) => e.data as T);
 
-  /// Queries nodes for a location (either a point or a rectangle), returning an
-  /// iterable. By default, this method returns only leaf nodes, though
-  /// intermediate-level nodes can also be returned by setting the leaves
-  /// parameter to false.
-  Iterable<RTreeNode<T>> queryNodes(Bounds bounds, {bool leaves = true}) =>
-      searchNodes(
-        nodePredicate: (node) => node.bounds?.intersects(bounds) ?? false,
-        leaves: leaves,
-      );
+  /// Queries nodes intersecting [bounds], returning a lazy iterable.
+  ///
+  /// By default, this method returns only leaf nodes, though intermediate-level
+  /// nodes can also be returned by setting [leaves] to `false`.
+  Iterable<RTreeNode<T>> queryNodes(Bounds bounds, {bool leaves = true}) sync* {
+    if (root.entries.isEmpty) return;
+    if (!root.entries.any((entry) => entry.bounds.intersects(bounds))) return;
+    final stack = <RTreeNode<T>>[root];
+    while (stack.isNotEmpty) {
+      final node = stack.removeLast();
+      if (!leaves || node.isLeaf) {
+        yield node;
+      }
+      if (!node.isLeaf) {
+        for (var i = node.entries.length - 1; i >= 0; i--) {
+          final entry = node.entries[i];
+          if (entry.bounds.intersects(bounds)) {
+            final child = entry.child;
+            if (child != null) stack.add(child);
+          }
+        }
+      }
+    }
+  }
 
   /// Traverses the tree, returning leaf entries that match a condition. This
-  /// method optionally accepts both a node condition and an entry condition.
+  /// method optionally accepts both a [nodePredicate] and an [entryPredicate].
   /// The node condition is evaluated at each level and eliminates entire
   /// subtrees. In order for a leaf entry to be returned, all parent node
   /// conditions must pass. The entry condition is evaluated only at the leaf
@@ -249,48 +312,63 @@ abstract class RTree<T> with Iterable<T> {
     }
   }
 
-  /// Traverses the tree, returning nodes that match a condition. By default,
-  /// this method returns only leaf nodes, but intermediate-level nodes can also
-  /// be returned by passing leaves=false. The condition is evaluated for each
-  /// node at every level of the tree, and if it returns false, the entire
-  /// subtree is eliminated.
+  /// Traverses the tree, returning nodes that match [nodePredicate].
+  ///
+  /// By default, this method returns only leaf nodes, but intermediate-level
+  /// nodes can also be returned by passing [leaves] as `false`. If
+  /// [nodePredicate] returns `false`, the entire subtree is eliminated.
   Iterable<RTreeNode<T>> searchNodes({
     Predicate1<RTreeNode<T>>? nodePredicate,
     bool leaves = true,
-  }) {
-    final callback = leaves
-        ? (RTreeNode<T> node) => (node.isLeaf ? [node] : <RTreeNode<T>>[])
-        : (RTreeNode<T> node) => [node];
-    return traverse(callback, condition: nodePredicate);
+  }) sync* {
+    final stack = <RTreeNode<T>>[root];
+    while (stack.isNotEmpty) {
+      final node = stack.removeLast();
+      if (nodePredicate != null && !nodePredicate(node)) continue;
+      if (!leaves || node.isLeaf) {
+        yield node;
+      }
+      if (!node.isLeaf) {
+        for (var i = node.entries.length - 1; i >= 0; i--) {
+          final child = node.entries[i].child;
+          if (child != null) stack.add(child);
+        }
+      }
+    }
   }
 
-  /// Traverses the nodes of the R-Tree in depth-first order, calling the given
-  /// function on each node. A condition function may optionally be passed to
-  /// filter which nodes get traversed. If condition returns false, then neither
-  /// the node nor any of its descendants will be traversed.
+  /// Traverses the nodes of the R-Tree in depth-first order, calling [callback]
+  /// on each node.
+  ///
+  /// If [condition] returns `false`, neither the node nor any of its
+  /// descendants will be traversed.
   Iterable<R> traverse<R>(
     Map1<RTreeNode<T>, Iterable<R>> callback, {
     Predicate1<RTreeNode<T>>? condition,
   }) => root.traverse(callback, condition: condition);
 
-  RTreeNode<T>? _findLeaf(
+  ({RTreeNode<T> leaf, int index})? _findLeafEntry(
     RTreeNode<T> node,
     Bounds bound,
     Predicate1<T>? dataPredicate,
   ) {
     if (node.isLeaf) {
-      final hasMatch = node.entries.any(
-        (e) =>
-            e.bounds == bound &&
-            (dataPredicate == null ||
-                (e.data is T && dataPredicate(e.data as T))),
-      );
-      return hasMatch ? node : null;
+      for (var i = 0; i < node.entries.length; i++) {
+        final entry = node.entries[i];
+        if (entry.bounds == bound &&
+            (dataPredicate == null || dataPredicate(entry.data as T))) {
+          return (leaf: node, index: i);
+        }
+      }
+      return null;
     }
     for (final entry in node.entries) {
-      if (entry.bounds.contains(bound) || entry.bounds.intersects(bound)) {
-        final found = _findLeaf(entry.child!, bound, dataPredicate);
-        if (found != null) return found;
+      if (entry.bounds.contains(bound)) {
+        final child = entry.child;
+        if (child != null) {
+          final found = _findLeafEntry(child, bound, dataPredicate);
+          if (found != null) return found;
+        }
       }
     }
     return null;
@@ -301,8 +379,9 @@ abstract class RTree<T> with Iterable<T> {
     final eliminatedEntries = <RTreeEntry<T>>[];
 
     while (!curr.isRoot) {
-      final parent = curr.parent!;
-      final parentEntry = curr.parentEntry!;
+      final parent = curr.parent;
+      final parentEntry = curr.parentEntry;
+      if (parent == null || parentEntry == null) break;
 
       if (curr.entries.length < minEntries) {
         parent.entries.remove(parentEntry);
@@ -318,7 +397,9 @@ abstract class RTree<T> with Iterable<T> {
     }
 
     while (!root.isLeaf && root.entries.length == 1) {
-      root = root.entries.first.child!;
+      final onlyChild = root.entries.first.child;
+      if (onlyChild == null) break;
+      root = onlyChild;
       root.parent = null;
     }
 
@@ -340,17 +421,44 @@ abstract class RTree<T> with Iterable<T> {
   /// Ascend from a leaf node to the root, adjusting covering rectangles and
   /// propagating node splits as necessary.
   @protected
-  void adjustTree(RTreeNode<T> node, RTreeNode<T>? splitNode);
+  void adjustTree(RTreeNode<T> node, RTreeNode<T>? splitNode) {
+    var current = node;
+    var split = splitNode;
+    while (!current.isRoot) {
+      final parent = current.parent;
+      final parentEntry = current.parentEntry;
+      if (parent == null || parentEntry == null) break;
+      parentEntry.bounds = Bounds.unionAll(
+        current.entries.map((entry) => entry.bounds),
+      );
+      if (split != null) {
+        final bounds = Bounds.unionAll(
+          split.entries.map((entry) => entry.bounds),
+        );
+        parent.entries.add(RTreeEntry<T>(bounds, child: split));
+        if (parent.entries.length > maxEntries) {
+          split = overflowStrategy(parent);
+        } else {
+          split = null;
+        }
+      }
+      current = parent;
+    }
+    if (split != null) {
+      growTree([current, split]);
+    }
+  }
 
   /// Grows the R-Tree by creating a new root node, with the given nodes as
   /// children.
   @protected
   RTreeNode<T> growTree(Iterable<RTreeNode<T>> nodes) {
     root = RTreeNode<T>(this, isLeaf: false);
-    root.entries.addAll(
-      nodes.map((node) => RTreeEntry<T>(node.bounds!, child: node)),
-    );
     for (final node in nodes) {
+      final nodeBounds = node.bounds;
+      if (nodeBounds != null) {
+        root.entries.add(RTreeEntry<T>(nodeBounds, child: node));
+      }
       node.parent = root;
     }
     return root;
@@ -365,8 +473,8 @@ abstract class RTree<T> with Iterable<T> {
   void decrementLength() => _length--;
 
   /// Splits a given node into two nodes. The original node will have the
-  /// entries specified in group1, and the newly-created split node will have
-  /// the entries specified in group2. Both the original and split node will
+  /// entries specified in [group1], and the newly-created split node will have
+  /// the entries specified in [group2]. Both the original and split node will
   /// have their children nodes adjusted so they have the correct parent.
   @protected
   RTreeNode<T> splitNode(

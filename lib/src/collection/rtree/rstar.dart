@@ -10,10 +10,24 @@ import 'utils.dart';
 /// "The R*-tree: An Efficient and Robust Access Method for Points and Rectangles".
 class RStarTree<T> extends RTree<T> {
   new({super.minEntries, super.maxEntries, double? reinsertFactor})
-    : reinsertCount = math.max(
-        1,
-        (((maxEntries ?? 8) + 1) * (reinsertFactor ?? 0.3)).round(),
+    : reinsertCount = _computeReinsertCount(
+        maxEntries ?? 8,
+        reinsertFactor ?? 0.3,
       );
+
+  static int _computeReinsertCount(int maxEntries, double reinsertFactor) {
+    if (!reinsertFactor.isFinite ||
+        reinsertFactor < 0.0 ||
+        reinsertFactor > 1.0) {
+      throw ArgumentError.value(
+        reinsertFactor,
+        'reinsertFactor',
+        'Must be between 0.0 and 1.0',
+      );
+    }
+    if (reinsertFactor == 0.0) return 0;
+    return math.max(1, ((maxEntries + 1) * reinsertFactor).round());
+  }
 
   /// Number of entries to remove and reinsert on first overflow at each level.
   final int reinsertCount;
@@ -34,9 +48,7 @@ class RStarTree<T> extends RTree<T> {
     overflowLevels ??= <int>{};
     final node = _chooseSubtree(root, entry, targetLevel);
     node.entries.add(entry);
-    if (!entry.isLeaf) {
-      entry.child!.parent = node;
-    }
+    entry.child?.parent = node;
 
     if (node.entries.length > maxEntries) {
       _overflowTreatment(node, targetLevel, overflowLevels);
@@ -51,16 +63,16 @@ class RStarTree<T> extends RTree<T> {
     int targetLevel,
   ) {
     var node = subRoot;
-    while (_levelOf(node) > targetLevel) {
+    var level = _levelOf(node);
+    while (level > targetLevel) {
       final childIsLeaf = node.entries.first.child?.isLeaf ?? true;
-      if (childIsLeaf) {
-        node = _entryWithLeastOverlapEnlargement(
-          node.entries,
-          entry.bounds,
-        ).child!;
-      } else {
-        node = entryWithLeastAreaEnlargement(node.entries, entry.bounds).child!;
-      }
+      final selected = childIsLeaf
+          ? _entryWithLeastOverlapEnlargement(node.entries, entry.bounds)
+          : entryWithLeastAreaEnlargement(node.entries, entry.bounds);
+      final child = selected.child;
+      if (child == null) break;
+      node = child;
+      level--;
     }
     return node;
   }
@@ -69,8 +81,10 @@ class RStarTree<T> extends RTree<T> {
     var level = 0;
     var curr = node;
     while (!curr.isLeaf) {
+      final child = curr.entries.first.child;
+      if (child == null) break;
       level++;
-      curr = curr.entries.first.child!;
+      curr = child;
     }
     return level;
   }
@@ -80,7 +94,7 @@ class RStarTree<T> extends RTree<T> {
     int level,
     Set<int> overflowLevels,
   ) {
-    if (!node.isRoot && !overflowLevels.contains(level)) {
+    if (!node.isRoot && reinsertCount > 0 && !overflowLevels.contains(level)) {
       overflowLevels.add(level);
       _reinsert(node, level, overflowLevels);
     } else {
@@ -88,15 +102,22 @@ class RStarTree<T> extends RTree<T> {
       if (node.isRoot) {
         growTree([node, split]);
       } else {
-        final parent = node.parent!;
-        _adjustBounds(node);
+        final parent = node.parent;
+        if (parent == null) {
+          growTree([node, split]);
+          return;
+        }
+        final parentEntry = node.parentEntry;
+        if (parentEntry != null && node.entries.isNotEmpty) {
+          parentEntry.bounds = Bounds.unionAll(
+            node.entries.map((e) => e.bounds),
+          );
+        }
         final splitEntry = RTreeEntry<T>(
           Bounds.unionAll(split.entries.map((e) => e.bounds)),
           child: split,
         );
         parent.entries.add(splitEntry);
-        split.parent = parent;
-        split.fixChildren();
         if (parent.entries.length > maxEntries) {
           _overflowTreatment(parent, level + 1, overflowLevels);
         } else {
@@ -110,17 +131,17 @@ class RStarTree<T> extends RTree<T> {
     final center = node.bounds?.center;
     if (center == null || node.entries.length <= minEntries) return;
 
-    node.entries.sort((a, b) {
-      final distA = a.bounds.minDistanceToPointSquared(center);
-      final distB = b.bounds.minDistanceToPointSquared(center);
-      return distB.compareTo(distA);
-    });
+    final entries = node.entries;
+    final count = math.min(reinsertCount, entries.length - minEntries);
+    final distances = [
+      for (final entry in entries)
+        (entry: entry, distSq: _centerDistanceSquared(entry.bounds, center)),
+    ]..sort((a, b) => b.distSq.compareTo(a.distSq));
 
-    final toReinsert = <RTreeEntry<T>>[];
-    final count = math.min(reinsertCount, node.entries.length - minEntries);
-    for (var i = 0; i < count; i++) {
-      toReinsert.add(node.entries.removeAt(0));
-    }
+    final toReinsert = [for (var i = 0; i < count; i++) distances[i].entry];
+    node.entries = [
+      for (var i = count; i < distances.length; i++) distances[i].entry,
+    ];
 
     _adjustBounds(node);
 
@@ -129,89 +150,114 @@ class RStarTree<T> extends RTree<T> {
     }
   }
 
+  static double _centerDistanceSquared(Bounds bounds, List<double> center) {
+    var sum = 0.0;
+    for (var i = 0; i < bounds.length; i++) {
+      final entryCenter =
+          bounds.getMin(i) + 0.5 * (bounds.getMax(i) - bounds.getMin(i));
+      final d = entryCenter - center[i];
+      sum += d * d;
+    }
+    return sum;
+  }
+
   RTreeNode<T> _split(RTreeNode<T> node) {
     final dimensions = node.entries.first.bounds.length;
-    var bestAxis = 0;
     var minMarginSum = double.infinity;
+    late List<RTreeEntry<T>> bestSortedByMin;
+    late List<RTreeEntry<T>> bestSortedByMax;
 
     for (var d = 0; d < dimensions; d++) {
-      var marginSum = 0.0;
       final sortedByMin = node.entries.toList()
         ..sort((a, b) => a.bounds.getMin(d).compareTo(b.bounds.getMin(d)));
-      marginSum += _computeDistributionsMargin(sortedByMin);
-
       final sortedByMax = node.entries.toList()
         ..sort((a, b) => a.bounds.getMax(d).compareTo(b.bounds.getMax(d)));
-      marginSum += _computeDistributionsMargin(sortedByMax);
+      final marginSum =
+          _computeDistributionsMargin(sortedByMin) +
+          _computeDistributionsMargin(sortedByMax);
 
-      if (marginSum < minMarginSum) {
+      if (d == 0 || marginSum < minMarginSum) {
         minMarginSum = marginSum;
-        bestAxis = d;
+        bestSortedByMin = sortedByMin;
+        bestSortedByMax = sortedByMax;
       }
     }
 
-    final sortedByMin = node.entries.toList()
-      ..sort(
-        (a, b) =>
-            a.bounds.getMin(bestAxis).compareTo(b.bounds.getMin(bestAxis)),
-      );
-    final sortedByMax = node.entries.toList()
-      ..sort(
-        (a, b) =>
-            a.bounds.getMax(bestAxis).compareTo(b.bounds.getMax(bestAxis)),
-      );
+    final bestMin = _chooseBestSplitDistribution(bestSortedByMin);
+    final bestMax = _chooseBestSplitDistribution(bestSortedByMax);
 
-    final bestMinSplit = _chooseBestSplitDistribution(sortedByMin);
-    final bestMaxSplit = _chooseBestSplitDistribution(sortedByMax);
+    final useMin =
+        bestMin.overlap < bestMax.overlap ||
+        (bestMin.overlap == bestMax.overlap && bestMin.area < bestMax.area);
+    final winningList = useMin ? bestSortedByMin : bestSortedByMax;
+    final splitIndex = useMin ? bestMin.splitIndex : bestMax.splitIndex;
 
-    final winningSplit =
-        (bestMinSplit.overlap < bestMaxSplit.overlap ||
-            (bestMinSplit.overlap == bestMaxSplit.overlap &&
-                bestMinSplit.area < bestMaxSplit.area))
-        ? bestMinSplit
-        : bestMaxSplit;
+    return splitNode(
+      node,
+      winningList.sublist(0, splitIndex),
+      winningList.sublist(splitIndex),
+    );
+  }
 
-    return splitNode(node, winningSplit.entries1, winningSplit.entries2);
+  ({List<Bounds> prefix, List<Bounds> suffix}) _prefixSuffixBounds(
+    List<RTreeEntry<T>> sorted,
+  ) {
+    final total = sorted.length;
+    final prefix = List<Bounds>.filled(total, sorted[0].bounds);
+    var acc = sorted[0].bounds;
+    for (var i = 1; i < total; i++) {
+      acc = acc.union(sorted[i].bounds);
+      prefix[i] = acc;
+    }
+    final suffix = List<Bounds>.filled(total, sorted[total - 1].bounds);
+    acc = sorted[total - 1].bounds;
+    for (var i = total - 2; i >= 0; i--) {
+      acc = acc.union(sorted[i].bounds);
+      suffix[i] = acc;
+    }
+    return (prefix: prefix, suffix: suffix);
   }
 
   double _computeDistributionsMargin(List<RTreeEntry<T>> sorted) {
-    var marginSum = 0.0;
     final total = sorted.length;
-    for (var k = 1; k <= total - 2 * minEntries + 1; k++) {
-      final splitIndex = minEntries - 1 + k;
-      final b1 = Bounds.unionAll(sorted.take(splitIndex).map((e) => e.bounds));
-      final b2 = Bounds.unionAll(sorted.skip(splitIndex).map((e) => e.bounds));
-      marginSum += b1.margin + b2.margin;
+    final (:prefix, :suffix) = _prefixSuffixBounds(sorted);
+    var marginSum = 0.0;
+    for (
+      var splitIndex = minEntries;
+      splitIndex <= total - minEntries;
+      splitIndex++
+    ) {
+      marginSum += prefix[splitIndex - 1].margin + suffix[splitIndex].margin;
     }
     return marginSum;
   }
 
-  _SplitDistribution<T> _chooseBestSplitDistribution(
+  ({int splitIndex, double overlap, double area}) _chooseBestSplitDistribution(
     List<RTreeEntry<T>> sorted,
   ) {
     final total = sorted.length;
+    final (:prefix, :suffix) = _prefixSuffixBounds(sorted);
+    var bestSplitIndex = minEntries;
     var minOverlap = double.infinity;
     var minArea = double.infinity;
-    late _SplitDistribution<T> best;
 
-    for (var k = 1; k <= total - 2 * minEntries + 1; k++) {
-      final splitIndex = minEntries - 1 + k;
-      final group1 = sorted.sublist(0, splitIndex);
-      final group2 = sorted.sublist(splitIndex);
-
-      final b1 = Bounds.unionAll(group1.map((e) => e.bounds));
-      final b2 = Bounds.unionAll(group2.map((e) => e.bounds));
-
-      final overlap = b1.intersection(b2)?.area ?? 0.0;
+    for (
+      var splitIndex = minEntries;
+      splitIndex <= total - minEntries;
+      splitIndex++
+    ) {
+      final b1 = prefix[splitIndex - 1];
+      final b2 = suffix[splitIndex];
+      final overlap = b1.intersectionArea(b2);
       final area = b1.area + b2.area;
 
       if (overlap < minOverlap || (overlap == minOverlap && area < minArea)) {
         minOverlap = overlap;
         minArea = area;
-        best = _SplitDistribution(group1, group2, overlap, area);
+        bestSplitIndex = splitIndex;
       }
     }
-    return best;
+    return (splitIndex: bestSplitIndex, overlap: minOverlap, area: minArea);
   }
 
   RTreeEntry<T> _entryWithLeastOverlapEnlargement(
@@ -249,7 +295,7 @@ class RStarTree<T> extends RTree<T> {
     var overlap = 0.0;
     for (var i = 0; i < entries.length; i++) {
       if (i == excludeIndex) continue;
-      overlap += entries[i].bounds.intersection(bounds)?.area ?? 0.0;
+      overlap += entries[i].bounds.intersectionArea(bounds);
     }
     return overlap;
   }
@@ -257,11 +303,13 @@ class RStarTree<T> extends RTree<T> {
   void _adjustBounds(RTreeNode<T> node) {
     var curr = node;
     while (!curr.isRoot) {
+      final parent = curr.parent;
       final parentEntry = curr.parentEntry;
+      if (parent == null) break;
       if (parentEntry != null && curr.entries.isNotEmpty) {
         parentEntry.bounds = Bounds.unionAll(curr.entries.map((e) => e.bounds));
       }
-      curr = curr.parent!;
+      curr = parent;
     }
   }
 
@@ -271,18 +319,4 @@ class RStarTree<T> extends RTree<T> {
 
   @override
   RTreeNode<T>? overflowStrategy(RTreeNode<T> node) => _split(node);
-
-  @override
-  void adjustTree(RTreeNode<T> node, RTreeNode<T>? splitNode) {
-    _adjustBounds(node);
-  }
-}
-
-class _SplitDistribution<T> {
-  const new(this.entries1, this.entries2, this.overlap, this.area);
-
-  final List<RTreeEntry<T>> entries1;
-  final List<RTreeEntry<T>> entries2;
-  final double overlap;
-  final double area;
 }

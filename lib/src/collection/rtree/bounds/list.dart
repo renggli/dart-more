@@ -4,31 +4,34 @@ import '../bounds.dart';
 
 /// N-dimensional bounding box backed by [min] and [max] coordinate lists.
 class ListBounds extends Bounds {
-  new(this.min, this.max) : super() {
-    assert(min.isNotEmpty, 'min must not be empty');
-    assert(min.length == max.length, 'min and max must have the same length');
+  new(this._min, this._max) : super() {
+    assert(_min.isNotEmpty, 'min must not be empty');
+    assert(_min.length == _max.length, 'min and max must have the same length');
     assert(() {
-      for (var i = 0; i < min.length; i++) {
-        assert(min[i] <= max[i], 'min must be <= max');
+      for (var i = 0; i < _min.length; i++) {
+        assert(_min[i] <= _max[i], 'min must be <= max');
       }
       return true;
     }());
   }
 
-  @override
-  final Float64List min;
+  final Float64List _min;
+  final Float64List _max;
 
   @override
-  final Float64List max;
+  List<double> get min => _min.asUnmodifiableView();
 
   @override
-  int get length => min.length;
+  List<double> get max => _max.asUnmodifiableView();
 
   @override
-  double getMin(int dimension) => min[dimension];
+  int get length => _min.length;
 
   @override
-  double getMax(int dimension) => max[dimension];
+  double getMin(int dimension) => _min[dimension];
+
+  @override
+  double getMax(int dimension) => _max[dimension];
 }
 
 /// Extension on [List<double>] of coordinates to convert to a zero-volume point [Bounds].

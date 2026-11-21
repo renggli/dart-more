@@ -23,7 +23,8 @@ abstract class Bounds {
 
   /// Creates a 2D bounding box from coordinates.
   ///
-  /// If [maxX] and [maxY] are omitted, creates a point bounding box at ([minX], [minY]).
+  /// If [maxX] and [maxY] are omitted, creates a point bounding box at
+  /// ([minX], [minY]).
   factory from2D(double minX, double minY, [double? maxX, double? maxY]) {
     assert(
       (maxX == null) == (maxY == null),
@@ -57,27 +58,43 @@ abstract class Bounds {
   int get length;
 
   /// Returns the minimum coordinate value for the given [dimension].
+  ///
+  /// Throws a [RangeError] if [dimension] is out of bounds.
   double getMin(int dimension);
 
   /// Returns the maximum coordinate value for the given [dimension].
+  ///
+  /// Throws a [RangeError] if [dimension] is out of bounds.
   double getMax(int dimension);
 
   /// Minimum X coordinate for 2D bounds.
+  ///
+  /// Throws a [RangeError] if [length] is less than `1`.
   double get minX => getMin(0);
 
   /// Minimum Y coordinate for 2D bounds.
+  ///
+  /// Throws a [RangeError] if [length] is less than `2`.
   double get minY => getMin(1);
 
   /// Maximum X coordinate for 2D bounds.
+  ///
+  /// Throws a [RangeError] if [length] is less than `1`.
   double get maxX => getMax(0);
 
   /// Maximum Y coordinate for 2D bounds.
+  ///
+  /// Throws a [RangeError] if [length] is less than `2`.
   double get maxY => getMax(1);
 
   /// Width (extent along dimension 0).
+  ///
+  /// Throws a [RangeError] if [length] is less than `1`.
   double get width => getMax(0) - getMin(0);
 
   /// Height (extent along dimension 1).
+  ///
+  /// Throws a [RangeError] if [length] is less than `2`.
   double get height => getMax(1) - getMin(1);
 
   /// Minimum coordinate values for each dimension.
@@ -86,7 +103,8 @@ abstract class Bounds {
   /// Maximum coordinate values for each dimension.
   List<double> get max => [for (var i = 0; i < length; i++) getMax(i)];
 
-  /// Whether this bounding box represents a single point (all dimensions zero).
+  /// Whether this bounding box represents a single point (zero extent in all
+  /// dimensions).
   bool get isPoint {
     for (var i = 0; i < length; i++) {
       if (getMin(i) != getMax(i)) return false;
@@ -119,10 +137,11 @@ abstract class Bounds {
 
   /// Center coordinates of this bounding box.
   List<double> get center => [
-    for (var i = 0; i < length; i++) 0.5 * (getMin(i) + getMax(i)),
+    for (var i = 0; i < length; i++) getMin(i) + 0.5 * (getMax(i) - getMin(i)),
   ];
 
-  /// Computes the Euclidean distance squared from a given [point] to the closest point in this bounding box.
+  /// Computes the Euclidean distance squared from a given [point] to the
+  /// closest point in this bounding box.
   double minDistanceToPointSquared(List<double> point) {
     assert(point.length == length, 'Point must have matching dimensions');
     var sum = 0.0;
@@ -141,7 +160,8 @@ abstract class Bounds {
     return sum;
   }
 
-  /// Computes the Euclidean distance squared between this bounding box and [other].
+  /// Computes the Euclidean distance squared between this bounding box and
+  /// [other].
   double minDistanceToBoundsSquared(Bounds other) {
     assert(other.length == length, 'Bounds must have matching dimensions');
     var sum = 0.0;
@@ -194,6 +214,21 @@ abstract class Bounds {
     return ListBounds(minList, maxList);
   }
 
+  /// Computes the hypervolume (area) of the union of this bounding box and
+  /// [other] without allocating an intermediate [Bounds].
+  double unionArea(Bounds other) {
+    assert(length == other.length, 'Bounds must have matching dimensions');
+    var result =
+        math.max(getMax(0), other.getMax(0)) -
+        math.min(getMin(0), other.getMin(0));
+    for (var i = 1; i < length; i++) {
+      result *=
+          math.max(getMax(i), other.getMax(i)) -
+          math.min(getMin(i), other.getMin(i));
+    }
+    return result;
+  }
+
   /// Computes if this bounding box and another one intersect.
   bool intersects(Bounds other) {
     assert(length == other.length, 'Bounds must have matching dimensions');
@@ -227,6 +262,21 @@ abstract class Bounds {
       maxList[i] = upper;
     }
     return ListBounds(minList, maxList);
+  }
+
+  /// Computes the hypervolume (area) of the intersection of this bounding box
+  /// and [other], or `0.0` if they do not intersect, without allocating an
+  /// intermediate [Bounds].
+  double intersectionArea(Bounds other) {
+    assert(length == other.length, 'Bounds must have matching dimensions');
+    var result = 1.0;
+    for (var i = 0; i < length; i++) {
+      final lower = math.max(getMin(i), other.getMin(i));
+      final upper = math.min(getMax(i), other.getMax(i));
+      if (lower >= upper) return 0.0;
+      result *= upper - lower;
+    }
+    return result;
   }
 
   @override
@@ -271,6 +321,8 @@ abstract class Bounds {
   }
 
   /// Computes the union of all bounding boxes.
+  ///
+  /// Throws a [StateError] if [bounds] is empty.
   static Bounds unionAll(Iterable<Bounds> bounds) {
     final iterator = bounds.iterator;
     if (!iterator.moveNext()) throw StateError('Empty bounds: $bounds');
@@ -282,6 +334,7 @@ abstract class Bounds {
       var maxY = first.getMax(1);
       while (iterator.moveNext()) {
         final current = iterator.current;
+        assert(current.length == 2, 'Bounds must have matching dimensions');
         minX = math.min(minX, current.getMin(0));
         minY = math.min(minY, current.getMin(1));
         maxX = math.max(maxX, current.getMax(0));
@@ -289,15 +342,17 @@ abstract class Bounds {
       }
       return RectangleBounds(minX, minY, maxX, maxY);
     }
-    final minList = Float64List(first.length);
-    final maxList = Float64List(first.length);
-    for (var i = 0; i < first.length; i++) {
+    final dims = first.length;
+    final minList = Float64List(dims);
+    final maxList = Float64List(dims);
+    for (var i = 0; i < dims; i++) {
       minList[i] = first.getMin(i);
       maxList[i] = first.getMax(i);
     }
     while (iterator.moveNext()) {
       final current = iterator.current;
-      for (var i = 0; i < first.length; i++) {
+      assert(current.length == dims, 'Bounds must have matching dimensions');
+      for (var i = 0; i < dims; i++) {
         minList[i] = math.min(minList[i], current.getMin(i));
         maxList[i] = math.max(maxList[i], current.getMax(i));
       }
@@ -305,7 +360,9 @@ abstract class Bounds {
     return ListBounds(minList, maxList);
   }
 
-  /// Computes the intersection of all bounding boxes.
+  /// Computes the intersection of all bounding boxes, or `null` if disjoint.
+  ///
+  /// Throws a [StateError] if [bounds] is empty.
   static Bounds? intersectionAll(Iterable<Bounds> bounds) {
     final iterator = bounds.iterator;
     if (!iterator.moveNext()) throw StateError('Empty bounds: $bounds');
@@ -317,6 +374,7 @@ abstract class Bounds {
       var maxY = first.getMax(1);
       while (iterator.moveNext()) {
         final current = iterator.current;
+        assert(current.length == 2, 'Bounds must have matching dimensions');
         minX = math.max(minX, current.getMin(0));
         minY = math.max(minY, current.getMin(1));
         maxX = math.min(maxX, current.getMax(0));
@@ -325,15 +383,17 @@ abstract class Bounds {
       }
       return RectangleBounds(minX, minY, maxX, maxY);
     }
-    final minList = Float64List(first.length);
-    final maxList = Float64List(first.length);
-    for (var i = 0; i < first.length; i++) {
+    final dims = first.length;
+    final minList = Float64List(dims);
+    final maxList = Float64List(dims);
+    for (var i = 0; i < dims; i++) {
       minList[i] = first.getMin(i);
       maxList[i] = first.getMax(i);
     }
     while (iterator.moveNext()) {
       final current = iterator.current;
-      for (var i = 0; i < first.length; i++) {
+      assert(current.length == dims, 'Bounds must have matching dimensions');
+      for (var i = 0; i < dims; i++) {
         final lower = math.max(minList[i], current.getMin(i));
         final upper = math.min(maxList[i], current.getMax(i));
         if (lower > upper) return null;
