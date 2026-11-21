@@ -244,6 +244,38 @@ void main() {
       check(list.removeFirst).throws<UnsupportedError>();
       check(list.removeLast).throws<UnsupportedError>();
       check(list.clear).throws<UnsupportedError>();
+      check(list.removeAll).throws<UnsupportedError>();
+
+      final empty = OrderedList<int>(growable: false);
+      check(empty.removeFirst).throws<UnsupportedError>();
+      check(empty.removeLast).throws<UnsupportedError>();
+    });
+    test('addAll(this) and removeWhere error/concurrent safety', () {
+      final list = OrderedList<int>.of([1, 2, 3]);
+      list.addAll(list);
+      check(list).deepEquals([1, 2, 3, 1, 2, 3]);
+
+      // Exception inside removeWhere leaves list intact.
+      check(
+        () => list.removeWhere((e) {
+          if (e == 2) throw StateError('boom');
+          return e == 1;
+        }),
+      ).throws<StateError>();
+      check(list).deepEquals([1, 2, 3, 1, 2, 3]);
+
+      // Concurrent mutation inside removeWhere throws ConcurrentModificationError.
+      check(
+        () => list.removeWhere((e) {
+          list.clear();
+          return false;
+        }),
+      ).throws<ConcurrentModificationError>();
+    });
+    test('removeRange prefix shift when closer to front', () {
+      final list = OrderedList<int>.of([0, 1, 2, 3, 4, 5, 6, 7]);
+      list.removeRange(1, 3);
+      check(list).deepEquals([0, 3, 4, 5, 6, 7]);
     });
   });
   group('stress', () {

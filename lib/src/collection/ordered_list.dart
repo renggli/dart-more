@@ -3,8 +3,8 @@ import 'dart:math' as math;
 
 import 'package:meta/meta.dart' show internal;
 
-/// A list with constant time addition and removal at both ends, backed by a
-/// circular buffer.
+/// A list with amortized constant-time addition and removal at both ends,
+/// backed by a circular buffer.
 ///
 /// Implements [List].
 ///
@@ -23,6 +23,9 @@ class OrderedList<E> extends ListBase<E> {
     : _buffer = List<E?>.filled(_initialCapacity, null);
 
   /// Constructs an ordered list from an [iterable].
+  ///
+  /// The list is growable by default; pass `growable: false` for a
+  /// fixed-length list.
   new of(Iterable<E> iterable, {this._growable = true})
     : _buffer = List<E?>.filled(
         _computeCapacity(
@@ -39,10 +42,12 @@ class OrderedList<E> extends ListBase<E> {
   }
 
   /// Constructs an ordered list of the given [length] filled with [fill].
+  ///
+  /// The list is fixed-length by default; pass `growable: true` for a growable
+  /// list. Throws a [RangeError] if [length] is negative.
   new filled(int length, E fill, {this._growable = false})
     : _length = length,
       _buffer = List<E?>.filled(_computeCapacity(length), null) {
-    RangeError.checkNotNegative(length, 'length');
     _buffer.fillRange(0, length, fill);
   }
 
@@ -51,14 +56,7 @@ class OrderedList<E> extends ListBase<E> {
   static int _computeCapacity(int length) {
     RangeError.checkNotNegative(length, 'length');
     if (length <= _initialCapacity) return _initialCapacity;
-    var v = length - 1;
-    v |= v >> 1;
-    v |= v >> 2;
-    v |= v >> 4;
-    v |= v >> 8;
-    v |= v >> 16;
-    v |= v >> 32;
-    return v + 1;
+    return 1 << (length - 1).bitLength;
   }
 
   final bool _growable;
@@ -96,9 +94,7 @@ class OrderedList<E> extends ListBase<E> {
       if (null is! E) {
         throw UnsupportedError('Cannot enlarge a list without a fill value');
       }
-      while (_capacity < newLength) {
-        _grow();
-      }
+      _ensureCapacity(newLength);
       _length = newLength;
     }
   }
@@ -116,9 +112,13 @@ class OrderedList<E> extends ListBase<E> {
   }
 
   /// Adds [element] to the beginning of this list.
+  ///
+  /// Throws an [UnsupportedError] if this list is fixed-length.
   void addFirst(E element) => _addFirst(element);
 
   /// Adds [element] to the end of this list.
+  ///
+  /// Throws an [UnsupportedError] if this list is fixed-length.
   void addLast(E element) => _addLast(element);
 
   void _addFirst(E element) {
@@ -142,15 +142,20 @@ class OrderedList<E> extends ListBase<E> {
   @override
   void addAll(Iterable<E> iterable) {
     if (!_growable) throwNotGrowable();
-    for (final element in iterable) {
-      _addLast(element);
+    final elements = identical(iterable, this) ? toList() : iterable;
+    if (elements is List<E> || elements is Set<E>) {
+      _ensureCapacity(_length + elements.length);
+    }
+    for (final element in elements) {
+      if (_length == _capacity) _grow();
+      _buffer[(_head + _length++) & _mask] = element;
     }
   }
 
   @override
   void insert(int index, E element) {
-    RangeError.checkValueInInterval(index, 0, _length, 'index');
     if (!_growable) throwNotGrowable();
+    RangeError.checkValueInInterval(index, 0, _length, 'index');
     if (index == 0) {
       _addFirst(element);
     } else if (index == _length) {
@@ -175,16 +180,14 @@ class OrderedList<E> extends ListBase<E> {
 
   @override
   void insertAll(int index, Iterable<E> iterable) {
-    RangeError.checkValueInInterval(index, 0, _length, 'index');
     if (!_growable) throwNotGrowable();
+    RangeError.checkValueInInterval(index, 0, _length, 'index');
     final elements = identical(iterable, this)
         ? toList()
         : (iterable is List<E> ? iterable : iterable.toList());
     final count = elements.length;
     if (count == 0) return;
-    while (_capacity < _length + count) {
-      _grow();
-    }
+    _ensureCapacity(_length + count);
     if (index < _length ~/ 2) {
       _head = (_head - count) & _mask;
       for (var i = 0; i < index; i++) {
@@ -203,8 +206,8 @@ class OrderedList<E> extends ListBase<E> {
 
   @override
   void removeRange(int start, int end) {
-    RangeError.checkValidRange(start, end, _length);
     if (!_growable) throwNotGrowable();
+    RangeError.checkValidRange(start, end, _length);
     final count = end - start;
     if (count == 0) return;
     if (start == 0) {
@@ -217,6 +220,15 @@ class OrderedList<E> extends ListBase<E> {
       for (var i = start; i < _length; i++) {
         _buffer[(_head + i) & _mask] = null;
       }
+      _length -= count;
+    } else if (start < _length - end) {
+      for (var i = start - 1; i >= 0; i--) {
+        _buffer[(_head + i + count) & _mask] = _buffer[(_head + i) & _mask];
+      }
+      for (var i = 0; i < count; i++) {
+        _buffer[(_head + i) & _mask] = null;
+      }
+      _head = (_head + count) & _mask;
       _length -= count;
     } else {
       for (var i = start; i < _length - count; i++) {
@@ -232,20 +244,26 @@ class OrderedList<E> extends ListBase<E> {
   @override
   void removeWhere(bool Function(E element) test) {
     if (!_growable) throwNotGrowable();
-    var write = 0;
-    for (var read = 0; read < _length; read++) {
-      final element = _buffer[(_head + read) & _mask] as E;
+    final retained = <E>[];
+    final startLength = _length;
+    final startHead = _head;
+    for (var i = 0; i < startLength; i++) {
+      final element = _buffer[(startHead + i) & _mask] as E;
       if (!test(element)) {
-        if (write != read) {
-          _buffer[(_head + write) & _mask] = element;
-        }
-        write++;
+        retained.add(element);
+      }
+      if (_length != startLength || _head != startHead) {
+        throw ConcurrentModificationError(this);
       }
     }
-    for (var i = write; i < _length; i++) {
+    if (retained.length == startLength) return;
+    for (var i = 0; i < retained.length; i++) {
+      _buffer[(_head + i) & _mask] = retained[i];
+    }
+    for (var i = retained.length; i < _length; i++) {
       _buffer[(_head + i) & _mask] = null;
     }
-    _length = write;
+    _length = retained.length;
   }
 
   @override
@@ -254,8 +272,8 @@ class OrderedList<E> extends ListBase<E> {
 
   @override
   E removeAt(int index) {
-    RangeError.checkValidIndex(index, this);
     if (!_growable) throwNotGrowable();
+    RangeError.checkValidIndex(index, this);
     final result = _buffer[(_head + index) & _mask] as E;
     if (index == 0) {
       _buffer[_head] = null;
@@ -279,9 +297,12 @@ class OrderedList<E> extends ListBase<E> {
   }
 
   /// Removes and returns the first element of this list.
+  ///
+  /// Throws an [UnsupportedError] if this list is fixed-length, or a
+  /// [StateError] if this list is empty.
   E removeFirst() {
-    if (_length == 0) throw StateError('No element');
     if (!_growable) throwNotGrowable();
+    if (_length == 0) throw StateError('No element');
     final result = _buffer[_head] as E;
     _buffer[_head] = null;
     _head = (_head + 1) & _mask;
@@ -289,10 +310,14 @@ class OrderedList<E> extends ListBase<E> {
     return result;
   }
 
+  /// Removes and returns the last element of this list.
+  ///
+  /// Throws an [UnsupportedError] if this list is fixed-length, or a
+  /// [StateError] if this list is empty.
   @override
   E removeLast() {
-    if (_length == 0) throw StateError('No element');
     if (!_growable) throwNotGrowable();
+    if (_length == 0) throw StateError('No element');
     final index = (_head + _length - 1) & _mask;
     final result = _buffer[index] as E;
     _buffer[index] = null;
@@ -304,7 +329,7 @@ class OrderedList<E> extends ListBase<E> {
   bool remove(Object? element) {
     if (!_growable) throwNotGrowable();
     for (var i = 0; i < _length; i++) {
-      if (this[i] == element) {
+      if (_buffer[(_head + i) & _mask] == element) {
         removeAt(i);
         return true;
       }
@@ -313,7 +338,10 @@ class OrderedList<E> extends ListBase<E> {
   }
 
   /// Removes all elements and returns them in a new list.
+  ///
+  /// Throws an [UnsupportedError] if this list is fixed-length.
   Iterable<E> removeAll() {
+    if (!_growable) throwNotGrowable();
     final result = toList();
     clear();
     return result;
@@ -322,7 +350,12 @@ class OrderedList<E> extends ListBase<E> {
   @override
   void clear() {
     if (!_growable) throwNotGrowable();
-    _buffer.fillRange(0, _capacity, null);
+    if (_head + _length <= _capacity) {
+      _buffer.fillRange(_head, _head + _length, null);
+    } else {
+      _buffer.fillRange(_head, _capacity, null);
+      _buffer.fillRange(0, (_head + _length) & _mask, null);
+    }
     _head = 0;
     _length = 0;
   }
@@ -334,19 +367,27 @@ class OrderedList<E> extends ListBase<E> {
   bool get isNotEmpty => _length > 0;
 
   @override
-  E get first => isEmpty ? throw StateError('No element') : this[0];
+  E get first => isEmpty ? throw StateError('No element') : _buffer[_head] as E;
 
   @override
-  E get last => isEmpty ? throw StateError('No element') : this[_length - 1];
+  E get last => isEmpty
+      ? throw StateError('No element')
+      : _buffer[(_head + _length - 1) & _mask] as E;
 
-  /// Elements in internal buffer order.
+  /// Elements in list order.
   Iterable<E> get unorderedElements => this;
 
-  /// Returns elements in internal buffer order as a list.
+  /// Returns elements in list order as a list.
   List<E> toUnorderedList() => toList();
 
-  void _grow() {
-    final newCapacity = math.max(_initialCapacity, _capacity * 2);
+  void _ensureCapacity(int minCapacity) {
+    if (_capacity >= minCapacity) return;
+    _resize(_computeCapacity(minCapacity));
+  }
+
+  void _grow() => _resize(math.max(_initialCapacity, _capacity * 2));
+
+  void _resize(int newCapacity) {
     final newBuffer = List<E?>.filled(newCapacity, null);
     final firstPart = _capacity - _head;
     if (_head + _length <= _capacity) {
