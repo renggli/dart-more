@@ -374,5 +374,14 @@ void main() {
       check(tree.nearest(q, maxDistance: double.nan)).isEmpty;
       check(tree.nearest(q, k: 0)).isEmpty;
     });
+    test('PointBounds edges and center properties', () {
+      final point = Bounds.from2D(3.5, -7.25);
+      check(point.edges).deepEquals([0.0, 0.0]);
+      check(point.center).deepEquals([3.5, -7.25]);
+      check(point.width).equals(0.0);
+      check(point.height).equals(0.0);
+      check(point.area).equals(0.0);
+      check(point.margin).equals(0.0);
+    });
   });
 }

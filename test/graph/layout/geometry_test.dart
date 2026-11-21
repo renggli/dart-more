@@ -61,4 +61,15 @@ void main() {
       check(withPoint.maxY).equals(15.0);
     });
   });
+
+  group('LayoutOrientation', () {
+    test('isHorizontal and isVertical', () {
+      check(LayoutOrientation.topToBottom.isVertical).isTrue;
+      check(LayoutOrientation.bottomToTop.isVertical).isTrue;
+      check(LayoutOrientation.leftToRight.isVertical).isFalse;
+      check(LayoutOrientation.rightToLeft.isVertical).isFalse;
+      check(LayoutOrientation.leftToRight.isHorizontal).isTrue;
+      check(LayoutOrientation.rightToLeft.isHorizontal).isTrue;
+    });
+  });
 }

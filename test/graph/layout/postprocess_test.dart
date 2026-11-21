@@ -141,6 +141,33 @@ void main() {
       final dist = posB.distanceTo(posC);
       check(dist).isGreaterThan(10.0);
     });
+
+    test('packs components in all orientations', () {
+      final c1 = LayoutResult<String>(
+        positions: const {'A': LayoutPoint(0, 0), 'B': LayoutPoint(40, 20)},
+      );
+      final c2 = LayoutResult<String>(
+        positions: const {'C': LayoutPoint(0, 0), 'D': LayoutPoint(40, 20)},
+      );
+
+      final btt = packComponents([
+        c1,
+        c2,
+      ], direction: LayoutOrientation.bottomToTop);
+      check(btt['C']!.y).isLessThan(btt['A']!.y);
+
+      final ltr = packComponents([
+        c1,
+        c2,
+      ], direction: LayoutOrientation.leftToRight);
+      check(ltr['C']!.x).isGreaterThan(ltr['B']!.x);
+
+      final rtl = packComponents([
+        c1,
+        c2,
+      ], direction: LayoutOrientation.rightToLeft);
+      check(rtl['D']!.x).isLessThan(rtl['A']!.x);
+    });
   });
 
   group('removeOverlaps', () {
@@ -231,6 +258,26 @@ void main() {
         posC.y,
       ).distanceTo(LayoutPoint(projX, projY));
       check(dist).isGreaterThan(18.0);
+    });
+
+    test('pushes vertex off routed polyline edge segment', () {
+      final input = LayoutInput<String>(
+        vertices: const ['A', 'B', 'C'],
+        successorsOf: (v) => v == 'A' ? const ['B'] : const [],
+        vertexSize: (_) => const (width: 30.0, height: 30.0),
+      );
+      final initial = LayoutResult<String>(
+        positions: const {
+          'A': LayoutPoint(0, 0),
+          'B': LayoutPoint(100, 0),
+          'C': LayoutPoint(25, 25), // Midpoint of routed segment A -> (50, 50)
+        },
+        edgeRoutes: const {
+          ('B', 'A'): [LayoutPoint(50, 50)],
+        },
+      );
+      final resolved = initial.removeOverlaps(input, padding: 5);
+      check(resolved['C']!).not(.it()..equals(const LayoutPoint(25, 25)));
     });
   });
 }

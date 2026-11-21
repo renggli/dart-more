@@ -108,5 +108,39 @@ void main() {
       final single = Graph<String, num>(isDirected: false)..addVertex('X');
       check(single.tspHeuristic()).isNull;
     });
+
+    test('2-opt uncrosses intersecting edges to shorten tour', () {
+      // Nearest-neighbor from A picks A -> B(1) -> C(1) -> D(1) -> A(100) = 103.
+      // 2-opt reverses [C, D] to produce A -> B(1) -> D(2) -> C(1) -> A(2) = 6.
+      final costs = <(String, String), num>{
+        ('A', 'B'): 1,
+        ('B', 'C'): 1,
+        ('C', 'D'): 1,
+        ('D', 'A'): 100,
+        ('A', 'C'): 2,
+        ('B', 'D'): 2,
+      };
+      num cost(String u, String v) =>
+          costs[(u, v)] ?? costs[(v, u)] ?? double.infinity;
+
+      final graph = Graph<String, num>(isDirected: false);
+      for (final entry in costs.entries) {
+        graph.addEdge(entry.key.$1, entry.key.$2, value: entry.value);
+      }
+      final path = graph.tspHeuristic(startVertex: 'A', edgeCost: cost);
+      check(path).isNotNull();
+      check(path!.cost).equals(6);
+    });
+
+    test('handles disconnected vertices with infinite edge cost', () {
+      final graph = Graph<String, num>(isDirected: false)
+        ..addEdge('A', 'B', value: 1)
+        ..addVertex('C');
+      final path = graph.tspHeuristic(
+        edgeCost: (u, v) => graph.getEdge(u, v)?.value ?? double.infinity,
+      );
+      check(path).isNotNull();
+      check(path!.vertices.toSet()).deepEquals({'A', 'B', 'C'});
+    });
   });
 }

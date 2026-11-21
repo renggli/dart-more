@@ -124,11 +124,11 @@ final class _MermaidParser<V, E> {
       if (edgeVal == null &&
           null is! E &&
           builder.factory.edgeProvider == null) {
-        if ((0 as num) is E) {
+        if (0 is E && 0.5 is E) {
           edgeVal = 1 as E;
         } else if (0 is E) {
           edgeVal = 1 as E;
-        } else if (0.0 is E) {
+        } else if (0.5 is E) {
           edgeVal = 1.0 as E;
         } else if ('' is E) {
           edgeVal = '' as E;
@@ -160,12 +160,15 @@ final class _MermaidParser<V, E> {
       vertex = builder.factory.vertexProvider!(_vertexMap.length);
     } else if ('' is V) {
       vertex = (label ?? id) as V;
+    } else if (0 is V && 0.5 is V) {
+      final parsed = num.tryParse(label ?? '') ?? num.tryParse(id);
+      vertex = (parsed ?? _vertexMap.length) as V;
     } else if (0 is V) {
       final parsed = int.tryParse(label ?? '') ?? int.tryParse(id);
       vertex = (parsed ?? _vertexMap.length) as V;
-    } else if ((0 as num) is V) {
-      final parsed = num.tryParse(label ?? '') ?? num.tryParse(id);
-      vertex = (parsed ?? _vertexMap.length) as V;
+    } else if (0.5 is V) {
+      final parsed = double.tryParse(label ?? '') ?? double.tryParse(id);
+      vertex = (parsed ?? _vertexMap.length.toDouble()) as V;
     } else {
       vertex = (label ?? id) as V;
     }
@@ -183,13 +186,13 @@ final class _MermaidParser<V, E> {
       return null;
     }
     final unescaped = _unescape(label).trim();
-    if ((0 as num) is E) {
+    if (0 is E && 0.5 is E) {
       final parsed = num.tryParse(unescaped);
       if (parsed != null) return parsed as E;
     } else if (0 is E) {
       final parsed = int.tryParse(unescaped);
       if (parsed != null) return parsed as E;
-    } else if (0.0 is E) {
+    } else if (0.5 is E) {
       final parsed = double.tryParse(unescaped);
       if (parsed != null) return parsed as E;
     } else if ('' is E) {

@@ -219,6 +219,45 @@ flowchart TD
           check(targetEdge?.value).equals(edge.value);
         }
       });
+
+      test('parses typed int, double, and String edge defaults and values', () {
+        final intGraph = GraphFactory<int, int>(isDirected: true).fromMermaid(
+          'graph TD\n'
+          '  1 --> 2\n'
+          '  2 -->|42| 3\n',
+        );
+        check(intGraph.vertices).unorderedEquals([1, 2, 3]);
+        check(intGraph.getEdge(1, 2)?.value).equals(1);
+        check(intGraph.getEdge(2, 3)?.value).equals(42);
+
+        final doubleGraph = GraphFactory<num, double>(isDirected: true)
+            .fromMermaid(
+              'graph TD\n'
+              '  1.5 --> 2.5\n'
+              '  2.5 -->|3.75| 3.5\n',
+            );
+        check(doubleGraph.vertices).unorderedEquals([1.5, 2.5, 3.5]);
+        check(doubleGraph.getEdge(1.5, 2.5)?.value).equals(1.0);
+        check(doubleGraph.getEdge(2.5, 3.5)?.value).equals(3.75);
+
+        final strGraph = GraphFactory<String, String>(isDirected: true)
+            .fromMermaid(
+              'graph TD\n'
+              '  A[/Parallelogram/] --> B[\\Trapezoid\\]\n',
+            );
+        check(strGraph.vertices)
+            .unorderedEquals(['Parallelogram', 'Trapezoid']);
+        check(strGraph.getEdge('Parallelogram', 'Trapezoid')?.value).equals('');
+      });
+
+      test('uses vertexProvider when configured on factory', () {
+        final graph = GraphFactory<String, void>(
+          isDirected: true,
+          vertexProvider: (i) => 'v$i',
+        ).fromMermaid('graph TD\n  A --> B\n');
+        check(graph.vertices).unorderedEquals(['v0', 'v1']);
+        check(graph.getEdge('v0', 'v1')).isNotNull();
+      });
     });
   });
 }

@@ -245,5 +245,90 @@ void main() {
       final result = strategy.layout(input);
       check(result.edgeRoutes).isNotEmpty;
     });
+
+    test('directed graph with cycle reverses back-edge and routes it', () {
+      final input = LayoutInput<String>(
+        vertices: const ['A', 'B', 'C'],
+        successorsOf: (v) => switch (v) {
+          'A' => const ['B'],
+          'B' => const ['C'],
+          'C' => const ['A'],
+          _ => const [],
+        },
+        predecessorsOf: (v) => switch (v) {
+          'B' => const ['A'],
+          'C' => const ['B'],
+          'A' => const ['C'],
+          _ => const [],
+        },
+      );
+      final result = const LayeredLayout<String>().layout(input);
+      check(result.positions.length).equals(3);
+      // Back-edge C -> A spans ranks 2 -> 0 and gets a reversed polyline route.
+      check(result.edgeRoutes[('C', 'A')]).isNotNull();
+    });
+
+    test('directed explicit layers handles forward and backward edges', () {
+      final input = LayoutInput<String>(
+        vertices: const ['A', 'B', 'C'],
+        successorsOf: (v) => switch (v) {
+          'A' => const ['B'],
+          'C' => const ['A'],
+          _ => const [],
+        },
+        predecessorsOf: (v) => switch (v) {
+          'B' => const ['A'],
+          'A' => const ['C'],
+          _ => const [],
+        },
+      );
+      const strategy = LayeredLayout<String>(
+        layers: [
+          ['A'],
+          ['B'],
+          ['C'],
+        ],
+        layerDistance: 50,
+      );
+      final result = strategy.layout(input);
+      check(result.positions.length).equals(3);
+      check(result.edgeRoutes[('C', 'A')]).isNotNull();
+    });
+
+    test('undirected explicit layers handles high-to-low rank edges', () {
+      final input = LayoutInput<String>(
+        vertices: const ['C', 'B', 'A'],
+        successorsOf: (v) => switch (v) {
+          'C' => const ['A'],
+          'A' => const ['C'],
+          _ => const [],
+        },
+      );
+      const strategy = LayeredLayout<String>(
+        layers: [
+          ['A'],
+          ['B'],
+          ['C'],
+        ],
+        layerDistance: 50,
+      );
+      final result = strategy.layout(input);
+      check(result.positions.length).equals(3);
+      check(result.edgeRoutes).isNotEmpty;
+    });
+
+    test('undirected layout handles reverse-ordered vertex pairs', () {
+      final input = LayoutInput<String>(
+        vertices: const ['C', 'B', 'A'],
+        successorsOf: (v) => switch (v) {
+          'A' => const ['B', 'C'],
+          'B' => const ['A', 'C'],
+          'C' => const ['A', 'B'],
+          _ => const [],
+        },
+      );
+      final result = const LayeredLayout<String>().layout(input);
+      check(result.positions.length).equals(3);
+    });
   });
 }

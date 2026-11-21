@@ -131,6 +131,19 @@ void main() {
     check(ds.find(a)).identicalTo(ds.find(b));
     check(ds.union(a, b)).isFalse;
   });
+  test('pre-populated nodes map preserves existing forest count', () {
+    final nodes = <String, DisjointSetNode<String>>{
+      'a': (parent: 'a', size: 2),
+      'b': (parent: 'a', size: 1),
+    };
+    final ds = DisjointSet<String>(['b', 'c'], nodes: nodes);
+    check(ds.count).equals(2);
+    check(ds.elements).unorderedEquals(['a', 'b', 'c']);
+    check(ds.find('a')).equals('a');
+    check(ds.find('b')).equals('a');
+    check(ds.find('c')).equals('c');
+    check(ds.sizes).unorderedEquals([2, 1]);
+  });
 }
 
 class _Box {
