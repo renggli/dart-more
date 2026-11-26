@@ -1,6 +1,6 @@
 /// Extension on [Iterable] of [num] providing polynomial evaluation.
 extension PolynomialIterableExtension on Iterable<num> {
-  /// Evaluates the polynomial described by this [Iterable]s coefficients and
+  /// Evaluates the polynomial described by this [Iterable]'s coefficients and
   /// the value [x].
   ///
   /// For example, if the [Iterable] has 4 elements the function computes:

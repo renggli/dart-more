@@ -83,6 +83,12 @@ void main() {
         check((-12).digits()).deepEquals([2, 1]);
         check((-123).digits()).deepEquals([3, 2, 1]);
       });
+      test('minInt64', () {
+        final minInt64 = int.parse('-9223372036854775808');
+        check(
+          minInt64.digits(),
+        ).deepEquals([8, 0, 8, 5, 7, 7, 4, 5, 8, 6, 3, 0, 2, 7, 3, 3, 2, 2, 9]);
+      }, testOn: '!js');
       test('BigInt', () {
         check(BigInt.from(-0).digits()).deepEquals([0]);
         check(BigInt.from(-1).digits()).deepEquals([1]);
@@ -92,14 +98,26 @@ void main() {
     });
     group('invalid base', () {
       test('int', () {
-        check(() => 10.digits(1).toList()).throws<RangeError>();
-        check(() => 10.digits(0).toList()).throws<RangeError>();
-        check(() => 10.digits(-1).toList()).throws<RangeError>();
+        check(() {
+          10.digits(1);
+        }).throws<RangeError>();
+        check(() {
+          10.digits(0);
+        }).throws<RangeError>();
+        check(() {
+          10.digits(-1);
+        }).throws<RangeError>();
       });
       test('BigInt', () {
-        check(() => BigInt.from(10).digits(1).toList()).throws<RangeError>();
-        check(() => BigInt.from(10).digits(0).toList()).throws<RangeError>();
-        check(() => BigInt.from(10).digits(-1).toList()).throws<RangeError>();
+        check(() {
+          BigInt.from(10).digits(1);
+        }).throws<RangeError>();
+        check(() {
+          BigInt.from(10).digits(0);
+        }).throws<RangeError>();
+        check(() {
+          BigInt.from(10).digits(-1);
+        }).throws<RangeError>();
       });
     });
   });

@@ -93,6 +93,8 @@ void main() {
       check((-1).bitFloor).equals(0x80000000);
       check(0x100000000.bitFloor).equals(0);
       check(0x100000000.bitCeil).equals(1);
+      check(0x80000001.bitCeil).equals(0x100000000);
+      check((-1).bitCeil).equals(0x100000000);
     });
     group('setBit', () {
       test('sets the selected bit', () {

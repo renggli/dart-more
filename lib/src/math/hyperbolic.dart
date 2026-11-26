@@ -9,8 +9,15 @@ import 'math.dart';
 extension HyperbolicNumberExtension on num {
   /// Returns the hyperbolic sine of this [num].
   double sinh() {
-    if (abs() < 1e-5) {
+    if (this == 0) return toDouble();
+    final absValue = abs();
+    if (absValue < 1e-5) {
       return toDouble() + (this * this * this) / 6.0;
+    }
+    if (absValue > 709 && isFinite) {
+      final half = (absValue / 2).exp();
+      final result = half * (half / 2);
+      return isNegative ? -result : result;
     }
     final y = exp();
     return (y - 1 / y) / 2;
@@ -31,6 +38,11 @@ extension HyperbolicNumberExtension on num {
 
   /// Returns the hyperbolic cosine of this [num].
   double cosh() {
+    final absValue = abs();
+    if (absValue > 709 && isFinite) {
+      final half = (absValue / 2).exp();
+      return half * (half / 2);
+    }
     final y = exp();
     return (y + 1 / y) / 2;
   }
@@ -46,6 +58,10 @@ extension HyperbolicNumberExtension on num {
 
   /// Returns the hyperbolic tangent of this [num].
   double tanh() {
+    if (this == 0) return toDouble();
+    if (abs() < 1e-5) {
+      return toDouble() - (this * this * this) / 3.0;
+    }
     final a = exp(), b = (-this).exp();
     return a.isInfinite
         ? 1

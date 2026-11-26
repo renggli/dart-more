@@ -1,3 +1,4 @@
+import 'dart:collection' show UnmodifiableListView;
 import 'dart:typed_data';
 
 import 'eratosthenes.dart';
@@ -40,7 +41,7 @@ class EulerPrimeSieve extends PrimeSieve {
   bool isPrime(int value) => _factors[value] == value && value > 1;
 
   @override
-  Iterable<int> get primes => _primes;
+  Iterable<int> get primes => UnmodifiableListView(_primes);
 
   /// Computes the prime factors of [value].
   List<int> factorize(int value) {

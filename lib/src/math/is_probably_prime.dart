@@ -54,9 +54,9 @@ extension ProbablyPrimeIntegerExtension on int {
 extension ProbablyPrimeBigIntExtension on BigInt {
   /// Tests if this [BigInt] is probably a prime.
   ///
-  /// This variant of the probabilistic prime test by Miller–Rabin is
-  /// deterministic. It has been verified to return correct results for
-  /// 64 bit integers.
+  /// Uses Miller–Rabin with bases `2..37`. This is deterministic for all
+  /// 64-bit integers (`< 2^64`), and probabilistic (may return false positives
+  /// on strong pseudoprimes) for larger values.
   bool get isProbablyPrime {
     if (this <= _bases.last) {
       return _bases.contains(this);

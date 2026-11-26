@@ -28,7 +28,9 @@ extension BitUint32Extension on int {
   /// integer.
   int get bitCeil {
     final value = this & 0xffffffff;
-    return value <= 1 ? 1 : 1 << (value - 1).bitLength;
+    if (value <= 1) return 1;
+    if (value > 0x80000000) return 0x100000000;
+    return 1 << (value - 1).bitLength;
   }
 
   /// Returns this unsigned 32-bit integer with the bit at [index] set.

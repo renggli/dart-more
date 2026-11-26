@@ -7,8 +7,8 @@ abstract class PrimeSieve {
   /// The maximum number this sieve supports.
   final int max;
 
-  /// Tests if a [value] is prime. Throws a [RangeError] exception if [value] is
-  /// larger than [max].
+  /// Tests if a [value] is prime. Throws a [RangeError] if [value] is
+  /// negative or larger than [max].
   bool isPrime(int value);
 
   /// Returns an [Iterable] of all primes up to and including [max].

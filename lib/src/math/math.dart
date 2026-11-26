@@ -23,19 +23,19 @@ extension MathNumberExtension on num {
   /// Returns the arc-tan of this [num].
   double atan() => math.atan(this);
 
-  /// Returns the arc-tan of this [num] and [other].
+  /// Returns the four-quadrant arc-tangent of `this` (`y`) and [other] (`x`).
   double atan2(num other) => math.atan2(this, other);
 
   /// Returns the square root of this [num].
   double sqrt() => math.sqrt(this);
 
-  /// Returns the degree of this [num] in degrees.
+  /// Converts this [num] from radians to degrees.
   double toDegrees() => this * 180 / math.pi;
 
-  /// Returns the radian of this [num] in radians.
+  /// Converts this [num] from degrees to radians.
   double toRadians() => this * math.pi / 180;
 
-  /// Returns the natural exponent of this [num].
+  /// Returns the natural exponential `e^this` of this [num].
   double exp() => math.exp(this);
 
   /// Returns the natural logarithm of this [num].
