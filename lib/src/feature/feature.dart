@@ -1,8 +1,6 @@
 /// Information about the runtime environment.
 library;
 
-import 'dart:math';
-
 /// True, if the code is running in JavaScript.
 const isJavaScript = identical(1, 1.0);
 
@@ -20,8 +18,12 @@ final bool hasAssertionsEnabled = () {
 /// [maxSafeInteger] (`53` in JavaScript, `63` on VM/Wasm).
 const int safeIntegerBits = isJavaScript ? 53 : 63;
 
-/// The minimum safe value of an [int] (`-2^(safeIntegerBits - 1)`).
-final int minSafeInteger = -pow(2, safeIntegerBits - 1).toInt();
+/// The minimum safe value of an [int] (`-(2^53 - 1)` in JavaScript, `-2^63` on
+/// VM/Wasm).
+const int minSafeInteger = isJavaScript ? -9007199254740991 : -(1 << 62) * 2;
 
-/// The maximum safe value of an [int] (`2^(safeIntegerBits - 1) - 1`).
-final int maxSafeInteger = pow(2, safeIntegerBits - 1).toInt() - 1;
+/// The maximum safe value of an [int] (`2^53 - 1` in JavaScript, `2^63 - 1` on
+/// VM/Wasm).
+const int maxSafeInteger = isJavaScript
+    ? 9007199254740991
+    : ((1 << 62) - 1) * 2 + 1;

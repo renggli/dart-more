@@ -36,11 +36,18 @@ void main() {
   });
   test('minSafeInteger', () {
     check(minSafeInteger).isLessThan(-0xfffffffffff);
-    check(minSafeInteger).equals(-BigInt.two.pow(safeIntegerBits - 1).toInt());
+    check(minSafeInteger).equals(
+      isJavaScript
+          ? -(BigInt.two.pow(53) - BigInt.one).toInt()
+          : (-BigInt.two.pow(63)).toInt(),
+    );
   });
   test('maxSafeInteger', () {
     check(maxSafeInteger).isGreaterThan(0xfffffffffff);
-    check(maxSafeInteger)
-        .equals((BigInt.two.pow(safeIntegerBits - 1) - BigInt.one).toInt());
+    check(maxSafeInteger).equals(
+      isJavaScript
+          ? (BigInt.two.pow(53) - BigInt.one).toInt()
+          : (BigInt.two.pow(63) - BigInt.one).toInt(),
+    );
   });
 }
