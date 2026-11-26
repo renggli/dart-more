@@ -62,7 +62,7 @@ final class _MermaidParser<V, E> {
       if (_headerRegex.hasMatch(stmt)) continue;
 
       // Handle subgraphs.
-      if (stmt.startsWith('subgraph') || stmt == 'end') {
+      if (_subgraphRegex.hasMatch(stmt) || stmt.toLowerCase() == 'end') {
         // If a subgraph statement declares an id/label e.g. "subgraph id [label]"
         continue;
       }
@@ -75,8 +75,12 @@ final class _MermaidParser<V, E> {
   }
 
   void _parseStatement(String statement) {
-    // Find all edge connectors in the statement.
-    final matches = _edgePattern.allMatches(statement).toList();
+    // Find all top-level edge connectors (outside quotes, brackets, and pipes).
+    final topLevelMask = _topLevelMask(statement);
+    final matches = _edgePattern
+        .allMatches(statement)
+        .where((m) => topLevelMask[m.start])
+        .toList();
     if (matches.isEmpty) {
       // Single node declaration without edges.
       final node = _parseNodeToken(statement);
@@ -256,10 +260,48 @@ final class _MermaidParser<V, E> {
     return match?.group(1)?.trim();
   }
 
+  static List<bool> _topLevelMask(String text) {
+    final mask = List<bool>.filled(text.length, false);
+    var inQuotes = false;
+    var quoteChar = '';
+    var bracketDepth = 0;
+    for (var i = 0; i < text.length; i++) {
+      final char = text[i];
+      if (inQuotes) {
+        if (char == quoteChar && (i == 0 || text[i - 1] != '\\')) {
+          inQuotes = false;
+        }
+      } else if (char == '"' || char == "'") {
+        inQuotes = true;
+        quoteChar = char;
+      } else if (char == '[' || char == '(' || char == '{') {
+        bracketDepth++;
+      } else if (char == ']' || char == ')' || char == '}') {
+        if (bracketDepth > 0) bracketDepth--;
+      } else if (bracketDepth == 0) {
+        mask[i] = true;
+      }
+    }
+    return mask;
+  }
+
   static String _stripComments(String line) {
-    final commentIdx = line.indexOf('%%');
-    if (commentIdx == -1) return line;
-    return line.substring(0, commentIdx);
+    var inQuotes = false;
+    var quoteChar = '';
+    for (var i = 0; i < line.length - 1; i++) {
+      final char = line[i];
+      if (inQuotes) {
+        if (char == quoteChar && (i == 0 || line[i - 1] != '\\')) {
+          inQuotes = false;
+        }
+      } else if (char == '"' || char == "'") {
+        inQuotes = true;
+        quoteChar = char;
+      } else if (char == '%' && line[i + 1] == '%') {
+        return line.substring(0, i);
+      }
+    }
+    return line;
   }
 
   static bool _isIgnoredDirective(String stmt) {
@@ -368,6 +410,8 @@ final _headerRegex = RegExp(
   r'^(flowchart|graph)(\s+[A-Za-z]+)?$',
   caseSensitive: false,
 );
+
+final _subgraphRegex = RegExp(r'^subgraph(?:\s|$)', caseSensitive: false);
 
 final _inlineLabelRegex = RegExp(
   r'(?:--|\-\.|\=\=)\s*([^-.\=]+?)\s*(?:-->|---|-.->|-.-|==>|===)',

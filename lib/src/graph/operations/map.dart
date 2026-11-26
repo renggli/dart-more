@@ -20,7 +20,7 @@ extension MapGraphExtension<V, E> on Graph<V, E> {
       isDirected: isDirected,
       vertexStrategy:
           vertexStrategy ??
-          (this.vertexStrategy is StorageStrategy<VR>
+          (vertex == null && this.vertexStrategy is StorageStrategy<VR>
               ? this.vertexStrategy as StorageStrategy<VR>
               : null),
     );
@@ -32,8 +32,17 @@ extension MapGraphExtension<V, E> on Graph<V, E> {
       graph.addVertex(newVertex);
     }
     final edgeMapper = edge ?? (edge) => edge.value as ER;
+    final seen = !isDirected ? this.vertexStrategy.createMap<Set<V>>() : null;
     for (final oldVertex in vertices) {
       for (final oldEdge in outgoingEdgesOf(oldVertex)) {
+        if (seen != null) {
+          if (seen[oldEdge.source]?.contains(oldEdge.target) ?? false) {
+            continue;
+          }
+          seen
+              .putIfAbsent(oldEdge.target, this.vertexStrategy.createSet)
+              .add(oldEdge.source);
+        }
         graph.addEdge(
           vertexMap[oldEdge.source] as VR,
           vertexMap[oldEdge.target] as VR,

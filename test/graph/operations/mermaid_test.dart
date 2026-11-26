@@ -158,6 +158,15 @@ void main() {
             '  end',
           ]);
         });
+
+        test('keyword or digit-leading subgraph names are prefixed', () {
+          final graph = GraphFactory<String, void>().fromPath(['a', 'b']);
+          final text = graph.toMermaid(
+            subgraph: (v) => v == 'a' ? '123' : 'end',
+          );
+          check(text).contains('  subgraph subgraph_123 ["123"]');
+          check(text).contains('  subgraph subgraph_end ["end"]');
+        });
       });
     });
   });

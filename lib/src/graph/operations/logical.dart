@@ -58,7 +58,7 @@ extension LogicalGraphExtension<V, E> on Graph<V, E> {
     final result = copy(empty: true);
     // Create all the vertices present in both graphs.
     for (final vertex in vertices) {
-      if (other.vertices.contains(vertex)) {
+      if (other.containsVertex(vertex)) {
         result.addVertex(vertex);
       }
     }
@@ -102,12 +102,17 @@ extension LogicalGraphExtension<V, E> on Graph<V, E> {
       result.addVertex(vertex);
     }
     // Identify all the edges to be created.
+    final visited = !isDirected ? vertexStrategy.createSet() : null;
     for (final source in vertices) {
       final targets = vertexStrategy.createSet()
         ..addAll(vertices)
         ..removeAll(successorsOf(source));
       if (!allowSelfLoops) {
         targets.remove(source);
+      }
+      if (visited != null) {
+        targets.removeAll(visited);
+        visited.add(source);
       }
       for (final target in targets) {
         result.addEdge(source, target, value: edge?.call(source, target));

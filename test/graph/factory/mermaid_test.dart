@@ -258,6 +258,20 @@ flowchart TD
         check(graph.vertices).unorderedEquals(['v0', 'v1']);
         check(graph.getEdge('v0', 'v1')).isNotNull();
       });
+
+      test('preserves %% and arrows inside quoted labels and brackets', () {
+        const source = '''
+flowchart TD
+  A["50%% ok"] --> B["x --> y"]
+  subgraphFoo --> endNode
+''';
+        final graph = GraphFactory<String, void>(isDirected: true)
+            .fromMermaid(source);
+        check(graph.vertices)
+            .unorderedEquals(['50%% ok', 'x --> y', 'subgraphFoo', 'endNode']);
+        check(graph.containsEdge('50%% ok', 'x --> y')).isTrue;
+        check(graph.containsEdge('subgraphFoo', 'endNode')).isTrue;
+      });
     });
   });
 }

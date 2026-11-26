@@ -164,6 +164,23 @@ void main() {
         check(result.vertices).unorderedEquals([1, 2]);
         check(result.edges).unorderedMatches([isEdge(2, 1, value: 'prev')]);
       });
+      test(
+        'undirected complement calls edge factory once per undirected edge',
+        () {
+          final input = Graph<int, String>(isDirected: false)
+            ..addVertex(1)
+            ..addVertex(2);
+          var edgeCalls = 0;
+          final result = input.complement(
+            edge: (source, target) {
+              edgeCalls++;
+              return '$source-$target';
+            },
+          );
+          check(edgeCalls).equals(1);
+          check(result.containsEdge(1, 2)).isTrue;
+        },
+      );
     });
   });
 }

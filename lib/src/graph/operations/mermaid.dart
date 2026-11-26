@@ -1,6 +1,5 @@
 import 'package:meta/meta.dart' show optionalTypeArgs;
 
-import '../../collection/iterable/unique.dart';
 import '../../collection/multimap/list.dart';
 import '../edge.dart';
 import '../graph.dart';
@@ -64,9 +63,14 @@ extension MermaidGraphExtension<V, E> on Graph<V, E> {
     }
 
     // Render edges.
-    for (final edge in edges.unique()) {
+    final seenEdges = !isDirected ? <String, Set<String>>{} : null;
+    for (final edge in edges) {
       final sourceId = ids[edge.source]!;
       final targetId = ids[edge.target]!;
+      if (seenEdges != null) {
+        if (seenEdges[sourceId]?.contains(targetId) ?? false) continue;
+        seenEdges.putIfAbsent(targetId, () => <String>{}).add(sourceId);
+      }
       final label = edgeLabel?.call(edge) ?? edge.value?.toString() ?? '';
       final arrow = isDirected ? '-->' : '---';
       buffer.write('  $sourceId ');
@@ -120,7 +124,12 @@ extension MermaidGraphExtension<V, E> on Graph<V, E> {
       return input;
     }
     final sanitized = input.replaceAll(RegExp(r'[^a-zA-Z0-9_]'), '_');
-    return sanitized.isEmpty ? 'subgraph_0' : sanitized;
+    if (sanitized.isEmpty) return 'subgraph_0';
+    if (_keywords.contains(sanitized.toLowerCase()) ||
+        !_validId.hasMatch(sanitized)) {
+      return 'subgraph_$sanitized';
+    }
+    return sanitized;
   }
 }
 

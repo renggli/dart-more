@@ -77,5 +77,22 @@ void main() {
       ]);
       expectInvariants(result);
     });
+    test('undirected edge callback invoked once per edge and identity map', () {
+      final g = Graph<int, int>(
+        isDirected: false,
+        vertexStrategy: StorageStrategy.positiveInteger(),
+      )..addEdge(0, 1, value: 10);
+      var edgeCalls = 0;
+      final neg = g.map<int, int>(
+        vertex: (v) => v == 0 ? -1 : -2,
+        edge: (e) {
+          edgeCalls++;
+          return e.value * 2;
+        },
+      );
+      check(edgeCalls).equals(1);
+      check(neg.vertices).unorderedEquals([-1, -2]);
+      check(neg.getEdge(-1, -2)?.value).equals(20);
+    });
   });
 }

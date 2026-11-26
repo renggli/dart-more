@@ -1,6 +1,5 @@
 import 'package:meta/meta.dart' show optionalTypeArgs;
 
-import '../../collection/iterable/unique.dart';
 import '../../collection/multimap/list.dart';
 import '../edge.dart';
 import '../graph.dart';
@@ -59,8 +58,15 @@ extension ExportGraphExtension<V, E> on Graph<V, E> {
     }
     // Create edges.
     final arrow = isDirected ? '->' : '--';
-    for (final edge in edges.unique()) {
-      buffer.write('  ${ids[edge.source]} $arrow ${ids[edge.target]}');
+    final seenEdges = !isDirected ? <int, Set<int>>{} : null;
+    for (final edge in edges) {
+      final sourceId = ids[edge.source]!;
+      final targetId = ids[edge.target]!;
+      if (seenEdges != null) {
+        if (seenEdges[sourceId]?.contains(targetId) ?? false) continue;
+        seenEdges.putIfAbsent(targetId, () => <int>{}).add(sourceId);
+      }
+      buffer.write('  $sourceId $arrow $targetId');
       buffer.write(
         _encodeNodeEdgeAttributes({
           'label': edgeLabel?.call(edge) ?? edge.value?.toString() ?? '',
@@ -101,7 +107,7 @@ extension ExportGraphExtension<V, E> on Graph<V, E> {
   String _encodeId(String input) =>
       _validId.matchAsPrefix(input) == null ||
           _keywords.contains(input.toLowerCase())
-      ? '"${input.replaceAll('"', '\\"')}"'
+      ? '"${input.replaceAll(r'\', r'\\').replaceAll('"', r'\"').replaceAll('\n', r'\n').replaceAll('\r', r'\r')}"'
       : input;
 
   Iterable<String> _encodeAttributes(Map<String, String> attributes) =>

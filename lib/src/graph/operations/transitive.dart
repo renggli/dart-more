@@ -91,7 +91,7 @@ extension TransitiveGraphExtension<V, E> on Graph<V, E> {
     for (final u in vertices) {
       for (final edge in outgoingEdgesOf(u)) {
         final v = edge.target;
-        if (u == v) continue; // Skip self-loops
+        if (vertexStrategy.equals(u, v)) continue; // Skip self-loops
 
         // Check if v is reachable from u through any other immediate successor of u
         var reachableAlternative = false;
@@ -99,14 +99,14 @@ extension TransitiveGraphExtension<V, E> on Graph<V, E> {
         final searchQueue = <V>[];
 
         for (final next in successorsOf(u)) {
-          if (next != v && visited.add(next)) {
+          if (!vertexStrategy.equals(next, v) && visited.add(next)) {
             searchQueue.add(next);
           }
         }
 
         while (searchQueue.isNotEmpty) {
           final curr = searchQueue.removeLast();
-          if (curr == v) {
+          if (vertexStrategy.equals(curr, v)) {
             reachableAlternative = true;
             break;
           }

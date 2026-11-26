@@ -193,6 +193,11 @@ void main() {
           );
         });
       });
+      test('escapes backslashes, quotes, and newlines in labels', () {
+        final graph = Graph<String, void>(isDirected: true)
+          ..addVertex('a\\b\n"c"\r');
+        check(graph.toDot()).contains(r'label="a\\b\n\"c\"\r"');
+      });
     });
   });
 }
