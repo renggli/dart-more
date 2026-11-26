@@ -36,6 +36,7 @@ digraph {
   8 -> 6 [arrowsize="0.8"];
   9 -> 2 [arrowsize="0.8"];
   10 -> 8 [arrowsize="0.8"];
+  10 -> 2 [arrowsize="0.8"];
   11 -> 3 [arrowsize="0.8"];
   11 -> 4 [arrowsize="0.8"];
   11 -> 0 [arrowsize="0.8"];
