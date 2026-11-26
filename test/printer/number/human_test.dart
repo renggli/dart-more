@@ -203,6 +203,23 @@ void main() {
         ]);
       });
     });
+    test('edge cases and invalid arguments', () {
+      check(
+        HumanNumberPrinter.decimal(precision: 6, unitPrecision: 6)(
+          0.999999999999,
+        ),
+      ).equals('1.000000');
+      check(HumanNumberPrinter.decimal(precision: 6)(0.999999999999))
+          .equals('1');
+      final mixed = HumanNumberPrinter.decimal(precision: 0, unitPrecision: 2);
+      check(mixed(999.999)).equals('1 k');
+      check(mixed(999.99)).equals('999.99');
+      check(() => HumanNumberPrinter(units: const [])).throws<ArgumentError>();
+      check(() => HumanNumberPrinter(units: const [''], unitBase: 1))
+          .throws<ArgumentError>();
+      check(() => HumanNumberPrinter.decimal(unitPrecision: -1))
+          .throws<ArgumentError>();
+    });
     test('toString', () {
       final printer = HumanNumberPrinter.decimal();
       check(printer.toString()).startsWith('HumanNumberPrinter<num>');

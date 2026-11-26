@@ -35,6 +35,10 @@ void main() {
       check(printer(-22)).equals('-22nd');
       check(printer(-23)).equals('-23rd');
     });
+    test('minInt64', () {
+      final minInt64 = int.parse('-9223372036854775808');
+      check(OrdinalNumberPrinter()(minInt64)).equals('-9223372036854775808th');
+    }, testOn: '!js');
     test('toString', () {
       final printer = OrdinalNumberPrinter();
       check(printer.toString()).startsWith('OrdinalNumberPrinter');

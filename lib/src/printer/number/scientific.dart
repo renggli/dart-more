@@ -47,7 +47,15 @@ class ScientificNumberPrinter<T extends num> extends Printer<T> {
          separatorWidth: separatorWidth,
          separatorOffset: separatorOffset,
          sign: exponentSign ?? const SignNumberPrinter<int>.omitPositiveSign(),
-       );
+       ) {
+    if (significant < 1) {
+      throw ArgumentError.value(
+        significant,
+        'significant',
+        'Expected positive integer',
+      );
+    }
+  }
 
   /// The numeric base to which the number should be printed.
   final int base;
@@ -106,31 +114,36 @@ class ScientificNumberPrinter<T extends num> extends Printer<T> {
     if (value.isInfinite || value.isNaN) {
       return _mantissa.printOn(value, buffer);
     }
-    var exponent = _getExponent(value);
-    var mantissa = value / base.toDouble().pow(exponent);
-    final multiplier = base.toDouble().pow(precision);
-    final rounding = 1.0 / multiplier;
-    final roundedMantissa = (mantissa / rounding).roundToDouble() * rounding;
-    if (roundedMantissa.abs() >= base.toDouble().pow(significant)) {
-      exponent++;
-      mantissa = value / base.toDouble().pow(exponent);
+    var exponent = 0;
+    var mantissa = value;
+    if (value != 0.0) {
+      final logBase = value.abs().log() / base.log();
+      exponent = logBase.floor() + 1 - significant;
+      mantissa = scaleByBasePow(value, base, exponent);
+      final lower = base.toDouble().pow(significant - 1);
+      final upper = lower * base;
+      while (mantissa.abs() >= upper) {
+        exponent++;
+        mantissa = scaleByBasePow(value, base, exponent);
+      }
+      while (mantissa.abs() < lower && mantissa != 0.0) {
+        exponent--;
+        mantissa = scaleByBasePow(value, base, exponent);
+      }
+      final absMantissa = mantissa.abs();
+      final (:carry, digits: _) = extractFractionDigits(
+        absMantissa - absMantissa.truncateToDouble(),
+        base,
+        precision,
+      );
+      if (absMantissa.truncateToDouble() + (carry ? 1.0 : 0.0) >= upper) {
+        exponent++;
+        mantissa = scaleByBasePow(value, base, exponent);
+      }
     }
     _mantissa.printOn(mantissa, buffer);
     buffer.write(notation);
     _exponent.printOn(exponent, buffer);
-  }
-
-  int _getExponent(double value) {
-    if (value == 0.0 || value == -0.0) {
-      return 0;
-    } else {
-      final logBase = value.abs().log() / base.log();
-      final rounded = logBase.round();
-      final corrected = (logBase - rounded).abs() < 1e-12
-          ? rounded
-          : logBase.floor();
-      return corrected + 1 - significant;
-    }
   }
 
   @override
@@ -147,5 +160,7 @@ class ScientificNumberPrinter<T extends num> extends Printer<T> {
     ..addValue(notation, name: 'notation')
     ..addValue(precision, name: 'precision')
     ..addValue(separator, name: 'separator')
+    ..addValue(separatorWidth, name: 'separatorWidth')
+    ..addValue(separatorOffset, name: 'separatorOffset')
     ..addValue(significant, name: 'significant');
 }

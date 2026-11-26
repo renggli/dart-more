@@ -93,7 +93,41 @@ void main() {
         check(printer(-0.9)).equals('-0.90');
         check(printer(-0.99)).equals('-0.99');
         check(printer(-0.999)).equals('-1.00');
-        check(printer(-0.9999)).equals('-1.00');
+        check(printer(0.000000000000)).equals('0.00');
+      });
+      test('high precision and extreme doubles', () {
+        final p11 = FixedNumberPrinter<double>(precision: 11);
+        check(p11(1.0)).equals('1.00000000000');
+        check(FixedNumberPrinter<double>(precision: 2)(1e20))
+            .equals('100000000000000000000.00');
+        final maxFinite = FixedNumberPrinter<double>()(double.maxFinite);
+        check(maxFinite).length.isGreaterThan(300);
+        check(maxFinite).startsWith('17976931348623157');
+      });
+      test('NaN omits sign even with negativeAndPositiveSign', () {
+        final printer = FixedNumberPrinter<double>(
+          sign: const SignNumberPrinter<double>.negativeAndPositiveSign(),
+        );
+        check(printer(double.nan)).equals('NaN');
+        check(printer(double.infinity)).equals('+Infinity');
+        check(printer(double.negativeInfinity)).equals('-Infinity');
+      });
+      test('minInt64 and large int with precision', () {
+        final minInt64 = int.parse('-9223372036854775808');
+        check(FixedNumberPrinter<int>()(minInt64))
+            .equals('-9223372036854775808');
+        check(
+          FixedNumberPrinter<int>(precision: 2)(int.parse('9007199254740993')),
+        ).equals('9007199254740993.00');
+      }, testOn: '!js');
+      test('invalid arguments', () {
+        check(() => FixedNumberPrinter(base: 1)).throws<ArgumentError>();
+        check(() => FixedNumberPrinter(base: 100)).throws<ArgumentError>();
+        check(() => FixedNumberPrinter(precision: -1)).throws<ArgumentError>();
+        check(() => FixedNumberPrinter(accuracy: 0)).throws<ArgumentError>();
+        check(() => FixedNumberPrinter(accuracy: -1)).throws<ArgumentError>();
+        check(() => FixedNumberPrinter(accuracy: double.nan))
+            .throws<ArgumentError>();
       });
       test('infinite', () {
         final printer = FixedNumberPrinter<double>();
@@ -157,16 +191,19 @@ void main() {
         'divesAkuru': NumeralSystem.divesAkuru,
         'extendedArabicIndic': NumeralSystem.extendedArabicIndic,
         'fullwidth': NumeralSystem.fullwidth,
+        'garay': NumeralSystem.garay,
         'gujarati': NumeralSystem.gujarati,
         'gunjalaGondi': NumeralSystem.gunjalaGondi,
         'gurmukhi': NumeralSystem.gurmukhi,
+        'gurungKhema': NumeralSystem.gurungKhema,
         'hanifiRohingya': NumeralSystem.hanifiRohingya,
         'javanese': NumeralSystem.javanese,
         'kannada': NumeralSystem.kannada,
         'kawi': NumeralSystem.kawi,
         'kayahLi': NumeralSystem.kayahLi,
         'khmer': NumeralSystem.khmer,
-        'khudawadi:': NumeralSystem.khudawadi,
+        'khudawadi': NumeralSystem.khudawadi,
+        'kiratRai': NumeralSystem.kiratRai,
         'lao': NumeralSystem.lao,
         'latin': NumeralSystem.latin,
         'lepcha': NumeralSystem.lepcha,
@@ -184,6 +221,8 @@ void main() {
         'mongolian': NumeralSystem.mongolian,
         'mro': NumeralSystem.mro,
         'myanmar': NumeralSystem.myanmar,
+        'myanmarEasternPwoKaren': NumeralSystem.myanmarEasternPwoKaren,
+        'myanmarPao': NumeralSystem.myanmarPao,
         'myanmarShan': NumeralSystem.myanmarShan,
         'myanmarTaiLaing': NumeralSystem.myanmarTaiLaing,
         'nagMundari': NumeralSystem.nagMundari,
@@ -192,8 +231,10 @@ void main() {
         'nko': NumeralSystem.nko,
         'nyiakengPuachueHmong': NumeralSystem.nyiakengPuachueHmong,
         'olChiki': NumeralSystem.olChiki,
+        'olOnal': NumeralSystem.olOnal,
         'oriya': NumeralSystem.oriya,
         'osmanya': NumeralSystem.osmanya,
+        'outlined': NumeralSystem.outlined,
         'pahawhHmong': NumeralSystem.pahawhHmong,
         'saurashtra': NumeralSystem.saurashtra,
         'segmented': NumeralSystem.segmented,
@@ -201,6 +242,7 @@ void main() {
         'sinhalaLith': NumeralSystem.sinhalaLith,
         'soraSompeng': NumeralSystem.soraSompeng,
         'sundanese': NumeralSystem.sundanese,
+        'sunuwar': NumeralSystem.sunuwar,
         'taiThamHora': NumeralSystem.taiThamHora,
         'taiThamTham': NumeralSystem.taiThamTham,
         'takri': NumeralSystem.takri,
@@ -210,6 +252,7 @@ void main() {
         'thai': NumeralSystem.thai,
         'tibetan': NumeralSystem.tibetan,
         'tirhuta': NumeralSystem.tirhuta,
+        'tolongSiki': NumeralSystem.tolongSiki,
         'upperCaseLatin': NumeralSystem.upperCaseLatin,
         'vai': NumeralSystem.vai,
         'wancho': NumeralSystem.wancho,

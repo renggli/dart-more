@@ -52,9 +52,9 @@ class OrdinalNumberPrinter extends Printer<int> {
   @override
   void printOn(int object, StringBuffer buffer) {
     _number.printOn(object, buffer);
-    final abs = object.abs();
-    if (!(abs % 100).between(10, 20)) {
-      switch (abs % 10) {
+    final mod100 = object.remainder(100).abs();
+    if (!mod100.between(10, 20)) {
+      switch (mod100 % 10) {
         case 1:
           return buffer.write('st');
         case 2:
@@ -72,5 +72,7 @@ class OrdinalNumberPrinter extends Printer<int> {
     ..addValue(characters, name: 'characters')
     ..addValue(padding, name: 'padding')
     ..addValue(separator, name: 'separator')
+    ..addValue(separatorWidth, name: 'separatorWidth')
+    ..addValue(separatorOffset, name: 'separatorOffset')
     ..addValue(sign, name: 'sign');
 }

@@ -110,7 +110,21 @@ class HumanNumberPrinter<T extends num> extends Printer<T> {
          separatorWidth: separatorWidth,
          separatorOffset: separatorOffset,
          sign: sign ?? const SignNumberPrinter<double>.omitPositiveSign(),
-       );
+       ) {
+    if (units.isEmpty) {
+      throw ArgumentError.value(units, 'units', 'Expected non-empty units');
+    }
+    if (unitBase < 2) {
+      throw ArgumentError.value(unitBase, 'unitBase', 'Expected unitBase >= 2');
+    }
+    if (unitPrecision < 0) {
+      throw ArgumentError.value(
+        unitPrecision,
+        'unitPrecision',
+        'Expected non-negative unitPrecision',
+      );
+    }
+  }
 
   /// Prints numbers using a decimal suffix for units of measure to indicate a
   /// multiple or sub-multiple of the unit.
@@ -258,17 +272,31 @@ class HumanNumberPrinter<T extends num> extends Printer<T> {
       final index = _getExponent(value) + unitOffset;
       var unitIndex = index.clamp(0, units.length - 1);
       var unitExponent = unitIndex - unitOffset;
-      var mantissa = value / unitBase.toDouble().pow(unitExponent);
+      var mantissa = scaleByBasePow(value, unitBase, unitExponent);
+      while (mantissa.abs() >= unitBase && unitIndex < units.length - 1) {
+        unitIndex++;
+        unitExponent = unitIndex - unitOffset;
+        mantissa = scaleByBasePow(value, unitBase, unitExponent);
+      }
+      while (value != 0.0 && mantissa.abs() < 1.0 && unitIndex > 0) {
+        unitIndex--;
+        unitExponent = unitIndex - unitOffset;
+        mantissa = scaleByBasePow(value, unitBase, unitExponent);
+      }
       final currentPrecision = unitIndex == unitOffset
           ? unitPrecision
           : precision;
-      final multiplier = base.toDouble().pow(currentPrecision);
-      final rounding = 1.0 / multiplier;
-      final roundedMantissa = (mantissa / rounding).roundToDouble() * rounding;
-      if (roundedMantissa.abs() >= unitBase && unitIndex < units.length - 1) {
+      final absMantissa = mantissa.abs();
+      final (:carry, digits: _) = extractFractionDigits(
+        absMantissa - absMantissa.truncateToDouble(),
+        base,
+        currentPrecision,
+      );
+      if (absMantissa.truncateToDouble() + (carry ? 1.0 : 0.0) >= unitBase &&
+          unitIndex < units.length - 1) {
         unitIndex++;
         unitExponent = unitIndex - unitOffset;
-        mantissa = value / unitBase.toDouble().pow(unitExponent);
+        mantissa = scaleByBasePow(value, unitBase, unitExponent);
       }
       final unitString = units[unitIndex];
       if (unitString.isNotEmpty && unitPrefix) {
@@ -284,15 +312,8 @@ class HumanNumberPrinter<T extends num> extends Printer<T> {
     }
   }
 
-  int _getExponent(double value) {
-    if (value == 0.0 || value == -0.0) {
-      return 0;
-    } else {
-      final logBase = value.abs().log() / unitBase.log();
-      final rounded = logBase.round();
-      return (logBase - rounded).abs() < 1e-12 ? rounded : logBase.floor();
-    }
-  }
+  int _getExponent(double value) =>
+      value == 0.0 ? 0 : (value.abs().log() / unitBase.log()).floor();
 
   @override
   ObjectPrinter get toStringPrinter => super.toStringPrinter
@@ -304,6 +325,8 @@ class HumanNumberPrinter<T extends num> extends Printer<T> {
     ..addValue(padding, name: 'padding')
     ..addValue(precision, name: 'precision')
     ..addValue(separator, name: 'separator')
+    ..addValue(separatorWidth, name: 'separatorWidth')
+    ..addValue(separatorOffset, name: 'separatorOffset')
     ..addValue(sign, name: 'sign')
     ..addValue(unitBase, name: 'unitBase')
     ..addValue(unitOffset, name: 'unitOffset')

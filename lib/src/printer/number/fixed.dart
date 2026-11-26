@@ -1,4 +1,3 @@
-import '../../math/math.dart';
 import '../builder.dart';
 import '../object/object.dart';
 import '../printer.dart';
@@ -24,11 +23,10 @@ class FixedNumberPrinter<T extends num> extends Printer<T> {
     this.separatorWidth = 3,
     this.separatorOffset = 0,
     Printer<T>? sign,
-  }) : assert(base <= characters.length, 'Not enough characters for base'),
-       sign = sign ?? SignNumberPrinter<T>.omitPositiveSign(),
+  }) : sign = sign ?? SignNumberPrinter<T>.omitPositiveSign(),
        _integer = const Printer<String>.standard()
            .mapIf(
-             padding > 0,
+             padding > 0 && characters.isNotEmpty,
              (printer) => printer.padLeft(padding, characters[0]),
            )
            .mapIf(
@@ -41,7 +39,7 @@ class FixedNumberPrinter<T extends num> extends Printer<T> {
            ),
        _fraction = const Printer<String>.standard()
            .mapIf(
-             precision > 0,
+             precision > 0 && characters.isNotEmpty,
              (printer) => printer.padLeft(precision, characters[0]),
            )
            .mapIf(
@@ -51,7 +49,29 @@ class FixedNumberPrinter<T extends num> extends Printer<T> {
                separatorOffset,
                separator,
              ),
-           );
+           ) {
+    if (base < 2 || base > characters.length) {
+      throw ArgumentError.value(
+        base,
+        'base',
+        'Expected base between 2 and ${characters.length}',
+      );
+    }
+    if (precision < 0) {
+      throw ArgumentError.value(
+        precision,
+        'precision',
+        'Expected non-negative precision',
+      );
+    }
+    if (accuracy != null && (accuracy! <= 0 || !accuracy!.isFinite)) {
+      throw ArgumentError.value(
+        accuracy,
+        'accuracy',
+        'Expected positive finite accuracy',
+      );
+    }
+  }
 
   /// Round towards the nearest number that is a multiple of accuracy.
   final double? accuracy;
@@ -97,10 +117,12 @@ class FixedNumberPrinter<T extends num> extends Printer<T> {
 
   @override
   void printOn(T object, StringBuffer buffer) {
-    sign.printOn(object, buffer);
     if (object.isNaN) {
       buffer.write(nan);
-    } else if (object.isInfinite) {
+      return;
+    }
+    sign.printOn(object, buffer);
+    if (object.isInfinite) {
       buffer.write(infinity);
     } else {
       _printNumOn(object, buffer);
@@ -108,35 +130,49 @@ class FixedNumberPrinter<T extends num> extends Printer<T> {
   }
 
   void _printNumOn(num value, StringBuffer buffer) {
-    if (value is int && precision == 0 && accuracy == null) {
-      _printIntegerDigitsOn(intDigits(value.abs(), base), buffer);
+    if (value is int && accuracy == null) {
+      _printIntegerDigitsOn(intDigits(value, base), buffer);
+      if (precision > 0) {
+        buffer.write(delimiter);
+        _fraction.printOn(characters[0], buffer);
+      }
       return;
     }
-    final multiplier = base.pow(precision);
-    final rounding = accuracy ?? 1.0 / multiplier;
-    final rounded = (value / rounding).roundToDouble() * rounding;
-    _printIntegerOn(rounded, buffer);
+    var effective = value.toDouble();
+    if (accuracy case final accuracy?) {
+      effective = (effective / accuracy).roundToDouble() * accuracy;
+      if (effective.isInfinite) {
+        buffer.write(infinity);
+        return;
+      }
+    }
+    final absValue = effective.abs();
+    final intPart = absValue.truncateToDouble();
+    final fracPart = absValue - intPart;
+    final (:digits, :carry) = extractFractionDigits(fracPart, base, precision);
+    if (intPart < 9007199254740991.0) {
+      _printIntegerDigitsOn(
+        intDigits(intPart.truncate() + (carry ? 1 : 0), base),
+        buffer,
+      );
+    } else {
+      _printIntegerDigitsOn(
+        bigIntDigits(
+          doubleToBigInt(intPart) + (carry ? BigInt.one : BigInt.zero),
+          base,
+        ),
+        buffer,
+      );
+    }
     if (precision > 0) {
       buffer.write(delimiter);
-      final fractional = rounded.abs() - rounded.abs().truncate();
-      _printFractionOn(fractional * multiplier, buffer);
+      _fraction.printOn(formatDigits(digits, characters), buffer);
     }
-  }
-
-  void _printIntegerOn(num value, StringBuffer buffer) {
-    final digits = intDigits(value.abs().truncate(), base);
-    _printIntegerDigitsOn(digits, buffer);
   }
 
   void _printIntegerDigitsOn(Iterable<int> digits, StringBuffer buffer) {
     final result = formatDigits(digits, characters);
     _integer.printOn(result, buffer);
-  }
-
-  void _printFractionOn(double value, StringBuffer buffer) {
-    final digits = intDigits(value.round(), base);
-    final result = formatDigits(digits, characters);
-    _fraction.printOn(result, buffer);
   }
 
   @override

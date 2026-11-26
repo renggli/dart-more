@@ -81,14 +81,8 @@ void main() {
     });
     test('infinity', () {
       final printer = ScientificNumberPrinter(infinity: 'huge');
-      check(printer(0)).equals('0.000e0');
-      check(printer(2)).equals('2.000e0');
-      check(printer(300)).equals('3.000e2');
-      check(printer(4321.768)).equals('4.322e3');
-      check(printer(-53000)).equals('-5.300e4');
-      check(printer(6720000000)).equals('6.720e9');
-      check(printer(0.2)).equals('2.000e-1');
-      check(printer(0.00000000751)).equals('7.510e-9');
+      check(printer(double.infinity)).equals('huge');
+      check(printer(double.negativeInfinity)).equals('-huge');
     });
     test('mantissaPadding', () {
       final printer = ScientificNumberPrinter(mantissaPadding: 3);
@@ -118,14 +112,7 @@ void main() {
     });
     test('nan', () {
       final printer = ScientificNumberPrinter(nan: 'n/a');
-      check(printer(0)).equals('0.000e0');
-      check(printer(2)).equals('2.000e0');
-      check(printer(300)).equals('3.000e2');
-      check(printer(4321.768)).equals('4.322e3');
-      check(printer(-53000)).equals('-5.300e4');
-      check(printer(6720000000)).equals('6.720e9');
-      check(printer(0.2)).equals('2.000e-1');
-      check(printer(0.00000000751)).equals('7.510e-9');
+      check(printer(double.nan)).equals('n/a');
     });
     test('notation', () {
       final printer = ScientificNumberPrinter(notation: 'E');
@@ -204,6 +191,17 @@ void main() {
       check(printer(6720000000)).equals('672.000e7');
       check(printer(0.2)).equals('200.000e-3');
       check(printer(0.00000000751)).equals('751.000e-11');
+    });
+    test('subnormal double and extreme edge cases', () {
+      final printer = ScientificNumberPrinter();
+      check(printer(double.minPositive)).equals('4.941e-324');
+      final signed = ScientificNumberPrinter(
+        mantissaSign: const SignNumberPrinter.negativeAndPositiveSign(),
+      );
+      check(signed(double.nan)).equals('NaN');
+      check(signed(double.negativeInfinity)).equals('-Infinity');
+      check(() => ScientificNumberPrinter(significant: 0))
+          .throws<ArgumentError>();
     });
     test('toString', () {
       final printer = ScientificNumberPrinter();

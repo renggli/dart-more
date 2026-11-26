@@ -1,7 +1,8 @@
 import '../object/object.dart';
 import '../printer.dart';
 
-/// Prints numbers in various formats.
+/// Prints the sign of numbers using separate printers for negative and
+/// non-negative values.
 class SignNumberPrinter<T extends num> extends Printer<T> {
   /// A printer that prints a sign based on a [negative] and [positive] printer.
   const new({Printer<T>? negative, Printer<T>? positive})
@@ -18,7 +19,10 @@ class SignNumberPrinter<T extends num> extends Printer<T> {
   const new negativeAndPositiveSign()
     : this(positive: const Printer.literal('+'));
 
+  /// The printer used for negative numbers.
   final Printer<T> negative;
+
+  /// The printer used for non-negative numbers.
   final Printer<T> positive;
 
   @override
