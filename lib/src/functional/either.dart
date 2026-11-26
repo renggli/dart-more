@@ -117,7 +117,7 @@ sealed class Either<L, R> {
 }
 
 /// Implementation of an [Either] with [leftValue] populated.
-class LeftEither<L, R> extends Either<L, R> {
+final class LeftEither<L, R> extends Either<L, R> {
   const new _(this.leftValue) : super._();
 
   @override
@@ -197,7 +197,7 @@ class LeftEither<L, R> extends Either<L, R> {
 }
 
 /// Implementation of an [Either] with [rightValue] populated.
-class RightEither<L, R> extends Either<L, R> {
+final class RightEither<L, R> extends Either<L, R> {
   const new _(this.rightValue) : super._();
 
   @override

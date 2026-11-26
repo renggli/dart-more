@@ -86,7 +86,7 @@ sealed class Optional<T> {
 }
 
 /// Implementation of an [Optional] with a value.
-class PresentOptional<T> extends Optional<T> {
+final class PresentOptional<T> extends Optional<T> {
   const new _(this.value) : super._();
 
   @override
@@ -148,7 +148,7 @@ class PresentOptional<T> extends Optional<T> {
 }
 
 /// Implementation of an [Optional] without a value.
-class AbsentOptional<T> extends Optional<T> {
+final class AbsentOptional<T> extends Optional<T> {
   const new _() : super._();
 
   @override
