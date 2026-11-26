@@ -23,7 +23,7 @@ class GraphError extends ArgumentError {
     V target,
     E value,
   ) {
-    if (value < 0) {
+    if (value < 0 || value.isNaN) {
       throw GraphError(
         null,
         null,

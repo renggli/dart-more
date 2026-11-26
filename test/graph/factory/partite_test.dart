@@ -52,5 +52,9 @@ void main() {
       ]);
       expectInvariants(graph);
     });
+    test('negative vertexCount throws RangeError', () {
+      check(() => GraphFactory<int, void>().partite(vertexCounts: [2, -1]))
+          .throws<RangeError>();
+    });
   });
 }

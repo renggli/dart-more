@@ -30,5 +30,9 @@ void main() {
       ], successorsOf: reverseCollatzGraph);
       check(iterable.take(10)).deepEquals([1, 2, 4, 8, 16, 5, 32, 10, 64, 3]);
     });
+    test('duplicate start vertices', () {
+      final graph = GraphFactory<int, void>().path(vertexCount: 3);
+      check(graph.breadthFirstAll([0, 0])).deepEquals([0, 1, 2]);
+    });
   });
 }

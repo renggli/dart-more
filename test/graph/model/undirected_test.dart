@@ -97,6 +97,19 @@ void main() {
         check(graph.edges).isEmpty;
         expectInvariants(graph);
       });
+      test('remove vertex with equal instances under identity strategy', () {
+        final v1 = [1];
+        final v2 = [1];
+        final graph = Graph<List<int>, void>(
+          isDirected: false,
+          vertexStrategy: StorageStrategy.identity(),
+        );
+        graph.addEdge(v1, v2);
+        graph.removeVertex(v1);
+        check(graph.vertices).deepEquals([v2]);
+        check(graph.edges).isEmpty;
+        expectInvariants(graph);
+      });
     });
     group('querying', () {
       final graph = Graph<int, String>(isDirected: false)

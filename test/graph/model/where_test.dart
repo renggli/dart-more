@@ -23,6 +23,8 @@ void main() {
       check(graph.edgesOf('c')).unorderedMatches([isEdge('c', 'a')]);
       check(graph.incomingEdgesOf('a')).unorderedMatches([isEdge('c', 'a')]);
       check(graph.incomingEdgesOf('b')).isEmpty;
+      check(graph.edgesOf('b')).isEmpty;
+      check(graph.outgoingEdgesOf('b')).isEmpty;
       check(graph.incomingEdgesOf('c')).isEmpty;
       check(graph.outgoingEdgesOf('a')).isEmpty;
       check(graph.outgoingEdgesOf('b')).isEmpty;
@@ -66,6 +68,8 @@ void main() {
       check(graph.edgesOf('c')).unorderedMatches([isEdge('c', 'a')]);
       check(graph.incomingEdgesOf('a')).unorderedMatches([isEdge('c', 'a')]);
       check(graph.incomingEdgesOf('b')).isEmpty;
+      check(graph.edgesOf('b')).isEmpty;
+      check(graph.outgoingEdgesOf('b')).isEmpty;
       check(graph.incomingEdgesOf('c')).unorderedMatches([isEdge('a', 'c')]);
       check(graph.outgoingEdgesOf('a')).unorderedMatches([isEdge('a', 'c')]);
       check(graph.outgoingEdgesOf('b')).isEmpty;
@@ -127,6 +131,8 @@ void main() {
       check(graph.edgesOf('c')).unorderedMatches([isEdge('c', 'a')]);
       check(graph.incomingEdgesOf('a')).unorderedMatches([isEdge('c', 'a')]);
       check(graph.incomingEdgesOf('b')).isEmpty;
+      check(graph.edgesOf('b')).isEmpty;
+      check(graph.outgoingEdgesOf('b')).isEmpty;
       check(graph.incomingEdgesOf('c')).isEmpty;
       check(graph.outgoingEdgesOf('a')).isEmpty;
       check(graph.outgoingEdgesOf('b')).isEmpty;
@@ -172,6 +178,8 @@ void main() {
       check(graph.edgesOf('c')).unorderedMatches([isEdge('c', 'a')]);
       check(graph.incomingEdgesOf('a')).unorderedMatches([isEdge('c', 'a')]);
       check(graph.incomingEdgesOf('b')).isEmpty;
+      check(graph.edgesOf('b')).isEmpty;
+      check(graph.outgoingEdgesOf('b')).isEmpty;
       check(graph.incomingEdgesOf('c')).unorderedMatches([isEdge('a', 'c')]);
       check(graph.outgoingEdgesOf('a')).unorderedMatches([isEdge('a', 'c')]);
       check(graph.outgoingEdgesOf('b')).isEmpty;

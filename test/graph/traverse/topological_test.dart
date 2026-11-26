@@ -36,5 +36,15 @@ void main() {
       check(iterable)
           .deepEquals([1, 3, 9, 27, 2, 6, 18, 4, 12, 36, 8, 24, 16, 48, 32]);
     });
+    test('diamond DAG and cycle ignored', () {
+      final graph = Graph<int, void>(isDirected: true)
+        ..addEdge(0, 1)
+        ..addEdge(0, 2)
+        ..addEdge(1, 3)
+        ..addEdge(2, 3)
+        ..addEdge(3, 4)
+        ..addEdge(4, 3);
+      check(graph.topological(0)).deepEquals([0, 2, 1]);
+    });
   });
 }

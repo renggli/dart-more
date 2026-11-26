@@ -97,9 +97,7 @@ class UndirectedGraph<V, E> extends Graph<V, E> {
     final vertexAdjacency = adjacency.remove(vertex);
     if (vertexAdjacency == null) return;
     for (final target in vertexAdjacency.keys) {
-      if (target != vertex) {
-        adjacency[target]?.remove(vertex);
-      }
+      adjacency[target]?.remove(vertex);
     }
   }
 

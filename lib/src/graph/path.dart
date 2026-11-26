@@ -22,10 +22,18 @@ class Path<V, E> with ToStringPrinter {
         'Path must contain at least one vertex',
       );
     }
+    final valueList = values?.toList(growable: false);
+    if (valueList != null && valueList.length != list.length - 1) {
+      throw ArgumentError.value(
+        values,
+        'values',
+        'Expected ${list.length - 1} values, got ${valueList.length}',
+      );
+    }
     return Path._(
       vertices: list,
       values:
-          values ??
+          valueList ??
           (list.length <= 1
               ? const []
               : repeat<E>(null as E, count: list.length - 1)),

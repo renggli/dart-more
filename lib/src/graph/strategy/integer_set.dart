@@ -14,6 +14,7 @@ class IntegerSet extends SetBase<int> {
   final int Function(int x) _backward;
 
   final _presence = BitList.empty(growable: true);
+  int _length = 0;
 
   @override
   bool add(int value) {
@@ -24,6 +25,7 @@ class IntegerSet extends SetBase<int> {
       return false;
     }
     _presence.setUnchecked(index, true);
+    _length++;
     return true;
   }
 
@@ -39,13 +41,22 @@ class IntegerSet extends SetBase<int> {
   }
 
   @override
-  void clear() => _presence.length = 0;
+  void clear() {
+    _presence.length = 0;
+    _length = 0;
+  }
 
   @override
   Iterator<int> get iterator => _presence.indices().map(_backward).iterator;
 
   @override
-  int get length => _presence.count();
+  int get length => _length;
+
+  @override
+  bool get isEmpty => _length == 0;
+
+  @override
+  bool get isNotEmpty => _length > 0;
 
   @override
   int? lookup(Object? element) => contains(element) ? element as int : null;
@@ -58,6 +69,7 @@ class IntegerSet extends SetBase<int> {
           index < _presence.length &&
           _presence.getUnchecked(index)) {
         _presence.setUnchecked(index, false);
+        _length--;
         return true;
       }
     }

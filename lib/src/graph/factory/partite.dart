@@ -5,7 +5,10 @@ import '../graph.dart';
 extension PartiteGraphFactoryExtension<V, E> on GraphFactory<V, E> {
   /// Creates a partite [Graph] with a number of vertices on each layer.
   Graph<V, E> partite({required Iterable<int> vertexCounts}) {
-    final parts = vertexCounts.toList();
+    final parts = vertexCounts.toList(growable: false);
+    for (final count in parts) {
+      RangeError.checkNotNegative(count, 'vertexCounts');
+    }
     final offsets = parts.fold<List<int>>(<int>[
       0,
     ], (list, each) => list..add(list.last + each));

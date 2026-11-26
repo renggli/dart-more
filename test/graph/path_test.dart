@@ -56,6 +56,8 @@ void main() {
     test('empty vertices or edges throws', () {
       check(() => Path<int, void>.fromVertices([])).throws<ArgumentError>();
       check(() => Path<int, void>.fromEdges([])).throws<ArgumentError>();
+      check(() => Path<int, int>.fromVertices([1, 2], values: [10, 20]))
+          .throws<ArgumentError>();
     });
     test('long path', () {
       final vertices = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h'];

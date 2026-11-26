@@ -54,6 +54,15 @@ void main() {
       check(custom.degreeOf(1)).equals(1);
     });
   });
+  group('errors', () {
+    test('checkPositiveEdgeValue rejects NaN and negative', () {
+      check(() => GraphError.checkPositiveEdgeValue(0, 1, -1))
+          .throws<GraphError>();
+      check(() => GraphError.checkPositiveEdgeValue(0, 1, double.nan))
+          .throws<GraphError>();
+      GraphError.checkPositiveEdgeValue(0, 1, 0);
+    });
+  });
 }
 
 class _MinimalGraph<V, E> extends Graph<V, E> {

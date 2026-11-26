@@ -44,47 +44,48 @@ class TopologicalIterable<V> extends IterableBase<V> {
 }
 
 class _TopologicalIterator<V> implements Iterator<V> {
-  new(this.iterable)
-    : seen = iterable.vertexStrategy.createSet(),
-      reachable = iterable.vertexStrategy.createSet() {
-    reachable.addAll(
-      DepthFirstIterable(
-        iterable.vertices,
-        successorsOf: iterable.successorsOf,
-        vertexStrategy: iterable.vertexStrategy,
-      ),
-    );
+  new(this.iterable) : inDegree = iterable.vertexStrategy.createMap<int>() {
+    final reachable = DepthFirstIterable(
+      iterable.vertices,
+      successorsOf: iterable.successorsOf,
+      vertexStrategy: iterable.vertexStrategy,
+    ).toList(growable: false);
+    final reachableSet = iterable.vertexStrategy.createSet()..addAll(reachable);
     for (final vertex in reachable) {
-      if (iterable.predecessorsOf(vertex).where(reachable.contains).isEmpty) {
+      final degree = iterable
+          .predecessorsOf(vertex)
+          .where(reachableSet.contains)
+          .length;
+      if (degree == 0) {
         todo.add(vertex);
+      } else {
+        inDegree[vertex] = degree;
       }
     }
   }
 
   final TopologicalIterable<V> iterable;
   final List<V> todo = <V>[];
-  final Set<V> seen;
-  final Set<V> reachable;
+  final Map<V, int> inDegree;
 
   @override
   late V current;
 
   @override
   bool moveNext() {
-    while (todo.isNotEmpty) {
-      current = todo.removeLast();
-      if (seen.add(current)) {
-        for (final next in iterable.successorsOf(current)) {
-          if (iterable
-              .predecessorsOf(next)
-              .where(reachable.contains)
-              .every(seen.contains)) {
-            todo.add(next);
-          }
+    if (todo.isEmpty) return false;
+    current = todo.removeLast();
+    for (final next in iterable.successorsOf(current)) {
+      final remaining = inDegree[next];
+      if (remaining != null) {
+        if (remaining == 1) {
+          inDegree.remove(next);
+          todo.add(next);
+        } else {
+          inDegree[next] = remaining - 1;
         }
-        return true;
       }
     }
-    return false;
+    return true;
   }
 }

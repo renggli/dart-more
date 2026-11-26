@@ -33,5 +33,13 @@ void main() {
         ..contains(9232)
         ..contains(1);
     });
+    test('shortcut diamond DAG emits vertices once', () {
+      final graph = Graph<int, void>(isDirected: true)
+        ..addEdge(0, 1)
+        ..addEdge(0, 3)
+        ..addEdge(1, 3);
+      check(graph.depthFirstPostOrder(0)).deepEquals([3, 1, 0]);
+      check(graph.depthFirstPostOrderAll([0, 0])).deepEquals([3, 1, 0]);
+    });
   });
 }

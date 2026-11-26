@@ -48,11 +48,13 @@ class DepthFirstPostOrderIterable<V> extends IterableBase<V> {
 class _DepthFirstPostOrderIterator<V> implements Iterator<V> {
   new(this.iterable)
     : todo = addAllReversed(<V>[], iterable.vertices),
-      seen = iterable.vertexStrategy.createSet();
+      seen = iterable.vertexStrategy.createSet(),
+      emitted = iterable.vertexStrategy.createSet();
 
   final DepthFirstPostOrderIterable<V> iterable;
   final List<V> todo;
   final Set<V> seen;
+  final Set<V> emitted;
 
   @override
   late V current;
@@ -60,13 +62,17 @@ class _DepthFirstPostOrderIterator<V> implements Iterator<V> {
   @override
   bool moveNext() {
     while (todo.isNotEmpty) {
-      if (seen.add(todo.last)) {
+      final vertex = todo.last;
+      if (emitted.contains(vertex)) {
+        todo.removeLast();
+      } else if (seen.add(vertex)) {
         addAllReversed(
           todo,
-          iterable.successorsOf(todo.last).whereNot(seen.contains),
+          iterable.successorsOf(vertex).whereNot(seen.contains),
         );
       } else {
         current = todo.removeLast();
+        emitted.add(current);
         return true;
       }
     }

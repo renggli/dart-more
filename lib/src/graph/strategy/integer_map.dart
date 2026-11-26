@@ -15,6 +15,25 @@ class IntegerMap<T> extends MapBase<int, T> {
 
   final _presence = BitList.empty(growable: true);
   final _values = List<T?>.empty(growable: true);
+  int _length = 0;
+
+  @override
+  int get length => _length;
+
+  @override
+  bool get isEmpty => _length == 0;
+
+  @override
+  bool get isNotEmpty => _length > 0;
+
+  @override
+  bool containsKey(Object? key) {
+    if (key is int) {
+      final index = _forward(key);
+      return 0 <= index && index < _presence.length && _presence[index];
+    }
+    return false;
+  }
 
   @override
   T? operator [](Object? key) {
@@ -33,12 +52,18 @@ class IntegerMap<T> extends MapBase<int, T> {
     if (index >= _presence.length) {
       _presence.length = _values.length = 1 + index;
     }
-    _presence[index] = true;
+    if (!_presence[index]) {
+      _presence[index] = true;
+      _length++;
+    }
     _values[index] = value;
   }
 
   @override
-  void clear() => _presence.length = _values.length = 0;
+  void clear() {
+    _presence.length = _values.length = 0;
+    _length = 0;
+  }
 
   @override
   Iterable<int> get keys => _presence.indices().map(_backward);
@@ -51,6 +76,7 @@ class IntegerMap<T> extends MapBase<int, T> {
         final value = _values[index];
         _presence[index] = false;
         _values[index] = null;
+        _length--;
         return value;
       }
     }

@@ -43,8 +43,10 @@ class DepthFirstIterable<V> extends IterableBase<V> {
 
 class _DepthFirstIterator<V> implements Iterator<V> {
   new(this.iterable)
-    : todo = addAllReversed(<V>[], iterable.vertices),
-      seen = iterable.vertexStrategy.createSet()..addAll(iterable.vertices);
+    : todo = <V>[],
+      seen = iterable.vertexStrategy.createSet() {
+    addAllReversed(todo, iterable.vertices.where(seen.add));
+  }
 
   final DepthFirstIterable<V> iterable;
   final List<V> todo;

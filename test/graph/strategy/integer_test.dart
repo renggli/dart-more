@@ -37,12 +37,16 @@ void main() {
       check(map.containsKey(-42)).isTrue;
       check(map.containsKey(43)).isTrue;
       check(map.containsKey(44)).isFalse;
+      check(map.length).equals(2);
+      check(map.isNotEmpty).isTrue;
       check(map.keys).unorderedEquals([-42, 43]);
       check(map.values).unorderedEquals(['foo', 'baz']);
       check(map.remove(-42)).equals('foo');
+      check(map.length).equals(1);
       check(map.remove(-42)).isNull;
       check(map.remove('foo' as dynamic)).isNull;
       map.clear();
+      check(map.length).equals(0);
       check(map).isEmpty;
     });
     test('map (nullable)', () {

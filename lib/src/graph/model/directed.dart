@@ -101,14 +101,10 @@ class DirectedGraph<V, E> extends Graph<V, E> {
     final vertexAdjacency = adjacency.remove(vertex);
     if (vertexAdjacency == null) return;
     for (final target in vertexAdjacency.outgoing.keys) {
-      if (target != vertex) {
-        adjacency[target]?.incoming.remove(vertex);
-      }
+      adjacency[target]?.incoming.remove(vertex);
     }
     for (final source in vertexAdjacency.incoming.keys) {
-      if (source != vertex) {
-        adjacency[source]?.outgoing.remove(vertex);
-      }
+      adjacency[source]?.outgoing.remove(vertex);
     }
   }
 
