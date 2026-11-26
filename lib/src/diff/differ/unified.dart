@@ -11,13 +11,28 @@ import '../sequence_matcher.dart';
 /// immediately adjacent.
 class UnifiedDiffer extends Differ {
   /// Creates a unified differ with [context] lines of unchanged text.
-  const new({this.context = 3});
+  const new({this.context = 3}) : assert(context >= 0);
 
   /// The number of unchanged lines shown above and below a change.
   final int context;
 
   @override
   Iterable<String> compareLines(
+    Iterable<String> source,
+    Iterable<String> target, {
+    String? sourceLabel,
+    String? targetLabel,
+  }) {
+    if (context < 0) throw ArgumentError.value(context, 'context');
+    return _compareLines(
+      source,
+      target,
+      sourceLabel: sourceLabel,
+      targetLabel: targetLabel,
+    );
+  }
+
+  Iterable<String> _compareLines(
     Iterable<String> source,
     Iterable<String> target, {
     String? sourceLabel,

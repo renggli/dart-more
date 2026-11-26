@@ -12,29 +12,13 @@ extension CloseMatchesOnIterable<T> on Iterable<Iterable<T>> {
     Iterable<T> target, {
     int count = 3,
     double cutoff = 0.6,
-  }) {
-    if (count <= 0) throw ArgumentError.value(count, 'count');
-    if (cutoff < 0 || cutoff > 1) throw ArgumentError.value(cutoff, 'cutoff');
-    final matcher = SequenceMatcher<T>(target: target);
-    final candidates = <({Iterable<T> candidate, double ratio})>[];
-    for (final candidate in this) {
-      matcher.source = candidate;
-      if (matcher.realQuickRatio >= cutoff && matcher.quickRatio >= cutoff) {
-        final ratio = matcher.ratio;
-        if (ratio >= cutoff) {
-          candidates.add((candidate: candidate, ratio: ratio));
-        }
-      }
-    }
-    return candidates
-        .largest(
-          count,
-          comparator: keyOf<({Iterable<T> candidate, double ratio}), num>(
-            (each) => each.ratio,
-          ),
-        )
-        .map((each) => each.candidate);
-  }
+  }) => _closeMatches(
+    this,
+    target,
+    (candidate) => candidate,
+    count: count,
+    cutoff: cutoff,
+  );
 }
 
 /// Extension on string iterables to find close matches.
@@ -47,8 +31,43 @@ extension CloseMatchesOnStringIterable on Iterable<String> {
     String target, {
     int count = 3,
     double cutoff = 0.6,
-  }) =>
-      map((each) => each.runes)
-          .closeMatches(target.runes, count: count, cutoff: cutoff)
-          .map(String.fromCharCodes);
+  }) => _closeMatches(
+    this,
+    target.runes,
+    (candidate) => candidate.runes,
+    count: count,
+    cutoff: cutoff,
+  );
+}
+
+Iterable<E> _closeMatches<E, T>(
+  Iterable<E> items,
+  Iterable<T> target,
+  Iterable<T> Function(E item) toSequence, {
+  required int count,
+  required double cutoff,
+}) {
+  if (count <= 0) throw ArgumentError.value(count, 'count');
+  if (!(cutoff >= 0 && cutoff <= 1)) {
+    throw ArgumentError.value(cutoff, 'cutoff');
+  }
+  final matcher = SequenceMatcher<T>(target: target);
+  final candidates = <({E candidate, double ratio})>[];
+  for (final candidate in items) {
+    matcher.source = toSequence(candidate);
+    if (matcher.realQuickRatio >= cutoff && matcher.quickRatio >= cutoff) {
+      final ratio = matcher.ratio;
+      if (ratio >= cutoff) {
+        candidates.add((candidate: candidate, ratio: ratio));
+      }
+    }
+  }
+  return candidates
+      .largest(
+        count,
+        comparator: keyOf<({E candidate, double ratio}), num>(
+          (each) => each.ratio,
+        ),
+      )
+      .map((each) => each.candidate);
 }

@@ -1,4 +1,3 @@
-import '../../collection/iterable/repeat_element.dart';
 import '../../functional/types/predicate.dart';
 import '../../printer/printer.dart';
 import '../../printer/sequence.dart';
@@ -168,15 +167,15 @@ class ReadableDiffer extends Differ {
         final targetLength = operation.targetEnd - operation.targetStart;
         switch (operation.type) {
           case OperationType.replace:
-            sourceTags.writeAll(repeat('^', count: sourceLength));
-            targetTags.writeAll(repeat('^', count: targetLength));
+            sourceTags.write('^' * sourceLength);
+            targetTags.write('^' * targetLength);
           case OperationType.delete:
-            sourceTags.writeAll(repeat('-', count: sourceLength));
+            sourceTags.write('-' * sourceLength);
           case OperationType.insert:
-            targetTags.writeAll(repeat('+', count: targetLength));
+            targetTags.write('+' * targetLength);
           case OperationType.equal:
-            sourceTags.writeAll(repeat(' ', count: sourceLength));
-            targetTags.writeAll(repeat(' ', count: targetLength));
+            sourceTags.write(' ' * sourceLength);
+            targetTags.write(' ' * targetLength);
         }
       }
       yield* _dumpWithTags(

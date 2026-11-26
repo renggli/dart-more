@@ -5,9 +5,6 @@ import 'dart:math';
 
 import 'package:collection/collection.dart';
 
-import '../collection/iterable/group.dart';
-import '../collection/multimap/list.dart';
-import '../collection/multiset.dart';
 import '../functional/types.dart';
 import 'model/match.dart';
 import 'model/operation.dart';
@@ -38,40 +35,40 @@ class SequenceMatcher<T> {
   final bool autoJunk;
 
   // Internal cached source and target data.
-  final List<T> _source = <T>[];
-  final List<T> _target = <T>[];
+  List<T> _source = const [];
+  List<T> _target = const [];
 
   // Internal cached data for matching blocks and operations.
-  final List<Match> _matches = [];
-  final List<Operation> _operations = [];
+  UnmodifiableListView<Match>? _matches;
+  UnmodifiableListView<Operation>? _operations;
 
   // Internal cached data for `_target` input.
-  final ListMultimap<T, int> _targetIndices = ListMultimap();
+  final Map<T, List<int>> _targetIndices = {};
+  Map<T, int>? _targetCounts;
   final Set<T> _targetJunk = {};
   final Set<T> _targetPopular = {};
 
   /// The [source] iterable.
-  Iterable<T> get source => _source;
+  Iterable<T> get source => UnmodifiableListView(_source);
 
   set source(Iterable<T> iterable) {
-    _matches.clear();
-    _operations.clear();
-    _source.clear();
-    _source.addAll(iterable);
+    _matches = null;
+    _operations = null;
+    _source = List.of(iterable, growable: false);
   }
 
   /// The [target] iterable.
-  Iterable<T> get target => _target;
+  Iterable<T> get target => UnmodifiableListView(_target);
 
   set target(Iterable<T> iterable) {
-    _matches.clear();
-    _operations.clear();
-    _target.clear();
-    _target.addAll(iterable);
+    _matches = null;
+    _operations = null;
+    _targetCounts = null;
+    _target = List.of(iterable, growable: false);
     // Compute the target indices.
     _targetIndices.clear();
     for (var i = 0; i < _target.length; i++) {
-      _targetIndices[_target[i]].add(i);
+      (_targetIndices[_target[i]] ??= []).add(i);
     }
     // Compute junk elements.
     _targetJunk.clear();
@@ -81,30 +78,26 @@ class SequenceMatcher<T> {
           _targetJunk.add(element);
         }
       }
-      for (final element in _targetJunk) {
-        _targetIndices.removeAll(element);
-      }
+      _targetJunk.forEach(_targetIndices.remove);
     }
     // Compute popular elements, that are not junk.
     _targetPopular.clear();
     if (autoJunk && _target.length >= 200) {
       final cutoff = _target.length ~/ 100 + 1;
-      for (final entry in _targetIndices.asMap().entries) {
-        if (entry.values.length > cutoff) {
+      for (final entry in _targetIndices.entries) {
+        if (entry.value.length > cutoff) {
           _targetPopular.add(entry.key);
         }
       }
-      for (final element in _targetPopular) {
-        _targetIndices.removeAll(element);
-      }
+      _targetPopular.forEach(_targetIndices.remove);
     }
   }
 
   /// Returns an iterable over the junk entries in [target].
-  Iterable<T> get targetJunk => _targetJunk;
+  Iterable<T> get targetJunk => UnmodifiableSetView(_targetJunk);
 
   /// Returns an iterable over the popular entries in [target].
-  Iterable<T> get targetPopular => _targetPopular;
+  Iterable<T> get targetPopular => UnmodifiableSetView(_targetPopular);
 
   /// Finds the longest matching block in the provided ranges.
   Match findLongestMatch({
@@ -113,15 +106,27 @@ class SequenceMatcher<T> {
     int targetStart = 0,
     int? targetEnd,
   }) {
-    sourceEnd ??= _source.length;
-    targetEnd ??= _target.length;
+    sourceEnd = RangeError.checkValidRange(
+      sourceStart,
+      sourceEnd,
+      _source.length,
+      'sourceStart',
+      'sourceEnd',
+    );
+    targetEnd = RangeError.checkValidRange(
+      targetStart,
+      targetEnd,
+      _target.length,
+      'targetStart',
+      'targetEnd',
+    );
     // Find longest junk-free match.
     var bestSource = sourceStart, bestTarget = targetStart, bestLength = 0;
     var targetLengths = <int, int>{};
     var newTargetLengths = <int, int>{};
     for (var s = sourceStart; s < sourceEnd; s++) {
       newTargetLengths.clear();
-      for (final t in _targetIndices[_source[s]]) {
+      for (final t in _targetIndices[_source[s]] ?? const <int>[]) {
         if (t < targetStart) continue;
         if (t >= targetEnd) break;
         final targetLength = (targetLengths[t - 1] ?? 0) + 1;
@@ -175,7 +180,7 @@ class SequenceMatcher<T> {
 
   /// Returns a list of blocks describing matching subsequences.
   Iterable<Match> get matches {
-    if (_matches.isNotEmpty) return _matches;
+    if (_matches case final matches?) return matches;
     // Find the longest matching blocks iteratively.
     final blocks = <Match>[];
     final queue = QueueList.from([
@@ -218,6 +223,7 @@ class SequenceMatcher<T> {
     }
     blocks.sort();
     // Collapse adjacent blocks.
+    final result = <Match>[];
     var sourceStart = 0, targetStart = 0, length = 0;
     for (final block in blocks) {
       if (sourceStart + length == block.sourceStart &&
@@ -225,7 +231,7 @@ class SequenceMatcher<T> {
         length += block.length;
       } else {
         if (length > 0) {
-          _matches.add(
+          result.add(
             Match(
               sourceStart: sourceStart,
               targetStart: targetStart,
@@ -239,7 +245,7 @@ class SequenceMatcher<T> {
       }
     }
     if (length > 0) {
-      _matches.add(
+      result.add(
         Match(
           sourceStart: sourceStart,
           targetStart: targetStart,
@@ -247,20 +253,21 @@ class SequenceMatcher<T> {
         ),
       );
     }
-    _matches.add(
+    result.add(
       Match(
         sourceStart: _source.length,
         targetStart: _target.length,
         length: 0,
       ),
     );
-    return _matches;
+    return _matches = UnmodifiableListView(result);
   }
 
   /// Returns a sequence of operations describing how to turn [source] into
   /// [target].
   Iterable<Operation> get operations {
-    if (_operations.isNotEmpty) return _operations;
+    if (_operations case final operations?) return operations;
+    final result = <Operation>[];
     var sourceStart = 0, targetStart = 0;
     for (final block in matches) {
       final type =
@@ -273,7 +280,7 @@ class SequenceMatcher<T> {
           : null;
 
       if (type != null) {
-        _operations.add(
+        result.add(
           Operation(
             type,
             sourceStart: sourceStart,
@@ -286,7 +293,7 @@ class SequenceMatcher<T> {
       sourceStart = block.sourceStart + block.length;
       targetStart = block.targetStart + block.length;
       if (block.length > 0) {
-        _operations.add(
+        result.add(
           Operation(
             OperationType.equal,
             sourceStart: block.sourceStart,
@@ -297,13 +304,17 @@ class SequenceMatcher<T> {
         );
       }
     }
-    return _operations;
+    return _operations = UnmodifiableListView(result);
   }
 
   /// Returns a sequence of operations describing how to turn [source] into
   /// [target] keeping a [context] of lines before and after each change.
-  Iterable<List<Operation>> groupedOperations({int context = 3}) sync* {
+  Iterable<List<Operation>> groupedOperations({int context = 3}) {
     if (context < 0) throw ArgumentError.value(context, 'context');
+    return _groupedOperations(context);
+  }
+
+  Iterable<List<Operation>> _groupedOperations(int context) sync* {
     final codes = [...operations];
     if (codes.isEmpty) codes.add(Operation.empty);
     if (codes.first.type == OperationType.equal) {
@@ -383,10 +394,25 @@ class SequenceMatcher<T> {
   );
 
   /// Returns an upper bound on [ratio] relatively quickly.
-  double get quickRatio => _calculateRatio(
-    Multiset.from(_source).intersection(_target).length,
-    _source.length + _target.length,
-  );
+  double get quickRatio {
+    var counts = _targetCounts;
+    if (counts == null) {
+      counts = _targetCounts = <T, int>{};
+      for (final element in _target) {
+        counts[element] = (counts[element] ?? 0) + 1;
+      }
+    }
+    final available = <T, int>{};
+    var matches = 0;
+    for (final element in _source) {
+      final remaining = available[element] ?? counts[element] ?? 0;
+      if (remaining > 0) {
+        available[element] = remaining - 1;
+        matches++;
+      }
+    }
+    return _calculateRatio(matches, _source.length + _target.length);
+  }
 
   /// Returns an upper bound on [ratio] really quickly.
   double get realQuickRatio => _calculateRatio(

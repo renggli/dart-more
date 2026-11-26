@@ -125,5 +125,8 @@ void main() {
         '! c',
       ]);
     });
+    test('invalid context', () {
+      check(() => ContextDiffer(context: -1)).throws<AssertionError>();
+    });
   });
 }

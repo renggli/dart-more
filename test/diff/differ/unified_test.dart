@@ -101,5 +101,8 @@ void main() {
         ),
       ).deepEquals(['@@ -1,2 +1,2 @@', ' a', '-b', '+c']);
     });
+    test('invalid context', () {
+      check(() => UnifiedDiffer(context: -1)).throws<AssertionError>();
+    });
   });
 }

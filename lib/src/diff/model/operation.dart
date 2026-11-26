@@ -16,7 +16,7 @@ class Operation with ToStringPrinter {
     required this.targetEnd,
   });
 
-  /// An empty operation.
+  /// Sentinel operation returned when grouping empty operations.
   static const empty = Operation(
     OperationType.equal,
     sourceStart: 0,

@@ -1,7 +1,10 @@
+import 'package:meta/meta.dart';
+
 import '../../printer/object/object.dart';
 import '../../printer/to_string.dart';
 
 /// Encapsulates a matching block when comparing two inputs.
+@immutable
 class Match with ToStringPrinter implements Comparable<Match> {
   /// Constructs a new match.
   const new({

@@ -16,6 +16,9 @@ void main() {
       matcher.source = bcde;
       check(matcher.source).deepEquals(bcde);
       check(matcher.ratio).equals(1.00);
+      matcher.source = matcher.source.skip(1);
+      check(matcher.source).deepEquals(['c', 'd', 'e']);
+      check(() => (matcher.source as List).add('x')).throws<UnsupportedError>();
     });
 
     test('target', () {
@@ -25,6 +28,9 @@ void main() {
       matcher.target = abcd;
       check(matcher.target).deepEquals(abcd);
       check(matcher.ratio).equals(1.00);
+      matcher.target = matcher.target.skip(1);
+      check(matcher.target).deepEquals(['b', 'c', 'd']);
+      check(() => (matcher.target as List).add('x')).throws<UnsupportedError>();
     });
 
     test('findLongestMatch', () {
@@ -46,13 +52,14 @@ void main() {
           .equals(const Match(sourceStart: 1, targetStart: 0, length: 6));
     });
 
-    test('findLongestMatch (without match)', () {
+    test('findLongestMatch (invalid range)', () {
       final matcher = SequenceMatcher(
-        source: 'ab'.split(''),
-        target: 'c'.split(''),
+        source: 'abc'.split(''),
+        target: 'abc'.split(''),
       );
-      check(matcher.findLongestMatch())
-          .equals(const Match(sourceStart: 0, targetStart: 0, length: 0));
+      check(() => matcher.findLongestMatch(sourceStart: 2, sourceEnd: 1))
+          .throws<RangeError>();
+      check(() => matcher.findLongestMatch(targetEnd: 4)).throws<RangeError>();
     });
 
     test('findLongestMatch (with popular elements)', () {
@@ -225,8 +232,9 @@ void main() {
 
     test('groupedOperations invalid context', () {
       final matcher = SequenceMatcher(source: ['a'], target: ['b']);
-      check(() => matcher.groupedOperations(context: -1).toList())
-          .throws<ArgumentError>();
+      check(() {
+        matcher.groupedOperations(context: -1);
+      }).throws<ArgumentError>();
     });
 
     test('empty', () {
@@ -323,8 +331,8 @@ void main() {
     });
 
     test('end', () {
-      final a = [...repeat('a', count: 100)];
-      final b = [...repeat('a', count: 100), 'x'];
+      final a = [...repeat('a', count: 100), 'x'];
+      final b = [...repeat('a', count: 100)];
       final matcher = SequenceMatcher(source: a, target: b);
       check(matcher.ratio).isCloseTo(0.995, epsilon);
       check(matcher.quickRatio).isCloseTo(0.995, epsilon);
@@ -338,11 +346,11 @@ void main() {
           targetEnd: 100,
         ),
         const Operation(
-          OperationType.insert,
+          OperationType.delete,
           sourceStart: 100,
-          sourceEnd: 100,
+          sourceEnd: 101,
           targetStart: 100,
-          targetEnd: 101,
+          targetEnd: 100,
         ),
       ]);
       check(matcher.targetJunk).isEmpty;
@@ -503,8 +511,8 @@ void main() {
     });
 
     test('end', () {
-      final a = [...repeat('a', count: 100)];
-      final b = [...repeat('a', count: 100), 'x'];
+      final a = [...repeat('a', count: 100), 'x'];
+      final b = [...repeat('a', count: 100)];
       final matcher = SequenceMatcher(source: a, target: b);
       check(matcher.ratio).isCloseTo(0.995, epsilon);
       check(matcher.quickRatio).isCloseTo(0.995, epsilon);
@@ -518,11 +526,11 @@ void main() {
           targetEnd: 100,
         ),
         const Operation(
-          OperationType.insert,
+          OperationType.delete,
           sourceStart: 100,
-          sourceEnd: 100,
+          sourceEnd: 101,
           targetStart: 100,
-          targetEnd: 101,
+          targetEnd: 100,
         ),
       ]);
       check(matcher.targetJunk).isEmpty;
