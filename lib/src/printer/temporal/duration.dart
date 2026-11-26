@@ -57,8 +57,8 @@ class DurationPrinter extends SequencePrinter<Duration> {
   /// Returns an ISO-8601 extended full-precision format representation.
   static DurationPrinter iso8601() => DurationPrinter(
     (builder) => builder
-      ..literal('P')
       ..sign()
+      ..literal('P')
       ..part(
         TimeUnit.year,
         printer: FixedNumberPrinter<int>().after('Y'),

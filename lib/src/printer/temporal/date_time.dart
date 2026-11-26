@@ -89,7 +89,11 @@ class DateTimePrinter extends SequencePrinter<DateTime> {
   );
 
   /// Returns an ISO-8601 full-precision extended format printer.
-  static DateTimePrinter iso8601() => dateTime();
+  static DateTimePrinter iso8601() => DateTimePrinter(
+    (builder) => builder
+      ..add(dateTime())
+      ..add(const LiteralPrinter<DateTime>('Z').where((dt) => dt.isUtc)),
+  );
 
   @Deprecated('Use `iso8601()` as this method was wrongly named.')
   static DateTimePrinter iso8691() => iso8601();

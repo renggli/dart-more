@@ -37,20 +37,22 @@ void main() {
     test('iso8601', () {
       final printer = DateTimePrinter.iso8601();
       check(dateTimes.map(printer.print)).deepEquals([
-        '0000-01-01T00:00:00.000',
-        '1980-11-06T08:25:00.000',
-        '1969-07-20T20:18:04.012',
-        '2023-10-24T18:08:32.271828',
+        '0000-01-01T00:00:00.000Z',
+        '1980-11-06T08:25:00.000Z',
+        '1969-07-20T20:18:04.012Z',
+        '2023-10-24T18:08:32.271828Z',
       ]);
+      check(printer.print(DateTime(2023, 10, 24, 18, 8, 32, 271, 828)))
+          .equals('2023-10-24T18:08:32.271828');
     });
     test('iso8691 (deprecated)', () {
       // ignore: deprecated_member_use_from_same_package
       final printer = DateTimePrinter.iso8691();
       check(dateTimes.map(printer.print)).deepEquals([
-        '0000-01-01T00:00:00.000',
-        '1980-11-06T08:25:00.000',
-        '1969-07-20T20:18:04.012',
-        '2023-10-24T18:08:32.271828',
+        '0000-01-01T00:00:00.000Z',
+        '1980-11-06T08:25:00.000Z',
+        '1969-07-20T20:18:04.012Z',
+        '2023-10-24T18:08:32.271828Z',
       ]);
     });
     group('era', () {
