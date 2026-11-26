@@ -183,6 +183,20 @@ void persistentCacheTests(NewCache<int, String> newCache) {
     await loaded;
     check(await cache.getIfPresent(1)).isNull;
   });
+  test('concurrent get calls share a single loader invocation', () async {
+    var calls = 0;
+    final cache = newCache((key) {
+      calls++;
+      return futureDelayedLoader(key);
+    });
+    final results = await Future.wait([
+      cache.get(1),
+      cache.get(1),
+      cache.get(1),
+    ]);
+    check(calls).equals(1);
+    check(results).deepEquals(['1', '1', '1']);
+  });
   test('reap is invariant', () async {
     final cache = newCache(immediateFailingLoader);
     await cache.set(1, 'foo');

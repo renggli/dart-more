@@ -15,16 +15,16 @@ class ExpiryCache<K, V> extends Cache<K, V> {
     if (updateExpiry == null && accessExpiry == null) {
       throw ArgumentError('Either update or access expiry must be provided.');
     }
-    if (updateExpiry != null && updateExpiry! <= Duration.zero) {
+    if (updateExpiry case final update? when update <= Duration.zero) {
       throw ArgumentError.value(
-        updateExpiry,
+        update,
         'updateExpiry',
         'Update expiry must be positive.',
       );
     }
-    if (accessExpiry != null && accessExpiry! <= Duration.zero) {
+    if (accessExpiry case final access? when access <= Duration.zero) {
       throw ArgumentError.value(
-        accessExpiry,
+        access,
         'accessExpiry',
         'Access expiry must be positive.',
       );
@@ -47,16 +47,16 @@ class ExpiryCache<K, V> extends Cache<K, V> {
   Future<V> get(K key) async {
     final now = clock.now();
     var item = cached[key];
-    if (item == null) {
+    if (item == null || item.isExpired(now)) {
+      cached.remove(key);
       item = cached[key] = ExpiryCacheItem(
         loader(key),
-        updateDeadline: updateExpiry != null ? now.add(updateExpiry!) : null,
+        updateDeadline: _deadline(now, updateExpiry),
+        accessDeadline: _deadline(now, accessExpiry),
       );
-    } else if (item.isExpired(now)) {
-      item.value = loader(key);
-      item.refreshUpdate(now, updateExpiry);
+    } else {
+      item.refreshAccess(now, accessExpiry);
     }
-    item.refreshAccess(now, accessExpiry);
     try {
       return await item.value;
     } catch (_) {
@@ -84,19 +84,23 @@ class ExpiryCache<K, V> extends Cache<K, V> {
   @override
   Future<V> set(K key, FutureOr<V> value) async {
     final now = clock.now();
-    var item = cached[key];
-    if (item == null) {
-      item = cached[key] = ExpiryCacheItem(
-        value,
-        updateDeadline: updateExpiry != null ? now.add(updateExpiry!) : null,
-      );
-    } else {
-      item.value = value;
-      item.refreshUpdate(now, updateExpiry);
+    final item = cached[key] = ExpiryCacheItem(
+      value,
+      updateDeadline: _deadline(now, updateExpiry),
+      accessDeadline: _deadline(now, accessExpiry),
+    );
+    try {
+      return await item.value;
+    } catch (_) {
+      if (identical(cached[key], item)) {
+        cached.remove(key);
+      }
+      rethrow;
     }
-    item.refreshAccess(now, accessExpiry);
-    return await item.value;
   }
+
+  static DateTime? _deadline(DateTime now, Duration? duration) =>
+      duration != null ? now.add(duration) : null;
 
   @override
   Future<int> size() async => cached.length;
@@ -148,18 +152,21 @@ class ExpiryCacheItem<V> extends CacheItem<V> {
 
   /// The earlier expiration deadline of this item.
   DateTime get expiry {
-    if (updateDeadline != null && accessDeadline != null) {
-      return updateDeadline!.isBefore(accessDeadline!)
-          ? updateDeadline!
-          : accessDeadline!;
+    final update = updateDeadline;
+    final access = accessDeadline;
+    if (update != null && access != null) {
+      return update.isBefore(access) ? update : access;
     }
-    return updateDeadline ?? accessDeadline!;
+    return (update ?? access)!;
   }
 
   /// Whether this item has expired given the current time [now].
-  bool isExpired(DateTime now) =>
-      (updateDeadline != null && now.isAfter(updateDeadline!)) ||
-      (accessDeadline != null && now.isAfter(accessDeadline!));
+  bool isExpired(DateTime now) {
+    final update = updateDeadline;
+    final access = accessDeadline;
+    return (update != null && now.isAfter(update)) ||
+        (access != null && now.isAfter(access));
+  }
 
   /// Refreshes the update deadline from [now] and [duration].
   void refreshUpdate(DateTime now, Duration? duration) {

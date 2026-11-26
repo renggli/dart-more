@@ -1,6 +1,7 @@
 import 'dart:async' show Future, FutureOr;
 
 import '../printer/object/object.dart';
+import '../shared/exceptions.dart';
 import 'cache.dart';
 import 'item.dart';
 import 'loader.dart';
@@ -9,7 +10,7 @@ import 'loader.dart';
 class LruCache<K, V> extends Cache<K, V> {
   /// Creates an LRU cache with the given [loader] and [maximumSize].
   new(this.loader, this.maximumSize) {
-    RangeError.checkNotNegative(maximumSize - 1, 'maximumSize');
+    checkNonZeroPositive(maximumSize, 'maximumSize');
   }
 
   /// The loader function for cache misses.
@@ -43,14 +44,19 @@ class LruCache<K, V> extends Cache<K, V> {
 
   @override
   Future<V> set(K key, FutureOr<V> value) async {
-    var item = promote(key);
-    if (item == null) {
-      item = cached[key] = CacheItem(value);
+    final existing = promote(key);
+    final item = cached[key] = CacheItem(value);
+    if (existing == null) {
       cleanUp();
-    } else {
-      item.value = value;
     }
-    return await value;
+    try {
+      return await item.value;
+    } catch (_) {
+      if (identical(cached[key], item)) {
+        cached.remove(key);
+      }
+      rethrow;
+    }
   }
 
   @override

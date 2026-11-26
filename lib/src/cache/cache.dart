@@ -34,14 +34,16 @@ abstract class Cache<K, V> with ToStringPrinter {
   /// Creates a First-in/First-out (FIFO) cache.
   ///
   /// The [loader] defines the function to construct items for the cache; and
-  /// [maximumSize] defines the maximum number of items cached.
+  /// [maximumSize] defines the maximum number of items cached (must be at least
+  /// `1`, otherwise throws a [RangeError]).
   factory fifo({required Loader<K, V> loader, int maximumSize = 100}) =>
       FifoCache<K, V>(loader, maximumSize);
 
   /// Creates a Least Recently Used (LRU) cache.
   ///
   /// The [loader] defines the function to construct items for the cache; and
-  /// [maximumSize] defines the maximum number of items cached.
+  /// [maximumSize] defines the maximum number of items cached (must be at least
+  /// `1`, otherwise throws a [RangeError]).
   factory lru({required Loader<K, V> loader, int maximumSize = 100}) =>
       LruCache<K, V>(loader, maximumSize);
 
@@ -77,6 +79,9 @@ abstract class Cache<K, V> with ToStringPrinter {
   Future<void> putAll(Map<K, FutureOr<V>> values) => setAll(values);
 
   /// Returns the number of currently cached values.
+  ///
+  /// For expiry caches, this includes expired entries that have not yet been
+  /// accessed or removed by [reap].
   Future<int> size();
 
   /// Discards any cached value with the [key].
