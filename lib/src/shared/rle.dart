@@ -1,10 +1,14 @@
 import 'dart:typed_data';
 
-/// Encodes a list of positive integers [input] using run-length encoding.
+/// Encodes a list of non-negative 31-bit integers (`0 <= x <= 0x7fffffff`)
+/// [input] using run-length encoding.
 List<int> encodeRle(List<int> input) {
   final output = <int>[input.length];
   for (var i = 0; i < input.length;) {
-    assert(input[i] >= 0, 'invalid input value ${input[i]} at $i');
+    assert(
+      input[i] >= 0 && input[i] <= 0x7fffffff,
+      'invalid input value ${input[i]} at $i',
+    );
     var count = 1;
     while (i + count < input.length && input[i] == input[i + count]) {
       count++;

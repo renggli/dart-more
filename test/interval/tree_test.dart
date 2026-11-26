@@ -40,125 +40,144 @@ void verifyInvariants<V>(IntervalTree<num, V> tree) {
 }
 
 void main() {
-  group('tree', () {
-    test('empty', () {
-      final tree = IntervalTree.fromIntervals<num>();
-      check(tree).isEmpty;
-      check(tree.length).equals(0);
-      check(tree.isEmpty).isTrue;
-      check(tree.toString()).equals('()');
-      check(tree.queryPoint(0)).isEmpty;
-      check(tree.queryInterval(Interval(0))).isEmpty;
-      verifyInvariants(tree);
-    });
-    test('single', () {
-      final interval = Interval<num>(1980, 2023);
-      final tree = IntervalTree.fromIntervals<num>([interval]);
-      check(tree).isNotEmpty;
-      check(tree.length).equals(1);
-      check(tree.isEmpty).isFalse;
-      check(tree.toString()).equals('(1980..2023)');
-      check(tree.queryPoint(2000)).deepEquals([interval]);
-      check(tree.queryInterval(interval)).deepEquals([interval]);
-      verifyInvariants(tree);
-    });
-    test('separate', () {
-      final first = Interval<num>(1903, 1975);
-      final second = Interval<num>(1980, 2023);
-      final tree = IntervalTree.fromIntervals<num>([first, second]);
-      check(tree).isNotEmpty;
-      check(tree.length).equals(2);
-      check(tree.isEmpty).isFalse;
-      check(tree.queryPoint(1900)).isEmpty;
-      check(tree.queryPoint(1945)).deepEquals([first]);
-      check(tree.queryPoint(1978)).isEmpty;
-      check(tree.queryPoint(2000)).deepEquals([second]);
-      check(tree.queryPoint(2030)).isEmpty;
-      check(tree.queryInterval(Interval(1900, 1960))).deepEquals([first]);
-      check(tree.queryInterval(first)).deepEquals([first]);
-      check(tree.queryInterval(Interval(1903, 2023)))
-          .unorderedEquals([first, second]);
-      check(tree.queryInterval(second)).deepEquals([second]);
-      check(tree.queryInterval(Interval(2000, 2030))).deepEquals([second]);
-      verifyInvariants(tree);
-    });
-    test('overlapping', () {
-      final first = Interval<num>(1945, 2012);
-      final second = Interval<num>(1980, 2023);
-      final tree = IntervalTree.fromIntervals<num>([first, second]);
-      check(tree).isNotEmpty;
-      check(tree.length).equals(2);
-      check(tree.isEmpty).isFalse;
-      check(tree.queryPoint(1900)).isEmpty;
-      check(tree.queryPoint(1960)).deepEquals([first]);
-      check(tree.queryPoint(1980)).deepEquals([first, second]);
-      check(tree.queryPoint(2020)).deepEquals([second]);
-      check(tree.queryPoint(2030)).isEmpty;
-      check(tree.queryInterval(Interval(1900, 1950))).deepEquals([first]);
-      check(tree.queryInterval(first)).unorderedEquals([first, second]);
-      check(tree.queryInterval(second)).unorderedEquals([first, second]);
-      check(tree.queryInterval(Interval(2015, 2030))).deepEquals([second]);
-      verifyInvariants(tree);
-    });
-    test('repeat', () {
-      final first = Interval<num>(1980, 2023);
-      final second = Interval<num>(1980, 2023);
-      final tree = IntervalTree.fromIntervals<num>([first, second]);
-      check(tree).isNotEmpty;
-      check(tree.length).equals(2);
-      check(tree.isEmpty).isFalse;
-      check(tree.queryPoint(1970)).isEmpty;
-      check(tree.queryPoint(1980)).deepEquals([first, second]);
-      check(tree.queryPoint(2000)).deepEquals([first, second]);
-      check(tree.queryPoint(2023)).deepEquals([first, second]);
-      check(tree.queryPoint(2030)).isEmpty;
-      check(tree.queryInterval(Interval(1900, 1950))).isEmpty;
-      check(tree.queryInterval(first)).unorderedEquals([first, second]);
-      check(tree.queryInterval(second)).unorderedEquals([first, second]);
-      check(tree.queryInterval(Interval(2100, 2200))).isEmpty;
-      verifyInvariants(tree);
-    });
-    group('stress', () {
-      void stress(
-        String name, {
-        required int count,
-        required int range,
-        required int size,
-      }) => test(name, () {
-        final random = Random(name.hashCode);
-        final list = List.generate(count, (_) {
-          final base = random.nextInt(range);
-          final length = random.nextInt(size);
-          return Interval<num>(base, base + length);
-        });
-        final tree = IntervalTree.fromIntervals<num>(list);
-        check(tree).unorderedEquals(list);
-        verifyInvariants(tree);
+  test('empty', () {
+    final tree = IntervalTree.fromIntervals<num>();
+    check(tree).isEmpty;
+    check(tree.length).equals(0);
+    check(tree.isEmpty).isTrue;
+    check(tree.toString()).equals('()');
+    check(tree.queryPoint(0)).isEmpty;
+    check(tree.queryInterval(Interval(0))).isEmpty;
+    verifyInvariants(tree);
+  });
+  test('single', () {
+    final interval = Interval<num>(1980, 2023);
+    final tree = IntervalTree.fromIntervals<num>([interval]);
+    check(tree).isNotEmpty;
+    check(tree.length).equals(1);
+    check(tree.isEmpty).isFalse;
+    check(tree.toString()).equals('(1980..2023)');
+    check(tree.queryPoint(2000)).deepEquals([interval]);
+    check(tree.queryInterval(interval)).deepEquals([interval]);
+    verifyInvariants(tree);
+  });
+  test('separate', () {
+    final first = Interval<num>(1903, 1975);
+    final second = Interval<num>(1980, 2023);
+    final tree = IntervalTree.fromIntervals<num>([first, second]);
+    check(tree).isNotEmpty;
+    check(tree.length).equals(2);
+    check(tree.isEmpty).isFalse;
+    check(tree.queryPoint(1900)).isEmpty;
+    check(tree.queryPoint(1945)).deepEquals([first]);
+    check(tree.queryPoint(1978)).isEmpty;
+    check(tree.queryPoint(2000)).deepEquals([second]);
+    check(tree.queryPoint(2030)).isEmpty;
+    check(tree.queryInterval(Interval(1900, 1960))).deepEquals([first]);
+    check(tree.queryInterval(first)).deepEquals([first]);
+    check(tree.queryInterval(Interval(1903, 2023)))
+        .unorderedEquals([first, second]);
+    check(tree.queryInterval(second)).deepEquals([second]);
+    check(tree.queryInterval(Interval(2000, 2030))).deepEquals([second]);
+    verifyInvariants(tree);
+  });
+  test('overlapping', () {
+    final first = Interval<num>(1945, 2012);
+    final second = Interval<num>(1980, 2023);
+    final tree = IntervalTree.fromIntervals<num>([first, second]);
+    check(tree).isNotEmpty;
+    check(tree.length).equals(2);
+    check(tree.isEmpty).isFalse;
+    check(tree.queryPoint(1900)).isEmpty;
+    check(tree.queryPoint(1960)).deepEquals([first]);
+    check(tree.queryPoint(1980)).deepEquals([first, second]);
+    check(tree.queryPoint(2020)).deepEquals([second]);
+    check(tree.queryPoint(2030)).isEmpty;
+    check(tree.queryInterval(Interval(1900, 1950))).deepEquals([first]);
+    check(tree.queryInterval(first)).unorderedEquals([first, second]);
+    check(tree.queryInterval(second)).unorderedEquals([first, second]);
+    check(tree.queryInterval(Interval(2015, 2030))).deepEquals([second]);
+    verifyInvariants(tree);
+  });
+  test('repeat', () {
+    final first = Interval<num>(1980, 2023);
+    final second = Interval<num>(1980, 2023);
+    final tree = IntervalTree.fromIntervals<num>([first, second]);
+    check(tree).isNotEmpty;
+    check(tree.length).equals(2);
+    check(tree.isEmpty).isFalse;
+    check(tree.queryPoint(1970)).isEmpty;
+    check(tree.queryPoint(1980)).deepEquals([first, second]);
+    check(tree.queryPoint(2000)).deepEquals([first, second]);
+    check(tree.queryPoint(2023)).deepEquals([first, second]);
+    check(tree.queryPoint(2030)).isEmpty;
+    check(tree.queryInterval(Interval(1900, 1950))).isEmpty;
+    check(tree.queryInterval(first)).unorderedEquals([first, second]);
+    check(tree.queryInterval(second)).unorderedEquals([first, second]);
+    check(tree.queryInterval(Interval(2100, 2200))).isEmpty;
+    verifyInvariants(tree);
+  });
+  test('fromValues evaluates getter once per element', () {
+    var calls = 0;
+    final items = [
+      (name: 'a', range: Interval<num>(1, 5)),
+      (name: 'b', range: Interval<num>(3, 8)),
+      (name: 'c', range: Interval<num>(10, 12)),
+    ];
+    final tree =
+        IntervalTree.fromValues<num, ({String name, Interval<num> range})>(
+          items,
+          (item) {
+            calls++;
+            return item.range;
+          },
+        );
+    check(calls).equals(3);
+    check(tree.queryPoint(4).map((e) => e.name)).unorderedEquals(['a', 'b']);
+    check(tree.queryInterval(Interval<num>(4, 11)).map((e) => e.name))
+        .unorderedEquals(['a', 'b', 'c']);
+    check(calls).equals(3);
+  });
+  group('stress', () {
+    void stress(
+      String name, {
+      required int count,
+      required int range,
+      required int size,
+    }) => test(name, () {
+      final random = Random(name.hashCode);
+      final list = List.generate(count, (_) {
+        final base = random.nextInt(range);
+        final length = random.nextInt(size);
+        return Interval<num>(base, base + length);
       });
-      stress(
-        'very small intervals in small range',
-        count: 500,
-        range: 1000,
-        size: 10,
-      );
-      stress(
-        'very large intervals in small range',
-        count: 500,
-        range: 1000,
-        size: 1000,
-      );
-      stress(
-        'very small intervals in large range',
-        count: 500,
-        range: 1000000,
-        size: 10,
-      );
-      stress(
-        'very large intervals in large range',
-        count: 500,
-        range: 1000000,
-        size: 1000000,
-      );
+      final tree = IntervalTree.fromIntervals<num>(list);
+      check(tree).unorderedEquals(list);
+      verifyInvariants(tree);
     });
+    stress(
+      'very small intervals in small range',
+      count: 500,
+      range: 1000,
+      size: 10,
+    );
+    stress(
+      'very large intervals in small range',
+      count: 500,
+      range: 1000,
+      size: 1000,
+    );
+    stress(
+      'very small intervals in large range',
+      count: 500,
+      range: 1000000,
+      size: 10,
+    );
+    stress(
+      'very large intervals in large range',
+      count: 500,
+      range: 1000000,
+      size: 1000000,
+    );
   });
 }

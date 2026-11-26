@@ -2,9 +2,10 @@
 /// compilation. This library makes their use easier.
 ///
 /// Make sure to study and understand the documentation for the
-/// [Dart VM](https://github.com/dart-lang/sdk/blob/main/runtime/docs/pragmas.md)
+/// [Dart VM](https://github.com/dart-lang/sdk/blob/main/runtime/docs/pragmas.md),
+/// [Dart2JS](https://github.com/dart-lang/sdk/blob/main/pkg/compiler/doc/pragmas.md),
 /// and
-/// [Dart2JS](https://github.com/dart-lang/sdk/blob/main/pkg/compiler/doc/pragmas.md)
+/// [Dart2WASM](https://github.com/dart-lang/sdk/blob/main/pkg/dart2wasm/docs/pragmas.md)
 /// before using any of this code.
 library;
 

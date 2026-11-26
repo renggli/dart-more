@@ -1,5 +1,5 @@
 import 'package:checks/checks.dart';
-import 'package:more/more.dart';
+import 'package:more/pragma.dart';
 import 'package:test/scaffolding.dart';
 
 void main() {

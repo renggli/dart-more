@@ -16,13 +16,12 @@ final bool hasAssertionsEnabled = () {
   return enabled;
 }();
 
-/// The safe bits of an [int] value. In the Dart VM integers are represented
-/// using 63 bits, in JavaScript we only have 53.
+/// The nominal safe integer bit-width used by [minSafeInteger] and
+/// [maxSafeInteger] (`53` in JavaScript, `63` on VM/Wasm).
 const int safeIntegerBits = isJavaScript ? 53 : 63;
 
-/// The minimum safe value of an [int].
+/// The minimum safe value of an [int] (`-2^(safeIntegerBits - 1)`).
 final int minSafeInteger = -pow(2, safeIntegerBits - 1).toInt();
-// -BigInt.two.pow(safeIntegerBits - 1).toInt();
 
-/// The maximum safe value of an [int].
+/// The maximum safe value of an [int] (`2^(safeIntegerBits - 1) - 1`).
 final int maxSafeInteger = pow(2, safeIntegerBits - 1).toInt() - 1;

@@ -2,11 +2,13 @@ import 'package:meta/meta.dart';
 
 import '../collection/range.dart';
 
-/// An interval over a continuous ordering of type [T].
+/// A closed interval over a continuous ordering of type [T].
 ///
 /// Contrary to the [Range] collection, this object includes both the lower and
 /// upper endpoint and provides efficient means to compute the [intersection]
-/// and [union] between objects.
+/// and [union] between objects. Ordering operations rely on [Comparable.compareTo]
+/// being consistent with `==` (for example, avoiding `double.nan` or mixed
+/// `-0.0` and `0.0`).
 ///
 /// See https://en.wikipedia.org/wiki/Interval_(mathematics).
 @immutable
@@ -68,8 +70,12 @@ class Interval<T extends Comparable<T>> {
     upper.compareTo(other.upper) > 0 ? upper : other.upper,
   );
 
-  /// Returns the difference of this interval minus [other] interval as a list
-  /// of zero, one, or two disjoint intervals.
+  /// Returns the difference of this closed interval minus [other] interval as a
+  /// list of zero, one, or two closed intervals.
+  ///
+  /// Because all returned intervals are closed, when [other] is a single point
+  /// strictly inside this interval, the two returned intervals share that
+  /// boundary point.
   List<Interval<T>> difference(Interval<T> other) {
     if (!intersects(other)) {
       return [this];
