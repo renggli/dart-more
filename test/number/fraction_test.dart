@@ -381,9 +381,11 @@ void main() {
         check(Fraction.infinity + Fraction(1, 2)).isFraction(1, 0);
         check(Fraction.negativeInfinity + Fraction(1, 2)).isFraction(-1, 0);
         check(Fraction.nan + Fraction.nan).isFraction(0, 0);
-        check(Fraction.infinity + Fraction.infinity).isFraction(0, 0);
+        check(Fraction.infinity + Fraction.infinity).equals(Fraction.infinity);
         check(Fraction.negativeInfinity + Fraction.negativeInfinity)
-            .isFraction(0, 0);
+            .equals(Fraction.negativeInfinity);
+        check(Fraction.infinity + Fraction.negativeInfinity).isFraction(0, 0);
+        check(Fraction.negativeInfinity + Fraction.infinity).isFraction(0, 0);
       });
       test('subtraction', () {
         check(Fraction(1, 2) - Fraction(1, 4)).isFraction(1, 4);
@@ -401,6 +403,10 @@ void main() {
         check(Fraction.infinity - Fraction.infinity).isFraction(0, 0);
         check(Fraction.negativeInfinity - Fraction.negativeInfinity)
             .isFraction(0, 0);
+        check(Fraction.infinity - Fraction.negativeInfinity)
+            .equals(Fraction.infinity);
+        check(Fraction.negativeInfinity - Fraction.infinity)
+            .equals(Fraction.negativeInfinity);
       });
       test('multiplication', () {
         check(Fraction(2, 3) * Fraction(1, 4)).isFraction(1, 6);
@@ -581,21 +587,33 @@ void main() {
         check(Fraction(2, 3) < Fraction(2, 3)).isFalse;
         check(Fraction(2, 3) < Fraction(4, 5)).isTrue;
         check(Fraction(4, 5) < Fraction(2, 3)).isFalse;
+        check(Fraction.nan < Fraction(1)).isFalse;
+        check(Fraction(1) < Fraction.nan).isFalse;
+        check(Fraction.nan < Fraction.nan).isFalse;
       });
       test('<=', () {
         check(Fraction(2, 3) <= Fraction(2, 3)).isTrue;
         check(Fraction(2, 3) <= Fraction(4, 5)).isTrue;
         check(Fraction(4, 5) <= Fraction(2, 3)).isFalse;
+        check(Fraction.nan <= Fraction(1)).isFalse;
+        check(Fraction(1) <= Fraction.nan).isFalse;
+        check(Fraction.nan <= Fraction.nan).isFalse;
       });
       test('>=', () {
         check(Fraction(2, 3) >= Fraction(2, 3)).isTrue;
         check(Fraction(2, 3) >= Fraction(4, 5)).isFalse;
         check(Fraction(4, 5) >= Fraction(2, 3)).isTrue;
+        check(Fraction.nan >= Fraction(1)).isFalse;
+        check(Fraction(1) >= Fraction.nan).isFalse;
+        check(Fraction.nan >= Fraction.nan).isFalse;
       });
       test('>', () {
         check(Fraction(2, 3) > Fraction(2, 3)).isFalse;
         check(Fraction(2, 3) > Fraction(4, 5)).isFalse;
         check(Fraction(4, 5) > Fraction(2, 3)).isTrue;
+        check(Fraction.nan > Fraction(1)).isFalse;
+        check(Fraction(1) > Fraction.nan).isFalse;
+        check(Fraction.nan > Fraction.nan).isFalse;
       });
       test('==', () {
         check(Fraction(2, 3) == Fraction(2, 3)).isTrue;

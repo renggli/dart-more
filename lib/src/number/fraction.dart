@@ -192,9 +192,11 @@ class Fraction
   Fraction operator +(Object other) {
     if (other is Fraction) {
       if (isNaN || other.isNaN) return Fraction.nan;
-      if (isInfinite || other.isInfinite) {
-        return Fraction(a * other.b + other.a * b, b * other.b);
+      if (isInfinite && other.isInfinite) {
+        return a == other.a ? this : Fraction.nan;
       }
+      if (isInfinite) return this;
+      if (other.isInfinite) return other;
       final g = b.gcd(other.b);
       final left = b ~/ g;
       final right = other.b ~/ g;
@@ -210,9 +212,11 @@ class Fraction
   Fraction operator -(Object other) {
     if (other is Fraction) {
       if (isNaN || other.isNaN) return Fraction.nan;
-      if (isInfinite || other.isInfinite) {
-        return Fraction(a * other.b - other.a * b, b * other.b);
+      if (isInfinite && other.isInfinite) {
+        return a == other.a ? Fraction.nan : this;
       }
+      if (isInfinite) return this;
+      if (other.isInfinite) return -other;
       final g = b.gcd(other.b);
       final left = b ~/ g;
       final right = other.b ~/ g;
@@ -356,6 +360,22 @@ class Fraction
       isFinite &&
       other.isFinite &&
       (toDouble() - other.toDouble()).abs() <= epsilon;
+
+  @override
+  bool operator <(Fraction other) =>
+      !isNaN && !other.isNaN && compareTo(other) < 0;
+
+  @override
+  bool operator <=(Fraction other) =>
+      !isNaN && !other.isNaN && compareTo(other) <= 0;
+
+  @override
+  bool operator >=(Fraction other) =>
+      !isNaN && !other.isNaN && compareTo(other) >= 0;
+
+  @override
+  bool operator >(Fraction other) =>
+      !isNaN && !other.isNaN && compareTo(other) > 0;
 
   @override
   bool operator ==(Object other) {
