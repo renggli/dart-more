@@ -57,7 +57,18 @@ void main() {
         check(star.lastIndexIn('**a')).equals(1);
         check(star.lastIndexIn('*', 0)).equals(0);
         check(star.lastIndexIn('**', 0)).equals(0);
+        check(star.lastIndexIn('*', 1)).equals(0);
+        check(star.lastIndexIn('', 0)).equals(-1);
         check(star.lastIndexIn('*\u{10000}', 2)).equals(0);
+        check(() => star.lastIndexIn('*', -1)).throws<RangeError>();
+        check(() => star.lastIndexIn('*', 2)).throws<RangeError>();
+
+        final smile = CharMatcher.isChar('\u{1f600}');
+        check(smile.lastIndexIn('\u{1f600}', 0)).equals(0);
+        check(smile.lastIndexIn('\u{1f600}', 1)).equals(0);
+        check(smile.lastIndexIn('\u{1f600}', 2)).equals(0);
+        check(smile.lastIndexIn('a\u{1f600}b', 1)).equals(1);
+        check(smile.lastIndexIn('a\u{1f600}b', 0)).equals(-1);
       });
       test('countIn', () {
         check(star.countIn('')).equals(0);
@@ -272,6 +283,19 @@ void main() {
             .equals('\u{10000}');
         check('\u{10000}'.split(pattern)).deepEquals(['\u{10000}']);
         check('\u{10000}'.splitMapJoin(pattern)).equals('\u{10000}');
+      });
+      test('allMatches validates start eagerly', () {
+        check(() {
+          pattern.allMatches('abc', -1);
+        }).throws<RangeError>();
+        check(() {
+          pattern.allMatches('abc', 4);
+        }).throws<RangeError>();
+      });
+      test('non-finite number throws ArgumentError', () {
+        check(() => CharMatcher.isChar(double.nan)).throws<ArgumentError>();
+        check(() => CharMatcher.inRange(0, double.infinity))
+            .throws<ArgumentError>();
       });
     });
   });

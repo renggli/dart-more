@@ -26,7 +26,7 @@ import 'unicode/unicode.dart';
 ///
 /// The [CharMatcher] is a boolean predicate on Unicode code-points. The
 /// inclusion of a character can be determined by calling the char matcher with
-/// the code-unit as the function argument, for example:
+/// the code-point as the function argument, for example:
 ///
 /// ```dart
 /// CharMatcher.whitespace().match(' '.runes.first); // true
@@ -84,7 +84,7 @@ abstract class CharMatcher with ToStringPrinter implements Pattern {
   /// '1', '2', or '3'; and fails for any other character. The `pattern('^aou')`
   /// accepts any character, but fails for the characters 'a', 'o', or 'u'. The
   /// `pattern('a-z-[aeiou]')` accepts lower-case letters, but fails for
-  /// consonants.
+  /// vowels.
   factory pattern(String pattern) => fromPattern(pattern);
 
   /// A matcher that accepts ASCII characters.
@@ -98,7 +98,7 @@ abstract class CharMatcher with ToStringPrinter implements Pattern {
   /// [UnicodeCharMatcher.letterLowercase] for the Unicode variant.
   const factory lowerCaseLetter() = LowerCaseLetterCharMatcher;
 
-  /// A matcher that accepts ASCII letters or digits.
+  /// A matcher that accepts ASCII letters, digits, or `_`.
   const factory letterOrDigit() = LetterOrDigitCharMatcher;
 
   /// A matcher that accepts ASCII letters, see
@@ -184,8 +184,14 @@ abstract class CharMatcher with ToStringPrinter implements Pattern {
   /// Returns the first matching index in [sequence], searching backward
   /// starting at [start] (inclusive). Returns `-1` if it could not be found.
   int lastIndexIn(String sequence, [int? start]) {
-    var index = start == null ? sequence.length : start + 1;
-    if (_insideSplitSurrogate(sequence, index)) index--;
+    var index = sequence.length;
+    if (start != null) {
+      RangeError.checkValueInInterval(start, 0, sequence.length, 'start');
+      if (start < sequence.length) {
+        index = start + 1;
+        if (_insideSplitSurrogate(sequence, index)) index++;
+      }
+    }
     final iterator = _runeIteratorAt(sequence, index);
     while (iterator.movePrevious()) {
       if (match(iterator.current)) {
@@ -202,14 +208,16 @@ abstract class CharMatcher with ToStringPrinter implements Pattern {
   /// with the specified [replacement].
   String collapseFrom(String sequence, String replacement) {
     final buffer = StringBuffer();
-    final iterator = _runeIteratorAt(sequence, 0);
-    while (iterator.moveNext()) {
-      if (match(iterator.current)) {
-        while (iterator.moveNext() && match(iterator.current)) {}
-        buffer.write(replacement);
-        iterator.movePrevious();
+    var matching = false;
+    for (final rune in sequence.runes) {
+      if (match(rune)) {
+        if (!matching) {
+          buffer.write(replacement);
+          matching = true;
+        }
       } else {
-        buffer.writeCharCode(iterator.current);
+        buffer.writeCharCode(rune);
+        matching = false;
       }
     }
     return buffer.toString();
@@ -265,13 +273,23 @@ abstract class CharMatcher with ToStringPrinter implements Pattern {
   String trimTailingFrom(String sequence) => trimTrailingFrom(sequence);
 
   @override
-  Iterable<Match> allMatches(String sequence, [int start = 0]) sync* {
+  Iterable<Match> allMatches(String sequence, [int start = 0]) {
+    RangeError.checkValueInInterval(start, 0, sequence.length, 'start');
+    return _allMatches(sequence, start);
+  }
+
+  Iterable<Match> _allMatches(String sequence, int start) sync* {
     if (_insideSplitSurrogate(sequence, start)) start++;
     final iterator = _runeIteratorAt(sequence, start);
     while (iterator.moveNext()) {
       if (match(iterator.current)) {
-        final start = iterator.rawIndex;
-        yield CharMatch(start, start + iterator.currentSize, sequence, this);
+        final matchStart = iterator.rawIndex;
+        yield CharMatch(
+          matchStart,
+          matchStart + iterator.currentSize,
+          sequence,
+          this,
+        );
       }
     }
   }
@@ -312,7 +330,7 @@ bool _insideSplitSurrogate(String sequence, int index) {
 
 int _toCharCode(Object value, String name) {
   if (value is int) return value;
-  if (value is num) return value.truncate();
+  if (value is num && value.isFinite) return value.truncate();
   final codePoint = value.toString().runes.singleOrNull;
   if (codePoint != null) return codePoint;
   throw ArgumentError.value(value, name, 'Invalid unicode character');

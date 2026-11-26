@@ -2,34 +2,46 @@ import '../basic/range.dart';
 import '../char_matcher.dart';
 import 'optimize.dart';
 
-CharMatcher fromPattern(String input) => _fromPattern(input.runes.toList());
+CharMatcher fromPattern(String input) {
+  final runes = input.runes.toList(growable: false);
+  return _fromPattern(runes, 0, runes.length);
+}
 
-CharMatcher _fromPattern(List<int> pattern) {
+CharMatcher _fromPattern(List<int> pattern, int start, int end) {
   // Negation: ^pattern.
-  final isNegated = pattern.isNotEmpty && _negateMatcher.match(pattern[0]);
-  if (isNegated) pattern = pattern.sublist(1);
+  final isNegated = start < end && _negateMatcher.match(pattern[start]);
+  if (isNegated) start++;
 
   final ranges = <RangeCharMatcher>[];
-  while (pattern.isNotEmpty) {
+  var index = start;
+  while (index < end) {
+    final remaining = end - index;
     if (ranges.isNotEmpty &&
-        pattern.length > 2 &&
-        _rangeMatcher.match(pattern[0]) &&
-        _openMatcher.match(pattern[1]) &&
-        _closeMatcher.match(pattern.last)) {
+        remaining > 2 &&
+        _rangeMatcher.match(pattern[index]) &&
+        _openMatcher.match(pattern[index + 1]) &&
+        _closeMatcher.match(pattern[end - 1])) {
       // Subtraction: base-[subtract]
       final base = _completePattern(ranges, isNegated);
-      final subtract = _fromPattern(pattern.sublist(2, pattern.length - 1));
+      final subtract = _fromPattern(pattern, index + 2, end - 1);
       return base & ~subtract;
-    } else if (pattern.length > 2 &&
-        _rangeMatcher.match(pattern[1]) &&
-        !_openMatcher.match(pattern[2])) {
+    } else if (remaining > 2 &&
+        _rangeMatcher.match(pattern[index + 1]) &&
+        !(remaining > 3 &&
+            _openMatcher.match(pattern[index + 2]) &&
+            _closeMatcher.match(pattern[end - 1]))) {
       // Ranges: start-stop
-      ranges.add(RangeCharMatcher(pattern[0], pattern[2]));
-      pattern = pattern.sublist(3);
+      final rangeStart = pattern[index];
+      final rangeStop = pattern[index + 2];
+      if (rangeStart > rangeStop) {
+        throw ArgumentError('Invalid range: $rangeStart-$rangeStop');
+      }
+      ranges.add(RangeCharMatcher(rangeStart, rangeStop));
+      index += 3;
     } else {
       // Single character
-      ranges.add(RangeCharMatcher(pattern[0], pattern[0]));
-      pattern = pattern.sublist(1);
+      final char = pattern[index++];
+      ranges.add(RangeCharMatcher(char, char));
     }
   }
   return _completePattern(ranges, isNegated);

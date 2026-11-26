@@ -45,7 +45,7 @@ CharMatcher optimize(Iterable<RangeCharMatcher> ranges) {
     return const NoneCharMatcher();
   } else if (mergedRanges.length == 1 &&
       mergedRanges[0].start <= 0 &&
-      mergedRanges[0].stop >= 0xffff) {
+      mergedRanges[0].stop >= 0x10ffff) {
     return const AnyCharMatcher();
   } else if (mergedRanges.length == 1) {
     if (mergedRanges[0].start == mergedRanges[0].stop) {

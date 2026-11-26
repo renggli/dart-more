@@ -168,7 +168,7 @@ void main() {
       );
     });
     // Group 3
-    test('sudanese', () {
+    test('sundanese', () {
       verify(
         UnicodeCharMatcher.scriptSundanese(),
         'ᮃᮄᮅᮆᮇᮈᮉᮊᮋᮌᮍᮎᮏᮐᮑᮒ',
