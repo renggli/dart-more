@@ -21,27 +21,24 @@ void main() {
       check(spanning.vertices).isEmpty;
       check(spanning.edges).isEmpty;
     });
-    test('default start vertex (null)', () {
+    test('standalone primSpanningTree', () {
       final graph = Graph<String, int>(isDirected: false)
-        ..addEdge('a', 'b', value: 1);
-      final spanning = primSpanningTree<String, int>(
-        graph,
-        startVertex: null,
-        edgeWeight: (u, v) => 1,
+        ..addEdge('a', 'b', value: 2)
+        ..addEdge('a', 'd', value: 1)
+        ..addEdge('b', 'd', value: 2)
+        ..addEdge('d', 'c', value: 3);
+      final edges = primSpanningTree<String, int>(
+        startVertex: 'a',
+        outgoingEdgesOf: graph.outgoingEdgesOf,
+        edgeWeight: (u, v) => graph.getEdge(u, v)!.value,
         weightComparator: naturalComparable<num>,
         vertexStrategy: StorageStrategy.defaultStrategy(),
       );
-      check(spanning.vertices.toList()).deepEquals(['a', 'b']);
-
-      final empty = Graph<String, int>(isDirected: false);
-      final emptySpanning = primSpanningTree<String, int>(
-        empty,
-        startVertex: null,
-        edgeWeight: (u, v) => 1,
-        weightComparator: naturalComparable<num>,
-        vertexStrategy: StorageStrategy.defaultStrategy(),
-      );
-      check(emptySpanning.vertices.toList()).isEmpty;
+      check(edges).unorderedMatches([
+        isEdge('a', 'd', value: 1),
+        isEdge('d', 'b', value: 2),
+        isEdge('d', 'c', value: 3),
+      ]);
     });
     test('undirected (with start vertex)', () {
       final graph = Graph<String, int>(isDirected: false)

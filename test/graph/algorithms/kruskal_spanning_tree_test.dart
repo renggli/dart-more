@@ -117,5 +117,25 @@ void main() {
         isEdge('y', 'z', value: 1),
       ]);
     });
+    test('standalone kruskalSpanningTree', () {
+      final edges = [
+        const Edge<String, int>.directed('a', 'b', value: 2),
+        const Edge<String, int>.directed('a', 'd', value: 1),
+        const Edge<String, int>.directed('b', 'd', value: 2),
+        const Edge<String, int>.directed('d', 'c', value: 3),
+      ];
+      final result = kruskalSpanningTree<String, int>(
+        vertices: ['a', 'b', 'c', 'd'],
+        edges: edges,
+        edgeWeight: (u, v) => edges
+            .firstWhere((edge) => edge.source == u && edge.target == v)
+            .value,
+      );
+      check(result).unorderedMatches([
+        isEdge('a', 'd', value: 1),
+        isEdge('a', 'b', value: 2),
+        isEdge('d', 'c', value: 3),
+      ]);
+    });
   });
 }

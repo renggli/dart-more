@@ -141,5 +141,44 @@ void main() {
       check(minCut.graphs).length.equals(2);
       check(minCut.weight).equals(1);
     });
+    test('standalone stoerWagnerMinCut', () {
+      final edges = <(int, int), num>{
+        (0, 1): 2,
+        (1, 0): 2,
+        (1, 2): 1,
+        (2, 1): 1,
+        (2, 3): 1,
+        (3, 2): 1,
+        (0, 2): 2,
+        (2, 0): 2,
+      };
+      final neighbours = <int, List<int>>{
+        0: [1, 2],
+        1: [0, 2],
+        2: [0, 1, 3],
+        3: [2],
+      };
+      final result = stoerWagnerMinCut<int>(
+        vertices: [0, 1, 2, 3],
+        neighboursOf: (v) => neighbours[v]!,
+        edgeWeight: (u, v) => edges[(u, v)]!,
+      );
+      check(result.weight).equals(1);
+      check(result.first).unorderedEquals([3]);
+      check(result.second).unorderedEquals([0, 1, 2]);
+      check(
+        () => stoerWagnerMinCut<int>(
+          vertices: [0],
+          neighboursOf: (_) => const [],
+        ),
+      ).throws<GraphError>();
+      check(
+        () => stoerWagnerMinCut<int>(
+          vertices: [0, 1],
+          neighboursOf: (v) => v == 0 ? [1] : [0],
+          edgeWeight: (_, _) => -1,
+        ),
+      ).throws<GraphError>();
+    });
   });
 }

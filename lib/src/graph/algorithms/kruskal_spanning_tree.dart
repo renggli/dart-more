@@ -1,38 +1,38 @@
 import 'package:collection/collection.dart';
 
 import '../../collection/disjointset.dart';
-import '../graph.dart';
-import '../operations/copy.dart';
+import '../../comparator/constructors/natural.dart';
+import '../../functional/types/constant.dart';
+import '../edge.dart';
 import '../strategy.dart';
 
-/// Kruskal's algorithm to find the spanning tree in _O(E*log(E))_.
+/// Kruskal's algorithm to find a minimum spanning forest in _O(E*log(E))_.
 ///
 /// See https://en.wikipedia.org/wiki/Kruskal%27s_algorithm.
-Graph<V, E> kruskalSpanningTree<V, E>(
-  Graph<V, E> graph, {
-  required num Function(V source, V target) edgeWeight,
-  required Comparator<num> weightComparator,
-  required StorageStrategy<V> vertexStrategy,
+List<Edge<V, E>> kruskalSpanningTree<V, E>({
+  required Iterable<V> vertices,
+  required Iterable<Edge<V, E>> edges,
+  num Function(V source, V target)? edgeWeight,
+  Comparator<num>? weightComparator,
+  StorageStrategy<V>? vertexStrategy,
 }) {
-  // Create an empty copy of the graph.
-  final result = graph.copy(empty: true);
-  result.addVertices(graph.vertices);
-  // Fetch and sort the edges, if any.
-  final edges = graph.edges.toList(growable: false);
-  if (edges.isEmpty) return result;
-  edges.sortByCompare(
-    (value) => edgeWeight(value.source, value.target),
-    weightComparator,
+  final weightOf = edgeWeight ?? constantFunction2(1);
+  final comparator = weightComparator ?? naturalComparable<num>;
+  vertexStrategy ??= StorageStrategy.defaultStrategy();
+  final sortedEdges = edges.toList(growable: false);
+  if (sortedEdges.isEmpty) return <Edge<V, E>>[];
+  sortedEdges.sortByCompare(
+    (edge) => weightOf(edge.source, edge.target),
+    comparator,
   );
-  // Disjoint set for cycle detection.
   final disjointSet = DisjointSet<V>(
-    graph.vertices,
+    vertices,
     nodes: vertexStrategy.createMap<DisjointSetNode<V>>(),
   );
-  // Process all the edges.
-  for (final edge in edges) {
+  final result = <Edge<V, E>>[];
+  for (final edge in sortedEdges) {
     if (disjointSet.union(edge.source, edge.target)) {
-      result.addEdge(edge.source, edge.target, value: edge.value);
+      result.add(edge);
     }
   }
   return result;

@@ -41,6 +41,7 @@ import 'edge.dart';
 import 'errors.dart';
 import 'graph.dart';
 import 'model/internal.dart';
+import 'model/where.dart';
 import 'path.dart';
 import 'strategy.dart';
 
@@ -181,10 +182,10 @@ extension AlgorithmsGraphExtension<V, E> on Graph<V, E> {
   ///   edges. If no function is provided, the numeric edge value or a constant
   ///   weight of _1_ is used.
   ///
-  stoer_wagner_min_cut.StoerWagnerMinCut<V, E> minCut({
+  StoerWagnerMinCut<V, E> minCut({
     num Function(V source, V target)? edgeWeight,
     StorageStrategy<V>? vertexStrategy,
-  }) => stoer_wagner_min_cut.StoerWagnerMinCut<V, E>(
+  }) => StoerWagnerMinCut<V, E>(
     graph: this,
     edgeWeight: edgeWeight ?? getDefaultEdgeValueOr(1),
     vertexStrategy: vertexStrategy ?? this.vertexStrategy,
@@ -210,20 +211,39 @@ extension AlgorithmsGraphExtension<V, E> on Graph<V, E> {
     num Function(V source, V target)? edgeWeight,
     Comparator<num>? weightComparator,
     StorageStrategy<V>? vertexStrategy,
-  }) => startVertex == null
-      ? kruskal_spanning_tree.kruskalSpanningTree<V, E>(
-          this,
-          edgeWeight: edgeWeight ?? getDefaultEdgeValueOr(1),
-          weightComparator: weightComparator ?? naturalComparable<num>,
-          vertexStrategy: vertexStrategy ?? this.vertexStrategy,
-        )
-      : prim_spanning_tree.primSpanningTree<V, E>(
-          this,
-          startVertex: startVertex,
-          edgeWeight: edgeWeight ?? getDefaultEdgeValueOr(1),
-          weightComparator: weightComparator ?? naturalComparable<num>,
-          vertexStrategy: vertexStrategy ?? this.vertexStrategy,
-        );
+  }) {
+    final strategy = vertexStrategy ?? this.vertexStrategy;
+    final weightOf = edgeWeight ?? getDefaultEdgeValueOr(1);
+    final comparator = weightComparator ?? naturalComparable<num>;
+    final result = Graph<V, E>(
+      isDirected: isDirected,
+      vertexStrategy: strategy,
+    );
+    if (startVertex == null) {
+      result.addVertices(vertices);
+      for (final edge in kruskal_spanning_tree.kruskalSpanningTree<V, E>(
+        vertices: vertices,
+        edges: edges,
+        edgeWeight: weightOf,
+        weightComparator: comparator,
+        vertexStrategy: strategy,
+      )) {
+        result.addEdge(edge.source, edge.target, value: edge.value);
+      }
+    } else if (vertices.contains(startVertex)) {
+      result.addVertex(startVertex);
+      for (final edge in prim_spanning_tree.primSpanningTree<V, E>(
+        startVertex: startVertex,
+        outgoingEdgesOf: outgoingEdgesOf,
+        edgeWeight: weightOf,
+        weightComparator: comparator,
+        vertexStrategy: strategy,
+      )) {
+        result.addEdge(edge.source, edge.target, value: edge.value);
+      }
+    }
+    return result;
+  }
 
   /// Returns the strongly connected components in this directed graph. The
   /// implementation uses Tarjan's algorithm and runs in linear time.
@@ -959,4 +979,69 @@ extension AlgorithmsGraphExtension<V, E> on Graph<V, E> {
       vertexStrategy: vertexStrategy ?? this.vertexStrategy,
     );
   }
+}
+
+/// Stoer–Wagner minimum cut result on a [Graph] in _O(V*E + V^2*log(V))_.
+///
+/// See https://en.wikipedia.org/wiki/Stoer%E2%80%93Wagner_algorithm.
+class StoerWagnerMinCut<V, E> {
+  /// Computes the minimum cut of an undirected [graph].
+  new({
+    required Graph<V, E> graph,
+    num Function(V source, V target)? edgeWeight,
+    StorageStrategy<V>? vertexStrategy,
+  }) : this._(
+         graph: graph,
+         edgeWeight: edgeWeight ?? constantFunction2(1),
+         vertexStrategy: vertexStrategy ?? graph.vertexStrategy,
+       );
+
+  new _({
+    required this.graph,
+    required this.edgeWeight,
+    required this.vertexStrategy,
+  }) {
+    GraphError.checkNotDirected(graph);
+    GraphError.checkVertexCount(graph, 2);
+    final result = stoer_wagner_min_cut.stoerWagnerMinCut<V>(
+      vertices: graph.vertices,
+      neighboursOf: graph.neighboursOf,
+      edgeWeight: edgeWeight,
+      vertexStrategy: vertexStrategy,
+    );
+    _first = result.first;
+    _second = result.second;
+    weight = result.weight;
+  }
+
+  late final Set<V> _first;
+  late final Set<V> _second;
+
+  /// The underlying graph on which this cut was computed.
+  final Graph<V, E> graph;
+
+  /// The edge weight used to compute the cut.
+  final num Function(V source, V target) edgeWeight;
+
+  /// The vertex strategy to store vertices of type V.
+  final StorageStrategy<V> vertexStrategy;
+
+  /// Returns the weight of the cut vertices.
+  late final num weight;
+
+  /// Returns a list with the graphs on each side of the cut.
+  late final List<Graph<V, E>> graphs = [
+    graph.where(vertexPredicate: _first.contains),
+    graph.where(vertexPredicate: _second.contains),
+  ];
+
+  /// Returns an iterable over the edges that are cut.
+  ///
+  /// Each undirected edge appears for each direction once, to de-duplicate
+  /// use `minCut.edges.unique()`.
+  late final List<Edge<V, E>> edges = graph.edges
+      .where(
+        (edge) => _first.contains(edge.source) != _first.contains(edge.target),
+      )
+      .toList();
 }

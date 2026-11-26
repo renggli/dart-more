@@ -3,7 +3,8 @@
 /// {@category Graphs}
 library;
 
-export 'src/graph/algorithms.dart' show AlgorithmsGraphExtension;
+export 'src/graph/algorithms.dart'
+    show AlgorithmsGraphExtension, StoerWagnerMinCut;
 export 'src/graph/algorithms/betweenness_centrality.dart'
     show betweennessCentrality;
 export 'src/graph/algorithms/biconnected.dart'
@@ -42,7 +43,7 @@ export 'src/graph/algorithms/search/bellman_ford.dart' show bellmanFordSearch;
 export 'src/graph/algorithms/search/dijkstra.dart' show dijkstraSearch;
 export 'src/graph/algorithms/search/floyd_warshall.dart'
     show FloydWarshall, floydWarshallSearch;
-export 'src/graph/algorithms/stoer_wagner_min_cut.dart' show StoerWagnerMinCut;
+export 'src/graph/algorithms/stoer_wagner_min_cut.dart' show stoerWagnerMinCut;
 export 'src/graph/algorithms/structural_metrics.dart'
     show
         averageClusteringCoefficient,
