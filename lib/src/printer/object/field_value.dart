@@ -5,13 +5,22 @@ import 'object.dart';
 
 /// A field with a constant value.
 class FieldValue<T, F> extends FieldPrinter<T> {
+  /// Constructs a field printer with a constant [value].
   new(this.name, this.value, this.omitNull, this.omitPredicate, this.printer);
 
   @override
   final String? name;
+
+  /// The constant value of the field.
   final F value;
+
+  /// Whether `null` values are omitted.
   final bool omitNull;
+
+  /// Optional predicate deciding whether to omit the field.
   final Predicate1<F>? omitPredicate;
+
+  /// Printer used to format [value].
   final Printer<F> printer;
 
   @override
@@ -19,7 +28,7 @@ class FieldValue<T, F> extends FieldPrinter<T> {
     if (omitNull && value == null) {
       return true;
     }
-    if (omitPredicate != null && omitPredicate!(value)) {
+    if (omitPredicate case final predicate? when predicate(value)) {
       return true;
     }
     return false;

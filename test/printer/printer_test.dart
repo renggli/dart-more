@@ -24,7 +24,7 @@ void main() {
         check(printer(1)).equals('*');
         check(printer(12)).equals('*');
       });
-      test('string', () {
+      test('sequence', () {
         final printer = Printer<int>.wrap(const [standardInt, standardInt]);
         check(printer(1)).equals('11');
         check(printer(12)).equals('1212');

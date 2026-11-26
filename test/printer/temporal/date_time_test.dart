@@ -229,6 +229,13 @@ void main() {
         check(dateTimes.map(printer.print))
             .deepEquals(['00', '00', '01', '27']);
       });
+      test('width: 5', () {
+        final printer = DateTimePrinter(
+          (builder) => builder.millisecond(width: 5),
+        );
+        check(dateTimes.map(printer.print))
+            .deepEquals(['00000', '00000', '01200', '27100']);
+      });
     });
     group('microsecond', () {
       test('default', () {
@@ -243,12 +250,31 @@ void main() {
         check(dateTimes.map(printer.print))
             .deepEquals(['00', '00', '00', '82']);
       });
+      test('width: 5', () {
+        final printer = DateTimePrinter(
+          (builder) => builder.microsecond(width: 5),
+        );
+        check(dateTimes.map(printer.print))
+            .deepEquals(['00000', '00000', '00000', '82800']);
+      });
       test('skipIfZero', () {
         final printer = DateTimePrinter(
           (builder) => builder.microsecond(skipIfZero: true),
         );
         check(dateTimes.map(printer.print)).deepEquals(['', '', '', '828']);
       });
+    });
+    test('invalid names length', () {
+      check(() => DateTimePrinter((b) => b.era(names: ['AD'])))
+          .throws<ArgumentError>();
+      check(() => DateTimePrinter((b) => b.quarter(names: ['Q1'])))
+          .throws<ArgumentError>();
+      check(() => DateTimePrinter((b) => b.month(names: ['Jan'])))
+          .throws<ArgumentError>();
+      check(() => DateTimePrinter((b) => b.weekday(names: ['Mon'])))
+          .throws<ArgumentError>();
+      check(() => DateTimePrinter((b) => b.meridiem(names: ['am'])))
+          .throws<ArgumentError>();
     });
     test('toString', () {
       final printer = DateTimePrinter.iso8601();

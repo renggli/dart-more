@@ -118,14 +118,18 @@ class ObjectPrinter<T> extends Printer<T> {
   void printFieldsOn(T object, StringBuffer buffer) {
     var fieldCounter = 0;
     for (final field in fields) {
-      if (!field.isOmitted(object)) {
+      final resolved = switch (field) {
+        final EvaluatableField<T> evaluatable => evaluatable.evaluate(object),
+        _ => field.isOmitted(object) ? null : field,
+      };
+      if (resolved != null) {
         if (fieldCounter == 0 && beforeFields != null) {
           buffer.write(beforeFields);
         }
         if (fieldCounter > 0 && fieldSeparator != null) {
           buffer.write(fieldSeparator);
         }
-        printFieldOn(object, field, buffer);
+        printFieldOn(object, resolved, buffer);
         fieldCounter++;
       }
     }
@@ -138,8 +142,8 @@ class ObjectPrinter<T> extends Printer<T> {
   void printFieldOn(T object, FieldPrinter<T> field, StringBuffer buffer) {
     final name = field.name;
     if (name != null) {
-      if (fieldName != null) {
-        fieldName!.printOn(name, buffer);
+      if (fieldName case final fieldName?) {
+        fieldName.printOn(name, buffer);
       } else {
         buffer.write(name);
       }
@@ -147,8 +151,8 @@ class ObjectPrinter<T> extends Printer<T> {
         buffer.write(fieldNameSeparator);
       }
     }
-    if (fieldValue != null) {
-      fieldValue!.printOn(field.print(object), buffer);
+    if (fieldValue case final fieldValue?) {
+      fieldValue.printOn(field.print(object), buffer);
     } else {
       field.printOn(object, buffer);
     }

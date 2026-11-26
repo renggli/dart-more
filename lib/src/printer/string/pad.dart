@@ -20,10 +20,16 @@ extension PadPrinterExtension<T> on Printer<T> {
 
 /// Pads the string if it is shorter than width.
 abstract class PadPrinter<T> extends Printer<T> {
+  /// Constructs a padding printer with target [width] and [padding] string.
   const new(this.printer, this.width, this.padding);
 
+  /// The delegate printer whose output is padded.
   final Printer<T> printer;
+
+  /// The target minimum width in characters.
   final int width;
+
+  /// The padding string repeated as needed.
   final String padding;
 
   @override
@@ -35,14 +41,15 @@ abstract class PadPrinter<T> extends Printer<T> {
 
 /// Pads the string on the left if it is shorter than width.
 class PadLeftPrinter<T> extends PadPrinter<T> {
+  /// Constructs a left-padding printer.
   const new(super.printer, super.width, super.padding);
 
   @override
   void printOn(T object, StringBuffer buffer) {
     final input = printer(object).characters;
     final count = width - input.length;
-    if (count > 0) {
-      buffer.write(padding * count);
+    for (var i = 0; i < count; i++) {
+      buffer.write(padding);
     }
     buffer.write(input);
   }
@@ -50,6 +57,7 @@ class PadLeftPrinter<T> extends PadPrinter<T> {
 
 /// Pads the string on the right if it is shorter than width.
 class PadRightPrinter<T> extends PadPrinter<T> {
+  /// Constructs a right-padding printer.
   const new(super.printer, super.width, super.padding);
 
   @override
@@ -57,14 +65,15 @@ class PadRightPrinter<T> extends PadPrinter<T> {
     final input = printer(object).characters;
     buffer.write(input);
     final count = width - input.length;
-    if (count > 0) {
-      buffer.write(padding * count);
+    for (var i = 0; i < count; i++) {
+      buffer.write(padding);
     }
   }
 }
 
 /// Pads the string on both sides if it is shorter than width.
 class PadBothPrinter<T> extends PadPrinter<T> {
+  /// Constructs a symmetric-padding printer.
   const new(super.printer, super.width, super.padding);
 
   @override
@@ -73,13 +82,13 @@ class PadBothPrinter<T> extends PadPrinter<T> {
     final count = width - input.length;
     if (count > 0) {
       final left = count ~/ 2;
-      if (left > 0) {
-        buffer.write(padding * left);
+      for (var i = 0; i < left; i++) {
+        buffer.write(padding);
       }
       buffer.write(input);
       final right = left + count % 2;
-      if (right > 0) {
-        buffer.write(padding * right);
+      for (var i = 0; i < right; i++) {
+        buffer.write(padding);
       }
     } else {
       buffer.write(input);

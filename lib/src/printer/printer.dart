@@ -29,7 +29,7 @@ abstract class Printer<T> with ToStringPrinter {
   /// Constructs a printer that switches between other printers.
   const factory switcher(
     Map<Predicate1<T>, Printer<T>> cases, {
-    Printer<T> otherwise,
+    Printer<T>? otherwise,
   }) = SwitcherPrinter<T>;
 
   /// Constructs a printer by wrapping [object].

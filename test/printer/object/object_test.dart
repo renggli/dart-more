@@ -123,6 +123,22 @@ void main() {
         check(printer((2,))).equals('(int?)');
         check(printer((null,))).equals('(int?)');
       });
+      test('evaluates callback once when omitted check enabled', () {
+        var calls = 0;
+        final printer = ObjectPrinter<int>.static()
+          ..addCallback<int>(
+            (value) {
+              calls++;
+              return value;
+            },
+            omitNull: true,
+            omitPredicate: (object, value) => value.isNegative,
+          );
+        check(printer(42)).equals('int(42)');
+        check(calls).equals(1);
+        check(printer(-1)).equals('int');
+        check(calls).equals(2);
+      });
     });
     test('before and afterFields', () {
       final printer = ObjectPrinter<String>.static(

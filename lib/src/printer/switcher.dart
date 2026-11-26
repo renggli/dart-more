@@ -20,9 +20,7 @@ class SwitcherPrinter<T> extends Printer<T> {
         return;
       }
     }
-    if (otherwise != null) {
-      otherwise!.printOn(object, buffer);
-    }
+    otherwise?.printOn(object, buffer);
   }
 
   @override

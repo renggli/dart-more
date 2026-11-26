@@ -240,6 +240,23 @@ void main() {
         check(printer('👨👩👧👦😺💩')).equals('👨👩👧👦😺💩');
         check(printer('👨👩👧👦😺💩🙉')).equals('👨👩...🙉');
       });
+      test('word and sentence whitespace cleanup', () {
+        check(
+          standardString.truncateLeft(9, method: TruncateMethod.sentences)(
+            'Hello. World!',
+          ),
+        ).equals('…World!');
+        check(
+          standardString.truncateLeft(9, method: TruncateMethod.words)(
+            'hello   world',
+          ),
+        ).equals('…world');
+        check(
+          standardString.truncateRight(9, method: TruncateMethod.words)(
+            'hello   world',
+          ),
+        ).equals('hello…');
+      });
     });
     test('toString', () {
       final printer = standardString.truncateLeft(3, ellipsis: '...');

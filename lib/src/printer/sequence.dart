@@ -27,8 +27,10 @@ extension SequencePrinterIterableExtension<T> on Iterable<Printer<T>> {
 
 /// Prints a sequence of printers.
 class SequencePrinter<T> extends Printer<T> {
+  /// Constructs a sequence printer from [printers].
   const new(this.printers);
 
+  /// The printers invoked in sequence.
   final Iterable<Printer<T>> printers;
 
   @override

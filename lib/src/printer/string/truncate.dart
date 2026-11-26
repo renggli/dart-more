@@ -35,13 +35,24 @@ extension TruncatePrinterExtension<T> on Printer<T> {
 
 /// Truncates the string if it is longer than width.
 abstract class TruncatePrinter<T> extends Printer<T> {
+  /// Constructs a truncate printer with target [width], [ellipsis], and
+  /// [method].
   new(this.printer, this.width, this.ellipsis, this.method)
     : ellipsisLength = ellipsis.characters.length;
 
+  /// The delegate printer whose output is truncated.
   final Printer<T> printer;
+
+  /// The maximum width in characters.
   final int width;
+
+  /// The ellipsis inserted when truncation occurs.
   final String ellipsis;
+
+  /// The grapheme cluster length of [ellipsis].
   final int ellipsisLength;
+
+  /// The boundary strategy used when truncating.
   final TruncateMethod method;
 
   @override
@@ -141,7 +152,7 @@ String truncateRight(Characters input, TruncateMethod method, int width) {
       final iterator = input.iterator
         ..expandNext(width)
         ..dropBackWhile((each) => !whitespace.contains(each))
-        ..dropLast();
+        ..dropBackWhile(whitespace.contains);
       if (iterator.isEmpty) {
         return truncateRight(input, TruncateMethod.characters, width);
       }
@@ -165,7 +176,7 @@ String truncateLeft(Characters input, TruncateMethod method, int width) {
       final iterator = input.iteratorAtEnd
         ..expandBack(width)
         ..dropWhile((each) => !whitespace.contains(each))
-        ..dropFirst();
+        ..dropWhile(whitespace.contains);
       if (iterator.isEmpty) {
         return truncateLeft(input, TruncateMethod.characters, width);
       }
@@ -173,7 +184,10 @@ String truncateLeft(Characters input, TruncateMethod method, int width) {
     case TruncateMethod.sentences:
       final iterator = input.iteratorAtEnd
         ..expandBack(width)
-        ..dropWhile((each) => !punctuation.contains(each));
+        ..dropWhile((each) => !punctuation.contains(each))
+        ..dropWhile(
+          (each) => punctuation.contains(each) || whitespace.contains(each),
+        );
       if (iterator.isEmpty) {
         return truncateLeft(input, TruncateMethod.words, width);
       }

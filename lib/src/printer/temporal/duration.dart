@@ -104,6 +104,23 @@ class DurationPrinterBuilder {
   final List<Printer<Duration>> _printers = [];
   final Set<TimeUnit> _unitParts = {};
 
+  Duration? _cachedDuration;
+  Map<TimeUnit, int>? _cachedParts;
+
+  Map<TimeUnit, int> _convertParts(Duration duration) {
+    final cached = _cachedParts;
+    if (cached != null && _cachedDuration == duration) {
+      return cached;
+    }
+    final converted = duration.convertToAll(
+      _unitParts,
+      conversion: _conversion,
+    );
+    _cachedDuration = duration;
+    _cachedParts = converted;
+    return converted;
+  }
+
   /// Adds a printer.
   void add(Printer<Duration> printer) => _printers.add(printer);
 
@@ -143,12 +160,7 @@ class DurationPrinterBuilder {
             (printer) => printer.onResultOf((value) => value.abs()),
           )
           .mapIf(skipIfZero, (printer) => printer.where((value) => value != 0))
-          .onResultOf(
-            (duration) => duration.convertToAll(
-              _unitParts,
-              conversion: _conversion,
-            )[unit]!,
-          ),
+          .onResultOf((duration) => _convertParts(duration)[unit] ?? 0),
     );
   }
 

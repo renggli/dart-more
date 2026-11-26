@@ -19,7 +19,7 @@ void main() {
       check(durations.map(printer.print))
           .deepEquals(durations.map((duration) => duration.toString()));
     });
-    test('iso8691', () {
+    test('iso8601', () {
       final printer = DurationPrinter.iso8601();
       check(durations.map(printer.print)).deepEquals([
         'P0DT0S',
