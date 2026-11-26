@@ -113,6 +113,17 @@ void main() {
         });
         test('subnormal double', () {
           check(Fraction.fromDouble(double.minPositive)).isNotNull();
+          check(Fraction.fromDouble(1e-20)).isFraction(0);
+          check(Fraction.fromDouble(1e-300)).isFraction(0);
+        });
+        test('invalid arguments', () {
+          check(() => Fraction.fromDouble(0.5, maxDenominator: 0))
+              .throws<ArgumentError>();
+          check(() => Fraction.fromDouble(0.5, absoluteError: -0.1))
+              .throws<ArgumentError>();
+          check(() => Fraction.fromDouble(0.5, absoluteError: double.nan))
+              .throws<ArgumentError>();
+          check(() => Fraction.fromDouble(1e20)).throws<ArgumentError>();
         });
         test('common', () {
           for (var num = -10; num <= 10; num++) {
@@ -560,6 +571,11 @@ void main() {
         check(Fraction.nan.compareTo(Fraction.nan)).equals(0);
         check(Fraction.nan.compareTo(Fraction.infinity)).equals(1);
         check(Fraction.infinity.compareTo(Fraction.nan)).equals(-1);
+        check(Fraction(1, 1000000000000).compareTo(Fraction(1, 1000000000001)))
+            .equals(1);
+        check(
+          Fraction(-1, 1000000000000).compareTo(Fraction(-1, 1000000000001)),
+        ).equals(-1);
       });
       test('<', () {
         check(Fraction(2, 3) < Fraction(2, 3)).isFalse;
@@ -614,6 +630,38 @@ void main() {
         check(Fraction.negativeInfinity.toString())
             .equals('Fraction.negativeInfinity');
       });
+    });
+    group('edge cases', () {
+      test('farey validates order eagerly', () {
+        check(() {
+          Fraction.farey(0);
+        }).throws<ArgumentError>();
+      });
+      test('infinity division by negative value', () {
+        check(Fraction.infinity / -2).equals(Fraction.negativeInfinity);
+        check(Fraction.infinity / Fraction(-2))
+            .equals(Fraction.negativeInfinity);
+        check(Fraction.negativeInfinity / -2).equals(Fraction.infinity);
+        check(Fraction.negativeInfinity / Fraction(-2))
+            .equals(Fraction.infinity);
+      });
+      test('large denominator arithmetic pre-reduces', () {
+        const d = 1000000000000;
+        check(Fraction(1, d) + Fraction(1, d)).isFraction(1, d ~/ 2);
+        check(Fraction(3, d) - Fraction(1, d)).isFraction(1, d ~/ 2);
+        check(Fraction(2, d) * Fraction(d, 4)).isFraction(1, 2);
+        check(Fraction(2, d) / Fraction(4, d)).isFraction(1, 2);
+        check(Fraction(1, d) * d).isFraction(1);
+        check(Fraction(d, 1) / d).isFraction(1);
+      });
+      test('round with minInt64 and large denominator', () {
+        final minInt64 = int.parse('-9223372036854775808');
+        check(Fraction(minInt64, 1).round()).equals(minInt64);
+        check(Fraction(minInt64, 3).round()).equals(-3074457345618258603);
+        const largeDen = 1 << 62;
+        check(Fraction((1 << 61) + 1, largeDen + 1).round()).equals(1);
+        check(Fraction(-((1 << 61) + 1), largeDen + 1).round()).equals(-1);
+      }, testOn: '!js');
     });
   });
 }

@@ -19,7 +19,14 @@ class Fraction
           ? Fraction.negativeInfinity
           : Fraction.infinity;
     }
-    var divisor = numerator.gcd(denominator);
+    if (denominator == 1) {
+      return Fraction._(numerator, 1);
+    }
+    var divisor =
+        (numerator < 0 && numerator.abs() == numerator) ||
+            (denominator < 0 && denominator.abs() == denominator)
+        ? BigInt.from(numerator).gcd(BigInt.from(denominator)).toInt()
+        : numerator.gcd(denominator);
     if (denominator < 0) {
       divisor *= -1;
     }
@@ -38,10 +45,27 @@ class Fraction
     int maxDenominator = 1000000000,
     double absoluteError = 0.0,
   }) {
+    if (maxDenominator < 1) {
+      throw ArgumentError.value(
+        maxDenominator,
+        'maxDenominator',
+        'Expected positive integer',
+      );
+    }
+    if (absoluteError < 0 || absoluteError.isNaN) {
+      throw ArgumentError.value(
+        absoluteError,
+        'absoluteError',
+        'Expected non-negative number',
+      );
+    }
     if (value.isNaN) {
       return Fraction.nan;
     } else if (value.isInfinite) {
       return value < 0 ? Fraction.negativeInfinity : Fraction.infinity;
+    }
+    if (value.abs() >= 9223372036854775808.0) {
+      throw ArgumentError.value(value, 'value', 'Value out of int64 range');
     }
     var sign = 1;
     if (value < 0) {
@@ -55,10 +79,14 @@ class Fraction
     while (fractionPart != 0.0 &&
         (value - numerator1 / denominator1).abs() > absoluteError) {
       final newValue = 1.0 / fractionPart;
-      if (!newValue.isFinite) {
+      if (!newValue.isFinite || newValue >= 9223372036854775808.0) {
         break;
       }
       integerPart = newValue.floor();
+      if (numerator1 != 0 &&
+          integerPart > (maxDenominator - denominator2) ~/ denominator1) {
+        return Fraction(sign * numerator1, denominator1);
+      }
       fractionPart = newValue - integerPart.toDouble();
       final temp1 = numerator2;
       numerator2 = numerator1;
@@ -111,11 +139,15 @@ class Fraction
   /// Iterable over the Farey sequence of order [n].
   ///
   /// Returns an ordered sequence of the reduced fractions between _0_ and
-  /// _1_ with denominators less than or equal to _order_.
+  /// _1_ with denominators less than or equal to [n].
   ///
   /// For details, see https://en.wikipedia.org/wiki/Farey_sequence.
-  static Iterable<Fraction> farey(int n, {bool ascending = true}) sync* {
-    if (n < 1) throw ArgumentError.value(n, 'order', 'Expected positive');
+  static Iterable<Fraction> farey(int n, {bool ascending = true}) {
+    if (n < 1) throw ArgumentError.value(n, 'n', 'Expected positive');
+    return _farey(n, ascending);
+  }
+
+  static Iterable<Fraction> _farey(int n, bool ascending) sync* {
     var (a, b, c, d) = (ascending ? 0 : 1, 1, ascending ? 1 : n - 1, n);
     yield Fraction._(a, b);
     while (c <= n && ascending || a > 0 && !ascending) {
@@ -159,7 +191,14 @@ class Fraction
   /// Returns the sum of this fraction and [other].
   Fraction operator +(Object other) {
     if (other is Fraction) {
-      return Fraction(a * other.b + other.a * b, b * other.b);
+      if (isNaN || other.isNaN) return Fraction.nan;
+      if (isInfinite || other.isInfinite) {
+        return Fraction(a * other.b + other.a * b, b * other.b);
+      }
+      final g = b.gcd(other.b);
+      final left = b ~/ g;
+      final right = other.b ~/ g;
+      return Fraction(a * right + other.a * left, left * other.b);
     } else if (other is int) {
       return Fraction(a + other * b, b);
     } else {
@@ -170,7 +209,14 @@ class Fraction
   /// Returns the difference of this fraction and [other].
   Fraction operator -(Object other) {
     if (other is Fraction) {
-      return Fraction(a * other.b - other.a * b, b * other.b);
+      if (isNaN || other.isNaN) return Fraction.nan;
+      if (isInfinite || other.isInfinite) {
+        return Fraction(a * other.b - other.a * b, b * other.b);
+      }
+      final g = b.gcd(other.b);
+      final left = b ~/ g;
+      final right = other.b ~/ g;
+      return Fraction(a * right - other.a * left, left * other.b);
     } else if (other is int) {
       return Fraction(a - other * b, b);
     } else {
@@ -184,9 +230,21 @@ class Fraction
   /// Returns the multiplication of this fraction and [other].
   Fraction operator *(Object other) {
     if (other is Fraction) {
-      return Fraction(a * other.a, b * other.b);
+      if (!isFinite || !other.isFinite) {
+        return Fraction(a * other.a, b * other.b);
+      }
+      final g1 = a.gcd(other.b);
+      final g2 = other.a.gcd(b);
+      return Fraction._(
+        (a ~/ g1) * (other.a ~/ g2),
+        (b ~/ g2) * (other.b ~/ g1),
+      );
     } else if (other is int) {
-      return Fraction(a * other, b);
+      if (!isFinite) {
+        return Fraction(a * other, b);
+      }
+      final g = b.gcd(other);
+      return Fraction._(a * (other ~/ g), b ~/ g);
     } else {
       throw ArgumentError.value(other, 'other', 'Invalid type');
     }
@@ -195,9 +253,32 @@ class Fraction
   /// Returns the division of this fraction and [other].
   Fraction operator /(Object other) {
     if (other is Fraction) {
-      return Fraction(a * other.b, b * other.a);
+      if (isNaN || other.isNaN) return Fraction.nan;
+      if (isInfinite) {
+        if (other.isInfinite) return Fraction.nan;
+        return other.isNegative ? -this : this;
+      }
+      if (other.isInfinite) return Fraction.zero;
+      if (other.a == 0) return Fraction(a, 0);
+      final g1 = a.gcd(other.a);
+      final g2 = b.gcd(other.b);
+      final numerator = (a ~/ g1) * (other.b ~/ g2);
+      final denominator = (b ~/ g2) * (other.a ~/ g1);
+      return denominator < 0
+          ? Fraction._(-numerator, -denominator)
+          : Fraction._(numerator, denominator);
     } else if (other is int) {
-      return Fraction(a, b * other);
+      if (isNaN) return Fraction.nan;
+      if (isInfinite) {
+        return other < 0 ? -this : this;
+      }
+      if (other == 0) return Fraction(a, 0);
+      final g = a.gcd(other);
+      final numerator = a ~/ g;
+      final denominator = b * (other ~/ g);
+      return denominator < 0
+          ? Fraction._(-numerator, -denominator)
+          : Fraction._(numerator, denominator);
     } else {
       throw ArgumentError.value(other, 'other', 'Invalid type');
     }
@@ -242,11 +323,9 @@ class Fraction
   /// Rounds this fraction to an integer.
   int round() {
     if (!isFinite) return toDouble().round();
-    final absA = a.abs();
-    final q = absA ~/ b;
-    final r = absA % b;
-    final res = 2 * r >= b ? q + 1 : q;
-    return a < 0 ? -res : res;
+    final q = a ~/ b;
+    final r = a.remainder(b).abs();
+    return r >= b - r ? (a < 0 ? q - 1 : q + 1) : q;
   }
 
   /// Floors this fraction to an integer.
@@ -310,7 +389,19 @@ class Fraction
     if (other.isInfinite) {
       return other.isNegative ? 1 : -1;
     }
-    return (a * other.b).compareTo(other.a * b);
+    final signCmp = a.sign.compareTo(other.a.sign);
+    if (signCmp != 0) return signCmp;
+    final q1 = a ~/ b;
+    final q2 = other.a ~/ other.b;
+    if (q1 != q2) return q1.compareTo(q2);
+    final r1 = a.remainder(b);
+    final r2 = other.a.remainder(other.b);
+    if (b.bitLength + other.b.bitLength <= 52) {
+      return (r1 * other.b).compareTo(r2 * b);
+    }
+    return (BigInt.from(r1) * BigInt.from(other.b)).compareTo(
+      BigInt.from(r2) * BigInt.from(b),
+    );
   }
 
   @override

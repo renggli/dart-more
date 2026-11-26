@@ -435,5 +435,31 @@ void main() {
             .not(.it()..equals(const Complex(3, 2).hashCode));
       });
     });
+    group('edge cases', () {
+      test('parse rejects malformed unit/whitespace inputs', () {
+        check(Complex.tryParse('1e+ 5')).isNull;
+        check(Complex.tryParse('1*')).isNull;
+        check(Complex.tryParse('1*2i')).isNull;
+        check(Complex.tryParse('1i2')).isNull;
+        check(Complex.tryParse('1+1i2')).isNull;
+      });
+      test('scaled abs, sign, reciprocal, division, log, sqrt', () {
+        const big = Complex(1e200, 1e200);
+        CloseToNumChecks(check(big.abs())).isCloseTo(math.sqrt2 * 1e200, 1e186);
+        check(big.sign).isCloseTo(const Complex(math.sqrt1_2, math.sqrt1_2));
+        check(big.reciprocal()).isCloseTo(const Complex(0.5e-200, -0.5e-200));
+        check(big / big).isCloseTo(Complex.one);
+        CloseToNumChecks(check(big.log().a)).isCloseTo(460.8635921890891, 1e-6);
+        check(const Complex(-1e16, 1).sqrt())
+            .isCloseTo(const Complex(5e-9, 1e8), 1e-12);
+        check(Complex.nan.sign.isNaN).isTrue;
+      });
+      test('tan and tanh asymptotic branches', () {
+        check(const Complex(1, 25).tan()).isCloseTo(Complex.i);
+        check(const Complex(1, -25).tan()).isCloseTo(-Complex.i);
+        check(const Complex(25, 1).tanh()).isCloseTo(Complex.one);
+        check(const Complex(-25, 1).tanh()).isCloseTo(-Complex.one);
+      });
+    });
   });
 }

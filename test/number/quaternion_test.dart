@@ -439,6 +439,45 @@ void main() {
         check(const Quaternion(2, 3, 4, 5).hashCode)
             .not(.it()..equals(const Quaternion(2, 3, 5, 4).hashCode));
       });
+      test('closeTo', () {
+        check(
+          const Quaternion(
+            1,
+            2,
+            3,
+            4,
+          ).closeTo(const Quaternion(1, 2, 3, 4), 0.1),
+        ).isTrue;
+        check(const Quaternion(1, 2, 3, 4).closeTo(Quaternion.zero, 0.1))
+            .isFalse;
+        check(Quaternion.nan.closeTo(Quaternion.nan, 0.1)).isFalse;
+      });
+    });
+    group('edge cases', () {
+      test('parse rejects malformed unit/whitespace inputs', () {
+        check(Quaternion.tryParse('ijk')).isNull;
+        check(Quaternion.tryParse('1e+ 5')).isNull;
+        check(Quaternion.tryParse('1*')).isNull;
+        check(Quaternion.tryParse('1i2j')).isNull;
+      });
+      test('scaled abs, normalize, reciprocal, division, log', () {
+        const big = Quaternion(1e200, 1e200, 1e200, 1e200);
+        CloseToNumChecks(check(big.abs())).isCloseTo(2e200, 1e186);
+        check(big.normalize()).isCloseTo(const Quaternion(0.5, 0.5, 0.5, 0.5));
+        check(big.reciprocal()).isCloseTo(
+          const Quaternion(0.25e-200, -0.25e-200, -0.25e-200, -0.25e-200),
+        );
+        check(big / big).isCloseTo(Quaternion.one);
+        CloseToNumChecks(check(big.log().w)).isCloseTo(461.2101657793691, 1e-6);
+      });
+      test('nearly anti-parallel fromVectors', () {
+        final q = Quaternion.fromVectors(
+          const [1, 1e-13, 0],
+          const [-1, 1e-13, 0],
+        );
+        check(q.abs()).isCloseTo(1.0);
+        check(q.isFinite).isTrue;
+      });
     });
   });
 }

@@ -71,10 +71,11 @@ class Complex implements CloseTo<Complex> {
 
   /// Returns the radius of this complex value in polar coordinates, also called
   /// the magnitude of the complex number.
-  double abs() => norm().sqrt();
+  double abs() => _hypot2(a, b);
 
   /// Returns the closest point on the unit circle.
   Complex get sign {
+    if (isNaN) return Complex.nan;
     final absolute = abs();
     return absolute > 0 ? this / absolute : Complex.zero;
   }
@@ -126,18 +127,33 @@ class Complex implements CloseTo<Complex> {
 
   /// Returns the multiplicative inverse of this complex value.
   Complex reciprocal() {
-    final d = 1.0 / norm();
-    return Complex(a * d, b * -d);
+    final absA = a.abs();
+    final absB = b.abs();
+    if (absA >= absB) {
+      final r = b / a;
+      final d = a + b * r;
+      return Complex(1.0 / d, -r / d);
+    } else {
+      final r = a / b;
+      final d = b + a * r;
+      return Complex(r / d, -1.0 / d);
+    }
   }
 
   /// Returns the division of this complex value and [other].
   Complex operator /(Object other) {
     if (other is Complex) {
-      final d = 1.0 / other.norm();
-      return Complex(
-        (a * other.a + b * other.b) * d,
-        (b * other.a - a * other.b) * d,
-      );
+      final absA = other.a.abs();
+      final absB = other.b.abs();
+      if (absA >= absB) {
+        final r = other.b / other.a;
+        final d = other.a + other.b * r;
+        return Complex((a + b * r) / d, (b - a * r) / d);
+      } else {
+        final r = other.a / other.b;
+        final d = other.b + other.a * r;
+        return Complex((a * r + b) / d, (b * r - a) / d);
+      }
     } else if (other is num) {
       return Complex(a / other, b / other);
     } else {
@@ -152,7 +168,7 @@ class Complex implements CloseTo<Complex> {
   }
 
   /// Computes the natural logarithm of this complex number.
-  Complex log() => Complex(norm().sqrt().log(), b.atan2(a));
+  Complex log() => Complex(abs().log(), b.atan2(a));
 
   /// Computes the power of this complex number raised to [exponent].
   Complex pow(Object exponent) {
@@ -180,9 +196,13 @@ class Complex implements CloseTo<Complex> {
       return a >= 0 ? Complex(a.sqrt(), 0) : Complex(0, (-a).sqrt());
     }
     final r = abs();
-    final re = ((r + a) / 2).sqrt();
-    final im = ((r - a) / 2).sqrt();
-    return Complex(re, b < 0 ? -im : im);
+    if (a >= 0) {
+      final re = (0.5 * r + 0.5 * a).sqrt();
+      return Complex(re, b / (2 * re));
+    } else {
+      final im = (0.5 * r - 0.5 * a).sqrt() * (b < 0 ? -1 : 1);
+      return Complex(b / (2 * im), im);
+    }
   }
 
   /// Computes the n-th roots of this complex number.
@@ -226,6 +246,9 @@ class Complex implements CloseTo<Complex> {
 
   /// Computes the tangent of this complex number.
   Complex tan() {
+    if (b.isFinite && b.abs() >= 20) {
+      return Complex(0.0, b.sign.toDouble());
+    }
     final a2 = 2 * a, b2 = 2 * b;
     final d = a2.cos() + b2.cosh();
     return Complex(a2.sin() / d, b2.sinh() / d);
@@ -237,6 +260,9 @@ class Complex implements CloseTo<Complex> {
 
   /// Computes the hyperbolic tangent of this complex number.
   Complex tanh() {
+    if (a.isFinite && a.abs() >= 20) {
+      return Complex(a.sign.toDouble(), 0.0);
+    }
     final a2 = 2 * a, b2 = 2 * b;
     final d = a2.cosh() + b2.cos();
     return Complex(a2.sinh() / d, b2.sin() / d);
@@ -279,4 +305,22 @@ class Complex implements CloseTo<Complex> {
 
   @override
   String toString() => 'Complex($a, $b)';
+}
+
+double _hypot2(num a, num b) {
+  if (a.isNaN || b.isNaN) return double.nan;
+  final absA = a.abs().toDouble();
+  final absB = b.abs().toDouble();
+  if (absA == double.infinity || absB == double.infinity) {
+    return double.infinity;
+  }
+  if (absA < absB) {
+    if (absB == 0) return 0.0;
+    final q = absA / absB;
+    return absB * (1.0 + q * q).sqrt();
+  } else {
+    if (absA == 0) return 0.0;
+    final q = absB / absA;
+    return absA * (1.0 + q * q).sqrt();
+  }
 }

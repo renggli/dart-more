@@ -20,12 +20,10 @@ class Quaternion implements CloseTo<Quaternion> {
   factory fromList(List<num> vector) =>
       Quaternion(vector[0], vector[1], vector[2], vector[3]);
 
-  /// Constructs a quaternion from an [axis] and a rotation [angle].
+  /// Constructs a quaternion from an [axis] and a rotation [angle] in radians.
   factory fromAxis(List<num> axis, num angle) {
     final halfAngle = 0.5 * angle;
-    final norm =
-        halfAngle.sin() /
-        (axis[0] * axis[0] + axis[1] * axis[1] + axis[2] * axis[2]).sqrt();
+    final norm = halfAngle.sin() / _hypot4(0, axis[0], axis[1], axis[2]);
     return Quaternion(
       halfAngle.cos(),
       axis[0] * norm,
@@ -42,8 +40,8 @@ class Quaternion implements CloseTo<Quaternion> {
     final x = source[1] * target[2] - source[2] * target[1];
     final y = source[2] * target[0] - source[0] * target[2];
     final z = source[0] * target[1] - source[1] * target[0];
-    final norm = (w * w + x * x + y * y + z * z).sqrt();
-    if (w + norm == 0) {
+    final norm = _hypot4(w, x, y, z);
+    if (w + norm <= 1e-12 * norm) {
       // Vectors are opposite (anti-parallel). Rotate 180 degrees around an
       // orthogonal axis.
       final ax = source[0].abs();
@@ -61,7 +59,8 @@ class Quaternion implements CloseTo<Quaternion> {
     return Quaternion(w + norm, x, y, z).normalize();
   }
 
-  /// Constructs a quaternion from an euler rotation.
+  /// Constructs a quaternion from Euler angles ([phi], [theta], [psi]) in
+  /// radians, following the Z-X-Y intrinsic rotation convention.
   factory fromEuler(num phi, num theta, num psi) {
     final halfPhi = phi * 0.5;
     final halfTheta = theta * 0.5;
@@ -152,7 +151,7 @@ class Quaternion implements CloseTo<Quaternion> {
   final num z;
 
   /// Returns the absolute value of the quaternion.
-  double abs() => norm().sqrt();
+  double abs() => _hypot4(w, x, y, z);
 
   /// Returns the squared absolute value.
   num norm() => w * w + x * x + y * y + z * z;
@@ -165,8 +164,8 @@ class Quaternion implements CloseTo<Quaternion> {
 
   /// Returns the normalized form of the quaternion.
   Quaternion normalize() {
-    final f = 1 / abs();
-    return Quaternion(w * f, x * f, y * f, z * f);
+    final n = abs();
+    return Quaternion(w / n, x / n, y / n, z / n);
   }
 
   /// Returns the sum of this number and another one.
@@ -209,19 +208,51 @@ class Quaternion implements CloseTo<Quaternion> {
 
   /// Computes the multiplicative inverse of this quaternion.
   Quaternion reciprocal() {
-    final f = 1 / norm();
-    return Quaternion(w * f, -x * f, -y * f, -z * f);
+    final m = math
+        .max(math.max(w.abs(), x.abs()), math.max(y.abs(), z.abs()))
+        .toDouble();
+    if (!m.isFinite || m == 0.0) {
+      final f = 1 / norm();
+      return Quaternion(w * f, -x * f, -y * f, -z * f);
+    }
+    final sw = w / m, sx = x / m, sy = y / m, sz = z / m;
+    final sNorm = sw * sw + sx * sx + sy * sy + sz * sz;
+    return Quaternion(
+      (sw / sNorm) / m,
+      (-sx / sNorm) / m,
+      (-sy / sNorm) / m,
+      (-sz / sNorm) / m,
+    );
   }
 
   /// Computes the division of this number and another one.
   Quaternion operator /(Object other) {
     if (other is Quaternion) {
-      final f = 1 / other.norm();
+      final m = math
+          .max(
+            math.max(other.w.abs(), other.x.abs()),
+            math.max(other.y.abs(), other.z.abs()),
+          )
+          .toDouble();
+      if (!m.isFinite || m == 0.0) {
+        final f = 1 / other.norm();
+        return Quaternion(
+          (w * other.w + x * other.x + y * other.y + z * other.z) * f,
+          (x * other.w - w * other.x - y * other.z + z * other.y) * f,
+          (y * other.w - w * other.y - z * other.x + x * other.z) * f,
+          (z * other.w - w * other.z - x * other.y + y * other.x) * f,
+        );
+      }
+      final ow = other.w / m;
+      final ox = other.x / m;
+      final oy = other.y / m;
+      final oz = other.z / m;
+      final d = ow * ow + ox * ox + oy * oy + oz * oz;
       return Quaternion(
-        (w * other.w + x * other.x + y * other.y + z * other.z) * f,
-        (x * other.w - w * other.x - y * other.z + z * other.y) * f,
-        (y * other.w - w * other.y - z * other.x + x * other.z) * f,
-        (z * other.w - w * other.z - x * other.y + y * other.x) * f,
+        ((w / m) * ow + (x / m) * ox + (y / m) * oy + (z / m) * oz) / d,
+        ((x / m) * ow - (w / m) * ox - (y / m) * oz + (z / m) * oy) / d,
+        ((y / m) * ow - (w / m) * oy - (z / m) * ox + (x / m) * oz) / d,
+        ((z / m) * ow - (w / m) * oz - (x / m) * oy + (y / m) * ox) / d,
       );
     } else if (other is num) {
       return Quaternion(w / other, x / other, y / other, z / other);
@@ -233,7 +264,7 @@ class Quaternion implements CloseTo<Quaternion> {
   /// Computes the exponential function of this quaternion number.
   Quaternion exp() {
     final exp = w.exp();
-    final norm = (x * x + y * y + z * z).sqrt();
+    final norm = _hypot4(0, x, y, z);
     if (norm == 0) {
       return Quaternion(exp);
     }
@@ -243,7 +274,7 @@ class Quaternion implements CloseTo<Quaternion> {
 
   /// Computes the natural logarithm of this quaternion number.
   Quaternion log() {
-    final vectorNorm = (x * x + y * y + z * z).sqrt();
+    final vectorNorm = _hypot4(0, x, y, z);
     if (vectorNorm == 0) {
       if (w < 0) {
         return Quaternion((-w).log(), math.pi);
@@ -251,7 +282,7 @@ class Quaternion implements CloseTo<Quaternion> {
       return Quaternion(w.log());
     }
     final scale = vectorNorm.atan2(w) / vectorNorm;
-    return Quaternion(0.5 * norm().log(), x * scale, y * scale, z * scale);
+    return Quaternion(abs().log(), x * scale, y * scale, z * scale);
   }
 
   /// Computes the power of this quaternion number raised to [exponent].
@@ -314,4 +345,20 @@ class Quaternion implements CloseTo<Quaternion> {
 
   @override
   String toString() => 'Quaternion($w, $x, $y, $z)';
+}
+
+double _hypot4(num w, num x, num y, num z) {
+  if (w.isNaN || x.isNaN || y.isNaN || z.isNaN) return double.nan;
+  final aw = w.abs().toDouble();
+  final ax = x.abs().toDouble();
+  final ay = y.abs().toDouble();
+  final az = z.abs().toDouble();
+  final max = math.max(math.max(aw, ax), math.max(ay, az));
+  if (max == double.infinity) return double.infinity;
+  if (max == 0.0) return 0.0;
+  final sw = aw / max;
+  final sx = ax / max;
+  final sy = ay / max;
+  final sz = az / max;
+  return max * (sw * sw + sx * sx + sy * sy + sz * sz).sqrt();
 }
