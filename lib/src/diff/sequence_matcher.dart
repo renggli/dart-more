@@ -316,7 +316,7 @@ class SequenceMatcher<T> {
 
   Iterable<List<Operation>> _groupedOperations(int context) sync* {
     final codes = [...operations];
-    if (codes.isEmpty) codes.add(Operation.empty);
+    if (codes.isEmpty) return;
     if (codes.first.type == OperationType.equal) {
       final Operation(
         :type,

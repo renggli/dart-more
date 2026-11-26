@@ -42,8 +42,6 @@ class ContextDiffer extends Differ {
     String? sourceLabel,
     String? targetLabel,
   }) sync* {
-    if (sourceLabel != null) yield '*** $sourceLabel';
-    if (targetLabel != null) yield '--- $targetLabel';
     final sourceList = source is List<String>
         ? source
         : source.toList(growable: false);
@@ -51,7 +49,13 @@ class ContextDiffer extends Differ {
         ? target
         : target.toList(growable: false);
     final matcher = SequenceMatcher(source: sourceList, target: targetList);
+    var started = false;
     for (final group in matcher.groupedOperations(context: context)) {
+      if (!started) {
+        started = true;
+        if (sourceLabel != null) yield '*** $sourceLabel';
+        if (targetLabel != null) yield '--- $targetLabel';
+      }
       yield '***************';
       final sourceRange = _range(group.first.sourceStart, group.last.sourceEnd);
       yield '*** $sourceRange ****';

@@ -16,13 +16,13 @@ class Operation with ToStringPrinter {
     required this.targetEnd,
   });
 
-  /// Sentinel operation returned when grouping empty operations.
+  /// Empty operation spanning zero elements at index `0`.
   static const empty = Operation(
     OperationType.equal,
     sourceStart: 0,
-    sourceEnd: 1,
+    sourceEnd: 0,
     targetStart: 0,
-    targetEnd: 1,
+    targetEnd: 0,
   );
 
   /// The type of the operation.

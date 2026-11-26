@@ -21,7 +21,7 @@ void main() {
           sourceLabel: 'original',
           targetLabel: 'current',
         ),
-      ).deepEquals(['*** original', '--- current']);
+      ).isEmpty;
     });
 
     test('python', () {

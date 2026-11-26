@@ -34,9 +34,9 @@ void main() {
       check(Operation.empty)
         ..type.equals(OperationType.equal)
         ..sourceStart.equals(0)
-        ..sourceEnd.equals(1)
+        ..sourceEnd.equals(0)
         ..targetStart.equals(0)
-        ..targetEnd.equals(1);
+        ..targetEnd.equals(0);
     });
 
     test('toString', () {
