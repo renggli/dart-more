@@ -41,10 +41,10 @@ sealed class Either<L, R> {
     if (rightValue != null) {
       return Either<L, R>.right(rightValue);
     }
-    throw noValueError;
+    throw StateError('No value');
   }
 
-  /// Returns a dynamically typed value of this object, either the [leftValue]
+  /// Returns the value of this object as an [Object?], either the [leftValue]
   /// or the [rightValue].
   Object? get value;
 
@@ -60,7 +60,7 @@ sealed class Either<L, R> {
   /// Returns the right value as an [Optional].
   Optional<R> get rightOptional;
 
-  /// Returns a tuple with either the left or right value defined.
+  /// Returns a record with either the left or right value defined.
   (L?, R?) get tuple;
 
   /// Returns `true`, if this is a left value.
@@ -130,7 +130,7 @@ class LeftEither<L, R> extends Either<L, R> {
   Optional<L> get leftOptional => Optional<L>.of(leftValue);
 
   @override
-  R get rightValue => throw noRightValueError;
+  R get rightValue => throw StateError('No right value');
 
   @override
   Optional<R> get rightOptional => Optional<R>.absent();
@@ -204,7 +204,7 @@ class RightEither<L, R> extends Either<L, R> {
   R get value => rightValue;
 
   @override
-  L get leftValue => throw noLeftValueError;
+  L get leftValue => throw StateError('No left value');
 
   @override
   Optional<L> get leftOptional => Optional<L>.absent();
@@ -275,7 +275,3 @@ class RightEither<L, R> extends Either<L, R> {
   @override
   String toString() => '${super.toString()}[$rightValue]';
 }
-
-final noValueError = StateError('No value');
-final noLeftValueError = StateError('No left value');
-final noRightValueError = StateError('No right value');

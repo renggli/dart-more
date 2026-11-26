@@ -57,8 +57,8 @@ sealed class Optional<T> {
   /// to `true`, otherwise returns an absent [Optional].
   Optional<T> where(Predicate1<T> function);
 
-  /// Casts the present value of this [Optional] to [R], otherwise returns an
-  /// absent [Optional].
+  /// Returns this [Optional] if the value is an instance of [R], otherwise
+  /// returns an absent [Optional].
   Optional<R> whereType<R>();
 
   /// Transforms the present value of this [Optional] with the provided
@@ -152,13 +152,13 @@ class AbsentOptional<T> extends Optional<T> {
   const new _() : super._();
 
   @override
-  T get value => throw noSuchElementError;
+  T get value => throw StateError('No such element');
 
   @override
   T? get valueOrNull => null;
 
   @override
-  Iterable<T> get iterable => const [];
+  Iterable<T> get iterable => Iterable<T>.empty();
 
   @override
   bool get isPresent => false;
@@ -194,13 +194,14 @@ class AbsentOptional<T> extends Optional<T> {
   T orElseGet(Map0<T> function) => function();
 
   @override
-  T orElseThrow([Object? error]) => throw error ?? noSuchElementError;
+  T orElseThrow([Object? error]) =>
+      throw error ?? StateError('No such element');
 
   @override
   bool operator ==(Object other) => other is AbsentOptional;
 
   @override
-  int get hashCode => 0;
+  int get hashCode => (AbsentOptional).hashCode;
 }
 
 /// Extension on nullable types to convert to [Optional].
@@ -208,5 +209,3 @@ extension OptionalNullableExtension<T extends Object> on T? {
   /// Returns an [Optional] containing this value if non-null, otherwise absent.
   Optional<T> toOptional() => Optional<T>.ofNullable(this);
 }
-
-final noSuchElementError = StateError('No such element');
