@@ -57,29 +57,29 @@ extension StringListExtension on String {
 class MutableStringList extends ListBase<String> {
   new fromString(String string) : this.fromCodeUnits(string.codeUnits);
 
-  new fromCodeUnits(List<int> codeUnits) : codeUnits = codeUnits.toList();
+  new fromCodeUnits(List<int> codeUnits) : _codeUnits = codeUnits.toList();
 
-  final List<int> codeUnits;
+  final List<int> _codeUnits;
 
   @override
-  int get length => codeUnits.length;
+  int get length => _codeUnits.length;
 
   @override
   set length(int newLength) {
-    if (newLength > codeUnits.length) {
-      codeUnits.addAll(List.filled(newLength - codeUnits.length, 0));
+    if (newLength > _codeUnits.length) {
+      _codeUnits.addAll(List.filled(newLength - _codeUnits.length, 0));
     } else {
-      codeUnits.length = newLength;
+      _codeUnits.length = newLength;
     }
   }
 
   @override
-  String operator [](int index) => String.fromCharCode(codeUnits[index]);
+  String operator [](int index) => String.fromCharCode(_codeUnits[index]);
 
   @override
   void operator []=(int index, String character) {
     if (character.length == 1) {
-      codeUnits[index] = character.codeUnitAt(0);
+      _codeUnits[index] = character.codeUnitAt(0);
     } else {
       throw ArgumentError.value(character, 'character', 'Invalid character');
     }
@@ -88,7 +88,7 @@ class MutableStringList extends ListBase<String> {
   @override
   void add(String element) {
     if (element.length == 1) {
-      codeUnits.add(element.codeUnitAt(0));
+      _codeUnits.add(element.codeUnitAt(0));
     } else {
       throw ArgumentError.value(element, 'element', 'Invalid character');
     }
@@ -104,13 +104,13 @@ class MutableStringList extends ListBase<String> {
         throw ArgumentError.value(element, 'element', 'Invalid character');
       }
     }
-    codeUnits.addAll(units);
+    _codeUnits.addAll(units);
   }
 
   @override
   void insert(int index, String element) {
     if (element.length == 1) {
-      codeUnits.insert(index, element.codeUnitAt(0));
+      _codeUnits.insert(index, element.codeUnitAt(0));
     } else {
       throw ArgumentError.value(element, 'element', 'Invalid character');
     }
@@ -126,55 +126,55 @@ class MutableStringList extends ListBase<String> {
         throw ArgumentError.value(element, 'element', 'Invalid character');
       }
     }
-    codeUnits.insertAll(index, units);
+    _codeUnits.insertAll(index, units);
   }
 
   @override
-  String removeAt(int index) => String.fromCharCode(codeUnits.removeAt(index));
+  String removeAt(int index) => String.fromCharCode(_codeUnits.removeAt(index));
 
   @override
-  void removeRange(int start, int end) => codeUnits.removeRange(start, end);
+  void removeRange(int start, int end) => _codeUnits.removeRange(start, end);
 
   @override
-  void clear() => codeUnits.clear();
+  void clear() => _codeUnits.clear();
 
   @override
   List<String> sublist(int start, [int? end]) =>
-      MutableStringList.fromCodeUnits(codeUnits.sublist(start, end));
+      MutableStringList.fromCodeUnits(_codeUnits.sublist(start, end));
 
   @override
-  String toString() => String.fromCharCodes(codeUnits);
+  String toString() => String.fromCharCodes(_codeUnits);
 }
 
 /// A string as a mutable list of Unicode code-points.
 class MutableUnicodeStringList extends ListBase<String> {
   new fromString(String string) : this.fromRunes(string.runes);
 
-  new fromRunes(Iterable<int> runes) : runes = runes.toList();
+  new fromRunes(Iterable<int> runes) : _runes = runes.toList();
 
-  final List<int> runes;
+  final List<int> _runes;
 
   @override
-  int get length => runes.length;
+  int get length => _runes.length;
 
   @override
   set length(int newLength) {
-    if (newLength > runes.length) {
-      runes.addAll(List.filled(newLength - runes.length, 0));
+    if (newLength > _runes.length) {
+      _runes.addAll(List.filled(newLength - _runes.length, 0));
     } else {
-      runes.length = newLength;
+      _runes.length = newLength;
     }
   }
 
   @override
-  String operator [](int index) => String.fromCharCode(runes[index]);
+  String operator [](int index) => String.fromCharCode(_runes[index]);
 
   @override
   void operator []=(int index, String character) =>
-      runes[index] = _singleRune(character, 'character');
+      _runes[index] = _singleRune(character, 'character');
 
   @override
-  void add(String element) => runes.add(_singleRune(element, 'element'));
+  void add(String element) => _runes.add(_singleRune(element, 'element'));
 
   @override
   void addAll(Iterable<String> iterable) {
@@ -182,12 +182,12 @@ class MutableUnicodeStringList extends ListBase<String> {
     for (final element in iterable) {
       list.add(_singleRune(element, 'element'));
     }
-    runes.addAll(list);
+    _runes.addAll(list);
   }
 
   @override
   void insert(int index, String element) =>
-      runes.insert(index, _singleRune(element, 'element'));
+      _runes.insert(index, _singleRune(element, 'element'));
 
   @override
   void insertAll(int index, Iterable<String> iterable) {
@@ -195,24 +195,24 @@ class MutableUnicodeStringList extends ListBase<String> {
     for (final element in iterable) {
       list.add(_singleRune(element, 'element'));
     }
-    runes.insertAll(index, list);
+    _runes.insertAll(index, list);
   }
 
   @override
-  String removeAt(int index) => String.fromCharCode(runes.removeAt(index));
+  String removeAt(int index) => String.fromCharCode(_runes.removeAt(index));
 
   @override
-  void removeRange(int start, int end) => runes.removeRange(start, end);
+  void removeRange(int start, int end) => _runes.removeRange(start, end);
 
   @override
-  void clear() => runes.clear();
+  void clear() => _runes.clear();
 
   @override
   List<String> sublist(int start, [int? end]) =>
-      MutableUnicodeStringList.fromRunes(runes.sublist(start, end));
+      MutableUnicodeStringList.fromRunes(_runes.sublist(start, end));
 
   @override
-  String toString() => String.fromCharCodes(runes);
+  String toString() => String.fromCharCodes(_runes);
 }
 
 int _singleRune(String element, String name) {
@@ -253,20 +253,20 @@ class ImmutableUnicodeStringList extends ListBase<String>
     with UnmodifiableListMixin<String> {
   new fromString(String string) : this.fromRunes(string.runes);
 
-  new fromRunes(Iterable<int> runes) : runes = runes.toList(growable: false);
+  new fromRunes(Iterable<int> runes) : _runes = runes.toList(growable: false);
 
-  final List<int> runes;
-
-  @override
-  int get length => runes.length;
+  final List<int> _runes;
 
   @override
-  String operator [](int index) => String.fromCharCode(runes[index]);
+  int get length => _runes.length;
+
+  @override
+  String operator [](int index) => String.fromCharCode(_runes[index]);
 
   @override
   List<String> sublist(int start, [int? end]) =>
-      ImmutableUnicodeStringList.fromRunes(runes.sublist(start, end));
+      ImmutableUnicodeStringList.fromRunes(_runes.sublist(start, end));
 
   @override
-  String toString() => String.fromCharCodes(runes);
+  String toString() => String.fromCharCodes(_runes);
 }
