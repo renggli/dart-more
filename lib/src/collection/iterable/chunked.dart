@@ -11,16 +11,9 @@ extension ChunkedIterableExtension<E> on Iterable<E> {
   /// final input = [1, 2, 3, 4, 5];
   /// print(input.chunked(2));  // [[1, 2], [3, 4], [5]]
   /// ```
-  Iterable<List<E>> chunked(int size) sync* {
+  Iterable<List<E>> chunked(int size) {
     checkNonZeroPositive(size, 'size');
-    final iterator = this.iterator;
-    while (iterator.moveNext()) {
-      final current = <E>[];
-      do {
-        current.add(iterator.current);
-      } while (current.length < size && iterator.moveNext());
-      yield current.toList(growable: false);
-    }
+    return _chunked(this, size);
   }
 
   /// Divides this [Iterable] into sub-lists of a given [size]. The final list
@@ -32,18 +25,35 @@ extension ChunkedIterableExtension<E> on Iterable<E> {
   /// final input = [1, 2, 3, 4, 5];
   /// print(input.chunkedWithPadding(2, -1));  // [[1, 2], [3, 4], [5, -1]]
   /// ```
-  Iterable<List<E>> chunkedWithPadding(int size, E padding) sync* {
+  Iterable<List<E>> chunkedWithPadding(int size, E padding) {
     checkNonZeroPositive(size, 'size');
-    final iterator = this.iterator;
-    while (iterator.moveNext()) {
-      final current = <E>[];
-      do {
-        current.add(iterator.current);
-      } while (current.length < size && iterator.moveNext());
-      while (current.length < size) {
-        current.add(padding);
-      }
-      yield current.toList(growable: false);
-    }
+    return _chunkedWithPadding(this, size, padding);
+  }
+}
+
+Iterable<List<E>> _chunked<E>(Iterable<E> iterable, int size) sync* {
+  final iterator = iterable.iterator;
+  while (iterator.moveNext()) {
+    final current = <E>[];
+    do {
+      current.add(iterator.current);
+    } while (current.length < size && iterator.moveNext());
+    yield current.toList(growable: false);
+  }
+}
+
+Iterable<List<E>> _chunkedWithPadding<E>(
+  Iterable<E> iterable,
+  int size,
+  E padding,
+) sync* {
+  final iterator = iterable.iterator;
+  while (iterator.moveNext()) {
+    final current = List<E>.filled(size, padding);
+    var count = 0;
+    do {
+      current[count++] = iterator.current;
+    } while (count < size && iterator.moveNext());
+    yield current;
   }
 }

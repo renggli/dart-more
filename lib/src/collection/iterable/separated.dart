@@ -1,6 +1,3 @@
-/// Function type to build elements.
-typedef Builder<E> = E Function();
-
 /// Extension on [Iterable] to separate elements with injected items.
 extension SeparatedIterableExtension<E> on Iterable<E> {
   /// Returns an [Iterable] where every element is separated by an element
@@ -20,9 +17,9 @@ extension SeparatedIterableExtension<E> on Iterable<E> {
   /// // [1, 0, 2, 0, 3, -1]
   /// ```
   Iterable<E> separatedBy(
-    Builder<E> separator, {
-    Builder<E>? before,
-    Builder<E>? after,
+    E Function() separator, {
+    E Function()? before,
+    E Function()? after,
   }) sync* {
     var index = 0;
     for (final iterator = this.iterator; iterator.moveNext(); index++) {

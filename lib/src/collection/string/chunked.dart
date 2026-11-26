@@ -15,11 +15,15 @@ extension ChunkedStringExtension on String {
   /// final input = 'abcde';
   /// print(input.chunked(2));  // ('ab', 'cd', 'e')
   /// ```
-  Iterable<String> chunked(int size) sync* {
-    checkNonZeroPositive(size);
-    for (var i = 0; i < length; i += size) {
-      yield substring(i, min(i + size, length));
-    }
+  Iterable<String> chunked(int size) {
+    checkNonZeroPositive(size, 'size');
+    return _chunkedString(this, size);
+  }
+}
+
+Iterable<String> _chunkedString(String source, int size) sync* {
+  for (var i = 0; i < source.length; i += size) {
+    yield source.substring(i, min(i + size, source.length));
   }
 }
 
@@ -34,14 +38,18 @@ extension ChunkedCharactersExtension on Characters {
   /// final input = 'abcde'.characters;
   /// print(input.chunked(2));  // ('ab', 'cd', 'e')
   /// ```
-  Iterable<Characters> chunked(int size) sync* {
-    checkNonZeroPositive(size);
-    final range = iterator;
-    while (range.moveNext(size)) {
-      yield range.currentCharacters;
-    }
-    if (range.isNotEmpty) {
-      yield range.currentCharacters;
-    }
+  Iterable<Characters> chunked(int size) {
+    checkNonZeroPositive(size, 'size');
+    return _chunkedCharacters(this, size);
+  }
+}
+
+Iterable<Characters> _chunkedCharacters(Characters source, int size) sync* {
+  final range = source.iterator;
+  while (range.moveNext(size)) {
+    yield range.currentCharacters;
+  }
+  if (range.isNotEmpty) {
+    yield range.currentCharacters;
   }
 }

@@ -21,5 +21,10 @@ void main() {
       map['b'] = 42;
       check(map['b']).equals(42);
     });
+    test('nullable stored value of null returns null', () {
+      final map = <String, int?>{'a': null}.withDefault(42);
+      check(map['a']).isNull;
+      check(map['missing']).equals(42);
+    });
   });
 }

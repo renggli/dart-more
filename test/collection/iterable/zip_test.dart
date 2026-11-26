@@ -170,5 +170,24 @@ void main() {
             .deepEquals([(1, 'a'), (2, 'b'), (3, 'd')]);
       });
     });
+    test('single-pass on outer iterable', () {
+      var calls = 0;
+      Iterable<List<int>> outer() sync* {
+        calls++;
+        yield [1, 2];
+        yield [3, 4];
+      }
+
+      check(outer().zip()).deepEquals([
+        [1, 3],
+        [2, 4],
+      ]);
+      check(calls).equals(1);
+      check(outer().zipPartialWith(0)).deepEquals([
+        [1, 3],
+        [2, 4],
+      ]);
+      check(calls).equals(2);
+    });
   });
 }

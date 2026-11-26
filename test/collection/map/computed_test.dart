@@ -32,5 +32,14 @@ void main() {
       check(() => map[1]).throws<TypeError>();
       check(map.isEmpty).isTrue;
     });
+    test('nullable value cached as null is not recomputed', () {
+      var calls = 0;
+      final map = <String, int?>{'k': null}.withComputed((key) {
+        calls++;
+        return 42;
+      });
+      check(map['k']).isNull;
+      check(calls).equals(0);
+    });
   });
 }

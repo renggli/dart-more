@@ -27,7 +27,7 @@ extension StringListExtension on String {
   /// For a mutable copy of the string set the parameter [mutable] to `true`.
   /// This is more expensive, as the string needs to be copied to a [List].
   ///
-  /// For a list of UTF-16 code units set the parameter [unicode] to `true`.
+  /// For a list of Unicode code points set the parameter [unicode] to `true`.
   /// This is equivalent of using [String.runes] and requires to decode and
   /// copy the string to a list, no matter if immutable or mutable.
   ///
@@ -96,9 +96,15 @@ class MutableStringList extends ListBase<String> {
 
   @override
   void addAll(Iterable<String> iterable) {
+    final units = <int>[];
     for (final element in iterable) {
-      add(element);
+      if (element.length == 1) {
+        units.add(element.codeUnitAt(0));
+      } else {
+        throw ArgumentError.value(element, 'element', 'Invalid character');
+      }
     }
+    codeUnits.addAll(units);
   }
 
   @override
@@ -164,48 +170,30 @@ class MutableUnicodeStringList extends ListBase<String> {
   String operator [](int index) => String.fromCharCode(runes[index]);
 
   @override
-  void operator []=(int index, String character) {
-    if (character.runes.length == 1) {
-      runes[index] = character.runes.first;
-    } else {
-      throw ArgumentError.value(character, 'character', 'Invalid character');
-    }
-  }
+  void operator []=(int index, String character) =>
+      runes[index] = _singleRune(character, 'character');
 
   @override
-  void add(String element) {
-    if (element.runes.length == 1) {
-      runes.add(element.runes.first);
-    } else {
-      throw ArgumentError.value(element, 'element', 'Invalid character');
-    }
-  }
+  void add(String element) => runes.add(_singleRune(element, 'element'));
 
   @override
   void addAll(Iterable<String> iterable) {
+    final list = <int>[];
     for (final element in iterable) {
-      add(element);
+      list.add(_singleRune(element, 'element'));
     }
+    runes.addAll(list);
   }
 
   @override
-  void insert(int index, String element) {
-    if (element.runes.length == 1) {
-      runes.insert(index, element.runes.first);
-    } else {
-      throw ArgumentError.value(element, 'element', 'Invalid character');
-    }
-  }
+  void insert(int index, String element) =>
+      runes.insert(index, _singleRune(element, 'element'));
 
   @override
   void insertAll(int index, Iterable<String> iterable) {
     final list = <int>[];
     for (final element in iterable) {
-      if (element.runes.length == 1) {
-        list.add(element.runes.first);
-      } else {
-        throw ArgumentError.value(element, 'element', 'Invalid character');
-      }
+      list.add(_singleRune(element, 'element'));
     }
     runes.insertAll(index, list);
   }
@@ -225,6 +213,17 @@ class MutableUnicodeStringList extends ListBase<String> {
 
   @override
   String toString() => String.fromCharCodes(runes);
+}
+
+int _singleRune(String element, String name) {
+  final iterator = element.runes.iterator;
+  if (iterator.moveNext()) {
+    final rune = iterator.current;
+    if (!iterator.moveNext()) {
+      return rune;
+    }
+  }
+  throw ArgumentError.value(element, name, 'Invalid character');
 }
 
 /// A string as an immutable list of UTF-16 code units.

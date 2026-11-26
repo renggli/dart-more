@@ -37,6 +37,9 @@ class RepeatInfiniteIterable<E> extends IterableBase<E>
   final Iterable<E> iterable;
 
   @override
+  bool contains(Object? element) => iterable.contains(element);
+
+  @override
   Iterator<E> get iterator => RepeatIterableIterator<E>(iterable, null);
 }
 
@@ -47,18 +50,24 @@ class RepeatCountIterable<E> extends IterableBase<E> {
   final int count;
 
   @override
+  int get length => iterable.length * count;
+
+  @override
+  bool get isEmpty => iterable.isEmpty;
+
+  @override
+  bool contains(Object? element) => iterable.contains(element);
+
+  @override
   Iterator<E> get iterator => RepeatIterableIterator<E>(iterable, count);
 }
 
 class RepeatIterableIterator<E> implements Iterator<E> {
-  new(this.iterable, this.remainingRepetitions)
-    : iterator = iterable.iterator,
-      hasElements = false;
+  new(this.iterable, this.remainingRepetitions) : iterator = iterable.iterator;
 
   final Iterable<E> iterable;
   int? remainingRepetitions;
   Iterator<E> iterator;
-  bool hasElements;
 
   @override
   E get current => iterator.current;

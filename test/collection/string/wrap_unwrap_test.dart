@@ -22,7 +22,6 @@ void main() {
       check('a b'.wrap(4, whitespace: whitespace)).equals('a b');
       check('a  b'.wrap(4, whitespace: whitespace)).equals('a b');
       check('a b c'.wrap(4, whitespace: whitespace)).equals('a b\nc');
-
       check('aa bb cc'.wrap(4, whitespace: whitespace)).equals('aa\nbb\ncc');
       check('a\nb'.wrap(4, whitespace: whitespace)).equals('a\nb');
       check('1234'.wrap(4, whitespace: whitespace)).equals('1234');

@@ -24,7 +24,7 @@ extension UniqueIterableExtension<E> on Iterable<E> {
     int Function(E e)? hashCode,
   }) sync* {
     final uniques = factory == null
-        ? HashSet(equals: equals, hashCode: hashCode)
+        ? HashSet<E>(equals: equals, hashCode: hashCode)
         : factory();
     for (final element in this) {
       if (uniques.add(element)) {

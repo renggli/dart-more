@@ -43,6 +43,8 @@ void main() {
       check(() => iterable.singleWhere((e) => true)).throws<UnsupportedError>();
       check(iterable.toList).throws<UnsupportedError>();
       check(iterable.toSet).throws<UnsupportedError>();
+      check(iterable.contains(2)).isTrue;
+      check(iterable.contains(9)).isFalse;
     });
     test('error', () {
       check(() => [1, 2, 3].repeat(count: -1)).throws<RangeError>();

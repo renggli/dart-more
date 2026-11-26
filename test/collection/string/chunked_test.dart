@@ -12,7 +12,9 @@ void main() {
       check('abc'.chunked(2)).deepEquals(['ab', 'c']);
       check('abcd'.chunked(2)).deepEquals(['ab', 'cd']);
       check('abcde'.chunked(2)).deepEquals(['ab', 'cd', 'e']);
-      check(() => 'abc'.chunked(0)).throws<RangeError>();
+      check(() {
+        'abc'.chunked(0);
+      }).throws<RangeError>();
     });
     test('characters', () {
       check(''.characters.chunked(2)).isEmpty;
@@ -24,7 +26,9 @@ void main() {
           .deepEquals(['ab'.characters, 'cd'.characters]);
       check('abcde'.characters.chunked(2))
           .deepEquals(['ab'.characters, 'cd'.characters, 'e'.characters]);
-      check(() => 'abc'.characters.chunked(0)).throws<RangeError>();
+      check(() {
+        'abc'.characters.chunked(0);
+      }).throws<RangeError>();
     });
   });
 }

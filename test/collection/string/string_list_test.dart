@@ -157,6 +157,13 @@ void main() {
         check(() => mutable.insert(1, 'xy')).throws<ArgumentError>();
         check(() => mutable.insertAll(1, ['x', 'yz'])).throws<ArgumentError>();
       });
+      test('addAll is atomic and alias-safe', () {
+        final mutable = 'ab'.toList(mutable: true);
+        check(() => mutable.addAll(['c', 'xy'])).throws<ArgumentError>();
+        check(mutable.toString()).equals('ab');
+        mutable.addAll(mutable);
+        check(mutable.toString()).equals('abab');
+      });
     });
 
     group('immutable unicode', () {
@@ -309,6 +316,13 @@ void main() {
         final mutable = 'abc'.toList(mutable: true, unicode: true);
         check(() => mutable.insert(1, '🍌a')).throws<ArgumentError>();
         check(() => mutable.insertAll(1, ['x', '🍌a'])).throws<ArgumentError>();
+      });
+      test('addAll is atomic and alias-safe', () {
+        final mutable = 'a🍌'.toList(mutable: true, unicode: true);
+        check(() => mutable.addAll(['c', '🍌a'])).throws<ArgumentError>();
+        check(mutable.toString()).equals('a🍌');
+        mutable.addAll(mutable);
+        check(mutable.toString()).equals('a🍌a🍌');
       });
     });
   });

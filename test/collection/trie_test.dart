@@ -327,6 +327,18 @@ void allTrieTests(
       check(trie.update('cherry', (v) => v, ifAbsent: () => 6)).equals(6);
       check(() => trie.update('missing', (v) => v)).throws<ArgumentError>();
 
+      check(() => trie.putIfAbsent('missing', () => throw StateError('boom')))
+          .throws<StateError>();
+      check(
+        () => trie.update(
+          'missing2',
+          (v) => v,
+          ifAbsent: () => throw StateError('boom'),
+        ),
+      ).throws<StateError>();
+      check(trie.keysWithPrefix('m')).isEmpty;
+      check(trie.length).equals(5);
+
       final visited = <String, int>{};
       trie.forEach((k, v) => visited[k] = v);
       check(visited['app']).equals(30);

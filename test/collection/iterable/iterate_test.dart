@@ -25,5 +25,9 @@ void main() {
       check(iterable.toList).throws<UnsupportedError>();
       check(iterable.toSet).throws<UnsupportedError>();
     });
+    test('lazy evaluation does not invoke callback unnecessarily', () {
+      final iterable = iterate<int>(1, (_) => throw StateError('too eager'));
+      check(iterable.take(1)).deepEquals([1]);
+    });
   });
 }

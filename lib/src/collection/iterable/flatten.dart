@@ -20,7 +20,7 @@ extension DeepFlattenIterableExtension on Iterable<dynamic> {
   ///
   /// ```dart
   /// final input = [1, 2, [3, 4, [5, 6]]];
-  /// print(input.deepFlatten());   // [1, 2, 3, 4, 5, 6]
+  /// print(input.deepFlatten<int>());   // [1, 2, 3, 4, 5, 6]
   /// ```
   Iterable<E> deepFlatten<E>() sync* {
     for (final value in this) {

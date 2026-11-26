@@ -25,18 +25,21 @@ class IterateIterable<E> extends IterableBase<E> with InfiniteIterable<E> {
 }
 
 class IterateIterator<E> implements Iterator<E> {
-  new(this.next, this.function) : current = next;
+  new(this.current, this.function);
 
   final E Function(E element) function;
-  E next;
+  bool _started = false;
 
   @override
   E current;
 
   @override
   bool moveNext() {
-    current = next;
-    next = function(next);
+    if (_started) {
+      current = function(current);
+    } else {
+      _started = true;
+    }
     return true;
   }
 }

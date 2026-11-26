@@ -70,10 +70,8 @@ Iterable<List<E>> productNotEmpty<E>(List<List<E>> elements, int repeat) sync* {
         hasMore = true;
         break;
       } else {
-        for (var j = indices.length - 1; j >= i; j--) {
-          indices[j] = 0;
-          current[j] = elements[j % elements.length][0];
-        }
+        indices[i] = 0;
+        current[i] = elements[e][0];
       }
     }
   } while (hasMore);

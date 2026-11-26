@@ -38,6 +38,17 @@ void main() {
       check(() => iterable.singleWhere((e) => true)).throws<UnsupportedError>();
       check(iterable.toList).throws<UnsupportedError>();
       check(iterable.toSet).throws<UnsupportedError>();
+      check(iterable.contains(42)).isTrue;
+      check(iterable.contains(7)).isFalse;
+    });
+    test('large finite count operations are O(1)', () {
+      final iterable = repeat('x', count: 1000000000);
+      check(iterable.length).equals(1000000000);
+      check(iterable.isEmpty).isFalse;
+      check(iterable.contains('x')).isTrue;
+      check(iterable.contains('y')).isFalse;
+      check(iterable.elementAt(500000000)).equals('x');
+      check(() => iterable.elementAt(1000000000)).throws<RangeError>();
     });
   });
 }

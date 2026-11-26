@@ -11,9 +11,9 @@ extension ZipIterableExtension<E> on Iterable<Iterable<E>> {
   /// print(input.zip());  // [[1, 'a'], [2, 'b']]
   /// ```
   Iterable<List<E>> zip() sync* {
-    if (isEmpty) return;
     final iterators = map((iterable) => iterable.iterator)
         .toList(growable: false);
+    if (iterators.isEmpty) return;
     for (;;) {
       final result = <E>[];
       for (final iterator in iterators) {
@@ -36,11 +36,9 @@ extension ZipIterableExtension<E> on Iterable<Iterable<E>> {
   /// new list. The resulting iterable has the length of the longest input
   /// iterable, missing values are padded with [padding].
   Iterable<List<E>> zipPartialWith(E padding) sync* {
-    if (isEmpty) {
-      return;
-    }
     final iterators = map((iterable) => iterable.iterator)
         .toList(growable: false);
+    if (iterators.isEmpty) return;
     for (;;) {
       var hasAny = false;
       final result = <E>[];

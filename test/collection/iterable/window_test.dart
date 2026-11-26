@@ -5,8 +5,20 @@ import 'package:test/scaffolding.dart';
 void main() {
   group('window', () {
     test('error', () {
-      check(() => [1, 2, 3].window(0)).throws<RangeError>();
-      check(() => [1, 2, 3].window(1, step: 0)).throws<RangeError>();
+      check(() {
+        [1, 2, 3].window(0);
+      }).throws<RangeError>();
+      check(() {
+        [1, 2, 3].window(1, step: 0);
+      }).throws<RangeError>();
+    });
+    test('size = 3, step = 1, includePartial emits all trailing partials', () {
+      check([1, 2, 3, 4].window(3, step: 1, includePartial: true)).deepEquals([
+        [1, 2, 3],
+        [2, 3, 4],
+        [3, 4],
+        [4],
+      ]);
     });
     test('size = 1', () {
       check(<int>[].window(1)).isEmpty;

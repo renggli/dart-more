@@ -166,14 +166,15 @@ class Trie<K, P extends Comparable<Object?>, V> extends MapBase<K, V> {
 
   @override
   V putIfAbsent(K key, V Function() ifAbsent) {
+    final existing = _findNode(key);
+    if (existing != null && existing.hasKeyAndValue) {
+      return existing.value;
+    }
+    final value = ifAbsent();
     var current = _root;
     for (final part in _getParts(key)) {
       current = current.addChild(part);
     }
-    if (current.hasKeyAndValue) {
-      return current.value;
-    }
-    final value = ifAbsent();
     if (!current.hasKeyAndValue) {
       _length++;
     }
@@ -183,25 +184,20 @@ class Trie<K, P extends Comparable<Object?>, V> extends MapBase<K, V> {
 
   @override
   V update(K key, V Function(V value) update, {V Function()? ifAbsent}) {
+    final existing = _findNode(key);
+    if (existing != null && existing.hasKeyAndValue) {
+      final value = update(existing.value);
+      existing.setKeyAndValue(existing.key, value);
+      return value;
+    }
     if (ifAbsent == null) {
-      final node = _findNode(key);
-      if (node != null && node.hasKeyAndValue) {
-        final value = update(node.value);
-        node.setKeyAndValue(node.key, value);
-        return value;
-      }
       throw ArgumentError.value(key, 'key', 'Key not in map.');
     }
+    final value = ifAbsent();
     var current = _root;
     for (final part in _getParts(key)) {
       current = current.addChild(part);
     }
-    if (current.hasKeyAndValue) {
-      final value = update(current.value);
-      current.setKeyAndValue(current.key, value);
-      return value;
-    }
-    final value = ifAbsent();
     if (!current.hasKeyAndValue) {
       _length++;
     }

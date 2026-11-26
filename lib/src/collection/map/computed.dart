@@ -30,8 +30,9 @@ class MapWithComputed<K, V> extends MapView<K, V> {
 
   @override
   V operator [](Object? key) {
-    if (containsKey(key)) return super[key] as V;
+    final value = super[key];
+    if (value != null || containsKey(key)) return value as V;
     if (key is K) return super[key] = computation(key);
-    return throw TypeError();
+    throw TypeError();
   }
 }

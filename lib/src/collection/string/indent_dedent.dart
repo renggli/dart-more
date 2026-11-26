@@ -59,7 +59,7 @@ String findLongestPrefix(Pattern pattern, Iterable<String> lines) {
     var index = 0;
     while (index < line.length) {
       final match = pattern.matchAsPrefix(line, index);
-      if (match == null) {
+      if (match == null || match.end <= index) {
         break;
       }
       index = match.end;

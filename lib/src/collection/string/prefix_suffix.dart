@@ -3,8 +3,8 @@ extension PrefixSuffixStringExtension on String {
   /// If the string starts with the prefix pattern returns this [String]
   /// with the prefix removed, otherwise return `this`.
   String removePrefix(Pattern pattern) {
-    if (pattern is String && startsWith(pattern)) {
-      return substring(pattern.length);
+    if (pattern is String) {
+      return startsWith(pattern) ? substring(pattern.length) : this;
     }
     final match = pattern.matchAsPrefix(this);
     if (match != null && match.end > 0) {
@@ -16,12 +16,13 @@ extension PrefixSuffixStringExtension on String {
   /// If the string ends with the suffix pattern returns this [String]
   /// with the suffix removed, otherwise return `this`.
   String removeSuffix(Pattern pattern) {
-    if (pattern is String && endsWith(pattern)) {
-      return substring(0, length - pattern.length);
+    if (pattern is String) {
+      return endsWith(pattern) ? substring(0, length - pattern.length) : this;
     }
-    for (final match in pattern.allMatches(this)) {
-      if (match.end == length && match.start < length) {
-        return substring(0, match.start);
+    for (var i = 0; i < length; i++) {
+      final match = pattern.matchAsPrefix(this, i);
+      if (match != null && match.end == length) {
+        return substring(0, i);
       }
     }
     return this;

@@ -25,6 +25,9 @@ extension PermutationIterableExtension<E> on Iterable<E> {
   /// ['x', 'y', 'z'].permutations(2);
   /// ```
   Iterable<List<E>> permutations([int? count]) {
+    if (count != null && count < 0) {
+      throw RangeError.value(count, 'count', 'Expected non-negative count');
+    }
     final elements = toList(growable: false);
     count ??= elements.length;
     if (count == 0) {
@@ -86,10 +89,7 @@ Iterable<List<E>> _partialPermutations<E>(List<E> elements, int count) sync* {
     (i) => elements.length - i,
     growable: false,
   );
-  yield indices
-      .sublist(0, count)
-      .map((i) => elements[i])
-      .toList(growable: false);
+  yield List<E>.generate(count, (i) => elements[indices[i]], growable: false);
   for (;;) {
     var generated = 0;
     for (var i = count - 1; i >= 0; i--) {
@@ -106,10 +106,11 @@ Iterable<List<E>> _partialPermutations<E>(List<E> elements, int count) sync* {
       } else {
         final j = cycles[i];
         indices.swap(i, indices.length - j);
-        yield indices
-            .sublist(0, count)
-            .map((i) => elements[i])
-            .toList(growable: false);
+        yield List<E>.generate(
+          count,
+          (i) => elements[indices[i]],
+          growable: false,
+        );
         generated++;
         break;
       }

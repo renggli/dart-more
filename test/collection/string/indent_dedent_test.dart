@@ -72,6 +72,9 @@ void main() {
       check('  2\n 1'.dedent(ignoreEmpty: false)).equals(' 2\n1');
       check(' 1\n  2\n   3'.dedent(ignoreEmpty: false)).equals('1\n 2\n  3');
       check('   3\n  2\n 1'.dedent(ignoreEmpty: false)).equals('  3\n 2\n1');
+      check('  a\n  b'.dedent(whitespace: '')).equals('  a\n  b');
+      check('  a\n  b'.dedent(whitespace: RegExp(''))).equals('  a\n  b');
+      check('  a\n  b'.dedent(whitespace: RegExp(r'\b'))).equals('  a\n  b');
     });
   });
 }

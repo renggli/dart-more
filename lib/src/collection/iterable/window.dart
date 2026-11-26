@@ -15,32 +15,46 @@ extension WindowIterableExtension<E> on Iterable<E> {
     int size, {
     int step = 1,
     bool includePartial = false,
-  }) sync* {
+  }) {
     checkNonZeroPositive(size, 'size');
     checkNonZeroPositive(step, 'step');
-    final buffer = ListQueue<E>();
-    final iterator = this.iterator;
-    while (true) {
-      while (buffer.length < size && iterator.moveNext()) {
-        buffer.addLast(iterator.current);
-      }
-      if (buffer.length < size) {
-        if (includePartial && buffer.isNotEmpty) {
+    return _window(this, size, step, includePartial);
+  }
+}
+
+Iterable<List<E>> _window<E>(
+  Iterable<E> iterable,
+  int size,
+  int step,
+  bool includePartial,
+) sync* {
+  final buffer = ListQueue<E>();
+  final iterator = iterable.iterator;
+  while (true) {
+    while (buffer.length < size && iterator.moveNext()) {
+      buffer.addLast(iterator.current);
+    }
+    if (buffer.length < size) {
+      if (includePartial) {
+        while (buffer.isNotEmpty) {
           yield buffer.toList(growable: false);
-        }
-        break;
-      }
-      yield buffer.toList(growable: false);
-      if (step < size) {
-        for (var i = 0; i < step; i++) {
-          buffer.removeFirst();
-        }
-      } else {
-        buffer.clear();
-        for (var i = 0; i < step - size; i++) {
-          if (!iterator.moveNext()) {
-            return;
+          for (var i = 0; i < step && buffer.isNotEmpty; i++) {
+            buffer.removeFirst();
           }
+        }
+      }
+      break;
+    }
+    yield buffer.toList(growable: false);
+    if (step < size) {
+      for (var i = 0; i < step; i++) {
+        buffer.removeFirst();
+      }
+    } else {
+      buffer.clear();
+      for (var i = 0; i < step - size; i++) {
+        if (!iterator.moveNext()) {
+          return;
         }
       }
     }

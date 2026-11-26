@@ -15,21 +15,18 @@ List<int> decompose(List<int> codePoints, {bool compatibility = false}) {
   final decomposition = compatibility
       ? compatibilityDecomposition
       : canonicalDecomposition;
-  for (var i = 0; i < codePoints.length;) {
-    final codePoint = codePoints[i];
+  final result = <int>[];
+  for (final codePoint in codePoints) {
     final replacement = decomposition[codePoint];
     if (replacement != null) {
-      codePoints.replaceRange(i, i + 1, replacement);
-      i += replacement.length;
+      result.addAll(replacement);
     } else if (hangulSB <= codePoint && codePoint <= hangulSL) {
-      final replacement = decomposeHangulSyllable(codePoint);
-      codePoints.replaceRange(i, i + 1, replacement);
-      i += replacement.length;
+      result.addAll(decomposeHangulSyllable(codePoint));
     } else {
-      i++;
+      result.add(codePoint);
     }
   }
-  return codePoints;
+  return result;
 }
 
 // Performs Hangul syllable decomposition algorithm to derive the full
@@ -96,7 +93,7 @@ List<int> compose(List<int> codePoints) {
         blocked = true;
       }
       if (lastCc && blocked) {
-        continue;
+        break;
       }
       final prev = codePoints[j - 1];
       if (prev == -1 ||

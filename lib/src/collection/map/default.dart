@@ -27,6 +27,8 @@ class MapWithDefault<K, V> extends MapView<K, V> {
   final V defaultValue;
 
   @override
-  V operator [](Object? key) =>
-      containsKey(key) ? super[key] as V : defaultValue;
+  V operator [](Object? key) {
+    final value = super[key];
+    return value != null || containsKey(key) ? value as V : defaultValue;
+  }
 }
