@@ -13,14 +13,15 @@ import 'dart:typed_data';
   var dy = y1 - y2;
   var dist = math.sqrt(dx * dx + dy * dy);
   if (dist < 0.01) {
-    dx = (rng.nextDouble() - 0.5) * 2.0;
-    dy = (rng.nextDouble() - 0.5) * 2.0;
+    final angle = rng.nextDouble() * 2 * math.pi;
+    dx = math.cos(angle) * 0.01;
+    dy = math.sin(angle) * 0.01;
     dist = 0.01;
   }
   return (dx, dy, dist);
 }
 
-/// 2D Quadtree for Barnes-Hut $O(n \log n)$ repulsive force approximation.
+/// 2D Quadtree for Barnes-Hut `O(n log n)` repulsive force approximation.
 final class Quadtree {
   new({
     required this.minX,
@@ -153,17 +154,35 @@ final class Quadtree {
     if (mass == 0) return;
 
     if (isLeaf) {
-      if (vertexIndex != null && vertexIndex != targetIndex) {
-        final (dx, dy, dist) = distanceAndDelta(
-          targetX,
-          targetY,
-          pointX!,
-          pointY!,
-          rng,
-        );
-        final force = k2 / dist;
-        dispX[targetIndex] += (dx / dist) * force;
-        dispY[targetIndex] += (dy / dist) * force;
+      if (mass == 1) {
+        if (vertexIndex != targetIndex) {
+          final (dx, dy, dist) = distanceAndDelta(
+            targetX,
+            targetY,
+            pointX!,
+            pointY!,
+            rng,
+          );
+          final force = k2 / dist;
+          dispX[targetIndex] += (dx / dist) * force;
+          dispY[targetIndex] += (dy / dist) * force;
+        }
+      } else {
+        final coincident =
+            (targetX - cx).abs() < 1e-6 && (targetY - cy).abs() < 1e-6;
+        final effectiveMass = coincident ? mass - 1 : mass;
+        if (effectiveMass > 0) {
+          final (dx, dy, dist) = distanceAndDelta(
+            targetX,
+            targetY,
+            cx,
+            cy,
+            rng,
+          );
+          final force = (k2 / dist) * effectiveMass;
+          dispX[targetIndex] += (dx / dist) * force;
+          dispY[targetIndex] += (dy / dist) * force;
+        }
       }
       return;
     }

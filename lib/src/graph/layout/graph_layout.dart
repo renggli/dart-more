@@ -134,7 +134,8 @@ abstract class GraphLayout<V> {
       if (comps.length > 1) {
         final compResults = <LayoutResult<V>>[];
         for (final comp in comps) {
-          final compSet = comp.toSet();
+          final compSet = (input.vertexStrategy?.createSet() ?? <V>{})
+            ..addAll(comp);
           final compInput = LayoutInput<V>(
             vertices: comp,
             successorsOf: (v) => input.successorsOf(v).where(compSet.contains),

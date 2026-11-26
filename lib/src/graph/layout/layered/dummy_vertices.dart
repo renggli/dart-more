@@ -66,11 +66,15 @@ final class LayeredGraph<V> {
     required LayoutSize Function(V vertex) sizeOf,
   }) {
     final realNodes = <V, LayerNode<V>>{};
-    final maxRank = ranks.values.isEmpty
-        ? 0
-        : ranks.values.reduce((a, b) => a > b ? a : b);
+    var minRank = 0;
+    var maxRank = 0;
+    if (ranks.values.isNotEmpty) {
+      minRank = ranks.values.reduce((a, b) => a < b ? a : b);
+      maxRank = ranks.values.reduce((a, b) => a > b ? a : b);
+    }
+    final rankShift = minRank < 0 ? -minRank : 0;
     final layers = List<List<LayerNode<V>>>.generate(
-      maxRank + 1,
+      maxRank + rankShift + 1,
       (_) => <LayerNode<V>>[],
     );
 
@@ -78,7 +82,7 @@ final class LayeredGraph<V> {
       final size = sizeOf(v);
       final (w, h) = (size.width, size.height);
       final node = LayerNode<V>.real(v, width: w, height: h)
-        ..rank = ranks[v] ?? 0;
+        ..rank = (ranks[v] ?? 0) + rankShift;
       realNodes[v] = node;
       layers[node.rank].add(node);
     }
@@ -94,14 +98,14 @@ final class LayeredGraph<V> {
 
     for (final u in vertices) {
       final uNode = realNodes[u]!;
-      final uRank = ranks[u]!;
+      final uRank = uNode.rank;
       final succs = dagSuccessors[u];
       if (succs == null) continue;
 
       for (final v in succs) {
         final vNode = realNodes[v];
         if (vNode == null) continue;
-        final vRank = ranks[v]!;
+        final vRank = vNode.rank;
         final span = vRank - uRank;
 
         if (span <= 1) {

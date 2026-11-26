@@ -60,5 +60,28 @@ void main() {
         check(p.distanceTo(const LayoutPoint(0, 0))).isCloseTo(radius, 1e-4);
       }
     });
+
+    test('arcPlacement supports negative sweepAngle and zero radius', () {
+      final (positions, _) = arcPlacement<String>(
+        vertices: ['A', 'B'],
+        sizeOf: (_) => const (width: 10.0, height: 10.0),
+        radius: 100,
+        startAngle: 0,
+        sweepAngle: -math.pi,
+        vertexDistance: 10,
+      );
+      check(positions['A']!.y).isLessThan(0.0);
+      check(positions['B']!.y).isLessThan(positions['A']!.y);
+
+      final (zeroPos, zeroRad) = arcPlacement<String>(
+        vertices: ['A', 'B'],
+        sizeOf: (_) => const (width: 0.0, height: 0.0),
+        radius: 0.0,
+        vertexDistance: 0.0,
+      );
+      check(zeroRad).equals(0.0);
+      check(zeroPos['A']).equals(const LayoutPoint(0, 0));
+      check(zeroPos['B']).equals(const LayoutPoint(0, 0));
+    });
   });
 }

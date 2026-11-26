@@ -9,7 +9,7 @@ import 'force_config.dart';
 
 /// Positions vertices using a physical simulation of spring attraction and electrical repulsion.
 ///
-/// Supports exact $O(V^2)$ simulation or Barnes-Hut $O(V \log V)$ approximation
+/// Supports exact `O(V^2)` simulation or Barnes-Hut `O(V log V)` approximation
 /// for large graphs via [RepulsionMode.barnesHut].
 ///
 /// ```dart
@@ -76,7 +76,9 @@ final class ForceLayout<V> extends GraphLayout<V> {
         math.max(minStep * 1.4, 0.75 * math.sqrt(area / n));
     final k2 = k * k;
 
-    final posMap = <V, (double, double)>{};
+    final posMap =
+        input.vertexStrategy?.createMap<(double, double)>() ??
+        <V, (double, double)>{};
 
     if (initialPositions != null) {
       for (final v in list) {
@@ -104,7 +106,10 @@ final class ForceLayout<V> extends GraphLayout<V> {
       }
     }
 
-    final vertexIndex = <V, int>{for (var i = 0; i < n; i++) list[i]: i};
+    final vertexIndex = input.vertexStrategy?.createMap<int>() ?? <V, int>{};
+    for (var i = 0; i < n; i++) {
+      vertexIndex[list[i]] = i;
+    }
     final adj = List<List<int>>.generate(n, (_) => <int>[]);
     final weights = List<List<double>>.generate(n, (_) => <double>[]);
 
@@ -215,7 +220,8 @@ final class ForceLayout<V> extends GraphLayout<V> {
       }
 
       // 3. Position update clamped by temperature
-      const margin = 20.0;
+      final marginX = math.min(20.0, bounds.width / 2.0);
+      final marginY = math.min(20.0, bounds.height / 2.0);
       for (var i = 0; i < n; i++) {
         final v = list[i];
         if (pinned != null && pinned!.contains(v)) continue;
@@ -228,8 +234,12 @@ final class ForceLayout<V> extends GraphLayout<V> {
           posX[i] += (dx / disp) * step;
           posY[i] += (dy / disp) * step;
         }
-        posX[i] = posX[i].clamp(bounds.minX + margin, bounds.maxX - margin);
-        posY[i] = posY[i].clamp(bounds.minY + margin, bounds.maxY - margin);
+        if (marginX >= 0) {
+          posX[i] = posX[i].clamp(bounds.minX + marginX, bounds.maxX - marginX);
+        }
+        if (marginY >= 0) {
+          posY[i] = posY[i].clamp(bounds.minY + marginY, bounds.maxY - marginY);
+        }
       }
 
       temp =

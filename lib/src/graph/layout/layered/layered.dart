@@ -81,6 +81,8 @@ final class LayeredLayout<V> extends GraphLayout<V> {
         }
       }
 
+      final vertexSet = (input.vertexStrategy?.createSet() ?? <V>{})
+        ..addAll(allVertices);
       dagSuccessors = <V, List<V>>{for (final v in allVertices) v: []};
       reversedEdges = <(V, V)>{};
 
@@ -88,7 +90,7 @@ final class LayeredLayout<V> extends GraphLayout<V> {
         for (final u in allVertices) {
           final uRank = ranks[u] ?? 0;
           for (final v in input.successorsOf(u)) {
-            if (!allVertices.contains(v) || u == v) continue;
+            if (!vertexSet.contains(v) || u == v) continue;
             final vRank = ranks[v] ?? 0;
             if (uRank < vRank) {
               dagSuccessors[u]!.add(v);
@@ -103,7 +105,7 @@ final class LayeredLayout<V> extends GraphLayout<V> {
         for (final u in allVertices) {
           final uRank = ranks[u] ?? 0;
           for (final v in input.successorsOf(u)) {
-            if (!allVertices.contains(v) || u == v) continue;
+            if (!vertexSet.contains(v) || u == v) continue;
             if (processed.contains((u, v)) || processed.contains((v, u))) {
               continue;
             }

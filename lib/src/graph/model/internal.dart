@@ -7,6 +7,6 @@ extension InternalGraphExtension<V, E> on Graph<V, E> {
   /// of this graph, or otherwise a constant value for each edge.
   num Function(V source, V target) getDefaultEdgeValueOr(num value) =>
       this is Graph<V, num>
-      ? (source, target) => getEdge(source, target)!.value as num
+      ? (source, target) => getEdge(source, target)?.value as num? ?? value
       : constantFunction2(value);
 }

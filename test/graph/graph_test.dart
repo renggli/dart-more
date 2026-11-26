@@ -1,5 +1,6 @@
 import 'package:checks/checks.dart';
 import 'package:more/graph.dart';
+import 'package:more/src/graph/model/internal.dart';
 import 'package:test/scaffolding.dart';
 
 void main() {
@@ -61,6 +62,12 @@ void main() {
       check(() => GraphError.checkPositiveEdgeValue(0, 1, double.nan))
           .throws<GraphError>();
       GraphError.checkPositiveEdgeValue(0, 1, 0);
+    });
+    test('getDefaultEdgeValueOr falls back cleanly when edge is absent', () {
+      final graph = Graph<int, num>(isDirected: true)..addEdge(0, 1, value: 42);
+      final fn = graph.getDefaultEdgeValueOr(7);
+      check(fn(0, 1)).equals(42);
+      check(fn(1, 0)).equals(7);
     });
   });
 }

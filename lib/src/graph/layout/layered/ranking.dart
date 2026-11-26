@@ -12,7 +12,8 @@ enum RankingAlgorithm {
   tightened,
 }
 
-/// Assigns integer ranks to all vertices in [vertices] such that $\text{rank}(v) \ge \text{rank}(u) + 1$ for all edges $(u, v)$.
+/// Assigns integer ranks to all vertices in [vertices] such that
+/// `rank(v) >= rank(u) + 1` for all edges `(u, v)`.
 Map<V, int> assignRanks<V>(
   Iterable<V> vertices,
   Map<V, List<V>> dagSuccessors, {
@@ -21,14 +22,12 @@ Map<V, int> assignRanks<V>(
   final allVertices = vertices.toList();
   if (allVertices.isEmpty) return const {};
 
-  final inDegree = <V, int>{for (final v in allVertices) v: 0};
   final predecessors = <V, List<V>>{for (final v in allVertices) v: []};
 
   for (final u in allVertices) {
     final succs = dagSuccessors[u];
     if (succs != null) {
       for (final v in succs) {
-        inDegree[v] = (inDegree[v] ?? 0) + 1;
         predecessors[v]!.add(u);
       }
     }
@@ -79,8 +78,8 @@ void _optimizeNetworkSimplex<V>(
       final succs = successors[u];
       if (succs == null || succs.isEmpty) continue;
 
-      var minSuccRank = 0x7fffffff;
-      for (final v in succs) {
+      var minSuccRank = rank[succs.first]!;
+      for (final v in succs.skip(1)) {
         final r = rank[v]!;
         if (r < minSuccRank) minSuccRank = r;
       }

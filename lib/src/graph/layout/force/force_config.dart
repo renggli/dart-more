@@ -1,9 +1,9 @@
 /// Mode of repulsive force calculation in force-directed simulation.
 enum RepulsionMode {
-  /// All-pairs exact repulsion ($O(n^2)$).
+  /// All-pairs exact repulsion (`O(n^2)`).
   exact,
 
-  /// Barnes-Hut quadtree approximation ($O(n \log n)$).
+  /// Barnes-Hut quadtree approximation (`O(n log n)`).
   barnesHut,
 }
 
@@ -33,15 +33,16 @@ final class ForceConfig {
   /// Gravitational pull towards the center of the layout area.
   final double gravity;
 
-  /// Power exponent governing temperature cooling: $T_{iter} = T_0 (1 - iter/N)^{coolingFactor}$.
+  /// Power exponent governing temperature cooling:
+  /// `T_iter = T_0 * (1 - iter / N)^coolingFactor`.
   final double coolingFactor;
 
-  /// Natural resting length of edges $k$. If null, auto-calculated from area and vertex count.
+  /// Natural resting length of edges `k`. If null, auto-calculated from area and vertex count.
   final double? optimalDistance;
 
   /// Algorithm used to compute repulsive forces.
   final RepulsionMode repulsionMode;
 
-  /// Barnes-Hut opening threshold ratio $\theta = s / d$.
+  /// Barnes-Hut opening threshold ratio `theta = s / d`.
   final double theta;
 }

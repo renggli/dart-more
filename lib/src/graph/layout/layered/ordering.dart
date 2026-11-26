@@ -173,11 +173,12 @@ int countCrossings<V>(
   if (layerA.isEmpty || layerB.isEmpty) return 0;
 
   // Collect destination indices for edges from layerA to layerB
+  final layerBSet = layerB.toSet();
   final endpoints = <int>[];
   for (final u in layerA) {
     final targets =
         (successors[u] ?? const [])
-            .where(layerB.contains)
+            .where(layerBSet.contains)
             .map((v) => v.order)
             .toList()
           ..sort();

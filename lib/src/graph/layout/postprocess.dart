@@ -119,14 +119,19 @@ extension LayoutResultExtension<V> on LayoutResult<V> {
       for (final v in input.successorsOf(u)) {
         if (u == v || !currentPositions.containsKey(v)) continue;
         if (!input.isDirected) {
-          final pair = u.hashCode <= v.hashCode ? (u, v) : (v, u);
-          if (seen.add(pair)) {
-            edges.add((u, v));
-          }
+          if (seen.contains((u, v)) || seen.contains((v, u))) continue;
+          seen.add((u, v));
+          edges.add((u, v));
         } else {
           edges.add((u, v));
         }
       }
+    }
+
+    var maxHalfWidth = 0.0;
+    for (final v in vertices) {
+      final hw = input.sizeOf(v).width / 2.0;
+      if (hw > maxHalfWidth) maxHalfWidth = hw;
     }
 
     for (var pass = 0; pass < maxPasses; pass++) {
@@ -141,6 +146,7 @@ extension LayoutResultExtension<V> on LayoutResult<V> {
         final u = vertices[i];
         final sizeU = input.sizeOf(u);
         final (wu, hu) = (sizeU.width, sizeU.height);
+        final maxReachX = wu / 2.0 + maxHalfWidth + padding;
 
         for (var j = i + 1; j < n; j++) {
           final v = vertices[j];
@@ -152,8 +158,9 @@ extension LayoutResultExtension<V> on LayoutResult<V> {
           final minDistX = (wu + wv) / 2.0 + padding;
           final dx = posV.x - posU.x;
 
-          // Beyond horizontal reach, stop checking this inner loop
-          if (dx >= minDistX) break;
+          // Beyond horizontal reach of any vertex, stop checking this inner loop.
+          if (dx >= maxReachX) break;
+          if (dx >= minDistX) continue;
 
           final minDistY = (hu + hv) / 2.0 + padding;
           final dy = posV.y - posU.y;

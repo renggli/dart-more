@@ -7,7 +7,7 @@ import 'orientation.dart';
 /// Positions vertices in a hierarchical tree or forest using the Buchheim-Walker algorithm.
 ///
 /// Builds a depth-first spanning forest and computes aesthetic node coordinates
-/// without edge overlaps in $O(V)$ time.
+/// without edge overlaps in `O(V)` time.
 ///
 /// ```dart
 /// final graph = Graph<String, void>.directed()

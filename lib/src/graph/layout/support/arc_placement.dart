@@ -36,11 +36,18 @@ import '../geometry.dart';
 
   final minRadius = requiredPerimeter / math.max(0.001, sweepAngle.abs());
   final effectiveRadius = math.max(radius, minRadius);
+  if (effectiveRadius <= 0.0) {
+    for (final v in vertices) {
+      positions[v] = center;
+    }
+    return (positions, 0.0);
+  }
 
+  final direction = sweepAngle < 0 ? -1.0 : 1.0;
   var currentAngle = startAngle;
   for (var i = 0; i < n; i++) {
     final d = diameters[i];
-    final arc = (d + vertexDistance) / effectiveRadius;
+    final arc = ((d + vertexDistance) / effectiveRadius) * direction;
     final angle = currentAngle + (arc / 2.0);
     final x = center.x + effectiveRadius * math.cos(angle);
     final y = center.y + effectiveRadius * math.sin(angle);

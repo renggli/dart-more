@@ -138,5 +138,33 @@ void main() {
 
       check(result.positions.length).equals(3);
     });
+
+    test(
+      'narrow bounds and coincident vertices do not throw or produce NaN',
+      () {
+        final input = LayoutInput<int>(
+          vertices: [0, 1, 2],
+          successorsOf: (v) => v == 0 ? [1] : const [],
+        );
+        const strategy = ForceLayout<int>(
+          bounds: LayoutRectangle(0, 0, 10, 10),
+          initialPositions: {
+            0: LayoutPoint(5, 5),
+            1: LayoutPoint(5, 5),
+            2: LayoutPoint(5, 5),
+          },
+          config: ForceConfig(
+            iterations: 5,
+            repulsionMode: RepulsionMode.barnesHut,
+          ),
+        );
+        final result = strategy.layout(input);
+        check(result.positions.length).equals(3);
+        for (final p in result.positions.values) {
+          check(p.x.isFinite).isTrue;
+          check(p.y.isFinite).isTrue;
+        }
+      },
+    );
   });
 }

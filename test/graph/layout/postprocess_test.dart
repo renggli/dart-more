@@ -279,5 +279,25 @@ void main() {
       final resolved = initial.removeOverlaps(input, padding: 5);
       check(resolved['C']!).not(.it()..equals(const LayoutPoint(25, 25)));
     });
+
+    test('resolves overlap with wider later vertex', () {
+      final input = LayoutInput<String>(
+        vertices: const ['Small1', 'Small2', 'Wide'],
+        successorsOf: (_) => const [],
+        vertexSize: (v) => v == 'Wide'
+            ? const (width: 200.0, height: 200.0)
+            : const (width: 20.0, height: 20.0),
+      );
+      final initial = LayoutResult<String>(
+        positions: const {
+          'Small1': LayoutPoint(0, 0),
+          'Small2': LayoutPoint(35, 0),
+          'Wide': LayoutPoint(80, 0),
+        },
+      );
+      final resolved = initial.removeOverlaps(input, padding: 5);
+      final dist = (resolved['Wide']!.x - resolved['Small1']!.x).abs();
+      check(dist).isGreaterOrEqual(115.0);
+    });
   });
 }

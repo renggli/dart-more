@@ -51,11 +51,20 @@ final class StressLayout<V> extends GraphLayout<V> {
     final list = input.vertices;
     final n = list.length;
     final (sizes, avgExtent) = input.computeExtents(list);
+    if (n == 1) {
+      return LayoutResult<V>(
+        positions: {list.first: center},
+        vertexSizes: sizes,
+      );
+    }
     final extents = Float64List.fromList([
       for (final v in list) math.max(sizes[v]!.width, sizes[v]!.height),
     ]);
     final baseStep = avgExtent + vertexDistance;
-    final vertexIndex = <V, int>{for (var i = 0; i < n; i++) list[i]: i};
+    final vertexIndex = input.vertexStrategy?.createMap<int>() ?? <V, int>{};
+    for (var i = 0; i < n; i++) {
+      vertexIndex[list[i]] = i;
+    }
 
     // 1. All-pairs shortest path distances D[i * n + j]
     final distMatrix = Float64List(n * n);
@@ -105,7 +114,7 @@ final class StressLayout<V> extends GraphLayout<V> {
           }
         }
       }
-      weightSum[i] = sum > 0 ? sum : 1.0;
+      weightSum[i] = sum;
     }
 
     // 3. Initial placement from Spectral or circular
@@ -144,6 +153,8 @@ final class StressLayout<V> extends GraphLayout<V> {
       var maxDisplacement = 0.0;
 
       for (var i = 0; i < n; i++) {
+        final wSum = weightSum[i];
+        if (wSum == 0.0) continue;
         var newX = 0.0;
         var newY = 0.0;
         final pxI = posX[i];
@@ -163,9 +174,10 @@ final class StressLayout<V> extends GraphLayout<V> {
               var dy = pyI - posY[j];
               var dist = math.sqrt(dx * dx + dy * dy);
               if (dist < 1e-4) {
-                dx = (rng.nextDouble() - 0.5) * 0.1;
-                dy = (rng.nextDouble() - 0.5) * 0.1;
-                dist = 1e-4;
+                final angle = rng.nextDouble() * 2 * math.pi;
+                dx = math.cos(angle);
+                dy = math.sin(angle);
+                dist = 1.0;
               }
               newX += w * (posX[j] + dIdeal * (dx / dist));
               newY += w * (posY[j] + dIdeal * (dy / dist));
@@ -173,8 +185,8 @@ final class StressLayout<V> extends GraphLayout<V> {
           }
         }
 
-        final updatedX = newX / weightSum[i];
-        final updatedY = newY / weightSum[i];
+        final updatedX = newX / wSum;
+        final updatedY = newY / wSum;
         final disp = math.sqrt(
           (updatedX - pxI) * (updatedX - pxI) +
               (updatedY - pyI) * (updatedY - pyI),

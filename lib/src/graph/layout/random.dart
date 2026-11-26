@@ -44,10 +44,14 @@ final class RandomLayout<V> extends GraphLayout<V> {
       final size = input.sizeOf(v);
       sizes[v] = size;
       final (w, h) = (size.width, size.height);
-      final availW = math.max(1.0, bounds.width - w);
-      final availH = math.max(1.0, bounds.height - h);
-      final x = bounds.minX + (w / 2.0) + rng.nextDouble() * availW;
-      final y = bounds.minY + (h / 2.0) + rng.nextDouble() * availH;
+      final availW = math.max(0.0, bounds.width - w);
+      final availH = math.max(0.0, bounds.height - h);
+      final x = bounds.width <= w
+          ? bounds.minX + bounds.width / 2.0
+          : bounds.minX + (w / 2.0) + rng.nextDouble() * availW;
+      final y = bounds.height <= h
+          ? bounds.minY + bounds.height / 2.0
+          : bounds.minY + (h / 2.0) + rng.nextDouble() * availH;
       positions[v] = LayoutPoint(x, y);
     }
 

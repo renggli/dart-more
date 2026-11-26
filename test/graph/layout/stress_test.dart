@@ -115,5 +115,23 @@ void main() {
         }
       }
     });
+
+    test('isolated and coincident vertices preserve finite positions', () {
+      final input = LayoutInput<int>(
+        vertices: [0, 1, 2],
+        successorsOf: (v) => switch (v) {
+          0 => [1],
+          1 => [0],
+          _ => const [],
+        },
+        packComponents: false,
+      );
+      final result = const StressLayout<int>(iterations: 10).layout(input);
+      check(result.positions.length).equals(3);
+      for (final p in result.positions.values) {
+        check(p.x.isFinite).isTrue;
+        check(p.y.isFinite).isTrue;
+      }
+    });
   });
 }

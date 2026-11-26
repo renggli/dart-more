@@ -51,5 +51,18 @@ void main() {
       final result = graph.layout(const RandomLayout(seed: 99));
       check(result.positions.containsKey('A')).isTrue;
     });
+
+    test('centers vertex when bounds smaller than vertex size', () {
+      final input = LayoutInput<String>(
+        vertices: ['A'],
+        successorsOf: (_) => const [],
+        vertexSize: (_) => const (width: 100.0, height: 100.0),
+      );
+      final result = const RandomLayout<String>(
+        bounds: LayoutRectangle(10, 20, 40, 50),
+        seed: 1,
+      ).layout(input);
+      check(result['A']).equals(const LayoutPoint(30, 45));
+    });
   });
 }

@@ -330,5 +330,27 @@ void main() {
       final result = const LayeredLayout<String>().layout(input);
       check(result.positions.length).equals(3);
     });
+
+    test('negative layerOf ranks normalize cleanly', () {
+      final input = LayoutInput<String>(
+        vertices: const ['A', 'B', 'C'],
+        successorsOf: (v) => switch (v) {
+          'A' => const ['B'],
+          'B' => const ['C'],
+          _ => const [],
+        },
+      );
+      final strategy = LayeredLayout<String>(
+        layerOf: (v) => switch (v) {
+          'A' => -2,
+          'B' => 0,
+          _ => 1,
+        },
+      );
+      final result = strategy.layout(input);
+      check(result['A']!.y).isLessThan(result['B']!.y);
+      check(result['B']!.y).isLessThan(result['C']!.y);
+      check(result.edgeRoutes[('A', 'B')]).isNotNull();
+    });
   });
 }
