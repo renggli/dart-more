@@ -179,13 +179,14 @@ Future<void> generateUnicodeBlocks() async {
   out.writeln();
 
   out.writeln('import \'../basic/range.dart\';');
+  out.writeln('import \'../char_matcher.dart\';');
   out.writeln();
 
   out.writeln('abstract final class UnicodeBlockCharMatcher {');
   for (final MapEntry(:key, value: ranges) in data.asMap().entries) {
     final range = ranges.single;
     out.writeln(
-      'static const ${namify(key)} = RangeCharMatcher('
+      'static const CharMatcher ${namify(key)} = RangeCharMatcher('
       '${formatUnicode(range.$1)}, ${formatUnicode(range.$2)});',
     );
   }

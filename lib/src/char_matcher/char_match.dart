@@ -20,7 +20,10 @@ class CharMatch implements Match {
   final CharMatcher pattern;
 
   @override
-  String? group(int group) => group == 0 ? input.substring(start, end) : null;
+  String? group(int group) {
+    RangeError.checkValueInInterval(group, 0, 0, 'group');
+    return input.substring(start, end);
+  }
 
   @override
   String? operator [](int group) => this.group(group);

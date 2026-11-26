@@ -14,10 +14,12 @@ void main() {
       check(match.pattern).equals(matcher);
       check(match.groupCount).equals(0);
       check(match.group(0)).equals('el');
-      check(match.group(1)).isNull;
+      check(() => match.group(-1)).throws<RangeError>();
+      check(() => match.group(1)).throws<RangeError>();
       check(match[0]).equals('el');
-      check(match[1]).isNull;
-      check(match.groups([0, 1])).deepEquals(['el', null]);
+      check(() => match[1]).throws<RangeError>();
+      check(match.groups([0])).deepEquals(['el']);
+      check(() => match.groups([0, 1])).throws<RangeError>();
     });
     test('allMatches()', () {
       const input = 'a1b2c';
@@ -31,10 +33,11 @@ void main() {
       check(matches.map((matcher) => matcher.groupCount)).deepEquals([0, 0]);
       check(matches.map((matcher) => matcher[0])).deepEquals(['1', '2']);
       check(matches.map((matcher) => matcher.group(0))).deepEquals(['1', '2']);
-      check(matches.map((matcher) => matcher.groups([0, 1]))).deepEquals([
-        ['1', null],
-        ['2', null],
+      check(matches.map((matcher) => matcher.groups([0]))).deepEquals([
+        ['1'],
+        ['2'],
       ]);
+      check(() => matches.first.group(1)).throws<RangeError>();
     });
     test('matchAsPrefix()', () {
       const input = 'a1b2c';
@@ -50,10 +53,8 @@ void main() {
         ..has('groupCount', (m) => m.groupCount).equals(0)
         ..has('operator[]', (m) => m[0]).equals('1')
         ..has('group(0)', (m) => m.group(0)).equals('1')
-        ..has(
-          'groups([0, 1])',
-          (m) => m.groups([0, 1]),
-        ).deepEquals(['1', null]);
+        ..has('groups([0])', (m) => m.groups([0])).deepEquals(['1']);
+      check(() => match2![1]).throws<RangeError>();
     });
   });
 }
