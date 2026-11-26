@@ -23,7 +23,11 @@ void main() {
   test('constructor', () {
     check(Interval(1, 1)).equals(Interval(1));
     check(Interval(1, 2)).equals(Interval(1, 2));
+    check(Interval<int>(1, 2)).equals(Interval(1, 2));
     check(() => Interval(2, 1)).throws<ArgumentError>();
+    check(() => Interval<num>(double.nan, 1)).throws<ArgumentError>();
+    check(() => Interval<num>(1, double.nan)).throws<ArgumentError>();
+    check(() => Interval<num>(double.nan)).throws<ArgumentError>();
   });
   test('lower', () {
     check(interval0to7.lower).equals(0);
@@ -240,6 +244,8 @@ void main() {
       }
     }
     check(Interval(1, 2)).equals(Interval(1, 2));
+    check(Interval<num>(-0.0) == Interval<num>(0.0)).isFalse;
+    check(Interval<num>(0.0) == Interval<num>(0)).isTrue;
   });
   test('hashCode', () {
     for (var i = 0; i < intervals.length; i++) {

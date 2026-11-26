@@ -9,15 +9,16 @@ import 'interval.dart';
 /// The implementation is loosely based on the slide-deck of
 /// https://www.cs.cmu.edu/~ckingsf/bioinfo-lectures/intervaltrees.pdf.
 @immutable
-class IntervalTree<K extends Comparable<K>, V> with Iterable<V> {
+class IntervalTree<K extends Comparable<Object?>, V> with Iterable<V> {
   /// Creates an [IntervalTree] from an [Iterable] of [intervals].
-  static IntervalTree<K, Interval<K>> fromIntervals<K extends Comparable<K>>([
+  static IntervalTree<K, Interval<K>>
+  fromIntervals<K extends Comparable<Object?>>([
     Iterable<Interval<K>> intervals = const [],
   ]) => fromValues<K, Interval<K>>(intervals, _identityGetter<K>);
 
   /// Creates an [IntervalTree] from an [Iterable] of [values] and a [getter]
   /// function that returns the associated [Interval].
-  static IntervalTree<K, V> fromValues<K extends Comparable<K>, V>(
+  static IntervalTree<K, V> fromValues<K extends Comparable<Object?>, V>(
     Iterable<V> values,
     Interval<K> Function(V value) getter,
   ) {
@@ -101,7 +102,7 @@ class IntervalTree<K extends Comparable<K>, V> with Iterable<V> {
   }
 }
 
-final class _IntervalTreeIterator<K extends Comparable<K>, V>
+final class _IntervalTreeIterator<K extends Comparable<Object?>, V>
     implements Iterator<V> {
   new(_IntervalTreeNode<K, V>? node) {
     if (node != null) _nodes.add(node);
@@ -135,7 +136,7 @@ final class _IntervalTreeIterator<K extends Comparable<K>, V>
   }
 }
 
-final class _IntervalEntry<K extends Comparable<K>, V> {
+final class _IntervalEntry<K extends Comparable<Object?>, V> {
   const new(this.interval, this.value);
 
   final Interval<K> interval;
@@ -143,8 +144,8 @@ final class _IntervalEntry<K extends Comparable<K>, V> {
 }
 
 @immutable
-final class _IntervalTreeNode<K extends Comparable<K>, V> {
-  static _IntervalTreeNode<K, V>? fromEntries<K extends Comparable<K>, V>(
+final class _IntervalTreeNode<K extends Comparable<Object?>, V> {
+  static _IntervalTreeNode<K, V>? fromEntries<K extends Comparable<Object?>, V>(
     List<_IntervalEntry<K, V>> entries,
   ) {
     if (entries.isEmpty) return null;
@@ -205,5 +206,6 @@ final class _IntervalTreeNode<K extends Comparable<K>, V> {
   final _IntervalTreeNode<K, V>? _rightNode;
 }
 
-Interval<K> _identityGetter<K extends Comparable<K>>(Interval<K> interval) =>
-    interval;
+Interval<K> _identityGetter<K extends Comparable<Object?>>(
+  Interval<K> interval,
+) => interval;

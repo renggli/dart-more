@@ -6,13 +6,11 @@ import '../collection/range.dart';
 ///
 /// Contrary to the [Range] collection, this object includes both the lower and
 /// upper endpoint and provides efficient means to compute the [intersection]
-/// and [union] between objects. Ordering operations rely on [Comparable.compareTo]
-/// being consistent with `==` (for example, avoiding `double.nan` or mixed
-/// `-0.0` and `0.0`).
+/// and [union] between objects.
 ///
 /// See https://en.wikipedia.org/wiki/Interval_(mathematics).
 @immutable
-class Interval<T extends Comparable<T>> {
+class Interval<T extends Comparable<Object?>> {
   /// Creates an interval between [lower] and [upper] (inclusive):
   /// `{ x ∈ T | lower <= x <= upper }`.
   ///
@@ -21,6 +19,12 @@ class Interval<T extends Comparable<T>> {
   new(T lower, [T? upper]) : this._(lower, upper ?? lower);
 
   new _(this.lower, this.upper) {
+    if (lower case final num value when value.isNaN) {
+      throw ArgumentError.value(lower, 'lower', 'Endpoint must not be NaN');
+    }
+    if (upper case final num value when value.isNaN) {
+      throw ArgumentError.value(upper, 'upper', 'Endpoint must not be NaN');
+    }
     if (lower.compareTo(upper) > 0) {
       throw ArgumentError.value(
         upper,
@@ -93,7 +97,9 @@ class Interval<T extends Comparable<T>> {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      (other is Interval && lower == other.lower && upper == other.upper);
+      (other is Interval &&
+          _endpointEquals(lower, other.lower) &&
+          _endpointEquals(upper, other.upper));
 
   @override
   int get hashCode => Object.hash(lower, upper);
@@ -101,3 +107,6 @@ class Interval<T extends Comparable<T>> {
   @override
   String toString() => '$lower..$upper';
 }
+
+bool _endpointEquals(Object? a, Object? b) =>
+    a == b && (a is! num || b is! num || a.isNegative == b.isNegative);

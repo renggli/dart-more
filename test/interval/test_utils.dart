@@ -2,7 +2,8 @@ import 'package:checks/checks.dart';
 import 'package:more/interval.dart';
 
 /// Extension on [Subject] of [Interval] providing domain-specific checks.
-extension IntervalChecks<T extends Comparable<T>> on Subject<Interval<T>> {
+extension IntervalChecks<T extends Comparable<Object?>>
+    on Subject<Interval<T>> {
   /// Extracts the lower bound of the interval for further assertions.
   Subject<T> get lower => has('lower', (i) => i.lower);
 
