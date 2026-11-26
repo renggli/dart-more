@@ -1,5 +1,19 @@
 # Changelog
 
+## 4.11.0 (Unpublished)
+
+- Graph library improvements and breaking changes:
+  - Export standalone `bipartiteColoring`, `dominatingSet`, `hits`, `katzCentrality`, `stoerWagnerMinCut`, and `tspHeuristic` algorithms.
+  - Return a named record `({authorities, hubs})` from `hits()` and `Graph.hits()` instead of a positional record (update destructuring to `final (:authorities, :hubs) = graph.hits();`).
+  - Decouple standalone `kruskalSpanningTree` and `primSpanningTree` from `Graph` to accept iterables/callbacks and return `List<Edge<V, E>>` (use `graph.spanningTree(...)` for `Graph` instances).
+  - Fix edge cases across graph algorithms, layouts, traversals, Mermaid parsing/escaping, and custom `StorageStrategy` handling.
+- Export `DateTimePrinterBuilder` and `DurationPrinterBuilder`, append `'Z'` for UTC values in `DateTimePrinter.iso8601()` (use `DateTimePrinter.dateTime()` to omit it), and place the leading `'-'` before `'P'` in `DurationPrinter.iso8601()`.
+- Omit header lines in `ContextDiffer` and `UnifiedDiffer` when inputs have no differences, and fix `SequenceMatcher` aliasing and `quickRatio` bugs.
+- Make `minSafeInteger` and `maxSafeInteger` `const` with exact 64-bit bounds on VM and IEEE-754 safe integer bounds on JavaScript.
+- Widen `Comparable<Object?>` bounds across `comparator` and `interval` APIs, and cache `IntervalTree` bounds for faster queries.
+- Fix numerical stability, overflow, parsing, and IEEE-754 edge cases across `Fraction`, `Complex`, `Quaternion`, number printers, math, and temporal utilities.
+- Fix edge cases and performance issues across `async`, `cache`, `char_matcher`, `collection`, `comparator`, `functional`, and `tuple` libraries.
+
 ## 4.10.0
 
 - Dart 3.14 requirement.
