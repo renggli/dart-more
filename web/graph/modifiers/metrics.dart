@@ -147,11 +147,9 @@ class CentralityModifier extends GraphModifier {
         case CentralityMetric.katz:
           scores = graph.katzCentrality(alpha: katzAlpha, beta: katzBeta);
         case CentralityMetric.hitsHubs:
-          final (_, hubs) = graph.hits();
-          scores = hubs;
+          scores = graph.hits().hubs;
         case CentralityMetric.hitsAuthorities:
-          final (auth, _) = graph.hits();
-          scores = auth;
+          scores = graph.hits().authorities;
         case CentralityMetric.eccentricity:
           final fw = graph.allShortestPaths(edgeCost: edgeWeight);
           scores = {

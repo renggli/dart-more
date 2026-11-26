@@ -5,10 +5,10 @@ import '../strategy.dart';
 /// Computes Kleinberg's Hyperlink-Induced Topic Search (HITS) authority and
 /// hub centrality scores.
 ///
-/// Returns a record `(Map<V, double> authorities, Map<V, double> hubs)`.
+/// Returns a named record `({Map<V, double> authorities, Map<V, double> hubs})`.
 ///
 /// See https://en.wikipedia.org/wiki/HITS_algorithm.
-(Map<V, double> authorities, Map<V, double> hubs) hits<V>({
+({Map<V, double> authorities, Map<V, double> hubs}) hits<V>({
   required Iterable<V> vertices,
   required Iterable<V> Function(V vertex) successorsOf,
   required Iterable<V> Function(V vertex) predecessorsOf,
@@ -21,8 +21,8 @@ import '../strategy.dart';
   final n = vertList.length;
   if (n == 0) {
     return (
-      vertexStrategy.createMap<double>(),
-      vertexStrategy.createMap<double>(),
+      authorities: vertexStrategy.createMap<double>(),
+      hubs: vertexStrategy.createMap<double>(),
     );
   }
 
@@ -85,5 +85,5 @@ import '../strategy.dart';
     if (maxDiff < tolerance) break;
   }
 
-  return (auth, hubs);
+  return (authorities: auth, hubs: hubs);
 }

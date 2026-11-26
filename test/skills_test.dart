@@ -147,7 +147,7 @@ graph TD
       check(undirectedRing.bipartiteColoring()).isNotNull();
       check(undirectedRing.dominatingSet()).isNotEmpty;
       check(undirectedRing.katzCentrality()).length.equals(6);
-      final (authorities, hubs) = undirectedRing.hits();
+      final (:authorities, :hubs) = undirectedRing.hits();
       check(authorities).length.equals(6);
       check(hubs).length.equals(6);
       check(undirectedRing.tspHeuristic()).isNotNull();

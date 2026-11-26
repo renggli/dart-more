@@ -10,7 +10,7 @@ void main() {
         ..addEdge('H1', 'A2')
         ..addEdge('H2', 'A1')
         ..addEdge('H2', 'A2');
-      final (auth, hubs) = graph.hits();
+      final (authorities: auth, :hubs) = graph.hits();
       check(auth['A1']! > 0).isTrue;
       check(auth['A2']! > 0).isTrue;
       check(hubs['H1']! > 0).isTrue;
@@ -19,7 +19,7 @@ void main() {
 
     test('empty graph returns empty records', () {
       final empty = Graph<String, void>(isDirected: true);
-      final (auth, hubs) = empty.hits();
+      final (authorities: auth, :hubs) = empty.hits();
       check(auth).isEmpty;
       check(hubs).isEmpty;
     });
@@ -27,7 +27,7 @@ void main() {
 
   group('standalone', () {
     test('standalone hits function', () {
-      final (auth, hubs) = hits<String>(
+      final (authorities: auth, :hubs) = hits<String>(
         vertices: ['H', 'A'],
         successorsOf: (v) => v == 'H' ? ['A'] : const [],
         predecessorsOf: (v) => v == 'A' ? ['H'] : const [],

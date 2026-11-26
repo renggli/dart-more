@@ -924,7 +924,7 @@ extension AlgorithmsGraphExtension<V, E> on Graph<V, E> {
   );
 
   /// Computes Kleinberg's HITS authority and hub centrality scores.
-  (Map<V, double> authorities, Map<V, double> hubs) hits({
+  ({Map<V, double> authorities, Map<V, double> hubs}) hits({
     int maxIterations = 100,
     double tolerance = 1e-6,
     StorageStrategy<V>? vertexStrategy,
