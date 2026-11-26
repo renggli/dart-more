@@ -301,6 +301,16 @@ void main() {
         excluded: [2.0, 5.0],
       );
       verifyRange(
+        const DoubleRange.of(start: 5, end: 2, step: 1e-320),
+        included: [],
+        excluded: [2.0, 5.0],
+      );
+      verifyRange(
+        const DoubleRange.of(start: 0.0, end: 0.3, step: 0.1),
+        included: [0.0, 0.1, 0.2],
+        excluded: [0.3],
+      );
+      verifyRange(
         const DoubleRange.of(start: 0.0, end: 1e-17, step: 1.0),
         included: [0.0],
         excluded: [1.0],
@@ -310,6 +320,7 @@ void main() {
     });
     test('invalid', () {
       check(() => DoubleRange(0, 0, 0)).throws<ArgumentError>();
+      check(() => DoubleRange.length(3, step: 0)).throws<ArgumentError>();
       check(() => DoubleRange(null, 1)).throws<ArgumentError>();
       check(() => DoubleRange(null, null, 1)).throws<ArgumentError>();
     });
@@ -414,5 +425,15 @@ void main() {
     check(range.indexOf(2)).equals(2);
     check(range.contains(7)).isFalse;
     check(range.indexOf(7)).equals(-1);
+    check(range.indexOf(double.nan)).equals(-1);
+    check(range.lastIndexOf(double.nan)).equals(-1);
+    check(range.contains(double.nan)).isFalse;
+    final duplicates = DoubleRange.length(5, start: 1e17, step: 1.0);
+    check(duplicates.indexOf(1e17)).equals(0);
+    check(duplicates.indexOf(1e17, 2)).equals(2);
+    check(duplicates.lastIndexOf(1e17)).equals(4);
+    check(duplicates.lastIndexOf(1e17, 1)).equals(1);
+    check(duplicates.lastIndexOf(1e17, 10)).equals(4);
+    check(duplicates.lastIndexOf(1e17, -1)).equals(-1);
   });
 }

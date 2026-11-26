@@ -58,6 +58,9 @@ final class BigIntRange extends Range<BigInt> {
     start ??= BigInt.zero;
     end ??= BigInt.zero;
     step ??= start <= end ? BigInt.one : -BigInt.one;
+    if (step == BigInt.zero) {
+      throw ArgumentError.value(step, 'step', 'Step must not be zero');
+    }
     return BigIntRange._of1(start, end, step);
   }
 
@@ -80,6 +83,9 @@ final class BigIntRange extends Range<BigInt> {
     RangeError.checkNotNegative(length, 'length');
     start ??= BigInt.zero;
     step ??= BigInt.one;
+    if (step == BigInt.zero) {
+      throw ArgumentError.value(step, 'step', 'Step must not be zero');
+    }
     return BigIntRange._(
       start,
       start + BigInt.from(length) * step,
@@ -91,8 +97,14 @@ final class BigIntRange extends Range<BigInt> {
   // Internal const-constructor that initializes all state.
   new _(this.start, this.end, this.step, this.length)
     : assert(step != BigInt.zero, '`step` must not be zero'),
-      assert(step < BigInt.zero || start <= end, '`step` must be positive'),
-      assert(step > BigInt.zero || start >= end, '`step` must be negative'),
+      assert(
+        length == 0 || step < BigInt.zero || start <= end,
+        '`step` must be positive',
+      ),
+      assert(
+        length == 0 || step > BigInt.zero || start >= end,
+        '`step` must be negative',
+      ),
       assert(0 <= length, '`length` must be positive');
 
   @override
@@ -118,9 +130,12 @@ final class BigIntRange extends Range<BigInt> {
       if (startIndex < length) {
         final value = element - start;
         if (value % step == BigInt.zero) {
-          final index = (value ~/ step).toInt();
-          if (startIndex <= index && index < length) {
-            return index;
+          final bigIndex = value ~/ step;
+          if (bigIndex.isValidInt) {
+            final index = bigIndex.toInt();
+            if (startIndex <= index && index < length) {
+              return index;
+            }
           }
         }
       }

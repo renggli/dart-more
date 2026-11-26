@@ -59,9 +59,29 @@ final class IntegerRange extends Range<int> {
         end,
         step,
         0 < step && start < end
-            ? 1 + (end - start - 1) ~/ step
+            ? (start >= 0
+                  ? 1 + (end - start - 1) ~/ step
+                  : end <= 0
+                  ? 1 + (-(start + 1) - (-end)) ~/ step
+                  : 1 +
+                        (end - 1) ~/ step +
+                        -(start + 1) ~/ step +
+                        (-(start + 1) % step >= step - (end - 1) % step - 1
+                            ? 1
+                            : 0))
             : 0 > step && start > end
-            ? 1 + (start - end - 1) ~/ -step
+            ? (step == -step
+                  ? (start + step > end ? 2 : 1)
+                  : end >= 0
+                  ? 1 + (start - end - 1) ~/ -step
+                  : start <= 0
+                  ? 1 + (-(end + 1) - (-start)) ~/ -step
+                  : 1 +
+                        (start - 1) ~/ -step +
+                        -(end + 1) ~/ -step +
+                        (-(end + 1) % -step >= -step - (start - 1) % -step - 1
+                            ? 1
+                            : 0))
             : 0,
       );
 
@@ -70,14 +90,23 @@ final class IntegerRange extends Range<int> {
   /// uses the step-value [step].
   factory length(int length, {int start = 0, int step = 1}) {
     RangeError.checkNotNegative(length, 'length');
+    if (step == 0) {
+      throw ArgumentError.value(step, 'step', 'Step must not be zero');
+    }
     return IntegerRange._(start, start + length * step, step, length);
   }
 
   // Internal const-constructor that initializes the state.
   const new _(this.start, this.end, this.step, this.length)
     : assert(step != 0, '`step` must not be zero'),
-      assert(step < 0 || start <= end, '`step` must be positive'),
-      assert(step > 0 || start >= end, '`step` must be negative'),
+      assert(
+        length == 0 || step < 0 || start <= end,
+        '`step` must be positive',
+      ),
+      assert(
+        length == 0 || step > 0 || start >= end,
+        '`step` must be negative',
+      ),
       assert(0 <= length, '`length` must be positive');
 
   @override

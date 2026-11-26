@@ -352,4 +352,29 @@ void main() {
   test('indices with invalid step', () {
     check(() => ['a', 'b'].indices(step: 0)).throws<ArgumentError>();
   });
+  test('reversed empty and invalid step', () {
+    verifyRange(
+      const IntegerRange.of(start: 5, end: 2, step: 1),
+      included: [],
+      excluded: [2, 5],
+    );
+    verifyRange(
+      const IntegerRange.of(start: 2, end: 5, step: -1),
+      included: [],
+      excluded: [2, 5],
+    );
+    check(() => IntegerRange.length(3, step: 0)).throws<ArgumentError>();
+  });
+  test('large opposite-sign ranges avoid overflow', () {
+    const step = 1 << 61;
+    const pos = IntegerRange.of(start: -(1 << 62), end: 1 << 62, step: step);
+    check(pos.length).equals(4);
+    check(pos).deepEquals([-(1 << 62), -(1 << 61), 0, 1 << 61]);
+    const neg = IntegerRange.of(start: 1 << 62, end: -(1 << 62), step: -step);
+    check(neg.length).equals(4);
+    check(neg).deepEquals([1 << 62, 1 << 61, 0, -(1 << 61)]);
+    final minInt = int.parse('-9223372036854775808');
+    check(IntegerRange.of(start: minInt, end: 1, step: 1 << 62)).length
+        .equals(3);
+  }, testOn: '!js');
 }

@@ -410,4 +410,28 @@ void main() {
     check(list.shuffle).throws<UnsupportedError>();
     check(list.sort).throws<UnsupportedError>();
   });
+  test('reversed empty, invalid step, and huge indexOf', () {
+    verifyRange(
+      BigIntRange.of(start: BigInt.from(5), end: BigInt.two, step: BigInt.one),
+      included: <BigInt>[],
+      excluded: toBigIntList([2, 5]),
+    );
+    verifyRange(
+      BigIntRange.of(start: BigInt.two, end: BigInt.from(5), step: -BigInt.one),
+      included: <BigInt>[],
+      excluded: toBigIntList([2, 5]),
+    );
+    check(
+      () => BigIntRange.of(
+        start: BigInt.zero,
+        end: BigInt.one,
+        step: BigInt.zero,
+      ),
+    ).throws<ArgumentError>();
+    check(() => BigIntRange.length(3, step: BigInt.zero))
+        .throws<ArgumentError>();
+    final range = BigIntRange.of(end: BigInt.from(5));
+    check(range.indexOf(BigInt.one << 100)).equals(-1);
+    check(range.contains(BigInt.one << 100)).isFalse;
+  });
 }

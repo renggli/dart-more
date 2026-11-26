@@ -80,33 +80,28 @@ final class DoubleRange extends Range<double> {
     bool isValid,
     double deltaAbs,
     double stepAbs,
-  ) : this._of3(
-        start,
-        end,
-        step,
-        isValid,
-        deltaAbs ~/ stepAbs,
-        deltaAbs % stepAbs,
-        stepAbs * _relativeEpsilon,
-        stepAbs,
-      );
+  ) : this._of3(start, end, step, isValid, isValid ? deltaAbs / stepAbs : 0.0);
 
   const new _of3(
     double start,
     double end,
     double step,
     bool isValid,
+    double ratio,
+  ) : this._of4(start, end, step, isValid, ratio ~/ 1, ratio - (ratio ~/ 1));
+
+  const new _of4(
+    double start,
+    double end,
+    double step,
+    bool isValid,
     int div,
-    double mod,
-    double eps,
-    double stepAbs,
+    double frac,
   ) : this._(
         start,
         end,
         step,
-        !isValid
-            ? 0
-            : div + ((div > 0 && mod < eps) || stepAbs - mod < eps ? 0 : 1),
+        !isValid ? 0 : div + (div > 0 && frac < _relativeEpsilon ? 0 : 1),
       );
 
   static const _relativeEpsilon = 1e-12;
@@ -116,6 +111,9 @@ final class DoubleRange extends Range<double> {
   /// uses the step-value [step].
   factory length(int length, {double start = 0, double step = 1}) {
     RangeError.checkNotNegative(length, 'length');
+    if (step == 0) {
+      throw ArgumentError.value(step, 'step', 'Step must not be zero');
+    }
     return DoubleRange._(start, start + length * step, step, length);
   }
 
@@ -151,11 +149,38 @@ final class DoubleRange extends Range<double> {
   // ignore: avoid_renaming_method_parameters
   int indexOf(Object? element, [int startIndex = 0]) {
     if (element is num) {
+      final target = element.toDouble();
+      if (target.isNaN) return -1;
       if (startIndex < 0) startIndex = 0;
       if (startIndex < length) {
         final comparator = step > 0 ? _naturalComparator : _reverseComparator;
-        final index = comparator.binarySearch(this, element.toDouble());
-        if (startIndex <= index && index < length) {
+        final index = comparator.binarySearchLower(
+          this,
+          target,
+          start: startIndex,
+        );
+        if (index < length && this[index] == target) {
+          return index;
+        }
+      }
+    }
+    return -1;
+  }
+
+  @override
+  // ignore: avoid_renaming_method_parameters
+  int lastIndexOf(Object? element, [int? endIndex]) {
+    if (element is num) {
+      final target = element.toDouble();
+      if (target.isNaN || length == 0) return -1;
+      final limit = endIndex == null || endIndex >= length
+          ? length - 1
+          : endIndex;
+      if (limit >= 0) {
+        final comparator = step > 0 ? _naturalComparator : _reverseComparator;
+        final index =
+            comparator.binarySearchUpper(this, target, end: limit + 1) - 1;
+        if (index >= 0 && this[index] == target) {
           return index;
         }
       }
