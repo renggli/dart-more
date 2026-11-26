@@ -5,155 +5,207 @@ import 'package:more/async.dart';
 import 'package:test/scaffolding.dart';
 
 void main() {
-  group('tap', () {
-    Stream<T> wrap<T>(List<String> events, Stream<T> stream) => stream.tap(
-      onListen: () => events.add('onListen'),
-      onData: (value) => events.add('onData: $value'),
-      onError: (error, [stackTrace]) => events.add('onError: $error'),
-      onPause: () => events.add('onPause'),
-      onResume: () => events.add('onResume'),
-      onCancel: () => events.add('onCancel'),
-      onDone: () => events.add('onDone'),
+  Stream<T> wrap<T>(List<String> events, Stream<T> stream) => stream.tap(
+    onListen: () => events.add('onListen'),
+    onData: (value) => events.add('onData: $value'),
+    onError: (error, [stackTrace]) => events.add('onError: $error'),
+    onPause: () => events.add('onPause'),
+    onResume: () => events.add('onResume'),
+    onCancel: () => events.add('onCancel'),
+    onDone: () => events.add('onDone'),
+  );
+  test('basic', () async {
+    final events = <String>[];
+    final stream = Stream.fromIterable([1, 2, 3]);
+    await wrap(events, stream).forEach((value) => events.add('value: $value'));
+    check(events).deepEquals([
+      'onListen',
+      'onData: 1',
+      'value: 1',
+      'onData: 2',
+      'value: 2',
+      'onData: 3',
+      'value: 3',
+      'onDone',
+      'onCancel',
+    ]);
+  });
+  test('error', () async {
+    final events = <String>[];
+    final stream = Stream.fromIterable(<Stream<int>>[
+      Stream.value(42),
+      Stream.error('Expected error'),
+    ]).flatten();
+    await wrap(events, stream)
+        .listen((value) => events.add('value: $value'))
+        .asFuture<void>()
+        .catchError((Object error) => events.add('error: $error'));
+    check(events).deepEquals([
+      'onListen',
+      'onData: 42',
+      'value: 42',
+      'onError: Expected error',
+      'onCancel',
+      'error: Expected error',
+    ]);
+  });
+  test('error with cancelOnError: false', () async {
+    final events = <String>[];
+    final controller = StreamController<int>();
+    final completer = Completer<void>();
+    wrap(events, controller.stream).listen(
+      (value) => events.add('value: $value'),
+      onError: (Object error) => events.add('error: $error'),
+      onDone: () {
+        events.add('done');
+        completer.complete();
+      },
+      cancelOnError: false,
     );
-    test('basic', () async {
-      final events = <String>[];
-      final stream = Stream.fromIterable([1, 2, 3]);
-      await wrap(
-        events,
-        stream,
-      ).forEach((value) => events.add('value: $value'));
-      check(events).deepEquals([
-        'onListen',
-        'onData: 1',
-        'value: 1',
-        'onData: 2',
-        'value: 2',
-        'onData: 3',
-        'value: 3',
-        'onDone',
-        'onCancel',
-      ]);
-    });
-    test('error', () async {
-      final events = <String>[];
-      final stream = Stream.fromIterable(<Stream<int>>[
-        Stream.value(42),
-        Stream.error('Expected error'),
-      ]).flatten();
-      await wrap(events, stream)
-          .listen((value) => events.add('value: $value'))
-          .asFuture<void>()
-          .catchError((Object error) => events.add('error: $error'));
-      check(events).deepEquals([
-        'onListen',
-        'onData: 42',
-        'value: 42',
-        'onError: Expected error',
-        'onCancel',
-        'error: Expected error',
-      ]);
-    });
-    test('error with cancelOnError: false', () async {
-      final events = <String>[];
-      final controller = StreamController<int>();
-      final completer = Completer<void>();
-      wrap(events, controller.stream).listen(
-        (value) => events.add('value: $value'),
-        onError: (Object error) => events.add('error: $error'),
-        onDone: () {
-          events.add('done');
-          completer.complete();
-        },
-        cancelOnError: false,
-      );
-      controller.add(1);
-      controller.addError('error 1');
-      controller.add(2);
-      controller.addError('error 2');
-      await controller.close();
-      await completer.future;
-      check(events).deepEquals([
-        'onListen',
-        'onData: 1',
-        'value: 1',
-        'onError: error 1',
-        'error: error 1',
-        'onData: 2',
-        'value: 2',
-        'onError: error 2',
-        'error: error 2',
-        'onDone',
-        'onCancel',
-        'done',
-      ]);
-    });
-    test('pause/resume', () async {
-      late StreamSubscription<int> subscription;
-      final events = <String>[];
-      final stream = Stream.fromIterable([
-        Stream.value(1),
-        Stream.fromFuture(
-          Future(() {
-            subscription.pause();
-            subscription.resume();
-            return 2;
-          }),
-        ),
-        Stream.value(3),
-      ]).flatten();
-      subscription = wrap(
-        events,
-        stream,
-      ).listen((value) => events.add('value: $value'));
-      await subscription.asFuture<void>();
-      await subscription.cancel();
-      check(events).deepEquals([
-        'onListen',
-        'onData: 1',
-        'value: 1',
-        'onPause',
-        'onResume',
-        'onData: 2',
-        'value: 2',
-        'onData: 3',
-        'value: 3',
-        'onDone',
-        'onCancel',
-      ]);
-    });
-    test('cancel', () async {
-      StreamSubscription<int> subscription;
-      final events = <String>[];
-      final stream = Stream.fromIterable([
-        Stream.value(1),
-        Stream.fromFuture(
-          Future.delayed(const Duration(milliseconds: 10), () => 2),
-        ),
-        Stream.value(3),
-      ]).flatten();
-      subscription = wrap(
-        events,
-        stream,
-      ).listen((value) => events.add('value: $value'));
-      await Future<void>.delayed(const Duration(milliseconds: 5));
-      await subscription.cancel();
-      check(events)
-          .deepEquals(['onListen', 'onData: 1', 'value: 1', 'onCancel']);
-    });
-    test('broadcast', () async {
-      final controller = StreamController<int>.broadcast();
-      final events = <String>[];
-      final tapped = wrap(events, controller.stream);
-      check(tapped.isBroadcast).isTrue;
-      final sub1 = tapped.listen((value) => events.add('sub1: $value'));
-      final sub2 = tapped.listen((value) => events.add('sub2: $value'));
-      controller.add(1);
-      await Future<void>.delayed(Duration.zero);
-      await sub1.cancel();
-      await sub2.cancel();
-      await controller.close();
-      check(events).contains('sub1: 1');
-      check(events).contains('sub2: 1');
-    });
+    controller.add(1);
+    controller.addError('error 1');
+    controller.add(2);
+    controller.addError('error 2');
+    await controller.close();
+    await completer.future;
+    check(events).deepEquals([
+      'onListen',
+      'onData: 1',
+      'value: 1',
+      'onError: error 1',
+      'error: error 1',
+      'onData: 2',
+      'value: 2',
+      'onError: error 2',
+      'error: error 2',
+      'onDone',
+      'onCancel',
+      'done',
+    ]);
+  });
+  test('pause/resume', () async {
+    late StreamSubscription<int> subscription;
+    final events = <String>[];
+    final stream = Stream.fromIterable([
+      Stream.value(1),
+      Stream.fromFuture(
+        Future(() {
+          subscription.pause();
+          subscription.resume();
+          return 2;
+        }),
+      ),
+      Stream.value(3),
+    ]).flatten();
+    subscription = wrap(
+      events,
+      stream,
+    ).listen((value) => events.add('value: $value'));
+    await subscription.asFuture<void>();
+    await subscription.cancel();
+    check(events).deepEquals([
+      'onListen',
+      'onData: 1',
+      'value: 1',
+      'onPause',
+      'onResume',
+      'onData: 2',
+      'value: 2',
+      'onData: 3',
+      'value: 3',
+      'onDone',
+      'onCancel',
+    ]);
+  });
+  test('cancel', () async {
+    StreamSubscription<int> subscription;
+    final events = <String>[];
+    final stream = Stream.fromIterable([
+      Stream.value(1),
+      Stream.fromFuture(
+        Future.delayed(const Duration(milliseconds: 10), () => 2),
+      ),
+      Stream.value(3),
+    ]).flatten();
+    subscription = wrap(
+      events,
+      stream,
+    ).listen((value) => events.add('value: $value'));
+    await Future<void>.delayed(const Duration(milliseconds: 5));
+    await subscription.cancel();
+    check(events).deepEquals(['onListen', 'onData: 1', 'value: 1', 'onCancel']);
+  });
+  test('broadcast', () async {
+    final controller = StreamController<int>.broadcast();
+    final events = <String>[];
+    final tapped = wrap(events, controller.stream);
+    check(tapped.isBroadcast).isTrue;
+    final sub1 = tapped.listen((value) => events.add('sub1: $value'));
+    final sub2 = tapped.listen((value) => events.add('sub2: $value'));
+    controller.add(1);
+    await Future<void>.delayed(Duration.zero);
+    await sub1.cancel();
+    await sub2.cancel();
+    await controller.close();
+    check(events).contains('sub1: 1');
+    check(events).contains('sub2: 1');
+  });
+  test('throwing lifecycle callbacks do not leak subscriptions', () async {
+    var cancelled = false;
+    var paused = false;
+    var resumed = false;
+    final controller = StreamController<int>(
+      onCancel: () => cancelled = true,
+      onPause: () => paused = true,
+      onResume: () => resumed = true,
+    );
+    final tapped = controller.stream.tap(
+      onPause: () => throw StateError('pause error'),
+      onResume: () => throw StateError('resume error'),
+      onCancel: () => throw StateError('cancel error'),
+      onDone: () => throw StateError('done error'),
+    );
+    final errors = <Object>[];
+    final sub = tapped.listen(null);
+    runZonedGuarded(sub.pause, (error, stack) => errors.add(error));
+    check(paused).isTrue;
+    runZonedGuarded(sub.resume, (error, stack) => errors.add(error));
+    check(resumed).isTrue;
+    await check(sub.cancel()).throws<StateError>();
+    check(cancelled).isTrue;
+    check(errors).length.equals(2);
+
+    final doneController = StreamController<int>();
+    final doneCompleter = Completer<void>();
+    var completed = false;
+    runZonedGuarded(() {
+      doneController.stream
+          .tap(onDone: () => throw StateError('done error'))
+          .listen(
+            null,
+            onDone: () {
+              completed = true;
+              doneCompleter.complete();
+            },
+          );
+    }, (error, stack) => errors.add(error));
+    await doneController.close();
+    await doneCompleter.future;
+    check(completed).isTrue;
+    check(errors).length.equals(3);
+  });
+  test('throwing onListen does not cause LateInitializationError', () async {
+    final controller = StreamController<int>();
+    final tapped = controller.stream.tap(
+      onListen: () => throw StateError('listen error'),
+    );
+    final errors = <Object>[];
+    late StreamSubscription<int> sub;
+    runZonedGuarded(() {
+      sub = tapped.listen(null);
+    }, (error, stack) => errors.add(error));
+    check(errors).length.equals(1);
+    check(errors.first).isA<StateError>();
+    await sub.cancel();
   });
 }

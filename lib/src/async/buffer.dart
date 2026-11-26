@@ -54,10 +54,12 @@ extension BufferExtension<E> on Stream<E> {
       // Defensive cleanup; flush() always precedes cleanup() in close() and nulls maxAgeTimer.
       maxAgeTimer?.cancel(); // coverage:ignore-line
       maxAgeTimer = null;
-      sourceSubscription?.cancel();
+      final source = sourceSubscription;
       sourceSubscription = null;
-      triggerSubscription?.cancel();
+      source?.cancel().ignore();
+      final trigger = triggerSubscription;
       triggerSubscription = null;
+      trigger?.cancel().ignore();
     }
 
     void close() {
@@ -69,7 +71,7 @@ extension BufferExtension<E> on Stream<E> {
     }
 
     // Handling of the trigger stream.
-    void onTriggerData(value) {
+    void onTriggerData(void _) {
       if (!controller.isClosed) {
         flush();
       }
@@ -105,16 +107,22 @@ extension BufferExtension<E> on Stream<E> {
 
     // Setup the resulting stream controller.
     controller.onListen = () {
-      sourceSubscription = listen(
+      final source = sourceSubscription = listen(
         onSourceData,
         onError: onSourceError,
         onDone: onSourceDone,
       );
-      triggerSubscription = trigger?.listen(
-        onTriggerData,
-        onError: onTriggerError,
-        onDone: onTriggerDone,
-      );
+      try {
+        triggerSubscription = trigger?.listen(
+          onTriggerData,
+          onError: onTriggerError,
+          onDone: onTriggerDone,
+        );
+      } catch (_) {
+        sourceSubscription = null;
+        source.cancel().ignore();
+        rethrow;
+      }
     };
     if (!isBroadcast) {
       controller.onPause = () {
@@ -129,8 +137,13 @@ extension BufferExtension<E> on Stream<E> {
     controller.onCancel = () async {
       maxAgeTimer?.cancel();
       maxAgeTimer = null;
-      await sourceSubscription?.cancel();
-      await triggerSubscription?.cancel();
+      buffer.clear();
+      final source = sourceSubscription;
+      sourceSubscription = null;
+      final trigger = triggerSubscription;
+      triggerSubscription = null;
+      await source?.cancel();
+      await trigger?.cancel();
     };
     return controller.stream;
   }

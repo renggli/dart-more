@@ -1,45 +1,45 @@
 import 'dart:async';
 
-/// Callback without arguments.
-typedef Callback = void Function();
-
-/// Callback with a single data [element].
-typedef DataCallback<E> = void Function(E element);
-
-/// Callback invoked on [error] with optional [stackTrace].
-typedef ErrorCallback = void Function(Object error, [StackTrace? stackTrace]);
-
 /// Extension on [Stream] providing tapping operations for side-effects.
 extension TapExtension<E> on Stream<E> {
   /// Transparently performs side-effects on the events of a [Stream], for
   /// things such as logging or debugging.
   Stream<E> tap({
-    Callback? onListen,
-    Callback? onPause,
-    Callback? onResume,
-    DataCallback<E>? onData,
-    ErrorCallback? onError,
-    Callback? onCancel,
-    Callback? onDone,
+    void Function()? onListen,
+    void Function()? onPause,
+    void Function()? onResume,
+    void Function(E element)? onData,
+    void Function(Object error, [StackTrace? stackTrace])? onError,
+    void Function()? onCancel,
+    void Function()? onDone,
   }) {
     final controller = isBroadcast
         ? StreamController<E>.broadcast()
         : StreamController<E>();
-    late StreamSubscription<E> subscription;
+    StreamSubscription<E>? subscription;
 
     void dispatchOnData(E element) {
       onData?.call(element);
-      controller.add(element);
+      if (!controller.isClosed) {
+        controller.add(element);
+      }
     }
 
     void dispatchOnError(Object error, [StackTrace? stackTrace]) {
       onError?.call(error, stackTrace);
-      controller.addError(error, stackTrace);
+      if (!controller.isClosed) {
+        controller.addError(error, stackTrace);
+      }
     }
 
     void dispatchOnDone() {
-      onDone?.call();
-      controller.close();
+      try {
+        onDone?.call();
+      } finally {
+        if (!controller.isClosed) {
+          controller.close();
+        }
+      }
     }
 
     controller.onListen = () {
@@ -52,17 +52,28 @@ extension TapExtension<E> on Stream<E> {
     };
     if (!isBroadcast) {
       controller.onPause = () {
-        onPause?.call();
-        subscription.pause();
+        try {
+          onPause?.call();
+        } finally {
+          subscription?.pause();
+        }
       };
       controller.onResume = () {
-        onResume?.call();
-        subscription.resume();
+        try {
+          onResume?.call();
+        } finally {
+          subscription?.resume();
+        }
       };
     }
     controller.onCancel = () async {
-      onCancel?.call();
-      await subscription.cancel();
+      final sub = subscription;
+      subscription = null;
+      try {
+        onCancel?.call();
+      } finally {
+        await sub?.cancel();
+      }
     };
 
     return controller.stream;

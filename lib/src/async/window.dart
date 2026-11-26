@@ -7,6 +7,11 @@ import '../shared/exceptions.dart';
 extension WindowStreamExtension<E> on Stream<E> {
   /// Returns a sliding window [Stream] of given [size] over this [Stream].
   ///
+  /// The [step] parameter specifies the number of elements to advance between
+  /// consecutive windows (defaults to `1`). If [includePartial] is `true`,
+  /// trailing windows smaller than [size] are included at the end of the
+  /// stream.
+  ///
   /// If the stream is of type [E], the returned stream will be of type
   /// `List<E>`.
   Stream<List<E>> window(
@@ -24,8 +29,14 @@ extension WindowStreamExtension<E> on Stream<E> {
           buffer.addLast(iterator.current);
         }
         if (buffer.length < size) {
-          if (includePartial && buffer.isNotEmpty) {
-            yield buffer.toList(growable: false);
+          if (includePartial) {
+            while (buffer.isNotEmpty) {
+              yield buffer.toList(growable: false);
+              if (buffer.length <= step) break;
+              for (var i = 0; i < step; i++) {
+                buffer.removeFirst();
+              }
+            }
           }
           break;
         }
