@@ -1,12 +1,12 @@
 /// Returns an explicit [Comparator] based on an [iterable] of elements.
 ///
-/// If [iterable] contains duplicate elements, the rank of the last occurrence
+/// If [iterable] contains duplicate elements, the rank of the first occurrence
 /// wins. Comparing an element not present in [iterable] throws a [StateError].
 Comparator<T> explicitComparator<T>(Iterable<T> iterable) {
   final ranks = <T, int>{};
   var index = 0;
   for (final element in iterable) {
-    ranks[element] = index++;
+    ranks.putIfAbsent(element, () => index++);
   }
   return (a, b) => _rank(ranks, a) - _rank(ranks, b);
 }

@@ -20,7 +20,7 @@ void main() {
 
   test('duplicate elements', () {
     final comparator = explicitComparator(const [1, 2, 1]);
-    verify(comparator, [1, 2], [2, 1]);
+    verify(comparator, [2, 1], [1, 2]);
   });
 
   test('missing element', () {

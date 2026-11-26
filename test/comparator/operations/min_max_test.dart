@@ -30,11 +30,11 @@ void main() {
       final comparator = naturalInt.keyOf<({int key, String id})>((e) => e.key);
       const a = (key: 1, id: 'a');
       const b = (key: 1, id: 'b');
-      check(comparator.min(a, b)).identicalTo(b);
-      check(comparator.max(a, b)).identicalTo(b);
-      check(comparator.minOf([a, b])).identicalTo(b);
-      check(comparator.maxOf([a, b])).identicalTo(b);
-      check(comparator.minMaxOf([a, b])).equals((min: b, max: b));
+      check(comparator.min(a, b)).identicalTo(a);
+      check(comparator.max(a, b)).identicalTo(a);
+      check(comparator.minOf([a, b])).identicalTo(a);
+      check(comparator.maxOf([a, b])).identicalTo(a);
+      check(comparator.minMaxOf([a, b])).equals((min: a, max: a));
     });
 
     test('minOf orElse', () {

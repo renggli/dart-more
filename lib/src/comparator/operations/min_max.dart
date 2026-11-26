@@ -1,11 +1,11 @@
 /// Extension on [Comparator] to find the minimum and maximum elements.
 extension MinMaxComparator<T> on Comparator<T> {
   /// Returns the minimum of the two arguments [a] and [b]. If both arguments
-  /// compare equal, [b] is returned.
-  T min(T a, T b) => this(a, b) < 0 ? a : b;
+  /// compare equal, [a] is returned.
+  T min(T a, T b) => this(a, b) <= 0 ? a : b;
 
   /// Returns the minimum of the provided [iterable]. If multiple elements
-  /// compare equal to the minimum, the last one is returned.
+  /// compare equal to the minimum, the first one is returned.
   T minOf(Iterable<T> iterable, {T Function()? orElse}) {
     final iterator = iterable.iterator;
     if (iterator.moveNext()) {
@@ -20,11 +20,11 @@ extension MinMaxComparator<T> on Comparator<T> {
   }
 
   /// Returns the maximum of the two arguments [a] and [b]. If both arguments
-  /// compare equal, [b] is returned.
-  T max(T a, T b) => this(a, b) > 0 ? a : b;
+  /// compare equal, [a] is returned.
+  T max(T a, T b) => this(a, b) >= 0 ? a : b;
 
   /// Returns the maximum of the provided [iterable]. If multiple elements
-  /// compare equal to the maximum, the last one is returned.
+  /// compare equal to the maximum, the first one is returned.
   T maxOf(Iterable<T> iterable, {T Function()? orElse}) {
     final iterator = iterable.iterator;
     if (iterator.moveNext()) {

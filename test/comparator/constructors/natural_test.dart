@@ -6,7 +6,7 @@ import '../test_utils.dart';
 void main() {
   group('natural', () {
     test('int', () {
-      const Comparator<int> comparator = naturalComparable<num>;
+      const comparator = naturalComparable<int>;
       verify(comparator, [1, 2, 3], [1, 2, 3]);
       verify(comparator, [2, 3, 1], [1, 2, 3]);
       verify(comparator, [3, 1, 2], [1, 2, 3]);

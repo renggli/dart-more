@@ -7,14 +7,14 @@ import '../test_utils.dart';
 
 void main() {
   test('default', () {
-    final comparator = keyOf<String, num>((string) => string.length);
+    final comparator = keyOf<String, int>((string) => string.length);
     verify(comparator, ['abc', 'ab'], ['ab', 'abc']);
     verify(comparator, ['ab', 'a'], ['a', 'ab']);
     verify(comparator, ['ab', 'abc', 'a'], ['a', 'ab', 'abc']);
   });
 
   test('delegateComparator (deprecated)', () {
-    final comparator = delegateComparator<String, num>(
+    final comparator = delegateComparator<String, int>(
       (string) => string.length,
     );
     verify(comparator, ['abc', 'ab'], ['ab', 'abc']);
