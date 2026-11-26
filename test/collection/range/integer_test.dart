@@ -366,15 +366,16 @@ void main() {
     check(() => IntegerRange.length(3, step: 0)).throws<ArgumentError>();
   });
   test('large opposite-sign ranges avoid overflow', () {
-    const step = 1 << 61;
-    const pos = IntegerRange.of(start: -(1 << 62), end: 1 << 62, step: step);
+    final one = int.parse('1');
+    final step = one << 61;
+    final bound = one << 62;
+    final pos = IntegerRange.of(start: -bound, end: bound, step: step);
     check(pos.length).equals(4);
-    check(pos).deepEquals([-(1 << 62), -(1 << 61), 0, 1 << 61]);
-    const neg = IntegerRange.of(start: 1 << 62, end: -(1 << 62), step: -step);
+    check(pos).deepEquals([-bound, -step, 0, step]);
+    final neg = IntegerRange.of(start: bound, end: -bound, step: -step);
     check(neg.length).equals(4);
-    check(neg).deepEquals([1 << 62, 1 << 61, 0, -(1 << 61)]);
+    check(neg).deepEquals([bound, step, 0, -step]);
     final minInt = int.parse('-9223372036854775808');
-    check(IntegerRange.of(start: minInt, end: 1, step: 1 << 62)).length
-        .equals(3);
+    check(IntegerRange.of(start: minInt, end: 1, step: bound)).length.equals(3);
   }, testOn: '!js');
 }

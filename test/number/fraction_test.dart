@@ -675,7 +675,8 @@ void main() {
       test('round with minInt64 and large denominator', () {
         final minInt64 = int.parse('-9223372036854775808');
         check(Fraction(minInt64, 1).round()).equals(minInt64);
-        check(Fraction(minInt64, 3).round()).equals(-3074457345618258603);
+        check(Fraction(minInt64, 3).round())
+            .equals(int.parse('-3074457345618258603'));
         const largeDen = 1 << 62;
         check(Fraction((1 << 61) + 1, largeDen + 1).round()).equals(1);
         check(Fraction(-((1 << 61) + 1), largeDen + 1).round()).equals(-1);

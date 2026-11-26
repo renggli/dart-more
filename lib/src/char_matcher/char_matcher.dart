@@ -329,8 +329,10 @@ bool _insideSplitSurrogate(String sequence, int index) {
 }
 
 int _toCharCode(Object value, String name) {
-  if (value is int) return value;
-  if (value is num && value.isFinite) return value.truncate();
+  if (value is num) {
+    if (value.isFinite) return value.truncate();
+    throw ArgumentError.value(value, name, 'Invalid unicode character');
+  }
   final codePoint = value.toString().runes.singleOrNull;
   if (codePoint != null) return codePoint;
   throw ArgumentError.value(value, name, 'Invalid unicode character');

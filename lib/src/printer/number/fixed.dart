@@ -1,3 +1,4 @@
+import '../../feature/feature.dart';
 import '../builder.dart';
 import '../object/object.dart';
 import '../printer.dart';
@@ -130,7 +131,10 @@ class FixedNumberPrinter<T extends num> extends Printer<T> {
   }
 
   void _printNumOn(num value, StringBuffer buffer) {
-    if (value is int && accuracy == null) {
+    if (value is int &&
+        accuracy == null &&
+        value >= minSafeInteger &&
+        value <= maxSafeInteger) {
       _printIntegerDigitsOn(intDigits(value, base), buffer);
       if (precision > 0) {
         buffer.write(delimiter);
