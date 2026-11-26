@@ -16,5 +16,11 @@ extension ConvertToDurationExtension on Duration {
   double convertTo(
     TimeUnit unit, {
     UnitConversion conversion = casualConversion,
-  }) => inMicroseconds / conversion[unit]!;
+  }) {
+    final micros = conversion[unit];
+    if (micros == null) {
+      throw ArgumentError.value(unit, 'unit', 'Missing unit in conversion');
+    }
+    return inMicroseconds / micros;
+  }
 }

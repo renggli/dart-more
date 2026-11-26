@@ -76,5 +76,15 @@ void main() {
         duration.convertTo(TimeUnit.millennium, conversion: accurateConversion),
       ).isRelativeCloseTo(0.003912189903902791, epsilon);
     });
+    test('negative, zero, and missing unit', () {
+      check(const Duration(seconds: -90).convertTo(TimeUnit.minute))
+          .equals(-1.5);
+      check(Duration.zero.convertTo(TimeUnit.day)).equals(0.0);
+      check(
+        () => const Duration(
+          seconds: 1,
+        ).convertTo(TimeUnit.day, conversion: const {TimeUnit.second: 1000000}),
+      ).throws<ArgumentError>();
+    });
   });
 }

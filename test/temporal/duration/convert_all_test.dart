@@ -88,6 +88,28 @@ void main() {
         TimeUnit.microsecond: 21816000000,
       });
     });
+    test('negative, zero, empty units, and missing unit', () {
+      check(
+        const Duration(
+          hours: -25,
+          microseconds: -5,
+        ).convertToAll({TimeUnit.day, TimeUnit.hour}),
+      ).deepEquals({
+        TimeUnit.day: -1,
+        TimeUnit.hour: -1,
+        TimeUnit.microsecond: -5,
+      });
+      check(Duration.zero.convertToAll({TimeUnit.day}))
+          .deepEquals({TimeUnit.day: 0, TimeUnit.microsecond: 0});
+      check(const Duration(seconds: 5).convertToAll({}))
+          .deepEquals({TimeUnit.microsecond: 5000000});
+      check(
+        () => const Duration(seconds: 1).convertToAll(
+          {TimeUnit.day},
+          conversion: const {TimeUnit.second: 1000000},
+        ),
+      ).throws<ArgumentError>();
+    });
     test('large duration precision', () {
       final micros = int.parse('9007199254740993'); // 2^53 + 1
       final duration = Duration(microseconds: micros);

@@ -123,6 +123,27 @@ void main() {
         DateTime(1980, DateTime.june, 11, 12, 34, 56, 78, 92),
       ]);
     });
+    test('negative step and custom step', () {
+      check(date.periodical(TimeUnit.day, step: -2).take(3)).deepEquals([
+        DateTime(1980, DateTime.june, 11, 12, 34, 56, 78, 90),
+        DateTime(1980, DateTime.june, 9, 12, 34, 56, 78, 90),
+        DateTime(1980, DateTime.june, 7, 12, 34, 56, 78, 90),
+      ]);
+      check(date.periodical(TimeUnit.hour, step: -1).take(3)).deepEquals([
+        DateTime(1980, DateTime.june, 11, 12, 34, 56, 78, 90),
+        DateTime(1980, DateTime.june, 11, 11, 34, 56, 78, 90),
+        DateTime(1980, DateTime.june, 11, 10, 34, 56, 78, 90),
+      ]);
+      // Leap day stays aligned to Feb 29 on next leap year
+      check(DateTime(2024, 2, 29).periodical(TimeUnit.year).take(5))
+          .deepEquals([
+            DateTime(2024, 2, 29),
+            DateTime(2025, 3, 1),
+            DateTime(2026, 3, 1),
+            DateTime(2027, 3, 1),
+            DateTime(2028, 2, 29),
+          ]);
+    });
     test('invalid step', () {
       check(() => date.periodical(TimeUnit.day, step: 0))
           .throws<ArgumentError>();

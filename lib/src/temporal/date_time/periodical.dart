@@ -120,101 +120,94 @@ extension PeriodicalDateTimeExtension on DateTime {
           ),
         );
       case TimeUnit.week:
-        return iterate(
-          this,
-          (prev) => create(
-            prev.year,
-            prev.month,
-            prev.day + 7 * step,
-            prev.hour,
-            prev.minute,
-            prev.second,
-            prev.millisecond,
-            prev.microsecond,
+        return iterate(0, (i) => i + 1).map(
+          (i) => create(
+            year,
+            month,
+            day + 7 * step * i,
+            hour,
+            minute,
+            second,
+            millisecond,
+            microsecond,
           ),
         );
       case TimeUnit.day:
-        return iterate(
-          this,
-          (prev) => create(
-            prev.year,
-            prev.month,
-            prev.day + step,
-            prev.hour,
-            prev.minute,
-            prev.second,
-            prev.millisecond,
-            prev.microsecond,
+        return iterate(0, (i) => i + 1).map(
+          (i) => create(
+            year,
+            month,
+            day + step * i,
+            hour,
+            minute,
+            second,
+            millisecond,
+            microsecond,
           ),
         );
       case TimeUnit.hour:
-        return iterate(
-          this,
-          (prev) => create(
-            prev.year,
-            prev.month,
-            prev.day,
-            prev.hour + step,
-            prev.minute,
-            prev.second,
-            prev.millisecond,
-            prev.microsecond,
+        return iterate(0, (i) => i + 1).map(
+          (i) => create(
+            year,
+            month,
+            day,
+            hour + step * i,
+            minute,
+            second,
+            millisecond,
+            microsecond,
           ),
         );
       case TimeUnit.minute:
-        return iterate(
-          this,
-          (prev) => create(
-            prev.year,
-            prev.month,
-            prev.day,
-            prev.hour,
-            prev.minute + step,
-            prev.second,
-            prev.millisecond,
-            prev.microsecond,
+        return iterate(0, (i) => i + 1).map(
+          (i) => create(
+            year,
+            month,
+            day,
+            hour,
+            minute + step * i,
+            second,
+            millisecond,
+            microsecond,
           ),
         );
       case TimeUnit.second:
-        return iterate(
-          this,
-          (prev) => create(
-            prev.year,
-            prev.month,
-            prev.day,
-            prev.hour,
-            prev.minute,
-            prev.second + step,
-            prev.millisecond,
-            prev.microsecond,
+        return iterate(0, (i) => i + 1).map(
+          (i) => create(
+            year,
+            month,
+            day,
+            hour,
+            minute,
+            second + step * i,
+            millisecond,
+            microsecond,
           ),
         );
       case TimeUnit.millisecond:
-        return iterate(
-          this,
-          (prev) => create(
-            prev.year,
-            prev.month,
-            prev.day,
-            prev.hour,
-            prev.minute,
-            prev.second,
-            prev.millisecond + step,
-            prev.microsecond,
+        return iterate(0, (i) => i + 1).map(
+          (i) => create(
+            year,
+            month,
+            day,
+            hour,
+            minute,
+            second,
+            millisecond + step * i,
+            microsecond,
           ),
         );
       case TimeUnit.microsecond:
-        return iterate(
-          this,
-          (prev) => create(
-            prev.year,
-            prev.month,
-            prev.day,
-            prev.hour,
-            prev.minute,
-            prev.second,
-            prev.millisecond,
-            prev.microsecond + step,
+        return iterate(0, (i) => i + 1).map(
+          (i) => create(
+            year,
+            month,
+            day,
+            hour,
+            minute,
+            second,
+            millisecond,
+            microsecond + step * i,
           ),
         );
     }

@@ -13,11 +13,11 @@ extension AccessorsDateTimeExtension on DateTime {
 
   /// The number of weeks in this year (`52` or `53`).
   int get weeksInYear {
-    // A year has 53 weeks if December 28 is a Thursday (4), or if it is a leap
-    // year and December 28 is a Wednesday (3).
-    final dec28 = DateTime(year, DateTime.december, 28);
-    return dec28.weekday == DateTime.thursday ||
-            (isLeapYear && dec28.weekday == DateTime.wednesday)
+    // A year has 53 ISO weeks if January 1 is a Thursday, or if it is a leap
+    // year and January 1 is a Wednesday.
+    final jan1 = DateTime.utc(year, DateTime.january, 1);
+    return jan1.weekday == DateTime.thursday ||
+            (isLeapYear && jan1.weekday == DateTime.wednesday)
         ? 53
         : 52;
   }
@@ -44,7 +44,7 @@ extension AccessorsDateTimeExtension on DateTime {
     var weekNumber = (dayOfYear - weekday + 10) ~/ 7;
     if (weekNumber < 1) {
       weekYear--;
-      weekNumber = DateTime(weekYear).weeksInYear;
+      weekNumber = DateTime.utc(weekYear).weeksInYear;
     } else if (weekNumber > weeksInYear) {
       weekYear++;
       weekNumber = 1;

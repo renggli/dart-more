@@ -28,7 +28,10 @@ extension ConvertToAllDurationExtension on Duration {
             ? remainderDouble.truncate()
             : remainderInt;
       } else if (units.contains(unit)) {
-        final micros = conversion[unit]!;
+        final micros = conversion[unit];
+        if (micros == null) {
+          throw ArgumentError.value(unit, 'unit', 'Missing unit in conversion');
+        }
         if (micros is int && remainderDouble == null) {
           final value = remainderInt ~/ micros;
           remainderInt -= value * micros;

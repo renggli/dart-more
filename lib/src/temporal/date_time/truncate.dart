@@ -31,22 +31,21 @@ extension TruncateToDateTimeExtension on DateTime {
       case TimeUnit.hour:
         return create(year, month, day, hour);
       case TimeUnit.minute:
-        return create(year, month, day, hour, minute);
-      case TimeUnit.second:
-        return create(year, month, day, hour, minute, second);
-      case TimeUnit.millisecond:
-        return create(year, month, day, hour, minute, second, millisecond);
-      case TimeUnit.microsecond:
-        return create(
-          year,
-          month,
-          day,
-          hour,
-          minute,
-          second,
-          millisecond,
-          microsecond,
+        return subtract(
+          Duration(
+            seconds: second,
+            milliseconds: millisecond,
+            microseconds: microsecond,
+          ),
         );
+      case TimeUnit.second:
+        return subtract(
+          Duration(milliseconds: millisecond, microseconds: microsecond),
+        );
+      case TimeUnit.millisecond:
+        return subtract(Duration(microseconds: microsecond));
+      case TimeUnit.microsecond:
+        return this;
     }
   }
 }
