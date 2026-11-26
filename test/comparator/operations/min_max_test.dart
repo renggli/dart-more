@@ -26,6 +26,17 @@ void main() {
       check(naturalInt.minOf([3, 2, 1])).equals(1);
     });
 
+    test('tie-breaking', () {
+      final comparator = naturalInt.keyOf<({int key, String id})>((e) => e.key);
+      const a = (key: 1, id: 'a');
+      const b = (key: 1, id: 'b');
+      check(comparator.min(a, b)).identicalTo(b);
+      check(comparator.max(a, b)).identicalTo(b);
+      check(comparator.minOf([a, b])).identicalTo(b);
+      check(comparator.maxOf([a, b])).identicalTo(b);
+      check(comparator.minMaxOf([a, b])).equals((min: b, max: b));
+    });
+
     test('minOf orElse', () {
       check(naturalInt.minOf([], orElse: () => -1)).equals(-1);
       check(naturalInt.minOf([1], orElse: () => -1)).equals(1);

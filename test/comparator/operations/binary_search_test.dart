@@ -34,116 +34,145 @@ void _binarySearchTests<T>(
 }
 
 void main() {
-  group('binarySearch', () {
-    _binarySearchTests(
-      'empty',
-      examples: [[], [], []],
-      values: [-5, 0, 5],
-      binarySearch: [-1, -1, -1],
-      binarySearchLower: [0, 0, 0],
-      binarySearchUpper: [0, 0, 0],
-    );
-    _binarySearchTests(
-      'simple present',
-      examples: [
-        [5],
-        [1, 5, 6],
-        [1, 2, 5, 6, 7],
-        [1, 2, 3, 5, 6, 7, 8],
-        [1, 2, 3, 4, 5, 6, 7, 8, 9],
-      ],
-      values: [5, 5, 5, 5, 5],
-      binarySearch: [0, 1, 2, 3, 4],
-      binarySearchLower: [0, 1, 2, 3, 4],
-      binarySearchUpper: [1, 2, 3, 4, 5],
-    );
-    _binarySearchTests(
-      'simple absent',
-      examples: [
-        [1, 6],
-        [1, 2, 6, 7],
-        [1, 2, 3, 6, 7, 8],
-        [1, 2, 3, 4, 6, 7, 8, 9],
-      ],
-      values: [5, 5, 5, 5],
-      binarySearch: [-1, -1, -1, -1],
-      binarySearchLower: [1, 2, 3, 4],
-      binarySearchUpper: [1, 2, 3, 4],
-    );
-    _binarySearchTests(
-      'right most present',
-      examples: [
-        [5],
-        [1, 5],
-        [1, 2, 5],
-        [1, 2, 3, 5],
-        [1, 2, 3, 4, 5],
-      ],
-      values: [5, 5, 5, 5, 5],
-      binarySearch: [0, 1, 2, 3, 4],
-      binarySearchLower: [0, 1, 2, 3, 4],
-      binarySearchUpper: [1, 2, 3, 4, 5],
-    );
-    _binarySearchTests(
-      'right most absent',
-      examples: [
-        [1],
-        [1, 2],
-        [1, 2, 3],
-        [1, 2, 3, 4],
-      ],
-      values: [5, 5, 5, 5],
-      binarySearch: [-1, -1, -1, -1],
-      binarySearchLower: [1, 2, 3, 4],
-      binarySearchUpper: [1, 2, 3, 4],
-    );
-    _binarySearchTests(
-      'left most present',
-      examples: [
-        [5],
-        [5, 6],
-        [5, 6, 7],
-        [5, 6, 7, 8],
-        [5, 6, 7, 8, 9],
-      ],
-      values: [5, 5, 5, 5, 5],
-      binarySearch: [0, 0, 0, 0, 0],
-      binarySearchLower: [0, 0, 0, 0, 0],
-      binarySearchUpper: [1, 1, 1, 1, 1],
-    );
-    _binarySearchTests(
-      'left most absent',
-      examples: [
-        [6],
-        [6, 7],
-        [6, 7, 8],
-        [6, 7, 8, 9],
-      ],
-      values: [5, 5, 5, 5],
-      binarySearch: [-1, -1, -1, -1],
-      binarySearchLower: [0, 0, 0, 0],
-      binarySearchUpper: [0, 0, 0, 0],
-    );
-    _binarySearchTests(
-      'binarySearch repeated',
-      examples: [
-        [1, 5, 9],
-        [1, 5, 5, 9],
-        [1, 5, 5, 5, 9],
-        [1, 5, 5, 5, 5, 9],
-        [1, 5, 5, 5, 5, 5, 9],
-      ],
-      values: [5, 5, 5, 5, 5],
-      binarySearch: [1, 2, 2, 3, 3],
-      binarySearchLower: [1, 1, 1, 1, 1],
-      binarySearchUpper: [2, 3, 4, 5, 6],
-    );
+  _binarySearchTests(
+    'empty',
+    examples: [[], [], []],
+    values: [-5, 0, 5],
+    binarySearch: [-1, -1, -1],
+    binarySearchLower: [0, 0, 0],
+    binarySearchUpper: [0, 0, 0],
+  );
+  _binarySearchTests(
+    'simple present',
+    examples: [
+      [5],
+      [1, 5, 6],
+      [1, 2, 5, 6, 7],
+      [1, 2, 3, 5, 6, 7, 8],
+      [1, 2, 3, 4, 5, 6, 7, 8, 9],
+    ],
+    values: [5, 5, 5, 5, 5],
+    binarySearch: [0, 1, 2, 3, 4],
+    binarySearchLower: [0, 1, 2, 3, 4],
+    binarySearchUpper: [1, 2, 3, 4, 5],
+  );
+  _binarySearchTests(
+    'simple absent',
+    examples: [
+      [1, 6],
+      [1, 2, 6, 7],
+      [1, 2, 3, 6, 7, 8],
+      [1, 2, 3, 4, 6, 7, 8, 9],
+    ],
+    values: [5, 5, 5, 5],
+    binarySearch: [-1, -1, -1, -1],
+    binarySearchLower: [1, 2, 3, 4],
+    binarySearchUpper: [1, 2, 3, 4],
+  );
+  _binarySearchTests(
+    'right most present',
+    examples: [
+      [5],
+      [1, 5],
+      [1, 2, 5],
+      [1, 2, 3, 5],
+      [1, 2, 3, 4, 5],
+    ],
+    values: [5, 5, 5, 5, 5],
+    binarySearch: [0, 1, 2, 3, 4],
+    binarySearchLower: [0, 1, 2, 3, 4],
+    binarySearchUpper: [1, 2, 3, 4, 5],
+  );
+  _binarySearchTests(
+    'right most absent',
+    examples: [
+      [1],
+      [1, 2],
+      [1, 2, 3],
+      [1, 2, 3, 4],
+    ],
+    values: [5, 5, 5, 5],
+    binarySearch: [-1, -1, -1, -1],
+    binarySearchLower: [1, 2, 3, 4],
+    binarySearchUpper: [1, 2, 3, 4],
+  );
+  _binarySearchTests(
+    'left most present',
+    examples: [
+      [5],
+      [5, 6],
+      [5, 6, 7],
+      [5, 6, 7, 8],
+      [5, 6, 7, 8, 9],
+    ],
+    values: [5, 5, 5, 5, 5],
+    binarySearch: [0, 0, 0, 0, 0],
+    binarySearchLower: [0, 0, 0, 0, 0],
+    binarySearchUpper: [1, 1, 1, 1, 1],
+  );
+  _binarySearchTests(
+    'left most absent',
+    examples: [
+      [6],
+      [6, 7],
+      [6, 7, 8],
+      [6, 7, 8, 9],
+    ],
+    values: [5, 5, 5, 5],
+    binarySearch: [-1, -1, -1, -1],
+    binarySearchLower: [0, 0, 0, 0],
+    binarySearchUpper: [0, 0, 0, 0],
+  );
+  _binarySearchTests(
+    'binarySearch repeated',
+    examples: [
+      [1, 5, 9],
+      [1, 5, 5, 9],
+      [1, 5, 5, 5, 9],
+      [1, 5, 5, 5, 5, 9],
+      [1, 5, 5, 5, 5, 5, 9],
+    ],
+    values: [5, 5, 5, 5, 5],
+    binarySearch: [1, 2, 2, 3, 3],
+    binarySearchLower: [1, 1, 1, 1, 1],
+    binarySearchUpper: [2, 3, 4, 5, 6],
+  );
 
-    test('binarySearch with range', () {
-      final list = [1, 3, 5, 7, 9];
-      check(naturalCompare.binarySearch(list, 5, start: 1, end: 4)).equals(2);
-      check(naturalCompare.binarySearch(list, 1, start: 1, end: 4)).equals(-1);
-      check(naturalCompare.binarySearch(list, 9, start: 1, end: 4)).equals(-1);
+  group('range', () {
+    final list = [1, 3, 5, 5, 7, 9];
+    test('binarySearch', () {
+      check(naturalCompare.binarySearch(list, 5, start: 1, end: 5)).equals(3);
+      check(naturalCompare.binarySearch(list, 1, start: 1, end: 5)).equals(-1);
+      check(naturalCompare.binarySearch(list, 9, start: 1, end: 5)).equals(-1);
+    });
+    test('binarySearchLower', () {
+      check(naturalCompare.binarySearchLower(list, 5, start: 1, end: 5))
+          .equals(2);
+      check(naturalCompare.binarySearchLower(list, 1, start: 1, end: 5))
+          .equals(1);
+      check(naturalCompare.binarySearchLower(list, 9, start: 1, end: 5))
+          .equals(5);
+    });
+    test('binarySearchUpper', () {
+      check(naturalCompare.binarySearchUpper(list, 5, start: 1, end: 5))
+          .equals(4);
+      check(naturalCompare.binarySearchUpper(list, 1, start: 1, end: 5))
+          .equals(1);
+      check(naturalCompare.binarySearchUpper(list, 9, start: 1, end: 5))
+          .equals(5);
+    });
+    test('invalid range', () {
+      for (final search in [
+        naturalCompare.binarySearch,
+        naturalCompare.binarySearchLower,
+        naturalCompare.binarySearchUpper,
+      ]) {
+        check(() => search(list, 5, start: -1)).throws<RangeError>();
+        check(() => search(list, 5, end: 7)).throws<RangeError>();
+        check(() => search(list, 5, start: 4, end: 2)).throws<RangeError>();
+        check(() => search(list, 5, start: -1, end: -1)).throws<RangeError>();
+        check(() => search(list, 5, start: 10, end: 10)).throws<RangeError>();
+      }
     });
   });
 }

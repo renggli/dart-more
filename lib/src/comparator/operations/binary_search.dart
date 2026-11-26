@@ -8,15 +8,15 @@ extension SearchComparator<T> on Comparator<T> {
   /// supplied, only that range is searched.
   int binarySearch(List<T> list, T value, {int? start, int? end}) {
     var min = start ??= 0;
-    var max = end ??= list.length;
+    var max = end = RangeError.checkValidRange(min, end, list.length);
     while (min < max) {
       final mid = min + ((max - min) >> 1);
       final comp = this(list[mid], value);
       if (comp == 0) {
         assert(
-          start <= mid && mid <= end,
+          start <= mid && mid < end,
           // Only evaluated on assertion failure.
-          'Index $mid not in inclusive range $start..$end', // coverage:ignore-line
+          'Index $mid not in range $start..$end', // coverage:ignore-line
         );
         return mid;
       } else if (comp < 0) {
@@ -37,7 +37,7 @@ extension SearchComparator<T> on Comparator<T> {
   /// are supplied, only that range is searched.
   int binarySearchLower(List<T> list, T value, {int? start, int? end}) {
     var min = start ??= 0;
-    var max = end ??= list.length;
+    var max = end = RangeError.checkValidRange(min, end, list.length);
     while (min < max) {
       final mid = min + ((max - min) >> 1);
       if (this(list[mid], value) < 0) {
@@ -63,7 +63,7 @@ extension SearchComparator<T> on Comparator<T> {
   /// are supplied, only that range is searched.
   int binarySearchUpper(List<T> list, T value, {int? start, int? end}) {
     var min = start ??= 0;
-    var max = end ??= list.length;
+    var max = end = RangeError.checkValidRange(min, end, list.length);
     while (min < max) {
       final mid = min + ((max - min) >> 1);
       if (this(list[mid], value) <= 0) {
