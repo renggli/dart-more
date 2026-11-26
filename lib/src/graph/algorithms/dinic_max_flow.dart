@@ -40,6 +40,11 @@ class DinicMaxFlow<V> {
     for (final source in _vertices) {
       for (final originalTarget in successorsOf(source.vertex)) {
         final capacity = edgeCapacity(source.vertex, originalTarget);
+        GraphError.checkPositiveEdgeValue(
+          source.vertex,
+          originalTarget,
+          capacity,
+        );
         final target = _mapping[originalTarget]!;
         if (0 < capacity) {
           final outgoing = _Edge<V>(source, target, capacity: capacity);
@@ -86,11 +91,11 @@ class DinicMaxFlow<V> {
   }
 
   num _maxFlow(_Vertex<V> source, _Vertex<V> target) {
-    if (source == target) return 0;
-    num flow = 0;
     for (final edge in _edges) {
       edge.flow = 0;
     }
+    if (source == target) return 0;
+    num flow = 0;
     while (true) {
       if (!_bfs(source, target)) break;
       for (final vertex in _vertices) {
@@ -100,6 +105,7 @@ class DinicMaxFlow<V> {
         final pushed = _dfs(source, target);
         if (pushed == 0) break;
         flow += pushed;
+        if (flow.isInfinite) return flow;
       }
     }
     return flow;
@@ -114,7 +120,7 @@ class DinicMaxFlow<V> {
     while (_queue.isNotEmpty) {
       final source = _queue.removeFirst();
       for (final edge in source.outgoing) {
-        if (edge.residual <= 0) continue;
+        if (!(edge.residual > 0)) continue;
         if (edge.target.level != -1) continue;
         edge.target.level = source.level + 1;
         _queue.addLast(edge.target);
@@ -147,8 +153,14 @@ class DinicMaxFlow<V> {
     }
     final pushed = path.map((edge) => edge.residual).reduce(math.min);
     for (final edge in path) {
-      edge.flow += pushed;
-      edge.reverse.flow -= pushed;
+      if (pushed.isInfinite) {
+        edge.flow = double.infinity;
+      } else {
+        edge.flow += pushed;
+        if (!edge.reverse.capacity.isInfinite) {
+          edge.reverse.flow -= pushed;
+        }
+      }
     }
     return pushed;
   }

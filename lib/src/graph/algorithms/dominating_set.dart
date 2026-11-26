@@ -12,11 +12,12 @@ Set<V> dominatingSet<V>({
   StorageStrategy<V>? vertexStrategy,
 }) {
   vertexStrategy ??= StorageStrategy.defaultStrategy();
-  final uncovered = vertexStrategy.createSet()..addAll(vertices);
+  final vertexList = vertices.toList(growable: false);
+  final uncovered = vertexStrategy.createSet()..addAll(vertexList);
   final dominating = vertexStrategy.createSet();
 
   final closedNeighbors = vertexStrategy.createMap<Set<V>>();
-  for (final v in vertices) {
+  for (final v in vertexList) {
     final cn = vertexStrategy.createSet()..add(v);
     cn.addAll(neighboursOf(v));
     closedNeighbors[v] = cn;
@@ -26,7 +27,7 @@ Set<V> dominatingSet<V>({
     V? bestVertex;
     var maxCoverage = -1;
 
-    for (final v in vertices) {
+    for (final v in vertexList) {
       final cn = closedNeighbors[v]!;
       var coverage = 0;
       for (final u in cn) {

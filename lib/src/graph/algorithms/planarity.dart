@@ -352,20 +352,26 @@ bool _addConstraints(
       return false;
     }
     // Merge interval below lowpt(ei) into p.right
-    if (p.right.low != null) {
-      ref[p.right.low!] = q.right.high;
-    }
-    if (q.right.low != null) {
-      p.right.low = q.right.low;
-    }
-    if (p.left.isEmpty) {
-      p.left = q.left.copy();
-    } else {
-      if (p.left.low != null) {
-        ref[p.left.low!] = q.left.high;
+    if (!q.right.isEmpty) {
+      if (p.right.isEmpty) {
+        p.right = q.right.copy();
+      } else {
+        if (p.right.low != null) {
+          ref[p.right.low!] = q.right.high;
+        }
+        p.right.low = q.right.low;
       }
     }
-    p.left.low = q.left.low;
+    if (!q.left.isEmpty) {
+      if (p.left.isEmpty) {
+        p.left = q.left.copy();
+      } else {
+        if (p.left.low != null) {
+          ref[p.left.low!] = q.left.high;
+        }
+        p.left.low = q.left.low;
+      }
+    }
   }
 
   if (!p.left.isEmpty || !p.right.isEmpty) {

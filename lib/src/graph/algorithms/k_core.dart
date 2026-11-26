@@ -20,10 +20,11 @@ Map<V, int> coreNumbers<V>({
   final degrees = vertexStrategy.createMap<int>();
   var maxDeg = 0;
   for (final v in vertexList) {
-    var deg = 0;
+    final seen = vertexStrategy.createSet();
     for (final u in neighboursOf(v)) {
-      if (u != v) deg++;
+      if (!vertexStrategy.equals(u, v)) seen.add(u);
     }
+    final deg = seen.length;
     degrees[v] = deg;
     if (deg > maxDeg) maxDeg = deg;
   }
@@ -44,10 +45,13 @@ Map<V, int> coreNumbers<V>({
       bins[d].remove(v);
       result[v] = d;
 
+      final seen = vertexStrategy.createSet();
       for (final u in neighboursOf(v)) {
-        if (u != v && !result.containsKey(u)) {
-          final degU = degrees[u]!;
-          if (degU > d) {
+        if (!vertexStrategy.equals(u, v) &&
+            seen.add(u) &&
+            !result.containsKey(u)) {
+          final degU = degrees[u];
+          if (degU != null && degU > d) {
             bins[degU].remove(u);
             final newDegU = degU - 1;
             degrees[u] = newDegU;

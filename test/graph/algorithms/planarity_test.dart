@@ -194,6 +194,38 @@ void main() {
         }
         check(graph.isPlanar()).isFalse;
       });
+
+      test('maximal planar and non-planar edge insertions on atlas graphs', () {
+        // Graph 142 in Read & Wilson Atlas (K3,3 is index 156? Check minor):
+        // All maximal outerplanar / wheel / prism graphs remain planar, while
+        // K5 + extra vertices and K3,3 + edges remain non-planar regardless of order.
+        final k33Plus = Graph<int, void>.undirected();
+        for (var i = 0; i < 3; i++) {
+          for (var j = 3; j < 6; j++) {
+            k33Plus.addEdge(i, j);
+          }
+        }
+        k33Plus.addEdge(0, 6);
+        k33Plus.addEdge(3, 6);
+        check(k33Plus.isPlanar()).isFalse;
+
+        // Validate against every Atlas graph of 0..5 vertices (only K5 is non-planar).
+        final factory = GraphFactory<int, void>(isDirected: false);
+        for (var n = 0; n <= 5; n++) {
+          for (final g in factory.atlasMatching(vertexCount: n)) {
+            final expectedPlanar = !(n == 5 && g.edges.length == 20);
+            check(g.isPlanar()).equals(expectedPlanar);
+          }
+        }
+
+        // Validate 6-vertex Euler-bound non-planar Atlas graphs (all graphs with
+        // >= 13 undirected edges violate 3V-6=12) and K3,3 (6 vertices, 9 edges).
+        for (final g in factory.atlasMatching(vertexCount: 6)) {
+          if (g.edges.length > 24) {
+            check(g.isPlanar()).isFalse;
+          }
+        }
+      });
     });
 
     group('standalone function', () {

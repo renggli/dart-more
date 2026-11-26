@@ -74,7 +74,10 @@ Map<V, double> pageRank<V>({
     for (final v in vertexList) {
       var incomingSum = 0.0;
       for (final u in predecessorMap[v]!) {
-        incomingSum += rank[u]! / outDegrees[u]!;
+        final outDeg = outDegrees[u] ?? 0;
+        if (outDeg > 0) {
+          incomingSum += (rank[u] ?? 0.0) / outDeg;
+        }
       }
       final newScore = base + danglingContribution + damping * incomingSum;
       nextRank[v] = newScore;

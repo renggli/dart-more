@@ -135,6 +135,11 @@ void main() {
         ..addEdge(1, 2);
       // 1-2 is a bridge
       check(graph.bridges().length).equals(1);
+
+      final selfLoopOnly = Graph<int, void>(isDirected: false)..addEdge(7, 7);
+      final components = selfLoopOnly.biconnectedComponents().toList();
+      check(components.length).equals(1);
+      check(components.single.vertices).deepEquals([7]);
     });
 
     test('root vertex with multiple DFS children is articulation point', () {

@@ -135,5 +135,15 @@ void main() {
         );
       });
     });
+    test('NaN edge cost throws GraphError', () {
+      final graph = Graph<int, num>(isDirected: true)..addEdge(0, 1, value: 1);
+      final search = bellmanFordSearch<int>(
+        startVertices: [0],
+        targetPredicate: (v) => v == 1,
+        successorsOf: graph.successorsOf,
+        edgeCost: (_, _) => double.nan,
+      );
+      check(() => search.first).throws<GraphError>();
+    });
   });
 }

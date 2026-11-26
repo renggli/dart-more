@@ -238,5 +238,38 @@ void main() {
       check(() => graph.shortestPath(0, 2, hasNegativeEdges: true))
           .throws<GraphError>();
     });
+    test('closenessCentrality', () {
+      final p3 = Graph<int, void>(isDirected: false)
+        ..addEdge(0, 1)
+        ..addEdge(1, 2);
+      final cc = p3.closenessCentrality();
+      check(cc[1]).equals(1.0);
+      check(cc[0]!).isCloseTo(2 / 3, 1e-6);
+      check(cc[2]!).isCloseTo(2 / 3, 1e-6);
+
+      final disconnected = Graph<int, void>(isDirected: false)
+        ..addEdge(0, 1)
+        ..addVertex(2);
+      final dc = disconnected.closenessCentrality();
+      check(dc[2]).equals(0.0);
+      check(dc[0]).equals(0.5);
+    });
+    test('distance and extremities on path and ring graphs', () {
+      final path = GraphFactory<int, void>(isDirected: false)
+          .path(vertexCount: 5);
+      check(path.diameter()).equals(4);
+      check(path.radius()).equals(2);
+      check(path.center()).deepEquals({2});
+      check(path.periphery()).deepEquals({0, 4});
+      check(path.eccentricity(2)).equals(2);
+      check(path.eccentricity(0)).equals(4);
+
+      final ring = GraphFactory<int, void>(isDirected: false)
+          .ring(vertexCount: 4);
+      check(ring.diameter()).equals(2);
+      check(ring.radius()).equals(2);
+      check(ring.center()).deepEquals({0, 1, 2, 3});
+      check(ring.periphery()).deepEquals({0, 1, 2, 3});
+    });
   });
 }

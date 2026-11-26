@@ -66,7 +66,8 @@ extension AlgorithmsGraphExtension<V, E> on Graph<V, E> {
     StorageStrategy<V>? vertexStrategy,
   }) => shortestPathAll(
     source,
-    targetPredicate: (vertex) => target == vertex,
+    targetPredicate: (vertex) =>
+        (vertexStrategy ?? this.vertexStrategy).equals(target, vertex),
     edgeCost: edgeCost ?? getDefaultEdgeValueOr(1),
     costEstimate: costEstimate,
     includeAlternativePaths: includeAlternativePaths,
@@ -946,7 +947,9 @@ extension AlgorithmsGraphExtension<V, E> on Graph<V, E> {
     final cost =
         edgeCost ??
         (source, target) {
-          final val = getEdge(source, target)?.value;
+          final edge = getEdge(source, target);
+          if (edge == null) return double.infinity;
+          final val = edge.value;
           return val is num ? val : 1;
         };
     return tsp.tspHeuristic<V>(

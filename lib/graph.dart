@@ -8,7 +8,8 @@ export 'src/graph/algorithms/betweenness_centrality.dart'
     show betweennessCentrality;
 export 'src/graph/algorithms/biconnected.dart'
     show articulationPoints, biconnectedComponents, bridges;
-export 'src/graph/algorithms/bipartite_check.dart' show isBipartite;
+export 'src/graph/algorithms/bipartite_check.dart'
+    show bipartiteColoring, isBipartite;
 export 'src/graph/algorithms/bipartite_matching.dart'
     show bipartiteMatching, weightedBipartiteMatching;
 export 'src/graph/algorithms/blossom_matching.dart' show maximumMatching;
@@ -20,14 +21,17 @@ export 'src/graph/algorithms/connectivity.dart'
     show edgeConnectivity, vertexConnectivity;
 export 'src/graph/algorithms/cycle_check.dart' show hasCycle;
 export 'src/graph/algorithms/dinic_max_flow.dart' show DinicMaxFlow;
+export 'src/graph/algorithms/dominating_set.dart' show dominatingSet;
 export 'src/graph/algorithms/eigenvector_centrality.dart'
     show eigenvectorCentrality;
 export 'src/graph/algorithms/eulerian.dart'
     show findEulerianPath, hasEulerianCircuit, hasEulerianPath;
 export 'src/graph/algorithms/hamiltonian.dart'
     show findHamiltonianPath, hasHamiltonianCircuit, hasHamiltonianPath;
+export 'src/graph/algorithms/hits.dart' show hits;
 export 'src/graph/algorithms/isomorphism.dart' show findIsomorphisms;
 export 'src/graph/algorithms/k_core.dart' show coreNumbers, kCoreVertices;
+export 'src/graph/algorithms/katz_centrality.dart' show katzCentrality;
 export 'src/graph/algorithms/kruskal_spanning_tree.dart'
     show kruskalSpanningTree;
 export 'src/graph/algorithms/page_rank.dart' show pageRank;
@@ -49,6 +53,7 @@ export 'src/graph/algorithms/structural_metrics.dart'
         localClusteringCoefficient;
 export 'src/graph/algorithms/tarjan_strongly_connected.dart'
     show tarjanStronglyConnected;
+export 'src/graph/algorithms/tsp.dart' show tspHeuristic;
 export 'src/graph/algorithms/vertex_coloring.dart' show vertexColoring;
 export 'src/graph/algorithms/vertex_cover.dart'
     show
@@ -111,7 +116,7 @@ export 'src/graph/operations/map.dart' show MapGraphExtension;
 export 'src/graph/operations/mermaid.dart' show MermaidGraphExtension;
 export 'src/graph/operations/transitive.dart' show TransitiveGraphExtension;
 export 'src/graph/path.dart' show NumericPathExtension, Path;
-export 'src/graph/strategy.dart';
+export 'src/graph/strategy.dart' hide StorageStrategyExtension;
 export 'src/graph/traverse/breadth_first.dart'
     show BreadthFirstGraphExtension, BreadthFirstIterable;
 export 'src/graph/traverse/depth_first.dart'

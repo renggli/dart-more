@@ -20,9 +20,11 @@ Iterable<Path<V, num>> dijkstraSearch<V>({
   edgeCost = edgeCost ?? constantFunction2(1);
   vertexStrategy = vertexStrategy ?? StorageStrategy.defaultStrategy();
 
+  final startList = startVertices.toList(growable: false);
   final states = vertexStrategy.createMap<DijkstraState<V>>();
   final queue = PriorityQueue<DijkstraState<V>>(stateCompare);
-  for (final vertex in startVertices) {
+  for (final vertex in startList) {
+    if (states.containsKey(vertex)) continue;
     final state = DijkstraState<V>(vertex: vertex);
     states[vertex] = state;
     queue.add(state);
@@ -50,10 +52,15 @@ Iterable<Path<V, num>> dijkstraSearch<V>({
       if (includeAlternativePaths) {
         yield* createAllShortestPaths(
           sourceState,
-          startVertices: startVertices,
+          startVertices: startList,
+          vertexStrategy: vertexStrategy,
         );
       } else {
-        yield createShortestPath(sourceState, startVertices: startVertices);
+        yield createShortestPath(
+          sourceState,
+          startVertices: startList,
+          vertexStrategy: vertexStrategy,
+        );
       }
     }
   }

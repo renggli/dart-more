@@ -15,7 +15,8 @@ Iterable<Set<V>> bronKerboschCliques<V>(
   required StorageStrategy<V> vertexStrategy,
 }) sync* {
   Iterable<V> neighbours(V vertex) =>
-      neighboursOf(vertex).where((each) => each != vertex);
+      neighboursOf(vertex)
+          .where((each) => !vertexStrategy.equals(each, vertex));
   final stack = <({Set<V> all, Set<V> some, Set<V> none})>[];
   stack.add((
     all: vertexStrategy.createSet(), // R

@@ -34,7 +34,11 @@ Set<V> articulationPoints<V>({
       final u = frame.u;
       if (frame.iter.moveNext()) {
         final v = frame.iter.current;
-        if (v == u || v == frame.parent) continue;
+        if (vertexStrategy.equals(v, u) ||
+            (frame.parent != null &&
+                vertexStrategy.equals(v, frame.parent as V))) {
+          continue;
+        }
         if (disc.containsKey(v)) {
           // Back edge
           low[u] = min(low[u]!, disc[v]!);
@@ -104,8 +108,10 @@ Set<(V, V)> bridges<V>({
       final u = frame.u;
       if (frame.iter.moveNext()) {
         final v = frame.iter.current;
-        if (v == u) continue; // Ignore self-loops
-        if (v == frame.parent && !frame.parentEdgeSkipped) {
+        if (vertexStrategy.equals(v, u)) continue; // Ignore self-loops
+        if (frame.parent != null &&
+            vertexStrategy.equals(v, frame.parent as V) &&
+            !frame.parentEdgeSkipped) {
           callStack[callStack.length - 1] = (
             u: u,
             parent: frame.parent,
@@ -170,8 +176,10 @@ Iterable<BiconnectedComponent<V>> biconnectedComponents<V>({
       componentEdges.add(edge);
       componentVertices.add(edge.$1);
       componentVertices.add(edge.$2);
-      if ((edge.$1 == boundaryEdge.$1 && edge.$2 == boundaryEdge.$2) ||
-          (edge.$1 == boundaryEdge.$2 && edge.$2 == boundaryEdge.$1)) {
+      if ((vertexStrategy.equals(edge.$1, boundaryEdge.$1) &&
+              vertexStrategy.equals(edge.$2, boundaryEdge.$2)) ||
+          (vertexStrategy.equals(edge.$1, boundaryEdge.$2) &&
+              vertexStrategy.equals(edge.$2, boundaryEdge.$1))) {
         break;
       }
     }
@@ -191,6 +199,7 @@ Iterable<BiconnectedComponent<V>> biconnectedComponents<V>({
       >[];
   for (final v in vertices) {
     if (!disc.containsKey(v)) {
+      var hasComponent = false;
       disc[v] = low[v] = ++time;
       callStack.add((
         u: v,
@@ -204,7 +213,9 @@ Iterable<BiconnectedComponent<V>> biconnectedComponents<V>({
         final u = frame.u;
         if (frame.iter.moveNext()) {
           final w = frame.iter.current;
-          if (w == frame.parent && !frame.parentEdgeSkipped) {
+          if (frame.parent != null &&
+              vertexStrategy.equals(w, frame.parent as V) &&
+              !frame.parentEdgeSkipped) {
             callStack[callStack.length - 1] = (
               u: u,
               parent: frame.parent,
@@ -246,12 +257,14 @@ Iterable<BiconnectedComponent<V>> biconnectedComponents<V>({
             final pFrame = callStack.last;
             if ((pFrame.parent == null && pFrame.children > 1) ||
                 (pFrame.parent != null && low[u]! >= disc[p]!)) {
+              hasComponent = true;
               addComponent((p, u));
             }
           }
         }
       }
       if (stack.isNotEmpty) {
+        hasComponent = true;
         final componentEdges = <(V, V)>{};
         final componentVertices = vertexStrategy.createSet();
         while (stack.isNotEmpty) {
@@ -261,8 +274,8 @@ Iterable<BiconnectedComponent<V>> biconnectedComponents<V>({
           componentVertices.add(edge.$2);
         }
         components.add((vertices: componentVertices, edges: componentEdges));
-      } else if (neighboursOf(v).isEmpty) {
-        // Isolated vertex forms its own component
+      } else if (!hasComponent) {
+        // Isolated or self-loop-only vertex forms its own component.
         final componentVertices = vertexStrategy.createSet()..add(v);
         components.add((vertices: componentVertices, edges: <(V, V)>{}));
       }

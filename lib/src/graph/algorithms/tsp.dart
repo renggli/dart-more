@@ -1,4 +1,5 @@
 import '../edge.dart';
+import '../errors.dart';
 import '../path.dart';
 import '../strategy.dart';
 
@@ -16,9 +17,12 @@ Path<V, num>? tspHeuristic<V>({
   final n = vertList.length;
   if (n < 2) return null;
 
-  final start = startVertex ?? vertList.first;
   vertexStrategy ??= StorageStrategy.defaultStrategy();
   final unvisited = vertexStrategy.createSet()..addAll(vertList);
+  final start = startVertex ?? vertList.first;
+  if (startVertex != null && !unvisited.contains(startVertex)) {
+    throw GraphError(startVertex, 'startVertex', 'Unknown vertex');
+  }
   unvisited.remove(start);
 
   // 1. Nearest Neighbour Tour
@@ -56,10 +60,15 @@ Path<V, num>? tspHeuristic<V>({
         final c = tour[k];
         final d = tour[k + 1];
 
-        final currentDist = edgeCost(a, b) + edgeCost(c, d);
-        final newDist = edgeCost(a, c) + edgeCost(b, d);
+        var oldCost = edgeCost(a, b) + edgeCost(c, d);
+        var newCost = edgeCost(a, c) + edgeCost(b, d);
+        for (var m = i; m < k; m++) {
+          oldCost += edgeCost(tour[m], tour[m + 1]);
+          newCost += edgeCost(tour[m + 1], tour[m]);
+        }
 
-        if (newDist < currentDist) {
+        if (newCost < oldCost &&
+            (oldCost.isInfinite || newCost + 1e-9 < oldCost)) {
           tour.replaceRange(i, k + 1, tour.sublist(i, k + 1).reversed);
           improved = true;
         }

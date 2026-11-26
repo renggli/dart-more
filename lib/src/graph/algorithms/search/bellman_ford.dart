@@ -22,16 +22,17 @@ Iterable<Path<V, num>> bellmanFordSearch<V>({
   vertexStrategy = vertexStrategy ?? StorageStrategy.defaultStrategy();
 
   // Step 1: Initialize state.
+  final startList = startVertices.toList(growable: false);
   final states = vertexStrategy.createMap<BellmanFordState<V>>();
   final vertices = BreadthFirstIterable<V>(
-    startVertices,
+    startList,
     successorsOf: successorsOf,
     vertexStrategy: vertexStrategy,
   );
   for (final vertex in vertices) {
     states[vertex] = BellmanFordState<V>(vertex: vertex);
   }
-  for (final vertex in startVertices) {
+  for (final vertex in startList) {
     final state = states[vertex]!;
     state.total = 0;
   }
@@ -43,6 +44,9 @@ Iterable<Path<V, num>> bellmanFordSearch<V>({
       if (sourceState.total.isInfinite) continue;
       for (final target in successorsOf(sourceState.vertex)) {
         final value = edgeCost(sourceState.vertex, target);
+        if (value.isNaN) {
+          throw GraphError(value, 'edgeCost', 'Negative or invalid edge cost');
+        }
         final total = sourceState.total + value;
         final targetState = states[target]!;
         if (total < targetState.total) {
@@ -64,6 +68,9 @@ Iterable<Path<V, num>> bellmanFordSearch<V>({
     if (sourceState.total.isInfinite) continue;
     for (final target in successorsOf(sourceState.vertex)) {
       final value = edgeCost(sourceState.vertex, target);
+      if (value.isNaN) {
+        throw GraphError(value, 'edgeCost', 'Negative or invalid edge cost');
+      }
       final total = sourceState.total + value;
       final targetState = states[target]!;
       if (total < targetState.total) {
@@ -82,10 +89,15 @@ Iterable<Path<V, num>> bellmanFordSearch<V>({
       if (includeAlternativePaths) {
         yield* createAllShortestPaths(
           sourceState,
-          startVertices: startVertices,
+          startVertices: startList,
+          vertexStrategy: vertexStrategy,
         );
       } else {
-        yield createShortestPath(sourceState, startVertices: startVertices);
+        yield createShortestPath(
+          sourceState,
+          startVertices: startList,
+          vertexStrategy: vertexStrategy,
+        );
       }
     }
   }

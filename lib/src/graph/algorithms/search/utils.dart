@@ -2,6 +2,7 @@ import 'package:collection/collection.dart';
 import 'package:meta/meta.dart';
 
 import '../../path.dart';
+import '../../strategy.dart';
 
 /// Abstract helper for search algorithms to represent vertex specific state.
 abstract class SearchState<V, E> {
@@ -17,13 +18,17 @@ abstract class SearchState<V, E> {
 Path<V, E> createShortestPath<V, E>(
   SearchState<V, E> last, {
   Iterable<V> startVertices = const [],
+  StorageStrategy<V>? vertexStrategy,
 }) {
+  final startSet =
+      (vertexStrategy ?? StorageStrategy<V>.defaultStrategy()).createSet()
+        ..addAll(startVertices);
   final vertices = QueueList<V>();
   final values = QueueList<E>();
   SearchState<V, E>? state = last;
   while (state != null) {
     vertices.addFirst(state.vertex);
-    if (startVertices.contains(state.vertex)) break;
+    if (startSet.contains(state.vertex)) break;
     final pred = state.predecessors.firstOrNull;
     if (pred == null) break;
     values.addFirst(pred.$2);
@@ -36,13 +41,17 @@ Path<V, E> createShortestPath<V, E>(
 Iterable<Path<V, E>> createAllShortestPaths<V, E>(
   SearchState<V, E> state, {
   Iterable<V> startVertices = const [],
+  StorageStrategy<V>? vertexStrategy,
 }) sync* {
+  final startSet =
+      (vertexStrategy ?? StorageStrategy<V>.defaultStrategy()).createSet()
+        ..addAll(startVertices);
   final seen = {state};
   final stack = [(state: state, value: null as E?, index: 0)];
   var top = 0;
   while (top >= 0) {
     final (:state, :value, :index) = stack[top];
-    if (state.predecessors.isEmpty || startVertices.contains(state.vertex)) {
+    if (state.predecessors.isEmpty || startSet.contains(state.vertex)) {
       final list = stack.sublist(0, top + 1).reversed;
       yield Path<V, E>.fromVertices(
         list.map((step) => step.state.vertex),

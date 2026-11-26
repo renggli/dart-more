@@ -21,9 +21,11 @@ Iterable<Path<V, num>> aStarSearch<V>({
   edgeCost = edgeCost ?? constantFunction2(1);
   vertexStrategy = vertexStrategy ?? StorageStrategy.defaultStrategy();
 
+  final startList = startVertices.toList(growable: false);
   final states = vertexStrategy.createMap<AStarState<V>>();
   final queue = PriorityQueue<AStarState<V>>(stateCompare);
-  for (final vertex in startVertices) {
+  for (final vertex in startList) {
+    if (states.containsKey(vertex)) continue;
     final state = AStarState<V>(vertex: vertex, estimate: costEstimate(vertex));
     states[vertex] = state;
     queue.add(state);
@@ -56,10 +58,15 @@ Iterable<Path<V, num>> aStarSearch<V>({
       if (includeAlternativePaths) {
         yield* createAllShortestPaths(
           sourceState,
-          startVertices: startVertices,
+          startVertices: startList,
+          vertexStrategy: vertexStrategy,
         );
       } else {
-        yield createShortestPath(sourceState, startVertices: startVertices);
+        yield createShortestPath(
+          sourceState,
+          startVertices: startList,
+          vertexStrategy: vertexStrategy,
+        );
       }
     }
   }

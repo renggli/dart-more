@@ -31,7 +31,8 @@ Map<V, double> katzCentrality<V>({
 
   for (var iter = 0; iter < maxIterations; iter++) {
     final nextScores = vertexStrategy.createMap<double>();
-    var normSq = 0.0;
+    var diff = 0.0;
+    var finite = true;
 
     for (final v in vertList) {
       var sum = 0.0;
@@ -39,24 +40,29 @@ Map<V, double> katzCentrality<V>({
         sum += scores[u] ?? 0.0;
       }
       final val = alpha * sum + beta;
-      nextScores[v] = val;
-      normSq += val * val;
-    }
-
-    final norm = math.sqrt(normSq);
-    if (norm > 0) {
-      for (final v in vertList) {
-        nextScores[v] = nextScores[v]! / norm;
+      if (!val.isFinite) {
+        finite = false;
+        break;
       }
+      nextScores[v] = val;
+      diff += (val - (scores[v] ?? 0.0)).abs();
     }
 
-    var diff = 0.0;
-    for (final v in vertList) {
-      diff += (nextScores[v]! - (scores[v] ?? 0.0)).abs();
-    }
-
+    if (!finite) break;
     scores = nextScores;
     if (diff < tolerance) break;
+  }
+
+  var normSq = 0.0;
+  for (final v in vertList) {
+    final val = scores[v] ?? 0.0;
+    normSq += val * val;
+  }
+  final norm = math.sqrt(normSq);
+  if (norm > 0 && norm.isFinite) {
+    for (final v in vertList) {
+      scores[v] = scores[v]! / norm;
+    }
   }
 
   return scores;

@@ -63,10 +63,14 @@ Iterable<Map<VP, VT>> findIsomorphisms<VT, ET, VP, EP>({
         .map((w) => patternIndex[w]!)
         .toList(growable: false);
   });
-  final pPredecessors = List<List<int>>.generate(n1, (i) {
-    final v = pVerts[i];
-    return pPredOf(v).map((w) => patternIndex[w]!).toList(growable: false);
-  });
+  final pPredecessors = isDirected
+      ? List<List<int>>.generate(n1, (i) {
+          final v = pVerts[i];
+          return pPredOf(v)
+              .map((w) => patternIndex[w]!)
+              .toList(growable: false);
+        })
+      : pSuccessors;
 
   final tSuccessors = List<List<int>>.generate(n2, (i) {
     final v = tVerts[i];
@@ -74,10 +78,39 @@ Iterable<Map<VP, VT>> findIsomorphisms<VT, ET, VP, EP>({
         .map((w) => targetIndex[w]!)
         .toList(growable: false);
   });
-  final tPredecessors = List<List<int>>.generate(n2, (i) {
-    final v = tVerts[i];
-    return tPredOf(v).map((w) => targetIndex[w]!).toList(growable: false);
-  });
+  final tPredecessors = isDirected
+      ? List<List<int>>.generate(n2, (i) {
+          final v = tVerts[i];
+          return tPredOf(v).map((w) => targetIndex[w]!).toList(growable: false);
+        })
+      : tSuccessors;
+
+  final pSuccSets = List<Set<int>>.generate(n1, (i) => pSuccessors[i].toSet());
+  final pPredSets = isDirected
+      ? List<Set<int>>.generate(n1, (i) => pPredecessors[i].toSet())
+      : pSuccSets;
+  final tSuccSets = List<Set<int>>.generate(n2, (i) => tSuccessors[i].toSet());
+  final tPredSets = isDirected
+      ? List<Set<int>>.generate(n2, (i) => tPredecessors[i].toSet())
+      : tSuccSets;
+  final pNeighbors = isDirected
+      ? List<List<int>>.generate(
+          n1,
+          (i) => {...pSuccSets[i], ...pPredSets[i]}.toList(growable: false),
+        )
+      : List<List<int>>.generate(
+          n1,
+          (i) => pSuccSets[i].toList(growable: false),
+        );
+  final tNeighbors = isDirected
+      ? List<List<int>>.generate(
+          n2,
+          (i) => {...tSuccSets[i], ...tPredSets[i]}.toList(growable: false),
+        )
+      : List<List<int>>.generate(
+          n2,
+          (i) => tSuccSets[i].toList(growable: false),
+        );
 
   // State structures
   final core1 = List<int>.filled(n1, -1); // pattern -> target index
@@ -98,8 +131,8 @@ Iterable<Map<VP, VT>> findIsomorphisms<VT, ET, VP, EP>({
 
     // Syntactic feasibility:
     // Check self-loop consistency
-    final pSelfLoop = pSuccessors[u].contains(u);
-    final tSelfLoop = tSuccessors[v].contains(v);
+    final pSelfLoop = pSuccSets[u].contains(u);
+    final tSelfLoop = tSuccSets[v].contains(v);
     if (pSelfLoop != tSelfLoop) return false;
     if (pSelfLoop &&
         edgeComparator != null &&
@@ -107,33 +140,35 @@ Iterable<Map<VP, VT>> findIsomorphisms<VT, ET, VP, EP>({
         targetEdgeValue != null) {
       final ep = patternEdgeValue(vp, vp);
       final et = targetEdgeValue(vt, vt);
-      if (ep != null && et != null && !edgeComparator(et, ep)) return false;
+      if (et is ET && ep is EP && !edgeComparator(et, ep)) return false;
     }
 
     // Check edge consistency with already mapped vertices
     for (final nextU in pSuccessors[u]) {
       if (core1[nextU] != -1) {
         final nextV = core1[nextU];
-        if (!tSuccessors[v].contains(nextV)) return false;
+        if (!tSuccSets[v].contains(nextV)) return false;
         if (edgeComparator != null &&
             patternEdgeValue != null &&
             targetEdgeValue != null) {
           final ep = patternEdgeValue(vp, pVerts[nextU]);
           final et = targetEdgeValue(vt, tVerts[nextV]);
-          if (ep != null && et != null && !edgeComparator(et, ep)) return false;
+          if (et is ET && ep is EP && !edgeComparator(et, ep)) return false;
         }
       }
     }
-    for (final prevU in pPredecessors[u]) {
-      if (core1[prevU] != -1) {
-        final prevV = core1[prevU];
-        if (!tPredecessors[v].contains(prevV)) return false;
-        if (edgeComparator != null &&
-            patternEdgeValue != null &&
-            targetEdgeValue != null) {
-          final ep = patternEdgeValue(pVerts[prevU], vp);
-          final et = targetEdgeValue(tVerts[prevV], vt);
-          if (ep != null && et != null && !edgeComparator(et, ep)) return false;
+    if (isDirected) {
+      for (final prevU in pPredecessors[u]) {
+        if (core1[prevU] != -1) {
+          final prevV = core1[prevU];
+          if (!tPredSets[v].contains(prevV)) return false;
+          if (edgeComparator != null &&
+              patternEdgeValue != null &&
+              targetEdgeValue != null) {
+            final ep = patternEdgeValue(pVerts[prevU], vp);
+            final et = targetEdgeValue(tVerts[prevV], vt);
+            if (et is ET && ep is EP && !edgeComparator(et, ep)) return false;
+          }
         }
       }
     }
@@ -142,48 +177,35 @@ Iterable<Map<VP, VT>> findIsomorphisms<VT, ET, VP, EP>({
     for (final nextV in tSuccessors[v]) {
       if (core2[nextV] != -1) {
         final nextU = core2[nextV];
-        if (!pSuccessors[u].contains(nextU)) return false;
+        if (!pSuccSets[u].contains(nextU)) return false;
       }
     }
-    for (final prevV in tPredecessors[v]) {
-      if (core2[prevV] != -1) {
-        final prevU = core2[prevV];
-        if (!pPredecessors[u].contains(prevU)) return false;
+    if (isDirected) {
+      for (final prevV in tPredecessors[v]) {
+        if (core2[prevV] != -1) {
+          final prevU = core2[prevV];
+          if (!pPredSets[u].contains(prevU)) return false;
+        }
       }
     }
 
-    // Look-ahead checks: 1-look-ahead terminal sets
+    // Look-ahead checks: 1-look-ahead terminal sets (deduplicated per vertex)
     var out1Count = 0, out2Count = 0;
     var in1Count = 0, in2Count = 0;
     var other1Count = 0, other2Count = 0;
 
-    for (final nextU in pSuccessors[u]) {
-      if (core1[nextU] == -1) {
-        if (out1[nextU] > 0) out1Count++;
-        if (in1[nextU] > 0) in1Count++;
-        if (out1[nextU] == 0 && in1[nextU] == 0) other1Count++;
+    for (final adjU in pNeighbors[u]) {
+      if (core1[adjU] == -1) {
+        if (out1[adjU] > 0) out1Count++;
+        if (isDirected && in1[adjU] > 0) in1Count++;
+        if (out1[adjU] == 0 && (!isDirected || in1[adjU] == 0)) other1Count++;
       }
     }
-    for (final prevU in pPredecessors[u]) {
-      if (core1[prevU] == -1) {
-        if (out1[prevU] > 0) out1Count++;
-        if (in1[prevU] > 0) in1Count++;
-        if (out1[prevU] == 0 && in1[prevU] == 0) other1Count++;
-      }
-    }
-
-    for (final nextV in tSuccessors[v]) {
-      if (core2[nextV] == -1) {
-        if (out2[nextV] > 0) out2Count++;
-        if (in2[nextV] > 0) in2Count++;
-        if (out2[nextV] == 0 && in2[nextV] == 0) other2Count++;
-      }
-    }
-    for (final prevV in tPredecessors[v]) {
-      if (core2[prevV] == -1) {
-        if (out2[prevV] > 0) out2Count++;
-        if (in2[prevV] > 0) in2Count++;
-        if (out2[prevV] == 0 && in2[prevV] == 0) other2Count++;
+    for (final adjV in tNeighbors[v]) {
+      if (core2[adjV] == -1) {
+        if (out2[adjV] > 0) out2Count++;
+        if (isDirected && in2[adjV] > 0) in2Count++;
+        if (out2[adjV] == 0 && (!isDirected || in2[adjV] == 0)) other2Count++;
       }
     }
 

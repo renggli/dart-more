@@ -151,6 +151,17 @@ void main() {
           {4, 5, 6},
         });
       });
+
+      test('negative edge weights do not throw', () {
+        final graph = Graph<int, num>.undirected()
+          ..addEdge(1, 2, value: -5)
+          ..addEdge(2, 3, value: -2);
+        final communities = graph
+            .labelPropagationCommunities()
+            .map((c) => c.toSet())
+            .toList();
+        check(communities.expand((c) => c).toSet()).deepEquals({1, 2, 3});
+      });
     });
 
     group('louvain', () {

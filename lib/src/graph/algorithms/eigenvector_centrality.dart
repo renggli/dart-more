@@ -33,7 +33,8 @@ Map<V, double> eigenvectorCentrality<V>({
   if (n == 0) return x;
   if (n == 1) {
     final single = vertexList.first;
-    final selfLoop = successorsOf(single).contains(single);
+    final selfLoop = successorsOf(single)
+        .any((v) => vertexStrategy!.equals(v, single));
     x[single] = selfLoop ? 1.0 : 0.0;
     return x;
   }
@@ -65,7 +66,7 @@ Map<V, double> eigenvectorCentrality<V>({
       var sum = 0.0;
       for (final u in predecessorMap[v]!) {
         final w = edgeWeight?.call(u, v).toDouble() ?? 1.0;
-        sum += w * x[u]!;
+        sum += w * (x[u] ?? 0.0);
       }
       nextX[v] = sum;
     }

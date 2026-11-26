@@ -116,5 +116,19 @@ void main() {
       final nonBip = GraphFactory<int, void>().ring(vertexCount: 3);
       check(nonBip.bipartiteColoring()).isNull;
     });
+    test('standalone bipartiteColoring', () {
+      final coloring = bipartiteColoring<int>(
+        vertices: [1, 2, 3],
+        neighboursOf: (v) => switch (v) {
+          1 => [2],
+          2 => [1, 3],
+          3 => [2],
+          _ => const [],
+        },
+      );
+      check(coloring).isNotNull();
+      check(coloring![1]).equals(coloring[3]);
+      check(coloring[1] != coloring[2]).isTrue;
+    });
   });
 }

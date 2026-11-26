@@ -210,6 +210,36 @@ void main() {
         final cover = g.minimumVertexCover();
         check(cover).unorderedEquals([3]);
       });
+
+      test(
+        'non-complete bipartite graph maximumWeight replaces weaker match',
+        () {
+          // Vertex 1 only has edge 1-3 (weight 1); vertex 2 only has 2-3 (weight 10).
+          final g = Graph<int, int>(isDirected: false)
+            ..addEdge(1, 3, value: 1)
+            ..addEdge(2, 3, value: 10);
+          final matching = g.weightedBipartiteMatching(maximumWeight: true);
+          check(matching[2]).equals(3);
+          check(matching[3]).equals(2);
+          check(matching.containsKey(1)).isFalse;
+        },
+      );
+
+      test(
+        'non-complete bipartite graph minimumWeight maximizes cardinality',
+        () {
+          // Max cardinality is 2: (1-4: 1) + (2-3: 2) = 3.
+          final g = Graph<int, int>(isDirected: false)
+            ..addEdge(1, 3, value: 100)
+            ..addEdge(1, 4, value: 1)
+            ..addEdge(2, 3, value: 2);
+          final matching = g.weightedBipartiteMatching(maximumWeight: false);
+          check(matching[1]).equals(4);
+          check(matching[4]).equals(1);
+          check(matching[2]).equals(3);
+          check(matching[3]).equals(2);
+        },
+      );
     });
   });
 }

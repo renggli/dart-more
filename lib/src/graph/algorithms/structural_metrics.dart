@@ -33,14 +33,17 @@ double graphDensity<V>({
   required Iterable<V> vertices,
   required Iterable<V> Function(V vertex) successorsOf,
   required bool isDirected,
+  StorageStrategy<V>? vertexStrategy,
 }) {
-  final n = vertices.length;
+  vertexStrategy ??= StorageStrategy.defaultStrategy();
+  final vertexList = vertices.toList(growable: false);
+  final n = vertexList.length;
   if (n < 2) return 0.0;
   final maxEdges = n * (n - 1);
   var count = 0;
-  for (final v in vertices) {
+  for (final v in vertexList) {
     for (final w in successorsOf(v)) {
-      if (w != v) count++;
+      if (!vertexStrategy.equals(w, v)) count++;
     }
   }
   return count / maxEdges;
@@ -71,7 +74,7 @@ double localClusteringCoefficient<V>(
   if (isDirected) {
     for (final u in neighbours) {
       for (final w in successorsOf(u)) {
-        if (u != w && neighbours.contains(w)) {
+        if (!vertexStrategy.equals(u, w) && neighbours.contains(w)) {
           links++;
         }
       }
@@ -79,7 +82,7 @@ double localClusteringCoefficient<V>(
   } else {
     for (final u in neighbours) {
       for (final w in neighboursOf(u)) {
-        if (u != w && neighbours.contains(w)) {
+        if (!vertexStrategy.equals(u, w) && neighbours.contains(w)) {
           links++;
         }
       }
@@ -99,7 +102,6 @@ double averageClusteringCoefficient<V>({
   required bool isDirected,
   StorageStrategy<V>? vertexStrategy,
 }) {
-  if (vertices.isEmpty) return 0.0;
   var sum = 0.0;
   var count = 0;
   for (final v in vertices) {
@@ -135,8 +137,9 @@ double graphTransitivity<V>({
     if (k < 2) continue;
     triplets += k * (k - 1);
     for (final u in neighbours) {
-      for (final w in neighboursOf(u)) {
-        if (u != w && neighbours.contains(w)) {
+      final uNeighbours = vertexStrategy.createSet()..addAll(neighboursOf(u));
+      for (final w in uNeighbours) {
+        if (!vertexStrategy.equals(u, w) && neighbours.contains(w)) {
           triangles++;
         }
       }
@@ -167,59 +170,61 @@ double degreeAssortativity<V>({
   StorageStrategy<V>? vertexStrategy,
 }) {
   vertexStrategy ??= StorageStrategy.defaultStrategy();
+  final vertexList = vertices.toList(growable: false);
   final outDegrees = vertexStrategy.createMap<int>();
   final inDegrees = vertexStrategy.createMap<int>();
-  for (final v in vertices) {
+  for (final v in vertexList) {
     outDegrees[v] = 0;
     inDegrees[v] = 0;
   }
 
   if (isDirected) {
-    for (final u in vertices) {
+    for (final u in vertexList) {
       for (final v in successorsOf(u)) {
         outDegrees[u] = (outDegrees[u] ?? 0) + 1;
         inDegrees[v] = (inDegrees[v] ?? 0) + 1;
       }
     }
   } else {
-    for (final v in vertices) {
-      final deg = successorsOf(v);
-      final count = deg is List ? deg.length : deg.toList().length;
+    for (final v in vertexList) {
+      final count = successorsOf(v).length;
       outDegrees[v] = count;
       inDegrees[v] = count;
     }
   }
 
-  var edgeCount = 0;
+  final pairs = <(double, double)>[];
   var sumJ = 0.0;
   var sumK = 0.0;
-  var sumJ2 = 0.0;
-  var sumK2 = 0.0;
-  var sumJK = 0.0;
 
-  for (final u in vertices) {
+  for (final u in vertexList) {
     final j = outDegrees[u]!.toDouble();
     for (final v in successorsOf(u)) {
       final k = inDegrees[v]!.toDouble();
-      edgeCount++;
+      pairs.add((j, k));
       sumJ += j;
       sumK += k;
-      sumJ2 += j * j;
-      sumK2 += k * k;
-      sumJK += j * k;
     }
   }
 
+  final edgeCount = pairs.length;
   if (edgeCount == 0) return double.nan;
 
   final meanJ = sumJ / edgeCount;
   final meanK = sumK / edgeCount;
-  final varJ = (sumJ2 / edgeCount) - (meanJ * meanJ);
-  final varK = (sumK2 / edgeCount) - (meanK * meanK);
+  var varJ = 0.0;
+  var varK = 0.0;
+  var cov = 0.0;
+  for (final (j, k) in pairs) {
+    final dj = j - meanJ;
+    final dk = k - meanK;
+    varJ += dj * dj;
+    varK += dk * dk;
+    cov += dj * dk;
+  }
 
   if (varJ <= 0.0 || varK <= 0.0) return double.nan;
 
-  final cov = (sumJK / edgeCount) - (meanJ * meanK);
   final r = cov / math.sqrt(varJ * varK);
   return r.clamp(-1.0, 1.0);
 }

@@ -47,8 +47,10 @@ Map<V, double> betweennessCentrality<V>({
       stack.add(v);
 
       for (final w in successorsOf(v)) {
+        final distW = distance[w];
+        if (distW == null) continue;
         // Path discovery
-        if (distance[w]! < 0) {
+        if (distW < 0) {
           queue.add(w);
           distance[w] = distance[v]! + 1;
         }
@@ -72,7 +74,7 @@ Map<V, double> betweennessCentrality<V>({
       for (final v in predecessors[w]!) {
         delta[v] = delta[v]! + sigma[v]! * coeff;
       }
-      if (w != s) {
+      if (!vertexStrategy.equals(w, s)) {
         centrality[w] = centrality[w]! + delta[w]!;
       }
     }

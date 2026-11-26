@@ -113,11 +113,12 @@ Path<V, E>? findHamiltonianPath<V, E>({
   }
 
   final adj = List<List<int>>.generate(n, (_) => <int>[]);
+  final adjSets = List<Set<int>>.generate(n, (_) => <int>{});
   final inDegree = List<int>.filled(n, 0);
   for (var i = 0; i < n; i++) {
     for (final target in getSuccessors(vertexList[i])) {
       final j = vertexIndex[target];
-      if (j != null && j != i) {
+      if (j != null && j != i && adjSets[i].add(j)) {
         adj[i].add(j);
         inDegree[j]++;
       }
@@ -166,7 +167,8 @@ Path<V, E>? findHamiltonianPath<V, E>({
   for (var i = 0; i < resultVerts.length - 1; i++) {
     final from = resultVerts[i];
     final to = resultVerts[i + 1];
-    final edge = getEdges(from).firstWhere((e) => e.target == to);
+    final edge = getEdges(from)
+        .firstWhere((e) => vertexStrategy!.equals(e.target, to));
     pathEdges.add(edge);
   }
   return Path<V, E>.fromEdges(pathEdges);

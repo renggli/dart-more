@@ -272,14 +272,35 @@ Map<V, V> weightedBipartiteMatching<V>({
     indexW[partW[j]] = j;
   }
 
-  final sign = maximumWeight ? 1.0 : -1.0;
   final adj = List<List<(int, double)>>.generate(nU, (_) => <(int, double)>[]);
+  var minW = double.infinity;
+  var maxW = double.negativeInfinity;
+  var edgeCount = 0;
   for (var i = 0; i < nU; i++) {
     final u = partU[i];
     for (final w in neighboursOf(u)) {
       final j = indexW[w];
       if (j != null) {
-        adj[i].add((j, sign * edgeWeight(u, w).toDouble()));
+        final weight = edgeWeight(u, w).toDouble();
+        adj[i].add((j, weight));
+        if (weight < minW) minW = weight;
+        if (weight > maxW) maxW = weight;
+        edgeCount++;
+      }
+    }
+  }
+
+  if (edgeCount == 0) {
+    return vertexStrategy.createMap<V>();
+  }
+
+  if (!maximumWeight) {
+    final offset = nU * (maxW - minW) + 1.0;
+    for (var i = 0; i < nU; i++) {
+      final list = adj[i];
+      for (var k = 0; k < list.length; k++) {
+        final (j, weight) = list[k];
+        list[k] = (j, (maxW - weight) + offset);
       }
     }
   }
@@ -287,11 +308,11 @@ Map<V, V> weightedBipartiteMatching<V>({
   final pU = List<double>.filled(nU, 0.0);
   final pW = List<double>.filled(nW, 0.0);
   for (var i = 0; i < nU; i++) {
-    var maxW = double.negativeInfinity;
-    for (final (_, w) in adj[i]) {
-      if (w > maxW) maxW = w;
+    var bestWeight = 0.0;
+    for (final (_, weight) in adj[i]) {
+      if (weight > bestWeight) bestWeight = weight;
     }
-    pU[i] = maxW.isFinite ? maxW : 0.0;
+    pU[i] = bestWeight;
   }
 
   final matchU = List<int>.filled(nU, -1);
@@ -307,8 +328,11 @@ Map<V, V> weightedBipartiteMatching<V>({
     var currU = startU;
     visitedU[currU] = true;
     distU[currU] = 0.0;
+    var bestDummyU = startU;
+    var bestDummyDist = pU[startU];
 
-    int? finalW;
+    var finalW = -1;
+    var augmentedDummy = false;
     while (true) {
       final currentDistU = distU[currU];
       for (final (j, weight) in adj[currU]) {
@@ -331,44 +355,23 @@ Map<V, V> weightedBipartiteMatching<V>({
         }
       }
 
-      if (bestJ == -1 || bestDist.isInfinite) {
+      if (bestJ == -1 || bestDummyDist <= bestDist) {
+        final d = bestDummyDist;
+        for (var i = 0; i < nU; i++) {
+          if (visitedU[i]) {
+            pU[i] -= d - distU[i];
+          }
+        }
+        for (var j = 0; j < nW; j++) {
+          if (visitedW[j]) {
+            pW[j] += d - dist[j];
+          }
+        }
+        augmentedDummy = bestDummyU != startU;
         break;
       }
 
       visitedW[bestJ] = true;
-
-      if (maximumWeight) {
-        var gain = 0.0;
-        var traceW = bestJ;
-        while (traceW != -1) {
-          final u = parent[traceW];
-          double? forwardWeight;
-          for (final (neighbor, w) in adj[u]) {
-            if (neighbor == traceW) {
-              forwardWeight = w;
-              break;
-            }
-          }
-          gain += forwardWeight ?? 0.0;
-          final prevW = matchU[u];
-          if (prevW != -1) {
-            double? prevWeight;
-            for (final (neighbor, w) in adj[u]) {
-              if (neighbor == prevW) {
-                prevWeight = w;
-                break;
-              }
-            }
-            gain -= prevWeight ?? 0.0;
-          }
-          traceW = prevW;
-        }
-
-        if (gain <= 0.0) {
-          break;
-        }
-      }
-
       if (matchW[bestJ] == -1) {
         finalW = bestJ;
         break;
@@ -377,10 +380,15 @@ Map<V, V> weightedBipartiteMatching<V>({
       final nextU = matchW[bestJ];
       visitedU[nextU] = true;
       distU[nextU] = bestDist;
+      final candidateDummyDist = bestDist + pU[nextU];
+      if (candidateDummyDist < bestDummyDist) {
+        bestDummyDist = candidateDummyDist;
+        bestDummyU = nextU;
+      }
       currU = nextU;
     }
 
-    if (finalW != null) {
+    if (finalW != -1) {
       final d = dist[finalW];
       for (var i = 0; i < nU; i++) {
         if (visitedU[i]) {
@@ -394,6 +402,16 @@ Map<V, V> weightedBipartiteMatching<V>({
       }
 
       var currW = finalW;
+      while (currW != -1) {
+        final u = parent[currW];
+        final nextW = matchU[u];
+        matchU[u] = currW;
+        matchW[currW] = u;
+        currW = nextW;
+      }
+    } else if (augmentedDummy) {
+      var currW = matchU[bestDummyU];
+      matchU[bestDummyU] = -1;
       while (currW != -1) {
         final u = parent[currW];
         final nextW = matchU[u];

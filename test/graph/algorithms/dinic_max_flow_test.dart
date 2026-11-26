@@ -108,5 +108,29 @@ void main() {
       );
       check(flow(1, 2)).equals(1);
     });
+    test('resets residual flows when called with same source and target', () {
+      final graph = Graph<String, int>(isDirected: true)
+        ..addEdge('S', '1', value: 2)
+        ..addEdge('1', 'E', value: 2);
+      final flow = graph.maxFlow();
+      check(flow('S', 'E')).equals(2);
+      check(flow.flow('S', '1')).equals(2);
+      check(flow('S', 'S')).equals(0);
+      check(flow.flow('S', '1')).equals(0);
+    });
+    test('infinite capacity edge and negative capacity error', () {
+      final infGraph = Graph<int, num>(isDirected: true)
+        ..addEdge(0, 1, value: double.infinity)
+        ..addEdge(1, 2, value: 5);
+      check(infGraph.maxFlow()(0, 2)).equals(5);
+
+      final unbndGraph = Graph<int, num>(isDirected: true)
+        ..addEdge(0, 1, value: double.infinity);
+      check(unbndGraph.maxFlow()(0, 1)).equals(double.infinity);
+
+      final negGraph = Graph<int, num>(isDirected: true)
+        ..addEdge(0, 1, value: -1);
+      check(negGraph.maxFlow).throws<GraphError>();
+    });
   });
 }

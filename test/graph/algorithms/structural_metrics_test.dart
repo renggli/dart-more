@@ -159,6 +159,78 @@ void main() {
           },
         );
         check(trans).equals(1.0);
+
+        final transDup = graphTransitivity<int>(
+          vertices: [0, 1, 2],
+          neighboursOf: (v) => switch (v) {
+            0 => [1, 1, 2, 2],
+            1 => [0, 0, 2, 2],
+            2 => [0, 0, 1, 1],
+            _ => const [],
+          },
+        );
+        check(transDup).equals(1.0);
+      });
+    });
+
+    group('degreeCentrality', () {
+      test('empty and single vertex graph', () {
+        final g0 = Graph<int, void>(isDirected: false);
+        check(g0.degreeCentrality()).isEmpty;
+
+        final g1 = Graph<int, void>(isDirected: false)..addVertex(1);
+        check(g1.degreeCentrality()[1]).equals(0.0);
+      });
+
+      test('undirected line P3: 0 - 1 - 2', () {
+        final p3 = Graph<int, void>(isDirected: false)
+          ..addEdge(0, 1)
+          ..addEdge(1, 2);
+
+        final dc = p3.degreeCentrality();
+        check(dc[0]).equals(0.5);
+        check(dc[1]).equals(1.0);
+        check(dc[2]).equals(0.5);
+      });
+
+      test('complete graph K4', () {
+        final k4 = GraphFactory<int, void>(isDirected: false)
+            .complete(vertexCount: 4);
+        final dc = k4.degreeCentrality();
+        for (var i = 0; i < 4; i++) {
+          check(dc[i]).equals(1.0);
+        }
+      });
+
+      test('directed line: in-, out-, and total degree centrality', () {
+        final g = Graph<int, void>(isDirected: true)
+          ..addEdge(0, 1)
+          ..addEdge(1, 2);
+
+        final inDc = g.inDegreeCentrality();
+        check(inDc[0]).equals(0.0);
+        check(inDc[1]).equals(0.5);
+        check(inDc[2]).equals(0.5);
+
+        final outDc = g.outDegreeCentrality();
+        check(outDc[0]).equals(0.5);
+        check(outDc[1]).equals(0.5);
+        check(outDc[2]).equals(0.0);
+
+        final dc = g.degreeCentrality();
+        check(dc[0]).equals(0.5);
+        check(dc[1]).equals(1.0);
+        check(dc[2]).equals(0.5);
+      });
+
+      test('standalone degreeCentrality function', () {
+        final res = degreeCentrality<String>(
+          vertices: ['a', 'b', 'c'],
+          degreeOf: (v) => v == 'b' ? 2 : 1,
+        );
+        check(res['a']).equals(0.5);
+        check(res['b']).equals(1.0);
+        check(res['c']).equals(0.5);
       });
     });
 
@@ -249,6 +321,33 @@ void main() {
           isDirected: false,
         );
         check(val).isCloseTo(-1.0, 1e-6);
+
+        // Single-pass iterable vertices
+        Iterable<int> once() sync* {
+          yield 0;
+          yield 1;
+          yield 2;
+        }
+
+        final singlePassVal = degreeAssortativity<int>(
+          vertices: once(),
+          successorsOf: (v) => v == 0 ? [1, 2] : [0],
+          isDirected: false,
+        );
+        check(singlePassVal).isCloseTo(-1.0, 1e-6);
+
+        // High baseline degree cancellation resistance
+        const base = 100000000;
+        final largeShift = degreeAssortativity<int>(
+          vertices: [0, 1],
+          successorsOf: (v) => [
+            if (v == 0) 1 else 0,
+            ...List<int>.filled(base ~/ 10000, v),
+            if (v == 0) v,
+          ],
+          isDirected: false,
+        );
+        check(largeShift.isNaN).isFalse;
       });
     });
   });

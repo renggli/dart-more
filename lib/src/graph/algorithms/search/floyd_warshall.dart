@@ -18,19 +18,20 @@ FloydWarshall<V> floydWarshallSearch<V>({
   vertexStrategy = vertexStrategy ?? StorageStrategy.defaultStrategy();
 
   // Step 1: Initialize matrix states.
+  final vertexList = vertices.toList(growable: false);
   final pairs = vertexStrategy.createMap<Map<V, FloydWarshallState<V>>>();
-  for (final source in vertices) {
+  for (final source in vertexList) {
     final sourceMap = vertexStrategy.createMap<FloydWarshallState<V>>();
-    for (final target in vertices) {
+    for (final target in vertexList) {
       sourceMap[target] = FloydWarshallState<V>(
-        distance: source == target ? 0 : double.infinity,
+        distance: vertexStrategy.equals(source, target) ? 0 : double.infinity,
       );
     }
     for (final target in successorsOf(source)) {
       final state = sourceMap[target];
       if (state != null) {
         final cost = edgeCost(source, target);
-        if (source == target) {
+        if (vertexStrategy.equals(source, target)) {
           if (cost < state.distance) {
             state.distance = cost;
             state.next = target;
@@ -45,13 +46,13 @@ FloydWarshall<V> floydWarshallSearch<V>({
   }
 
   // Step 2: Floyd-Warshall loops.
-  for (final k in vertices) {
+  for (final k in vertexList) {
     final rowK = pairs[k]!;
-    for (final i in vertices) {
+    for (final i in vertexList) {
       final rowI = pairs[i]!;
       final ik = rowI[k]!;
       if (ik.distance.isInfinite) continue;
-      for (final j in vertices) {
+      for (final j in vertexList) {
         final kj = rowK[j]!;
         if (kj.distance.isInfinite) continue;
         final ij = rowI[j]!;
@@ -65,7 +66,7 @@ FloydWarshall<V> floydWarshallSearch<V>({
   }
 
   // Step 3: Check for negative cycles.
-  for (final vertex in vertices) {
+  for (final vertex in vertexList) {
     if (pairs[vertex]![vertex]!.distance < 0) {
       throw GraphError(
         vertex,
@@ -75,15 +76,17 @@ FloydWarshall<V> floydWarshallSearch<V>({
     }
   }
 
-  return FloydWarshall(edgeCost, pairs);
+  return FloydWarshall(edgeCost, pairs, vertexStrategy);
 }
 
 /// The result of the Floyd-Warshall all-pairs shortest paths algorithm.
 final class FloydWarshall<V> {
   final num Function(V source, V target) _edgeCost;
   final Map<V, Map<V, FloydWarshallState<V>>> _pairs;
+  final StorageStrategy<V> _vertexStrategy;
 
-  new(this._edgeCost, this._pairs);
+  new(this._edgeCost, this._pairs, [StorageStrategy<V>? vertexStrategy])
+    : _vertexStrategy = vertexStrategy ?? StorageStrategy.defaultStrategy();
 
   FloydWarshallState<V> _get(V source, V target) {
     final targetMap = _pairs[source];
@@ -107,7 +110,7 @@ final class FloydWarshall<V> {
     final vertices = [source];
     final values = <num>[];
     V? current = source;
-    while (current != null && current != target) {
+    while (current != null && !_vertexStrategy.equals(current, target)) {
       current = _get(current, target).next;
       if (current == null) return null;
       values.add(_edgeCost(vertices.last, current));
@@ -147,7 +150,7 @@ final class FloydWarshall<V> {
     if (_pairs.length <= 1) return 0;
     var maxDist = 0.0;
     for (final entry in targetMap.entries) {
-      if (entry.key == vertex) continue;
+      if (_vertexStrategy.equals(entry.key, vertex)) continue;
       final dist = entry.value.distance;
       if (dist.isInfinite) return double.infinity;
       if (dist > maxDist) maxDist = dist.toDouble();
@@ -190,7 +193,7 @@ final class FloydWarshall<V> {
   /// eccentricity equals the radius.
   Set<V> get center {
     final rad = radius;
-    final result = <V>{};
+    final result = _vertexStrategy.createSet();
     if (rad.isInfinite) return result;
     for (final vertex in _pairs.keys) {
       if (eccentricity(vertex) == rad) {
@@ -204,7 +207,7 @@ final class FloydWarshall<V> {
   /// eccentricity equals the diameter.
   Set<V> get periphery {
     final diam = diameter;
-    final result = <V>{};
+    final result = _vertexStrategy.createSet();
     if (diam.isInfinite) return result;
     for (final vertex in _pairs.keys) {
       if (eccentricity(vertex) == diam) {
@@ -223,7 +226,7 @@ final class FloydWarshall<V> {
     var pairCount = 0;
     for (final source in _pairs.keys) {
       for (final entry in _pairs[source]!.entries) {
-        if (source == entry.key) continue;
+        if (_vertexStrategy.equals(source, entry.key)) continue;
         final dist = entry.value.distance;
         if (!dist.isInfinite) {
           totalDistance += dist;
@@ -254,7 +257,7 @@ final class FloydWarshall<V> {
     var sumDistance = 0.0;
     var reachable = 0;
     for (final entry in targetMap.entries) {
-      if (entry.key == vertex) continue;
+      if (_vertexStrategy.equals(entry.key, vertex)) continue;
       final dist = entry.value.distance;
       if (!dist.isInfinite) {
         sumDistance += dist;

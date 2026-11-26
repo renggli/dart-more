@@ -239,5 +239,18 @@ void main() {
         );
       });
     });
+    test('handles single-pass iterable vertices', () {
+      Iterable<int> once() sync* {
+        yield 0;
+        yield 1;
+        yield 2;
+      }
+
+      final fw = floydWarshallSearch<int>(
+        vertices: once(),
+        successorsOf: (v) => v < 2 ? [v + 1] : const [],
+      );
+      check(fw.distance(0, 2)).equals(2);
+    });
   });
 }

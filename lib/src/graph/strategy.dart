@@ -1,3 +1,5 @@
+import 'package:meta/meta.dart' show internal;
+
 import 'strategy/integer_map.dart';
 import 'strategy/integer_set.dart';
 
@@ -70,5 +72,20 @@ class PositiveIntegerStorageStrategy implements StorageStrategy<int> {
   static int _identity(int x) {
     assert(x >= 0, 'Expected non-negative integer value, but got $x.');
     return x;
+  }
+}
+
+/// Internal helper extension on [StorageStrategy].
+@internal
+extension StorageStrategyExtension<T> on StorageStrategy<T> {
+  /// Compares [a] and [b] for equality under this strategy.
+  bool equals(T a, T b) {
+    if (this is IdentityStorageStrategy<T>) return identical(a, b);
+    if (this is ObjectStorageStrategy<T> ||
+        this is IntegerStorageStrategy ||
+        this is PositiveIntegerStorageStrategy) {
+      return a == b;
+    }
+    return (createSet()..add(a)).contains(b);
   }
 }

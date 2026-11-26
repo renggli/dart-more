@@ -116,7 +116,8 @@ Path<V, E>? findEulerianPath<V, E>({
     }
   } else {
     degreeOf ??= (v) => outgoingEdgesOf(v).length;
-    containsEdge ??= (u, v) => outgoingEdgesOf(u).any((e) => e.target == v);
+    containsEdge ??= (u, v) =>
+        outgoingEdgesOf(u).any((e) => vertexStrategy!.equals(e.target, v));
 
     var oddVertices = 0;
     for (final v in vertexList) {
@@ -202,7 +203,7 @@ Path<V, E>? findEulerianPath<V, E>({
       for (final edge in outgoingEdgesOf(v)) {
         final u = edge.source;
         final w = edge.target;
-        if (u == w) {
+        if (vertexStrategy.equals(u, w)) {
           final id = undirectedEdgeCount++;
           (remainingEdges[u] ??= []).add((id, edge));
         } else {

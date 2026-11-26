@@ -132,7 +132,7 @@ Iterable<Set<V>> labelPropagationCommunities<V>({
 
       if (labelWeights.isEmpty) continue;
 
-      var maxWeight = -1.0;
+      var maxWeight = double.negativeInfinity;
       final bestLabels = <int>[];
       for (final entry in labelWeights.entries) {
         if (entry.value > maxWeight + 1e-9) {

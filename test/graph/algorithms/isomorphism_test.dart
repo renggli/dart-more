@@ -188,6 +188,35 @@ void main() {
             .toList();
         check(matches.length).equals(2); // (10->1, 20->2) and (10->2, 20->1)
       });
+
+      test('edgeComparator handles nullable edge values', () {
+        final target = Graph<int, int?>(isDirected: true)
+          ..addEdge(1, 2, value: null)
+          ..addEdge(2, 3, value: 5);
+        final pattern = Graph<int, int?>(isDirected: true)
+          ..addEdge(10, 20, value: 5);
+
+        final matches = target
+            .findSubgraphIsomorphisms(
+              pattern,
+              edgeComparator: (et, ep) => et == ep,
+            )
+            .toList();
+        check(matches.length).equals(1);
+        check(matches.single).deepEquals({10: 2, 20: 3});
+      });
+
+      test('symmetric subgraph isomorphism look-ahead counts', () {
+        final target = Graph<int, void>(isDirected: false)
+          ..addEdge(0, 1)
+          ..addEdge(1, 2)
+          ..addEdge(2, 3)
+          ..addEdge(3, 0);
+        final pattern = Graph<int, void>(isDirected: false)
+          ..addEdge(10, 11)
+          ..addEdge(11, 12);
+        check(target.findSubgraphIsomorphisms(pattern).length).equals(8);
+      });
     });
   });
 }

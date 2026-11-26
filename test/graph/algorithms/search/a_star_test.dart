@@ -102,5 +102,16 @@ void main() {
         );
       });
     });
+    test('deduplicates duplicate startVertices', () {
+      final graph = Graph<int, void>(isDirected: true)..addEdge(1, 2);
+      final paths = aStarSearch<int>(
+        startVertices: [1, 1],
+        targetPredicate: (v) => v == 2,
+        successorsOf: graph.successorsOf,
+        costEstimate: (_) => 0,
+      ).toList();
+      check(paths).length.equals(1);
+      check(paths.single.vertices).deepEquals([1, 2]);
+    });
   });
 }

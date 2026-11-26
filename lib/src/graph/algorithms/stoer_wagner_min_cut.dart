@@ -1,6 +1,5 @@
 import 'package:collection/collection.dart';
 
-import '../../collection/iterable/unique.dart';
 import '../../functional/scope.dart';
 import '../../functional/types.dart';
 import '../edge.dart';
@@ -37,8 +36,13 @@ class StoerWagnerMinCut<V, E> {
       vertexMap[vertex] = set;
       set.add(vertex);
     }
-    for (final edge in graph.edges.unique()) {
-      if (edge.source == edge.target) continue;
+    final seenEdges = graph.vertexStrategy.createMap<Set<V>>();
+    for (final edge in graph.edges) {
+      if (graph.vertexStrategy.equals(edge.source, edge.target)) continue;
+      if (seenEdges[edge.target]?.contains(edge.source) ?? false) continue;
+      seenEdges
+          .putIfAbsent(edge.source, graph.vertexStrategy.createSet)
+          .add(edge.target);
       final weight = edgeWeight(edge.source, edge.target);
       GraphError.checkPositiveEdgeValue(edge.source, edge.target, weight);
       _workingGraph.addEdge(

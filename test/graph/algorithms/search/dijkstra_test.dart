@@ -95,5 +95,15 @@ void main() {
       check(paths).length.equals(1);
       check(paths.single.vertices).deepEquals(['S', 'T']);
     });
+    test('deduplicates duplicate startVertices', () {
+      final graph = Graph<int, void>(isDirected: true)..addEdge(1, 2);
+      final paths = dijkstraSearch<int>(
+        startVertices: [1, 1],
+        targetPredicate: (v) => v == 2,
+        successorsOf: graph.successorsOf,
+      ).toList();
+      check(paths).length.equals(1);
+      check(paths.single.vertices).deepEquals([1, 2]);
+    });
   });
 }
